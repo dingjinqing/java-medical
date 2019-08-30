@@ -162,6 +162,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
       )
   },
+  // 优惠券礼包-领取明细
+  {
+    path: '/admin/home/main/couponPackage/receiveDetails',
+    name: 'coupon_Package_receive_details',
+    meta: {
+      crumbTitle: 'router.coupon_Package_receive_details',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackageReceiveDetails'
+      )
+  },
   // 限时降价
   {
     path: '/admin/home/main/reduce',
@@ -407,9 +421,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-        import(
-          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSale'
-        )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSale'
+      )
   },
   // 定金膨胀 - 创建活动
   {
@@ -421,9 +435,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-        import(
-          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleAdd'
-        )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleAdd'
+      )
   },
   // 定金膨胀 - 修改活动
   {
@@ -435,9 +449,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-        import(
-          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleAdd'
-        )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleAdd'
+      )
   },
   // 定金膨胀 - 订单明细
   {
@@ -449,9 +463,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-        import(
-          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleOrderDetail'
-        )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleOrderDetail'
+      )
   },
   // 定金膨胀 - 活动明细
   {
@@ -463,9 +477,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-        import(
-          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleDetail'
-        )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleDetail'
+      )
   }
 ]
 export default routes

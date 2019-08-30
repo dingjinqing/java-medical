@@ -107,7 +107,10 @@ export const cn = {
   gift_detail: ['营销管理', '赠品', '赠送明细'],
   // 营销管理 优惠券礼包
   coupon_Package: ['营销管理', '优惠券礼包'],
+  // 营销管理 优惠券礼包 添加优惠券礼包
   coupon_Package_add: ['营销管理', '优惠券礼包', '添加优惠券礼包'],
+  // 营销管理 优惠券礼包 领取明细
+  coupon_Package_receive_details: ['营销管理', '优惠券礼包', '领取明细'],
   // 营销管理 好友代付
   friend_pay: ['营销管理', '好友代付'],
   // 营销管理 幸运大抽奖
@@ -255,10 +258,17 @@ export const en = {
   gift_detail: ['Marketing Management', 'Gift', 'Gift Detail'],
   // 营销管理 优惠券礼包
   coupon_Package: ['Marketing Management', 'Coupon Package'],
+  // 营销管理 优惠券礼包 添加优惠券礼包
   coupon_Package_add: [
     'Marketing management',
     'Coupon Package',
     'Add Coupon Package'
+  ],
+  // 营销管理 优惠券礼包 领取明细
+  coupon_Package_receive_details: [
+    'Marketing management',
+    'Coupon Package',
+    'Receive Details'
   ],
   // // 营销管理 组团瓜分积分
   // group_integration: ['Marketing management', 'Group integration'],

@@ -75,7 +75,12 @@
           <el-table-column
             prop="vaildDate"
             label="有效期"
-          ></el-table-column>
+            width="160"
+          >
+            <template slot-scope="scope">
+              <span v-html="scope.row.vaildDate"></span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="voucherKindsNumber"
             label="优惠券种类数/礼包"
@@ -95,6 +100,7 @@
           <el-table-column
             prop="accessCost"
             label="购买金额"
+            width="80"
           ></el-table-column>
           <el-table-column
             prop="issueAmount"
@@ -103,6 +109,7 @@
           <el-table-column
             prop="statusName"
             label="活动状态"
+            width="80"
           ></el-table-column>
           <el-table-column
             label="操作"
@@ -184,7 +191,10 @@
                   content="领取明细"
                   placement="top"
                 >
-                  <i class="el-icon-document"></i>
+                  <i
+                    class="el-icon-document"
+                    @click="receiveDetails(scope.row.id)"
+                  ></i>
                 </el-tooltip>
               </div>
             </template>
@@ -264,7 +274,7 @@ export default {
             item.accessMode = '直接领取'
             break
         }
-        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.vaildDate = `${item.startTime}<br/>至<br/>${item.endTime}`
         item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
       this.tableData = data
@@ -337,7 +347,16 @@ export default {
         })
       })
     },
-
+    // 领取明细
+    receiveDetails (id) {
+      console.log(id)
+      this.$router.push({
+        name: 'coupon_Package_receive_details',
+        query: {
+          id: id
+        }
+      })
+    },
     // 取活动分享二维码
     shareCouponPackage (id) {
       getCouponPackShareCode(id).then((res) => {
@@ -388,6 +407,7 @@ export default {
         margin-left: 15px;
         > span {
           min-width: 80px;
+          font-size: 14px;
         }
       }
     }

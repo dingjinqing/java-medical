@@ -55,7 +55,10 @@
               </div>
               <div class="package_rule">
                 <div class="rule_title">活动规则</div>
-                <div class="rule_info">{{param.actRule}}</div>
+                <div
+                  class="rule_info"
+                  v-html="crlfFormat"
+                ></div>
               </div>
             </div>
           </div>
@@ -539,6 +542,11 @@ export default {
       })
     }
   },
+  computed: {
+    crlfFormat () {
+      return this.param.actRule.replace(/\n/g, '<br />')
+    }
+  },
   mounted () {
 
   }
@@ -570,10 +578,6 @@ export default {
 
       &::-webkit-scrollbar-track:hover {
         background-color: rgba(0, 0, 0, 0.06);
-        -webkit-box-shadow: -2px 0 0 #fff inset,
-          1px 0 0 rgba(255, 255, 255, 0.9) inset,
-          0 -1px 0 rgba(255, 255, 255, 0.9) inset,
-          0 1px 0 rgba(255, 255, 255, 0.9) inset;
       }
 
       &::-webkit-scrollbar-track:active {
@@ -583,9 +587,6 @@ export default {
       &::-webkit-scrollbar-thumb {
         border-radius: 8px;
         background-color: rgba(0, 0, 0, 0.1);
-        -webkit-box-shadow: -2px 0 0 #fff inset, 1px 0 0 #fff inset,
-          0 -1px 0 rgba(255, 255, 255, 0.9) inset,
-          0 1px 0 rgba(255, 255, 255, 0.9) inset;
       }
 
       &::-webkit-scrollbar-thumb:hover {
