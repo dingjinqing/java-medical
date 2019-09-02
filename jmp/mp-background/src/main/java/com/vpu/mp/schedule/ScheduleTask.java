@@ -41,7 +41,7 @@ public class ScheduleTask {
 	@Async
 	@Scheduled(cron = "0/5 * * * * ?")
 	public void taskSendMessage() {
-        saas.taskJobMainService.getAndSendMessage(TaskJobsConstant.TaskJobEnum.SEND_MESSAGE);
+        saas.taskJobMainService.getAndSendMessage();
     }
 	/**
 	 * 每天获取微信数据（每天6-12点每半个小时执行一次）
