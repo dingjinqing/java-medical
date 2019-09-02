@@ -1,8 +1,7 @@
 package com.vpu.mp.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +22,7 @@ import com.vpu.mp.service.saas.SaasApplication;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -37,6 +36,9 @@ public class BaseController {
 
 	@Autowired
 	protected Environment env;
+
+	@Autowired
+	private VoTranslator translator;
 
 	@Autowired
 	private DomainConfig domainConfig;
@@ -64,6 +66,12 @@ public class BaseController {
 		return result(resultCode, null,args);
 	}
 
+	public JsonResult fail(Object ...args){
+		Object resultCode =args[0];
+		List<Object> arr =Arrays.asList(args);
+		arr.remove(0);
+		return fail(resultCode,arr);
+	}
 
 	public JsonResult fail() {
 		return result(JsonResultCode.CODE_FAIL, null);
@@ -166,7 +174,7 @@ public class BaseController {
 		VoTranslator.translateFields(content,getLang());
 		return result(JsonResultCode.CODE_SUCCESS, content);
 	}
-	
+
 	public JsonResult wxfail(WxOpenResult result) {
 		JsonResult result2 = null;
 		for (JsonResultCode code : JsonResultCode.values()) {

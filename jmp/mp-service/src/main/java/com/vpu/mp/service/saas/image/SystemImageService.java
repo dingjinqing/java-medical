@@ -46,15 +46,15 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
 
 	@Autowired
     protected DomainConfig domainConfig;
-    
+
     @Autowired
     protected UpYunConfig upYunConfig;
-    
-    
+
+
     @Override
    	public String imageUrl(String relativePath) {
     	if(!StringUtils.isEmpty(relativePath)) {
-    		return domainConfig.imageUrl(relativePath);    		
+    		return domainConfig.imageUrl(relativePath);
     	}
     	return null;
    	}
@@ -68,7 +68,7 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
    	public UpYun getUpYunClient() {
    		return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
    	}
-   	
+
     /**
      * 删除单张图片
      *
@@ -208,7 +208,7 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
      * @return
      */
     public UploadedImageRecord addImageToDb(String relativePath, String imageName, String originFileName,
-                                            Integer catId) {
+                                            Integer catId) throws IOException {
         String fullPath = fullPath(relativePath);
         File file = new File(fullPath);
         if (file.exists()) {
@@ -281,7 +281,12 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
             }
             UploadedImageRecord record = this.getImageFromImagePath(uploadPath.relativeFilePath);
             if (record == null) {
-                record = this.addImageToDb(uploadPath.relativeFilePath, null, imageUrl, 0);
+                try {
+                    record = this.addImageToDb(uploadPath.relativeFilePath, null, imageUrl, 0);
+                }catch (IOException e){
+                    e.printStackTrace();
+                    return null;
+                }
             }
             return record;
         }
@@ -289,14 +294,14 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
     }
 
     /**
-     * 当前店铺Id 
+     * 当前店铺Id
      * @return
      */
     @Override
     public Integer currentShopId() {
     	return this.getShopId();
     }
-    
+
 	 /**
 	  * 添加外链图片到又拍云
      * @param iamgeUrl
@@ -334,5 +339,5 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
 		}
 		return steam;
 	}
-	
+
 }

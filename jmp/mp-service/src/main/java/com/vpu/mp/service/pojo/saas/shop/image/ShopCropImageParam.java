@@ -39,4 +39,5 @@ public class ShopCropImageParam {
     public Double imgScaleW;
     public Integer imgCatId;
     public Integer remoteImgId;
+    private Integer size;
 }

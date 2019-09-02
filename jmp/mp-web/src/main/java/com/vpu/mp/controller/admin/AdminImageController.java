@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
 
+import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadedImageVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +34,7 @@ import com.vpu.mp.service.pojo.shop.image.UploadedImageVo;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -41,7 +44,7 @@ public class AdminImageController extends AdminBaseController {
 
 	/**
 	 * 上传多张图片
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 * @throws IOException
@@ -70,7 +73,7 @@ public class AdminImageController extends AdminBaseController {
 
 	/**
 	 * 上传单张图片
-	 * 
+	 *
 	 * @param  param
 	 * @param  file
 	 * @return
@@ -78,69 +81,55 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/uploadOneImgae")
-	protected JsonResult uploadOneFile( UploadImageParam param, Part file) throws IOException, Exception {
-		ShopApplication shop = shop();
-		Integer maxSize = 5 * 1024 * 1024;
-		if (file.getSize() > maxSize) {
-			return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M);
+	protected JsonResult uploadOneFile(UploadImageParam param, Part file) throws IOException, Exception {
+		//校验
+		Object[] jsonResultCode = shop().image.validImageParam(param, file);
+		if (jsonResultCode!=null){
+			this.fail(jsonResultCode);
 		}
-		if (!shop().image.validImageType(file.getContentType())) {
-			return this.fail(JsonResultCode.CODE_IMGAE_FORMAT_INVALID);
-		}
-		if (param.needImgWidth != null || param.needImgHeight != null) {
-			BufferedImage bufferImage;
-			bufferImage = ImageIO.read(file.getInputStream());
-			if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
-				return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH, param.needImgWidth);
-			}
-			if (param.needImgHeight != null && param.needImgHeight != bufferImage.getHeight()) {
-				return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT, param.needImgHeight);
-			}
-		}
-		UploadPath uploadPath = shop.image.getImageWritableUploadPath(file.getContentType());
-		file.write(uploadPath.fullPath);
-
-		boolean ret = shop.image.uploadToUpYun(uploadPath.relativeFilePath, new File(uploadPath.fullPath));
+		UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType(),file.getSubmittedFileName());
+		//上传又拍云
+	    boolean ret=  shop().image.uploadToUpYunBySteam(uploadPath.relativeFilePath,file.getInputStream());
 		if (ret) {
-			UploadedImageRecord record = shop.image.addImageToDb(uploadPath.relativeFilePath,
-					shop.image.baseFilename(file.getSubmittedFileName()), file.getSubmittedFileName(), param.imgCatId);
-			shop.image.rmFile(uploadPath.fullPath);
-			return this.success(record.into(UploadedImageVo.class));
+			//保存记录
+			UploadedImageVo uploadedImageVo = shop().image.addImageToDb(param, file, uploadPath).into(UploadedImageVo.class);
+			return this.success(uploadedImageVo);
 		}
 		return fail(JsonResultCode.CODE_IMGAE_UPLOAD_FAILED);
 	}
 
 	/**
 	 * 图片列表
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 */
 	@PostMapping(value = "/admin/image/list")
 	public JsonResult getImageList(@RequestBody ImageListQueryParam param) {
-		ShopApplication shop = shop();
-		PageResult<UploadImageCatNameVo> imageList = shop.image.getPageList(param);
+		PageResult<UploadImageCatNameVo> imageList = shop().image.getPageList(param);
 		return this.success(imageList);
 	}
 
 	/**
 	 * 图片裁剪
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/makeCrop")
 	public JsonResult makeCrop(@RequestBody CropImageParam param) throws Exception {
-		ShopApplication shop = shop();
-		UploadPath uploadPath = shop.image.makeCrop(param);
-
-		return success();
+		UploadPath uploadPath = shop().image.makeCrop(param);
+		if (uploadPath==null){
+		    return fail();
+        }
+        UploadedImageRecord record = shop().image.addImageToDb(param, uploadPath);
+		return success(record.into(ShopUploadedImageVo.class));
 	}
 
 	/**
 	 * 批量移动分组
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 */
@@ -152,7 +141,7 @@ public class AdminImageController extends AdminBaseController {
 
 	/**
 	 * 批量删除图片
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 */

@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.image;
 import lombok.Data;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -16,6 +16,7 @@ public class UploadPath {
 	public String type;
 	public String filname;
 	public String extension;
+	private String imageUrl;
 	public Object into(Class<CropImageParam> class1) {
 		// TODO Auto-generated method stub
 		return null;

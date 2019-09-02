@@ -1,11 +1,8 @@
 package com.vpu.mp.service.foundation.image;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -17,6 +14,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import com.upyun.UpException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.tools.StringUtils;
@@ -31,7 +30,7 @@ import net.coobird.thumbnailator.Thumbnails;
 
 /**
  * 图片公用接口，实现了默认方法
- * 
+ *
  * @author lixinguo
  *
  */
@@ -64,7 +63,7 @@ public interface ImageDefault {
 
 	/**
 	 * 当前店铺Id
-	 * 
+	 *
 	 * @return
 	 */
 	public default Integer currentShopId() {
@@ -73,7 +72,7 @@ public interface ImageDefault {
 
 	/**
 	 * 当前店铺Id
-	 * 
+	 *
 	 * @return
 	 */
 	public default Integer getShopId() {
@@ -115,6 +114,7 @@ public interface ImageDefault {
 		uploadPath.type = type;
 		uploadPath.fullPath = fullPath(uploadPath.relativeFilePath);
 		uploadPath.fullDirectory = fullPath(uploadPath.relativeDirectory);
+		uploadPath.setImageUrl(imageUrl(uploadPath.relativeFilePath));
 		mkdir(uploadPath.fullDirectory);
 		return uploadPath;
 	}
@@ -141,7 +141,7 @@ public interface ImageDefault {
 	 */
 	public default boolean rmFile(String fullPath) {
 		File file = new File(fullPath);
-		if (!file.exists()) {
+		if (file.isFile()&&file.exists()) {
 			return file.delete();
 		}
 		return true;
@@ -209,40 +209,44 @@ public interface ImageDefault {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public default ImageDim getImageDim(String path) throws FileNotFoundException, IOException {
-		BufferedImage img = ImageIO.read(new FileInputStream(path));
+	public default ImageDim getImageDim(String path) throws IOException {
+        BufferedImage img =getImageInfo(path);
 		return new ImageDim(img.getWidth(), img.getHeight());
 	}
 
 	/**
 	 * 得到图片buffer对象
-	 * 
+	 *
 	 * @param path
 	 * @return
 	 */
-	public default BufferedImage getImageInfo(String path) {
-		try {
-			return ImageIO.read(new FileInputStream(path));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public default BufferedImage getImageInfo(String path) throws IOException {
+        BufferedImage bufferedImage = null;
+        try (FileInputStream fileInputStream = new FileInputStream(path)) {
+            bufferedImage = ImageIO.read(fileInputStream);
+        }
+        return bufferedImage;
+    }
 
 	/**
 	 * 得到图片buffer对象
 	 * @param imageUrl
 	 * @return
+	 * @throws IOException
 	 */
-	public default BufferedImage getRemoteImageInfo(String imageUrl) {
-		try {
-			return ImageIO.read(new URL(imageUrl).openStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	public default BufferedImage getRemoteImageInfo(String imageUrl) throws IOException {
+		return ImageIO.read(getStreamInfo(imageUrl));
 	}
-
+	/**
+	 * 下载
+	 * @param imageUrl
+	 * @return
+	 */
+	public default InputStream getStreamInfo(String imageUrl) throws IOException {
+		try (InputStream inputStream =new URL(imageUrl).openStream()) {
+			return inputStream;
+		}
+	}
 	/**
 	 * 校验图片合法性
 	 * @param contentType
@@ -268,8 +272,17 @@ public interface ImageDefault {
 	 * @param contentType
 	 * @return
 	 */
-	public default UploadPath getImageWritableUploadPath(String contentType) {
-		return this.getWritableUploadPath("image", randomFilename(), getImageExtension(contentType), null);
+	public default UploadPath getImageWritableUploadPath(String contentType,String filename) {
+		return this.getWritableUploadPath("image", baseFilename(filename), getImageExtension(contentType), null);
+	}
+
+	/**
+	 * 得到图片可写上传路径
+	 * @param contentType
+	 * @return
+	 */
+	public default UploadPath getImageWritableUploadPath(String contentType,String filename,Integer sysId) {
+		return this.getWritableUploadPath("image", baseFilename(filename), getImageExtension(contentType), sysId);
 	}
 
 	/**
@@ -305,24 +318,36 @@ public interface ImageDefault {
 		return p == -1 ? filename : filename.substring(0, p);
 	}
 
+
 	/**
 	 * 裁剪图片
-	 * @param  param
+	 * @param param
 	 * @return
-	 * @throws Exception
+	 * @throws IOException
+	 * @throws UpException
 	 */
-	public default UploadPath makeCrop(CropImageParam param) throws Exception {
+	public default UploadPath makeCrop(CropImageParam param) throws IOException, UpException {
+		return makeCrop(param,null);
+	}
+		/**
+         * 裁剪图片
+         * @param  param
+         * @return
+         * @throws Exception
+         */
+	public default UploadPath makeCrop(CropImageParam param,Integer sysId) throws IOException, UpException {
 		String fullPath = fullPath(param.remoteImgPath);
 		String extension = this.getImageExension(fullPath);
-		ImageDim dim = this.getImageDim(fullPath);
+		BufferedImage bufferedImage = getRemoteImageInfo(imageUrl(param.remoteImgPath));
+		//原图压缩放大
 		if (param.imgScaleW != null) {
-			double ratio = dim.width / param.imgScaleW;
+			double ratio = bufferedImage.getWidth() / param.imgScaleW;
 			param.x = (int) (ratio * param.x);
 			param.y = (int) (ratio * param.y);
 			param.w = (int) (ratio * param.w);
 			param.h = (int) (ratio * param.h);
 		}
-
+		//比例改变处理
 		if (Util.getInteger(param.cropWidth) > 0 && Util.getInteger(param.cropHeight) <= 0) {
 			param.cropHeight = param.h / param.w * param.cropWidth;
 		} else if (Util.getInteger(param.cropHeight) > 0 && Util.getInteger(param.cropWidth) <= 0) {
@@ -331,12 +356,23 @@ public interface ImageDefault {
 			param.cropWidth = param.w;
 			param.cropHeight = param.h;
 		}
-		UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension, null);
-		Thumbnails.of(fullPath).sourceRegion(param.x, param.y, param.w, param.h).size(param.cropWidth, param.cropHeight)
-				.toFile(uploadPath.fullPath);
-		return uploadPath;
+		UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension,sysId);
+		try (ByteArrayOutputStream  outputStream = new ByteArrayOutputStream()) {
+			//剪切
+			Thumbnails.of(bufferedImage).sourceRegion(param.x, param.y, param.w, param.h).size(param.cropWidth, param.cropHeight).toOutputStream(outputStream);
+			InputStream inputStream= new ByteArrayInputStream(outputStream.toByteArray());
+			//上传又拍云
+			boolean b = uploadToUpYunBySteam(uploadPath.relativeFilePath, inputStream);
+
+			inputStream.close();
+			if (b){
+				param.setSize(outputStream.size());
+				return uploadPath;
+			}
+		}
+		return null;
 	}
-	
+
 	/**
 	 * 上传图片到又拍云
 	 * @param  upYunPath
@@ -345,14 +381,13 @@ public interface ImageDefault {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	public default boolean uploadToUpYunBySteam(String upYunPath, InputStream inStream) throws IOException, Exception {
+	public default boolean uploadToUpYunBySteam(String upYunPath, InputStream inStream) throws IOException, UpException {
 		return this.getUpYunClient().writeFile(upYunPath, inStream, true, null);
 	}
-	
+
 	/**
 	 * 根据byte[] 上传图片到又拍云
-	 * @param upYunPath
-	 * @param inStream
+	 *
 	 * @return
 	 * @throws IOException
 	 * @throws Exception
@@ -360,4 +395,7 @@ public interface ImageDefault {
 	public default boolean uploadToUpYunByByte(String filePath, byte[] datas) throws IOException, Exception {
 		return this.getUpYunClient().writeFile(filePath,datas,true);
 	}
+
+
+
 }

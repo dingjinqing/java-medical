@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.image.UploadedImageVo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -137,33 +138,16 @@ public class AdminShopImageController extends  AdminBaseController{
         if (adminInfo == null) {
             return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
         }
-        Integer maxSize = 5 * 1024 * 1024;
-        if (file.getSize() > maxSize) {
-            return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M);
+        //校验
+        Object[] jsonResultCode = saas.shop.image.validImageParam(param, file);
+        if (jsonResultCode!=null){
+            this.fail(jsonResultCode);
         }
-        if (!shop().image.validImageType(file.getContentType())) {
-            return this.fail(JsonResultCode.CODE_IMGAE_FORMAT_INVALID);
-        }
-        if (param.needImgWidth != null || param.needImgHeight != null) {
-            BufferedImage bufferImage;
-            bufferImage = ImageIO.read(file.getInputStream());
-            if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
-                return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH, param.needImgWidth);
-            }
-            if (param.needImgHeight != null && param.needImgHeight != bufferImage.getHeight()) {
-                return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT, param.needImgHeight);
-            }
-        }
-        UploadPath uploadPath = saas.shop.image.getImageWritableUploadPath(file.getContentType(),adminInfo.getSysId());
-        file.write(uploadPath.fullPath);
-        boolean ret = shop().image.uploadToUpYun(uploadPath.relativeFilePath, new File(uploadPath.fullPath));
+        UploadPath uploadPath = saas.shop.image.getImageWritableUploadPath(file.getContentType(),file.getName(),adminInfo.getSysId());
+        //上传又拍云
+        boolean ret = saas.shop.image.uploadToUpYunBySteam(uploadPath.relativeFilePath, file.getInputStream());
         if (ret) {
-            ShopUploadedImageRecord record = saas.shop.image.addImageToDb(uploadPath.relativeFilePath,
-                    shop().image.baseFilename(file.getSubmittedFileName()),
-                    file.getSubmittedFileName(),
-                    param.imgCatId,
-                    adminInfo.getSysId());
-            shop().image.rmFile(uploadPath.fullPath);
+            ShopUploadedImageRecord record = saas.shop.image.addImageToDb(param, file, uploadPath, adminInfo.sysId);
             return this.success(record.into(ShopUploadedImageVo.class));
         }
         return fail(JsonResultCode.CODE_IMGAE_UPLOAD_FAILED);
@@ -202,18 +186,11 @@ public class AdminShopImageController extends  AdminBaseController{
             return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
         }
         UploadPath  uploadPath =saas.shop.image.makeCrop(param,adminInfo.getSysId());
-        File file =new  File(uploadPath.fullPath);
-        boolean ret = shop().image.uploadToUpYun(uploadPath.relativeFilePath, file);
-        if (ret) {
-            ShopUploadedImageRecord record = saas.shop.image.addImageToDb(uploadPath.relativeFilePath,
-                    uploadPath.getFilname(),
-                    file.getName(),
-                    param.imgCatId,
-                    adminInfo.getSysId());
-            shop().image.rmFile(uploadPath.fullPath);
-            return this.success(record.into(ShopUploadedImageVo.class));
+        if (uploadPath==null){
+            return  fail();
         }
-        return fail();
+        ShopUploadedImageRecord record = saas.shop.image.addImageToDb(param, uploadPath, adminInfo.sysId);
+        return success(record.into(ShopUploadedImageVo.class));
     }
 
     /**

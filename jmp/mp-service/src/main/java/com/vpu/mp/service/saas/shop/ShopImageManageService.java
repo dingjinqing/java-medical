@@ -9,6 +9,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.UpYun;
+import com.upyun.UpException;
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.StorageConfig;
+import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.image.ImageDefault;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.pojo.saas.shop.image.*;
+import com.vpu.mp.service.pojo.shop.image.CropImageParam;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -22,17 +32,11 @@ import com.vpu.mp.db.main.tables.records.ShopUploadedImageCategoryRecord;
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.shop.image.ShopCategoryTreeItemVo;
-import com.vpu.mp.service.pojo.saas.shop.image.ShopCropImageParam;
-import com.vpu.mp.service.pojo.saas.shop.image.ShopImageCategoryParam;
-import com.vpu.mp.service.pojo.saas.shop.image.ShopImageListQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadImageCatNameVo;
-import com.vpu.mp.service.pojo.shop.image.ImageDim;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.shop.image.ImageService;
 
-import net.coobird.thumbnailator.Thumbnails;
+import javax.imageio.ImageIO;
+import javax.servlet.http.Part;
 
 
 /**
@@ -42,13 +46,40 @@ import net.coobird.thumbnailator.Thumbnails;
  */
 @Service
 
-public class ShopImageManageService  extends MainBaseService {
+public class ShopImageManageService  extends MainBaseService implements ImageDefault {
 
 
     private static final String ROOT_NAME = "我的图片";
 
+    /**
+     * 使用一些公共方法
+     */
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    protected DomainConfig domainConfig;
+
+    @Autowired
+    protected UpYunConfig upYunConfig;
+
+    @Autowired
+    protected StorageConfig storageConfig;
+
+    @Override
+    public String imageUrl(String relativePath) {
+        return domainConfig.imageUrl(relativePath);
+    }
+
+    @Override
+    public String fullPath(String relativePath) {
+        return storageConfig.storagePath(relativePath);
+    }
+
+    @Override
+    public UpYun getUpYunClient() {
+        return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
+    }
 
     /**
      * 添加分类
@@ -212,20 +243,25 @@ public class ShopImageManageService  extends MainBaseService {
     }
 
     public ShopUploadedImageRecord addImageToDb(String relativeFilePath, String baseFilename, String submittedFileName, Integer imgCatId, Integer sysId) {
-        String fullPath = imageService.fullPath(relativeFilePath);
+        String fullPath = fullPath(relativeFilePath);
         File file = new File(fullPath);
         if (file.exists()) {
-            BufferedImage imageInfo = imageService.getImageInfo(fullPath);
+            BufferedImage imageInfo = null;
+            try {
+                imageInfo = getImageInfo(fullPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if (imageInfo == null) {
                 return null;
             }
             ShopUploadedImageRecord image = db().newRecord(SHOP_UPLOADED_IMAGE);
             image.setImgName(baseFilename == null ? file.getName() : baseFilename);
             image.setImgPath(relativeFilePath);
-            image.setImgType(imageService.getImageExension(fullPath));
+            image.setImgType(getImageExension(fullPath));
             image.setImgOrigFname(submittedFileName == null ? file.getName() : submittedFileName);
             image.setImgSize((int) (file.length()));
-            image.setImgUrl(imageService.imageUrl(relativeFilePath));
+            image.setImgUrl(imageUrl(relativeFilePath));
             image.setImgWidth(imageInfo.getWidth());
             image.setImgHeight(imageInfo.getHeight());
             image.setImgCatId(imgCatId == null ? 0 : imgCatId);
@@ -236,6 +272,52 @@ public class ShopImageManageService  extends MainBaseService {
             return image;
         }
         return  null;
+    }
+
+    /**
+     * 添加记录
+     * @param param
+     * @param file
+     * @param uploadPath
+     * @return
+     */
+    public ShopUploadedImageRecord addImageToDb(ShopUploadImageParam param, Part file, UploadPath uploadPath, Integer sysId) {
+        ShopUploadedImageRecord image = db().newRecord(SHOP_UPLOADED_IMAGE);
+        image.setImgName(uploadPath.getFilname());
+        image.setImgPath(uploadPath.relativeFilePath);
+        image.setImgType(uploadPath.type);
+        image.setImgOrigFname(file.getSubmittedFileName());
+        image.setImgSize((int) file.getSize());
+        image.setImgUrl(uploadPath.getImageUrl());
+        image.setImgWidth(param.getNeedImgWidth());
+        image.setImgHeight(param.getNeedImgHeight());
+        image.setImgCatId(param.getImgCatId()==null?0:param.getImgCatId());
+        image.setSysId(sysId);
+        image.insert();
+        return image;
+    }
+
+    /**
+     *
+     * @param param
+     * @param uploadPath
+     * @param sysId
+     * @return
+     */
+    public ShopUploadedImageRecord addImageToDb(ShopCropImageParam param, UploadPath uploadPath, Integer sysId) {
+        ShopUploadedImageRecord image = db().newRecord(SHOP_UPLOADED_IMAGE);
+        image.setImgName(uploadPath.getFilname());
+        image.setImgPath(uploadPath.relativeFilePath);
+        image.setImgType(uploadPath.type);
+        image.setImgOrigFname(param.getRemoteImgPath());
+        image.setImgSize( param.getSize());
+        image.setImgUrl(uploadPath.getImageUrl());
+        image.setImgWidth(param.getCropWidth());
+        image.setImgHeight(param.getCropHeight());
+        image.setImgCatId(param.getImgCatId()==null?0:param.getImgCatId());
+        image.setSysId(sysId);
+        image.insert();
+        return image;
     }
 
 
@@ -293,31 +375,19 @@ public class ShopImageManageService  extends MainBaseService {
         return select;
     }
 
-    public UploadPath makeCrop(ShopCropImageParam param, Integer sysId) throws IOException {
-        String fullPath = imageService.fullPath(param.remoteImgPath);
-        String extension = imageService.getImageExension(fullPath);
-        ImageDim dim = imageService.getImageDim(fullPath);
-        if (param.imgScaleW != null) {
-            double ratio = dim.width / param.imgScaleW;
-            param.x = (int) (ratio * param.x);
-            param.y = (int) (ratio * param.y);
-            param.w = (int) (ratio * param.w);
-            param.h = (int) (ratio * param.h);
-        }
-
-        if (Util.getInteger(param.cropWidth) > 0 && Util.getInteger(param.cropHeight) <= 0) {
-            param.cropHeight = param.h / param.w * param.cropWidth;
-        } else if (Util.getInteger(param.cropHeight) > 0 && Util.getInteger(param.cropWidth) <= 0) {
-            param.cropWidth = param.w / param.h * param.cropHeight;
-        } else if (Util.getInteger(param.cropHeight) <= 0 && Util.getInteger(param.cropWidth) <= 0) {
-            param.cropWidth = param.w;
-            param.cropHeight = param.h;
-        }
-        UploadPath uploadPath = imageService.getWritableUploadPath("image", imageService.randomFilename(), extension,sysId);
-        Thumbnails.of(fullPath)
-                .sourceRegion(param.x, param.y, param.w, param.h)
-                .size(param.cropWidth, param.cropHeight)
-                .toFile(uploadPath.fullPath);
+    /**
+     * 剪切图片
+     * @param shopParam
+     * @param sysId
+     * @return
+     * @throws IOException
+     * @throws UpException
+     */
+    public UploadPath makeCrop(ShopCropImageParam shopParam, Integer sysId) throws IOException, UpException {
+        CropImageParam param =new CropImageParam();
+        FieldsUtil.assignNotNull(shopParam,param);
+        UploadPath uploadPath = makeCrop(param, sysId);
+        shopParam.setSize(param.getSize());
         return uploadPath;
 
     }
@@ -344,7 +414,33 @@ public class ShopImageManageService  extends MainBaseService {
 
     }
 
-    public UploadPath getImageWritableUploadPath(String contentType, Integer sysId) {
-        return imageService.getWritableUploadPath("image", imageService.randomFilename(), imageService.getImageExtension(contentType),sysId);
+
+
+    /**
+     * 校验添加图片参数
+     * @param param 入参
+     * @param file 文件流
+     * @return jsonResultCode,object
+     */
+    public Object[] validImageParam(ShopUploadImageParam param, Part file) throws IOException {
+        Integer maxSize = 5 * 1024 * 1024;
+        if (file.getSize() > maxSize) {
+            return new JsonResultCode[]{JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M};
+        }
+        if (!validImageType(file.getContentType())) {
+            return new JsonResultCode[]{JsonResultCode.CODE_IMGAE_FORMAT_INVALID};
+        }
+        if (param.needImgWidth != null || param.needImgHeight != null) {
+            BufferedImage bufferImage = ImageIO.read(file.getInputStream());
+            if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
+                return new Object[]{JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH,param.needImgWidth};
+            }
+            if (param.needImgHeight != null && param.needImgHeight != bufferImage.getHeight()) {
+                return new Object[]{JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT,param.needImgHeight};
+            }
+        }
+        return null;
     }
+
+
 }

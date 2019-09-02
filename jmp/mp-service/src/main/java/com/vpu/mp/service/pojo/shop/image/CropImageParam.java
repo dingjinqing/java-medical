@@ -2,8 +2,11 @@ package com.vpu.mp.service.pojo.shop.image;
 
 import lombok.Data;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
+
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -22,4 +25,5 @@ public class CropImageParam {
 	public Double imgScaleW;
 	public Integer imgCatId;
 	public Integer remoteImgId;
+	private Integer size;
 };

@@ -4,7 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 
 /**
  * MpException:处理
- * 
+ *
  * @author 王帅
  *
  */
@@ -22,6 +22,9 @@ public class MpException extends Exception {
 		this.setErrorCode(errorCode);
 	}
 
+	public MpException(Exception e){
+		super(e);
+	}
 	public JsonResultCode getErrorCode() {
 		return errorCode;
 	}
