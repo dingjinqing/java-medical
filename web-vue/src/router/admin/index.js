@@ -398,6 +398,8 @@ const routes = [
           // 商品管理/商家分类管理
           {
             path: '/admin/home/main/goodsManage/businessSortManagement',
+            redirect:
+              '/admin/home/main/goodsManage/businessSortManagement/list',
             name: 'sort',
             meta: {
               crumbTitle: 'router.businessSortManagement',
@@ -406,7 +408,38 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/businessSortManagement'
-              )
+              ),
+            children: [
+              //  商品管理/商家分类管理/分类列表
+              {
+                path:
+                  '/admin/home/main/goodsManage/businessSortManagement/list',
+                name: 'list',
+                meta: {
+                  crumbTitle: 'router.businessSortManagement',
+                  meta: 'goods_manage',
+                  category: 'sort'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/businessSortList'
+                  )
+              },
+              {
+                path:
+                  '/admin/home/main/goodsManage/businessSortManagement/addSort',
+                name: 'addSort',
+                meta: {
+                  crumbTitle: 'router.businessSortManagement',
+                  meta: 'goods_manage',
+                  category: 'sort'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/addSort'
+                  )
+              }
+            ]
           },
           // 商品管理/品牌管理
           {

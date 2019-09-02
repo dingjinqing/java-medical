@@ -65,16 +65,19 @@
             header-align="center"
             :header-cell-style="tableHeaderStyle"
           >
-            <!-- 表格无数据的时候 -->
-            <template slot="empty">
-              .
-            </template>
             <!-- 可配送区域 -->
             <el-table-column
-              prop="price"
+              prop="area"
               label="可配送区域"
               align="center"
             >
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  @click="dialogStat=true"
+                >{{ scope.row.areaText}}
+                </el-button>
+              </template>
             </el-table-column>
             <!-- 首件（件） -->
             <el-table-column
@@ -82,6 +85,12 @@
               label="首件（件）"
               align="center"
             >
+              <template slot-scope="scope">
+                <el-input
+                  v-model="scope.row.firstNum"
+                  size="small"
+                ></el-input>
+              </template>
             </el-table-column>
             <!-- 运费（元） -->
             <el-table-column
@@ -89,6 +98,12 @@
               label="运费（元）"
               align="center"
             >
+              <template slot-scope="scope">
+                <el-input
+                  v-model="scope.row.firstFee"
+                  size="small"
+                ></el-input>
+              </template>
             </el-table-column>
             <!-- 续件（件） -->
             <el-table-column
@@ -96,6 +111,12 @@
               label="续件（件）"
               align="center"
             >
+              <template slot-scope="scope">
+                <el-input
+                  v-model="scope.row.continueNum"
+                  size="small"
+                ></el-input>
+              </template>
             </el-table-column>
             <!-- 续费（元） -->
             <el-table-column
@@ -103,6 +124,12 @@
               label="续费（元）"
               align="center"
             >
+              <template slot-scope="scope">
+                <el-input
+                  v-model="scope.row.continueFee"
+                  size="small"
+                ></el-input>
+              </template>
             </el-table-column>
           </el-table>
           <section class="add">
@@ -151,17 +178,41 @@
       >添加模板</el-button>
     </section>
     <!-- 指定运费模板省市区三级联动 弹窗-->
-    <areaLinkage :outerVisible.sync="outerVisible" />
+    <locat-t-p
+      :location-list=this.locatList
+      :outer-visible=this.dialogStat
+      @close="this.showData"
+      @checkList="this.getCheckList"
+    ></locat-t-p>
   </div>
 </template>
 <script>
 // 引入省市区三级联动
-import areaLinkage from '@/components/admin/areaLinkage/areaLinkage'
+import LocatTP from '@/components/admin/areaLinkage/LocatTP'
+// import areaLinkage from '@/components/admin/areaLinkage/areaLinkage'
 // api
-import { addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+
+import { addTemplate, getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'templateAdd',
-  components: { areaLinkage },
+  components: { LocatTP },
+  created () {
+    this.fetchAreaData()
+  },
+  mounted () {
+    this.getData()
+  },
+  computed: {
+    comput: {
+      get () {
+        return this.dialogStat
+      },
+      set () {
+        this.dialogStat = true
+        return this.dialogStat
+      }
+    }
+  },
   data () {
     return {
       formData: {},
@@ -178,12 +229,43 @@ export default {
       checked: false, // 默认其他区域可配送
       checked1: false, // 指定条件包邮（可选）
       // 表格数据
-      tableData: [],
       tableData1: [],
-      outerVisible: false
+      outerVisible: false,
+      dialogStat: false,
+      tableData: [
+        { areaText: '指定配送区域和运费', firstNum: 1, firstFee: 0, continueNum: 1, continueFee: 0 }
+      ],
+      locatList: [],
+      checkeList: []
+
     }
   },
   methods: {
+    showData (flag) {
+      this.dialogStat = flag
+    },
+    getCheckList (value) {
+      this.checkeList = value
+      console.log(value)
+      let str = ''
+      for (let i = 0; i < this.checkeList.length; i++) {
+        for (let j = 0; j < this.locatList.length; j++) {
+          if (this.checkeList[i] !== 0) {
+            if (this.checkeList[i] === this.locatList[j].provinceId) {
+              str += this.locatList[j].provinceName
+              str += ','
+            }
+          }
+        }
+      }
+      this.tableData = [
+        { area: str }
+      ]
+    },
+    // getData
+    getData () {
+      console.log(this.locatList)
+    },
     //  修改table header的样式
     tableHeaderStyle ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
@@ -193,6 +275,16 @@ export default {
     // 指定可配送区域和运费
     handleAdd () {
       this.outerVisible = true
+    },
+    // 获取省市区数据
+    fetchAreaData () {
+      getAreaSelect().then(res => {
+        const { error, content } = res
+        if (error === 0) {
+          content.unshift({ 'provinceId': 1, 'provinceName': '全选' })
+          this.locatList = content
+        }
+      }).catch(err => console.log(err))
     },
     // 添加模板
     handleAddTemplate () {
