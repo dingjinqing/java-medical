@@ -35,7 +35,7 @@ public class MessageTemplateListener implements BaseRabbitHandler {
     @RabbitHandler
     public void handler(@Payload RabbitMessageParam param, Message message, Channel channel){
         List<WxUserInfo> userInfoList = saas.getShopApp(param.getShopId())
-            .wechatMessageTemplateService.getUserInfoList(param.getUserIdList());
+            .wechatMessageTemplateService.getUserInfoList(param.getUserIdList(),param.getType(),param.getShopId());
         userInfoList.stream().forEach(info->{
             if( saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param,info)){
                 //成功
