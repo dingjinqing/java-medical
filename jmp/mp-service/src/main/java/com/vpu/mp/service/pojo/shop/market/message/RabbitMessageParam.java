@@ -36,7 +36,7 @@ public class RabbitMessageParam {
      */
     private String page;
     /**
-     * 消息类型
+     * 消息类型 {@link RabbitParamConstant}
      */
     private Integer type;
 
