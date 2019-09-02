@@ -173,7 +173,9 @@ export default {
     },
     // 会员卡项点击
     handleClickMem (data) {
-
+      this.$router.push({
+        name: 'membershipCardDetail'
+      })
     },
     // 设置激活通知  会员导入  筛选 综合处理
     handleSetAll (flag) {

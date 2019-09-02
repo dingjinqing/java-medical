@@ -9,7 +9,7 @@
           label="积分规则设置"
           name="first"
         >
-          <IntegralRule />
+          <IntegralRule @toNoticeSend="toNoticeSend" />
         </el-tab-pane>
         <el-tab-pane
           label="前端展示设置"
@@ -201,7 +201,7 @@ export default {
   },
   data () {
     return {
-      activeName: 'second',
+      activeName: 'first',
       limitRadio: '1',
       limitIntegralNum: '',
       shopValue: true,
@@ -244,6 +244,24 @@ export default {
       this.$router.push({
         name: 'viewSigninMembers'
       })
+    },
+    // 积分规则第一部分子组件传递数据
+    toNoticeSend (data, flag) {
+      console.log(data, flag)
+      let newData = {}
+      switch (flag) {
+        // 积分规则保存
+        case 0:
+          //  积分规则底部数据
+          let obj = {}
+          newData = Object.assign(data, obj)
+          console.log(newData)
+          break
+        // 前端展示保存
+        case 1:
+          console.log(data)
+          break
+      }
     }
   }
 }

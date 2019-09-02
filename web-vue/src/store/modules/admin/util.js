@@ -4,7 +4,8 @@ const crumbs = {
     activeFlag: null,
     cropperFlag: null,
     activeFresh: null,
-    picSpaceCropperFlag: null
+    picSpaceCropperFlag: null,
+    integralDataNotice: null
   },
   mutations: {
     TOCHANGE_MENUALL: (state, params) => {
@@ -26,6 +27,10 @@ const crumbs = {
     TOCHANGE_AUTOREFRESHPICSPACE: (state, params) => {
       state.picSpaceCropperFlag = params
       console.log(state.activeFresh)
+    },
+    TOCHANGE_NOTICEINTEGRALDATA: (state, params) => {
+      state.integralDataNotice = params
+      console.log(state.integralDataNotice)
     }
   },
   actions: {
@@ -50,6 +55,10 @@ const crumbs = {
     // 图片空间主动刷新数据
     autoRefreshPicSpace ({ commit }, params) {
       commit('TOCHANGE_AUTOREFRESHPICSPACE', params)
+    },
+    // 积分管理模块保存通知子组件传递数据
+    handleToNoticeIntegral ({ commit }, params) {
+      commit('TOCHANGE_NOTICEINTEGRALDATA', params)
     }
   }
 }

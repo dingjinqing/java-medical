@@ -10,10 +10,16 @@
 </template>
 <script>
 export default {
+  data () {
+    return {
+      flag: true
+    }
+  },
   methods: {
     // 点击保存
     handleToSave () {
-
+      this.flag = !this.flag
+      this.$store.commit('TOCHANGE_NOTICEINTEGRALDATA', this.flag)
     }
   }
 }

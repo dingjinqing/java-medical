@@ -93,6 +93,17 @@ export default {
       templateList: 'test'
     }
   },
+  watch: {
+    watch: {
+      '$store.state.util.integralDataNotice' (newData) {
+        let obj = {
+          templateList: this.templateList
+        }
+        console.log(obj)
+        this.$emit('toNoticeSend', obj, 1)
+      }
+    }
+  },
   methods: {
     // 右侧按钮点击汇总
     handleToRightBtn (flag) {
