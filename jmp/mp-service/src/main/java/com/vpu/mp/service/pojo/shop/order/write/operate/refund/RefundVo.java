@@ -33,16 +33,24 @@ public class RefundVo {
 		private Integer orderId;
 		private String orderSn;
 		private Integer productId;
+		@JsonIgnore
+		private Integer goodsId;
 		private String goodsName;
 		private String goodsAttr;
 		@JsonIgnore
-		private Integer goodsNumber;
+		private String goodsImg;
 		@JsonIgnore
+		private Integer goodsNumber;
+		/** 已退完成（手工退款时需计算） */
 		private Integer returnNumber;
+		/** 市场价 */
+		private BigDecimal marketPrice;
 		/** 单价 */
 		private BigDecimal goodsPrice;
 		/** 折后单价 */
 		private BigDecimal discountedGoodsPrice;
+		/** 折后总价 */
+		private BigDecimal discountedTotalPrice;
 		/** 可退 */
 		private Integer returnable;
 		/** 已提交 */
@@ -53,8 +61,11 @@ public class RefundVo {
 		private Byte isCanReturn;
 		/** 赠品 */
 		private Byte isGift;
-		/**已退金额(手动退款时需要)*/
-		private BigDecimal returned;
+		/**手动退款时已退金额*/
+		private BigDecimal returnMoney;
+		/** 发货数 */
+		@JsonIgnore
+		private Short sendNumber;
 	}
 
 	public Boolean mpIsReturn() {

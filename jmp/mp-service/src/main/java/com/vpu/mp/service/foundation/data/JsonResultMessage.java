@@ -198,7 +198,7 @@ public class JsonResultMessage {
 
 	public static final String BINDING_MINI_NO_SAME = "binding.mini.no.same";
 	public static final String BINDING_MINI_HAVEBIND = "binding.mini.havebind";
-
+	
 	public static final String WX_MA_APP_ID_NOT_AUTH = "wx.ma.app_id.not.auth";
 	public static final String WX_MA_TEMPLATE_ID_NOT_NULL = "wx.ma.app_template_id.not.null";
 	public static final String WX_MA_PACKAGE_VERSION_NOT_NULL = "wx.ma.package_version.not.null";
@@ -213,7 +213,7 @@ public class JsonResultMessage {
 	public static final String WX_MP_NO_ACCESS = "wx.mp.no.access";
 	public static final String WX_MA_HAVE_MP = "wx.ma.have.mp";
 	public static final String WX_MP_NEED_CHOOSE_RIGHT = "wx.mp.need.choose.right";
-
+	
 	/**
 	 * 门店管理
 	 */
@@ -319,6 +319,14 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ORDER_RETURN_NOT_NULL_RETURNTYPE = "order_return_not_null_returntype";
 	public static final String MSG_CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY = "order_return_not_null_returnmoney";
 	public static final String MSG_CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE = "order_return_not_null_shippingfee";
+	public static final String MSG_CODE_ORDER_RETURN_GOODS_RETURN_COMPLETED = "order_return_goods_return_completed";
+	public static final String MSG_CODE_ORDER_RETURN_GOODS_RETURN_NUMBER_ERROR = "order_return_goods_return_number_error";
+	public static final String MSG_CODE_ORDER_RETURN_NUMBER_ERROR = "order_return_number_error";
+	public static final String MSG_CODE_ORDER_RETURN_GOODS_NO_CAN_RETURN = "order_return_goods_no_can_return";
+	public static final String MSG_CODE_ORDER_RETURN_MANUAL_MONEY_ERROR = "order_return_manual_money_error";
+	public static final String MSG_CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR = "order_return_operation_not_supported_because_status_error";
+	public static final String MSG_CODE_ORDER_RETURN_AGREE_RETURN_BECAUSE_STATUS_ERROR = "order_return_agree_return_because_status_error";
+	
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
@@ -372,7 +380,7 @@ public class JsonResultMessage {
     public static final String REDEMPTION_DETAIL_REDEMPTION_NUM = "market.increase.purchase.redemption.detail.redemption_num";
     public static final String REDEMPTION_DETAIL_REDEMPTION_TOTAL_MONEY = "market.increase.purchase.redemption.detail.redemption_total_money";
 
-
+	
 
 
 }

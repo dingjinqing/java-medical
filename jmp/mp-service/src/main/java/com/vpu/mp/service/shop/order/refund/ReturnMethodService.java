@@ -194,7 +194,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 */
 	public void refundMoneyPaid(OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) {
 		if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == order.getOrderPayWay()) {
-			//TODO 子单退款逻辑
+			//TODO 好友代付
 		}
 		if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
 			try {

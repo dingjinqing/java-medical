@@ -21,6 +21,7 @@ import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
@@ -89,7 +90,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * 	退款完成后，更新状态及退款退货数量
 	 * @param returnOrder
 	 */
-	public void finishReturn(String orderSn , Result<ReturnOrderGoodsRecord> returnGoods , ReturnOrderRecord returnOrderRecord) {
+	public void updateInReturn(String orderSn , List<ReturnOrderGoodsRecord> returnGoods , ReturnOrderRecord returnOrderRecord) {
 		//退款商品recIds
 		List<Integer> recIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getRecId).collect(Collectors.toList());
 		//退款退货商品对应的orderGoods商品
@@ -97,12 +98,20 @@ public class OrderGoodsService extends ShopBaseService{
 		//退款商品map(key->recId)
 		Map<Integer, ReturnOrderGoodsRecord> returnGoodsMap = returnGoods.stream().collect(Collectors.toMap(ReturnOrderGoodsRecord::getRecId,rGoods->rGoods));
 		for (OrderGoodsRecord goods : orderGoods) {
-			//状态
-			goods.set(TABLE.REFUND_STATUS, returnOrderRecord.getRefundStatus());
-			//此次退款退货数量
-			int returnNum = returnGoodsMap.get(goods.getRecId()) == null ? 0 : returnGoodsMap.get(goods.getRecId()).getGoodsNumber();
-			//修改退货退款商品数量
-			goods.setReturnNumber(Integer.valueOf(goods.getReturnNumber().shortValue() - returnNum).shortValue());
+			switch (returnOrderRecord.getRefundStatus()) {
+			//退款订单状态为完成
+			case OrderConstant.REFUND_STATUS_FINISH:
+				//状态
+				goods.set(TABLE.REFUND_STATUS, returnOrderRecord.getRefundStatus());
+				//此次退款退货数量
+				int returnNum = returnGoodsMap.get(goods.getRecId()) == null ? 0 : returnGoodsMap.get(goods.getRecId()).getGoodsNumber();
+				//修改退货退款商品数量
+				goods.setReturnNumber(Integer.valueOf(goods.getReturnNumber().shortValue() - returnNum).shortValue());
+				break;
+			default:
+				goods.set(TABLE.REFUND_STATUS, returnOrderRecord.getRefundStatus());
+				break;
+			}
 		}
 		db().batchUpdate(orderGoods).execute();
 	}

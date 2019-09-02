@@ -395,31 +395,37 @@ public class OrderInfoService extends ShopBaseService {
 				entry.setValue(BigDecimal.ZERO);
 				continue;
 			}
+			//TODO 这里逻辑有问题，但不会有问题，稍后修改
 			//设置当前key的可退金额（增加双重校验，实际上实际退款时已经判断，不会出现amount<currentKeyCanReturn）
-			entry.setValue(BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? entry.getValue() : amount);
+			entry.setValue(BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? currentKeyCanReturn : amount);
 			//设置下次循环的amount
-			amount = amount.subtract(BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? amount.subtract(entry.getValue()) : BigDecimal.ZERO);
+			amount = BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? amount.subtract(entry.getValue()) : BigDecimal.ZERO;
 		}
 		return map;
 	}
 	
 	/**
-	 *	 退*时更新订单信息
+	 *	 退*时更新订单信息（完成状态输入时必须order与canReturnGoodsNumber）
 	 * @param returnOrder
 	 * @param order ==null时不参与returnOrder==REFUND_STATUS_FINISH分支
 	 * @param canReturnGoodsNumber 是否存在可退商品数量；==null时不参与returnOrder==REFUND_STATUS_FINISH分支
 	 */
-	public void updateOrderInfoInReturn(ReturnOrderRecord returnOrder , OrderInfoVo order , Boolean canReturnGoodsNumber) {
+	public void updateInReturn(ReturnOrderRecord returnOrder , OrderInfoVo order , Boolean canReturnGoodsNumber) {
 		UpdateSetMoreStep<OrderInfoRecord> set = db().update(TABLE).set(TABLE.REFUND_STATUS, returnOrder.getRefundStatus());
 		//退款退货订单处与 1买家仅退款 2买家提交物流 3仅退运费 4手动退款
-		if(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING == returnOrder.getRefundStatus()) {
+		switch (returnOrder.getRefundStatus()) {
+		case OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING:
 			if(OrderConstant.RT_ONLY_MONEY == returnOrder.getReturnType()) {
 				set.set(TABLE.REFUND_TIME, DateUtil.getSqlTimestamp());
 			}else {
 				set.set(TABLE.RETURN_TIME, DateUtil.getSqlTimestamp());
 			}
-		
-		}else if(OrderConstant.REFUND_STATUS_FINISH == returnOrder.getRefundStatus()) {
+			break;
+		case OrderConstant.REFUND_STATUS_FINISH:
+			if(order == null || canReturnGoodsNumber == null) {
+				//未输入默认不处理
+				return;
+			}
 			if(canReturnGoodsNumber) {
 				//完成状态且存在可退数量跳出
 				return;
@@ -437,6 +443,9 @@ public class OrderInfoService extends ShopBaseService {
 				set.set(TABLE.SETTLEMENT_FLAG,OrderConstant.SETTLEMENT_NOT);
 				set.set(TABLE.FANLI_MONEY, BigDecimal.ZERO);
 			}
+			break;
+		default:
+			break;
 		}
 		set.where(TABLE.ORDER_SN.eq(returnOrder.getOrderSn())).execute();
 	}

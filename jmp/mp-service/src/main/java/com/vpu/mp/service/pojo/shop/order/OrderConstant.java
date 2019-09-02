@@ -145,6 +145,8 @@ public class OrderConstant {
 	public final static byte SUCCESS_RETURNING = 1;
 	/**2完成*/
 	public final static byte SUCCESS_COMPLETE = 2;
+	/**3撤销*/
+	public final static byte SUCCESS_REVOKE = 3;
 
 	/**
 	 * mp端是否支持退款、退货,orderInfo表字段
@@ -174,8 +176,15 @@ public class OrderConstant {
 	public final static byte RT_ONLY_SHIPPING_FEE = 2;
 	public final static byte RT_MANUAL = 3;
 	
+	public final static String[] RETURN_TYPE_CN = {
+			"仅退款",
+			"退货退款",
+			"仅退运费",
+			"手动退款"	
+	};
+	
 	/**
-	 * 	返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
+	 * 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
 	 */
 	public final static byte FANLI_TYPE_DEFAULT = 0;
 	public final static byte FANLI_TYPE_DISTRIBUTION_ORDER = 1;
@@ -192,6 +201,31 @@ public class OrderConstant {
 	/**元转化为分的比例*/
 	public final static byte TUAN_TO_FEN = 100;
 
+	/**商家 0 、买家1*/
+	public final static byte IS_MP_Y = 1;
+	public final static byte IS_MP_N = 0;
+	
+	/**
+	 * 订单操作
+	 */
+	/**买家提交物流信息*/
+	public final static byte RETURN_OPERATE_MP_SUBMIT_SHIPPING = 0;
+	/**买家撤销退款退货*/
+	public final static byte RETURN_OPERATE_MP_REVOKE = 1;
+	/**商家拒绝退款退货（退货为提交物流后的拒绝）*/
+	public final static byte RETURN_OPERATE_ADMIN_REFUSE = 2;
+	/**商家同意退货申请*/
+	public final static byte RETURN_OPERATE_ADMIN_AGREE_RETURN = 3;
+	/**商家拒绝退货申请*/
+	public final static byte RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY = 4;
+	/**操作对应的中文*/
+	public final static String[] RETURN_OPERATE = {
+			"买家提交物流信息",
+			"买家撤销退款退货",
+			"商家拒绝退款退货",
+			"商家同意退货申请",
+			"商家拒绝退货申请"
+	};
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",

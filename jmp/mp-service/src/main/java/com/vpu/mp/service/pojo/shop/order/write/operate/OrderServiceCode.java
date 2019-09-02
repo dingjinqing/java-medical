@@ -11,9 +11,9 @@ import com.vpu.mp.service.shop.order.action.ReturnService;
  *
  */
 public enum OrderServiceCode {
-	//admin后台发货ShipService
+	//0:admin后台发货ShipService
 	ADMIN_SHIP(ShipService.class),
-	//退款 退货 ReturnMoneyApple
+	//1:退款 退货 ReturnMoneyApple
 	RETURN(ReturnService.class);
 	//TODO 小程序端发起退货请求
 	//MP_REFUND_GOODS_APPLY;
