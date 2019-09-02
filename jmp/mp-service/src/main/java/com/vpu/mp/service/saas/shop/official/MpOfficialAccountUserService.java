@@ -37,4 +37,13 @@ public class MpOfficialAccountUserService extends MainBaseService {
     	}
     	return accountRolePageList;
     }
+    
+    
+    public MpOfficialAccountUserRecord getAccountUserListByRecid(Integer recId) {
+        return db().select(MP_OFFICIAL_ACCOUNT_USER.OPENID,MP_OFFICIAL_ACCOUNT_USER.UNIONID,MP_OFFICIAL_ACCOUNT_USER.APP_ID)
+            .from(MP_OFFICIAL_ACCOUNT_USER)
+            .where(MP_OFFICIAL_ACCOUNT_USER.REC_ID.eq(recId))
+            .and(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.eq((byte)1))
+            .fetchAnyInto(MP_OFFICIAL_ACCOUNT_USER);
+    }
 }
