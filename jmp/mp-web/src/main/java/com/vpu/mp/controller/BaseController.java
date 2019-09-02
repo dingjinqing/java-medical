@@ -38,9 +38,6 @@ public class BaseController {
 	protected Environment env;
 
 	@Autowired
-	private VoTranslator translator;
-
-	@Autowired
 	private DomainConfig domainConfig;
 
 	/**
