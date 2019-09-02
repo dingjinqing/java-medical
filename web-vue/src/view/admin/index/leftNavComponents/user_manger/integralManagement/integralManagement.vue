@@ -156,7 +156,7 @@
             >
               <span>连续签到{{item}}天，送</span>
               <el-input
-                v-model="signInput"
+                v-model="signInput.index"
                 size="small"
               ></el-input>
               <span>积分</span>
@@ -172,6 +172,13 @@
           </div>
         </div>
       </div>
+    </div>
+    <!--保存-->
+    <div class="footer">
+      <div
+        class="save"
+        @click="handleToSave()"
+      >{{$t('shopStyle.saveText')}}</div>
     </div>
   </div>
 </template>
@@ -190,15 +197,21 @@ export default {
       loginValue: true,
       signInValue: true,
       loginIntegralNum: '',
-      signData: 1
+      signData: 1,
+      signInput: []
     }
   },
   methods: {
     handleClick (tab, event) {
       console.log(tab, event)
     },
+    // 签到送积分点击添加icon
     handleToAdd () {
       this.signData++
+    },
+    // 保存
+    handleToSave () {
+      console.log(this.signInput)
     }
   }
 }
@@ -302,6 +315,28 @@ export default {
           }
         }
       }
+    }
+  }
+  .footer {
+    background: #f8f8fa;
+    border-top: 1px solid #f2f2f2;
+    text-align: center;
+    position: fixed;
+    z-index: 2;
+    bottom: 0;
+    padding: 10px 0;
+    left: 0;
+    right: 0;
+    margin-right: 1%;
+    .save {
+      width: 70px;
+      height: 30px;
+      line-height: 30px;
+      border: none;
+      background: #5a8bff;
+      color: #fff;
+      margin: auto;
+      cursor: pointer;
     }
   }
 }
