@@ -12,7 +12,9 @@ import lombok.Data;
  */
 @Data
 public class Table {
+	public String databseName;
 	public String tableName;
+	public String fullTableName;
 	public List<Column> columns = new ArrayList<Column>();
 	public List<Index> indexes = new ArrayList<Index>();
 	public String createSql;

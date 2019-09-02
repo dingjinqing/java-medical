@@ -1163,7 +1163,7 @@ create table `b2c_store_goods` (
   `product_number` int 				not null	default 0 		comment '库存',
   `product_price`  decimal(10, 2) 	not null	default 0.00 	comment '价格',
   `is_sync`        tinyint(1) 		not null	default 0 		comment '是否已同步',
-  `is_on_sale`     tinyint(1)                   not null default '0' comment '''是否在售，1在售，0下架''',
+  `is_on_sale`     tinyint(1)                   not null default '0' comment '是否在售，1在售，0下架',
   `create_time`		timestamp       default current_timestamp,
   `update_time` 	timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   `flag`           tinyint(1)                   not null default '0' comment '1:初始化数据，0:无效数据',
@@ -4320,7 +4320,7 @@ create table `b2c_comment_award` (
 	`create_time` timestamp default current_timestamp,
 	`update_time` timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
 	primary key ( `id` )
-)
+);
 
 -- 优惠券礼包_礼包内容(优惠券)
 -- DROP TABLE IF EXISTS `b2c_coupon_pack_voucher`;

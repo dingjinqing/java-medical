@@ -9,12 +9,13 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.impl.DefaultDSLContext;
+import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.database.DatabaseManager;
+import com.vpu.mp.service.foundation.database.MpDefaultDslContext;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.db.Column;
@@ -34,16 +35,22 @@ public class RepairDatabaseService extends MainBaseService {
 	DatabaseManager databaseManager;
 	
 	/**
+	 * 是否只是检查SQL，不执行SQL
+	 */
+	protected static Boolean onlyCheck = false;
+
+	/**
 	 * 修复主库
 	 */
 	public void repairMainDb() {
 		String sql = Util.loadResource("db/main/db_main.sql");
 		List<Table> tables = this.parseSql(sql);
-		repairDb(tables, databaseManager.mainDb());
+		repairDb(tables, (MpDefaultDslContext)databaseManager.mainDb());
 	}
 
 	/**
 	 * 修复店铺库
+	 * 
 	 * @param shopId
 	 */
 	public void repairShopDb(Integer shopId) {
@@ -58,7 +65,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 * 修复所有店铺库
 	 */
 	public void repairAllShopDb() {
-		String sql = Util.loadResource("db/main/db_shop.sql");
+		String sql = Util.loadResource("db/shop/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
 		Result<ShopRecord> shops = saas().shop.getAll();
 		for (ShopRecord shop : shops) {
@@ -74,10 +81,12 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @param tables
 	 * @param db
 	 */
-	public void repairDb(List<Table> tables, DefaultDSLContext db) {
+	public void repairDb(List<Table> tables, MpDefaultDslContext db) {
 		for (Table table : tables) {
 			// if (table.getTableName().equals("b2c_upload_uyun_record"))
 			{
+				table.setDatabseName(db.getDbConfig().getDatabase());
+				table.setFullTableName(table.getDatabseName()+"."+table.getTableName());
 				this.processTable(table, db);
 			}
 
@@ -91,20 +100,29 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @param table
 	 * @param db
 	 */
-	public void processTable(Table table, DefaultDSLContext db) {
-		if (isTableExists(table.tableName, db)) {
-			Result<Record> columnRecords = db.fetch("show columns from " + table.tableName);
+	public void processTable(Table table, MpDefaultDslContext db) {
+		if (isTableExists(table, db)) {
+			Result<Record> columnRecords = db.fetch("show columns from " + table.getFullTableName());
 			for (int i = 0; i < table.columns.size(); i++) {
 				this.processColumn(table, i, columnRecords, db);
 			}
 
-			Result<Record> indexRecords = db.fetch("show indexes from " + table.tableName);
+			Result<Record> indexRecords = db.fetch("show indexes from " + table.getFullTableName());
 			for (int i = 0; i < table.indexes.size(); i++) {
 				this.processIndex(table, i, indexRecords, db);
 			}
 		} else {
-			logger().debug("tableSql:" + table.createSql);
-			// db.execute(table.createSql);
+			String sql = table.createSql.replace(table.getTableName(), table.getFullTableName());
+			this.executeSql(db, sql);
+		}
+	}
+	
+	protected void executeSql(MpDefaultDslContext db,String sql) {
+		try{
+			logger().debug("Execute SQL: {}", sql);
+			//db.execute(sql);
+		}catch(DataAccessException e) {
+			logger().error("Execute SQL Exception, message: {} ",e.getMessage());
 		}
 	}
 
@@ -116,7 +134,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @param records
 	 * @param db
 	 */
-	public void processColumn(Table table, int colIdx, Result<Record> records, DefaultDSLContext db) {
+	public void processColumn(Table table, int colIdx, Result<Record> records, MpDefaultDslContext db) {
 		Column col = table.columns.get(colIdx);
 		boolean found = false;
 		String regex0 = "(\\w+)\\((\\d+),(\\d+)\\)\\s+unsigned";
@@ -159,18 +177,17 @@ public class RepairDatabaseService extends MainBaseService {
 
 				if (!Column.isEquals(col, colFromDb)) {
 					// 列不同,则进行字段修改
-					sql = "alter table " + table.getTableName() + " modify column " + col.getCreateSql();
+					sql = "alter table " + table.getFullTableName() + " modify column " + col.getCreateSql();
 				}
 				break;
 
 			}
 		}
 		if (!found) {
-			sql = "alter table " + table.getTableName() + " add column " + col.getCreateSql();
+			sql = "alter table " + table.getFullTableName() + " add column " + col.getCreateSql();
 		}
 		if (!StringUtils.isBlank(sql)) {
-			logger().debug(sql);
-			// db.execute(sql);
+			this.executeSql(db, sql);
 		}
 		return;
 
@@ -184,7 +201,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @param records
 	 * @param db
 	 */
-	public void processIndex(Table table, int indexIdx, Result<Record> records, DefaultDSLContext db) {
+	public void processIndex(Table table, int indexIdx, Result<Record> records, MpDefaultDslContext db) {
 		Index index = table.indexes.get(indexIdx);
 		int findIndexCols = 0;
 		boolean findKeyName = false;
@@ -192,23 +209,24 @@ public class RepairDatabaseService extends MainBaseService {
 		for (Record r : records) {
 			if (StringUtils.equalsIgnoreCase(r.get("Key_name").toString(), index.getKeyName())) {
 				findKeyName = true;
-				if (StringUtils.equalsAnyIgnoreCase(r.get("Column_name").toString(),
-						index.getColumnNames().toArray(new String[0]))) {
-					findIndexCols++;
+				String col = r.get("Column_name").toString();
+				for(String indexCol :index.getColumnNames() ) {
+					if(indexCol.equals(col)) {
+						findIndexCols++;
+					}
 				}
 			}
 		}
 
 		if (findKeyName) {
 			if (findIndexCols != index.getColumnNames().size()) {
-				sql = indexSql(index, table.getTableName(), true);
+				sql = indexSql(index, table.getFullTableName(), true);
 			}
 		} else {
-			sql = indexSql(index, table.getTableName(), false);
+			sql = indexSql(index, table.getFullTableName(), false);
 		}
 		if (!StringUtils.isBlank(sql)) {
-			logger().debug(sql);
-			// db.execute(sql);
+			this.executeSql(db, sql);
 		}
 		return;
 	}
@@ -222,13 +240,13 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @return
 	 */
 	protected String indexSql(Index index, String tableName, boolean modify) {
-		String format = "alter table %s %s add %s key %s";
+		String format = "alter table %s %s add %s key %s (%s)";
 		String keyProp = "";
 		String primary = "PRIMARY";
 		String unique = "0";
 		String dropKey = "";
 		String cols = StringUtils.join(index.getColumnNames(), ",");
-		
+
 		if (modify) {
 			if (primary.equals(index.getKeyName())) {
 				dropKey = "drop primary key,";
@@ -236,26 +254,26 @@ public class RepairDatabaseService extends MainBaseService {
 				dropKey = "drop index `" + index.getKeyName() + "`,";
 			}
 		}
-		
-		
+
 		if (primary.equals(index.getKeyName())) {
 			keyProp = "primary";
 		} else if (unique.equals(index.getNonUnique())) {
 			keyProp = "unique";
-		} 
-		
-		return String.format(format,tableName,dropKey,keyProp,cols);
+		}
+
+		return String.format(format, tableName, dropKey, keyProp, index.getKeyName(),cols);
 	}
 
 	/**
 	 * 判断表是否存在
 	 * 
-	 * @param tableName
+	 * @param table
 	 * @param db
 	 * @return
 	 */
-	public boolean isTableExists(String tableName, DefaultDSLContext db) {
-		Result<Record> tables = db.fetch("show tables like '" + tableName + "'");
+	public boolean isTableExists(Table table, MpDefaultDslContext db) {
+		Result<Record> tables = db
+				.fetch("show tables from " + table.getDatabseName() + " like '" + table.getTableName() + "'");
 		return tables.size() > 0;
 	}
 
@@ -276,11 +294,9 @@ public class RepairDatabaseService extends MainBaseService {
 			Table table = new Table();
 			table.tableName = matcher.group(1);
 			table.createSql = String.format("create table %s(%s)", matcher.group(1), matcher.group(2));
-			String[] columns = matcher.group(2).split(",\\s*\r\n");
+			String[] columns = matcher.group(2).split(",\\s*\n");
 			for (String col : columns) {
-				String[] tokens = col.trim().replaceAll("comment\\s+.*", "").split("\\s+");
-				tokens = this.connect(tokens);
-
+				String[] tokens = this.parseTokens(col).toArray(new String[0]);
 				if (tokens.length == 0) {
 					logger().error("tokens.length == 0");
 					continue;
@@ -295,6 +311,47 @@ public class RepairDatabaseService extends MainBaseService {
 		}
 
 		return tables;
+	}
+
+	protected List<String> parseTokens(String str) {
+		List<String> result = new ArrayList<>();
+		str = str.trim();
+		int i = 0;
+		StringBuffer buf = new StringBuffer();
+		while (i < str.length()) {
+			char ch = str.charAt(i);
+			if (ch == '"' || ch == '\'' || ch == '(') {
+				bufAddAndReset(result, buf);
+
+				char lastCh = ch == '(' ? ')' : ch;
+				buf.append(ch);
+				i++;
+				while (i < str.length()) {
+					buf.append(str.charAt(i));
+					if (str.charAt(i) == lastCh) {
+						break;
+					}
+					i++;
+				}
+				bufAddAndReset(result, buf);
+			} else {
+				if (!String.valueOf(ch).matches("\\s")) {
+					buf.append(ch);
+				} else {
+					bufAddAndReset(result, buf);
+				}
+			}
+			i++;
+		}
+		bufAddAndReset(result, buf);
+		return result;
+	}
+
+	protected void bufAddAndReset(List<String> result, StringBuffer buf) {
+		if (buf.length() > 0) {
+			result.add(buf.toString());
+			buf.setLength(0);
+		}
 	}
 
 	/**
@@ -377,7 +434,7 @@ public class RepairDatabaseService extends MainBaseService {
 				break;
 			}
 			default: {
-				logger().warn("column token " + tokens[i] + "not found");
+				logger().warn("{} column token {} not found!", table.getTableName(), tokens[i]);
 				i++;
 			}
 			}
@@ -419,15 +476,18 @@ public class RepairDatabaseService extends MainBaseService {
 				i++;
 				int p = tokens[i].indexOf("(");
 				if (p == -1) {
-					index.setKeyName(tokens[i]);
+					index.setKeyName(tokens[i].trim());
 					i++;
 					p = 0;
 				}
-
+				List<String> propList = new ArrayList<>();
 				String[] props = tokens[i].substring(p + 1, tokens[i].length() - 1).split(",");
-				index.setColumnNames(Arrays.asList(props));
+				for(String prop: props) {
+					propList.add(prop.trim());
+				}
+				index.setColumnNames(propList);
 				if (StringUtils.isBlank(index.getKeyName())) {
-					index.setKeyName(props[0]);
+					index.setKeyName(props[0].trim());
 				}
 				i++;
 				break;
@@ -437,7 +497,7 @@ public class RepairDatabaseService extends MainBaseService {
 				break;
 			}
 			default: {
-				logger().warn("unkown index token " + tokens[i]);
+				logger().warn("{} found unkown index token {}.", table.getTableName(), tokens[i]);
 				i++;
 
 			}
@@ -457,6 +517,7 @@ public class RepairDatabaseService extends MainBaseService {
 		int i = 0;
 		while (i < tokens.length) {
 			tokens[i] = tokens[i].trim();
+
 			if (tokens[i].contains("(") && !tokens[i].contains(")")) {
 				ConnectStr c = getConnectStr(tokens, i, ")");
 				i = c.getLastIndex() + 1;

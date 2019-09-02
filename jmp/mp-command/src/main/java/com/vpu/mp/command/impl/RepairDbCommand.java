@@ -15,8 +15,7 @@ public class RepairDbCommand implements CommandRunner {
 	
 	@Override
 	public void run(ApplicationArguments args) {
-		System.out.println("hello ");
-		//saas.repairDb.repairAllShopDb();
+		saas.repairDb.repairAllShopDb();
 	}
 
 	@Override
