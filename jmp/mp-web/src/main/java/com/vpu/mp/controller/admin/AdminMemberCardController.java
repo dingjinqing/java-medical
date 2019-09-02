@@ -1,10 +1,13 @@
 package com.vpu.mp.controller.admin;
 
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
@@ -110,5 +114,16 @@ public class AdminMemberCardController extends AdminBaseController {
 		BaseCardVo card = shop().member.card.getCardById(param);
 		return success(card);
 	}	
+	
+	/**
+	 * 获取所有会员卡弹窗
+	 */
+	@PostMapping("/card/all/get")
+	public JsonResult getAllUserCard() {
+		logger.info("获取所有会员卡弹窗");
+		List<CardBasicVo> allUserCard = shop().member.card.getAllUserCard();
+		return success(allUserCard);
+	}
+	
 	
 }
