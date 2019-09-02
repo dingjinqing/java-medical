@@ -66,11 +66,11 @@ public class BaseController {
 		return result(resultCode, null,args);
 	}
 
-	public JsonResult fail(Object ...args){
-		Object resultCode =args[0];
+	public JsonResult fail(List<Object> args){
+        JsonResultCode resultCode = (JsonResultCode) args.get(0);
 		List<Object> arr =Arrays.asList(args);
 		arr.remove(0);
-		return fail(resultCode,arr);
+		return fail(resultCode,arr.toArray());
 	}
 
 	public JsonResult fail() {

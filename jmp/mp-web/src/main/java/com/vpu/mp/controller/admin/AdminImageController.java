@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -85,7 +86,7 @@ public class AdminImageController extends AdminBaseController {
 		//校验
 		Object[] jsonResultCode = shop().image.validImageParam(param, file);
 		if (jsonResultCode!=null){
-			this.fail(jsonResultCode);
+			this.fail(Arrays.asList(jsonResultCode));
 		}
 		UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType(),file.getSubmittedFileName());
 		//上传又拍云

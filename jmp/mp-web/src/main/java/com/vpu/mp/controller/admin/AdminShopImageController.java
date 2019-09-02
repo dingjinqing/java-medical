@@ -3,6 +3,8 @@ package com.vpu.mp.controller.admin;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
@@ -141,7 +143,7 @@ public class AdminShopImageController extends  AdminBaseController{
         //校验
         Object[] jsonResultCode = saas.shop.image.validImageParam(param, file);
         if (jsonResultCode!=null){
-            this.fail(jsonResultCode);
+            this.fail(Arrays.asList(jsonResultCode));
         }
         UploadPath uploadPath = saas.shop.image.getImageWritableUploadPath(file.getContentType(),file.getName(),adminInfo.getSysId());
         //上传又拍云
