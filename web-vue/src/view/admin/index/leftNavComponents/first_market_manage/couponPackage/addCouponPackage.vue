@@ -116,7 +116,7 @@
               <div class="item_right">
                 <a
                   style="color:#409eff;font-size:12px;cursor: pointer;"
-                  @click="handleToCallDialog"
+                  @click="isEditFlag?'':handleToCallDialog()"
                 >添加优惠券</a>
                 <span class="item_tips">最多可添加10种优惠券，每种优惠券最多送6张</span>
               </div>
@@ -154,6 +154,7 @@
                     <template slot-scope="scope">
                       <div>
                         <el-input-number
+                          :disabled="isEditFlag"
                           v-model="scope.row.send_num"
                           size="small"
                           :min="1"
@@ -177,7 +178,7 @@
                         </p>
                         <a
                           style="color:#409eff;cursor: pointer;"
-                          @click.prevent="handleCouponSet(scope)"
+                          @click.prevent="isEditFlag?'':handleCouponSet(scope)"
                         >{{scope.row.coupon_set.immediatelyGrantAmount > 0 || (scope.row.coupon_set.timingEvery > 0 && scope.row.coupon_set.timingTime > 0) ? '重新设置' : '设置'}}</a>
                       </div>
                     </template>
@@ -190,7 +191,7 @@
                       <div style="text-align:center">
                         <a
                           style="color:#409eff;cursor: pointer;"
-                          @click.prevent="handleCouponDel(scope.$index)"
+                          @click.prevent="isEditFlag?'':handleCouponDel(scope.$index)"
                         >删除</a>
                       </div>
                     </template>
@@ -287,7 +288,7 @@
     </div>
     <div class="footer">
       <el-button
-        @click="submit"
+        @click="isEditFlag?updateSubmit():addSubmit()"
         type="primary"
         size="small"
       >保存</el-button>
@@ -390,7 +391,7 @@
 </template>
 
 <script>
-import { addCouponPackage, getCouponPackById } from '@/api/admin/marketManage/couponPackage.js'
+import { addCouponPackage, getCouponPackById, updateCouponPackage } from '@/api/admin/marketManage/couponPackage.js'
 export default {
   components: {
     AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
@@ -405,7 +406,6 @@ export default {
         actRule: '',
         accessMode: 0,
         couponPackVoucher: []
-
       },
       effectiveDate: '',
       coupon_info: [],
@@ -435,7 +435,9 @@ export default {
           label: '自然月'
         }
       ],
-      target: null
+      target: null,
+      isEditFlag: false,
+      actId: null
     }
   },
   methods: {
@@ -511,7 +513,8 @@ export default {
       })
       return [...map.values()]
     },
-    submit () {
+    addSubmit () {
+      // 新建活动
       this.coupon_info.forEach(element => {
         var voucher = {}
         voucher.voucherId = element.id
@@ -541,6 +544,28 @@ export default {
           })
         }
       })
+    },
+    updateSubmit () {
+      // 更新活动
+      this.param.id = this.actId
+      this.param.startTime = this.effectiveDate[0]
+      this.param.endTime = this.effectiveDate[1]
+      updateCouponPackage(this.param).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            type: 'success',
+            message: '更新成功!'
+          })
+          this.$router.push({
+            name: 'coupon_package'
+          })
+        } else {
+          this.$message({
+            type: 'fail',
+            message: '更新失败!'
+          })
+        }
+      })
     }
   },
   computed: {
@@ -550,6 +575,9 @@ export default {
   },
   mounted () {
     if (this.$route.query.id > 0) {
+      this.actId = this.$route.query.id
+      // 编辑时优惠券信息不可修改
+      this.isEditFlag = true
       // 点击编辑按钮进来，初始化页面数据
       let SimpleCouponPackParam = {
         'id': this.$route.query.id
