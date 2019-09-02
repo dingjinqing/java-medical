@@ -89,6 +89,7 @@ public class TaskJobMainService extends MainBaseService {
                 .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
                 .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
                 .forUpdate()
+                .skipLocked()
                 .fetch();
             result.forEach(r->{
                 TaskJobsConstant.TaskJobEnum job =
