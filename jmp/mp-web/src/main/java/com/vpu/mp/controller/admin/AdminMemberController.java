@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +46,9 @@ public class AdminMemberController extends AdminBaseController{
 	 */
 	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody MemberPageListParam param) {
-		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param);
+		/** 获取语言，用于国际化 */
+		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
+		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param,language);
 		return this.success(pageResult);
 	}
 	
