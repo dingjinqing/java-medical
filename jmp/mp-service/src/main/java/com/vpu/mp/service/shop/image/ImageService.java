@@ -1,21 +1,15 @@
 package com.vpu.mp.service.shop.image;
 
-import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
-import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import com.UpYun;
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.StorageConfig;
+import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.image.ImageDefault;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.*;
 import org.apache.commons.io.FileUtils;
 import org.jooq.Record;
@@ -26,18 +20,17 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.UpYun;
-import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.config.StorageConfig;
-import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
-import com.vpu.mp.service.foundation.image.ImageDefault;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-
 import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
+import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
 /**
  * @author 新国
