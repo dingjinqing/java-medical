@@ -45,6 +45,7 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
@@ -52,9 +53,15 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
+import com.vpu.mp.service.pojo.shop.market.message.MpTemplateMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
+import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
@@ -71,7 +78,6 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
-import me.chanjar.weixin.mp.builder.outxml.TextBuilder;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
@@ -1360,7 +1366,7 @@ public class MpAuthShopService extends MainBaseService {
 				record.setSubscribeTime(new Timestamp(userInfo.getSubscribeTime() * 1000L));
 				record.setUnionid(userInfo.getUnionId());
 				saas.shop.officeAccount.addOrUpdateUser(appId, record, userInfo.getUnionId(), userInfo.getOpenId());
-				//得到公众号关联的小程序
+				//得到公众号关联的小程序 
 				Result<MpAuthShopRecord> officialAccountMps = getOfficialAccountMps(appId);
 				boolean parseAccountInfo = saas.shop.account.parseAccountInfo(appId, inMessage.getEventKey(), record.getOpenid());
 				logger().debug("'parseAccountInfo result "+parseAccountInfo);
@@ -1380,8 +1386,17 @@ public class MpAuthShopService extends MainBaseService {
 						String firest="为你精心准备了关注礼品，快来点击查看吧!";
 						String page="pages/auth/auth";//String page="pages/auth/auth";pages/index/index
 						String content="点击进入小程序";
-						List<WxMpTemplateData> keywordValues = fexMessage(record, firest, shopName, content, page, null);
-						accountMessageService.sendMpTemplateMessage(appId, userInfo.getOpenId(), keywordValues, MpTemplateConfig.PUSHMSG, authShopRecord.getAppId(), page, page);
+						//List<WxMpTemplateData> keywordValues = fexMessage(record, firest, shopName, content, page, null);
+						ShopApplication shopApp = saas.getShopApp(authShopRecord.getShopId());
+						WxUserInfo info=WxUserInfo.builder().mpAppId(appId).mpOpenId(userInfo.getOpenId()).maAppId(authShopRecord.getAppId()).build();
+						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{null,"#173177"}};
+						RabbitMessageParam param = RabbitMessageParam.builder()
+								.mpTemplateData(
+										MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(data).build())
+								.page(page).shopId(authShopRecord.getShopId())
+								.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+						shopApp.wechatMessageTemplateService.sendMpMessage(param, info);
+						saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), authShopRecord.getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 					}
 				}
 				return message;
@@ -1404,6 +1419,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return message;
 	}
+	
 	
 	/**
 	 * 组装List<WxMpTemplateData>的信息
@@ -1453,8 +1469,8 @@ public class MpAuthShopService extends MainBaseService {
 		build.setFromUserName(inMessage.getToUser());
 		build.setCreateTime((System.currentTimeMillis() / 1000L));
 		build.setMsgType(WxConsts.XmlMsgType.TRANSFER_CUSTOMER_SERVICE);
-		logger().debug("发给客服的报文"+build.toXml().toString());
+		logger().debug("\n 发给客服的报文：\n{}",build.toXml().toString());
 		return build;
 	}
-
+	
 }
