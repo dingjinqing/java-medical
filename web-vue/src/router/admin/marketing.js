@@ -78,7 +78,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/addbargainAct'
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/addBargainAct'
       )
   },
   // 多人拼团
