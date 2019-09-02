@@ -58,12 +58,14 @@
             <el-radio
               v-model="form.rewardType"
               label="0"
+              @click.native="bindRewardType"
             >
               赠送商品
             </el-radio>
             <el-radio
               v-model="form.rewardType"
               label="1"
+              @click.native="bindRewardType()"
             >折扣商品</el-radio>
             <el-radio
               v-model="form.rewardType"
@@ -124,13 +126,12 @@
               </el-table-column>
 
               <el-table-column
-                v-if="form.rewardType"
+                v-if="form.goodsInfo.rewardType == 1"
                 width="100%"
                 prop=""
                 label="活动价"
                 align="center"
               >
-                <el-input v-if="form.rewardType"></el-input>
               </el-table-column>
 
             </el-table>
@@ -433,7 +434,8 @@ export default {
           goodsIds: '',
           goodsName: '',
           shopPrice: '',
-          goodsNumber: ''
+          goodsNumber: '',
+          rewardType: ''
         }
       },
 
@@ -512,7 +514,12 @@ export default {
         }
       })
     },
-
+    bindRewardType () {
+      console.log(1111)
+      this.form.goodsInfo.rewardType = this.form.rewardType
+      console.log('this.form.goodsInfo.rewardType:', this.form.goodsInfo.rewardType)
+      console.log('this.form.rewardType:', this.form.rewardType)
+    },
     // 选择商品弹窗
     showChoosingGoods () {
       this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
