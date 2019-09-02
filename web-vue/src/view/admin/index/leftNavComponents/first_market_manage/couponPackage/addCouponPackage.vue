@@ -45,7 +45,7 @@
                     </div>
                     <div class="coupon_right">
                       <div class="coupon_name">{{item.actName}}</div>
-                      <div class="coupon_limits">全部商品可用></div>
+                      <div class="coupon_limits">{{item.recommendCatId || item.recommendGoodsId || item.recommendSortId ? '指定商品可用' : '全部商品可用'}}></div>
                       <div class="coupon_time">2019-08-21--2019-08-31</div>
                       <div class="coupon_icon">{{item.send_num ?item.send_num:0}}张</div>
                     </div>
@@ -236,33 +236,33 @@
                 <p>
                   <el-radio
                     v-model="param.accessMode"
-                    label="0"
+                    :label='0'
                   >现金购买</el-radio>
                   <el-radio
                     v-model="param.accessMode"
-                    label="1"
+                    :label='1'
                   >积分购买</el-radio>
                   <el-radio
                     v-model="param.accessMode"
-                    label="2"
+                    :label='2'
                   >直接领取</el-radio>
                 </p>
                 <p class="package_get_choose">
-                  <span v-if="param.accessMode==='0'">
+                  <span v-if="param.accessMode===0">
                     需支付：<el-input
                       v-model="param.accessCost"
                       class="small_input"
                       size="small"
                     ></el-input> 元，
                   </span>
-                  <span v-if="param.accessMode==='1'">
+                  <span v-if="param.accessMode===1">
                     需支付：<el-input
                       v-model="param.accessCost"
                       class="small_input"
                       size="small"
                     ></el-input> 积分，
                   </span>
-                  <span v-if="param.accessMode!='2'">
+                  <span v-if="param.accessMode!==2">
                     当前已选优惠券可优惠金额总和为 0.00元
                   </span>
                 </p>
@@ -403,7 +403,7 @@ export default {
         limitGetTimes: '',
         totalAmount: '',
         actRule: '',
-        accessMode: '0',
+        accessMode: 0,
         couponPackVoucher: []
 
       },
@@ -449,6 +449,7 @@ export default {
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
+      console.log(data)
       let couponArr = this.formatCoupon(data)
       let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
       let couponKey = []
@@ -556,7 +557,23 @@ export default {
       getCouponPackById(SimpleCouponPackParam).then((res) => {
         if (res.error === 0) {
           this.param = res.content
-          console.log(this.param)
+          this.effectiveDate = []
+          this.effectiveDate.push(res.content.startTime)
+          this.effectiveDate.push(res.content.endTime)
+          let couponList = []
+          this.param.couponPackVoucher.map(item => {
+            let couponInfo = Object.assign({}, item.couponView)
+            couponInfo.ischeck = true
+            couponInfo.send_num = item.totalAmount
+            couponInfo.coupon_set = {}
+            couponInfo.coupon_set.immediatelyGrantAmount = item.immediatelyGrantAmount
+            couponInfo.coupon_set.timingAmount = item.timingAmount
+            couponInfo.coupon_set.timingEvery = item.timingEvery
+            couponInfo.coupon_set.timingTime = item.timingTime
+            couponInfo.coupon_set.timingUnit = item.timingUnit
+            couponList.push(couponInfo)
+          })
+          this.coupon_info = couponList
         }
       })
     }
