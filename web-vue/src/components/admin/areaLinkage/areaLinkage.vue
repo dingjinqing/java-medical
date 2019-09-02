@@ -3,7 +3,7 @@
     <section class="container">
       <!-- 选择省 -->
       <el-select
-        style="width:150px"
+        style="width:220px"
         size="small"
         @change="choseProvince"
         v-model="values.province"
@@ -20,7 +20,7 @@
       </el-select>
       <!-- 选择市 -->
       <el-select
-        style="width:150px"
+        style="width:220px"
         size="small"
         @change="choseCity"
         v-model="values.city"
@@ -37,7 +37,7 @@
       </el-select>
       <!-- 选择区县 -->
       <el-select
-        style="width:150px"
+        style="width:220px"
         size="small"
         @change="choseDistrict"
         v-model="values.district"
