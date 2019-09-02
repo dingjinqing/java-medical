@@ -34,8 +34,7 @@ import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PURCHASE_PRICE;
-import static org.jooq.impl.DSL.groupConcat;
-import static org.jooq.impl.DSL.sum;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author liufei
@@ -268,7 +267,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return the select condition step
      */
     private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(RedemptionOrderParam param) {
-        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.ORDER_SN, groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), oi.CREATE_TIME, oi.CONSIGNEE, oi.MOBILE, oi.ORDER_STATUS_NAME).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), oi.CREATE_TIME, oi.CONSIGNEE, oi.MOBILE, oi.ORDER_STATUS_NAME).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
             conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -368,7 +367,11 @@ public class IncreasePurchaseService extends ShopBaseService {
     private PageResult<RedemptionDetailVo> getRedemptionDetailSpec(RedemptionDetailParam param) {
         //由于筛选条件中可能含有换购数量，所以只能现找出换购信息，然后在挨个查询主商品信息
         SelectSeekStep1<Record7<Integer, String, String, String, Timestamp, BigDecimal, BigDecimal>, Timestamp> conditionStep = db()
-            .select(oi.USER_ID, u.USERNAME, u.MOBILE, oi.ORDER_SN, oi.CREATE_TIME
+            .select(min(oi.USER_ID).as("userId")
+                , min(u.USERNAME).as("username")
+                , min(u.MOBILE).as("mobile")
+                , min(oi.ORDER_SN).as("orderSn")
+                , min(oi.CREATE_TIME).as("createTime")
                 , sum(og.GOODS_PRICE).as("redemptionTotalMoney")
                 , sum(og.GOODS_NUMBER).as("redemptionNum"))
             .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
@@ -413,7 +416,11 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     private SelectSeekStep1<Record8<Integer, String, String, String, Timestamp, String, String, String>, Timestamp> buildDetailSelectStep(RedemptionDetailParam param) {
         return db()
-            .select(oi.USER_ID, u.USERNAME, u.MOBILE, oi.ORDER_SN, oi.CREATE_TIME
+            .select(min(oi.USER_ID).as("userId")
+                , min(u.USERNAME).as("username")
+                , min(u.MOBILE).as("mobile")
+                , min(oi.ORDER_SN).as("orderSn")
+                , min(oi.CREATE_TIME).as("createTime")
                 , groupConcat(og.GOODS_PRICE, GROUPCONCAT_SEPARATOR).as("concatPrices")
                 , groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumbers")
                 , groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"))
