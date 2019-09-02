@@ -542,7 +542,7 @@ KEY `user_openid` ( `user_openid` ),
 KEY `order_status` ( `order_status` ),
 KEY `shipping_id` ( `shipping_id` ),
 KEY `shop_id` ( `shop_id` )
-) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 -- --   订单操作表 b2c_order_action
 -- drop table if exists `b2c_order_action`;
@@ -617,7 +617,7 @@ KEY `order_id` ( `order_id` ),
 KEY `order_sn` ( `order_sn` ),
 KEY `goods_id` ( `goods_id` ),
 KEY `shop_id` ( `shop_id` )
-) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 
 -- -- 发放优惠券 --用户持有的优惠券
@@ -940,8 +940,8 @@ CREATE TABLE `b2c_return_order_goods`  (
   `discounted_goods_price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '实际退款金额',
   `goods_img` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `success` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0代表退货申请被拒绝，1代表正在退货中，2代表退货成功',
-  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '最后修改时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `rec_id`(`rec_id`) USING BTREE,
   INDEX `ret_id`(`ret_id`) USING BTREE,
@@ -3070,7 +3070,7 @@ create table `b2c_distribution_withdraw` (
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`),
   unique key `order_sn` (`order_sn`)
-) engine = innodb default charset = utf8mb4 collate = utf8mb4_unicode_ci;
+);
 
 -- -- 商品品牌
 -- drop table if exists `b2c_goods_brand`;
@@ -3102,7 +3102,7 @@ create table `b2c_return_status_change` (
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
   `desc`     text        comment '备注' ,
   primary key (`id`)
-) collate = 'utf8mb4_unicode_ci' engine = innodb;
+);
 
 -- unlimit小程序码
 -- drop table if exists `b2c_wxp_unlimit_code`;
@@ -4084,7 +4084,7 @@ CREATE TABLE `b2c_gift_cart` (
   PRIMARY KEY (`id`),
   KEY `gift_id` (`gift_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 -- 送礼_活动主表
 -- DROP TABLE IF EXISTS `b2c_gift_giving_activity`;
 CREATE TABLE `b2c_gift_giving_activity` (
@@ -4104,7 +4104,7 @@ CREATE TABLE `b2c_gift_giving_activity` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
   KEY `act_name` (`act_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 -- 送礼_记录表
 -- DROP TABLE IF EXISTS `b2c_give_gift_receive`;
 CREATE TABLE `b2c_give_gift_receive` (
@@ -4126,7 +4126,7 @@ CREATE TABLE `b2c_give_gift_receive` (
   KEY `user_id` (`user_id`),
   KEY `order_sn` (`order_sn`),
   KEY `main_order_sn` (`main_order_sn`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 --  满包邮详情
 -- DROP TABLE IF EXISTS `b2c_free_shipping`;
@@ -4147,7 +4147,7 @@ CREATE TABLE `b2c_free_shipping` (
 `del_time` datetime DEFAULT NULL,
 `level` TINYINT ( 2 ) DEFAULT '0' COMMENT '优先级 默认0',
 PRIMARY KEY ( `id` )
-) ENGINE = INNODB AUTO_INCREMENT = 22 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 
 
@@ -4166,7 +4166,7 @@ CREATE TABLE `b2c_free_shipping_rule` (
 `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 PRIMARY KEY ( `id` ),
 KEY `shipping_id` ( `shipping_id` )
-) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 
 -- 首单特惠定义表
@@ -4238,11 +4238,11 @@ CREATE TABLE `b2c_share_award`  (
   `first_award_num` int(10) NULL DEFAULT 0 COMMENT '一级规则剩余奖品数',
   `second_award_num` int(10) NULL DEFAULT 0 COMMENT '二级规则剩余奖品数',
   `third_award_num` int(10) NULL DEFAULT 0 COMMENT '三级规则剩余奖品数',
-  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `share_name`(`name`,`del_flag`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '分享有礼活动记录表';
+);
 
 -- 用户分享记录表
 DROP TABLE IF EXISTS `b2c_share_award_record`;
@@ -4256,12 +4256,12 @@ CREATE TABLE `b2c_share_award_record`  (
   `first_award` tinyint(1) NULL DEFAULT 0 COMMENT '1级规则奖品状态 0进行中 1未领取 2已领取 3已过期',
   `second_award` tinyint(1) NULL DEFAULT 0 COMMENT '2级规则奖品状态 0进行中 1未领取 2已领取 3已过期',
   `third_award` tinyint(1) NULL DEFAULT 0 COMMENT '3级规则奖品状态 0进行中 1未领取 2已领取 3已过期',
-  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `share_id`(`share_id`) USING BTREE,
   INDEX `user_share`(`user_id`, `share_id`, `goods_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '用户分享记录表';
+);
 
 -- 用户领取分享奖励记录表
 DROP TABLE IF EXISTS `b2c_share_award_receive`;
@@ -4271,12 +4271,12 @@ CREATE TABLE `b2c_share_award_receive`  (
   `share_id` int(9) NOT NULL DEFAULT 0 COMMENT '活动ID',
   `goods_id` int(9) NOT NULL DEFAULT 0 COMMENT '商品ID',
   `award_level` tinyint(1) NULL DEFAULT 0 COMMENT '领取的是几级奖励 1,2 3',
-  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间/分享奖励领取时间',
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间/分享奖励领取时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP() COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `share_id`(`share_id`) USING BTREE,
   INDEX `user_share`(`user_id`, `share_id`, `goods_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact  COMMENT '用户领取分享奖励记录表';
+);
 
 -- 用户点击分享链接触发分享生效记录表
 DROP TABLE IF EXISTS `b2c_attend_share_user`;
@@ -4289,11 +4289,11 @@ CREATE TABLE `b2c_attend_share_user`  (
   `is_new` tinyint(1) NULL DEFAULT 0 COMMENT '是否是新用户：0否，1是',
   `launch_user_id` int(9) NOT NULL DEFAULT 0 COMMENT '触发分享活动用户ID，即分享商品的用户id',
   `level` tinyint(1) NULL DEFAULT 0 COMMENT '参加活动时的活动进行等级1,2,3',
-  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `attend_share_user`(`record_id`, `user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 73 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '用户点击分享链接触发分享生效记录表';
+);
 
 -- 评价有礼活动
 --  drop table if exists `b2c_comment_award`;
@@ -4343,7 +4343,7 @@ create table `b2c_coupon_pack_voucher` (
   primary key (`id`),
   index `voucher_id` (`voucher_id`),
   index `act_id` (`act_id`)
-) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 
 
