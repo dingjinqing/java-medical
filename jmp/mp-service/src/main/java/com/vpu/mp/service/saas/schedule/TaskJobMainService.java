@@ -8,15 +8,14 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.schedule.BaseTaskJob;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import org.jooq.Condition;
-import org.jooq.Record2;
-import org.jooq.Result;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
 import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
@@ -78,25 +77,30 @@ public class TaskJobMainService extends MainBaseService {
         dispatch(info);
     }
 
-    public void  getAndSendMessage(TaskJobsConstant.TaskJobEnum job){
-        List<Condition> filters = new ArrayList<>();
-        filters.add(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW));
-        filters.add(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()));
-        filters.add(TASK_JOB_MAIN.EXECUTION_TYPE.eq(job.getExecutionType()));
-        sendMessage(getNeedMessage(filters),job);
+    /**
+     * 查询并发送待执行的任务给各自的队列（加入排他锁，防重入）
+     */
+    public void  getAndSendMessage(){
+        db().transaction(configuration -> {
+            Result<Record4<Integer,String,String,Integer>> result = DSL.using(configuration)
+                .select(TASK_JOB_MAIN.ID,TASK_JOB_CONTENT.CONTENT,TASK_JOB_MAIN.CLASS_NAME,TASK_JOB_MAIN.EXECUTION_TYPE)
+                .from(TASK_JOB_MAIN)
+                .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_CONTENT.ID.eq(TASK_JOB_MAIN.CONTENT_ID))
+                .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
+                .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
+                .forUpdate()
+                .fetch();
+            result.forEach(r->{
+                TaskJobsConstant.TaskJobEnum job =
+                    TaskJobsConstant.TaskJobEnum.getTaskJobEnumByExecutionType(r.get(TASK_JOB_MAIN.EXECUTION_TYPE));
+                if (job != null) {
+                    rabbitmqSendService.sendMessage(job.getExchangeName(),job.getRoutingKey(),
+                        r.get(TASK_JOB_CONTENT.CONTENT),r.get(TASK_JOB_MAIN.CLASS_NAME));
+                }
+            });
+            db().update(TASK_JOB_MAIN)
+                .set(TASK_JOB_MAIN.STATUS,TaskJobsConstant.STATUS_EXECUTING)
+                .where(TASK_JOB_MAIN.ID.in(result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList())));
+        });
     }
-    private Result<TaskJobMainRecord>  getNeedMessage(List<Condition> conditionList){
-        return db().select(TASK_JOB_MAIN.CONTENT_ID,TASK_JOB_MAIN.SHOP_ID)
-            .from(TASK_JOB_MAIN)
-            .where(conditionList)
-            .fetchInto(TASK_JOB_MAIN);
-    }
-    private void sendMessage(Result<TaskJobMainRecord> result,TaskJobsConstant.TaskJobEnum job){
-        result.forEach(r->
-            rabbitmqSendService.sendMessage(
-                job.getExchangeName(),job.getRoutingKey(),r.get(TASK_JOB_MAIN.SHOP_ID),r.get(TASK_JOB_MAIN.CONTENT_ID)
-            )
-        );
-    }
-
 }
