@@ -53,7 +53,7 @@
           </el-form-item>
           <el-form-item
             label="奖励类型："
-            prop="rewardType"
+            prop=""
           >
             <el-radio
               v-model="form.rewardType"
@@ -86,12 +86,12 @@
             <el-table
               class="version-manage-table"
               header-row-class-name="tableClass"
-              :data="goodsInfo"
+              :data="form.goodsInfo"
               border
               style="width: 38%"
             >
               <el-table-column
-                width="200px"
+                width="100%"
                 prop="goodsName"
                 label="商品信息"
                 align="center"
@@ -99,27 +99,38 @@
               </el-table-column>
 
               <el-table-column
-                width="125px"
-                prop=""
+                width="100%"
+                prop="shopPrice"
                 label="商品价格"
                 align="center"
               >
               </el-table-column>
 
               <el-table-column
-                width="125px"
-                prop=""
+                width="100%"
+                prop="goodsNumber"
                 label="商品库存"
                 align="center"
               >
               </el-table-column>
 
               <el-table-column
-                width="125px"
+                width="100%"
                 prop=""
                 label="活动库存"
                 align="center"
               >
+                <el-input></el-input>
+              </el-table-column>
+
+              <el-table-column
+                v-if="form.rewardType"
+                width="100%"
+                prop=""
+                label="活动价"
+                align="center"
+              >
+                <el-input v-if="form.rewardType"></el-input>
               </el-table-column>
 
             </el-table>
@@ -370,11 +381,12 @@ export default {
       form: {
         actName: '',
         rewardType: '0',
-        rewardContent: {
-          goodsIds: 0,
-          rewardIds: '',
-          marketPrice: '',
-          marketStore: ''
+        rewardContent: '',
+        rewardSet: {
+          goods_ids: '',
+          reward_ids: '',
+          market_price: '',
+          market_store: ''
         },
         startTime: '',
         endTime: '',
@@ -415,13 +427,16 @@ export default {
         failedSendType: '0',
         activityShareType: '0',
         customShareWord: '',
-        shareImgType: '0'
+        shareImgType: '0',
+        // 选中商品id
+        goodsInfo: {
+          goodsIds: '',
+          goodsName: '',
+          shopPrice: '',
+          goodsNumber: ''
+        }
       },
-      // 选中商品id
-      goodsIds: '',
-      goodsName: '',
-      goodsArray: null,
-      goodsInfo: null,
+
       // 表单约束
       formRules: {
         actName: [
@@ -460,6 +475,7 @@ export default {
         'startTime': this.form.startTime,
         'endTime': this.form.endTime,
         'rewardType': this.form.rewardType,
+        'rewardContent': this.form.rewardContent,
         'rewardDuration': this.form.rewardDuration,
         'rewardDurationUnit': this.form.rewardDurationUnitSelect,
         'promoteType': this.form.promoteType,
@@ -499,7 +515,7 @@ export default {
 
     // 选择商品弹窗
     showChoosingGoods () {
-      this.transmitEditGoodsId(this.form.rewardContent.goodsIds)
+      this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
       // console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
     },
@@ -509,38 +525,33 @@ export default {
         return
       }
       this.step++
-      this.transmitEditGoodsId(this.form.rewardContent.goodsIds)
+      this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
     },
     lastStep () {
       this.step--
-      this.transmitEditGoodsId(this.form.rewardContent.goodsIds)
+      this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
     },
     //  获取商品ids
     choosingGoodsResult (row) {
       console.log('获取商品行', row)
       this.goodsRow = row
-      this.form.rewardContent.goodsIds = row.goodsId
-      // console.log('goodsRow', this.goodsRow)
-      // console.log('tmpGoodsIds', this.form.rewardContent.goodsIds)
+      this.form.goodsInfo.goodsIds = row.goodsId
       // 初始化规格表格
       let obj = {
-        goodsId: this.form.rewardContent.goodsIds,
+        goodsId: this.form.goodsInfo.goodsIds,
         currentPage: 1,
         pageRows: 1024
       }
       getGoodsProductList(obj).then(res => {
-        console.log('res', res)
-        this.goodsArray = res.content.dataList
-        // console.log('goodsInfo!', this.goodsInfo[obj.goodsId].goodsId)
-        // this.goodsInfo = this.goodsArray[obj.goodsId].goodsName
         const { content } = res
-        console.log(content)
         const { dataList } = content
-        console.log(dataList)
-        // this.goodsInfo = dataList[obj.goodsId].goodsName
-        console.log('name', this.goodsInfo)
-        // this.goodsIds = this.goodsInfo[obj.goodsId].goodsId
-        // this.goodsName = this.goodsInfo[obj.goodsId].goodsName
+
+        this.form.goodsInfo = [dataList[obj.goodsId]]
+        this.form.rewardSet.goods_ids = obj.goodsId
+        this.form.rewardSet.market_store = 10
+        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+        console.log('rewardSet:', this.form.rewardSet)
+        console.log('rewardContent:', this.form.rewardContent)
       })
     }
   }
