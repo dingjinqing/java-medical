@@ -132,9 +132,12 @@ export default {
   },
   watch: {
     Micropage_ (newData) {
-      if (newData === true) {
+      if (newData === null) {
+        this.dialogVisible = false
+      } else {
         this.dialogVisible = true
       }
+
       console.log(newData)
     },
     dialogVisible (newData) {

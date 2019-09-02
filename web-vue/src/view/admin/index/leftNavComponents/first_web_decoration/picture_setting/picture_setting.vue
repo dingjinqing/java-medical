@@ -350,7 +350,8 @@ export default {
       currentPage: null,
       dialogVisibleShare: false,
       shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
-      pathInput: ''
+      pathInput: '',
+      flag: true
     }
   },
   watch: {
@@ -466,7 +467,8 @@ export default {
     },
     // 点击新建微页面
     handleToNewPage () {
-      this.handleToCallMicropage(true)
+      this.flag = !this.flag
+      this.handleToCallMicropage(this.flag)
     },
     // 表格设置点击
     handleSet () {

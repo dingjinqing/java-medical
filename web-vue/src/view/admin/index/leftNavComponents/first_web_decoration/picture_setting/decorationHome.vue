@@ -297,6 +297,7 @@ export default {
   },
   methods: {
     onMove ({ relatedContext, draggedContext }) {
+      console.log(relatedContext, draggedContext)
       const relatedElement = relatedContext.element
       const draggedElement = draggedContext.element
       return (
