@@ -233,7 +233,10 @@ public interface ImageDefault {
 	 * @throws IOException
 	 */
 	public default BufferedImage getRemoteImageInfo(String imageUrl) throws IOException {
-		return ImageIO.read(getStreamInfo(imageUrl));
+		try (InputStream inputStream =new URL(imageUrl).openStream()) {
+			return ImageIO.read(inputStream);
+		}
+
 	}
 	/**
 	 * 下载
@@ -355,9 +358,15 @@ public interface ImageDefault {
 			param.cropHeight = param.h;
 		}
 		UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension,sysId);
-		try (ByteArrayOutputStream  outputStream = new ByteArrayOutputStream()) {
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			//剪切
-			Thumbnails.of(bufferedImage).sourceRegion(param.x, param.y, param.w, param.h).size(param.cropWidth, param.cropHeight).toOutputStream(outputStream);
+			Thumbnails.of(bufferedImage)
+					.sourceRegion(param.x, param.y, param.w, param.h)
+					//强制使用设置尺寸
+					.forceSize(param.cropWidth, param.cropHeight)
+					//使用bufferedImage必须指定类型
+					.outputFormat(extension)
+					.toOutputStream(outputStream);
 			InputStream inputStream= new ByteArrayInputStream(outputStream.toByteArray());
 			//上传又拍云
 			boolean b = uploadToUpYunBySteam(uploadPath.relativeFilePath, inputStream);
