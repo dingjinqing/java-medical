@@ -4,9 +4,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 
  * @author 黄壮壮
@@ -27,10 +26,23 @@ public class MemberInfoVo {
 	private BigDecimal account;
 	/** 积分 */
 	private Integer score;
-	/** 来源 门店来源-1未录入0后台>0为门店 */
+	/** 来源 : -1 未录入 ; 0 后台; >0为门店id */
 	private Byte source;
 	/** 创建时间 */
 	private Timestamp createTime;
 	/** 用户持有的会员卡 */
 	private String cardName;
+	
+	/** 邀请来源 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String inviteSource;
+	
+	/** 邀请来源活动id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Integer inviteActId;
+	
+	/** 来源名称  如： {@link com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED } */
+	private String sourceName;
+	
+	
 }

@@ -8,11 +8,16 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.db.shop.Tables.CHANNEL;
+import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
-
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SCAN_QRCODE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.CHANNAL_PAGE;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
@@ -49,6 +54,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
@@ -77,7 +83,7 @@ public class MemberService extends ShopBaseService {
 
 	private static final String INVITE_USERNAME="inviteUserName";
 	private static final String USER_NAME="userName";
-
+	
 	public static final String INVITE_SOURCE_GROUPBUY="groupbuy";
 	public static final String INVITE_SOURCE_BARGAIN="bargain";
 	public static final String INVITE_SOURCE_INTEGRAL="integral";
@@ -106,7 +112,7 @@ public class MemberService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<MemberInfoVo> getPageList(MemberPageListParam param) {
+	public PageResult<MemberInfoVo> getPageList(MemberPageListParam param,String language) {
 		
 		User u = USER.as("u");
 		User n = USER.as("n");
@@ -120,10 +126,6 @@ public class MemberService extends ShopBaseService {
 	    select = this.buildOptions(select,u, param);
 		PageResult<MemberInfoVo> memberList = this.getPageResult(select,param.getCurrentPage(),param.getPageRows() , MemberInfoVo.class);
 		
-		for(MemberInfoVo member: memberList.dataList) {
-			Integer userId = member.getUserId();
-			
-		
 		
 		//TODO加入DateUtil工具
 		LocalDate now = LocalDate.now();
@@ -135,6 +137,10 @@ public class MemberService extends ShopBaseService {
 			inData.clear();
 			inData.addAll(Arrays.asList(new Integer[] {0,2}));
 		}
+		
+		for(MemberInfoVo member: memberList.dataList) {
+			Integer userId = member.getUserId();
+			
 		
 		/** 只需要一张会员卡的信息即可  */
 		  Record recordInfo = db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.DISCOUNT,MEMBER_CARD.BG_TYPE,
@@ -163,7 +169,37 @@ public class MemberService extends ShopBaseService {
 		  	}catch(NullPointerException ex) {
 		  		logger().info("没有查询到相应的会员卡");
 		  	}
-
+		  	
+		  	
+		  	
+		  	/** 处理来源信息 */
+		  	//TODO 搜索进入
+		  	String sourceName=null;
+		  	if(NOT_ACQUIRED.getCode().equals(member.getSource()) && !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))  && !(INVITE_SOURCE_SCANQRCODE.equals(member.getSource()))) {
+		  		/** 未获取 */
+		  		sourceName = Util.translateMessage(language, NOT_ACQUIRED.getName(), "member");
+		  		logger().info(sourceName);
+		  	}else if(BACK_STAGE.getCode().equals(member.getSource())) {
+		  		/** 后台 */
+		  		Util.translateMessage(language, BACK_STAGE.getName(), "member");
+		  	}else if(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
+		  		/** 渠道页-- */
+		  		String channelName = db().select(CHANNEL.CHANNEL_NAME).from(CHANNEL).where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
+		  		sourceName = Util.translateMessage(language, CHANNAL_PAGE.getName(), "member")+channelName;
+		  	}else if(INVITE_SOURCE_SCANQRCODE.equals(member.getInviteSource())) {
+		  		/** 扫码进入 */
+		  		sourceName = Util.translateMessage(language, SCAN_QRCODE.getName(), "member");
+		  	}else {
+		  		/** 门店名称  */
+		  		try {
+		  			sourceName = db().select(STORE.STORE_NAME).from(STORE).where(STORE.STORE_ID.eq(new Integer(member.getSource()))).fetchOne().into(String.class);
+		  		}catch(NullPointerException ex) {
+		  			logger().info("店铺id->"+member.getSource()+" 不存在");
+		  		}
+		  	}
+		  	
+		  	logger().info(sourceName);
+		  	member.setSourceName(sourceName);
 		}
 		
 		return memberList;
