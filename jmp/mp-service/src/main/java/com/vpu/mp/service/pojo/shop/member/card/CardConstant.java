@@ -122,9 +122,14 @@ public class CardConstant {
 
 	
 	/** -----------------user_card表常量--------------------------*/
-	/** flag 0 正常使用，1已经删除*/
+	/** user_card表 flag 0 正常使用，1已经删除*/
 	public static final Byte CARD_USING = 0;
 	public static final Byte CARD_DELETE = 1;
 	/** --------------------------------------------------------*/
 	
+	/** -----------------member_card表常量--------------------------*/
+	/** member_card表flag 1正常使用，2停止使用 */
+	public static final Byte MEMBER_CARD_USING = 1;
+	public static final Byte MEMBER_CARD_DELETE = 2;
+	/** ----------------------------------------------------------*/
 }

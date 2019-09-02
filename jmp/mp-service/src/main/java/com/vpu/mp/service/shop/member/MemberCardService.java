@@ -47,6 +47,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEF
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
 import static org.jooq.impl.DSL.count;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import java.math.BigDecimal;
@@ -81,6 +82,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -107,7 +109,7 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
-
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 
 /**
  * 
@@ -755,9 +757,32 @@ public class MemberCardService extends ShopBaseService {
 				.where(DslPlus.findInSet(cardIdsString, MEMBER_CARD.ID))
 				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
 	}
+	
+	/**
+	 * 获取可用的所有会员卡弹窗
+	 * 返回的对象信息为会员卡的id与名称
+	 */
+	public List<CardBasicVo> getAllUserCard() {
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		List<CardBasicVo> cardList = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
+			.where(MEMBER_CARD.FLAG.eq(MEMBER_CARD_USING))
+			.and(
+					(MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME)
+			                .and(MEMBER_CARD.END_TIME.ge(localDateTime))
+					).or(
+							MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME,FOREVER)
+						)
+				)
+			.fetch()
+			.into(CardBasicVo.class);
+			
+		return cardList;
+	}
+	
+	
 
 	/**
-	 * 会员卡列表弹窗
+	 * 会员卡列表
 	 * 
 	 * @return
 	 */
