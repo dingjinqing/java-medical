@@ -5,7 +5,7 @@
         <div class="filters_item">
           <span>用户昵称：</span>
           <el-input
-            v-model="paramsData.username"
+            v-model="pageParams.username"
             placeholder="请输入用户昵称"
             size="small"
             class="default_input"
@@ -14,7 +14,7 @@
         <div class="filters_item">
           <span>手机号：</span>
           <el-input
-            v-model="paramsData.mobile"
+            v-model="pageParams.mobile"
             placeholder="请输入用户手机号"
             size="small"
             class="default_input"
@@ -36,7 +36,7 @@
         <div class="filters_item">
           <span>领取方式：</span>
           <el-select
-            v-model="paramsData.accessMode"
+            v-model="pageParams.accessMode"
             size="small"
             class="default_input"
           >
@@ -51,7 +51,7 @@
         <div class="filters_item">
           <span>订单号：</span>
           <el-input
-            v-model="paramsData.orderSn"
+            v-model="pageParams.orderSn"
             placeholder="请输入订单号"
             size="small"
             class="default_input"
@@ -99,59 +99,17 @@
 </template>
 
 <script>
+import { getCouponPackDetailPageList } from '@/api/admin/marketManage/couponPackage.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
     return {
-      currentPage: 1,
+      actId: null,
       pageParams: {},
       effectiveDate: '',
-      paramsData: {
-        id: '',
-        username: '',
-        mobile: '',
-        startTime: '',
-        endTime: '',
-        accessMode: -1,
-        orderSn: '',
-        currentPage: 1
-      },
-      tableData: [
-        {
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
-          'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
-        },
-        {
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
-          'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
-        },
-        {
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
-          'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
-        },
-        {
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
-          'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
-        }
-      ],
+      tableData: [],
       loading: false,
       tableItem: [
         { prop: 'username', label: '用户昵称' },
@@ -171,14 +129,22 @@ export default {
   },
   methods: {
     initDataList () {
-      this.loading = false
-      console.log(this.paramsData)
+      this.loading = true
+      this.pageParams.id = this.actId
+      this.pageParams.startTime = this.effectiveDate[0] ? this.effectiveDate[0] : null
+      this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : null
+      getCouponPackDetailPageList(this.pageParams).then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
     },
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
         // TODO: 国际化
-        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
         item.accessMode = this.getAccessModeString(item.accessMode)
       })
       this.tableData = data
@@ -194,6 +160,9 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.query.id > 0) {
+      this.actId = this.$route.query.id
+    }
     this.initDataList()
   }
 }

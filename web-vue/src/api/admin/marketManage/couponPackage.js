@@ -52,3 +52,31 @@ export function getCouponPackById (data) {
     data: data
   })
 }
+
+// 优惠券礼包活动订单列表
+export function getCouponPackOrderPageList (data) {
+  return service({
+    url: `/api/admin/market/couponpack/order`,
+    method: 'post',
+    data: data
+  })
+}
+
+// 优惠券礼包活动订单列表-导出
+export function exportCouponPackOrderList (data) {
+  return service({
+    url: `/api/admin/market/couponpack/order/export`,
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
+// 优惠券礼包活动领取详情列表
+export function getCouponPackDetailPageList (data) {
+  return service({
+    url: `/api/admin/market/couponpack/detail`,
+    method: 'post',
+    data: data
+  })
+}

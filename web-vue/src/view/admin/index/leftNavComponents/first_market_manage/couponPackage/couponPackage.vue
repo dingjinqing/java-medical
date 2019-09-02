@@ -348,9 +348,8 @@ export default {
     },
     // 领取明细
     receiveDetails (id) {
-      console.log(id)
       this.$router.push({
-        name: 'coupon_Package_receive_details',
+        path: '/admin/home/main/couponPackage/receiveDetails',
         query: {
           id: id
         }
@@ -358,9 +357,8 @@ export default {
     },
     // 查看订单
     orderDetails (id) {
-      console.log(id)
       this.$router.push({
-        name: 'coupon_Package_order_details',
+        path: '/admin/home/main/couponPackage/orderDetails',
         query: {
           id: id
         }

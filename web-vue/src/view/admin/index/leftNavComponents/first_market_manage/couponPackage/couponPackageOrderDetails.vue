@@ -5,7 +5,7 @@
         <div class="filters_item">
           <span>订单号：</span>
           <el-input
-            v-model="paramsData.orderSn"
+            v-model="pageParams.orderSn"
             placeholder="请输入订单号"
             size="small"
             class="default_input"
@@ -14,7 +14,7 @@
         <div class="filters_item">
           <span>下单用户信息：</span>
           <el-input
-            v-model="paramsData.userInfo"
+            v-model="pageParams.userInfo"
             placeholder="请输入下单用户昵称/手机号"
             size="small"
             class="default_input"
@@ -40,7 +40,7 @@
             size="small"
           >筛选</el-button>
           <el-button
-            @click="initDataList"
+            @click="exportDataList"
             type="primary"
             size="small"
           >导出数据</el-button>
@@ -80,85 +80,23 @@
 </template>
 
 <script>
+import { getCouponPackOrderPageList, exportCouponPackOrderList } from '@/api/admin/marketManage/couponPackage.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
     return {
-
-      pageParams: {},
-      effectiveDate: '',
-      paramsData: {
+      actId: null,
+      pageParams: {
         id: '',
         orderSn: '',
         userInfo: '',
         startTime: '',
-        endTime: '',
-        currentPage: 1
+        endTime: ''
       },
-      tableData: [
-        {
-          'orderSn': 'qweqwew',
-          'moneyPaid': 0,
-          'useAccount': 1.3,
-          'useScore': 50,
-          'memberCardBalance': 0,
-          'userId': 1,
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'createTime': '2019-08-21 17:10:22',
-          'orderStatus': 1
-        },
-        {
-          'orderSn': 'qweqwew',
-          'moneyPaid': 0,
-          'useAccount': 1.3,
-          'useScore': 50,
-          'memberCardBalance': 0,
-          'userId': 1,
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'createTime': '2019-08-21 17:10:22',
-          'orderStatus': 1
-        },
-        {
-          'orderSn': 'qweqwew',
-          'moneyPaid': 0,
-          'useAccount': 1.3,
-          'useScore': 50,
-          'memberCardBalance': 0,
-          'userId': 1,
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'createTime': '2019-08-21 17:10:22',
-          'orderStatus': 1
-        },
-        {
-          'orderSn': 'qweqwew',
-          'moneyPaid': 0,
-          'useAccount': 1.3,
-          'useScore': 50,
-          'memberCardBalance': 0,
-          'userId': 1,
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'createTime': '2019-08-21 17:10:22',
-          'orderStatus': 1
-        },
-        {
-          'orderSn': 'qweqwew',
-          'moneyPaid': 0,
-          'useAccount': 1.3,
-          'useScore': 50,
-          'memberCardBalance': 0,
-          'userId': 1,
-          'username': 'sdsa',
-          'mobile': '13533333333',
-          'createTime': '2019-08-21 17:10:22',
-          'orderStatus': 1
-        }
-      ],
+      effectiveDate: '',
+      tableData: [],
       loading: false,
       tableItem: [
         { prop: 'orderSn', label: '订单号' },
@@ -172,35 +110,77 @@ export default {
   },
   methods: {
     initDataList () {
-      this.loading = false
-      this.pageParams.startTime = this.effectiveDate[0] ? this.effectiveDate[0] : ''
-      this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : ''
-      this.handleData(this.tableData)
+      this.loading = true
+      this.pageParams.id = this.actId
+      this.pageParams.startTime = this.effectiveDate[0] ? this.effectiveDate[0] : null
+      this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : null
+      getCouponPackOrderPageList(this.pageParams).then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
+    },
+    // 列表导出
+    exportDataList () {
+      this.loading = true
+      this.pageParams.id = this.actId
+      this.pageParams.startTime = this.effectiveDate[0] ? this.effectiveDate[0] : null
+      this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : null
+      exportCouponPackOrderList(this.pageParams).then((res) => {
+        this.download(res)
+        this.loading = false
+      })
     },
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
         // TODO: 国际化
-        item.orderStatusFormat = item.orderStatus === 1 ? '订单完成' : '订单未完成'
-        item.realPay = this.getRealPay(item.useAccount, item.useScore, item.memberCardBalance)
+        item.orderStatusFormat = item.orderStatus === 1 ? '订单完成' : '待付款'
+        item.realPay = this.getRealPrice(item.moneyPaid, item.useAccount, item.useScore, item.memberCardBalance)
       })
       this.tableData = data
     },
-    getRealPay (useAccount, useScore, memberCardBalance) {
+    getRealPrice (moneyPaid, useAccount, useScore, memberCardBalance) {
       let payStr = ''
-      if (useAccount > 0) {
-        payStr += `${useAccount}元余额`
-      };
       if (useScore > 0) {
         payStr += `${useAccount}积分`
-      };
-      if (memberCardBalance > 0) {
-        payStr += `${useAccount}元会员卡余额`
-      };
+      } else {
+        let price = 0.0
+        if (moneyPaid > 0) {
+          price += moneyPaid
+        };
+        if (useAccount > 0) {
+          price += useAccount
+        };
+        if (memberCardBalance > 0) {
+          price += useAccount
+        };
+        payStr += `${price}元`
+      }
+
       return payStr
+    },
+    // 下载文件
+    download (data) {
+      if (!data) {
+        return
+      }
+      let url = window.URL.createObjectURL(new Blob([data]))
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', 'excel.xlsx')
+
+      document.body.appendChild(link)
+      link.click()
     }
   },
   mounted () {
+    if (this.$route.query.id > 0) {
+      this.actId = this.$route.query.id
+    }
     this.initDataList()
   }
 }

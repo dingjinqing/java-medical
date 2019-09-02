@@ -451,7 +451,6 @@ export default {
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      console.log(data)
       let couponArr = this.formatCoupon(data)
       let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
       let couponKey = []
