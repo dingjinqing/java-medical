@@ -246,7 +246,7 @@ export default {
     },
     getCheckList (value) {
       this.checkeList = value
-      console.log(value)
+      // console.log(value)
       let str = ''
       for (let i = 0; i < this.checkeList.length; i++) {
         for (let j = 0; j < this.locatList.length; j++) {
@@ -264,7 +264,7 @@ export default {
     },
     // getData
     getData () {
-      console.log(this.locatList)
+      // console.log(this.locatList)
     },
     //  修改table header的样式
     tableHeaderStyle ({ row, column, rowIndex, columnIndex }) {
@@ -324,7 +324,7 @@ export default {
             'fee_0_con3_fee': '0'
           }]
       }
-      console.log(this.templateName)
+      // console.log(this.templateName)
       console.log(params)
       let obj = {
         'templateName': this.templateName,
@@ -339,7 +339,7 @@ export default {
         }
       }
       addTemplate(obj).then(res => {
-        console.log(res)
+        // console.log(res)
       }).catch(err => console.log(err))
     }
   }
