@@ -9,7 +9,6 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderExportVo;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import org.apache.poi.ss.usermodel.Workbook;

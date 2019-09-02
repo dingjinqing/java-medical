@@ -40,7 +40,6 @@ import static org.jooq.impl.DSL.sum;
 /**
  * @author liufei
  * @date 2019/8/14
- * @description
  */
 @Slf4j
 @Service
@@ -202,7 +201,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
         List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
-        Integer integer = 0;
+        int integer = 0;
         for (String s : redemptionGoods) {
             Integer[] array = stringArray2Int(s.split(","));
             redemptionresult[integer++] = db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
@@ -256,25 +255,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         PageResult<RedemptionOrderVo> vo = this.getPageResult(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
 
         log.debug("进行商品展示信息的组合");
-        for (RedemptionOrderVo redemption : vo.getDataList()) {
-            String[] concatIds = redemption.getConcatId().split(GROUPCONCAT_SEPARATOR);
-            String[] concatNames = redemption.getConcatName().split(GROUPCONCAT_SEPARATOR);
-            String[] concatNumbers = redemption.getConcatNumber().split(GROUPCONCAT_SEPARATOR);
-            String[] activityRules = redemption.getActivityRules().split(GROUPCONCAT_SEPARATOR);
-            String[] concatImgs = redemption.getConcatImg().split(GROUPCONCAT_SEPARATOR);
-            List<RedemptionGoodsInfo> mainGoods = new ArrayList<>();
-            List<RedemptionGoodsInfo> redempGoods = new ArrayList<>();
-            for (int i = 0; i < concatIds.length; i++) {
-                log.debug("activityRule字段不为默认值0，说明该商品在本次订单中属于加购商品（非主商品）");
-                if (Integer.valueOf(activityRules[i]) > 0) {
-                    redempGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]), concatNames[i], concatImgs[i], Integer.valueOf(concatNumbers[i])));
-                } else {
-                    mainGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]), concatNames[i], concatImgs[i], Integer.valueOf(concatNumbers[i])));
-                }
-            }
-            redemption.setMainGoods(mainGoods);
-            redemption.setRedemptionGoods(redempGoods);
-        }
+        preExportList(vo.getDataList());
         return vo;
     }
 
@@ -287,7 +268,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return the select condition step
      */
     private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(RedemptionOrderParam param) {
-        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.ORDER_SN, groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), oi.CREATE_TIME, oi.CONSIGNEE, oi.MOBILE, oi.ORDER_STATUS_NAME).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte)7));
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.ORDER_SN, groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), oi.CREATE_TIME, oi.CONSIGNEE, oi.MOBILE, oi.ORDER_STATUS_NAME).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
             conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -323,9 +304,9 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return Workbook
      */
     public Workbook exportOrderList(RedemptionOrderParam param) {
-        List<RedemptionOrderExportVo> list = this.getMultiPage(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionOrderExportVo.class);
+        List<RedemptionOrderVo> list = this.getMultiPage(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionOrderVo.class);
         preExportList(list);
-        return this.export(list, RedemptionOrderExportVo.class);
+        return this.export(list, RedemptionOrderVo.class);
     }
 
     /**
@@ -334,8 +315,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      *
      * @param list the list
      */
-    private void preExportList(List<RedemptionOrderExportVo> list) {
-        for (RedemptionOrderExportVo redemption : list) {
+    private void preExportList(List<RedemptionOrderVo> list) {
+        for (RedemptionOrderVo redemption : list) {
             String[] concatIds = redemption.getConcatId().split(GROUPCONCAT_SEPARATOR);
             String[] concatNames = redemption.getConcatName().split(GROUPCONCAT_SEPARATOR);
             String[] concatNumbers = redemption.getConcatNumber().split(GROUPCONCAT_SEPARATOR);
@@ -351,13 +332,14 @@ public class IncreasePurchaseService extends ShopBaseService {
                     mainGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]), concatNames[i], concatImgs[i], Integer.valueOf(concatNumbers[i])));
                 }
             }
+            redemption.setMainGoods(mainGoods);
+            redemption.setRedemptionGoods(redempGoods);
             try {
                 redemption.setMainGoodsString(MAPPER.writeValueAsString(mainGoods));
                 redemption.setRedemptionGoodsString(MAPPER.writeValueAsString(redempGoods));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            redemption.setReceiverInfo(String.format("%s(%s)", redemption.getConsignee(), redemption.getMobile()));
         }
     }
 
@@ -368,28 +350,76 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return 分页数据
      */
     public PageResult<RedemptionDetailVo> getRedemptionDetail(RedemptionDetailParam param) {
-        SelectOnConditionStep<Record8<Integer, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.USER_ID, u.USERNAME, u.MOBILE, oi.ORDER_SN, oi.CREATE_TIME, groupConcat(og.GOODS_PRICE, GROUPCONCAT_SEPARATOR).as("concatPrices"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumbers"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules")).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID));
-        PageResult<RedemptionDetailVo> vo = this.getPageResult(conditionStep.groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionDetailVo.class);
+        if (param.getRedemptionNum() != null && param.getRedemptionNum() != 0) {
+            return getRedemptionDetailSpec(param);
+        }
+        PageResult<RedemptionDetailVo> vo = this.getPageResult(buildDetailSelectStep(param), param.getCurrentPage(), param.getPageRows(), RedemptionDetailVo.class);
+        preExportDetail(vo.getDataList());
+        return vo;
+    }
+
+    /**
+     * 查看换购明细
+     * 含有换购数量筛选条件时采用此方法
+     *
+     * @param param 加价购活动id和筛选条件
+     * @return 分页数据
+     */
+    private PageResult<RedemptionDetailVo> getRedemptionDetailSpec(RedemptionDetailParam param) {
+        //由于筛选条件中可能含有换购数量，所以只能现找出换购信息，然后在挨个查询主商品信息
+        SelectSeekStep1<Record7<Integer, String, String, String, Timestamp, BigDecimal, BigDecimal>, Timestamp> conditionStep = db()
+            .select(oi.USER_ID, u.USERNAME, u.MOBILE, oi.ORDER_SN, oi.CREATE_TIME
+                , sum(og.GOODS_PRICE).as("redemptionTotalMoney")
+                , sum(og.GOODS_NUMBER).as("redemptionNum"))
+            .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
+            .where(og.ACTIVITY_RULE.greaterThan(0))
+            .and(buildRedemptionDetailOption(param))
+            .groupBy(og.ORDER_SN).having(sum(og.GOODS_NUMBER).greaterOrEqual(BigDecimal.valueOf(param.getRedemptionNum())))
+            .orderBy(oi.CREATE_TIME);
+
+        //获取分页数据
+        PageResult<RedemptionDetailVo> vo = this.getPageResult(conditionStep, param.getCurrentPage(), param.getPageRows(), RedemptionDetailVo.class);
+        //循环查询主商品信息
         for (RedemptionDetailVo redemption : vo.getDataList()) {
-            String[] concatPrices = redemption.getConcatPrices().split(GROUPCONCAT_SEPARATOR);
-            String[] concatNumbers = redemption.getConcatNumbers().split(GROUPCONCAT_SEPARATOR);
-            String[] activityRules = redemption.getActivityRules().split(GROUPCONCAT_SEPARATOR);
-            BigDecimal mainMoney = new BigDecimal(0);
-            BigDecimal redempMoney = new BigDecimal(0);
-            Integer redempNum = 0;
-            for (int i = 0; i < activityRules.length; i++) {
-                if (Integer.valueOf(activityRules[i]) > 0) {
-                    redempMoney = redempMoney.add(new BigDecimal(concatPrices[i]));
-                    redempNum += Integer.valueOf(concatNumbers[i]);
-                } else {
-                    mainMoney = mainMoney.add(new BigDecimal(concatPrices[i]));
-                }
-            }
-            redemption.setMainGoodsTotalMoney(mainMoney);
-            redemption.setRedemptionNum(redempNum);
-            redemption.setRedemptionTotalMoney(redempMoney);
+            String orderSn = redemption.getOrderSn();
+            //当ACTIVITY_RULE字段值为0时，表明该订单商品为加价购活动中的主商品，统计主商品总金额
+            BigDecimal mainGoodsTotalMoney = db().select(sum(og.GOODS_PRICE))
+                .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
+                .where(og.ACTIVITY_RULE.eq(0))
+                .and(og.ORDER_SN.eq(orderSn))
+                .and(buildRedemptionDetailOption(param))
+                .fetchOne().value1();
+            redemption.setMainGoodsTotalMoney(mainGoodsTotalMoney);
         }
         return vo;
+    }
+
+    /**
+     * 构建换购明细查询条件
+     */
+    private Condition buildRedemptionDetailOption(RedemptionDetailParam param) {
+        Condition baseCondition = og.ACTIVITY_ID.notEqual(0);
+        if (StringUtils.isNotEmpty(param.getNickName())) {
+            baseCondition = baseCondition.and(u.USERNAME.like(this.likeValue(param.getNickName())));
+        }
+        if (StringUtils.isNotEmpty(param.getPhoneNumber())) {
+            baseCondition = baseCondition.and(u.MOBILE.like(this.likeValue(param.getPhoneNumber())));
+        }
+        return baseCondition;
+    }
+
+    /**
+     * 构建分页查询ConditionStep
+     */
+    private SelectSeekStep1<Record8<Integer, String, String, String, Timestamp, String, String, String>, Timestamp> buildDetailSelectStep(RedemptionDetailParam param) {
+        return db()
+            .select(oi.USER_ID, u.USERNAME, u.MOBILE, oi.ORDER_SN, oi.CREATE_TIME
+                , groupConcat(og.GOODS_PRICE, GROUPCONCAT_SEPARATOR).as("concatPrices")
+                , groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumbers")
+                , groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"))
+            .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
+            .where(buildRedemptionDetailOption(param))
+            .groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME);
     }
 
     /**
@@ -399,8 +429,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return Workbook
      */
     public Workbook exportOrderDetail(RedemptionDetailParam param) {
-        SelectOnConditionStep<Record8<Integer, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.USER_ID, u.USERNAME, u.MOBILE, oi.ORDER_SN, oi.CREATE_TIME, groupConcat(og.GOODS_PRICE, GROUPCONCAT_SEPARATOR).as("concatPrices"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumbers"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules")).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID));
-        List<RedemptionDetailVo> list = this.getMultiPage(conditionStep.groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionDetailVo.class);
+        List<RedemptionDetailVo> list = this.getMultiPage(buildDetailSelectStep(param), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionDetailVo.class);
         preExportDetail(list);
         return this.export(list, RedemptionDetailVo.class);
     }
