@@ -1,11 +1,14 @@
 package com.vpu.mp.service.shop.user.message;
 
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
+
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
@@ -19,6 +22,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -167,8 +171,16 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * @param userIdList
      * @return 相关信息
      */
-    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList) {
-        List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
+    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId) {
+    	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
+    	if(type==RabbitParamConstant.Type.MP_TEMPLE_TYPE) {
+    		MpOfficialAccountUserRecord accountUserListByRecid = accountUserService.getAccountUserListByRecid(userIdList.get(0));
+    		//通过shopId得到小程序信息
+    		MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
+    		WxUserInfo info=WxUserInfo.builder().mpAppId(accountUserListByRecid.getAppId()).mpOpenId(accountUserListByRecid.getOpenid()).maAppId(authShopByShopId.getAppId()).build();
+    		resultList.add(info);
+    		return resultList;
+    	}
         String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
         List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
         Map<Integer,UserRecord> userMap = userList.stream()
