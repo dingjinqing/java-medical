@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @Description: 会员卡用到的常量定义
  */
 public class CardConstant {
+	
+	/** -----------------member_card表常量--------------------------*/
 	/** 普通会员卡 */
 	public static final Byte NORMAL_TYPE = 0;
 	/** 限次会员卡 */
@@ -23,6 +25,7 @@ public class CardConstant {
 	public static final Byte PICK_UP_CODE = 2;
 	/** 按钮打开 */
 	public static final String BUTTON_ON = "on";
+	/** expire_type 过期类型 */
 	/** 固定日期 */
 	public static final Byte FIX_DATETIME = 0;
 	/** 自领取多少内有效 */
@@ -115,4 +118,13 @@ public class CardConstant {
 	
 	/** 国际化语言前缀 */
 	public static final String LANGUAGE_TYPE_MEMBER="member";
+	
+
+	
+	/** -----------------user_card表常量--------------------------*/
+	/** flag 0 正常使用，1已经删除*/
+	public static final Byte CARD_USING = 0;
+	public static final Byte CARD_DELETE = 1;
+	/** --------------------------------------------------------*/
+	
 }
