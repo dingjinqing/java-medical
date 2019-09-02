@@ -48,34 +48,38 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
                 param.setType(j_node.findValue(key).asInt());
             }else if( key.equals("maTemplateData") )  {
                 JsonNode maData = j_node.findValue(key);
-                String[][] data = new String[maData.findValue("data").size()][3];
-                MaTemplateConfig config = MaTemplateConfig.getConfig(maData.findPath("config").asText());
-                for (int i = 0,len = maData.findValue("data").size(); i < len; i++) {
-                    JsonNode i_node = maData.findValue("data").get(i);
-                    for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
-                        data[i][j] = i_node.get(j).asText();
-                    }
+                if(maData.size()>0) {
+                	String[][] data = new String[maData.findValue("data").size()][3];
+                	MaTemplateConfig config = MaTemplateConfig.getConfig(maData.findPath("config").asText());
+                	for (int i = 0,len = maData.findValue("data").size(); i < len; i++) {
+                		JsonNode i_node = maData.findValue("data").get(i);
+                		for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
+                			data[i][j] = i_node.get(j).asText();
+                		}
+                	}
+                	MaTemplateData ma = MaTemplateData.builder()
+                			.data(data)
+                			.config(config)
+                			.build();
+                	param.setMaTemplateData(ma);                	
                 }
-                MaTemplateData ma = MaTemplateData.builder()
-                    .data(data)
-                    .config(config)
-                    .build();
-                param.setMaTemplateData(ma);
             }else if( key.equals("mpTemplateData") )  {
                 JsonNode mpData = j_node.findValue(key);
-                String[][] data = new String[mpData.findValue("data").size()][3];
-                MpTemplateConfig config = MpTemplateConfig.getConfig(mpData.findPath("config").asText());
-                for (int i = 0,len = mpData.findValue("data").size(); i < len; i++) {
-                    JsonNode i_node = mpData.findValue("data").get(i);
-                    for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
-                        data[i][j] = i_node.get(j).asText();
-                    }
+                if(mpData.size()>0) {
+                	String[][] data = new String[mpData.findValue("data").size()][3];
+                	MpTemplateConfig config = MpTemplateConfig.getConfig(mpData.findPath("config").asText());
+                	for (int i = 0,len = mpData.findValue("data").size(); i < len; i++) {
+                		JsonNode i_node = mpData.findValue("data").get(i);
+                		for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
+                			data[i][j] = i_node.get(j).asText();
+                		}
+                	}
+                	MpTemplateData mp = MpTemplateData.builder()
+                			.data(data)
+                			.config(config)
+                			.build();
+                	param.setMpTemplateData(mp);                	
                 }
-                MpTemplateData mp = MpTemplateData.builder()
-                    .data(data)
-                    .config(config)
-                    .build();
-                param.setMpTemplateData(mp);
             }else if( key.equals("emphasisKeywordSn") ){
                 param.setEmphasisKeyword(j_node.findValue(key).asText());
             }
