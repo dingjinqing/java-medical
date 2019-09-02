@@ -13,5 +13,10 @@ public class RabbitParamConstant {
          * 模版消息通用类型
          */
         public static final Integer GENERAL_TYPE = 1001;
+        
+        /**
+         *微信公众号模板消息类型
+         */
+        public static final Integer MP_TEMPLE_TYPE=1002;
     }
 }
