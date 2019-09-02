@@ -53,7 +53,6 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
-import com.vpu.mp.service.pojo.shop.market.message.MpTemplateMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -94,7 +93,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -107,7 +106,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	@Autowired
 	protected SystemImageService image;
-	
+
 	@Autowired
 	protected  MpOfficialAccountMessageService accountMessageService;
 
@@ -126,7 +125,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 添加小程序信息
-	 * 
+	 *
 	 * @param appId
 	 * @param shopId
 	 * @return
@@ -208,7 +207,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * appId是否授权成功
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 */
@@ -219,7 +218,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 店铺是否授权成功
-	 * 
+	 *
 	 * @param shopId
 	 * @return
 	 */
@@ -230,7 +229,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 获取小程序服务
-	 * 
+	 *
 	 * @param shopId
 	 * @return
 	 */
@@ -242,7 +241,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 获取小程序服务
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 */
@@ -254,7 +253,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 获取小程序服务
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 */
@@ -267,7 +266,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 通过appId得到小程序信息
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 */
@@ -276,24 +275,24 @@ public class MpAuthShopService extends MainBaseService {
 		return fetchAny;
 	}
 
-	
+
 	/**
 	 * 通过appId得到小程序信息，返回的图片带url
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 */
 	public MpAuthShopRecord getAuthShopByAppIdAddURL(String appId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.APP_ID.eq(appId));
 		if(fetchAny!=null) {
-			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
-			fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));			
+			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl()));
+			fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));
 		}
 		return fetchAny;
 	}
 	/**
 	 * 通过shopId得到小程序信息
-	 * 
+	 *
 	 * @param shopId
 	 * @return
 	 */
@@ -301,26 +300,26 @@ public class MpAuthShopService extends MainBaseService {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq((shopId)));
 		return fetchAny;
 	}
-	
-	
+
+
 	/**
 	 * 通过shopId得到小程序信息
-	 * 
+	 *
 	 * @param shopId
 	 * @return
 	 */
 	public MpAuthShopRecord getAuthShopByShopIdAddURL(Integer shopId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq((shopId)));
 		if(fetchAny!=null) {
-			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
-			fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));			
+			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl()));
+			fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));
 		}
 		return fetchAny;
 	}
 
 	/**
 	 * 设置小程序支付配置
-	 * 
+	 *
 	 * @param appId
 	 * @param mchId       商户号
 	 * @param key         支付密钥
@@ -336,7 +335,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 更新微信支付配置
-	 * 
+	 *
 	 * @param wxpayConfigParam
 	 * @return
 	 */
@@ -351,7 +350,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 根据appid检测MpAuthShop表中数据存在性
-	 * 
+	 *
 	 * @param appId
 	 * @return true存在，false不存在
 	 */
@@ -362,7 +361,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 查询微信支付配置
-	 * 
+	 *
 	 * @return
 	 */
 	public WxpayConfigParam getWxpayConfig(WxpaySearchParam wxpaySearchParam) {
@@ -377,7 +376,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 设置小程序服务器域名和 业务域名
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 * @throws WxErrorException
@@ -415,7 +414,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		if (result.isSuccess()) {
 			mp.setIsModifyDomain((byte) 1);
-			mp.update();				
+			mp.update();
 		}else {
 			logger().debug("appId:"+appId+"修改域名modifyDomain失败"+result.getErrcode()+"  "+result.getErrmsg());
 		}
@@ -425,7 +424,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 上传代码
-	 * 
+	 *
 	 * @param appId
 	 * @param templateId
 	 * @param userVersion
@@ -450,7 +449,7 @@ public class MpAuthShopService extends MainBaseService {
 		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList());
 		//上传代码保存小程序跳转的提交的appid 版本号，appid ,状态
 		appletsJumpService.saveMpJumpAppIDList(extInfo.getNavigateToMiniProgramAppIdList(), templateId);
-		
+
 		JsonObject params = new JsonObject();
 		params.addProperty("template_id", templateId);
 		params.addProperty("user_version", version.getUserVersion());
@@ -477,7 +476,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 记录操作日志
-	 * 
+	 *
 	 * @param mp
 	 * @param operateType
 	 * @param result
@@ -488,10 +487,10 @@ public class MpAuthShopService extends MainBaseService {
 				: MpOperateLogService.OP_STATE_FAILED;
 		saas.shop.mpOperateLog.log(mp.getAppId(), mp.getBindTemplateId(), operateType, operateState, message);
 	}
-	
+
 	/**
 	 * 记录操作日志多语言
-	 * 
+	 *
 	 * @param mp
 	 * @param operateType
 	 * @param result
@@ -504,7 +503,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 绑定体验者
-	 * 
+	 *
 	 * @param appId
 	 * @param wechatId
 	 * @return
@@ -551,7 +550,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 解除绑定
-	 * 
+	 *
 	 * @param appId
 	 * @param wechatId
 	 * @return
@@ -578,7 +577,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 正确结果
-	 * 
+	 *
 	 * @return
 	 */
 	public WxOpenResult successResult(String message) {
@@ -590,7 +589,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 自定义错误消息
-	 * 
+	 *
 	 * @param message
 	 * @return
 	 */
@@ -603,7 +602,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 得到体验码
-	 * 
+	 *
 	 * @param appId
 	 * @throws WxErrorException
 	 * @throws IOException
@@ -632,7 +631,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 得到可选类目
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 * @throws WxErrorException
@@ -651,7 +650,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 得到小程序页面配置列表
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 * @throws WxErrorException
@@ -672,7 +671,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 提交审核
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 * @throws WxErrorException
@@ -732,7 +731,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 发布审核成功代码
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 * @throws WxErrorException
@@ -760,7 +759,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 上传代码并提交审核
-	 * 
+	 *
 	 * @param appId
 	 * @param templateId
 	 * @param userVersion
@@ -782,7 +781,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 批量上传代码并提交审核
-	 * 
+	 *
 	 * @param templateId
 	 * @param userVersion
 	 * @param userDesc
@@ -798,7 +797,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 更新小程序审核状态,只有审核中，才可以获取最后审核状态
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 * @throws WxErrorException
@@ -849,7 +848,7 @@ public class MpAuthShopService extends MainBaseService {
         return mpAuditStateVo;
     }
 
-	
+
 	public WxOpenMaQueryAuditResult getLatestAuditStatus(String appId) throws WxErrorException {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaQueryAuditResult latestAuditStatus = maService.getLatestAuditStatus();
@@ -886,7 +885,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 用接口绑定小程序或者公众号appId到开放平台账号
-	 * 
+	 *
 	 * @param isMa     是否是小程序
 	 * @param appId     小程序或者公众号appId
 	 * @param openAppId 开放平台账号，为空需要新创建
@@ -928,7 +927,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 查询主体名称相同的
-	 * 
+	 *
 	 * @param principalName
 	 * @return
 	 */
@@ -988,7 +987,7 @@ public class MpAuthShopService extends MainBaseService {
 		return 1;
 
 	}
-	
+
 	/**
 	 * 	获得插件
 	 * @param appId
@@ -1016,8 +1015,8 @@ public class MpAuthShopService extends MainBaseService {
     	}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * 更新部署日志
 	 */
@@ -1029,16 +1028,16 @@ public class MpAuthShopService extends MainBaseService {
 			saas().deployHistoryService.addRow(appId, tempId);
 		}
 		saas().deployHistoryService.update(appId, tempId, pageList);
-				
+
 	}
-	
+
 	public void updatePush(String appId) {
 		MpAuthShopRecord newRecord = MP_AUTH_SHOP.newRecord();
 		newRecord.setAppId(appId);
 		newRecord.setPublishState((byte) 1);
 		newRecord.setPublishTime(new Timestamp(System.currentTimeMillis()));
 		db().executeUpdate(newRecord);
-		
+
 	}
 
 	/**
@@ -1115,11 +1114,11 @@ public class MpAuthShopService extends MainBaseService {
 			break;
 		}
 		if(wxOpenResult.getErrcode().equals(String.valueOf(JsonResultCode.CODE_SUCCESS))) {
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_SETTING_SUB_MERCHANT_SUCCESS.code, new String[] {String.valueOf(param.getIsSubMerchant())});			
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_SETTING_SUB_MERCHANT_SUCCESS.code, new String[] {String.valueOf(param.getIsSubMerchant())});
 		}
 		return wxOpenResult;
 	}
-	
+
 	/**
 	 * 将抛错信息存入log表
 	 * @param act
@@ -1239,18 +1238,18 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		operateLogGlobal(mp, operateType, result, templateIds, datas);
 	}
-	
-	
+
+
 	public Integer updateRow(MpAuthShopRecord authShopByShopId) {
 		return db().executeUpdate(authShopByShopId);
 	}
 
-	
-	
-	
-	
+
+
+
+
 	/**
-	 * 微信回调执行的函数/wechat/notify/app/event/{appId}/callback 
+	 * 微信回调执行的函数/wechat/notify/app/event/{appId}/callback
 	 * @param inMessage
 	 * @param appId
 	 * @return
@@ -1269,11 +1268,11 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return wxMessage;
 	}
-	
+
 
 	// 小程序有审核结果通知
 	public void WebAppAudit(WxMpXmlMessage inMessage,String appId) {
-		processAuditEvent(inMessage, appId);		
+		processAuditEvent(inMessage, appId);
 	}
 
 	public void processAuditEvent(WxMpXmlMessage inMessage, String appId) {
@@ -1301,7 +1300,7 @@ public class MpAuthShopService extends MainBaseService {
 					} catch (WxErrorException e) {
 						e.printStackTrace();
 					}
-					
+
 				}else {
 					mpRecord.setAuditState((byte) 3);
 					mpRecord.setAuditFailReason(inMessage.getReason());
@@ -1310,9 +1309,9 @@ public class MpAuthShopService extends MainBaseService {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public WxMpXmlOutTextMessage OfficialAccountMessage(WxMpXmlMessage inMessage,String appId) {
 		WxMpXmlOutTextMessage wxMessage = processMessage(inMessage, appId);
 		return wxMessage;
@@ -1321,7 +1320,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * 处理公众号消息
 	 * @param inMessage
 	 * @param appId
-	 * @return 
+	 * @return
 	 */
 	public WxMpXmlOutTextMessage processMessage(WxMpXmlMessage inMessage,String appId) {
 		MpOfficeAccountListVo officeAccountByAppId = saas.shop.officeAccount.getOfficeAccountByAppId(appId);
@@ -1341,7 +1340,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return process;
 	}
-	
+
 	public WxMpXmlOutTextMessage processSubscribeEvent(WxMpXmlMessage inMessage,String appId,MpOfficeAccountListVo officeAccountByAppId) throws WxErrorException {
 		//subscribe（订阅）
 		WxMpXmlOutTextMessage message = WxMpXmlOutMessage.TEXT().build();
@@ -1366,7 +1365,7 @@ public class MpAuthShopService extends MainBaseService {
 				record.setSubscribeTime(new Timestamp(userInfo.getSubscribeTime() * 1000L));
 				record.setUnionid(userInfo.getUnionId());
 				saas.shop.officeAccount.addOrUpdateUser(appId, record, userInfo.getUnionId(), userInfo.getOpenId());
-				//得到公众号关联的小程序 
+				//得到公众号关联的小程序
 				Result<MpAuthShopRecord> officialAccountMps = getOfficialAccountMps(appId);
 				boolean parseAccountInfo = saas.shop.account.parseAccountInfo(appId, inMessage.getEventKey(), record.getOpenid());
 				logger().debug("'parseAccountInfo result "+parseAccountInfo);
@@ -1377,7 +1376,7 @@ public class MpAuthShopService extends MainBaseService {
 				    message.setFromUserName(inMessage.getToUser());
 				    message.setContent("欢迎关注，您可在这里及时接收新订单提醒");
 				    message.setCreateTime(System.currentTimeMillis() / 1000L);
-				    return message; 
+				    return message;
 				}else {
 					logger().debug("用户Openid"+userInfo.getOpenId()+"为你精心准备了关注礼品，快来点击查看吧!");
 					for(MpAuthShopRecord authShopRecord:officialAccountMps) {
@@ -1419,8 +1418,8 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return message;
 	}
-	
-	
+
+
 	/**
 	 * 组装List<WxMpTemplateData>的信息
 	 * @param record
@@ -1449,9 +1448,9 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return keywordValuesDatas;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 得到公众号关联的小程序
 	 * @param appId
@@ -1460,8 +1459,8 @@ public class MpAuthShopService extends MainBaseService {
 	public Result<MpAuthShopRecord> getOfficialAccountMps(String appId) {
 		return db().selectFrom(MP_AUTH_SHOP).where(MP_AUTH_SHOP.LINK_OFFICIAL_APP_ID.eq(appId)).fetch();
 	}
-	
-	
+
+
 	//消息都转发给客服
 	public WxMpXmlOutMessage MessageTrans(WxMpXmlMessage inMessage) {
 		WxMpXmlOutTextMessage build = WxMpXmlOutMessage.TEXT().build();
@@ -1472,5 +1471,5 @@ public class MpAuthShopService extends MainBaseService {
 		logger().debug("\n 发给客服的报文：\n{}",build.toXml().toString());
 		return build;
 	}
-	
+
 }
