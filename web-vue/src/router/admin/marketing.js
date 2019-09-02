@@ -534,7 +534,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/increasepurchase/purchaseList'
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/purchaseList'
       )
   },
   // 加价购活动 换购订单
@@ -548,7 +548,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/increasepurchase/redemptionOrder'
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/redemptionOrder'
       )
   },
   // 加价购活动 换购明细
@@ -562,7 +562,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/increasepurchase/redemptionDetail'
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/redemptionDetail'
       )
   }
 ]
