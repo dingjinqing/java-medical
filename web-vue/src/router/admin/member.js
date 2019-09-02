@@ -213,6 +213,28 @@ const routes = [
       meta: 'user_manger'
     },
     component: () => import('@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralManagement')
+  },
+  // 查看签到会员
+  {
+    path: '/admin/home/main/viewSigninMembers',
+    name: 'viewSigninMembers',
+    meta: {
+      crumbTitle: 'router.viewSigninMembers',
+      meta: 'user_manger',
+      category: 'user_list'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/user_manger/integralManagement/viewSigninMembers')
+  },
+  // 积分说明
+  {
+    path: '/admin/home/main/integralDescription',
+    name: 'integralDescription',
+    meta: {
+      crumbTitle: 'router.integralDescription',
+      meta: 'user_manger',
+      category: 'score'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralDescription')
   }
 ]
 

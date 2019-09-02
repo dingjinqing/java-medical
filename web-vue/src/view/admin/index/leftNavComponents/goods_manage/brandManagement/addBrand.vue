@@ -647,11 +647,12 @@ export default {
     },
     // 跳转到品牌分类
     handleTurnManClassPage () {
-      let obj = {
-        index: 1,
-        turnIndex: 1
-      }
-      this.$emit('turnComponents', obj)
+      this.$router.push({
+        name: 'brand',
+        params: {
+          toSecond: true
+        }
+      })
     },
     // 页码改变
     handleCurrentChange () {

@@ -41,7 +41,7 @@ export default {
     },
     toolbar: {
       type: [String, Array],
-      default: 'undo redo |  formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image media table | removeformat'
+      default: ' forecolor  |undo redo |  formatselect  | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image media table | removeformat'
     }
   },
   data () {

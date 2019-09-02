@@ -159,7 +159,7 @@ export default {
         case 3:
           this.$emit('change_components', '3')
           this.$router.push({
-            path: '/admin/home/shop_main',
+            path: '/admin/home/shopMain',
             query: {
               change_components: '3'
             }

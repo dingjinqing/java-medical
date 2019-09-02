@@ -445,6 +445,10 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$route)
+    if (this.$route.params.toSecond) {
+      this.activeName = 'second'
+    }
     // 初始化全部商品数据
     this.defaultAllBrandData()
     console.log(this.turnIndex)

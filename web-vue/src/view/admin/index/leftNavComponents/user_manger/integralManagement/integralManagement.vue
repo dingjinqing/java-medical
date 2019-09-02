@@ -14,11 +14,16 @@
         <el-tab-pane
           label="前端展示设置"
           name="second"
-        >前端展示设置</el-tab-pane>
+        >
+          <FrontEndDisplay />
+        </el-tab-pane>
       </el-tabs>
     </div>
     <!--积分使用规则模块-->
-    <div class="integralManagementMain integralUsage">
+    <div
+      class="integralManagementMain integralUsage"
+      v-if="activeName==='first'"
+    >
       <div class="title">
         <span></span>
         积分使用规则
@@ -144,7 +149,10 @@
         </el-switch>
         <div class="signHiddenDiv">
           <span style="display:inline-block;margin:0 20px">{{signInValue?'已开启':'已关闭'}}</span>
-          <span style="color:#999;margin-right:10px;display:inline-block">开关开启，则系统开启签到14天</span><i style="cursor:pointer;color:#5a8bff">查看签到会员</i>
+          <span style="color:#999;margin-right:10px;display:inline-block">开关开启，则系统开启签到14天</span><i
+            @click="handleToCheckMember()"
+            style="cursor:pointer;color:#5a8bff"
+          >查看签到会员</i>
           <div
             v-if="true"
             class="hiddenLoginDiv"
@@ -156,7 +164,7 @@
             >
               <span>连续签到{{item}}天，送</span>
               <el-input
-                v-model="signInput.index"
+                v-model="signInput[index].input"
                 size="small"
               ></el-input>
               <span>积分</span>
@@ -167,6 +175,13 @@
               >
                 <img :src="$imageHost+'/image/admin/sign_jia.png'">
               </span>
+              <span
+                @click="handleToDel(index)"
+                v-if="index>0&&index===(signInput.length-1)"
+                style="cursor:pointer"
+              >
+                <img :src="$imageHost+'/image/admin/sign_del.png'">
+              </span>
             </div>
 
           </div>
@@ -174,22 +189,19 @@
       </div>
     </div>
     <!--保存-->
-    <div class="footer">
-      <div
-        class="save"
-        @click="handleToSave()"
-      >{{$t('shopStyle.saveText')}}</div>
-    </div>
+    <saveComponent />
   </div>
 </template>
 <script>
 export default {
   components: {
-    IntegralRule: () => import('./integralRule')
+    IntegralRule: () => import('./integralRule'),
+    FrontEndDisplay: () => import('./frontEndDisplay'),
+    saveComponent: () => import('./saveComponent')
   },
   data () {
     return {
-      activeName: 'first',
+      activeName: 'second',
       limitRadio: '1',
       limitIntegralNum: '',
       shopValue: true,
@@ -198,7 +210,11 @@ export default {
       signInValue: true,
       loginIntegralNum: '',
       signData: 1,
-      signInput: []
+      signInput: [
+        {
+          input: ''
+        }
+      ]
     }
   },
   methods: {
@@ -207,11 +223,27 @@ export default {
     },
     // 签到送积分点击添加icon
     handleToAdd () {
+      let obj = {
+        input: ''
+      }
+      this.signInput.push(obj)
       this.signData++
+    },
+    // 签到送积分点击删除icon
+    handleToDel (index) {
+      this.signData--
+      this.signInput.splice(index, 1)
+      console.log(this.signInput, index)
     },
     // 保存
     handleToSave () {
       console.log(this.signInput)
+    },
+    //  查看签到会员点击
+    handleToCheckMember () {
+      this.$router.push({
+        name: 'viewSigninMembers'
+      })
     }
   }
 }
@@ -315,28 +347,6 @@ export default {
           }
         }
       }
-    }
-  }
-  .footer {
-    background: #f8f8fa;
-    border-top: 1px solid #f2f2f2;
-    text-align: center;
-    position: fixed;
-    z-index: 2;
-    bottom: 0;
-    padding: 10px 0;
-    left: 0;
-    right: 0;
-    margin-right: 1%;
-    .save {
-      width: 70px;
-      height: 30px;
-      line-height: 30px;
-      border: none;
-      background: #5a8bff;
-      color: #fff;
-      margin: auto;
-      cursor: pointer;
     }
   }
 }

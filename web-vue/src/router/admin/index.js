@@ -460,7 +460,8 @@ const routes = [
             name: 'addBrand',
             meta: {
               crumbTitle: 'router.brandAddManagement',
-              meta: 'goods_manage'
+              meta: 'goods_manage',
+              category: 'brand'
             },
             component: () =>
               import(

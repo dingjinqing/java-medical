@@ -58,6 +58,10 @@ export const cn = {
   labelManagement: ['会员管理', '标签管理'],
   // 会员管理 积分管理
   integralManagement: ['会员管理', '积分管理'],
+  // 积分管理 查看签到会员
+  viewSigninMembers: ['积分管理', '查看签到会员'],
+  // 积分管理 积分说明
+  integralDescription: ['积分管理', '积分说明'],
   // 基础配置 小程序授权
   program_auth: ['基础配置', '小程序授权'],
   // 基础配置 小程序授权成功页面
