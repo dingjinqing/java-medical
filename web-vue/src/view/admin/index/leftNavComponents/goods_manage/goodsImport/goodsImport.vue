@@ -1,33 +1,38 @@
 <template>
-  <div>
-    <areaLinkage @areaData="handleAreaData" />
+  <div class="">
+    <el-card>
+      <headerTabs :labels="labels" />
+    </el-card>
+
   </div>
 </template>
 <script>
-import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
+import headerTabs from '@/components/admin/headerTabs/headerTabs'
 export default {
-  components: { areaLinkage },
-
+  name: '',
+  components: {
+    headerTabs
+  },
   data () {
     return {
-      province: ``,
-      district: ``,
-      city: ``
-    }
-  },
-
-  methods: {
-    data2 () {
-      const res = this.data1()
-      console.log(res)
-    },
-    handleAreaData (val) {
-      this.province = val['province']
-    },
-    data1 () {
-      return {
-
-      }
+      labels: [
+        {
+          label: `运费模板列表`,
+          name: `deliverTemplateList`
+        },
+        {
+          label: `重量运费模板列表`,
+          name: `deliverTemplateWeightList`
+        },
+        {
+          label: `添加运费模板`,
+          name: `deliverTemplateAdd`
+        },
+        {
+          label: `添加重量运费模板`,
+          name: `deliverTemplateWeightAdd`
+        }
+      ]
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <!-- 运费模板列表 -->
   <div class="deliverTemplateList">
-    <el-button @click="handleTest">测试按钮</el-button>
+
     <section class="wrap">
       <section>
         <el-form
@@ -137,12 +137,17 @@
         </section>
       </section>
     </section>
+    <section class="paginationContainer">
+
+    </section>
   </div>
 </template>
 <script>
 import { fetchDeliverTemplateList, deliverConfig } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import pagination from '@/components/admin/pagination/pagination'
 export default {
   name: 'deliverTemplateList',
+  components: { pagination },
   data () {
     // 自定义校验规则
     let checkPrice = (rule, value, callback) => {
@@ -199,10 +204,7 @@ export default {
     this.initPriceData()
   },
   methods: {
-    // 测试按钮
-    handleTest () {
-      console.log(this.lists)
-    },
+
     // 选中运费模板的时候
     handleChange (val) {
       switch (val) {
