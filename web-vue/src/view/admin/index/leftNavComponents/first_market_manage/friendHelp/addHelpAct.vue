@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+
 <template>
   <wrapper>
     <div class="content">
@@ -55,10 +55,14 @@
             label="奖励类型："
             prop=""
           >
+            <!--  -->
+            <section>
+              <el-button @click="handleTest">test</el-button>
+            </section>
+            <!--  -->
             <el-radio
               v-model="form.rewardType"
               label="0"
-              @click.native="bindRewardType"
             >
               赠送商品
             </el-radio>
@@ -76,7 +80,7 @@
                 size="small"
                 type="primary"
                 @click="showChoosingGoods"
-              >+选择商品</el-button>
+              >+ 选择商品</el-button>
             </el-col>
             <div></div>
           </el-form-item>
@@ -84,13 +88,12 @@
             label="奖励设置："
             prop=""
           >
-
             <el-table
               class="version-manage-table"
               header-row-class-name="tableClass"
               :data="form.goodsInfo"
               border
-              style="width: 38%"
+              style="width: 100%"
             >
               <el-table-column
                 width="100%"
@@ -98,6 +101,7 @@
                 label="商品信息"
                 align="center"
               >
+                <el-input></el-input>
               </el-table-column>
 
               <el-table-column
@@ -126,15 +130,16 @@
               </el-table-column>
 
               <el-table-column
-                v-if="form.goodsInfo.rewardType == 1"
+                v-if="this.show"
                 width="100%"
-                prop=""
                 label="活动价"
                 align="center"
               >
               </el-table-column>
 
             </el-table>
+
+            <!-- <div v-if="form.rewardType == '2'">hello world</div> -->
 
           </el-form-item>
           <el-form-item
@@ -378,6 +383,8 @@ export default {
   },
   data () {
     return {
+      show: false,
+      radio: 'one',
       // 表单
       form: {
         actName: '',
@@ -438,7 +445,6 @@ export default {
           rewardType: ''
         }
       },
-
       // 表单约束
       formRules: {
         actName: [
@@ -471,6 +477,9 @@ export default {
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
+    // handleTest () {
+    //   this.show = !this.show
+    // },
     addAct () {
       let addParam = {
         'actName': this.form.actName,
@@ -515,10 +524,12 @@ export default {
       })
     },
     bindRewardType () {
-      console.log(1111)
-      this.form.goodsInfo.rewardType = this.form.rewardType
-      console.log('this.form.goodsInfo.rewardType:', this.form.goodsInfo.rewardType)
-      console.log('this.form.rewardType:', this.form.rewardType)
+      // console.log(1111)
+      // this.form.goodsInfo.rewardType = this.form.rewardType
+      // console.log('this.form.goodsInfo.rewardType:', this.form.goodsInfo.rewardType)
+      // console.log('this.form.rewardType:', this.form.rewardType)
+      console.log(11111111)
+      this.show = true
     },
     // 选择商品弹窗
     showChoosingGoods () {

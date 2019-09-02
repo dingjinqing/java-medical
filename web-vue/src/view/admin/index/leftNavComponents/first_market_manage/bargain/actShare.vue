@@ -1,3 +1,10 @@
+<!--
+* 活动分享模块
+*
+* @author 赵鑫
+-->
+
+<!--活动分享模块-->
 <template>
   <div>
     <el-form-item
@@ -6,11 +13,9 @@
     >
       <section>
         <el-radio
-          v-model="shareConfig.share_action"
+          v-model="actShare"
           label="1"
-        >
-          <span>默认样式</span>
-        </el-radio>
+        >默认样式</el-radio>
         <el-popover
           placement="right-start"
           width="220"
@@ -38,27 +43,30 @@
 
       <section>
         <el-radio
-          v-model="shareConfig.share_action"
+          v-model="actShare"
           label="2"
         >
           自定义样式
-          <div style="margin: 15px 0">
-            <span>文案：</span>
+          <div
+            style="margin: 15px 0"
+            v-if="actShare == '2'"
+          >
+            <span style="color:#606266">文案：</span>
             <el-input
               v-model="shareConfig.share_doc"
               size="small"
               style="width:200px"
             ></el-input>
           </div>
-          <div>
-            <span>分享图：</span>
+          <div v-if="actShare == '2'">
+            <span style="color:#606266">分享图：</span>
             <el-radio
-              v-model="shareConfig.share_img_action"
+              v-model="shareImg.share_img_action"
               label="1"
             >活动商品信息图</el-radio>
             <div style="margin: 10px 0 0 60px">
               <el-radio
-                v-model="shareConfig.share_img_action"
+                v-model="shareImg.share_img_action"
                 label="2"
               >自定义图片</el-radio>
             </div>
@@ -91,7 +99,10 @@ export default {
   props: ['shareConfig'],
   data () {
     return {
-      radio: 1,
+      actShare: '1',
+      shareImg: {
+        share_img_action: '1'
+      },
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,

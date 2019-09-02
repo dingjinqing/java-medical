@@ -14,7 +14,7 @@
       </li>
       <li
         class="oneImg"
-        @click="handleShowDialog"
+        @click="handleToCallDialog"
       >
         <img
           :src="src"
@@ -22,17 +22,16 @@
         >
       </li>
     </ul>
-    <AddCouponDialog
-      pageIndex='pictureSpace'
-      @handleSelectImg='handleSelectImg'
-    />
+    <AddCouponDialog />
   </div>
 </template>
 <script>
-import AddCouponDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog'
 
 export default {
-  components: { AddCouponDialog },
+  components: {
+    AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
+  },
+
   data () {
     return {
       src: `${this.$imageHost}/image/admin/add_img.png`,
@@ -40,21 +39,21 @@ export default {
     }
   },
   methods: {
-    handleShowDialog () {
-      let data = {
-        couponDialogFlag: true,
-        couponList: ['4']
-
+    // 选择优惠券弹窗
+    handleToCallDialog () {
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: this.coupon_info
       }
-      this.$http.$emit('V-AddCoupon', data)
+      this.$http.$emit('V-AddCoupon', obj)
     },
     handleSelectImg (res) {
       console.log(res)
 
-      if (res != null) {
-        this.imgLists.push(res)
-        this.$emit('imgListChange', this.imgLists.slice())
-      }
+      // if (res != null) {
+      //   this.imgLists.push(res)
+      //   this.$emit('imgListChange', this.imgLists.slice())
+      // }
     }
   }
 }

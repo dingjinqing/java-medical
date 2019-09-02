@@ -1,7 +1,14 @@
+<!--
+* 添加砍价活动页面
+*
+* @author:赵鑫
+-->
+
 <template>
   <div class="bargainAct">
     <div class="bargainContent">
       <div class="bargainActMain">
+        <!-- 公共部分 -->
         <el-form
           label-width="150px"
           labelPosition='right'
@@ -17,15 +24,7 @@
               <el-radio label="1">砍到指定金额计算</el-radio>
               <el-radio label="2">砍到任意金额计算</el-radio>
             </el-radio-group>
-
-            <!-- <el-radio-group
-              v-model="param.bargainType"
-              size="medium"
-            >
-              <el-radio label="砍到指定金额计算"></el-radio>
-              <el-radio label="砍到任意金额计算"></el-radio>
-            </el-radio-group> -->
-            <span style="margin-left: 10px;">保存后不可编辑</span>
+            <span style="margin-left: 15px;">保存后不可编辑</span>
           </el-form-item>
 
           <el-form-item
@@ -46,7 +45,7 @@
             <div style="display:flex">
               <el-date-picker
                 size="small"
-                v-model="value1"
+                v-model="startTime"
                 type="datetime"
                 placeholder="选择日期时间"
               >
@@ -54,7 +53,7 @@
               <span style="margin: 0 5px">至</span>
               <el-date-picker
                 size="small"
-                v-model="value1"
+                v-model="endTime"
                 type="datetime"
                 placeholder="选择日期时间"
               >
@@ -77,6 +76,7 @@
               若某商品同一时间段内同时参与了砍价和拼团活动，则优先进行砍价活动</div>
           </el-form-item>
 
+          <!-- 砍到指定金额计算部分内容区域 -->
           <div v-if="this.param.bargainType==1">
             <el-form-item
               label="帮砍设置："
@@ -89,14 +89,10 @@
               label="运费设置："
               prop=""
             >
-              <el-radio
-                v-model="param.freeFreight"
-                label="1"
-              >免运费</el-radio>
-              <el-radio
-                v-model="param.freeFreight"
-                label="2"
-              >使用原商品运费模板</el-radio>
+              <el-radio-group v-model="param.freeFreight">
+                <el-radio label="1">免运费</el-radio>
+                <el-radio label="2">使用原商品运费模板</el-radio>
+              </el-radio-group>
             </el-form-item>
 
             <el-form-item label="期望参与砍价人次：">
@@ -131,6 +127,7 @@
             </el-form-item>
           </div>
 
+          <!-- 砍到任意金额计算部分 -->
           <div v-if="this.param.bargainType==2">
             <el-form-item
               label="单次帮砍金额"
@@ -173,17 +170,14 @@
               label="运费设置："
               prop=""
             >
-              <el-radio
-                v-model="param.freeFreight"
-                label="1"
-              >免运费</el-radio>
-              <el-radio
-                v-model="param.freeFreight"
-                label="2"
-              >使用原商品运费模板</el-radio>
+              <el-radio-group v-model="param.freeFreight">
+                <el-radio label="1">免运费</el-radio>
+                <el-radio label="2">使用原商品运费模板</el-radio>
+              </el-radio-group>
             </el-form-item>
           </div>
 
+          <!-- 公共更多配置模块部分 -->
           <el-form-item
             label="好友砍价优惠券："
             prop=""
@@ -215,89 +209,8 @@
             </el-card>
           </el-form-item>
 
+          <!-- 引入活动分享模块 -->
           <actShare :shareConfig="shareConfig" />
-
-          <!-- <el-form-item
-            label="活动分享："
-            prop=""
-          >
-            <div>
-              <el-radio
-                v-model="param.actShare"
-                label="1"
-              >
-                <span>默认样式</span>
-                <el-popover
-                  placement="right-start"
-                  width="220"
-                  trigger="hover"
-                >
-                  <el-image :src="srcList.src1"></el-image>
-                  <el-button
-                    slot="reference"
-                    type="text"
-                    style="margin: 0 20px"
-                  >查看示例</el-button>
-                </el-popover>
-                <el-popover
-                  placement="right-start"
-                  width="220"
-                  trigger="hover"
-                >
-                  <el-image :src="srcList.src2"></el-image>
-                  <el-button
-                    slot="reference"
-                    type="text"
-                  >下载海报</el-button>
-                </el-popover>
-              </el-radio>
-            </div>
-            <div>
-              <el-radio
-                v-model="param.actShare"
-                label="2"
-              >
-                自定义样式
-                <div style="margin: 15px 0">
-                  <span>文案：</span>
-                  <el-input
-                    size="small"
-                    style="width:200px"
-                  ></el-input>
-                </div>
-                <div>
-                  <span>分享图：</span>
-                  <el-radio
-                    v-model="param.imgShare"
-                    label="1"
-                  >活动商品信息图</el-radio>
-                  <div style="margin: 10px 0 0 60px">
-                    <el-radio
-                      v-model="param.imgShare"
-                      label="2"
-                    >自定义图片</el-radio>
-                  </div>
-                  <div style="margin: 10px 0 0 60px; display:flex">
-                    <div
-                      class="selectPic"
-                      @click="handleShowDialog"
-                    >
-                      <img
-                        class="recPic"
-                        :src="srcList.src3"
-                        alt=""
-                      >
-                    </div>
-                    <span style="margin: 30px 0 0 30px">建议尺寸：800*800像素</span>
-                  </div>
-                </div>
-              </el-radio>
-              <ImageDalog
-                pageIndex='pictureSpace'
-                @handleSelectImg='handleSelectImg'
-              />
-            </div>
-          </el-form-item> -->
 
         </el-form>
 
@@ -325,7 +238,8 @@ export default {
   },
   data () {
     return {
-      value1: '',
+      startTime: '',
+      endTime: '',
       checked: '',
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
@@ -334,9 +248,8 @@ export default {
         imageUrl: ``
       },
       param: {
-        bargainType: '活动类型',
+        bargainType: '1',
         freeFreight: '运费设置',
-        actShare: '活动分享',
         bargainMoney: '单次帮砍金额'
       },
       imgLists: [],
@@ -349,15 +262,6 @@ export default {
     }
   },
   methods: {
-    handleShowDialog () {
-      this.$http.$emit('dtVisible')
-    },
-    handleSelectImg (res) {
-      if (res != null) {
-        console.log(res)
-        this.srcList.src3 = res
-      }
-    },
     submit () {
       console.log(this.shareConfig)
       // this.coupon_info.forEach(element => {

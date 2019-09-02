@@ -11,15 +11,24 @@
         :activityName="activityName"
         :standard="false"
       />
-      <el-row :gutter="20">
-        <el-col :span="4">
-          <el-input
-            v-model="param.name"
-            placeholder="活动名称"
-          ></el-input>
-        </el-col>
+      <el-row
+        :gutter="20"
+        type="flex"
+      >
+        <el-col
+          :span="7"
+          style="height:30px;line-height: 30px;font-size: 14px;"
+        >活动名称</el-col>
+        <el-input
+          v-model="param.name"
+          placeholder="请输入活动名称"
+          size="small"
+          suffix-icon="el-icon-search"
+          :span="3"
+        ></el-input>
         <el-col :span="3">
           <el-button
+            size="small"
             type="primary"
             @click="loadData"
           >查询</el-button>
@@ -29,6 +38,7 @@
           :offset="15"
         >
           <el-button
+            size="small"
             type="primary"
             style="float:right;"
             @click="gotoAddGift"
@@ -66,7 +76,8 @@
             <template slot-scope="scope">
               <inputEdit
                 v-model="scope.row.level"
-                @update="updateGiftLevel(scope.row.id, scope.row.level)"/>
+                @update="updateGiftLevel(scope.row.id, scope.row.level)"
+              />
             </template>
           </el-table-column>
           <el-table-column
@@ -88,30 +99,94 @@
           >
             <template slot-scope="scope">
               <el-row>
-                <el-button
+                <!-- <el-button
                   size="mini"
                   @click="disableGift(scope.row.id)"
                   v-show="couldStop(scope.row)"
-                >停用</el-button>
-                <el-button
+                >停用</el-button> -->
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="停用"
+                  placement="top"
+                >
+                  <i
+                    @click="disableGift(scope.row.id)"
+                    v-show="couldStop(scope.row)"
+                    class="el-icon-remove-outline"
+                    style="color:#409EFF;fontSize:16px"
+                  ></i>
+                </el-tooltip>
+                <!-- <el-button
                   size="mini"
                   @click="enableGift(scope.row.id)"
                   v-show="couldStart(scope.row)"
-                >启用</el-button>
-                <el-button
+                >启用</el-button> -->
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="启用"
+                  placement="top"
+                >
+                  <i
+                    @click="enableGift(scope.row.id)"
+                    v-show="couldStart(scope.row)"
+                    class="el-icon-circle-check"
+                    style="color:#409EFF;fontSize:16px"
+                  ></i>
+                </el-tooltip>
+                <!-- <el-button
                   size="mini"
                   @click="editGift(scope.row.id)"
                   v-show="couldEdit(scope.row)"
-                >编辑</el-button>
-                <el-button
+                >编辑</el-button> -->
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="编辑"
+                  placement="top"
+                >
+                  <i
+                    @click="editGift(scope.row.id)"
+                    v-show="couldEdit(scope.row)"
+                    class="el-icon-edit-outline"
+                    style="color:#409EFF;fontSize:16px"
+                  ></i>
+                </el-tooltip>
+                <!-- <el-button
                   size="mini"
                   @click="gotoGiftDetail(scope.row.id)"
-                >赠送明细</el-button>
-                <el-button
+                >赠送明细</el-button> -->
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="赠送明细"
+                  placement="top"
+                >
+                  <i
+                    @click="gotoGiftDetail(scope.row.id)"
+                    class="el-icon-present"
+                    style="color:#409EFF;fontSize:16px"
+                  ></i>
+                </el-tooltip>
+                <!-- <el-button
                   size="mini"
                   @click="deleteGift(scope.row.id)"
                   v-show="couldDelete(scope.row)"
-                >删除</el-button>
+                >删除</el-button> -->
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="删除"
+                  placement="top"
+                >
+                  <i
+                    @click="deleteGift(scope.row.id)"
+                    v-show="couldDelete(scope.row)"
+                    class="el-icon-delete"
+                    style="color:#409EFF;fontSize:16px"
+                  ></i>
+                </el-tooltip>
               </el-row>
             </template>
           </el-table-column>
@@ -255,4 +330,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.item {
+  font-size: 22px;
+  color: #66b1ff;
+  cursor: pointer;
+}
 </style>
