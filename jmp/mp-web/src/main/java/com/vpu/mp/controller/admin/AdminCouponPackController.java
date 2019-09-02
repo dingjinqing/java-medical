@@ -102,7 +102,7 @@ public class AdminCouponPackController extends AdminBaseController {
     @PostMapping(value = "/api/admin/market/couponpack/order/export")
     public void exportCouponPackOrderList(@RequestBody @Valid CouponPackOrderListQueryParam param, HttpServletResponse response) throws IOException {
         Workbook workbook =shop().couponPack.exportCouponPackOrderList(param,getLang());
-        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        response.setContentType("application/octet-stream;charset=UTF-8");
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.COUPON_PACK_ORDER_FILENAME,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
         workbook.write(response.getOutputStream());
