@@ -10,7 +10,7 @@ public class DistributorListVo {
 	private Integer userId;
 	private String username;
 	private String mobile;
-	private Timestamp createDate;
+	private Timestamp createTime;
 	private String realName;
 	private String groupName;
 	private String levelName;

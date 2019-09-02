@@ -41,6 +41,7 @@ create table `b2c_user` (
   `get_collect_gift`    tinyint(1)   			not null default 0 		comment '是否获得收藏好礼：0未获得，1已获得',
   `invite_group` 		int(6) 					not null default 0   	comment '分销员分组',
   `unit_price`  		decimal(10, 2)       	not null default '0.00' 	comment '客单价',
+  `invite_time`         timestamp            null comment '邀请时间',
   primary key (`user_id`),
   unique key `mobile` (`mobile`, `shop_id`),
   key (`user_code`),
@@ -1904,6 +1905,7 @@ create table `b2c_message_template` (
 -- -- 每个分销员统计信息
 -- drop table if exists `b2c_user_total_fanli`;
 create table `b2c_user_total_fanli` (
+  `id`                    int(11) not null auto_increment,
   `user_id`         int not null comment '会员id',
   `mobile`          varchar(16)    default '' comment '会员手机号',
   `sublayer_number` int(11)        default '0' comment '子层分销员数量',
@@ -1912,12 +1914,14 @@ create table `b2c_user_total_fanli` (
   `blocked`         decimal(10, 2) default '0.00' comment '冻结佣金余额',
   `create_time`		timestamp      default current_timestamp,
   `update_time` 	timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`user_id`)
+  primary key (`id`),
+   key (`user_id`)
 );
 
 -- -- 每个子分销员数据汇总
 -- drop table if exists `b2c_user_fanli_statistics`;
 create table `b2c_user_fanli_statistics` (
+  `id`                    int(11) not null auto_increment,
   `user_id`               int(11) not null,
   `fanli_user_id`         int(11) comment '邀请人id',
   `order_number`          int(11) comment '累积订单数量',
@@ -1926,7 +1930,8 @@ create table `b2c_user_fanli_statistics` (
   `rebate_level`  tinyint(2)     default 1 comment '返利等级 0自购；1直接；2间接',
   `create_time`   timestamp      default current_timestamp,
   `update_time`   timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`user_id`)
+  primary key (`id`),
+   key (`user_id`)
 );
 
 -- -- 商品返利统计
