@@ -68,6 +68,8 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
                 }
             }else if( "emphasisKeywordSn".equals(key) ){
                 param.setEmphasisKeyword(j_node.findValue(key).asText());
+            }else if("taskJobId".equals(key)){
+                param.setTaskJobId(j_node.findValue(key).asInt());
             }
         }
         return param;

@@ -5,6 +5,7 @@ import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.BaseTaskJob;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
@@ -13,8 +14,11 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
@@ -49,14 +53,32 @@ public class TaskJobMainService extends MainBaseService {
                 TaskJobsConstant.TaskJobEnum jobEnum = TaskJobsConstant.TaskJobEnum
                     .getTaskJobEnumByExecutionType(job.getExecutionType());
                 mainRecord.setType(TaskJobsConstant.STATUS_EXECUTING);
-                rabbitmqSendService.sendMessage(jobEnum.getExchangeName(),
-                    jobEnum.getRoutingKey(),job.getContent(),job.getClassName());
             }
-            mainRecord.insert();
-
+            TaskJobMainRecord idRecord = DSL.using(configuration)
+                .insertInto(TASK_JOB_MAIN)
+                .set(record).returning(TASK_JOB_MAIN.ID)
+                .fetchOne();
+            if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
+                TaskJobsConstant.TaskJobEnum jobEnum = TaskJobsConstant.TaskJobEnum
+                    .getTaskJobEnumByExecutionType(job.getExecutionType());
+                rabbitmqSendService.sendMessage(jobEnum.getExchangeName(),
+                    jobEnum.getRoutingKey(),setTaskJobId(job.getContent(),job.getClassName(),idRecord.getId()),job.getClassName());
+            }
         });
     }
-
+    private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
+        try {
+            if(  Class.forName(clzName).getMethod("setTaskJobId",Integer.class)!= null ){
+                String jobIdStr = "\"taskJobId\":"+jobId+",";
+                return  jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
+            }else{
+                return jsonStr;
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return jsonStr;
+        }
+    }
     /**
      *
      * @param param MQ传参类
@@ -71,8 +93,8 @@ public class TaskJobMainService extends MainBaseService {
             .className(className)
             .startTime(DateUtil.getLocalDateTime())
             .endTime(DateUtil.getLocalDateTime())
-            .executionType(TaskJobsConstant.TaskJobEnum
-                .getTaskJobEnumByExecutionType(executionType))
+            .executionType(Objects.requireNonNull(TaskJobsConstant.TaskJobEnum
+                .getTaskJobEnumByExecutionType(executionType)))
             .builder();
         dispatch(info);
     }

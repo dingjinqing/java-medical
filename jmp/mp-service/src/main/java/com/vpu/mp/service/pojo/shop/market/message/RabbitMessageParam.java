@@ -29,6 +29,10 @@ public class RabbitMessageParam {
      */
     private Integer messageTemplateId;
 
+    /**
+     *任务id
+     */
+    private Integer taskJobId;
 
     private List<Integer> userIdList;
     /**

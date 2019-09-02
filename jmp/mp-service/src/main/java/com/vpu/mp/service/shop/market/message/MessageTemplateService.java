@@ -1,34 +1,24 @@
 package com.vpu.mp.service.shop.market.message;
 
-import com.vpu.mp.db.main.tables.TaskJobMain;
-import com.vpu.mp.db.shop.tables.MpTemplateFormId;
-import com.vpu.mp.db.shop.tables.TemplateConfig;
-import com.vpu.mp.db.shop.tables.records.MpTemplateFormIdRecord;
+
 import com.vpu.mp.db.shop.tables.records.TemplateConfigRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.*;
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateParam;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.market.message.SendUserVo;
-import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
+import com.vpu.mp.service.pojo.shop.market.message.*;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
-import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
 import com.vpu.mp.service.shop.user.user.SendUserService;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.UpdateSetMoreStep;
-import org.jooq.UpdateSetStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
@@ -93,6 +83,7 @@ public class MessageTemplateService extends ShopBaseService {
     private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
         return RabbitMessageParam.builder()
             .shopId(shopId)
+            .type(RabbitParamConstant.Type.GENERAL_TYPE)
             .page(templateConfigRecord.getPageLink())
             .messageTemplateId(templateConfigRecord.getId())
             .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
