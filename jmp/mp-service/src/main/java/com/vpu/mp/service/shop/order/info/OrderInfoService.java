@@ -70,7 +70,7 @@ import lombok.Data;
 
 /**
  * Table:order_info
- * 
+ *
  * @author 王帅
  * @param <V>
  *
@@ -93,24 +93,24 @@ public class OrderInfoService extends ShopBaseService {
 	public final String PS_MONEY_PAID= TABLE.MONEY_PAID.getName();
 	/**补款金额*/
 	public final String PS_BK_ORDER_MONEY= TABLE.BK_ORDER_MONEY.getName();
-	
+
 	public final String[] PAY_SUBDIVISION = {PS_BK_ORDER_MONEY,PS_MEMBER_CARD_BALANCE,PS_USE_ACCOUNT,PS_SCORE_DISCOUNT,PS_MONEY_PAID};
-	
+
 	/**
 	 * @param <T> <? extends OrderListVo>
 	 * @param orderId 订单id
-	 * @param clz 
+	 * @param clz
 	 * @return oneOrder
 	 */
 	public <T> T getByOrderId(Integer orderId , Class<T> clz){
 		T order = db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
 		return order;
 	}
-	
+
 	public OrderInfoRecord getOrderByOrderSn(String orderSn) {
 		return db().fetchAny(TABLE,TABLE.ORDER_SN.eq(orderSn));
 	}
-	
+
 	/**
 	 * 	订单综合查询:通过条件获得主订单号（因为前端显示以主订单为主）
 	 * @param param
@@ -121,16 +121,16 @@ public class OrderInfoService extends ShopBaseService {
 		//分组聚合主订单
 		mainOrder.groupBy(TABLE.MAIN_ORDER_SN);
 		buildOptions(mainOrder, param);
-		//得到主订单号		
+		//得到主订单号
 		return getPageResult(mainOrder,param.getCurrentPage(),param.getPageRows(),MainOrderResult.class);
 	}
-	
+
 	@Data
 	public static class MainOrderResult {
 		String mainOrderSn;
 		Integer orderId;
 	}
-	
+
 	/**
 	  * 构造综合查询条件
 	  * @param select
@@ -217,7 +217,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 *	 构造营销货订查询条件
-	 * 
+	 *
 	 * @param select
 	 * @param param
 	 * @return
@@ -228,10 +228,10 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return select;
 	}
-	 
+
 	/**
 	 * TODO 去* 通过传入的field获取对应记录
-	 * 
+	 *
 	 * @param <T>
 	 * @param userId
 	 * @param field
@@ -240,10 +240,10 @@ public class OrderInfoService extends ShopBaseService {
 	public <T> List<T> getOrdersByCondition(Condition where, Class<T> clz) {
 		return db().select(TABLE.asterisk()).from(TABLE).where(where).fetchInto(clz);
 	}
-	
+
 	/**
 	 * TODO查询订单按照MAIN_ORDER_SN分组
-	 * 
+	 *
 	 * @param <T>
 	 * @param arrayToSearch
 	 * @return
@@ -253,7 +253,7 @@ public class OrderInfoService extends ShopBaseService {
 				.where(ORDER_INFO.MAIN_ORDER_SN.in(arrayToSearch)).orderBy(ORDER_INFO.ORDER_ID)
 				.fetchGroups(ORDER_INFO.MAIN_ORDER_SN, OrderListInfoVo.class);
 	}
-	
+
 	/**
 	 * 过滤子订单数量>0时,过滤主订单下已被拆除的商品行（通过减小数量为0则不展示）
 	 * @param OrderListInfoVo主订单（已经在主订单下添加了子订单及其商品）, goods主订单商品行
@@ -292,7 +292,7 @@ public class OrderInfoService extends ShopBaseService {
 		order.setGoods(goods);
 		return order;
 	}
-	
+
 	/**
 	 * 	得到实际支付金额（判读是否包含运费）
 	 * @param order
@@ -308,7 +308,7 @@ public class OrderInfoService extends ShopBaseService {
 		//.add(order.getSubGoodsPrice())
 		.subtract(isIncludeShipingFee ? BigDecimal.ZERO : order.getShippingFee());
 	}
-	
+
 	/**
 	 * 	当前订单为子订单需要替换支付信息与用户信息(子订单无补款信息,不需复制)
 	 * @param currentOrder
@@ -336,7 +336,7 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return Boolean.FALSE;
 	}
-	
+
 	/**
 	 * 	是否为拆单逻辑下的子订单
 	 * @param currentOrder
@@ -362,7 +362,7 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return new ArrayList<OrderListInfoVo>(0);
 	}
-	
+
 	/**
 	 * 	将order支付信息构造成map方便计算
 	 * @param currentOrder
@@ -378,11 +378,11 @@ public class OrderInfoService extends ShopBaseService {
 		return map;
 	}
 	/**
-	 * 
+	 *
 	 * @param currentOrder
 	 * @param amount 当前订单最终支付金额(包含运费)
 	 * @param map 退款数据汇总
-	 * @return Map<String , BigDecimal> 
+	 * @return Map<String , BigDecimal>
 	 */
 	public Map<String , BigDecimal> getCanReturn(OrderListInfoVo currentOrder , BigDecimal amount , LinkedHashMap<String , BigDecimal> map) {
 		//将order支付信息构造成map方便计算
@@ -403,7 +403,7 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return map;
 	}
-	
+
 	/**
 	 *	 退*时更新订单信息（完成状态输入时必须order与canReturnGoodsNumber）
 	 * @param returnOrder
@@ -449,7 +449,7 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		set.where(TABLE.ORDER_SN.eq(returnOrder.getOrderSn())).execute();
 	}
-	
+
 	public void setOrderstatus(String orderSn , byte orderStatus){
 		OrderInfoRecord order = getOrderByOrderSn(orderSn);
 		switch (orderStatus) {
@@ -462,8 +462,8 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		order.update();
 	}
-	
-	
+
+
 	/**
 	 *
 	 *  活动新用户订单
@@ -521,7 +521,7 @@ public class OrderInfoService extends ShopBaseService {
 		activeOrderList.setOldUserNum(oldList);
 		return activeOrderList;
 	}
-	
+
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据
 	 * @param param
@@ -564,7 +564,7 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchInto(ActiveDiscountMoney.class);
 		return record;
 	}
-	
+
 	/**
 	 * 查找一口价活动 已购商品数量
 	 * @param activityId
@@ -602,14 +602,14 @@ public class OrderInfoService extends ShopBaseService {
 			return goodsNum;
 	}
 
-	
+
 	/**
 	 * 根据用户id获取累计消费金额
 	 */
 	public BigDecimal getAllConsumpAmount(Integer userId) {
 		BigDecimal totalConsumpAmount = new BigDecimal(0);
 		logger().info("计算会员 "+userId+" 的累积消费金额");
-		
+
 		/** 会员卡消费金额 */
 		BigDecimal memberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE))
 										   .from(ORDER_INFO)
@@ -621,7 +621,7 @@ public class OrderInfoService extends ShopBaseService {
 		if(memberCardBalance != null) {
 			totalConsumpAmount = totalConsumpAmount.add(memberCardBalance);
 		}
-		
+
 		/** 余额，微信订单应付金额*/
 		BigDecimal moneyPaid = db().select(sum(ORDER_INFO.MONEY_PAID))
 									.from(ORDER_INFO)
@@ -634,8 +634,8 @@ public class OrderInfoService extends ShopBaseService {
 		if(moneyPaid != null) {
 			totalConsumpAmount = totalConsumpAmount.add(moneyPaid);
 		}
-		
-		
+
+
 		/** 用户消费余额 */
 		BigDecimal useAccount = db().select(sum(ORDER_INFO.USE_ACCOUNT))
 				.from(ORDER_INFO)
@@ -647,8 +647,8 @@ public class OrderInfoService extends ShopBaseService {
 		if(useAccount != null) {
 			totalConsumpAmount = totalConsumpAmount.add(useAccount);
 		}
-		
-		
+
+
 		/** 门店-会员卡消费金额  */
 		BigDecimal storeMemberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE))
 												.from(STORE_ORDER)
@@ -660,20 +660,20 @@ public class OrderInfoService extends ShopBaseService {
 		if(storeMemberCardBalance != null) {
 			totalConsumpAmount = totalConsumpAmount.add(storeMemberCardBalance);
 		}
-		
-		/** 门店-订单应付金额  */ 
+
+		/** 门店-订单应付金额  */
 		BigDecimal storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID))
 			.from(STORE_ORDER)
 			.where(STORE_ORDER.USER_ID.eq(userId))
 			.and(STORE_ORDER.ORDER_STATUS.eq(STORE_ORDER_PAID))
 			.fetchOne()
 			.into(BigDecimal.class);
-		
+
 		logger().info("门店-订单应付金额"+storeMoneyPaid);
 		if(storeMoneyPaid != null) {
 			totalConsumpAmount = totalConsumpAmount.add(storeMoneyPaid);
 		}
-		
+
 		/** 门店-用户消费余额*/
 		BigDecimal storeUserAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT))
 											.from(STORE_ORDER)
@@ -685,7 +685,7 @@ public class OrderInfoService extends ShopBaseService {
 		if(storeUserAccount != null) {
 			totalConsumpAmount = totalConsumpAmount.add(storeUserAccount);
 		}
-		
+
 		/** 服务订单表 订单应付金额 */
 		BigDecimal serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID))
 									.from(SERVICE_ORDER)
@@ -694,21 +694,21 @@ public class OrderInfoService extends ShopBaseService {
 									.and(SERVICE_ORDER.PAY_CODE.in(PAY_CODE_BALANCE_PAY,PAY_CODE_WX_PAY))
 									.fetchOne()
 									.into(BigDecimal.class);
-		
+
 		logger().info("服务订单表 订单应付金额"+serviceMoneyPaid);
 		if(serviceMoneyPaid != null) {
 			totalConsumpAmount = totalConsumpAmount.add(serviceMoneyPaid);
 		}
-		
+
 		return totalConsumpAmount;
 	}
-	
+
 	/**
 	 * 获取最近用户下单的订单时间
 	 * @param userId
-	 * @return 
-	 * @return 
-	 * @return 
+	 * @return
+	 * @return
+	 * @return
 	 */
 	public Timestamp getRecentOrderInfoByUserId(Integer userId) {
 		return db().select(ORDER_INFO.CREATE_TIME)
@@ -720,7 +720,7 @@ public class OrderInfoService extends ShopBaseService {
 			.orderBy(ORDER_INFO.CREATE_TIME.desc())
 			.fetchOne().into(Timestamp.class);
 	}
-	
+
 	/**
 	 * 累计下单金额
 	 * @param userId
@@ -736,11 +736,11 @@ public class OrderInfoService extends ShopBaseService {
 			.into(BigDecimal.class);
 		return orderMoney;
 	}
-	
+
 	/**
-	 * 累计消费订单数 
+	 * 累计消费订单数
 	 * @param userId
-	 * @return 
+	 * @return
 	 */
 	public Integer getAllOrderNum(Integer userId) {
 		return db().select(count())
@@ -752,11 +752,11 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchOne()
 				.into(Integer.class);
 		}
-	
+
 	/**
 	 * 累计退款金额
 	 * @param userId
-	 * @return 
+	 * @return
 	 */
 	public BigDecimal getAllReturnOrderMoney(Integer userId) {
 		OrderInfoRecord record = db().select(sum(ORDER_INFO.MONEY_PAID).as(ORDER_INFO.MONEY_PAID),sum(ORDER_INFO.SHIPPING_FEE).as(ORDER_INFO.SHIPPING_FEE))
@@ -765,15 +765,15 @@ public class OrderInfoService extends ShopBaseService {
 			.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_STATUS_FINISH))
 			.fetchOne()
 			.into(OrderInfoRecord.class);
-		
+
 		BigDecimal result = record.getMoneyPaid().add(record.getShippingFee());
 		return result;
 	}
-	
+
 	/**
 	 * 累计退款订单数
 	 * @param userId
-	 * @return 
+	 * @return
 	 */
 	public Integer getAllReturnOrderNum(Integer userId) {
 		return db().select(count())
@@ -800,7 +800,7 @@ public class OrderInfoService extends ShopBaseService {
 				.leftJoin(GIVE_GIFT_CART).on(TABLE.ACTIVITY_ID.eq(GIVE_GIFT_CART.ID))
 				.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(activityId))
 				.and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-				.and(TABLE.ORDER_STATUS.gt((byte) 2))
+				.and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT,TABLE.GOODS_TYPE))
 				.and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN))
 				.fetchOne().component1();
@@ -810,6 +810,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * 收礼明细
 	 * @param param GiveGiftReceiveListParam
 	 * @return SelectConditionStep<? extends Record>
+	 *     todo
 	 */
 	public SelectConditionStep<? extends Record> giveGiftRecordList(GiveGiftRecordListParam param) {
 		SelectConditionStep<? extends Record> select = db()

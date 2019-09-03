@@ -17,8 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 public class GroupBuyDetailVo {
 
+    private Integer id;
+    /**
+     * 名称
+     */
     private String name;
-    private Integer shopId;
     /**
      * 商品id
      */
@@ -35,6 +38,14 @@ public class GroupBuyDetailVo {
      * 开团限制
      */
     private Short openLimit;
+    /**
+     * 最少购买数 0不限制
+     */
+    private Short limitBuyMinNum;
+    /**
+     * 最多购买数 0 不限制
+     */
+    private Short limitBuyMaxNum;
     /**
      * 默认成团
      */
@@ -65,6 +76,12 @@ public class GroupBuyDetailVo {
      * 是否开启团长优惠：0：不开启，1：开启
      */
     private Byte isGrouperCheap;
+
+    /**
+     * 是否免运费 1 免运费 2 使用原商品运费模板
+     */
+    private Byte shippingType;
+
     /**
      * 拼团失败发放优惠券
      */

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,7 @@ public class GroupBuyProductParam extends BasePageGroupBuyParam{
     /**
      * 商品规格id
      */
-
+    @JsonProperty(value = "prdId")
     private Integer productId;
 
     /**
