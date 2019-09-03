@@ -2,6 +2,7 @@ package com.vpu.mp.command;
 
 import java.util.List;
 
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.support.SpringUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class CommandKernel implements ApplicationRunner,ApplicationContextAware {
 
 	 private ApplicationContext applicationContext;
@@ -40,8 +44,13 @@ public class CommandKernel implements ApplicationRunner,ApplicationContextAware 
 	public void printDescriptions() {
 		CommandsEnum[] commans = CommandsEnum.values();
 		for(CommandsEnum command : commans) {
-			System.out.println(command.getKey()+"\t\t"+SpringUtil.getBean(command.getCls()).description());
+			output(command.getKey(),SpringUtil.getBean(command.getCls()).description());
 		}
+	}
+	
+	protected void output(String key,String description) {
+		key = StringUtils.rightPad(key, 20 - key.length());
+		System.out.println("\033[31;4m"+key+"\033[0m\t"+description);
 	}
 	
 	protected void exit() {
