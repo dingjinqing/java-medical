@@ -6,37 +6,81 @@
 <template>
   <div>
     <wrapper>
-        <el-steps :active="step"  align-center finish-status="finish" style="margin-bottom:20px">
-            <el-step v-for="(item, index) in steps" :key="index" :title="`${index+1}. ${item}`" ></el-step>
-        </el-steps>
-        <!-- 设置赠品规则 -->
-        <div v-if="step===1">
-        <el-row style="margin-bottom:20px">
+      <!-- <el-steps
+        :active="step"
+        align-center
+        finish-status="finish"
+        style="margin-bottom:20px"
+      >
+        <el-step
+          v-for="(item, index) in steps"
+          :key="index"
+          :title="`${index+1}. ${item}`"
+        ></el-step>
+      </el-steps> -->
+      <el-steps
+        :active="step"
+        simple
+        finish-status="finish"
+        style="margin-bottom: 20px"
+      >
+        <el-step
+          v-for="(item, index) in steps"
+          :key="index"
+          :title="`${index+1}. ${item}`"
+        ></el-step>
+        <!-- <el-step
+          title="步骤 1"
+          icon="el-icon-edit"
+        ></el-step>
+        <el-step
+          title="步骤 2"
+          icon="el-icon-upload"
+        ></el-step>
+        <el-step
+          title="步骤 3"
+          icon="el-icon-picture"
+        ></el-step> -->
+      </el-steps>
+      <!-- 设置赠品规则 -->
+      <div v-if="step===1">
+        <el-row style="margin-bottom:20px;">
           <el-col :span="2">
             <span class="label">基础配置</span>
           </el-col>
-          <el-col :span="11">
-            <el-form label-width="100px" >
-              <el-form-item label="活动名称">
-                <el-input v-model="param.name"></el-input>
+          <el-col :span="5">
+            <el-form label-width="110px">
+              <el-form-item label="活动名称：">
+                <el-input
+                  v-model="param.name"
+                  class="inputWidth"
+                ></el-input>
               </el-form-item>
-              <el-form-item label="活动优先级">
-                <el-input type="number" v-model="param.level" :disabled="ongoing"></el-input>
+              <el-form-item label="活动优先级：">
+                <el-input
+                  class="inputWidth"
+                  v-model="param.level"
+                  :disabled="ongoing"
+                ></el-input>
               </el-form-item>
-              <el-form-item label="活动时间">
+              <el-form-item label="活动时间：">
                 <el-date-picker
                   v-model="dateRange"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  :disabled="ongoing">
+                  :disabled="ongoing"
+                >
                 </el-date-picker>
               </el-form-item>
             </el-form>
           </el-col>
-          <el-col :span="10" class="description">
-            <el-form label-width="20px" >
+          <el-col
+            :span="10"
+            class="description"
+          >
+            <el-form label-width="20px">
               <el-form-item>
                 <template>
                   只作为商家记录使用，用户不会看到这个名称
@@ -55,98 +99,195 @@
             <span class="label">赠品策略</span>
           </el-col>
           <el-col :span="11">
-            <el-form label-width="100px" >
-              <el-form-item label="活动商品">
+            <el-form label-width="110px">
+              <el-form-item
+                label="活动商品："
+                style="width: 600px"
+              >
                 <template>
-                  <el-radio v-for="(item, index) in goodsRanges" :key="index"
-                    v-model="goodsRange" :label="index" :disabled="ongoing">{{item}}</el-radio>
-                  <el-button v-show="goodsRange===1" size="small"
-                    @click="showChoosingGoods">{{goodsBtnName}}</el-button>
-                  <span v-show="goodsRange===1">已选{{goodsIdsLength}}</span>
+                  <!-- <div style="display:flex"> -->
+                  <el-radio
+                    v-for="(item, index) in goodsRanges"
+                    :key="index"
+                    v-model="goodsRange"
+                    :label="index"
+                    :disabled="ongoing"
+                  >{{item}}</el-radio>
+                  <el-button
+                    size="small"
+                    v-show="goodsRange===1"
+                    @click="showChoosingGoods"
+                  >{{goodsBtnName}}</el-button>
+                  <span v-show="goodsRange===1">已选：{{goodsIdsLength}}件商品</span>
+                  <!-- </div> -->
                 </template>
               </el-form-item>
-              <el-form-item label="赠品规则">
-                <el-select v-model="selectedRules" multiple :multiple-limit="3" :disabled="ongoing">
+              <el-form-item label="赠品条件：">
+                <el-select
+                  v-model="selectedRules"
+                  multiple
+                  :multiple-limit="3"
+                  :disabled="ongoing"
+                >
                   <el-option
                     v-for="(item, index) in rules"
                     :disabled="ongoing"
                     :key="index"
                     :label="item.label"
-                    :value="index">
+                    :value="index"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="满金额赠送" v-show="contains(0)">
+              <div style="background:rgb(245,245,245);margin-bottom:22px">
+                <el-form-item
+                  label="满金额赠送"
+                  v-show="contains(0)"
+                >
                   <span>满</span>
-                  <el-input type="number" v-model="param.rules.fullPrice" class="input" :disabled="ongoing"></el-input>
+                  <el-input
+                    size="small"
+                    v-model="param.rules.fullPrice"
+                    class="input"
+                    :disabled="ongoing"
+                  ></el-input>
                   <span>元，送赠品</span>
-              </el-form-item>
-              <el-form-item label="满数量赠送" v-show="contains(1)">
+                </el-form-item>
+                <el-form-item
+                  label="满数量赠送"
+                  v-show="contains(1)"
+                >
                   <span>满</span>
-                  <el-input type="number" v-model="param.rules.fullNumber" class="input" :disabled="ongoing"></el-input>
+                  <el-input
+                    v-model="param.rules.fullNumber"
+                    class="input"
+                    :disabled="ongoing"
+                  ></el-input>
                   <span>件，送赠品</span>
-              </el-form-item>
-              <el-form-item label="会员标签" v-show="contains(2)">
-                  <el-select v-model="param.rules.tagId" multiple :disabled="ongoing">
+                </el-form-item>
+                <el-form-item
+                  label="会员标签"
+                  v-show="contains(2)"
+                >
+                  <el-select
+                    v-model="param.rules.tagId"
+                    multiple
+                    :disabled="ongoing"
+                  >
                     <el-option
                       v-for="item in tags"
                       :key="item.id"
                       :label="item.name"
-                      :value="item.id">
+                      :value="item.id"
+                    >
                     </el-option>
                   </el-select>
-              </el-form-item>
-              <el-form-item label="会员卡" v-show="contains(3)">
-                  <el-select v-model="param.rules.cardId" multiple :disabled="ongoing">
+                </el-form-item>
+                <el-form-item
+                  label="会员卡"
+                  v-show="contains(3)"
+                >
+                  <el-select
+                    v-model="param.rules.cardId"
+                    multiple
+                    :disabled="ongoing"
+                  >
                     <el-option
                       v-for="item in cards"
                       :key="item.id"
                       :label="item.name"
-                      :value="item.id">
+                      :value="item.id"
+                    >
                     </el-option>
                   </el-select>
-              </el-form-item>
-              <el-form-item label="付款排名" v-show="contains(4)">
-                  <el-input type="number" v-model="param.rules.payTop" class="input" :disabled="ongoing"></el-input>
-              </el-form-item>
-              <el-form-item label="已购买次数" v-show="contains(5)">
-                  <el-input type="number" v-model="param.rules.minPayNum" class="input" :disabled="ongoing"></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="付款排名"
+                  v-show="contains(4)"
+                >
+                  前 <el-input
+                    v-model="param.rules.payTop"
+                    class="input"
+                    :disabled="ongoing"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="已购买次数"
+                  v-show="contains(5)"
+                >
+                  <el-input
+                    v-model="param.rules.minPayNum"
+                    class="input"
+                    :disabled="ongoing"
+                  ></el-input>
                   <span>至</span>
-                  <el-input type="number" v-model="param.rules.maxPayNum" class="input" :disabled="ongoing"></el-input>
-              </el-form-item>
-              <el-form-item label="付款时间" v-show="contains(6)">
-                <el-date-picker
-                  v-model="payDateRange"
-                  type="datetimerange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :disabled="ongoing">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item label="用户类别" v-show="contains(7)">
-                  <el-select v-model="param.rules.userAction" :disabled="ongoing">
+                  <el-input
+                    v-model="param.rules.maxPayNum"
+                    class="input"
+                    :disabled="ongoing"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="付款时间"
+                  v-show="contains(6)"
+                >
+                  <el-date-picker
+                    v-model="payDateRange"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :disabled="ongoing"
+                  >
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item
+                  label="用户类别"
+                  v-show="contains(7)"
+                >
+                  <el-select
+                    v-model="param.rules.userAction"
+                    :disabled="ongoing"
+                  >
                     <el-option
                       v-for="item in userAction"
                       :key="item.id"
                       :label="item.name"
-                      :value="item.id">
+                      :value="item.id"
+                    >
                     </el-option>
                   </el-select>
-              </el-form-item>
-              <el-form-item label="赠品规则说明">
+                </el-form-item>
+              </div>
+              <el-form-item label="赠品规则说明：">
                 <el-input
                   type="textarea"
                   :rows="5"
                   v-model="param.explain"
                   placeholder="此提示将在小程序前端展示，请根据配置的赠品策略谨慎编写赠品规则说明，最多可填写200字。
-  例：前100名付款用户可获得赠品，送完即止。">
+  例：前100名付款用户可获得赠品，送完即止。"
+                >
                 </el-input>
+                <el-popover
+                  placement="right-start"
+                  width="220"
+                  trigger="hover"
+                >
+                  <el-image :src="srcList.src1"></el-image>
+                  <el-button
+                    slot="reference"
+                    type="text"
+                    style="margin: 0 20 0 0px"
+                  >查看示例</el-button>
+                </el-popover>
               </el-form-item>
             </el-form>
           </el-col>
-          <el-col :span="10" class="description">
-            <el-form label-width="20px" >
+          <el-col
+            :span="6"
+            class="description"
+          >
+            <el-form style="margin: 60px 0 0 -270px;">
               <el-form-item>
                 <template>
                   以下条件满足其一即可获得赠品，最多可选择 3 类
@@ -155,97 +296,120 @@
             </el-form>
           </el-col>
         </el-row>
-        </div>
-        <!-- 设置赠品 -->
-        <div v-if="step===2">
-          <el-row v-show="!ongoing">
-            <el-col>
-              <el-button size="small" type="primary" @click="showChoosingGoods">添加赠品商品</el-button>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col>
-              <el-table
-                class="version-manage-table"
-                header-row-class-name="tableHeader"
-                :data="tableData"
-                border
-                style="width: 100%"
+      </div>
+      <!-- 设置赠品 -->
+      <div v-if="step===2">
+        <el-row v-show="!ongoing">
+          <el-col>
+            <el-button
+              size="small"
+              type="primary"
+              @click="showChoosingGoods"
+            >添加赠品商品</el-button>
+            <span style="color:#999;height:30px;line-height:30px">注：请合理设置赠品库存，赠品全部发完活动将提前停止。最多可添加20件赠品</span>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-table
+              class="version-manage-table"
+              header-row-class-name="tableHeader"
+              :data="tableData"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="goodsName"
+                label="商品名称"
+                align="center"
               >
-                <el-table-column
-                  prop="goodsName"
-                  label="商品名称"
-                  align="center"
-                >
-                  <template slot-scope="scope">
-                    <div class="name_cell">
-                      <img :src="scope.row.goodsImg" class="goods_img">
-                      <div>{{scope.row.goodsName}}</div>
+                <template slot-scope="scope">
+                  <div class="name_cell">
+                    <img
+                      :src="scope.row.goodsImg"
+                      class="goods_img"
+                    >
+                    <div>{{scope.row.goodsName}}</div>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="prdDesc"
+                label="规格"
+                align="center"
+              > </el-table-column>
+              <el-table-column
+                prop="prdPrice"
+                label="商品原价"
+                align="center"
+              > </el-table-column>
+              <el-table-column
+                prop="prdNumber"
+                label="商品库存"
+                align="center"
+              > </el-table-column>
+              <el-table-column
+                prop="productNumber"
+                label="赠品库存 (当前库存/初始库存)"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <inputEdit
+                    v-model="scope.row.productNumber"
+                    :disabled="ongoing"
+                    :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
+                    @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
+                  >
+                    <div slot="before">
+                      {{scope.row.productNumber - scope.row.offerNumber}} /
                     </div>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="prdDesc"
-                  label="规格"
-                  align="center"
-                > </el-table-column>
-                <el-table-column
-                  prop="prdPrice"
-                  label="商品原价"
-                  align="center"
-                > </el-table-column>
-                <el-table-column
-                  prop="prdNumber"
-                  label="商品库存"
-                  align="center"
-                > </el-table-column>
-                <el-table-column
-                  prop="productNumber"
-                  label="赠品库存 (当前库存/初始库存)"
-                  align="center"
-                >
-                  <template slot-scope="scope">
-                    <inputEdit v-model="scope.row.productNumber"
-                      :disabled="ongoing"
-                      :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
-                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)">
-                      <div slot="before">
-                        {{scope.row.productNumber - scope.row.offerNumber}} /
-                      </div>
-                    </inputEdit>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label = "操作"
-                  align="center"
-                  v-if="!ongoing"
-                >
-                  <template slot-scope="scope">
-                    <el-button size="small"
+                  </inputEdit>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                align="center"
+                v-if="!ongoing"
+              >
+                <template slot-scope="scope">
+                  <el-button
                     v-show="!ongoing"
-                    @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)">
+                    @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)"
+                  >
                     删除</el-button>
-                  </template>
-                </el-table-column>
-                </el-table>
-            </el-col>
-          </el-row>
-        </div>
-        <div style="margin-top:20px">
-          <el-row>
-            <el-col :offset="stepButtonOffset">
-              <el-button type="primary" @click="lastStep" v-show="step > 1">上一步</el-button>
-              <el-button type="primary" @click="nextStep" v-show="step < steps.length">下一步</el-button>
-              <el-button type="primary" @click="addGift" v-show="step === steps.length">保存</el-button>
-            </el-col>
-          </el-row>
-        </div>
-        <div v-if="1===step">
-          <choosingGoods/>
-        </div>
-        <div v-if="2===step">
-          <choosingGoods :loadProduct="true"/>
-        </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
+      </div>
+      <div style="margin-top:20px">
+        <el-row>
+          <el-col :offset="stepButtonOffset">
+            <el-button
+              type="primary"
+              @click="lastStep"
+              v-show="step > 1"
+            >上一步</el-button>
+            <el-button
+              type="primary"
+              @click="nextStep"
+              v-show="step < steps.length"
+            >下一步</el-button>
+            <el-button
+              type="primary"
+              @click="addGift"
+              v-show="step === steps.length"
+            >保存</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div v-if="1===step">
+        <choosingGoods />
+      </div>
+      <div v-if="2===step">
+        <choosingGoods :loadProduct="true" />
+      </div>
     </wrapper>
   </div>
 </template>
@@ -351,7 +515,10 @@ export default {
       // 选中商品id
       tmpGoodsIds: [],
       // 选中赠品商品id
-      tmpGiftGoodsIds: []
+      tmpGiftGoodsIds: [],
+      srcList: {
+        src1: `${this.$imageHost}/image/admin/new_preview_image/gift.jpg`
+      }
     }
   },
   computed: {
@@ -373,6 +540,15 @@ export default {
       }
       return '添加商品'
     }
+    // // 表单约束
+    // formRules: {
+    //   name: [
+    //     { required: true, message: '此处不能为空！', trigger: 'blur' }
+    //   ],
+    //   level: [
+    //     { required: true, message: '此处不能为空！', trigger: 'change' }
+    //   ]
+    // }
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
@@ -680,25 +856,28 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .label {
-    line-height: 40px
+.label {
+  line-height: 40px;
+}
+.input {
+  margin-right: 10px;
+  width: 70px;
+}
+.name_cell {
+  display: flex;
+  div {
+    line-height: 45px;
+    margin-left: 10px;
   }
-  .input {
-    margin-right: 10px;
-    width: 70px;
-  }
-  .name_cell {
-    display: flex;
-    div {
-      line-height: 45px;
-      margin-left: 10px;
-    }
-  }
-  .goods_img {
-    width: 45px;
-    height: 45px;
-  }
-  .description {
-    color: #999;
-  }
+}
+.goods_img {
+  width: 45px;
+  height: 45px;
+}
+.description {
+  color: #999;
+}
+.inputWidth {
+  width: 180px;
+}
 </style>

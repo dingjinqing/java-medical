@@ -192,22 +192,30 @@
           </el-table-column>
         </el-table>
       </el-row>
-      <el-row>
+      <!-- <el-row>
         <el-col
-          :offset="14"
+          :offset="17"
           :span="10"
-        >
-          <el-pagination
-            @size-change="loadData"
-            @current-change="loadData"
-            :current-page.sync="param.currentPage"
-            :page-size="param.pageRows"
-            :total="page.pageRows"
-            layout="total, sizes, prev, pager, next, jumper"
-          >
-          </el-pagination>
-        </el-col>
-      </el-row>
+        > -->
+
+      <!-- <el-pagination
+        @size-change="loadData"
+        @current-change="loadData"
+        :current-page.sync="param.currentPage"
+        :page-size="param.pageRows"
+        :total="page.pageRows"
+        layout="total, sizes, prev, pager, next, jumper"
+      >
+      </el-pagination> -->
+      <!-- </el-col>
+      </el-row> -->
+
+      <!-- <div style="background: red"> -->
+      <pagination
+        :page-params.sync="param"
+        @pagination="loadData"
+      />
+      <!-- </div> -->
     </wrapper>
   </div>
 </template>
@@ -215,6 +223,7 @@
 import wrapper from '@/components/admin/wrapper/wrapper'
 import statusTab from '@/components/admin/status/statusTab'
 import inputEdit from '@/components/admin/inputEdit'
+import pagination from '@/components/admin/pagination/pagination.vue'
 import { getById, couldEdit, couldStop, couldStart, couldDelete } from '@/components/admin/status/status'
 import { giftList, deleteGift, disableGift, enableGift, updateGiftLevel } from '@/api/admin/marketManage/gift'
 
@@ -223,17 +232,18 @@ export default {
   components: {
     wrapper,
     statusTab,
-    inputEdit
+    inputEdit,
+    pagination
   },
   data () {
     return {
       activityName: '赠品',
       param: {
-        name: '',
-        status: 0,
-        // 分页
-        currentPage: 0,
-        pageRows: 20
+        // name: '',
+        // status: 0,
+        // // 分页
+        // currentPage: 0,
+        // pageRows: 20
       },
       page: {
         totalRows: 0
@@ -251,11 +261,11 @@ export default {
   methods: {
     // 列表查询
     loadData () {
-      const { param } = this
-      giftList(param).then(res => {
+      // const { param } = this
+      giftList(this.param).then(res => {
         const { content: { page, dataList } } = res
         this.tableData = dataList
-        this.page = page
+        this.param = page
       })
     },
     // 删除活动

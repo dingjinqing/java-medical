@@ -10,14 +10,35 @@
 * @author 郑保乐
 -->
 <template>
-    <div class="container">
-      <div v-show="!showInput" class="input">
-        <slot name="before"></slot>{{input}}<slot name="after"></slot>
-      </div>
-      <el-input ref="input" type="number" v-show="showInput" v-model="value"></el-input>
-      <el-button @click="switchEditState" size="mini"
-        v-show="!disabled">{{btnContent}}</el-button>
+  <div class="container">
+    <div
+      v-show="!showInput"
+      class="input"
+    >
+      <slot name="before"></slot>{{input}}<slot name="after"></slot>
     </div>
+    <el-input
+      ref="input"
+      v-show="showInput"
+      v-model="value"
+      size="small"
+    ></el-input>
+    <!-- <el-button @click="switchEditState" size="mini"
+        v-show="!disabled">{{btnContent}}</el-button> -->
+    <el-tooltip
+      class="item"
+      effect="dark"
+      content="编辑"
+      placement="top"
+    >
+      <i
+        @click="switchEditState"
+        v-show="!disabled"
+        class="el-icon-edit-outline"
+        style="color:#409EFF;fontSize:20px;height:45px;line-height:45px;"
+      ></i>
+    </el-tooltip>
+  </div>
 </template>
 <script>
 export default {
@@ -62,14 +83,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .container {
-    display: flex;
-    line-height: 45px;
-    vertical-align: middle;
-    .input {
-      width: 30%;
-      text-align: right;
-      margin-right: 10px;
-    }
+.container {
+  display: flex;
+  line-height: 45px;
+  vertical-align: middle;
+  // text-align: center;
+  .input {
+    width: 45%;
+    text-align: right;
+    margin-right: 10px;
   }
+}
 </style>

@@ -4,12 +4,16 @@
       <el-form :inline="true">
         <el-form-item label="团ID">
           <el-input
+            size="small"
             placeholder="请输入团ID"
             v-model="condition.groupId"
           ></el-input>
         </el-form-item>
         <el-form-item label="成团状态">
-          <el-select v-model="condition.status">
+          <el-select
+            v-model="condition.status"
+            size="small"
+          >
             <el-option
               value=""
               label="请选择"
@@ -29,12 +33,14 @@
         </el-form-item>
         <el-form-item label="结束时间">
           <el-date-picker
+            size="small"
             type="datetimerange"
             value-format="yyyy-MM-dd HH:mm:ss"
             v-model="timeRange"
           ></el-date-picker>
         </el-form-item>
         <el-button
+          size="small"
           type="primary"
           @click="onSubmit"
         >查询</el-button>
@@ -295,7 +301,7 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 20px 0px 20px;
   }
 }
 /deep/ .tableClss th {

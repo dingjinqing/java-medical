@@ -80,6 +80,7 @@
           <template slot-scope="scope">
             <div>
               <span>{{scope.row.totalIntegration}}</span>
+              <br>
               <span>{{scope.row.leftIntegration}}</span>
             </div>
           </template>
@@ -89,7 +90,9 @@
           label="有效期"
           align="center"
         >
-
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+          </template>
         </el-table-column>
         <el-table-column
           prop="expire"
@@ -210,7 +213,7 @@ export default {
         item.content = `${item.limitAmount}人瓜分${item.inteGroup}`
         item.totalIntegration = `${item.inteTotal}积分`
         item.leftIntegration = `剩余：${item.inteRemain}积分`
-        item.actDate = `${item.startTime}至${item.endTime}`
+        // item.actDate = `${item.startTime}至${item.endTime}`
         item.expire = this.getExpireString(item.expire)
       })
       this.tableData = data

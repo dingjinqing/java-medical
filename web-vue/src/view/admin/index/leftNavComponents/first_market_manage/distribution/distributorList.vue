@@ -87,7 +87,7 @@
             <span class="labelClass">分销员等级</span>
             <el-select
               size="small"
-              v-model="value"
+              v-model="distributorLevel"
               placeholder="请选择等级"
             >
               <el-option
@@ -261,6 +261,7 @@ export default {
   components: { pagination },
   data () {
     return {
+      distributorLevel: '',
       options: [{
         value: '选项1',
         label: 'levelName'
@@ -299,6 +300,9 @@ export default {
 
     },
     list () {
+      // let obj = {
+      //   'selectOption': this.distributorList
+      // }
       distributorList(this.pageParams).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -310,6 +314,8 @@ export default {
     levelList () {
       distributorLevelList().then(res => {
         console.log(res)
+        this.distributorLevel = res.content.dataList
+        console.log(this.distributorList)
       })
     },
     groupList () {

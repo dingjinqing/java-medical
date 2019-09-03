@@ -56,9 +56,9 @@
             prop=""
           >
             <!--  -->
-            <section>
+            <!-- <section>
               <el-button @click="handleTest">test</el-button>
-            </section>
+            </section> -->
             <!--  -->
             <el-radio
               v-model="form.rewardType"
@@ -179,15 +179,15 @@
                 label="发券数量"
                 width="120%"
               >
-                <template slot-scope="scope">
-                  <div>
-                    <el-input
-                      v-model="form.coupon_store"
-                      size="small"
-                      style="width:100px;"
-                    ></el-input>
-                  </div>
-                </template>
+                <!-- <template slot-scope="scope"> -->
+                <div>
+                  <el-input
+                    v-model="form.coupon_store"
+                    size="small"
+                    style="width:100px;"
+                  ></el-input>
+                </div>
+                <!-- </template> -->
               </el-table-column>
 
             </el-table>
@@ -669,9 +669,9 @@ export default {
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      console.log('couponInfo:', data)
-      this.form.rewardSet.reward_ids = data[0].id
-      console.log('data[0].id', data[0].id)
+      // console.log('couponInfo:', data)
+      // this.form.rewardSet.reward_ids = data[0].id
+      // console.log('data[0].id', data[0].id)
       let couponArr = this.formatCoupon(data)
       let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
       let couponKey = []
