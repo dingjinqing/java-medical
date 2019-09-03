@@ -270,13 +270,16 @@ export default {
     handleSelectImg (res) {
       // this.imageUrl[0].img_1 = res
       console.log(res)
+      console.log(this.firstNavIndex, this.secondNavIndex, this.contentList)
       let first = this.firstNavIndex
       let second = this.secondNavIndex
+      console.log(second)
       if (second === 0) {
-        this.ulDataList[first].img = res
+        // this.ulDataList[first].img = res
         this.contentList[first].normal = res
+        console.log(this.contentList)
       } else {
-        this.ulDataList[first].imgActive = res
+        // this.ulDataList[first].imgActive = res
         this.contentList[first].hover = res
       }
       this.$forceUpdate()

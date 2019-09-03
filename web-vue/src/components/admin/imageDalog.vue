@@ -224,10 +224,18 @@ export default {
   },
   mounted () {
     // accountSettings组件控制本组件弹窗
-    this.$http.$on('dtVisible', () => {
+    this.$http.$on('dtVisible', (flag) => {
       console.log(123)
-      this.dialogTableVisible = true
+      this.img_list.forEach((item, index) => {
+        item.checked = false
+      })
+      if (flag === false) {
+        this.dialogTableVisible = false
+      } else {
+        this.dialogTableVisible = true
+      }
     })
+    console.log(this.options)
     this.value = this.options[0].value
     // 初始化语言
     this.langDefault()
