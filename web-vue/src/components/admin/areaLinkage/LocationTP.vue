@@ -38,7 +38,7 @@ import LocatTP from './LocatTP'
 @Component({
   components: { LocatTP }
 })
-class locationTP extends Vue {
+export default class locationTP extends Vue {
   @Prop({ type: Array, default: [] }) locationList;
   outerVisible = false;
   innerVisible = false;
@@ -66,7 +66,6 @@ class locationTP extends Vue {
     // console.log(this.locationList);
   }
 }
-export default locationTP
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -82,7 +81,7 @@ ul {
 
 li {
   display: inline-block;
-  margin: 0 5px;
+  margin: 0 10px;
 }
 
 a {
