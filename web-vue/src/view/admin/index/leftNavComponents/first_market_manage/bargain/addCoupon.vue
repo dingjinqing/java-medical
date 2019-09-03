@@ -22,15 +22,11 @@
         >
       </li>
     </ul>
-    <AddCouponDialog />
   </div>
 </template>
 <script>
 
 export default {
-  components: {
-    AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
-  },
 
   data () {
     return {
@@ -39,14 +35,6 @@ export default {
     }
   },
   methods: {
-    // 选择优惠券弹窗
-    handleToCallDialog () {
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.coupon_info
-      }
-      this.$http.$emit('V-AddCoupon', obj)
-    },
     handleSelectImg (res) {
       console.log(res)
 

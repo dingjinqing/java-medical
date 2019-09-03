@@ -21,8 +21,8 @@
               v-model="param.bargainType"
               size="medium"
             >
-              <el-radio label="1">砍到指定金额计算</el-radio>
-              <el-radio label="2">砍到任意金额计算</el-radio>
+              <el-radio label="0">砍到指定金额计算</el-radio>
+              <el-radio label="1">砍到任意金额计算</el-radio>
             </el-radio-group>
             <span style="margin-left: 15px;">保存后不可编辑</span>
           </el-form-item>
@@ -32,6 +32,7 @@
             prop=""
           >
             <el-input
+              v-model="param.bargainName"
               size="small"
               style="width:200px;"
               placeholder="请输入活动名称"
@@ -42,48 +43,104 @@
             label="有效期："
             prop=""
           >
-            <div style="display:flex">
-              <el-date-picker
-                size="small"
-                v-model="startTime"
-                type="datetime"
-                placeholder="选择日期时间"
-              >
-              </el-date-picker>
-              <span style="margin: 0 5px">至</span>
-              <el-date-picker
-                size="small"
-                v-model="endTime"
-                type="datetime"
-                placeholder="选择日期时间"
-              >
-              </el-date-picker>
-            </div>
+            <el-date-picker
+              v-model="effectiveDate"
+              type="datetimerange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              size="small"
+            >
+            </el-date-picker>
           </el-form-item>
 
           <el-form-item
             label="活动商品："
             prop=""
           >
-            <div class="choose">
+            <div
+              @click="showChoosingGoods"
+              class="choose"
+            >
               <img
                 :src="srcList.src3"
                 alt=""
               >
-              <p>选择商品</p>
+              <p v-if="this.goodsRow.length == 0">选择商品</p>
+              <p v-else>重新选择</p>
             </div>
             <div class="fontColor">所有参与砍价的商品，均需要用户将价格砍到底价后才可以砍价成功，
               若某商品同一时间段内同时参与了砍价和拼团活动，则优先进行砍价活动</div>
+            <el-table
+              :data="this.goodsRow"
+              :hidden="this.goodsRow.length == 0?true:false"
+            >
+              <el-table-column
+                prop="goodsName"
+                label="商品名称"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <img :src="scope.row.goodsImg">
+                  <span>{{scope.row.goodsName}}</span>
+                </template>
+
+              </el-table-column>
+              <el-table-column
+                prop="goodsNumber"
+                label="商品原库存"
+                align="center"
+              ></el-table-column>
+              <el-table-column
+                label="砍价库存"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <el-input-number
+                    v-model="param.stock"
+                    size="small"
+                    style="width:120px"
+                    :min="1"
+                    :max="scope.row.goodsNumber"
+                  >
+                  </el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="shopPrice"
+                label="商品原价"
+                align="center"
+              ></el-table-column>
+              <el-table-column
+                prop="shopPrice"
+                label="砍价底价"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <el-input-number
+                    v-model="param.floorPrice"
+                    size="small"
+                    style="width:120px"
+                    :min="0"
+                    :max="scope.row.shopPrice"
+                  >
+                  </el-input-number>
+                  (默认0元)
+                </template>
+              </el-table-column>
+
+            </el-table>
           </el-form-item>
 
           <!-- 砍到指定金额计算部分内容区域 -->
-          <div v-if="this.param.bargainType==1">
-            <el-form-item
+          <div v-if="this.param.bargainType==0">
+            <!-- <el-form-item
               label="帮砍设置："
               prop=""
             >
               <el-checkbox v-model="checked">帮砍好友需要授权手机号才可以参与砍价</el-checkbox>
-            </el-form-item>
+            </el-form-item> -->
 
             <el-form-item
               label="运费设置："
@@ -91,15 +148,18 @@
             >
               <el-radio-group v-model="param.freeFreight">
                 <el-radio label="1">免运费</el-radio>
-                <el-radio label="2">使用原商品运费模板</el-radio>
+                <el-radio label="0">使用原商品运费模板</el-radio>
               </el-radio-group>
             </el-form-item>
 
             <el-form-item label="期望参与砍价人次：">
-              <el-input
+              <el-input-number
+                v-model="param.expectationNumber"
                 size="small"
-                style="width:90px"
-              ></el-input>&nbsp;人
+                style="width:150px"
+                :min="3"
+              >
+              </el-input-number>&nbsp;人
               <span style="margin-left:10px">(期望人次最少为3)</span>
               <div class="fontColor">填写人数为发起人发起砍价后，预计将价格砍到底价时需要参与砍价活动帮助该发起人进行砍价的用户数，
                 默认为100，保存后不可编辑</div>
@@ -107,14 +167,20 @@
 
             <el-form-item label="商品首次砍价可砍价比例区间：">
               <div style="display: flex">
-                <el-input
+                <el-input-number
+                  v-model="param.bargainMin"
                   size="small"
-                  style="width:90px"
-                ></el-input>&nbsp;%&nbsp;至&nbsp;
-                <el-input
+                  style="width:150px"
+                  :min="0"
+                  :max="50"
+                ></el-input-number>&nbsp;%&nbsp;至&nbsp;
+                <el-input-number
+                  v-model="param.bargainMax"
                   size="small"
-                  style="width:90px"
-                ></el-input>&nbsp;%
+                  style="width:150px"
+                  :min="0"
+                  :max="50"
+                ></el-input-number>&nbsp;%
                 <span style="margin-left:10px">(比例必须在0~50%之间)</span>
               </div>
               <div
@@ -128,43 +194,49 @@
           </div>
 
           <!-- 砍到任意金额计算部分 -->
-          <div v-if="this.param.bargainType==2">
+          <div v-if="this.param.bargainType==1">
             <el-form-item
               label="单次帮砍金额"
               prop=""
             >
               <el-radio
-                v-model="param.bargainMoney"
-                label="1"
+                v-model="param.bargainMoneyType"
+                label="0"
               >固定金额
-                <el-input
+                <el-input-number
+                  :disabled="param.bargainMoneyType=='1'?true:false"
+                  v-model="param.bargainFixedMoney"
                   size="small"
-                  style="width:90px"
-                ></el-input>元
+                  style="width:150px"
+                ></el-input-number>元
               </el-radio>
               <br>
               <el-radio
-                v-model="param.bargainMoney"
-                label="2"
+                v-model="param.bargainMoneyType"
+                label="1"
               >随机金额
-                <el-input
+                <el-input-number
+                  :disabled="param.bargainMoneyType=='0'?true:false"
+                  v-model="param.bargainMinMoney"
                   size="small"
-                  style="width:90px"
-                ></el-input>元
+                  style="width:150px"
+                ></el-input-number>元
                 <span>至</span>
-                <el-input
+                <el-input-number
+                  :disabled="param.bargainMoneyType=='0'?true:false"
+                  v-model="param.bargainMaxMoney"
                   size="small"
-                  style="width:90px"
-                ></el-input>元之间取随机数
+                  style="width:150px"
+                ></el-input-number>元之间取随机数
               </el-radio>
             </el-form-item>
 
-            <el-form-item
+            <!-- <el-form-item
               label="帮砍设置："
               prop=""
             >
               <el-checkbox v-model="checked">帮砍好友需要授权手机号才可以参与砍价</el-checkbox>
-            </el-form-item>
+            </el-form-item> -->
 
             <el-form-item
               label="运费设置："
@@ -172,7 +244,7 @@
             >
               <el-radio-group v-model="param.freeFreight">
                 <el-radio label="1">免运费</el-radio>
-                <el-radio label="2">使用原商品运费模板</el-radio>
+                <el-radio label="0">使用原商品运费模板</el-radio>
               </el-radio-group>
             </el-form-item>
           </div>
@@ -184,8 +256,9 @@
           >
             <el-card class="box-card">
               <div class="fontColor">向帮忙砍价的用户赠送优惠券，可促使帮砍用户在店铺内下单，提高交易量。</div>
+              <span>{{mrkingVoucherId}}</span>
               <div
-                @click="submit"
+                @click="handleToCallDialog1()"
                 class="addInfo"
               >
                 <img
@@ -204,7 +277,18 @@
           >
             <el-card class="box-card">
               <div class="fontColor">买家砍价失败后给予一定奖励，可提升买家复购</div>
-              <addCoupon />
+              <span>{{rewardCouponId}}</span>
+              <div
+                @click="handleToCallDialog2()"
+                class="addInfo"
+              >
+                <img
+                  :src="srcList.src3"
+                  alt=""
+                >
+                <p class="fontColor">添加优惠券</p>
+              </div>
+              <!-- <addCoupon /> -->
               <div class="fontColor">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
             </el-card>
           </el-form-item>
@@ -218,29 +302,40 @@
     </div>
     <div class="footer">
       <el-button
-        @click="submit"
+        @click="addSubmit"
         type="primary"
         size="small"
       >保存</el-button>
     </div>
+    <!--添加优惠卷-->
+    <AddCouponDialog @handleToCheck="handleToCheck" />
+    <!--商品选择-->
+    <choosingGoods @resultGoodsRow="choosingGoodsResult" />
   </div>
 </template>
 
 <script>
 import addCoupon from './addCoupon'
 import actShare from './actShare'
-// import { addBargain } from '@/api/admin/marketManage/bargain.js'
+import AddCouponDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog'
+import choosingGoods from '@/components/admin/choosingGoods'
+import { addBargain } from '@/api/admin/marketManage/bargain.js'
 
 export default {
-  components: { addCoupon, actShare },
+  components: { addCoupon, actShare, AddCouponDialog, choosingGoods },
   mounted () {
-    console.log(this.shareConfig)
+    console.log()
   },
   data () {
     return {
-      startTime: '',
-      endTime: '',
-      checked: '',
+      // 向帮忙砍价的用户赠送优惠券
+      mrkingVoucherId: [],
+      // 砍价失败后向买家赠送优惠券
+      rewardCouponId: [],
+      // 优惠券弹窗区分，1鼓励奖，0好友砍价优惠券
+      dialogFlag: 2,
+      effectiveDate: '',
+      goodsRow: [],
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
@@ -248,11 +343,14 @@ export default {
         imageUrl: ``
       },
       param: {
-        bargainType: '1',
-        freeFreight: '运费设置',
-        bargainMoney: '单次帮砍金额'
+        // 默认值
+        bargainType: '0',
+        freeFreight: '1',
+        expectationNumber: 100,
+        bargainMoneyType: '0',
+        stock: 0,
+        floorPrice: 0
       },
-      imgLists: [],
       shareConfig: {
         'share_action': 1,
         'share_doc': '',
@@ -262,37 +360,83 @@ export default {
     }
   },
   methods: {
-    submit () {
-      console.log(this.shareConfig)
-      // this.coupon_info.forEach(element => {
-      //   var voucher = {}
-      //   voucher.voucherId = element.id
-      //   voucher.totalAmount = element.send_num
-      //   voucher.immediatelyGrantAmount = element.coupon_set.immediatelyGrantAmount
-      //   voucher.timingAmount = element.coupon_set.timingAmount
-      //   voucher.timingEvery = element.coupon_set.timingEvery
-      //   voucher.timingTime = element.coupon_set.timingTime
-      //   voucher.timingUnit = element.coupon_set.timingUnit
-      //   this.param.couponPackVoucher.push(voucher)
-      // })
-      // this.param.startTime = this.effectiveDate[0]
-      // this.param.endTime = this.effectiveDate[1]
-      // addBargain(this.param).then((res) => {
-      //   if (res.error === 0) {
-      //     this.$message({
-      //       type: 'success',
-      //       message: '保存成功!'
-      //     })
-      //     this.$router.push({
-      //       name: 'coupon_package'
-      //     })
-      //   } else {
-      //     this.$message({
-      //       type: 'fail',
-      //       message: '保存失败!'
-      //     })
-      //   }
-      // })
+    // 选择优惠券弹窗-帮忙砍价的用户
+    handleToCallDialog1 () {
+      this.dialogFlag = 1
+      let couponList = []
+      this.mrkingVoucherId.forEach((item, index) => {
+        let coupon = {}
+        coupon.id = item
+        couponList.push(coupon)
+      })
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: couponList
+      }
+      this.$http.$emit('V-AddCoupon', obj)
+    },
+    // 选择优惠券弹窗-砍价失败后向买家赠送
+    handleToCallDialog2 () {
+      this.dialogFlag = 2
+      let couponList = []
+      this.rewardCouponId.forEach((item, index) => {
+        let coupon = {}
+        coupon.id = item
+        couponList.push(coupon)
+      })
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: couponList
+      }
+      this.$http.$emit('V-AddCoupon', obj)
+    },
+    // 确认选择优惠券-新增-删除
+    handleToCheck (data) {
+      if (this.dialogFlag === 2) {
+        this.rewardCouponId = this.formatCoupon(data)
+      } else {
+        this.mrkingVoucherId = this.formatCoupon(data)
+      }
+    },
+    // 添加优惠券初始项
+    formatCoupon (data) {
+      let arr = []
+      data.map(item => {
+        arr.push(item.id)
+      })
+      return arr
+    },
+    // 选择商品弹窗
+    showChoosingGoods () {
+      this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
+    },
+    //  选择商品弹窗确认
+    choosingGoodsResult (row) {
+      this.param.goodsId = row.goodsId
+      this.goodsRow = []
+      this.goodsRow.push(row)
+      this.param.stock = this.goodsRow[0].goodsNumber
+    },
+    addSubmit () {
+      this.param.shareConfig = this.shareConfig
+      this.param.startTime = this.effectiveDate[0]
+      this.param.endTime = this.effectiveDate[1]
+      addBargain(this.param).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+          this.$router.push({
+            name: 'bargain'
+          })
+        } else {
+          this.$message({
+            type: 'fail',
+            message: '保存失败!'
+          })
+        }
+      })
     }
   }
 }
