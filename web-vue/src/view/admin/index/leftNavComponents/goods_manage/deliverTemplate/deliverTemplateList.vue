@@ -1,7 +1,7 @@
 <template>
   <!-- 运费模板列表 -->
   <div class="deliverTemplateList">
-
+    <el-button @click="handleDelTemplate">删除运费模板</el-button>
     <section class="wrap">
       <section>
         <el-form
@@ -94,7 +94,6 @@
         <section class="table_list">
           <!-- 表格 -->
           <el-table
-            :data="lists"
             border
             style="width: 100%"
           >
@@ -143,7 +142,7 @@
   </div>
 </template>
 <script>
-import { fetchDeliverTemplateList, deliverConfig } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { fetchDeliverTemplateList, deliverConfig, deliverDelete } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   name: 'deliverTemplateList',
@@ -204,7 +203,12 @@ export default {
     this.initPriceData()
   },
   methods: {
-
+    // 删除运费模板
+    handleDelTemplate () {
+      deliverDelete({
+        'deliverTemplateId': '21'
+      }).then(res => { console.log(res) }).catch(err => console.log(err))
+    },
     // 选中运费模板的时候
     handleChange (val) {
       switch (val) {
@@ -231,12 +235,13 @@ export default {
       fetchDeliverTemplateList({}).then(res => {
         const { error, content: { config, pageResult: { dataList } } } = res
         if (error === 0) {
+          console.log(res[`content`][`pageResult`][`dataList`])
           this.content = res.content
           this.formData = JSON.parse(config)
           let resData = this.formatTemplateContent(dataList)
-          console.log(resData)
+          // console.log(resData)
           this.lists = resData
-          console.log(this.lists)
+          // console.log(this.lists)
         }
       }).catch(err => console.log(err))
     },

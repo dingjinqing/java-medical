@@ -24,7 +24,7 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    console.log(config.url.split('/')[2])
+    // console.log(config.url.split('/')[2])
 
     config.headers['Content-Type'] = localStorage.getItem('contentType')
     // console.log(Cookies.get('V-Token'))
@@ -52,17 +52,17 @@ service.interceptors.request.use(
 // respone拦截器
 service.interceptors.response.use(
   response => {
-    console.log(response)
+    // console.log(response)
     const res = response
     let flag = localStorage.getItem('V-overallFlag')
     // console.log(flag, res)
-    console.log(res)
+    // console.log(res)
     if (res) {
       switch (res.status) {
         // 成功
         case 200:
           if (res.data.error === 100004 && flag !== 'false') {
-            console.log(res)
+            // console.log(res)
             Message.error({
               message: res.data.message,
               showClose: true
@@ -95,7 +95,7 @@ service.interceptors.response.use(
     return res
   },
   error => {
-    console.log(2, error)
+    // console.log(2, error)
     let flag = localStorage.getItem('V-overallFlag')
 
     if (error && error.response) {

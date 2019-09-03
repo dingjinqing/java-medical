@@ -8,25 +8,25 @@
       <!-- 运费模板列表 -->
       <el-tab-pane
         label="运费模板列表"
-        name="first"
+        name="0"
       >
       </el-tab-pane>
       <!-- 重量运费模板列表 -->
       <el-tab-pane
         label="重量运费模板列表"
-        name="second"
+        name="1"
       >
       </el-tab-pane>
       <!-- 添加运费模板 -->
       <el-tab-pane
         label="添加运费模板"
-        name="third"
+        name="2"
       >
       </el-tab-pane>
       <!-- 添加重量运费模板-->
       <el-tab-pane
         label="添加重量运费模板"
-        name="fourth"
+        name="3"
       >
       </el-tab-pane>
     </el-tabs>
@@ -37,19 +37,38 @@ export default {
   name: 'deliverTemplateHeader',
   data () {
     return {
-      activeName: 'first'
+      activeName: '0'
+    }
+  },
+  created () {
+    this.refresh()
+  },
+  watch: {
+    'activeName' (val) {
+      switch (val) {
+        case '0': this.$router.push({ name: `deliverTemplateList` }); break
+        case '1': this.$router.push({ name: `deliverTemplateWeightList` }); break
+        case '2': this.$router.push({ name: `deliverTemplateAdd` }); break
+        case '3': this.$router.push({ name: `deliverTemplateWeightAdd` }); break
+        default: break
+      }
     }
   },
   methods: {
-    // 点击头部跳转路由
-    handleClick (tab, event) {
-      switch (tab.name) {
-        case 'first': this.$router.push({ name: `deliverTemplateList` }); break
-        case 'second': this.$router.push({ name: `deliverTemplateWeightList` }); break
-        case 'third': this.$router.push({ name: `deliverTemplateAdd` }); break
-        case 'fourth': this.$router.push({ name: `deliverTemplateWeightAdd` }); break
+    // 刷新的时候锁定el-tab-pane
+    refresh () {
+      switch (this.$route.name) {
+        case 'deliverTemplateList': this.activeName = `0`; break
+        case 'deliverTemplateWeightList': this.activeName = `1`; break
+        case 'deliverTemplateAdd': this.activeName = `2`; break
+        case 'deliverTemplateWeightAdd': this.activeName = `3`; break
         default: break
       }
+    },
+    // 点击头部跳转路由
+    handleClick (tab, event) {
+      // console.log(tab.name)
+
     }
   }
 }
