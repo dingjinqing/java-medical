@@ -20,7 +20,7 @@
       </el-tabs>
 
     </div>
-    <addGroupBuy v-if="tableListView===false" />
+    <addGroupBuy ref="addGroupBuy" v-if="tableListView===false"  :editData="editData"/>
     <div
       class="table_list"
       v-if="tableListView"
@@ -86,20 +86,44 @@
           label="操作"
           align="center"
         >
-          <template slot-scope="scope">
+          <template slot-scope="scope" >
             <div class="opt">
-              <span>编辑</span>
-              <span>分享</span>
-              <span
-                @click="changeStatus(scope.row.id)"
-                v-if="scope.row.status==0"
-              > 停用</span>
-              <span
-                @click="changeStatus(scope.row.id)"
-                v-if="scope.row.status==1"
-              > 启用</span>
-              <span>领取明细</span>
-              <span @click="deleteGroupBuy(scope.row.id)">删除</span>
+              <el-tooltip content="编辑" placement="top">
+                <span class="el-icon-edit-outline" @click="editActivity(scope.row.id)"></span>
+              </el-tooltip>
+              <el-tooltip content="分享" placement="top">
+                <span class="el-icon-share"></span>
+              </el-tooltip>
+              <el-tooltip content="停用" placement="top">
+              <span   class="el-icon-circle-close"
+                      @click="changeStatus(scope.row.id)"
+                      v-if="scope.row.status==1"
+              > </span>
+              </el-tooltip>
+              <el-tooltip content="启用">
+              <span  class="el-icon-circle-check"
+                      @click="changeStatus(scope.row.id)"
+                      v-if="scope.row.status==0"
+              > </span>
+              </el-tooltip>
+              <el-tooltip content="删除" placement="top">
+                <span class="el-icon-delete" @click="deleteGroupBuy(scope.row.id)"></span>
+              </el-tooltip>
+              <el-tooltip content="参团明细" placement="top">
+                <span class="el-icon-tickets"></span>
+              </el-tooltip>
+              <el-tooltip content="查看拼团订单" placement="top">
+                <span class="el-icon-s-unfold"></span>
+              </el-tooltip>
+              <el-tooltip content="活动新用户" placement="top">
+                <span class="el-icon-user-solid"></span>
+              </el-tooltip>
+              <el-tooltip content="退款失败订单" placement="top">
+                <span class="el-icon-warning"></span>
+              </el-tooltip>
+              <el-tooltip content="活动效果" placement="top">
+                <span class="el-icon-s-data"></span>
+              </el-tooltip>
             </div>
           </template>
         </el-table-column>
@@ -121,7 +145,8 @@ import pagination from '@/components/admin/pagination/pagination.vue'
 import {
   groupBuyList,
   changeStatusActivity,
-  deleteGroupBuyActivity
+  deleteGroupBuyActivity,
+  getGroupBuyDetail
 } from '@/api/admin/marketManage/spellGroup.js'
 
 export default {
@@ -133,6 +158,7 @@ export default {
     return {
       pageParams: {},
       tableData: [],
+      editData: [],
       tabSwitch: '2',
       tabInfo: [{
         title: '全部砍价活动',
@@ -182,8 +208,6 @@ export default {
         this.tabInfo = this.tabInfo.filter(tab => tab.name !== '6')
       }
       groupBuyList(obj).then(res => {
-        console.log(res.content.dataList)
-        console.log(res)
         console.log(res.content.page)
         console.log(res.content.page.pageRows)
         this.pageParams = res.content.page
@@ -235,9 +259,30 @@ export default {
       })
       this.tableListView = false
       this.tabSwitch = '6'
+    },
+    // 编辑
+    editActivity (id) {
+      console.log('编辑', id)
+      this.tabInfo.push({
+        title: '编辑活动',
+        name: '6',
+        content: 'edit tab content'
+      })
+      let obj = {
+        id: id
+      }
+      this.tableListView = false
+      this.tabSwitch = '6'
+
+      getGroupBuyDetail(obj).then(res => {
+        console.log('拼团详情', res)
+        this.editData = res.content
+        this.$refs.addGroupBuy.editActivityInit(res.content)
+      })
     }
   }
 }
+
 </script>
 <style lang="scss" scoped>
 .content {
@@ -255,11 +300,6 @@ export default {
 
 .p_top_right {
   display: flex;
-
-  /deep/ .el-button {
-    padding: none;
-    height: 32px;
-  }
 
   span {
     white-space: nowrap;

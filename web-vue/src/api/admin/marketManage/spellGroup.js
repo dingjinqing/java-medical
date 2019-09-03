@@ -10,6 +10,15 @@ export function groupBuyList (data) {
 }
 
 // 添加团购活动
+export function getGroupBuyDetail (data) {
+  return service({
+    url: '/api/admin/market/groupbuy/detail',
+    method: 'post',
+    data: data
+  })
+}
+
+// 添加团购活动
 export function addGroupBuyActivity (data) {
   return service({
     url: '/api/admin/market/groupbuy/add',

@@ -7,8 +7,8 @@
         <el-form ref="form" :model="form" :rules="fromRules" label-width="150px" :label-position="'right'">
             <el-form-item label="拼团活动" prop="resource">
                 <el-radio-group v-model="form.activityType">
-                    <el-radio  :label = 1>普通拼团</el-radio>
-                    <el-radio  :label = 2>老带新拼团</el-radio>
+                    <el-radio :label=1>普通拼团</el-radio>
+                    <el-radio :label=2>老带新拼团</el-radio>
                 </el-radio-group>
                 <div class="prompt">
                     开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。
@@ -25,13 +25,13 @@
                     <el-input :disabled="true"
                               v-model="goodsRow.goodsName"
                               v-if="goodsRow.ischecked"></el-input>
-                    <el-input :disabled="true" v-model="form.goodsId"></el-input>
+                    <el-input :disabled="true" v-if="false" v-model="form.goodsId"></el-input>
                 </el-col>
             </el-form-item>
             <el-form-item label="团长优惠">
                 <el-switch v-model="form.isGrouperCheap"
-                           active-value=1
-                           inactive-value=0
+                           :active-value =  1
+                           :inactive-value =  0
                 ></el-switch>
                 <div class="prompt">开启团长(开团人)优惠后，团长将享受更优惠价格，有助于提高开团率和成团率。
                     <p>
@@ -52,36 +52,53 @@
                     >
                     </el-table-column>
                     <el-table-column
-                            prop="goodsName"
+                            prop="prdPrice"
                             label="原价（元）"
                     >
                     </el-table-column>
                     <el-table-column
-                            prop=""
+                            prop="groupPrice"
                             label="拼团价（元）"
                     >
+                        <template slot="header" slot-scope="scope" >
+                            <span>拼团价（元）</span>
+                            <el-button @click="setCurrent(1)"  size="mini" icon="el-icon-edit">批量</el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.groupPrice"/>
+                        </template>
                     </el-table-column>
-                    <el-table-column v-if="form.isGrouperCheap"
-                                     prop=""
+                    <el-table-column v-if="form.isGrouperCheap === 1"
+                                     prop="grouperPrice"
                                      label="团长优惠价（元）"
                     >
+                        <template slot="header" slot-scope="scope">
+                            <span>团长优惠价（元）</span>
+
+                            <el-button @click="setCurrent(2)"  size="mini" icon="el-icon-edit">批量</el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.grouperPrice"/>
+                        </template>
                     </el-table-column>
                     <el-table-column
-                            prop=""
+                            prop="prdNumber"
                             label="原库存"
                     >
                     </el-table-column>
                     <el-table-column
-                            prop=""
+                            prop="stock"
                             label="拼团库存"
                     >
+                        <template slot="header" slot-scope="scope">
+                            <span>拼团库存</span>
+                            <el-button @click="setCurrent(3)"  size="mini" icon="el-icon-edit">批量</el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.stock"/>
+                        </template>
                     </el-table-column>
                 </el-table>
-                <div>
-                    <el-button @click="setCurrent(1)">批量设置拼团价</el-button>
-                    <el-button @click="setCurrent(2)">批量设置拼团库存</el-button>
-                    <el-button @click="setCurrent(3)">批量设置团长优惠价（元）</el-button>
-                </div>
             </el-form-item>
 
             <el-form-item label="有效期">
@@ -90,7 +107,7 @@
                         type="datetimerange"
                         @change="dateChange(validityDate)"
                         :picker-options="pickerOptions"
-                        range-separator="至"
+                        range-separator="~"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         align="right"
@@ -107,66 +124,66 @@
                 <div class="prompt">不可小于2人,保存后不可编辑</div>
             </el-form-item>
             <el-form-item label="下单商品数量">
-            <div class="prompt">  单次下单购买拼团商品数量最小 </div>
-            <el-input-number
-                    v-model="form.limitBuyMinNum"
-                    controls-position="right"
-                    :min="0"
-            ></el-input-number>
-            <div class="prompt">件 请填写正整数，不填或为0表示不限制数量 </div>
-        </el-form-item>
-            <el-form-item  >
-                <div class="prompt">  单次下单购买拼团商品数量最大 </div>
+                <div class="prompt"> 单次下单购买拼团商品数量最小</div>
                 <el-input-number
-                        v-model="form.limitBuyMaxNum"
+                        v-model="form.limitBuyNum"
                         controls-position="right"
                         :min="0"
                 ></el-input-number>
-                <div class="prompt">件 请填写正整数，不填或为0表示不限制数量 </div>
+                <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
+            </el-form-item>
+            <el-form-item>
+                <div class="prompt"> 单次下单购买拼团商品数量最大</div>
+                <el-input-number
+                        v-model="form.limitMaxNum"
+                        controls-position="right"
+                        :min="0"
+                ></el-input-number>
+                <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
             </el-form-item>
             <el-form-item label="参团限制">
-                <div class="prompt">   每人最多参加   </div>
+                <div class="prompt"> 每人最多参加</div>
                 <el-input-number
                         v-model="form.joinLimit"
                         controls-position="right"
                         :min="0"
                 ></el-input-number>
-                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制参与其他用户所开的团的数量 </div>
+                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制参与其他用户所开的团的数量</div>
             </el-form-item>
             <el-form-item label="开团限制">
-                <div class="prompt"> 每人最多开启 </div>
+                <div class="prompt"> 每人最多开启</div>
                 <el-input-number
                         v-model="form.openLimit"
                         controls-position="right"
                         :min="0"
                 ></el-input-number>
-                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制同一用户的开团数量  </div>
+                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制同一用户的开团数量</div>
             </el-form-item>
-            <el-form-item  label="默认成团">
-            <el-switch v-model="form.isDefault"
-                       active-value=1
-                       inactive-value=0
-            ></el-switch>
-                <div class="prompt">开启默认成团后，24小时内人数未满的团，系统将会模拟“匿名买家”凑满人数，使该团成团。 你只需要对已付款参团的真实买家发货。建议合理开启，以提高成团率 </div>
+            <el-form-item label="默认成团">
+                <el-switch v-model="form.isDefault"
+                           :active-value=1
+                           :inactive-value=0
+                ></el-switch>
+                <div class="prompt">开启默认成团后，24小时内人数未满的团，系统将会模拟“匿名买家”凑满人数，使该团成团。 你只需要对已付款参团的真实买家发货。建议合理开启，以提高成团率</div>
             </el-form-item>
             <el-form-item label="运费设置">
-                <el-radio-group v-model="form.freeFreight">
-                    <el-radio label=1 >免运费</el-radio>
-                    <el-radio label=2>使用原商品运费模板</el-radio>
+                <el-radio-group v-model="form.shippingType">
+                    <el-radio :label=1>免运费</el-radio>
+                    <el-radio :label=2>使用原商品运费模板</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="鼓励奖">
 
             </el-form-item>
             <el-form-item label="活动分享">
-                <el-radio-group v-model="form.share">
-                    <el-radio label="默认 "></el-radio>
-                    <el-radio label="自定义样式"></el-radio>
+                <el-radio-group v-model="shareType">
+                    <el-radio :label=1 >默认</el-radio>
+                    <el-radio :label=2 >自定义样式</el-radio>
                 </el-radio-group>
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="submitForm(form)">立即创建</el-button>
+                <el-button type="primary" @click="submitForm(form)">{{submitText}}</el-button>
             </el-form-item>
         </el-form>
         <choosingGoods
@@ -179,7 +196,10 @@
 import {mapActions} from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { getGoodsProductList } from '@/api/admin/brandManagement.js'
+import {getAllGoodsProductList} from '@/api/admin/brandManagement.js'
+import {addGroupBuyActivity} from '@/api/admin/marketManage/spellGroup.js'
+import { format } from '@/util/date'
+
 export default {
   components: {
     wrapper,
@@ -198,13 +218,13 @@ export default {
         isDefault: 0,
         startTime: '',
         endTime: '',
-        stock: '',
-        freeFreight: 1,
+        shippingType: 1,
         activityType: 1,
         isGrouperCheap: 0,
         rewardCouponId: '',
-        limitBuyMaxNum: 0,
-        limitBuyMinNum: 0,
+        limitMaxNum: 0,
+        limitBuyNum: 0,
+        shareType: 1,
         share: {},
         product: [{}]
       },
@@ -221,8 +241,6 @@ export default {
       // 选中商品id
       goodsRow: {},
       goodsIds: [],
-      goodsName: '',
-      // 规格表数据
       // 时间控件
       pickerOptions: {
         shortcuts: [{
@@ -251,7 +269,9 @@ export default {
           }
         }]
       },
-      validityDate: ''
+      validityDate: [],
+      props: ['editData'],
+      submitText: 'submitText'
     }
   },
   mounted () {
@@ -263,8 +283,16 @@ export default {
     submitForm (formName) {
       this.$refs['form'].validate((valid) => {
         console.log('submit', formName)
+        console.log('this.form', this.form)
         if (valid) {
-          this.success('submit!')
+          addGroupBuyActivity(this.form).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.success(res.content)
+            } else {
+              this.fail(res.message)
+            }
+          })
         } else {
           this.fail('error submit!!')
           return false
@@ -277,18 +305,6 @@ export default {
       console.log('初始化商品弹窗', this.form.goodsId)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
     },
-
-    nextStep () {
-      if (!this.validateParam()) {
-        return
-      }
-      this.step++
-      this.transmitEditGoodsId(this.form.goodsId)
-    },
-    lastStep () {
-      this.step--
-      this.transmitEditGoodsId(this.form.goodsId)
-    },
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log('获取商品行', row)
@@ -298,17 +314,17 @@ export default {
       console.log('tmpGoodsIds', this.form.goodsId)
       // 初始化规格表格
       let obj = {
-        goodsId: this.form.goodsId,
-        currentPage: 1,
-        pageRows: 1024
+        goodsId: this.form.goodsId
       }
-      getGoodsProductList(obj).then(res => {
-        console.log('product', res.content.dataList)
-        this.form.product = res.content.dataList
+      getAllGoodsProductList(obj).then(res => {
+        console.log('product', res.content)
+        this.form.product = res.content
       })
     },
     // 活动时间时间选择
     dateChange (date) {
+      this.form.startTime = date[0]
+      this.form.endTime = date[1]
       console.log(date)
     },
     fail (message) {
@@ -324,6 +340,53 @@ export default {
         message,
         type: 'success'
       })
+    },
+    // 设置数据
+    setCurrent (index) {
+      // 拷贝一份数据
+      let price = JSON.parse(JSON.stringify(this.form.product))
+      switch (index) {
+        case 1:
+          price.forEach(row => {
+            row.groupPrice = price[0].groupPrice
+          })
+          break
+        case 2:
+          price.forEach(row => {
+            row.grouperPrice = price[0].grouperPrice
+          })
+          break
+        case 3:
+          price.forEach(row => {
+            row.stock = price[0].stock
+          })
+          break
+      }
+      this.form.product = price
+    },
+    // 编辑活动初始化
+    editActivityInit (data) {
+      console.log('编辑活动初始化', data)
+      console.log('活动名称', this.form.name)
+      this.goodsRow.goodsName = data.goodsName
+      this.validityDate = [format(data.startTime), format(data.endTime)]
+      this.form.name = data.name
+      this.form.goodsId = data.goodsId
+      this.form.limitAmount = data.limitAmount
+      this.form.joinLimit = data.joinLimit
+      this.form.openLimit = data.openLimit
+      this.form.isDefault = data.isDefault
+      this.form.startTime = data.startTime
+      this.form.endTime = data.endTime
+      this.form.shippingType = data.shippingType
+      this.form.activityType = data.activityType
+      this.form.isGrouperCheap = data.isGrouperCheap
+      this.form.rewardCouponId = data.rewardCouponId
+      this.form.limitMaxNum = data.limitMaxNum
+      this.form.limitBuyNum = data.limitBuyNum
+      this.form.share = []
+      this.form.product = data.productList
+      console.log(this.form)
     }
   }
 }
