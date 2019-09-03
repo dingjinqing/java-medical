@@ -126,4 +126,14 @@ public class AdminMemberCardController extends AdminBaseController {
 	}
 	
 	
+	/**
+	 * 获取所有专属会员卡弹窗
+	 */
+	@PostMapping("/card/exclusive/get")
+	public JsonResult getCardExclusive() {
+		logger.info("获取所有专享会员卡弹窗");
+		List<CardBasicVo> allUserCard = shop().member.card.getCardExclusive();
+		return success(allUserCard);
+	}
+	
 }
