@@ -78,7 +78,9 @@
         <div class="decMiddle">
           <div class="decTop"></div>
           <div class="decContent">
+            <div class="drag_area">
 
+            </div>
           </div>
         </div>
         <!-- <div class="decRight">
@@ -283,7 +285,7 @@ export default {
     },
     // 拖拽开始start处理函数
     highlignt_row_item (pos) {
-      let p = $('.decContent').offset()
+      let p = $('.drag_area').offset()
       console.log(p)
       let flag = false
       if (pos.left > p.left && pos.top > p.top &&
