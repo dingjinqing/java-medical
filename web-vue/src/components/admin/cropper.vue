@@ -184,10 +184,10 @@ export default {
         remoteImgPath: this.imgPath,
         cropWidth: this.cropperTopInput_one,
         cropHeight: this.cropperTopInput_two,
-        x: this.cropMovingX,
-        y: this.cropMovingY,
-        w: this.previews.w,
-        h: this.previews.h,
+        x: parseInt(this.cropMovingX),
+        y: parseInt(this.cropMovingY),
+        w: parseInt(this.previews.w),
+        h: parseInt(this.previews.h),
         imgScaleW: 98,
         imgCatId: this.imgCatId,
         remoteImgId: this.imgID
@@ -211,8 +211,8 @@ export default {
       this.dialogVisible = false
     },
     cropMoving (data) {
-      // console.log(data)
-      this.cropMovingX = data.axis.x1 - 25.70224719101124
+      console.log(data)
+      this.cropMovingX = data.axis.x1
       this.cropMovingY = data.axis.y1
     }
   }

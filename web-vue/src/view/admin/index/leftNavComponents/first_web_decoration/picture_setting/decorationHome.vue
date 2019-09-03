@@ -245,20 +245,45 @@ export default {
       }, {
         name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
         value: '瓜分积分4'
-      }]
+      }],
+      positionX: 0,
+      positionY: 0
     }
   },
   directives: {
     drag: {
-      bind: function (el) {
+      bind: function (el, binding) {
         let oDiv = el
         oDiv.onmousedown = (e) => {
           console.log(e)
+          // 算出鼠标相对元素的位置
+          // let disX = e.clientX - oDiv.offsetLeft
+          // let disY = e.clientY - oDiv.offsetTop
+          // document.onmousemove = (e) => {
+          //   // 用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
+          //   let left = e.clientX - disX - 10
+          //   let top = e.clientY - disY - 20
+
+          //   // 绑定元素位置到positionX和positionY上面
+          //   // this.positionX = top
+          //   // this.positionY = left
+          //   console.log(binding)
+          // 移动当前元素
+          //   oDiv.style.left = left + 'px'
+          //   oDiv.style.top = top + 'px'
+          // }
+          // document.onmouseup = (e) => {
+          //   document.onmousemove = null
+          //   document.onmouseup = null
+          // }
         }
       }
     }
   },
   methods: {
+    changeData (x, y) {
+      console.log(x, y)
+    }
   }
 }
 </script>
@@ -290,7 +315,6 @@ export default {
         padding: 0 2px;
 
         .picTextConDivList {
-          overflow: hidden;
           float: left;
           border: 1px solid #e5e5e5;
           background: #f8f8f8;
