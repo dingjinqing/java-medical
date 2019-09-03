@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -125,6 +126,13 @@ public class AdminWechatApiController extends AdminBaseController {
 		//查询已绑定的公众号信息
 		Record officialAccount = saas.shop.officeAccount.getOfficeAccountByAppIdRecord(record.getLinkOfficialAppId());
 		into.setOfficialList(officialList);
+		//最新版本id
+		MpVersionRecord mpRecord = saas.shop.mpVersion.getCurrentUseVersion(record.getAppId(),(byte)1);
+		into.setCurrentTemplateId(mpRecord.getTemplateId());
+		into.setCurrentUserVersion(mpRecord.getUserVersion());
+		//当前版本名字
+		MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
+		into.setBindUserVersion(row.getUserVersion());
 		if(officialAccount!=null) {
 			into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
 		}
