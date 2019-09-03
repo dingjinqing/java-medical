@@ -22,7 +22,7 @@ export function goodsSortAndGoodsBrandInitApi () {
   })
 }
 // 商品新增，发送请求分为有sku和无sku两个示例
-export function goodsList (data) {
+export function addGoodsApi (data) {
   return service({
     url: `/api/admin/goods/add`,
     method: 'post',
@@ -46,5 +46,13 @@ export function getLevelCardList () {
     data: {
       cardType: 2
     }
+  })
+}
+
+// 获取所有可设置为会员专享的卡，普通卡和等级卡
+export function getExclusiveCardList () {
+  return service({
+    url: `/api/admin/member/card/exclusive/get`,
+    method: 'post'
   })
 }

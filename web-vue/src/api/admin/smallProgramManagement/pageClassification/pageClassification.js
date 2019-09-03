@@ -9,6 +9,11 @@ export function getPageclassificationData (data) {
   })
 }
 
+// 获取页面分类下拉列表
+export function getPageClassificationList () {
+  // TODO: 需要后台接口
+}
+
 // 页面分类添加
 export function addPageclassification (data) {
   return service({

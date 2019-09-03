@@ -1,251 +1,262 @@
 <template>
-  <!-- 编辑分销信息 -->
-  <div class="addingGoodsDistributionInfo">
-    <el-form
-      ref="form"
-      :model="formData"
-      label-width="120px"
-    >
-      <!-- 分销改价 -->
+  <div>
+    <el-form ref="goodsDistributionInfoForm" :model="goodsDistributionInfo" label-width="120px">
       <el-form-item label="分销改价：">
-        <el-checkbox v-model="checked">允许分销员分销商品时修改商品售价</el-checkbox>
-        <!-- 允许分销员分销商品时修改商品售价 -->
-        <section
-          class="modify_price"
-          v-show="checked"
-        >
-          <section class="modify_price_header">
-            <section>建议售价(元)</section>
-            <section>最低售价(元)</section>
-            <section>最高售价（元）</section>
-          </section>
-          <section class="ipts">
-            <el-input
-              size="small"
-              style="width:200px"
-              v-model="formData.advisePrice"
-              placeholder="建议售价为"
-            ></el-input>
-
-            <el-input
-              size="small"
-              style="width:200px"
-              v-model="formData.miniPrice"
-              placeholder="最低售价为"
-            ></el-input>
-
-            <el-input
-              style="width:200px"
-              size="small"
-              v-model="formData.maxPrice"
-              placeholder="最高售价为"
-            ></el-input>
-          </section>
-        </section>
-
+        <el-checkbox v-model="goodsDistributionInfo.canRebate">允许分销员分销商品时修改商品售价</el-checkbox>
+        <template v-if="goodsDistributionInfo.canRebate">
+          <div v-if="goodsProductInfoData.specInfoSwitch" style="border: 1px solid #ccc;padding: 10px;">
+            <table>
+              <tr>
+                <th></th>
+                <th>规格价格(元)</th>
+                <th>建议售价(元)</th>
+                <th>最低售价(元)</th>
+                <th>最高售价（元）</th>
+              </tr>
+              <tr
+                v-for="(item,index) in goodsDistributionInfo.goodsRebatePrices"
+                :key="index"
+              >
+                <td>{{item.prdDescTemp}}</td>
+                <td>{{item.prdPrice}}</td>
+                <td><input type="text" v-model.number="item.advisePrice"/></td>
+                <td><input type="text" v-model.number="item.minPrice"/></td>
+                <td><input type="text" v-model.number="item.maxPrice"/></td>
+              </tr>
+            </table>
+            <p style="text-align: right;line-height: 10px;margin-top: 20px;">
+              <span style="font-size: 14px;">批量设置：</span>
+              <el-link size="small" :underline="false" @click="setLowestPrice">最低售价</el-link>
+              <el-link size="small" :underline="false" @click="setHighestPrice">最高售价</el-link>
+            </p>
+          </div>
+          <div v-else style="border: 1px solid #ccc;padding: 10px;">
+            <table>
+              <tr>
+                <th>商品价格(元)</th>
+                <th>建议售价(元)</th>
+                <th>最低售价(元)</th>
+                <th>最高售价（元）</th>
+              </tr>
+              <tr
+                v-for="(item,index) in goodsDistributionInfo.goodsRebatePrices"
+                :key="index"
+              >
+                <td>{{item.prdPrice}}</td>
+                <td><input type="text" v-model.number="item.advisePrice"/></td>
+                <td><input type="text" v-model.number="item.minPrice"/></td>
+                <td><input type="text" v-model.number="item.maxPrice"/></td>
+              </tr>
+            </table>
+          </div>
+        </template>
       </el-form-item>
-      <!-- 分销推广语言 -->
       <el-form-item label="分销推广语：">
-        <section class="switchWrap">
-          <section class="switch">
-            <!-- 开关 -->
-            <el-switch
-              style="display: block"
-              v-model="promotionLanguageSwitch"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="已开启"
-              inactive-text="已关闭"
-            >
-            </el-switch>
-          </section>
-          <section style="color:#999">分销员下载当前商品海报时将直接复制此推广语到手机剪贴板</section>
-        </section>
-        <!-- 推广语言内容 -->
-        <section
-          class="promotional_content"
-          v-show="promotionLanguageSwitch"
-        >
-          <section class="content">推广语内容:</section>
-          <section>
-            <el-input
-              style="width:400px"
-              type="textarea"
-              :autosize="{ minRows: 5,}"
-              placeholder="请输入推广语内容"
-              v-model="formData.promotionLanguage"
-              maxlength="200"
-              show-word-limit
-            >
-            </el-input>
-          </section>
-        </section>
+        <el-switch v-model="goodsDistributionInfo.promotionLanguageSwitch" />
+        <span>{{goodsDistributionInfo.promotionLanguageSwitch?'已开启':'已关闭'}}</span>
+        <span style="color: #999;margin-left: 10px;">分销员下载当前商品海报时将直接复制此推广语到手机剪贴板</span>
+        <div v-show="goodsDistributionInfo.promotionLanguageSwitch" style="display: flex;align-items: flex-start">
+          <span style="line-height: 20px;">推广语内容：</span>
+          <el-input ref="promotionLanguageInput" type="textarea" v-model="goodsDistributionInfo.promotionLanguage" placeholder="请输入" resize="none" :maxlength="200" show-word-limit :rows="8" style="width:400px;"/>
+        </div>
       </el-form-item>
-      <!-- 商品分享海报 -->
-      <el-form-item label="商品分享海报:">
-        <!-- 默认样式 -->
-        <section>
-          <el-radio
-            v-model="radioList.radio1"
-            label="默认样式"
-          ><span style="margin-right:10px">默认样式</span>
-            <el-popover
-              placement="right-start"
-              width="220"
-              trigger="hover"
-            >
-              <el-image :src="srcList.src1"></el-image>
-              <el-button
-                slot="reference"
-                type="text"
-                style="margin-right:20px"
-              >查看示例</el-button>
-            </el-popover>
-            <el-popover
-              placement="right-start"
-              width="220"
-              trigger="hover"
-            >
-
-              <el-image :src="srcList.src2"></el-image>
-              <el-button
-                slot="reference"
-                type="text"
-              >下载海报</el-button>
-            </el-popover>
-          </el-radio>
-        </section>
-        <!-- 自定义样式 -->
-        <section class="customize">
-          <el-radio
-            v-model="radioList.radio1"
-            label="自定义样式"
-          >自定义样式</el-radio>
-        </section>
-        <!-- 文案 -->
-        <section class="copywriting">
-          <span>文案：</span>
-          <el-input
-            size="small"
-            v-model="formData.copywriting"
-            placeholder="请输入15个以内的字符"
-            style="width:220px"
-          ></el-input>
-        </section>
-        <!-- 分享图 -->
-        <section class="share_img">
-          <section>分享图：</section>
-          <section class="">
-            <!-- 商品主图 -->
-            <section>
-              <el-radio
-                v-model="radioList.radio2"
-                label="商品主图"
-              >商品主图</el-radio>
-            </section>
-            <!-- 自定义图片 -->
-            <section>
-              <el-radio
-                v-model="radioList.radio2"
-                label="自定义图片"
-              >自定义图片</el-radio>
-            </section>
-            <!-- Image -->
-            <section class="img">
-              <section class="image_wrap">
-                <el-image
-                  style="width: 70px; height: 70px"
-                  :src="srcList.imageUrl"
-                  fit="fill"
-                ></el-image>
-              </section>
-            </section>
-          </section>
-        </section>
+      <el-form-item label="商品分享海报：">
+        <!--默认样式-->
+        <div>
+          <el-radio v-model="goodsDistributionInfo.shareAction" :label="1" style="margin-right: 15px;">默认样式</el-radio>
+          <el-popover placement="right-start" trigger="hover">
+            <el-image :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle1.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
+            <span slot="reference" style="color:#409EFF;cursor:pointer;">查看示例</span>
+          </el-popover>
+          <el-popover placement="right-start" trigger="hover" style="margin-left: 10px;">
+            <el-image :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
+            <span slot="reference" style="color:#409EFF;cursor:pointer;">下载海报</span>
+          </el-popover>
+        </div>
+        <!--自定义样式-->
+        <div>
+          <el-radio v-model="goodsDistributionInfo.shareAction" :label="2" style="margin-right: 15px;">自定义样式</el-radio>
+        </div>
+        <!--文案-->
+        <div>
+          <span style="width:70px;display:inline-block;">文案：</span>
+          <el-input ref="shareDocInput" v-model="goodsDistributionInfo.shareDoc" :disabled="goodsDistributionInfo.shareAction === 1" size="small" placeholder="请输入15个以内的字符" style="width:220px;"/>
+        </div>
+        <!--分享图-->
+        <div>
+          <span style="width:70px;display:inline-block;">分享图：</span>
+          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="1" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">商品主图</el-radio>
+        </div>
+        <div>
+          <span style="width:70px;display:inline-block;"></span>
+          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="2" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">自定义图片</el-radio>
+        </div>
+        <div>
+          <span style="width:70px;display:inline-block;"></span>
+          <el-image v-if="goodsDistributionInfo.shareImgUrl === null" @click="addGoodsImg"  fit="scale-down" :src="goodsDistributionInfo.imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
+          <el-image v-else @click="addGoodsImg" fit="cover" :src="goodsDistributionInfo.shareImgUrl" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
+        </div>
       </el-form-item>
     </el-form>
+    <ImageDalog
+      pageIndex='pictureSpace'
+      @handleSelectImg='imgDialogSelectedCallback'
+    />
   </div>
 </template>
+
 <script>
+// 组件导入
+import ImageDalog from '@/components/admin/imageDalog'
+// js工具函数导入
+import { isStrBlank } from '@/util/goodsUtil'
+
 export default {
   name: 'addingGoodsDistributionInfo',
+  props: ['goodsProductInfoData'],
+  components: {
+    ImageDalog
+  },
+  watch: {
+    'goodsProductInfoData.goodsSpecProducts': function (goodsSpecProducts) {
+      let tempData = []
+      goodsSpecProducts.forEach(item => {
+        let isHas = this.goodsDistributionInfo.goodsRebatePrices.some(innerItem => {
+          if (innerItem.tempId === item.tempId) {
+            innerItem.prdDesc = item.prdDesc
+            innerItem.prdDescTemp = item.prdDescTemp
+            tempData.push(innerItem)
+            return true
+          } else {
+            return false
+          }
+        })
+
+        if (!isHas) {
+          tempData.push({
+            tempId: item.tempId,
+            prdDesc: item.prdDesc,
+            prdDescTemp: item.prdDescTemp,
+            prdPrice: item.prdPrice,
+            advisePrice: null,
+            minPrice: null,
+            maxPrice: null
+          })
+        }
+      })
+      this.goodsDistributionInfo.goodsRebatePrices = tempData
+    }
+  },
   data () {
     return {
-      // 表单数据
-      formData: {
-        advisePrice: '', // 建议售价
-        miniPrice: '', // 最低售价
-        maxPrice: '', // 最高售价
-        promotionLanguage: '', // 分享推广语
-        copywriting: '' // 文案
-      },
-      checked: false, // 用来控制是否显示改价信息
-      promotionLanguageSwitch: false, // 分销推广语
-      radioList: {
-        radio1: '默认样式',
-        radio2: '商品主图'
-      },
-      srcList: {
-        src1: `${this.$imageHost}/image/admin/share/goods_info_exapmle1.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/goods_info_exapmle.jpg`,
-        imageUrl: ``
+      goodsDistributionInfo: {
+        canRebate: false,
+        goodsRebatePrices: [],
+        promotionLanguageSwitch: false,
+        promotionLanguage: null,
+        shareAction: 1,
+        shareDoc: null,
+        shareImgAction: 1,
+        shareImgUrl: null,
+        imgHost: `${this.$imageHost}`
       }
     }
   },
-  // 方法
   methods: {
+    setLowestPrice () {
+      let minPrice = this.goodsDistributionInfo.goodsRebatePrices[0].minPrice
+      this.goodsDistributionInfo.goodsRebatePrices.forEach(item => { item.minPrice = minPrice })
+    },
+    setHighestPrice () {
+      let maxPrice = this.goodsDistributionInfo.goodsRebatePrices[0].maxPrice
+      this.goodsDistributionInfo.goodsRebatePrices.forEach(item => { item.maxPrice = maxPrice })
+    },
+    /* 添加图片点击事件，弹出图片选择组件 */
+    addGoodsImg () {
+      if (this.goodsDistributionInfo.shareAction !== 2 || this.goodsDistributionInfo.shareImgAction !== 2) {
+        return
+      }
 
+      this.$http.$emit('dtVisible')
+    },
+    /* 添加图片点击回调事件 */
+    imgDialogSelectedCallback (src) {
+      this.goodsDistributionInfo.shareImgUrl = src
+    },
+    /* 验证数据是否全部合法 */
+    validateFormData () {
+      // 分销推广语长度超长
+      if (this.goodsDistributionInfo.promotionLanguageSwitch && !isStrBlank(this.goodsDistributionInfo.promotionLanguage) &&
+        this.goodsDistributionInfo.promotionLanguage.length > 200) {
+        this.$message({message: '推广语超长', type: 'warning'})
+        this.$refs.promotionLanguageInput.focus()
+        return false
+      }
+
+      if (this.goodsDistributionInfo.shareAction === 2 && !isStrBlank(this.goodsDistributionInfo.shareDoc) &&
+        this.goodsDistributionInfo.shareDoc.length > 15) {
+        this.$message({message: '文档内容过长', type: 'warning'})
+        this.$refs.shareDocInput.focus()
+        return false
+      }
+      return true
+    },
+    /* 获取传给后台的表单数据 */
+    getFormData () {
+      let retData = {
+        canRebate: this.goodsDistributionInfo.canRebate ? 1 : 0,
+        goodsRebatePrices: [],
+        promotionLanguageSwitch: this.goodsDistributionInfo.promotionLanguageSwitch ? 1 : 0,
+        promotionLanguage: this.goodsDistributionInfo.promotionLanguage,
+        goodsSharePostConfig: {}
+      }
+
+      this.goodsDistributionInfo.goodsRebatePrices.forEach(item => {
+        retData.goodsRebatePrices.push({
+          prdDesc: item.prdDesc,
+          advisePrice: item.advisePrice,
+          minPrice: item.minPrice,
+          maxPrice: item.maxPrice
+        })
+      })
+
+      retData.goodsSharePostConfig.shareAction = this.goodsDistributionInfo.shareAction
+      retData.goodsSharePostConfig.shareDoc = this.goodsDistributionInfo.shareDoc
+      retData.goodsSharePostConfig.shareImgAction = this.goodsDistributionInfo.shareImgAction
+      retData.goodsSharePostConfig.shareImgUrl = this.goodsDistributionInfo.shareImgUrl
+
+      return retData
+    }
   }
 }
 </script>
+
 <style scoped>
-.modify_price {
-  border: 1px solid #ccc;
-  padding: 10px;
-  color: #333;
-  border-radius: 2px;
+/* 以下临时使用，可删除 */
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
 }
-.modify_price_header {
-  background-color: #f8f8f8;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+
+table td,
+table th {
+  border: 1px solid #cad9ea;
+  color: #666;
+  height: 30px;
 }
-.ipts {
-  display: flex;
-  justify-content: space-around;
+
+table thead th {
+  background-color: #cce8eb;
+  width: 100px;
 }
-.switchWrap {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 10px;
+
+table tr:nth-child(odd) {
+  background: #fff;
 }
-.switch {
-  margin-right: 10px;
-}
-.promotional_content {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-.content {
-  margin-right: 20px;
-}
-.share_img {
-  display: flex;
-  justify-content: flex-start;
-}
-.copywriting,
-.customize {
-  margin: 10px 0;
-}
-.image_wrap {
-  width: 70px;
-  height: 70px;
-  background: url(../../../../../../assets/image/admin/btn_add.png) no-repeat;
-}
-.img {
-  margin: 10px 0;
+
+table tr:nth-child(even) {
+  background: #f5fafa;
 }
 </style>

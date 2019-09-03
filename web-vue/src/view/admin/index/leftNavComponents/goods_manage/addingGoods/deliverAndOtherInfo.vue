@@ -180,6 +180,8 @@
   </div>
 </template>
 <script>
+// api导入
+import {getExclusiveCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 import { format } from '@/util/date'
@@ -200,7 +202,7 @@ export default {
       /* 运费模板数据 */
       deliverTemplateData: [],
       /* 会员专享卡数据 */
-      cardsSelectOptions: [{ id: 1, cardName: '卡1' }, { id: 2, cardName: '卡2' }, { id: 3, cardName: '卡3' }, { id: 4, cardName: '卡4' }],
+      cardsSelectOptions: [],
       cardSelectedTempVal: null,
       cardSelectedItems: []
     }
@@ -255,7 +257,10 @@ export default {
     },
     /* 刷新会员卡下拉列表，要将已选的项剔除 */
     cardSelectRefresh () {
-
+      getExclusiveCardList().then(res => {
+        let tempArr = res.content || []
+        this.cardsSelectOptions = tempArr.filter(item => !this.cardSelectedItems.some(innerItem => innerItem.id === item.id))
+      })
     },
     /* 删除商品已选会员卡,并将删除的项添加到下拉框内 */
     deleteCard (item, index) {
@@ -263,9 +268,10 @@ export default {
       this.cardsSelectOptions.push(item)
     },
     /* 初始化会员专享卡 */
-    // TODO: 从后台获取相应的会员卡列表
     cardDataInit () {
-
+      getExclusiveCardList().then(res => {
+        this.cardsSelectOptions = res.content || []
+      })
     },
     /* 选择上架售卖时间change */
     saleTimeChange () {
@@ -282,19 +288,19 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {
-        this.$message('发货地址最多15个字')
+        this.$message({message: '发货地址最多15个字', type: 'warning'})
         this.$refs.deliverPlaceInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.saleType === 1) {
         if (this.goodsProductInfo.saleTime === null) {
-          this.$message('自定义上架时间不可为空')
+          this.$message({message: '自定义上架时间不可为空', type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
-          this.$message('自定义上架时间不可早于当前时间')
+          this.$message({message: '自定义上架时间不可早于当前时间', type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
@@ -305,7 +311,7 @@ export default {
     getFormData () {
       let retData = {
         deliverTemplateId: this.goodsProductInfo.deliverTemplateId,
-        isCardExclusive: this.goodsProductInfo.isCardExclusive,
+        isCardExclusive: this.goodsProductInfo.isCardExclusive ? 1 : 0,
         memberCardIds: null,
         saleType: this.goodsProductInfo.saleType,
         saleTime: null

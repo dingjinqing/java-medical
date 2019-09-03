@@ -18,6 +18,7 @@
           style="width: 170px;"
         >添加规格</el-button>
       </el-form-item>
+      <!--商品规格元素-->
       <el-form-item
         label="商品规格："
         v-if="specInfoSwitch"
@@ -81,6 +82,7 @@
           >添加规格选项</el-button>
         </div>
       </el-form-item>
+      <!--商品规格价格元素-->
       <el-form-item
         label="规格价格："
         v-if="specInfoSwitch"
@@ -97,23 +99,13 @@
             </tr>
             <tr
               v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
-              :key="index"
-            >
+              :key="index">
               <td>{{item.prdDescTemp}}</td>
-              <td><input
-                  :id="'prdPrice_'+item.prdDesc"
-                  v-model.number="item.prdPrice"
-                /></td>
+              <td><input :id="'prdPrice_'+item.prdDesc" v-model.number="item.prdPrice"/></td>
               <td><input v-model.number="item.prdCostPrice" /></td>
-              <td><input
-                  :id="'prdNumber_'+item.prdDesc"
-                  v-model.number="item.prdNumber"
-                /></td>
-              <td><input v-model.number="item.prdSn" /></td>
-              <td><img
-                  src=""
-                  alt=""
-                >src</td>
+              <td><input :id="'prdNumber_'+item.prdDesc" v-model.number="item.prdNumber"/></td>
+              <td><input :id="'prdSn_'+item.prdDesc" @change="specPrdSnChange(item,index,$event.target.value,$event)"/></td>
+              <td><img src="" alt="">src</td>
             </tr>
           </table>
           <div style="text-align: center;">
@@ -145,6 +137,7 @@
           </div>
         </div>
       </el-form-item>
+      <!--库存等-->
       <el-form-item
         label="商品库存："
         prop="prdNumber"
@@ -189,6 +182,7 @@
           style="width:170px;"
         />
       </el-form-item>
+      <!--商品会员价格复选框-->
       <el-form-item label="会员价：">
         <el-checkbox
           v-for="(item,index) in memberCards"
@@ -202,6 +196,7 @@
           style="margin-left: 0px;"
         >会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价</span>
       </el-form-item>
+      <!--商品会员价格设置table-->
       <el-form-item
         label="会员价设置："
         v-if="memberCardPrdShow"
@@ -381,7 +376,7 @@
 
 // 接口函数引入
 import { getLevelCardList } from '@/api/admin/goodsManage/addingGoods/addingGoods'
-/// / js工具函数导入
+// js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 
 export default {
@@ -391,12 +386,15 @@ export default {
       goodsProductInfo: {
         // 库存、价格信息
         marketPrice: null,
+        // 根据用户填写的goodsSpecs计算出来的笛卡尔集合：[{tempId:1,prdDesc:'color:red;size:x',prdPrice:0,prdCostPrice:0,prdSn:null,prdImg:null}]
+        // 其中tempId是在新增的时候由页面内一个全局变量产生的递增值，仅用于前端页面辅助操作，比如传递给商品分销详情页面
         goodsSpecProducts: [],
+        // 存放sku名和值[{specName:'',goodsSpecVals:[{specValName:''},{specValName:''}]}]
         goodsSpecs: [],
         limitBuyNum: 0,
         limitMaxNum: 0,
         addSaleNum: 0,
-        /* 以下为辅助数据，不传到后台 */
+        /* 以下为使用默认规格时的辅助数据，最终会被整合到goodsSpecProducts传到后台 */
         prdNumber: 0,
         prdPrice: 0,
         prdCost: 0,
@@ -415,6 +413,7 @@ export default {
       },
       /* 自定义商品规格 */
       specInfoSwitch: false,
+      goodsSpecProductsIndex: 0,
       /* 会员价辅助数据 */
       memberCards: [],
       memberCardPrdShow: false,
@@ -474,7 +473,7 @@ export default {
     specInfoChange (specInfoModel, kIndex, newVal, event) {
       // 规格名称重复则将input恢复原值，并返回
       if (this._isSpecInfoNameRepeated(kIndex, newVal)) {
-        this.$message('规格名称重复')
+        this.$message({message: '规格名称重复', type: 'warning'})
         event.target.value = specInfoModel.specName
         event.target.focus()
         return
@@ -493,7 +492,7 @@ export default {
           this._recalculateSpec()
         }
       } else {
-        // 名字由null修改为非nulll,但是存在可用的规格值，则认为是新增了规格，则触发重新计算
+        // 名字由null修改为非null,但是存在可用的规格值，则认为是新增了规格，则触发重新计算
         if (isStrBlank(oldSpecName) && this._isSpecInfoHasSpecVal(specInfoModel)) {
           this._recalculateSpec()
         } else {
@@ -508,7 +507,7 @@ export default {
     specValChange (specInfoModel, vIndex, newVal, event) {
       // 商品规格值名称有重复的话则将input恢复原值,并返回
       if (this._isSpecValNameRepeated(specInfoModel, vIndex, newVal)) {
-        this.$message('规格值名称重复')
+        this.$message({message: '规格值名称重复', type: 'warning'})
         event.target.value = specInfoModel.goodsSpecVals[vIndex].specValName
         event.target.focus()
         return
@@ -541,9 +540,19 @@ export default {
         }
       }
     },
+    /* 规格编码改变 */
+    specPrdSnChange (item, index, newVal, event) {
+      if (this._isSpecPrdSnRepeated(index, newVal)) {
+        this.$message({message: 'sku编码重复', type: 'warning'})
+        event.target.value = item.prdSn
+        event.target.focus()
+        return
+      }
+      item.prdSn = newVal
+    },
     /* 判断规格名称是否存在重复 */
     _isSpecInfoNameRepeated (kIndex, newVal) {
-      if (newVal === null) {
+      if (isStrBlank(newVal)) {
         return false
       }
 
@@ -572,6 +581,23 @@ export default {
           return true
         }
       }
+      return false
+    },
+    /* 规格编码是否重复 */
+    _isSpecPrdSnRepeated (index, newVal) {
+      if (isStrBlank(newVal)) {
+        return false
+      }
+
+      for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
+        if (i === index) {
+          continue
+        }
+        if (this.goodsProductInfo.goodsSpecProducts[i].prdSn === newVal) {
+          return true
+        }
+      }
+
       return false
     },
     /* 统一规格属性函数 */
@@ -676,6 +702,7 @@ export default {
 
       // 笛卡尔计算初始化操作
       let goodsSpecProducts = [{
+        tempId: this.goodsSpecProductsIndex++,
         prdPrice: 0,
         prdCostPrice: 0,
         prdNumber: 0,
@@ -721,6 +748,7 @@ export default {
           let goodsSpec = goodsSpecProducts[j]
 
           let tempSpec = {
+            tempId: this.goodsSpecProductsIndex++,
             prdPrice: 0,
             prdCostPrice: 0,
             prdNumber: 0,
@@ -801,13 +829,13 @@ export default {
     /* 会员价格change处理函数 */
     memberCardPriceChange (prdPrice, cardPrice, inputId) {
       if (cardPrice === undefined || cardPrice === '') {
-        this.$message('会员价格不可以为空')
+        this.$message({message: '会员价格不可以为空', type: 'warning'})
         document.getElementById(inputId).focus()
         return
       }
 
       if (cardPrice > prdPrice) {
-        this.$message('会员价格不可高于原价格')
+        this.$message({message: '会员价格不可高于原价格', type: 'warning'})
         document.getElementById(inputId).focus()
       }
     },
@@ -818,7 +846,7 @@ export default {
       }
       // 商品价格填写校验正确性
       if (!this.specInfoSwitch && this.goodsProductInfo.prdPrice === undefined) {
-        this.$message('请填写商品价格')
+        this.$message({message: '请填写商品价格', type: 'warning'})
         this.$refs.prdPriceInput.focus()
         memberCard.checked = false
         return false
@@ -846,13 +874,13 @@ export default {
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let item = this.goodsProductInfo.goodsSpecProducts[i]
           if (isNumberBlank(item.prdPrice) || item.prdPrice < 0) {
-            this.$message('规格:' + item.prdDescTemp + ' 价格填写错误')
+            this.$message({message: '规格:' + item.prdDescTemp + ' 价格填写错误', type: 'warning'})
             document.getElementById('prdPrice_' + item.prdDesc).focus()
             return false
           }
 
           if (isNumberBlank(item.prdNumber) || item.prdNumber < 0) {
-            this.$message('规格：' + item.prdDescTemp + '库存写错误')
+            this.$message({message: '规格：' + item.prdDescTemp + '库存写错误', type: 'warning'})
             document.getElementById('prdNumber_' + item.prdDesc).focus()
             return false
           }
@@ -868,13 +896,13 @@ export default {
               continue
             }
             if (isNumberBlank(cardWrap.cardPrice) || cardWrap < 0) {
-              this.$message('会员价格不可为空')
+              this.$message({message: '会员价格不可为空', type: 'warning'})
               document.getElementById(specProduct.prdDesc + cardWrap.card.cardName).focus()
               return false
             }
 
             if (cardWrap.cardPrice > specProduct.prdPrice) {
-              this.$message('会员价格不可高于商品价格')
+              this.$message({message: '会员价格不可高于商品价格', type: 'warning'})
               document.getElementById(specProduct.prdDesc + cardWrap.card.cardName).focus()
               return false
             }
@@ -883,19 +911,19 @@ export default {
       } else {
         // 商品库存检查
         if (isNumberBlank(this.goodsProductInfo.prdNumber) || this.goodsProductInfo.prdNumber < 0) {
-          this.$message('商品库存填写错误')
+          this.$message({message: '商品库存填写错误', type: 'warning'})
           this.$refs.prdNumberInput.focus()
           return false
         }
         // 商品价格验证
         if (isNumberBlank(this.goodsProductInfo.prdPrice) || this.goodsProductInfo.prdPrice < 0) {
-          this.$message('商品价格填写错误')
+          this.$message({message: '商品价格填写错误', type: 'warning'})
           this.$refs.prdPriceInput.focus()
           return false
         }
         // 成本价格验证
         if (isNumberBlank(this.goodsProductInfo.prdCost) || this.goodsProductInfo.prdCost < 0) {
-          this.$message('成本价格填写错误')
+          this.$message({message: '成本价格填写错误', type: 'warning'})
           this.$refs.prdPriceInput.focus()
           return false
         }
@@ -906,12 +934,12 @@ export default {
             continue
           }
           if (isNumberBlank(item.cardPrice) || item.cardPrice < 0) {
-            this.$message('会员价格不可为空')
+            this.$message({message: '会员价格不可为空', type: 'warning'})
             document.getElementById(item.cardName).focus()
             return false
           }
           if (item.cardPrice > this.goodsProductInfo.prdPrice) {
-            this.$message('会员价格不可高于商品价格')
+            this.$message({message: '会员价格不可高于商品价格', type: 'warning'})
             document.getElementById(item.cardName).focus()
             return false
           }
@@ -922,7 +950,7 @@ export default {
       if ((isNumberBlank(this.goodsProductInfo.limitBuyNum) || this.goodsProductInfo.limitBuyNum < 0) &&
         (isNumberBlank(this.goodsProductInfo.limitMaxNum) || this.goodsProductInfo.limitMaxNum < 0)) {
         if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
-          this.$message('最小限购数量不可大于最大限购数量')
+          this.$message({message: '最小限购数量不可大于最大限购数量', type: 'warning'})
           this.$refs.limitBuyNumInput.focus()
           return false
         }
@@ -937,6 +965,7 @@ export default {
       retData.addSaleNum = this.goodsProductInfo.addSaleNum
       retData.limitBuyNum = this.goodsProductInfo.limitBuyNum
       retData.limitMaxNum = this.goodsProductInfo.limitMaxNum
+      retData.specInfoSwitch = this.specInfoSwitch
 
       // 剔除无效规格
       this.goodsProductInfo.goodsSpecs = this.goodsProductInfo.goodsSpecs.filter(goodsSpec => {
@@ -988,7 +1017,9 @@ export default {
         this.goodsProductInfo.goodsSpecProducts.forEach(specProduct => {
           // 插入规格属性
           retData.goodsSpecProducts.push({
+            tempId: specProduct.tempId,
             prdDesc: specProduct.prdDesc,
+            prdDescTemp: specProduct.prdDescTemp,
             prdPrice: specProduct.prdPrice,
             prdCostPrice: specProduct.prdCostPrice,
             prdNumber: specProduct.prdNumber,

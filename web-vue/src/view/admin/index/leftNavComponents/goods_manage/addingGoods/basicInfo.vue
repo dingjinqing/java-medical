@@ -287,7 +287,6 @@
               prop="video"
               @click="videoInputClick"
             >
-
               <span class="inputTip">上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。</span>
             </el-form-item>
           </el-form>
@@ -569,24 +568,24 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (isStrBlank(this.goodsProductInfo.goodsName)) {
-        this.$message('请输入商品名称')
+        this.$message({message: '请输入商品名称', type: 'warning'})
         this.$refs.goodsNameInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.catId === null) {
-        this.$message('请选择平台分类')
+        this.$message({message: '请选择平台分类', type: 'warning'})
         this.$refs.catSelect.focus()
         return false
       }
 
       if (this.goodsProductInfo.goodsImgs.length === 0) {
-        this.$message('请选择商品图片')
+        this.$message({message: '请选择商品图片', type: 'warning'})
         return false
       }
 
       if (this.goodsProductInfo.unit === null) {
-        this.$message('请选择商品单位')
+        this.$message({message: '请选择商品单位', type: 'warning'})
         this.$refs.unitSelect.focus()
         return false
       }
