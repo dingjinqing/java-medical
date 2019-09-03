@@ -331,8 +331,9 @@ public class AdminWechatApiController extends AdminBaseController {
 		//让客户自己去开放平台把公众号和小程序绑定。这个方法只改变数据库的值
 		authShopByShopId.setLinkOfficialAppId(appId);
 		saas.shop.mp.updateRow(authShopByShopId);
-		//TODO 跑个异步任务去 批量获取公众号用户信息
-		saas.shop.officeAccount.batchGetUsers(appId, language,adminAuth.user());
+		//跑个异步任务去 批量获取公众号用户信息
+		saas.shop.officeAccount.batchGetUsersByRabbitMq(appId, language, adminAuth.user().getSysId(), adminAuth.user().loginShopId);
+		//saas.shop.officeAccount.batchGetUsers(appId, language,adminAuth.user().getSysId());
 		return success();
 
 	}
