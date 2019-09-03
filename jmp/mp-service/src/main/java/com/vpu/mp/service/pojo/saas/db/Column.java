@@ -54,11 +54,51 @@ public class Column {
 				&& StringUtils.equalsIgnoreCase(c1.getTypeRange1(), c2.getTypeRange1())
 				&& StringUtils.equalsIgnoreCase(c1.getTypeRange2(), c2.getTypeRange2())
 				&& StringUtils.equalsIgnoreCase(c1.getTypeUnsigned(), c2.getTypeUnsigned())
-				&& (StringUtils.equalsIgnoreCase(c1.getDefaultValue(), c2.getDefaultValue()) || StringUtils
-						.equalsAnyIgnoreCase(c1.getDefaultValue(), "CURRENT_TIMESTAMP", "now()", "current_timestamp()")
-						&& StringUtils.equalsAnyIgnoreCase(c2.getDefaultValue(), "CURRENT_TIMESTAMP", "now()",
-								"current_timestamp()"));
-
+				&& isDefaultValueEqual(c1.getType(),c1.getDefaultValue(),c2.getDefaultValue());
+	}
+	
+	static public boolean isIntType(String type) {
+		return StringUtils.equalsAnyIgnoreCase(type,"TINYINT","SMALLINT","MEDIUMINT","INT","BIGINT","INTEGER");
+	}
+	
+	static public boolean isDecimalType(String type) {
+		return StringUtils.equalsAnyIgnoreCase(type,"DEC","DECIMAL","NUMERIC");
+	}
+	
+	static public boolean isFloatType(String type) {
+		return StringUtils.equalsAnyIgnoreCase(type,"FLOAT","DOUBLE","REAL","FIXED");
+	}
+	
+	static public boolean isBitType(String type) {
+		return StringUtils.equalsAnyIgnoreCase(type,"BIT");
+	}
+	
+	static public boolean isDateType(String type) {
+		return StringUtils.equalsAnyIgnoreCase(type,"DATE","TIME","DATETIME","TIMESTAMP","YEAR");
+	}
+	
+	static public boolean isStringType(String type) {
+		return StringUtils.equalsAnyIgnoreCase(type,"CHAR","VARCHAR","BINARY","VARBINARY","BLOB","TEXT","ENUM","SET");
+	}
+	
+	static public boolean isDefaultValueEqual(String type,String v1,String v2) {
+		if(StringUtils.equalsAnyIgnoreCase(v1,v2)) {
+			return true;
+		}
+		if(isIntType(type)) {
+			return v1!=null && v2!=null && Integer.valueOf(v1).equals(Integer.valueOf(v2));
+		}
+		if(isDecimalType(type) || isFloatType(type)) {
+			return  v1!=null && v2!=null && Double.valueOf(v1).equals(Double.valueOf(v2));
+		}
+		
+		if(isDateType(type)) {
+			if(StringUtils.equalsAnyIgnoreCase(v1, "current_timestamp", "now()","now(0)","current_timestamp()","current_timestamp(0)")
+					&& StringUtils.equalsAnyIgnoreCase(v2, "current_timestamp", "now()","now(0)","current_timestamp()","current_timestamp(0)")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

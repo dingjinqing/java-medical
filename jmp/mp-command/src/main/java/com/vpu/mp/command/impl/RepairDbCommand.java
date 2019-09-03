@@ -35,7 +35,7 @@ public class RepairDbCommand implements CommandRunner {
 		}
 		Boolean onlyCheck = true;
 		List<String> options = args.getOptionValues("--only_check");
-		if (options.size() > 0 && StringUtils.equalsIgnoreCase(options.get(0), "false")) {
+		if (options != null &&  options.size() > 0 && StringUtils.equalsIgnoreCase(options.get(0), "false")) {
 			onlyCheck = false;
 		}
 
@@ -44,7 +44,7 @@ public class RepairDbCommand implements CommandRunner {
 			saas.repairDb.repairMainDb(onlyCheck);
 		} else if (type.equals("shop")) {
 			List<String> shopIdOptions = args.getOptionValues("--shop_id");
-			if (shopIdOptions.size() > 0) {
+			if (shopIdOptions != null && shopIdOptions.size() > 0) {
 				Integer shopId = Util.getInteger(shopIdOptions.get(0));
 				if (shopId == 0) {
 					logger.error("--shop_id is invalid,usage: {} ", description());

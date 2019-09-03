@@ -480,8 +480,7 @@ create table b2c_virtual_card_order
     order_id      mediumint unsigned comment '主虚拟商品订单id',
     card_id       int         default 0   not null comment '会员卡id',
     card_no       varchar(32) default '0' null comment '会员卡 No'
-)
-    collate = utf8mb4_unicode_ci;
+);
 
 --分销员数据汇总 常乐 20190801
 ALTER TABLE `b2c_user_fanli_statistics` DROP PRIMARY KEY;
@@ -492,14 +491,14 @@ ALTER TABLE `b2c_user_fanli_statistics` ADD COLUMN `rebate_level` TINYINT(2) DEF
 -- DROP TABLE IF EXISTS `b2c_free_shipping`;
 CREATE TABLE `b2c_free_shipping` (
 `id` INT ( 11 ) NOT NULL AUTO_INCREMENT,
-`name` VARCHAR ( 100 ) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+`name` VARCHAR ( 100 )  NOT NULL COMMENT '活动名称',
 `expire_type` TINYINT ( 1 ) DEFAULT '0' COMMENT '0:固定日期 1：永久有效',
 `start_time` datetime DEFAULT NULL COMMENT '开始时间',
 `end_time` datetime DEFAULT NULL COMMENT '结束时间',
 `type` INT ( 11 ) NOT NULL COMMENT '条件 0全部 1部分',
-`recommend_goods_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定商品可用',
-`recommend_cat_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定分类可用',
-`recommend_sort_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定商家分类可用',
+`recommend_goods_id` text  COMMENT '指定商品可用',
+`recommend_cat_id` text  COMMENT '指定分类可用',
+`recommend_sort_id` text  COMMENT '指定商家分类可用',
 `status` TINYINT ( 1 ) DEFAULT '0' COMMENT '1停用',
 `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -507,7 +506,7 @@ CREATE TABLE `b2c_free_shipping` (
 `del_time` datetime DEFAULT NULL,
 `level` TINYINT ( 2 ) DEFAULT '0' COMMENT '优先级 默认0',
 PRIMARY KEY ( `id` )
-) ENGINE = INNODB AUTO_INCREMENT = 22 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 
 
@@ -519,14 +518,14 @@ CREATE TABLE `b2c_free_shipping_rule` (
 `con_type` INT ( 11 ) NOT NULL COMMENT '包邮条件 0满金额 1满件数',
 `money` DECIMAL ( 10, 2 ) NOT NULL COMMENT '满金额',
 `num` INT ( 11 ) NOT NULL COMMENT '满件数',
-`area` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
-`area_list` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
-`area_text` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
+`area` text  COMMENT '包邮地区',
+`area_list` text  COMMENT '包邮地区',
+`area_text` text  COMMENT '包邮地区',
 `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 PRIMARY KEY ( `id` ),
 KEY `shipping_id` ( `shipping_id` )
-) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 
 
@@ -546,7 +545,7 @@ create table `b2c_coupon_pack_voucher` (
   primary key (`id`),
   index `voucher_id` (`voucher_id`),
   index `act_id` (`act_id`)
-) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
 
 -- 修改虚拟订单表，整合不同商品id字段
 alter table b2c_card_order drop column card_id;
@@ -662,7 +661,7 @@ add column `activity_id` INT ( 11 ) NOT NULL DEFAULT '0' COMMENT '营销活动id
 -- DROP TABLE IF EXISTS `b2c_first_special`;
 CREATE TABLE `b2c_first_special` (
    `id`                 int(11) NOT NULL AUTO_INCREMENT,
-   `name`               varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+   `name`               varchar(50)  NOT NULL COMMENT '活动名称',
    `start_time`         timestamp NULL DEFAULT NULL COMMENT '开始时间',
    `end_time`           timestamp NULL DEFAULT NULL COMMENT '结束日期',
    `batch_discount`     tinyint(1) DEFAULT '0' COMMENT '批量打几折',
@@ -674,7 +673,7 @@ CREATE TABLE `b2c_first_special` (
    `del_time`           timestamp NULL DEFAULT NULL,
    `limit_amount`       int(11) DEFAULT '0',
    `first`              tinyint(1) DEFAULT '1' COMMENT '优先级',
-   `share_config`       text COLLATE utf8mb4_unicode_ci COMMENT '分享设置',
+   `share_config`       text  COMMENT '分享设置',
    `is_forever`         tinyint(1) DEFAULT '0' COMMENT '是否永久',
    `limit_flag`         tinyint(1) DEFAULT '0' COMMENT '超限购购买标记',
    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -768,9 +767,9 @@ alter table `b2c_mrking_voucher` add column `validity_minute`  mediumint(11) def
 
 -- 李晓冰2019-8-21修改商品表
 ALTER TABLE b2c_goods ADD COLUMN `promotion_language_switch` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否使用分销推广语0关闭，1使用';
-ALTER TABLE b2c_goods ADD COLUMN `promotion_language` VARCHAR (400) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '推广语';
-ALTER TABLE b2c_goods ADD COLUMN `deliver_place` VARCHAR ( 191 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发货地址';
-ALTER TABLE b2c_goods ADD COLUMN `share_config` VARCHAR ( 500 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '分享配置';
+ALTER TABLE b2c_goods ADD COLUMN `promotion_language` VARCHAR (400)  NOT NULL DEFAULT '' COMMENT '推广语';
+ALTER TABLE b2c_goods ADD COLUMN `deliver_place` VARCHAR ( 191 )  DEFAULT NULL COMMENT '发货地址';
+ALTER TABLE b2c_goods ADD COLUMN `share_config` VARCHAR ( 500 )  DEFAULT NULL COMMENT '分享配置';
 ALTER TABLE b2c_grade_prd ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是';
 ALTER TABLE b2c_goods_rebate_price ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是';
 
@@ -794,7 +793,7 @@ DROP TABLE IF EXISTS `b2c_refund_card_record`;
 DROP TABLE IF EXISTS `b2c_virtual_order_refund_record`;
 create table `b2c_virtual_order_refund_record` (
   `id`              int(11)                        not null auto_increment,
-  `order_sn`            varchar(30) collate utf8mb4_unicode_ci not null default '',
+  `order_sn`            varchar(30)  not null default '',
   `user_id`             int(11)                        not null default '0',
   `use_score`           int(11)                 not null default '0' comment '退款积分',
   `use_account`         decimal(10, 2)                 not null default '0.00' comment '退款余额',
@@ -846,22 +845,21 @@ create table `b2c_group_buy_define`
     `limit_amount`     smallint(6)  not null comment '成团人数 不小于2人',
     `join_limit`       smallint(6)  not null default 0 comment '参团限制 0不限制',
     `open_limit`       smallint(6)  not null default 0 comment '开团限制 0不限制',
-		`limit_buy_num` 	 int(6)   		not null default 0 comment '最少购买数 0不限制',
+    `limit_buy_num` 	 int(6)   		not null default 0 comment '最少购买数 0不限制',
     `limit_max_num` 	 int(6) 		  not null default 0 comment '最多购买数 0不限制',
-		`start_time`       timestamp    null     default null comment '开始时间',
+    `start_time`       timestamp    null     default null comment '开始时间',
     `end_time`         timestamp    null     default null comment '结束时间',
     `stock`            smallint(6)  not null default 0 comment '总库存',
     `sale_num`         smallint(6)  not null default 0 comment '销量',
     `is_default`       tinyint(1)   not null default 0 comment '默认成团 ',
     `activity_type`    tinyint(1)   not null default '1' comment '活动类型：1：普通拼团，2：老带新团',
     `is_grouper_cheap` tinyint(1)   not null default '0' comment '是否开启团长优惠：0：不开启，1：开启',
-		`shipping_type`     tinyint(2)   not null  default '0' comment '运费类型 1免运费 2自定义',
-
+    `shipping_type`     tinyint(2)   not null  default '0' comment '运费类型 1免运费 2自定义',
     `reward_coupon_id` varchar(200) null comment '拼团失败发放优惠券',
     `share_config`     text comment '分享设置',
-		`status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用 2 代表已无库存',
-		`del_flag`         tinyint(1)   not null default 0,
-		`del_time`         int(11)      not null default 0,
+    `status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用 2 代表已无库存',
+    `del_flag`         tinyint(1)   not null default 0,
+    `del_time`         int(11)      not null default 0,
     `create_time`      timestamp             default current_timestamp,
     `update_time`      timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)

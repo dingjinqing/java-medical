@@ -95,7 +95,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public void repairDb(List<Table> tables, MpDefaultDslContext db) {
 		for (Table table : tables) {
-			// if (table.getTableName().equals("b2c_return_order"))
+			if (table.getTableName().equals("b2c_order_info"))
 			{
 				table.setDatabseName(db.getDbConfig().getDatabase());
 				table.setFullTableName(table.getDatabseName() + "." + table.getTableName());
@@ -301,19 +301,22 @@ public class RepairDatabaseService extends MainBaseService {
 	public List<Table> parseSql(String sql) {
 		List<Table> tables = new ArrayList<Table>();
 		sql = sql.replaceAll("`", "");
-		String createTableRegex = "create\\s+table\\s+(.*?)\\s*\\((.*?)\\)[^\\)]*?;";
+		String createTableRegex = "create\\s+table\\s+(.*?)\\s*\\((.*?)\n\\s*\\)[^\\)]*?;";
 		Pattern pattern = Pattern.compile(createTableRegex,
 				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(sql);
 		while (matcher.find()) {
 			Table table = new Table();
 			table.tableName = matcher.group(1);
-			if (!"b2c_return_order_goods".equals(table.tableName)) {
-				continue;
-			}
+//			if(!"b2c_presale".equals(table.tableName)) {
+//				continue;
+//			}
 			table.createSql = String.format("create table %s(%s)", matcher.group(1), matcher.group(2));
 			String[] columns = matcher.group(2).split(",\\s*\n");
 			for (String col : columns) {
+				if(StringUtils.isBlank(col.trim())) {
+					continue;
+				}
 				String[] tokens = this.parseTokens(col).toArray(new String[0]);
 				if (tokens.length == 0) {
 					logger().error("tokens.length == 0");
@@ -396,6 +399,9 @@ public class RepairDatabaseService extends MainBaseService {
 					String[] props = tokens[i].substring(1, tokens[i].length() - 1).replaceAll("\\s", "").split(",");
 					col.setTypeRange1(props[0]);
 					col.setTypeRange2(props.length > 1 ? props[1] : "");
+					if(StringUtils.equals("timestamp", tokens[i])) {
+						col.setTypeRange1("");
+					}
 					i++;
 				}
 				continue;
@@ -433,6 +439,9 @@ public class RepairDatabaseService extends MainBaseService {
 			}
 			case "ON": {
 				i += 3;
+				if(i <len && tokens[i].startsWith("(")) {
+					i++;
+				}
 				break;
 			}
 			case "DEFAULT": {
@@ -441,12 +450,16 @@ public class RepairDatabaseService extends MainBaseService {
 					col.setDefaultValue(tokens[i].substring(1, tokens[i].length() - 1));
 				} else {
 					col.setDefaultValue(tokens[i].equalsIgnoreCase("null") ? null : tokens[i]);
+					if(i+1 < len && tokens[i+1].startsWith("(")) {
+						col.setDefaultValue(tokens[i]+tokens[i+1]);
+						i++;
+					}
 				}
 				i++;
 				break;
 			}
 			default: {
-				logger().warn("{} column token {} not found!", table.getTableName(), tokens[i]);
+				logger().warn("{} column tokens{}, i={},{} not found!", table.getTableName(), tokens.toString(),tokens[i]);
 				i++;
 			}
 			}
