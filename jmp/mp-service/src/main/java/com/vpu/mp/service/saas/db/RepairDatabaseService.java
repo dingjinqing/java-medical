@@ -19,9 +19,11 @@ import com.vpu.mp.service.foundation.database.MpDefaultDslContext;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.db.Column;
-import com.vpu.mp.service.pojo.saas.db.ConnectStr;
 import com.vpu.mp.service.pojo.saas.db.Index;
 import com.vpu.mp.service.pojo.saas.db.Table;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
@@ -33,19 +35,24 @@ public class RepairDatabaseService extends MainBaseService {
 
 	@Autowired
 	DatabaseManager databaseManager;
-	
+
 	/**
 	 * 是否只是检查SQL，不执行SQL
 	 */
-	protected static Boolean onlyCheck = false;
+	@Getter
+	@Setter
+	protected Boolean onlyCheck = false;
 
 	/**
 	 * 修复主库
 	 */
-	public void repairMainDb() {
+	public void repairMainDb(Boolean onlyCheck) {
+		logger().info("repairMainDb(onlyCheck={}) start.", onlyCheck);
+		this.onlyCheck = onlyCheck;
 		String sql = Util.loadResource("db/main/db_main.sql");
 		List<Table> tables = this.parseSql(sql);
-		repairDb(tables, (MpDefaultDslContext)databaseManager.mainDb());
+		repairDb(tables, (MpDefaultDslContext) databaseManager.mainDb());
+		logger().info("repairMainDb(onlyCheck={}) done.", onlyCheck);
 	}
 
 	/**
@@ -53,26 +60,31 @@ public class RepairDatabaseService extends MainBaseService {
 	 * 
 	 * @param shopId
 	 */
-	public void repairShopDb(Integer shopId) {
+	public void repairShopDb(Boolean onlyCheck, Integer shopId) {
+		logger().info("repairShopDb(onlyCheck={})  shopId:{} start.", onlyCheck, shopId);
+		this.onlyCheck = onlyCheck;
 		String sql = Util.loadResource("db/main/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
 		databaseManager.switchShopDb(shopId);
 		repairDb(tables, databaseManager.currentShopDb());
-		databaseManager.restoreLastShopDb();
+		logger().info("repairShopDb(onlyCheck={})  shopId:{} done.", onlyCheck, shopId);
 	}
 
 	/**
 	 * 修复所有店铺库
 	 */
-	public void repairAllShopDb() {
+	public void repairAllShopDb(Boolean onlyCheck) {
+		logger().info("repairAllShopDb(onlyCheck={}) start.", onlyCheck);
+		this.onlyCheck = onlyCheck;
 		String sql = Util.loadResource("db/shop/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
 		Result<ShopRecord> shops = saas().shop.getAll();
 		for (ShopRecord shop : shops) {
+			logger().info("repairDb(onlyCheck={})  shopId:{} ...", onlyCheck, shop.getShopId());
 			databaseManager.switchShopDb(shop.getShopId());
 			repairDb(tables, databaseManager.currentShopDb());
-			databaseManager.restoreLastShopDb();
 		}
+		logger().info("repairAllShopDb(onlyCheck={}) done.", onlyCheck);
 	}
 
 	/**
@@ -83,13 +95,12 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public void repairDb(List<Table> tables, MpDefaultDslContext db) {
 		for (Table table : tables) {
-			// if (table.getTableName().equals("b2c_upload_uyun_record"))
+			// if (table.getTableName().equals("b2c_return_order"))
 			{
 				table.setDatabseName(db.getDbConfig().getDatabase());
-				table.setFullTableName(table.getDatabseName()+"."+table.getTableName());
+				table.setFullTableName(table.getDatabseName() + "." + table.getTableName());
 				this.processTable(table, db);
 			}
-
 		}
 
 	}
@@ -116,13 +127,17 @@ public class RepairDatabaseService extends MainBaseService {
 			this.executeSql(db, sql);
 		}
 	}
-	
-	protected void executeSql(MpDefaultDslContext db,String sql) {
-		try{
-			logger().debug("Execute SQL: {}", sql);
-			//db.execute(sql);
-		}catch(DataAccessException e) {
-			logger().error("Execute SQL Exception, message: {} ",e.getMessage());
+
+	protected void executeSql(MpDefaultDslContext db, String sql) {
+		try {
+			if (this.onlyCheck) {
+				logger().info("Check: Need Execute SQL: {}", sql);
+				return;
+			}
+			logger().info("Repair Db, Execute SQL: {}", sql);
+			db.execute(sql);
+		} catch (DataAccessException e) {
+			logger().error("Execute SQL Exception, message: {} ", e.getMessage());
 		}
 	}
 
@@ -210,8 +225,8 @@ public class RepairDatabaseService extends MainBaseService {
 			if (StringUtils.equalsIgnoreCase(r.get("Key_name").toString(), index.getKeyName())) {
 				findKeyName = true;
 				String col = r.get("Column_name").toString();
-				for(String indexCol :index.getColumnNames() ) {
-					if(indexCol.equals(col)) {
+				for (String indexCol : index.getColumnNames()) {
+					if (indexCol.equals(col)) {
 						findIndexCols++;
 					}
 				}
@@ -261,7 +276,7 @@ public class RepairDatabaseService extends MainBaseService {
 			keyProp = "unique";
 		}
 
-		return String.format(format, tableName, dropKey, keyProp, index.getKeyName(),cols);
+		return String.format(format, tableName, dropKey, keyProp, index.getKeyName(), cols);
 	}
 
 	/**
@@ -293,6 +308,9 @@ public class RepairDatabaseService extends MainBaseService {
 		while (matcher.find()) {
 			Table table = new Table();
 			table.tableName = matcher.group(1);
+			if (!"b2c_return_order_goods".equals(table.tableName)) {
+				continue;
+			}
 			table.createSql = String.format("create table %s(%s)", matcher.group(1), matcher.group(2));
 			String[] columns = matcher.group(2).split(",\\s*\n");
 			for (String col : columns) {
@@ -372,24 +390,13 @@ public class RepairDatabaseService extends MainBaseService {
 		while (i < len) {
 
 			if (i == 1) {
-				int p = tokens[i].indexOf("(");
-				if (p == -1) {
-					col.setType(tokens[i]);
+				col.setType(tokens[i]);
+				i++;
+				if (i < len && tokens[i].startsWith("(") && tokens[i].endsWith(")")) {
+					String[] props = tokens[i].substring(1, tokens[i].length() - 1).replaceAll("\\s", "").split(",");
+					col.setTypeRange1(props[0]);
+					col.setTypeRange2(props.length > 1 ? props[1] : "");
 					i++;
-					if (i < len) {
-						p = tokens[i].indexOf("(");
-					}
-
-				} else {
-					col.setType(tokens[i].substring(0, p));
-				}
-				if (p != -1) {
-					{
-						String[] props = tokens[i].substring(p + 1, tokens[i].length() - 1).split(",");
-						col.setTypeRange1(props.length > 0 ? props[0] : "");
-						col.setTypeRange2(props.length > 1 ? props[1] : "");
-						i++;
-					}
 				}
 				continue;
 			}
@@ -406,6 +413,7 @@ public class RepairDatabaseService extends MainBaseService {
 				i++;
 				break;
 			}
+			case "CHARACTER":
 			case "NULL":
 			case "AUTO_INCREMENT": {
 				i++;
@@ -416,6 +424,10 @@ public class RepairDatabaseService extends MainBaseService {
 				break;
 			}
 			case "COLLATE": {
+				i += 2;
+				break;
+			}
+			case "SET": {
 				i += 2;
 				break;
 			}
@@ -474,22 +486,18 @@ public class RepairDatabaseService extends MainBaseService {
 			case "KEY":
 			case "INDEX": {
 				i++;
-				int p = tokens[i].indexOf("(");
-				if (p == -1) {
-					index.setKeyName(tokens[i].trim());
+				if (!tokens[i].startsWith("(")) {
+					index.setKeyName(tokens[i]);
 					i++;
-					p = 0;
 				}
-				List<String> propList = new ArrayList<>();
-				String[] props = tokens[i].substring(p + 1, tokens[i].length() - 1).split(",");
-				for(String prop: props) {
-					propList.add(prop.trim());
+				if (tokens[i].startsWith("(") && tokens[i].endsWith(")")) {
+					String[] cols = tokens[i].substring(1, tokens[i].length() - 1).replaceAll("\\s", "").split(",");
+					if (StringUtils.isBlank(index.getKeyName())) {
+						index.setKeyName(cols[0]);
+					}
+					index.setColumnNames(Arrays.asList(cols));
+					i++;
 				}
-				index.setColumnNames(propList);
-				if (StringUtils.isBlank(index.getKeyName())) {
-					index.setKeyName(props[0].trim());
-				}
-				i++;
 				break;
 			}
 			case "USING": {
@@ -504,74 +512,6 @@ public class RepairDatabaseService extends MainBaseService {
 			}
 		}
 		table.indexes.add(index);
-	}
-
-	/**
-	 * 辅助函数，连接括号 单 双引号
-	 * 
-	 * @param tokens
-	 * @return
-	 */
-	public String[] connect(String[] tokens) {
-		List<String> result = new ArrayList<String>();
-		int i = 0;
-		while (i < tokens.length) {
-			tokens[i] = tokens[i].trim();
-
-			if (tokens[i].contains("(") && !tokens[i].contains(")")) {
-				ConnectStr c = getConnectStr(tokens, i, ")");
-				i = c.getLastIndex() + 1;
-				result.add(c.str);
-				continue;
-			}
-			if (tokens[i].startsWith("\"") && !tokens[i].endsWith("\"")) {
-				ConnectStr c = getConnectStr(tokens, i, "\"");
-				i = c.getLastIndex() + 1;
-				result.add(c.str);
-				continue;
-			}
-
-			if (tokens[i].startsWith("'") && !tokens[i].endsWith("'")) {
-				ConnectStr c = getConnectStr(tokens, i, "'");
-				i = c.getLastIndex() + 1;
-				result.add(c.str);
-				continue;
-			}
-			String token = tokens[i].trim();
-			if (!StringUtils.isBlank(token)) {
-				result.add(token);
-			}
-			i++;
-
-		}
-		return result.toArray(new String[0]);
-
-	}
-
-	/**
-	 * 得到连接串，连接括号 单 双引号
-	 * 
-	 * @param tokens
-	 * @param i
-	 * @param t
-	 * @return
-	 */
-	public ConnectStr getConnectStr(String[] tokens, int i, String t) {
-		ConnectStr c = new ConnectStr();
-		c.setLastIndex(i);
-		while (i < tokens.length) {
-			c.setLastIndex(i);
-			if (c.str.equals("")) {
-				c.str += tokens[i];
-			} else {
-				c.str += (t.equals(")") ? "" : " ") + tokens[i];
-			}
-			if (tokens[i].endsWith(t)) {
-				break;
-			}
-			i++;
-		}
-		return c;
 	}
 
 	/**

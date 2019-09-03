@@ -84,12 +84,6 @@ public class AdminIndexController extends AdminBaseController {
 		}
 	}
 
-	@RequestMapping(value = "/admin/db/main/repair")
-	public JsonResult repairMain(@RequestParam(value = "password") String password) {
-		saas.repairDb.repairMainDb();
-		return success();
-	}
-
 	/**
 	 * 点击的菜单或者功能有没有权限
 	 * 

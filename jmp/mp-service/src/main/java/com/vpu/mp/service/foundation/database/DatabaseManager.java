@@ -1,9 +1,10 @@
 package com.vpu.mp.service.foundation.database;
 
-import com.vpu.mp.config.DatabaseConfig;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.service.QueryFilter;
-import com.vpu.mp.service.foundation.util.Util;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
@@ -16,7 +17,11 @@ import org.jooq.conf.MappedSchema;
 import org.jooq.conf.RenderMapping;
 import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.*;
+import org.jooq.impl.DataSourceConnectionProvider;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.impl.DefaultDSLContext;
+import org.jooq.impl.DefaultExecuteListenerProvider;
+import org.jooq.impl.DefaultTransactionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +29,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import com.vpu.mp.config.DatabaseConfig;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.foundation.service.QueryFilter;
+import com.vpu.mp.service.foundation.util.Util;
 
 /**
  * 数据库管理，单例。需要考虑多线程互斥情况
@@ -44,25 +49,6 @@ public class DatabaseManager {
 	@Autowired
 	protected DatasourceManager datasourceManager;
 
-	/**
-	 * 当前操作的店铺ID
-	 */
-	private ThreadLocal<Integer> currentShopId = new ThreadLocal<Integer>() {
-		@Override
-		public Integer initialValue() {
-			return 0;
-		}
-	};
-
-	/**
-	 * 上一次操作店铺ID
-	 */
-	private ThreadLocal<Integer> lastShopId = new ThreadLocal<Integer>() {
-		@Override
-		public Integer initialValue() {
-			return 0;
-		}
-	};
 
 	Logger loger = LoggerFactory.getLogger(DatabaseManager.class);
 
@@ -97,36 +83,24 @@ public class DatabaseManager {
 	 */
 	public DatabaseManager switchShopDb(Integer shopId) {
 		loger.debug("switchShopDb==="+shopId);
-		if (shopId == currentShopId.get()) {
-			return this;
-		}
 		MpDefaultDslContext db = shopDsl.get();
-		if (db == null) {
+		if(db == null || db !=null && db.getShopId() != shopId) {
 			ShopRecord shop = mainDb().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 			if (shop != null) {
 				DbConfig dbConfig = Util.parseJson(shop.getDbConfig(), DbConfig.class);
 				if (dbConfig == null) {
 					throw new RuntimeException();
 				}
-
 				BasicDataSource ds = datasourceManager.getDatasource(dbConfig);
 				db = getDsl(ds, dbConfig);
+				shopDsl.set(db);
 			} else {
 				throw new RuntimeException();
 			}
-		}
-		shopDsl.set(db);
-		lastShopId.set(currentShopId.get());
-		currentShopId.set(shopId);
+		}		
 		return this;
 	}
 
-	/**
-	 * 恢复上次切换的DB
-	 */
-	public void restoreLastShopDb() {
-		this.switchShopDb(lastShopId.get());
-	}
 
 	/**
 	 * 得到当前数据库店铺ID
@@ -134,7 +108,9 @@ public class DatabaseManager {
 	 * @return
 	 */
 	public Integer getCurrentShopId() {
-		return currentShopId.get();
+		MpDefaultDslContext db = shopDsl.get();
+		assert (db != null);
+		return db.getShopId();
 	}
 
 	/**
@@ -143,7 +119,7 @@ public class DatabaseManager {
 	public MpDefaultDslContext currentShopDb() {
 		MpDefaultDslContext db = shopDsl.get();
 		assert (db != null);
-		return shopDsl.get();
+		return db;
 	}
 
 	/**
@@ -334,26 +310,5 @@ public class DatabaseManager {
 	 */
 	public String getMainDbSchema() {
 		return databaseConfig.getDatabase();
-	}
-
-	@Override
-	protected void finalize() {
-		MpDefaultDslContext db = mainDsl.get();
-		if (db != null) {
-			mainDsl.remove();
-			db = null;
-		}
-
-		db = shopDsl.get();
-		if (db != null) {
-			shopDsl.remove();
-			db = null;
-		}
-		if (currentShopId.get() != null) {
-			currentShopId.remove();
-		}
-		if (lastShopId.get() != null) {
-			lastShopId.remove();
-		}
 	}
 }

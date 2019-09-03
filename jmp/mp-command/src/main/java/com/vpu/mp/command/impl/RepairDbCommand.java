@@ -15,7 +15,7 @@ public class RepairDbCommand implements CommandRunner {
 	
 	@Override
 	public void run(ApplicationArguments args) {
-		saas.repairDb.repairAllShopDb();
+		saas.repairDb.repairAllShopDb(true);
 	}
 
 	@Override
