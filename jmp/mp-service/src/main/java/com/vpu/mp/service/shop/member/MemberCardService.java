@@ -49,10 +49,6 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBE
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_ON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.GOODS_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.STORE_CATEGORY_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PLATFORM_CATEGORY_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
 import static org.jooq.impl.DSL.count;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
@@ -330,7 +326,7 @@ public class MemberCardService extends ShopBaseService {
 	/**
 	 * 为单张会员卡设置专享商品 | 商家分类 | 平台分类
 	 * @param cardId 会员卡id
-	 * @param ownGoodsId 专享商品id列表
+	 * @param ownId 专享商品id列表 |   商家分类id列表 |  平台分类id列表
 	 * @param type 标签关联类型 如： {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.GOODS_TYPE }
 	 */
 	public void addGoodsCardCouple(Integer cardId, List<Integer> ownId,Byte type) {
