@@ -14,9 +14,7 @@ import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
