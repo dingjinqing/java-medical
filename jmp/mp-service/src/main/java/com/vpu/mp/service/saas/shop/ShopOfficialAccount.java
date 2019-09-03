@@ -16,6 +16,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,13 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.market.message.BindOARabbitParam;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
@@ -301,13 +304,30 @@ public class ShopOfficialAccount extends MainBaseService {
 	}
 
 	/**
+	 * 批量获取公众号关注用户信息--加入队列操作
+	 * @param appId
+	 * @param language
+	 * @param sysId
+	 * @param shopId
+	 */
+	public void batchGetUsersByRabbitMq(String appId, String language, Integer sysId,Integer shopId) {
+		BindOARabbitParam param=new BindOARabbitParam();
+		param.setAppId(appId);
+		param.setLanguage(language);
+		param.setSysId(sysId);
+		logger().debug("批量获取公众号关注用户"+param.toString());
+		saas.taskJobMainService.dispatchImmediately(param,BindOARabbitParam.class.getName(),shopId,TaskJobEnum.MP_BIND_MA.getExecutionType());
+		//rabbitTemplate.convertAndSend("bind.mamp.template", "bind.mamp.key", param);
+	}
+	
+	/**
 	 * 批量获取公众号用户信息
 	 * 
 	 * @param appId
 	 * @param language
 	 * @param adminTokenAuthInfo
 	 */
-	public void batchGetUsers(String appId, String language, AdminTokenAuthInfo adminTokenAuthInfo) {
+	public void batchGetUsers(String appId, String language, Integer sysId) {
 		// https://developers.weixin.qq.com/doc/offiaccount/User_Management/Getting_a_User_List.html
 		// https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
 		if (language != null && language.equals("en_US")) {
@@ -330,7 +350,7 @@ public class ShopOfficialAccount extends MainBaseService {
 					}
 					record.setOpenid(userInfo.getOpenId());
 					record.setAppId(appId);
-					record.setSysId(adminTokenAuthInfo.getSysId());
+					record.setSysId(sysId);
 					record.setSubscribe(userInfo.getSubscribe() ? (byte) 1 : (byte) 0);
 					record.setNickname(userInfo.getNickname());
 					record.setSex(userInfo.getSex().byteValue());
