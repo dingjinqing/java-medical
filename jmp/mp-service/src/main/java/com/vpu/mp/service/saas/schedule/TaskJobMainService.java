@@ -14,10 +14,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -75,7 +71,6 @@ public class TaskJobMainService extends MainBaseService {
                 return jsonStr;
             }
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            e.printStackTrace();
             return jsonStr;
         }
     }
