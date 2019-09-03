@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jooq.Condition;
@@ -57,7 +58,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return Map<String, List<RefundVoGoods>>
 	 */
 	public Map<String, List<RefundVoGoods>> getByOrderSns(List<String> orderSns) {
-		return db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.REC_ID,TABLE.GOODS_NAME,TABLE.GOODS_NUMBER,TABLE.RETURN_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.DISCOUNTED_GOODS_PRICE,TABLE.PRODUCT_ID,TABLE.IS_CAN_RETURN,TABLE.IS_GIFT).from(TABLE)
+		return db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.REC_ID,TABLE.GOODS_NAME,TABLE.GOODS_NUMBER,TABLE.RETURN_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.DISCOUNTED_GOODS_PRICE,TABLE.PRODUCT_ID,TABLE.IS_CAN_RETURN,TABLE.IS_GIFT,TABLE.DISCOUNTED_TOTAL_PRICE,TABLE.GOODS_ID,TABLE.MARKET_PRICE,TABLE.SEND_NUMBER,TABLE.GOODS_IMG).from(TABLE)
 			.where(TABLE.ORDER_SN.in(orderSns))
 			.fetchGroups(TABLE.ORDER_SN,RefundVoGoods.class);
 	}
@@ -66,7 +67,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @param goods
 	 * @param currentOrder
 	 * @param isMain
-	 * @return HashMap<Integer, Integer>
+	 * @return HashMap<recid, sum>
 	 */
 	public HashMap<Integer, Integer> countSubOrderGoods(Map<String, List<RefundVoGoods>> goods , OrderListInfoVo currentOrder , Boolean isMain) {
 		if(isMain) {
@@ -74,10 +75,10 @@ public class OrderGoodsService extends ShopBaseService{
 			for (Entry<String, List<RefundVoGoods>> entry : goods.entrySet()) {
 				if(!currentOrder.getOrderSn().equals(entry.getKey())) {
 					for (RefundVoGoods oneGoods : entry.getValue()) {
-						if(count.get(oneGoods.getProductId()) == null) {
-							count.put(oneGoods.getProductId(), oneGoods.getGoodsNumber());
+						if(count.get(oneGoods.getRecId()) == null) {
+							count.put(oneGoods.getRecId(), oneGoods.getGoodsNumber());
 						}else {
-							count.put(oneGoods.getProductId(), count.get(oneGoods.getProductId()) + oneGoods.getGoodsNumber());
+							count.put(oneGoods.getRecId(), count.get(oneGoods.getRecId()) + oneGoods.getGoodsNumber());
 						}
 					}
 				}
@@ -96,7 +97,7 @@ public class OrderGoodsService extends ShopBaseService{
 		//退款退货商品对应的orderGoods商品
 		Result<OrderGoodsRecord> orderGoods = db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REC_ID.in(recIds))).fetch();
 		//退款商品map(key->recId)
-		Map<Integer, ReturnOrderGoodsRecord> returnGoodsMap = returnGoods.stream().collect(Collectors.toMap(ReturnOrderGoodsRecord::getRecId,rGoods->rGoods));
+		Map<Integer, ReturnOrderGoodsRecord> returnGoodsMap = returnGoods.stream().collect(Collectors.toMap(ReturnOrderGoodsRecord::getRecId,Function.identity()));
 		for (OrderGoodsRecord goods : orderGoods) {
 			switch (returnOrderRecord.getRefundStatus()) {
 			//退款订单状态为完成
@@ -106,7 +107,7 @@ public class OrderGoodsService extends ShopBaseService{
 				//此次退款退货数量
 				int returnNum = returnGoodsMap.get(goods.getRecId()) == null ? 0 : returnGoodsMap.get(goods.getRecId()).getGoodsNumber();
 				//修改退货退款商品数量
-				goods.setReturnNumber(Integer.valueOf(goods.getReturnNumber().shortValue() - returnNum).shortValue());
+				goods.setReturnNumber(Integer.valueOf(goods.getReturnNumber().shortValue() + returnNum).shortValue());
 				break;
 			default:
 				goods.set(TABLE.REFUND_STATUS, returnOrderRecord.getRefundStatus());

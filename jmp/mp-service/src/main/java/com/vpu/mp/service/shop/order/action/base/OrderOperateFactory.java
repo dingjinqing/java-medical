@@ -43,7 +43,7 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	 * @return 执行结果
 	 * @throws MpException 
 	 */
-	public JsonResultCode orderOperate(IOrderBase info) throws MpException {
+	public JsonResultCode orderOperate(IOrderBase info) {
 		return getService(info.getServiceCode()).execute(info);
 	}
 	

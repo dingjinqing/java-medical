@@ -326,6 +326,8 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ORDER_RETURN_MANUAL_MONEY_ERROR = "order_return_manual_money_error";
 	public static final String MSG_CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR = "order_return_operation_not_supported_because_status_error";
 	public static final String MSG_CODE_ORDER_RETURN_AGREE_RETURN_BECAUSE_STATUS_ERROR = "order_return_agree_return_because_status_error";
+	public static final String MSG_CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS = "order_return_return_shipping_fee_excess";
+	public static final String MSG_CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_NOT_ZERO = "order_return_return_shipping_fee_not_zero";
 	
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";

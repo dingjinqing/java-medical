@@ -97,12 +97,7 @@ public class AdminOrderController extends AdminBaseController {
 	@PostMapping("/ship")
 	public JsonResult ship(@RequestBody @Valid ShipParam param ) {
 		param.setAdminInfo(adminAuth.user());
-		JsonResultCode code = null;
-		try {
-			code = shop().orderActionFactory.orderOperate(param);
-		} catch (MpException e) {
-			return fail(e.getErrorCode());
-		}
+		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
 	
@@ -136,12 +131,7 @@ public class AdminOrderController extends AdminBaseController {
 	@PostMapping("/refund")
 	public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
 		param.setAdminInfo(adminAuth.user());
-		JsonResultCode code;
-		try {
-			code = shop().orderActionFactory.orderOperate(param);
-		} catch (MpException e) {
-			return fail(e.getErrorCode());
-		}
+		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
 }

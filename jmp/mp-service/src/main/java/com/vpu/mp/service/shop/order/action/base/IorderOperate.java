@@ -15,12 +15,12 @@ public interface IorderOperate extends IOrderBase{
 	 * @return
 	 * @throws MpException
 	 */
-	public Object query(OrderOperateQueryParam param) throws MpException;
+	public Object query(OrderOperateQueryParam param);
 	/**
 	 * 	操作执行
 	 * @param obj
 	 * @return
 	 * @throws MpException
 	 */
-	public JsonResultCode execute(Object obj)throws MpException;
+	public JsonResultCode execute(Object obj);
 }

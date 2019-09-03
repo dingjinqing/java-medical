@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,7 +19,12 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
@@ -149,7 +155,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 	 * @param orderStatus
 	 * @param returnGoods
 	 */
-	public void updateSucessByRefundStatus(Byte orderStatus , List<ReturnOrderGoodsRecord> returnGoods){
+	public void updateSucess(Byte orderStatus , List<ReturnOrderGoodsRecord> returnGoods){
 		Byte success = null;
 		//若取消订单需更新returnOrderGoods的success状态
 		if(orderStatus == OrderConstant.REFUND_STATUS_CLOSE) {
@@ -168,4 +174,154 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 			updateSuccess(returnGoods, success);
 		}
 	}
+	
+	/**
+	 * 	退款商品可退最大金额
+	 * @param returnGoods
+	 * @return
+	 */
+	public BigDecimal getTotalCanReturnMoney(List<ReturnOrderGoodsRecord> returnGoods){
+		BigDecimal[] sum = {BigDecimal.ZERO};
+		returnGoods.forEach(goods->{
+			sum[0] = sum[0].add(BigDecimalUtil.multiplyOrDivide(
+					BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),Operator.multiply),
+					BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),null)
+					));
+		});
+		return sum[0];
+	}
+	
+	/**
+	 * 	计算退款商品行退款金额
+	 * @param returnOrder
+	 * @param returnGoods 前端传的退货商品
+	 * @throws MpException 
+	 */
+	public void calculateGoodsReturnMoney(ReturnOrderRecord returnOrder,List<ReturnGoods> returnGoods) throws MpException {
+		//手动退款金额map
+		Map<Integer, BigDecimal> returnMoneyMap = null;
+		if(OrderConstant.RT_MANUAL == returnOrder.getReturnType()) {
+			returnMoneyMap = new HashMap<Integer, BigDecimal>(returnGoods.size());
+			BigDecimal sum = BigDecimal.ZERO;
+			for (ReturnGoods goods : returnGoods) {
+				returnMoneyMap.put(goods.getRecId(), goods.getMoney());
+				sum = sum.add(goods.getMoney());
+			}
+			if(BigDecimalUtil.compareTo(returnOrder.getMoney(), sum) != 0) {
+				throw new MpException(JsonResultCode.CODE_ORDER_MANUAL_INCONSISTENT_AMOUNT);
+			}
+		}
+		//此次退款商品
+		List<ReturnOrderGoodsRecord> currentReturnGoods = getReturnGoods(returnOrder.getOrderSn(),returnOrder.getRetId());
+		//获取此次退款商品可退最大金额
+		BigDecimal totalCanReturnMoney = getTotalCanReturnMoney(currentReturnGoods);
+		Iterator<ReturnOrderGoodsRecord> iterator = currentReturnGoods.iterator();
+		while (iterator.hasNext()) {
+			ReturnOrderGoodsRecord goods = iterator.next();
+			BigDecimal currentGoodsReturnMoney = null;
+			if(OrderConstant.RT_MANUAL == returnOrder.getReturnType()) {
+				//因为数据库默认金额为0.00，所以退款金额大于0时更新数据
+				if(BigDecimalUtil.compareTo(returnMoneyMap.get(goods.getRecId()), BigDecimal.ZERO) < 1) {
+					iterator.remove();
+					continue;
+				}else {
+					currentGoodsReturnMoney = returnMoneyMap.get(goods.getRecId());
+				}
+			}else {
+				//totalCanReturnMoney=0存在，eg赠品,除数不为零
+				if(BigDecimalUtil.compareTo(totalCanReturnMoney, null) > 0 ) {
+					//非手工退款商品退款金额(先乘后除)=订单退款金额*折后单价*退款数量/totalCanReturnMoney(!=0)
+					currentGoodsReturnMoney = BigDecimalUtil.multiplyOrDivide(
+							BigDecimalPlus.create(returnOrder.getMoney(),Operator.multiply),
+							BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),Operator.multiply),
+							BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),Operator.Divide),
+							BigDecimalPlus.create(totalCanReturnMoney,null));
+				}
+			}
+			if(BigDecimalUtil.compareTo(currentGoodsReturnMoney, null) < 1) {
+				//此次退款金额为0不进行更新
+				iterator.remove();
+			}else {
+				goods.setReturnMoney(currentGoodsReturnMoney);
+			}
+		}
+		//权重分摊校验与差额分摊,此时currentReturnGoods已经去除金额为0的
+		balanceRefundMoney(currentReturnGoods, returnOrder.getMoney());
+		db().batchUpdate(currentReturnGoods).execute();
+	}
+	
+	/**
+	 * 平衡退款商品行的退款金额
+	 * @param returnGoods
+	 * @param sum
+	 */
+	public void balanceRefundMoney(List<ReturnOrderGoodsRecord> returnGoods, BigDecimal sum){
+		//只有0、1件商品return
+		if(returnGoods.size() <= 1) {
+			return;
+		}
+		//商品行所退金额和
+		BigDecimal goodsSum = returnGoods.stream().map(ReturnOrderGoodsRecord::getReturnMoney).reduce(BigDecimal.ZERO , BigDecimal::add);
+		//无差额return
+		if(BigDecimalUtil.compareTo(goodsSum, sum) == 0) {
+			return;
+		}
+		//差额
+		BigDecimalPlus difference = BigDecimalPlus.create(BigDecimalUtil.subtrac(sum, goodsSum).abs() , null);
+		//差额为正还是负
+		if(BigDecimalUtil.compareTo(goodsSum, sum) < 0) {
+			//商品分配金额少
+			difference.setOperator(Operator.add);
+		}else {
+			//商品分配金额多
+			difference.setOperator(Operator.subtrac);
+		}
+		/**
+		 * 误差可能的最大值 = 商品行数 * 0.01元
+		 * so: 误差 / 0.01 = 份数;
+		 */
+		int num = BigDecimalUtil.divide(difference.getValue(), OrderConstant.CENT).intValue();
+		while(true) {
+			for (ReturnOrderGoodsRecord oneGoods : returnGoods) {
+				//当前商品假如加上（减去）一分的退款金额
+				BigDecimal future = BigDecimalUtil.addOrSubtrac(
+						BigDecimalPlus.create(oneGoods.getReturnMoney(), difference.getOperator()),
+						BigDecimalPlus.create(OrderConstant.CENT, null)
+						);
+				//是否超限
+				if(BigDecimalUtil.compareTo(future,
+						BigDecimalUtil.multiply(oneGoods.getReturnMoney() , new BigDecimal(oneGoods.getGoodsNumber())))
+								< 1) {
+					//不超限，设置future
+					oneGoods.setReturnMoney(future);
+					//分数-1
+					--num;
+				}
+				//差额
+				if(num == 0) {
+					break;
+				}
+			}
+			if(num == 0) {
+				break;
+			}
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

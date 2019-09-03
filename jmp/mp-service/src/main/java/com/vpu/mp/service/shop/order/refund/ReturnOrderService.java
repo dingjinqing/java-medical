@@ -216,7 +216,7 @@ public class ReturnOrderService extends ShopBaseService{
 						"退款时订单sn:"+ order.getOrderSn() +
 						",退款类型为:" + param.getReturnType() +
 						",商品id:" + paramGoods.getRecId() +
-						"商品已退完或者");
+						"商品已退完或者不存在");
 				//商品已退完
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_RETURN_COMPLETED);
 			}

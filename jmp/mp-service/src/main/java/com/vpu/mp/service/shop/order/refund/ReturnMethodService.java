@@ -54,6 +54,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 */
 	public boolean refundMethods(String methodName , OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) throws MpException {
 		try {
+			//RETURN_METHOD_PREFIX + methodName获取该优先级退款的具体方法
 			Method method = getClass().getMethod(FieldsUtil.underLineToCamel(RETURN_METHOD_PREFIX + methodName), OrderInfoVo.class,ReturnOrderRecord.class,BigDecimal.class);
 			method.invoke(this, order,returnOrder,money);
 		} catch (InvocationTargetException e) {

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -201,6 +202,9 @@ public class OrderConstant {
 	/**元转化为分的比例*/
 	public final static byte TUAN_TO_FEN = 100;
 
+	/**一分*/
+	public final static BigDecimal CENT = new BigDecimal("0.01");
+	
 	/**商家 0 、买家1*/
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_N = 0;
