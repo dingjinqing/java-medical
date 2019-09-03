@@ -510,6 +510,7 @@ export default {
       this.choiseGooddialogVisible = false
       this.$http.$emit('result', this.goodsIdsArr)
       this.$emit('resultGoodsRow', this.goodsRow)
+      this.$emit('resultGoodsIds', this.goodsIdsArr)
     },
     // 页数改变
     handleCurrentChange () {
