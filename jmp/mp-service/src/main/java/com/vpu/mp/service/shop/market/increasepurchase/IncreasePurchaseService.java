@@ -377,7 +377,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
             .where(og.ACTIVITY_RULE.greaterThan(0))
             .and(buildRedemptionDetailOption(param))
-            .groupBy(og.ORDER_SN).having(sum(og.GOODS_NUMBER).greaterOrEqual(BigDecimal.valueOf(param.getRedemptionNum())))
+            .groupBy(og.ORDER_SN).having(sum(og.GOODS_NUMBER).eq(BigDecimal.valueOf(param.getRedemptionNum())))
             .orderBy(oi.CREATE_TIME);
 
         //获取分页数据
