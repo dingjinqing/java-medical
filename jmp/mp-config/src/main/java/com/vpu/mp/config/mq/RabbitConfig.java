@@ -12,6 +12,7 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -50,6 +51,9 @@ public class RabbitConfig {
     public static final String QUEUE_COUPON_SEND = "marketing.coupon";
     /** 发送消息默认存放队列 */
     public static final String QUEUE_MESSAGE_SEND = "marketing.message";
+    
+    /** 获取公众号关注用户*/
+    public static final String QUEUE_MA_MAP_BIND="bind.mamp.queue";
 
 
 
@@ -58,6 +62,8 @@ public class RabbitConfig {
     
     /** 营销功能的路由 */
     public static final String EXCHANGE_MARKETING = "direct.marketing";
+    /**获取关注公众号的用户信息*/
+    public static final String EXCHANGE_MA_MAP_BIND="bind.mamp.template";
 
     /** 发送失败路由键 */
     public static final String BINDING_EXCHANGE_ERROR_KEY = "direct.error.send";
@@ -69,8 +75,9 @@ public class RabbitConfig {
 
     /** 发送消息路由键 */
     public static final String BINDING_EXCHANGE_MESSAGE_KEY = "direct.marketing.message";
-
-
+    
+    /** 获取公众号关注用户的路由键*/
+    public static final String BINDING_MA_MAP_BIND_KEY="bind.mamp.key";
 
     @Bean
     public ConnectionFactory connectionFactory(){
@@ -138,6 +145,15 @@ public class RabbitConfig {
     public Queue sendCouponWithQueue() {
         return new Queue(QUEUE_COUPON_SEND,true,false,false);
     }
+    
+    /**
+     * 	获取关注公众号的用户信息
+     * @return
+     */
+    @Bean
+    public Queue sendMpMABindQueue() {
+    	return new Queue(QUEUE_MA_MAP_BIND,true);
+    }
     /**
      * 1.交换机名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -156,6 +172,10 @@ public class RabbitConfig {
     public DirectExchange marketingExchange(){
         return new DirectExchange(EXCHANGE_MARKETING,true,false);
     }
+    
+    @Bean
+    public DirectExchange mpTemplateExchange() {
+    	return new DirectExchange(EXCHANGE_MA_MAP_BIND,true,false);    }
     /**
      * @return 路由和队列绑定
      */
@@ -174,5 +194,13 @@ public class RabbitConfig {
     @Bean
     public Binding bindingMessageSend(){
         return BindingBuilder.bind(sendMessageQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_MESSAGE_KEY);
+    }
+    /**
+     * 获取关注公众号的用户信息
+     * @return
+     */
+    @Bean
+    public Binding bindingTemplateSend() {
+    	return BindingBuilder.bind(sendMpMABindQueue()).to(mpTemplateExchange()).with(BINDING_MA_MAP_BIND_KEY);
     }
 }
