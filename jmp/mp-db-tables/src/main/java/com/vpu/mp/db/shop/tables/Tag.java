@@ -5,8 +5,8 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.tables.records.TagRecord;
 
 import java.sql.Timestamp;
@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tag extends TableImpl<TagRecord> {
 
-    private static final long serialVersionUID = -858702441;
+    private static final long serialVersionUID = -1642023682;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_tag</code>
+     * The reference instance of <code>jmini_shop_444801.b2c_tag</code>
      */
     public static final Tag TAG = new Tag();
 
@@ -58,46 +58,41 @@ public class Tag extends TableImpl<TagRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_tag.tag_id</code>.
+     * The column <code>jmini_shop_444801.b2c_tag.tag_id</code>.
      */
     public final TableField<TagRecord, Integer> TAG_ID = createField("tag_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_tag.tag_name</code>.
+     * The column <code>jmini_shop_444801.b2c_tag.tag_name</code>.
      */
     public final TableField<TagRecord, String> TAG_NAME = createField("tag_name", org.jooq.impl.SQLDataType.VARCHAR(20), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_tag.create_time</code>.
+     * The column <code>jmini_shop_444801.b2c_tag.create_time</code>.
      */
     public final TableField<TagRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_tag.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_444801.b2c_tag.update_time</code>. 最后修改时间
      */
     public final TableField<TagRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_tag.is_delete</code>. 0未删除，1已删除
-     */
-    public final TableField<TagRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未删除，1已删除");
-
-    /**
-     * Create a <code>mini_shop_471752.b2c_tag</code> table reference
+     * Create a <code>jmini_shop_444801.b2c_tag</code> table reference
      */
     public Tag() {
         this(DSL.name("b2c_tag"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_tag</code> table reference
+     * Create an aliased <code>jmini_shop_444801.b2c_tag</code> table reference
      */
     public Tag(String alias) {
         this(DSL.name(alias), TAG);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_tag</code> table reference
+     * Create an aliased <code>jmini_shop_444801.b2c_tag</code> table reference
      */
     public Tag(Name alias) {
         this(alias, TAG);
