@@ -33,7 +33,7 @@ public class MessageTemplateParam {
     /** 发送状态 */
     private Byte sendStatus;
     /** 开始日期 */
-    private Timestamp startTime = new Timestamp(Long.MIN_VALUE);
+    private Timestamp startTime ;
     /** 结束日期 */
-    private Timestamp endTime = new Timestamp(Long.MIN_VALUE);
+    private Timestamp endTime ;
 }

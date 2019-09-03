@@ -18,5 +18,18 @@ public class RabbitParamConstant {
          *微信公众号模板消息类型
          */
         public static final Integer MP_TEMPLE_TYPE=1002;
+
+
+//    可以参考
+//    const TEMPLATE_TYPE_ORDER = 1;          // 订单类型
+//    const TEMPLATE_TYPE_APPOINTMENT = 2;    // 预约类型
+//    const TEMPLATE_TYPE_COUPON = 3;         // 优惠券类型
+//    const TEMPLATE_TYPE_GROUP = 4;          // 拼团类型
+//    const TEMPLATE_TYPE_CARD = 5;           // 会员卡类型
+//    const TEMPLATE_TYPE_DISTRIBUTION = 6;   // 分销
+//    const TEMPLATE_TYPE_CUSTOM = 7;         // 商家自定义
+//    const TEMPLATE_TYPE_BARGAIN = 8;        // 砍价
+//    const TEMPLATE_TYPE_AUDIT = 9;          // 审核
+//    const TEMPLATE_TYPE_DRAW  = 10;         // 抽奖
     }
 }

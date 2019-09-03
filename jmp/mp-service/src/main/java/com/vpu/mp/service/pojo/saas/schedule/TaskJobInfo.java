@@ -71,8 +71,28 @@ public class TaskJobInfo extends BaseTaskJob {
         this.progress = builder.progress;
         this.executionType = builder.executionType;
         this.type = builder.type;
-        this.cycle = builder.cycle;
-        this.startTime = builder.startTime;
+
+        if( builder.type.equals(TaskJobsConstant.TYPE_CYCLE_ONCE) ){
+            if( builder.cycle!=null ){
+                this.cycle = builder.cycle;
+            }
+            if( builder.startTime!=null ){
+                this.nextExecuteTime = builder.startTime;
+            }else{
+                this.nextExecuteTime = DateUtil.getLocalDateTime();
+            }
+        }else if( builder.type.equals(TaskJobsConstant.TYPE_ONCE) ){
+            this.nextExecuteTime = DateUtil.getLocalDateTime();
+        }else if( builder.type.equals(TaskJobsConstant.EXECUTION_TIMING) ){
+            this.nextExecuteTime = builder.startTime;
+        }
+
+        if( builder.startTime!=null ){
+            this.startTime = builder.startTime;
+        }
+        if( builder.startTime!=null ){
+            this.endTime = builder.endTime;
+        }
         this.content = builder.content;
         this.className = builder.className;
     }

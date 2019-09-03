@@ -24,17 +24,17 @@ public class BaseTaskJob  {
     /** 任务进度：0-100 */
     protected Byte progress = 0;
 
-    /** 执行周期id */
+    /** 执行类型：任务类型标识 */
     protected Integer executionType ;
 
-    /** task任务类型(任务标识) */
+    /** task任务类型(立刻执行、定时执行、循环执行) */
     protected Byte type;
 
     /** 周期开始日期 */
-    protected Timestamp startTime = new Timestamp(Long.MIN_VALUE);
+    protected Timestamp startTime ;
 
     /** 周期结束日期 */
-    protected Timestamp endTime = new Timestamp(Long.MIN_VALUE);
+    protected Timestamp endTime ;
 
     /** 轮循间隔(单位:秒) */
     protected Integer cycle = 60*60*3;

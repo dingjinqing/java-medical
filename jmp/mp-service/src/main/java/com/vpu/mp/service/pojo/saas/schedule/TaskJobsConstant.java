@@ -23,6 +23,8 @@ public class TaskJobsConstant {
     public static final Byte TYPE_ONCE = 1;
     /** 循环执行（但只执行一次）且schedule值不能为NULL */
     public static final Byte TYPE_CYCLE_ONCE = 2;
+
+    @Deprecated
     /** 循环执行（每天都执行）且schedule值不能为NULL */
     public static final Byte TYPE_CYCLE_EVERYDAY = 3;
     /** 定时执行 startTime不能为NULL */

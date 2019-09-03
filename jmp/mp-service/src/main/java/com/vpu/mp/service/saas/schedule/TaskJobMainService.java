@@ -1,10 +1,13 @@
 package com.vpu.mp.service.saas.schedule;
 
+import com.vpu.mp.db.main.tables.TaskJobContent;
+import com.vpu.mp.db.main.tables.TaskJobMain;
 import com.vpu.mp.db.main.tables.records.TaskJobContentRecord;
 import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.MathUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.BaseTaskJob;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
@@ -14,6 +17,8 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -52,7 +57,7 @@ public class TaskJobMainService extends MainBaseService {
             }
             TaskJobMainRecord idRecord = DSL.using(configuration)
                 .insertInto(TASK_JOB_MAIN)
-                .set(record).returning(TASK_JOB_MAIN.ID)
+                .set(mainRecord).returning(TASK_JOB_MAIN.ID)
                 .fetchOne();
             if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
                 TaskJobsConstant.TaskJobEnum jobEnum = TaskJobsConstant.TaskJobEnum
@@ -64,7 +69,7 @@ public class TaskJobMainService extends MainBaseService {
     }
     private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
         try {
-            if(  Class.forName(clzName).getMethod("setTaskJobId",Integer.class)!= null ){
+            if(  !jsonStr.contains("taskJobId")&&Class.forName(clzName).getMethod("setTaskJobId",Integer.class)!= null ){
                 String jobIdStr = "\"taskJobId\":"+jobId+",";
                 return  jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
             }else{
@@ -106,7 +111,7 @@ public class TaskJobMainService extends MainBaseService {
                 .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
                 .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
                 .forUpdate()
-                .skipLocked()
+                .noWait()
                 .fetch();
             result.forEach(r->{
                 TaskJobsConstant.TaskJobEnum job =
@@ -120,5 +125,41 @@ public class TaskJobMainService extends MainBaseService {
                 .set(TASK_JOB_MAIN.STATUS,TaskJobsConstant.STATUS_EXECUTING)
                 .where(TASK_JOB_MAIN.ID.in(result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList())));
         });
+    }
+
+    public TaskJobMainRecord getTaskJobMainRecordById(Integer taskJobId){
+        return db().selectFrom(TASK_JOB_MAIN).where(TASK_JOB_MAIN.ID.eq(taskJobId)).fetchOne();
+    }
+    public TaskJobContentRecord getTaskJobContentRecordById(Integer taskContentId){
+        return db().selectFrom(TASK_JOB_CONTENT).where(TASK_JOB_CONTENT.ID.eq(taskContentId)).fetchOne();
+    }
+
+    /**
+     * 更新进度和状态
+     * @param content
+     * @param taskJobId
+     * @param failSize
+     * @param allSize
+     */
+    public void updateProgress(String content,Integer taskJobId, int failSize ,int allSize) {
+        TaskJobMainRecord record = getTaskJobMainRecordById(taskJobId);
+        if( record != null ){
+            TaskJobContentRecord contentRecord = getTaskJobContentRecordById(record.getContentId());
+            contentRecord.setContent(content);
+            contentRecord.update();
+            record.setProgress((byte)(MathUtil.deciMal(allSize-failSize,allSize)*100));
+            if( record.getType().equals(TaskJobsConstant.TYPE_CYCLE_ONCE) ){
+                Timestamp next = DateUtil.getDalyedDateTime(record.getCycle());
+                if( next.before(record.getEndTime()) ){
+                    record.setNextExecuteTime(next);
+                    record.setStatus(TaskJobsConstant.STATUS_EXECUTING);
+                }else{
+                    record.setStatus(TaskJobsConstant.STATUS_COMPLETE);
+                }
+            }else{
+                record.setStatus(TaskJobsConstant.STATUS_COMPLETE);
+            }
+            record.update();
+        }
     }
 }

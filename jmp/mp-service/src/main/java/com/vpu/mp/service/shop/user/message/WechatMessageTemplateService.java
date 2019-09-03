@@ -4,6 +4,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.RegexUtil;
@@ -76,6 +77,9 @@ public class WechatMessageTemplateService extends ShopBaseService {
         Boolean success = Boolean.TRUE;
         if( param.getMaTemplateData() != null && StringUtils.isNotBlank(formId) ){
             success = sendMaMessage(param,info,formId);
+            if(!success){
+//                ServiceMessageRecord record =
+            }
         }
 
         if( !success && param.getMpTemplateData() != null && info.getIsSubscribe() ){
@@ -173,40 +177,47 @@ public class WechatMessageTemplateService extends ShopBaseService {
      */
     public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId) {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
-    	if(type==RabbitParamConstant.Type.MP_TEMPLE_TYPE) {
-    		MpOfficialAccountUserRecord accountUserListByRecid = accountUserService.getAccountUserListByRecid(userIdList.get(0));
+    	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
+    		MpOfficialAccountUserRecord accountUserListByRecord =
+                accountUserService.getAccountUserListByRecid(userIdList.get(0));
     		//通过shopId得到小程序信息
     		MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
-    		WxUserInfo info=WxUserInfo.builder().mpAppId(accountUserListByRecid.getAppId()).mpOpenId(accountUserListByRecid.getOpenid()).maAppId(authShopByShopId.getAppId()).build();
+    		WxUserInfo info=WxUserInfo.builder()
+                .mpAppId(accountUserListByRecord.getAppId())
+                .mpOpenId(accountUserListByRecord.getOpenid())
+                .maAppId(authShopByShopId.getAppId())
+                .build();
     		resultList.add(info);
     		return resultList;
-    	}
-        String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
-        List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
-        Map<Integer,UserRecord> userMap = userList.stream()
-            .collect(Collectors.toMap(UserRecord::getUserId, x->x));
-        List<MpOfficialAccountUserRecord> accountUserList =
-            accountUserService.getAccountUserListByUnionIds(
-                userList.stream().map(x->x.get(USER.WX_UNION_ID)).collect(Collectors.toList())
-            );
-        Map<String,MpOfficialAccountUserRecord> accountUserAccountMap = accountUserList.stream()
-            .collect(Collectors.toMap(MpOfficialAccountUserRecord::getUnionid, x->x));
-        userIdList.stream()
-            .filter(userMap::containsKey)
-            .forEach(x->{
-                UserRecord user= userMap.get(x);
-                WxUserInfo.WxUserInfoBuilder builder = WxUserInfo.builder()
-                    .userId(x)
-                    .maAppId(appId)
-                    .maOpenId(user.getWxOpenid());
-                if( accountUserAccountMap.containsKey(user.getWxUnionId()) ){
-                    MpOfficialAccountUserRecord record = accountUserAccountMap.get(user.getWxUnionId());
-                    builder.isSubscribe(Boolean.TRUE)
-                        .mpAppId(record.getAppId())
-                        .mpOpenId(record.getOpenid());
-                }
-                resultList.add(builder.build());
-        });
+    	}else if( type.equals(RabbitParamConstant.Type.GENERAL_TYPE) ){
+            String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
+            List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
+            Map<Integer,UserRecord> userMap = userList.stream()
+                .collect(Collectors.toMap(UserRecord::getUserId, x->x));
+            List<MpOfficialAccountUserRecord> accountUserList =
+                accountUserService.getAccountUserListByUnionIds(
+                    userList.stream().map(x->x.get(USER.WX_UNION_ID)).collect(Collectors.toList())
+                );
+            Map<String,MpOfficialAccountUserRecord> accountUserAccountMap = accountUserList.stream()
+                .collect(Collectors.toMap(MpOfficialAccountUserRecord::getUnionid, x->x));
+            userIdList.stream()
+                .filter(userMap::containsKey)
+                .forEach(x->{
+                    UserRecord user= userMap.get(x);
+                    WxUserInfo.WxUserInfoBuilder builder = WxUserInfo.builder()
+                        .userId(x)
+                        .maAppId(appId)
+                        .maOpenId(user.getWxOpenid());
+                    if( accountUserAccountMap.containsKey(user.getWxUnionId()) ){
+                        MpOfficialAccountUserRecord record = accountUserAccountMap.get(user.getWxUnionId());
+                        builder.isSubscribe(Boolean.TRUE)
+                            .mpAppId(record.getAppId())
+                            .mpOpenId(record.getOpenid());
+                    }
+                    resultList.add(builder.build());
+                });
+            return resultList;
+        }
         return resultList;
     }
 }
