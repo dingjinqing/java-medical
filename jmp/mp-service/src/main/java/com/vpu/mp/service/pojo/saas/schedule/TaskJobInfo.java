@@ -58,7 +58,7 @@ public class TaskJobInfo extends BaseTaskJob {
             this.className = className;
             return this;
         }
-        public TaskJobInfo.Builder content(Object... content){
+        public TaskJobInfo.Builder content(Object content){
             this.content = Util.toJson(content);
             return this;
         }
