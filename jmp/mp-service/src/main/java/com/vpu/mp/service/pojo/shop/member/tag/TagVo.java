@@ -1,18 +1,17 @@
 package com.vpu.mp.service.pojo.shop.member.tag;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
-
 /**
 * @author 黄壮壮
-* @Date: 2019年8月13日
-* @Description: 标签通用弹窗
+* @Date: 2019年9月3日
+* @Description:
 */
 @Getter
 @Setter
-public class CommonTagVo {
-	/** 标签Id */
-	private Integer tagId;
-	/** 标签名 */
+public class TagVo {
+	@JsonProperty("value")
 	private String tagName;
 }
