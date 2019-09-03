@@ -266,7 +266,7 @@ public class StoreService extends ShopBaseService {
 	public List<StoreBasicVo> getAllStore() {
 		logger().info("获取所有门店id和名称");
 		 return db().select(STORE.STORE_ID,STORE.STORE_NAME)
-			.from(STORE)
+			.from(STORE) 
 			.fetch()
 			.into(StoreBasicVo.class);
 	}

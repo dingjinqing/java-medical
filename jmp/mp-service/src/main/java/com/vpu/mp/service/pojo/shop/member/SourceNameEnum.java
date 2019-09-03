@@ -12,7 +12,7 @@ public enum SourceNameEnum {
 	/** 渠道页-- */
 	CHANNAL_PAGE(1,"member.source.channal_page"),
 	/** 扫码进入 */
-	SCAN_QRCODE(2,"member.source.scan_qrcode");
+	SCAN_QRCODE(-3,"member.source.scan_qrcode");
 
 	
 	/** 数字代号 */
@@ -22,7 +22,7 @@ public enum SourceNameEnum {
 	private SourceNameEnum(int code,String name) {
 		this.code = (byte)code;
 		this.name = name;
-	}
+	} 
 	
 	public Byte getCode() {
 		return code;

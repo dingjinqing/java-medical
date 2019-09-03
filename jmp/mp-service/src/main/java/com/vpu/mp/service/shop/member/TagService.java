@@ -32,6 +32,7 @@ import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
 
 public class TagService extends ShopBaseService {
 	final static Byte DELETE_NO = 0;
+
 	public PageResult<TagInfoVo> getPageList(TagPageListParam param) {
 
 		UserTag ut = USER_TAG.as("ut");
@@ -47,7 +48,7 @@ public class TagService extends ShopBaseService {
 
 		Field<Integer> count = this.db().select(DSL.count()).from(ut).where(ut.TAG_ID.eq(t.TAG_ID)).asField("count");
 		SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> select = (SelectWhereStep<Record4<Integer, String, Timestamp, Integer>>) this
-				.db().select(t.TAG_ID, t.TAG_NAME, t.CREATE_TIME, count).from(t).where(t.IS_DELETE.eq(existTag));
+				.db().select(t.TAG_ID, t.TAG_NAME, t.CREATE_TIME, count).from(t);
 		/*
 		 * 按照降序进行查询
 		 */
@@ -55,8 +56,8 @@ public class TagService extends ShopBaseService {
 		select = buildOptions(select, param, t);
 
 		select.orderBy(t.CREATE_TIME.desc());
-		PageResult<TagInfoVo> pageResult = this.getPageResult(select, param.getCurrentPage(),
-				param.getPageRows(), TagInfoVo.class);
+		PageResult<TagInfoVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				TagInfoVo.class);
 		for (TagInfoVo tag : pageResult.dataList) {
 			if (tag.getCount() == null) {
 				tag.setCount(0);
@@ -73,13 +74,13 @@ public class TagService extends ShopBaseService {
 	 * @return
 	 */
 
-	private SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> buildOptions(SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> select,
-			TagPageListParam param,Tag t) {
-		if(param == null) {
+	private SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> buildOptions(
+			SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> select, TagPageListParam param, Tag t) {
+		if (param == null) {
 			return select;
 		}
-		if(!StringUtils.isEmpty(param.getTagName())) {
-			//like value
+		if (!StringUtils.isEmpty(param.getTagName())) {
+			// like value
 			String likeValue = this.likeValue(param.getTagName());
 			select.where(t.TAG_NAME.like(likeValue));
 		}
@@ -116,6 +117,7 @@ public class TagService extends ShopBaseService {
 
 	/**
 	 * delete tagName
+	 * 
 	 * @param tagId
 	 */
 	public void deleteTag(Integer tagId) {
@@ -124,27 +126,20 @@ public class TagService extends ShopBaseService {
 		Byte deleteFlag = 1;
 
 		this.transaction(() -> {
-			db().update(TAG)
-				.set(TAG.IS_DELETE, deleteFlag)
-				.where(TAG.TAG_ID.eq(tagId))
-				.execute();
-			
-			db().delete(USER_TAG)
-				.where(USER_TAG.TAG_ID.eq(tagId))
-				.execute();
+			db().delete(TAG).where(TAG.TAG_ID.eq(tagId)).execute();
+			db().delete(USER_TAG).where(USER_TAG.TAG_ID.eq(tagId)).execute();
 		});
 
 	}
 
 	/**
 	 * 更新标签名称
+	 * 
 	 * @param param
 	 * @return
 	 */
 	public int updateTag(@Valid UpdateTagParam param) {
-		int result = db().update(TAG)
-				.set(TAG.TAG_NAME, param.getTagName())
-				.where(TAG.TAG_ID.eq(param.getTagId()))
+		int result = db().update(TAG).set(TAG.TAG_NAME, param.getTagName()).where(TAG.TAG_ID.eq(param.getTagId()))
 				.execute();
 		return result;
 	}
@@ -155,7 +150,19 @@ public class TagService extends ShopBaseService {
 	public List<CommonTagVo> getCommonTagList() {
 
 		List<CommonTagVo> list = db().selectFrom(TAG).orderBy(TAG.TAG_ID.asc()).fetch().into(CommonTagVo.class);
-		logger().info("共查询到： "+list.size()+" 条数据");
+		logger().info("共查询到： " + list.size() + " 条数据");
 		return list;
 	}
+	/**
+	 * 获取标签基本信息
+	 * @return
+	 */
+	public List<CommonTagVo> getAllTag() {
+		logger().info("获取所有标签");
+		 return db().select(TAG.TAG_ID, TAG.TAG_NAME)
+			.from(TAG)
+			.fetch()
+			.into(CommonTagVo.class);
+	}
+
 }
