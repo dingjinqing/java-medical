@@ -39,7 +39,9 @@ public class TaskJobsConstant {
      */
     public enum  TaskJobEnum {
         /** 消息推送任务 */
-        SEND_MESSAGE(1001, RabbitConfig.EXCHANGE_MARKETING,RabbitConfig.BINDING_EXCHANGE_MESSAGE_KEY);
+        SEND_MESSAGE(1001, RabbitConfig.EXCHANGE_MARKETING,RabbitConfig.BINDING_EXCHANGE_MESSAGE_KEY),
+    	/**获取关注公众号的用户信息*/
+        MP_BIND_MA(1002, RabbitConfig.EXCHANGE_MA_MAP_BIND, RabbitConfig.BINDING_MA_MAP_BIND_KEY);
         private Integer executionType;
         private String exchangeName;
         private String routingKey;
