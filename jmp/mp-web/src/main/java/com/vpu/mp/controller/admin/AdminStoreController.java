@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderCountingData
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
@@ -544,5 +547,14 @@ public class AdminStoreController extends AdminBaseController{
     		return fail();
     	}
     	
+    }
+    /**
+     * -门店下拉框弹窗api
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/all/get")
+    public JsonResult getAllStore() {
+    	List<StoreBasicVo> allStore = shop().store.getAllStore();
+    	return success(allStore);
     }
 }
