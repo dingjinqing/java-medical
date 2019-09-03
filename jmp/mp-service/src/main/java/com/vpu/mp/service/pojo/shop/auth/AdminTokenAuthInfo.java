@@ -19,4 +19,5 @@ public class AdminTokenAuthInfo {
 	public Integer loginShopId = 0;
 	public boolean shopLogin = false;
 	public String token = "";
+	public String accountName;
 }
