@@ -89,7 +89,7 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断平台分类是否为空
-        if (goods.getSortId() == null) {
+        if (goods.getCatId() == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
 
