@@ -44,7 +44,15 @@ public class MpAuthShopToAdminVo {
     @JsonIgnore
     private String    payKeyContent;
     private Byte      isModifyDomain;
+    
     private Integer   bindTemplateId;
+	/** 绑定的模板ID对应的版本号*/
+    private String bindUserVersion;
+    /** 当前模板id*/
+    private Integer currentTemplateId;
+    /** 当前模板id对应的版本号*/
+    private String currentUserVersion;
+    
     private Byte      uploadState;
     private Timestamp lastUploadTime;
     private Long   auditId;
