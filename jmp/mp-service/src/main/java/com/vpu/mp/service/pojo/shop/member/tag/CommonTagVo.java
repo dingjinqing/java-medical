@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.tag;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +16,6 @@ public class CommonTagVo {
 	/** 标签Id */
 	private Integer tagId;
 	/** 标签名 */
+	@JsonProperty("value")
 	private String tagName;
 }
