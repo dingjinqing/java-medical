@@ -11,7 +11,7 @@
         v-model="checkList"
         @change="checkChange()"
       >
-        <div style="height: 420px;width: 100%;overflow:auto">
+        <div style="height: 500px;width: 100%;overflow:auto">
           <el-table
             :show-header="false"
             :data="locationList"
@@ -79,14 +79,10 @@
             slot="footer"
             class="dialog-footer"
           >
-            <el-button
-              @click=closeInner
-              size="small"
-            >取 消</el-button>
+            <el-button @click=closeInner>取 消</el-button>
             <el-button
               type="primary"
               @click="confirInner"
-              size="small"
             >确 定</el-button>
           </div>
         </el-dialog>
@@ -95,14 +91,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button
-          @click=closeFunc
-          size="small"
-        >取 消</el-button>
+        <el-button @click=closeFunc>取 消</el-button>
         <!--                <el-button @click=reset>重 置</el-button>-->
         <el-button
           type="primary"
-          size="small"
           @click="getCheckList"
         >确 定</el-button>
       </div>
@@ -193,7 +185,7 @@ export default {
       this.$emit('close', false)
     },
     getCheckList () {
-      // eslint-disable-next-line
+      /* eslint-disable */
       let str = ''
       let areaList = []
       let idList = []
@@ -215,15 +207,14 @@ export default {
           if (areaCity !== undefined) {
             let arCount = 0
             let arArr = []
-            // eslint-disable-next-line
             let arStr = ''
             let arArea = []
+            let arSet = new Set()
             for (let j = 0; j < areaCity.length; j++) {
               // this.checkList.push(areaCity[j].cityId);
               let distn = areaCity[j].areaDistrict
               let disCount = 0
               let disArr = []
-              // eslint-disable-next-line
               let disStr = ''
               let disArea = []
               for (let k = 0; k < distn.length; k++) {
@@ -240,14 +231,15 @@ export default {
                 arArea.push(areaCity[j].cityName)
                 str += areaCity[j].cityName
                 str += ','
-                showArr.add(this.cData[i].provinceName)
+                arSet.add(areaCity[j].cityName)
               } else {
                 arArr = arArr.concat(disArr)
                 arArea = arArea.concat(disArea)
                 if (disCount > 0) {
-                  showArr.add(areaCity[j].cityName)
+                  arSet.add(areaCity[j].cityName)
                 }
               }
+              // console.log("set-->>>",arSet)
               if (this.checkList.findIndex(item => item === areaCity[j].cityId) !== -1) {
                 arCount++
                 arArr.push(areaCity[j].cityId)
@@ -256,7 +248,8 @@ export default {
                 arStr += ','
               }
             }
-            if (arCount === areaCity.length || arCount !== 0) {
+            // console.log("set-->>>",arSet)
+            if (arCount === areaCity.length && arCount !== 0) {
               idList.push(this.cData[i].provinceId)
               areaList.push(this.cData[i].provinceName)
               showArr.add(this.cData[i].provinceName)
@@ -264,10 +257,9 @@ export default {
             } else {
               idList = idList.concat(arArr)
               areaList = areaList.concat(arArea)
-              if (arCount > 0) {
-                showArr.add(this.cData[i].provinceName)
-              }
-
+              // showArr.add(this.cData[i].provinceName);
+              // console.log("arSet-->",arSet)
+              showArr = new Set([...showArr, ...arSet])
               // areaList.push(areaCity[j].cityName);
             }
           }
@@ -284,17 +276,19 @@ export default {
       //         }
       //     }
       // }
+      let set = new Set()
+      let set2 = new Set()
       let param = {
         checkList: this.checkList,
-        areaList: areaList,
-        idList: idList,
+        areaList: Array.from(new Set(areaList)),
+        idList: Array.from(new Set(idList)),
         innerObj: this.innerObj,
         showArr: Array.from(showArr)
       }
       this.$emit('checkList', param)
       this.$emit('close', false)
     },
-    checkChange () {
+    checkChange() {
       // for (let i = 0; i < this.checkList.length; i++) {
       //     if (this.checkList[i] === 1) {
       //
@@ -302,7 +296,7 @@ export default {
       //     }
       // }
     },
-    showInner (scope, id) {
+    showInner(scope, id) {
       this.innerTemp = this.checkList
       let list = scope.row.areaCity
       for (let i = 0; i < list.length; i++) {
@@ -314,7 +308,7 @@ export default {
       }
       this.innerVisible = true
     },
-    closeInner () {
+    closeInner() {
       // for (let i = 0; i < this.areaList.length; i++) {
       //     for (let j = 0; j < this.checkList.length; j++) {
       //         if (this.checkList[j] === this.areaList[i].districtId) {
@@ -325,10 +319,10 @@ export default {
       this.checkList = this.innerTemp
       this.innerVisible = false
     },
-    reset () {
+    reset() {
       this.checkList = []
     },
-    confirInner () {
+    confirInner() {
       // for (let i = 0; i < this.areaList.length; i++) {
       //     for (let j = 0; j < this.checkList.length; j++) {
       //         if (this.checkList[j] === this.areaList[i].districtId) {
@@ -353,7 +347,7 @@ export default {
       // }
       this.innerVisible = false
     },
-    checkedSingleChange (val, b) {
+    checkedSingleChange(val, b) {
       let value = b.target._value
       let obj = Object.assign({}, this.innerObj)
       if (this.checkList.length !== this.total) {
@@ -395,9 +389,9 @@ export default {
                   if (this.checkList.findIndex(item => item === areaCity[j].cityId) !== -1) {
                     this.checkList.splice(this.checkList.findIndex(item => item === areaCity[j].cityId), 1)
                   }
-                  if (obj[areaCity[j].cityId] === undefined) {
-                    obj[areaCity[j].cityId] = 0
-                  }
+                  // if (obj[areaCity[j].cityId]===undefined) {
+                  obj[areaCity[j].cityId] = 0
+                  // }
 
                   this.checkList.push(areaCity[j].cityId)
                   let distn = areaCity[j].areaDistrict

@@ -245,7 +245,10 @@ export default {
       firstNum: 1,
       firstFee: 0,
       continueNum: 1,
-      continueFee: 0
+      continueFee: 0,
+      showArr: [], // 展示在表格中的数据
+      area_list: [], // 选中的值对应的ID 区域代码
+      area_text: `` // 选中的值中文字符串 区域名称
 
     }
   },
@@ -254,17 +257,18 @@ export default {
       this.dialogStat = flag
     },
     getCheckList (value) {
+      console.log(value)
       // 获取的id数组
       this.valueA = value
-      this.checkeList = value.checkList
-      console.log(this.valueA)
-      // console.log(this.checkeList)
+      this.checkeList = value.checkList // 复选框选中LIst(传回组件用)
+      this.showArr = value.showArr
+      this.area_text = value.areaList // fag
       // 获取中文拼接字符串，只有省份
       // if (value.areaList.length > 0) {
       //   this.tableData.push(
       //     { area_text: value.areaList.toString(), first_num: this.firstNum, first_fee: this.firstFee, continue_num: this.continueNum, continue_fee: this.continueFee, area_list: value.idList })
       // }
-      console.log(this.tableData)
+      // console.log(this.tableData)
     },
     // getData
     getData () {
@@ -329,7 +333,7 @@ export default {
           }]
       }
       // console.log(this.templateName)
-      console.log(params)
+      console.log(params['goodsDeliverTemplateAreaParam'][0]['area_list'])
       let obj = {
         'templateName': this.templateName,
         'goodsDeliverTemplateLimitParam': {
