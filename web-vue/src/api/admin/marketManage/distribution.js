@@ -63,10 +63,37 @@ export function advertisementDelete (data) {
   })
 }
 
-// 分销员分组
+// 分销员分组列表
 export function distributionGroup (data) {
   return service({
     url: '/api/admin/distribution/group/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 添加分销员分组
+export function distributionGroupAdd (data) {
+  return service({
+    url: '/api/admin/distribution/group/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取分销员分组单条信息
+export function distributionGroupEdit (data) {
+  return service({
+    url: `/api/admin/distribution/group/edit?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 编辑保存
+export function distributionGroupSave (data) {
+  return service({
+    url: '/api/admin/distribution/group/edit',
     method: 'post',
     data: data
   })
@@ -76,6 +103,32 @@ export function distributionGroup (data) {
 export function distributionGroupDel (data) {
   return service({
     url: `/api/admin/distribution/group/del?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 分销员列表
+export function distributorList (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 分销员等级列表
+export function distributorLevelList (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/level',
+    method: 'get',
+    data: data
+  })
+}
+// 分销员分组列表
+export function distributorGroupList (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/group',
     method: 'get',
     data: data
   })

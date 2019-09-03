@@ -105,6 +105,7 @@
 
     <div class="table_list">
       <el-table
+        v-loading="loading"
         class="version-manage-table"
         header-row-class-name="tableClss"
         :data="tableData"
@@ -208,7 +209,9 @@ export default {
       isPause: '',
       pageParams: {},
       opt: 1,
-      groupId: ''
+      id: '',
+      loading: false
+
     }
   },
   created () {
@@ -234,6 +237,7 @@ export default {
       return row.isBlock
     },
     search () {
+      this.loading = true
       this.pageParams.promotionLanguage = this.promotionLanguage
       this.pageParams.startCreateTime = this.time.startCreateTime
       this.pageParams.endCreateTime = this.time.endCreateTime
@@ -245,6 +249,7 @@ export default {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
+          this.loading = false
         }
       })
     },
@@ -275,7 +280,7 @@ export default {
         }
         this.param = param
         this.opt = 0
-        this.groupId = res.content.id
+        this.id = res.content.id
       })
 
       this.centerDialogVisible = true
@@ -296,10 +301,7 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消停用操作'
-        })
+
       })
     },
     start (id) {
@@ -318,10 +320,7 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消启用操作'
-        })
+
       })
     },
     del (id) {
@@ -340,10 +339,7 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+
       })
     },
     cancel () {
@@ -362,7 +358,7 @@ export default {
           }
         })
       } else {
-        this.param.id = this.groupId
+        this.param.id = this.id
         advertisementSave(this.param).then(res => {
           if (res.error === 0) {
             this.$message({

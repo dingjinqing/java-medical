@@ -1,111 +1,32 @@
 <template>
   <div class="content">
     <div class="main">
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          label="全部优惠券"
-          name="first"
+      <statusTab
+        v-model="nav"
+        :activityName="activityName"
+        :standard="true"
+      />
+      <div class="wrapper">
+        <span>优惠券名称：</span>
+        <el-input
+          size="medium"
+          v-model="actName"
+          placeholder="请输入优惠券名称"
+          class='search_content'
         >
-          <div class="wrapper">
-            <span>优惠券名称：</span>
-            <el-input
-              size="medium"
-              placeholder="请输入优惠券名称"
-              class='search_content'
-            >
-            </el-input>
-            <el-button
-              type="primary"
-              size="medium"
-              @click="addCoupon()"
-              class="barginBtn"
-            >添加优惠券</el-button>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="进行中"
-          name="second"
-        >
-          <div class="wrapper">
-            <span>优惠券名称：</span>
-            <el-input
-              size="medium"
-              placeholder="请输入优惠券名称"
-              class='search_content'
-            >
-            </el-input>
-            <el-button
-              type="primary"
-              size="medium"
-              @click="addCoupon()"
-              class="barginBtn"
-            >添加优惠券</el-button>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="未开始"
-          name="third"
-        >
-          <div class="wrapper">
-            <span>优惠券名称：</span>
-            <el-input
-              size="medium"
-              placeholder="请输入优惠券名称"
-              class='search_content'
-            >
-            </el-input>
-            <el-button
-              type="primary"
-              size="medium"
-              @click="addCoupon()"
-              class="barginBtn"
-            >添加优惠券</el-button>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="已过期"
-          name="fourth"
-        >
-          <div class="wrapper">
-            <span>优惠券名称：</span>
-            <el-input
-              size="medium"
-              placeholder="请输入优惠券名称"
-              class='search_content'
-            >
-            </el-input>
-            <el-button
-              type="primary"
-              size="medium"
-              @click="addCoupon()"
-              class="barginBtn"
-            >添加优惠券</el-button>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="已停用"
-          name="fifth"
-        >
-          <div class="wrapper">
-            <span>优惠券名称：</span>
-            <el-input
-              size="medium"
-              placeholder="请输入优惠券名称"
-              class='search_content'
-            >
-            </el-input>
-            <el-button
-              type="primary"
-              size="medium"
-              @click="addCoupon()"
-              class="barginBtn"
-            >添加优惠券</el-button>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
+        </el-input>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="handleClick"
+        >查询</el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="addCoupon()"
+          class="barginBtn"
+        >添加优惠券</el-button>
+      </div>
     </div>
     <div class="table_list">
       <el-table
@@ -143,7 +64,7 @@
 
         </el-table-column>
         <el-table-column
-          prop="remainAmount"
+          prop="surplus"
           label="库存"
           align="center"
           width="80"
@@ -201,34 +122,38 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="footer">
-        <span>当前页面1/1，总记录4条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="4"
-        >
-        </el-pagination>
-      </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="handleClick"
+      />
     </div>
+
   </div>
 
 </template>
 <script>
+// 引入分页
+import pagination from '@/components/admin/pagination/pagination'
+import statusTab from '@/components/admin/status/statusTab'
 import { couponList, pauseCoupon, deleteCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
+  components: {
+    statusTab, pagination
+  },
   data () {
     return {
+      actName: null,
+      activityName: '优惠券',
       tableData: [],
       activeName: 'second',
-      currentPage: 1
+      currentPage: 1,
+      nav: 0,
+      pageParams: {}
     }
   },
   mounted () {
     // 初始化数据
-    // this.handleClick()
+    this.handleClick()
   },
   methods: {
     // 当前页发生变化
@@ -236,18 +161,14 @@ export default {
       console.log(this.currentPage)
     },
 
-    handleClick (tab) {
-      alert(tab.index)
-      let obj = {
-        'nav': parseInt(tab.index) + 1,
-        'currentPage': 1,
-        'pageRows': 1
-      }
-
-      couponList(obj).then((res) => {
+    handleClick () {
+      this.pageParams.nav = this.nav
+      this.pageParams.actName = this.actName
+      couponList(this.pageParams).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
         }
       })
     },
@@ -266,27 +187,60 @@ export default {
     },
     // 停用优惠券
     puaseCoupon (id) {
-      console.log(id)
-      pauseCoupon(id).then(res => {
-        if (res.error === 0) {
-          alert('停用成功！')
-        }
-        console.log(res)
+      this.$confirm('此操作将永久删除该优惠券活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        pauseCoupon(id).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.couponList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     // 删除优惠券
     delCoupon (id) {
-      deleteCoupon(id).then(res => {
-        if (res.error === 0) {
-          alert('删除成功！')
-          this.seacherCouponList()
-        }
+      this.$confirm('此操作将永久删除该优惠券活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteCoupon(id).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.seacherCouponList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     addCoupon () {
       this.$router.push({
         name: 'add_coupon'
       })
+    }
+
+  },
+  watch: {
+    'nav' (n, o) {
+      this.handleClick()
     }
   }
 }

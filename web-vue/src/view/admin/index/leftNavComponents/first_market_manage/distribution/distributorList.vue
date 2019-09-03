@@ -6,6 +6,7 @@
           <div class="liNav">
             <span class="labelClass">手机号</span>
             <el-input
+              v-model="param.mobile"
               placeholder="请填写手机号"
               size="small"
             ></el-input>
@@ -16,6 +17,7 @@
           >
             <span class="labelClass">微信昵称</span>
             <el-input
+              v-model="param.username"
               placeholder="请填写微信昵称"
               size="small"
             ></el-input>
@@ -23,6 +25,7 @@
           <div class="liNav">
             <span class="labelClass">真实姓名</span>
             <el-input
+              v-model="param.realName"
               placeholder="请填写真实姓名"
               size="small"
             >
@@ -48,14 +51,14 @@
           <div class="liNav timeLine">
             <span class="labelClass date">注册时间</span>
             <el-date-picker
-              v-model="time1"
+              v-model="param.startCreateTime"
               type="date"
               placeholder="选择日期"
             >
             </el-date-picker>
             <span>至</span>
             <el-date-picker
-              v-model="time2"
+              v-model="param.endCreateTime"
               type="date"
               placeholder="选择日期"
             >
@@ -69,6 +72,7 @@
           <div class="liNav">
             <span class="labelClass invitation">被邀请用户昵称</span>
             <el-input
+              v-model="param.invitedUsername"
               placeholder="请填写被邀请用户昵称"
               size="small"
             >
@@ -138,39 +142,89 @@
           class="version-manage-table"
           header-row-class-name="tableClss"
           border
+          :data="tableData"
           style="width: 100%"
         >
           <el-table-column
-            prop="title"
-            label="推广语标签"
+            prop="userId"
+            label="ID"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="promotionLanguage"
-            label="推广语内容"
+            prop="username"
+            label="分销员昵称"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="mobile"
+            label="分销员手机号"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="createTime"
-            label="创建时间"
+            label="注册时间"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="updateTime"
-            label="更新时间"
+            prop="realName"
+            label="真实姓名"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="isBlock"
-            label="状态"
+            prop="groupName"
+            label="分销员分组"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="levelName"
+            label="分销员等级"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="nextNumber"
+            label="下级用户数"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="sublayerNumber"
+            label="间接邀请用户数"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="totalCanFanliMoney"
+            label="累计返利商品总额"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="totalFanliMoney"
+            label="累计获得佣金金额"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="waitFanliMoney"
+            label="待返利佣金金额"
             align="center"
           >
           </el-table-column>
@@ -180,33 +234,36 @@
             label="操作"
             align="center"
           >
-
+            <template>
+              <div class="opt">
+                <p>查看已邀请用户</p>
+                <p>查看返利佣金明细</p>
+                <p>清除</p>
+              </div>
+            </template>
           </el-table-column>
         </el-table>
-        <div class="footer">
-          <span>当前页面1/1，总记录4条</span>
-          <el-pagination
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="20"
-            layout="prev, pager, next, jumper"
-            :total="4"
-          >
-          </el-pagination>
-        </div>
       </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="list"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+// 引入分页
+import pagination from '@/components/admin/pagination/pagination'
 
 export default {
+  components: { pagination },
   data () {
     return {
       options: [{
         value: '选项1',
-        label: '黄金糕'
+        label: 'levelName'
       }, {
         value: '选项2',
         label: '双皮奶'
@@ -223,13 +280,45 @@ export default {
       value: '',
       time1: '',
       time2: '',
-      currentPage: 1
+      tableData: [],
+      currentPage: 1,
+      pageParams: {},
+      param: {
+
+      }
     }
   },
-  methods: {
-    handleCurrentChange () { }
-  }
+  mounted () {
+    this.list()
+    this.levelList()
+    this.groupList()
+  },
 
+  methods: {
+    handleCurrentChange () {
+
+    },
+    list () {
+      distributorList(this.pageParams).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
+    levelList () {
+      distributorLevelList().then(res => {
+        console.log(res)
+      })
+    },
+    groupList () {
+      distributorGroupList().then(res => {
+        console.log(res)
+      })
+    }
+
+  }
 }
 
 </script>
@@ -320,5 +409,9 @@ export default {
   display: block;
   height: 32px;
   line-height: 32px;
+}
+.opt {
+  text-align: center;
+  color: #5a8bff;
 }
 </style>

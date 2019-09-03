@@ -30,6 +30,35 @@
         plain
       >保存</el-button>
     </div>
+    <div>
+      <el-button
+        type="primary"
+        size="small"
+        @click="addGroup"
+      >添加分销员分组</el-button>
+    </div>
+    <el-dialog
+      title="添加分销员分组"
+      :visible.sync="dialogVisible"
+      width="20%"
+      center
+    >
+      <span>分销员分组名称</span>
+      <el-input
+        v-model="param.groupName"
+        placeholder="请输入分组名称"
+      ></el-input>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirm"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
     <div class="table_list">
       <el-table
         class="version-manage-table"
@@ -89,7 +118,7 @@
 </template>
 
 <script>
-import { distributionGroup, distributionGroupDel } from '@/api/admin/marketManage/distribution.js'
+import { distributionGroup, distributionGroupDel, distributionGroupAdd, distributionGroupEdit, distributionGroupSave } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -100,7 +129,13 @@ export default {
       radio: '1',
       currentPage: null,
       pageParams: {},
-      groupName: null
+      param: {
+        groupName: ''
+      },
+      groupName: null,
+      opt: 0,
+      dialogVisible: false,
+      id: ''
     }
   },
   created () {
@@ -110,6 +145,13 @@ export default {
     this.groupList()
   },
   methods: {
+    handleClose (done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => { })
+    },
     // 当前页发生变化
     handleCurrentChange () {
       console.log(this.currentPage)
@@ -151,11 +193,49 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+
       })
+    },
+    addGroup () {
+      this.dialogVisible = true
+      this.param.groupName = ''
+    },
+    confirm () {
+      this.dialogVisible = false
+      if (this.opt === 0) {
+        distributionGroupAdd(this.param).then(res => {
+          if (res.error === 0) {
+            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            })
+          }
+        })
+      } else {
+        this.param.id = this.id
+        distributionGroupSave(this.param).then(res => {
+          if (res.error === 0) {
+            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '编辑成功!'
+            })
+          }
+        })
+      }
+      this.groupList()
+    },
+    edit (id) {
+      distributionGroupEdit(id).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.param.groupName = res.content.groupName
+          this.id = res.content.id
+        }
+      })
+      this.dialogVisible = true
+      this.opt = 1
     }
   }
 }
