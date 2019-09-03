@@ -22,6 +22,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
@@ -257,5 +258,16 @@ public class StoreService extends ShopBaseService {
 					.where(STORE_GROUP.GROUP_ID.eq(param.getGroupId()))
 					.execute();
 		});
+	}
+	/**
+	 * 获取所有门店id和名称
+	 * @return
+	 */
+	public List<StoreBasicVo> getAllStore() {
+		logger().info("获取所有门店id和名称");
+		 return db().select(STORE.STORE_ID,STORE.STORE_NAME)
+			.from(STORE)
+			.fetch()
+			.into(StoreBasicVo.class);
 	}
 }
