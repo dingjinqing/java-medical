@@ -50,7 +50,7 @@ public class CommandKernel implements ApplicationRunner,ApplicationContextAware 
 	
 	protected void output(String key,String description) {
 		key = StringUtils.rightPad(key, 20 - key.length());
-		System.out.println("\033[31;4m"+key+"\033[0m\t"+description);
+		System.out.println("\033[31;0m"+key+"\033[0m\t"+description);
 	}
 	
 	protected void exit() {
