@@ -82,6 +82,13 @@
                 @click="showChoosingGoods"
               >+ 选择商品</el-button>
             </el-col>
+            <el-col>
+              <el-button
+                size="small"
+                type="primary"
+                @click="isEditFlag?'':handleToCallDialog()"
+              >+选择优惠券</el-button>
+            </el-col>
             <div></div>
           </el-form-item>
           <el-form-item
@@ -93,10 +100,10 @@
               header-row-class-name="tableClass"
               :data="form.goodsInfo"
               border
-              style="width: 100%"
+              style="width: 50%"
             >
               <el-table-column
-                width="100%"
+                width="150%"
                 prop="goodsName"
                 label="商品信息"
                 align="center"
@@ -105,7 +112,7 @@
               </el-table-column>
 
               <el-table-column
-                width="100%"
+                width="150%"
                 prop="shopPrice"
                 label="商品价格"
                 align="center"
@@ -113,7 +120,7 @@
               </el-table-column>
 
               <el-table-column
-                width="100%"
+                width="150%"
                 prop="goodsNumber"
                 label="商品库存"
                 align="center"
@@ -121,20 +128,20 @@
               </el-table-column>
 
               <el-table-column
-                width="100%"
+                width="150%"
                 prop=""
                 label="活动库存"
                 align="center"
               >
-                <el-input></el-input>
+                <el-input v-model="form.goodsInfo.market_store"></el-input>
               </el-table-column>
 
               <el-table-column
-                v-if="this.show"
-                width="100%"
+                width="150%"
                 label="活动价"
                 align="center"
               >
+                <el-input v-model="form.goodsInfo.market_price"></el-input>
               </el-table-column>
 
             </el-table>
@@ -142,6 +149,50 @@
             <!-- <div v-if="form.rewardType == '2'">hello world</div> -->
 
           </el-form-item>
+
+          <div class="coupon_set_table">
+            <el-table
+              :data="coupon_info"
+              border
+              style="width: 20%"
+            >
+              <el-table-column
+                label="优惠券信息"
+                width="180%"
+              >
+                <template slot-scope="scope">
+                  <div class="coupon_info">
+                    <span class="coupon_name">{{scope.row.actName}}</span>
+                    <div
+                      class="coupon_price"
+                      v-if="scope.row.actCode == 'voucher'"
+                    >￥<span>{{scope.row.denomination}}</span></div>
+                    <div
+                      class="coupon_price"
+                      v-else
+                    ><span>{{scope.row.denomination}}</span>折</div>
+                    <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="发券数量"
+                width="120%"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    <el-input
+                      v-model="scope.row.send_num"
+                      size="small"
+                      style="width:100px;"
+                    ></el-input>
+                  </div>
+                </template>
+              </el-table-column>
+
+            </el-table>
+          </div>
+
           <el-form-item
             label="奖励有效期："
             prop=""
@@ -366,6 +417,11 @@
     </div>
     <choosingGoods @resultGoodsRow="choosingGoodsResult">
     </choosingGoods>
+    <!--添加优惠卷-->
+    <AddCouponDialog
+      origin="couponPackage"
+      @handleToCheck="handleToCheck"
+    />
   </wrapper>
 </template>
 
@@ -379,7 +435,8 @@ import { getGoodsProductList } from '@/api/admin/brandManagement.js'
 export default {
   components: {
     wrapper,
-    choosingGoods
+    choosingGoods,
+    AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
   },
   data () {
     return {
@@ -442,9 +499,25 @@ export default {
           goodsName: '',
           shopPrice: '',
           goodsNumber: '',
-          rewardType: ''
+          rewardType: '',
+          market_price: '',
+          market_store: ''
         }
+
       },
+      // 优惠券
+      coupon_info: [],
+      couponDialogFlag: false,
+      couponSetDialogFlag: false,
+      coupon_set: {
+        immediatelyGrantAmount: 0,
+        timingEvery: 0,
+        timingAmount: 0,
+        timingTime: '1',
+        timingUnit: '0'
+      },
+      target: null,
+
       // 表单约束
       formRules: {
         actName: [
@@ -481,6 +554,21 @@ export default {
     //   this.show = !this.show
     // },
     addAct () {
+      console.log('this.form.rewardType:', this.form.rewardType)
+      if (this.form.rewardType === '0' || this.form.rewardType === '1') {
+        this.form.rewardSet.market_price = this.form.goodsInfo.market_price
+        this.form.rewardSet.market_store = this.form.goodsInfo.market_store
+        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+        console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
+        console.log('rewardSet:', this.form.rewardSet)
+        console.log('rewardContent:', this.form.rewardContent)
+      }
+      if (this.form.rewardType === '2') {
+        this.form.rewardSet.market_store = this.form.goodsInfo.market_store
+        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+        console.log('rewardSet:', this.form.rewardSet)
+        console.log('rewardContent:', this.form.rewardContent)
+      }
       let addParam = {
         'actName': this.form.actName,
         'startTime': this.form.startTime,
@@ -554,6 +642,7 @@ export default {
       console.log('获取商品行', row)
       this.goodsRow = row
       this.form.goodsInfo.goodsIds = row.goodsId
+      this.form.rewardSet.goods_ids = row.goodsId
       // 初始化规格表格
       let obj = {
         goodsId: this.form.goodsInfo.goodsIds,
@@ -565,12 +654,70 @@ export default {
         const { dataList } = content
 
         this.form.goodsInfo = [dataList[obj.goodsId]]
-        this.form.rewardSet.goods_ids = obj.goodsId
-        this.form.rewardSet.market_store = 10
-        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
-        console.log('rewardSet:', this.form.rewardSet)
-        console.log('rewardContent:', this.form.rewardContent)
       })
+    },
+    // 选择优惠券弹窗
+    handleToCallDialog () {
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: this.coupon_info
+      }
+      this.$http.$emit('V-AddCoupon', obj)
+    },
+    // 确认选择优惠券-新增-删除
+    handleToCheck (data) {
+      console.log('couponInfo:', data)
+      this.form.rewardSet.reward_ids = data[0].id
+      console.log('data[0].id', data[0].id)
+      let couponArr = this.formatCoupon(data)
+      let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
+      let couponKey = []
+      couponArr.map((item) => {
+        couponKey.push(item.id)
+      })
+      this.coupon_info = oldArr.filter((item) => {
+        return couponKey.includes(item.id)
+      })
+      console.log(this.coupon_info)
+    },
+    // 添加优惠券初始项
+    formatCoupon (data) {
+      let arry = []
+      let couponData = {
+        immediatelyGrantAmount: 0,
+        timingEvery: 0,
+        timingAmount: 0,
+        timingTime: '1',
+        timingUnit: '0'
+      }
+      data.map(item => {
+        arry.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
+      })
+      console.log(arry)
+      return arry
+    },
+    // 设置优惠券内容弹窗
+    handleCouponSet (scope) {
+      let target = this.coupon_info[scope.$index]
+      this.coupon_set = JSON.parse(JSON.stringify(target.coupon_set))
+      this.couponSetDialogFlag = true
+      this.target = scope.$index
+    },
+    // 确认设置优惠券
+    confrimCouponSet () {
+      this.coupon_info[this.target].coupon_set = JSON.parse(JSON.stringify(this.coupon_set))
+      this.couponSetDialogFlag = false
+    },
+
+    // 同id去重
+    unique (arr, key) {
+      let map = new Map()
+      arr.forEach((item, index) => {
+        if (!map.has(item[key])) {
+          map.set(item[key], item)
+        }
+      })
+      return [...map.values()]
     }
   }
 }
