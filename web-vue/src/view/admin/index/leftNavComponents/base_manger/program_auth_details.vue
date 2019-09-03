@@ -41,7 +41,13 @@
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.SmallProgramVersion')}}:
             </span>
             <span class="item-title ml-20">
-              1.28.2
+              {{data.bindUserVersion}}
+            </span>
+            <span
+              class="info-text ml-20"
+              v-show="bindshow"
+            >
+              ({{$t('ShopConfiguration.SmallProgramAuthorizationPage.CurrentBindUserVersion')}} {{data.currentUserVersion}})
             </span>
           </li>
           <li class="details-item">
@@ -233,6 +239,7 @@ export default {
   name: 'program_auth_details',
   data () {
     return {
+      bindshow: false,
       queryData: {
         switch: false,
         isShowDetails: false, // 订单详情页是否展示
@@ -308,6 +315,11 @@ export default {
           break
         case '0':
           res.verifyTypeInfo = '微信认证'
+      }
+      if (res.isAuthOk === res.currentTemplateId) {
+        this.bindshow = false
+      } else {
+        this.bindshow = true
       }
       this.data = res
     },

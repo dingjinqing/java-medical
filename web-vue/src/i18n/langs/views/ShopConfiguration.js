@@ -38,7 +38,8 @@ export const cn = {
     CommodityDetailsPage: '商品详情页',
     tip5: '当前【好物推荐】申请通过',
     tip6: '注：好物圈插件申请后，小程序公众平台后台不要关闭或者删除此插件，负责小程序将无法正常使用。若想关闭此功能，请联系客服、运营人员，协助操作。',
-    Preservation: '保存'
+    Preservation: '保存',
+    CurrentBindUserVersion: '最新版本'
   }
 }
 
@@ -82,6 +83,7 @@ export const en = {
     CommodityDetailsPage: 'Commodity Details Page',
     tip5: 'At present, the application has been approved.',
     tip6: 'Note: After the application of good circle plug-in, do not close or delete this plug-in in the background of the public platform of small programs, the responsible small programs will not be able to use normally. If you want to turn off this function, please contact customer service and operator to assist in operation.',
-    Preservation: 'Preservation'
+    Preservation: 'Preservation',
+    CurrentBindUserVersion: 'The latest version '
   }
 }
