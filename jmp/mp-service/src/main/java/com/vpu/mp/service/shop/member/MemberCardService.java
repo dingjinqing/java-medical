@@ -833,6 +833,7 @@ public class MemberCardService extends ShopBaseService {
 				)
 			.and(MEMBER_CARD.PAY_OWN_GOOD.eq(PAY_OWN_GOOD_YES))
 			.and(MEMBER_CARD.CARD_TYPE.in(NORMAL_TYPE,RANK_TYPE))
+			.orderBy(MEMBER_CARD.GRADE.asc(),MEMBER_CARD.ID.asc())
 			.fetch()
 			.into(CardBasicVo.class);
 			
