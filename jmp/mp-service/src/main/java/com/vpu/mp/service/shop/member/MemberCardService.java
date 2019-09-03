@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
@@ -48,6 +49,11 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBE
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_ON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.GOODS_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.STORE_CATEGORY_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PLATFORM_CATEGORY_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
 import static org.jooq.impl.DSL.count;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import java.math.BigDecimal;
@@ -62,6 +68,7 @@ import java.util.Queue;
 
 import javax.validation.Valid;
 
+import org.jooq.InsertValuesStep2;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
@@ -230,13 +237,33 @@ public class MemberCardService extends ShopBaseService {
 		Byte cardType = card.getCardType();
 		Byte payOwnGood;
 		if (NORMAL_TYPE.equals(cardType) || RANK_TYPE.equals(cardType)) {
-			// TODO专享商品
-			payOwnGood = (byte) (BUTTON_ON.equals(card.getPowerPayOwnGood()) ? 1 : 0);
-			
-			
-			
-			
 			boolean flag = false;
+			/** 是否专属购买商品 0不是 1是 */
+			payOwnGood = (byte) (BUTTON_ON.equals(card.getPowerPayOwnGood()) ? 1 : 0);
+			cardRecord.setPayOwnGood(payOwnGood);
+//			
+//			if(payOwnGood == PAY_OWN_GOOD_ON) {
+//				Integer cardId = card.getId();
+//				/** -处理专享商品 ownGoodsId */
+//				List<Integer> ownGoodsId = card.getOwnGoodsId();
+//				if(ownGoodsId != null && ownGoodsId.size()>0) {
+//					addGoodsCardCouple(cardId,ownGoodsId,GOODS_TYPE);
+//				}
+//				
+//				/** -处理专享商品商家分类 */
+//				List<Integer> ownStoreCategoryIds = card.getOwnStoreCategoryIds();
+//				if(ownStoreCategoryIds != null && ownStoreCategoryIds.size()>0) {
+//					addGoodsCardCouple(cardId,ownStoreCategoryIds,STORE_CATEGORY_TYPE);
+//				}
+//				
+//				/** -处理专享商品平台分类 */
+//				List<Integer> ownPlatFormCategoryIds = card.getOwnPlatFormCategoryIds();
+//				if(ownPlatFormCategoryIds != null && ownPlatFormCategoryIds.size()>0) {
+//					addGoodsCardCouple(cardId,ownPlatFormCategoryIds,PLATFORM_CATEGORY_TYPE);
+//				}
+//			}
+//		
+		
 			/** 1. 会员折扣 */
 			if (CHECKED.equals(card.getPowerCount())) {
 				flag = true;
@@ -298,6 +325,16 @@ public class MemberCardService extends ShopBaseService {
 			}
 
 		}
+	}
+
+	/**
+	 * 为单张会员卡设置专享商品 | 商家分类 | 平台分类
+	 * @param cardId 会员卡id
+	 * @param ownGoodsId 专享商品id列表
+	 * @param type 标签关联类型 如： {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.GOODS_TYPE }
+	 */
+	public void addGoodsCardCouple(Integer cardId, List<Integer> ownId,Byte type) {
+		this.batchUpdateGoods(ownId, Arrays.asList(new Integer[] {cardId}), type);
 	}
 
 	/**
@@ -778,6 +815,31 @@ public class MemberCardService extends ShopBaseService {
 			
 		return cardList;
 	}
+	
+	/**
+	 * 获取专属会员卡
+	 * @return List<CardBasicVo>
+	 */
+	public List<CardBasicVo> getCardExclusive() {
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		List<CardBasicVo> cardList = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
+			.where(MEMBER_CARD.FLAG.eq(MEMBER_CARD_USING))
+			.and(
+					(MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME)
+			                .and(MEMBER_CARD.END_TIME.ge(localDateTime))
+					).or(
+							MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME,FOREVER)
+						)
+				)
+			.and(MEMBER_CARD.PAY_OWN_GOOD.eq(PAY_OWN_GOOD_YES))
+			.and(MEMBER_CARD.CARD_TYPE.in(NORMAL_TYPE,RANK_TYPE))
+			.fetch()
+			.into(CardBasicVo.class);
+			
+		return cardList;
+	}
+	
+	
 	
 	
 

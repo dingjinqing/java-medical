@@ -119,7 +119,8 @@ public class CardConstant {
 	/** 国际化语言前缀 */
 	public static final String LANGUAGE_TYPE_MEMBER="member";
 	
-
+	/** 是否专属购买商品 0不是 1是*/
+	public static final Byte PAY_OWN_GOOD_ON = 1 ;
 	
 	/** -----------------user_card表常量--------------------------*/
 	/** user_card表 flag 0 正常使用，1已经删除*/
@@ -131,5 +132,20 @@ public class CardConstant {
 	/** member_card表flag 1正常使用，2停止使用 */
 	public static final Byte MEMBER_CARD_USING = 1;
 	public static final Byte MEMBER_CARD_DELETE = 2;
+	/** 是否专属购买商品 0不是 1是 */
+	public static final Byte PAY_OWN_GOOD_YES=1; 
 	/** ----------------------------------------------------------*/
+	
+	
+	/** -----------------goods_card_couple表常量--------------------------*/
+	/**标签关联类型type： 1：关联商品 2：关联商家分类 3：关联平台分类 */
+	public static final Byte GOODS_TYPE = 1;
+	public static final Byte STORE_CATEGORY_TYPE=2;
+	public static final Byte PLATFORM_CATEGORY_TYPE=3;
+	
+	/** ----------------------------------------------------------*/
+	
+	
+	
+	
 }
