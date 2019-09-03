@@ -55,4 +55,12 @@ public class PurchaseConstant {
      */
     public static final Byte FLAG_ZERO = 0;
     public static final Byte FLAG_ONE = 1;
+
+    /**
+     * 辅助常量
+     */
+    public static final byte CONDITION_ZERO = 0;
+    public static final byte CONDITION_ONE = 1;
+    public static final byte CONDITION_TWO = 2;
+    public static final byte CONDITION_THREE = 3;
 }

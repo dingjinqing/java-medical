@@ -96,16 +96,16 @@ public class IncreasePurchaseService extends ShopBaseService {
         if (param.getEndTime() != null) {
             selectConditon = selectConditon.and(ppd.END_TIME.lessThan(param.getEndTime()));
         }
-        if (param.getFullPriceUp() != null) {
+        if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.lessThan(param.getFullPriceUp()));
         }
-        if (param.getFullPriceDown() != null) {
+        if (param.getFullPriceDown() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.greaterThan(param.getFullPriceDown()));
         }
-        if (param.getPurchasePriceUp() != null) {
+        if (param.getPurchasePriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.lessThan(param.getPurchasePriceUp()));
         }
-        if (param.getPurchasePriceDown() != null) {
+        if (param.getPurchasePriceDown() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterThan(param.getPurchasePriceDown()));
         }
 
@@ -219,12 +219,27 @@ public class IncreasePurchaseService extends ShopBaseService {
     }
 
     /**
-     * 停用/启用加价购活动
+     * 停用/启用/删除加价购活动
      *
      * @param param 活动id和被修改的状态值
      */
     public void changeTheStatus(PurchaseStatusParam param) {
-        db().update(ppd).set(ppd.STATUS, param.getStatus()).where(ppd.ID.eq(param.getId())).execute();
+        switch (param.getStatus()) {
+            case CONDITION_ZERO:
+                //启用
+                db().update(ppd).set(ppd.STATUS, FLAG_ZERO).where(ppd.ID.eq(param.getId())).execute();
+                break;
+            case CONDITION_ONE:
+                //停用
+                db().update(ppd).set(ppd.STATUS, FLAG_ONE).where(ppd.ID.eq(param.getId())).execute();
+                break;
+            case CONDITION_TWO:
+                //删除，更新删除标志和删除时间
+                db().update(ppd).set(ppd.DEL_FLAG, FLAG_ONE).set(ppd.DEL_TIME,Timestamp.valueOf(LocalDateTime.now())).where(ppd.ID.eq(param.getId())).execute();
+                break;
+            default:
+                break;
+        }
     }
 
     /**

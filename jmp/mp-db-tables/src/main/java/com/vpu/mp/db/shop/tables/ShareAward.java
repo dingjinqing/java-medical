@@ -30,7 +30,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 分享有礼活动记录表
+ * 享有礼活动记录表
  */
 @Generated(
     value = {
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShareAward extends TableImpl<ShareAwardRecord> {
 
-    private static final long serialVersionUID = 114436375;
+    private static final long serialVersionUID = -381327263;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_share_award</code>
@@ -85,7 +85,7 @@ public class ShareAward extends TableImpl<ShareAwardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_share_award.priority</code>. 优先级
      */
-    public final TableField<ShareAwardRecord, Integer> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
+    public final TableField<ShareAwardRecord, Integer> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
 
     /**
      * The column <code>mini_shop_471752.b2c_share_award.condition</code>. 触发条件：1.分享全部商品，2.分享指定商品，3.分享访问量较少商品
@@ -108,14 +108,19 @@ public class ShareAward extends TableImpl<ShareAwardRecord> {
     public final TableField<ShareAwardRecord, Byte> VISIT_FIRST = createField("visit_first", org.jooq.impl.SQLDataType.TINYINT, this, "仅邀请未访问过的用户有效");
 
     /**
-     * The column <code>mini_shop_471752.b2c_share_award.status</code>. 状态：1停用
+     * The column <code>mini_shop_471752.b2c_share_award.status</code>. 状态：0启用，1停用
      */
-    public final TableField<ShareAwardRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态：1停用");
+    public final TableField<ShareAwardRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态：0启用，1停用");
 
     /**
-     * The column <code>mini_shop_471752.b2c_share_award.del_flag</code>. 是否删除：1删除
+     * The column <code>mini_shop_471752.b2c_share_award.del_flag</code>. 是否删除：0未删除，1删除
      */
-    public final TableField<ShareAwardRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否删除：1删除");
+    public final TableField<ShareAwardRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否删除：0未删除，1删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_share_award.del_time</code>. 删除时间
+     */
+    public final TableField<ShareAwardRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_share_award.first_level_rule</code>. 一级规则设置（json）：规则优先级从一到三依次增强，规则一满足后方可进行规则二
@@ -135,27 +140,27 @@ public class ShareAward extends TableImpl<ShareAwardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_share_award.first_award_num</code>. 一级规则剩余奖品数
      */
-    public final TableField<ShareAwardRecord, Integer> FIRST_AWARD_NUM = createField("first_award_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "一级规则剩余奖品数");
+    public final TableField<ShareAwardRecord, Integer> FIRST_AWARD_NUM = createField("first_award_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "一级规则剩余奖品数");
 
     /**
      * The column <code>mini_shop_471752.b2c_share_award.second_award_num</code>. 二级规则剩余奖品数
      */
-    public final TableField<ShareAwardRecord, Integer> SECOND_AWARD_NUM = createField("second_award_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "二级规则剩余奖品数");
+    public final TableField<ShareAwardRecord, Integer> SECOND_AWARD_NUM = createField("second_award_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "二级规则剩余奖品数");
 
     /**
      * The column <code>mini_shop_471752.b2c_share_award.third_award_num</code>. 三级规则剩余奖品数
      */
-    public final TableField<ShareAwardRecord, Integer> THIRD_AWARD_NUM = createField("third_award_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "三级规则剩余奖品数");
+    public final TableField<ShareAwardRecord, Integer> THIRD_AWARD_NUM = createField("third_award_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "三级规则剩余奖品数");
 
     /**
      * The column <code>mini_shop_471752.b2c_share_award.create_time</code>. 创建时间
      */
-    public final TableField<ShareAwardRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<ShareAwardRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_share_award.update_time</code>. 更新时间
      */
-    public final TableField<ShareAwardRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<ShareAwardRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_share_award</code> table reference
@@ -183,7 +188,7 @@ public class ShareAward extends TableImpl<ShareAwardRecord> {
     }
 
     private ShareAward(Name alias, Table<ShareAwardRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("分享有礼活动记录表"));
+        super(alias, null, aliased, parameters, DSL.comment("享有礼活动记录表"));
     }
 
     public <O extends Record> ShareAward(Table<O> child, ForeignKey<O, ShareAwardRecord> key) {

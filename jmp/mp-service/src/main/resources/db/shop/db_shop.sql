@@ -4433,6 +4433,7 @@ CREATE TABLE `b2c_share_award`
     `visit_first`       tinyint(1)   NULL     DEFAULT NULL COMMENT '仅邀请未访问过的用户有效',
     `status`            tinyint(1)   NOT NULL DEFAULT 0 COMMENT '状态：0启用，1停用',
     `del_flag`          tinyint(1)   NOT NULL DEFAULT 0 COMMENT '是否删除：0未删除，1删除',
+    `del_time` timestamp null default null COMMENT '删除时间',
     `first_level_rule`  varchar(500) NULL     DEFAULT NULL COMMENT '一级规则设置（json）：规则优先级从一到三依次增强，规则一满足后方可进行规则二',
     `second_level_rule` varchar(500) NULL     DEFAULT NULL COMMENT '二级规则设置（json）',
     `third_level_rule`  varchar(500) NULL     DEFAULT NULL COMMENT '三级规则设置（json）',

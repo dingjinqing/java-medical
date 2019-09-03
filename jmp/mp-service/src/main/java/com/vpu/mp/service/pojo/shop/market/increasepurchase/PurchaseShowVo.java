@@ -48,6 +48,5 @@ public class PurchaseShowVo {
     /**
      * 状态
      */
-    @JsonIgnore
     private Byte status;
 }

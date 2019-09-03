@@ -169,12 +169,6 @@ public class ShareRewardService extends ShopBaseService {
         return db().selectCount().from(asu).where(asu.SHARE_ID.eq(shareId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
-
-    private static final byte CONDITION_ZERO = 0;
-    private static final byte CONDITION_ONE = 1;
-    private static final byte CONDITION_TWO = 2;
-    private static final byte CONDITION_THREE = 3;
-
     /**
      * 添加分享有礼活动
      *
