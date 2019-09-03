@@ -179,15 +179,13 @@
                 label="发券数量"
                 width="120%"
               >
-                <template slot-scope="scope">
-                  <div>
-                    <el-input
-                      v-model="scope.row.send_num"
-                      size="small"
-                      style="width:100px;"
-                    ></el-input>
-                  </div>
-                </template>
+                <div>
+                  <el-input
+                    v-model="form.coupon_store"
+                    size="small"
+                    style="width:100px;"
+                  ></el-input>
+                </div>
               </el-table-column>
 
             </el-table>
@@ -442,11 +440,14 @@ export default {
     return {
       show: false,
       radio: 'one',
+      isEditFlag: false,
       // 表单
       form: {
+        test: '',
         actName: '',
         rewardType: '0',
         rewardContent: '',
+        coupon_store: '',
         rewardSet: {
           goods_ids: '',
           reward_ids: '',
@@ -494,7 +495,7 @@ export default {
         customShareWord: '',
         shareImgType: '0',
         // 选中商品id
-        goodsInfo: {
+        goodsInfo: [{
           goodsIds: '',
           goodsName: '',
           shopPrice: '',
@@ -502,7 +503,7 @@ export default {
           rewardType: '',
           market_price: '',
           market_store: ''
-        }
+        }]
 
       },
       // 优惠券
@@ -550,9 +551,9 @@ export default {
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
-    // handleTest () {
-    //   this.show = !this.show
-    // },
+    handleTest () {
+      // this.show = !this.show
+    },
     addAct () {
       console.log('this.form.rewardType:', this.form.rewardType)
       if (this.form.rewardType === '0' || this.form.rewardType === '1') {
@@ -564,7 +565,7 @@ export default {
         console.log('rewardContent:', this.form.rewardContent)
       }
       if (this.form.rewardType === '2') {
-        this.form.rewardSet.market_store = this.form.goodsInfo.market_store
+        this.form.rewardSet.market_store = this.form.coupon_store
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
