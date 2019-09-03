@@ -586,6 +586,7 @@ create table `b2c_order_action`
 CREATE TABLE `b2c_order_goods`
 (
     `rec_id`                 MEDIUMINT(8)   NOT NULL AUTO_INCREMENT,
+    `main_rec_id`            MEDIUMINT (8)  NOT NULL DEFAULT '0' COMMENT '主订单rec_id',
     `shop_id`                INT(11)        NOT NULL DEFAULT '0' COMMENT '店铺ID',
     `order_id`               MEDIUMINT(8)   NOT NULL DEFAULT '0',
     `order_sn`               VARCHAR(20)    NOT NULL DEFAULT '',
