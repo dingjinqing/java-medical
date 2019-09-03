@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
 import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 
 /**
  * 
@@ -157,12 +158,12 @@ public class TagService extends ShopBaseService {
 	 * 获取标签基本信息
 	 * @return
 	 */
-	public List<CommonTagVo> getAllTag() {
+	public List<TagVo> getAllTag() {
 		logger().info("获取所有标签");
-		 return db().select(TAG.TAG_ID, TAG.TAG_NAME)
+		 return db().select(TAG.TAG_NAME)
 			.from(TAG)
 			.fetch()
-			.into(CommonTagVo.class);
+			.into(TagVo.class);
 	}
 
 }
