@@ -60,16 +60,16 @@
               label="营销组件"
               name="third"
             >
+              <div id="listLeft">
+                <div
+                  v-for="(item,key) in listLeft"
+                  :key="key"
+                  class="picTextConDivList third_drag"
+                >
+                  <img :src="item.name">
+                  {{item.value}}
 
-              <div
-                v-for="(item,key) in listLeft"
-                :key="key"
-                class="picTextConDivList"
-                v-drag
-              >
-                <img :src="item.name">
-                {{item.value}}
-
+                </div>
               </div>
 
             </el-tab-pane>
@@ -78,6 +78,7 @@
         <div class="decMiddle">
           <div class="decTop"></div>
           <div class="decContent">
+
           </div>
         </div>
         <!-- <div class="decRight">
@@ -90,6 +91,9 @@
 </template>
 <script>
 import vuescroll from 'vuescroll'
+import $ from 'jquery'
+require('webpack-jquery-ui')
+require('webpack-jquery-ui/css')
 export default {
   components: {
     vuescroll
@@ -246,43 +250,59 @@ export default {
         name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
         value: '瓜分积分4'
       }],
-      positionX: 0,
-      positionY: 0
+      g_insert_index: -1
     }
   },
-  directives: {
-    drag: {
-      bind: function (el, binding) {
-        let oDiv = el
-        oDiv.onmousedown = (e) => {
-          console.log(e)
-          // 算出鼠标相对元素的位置
-          // let disX = e.clientX - oDiv.offsetLeft
-          // let disY = e.clientY - oDiv.offsetTop
-          // document.onmousemove = (e) => {
-          //   // 用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
-          //   let left = e.clientX - disX - 10
-          //   let top = e.clientY - disY - 20
-
-          //   // 绑定元素位置到positionX和positionY上面
-          //   // this.positionX = top
-          //   // this.positionY = left
-          //   console.log(binding)
-          // 移动当前元素
-          //   oDiv.style.left = left + 'px'
-          //   oDiv.style.top = top + 'px'
-          // }
-          // document.onmouseup = (e) => {
-          //   document.onmousemove = null
-          //   document.onmouseup = null
-          // }
-        }
-      }
-    }
+  mounted () {
+    // 初始化数据
+    this.$nextTick(() => {
+      this.init_drag_event()
+    })
   },
   methods: {
-    changeData (x, y) {
-      console.log(x, y)
+    // 初始化拖拽事件
+    init_drag_event () {
+      let this_ = this
+
+      // 模块拖拽
+      $('.third_drag').draggable({
+        appendTo: '.decLeft',
+        helper: 'clone',
+        start: function () {
+          this_.g_insert_index = -1
+        },
+        drag: function (ev, ui) {
+          console.log($(ui.helper).offset())
+          this_.highlignt_row_item($(ui.helper).offset())
+        },
+        stop: function () {
+          // $('#drag_area div.row_item').removeClass('placeholder')
+        },
+        zIndex: 10000 // 拖动位置在拖放区域上方
+      })
+    },
+    // 拖拽开始start处理函数
+    highlignt_row_item (pos) {
+      let p = $('.decContent').offset()
+      console.log(p)
+      let flag = false
+      if (pos.left > p.left && pos.top > p.top &&
+        pos.left < p.left + $('#drag_area').width() &&
+        pos.top < p.top + $('#drag_area').height()) {
+        //   //   $('#drag_area div.row_item').each(function (idx, item) {
+        //   //     p = $(this).offset()
+        //   //     if (pos.left > p.left && pos.top > p.top &&
+        //   //       pos.left < p.left + $(this).width() &&
+        //   //       pos.top < p.top + $(this).height()
+        //   //     ) {
+        //   //       $('#drag_area div.row_item').removeClass('placeholder')
+        //   //       $(this).addClass('placeholder')
+        //   //       g_insert_index = $(this).index()
+        //   //       flag = true
+        //   //     }
+        //   //   })
+      }
+      if (!flag) this.g_insert_index = -1
     }
   }
 }
@@ -329,6 +349,7 @@ export default {
           justify-content: center;
           align-items: center;
           flex-direction: column;
+          z-index: 10000;
         }
       }
       .decMiddle {
@@ -341,8 +362,11 @@ export default {
             no-repeat;
         }
         .decContent {
-          background: #eee;
+          overflow-y: auto;
           height: 100%;
+          height: 510px;
+          background: #fff;
+          position: relative;
         }
       }
     }

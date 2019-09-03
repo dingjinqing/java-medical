@@ -179,13 +179,15 @@
                 label="发券数量"
                 width="120%"
               >
-                <div>
-                  <el-input
-                    v-model="form.coupon_store"
-                    size="small"
-                    style="width:100px;"
-                  ></el-input>
-                </div>
+                <template slot-scope="scope">
+                  <div>
+                    <el-input
+                      v-model="form.coupon_store"
+                      size="small"
+                      style="width:100px;"
+                    ></el-input>
+                  </div>
+                </template>
               </el-table-column>
 
             </el-table>
