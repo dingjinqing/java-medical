@@ -60,49 +60,24 @@
               label="营销组件"
               name="third"
             >
-              <draggable
-                class="list-group"
-                element="div"
-                v-model="listLeft"
-                :options="dragOptions1"
-                :move="onMove"
-                @start="isDragging=true"
-                @end="isDragging=false"
-              >
-                <div
-                  v-for="(item,key) in listLeft"
-                  :key="key"
-                  class="picTextConDivList"
-                >
-                  <img :src="item.name">
-                  {{item.value}}
 
-                </div>
-              </draggable>
+              <div
+                v-for="(item,key) in listLeft"
+                :key="key"
+                class="picTextConDivList"
+                v-drag
+              >
+                <img :src="item.name">
+                {{item.value}}
+
+              </div>
+
             </el-tab-pane>
           </el-tabs>
         </div>
         <div class="decMiddle">
           <div class="decTop"></div>
           <div class="decContent">
-            <draggable
-              class="list-group"
-              element="div"
-              v-model="listRight"
-              :options="dragOptions2"
-              :move="onMove"
-              @start="isDragging=true"
-              @end="isDragging=false"
-            >
-              <div
-                v-for="(item,key) in listRight"
-                :key="key"
-                class="picTextConDivList"
-              >
-                <img :src="item.name">
-                {{item.value}}
-              </div>
-            </draggable>
           </div>
         </div>
         <!-- <div class="decRight">
@@ -114,12 +89,10 @@
   </div>
 </template>
 <script>
-import draggable from 'vuedraggable'
 import vuescroll from 'vuescroll'
 export default {
   components: {
-    vuescroll,
-    draggable
+    vuescroll
   },
   data () {
     return {
@@ -137,7 +110,7 @@ export default {
           background: '#eee'
         }
       },
-      activeName: 'first',
+      activeName: 'third',
       pivTextConArr: [
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
@@ -272,38 +245,20 @@ export default {
       }, {
         name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
         value: '瓜分积分4'
-      }],
-      listRight: []
+      }]
     }
   },
-  computed: {
-    dragOptions1 () {
-      return {
-        animation: 0,
-        group: {
-          name: 'description',
-          pull: 'clone',
-          put: false
-        },
-        ghostClass: 'ghost'
-      }
-    },
-    dragOptions2 () {
-      return {
-        animation: 0,
-        group: 'description'
+  directives: {
+    drag: {
+      bind: function (el) {
+        let oDiv = el
+        oDiv.onmousedown = (e) => {
+          console.log(e)
+        }
       }
     }
   },
   methods: {
-    onMove ({ relatedContext, draggedContext }) {
-      console.log(relatedContext, draggedContext)
-      const relatedElement = relatedContext.element
-      const draggedElement = draggedContext.element
-      return (
-        (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
-      )
-    }
   }
 }
 </script>
