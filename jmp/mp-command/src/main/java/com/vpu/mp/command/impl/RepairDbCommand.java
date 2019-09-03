@@ -1,8 +1,5 @@
 package com.vpu.mp.command.impl;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +7,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.command.CommandRunner;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
  * 修复数据库
+ * 
  * @author lixinguo
  *
  */
@@ -28,24 +25,18 @@ public class RepairDbCommand implements CommandRunner {
 
 	@Override
 	public void run(ApplicationArguments args) {
-		List<String> nonOptions = args.getNonOptionArgs();
-		if (nonOptions.size() < 2) {
+		if (args.getNonOptionArgs().size() < 2) {
 			logger.error(description());
 			return;
 		}
-		Boolean onlyCheck = true;
-		List<String> options = args.getOptionValues("--only_check");
-		if (options != null &&  options.size() > 0 && StringUtils.equalsIgnoreCase(options.get(0), "false")) {
-			onlyCheck = false;
-		}
+		Boolean onlyCheck = this.getOption(args, "only_check", Boolean.class, true);
 
-		String type = nonOptions.get(1);
+		String type = this.getNonOption(args, 1);
 		if (type.equals("main")) {
 			saas.repairDb.repairMainDb(onlyCheck);
 		} else if (type.equals("shop")) {
-			List<String> shopIdOptions = args.getOptionValues("--shop_id");
-			if (shopIdOptions != null && shopIdOptions.size() > 0) {
-				Integer shopId = Util.getInteger(shopIdOptions.get(0));
+			if (hasOption(args, "shop_id")) {
+				Integer shopId = this.getOption(args, "shop_id", Integer.class, 0);
 				if (shopId == 0) {
 					logger.error("--shop_id is invalid,usage: {} ", description());
 					return;

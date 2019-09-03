@@ -18,4 +18,17 @@ public class Table {
 	public List<Column> columns = new ArrayList<Column>();
 	public List<Index> indexes = new ArrayList<Index>();
 	public String createSql;
+
+	public Index getIndexForAutoIncrement(String field) {
+		for (Index index : this.indexes) {
+			if(index.getColumnNames().size() == 1) {
+				for (String col: index.columnNames){
+					if(Column.equalField(col, field)) {
+						return index;
+					}
+				}
+			}
+		}
+		return null;
+	}
 }

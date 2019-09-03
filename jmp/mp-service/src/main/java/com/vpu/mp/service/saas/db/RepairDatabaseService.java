@@ -2,7 +2,9 @@ package com.vpu.mp.service.saas.db;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +65,7 @@ public class RepairDatabaseService extends MainBaseService {
 	public void repairShopDb(Boolean onlyCheck, Integer shopId) {
 		logger().info("repairShopDb(onlyCheck={})  shopId:{} start.", onlyCheck, shopId);
 		this.onlyCheck = onlyCheck;
-		String sql = Util.loadResource("db/main/db_shop.sql");
+		String sql = Util.loadResource("db/shop/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
 		databaseManager.switchShopDb(shopId);
 		repairDb(tables, databaseManager.currentShopDb());
@@ -95,7 +97,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public void repairDb(List<Table> tables, MpDefaultDslContext db) {
 		for (Table table : tables) {
-			if (table.getTableName().equals("b2c_order_info"))
+			if (table.getTableName().equals("`b2c_mrking_voucher`")) 
 			{
 				table.setDatabseName(db.getDbConfig().getDatabase());
 				table.setFullTableName(table.getDatabseName() + "." + table.getTableName());
@@ -112,18 +114,61 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @param db
 	 */
 	public void processTable(Table table, MpDefaultDslContext db) {
+		List<String> columnSqls = new ArrayList<>();
+		List<String> indexSqls = new ArrayList<>();
+		List<String> allSqls = new ArrayList<>();
+		Index incrementIndex = null; 
 		if (isTableExists(table, db)) {
 			Result<Record> columnRecords = db.fetch("show columns from " + table.getFullTableName());
 			for (int i = 0; i < table.columns.size(); i++) {
-				this.processColumn(table, i, columnRecords, db);
+				String sql = this.processColumn(table, i, columnRecords, db);
+				if (StringUtils.isBlank(sql)) {
+					continue;
+				}
+				// add column auto_increment 单独处理
+				if(StringUtils.containsIgnoreCase(sql,"add column") 
+						&& StringUtils.containsIgnoreCase(sql,"auto_increment") 
+						&& !StringUtils.containsIgnoreCase(sql,"primary")){
+					incrementIndex = table.getIndexForAutoIncrement(table.columns.get(i).getField());
+					if(incrementIndex == null) {
+						logger().error("sql:{} index not found ",sql);
+					}else {
+						if(incrementIndex.getKeyName().equals("PRIMARY")) {
+							sql  = sql +" primary key";
+						}else {
+							sql  = sql +" , add index "+incrementIndex.getKeyName()+"("+incrementIndex.getColumnNames().get(0)+")";
+						}
+						columnSqls.add(sql);
+					}
+				}else {
+					columnSqls.add(sql);
+				}
 			}
 
 			Result<Record> indexRecords = db.fetch("show indexes from " + table.getFullTableName());
 			for (int i = 0; i < table.indexes.size(); i++) {
-				this.processIndex(table, i, indexRecords, db);
+				String sql = this.processIndex(table, i, indexRecords, db);
+				if (StringUtils.isBlank(sql)) {
+					continue;
+				}
+				// 删除索引为高优先级
+				if (sql.contains("drop primary key") || sql.contains("drop index")) {
+					String[] sqls = sql.split(";");
+					allSqls.add(sqls[0]);
+					sql = sqls[1];
+				}
+				if(incrementIndex!=null && incrementIndex.getKeyName().equals(table.indexes.get(i).getKeyName())){
+					continue;
+				}
+				indexSqls.add(sql);
 			}
 		} else {
 			String sql = table.createSql.replace(table.getTableName(), table.getFullTableName());
+			allSqls.add(sql);
+		}
+		allSqls.addAll(columnSqls);
+		allSqls.addAll(indexSqls);
+		for (String sql : allSqls) {
 			this.executeSql(db, sql);
 		}
 	}
@@ -148,8 +193,9 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @param colIdx
 	 * @param records
 	 * @param db
+	 * @return
 	 */
-	public void processColumn(Table table, int colIdx, Result<Record> records, MpDefaultDslContext db) {
+	public String processColumn(Table table, int colIdx, Result<Record> records, MpDefaultDslContext db) {
 		Column col = table.columns.get(colIdx);
 		boolean found = false;
 		String regex0 = "(\\w+)\\((\\d+),(\\d+)\\)\\s+unsigned";
@@ -158,7 +204,7 @@ public class RepairDatabaseService extends MainBaseService {
 		String regex3 = "(\\w+)";
 		String sql = "";
 		for (Record r : records) {
-			if (StringUtils.equalsIgnoreCase(r.get("Field").toString(), col.getField())) {
+			if (Column.equalField(r.get("Field").toString(), col.getField())) {
 				found = true;
 				String type = r.get("Type").toString();
 				Column colFromDb = new Column();
@@ -201,10 +247,7 @@ public class RepairDatabaseService extends MainBaseService {
 		if (!found) {
 			sql = "alter table " + table.getFullTableName() + " add column " + col.getCreateSql();
 		}
-		if (!StringUtils.isBlank(sql)) {
-			this.executeSql(db, sql);
-		}
-		return;
+		return sql;
 
 	}
 
@@ -215,18 +258,19 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @param indexIdx
 	 * @param records
 	 * @param db
+	 * @return
 	 */
-	public void processIndex(Table table, int indexIdx, Result<Record> records, MpDefaultDslContext db) {
+	public String processIndex(Table table, int indexIdx, Result<Record> records, MpDefaultDslContext db) {
 		Index index = table.indexes.get(indexIdx);
 		int findIndexCols = 0;
 		boolean findKeyName = false;
 		String sql = "";
 		for (Record r : records) {
-			if (StringUtils.equalsIgnoreCase(r.get("Key_name").toString(), index.getKeyName())) {
+			if (Column.equalField(r.get("Key_name").toString(), index.getKeyName())) {
 				findKeyName = true;
 				String col = r.get("Column_name").toString();
 				for (String indexCol : index.getColumnNames()) {
-					if (indexCol.equals(col)) {
+					if (Column.equalField(indexCol, col)) {
 						findIndexCols++;
 					}
 				}
@@ -240,10 +284,7 @@ public class RepairDatabaseService extends MainBaseService {
 		} else {
 			sql = indexSql(index, table.getFullTableName(), false);
 		}
-		if (!StringUtils.isBlank(sql)) {
-			this.executeSql(db, sql);
-		}
-		return;
+		return sql;
 	}
 
 	/**
@@ -255,7 +296,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 * @return
 	 */
 	protected String indexSql(Index index, String tableName, boolean modify) {
-		String format = "alter table %s %s add %s key %s (%s)";
+		String format = "%s alter table %s add %s key %s (%s)";
 		String keyProp = "";
 		String primary = "PRIMARY";
 		String unique = "0";
@@ -264,19 +305,20 @@ public class RepairDatabaseService extends MainBaseService {
 
 		if (modify) {
 			if (primary.equals(index.getKeyName())) {
-				dropKey = "drop primary key,";
+				dropKey = "alter table " + tableName + " drop primary key ;";
 			} else {
-				dropKey = "drop index `" + index.getKeyName() + "`,";
+				dropKey = "alter table " + tableName + " drop index " + index.getKeyName() + ";";
 			}
 		}
 
-		if (primary.equals(index.getKeyName())) {
+		String keyName = index.getKeyName();
+		if (primary.equals(keyName)) {
 			keyProp = "primary";
+			keyName = "";
 		} else if (unique.equals(index.getNonUnique())) {
 			keyProp = "unique";
 		}
-
-		return String.format(format, tableName, dropKey, keyProp, index.getKeyName(), cols);
+		return String.format(format, dropKey, tableName, keyProp, keyName, cols);
 	}
 
 	/**
@@ -288,8 +330,13 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public boolean isTableExists(Table table, MpDefaultDslContext db) {
 		Result<Record> tables = db
-				.fetch("show tables from " + table.getDatabseName() + " like '" + table.getTableName() + "'");
+				.fetch("show tables from " + table.getDatabseName() + " like '"
+						+ getNoQuotStr(table.getTableName(), "`") + "'");
 		return tables.size() > 0;
+	}
+
+	protected String getNoQuotStr(String str, String quot) {
+		return str.startsWith(quot) && str.endsWith(quot) ? str.substring(1, str.length() - 1) : str;
 	}
 
 	/**
@@ -300,7 +347,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public List<Table> parseSql(String sql) {
 		List<Table> tables = new ArrayList<Table>();
-		sql = sql.replaceAll("`", "");
+//		sql = sql.replaceAll("`", "");
 		String createTableRegex = "create\\s+table\\s+(.*?)\\s*\\((.*?)\n\\s*\\)[^\\)]*?;";
 		Pattern pattern = Pattern.compile(createTableRegex,
 				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -314,7 +361,7 @@ public class RepairDatabaseService extends MainBaseService {
 			table.createSql = String.format("create table %s(%s)", matcher.group(1), matcher.group(2));
 			String[] columns = matcher.group(2).split(",\\s*\n");
 			for (String col : columns) {
-				if(StringUtils.isBlank(col.trim())) {
+				if (StringUtils.isBlank(col.trim())) {
 					continue;
 				}
 				String[] tokens = this.parseTokens(col).toArray(new String[0]);
@@ -399,7 +446,7 @@ public class RepairDatabaseService extends MainBaseService {
 					String[] props = tokens[i].substring(1, tokens[i].length() - 1).replaceAll("\\s", "").split(",");
 					col.setTypeRange1(props[0]);
 					col.setTypeRange2(props.length > 1 ? props[1] : "");
-					if(StringUtils.equals("timestamp", tokens[i])) {
+					if (StringUtils.equals("timestamp", tokens[i])) {
 						col.setTypeRange1("");
 					}
 					i++;
@@ -439,7 +486,7 @@ public class RepairDatabaseService extends MainBaseService {
 			}
 			case "ON": {
 				i += 3;
-				if(i <len && tokens[i].startsWith("(")) {
+				if (i < len && tokens[i].startsWith("(")) {
 					i++;
 				}
 				break;
@@ -450,8 +497,8 @@ public class RepairDatabaseService extends MainBaseService {
 					col.setDefaultValue(tokens[i].substring(1, tokens[i].length() - 1));
 				} else {
 					col.setDefaultValue(tokens[i].equalsIgnoreCase("null") ? null : tokens[i]);
-					if(i+1 < len && tokens[i+1].startsWith("(")) {
-						col.setDefaultValue(tokens[i]+tokens[i+1]);
+					if (i + 1 < len && tokens[i + 1].startsWith("(")) {
+						col.setDefaultValue(tokens[i] + tokens[i + 1]);
 						i++;
 					}
 				}
@@ -459,7 +506,8 @@ public class RepairDatabaseService extends MainBaseService {
 				break;
 			}
 			default: {
-				logger().warn("{} column tokens{}, i={},{} not found!", table.getTableName(), tokens.toString(),tokens[i]);
+				logger().warn("{} column tokens{}, i={},{} not found!", table.getTableName(), tokens.toString(),
+						tokens[i]);
 				i++;
 			}
 			}

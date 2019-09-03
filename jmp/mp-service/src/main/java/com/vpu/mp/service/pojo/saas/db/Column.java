@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.saas.db;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.vpu.mp.service.foundation.util.Util;
+
 import lombok.Data;
 
 /**
@@ -49,12 +51,18 @@ public class Column {
 	}
 
 	static public boolean isEquals(Column c1, Column c2) {
-		return StringUtils.equalsIgnoreCase(c1.getField(), c2.getField())
+		return equalField(c1.getField(), c2.getField())
 				&& StringUtils.equalsIgnoreCase(c1.getType(), c2.getType())
 				&& StringUtils.equalsIgnoreCase(c1.getTypeRange1(), c2.getTypeRange1())
 				&& StringUtils.equalsIgnoreCase(c1.getTypeRange2(), c2.getTypeRange2())
 				&& StringUtils.equalsIgnoreCase(c1.getTypeUnsigned(), c2.getTypeUnsigned())
 				&& isDefaultValueEqual(c1.getType(),c1.getDefaultValue(),c2.getDefaultValue());
+	}
+	
+	static public boolean equalField(String v1,String v2) {
+		v1 = v1.startsWith("`") ? v1 : "`"+v1+"`";
+		v2 = v2.startsWith("`") ? v2 : "`"+v2+"`";
+		return StringUtils.equalsIgnoreCase(v1,v2);
 	}
 	
 	static public boolean isIntType(String type) {
@@ -85,11 +93,15 @@ public class Column {
 		if(StringUtils.equalsAnyIgnoreCase(v1,v2)) {
 			return true;
 		}
-		if(isIntType(type)) {
-			return v1!=null && v2!=null && Integer.valueOf(v1).equals(Integer.valueOf(v2));
+		if(isIntType(type) && v1!=null && v2!=null) {
+			Integer i1 = Util.convert(v1, Integer.class, -1);
+			Integer i2 = Util.convert(v2, Integer.class, -2);
+			return i1.equals(i2);
 		}
-		if(isDecimalType(type) || isFloatType(type)) {
-			return  v1!=null && v2!=null && Double.valueOf(v1).equals(Double.valueOf(v2));
+		if((isDecimalType(type) || isFloatType(type) ) && v1!=null && v2!=null) {
+			Double i1 = Util.convert(v1, Double.class, -1.0);
+			Double i2 = Util.convert(v2, Double.class, -2.0);
+			return i1.equals(i2);
 		}
 		
 		if(isDateType(type)) {

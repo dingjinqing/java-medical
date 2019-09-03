@@ -23,6 +23,7 @@ public class Index {
 	 * 是否为唯一索引：0否，1是
 	 */
 	String nonUnique;
+	
 
 	/**
 	 * 索引列

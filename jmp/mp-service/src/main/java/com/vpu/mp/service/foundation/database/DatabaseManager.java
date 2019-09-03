@@ -84,7 +84,7 @@ public class DatabaseManager {
 	public DatabaseManager switchShopDb(Integer shopId) {
 		loger.debug("switchShopDb==="+shopId);
 		MpDefaultDslContext db = shopDsl.get();
-		if(db == null || db !=null && db.getShopId() != shopId) {
+		if(db == null || db !=null && !db.getShopId().equals(shopId)) {
 			ShopRecord shop = mainDb().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 			if (shop != null) {
 				DbConfig dbConfig = Util.parseJson(shop.getDbConfig(), DbConfig.class);

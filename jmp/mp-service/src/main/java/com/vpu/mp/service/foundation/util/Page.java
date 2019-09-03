@@ -29,14 +29,14 @@ public class Page {
 
 	public static Page getPage(Integer totalRows, Integer currentPage, Integer pageRows) {
 		//currentPage pageRows为null取默认值;<1取默认
-		currentPage = currentPage == null || currentPage < 1 ? DEFAULT_CURRENT_PAGE : currentPage;
-		pageRows = pageRows == null || pageRows < 1 ? DEFAULT_PAGE_ROWS : pageRows;
+		currentPage = currentPage == null || currentPage.intValue() < 1 ? DEFAULT_CURRENT_PAGE : currentPage;
+		pageRows = pageRows == null || pageRows.intValue() < 1 ? DEFAULT_PAGE_ROWS : pageRows;
 		Integer pageCount = (Integer)(int)Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
-		Integer lastPage = pageCount > 0 ? pageCount : 1;
-		currentPage = currentPage > lastPage ? lastPage : (currentPage <= 0 ? 1 : currentPage);
+		Integer lastPage = pageCount.intValue() > 0 ? pageCount : 1;
+		currentPage = currentPage.intValue() > lastPage.intValue() ? lastPage : (currentPage.intValue() <= 0 ? 1 : currentPage);
 		Integer firstPage = 1;
-		Integer prePage = currentPage > 1 ? currentPage - 1 : 1;
-		Integer nextPage = currentPage >= lastPage ? lastPage : currentPage + 1;
+		Integer prePage = currentPage.intValue() > 1 ? currentPage - 1 : 1;
+		Integer nextPage = currentPage.intValue() >= lastPage.intValue() ? lastPage : currentPage + 1;
 		return new Page(totalRows, currentPage, firstPage, prePage, nextPage, lastPage, pageRows,pageCount);
 	}
 

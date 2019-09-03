@@ -4506,8 +4506,8 @@ create table `b2c_comment_award`
 (
     `id`                  int(9)       not null auto_increment,
     `name`                varchar(120) not null comment '活动名称',
-    `start_time`          timestamp      default null comment '开始时间',
-    `end_time`            timestamp      default null comment '结束时间',
+    `start_time`          timestamp      null default null comment '开始时间',
+    `end_time`            timestamp      null default null comment '结束时间',
     `is_forever`          tinyint(1)     default null comment '是否永久',
     `leve`                int(9)         default '1' comment '优先级',
     `goods_type`          tinyint(4)   not null comment '触发条件 1全部商品 2指定商品 3 实际品论比较少的商品',
