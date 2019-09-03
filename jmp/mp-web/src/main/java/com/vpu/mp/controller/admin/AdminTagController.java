@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
@@ -13,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.member.DeleteTagParam;
 import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
+import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
 
 /**
  * 会员标签管理
@@ -105,6 +108,14 @@ public class AdminTagController extends AdminBaseController {
 	}
 	
 	
+	/**
+	 * 标签弹窗
+	 */
+	@PostMapping(value="/api/admin/tag/all/get")
+	public JsonResult getAllTag() {
+		List<CommonTagVo> allTag = shop().tag.getAllTag();
+		return success(allTag);
+	}
 	
 	
 }
