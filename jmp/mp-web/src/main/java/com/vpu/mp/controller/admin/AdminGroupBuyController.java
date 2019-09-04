@@ -115,6 +115,9 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/detail")
     public JsonResult detailGroupBuy(@RequestBody GroupBuyIdParam param) {
+        if (param.getId()!=null){
+            return fail(JsonResultCode.CODE_PARAM_ERROR);
+        }
         GroupBuyDetailVo vo = shop().groupBuy.detailGroupBuy(param.getId());
         return success(vo);
     }

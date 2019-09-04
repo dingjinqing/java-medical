@@ -160,10 +160,12 @@ public class GroupBuyListService  extends ShopBaseService {
         if (param.getNickName() != null && !param.getNickName().isEmpty()) {
             select.and(USER.USERNAME.eq(param.getNickName()));
         }
-        if (param.getStatus() < 0) {
-            select.and(GROUP_BUY_LIST.STATUS.le((byte) 0));
-        } else {
-            select.and(GROUP_BUY_LIST.STATUS.eq(param.getStatus()));
+        if (param.getStatus()!=null) {
+            if (param.getStatus() < 0) {
+                select.and(GROUP_BUY_LIST.STATUS.le((byte) 0));
+            } else {
+                select.and(GROUP_BUY_LIST.STATUS.eq(param.getStatus()));
+            }
         }
 
     }

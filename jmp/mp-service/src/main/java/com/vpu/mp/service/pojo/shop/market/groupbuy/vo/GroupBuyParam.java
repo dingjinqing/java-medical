@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigParam;
 import lombok.Data;
@@ -47,12 +48,13 @@ public class GroupBuyParam {
     private Timestamp endTime;
     /**
      * 最少购买数 0不限制
+     * limit_buy_num
      */
-    private Short limitBuyMinNum;
+    private Short limitBuyNum;
     /**
      * 最多购买数 0 不限制
      */
-    private Short limitBuyMaxNum;
+    private Short limitMaxNum;
 
     /**
      * 状态： 1：启用  0： 禁用

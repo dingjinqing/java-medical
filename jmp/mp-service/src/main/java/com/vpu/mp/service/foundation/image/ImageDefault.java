@@ -268,22 +268,23 @@ public interface ImageDefault {
 		return Arrays.asList(types).contains(contentType) ? contentType.split("/")[1] : "unkown";
 	}
 
-	/**
-	 * 得到图片可写上传路径
-	 * @param contentType
-	 * @return
-	 */
-	public default UploadPath getImageWritableUploadPath(String contentType,String filename) {
-		return this.getWritableUploadPath("image", baseFilename(filename), getImageExtension(contentType), null);
-	}
+    /**
+     * 得到图片可写上传路径
+     * @param contentType
+     * @return
+     */
+    public default UploadPath getImageWritableUploadPath(String contentType) {
+        return this.getWritableUploadPath("image", randomFilename(), getImageExtension(contentType), null);
+    }
 
 	/**
 	 * 得到图片可写上传路径
 	 * @param contentType
+     * @param sysId  用户id
 	 * @return
 	 */
-	public default UploadPath getImageWritableUploadPath(String contentType,String filename,Integer sysId) {
-		return this.getWritableUploadPath("image", baseFilename(filename), getImageExtension(contentType), sysId);
+	public default UploadPath getImageWritableUploadPath(String contentType,Integer sysId) {
+		return this.getWritableUploadPath("image", randomFilename(), getImageExtension(contentType), sysId);
 	}
 
 	/**

@@ -88,7 +88,7 @@ public class AdminImageController extends AdminBaseController {
 		if (jsonResultCode!=null){
 			this.fail(Arrays.asList(jsonResultCode));
 		}
-		UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType(),file.getSubmittedFileName());
+		UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType());
 		//上传又拍云
 	    boolean ret=  shop().image.uploadToUpYunBySteam(uploadPath.relativeFilePath,file.getInputStream());
 		if (ret) {

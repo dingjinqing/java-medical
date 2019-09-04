@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import lombok.Data;
@@ -41,11 +42,12 @@ public class GroupBuyDetailVo {
     /**
      * 最少购买数 0不限制
      */
-    private Short limitBuyMinNum;
+    private Short limitBuyNum;
     /**
      * 最多购买数 0 不限制
      */
-    private Short limitBuyMaxNum;
+    private Short limitMaxNum;
+
     /**
      * 默认成团
      */
