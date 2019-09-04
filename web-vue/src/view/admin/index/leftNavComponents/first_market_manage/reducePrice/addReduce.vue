@@ -293,7 +293,7 @@
                         class="upload_img"
                       >
                         <img
-                          :src="this.reduceData.shareConfig.share_img"
+                          :src="reduceData.shareConfig.share_img ? $imageHost +'/' + reduceData.shareConfig.share_img : ' '"
                           class="bgImgDiv"
                           @click="handleToAddImg()"
                           :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
@@ -460,7 +460,7 @@ export default {
     },
     // 图片选中
     handleSelectImg (res) {
-      this.reduceData.shareConfig.share_img = res
+      this.reduceData.shareConfig.share_img = res.imgPath
       console.log(res)
     },
     showCycleDialog (val) {

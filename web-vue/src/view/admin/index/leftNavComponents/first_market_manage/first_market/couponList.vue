@@ -116,7 +116,7 @@
               <span>编辑</span>
               <span>分享</span>
               <span @click="puaseCoupon(scope.row.id)">停用</span>
-              <span>领取明细</span>
+              <span @click="receiveDetails(scope.row.id)">领取明细</span>
               <span @click="delCoupon(scope.row.id)">删除</span>
             </div>
           </template>
@@ -234,6 +234,11 @@ export default {
     addCoupon () {
       this.$router.push({
         name: 'add_coupon'
+      })
+    },
+    receiveDetails () {
+      this.$router.push({
+        name: 'ordinary_coupon_receive_details'
       })
     }
 

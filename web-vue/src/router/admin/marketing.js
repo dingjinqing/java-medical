@@ -272,6 +272,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/first_market/addCoupon'
       )
   },
+  // 普通优惠券领取明细
+  {
+    path: '/admin/home/main/ordinaryCoupon/receiveDetails',
+    name: 'ordinary_coupon_receive_details',
+    meta: {
+      crumbTitle: 'router.ordinary_coupon_receive_details',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/couponReceiveDetails'
+      )
+  },
   // 拼团抽奖活动
   {
     path: '/admin/home/main/lotteryDraw',
