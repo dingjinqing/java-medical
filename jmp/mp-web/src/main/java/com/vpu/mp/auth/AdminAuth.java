@@ -228,4 +228,14 @@ public class AdminAuth {
 		record.setUserIp(Util.getCleintIp(request));
 		return saas.shop.insertUserLoginRecord(record);
 	}
+	
+	/**
+	 * 更新accountName
+	 * @param accountName
+	 */
+	public void updateAccountName(String accountName) {
+		AdminTokenAuthInfo user = user();
+		user.setAccountName(accountName);
+		jedis.set(getToken(), Util.toJson(user));
+	}
 }
