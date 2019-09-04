@@ -21,6 +21,7 @@ public class GoodsBrand {
     private String desc;
     private Byte isRecommend;
     private Integer classifyId;
+    private String classifyName;
 
     List<Integer> goodsIds;
     Integer goodsNum;

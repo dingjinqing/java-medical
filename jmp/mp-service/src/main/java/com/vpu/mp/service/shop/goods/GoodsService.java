@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import org.apache.commons.lang3.StringUtils;
@@ -370,7 +371,7 @@ public class GoodsService extends ShopBaseService {
         if (goods.getIsCardExclusive()==null||goods.getIsCardExclusive()==0||goods.getMemberCardIds()==null||goods.getMemberCardIds().size()==0) {
             return;
         }
-        memberCardService.batchUpdateGoods(Arrays.asList(goods.getGoodsId()),goods.getMemberCardIds());
+        memberCardService.batchUpdateGoods(Arrays.asList(goods.getGoodsId()),goods.getMemberCardIds(), CardConstant.GOODS_TYPE);
     }
 
     /**

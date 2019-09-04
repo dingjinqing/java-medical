@@ -8,14 +8,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jooq.Field;
-import org.jooq.Record1;
-import org.jooq.Record10;
-import org.jooq.Record5;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectOnConditionStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -42,7 +35,7 @@ import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
 public class GoodsBrandService extends ShopBaseService {
 
     private final static String BRAND_NUM = "brand_num";
-    private final static String GOODS_NUM = "goods_num";
+
     private final static int DEFAULT_GOODS_BRAND_ID = 0;
 
     /**
@@ -52,13 +45,18 @@ public class GoodsBrandService extends ShopBaseService {
      * @return
      */
     public PageResult<GoodsBrand> getPageList(GoodsBrandPageListParam param) {
-        Field<Object> goodsNum = db().selectCount().from(GOODS)
-                .where(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .asField(GOODS_NUM);
+        String goodsNumFieldName = "goods_num";
+        String classifyNameFieldName = "classify_name";
+        Field<Object> goodsNumField = db().selectCount().from(GOODS)
+            .where(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .asField(goodsNumFieldName);
 
-        SelectJoinStep<Record10<Integer, String, String, String, Byte, Timestamp, String, Byte, Integer, Object>> selectFrom = db().select(GOODS_BRAND.ID,
-                GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID,
-                goodsNum).from(GOODS_BRAND);
+        Field<Object> classifyNameField = db().select(BRAND_CLASSIFY.CLASSIFY_NAME).from(BRAND_CLASSIFY)
+            .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID)).asField(classifyNameFieldName);
+
+        SelectJoinStep<Record11<Integer, String, String, String, Byte, Timestamp, String, Byte, Integer, Object, Object>> selectFrom = db().select(GOODS_BRAND.ID,
+            GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID,
+            goodsNumField, classifyNameField).from(GOODS_BRAND);
 
         SelectConditionStep<?> select = this.buildOptions(selectFrom, param);
 
@@ -117,8 +115,8 @@ public class GoodsBrandService extends ShopBaseService {
 
             if (goodsBrand.getGoodsIds() != null && goodsBrand.getGoodsIds().size() > 0) {
                 db().update(GOODS).set(GOODS.BRAND_ID, goodsBrandRecord.getId())
-                        .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
-                        .execute();
+                    .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
+                    .execute();
             }
 
         });
@@ -137,17 +135,17 @@ public class GoodsBrandService extends ShopBaseService {
 
     private void deleteGoodsBrand(List<Integer> brandIds) {
         db().update(GOODS_BRAND)
-                .set(GOODS_BRAND.DEL_FLAG, DelFlag.DISABLE.getCode())
-                .set(GOODS_BRAND.BRAND_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
-                        .concat(GOODS_BRAND.ID)
-                        .concat(DelFlag.DEL_ITEM_SPLITER)
-                        .concat(GOODS_BRAND.BRAND_NAME))
-                .where(GOODS_BRAND.ID.in(brandIds))
-                .execute();
+            .set(GOODS_BRAND.DEL_FLAG, DelFlag.DISABLE.getCode())
+            .set(GOODS_BRAND.BRAND_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
+                .concat(GOODS_BRAND.ID)
+                .concat(DelFlag.DEL_ITEM_SPLITER)
+                .concat(GOODS_BRAND.BRAND_NAME))
+            .where(GOODS_BRAND.ID.in(brandIds))
+            .execute();
 
         db().update(GOODS).set(GOODS.BRAND_ID, DEFAULT_GOODS_BRAND_ID)
-                .where(GOODS.BRAND_ID.in(brandIds))
-                .execute();
+            .where(GOODS.BRAND_ID.in(brandIds))
+            .execute();
     }
 
     /**
@@ -159,12 +157,12 @@ public class GoodsBrandService extends ShopBaseService {
     public void update(GoodsBrand goodsBrand) {
         GoodsBrandRecord goodsBrandRecord = new GoodsBrandRecord();
         assign(goodsBrand, goodsBrandRecord);
-        transaction(()->{
+        transaction(() -> {
             db().executeUpdate(goodsBrandRecord);
             if (goodsBrand.getGoodsIds() != null && goodsBrand.getGoodsIds().size() > 0) {
                 db().update(GOODS).set(GOODS.BRAND_ID, goodsBrandRecord.getId())
-                        .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
-                        .execute();
+                    .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
+                    .execute();
             }
         });
     }
@@ -177,13 +175,13 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public GoodsBrand select(GoodsBrand goodsBrand) {
 
-        GoodsBrand gb= db().select(GOODS_BRAND.ID,
-                GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
-                .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
-                .fetchOne().into(GoodsBrand.class);
+        GoodsBrand gb = db().select(GOODS_BRAND.ID,
+            GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
+            .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
+            .fetchOne().into(GoodsBrand.class);
 
         List<Integer> goodsIds = db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.BRAND_ID.eq(goodsBrand.getId()))
-                .fetch().into(Integer.class);
+            .fetch().into(Integer.class);
 
         gb.setGoodsIds(goodsIds);
 
@@ -199,9 +197,9 @@ public class GoodsBrandService extends ShopBaseService {
     public boolean isBrandNameExist(GoodsBrand goodsBrand) {
 
         Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
-                .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-                .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .fetchOne();
+            .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
+            .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .fetchOne();
         Integer count = countRecord.getValue(0, Integer.class);
         if (count > 0) {
             return true;
@@ -218,10 +216,10 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public boolean isOtherBrandNameExist(GoodsBrand goodsBrand) {
         Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
-                .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-                .and(GOODS_BRAND.ID.ne(goodsBrand.getId()))
-                .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .fetchOne();
+            .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
+            .and(GOODS_BRAND.ID.ne(goodsBrand.getId()))
+            .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .fetchOne();
         Integer count = countRecord.getValue(0, Integer.class);
         if (count > 0) {
             return true;
@@ -237,9 +235,9 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public List<GoodsBrandVo> listGoodsBrandName() {
         List<GoodsBrandVo> goodsBrandNames = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME)
-                .from(GOODS_BRAND)
-                .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .fetch().into(GoodsBrandVo.class);
+            .from(GOODS_BRAND)
+            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .fetch().into(GoodsBrandVo.class);
 
         return goodsBrandNames;
     }
@@ -252,9 +250,9 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public List<GoodsBrandClassifyVo> getBrandClassifyList() {
         List<GoodsBrandClassifyVo> voList = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME)
-                .from(BRAND_CLASSIFY)
-                .where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .fetch().into(GoodsBrandClassifyVo.class);
+            .from(BRAND_CLASSIFY)
+            .where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .fetch().into(GoodsBrandClassifyVo.class);
 
         return voList;
     }
@@ -268,13 +266,13 @@ public class GoodsBrandService extends ShopBaseService {
     public PageResult<GoodsBrandClassifyVo> getBrandClassifyList(GoodsBrandClassifyParam param) {
 
         SelectOnConditionStep<Record5<Integer, String, Timestamp, Short, Integer>> selectFrom = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.CREATE_TIME,
-                BRAND_CLASSIFY.FIRST,
-                DSL.count(GOODS_BRAND.ID).as(BRAND_NUM))
-                .from(BRAND_CLASSIFY).leftJoin(GOODS_BRAND).on(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID));
+            BRAND_CLASSIFY.FIRST,
+            DSL.count(GOODS_BRAND.ID).as(BRAND_NUM))
+            .from(BRAND_CLASSIFY).leftJoin(GOODS_BRAND).on(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID));
 
         SelectConditionStep<?> select = this.buildBrandClassifyCondition(selectFrom, param);
 
-        select.groupBy(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME,BRAND_CLASSIFY.FIRST, BRAND_CLASSIFY.CREATE_TIME);
+        select.groupBy(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST, BRAND_CLASSIFY.CREATE_TIME);
         select.orderBy(BRAND_CLASSIFY.FIRST.desc(), BRAND_CLASSIFY.CREATE_TIME.desc());
 
         PageResult<GoodsBrandClassifyVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrandClassifyVo.class);
@@ -307,7 +305,7 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public void insertBrandClassify(GoodsBrandClassifyParam param) {
         db().insertInto(BRAND_CLASSIFY, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST)
-                .values(param.getClassifyName(), param.getFirst()).execute();
+            .values(param.getClassifyName(), param.getFirst()).execute();
     }
 
     /**
@@ -318,9 +316,9 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public GoodsBrandClassifyVo selectBrandClassify(GoodsBrandClassifyParam param) {
         GoodsBrandClassifyVo vo = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST)
-                .from(BRAND_CLASSIFY)
-                .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(param.getClassifyId()))
-                .fetchOne().into(GoodsBrandClassifyVo.class);
+            .from(BRAND_CLASSIFY)
+            .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(param.getClassifyId()))
+            .fetchOne().into(GoodsBrandClassifyVo.class);
 
         return vo;
     }
@@ -346,17 +344,17 @@ public class GoodsBrandService extends ShopBaseService {
     }
 
     public void deleteBrandClassify(GoodsBrandClassifyParam param) {
-        transaction(()->{
+        transaction(() -> {
             db().update(BRAND_CLASSIFY)
-                    .set(BRAND_CLASSIFY.DEL_FLAG,DelFlag.DISABLE.getCode())
-                    .set(BRAND_CLASSIFY.CLASSIFY_NAME,DSL.concat(getDelPrefix(param.getClassifyId()))
+                .set(BRAND_CLASSIFY.DEL_FLAG, DelFlag.DISABLE.getCode())
+                .set(BRAND_CLASSIFY.CLASSIFY_NAME, DSL.concat(getDelPrefix(param.getClassifyId()))
                     .concat(BRAND_CLASSIFY.CLASSIFY_NAME))
-                    .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(param.getClassifyId())).execute();
+                .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(param.getClassifyId())).execute();
 
             List<Integer> brandIds = db().select(GOODS_BRAND.ID)
-                    .from(GOODS_BRAND)
-                    .where(GOODS_BRAND.CLASSIFY_ID.eq(param.getClassifyId()))
-                    .fetch().into(Integer.class);
+                .from(GOODS_BRAND)
+                .where(GOODS_BRAND.CLASSIFY_ID.eq(param.getClassifyId()))
+                .fetch().into(Integer.class);
 
 
             deleteGoodsBrand(brandIds);
@@ -365,23 +363,23 @@ public class GoodsBrandService extends ShopBaseService {
 
     public void batchUpdateBrand(GoodsBrandBatchParam param) {
         db().update(GOODS_BRAND).set(GOODS_BRAND.CLASSIFY_ID, param.getClassifyId())
-                .where(GOODS_BRAND.ID.in(param.getIds()))
-                .execute();
+            .where(GOODS_BRAND.ID.in(param.getIds()))
+            .execute();
     }
 
     public boolean isClassifyNameExist(GoodsBrandClassifyParam param) {
         Integer count = db().selectCount().from(BRAND_CLASSIFY)
-                .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
-                .fetchOne().into(Integer.class);
+            .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
+            .fetchOne().into(Integer.class);
 
         return count > 0;
     }
 
     public boolean isOtherClassifyNameExist(GoodsBrandClassifyParam param) {
         Integer count = db().selectCount().from(BRAND_CLASSIFY)
-                .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
-                .and(BRAND_CLASSIFY.CLASSIFY_ID.ne(param.getClassifyId()))
-                .fetchOne().into(Integer.class);
+            .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
+            .and(BRAND_CLASSIFY.CLASSIFY_ID.ne(param.getClassifyId()))
+            .fetchOne().into(Integer.class);
 
         return count > 0;
     }
