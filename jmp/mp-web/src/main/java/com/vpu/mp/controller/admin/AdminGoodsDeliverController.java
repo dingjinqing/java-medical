@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
+import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverBoxVo;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateListVo;
@@ -27,7 +28,7 @@ import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
 @RestController
 @RequestMapping("/api/admin/goods/deliver")
 public class AdminGoodsDeliverController extends AdminBaseController {
-	
+
 	/**
 	 * 返回所有地区代码及名称
 	 * 
@@ -39,6 +40,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 		List<AreaProvinceVo> areaSelectVo = shop().goods.goodsDeliver.getAllArea();
 		return success(areaSelectVo);
 	}
+
 	/**
 	 * 运费模版分页查询
 	 *
@@ -56,7 +58,6 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 		return success(vo);
 
 	}
-
 
 	/**
 	 * 重量运费模版分页查询
@@ -144,7 +145,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 
 		return success();
 	}
-	
+
 	/**
 	 * 修改模版前先查询单个模版的信息，将其参数作为修改时的默认值
 	 *
@@ -160,19 +161,30 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 		return success(goodsDeliverTemplateVos);
 
 	}
-	
+
 	/**
 	 * 默认运费模板配置
 	 *
-	 * @param 
+	 * @param
 	 * @return
 	 */
 	@PostMapping("/config")
 	public JsonResult setDefaultDeliverTemplate(@RequestBody DeliverTemplateConfig param) {
-		
+
 		shop().config.deliverTemplateConfigService.setDefaultDeliverTemplate(param);
-		
+
 		return success();
 	}
-	
+
+	/**
+	 * 运费模板下拉框
+	 *
+	 * @param
+	 * @return
+	 */
+	@GetMapping("/box")
+	public JsonResult getBox() {
+		List<GoodsDeliverBoxVo> boxVos = shop().goods.goodsDeliver.getBox();
+		return success(boxVos);
+	}
 }

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
+import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverBoxVo;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
@@ -309,5 +310,17 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	/**
+	 *	运费模板下拉框
+	 *
+	 * @param 
+	 * @return List<GoodsDeliverBoxVo>
+	 */
+	public List<GoodsDeliverBoxVo> getBox() {
+		
+		List<GoodsDeliverBoxVo> boxVo = db().select().from(DELIVER_FEE_TEMPLATE)
+				.fetch().into(GoodsDeliverBoxVo.class);
+		return boxVo;
 	}
 }
