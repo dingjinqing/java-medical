@@ -288,7 +288,8 @@ export default {
         name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
         value: '瓜分积分'
       }],
-      showModulesList: []
+      showModulesList: [],
+      dataId: -1
     }
   },
   mounted () {
@@ -325,15 +326,18 @@ export default {
     },
     // 拖拽开始start处理函数
     highlignt_row_item (pos) {
+      // let this_ = this
       let p = $('.drag_area').offset()
       console.log(p, '--', pos, '--', $('.drag_area').width(), $('.drag_area').height())
       if (pos.left > p.left && pos.top > p.top &&
         pos.left < p.left + $('.drag_area').width() &&
         pos.top < p.top + $('.drag_area').height()) {
         console.log('ssssss')
+
         $('.modules').each(function (idx, item) {
           p = $(this).offset()
-          console.log($(this))
+          // console.log($(this).attr('data-id'))
+          // this_.dataId = $(this).attr('data-id')
           if (pos.left > p.left && pos.top > p.top &&
             pos.left < p.left + $(this).width() &&
             pos.top < p.top + $(this).height()
@@ -342,8 +346,8 @@ export default {
             $(this).addClass('placeholder')
           }
         })
-        let last = this.showModulesList
-        this.$http.$emit('decCard', last, true)
+        // let last = this.showModulesList
+        // this.$http.$emit('decCard', last)
       }
     },
     // 模块拖拽接收
@@ -355,6 +359,7 @@ export default {
         accept: '.third_drag',
         drop: function (event, ui) {
           // console.log(ui.draggable[0].innerText)
+          // console.log(this_.dataId)
           switch (ui.draggable[0].innerText) {
             case '会员卡':
               this_.showModulesList.push(1)
@@ -362,8 +367,6 @@ export default {
             case '优惠卷':
               this_.showModulesList.push(2)
           }
-
-          console.log(1)
         }
       })
     }

@@ -3,7 +3,6 @@
     <!--会员列表模块-->
     <div
       class="showModule"
-      v-if="index===1"
       :class="activeBorder?'activeBorder':''"
     >
       <div class="carModule">
@@ -33,14 +32,17 @@
       <div class="item_operation">
         <img
           class="up_img"
+          style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
         >
         <img
           class="down_img"
+          style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
         >
         <img
           class="del_img"
+          style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
         >
       </div>
