@@ -55,11 +55,6 @@
             label="奖励类型："
             prop=""
           >
-            <!--  -->
-            <!-- <section>
-              <el-button @click="handleTest">test</el-button>
-            </section> -->
-            <!--  -->
             <el-radio
               v-model="form.rewardType"
               label="0"
@@ -75,14 +70,14 @@
               v-model="form.rewardType"
               label="2"
             >赠送优惠券</el-radio>
-            <el-col>
+            <el-col v-if="form.rewardType==0 || form.rewardType==1">
               <el-button
                 size="small"
                 type="primary"
                 @click="showChoosingGoods"
               >+ 选择商品</el-button>
             </el-col>
-            <el-col>
+            <el-col v-if="form.rewardType==2">
               <el-button
                 size="small"
                 type="primary"
@@ -96,6 +91,7 @@
             prop=""
           >
             <el-table
+              v-if="form.rewardType==0 || form.rewardType==1"
               class="version-manage-table"
               header-row-class-name="tableClass"
               :data="form.goodsInfo"
@@ -108,7 +104,6 @@
                 label="商品信息"
                 align="center"
               >
-                <el-input></el-input>
               </el-table-column>
 
               <el-table-column
@@ -137,6 +132,7 @@
               </el-table-column>
 
               <el-table-column
+                v-if="form.rewardType==1"
                 width="150%"
                 label="活动价"
                 align="center"
@@ -150,48 +146,49 @@
 
           </el-form-item>
 
-          <div class="coupon_set_table">
-            <el-table
-              :data="coupon_info"
-              border
-              style="width: 20%"
+          <el-table
+            v-if="form.rewardType==2"
+            class="version-manage-table"
+            header-row-class-name="tableClass"
+            :data="coupon_info"
+            border
+            style="width: 20%"
+          >
+            <el-table-column
+              label="优惠券信息"
+              width="180%"
             >
-              <el-table-column
-                label="优惠券信息"
-                width="180%"
-              >
-                <template slot-scope="scope">
-                  <div class="coupon_info">
-                    <span class="coupon_name">{{scope.row.actName}}</span>
-                    <div
-                      class="coupon_price"
-                      v-if="scope.row.actCode == 'voucher'"
-                    >￥<span>{{scope.row.denomination}}</span></div>
-                    <div
-                      class="coupon_price"
-                      v-else
-                    ><span>{{scope.row.denomination}}</span>折</div>
-                    <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="发券数量"
-                width="120%"
-              >
-                <!-- <template slot-scope="scope"> -->
+              <template slot-scope="scope">
+                <div class="coupon_info">
+                  <span class="coupon_name">{{scope.row.actName}}</span>
+                  <div
+                    class="coupon_price"
+                    v-if="scope.row.actCode == 'voucher'"
+                  >￥<span>{{scope.row.denomination}}</span></div>
+                  <div
+                    class="coupon_price"
+                    v-else
+                  ><span>{{scope.row.denomination}}</span>折</div>
+                  <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="发券数量"
+              width="120%"
+            >
+              <template slot-scope="scope">
                 <div>
                   <el-input
-                    v-model="form.coupon_store"
+                    v-model="scope.row.send_num"
                     size="small"
                     style="width:100px;"
                   ></el-input>
                 </div>
-                <!-- </template> -->
-              </el-table-column>
+              </template>
+            </el-table-column>
 
-            </el-table>
-          </div>
+          </el-table>
 
           <el-form-item
             label="奖励有效期："
@@ -328,6 +325,37 @@
             >需要授权个人信息</el-radio>
             <span class="gray">好友帮忙助力时，是否需要授权个人信息（头像+昵称）</span>
           </el-form-item>
+
+          <el-form-item
+            v-if="form.rewardType == 1"
+            label="优惠叠加策略："
+            prop=""
+          >
+            <el-radio
+              v-model="form.useDiscount"
+              label="1"
+            >可叠加</el-radio>
+            <el-radio
+              v-model="form.useDiscount"
+              label="0"
+            >不可叠加</el-radio>
+            <span class="gray">活动商品结算时是否可与会员卡折扣、优惠券叠加使用</span>
+          </el-form-item>
+          <el-form-item
+            v-if="form.rewardType == 1"
+            label="积分抵扣策略："
+            prop=""
+          >
+            <el-radio
+              v-model="form.useScore"
+              label="1"
+            >可抵扣</el-radio>
+            <el-radio
+              v-model="form.useScore"
+              label="0"
+            >不可抵扣</el-radio>
+            <span class="gray">活动商品结算时是否可使用积分抵扣部分金额</span>
+          </el-form-item>
           <el-form-item
             label="助力失败赠送："
             prop=""
@@ -372,25 +400,27 @@
                     label="1"
                   >
                     自定义样式
-                    <div style="margin: 15px 0">
-                      <span>文案：</span>
-                      <el-input
-                        size="small"
-                        style="width:200px"
-                        v-model="form.customShareWord"
-                      ></el-input>
-                    </div>
-                    <div>
-                      <span>分享图：</span>
-                      <el-radio
-                        v-model="form.shareImgType"
-                        label="0"
-                      >活动商品信息图</el-radio>
-                      <div style="margin: 10px 0 0 60px">
+                    <div v-if="form.activityShareType == 1">
+                      <div style="margin: 15px 0">
+                        <span>文案：</span>
+                        <el-input
+                          size="small"
+                          style="width:200px"
+                          v-model="form.customShareWord"
+                        ></el-input>
+                      </div>
+                      <div>
+                        <span>分享图：</span>
                         <el-radio
                           v-model="form.shareImgType"
-                          label="1"
-                        >自定义图片</el-radio>
+                          label="0"
+                        >活动商品信息图</el-radio>
+                        <div style="margin: 10px 0 0 60px">
+                          <el-radio
+                            v-model="form.shareImgType"
+                            label="1"
+                          >自定义图片</el-radio>
+                        </div>
                       </div>
                       <!-- <div style="margin-left: 60px">
                       <img
@@ -456,6 +486,8 @@ export default {
           market_price: '',
           market_store: ''
         },
+        useDiscount: '0',
+        useScore: '1',
         startTime: '',
         endTime: '',
         ruleForm: {},
@@ -550,12 +582,12 @@ export default {
   created () {
     this.form.rewardDurationUnitSelect = this.form.rewardDurationUnit[0].value
     this.form.launchLimitUnitSelect = this.form.launchLimitUnit[0].value
+    this.form.useDiscount = this.form.useDiscount[0].value
+    this.form.useScore = this.form.useScore[1].value
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
-    handleTest () {
-      // this.show = !this.show
-    },
+
     addAct () {
       console.log('this.form.rewardType:', this.form.rewardType)
       if (this.form.rewardType === '0' || this.form.rewardType === '1') {
@@ -567,7 +599,7 @@ export default {
         console.log('rewardContent:', this.form.rewardContent)
       }
       if (this.form.rewardType === '2') {
-        this.form.rewardSet.market_store = this.form.coupon_store
+        this.form.rewardSet.market_store = this.coupon_info[0].send_num
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
