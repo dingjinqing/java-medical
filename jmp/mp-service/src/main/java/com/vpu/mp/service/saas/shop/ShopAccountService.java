@@ -27,6 +27,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
+import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.saas.image.SystemImageService;
 
 /**
@@ -75,12 +76,19 @@ public class ShopAccountService extends MainBaseService {
 	}
 
 	public ShopAccountRecord checkByIdAndNameOnMain(String username, Integer sysid) {
-		ShopAccountRecord record = db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
+		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
 				.and(SHOP_ACCOUNT.SYS_ID.eq(sysid)).fetchAny();
+	}
+	
+	public ShopManageVo getRow(String username, Integer sysid){
+		ShopAccountRecord record = checkByIdAndNameOnMain(username, sysid);
+		ShopManageVo into = new ShopManageVo();
 		if(record!=null) {
-			record.setShopAvatar(image.imageUrl(record.getShopAvatar()));
+			into=record.into(ShopManageVo.class);
+			into.setShopAvatarPath(record.getShopAvatar());
+			into.setShopAvatar(image.imageUrl(record.getShopAvatar()));
 		}
-		return record;
+		return into;
 	}
 
 	public ShopAccountRecord getAccountInfo(String username) {
