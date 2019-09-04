@@ -20,6 +20,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopManagePwdParam;
+import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectResp;
 
@@ -85,11 +86,11 @@ public class AdminRoleController extends AdminBaseController {
 			// 权限不足
 			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT);
 		}
-		ShopAccountRecord shopRecord = saas.shop.account.checkByIdAndNameOnMain(info.getUserName(), info.getSysId());
+		ShopManageVo shopRecord = saas.shop.account.getRow(info.getUserName(), info.getSysId());
 		if (shopRecord == null) {
 			return fail();
 		}
-		return success(shopRecord.into(ShopManageParam.class));
+		return success(shopRecord);
 	}
 
 	/**
