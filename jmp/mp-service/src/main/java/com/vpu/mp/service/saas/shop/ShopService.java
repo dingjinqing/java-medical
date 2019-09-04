@@ -339,7 +339,7 @@ public class ShopService extends MainBaseService {
 			shopInner.setShopId(record.get(SHOP.SHOP_ID));
 			shopInner.setSysId(record.get(SHOP.SYS_ID));
 			shopInner.setShopName(record.get(SHOP.SHOP_NAME));
-			shopInner.setShopAvatar(record.get(SHOP.SHOP_AVATAR)!=null?image.imageUrl(record.get(SHOP.SHOP_AVATAR)):null);
+			shopInner.setShopAvatar(StringUtils.isEmpty(record.get(SHOP.SHOP_AVATAR))?null:image.imageUrl(record.get(SHOP.SHOP_AVATAR)));
 			shopInner.setCreated(record.get(SHOP.CREATED));
 			shopInner.setState(record.get(SHOP.STATE));
 			shopInner.setBusinessState(record.get(SHOP.BUSINESS_STATE));
