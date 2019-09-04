@@ -128,18 +128,26 @@ public class AdminTradeController extends AdminBaseController {
      * @param retrunConfigParam
      * @return
      */
-    @PostMapping("/api/admin/config/trade/retrunConfig")
-    public JsonResult retrunConfig(@RequestBody @Validated RetrunConfigParam retrunConfigParam) {
+    @PostMapping("/api/admin/config/trade/returnConfig")
+    public JsonResult returnConfig(@RequestBody @Validated RetrunConfigParam retrunConfigParam) {
         return shop().config.returnConfigService.updateReturnConfig(retrunConfigParam) ? success() : fail(JsonResultMessage.RETURN_CONFIG_UPDATE_FAILED);
     }
 
     /**
      * 查询退换货配置
-     * @return
      */
-    @PostMapping("/api/admin/config/trade/getRetrunConfig")
-    public JsonResult getRetrunConfig(){
+    @PostMapping("/api/admin/config/trade/getReturnConfig")
+    public JsonResult getReturnConfig(){
         RetrunConfigParam param = shop().config.returnConfigService.getRetrunConfigParam();
         return param != null ? success(param) : fail(JsonResultMessage.RETURN_CONFIG_IS_NULL);
     }
+
+    /**
+     * 查询退换货配置-商家默认收货地址配置信息
+     */
+    @PostMapping("/api/admin/config/trade/getdefaultaddress")
+    public JsonResult getDefaultAddress(){
+        return success(shop().config.returnConfigService.getDefaultAddress());
+    }
+
 }

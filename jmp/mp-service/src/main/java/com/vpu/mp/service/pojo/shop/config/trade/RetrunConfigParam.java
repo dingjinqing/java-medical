@@ -25,7 +25,7 @@ public class RetrunConfigParam {
     @JsonProperty(value = "is_refund_coupon")
     public Byte isReturnCoupon;
     @JsonProperty(value = "business_address")
-    public ReturnBusinessAdressParam businessAddress;
+    public ReturnBusinessAddressParam businessAddress;
     @JsonProperty(value = "return_change_goods_status")
     public Byte returnChangeGoodsStatus;
     @JsonProperty(value = "order_return_goods_package")

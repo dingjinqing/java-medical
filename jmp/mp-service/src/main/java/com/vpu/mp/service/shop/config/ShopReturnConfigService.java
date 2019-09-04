@@ -1,12 +1,11 @@
 package com.vpu.mp.service.shop.config;
 
-import java.sql.Timestamp;
-
+import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnPackageParam;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAdressParam;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnPackageParam;
+import java.sql.Timestamp;
 
 /**
  * @Author:liufei
@@ -112,11 +111,11 @@ public class ShopReturnConfigService extends BaseShopConfigService {
         return this.set(K_IS_REFUND_COUPON, isReturnCoupon,Byte.class);
     }
 
-    public ReturnBusinessAdressParam getBusinessAddress() {
-        return this.getJsonObject(K_BUSINESS_ADDRESS, ReturnBusinessAdressParam.class, null);
+    public ReturnBusinessAddressParam getBusinessAddress() {
+        return this.getJsonObject(K_BUSINESS_ADDRESS, ReturnBusinessAddressParam.class, null);
     }
 
-    public int setBusinessAddress(ReturnBusinessAdressParam businessAddress) {
+    public int setBusinessAddress(ReturnBusinessAddressParam businessAddress) {
         return businessAddress !=null ? this.setJsonObject(K_BUSINESS_ADDRESS, businessAddress) : -1;
     }
 
@@ -151,6 +150,13 @@ public class ShopReturnConfigService extends BaseShopConfigService {
             retrunConfigParam.setReturnShoppingDays(this.getReturnShoppingDays());
         });
         return retrunConfigParam;
+    }
+
+    /**
+     * 查询退换货配置-商家默认收货地址配置信息
+     */
+    public ReturnBusinessAddressParam getDefaultAddress(){
+        return this.getBusinessAddress();
     }
 
     /**
