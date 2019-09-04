@@ -240,7 +240,9 @@ public class MemberService extends ShopBaseService {
 		}
 		/** - 昵称 */
 		if (!StringUtils.isEmpty(param.getUsername())) {
-			select.where(u.USERNAME.eq(param.getUsername()));
+			logger().info("用户昵称模糊查询");
+			String likeValue = likeValue(param.getUsername());
+			select.where(u.USERNAME.like(likeValue));
 		}
 		/** - 来源 */
 		if (param.getSource() != null) {
@@ -248,9 +250,10 @@ public class MemberService extends ShopBaseService {
 		}
 		/** -邀请人 */
 		if (!StringUtils.isBlank(param.getInviteUserName())) {
-			Field<Integer> inviteId = this.db().select(u.USER_ID).from(u)
-					.where(u.USERNAME.eq(param.getInviteUserName())).asField();
-			select.where(u.INVITE_ID.eq(inviteId));
+			logger().info("处理邀请人模糊查询");
+			String likeValue = likeValue(param.getInviteUserName());
+			List<Integer> ids = db().select(u.USER_ID).from(u).where(u.USERNAME.like(likeValue)).fetch().into(Integer.class);
+			select.where(u.INVITE_ID.in(ids));
 		}
 		
 		/** - 会员卡 */
