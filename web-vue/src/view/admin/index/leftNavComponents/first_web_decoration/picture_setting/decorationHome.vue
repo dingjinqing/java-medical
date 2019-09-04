@@ -77,11 +77,38 @@
         </div>
         <div class="decMiddle">
           <div class="decTop"></div>
-          <div class="decContent">
-            <div class="drag_area">
+          <vue-scroll
+            :ops="ops"
+            style="height:510px"
+          >
+            <div class="decContent">
+
+              <div class="drag_area">
+                <!--模块列表-->
+                <div
+                  v-for="(item,index) in showModulesList"
+                  :key="index"
+                >
+                  <!--会员列表模块-->
+
+                  <MembershipCard
+                    v-show="item===1"
+                    :index="1"
+                    :flag="index"
+                  />
+
+                  <!--优惠卷模块-->
+                  <Coupon
+                    v-show="item===2"
+                    :index="2"
+                    :flag="index"
+                  />
+                </div>
+                <!--模块列表结束-->
+              </div>
 
             </div>
-          </div>
+          </vue-scroll>
         </div>
         <!-- <div class="decRight">
           3
@@ -98,7 +125,9 @@ require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
 export default {
   components: {
-    vuescroll
+    vuescroll,
+    MembershipCard: () => import('./decorationModules/membershipCard'),
+    Coupon: () => import('./decorationModules/Coupon')
   },
   data () {
     return {
@@ -237,22 +266,28 @@ export default {
       ],
       isDragging: false,
       listLeft: [{
+        name: this.$imageHost + '/image/admin/new_shop_beautify/deco_card.png',
+        value: '会员卡'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/deco_voucher.png',
+        value: '优惠卷'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/bargain.png',
+        value: '砍价'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/icon_integral_deco.png',
+        value: '积分兑换'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/secKill.png',
+        value: '秒杀'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/fight_group.png',
+        value: '拼团抽奖'
+      }, {
         name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
         value: '瓜分积分'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
-        value: '瓜分积分2'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
-        value: '瓜分积分3'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
-        value: '瓜分积分3'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
-        value: '瓜分积分4'
       }],
-      g_insert_index: -1
+      showModulesList: []
     }
   },
   mounted () {
@@ -265,46 +300,58 @@ export default {
     // 初始化拖拽事件
     init_drag_event () {
       let this_ = this
-
       // 模块拖拽
       $('.third_drag').draggable({
         appendTo: '.decLeft',
         helper: 'clone',
         start: function () {
-          this_.g_insert_index = -1
         },
         drag: function (ev, ui) {
-          console.log($(ui.helper).offset())
+          // console.log($(ui.helper).offset())
           this_.highlignt_row_item($(ui.helper).offset())
         },
         stop: function () {
+          let last = this_.showModulesList
+          setTimeout(() => {
+            this_.$http.$emit('decCard', last)
+          }, 50)
+
           // $('#drag_area div.row_item').removeClass('placeholder')
         },
         zIndex: 10000 // 拖动位置在拖放区域上方
       })
+      this.handleToAcceptDrag()
     },
     // 拖拽开始start处理函数
     highlignt_row_item (pos) {
       let p = $('.drag_area').offset()
-      console.log(p)
-      let flag = false
+      // console.log(p)
       if (pos.left > p.left && pos.top > p.top &&
         pos.left < p.left + $('#drag_area').width() &&
         pos.top < p.top + $('#drag_area').height()) {
-        //   //   $('#drag_area div.row_item').each(function (idx, item) {
-        //   //     p = $(this).offset()
-        //   //     if (pos.left > p.left && pos.top > p.top &&
-        //   //       pos.left < p.left + $(this).width() &&
-        //   //       pos.top < p.top + $(this).height()
-        //   //     ) {
-        //   //       $('#drag_area div.row_item').removeClass('placeholder')
-        //   //       $(this).addClass('placeholder')
-        //   //       g_insert_index = $(this).index()
-        //   //       flag = true
-        //   //     }
-        //   //   })
+
       }
-      if (!flag) this.g_insert_index = -1
+    },
+    // 模块拖拽接收
+    handleToAcceptDrag () {
+      let this_ = this
+      $('.decContent').droppable({
+        activeClass: 'ui-state-default',
+        hoverClass: 'ui-state-hover',
+        accept: '.third_drag',
+        drop: function (event, ui) {
+          // console.log(ui.draggable[0].innerText)
+          switch (ui.draggable[0].innerText) {
+            case '会员卡':
+              this_.showModulesList.push(1)
+              break
+            case '优惠卷':
+              this_.showModulesList.push(2)
+          }
+
+          console.log(1)
+        }
+      })
     }
   }
 }
@@ -334,7 +381,7 @@ export default {
       .decMiddle {
         width: 254px;
         margin: 2px;
-        padding: 0 2px;
+        // padding: 0 2px;
 
         .picTextConDivList {
           float: left;
@@ -364,8 +411,6 @@ export default {
             no-repeat;
         }
         .decContent {
-          overflow-y: auto;
-          height: 100%;
           height: 510px;
           background: #fff;
           position: relative;

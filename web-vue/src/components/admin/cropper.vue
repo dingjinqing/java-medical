@@ -192,6 +192,7 @@ export default {
         imgCatId: this.imgCatId,
         remoteImgId: this.imgID
       }
+      console.log(this.cropperFlagF)
       if (this.cropperFlagF === 0) {
         imgsCropperRequest(obj).then((res) => {
           console.log(res)

@@ -14,7 +14,7 @@
           height="30px"
           style="border: 1px solid #ddd;"
         >
-        <span>{{username}}</span>
+        <span style="display:inline-block;white-space:normal;height:82px;">{{username}}</span>
         <img
           :src="imageUrlData[2].image_3"
           class="head_down"
@@ -395,7 +395,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 84px;
+  /* width: 84px; */
   height: 100%;
 }
 .nav2 > div {
