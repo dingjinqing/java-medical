@@ -29,35 +29,35 @@
           style="display:flex"
           v-show="!formData[`limitParam_limitDeliverArea`]"
         >
-          <el-form-item prop="limitParam_firstNum">
+          <el-form-item prop="goodsDeliverTemplateLimitParam.first_num">
             其他区域运费:
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_firstNum`]"
+              v-model.number="formData[`goodsDeliverTemplateLimitParam`]['first_num']"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="limitParam_firstFee">
+          <el-form-item prop="goodsDeliverTemplateLimitParam.first_fee">
             件内，
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_firstFee`]"
+              v-model.number="formData[`goodsDeliverTemplateLimitParam`][`first_fee`]"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="limitParam_continueNum">
+          <el-form-item prop="goodsDeliverTemplateLimitParam.continue_num">
             元，每增加
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_continueNum`]"
+              v-model.number="formData[`goodsDeliverTemplateLimitParam`][`continue_num`]"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="formData[`limitParam_continueNum`]">
+          <el-form-item prop="goodsDeliverTemplateLimitParam.continue_fee">
             件，增加运费
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_continueFee`]"
+              v-model.number="formData[`goodsDeliverTemplateLimitParam`][`continue_fee`]"
               style="width:80px;"
             ></el-input>
             元
@@ -259,6 +259,23 @@ export default {
         // 模板名称
         templateName: ``,
         // 配送区域限制信息
+        goodsDeliverTemplateLimitParam: {
+          limit_deliver_area: '0',
+          area_list: '0',
+          area_text: '全国（其他地区）',
+          first_num: '1',
+          first_fee: '0',
+          continue_num: '1',
+          continue_fee: '0'
+        },
+        goodsDeliverTemplateAreaParam: [{
+          area_list: '',
+          area_text: '',
+          first_num: '1',
+          first_fee: '0',
+          continue_num: '1',
+          continue_fee: '0'
+        }],
         limitParam_limitDeliverArea: false, // 默认其他区域可配送
         limitParam_areaList: `0`,
         limitParam_areaText: `全国（其他地区）`,
@@ -340,6 +357,14 @@ export default {
       this.checkeList = value.checkList // 复选框选中LIst(传回组件用)
       this.showArr = value.showArr
       this.area_text = value.areaList // fag
+
+      if (value.areaList.length > 0) {
+        for (let i = 0; i < value.areaList.length; i++) {
+          this.formData.goodsDeliverTemplateAreaParam[i].area_list = i + 1
+          this.formData.goodsDeliverTemplateAreaParam[i].area_text = '测试'
+        }
+      }
+      console.log('goodsDeliverTemplateAreaParam:', this.formData.goodsDeliverTemplateAreaParam)
       // 获取中文拼接字符串，只有省份
       // if (value.areaList.length > 0) {
       //   this.tableData.push(
@@ -388,25 +413,29 @@ export default {
       }
       // 判断除可配送区域外，其他不可配送的值
       if (this.formatLimitDeliverArea === `0`) {
+        this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
         // 请求参数
         let params = {
           'templateName': this.formData[`templateName`], // 模板名称
-          'goodsDeliverTemplateLimitParam': {
-            'limit_deliver_area': this.formatLimitDeliverArea,
-            'area_list': this.formData[`limitParam_areaList`],
-            'area_text': this.formData[`limitParam_areaText`],
-            'first_num': this.formData[`limitParam_firstNum`],
-            'first_fee': this.formData[`limitParam_firstFee`],
-            'continue_num': this.formData[`limitParam_continueNum`],
-            'continue_fee': this.formData[`limitParam_continueFee`]
-          }
+          'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam,
+          'goodsDeliverTemplateAreaParam': this.formData.goodsDeliverTemplateAreaParam
         }
         // 发送请求
         addTemplate(params).then(res => {
           console.log(res)
         }).catch(err => console.log(err))
-      } else {
-
+      } else if (this.formatLimitDeliverArea === `0` && this.formData.goodsDeliverTemplateAreaParam.length > 0) {
+        this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
+        // 请求参数
+        let params = {
+          'templateName': this.formData[`templateName`], // 模板名称
+          'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam,
+          'goodsDeliverTemplateAreaParam': this.formData.goodsDeliverTemplateAreaParam
+        }
+        // 发送请求
+        addTemplate(params).then(res => {
+          console.log(res)
+        }).catch(err => console.log(err))
       }
 
       // 请求报文参数
