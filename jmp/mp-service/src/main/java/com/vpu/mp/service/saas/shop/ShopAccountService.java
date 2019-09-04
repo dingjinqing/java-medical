@@ -27,6 +27,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
+import com.vpu.mp.service.saas.image.SystemImageService;
 
 /**
  * 
@@ -38,6 +39,8 @@ import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 public class ShopAccountService extends MainBaseService {
 	@Autowired
 	protected JedisManager jedis;
+	@Autowired
+	protected SystemImageService image;
 
 	public PageResult<ShopAccountPojo> getPageList(ShopAccountListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().selectFrom(SHOP_ACCOUNT);
@@ -72,8 +75,12 @@ public class ShopAccountService extends MainBaseService {
 	}
 
 	public ShopAccountRecord checkByIdAndNameOnMain(String username, Integer sysid) {
-		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
+		ShopAccountRecord record = db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
 				.and(SHOP_ACCOUNT.SYS_ID.eq(sysid)).fetchAny();
+		if(record!=null) {
+			record.setShopAvatar(image.imageUrl(record.getShopAvatar()));
+		}
+		return record;
 	}
 
 	public ShopAccountRecord getAccountInfo(String username) {
