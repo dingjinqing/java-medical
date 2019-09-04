@@ -118,6 +118,7 @@ export default {
     console.log(1)
     this.langDefault()
   },
+
   watch: {
 
   },

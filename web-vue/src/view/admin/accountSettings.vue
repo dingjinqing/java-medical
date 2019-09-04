@@ -149,6 +149,7 @@ export default {
       modifyWidth: 'headWidth',
       shop_config_ul_flag: true,
       maskspanheight: '',
+      imagePath: '',
       modifyObj: {
         passwd: '',
         newPasswd: '',
@@ -159,7 +160,7 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    this.accountName = localStorage.getItem('V-accountName')
+    this.accountName = localStorage.getItem('V-AccountName')
     // 初始化账户设置
     this.queryAccount()
   },
@@ -173,19 +174,23 @@ export default {
         this.userName = res.content.userName
         this.accountName = res.content.accountName
         this.mobile = res.content.mobile
-        localStorage.setItem('V-accountName', res.content.accountName)
+        localStorage.setItem('V-AccountName', res.content.accountName)
         this.imageUrl[0].img_1 = res.content.shopAvatar
+        this.imagePath = res.content.shopAvatarPath
         console.log(res)
       })
     },
     // 确认修改
     handleSave () {
       let obj = {
-        shopAvatar: this.imageUrl[0].img_1,
+        shopAvatar: this.imagePath,
         accountName: this.accountName
       }
       accountManageRequest(obj).then((res) => {
         if (res.error === 0) {
+          localStorage.setItem('V-shopAvatar', this.imageUrl[0].img_1)
+          localStorage.setItem('V-AccountName', this.accountName)
+          this.$http.$emit('changeHead')
           this.$message({
             message: '保存成功',
             type: 'success'
@@ -196,7 +201,8 @@ export default {
     },
     // 弹框确定选中
     handleSelectImg (res) {
-      this.imageUrl[0].img_1 = res
+      this.imageUrl[0].img_1 = res.imgUrl
+      this.imagePath = res.imgPath
       console.log(res)
     },
     // 跳转修改登录密码页面

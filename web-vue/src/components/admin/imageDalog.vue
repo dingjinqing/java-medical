@@ -434,7 +434,7 @@ export default {
     // 单图片选中
     handleChecked (index) {
       this.img_list[index].checked = !this.img_list[index].checked
-      this.$emit('handleSelectImg', this.img_list[index].imgUrl)
+      this.$emit('handleSelectImg', this.img_list[index])
       this.dialogTableVisible = false
     },
     // 鼠标划入

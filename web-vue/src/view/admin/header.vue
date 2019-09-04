@@ -92,6 +92,10 @@ export default {
   methods: {
     // 初始化登录
     judgeuserinfo () {
+      this.$http.$on('changeHead', () => {
+        this.shopAvatar = localStorage.getItem('V-shopAvatar')
+        this.accountName = localStorage.getItem('V-AccountName')
+      })
       if (Cookies.get('V-Index-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
@@ -100,6 +104,7 @@ export default {
           console.log(res)
           if (res.error === 0) {
             this.shopAvatar = res.content.shopAvatar
+
             localStorage.setItem('V-shopAvatar', res.content.shopAvatar)
           }
           console.log(res)
