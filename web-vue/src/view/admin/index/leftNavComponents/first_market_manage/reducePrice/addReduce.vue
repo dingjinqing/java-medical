@@ -135,6 +135,7 @@
             :cell-style="{
             'text-align':'center'
           }"
+            ref="multipleTable"
           >
             <el-table-column
               type="selection"
@@ -495,65 +496,71 @@ export default {
       this.pageShowGoodsList[goodsTarget].goodsProductAddParams = ProductInfo
     },
     batchSet () {
-      switch (this.batchFlag) {
-        case 1:
-          if (!this.reduceData.batchDiscount) {
-            this.$message.error('请输入折扣数')
-            return false
-          } else if (parseFloat(this.reduceData.batchDiscount) <= 0 || parseFloat(this.reduceData.batchDiscount) >= 10) {
-            this.$message.error('折扣只能输入0-10之间')
-            return false
-          }
-          this.pageShowGoodsList.map(item => {
-            let shopPrice = parseFloat(item.shopPrice)
-            let goodsPrice = (shopPrice * parseFloat(this.reduceData.batchDiscount / 10)).toFixed(2)
-            let reducePrice = parseFloat(shopPrice - goodsPrice).toFixed(2)
-            item.goodsPrice = goodsPrice
-            item.reducePrice = reducePrice
-            item.discount = this.reduceData.batchDiscount
-            if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
-              item.goodsProductAddParams.map(item2 => {
-                let prdPrice = item2.prdPrice
-                let originalPrice = (prdPrice * (parseFloat(this.reduceData.batchDiscount / 10))).toFixed(2)
-                item2.originalPrice = originalPrice
-              })
+      console.log(this.$refs.multipleTable.selection)
+      if (this.$refs.multipleTable.selection.length === 0) {
+        this.$message.error('请勾选商品后再试')
+        return false
+      } else {
+        switch (this.batchFlag) {
+          case 1:
+            if (!this.reduceData.batchDiscount) {
+              this.$message.error('请输入折扣数')
+              return false
+            } else if (parseFloat(this.reduceData.batchDiscount) <= 0 || parseFloat(this.reduceData.batchDiscount) >= 10) {
+              this.$message.error('折扣只能输入0-10之间')
+              return false
             }
-          })
-          break
-        case 2:
-          this.pageShowGoodsList.map(item => {
-            let shopPrice = parseFloat(item.shopPrice)
-            let goodsPrice = parseFloat(shopPrice - this.reduceData.batchReduce).toFixed(2)
-            let discount = (parseFloat(goodsPrice / shopPrice) * 10).toFixed(2)
-            item.goodsPrice = goodsPrice
-            item.reducePrice = this.reduceData.batchReduce
-            item.discount = discount
-            if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
-              item.goodsProductAddParams.map(item2 => {
-                let prdPrice = item2.prdPrice
-                item2.originalPrice = parseFloat(prdPrice - this.reduceData.batchReduce).toFixed(2)
-              })
-            }
-          })
-          break
-        case 3:
-          this.pageShowGoodsList.map(item => {
-            let shopPrice = parseFloat(item.shopPrice)
-            let reducePrice = parseFloat(shopPrice - this.reduceData.batchFinalPrice).toFixed(2)
-            let discount = (parseFloat(this.reduceData.batchFinalPrice / shopPrice) * 10).toFixed(2)
-            item.goodsPrice = this.reduceData.batchFinalPrice
-            item.reducePrice = reducePrice
-            item.discount = discount
-            if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
-              item.goodsProductAddParams.map(item2 => {
-                item2.originalPrice = this.reduceData.batchFinalPrice
-              })
-            }
-          })
-          break
-        default:
-          this.$message.error('请选择批量类型')
-          break
+            this.$refs.multipleTable.selection.map(item => {
+              let shopPrice = parseFloat(item.shopPrice)
+              let goodsPrice = (shopPrice * parseFloat(this.reduceData.batchDiscount / 10)).toFixed(2)
+              let reducePrice = parseFloat(shopPrice - goodsPrice).toFixed(2)
+              item.goodsPrice = goodsPrice
+              item.reducePrice = reducePrice
+              item.discount = this.reduceData.batchDiscount
+              if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
+                item.goodsProductAddParams.map(item2 => {
+                  let prdPrice = item2.prdPrice
+                  let originalPrice = (prdPrice * (parseFloat(this.reduceData.batchDiscount / 10))).toFixed(2)
+                  item2.originalPrice = originalPrice
+                })
+              }
+            })
+            break
+          case 2:
+            this.$refs.multipleTable.selection.map(item => {
+              let shopPrice = parseFloat(item.shopPrice)
+              let goodsPrice = parseFloat(shopPrice - this.reduceData.batchReduce).toFixed(2)
+              let discount = (parseFloat(goodsPrice / shopPrice) * 10).toFixed(2)
+              item.goodsPrice = goodsPrice
+              item.reducePrice = this.reduceData.batchReduce
+              item.discount = discount
+              if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
+                item.goodsProductAddParams.map(item2 => {
+                  let prdPrice = item2.prdPrice
+                  item2.originalPrice = parseFloat(prdPrice - this.reduceData.batchReduce).toFixed(2)
+                })
+              }
+            })
+            break
+          case 3:
+            this.$refs.multipleTable.selection.map(item => {
+              let shopPrice = parseFloat(item.shopPrice)
+              let reducePrice = parseFloat(shopPrice - this.reduceData.batchFinalPrice).toFixed(2)
+              let discount = (parseFloat(this.reduceData.batchFinalPrice / shopPrice) * 10).toFixed(2)
+              item.goodsPrice = this.reduceData.batchFinalPrice
+              item.reducePrice = reducePrice
+              item.discount = discount
+              if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
+                item.goodsProductAddParams.map(item2 => {
+                  item2.originalPrice = this.reduceData.batchFinalPrice
+                })
+              }
+            })
+            break
+          default:
+            this.$message.error('请选择批量类型')
+            break
+        }
       }
     },
     resetPrice () {
