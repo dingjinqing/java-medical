@@ -6,18 +6,6 @@
 <template>
   <div>
     <wrapper>
-      <!-- <el-steps
-        :active="step"
-        align-center
-        finish-status="finish"
-        style="margin-bottom:20px"
-      >
-        <el-step
-          v-for="(item, index) in steps"
-          :key="index"
-          :title="`${index+1}. ${item}`"
-        ></el-step>
-      </el-steps> -->
       <el-steps
         :active="step"
         simple
@@ -29,18 +17,6 @@
           :key="index"
           :title="`${index+1}. ${item}`"
         ></el-step>
-        <!-- <el-step
-          title="步骤 1"
-          icon="el-icon-edit"
-        ></el-step>
-        <el-step
-          title="步骤 2"
-          icon="el-icon-upload"
-        ></el-step>
-        <el-step
-          title="步骤 3"
-          icon="el-icon-picture"
-        ></el-step> -->
       </el-steps>
       <!-- 设置赠品规则 -->
       <div v-if="step===1">
@@ -49,22 +25,34 @@
             <span class="label">基础配置</span>
           </el-col>
           <el-col :span="5">
-            <el-form label-width="110px">
-              <el-form-item label="活动名称：">
+            <el-form label-width="120px">
+              <el-form-item
+                label="活动名称："
+                :rules="[{required: true}]"
+              >
                 <el-input
+                  size="small"
                   v-model="param.name"
                   class="inputWidth"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="活动优先级：">
+              <el-form-item
+                label="活动优先级："
+                :rules="[{required: true}]"
+              >
                 <el-input
+                  size="small"
                   class="inputWidth"
                   v-model="param.level"
                   :disabled="ongoing"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="活动时间：">
+              <el-form-item
+                label="活动时间："
+                :rules="[{required: true}]"
+              >
                 <el-date-picker
+                  size="small"
                   v-model="dateRange"
                   type="datetimerange"
                   range-separator="至"
@@ -99,13 +87,13 @@
             <span class="label">赠品策略</span>
           </el-col>
           <el-col :span="11">
-            <el-form label-width="110px">
+            <el-form label-width="120px">
               <el-form-item
                 label="活动商品："
                 style="width: 600px"
+                :rules="[{required: true}]"
               >
                 <template>
-                  <!-- <div style="display:flex"> -->
                   <el-radio
                     v-for="(item, index) in goodsRanges"
                     :key="index"
@@ -119,11 +107,14 @@
                     @click="showChoosingGoods"
                   >{{goodsBtnName}}</el-button>
                   <span v-show="goodsRange===1">已选：{{goodsIdsLength}}件商品</span>
-                  <!-- </div> -->
                 </template>
               </el-form-item>
-              <el-form-item label="赠品条件：">
+              <el-form-item
+                label="赠品条件："
+                :rules="[{required: true}]"
+              >
                 <el-select
+                  size="small"
                   v-model="selectedRules"
                   multiple
                   :multiple-limit="3"
@@ -139,9 +130,9 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <div style="background:rgb(245,245,245);margin-bottom:22px">
+              <div style="background:rgb(245,245,245);margin-bottom:22px;">
                 <el-form-item
-                  label="满金额赠送"
+                  label="满金额赠送："
                   v-show="contains(0)"
                 >
                   <span>满</span>
@@ -154,11 +145,12 @@
                   <span>元，送赠品</span>
                 </el-form-item>
                 <el-form-item
-                  label="满数量赠送"
+                  label="满数量赠送："
                   v-show="contains(1)"
                 >
                   <span>满</span>
                   <el-input
+                    size="small"
                     v-model="param.rules.fullNumber"
                     class="input"
                     :disabled="ongoing"
@@ -166,10 +158,11 @@
                   <span>件，送赠品</span>
                 </el-form-item>
                 <el-form-item
-                  label="会员标签"
+                  label="会员标签："
                   v-show="contains(2)"
                 >
                   <el-select
+                    size="small"
                     v-model="param.rules.tagId"
                     multiple
                     :disabled="ongoing"
@@ -184,10 +177,11 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item
-                  label="会员卡"
+                  label="会员卡："
                   v-show="contains(3)"
                 >
                   <el-select
+                    size="small"
                     v-model="param.rules.cardId"
                     multiple
                     :disabled="ongoing"
@@ -202,36 +196,40 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item
-                  label="付款排名"
+                  label="付款排名："
                   v-show="contains(4)"
                 >
                   前 <el-input
+                    size="small"
                     v-model="param.rules.payTop"
                     class="input"
                     :disabled="ongoing"
-                  ></el-input>
+                  ></el-input>名付款用户，送赠品
                 </el-form-item>
                 <el-form-item
-                  label="已购买次数"
+                  label="已购买次数："
                   v-show="contains(5)"
                 >
                   <el-input
+                    size="small"
                     v-model="param.rules.minPayNum"
                     class="input"
                     :disabled="ongoing"
                   ></el-input>
-                  <span>至</span>
+                  <span style="margin-right: 10px">至</span>
                   <el-input
+                    size="small"
                     v-model="param.rules.maxPayNum"
                     class="input"
                     :disabled="ongoing"
-                  ></el-input>
+                  ></el-input> 次
                 </el-form-item>
                 <el-form-item
-                  label="付款时间"
+                  label="付款时间："
                   v-show="contains(6)"
                 >
                   <el-date-picker
+                    size="samll"
                     v-model="payDateRange"
                     type="datetimerange"
                     range-separator="至"
@@ -242,10 +240,11 @@
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item
-                  label="用户类别"
+                  label="用户类别："
                   v-show="contains(7)"
                 >
                   <el-select
+                    size="small"
                     v-model="param.rules.userAction"
                     :disabled="ongoing"
                   >
@@ -259,7 +258,10 @@
                   </el-select>
                 </el-form-item>
               </div>
-              <el-form-item label="赠品规则说明：">
+              <el-form-item
+                label="赠品规则说明："
+                :rules="[{required: true}]"
+              >
                 <el-input
                   type="textarea"
                   :rows="5"
@@ -306,7 +308,7 @@
               type="primary"
               @click="showChoosingGoods"
             >添加赠品商品</el-button>
-            <span style="color:#999;height:30px;line-height:30px">注：请合理设置赠品库存，赠品全部发完活动将提前停止。最多可添加20件赠品</span>
+            <span class="remarks">注：请合理设置赠品库存，赠品全部发完活动将提前停止。最多可添加20件赠品</span>
           </el-col>
         </el-row>
         <el-row>
@@ -360,9 +362,9 @@
                     :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
                     @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
                   >
-                    <div slot="before">
+                    <span slot="before">
                       {{scope.row.productNumber - scope.row.offerNumber}} /
-                    </div>
+                    </span>
                   </inputEdit>
                 </template>
               </el-table-column>
@@ -372,31 +374,35 @@
                 v-if="!ongoing"
               >
                 <template slot-scope="scope">
-                  <el-button
+                  <div
+                    style="cursor:pointer"
                     v-show="!ongoing"
                     @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)"
                   >
-                    删除</el-button>
+                    删除</div>
                 </template>
               </el-table-column>
             </el-table>
           </el-col>
         </el-row>
       </div>
-      <div style="margin-top:20px">
+      <div class="footer">
         <el-row>
-          <el-col :offset="stepButtonOffset">
+          <el-col>
             <el-button
+              size="small"
               type="primary"
               @click="lastStep"
               v-show="step > 1"
             >上一步</el-button>
             <el-button
+              size="small"
               type="primary"
               @click="nextStep"
               v-show="step < steps.length"
             >下一步</el-button>
             <el-button
+              size="small"
               type="primary"
               @click="addGift"
               v-show="step === steps.length"
@@ -540,15 +546,6 @@ export default {
       }
       return '添加商品'
     }
-    // // 表单约束
-    // formRules: {
-    //   name: [
-    //     { required: true, message: '此处不能为空！', trigger: 'blur' }
-    //   ],
-    //   level: [
-    //     { required: true, message: '此处不能为空！', trigger: 'change' }
-    //   ]
-    // }
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
@@ -721,7 +718,10 @@ export default {
           ...content,
           goodsImg: prdImg || goodsImg
         }
-        this.tableData.splice(this.tableData.findIndex(row => row.productId === productId), 1)
+        const index = this.tableData.findIndex(row => row.productId === productId)
+        if (index !== -1) {
+          this.tableData.splice(index, 1)
+        }
         this.tableData.push({
           ...row,
           productNumber: row.prdNumber + offerNumber
@@ -879,5 +879,24 @@ export default {
 }
 .inputWidth {
   width: 180px;
+}
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  text-align: center;
+  background: #f8f8f8;
+  box-sizing: border-box;
+  height: 50px;
+  padding-top: 10px;
+}
+.remarks {
+  color: #999;
+  margin-left: 20px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
 }
 </style>

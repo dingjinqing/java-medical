@@ -23,8 +23,11 @@
       v-model="value"
       size="small"
     ></el-input>
-    <!-- <el-button @click="switchEditState" size="mini"
-        v-show="!disabled">{{btnContent}}</el-button> -->
+    <!-- <el-button
+      @click="switchEditState"
+      size="mini"
+      v-show="!disabled"
+    >{{btnContent}}</el-button> -->
     <el-tooltip
       class="item"
       effect="dark"

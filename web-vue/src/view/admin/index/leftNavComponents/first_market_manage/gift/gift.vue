@@ -47,6 +47,8 @@
           </el-button>
         </el-col>
       </el-row>
+    </wrapper>
+    <wrapper>
       <el-row>
         <el-table
           class="version-manage-table"
@@ -114,7 +116,7 @@
                     @click="disableGift(scope.row.id)"
                     v-show="couldStop(scope.row)"
                     class="el-icon-remove-outline"
-                    style="color:#409EFF;fontSize:16px"
+                    style="color:#409EFF;fontSize:20px"
                   ></i>
                 </el-tooltip>
                 <!-- <el-button
@@ -132,7 +134,7 @@
                     @click="enableGift(scope.row.id)"
                     v-show="couldStart(scope.row)"
                     class="el-icon-circle-check"
-                    style="color:#409EFF;fontSize:16px"
+                    style="color:#409EFF;fontSize:20px"
                   ></i>
                 </el-tooltip>
                 <!-- <el-button
@@ -150,7 +152,7 @@
                     @click="editGift(scope.row.id)"
                     v-show="couldEdit(scope.row)"
                     class="el-icon-edit-outline"
-                    style="color:#409EFF;fontSize:16px"
+                    style="color:#409EFF;fontSize:20px"
                   ></i>
                 </el-tooltip>
                 <!-- <el-button
@@ -166,7 +168,7 @@
                   <i
                     @click="gotoGiftDetail(scope.row.id)"
                     class="el-icon-present"
-                    style="color:#409EFF;fontSize:16px"
+                    style="color:#409EFF;fontSize:20px"
                   ></i>
                 </el-tooltip>
                 <!-- <el-button
@@ -184,7 +186,7 @@
                     @click="deleteGift(scope.row.id)"
                     v-show="couldDelete(scope.row)"
                     class="el-icon-delete"
-                    style="color:#409EFF;fontSize:16px"
+                    style="color:#409EFF;fontSize:20px"
                   ></i>
                 </el-tooltip>
               </el-row>
