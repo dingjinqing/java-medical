@@ -308,6 +308,7 @@ export default {
         },
         drag: function (ev, ui) {
           // console.log($(ui.helper).offset())
+          console.log(ev)
           this_.highlignt_row_item($(ui.helper).offset())
         },
         stop: function () {
@@ -325,11 +326,13 @@ export default {
     // 拖拽开始start处理函数
     highlignt_row_item (pos) {
       let p = $('.drag_area').offset()
-      // console.log(p)
+      console.log(p, '--', pos)
       if (pos.left > p.left && pos.top > p.top &&
         pos.left < p.left + $('#drag_area').width() &&
         pos.top < p.top + $('#drag_area').height()) {
-
+        console.log('ssssss')
+        let last = this.showModulesList
+        this.$http.$emit('decCard', last, true)
       }
     },
     // 模块拖拽接收

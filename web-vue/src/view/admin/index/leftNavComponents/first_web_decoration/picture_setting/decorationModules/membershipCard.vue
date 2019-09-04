@@ -28,6 +28,13 @@
         </div>
       </div>
     </div>
+    <!--放这里-->
+    <div
+      class="setHere"
+      :class="activeSetHere?'':'activeSetHere'"
+    >
+      放这里
+    </div>
   </div>
 </template>
 <script>
@@ -42,7 +49,8 @@ export default {
   },
   data () {
     return {
-      activeBorder: false
+      activeBorder: false,
+      activeSetHere: false
     }
   },
   mounted () {
@@ -51,8 +59,9 @@ export default {
   },
   methods: {
     defaultData () {
-      this.$http.$on('decCard', data => {
+      this.$http.$on('decCard', (data, hereFlag) => {
         console.log(this.flag, data)
+        console.log(hereFlag)
         let arr = data.length - 1
         if (this.flag === arr) {
           this.activeBorder = true
@@ -65,83 +74,97 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.showModule {
-  min-height: 10px;
-  background-color: #ffffff;
-  position: relative;
-  .carModule {
-    padding: 12px;
-    .card_back_module {
-      width: 100%;
-      -webkit-border-radius: 8px;
-      -moz-border-radius: 8px;
-      border-radius: 8px;
-      background: #ecc98f;
-      color: #fff;
-      padding: 0 20px;
-      position: relative;
-      overflow: hidden;
-      font-size: 14px;
-      .card_type {
-        position: absolute;
-        top: 0;
-        right: 0;
-        background: rgba(0, 0, 0, 0.1);
-        width: 60px;
-        height: 20px;
-        text-align: center;
-        line-height: 20px;
-        border-bottom-left-radius: 8px;
-        font-size: 12px;
-      }
-      .card_content {
-        padding: 20px 0;
-        border-bottom: 1px solid #fff;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
+.membershipCard {
+  .showModule {
+    min-height: 10px;
+    background-color: #ffffff;
+    position: relative;
+    .carModule {
+      padding: 12px;
+      .card_back_module {
+        width: 100%;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+        background: #ecc98f;
+        color: #fff;
+        padding: 0 20px;
         position: relative;
         overflow: hidden;
-        .card_shop_icon {
-          img {
-            display: inline-block;
-            width: 100%;
-          }
-          float: left;
-          width: 40px;
-          height: 40px;
-          -webkit-border-radius: 100%;
-          -moz-border-radius: 100%;
-          border-radius: 100%;
-          overflow: hidden;
-        }
-        .card_content_right {
-          float: left;
-          margin-left: 10px;
-          p {
-            font-size: 12px;
-            margin: 5px 0 0 0;
-          }
-        }
-      }
-      .card_bottom {
-        text-align: right;
-        line-height: 20px;
-        padding: 6px 0;
-        font-size: 12px;
-        span {
-          display: inline-block;
-          border: 1px solid #fff;
-          border-radius: 12px;
+        font-size: 14px;
+        .card_type {
+          position: absolute;
+          top: 0;
+          right: 0;
+          background: rgba(0, 0, 0, 0.1);
+          width: 60px;
           height: 20px;
+          text-align: center;
           line-height: 20px;
-          padding: 0 10px;
-          margin-left: 5px;
+          border-bottom-left-radius: 8px;
+          font-size: 12px;
+        }
+        .card_content {
+          padding: 20px 0;
+          border-bottom: 1px solid #fff;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          position: relative;
+          overflow: hidden;
+          .card_shop_icon {
+            img {
+              display: inline-block;
+              width: 100%;
+            }
+            float: left;
+            width: 40px;
+            height: 40px;
+            -webkit-border-radius: 100%;
+            -moz-border-radius: 100%;
+            border-radius: 100%;
+            overflow: hidden;
+          }
+          .card_content_right {
+            float: left;
+            margin-left: 10px;
+            p {
+              font-size: 12px;
+              margin: 5px 0 0 0;
+            }
+          }
+        }
+        .card_bottom {
+          text-align: right;
+          line-height: 20px;
+          padding: 6px 0;
+          font-size: 12px;
+          span {
+            display: inline-block;
+            border: 1px solid #fff;
+            border-radius: 12px;
+            height: 20px;
+            line-height: 20px;
+            padding: 0 10px;
+            margin-left: 5px;
+          }
         }
       }
     }
   }
-}
-.activeBorder {
-  border: 2px dashed #5a8bff;
+  .activeBorder {
+    border: 2px dashed #5a8bff;
+  }
+  .setHere {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    background-color: #8baeff;
+    font-size: 14px;
+    color: #fff;
+    border: 1px dashed #2589ff;
+  }
+  .activeSetHere {
+    display: none;
+  }
 }
 </style>
