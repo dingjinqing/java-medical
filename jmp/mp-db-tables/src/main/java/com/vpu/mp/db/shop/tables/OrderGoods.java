@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = 1716066429;
+    private static final long serialVersionUID = 1251146015;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_order_goods</code>
@@ -62,6 +62,11 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
      * The column <code>mini_shop_6797286.b2c_order_goods.rec_id</code>.
      */
     public final TableField<OrderGoodsRecord, Integer> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_goods.main_rec_id</code>. 主订单下商品recid
+     */
+    public final TableField<OrderGoodsRecord, Integer> MAIN_REC_ID = createField("main_rec_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "主订单下商品recid");
 
     /**
      * The column <code>mini_shop_6797286.b2c_order_goods.shop_id</code>. 店铺ID
