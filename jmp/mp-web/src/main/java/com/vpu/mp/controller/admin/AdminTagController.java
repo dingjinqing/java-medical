@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
 import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 
 /**
  * 会员标签管理
@@ -113,7 +114,7 @@ public class AdminTagController extends AdminBaseController {
 	 */
 	@PostMapping(value="/api/admin/tag/all/get")
 	public JsonResult getAllTag() {
-		List<CommonTagVo> allTag = shop().tag.getAllTag();
+		List<TagVo> allTag = shop().tag.getAllTag();
 		return success(allTag);
 	}
 	
