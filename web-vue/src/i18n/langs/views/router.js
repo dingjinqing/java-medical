@@ -125,6 +125,8 @@ export const cn = {
   lottery_activity: ['营销管理', '幸运大抽奖'],
   // 营销管理 限时降价
   reduce: ['营销管理', '限时降价'],
+  // 营销管理 限时降价 订单明细
+  reduce_order_list: ['营销管理', '限时降价', '订单明细'],
   // 营销管理 打包一口价
   package_price: ['营销管理', '打包一口价'],
   // 营销管理 打包一口价 参与明细
@@ -308,10 +310,20 @@ export const en = {
   ],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
+  // 营销管理 限时降价 订单明细
+  reduce_order_list: [
+    'Marketing management',
+    'Limited Time Price Reduction',
+    'Order List'
+  ],
   // 营销管理 打包一口价
   package_price: ['Marketing management', 'Package Price'],
   // 营销管理 打包一口价 参与明细
-  package_price_detail: ['Marketing management', 'Package Price', 'Participation details'],
+  package_price_detail: [
+    'Marketing management',
+    'Package Price',
+    'Participation details'
+  ],
 
   // 营销管理 定金膨胀
   presale: ['Marketing Management', 'Pre Sale'],
@@ -326,7 +338,15 @@ export const en = {
   // 营销管理 加价购
   increase_purchase: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 换购订单
-  purchase_redemption_order: ['Marketing management', 'Increase Purchase', 'Redemption Order'],
+  purchase_redemption_order: [
+    'Marketing management',
+    'Increase Purchase',
+    'Redemption Order'
+  ],
   // 营销管理 加价购 换购明细
-  purchase_redemption_detail: ['Marketing management', 'Increase Purchase', 'Redemption Detail']
+  purchase_redemption_detail: [
+    'Marketing management',
+    'Increase Purchase',
+    'Redemption Detail'
+  ]
 }

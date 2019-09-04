@@ -103,7 +103,10 @@
                     content="订单明细"
                     placement="top"
                   >
-                    <i class="el-icon-s-order"></i>
+                    <i
+                      class="el-icon-s-order"
+                      @click="checkOrderList"
+                    ></i>
                   </el-tooltip>
                 </div>
               </template>
@@ -244,6 +247,11 @@ export default {
             this.initDataList()
           }
         })
+      })
+    },
+    checkOrderList () {
+      this.$router.push({
+        name: 'reduce_order_list'
       })
     }
   },
