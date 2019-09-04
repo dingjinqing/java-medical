@@ -83,8 +83,8 @@ public class IncreasePurchaseService extends ShopBaseService {
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
                 break;
         }
-        Table<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> conditionStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.DEL_FLAG).from(ppd).where(categoryConditon).asTable("ppd");
+        Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
+            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG).from(ppd).where(categoryConditon).asTable("ppd");
 
         Condition selectConditon = ppd.DEL_FLAG.eq(FLAG_ZERO);
         if (StringUtils.isNotEmpty(param.getName())) {
@@ -109,8 +109,8 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterThan(param.getPurchasePriceDown()));
         }
 
-        SelectConditionStep<Record6<Integer, String, Short, Short, Timestamp, Timestamp>> resultStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME).from(conditionStep).where(selectConditon);
+        SelectConditionStep<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> resultStep = db().
+            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS).from(conditionStep).where(selectConditon);
         PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
         for (PurchaseShowVo vo : pageResult.getDataList()) {
             Integer purchaseId = vo.getId();
