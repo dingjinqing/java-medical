@@ -28,6 +28,7 @@ import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.*;
 
 /**
  * @author liufei
@@ -50,7 +51,7 @@ public class ShareRewardService extends ShopBaseService {
      */
     public PageResult<ShareRewardShowVo> selectByPage(ShareRewardShowParam param) {
         //已删除的分享有礼活动不参与查询
-        Condition categoryConditon = sa.DEL_FLAG.eq(FLAG_ONE);
+        Condition categoryConditon = sa.DEL_FLAG.eq(FLAG_ZERO);
         switch (param.getCategory()) {
             // 所有0
             case PURCHASE_ALL:
@@ -125,11 +126,6 @@ public class ShareRewardService extends ShopBaseService {
         }
         return null;
     }
-
-    /**
-     * @value 分享规则json串中，奖励类型字段常量
-     */
-    private static final String REWARD_TYPE = "reward_type";
 
     /**
      * 根据分享规则获取分享后的奖励类型，包括积分，优惠券，幸运大抽奖等
@@ -273,7 +269,7 @@ public class ShareRewardService extends ShopBaseService {
             conditionStep = conditionStep.and(GOODS.GOODS_NAME.like(this.likeReplace(param.getGoodsName())));
         }
         if (StringUtils.isNotEmpty(param.getMobile())) {
-            conditionStep = conditionStep.and(USER.MOBILE.eq(param.getMobile()));
+            conditionStep = conditionStep.and(USER.MOBILE.like(this.likeReplace(param.getMobile())));
         }
         if (StringUtils.isNotEmpty(param.getUsername())) {
             conditionStep = conditionStep.and(USER.USERNAME.like(this.likeReplace(param.getUsername())));
@@ -291,13 +287,19 @@ public class ShareRewardService extends ShopBaseService {
                 vo.setInviteNewUserNum(getInviteNewUserNum(shareId));
                 switch (vo.getAwardLevel()) {
                     case CONDITION_ONE:
-                        vo.setRewardType(Byte.valueOf(MAPPER.readTree(vo.getFirstLevelRule()).get(REWARD_TYPE).asText()));
+                        JsonNode fNode = MAPPER.readTree(vo.getFirstLevelRule());
+                        vo.setRewardType(Byte.valueOf(fNode.get(REWARD_TYPE).asText()));
+                        vo.setScore(fNode.get(SCORE).asInt());
                         break;
                     case CONDITION_TWO:
-                        vo.setRewardType(Byte.valueOf(MAPPER.readTree(vo.getSecondLevelRule()).get(REWARD_TYPE).asText()));
+                        JsonNode sNode = MAPPER.readTree(vo.getSecondLevelRule());
+                        vo.setRewardType(Byte.valueOf(sNode.get(REWARD_TYPE).asText()));
+                        vo.setScore(sNode.get(SCORE).asInt());
                         break;
                     case CONDITION_THREE:
-                        vo.setRewardType(Byte.valueOf(MAPPER.readTree(vo.getThirdLevelRule()).get(REWARD_TYPE).asText()));
+                        JsonNode tNode = MAPPER.readTree(vo.getThirdLevelRule());
+                        vo.setRewardType(Byte.valueOf(tNode.get(REWARD_TYPE).asText()));
+                        vo.setScore(tNode.get(SCORE).asInt());
                         break;
                     default:
                         break;
@@ -327,11 +329,6 @@ public class ShareRewardService extends ShopBaseService {
     private Integer getInviteNewUserNum(Integer shareId) {
         return db().select(DSL.countDistinct(asu.USER_ID)).from(asu).where(asu.SHARE_ID.eq(shareId)).and(asu.IS_NEW.eq(CONDITION_ONE)).fetchOptionalInto(Integer.class).orElse(0);
     }
-
-    /**
-     * 分享有礼活动-每日用户可分享次数上限参数常量
-     */
-    private static final String DAILY_SHARE_AWARD = "daily_share_award";
 
     /**
      * 更新每日用户可分享次数上限参数

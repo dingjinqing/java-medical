@@ -59,6 +59,10 @@ public class ShareReceiveDetailVo {
      */
     public Byte rewardType;
     /**
+     * 奖励类型为积分时，显示具体积分值
+     */
+    public Integer score;
+    /**
      * 领取时间
      */
     public Timestamp createTime;
