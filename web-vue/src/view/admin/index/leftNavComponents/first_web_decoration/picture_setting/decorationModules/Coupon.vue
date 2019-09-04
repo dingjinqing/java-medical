@@ -1,5 +1,5 @@
 <template>
-  <div class="Coupon">
+  <div class="Coupon modules">
     <!--会员卷模块-->
     <div
       class="showModule"
@@ -37,6 +37,27 @@
           </div>
         </div>
       </div>
+      <div class="item_module_title">
+        <span>会员卡</span>
+      </div>
+      <div class="item_operation">
+        <img
+          class="up_img"
+          :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
+        >
+        <img
+          class="down_img"
+          :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
+        >
+        <img
+          class="del_img"
+          :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
+        >
+      </div>
+    </div>
+    <!--放这里-->
+    <div class="setHere activeSetHere">
+      放这里
     </div>
   </div>
 </template>
@@ -75,53 +96,105 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.showModule {
-  min-height: 10px;
-  background-color: #ffffff;
-  position: relative;
-  .coupon_module {
-    padding: 10px;
-    background: #fff;
-    display: flex;
-    justify-content: space-between;
-    .coupon_list {
-      width: 32%;
-      border: 1px solid #fbb;
-      -webkit-border-radius: 110px;
-      -moz-border-radius: 10px;
-      border-radius: 10px;
+.Coupon {
+  .showModule {
+    min-height: 10px;
+    background-color: #ffffff;
+    position: relative;
+    .item_module_title {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      display: none;
+      z-index: 8;
+      width: 88px;
+      height: 30px;
+      background-color: #9ebbff;
+      color: #fff;
       text-align: center;
-      overflow: hidden;
-      .coupon_list_top {
-        margin-top: 10px;
-        color: #f66;
-        font-size: 14px;
-        span {
-          font-size: 20px;
-          font-weight: bold;
-          display: inline-block;
+      line-height: 30px;
+      border-bottom-right-radius: 15px;
+      -webkit-border-bottom-right-radius: 15px;
+      -moz-border-bottom-right-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    .item_operation {
+      position: absolute;
+      right: 8px;
+      top: 2px;
+      display: none;
+      z-index: 8;
+    }
+    &:hover {
+      border: 2px dashed #5a8bff;
+      .item_module_title {
+        display: block;
+      }
+      .item_operation {
+        display: block;
+      }
+    }
+    .coupon_module {
+      padding: 10px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      .coupon_list {
+        width: 32%;
+        border: 1px solid #fbb;
+        -webkit-border-radius: 110px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        text-align: center;
+        overflow: hidden;
+        .coupon_list_top {
+          margin-top: 10px;
+          color: #f66;
+          font-size: 14px;
+          span {
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+          }
         }
-      }
-      .coupon_list_center {
-        height: 40px;
-        color: #f66;
-        font-size: 12px;
-      }
-      .coupon_list_bottom {
-        font-size: 12px;
-        background: #f66
-          url(../../../../../../../assets/adminImg/coupon_border.png) repeat-x
-          top;
-        -webkit-background-size: 12px;
-        background-size: 12px;
-        height: 24px;
-        line-height: 30px;
-        color: #fff;
+        .coupon_list_center {
+          height: 40px;
+          color: #f66;
+          font-size: 12px;
+        }
+        .coupon_list_bottom {
+          font-size: 12px;
+          background: #f66
+            url(../../../../../../../assets/adminImg/coupon_border.png) repeat-x
+            top;
+          -webkit-background-size: 12px;
+          background-size: 12px;
+          height: 24px;
+          line-height: 30px;
+          color: #fff;
+        }
       }
     }
   }
+  .activeBorder {
+    border: 2px dashed #5a8bff;
+  }
+  .setHere {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    background-color: #8baeff;
+    font-size: 14px;
+    color: #fff;
+    border: 1px dashed #2589ff;
+  }
+  .activeSetHere {
+    display: none;
+  }
 }
-.activeBorder {
-  border: 2px dashed #5a8bff;
+.placeholder {
+  .activeSetHere {
+    display: block;
+  }
 }
 </style>

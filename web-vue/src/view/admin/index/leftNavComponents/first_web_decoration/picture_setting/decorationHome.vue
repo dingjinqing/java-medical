@@ -88,6 +88,7 @@
                 <div
                   v-for="(item,index) in showModulesList"
                   :key="index"
+                  class=""
                 >
                   <!--会员列表模块-->
 
@@ -316,8 +317,7 @@ export default {
           setTimeout(() => {
             this_.$http.$emit('decCard', last)
           }, 50)
-
-          // $('#drag_area div.row_item').removeClass('placeholder')
+          $('.modules').removeClass('placeholder')
         },
         zIndex: 10000 // 拖动位置在拖放区域上方
       })
@@ -326,11 +326,22 @@ export default {
     // 拖拽开始start处理函数
     highlignt_row_item (pos) {
       let p = $('.drag_area').offset()
-      console.log(p, '--', pos)
+      console.log(p, '--', pos, '--', $('.drag_area').width(), $('.drag_area').height())
       if (pos.left > p.left && pos.top > p.top &&
-        pos.left < p.left + $('#drag_area').width() &&
-        pos.top < p.top + $('#drag_area').height()) {
+        pos.left < p.left + $('.drag_area').width() &&
+        pos.top < p.top + $('.drag_area').height()) {
         console.log('ssssss')
+        $('.modules').each(function (idx, item) {
+          p = $(this).offset()
+          console.log($(this))
+          if (pos.left > p.left && pos.top > p.top &&
+            pos.left < p.left + $(this).width() &&
+            pos.top < p.top + $(this).height()
+          ) {
+            $('.modules').removeClass('placeholder')
+            $(this).addClass('placeholder')
+          }
+        })
         let last = this.showModulesList
         this.$http.$emit('decCard', last, true)
       }

@@ -1,5 +1,5 @@
 <template>
-  <div class="membershipCard">
+  <div class="membershipCard modules">
     <!--会员列表模块-->
     <div
       class="showModule"
@@ -27,12 +27,26 @@
           </div>
         </div>
       </div>
+      <div class="item_module_title">
+        <span>会员卡</span>
+      </div>
+      <div class="item_operation">
+        <img
+          class="up_img"
+          :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
+        >
+        <img
+          class="down_img"
+          :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
+        >
+        <img
+          class="del_img"
+          :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
+        >
+      </div>
     </div>
     <!--放这里-->
-    <div
-      class="setHere"
-      :class="activeSetHere?'':'activeSetHere'"
-    >
+    <div class="setHere activeSetHere">
       放这里
     </div>
   </div>
@@ -68,6 +82,11 @@ export default {
         } else {
           this.activeBorder = false
         }
+        // if (hereFlag) {
+        //   this.activeSetHere = true
+        // } else {
+        //   this.activeSetHere = false
+        // }
       })
     }
   }
@@ -79,6 +98,39 @@ export default {
     min-height: 10px;
     background-color: #ffffff;
     position: relative;
+    .item_module_title {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      display: none;
+      z-index: 8;
+      width: 88px;
+      height: 30px;
+      background-color: #9ebbff;
+      color: #fff;
+      text-align: center;
+      line-height: 30px;
+      border-bottom-right-radius: 15px;
+      -webkit-border-bottom-right-radius: 15px;
+      -moz-border-bottom-right-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    .item_operation {
+      position: absolute;
+      right: 8px;
+      top: 2px;
+      display: none;
+      z-index: 8;
+    }
+    &:hover {
+      border: 2px dashed #5a8bff;
+      .item_module_title {
+        display: block;
+      }
+      .item_operation {
+        display: block;
+      }
+    }
     .carModule {
       padding: 12px;
       .card_back_module {
@@ -165,6 +217,11 @@ export default {
   }
   .activeSetHere {
     display: none;
+  }
+}
+.placeholder {
+  .activeSetHere {
+    display: block;
   }
 }
 </style>
