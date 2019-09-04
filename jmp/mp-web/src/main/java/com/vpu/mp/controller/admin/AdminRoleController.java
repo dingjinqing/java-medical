@@ -89,13 +89,7 @@ public class AdminRoleController extends AdminBaseController {
 		if (shopRecord == null) {
 			return fail();
 		}
-		ShopManageParam resp = new ShopManageParam();
-		resp.setSysId(shopRecord.getSysId());
-		resp.setAccountName(shopRecord.getAccountName());
-		resp.setMobile(shopRecord.getMobile());
-		resp.setUserName(shopRecord.getUserName());
-		resp.setShopAvatar(shopRecord.getShopAvatar());
-		return success(resp);
+		return success(shopRecord.into(ShopManageParam.class));
 	}
 
 	/**
@@ -119,6 +113,7 @@ public class AdminRoleController extends AdminBaseController {
 		if (saas.shop.account.updateById(pojo) < 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
+		adminAuth.updateAccountName(shopManageParam.getAccountName());
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
 
