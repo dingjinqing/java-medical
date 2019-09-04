@@ -87,14 +87,14 @@
             <span class="labelClass">分销员等级</span>
             <el-select
               size="small"
-              v-model="distributorLevel"
+              v-model="valueLevel"
               placeholder="请选择等级"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="level in groupLevelList"
+                :key="level.levelId"
+                :label="level.label"
+                :value="level.levelName"
               >
               </el-option>
             </el-select>
@@ -105,14 +105,14 @@
             <span class="labelClass">分销员分组</span>
             <el-select
               size="small"
-              v-model="value"
+              v-model="valueGroup"
               placeholder="请选择分组"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="group in groupNameList"
+                :key="group.id"
+                :label="group.groupName"
+                :value="group.groupName"
               >
               </el-option>
             </el-select>
@@ -123,6 +123,7 @@
           style="margin: 0 10px 0 50px"
         >
           <el-button
+            @click="searchList"
             type="primary"
             size="small"
           >筛选</el-button>
@@ -261,23 +262,10 @@ export default {
   components: { pagination },
   data () {
     return {
-      distributorLevel: '',
-      options: [{
-        value: '选项1',
-        label: 'levelName'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      groupNameList: [],
+      groupLevelList: [],
+      valueGroup: '',
+      valueLevel: '',
       value: '',
       time1: '',
       time2: '',
@@ -313,14 +301,16 @@ export default {
     },
     levelList () {
       distributorLevelList().then(res => {
-        console.log(res)
+        this.groupLevelList = res.content
+        console.log(this.groupLevelList)
         this.distributorLevel = res.content.dataList
         console.log(this.distributorList)
       })
     },
     groupList () {
       distributorGroupList().then(res => {
-        console.log(res)
+        this.groupNameList = res.content
+        console.log(this.groupNameList)
       })
     }
 
