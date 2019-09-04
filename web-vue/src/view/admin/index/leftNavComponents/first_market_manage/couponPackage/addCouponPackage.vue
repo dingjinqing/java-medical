@@ -394,7 +394,7 @@
 import { addCouponPackage, getCouponPackById, updateCouponPackage } from '@/api/admin/marketManage/couponPackage.js'
 export default {
   components: {
-    AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
+    AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
     return {

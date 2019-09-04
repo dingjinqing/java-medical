@@ -466,7 +466,7 @@ export default {
   components: {
     wrapper,
     choosingGoods,
-    AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
+    AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
     return {

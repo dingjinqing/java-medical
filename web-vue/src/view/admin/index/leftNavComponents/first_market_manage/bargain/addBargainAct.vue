@@ -317,7 +317,7 @@
 <script>
 import addCoupon from './addCoupon'
 import actShare from './actShare'
-import AddCouponDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog'
+import AddCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addBargain } from '@/api/admin/marketManage/bargain.js'
 

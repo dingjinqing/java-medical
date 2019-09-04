@@ -739,7 +739,7 @@
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
-    AddCouponDialog: () => import('./addCouponDialog'),
+    AddCouponDialog: () => import('@/components/admin/addCouponDialog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('./addingBusClassDialog'),
     BrandDialog: () => import('./brandDialog'),
