@@ -24,7 +24,7 @@
               </div>
               <div class="shop_logo">
                 <img
-                  :src="item.shopAvatar"
+                  :src="item.shopAvatar===null?imageUrl[3].img_def:item.shopAvatar"
                   class="shop_img_default"
                 >
               </div>
@@ -50,7 +50,8 @@ export default {
       imageUrl: [
         { img_1: this.$imageHost + '/image/admin/expand.png' },
         { img_2: this.$imageHost + '/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg' },
-        { img_3: this.$imageHost + '/image/admin/ad_img.png' }
+        { img_3: this.$imageHost + '/image/admin/ad_img.png' },
+        { img_def: this.$imageHost + '/image/admin/shop_logo_default.png' }
       ],
       shop_list: [],
       shop_list_index: '',
