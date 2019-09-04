@@ -107,6 +107,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
       )
   },
+  // 分销员已邀请的用户
+  {
+    path: '/admin/home/main/distribution/inviteUserList',
+    name: 'inviteUser',
+    meta: {
+      crumbTitle: 'router.distribution_info',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/inviteUserList'
+      )
+  },
   // // 组团瓜分积分
   // {
   //   path: '/admin/home/main/divideIntegral',

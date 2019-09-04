@@ -123,7 +123,7 @@
           style="margin: 0 10px 0 50px"
         >
           <el-button
-            @click="searchList"
+            @click="list"
             type="primary"
             size="small"
           >筛选</el-button>
@@ -142,8 +142,8 @@
         <el-table
           class="version-manage-table"
           header-row-class-name="tableClss"
-          border
           :data="tableData"
+          border
           style="width: 100%"
         >
           <el-table-column
@@ -235,9 +235,9 @@
             label="操作"
             align="center"
           >
-            <template>
+            <template slot-scope="scope">
               <div class="opt">
-                <p>查看已邀请用户</p>
+                <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
                 <p>查看返利佣金明细</p>
                 <p>清除</p>
               </div>
@@ -312,13 +312,21 @@ export default {
         this.groupNameList = res.content
         console.log(this.groupNameList)
       })
+    },
+    inviteUserList (userId) {
+      this.$router.push({
+        path: '/admin/home/main/distribution/inviteUserList',
+        query: {
+          userId: userId
+        }
+      })
     }
 
   }
 }
 
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .distributorListContent {
   padding: 10px;
   padding-bottom: 68px;
@@ -383,7 +391,7 @@ export default {
 .notice :first-child {
   color: red;
 }
-.tableClss th {
+/deep/ .tableClss th {
   background-color: #f5f5f5;
   border: none;
   height: 36px;

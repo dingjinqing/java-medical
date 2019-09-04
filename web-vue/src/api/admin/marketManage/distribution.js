@@ -133,3 +133,12 @@ export function distributorGroupList (data) {
     data: data
   })
 }
+
+// 分销员已邀请用户列表
+export function inviteUserList (data) {
+  return service({
+    url: '/api/admin/distribution/invited/list',
+    method: 'post',
+    data: data
+  })
+}
