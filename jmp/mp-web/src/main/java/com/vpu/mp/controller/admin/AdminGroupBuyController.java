@@ -23,7 +23,6 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 
 /**
  * 团购、多人平团
@@ -167,8 +166,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/order/list")
     public JsonResult groupBuyOrderList(@RequestBody MarketOrderListParam param) {
-        PageResult<OrderListInfoVo> pageList = shop().groupBuy.groupBuyOrderList(param);
-        return success(pageList);
+        return success(shop().groupBuy.groupBuyOrderList(param));
     }
 
     /**

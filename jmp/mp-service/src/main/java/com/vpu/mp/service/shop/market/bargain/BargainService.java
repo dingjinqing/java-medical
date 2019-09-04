@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Map;
 
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
@@ -37,8 +38,6 @@ import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotal
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.shop.member.MemberService;
 
 /**
@@ -269,37 +268,8 @@ public class BargainService extends ShopBaseService  {
      * 砍价订单
      *
      */
-    @SuppressWarnings("unchecked")
-	public PageResult<OrderListInfoVo> getBargainOrderList(MarketOrderListParam param) {
-        OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
-        orderParam.setCurrentPage(param.getCurrentPage());
-        orderParam.setPageRows(param.getPageRows());
-        orderParam.setActivityId(param.getActivityId());
-        orderParam.setGoodsType(OrderConstant.GOODS_TYPE_BARGAIN);
-        orderParam.setGoodsName(param.getGoodsName());
-        orderParam.setOrderSn(param.getOrderSn());
-        orderParam.setOrderStatus(param.getOrderStatus());
-
-        orderParam.setMobile(param.getMobile());
-        orderParam.setConsignee(param.getConsignee());
-        orderParam.setCreateTimeStart(param.getCreateTimeStart());
-        orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
-
-        orderParam.setCountryCode(param.getCountryCode());
-        orderParam.setProvinceCode(param.getProvinceCode());
-        orderParam.setCityCode(param.getCityCode());
-        orderParam.setDistrictCode(param.getDistrictCode());
-
-        PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) saas().getShopApp(getShopId()).readOrder.getPageList(orderParam);
-
-        if(pageList.getDataList() != null){
-            pageList.getDataList().forEach(data->{
-                data.setChildOrders(null);
-                data.setGoods(null);
-            });
-        }
-
-        return pageList;
+	public PageResult<MarketOrderListVo> getBargainOrderList(MarketOrderListParam param) {
+        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_BARGAIN);
     }
 
     /**

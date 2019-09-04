@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record3;
@@ -168,4 +169,13 @@ public class OrderGoodsService extends ShopBaseService{
 	public List<OrderGoodsVo> getReturnGoods(String orderSn) {
 		return selectWhere(TABLE.ORDER_SN.eq(orderSn).and(TABLE.RETURN_NUMBER.gt((short)0))).into(OrderGoodsVo.class);
 	}
+
+    /**
+     * 	营销活动订单-根据orderSn取订单行信息
+     * @param orderSn
+     * @return  List<MarketOrderGoodsListVo>
+     */
+    public List<MarketOrderGoodsListVo> getMarketOrderGoodsByOrderSn(String orderSn) {
+        return db().select(TABLE.GOODS_NAME,TABLE.GOODS_IMG,TABLE.GOODS_PRICE).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(MarketOrderGoodsListVo.class);
+    }
 }

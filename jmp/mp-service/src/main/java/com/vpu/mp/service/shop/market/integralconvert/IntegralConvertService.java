@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.integralconvert;
 
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -32,8 +33,6 @@ import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserVo
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 
@@ -340,26 +339,7 @@ public class IntegralConvertService extends ShopBaseService {
 	 */
 	@SuppressWarnings("unchecked")
 	public PageResult<IntegralConvertOrderVo> interalOrderList(MarketOrderListParam param) {
-		OrderPageListQueryParam orderParam = new OrderPageListQueryParam();
-		orderParam.setCurrentPage(param.getCurrentPage());
-		orderParam.setPageRows(param.getPageRows());
-		orderParam.setActivityId(param.getActivityId());
-		orderParam.setGoodsType(OrderConstant.GOODS_TYPE_INTEGRAL);
-		orderParam.setGoodsName(param.getGoodsName());
-		orderParam.setOrderSn(param.getOrderSn());
-		orderParam.setOrderStatus(param.getOrderStatus());
-
-		orderParam.setMobile(param.getMobile());
-		orderParam.setConsignee(param.getConsignee());
-		orderParam.setCreateTimeStart(param.getCreateTimeStart());
-		orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
-
-		orderParam.setCountryCode(param.getCountryCode());
-		orderParam.setProvinceCode(param.getProvinceCode());
-		orderParam.setCityCode(param.getCityCode());
-		orderParam.setDistrictCode(param.getDistrictCode());
-
-		PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) orderReadService.getPageList(orderParam);
+		PageResult<MarketOrderListVo> pageList = saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_INTEGRAL);
 
 		List<IntegralConvertOrderVo> newList = new ArrayList<IntegralConvertOrderVo>(20);
 

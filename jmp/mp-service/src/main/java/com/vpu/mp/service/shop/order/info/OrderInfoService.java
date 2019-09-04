@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -857,5 +859,38 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return select;
 	}
+
+    /**
+     * 营销活动订单查询
+     *
+     * @param param
+     * @return
+     */
+    public PageResult<MarketOrderListVo> getMarketOrderList(MarketOrderListParam param,byte goodsType) {
+        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE.as("userMobile")).from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+
+        /** 构造订单查询通用参数 */
+        OrderPageListQueryParam orderParam = new OrderPageListQueryParam();
+        orderParam.setCurrentPage(param.getCurrentPage());
+        orderParam.setPageRows(param.getPageRows());
+        orderParam.setActivityId(param.getActivityId());
+        orderParam.setGoodsType(goodsType);
+        orderParam.setGoodsName(param.getGoodsName());
+        orderParam.setOrderSn(param.getOrderSn());
+        orderParam.setOrderStatus(param.getOrderStatus());
+        orderParam.setMobile(param.getMobile());
+        orderParam.setConsignee(param.getConsignee());
+        orderParam.setCreateTimeStart(param.getCreateTimeStart());
+        orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
+        orderParam.setCountryCode(param.getCountryCode());
+        orderParam.setProvinceCode(param.getProvinceCode());
+        orderParam.setCityCode(param.getCityCode());
+        orderParam.setDistrictCode(param.getDistrictCode());
+
+        buildOptions(select, orderParam);
+        select.where(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+
+        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
+    }
 
 }

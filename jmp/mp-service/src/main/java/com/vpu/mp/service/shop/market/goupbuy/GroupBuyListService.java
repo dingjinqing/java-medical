@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
@@ -12,8 +13,6 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.Record;
@@ -113,37 +112,8 @@ public class GroupBuyListService  extends ShopBaseService {
      *
      * @return
      */
-    @SuppressWarnings("unchecked")
-	public PageResult<OrderListInfoVo> groupBuyOrderList(MarketOrderListParam param ) {
-        OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
-        orderParam.setCurrentPage(param.getCurrentPage());
-        orderParam.setPageRows(param.getPageRows());
-        orderParam.setActivityId(param.getActivityId());
-        orderParam.setGoodsType(OrderConstant.GOODS_TYPE_PIN_GROUP);
-        orderParam.setGoodsName(param.getGoodsName());
-        orderParam.setOrderSn(param.getOrderSn());
-        orderParam.setOrderStatus(param.getOrderStatus());
-
-        orderParam.setMobile(param.getMobile());
-        orderParam.setConsignee(param.getConsignee());
-        orderParam.setCreateTimeStart(param.getCreateTimeStart());
-        orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
-
-        orderParam.setCountryCode(param.getCountryCode());
-        orderParam.setProvinceCode(param.getProvinceCode());
-        orderParam.setCityCode(param.getCityCode());
-        orderParam.setDistrictCode(param.getDistrictCode());
-
-        PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) orderReadService.getPageList(orderParam);
-
-        if(pageList.getDataList() != null){
-            pageList.getDataList().forEach(data->{
-                data.setChildOrders(null);
-                data.setGoods(null);
-            });
-        }
-
-        return pageList;
+	public PageResult<MarketOrderListVo> groupBuyOrderList(MarketOrderListParam param ) {
+        return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_PIN_GROUP);
 
     }
 

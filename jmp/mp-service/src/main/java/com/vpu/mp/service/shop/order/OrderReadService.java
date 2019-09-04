@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -264,5 +266,22 @@ public class OrderReadService extends ShopBaseService {
 		return orderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
 	}
 
+	 /**
+     * 营销活动订单查询
+     *
+     * @param param
+      * @param goodsType 参考OrderConstant类中的常量
+     * @return
+     */
+    public PageResult<MarketOrderListVo> getMarketOrderList(MarketOrderListParam param, byte goodsType) {
+        PageResult<MarketOrderListVo> res = orderInfo.getMarketOrderList(param,goodsType);
+
+        /** 填充商品行 */
+        for(MarketOrderListVo order : res.dataList){
+            order.setGoods(orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn()));
+        }
+
+        return res;
+    }
 
 }
