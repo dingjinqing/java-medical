@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class OrderParam {
-	private String mainOrderSn;
+	private String orderSn;
 }

@@ -21,7 +21,7 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean isReturnMoney(OrderListInfoVo order , Boolean isMp) {
 		//后台权限大,不支持退的也可以退
-		if(order.getReturnTypeCfg().equals(OrderConstant.CFG_RETURN_TYPE_N) && isMp) {
+		if(OrderConstant.CFG_RETURN_TYPE_N == order.getReturnTypeCfg() && isMp) {
 			return false;
 		}
 		/**
@@ -81,7 +81,7 @@ public class OrderOperationJudgment {
 	 * @return true可退；false不可退
 	 */
 	public static Boolean adminIsReturnShipingFee(OrderListInfoVo order , BigDecimal returnShipingFee) {
-		if(BigDecimalUtil.compareTo(order.getShippingFee(), returnShipingFee) < 1) {
+		if(BigDecimalUtil.compareTo(order.getShippingFee(), returnShipingFee) < 0) {
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;

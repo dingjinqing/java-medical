@@ -329,7 +329,7 @@ public class ReturnOrderService extends ShopBaseService{
 			switch (param.getReturnOperate()) {
 			case OrderConstant.RETURN_OPERATE_ADMIN_REFUSE:
 				//商家拒绝退款退货（退货为提交物流后的拒绝）
-				RefuseReturn(returnOrder, param);
+				refuseReturn(returnOrder, param);
 				break;
 			case OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN:
 				//商家同意退货申请
@@ -337,7 +337,7 @@ public class ReturnOrderService extends ShopBaseService{
 				break;
 			case OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY:
 				//商家拒绝退货申请
-				RefuseReturnGoodsApply(returnOrder, param);
+				refuseReturnGoodsApply(returnOrder, param);
 				break;
 			default:
 				break;
@@ -388,7 +388,7 @@ public class ReturnOrderService extends ShopBaseService{
 	 * @param param
 	 * @throws MpException 
 	 */
-	public void RefuseReturn(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
+	public void refuseReturn(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
 		//校验
 		if(returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
@@ -425,7 +425,7 @@ public class ReturnOrderService extends ShopBaseService{
 	 * @param param
 	 * @throws MpException 
 	 */
-	public void RefuseReturnGoodsApply(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
+	public void refuseReturnGoodsApply(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
 		//校验
 		if(returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDITING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);

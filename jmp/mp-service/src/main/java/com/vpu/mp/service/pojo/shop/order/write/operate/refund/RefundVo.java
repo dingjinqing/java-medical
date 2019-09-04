@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 
 import lombok.Data;
 
@@ -69,14 +70,14 @@ public class RefundVo {
 	}
 
 	public Boolean mpIsReturn() {
-		if(!returnType[0] && !returnType[1]) {
+		if(!returnType[OrderConstant.RT_ONLY_MONEY] && !returnType[OrderConstant.RT_GOODS]) {
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;
 	}
 
 	public Boolean adminIsReturn() {
-		if(!returnType[0] && !returnType[1] && !returnType[2] && !returnType[3]) {
+		if(!returnType[OrderConstant.RT_ONLY_MONEY] && !returnType[OrderConstant.RT_GOODS] && !returnType[OrderConstant.RT_ONLY_SHIPPING_FEE] && !returnType[OrderConstant.RT_MANUAL]) {
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderGoodsVo {
 	private Integer recId;
+	private Integer mainRecId;
 	private Integer orderId;
 	private String orderSn;
 	private Integer goodsId;

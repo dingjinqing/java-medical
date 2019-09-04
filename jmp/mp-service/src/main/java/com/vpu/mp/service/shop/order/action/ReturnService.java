@@ -37,6 +37,7 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -125,7 +126,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 							//通过退款查询获取可退信息
 							RefundVo check = (RefundVo)query(param);
 							//校验、生成退款订单、
-							rOrder = NotOnlyReturnShippingFee(param , order , check);
+							rOrder = notOnlyReturnShippingFee(param , order , check);
 							//生成退款商品
 							returnGoods = returnOrderGoods.add(param, rOrder, check);
 							//更新orderGoods表
@@ -162,11 +163,15 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), OrderConstant.RETURN_OPERATE[param.getReturnOperate()]+",falg:"+param.getReturnOperateFlag());
 						return;
 					}
+					if(param.getIsMp()) {
+						return;
+					}
 					//退款逻辑
 					boolean isExecute = refundLogic(order, rOrder, BigDecimalUtil.compareTo(param.getReturnMoney(), null) > 0 ? param.getReturnMoney() : BigDecimal.ZERO, param);
-					if(isExecute) 
-					//需要执行 完成后更新信息
-					finishUpdateInfo(order , rOrder , param);
+					if(isExecute) {
+						//需要执行 完成后更新信息
+						finishUpdateInfo(order , rOrder , param);
+					}
 				} catch (MpException e) {
 					logger.error("退款捕获mp异常", e);
 					throw new MpException(e.getErrorCode());
@@ -197,25 +202,28 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	}
 
 	@Override
-	public Object query(OrderOperateQueryParam param) {
+	public Object query(OrderOperateQueryParam param) throws MpException  {
 		logger.info("获取可退款、退货信息参数为:" + param.toString());
 		Boolean isMp = param.getIsMp();
 		RefundVo vo = new RefundVo();
 		//获取当前订单
 		OrderListInfoVo currentOrder = orderInfo.getByOrderId(param.getOrderId(),OrderListInfoVo.class);
+		if(currentOrder == null) {
+			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
+		}
 		//退款校验
 		if(OrderOperationJudgment.isReturnMoney(currentOrder, isMp)) {
-			vo.getReturnType()[0] = true;
+			vo.getReturnType()[OrderConstant.RT_ONLY_MONEY] = true;
 		}
 		//退货校验
 		if(OrderOperationJudgment.isReturnGoods(currentOrder , isMp)) {
-			vo.getReturnType()[1] = true;
+			vo.getReturnType()[OrderConstant.RT_GOODS] = true;
 		}
 		//获取已退运费
 		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(currentOrder.getOrderSn());
 		//退运费校验
 		if(OrderOperationJudgment.adminIsReturnShipingFee(currentOrder , returnShipingFee)){
-			vo.getReturnType()[2] = true;
+			vo.getReturnType()[OrderConstant.RT_ONLY_SHIPPING_FEE] = true;
 			//设置
 			vo.setReturnShippingFee(currentOrder.getShippingFee().subtract(returnShipingFee));
 		}
@@ -235,7 +243,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 									BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),null)));
 				}
 				if(BigDecimalUtil.compareTo(returnGoodsMaxMoney , returnMoney) > 0) {
-					vo.getReturnType()[3] = true;
+					vo.getReturnType()[OrderConstant.RT_MANUAL] = true;
 				}
 			}
 		}
@@ -273,7 +281,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		Iterator<RefundVoGoods> currentGoods = goods.get(currentOrder.getOrderSn()).iterator();
 		//如果后台查询且满足手动退款则需查询已退金额
 		Map<Integer, BigDecimal> manualReturnMoney = null;
-		if(!isMp && vo.getReturnType()[3] == true) {
+		if(!isMp && vo.getReturnType()[OrderConstant.RT_MANUAL] == true) {
 			manualReturnMoney = returnOrderGoods.getManualReturnMoney(param.getOrderSn());
 		}
 		while (currentGoods.hasNext()) {
@@ -287,7 +295,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				oneGoods.setTotal(oneGoods.getGoodsNumber());
 			}
 			//已提交=退中+退完成
-			Integer submitted = (refundingGoods.get(oneGoods.getProductId()) == null ? 0 : refundingGoods.get(oneGoods.getProductId())) + oneGoods.getReturnNumber();
+			Integer submitted = (refundingGoods.get(oneGoods.getRecId()) == null ? 0 : refundingGoods.get(oneGoods.getRecId())) + oneGoods.getReturnNumber();
 			oneGoods.setSubmitted(submitted);
 			// 可退
 			Integer returnable = oneGoods.getTotal() - oneGoods.getSubmitted();
@@ -547,20 +555,20 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	 * @return
 	 * @throws MpException
 	 */
-	private ReturnOrderRecord NotOnlyReturnShippingFee(RefundParam param , OrderInfoVo order , RefundVo check) throws MpException{
+	private ReturnOrderRecord notOnlyReturnShippingFee(RefundParam param , OrderInfoVo order , RefundVo check) throws MpException{
 		//通用是否支持该退款退货类型
 		if(!check.getReturnType()[param.getReturnType()]) {
 			logger.error("订单sn:"+param.getOrderSn()+","+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"时通用校验失败，不支持该类型退款退货");
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_NOT_SUPPORT_RETURN_TYPE);
 		}
 		//查询参数校验
-		if(check.getRefundGoods() == null || check.getRefundGoods().isEmpty()) {
+		if(CollectionUtils.isEmpty(check.getRefundGoods())) {
 			logger.error("订单sn:"+param.getOrderSn()+","+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"时，未选择商品");
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_RETURN_COMPLETED);
 		}
 		
 		//输入商品简单校验
-		if (param.getReturnGoods() == null || param.getReturnGoods().isEmpty()) {
+		if (CollectionUtils.isEmpty(param.getReturnGoods())) {
 			logger.error("订单sn:" + param.getOrderSn() + "," + OrderConstant.RETURN_TYPE_CN[param.getReturnType()]
 					+ "时，未选择商品");
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_NO_SELECT_GOODS);
@@ -571,6 +579,13 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			if(!OrderOperationJudgment.adminIsReturnShipingFee(order, returnShipingFee.add(param.getShippingFee()))) {
 				logger.error("订单sn:"+param.getOrderSn()+"，该订单运费已经退完或超额");
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS);
+			}
+		}
+		//手动退款商品行金额和与输入金额比较
+		if(param.getReturnType() == OrderConstant.RT_MANUAL) {
+			BigDecimal sum = param.getReturnGoods().stream().map(ReturnGoods::getMoney).reduce(BigDecimal.ZERO,BigDecimal::add);
+			if(BigDecimalUtil.compareTo(sum, param.getReturnMoney()) != 0) {
+				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MANUAL_INCONSISTENT_AMOUNT);
 			}
 		}
 		//构造退款订单及复杂校验

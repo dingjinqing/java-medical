@@ -15,7 +15,7 @@ public interface IorderOperate extends IOrderBase{
 	 * @return
 	 * @throws MpException
 	 */
-	public Object query(OrderOperateQueryParam param);
+	public Object query(OrderOperateQueryParam param) throws MpException;
 	/**
 	 * 	操作执行
 	 * @param obj

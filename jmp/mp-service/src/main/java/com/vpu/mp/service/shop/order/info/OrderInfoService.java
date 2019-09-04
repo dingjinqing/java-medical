@@ -39,7 +39,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import org.jooq.Condition;
 import org.jooq.Record;
-import org.jooq.Record2;
+import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -67,8 +67,6 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-
-import lombok.Data;
 
 /**
  * Table:order_info
@@ -114,23 +112,17 @@ public class OrderInfoService extends ShopBaseService {
 	}
 	
 	/**
-	 * 	订单综合查询:通过条件获得主订单号（因为前端显示以主订单为主）
+	 * 	订单综合查询:通过条件获得订单号
 	 * @param param
 	 * @return
 	 */
-	public PageResult<MainOrderResult> getMainOrders(OrderPageListQueryParam param){
-		SelectJoinStep<Record2<String, Integer>> mainOrder = db().select(TABLE.MAIN_ORDER_SN,DSL.min(TABLE.ORDER_ID).as("orderId")).from(TABLE);
-		//分组聚合主订单
-		mainOrder.groupBy(TABLE.MAIN_ORDER_SN);
+	public PageResult<String> getOrderSns(OrderPageListQueryParam param){
+		SelectJoinStep<Record1<String>> mainOrder = db().select(TABLE.ORDER_SN).from(TABLE);
+		//存在子单但是显示不易子单为主所以查询需过滤子单
+		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-		//得到主订单号		
-		return getPageResult(mainOrder,param.getCurrentPage(),param.getPageRows(),MainOrderResult.class);
-	}
-	
-	@Data
-	public static class MainOrderResult {
-		String mainOrderSn;
-		Integer orderId;
+		//得到订单号		
+		return getPageResult(mainOrder,param.getCurrentPage(),param.getPageRows(),String.class);
 	}
 	
 	/**
@@ -140,7 +132,7 @@ public class OrderInfoService extends ShopBaseService {
 	  * @return
 	  */
 	 public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
-		select.orderBy(ORDER_INFO.ORDER_ID.as("orderId").desc());
+		select.orderBy(ORDER_INFO.ORDER_ID);
 		//输入商品名称需要join order_goods表
 		if(!StringUtils.isEmpty(param.goodsName)){
 			select.innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
@@ -218,7 +210,7 @@ public class OrderInfoService extends ShopBaseService {
 	 }
 
 	/**
-	 *	 构造营销货订查询条件
+	 *	 构造营销订查询条件
 	 * 
 	 * @param select
 	 * @param param
@@ -244,16 +236,31 @@ public class OrderInfoService extends ShopBaseService {
 	}
 	
 	/**
-	 * TODO查询订单按照MAIN_ORDER_SN分组
-	 * 
+	 * 按照主订单分组，正常订单的key为orderSn
 	 * @param <T>
 	 * @param arrayToSearch
 	 * @return
 	 */
-	public Map<String, List<OrderListInfoVo>> getOrdersGorupByMainSn(String... arrayToSearch) {
-		return db().selectDistinct(ORDER_INFO.asterisk()).from(ORDER_INFO)
-				.where(ORDER_INFO.MAIN_ORDER_SN.in(arrayToSearch)).orderBy(ORDER_INFO.ORDER_ID)
-				.fetchGroups(ORDER_INFO.MAIN_ORDER_SN, OrderListInfoVo.class);
+	public Map<String, List<OrderListInfoVo>> getOrders(List<String> orderSn) {
+		List<OrderListInfoVo> orders = db().select(ORDER_INFO.asterisk()).from(ORDER_INFO)
+				.where(ORDER_INFO.MAIN_ORDER_SN.in(orderSn).or(TABLE.ORDER_SN.in(orderSn))).orderBy(ORDER_INFO.ORDER_ID.desc())
+				.fetchInto(OrderListInfoVo.class);
+		orders.forEach(order->{
+			if(StringUtils.isBlank(order.getMainOrderSn())) {
+				order.setMainOrderSn(order.getOrderSn());
+			}
+		});
+		Map<String, List<OrderListInfoVo>> result = new HashMap<String, List<OrderListInfoVo>>();
+		for (OrderListInfoVo order : orders) {
+			if(result.get(order.getMainOrderSn()) != null) {
+				result.get(order.getOrderSn()).add(order);
+			}else {
+				ArrayList<OrderListInfoVo> orderList = new ArrayList<OrderListInfoVo>();
+				orderList.add(order);
+				result.put(order.getMainOrderSn(), orderList);
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -267,13 +274,13 @@ public class OrderInfoService extends ShopBaseService {
 		Map<Integer, Integer> childGoodsCount = new HashMap<>(goods.size());
 		for (OrderListInfoVo oneOrder : cOrders) {
 			for (OrderGoodsVo tempGoods : oneOrder.getGoods()) {
-				Integer tempCount = childGoodsCount.get(tempGoods.getProductId());
+				Integer tempCount = childGoodsCount.get(tempGoods.getMainRecId());
 				if(tempCount == null) {
 					//第一次goodsNumber
-					childGoodsCount.put(tempGoods.getProductId(),tempGoods.getGoodsNumber().intValue());
+					childGoodsCount.put(tempGoods.getMainRecId(),tempGoods.getGoodsNumber());
 				}else {
 					//后续加goodsNumber
-					childGoodsCount.put(tempGoods.getProductId(),tempCount + tempGoods.getGoodsNumber().intValue());
+					childGoodsCount.put(tempGoods.getMainRecId(),tempCount + tempGoods.getGoodsNumber());
 				}
 			}
 		}
@@ -281,9 +288,9 @@ public class OrderInfoService extends ShopBaseService {
 		Iterator<OrderGoodsVo> iter = goods.iterator();
 		while(iter.hasNext()) {
 			OrderGoodsVo orderOoods = iter.next();
-			Integer count = childGoodsCount.get(orderOoods.getProductId());
+			Integer count = childGoodsCount.get(orderOoods.getRecId());
 			if(count != null){
-				int finalCount = orderOoods.getGoodsNumber().intValue() - count;
+				int finalCount = orderOoods.getGoodsNumber() - count;
 				if(finalCount > 0 ) {
 					orderOoods.setGoodsNumber(finalCount);
 				}else {

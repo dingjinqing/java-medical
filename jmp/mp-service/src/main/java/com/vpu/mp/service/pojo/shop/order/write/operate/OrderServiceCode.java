@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.order.write.operate;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.order.action.ShipService;
+import com.vpu.mp.service.shop.order.action.CancelService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 
 /**
@@ -14,8 +15,10 @@ public enum OrderServiceCode {
 	//0:admin后台发货ShipService
 	ADMIN_SHIP(ShipService.class),
 	//1:退款 退货 ReturnMoneyApple
-	RETURN(ReturnService.class);
-	//TODO 小程序端发起退货请求
-	//MP_REFUND_GOODS_APPLY;
+	RETURN(ReturnService.class),
+	//2:取消
+	CANCEL(CancelService.class);
+	//3:关闭
+	//CLOSE(.class);
 	private OrderServiceCode(Class<? extends ShopBaseService> clz){}
 }

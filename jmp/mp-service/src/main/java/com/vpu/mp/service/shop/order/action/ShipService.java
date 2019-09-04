@@ -158,9 +158,10 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 		ShipVo shipVo = null;
 		logger.info("获取可发货信息参数为:" + param.toString());
 		// 订单信息
-		shipVo = db().select(ORDER_INFO.CONSIGNEE, ORDER_INFO.MOBILE, ORDER_INFO.COMPLETE_ADDRESS).from(ORDER_INFO)
+		shipVo = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.MAIN_ORDER_SN,ORDER_INFO.CONSIGNEE, ORDER_INFO.MOBILE, ORDER_INFO.COMPLETE_ADDRESS).from(ORDER_INFO)
 				.where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))).fetchOneInto(ShipVo.class);
-		if(shipVo == null) {
+		
+		if(shipVo == null || shipVo.getOrderSn().equals(shipVo.getMainOrderSn())) {
 			return null;
 		}
 		// 设置可发货信息

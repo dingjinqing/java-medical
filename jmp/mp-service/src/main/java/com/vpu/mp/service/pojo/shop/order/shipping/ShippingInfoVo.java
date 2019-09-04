@@ -29,6 +29,8 @@ public class ShippingInfoVo {
 	private Timestamp confirmTime;
 	/**商品信息*/
 	private List<Goods> goods;
+	/**批次号：相同为同一批*/
+	private String batchNo;
 	@Data
 	@AllArgsConstructor
 	public static class Goods{
@@ -56,7 +58,7 @@ public class ShippingInfoVo {
 	private String sendNumber;
 	@Override
 	public boolean equals(Object obj) {
-		return ((ShippingInfoVo)obj).getShippingNo().equals(shippingNo) ? true : false;
+		return ((ShippingInfoVo)obj).getBatchNo().equals(batchNo) ? true : false;
 	}
 
 	@Override

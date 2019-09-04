@@ -21,13 +21,13 @@ public final class RefundParam extends OrderOperateQueryParam {
 	/**退款退货订单id*/
 	private Integer retId;
 	/** 退-退款类型:0仅退款 1:退货退款 2:仅退运费 3:手动退款 */
-	@NotNull(message = JsonResultMessage.MSG_CODE_ORDER_RETURN_NOT_NULL_RETURNTYPE)
+	@NotNull(message = JsonResultMessage.MSG_ORDER_RETURN_NOT_NULL_RETURNTYPE)
 	private Byte returnType;
 	private List<ReturnGoods> returnGoods;
-	@NotNull(message = JsonResultMessage.MSG_CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY)
+	@NotNull(message = JsonResultMessage.MSG_ORDER_RETURN_NOT_NULL_RETURNMONEY)
 	private BigDecimal returnMoney;
 	/**退运费金额*/
-	@NotNull(message = JsonResultMessage.MSG_CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE)
+	@NotNull(message = JsonResultMessage.MSG_ORDER_RETURN_NOT_NULL_SHIPPINGFEE)
 	private BigDecimal shippingFee;
 	private Byte reasonType;
 	private String reasonDesc;

@@ -210,7 +210,7 @@ public class OrderConstant {
 	public final static byte IS_MP_N = 0;
 	
 	/**
-	 * 订单操作
+	 * 订单退款退货流程操作
 	 */
 	/**买家提交物流信息*/
 	public final static byte RETURN_OPERATE_MP_SUBMIT_SHIPPING = 0;
@@ -230,6 +230,14 @@ public class OrderConstant {
 			"商家同意退货申请",
 			"商家拒绝退货申请"
 	};
+	
+	/**
+	 * 订单简单操作
+	 */
+	/**商家关闭订单*/
+	public final static byte SIMPLE_OPERATE_CLOSE = 0;
+	/**买家取消订单*/
+	public final static byte SIMPLE_OPERATE_CANCEL = 1;
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",

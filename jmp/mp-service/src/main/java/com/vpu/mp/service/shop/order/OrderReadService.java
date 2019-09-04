@@ -36,7 +36,6 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.order.info.OrderInfoService.MainOrderResult;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
@@ -74,22 +73,21 @@ public class OrderReadService extends ShopBaseService {
 			return getReturnPageList(param);
 		}
 		PageResult<OrderListInfoVo> pageResult = new PageResult<>();
-		//得到主订单号
-		PageResult<MainOrderResult> mainOrderResult = orderInfo.getMainOrders(param);
-		pageResult.setPage(mainOrderResult.getPage());
-		if(mainOrderResult.getDataList().size() < 1) {
+		//得到订单号(包含主订单和正常订单)
+		PageResult<String> orderSn = orderInfo.getOrderSns(param);
+		pageResult.setPage(orderSn.getPage());
+		if(orderSn.getDataList().size() < 1) {
 			return pageResult;
 		}
-		String[] collect = mainOrderResult.getDataList().stream().map(MainOrderResult::getMainOrderSn).collect(Collectors.toList()).toArray(new String[0]);
-		//查询出全部订单按照MAIN_ORDER_SN分组
-		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrdersGorupByMainSn(collect);
+		//查询出全部订单按照主订单分组，正常订单的key为orderSn
+		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrders(orderSn.getDataList());
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
 		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>();
 		//主订单
-		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(mainOrderResult.getDataList().size());
+		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(orderSn.getDataList().size());
 		//现子订单数>0的主订单
 		ArrayList<Integer> orderCountMoreZero = new ArrayList<Integer>();
-		for (String moc : collect) {
+		for (String moc : orderSn.getDataList()) {
 			List<OrderListInfoVo> list = allOrder.get(moc);
 			int size = list.size();
 			OrderListInfoVo mOrder = null;
@@ -136,8 +134,8 @@ public class OrderReadService extends ShopBaseService {
 	 * @param mainOrderSn
 	 * @return
 	 */
-	public OrderInfoVo get(String mainOrderSn) {
-		List<OrderInfoVo> orders = orderInfo.getOrdersByCondition(orderInfo.TABLE.MAIN_ORDER_SN.eq(mainOrderSn) , OrderInfoVo.class);
+	public OrderInfoVo get(String orderSn) {
+		List<OrderInfoVo> orders = orderInfo.getOrdersByCondition(orderInfo.TABLE.MAIN_ORDER_SN.eq(orderSn).or(orderInfo.TABLE.ORDER_SN.eq(orderSn)) , OrderInfoVo.class);
 		int size = orders.size();
 		if(size == 0) {
 			return null;
@@ -150,11 +148,15 @@ public class OrderReadService extends ShopBaseService {
 		List<String> rOrderSns = new ArrayList<String>();
 		//子订单
 		List<OrderInfoVo> childOrders = size <=1 ? null : new ArrayList<OrderInfoVo>(size -1);
+		//主订单
+		OrderInfoVo mainOrder = null;
 		//构造参数
 		for (OrderInfoVo order : orders) {
 			//子订单
 			if(!order.getOrderSn().equals(order.getMainOrderSn())) {
 				childOrders.add(order);
+			}else{
+				mainOrder = order;
 			}
 			//所有订单sn
 			orderIds.add(order.getOrderId());
@@ -167,7 +169,6 @@ public class OrderReadService extends ShopBaseService {
 				rOrderSns.add(order.getOrderSn());
 			}
 		}
-		OrderInfoVo mainOrder = orders.get(0);
 		//查询商品行
 		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderIds(orderIds.toArray(new Integer[orderIds.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
 		//查询配送信息

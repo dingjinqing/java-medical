@@ -76,12 +76,12 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 		//构造Map<Integer(子订单规格号), Integer(数量)>
 		HashMap<Integer, Integer> productNum = new HashMap<Integer, Integer>();
 		for (OrderReturnGoodsVo goods : returnOrderGoods) {
-			if(productNum.get(goods.getProductId()) == null) {
+			if(productNum.get(goods.getRecId()) == null) {
 				//第一次初始化该规格商品数量
-				productNum.put(goods.getProductId(), goods.getGoodsNumber());
+				productNum.put(goods.getRecId(), goods.getGoodsNumber());
 			}else {
 				//第二次数量相加
-				productNum.put(goods.getProductId(), productNum.get(goods.getProductId()) + goods.getGoodsNumber());
+				productNum.put(goods.getRecId(), productNum.get(goods.getRecId()) + goods.getGoodsNumber());
 			}
 		}
 		return productNum;
@@ -208,7 +208,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 				sum = sum.add(goods.getMoney());
 			}
 			if(BigDecimalUtil.compareTo(returnOrder.getMoney(), sum) != 0) {
-				throw new MpException(JsonResultCode.CODE_ORDER_MANUAL_INCONSISTENT_AMOUNT);
+				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MANUAL_INCONSISTENT_AMOUNT);
 			}
 		}
 		//此次退款商品
@@ -288,7 +288,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 						BigDecimalPlus.create(oneGoods.getReturnMoney(), difference.getOperator()),
 						BigDecimalPlus.create(OrderConstant.CENT, null)
 						);
-				//是否超限
+				//是否超限()
 				if(BigDecimalUtil.compareTo(future,
 						BigDecimalUtil.multiply(oneGoods.getReturnMoney() , new BigDecimal(oneGoods.getGoodsNumber())))
 								< 1) {
