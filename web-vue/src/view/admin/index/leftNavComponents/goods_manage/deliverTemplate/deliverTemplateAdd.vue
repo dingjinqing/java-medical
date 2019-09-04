@@ -26,37 +26,43 @@
         </section>
         <!-- 其他区域运费 -->
         <section
-          class="other"
+          style="display:flex"
           v-show="!formData[`limitParam_limitDeliverArea`]"
         >
           <el-form-item prop="limitParam_firstNum">
             其他区域运费:
             <el-input
               size="small"
-              v-model="formData[`limitParam_firstNum`]"
-              style="width:50px;"
+              v-model.number="formData[`limitParam_firstNum`]"
+              style="width:80px;"
             ></el-input>
           </el-form-item>
+          <el-form-item prop="limitParam_firstFee">
+            件内，
+            <el-input
+              size="small"
+              v-model.number="formData[`limitParam_firstFee`]"
+              style="width:80px;"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="limitParam_continueNum">
+            元，每增加
+            <el-input
+              size="small"
+              v-model.number="formData[`limitParam_continueNum`]"
+              style="width:80px;"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="formData[`limitParam_continueNum`]">
+            件，增加运费
+            <el-input
+              size="small"
+              v-model.number="formData[`limitParam_continueFee`]"
+              style="width:80px;"
+            ></el-input>
+            元
+          </el-form-item>
 
-          件内，
-          <el-input
-            size="small"
-            v-model="formData[`limitParam_firstFee`]"
-            style="width:50px;"
-          ></el-input>
-          元，每增加
-          <el-input
-            size="small"
-            v-model="formData[`limitParam_continueNum`]"
-            style="width:50px;"
-          ></el-input>
-          件，增加运费
-          <el-input
-            size="small"
-            v-model="formData[`limitParam_continueFee`]"
-            style="width:50px;"
-          ></el-input>
-          元
         </section>
       </el-form-item>
       <!-- 配送区域 -->
@@ -201,7 +207,7 @@
 <script>
 // 引入省市区三级联动
 import LocatTP from '@/components/admin/areaLinkage/LocatTP'
-import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { getAreaSelect, addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'templateAdd',
   components: { LocatTP },
@@ -213,6 +219,38 @@ export default {
         return callback(new Error('模板名称不能为空'))
       } else {
         callback() // 必须要有回调，要不然表单无法提交
+      }
+    }
+    // 自定义验证规则/首件的件数为大于0的整数
+    let checkLimitParamFirstNum = (rule, value, callback) => {
+      if (Number.isInteger(Number(value)) && Number(value) > 0) {
+        callback()
+      } else {
+        callback(new Error('首件件数必须为大于0'))
+      }
+    }
+    // 自定义验证规则/首件的运费为大于0的整数
+    let checkLimitParamFirstFee = (rule, value, callback) => {
+      if (Number.isInteger(Number(value)) && Number(value) > 0) {
+        callback()
+      } else {
+        callback(new Error('首件运费必须为大于0'))
+      }
+    }
+    // 自定义验证规则/续重为大于0的整数
+    let ckeckLimitParamContinueNum = (rule, value, callback) => {
+      if (Number.isInteger(Number(value)) && Number(value) > 0) {
+        callback()
+      } else {
+        callback(new Error('续重必须为大于0'))
+      }
+    }
+    // 自定义验证规则/续件运费为大于0的整数
+    let ckeckLimitParamContinueFee = (rule, value, callback) => {
+      if (Number.isInteger(Number(value)) && Number(value) > 0) {
+        callback()
+      } else {
+        callback(new Error('续件运费必须为大于0的数'))
       }
     }
     return {
@@ -236,8 +274,16 @@ export default {
           { validator: checkTemplateName, trigger: 'blur' }
         ],
         limitParam_firstNum: [
-          { validator: checkTemplateName, trigger: 'blur' }
-
+          { validator: checkLimitParamFirstNum, trigger: 'blur' }
+        ],
+        limitParam_firstFee: [
+          { validator: checkLimitParamFirstFee, trigger: 'blur' }
+        ],
+        limitParam_continueNum: [
+          { validator: ckeckLimitParamContinueNum, trigger: 'blur' }
+        ],
+        limitParam_continueFee: [
+          { validator: ckeckLimitParamContinueFee, trigger: 'blur' }
         ]
       },
       checked1: false, // 指定条件包邮（可选）
@@ -320,6 +366,7 @@ export default {
       getAreaSelect().then(res => {
         const { error, content } = res
         if (error === 0) {
+          console.log(content)
           content.unshift({ 'provinceId': 1, 'provinceName': '全选' })
           this.locatList = content
         }
@@ -342,8 +389,26 @@ export default {
       // 判断除可配送区域外，其他不可配送的值
       if (this.formatLimitDeliverArea === `0`) {
         // 请求参数
+        let params = {
+          'templateName': this.formData[`templateName`], // 模板名称
+          'goodsDeliverTemplateLimitParam': {
+            'limit_deliver_area': this.formatLimitDeliverArea,
+            'area_list': this.formData[`limitParam_areaList`],
+            'area_text': this.formData[`limitParam_areaText`],
+            'first_num': this.formData[`limitParam_firstNum`],
+            'first_fee': this.formData[`limitParam_firstFee`],
+            'continue_num': this.formData[`limitParam_continueNum`],
+            'continue_fee': this.formData[`limitParam_continueFee`]
+          }
+        }
+        // 发送请求
+        addTemplate(params).then(res => {
+          console.log(res)
+        }).catch(err => console.log(err))
+      } else {
 
       }
+
       // 请求报文参数
       let params = {
         'templateName': '运费模板001',
@@ -397,9 +462,6 @@ export default {
         }
       }
       console.log(formData)
-      // addTemplate({}).then(res => {
-      //   // console.log(res)
-      // }).catch(err => console.log(err))
     },
     // 编辑每条
     handleEdit (index) {
