@@ -30,7 +30,7 @@ public class DistributorInvitedListVo {
 	/**
 	 * 返利有效日期
 	 */
-	private Timestamp invitExpiryDate;
+	private Timestamp inviteExpiryDate;
 	/**
 	 * 邀请保护日期
 	 */

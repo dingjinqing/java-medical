@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record6;
 import org.jooq.Record8;
@@ -142,9 +143,9 @@ public class DistributorListService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<DistributorInvitedListVo> getInvitedList(DistributorInvitedListParam param) {
-		SelectJoinStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> select = db().select(USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER_FANLI_STATISTICS.ORDER_NUMBER,USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY,USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY)
+		SelectJoinStep<? extends Record> select = db().select(USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_PROTECT_DATE,sum(USER_FANLI_STATISTICS.ORDER_NUMBER).as("ORDER_NUMBER"),sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("TOTAL_CAN_FANLI_MONEY"),sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("TOTAL_FANLI_MONEY"))
 				.from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)));
-		SelectConditionStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> sql = getInvitedListOptions(select,param);
+		SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param);
 		PageResult<DistributorInvitedListVo> invitedlist = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorInvitedListVo.class);
 		return invitedlist;
 	}
@@ -155,8 +156,8 @@ public class DistributorListService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public SelectConditionStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> getInvitedListOptions(SelectJoinStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> select,DistributorInvitedListParam param) {
-		SelectConditionStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> sql = select.where(USER.USER_ID.eq(param.getUserId()).and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte)1)));
+	public SelectConditionStep<? extends Record> getInvitedListOptions(SelectJoinStep<? extends Record> select,DistributorInvitedListParam param) {
+		SelectConditionStep<? extends Record> sql = select.where(USER.USER_ID.eq(param.getUserId()).and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte)1)));
 		
 		if(param.getMobile() != null) {
 			sql = sql.and(USER.MOBILE.eq(param.getMobile()));
@@ -167,6 +168,7 @@ public class DistributorListService extends ShopBaseService{
 		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
 			sql = sql.and(USER.CREATE_TIME.ge(param.getStartCreateTime()).and(USER.CREATE_TIME.le(param.getEndCreateTime())));
 		}
+		sql.groupBy(USER_FANLI_STATISTICS.USER_ID,USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER.INVITE_EXPIRY_DATE,USER.INVITE_PROTECT_DATE);
 		return sql;
 	}
 	
