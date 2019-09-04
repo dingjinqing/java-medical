@@ -38,7 +38,7 @@
             </span>
             <span>
               <label>
-                {{this.username}}
+                {{this.accountName}}
               </label>
               <img :src="imageUrl[2].img_3">
             </span>
@@ -91,6 +91,7 @@ export default {
       hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration_J'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
       changeColorIndex: '',
       username: '',
+      accountName: '',
       menu_width: '',
       header_navData: [
         // { title: this.$t('adminPageFramework.headerData.title_1'), index: '', meta: 'first_web_manage', name: 'shop_view' },
@@ -125,6 +126,7 @@ export default {
     // 初始化登录
     judgeuserinfo () {
       this.imageUrl[1].img_2 = localStorage.getItem('V-shopAvatar')
+      this.accountName = localStorage.getItem('V-AccountName')
       if (Cookies.get('V-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
@@ -150,7 +152,7 @@ export default {
         case 0:
           this.$emit('change_components', '0')
           this.$router.push({
-            path: '/admin/home/shop_main',
+            path: '/admin/home/shopMain',
             query: {
               change_components: '0'
             }

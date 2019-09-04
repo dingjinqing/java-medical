@@ -84,6 +84,6 @@ export const en = {
     tip5: 'At present, the application has been approved.',
     tip6: 'Note: After the application of good circle plug-in, do not close or delete this plug-in in the background of the public platform of small programs, the responsible small programs will not be able to use normally. If you want to turn off this function, please contact customer service and operator to assist in operation.',
     Preservation: 'Preservation',
-    CurrentBindUserVersion: 'The latest version '
+    CurrentBindUserVersion: 'The latest version'
   }
 }

@@ -14,7 +14,7 @@
                 :class="modifyWidth"
               >{{$t('accountSetting.account')}}</div>
               <div class="li">
-                <div class="mdy-input">tester001</div>
+                <div class="mdy-input">{{userName}}</div>
                 <div
                   class="update"
                   @click="change_modifyPassword()"
@@ -27,7 +27,7 @@
                 :class="modifyWidth"
               >{{$t('accountSetting.phone')}}</div>
               <div class="li mdy-input">
-                <div>13683043470</div>
+                <div>{{mobile}}</div>
               </div>
             </li>
             <li>
@@ -37,9 +37,9 @@
               >{{$t('accountSetting.name')}}</div>
               <div class="li mdy-input">
                 <el-input
-                  v-model="username"
+                  v-model="accountName"
                   :placeholder="$t('accountSetting.namePlaceholder')"
-                  :value="username"
+                  :value="accountName"
                 ></el-input>
               </div>
             </li>
@@ -142,7 +142,9 @@ export default {
       imageUrl: [
         { img_1: this.$imageHost + '/image/admin/icon_4.png' }
       ],
-      username: '',
+      userName: '',
+      accountName: '',
+      mobile: '',
       dialogTableVisible: false,
       modifyWidth: 'headWidth',
       shop_config_ul_flag: true,
@@ -157,7 +159,7 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    this.username = localStorage.getItem('V-Username')
+    this.accountName = localStorage.getItem('V-accountName')
     // 初始化账户设置
     this.queryAccount()
   },
@@ -168,8 +170,10 @@ export default {
     },
     queryAccount () {
       queryShopRequest().then((res) => {
-        this.username = res.content.accountName
-        localStorage.setItem('V-Username', res.content.accountName)
+        this.userName = res.content.userName
+        this.accountName = res.content.accountName
+        this.mobile = res.content.mobile
+        localStorage.setItem('V-accountName', res.content.accountName)
         this.imageUrl[0].img_1 = res.content.shopAvatar
         console.log(res)
       })
@@ -178,7 +182,7 @@ export default {
     handleSave () {
       let obj = {
         shopAvatar: this.imageUrl[0].img_1,
-        accountName: this.username
+        accountName: this.accountName
       }
       accountManageRequest(obj).then((res) => {
         if (res.error === 0) {

@@ -24,7 +24,7 @@
             </span>
             <span>
               <label>
-                {{this.username}}
+                {{this.accountName}}
               </label>
               <img :src="imageUrl[2].img_3">
             </span>
@@ -77,6 +77,7 @@ export default {
       hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
       changeColorIndex: '',
       username: '',
+      accountName: '',
       menu_width: '',
       shopAvatar: ''
     }
@@ -94,6 +95,7 @@ export default {
       if (Cookies.get('V-Index-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
+        this.accountName = localStorage.getItem('V-AccountName')
         queryShopRequest().then((res) => {
           console.log(res)
           if (res.error === 0) {

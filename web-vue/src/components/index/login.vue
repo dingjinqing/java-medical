@@ -208,6 +208,7 @@ export default {
             Cookies.set('V-Index-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             localStorage.setItem('V-loginType', 0)
+            localStorage.setItem('V-AccountName', res.content.accountName)
             this.$message({
               showClose: true,
               message: res.message,
@@ -229,6 +230,7 @@ export default {
             localStorage.setItem('V-loginType', 0)
             Cookies.set('V-Index-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
+            localStorage.setItem('V-AccountName', res.content.accountName)
             this.$message({
               showClose: true,
               message: res.message,
