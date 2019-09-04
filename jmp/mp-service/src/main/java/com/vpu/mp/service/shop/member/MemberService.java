@@ -264,9 +264,9 @@ public class MemberService extends ShopBaseService {
 			select.where(u.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getCreateTime())));
 		}
 
-		// 结束时间
+		/** -结束时间 */
 		if (!StringUtils.isEmpty(param.getEndTime())) {
-			select.where(u.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getCreateTime())));
+			select.where(u.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getEndTime())));
 		}
 
 		// TODO 指定时间内有登录
