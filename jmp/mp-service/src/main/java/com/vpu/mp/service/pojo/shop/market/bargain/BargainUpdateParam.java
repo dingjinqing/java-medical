@@ -8,6 +8,9 @@ import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
 /**
  * @author 王兵兵
  *
@@ -31,6 +34,20 @@ public class BargainUpdateParam {
 	private Byte status;
 	
 	private String bargainName;
+    private Byte       bargainType;
+
+    private Timestamp startTime;
+    private Timestamp  endTime;
+    private Double     bargainMin;
+    private Double     bargainMax;
+    private Integer    stock;
+    private String     mrkingVoucherId;
+    private String     rewardCouponId;
+    private Byte       bargainMoneyType;
+    private BigDecimal bargainFixedMoney;
+    private BigDecimal bargainMinMoney;
+    private BigDecimal bargainMaxMoney;
+    private Byte       freeFreight;
 	
 	private ShopShareConfig shareConfig;
 }
