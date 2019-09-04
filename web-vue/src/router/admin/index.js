@@ -393,6 +393,20 @@ const routes = [
                   import(
                     '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightAdd'
                   )
+              },
+              // 商品管理/运费模板/运费模板编辑
+              {
+                path: '/admin/home/main/goodsManage/deliverTemplate/edit',
+                name: 'deliverTemplateEdit',
+                meta: {
+                  crumbTitle: 'router.deliverTemplate',
+                  meta: 'goods_manage',
+                  category: 'deliver'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateEdit'
+                  )
               }
             ]
           },

@@ -28,10 +28,11 @@ import deliverTemplateList from './deliverTemplateList'
 import deliverTemplateWeightList from './deliverTemplateWeightList'
 import deliverTemplateAdd from './deliverTemplateAdd'
 import deliverTemplateWeightAdd from './deliverTemplateWeightAdd'
+import deliverTemplateEdit from './deliverTemplateEdit'
 export default {
   // 组件名
   name: 'deliverTemplate',
-  components: { deliverTemplateHeader, deliverTemplateMain, deliverTemplateList, deliverTemplateWeightList, deliverTemplateAdd, deliverTemplateWeightAdd },
+  components: { deliverTemplateEdit, deliverTemplateHeader, deliverTemplateMain, deliverTemplateList, deliverTemplateWeightList, deliverTemplateAdd, deliverTemplateWeightAdd },
   // data 数据
   data () {
     return {

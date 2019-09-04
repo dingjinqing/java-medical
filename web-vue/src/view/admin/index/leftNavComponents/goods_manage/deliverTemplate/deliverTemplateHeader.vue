@@ -29,6 +29,14 @@
         name="3"
       >
       </el-tab-pane>
+      <!-- 运费模板编辑-->
+      <section v-show="isShowDeliverTemplateEdit">
+        <el-tab-pane
+          label="运费模板编辑"
+          name="4"
+        />
+      </section>
+
     </el-tabs>
   </div>
 </template>
@@ -37,7 +45,8 @@ export default {
   name: 'deliverTemplateHeader',
   data () {
     return {
-      activeName: '0'
+      activeName: '0',
+      isShowDeliverTemplateEdit: false
     }
   },
   created () {
@@ -50,6 +59,8 @@ export default {
         case '1': this.$router.push({ name: `deliverTemplateWeightList` }); break
         case '2': this.$router.push({ name: `deliverTemplateAdd` }); break
         case '3': this.$router.push({ name: `deliverTemplateWeightAdd` }); break
+        case '4': this.$router.push({ name: `deliverTemplateEdit` }); break
+
         default: break
       }
     }
@@ -62,6 +73,7 @@ export default {
         case 'deliverTemplateWeightList': this.activeName = `1`; break
         case 'deliverTemplateAdd': this.activeName = `2`; break
         case 'deliverTemplateWeightAdd': this.activeName = `3`; break
+        case 'deliverTemplateEdit': this.activeName = `3`; break
         default: break
       }
     },

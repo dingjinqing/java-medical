@@ -206,7 +206,7 @@ export default {
     // 删除运费模板
     handleDelTemplate () {
       deliverDelete({
-        'deliverTemplateId': '24'
+        'deliverTemplateId': '29'
       }).then(res => { console.log(res) }).catch(err => console.log(err))
     },
     // 选中运费模板的时候

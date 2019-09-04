@@ -18,49 +18,51 @@
               style="width:210px"
             ></el-input>
           </el-form-item>
+
         </section>
         <!-- 橙黄框 -->
         <section class="wrap">
-          <el-checkbox v-model="limit_deliver_area">除可配送区域外，其他不可配送</el-checkbox>
+          <el-checkbox v-model="formData[`limitParam_limitDeliverArea`]">除可配送区域外，其他不可配送</el-checkbox>
         </section>
         <!-- 其他区域运费 -->
         <section
           style="display:flex"
-          v-show="!limit_deliver_area"
+          v-show="!formData[`limitParam_limitDeliverArea`]"
         >
-          <el-form-item prop="goodsDeliverTemplateLimitParam.first_num">
+          <el-form-item prop="limitParam_firstNum">
             其他区域运费:
             <el-input
               size="small"
-              v-model.number="formData[`goodsDeliverTemplateLimitParam`]['first_num']"
+              v-model.number="formData[`limitParam_firstNum`]"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="goodsDeliverTemplateLimitParam.first_fee">
+          <el-form-item prop="limitParam_firstFee">
             件内，
             <el-input
               size="small"
-              v-model.number="formData[`goodsDeliverTemplateLimitParam`][`first_fee`]"
+              v-model.number="formData[`limitParam_firstFee`]"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="goodsDeliverTemplateLimitParam.continue_num">
+          <el-form-item prop="limitParam_continueNum">
             元，每增加
             <el-input
               size="small"
-              v-model.number="formData[`goodsDeliverTemplateLimitParam`][`continue_num`]"
+              v-model.number="formData[`limitParam_continueNum`]"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="goodsDeliverTemplateLimitParam.continue_fee">
+          <el-form-item prop="formData[`limitParam_continueNum`]">
             件，增加运费
             <el-input
               size="small"
-              v-model.number="formData[`goodsDeliverTemplateLimitParam`][`continue_fee`]"
+              v-model.number="formData[`limitParam_continueFee`]"
               style="width:80px;"
             ></el-input>
             元
           </el-form-item>
+
         </section>
       </el-form-item>
       <!-- 配送区域 -->
@@ -164,13 +166,9 @@
         </section>
         <!-- 指定条件包邮（可选） -->
         <section class="designation">
-          <el-checkbox v-model="formData[`goodsDeliverTemplateFeeParam`][`has_fee_0_condition`]">指定条件包邮（可选）</el-checkbox>
+          <el-checkbox v-model="checked1">指定条件包邮（可选）</el-checkbox>
         </section>
-        <!-- 当点击指定包邮条件的时候展示的表格 -->
-        <section
-          class="footer_table"
-          v-show="formData[`goodsDeliverTemplateFeeParam`][`has_fee_0_condition`]"
-        >
+        <section class="">
           <el-table
             :data="tableData1"
             border
@@ -181,22 +179,6 @@
               label="包邮可配送区域"
               align="center"
             >
-              <template>
-                <div class="">
-                  <!-- 展示的中文区域名称 -->
-                  <span></span>
-                  <!-- 编辑 -->
-                  <el-button
-                    @click="handelEdirArea"
-                    type="text"
-                  >编辑</el-button>
-                  <!-- 删除 -->
-                  <el-button
-                    @click="handelDelArea"
-                    type="text"
-                  >编辑</el-button>
-                </div>
-              </template>
             </el-table-column>
             <!-- 设置包邮条件 -->
             <el-table-column
@@ -204,35 +186,9 @@
               label="设置包邮条件"
               align="center"
             >
-              <!-- 每个单元格的的包邮条件 -->
-              <template>
-                <div class="">
-                  <!-- 件数 -->
-                  <el-select
-                    size="small"
-                    v-model="value12"
-                  >
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    >
-                    </el-option>
-                  </el-select>
-                  <span>满</span>
-                  <el-input v-model="value13">件包邮</el-input>
-                </div>
-              </template>
             </el-table-column>
           </el-table>
-          <!-- 指定可包邮配送区域和条件按钮 -->
-          <section class="addArea">
-            <el-button
-              type="text"
-              @click="handleShipping"
-            >指定可包邮配送区域和条件</el-button>
-          </section>
+
         </section>
       </el-form-item>
     </el-form>
@@ -273,9 +229,9 @@ export default {
         callback(new Error('首件件数必须为大于0'))
       }
     }
-    // 自定义验证规则/首件的运费为大于0的数
+    // 自定义验证规则/首件的运费为大于0的整数
     let checkLimitParamFirstFee = (rule, value, callback) => {
-      if (Number(value) > 0) {
+      if (Number.isInteger(Number(value)) && Number(value) > 0) {
         callback()
       } else {
         callback(new Error('首件运费必须为大于0'))
@@ -289,9 +245,9 @@ export default {
         callback(new Error('续重必须为大于0'))
       }
     }
-    // 自定义验证规则/续件运费为大于0的数
+    // 自定义验证规则/续件运费为大于0的整数
     let ckeckLimitParamContinueFee = (rule, value, callback) => {
-      if (Number(value) > 0) {
+      if (Number.isInteger(Number(value)) && Number(value) > 0) {
         callback()
       } else {
         callback(new Error('续件运费必须为大于0的数'))
@@ -299,43 +255,17 @@ export default {
     }
     return {
       // form表单的数据
-      limit_deliver_area: false,
       formData: {
         // 模板名称
         templateName: ``,
         // 配送区域限制信息
-        goodsDeliverTemplateLimitParam: {
-          limit_deliver_area: `0`, // 是否限制区域 // 默认其他区域可配送
-          area_list: '0', // 区域代码
-          area_text: '全国（其他地区）', // 区域名称
-          first_num: '1', // 其他区域运费:几件内
-          first_fee: '0', // 其他区域运费:多少元
-          continue_num: '1', // 每增加多少件
-          continue_fee: '0' // 增加运费多少
-        },
-        // 配送区域详细信息
-        goodsDeliverTemplateAreaParam: [{
-          area_list: '', // 区域代码
-          area_text: '', // 区域名称
-          first_num: '1', // 首件（件）
-          first_fee: '0', // 运费（元）
-          continue_num: '1', // 续件（件）
-          continue_fee: '0' // 续费（元）
-        }],
-        // 是否包邮信息
-        goodsDeliverTemplateFeeParam: {
-          has_fee_0_condition: true
-        },
-        // 包邮条件详细信息
-        goodsDeliverTemplateFeeConditionParam: [{
-          'area_list': '0', // 区域代码
-          'area_text': '全国（其他地区）', // 区域名称
-          'fee_0_condition': '1', // 包邮类型（1:件数,2:金额,3:件数+金额）
-          'fee_0_con1_num': '0', // 件数包邮类型最低件数
-          'fee_0_con2_num': '10', // 金额包邮类型最低金额
-          'fee_0_con3_num': '1', // 件数+金额类型最低件数
-          'fee_0_con3_fee': '0' // 件数+金额类型最低金额
-        }]
+        limitParam_limitDeliverArea: false, // 默认其他区域可配送
+        limitParam_areaList: `0`,
+        limitParam_areaText: `全国（其他地区）`,
+        limitParam_firstNum: `1`, // 其他区域运费:几件内
+        limitParam_firstFee: `0`, // 其他区域运费:多少元
+        limitParam_continueNum: `1`, // 每增加多少件
+        limitParam_continueFee: `0` // 增加运费多少
       },
       // 验证规则
       formDataRules: {
@@ -343,31 +273,22 @@ export default {
         templateName: [
           { validator: checkTemplateName, trigger: 'blur' }
         ],
-        'goodsDeliverTemplateLimitParam.first_num': [
+        limitParam_firstNum: [
           { validator: checkLimitParamFirstNum, trigger: 'blur' }
         ],
-        'goodsDeliverTemplateLimitParam.first_fee': [
+        limitParam_firstFee: [
           { validator: checkLimitParamFirstFee, trigger: 'blur' }
         ],
-        'goodsDeliverTemplateLimitParam.continue_num': [
+        limitParam_continueNum: [
           { validator: ckeckLimitParamContinueNum, trigger: 'blur' }
         ],
-        'goodsDeliverTemplateLimitParam.continue_fee': [
+        limitParam_continueFee: [
           { validator: ckeckLimitParamContinueFee, trigger: 'blur' }
         ]
       },
-      // 指定包邮条件的表格数据
-      tableData1: [
-        {
-          'area_list': '0',
-          'area_text': '全国（其他地区）',
-          'fee_0_condition': '1',
-          'fee_0_con1_num': '0',
-          'fee_0_con2_num': '10',
-          'fee_0_con3_num': '1',
-          'fee_0_con3_fee': '0'
-        }
-      ],
+      checked1: false, // 指定条件包邮（可选）
+      // 表格数据
+      tableData1: [],
       outerVisible: false,
       dialogStat: false,
       tableData: [
@@ -382,23 +303,7 @@ export default {
       continueFee: 0,
       showArr: [], // 展示在表格中的数据
       area_list: [], // 选中的值对应的ID 区域代码
-      area_text: ``, // 选中的值中文字符串 区域名称
-      value12: `件数`,
-      value13: `1`,
-      options: [
-        {
-          value: `件数`,
-          label: `件数`
-        },
-        {
-          value: `金额`,
-          label: `金额`
-        },
-        {
-          value: `件数+金额`,
-          label: `件数+金额`
-        }
-      ]
+      area_text: `` // 选中的值中文字符串 区域名称
 
     }
   },
@@ -409,13 +314,9 @@ export default {
     this.getData()
   },
   computed: {
-    // 处理指定条件包邮
-    formatHas_fee_0_condition () {
-      return this.formData[`goodsDeliverTemplateFeeParam`][`has_fee_0_condition`] ? `1` : `0`
-    },
     formatLimitDeliverArea: function () {
       // `this` 指向 vm 实例
-      return this.limit_deliver_area ? `1` : `0`
+      return this.formData[`limitParam_limitDeliverArea`] ? `1` : `0`
     },
     comput: {
       get () {
@@ -439,14 +340,6 @@ export default {
       this.checkeList = value.checkList // 复选框选中LIst(传回组件用)
       this.showArr = value.showArr
       this.area_text = value.areaList // fag
-
-      if (value.areaList.length > 0) {
-        for (let i = 0; i < value.areaList.length; i++) {
-          this.formData.goodsDeliverTemplateAreaParam[i].area_list = i + 1
-          this.formData.goodsDeliverTemplateAreaParam[i].area_text = '测试'
-        }
-      }
-      console.log('goodsDeliverTemplateAreaParam:', this.formData.goodsDeliverTemplateAreaParam)
       // 获取中文拼接字符串，只有省份
       // if (value.areaList.length > 0) {
       //   this.tableData.push(
@@ -495,30 +388,18 @@ export default {
       }
       // 判断除可配送区域外，其他不可配送的值
       if (this.formatLimitDeliverArea === `0`) {
-        // this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
         // 请求参数
         let params = {
           'templateName': this.formData[`templateName`], // 模板名称
-          'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam
-          // 'goodsDeliverTemplateAreaParam': this.formData.goodsDeliverTemplateAreaParam
-        }
-        console.log(params)
-        // 发送请求
-        addTemplate(params).then(res => {
-          const { error } = res
-          if (error === 0) {
-            this.$router.push({
-              name: `deliverTemplateList`
-            })
+          'goodsDeliverTemplateLimitParam': {
+            'limit_deliver_area': this.formatLimitDeliverArea,
+            'area_list': this.formData[`limitParam_areaList`],
+            'area_text': this.formData[`limitParam_areaText`],
+            'first_num': this.formData[`limitParam_firstNum`],
+            'first_fee': this.formData[`limitParam_firstFee`],
+            'continue_num': this.formData[`limitParam_continueNum`],
+            'continue_fee': this.formData[`limitParam_continueFee`]
           }
-        }).catch(err => console.log(err))
-      } else if (this.formData.goodsDeliverTemplateAreaParam.length > 0) {
-        this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
-        // 请求参数
-        let params = {
-          'templateName': this.formData[`templateName`], // 模板名称
-          'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam,
-          'goodsDeliverTemplateAreaParam': this.formData.goodsDeliverTemplateAreaParam
         }
         // 发送请求
         addTemplate(params).then(res => {
@@ -527,6 +408,60 @@ export default {
       } else {
 
       }
+
+      // 请求报文参数
+      let params = {
+        'templateName': '运费模板001',
+        'flag': '0',
+        'goodsDeliverTemplateLimitParam':
+        {
+          'limit_deliver_area': '0',
+          'area_list': '0',
+          'area_text': '全国（其他地区）',
+          'first_num': '1',
+          'first_fee': '0',
+          'continue_num': '1',
+          'continue_fee': '0'
+        },
+        'goodsDeliverTemplateAreaParam':
+          [{
+            'area_list': '["110000","120000","130000","140000","150000","210000","220000","230000","310000","320000","330000","340000","350000","360000","370000","410000","420000","430000","440000","450000","460000","500000","510000","520000","530000","540000","610000","620000","630000","640000","650000","710000","810000","820000"]',
+            'area_text': '北京市、天津市、河北省、山西省、内蒙古自治区、辽宁省、吉林省、黑龙江省、上海市、江苏省、浙江省、安徽省、福建省、江西省、山东省、河南省、湖北省、湖南省、广东省、广西壮族自治区、海南省、重庆市、四川省、贵州省、云南省、西藏自治区、陕西省、甘肃省、青海省、宁夏回族自治区、新疆维吾尔自治区、台湾省、香港特别行政区、澳门特别行政区',
+            'first_num': '1',
+            'first_fee': '1',
+            'continue_num': '1',
+            'continue_fee': '1'
+          }],
+        'goodsDeliverTemplateFeeParam': {
+          'has_fee_0_condition': '1'
+        },
+        'goodsDeliverTemplateFeeConditionParam':
+          [{
+            'area_list': '0',
+            'area_text': '全国（其他地区）',
+            'fee_0_condition': '1',
+            'fee_0_con1_num': '0',
+            'fee_0_con2_num': '10',
+            'fee_0_con3_num': '1',
+            'fee_0_con3_fee': '0'
+          }]
+      }
+      // console.log(this.templateName)
+      console.log(params['goodsDeliverTemplateAreaParam'][0]['area_list'])
+      // 请求params
+      let formData = {
+        'templateName': this.formData[`templateName`], // 模板名称
+        'goodsDeliverTemplateLimitParam': {
+          'limit_deliver_area': this.formatLimitDeliverArea,
+          'area_list': this.formData[`limitParam_areaList`],
+          'area_text': this.formData[`limitParam_areaText`],
+          'first_num': this.formData[`limitParam_firstNum`],
+          'first_fee': this.formData[`limitParam_firstFee`],
+          'continue_num': this.formData[`limitParam_continueNum`],
+          'continue_fee': this.formData[`limitParam_continueFee`]
+        }
+      }
+      console.log(formData)
     },
     // 编辑每条
     handleEdit (index) {
@@ -537,18 +472,6 @@ export default {
     handleDel (index) {
       this.tableData.splice(index, 1)
       // console.log(this.tableData)
-    },
-    // 指定可包邮配送区域和条件
-    handleShipping () {
-
-    },
-    // 包邮可配送区域/编辑
-    handelEdirArea () {
-
-    },
-    // 包邮可配送区域/删除
-    handelDelArea () {
-
     }
   }
 }
@@ -583,16 +506,5 @@ export default {
 .add {
   border: 1px solid #ddd;
   border-top: 0px solid #ddd;
-}
-.footer_table {
-  /* background-color: skyblue; */
-  border: 1px solid black;
-}
-.addArea {
-  height: 50px;
-  border: 1px solid #e0dedb;
-  border-top: 0px;
-  display: flex;
-  align-items: center;
 }
 </style>
