@@ -424,7 +424,7 @@ export default {
         addTemplate(params).then(res => {
           console.log(res)
         }).catch(err => console.log(err))
-      } else if (this.formatLimitDeliverArea === `0` && this.formData.goodsDeliverTemplateAreaParam.length > 0) {
+      } else if (this.formData.goodsDeliverTemplateAreaParam.length > 0) {
         this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
         // 请求参数
         let params = {
