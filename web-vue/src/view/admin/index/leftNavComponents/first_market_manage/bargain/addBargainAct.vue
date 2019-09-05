@@ -231,36 +231,29 @@
               label="单次帮砍金额"
               prop=""
             >
-              <el-radio
-                v-model="param.bargainMoneyType"
-                :label='0'
-              >固定金额
-                <el-input-number
-                  :disabled="param.bargainMoneyType==1?true:false"
-                  v-model="param.bargainFixedMoney"
-                  size="small"
-                  style="width:150px"
-                ></el-input-number>元
-              </el-radio>
-              <br>
-              <el-radio
-                v-model="param.bargainMoneyType"
-                :label='1'
-              >随机金额
-                <el-input-number
-                  :disabled="param.bargainMoneyType==0?true:false"
-                  v-model="param.bargainMinMoney"
-                  size="small"
-                  style="width:150px"
-                ></el-input-number>元
-                <span>至</span>
-                <el-input-number
-                  :disabled="param.bargainMoneyType==0?true:false"
-                  v-model="param.bargainMaxMoney"
-                  size="small"
-                  style="width:150px"
-                ></el-input-number>元之间取随机数
-              </el-radio>
+              <el-radio-group v-model="param.bargainMoneyType">
+                <el-radio :label='0'>固定金额
+                  <el-input-number
+                    v-model="param.bargainFixedMoney"
+                    size="small"
+                    style="width:150px"
+                  ></el-input-number>元
+                </el-radio>
+                <br>
+                <el-radio :label='1'>随机金额
+                  <el-input-number
+                    v-model="param.bargainMinMoney"
+                    size="small"
+                    style="width:150px"
+                  ></el-input-number>元
+                  <span>至</span>
+                  <el-input-number
+                    v-model="param.bargainMaxMoney"
+                    size="small"
+                    style="width:150px"
+                  ></el-input-number>元之间取随机数
+                </el-radio>
+              </el-radio-group>
             </el-form-item>
 
             <!-- <el-form-item
@@ -372,8 +365,8 @@ export default {
           this.effectiveDate = []
           this.effectiveDate.push(res.content.startTime)
           this.effectiveDate.push(res.content.endTime)
-          this.mrkingVoucherId = res.content.mrkingVoucherId.split(',')
-          this.rewardCouponId = res.content.rewardCouponId.split(',')
+          this.mrkingVoucherId = res.content.mrkingVoucherList
+          this.rewardCouponId = res.content.rewardCouponList
           this.goodsRow.push(res.content.goods)
         }
       })
@@ -418,48 +411,29 @@ export default {
     // 选择优惠券弹窗-帮忙砍价的用户
     handleToCallDialog1 () {
       this.dialogFlag = 0
-      let couponList = []
-      this.mrkingVoucherId.forEach((item, index) => {
-        let coupon = {}
-        coupon.id = item
-        couponList.push(coupon)
-      })
       let obj = {
         couponDialogFlag: !this.couponDialogFlag,
-        couponList: couponList
+        couponList: this.mrkingVoucherId
       }
       this.$http.$emit('V-AddCoupon', obj)
     },
     // 选择优惠券弹窗-砍价失败后向买家赠送
     handleToCallDialog2 () {
       this.dialogFlag = 1
-      let couponList = []
-      this.rewardCouponId.forEach((item, index) => {
-        let coupon = {}
-        coupon.id = item
-        couponList.push(coupon)
-      })
       let obj = {
         couponDialogFlag: !this.couponDialogFlag,
-        couponList: couponList
+        couponList: this.rewardCouponId
       }
       this.$http.$emit('V-AddCoupon', obj)
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
+      console.log(data)
       if (this.dialogFlag === 1) {
-        this.rewardCouponId = this.formatCoupon(data)
+        this.rewardCouponId = data
       } else {
-        this.mrkingVoucherId = this.formatCoupon(data)
+        this.mrkingVoucherId = data
       }
-    },
-    // 添加优惠券初始项
-    formatCoupon (data) {
-      let arr = []
-      data.map(item => {
-        arr.push(item.id)
-      })
-      return arr
     },
     // 选择商品弹窗
     showChoosingGoods () {
@@ -476,8 +450,8 @@ export default {
       this.param.shareConfig = this.shareConfig
       this.param.startTime = this.effectiveDate[0]
       this.param.endTime = this.effectiveDate[1]
-      this.param.mrkingVoucherId = this.mrkingVoucherId.join()
-      this.param.rewardCouponId = this.rewardCouponId.join()
+      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherId)
+      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponId)
       addBargain(this.param).then((res) => {
         if (res.error === 0) {
           this.$message({
@@ -501,8 +475,8 @@ export default {
       this.param.shareConfig = this.shareConfig
       this.param.startTime = this.effectiveDate[0]
       this.param.endTime = this.effectiveDate[1]
-      this.param.mrkingVoucherId = this.mrkingVoucherId.join()
-      this.param.rewardCouponId = this.rewardCouponId.join()
+      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherId)
+      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponId)
       updateBargain(this.param).then((res) => {
         if (res.error === 0) {
           this.$message({
@@ -519,6 +493,17 @@ export default {
           })
         }
       })
+    },
+    getCouponIdsString (data) {
+      let res = ''
+      data.forEach((item, index) => {
+        if (index == 0) {
+          res += item.id
+        } else {
+          res += ',' + item.id
+        }
+      })
+      return res
     }
   }
 }
