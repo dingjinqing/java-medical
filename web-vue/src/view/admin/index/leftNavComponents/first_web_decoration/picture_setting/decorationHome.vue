@@ -83,28 +83,40 @@
           >
             <div class="decContent">
 
-              <div class="drag_area">
-                <!--模块列表-->
-                <div
-                  v-for="(item,index) in showModulesList"
-                  :key="index"
+              <div
+                class="drag_area"
+                :class="zbFlag?'zwHeight':''"
+              >
+                <draggable
+                  class="list-group"
+                  element="div"
+                  v-model="showModulesList"
+                  :options="dragOptions"
+                  @start="handleToStart"
+                  @end="handleToEnd"
                 >
-                  <!--会员列表模块-->
+                  <!--模块列表-->
+                  <div
+                    v-for="(item,index) in showModulesList"
+                    :key="index"
+                  >
+                    <!--会员列表模块-->
 
-                  <MembershipCard
-                    v-show="item===1"
-                    :index="1"
-                    :flag="index"
-                  />
+                    <MembershipCard
+                      v-show="item===1"
+                      :index="1"
+                      :flag="index"
+                    />
 
-                  <!--优惠卷模块-->
-                  <Coupon
-                    v-show="item===2"
-                    :index="2"
-                    :flag="index"
-                  />
-                </div>
-                <!--模块列表结束-->
+                    <!--优惠卷模块-->
+                    <Coupon
+                      v-show="item===2"
+                      :index="2"
+                      :flag="index"
+                    />
+                  </div>
+                  <!--模块列表结束-->
+                </draggable>
               </div>
 
             </div>
@@ -120,12 +132,14 @@
 </template>
 <script>
 import vuescroll from 'vuescroll'
+import draggable from 'vuedraggable'
 import $ from 'jquery'
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
 export default {
   components: {
     vuescroll,
+    draggable,
     MembershipCard: () => import('./decorationModules/membershipCard'),
     Coupon: () => import('./decorationModules/Coupon')
   },
@@ -288,7 +302,36 @@ export default {
         value: '瓜分积分'
       }],
       showModulesList: [],
-      insertModulesId: -1
+      insertModulesId: -1,
+      drag_flag: false,
+      oldIndex: -1,
+      newIndex: -1,
+      oldElement: null,
+      zbFlag: false
+    }
+  },
+  watch: {
+    showModulesList (newData) {
+      if (newData.length) {
+        this.zbFlag = true
+      } else {
+        this.zbFlag = false
+      }
+    }
+  },
+  computed: {
+    dragOptions () {
+      return {
+        animation: 0,
+        group: {
+          name: 'description',
+          pull: 'clone',
+          put: false
+        },
+        forceFallback: true,
+        fallbackClass: 'active',
+        sort: false
+      }
     }
   },
   mounted () {
@@ -298,40 +341,14 @@ export default {
     })
   },
   methods: {
-    // 处理数组数据
-    handleToArrData () {
-
-    },
     // 初始化拖拽事件
     init_drag_event () {
       // 模块icon点击数据接收统一处理
-      this.$http.$on('handleDragIconClick', ({ direction, flag }) => {
-        let newArr = JSON.parse(JSON.stringify(this.showModulesList))
-        switch (direction) {
-          case 'up':
-            console.log(flag)
-            let temp = newArr[(flag - 1)]
-            newArr[(flag - 1)] = newArr[flag]
-            newArr[flag] = temp
-            this.showModulesList = newArr
-            console.log(newArr, '--' + this.showModulesList)
-            break
-          case 'dowm':
-            let temp2 = newArr[(flag + 1)]
-            newArr[(flag + 1)] = newArr[flag]
-            newArr[flag] = temp2
-            this.showModulesList = newArr
-            break
-          case 'delete':
-            console.log(newArr, flag)
-            newArr.splice(flag, 1)
-            console.log(newArr)
-            this.showModulesList = newArr
-            break
-        }
-      })
+      this.handleTohandleIconClick()
+      // 中间区域拖拽插入数据处理
+      this.handleToMiddleDragData()
       let this_ = this
-      // 模块拖拽
+      // 左侧模块向中间区域拖拽
       $('.third_drag').draggable({
         appendTo: '.decLeft',
         helper: 'clone',
@@ -352,8 +369,18 @@ export default {
         zIndex: 10000 // 拖动位置在拖放区域上方
       })
       this.handleToAcceptDrag()
+      $('.decContent').sortable({
+        items: '.row_item:not(.not_allow_drag)',
+        sort: function () {
+          console.log(123)
+          // gets added unintentionally by droppable interacting with sortable
+          // using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
+          $(this).removeClass('ui-state-default')
+        },
+        placeholder: 'ui-state-highlight'
+      })
     },
-    // 拖拽开始start处理函数
+    // 左侧模块拖拽开始start处理函数
     highlignt_row_item (pos) {
       let this_ = this
       let p = $('.drag_area').offset()
@@ -377,9 +404,10 @@ export default {
         })
       }
     },
-    // 模块拖拽接收
+    // 中间模块拖拽接收
     handleToAcceptDrag () {
       let this_ = this
+      console.log('test')
       $('.decContent').droppable({
         activeClass: 'ui-state-default',
         hoverClass: 'ui-state-hover',
@@ -407,6 +435,92 @@ export default {
               }
           }
         }
+      })
+    },
+    // 中间区域元素开始拖动时处理函数
+    handleToStart ({ oldIndex }) {
+      console.log(oldIndex)
+      let newArr = JSON.parse(JSON.stringify(this.showModulesList))
+      this.oldElement = newArr[oldIndex]
+      this.oldIndex = oldIndex
+      console.log(newArr.length, oldIndex)
+      // let arrLength = newArr.length - 1
+      newArr[oldIndex] = -1
+
+      // if (oldIndex === arrLength) {
+      //   newArr.pop()
+      //   console.log(newArr)
+      // } else {
+      //   newArr.splice(oldIndex, 1)
+      // }
+      console.log(newArr)
+      this.showModulesList = newArr
+
+      let data = newArr
+      setTimeout(() => {
+        this.$http.$emit('decCard', data, oldIndex)
+      }, 100)
+
+      this.isDragging = true
+    },
+    // 中间区域元素停止拖动是处理函数
+    handleToEnd (e) {
+      let this_ = this
+      console.log(this.oldIndex, this.newIndex, this.oldElement)
+      let newArr = JSON.parse(JSON.stringify(this.showModulesList))
+      let insertIndex = this.newIndex + 1
+      newArr.splice(insertIndex, 0, this.oldElement)
+      console.log(newArr)
+      let newArrMiddle = JSON.parse(JSON.stringify(newArr))
+
+      newArr.forEach((item, index) => {
+        if (item === -1) {
+          newArrMiddle.splice(index, 1)
+        }
+      })
+      this.showModulesList = newArrMiddle
+      this.isDragging = false
+      let data = newArrMiddle
+      setTimeout(() => {
+        this_.$http.$emit('decCard', data, -1)
+      }, 100)
+    },
+    // 中间区域模块icon点击数据接收统一处理
+    handleTohandleIconClick () {
+      console.log(1111)
+      this.$http.$on('handleDragIconClick', ({ direction, flag }) => {
+        let newArr = JSON.parse(JSON.stringify(this.showModulesList))
+        switch (direction) {
+          case 'up':
+            console.log(flag)
+            let temp = newArr[(flag - 1)]
+            newArr[(flag - 1)] = newArr[flag]
+            newArr[flag] = temp
+            this.showModulesList = newArr
+            console.log(newArr, '--' + this.showModulesList)
+            break
+          case 'dowm':
+            let temp2 = newArr[(flag + 1)]
+            newArr[(flag + 1)] = newArr[flag]
+            newArr[flag] = temp2
+            this.showModulesList = newArr
+            break
+          case 'delete':
+            console.log(newArr, flag)
+            newArr.splice(flag, 1)
+            console.log(newArr)
+            this.showModulesList = newArr
+            break
+        }
+        let data = this.showModulesList
+        this.$http.$emit('decCard', data, -1)
+      })
+    },
+    // 中间区域拖拽插入数据处理
+    handleToMiddleDragData () {
+      this.$http.$on('middleDragData', res => {
+        console.log(res)
+        this.newIndex = res
       })
     }
   }
@@ -470,6 +584,9 @@ export default {
           height: 510px;
           background: #fff;
           position: relative;
+          .zwHeight {
+            height: 100%;
+          }
         }
       }
     }
@@ -477,5 +594,8 @@ export default {
   .list-group {
     height: 100%;
   }
+}
+.active {
+  z-index: 100000 !important;
 }
 </style>

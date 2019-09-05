@@ -1,5 +1,8 @@
 <template>
-  <div class="membershipCard modules">
+  <div
+    class="membershipCard modules"
+    @mouseover="mouseOver"
+  >
     <!--会员列表模块-->
     <div
       class="showModule"
@@ -51,7 +54,10 @@
       </div>
     </div>
     <!--放这里-->
-    <div class="setHere activeSetHere">
+    <div
+      class="setHere activeSetHere"
+      :class="activeSetHere?'middleModulesActive':''"
+    >
       放这里
     </div>
   </div>
@@ -72,6 +78,14 @@ export default {
       activeSetHere: false
     }
   },
+  watch: {
+    // activeSetHere (newData) {
+    //   console.log(newData)
+    //   if (newData) {
+    //     this.$http.$emit('middleDragData', this.flag)
+    //   }
+    // }
+  },
   mounted () {
     // 初始化数据
     this.defaultData()
@@ -87,11 +101,12 @@ export default {
         } else {
           this.activeBorder = false
         }
-        // if (hereFlag) {
-        //   this.activeSetHere = true
-        // } else {
-        //   this.activeSetHere = false
-        // }
+        if (hereFlag >= 0) {
+          this.activeSetHere = true
+        } else {
+          this.activeSetHere = false
+        }
+        console.log(this.activeBorder)
       })
     },
     // 移上、移下、删除统一处理事件
@@ -115,6 +130,9 @@ export default {
           this.$http.$emit('handleDragIconClick', obj)
           break
       }
+    },
+    mouseOver () {
+      this.$http.$emit('middleDragData', this.flag)
     }
   }
 }
@@ -230,9 +248,7 @@ export default {
       }
     }
   }
-  .activeBorder {
-    border: 2px dashed #5a8bff;
-  }
+
   .setHere {
     height: 40px;
     text-align: center;
@@ -244,6 +260,15 @@ export default {
   }
   .activeSetHere {
     display: none;
+  }
+}
+.activeBorder {
+  border: 2px dashed #5a8bff !important;
+}
+.membershipCard:hover,
+.placeholder {
+  .middleModulesActive {
+    display: block;
   }
 }
 .placeholder {

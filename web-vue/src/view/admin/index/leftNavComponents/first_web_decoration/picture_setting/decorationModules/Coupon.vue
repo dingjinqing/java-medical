@@ -1,5 +1,8 @@
 <template>
-  <div class="Coupon modules">
+  <div
+    class="Coupon modules"
+    @mouseover="mouseOver"
+  >
     <!--会员卷模块-->
     <div
       class="showModule"
@@ -61,7 +64,10 @@
       </div>
     </div>
     <!--放这里-->
-    <div class="setHere activeSetHere">
+    <div
+      class="setHere activeSetHere"
+      :class="activeSetHere?'middleModulesActive':''"
+    >
       放这里
     </div>
   </div>
@@ -78,7 +84,16 @@ export default {
   },
   data () {
     return {
-      activeBorder: null
+      activeBorder: null,
+      activeSetHere: false
+    }
+  },
+  watch: {
+    activeSetHere (newData) {
+      console.log(newData)
+      if (newData) {
+        this.$http.$emit('middleDragData', this.flag)
+      }
     }
   },
   mounted () {
@@ -87,13 +102,19 @@ export default {
   },
   methods: {
     defaultData () {
-      this.$http.$on('decCard', data => {
+      this.$http.$on('decCard', (data, hereFlag) => {
         console.log(this.flag, data)
         let arr = data.length - 1
         if (this.flag === arr) {
           this.activeBorder = true
         } else {
           this.activeBorder = false
+        }
+
+        if (hereFlag >= 0) {
+          this.activeSetHere = true
+        } else {
+          this.activeSetHere = false
         }
       })
     },
@@ -118,6 +139,10 @@ export default {
           this.$http.$emit('handleDragIconClick', obj)
           break
       }
+    },
+    mouseOver () {
+      console.log(this.flag)
+      this.$http.$emit('middleDragData', this.flag)
     }
   }
 }
@@ -203,9 +228,7 @@ export default {
       }
     }
   }
-  .activeBorder {
-    border: 2px dashed #5a8bff;
-  }
+
   .setHere {
     height: 40px;
     text-align: center;
@@ -217,6 +240,15 @@ export default {
   }
   .activeSetHere {
     display: none;
+  }
+}
+.activeBorder {
+  border: 2px dashed #5a8bff !important;
+}
+.Coupon:hover,
+.placeholder {
+  .middleModulesActive {
+    display: block;
   }
 }
 .placeholder {
