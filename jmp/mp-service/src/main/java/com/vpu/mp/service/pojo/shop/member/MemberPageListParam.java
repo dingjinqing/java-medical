@@ -58,15 +58,15 @@ public class MemberPageListParam extends BaseMemberPojo {
 	
 	/*---------新字段---------------*/
 	/** -是否有手机 */
-	private Boolean hasMobile;
+	private Boolean hasMobile=false;
 	/** -是否有积分  */
-	private Boolean hasScore;
+	private Boolean hasScore=false;
 	/** -是否有余额 */
-	private Boolean hasBalance;
+	private Boolean hasBalance=false;
 	/** -是否有会员卡 */
-	private Boolean hasCard;
+	private Boolean hasCard=false;
 	/** -是否已禁止登录  */
-	private Boolean hasDelete;
+	private Boolean hasDelete=false;
 	/** -是否为导入会员 */
-	private Boolean hasImport;
+	private Boolean hasImport=false;
 }
