@@ -175,6 +175,9 @@ public class OrderInfoService extends ShopBaseService {
 		if(!StringUtils.isEmpty(param.consignee)){
 			select.where(ORDER_INFO.CONSIGNEE.contains(param.consignee));
 		}
+         if(!StringUtils.isEmpty(param.getMobile())){
+             select.where(ORDER_INFO.MOBILE.contains(param.getMobile()));
+         }
 		if(param.countryCode != null){
 			select.where(ORDER_INFO.COUNTRY_CODE.eq(param.countryCode));
 		}
