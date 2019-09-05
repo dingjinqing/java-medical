@@ -82,10 +82,14 @@
             slot="footer"
             class="dialog-footer"
           >
-            <el-button @click=closeInner>取 消</el-button>
+            <el-button
+              @click=closeInner
+              size="small"
+            >取 消</el-button>
             <el-button
               type="primary"
               @click="confirInner"
+              size="small"
             >确 定</el-button>
           </div>
         </el-dialog>
@@ -94,11 +98,15 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click=closeFunc>取 消</el-button>
+        <el-button
+          @click=closeFunc
+          size="small"
+        >取 消</el-button>
         <!--                <el-button @click=reset>重 置</el-button>-->
         <el-button
           type="primary"
           @click="getCheckList"
+          size="small"
         >确 定</el-button>
       </div>
     </el-dialog>

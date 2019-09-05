@@ -66,7 +66,7 @@
       <!-- 配送区域 -->
       <el-form-item>
         <!-- 配送区域表格 -->
-        <section>
+        <section style="border:1px solid black">
           <el-table
             highlight-current-row
             :data="tableData"
@@ -149,11 +149,20 @@
           <!-- 配送区域弹窗 -->
           <locat-t-p
             :location-list=this.locatList
-            :outer-visible=this.dialogStat
-            @close="this.showData"
-            :inner-formData-j="valueA.innerformData"
+            :outer-visible=this.dialogStatA
+            @close="this.showDataA"
+            :inner-obj-j="valueA.innerObj"
             :check-list-t="valueA.checkList"
-            @checkList="this.getCheckList"
+            @checkList="this.getCheckListA"
+          ></locat-t-p>
+          <!-- 包邮条件弹窗 -->
+          <locat-t-p
+            :location-list=this.locatList
+            :outer-visible=this.dialogStatB
+            @close="this.showDataB"
+            :inner-obj-j="valueB.innerObj"
+            :check-list-t="valueB.checkList"
+            @checkList="this.getCheckListB"
           ></locat-t-p>
           <section class="add">
             <el-button
@@ -188,12 +197,12 @@
                   <span>{{scope.row.text}}</span>
                   <!-- 编辑 -->
                   <el-button
-                    @click="handelEdirArea"
+                    @click="handleEdirArea"
                     type="text"
                   >编辑</el-button>
                   <!-- 删除 -->
                   <el-button
-                    @click="handelDelArea"
+                    @click="handleDelArea"
                     type="text"
                   >删除</el-button>
                 </div>
@@ -208,16 +217,16 @@
               <!-- 每个单元格的的包邮条件 -->
               <template slot-scope="scope">
                 <div class="">
-
                   <!-- 件数 -->
+
                   <el-select
-                    @click="shandleAreaChange"
+                    @change="shandleAreaChange($event,scope.$index)"
                     style="width:120px"
                     size="small"
                     v-model="scope.row.obj.value"
                   >
                     <el-option
-                      v-for="item in scope.row.obj.fee0Condition"
+                      v-for="(item) in scope.row.obj.options"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -251,7 +260,6 @@
                       style="width:120px"
                     ></el-input>元包邮
                   </span>
-
                 </div>
               </template>
             </el-table-column>
@@ -263,15 +271,7 @@
               @click="handleShipping"
             >指定可包邮配送区域和条件</el-button>
           </section>
-          <!-- 包邮条件弹窗 -->
-          <locat-t-p
-            :location-list=this.locatList
-            :outer-visible=this.dialogStat
-            @close="this.showData"
-            :inner-formData-j="valueA.innerformData"
-            :check-list-t="valueA.checkList"
-            @checkList="this.getCheckList1"
-          ></locat-t-p>
+
         </section>
       </el-form-item>
     </el-form>
@@ -290,7 +290,7 @@
 <script>
 // 引入省市区三级联动
 import LocatTP from '@/components/admin/areaLinkage/LocatTP'
-import { getAreaSelect, addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'templateAdd',
   components: { LocatTP },
@@ -376,6 +376,10 @@ export default {
           'fee_0_con3_fee': '0' // 件数+金额类型最低金额
         }]
       },
+      // options
+      options: [
+
+      ],
       // 验证规则
       formDataRules: {
         // 模板名称验证
@@ -403,20 +407,25 @@ export default {
       isShowFee0Con2Fee: false,
       isShowFee0Con3Num: false,
       outerVisible: false,
-      dialogStat: false,
+      dialogStatA: false,
+      dialogStatB: false,
       tableData: [
         // { areaText: ``, firstNum: 1, firstFee: 0, continueNum: 1, continueFee: 0 }
       ],
       locatList: [],
-      checkeList: [],
+      checkeListA: [],
+      checkListB: [],
       valueA: {},
+      valueB: {},
       firstNum: 1,
       firstFee: 0,
       continueNum: 1,
       continueFee: 0,
-      showArr: [], // 展示在表格中的数据
+      showArrA: [],
+      showArrB: [], // 展示在表格中的数据
       area_list: [], // 选中的值对应的ID 区域代码
-      area_text: `` // 选中的值中文字符串 区域名称
+      area_text: ``, // 选中的值中文字符串 区域名称
+      index: ``
 
     }
   },
@@ -437,34 +446,42 @@ export default {
     },
     comput: {
       get () {
-        return this.dialogStat
+        return this.dialogStatB
       },
       set () {
-        this.dialogStat = true
-        return this.dialogStat
+        this.dialogStatB = true
+        return this.dialogStatB
       }
     }
   },
 
   methods: {
-    showData (flag) {
-      this.dialogStat = flag
+    showDataB (flag) {
+      this.dialogStatB = flag
     },
-    getCheckList1 (val) {
-      console.log(val)
-      const { areaList, idList, showArr, checkList } = val
+    showDataA (flag) {
+      this.dialogStatA = flag
+    },
+    getCheckListA (val) {
+      // console.log(val)
+      const { idList, showArr, checkList } = val
       this.valueA = val
-      this.checkeList = checkList // 复选框选中LIst(传回组件用)
-      this.showArr = showArr
-      console.log(areaList)
-      console.log(idList)
-      console.log(showArr)
-
-      console.log(this.locatList)
-      // let arr1 = Array.from(new Set(idList))
-      // let arr2 = Array.from(new Set(areaList))
-      // let arr3 = Array.from(new Set(showArr))
-      // console.log(arr1)
+      this.checkeListA = checkList // 复选框选中LIst(传回组件用)
+      this.showArrA = showArr
+      this.tableData.push({
+        'area_list': idList.toString(),
+        'area_text': '北京市、天津市、河北省、山西省、内蒙古自治区、辽宁省、吉林省、黑龙江省、上海市、江苏省、浙江省、安徽省、福建省、江西省、山东省、河南省、湖北省、湖南省、广东省、广西壮族自治区、海南省、重庆市、四川省、贵州省、云南省、西藏自治区、陕西省、甘肃省、青海省、宁夏回族自治区、新疆维吾尔自治区、台湾省、香港特别行政区、澳门特别行政区',
+        'first_num': '1',
+        'first_fee': '1',
+        'continue_num': '1',
+        'continue_fee': '1'
+      })
+    },
+    getCheckListB (val) {
+      const { areaList, idList, showArr, checkList } = val
+      this.valueB = val
+      this.checkeListB = checkList // 复选框选中LIst(传回组件用)
+      this.showArrB = showArr
       this.tableData1.push(
         {
           'area_list': idList.toString(),
@@ -472,7 +489,7 @@ export default {
           'list': `10000`,
           'text': showArr.toString(),
           'obj': {
-            fee0Condition: [
+            options: [
               {
                 value: `1`,
                 label: `件数`
@@ -495,7 +512,6 @@ export default {
         }
       )
 
-      console.log(this.tableData1)
       for (let i = 0; i < this.locatList.length; i++) {
         if (val.checkList.findIndex(item => item === this.locatList[i].provinceId) !== -1) {
           this.locatList[i]['state'] = true
@@ -517,28 +533,6 @@ export default {
         }
       }
     },
-    getCheckList (value) {
-      console.log(value)
-      // 获取的id数组
-      this.valueA = value
-      this.checkeList = value.checkList // 复选框选中LIst(传回组件用)
-      this.showArr = value.showArr
-      this.area_text = value.areaList // fag
-
-      if (value.areaList.length > 0) {
-        for (let i = 0; i < value.areaList.length; i++) {
-          this.formData.goodsDeliverTemplateAreaParam[i].area_list = i + 1
-          this.formData.goodsDeliverTemplateAreaParam[i].area_text = '测试'
-        }
-      }
-      console.log('goodsDeliverTemplateAreaParam:', this.formData.goodsDeliverTemplateAreaParam)
-      // 获取中文拼接字符串，只有省份
-      // if (value.areaList.length > 0) {
-      //   this.tableData.push(
-      //     { area_text: value.areaList.toString(), first_num: this.firstNum, first_fee: this.firstFee, continue_num: this.continueNum, continue_fee: this.continueFee, area_list: value.idList })
-      // }
-      // console.log(this.tableData)
-    },
     // getData
     getData () {
       // console.log(this.locatList)
@@ -551,7 +545,7 @@ export default {
     },
     // 指定可配送区域和运费
     handleAdd () {
-      this.dialogStat = true
+      // this.dialogStatB = true
     },
     // 获取省市区数据
     fetchAreaData () {
@@ -564,6 +558,7 @@ export default {
         }
       }).catch(err => console.log(err))
     },
+    // 处理第二个表格的数据
     // 添加模板
     handleAddTemplate () {
       // 验证模板名称是否输入
@@ -578,66 +573,59 @@ export default {
         })
         return
       }
-      // 判断除可配送区域外，其他不可配送的值
-      if (this.formatLimitDeliverArea === `0`) {
-        // this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
-        // 请求参数
-        let params = {
-          'templateName': this.formData[`templateName`], // 模板名称
-          'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam
-          // 'goodsDeliverTemplateAreaParam': this.formData.goodsDeliverTemplateAreaParam
-        }
-        console.log(params)
-        // 发送请求
-        addTemplate(params).then(res => {
-          const { error } = res
-          if (error === 0) {
-            this.$router.push({
-              name: `deliverTemplateList`
-            })
-          }
-        }).catch(err => console.log(err))
-      } else if (this.formData.goodsDeliverTemplateAreaParam.length > 0) {
-        this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
-        // 请求参数
-        let params = {
-          'templateName': this.formData[`templateName`], // 模板名称
-          'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam,
-          'goodsDeliverTemplateAreaParam': this.formData.goodsDeliverTemplateAreaParam
-        }
-        // 发送请求
-        addTemplate(params).then(res => {
-          console.log(res)
-        }).catch(err => console.log(err))
-      } else {
-
+      // 请求参数
+      this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area = this.formatLimitDeliverArea
+      let params = {
+        'templateName': this.formData[`templateName`], // 模板名称
+        'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam,
+        // 第一个表格的数据
+        'goodsDeliverTemplateAreaParam': [],
+        'goodsDeliverTemplateFeeParam': {
+          'has_fee_0_condition': this.formatHas_fee_0_condition
+        },
+        // 第二个表格的数据
+        'goodsDeliverTemplateFeeConditionParam': []
       }
+      console.log(params)
+      // 发送请求
+      // addTemplate(params).then(res => {
+      //   const { error } = res
+      //   if (error === 0) {
+      //     console.log(`添加成功`)
+      //   }
+      // }).catch(err => console.log(err))
     },
     // 编辑每条
     handleEdit (index) {
       console.log(index)
-      this.dialogStat = true
     },
     // 删除每条
     handleDel (index) {
-      this.tableData.splice(index, 1)
+      // this.tableData.splice(index, 1)
       // console.log(this.tableData)
     },
     // 指定可包邮配送区域和条件
     handleShipping () {
-      this.dialogStat = true
+      this.dialogStatB = true
     },
     // 包邮可配送区域/编辑
-    handelEdirArea () {
+    handleEdirArea () {
 
     },
     // 包邮可配送区域/删除
-    handelDelArea () {
+    handleDelArea () {
 
     },
     // 包邮条件发生该改变触发的函数
-    shandleAreaChange (val) {
-      console.log(val)
+    shandleAreaChange (val, index) {
+      switch (val) {
+        case `1`: this.isShowFee0Con1Num = true; this.isShowFee0Con2Fee = false; this.isShowFee0Con3Num = true
+          break
+        case `2`: this.isShowFee0Con1Num = false; this.isShowFee0Con2Fee = true; this.isShowFee0Con3Num = false
+          break
+        case `3`: this.isShowFee0Con1Num = false; this.isShowFee0Con2Fee = false; this.isShowFee0Con3Num = true
+          break
+      }
     }
   }
 }
