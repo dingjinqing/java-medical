@@ -35,9 +35,9 @@ public class PurchaseDetailVo {
      */
     private Short level;
     /**
-     * 活动信息规则，规则id：[] --- []；主商品购满 [] 元可加 [] 元换购
+     * 活动信息规则，主商品购满 [] 元可加 [] 元换购
      */
-    private Map<Integer, String> purchaseInfo;
+    private List<String> purchaseInfo;
     /**
      * 单笔最大换购数量
      */
