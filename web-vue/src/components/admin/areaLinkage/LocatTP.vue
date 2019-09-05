@@ -26,6 +26,7 @@
                   :label="scope.row.provinceId"
                   :key="scope.row.provinceId"
                   @change="checkedSingleChange"
+                  :disabled="scope.row.state"
                 >
                   {{scope.row.provinceName}}
                 </el-checkbox>
@@ -44,6 +45,7 @@
                   :label="city.cityId"
                   :key="city.cityId"
                   @change="checkedSingleChange"
+                  :disabled="city.state"
                 >
                   <el-button
                     type="text"
@@ -72,6 +74,7 @@
             :label="city.districtId"
             :key="city.districtId"
             @change="checkedSingleChange"
+            :disabled="city.state"
           >
             {{city.districtName}}
           </el-checkbox>
@@ -79,14 +82,10 @@
             slot="footer"
             class="dialog-footer"
           >
-            <el-button
-              @click=closeInner
-              size="small"
-            >取 消</el-button>
+            <el-button @click=closeInner>取 消</el-button>
             <el-button
               type="primary"
               @click="confirInner"
-              size="small"
             >确 定</el-button>
           </div>
         </el-dialog>
@@ -95,13 +94,9 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button
-          @click=closeFunc
-          size="small"
-        >取 消</el-button>
+        <el-button @click=closeFunc>取 消</el-button>
         <!--                <el-button @click=reset>重 置</el-button>-->
         <el-button
-          size="small"
           type="primary"
           @click="getCheckList"
         >确 定</el-button>

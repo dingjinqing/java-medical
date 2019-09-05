@@ -266,7 +266,7 @@ const routes = [
               // 商品管理/出售中商品
               {
                 path: '/admin/home/main/goodsManage/goodsForSale',
-                name: 'sale_on',
+                name: 'goodsForSale',
                 meta: {
                   crumbTitle: 'router.goodsForSale',
                   meta: 'goods_manage',
@@ -281,7 +281,7 @@ const routes = [
               // 商品管理/已售罄
               {
                 path: '/admin/home/main/goodsManage/soldOutGoods',
-                name: 'sale_end',
+                name: 'soldOutGoods',
                 meta: {
                   crumbTitle: 'router.soldOutGoods',
                   meta: 'goods_manage',
@@ -296,7 +296,7 @@ const routes = [
               // 商品管理/仓库中
               {
                 path: '/admin/home/main/goodsManage/goodsInTheWarehouse',
-                name: 'sale_off',
+                name: 'goodsInTheWarehouse',
                 meta: {
                   crumbTitle: 'router.goodsInTheWarehouse',
                   meta: 'goods_manage',

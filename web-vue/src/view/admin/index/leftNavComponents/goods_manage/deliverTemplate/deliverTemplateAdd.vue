@@ -146,6 +146,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <!-- 配送区域弹窗 -->
           <locat-t-p
             :location-list=this.locatList
             :outer-visible=this.dialogStat
@@ -177,14 +178,14 @@
           >
             <!-- 包邮可配送区域 -->
             <el-table-column
-              prop="price"
+              prop="text"
               label="包邮可配送区域"
-              align="center"
+              align="left"
             >
-              <template>
+              <template slot-scope="scope">
                 <div class="">
                   <!-- 展示的中文区域名称 -->
-                  <span></span>
+                  <span>{{scope.row.text}}</span>
                   <!-- 编辑 -->
                   <el-button
                     @click="handelEdirArea"
@@ -194,26 +195,29 @@
                   <el-button
                     @click="handelDelArea"
                     type="text"
-                  >编辑</el-button>
+                  >删除</el-button>
                 </div>
               </template>
             </el-table-column>
             <!-- 设置包邮条件 -->
             <el-table-column
-              prop="price"
+              prop="obj"
               label="设置包邮条件"
-              align="center"
+              align="left"
             >
               <!-- 每个单元格的的包邮条件 -->
-              <template>
+              <template slot-scope="scope">
                 <div class="">
+
                   <!-- 件数 -->
                   <el-select
+                    @click="shandleAreaChange"
+                    style="width:120px"
                     size="small"
-                    v-model="value12"
+                    v-model="scope.row.obj.value"
                   >
                     <el-option
-                      v-for="item in options"
+                      v-for="item in scope.row.obj.fee0Condition"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -221,7 +225,33 @@
                     </el-option>
                   </el-select>
                   <span>满</span>
-                  <el-input v-model="value13">件包邮</el-input>
+                  <span v-show="isShowFee0Con1Num">
+                    <el-input
+                      v-model="scope.row.obj.fee0Con1Num"
+                      size="small"
+                      style="width:120px"
+                    ></el-input>件包邮
+                  </span>
+                  <span v-show="isShowFee0Con2Fee">
+                    <el-input
+                      v-model="scope.row.obj.fee0Con2Fee"
+                      size="small"
+                      style="width:120px"
+                    ></el-input>元包邮
+                  </span>
+                  <span v-show="isShowFee0Con3Num">
+                    <el-input
+                      v-model="scope.row.obj.fee0Con3Num"
+                      size="small"
+                      style="width:120px"
+                    ></el-input>件
+                    <el-input
+                      v-model="scope.row.obj.fee0Con3Fee"
+                      size="small"
+                      style="width:120px"
+                    ></el-input>元包邮
+                  </span>
+
                 </div>
               </template>
             </el-table-column>
@@ -233,6 +263,15 @@
               @click="handleShipping"
             >指定可包邮配送区域和条件</el-button>
           </section>
+          <!-- 包邮条件弹窗 -->
+          <locat-t-p
+            :location-list=this.locatList
+            :outer-visible=this.dialogStat
+            @close="this.showData"
+            :inner-formData-j="valueA.innerformData"
+            :check-list-t="valueA.checkList"
+            @checkList="this.getCheckList1"
+          ></locat-t-p>
         </section>
       </el-form-item>
     </el-form>
@@ -358,16 +397,11 @@ export default {
       },
       // 指定包邮条件的表格数据
       tableData1: [
-        {
-          'area_list': '0',
-          'area_text': '全国（其他地区）',
-          'fee_0_condition': '1',
-          'fee_0_con1_num': '0',
-          'fee_0_con2_num': '10',
-          'fee_0_con3_num': '1',
-          'fee_0_con3_fee': '0'
-        }
+
       ],
+      isShowFee0Con1Num: true,
+      isShowFee0Con2Fee: false,
+      isShowFee0Con3Num: false,
       outerVisible: false,
       dialogStat: false,
       tableData: [
@@ -382,23 +416,7 @@ export default {
       continueFee: 0,
       showArr: [], // 展示在表格中的数据
       area_list: [], // 选中的值对应的ID 区域代码
-      area_text: ``, // 选中的值中文字符串 区域名称
-      value12: `件数`,
-      value13: `1`,
-      options: [
-        {
-          value: `件数`,
-          label: `件数`
-        },
-        {
-          value: `金额`,
-          label: `金额`
-        },
-        {
-          value: `件数+金额`,
-          label: `件数+金额`
-        }
-      ]
+      area_text: `` // 选中的值中文字符串 区域名称
 
     }
   },
@@ -431,6 +449,73 @@ export default {
   methods: {
     showData (flag) {
       this.dialogStat = flag
+    },
+    getCheckList1 (val) {
+      console.log(val)
+      const { areaList, idList, showArr, checkList } = val
+      this.valueA = val
+      this.checkeList = checkList // 复选框选中LIst(传回组件用)
+      this.showArr = showArr
+      console.log(areaList)
+      console.log(idList)
+      console.log(showArr)
+
+      console.log(this.locatList)
+      // let arr1 = Array.from(new Set(idList))
+      // let arr2 = Array.from(new Set(areaList))
+      // let arr3 = Array.from(new Set(showArr))
+      // console.log(arr1)
+      this.tableData1.push(
+        {
+          'area_list': idList.toString(),
+          'area_text': areaList.toString(),
+          'list': `10000`,
+          'text': showArr.toString(),
+          'obj': {
+            fee0Condition: [
+              {
+                value: `1`,
+                label: `件数`
+              },
+              {
+                value: `2`,
+                label: `金额`
+              },
+              {
+                value: `3`,
+                label: `件数+金额`
+              }
+            ],
+            value: `件数`,
+            fee0Con1Num: `1`, // 件数包邮类型最低件数
+            fee0Con2Fee: `0`, // 金额包邮类型最低金额
+            fee0Con3Num: `1`, // 件数+金额类型最低件数
+            fee0Con3Fee: `0` // 件数+金额类型最低金额
+          }
+        }
+      )
+
+      console.log(this.tableData1)
+      for (let i = 0; i < this.locatList.length; i++) {
+        if (val.checkList.findIndex(item => item === this.locatList[i].provinceId) !== -1) {
+          this.locatList[i]['state'] = true
+        }
+        let areaCity = this.locatList[i].areaCity
+        if (areaCity !== undefined) {
+          for (let j = 0; j < areaCity.length; j++) {
+            if (val.checkList.findIndex(item => item === areaCity[j].cityId) !== -1) {
+              areaCity[j]['state'] = true
+            }
+            // this.innerObj[areaCity[j].cityId]=0
+            let distn = areaCity[j].areaDistrict
+            for (let k = 0; k < distn.length; k++) {
+              if (val.checkList.findIndex(item => item === distn[k].districtId) !== -1) {
+                distn[k]['state'] = true
+              }
+            }
+          }
+        }
+      }
     },
     getCheckList (value) {
       console.log(value)
@@ -473,7 +558,7 @@ export default {
       getAreaSelect().then(res => {
         const { error, content } = res
         if (error === 0) {
-          console.log(content)
+          // console.log(content)
           content.unshift({ 'provinceId': 1, 'provinceName': '全选' })
           this.locatList = content
         }
@@ -540,7 +625,7 @@ export default {
     },
     // 指定可包邮配送区域和条件
     handleShipping () {
-
+      this.dialogStat = true
     },
     // 包邮可配送区域/编辑
     handelEdirArea () {
@@ -549,6 +634,10 @@ export default {
     // 包邮可配送区域/删除
     handelDelArea () {
 
+    },
+    // 包邮条件发生该改变触发的函数
+    shandleAreaChange (val) {
+      console.log(val)
     }
   }
 }
