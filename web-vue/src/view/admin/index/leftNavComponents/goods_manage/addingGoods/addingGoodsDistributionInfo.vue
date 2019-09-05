@@ -115,7 +115,7 @@ import { isStrBlank } from '@/util/goodsUtil'
 export default {
   name: 'addingGoodsDistributionInfo',
   props: ['goodsProductInfoData'],
-  inject:['stepData'],
+  inject: ['stepData'],
   components: {
     ImageDalog
   },
@@ -175,12 +175,9 @@ export default {
     },
     /* 添加图片点击事件，弹出图片选择组件 */
     addGoodsImg () {
-      console.log("currentStep")
-      console.log(this.stepData)
       if (this.goodsDistributionInfo.shareAction !== 2 || this.goodsDistributionInfo.shareImgAction !== 2) {
         return
       }
-
       this.$http.$emit('dtVisible')
     },
     /* 添加图片点击回调事件 */

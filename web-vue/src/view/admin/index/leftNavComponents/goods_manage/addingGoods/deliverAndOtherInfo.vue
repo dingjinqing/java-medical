@@ -216,16 +216,16 @@ export default {
       /* 会员专享卡数据 */
       cardsSelectOptions: [],
       cardSelectedTempVal: null,
-      cardSelectedItems: [],
+      cardSelectedItems: []
     }
   },
   methods: {
     /* loading开始加载遮罩预留函数 */
-    beginLoading(){
+    beginLoading () {
 
     },
     /* loading关闭加载遮罩预留函数 */
-    closeLoading(){
+    closeLoading () {
 
     },
     /* 解析运费模板数据 */

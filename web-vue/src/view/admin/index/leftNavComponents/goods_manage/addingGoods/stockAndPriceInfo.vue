@@ -415,7 +415,7 @@ export default {
       specInfoSwitch: false,
       goodsSpecProductsIndex: 0,
       /* 更多配置部分 */
-      collapseActiveName:'stockMore',
+      collapseActiveName: 'stockMore',
       /* 会员价辅助数据 */
       memberCards: [],
       memberCardPrdShow: false,
