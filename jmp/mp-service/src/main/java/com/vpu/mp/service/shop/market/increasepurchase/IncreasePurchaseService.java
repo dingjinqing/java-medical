@@ -120,10 +120,10 @@ public class IncreasePurchaseService extends ShopBaseService {
         return pageResult;
     }
 
-    private Map<Integer, String> getPurchaseDetailInfo(Integer purchasePriceId) {
-        Map<Integer, String> map = db().select(ppr.ID, concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE)).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).orderBy(ppr.ID).fetchMap(ppr.ID, concatWs("---", ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
-        log.debug("获取加价购活动详细规则 [{}]", map);
-        return map;
+    private List<String> getPurchaseDetailInfo(Integer purchasePriceId) {
+        List<String> list = db().select(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE)).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(purchasePriceId)).orderBy(ppr.ID).fetch(concatWs(CONCAT_WS_SEPARATOR, ppr.FULL_PRICE, ppr.PURCHASE_PRICE));
+        log.debug("获取加价购活动详细规则 [{}]", list);
+        return list;
     }
 
 

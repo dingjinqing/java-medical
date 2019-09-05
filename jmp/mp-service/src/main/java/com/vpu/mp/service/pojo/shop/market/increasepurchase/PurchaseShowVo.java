@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.increasepurchase;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author liufei
@@ -34,9 +33,9 @@ public class PurchaseShowVo {
      */
     private Short level;
     /**
-     * 活动信息规则，规则id：[] --- []；主商品购满 [] 元可加 [] 元换购
+     * 活动信息规则，主商品购满 [] 元可加 [] 元换购
      */
-    private Map<Integer, String> purchaseInfo;
+    private List<String> purchaseInfo;
     /**
      * 单笔最大换购数量
      */
