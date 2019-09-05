@@ -110,7 +110,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         }
 
         SelectConditionStep<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> resultStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
+            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
         PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
         for (PurchaseShowVo vo : pageResult.getDataList()) {
             Integer purchaseId = vo.getId();
@@ -482,5 +482,16 @@ public class IncreasePurchaseService extends ShopBaseService {
             redemption.setRedemptionNum(redempNum);
             redemption.setRedemptionTotalMoney(redempMoney);
         }
+    }
+
+    /**
+     * Update priority.更新活动优先级
+     */
+    public void updatePriority(UpdatePriorityParam param){
+        if (db().fetchExists(db().selectFrom(ppd).where(ppd.ID.eq(param.getId())))){
+            db().update(ppd).set(ppd.LEVEL,param.getPriority()).where(ppd.ID.eq(param.getId())).execute();
+            return;
+        }
+        throw new NullPointerException("Activity Not Exist !");
     }
 }

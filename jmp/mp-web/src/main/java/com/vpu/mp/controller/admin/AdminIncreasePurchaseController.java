@@ -4,6 +4,7 @@ import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.LANGUAGE
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,13 +14,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.AddPurchaseParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
 
 /**
  * @author liufei
@@ -129,5 +123,14 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
     public void exportOrderDetail(@RequestBody RedemptionDetailParam param, HttpServletResponse response) {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_DETAIL_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
         export2Excel(shop().increaseService.exportOrderDetail(param),response,fileName);
+    }
+
+    /**
+     * 活动优先级修改
+     */
+    @PostMapping("/api/admin/market/increasepurchase/updatepriority")
+    public JsonResult updatePriority(@RequestBody UpdatePriorityParam param) {
+        shop().increaseService.updatePriority(param);
+        return success();
     }
 }
