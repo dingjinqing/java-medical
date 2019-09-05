@@ -139,7 +139,7 @@ public class OrderInfoService extends ShopBaseService {
 			select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.goodsName)));
 		}
 		if(!StringUtils.isEmpty(param.orderSn)){
-			 select.where(ORDER_INFO.ORDER_SN.eq(param.orderSn));
+			 select.where(ORDER_INFO.ORDER_SN.contains(param.orderSn));
 		}
 		if(param.orderStatus != null && param.orderStatus.length != 0){
 			 select.where(ORDER_INFO.ORDER_STATUS.in(param.orderStatus));
@@ -173,7 +173,7 @@ public class OrderInfoService extends ShopBaseService {
 			select.where(ORDER_INFO.VERIFY_CODE.eq(param.verifyCode));
 		}
 		if(!StringUtils.isEmpty(param.consignee)){
-			select.where(ORDER_INFO.CONSIGNEE.eq(param.consignee));
+			select.where(ORDER_INFO.CONSIGNEE.contains(param.consignee));
 		}
 		if(param.countryCode != null){
 			select.where(ORDER_INFO.COUNTRY_CODE.eq(param.countryCode));

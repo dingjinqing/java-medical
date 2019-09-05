@@ -9,6 +9,7 @@ import lombok.Data;
  **/
 @Data
 public class MarketOrderGoodsListVo {
+    private Integer goodsId;
     private String goodsName;
     private String goodsImg;
     private String goodsPrice;

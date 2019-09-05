@@ -176,6 +176,6 @@ public class OrderGoodsService extends ShopBaseService{
      * @return  List<MarketOrderGoodsListVo>
      */
     public List<MarketOrderGoodsListVo> getMarketOrderGoodsByOrderSn(String orderSn) {
-        return db().select(TABLE.GOODS_NAME,TABLE.GOODS_IMG,TABLE.GOODS_PRICE).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(MarketOrderGoodsListVo.class);
+        return db().select(TABLE.GOODS_ID,TABLE.GOODS_NAME,TABLE.GOODS_IMG,TABLE.GOODS_PRICE).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(MarketOrderGoodsListVo.class);
     }
 }
