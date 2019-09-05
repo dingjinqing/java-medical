@@ -88,7 +88,6 @@
                 <div
                   v-for="(item,index) in showModulesList"
                   :key="index"
-                  class=""
                 >
                   <!--会员列表模块-->
 
@@ -289,7 +288,7 @@ export default {
         value: '瓜分积分'
       }],
       showModulesList: [],
-      dataId: -1
+      insertModulesId: -1
     }
   },
   mounted () {
@@ -326,7 +325,7 @@ export default {
     },
     // 拖拽开始start处理函数
     highlignt_row_item (pos) {
-      // let this_ = this
+      let this_ = this
       let p = $('.drag_area').offset()
       console.log(p, '--', pos, '--', $('.drag_area').width(), $('.drag_area').height())
       if (pos.left > p.left && pos.top > p.top &&
@@ -336,18 +335,16 @@ export default {
 
         $('.modules').each(function (idx, item) {
           p = $(this).offset()
-          // console.log($(this).attr('data-id'))
-          // this_.dataId = $(this).attr('data-id')
           if (pos.left > p.left && pos.top > p.top &&
             pos.left < p.left + $(this).width() &&
             pos.top < p.top + $(this).height()
           ) {
+            this_.insertModulesId = $(this)[0].__vue__.flag
+            console.log($(this)[0].__vue__.flag)
             $('.modules').removeClass('placeholder')
             $(this).addClass('placeholder')
           }
         })
-        // let last = this.showModulesList
-        // this.$http.$emit('decCard', last)
       }
     },
     // 模块拖拽接收
@@ -360,12 +357,24 @@ export default {
         drop: function (event, ui) {
           // console.log(ui.draggable[0].innerText)
           // console.log(this_.dataId)
+          console.log(this_.insertModulesId, '--', this_.showModulesList)
+          let insert = this_.insertModulesId + 1
           switch (ui.draggable[0].innerText) {
             case '会员卡':
-              this_.showModulesList.push(1)
+              if (this_.insertModulesId === -1) {
+                this_.showModulesList.push(1)
+              } else {
+                this_.showModulesList.splice(insert, 0, 1)
+                console.log(this_.showModulesList)
+              }
+
               break
             case '优惠卷':
-              this_.showModulesList.push(2)
+              if (this_.insertModulesId === -1) {
+                this_.showModulesList.push(2)
+              } else {
+                this_.showModulesList.splice(insert, 0, 2)
+              }
           }
         }
       })
