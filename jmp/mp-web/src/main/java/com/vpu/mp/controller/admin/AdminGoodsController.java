@@ -134,6 +134,9 @@ public class AdminGoodsController extends AdminBaseController {
         goods.setShopId(shopId());
 
         shop().goods.insert(goods);
+
+        result.setContent(goods.getGoodsId());
+
         return result;
     }
 
@@ -246,6 +249,15 @@ public class AdminGoodsController extends AdminBaseController {
 
 
         return success(goodsVo);
+    }
+
+    @PostMapping("/api/admin/goods/qrCode/get")
+    public JsonResult getQrCode(Integer goodsId){
+        if (goodsId == null) {
+            return fail(JsonResultCode.GOODS_ID_IS_NULL);
+        }
+        GoodsQrCodeVo vo= shop().goods.getGoodsQrCode(goodsId);
+        return success(vo);
     }
 
     private JsonResult columnValueExistCheckForUpdate(Goods goods) {

@@ -17,7 +17,9 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
@@ -55,7 +57,7 @@ public class GoodsService extends ShopBaseService {
     @Autowired public ChooseLinkService chooseLink;
     @Autowired protected MemberCardService memberCardService;
     @Autowired protected GoodsSpecProductService goodsSpecProductService;
-
+    @Autowired protected QrCodeService qrCodeService;
 
     public GoodsInitialVo pageInitValue(){
         GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
@@ -781,4 +783,18 @@ public class GoodsService extends ShopBaseService {
             fetchMap(GOODS.GOODS_ID);
     }
 
+    /**
+     *  获取商品小程序展示页面
+     * @param goodsId 商品id
+     * @return GoodsQrCodeVo
+     */
+    public GoodsQrCodeVo getGoodsQrCode(Integer goodsId){
+        String paramName="goods_id=";
+        String urlParam=paramName+goodsId;
+        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, urlParam);
+        GoodsQrCodeVo goodsQrCodeVo = new GoodsQrCodeVo();
+        goodsQrCodeVo.setImgFullUrl(mpQrCode);
+        goodsQrCodeVo.setPageUrl(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(urlParam));
+        return goodsQrCodeVo;
+    }
 }
