@@ -13,4 +13,6 @@ public class GoodsDeliverBoxVo {
 	private Integer deliverTemplateId;
 	/** 模板名称 */
 	private String templateName;
+	/** 模板类型 */
+	private String flag;
 }
