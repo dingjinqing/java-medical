@@ -143,10 +143,23 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="purchaseInfo"
             label="活动信息"
             align="center"
           >
+            <template slot-scope="scope">
+              <ul>
+                <li
+                  v-for="(item,index) in scope.row.purchaseInfo"
+                  :key="index"
+                >
+                  <el-form :inline="true">
+                    <el-form-item>
+                      满{{item.replace('---','加价')}}换购<br>
+                    </el-form-item>
+                  </el-form>
+                </li>
+              </ul>
+            </template>
           </el-table-column>
           <el-table-column
             prop="maxChangePurchase"
@@ -289,6 +302,10 @@ export default {
     }
   },
   methods: {
+    // 格式化活动信息
+    formater (row, column) {
+
+    },
     // 修改活动优先级
     updatePriority (id, level) {
       let obj = {
@@ -360,10 +377,6 @@ export default {
         // item.purchaseInfo[1] = this.stringReplace(item.purchaseInfo[1])
       })
       this.tableData = data.dataList
-    },
-    //
-    formatter (row, column) {
-      return row.purchaseInfo
     },
     // 停用
     disableShare (shareId) {
