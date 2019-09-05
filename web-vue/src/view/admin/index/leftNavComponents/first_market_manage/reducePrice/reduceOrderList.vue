@@ -66,6 +66,7 @@
         </div>
         <div class="filters_item">
           <el-button
+            @click="initDataList()"
             type="primary"
             size="small"
           >筛选</el-button>
@@ -98,7 +99,7 @@
               :prop="item.prop"
               :label="item.label"
               :key="item.index"
-              v-if="item.index === 3"
+              v-if="item.index === 2"
               width="400"
             >
               <el-table-column
@@ -110,7 +111,7 @@
               >
                 <template slot-scope="scope">
                   <div
-                    v-for="goodsItem in scope.row.orderGoodsList"
+                    v-for="goodsItem in scope.row.goods"
                     :key="goodsItem.goodsId"
                     class="goods_info"
                   >
@@ -130,13 +131,49 @@
                 <template slot-scope="scope">
                   <div
                     class="goods_price"
-                    v-for="goodsItem in scope.row.orderGoodsList"
+                    v-for="goodsItem in scope.row.goods"
                     :key="goodsItem.goodsId"
                   >
-                    {{goodsItem.shopPrice}}
+                    {{goodsItem.goodsPrice}}
                   </div>
                 </template>
               </el-table-column>
+            </el-table-column>
+            <el-table-column
+              :prop="item.prop"
+              :label="item.label"
+              :key="item.index"
+              v-else-if="item.index === 4"
+              width="400"
+            >
+              <template
+                slot-scope="scope"
+                @click="jumpUserInfo(scope.row.userId)"
+              >
+                <span>{{scope.row.username}}</span><br><span>{{scope.row.userMobile}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              :prop="item.prop"
+              :label="item.label"
+              :key="item.index"
+              v-else-if="item.index === 5"
+              width="400"
+            >
+              <template slot-scope="scope">
+                <span>{{scope.row.consignee}}</span><br><span>{{scope.row.mobile}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              :prop="item.prop"
+              :label="item.label"
+              :key="item.index"
+              v-else-if="item.index === 6"
+              width="400"
+            >
+              <template slot-scope="scope">
+                <span>￥{{scope.row.moneyPaid}}</span><br><span>(含快递￥{{scope.row.shippingFee}})</span>
+              </template>
             </el-table-column>
             <el-table-column
               :prop="item.prop"
@@ -156,97 +193,32 @@
 </template>
 
 <script>
+import { getReducePriceOrderList } from '@/api/admin/marketManage/reducePrice.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue')
   },
+  mounted () {
+    if (this.$route.query.id > 0) {
+      this.actId = this.$route.query.id
+      this.initDataList()
+    }
+  },
   data () {
     return {
       loading: false,
-      requestParams: {
-        activityId: 1,
-        goodsName: '',
-        orderSn: '',
-        orderStatus: -1,
-        consignee: '',
-        mobile: '',
-        createTimeStart: '',
-        provinceCode: 1,
-        cityCode: 2,
-        districtCode: 3
-      },
       pageParams: {},
-      tableData: [
-        {
-          actName: '测试',
-          orderSn: '123123123123',
-          createTime: '2018-09-10 11:11:11',
-          moneyPaid: '100.00',
-          orderGoodsList: [
-            {
-              goodsId: 1,
-              shopPrice: 321,
-              goodsNumber: 10,
-              goodsName: '第一古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-              goodsImg: '',
-              discount: '',
-              reducePrice: '',
-              goodsPrice: ''
-            },
-            {
-              goodsId: 2,
-              shopPrice: 321,
-              goodsNumber: 10,
-              goodsName: '第一古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-              goodsImg: '',
-              discount: '',
-              reducePrice: '',
-              goodsPrice: ''
-            },
-            {
-              goodsId: 3,
-              shopPrice: 321,
-              goodsNumber: 10,
-              goodsName: '第一古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-              goodsImg: '',
-              discount: '',
-              reducePrice: '',
-              goodsPrice: ''
-            },
-            {
-              goodsId: 4,
-              shopPrice: 321,
-              goodsNumber: 10,
-              goodsName: '第一古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-              goodsImg: '',
-              discount: '',
-              reducePrice: '',
-              goodsPrice: ''
-            },
-            {
-              goodsId: 5,
-              shopPrice: 321,
-              goodsNumber: 10,
-              goodsName: '第一古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-              goodsImg: '',
-              discount: '',
-              reducePrice: '',
-              goodsPrice: ''
-            }
-          ]
-        }
-
-      ],
+      requestParams: {},
+      tableData: [],
       tableLabel: [
-        { index: 1, prop: 'actName', label: '活动名称' },
-        { index: 2, prop: 'orderSn', label: '订单编号' },
-        { index: 3, prop: '', label: '商品信息' },
-        { index: 4, prop: 'createTime', label: '下单时间' },
-        { index: 5, prop: '', label: '下单人信息' },
-        { index: 6, prop: '', label: '收货人信息' },
-        { index: 7, prop: 'moneyPaid', label: '支付金额' },
-        { index: 8, prop: '', label: '订单状态' }
+        { index: 1, prop: 'orderSn', label: '订单编号' },
+        { index: 2, prop: '', label: '商品信息' },
+        { index: 3, prop: 'createTime', label: '下单时间' },
+        { index: 4, prop: '', label: '下单人信息' },
+        { index: 5, prop: '', label: '收货人信息' },
+        { index: 6, prop: 'moneyPaid', label: '支付金额' },
+        { index: 7, prop: 'orderStatus', label: '订单状态' }
       ],
       orderStatus: [
         { value: -1, label: '全部订单' },
@@ -262,12 +234,27 @@ export default {
         { value: 10, label: '退款中' },
         { value: 11, label: '退款完成' },
         { value: 12, label: '送礼完成' }
-      ]
+      ],
+      actId: null
     }
   },
   methods: {
     initDataList () {
-
+      this.loading = true
+      this.requestParams.activityId = this.actId
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      getReducePriceOrderList(this.requestParams).then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
+    },
+    // 表格数据处理
+    handleData (data) {
+      this.tableData = data
     },
     goodsInfo (data) {
       if (data.columnIndex === 2 || data.columnIndex === 3) {

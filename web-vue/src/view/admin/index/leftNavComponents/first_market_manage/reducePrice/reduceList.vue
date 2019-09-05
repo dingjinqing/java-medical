@@ -105,7 +105,7 @@
                   >
                     <i
                       class="el-icon-s-order"
-                      @click="checkOrderList"
+                      @click="checkOrderList(scope.row.id)"
                     ></i>
                   </el-tooltip>
                 </div>
@@ -186,7 +186,14 @@ export default {
         name: 'reduce_add_view'
       })
     },
-    edit (id) { },
+    edit (id) {
+      this.$router.push({
+        path: '/admin/home/main/reduce/add',
+        query: {
+          id: id
+        }
+      })
+    },
     del (id) {
       let param = {
         'id': id
@@ -249,9 +256,12 @@ export default {
         })
       })
     },
-    checkOrderList () {
+    checkOrderList (id) {
       this.$router.push({
-        name: 'reduce_order_list'
+        path: '/admin/home/main/reduce/orderList',
+        query: {
+          id: id
+        }
       })
     }
   },

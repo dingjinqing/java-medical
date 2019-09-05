@@ -35,3 +35,12 @@ export function deleteReducePrice (data) {
     data: data
   })
 }
+
+// 限时降价订单列表
+export function getReducePriceOrderList (data) {
+  return service({
+    url: '/api/admin/market/reduceprice/order',
+    method: 'post',
+    data: data
+  })
+}
