@@ -9,6 +9,8 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordContentMessage.MSG_ME
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.RECHARGE;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CONSUMPTION;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +29,13 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 /**
  * 余额管理
  * @author 黄壮壮
@@ -46,6 +49,7 @@ public class AccountService extends ShopBaseService {
 	@Autowired private RecordMemberTradeService tradeService;
 	
 	/**
+	 * 会员余额变动
 	 * @param param 余额对象参数
 	 * @param adminUser 操作员id
 	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
@@ -83,7 +87,20 @@ public class AccountService extends ShopBaseService {
 			remark = param.getRemark();
 		}	
 		param.setRemark(remark);
-
+		
+		/** -支付类型  */
+		if(BigDecimalUtil.compareTo(param.getAmount(), BigDecimal.ZERO)>0) {
+			/** -充值 */
+			param.setIsPaid(RECHARGE.getValue());
+		}else {
+			/** -消费 */
+			param.setIsPaid(CONSUMPTION.getValue());
+		}
+		
+		/** -支付类型 不能为null */
+		if(param.getPayment() == null) {
+			param.setPayment("");
+		}
 		/** 加事务 */
 		this.transaction(() ->{
 			/** 插入要更新的数据到user_account表 */
@@ -139,8 +156,17 @@ public class AccountService extends ShopBaseService {
 	 * @param user
 	 */
 	private void updateUserAccount(AccountParam param, UserRecord user) {
-		db().update(USER).set(USER.ACCOUNT, param.getAmount().add(user.getAccount()))
-				.where(USER.USER_ID.eq(user.getUserId())).execute();
+		/** 应该从user_account表中计算余额 */
+//		db().update(USER).set(USER.ACCOUNT, param.getAmount().add(user.getAccount()))
+//				.where(USER.USER_ID.eq(user.getUserId())).execute();
+		logger().info("计算用户余额");
+		BigDecimal account = db().select(DSL.sum(USER_ACCOUNT.AMOUNT))
+			.from(USER_ACCOUNT)
+			.where(USER_ACCOUNT.USER_ID.eq(user.getUserId()))
+			.fetchOne()
+			.into(BigDecimal.class);
+		logger().info("计算用户余额； "+account);
+		db().update(USER).set(USER.ACCOUNT,account).where(USER.USER_ID.eq(user.getUserId())).execute();
 	}
 
 	/**
