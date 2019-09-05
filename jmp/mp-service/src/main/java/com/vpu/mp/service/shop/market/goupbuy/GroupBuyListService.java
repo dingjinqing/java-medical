@@ -56,7 +56,7 @@ public class GroupBuyListService  extends ShopBaseService {
 
         SelectConditionStep<? extends Record> records = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
                 GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_DEFINE.STATUS, GROUP_BUY_DEFINE.LIMIT_AMOUNT,
-                DSL.ifnull(table.field(GROUP_ORDER_NUM),0))
+                DSL.ifnull(table.field(GROUP_ORDER_NUM),0).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_DEFINE)
                 .leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
                 .leftJoin(table).on(table.field(GROUP_BUY_LIST.ACTIVITY_ID).eq(GROUP_BUY_DEFINE.ID))
