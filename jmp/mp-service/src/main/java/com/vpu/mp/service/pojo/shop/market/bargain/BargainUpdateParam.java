@@ -48,6 +48,8 @@ public class BargainUpdateParam {
     private BigDecimal bargainMinMoney;
     private BigDecimal bargainMaxMoney;
     private Byte       freeFreight;
+
+    private BigDecimal expectationPrice;
 	
 	private ShopShareConfig shareConfig;
 }

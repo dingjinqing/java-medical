@@ -49,7 +49,7 @@ public class BargainAddParam {
 	private Integer expectationNumber;
 	
 	/**
-	 *  指定金额结算模式的砍价底价
+	 *  指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限
 	 */
 	private BigDecimal expectationPrice;
 	
