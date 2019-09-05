@@ -25,7 +25,9 @@ public final class DateUtil {
 			.withInitial(() -> new HashMap<String, SimpleDateFormat>());
 
 	public static final String DATE_FORMAT_SHORT = "yyyyMMdd";
+    public static final String DATE_FORMAT_SIMPLE = "yyyy-MM-dd";
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
+
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
 
 	private static final Integer MILLI_SECOND = 1000;
