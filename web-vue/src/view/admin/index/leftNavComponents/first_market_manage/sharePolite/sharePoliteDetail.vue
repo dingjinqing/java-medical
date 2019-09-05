@@ -218,7 +218,7 @@ export default {
       data.map((item, index) => {
         switch (item.rewardType) {
           case 1:
-            item.rewardType = '积分'
+            item.rewardType = item.score + '积分'
             break
           case 2:
             item.rewardType = '优惠券'
@@ -228,6 +228,20 @@ export default {
             break
           default:
             item.rewardType = ''
+            break
+        }
+        switch (item.awardLevel) {
+          case 1:
+            item.awardLevel = '一级'
+            break
+          case 2:
+            item.awardLevel = '二级'
+            break
+          case 3:
+            item.awardLevel = '三级'
+            break
+          default:
+            item.awardLevel = ''
             break
         }
       })

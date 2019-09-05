@@ -40,6 +40,14 @@ export function changeActivity (data) {
     data: data
   })
 }
+// 修改活动优先级
+export function updatePriority (data) {
+  return service({
+    url: `/api/admin/market/increasepurchase/updatepriority`,
+    method: 'post',
+    data: data
+  })
+}
 // 分享,获取小程序二维码
 export function share (data) {
   return service({

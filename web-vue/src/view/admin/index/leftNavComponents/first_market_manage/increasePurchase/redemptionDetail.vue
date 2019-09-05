@@ -6,7 +6,7 @@
           <el-form label-width="100px">
             <el-form-item label="昵称">
               <el-input
-                v-model="param.name"
+                v-model="param.nickName"
                 placeholder="请输入昵称"
               ></el-input>
             </el-form-item>
@@ -16,7 +16,7 @@
           <el-form label-width="100px">
             <el-form-item label="手机号">
               <el-input
-                v-model="param.name"
+                v-model="param.phoneNumber"
                 placeholder="请输入手机号"
               ></el-input>
             </el-form-item>
@@ -26,7 +26,7 @@
           <el-form label-width="100px">
             <el-form-item label="换购数量">
               <el-input
-                v-model="param.fullPriceDown"
+                v-model="param.redemptionNum"
                 placeholder="请输入换购数量"
               ></el-input>
             </el-form-item>
@@ -62,53 +62,51 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="name"
+            prop="userId"
             label="用户id"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
+            prop="username"
             label="昵称"
             align="center"
           >
-            <template slot-scope="scope">
-              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
-            </template>
           </el-table-column>
           <el-table-column
-            prop="level"
+            prop="mobile"
             label="手机号"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="rewardType"
+            prop="orderSn"
             label="订单号"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="maxChangePurchase"
+            prop="createTime"
             label="换购时间"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
-            prop="resaleQuantity"
+            prop="mainGoodsTotalMoney"
             label="主商品总金额"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="resaleQuantity"
+            prop="redemptionNum"
             label="换购数量"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="resaleQuantity"
+            prop="redemptionTotalMoney"
             label="换购总金额"
             align="center"
           >
@@ -137,40 +135,18 @@ export default {
   mounted () {
     this.langDefault()
   },
-  watch: {
-    'param.status' (n, o) {
-      this.initDateList()
-    }
-  },
   created () {
     this.initDateList()
   },
   data () {
     return {
-      activityName: '加价购',
       tableData: [],
       pageParams: {},
-      options: [{
-        value: 1,
-        label: '状态1'
-      }, {
-        value: 2,
-        label: '状态2'
-      }, {
-        value: 3,
-        label: '状态3'
-      }],
       param: {
-        status: 0,
-        name: '',
-        dateRange: [],
-        startTime: null,
-        endTime: null,
-        fullPriceUp: null,
-        fullPriceDown: null,
-        purchasePriceUp: null,
-        purchasePriceDown: null,
-        category: 0,
+        activityId: this.$route.params.id,
+        nickName: '',
+        phoneNumber: '',
+        redemptionNum: null,
         // 分页
         currentPage: 0,
         pageRows: 20
@@ -180,7 +156,6 @@ export default {
   methods: {
     // 分模块查询数据列表
     initDateList () {
-      this.param.category = this.param.status
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
       console.log(this.param)
@@ -196,12 +171,8 @@ export default {
     },
     // 表格数据处理
     handleData (data) {
-      data.dataList.map((item, index) => {
-        console.log(item.purchaseInfo)
-      })
       this.tableData = data.dataList
-    },
-    addActivity () { }
+    }
   }
 }
 </script>

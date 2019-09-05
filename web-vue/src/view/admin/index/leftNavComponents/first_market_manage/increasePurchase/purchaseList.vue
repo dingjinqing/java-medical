@@ -6,8 +6,8 @@
         :activityName="activityName"
         :standard="true"
       />
-      <el-row :gutter="20">
-        <el-col :span="6">
+      <el-row>
+        <el-col :span="5">
           <el-form label-width="100px">
             <el-form-item label="活动名称">
               <el-input
@@ -19,7 +19,7 @@
         </el-col>
         <el-col
           :span="4"
-          :offset=2
+          :offset=1
         >
           <el-form label-width="100px">
             <el-form-item label="活动时间">
@@ -29,6 +29,7 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
+                value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
             </el-form-item>
@@ -40,7 +41,7 @@
           <el-form label-width="100px">
             <el-form-item label="加价购条件:满">
               <el-input
-                v-model="param.fullPriceDown"
+                v-model.number="param.fullPriceDown"
                 placeholder="0"
               ></el-input>
             </el-form-item>
@@ -50,9 +51,15 @@
           <el-form label-width="50px">
             <el-form-item label="元 至">
               <el-input
-                v-model="param.fullPriceUp"
+                v-model.number="param.fullPriceUp"
                 placeholder="0"
               ></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="1">
+          <el-form label-width="30px">
+            <el-form-item label="元">
             </el-form-item>
           </el-form>
         </el-col>
@@ -63,7 +70,7 @@
           <el-form label-width="100px">
             <el-form-item label="换购条件:满">
               <el-input
-                v-model="param.purchasePriceDown"
+                v-model.number="param.purchasePriceDown"
                 placeholder="0"
               ></el-input>
             </el-form-item>
@@ -73,25 +80,25 @@
           <el-form label-width="50px">
             <el-form-item label="元 至">
               <el-input
-                v-model="param.purchasePriceUp"
+                v-model.number="param.purchasePriceUp"
                 placeholder="0"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col
-          :span="2"
-          :offset=1
-        >
+        <el-col :span="1">
+          <el-form label-width="30px">
+            <el-form-item label="元">
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="2">
           <el-button
             type="primary"
             @click="initDateList"
           >查询</el-button>
         </el-col>
-        <el-col
-          :span="4"
-          :offset="1"
-        >
+        <el-col :span="4">
           <el-button
             type="primary"
             style="float:right;"
@@ -128,9 +135,15 @@
             label="活动优先级"
             align="center"
           >
+            <template slot-scope="scope">
+              <inputEdit
+                v-model="scope.row.level"
+                @update="updatePriority(scope.row.id, scope.row.level)"
+              />
+            </template>
           </el-table-column>
           <el-table-column
-            prop="rewardType"
+            prop="purchaseInfo"
             label="活动信息"
             align="center"
           >
@@ -158,27 +171,28 @@
                 <el-tooltip
                   content="编辑"
                   placement="top"
+                  v-if="scope.row.status === 0"
                 >
                   <span class="el-icon-edit-outline iconSpn"></span>
                 </el-tooltip>
                 <el-tooltip
                   content="停用"
                   placement="top"
-                  v-if="status != '1'"
+                  v-if="scope.row.status === 0"
                 >
                   <span
                     class="el-icon-circle-close iconSpn"
-                    @click="shutdown(scope.row.id)"
+                    @click="disableShare(scope.row.id)"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
                   content="启用"
                   placement="top"
-                  v-if="status === '1'"
+                  v-if="scope.row.status === 1"
                 >
                   <span
                     class="el-icon-circle-check iconSpn"
-                    @click="open(scope.row.id)"
+                    @click="enableShare(scope.row.id)"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -186,7 +200,7 @@
                   placement="top"
                 >
                   <span
-                    @click="del(scope.row.id)"
+                    @click="deleteShare(scope.row.id)"
                     class="el-icon-delete iconSpn"
                   ></span>
                 </el-tooltip>
@@ -212,10 +226,7 @@
                   content="分享"
                   placement="top"
                 >
-                  <span
-                    class="el-icon-share iconSpn"
-                    @click="todoItem()"
-                  ></span>
+                  <span class="el-icon-share iconSpn"></span>
                 </el-tooltip>
               </div>
             </template>
@@ -232,16 +243,17 @@
   </div>
 </template>
 <script>
-import { getList, changeActivity } from '@/api/admin/marketManage/increasePurchase.js'
-// import { getList, changeActivity, add, update, getDetail, share, orderList, detailList, orderExport, detailExport } from '@/api/admin/marketManage/increasePurchase.js'
+import { getList, changeActivity, updatePriority } from '@/api/admin/marketManage/increasePurchase.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import statusTab from '@/components/admin/status/statusTab'
+import inputEdit from '@/components/admin/inputEdit'
 export default {
   components: {
     pagination,
     statusTab,
-    wrapper
+    wrapper,
+    inputEdit
   },
   mounted () {
     this.langDefault()
@@ -260,16 +272,16 @@ export default {
       tableData: [],
       pageParams: {},
       param: {
-        status: 0,
+        status: 1,
+        category: 0,
         name: '',
         dateRange: [],
-        startTime: null,
-        endTime: null,
-        fullPriceUp: null,
-        fullPriceDown: null,
-        purchasePriceUp: null,
-        purchasePriceDown: null,
-        category: 0,
+        startTime: '',
+        endTime: '',
+        fullPriceUp: 0,
+        fullPriceDown: 0,
+        purchasePriceUp: 0,
+        purchasePriceDown: 0,
         // 分页
         currentPage: 0,
         pageRows: 20
@@ -277,6 +289,33 @@ export default {
     }
   },
   methods: {
+    // 修改活动优先级
+    updatePriority (id, level) {
+      let obj = {
+        id: id,
+        priority: level
+      }
+      this.$confirm('此操作将修改该活动优先级, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updatePriority(obj).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
+            this.initDateList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消修改'
+        })
+      })
+    },
     // 换购订单跳转
     jumptoRedemptionList (purchaseId) {
       this.$router.push({
@@ -297,11 +336,13 @@ export default {
         }
       })
     },
-    // 分模块查询数据列表
+    // 查询数据列表
     initDateList () {
       this.param.category = this.param.status
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
+      this.param.startTime = this.param.dateRange[0]
+      this.param.endTime = this.param.dateRange[1]
       console.log(this.param)
       getList(this.param).then((res) => {
         console.log(res)
@@ -316,46 +357,93 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.dataList.map((item, index) => {
-        console.log(item.purchaseInfo)
+        // item.purchaseInfo[1] = this.stringReplace(item.purchaseInfo[1])
       })
       this.tableData = data.dataList
     },
-    addActivity () { },
-    // 停用分享有礼活动
-    shutdown (shareId) {
+    //
+    formatter (row, column) {
+      return row.purchaseInfo
+    },
+    // 停用
+    disableShare (shareId) {
       let obj = {
-        'shareId': shareId,
+        'id': shareId,
         'status': 1
       }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('停用成功！')
-        }
+      this.$confirm('此操作将停用该加价购活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeActivity(obj).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '停用成功!'
+            })
+            this.initDateList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消停用'
+        })
       })
     },
-    // 启用分享有礼活动
-    open (shareId) {
+    // 启用
+    enableShare (shareId) {
       let obj = {
-        'shareId': shareId,
+        'id': shareId,
         'status': 0
       }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('启用成功！')
-        }
+      this.$confirm('此操作将启用该加价购活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeActivity(obj).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '启用成功!'
+            })
+            this.initDateList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消启用'
+        })
       })
     },
-    // 删除分享有礼活动
-    del (shareId) {
+    // 删除
+    deleteShare (shareId) {
       let obj = {
-        'shareId': shareId,
+        'id': shareId,
         'status': 2
       }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('删除成功！')
-          this.seacherList()
-        }
+      this.$confirm('此操作将永久删除该加价购活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeActivity(obj).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initDateList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }

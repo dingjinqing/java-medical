@@ -99,16 +99,14 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
+                v-if="scope.row.pageStatus != '已停用'"
               >
-                <span
-                  class="el-icon-edit-outline iconSpn"
-                  @click="todoItem()"
-                ></span>
+                <span class="el-icon-edit-outline iconSpn"></span>
               </el-tooltip>
               <el-tooltip
                 content="停用"
                 placement="top"
-                v-if="status != '1'"
+                v-if="scope.row.status === 0"
               >
                 <span
                   class="el-icon-circle-close iconSpn"
@@ -118,7 +116,7 @@
               <el-tooltip
                 content="启用"
                 placement="top"
-                v-if="status === '1'"
+                v-if="scope.row.status === 1"
               >
                 <span
                   class="el-icon-circle-check iconSpn"
@@ -147,10 +145,7 @@
                 content="分享"
                 placement="top"
               >
-                <span
-                  class="el-icon-share iconSpn"
-                  @click="todoItem()"
-                ></span>
+                <span class="el-icon-share iconSpn"></span>
               </el-tooltip>
             </div>
           </template>
@@ -197,7 +192,7 @@ export default {
       dailyLimit: 0,
       pageParams: {},
       param: {
-        status: 0,
+        status: 1,
         category: 0,
         // 分页
         currentPage: 0,
@@ -206,10 +201,6 @@ export default {
     }
   },
   methods: {
-    // 待完成方法
-    todoItem () {
-
-    },
     // 分享有礼活动领取明细点击跳转
     jumptoReceiveDetail (shareId) {
       this.$router.push({
@@ -223,9 +214,9 @@ export default {
     // 分模块查询数据列表
     seacherList () {
       this.param.category = this.param.status
-      console.log(this.param.category)
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
+      console.log(this.param)
       getList(this.param).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -241,7 +232,7 @@ export default {
     handleData (data) {
       data.pageResult.dataList.map((item, index) => {
         // 有效期
-        if (item.validityPeriod === 1) {
+        if (item.validityPeriod === '1') {
           item.validityPeriod = '永久有效'
         } else {
           item.validityPeriod = `${item.startTime}至${item.endTime}`
@@ -263,16 +254,16 @@ export default {
         }
         // 活动状态
         switch (item.pageStatus) {
-          case 1:
+          case 4:
             item.pageStatus = '已停用'
             break
-          case 2:
+          case 3:
             item.pageStatus = '已过期'
             break
-          case 4:
+          case 2:
             item.pageStatus = '未开始'
             break
-          case 8:
+          case 1:
             item.pageStatus = '进行中'
             break
         }
@@ -294,11 +285,25 @@ export default {
     },
     // 更新每日用户可分享次数上限参数
     saveDailyLimit () {
-      updateDailyLimit(this.input).then(res => {
-        if (res.error === 0) {
-          alert('更新成功！')
-          this.seacherList()
-        }
+      this.$confirm('此操作将更新每日用户可分享次数上限, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateDailyLimit(this.input).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '更新成功！'
+            })
+            this.seacherList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     addActivity () { },
@@ -308,10 +313,25 @@ export default {
         'shareId': shareId,
         'status': 1
       }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('停用成功！')
-        }
+      this.$confirm('此操作将停用该加价购活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeActivity(obj).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '停用成功!'
+            })
+            this.seacherList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消停用'
+        })
       })
     },
     // 启用分享有礼活动
@@ -320,10 +340,25 @@ export default {
         'shareId': shareId,
         'status': 0
       }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('启用成功！')
-        }
+      this.$confirm('此操作将启用该加价购活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeActivity(obj).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '启用成功!'
+            })
+            this.seacherList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消启用'
+        })
       })
     },
     // 删除分享有礼活动
@@ -332,11 +367,25 @@ export default {
         'shareId': shareId,
         'status': 2
       }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('删除成功！')
-          this.seacherList()
-        }
+      this.$confirm('此操作将永久删除该加价购活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        changeActivity(obj).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.seacherList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }
