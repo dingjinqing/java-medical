@@ -95,6 +95,15 @@
                   @start="handleToStart"
                   @end="handleToEnd"
                 >
+                  <!--放这里-->
+                  <!-- <div
+                    class="hereDaily"
+                    :class="topAreaFlag?'setHere':''"
+                    @mouseover="dragTopOver"
+                    @mouseout="dragTopOut"
+                  >
+                    <span :class="topAreaFlag?'setHereSpan':''">放这里</span>
+                  </div> -->
                   <!--模块列表-->
                   <div
                     v-for="(item,index) in showModulesList"
@@ -307,7 +316,8 @@ export default {
       oldIndex: -1,
       newIndex: -1,
       oldElement: null,
-      zbFlag: false
+      zbFlag: false,
+      topAreaFlag: false
     }
   },
   watch: {
@@ -369,16 +379,6 @@ export default {
         zIndex: 10000 // 拖动位置在拖放区域上方
       })
       this.handleToAcceptDrag()
-      $('.decContent').sortable({
-        items: '.row_item:not(.not_allow_drag)',
-        sort: function () {
-          console.log(123)
-          // gets added unintentionally by droppable interacting with sortable
-          // using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
-          $(this).removeClass('ui-state-default')
-        },
-        placeholder: 'ui-state-highlight'
-      })
     },
     // 左侧模块拖拽开始start处理函数
     highlignt_row_item (pos) {
@@ -446,13 +446,6 @@ export default {
       console.log(newArr.length, oldIndex)
       // let arrLength = newArr.length - 1
       newArr[oldIndex] = -1
-
-      // if (oldIndex === arrLength) {
-      //   newArr.pop()
-      //   console.log(newArr)
-      // } else {
-      //   newArr.splice(oldIndex, 1)
-      // }
       console.log(newArr)
       this.showModulesList = newArr
 
@@ -522,6 +515,14 @@ export default {
         console.log(res)
         this.newIndex = res
       })
+    },
+    // 顶部滑动
+    dragTopOver () {
+      this.topAreaFlag = true
+    },
+    // 顶部划出
+    dragTopOut () {
+      this.topAreaFlag = false
     }
   }
 }
@@ -552,7 +553,25 @@ export default {
         width: 254px;
         margin: 2px;
         // padding: 0 2px;
-
+        .hereDaily {
+          height: 5px;
+          background-color: #000;
+          span {
+            display: none;
+          }
+          .setHereSpan {
+            display: block;
+          }
+        }
+        .setHere {
+          height: 40px;
+          text-align: center;
+          line-height: 40px;
+          background-color: #8baeff;
+          font-size: 14px;
+          color: #fff;
+          border: 1px dashed #2589ff;
+        }
         .picTextConDivList {
           float: left;
           border: 1px solid #e5e5e5;
