@@ -115,6 +115,7 @@
               >
                 <i
                   class="el-icon-edit-outline"
+                  @click="edit(scope.row.id)"
                   style="color:#409EFF;fontSize:16px"
                 ></i>
               </el-tooltip>
@@ -321,6 +322,16 @@ export default {
     shareBargain (id) {
       getBargainShareCode(id).then((res) => {
         console.log(res)
+      })
+    },
+
+    // 编辑点击事件
+    edit (id) {
+      this.$router.push({
+        path: '/admin/home/main/bargain/add',
+        query: {
+          id: id
+        }
       })
     },
 

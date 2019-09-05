@@ -59,3 +59,12 @@ export function getBargainShareCode (id) {
     method: 'get'
   })
 }
+
+// 取单个砍价活动信息
+export function getBargainByIsd (data) {
+  return service({
+    url: `/api/admin/market/bargain/get`,
+    method: 'post',
+    data: data
+  })
+}

@@ -18,11 +18,12 @@
             prop=""
           >
             <el-radio-group
+              :disabled="isEditFlag"
               v-model="param.bargainType"
               size="medium"
             >
-              <el-radio label="0">砍到指定金额计算</el-radio>
-              <el-radio label="1">砍到任意金额计算</el-radio>
+              <el-radio :label='0'>砍到指定金额计算</el-radio>
+              <el-radio :label='1'>砍到任意金额计算</el-radio>
             </el-radio-group>
             <span style="margin-left: 15px;">保存后不可编辑</span>
           </el-form-item>
@@ -60,6 +61,7 @@
             prop=""
           >
             <div
+              v-if="!isEditFlag"
               @click="showChoosingGoods"
               class="choose"
             >
@@ -113,13 +115,14 @@
                 align="center"
               ></el-table-column>
               <el-table-column
+                v-if="param.bargainType == 0"
                 prop="shopPrice"
                 label="砍价底价"
                 align="center"
               >
                 <template slot-scope="scope">
                   <el-input-number
-                    v-model="param.floorPrice"
+                    v-model="param.expectationPrice"
                     size="small"
                     style="width:120px"
                     :min="0"
@@ -129,7 +132,35 @@
                   (默认0元)
                 </template>
               </el-table-column>
-
+              <el-table-column
+                v-else
+                prop="shopPrice"
+                label="结算金额"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <el-input-number
+                    :disabled="isEditFlag"
+                    v-model="param.floorPrice"
+                    size="small"
+                    style="width:120px"
+                    :min="0"
+                    :max="scope.row.shopPrice"
+                  >
+                  </el-input-number>
+                  至
+                  <el-input-number
+                    :disabled="isEditFlag"
+                    v-model="param.expectationPrice"
+                    size="small"
+                    style="width:120px"
+                    :min="0"
+                    :max="scope.row.shopPrice"
+                  >
+                  </el-input-number>
+                  (默认0元)保存后不可编辑
+                </template>
+              </el-table-column>
             </el-table>
           </el-form-item>
 
@@ -147,13 +178,14 @@
               prop=""
             >
               <el-radio-group v-model="param.freeFreight">
-                <el-radio label="1">免运费</el-radio>
-                <el-radio label="0">使用原商品运费模板</el-radio>
+                <el-radio :label="1">免运费</el-radio>
+                <el-radio :label="0">使用原商品运费模板</el-radio>
               </el-radio-group>
             </el-form-item>
 
             <el-form-item label="期望参与砍价人次：">
               <el-input-number
+                :disabled="isEditFlag"
                 v-model="param.expectationNumber"
                 size="small"
                 style="width:150px"
@@ -201,10 +233,10 @@
             >
               <el-radio
                 v-model="param.bargainMoneyType"
-                label="0"
+                :label='0'
               >固定金额
                 <el-input-number
-                  :disabled="param.bargainMoneyType=='1'?true:false"
+                  :disabled="param.bargainMoneyType==1?true:false"
                   v-model="param.bargainFixedMoney"
                   size="small"
                   style="width:150px"
@@ -213,17 +245,17 @@
               <br>
               <el-radio
                 v-model="param.bargainMoneyType"
-                label="1"
+                :label='1'
               >随机金额
                 <el-input-number
-                  :disabled="param.bargainMoneyType=='0'?true:false"
+                  :disabled="param.bargainMoneyType==0?true:false"
                   v-model="param.bargainMinMoney"
                   size="small"
                   style="width:150px"
                 ></el-input-number>元
                 <span>至</span>
                 <el-input-number
-                  :disabled="param.bargainMoneyType=='0'?true:false"
+                  :disabled="param.bargainMoneyType==0?true:false"
                   v-model="param.bargainMaxMoney"
                   size="small"
                   style="width:150px"
@@ -243,8 +275,8 @@
               prop=""
             >
               <el-radio-group v-model="param.freeFreight">
-                <el-radio label="1">免运费</el-radio>
-                <el-radio label="0">使用原商品运费模板</el-radio>
+                <el-radio :label='1'>免运费</el-radio>
+                <el-radio :label='0'>使用原商品运费模板</el-radio>
               </el-radio-group>
             </el-form-item>
           </div>
@@ -302,7 +334,7 @@
     </div>
     <div class="footer">
       <el-button
-        @click="addSubmit"
+        @click="isEditFlag?updateSubmit():addSubmit()"
         type="primary"
         size="small"
       >保存</el-button>
@@ -319,12 +351,33 @@ import addCoupon from './addCoupon'
 import actShare from './actShare'
 import AddCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { addBargain } from '@/api/admin/marketManage/bargain.js'
+import { addBargain, getBargainByIsd, updateBargain } from '@/api/admin/marketManage/bargain.js'
 
 export default {
   components: { addCoupon, actShare, AddCouponDialog, choosingGoods },
   mounted () {
-    console.log()
+    if (this.$route.query.id > 0) {
+      // 编辑砍价活动
+      this.actId = this.$route.query.id
+      // 编辑时部分信息不可修改
+      this.isEditFlag = true
+      // 点击编辑按钮进来，初始化页面数据
+      let SimpleBargainParam = {
+        'id': this.$route.query.id
+      }
+      getBargainByIsd(SimpleBargainParam).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.param = res.content
+          this.effectiveDate = []
+          this.effectiveDate.push(res.content.startTime)
+          this.effectiveDate.push(res.content.endTime)
+          this.mrkingVoucherId = res.content.mrkingVoucherId.split(',')
+          this.rewardCouponId = res.content.rewardCouponId.split(',')
+          this.goodsRow.push(res.content.goods)
+        }
+      })
+    }
   },
   data () {
     return {
@@ -333,7 +386,7 @@ export default {
       // 砍价失败后向买家赠送优惠券
       rewardCouponId: [],
       // 优惠券弹窗区分，1鼓励奖，0好友砍价优惠券
-      dialogFlag: 2,
+      dialogFlag: 1,
       effectiveDate: '',
       goodsRow: [],
       srcList: {
@@ -344,10 +397,10 @@ export default {
       },
       param: {
         // 默认值
-        bargainType: '0',
-        freeFreight: '1',
+        bargainType: 0,
+        freeFreight: 1,
         expectationNumber: 100,
-        bargainMoneyType: '0',
+        bargainMoneyType: 0,
         stock: 0,
         floorPrice: 0
       },
@@ -356,13 +409,15 @@ export default {
         'share_doc': '',
         'share_img_action': 1,
         'share_img': ''
-      }
+      },
+      isEditFlag: false,
+      actId: null
     }
   },
   methods: {
     // 选择优惠券弹窗-帮忙砍价的用户
     handleToCallDialog1 () {
-      this.dialogFlag = 1
+      this.dialogFlag = 0
       let couponList = []
       this.mrkingVoucherId.forEach((item, index) => {
         let coupon = {}
@@ -377,7 +432,7 @@ export default {
     },
     // 选择优惠券弹窗-砍价失败后向买家赠送
     handleToCallDialog2 () {
-      this.dialogFlag = 2
+      this.dialogFlag = 1
       let couponList = []
       this.rewardCouponId.forEach((item, index) => {
         let coupon = {}
@@ -392,7 +447,7 @@ export default {
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      if (this.dialogFlag === 2) {
+      if (this.dialogFlag === 1) {
         this.rewardCouponId = this.formatCoupon(data)
       } else {
         this.mrkingVoucherId = this.formatCoupon(data)
@@ -421,6 +476,8 @@ export default {
       this.param.shareConfig = this.shareConfig
       this.param.startTime = this.effectiveDate[0]
       this.param.endTime = this.effectiveDate[1]
+      this.param.mrkingVoucherId = this.mrkingVoucherId.join()
+      this.param.rewardCouponId = this.rewardCouponId.join()
       addBargain(this.param).then((res) => {
         if (res.error === 0) {
           this.$message({
@@ -434,6 +491,31 @@ export default {
           this.$message({
             type: 'fail',
             message: '保存失败!'
+          })
+        }
+      })
+    },
+    updateSubmit () {
+      // 更新活动
+      this.param.id = this.actId
+      this.param.shareConfig = this.shareConfig
+      this.param.startTime = this.effectiveDate[0]
+      this.param.endTime = this.effectiveDate[1]
+      this.param.mrkingVoucherId = this.mrkingVoucherId.join()
+      this.param.rewardCouponId = this.rewardCouponId.join()
+      updateBargain(this.param).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            type: 'success',
+            message: '更新成功!'
+          })
+          this.$router.push({
+            name: 'bargain'
+          })
+        } else {
+          this.$message({
+            type: 'fail',
+            message: '更新失败!'
           })
         }
       })

@@ -70,7 +70,7 @@ const routes = [
   },
   // 添加砍价活动
   {
-    path: '/admin/home/main/bargainActivity',
+    path: '/admin/home/main/bargain/add',
     name: 'bargain_activity',
     meta: {
       crumbTitle: 'router.bargain_activity',
