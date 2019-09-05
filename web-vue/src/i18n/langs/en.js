@@ -15,6 +15,8 @@ import { en as adminPageFramework } from './views/adminPageFramework'
 // 商品管理/全部商品
 import { en as allGoods } from './views/goodsManage/allGoods'
 import { en as goodsImport } from './views/goodsManage/goodsImport'
+// 多人拼团
+import { en as groupBuy } from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
 
 const en = {
   messages: {
@@ -426,6 +428,7 @@ const en = {
   adminPageFramework, // admin 页面框架
   allGoods, // 商品管理/全部商品
   goodsImport,
+  groupBuy,
   ...enLocale
 }
 export default en

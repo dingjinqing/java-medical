@@ -15,6 +15,9 @@ import { cn as adminPageFramework } from './views/adminPageFramework'
 // 商品管理/全部商品
 import { cn as allGoods } from './views/goodsManage/allGoods'
 import { cn as goodsImport } from './views/goodsManage/goodsImport'
+// 多人拼团
+import { cn as groupBuy } from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
+
 // console.log(zhLocale)
 const cn = {
   messages: {
@@ -397,6 +400,7 @@ const cn = {
   adminPageFramework, // admin页面框架
   allGoods, // 商品管理/全部商品
   goodsImport,
+  groupBuy, // 多人拼团
 
   ...zhLocale
 }

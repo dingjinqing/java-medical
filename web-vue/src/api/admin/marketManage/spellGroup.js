@@ -51,3 +51,11 @@ export function deleteGroupBuyActivity (data) {
     data: data
   })
 }
+// 详情明细列表
+export function detailGroupBuy (data) {
+  return service({
+    url: '/api/admin/market/groupbuy/detail/list',
+    method: 'post',
+    data: data
+  })
+}

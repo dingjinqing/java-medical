@@ -94,6 +94,18 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/spellGroup'
       )
   },
+  {
+    path: '/admin/home/main/spellGroup/detailList',
+    name: 'pin_group_detailList',
+    meta: {
+      crumbTitle: 'router.pin_group_detailList',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuyDetailList'
+      )
+  },
   // 分销
   {
     path: '/admin/home/main/distribution',

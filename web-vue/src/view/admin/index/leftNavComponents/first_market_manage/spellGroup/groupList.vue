@@ -20,7 +20,10 @@
       </el-tabs>
 
     </div>
-    <addGroupBuy ref="addGroupBuy" v-if="tableListView===false"  :editData="editData"/>
+    <addGroupBuy ref="addGroupBuy"
+                 @addGroupBuySubmit="addGroupBuySubmit"
+                 v-if="tableListView===false"
+                 :isEdite="isEdite"/>
     <div
       class="table_list"
       v-if="tableListView"
@@ -40,7 +43,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="activityType"
+          prop="activityTypeText"
           label="活动类型"
           align="center"
         >
@@ -110,7 +113,7 @@
                 <span class="el-icon-delete" @click="deleteGroupBuy(scope.row.id)"></span>
               </el-tooltip>
               <el-tooltip content="参团明细" placement="top">
-                <span class="el-icon-tickets"></span>
+                <span class="el-icon-tickets" @click="groupBuyDetailList(scope.row.id)"></span>
               </el-tooltip>
               <el-tooltip content="查看拼团订单" placement="top">
                 <span class="el-icon-s-unfold"></span>
@@ -158,10 +161,10 @@ export default {
     return {
       pageParams: {},
       tableData: [],
-      editData: [],
+      isEdite: true,
       tabSwitch: '2',
       tabInfo: [{
-        title: '全部砍价活动',
+        title: '全部拼团活动',
         name: '1'
       }, {
         title: '进行中',
@@ -225,6 +228,7 @@ export default {
       tabData.map((item, index) => {
         item.vaildDate = `${item.startTime}至${item.endTime}`
         item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+        item.activityTypeText = item.activityType === 1 ? '普通拼团' : '老带新拼团'
       })
       this.tableData = tabData
     },
@@ -276,9 +280,17 @@ export default {
 
       getGroupBuyDetail(obj).then(res => {
         console.log('拼团详情', res)
-        this.editData = res.content
+        this.isEdite = true
         this.$refs.addGroupBuy.editActivityInit(res.content)
       })
+    },
+    addGroupBuySubmit () {
+      this.tabSwitch = '2'
+      this.initDataList()
+    },
+    groupBuyDetailList (id) {
+      console.log('跳转到详情列表页 id = ', id)
+      this.$router.push({path: `/admin/home/main/spellGroup/detailList`, query: {id: id}})
     }
   }
 }
