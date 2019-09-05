@@ -1,5 +1,6 @@
 package com.vpu.mp.service.saas;
 
+import com.vpu.mp.service.saas.db.DataExportService;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,8 @@ public class SaasApplication {
 	public MpDeployHistoryService deployHistoryService;
 	@Autowired
     public TaskJobMainService taskJobMainService;
-
+    @Autowired
+    public DataExportService dataExportService;
 	@Autowired
 	DatabaseManager databaseManager;
 	
