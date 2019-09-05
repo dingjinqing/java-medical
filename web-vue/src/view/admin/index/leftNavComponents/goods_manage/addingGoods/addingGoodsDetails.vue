@@ -5,10 +5,9 @@
         <span style="font-weight:800;color:#000;font-size:16px;margin-top:33px;display: inline-block;">商品详情</span>
       </div>
       <div style="height:550px;overflow-y:auto;overflow-x: auto;background-color:#F5F5F5;">
-        {{goodsProductInfoData.goodsName}}
         <!--商品主图-->
         <div style="height:380px;">
-          <img :src="goodsProductInfoData.goodsImg" style="width:100%;height:100%;"/>
+          <img :src="$imageHost+'/'+goodsProductInfoData.goodsImg" style="width:100%;height:100%;"/>
         </div>
         <!--商品信息-->
         <div class="goodsItemWrap">

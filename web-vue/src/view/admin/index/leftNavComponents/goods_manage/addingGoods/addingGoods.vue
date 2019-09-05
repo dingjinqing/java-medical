@@ -6,7 +6,7 @@
     >
       <!-- 头部导航 headerSteps-->
       <el-steps
-        :active="currentStep"
+        :active="stepData.currentStep"
         finish-status="finish"
         simple
       >
@@ -34,19 +34,19 @@
       <!--商品信息-->
         <addingGoodsProductInfo
           ref="goodsProductInfoCmp"
-          v-show="currentStep===1"
+          v-show="stepData.currentStep===1"
         />
       <!--商品详情-->
         <addingGoodsDetails
           :goodsProductInfoData="goodsProductInfoDataForDetails"
           ref="goodsDetailsCmp"
-          v-show="currentStep===2"
+          v-show="stepData.currentStep===2"
         />
       <!--商品分销信息-->
         <addingGoodsDistributionInfo
           :goodsProductInfoData="goodsProductInfoDataForDistribution"
         ref="goodsDistributionInfoCmp"
-        v-show="currentStep===3"
+        v-show="stepData.currentStep===3"
         />
 
       <!-- 底部按钮组件 -->
@@ -62,28 +62,28 @@
           class="btn"
           size="small"
           @click="footerStepsClick(-1)"
-          v-show="currentStep!==1"
+          v-show="stepData.currentStep!==1"
         >上一步
         </el-button>
         <el-button
           class="btn"
           size="small"
           @click="footerStepsClick(1)"
-          v-show="currentStep!==3"
+          v-show="stepData.currentStep!==3"
         >下一步
         </el-button>
         <el-button
           class="btn"
           size="small"
           type="primary"
-          v-show="currentStep!==1"
+          v-show="stepData.currentStep!==1"
         >保存后继续添加
         </el-button>
         <el-button
           class="btn"
           size="small"
           type="primary"
-          v-show="currentStep!==1"
+          v-show="stepData.currentStep!==1"
         >保存后预览商品
         </el-button>
       </div>
@@ -118,9 +118,15 @@ export default {
       return retData
     }
   },
+  provide () {
+    return {
+      stepData: this.stepData
+    }
+  },
   data () {
     return {
-      currentStep: 1,
+      /* 为了能在子组件内部通过inject察觉到变化,默认情况inject不具有响应式 */
+      stepData: {currentStep: 1},
       goodsProductInfoData: {},
       goodsDetailsData: {},
       goodsDistributionInfoData: {}
@@ -133,7 +139,7 @@ export default {
       this.$http.$emit('dtVisible', false)
 
       // 如果是从商品基本信息跳转验证基础信息正确性
-      if (this.currentStep === 1) {
+      if (this.stepData.currentStep === 1) {
         // 数据验证失败，或者直接从第一步跳到第三步
         if (!this.$refs.goodsProductInfoCmp.validateFormData() || nextStep === 3) {
           return
@@ -143,13 +149,13 @@ export default {
         }
       }
       // 从第三步跳转
-      if (this.currentStep === 3) {
+      if (this.stepData.currentStep === 3) {
         if (!this.$refs.goodsDistributionInfoCmp.validateFormData()) {
           return
         }
       }
 
-      this.currentStep = nextStep
+      this.stepData.currentStep = nextStep
     },
     /* 底部下一步,上一步点击事件 */
     footerStepsClick (step) {
@@ -157,7 +163,7 @@ export default {
       this.$http.$emit('dtVisible', false)
 
       // 如果是从商品基本信息跳转验证基础信息正确性
-      if (this.currentStep === 1) {
+      if (this.stepData.currentStep === 1) {
         if (!this.$refs.goodsProductInfoCmp.validateFormData()) {
           return
         } else {
@@ -166,15 +172,15 @@ export default {
         }
       }
       // 从第三步跳转
-      if (this.currentStep === 3) {
+      if (this.stepData.currentStep === 3) {
         if (!this.$refs.goodsDistributionInfoCmp.validateFormData()) {
           return
         }
       }
 
-      let nextStep = this.currentStep + step
+      let nextStep = this.stepData.currentStep + step
 
-      this.currentStep = nextStep < 1 ? 1 : nextStep > 3 ? 3 : nextStep
+      this.stepData.currentStep = nextStep < 1 ? 1 : nextStep > 3 ? 3 : nextStep
     },
     validateFormData () {
       if (!this.$refs.goodsProductInfoCmp.validateFormData()) {

@@ -281,10 +281,10 @@
       </el-form-item>
     </el-form>
     <!-- 展开更多配置 -->
-    <el-collapse accordion>
+    <el-collapse accordion v-model="collapseActiveName">
       <el-collapse-item
         title="展开/收起更多配置"
-        name="1"
+        name="stockMore"
       >
         <el-form
           :model="goodsProductInfo"
@@ -414,6 +414,8 @@ export default {
       /* 自定义商品规格 */
       specInfoSwitch: false,
       goodsSpecProductsIndex: 0,
+      /* 更多配置部分 */
+      collapseActiveName:'stockMore',
       /* 会员价辅助数据 */
       memberCards: [],
       memberCardPrdShow: false,

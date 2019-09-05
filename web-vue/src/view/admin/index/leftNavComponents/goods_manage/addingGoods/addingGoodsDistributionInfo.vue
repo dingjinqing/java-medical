@@ -94,11 +94,12 @@
         <div>
           <span style="width:70px;display:inline-block;"></span>
           <el-image v-if="goodsDistributionInfo.shareImgUrl === null" @click="addGoodsImg"  fit="scale-down" :src="goodsDistributionInfo.imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
-          <el-image v-else @click="addGoodsImg" fit="cover" :src="goodsDistributionInfo.shareImgUrl" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
+          <el-image v-else @click="addGoodsImg" fit="cover" :src="$imageHost+'/'+goodsDistributionInfo.shareImgUrl" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
         </div>
       </el-form-item>
     </el-form>
-    <ImageDalog
+    <!--解决图片弹框非单例的问题-->
+    <ImageDalog v-if="stepData.currentStep === 3"
       pageIndex='pictureSpace'
       @handleSelectImg='imgDialogSelectedCallback'
     />
@@ -114,6 +115,7 @@ import { isStrBlank } from '@/util/goodsUtil'
 export default {
   name: 'addingGoodsDistributionInfo',
   props: ['goodsProductInfoData'],
+  inject:['stepData'],
   components: {
     ImageDalog
   },
@@ -173,6 +175,8 @@ export default {
     },
     /* 添加图片点击事件，弹出图片选择组件 */
     addGoodsImg () {
+      console.log("currentStep")
+      console.log(this.stepData)
       if (this.goodsDistributionInfo.shareAction !== 2 || this.goodsDistributionInfo.shareImgAction !== 2) {
         return
       }
@@ -180,8 +184,8 @@ export default {
       this.$http.$emit('dtVisible')
     },
     /* 添加图片点击回调事件 */
-    imgDialogSelectedCallback (src) {
-      this.goodsDistributionInfo.shareImgUrl = src
+    imgDialogSelectedCallback (imgObj) {
+      this.goodsDistributionInfo.shareImgUrl = imgObj.imgPath
     },
     /* 验证数据是否全部合法 */
     validateFormData () {

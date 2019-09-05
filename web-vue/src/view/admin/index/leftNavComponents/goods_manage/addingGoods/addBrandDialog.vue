@@ -11,7 +11,6 @@
     >
 
       <el-form :model="formData">
-
         <el-row>
           <el-col :span="9">
             <el-form-item
@@ -121,9 +120,6 @@ export default {
     this.fetchTableData(this.currentPage, this.pageRows)
     this.initData()
   },
-  computed: {
-    // ...mapGetters(['dialogVisible'])
-  },
   props: ['dialogVisible'],
   data () {
     return {
@@ -142,22 +138,6 @@ export default {
   },
 
   methods: {
-    handleTest () {
-      console.log(this.classifyIdOPtions)
-      // let params = {
-      //   'currentPage': '1',
-      //   'pageRows': '3' }
-
-      // brandAllGetRequest(params).then(res => console.log(res)).catch(err => console.log(err))
-      // brandAddRequest({
-      //   'brandName': '匡威24',
-      //   'ename': 'converse',
-
-      //   'first': 13
-
-      // }).then(res => console.log(res)).catch(err => console.log(err))
-    },
-    // ...mapMutations(['SHOW_DIALOG']),
     handleSave () {
       this.$emit('update:dialogVisible', false) // 直接修改父组件的属性
     },

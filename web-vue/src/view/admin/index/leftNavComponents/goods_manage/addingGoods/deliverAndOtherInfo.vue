@@ -26,10 +26,10 @@
         <el-link
           type="primary"
           :underline="false"
-          @click="deliverTemplateSelectRefresh"
+          @click.native="deliverTemplateSelectRefresh"
           href="#"
           style="margin:0 5px;"
-        >刷新
+        >刷新模板
         </el-link>
         |
         <el-link
@@ -37,18 +37,18 @@
           :underline="false"
           href="#"
           style="margin:0 5px;"
-        >新建标签</el-link>
+        >新建模板</el-link>
         |
         <el-link
           type="primary"
           :underline="false"
           href="#"
           style="margin:0 5px;"
-        >管理标签</el-link>
+        >管理模板</el-link>
         <div class="deliverTemplateContentWrap">
           <div class="deliverTemplateContentTitle">
             <div>
-              {{deliverTemplateCurrentData===undefined?'':deliverTemplateCurrentData.templateContent}} 此处是运费模板头部信息，主要展示运费模板其他区域运费信息
+              {{deliverTemplateCurrentData.deliverTemplateTitleDesc}}
             </div>
             <el-link
               style="position:absolute;right: 10px;top: 0px;"
@@ -57,8 +57,13 @@
               href="#"
             >查看详情</el-link>
           </div>
-          <div class="deliverTemplateContent">
-            {{deliverTemplateCurrentData===undefined?'':deliverTemplateCurrentData.templateContent}} 运费模板详情，这个div在的显示需要通过后台的数据进行动态判断，具体如何判断需要和运费模板后端交流，可以咨询良辰
+          <div v-if="deliverTemplateCurrentData.deliverTemplateAreasDesc.length>0" class="deliverTemplateContent">
+            <p>指定可配送区域运费:</p>
+            <p v-for="(item,index) in deliverTemplateCurrentData.deliverTemplateAreasDesc" :key="index">{{item}}</p>
+          </div>
+          <div v-if="deliverTemplateCurrentData.freeDeliverTemplateAreasDesc.length>0" class="deliverTemplateContent">
+            <p>指定条件包邮可配送区域运费:</p>
+            <p v-for="(item,index) in deliverTemplateCurrentData.freeDeliverTemplateAreasDesc" :key="index">{{item}}</p>
           </div>
         </div>
       </el-form-item>
@@ -182,6 +187,7 @@
 <script>
 // api导入
 import {getExclusiveCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+import {deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi} from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 import { format } from '@/util/date'
@@ -189,8 +195,8 @@ export default {
   data () {
     return {
       goodsProductInfo: {
-        deliverTemplateId: null,
         goodsWeight: null,
+        deliverTemplateId: null,
         deliverPlace: null,
         isCardExclusive: false,
         saleType: 0,
@@ -198,23 +204,118 @@ export default {
       },
       /* 运费模板辅助数据 */
       // 当前选中的运费模板，用来展示模板的详细信息使用,此处初始化用的undefined,当没有运费模板的时候在进行大括号插值显示的时候判断使用
-      deliverTemplateCurrentData: undefined,
+      deliverTemplateCurrentData: {
+        deliverTemplateId: null,
+        deliverTemplateTitleDesc: null,
+        deliverTemplateAreasDesc: [],
+        freeDeliverTemplateAreasDesc: []
+
+      },
       /* 运费模板数据 */
       deliverTemplateData: [],
       /* 会员专享卡数据 */
       cardsSelectOptions: [],
       cardSelectedTempVal: null,
-      cardSelectedItems: []
+      cardSelectedItems: [],
     }
   },
   methods: {
-    /* 运费模板下拉框change处理函数 */
-    deliverTemplateChange (deliverTemplateId) {
-      for (let i = 0; i < this.deliverTemplateData.length; i++) {
-        if (this.deliverTemplateData[i].deliverTemplateId === deliverTemplateId) {
-          this.deliverTemplateCurrentData = this.deliverTemplateData[i]
+    /* loading开始加载遮罩预留函数 */
+    beginLoading(){
+
+    },
+    /* loading关闭加载遮罩预留函数 */
+    closeLoading(){
+
+    },
+    /* 解析运费模板数据 */
+    parseDeliverTemplateData (data) {
+      let unit = data.flag === '0' ? '件' : '公斤'
+
+      let retData = {}
+      let temp = null
+      retData.deliverTemplateId = data.deliverTemplateId
+      let templateContent = JSON.parse(data.templateContent)
+      // 运费模板:'除可配送区域外，其他不可配送' 部分信息
+      retData.deliverTemplateTitleDesc = null
+      // 搜索area_list为'0'的表示配送基础信心配置项
+      for (let i = 0; i < templateContent.data_list.length; i++) {
+        if (templateContent.data_list[i].area_list === '0') {
+          temp = templateContent.data_list[i]
           break
         }
+      }
+      if (temp.limit_deliver_area === 1) {
+        retData.deliverTemplateTitleDesc = '除可配送区域外，不可配送'
+      } else { // 1件内5元,
+        retData.deliverTemplateTitleDesc = `${temp.first_num} ${unit}内${temp.first_fee}元,每增加${temp.continue_num}${unit},加${temp.continue_fee}元`
+      }
+
+      // 搜索指定可配送区域运费
+      retData.deliverTemplateAreasDesc = []
+      for (let i = 0; i < templateContent.data_list.length; i++) {
+        if (templateContent.data_list[i].area_list === '0') {
+          continue
+        }
+        temp = templateContent.data_list[i]
+        retData.deliverTemplateAreasDesc.push(`${temp.area_text}：${temp.first_num} ${unit}内${temp.first_fee}元,每增加${temp.continue_num}${unit},加${temp.continue_fee}元`)
+      }
+      // 指定条件包邮可配送区域运费
+      retData.freeDeliverTemplateAreasDesc = []
+      if (templateContent.has_fee_0_condition === 0) {
+        return retData
+      }
+      for (let i = 0; i < templateContent.fee_0_data_list.length; i++) {
+        temp = templateContent.fee_0_data_list[i]
+        // 指定件数包邮
+        if (temp.fee_0_condition === '1') {
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con1_num}${unit}内包邮`)
+        } else if (temp.fee_0_condition === '2') {
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：满${temp.fee_0_con2_fee}元包邮`)
+        } else {
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con3_num}${unit}内，${temp.fee_0_con3_fee}元包邮`)
+        }
+      }
+      return retData
+    },
+    /* 解析默认运费模板 */
+    parseDeliverTemplateDefaultData (data) {
+      let content = JSON.parse(data.content)
+      let retData = {}
+      retData.deliverTemplateId = null
+      if (content.templateName === 1) {
+        retData.deliverTemplateTitleDesc = `订单满${content.feeLimit}包邮，否则运费为${content.price}元`
+      } else {
+        retData.deliverTemplateTitleDesc = `店铺统一运费：${content.price}元`
+      }
+      retData.deliverTemplateAreasDesc = []
+      retData.freeDeliverTemplateAreasDesc = []
+      return retData
+    },
+    /* 运费模板下拉框change处理函数 */
+    deliverTemplateChange (deliverTemplateId) {
+      // 加载遮罩
+      this.beginLoading()
+
+      if (deliverTemplateId === null) {
+        // 查找默认配置
+        getDeliverTemplateConfigApi().then(res => {
+          this.deliverTemplateCurrentData = this.parseDeliverTemplateDefaultData(res)
+          this.closeLoading()
+        })
+      } else {
+        // 找到对应模板信息
+        getDeliverTemplateApi({'deliverTemplateId': deliverTemplateId}).then(res => {
+          this.closeLoading()
+          let content = res.content || []
+          // 模板信息被删除，则展示默认模板信息
+          if (content.length === 0) {
+            this.goodsProductInfo.deliverTemplateId = null
+            this.deliverTemplateChange(null)
+          } else {
+            this.deliverTemplateCurrentData = this.parseDeliverTemplateData(content[0])
+          }
+        })
       }
     },
     /* 刷新运费模板 */
@@ -222,27 +323,25 @@ export default {
       this.deliverTemplateDataInit()
     },
     /* 初始化运费模板数据 */
-    // TODO: 从后台获取去运费模板数据，包括了默认模板数据，将默认模板项的id设置为null，并且放在deliverTemplateData的第一项
     deliverTemplateDataInit () {
-      // 默认运费模板id可以手动设置为0
-      this.deliverTemplateData.push({
-        deliverTemplateId: 0,
-        templateName: '店铺默认运费模板',
-        templateContent: 'content'
-      })
-      this.deliverTemplateData.push({
-        deliverTemplateId: 1,
-        templateName: '运费模板1',
-        templateContent: 'content1'
-      })
-      this.deliverTemplateData.push({
-        deliverTemplateId: 2,
-        templateName: '运费模板2',
-        templateContent: 'content2'
-      })
+      deliverTemplateNameListApi().then(res => {
+        let content = res.content || []
+        this.deliverTemplateData = []
 
-      this.goodsProductInfo.deliverTemplateId = 0
-      this.deliverTemplateCurrentData = this.deliverTemplateData[0]
+        content.forEach(item => {
+          this.deliverTemplateData.push({
+            deliverTemplateId: item.deliverTemplateId,
+            templateName: item.flag === '0' ? '普通--' + item.templateName : '重量--' + item.templateName
+          })
+        })
+        this.deliverTemplateData.unshift({
+          deliverTemplateId: null,
+          templateName: '店铺默认运费模板'
+        })
+        // 刷新时回显使用
+        this.goodsProductInfo.deliverTemplateId = this.deliverTemplateCurrentData.deliverTemplateId
+        this.deliverTemplateChange(this.goodsProductInfo.deliverTemplateId)
+      })
     },
     /* 会员专享商品下拉框change */
     cardSelectChange () {

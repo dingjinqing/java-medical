@@ -39,3 +39,25 @@ export function getAreaSelect () {
     method: 'get'
   })
 }
+// 运费模板下拉框
+export function deliverTemplateNameListApi () {
+  return service({
+    url: '/api/admin/goods/deliver/box',
+    method: 'get'
+  })
+}
+// 运费模板配置查询
+export function getDeliverTemplateConfigApi () {
+  return service({
+    url: '/api/admin/goods/deliver/getconfig',
+    method: 'get'
+  })
+}
+// 查看模板详情
+export function getDeliverTemplateApi (data) {
+  return service({
+    url: '/api/admin/goods/deliver/templateone',
+    method: 'post',
+    data: data
+  })
+}

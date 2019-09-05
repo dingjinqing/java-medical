@@ -114,7 +114,7 @@
             >
               <el-image
                 fit="cover"
-                :src="src"
+                :src="imgHost+'/'+src"
                 style="width: 78px; height: 78px;"
               ></el-image>
               <span
@@ -150,10 +150,10 @@
         </el-form-item>
       </el-form>
       <!-- 基本信息更多配置 -->
-      <el-collapse accordion>
+      <el-collapse accordion v-model="collapseActiveName">
         <el-collapse-item
           title="展开/收起更多配置"
-          name="1"
+          name="basicMore"
         >
           <el-form
             ref="basicInfoOtherForm"
@@ -232,7 +232,7 @@
               <el-link
                 type="primary"
                 :underline="false"
-                @click="labelSelectRefresh"
+                @click.native="labelSelectRefresh"
                 href="#"
                 style="margin:0 5px;"
               >刷新
@@ -273,14 +273,22 @@
               label="商品品牌："
               prop="brandName"
             >
-              <el-input
-                v-model="goodsProductInfo.brandId"
-                disabled
-                placeholder="添加品牌"
-                size="small"
-                @click="brandInputClick"
-                style="width:170px;"
-              />
+              <el-button @click="goodsBrandDialogData.goodsBrandDialogShow=true" size="small" style="width: 170px;">
+                {{currentGoodsBrandData.brandName}}
+              </el-button>
+              <el-link
+                type="primary"
+                :underline="false"
+                href="#"
+                style="margin:0 5px;"
+              >新建品牌</el-link>
+              |
+              <el-link
+                type="primary"
+                :underline="false"
+                href="#"
+                style="margin:0 5px;"
+              >管理品牌</el-link>
             </el-form-item>
             <el-form-item
               label="商品视频："
@@ -292,10 +300,51 @@
           </el-form>
         </el-collapse-item>
       </el-collapse>
-      <ImageDalog
+      <!--图片dialog-->
+      <ImageDalog v-if="stepData.currentStep === 1"
         pageIndex='pictureSpace'
         @handleSelectImg='imgDialogSelectedCallback'
       />
+
+      <!--添加品牌dialog-->
+      <el-dialog title="添加品牌"
+                 :visible.sync="goodsBrandDialogData.goodsBrandDialogShow" @open="goodsBrandDialogBeforeOpen"
+                 modal  width="40%" :show-close="false">
+        <el-form :inline="true" :model="goodsBrandDialogData.formData" label-width="80px">
+          <el-form-item  label="品牌名称">
+            <el-input v-model="goodsBrandDialogData.formData.brandName"/>
+          </el-form-item>
+          <el-form-item  label="品牌分类">
+            <el-select v-model="goodsBrandDialogData.formData.classifyId">
+              <el-option label="请选择" :value="null"/>
+              <el-option v-for="(item,index) in goodsBrandDialogData.formData.brandClassifyOptions"
+                         :key="index"
+                         :label="item.classifyName"
+                         :value="item.classifyId"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="fetchGoodsBrandDialogTableData" type="primary" size="small">筛选</el-button>
+          </el-form-item>
+        </el-form>
+        <div class="tableContent">
+          <el-table :data="goodsBrandDialogData.tableData" v-loading="goodsBrandDialogData.loading" border height="300" highlight-current-row
+                    @current-change="brandTableCurrentChange" style="width: 100%;">
+            <el-table-column prop="brandName" label="品牌名称"/>
+            <el-table-column prop="classifyName" label="品牌分类"/>
+            <el-table-column prop="createTime" label="创建时间"/>
+          </el-table>
+          <pagination
+
+            :page-params.sync="goodsBrandDialogData.formData.pageParams"
+            @pagination="fetchGoodsBrandDialogTableData"
+          />
+        </div>
+        <div slot="footer">
+          <el-button @click="brandDialogConfirm" type="primary" size="small">确定</el-button>
+          <el-button @click="brandDialogCancel" type="primary" size="small">取消</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -305,15 +354,16 @@ import {
   selectPlatformClassification,
   goodsSortAndGoodsBrandInitApi
 } from '@/api/admin/goodsManage/addingGoods/addingGoods'
-
+import {goodsBrandListApi, goodsBrandPageListApi} from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
 import { isStrBlank } from '@/util/goodsUtil'
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
-import addBrandDialog from './addBrandDialog'
+import pagination from '@/components/admin/pagination/pagination'
 
 export default {
-  components: { ImageDalog, addBrandDialog },
+  components: { ImageDalog, pagination },
+  inject: ['stepData'],
   data () {
     return {
       goodsProductInfo: {
@@ -359,6 +409,7 @@ export default {
       },
       imgHost: `${this.$imageHost}`,
       /* 基本信息更多配置部分 */
+      collapseActiveName: 'basicMore',
       unitSelectOptions: [{
         value: '个',
         label: '个'
@@ -422,8 +473,27 @@ export default {
       unitCustomerValue: null,
       // 商家分类下落框
       sortSelectOptions: null,
-      // 商品品牌下拉框
-      brandSelectOptions: null,
+      /* 商品品牌服辅助数据 */
+      // 商品品牌选中对象
+      currentGoodsBrandData: {
+        id: null,
+        brandName: '添加品牌'
+      },
+      goodsBrandDialogData: {
+        goodsBrandDialogShow: false,
+        formData: {
+          brandName: null,
+          classifyId: null,
+          pageParams: {
+            currentPage: 1,
+            pageRows: 20
+          },
+          brandClassifyOptions: []
+        },
+        tableData: [],
+        loading: false,
+        currentSelectedRow: null
+      },
       /* 商品标签辅助数据 */
       // 商品标签下拉框
       labelSelectOptions: null,
@@ -483,11 +553,11 @@ export default {
       this.$http.$emit('dtVisible')
     },
     /* 商品图片点击回调函数 */
-    imgDialogSelectedCallback (src) {
+    imgDialogSelectedCallback (imgObj) {
       if (this.goodsProductInfo.goodsImgs.length >= 5) {
         return
       }
-      this.goodsProductInfo.goodsImgs.push(src)
+      this.goodsProductInfo.goodsImgs.push(imgObj.imgPath)
     },
     /* 删除商品图片 */
     deleteGoodsImg (index) {
@@ -529,10 +599,9 @@ export default {
     // 初始化商家分类和商品标签
     sortAndLabelAndBrandSelectInit () {
       goodsSortAndGoodsBrandInitApi().then(res => {
-        const { content: { goodsBrands, goodsLabels, goodsSorts } } = res
+        const { content: { goodsLabels, goodsSorts } } = res
         this.sortSelectOptions = goodsSorts
         this.labelSelectOptions = goodsLabels
-        this.brandSelectOptions = goodsBrands
       })
     },
     /* 标签下拉框选择事件 */
@@ -558,8 +627,47 @@ export default {
       this.labelSelectedItems.splice(index, 1)
       this.labelSelectOptions.push(item)
     },
-    brandInputClick () {
-      // TODO: 目前的实现的商品品牌选择框逻辑错误，需要修改
+    /** 品牌辅助函数 **/
+    /* brandDialog 打开前预处理 */
+    goodsBrandDialogBeforeOpen () {
+      // 商品品牌下拉列表初始化
+      goodsBrandListApi().then(res => {
+        this.goodsBrandDialogData.formData.brandClassifyOptions = res.content
+      })
+      this.fetchGoodsBrandDialogTableData()
+    },
+    /* 获取分页数据 */
+    fetchGoodsBrandDialogTableData () {
+      let param = {
+        brandName: this.goodsBrandDialogData.formData.brandName,
+        classifyId: this.goodsBrandDialogData.formData.classifyId,
+        ...this.goodsBrandDialogData.formData.pageParams
+      }
+      this.goodsBrandDialogData.loading = true
+
+      goodsBrandPageListApi(param).then(ret => {
+        this.goodsBrandDialogData.formData.pageParams.totalRows = ret.content.page.totalRows
+        this.goodsBrandDialogData.formData.pageParams.currentPage = ret.content.page.currentPage
+        this.goodsBrandDialogData.formData.pageParams.pageRows = ret.content.page.pageRows
+        this.goodsBrandDialogData.tableData = ret.content.dataList
+        this.goodsBrandDialogData.loading = false
+      })
+    },
+    /* 商品品牌table选择行事件 */
+    brandTableCurrentChange (currentRow) {
+      this.goodsBrandDialogData.currentSelectedRow = currentRow
+    },
+    /* brandDialog确认按钮 */
+    brandDialogConfirm () {
+      this.goodsBrandDialogData.goodsBrandDialogShow = false
+      if (this.goodsBrandDialogData.currentSelectedRow !== null) {
+        this.currentGoodsBrandData = this.goodsBrandDialogData.currentSelectedRow
+        this.goodsProductInfo.brandId = this.currentGoodsBrandData.id
+      }
+    },
+    /* brandDialog取消按钮 */
+    brandDialogCancel () {
+      this.goodsBrandDialogData.goodsBrandDialogShow = false
     },
     videoInputClick () {
       // TODO: 视频选择弹出未实现
