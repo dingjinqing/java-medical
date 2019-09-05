@@ -112,10 +112,24 @@
                 effect="dark"
                 content="编辑"
                 placement="top"
+                v-if="scope.row.status === 1"
               >
                 <i
                   class="el-icon-edit-outline"
                   @click="edit(scope.row.id)"
+                  style="color:#409EFF;fontSize:16px"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="删除"
+                placement="top"
+                v-else
+              >
+                <i
+                  @click="delBargain(scope.row.id)"
+                  class="el-icon-delete"
                   style="color:#409EFF;fontSize:16px"
                 ></i>
               </el-tooltip>
@@ -160,13 +174,12 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="删除"
+                content="订单明细"
                 placement="top"
               >
                 <i
-                  @click="delBargain(scope.row.id)"
-                  class="el-icon-delete"
-                  style="color:#409EFF;fontSize:16px"
+                  class="el-icon-s-order"
+                  @click="checkOrderList(scope.row.id)"
                 ></i>
               </el-tooltip>
             </div>
@@ -335,6 +348,17 @@ export default {
       })
     },
 
+    // 跳转砍价订单页
+    checkOrderList (id) {
+      this.$router.push({
+        path: '/admin/home/main/bargain/orderList',
+        query: {
+          id: id
+        }
+      })
+    },
+
+    // 跳转到添加页
     addActivity () {
       this.$router.push({
         name: 'bargain_activity'

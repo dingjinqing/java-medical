@@ -81,6 +81,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/bargain/addBargainAct'
       )
   },
+  // 砍价订单列表
+  {
+    path: '/admin/home/main/bargain/orderList',
+    name: 'bargain_order_list',
+    meta: {
+      crumbTitle: 'router.bargain_order_list',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/bargainOrderList'
+      )
+  },
   // 多人拼团
   {
     path: '/admin/home/main/spellGroup',

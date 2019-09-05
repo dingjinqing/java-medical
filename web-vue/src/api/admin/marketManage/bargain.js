@@ -68,3 +68,12 @@ export function getBargainByIsd (data) {
     data: data
   })
 }
+
+// 砍价活动列表
+export function getBargainOrderList (data) {
+  return service({
+    url: '/api/admin/market/bargain/order',
+    method: 'post',
+    data: data
+  })
+}

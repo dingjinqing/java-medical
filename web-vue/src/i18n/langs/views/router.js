@@ -80,6 +80,8 @@ export const cn = {
   bargain: ['营销管理', '砍价'],
   // 营销管理 砍价
   bargain_activity: ['营销管理', '砍价', '砍价活动'],
+  // 营销管理 砍价订单
+  bargain_order_list: ['营销管理', '砍价', '砍价订单'],
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 添加好友助力活动
@@ -232,6 +234,8 @@ export const en = {
   bargain: ['Marketing management', 'Bargain'],
   // 营销管理 砍价
   bargain_activity: ['Marketing management', 'Bargaining activity'],
+  // 营销管理 砍价订单
+  bargain_order_list: ['Marketing management', 'Bargain', 'Bargaining Orders'],
   // 营销管理 好友助力
   promote: ['Marketing management', 'Good friend help'],
   // 营销管理 添加好友助力活动
