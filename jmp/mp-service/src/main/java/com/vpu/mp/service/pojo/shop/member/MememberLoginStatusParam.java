@@ -18,6 +18,6 @@ import lombok.Setter;
 public class MememberLoginStatusParam {
 	/** 会员用户ID列表  */
 	@NotNull private List<Integer> userIdList;
-	/** 用户登录设置状态 1-禁止登录，0-恢复登录 */
+	/** 用户登录设置状态 1-禁止登录，0-恢复登录  {@link com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES }*/
 	@NotNull private Byte isDelete;
 }

@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.shop.member;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,10 +25,48 @@ public class MemberPageListParam extends BaseMemberPojo {
 	private Integer cardId;
 	/** -邀请人*/
 	private String inviteUserName;
-	/** - 创建时间 */
+	/** -注册 创建时间 */
 	private String createTime;
-	/** -结束时间*/
+	/** -注册结束时间*/
 	private String endTime;
 	
-
+	
+	/** -标签名称 */
+	private String tagName;
+	/** -指定时间内登录有记录 - 开始时间 */
+	private String loginStartTime;
+	/** -指定时间内登录有记录 - 结束时间 */
+	private String loginEndTime;
+	/** -指定时间内有加购行为 - 开始时间 */
+	private String cartStartTime;
+	/** -指定时间内有加购行为 - 结束时间 */
+	private String cartEndTime;
+	/** -指定时间内有交易行为 - 开始时间  */
+	private String buyStartTime;
+	/** -指定时间内有交易行为 - 结束时间  */
+	private String buyEndTime;
+	/** -客单价 - 最低 */
+	private BigDecimal unitPriceLow;
+	/** -客单价 - 最高 */
+	private BigDecimal unitPriceHight;
+	/** -累计购买次数  - 最低 */
+	private Integer buyCountLow; 
+	/** -累计购买次数  - 最高 */
+	private Integer buyCountHight;
+	/** - 累计指定商品 */
+	private List<Integer> goodsId;
+	
+	/*---------新字段---------------*/
+	/** -是否有手机 */
+	private Boolean hasMobile;
+	/** -是否有积分  */
+	private Boolean hasScore;
+	/** -是否有余额 */
+	private Boolean hasBalance;
+	/** -是否有会员卡 */
+	private Boolean hasCard;
+	/** -是否已禁止登录  */
+	private Boolean hasDelete;
+	/** -是否为导入会员 */
+	private Boolean hasImport;
 }
