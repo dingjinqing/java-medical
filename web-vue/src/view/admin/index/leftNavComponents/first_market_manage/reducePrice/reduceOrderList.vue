@@ -144,7 +144,6 @@
               :label="item.label"
               :key="item.index"
               v-else-if="item.index === 4"
-              width="400"
             >
               <template
                 slot-scope="scope"
@@ -158,7 +157,6 @@
               :label="item.label"
               :key="item.index"
               v-else-if="item.index === 5"
-              width="400"
             >
               <template slot-scope="scope">
                 <span>{{scope.row.consignee}}</span><br><span>{{scope.row.mobile}}</span>
@@ -169,7 +167,6 @@
               :label="item.label"
               :key="item.index"
               v-else-if="item.index === 6"
-              width="400"
             >
               <template slot-scope="scope">
                 <span>￥{{scope.row.moneyPaid}}</span><br><span>(含快递￥{{scope.row.shippingFee}})</span>
