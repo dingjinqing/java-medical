@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -20,6 +22,8 @@ import com.vpu.mp.service.shop.member.MemberService;
 * @Date: 2019年8月26日
 * @Description: 会员余额控制器
 */
+@RestController
+@RequestMapping(value="/api/admin/member")
 public class AdminAccountController extends AdminBaseController {
 	
 	/**
