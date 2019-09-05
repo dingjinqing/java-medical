@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.trade;
 import com.vpu.mp.db.shop.tables.TradesRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 
 import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
@@ -40,6 +41,9 @@ public class TradesRecordService extends ShopBaseService{
 	 */
 	public void addRecord(BigDecimal money, String orderSn, Integer userId, byte tradeContent, byte tradeType,
 			byte tradeFlow, byte tradeStatus) {
+		if(BigDecimalUtil.compareTo(money, null) < 1) {
+			return;
+		}
 		TradesRecordRecord record = db().newRecord(TABLE);
 		record.setTradeNum(money);
 		record.setTradeSn(orderSn);

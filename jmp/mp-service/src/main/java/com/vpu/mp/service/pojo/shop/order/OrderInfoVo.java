@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -53,5 +54,8 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**订单付款方式，0全款 1定金 2补款*/
 	@JsonIgnore
 	private Byte orderPayWay;
+	/**（券）折扣金额*/
+	@JsonIgnore
+	private BigDecimal discount;
 	
 }

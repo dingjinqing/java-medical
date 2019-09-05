@@ -19,6 +19,13 @@ public class RecordContentMessage {
     public static final String ORDER_COUPON_PACK_ORDER_REFUND = "order.coupon.pack.order.refund";
     /**会员卡订单退款*/
     public static final String ORDER_MEMBER_CARD_ORDER_REFUND = "order.member.card.order.refund";
+    /**完成*/
+    public static final String ORDER_FINISH = "order.finish";
+    /**退款退货*/
+    public static final String ORDER_RETURN = "order.return";
+    /**关闭*/
+    public static final String ORDER_CLOSE = "order.close";
+
     
     /**
      * 	会员

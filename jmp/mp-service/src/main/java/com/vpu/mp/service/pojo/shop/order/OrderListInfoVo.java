@@ -72,4 +72,6 @@ public class OrderListInfoVo {
 	private String bkOrderSn;
 	@JsonIgnore
 	private Integer activityId;
+	@JsonIgnore
+	private Byte bkOrderPaid;
 }

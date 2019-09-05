@@ -30,6 +30,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
@@ -42,6 +43,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -82,6 +84,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	private GoodsSpecProductService goodsSpecProduct;
 	@Autowired
 	private ReturnStatusChangeService returnStatusChange;
+	@Autowired
+	public RecordAdminActionService record;
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -198,6 +202,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			logger.error("退款捕获mp异常", e);
 			return JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION;
 		}
+		//操作记录
+		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
 		return null;
 	}
 

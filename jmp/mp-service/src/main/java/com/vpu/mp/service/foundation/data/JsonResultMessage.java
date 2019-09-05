@@ -328,7 +328,10 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_RETURN_AGREE_RETURN_BECAUSE_STATUS_ERROR = "order_return_agree_return_because_status_error";
 	public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS = "order_return_return_shipping_fee_excess";
 	public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_NOT_ZERO = "order_return_return_shipping_fee_not_zero";
-	
+	public static final String MSG_ORDER_CANCEL_NOT_CANCEL = "order_cancel_not_cancel";
+	public static final String MSG_ORDER_CANCEL_FAIL = "order_cancel_fail";
+	public static final String MSG_ORDER_CLOSE_NOT_CLOSE = "order_close_not_close";
+	public static final String MSG_ORDER_CLOSE_FAIL = "order_close_fail";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";

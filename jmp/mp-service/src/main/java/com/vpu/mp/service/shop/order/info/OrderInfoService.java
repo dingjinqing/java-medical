@@ -451,6 +451,7 @@ public class OrderInfoService extends ShopBaseService {
 				set.set(TABLE.RETURN_FINISH_TIME, DateUtil.getSqlTimestamp());
 			}
 			//TODO 返利更新逻辑未知
+			//优惠卷
 			if(OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER == order.getFanliType()) {
 				set.set(TABLE.SETTLEMENT_FLAG,OrderConstant.SETTLEMENT_NOT);
 				set.set(TABLE.FANLI_MONEY, BigDecimal.ZERO);
@@ -465,9 +466,25 @@ public class OrderInfoService extends ShopBaseService {
 	public void setOrderstatus(String orderSn , byte orderStatus){
 		OrderInfoRecord order = getOrderByOrderSn(orderSn);
 		switch (orderStatus) {
+		//发货
 		case OrderConstant.ORDER_SHIPPED:
 			order.setOrderStatus(OrderConstant.ORDER_SHIPPED);
 			order.setShippingTime(DateUtil.getSqlTimestamp());
+			break;
+		//取消
+		case OrderConstant.ORDER_CANCELLED:
+			order.setOrderStatus(OrderConstant.ORDER_CANCELLED);
+			order.setCancelledTime(DateUtil.getSqlTimestamp());
+			//返利订单特殊处理
+			if(order.getFanliType() == OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER) {
+				order.setSettlementFlag(OrderConstant.SETTLEMENT_NOT);
+				order.setFanliMoney(BigDecimal.ZERO);
+			}
+			break;
+		//关闭
+		case OrderConstant.ORDER_CLOSED:
+			order.setOrderStatus(OrderConstant.ORDER_CLOSED);
+			order.setClosedTime(DateUtil.getSqlTimestamp());
 			break;
 		default:
 			break;

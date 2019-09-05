@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.order.action.base;
 import java.math.BigDecimal;
 
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 
@@ -105,7 +107,12 @@ public class OrderOperationJudgment {
 		}
 		return false;
 	}
-	
+	/**
+	 * 退货判断
+	 * @param order
+	 * @param isMp
+	 * @return
+	 */
 	public static boolean isReturnGoods(OrderListInfoVo order , Boolean isMp) {
 		if(isMp) {
 			//判断mp是否可以退货
@@ -117,6 +124,51 @@ public class OrderOperationJudgment {
 			if(adminIsReturnGoods(order)) {
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 订单是否可以取消
+	 * @param order
+	 * @return
+	 */
+	public static boolean mpIsCancel(OrderListInfoVo order) {
+		if(//1待付款  且  无补款或补款未支付
+			(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAID_N)
+			//2待发货  且 余额支付  且 系统金额为0
+			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_BALANCE_PAY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0
+			//3待发货  且  货到付款
+			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_COD) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 获取系统金额
+	 * @param order
+	 * @return
+	 */
+	public static BigDecimal getOnlinePayAmount(OrderListInfoVo order) {
+		return BigDecimalUtil.addOrSubtrac(
+				BigDecimalPlus.create(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ? BigDecimal.ZERO : order.getMoneyPaid(), Operator.add),
+				BigDecimalPlus.create(order.getScoreDiscount() , Operator.add),
+				BigDecimalPlus.create(order.getMemberCardBalance() , Operator.add),
+				BigDecimalPlus.create(order.getUseAccount() , null));
+	}
+	
+	/**
+	 * 订单是否可以关闭
+	 * @param order
+	 * @return
+	 */
+	public static boolean mpIsClose(OrderListInfoVo order) {
+		if(//待支付不存在补款或补款未支付
+			order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAID_N
+			//待发货 且 货到付款 且 系统支付0
+			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0 && order.getPayCode() == OrderConstant.PAY_CODE_COD) {
+			return true;
 		}
 		return false;
 	}

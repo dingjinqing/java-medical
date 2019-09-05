@@ -161,7 +161,7 @@ public class ReturnMethodService extends ShopBaseService{
 		}
 		//金额换算成积分
 		Integer score = BigDecimalUtil.multiplyOrDivide(
-				BigDecimalPlus.create(new BigDecimal(100), Operator.multiply),
+				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_TO_FEN), Operator.multiply),
 				BigDecimalPlus.create(money,null)
 				).intValue();
 				
@@ -203,10 +203,11 @@ public class ReturnMethodService extends ShopBaseService{
 			} catch (MpException e) {
 				//TODO 微信失败处理
 			}
-			//交易记录
-			tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.CASH_REFUND.getValue(),RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
-			//记录
-			refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MONEY_PAID, money, returnOrder.getRetId());
+			
 		}
+		//交易记录
+		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.CASH_REFUND.getValue(),RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
+		//记录
+		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MONEY_PAID, money, returnOrder.getRetId());
 	}
 }

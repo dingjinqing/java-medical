@@ -29,7 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 
 /**
- * Table:TABLE
+ * Table:ORDER_GOODS
  * @author 王帅
  *
  */
@@ -51,6 +51,15 @@ public class OrderGoodsService extends ShopBaseService{
 			.orderBy(TABLE.ORDER_ID.desc())
 			.fetch();
 		return goods;	
+	}
+	
+	/**
+	 * 	通过订单id[]查询其下商品
+	 * @param arrayToSearch
+	 * @return  Result<?>
+	 */
+	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
+		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
 	
 	/**

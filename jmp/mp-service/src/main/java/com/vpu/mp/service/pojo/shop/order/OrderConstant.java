@@ -192,7 +192,7 @@ public class OrderConstant {
 	public final static byte FANLI_TYPE_MEMBER_ORDER = 2;
 	
 	/**
-	 * 	settlement_flag 结算标志：0：未结算，1：已结算，2：不返利
+	 * 	settlement_flag 返利结算标志：0：未结算，1：已结算，2：不返利
 	 */
 	
 	public final static byte SETTLEMENT_WAIT = 0;
@@ -238,6 +238,12 @@ public class OrderConstant {
 	public final static byte SIMPLE_OPERATE_CLOSE = 0;
 	/**买家取消订单*/
 	public final static byte SIMPLE_OPERATE_CANCEL = 1;
+	/**
+	 * 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
+	 */
+	public final static byte BK_PAID_N = 0;
+	public final static byte BK_PAID_Y = 1;
+	
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",

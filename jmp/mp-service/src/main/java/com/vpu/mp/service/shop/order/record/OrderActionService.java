@@ -27,7 +27,13 @@ public class OrderActionService extends ShopBaseService{
 		record.setShopId(getShopId());
 		record.setUserId(order.getUserId());
 		record.setOrderStatus(beforeStatus);
-		record.setActionUser(param.getAdminInfo().getSysId()+param.getAdminInfo().getUserName());
+		if(param.getAdminInfo() != null) {
+			record.setActionUser(param.getAdminInfo().getSysId() + "," + param.getAdminInfo().getUserName());
+		}
+		
+		if(param.getWxUserInfo() != null){
+			record.setUserOpenid(param.getWxUserInfo().getOpenId());
+		}
 		record.setActionNote(desc);
 		record.insert();
 	}

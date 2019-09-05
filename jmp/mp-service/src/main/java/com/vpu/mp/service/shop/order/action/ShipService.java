@@ -1,3 +1,4 @@
+
 package com.vpu.mp.service.shop.order.action;
 
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
@@ -34,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
@@ -51,6 +53,8 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 	private ShipInfoService shipInfo;
 	@Autowired
 	OrderActionService orderAction;
+	@Autowired
+	public RecordAdminActionService record;
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -141,9 +145,7 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 		//action操作
 		orderAction.addRecord(orderRecord, param, OrderConstant.ORDER_WAIT_DELIVERY, orderRecord.getOrderStatus() == OrderConstant.ORDER_SHIPPED ? "全部发货 " : "部分发货");
 		//TODO 操作记录 b2c_record_admin_action  需要测试记录
-		Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code });
-		saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code }), new String[] {param.getOrderSn()});
-		databaseManager.mainDb();
+		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code }), new String[] {param.getOrderSn()});
 		logger.info("发货完成");
 		return null;
 	}

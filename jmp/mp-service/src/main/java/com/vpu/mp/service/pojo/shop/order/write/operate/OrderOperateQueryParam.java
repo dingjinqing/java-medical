@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser.WxUserInfo;
 import com.vpu.mp.service.shop.order.action.base.IOrderBase;
 
 import lombok.Data;
@@ -29,6 +30,7 @@ public class OrderOperateQueryParam implements IOrderBase{
 	/**区分前后台操作*/
 	private Boolean isMp;
 	private AdminTokenAuthInfo adminInfo;
+	private WxUserInfo wxUserInfo;
 	@Override
 	public OrderServiceCode getServiceCode() {
 		//enum类型values取得数组利用默认排序顺序获取对应service

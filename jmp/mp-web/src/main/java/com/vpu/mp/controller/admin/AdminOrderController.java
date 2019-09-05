@@ -84,6 +84,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/shipGoods")
 	public JsonResult shipGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
+		param.setIsMp(false);
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
@@ -96,29 +97,17 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/ship")
 	public JsonResult ship(@RequestBody @Valid ShipParam param ) {
+		param.setIsMp(false);
 		param.setAdminInfo(adminAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
 	
 	/**
-	 * 	mp退款、退货查询
+	 * 	退款、退货查询
 	 */
 	@PostMapping("/refund/list")
 	public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
-		param.setIsMp(true);
-		try {
-			return success(shop().orderActionFactory.orderQuery(param));
-		} catch (MpException e) {
-			return fail(e.getErrorCode());
-		}
-	}
-	
-	/**
-	 * 	admin退款、退货查询
-	 */
-	@PostMapping("/refund/adminList")
-	public JsonResult adminRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
 		param.setIsMp(false);
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
@@ -132,6 +121,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund")
 	public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
+		param.setIsMp(false);
 		param.setAdminInfo(adminAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
@@ -142,6 +132,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/close")
 	public JsonResult close(@RequestBody @Valid RefundParam param) {
+		param.setIsMp(false);
 		param.setAdminInfo(adminAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
