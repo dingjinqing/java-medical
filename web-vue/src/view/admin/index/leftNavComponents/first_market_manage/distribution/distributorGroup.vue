@@ -129,7 +129,7 @@
             prop="title"
             size="small"
           ></el-input>
-          <span>真是姓名:</span>
+          <span>真实姓名:</span>
           <el-input
             class="optionInput"
             prop="title"
@@ -404,6 +404,7 @@ export default {
     addDistributor () {
       this.centerDialogVisible = true
       distributorGroupList().then(res => {
+        console.log(res)
         this.groupNameList = res.content
       })
 

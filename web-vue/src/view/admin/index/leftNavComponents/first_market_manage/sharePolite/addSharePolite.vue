@@ -1,248 +1,339 @@
 <template>
-  <div class="content">
-    <div class="main">
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick(activeName)"
+  <div class="bottomNavigationContent">
+    <div class="bottomNavigationContent_main">
+
+      <!-- 左侧内容start -->
+      <div class="cententLleft">
+        <div class="cententLleft_title"></div>
+        <!-- <div class="cententLleft_bottom"> -->
+        <div id="slider">
+          <div class="scroll">
+            <swiper :options="swiperOption">
+              <swiper-slide>
+                <div class="advan_li_left">
+                  <img
+                    :src="imageUrlData[0].image_1"
+                    alt=""
+                  >
+                </div>
+              </swiper-slide>
+              <swiper-slide>
+                <div class="advan_li_left">
+                  <img
+                    :src="imageUrlData[1].image_2"
+                    alt=""
+                  >
+                </div>
+              </swiper-slide>
+              <div
+                class="swiper-pagination"
+                slot="pagination"
+              ></div> <!-- 标页码 -->
+            </swiper>
+          </div>
+        </div>
+        <!-- </div> -->
+      </div>
+      <!-- 左侧内容end  -->
+
+      <!-- 右侧内容start -->
+      <div class="contentRight">
+        <div class="actInfo">活动信息</div>
+        <el-form
+          label-position="right"
+          label-width="100px"
+        >
+          <el-form-item label="活动名称：">
+            <el-input
+              size="mini"
+              style="width:200px"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="活动有效期：">
+            <el-radio-group v-model="radio">
+              <div style="display:flex">
+                <el-radio label="1">固定时间</el-radio>
+                <div style="margin-left: 10px">
+                  <el-date-picker
+                    v-if="radio==='1'"
+                    style="width: 300px;"
+                    v-model="effectiveDate"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    size="small"
+                  >
+                  </el-date-picker>
+                </div>
+              </div>
+              <!-- <div> -->
+              <el-radio label="2">永久有效</el-radio>
+              <!-- </div> -->
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="优先级：">
+            <el-input
+              size="mini"
+              style="width:200px"
+            ></el-input>
+            <div>用于区分不同分享有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
+          </el-form-item>
+          <el-form-item label="触发条件：">
+            <span>用户分享</span>
+            <el-radio-group v-model="trigger">
+              <el-radio label="1">全部商品</el-radio>
+              <el-radio label="2">指定商品</el-radio>
+              <el-radio label="3">实际访问量较少商品</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+        <div
+          class="selectGoods"
+          v-if="trigger==='2'"
+        >+ 选择商品</div>
+        <div
+          v-if="trigger==='3'"
+          style="margin-left:163px"
+        >
+          <span>实际访问量少于</span>
+          <el-input
+            size="mini"
+            style="width:50px"
+          ></el-input> 条的商品
+        </div>
+      </div>
+
+      <div
+        class="contentRight"
+        style="margin-top:10px;"
       >
-        <el-tab-pane
-          label="全部分享有礼活动"
-          name="first"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="进行中"
-          name="second"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="未开始"
-          name="third"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="已过期"
-          name="fourth"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="已停用"
-          name="fifth"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="添加分享有礼活动"
-          name="sixth"
-        >
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-    <div class="table_list">
+        <div style="display:flex">
+          <div class="actInfo">分享奖励</div>
+          <div style="display:flex">
+            <span>最多可添加三级</span>
+            <span
+              class="addRules"
+              @click="handleRules"
+            >+ 添加规则</span>
+          </div>
+        </div>
+        <el-form>
+          <el-form-item>
+            <el-checkbox v-model="checked">仅邀请未访问过店铺的用户有效</el-checkbox>
+          </el-form-item>
+          <el-form-item label="一级">
+
+            <div>邀请满 <el-input
+                size="mini"
+                style="width:60px"
+              ></el-input> 人 <span style="color:#999">可填写1-5人</span></div>
+            <div style="margin-left:43px">可获得
+              <el-radio-group v-model="willGet">
+                <el-radio label="1">积分</el-radio>
+                <el-radio label="2">优惠券</el-radio>
+                <el-radio label="3">幸运大抽奖</el-radio>
+              </el-radio-group>
+            </div>
+            <div style="margin-left:43px">奖励份数：<el-input
+                size="mini"
+                style="width:150px"
+              ></el-input> 份</div>
+          </el-form-item>
+        </el-form>
+        <div style="margin-left:43px">积分：<el-input
+            size="mini"
+            style="width: 150px"
+          ></el-input>
+        </div>
+        <div style="margin-left:43px;display:flex">
+          <div style="width:80px;height:30px;line-height:30px">优惠券：</div>
+          <el-select
+            style="width: 150px;margin-top:10px"
+            size="mini"
+            v-model="gift"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <div>
+            <span>刷新 | </span>
+            <span>新建 | </span>
+            <span>管理</span>
+          </div>
+        </div>
+        <div>优惠券可用库存{{num}}份数</div>
+
+      </div>
+      <!-- 右侧内容end -->
+
+      <!--保存-->
+      <div class="footer">
+        <div
+          class="save"
+          @click="saveShopStyle()"
+        >{{$t('shopStyle.saveText')}}</div>
+      </div>
     </div>
   </div>
-
 </template>
 <script>
-import { getList, changeActivity, updateDailyLimit } from '@/api/admin/marketManage/sharePolite.js'
 export default {
-  mounted () {
-    this.langDefault()
-    // 页面加载时调用接口初始化数据，初始化加载进行中模块
-    this.seacherList(8)
-  },
   data () {
     return {
-      tableData: []
+      swiperOption: {
+        autoplay: {
+          delay: 3000, // 自动切换的时间间隔，单位ms
+          stopOnLastSlide: false, // 当切换到最后一个slide时停止自动切换
+          disableOnInteraction: false, // 用户操作swiper之后，是否禁止autoplay。
+          waitForTransition: true // 等待过渡完毕。自动切换会在slide过渡完毕后才开始计时。
+        },
+        // 分页器设置
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true
+        }
+      },
+      imageUrlData: [
+        { image_1: this.$imageHost + '/image/admin/share_pop1.jpg' },
+        { image_2: this.$imageHost + '/image/admin/share_pop2.jpg' }
+      ],
+      radio: '',
+      trigger: '',
+      willGet: '',
+      gift: '',
+      options: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }],
+      checked: '',
+      value: '',
+      num: 0,
+      effectiveDate: ''
     }
   },
   methods: {
-    // 分享有礼活动领取明细点击跳转
-    jumptoReceiveDetail (shareId) {
-      this.$router.push({
-        name: 'share_polite_detail',
-        params: {
-          id: shareId,
-          flag: true
-        }
-      })
-    },
-    // 分模块查询数据列表
-    seacherList (category) {
-      let obj = {
-        'currentPage ': 0,
-        'pageRows ': 20,
-        'category': category
-      }
-      getList(obj).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.handleData(res.content)
-        }
-      })
-    },
-    // 表格数据处理
-    handleData (data) {
-      this.tableData = data.pageResult.dataList
-    },
-    // 标签页点击事件
-    handleClick (activeName) {
-      switch (activeName) {
-        case 'first':
-          this.seacherList(0)
-          break
-        case 'second':
-          this.seacherList(8)
-          break
-        case 'third':
-          this.seacherList(4)
-          break
-        case 'fourth':
-          this.seacherList(2)
-          break
-        case 'fifth':
-          this.seacherList(1)
-          break
-        default:
-          this.seacherList(8)
-          break
-      }
-    },
-    // 更新每日用户可分享次数上限参数
-    saveDailyLimit (num) {
-      updateDailyLimit(num).then(res => {
-        if (res.error === 0) {
-          alert('更新成功！')
-        }
-        console.log(res)
-      })
-    },
-    addActivity () { },
-    // 停用分享有礼活动
-    shutdown (shareId) {
-      let obj = {
-        'shareId': shareId,
-        'status': 1
-      }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('停用成功！')
-        }
-        console.log(res)
-      })
-    },
-    // 启用分享有礼活动
-    open (shareId) {
-      let obj = {
-        'shareId': shareId,
-        'status': 0
-      }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('启用成功！')
-        }
-        console.log(res)
-      })
-    },
-    // 删除分享有礼活动
-    del (shareId) {
-      let obj = {
-        'shareId': shareId,
-        'status': 2
-      }
-      changeActivity(obj).then(res => {
-        if (res.error === 0) {
-          alert('删除成功！')
-          this.seacherSharePoliteList()
-        }
-        console.log(res)
-      })
+    handleRules () {
+      console.log(111)
     }
   }
 }
 </script>
-<style lang="scss" scoped>
-.content {
-  padding: 10px;
-  min-width: 100%;
-  font-size: 14px;
+
+<style scoped>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.bottomNavigationContent {
+  position: relative;
   height: 100%;
-  .main {
-    position: relative;
-    background-color: #fff;
-    padding: 10px 20px 10px 20px;
-    .wrapper {
-      display: flex;
-      justify-content: space-between;
-      .rightContent {
-        .el-button {
-          margin-left: 5px;
-        }
-        span {
-          height: 30px;
-          line-height: 30px;
-        }
-        :nth-of-type(3) {
-          color: #999;
-        }
-      }
-    }
-  }
+  width: 100%;
 }
-.condition {
-  position: relative;
+.bottomNavigationContent_main {
   background-color: #fff;
-  padding: 10px 20px 0 20px;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  padding-bottom: 96px;
 }
-.p_top_right {
-  display: flex;
-  /deep/ .el-button {
-    padding: none;
-    height: 32px;
-  }
-  span {
-    white-space: nowrap;
-    height: 32px;
-    line-height: 32px;
-    margin-right: 10px;
-  }
-  .topRightDiv {
-    &:nth-of-type(2) {
-      margin: 0 10px 0 30px;
-    }
-  }
+
+.cententLleft_title {
+  height: 55px;
+  background: url(../../../../../../assets/adminImg/phone_tops.png) no-repeat;
+  text-align: center;
+  padding-top: 9px;
 }
-/deep/ .tableClss th {
-  background-color: #f5f5f5;
-  border: none;
-  height: 36px;
-  font-weight: bold;
-  color: #000;
-  padding: 8px 10px;
-}
-.table_list {
-  position: relative;
-  margin-top: 10px;
-  background-color: #fff;
-  padding: 10px 20px 0 20px;
-}
-.opt {
-  text-align: left;
-  color: #5a8bff;
-  span {
-    cursor: pointer;
-  }
-}
-.balanceDialo .el-dialog__body {
-  padding-bottom: 0 !important;
-}
-.balanceDialo .el-dialog__footer {
-  border-top: 1px solid #eee;
-}
-.setUpDialog .el-dialog__body {
-  padding-top: 10px !important;
-}
-.add_coupon {
+.advan_li_left {
+  width: 321px;
+  height: 570px;
   float: left;
-  margin-left: 65%;
+}
+.advan_li_left > img {
+  width: 100%;
+  height: 100%;
+}
+#slider {
+  width: 100%;
+}
+.cententLleft {
+  width: 323px;
+  height: 627px;
+  border: 1px solid #ccc;
+  background: #eee;
+  position: relative;
+  float: left;
+  margin: 70px 0 0 224px;
+}
+.contentRight {
+  float: left;
+  margin: 80px 0 0 30px;
+  border: 1px solid #e5e5e5;
+  background: #f8f8f8;
+  border-radius: 3px;
+  padding: 10px;
+  width: 515px;
+}
+.actInfo_content_item {
+  display: flex;
+}
+.actInfo {
+  width: 100%;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.selectGoods {
+  margin-left: 190px;
+  width: 120px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #5a8bff;
+}
+.addRules {
+  display: inline-block;
+  width: 90px;
+  height: 25px;
+  line-height: 25px;
+  padding: 0 5px;
+  border: 1px solid #5a8bff;
+  color: #5a8bff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.footer {
+  background: #f8f8fa;
+  border-top: 1px solid #f2f2f2;
+  text-align: center;
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  padding: 10px 0;
+  left: 0;
+  right: 0;
+  margin-right: 10px;
+}
+.save {
+  width: 70px;
+  height: 30px;
+  line-height: 30px;
+  border: none;
+  background: #5a8bff;
+  color: #fff;
+  margin: auto;
+  cursor: pointer;
 }
 </style>

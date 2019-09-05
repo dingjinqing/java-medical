@@ -306,7 +306,12 @@ export default {
         })
       })
     },
-    addActivity () { },
+    // 添加分享有礼活动
+    addActivity () {
+      this.$router.push({
+        name: 'share_polite_add'
+      })
+    },
     // 停用分享有礼活动
     shutdown (shareId) {
       let obj = {

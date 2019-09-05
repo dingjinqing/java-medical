@@ -88,8 +88,10 @@ export const cn = {
   promote_activity: ['营销管理', '好友助力', '添加好友助力活动'],
   // 营销管理 分享有礼
   share_polite: ['营销管理', '分享有礼'],
-  // 营销管理 分享有礼
+  // 营销管理 分享有礼 领取明细
   share_polite_detail: ['营销管理', '分享有礼', '领取明细'],
+  // 营销管理 分享有礼 添加分享有礼活动
+  share_polite_add: ['营销管理', '分享有礼', '分享有礼活动'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['营销管理', '普通优惠券'],
   // 营销管理 普通优惠券 领取明细
@@ -324,6 +326,8 @@ export const en = {
     'share polite',
     'receive details '
   ],
+  // 营销管理 分享有礼 添加分享有礼活动
+  share_polite_add: ['Marketing management', 'share polite', 'add share polite activity'],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 限时降价 订单明细

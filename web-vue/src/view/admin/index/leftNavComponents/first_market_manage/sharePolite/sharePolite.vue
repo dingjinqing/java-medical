@@ -1,14 +1,20 @@
 <template>
   <div>
-    <!-- <sharePoliteList /> -->
-  </div>
 
+  </div>
 </template>
+
 <script>
-// import SharePoliteList from './sharePoliteListTest'
-// import sharePoliteList from '@/api/admin/marketManage/sharePoliteListTest.js'
+
 export default {
-//   components: { sharePoliteList }
+  data () {
+    return {
+
+    }
+  }
 
 }
+
 </script>
+<style scoped>
+</style>
