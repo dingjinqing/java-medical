@@ -152,7 +152,7 @@ public class ScoreService extends ShopBaseService {
 				userScoreRecord.setExpireTime(param.getExpiredTime());
 				
 				/** -判断是否为退款积分 */
-				if(param.getIsFromRefund()==IS_FROM_REFUND_Y.getValue()) {
+				if(param.getIsFromRefund() !=null && param.getIsFromRefund()==IS_FROM_REFUND_Y.getValue()) {
 					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
 					UserScoreRecord userScore = getScoreRecordByOrderSn(userId,orderSn);
 					userScoreRecord.setExpireTime(userScore.getExpireTime());
@@ -248,7 +248,7 @@ public class ScoreService extends ShopBaseService {
 				.where(USER_SCORE.USER_ID.eq(userId)).and(USER_SCORE.STATUS.in(list))
 				.and(USER_SCORE.EXPIRE_TIME.ge(localDateTime).or(USER_SCORE.EXPIRE_TIME.isNull()))
 				.fetchOneInto(Integer.class);
-
+		logger().info("计算积分为： "+sum);
 		return sum;
 	}
 
