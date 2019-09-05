@@ -497,7 +497,7 @@ export default {
     getCouponIdsString (data) {
       let res = ''
       data.forEach((item, index) => {
-        if (index == 0) {
+        if (index === 0) {
           res += item.id
         } else {
           res += ',' + item.id
