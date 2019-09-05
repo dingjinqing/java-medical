@@ -89,7 +89,7 @@ public class BargainAddParam {
 	/**
 	 *  任意金额结算模式的单次帮砍金额模式：0固定金额，1区间随机金额
 	 */
-	private Integer bargainMoneyType;
+	private Byte bargainMoneyType;
 	
 	/**
 	 * 任意金额结算模式的，单次帮砍金额模式的固定金额模式的，固定金额数值
