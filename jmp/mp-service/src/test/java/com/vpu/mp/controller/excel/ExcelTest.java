@@ -51,7 +51,8 @@ public class ExcelTest {
         URL resource = ExcelTest.class.getResource(WRITER_PATH);
 
 
-        when(request.getParameter(HEADER_LANG)).thenReturn("zh_CN");
+        when(request.getHeader(HEADER_LANG)).thenReturn("zh_CN");
+        System.out.println(request.getHeader(HEADER_LANG));
         when(request.getParameter("fileType")).thenReturn("a.xlsx");
         InputStream in = new FileInputStream(new File(ExcelTest.class.getResource(READER_PATH).getPath()));
         when(multipartFile.getInputStream()).thenReturn(in);
@@ -142,7 +143,7 @@ public class ExcelTest {
     @Test
     public void excelReadData() throws IOException {
 
-        String lang=request.getHeader("HEADER_LANG");
+        String lang=request.getHeader(HEADER_LANG);
 
         ExcelTypeEnum type;
         if (request.getParameter("fileType").indexOf(ExcelTypeEnum.XLSX.getSuffix()) > 0) {
