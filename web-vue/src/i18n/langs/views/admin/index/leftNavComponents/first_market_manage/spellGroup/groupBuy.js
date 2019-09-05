@@ -1,4 +1,44 @@
 export const cn = {
+  // 拼团活动
+  activityName: '活动名称',
+  activityType: '活动类型',
+  addActvity: '添加活动,',
+  goodsNmae: '商品名称',
+  validDate: '有效期',
+  activityStatus: '活动状态',
+  limitAmount: '拼团人数',
+  grouponOrderNum: '成团订单数',
+  grouponType: [
+    '',
+    '普通拼团',
+    '老带新拼团'
+  ],
+  edit: '编辑',
+  share: '分享',
+  disable: '停用',
+  enabled: '启用',
+  delete: '删除',
+  groupBuyDetailList: '参团明细',
+  groupBuyOrderlist: '拼团订单',
+  newUserList: '新用户列表',
+  returnOrder: '退款失败订单',
+  activityEchert: '活动效果',
+  tabInfo: [{
+    title: '全部拼团活动',
+    name: '1'
+  }, {
+    title: '进行中',
+    name: '2'
+  }, {
+    title: '未开始',
+    name: '3'
+  }, {
+    title: '已过期',
+    name: '4'
+  }, {
+    title: '已停用',
+    name: '5'
+  }],
   // 拼团详情-成团状态
   name: '中文',
   userMobileNumber: '用户手机号',
@@ -31,6 +71,46 @@ export const cn = {
 }
 
 export const en = {
+  // 拼团活动
+  activityName: 'activityName',
+  activityType: 'activityType',
+  addActvity: 'addActvity,',
+  goodsNmae: 'goodsNmae',
+  validDate: 'validDate',
+  activityStatus: 'activityStatus',
+  limitAmount: 'limitAmount',
+  grouponOrderNum: 'grouponOrderNum',
+  grouponType: [
+    '',
+    'generalGroupon',
+    'OldUserGroupon'
+  ],
+  edit: 'edit',
+  share: 'share',
+  disable: 'disable',
+  enabled: 'enabled',
+  delete: 'delete',
+  groupBuyDetailList: 'grouponDetailList',
+  groupBuyOrderlist: 'grouponOrderlist',
+  newUserList: 'newUserList',
+  returnFailOrder: 'returnFailOrder',
+  activityInfo: 'activityInfo',
+  tabInfo: [{
+    title: 'all',
+    name: '1'
+  }, {
+    title: 'in Progress',
+    name: '2'
+  }, {
+    title: 'NotStarted',
+    name: '3'
+  }, {
+    title: 'overdue',
+    name: '4'
+  }, {
+    title: 'Disable',
+    name: '5'
+  }],
   name: 'English',
   userMobileNumber: 'user mobile',
   mobileNumber: 'mobile number',

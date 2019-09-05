@@ -15,7 +15,7 @@
             v-if="tableListView"
             type="primary"
             @click="addActivity()"
-          >添加活动</el-button>
+          >{{$t('groupBuy.addActivity')}}</el-button>
         </el-tab-pane>
       </el-tabs>
 
@@ -37,94 +37,94 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('groupBuy.activityName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="activityTypeText"
-          label="活动类型"
+          :label="$t('groupBuy.activityType')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="goodsName"
-          label="商品名称"
+          :label="$t('groupBuy.goodsNmae')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="vaildDate"
-          label="有效期"
+          :label="$t('groupBuy.validDate')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="statusText"
-          label="活动状态"
+          :label="$t('groupBuy.activityStatus')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="limitAmount"
-          label="成团人数"
+          :label="$t('groupBuy.limitAmount')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="groupOrderNum"
-          label="成团订单数"
+          :label="$t('groupBuy.grouponOrderNum')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop=""
-          label="操作"
+          :label="$t('groupBuy.validDate')"
           align="center"
         >
           <template slot-scope="scope" >
             <div class="opt">
-              <el-tooltip content="编辑" placement="top">
+              <el-tooltip :content="$t('groupBuy.edit')" placement="top">
                 <span class="el-icon-edit-outline" @click="editActivity(scope.row.id)"></span>
               </el-tooltip>
-              <el-tooltip content="分享" placement="top">
+              <el-tooltip :content="$t('groupBuy.share')" placement="top">
                 <span class="el-icon-share"></span>
               </el-tooltip>
-              <el-tooltip content="停用" placement="top">
+              <el-tooltip :content="$t('groupBuy.disable')" placement="top">
               <span   class="el-icon-circle-close"
                       @click="changeStatus(scope.row.id)"
                       v-if="scope.row.status==1"
               > </span>
               </el-tooltip>
-              <el-tooltip content="启用">
+              <el-tooltip :content="$t('groupBuy.enabled')">
               <span  class="el-icon-circle-check"
                       @click="changeStatus(scope.row.id)"
                       v-if="scope.row.status==0"
               > </span>
               </el-tooltip>
-              <el-tooltip content="删除" placement="top">
+              <el-tooltip :content="$t('groupBuy.delete')" placement="top">
                 <span class="el-icon-delete" @click="deleteGroupBuy(scope.row.id)"></span>
               </el-tooltip>
-              <el-tooltip content="参团明细" placement="top">
+              <el-tooltip :content="$t('groupBuy.grouponDetailList')" placement="top">
                 <span class="el-icon-tickets" @click="groupBuyDetailList(scope.row.id)"></span>
               </el-tooltip>
-              <el-tooltip content="查看拼团订单" placement="top">
+              <el-tooltip :content="$t('groupBuy.grouponOrderlist')" placement="top">
                 <span class="el-icon-s-unfold"></span>
               </el-tooltip>
-              <el-tooltip content="活动新用户" placement="top">
+              <el-tooltip :content="$t('groupBuy.newUserList')" placement="top">
                 <span class="el-icon-user-solid"></span>
               </el-tooltip>
-              <el-tooltip content="退款失败订单" placement="top">
+              <el-tooltip :content="$t('groupBuy.returnFailOrder')" placement="top">
                 <span class="el-icon-warning"></span>
               </el-tooltip>
-              <el-tooltip content="活动效果" placement="top">
+              <el-tooltip :content="$t('groupBuy.activityInfo')" placement="top">
                 <span class="el-icon-s-data"></span>
               </el-tooltip>
             </div>
@@ -163,28 +163,17 @@ export default {
       tableData: [],
       isEdite: true,
       tabSwitch: '2',
-      tabInfo: [{
-        title: '全部拼团活动',
-        name: '1'
-      }, {
-        title: '进行中',
-        name: '2'
-      }, {
-        title: '未开始',
-        name: '3'
-      }, {
-        title: '已过期',
-        name: '4'
-      }, {
-        title: '已停用',
-        name: '5'
-      }],
       tabIndex: 3,
       currentPage: 0,
       pageRows: 1,
       totalRows: 0,
       pageCount: undefined,
       tableListView: true
+    }
+  },
+  computed: {
+    tabInfo: function () {
+      return this.$t('groupBuy.tabInfo')
     }
   },
   mounted () {
@@ -228,7 +217,7 @@ export default {
       tabData.map((item, index) => {
         item.vaildDate = `${item.startTime}至${item.endTime}`
         item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
-        item.activityTypeText = item.activityType === 1 ? '普通拼团' : '老带新拼团'
+        item.activityTypeText = this.$t('groupBuy.grouponType')[item.activityType]
       })
       this.tableData = tabData
     },
