@@ -4,10 +4,15 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.TAG;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.USER_CART_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.CHANNEL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
@@ -17,6 +22,8 @@ import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SCAN_QRCODE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.CHANNAL_PAGE;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
@@ -34,7 +41,9 @@ import java.util.Map;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Record2;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -67,8 +76,6 @@ import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-
-import ch.qos.logback.classic.Logger;
 import jodd.util.StringUtil;
 
 /**
@@ -138,9 +145,14 @@ public class MemberService extends ShopBaseService {
 		if(param.getCardId() != null) {
 			from.leftJoin(USER_CARD).on(u.USER_ID.eq(USER_CARD.USER_ID));
 		}
+		if(!StringUtil.isBlank(param.getTagName())) {
+			/** -标签处理 */
+			from.leftJoin(USER_TAG).on(u.USER_ID.eq(USER_TAG.USER_ID));
+		}
 		
 		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) from;
 		
+		/** -构建查询条件 */
 		select = this.buildOptions(select, u, param);
 		PageResult<MemberInfoVo> memberList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MemberInfoVo.class);
@@ -271,14 +283,189 @@ public class MemberService extends ShopBaseService {
 		if (!StringUtils.isEmpty(param.getEndTime())) {
 			select.where(u.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getEndTime())));
 		}
+		
+		/** -标签处理 */
+		if(!StringUtil.isBlank(param.getTagName())) {
+			logger().info("正在构建标签查询页");
+			String tagName = param.getTagName();
+			List<Integer> ids = db().select(TAG.TAG_ID).from(TAG).where(TAG.TAG_NAME.eq(tagName)).fetch().into(Integer.class);
+			select.where(USER_TAG.TAG_ID.in(ids));
+		}
+		
 
-		// TODO 指定时间内有登录
-		// TODO 指定时间内有加购行为
-		// TODO 指定时间内有交易记录
-		// TODO 客单价
-		// TODO 累计购买次数
-		// TODO 购买指定商品
+		/**  -指定时间内有登录 - 开始时间 */
+		if(!StringUtil.isBlank(param.getLoginStartTime())) {
+			logger().info("正在构建指定时间内登录-开始时间");
+			List<Integer> ids = db().select(USER_LOGIN_RECORD.USER_ID)
+				.from(USER_LOGIN_RECORD)
+				.where(USER_LOGIN_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getLoginStartTime())))
+				.groupBy(USER_LOGIN_RECORD.USER_ID)
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		/**  -指定时间内有登录 - 结束时间 */
+		if(!StringUtil.isBlank(param.getLoginEndTime())) {
+			logger().info("正在构建指定时间内登录-结束时间");
+			List<Integer> ids = db().select(USER_LOGIN_RECORD.USER_ID)
+				.from(USER_LOGIN_RECORD)
+				.where(USER_LOGIN_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getLoginEndTime())))
+				.groupBy(USER_LOGIN_RECORD.USER_ID)
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		
+		/**  -指定时间内有加购行为 */
+		if(!StringUtil.isBlank(param.getCartStartTime())) {
+			logger().info("正在构建指定时间内有加购行为-开始时间");
+			/** -用户添加购物车商品记录表 */
+			List<Integer> ids = db().select(USER_CART_RECORD.USER_ID)
+				.from(USER_CART_RECORD)
+				.where(USER_CART_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getCartStartTime())))
+				.groupBy(USER_CART_RECORD.USER_ID)
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		/**  -指定时间内有加购行为 */
+		if(!StringUtil.isBlank(param.getCartEndTime())) {
+			logger().info("正在构建指定时间内有加购行为-结束时间");
+			/** -用户添加购物车商品记录表 */
+			List<Integer> ids = db().select(USER_CART_RECORD.USER_ID)
+				.from(USER_CART_RECORD)
+				.where(USER_CART_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getCartEndTime())))
+				.groupBy(USER_CART_RECORD.USER_ID)
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		
+		/** -指定时间内有交易记录 */
+		if(!StringUtil.isBlank(param.getBuyStartTime())) {
+			logger().info("正在构建指定时间内有交易记录-开始时间");
+			/** -订单表 */
+			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+				.and(ORDER_INFO.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getBuyStartTime())))
+				.groupBy(ORDER_INFO.USER_ID)
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		
+		/** -指定时间内有交易记录 */
+		if(!StringUtil.isBlank(param.getBuyEndTime())) {
+			logger().info("正在构建指定时间内有交易记录-结束时间");
+			/** -订单表 */
+			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+				.and(ORDER_INFO.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getBuyEndTime())))
+				.groupBy(ORDER_INFO.USER_ID)
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		
+		/** -客单价 -最低 */
+		if(param.getUnitPriceLow() != null) {
+			select.where(u.UNIT_PRICE.ge(param.getUnitPriceLow()));
+		}
+		
+		/** -客单价 -最高  */
+		if(param.getUnitPriceHight() != null) {
+			select.where(u.UNIT_PRICE.le(param.getUnitPriceHight()));
+		}
+		
+		
+			
+		/** -累计购买次数 - 最低次数 */
+		if(param.getBuyCountLow()!=null) {
+			logger().info("正在构建累计购买次数-最低次数");
+			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
+				.from(ORDER_INFO)
+				.groupBy(ORDER_INFO.USER_ID)
+				.having(count(ORDER_INFO.USER_ID).ge(param.getBuyCountLow()))
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		/** -累计购买次数 - 最高次数 */
+		if(param.getBuyCountHight() != null) {
+			logger().info("正在构建累计购买次数-最高次数");
+			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
+					.from(ORDER_INFO)
+					.groupBy(ORDER_INFO.USER_ID)
+					.having(count(ORDER_INFO.USER_ID).le(param.getBuyCountHight()))
+					.fetch()
+					.into(Integer.class);
+				select.where(u.USER_ID.in(ids));
+		}
+		
+		/**  -购买指定商品 */
+		if(param.getGoodsId()!=null && param.getGoodsId().size()>0) {
+			logger().info("正在构建购买指定商品");
+			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
+				.from(ORDER_GOODS.leftJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)))
+				.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+				.and(ORDER_GOODS.GOODS_ID.in(param.getGoodsId()))
+				.groupBy(ORDER_INFO.USER_ID)
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
 
+		/** -是否有手机号  */
+		if(param.getHasMobile()) {
+			select.where(u.MOBILE.isNotNull());
+		}
+		
+		/** -是否有积分 */
+		if(param.getHasScore()) {
+			select.where(u.SCORE.greaterThan(Integer.parseInt(ZERO)));
+		}
+		
+		/** -是否有余额 */
+		if(param.getHasBalance()) {
+			select.where(u.ACCOUNT.greaterThan(BigDecimal.ZERO));
+		}
+		
+		/** -是否持有会员卡 */
+		if(param.getHasCard()) {
+			logger().info("正在处理持有会员卡的会员");
+			Timestamp localDateTime = DateUtil.getLocalDateTime();
+			List<Integer> ids = db().select(USER_CARD.USER_ID)
+				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+				.where(USER_CARD.FLAG.eq(CARD_USING))
+				.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
+				.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(localDateTime)))
+                        .or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
+				.fetch()
+				.into(Integer.class);
+			select.where(u.USER_ID.in(ids));
+		}
+		
+		/** -是否已经禁止登录 */
+		if(param.getHasDelete()) {
+			select.where(u.DEL_FLAG.eq(DELETE_YES));
+		}
+		
+		/** -是否是导入会员 */
+		if(param.getHasImport()) {
+			logger().info("正在构建导入会员");
+			SelectConditionStep<Record1<Integer>> subSelect = db().select(USER_IMPORT_DETAIL.ID).from(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.MOBILE.eq(u.MOBILE));
+			select.whereExists(subSelect);
+		}
+		
 		return select;
 	}
 
