@@ -298,8 +298,38 @@ export default {
     })
   },
   methods: {
+    // 处理数组数据
+    handleToArrData () {
+
+    },
     // 初始化拖拽事件
     init_drag_event () {
+      // 模块icon点击数据接收统一处理
+      this.$http.$on('handleDragIconClick', ({ direction, flag }) => {
+        let newArr = JSON.parse(JSON.stringify(this.showModulesList))
+        switch (direction) {
+          case 'up':
+            console.log(flag)
+            let temp = newArr[(flag - 1)]
+            newArr[(flag - 1)] = newArr[flag]
+            newArr[flag] = temp
+            this.showModulesList = newArr
+            console.log(newArr, '--' + this.showModulesList)
+            break
+          case 'dowm':
+            let temp2 = newArr[(flag + 1)]
+            newArr[(flag + 1)] = newArr[flag]
+            newArr[flag] = temp2
+            this.showModulesList = newArr
+            break
+          case 'delete':
+            console.log(newArr, flag)
+            newArr.splice(flag, 1)
+            console.log(newArr)
+            this.showModulesList = newArr
+            break
+        }
+      })
       let this_ = this
       // 模块拖拽
       $('.third_drag').draggable({

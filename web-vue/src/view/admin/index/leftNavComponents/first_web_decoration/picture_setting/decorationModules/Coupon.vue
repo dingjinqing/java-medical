@@ -44,16 +44,19 @@
           class="up_img"
           style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
+          @click="handleToClickIcon(0)"
         >
         <img
           class="down_img"
           style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
+          @click="handleToClickIcon(1)"
         >
         <img
           class="del_img"
           style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
+          @click="handleToClickIcon(2)"
         >
       </div>
     </div>
@@ -93,6 +96,28 @@ export default {
           this.activeBorder = false
         }
       })
+    },
+    // 移上、移下、删除统一处理事件
+    handleToClickIcon (flag) {
+      console.log(123)
+      let obj = {
+        direction: '',
+        flag: this.flag
+      }
+      switch (flag) {
+        case 0:
+          obj.direction = 'up'
+          this.$http.$emit('handleDragIconClick', obj)
+          break
+        case 1:
+          obj.direction = 'dowm'
+          this.$http.$emit('handleDragIconClick', obj)
+          break
+        case 2:
+          obj.direction = 'delete'
+          this.$http.$emit('handleDragIconClick', obj)
+          break
+      }
     }
   }
 }
