@@ -11,17 +11,25 @@ import java.sql.Timestamp;
 @Data
 public class GroupBuyDetailListVo {
 
+    public final static String COMMANDER_MOBILE="commanderMobile";
+    public final static String COMMANDER_NAME="commanderName";
+
     /**
      * 活动名称
      */
     private String name;
 
     /**
-     *
+     *参团用户
      */
     private String userName;
-
+    /**
+     * 用户手机号
+     */
     private String mobile;
+    //团长信息
+    private String commanderMobile;
+    private String commanderName;
 
     private Short count;
 
@@ -35,6 +43,5 @@ public class GroupBuyDetailListVo {
 
     private String  orderSn;
 
-    GroupBuyDetailVo groupBuyDetail;
 
 }

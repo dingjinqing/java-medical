@@ -15,9 +15,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.OrderReadService;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.TableLike;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,10 +35,7 @@ public class GroupBuyListService  extends ShopBaseService {
     private static final Byte USE_STATUS = 1;
     private static final Byte STOP_STATUS = 0;
     private static final String GROUP_ORDER_NUM = "groupOrderNum";
-    private static final String GROUP_BUY = "groupbuy";
 
-    @Autowired
-    private OrderReadService orderReadService;
     @Autowired
     private MemberService memberService;
 
@@ -53,18 +48,18 @@ public class GroupBuyListService  extends ShopBaseService {
      */
     public PageResult<GroupBuyListVo> getListGroupBuy(GroupBuyListParam param) {
         //子查询
-        TableLike<?> table = db()
-                .select(GROUP_BUY_LIST.ACTIVITY_ID, DSL.count(GROUP_BUY_LIST.ACTIVITY_ID).as(GROUP_ORDER_NUM))
+        SelectHavingStep<Record2<Integer, Integer>> table = db()
+                .select(GROUP_BUY_LIST.ACTIVITY_ID, DSL.count(GROUP_BUY_LIST.ID).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_LIST)
                 .where(GROUP_BUY_LIST.STATUS.eq(USE_STATUS))
-                .groupBy(GROUP_BUY_LIST.ACTIVITY_ID)
-                .asTable("a");
+                .groupBy(GROUP_BUY_LIST.ACTIVITY_ID);
+
         SelectConditionStep<? extends Record> records = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
                 GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_DEFINE.STATUS, GROUP_BUY_DEFINE.LIMIT_AMOUNT,
-                table.field(1))
+                DSL.ifnull(table.field(GROUP_ORDER_NUM),0))
                 .from(GROUP_BUY_DEFINE)
                 .leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
-                .leftJoin(table).on(table.field(0, Integer.class).eq(GROUP_BUY_DEFINE.ID))
+                .leftJoin(table).on(table.field(GROUP_BUY_LIST.ACTIVITY_ID).eq(GROUP_BUY_DEFINE.ID))
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         records.orderBy(GROUP_BUY_DEFINE.ID.desc());
         this.buildOptions(param, records);
@@ -141,9 +136,23 @@ public class GroupBuyListService  extends ShopBaseService {
      * @return
      */
     public PageResult<GroupBuyDetailListVo> detailGroupBuyList(GroupBuyDetailParam param) {
-        SelectConditionStep<Record> select = db().select(GROUP_BUY_LIST.asterisk(), GROUP_BUY_DEFINE.NAME, USER.USERNAME, USER.MOBILE, GROUP_BUY_DEFINE.DEL_FLAG)
+        SelectConditionStep<Record3<Integer, String, String>> table = db().select(GROUP_BUY_LIST.GOODS_ID,USER.MOBILE,USER.USERNAME).from(GROUP_BUY_LIST).leftJoin(USER).on(USER.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
+                .where(GROUP_BUY_LIST.IS_GROUPER.eq((byte) 1));
+        SelectConditionStep<? extends Record> select = db().select(
+                GROUP_BUY_LIST.STATUS,
+                GROUP_BUY_LIST.ORDER_SN,
+                GROUP_BUY_LIST.START_TIME,
+                GROUP_BUY_LIST.END_TIME,
+                table.field(USER.MOBILE).as(GroupBuyDetailListVo.COMMANDER_MOBILE),
+                table.field(USER.USERNAME).as(GroupBuyDetailListVo.COMMANDER_NAME),
+                USER.USERNAME,
+                USER.MOBILE,
+                GROUP_BUY_DEFINE.NAME,
+                GROUP_BUY_DEFINE.IS_DEFAULT,
+                GROUP_BUY_DEFINE.DEL_FLAG)
                 .from(GROUP_BUY_LIST)
                 .leftJoin(USER).on(GROUP_BUY_LIST.USER_ID.eq(USER.USER_ID))
+                .leftJoin(table).on(table.field(GROUP_BUY_LIST.GOODS_ID).eq(GROUP_BUY_LIST.GOODS_ID))
                 .leftJoin(GROUP_BUY_DEFINE).on(GROUP_BUY_LIST.ACTIVITY_ID.eq(GROUP_BUY_DEFINE.ID))
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         builderQuery(select, param);
@@ -153,7 +162,7 @@ public class GroupBuyListService  extends ShopBaseService {
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GroupBuyDetailListVo.class);
     }
 
-    private void builderQuery(SelectConditionStep<Record> select, GroupBuyDetailParam param) {
+    private void builderQuery(SelectConditionStep<? extends Record> select, GroupBuyDetailParam param) {
         if (param.getMobile() != null && !param.getMobile().isEmpty()) {
             select.and(USER.MOBILE.eq(param.getMobile()));
         }
@@ -161,9 +170,7 @@ public class GroupBuyListService  extends ShopBaseService {
             select.and(USER.USERNAME.eq(param.getNickName()));
         }
         if (param.getStatus()!=null) {
-            if (param.getStatus() < 0) {
-                select.and(GROUP_BUY_LIST.STATUS.le((byte) 0));
-            } else {
+            if (param.getStatus() > 0&&param.getStatus()<3) {
                 select.and(GROUP_BUY_LIST.STATUS.eq(param.getStatus()));
             }
         }
