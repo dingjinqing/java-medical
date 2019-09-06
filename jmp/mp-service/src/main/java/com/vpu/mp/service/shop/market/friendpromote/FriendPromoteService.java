@@ -226,7 +226,7 @@ public class FriendPromoteService extends ShopBaseService {
 						DSL.count(fpd.USER_ID).as("promoteTimes"), DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"),
 						fpl.PROMOTE_STATUS)
 				.from(fpl).leftJoin(USER).on(fpl.USER_ID.eq(USER.USER_ID)).leftJoin(fpd).on(fpl.ID.eq(fpd.LAUNCH_ID))
-				.where(fpl.PROMOTE_ID.eq(param.getPromoteId())).groupBy(fpl.ID);
+				.where(fpl.PROMOTE_ID.eq(param.getPromoteId())).groupBy(fpl.ID,USER.USERNAME, USER.MOBILE,fpl.PROMOTE_STATUS);
 		/* 查询条件 */
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(USER.USERNAME.like(this.likeValue(param.getUsername())));
@@ -265,7 +265,8 @@ public class FriendPromoteService extends ShopBaseService {
 				.leftJoin(fpl).on(fpd.LAUNCH_ID.eq(fpl.ID))
 				.leftJoin(b).on(fpl.USER_ID.eq(b.USER_ID))
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId()))
-				.groupBy(fpd.ID);
+				.groupBy(fpd.ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
+						b.USERNAME.as("launchUsername"));
 		/* 查询条件 */
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(USER.USERNAME.like(this.likeValue(param.getUsername())));
