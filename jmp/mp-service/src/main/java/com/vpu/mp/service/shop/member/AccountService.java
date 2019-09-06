@@ -14,9 +14,11 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CONSUMPTION
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.List;
 
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.jooq.tools.StringUtils;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,10 +226,9 @@ public class AccountService extends ShopBaseService {
 	 */
 	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param) {
 		
-		SelectConditionStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select = db()
+ SelectJoinStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select = db()
 				.select(USER.USERNAME,USER.MOBILE,USER_ACCOUNT.ORDER_SN,USER_ACCOUNT.AMOUNT,USER_ACCOUNT.CREATE_TIME,USER_ACCOUNT.REMARK)
-				.from(USER_ACCOUNT.join(USER).on(USER.USER_ID.eq(USER_ACCOUNT.USER_ID))).where(USER_ACCOUNT.USER_ID.eq(param.getUserId()));
-		
+				.from(USER_ACCOUNT.join(USER).on(USER.USER_ID.eq(USER_ACCOUNT.USER_ID)));
 		
 		/** 查询条件的其他选项 */
 		buildOptions(select,param);
@@ -243,23 +244,34 @@ public class AccountService extends ShopBaseService {
 	/**
 	 * 分页查询用户余额明细-积分明细时其他查询条件
 	 */
-	private void buildOptions(SelectConditionStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select,
+	private void buildOptions( SelectJoinStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select,
 			AccountPageListParam param) {
 		logger().info("正在构建查询条件");
 		
+		/** 会员id与昵称,优先处理id */
+		if(param.getUserId() != null) {
+			select.where(USER_ACCOUNT.USER_ID.eq(param.getUserId()));
+		}else if(!StringUtils.isBlank(param.getUserName())) {
+
+			String likeValue = this.likeValue(param.getUserName());
+			List<Integer> ids = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.like(likeValue)).fetch().into(Integer.class);
+			logger().info("昵称查询转id列表"+ids);
+			select.where(USER_ACCOUNT.USER_ID.in(ids));
+		}
+		
 		/** 订单号 */
-		if(!StringUtils.isEmpty(param.getOrderSn())) {
-			select.and(USER_ACCOUNT.ORDER_SN.eq(param.getOrderSn()));
+		if(!StringUtils.isBlank(param.getOrderSn())) {
+			select.where(USER_ACCOUNT.ORDER_SN.eq(param.getOrderSn()));
 		}
 		
 		/** 时间范围 */
 		/** 开始时间 */
 		if(param.getStartTime() != null) {
-			select.and(USER_ACCOUNT.CREATE_TIME.ge(param.getStartTime()));
+			select.where(USER_ACCOUNT.CREATE_TIME.ge(param.getStartTime()));
 		}
 		/** 结束时间 */
 		if(param.getEndTime() != null) {
-			select.and(USER_ACCOUNT.CREATE_TIME.le(param.getEndTime()));
+			select.where(USER_ACCOUNT.CREATE_TIME.le(param.getEndTime()));
 		}
 	}
 
