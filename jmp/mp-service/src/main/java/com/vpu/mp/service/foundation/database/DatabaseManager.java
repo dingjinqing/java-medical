@@ -89,7 +89,7 @@ public class DatabaseManager {
 			if (shop != null) {
 				DbConfig dbConfig = Util.parseJson(shop.getDbConfig(), DbConfig.class);
 				if (dbConfig == null) {
-					throw new RuntimeException();
+					throw new RuntimeException("ShopId "+shopId+" Db not found") ;
 				}
 				BasicDataSource ds = datasourceManager.getDatasource(dbConfig);
 				db = getDsl(ds, dbConfig);

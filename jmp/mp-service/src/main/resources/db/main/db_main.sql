@@ -1805,7 +1805,7 @@ CREATE TABLE `b2c_task_job_main`
     `execution_type`    INT(8)         DEFAULT '0' COMMENT '执行类型:任务类型标识',
     `cycle`             INT(11)        DEFAULT '0' COMMENT '轮循间隔(单位:秒)',
     `type`              TINYINT(3)     DEFAULT '0' COMMENT 'task任务类型(立刻执行；定时执行；循环执行)',
-    `next_execute_time` TIMESTAMP NULL DEFAULT null COMMENT "下次执行开始日期",
+    `next_execute_time` TIMESTAMP NULL DEFAULT null COMMENT '下次执行开始日期',
     `start_time`        TIMESTAMP NULL DEFAULT null COMMENT '周期开始时间',
     `end_time`          TIMESTAMP NULL DEFAULT null COMMENT '周期结束时间',
     `create_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,

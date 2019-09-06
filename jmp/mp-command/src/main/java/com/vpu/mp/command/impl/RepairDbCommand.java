@@ -37,7 +37,7 @@ public class RepairDbCommand implements CommandRunner {
 		} else if (type.equals("shop")) {
 			if (hasOption(args, "shop_id")) {
 				Integer shopId = this.getOption(args, "shop_id", Integer.class, 0);
-				if (shopId == 0) {
+				if (shopId.intValue() == 0) {
 					logger.error("--shop_id is invalid,usage: {} ", description());
 					return;
 				}

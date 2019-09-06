@@ -82,9 +82,13 @@ public class RepairDatabaseService extends MainBaseService {
 		List<Table> tables = this.parseSql(sql);
 		Result<ShopRecord> shops = saas().shop.getAll();
 		for (ShopRecord shop : shops) {
-			logger().info("repairDb(onlyCheck={})  shopId:{} ...", onlyCheck, shop.getShopId());
-			databaseManager.switchShopDb(shop.getShopId());
-			repairDb(tables, databaseManager.currentShopDb());
+			try {
+				logger().info("repairDb(onlyCheck={})  shopId:{} ...", onlyCheck, shop.getShopId());
+				databaseManager.switchShopDb(shop.getShopId());
+				repairDb(tables, databaseManager.currentShopDb());
+			} catch (Exception e) {
+				logger().error("repairDb(onlyCheck={})  shopId:{} exception: {}", onlyCheck, e.getMessage());
+			}
 		}
 		logger().info("repairAllShopDb(onlyCheck={}) done.", onlyCheck);
 	}
@@ -97,8 +101,7 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public void repairDb(List<Table> tables, MpDefaultDslContext db) {
 		for (Table table : tables) {
-			if (table.getTableName().equals("`b2c_mrking_voucher`")) 
-			{
+			if (table.getTableName().equals("`b2c_mrking_voucher`")) {
 				table.setDatabseName(db.getDbConfig().getDatabase());
 				table.setFullTableName(table.getDatabseName() + "." + table.getTableName());
 				this.processTable(table, db);
@@ -117,7 +120,7 @@ public class RepairDatabaseService extends MainBaseService {
 		List<String> columnSqls = new ArrayList<>();
 		List<String> indexSqls = new ArrayList<>();
 		List<String> allSqls = new ArrayList<>();
-		Index incrementIndex = null; 
+		Index incrementIndex = null;
 		if (isTableExists(table, db)) {
 			Result<Record> columnRecords = db.fetch("show columns from " + table.getFullTableName());
 			for (int i = 0; i < table.columns.size(); i++) {
@@ -126,21 +129,22 @@ public class RepairDatabaseService extends MainBaseService {
 					continue;
 				}
 				// add column auto_increment 单独处理
-				if(StringUtils.containsIgnoreCase(sql,"add column") 
-						&& StringUtils.containsIgnoreCase(sql,"auto_increment") 
-						&& !StringUtils.containsIgnoreCase(sql,"primary")){
+				if (StringUtils.containsIgnoreCase(sql, "add column")
+						&& StringUtils.containsIgnoreCase(sql, "auto_increment")
+						&& !StringUtils.containsIgnoreCase(sql, "primary")) {
 					incrementIndex = table.getIndexForAutoIncrement(table.columns.get(i).getField());
-					if(incrementIndex == null) {
-						logger().error("sql:{} index not found ",sql);
-					}else {
-						if(incrementIndex.getKeyName().equals("PRIMARY")) {
-							sql  = sql +" primary key";
-						}else {
-							sql  = sql +" , add index "+incrementIndex.getKeyName()+"("+incrementIndex.getColumnNames().get(0)+")";
+					if (incrementIndex == null) {
+						logger().error("sql:{} index not found ", sql);
+					} else {
+						if (incrementIndex.getKeyName().equals("PRIMARY")) {
+							sql = sql + " primary key";
+						} else {
+							sql = sql + " , add index " + incrementIndex.getKeyName() + "("
+									+ incrementIndex.getColumnNames().get(0) + ")";
 						}
 						columnSqls.add(sql);
 					}
-				}else {
+				} else {
 					columnSqls.add(sql);
 				}
 			}
@@ -157,7 +161,7 @@ public class RepairDatabaseService extends MainBaseService {
 					allSqls.add(sqls[0]);
 					sql = sqls[1];
 				}
-				if(incrementIndex!=null && incrementIndex.getKeyName().equals(table.indexes.get(i).getKeyName())){
+				if (incrementIndex != null && incrementIndex.getKeyName().equals(table.indexes.get(i).getKeyName())) {
 					continue;
 				}
 				indexSqls.add(sql);
