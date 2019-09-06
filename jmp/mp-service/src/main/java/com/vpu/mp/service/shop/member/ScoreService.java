@@ -22,6 +22,7 @@ import java.util.Random;
 
 import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
+
+import jodd.util.StringUtil;
 /**
  * 
  * @author 黄壮壮
@@ -378,9 +381,10 @@ public class ScoreService extends ShopBaseService {
 	 * @return PageResult<ScorePageListVo>
 	 */
 	public PageResult<ScorePageListVo> getPageListOfScoreDetails(ScorePageListParam param) {
-		SelectConditionStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select = db()
+		SelectJoinStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select = db()
 				.select(USER.USERNAME,USER.MOBILE,USER_SCORE.ORDER_SN,USER_SCORE.SCORE,USER_SCORE.CREATE_TIME,USER_SCORE.EXPIRE_TIME,USER_SCORE.REMARK)
-				.from(USER_SCORE.join(USER).on(USER.USER_ID.eq(USER_SCORE.USER_ID))).where(USER_SCORE.USER_ID.eq(param.getUserId()));
+				.from(USER_SCORE.join(USER).on(USER.USER_ID.eq(USER_SCORE.USER_ID)));
+		
 		
 		buildOptions(select,param);
 		select.orderBy(USER_SCORE.CREATE_TIME.desc());
@@ -395,23 +399,33 @@ public class ScoreService extends ShopBaseService {
 	 * @param param  
 	 */
 	private void buildOptions(
-			SelectConditionStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select,
+			SelectJoinStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select,
 			ScorePageListParam param) {
 		logger().info("正在构建查询条件");
 		
+		/** 会员id-会员昵称，优先id */
+		if(param.getUserId() != null) {
+			select.where(USER_SCORE.USER_ID.eq(param.getUserId()));
+		}else if(!StringUtil.isBlank(param.getUserName())){
+			String likeValue = likeValue(param.getUserName());
+			/** 查询出所有符合昵称的会员id */
+			List<Integer> ids = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.like(likeValue)).fetch().into(Integer.class);
+			select.where(USER_SCORE.USER_ID.in(ids));
+		}
+		
 		/** 订单号 */
 		if(!StringUtils.isEmpty(param.getOrderSn())) {
-			select.and(USER_SCORE.ORDER_SN.eq(param.getOrderSn()));
+			select.where(USER_SCORE.ORDER_SN.eq(param.getOrderSn()));
 		}
 		
 		/** 时间范围 */
 		/** 开始时间 */
 		if(param.getStartTime() != null) {
-			select.and(USER_SCORE.CREATE_TIME.ge(param.getStartTime()));
+			select.where(USER_SCORE.CREATE_TIME.ge(param.getStartTime()));
 		}
 		/** 结束时间 */
 		if(param.getEndTime() != null) {
-			select.and(USER_SCORE.CREATE_TIME.le(param.getEndTime()));
+			select.where(USER_SCORE.CREATE_TIME.le(param.getEndTime()));
 		}
 		
 	}
