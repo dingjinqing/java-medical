@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.vpu.mp.db.shop.tables.records.DeliverFeeTemplateRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
@@ -322,5 +323,27 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 		List<GoodsDeliverBoxVo> boxVo = db().select().from(DELIVER_FEE_TEMPLATE)
 				.fetch().into(GoodsDeliverBoxVo.class);
 		return boxVo;
+	}
+	/**
+	 *	复制运费模板
+	 *
+	 * @param GoodsDeliverIdParam
+	 * @return
+	 */
+	public void copyTemplate(GoodsDeliverIdParam param) {
+		/** 根据id查模板信息 */
+		DeliverFeeTemplateRecord record = db().select(DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,
+				DELIVER_FEE_TEMPLATE.SHOP_ID,DELIVER_FEE_TEMPLATE.FLAG)
+				.from(DELIVER_FEE_TEMPLATE)
+				.where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
+				.fetchOneInto(DELIVER_FEE_TEMPLATE);
+		/** 重命名复制出来的副本 */
+		String newName = record.getTemplateName()+" 副本";
+		record.setTemplateName(newName);
+		record.setTemplateContent(record.getTemplateContent());
+		record.setShopId(record.getShopId());
+		record.setFlag(record.getFlag());
+		/** 将副本信息插入为一条新的模板信息 */
+		db().executeInsert(record);
 	}
 }

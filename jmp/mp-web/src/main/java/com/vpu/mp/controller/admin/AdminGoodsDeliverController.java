@@ -1,6 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,17 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonPointer;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.core.JsonParser.NumberType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
@@ -30,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateListVo;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
+
 
 /**
  * 运费模版控制器
@@ -209,5 +198,17 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	public JsonResult getDefaultDeliverTemplate() {
 		String config = shop().config.deliverTemplateConfigService.getDefaultDeliverTemplate();
 		return success(config);
+	}
+	
+	/**
+	 *	复制运费模板
+	 *
+	 * @param 
+	 * @return
+	 */
+	@PostMapping("/copy")
+	public JsonResult copyTemplate(@RequestBody GoodsDeliverIdParam param) {
+		shop().goods.goodsDeliver.copyTemplate(param);
+		return success();
 	}
 }
