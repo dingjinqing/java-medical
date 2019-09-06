@@ -24,6 +24,11 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 */
 @RestController
 public class AdminMemberScoreController extends AdminBaseController {
+	/**
+	 * 获取积分明细
+	 * @param param
+	 * @return
+	 */
 	@PostMapping("/api/admin/member/score/list")
 	public JsonResult getScoreDetails(@RequestBody @Valid ScorePageListParam param) {
 		logger().info("正在会员用户积分明细");
