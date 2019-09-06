@@ -76,6 +76,8 @@ export const cn = {
   pin_group: ['营销管理', '多人拼团'],
   // 营销管理 多人拼团 详情明细
   pin_group_detailList: ['营销管理', '多人拼团', '详情明细'],
+  // 营销管理 多人拼团 拼团订单
+  pin_group_orderList: ['营销管理', '多人拼团', '详情明细'],
   // 营销管理 砍价
   bargain: ['营销管理', '砍价'],
   // 营销管理 砍价
@@ -229,9 +231,11 @@ export const en = {
   // 营销管理
   market_manage: ['Marketing management'],
   // 营销管理 多人拼团
-  pin_group: ['Marketing management', 'Group Buy'],
+  pin_group: ['Marketing management', 'Groupon'],
   // 营销管理 多人拼团 详情明细
-  pin_group_detailList: ['Marketing management', 'Group Buy', 'detail'],
+  pin_group_detailList: ['Marketing management', 'Groupon', 'detail'],
+  // 营销管理 多人拼团 拼团订单
+  pin_group_orderList: ['Marketing management', 'Groupon', 'Groupon Orders'],
   // 营销管理 砍价
   bargain: ['Marketing management', 'Bargain'],
   // 营销管理 砍价

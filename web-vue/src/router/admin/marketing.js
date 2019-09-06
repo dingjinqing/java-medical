@@ -108,6 +108,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/spellGroup'
       )
   },
+  // 多人拼团详情列表
   {
     path: '/admin/home/main/spellGroup/detailList',
     name: 'pin_group_detailList',
@@ -118,6 +119,19 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuyDetailList'
+      )
+  },
+  // 多人拼团 拼团订单
+  {
+    path: '/admin/home/main/spellGroup/orderList',
+    name: 'pin_group_orderList',
+    meta: {
+      crumbTitle: 'router.pin_group_orderList',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuyOrderList'
       )
   },
   // 分销

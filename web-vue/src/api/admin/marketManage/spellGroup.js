@@ -59,3 +59,11 @@ export function detailGroupBuy (data) {
     data: data
   })
 }
+// 详情明细列表
+export function groupBuyOrderList (data) {
+  return service({
+    url: '/api/admin/market/groupbuy/order/list',
+    method: 'post',
+    data: data
+  })
+}

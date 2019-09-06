@@ -51,7 +51,7 @@
 
         <el-table-column
           prop="goodsName"
-          :label="$t('groupBuy.goodsNmae')"
+          :label="$t('groupBuy.goodsName')"
           align="center"
         >
         </el-table-column>
@@ -116,7 +116,7 @@
                 <span class="el-icon-tickets" @click="groupBuyDetailList(scope.row.id)"></span>
               </el-tooltip>
               <el-tooltip :content="$t('groupBuy.grouponOrderlist')" placement="top">
-                <span class="el-icon-s-unfold"></span>
+                <span class="el-icon-s-unfold"  @click="groupBuyOrderList(scope.row.id)"></span>
               </el-tooltip>
               <el-tooltip :content="$t('groupBuy.newUserList')" placement="top">
                 <span class="el-icon-user-solid"></span>
@@ -280,6 +280,10 @@ export default {
     groupBuyDetailList (id) {
       console.log('跳转到详情列表页 id = ', id)
       this.$router.push({path: `/admin/home/main/spellGroup/detailList`, query: {id: id}})
+    },
+    groupBuyOrderList (id) {
+      console.log('跳转到拼团订单也 id = ', id)
+      this.$router.push({path: `/admin/home/main/spellGroup/orderList`, query: {id: id}})
     }
   }
 }

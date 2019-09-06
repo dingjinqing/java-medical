@@ -2,116 +2,109 @@
 
     <div>
         <wrapper>
-            <el-container>
-                <el-header>
-                    <el-row :gutter=24>
-                        <el-col :span="6">
-                            <el-form label-width="100px">
-                                <el-form-item :label="$t('groupBuy.userMobileNumber')">
-                                    <el-input
-                                            v-model="mobile"
-                                            :placeholder="$t('groupBuy.mobileNumber')"
-                                            maxlength="11"
-                                            clearable
-                                    ></el-input>
-                                </el-form-item>
-                            </el-form>
-                        </el-col>
-                        <el-col :span="6">
-                            <el-form label-width="100px">
-                                <el-form-item :label="$t('groupBuy.userNickname')">
-                                    <el-input
-                                            v-model="nickname"
-                                            :placeholder="$t('groupBuy.nickname')"
-                                            maxlength="11"
-                                            clearable
-                                    ></el-input>
-                                </el-form-item>
-                            </el-form>
-                        </el-col>
-                        <el-col :span="6">
-                            <el-form label-width="100px">
-                                <el-form-item :label="$t('groupBuy.grouponState')">
-                                    <el-select v-model="stauts">
-                                        <el-option
-                                                v-for="item in stateOptions"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-form>
-                        </el-col>
-                        <el-col :span="2" :offset="2">
-                            <el-button type="primary" @click="searchData">{{$t('groupBuy.searchDataText')}}</el-button>
-                        </el-col>
-                    </el-row>
-                </el-header>
-                <el-main>
 
-                    <el-table
-                            class="version-manage-table"
-                            header-row-class-name="tableHeader"
-                            :data="tableData"
-                            border
-                            style="width: 100%"
-                    >
-                        <el-table-column
-                                prop="commanderName"
-                                :label="$t('groupBuy.commanderName')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="commanderMobile"
-                                :label="$t('groupBuy.commanderMobile')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="username"
-                                :label="$t('groupBuy.username')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="mobile"
-                                :label="$t('groupBuy.mobile')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="status"
-                                :label="$t('groupBuy.grouponState')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="isDefault"
-                                :label="$t('groupBuy.isDefault')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="orderSn"
-                                :label="$t('groupBuy.orderSn')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="startTime"
-                                :label="$t('groupBuy.startTime')"
-                                align="center"
-                        > </el-table-column>
-                        <el-table-column
-                                prop="endTime"
-                                :label="$t('groupBuy.endTime')"
-                                align="center"
-                        > </el-table-column>
+            <el-form label-width="100px">
+                <el-row :gutter=24>
+                    <el-col :span="6">
+                        <el-form-item :label="$t('groupBuy.userMobileNumber')">
+                            <el-input
+                                    v-model="mobile"
+                                    :placeholder="$t('groupBuy.mobileNumber')"
+                                    maxlength="11"
+                                    clearable
+                            ></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item :label="$t('groupBuy.userNickname')">
+                            <el-input
+                                    v-model="nickname"
+                                    :placeholder="$t('groupBuy.nickname')"
+                                    clearable
+                            ></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item :label="$t('groupBuy.grouponState')">
+                            <el-select v-model="stauts">
+                                <el-option
+                                        v-for="item in stateOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2" :offset="2">
+                        <el-button type="primary" @click="searchData">{{$t('groupBuy.searchDataText')}}
+                        </el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
+        </wrapper>
+        <wrapper>
+            <el-main>
 
-                    </el-table>
-                </el-main>
-            </el-container>
-            <el-footer>
-                <pagination
-                        :page-params.sync="pageParams"
-                        @pagination="initialize"
-                />
-            </el-footer>
+                <el-table
+                        class="version-manage-table"
+                        header-row-class-name="tableHeader"
+                        :data="tableData"
+                        border
+                        style="width: 100%"
+                >
+                    <el-table-column
+                            prop="commanderName"
+                            :label="$t('groupBuy.commanderName')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="commanderMobile"
+                            :label="$t('groupBuy.commanderMobile')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="username"
+                            :label="$t('groupBuy.username')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="mobile"
+                            :label="$t('groupBuy.mobile')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="status"
+                            :label="$t('groupBuy.grouponState')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="isDefault"
+                            :label="$t('groupBuy.isDefault')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="orderSn"
+                            :label="$t('groupBuy.orderSn')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="startTime"
+                            :label="$t('groupBuy.startTime')"
+                            align="center"
+                    ></el-table-column>
+                    <el-table-column
+                            prop="endTime"
+                            :label="$t('groupBuy.endTime')"
+                            align="center"
+                    ></el-table-column>
+
+                </el-table>
+            </el-main>
+            <pagination
+                    :page-params.sync="pageParams"
+                    @pagination="initialize"
+            />
         </wrapper>
     </div>
 </template>
@@ -142,7 +135,6 @@ export default {
   },
   mounted () {
     // 初始化
-    this.language()
     this.initialize()
   },
   methods: {
