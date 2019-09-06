@@ -46,15 +46,38 @@ export default {
   data () {
     return {
       activeName: '0',
-      isShowDeliverTemplateEdit: false
+      isShowDeliverTemplateEdit: false,
+      active: this.$route.query.active
     }
   },
   created () {
     this.refresh()
   },
   watch: {
-    'activeName' (val) {
-      switch (val) {
+    // 'activeName' (val) {
+
+    // }
+  },
+  methods: {
+    // 刷新的时候锁定el-tab-pane
+    refresh () {
+      console.log(this.$route.query.active)
+      // switch (this.$route.name) {
+      //   case 'deliverTemplateList': this.activeName = `0`; break
+      //   case 'deliverTemplateWeightList': this.activeName = `1`; break
+      //   case 'deliverTemplateAdd': this.activeName = `2`; break
+      //   case 'deliverTemplateWeightAdd': this.activeName = `3`; break
+      //   case 'deliverTemplateEdit': this.activeName = `3`; break
+      //   default: break
+      // }
+      if (this.active === `0`) {
+        this.activeName = '0'
+      }
+    },
+    // 点击头部跳转路由
+    handleClick (tab, event) {
+      // console.log(tab)
+      switch (tab.index) {
         case '0': this.$router.push({ name: `deliverTemplateList` }); break
         case '1': this.$router.push({ name: `deliverTemplateWeightList` }); break
         case '2': this.$router.push({ name: `deliverTemplateAdd` }); break
@@ -63,24 +86,6 @@ export default {
 
         default: break
       }
-    }
-  },
-  methods: {
-    // 刷新的时候锁定el-tab-pane
-    refresh () {
-      switch (this.$route.name) {
-        case 'deliverTemplateList': this.activeName = `0`; break
-        case 'deliverTemplateWeightList': this.activeName = `1`; break
-        case 'deliverTemplateAdd': this.activeName = `2`; break
-        case 'deliverTemplateWeightAdd': this.activeName = `3`; break
-        case 'deliverTemplateEdit': this.activeName = `3`; break
-        default: break
-      }
-    },
-    // 点击头部跳转路由
-    handleClick (tab, event) {
-      // console.log(tab.name)
-
     }
   }
 }

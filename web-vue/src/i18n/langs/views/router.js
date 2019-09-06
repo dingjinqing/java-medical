@@ -156,7 +156,9 @@ export const cn = {
   // 营销管理 加价购 换购订单
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细
-  purchase_redemption_detail: ['营销管理', '加价购', '换购明细']
+  purchase_redemption_detail: ['营销管理', '加价购', '换购明细'],
+  // 营销管理 消息推送
+  message_push: ['营销管理', '消息推送']
 }
 
 export const en = {
@@ -331,7 +333,11 @@ export const en = {
     'receive details '
   ],
   // 营销管理 分享有礼 添加分享有礼活动
-  share_polite_add: ['Marketing management', 'share polite', 'add share polite activity'],
+  share_polite_add: [
+    'Marketing management',
+    'share polite',
+    'add share polite activity'
+  ],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 限时降价 订单明细
@@ -372,5 +378,7 @@ export const en = {
     'Marketing management',
     'Increase Purchase',
     'Redemption Detail'
-  ]
+  ],
+  // 营销管理 消息体送
+  message_push: ['message_push']
 }

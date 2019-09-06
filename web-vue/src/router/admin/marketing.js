@@ -618,6 +618,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/purchaseList'
       )
   },
+
   // 加价购活动 换购订单
   {
     path: '/api/admin/market/addPriceBuy/redemptionOrder',
@@ -644,6 +645,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/increasePurchase/redemptionDetail'
+      )
+  },
+  // 营销管理/留存复购/消息推送
+  {
+    path: '/api/admin/market/messagePush',
+    name: 'message_push',
+    meta: {
+      crumbTitle: 'router.message_push',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/messagePush'
       )
   }
 ]

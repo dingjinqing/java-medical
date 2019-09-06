@@ -29,7 +29,7 @@ Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
 Vue.component('v-distpicker', Distpicker);
 // 全局事件总线
 Vue.prototype.$http = new Vue();
-
+// Vue.prototype.$t = (key, value) => i18n.t(key, value);
 Vue.use(vcolorpicker);
 Vue.use(ElementUI);
 Vue.use(vueSwiper);

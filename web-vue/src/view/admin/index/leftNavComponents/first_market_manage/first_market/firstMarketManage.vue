@@ -225,7 +225,10 @@
           </div>
         </div>
         <!-- 定金膨胀 -->
-        <div class="voucher box_style" @click="preSale">
+        <div
+          class="voucher box_style"
+          @click="preSale"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/djpz.png'"
               alt=""
@@ -423,7 +426,10 @@
           </div>
         </div>
         <!-- 消息推送 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="messagePush"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/xxts.png'"
               alt=""
@@ -562,6 +568,12 @@ export default {
     purchase () {
       this.$router.push({
         name: 'increase_purchase'
+      })
+    },
+    // 消息推送
+    messagePush () {
+      this.$router.push({
+        name: 'message_push'
       })
     }
   }

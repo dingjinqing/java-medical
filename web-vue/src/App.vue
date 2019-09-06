@@ -3,13 +3,31 @@
     id="app"
     class="fillcontain"
   >
-    <router-view></router-view>
+    <router-view v-if="isRouterAlive"></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+      isRouterAlive: true
+    }
+  },
+  provide () { // 提供
+    return {
+      reload: this.reload
+    }
+  },
+  methods: {
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+      })
+    }
+  }
 }
 </script>
 <style lang="scss" src="./style/system/common.scss"></style> <!--引入common全局样式-->

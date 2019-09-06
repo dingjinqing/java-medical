@@ -61,3 +61,11 @@ export function getDeliverTemplateApi (data) {
     data: data
   })
 }
+// 复制运费模板
+export function copyDeliverTemplateApi (data) {
+  return service({
+    url: '/api/admin/goods/deliver/copy',
+    method: 'post',
+    data: data
+  })
+}

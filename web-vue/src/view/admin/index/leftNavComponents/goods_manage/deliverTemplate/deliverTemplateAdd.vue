@@ -290,7 +290,7 @@
 <script>
 // 引入省市区三级联动
 import LocatTP from '@/components/admin/areaLinkage/LocatTP'
-import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { getAreaSelect, addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'templateAdd',
   components: { LocatTP },
@@ -363,7 +363,7 @@ export default {
         }],
         // 是否包邮信息
         goodsDeliverTemplateFeeParam: {
-          has_fee_0_condition: true
+          has_fee_0_condition: false
         },
         // 包邮条件详细信息
         goodsDeliverTemplateFeeConditionParam: [{
@@ -552,13 +552,13 @@ export default {
       getAreaSelect().then(res => {
         const { error, content } = res
         if (error === 0) {
-          // console.log(content)
+          console.log(content)
+          localStorage.setItem(`qwq`, JSON.stringify(content))
           content.unshift({ 'provinceId': 1, 'provinceName': '全选' })
           this.locatList = content
         }
       }).catch(err => console.log(err))
     },
-    // 处理第二个表格的数据
     // 添加模板
     handleAddTemplate () {
       // 验证模板名称是否输入
@@ -579,7 +579,11 @@ export default {
         'templateName': this.formData[`templateName`], // 模板名称
         'goodsDeliverTemplateLimitParam': this.formData.goodsDeliverTemplateLimitParam,
         // 第一个表格的数据
-        'goodsDeliverTemplateAreaParam': [],
+        'goodsDeliverTemplateAreaParam': [
+          {
+
+          }
+        ],
         'goodsDeliverTemplateFeeParam': {
           'has_fee_0_condition': this.formatHas_fee_0_condition
         },
@@ -588,12 +592,23 @@ export default {
       }
       console.log(params)
       // 发送请求
-      // addTemplate(params).then(res => {
-      //   const { error } = res
-      //   if (error === 0) {
-      //     console.log(`添加成功`)
-      //   }
-      // }).catch(err => console.log(err))
+      addTemplate(params).then(res => {
+        const { error } = res
+        if (error === 0) {
+          // 添加成功的提示信息
+          this.$message({
+            message: '添加成功',
+            center: true,
+            type: 'success',
+            duration: 1000
+          })
+          // 跳转到列表页
+          this.$router.push({
+            name: `deliverTemplateList`,
+            query: { active: `0` }
+          })
+        }
+      }).catch(err => console.log(err))
     },
     // 编辑每条
     handleEdit (index) {

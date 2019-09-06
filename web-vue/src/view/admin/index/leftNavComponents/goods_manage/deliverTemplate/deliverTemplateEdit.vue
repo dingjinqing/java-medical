@@ -312,6 +312,9 @@ export default {
   },
   mounted () {
     this.getData()
+    this.$http.$on(`showUpDate`, (val) => {
+      console.log(val)
+    })
   },
   computed: {
     formatLimitDeliverArea: function () {
