@@ -143,7 +143,7 @@ export default {
     return {
       colorLeft_: '',
       colorRight: '',
-      colorDataList: this.$t('shopStyle.topTitleList'),
+      colorDataList: [],
       choiseId: '',
       colorLeft_color: 'color: rgb(255, 102, 102)',
       colorLeft: 'background:rgba(255, 102, 102, 0.2);color: rgb(255, 102, 102);border: 1px solid rgba(255, 102, 102, 0.4)',
@@ -162,6 +162,11 @@ export default {
       defaultColorright: '',
       en_ch_title_width_one: '',
       en_ch_title_width_two: ''
+    }
+  },
+  watch: {
+    lang () {
+      this.colorDataList = this.$t('shopStyle.topTitleList')
     }
   },
   mounted () {

@@ -31,6 +31,10 @@ import { cn as receiveDetails } from './views/admin/index/leftNavComponents/firs
 // 优惠券礼包
 import { cn as couponPackage } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
 
+// 小程序装修
+import { cn as pageDecoration } from './views/smallProgramManagement/pageDecoration'
+// 底部导航配置
+import { cn as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
 // console.log(zhLocale)
 const cn = {
   messages: {
@@ -421,7 +425,8 @@ const cn = {
   statusTab, // 营销活动状态 tabs
   sharePolite, // 分享有礼
   receiveDetails,
-
+  pageDecoration,
+  bottomNavigation,
   ...zhLocale
 }
 

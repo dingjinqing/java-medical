@@ -112,13 +112,13 @@
                         class="old_pic"
                         :href="item.imgUrl"
                         target="_blank"
-                        title="显示原图"
+                        :title="$t('pageDecoration.displayTheOriginal')"
                       >{{$t('imgageDalog.OriginalImg')}}</a>
                       <a
-                        title="裁剪图片"
+                        :title="$t('pageDecoration.cutOutPictures')"
                         @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl)"
                       >
-                        裁剪
+                        {{$t('pageDecoration.cropper')}}
                       </a>
                       <a
                         class="remove_image"
@@ -126,7 +126,7 @@
                         img_width="52"
                         img_height="52"
                         img_path="upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
-                        title="删除图片"
+                        :title="$t('pageDecoration.deletePictures')"
                         @click="delMaskImg(item.imgId)"
                       >{{$t('imgageDalog.delImg')}}</a>
                     </p>
@@ -244,7 +244,7 @@ export default {
           img_1: this.$imageHost + '/image/admin/notice_img.png'
         }
       ],
-      options: this.$t('options'),
+      options: [],
       value: '',
       imgNameInput: '',
       checked: false,
@@ -308,10 +308,15 @@ export default {
     },
     picSpaceCropperFlag_ (obj) {
       this.queryImgs()
+    },
+    lang (newData) {
+      console.log(newData)
+      this.options = this.$t('options')
+      this.value = this.options[0].value
+      console.log(this.options)
     }
   },
   mounted () {
-    this.value = this.options[0].value
     // console.log(this.clickNode)
     // 初始化语言
     this.langDefault()

@@ -2,7 +2,7 @@
   <div class="bottomNavigationContent">
     <div class="bottomNavigationContent_main">
       <div class="cententLleft">
-        <div class="cententLleft_title">底部导航配置</div>
+        <div class="cententLleft_title">{{$t('bottomNavigation.title')}}</div>
         <div class="cententLleft_bottom">
           <ul>
             <li
@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="cententLRight">
-        <div class="cententLRight_title">导航设置：<span style="color:#999">最少需要使用三个导航设置，最多五个。图标大小80*80。</span></div>
+        <div class="cententLRight_title">{{$t('bottomNavigation.contentTitle')}}：<span style="color:#999">{{$t('bottomNavigation.tips')}}80*80。</span></div>
         <div
           class="cententLRight_content_container"
           v-for="(item,index) in contentList"
@@ -31,44 +31,44 @@
             ><img :src="
               dele_icon"></div>
             <div class="mp_list">
-              <span>导航文字：</span>
+              <span>{{$t('bottomNavigation.listTitle')}}：</span>
               <el-input
-                placeholder="请输入内容"
+                :placeholder="$t('bottomNavigation.listTitle')"
                 size="mini"
                 v-model="item.text"
               ></el-input>
             </div>
             <div class="mp_list moDifyImg">
-              <div class="nav_title">图片：<span
+              <div class="nav_title">{{$t('bottomNavigation.picture')}}：<span
                   @click="handleModifyDialog(index)"
                   style="color:#5a8bff;cursor:pointer"
-                >修改</span></div>
+                >{{$t('bottomNavigation.modify')}}</span></div>
               <div class="nav_icon">
                 <div class="icon_box">
                   <img :src="item.normal">
-                  <span @click="handleChangeIcon(index,0)">更换图标</span>
+                  <span @click="handleChangeIcon(index,0)">{{$t('bottomNavigation.changeIcons')}}</span>
                 </div>
-                <div class="tip">点击状态</div>
+                <div class="tip">{{$t('bottomNavigation.clickStatus')}}</div>
               </div>
               <div class="nav_icon">
                 <div class="icon_box">
                   <img :src="item.hover">
-                  <span @click="handleChangeIcon(index,1)">更换图标</span>
+                  <span @click="handleChangeIcon(index,1)">{{$t('bottomNavigation.changeIcons')}}</span>
                 </div>
-                <div class="tip">未点击状态</div>
+                <div class="tip">{{$t('bottomNavigation.unclickedStatus')}}</div>
               </div>
             </div>
             <div class="linkContainer">
-              <span>添加链接：</span>
+              <span>{{$t('bottomNavigation.addConnections')}}：</span>
               <el-input
                 v-model="item.page"
-                placeholder="请输入内容"
+                :placeholder="$t('bottomNavigation.placeholder')"
                 size="mini"
               ></el-input>
               <el-button
                 size="mini"
                 @click="handleSelectLinks(index)"
-              >选择链接</el-button>
+              >{{$t('bottomNavigation.addConnections')}}</el-button>
             </div>
           </div>
         </div>

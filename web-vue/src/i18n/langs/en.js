@@ -31,6 +31,10 @@ import { en as receiveDetails } from './views/admin/index/leftNavComponents/firs
 // 优惠券礼包
 import { en as couponPackage } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
 
+// 小程序装修
+import { en as pageDecoration } from './views/smallProgramManagement/pageDecoration'
+// 底部导航配置
+import { en as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
 const en = {
   messages: {
     lang: 'English',
@@ -444,11 +448,12 @@ const en = {
   marketCommon, // 营销管理通用词汇
   goodsAddEditInfo,
   groupBuy,
-  couponPackage, // 优惠券礼包
-  statusTab, // 营销活动状态 tabs
+  statusTab,
   sharePolite,
   receiveDetails,
-
+  couponPackage,
+  pageDecoration,
+  bottomNavigation,
   ...enLocale
 }
 export default en

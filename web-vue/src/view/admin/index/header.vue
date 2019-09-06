@@ -448,9 +448,10 @@ label {
   box-shadow: 0 0px 10px rgba(204, 204, 204, 0.3);
   color: #333;
   text-align: center;
-  z-index: 2;
   top: 85px;
-  z-index: 10000;
+  z-index: 1000;
+  box-shadow: 1px 1px 1px #ccc;
+  border-radius: 3px;
 }
 .lang_c {
   display: none;
@@ -461,8 +462,8 @@ label {
   border-radius: 3px;
 }
 .login_active {
-  background-color: #f8f8f8;
-  color: #5a8bff;
+  /* background-color: #f8f8f8;
+  color: #5a8bff; */
   display: block !important;
 }
 </style>
