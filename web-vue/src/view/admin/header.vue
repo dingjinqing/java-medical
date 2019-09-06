@@ -3,6 +3,7 @@
     <div class="left">
       <img :src="imageUrl[0].img_1">
     </div>
+
     <div class="right">
       <div class="right_main">
         <img src="../../assets/adminImg/notice_ld.png">
@@ -49,6 +50,27 @@
         <img :src="imageUrl[3].img_4">
       </div>
     </div>
+    <div
+      class="langChange"
+      @mouseover="langEnter()"
+      @mouseout="langLeave()"
+    >
+      <span>{{$t('messages.lang')}}</span>
+      <img
+        :src="imageUrlData[1].image_4"
+        class="head_down"
+      >
+      <div class="head_list_lang">
+        <div
+          class="lang_c"
+          target="_blank"
+          @click="handleChangeLang(index)"
+          :class="item.login_active"
+          v-for="(item,index) in langData_show"
+          :key="index"
+        >{{item.show_lang}}</div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -59,6 +81,7 @@ import { loginRequestOut } from '@/api/index/login.js'
 export default {
   data () {
     return {
+      langData_show: [],
       imageUrl: [
         {
           img_1: this.$imageHost + '/image/admin/official/bottom_logo.png'
@@ -79,7 +102,19 @@ export default {
       username: '',
       accountName: '',
       menu_width: '',
-      shopAvatar: ''
+      shopAvatar: '',
+      imageUrlData: [
+        { image_3: this.$imageHost + '/image/admin/official/blue_down.png' },
+        { image_4: this.$imageHost + '/image/admin/img1.png' }
+      ],
+      langData_cn: [
+        { lang: 'en', login_active: '', show_lang: 'English' },
+        { lang: 'cn', login_active: '', show_lang: '中文' }
+      ],
+      langData_en: [
+        { lang: 'en', login_active: '', show_lang: 'English' },
+        { lang: 'cn', login_active: '', show_lang: 'Chinese' }
+      ]
     }
   },
   mounted () {
@@ -148,11 +183,49 @@ export default {
       if (index === 'undefined') return 0
       this.changeColorIndex = index
     },
+    langEnter () {
+      console.log('1')
+      this.langData_cn.forEach(item => {
+        item.login_active = 'login_active'
+      })
+      this.langData_en.forEach(item => {
+        item.login_active = 'login_active'
+      })
+    },
     // 鼠标划出
     user_leave (index) {
       this.log_menu_show = false
       if (!index) return 0
       this.changeColorIndex = ''
+    },
+    langLeave () {
+      console.log('2')
+      this.langData_cn.forEach(item => {
+        item.login_active = ''
+      })
+      this.langData_en.forEach(item => {
+        item.login_active = ''
+      })
+    },
+    // 语言选项点击
+    handleChangeLang (index) {
+      switch (index) {
+        case 0:
+          this.$i18n.locale = this.langData_cn[index].lang
+          this.lang_with = 'width:63px'
+          this.langData_show = this.langData_en
+          this.loginData_show = this.loginData_en
+          localStorage.setItem('WEPUBAO_LANGUAGE', 'en_US')
+          break
+        case 1:
+          this.$i18n.locale = this.langData_cn[index].lang
+          this.lang_with = 'width:43px'
+          this.langData_show = this.langData_cn
+          this.loginData_show = this.loginData_cn
+          localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
+          break
+      }
+      this.$http.$emit('lang_change', index)
     }
   }
 }
@@ -256,5 +329,36 @@ label {
 }
 .admin_menu_width {
   width: 220px !important;
+}
+.langChange {
+  float: right;
+  margin-right: 30px;
+  cursor: pointer;
+}
+.head_list_lang {
+  position: absolute;
+  width: 160px;
+  background: #fff;
+  -webkit-box-shadow: 0 0px 10px rgba(204, 204, 204, 0.3);
+  -moz-box-shadow: 0 0px 10px rgba(204, 204, 204, 0.3);
+  box-shadow: 0 0px 10px rgba(204, 204, 204, 0.3);
+  color: #333;
+  text-align: center;
+  z-index: 2;
+  top: 85px;
+  z-index: 10000;
+}
+.lang_c {
+  display: none;
+  line-height: 40px;
+  height: 40px;
+  width: 100%;
+  text-align: center;
+  border-radius: 3px;
+}
+.login_active {
+  background-color: #f8f8f8;
+  color: #5a8bff;
+  display: block !important;
 }
 </style>

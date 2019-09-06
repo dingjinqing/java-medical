@@ -101,9 +101,9 @@
                     :class="topAreaFlag?'setHere':''"
                     @mouseover="dragTopOver"
                     @mouseout="dragTopOut"
-                  >
-                    <span :class="topAreaFlag?'setHereSpan':''">放这里</span>
-                  </div> -->
+                  > -->
+                  <!-- <span :class="topAreaFlag?'setHereSpan':''">放这里</span> -->
+                  <!-- </div> -->
                   <!--模块列表-->
                   <div
                     v-for="(item,index) in showModulesList"
