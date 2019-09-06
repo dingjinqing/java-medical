@@ -21,8 +21,9 @@ public class AccountPageListParam {
 	private Integer pageRows;
 
 	/** 会员id */
-	@NotNull
 	private Integer userId;
+	/** 会员名称 */
+	private String userName;
 	/** 订单号 */
 	private String orderSn;
 	
