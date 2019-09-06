@@ -184,7 +184,7 @@ public class MemberService extends ShopBaseService {
 					.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
 					.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(localDateTime)))
 							.or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
-					.orderBy(USER_CARD.IS_DEFAULT.desc(), MEMBER_CARD.GRADE.desc()).limit(1).fetchOne();
+					.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc()).limit(1).fetchOne();
 
 			try {
 				String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
