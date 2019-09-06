@@ -25,6 +25,7 @@ public class FriendPromoteReceiveParam {
 
 	/* 是否已领取 */
 	public static final int PROMOTE_STATUS_DEFAULT = -1;
+	public static final int RECEIVED = 2;
 	private int promoteStatus = PROMOTE_STATUS_DEFAULT;
 	
 	/* 订单号 */
