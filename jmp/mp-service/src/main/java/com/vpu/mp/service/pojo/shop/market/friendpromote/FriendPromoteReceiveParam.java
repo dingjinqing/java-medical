@@ -31,6 +31,6 @@ public class FriendPromoteReceiveParam {
 	private String orderSn;
 	
 	/* 分页信息 */
-	private int currentPage;
-	private int pageRows;
+	private Integer currentPage;
+	private Integer pageRows;
 }

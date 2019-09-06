@@ -199,7 +199,12 @@ public class FriendPromoteService extends ShopBaseService {
 			sql.and(ORDER_INFO.ORDER_SN.like(this.likeValue(param.getOrderSn())));
 		}
 		if (param.getPromoteStatus() != FriendPromoteReceiveParam.PROMOTE_STATUS_DEFAULT) {
-			sql.and(fpl.PROMOTE_STATUS.equal((byte) param.getPromoteStatus()));
+			if (param.getPromoteStatus()==2) {
+				sql.and(fpl.PROMOTE_STATUS.equal((byte) param.getPromoteStatus()));
+			}else {
+				sql.and(fpl.PROMOTE_STATUS.notEqual((byte) param.getPromoteStatus()));
+			}
+			
 		}
 		/* 整合分页信息 */
 		PageResult<FriendPromoteReceiveVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
