@@ -132,9 +132,9 @@
             <div class="opt">
               <span>编辑</span>
               <span>分享</span>
-              <span>领取明细</span>
-              <span>发起明细</span>
-              <span>参与明细</span>
+              <span @click="receiveDetails(scope.row.id)">领取明细</span>
+              <span @click="launchDetails(scope.row.id)">发起明细</span>
+              <span @click="participateDetails(scope.row.id)">参与明细</span>
               <span @click="startOrBlock(scope)">启用</span>
               <span @click="startOrBlock(scope)">停用</span>
               <span @click="delAct(scope)">删除</span>
@@ -305,6 +305,18 @@ export default {
       this.$router.push({
         name: 'promote_activity'
       })
+    },
+    // 领取明细
+    receiveDetails (id) {
+      this.$router.push(`/admin/home/main/friendHelp/receiveDetails/${id}`)
+    },
+    // 发起明细
+    launchDetails (id) {
+      this.$router.push(`/admin/home/main/friendHelp/launchDetails/${id}`)
+    },
+    // 参与明细
+    participateDetails (id) {
+      this.$router.push(`/admin/home/main/friendHelp/participateDetails/${id}`)
     }
   }
 }

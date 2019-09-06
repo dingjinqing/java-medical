@@ -64,7 +64,6 @@
             <el-radio
               v-model="form.rewardType"
               label="1"
-              @click.native="bindRewardType()"
             >折扣商品</el-radio>
             <el-radio
               v-model="form.rewardType"
@@ -139,56 +138,51 @@
               >
                 <el-input v-model="form.goodsInfo.market_price"></el-input>
               </el-table-column>
-
             </el-table>
 
             <!-- <div v-if="form.rewardType == '2'">hello world</div> -->
 
+            <el-table
+              v-if="form.rewardType==2"
+              :data="coupon_info"
+              border
+              style="width: 20%"
+            >
+              <el-table-column
+                label="优惠券信息"
+                width="180%"
+              >
+                <template slot-scope="scope">
+                  <div class="coupon_info">
+                    <span class="coupon_name">{{scope.row.actName}}</span>
+                    <div
+                      class="coupon_price"
+                      v-if="scope.row.actCode == 'voucher'"
+                    >￥<span>{{scope.row.denomination}}</span></div>
+                    <div
+                      class="coupon_price"
+                      v-else
+                    ><span>{{scope.row.denomination}}</span>折</div>
+                    <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="发券数量"
+                width="120%"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    <el-input
+                      v-model="scope.row.send_num"
+                      size="small"
+                      style="width:100px;"
+                    ></el-input>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
           </el-form-item>
-
-          <el-table
-            v-if="form.rewardType==2"
-            class="version-manage-table"
-            header-row-class-name="tableClass"
-            :data="coupon_info"
-            border
-            style="width: 20%"
-          >
-            <el-table-column
-              label="优惠券信息"
-              width="180%"
-            >
-              <template slot-scope="scope">
-                <div class="coupon_info">
-                  <span class="coupon_name">{{scope.row.actName}}</span>
-                  <div
-                    class="coupon_price"
-                    v-if="scope.row.actCode == 'voucher'"
-                  >￥<span>{{scope.row.denomination}}</span></div>
-                  <div
-                    class="coupon_price"
-                    v-else
-                  ><span>{{scope.row.denomination}}</span>折</div>
-                  <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="发券数量"
-              width="120%"
-            >
-              <template slot-scope="scope">
-                <div>
-                  <el-input
-                    v-model="scope.row.send_num"
-                    size="small"
-                    style="width:100px;"
-                  ></el-input>
-                </div>
-              </template>
-            </el-table-column>
-
-          </el-table>
 
           <el-form-item
             label="奖励有效期："
@@ -374,7 +368,42 @@
               v-model="form.failedSendType"
               label="2"
             >积分</el-radio>
+            <div v-if="form.failedSendType==1">
+              <el-button
+                size="small"
+                type="primary"
+                @click="isEditFlag?'':handleToCallDialog()"
+              >+选择优惠券</el-button>
+            </div>
+            <el-table
+              v-if="form.failedSendType==1"
+              :data="coupon_info"
+              border
+              style="width: 10%"
+            >
+              <el-table-column
+                label="优惠券信息"
+                width="150%"
+              >
+                <template slot-scope="scope">
+                  <div class="coupon_info">
+                    <span class="coupon_name">{{scope.row.actName}}</span>
+                    <div
+                      class="coupon_price"
+                      v-if="scope.row.actCode == 'voucher'"
+                    >￥<span>{{scope.row.denomination}}</span></div>
+                    <div
+                      class="coupon_price"
+                      v-else
+                    ><span>{{scope.row.denomination}}</span>折</div>
+                    <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
           </el-form-item>
+
+          <div></div>
           <el-collapse>
             <el-collapse-item>
               <template slot="title">
@@ -420,15 +449,47 @@
                             v-model="form.shareImgType"
                             label="1"
                           >自定义图片</el-radio>
+
+                          <div
+                            style="display: flex;align-items: center;flex-wrap: wrap;"
+                            v-if="form.shareImgType == 1"
+                          >
+                            <div
+                              v-for="(src,index) in goodsProductInfo.goodsImgs"
+                              :key="index"
+                              class="goodsImgWrap"
+                            >
+                              <el-image
+                                fit="cover"
+                                :src="src"
+                                style="width: 78px; height: 78px;"
+                              ></el-image>
+                              <span
+                                @click="deleteGoodsImg(index)"
+                                class="deleteIcon"
+                              >×</span>
+
+                            </div>
+                            <div
+                              class="goodsImgWrap"
+                              @click="addGoodsImg"
+                              v-if="goodsProductInfo.goodsImgs.length < 1"
+                            >
+                              <el-image
+                                fit="scale-down"
+                                :src="imgHost+'/image/admin/add_img.png'"
+                                style="width: 78px; height: 78px;cursor: pointer;"
+                              />
+                            </div>
+                            <span class="inputTip">
+                              建议尺寸：800*800像素
+                            </span>
+                          </div>
+
                         </div>
                       </div>
-                      <!-- <div style="margin-left: 60px">
-                      <img
-                        src=""
-                        alt=""
-                      >
-                    </div> -->
                     </div>
+
                   </el-radio>
                 </div>
               </el-form-item>
@@ -452,6 +513,10 @@
       origin="couponPackage"
       @handleToCheck="handleToCheck"
     />
+    <ImageDalog
+      pageIndex='pictureSpace'
+      @handleSelectImg='imgDialogSelectedCallback'
+    />
   </wrapper>
 </template>
 
@@ -461,11 +526,12 @@ import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addActive } from '@/api/admin/marketManage/friendHelp.js'
 import { getGoodsProductList } from '@/api/admin/brandManagement.js'
-
+import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: {
     wrapper,
     choosingGoods,
+    ImageDalog,
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
@@ -473,6 +539,15 @@ export default {
       show: false,
       radio: 'one',
       isEditFlag: false,
+      goodsProductInfo: {
+        // 基本信息
+        goodsName: null,
+        goodsAd: null,
+        goodsSn: null,
+        catId: null,
+        goodsImgs: []
+
+      },
       // 表单
       form: {
         test: '',
@@ -541,6 +616,7 @@ export default {
 
       },
       // 优惠券
+      coupon_msg: [],
       coupon_info: [],
       couponDialogFlag: false,
       couponSetDialogFlag: false,
@@ -582,7 +658,7 @@ export default {
   created () {
     this.form.rewardDurationUnitSelect = this.form.rewardDurationUnit[0].value
     this.form.launchLimitUnitSelect = this.form.launchLimitUnit[0].value
-    this.form.useDiscount = this.form.useDiscount[0].value
+    this.form.useDiscount = this.form.useDiscount[1].value
     this.form.useScore = this.form.useScore[1].value
   },
   methods: {
@@ -646,14 +722,22 @@ export default {
         }
       })
     },
-    bindRewardType () {
-      // console.log(1111)
-      // this.form.goodsInfo.rewardType = this.form.rewardType
-      // console.log('this.form.goodsInfo.rewardType:', this.form.goodsInfo.rewardType)
-      // console.log('this.form.rewardType:', this.form.rewardType)
-      console.log(11111111)
-      this.show = true
+    /* 添加图片点击事件，弹出图片选择组件 */
+    addGoodsImg () {
+      this.$http.$emit('dtVisible')
     },
+    /* 商品图片点击回调函数 */
+    imgDialogSelectedCallback (src) {
+      if (this.goodsProductInfo.goodsImgs.length >= 1) {
+        return
+      }
+      this.goodsProductInfo.goodsImgs.push(src)
+    },
+    /* 删除商品图片 */
+    deleteGoodsImg (index) {
+      this.goodsProductInfo.goodsImgs.splice(index, 1)
+    },
+
     // 选择商品弹窗
     showChoosingGoods () {
       this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
@@ -743,7 +827,6 @@ export default {
       this.coupon_info[this.target].coupon_set = JSON.parse(JSON.stringify(this.coupon_set))
       this.couponSetDialogFlag = false
     },
-
     // 同id去重
     unique (arr, key) {
       let map = new Map()
@@ -759,6 +842,10 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+.inputTip {
+  color: #999;
+  margin-left: 15px;
+}
 .content {
   padding: 10px;
   min-width: 100%;
@@ -791,7 +878,56 @@ export default {
     }
   }
 }
-
+.goodsImgWrap {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #ccc;
+  margin: 5px 5px;
+  position: relative;
+}
+.goodsImgWrap .deleteIcon {
+  width: 17px;
+  height: 17px;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  line-height: 17px;
+  text-align: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.goodsImgWrap .moveIcon {
+  width: 17px;
+  height: 17px;
+  display: none;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  line-height: 17px;
+  text-align: center;
+  position: absolute;
+  bottom: 0px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.goodsImgWrap:hover .moveIcon {
+  display: block;
+}
+.selectedWrap {
+  min-width: 70px;
+  height: 22px;
+  border: 1px solid #ccc;
+  line-height: 22px;
+  text-align: center;
+  padding: 0px 5px;
+  margin: 0px 5px;
+  background-color: #fff;
+  position: relative;
+}
 .footer {
   padding: 10px 0px 10px 0px;
   text-align: center;

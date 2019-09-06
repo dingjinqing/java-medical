@@ -311,6 +311,45 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/addHelpAct'
       )
   },
+  // 好友助力领取明细
+  {
+    path: '/admin/home/main/friendHelp/receiveDetails/:id',
+    name: 'promote_receive_details',
+    meta: {
+      crumbTitle: 'router.promote_receive_details',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/receiveDetails'
+      )
+  },
+  // 好友助力发起明细
+  {
+    path: '/admin/home/main/friendHelp/launchDetails/:id',
+    name: 'promote_launch_details',
+    meta: {
+      crumbTitle: 'router.promote_launch_details',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/launchDetails'
+      )
+  },
+  // 好友助力参与明细
+  {
+    path: '/admin/home/main/friendHelp/participateDetails/:id',
+    name: 'promote_participate_details',
+    meta: {
+      crumbTitle: 'router.promote_participate_details',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/participateDetails'
+      )
+  },
   // 添加优惠券活动
   {
     path: '/admin/home/main/addyCoupon',

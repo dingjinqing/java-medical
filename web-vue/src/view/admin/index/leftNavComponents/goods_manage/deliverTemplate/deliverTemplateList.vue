@@ -248,6 +248,7 @@ export default {
     // 初始化运费模板数据
     initData () {
       fetchDeliverTemplateList(this.pageParams).then(res => {
+        console.log(res.content.pageResult.dataList)
         const { error, content: { config, pageResult: { dataList, page } } } = res
         if (error === 0) {
           // console.log(page)
