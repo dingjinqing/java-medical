@@ -27,11 +27,11 @@ export function deleteCoupon (data) {
   })
 }
 
-// 添加优惠券
-export function addCoupon (data) {
+// 添加保存优惠券
+export function saveCoupon (data) {
   return service({
     url: `/api/admin/coupon/add`,
-    method: 'get',
+    method: 'post',
     data: data
   })
 }

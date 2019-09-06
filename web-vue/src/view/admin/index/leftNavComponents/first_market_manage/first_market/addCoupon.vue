@@ -38,10 +38,10 @@
                   class="vip_exclusive"
                   style="display:none;"
                 >会员专享</div>
-                <div class="coupon_name">{{coupon_name_input ? coupon_name_input : '优惠券名称'}}</div>
+                <div class="coupon_name">{{param.actName ? param.actName : '优惠券名称'}}</div>
                 <div class="coupon_vou">
-                  <span v-if="preferential_type === '0'">￥{{denomination ? denomination : '0.00'}}</span>
-                  <span v-else>{{denomination2?denomination2:'0'}}折</span>
+                  <span v-if="param.preferential_type === '0'">￥{{param.denomination ? param.denomination : '0.00'}}</span>
+                  <span v-else>{{param.denomination2?param.denomination2:'0'}}折</span>
                 </div>
                 <div class="coupon_dis"></div>
               </div>
@@ -50,32 +50,32 @@
               <div class="clearfix">
                 <span class="sub_title">有效日期</span>
                 <span class=date>
-                  <span v-if="available_period === '0'">{{coupon_date_datetimerange}}</span>
-                  <span v-else>{{coupon_date_info}}</span>
+                  <span v-if="param.available_period === '0'">{{param.coupon_date_datetimerange}}</span>
+                  <span v-else>{{param.coupon_date_info}}</span>
                 </span>
               </div>
               <div>
                 <span class="sub_title">使用限制</span>
                 <span
                   class="all"
-                  v-if="using_limit==='0'"
+                  v-if="param.using_limit==='0'"
                 >无限制</span>
-                <span v-else>订单满<span>{{least_consume?least_consume:'0'}}</span>元可用</span>
+                <span v-else>订单满<span>{{param.least_consume?param.least_consume:'0'}}</span>元可用</span>
                 <span
                   class="part"
-                  v-if="radio_goods === '1'"
+                  v-if="param.radioGoods === '1'"
                 >部分商品可用</span>
               </div>
             </div>
             <div class="info_bot">
               <div
                 class="code"
-                v-if="validation_code != ''"
+                v-if="param.validation_code != ''"
               >请输入领取码</div>
               <div class="use">立即使用</div>
               <div>
                 <span class="sub_title">使用说明</span>
-                <div class="instruction">{{use_explain?use_explain:'暂无使用说明'}}</div>
+                <div class="instruction">{{param.use_explain?param.use_explain:'暂无使用说明'}}</div>
               </div>
             </div>
           </div>
@@ -92,7 +92,7 @@
                       size="small"
                       class="coupon_name_input"
                       placeholder="最多输入10个字"
-                      v-model="coupon_name_input"
+                      v-model="param.actName"
                       maxlength="10"
                     ></el-input>
                   </div>
@@ -104,11 +104,11 @@
                   <div class="to_choose">
                     <p>
                       <el-radio
-                        v-model="preferential_type"
+                        v-model="param.preferentialType"
                         label="0"
                       >指定金额</el-radio>
                       <span>面值：<el-input
-                          v-model="denomination"
+                          v-model="param.denomination"
                           size="small"
                           class="small_input"
                         ></el-input> 元</span>
@@ -116,10 +116,10 @@
 
                     <p>
                       <el-radio
-                        v-model="preferential_type"
+                        v-model="param.preferentialType"
                         label="1"
                       >折扣<el-input
-                          v-model="denomination2"
+                          v-model="param.denomination2"
                           size="small"
                           class="small_input"
                         ></el-input>
@@ -136,17 +136,17 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="using_limit"
+                        v-model="param.userConsumeRestrict"
                         label="0"
                       >不限制</el-radio>
                     </p>
                     <p>
                       <el-radio
-                        v-model="using_limit"
+                        v-model="param.userConsumeRestrict"
                         label="1"
                       >满<el-input
                           size="small"
-                          v-model="least_consume"
+                          v-model="param.leastConsume"
                           class="small_input"
                         ></el-input>
                         元可用
@@ -160,16 +160,16 @@
                   </div>
                   <div>
                     <el-radio
-                      v-model="redeem_gift"
+                      v-model="param.useScore"
                       label="0"
                     >不需要</el-radio>
                     <el-radio
-                      v-model="redeem_gift"
+                      v-model="param.useScore"
                       label="1"
                     >需要兑换</el-radio>
-                    <p v-if="redeem_gift == 1">
+                    <p v-if="param.useScore == 1">
                       <el-input
-                        v-model="score_number"
+                        v-model="param.scoreNumber"
                         class="small_input"
                         size="small"
                       ></el-input>
@@ -188,7 +188,7 @@
                   </div>
                   <div class="ft">
                     <el-select
-                      v-model="get_limit_select"
+                      v-model="param.receivePerPerson"
                       size="small"
                     >
                       <el-option
@@ -207,13 +207,13 @@
                   <div>
                     <p>
                       <el-checkbox
-                        v-model="is_exclusive"
+                        v-model="param.isExclusive"
                         label="用户持有会员卡才可以参与活动"
                       ></el-checkbox>
                     </p>
-                    <div v-if="is_exclusive">
+                    <div v-if="param.isExclusive">
                       <el-select
-                        v-model="choose_card_list"
+                        v-model="param.cardId"
                         placeholder="请选择会员卡"
                         multiple
                         size="small"
@@ -240,17 +240,18 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="available_period"
+                        v-model="param.availablePeriod"
                         label="0"
                       >固定日期</el-radio>
                     </p>
                     <p
-                      v-if='available_period==="0"'
+                      v-if='param.availablePeriod==="0"'
                       style="margin:15px 0;"
                     >
                       <el-date-picker
-                        v-model="coupon_date"
+                        v-model="param.couponDate"
                         type="datetimerange"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         format="yyyy-MM-dd HH:mm:ss"
                         range-separator="-"
                         start-placeholder="生效时间"
@@ -261,20 +262,20 @@
                     </p>
                     <p>
                       <el-radio
-                        v-model="available_period"
+                        v-model="param.availablePeriod"
                         label="1"
                       >领券开始 <el-input
-                          v-model="coupon_date_day"
+                          v-model="param.validity"
                           placeholder=""
                           size="small"
                           class="small_input"
                         ></el-input> 天 <el-input
-                          v-model="coupon_date_hour"
+                          v-model="param.validityHour"
                           placeholder=""
                           size="small"
                           class="small_input"
                         ></el-input> 小时 <el-input
-                          v-model="coupon_date_minite"
+                          v-model="param.validityMinute"
                           placeholder=""
                           size="small"
                           class="small_input"
@@ -288,7 +289,7 @@
                   </div>
                   <div>
                     <el-input
-                      v-model="total_amount"
+                      v-model="param.totalAmount"
                       placeholder=""
                       size="small"
                       class="small_input"
@@ -301,7 +302,7 @@
                   </div>
                   <div>
                     <el-input
-                      v-model="validation_code"
+                      v-model="param.validationCode"
                       placeholder=""
                       size="small"
                       class="small_input"
@@ -315,17 +316,17 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="radio_goods"
+                        v-model="param.recommendGoodsId"
                         label="0"
                       >全部商品</el-radio>
                     </p>
                     <p>
                       <el-radio
-                        v-model="radio_goods"
+                        v-model="param.recommendGoodsId"
                         label="1"
                       >指定商品</el-radio>
                     </p>
-                    <div v-if="radio_goods === '1'">
+                    <div v-if="param.recommendGoodsId === '1'">
                       <div
                         class="noneBlockList"
                         v-for="(item,index) in noneBlockDiscArr"
@@ -351,11 +352,11 @@
                   <div style="display:flex">
                     <div>
                       <el-radio
-                        v-model="suit_goods"
+                        v-model="param.suitGoods"
                         label="0"
                       >否</el-radio>
                       <el-radio
-                        v-model="suit_goods"
+                        v-model="param.suitGoods"
                         label="1"
                       >是</el-radio>
                     </div>
@@ -372,7 +373,7 @@
                     <el-input
                       type="textarea"
                       :rows="5"
-                      v-model="use_explain"
+                      v-model="param.useExplain"
                       placeholder="请输入使用说明"
                       resize="none"
                     ></el-input>
@@ -388,6 +389,7 @@
       <el-button
         type="primary"
         size="small"
+        @click="saveCoupon"
       >保存</el-button>
     </div>
     <!--选择商品弹窗-->
@@ -399,6 +401,7 @@
   </div>
 </template>
 <script>
+import { saveCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -408,15 +411,36 @@ export default {
   data () {
     return {
       tableData: [],
+      param: {
+        actName: '',
+        preferentialType: '0',
+        userConsumeRestrict: '0',
+        useScore: '0',
+        receivePerPerson: 0,
+        cardId: [],
+        availablePeriod: '0',
+        couponDate: '',
+        validity: '',
+        validityHour: '',
+        validityMinute: '',
+        totalAmount: '',
+        validationCode: '',
+        recommendGoodsId: '0',
+        recommendCatId: '0',
+        recommendSortId: '0',
+        suitGoods: '0',
+        useExplain: '',
+        denomination: null,
+        denomination2: null,
+        leastConsume: null,
+        scoreNumber: null,
+        AtreeType: null,
+        isExclusive: false
+      },
       activeName: 'second',
       currentPage: 1,
-      coupon_name_input: '',
-      preferential_type: '0',
-      using_limit: '0',
-      redeem_gift: '0',
       get_limit: ['不限制', 1, 2, 3, 4, 5, 8, 10, 20],
-      get_limit_select: 0,
-      is_exclusive: false,
+
       card_list: [
         { id: 1, card_name: '翻车现场' },
         { id: 2, card_name: '翻车现场2' },
@@ -425,22 +449,7 @@ export default {
         { id: 5, card_name: '翻车现场5' },
         { id: 6, card_name: '翻车现场6' }
       ],
-      choose_card_list: [],
-      available_period: '0',
-      coupon_date: null,
-      coupon_date_day: '',
-      coupon_date_hour: '',
-      coupon_date_minite: '',
-      total_amount: '',
-      validation_code: '',
-      radio_goods: '0',
-      suit_goods: '0',
-      use_explain: '',
-      denomination: null,
-      denomination2: null,
-      least_consume: null,
-      score_number: null,
-      AtreeType: null,
+
       noneBlockDiscArr: [
         {
           name: '添加商品',
@@ -456,6 +465,14 @@ export default {
         }
       ]
     }
+  },
+  mounted () {
+    this.$http.$on('ABusClassTrueArr', res => {
+      this.param.recommendCatId = res.join()
+    })
+    this.$http.$on('ABusClassTrueArr', res => {
+      this.param.recommendSortId = res.join()
+    })
   },
   methods: {
     dataDefalut () {
@@ -485,8 +502,20 @@ export default {
           this.AtreeType = 2
           this.$http.$emit('AuserBrandDialog', index)
       }
+    },
+    // 保存优惠券
+    saveCoupon () {
+      console.log(this.param)
+      this.param.cardId = this.param.cardId.join()
+      this.param.startTime = this.param.couponDate[0]
+      this.param.endTime = this.param.couponDate[1]
+      console.log(this.param)
+      saveCoupon(this.param).then(res => {
+        console.log(res)
+      })
     }
   },
+
   filters: {
   },
   computed: {
