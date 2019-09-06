@@ -21,8 +21,9 @@ public class ScorePageListParam {
 	private Integer pageRows;
 
 	/** 会员id */
-	@NotNull
 	private Integer userId;
+	/** 用户名称 */
+	private String userName;
 	/** 订单号 */
 	private String orderSn;
 	
