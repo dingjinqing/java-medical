@@ -806,7 +806,7 @@ public class MemberCardService extends ShopBaseService {
 							MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME,FOREVER)
 						)
 				)
-			.orderBy(MEMBER_CARD.GRADE.asc(),MEMBER_CARD.ID.asc())
+			.orderBy(MEMBER_CARD.CARD_TYPE.asc(),MEMBER_CARD.GRADE.asc(),MEMBER_CARD.ID.asc())
 			.fetch()
 			.into(CardBasicVo.class);
 			
