@@ -1,19 +1,13 @@
 package com.vpu.mp.controller.excel;
 
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelReader;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.web.multipart.MultipartFile;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -21,8 +15,28 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelReader;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.excel.bean.ClassList;
 
 /**
  * @author 李晓冰
@@ -77,6 +91,12 @@ public class ExcelTest {
         };
 
         when(response.getOutputStream()).thenReturn(outputStream);
+    }
+    
+    
+    @After
+    public void testAfter() {
+    	System.out.println("生成的测试文件在 /mp-service/target/test-classes/excel中");
     }
 
     /**
@@ -143,7 +163,7 @@ public class ExcelTest {
     @Test
     public void excelReadData() throws IOException {
 
-        String lang=request.getHeader(HEADER_LANG);
+        String lang=request.getHeader("HEADER_LANG");
 
         ExcelTypeEnum type;
         if (request.getParameter("fileType").indexOf(ExcelTypeEnum.XLSX.getSuffix()) > 0) {
@@ -167,4 +187,101 @@ public class ExcelTest {
 
         System.out.println(models);
     }
+    
+    /**
+     * 合并单元格的测试
+     * @throws IOException
+     */
+    @Test
+    public void excelExportDataByMergedRegion() throws Exception {
+        List<OrderListInfo> modelData = getList();
+
+        String lang=request.getHeader(HEADER_LANG);
+
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter=new ExcelWriter(lang,workbook);
+        ClassList cList=new ClassList();
+        cList.setUpClazz(OrderListInfo.class);
+        cList.setInnerClazz(OrderGoods.class);
+        excelWriter.writeModelListByRegion(modelData, cList);
+      //  excelWriter.writeModelListByRegion(modelData,OrderListInfo.class,OrderGoods.class);
+
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        workbook.write(outputStream);
+
+        outputStream.close();
+        
+    }
+    
+    private List<OrderListInfo> getList(){
+    	List<OrderListInfo> list=new ArrayList<OrderListInfo>();
+    	
+    	OrderListInfo vo=getVo("P201901041135261953");
+    	OrderListInfo vo1=getVo2("P201901041135261222");
+    	
+    	list.add(vo);
+		list.add(vo1);
+		return list;
+    	
+    }
+    
+	public OrderListInfo getVo(String srt) {
+		OrderListInfo vo = new OrderListInfo();
+		List<OrderGoods> gooList = new ArrayList<OrderGoods>();
+		OrderGoods goods = new OrderGoods();
+		goods.setGoodsName("东方骆驼2018秋季长袖棒球领拉链开衫男士外套");
+		goods.setGoodsPrice(new BigDecimal(128));
+
+		OrderGoods goods1 = new OrderGoods();
+		goods1.setGoodsName("2018秋冬新款 真皮草领 保暖鹅绒 奢华厚款滩羊毛领鹅绒女士羽绒服11");
+		goods1.setGoodsPrice(new BigDecimal(368));
+
+		OrderGoods goods12 = new OrderGoods();
+		goods12.setGoodsName("奥术大师大所大所大所多");
+		goods12.setGoodsPrice(new BigDecimal(222));
+		
+		gooList.add(goods);
+		gooList.add(goods1);
+		gooList.add(goods12);
+		vo.setGoods(gooList);
+
+		vo.setOrderSn(srt);
+		vo.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+		vo.setUserName("义博云天");
+		vo.setConsignee("王义博;18236936252");
+		vo.setOrderStatus("待发货");
+		vo.setMoneyPaid("￥500.00(含快递:￥0.00)");
+		return vo;
+	}
+	
+	public OrderListInfo getVo2(String srt) {
+		OrderListInfo vo = new OrderListInfo();
+		List<OrderGoods> gooList = new ArrayList<OrderGoods>();
+		OrderGoods goods = new OrderGoods();
+		goods.setGoodsName("蒙牛牛奶 激情测试");
+		goods.setGoodsPrice(new BigDecimal(222));
+
+		OrderGoods goods1 = new OrderGoods();
+		goods1.setGoodsName("激情测试 伊利牛奶 ");
+		goods1.setGoodsPrice(new BigDecimal(333));
+
+		OrderGoods goods12 = new OrderGoods();
+		goods12.setGoodsName("激情 三元牛奶 测试 ");
+		goods12.setGoodsPrice(new BigDecimal(1111));
+		
+		gooList.add(goods);
+		gooList.add(goods1);
+		gooList.add(goods12);
+		vo.setGoods(gooList);
+
+		vo.setOrderSn(srt);
+		vo.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+		vo.setUserName("测试人员");
+		vo.setConsignee("测发;1821111111");
+		vo.setOrderStatus("已经发货");
+		vo.setMoneyPaid("￥100.00(含快递:￥2.00)");
+		return vo;
+	}
+    
 }
