@@ -97,16 +97,16 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppd.END_TIME.lessThan(param.getEndTime()));
         }
         if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
-            selectConditon = selectConditon.and(ppr.FULL_PRICE.lessThan(param.getFullPriceUp()));
+            selectConditon = selectConditon.and(ppr.FULL_PRICE.lessOrEqual(param.getFullPriceUp()));
         }
-        if (param.getFullPriceDown() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
-            selectConditon = selectConditon.and(ppr.FULL_PRICE.greaterThan(param.getFullPriceDown()));
+        if (param.getFullPriceDown() != null&&!BigDecimal.ZERO.equals(param.getFullPriceDown())) {
+            selectConditon = selectConditon.and(ppr.FULL_PRICE.greaterOrEqual(param.getFullPriceDown()));
         }
-        if (param.getPurchasePriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
-            selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.lessThan(param.getPurchasePriceUp()));
+        if (param.getPurchasePriceUp() != null&&!BigDecimal.ZERO.equals(param.getPurchasePriceUp())) {
+            selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.lessOrEqual(param.getPurchasePriceUp()));
         }
-        if (param.getPurchasePriceDown() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
-            selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterThan(param.getPurchasePriceDown()));
+        if (param.getPurchasePriceDown() != null&&!BigDecimal.ZERO.equals(param.getPurchasePriceDown())) {
+            selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterOrEqual(param.getPurchasePriceDown()));
         }
 
         SelectConditionStep<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> resultStep = db().
