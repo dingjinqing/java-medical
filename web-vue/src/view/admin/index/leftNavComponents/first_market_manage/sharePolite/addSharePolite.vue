@@ -114,7 +114,7 @@
             <span style="width: 100px">最多可添加三级</span>
             <span
               class="addRules"
-              @click="handleRules"
+              @click="addItem()"
             >+ 添加规则</span>
           </div>
         </div>
@@ -122,16 +122,18 @@
           <el-form-item>
             <el-checkbox v-model="checked">仅邀请未访问过店铺的用户有效</el-checkbox>
           </el-form-item>
-          <section
-            v-for="item in rules.slice(0,3)"
+          <!-- <section
+            v-for="(item,index) in rules"
             :key="item.level"
           >
+            {{index}}
             <el-form-item :label='item.level'>
               <div>{{item.invite}} <el-input
                   size="mini"
                   style="width:60px"
                 ></el-input> {{item.person}} <span style="color:#999">{{item.personNumber}}</span>
                 <i
+                  v-if="index>0"
                   class="el-icon-delete"
                   style="color:#409eff;cursor:pointer"
                   @click="deleteItem"
@@ -248,6 +250,136 @@
                   style="width:150px"
                 ></el-input> {{item.times}}</div>
             </el-form-item>
+          </section> -->
+
+          <section
+            v-for="(item,index) in addLevel"
+            :key="index"
+          >
+            <el-form-item label='一级'>
+              <div>邀请满 <el-input
+                  size="mini"
+                  style="width:60px"
+                ></el-input> 人 <span style="color:#999">可填写1-5人</span>
+                <i
+                  v-if="index>0"
+                  class="el-icon-delete"
+                  style="color:#409eff;cursor:pointer"
+                  @click="deleteItem(index)"
+                ></i>
+              </div>
+              <div style="margin-left:43px">可获得
+                <el-radio-group v-model="item.willGet">
+                  <el-radio label="1">积分</el-radio>
+                  <el-radio label="2">优惠券</el-radio>
+                  <el-radio label="3">幸运大抽奖</el-radio>
+                </el-radio-group>
+              </div>
+              <div
+                style="margin-left:43px"
+                v-if="willGet === '1'"
+              >积分：
+                <el-input
+                  v-model="addLevel[index].coupon"
+                  size="mini"
+                  style="width: 150px"
+                ></el-input>
+              </div>
+
+              <div v-if="willGet === '2'">
+                <div style="margin-left:43px;margin-top: 10px;display:flex">
+                  <div style="height:30px;line-height:30px">优惠券：</div>
+                  <el-select
+                    style="width: 150px;"
+                    size="mini"
+                    v-model="gift"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <div style="height:30px; line-height:30px">
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      href="#"
+                      style="margin:0 5px;"
+                    >刷新
+                    </el-link>
+                    |
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      href="#"
+                      style="margin:0 5px;"
+                    >新建标签</el-link>
+                    |
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      href="#"
+                      style="margin:0 5px;"
+                    >管理标签</el-link>
+                  </div>
+                </div>
+                <div style="margin-left: 120px">优惠券可用库存{{num}}份数</div>
+              </div>
+
+              <div v-if="willGet === '3'">
+                <div style="margin-left:43px;margin-top: 10px;display:flex">
+                  <div style="height:30px;line-height:30px">幸运大抽奖：</div>
+                  <el-select
+                    style="width: 150px;"
+                    size="mini"
+                    v-model="gift"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <div style="height:30px; line-height:30px">
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      href="#"
+                      style="margin:0 5px;"
+                    >刷新
+                    </el-link>
+                    |
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      href="#"
+                      style="margin:0 5px;"
+                    >新建标签</el-link>
+                    |
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      href="#"
+                      style="margin:0 5px;"
+                    >管理标签</el-link>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-left:43px">
+                奖品份数
+                <el-input
+                  size="mini"
+                  style="width:150px"
+                ></el-input>份</div>
+            </el-form-item>
           </section>
         </el-form>
 
@@ -255,10 +387,7 @@
 
       <!--保存-->
       <div class="footer">
-        <div
-          class="save"
-          @click="saveShopStyle()"
-        >{{$t('shopStyle.saveText')}}</div>
+        <div class="save">保存</div>
       </div>
     </div>
   </div>
@@ -286,7 +415,7 @@ export default {
       ],
       radio: '',
       trigger: '',
-      willGet: '1',
+      // willGet: '1',
       gift: '',
       options: [{
         value: '选项1',
@@ -299,20 +428,30 @@ export default {
       value: '',
       num: 0,
       effectiveDate: '',
-      rules: [
-        { level: '一级', invite: '邀请满', person: '人', personNumber: '可填写1-5人', willGet: '可获得', integral: '积分', coupon: '优惠券', luckyDraw: '幸运大抽奖', rewardTimes: '奖品份数：', times: '份', type: 1 },
-        { level: '二级', invite: '邀请满', person: '人', personNumber: '可填写1-5人', willGet: '可获得', integral: '积分', coupon: '优惠券', luckyDraw: '幸运大抽奖', rewardTimes: '奖品份数：', times: '份', type: 2 },
-        { level: '三级', invite: '邀请满', person: '人', personNumber: '可填写1-5人', willGet: '可获得', integral: '积分', coupon: '优惠券', luckyDraw: '幸运大抽奖', rewardTimes: '奖品份数：', times: '份', type: 3 }
-      ],
+      // rules: [
+      //   { level: '一级', invite: '邀请满', person: '人', personNumber: '可填写1-5人', willGet: '可获得', integral: '积分', coupon: '优惠券', luckyDraw: '幸运大抽奖', rewardTimes: '奖品份数：', times: '份', type: 1 },
+      //   { level: '二级', invite: '邀请满', person: '人', personNumber: '可填写1-5人', willGet: '可获得', integral: '积分', coupon: '优惠券', luckyDraw: '幸运大抽奖', rewardTimes: '奖品份数：', times: '份', type: 2 },
+      //   { level: '三级', invite: '邀请满', person: '人', personNumber: '可填写1-5人', willGet: '可获得', integral: '积分', coupon: '优惠券', luckyDraw: '幸运大抽奖', rewardTimes: '奖品份数：', times: '份', type: 3 }
+      // ],
+      addLevel: [{ willGet: '1' }],
       flag: false
     }
   },
   methods: {
-    handleRules () {
-      console.log(111)
+    addItem () {
+      let obj = {
+        coupon: ''
+      }
+      if (this.addLevel.length < 3) {
+        this.addLevel.push(obj)
+      } else {
+        alert('最多可添加3个规则！')
+      }
     },
-    deleteItem () {
-
+    deleteItem (index) {
+      console.log(this.addLevel)
+      this.addLevel.splice(index, 1)
+      console.log(index)
     }
   }
 }
