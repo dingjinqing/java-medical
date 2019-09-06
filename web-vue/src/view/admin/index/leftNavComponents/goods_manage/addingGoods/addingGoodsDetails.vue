@@ -2,7 +2,7 @@
   <div style="display: flex;justify-content: center;align-items: flex-start;margin-top: 40px;">
     <div class="phoneWrap">
       <div class="phoneTop">
-        <span style="font-weight:800;color:#000;font-size:16px;margin-top:33px;display: inline-block;">商品详情</span>
+        <span style="font-weight:800;color:#000;font-size:16px;margin-top:33px;display: inline-block;">{{$t("goodsAddEditInfo.goodsDetail.phoneTitle")}}</span>
       </div>
       <div style="height:550px;overflow-y:auto;overflow-x: auto;background-color:#F5F5F5;">
         <!--商品主图-->
@@ -14,36 +14,36 @@
           <div style="color:#333;font-size:16px;">{{goodsProductInfoData.goodsName}}</div>
           <div style="color:#FF6666;font-size:18px;margin:10px 0;">
             <template v-if="goodsNumAndPriceComputed.goodsPriceMin === goodsNumAndPriceComputed.goodsPriceMax">
-              ￥ {{goodsNumAndPriceComputed.goodsPriceMin}}
+              {{$t("goodsAddEditInfo.goodsDetail.priceIcon")}} {{goodsNumAndPriceComputed.goodsPriceMin}}
             </template>
             <template v-else>
-              ￥ {{goodsNumAndPriceComputed.goodsPriceMin}} - {{goodsNumAndPriceComputed.goodsPriceMax}}
+              {{$t("goodsAddEditInfo.goodsDetail.priceIcon")}} {{goodsNumAndPriceComputed.goodsPriceMin}} - {{goodsNumAndPriceComputed.goodsPriceMax}}
             </template>
           </div>
-          <div style="color:#999;font-size:14px;">库存：{{goodsNumAndPriceComputed.goodsNumSum}}
+          <div style="color:#999;font-size:14px;"> {{$t("goodsAddEditInfo.goodsDetail.phoneNum")}}{{goodsNumAndPriceComputed.goodsNumSum}}
             {{goodsProductInfoData.unit}}
           </div>
         </div>
         <template v-if="goodsDetailInfo.isPageUp === 1">
           <!--商品描述-->
           <div class="goodsItemWrap goodsDrapItem">
-            <div style="width: 70px;height: 20px;border-bottom: 1px solid #ccc;margin-bottom: 5px;">商品描述</div>
+            <div style="width: 70px;height: 20px;border-bottom: 1px solid #ccc;margin-bottom: 5px;">{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsDesc")}}</div>
             <div v-if="!isStrBlank(goodsDetailInfo.goodsDesc)" v-html="goodsDetailInfo.goodsDesc" style="word-break:break-all;" ></div>
             <div v-else class="contentTip">
-              <p>可在右侧编辑商品详情</p>
-              <p>未添加内容时,不显示此模块内容</p>
+              <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsDescTip1")}}</p>
+              <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsDescTip2")}}</p>
             </div>
           </div>
           <!--自定义内容区域-->
           <div class="goodsItemWrap goodsDrapItem">
             <div class="contentTip">
               <template v-if="goodsDetailInfo.goodsPageData === null">
-                <p style="font-size: 15px;color:#333;">自定义内容区域</p>
-                <p>可在右侧选择商品页模板</p>
-                <p>未添加内容时,不显示此模块内容</p>
+                <p style="font-size: 15px;color:#333;">{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip1")}}</p>
+                <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip2")}}</p>
+                <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip3")}}</p>
               </template>
               <template v-else>
-                <p style="color: #333;">已选择模板:{{goodsDetailInfo.goodsPageData.pageName}}</p>
+                <p style="color: #333;">{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip4")}}{{goodsDetailInfo.goodsPageData.pageName}}</p>
               </template>
             </div>
           </div>
@@ -53,22 +53,22 @@
           <div class="goodsItemWrap goodsDrapItem">
             <div class="contentTip">
               <template v-if="goodsDetailInfo.goodsPageData === null">
-                <p style="font-size: 15px;color:#333;">自定义内容区域</p>
-                <p>可在右侧选择商品页模板</p>
-                <p>未添加内容时,不显示此模块内容</p>
+                <p style="font-size: 15px;color:#333;">{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip1")}}</p>
+                <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip2")}}</p>
+                <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip3")}}</p>
               </template>
               <template v-else>
-                <p style="color: #333;">已选择模板:{{goodsDetailInfo.goodsPageData.pageName}}</p>
+                <p style="color: #333;">{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsTempTip4")}}{{goodsDetailInfo.goodsPageData.pageName}}</p>
               </template>
             </div>
           </div>
           <!--商品描述-->
           <div class="goodsItemWrap goodsDrapItem">
-            <div style="width: 70px;height: 20px;border-bottom: 1px solid #ccc;margin-bottom: 5px;">商品描述</div>
+            <div style="width: 70px;height: 20px;border-bottom: 1px solid #ccc;margin-bottom: 5px;">{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsDesc")}}</div>
             <div v-if="!isStrBlank(goodsDetailInfo.goodsDesc)" v-html="goodsDetailInfo.goodsDesc" style="word-break:break-all;" ></div>
             <div v-else class="contentTip">
-              <p>可在右侧编辑商品详情</p>
-              <p>未添加内容时,不显示此模块内容</p>
+              <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsDescTip1")}}</p>
+              <p>{{$t("goodsAddEditInfo.goodsDetail.phoneGoodsDescTip2")}}</p>
             </div>
           </div>
         </template>
@@ -77,57 +77,59 @@
     <div class="goodsDetailWrap">
       <div class="goodsDetailItem">
         <p class="message">
-          <span class="messageTitle">商品基本信息</span><span style="color: #ccc">商品信息为固定样式仅供参考，请以实际效果为准</span>
+          <span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemTitle")}}</span>
+          <span style="color: #ccc">{{$t("goodsAddEditInfo.goodsDetail.goodsItemStyleTip")}}</span>
         </p>
       </div>
       <div class="goodsDetailItem">
         <p class="message">
-          <span class="messageTitle">模块位置</span>
+          <span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemPositionTitle")}}</span>
           <span>
             <el-radio-group v-model="goodsDetailInfo.isPageUp">
-              <el-radio :label="0">自定义内容在上</el-radio>
-              <el-radio :label="1">商品详情在上</el-radio>
+              <el-radio :label="0">{{$t("goodsAddEditInfo.goodsDetail.goodsItemPositionRadio1")}}</el-radio>
+              <el-radio :label="1">{{$t("goodsAddEditInfo.goodsDetail.goodsItemPositionRadio2")}}</el-radio>
             </el-radio-group>
           </span>
         </p>
       </div>
       <div class="goodsDetailItem">
-        <p class="message" style="border-bottom: 1px solid #ccc;"><span class="messageTitle">自定义内容</span></p>
+        <p class="message" style="border-bottom: 1px solid #ccc;"><span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateTitle")}}</span></p>
         <p class="message">
-          <span class="messageTitle">商品页模板</span>
+          <span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateTitle2")}}</span>
           <template v-if="goodsDetailInfo.goodsPageData!==null">
             <span style="font-size: 14px;">{{goodsDetailInfo.goodsPageData.pageName}}</span>
             <span @click="goodsDetailInfo.goodsPageData=null" class="deleteIcon">×</span>
           </template>
-          <span @click="pageTemplateDialogData.isShow=true" style="border: 1px solid #ccc;display: inline-block;width: 75px;font-size: 14px;line-height:20px;text-align: center;cursor: pointer;">选择模板</span>
-          <el-link style="margin-left: 10px;" type="primary" :underline="false" href="#" target="_blank">刷新</el-link>
-          <el-link style="margin-left: 10px;" type="primary" :underline="false" href="#" target="_blank">添加模板</el-link>
+          <span @click="pageTemplateDialogData.isShow=true" style="border: 1px solid #ccc;display: inline-block;width: 75px;font-size: 14px;line-height:20px;text-align: center;cursor: pointer;">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateBtn")}}</span>
+          <el-link style="margin-left: 10px;" type="primary" :underline="false" href="#" target="_blank">{{$t("goodsAddEditInfo.linkRefresh")}}</el-link>
+          <el-link style="margin-left: 10px;" type="primary" :underline="false" href="#" target="_blank">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateAdd")}}</el-link>
         </p>
       </div>
       <div class="goodsDetailItem">
-        <p class="message" style="border-bottom: 1px solid #ccc;"><span class="messageTitle">商品详情</span></p>
+        <p class="message" style="border-bottom: 1px solid #ccc;"><span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateTitle")}}</span></p>
         <div style="margin:10px 0px;border: 1px solid #ccc;width:calc(100% - 15px);">
           <tinymceEditor v-model="goodsDetailInfo.goodsDesc"/>
         </div>
       </div>
     </div>
     <!-- 页面装修模板选择框 -->
-    <el-dialog ref="templateDialog"  title="选择模板" center :visible.sync="pageTemplateDialogData.isShow" @open="beforePageTemplateDialogShow" width="800px">
+    <el-dialog ref="templateDialog"  :title="$t('goodsAddEditInfo.goodsDetail.goodsItemDecorateBtn')" center :visible.sync="pageTemplateDialogData.isShow" @open="beforePageTemplateDialogShow" width="800px">
       <el-form :inline="true">
-        <el-form-item label="页面名称"><el-input placeholder="请输入页面名称" size="small" v-model="pageTemplateDialogData.pageName"/></el-form-item>
-        <el-form-item label="页面分类">
+        <el-form-item :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageName')">
+          <el-input :placeholder="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageSelector')" size="small" v-model="pageTemplateDialogData.pageName"/></el-form-item>
+        <el-form-item :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageClassification')">
           <el-select size="small" v-model="pageTemplateDialogData.pageClassificationId">
             <el-option v-for="(item,index) in pageTemplateDialogData.pageClassificationList" :key="index" :value="item.id" :label="item.name"/>
           </el-select>
         </el-form-item>
-        <el-form-item><el-button type="primary" size="small">搜索</el-button></el-form-item>
+        <el-form-item><el-button type="primary" size="small">{{$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageSearch')}}</el-button></el-form-item>
       </el-form>
       <el-table :data="pageTemplateDialogData.pageTemplateTableData"  @row-click="pageTemplateTableClick"  highlight-current-row border height="300">
-        <el-table-column prop="createTime" label="创建时间"/>
-        <el-table-column prop="pageName" label="页面名称" />
-        <el-table-column label="是否首页">
+        <el-table-column prop="createTime" :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageCreateTime')"/>
+        <el-table-column prop="pageName" :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageName')" />
+        <el-table-column :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageIsDefaultPage')">
           <template slot-scope="scope">
-            {{scope.row.pageType ===1 ? '是':'否'}}
+            {{scope.row.pageType ===1 ? $t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageIsDefaultYes'):$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageIsDefaultNo')}}
           </template>
         </el-table-column>
       </el-table>
@@ -222,6 +224,10 @@ export default {
         retData.goodsPageId = this.goodsDetailInfo.goodsPageData.pageId
       }
     }
+  },
+  mounted () {
+    // 国际化
+    this.langDefault()
   }
 }
 </script>

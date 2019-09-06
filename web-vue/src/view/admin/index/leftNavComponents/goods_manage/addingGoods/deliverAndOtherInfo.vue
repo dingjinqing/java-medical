@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="title">配送信息</div>
+    <div class="title">{{$t("goodsAddEditInfo.deliverAndOtherInfo.title")}}</div>
     <el-form
       ref="deliveryInfoForm"
       :model="goodsProductInfo"
-      label-width="120px"
+      :label-width="labelWidth+'px'"
     >
       <el-form-item
-        label="运费模板："
+        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplate')"
         prop="deliverTemplateId"
       >
         <el-select
@@ -29,7 +29,7 @@
           @click.native="deliverTemplateSelectRefresh"
           href="#"
           style="margin:0 5px;"
-        >刷新模板
+        >{{$t("goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateRefresh")}}
         </el-link>
         |
         <el-link
@@ -37,14 +37,14 @@
           :underline="false"
           href="#"
           style="margin:0 5px;"
-        >新建模板</el-link>
+        >{{$t("goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateNew")}}</el-link>
         |
         <el-link
           type="primary"
           :underline="false"
           href="#"
           style="margin:0 5px;"
-        >管理模板</el-link>
+        >{{$t("goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateManage")}}</el-link>
         <div class="deliverTemplateContentWrap">
           <div class="deliverTemplateContentTitle">
             <div>
@@ -55,20 +55,20 @@
               type="primary"
               :underline="false"
               href="#"
-            >查看详情</el-link>
+            >{{$t("goodsAddEditInfo.linkDetail")}}</el-link>
           </div>
           <div v-if="deliverTemplateCurrentData.deliverTemplateAreasDesc.length>0" class="deliverTemplateContent">
-            <p>指定可配送区域运费:</p>
+            <p>{{$t("goodsAddEditInfo.deliverAndOtherInfo.pointAreaForFreeDeliverTemplate")}}</p>
             <p v-for="(item,index) in deliverTemplateCurrentData.deliverTemplateAreasDesc" :key="index">{{item}}</p>
           </div>
           <div v-if="deliverTemplateCurrentData.freeDeliverTemplateAreasDesc.length>0" class="deliverTemplateContent">
-            <p>指定条件包邮可配送区域运费:</p>
+            <p>{{$t("goodsAddEditInfo.deliverAndOtherInfo.pointConditionForFreeDeliverTemplate")}}</p>
             <p v-for="(item,index) in deliverTemplateCurrentData.freeDeliverTemplateAreasDesc" :key="index">{{item}}</p>
           </div>
         </div>
       </el-form-item>
       <el-form-item
-        label="商品重量："
+        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.goodsWeight')"
         prop="goodsWeight"
       >
         <el-input-number
@@ -79,10 +79,10 @@
           :min="0"
           style="width:170px;"
         />
-        <span>&nbsp;&nbsp;Kg</span>
+        <span>&nbsp;&nbsp;kg</span>
       </el-form-item>
       <el-form-item
-        label="发货地："
+        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlace')"
         prop="deliverPlace"
       >
         <el-input
@@ -91,26 +91,25 @@
           size="small"
           style="width:230px;"
         />
-        <span class="inputTip">最多15个字</span>
+        <span class="inputTip">{{$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip')}}</span>
       </el-form-item>
     </el-form>
-    <div class="title">其他信息</div>
+    <div class="title">{{$t('goodsAddEditInfo.deliverAndOtherInfo.otherTitle')}}</div>
     <el-form
       ref="otherInfoForm"
       :model="goodsProductInfo"
-      label-width="120px"
+      :label-width="labelWidth+'px'"
     >
       <el-form-item
-        label="会员专享商品："
-        prop="deliverTemplateId"
+        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.memberCard')"
       >
-        <el-checkbox v-model="goodsProductInfo.isCardExclusive">用户持有会员卡才可以购买此商品</el-checkbox>
+        <el-checkbox v-model="goodsProductInfo.isCardExclusive">{{$t('goodsAddEditInfo.deliverAndOtherInfo.memberCardTip')}}</el-checkbox>
         <div v-if="goodsProductInfo.isCardExclusive">
           <el-select
             v-model="cardSelectedTempVal"
             size="small"
             @change="cardSelectChange"
-            placeholder="请选择会员卡"
+            :placeholder="$t('goodsAddEditInfo.deliverAndOtherInfo.chooseMemberCard')"
             style="width:170px;"
           >
             <el-option
@@ -126,7 +125,7 @@
             @click="cardSelectRefresh"
             href="#"
             style="margin:0 5px;"
-          >刷新
+          >{{$t('goodsAddEditInfo.linkRefresh')}}
           </el-link>
           |
           <el-link
@@ -134,19 +133,19 @@
             :underline="false"
             href="#"
             style="margin:0 5px;"
-          >新建会员卡</el-link>
+          >{{$t('goodsAddEditInfo.deliverAndOtherInfo.memberCardNew')}}</el-link>
           |
           <el-link
             type="primary"
             :underline="false"
             href="#"
             style="margin:0 5px;"
-          >管理会员卡</el-link>
+          >{{$t('goodsAddEditInfo.deliverAndOtherInfo.memberCardManage')}}</el-link>
           <div
             v-if="cardSelectedItems.length>0"
             style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
           >
-            <div>已选：</div>
+            <div>{{$t('goodsAddEditInfo.deliverAndOtherInfo.memberCardSelected')}}</div>
             <div
               class="selectedWrap"
               v-for="(item,index) in cardSelectedItems"
@@ -162,12 +161,12 @@
         </div>
       </el-form-item>
       <el-form-item
-        label="上下架："
+        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.saleType')"
         prop="isOnSale"
       >
         <el-radio-group v-model="goodsProductInfo.saleType">
-          <el-radio :label="0">立即上架售卖</el-radio><br />
-          <el-radio :label="1">自定义上架时间</el-radio>
+          <el-radio :label="0">{{$t('goodsAddEditInfo.deliverAndOtherInfo.saleNow')}}</el-radio><br />
+          <el-radio :label="1">{{$t('goodsAddEditInfo.deliverAndOtherInfo.saleOnTime')}}</el-radio>
           <el-date-picker
             ref="saleTimeInput"
             v-model="goodsProductInfo.saleTime"
@@ -175,10 +174,10 @@
             type="datetime"
             @change="saleTimeChange"
             size="small"
-            placeholder="选择上架售卖时间"
+            :placeholder="$t('goodsAddEditInfo.deliverAndOtherInfo.chooseMemberCard')"
             style="margin-left: 10px;"
           /><br />
-          <el-radio :label="2">暂不售卖放入仓库</el-radio>
+          <el-radio :label="2">{{$t('goodsAddEditInfo.deliverAndOtherInfo.notSale')}}</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
@@ -194,6 +193,8 @@ import { format } from '@/util/date'
 export default {
   data () {
     return {
+      lang: '',
+      labelWidth: 170,
       goodsProductInfo: {
         goodsWeight: null,
         deliverTemplateId: null,
@@ -230,7 +231,40 @@ export default {
     },
     /* 解析运费模板数据 */
     parseDeliverTemplateData (data) {
-      let unit = data.flag === '0' ? '件' : '公斤'
+      // 定义国际化变量
+      // 件
+      let deliverTemplateUnit1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateUnit1')
+      // 公斤
+      let deliverTemplateUnit2 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateUnit2')
+      // 除可配送区域外，不可配送
+      let deliverTemplateTitleDesc1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc1')
+      // 内
+      let deliverTemplateTitleDesc2 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc2')
+      // 元,每增加'
+      let deliverTemplateTitleDesc3 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc3')
+      // 加
+      let deliverTemplateTitleDesc4 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc4')
+      // 内
+      let deliverTemplateAreasDesc1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc1')
+      // 元,每增加
+      let deliverTemplateAreasDesc2 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc2')
+      // 加
+      let deliverTemplateAreasDesc3 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc3')
+      // 元
+      let deliverTemplateAreasDesc4 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc4')
+      // 内包邮
+      let freeDeliverTemplateAreasDesc1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.freeDeliverTemplateAreasDesc1')
+      // 满
+      let freeDeliverTemplateAreasDesc2 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.freeDeliverTemplateAreasDesc2')
+      // 元包邮
+      let freeDeliverTemplateAreasDesc3 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.freeDeliverTemplateAreasDesc3')
+      // 内
+      let freeDeliverTemplateAreasDesc4 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.freeDeliverTemplateAreasDesc4')
+      // 元包邮
+      let freeDeliverTemplateAreasDesc5 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.freeDeliverTemplateAreasDesc5')
+
+      // let unit = data.flag === '0' ? '件' : '公斤'
+      let unit = data.flag === '0' ? deliverTemplateUnit1 : deliverTemplateUnit2
 
       let retData = {}
       let temp = null
@@ -245,10 +279,12 @@ export default {
           break
         }
       }
+
       if (temp.limit_deliver_area === 1) {
-        retData.deliverTemplateTitleDesc = '除可配送区域外，不可配送'
-      } else { // 1件内5元,
-        retData.deliverTemplateTitleDesc = `${temp.first_num} ${unit}内${temp.first_fee}元,每增加${temp.continue_num}${unit},加${temp.continue_fee}元`
+        // retData.deliverTemplateTitleDesc = '除可配送区域外，不可配送'
+        retData.deliverTemplateTitleDesc = deliverTemplateTitleDesc1
+      } else { // 1件内5元,没增加1件，加10元
+        retData.deliverTemplateTitleDesc = `${temp.first_num} ${unit}${deliverTemplateTitleDesc1}${temp.first_fee}${deliverTemplateTitleDesc2}${temp.continue_num}${unit}${deliverTemplateTitleDesc3}${temp.continue_fee}${deliverTemplateTitleDesc4}`
       }
 
       // 搜索指定可配送区域运费
@@ -258,7 +294,8 @@ export default {
           continue
         }
         temp = templateContent.data_list[i]
-        retData.deliverTemplateAreasDesc.push(`${temp.area_text}：${temp.first_num} ${unit}内${temp.first_fee}元,每增加${temp.continue_num}${unit},加${temp.continue_fee}元`)
+        // 北京：1件内10元，每增加5件，加10元
+        retData.deliverTemplateAreasDesc.push(`${temp.area_text}${temp.first_num} ${unit}${deliverTemplateAreasDesc1}${temp.first_fee}${deliverTemplateAreasDesc2}${temp.continue_num}${unit}${deliverTemplateAreasDesc3}${temp.continue_fee}${deliverTemplateAreasDesc4}`)
       }
       // 指定条件包邮可配送区域运费
       retData.freeDeliverTemplateAreasDesc = []
@@ -269,11 +306,11 @@ export default {
         temp = templateContent.fee_0_data_list[i]
         // 指定件数包邮
         if (temp.fee_0_condition === '1') {
-          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con1_num}${unit}内包邮`)
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con1_num}${unit}${freeDeliverTemplateAreasDesc1}`)
         } else if (temp.fee_0_condition === '2') {
-          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：满${temp.fee_0_con2_fee}元包邮`)
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${freeDeliverTemplateAreasDesc2}${temp.fee_0_con2_fee}${freeDeliverTemplateAreasDesc3}`)
         } else {
-          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con3_num}${unit}内，${temp.fee_0_con3_fee}元包邮`)
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con3_num}${unit}${freeDeliverTemplateAreasDesc4}${temp.fee_0_con3_fee}${freeDeliverTemplateAreasDesc5}`)
         }
       }
       return retData
@@ -283,10 +320,18 @@ export default {
       let content = JSON.parse(data.content)
       let retData = {}
       retData.deliverTemplateId = null
+
+      let deliverTemplateTitleDesc5 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc5')
+      let deliverTemplateTitleDesc6 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc6')
+      let deliverTemplateTitleDesc7 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc7')
+      let deliverTemplateTitleDesc8 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc8')
+      let deliverTemplateTitleDesc9 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc9')
+
+      // 订单满
       if (content.templateName === 1) {
-        retData.deliverTemplateTitleDesc = `订单满${content.feeLimit}包邮，否则运费为${content.price}元`
+        retData.deliverTemplateTitleDesc = `${deliverTemplateTitleDesc5}${content.feeLimit}${deliverTemplateTitleDesc6}${content.price}${deliverTemplateTitleDesc7}`
       } else {
-        retData.deliverTemplateTitleDesc = `店铺统一运费：${content.price}元`
+        retData.deliverTemplateTitleDesc = `${deliverTemplateTitleDesc8}${content.price}${deliverTemplateTitleDesc9}`
       }
       retData.deliverTemplateAreasDesc = []
       retData.freeDeliverTemplateAreasDesc = []
@@ -336,7 +381,7 @@ export default {
         })
         this.deliverTemplateData.unshift({
           deliverTemplateId: null,
-          templateName: '店铺默认运费模板'
+          templateName: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateDefault')
         })
         // 刷新时回显使用
         this.goodsProductInfo.deliverTemplateId = this.deliverTemplateCurrentData.deliverTemplateId
@@ -387,19 +432,19 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {
-        this.$message({message: '发货地址最多15个字', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip'), type: 'warning'})
         this.$refs.deliverPlaceInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.saleType === 1) {
         if (this.goodsProductInfo.saleTime === null) {
-          this.$message({message: '自定义上架时间不可为空', type: 'warning'})
+          this.$message({message: this.$('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
-          this.$message({message: '自定义上架时间不可早于当前时间', type: 'warning'})
+          this.$message({message: this.$('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
@@ -431,6 +476,8 @@ export default {
     }
   },
   mounted () {
+    // 国际化
+    this.langDefault()
     /* 运费模板初始化 */
     this.deliverTemplateDataInit()
     /* 会员专享卡初始化 */

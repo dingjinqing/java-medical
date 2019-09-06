@@ -1,6 +1,7 @@
 <template>
-  <div class="addGoodsWrap">
+  <div class="addGoodsWrap" >
     <div
+      v-if="reload"
       id="addGoods"
       class="addGoodsContent"
     >
@@ -11,19 +12,19 @@
         simple
       >
         <el-step
-          title="编辑商品信息"
+          :title="$t('goodsAddEditInfo.editGoodsBasicInfo')"
           icon="el-icon-edit"
           @click.native="headerStepsClick(1)"
           style="cursor: pointer"
         />
         <el-step
-          title="编辑商品详情"
+          :title="$t('goodsAddEditInfo.editGoodsDetailInfo')"
           icon="el-icon-edit"
           @click.native="headerStepsClick(2)"
           style="cursor: pointer"
         />
         <el-step
-          title="编辑分销信息"
+          :title="$t('goodsAddEditInfo.editGoodsDistributionInfo')"
           icon="el-icon-edit"
           @click.native="headerStepsClick(3)"
           style="cursor: pointer"
@@ -55,38 +56,55 @@
           class="btn"
           type="primary"
           size="small"
-          @click="saveGoods"
-        >保存后返回列表
+          @click="saveGoodsReturnList"
+        >{{$t('goodsAddEditInfo.saveAndReturnList')}}
         </el-button>
         <el-button
           class="btn"
           size="small"
           @click="footerStepsClick(-1)"
           v-show="stepData.currentStep!==1"
-        >上一步
+        >{{$t('goodsAddEditInfo.previewStep')}}
         </el-button>
         <el-button
           class="btn"
           size="small"
           @click="footerStepsClick(1)"
           v-show="stepData.currentStep!==3"
-        >下一步
+        >{{$t('goodsAddEditInfo.nextStep')}}
         </el-button>
         <el-button
           class="btn"
           size="small"
           type="primary"
+          @click="saveGoodsContinueAdd"
           v-show="stepData.currentStep!==1"
-        >保存后继续添加
+        >{{$t('goodsAddEditInfo.saveAndAdd')}}
         </el-button>
         <el-button
           class="btn"
           size="small"
           type="primary"
+          @click="saveGoodsView"
           v-show="stepData.currentStep!==1"
-        >保存后预览商品
+        >{{$t('goodsAddEditInfo.saveAndReview')}}
         </el-button>
       </div>
+
+      <!--预览商品太阳码-->
+      <el-dialog :visible.sync="qrCodeData.isShow" :title="$t('goodsAddEditInfo.goodsAppView')" width="350px">
+        <div style="text-align: center;">
+          <el-image
+            fit="scale-down"
+            :src="qrCodeData.imgFullUrl"
+            style="width: 250px; height: 230px;"
+          />
+        </div>
+        <div slot="footer" style="text-align: center;">
+          <el-button @click="reloadCmp" type="primary">{{$t('goodsAddEditInfo.continueAdd')}}</el-button>
+          <el-button @click="returnGoodsList">{{$t('goodsAddEditInfo.returnToList')}}</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -97,7 +115,7 @@ import addingGoodsDetails from './addingGoodsDetails'
 import addingGoodsDistributionInfo from './addingGoodsDistributionInfo'
 
 /* 导入js组件 */
-import {addGoodsApi} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+import {addGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addingGoods/addingGoods'
 
 export default {
   name: 'addingGoods',
@@ -125,14 +143,31 @@ export default {
   },
   data () {
     return {
+      reload: true,
       /* 为了能在子组件内部通过inject察觉到变化,默认情况inject不具有响应式 */
       stepData: {currentStep: 1},
       goodsProductInfoData: {},
       goodsDetailsData: {},
-      goodsDistributionInfoData: {}
+      goodsDistributionInfoData: {},
+      qrCodeData: {
+        imgFullUrl: null,
+        isShow: false
+      }
     }
   },
   methods: {
+    reloadCmp () {
+      this.reload = false
+      this.$nextTick(() => {
+        this.reload = true
+        this.stepData.currentStep = 1
+        this.goodsProductInfoData = {}
+        this.goodsDetailsData = {}
+        this.goodsDistributionInfoData = {}
+        this.qrCodeData.imgFullUrl = null
+        this.qrCodeData.isShow = false
+      })
+    },
     /* 顶部导航点击事件 */
     headerStepsClick (nextStep) {
       /* 隐藏商品主图选择弹框，这主要是这个弹框在使用上有点小bug(但是改起来非常困难) */
@@ -194,12 +229,11 @@ export default {
       }
       return true
     },
-    saveGoods () {
+    _saveGoods () {
       let isOk = this.validateFormData()
       if (!isOk) {
-        return
+        return null
       }
-
       let productInfoData = this.$refs.goodsProductInfoCmp.getFormData()
       let goodsDetailsData = this.$refs.goodsDetailsCmp.getFormData()
       let distributionInfoData = this.$refs.goodsDistributionInfoCmp.getFormData()
@@ -209,17 +243,65 @@ export default {
         ...goodsDetailsData,
         ...distributionInfoData
       }
-
-      addGoodsApi(retData).then(res => {
+      return retData
+    },
+    saveGoodsReturnList () {
+      let goodsData = this._saveGoods()
+      if (goodsData === null) {
+        return
+      }
+      addGoodsApi(goodsData).then(res => {
         if (res.error !== 0) {
           this.$message({
             message: res.message,
             type: 'error'
           })
         } else {
-          this.$router.push({path: '/admin/home/main/goodsManage/goodsForSale'})
+          this.$router.push({name: 'soldOutGoods'})
         }
       })
+    },
+    saveGoodsContinueAdd () {
+      let goodsData = this._saveGoods()
+      if (goodsData === null) {
+        return
+      }
+      addGoodsApi(goodsData).then(res => {
+        if (res.error !== 0) {
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        } else {
+          this.reloadCmp()
+        }
+      })
+    },
+    saveGoodsView () {
+      let goodsData = this._saveGoods()
+      if (goodsData === null) {
+        return
+      }
+
+      addGoodsApi(goodsData).then(res => {
+        if (res.error !== 0) {
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+          throw new Error(res.message)
+        } else {
+          return res.content
+        }
+      }).then(goodsId => {
+        return getGoodsQrCode(goodsId)
+      }).then(res => {
+        this.qrCodeData.imgFullUrl = res.content.imgFullUrl
+        this.qrCodeData.isShow = true
+      })
+    },
+    returnGoodsList () {
+      this.$router.push({name: 'soldOutGoods'})
     }
   }
 }

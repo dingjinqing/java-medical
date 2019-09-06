@@ -5,7 +5,7 @@ import service from '@/util/request.js'
 export function goodsBrandListApi () {
   return service({
     url: `/api/admin/goods/brand/name/list`,
-    method: 'get'
+    method: 'post'
   })
 }
 // 品牌分页查询接口
@@ -14,5 +14,12 @@ export function goodsBrandPageListApi (data) {
     url: `/api/admin/goods/brand/list`,
     method: 'post',
     data: data
+  })
+}
+// 品牌分类下拉列表
+export function goodsBrandClassifyListApi () {
+  return service({
+    url: `/api/admin/goods/brand/classify/name/list`,
+    method: 'get'
   })
 }

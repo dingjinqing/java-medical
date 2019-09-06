@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">库存/价格信息</div>
+    <div class="title">{{$t("goodsAddEditInfo.stockAndPriceInfo.title")}}</div>
     <el-form
       ref="stockAndPriceInfoForm"
       :model="goodsProductInfo"
@@ -9,18 +9,18 @@
     >
       <!--商品规格按钮-->
       <el-form-item
-        label="商品规格："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsPrd')"
         v-if="!specInfoSwitch"
       >
         <el-button
           size="small"
           @click="addSpecClick"
           style="width: 170px;"
-        >添加规格</el-button>
+        >{{$t("goodsAddEditInfo.stockAndPriceInfo.goodsPrdAdd")}}</el-button>
       </el-form-item>
       <!--商品规格元素-->
       <el-form-item
-        label="商品规格："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsPrd')"
         v-if="specInfoSwitch"
       >
         <div class="specInfoWrap">
@@ -29,7 +29,7 @@
               class="specInfoItem speInfoItemK"
               :key="'k'+kIndex"
             >
-              <div class="specInfoItemTitle">规格名：</div>
+              <div class="specInfoItemTitle">{{$t("goodsAddEditInfo.stockAndPriceInfo.goodsSpecName")}}</div>
               <div class="specInfoItemContent">
                 <div class="specInfoItemInputWrap">
                   <input
@@ -48,7 +48,7 @@
               class="specInfoItem speInfoItemV"
               :key="'v'+kIndex"
             >
-              <div class="specInfoItemTitle">规格值：</div>
+              <div class="specInfoItemTitle">{{$t("goodsAddEditInfo.stockAndPriceInfo.goodsSpecVal")}}</div>
               <div class="specInfoItemContent">
                 <div
                   class="specInfoItemInputWrap"
@@ -70,7 +70,7 @@
                   :underline="false"
                   @click="addSpecValClick(specInfoModel)"
                   style="margin-left: 5px;"
-                >添加规格值
+                >{{$t("goodsAddEditInfo.stockAndPriceInfo.goodsSpecValAdd")}}
                 </el-link>
               </div>
             </div>
@@ -79,23 +79,23 @@
             style="float: right;"
             size="small"
             @click="addSpecInfoClick"
-          >添加规格选项</el-button>
+          >{{$t("goodsAddEditInfo.stockAndPriceInfo.goodsSpecAdd")}}</el-button>
         </div>
       </el-form-item>
       <!--商品规格价格元素-->
       <el-form-item
-        label="规格价格："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecPrice')"
         v-if="specInfoSwitch"
       >
         <div class="specInfoWrap">
           <table>
             <tr>
               <th></th>
-              <th>价格(元)</th>
-              <th>成本价格(元)</th>
-              <th>库存</th>
-              <th>规格编码</th>
-              <th>规格图片</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
             </tr>
             <tr
               v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
@@ -109,37 +109,37 @@
             </tr>
           </table>
           <div style="text-align: center;">
-            <span>批量设置：</span>
+            <span>{{$t('goodsAddEditInfo.stockAndPriceInfo.batchUpdate')}}</span>
             <el-link
               size="small"
               :underline="false"
               @click="unifyPrdSpecAttr('prdPrice')"
               style="margin-right: 5px;"
-            >价格</el-link>
+            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchPrice')}}</el-link>
             <el-link
               size="small"
               :underline="false"
               @click="unifyPrdSpecAttr('prdCostPrice')"
               style="margin-right: 5px;"
-            >成本价格</el-link>
+            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</el-link>
             <el-link
               size="small"
               :underline="false"
               @click="unifyPrdSpecAttr('prdNumber')"
               style="margin-right: 5px;"
-            >库存</el-link>
+            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</el-link>
             <el-link
               size="small"
               :underline="false"
               @click="unifyPrdSpecAttr('prdImg')"
               style="margin-right: 5px;"
-            >规格图片</el-link>
+            >{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</el-link>
           </div>
         </div>
       </el-form-item>
       <!--库存等-->
       <el-form-item
-        label="商品库存："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsNumber')"
         prop="prdNumber"
       >
         <el-input-number
@@ -152,10 +152,10 @@
           :disabled="specInfoSwitch"
           style="width:170px;"
         />
-        <span class="inputTip">设置了规格库存商品库存将失效，不在前端展示</span>
+        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsNumberTip')}}</span>
       </el-form-item>
       <el-form-item
-        label="商品价格："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsShopPrice')"
         prop="prdPrice"
       >
         <el-input-number
@@ -167,10 +167,10 @@
           :disabled="specInfoSwitch"
           style="width:170px;"
         />
-        <span class="inputTip">设置了规格价格商品价格将失效，不在前端展示</span>
+        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsShopPriceTip')}}</span>
       </el-form-item>
       <el-form-item
-        label="市场价格："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsMarketPrice')"
         prop="marketPrice"
       >
         <el-input-number
@@ -183,7 +183,7 @@
         />
       </el-form-item>
       <!--商品会员价格复选框-->
-      <el-form-item label="会员价：">
+      <el-form-item :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMember')">
         <el-checkbox
           v-for="(item,index) in memberCards"
           v-model="item.checked"
@@ -194,7 +194,7 @@
         <span
           class="inputTip"
           style="margin-left: 0px;"
-        >会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价</span>
+        >{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMemberTip')}}</span>
       </el-form-item>
       <!--商品会员价格设置table-->
       <el-form-item
@@ -283,7 +283,7 @@
     <!-- 展开更多配置 -->
     <el-collapse accordion v-model="collapseActiveName">
       <el-collapse-item
-        title="展开/收起更多配置"
+        :title="$t('goodsAddEditInfo.toggleName')"
         name="stockMore"
       >
         <el-form
@@ -294,7 +294,7 @@
         >
 
           <el-form-item
-            label="最小限购数量："
+            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.limitBuyNum')"
             prop="limitBuyNum"
           >
             <el-input-number
@@ -306,10 +306,10 @@
               :min="0"
               style="width:170px;"
             />
-            <span class="inputTip">0或不填表示不限制购买数量</span>
+            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.limitBuyNumTip')}}</span>
           </el-form-item>
           <el-form-item
-            label="最大限购数量："
+            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.maxBuyNum')"
             prop="limitMaxNum"
           >
             <el-input-number
@@ -321,10 +321,10 @@
               :min="0"
               style="width:170px;"
             />
-            <span class="inputTip">0或不填表示不限制购买数量</span>
+            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.maxBuyNumTip')}}</span>
           </el-form-item>
           <el-form-item
-            label="成本价格："
+            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.costPrice')"
             prop="prdCost"
           >
             <el-input-number
@@ -337,10 +337,10 @@
               :disabled="specInfoSwitch"
               style="width:170px;"
             />
-            <span class="inputTip">0或不填表示不限制购买数量</span>
+            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.costPriceTip')}}</span>
           </el-form-item>
           <el-form-item
-            label="初始销量："
+            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNum')"
             prop="addSaleNum"
           >
             <el-input-number
@@ -351,10 +351,10 @@
               :min="0"
               style="width:170px;"
             />
-            <span class="inputTip">设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。</span>
+            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNumSetting')}}</span>
           </el-form-item>
           <el-form-item
-            label="商品规格编码："
+            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.goodsPrdSn')"
             v-if="!specInfoSwitch"
           >
             <el-input
@@ -382,6 +382,7 @@ import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 export default {
   data () {
     return {
+      lang: '',
       /* 临时存放和后台交互的数据 */
       goodsProductInfo: {
         // 库存、价格信息
@@ -408,7 +409,7 @@ export default {
           { required: true, message: '请输入商品价格', trigger: 'change' }
         ],
         prdCost: [
-          { required: true, message: '请输入商品价格', trigger: 'change' }
+          { required: true, message: '请输入商品成本价格', trigger: 'change' }
         ]
       },
       /* 自定义商品规格 */
@@ -423,6 +424,11 @@ export default {
     }
   },
   watch: {
+    lang () {
+      this.stockAndPriceRules.prdNumber[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsNumber')
+      this.stockAndPriceRules.prdPrice[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsPrice')
+      this.stockAndPriceRules.prdCost[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsCostPrice')
+    },
     'goodsProductInfo.goodsSpecProducts': function () {
       // 当商品规格信息变化时将会员卡信息注入每一个规格项内，用来生成会员价的列表
       this.goodsProductInfo.goodsSpecProducts.forEach(specPrd => {
@@ -1057,6 +1063,9 @@ export default {
     }
   },
   mounted () {
+    // 国际化
+    this.langDefault()
+
     this.memberCardsInit()
   }
 }

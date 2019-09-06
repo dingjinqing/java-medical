@@ -11,6 +11,7 @@ import { cn as marketManage } from './views/marketManage'
 import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
 import { cn as adminPageFramework } from './views/adminPageFramework'
+import { cn as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { cn as allGoods } from './views/goodsManage/allGoods'
@@ -406,6 +407,7 @@ const cn = {
   adminPageFramework, // admin页面框架
   allGoods, // 商品管理/全部商品
   goodsImport,
+  goodsAddEditInfo,
   groupBuy, // 多人拼团
   statusTab, // 营销活动状态 tabs
   sharePolite, // 分享有礼

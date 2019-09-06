@@ -11,6 +11,7 @@ import { en as marketManage } from './views/marketManage'
 import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
 import { en as adminPageFramework } from './views/adminPageFramework'
+import { en as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { en as allGoods } from './views/goodsManage/allGoods'
@@ -434,6 +435,7 @@ const en = {
   adminPageFramework, // admin 页面框架
   allGoods, // 商品管理/全部商品
   goodsImport,
+  goodsAddEditInfo,
   groupBuy,
   statusTab, // 营销活动状态 tabs
   sharePolite,

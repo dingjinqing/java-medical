@@ -1,17 +1,17 @@
 <template>
   <div>
     <el-form ref="goodsDistributionInfoForm" :model="goodsDistributionInfo" label-width="120px">
-      <el-form-item label="分销改价：">
-        <el-checkbox v-model="goodsDistributionInfo.canRebate">允许分销员分销商品时修改商品售价</el-checkbox>
+      <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.distributionTitle')">
+        <el-checkbox v-model="goodsDistributionInfo.canRebate">{{$t('goodsAddEditInfo.goodsDistribution.distributionTitleTip')}}</el-checkbox>
         <template v-if="goodsDistributionInfo.canRebate">
           <div v-if="goodsProductInfoData.specInfoSwitch" style="border: 1px solid #ccc;padding: 10px;">
             <table>
               <tr>
                 <th></th>
-                <th>规格价格(元)</th>
-                <th>建议售价(元)</th>
-                <th>最低售价(元)</th>
-                <th>最高售价（元）</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.goodsPrice')}}</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.advicePrice')}}</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.minPrice')}}</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.maxPrice')}}</th>
               </tr>
               <tr
                 v-for="(item,index) in goodsDistributionInfo.goodsRebatePrices"
@@ -25,18 +25,18 @@
               </tr>
             </table>
             <p style="text-align: right;line-height: 10px;margin-top: 20px;">
-              <span style="font-size: 14px;">批量设置：</span>
-              <el-link size="small" :underline="false" @click="setLowestPrice">最低售价</el-link>
-              <el-link size="small" :underline="false" @click="setHighestPrice">最高售价</el-link>
+              <span style="font-size: 14px;">{{$t('goodsAddEditInfo.goodsDistribution.batchSetting')}}</span>
+              <el-link size="small" :underline="false" @click="setLowestPrice">{{$t('goodsAddEditInfo.goodsDistribution.lowestSetting')}}</el-link>
+              <el-link size="small" :underline="false" @click="setHighestPrice">{{$t('goodsAddEditInfo.goodsDistribution.highestSetting')}}</el-link>
             </p>
           </div>
           <div v-else style="border: 1px solid #ccc;padding: 10px;">
             <table>
               <tr>
-                <th>商品价格(元)</th>
-                <th>建议售价(元)</th>
-                <th>最低售价(元)</th>
-                <th>最高售价（元）</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.goodsPrice')}}</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.advicePrice')}}</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.minPrice')}}</th>
+                <th>{{$t('goodsAddEditInfo.goodsDistribution.maxPrice')}}</th>
               </tr>
               <tr
                 v-for="(item,index) in goodsDistributionInfo.goodsRebatePrices"
@@ -51,50 +51,50 @@
           </div>
         </template>
       </el-form-item>
-      <el-form-item label="分销推广语：">
+      <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.promotionTitle')">
         <el-switch v-model="goodsDistributionInfo.promotionLanguageSwitch" />
-        <span>{{goodsDistributionInfo.promotionLanguageSwitch?'已开启':'已关闭'}}</span>
-        <span style="color: #999;margin-left: 10px;">分销员下载当前商品海报时将直接复制此推广语到手机剪贴板</span>
+        <span>{{goodsDistributionInfo.promotionLanguageSwitch?$t('goodsAddEditInfo.goodsDistribution.promotionSwitchOn'):$t('goodsAddEditInfo.goodsDistribution.promotionSwitchOff')}}</span>
+        <span style="color: #999;margin-left: 10px;">{{$t('goodsAddEditInfo.goodsDistribution.promotionTitleTip')}}</span>
         <div v-show="goodsDistributionInfo.promotionLanguageSwitch" style="display: flex;align-items: flex-start">
-          <span style="line-height: 20px;">推广语内容：</span>
-          <el-input ref="promotionLanguageInput" type="textarea" v-model="goodsDistributionInfo.promotionLanguage" placeholder="请输入" resize="none" :maxlength="200" show-word-limit :rows="8" style="width:400px;"/>
+          <span style="line-height: 20px;">{{$t('goodsAddEditInfo.goodsDistribution.promotionLanguage')}}</span>
+          <el-input ref="promotionLanguageInput" type="textarea" v-model="goodsDistributionInfo.promotionLanguage"  resize="none" :maxlength="200" show-word-limit :rows="8" style="width:400px;"/>
         </div>
       </el-form-item>
-      <el-form-item label="商品分享海报：">
+      <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.shareGoodsAction')">
         <!--默认样式-->
         <div>
-          <el-radio v-model="goodsDistributionInfo.shareAction" :label="1" style="margin-right: 15px;">默认样式</el-radio>
+          <el-radio v-model="goodsDistributionInfo.shareAction" :label="1" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsAction')}}</el-radio>
           <el-popover placement="right-start" trigger="hover">
             <el-image :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle1.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-            <span slot="reference" style="color:#409EFF;cursor:pointer;">查看示例</span>
+            <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgLinkLook')}}</span>
           </el-popover>
           <el-popover placement="right-start" trigger="hover" style="margin-left: 10px;">
             <el-image :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-            <span slot="reference" style="color:#409EFF;cursor:pointer;">下载海报</span>
+            <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgLinkDownload')}}</span>
           </el-popover>
         </div>
         <!--自定义样式-->
         <div>
-          <el-radio v-model="goodsDistributionInfo.shareAction" :label="2" style="margin-right: 15px;">自定义样式</el-radio>
+          <el-radio v-model="goodsDistributionInfo.shareAction" :label="2" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsActionRadio2')}}</el-radio>
         </div>
         <!--文案-->
         <div>
-          <span style="width:70px;display:inline-block;">文案：</span>
-          <el-input ref="shareDocInput" v-model="goodsDistributionInfo.shareDoc" :disabled="goodsDistributionInfo.shareAction === 1" size="small" placeholder="请输入15个以内的字符" style="width:220px;"/>
+          <span style="width:70px;display:inline-block;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsDoc')}}</span>
+          <el-input ref="shareDocInput" v-model="goodsDistributionInfo.shareDoc" :disabled="goodsDistributionInfo.shareAction === 1" size="small" :placeholder="$t('goodsAddEditInfo.goodsDistribution.shareGoodsDocTip')" style="width:220px;"/>
         </div>
         <!--分享图-->
         <div>
-          <span style="width:70px;display:inline-block;">分享图：</span>
-          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="1" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">商品主图</el-radio>
+          <span style="width:70px;display:inline-block;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImg')}}</span>
+          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="1" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgRadio1')}}</el-radio>
         </div>
         <div>
           <span style="width:70px;display:inline-block;"></span>
-          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="2" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">自定义图片</el-radio>
+          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="2" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgRadio2')}}</el-radio>
         </div>
         <div>
           <span style="width:70px;display:inline-block;"></span>
-          <el-image v-if="goodsDistributionInfo.shareImgUrl === null" @click="addGoodsImg"  fit="scale-down" :src="goodsDistributionInfo.imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
-          <el-image v-else @click="addGoodsImg" fit="cover" :src="$imageHost+'/'+goodsDistributionInfo.shareImgUrl" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
+          <el-image v-if="goodsDistributionInfo.shareImgObj === null" @click="addGoodsImg"  fit="scale-down" :src="goodsDistributionInfo.imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
+          <el-image v-else @click="addGoodsImg" fit="cover" :src="goodsDistributionInfo.shareImgObj.imgUrl" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
         </div>
       </el-form-item>
     </el-form>
@@ -159,7 +159,7 @@ export default {
         shareAction: 1,
         shareDoc: null,
         shareImgAction: 1,
-        shareImgUrl: null,
+        shareImgObj: null,
         imgHost: `${this.$imageHost}`
       }
     }
@@ -182,21 +182,21 @@ export default {
     },
     /* 添加图片点击回调事件 */
     imgDialogSelectedCallback (imgObj) {
-      this.goodsDistributionInfo.shareImgUrl = imgObj.imgPath
+      this.goodsDistributionInfo.shareImgObj = {imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl}
     },
     /* 验证数据是否全部合法 */
     validateFormData () {
       // 分销推广语长度超长
       if (this.goodsDistributionInfo.promotionLanguageSwitch && !isStrBlank(this.goodsDistributionInfo.promotionLanguage) &&
         this.goodsDistributionInfo.promotionLanguage.length > 200) {
-        this.$message({message: '推广语超长', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionLanguageTooLong'), type: 'warning'})
         this.$refs.promotionLanguageInput.focus()
         return false
       }
 
       if (this.goodsDistributionInfo.shareAction === 2 && !isStrBlank(this.goodsDistributionInfo.shareDoc) &&
         this.goodsDistributionInfo.shareDoc.length > 15) {
-        this.$message({message: '文档内容过长', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionDocTooLong'), type: 'warning'})
         this.$refs.shareDocInput.focus()
         return false
       }
@@ -224,10 +224,17 @@ export default {
       retData.goodsSharePostConfig.shareAction = this.goodsDistributionInfo.shareAction
       retData.goodsSharePostConfig.shareDoc = this.goodsDistributionInfo.shareDoc
       retData.goodsSharePostConfig.shareImgAction = this.goodsDistributionInfo.shareImgAction
-      retData.goodsSharePostConfig.shareImgUrl = this.goodsDistributionInfo.shareImgUrl
-
+      if (this.goodsDistributionInfo.shareImgObj != null) {
+        retData.goodsSharePostConfig.shareImgUrl = this.goodsDistributionInfo.shareImgObj.imgPath
+      } else {
+        retData.goodsSharePostConfig.shareImgUrl = null
+      }
       return retData
     }
+  },
+  mounted () {
+    // 国际化
+    this.langDefault()
   }
 }
 </script>

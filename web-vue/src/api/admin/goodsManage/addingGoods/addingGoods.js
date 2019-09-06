@@ -56,3 +56,10 @@ export function getExclusiveCardList () {
     method: 'post'
   })
 }
+// 获取商品对应的小程序展示页面
+export function getGoodsQrCode (goodsId) {
+  return service({
+    url: `/api/admin/goods/qrCode/get?goodsId=${goodsId}`,
+    method: 'get'
+  })
+}

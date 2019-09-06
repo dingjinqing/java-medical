@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">基本信息</div>
+    <div class="title">{{$t("goodsAddEditInfo.basicInfo.title")}}</div>
     <div>
       <el-form
         ref="basicInfoForm"
@@ -9,7 +9,7 @@
         label-width="120px"
       >
         <el-form-item
-          label="商品名称："
+          :label="$t('goodsAddEditInfo.basicInfo.goodsName')"
           prop="goodsName"
         >
           <el-input
@@ -19,23 +19,23 @@
             style="width:400px"
           />
         </el-form-item>
-        <el-form-item label="商品广告词：">
+        <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsAd')">
           <el-input
             v-model="goodsProductInfo.goodsAd"
             size="small"
             style="width:400px"
           />
         </el-form-item>
-        <el-form-item label="商品货号：">
+        <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsSn')">
           <el-input
             v-model="goodsProductInfo.goodsSn"
             size="small"
             style="width:170px;"
           />
-          <span class="inputTip">不填则由系统自动生成货号</span>
+          <span class="inputTip">{{$t("goodsAddEditInfo.basicInfo.goodsSnTip")}}</span>
         </el-form-item>
         <el-form-item
-          label="平台分类："
+          :label="$t('goodsAddEditInfo.basicInfo.catId')"
           prop="catId"
         >
           <el-select
@@ -47,7 +47,7 @@
           >
             <el-option
               :value="null"
-              label="请选择平台分类"
+              :label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"
             />
             <el-option
               v-for="item in catIdTemp.firstCatData"
@@ -65,7 +65,7 @@
           >
             <el-option
               :value="null"
-              label="请选择平台分类"
+              :label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"
             />
             <el-option
               v-for="item in catIdTemp.secondCatData"
@@ -83,7 +83,7 @@
           >
             <el-option
               :value="null"
-              label="请选择平台分类"
+              :label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"
             />
             <el-option
               v-for="item in catIdTemp.thirdCatData"
@@ -93,28 +93,27 @@
             />
           </el-select>
           <span class="inputTip">
-            “平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。
+            {{$t("goodsAddEditInfo.basicInfo.catIdTip")}}
           </span>
           <el-link
             type="primary"
             :underline="false"
             href="#"
             target="_blank"
-          >前往</el-link>
+          >{{$t("goodsAddEditInfo.basicInfo.catIdGo")}}</el-link>
         </el-form-item>
         <el-form-item
-          label="商品主图："
-          prop="goodsImgs"
+          :label="$t('goodsAddEditInfo.basicInfo.goodsImg')"
         >
           <div style="display: flex;align-items: center;flex-wrap: wrap;">
             <div
-              v-for="(src,index) in goodsProductInfo.goodsImgs"
+              v-for="(item,index) in goodsProductInfo.goodsImgs"
               :key="index"
               class="goodsImgWrap"
             >
               <el-image
                 fit="cover"
-                :src="imgHost+'/'+src"
+                :src="item.imgUrl"
                 style="width: 78px; height: 78px;"
               ></el-image>
               <span
@@ -144,7 +143,7 @@
               />
             </div>
             <span class="inputTip">
-              建议尺寸：800*800像素
+              {{$t('goodsAddEditInfo.basicInfo.goodsImgTip')}}
             </span>
           </div>
         </el-form-item>
@@ -152,7 +151,7 @@
       <!-- 基本信息更多配置 -->
       <el-collapse accordion v-model="collapseActiveName">
         <el-collapse-item
-          title="展开/收起更多配置"
+          :title="$t('goodsAddEditInfo.toggleName')"
           name="basicMore"
         >
           <el-form
@@ -162,9 +161,7 @@
             label-width="120px"
           >
             <el-form-item
-              label="单位："
-              prop="unit"
-            >
+              :label="$t('goodsAddEditInfo.basicInfoOther.unit')">
               <el-select
                 ref="unitSelect"
                 v-model="unitSelectedValue"
@@ -189,16 +186,14 @@
               <span
                 v-if="unitSelectedValue===null"
                 class="inputTip"
-              >长度限制为3个中文字符</span>
+              >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
             </el-form-item>
             <el-form-item
-              label="商家分类："
-              prop="sortId"
-            >
+              :label="$t('goodsAddEditInfo.basicInfoOther.sortId')">
               <el-select
                 filterable
                 v-model="goodsProductInfo.sortId"
-                placeholder="请选择商家分类"
+               :placeholder="$t('goodsAddEditInfo.basicInfoOther.sortIdDefault')"
                 size="small"
                 style="width:170px;"
               >
@@ -212,12 +207,10 @@
               </el-select>
             </el-form-item>
             <el-form-item
-              label="商品标签："
-              prop="goodsLabels"
-            >
+              :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
               <el-select
                 v-model="labelSelectedTempVal"
-                placeholder="请选择商品标签"
+                :placeholder="$t('goodsAddEditInfo.basicInfoOther.goodsLabelDefault')"
                 size="small"
                 @change="labelSelectChange"
                 style="width:170px;"
@@ -235,7 +228,7 @@
                 @click.native="labelSelectRefresh"
                 href="#"
                 style="margin:0 5px;"
-              >刷新
+              >{{$t('goodsAddEditInfo.linkRefresh')}}
               </el-link>
               |
               <el-link
@@ -243,14 +236,14 @@
                 :underline="false"
                 href="#"
                 style="margin:0 5px;"
-              >新建标签</el-link>
+              >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelNew')}}</el-link>
               |
               <el-link
                 type="primary"
                 :underline="false"
                 href="#"
                 style="margin:0 5px;"
-              >管理标签</el-link>
+              >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelManage')}}</el-link>
               <div
                 v-if="labelSelectedItems.length>0"
                 style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
@@ -270,9 +263,7 @@
               </div>
             </el-form-item>
             <el-form-item
-              label="商品品牌："
-              prop="brandName"
-            >
+              :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrand')">
               <el-button @click="goodsBrandDialogData.goodsBrandDialogShow=true" size="small" style="width: 170px;">
                 {{currentGoodsBrandData.brandName}}
               </el-button>
@@ -281,21 +272,21 @@
                 :underline="false"
                 href="#"
                 style="margin:0 5px;"
-              >新建品牌</el-link>
+              >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandNew')}}</el-link>
               |
               <el-link
                 type="primary"
                 :underline="false"
                 href="#"
                 style="margin:0 5px;"
-              >管理品牌</el-link>
+              >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandManage')}}</el-link>
             </el-form-item>
             <el-form-item
-              label="商品视频："
+              :label="$t('goodsAddEditInfo.basicInfoOther.goodsVideo')"
               prop="video"
               @click="videoInputClick"
             >
-              <span class="inputTip">上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。</span>
+              <span class="inputTip">{{$t('goodsAddEditInfo.basicInfoOther.goodsVideoTip')}}</span>
             </el-form-item>
           </el-form>
         </el-collapse-item>
@@ -307,16 +298,16 @@
       />
 
       <!--添加品牌dialog-->
-      <el-dialog title="添加品牌"
+      <el-dialog :title="$t('goodsAddEditInfo.basicInfoOther.goodsBrandTitle')"
                  :visible.sync="goodsBrandDialogData.goodsBrandDialogShow" @open="goodsBrandDialogBeforeOpen"
                  modal  width="40%" :show-close="false">
         <el-form :inline="true" :model="goodsBrandDialogData.formData" label-width="80px">
-          <el-form-item  label="品牌名称">
+          <el-form-item  :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandName')">
             <el-input v-model="goodsBrandDialogData.formData.brandName"/>
           </el-form-item>
-          <el-form-item  label="品牌分类">
+          <el-form-item  :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassify')">
             <el-select v-model="goodsBrandDialogData.formData.classifyId">
-              <el-option label="请选择" :value="null"/>
+              <el-option :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassifyDefault')" :value="null"/>
               <el-option v-for="(item,index) in goodsBrandDialogData.formData.brandClassifyOptions"
                          :key="index"
                          :label="item.classifyName"
@@ -324,25 +315,24 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button @click="fetchGoodsBrandDialogTableData" type="primary" size="small">筛选</el-button>
+            <el-button @click="fetchGoodsBrandDialogTableData" type="primary" size="small">{{$t('goodsAddEditInfo.filter')}}</el-button>
           </el-form-item>
         </el-form>
         <div class="tableContent">
           <el-table :data="goodsBrandDialogData.tableData" v-loading="goodsBrandDialogData.loading" border height="300" highlight-current-row
                     @current-change="brandTableCurrentChange" style="width: 100%;">
-            <el-table-column prop="brandName" label="品牌名称"/>
-            <el-table-column prop="classifyName" label="品牌分类"/>
-            <el-table-column prop="createTime" label="创建时间"/>
+            <el-table-column prop="brandName" :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandName')"/>
+            <el-table-column prop="classifyName" :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassify')"/>
+            <el-table-column prop="createTime" :label="$t('goodsAddEditInfo.createTime')"/>
           </el-table>
           <pagination
-
             :page-params.sync="goodsBrandDialogData.formData.pageParams"
             @pagination="fetchGoodsBrandDialogTableData"
           />
         </div>
         <div slot="footer">
-          <el-button @click="brandDialogConfirm" type="primary" size="small">确定</el-button>
-          <el-button @click="brandDialogCancel" type="primary" size="small">取消</el-button>
+          <el-button @click="brandDialogConfirm" type="primary" size="small">{{$t('goodsAddEditInfo.confirmBtn')}}</el-button>
+          <el-button @click="brandDialogCancel" type="primary" size="small">{{$t('goodsAddEditInfo.cancelBtn')}}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -354,7 +344,7 @@ import {
   selectPlatformClassification,
   goodsSortAndGoodsBrandInitApi
 } from '@/api/admin/goodsManage/addingGoods/addingGoods'
-import {goodsBrandListApi, goodsBrandPageListApi} from '@/api/admin/goodsManage/brandManagement/brandManagement'
+import {goodsBrandClassifyListApi, goodsBrandPageListApi} from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
 import { isStrBlank } from '@/util/goodsUtil'
 // 组件导入
@@ -503,6 +493,39 @@ export default {
       labelSelectedTempVal: null
     }
   },
+  watch: {
+    lang () {
+      this.basicInfoRules.goodsName[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsName')
+      this.basicInfoRules.catId[0].message = this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify')
+      this.basicInfoRules.goodsImgs[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage')
+      this.basicInfoRules.unit[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit')
+      this.currentGoodsBrandData.brandName = this.$t('goodsAddEditInfo.basicInfoOther.goodsBrandTitle')
+      let i18nUnitOptions = this.$t('goodsAddEditInfo.basicInfoOther.unitOptions')
+      this.unitSelectedValue = i18nUnitOptions[0]
+      this.unitSelectOptions = [
+        {value: i18nUnitOptions[0], label: i18nUnitOptions[0]},
+        {value: i18nUnitOptions[1], label: i18nUnitOptions[1]},
+        {value: i18nUnitOptions[2], label: i18nUnitOptions[2]},
+        {value: i18nUnitOptions[3], label: i18nUnitOptions[3]},
+        {value: i18nUnitOptions[4], label: i18nUnitOptions[4]},
+        {value: i18nUnitOptions[5], label: i18nUnitOptions[5]},
+        {value: i18nUnitOptions[6], label: i18nUnitOptions[6]},
+        {value: i18nUnitOptions[7], label: i18nUnitOptions[7]},
+        {value: i18nUnitOptions[8], label: i18nUnitOptions[8]},
+        {value: i18nUnitOptions[9], label: i18nUnitOptions[9]},
+        {value: i18nUnitOptions[10], label: i18nUnitOptions[10]},
+        {value: i18nUnitOptions[11], label: i18nUnitOptions[11]},
+        {value: i18nUnitOptions[12], label: i18nUnitOptions[12]},
+        {value: i18nUnitOptions[13], label: i18nUnitOptions[13]},
+        {value: i18nUnitOptions[14], label: i18nUnitOptions[14]},
+        {value: i18nUnitOptions[15], label: i18nUnitOptions[15]},
+        {value: i18nUnitOptions[16], label: i18nUnitOptions[16]},
+        {value: i18nUnitOptions[17], label: i18nUnitOptions[17]},
+        {value: i18nUnitOptions[18], label: i18nUnitOptions[18]},
+        {value: null, label: i18nUnitOptions[19]}
+      ]
+    }
+  },
   methods: {
     /* 基本信息部分 */
     // 平台分类下拉框交互
@@ -557,7 +580,7 @@ export default {
       if (this.goodsProductInfo.goodsImgs.length >= 5) {
         return
       }
-      this.goodsProductInfo.goodsImgs.push(imgObj.imgPath)
+      this.goodsProductInfo.goodsImgs.push({imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl})
     },
     /* 删除商品图片 */
     deleteGoodsImg (index) {
@@ -631,7 +654,7 @@ export default {
     /* brandDialog 打开前预处理 */
     goodsBrandDialogBeforeOpen () {
       // 商品品牌下拉列表初始化
-      goodsBrandListApi().then(res => {
+      goodsBrandClassifyListApi().then(res => {
         this.goodsBrandDialogData.formData.brandClassifyOptions = res.content
       })
       this.fetchGoodsBrandDialogTableData()
@@ -676,24 +699,24 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (isStrBlank(this.goodsProductInfo.goodsName)) {
-        this.$message({message: '请输入商品名称', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsName'), type: 'warning'})
         this.$refs.goodsNameInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.catId === null) {
-        this.$message({message: '请选择平台分类', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning'})
         this.$refs.catSelect.focus()
         return false
       }
 
       if (this.goodsProductInfo.goodsImgs.length === 0) {
-        this.$message({message: '请选择商品图片', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning'})
         return false
       }
 
       if (this.goodsProductInfo.unit === null) {
-        this.$message({message: '请选择商品单位', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning'})
         this.$refs.unitSelect.focus()
         return false
       }
@@ -713,15 +736,15 @@ export default {
       // 处理商品图片
       // 只有一个商品主图
       if (this.goodsProductInfo.goodsImgs.length === 1) {
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0].imgPath
         retData.goodsImgs = null
       } else if (this.goodsProductInfo.goodsImgs.length > 1) {
         // 有商品主图和幅图
         // 避免和goodsProductInfo共享同一个数组
         retData.goodsImgs = []
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0].imgPath
         for (let i = 1; i < this.goodsProductInfo.goodsImgs.length; i++) {
-          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i])
+          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i].imgPath)
         }
       } else {
         // 没有数据直接设置为null,这样后台不会执行对应的空sql
@@ -732,6 +755,8 @@ export default {
     }
   },
   mounted () {
+    // 国际化
+    this.langDefault()
     // 初始化平台分类一级下拉框
     this.catIdInit()
     // 初始化商家分类和商品标签
