@@ -64,12 +64,13 @@
                     </el-col>
                     <el-col :span="6">
                         <el-form-item label="下单时间">
-                            <el-input
-                                    v-model="requestParams.mobile"
+                            <el-date-picker
+                                    v-model="requestParams.createTimeStart"
+                                    type="datetime"
                                     placeholder="下单时间"
                                     size="small"
-                                    clearable
-                            ></el-input>
+                                    class="date_picker"
+                            ></el-date-picker>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -112,37 +113,50 @@
                         align="center"
                 > </el-table-column>
                 <el-table-column
-                        prop="orderSn"
                         label="拼团商品"
                         align="center"
-                > </el-table-column>
+                        width="200px"
+                >
+                    <template   slot-scope="scope" >
+                        <el-table
+                                :data="scope.row.goods"
+                                :show-header=false
+                        >
+                            <el-table-column
+                                    prop="goodsName"
+                                    align="center"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="goodsPrice"
+                                    label="单价"
+                                    align="center"
+                            > </el-table-column>
+                        </el-table>
+                    </template>
+                </el-table-column>
                 <el-table-column
-                        prop="orderSn"
-                        label="单价"
-                        align="center"
-                > </el-table-column>
-                <el-table-column
-                        prop="orderSn"
+                        prop="createTime"
                         label="下单时间"
                         align="center"
                 > </el-table-column>
                 <el-table-column
-                        prop="orderSn"
+                        prop="username"
                         label="下单人信息"
                         align="center"
                 > </el-table-column>
                 <el-table-column
-                        prop="orderSn"
+                        prop="consignee"
                         label="收货人信息"
                         align="center"
                 > </el-table-column>
                 <el-table-column
-                        prop="orderSn"
+                        prop="moneyPaid"
                         label="支付金额"
                         align="center"
                 > </el-table-column>
                 <el-table-column
-                        prop="orderSn"
+                        prop="orderStatusText"
                         label="订单状态"
                         align="center"
                 > </el-table-column>
@@ -212,7 +226,17 @@ export default {
     },
     // 表格数据处理
     handleData (data) {
+      data.forEach(item => {
+        item.orderStatusText = this.getOrderStatusText(item.orderStatus)
+      })
       this.tableData = data
+    },
+    getOrderStatusText (index) {
+      this.orderStatus.forEach(item => {
+        if (item.value === index) {
+          return item.label
+        }
+      })
     },
     goodsInfo (data) {
       if (data.columnIndex === 2) {

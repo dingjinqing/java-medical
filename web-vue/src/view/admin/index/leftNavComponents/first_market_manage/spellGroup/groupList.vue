@@ -168,17 +168,22 @@ export default {
       pageRows: 1,
       totalRows: 0,
       pageCount: undefined,
-      tableListView: true
+      tableListView: true,
+      tabInfo: {},
+      activityTypeText: []
     }
   },
-  computed: {
-    tabInfo: function () {
-      return this.$t('groupBuy.tabInfo')
+  watch: {
+    lang () {
+      this.tabInfo = this.$t('groupBuy.tabInfo')
+      this.activityTypeText = this.$t('groupBuy.grouponType')
+      this.initDataList()
     }
   },
   mounted () {
     console.log('mounted-----------------------')
     // 初始化数据
+    this.langDefault()
     this.initDataList()
   },
   methods: {
@@ -207,7 +212,7 @@ export default {
         this.pageRows = res.content.page.pageRows
         this.pageCount = res.content.page.pageCount
         this.totalRows = res.content.page.totalRows
-
+        this.tableDataCopy = res.content.dataList
         this.handleData(res.content.dataList)
       }).catch(() => {
         this.$message.error('保存失败')
@@ -217,7 +222,7 @@ export default {
       tabData.map((item, index) => {
         item.vaildDate = `${item.startTime}至${item.endTime}`
         item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
-        item.activityTypeText = this.$t('groupBuy.grouponType')[item.activityType]
+        item.activityTypeText = this.activityTypeText[item.activityType]
       })
       this.tableData = tabData
     },

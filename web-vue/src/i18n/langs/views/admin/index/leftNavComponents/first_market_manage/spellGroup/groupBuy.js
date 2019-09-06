@@ -43,7 +43,6 @@ export const cn = {
     name: '5'
   }],
   // 拼团详情-成团状态
-  name: '中文',
   userMobileNumber: '用户手机号',
   mobileNumber: '手机号',
   userNickname: '用户昵称',
@@ -77,8 +76,8 @@ export const en = {
   // 拼团活动
   activityName: 'activityName',
   activityType: 'activityType',
-  addActivity: 'addActvity,',
-  goodsName: 'goodsNmae',
+  addActivity: 'addActivity',
+  goodsName: 'goodsName',
   validDate: 'validDate',
   activityStatus: 'activityStatus',
   limitAmount: 'limitAmount',
@@ -114,7 +113,6 @@ export const en = {
     title: 'Disable',
     name: '5'
   }],
-  name: 'English',
   userMobileNumber: 'user mobile',
   mobileNumber: 'mobile number',
   userNickname: 'user nickname',

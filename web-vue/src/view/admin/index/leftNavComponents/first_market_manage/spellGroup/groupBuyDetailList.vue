@@ -125,16 +125,18 @@ export default {
       nickname: null,
       stauts: 0,
       tableData: [],
-      pageParams: {}
+      pageParams: {},
+      stateOptions: {}
     }
   },
-  computed: {
-    stateOptions: function () {
-      return this.$t('groupBuy.stateOptions')
+  watch: {
+    lang () {
+      this.stateOptions = this.$t('groupBuy.stateOptions')
     }
   },
   mounted () {
     // 初始化
+    this.langDefault()
     this.initialize()
   },
   methods: {
@@ -148,6 +150,7 @@ export default {
     },
     // 查询
     searchData () {
+      this.tableData.loading = true
       let obj = {
         nickName: this.nickname,
         mobile: this.mobile,
@@ -160,6 +163,7 @@ export default {
         console.log(res)
         this.pageParams = res.content.page
         this.tableData = res.content.dataList
+        this.tableData.loading = true
       })
     }
   }
