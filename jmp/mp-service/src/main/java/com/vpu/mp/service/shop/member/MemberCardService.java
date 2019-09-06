@@ -796,6 +796,8 @@ public class MemberCardService extends ShopBaseService {
 	 * 返回的对象信息为会员卡的id与名称
 	 */
 	public List<CardBasicVo> getAllUserCard() {
+		// 等级降序
+		logger().info("正在获取所有的可用会员卡，按等级排序");
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
 		List<CardBasicVo> cardList = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
 			.where(MEMBER_CARD.FLAG.eq(MEMBER_CARD_USING))
