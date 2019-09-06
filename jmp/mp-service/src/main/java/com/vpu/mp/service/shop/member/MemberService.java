@@ -199,7 +199,7 @@ public class MemberService extends ShopBaseService {
 			String sourceName = null;
 			if (NOT_ACQUIRED.getCode().equals(member.getSource())
 					&& !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))
-					&& !(INVITE_SOURCE_SCANQRCODE.equals(member.getSource()))) {
+					&& !(SCAN_QRCODE.getCode().equals(member.getSource()))) {
 				/** 未获取 */
 				sourceName = Util.translateMessage(language, NOT_ACQUIRED.getName(), "member");
 				logger().info(sourceName);
