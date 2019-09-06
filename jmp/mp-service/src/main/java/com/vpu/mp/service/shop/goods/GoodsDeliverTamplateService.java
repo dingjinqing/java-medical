@@ -5,7 +5,7 @@ import static com.vpu.mp.db.shop.Tables.DELIVER_FEE_TEMPLATE;
 import java.util.List;
 
 import org.jooq.Record4;
-import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,10 +50,11 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 	 * @return 
 	 */
 	public PageResult<GoodsDeliverTemplateVo> getDeliverTemplateList(GoodsDeliverPageListParam param) {
-		SelectConditionStep<Record4<Integer, String, String,Byte>> selectFrom =
+		SelectSeekStep1<Record4<Integer, String, String, Byte>, Integer> selectFrom =
 				db().select(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID,DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,DELIVER_FEE_TEMPLATE.FLAG)
 				.from(DELIVER_FEE_TEMPLATE)
-				.where(DELIVER_FEE_TEMPLATE.FLAG.eq((byte)0));
+				.where(DELIVER_FEE_TEMPLATE.FLAG.eq((byte)0))
+				.orderBy(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.desc());
 		
 		PageResult<GoodsDeliverTemplateVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsDeliverTemplateVo.class);
 		
@@ -67,10 +68,11 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 	 * @return 
 	 */
 	public PageResult<GoodsDeliverTemplateVo> getWeightDeliverTemplateList(GoodsDeliverPageListParam param) {
-		SelectConditionStep<Record4<Integer, String, String,Byte>> selectFrom =
+		SelectSeekStep1<Record4<Integer, String, String, Byte>, Integer> selectFrom =
 				db().select(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID,DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,DELIVER_FEE_TEMPLATE.FLAG)
 				.from(DELIVER_FEE_TEMPLATE)
-				.where(DELIVER_FEE_TEMPLATE.FLAG.eq((byte)1));
+				.where(DELIVER_FEE_TEMPLATE.FLAG.eq((byte)1))
+				.orderBy(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.desc());
 		
 		PageResult<GoodsDeliverTemplateVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsDeliverTemplateVo.class);
 		
