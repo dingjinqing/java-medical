@@ -463,7 +463,12 @@ export default {
       console.log(this.oldIndex, this.newIndex, this.oldElement)
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
       let insertIndex = this.newIndex + 1
-      newArr.splice(insertIndex, 0, this.oldElement)
+      if (this.topAreaFlag) {
+        newArr.unshift(this.oldElement)
+      } else {
+        newArr.splice(insertIndex, 0, this.oldElement)
+      }
+
       console.log(newArr)
       let newArrMiddle = JSON.parse(JSON.stringify(newArr))
 
@@ -556,7 +561,6 @@ export default {
         // padding: 0 2px;
         .hereDaily {
           height: 5px;
-          background-color: #000;
           span {
             display: none;
           }

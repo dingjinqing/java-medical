@@ -506,7 +506,6 @@ export default {
       console.log(newData)
       this.handleJurisdiction()
     }
-
   },
   mounted() {
     console.log(this.$route)
