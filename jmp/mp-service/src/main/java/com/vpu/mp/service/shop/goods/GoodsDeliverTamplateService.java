@@ -57,7 +57,6 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 				.orderBy(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.desc());
 		
 		PageResult<GoodsDeliverTemplateVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsDeliverTemplateVo.class);
-		
 		return pageResult;
 	}
 	
