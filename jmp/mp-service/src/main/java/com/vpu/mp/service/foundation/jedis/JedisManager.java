@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,6 +18,12 @@ import java.util.List;
  */
 @Service
 public class JedisManager {
+
+    private static final Long RELEASE_SUCCESS = 1L;
+
+    private static final String LOCK_SUCCESS = "OK";
+    private static final String SET_IF_NOT_EXIST = "NX";
+    private static final String SET_WITH_EXPIRE_TIME = "PX";
 
 	@Autowired
 	private JedisPool pool;
@@ -139,4 +146,40 @@ public class JedisManager {
 			}
 		}
 	}
+
+    /**
+     * redis加锁
+     * @param lockKey
+     * @param requestId
+     * @param timeOut
+     * @return
+     */
+	public boolean  addLock(String lockKey,String requestId,Integer timeOut){
+	    try( Jedis jedis = getJedisPool().getResource() ){
+            String result = jedis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, timeOut);
+            if (LOCK_SUCCESS.equals(result)) {
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+
+    /**
+     * redis释放锁
+     * @param lockKey 锁
+     * @param requestId 请求标识
+     * @return 是否释放成功
+     */
+    public  boolean releaseLock( String lockKey, String requestId) {
+        try( Jedis jedis = getJedisPool().getResource() ){
+            String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+            Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));
+            if (RELEASE_SUCCESS.equals(result)) {
+                return true;
+            }
+            return false;
+        }
+    }
 }

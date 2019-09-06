@@ -4,6 +4,8 @@ import com.vpu.mp.db.main.tables.TaskJobContent;
 import com.vpu.mp.db.main.tables.TaskJobMain;
 import com.vpu.mp.db.main.tables.records.TaskJobContentRecord;
 import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -13,6 +15,7 @@ import com.vpu.mp.service.pojo.saas.schedule.BaseTaskJob;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import org.jooq.*;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
@@ -37,6 +41,9 @@ public class TaskJobMainService extends MainBaseService {
 
     @Autowired
     private RabbitmqSendService rabbitmqSendService;
+
+    @Autowired
+    private JedisManager jedisManager;
 
     /**
      * 通用定时任务job处理（BaseTaskJob 自己定义）
@@ -102,29 +109,32 @@ public class TaskJobMainService extends MainBaseService {
     /**
      * 查询并发送待执行的任务给各自的队列（加入排他锁，防重入）
      */
-    public void  getAndSendMessage(){
-        db().transaction(configuration -> {
-            Result<Record4<Integer,String,String,Integer>> result = DSL.using(configuration)
-                .select(TASK_JOB_MAIN.ID,TASK_JOB_CONTENT.CONTENT,TASK_JOB_MAIN.CLASS_NAME,TASK_JOB_MAIN.EXECUTION_TYPE)
-                .from(TASK_JOB_MAIN)
-                .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_CONTENT.ID.eq(TASK_JOB_MAIN.CONTENT_ID))
-                .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
-                .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
-                .forUpdate()
-                .noWait()
-                .fetch();
-            result.forEach(r->{
-                TaskJobsConstant.TaskJobEnum job =
-                    TaskJobsConstant.TaskJobEnum.getTaskJobEnumByExecutionType(r.get(TASK_JOB_MAIN.EXECUTION_TYPE));
-                if (job != null) {
-                    rabbitmqSendService.sendMessage(job.getExchangeName(),job.getRoutingKey(),
-                        r.get(TASK_JOB_CONTENT.CONTENT),r.get(TASK_JOB_MAIN.CLASS_NAME));
-                }
+    public  void  getAndSendMessage(){
+        String uuid = Util.randomId();
+        if( jedisManager.addLock(JedisKeyConstant.TASK_JOB_LOCK,uuid,60*60) ){
+            db().transaction(configuration -> {
+
+                Result<Record4<Integer,String,String,Integer>> result = DSL.using(configuration)
+                    .select(TASK_JOB_MAIN.ID,TASK_JOB_CONTENT.CONTENT,TASK_JOB_MAIN.CLASS_NAME,TASK_JOB_MAIN.EXECUTION_TYPE)
+                    .from(TASK_JOB_MAIN)
+                    .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_CONTENT.ID.eq(TASK_JOB_MAIN.CONTENT_ID))
+                    .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
+                    .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
+                    .fetch();
+                result.forEach(r->{
+                    TaskJobsConstant.TaskJobEnum job =
+                        TaskJobsConstant.TaskJobEnum.getTaskJobEnumByExecutionType(r.get(TASK_JOB_MAIN.EXECUTION_TYPE));
+                    if (job != null) {
+                        rabbitmqSendService.sendMessage(job.getExchangeName(),job.getRoutingKey(),
+                            r.get(TASK_JOB_CONTENT.CONTENT),r.get(TASK_JOB_MAIN.CLASS_NAME));
+                    }
+                });
+                db().update(TASK_JOB_MAIN)
+                    .set(TASK_JOB_MAIN.STATUS,TaskJobsConstant.STATUS_EXECUTING)
+                    .where(TASK_JOB_MAIN.ID.in(result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList())));
             });
-            db().update(TASK_JOB_MAIN)
-                .set(TASK_JOB_MAIN.STATUS,TaskJobsConstant.STATUS_EXECUTING)
-                .where(TASK_JOB_MAIN.ID.in(result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList())));
-        });
+            jedisManager.releaseLock(JedisKeyConstant.TASK_JOB_LOCK,uuid);
+        }
     }
 
     public TaskJobMainRecord getTaskJobMainRecordById(Integer taskJobId){
