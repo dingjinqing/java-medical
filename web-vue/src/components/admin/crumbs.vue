@@ -13,10 +13,15 @@ export default {
   data () {
     return {
       titleLeft: '',
-      titleList: ''
+      titleList: '',
+      lang: ''
     }
   },
   watch: {
+    lang (newData) {
+      console.log(newData)
+      this.changeText()
+    },
     '$route.name' (newData) {
       console.log(newData)
       this.changeText()

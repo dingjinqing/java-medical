@@ -491,7 +491,9 @@ export default {
       click_nav_index: null,
       nav_s_class_index: false,
       saveIndex: null,
-      leftMenuEn: ''
+      leftMenuEn: '',
+      lang: ''
+
     }
   },
   watch: {
@@ -500,7 +502,12 @@ export default {
       console.log(this.$route, this.click_nav_index, this.saveIndex)
       this.saveIndex = -1
       this.defaultNav(to.meta.meta)
+    },
+    lang(newData) {
+      console.log(newData)
+      this.handleJurisdiction()
     }
+
   },
   mounted() {
     console.log(this.$route)

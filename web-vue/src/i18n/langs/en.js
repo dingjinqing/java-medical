@@ -236,14 +236,14 @@ const en = {
     Q_title: 'QQ Consultation'
   },
   // admin选择店铺
-  shopData: {
-    set: 'Account Settings',
-    administration: 'Subaccount management',
-    administration_J: 'Subaccount Authority',
-    public: 'Authorized Public Number',
-    choice: 'Choose Shops',
-    loginOut: 'Sign out'
-  },
+  shopData: [
+    'Account Settings',
+    'Subaccount management',
+    'Subaccount Authority',
+    'Authorized Public Number',
+    'Choose Shops',
+    'Sign out'
+  ],
   // admin选择店铺页面contact组件数据
   adminContact: {
     phoneNum: 'Customer Service Telephone: 400-010-1039',

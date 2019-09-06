@@ -208,14 +208,14 @@ const cn = {
     Q_title: 'QQ咨询'
   },
   // admin选择店铺数据
-  shopData: {
-    set: '账户设置',
-    administration: '子账号管理',
-    administration_J: ' 子账号权限管理',
-    public: '授权公众号',
-    choice: '选择店铺',
-    loginOut: '退出'
-  },
+  shopData: [
+    '账户设置',
+    '子账号管理',
+    ' 子账号权限管理',
+    '授权公众号',
+    '选择店铺',
+    '退出'
+  ],
   // admin选择店铺页面contact组件数据
   adminContact: {
     phoneNum: '客服电话：400-010-1039',

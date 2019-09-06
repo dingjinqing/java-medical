@@ -2,7 +2,15 @@ const myMixin = {
   methods: {
     // 初始化语言
     langDefault () {
+      this.$http.$on('CHANGE_LANGUAGE', res => {
+        console.log('feifeifei')
+        this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
+        this.adaptation()
+      })
       // console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
+      this.adaptation()
+    },
+    adaptation () {
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
         this.Recommend_class = 'Recommend_class'
@@ -116,7 +124,6 @@ const myMixin = {
         this.leftMenuEn = ''
       }
     },
-
     // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用
     // TODO: 未国际化
     getActStatusString (status, startTime, endTime) {

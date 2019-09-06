@@ -62,8 +62,29 @@
         </div>
         <img :src="imageUrl[3].img_4">
       </div>
-    </div>
 
+    </div>
+    <div
+      class="langChange"
+      @mouseover="langEnter()"
+      @mouseout="langLeave()"
+    >
+      <span>{{$t('messages.lang')}}</span>
+      <img
+        :src="imageUrlData[1].image_4"
+        class="head_down"
+      >
+      <div class="head_list_lang">
+        <div
+          class="lang_c"
+          target="_blank"
+          @click="handleChangeLang(index)"
+          :class="item.login_active"
+          v-for="(item,index) in langData_show"
+          :key="index"
+        >{{item.show_lang}}</div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -88,26 +109,32 @@ export default {
         }
       ],
       log_menu_show: false,
-      hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration_J'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
+      hiddle_menu_list: [],
       changeColorIndex: '',
       username: '',
       accountName: '',
       menu_width: '',
       header_navData: [
-        // { title: this.$t('adminPageFramework.headerData.title_1'), index: '', meta: 'first_web_manage', name: 'shop_view' },
-        // { title: this.$t('adminPageFramework.headerData.title_2'), index: '', meta: 'first_web_decoration', name: 'picture_setting' },
-        // { title: this.$t('adminPageFramework.headerData.title_3'), index: '', meta: 'goods_manage', name: 'sale_on' },
-        // { title: this.$t('adminPageFramework.headerData.title_4'), index: '', meta: 'first_trade_manage', name: 'order' },
-        // { title: this.$t('adminPageFramework.headerData.title_5'), index: '', meta: 'first_market_manage', name: 'first_market_manage' },
-        // { title: this.$t('adminPageFramework.headerData.title_6'), index: '', meta: 'user_manger', name: 'user_list' },
-        // { title: this.$t('adminPageFramework.headerData.title_7'), index: '', meta: 'store_manage', name: 'store_list' },
-        // { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' }
+
       ],
       active_bg: 'active_bg',
       nav_index: '',
       click_nav_index: null,
-      headerNavEn: ''
-
+      headerNavEn: '',
+      lang: '',
+      imageUrlData: [
+        { image_3: this.$imageHost + '/image/admin/official/blue_down.png' },
+        { image_4: this.$imageHost + '/image/admin/img1.png' }
+      ],
+      langData_show: [],
+      langData_cn: [
+        { lang: 'en', login_active: '', show_lang: 'English' },
+        { lang: 'cn', login_active: '', show_lang: '中文' }
+      ],
+      langData_en: [
+        { lang: 'en', login_active: '', show_lang: 'English' },
+        { lang: 'cn', login_active: '', show_lang: 'Chinese' }
+      ]
     }
   },
   mounted () {
@@ -120,12 +147,25 @@ export default {
   },
 
   watch: {
-
+    lang (newData) {
+      console.log(newData)
+      this.header_navData = [
+        { title: this.$t('adminPageFramework.headerData.title_1'), index: '', meta: 'first_web_manage', name: 'shop_view' },
+        { title: this.$t('adminPageFramework.headerData.title_2'), index: '', meta: 'first_web_decoration', name: 'picture_setting' },
+        { title: this.$t('adminPageFramework.headerData.title_3'), index: '', meta: 'goods_manage', name: 'sale_on' },
+        { title: this.$t('adminPageFramework.headerData.title_4'), index: '', meta: 'first_trade_manage', name: 'order' },
+        { title: this.$t('adminPageFramework.headerData.title_5'), index: '', meta: 'first_market_manage', name: 'first_market_manage' },
+        { title: this.$t('adminPageFramework.headerData.title_6'), index: '', meta: 'user_manger', name: 'user_list' },
+        { title: this.$t('adminPageFramework.headerData.title_7'), index: '', meta: 'store_manage', name: 'store_list' },
+        { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' }]
+      this.hiddle_menu_list = this.$t('shopData')
+    }
   },
   methods: {
     ...mapActions(['ToTurnMemberShipDetail', 'judgeActiveMeunAll']),
     // 初始化登录
     judgeuserinfo () {
+      this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
       this.imageUrl[1].img_2 = localStorage.getItem('V-shopAvatar')
       this.accountName = localStorage.getItem('V-AccountName')
       if (Cookies.get('V-Token')) {
@@ -135,17 +175,6 @@ export default {
       } else {
         this.user_flag = false
       }
-      setTimeout(() => {
-        this.header_navData = [
-          { title: this.$t('adminPageFramework.headerData.title_1'), index: '', meta: 'first_web_manage', name: 'shop_view' },
-          { title: this.$t('adminPageFramework.headerData.title_2'), index: '', meta: 'first_web_decoration', name: 'picture_setting' },
-          { title: this.$t('adminPageFramework.headerData.title_3'), index: '', meta: 'goods_manage', name: 'sale_on' },
-          { title: this.$t('adminPageFramework.headerData.title_4'), index: '', meta: 'first_trade_manage', name: 'order' },
-          { title: this.$t('adminPageFramework.headerData.title_5'), index: '', meta: 'first_market_manage', name: 'first_market_manage' },
-          { title: this.$t('adminPageFramework.headerData.title_6'), index: '', meta: 'user_manger', name: 'user_list' },
-          { title: this.$t('adminPageFramework.headerData.title_7'), index: '', meta: 'store_manage', name: 'store_list' },
-          { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' }]
-      }, 100)
     },
     // 用户选项点击
     handle_user_list (index) {
@@ -194,6 +223,15 @@ export default {
       if (index === 'undefined') return 0
       this.changeColorIndex = index
     },
+    langEnter () {
+      console.log('1')
+      this.langData_cn.forEach(item => {
+        item.login_active = 'login_active'
+      })
+      this.langData_en.forEach(item => {
+        item.login_active = 'login_active'
+      })
+    },
     header_nav_over (index) {
       this.click_nav_index = index
     },
@@ -202,6 +240,15 @@ export default {
       this.log_menu_show = false
       if (!index) return 0
       this.changeColorIndex = ''
+    },
+    langLeave () {
+      console.log('2')
+      this.langData_cn.forEach(item => {
+        item.login_active = ''
+      })
+      this.langData_en.forEach(item => {
+        item.login_active = ''
+      })
     },
     header_nav_leave (index) {
       this.click_nav_index = null
@@ -230,6 +277,28 @@ export default {
       if (name === 'membershipList') {
         this.ToTurnMemberShipDetail('0')
       }
+    },
+    // 语言选项点击
+    handleChangeLang (index) {
+      switch (index) {
+        case 0:
+          this.$i18n.locale = this.langData_cn[index].lang
+          this.lang_with = 'width:63px'
+          this.langData_show = this.langData_en
+          this.loginData_show = this.loginData_en
+          localStorage.setItem('WEPUBAO_LANGUAGE', 'en_US')
+          break
+        case 1:
+          this.$i18n.locale = this.langData_cn[index].lang
+          this.lang_with = 'width:43px'
+          this.langData_show = this.langData_cn
+          this.loginData_show = this.loginData_cn
+          localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
+          break
+      }
+      this.$http.$emit('lang_change', index)
+      this.$http.$emit('CHANGE_LANGUAGE', -1)
+      console.log(this.lang)
     }
   }
 }
@@ -304,7 +373,7 @@ label {
 }
 .log-menu {
   color: #000;
-  height: 210px !important;
+  /* height: 210px !important; */
   background: #fff;
   position: absolute;
   left: -60px;
@@ -365,5 +434,36 @@ label {
   display: inline-block;
   width: 52px;
   height: 52px;
+}
+.langChange {
+  float: right;
+  margin-right: 30px;
+  cursor: pointer;
+}
+.head_list_lang {
+  position: absolute;
+  width: 160px;
+  background: #fff;
+  -webkit-box-shadow: 0 0px 10px rgba(204, 204, 204, 0.3);
+  -moz-box-shadow: 0 0px 10px rgba(204, 204, 204, 0.3);
+  box-shadow: 0 0px 10px rgba(204, 204, 204, 0.3);
+  color: #333;
+  text-align: center;
+  z-index: 2;
+  top: 85px;
+  z-index: 10000;
+}
+.lang_c {
+  display: none;
+  line-height: 40px;
+  height: 40px;
+  width: 100%;
+  text-align: center;
+  border-radius: 3px;
+}
+.login_active {
+  background-color: #f8f8f8;
+  color: #5a8bff;
+  display: block !important;
 }
 </style>

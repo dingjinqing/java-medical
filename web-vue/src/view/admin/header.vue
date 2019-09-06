@@ -97,7 +97,7 @@ export default {
         }
       ],
       log_menu_show: false,
-      hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
+      hiddle_menu_list: [],
       changeColorIndex: '',
       username: '',
       accountName: '',
@@ -114,7 +114,8 @@ export default {
       langData_en: [
         { lang: 'en', login_active: '', show_lang: 'English' },
         { lang: 'cn', login_active: '', show_lang: 'Chinese' }
-      ]
+      ],
+      lang: ''
     }
   },
   mounted () {
@@ -123,10 +124,16 @@ export default {
     // 初始化语言
     this.langDefault()
   },
-
+  watch: {
+    lang (newData) {
+      console.log(newData)
+      this.hiddle_menu_list = this.$t('shopData')
+    }
+  },
   methods: {
     // 初始化登录
     judgeuserinfo () {
+      this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
       this.$http.$on('changeHead', () => {
         this.shopAvatar = localStorage.getItem('V-shopAvatar')
         this.accountName = localStorage.getItem('V-AccountName')
@@ -150,14 +157,15 @@ export default {
     },
     // 用户选项点击
     handle_user_list (index) {
+      console.log(index)
       switch (index) {
         case 0:
           this.$emit('change_components', '0')
           break
-        case 3:
+        case 4:
           this.$emit('change_components', '3')
           break
-        case 4:
+        case 5:
           loginRequestOut().then((res) => {
             console.log(res)
             if (res.error === 0) {
@@ -226,6 +234,8 @@ export default {
           break
       }
       this.$http.$emit('lang_change', index)
+      this.$http.$emit('CHANGE_LANGUAGE', -1)
+      console.log(this.lang)
     }
   }
 }
@@ -302,7 +312,7 @@ label {
 }
 .log-menu {
   color: #000;
-  height: 210px !important;
+  /* height: 210px !important; */
   background: #fff;
   position: absolute;
   left: -60px;

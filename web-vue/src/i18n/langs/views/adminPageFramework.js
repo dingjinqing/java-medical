@@ -27,12 +27,12 @@ export const en = {
   // header
   headerData: {
     title_1: 'Survey',
-    title_2: 'Small Program Management',
-    title_3: 'Commodity management',
-    title_4: 'Order management',
-    title_5: 'marketing management',
-    title_6: 'Membership management',
-    title_7: 'Store management',
+    title_2: 'Small Program',
+    title_3: 'Commodity',
+    title_4: 'Order',
+    title_5: 'marketing',
+    title_6: 'Membership',
+    title_7: 'Store',
     title_8: 'Basic configuration'
   },
   // leftNav
