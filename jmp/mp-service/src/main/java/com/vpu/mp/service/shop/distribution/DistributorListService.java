@@ -23,6 +23,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
@@ -148,6 +149,16 @@ public class DistributorListService extends ShopBaseService{
 		SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param);
 		PageResult<DistributorInvitedListVo> invitedlist = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorInvitedListVo.class);
 		return invitedlist;
+	}
+	
+	/**
+	 * 清除分销员身份
+	 * @param userId
+	 * @return
+	 */
+	public int delDistributor(Integer userId) {
+		int res = db().update(USER).set(USER.IS_DISTRIBUTOR,(byte)0).where(USER.USER_ID.eq(userId)).execute();
+		return res;
 	}
 	
 	/**

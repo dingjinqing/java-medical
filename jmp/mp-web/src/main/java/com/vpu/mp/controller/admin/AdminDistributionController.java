@@ -340,6 +340,17 @@ public class AdminDistributionController extends AdminBaseController{
 	}
 	
 	/**
+	 * 清除分销员身份
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/distributor/del")
+	public JsonResult delDistributor(Integer userId) {
+		int result = shop().distributorList.delDistributor(userId);
+		return this.success(result);
+	}
+	
+	/**
 	 * 佣金统计
 	 * @param param
 	 * @return
