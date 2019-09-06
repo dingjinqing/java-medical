@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.OrderRefundRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -18,6 +17,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.RandomUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
@@ -45,15 +45,39 @@ public class OrderRefundRecordService extends ShopBaseService{
 	 * @param money
 	 * @throws MpException 
 	 */
-	public void wxPayRefund(OrderInfoVo order ,ReturnOrderRecord returnOrderRecord ,BigDecimal money) throws MpException {
+	public void wxPayRefund(OrderInfoVo order ,Integer retId ,BigDecimal money) throws MpException {
 		//子订单取主订单订单号
 		String orderSn = orderInfo.isSubOrder(order) ? order.getMainOrderSn() : order.getOrderSn();
 		//退款流水号
 		String refundSn = generateReturnOrderSn();
-		//支付记录·
+		//支付记录
 		PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(orderSn);
 		if(payRecord == null) {
 			logger().error("wxPayRefund 微信支付记录未找到 order_sn="+orderSn);
+			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
+		}
+		//微信金额单为为分需单位换算
+		refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_TO_FEN, money.intValue() * OrderConstant.TUAN_TO_FEN);
+		
+		addRecord();
+		
+		
+	}
+	
+	/**
+	 * 虚拟订单微信退款
+	 * @param order 
+	 * @param returnOrder
+	 * @param money
+	 * @throws MpException 
+	 */
+	public void wxPayRefund(VirtualOrderPayInfo order , BigDecimal money) throws MpException {
+		//退款流水号
+		String refundSn = generateReturnOrderSn();
+		//支付记录
+		PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(order.getOrderSn());
+		if(payRecord == null) {
+			logger().error("wxPayRefund 微信支付记录未找到 order_sn={}",order.getOrderSn());
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
 		}
 		//微信金额单为为分需单位换算

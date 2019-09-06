@@ -19,6 +19,8 @@ import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
@@ -129,12 +131,17 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 * @param
 	 * @return
 	 */
-	public void refundCouponPackOrder(CouponPackOrderRefundParam param) {
-        this.virtualOrderRefund(param.getVirtualOrderRefundParam());
+	public JsonResultCode refundCouponPackOrder(CouponPackOrderRefundParam param) {
+        try {
+			this.virtualOrderRefund(param.getVirtualOrderRefundParam());
+		} catch (MpException e) {
+			return e.getErrorCode();
+		}
         this.updateSendFlag(param.getStillSendFlag(), param.getOrderId());
 
         /** 操作记录 */
         saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_COUPON_PACK_ORDER_REFUND.code }), new String[] {param.getOrderSn()});
+        return null;
 	}
 
 	public void updateSendFlag(Byte sendFlag,Integer orderId) {

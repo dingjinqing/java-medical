@@ -14,6 +14,8 @@ import org.jooq.Record;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
@@ -91,10 +93,15 @@ public class MemberCardOrderService extends VirtualOrderService {
     /**
      * 手动退款
      */
-    public void memberCardOrderRefund(VirtualOrderRefundParam param) {
-        this.virtualOrderRefund(param);
+    public JsonResultCode memberCardOrderRefund(VirtualOrderRefundParam param) {
+        try {
+			this.virtualOrderRefund(param);
+		} catch (MpException e) {
+			return e.getErrorCode();
+		}
 
         /** 操作记录 */
         saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_MEMBER_CARD_ORDER_REFUND.code }), new String[] {param.getOrderSn()});
+        return null;
     }
 }

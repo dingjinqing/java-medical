@@ -197,8 +197,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			} else {
 				return JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION;
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("退款捕获mp异常", e);
 			return JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION;
 		}
@@ -338,13 +337,13 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	private ReturnOrderRecord returnShippingFee(RefundParam param , OrderInfoVo order) throws MpException{
 		// 只退运费必须金额>0
 		if (BigDecimalUtil.compareTo(param.getShippingFee(), BigDecimal.ZERO) < 1) {
-			logger.error("订单sn:"+param.getOrderSn()+"仅退运费时退运费金额必须大于0");
+			logger.error("订单sn:{}，仅退运费时退运费金额必须大于0",param.getOrderSn());
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_NOT_ZERO);
 		}
 		// 获取已退运费
 		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(param.getOrderSn());
 		if (!OrderOperationJudgment.adminIsReturnShipingFee(order, returnShipingFee.add(param.getShippingFee()))) {
-			logger.error("订单sn:"+param.getOrderSn()+"，该订单运费已经退完或超额");
+			logger.error("订单sn:{}，该订单运费已经退完或超额",param.getOrderSn());
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS);
 		}
 		logger.info("退运费创建退款订单开始");
@@ -439,9 +438,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				returnAmount = returnAmount.subtract(keyCanReturn);
 			}
 			
-			boolean result = returnMethod.refundMethods(entry.getKey(), order, returnOrder, currentReturn);
+			boolean result = returnMethod.refundMethods(entry.getKey(), order, returnOrder.getRetId(), currentReturn);
 			if(!result) {
-				logger.error("优先级退款调用refundMethods失败,orderSn:"+order.getOrderSn()+",retId:"+returnOrder.getRetId()+",优先级为："+key);
+				logger.error("优先级退款调用refundMethods失败,orderSn:{},retId:{},优先级为:{}",order.getOrderSn(),returnOrder.getRetId(),key);
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ING_RETURNMETHOD_ERROR);
 			}
 			//微信退款后续处理标识
@@ -454,7 +453,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			}
 		}
 		if(returnAmount.compareTo(BigDecimal.ZERO) > 0) {
-			 logger.error("优先级退款完成后本次退款金额>0,orderSn:"+order.getOrderSn()+",retId:"+returnOrder.getRetId());
+			 logger.error("优先级退款完成后本次退款金额>0,orderSn:{},retId:{}",order.getOrderSn(),returnOrder.getRetId());
 			 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO);
 		}
 		return flag;
@@ -564,26 +563,25 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	private ReturnOrderRecord notOnlyReturnShippingFee(RefundParam param , OrderInfoVo order , RefundVo check) throws MpException{
 		//通用是否支持该退款退货类型
 		if(!check.getReturnType()[param.getReturnType()]) {
-			logger.error("订单sn:"+param.getOrderSn()+","+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"时通用校验失败，不支持该类型退款退货");
+			logger.error("订单sn:{},{}时通用校验失败，不支持该类型退款退货",param.getOrderSn(),OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_NOT_SUPPORT_RETURN_TYPE);
 		}
 		//查询参数校验
 		if(CollectionUtils.isEmpty(check.getRefundGoods())) {
-			logger.error("订单sn:"+param.getOrderSn()+","+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"时，未选择商品");
+			logger.error("订单sn:{},{}时，未选择商品",param.getOrderSn(),OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_RETURN_COMPLETED);
 		}
 		
 		//输入商品简单校验
 		if (CollectionUtils.isEmpty(param.getReturnGoods())) {
-			logger.error("订单sn:" + param.getOrderSn() + "," + OrderConstant.RETURN_TYPE_CN[param.getReturnType()]
-					+ "时，未选择商品");
+			logger.error("订单sn:{},{}时，未选择商品",param.getOrderSn(),OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_NO_SELECT_GOODS);
 		}
 		// 退运费判断
 		if (BigDecimalUtil.compareTo(param.getShippingFee(), null) > 0 ) {
 			BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(param.getOrderSn());
 			if(!OrderOperationJudgment.adminIsReturnShipingFee(order, returnShipingFee.add(param.getShippingFee()))) {
-				logger.error("订单sn:"+param.getOrderSn()+"，该订单运费已经退完或超额");
+				logger.error("订单sn:{}，该订单运费已经退完或超额",param.getOrderSn());
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS);
 			}
 		}
@@ -591,6 +589,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		if(param.getReturnType() == OrderConstant.RT_MANUAL) {
 			BigDecimal sum = param.getReturnGoods().stream().map(ReturnGoods::getMoney).reduce(BigDecimal.ZERO,BigDecimal::add);
 			if(BigDecimalUtil.compareTo(sum, param.getReturnMoney()) != 0) {
+				logger.error("订单sn:{}，手动退款商品行金额和与输入金额不一致",param.getOrderSn());
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MANUAL_INCONSISTENT_AMOUNT);
 			}
 		}

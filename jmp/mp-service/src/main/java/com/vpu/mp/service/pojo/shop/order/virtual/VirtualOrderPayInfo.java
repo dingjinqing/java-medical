@@ -43,6 +43,8 @@ public class VirtualOrderPayInfo {
 
     private Integer returnScore;
 
+    private String cardNo;
+
     private Timestamp returnTime;
 
 }

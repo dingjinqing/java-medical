@@ -1,9 +1,22 @@
 package com.vpu.mp.service.shop.order.virtual;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.data.AccountData;
+import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
+import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
+import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+
+import org.jooq.exception.DataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,6 +30,12 @@ import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_R
  **/
 @Service
 public class VirtualOrderService extends ShopBaseService {
+	
+	@Autowired
+	private RecordMemberTradeService recordMemberTrade;
+	
+	@Autowired
+	private ReturnMethodService returnMethod;
     /** 虚拟商品类型：会员卡订单 */
     public static final Byte GOODS_TYPE_MEMBER_CARD = 0;
     /** 虚拟商品类型：优惠券礼包订单 */
@@ -38,31 +57,89 @@ public class VirtualOrderService extends ShopBaseService {
 
     /**
      * 手动退款
+     * @throws MpException 
      */
-    public void virtualOrderRefund(VirtualOrderRefundParam param) {
+    public void virtualOrderRefund(VirtualOrderRefundParam param) throws MpException {
+    	//订单
+    	VirtualOrderPayInfo payInfo = getOrderPayInfo(param.getOrderId());
+    	
         /** 是否退款成功 */
         boolean successFlag = false;
+        try {
+        	transaction(() -> {
+    			if (param.getAccount().compareTo(BigDecimal.ZERO) > 0) {
+    				/** TODO 余额退款服务 */
+    				AccountData accountData = AccountData.newBuilder().userId(payInfo.getUserId())
+    						.orderSn(payInfo.getOrderSn()).
+    				// 退款金额
+    				amount(param.getAccount()).remark(String.format("虚拟订单退款:%s", payInfo.getOrderSn()))
+    						.payment(OrderConstant.PAY_CODE_BALANCE_PAY).
+    				// 支付类型
+    				isPaid(RecordTradeEnum.RECHARGE.getValue()).
+    				// 后台处理时为操作人id为0
+    				adminUser(0).
+    				// 用户余额退款
+    				tradeType(RecordTradeEnum.MEMBER_ACCOUNT_REFUND.getValue()).
+    				// 资金流量-支出
+    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+    				// 调用退余额接口
+    				recordMemberTrade.updateUserEconomicData(accountData);
+    			}
 
-        /** TODO 是否需要事务控制 */
+    			if (param.getMemberCardBalance().compareTo(BigDecimal.ZERO) > 0) {
+    				/** TODO 会员卡余额退款服务 */
+    				UserCardData userCardData = UserCardData.newBuilder().userId(payInfo.getUserId())
+    						.cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reason("虚拟订单退款").
+    				// 普通会员卡
+    				type(CardConstant.NORMAL_TYPE).orderSn(param.getOrderSn()).
+    				// 后台处理时为操作人id为0
+    				adminUser(0).
+    				// 用户会员卡余额退款
+    				tradeType(RecordTradeEnum.MEMBER_CARD_ACCOUNT_REFUND.getValue()).
+    				// 资金流量-支出
+    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+    				// 调用退会员卡接口
+    				recordMemberTrade.updateUserEconomicData(userCardData);
+    			}
 
-        if(param.getMoney().compareTo(BigDecimal.ZERO) > 0){
-            /** TODO 微信退款服务 */
-        }
+    			if (param.getScore() > 0) {
+    				/** TODO 积分退款服务 */
+    				ScoreData scoreData = ScoreData.newBuilder().userId(payInfo.getUserId()).orderSn(payInfo.getOrderSn()).
+    				// 退款积分
+    				score(param.getScore())
+    						.remark(String.format("虚拟订单退款:%s，退积分：%s", payInfo.getOrderSn(), param.getScore())).
+    				// 后台处理时为操作人id为0
+    				adminUser(0).
+    				// 用户余额充值
+    				tradeType(RecordTradeEnum.POWER_MEMBER_ACCOUNT.getValue()).
+    				// 资金流量-支出
+    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).
+    				// 积分变动是否来自退款
+    				isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.getValue()).build();
+    				// 调用退积分接口
+    				recordMemberTrade.updateUserEconomicData(scoreData);
+    			}
 
-        if(param.getAccount().compareTo(BigDecimal.ZERO) > 0){
-            /** TODO 余额退款服务 */
-        }
+    			if (param.getMoney().compareTo(BigDecimal.ZERO) > 0) {
+    				/** TODO 微信退款服务 */
+    				returnMethod.refundVirtualWx(payInfo, param.getMoney());
+    			}
 
-        if(param.getMemberCardBalance().compareTo(BigDecimal.ZERO) > 0){
-            /** TODO 会员卡余额退款服务 */
-        }
+    		});
 
-        if(param.getScore() > 0){
-            /** TODO 积分退款服务 */
-        }
-
-        VirtualOrderPayInfo payInfo = getOrderPayInfo(param.getOrderId());
-
+		}  catch (DataAccessException e) {
+			logger().error("退款捕获DataAccessException异常", e);
+			Throwable cause = e.getCause();
+			if (cause instanceof MpException) {
+				throw (MpException)cause;
+			} else {
+				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
+			}
+		} catch (Exception e) {
+			logger().error("退款捕获mp异常", e);
+			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
+		}
+	
         BigDecimal finalReturnMoney = payInfo.getReturnMoney().add(param.getMoney());
         BigDecimal finalReturnAccount = payInfo.getReturnAccount().add(param.getAccount());
         BigDecimal finalReturnMemberCardBalance = payInfo.getReturnCardBalance().add(param.getMemberCardBalance());
@@ -82,11 +159,11 @@ public class VirtualOrderService extends ShopBaseService {
             db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.RETURN_FLAG, REFUND_STATUS_SUCCESS).set(VIRTUAL_ORDER.RETURN_MONEY,
                 finalReturnMoney).set(VIRTUAL_ORDER.RETURN_ACCOUNT, finalReturnAccount).set(VIRTUAL_ORDER.RETURN_CARD_BALANCE, finalReturnMemberCardBalance).set(VIRTUAL_ORDER.RETURN_SCORE, finalReturnScore).execute();
         }
-
+        
     }
 
     private VirtualOrderPayInfo getOrderPayInfo(Integer orderId){
-        return db().select(VIRTUAL_ORDER.ORDER_SN,VIRTUAL_ORDER.USER_ID,VIRTUAL_ORDER.PAY_CODE,VIRTUAL_ORDER.PAY_SN,VIRTUAL_ORDER.MONEY_PAID,VIRTUAL_ORDER.USE_ACCOUNT,VIRTUAL_ORDER.MEMBER_CARD_BALANCE,VIRTUAL_ORDER.USE_SCORE,VIRTUAL_ORDER.ORDER_AMOUNT,VIRTUAL_ORDER.PAY_TIME,VIRTUAL_ORDER.RETURN_FLAG,VIRTUAL_ORDER.RETURN_MONEY,VIRTUAL_ORDER.RETURN_ACCOUNT,VIRTUAL_ORDER.RETURN_CARD_BALANCE,VIRTUAL_ORDER.RETURN_SCORE,VIRTUAL_ORDER.RETURN_TIME).from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_ID.eq(orderId)).and(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(VirtualOrderPayInfo.class);
+        return db().select(VIRTUAL_ORDER.ORDER_SN,VIRTUAL_ORDER.USER_ID,VIRTUAL_ORDER.PAY_CODE,VIRTUAL_ORDER.PAY_SN,VIRTUAL_ORDER.MONEY_PAID,VIRTUAL_ORDER.USE_ACCOUNT,VIRTUAL_ORDER.MEMBER_CARD_BALANCE,VIRTUAL_ORDER.USE_SCORE,VIRTUAL_ORDER.ORDER_AMOUNT,VIRTUAL_ORDER.PAY_TIME,VIRTUAL_ORDER.RETURN_FLAG,VIRTUAL_ORDER.RETURN_MONEY,VIRTUAL_ORDER.RETURN_ACCOUNT,VIRTUAL_ORDER.RETURN_CARD_BALANCE,VIRTUAL_ORDER.RETURN_SCORE,VIRTUAL_ORDER.CARD_NO,VIRTUAL_ORDER.RETURN_TIME).from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_ID.eq(orderId)).and(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(VirtualOrderPayInfo.class);
     }
 
     /**

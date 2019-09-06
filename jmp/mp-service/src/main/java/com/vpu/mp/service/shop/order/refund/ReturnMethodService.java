@@ -22,6 +22,7 @@ import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
@@ -52,22 +53,22 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @return
 	 * @throws MpException 
 	 */
-	public boolean refundMethods(String methodName , OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) throws MpException {
+	public boolean refundMethods(String methodName , OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		try {
 			//RETURN_METHOD_PREFIX + methodName获取该优先级退款的具体方法
 			Method method = getClass().getMethod(FieldsUtil.underLineToCamel(RETURN_METHOD_PREFIX + methodName), OrderInfoVo.class,ReturnOrderRecord.class,BigDecimal.class);
-			method.invoke(this, order,returnOrder,money);
+			method.invoke(this, order,retId,money);
 		} catch (InvocationTargetException e) {
 			//反射捕获自定义异常
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
 				throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
 			}else {
-				logger().error("退款统一入口调用方法异常(非MpException)ReturnOrderSn:"+returnOrder.getReturnOrderSn()+"。异常信息："+e.getMessage());
+				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId+"。异常信息："+e.getMessage());
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR, e.getMessage());
 			}
 		} catch (Exception e) {
-			logger().error("退款统一入口调用异常ReturnOrderSn:"+returnOrder.getReturnOrderSn()+"。异常信息："+e.getMessage());
+			logger().error("退款统一入口调用异常retId:"+retId+"。异常信息："+e.getMessage());
 			new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR,e.getMessage());
 		} 
 		return true;
@@ -80,8 +81,8 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @return
 	 * @throws MpException
 	 */
-	public void refundBkMoney(OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) throws MpException {
-		refundMoneyPaid(order, returnOrder, money);
+	public void refundBkMoney(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
+		refundMoneyPaid(order, retId, money);
 	}
 	/**
 	 * 	退会员卡余额
@@ -90,7 +91,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @param money
 	 * @throws MpException 
 	 */
-	public void refundMemberCardBalance(OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) throws MpException {
+	public void refundMemberCardBalance(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		if(BigDecimalUtil.compareTo(money, null) == 0) {
 			return;
 		}
@@ -112,7 +113,7 @@ public class ReturnMethodService extends ShopBaseService{
 		//调用退会员卡接口
 		recordMemberTrade.updateUserEconomicData(userCardData);
 		//记录
-		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MEMBER_CARD_BALANCE, money, returnOrder.getRetId());
+		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MEMBER_CARD_BALANCE, money, retId);
 	}
 	
 	/**
@@ -122,7 +123,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @param money
 	 * @throws MpException 
 	 */
-	public void refundUseAccount(OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) throws MpException {
+	public void refundUseAccount(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		if(BigDecimalUtil.compareTo(money, null) == 0) {
 			return;
 		}
@@ -144,7 +145,7 @@ public class ReturnMethodService extends ShopBaseService{
 		//调用退余额接口
 		recordMemberTrade.updateUserEconomicData(accountData);
 		//记录
-		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.USE_ACCOUNT, money, returnOrder.getRetId());
+		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.USE_ACCOUNT, money, retId);
 	}
 	
 	/**
@@ -155,7 +156,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @return
 	 * @throws MpException
 	 */
-	public void refundScoreDiscount(OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) throws MpException {
+	public void refundScoreDiscount(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		if(BigDecimalUtil.compareTo(money, null) == 0) {
 			return;
 		}
@@ -182,7 +183,7 @@ public class ReturnMethodService extends ShopBaseService{
 		//调用退积分接口
 		recordMemberTrade.updateUserEconomicData(scoreData);
 		//记录
-		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.SCORE_DISCOUNT, money, returnOrder.getRetId());
+		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.SCORE_DISCOUNT, money, retId);
 	}
 	
 	/**
@@ -193,13 +194,13 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @return
 	 * @throws MpException
 	 */
-	public void refundMoneyPaid(OrderInfoVo order , ReturnOrderRecord returnOrder ,BigDecimal money) {
+	public void refundMoneyPaid(OrderInfoVo order , Integer retId ,BigDecimal money) {
 		if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == order.getOrderPayWay()) {
 			//TODO 好友代付
 		}
 		if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
 			try {
-				orderRefundRecord.wxPayRefund(order, returnOrder, money);
+				orderRefundRecord.wxPayRefund(order, retId, money);
 			} catch (MpException e) {
 				//TODO 微信失败处理
 			}
@@ -208,6 +209,21 @@ public class ReturnMethodService extends ShopBaseService{
 		//交易记录
 		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.CASH_REFUND.getValue(),RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
 		//记录
-		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MONEY_PAID, money, returnOrder.getRetId());
+		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MONEY_PAID, money, retId);
+	}
+	
+	/**
+	 * 虚拟订单微信退款
+	 * @param order
+	 * @param retId
+	 * @param money
+	 * @throws MpException 
+	 */
+	public void refundVirtualWx(VirtualOrderPayInfo order , BigDecimal money) throws MpException {
+		if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
+			orderRefundRecord.wxPayRefund(order , money);
+		}
+		//交易记录
+		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.CASH_REFUND.getValue(),RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
 	}
 }

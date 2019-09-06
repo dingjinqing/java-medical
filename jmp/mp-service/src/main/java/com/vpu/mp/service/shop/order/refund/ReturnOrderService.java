@@ -213,21 +213,14 @@ public class ReturnOrderService extends ShopBaseService{
 			RefundVoGoods checkGoods = cbsMap.get(paramGoods.getRecId());
 			if(checkGoods == null) {
 				logger().error(
-						"退款时订单sn:"+ order.getOrderSn() +
-						",退款类型为:" + param.getReturnType() +
-						",商品id:" + paramGoods.getRecId() +
-						"商品已退完或者不存在");
+						"退款时订单sn：{},退款类型为：{},商品id：{}商品已退完或者不存在",order.getOrderSn(),param.getReturnType(),paramGoods.getRecId());
 				//商品已退完
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_RETURN_COMPLETED);
 			}
 			//买家校验商家是否配置可退
 			if(param.getIsMp()) {
 				if(checkGoods.getIsCanReturn() == OrderConstant.IS_CAN_RETURN_N) {
-					logger().error(
-							"退款时订单sn:"+ order.getOrderSn() +
-							",退款类型为:" + param.getReturnType() +
-							",商品id:" + paramGoods.getRecId() +
-							"商品配置不可退");
+					logger().error("退款时订单sn:{},退款类型为:{},商品id:{}，商品配置不可退",order.getOrderSn(),param.getReturnType(),paramGoods.getRecId());
 					//商品配置不可退
 					throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_NO_CAN_RETURN);
 				}
@@ -244,11 +237,7 @@ public class ReturnOrderService extends ShopBaseService{
 				BigDecimal canReturnMoney = maxMoney.subtract(checkGoods.getReturnMoney());
 				//申请退款金额<=0 || canReturnMoney < 申请退款金额
 				if(BigDecimalUtil.compareTo(paramGoods.getMoney() , null) < 1 || BigDecimalUtil.compareTo(canReturnMoney , paramGoods.getMoney()) < 0) {
-					logger().error(
-							"退款时订单sn:"+ order.getOrderSn() +
-							",退款类型为:" + param.getReturnType() +
-							",商品id:" + paramGoods.getRecId() +
-							"申请退款金额不满足条件");
+					logger().error("退款时订单sn:{},退款类型为:{},商品id:{}，申请退款金额不满足条件",order.getOrderSn(),param.getReturnType(),paramGoods.getRecId());
 					throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MANUAL_MONEY_ERROR);
 				}
 				

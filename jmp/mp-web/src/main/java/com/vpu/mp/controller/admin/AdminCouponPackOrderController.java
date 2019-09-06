@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
@@ -36,8 +37,8 @@ public class AdminCouponPackOrderController extends AdminBaseController {
 	@PostMapping("/refund")
 	public JsonResult refundPackOrder(@RequestBody @Valid CouponPackOrderRefundParam param) {
 	    if(shop().couponPackOrder.checkVirtualOrderRefundParam(param.getVirtualOrderRefundParam())){
-            shop().couponPackOrder.refundCouponPackOrder(param);
-            return success();
+            JsonResultCode result = shop().couponPackOrder.refundCouponPackOrder(param);
+            return result == null ? success() : fail(result);
         }else{
 	        return fail(JsonResultMessage.REFUND_REQUEST_PARAMETER_ERROR);
         }
