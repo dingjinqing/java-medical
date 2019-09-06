@@ -10,28 +10,27 @@
         <el-button
           type="primary"
           @click="addCouponPackage()"
-        >添加优惠券礼包</el-button>
+        >{{$t('couponPackage.addCouponPackage')}}</el-button>
       </div>
       <div class="table_box">
         <div class="filters">
-          <div class="filters_item"><span>活动名称：</span>
+          <div class="filters_item"><span>{{$t('marketCommon.actName')}}：</span>
             <el-input
               v-model="actName"
-              placeholder="请输入活动名称"
+              :placeholder="$t('marketCommon.actNamePlaceholder')"
               size="small"
             ></el-input>
           </div>
-          <div class="filters_item"><span>礼包名称：</span>
+          <div class="filters_item"><span>{{$t('couponPackage.packName')}}：</span>
             <el-input
               v-model="packName"
-              placeholder="请输入礼包名称"
+              :placeholder="$t('couponPackage.packNamePlaceholder')"
               size="small"
             ></el-input>
           </div>
-          <div class="filters_item"><span>领取方式：</span>
+          <div class="filters_item"><span>{{$t('couponPackage.accessMode')}}：</span>
             <el-select
               v-model="accessMode"
-              placeholder="请选择"
               size="small"
             >
               <el-option
@@ -47,7 +46,7 @@
               @click="initDataList"
               type="primary"
               size="small"
-            >筛选</el-button>
+            >{{$t('marketCommon.filter')}}</el-button>
           </div>
         </div>
         <el-table
@@ -66,15 +65,15 @@
         >
           <el-table-column
             prop="actName"
-            label="活动名称"
+            :label="$t('marketCommon.actName')"
           ></el-table-column>
           <el-table-column
             prop="packName"
-            label="礼包名称"
+            :label="$t('couponPackage.packName')"
           ></el-table-column>
           <el-table-column
             prop="vaildDate"
-            label="有效期"
+            :label="$t('marketCommon.validDate')"
             width="160"
           >
             <template slot-scope="scope">
@@ -83,36 +82,36 @@
           </el-table-column>
           <el-table-column
             prop="voucherKindsNumber"
-            label="优惠券种类数/礼包"
+            :label="$t('couponPackage.voucherKindsNumber')"
           ></el-table-column>
           <el-table-column
             prop="voucherNumber"
-            label="优惠券数量/礼包"
+            :label="$t('couponPackage.voucherNumber')"
           ></el-table-column>
           <el-table-column
             prop="totalAmount"
-            label="可发放礼包数"
+            :label="$t('couponPackage.totalAmount')"
           ></el-table-column>
           <el-table-column
             prop="accessMode"
-            label="领取方式"
+            :label="$t('couponPackage.accessMode')"
           ></el-table-column>
           <el-table-column
             prop="accessCost"
-            label="购买金额"
+            :label="$t('couponPackage.accessCost')"
             width="80"
           ></el-table-column>
           <el-table-column
             prop="issueAmount"
-            label="已领取礼包数"
+            :label="$t('couponPackage.issueAmount')"
           ></el-table-column>
           <el-table-column
             prop="statusName"
-            label="活动状态"
+            :label="$t('marketCommon.activityStatus')"
             width="80"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('marketCommon.operate')"
             width="130"
           >
             <template slot-scope="scope">
@@ -120,7 +119,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="编辑"
+                  :content="$t('marketCommon.edit')"
                   placement="top"
                   v-if="scope.row.status === 1"
                 >
@@ -132,7 +131,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="删除"
+                  :content="$t('marketCommon.delete')"
                   placement="top"
                   v-else
                 >
@@ -144,7 +143,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="分享"
+                  :content="$t('marketCommon.share')"
                   placement="top"
                 >
                   <i
@@ -156,7 +155,7 @@
                   v-if="scope.row.status === 1"
                   class="item"
                   effect="dark"
-                  content="停用"
+                  :content="$t('marketCommon.disable')"
                   placement="top"
                 >
                   <i
@@ -168,7 +167,7 @@
                   v-else
                   class="item"
                   effect="dark"
-                  content="启用"
+                  :content="$t('marketCommon.enabled')"
                   placement="top"
                 >
                   <i
@@ -180,7 +179,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="查看订单"
+                  :content="$t('couponPackage.checkOrders')"
                   placement="top"
                 >
                   <i
@@ -191,7 +190,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="领取明细"
+                  :content="$t('couponPackage.receiveDetails')"
                   placement="top"
                 >
                   <i
@@ -221,24 +220,22 @@ export default {
   components: { pagination, statusTab },
   data () {
     return {
-      activityName: '优惠券礼包',
+      loading: false,
+      activityName: '',
       // 默认显示进行中的活动
       tabIndex: 1,
-      pageParams: {},
-      loading: false,
 
-      activeName: 'first',
+      pageParams: {},
+
       actName: '',
       packName: '',
       accessMode: -1,
-      get_type_option: [
-        { value: -1, label: '全部' },
-        { value: 0, label: '现金' },
-        { value: 1, label: '积分' },
-        { value: 2, label: '免费' }
-      ],
+      get_type_option: [],
       tableData: [],
-      totalRows: null
+      totalRows: null,
+
+      // 表格原始数据
+      originalData: []
     }
   },
   methods: {
@@ -251,29 +248,30 @@ export default {
 
       couponPackageList(this.pageParams).then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.dataList)
+          this.originalData = res.content.dataList
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
         }
       })
     },
 
-    // 表格数据处理
+    // 表格数据处理/渲染
     handleData (data) {
       data.map((item, index) => {
-        // TODO: 国际化
         switch (item.accessMode) {
           case 0:
-            item.accessMode = '现金购买'
+            item.accessMode = this.$t('couponPackage.accessModeCash')
             break
           case 1:
-            item.accessMode = '积分购买'
+            item.accessMode = this.$t('couponPackage.accessModeTntegral')
             break
           case 2:
-            item.accessMode = '直接领取'
+            item.accessMode = this.$t('couponPackage.accessModeFree')
             break
         }
-        item.vaildDate = `${item.startTime}<br/>至<br/>${item.endTime}`
+        item.vaildDate = `${item.startTime}<br/>${this.$t('marketCommon.to')}<br/>${item.endTime}`
         item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
       this.tableData = data
@@ -285,16 +283,16 @@ export default {
         'id': id,
         'status': 0
       }
-      this.$confirm('确定停用该优惠券礼包活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actDisableConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '停用成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
@@ -388,9 +386,25 @@ export default {
   watch: {
     'tabIndex' (n, o) {
       this.initDataList()
+    },
+
+    // data内变量国际化
+    lang () {
+      this.get_type_option = [
+        { value: -1, label: this.$t('couponPackage.accessModeAll') },
+        { value: 0, label: this.$t('couponPackage.accessModeCash') },
+        { value: 1, label: this.$t('couponPackage.accessModeTntegral') },
+        { value: 2, label: this.$t('couponPackage.accessModeFree') }
+      ]
+      this.activityName = this.$t('couponPackage.couponPackage')
+
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
     }
   },
   mounted () {
+    this.langDefault()
     this.initDataList()
   }
 

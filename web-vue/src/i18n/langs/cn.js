@@ -16,6 +16,10 @@ import { cn as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
 // 商品管理/全部商品
 import { cn as allGoods } from './views/goodsManage/allGoods'
 import { cn as goodsImport } from './views/goodsManage/goodsImport'
+
+// 营销管理
+// 营销管理通用词汇
+import { cn as marketCommon } from './views/admin/index/leftNavComponents/first_market_manage/marketCommon'
 // 多人拼团
 import { cn as groupBuy } from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
 // 营销活动状态 tabs
@@ -24,6 +28,8 @@ import { cn as statusTab } from './views/components/status/statusTab'
 import { cn as sharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePolite'
 // 分享有礼-领取明细
 import { cn as receiveDetails } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
+// 优惠券礼包
+import { cn as couponPackage } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
 
 // console.log(zhLocale)
 const cn = {
@@ -407,8 +413,11 @@ const cn = {
   adminPageFramework, // admin页面框架
   allGoods, // 商品管理/全部商品
   goodsImport,
+
+  marketCommon, // 营销管理通用词汇
   goodsAddEditInfo,
   groupBuy, // 多人拼团
+  couponPackage, // 优惠券礼包
   statusTab, // 营销活动状态 tabs
   sharePolite, // 分享有礼
   receiveDetails,

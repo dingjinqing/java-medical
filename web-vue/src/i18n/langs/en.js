@@ -4,7 +4,7 @@ import { en as programVersion } from './views/programVersion'
 import { en as shopAccountList } from './views/shopAccountList'
 import { en as shopList } from './views/shopList'
 import { en as publishList } from './views/publishList'
-import { cn as versionList } from './views/versionList'
+import { en as versionList } from './views/versionList'
 import { en as router } from './views/router'
 import { en as membershipIntroduction } from './views/membershipIntroduction'
 import { en as marketManage } from './views/marketManage'
@@ -16,6 +16,10 @@ import { en as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
 // 商品管理/全部商品
 import { en as allGoods } from './views/goodsManage/allGoods'
 import { en as goodsImport } from './views/goodsManage/goodsImport'
+
+// 营销管理
+// 营销管理通用词汇
+import { en as marketCommon } from './views/admin/index/leftNavComponents/first_market_manage/marketCommon'
 // 多人拼团
 import { en as groupBuy } from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
 // 营销活动状态 tabs
@@ -24,6 +28,8 @@ import { en as statusTab } from './views/components/status/statusTab'
 import { en as sharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePolite'
 // 分享有礼-领取明细
 import { en as receiveDetails } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
+// 优惠券礼包
+import { en as couponPackage } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
 
 const en = {
   messages: {
@@ -435,11 +441,14 @@ const en = {
   adminPageFramework, // admin 页面框架
   allGoods, // 商品管理/全部商品
   goodsImport,
+  marketCommon, // 营销管理通用词汇
   goodsAddEditInfo,
   groupBuy,
+  couponPackage, // 优惠券礼包
   statusTab, // 营销活动状态 tabs
   sharePolite,
   receiveDetails,
+
   ...enLocale
 }
 export default en
