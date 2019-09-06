@@ -239,7 +239,7 @@
               <div class="opt">
                 <p @click="inviteUserList(scope.row.userId)">查看已邀请用户</p>
                 <p>查看返利佣金明细</p>
-                <p>清除</p>
+                <p @click="del(scope.row.userId)">清除</p>
               </div>
             </template>
           </el-table-column>
@@ -254,7 +254,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorGroupList, delDistributor } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 
@@ -287,38 +287,56 @@ export default {
     handleCurrentChange () {
 
     },
+    // 分销员列表
     list () {
-      // let obj = {
-      //   'selectOption': this.distributorList
-      // }
       distributorList(this.pageParams).then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
         }
       })
     },
+    // 等级下拉列表
     levelList () {
       distributorLevelList().then(res => {
         this.groupLevelList = res.content
-        console.log(this.groupLevelList)
         this.distributorLevel = res.content.dataList
-        console.log(this.distributorList)
       })
     },
+    // 分组下拉列表
     groupList () {
       distributorGroupList().then(res => {
         this.groupNameList = res.content
         console.log(this.groupNameList)
       })
     },
+    // 分销员邀请用户列表
     inviteUserList (userId) {
       this.$router.push({
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
           userId: userId
         }
+      })
+    },
+    // 清除分销员身份
+    del (userId) {
+      this.$confirm('清除分销员，则该分销员被清除分销员资格，被清除的用户可以重新申请成为分销员，确定清除吗？', '清除分销员', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delDistributor(userId).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '清除成功!'
+            })
+            this.list()
+          }
+        })
+      }).catch(() => {
+
       })
     }
 

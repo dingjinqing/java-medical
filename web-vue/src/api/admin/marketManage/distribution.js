@@ -142,3 +142,12 @@ export function inviteUserList (data) {
     data: data
   })
 }
+
+// 清除分销员身份
+export function delDistributor (data) {
+  return service({
+    url: `/api/admin/distribution/distributor/del?userId=${data}`,
+    method: 'get',
+    data: data
+  })
+}
