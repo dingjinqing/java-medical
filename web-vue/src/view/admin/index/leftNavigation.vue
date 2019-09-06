@@ -492,7 +492,6 @@ export default {
       nav_s_class_index: false,
       saveIndex: null,
       leftMenuEn: '',
-      lang: ''
 
     }
   },

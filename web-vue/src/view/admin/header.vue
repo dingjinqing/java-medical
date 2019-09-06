@@ -114,8 +114,7 @@ export default {
       langData_en: [
         { lang: 'en', login_active: '', show_lang: 'English' },
         { lang: 'cn', login_active: '', show_lang: 'Chinese' }
-      ],
-      lang: ''
+      ]
     }
   },
   mounted () {

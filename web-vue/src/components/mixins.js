@@ -1,4 +1,9 @@
 const myMixin = {
+  data () {
+    return {
+      lang: ''
+    }
+  },
   methods: {
     // 初始化语言
     langDefault () {

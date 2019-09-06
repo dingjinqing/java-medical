@@ -121,7 +121,6 @@ export default {
       nav_index: '',
       click_nav_index: null,
       headerNavEn: '',
-      lang: '',
       imageUrlData: [
         { image_3: this.$imageHost + '/image/admin/official/blue_down.png' },
         { image_4: this.$imageHost + '/image/admin/img1.png' }
