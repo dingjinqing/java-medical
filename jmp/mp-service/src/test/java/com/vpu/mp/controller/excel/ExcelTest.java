@@ -219,9 +219,10 @@ public class ExcelTest {
     	
     	OrderListInfo vo=getVo("P201901041135261953");
     	OrderListInfo vo1=getVo2("P201901041135261222");
-    	
+    	OrderListInfo vo2=getVo3("P201901041135261333");
     	list.add(vo);
 		list.add(vo1);
+		list.add(vo2);
 		return list;
     	
     }
@@ -269,10 +270,12 @@ public class ExcelTest {
 		OrderGoods goods12 = new OrderGoods();
 		goods12.setGoodsName("激情 三元牛奶 测试 ");
 		goods12.setGoodsPrice(new BigDecimal(1111));
-		
+
 		gooList.add(goods);
+
 		gooList.add(goods1);
 		gooList.add(goods12);
+
 		vo.setGoods(gooList);
 
 		vo.setOrderSn(srt);
@@ -281,6 +284,26 @@ public class ExcelTest {
 		vo.setConsignee("测发;1821111111");
 		vo.setOrderStatus("已经发货");
 		vo.setMoneyPaid("￥100.00(含快递:￥2.00)");
+		return vo;
+	}
+	
+	public OrderListInfo getVo3(String srt) {
+		OrderListInfo vo = new OrderListInfo();
+		List<OrderGoods> gooList = new ArrayList<OrderGoods>();
+		OrderGoods goods = new OrderGoods();
+		goods.setGoodsName("蒙牛牛奶 激情测试");
+		goods.setGoodsPrice(new BigDecimal(222));
+
+		gooList.add(goods);
+
+		vo.setGoods(gooList);
+
+		vo.setOrderSn(srt);
+		vo.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+		vo.setUserName("测试人员2");
+		vo.setConsignee("测发;12222221");
+		vo.setOrderStatus("已经发货");
+		vo.setMoneyPaid("￥1030.00(含快递:￥2.00)");
 		return vo;
 	}
     
