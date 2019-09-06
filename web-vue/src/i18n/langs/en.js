@@ -17,6 +17,12 @@ import { en as allGoods } from './views/goodsManage/allGoods'
 import { en as goodsImport } from './views/goodsManage/goodsImport'
 // 多人拼团
 import { en as groupBuy } from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
+// 营销活动状态 tabs
+import { en as statusTab } from './views/components/status/statusTab'
+// 分享有礼
+import { en as sharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePolite'
+// 分享有礼-领取明细
+import { en as receiveDetails } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
 
 const en = {
   messages: {
@@ -429,6 +435,9 @@ const en = {
   allGoods, // 商品管理/全部商品
   goodsImport,
   groupBuy,
+  statusTab, // 营销活动状态 tabs
+  sharePolite,
+  receiveDetails,
   ...enLocale
 }
 export default en

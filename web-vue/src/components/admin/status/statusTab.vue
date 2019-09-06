@@ -52,7 +52,7 @@ export default {
       const { standard } = this
       const allCode = standard ? 0 : null
       if (status.status === allCode) {
-        return '全部' + this.activityName + '活动'
+        return this.$t('statusTab.all') + ' ' + this.activityName + ' ' + this.$t('statusTab.activity')
       }
       return status.name
     }

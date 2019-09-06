@@ -7,24 +7,25 @@
         :standard="true"
       />
       <div class="wrapper">
+        <!-- 添加分享有礼活动按钮 -->
         <el-button
           type="primary"
           @click="addActivity"
-        >添加分享有礼活动</el-button>
+        >{{$t('sharePolite.addActivity')}}</el-button>
         <div class="rightContent">
-          <span>用户每天可参与</span>
+          <span>{{$t('sharePolite.userDaily')}}</span>
           <el-input
             v-model="input"
             style="width: 80px"
             size="small"
             :value="dailyLimit"
           ></el-input>
-          <span>次 分享有礼活动</span>
-          <span>填写0表示不限制</span>
+          <span>{{$t('sharePolite.sharePoliteActivity')}}</span>
+          <span>{{$t('sharePolite.unlimited')}}</span>
           <el-button
             type="primary"
             @click="saveDailyLimit()"
-          >保存设置</el-button>
+          >{{$t('sharePolite.save')}}</el-button>
         </div>
       </div>
     </div>
@@ -38,73 +39,73 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('sharePolite.activityName')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="condition"
-          label="触发条件"
+          :label="$t('sharePolite.condition')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="validityPeriod"
-          label="有效期"
+          :label="$t('sharePolite.validityPeriod')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="rewardType"
-          label="活动奖励"
+          :label="$t('sharePolite.rewardType')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="priority"
-          label="优先级"
+          :label="$t('sharePolite.priority')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="pageStatus"
-          label="活动状态"
+          :label="$t('sharePolite.activityStatus')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="shareNum"
-          label="分享人数"
+          :label="$t('sharePolite.shareNum')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="inviteNum"
-          label="邀请人数"
+          :label="$t('sharePolite.inviteNum')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('sharePolite.option')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="operation">
               <el-tooltip
-                content="编辑"
+                :content="$t('sharePolite.edit')"
                 placement="top"
                 v-if="scope.row.pageStatus != '已停用'"
               >
                 <span class="el-icon-edit-outline iconSpn"></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('sharePolite.terminate')"
                 placement="top"
                 v-if="scope.row.status === 0"
               >
@@ -114,7 +115,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="启用"
+                :content="$t('sharePolite.open')"
                 placement="top"
                 v-if="scope.row.status === 1"
               >
@@ -124,7 +125,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('sharePolite.delete')"
                 placement="top"
               >
                 <span
@@ -133,7 +134,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="领取明细"
+                :content="$t('sharePolite.detail')"
                 placement="top"
               >
                 <span
@@ -142,7 +143,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="分享"
+                :content="$t('sharePolite.share')"
                 placement="top"
               >
                 <span class="el-icon-share iconSpn"></span>
@@ -172,7 +173,7 @@ export default {
     wrapper
   },
   mounted () {
-    this.langDefault()
+    this.$langDefault()
   },
   watch: {
     'param.status' (n, o) {

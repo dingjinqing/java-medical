@@ -17,6 +17,12 @@ import { cn as allGoods } from './views/goodsManage/allGoods'
 import { cn as goodsImport } from './views/goodsManage/goodsImport'
 // 多人拼团
 import { cn as groupBuy } from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
+// 营销活动状态 tabs
+import { cn as statusTab } from './views/components/status/statusTab'
+// 分享有礼
+import { cn as sharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePolite'
+// 分享有礼-领取明细
+import { cn as receiveDetails } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
 
 // console.log(zhLocale)
 const cn = {
@@ -401,6 +407,9 @@ const cn = {
   allGoods, // 商品管理/全部商品
   goodsImport,
   groupBuy, // 多人拼团
+  statusTab, // 营销活动状态 tabs
+  sharePolite, // 分享有礼
+  receiveDetails,
 
   ...zhLocale
 }

@@ -4,44 +4,44 @@
       <el-row>
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="手机号">
+            <el-form-item :label="$t('receiveDetails.mobile')">
               <el-input
                 v-model="param.mobile"
-                placeholder="请输入手机号"
+                :placeholder="$t('receiveDetails.placeholderMobile')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="用户昵称">
+            <el-form-item :label="$t('receiveDetails.username')">
               <el-input
                 v-model="param.username"
-                placeholder="请输入昵称"
+                :placeholder="$t('receiveDetails.placeholderName')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="商品名称">
+            <el-form-item :label="$t('receiveDetails.goodsName')">
               <el-input
                 v-model="param.goodsName"
-                placeholder="请输入商品名称"
+                :placeholder="$t('receiveDetails.placeholderGoodsName')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="奖励等级">
+            <el-form-item :label="$t('receiveDetails.awardLevel')">
               <template>
                 <el-select
                   v-model="param.rewardLevel"
-                  placeholder="请选择"
+                  :placeholder="$t('receiveDetails.placeholderLevel')"
                 >
                   <el-option
-                    v-for="item in options"
+                    v-for="item in levelOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -60,7 +60,7 @@
             <el-button
               type="primary"
               @click="searchByCondition"
-            >查询</el-button>
+            >{{$t('receiveDetails.inquire')}}</el-button>
           </el-form>
         </el-col>
       </el-row>
@@ -75,55 +75,55 @@
         >
           <el-table-column
             prop="userId"
-            label="用户id"
+            :label="$t('receiveDetails.userId')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="username"
-            label="用户昵称"
+            :label="$t('receiveDetails.username')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="mobile"
-            label="手机号"
+            :label="$t('receiveDetails.mobile')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="goodsName"
-            label="分享商品"
+            :label="$t('receiveDetails.goodsName')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="awardLevel"
-            label="奖励级别"
+            :label="$t('receiveDetails.awardLevel')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="inviteUserNum"
-            label="邀请用户总数"
+            :label="$t('receiveDetails.inviteUserNum')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="inviteNewUserNum"
-            label="邀请新用户数"
+            :label="$t('receiveDetails.inviteNewUserNum')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="rewardType"
-            label="活动奖励"
+            :label="$t('receiveDetails.rewardType')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="领取时间"
+            :label="$t('receiveDetails.createTime')"
             align="center"
           >
           </el-table-column>
@@ -164,17 +164,12 @@ export default {
         currentPage: 1,
         pageRows: 20
       },
-      pageParams: {},
-      options: [{
-        value: 1,
-        label: '一级'
-      }, {
-        value: 2,
-        label: '二级'
-      }, {
-        value: 3,
-        label: '三级'
-      }]
+      pageParams: {}
+    }
+  },
+  computed: {
+    levelOptions: function () {
+      return this.$t('receiveDetails.options')
     }
   },
   mounted () {
