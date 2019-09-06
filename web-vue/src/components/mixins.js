@@ -7,6 +7,7 @@ const myMixin = {
         this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
         this.adaptation()
       })
+      this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
       // console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
       this.adaptation()
     },

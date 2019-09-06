@@ -87,6 +87,16 @@
                 class="drag_area"
                 :class="zbFlag?'zwHeight':''"
               >
+                <!--放这里-->
+                <div
+                  class="hereDaily"
+                  :class="topAreaFlag?'setHere':''"
+                  @mouseover="dragTopOver"
+                  @mouseout="dragTopOut"
+                >
+                  <span :class="topAreaFlag?'setHereSpan':''">放这里</span>
+                </div>
+                <!--拖拽区域-->
                 <draggable
                   class="list-group"
                   element="div"
@@ -95,15 +105,6 @@
                   @start="handleToStart"
                   @end="handleToEnd"
                 >
-                  <!--放这里-->
-                  <!-- <div
-                    class="hereDaily"
-                    :class="topAreaFlag?'setHere':''"
-                    @mouseover="dragTopOver"
-                    @mouseout="dragTopOut"
-                  > -->
-                  <!-- <span :class="topAreaFlag?'setHereSpan':''">放这里</span> -->
-                  <!-- </div> -->
                   <!--模块列表-->
                   <div
                     v-for="(item,index) in showModulesList"
