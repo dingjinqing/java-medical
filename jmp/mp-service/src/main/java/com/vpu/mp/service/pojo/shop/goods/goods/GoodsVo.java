@@ -20,7 +20,7 @@ public class GoodsVo extends Goods {
     private List<GoodsLabelListVo> goodsLabelListVos;
     private String brandName;
     private String sortName;
-
+    private String goodsPageName;
     @Override
     public List<Integer> getGoodsLabels() {
         return goodsLabels;

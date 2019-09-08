@@ -220,13 +220,11 @@ public class GoodsLabelCoupleService extends ShopBaseService {
 
     /**
      * 根据商品ids 删除对应标签对应关系 并对外提供统一事务入口
-     *
-     * @param db       调用者传入，可进行事务控制
      * @param goodsIds
      * @author 李晓冰
      */
-    public void deleteByGoodsIds(DSLContext db, List<Integer> goodsIds) {
-        db.delete(GOODS_LABEL_COUPLE)
+    public void deleteByGoodsIds(List<Integer> goodsIds) {
+        db().delete(GOODS_LABEL_COUPLE)
                 .where(GOODS_LABEL_COUPLE.GTA_ID.in(goodsIds))
                 .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()))
                 .execute();

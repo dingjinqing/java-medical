@@ -70,7 +70,6 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 商品新增
-     *
      * @param goods 商品参数
      * @return 操作结果
      */
@@ -79,7 +78,6 @@ public class AdminGoodsController extends AdminBaseController {
 
         //如果商品使用默认的规格形式，也需要根据默认形式设置一个GoodsSpecProducts参数
         if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
-
             return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
         }
 
@@ -106,23 +104,9 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
-        if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
-
-            Map<String, BigDecimal> collect =
-                goods.getGoodsSpecProducts()
-                    .stream()
-                    .collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdPrice));
-
-            boolean r = goods.getGoodsGradePrds().stream().anyMatch(goodsGradePrd -> {
-                if (goodsGradePrd.getGradePrice() == null || goodsGradePrd.getGrade() == null) {
-                    return true;
-                }
-                return goodsGradePrd.getGradePrice().compareTo(collect.get(goodsGradePrd.getPrdDesc())) > 0;
-            });
-
-            if (r) {
-                return fail(JsonResultCode.CODE_PARAM_ERROR);
-            }
+        result=isGradePrdPriceOk(goods);
+        if (result.getError() != 0) {
+            return result;
         }
 
         //存在重复值则直接返回
@@ -130,8 +114,6 @@ public class AdminGoodsController extends AdminBaseController {
         if (result.getError() != 0) {
             return result;
         }
-
-        goods.setShopId(shopId());
 
         shop().goods.insert(goods);
 
@@ -222,8 +204,36 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
         }
 
+        //判断商品名称是否为空
+        if (StringUtils.isBlank(goods.getGoodsName())) {
+            return fail(JsonResultCode.GOODS_NAME_IS_NULL);
+        }
+
+        //判断平台分类是否为空
+        if (goods.getCatId() == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+        }
+
+        //判断商品主图是否为空
+        if (StringUtils.isBlank(goods.getGoodsImg())) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
+        }
+
+        //判断商品的规格属性的prdDesc和传入的规格键值是否能对应上
+        JsonResult result = isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
+        //传入的规格属性的prdDesc存在错误
+        if (result.getError() != 0) {
+            return result;
+        }
+
+        //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
+        result=isGradePrdPriceOk(goods);
+        if (result.getError() != 0) {
+            return result;
+        }
+
         //存在重复值则直接返回
-        JsonResult result = columnValueExistCheckForUpdate(goods);
+         result = columnValueExistCheckForUpdate(goods);
         if (result.getError() != 0) {
             return result;
         }
@@ -235,7 +245,6 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 根据id值查询商品信息
-     *
      * @param goods 商品信息
      * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
      */
@@ -251,6 +260,11 @@ public class AdminGoodsController extends AdminBaseController {
         return success(goodsVo);
     }
 
+    /**
+     * 获得商品的小程序跳转图片
+     * @param goodsId 商品id
+     * @return 图片绝对地址和跳转链接相对地址
+     */
     @PostMapping("/api/admin/goods/qrCode/get")
     public JsonResult getQrCode(Integer goodsId){
         if (goodsId == null) {
@@ -260,6 +274,11 @@ public class AdminGoodsController extends AdminBaseController {
         return success(vo);
     }
 
+    /**
+     * 更新数据时判断传入的商品名称、货号，sku码和规格名值是否重复。
+     * @param goods 商品
+     * @return {@link JsonResult#getError()}!=0表示存在重复
+     */
     private JsonResult columnValueExistCheckForUpdate(Goods goods) {
         GoodsService goodsService = shop().goods;
 
@@ -299,7 +318,7 @@ public class AdminGoodsController extends AdminBaseController {
             }
         }
 
-        //检查规格名称是否存在重复
+        //检查规格名称和值是否存在重复
         return isSpecNameOrValueRepeat(goods.getGoodsSpecs());
     }
 
@@ -340,8 +359,31 @@ public class AdminGoodsController extends AdminBaseController {
         return success();
     }
 
+    private JsonResult isGradePrdPriceOk(Goods goods){
+        //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
+        if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
+            Map<String, BigDecimal> collect =
+                goods.getGoodsSpecProducts()
+                    .stream()
+                    .collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdPrice));
+
+            boolean r = goods.getGoodsGradePrds().stream().anyMatch(goodsGradePrd -> {
+                if (goodsGradePrd.getGradePrice() == null || goodsGradePrd.getGrade() == null) {
+                    return true;
+                }
+                return goodsGradePrd.getGradePrice().compareTo(collect.get(goodsGradePrd.getPrdDesc())) > 0;
+            });
+
+            if (r) {
+                return fail(JsonResultCode.CODE_PARAM_ERROR);
+            }
+        }
+        return success();
+    }
+
     /**
-     * 验证出入的商品规格属性和商品规格键值的正确性
+     * 验证出入的商品规格属性和商品规格键值的正确性，
+     * 验证方式是动态计算{@link GoodsSpecProduct#prdDesc}的值是否和{@link GoodsSpec}计算出来的值一致
      * @param goodsSpecProducts 商品规格属性
      * @param goodsSpecs    商品规格键值
      * @return {@link JsonResult#getError()}!=0表示存在错误

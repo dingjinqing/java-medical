@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,32 +48,6 @@ public class GoodsSpecProductService extends ShopBaseService {
      */
     public static final String PRD_SPEC_ID_KEY = GoodsSpecService.PRD_SPEC_ID_KEY;
 
-    /**
-     * 判断传入的数据是否修改
-     *
-     * @return
-     */
-    public boolean isChange(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts, Integer goodsId) {
-        List<String> result = db.select(GOODS_SPEC_PRODUCT.PRD_DESC).from(GOODS_SPEC_PRODUCT)
-                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
-                .fetch(0, String.class);
-
-        Map<String, Object> map = new HashMap<>(result.size());
-
-        for (String str : result) {
-            map.put(str.trim(), null);
-        }
-
-        for (GoodsSpecProduct gsp : goodsSpecProducts) {
-            map.remove(gsp.getPrdDesc() == null ? "" : gsp.getPrdDesc().trim());
-        }
-
-        if (result.size() == goodsSpecProducts.size() && map.size() == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     /**
      * 插入商品sku之前预处理器prdSpecs字段，目前用于用户填写了自己的sku
@@ -81,48 +56,42 @@ public class GoodsSpecProductService extends ShopBaseService {
      * @param goodsSpecs    规格名值
      * @param goodsId   商品id
      */
-    public void insert(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs, Integer goodsId,BigDecimal marketPrice) {
+    public void insert(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs, Integer goodsId) {
 
-        Map<String, Map<String, Integer>> goodsSpecsMap = goodsSpecService
+        if (goodsSpecs == null || goodsSpecs.size() == 0) {
+            GoodsSpecProduct goodsSpecProduct=goodsSpecProducts.get(0);
+            goodsSpecProduct.setGoodsId(goodsId);
+            insert(goodsSpecProduct);
+        } else {
+            // 先插入规格名和规格值信息
+            Map<String, Map<String, Integer>> goodsSpecsMap = goodsSpecService
                 .insertSpecAndSpecValWithPrepareResult(goodsSpecs, goodsId);
 
-        for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
-            goodsSpecProduct.setGoodsId(goodsId);
-            goodsSpecProduct.setPrdMarketPrice(marketPrice);
-            String prdDescs = goodsSpecProduct.getPrdDesc();
+            for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
+                goodsSpecProduct.setGoodsId(goodsId);
+                String prdDescs = goodsSpecProduct.getPrdDesc();
 
-            StringBuilder sb = new StringBuilder();
-            //specDesc参数格式为：颜色:绿色;尺寸:X
-            for (String prdDesc : prdDescs.split(PRD_DESC_DELIMITER)) {
-                String[] s = prdDesc.split(PRD_VAL_DELIMITER);
+                StringBuilder sb = new StringBuilder();
+                //specDesc参数格式为：颜色:绿色;尺寸:X
+                for (String prdDesc : prdDescs.split(PRD_DESC_DELIMITER)) {
+                    String[] s = prdDesc.split(PRD_VAL_DELIMITER);
 
 
-                String spec = s[0], specVal = s[1];
-                if (sb.length() != 0) {
-                    sb.append(PRD_SPEC_DELIMITER);
+                    String spec = s[0], specVal = s[1];
+                    if (sb.length() != 0) {
+                        sb.append(PRD_SPEC_DELIMITER);
+                    }
+
+                    Map<String, Integer> nameIdMap = goodsSpecsMap.get(spec);
+                    sb.append(nameIdMap.get(PRD_SPEC_ID_KEY)).append(PRD_VAL_DELIMITER).append(nameIdMap.get(specVal));
                 }
+                //格式：1:2!!1:3
+                goodsSpecProduct.setPrdSpecs(sb.toString());
 
-                Map<String, Integer> nameIdMap = goodsSpecsMap.get(spec);
-                sb.append(nameIdMap.get(PRD_SPEC_ID_KEY)).append(PRD_VAL_DELIMITER).append(nameIdMap.get(specVal));
+                insert(goodsSpecProduct);
             }
-            //格式：1:2!!1:3
-            goodsSpecProduct.setPrdSpecs(sb.toString());
-
-
-            insert(goodsSpecProduct);
         }
-    }
 
-    /**
-     * 插入单条，目前用于商品使用默认的sku的时候（即不填写sku的时候）
-     *
-     * @param goodsSpecProduct 商品规格属性
-     * @param goodsId 商品id
-     */
-    public void insert(GoodsSpecProduct goodsSpecProduct, Integer goodsId, BigDecimal marketPrice) {
-        goodsSpecProduct.setGoodsId(goodsId);
-        goodsSpecProduct.setPrdMarketPrice(marketPrice);
-        insert(goodsSpecProduct);
     }
 
     /**
@@ -138,7 +107,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品ids删除规格值
-     *
      * @param db
      * @param goodsIds
      */
@@ -166,8 +134,35 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 删除属于商品id但是不在prdIds集合内的所有项
+     * @param prdIds 规格项id
+     * @param goodsId 商品id
+     */
+    private void deleteByPrdIdsAndGoodsId(List<Integer> prdIds,List<GoodsSpec> goodsSpecs,Integer goodsId) {
+        DSLContext db=db();
+        //将sku表内数据备份至sku_bak内
+        db.insertInto(GOODS_SPEC_PRODUCT_BAK, GOODS_SPEC_PRODUCT_BAK.PRD_ID, GOODS_SPEC_PRODUCT_BAK.SHOP_ID, GOODS_SPEC_PRODUCT_BAK.GOODS_ID
+            , GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_COST_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER
+            , GOODS_SPEC_PRODUCT_BAK.PRD_SN, GOODS_SPEC_PRODUCT_BAK.PRD_CODES, GOODS_SPEC_PRODUCT_BAK.PRD_SPECS, GOODS_SPEC_PRODUCT_BAK.PRD_DESC
+            , GOODS_SPEC_PRODUCT_BAK.DEL_FLAG, GOODS_SPEC_PRODUCT_BAK.SELF_FLAG, GOODS_SPEC_PRODUCT_BAK.LOW_SHOP_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_IMG
+            , GOODS_SPEC_PRODUCT_BAK.PRICE_FLAG, GOODS_SPEC_PRODUCT_BAK.CREATE_TIME, GOODS_SPEC_PRODUCT_BAK.UPDATE_TIME)
+            .select(db.select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.SHOP_ID, GOODS_SPEC_PRODUCT.GOODS_ID
+                , GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER
+                , GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_CODES, GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC
+                , GOODS_SPEC_PRODUCT.DEL_FLAG, GOODS_SPEC_PRODUCT.SELF_FLAG, GOODS_SPEC_PRODUCT.LOW_SHOP_PRICE, GOODS_SPEC_PRODUCT.PRD_IMG
+                , GOODS_SPEC_PRODUCT.PRICE_FLAG, GOODS_SPEC_PRODUCT.CREATE_TIME, GOODS_SPEC_PRODUCT.UPDATE_TIME).from(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).and(GOODS_SPEC_PRODUCT.PRD_ID.notIn(prdIds)))
+            .execute();
+
+        //真删除sku内数据
+        db.deleteFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .and(GOODS_SPEC_PRODUCT.PRD_ID.notIn(prdIds)).execute();
+
+        //假删除规格名和值内数据
+        goodsSpecService.deleteByPrdIdsGoodsId(goodsSpecs,goodsId);
+    }
+    /**
      * 根据商品id查找对应sku
-     *
      * @param goodsId
      * @return
      */
@@ -183,24 +178,29 @@ public class GoodsSpecProductService extends ShopBaseService {
         return goodsSpecs;
     }
 
-    public void updateSpec(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts) {
-        List<Integer> ids = goodsSpecProducts.stream().map(r -> r.getPrdId()).collect(Collectors.toList());
+    /**
+     * 根据prdId修改商品规格信息并删除无用的（数据库中存在但是出入的对象集合中不存在）
+     * @param goodsSpecProducts 规格对象集合
+     */
+    public void updateAndDelete(List<GoodsSpecProduct> goodsSpecProducts,List<GoodsSpec> goodsSpecs,Integer goodsId) {
+        DSLContext db=db();
 
-        List<GoodsSpecProductRecord> recordList = db.selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(ids)).fetch().into(GoodsSpecProductRecord.class);
+        List<Integer> goodsSpecProductIds=goodsSpecProducts.stream().map(item->item.getPrdId()).collect(Collectors.toList());
 
-        Map<Integer, GoodsSpecProduct> goodsSpecMap = goodsSpecProducts.stream().collect(Collectors.toMap(r -> r.getPrdId(), r -> r));
+        // 删除无效sku，规格名规格值
+        deleteByPrdIdsAndGoodsId(goodsSpecProductIds,goodsSpecs,goodsId);
 
-        for (GoodsSpecProductRecord record : recordList) {
-            GoodsSpecProduct goodsSpecProduct = goodsSpecMap.get(record.getPrdId());
-            record.setPrdCostPrice(goodsSpecProduct.getPrdCostPrice());
-            record.setPrdPrice(goodsSpecProduct.getPrdPrice());
-            record.setPrdNumber(goodsSpecProduct.getPrdNumber());
-        }
-        db.batchUpdate(recordList).execute();
+        List<GoodsSpecProductRecord> listRecords=new ArrayList<>(goodsSpecProducts.size());
+       goodsSpecProducts.forEach(item->{
+           GoodsSpecProductRecord record=db.newRecord(GOODS_SPEC_PRODUCT);
+           assign(item,record);
+           listRecords.add(record);
+       });
+       db.batchUpdate(listRecords).execute();
+       goodsSpecService.update(goodsSpecs);
     }
     /**
      * 	根据规格id查询规格明细
-     * @param goodsId
      * @return
      */
     public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds) {

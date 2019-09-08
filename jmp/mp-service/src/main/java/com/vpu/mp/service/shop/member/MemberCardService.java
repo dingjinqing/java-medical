@@ -330,7 +330,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param type 标签关联类型 如： {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.GOODS_TYPE }
 	 */
 	public void addGoodsCardCouple(Integer cardId, List<Integer> ownId,Byte type) {
-		this.batchUpdateGoods(ownId, Arrays.asList(new Integer[] {cardId}), type);
+		this.batchUpdateGoods(ownId, Arrays.asList(cardId), type);
 	}
 
 	/**
@@ -411,6 +411,28 @@ public class MemberCardService extends ShopBaseService {
 		});
 	}
 
+    /**
+     * 根据商品或分类id获取相应的会员卡id
+     * @author 李晓冰
+     * @param gctaId 商品或分类id
+     * @param type 类型
+     * @return 会员卡ids
+     */
+    public List<Integer> selectOwnEnjoyCardByGcta(Integer gctaId, Byte type) {
+        List<Integer> cardIds = db().select(GOODS_CARD_COUPLE.CARD_ID).from(GOODS_CARD_COUPLE)
+            .where(GOODS_CARD_COUPLE.GCTA_ID.eq(gctaId)).and(GOODS_CARD_COUPLE.TYPE.eq(type)).fetchInto(Integer.class);
+
+        return cardIds;
+    }
+    /**
+     *  删除商品会员卡的专属信息
+     * @author 李晓冰
+     * @param gctaId   商品或分类id
+     * @param type     类型
+     */
+    public void deleteOwnEnjoyGoodsByGcta(List<Integer> gctaId, Byte type) {
+        db().deleteFrom(GOODS_CARD_COUPLE).where(GOODS_CARD_COUPLE.GCTA_ID.in(gctaId)).and(GOODS_CARD_COUPLE.TYPE.eq(type)).execute();
+    }
 	/**
 	 * 根据会员卡id,标签关联类型进行删除
 	 * @param cardIdList
@@ -968,7 +990,7 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		saas().getShopApp(getShopId()).record.insertRecord(
-				Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_CARD_SEND.code }),
+				Arrays.asList(RecordContentTemplate.MEMBER_CARD_SEND.code),
 				tmpData.stream().toArray(String[]::new));
 	}
 
@@ -982,7 +1004,7 @@ public class MemberCardService extends ShopBaseService {
 			/** 会员卡号 = 店铺id+两位随机数+四位会员卡id+四位随机数 */
 			cardNo.append(getShopId());
 			cardNo.append(Util.randomInteger(10, 100));
-			cardNo.append(String.format("%04d", cardId).substring(0, 4));
+			cardNo.append(String.format("%04d", cardId), 0, 4);
 			cardNo.append(Util.randomInteger(1000, 10000));
 
 			/** 确保数据库会员卡号具有唯一性 */
