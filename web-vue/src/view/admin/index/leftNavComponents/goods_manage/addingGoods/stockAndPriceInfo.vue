@@ -1015,7 +1015,8 @@ export default {
           prdSn: this.goodsProductInfo.prdSn,
           prdNumber: this.goodsProductInfo.prdNumber,
           prdPrice: this.goodsProductInfo.prdPrice,
-          prdCostPrice: this.goodsProductInfo.prdCost
+          prdCostPrice: this.goodsProductInfo.prdCost,
+          prdMarketPrice: this.goodsProductInfo.marketPrice
         }]
       } else {
         // 自定义规格数据
@@ -1031,6 +1032,7 @@ export default {
             prdPrice: specProduct.prdPrice,
             prdCostPrice: specProduct.prdCostPrice,
             prdNumber: specProduct.prdNumber,
+            prdMarketPrice: this.goodsProductInfo.marketPrice,
             prdSn: specProduct.prdSn,
             prdImg: specProduct.prdImg
           })
