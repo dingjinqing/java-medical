@@ -10,6 +10,7 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo;
+import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.Setting;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.ShowPoster;
 import com.vpu.mp.service.shop.goods.GoodsBrandConfigService;
 
@@ -62,14 +63,16 @@ public class ConfigService extends ShopBaseService {
 	 * @return
 	 */
 	public WxAppConfigVo getAppConfig() {
+		ShopRecord shop = saas.shop.getShopById(getShopId());
 		Byte showLogo = shopCommonConfigService.getShowLogo();
 		WxAppConfigVo config = new WxAppConfigVo();
-		ShopRecord shop = saas.shop.getShopById(getShopId());
+		Setting setting = WxAppConfigVo.Setting.builder().shopFlag(shop.getShopFlag())
+				.shopStyle(convertShopStyle(shopCommonConfigService.getShopStyle()))
+				.hideBottom(shop.getHidBottom()).build();
 		config.setBottomNavigateMenuList(bottomCfg.getBottomNavigatorConfig());
 		config.setShowLogo(showLogo);
 		config.setLogoLink(shopCommonConfigService.getLogoLink());
-		config.setHideBottom(shop.getHidBottom());
-		config.setShopStyleConfig(convertShopStyle(shopCommonConfigService.getShopStyle()));
+		config.setSetting(setting);
 		ShowPoster showPoster = new ShowPoster();
 		// TODO: 取ShowPoster数据
 		config.setShowPoster(showPoster);
@@ -89,13 +92,15 @@ public class ConfigService extends ShopBaseService {
 			String pattern = "rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
 			Pattern r = Pattern.compile(pattern);
 			Matcher m = r.matcher(style);
-			if(m.find()) {
-				return new String[]{
-					String.format("#%02x%02x%02x", Integer.valueOf(m.group(1)),Integer.valueOf(m.group(2)),Integer.valueOf(m.group(3))),
-					String.format("#%02x%02x%02x", Integer.valueOf(m.group(4)),Integer.valueOf(m.group(5)),Integer.valueOf(m.group(6)))
+			if (m.find()) {
+				return new String[] {
+						String.format("#%02x%02x%02x", Integer.valueOf(m.group(1)), Integer.valueOf(m.group(2)),
+								Integer.valueOf(m.group(3))),
+						String.format("#%02x%02x%02x", Integer.valueOf(m.group(4)), Integer.valueOf(m.group(5)),
+								Integer.valueOf(m.group(6)))
 				};
-			}else {
-				return  new String[]{};
+			} else {
+				return new String[] {};
 			}
 		}
 	}

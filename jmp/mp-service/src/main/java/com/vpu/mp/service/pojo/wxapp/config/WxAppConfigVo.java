@@ -5,8 +5,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.I18N;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
-import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -40,15 +40,11 @@ public class WxAppConfigVo {
 	 */
 	@JsonProperty(value = "logo_link")
 	String logoLink;
-	
-	@JsonProperty(value = "shop_style")
-	String[] shopStyleConfig;
-	
+
 	/**
-	 * 是否隐藏底部logo,0 或者1
+	 * 设置
 	 */
-	@JsonProperty(value = "hid_bottom")
-	Byte hideBottom = 0;
+	Setting setting;
 	
 	@Data
 	public static final class ShowPoster{
@@ -71,5 +67,21 @@ public class WxAppConfigVo {
 		@I18N(propertiesFileName = "wxapp")
 		@JsonProperty(value = "text_2")
 		String textTwo = "poster.text.poster" ;
+	}
+	
+	@Data
+	@Builder
+	public static class Setting{
+		/**
+		 * 是否隐藏底部logo,0 或者1
+		 */
+		@JsonProperty(value = "hid_bottom")
+		Byte hideBottom;
+
+		@JsonProperty(value = "shop_flag")
+		Byte shopFlag;
+		
+		@JsonProperty(value = "shop_style")
+		String[] shopStyle;
 	}
 }
