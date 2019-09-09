@@ -179,7 +179,7 @@ export default {
     handle_user_list (index) {
       switch (index) {
         case 0:
-          this.$emit('change_components', '0')
+          // this.$emit('change_components', '0')
           this.$router.push({
             path: '/admin/home/shopMain',
             query: {
@@ -188,7 +188,7 @@ export default {
           })
           break
         case 3:
-          this.$emit('change_components', '3')
+          // this.$emit('change_components', '3')
           this.$router.push({
             path: '/admin/home/shopMain',
             query: {
@@ -197,8 +197,16 @@ export default {
           })
           break
         case 4:
+          this.$router.push({
+            path: '/admin/home/shopMain',
+            query: {
+              change_components: '3'
+            }
+          })
+          break
+        case 5:
           loginRequestOut().then((res) => {
-            // console.log(res)
+            console.log(res)
             if (res.error === 0) {
               Cookies.remove('V-Token')
               localStorage.removeItem('V-Username')
@@ -213,7 +221,6 @@ export default {
               })
             }
           })
-          break
       }
     },
     // 鼠标划入

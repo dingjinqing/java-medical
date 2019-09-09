@@ -97,6 +97,13 @@
                 >
                   <span :class="topAreaFlag?'setHereSpan':''">放这里</span>
                 </div>
+                <!--占位提示-->
+                <div
+                  class="zbTips"
+                  v-if="!showModulesList.length"
+                >
+                  <div class="drag_notice">拖拽左侧模块进行装修</div>
+                </div>
                 <!--拖拽区域-->
                 <draggable
                   class="list-group"
@@ -112,19 +119,23 @@
                     :key="index"
                   >
                     <!--会员列表模块-->
-
-                    <MembershipCard
-                      v-show="item===1"
-                      :index="1"
-                      :flag="index"
-                    />
+                    <div @click.stop.prevent="handleToClickModule(index)">
+                      <MembershipCard
+                        v-show="item===1"
+                        :index="1"
+                        :flag="index"
+                      />
+                    </div>
 
                     <!--优惠卷模块-->
-                    <Coupon
-                      v-show="item===2"
-                      :index="2"
-                      :flag="index"
-                    />
+                    <div @click.stop.prevent="handleToClickModule(index)">
+                      <Coupon
+                        v-show="item===2"
+                        :index="2"
+                        :flag="index"
+                      />
+                    </div>
+
                   </div>
                   <!--模块列表结束-->
                 </draggable>
@@ -138,7 +149,24 @@
         </div> -->
       </div>
     </div>
-
+    <!--保存-->
+    <div class="footer">
+      <div>
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleToFooter(0)"
+        >保存并发布</el-button>
+        <el-button
+          size="small"
+          @click="handleToFooter(1)"
+        >保存为草稿</el-button>
+        <el-button
+          size="small"
+          @click="handleToFooter(2)"
+        >预览效果</el-button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -419,6 +447,7 @@ export default {
           // console.log(this_.dataId)
           console.log(this_.insertModulesId, '--', this_.showModulesList)
           let insert = this_.insertModulesId + 1
+          // 判断id是否为-1，若是则不插入数组中
           switch (ui.draggable[0].innerText) {
             case '会员卡':
               if (this_.insertModulesId === -1) {
@@ -494,14 +523,8 @@ export default {
         switch (direction) {
           case 'up':
             console.log(newArr, '--', flag)
-            if (flag === 0) {
-              this.$message({
-                message: '已到底部',
-                type: 'warning',
-                duration: 1000
-              })
-              return
-            }
+            if (flag === 0) return
+
             let temp = newArr[(flag - 1)]
             newArr[(flag - 1)] = newArr[flag]
             newArr[flag] = temp
@@ -515,14 +538,7 @@ export default {
           case 'down':
             console.log(newArr, '--', flag, '123123123')
             let temp2 = newArr[(flag + 1)]
-            if ((newArr.length - 1) === flag) {
-              this.$message({
-                message: '已到底部',
-                type: 'warning',
-                duration: 1000
-              })
-              return
-            }
+            if ((newArr.length - 1) === flag) return
             newArr[(flag + 1)] = newArr[flag]
             newArr[flag] = temp2
             let arrFliterD = newArr.filter(item => {
@@ -556,6 +572,20 @@ export default {
     // 顶部划出
     dragTopOut () {
       this.topAreaFlag = false
+    },
+    // 底部点击统一处理
+    handleToFooter (flag) {
+      switch (flag) {
+        case 0:
+          break
+        case 1:
+          break
+        case 2:
+      }
+    },
+    handleToClickModule (index) {
+      console.log(index)
+      this.$http.$emit('modulesClick', index)
     }
   }
 }
@@ -638,12 +668,38 @@ export default {
           // .zwHeight {
           //   // height: 100%;
           // }
+          .zbTips {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            .drag_notice {
+              width: 90%;
+              margin: 10px auto 0;
+              border: 1px dashed #d0d0d0;
+              background: #fff;
+              padding: 50px 0;
+              text-align: center;
+              color: #9f9f9f;
+              font-size: 15px;
+            }
+          }
         }
       }
     }
   }
   .list-group {
     height: 100%;
+  }
+  .footer {
+    background: #f8f8fa;
+    border-top: 1px solid #f2f2f2;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    padding: 10px 0;
+    left: 0;
+    right: 0;
   }
 }
 .active {

@@ -104,6 +104,7 @@ export default {
     defaultData () {
       this.$http.$on('decCard', (data, hereFlag) => {
         // console.log(this.flag, data)
+
         let arr = data.length - 1
         if (this.flag === arr) {
           this.activeBorder = true
@@ -116,6 +117,11 @@ export default {
         } else {
           this.activeSetHere = false
         }
+      })
+
+      // 点击各模块触发事件
+      this.$http.$on('modulesClick', res => {
+        console.log(res)
       })
     },
     // 移上、移下、删除统一处理事件
@@ -140,6 +146,7 @@ export default {
           break
       }
     },
+    // 模块划过
     mouseOver () {
       // console.log(this.flag)
       this.$http.$emit('middleDragData', this.flag)
