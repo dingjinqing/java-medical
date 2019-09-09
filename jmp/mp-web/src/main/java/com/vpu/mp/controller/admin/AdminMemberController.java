@@ -22,6 +22,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 /**
  * 会员管理
@@ -107,7 +108,7 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/tag/get")
 	public JsonResult getTagForMember(@RequestBody MemberParam param) {
 		logger().info("正在该会员的标签");
-		List<String> tagList = shop().member.getTagForMember(param);
+		List<TagVo> tagList = shop().member.getTagForMember(param);
 		return success(tagList);
 	}
 	
