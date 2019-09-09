@@ -94,6 +94,9 @@ public class ShopService extends MainBaseService {
 
     @Autowired
     public MpOfficialAccountUserService mpOfficialAccountUserService;
+    
+    @Autowired
+    public MpBackProcessService backProcessService;
 
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()
