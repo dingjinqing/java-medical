@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.system;
 
+import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -14,6 +15,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -269,6 +271,44 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		return success(mpCurrentTempIdVo);
 	}
 	
+	/**
+	 * 批量提交小程序审核 batch_apply
+	 * @param templateId
+	 * @return
+	 */
+	@GetMapping("/api/system/mp/version/batch_apply/{templateId}")
+	public JsonResult batchApply(@PathVariable Integer templateId) {
+		if(templateId==null) {
+			return fail();
+		}
+		Boolean rBoolean = saas.shop.mp.batchUploadCodeAndApplyAudit(templateId);
+		if(!rBoolean) {
+			//没有需要提交的小程序
+			return fail(JsonResultCode.WX_NO_REQUIRED);
+		}
+		return success();		
+	}
 	
+	/**
+	 * 查询小程序审核
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/api/system/back/process/list")
+	public JsonResult getBackProcessList(@RequestBody MpUploadListParam param) {
+		return success(saas.shop.backProcessService.getPageList(param));
+		
+	}
+	
+	/**
+	 * 终止 TODO
+	 * @return
+	 */
+	@GetMapping("/api/system/back/process/stop")
+	public JsonResult stopUpload() {
+		//TODO
+		return success();
+		
+	}
 	
 }
