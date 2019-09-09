@@ -92,4 +92,21 @@ public class MpAuthShopListParam {
         val = val.replaceAll("%", "\\%");
         return val.replaceAll("_", "\\_");
     }
+    
+    public Condition buildOptionByUpload() {
+        Condition condition = DSL.noCondition();
+        if (templateId != null) {
+            condition = condition.and(MP_AUTH_SHOP.BIND_TEMPLATE_ID.eq(templateId));
+        }
+
+        if (isAuthOk != null) {
+            condition = condition.and(MP_AUTH_SHOP.IS_AUTH_OK.eq(isAuthOk));
+        }
+        //不等于
+        if (auditState != null) {
+            condition = condition.and(MP_AUTH_SHOP.AUDIT_STATE.notEqual(auditState));
+        }
+
+        return condition;
+    }
 }
