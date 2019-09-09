@@ -141,7 +141,7 @@ public class MemberService extends ShopBaseService {
 				.asField(INVITE_USERNAME);
 		//SelectWhereStep<? extends Record> select = 
 		SelectJoinStep<?> from = this.db().selectDistinct(u.USER_ID,
-				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME)
+				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME,u.DEL_FLAG)
 				.from(u);
 		
 		//TODO buildOptionsForTable
