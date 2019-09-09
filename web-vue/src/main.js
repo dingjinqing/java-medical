@@ -6,7 +6,6 @@ import App from './App';
 import router from './router';
 import store from './store';
 import i18n from './i18n/i18n';
-import vueSwiper from 'vue-awesome-swiper';
 import ElementUI from 'element-ui';
 import Distpicker from 'v-distpicker';
 import vuescroll from 'vuescroll';
@@ -14,10 +13,6 @@ import vuescroll from 'vuescroll';
 import './assets/aliIcon/iconfont.css';
 import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
-// 富文本编辑器
-import tinymce from 'vue-tinymce-editor';
-// 颜色选择器
-import vcolorpicker from 'vcolorpicker';
 import 'swiper/dist/css/swiper.css';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -30,12 +25,9 @@ Vue.component('v-distpicker', Distpicker);
 // 全局事件总线
 Vue.prototype.$http = new Vue();
 // Vue.prototype.$t = (key, value) => i18n.t(key, value);
-Vue.use(vcolorpicker);
 Vue.use(ElementUI);
-Vue.use(vueSwiper);
 Vue.config.productionTip = false;
 Vue.mixin(myMixins);
-Vue.component('tinymce', tinymce);
 
 new Vue({
   el: '#app',

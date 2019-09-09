@@ -171,6 +171,9 @@
   </div>
 </template>
 <script>
+import vueSwiper from 'vue-awesome-swiper'
+import Vue from 'vue'
+Vue.use(vueSwiper)
 export default {
   data () {
     return {

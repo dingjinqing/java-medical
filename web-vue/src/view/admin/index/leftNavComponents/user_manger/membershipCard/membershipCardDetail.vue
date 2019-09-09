@@ -736,6 +736,9 @@
   </div>
 </template>
 <script>
+import vcolorpicker from 'vcolorpicker'
+import Vue from 'vue'
+Vue.use(vcolorpicker)
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
