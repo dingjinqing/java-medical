@@ -35,10 +35,10 @@ public class StoreGroupService extends ShopBaseService{
 	 */
 	@RecordAction(templateId = {RecordContentTemplate.GOODS_CONTENT_ADD},templateData = {"#{param.groupId}"})
 	public PageResult<StoreGroup> getStoreGroupPageList(StoreGroupQueryParam param){
-		SelectWhereStep<? extends Record> select = db().select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,
-				STORE_GROUP.CREATE_TIME, DSL.count(STORE.GROUP).as("numbers"))
-				.from(STORE_GROUP)
-				.leftJoin(STORE).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
+		SelectWhereStep<? extends Record> select = db()
+            .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME, DSL.count(STORE.GROUP).as("numbers"))
+            .from(STORE_GROUP)
+            .leftJoin(STORE).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 		buildParams(select,param);
 		select.groupBy(STORE_GROUP.GROUP_ID).orderBy(STORE_GROUP.CREATE_TIME.asc());
 		if(null != param.getCurrentPage()) {

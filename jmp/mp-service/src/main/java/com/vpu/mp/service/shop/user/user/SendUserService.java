@@ -76,6 +76,9 @@ public class SendUserService extends ShopBaseService {
         if (query.getOnClickTag() && !query.getTagIdList().isEmpty()){
             userIdSet.addAll(getSendUserByUserTagList(query.getTagIdList()));
         }
+        if (query.getOnClickUser() && !query.getUserIdList().isEmpty()){
+            userIdSet.addAll(query.getUserIdList().stream().map(x->x.toString()).collect(Collectors.toList()));
+        }
         if (query.getOnClickCustomRule()){
             CustomRuleInfo info = query.getCustomRuleInfo();
             if (info != null){

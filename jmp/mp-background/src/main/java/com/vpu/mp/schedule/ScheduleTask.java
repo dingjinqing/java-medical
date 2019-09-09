@@ -26,7 +26,7 @@ import java.util.List;
  *
  */
 @Component
-
+@EnableScheduling
 @EnableAsync
 @ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class ScheduleTask {
@@ -34,6 +34,14 @@ public class ScheduleTask {
     @Autowired
     private  SaasApplication saas;
 
+    /**
+     * TaskJob数据导出
+     * 每天2点执行
+     */
+    @Scheduled(cron = "0 0 2 * * ?")
+    public void exportTaskJob(){
+        saas.dataExportService.exportData();
+    }
 
 	/**
 	 * 每一分钟执行一次

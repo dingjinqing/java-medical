@@ -58,8 +58,6 @@ public class TaskJobMainService extends MainBaseService {
                 .fetchOne();
             mainRecord.setContentId(record.getId());
             if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
-                TaskJobsConstant.TaskJobEnum jobEnum = TaskJobsConstant.TaskJobEnum
-                    .getTaskJobEnumByExecutionType(job.getExecutionType());
                 mainRecord.setType(TaskJobsConstant.STATUS_EXECUTING);
             }
             TaskJobMainRecord idRecord = DSL.using(configuration)

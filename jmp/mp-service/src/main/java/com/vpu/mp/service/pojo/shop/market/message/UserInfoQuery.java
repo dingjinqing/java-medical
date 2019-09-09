@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 */
 @Data
 public class UserInfoQuery {
+    @JsonIgnore
     /** redis存储的唯一标识 */
     private String redisKey;
     /** 勾选加购人群 */
@@ -30,7 +32,7 @@ public class UserInfoQuery {
     private List<Integer> tagIdList;
     /** 勾选指定会员 */
     private Boolean onClickUser = Boolean.FALSE;
-    /** 会员ID集合 */
+    /** 用户ID集合 */
     private List<Integer> userIdList;
     /** 勾选自定人群 */
     private Boolean onClickCustomRule = Boolean.FALSE;

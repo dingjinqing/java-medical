@@ -1,9 +1,15 @@
 package com.vpu.mp.service.shop.market.message;
 
 
+import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.ServiceMessageRecordRecord;
 import com.vpu.mp.db.shop.tables.records.TemplateConfigRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.MathUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.*;
 import com.vpu.mp.service.pojo.shop.market.message.*;
@@ -14,15 +20,23 @@ import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 import com.vpu.mp.service.shop.user.user.SendUserService;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
+import static com.vpu.mp.db.shop.tables.ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
 import static com.vpu.mp.db.shop.tables.TemplateConfig.TEMPLATE_CONFIG;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * 营销管理--推送消息实现类
@@ -123,6 +137,132 @@ public class MessageTemplateService extends ShopBaseService {
             .executionType(TaskJobsConstant.TaskJobEnum.SEND_MESSAGE)
             .builder();
         taskJobMainService.dispatch(info);
+    }
+
+    public PageResult<MessageTemplateVo> getPageByParam(MessageTemplateQuery param) {
+        PageResult<MessageTemplateVo> resultPage = new PageResult<>();
+        SelectConditionStep<Record> select  = db().select()
+            .from(TEMPLATE_CONFIG)
+            .where(buildParams(param))
+            .and(TEMPLATE_CONFIG.DEL_FLAG.eq((byte)0));
+        PageResult<TemplateConfigRecord> templatePage = getPageResult(select,param.getCurrentPage(),param.getPageRows(),TemplateConfigRecord.class);
+        BeanUtils.copyProperties(templatePage,resultPage);
+        return buildPageVo(resultPage,templatePage);
+    }
+
+    /**
+     * vo转换
+     * @param resultPage voPage
+     * @param templatePage  sourcePage
+     * @return voPage
+     */
+    private PageResult<MessageTemplateVo> buildPageVo(PageResult<MessageTemplateVo> resultPage,PageResult<TemplateConfigRecord> templatePage){
+        List<TemplateConfigRecord> templateList = templatePage.getDataList();
+        List<Integer> templateIdList = templateList.stream().map(x->x.getId()).collect(Collectors.toList());
+        Map<String,Integer> sendMap = getSentPersonByTemplateId(templateIdList);
+        Map<String,Integer> visitMap = getVisitedPersonByTemplateId(templateIdList);
+        List<MessageTemplateVo> resultVoList = new ArrayList<>();
+        for(TemplateConfigRecord record : templateList  ){
+            MessageTemplateVo vo = new MessageTemplateVo();
+            int sentNumber = sendMap.getOrDefault(record.getId(), 0);
+            int visitNumber = visitMap.getOrDefault(record.getId(), 0);
+            BeanUtils.copyProperties(record,vo);
+            vo.setSentNumber(sentNumber);
+            vo.setClickedNumber(visitNumber);
+            if( sendMap.containsKey(record.getId()) ){
+                vo.setPercentage(MathUtil.deciMal(visitNumber,sentNumber)*100);
+            }else{
+                vo.setPercentage(0D);
+            }
+
+            resultVoList.add(vo);
+        }
+        resultPage.setDataList(resultVoList);
+        return resultPage;
+    }
+
+    /**
+     * 根据推送消息id获取已发送人数
+     * @param templateIdList 推送消息id集合
+     * @return 推送消息id和对应的发送人数
+     */
+    private Map<String,Integer> getSentPersonByTemplateId(List<Integer> templateIdList){
+        return db()
+            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .from(SERVICE_MESSAGE_RECORD)
+            .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
+            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
+            .fetch()
+            .stream()
+            .collect(Collectors.toMap(x->x.get(SERVICE_MESSAGE_RECORD.LINK_IDENTITY),x->Integer.parseInt(x.get("number").toString())));
+    }
+
+    /**
+     * 根据推送消息id获取对应的访问人数
+     * @param templateIdList 推送消息id集合
+     * @return 推送消息id和对应的访问人数
+     */
+    private Map<String,Integer> getVisitedPersonByTemplateId( List<Integer> templateIdList ){
+        return db()
+            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"))
+            .from(SERVICE_MESSAGE_RECORD)
+            .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
+            .and(SERVICE_MESSAGE_RECORD.IS_VISIT.eq((byte)1))
+            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY)
+            .fetch()
+            .stream()
+            .collect(Collectors.toMap(x->x.get(SERVICE_MESSAGE_RECORD.LINK_IDENTITY),x->Integer.parseInt(x.get("number").toString())));
+    }
+    private List<Condition> buildParams(MessageTemplateQuery param){
+        List<Condition> result = new ArrayList<>();
+        if( StringUtils.isNotBlank(param.getMessageName()) ){
+            result.add(TEMPLATE_CONFIG.NAME.contains(param.getMessageName()));
+        }
+        if( StringUtils.isNotBlank(param.getBusinessTitle()) ){
+            result.add(TEMPLATE_CONFIG.TITLE.contains(param.getBusinessTitle()));
+        }
+        if( param.getStartTime() != null ){
+            result.add(TEMPLATE_CONFIG.START_TIME.greaterOrEqual(param.getStartTime() ));
+        }
+        if( param.getEndTime() != null  ){
+            result.add(TEMPLATE_CONFIG.END_TIME.lessOrEqual(param.getEndTime()));
+        }
+        if( param.getTemplateId() != null){
+            result.add(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.eq(param.getTemplateId().toString()));
+        }
+        if( StringUtils.isNotBlank(param.getUserName()) ){
+            result.add(USER.USERNAME.contains(param.getUserName()));
+        }
+        return result;
+    }
+
+    public void deleteById(Integer id) {
+        db().update(TEMPLATE_CONFIG)
+            .set(TEMPLATE_CONFIG.DEL_FLAG,(byte)1)
+            .set(TEMPLATE_CONFIG.DEL_TIME,DateUtil.getLocalDateTime())
+            .where(TEMPLATE_CONFIG.ID.eq(id))
+            .execute();
+    }
+
+    public MessageTemplateDetailVo getMessageDetail(Integer id) {
+        MessageTemplateDetailVo vo = new MessageTemplateDetailVo();
+        TemplateConfigRecord record = getById(id);
+        UserInfoQuery userInfo = Util.parseJson(record.getSendCondition(),UserInfoQuery.class);
+        BeanUtils.copyProperties(record,vo);
+        vo.setUserInfo(userInfo);
+        return vo;
+    }
+    private TemplateConfigRecord getById(Integer id){
+        return db().selectFrom(TEMPLATE_CONFIG)
+            .where(TEMPLATE_CONFIG.ID.eq(id))
+            .fetchAny();
+    }
+    public PageResult<MessageOutputVo> getSendRecord(MessageTemplateQuery query){
+        SelectConditionStep<Record> select  = db().select().from(SERVICE_MESSAGE_RECORD)
+            .leftJoin(USER).on(USER.USER_ID.eq(SERVICE_MESSAGE_RECORD.USER_ID))
+            .where(buildParams(query));
+        return getPageResult(select,query.getCurrentPage(),MessageOutputVo.class);
     }
 
 }

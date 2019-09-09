@@ -17,6 +17,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageTemplateQuery extends BasePageParam {
+
+    private Integer templateId;
     /** 用户ID */
     private Integer userId;
     /** 用户昵称 */
@@ -29,8 +31,10 @@ public class MessageTemplateQuery extends BasePageParam {
     private String messageName;
     /** 业务标题 */
     private String businessTitle;
-    /** 发送时间 */
-    private Timestamp sendTime;
+    /** 开始日期 */
+    private Timestamp startTime ;
+    /** 结束日期 */
+    private Timestamp endTime ;
     /** 筛选日期 */
     private Integer screeningDate;
     /** 发送类型 */

@@ -67,8 +67,7 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/list")
     public JsonResult getStorePageList(@RequestBody(required = false) StoreListQueryParam param) {
-        PageResult<StorePageListVo> storePageResult = shop().store.getPageList(param);
-        return success(storePageResult);
+        return success(shop().store.getPageList(param));
     }
     
     /**

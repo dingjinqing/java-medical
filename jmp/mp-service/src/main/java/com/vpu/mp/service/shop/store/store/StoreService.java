@@ -79,7 +79,7 @@ public class StoreService extends ShopBaseService {
 	
 	/**
 	 * 门店列表分页查询
-	 * @param StoreListQueryParam
+	 * @param param
 	 * @return StorePageListVo
 	 */
 	public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
@@ -119,7 +119,7 @@ public class StoreService extends ShopBaseService {
 	
 	/**
 	 * 新增门店
-	 * @param StorePojo
+	 * @param store
 	 * @return
 	 */
 	public Boolean addStore(StorePojo store) {
@@ -130,7 +130,7 @@ public class StoreService extends ShopBaseService {
 	
 	/**
 	 * 更新门店
-	 * @param StorePojo
+	 * @param store
 	 * @return
 	 */
 	public Boolean updateStore(StorePojo store) {
@@ -266,7 +266,7 @@ public class StoreService extends ShopBaseService {
 	public List<StoreBasicVo> getAllStore() {
 		logger().info("获取所有门店id和名称");
 		 return db().select(STORE.STORE_ID,STORE.STORE_NAME)
-			.from(STORE) 
+			.from(STORE)
 			.fetch()
 			.into(StoreBasicVo.class);
 	}
