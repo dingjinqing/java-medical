@@ -171,6 +171,7 @@
   </div>
 </template>
 <script>
+import 'swiper/dist/css/swiper.css'
 import vueSwiper from 'vue-awesome-swiper'
 import Vue from 'vue'
 Vue.use(vueSwiper)

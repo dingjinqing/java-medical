@@ -170,9 +170,13 @@
   </div>
 </template>
 <script>
+
 import vuescroll from 'vuescroll'
 import draggable from 'vuedraggable'
+import Vue from 'vue'
+import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
+Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
 export default {

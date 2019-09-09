@@ -7,12 +7,8 @@ import router from './router';
 import store from './store';
 import i18n from './i18n/i18n';
 import ElementUI from 'element-ui';
-import Distpicker from 'v-distpicker';
-import vuescroll from 'vuescroll';
 // 阿里图标
 import './assets/aliIcon/iconfont.css';
-import 'vuescroll/dist/vuescroll.css';
-Vue.use(vuescroll);
 import 'swiper/dist/css/swiper.css';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -21,7 +17,6 @@ import myMixins from '@/components/mixins.js';
 localStorage.setItem('V-overallFlag', true);
 Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn';
 Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
-Vue.component('v-distpicker', Distpicker);
 // 全局事件总线
 Vue.prototype.$http = new Vue();
 // Vue.prototype.$t = (key, value) => i18n.t(key, value);
