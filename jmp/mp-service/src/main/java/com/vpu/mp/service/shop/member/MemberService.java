@@ -70,6 +70,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
@@ -599,6 +600,19 @@ public class MemberService extends ShopBaseService {
 		});
 	}
 
+	
+	/**
+	 * 查询会员所持有标签列表
+	 * @param param
+	 * @return
+	 */
+	public List<String> getTagForMember(MemberParam param) {
+		 return db().select(TAG.TAG_NAME).from(USER_TAG.innerJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID)))
+			.where(USER_TAG.USER_ID.eq(param.getUserId()))
+			.fetch()
+			.into(String.class);
+	}
+	
 	/** 根据用户id获取用户详情 */
 	public MemberDetailsVo getMemberInfoById(Integer userId) {
 		MemberDetailsVo vo = new MemberDetailsVo();
