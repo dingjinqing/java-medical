@@ -213,6 +213,7 @@ public class JsonResultMessage {
 	public static final String WX_MP_NO_ACCESS = "wx.mp.no.access";
 	public static final String WX_MA_HAVE_MP = "wx.ma.have.mp";
 	public static final String WX_MP_NEED_CHOOSE_RIGHT = "wx.mp.need.choose.right";
+	public static final String WX_NO_REQUIRED = "wx.no.request";
 	
 	/**
 	 * 门店管理
