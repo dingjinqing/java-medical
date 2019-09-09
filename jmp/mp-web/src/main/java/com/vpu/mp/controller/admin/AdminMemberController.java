@@ -99,7 +99,11 @@ public class AdminMemberController extends AdminBaseController{
 		return success();
 	}
 	
-	
+	/**
+	 * 查询某个用户的标签列表
+	 * @param param
+	 * @return
+	 */
 	@PostMapping("/tag/get")
 	public JsonResult getTagForMember(@RequestBody MemberParam param) {
 		logger().info("正在该会员的标签");
