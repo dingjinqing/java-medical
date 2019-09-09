@@ -69,3 +69,11 @@ export function copyDeliverTemplateApi (data) {
     data: data
   })
 }
+// 查询单个模版信息
+export function getTemplateOneApi (data) {
+  return service({
+    url: '/api/admin/goods/deliver/templateone',
+    method: 'post',
+    data: data
+  })
+}

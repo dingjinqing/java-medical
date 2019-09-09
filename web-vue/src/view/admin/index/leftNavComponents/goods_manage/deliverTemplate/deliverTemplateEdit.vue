@@ -22,42 +22,42 @@
         </section>
         <!-- 橙黄框 -->
         <section class="wrap">
-          <el-checkbox v-model="formData[`limitParam_limitDeliverArea`]">除可配送区域外，其他不可配送</el-checkbox>
+          <el-checkbox v-model="formData.goodsDeliverTemplateLimitParam.limit_deliver_area1">除可配送区域外，其他不可配送</el-checkbox>
         </section>
         <!-- 其他区域运费 -->
         <section
           style="display:flex"
-          v-show="!formData[`limitParam_limitDeliverArea`]"
+          v-show="!formData.goodsDeliverTemplateLimitParam.limit_deliver_area1"
         >
-          <el-form-item prop="limitParam_firstNum">
+          <el-form-item prop="">
             其他区域运费:
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_firstNum`]"
+              v-model.number="formData.goodsDeliverTemplateLimitParam.first_num"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="limitParam_firstFee">
+          <el-form-item prop="">
             件内，
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_firstFee`]"
+              v-model.number="formData.goodsDeliverTemplateLimitParam.first_fee"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="limitParam_continueNum">
+          <el-form-item prop="">
             元，每增加
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_continueNum`]"
+              v-model.number="formData.goodsDeliverTemplateLimitParam.continue_num"
               style="width:80px;"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="formData[`limitParam_continueNum`]">
+          <el-form-item prop="">
             件，增加运费
             <el-input
               size="small"
-              v-model.number="formData[`limitParam_continueFee`]"
+              v-model.number="formData.goodsDeliverTemplateLimitParam.continue_fee"
               style="width:80px;"
             ></el-input>
             元
@@ -148,14 +148,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <locat-t-p
-            :location-list=this.locatList
-            :outer-visible=this.dialogStat
-            @close="this.showData"
-            :inner-formData-j="valueA.innerformData"
-            :check-list-t="valueA.checkList"
-            @checkList="this.getCheckList"
-          ></locat-t-p>
           <section class="add">
             <el-button
               type="text"
@@ -205,12 +197,11 @@
   </div>
 </template>
 <script>
-// 引入省市区三级联动
-import LocatTP from '@/components/admin/areaLinkage/LocatTP'
-import { getAreaSelect, addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+// 引入格式化运费模板数据工具方法
+// import { formatTemplateData } from '@/util/formatData.js'
+import { addTemplate, getTemplateOneApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'templateAdd',
-  components: { LocatTP },
 
   data () {
     // 自定义验证规则/验证运费模板名称不能为空
@@ -221,159 +212,97 @@ export default {
         callback() // 必须要有回调，要不然表单无法提交
       }
     }
-    // 自定义验证规则/首件的件数为大于0的整数
-    let checkLimitParamFirstNum = (rule, value, callback) => {
-      if (Number.isInteger(Number(value)) && Number(value) > 0) {
-        callback()
-      } else {
-        callback(new Error('首件件数必须为大于0'))
-      }
-    }
-    // 自定义验证规则/首件的运费为大于0的整数
-    let checkLimitParamFirstFee = (rule, value, callback) => {
-      if (Number.isInteger(Number(value)) && Number(value) > 0) {
-        callback()
-      } else {
-        callback(new Error('首件运费必须为大于0'))
-      }
-    }
-    // 自定义验证规则/续重为大于0的整数
-    let ckeckLimitParamContinueNum = (rule, value, callback) => {
-      if (Number.isInteger(Number(value)) && Number(value) > 0) {
-        callback()
-      } else {
-        callback(new Error('续重必须为大于0'))
-      }
-    }
-    // 自定义验证规则/续件运费为大于0的整数
-    let ckeckLimitParamContinueFee = (rule, value, callback) => {
-      if (Number.isInteger(Number(value)) && Number(value) > 0) {
-        callback()
-      } else {
-        callback(new Error('续件运费必须为大于0的数'))
-      }
-    }
     return {
       // form表单的数据
       formData: {
         // 模板名称
         templateName: ``,
         // 配送区域限制信息
-        limitParam_limitDeliverArea: false, // 默认其他区域可配送
-        limitParam_areaList: `0`,
-        limitParam_areaText: `全国（其他地区）`,
-        limitParam_firstNum: `1`, // 其他区域运费:几件内
-        limitParam_firstFee: `0`, // 其他区域运费:多少元
-        limitParam_continueNum: `1`, // 每增加多少件
-        limitParam_continueFee: `0` // 增加运费多少
+        goodsDeliverTemplateLimitParam:
+        {
+          'limit_deliver_area': '0',
+          'limit_deliver_area1': false,
+          'area_list': '0',
+          'area_text': '全国（其他地区）',
+          'first_num': '1',
+          'first_fee': '0',
+          'continue_num': '1',
+          'continue_fee': '0'
+        }
       },
       // 验证规则
       formDataRules: {
         // 模板名称验证
         templateName: [
           { validator: checkTemplateName, trigger: 'blur' }
-        ],
-        limitParam_firstNum: [
-          { validator: checkLimitParamFirstNum, trigger: 'blur' }
-        ],
-        limitParam_firstFee: [
-          { validator: checkLimitParamFirstFee, trigger: 'blur' }
-        ],
-        limitParam_continueNum: [
-          { validator: ckeckLimitParamContinueNum, trigger: 'blur' }
-        ],
-        limitParam_continueFee: [
-          { validator: ckeckLimitParamContinueFee, trigger: 'blur' }
         ]
       },
       checked1: false, // 指定条件包邮（可选）
       // 表格数据
       tableData1: [],
-      outerVisible: false,
-      dialogStat: false,
       tableData: [
-        // { areaText: ``, firstNum: 1, firstFee: 0, continueNum: 1, continueFee: 0 }
       ],
-      locatList: [],
-      checkeList: [],
-      valueA: {},
       firstNum: 1,
       firstFee: 0,
       continueNum: 1,
       continueFee: 0,
-      showArr: [], // 展示在表格中的数据
       area_list: [], // 选中的值对应的ID 区域代码
-      area_text: `` // 选中的值中文字符串 区域名称
+      area_text: ``, // 选中的值中文字符串 区域名称
+      // 根据ID获取的数据
+      dataList: []
 
     }
   },
   created () {
-    this.fetchAreaData()
+    // 数据初始化函数
+    this.initData()
   },
+
   mounted () {
-    this.getData()
-    this.$http.$on(`showUpDate`, (val) => {
-      console.log(val)
-    })
+
   },
   computed: {
     formatLimitDeliverArea: function () {
       // `this` 指向 vm 实例
-      return this.formData[`limitParam_limitDeliverArea`] ? `1` : `0`
-    },
-    comput: {
-      get () {
-        return this.dialogStat
-      },
-      set () {
-        this.dialogStat = true
-        return this.dialogStat
-      }
+      return this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area1 ? `1` : `0`
     }
+
   },
 
   methods: {
-    showData (flag) {
-      this.dialogStat = flag
-    },
-    getCheckList (value) {
-      console.log(value)
-      // 获取的id数组
-      this.valueA = value
-      this.checkeList = value.checkList // 复选框选中LIst(传回组件用)
-      this.showArr = value.showArr
-      this.area_text = value.areaList // fag
-      // 获取中文拼接字符串，只有省份
-      // if (value.areaList.length > 0) {
-      //   this.tableData.push(
-      //     { area_text: value.areaList.toString(), first_num: this.firstNum, first_fee: this.firstFee, continue_num: this.continueNum, continue_fee: this.continueFee, area_list: value.idList })
-      // }
-      // console.log(this.tableData)
-    },
-    // getData
-    getData () {
-      // console.log(this.locatList)
-    },
     //  修改table header的样式
     tableHeaderStyle ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
         return 'background-color: #f5f5f5;color: #333;font-weight: 500;'
       }
     },
-    // 指定可配送区域和运费
-    handleAdd () {
-      this.dialogStat = true
-    },
-    // 获取省市区数据
-    fetchAreaData () {
-      getAreaSelect().then(res => {
+    // 根据ID获取数据
+    initData () {
+      console.log(this.$route.query.deliverTemplateId)
+      getTemplateOneApi({ 'deliverTemplateId': this.$route.query.deliverTemplateId }).then(res => {
         const { error, content } = res
         if (error === 0) {
-          console.log(content)
-          content.unshift({ 'provinceId': 1, 'provinceName': '全选' })
-          this.locatList = content
+          console.log(`查询成功`)
+          this.handleData(content)
         }
       }).catch(err => console.log(err))
+    },
+    // 获取的数据进行赋值
+    handleData (content) {
+      const { templateName, templateContent } = content[0]
+      const templateContentArr = JSON.parse(templateContent)
+      console.log((JSON.parse(templateContent)))
+      this.formData.templateName = templateName
+      this.formData.goodsDeliverTemplateLimitParam.first_num = templateContentArr[0].datalist[0].first_num
+      this.formData.goodsDeliverTemplateLimitParam.first_fee = templateContentArr[0].datalist[0].first_fee
+      this.formData.goodsDeliverTemplateLimitParam.continue_num = templateContentArr[0].datalist[0].continue_num
+      this.formData.goodsDeliverTemplateLimitParam.continue_fee = templateContentArr[0].datalist[0].continue_fee
+      let flag1 = templateContentArr[0].datalist[0].limit_deliver_area !== 0
+      this.formData.goodsDeliverTemplateLimitParam.limit_deliver_area1 = flag1
+    },
+    // 指定可配送区域和运费
+    handleAdd () {
+
     },
     // 添加模板
     handleAddTemplate () {
@@ -389,31 +318,27 @@ export default {
         })
         return
       }
-      // 判断除可配送区域外，其他不可配送的值
-      if (this.formatLimitDeliverArea === `0`) {
-        // 请求参数
-        let params = {
-          'templateName': this.formData[`templateName`], // 模板名称
-          'goodsDeliverTemplateLimitParam': {
-            'limit_deliver_area': this.formatLimitDeliverArea,
-            'area_list': this.formData[`limitParam_areaList`],
-            'area_text': this.formData[`limitParam_areaText`],
-            'first_num': this.formData[`limitParam_firstNum`],
-            'first_fee': this.formData[`limitParam_firstFee`],
-            'continue_num': this.formData[`limitParam_continueNum`],
-            'continue_fee': this.formData[`limitParam_continueFee`]
-          }
-        }
-        // 发送请求
-        addTemplate(params).then(res => {
-          console.log(res)
-        }).catch(err => console.log(err))
-      } else {
 
-      }
-
-      // 请求报文参数
+      // 请求参数
       let params = {
+        'templateName': this.formData[`templateName`], // 模板名称
+        'goodsDeliverTemplateLimitParam': {
+          'limit_deliver_area': this.formatLimitDeliverArea,
+          'area_list': this.formData[`limitParam_areaList`],
+          'area_text': this.formData[`limitParam_areaText`],
+          'first_num': this.formData[`limitParam_firstNum`],
+          'first_fee': this.formData[`limitParam_firstFee`],
+          'continue_num': this.formData[`limitParam_continueNum`],
+          'continue_fee': this.formData[`limitParam_continueFee`]
+        }
+      }
+      // 发送请求
+      addTemplate(params).then(res => {
+        console.log(res)
+      }).catch(err => console.log(err))
+
+      // 请求报文参数------------------------
+      let params1 = {
         'templateName': '运费模板001',
         'flag': '0',
         'goodsDeliverTemplateLimitParam':
@@ -449,32 +374,15 @@ export default {
             'fee_0_con3_fee': '0'
           }]
       }
-      // console.log(this.templateName)
-      console.log(params['goodsDeliverTemplateAreaParam'][0]['area_list'])
-      // 请求params
-      let formData = {
-        'templateName': this.formData[`templateName`], // 模板名称
-        'goodsDeliverTemplateLimitParam': {
-          'limit_deliver_area': this.formatLimitDeliverArea,
-          'area_list': this.formData[`limitParam_areaList`],
-          'area_text': this.formData[`limitParam_areaText`],
-          'first_num': this.formData[`limitParam_firstNum`],
-          'first_fee': this.formData[`limitParam_firstFee`],
-          'continue_num': this.formData[`limitParam_continueNum`],
-          'continue_fee': this.formData[`limitParam_continueFee`]
-        }
-      }
-      console.log(formData)
+      console.log(params1)
     },
     // 编辑每条
     handleEdit (index) {
-      console.log(index)
-      this.dialogStat = true
+
     },
     // 删除每条
     handleDel (index) {
-      this.tableData.splice(index, 1)
-      // console.log(this.tableData)
+
     }
   }
 }

@@ -119,6 +119,18 @@
                 <td>{{item.templateContent[0].datalist[0].continue_num}}</td>
                 <td>{{item.templateContent[0].datalist[0].continue_fee}}</td>
               </tr>
+              <!-- 其他区域以外的表格 -->
+              <tr
+                v-for="(it22,i) in item.templateContent[0].datalist[1]"
+                :key="i"
+                v-show="it22.area_text!== null"
+              >
+                <td>{{it22.area_text}}</td>
+                <td>{{it22.first_num}}</td>
+                <td>{{it22.first_fee}}</td>
+                <td>{{it22.continue_num}}</td>
+                <td>{{it22.continue_fee}}</td>
+              </tr>
             </tbody>
           </table>
           <!-- 表格 -->
@@ -135,6 +147,7 @@
   </div>
 </template>
 <script>
+import { formatTemplateData } from '@/util/formatData.js'
 import { fetchDeliverTemplateList, deliverConfig, deliverDelete, copyDeliverTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -233,18 +246,7 @@ export default {
           break
       }
     },
-    // 格式化返回的config
-    formatConfig (config) {
-      // DeliverTemplateConfig(templateName=1, feeLimit=300, price=10)
-      // 截取有限字符串
-      let jsonObj = {}
-      let res = config.slice(22, 60).split(',')
 
-      res.forEach((item, i) => {
-        jsonObj[res[i].split('=')[0].trim()] = res[i].split('=')[1].trim()
-      })
-      return jsonObj
-    },
     // 初始化运费模板数据
     initData () {
       fetchDeliverTemplateList(this.pageParams).then(res => {
@@ -254,12 +256,14 @@ export default {
           // console.log(page)
           this.pageParams = page
           // console.log(res[`content`][`pageResult`][`dataList`])
+          // console.log(res.content)
           this.content = res.content
           this.formData = JSON.parse(config)
-          let resData = this.formatTemplateContent(dataList)
+          let resData = formatTemplateData(dataList)
+          // let resData = this.formatTemplateContent(dataList)
           // console.log(resData)
           this.lists = resData
-          // console.log(this.lists)
+          console.log(this.lists)
         }
       }).catch(err => console.log(err))
     },
@@ -280,20 +284,7 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    // 格式化模板的内容
-    formatTemplateContent (dataList) {
-      // console.log(dataList[0])
-      let newArrList = []
-      dataList.forEach((item, i) => {
-        newArrList.push({
-          'deliverTemplateId': item.deliverTemplateId,
-          'flag': item.flag,
-          'templateName': item.templateName,
-          'templateContent': JSON.parse(item['templateContent'])
-        })
-      })
-      return newArrList
-    },
+
     // 复制运费模板
     handleCopyTemplate (deliverTemplateId) {
       // copyDeliverTemplateApi

@@ -68,15 +68,29 @@ export default {
     }
   },
   // 生命周期钩子
-  create () {
-
+  created () {
+    this.$http.$on(`showUpDate`, (val) => {
+      this.isShowUpdate = val
+    })
   },
   mounted () {
     this.$http.$on(`activeName`, (val) => { this.activeName = val })
+    this.$http.$on(`showUpDate`, (val) => {
+      this.isShowUpdate = val
+      this.activeName = `4`
+    })
     this.refresh()
+  },
+  watch: {
+    'activeName': 'fun'
   },
   // 方法
   methods: {
+    fun (val) {
+      if (val !== `4`) {
+        this.isShowUpdate = false
+      }
+    },
     handleClick (tab) {
       switch (tab.index) {
         case '0': this.$router.push({ name: `deliverTemplateList` }); break
@@ -89,12 +103,13 @@ export default {
       }
     },
     refresh () {
+      console.log(this.$route.name)
       switch (this.$route.name) {
         case 'deliverTemplateList': this.activeName = `0`; break
         case 'deliverTemplateWeightList': this.activeName = `1`; break
         case 'deliverTemplateAdd': this.activeName = `2`; break
         case 'deliverTemplateWeightAdd': this.activeName = `3`; break
-        case 'deliverTemplateEdit': this.activeName = `4`; break
+        case 'deliverTemplateEdit': this.activeName = `4`; this.isShowUpdate = true; break
         default: break
       }
     }
