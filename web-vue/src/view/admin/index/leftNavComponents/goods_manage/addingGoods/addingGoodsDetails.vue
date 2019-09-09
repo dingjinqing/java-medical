@@ -2,7 +2,7 @@
   <div style="display: flex;justify-content: center;align-items: flex-start;margin-top: 40px;">
     <div class="phoneWrap">
       <div class="phoneTop">
-        <span style="font-weight:800;color:#000;font-size:16px;margin-top:33px;display: inline-block;">{{$t("goodsAddEditInfo.goodsDetail.phoneTitle")}}</span>
+        <span style="font-weight:800;color:#000;font-size:16px;margin-top:33px;display: inline-block;">{{$t("goodsAddEditInfo.goodsDetail.goodsDetailTitle")}}</span>
       </div>
       <div style="height:550px;overflow-y:auto;overflow-x: auto;background-color:#F5F5F5;">
         <!--商品主图-->

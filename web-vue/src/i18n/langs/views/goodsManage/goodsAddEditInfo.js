@@ -149,7 +149,7 @@ export const cn = {
     notSale: '暂不售卖放入仓库'
   },
   goodsDetail: {
-    goodsDetail: '商品详情',
+    goodsDetailTitle: '商品详情',
     priceIcon: '￥',
     phoneNum: '库存：',
     phoneGoodsDesc: '商品描述',
@@ -355,7 +355,7 @@ export const en = {
     notSale: 'Not sale'
   },
   goodsDetail: {
-    phoneTitle: 'Goods info',
+    goodsDetailTitle: 'Goods info',
     priceIcon: '$',
     phoneNum: 'Stock',
     phoneGoodsDesc: 'Goods Desc',

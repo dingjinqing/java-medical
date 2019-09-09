@@ -161,7 +161,8 @@
             label-width="120px"
           >
             <el-form-item
-              :label="$t('goodsAddEditInfo.basicInfoOther.unit')">
+              :label="$t('goodsAddEditInfo.basicInfoOther.unit')"
+            prop="unit">
               <el-select
                 ref="unitSelect"
                 v-model="unitSelectedValue"
@@ -363,7 +364,7 @@ export default {
         goodsSn: null,
         catId: null,
         goodsImgs: [],
-        unit: '个',
+        unit: null,
         sortId: null,
         goodsLabels: null,
         brandId: null,
@@ -400,65 +401,7 @@ export default {
       imgHost: `${this.$imageHost}`,
       /* 基本信息更多配置部分 */
       collapseActiveName: 'basicMore',
-      unitSelectOptions: [{
-        value: '个',
-        label: '个'
-      }, {
-        value: '包',
-        label: '包'
-      }, {
-        value: '箱',
-        label: '箱'
-      }, {
-        value: '袋',
-        label: '袋'
-      }, {
-        value: '套',
-        label: '套'
-      }, {
-        value: '卷',
-        label: '卷'
-      }, {
-        value: '件',
-        label: '件'
-      }, {
-        value: '台',
-        label: '台'
-      },
-      {
-        value: '吨',
-        label: '吨'
-      }, {
-        value: '平方米',
-        label: '平方米'
-      }, {
-        value: '本',
-        label: '本'
-      }, {
-        value: '幅',
-        label: '幅'
-      }, {
-        value: '张',
-        label: '张'
-      }, {
-        value: '支',
-        label: '支'
-      }, {
-        value: '盒',
-        label: '盒'
-      }, {
-        value: '份',
-        label: '份'
-      }, {
-        value: '令',
-        label: '令'
-      }, {
-        value: '千克',
-        label: '千克'
-      }, {
-        value: null,
-        label: '自定义'
-      }],
+      unitSelectOptions: [],
       unitSelectedValue: '个',
       unitCustomerValue: null,
       // 商家分类下落框
@@ -524,6 +467,7 @@ export default {
         {value: i18nUnitOptions[18], label: i18nUnitOptions[18]},
         {value: null, label: i18nUnitOptions[19]}
       ]
+      this.goodsProductInfo.unit = this.unitSelectOptions[0].value
     }
   },
   methods: {
@@ -715,7 +659,7 @@ export default {
         return false
       }
 
-      if (this.goodsProductInfo.unit === null) {
+      if (isStrBlank(this.goodsProductInfo.unit)) {
         this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning'})
         this.$refs.unitSelect.focus()
         return false

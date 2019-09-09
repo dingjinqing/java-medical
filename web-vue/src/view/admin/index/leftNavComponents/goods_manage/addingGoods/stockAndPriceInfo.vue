@@ -101,9 +101,9 @@
               v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
               :key="index">
               <td>{{item.prdDescTemp}}</td>
-              <td><input :id="'prdPrice_'+item.prdDesc" v-model.number="item.prdPrice"/></td>
-              <td><input v-model.number="item.prdCostPrice" /></td>
-              <td><input :id="'prdNumber_'+item.prdDesc" v-model.number="item.prdNumber"/></td>
+              <td><input :id="'prdPrice_'+item.prdDesc" v-model.number="item.prdPrice" @change="specPrdInputChange(item.prdPrice,'prdPrice_'+item.prdDesc,item)"/></td>
+              <td><input :id="'prdCostPrice_'+item.prdCostPrice" v-model.number="item.prdCostPrice" @change="specPrdInputChange(item.prdCostPrice,'prdCostPrice_'+item.prdCostPrice,item)"/></td>
+              <td><input :id="'prdNumber_'+item.prdNumber" v-model.number="item.prdNumber" @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdNumber,item)"/></td>
               <td><input :id="'prdSn_'+item.prdDesc" @change="specPrdSnChange(item,index,$event.target.value,$event)"/></td>
               <td><img src="" alt="">src</td>
             </tr>
@@ -229,7 +229,7 @@
                     :id="item.prdDesc+cardWrap.card.cardName"
                     type="text"
                     v-model.number="cardWrap.cardPrice"
-                    @change="memberCardPriceChange(item.prdPrice,cardWrap.cardPrice,item.prdDesc+cardWrap.card.cardName)"
+                    @change="memberCardPriceChange(item.prdPrice,cardWrap.cardPrice,item.prdDesc+cardWrap.card.cardName,cardWrap)"
                   />
                 </td>
               </template>
@@ -264,7 +264,7 @@
                     :id="item.cardName"
                     type="text"
                     v-model.number="item.cardPrice"
-                    @change="memberCardPriceChange(goodsProductInfo.prdPrice,item.cardPrice,item.cardName)"
+                    @change="memberCardPriceChange(goodsProductInfo.prdPrice,item.cardPrice,item.cardName,item)"
                   />
                 </td>
               </template>
@@ -546,6 +546,21 @@ export default {
           // 修改规格值名字，遍历修改对应项
           this._calculateChangeSpecVal(newVal, tempSpecVal.specValName)
         }
+      }
+    },
+    /* 商品规格价格、成本价格、库存发送变化 */
+    specPrdInputChange (val, inputId, item) {
+      if (typeof val !== 'number') {
+        if (inputId.indexOf('prdPrice_') > -1) {
+          item.prdPrice = 0
+        }
+        if (inputId.indexOf('prdCostPrice_') > -1) {
+          item.prdCostPrice = 0
+        }
+        if (inputId.indexOf('prdNumber_') > -1) {
+          item.prdCostPrice = 0
+        }
+        document.getElementById(inputId).focus()
       }
     },
     /* 规格编码改变 */
@@ -835,9 +850,15 @@ export default {
       }
     },
     /* 会员价格change处理函数 */
-    memberCardPriceChange (prdPrice, cardPrice, inputId) {
+    memberCardPriceChange (prdPrice, cardPrice, inputId, item) {
       if (cardPrice === undefined || cardPrice === '') {
         this.$message({message: '会员价格不可以为空', type: 'warning'})
+        document.getElementById(inputId).focus()
+        return
+      }
+
+      if (typeof cardPrice !== 'number') {
+        item.cardPrice = null
         document.getElementById(inputId).focus()
         return
       }
