@@ -47,15 +47,17 @@
             <el-input
               size="mini"
               style="width:200px"
+              v-model="param.name"
+              placeholder="活动名称"
             ></el-input>
           </el-form-item>
           <el-form-item label="活动有效期：">
-            <el-radio-group v-model="radio">
+            <el-radio-group v-model="param.isForever">
               <div style="display:flex">
-                <el-radio label="1">固定时间</el-radio>
+                <el-radio :label=0>固定时间</el-radio>
                 <div style="margin-left: 10px">
                   <el-date-picker
-                    v-if="radio==='1'"
+                    v-if="this.param.isForever == 0"
                     style="width: 300px;"
                     v-model="effectiveDate"
                     type="datetimerange"
@@ -68,37 +70,44 @@
                   </el-date-picker>
                 </div>
               </div>
-              <el-radio label="2">永久有效</el-radio>
+              <el-radio :label=1>永久有效</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="优先级：">
             <el-input
               size="mini"
               style="width:200px"
+              v-model="param.priority"
+              placeholder="0"
             ></el-input>
             <div>用于区分不同分享有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
           </el-form-item>
           <el-form-item label="触发条件：">
             <span>用户分享</span>
-            <el-radio-group v-model="trigger">
-              <el-radio label="1">全部商品</el-radio>
-              <el-radio label="2">指定商品</el-radio>
-              <el-radio label="3">实际访问量较少商品</el-radio>
+            <el-radio-group v-model="param.condition">
+              <el-radio :label=1>全部商品</el-radio>
+              <el-radio :label=2>指定商品</el-radio>
+              <el-radio :label=3>实际访问量较少商品</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
+        <div v-if="param.condition == 2">
+          <el-button
+            type="primary"
+            @click="showChoosingGoods"
+          >+选择商品</el-button>
+          <span>已选：{{selectGoods}}件商品</span>
+        </div>
         <div
-          class="selectGoods"
-          v-if="trigger==='2'"
-        >+ 选择商品</div>
-        <div
-          v-if="trigger==='3'"
+          v-if="param.condition == 3"
           style="margin-left:163px"
         >
           <span>实际访问量少于</span>
           <el-input
             size="mini"
             style="width:50px"
+            v-model.number="param.goodsPv"
+            placeholder="0"
           ></el-input> 条的商品
         </div>
       </div>
@@ -120,17 +129,19 @@
         </div>
         <el-form>
           <el-form-item>
-            <el-checkbox v-model="checked">仅邀请未访问过店铺的用户有效</el-checkbox>
+            <el-checkbox v-model="param.visitFirst">仅邀请未访问过店铺的用户有效</el-checkbox>
           </el-form-item>
 
           <section
-            v-for="(item,index) in addLevel"
+            v-for="(item,index) in shareRule"
             :key="index"
           >
             <el-form-item :label="(index+1)+'级'">
               <div>邀请满 <el-input
                   size="mini"
                   style="width:60px"
+                  v-model="item.invite_num"
+                  placeholder="0"
                 ></el-input> 人 <span style="color:#999">可填写1-5人</span>
                 <i
                   v-if="index>0"
@@ -140,40 +151,28 @@
                 ></i>
               </div>
               <div style="margin-left:43px">可获得
-                <el-radio-group v-model="item.willGet">
-                  <el-radio label="1">积分</el-radio>
-                  <el-radio label="2">优惠券</el-radio>
-                  <el-radio label="3">幸运大抽奖</el-radio>
+                <el-radio-group v-model="item.reward_type">
+                  <el-radio :label=1>积分</el-radio>
+                  <el-radio :label=2>优惠券</el-radio>
+                  <el-radio :label=3>幸运大抽奖</el-radio>
                 </el-radio-group>
               </div>
               <div
                 style="margin-left:43px"
-                v-if="item.willGet === '1'"
+                v-if="item.reward_type == 1"
               >积分：
                 <el-input
-                  v-model="addLevel[index].coupon"
+                  v-model="item.score"
                   size="mini"
                   style="width: 150px"
+                  placeholder="0"
                 ></el-input>
               </div>
 
-              <div v-if="item.willGet === '2'">
+              <div v-if="item.reward_type == 2">
                 <div style="margin-left:43px;margin-top: 10px;display:flex">
                   <div style="height:30px;line-height:30px">优惠券：</div>
-                  <el-select
-                    style="width: 150px;"
-                    size="mini"
-                    v-model="gift"
-                    placeholder="请选择"
-                  >
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    >
-                    </el-option>
-                  </el-select>
+                  <el-button @click="handleToCallDialog(index)">添加优惠卷</el-button>
                   <div style="height:30px; line-height:30px">
                     <el-link
                       type="primary"
@@ -198,26 +197,13 @@
                     >管理标签</el-link>
                   </div>
                 </div>
-                <div style="margin-left: 120px">优惠券可用库存{{num}}份数</div>
+                <div style="margin-left: 120px">优惠券可用库存{{couponNum}}份数</div>
               </div>
 
-              <div v-if="item.willGet === '3'">
+              <div v-if="item.reward_type == 3">
                 <div style="margin-left:43px;margin-top: 10px;display:flex">
                   <div style="height:30px;line-height:30px">幸运大抽奖：</div>
-                  <el-select
-                    style="width: 150px;"
-                    size="mini"
-                    v-model="gift"
-                    placeholder="请选择"
-                  >
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    >
-                    </el-option>
-                  </el-select>
+                  <el-button @click="handleToCallDialog(index)">添加幸运大抽奖</el-button>
                   <div style="height:30px; line-height:30px">
                     <el-link
                       type="primary"
@@ -249,6 +235,8 @@
                 <el-input
                   size="mini"
                   style="width:150px"
+                  v-model="item.totalNum"
+                  placeholder="0"
                 ></el-input>份</div>
             </el-form-item>
           </section>
@@ -258,13 +246,32 @@
 
       <!--保存-->
       <div class="footer">
-        <div class="save">保存</div>
+        <div
+          class="save"
+          @click="add()"
+        >保存</div>
       </div>
     </div>
+    <!--添加商品弹窗-->
+    <choosingGoods @resultGoodsIds="choosingGoodsResult" />
+    <!--添加优惠卷弹窗-->
+    <addCouponDialog
+      :singleElection="true"
+      @handleToCheck="handleToCheck"
+    />
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
+import { addShareReward } from '@/api/admin/marketManage/sharePolite.js'
+import choosingGoods from '@/components/admin/choosingGoods'
+import addCouponDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog'
+// import { couponList } from '@/api/admin/marketManage/couponList.js'
 export default {
+  components: {
+    choosingGoods,
+    addCouponDialog
+  },
   data () {
     return {
       swiperOption: {
@@ -284,40 +291,146 @@ export default {
         { image_1: this.$imageHost + '/image/admin/share_pop1.jpg' },
         { image_2: this.$imageHost + '/image/admin/share_pop2.jpg' }
       ],
-      radio: '',
-      trigger: '',
-      // willGet: '1',
-      gift: '',
       options: [{
-        value: '选项1',
+        value: '1',
         label: '黄金糕'
       }, {
-        value: '选项2',
+        value: '2',
         label: '双皮奶'
       }],
-      checked: '',
       value: '',
-      num: 0,
+      // 已选择商品件数
+      selectGoods: 0,
+      // 优惠券可用库存
+      couponNum: 0,
       effectiveDate: '',
-      addLevel: [{ willGet: '1' }],
-      flag: false
+      // 分享奖励规则数组，最多定义三个规则
+      shareRule: [
+        { invite_num: '',
+          reward_type: 1,
+          score: '',
+          coupon: '',
+          lottery: '',
+          totalNum: '',
+          score_num: '',
+          coupon_num: '',
+          lottery_num: ''
+        }
+      ],
+      index: 0,
+      param: {
+        name: '',
+        startTime: null,
+        endTime: null,
+        isForever: 1,
+        priority: '',
+        condition: 1,
+        goodsIds: '',
+        goodsPv: '',
+        visitFirst: false,
+        firstRule: null,
+        secondRule: null,
+        thirdRule: null
+      }
     }
   },
   methods: {
+    ...mapActions(['transmitEditGoodsId']),
+    // 选择优惠券弹窗
+    handleToCallDialog (index) {
+      this.index = index
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: this.couponList
+      }
+      this.$http.$emit('V-AddCoupon', obj, 'choiseOne')
+    },
+    // 优惠卷回调
+    handleToCheck (data) {
+      console.log('优惠卷', data)
+      let arr = []
+      let stock = []
+      data.forEach(item => {
+        arr.push(item.id)
+        stock.push(item.remainAmount)
+      })
+      this.shareRule[this.index].coupon = arr.toString()
+      this.couponNum = arr[0]
+      console.log('conpon', arr.toString())
+    },
+    // 选择商品弹窗
+    showChoosingGoods () {
+      this.transmitEditGoodsId(this.param.goodsIds)
+      this.$http.$emit('choosingGoodsFlag', true)
+    },
+    //  获取商品ids
+    choosingGoodsResult (ids) {
+      console.log('获取商品行信息', ids)
+      this.param.goodsIds = ids.toString()
+      this.selectGoods = ids.length
+    },
     addItem () {
       let obj = {
         coupon: ''
       }
-      if (this.addLevel.length < 3) {
-        this.addLevel.push(obj)
+      if (this.shareRule.length < 3) {
+        this.shareRule.push(obj)
       } else {
         alert('最多可添加3个规则！')
       }
     },
     deleteItem (index) {
-      console.log(this.addLevel)
-      this.addLevel.splice(index, 1)
+      console.log(this.shareRule)
+      this.shareRule.splice(index, 1)
       console.log(index)
+    },
+    add () {
+      // 分享规则处理逻辑
+      this.shareRule.map((item, index) => {
+        switch (item.reward_type) {
+          case 1:
+            item.score_num = item.totalNum
+            break
+          case 2:
+            item.coupon_num = item.totalNum
+            break
+          case 3:
+            item.lottery_num = item.totalNum
+            break
+        }
+        delete this.shareRule.totalNum
+        switch (this.shareRule.length) {
+          case 0:
+            break
+          case 1:
+            this.param.firstRule = this.shareRule[0]
+            break
+          case 2:
+            this.param.firstRule = this.shareRule[0]
+            this.param.secondRule = this.shareRule[1]
+            break
+          case 3:
+            this.param.firstRule = this.shareRule[0]
+            this.param.secondRule = this.shareRule[1]
+            this.param.thirdRule = this.shareRule[2]
+            break
+        }
+      })
+      // 仅邀请未访问过的用户有效；0否，1是
+      switch (this.param.visitFirst) {
+        case true:
+          this.param.visitFirst = 1
+          break
+        case false:
+          this.param.visitFirst = 0
+          break
+      }
+      this.param.startTime = this.effectiveDate[0]
+      this.param.endTime = this.effectiveDate[1]
+      console.log(JSON.parse(JSON.stringify(this.param)))
+      addShareReward(this.param).then((res) => {
+        console.log(JSON.parse(JSON.stringify(res)))
+      })
     }
   }
 }
