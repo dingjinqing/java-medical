@@ -37,19 +37,19 @@
           class="up_img"
           style="cursor:pointer;z-index:1000"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
-          @click="handleToClickIcon(0)"
+          @click.stop="handleToClickIcon(0)"
         >
         <img
           class="down_img"
           style="cursor:pointer;z-index:1000"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
-          @click="handleToClickIcon(1)"
+          @click.stop="handleToClickIcon(1)"
         >
         <img
           class="del_img"
           style="cursor:pointer;z-index:1000"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
-          @click="handleToClickIcon(2)"
+          @click.stop="handleToClickIcon(2)"
         >
       </div>
     </div>
@@ -93,7 +93,7 @@ export default {
   methods: {
     defaultData () {
       this.$http.$on('decCard', (data, hereFlag) => {
-        console.log(this.flag, 111)
+        console.log(this.flag, data)
         // console.log(hereFlag)
 
         let arr = data.length - 1
@@ -113,6 +113,11 @@ export default {
 
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
+        if (this.flag === res) {
+          this.activeBorder = true
+        } else {
+          this.activeBorder = false
+        }
         console.log(res)
       })
     },

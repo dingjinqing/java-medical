@@ -119,7 +119,7 @@
                     :key="index"
                   >
                     <!--会员列表模块-->
-                    <div @click.stop.prevent="handleToClickModule(index)">
+                    <div @click="handleToClickModule(index)">
                       <MembershipCard
                         v-show="item===1"
                         :index="1"
@@ -128,7 +128,7 @@
                     </div>
 
                     <!--优惠卷模块-->
-                    <div @click.stop.prevent="handleToClickModule(index)">
+                    <div @click="handleToClickModule(index)">
                       <Coupon
                         v-show="item===2"
                         :index="2"
@@ -347,7 +347,8 @@ export default {
       newIndex: -1,
       oldElement: null,
       zbFlag: false,
-      topAreaFlag: false
+      topAreaFlag: false,
+      nowRightShowFlag: null
     }
   },
   watch: {
@@ -523,39 +524,50 @@ export default {
         switch (direction) {
           case 'up':
             console.log(newArr, '--', flag)
+            // 顶部判断
             if (flag === 0) return
-
             let temp = newArr[(flag - 1)]
             newArr[(flag - 1)] = newArr[flag]
             newArr[flag] = temp
             let arrFliter = newArr.filter(item => {
               return item
             })
+            // 改变边框
+            let index = flag - 1
+
             console.log(newArr)
             this.showModulesList = arrFliter
+            let data = this.showModulesList
+            this.$http.$emit('decCard', data, -1)
+            this.$http.$emit('modulesClick', index)
             console.log(newArr, '--' + this.showModulesList)
             break
           case 'down':
             console.log(newArr, '--', flag, '123123123')
             let temp2 = newArr[(flag + 1)]
+            // 底部判断
             if ((newArr.length - 1) === flag) return
             newArr[(flag + 1)] = newArr[flag]
             newArr[flag] = temp2
             let arrFliterD = newArr.filter(item => {
               return item
             })
+            let indexD = flag + 1
+
             console.log(arrFliterD)
             this.showModulesList = arrFliterD
+            let dataD = this.showModulesList
+            this.$http.$emit('decCard', dataD, -1)
+            this.$http.$emit('modulesClick', indexD)
             break
           case 'delete':
             console.log(newArr, flag)
             newArr.splice(flag, 1)
             console.log(newArr)
             this.showModulesList = newArr
+            this.$http.$emit('modulesClick', (newArr.length - 1))
             break
         }
-        let data = this.showModulesList
-        this.$http.$emit('decCard', data, -1)
       })
     },
     // 中间区域拖拽插入数据处理
