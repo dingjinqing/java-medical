@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
@@ -94,6 +97,14 @@ public class AdminMemberController extends AdminBaseController{
 		logger().info("为会员用户打标签");
 		shop().member.setTagForMember(param);
 		return success();
+	}
+	
+	
+	@PostMapping("/tag/get")
+	public JsonResult getTagForMember(@RequestBody MemberParam param) {
+		logger().info("正在该会员的标签");
+		List<String> tagList = shop().member.getTagForMember(param);
+		return success(tagList);
 	}
 	
 	
