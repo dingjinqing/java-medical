@@ -33,21 +33,21 @@
 
       <!-- 主要内容区 -->
       <!--商品信息-->
-        <addingGoodsProductInfo
+        <updateGoodsProductInfo
           ref="goodsProductInfoCmp"
           v-show="stepData.currentStep===1"
         />
       <!--商品详情-->
-        <addingGoodsDetails
+        <updateGoodsDetails
           :goodsProductInfoData="goodsProductInfoDataForDetails"
           ref="goodsDetailsCmp"
           v-show="stepData.currentStep===2"
         />
       <!--商品分销信息-->
-        <addingGoodsDistributionInfo
+        <updateGoodsDistributionInfo
           :goodsProductInfoData="goodsProductInfoDataForDistribution"
-        ref="goodsDistributionInfoCmp"
-        v-show="stepData.currentStep===3"
+          ref="goodsDistributionInfoCmp"
+          v-show="stepData.currentStep===3"
         />
 
       <!-- 底部按钮组件 -->
@@ -110,16 +110,16 @@
 </template>
 <script>
 /* 导入组件 */
-import addingGoodsProductInfo from './addingGoodsProductInfo'
-import addingGoodsDetails from './addingGoodsDetails'
-import addingGoodsDistributionInfo from './addingGoodsDistributionInfo'
+import updateGoodsProductInfo from './updateGoodsProductInfo'
+import updateGoodsDetails from './updateGoodsDetails'
+import updateGoodsDistributionInfo from './updateGoodsDistributionInfo'
 
 /* 导入js组件 */
 import {addGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 
 export default {
-  name: 'addingGoods',
-  components: {addingGoodsProductInfo, addingGoodsDetails, addingGoodsDistributionInfo},
+  name: 'updateGoods',
+  components: {updateGoodsProductInfo, updateGoodsDetails, updateGoodsDistributionInfo},
   computed: {
     goodsProductInfoDataForDetails: function () {
       let retData = {}
@@ -302,7 +302,13 @@ export default {
     },
     returnGoodsList () {
       this.$router.push({name: 'soldOutGoods'})
+    },
+    loadGoodsData (goodsId) {
+
     }
+  },
+  mounted () {
+
   }
 }
 </script>

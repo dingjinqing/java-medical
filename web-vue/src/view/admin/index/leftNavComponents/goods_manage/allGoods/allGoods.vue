@@ -1,6 +1,7 @@
 <template>
   <!-- 全部商品组件 -->
   <div class="allGoods">
+    <el-button @click="lookEdit">商品编辑测试</el-button>
     <!-- 外部容器卡片 -->
     <el-card class="container">
       <!-- 头部标签页 -->
@@ -30,7 +31,12 @@ export default {
   },
   // methods 方法
   methods: {
-
+    lookEdit () {
+      this.$router.push({
+        name: 'goods_update',
+        params: {goodsId: 44}
+      })
+    }
   }
 }
 </script>

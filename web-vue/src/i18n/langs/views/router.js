@@ -18,7 +18,9 @@ export const cn = {
   // 商品管理 仓库中商品
   goodsInTheWarehouse: ['商品管理', '仓库中商品'],
   // 商品管理 添加商品
-  addingGoods: ['商品管理', '添加商品'],
+  addGoods: ['商品管理', '添加商品'],
+  // 商品管理 修改商品
+  updateGoods: ['商品管理', '修改商品'],
   // 商品管理 运费模板
   deliverTemplate: ['商品管理', '运费模板'],
   // 商品管理 商家分类管理

@@ -311,18 +311,30 @@ const routes = [
           },
           // 商品管理 添加商品
           {
-            path: '/admin/home/main/goodsManage/addingGoods',
+            path: '/admin/home/main/goodsManage/addGoods',
             name: 'goods_add',
             meta: {
-              crumbTitle: 'router.addingGoods',
+              crumbTitle: 'router.addGoods',
               meta: 'goods_manage'
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods'
+                '@/view/admin/index/leftNavComponents/goods_manage/addGoods/addGoods'
               )
           },
-
+          // 商品管理 编辑商品
+          {
+            path: '/admin/home/main/goodsManage/updateGoods/:goodsId',
+            name: 'goods_update',
+            meta: {
+              crumbTitle: 'router.updateGoods',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/updateGoods/updateGoods'
+              )
+          },
           // 商品管理/运费模板
           {
             path: '/admin/home/main/goodsManage/deliverTemplate',
