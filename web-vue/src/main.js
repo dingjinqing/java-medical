@@ -9,7 +9,6 @@ import i18n from './i18n/i18n';
 import ElementUI from 'element-ui';
 // 阿里图标
 import './assets/aliIcon/iconfont.css';
-import 'swiper/dist/css/swiper.css';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import myMixins from '@/components/mixins.js';
