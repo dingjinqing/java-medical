@@ -75,4 +75,17 @@ public class ShareRewardAddParam {
      */
     private ShareRule thirdRule;
     private String thirdLevelRule;
+
+    /**
+     * 一级规则奖励奖品剩余数量
+     */
+    private Integer firstAwardNum;
+    /**
+     * 二级规则奖励奖品剩余数量
+     */
+    private Integer secondAwardNum;
+    /**
+     * 三级规则奖励奖品剩余数量
+     */
+    private Integer thirdAwardNum;
 }
