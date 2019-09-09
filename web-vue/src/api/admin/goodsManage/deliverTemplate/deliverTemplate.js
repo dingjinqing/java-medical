@@ -77,3 +77,22 @@ export function getTemplateOneApi (data) {
     data: data
   })
 }
+
+// 添加自定义重量运费模版
+
+export function addWeightTemplateApi (data) {
+  return service({
+    url: '/api/admin/goods/deliver/addweighttemplate',
+    method: 'post',
+    data: data
+  })
+}
+// 重量运费模版分页查询
+
+export function getWeightTemplateListApi (data) {
+  return service({
+    url: '/api/admin/goods/deliver/weighttemplatelist',
+    method: 'post',
+    data: data
+  })
+}

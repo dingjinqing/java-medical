@@ -112,7 +112,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr v-show="item.templateContent[0].datalist[0].limit_deliver_area === 0">
                 <td>{{item.templateContent[0].datalist[0].area_text}}</td>
                 <td>{{item.templateContent[0].datalist[0].first_num}}</td>
                 <td>{{item.templateContent[0].datalist[0].first_fee}}</td>
@@ -250,7 +250,7 @@ export default {
     // 初始化运费模板数据
     initData () {
       fetchDeliverTemplateList(this.pageParams).then(res => {
-        console.log(res.content.pageResult.dataList)
+        // console.log(res.content.pageResult.dataList)
         const { error, content: { config, pageResult: { dataList, page } } } = res
         if (error === 0) {
           // console.log(page)
@@ -356,11 +356,13 @@ table {
 th {
   height: 30px;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
 }
 td {
   text-align: center;
-  height: 30px;
-  vertical-align: center;
+  min-height: 30px;
+  vertical-align: middle;
+  padding: 10px;
+  width: 20%;
 }
 </style>

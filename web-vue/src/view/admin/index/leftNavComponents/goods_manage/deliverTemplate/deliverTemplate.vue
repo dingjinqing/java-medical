@@ -79,7 +79,7 @@ export default {
       this.isShowUpdate = val
       this.activeName = `4`
     })
-    this.refresh()
+    // this.refresh()
   },
   watch: {
     'activeName': 'fun'
@@ -98,7 +98,6 @@ export default {
         case '2': this.$router.push({ name: `deliverTemplateAdd` }); break
         case '3': this.$router.push({ name: `deliverTemplateWeightAdd` }); break
         case '4': this.$router.push({ name: `deliverTemplateEdit` }); break
-
         default: break
       }
     },

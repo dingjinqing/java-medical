@@ -1,78 +1,6 @@
 <template>
   <!-- 运费模板列表 -->
   <div class="deliverTemplateList">
-    <el-button @click="handleDelTemplate">删除运费模板</el-button>
-    <section class="wrap">
-      <section>
-        <el-form
-          :rules="formRules"
-          ref="form"
-          :model="formData"
-          label-width="140px"
-          :inline="true"
-        >
-          <!-- 店铺默认运费模板 -->
-          <el-form-item label="店铺默认运费模板：">
-            <el-select
-              @change="handleChange"
-              style="width:100px;"
-              size="small"
-              v-model="value"
-              placeholder="请选择运费模板"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value "
-                :label="item.label | showTemplate"
-                :value="item.value | showTemplate"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <!-- 运费 -->
-          <el-form-item
-            v-if="isShow"
-            prop="price"
-          >
-            <span>运费：</span>
-            <!-- 运费输入框 -->
-            <el-input
-              size="small"
-              v-model.number="formData.price"
-              style="width:80px"
-            ></el-input><span>元</span>
-          </el-form-item>
-          <!-- 订单金额 -->
-          <el-form-item
-            v-else
-            prop="feeLimit"
-          >
-            <span> 订单金额>=</span>
-            <el-input
-              size="small"
-              v-model.number="formData.feeLimit"
-              style="width:80px"
-            ></el-input>
-            <span>元时包邮,否则运费为</span>
-            <el-input
-              size="small"
-              v-model.number="formData.price"
-              style="width:80px"
-            ></el-input>
-            <span>元</span>
-          </el-form-item>
-          <el-form-item>
-          </el-form-item>
-        </el-form>
-      </section>
-      <section>
-        <!-- 保存按钮 -->
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleSaveConfig"
-        >保存配置</el-button>
-      </section>
-    </section>
     <!-- 列表的内容 -->
     <section class="list_content">
       <section
@@ -86,67 +14,75 @@
             <span>{{item.templateName}}</span>
           </section>
           <section class="right">
-            <el-button type="text">复制模板</el-button>
-            <el-button type="text">修改</el-button>
-            <el-button type="text">删除</el-button>
+            <el-button
+              type="text"
+              @click="handleCopyTemplate(item.deliverTemplateId)"
+            >复制模板</el-button>
+            <el-button
+              type="text"
+              @click="upDateTemplate(item.deliverTemplateId)"
+            >修改</el-button>
+            <el-button
+              type="text"
+              @click="handleDelTemplate(item.deliverTemplateId)"
+            >删除</el-button>
           </section>
         </section>
         <section class="table_list">
           <!-- 表格 -->
-          <el-table
-            border
-            style="width: 100%"
-          >
-            <!-- 可配送区域 -->
-            <el-table-column
-              prop="templateContent[0].datalist[0].area_text"
-              align="center"
-              label="可配送区域"
-            >
-            </el-table-column>
-            <!-- 首件 -->
-            <el-table-column
-              prop="templateContent[0].datalist[0].first_num"
-              align="center"
-              label="首件（件）"
-            >
-            </el-table-column>
-            <!-- 运费 -->
-            <el-table-column
-              align="center"
-              prop="templateContent[0].datalist[0].first_fee"
-              label="运费（元）"
-            >
-            </el-table-column>
-            <!-- 续件 -->
-            <el-table-column
-              prop="templateContent[0].datalist[0].continue_num"
-              label="续件（件）"
-              align="center"
-            >
-            </el-table-column>
-            <!-- 续费 -->
-            <el-table-column
-              align="center"
-              prop="templateContent[0].datalist[0].continue_fee"
-              label="续费（元）"
-            >
-            </el-table-column>
-          </el-table>
+          <table border="1">
+            <thead>
+              <tr>
+                <th>可配送区域</th>
+                <th>首件（件）</th>
+                <th>运费（元）</th>
+                <th>续件（件）</th>
+                <th>续费（元）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-show="item.templateContent[0].datalist[0].limit_deliver_area === 0">
+                <td>{{item.templateContent[0].datalist[0].area_text}}</td>
+                <td>{{item.templateContent[0].datalist[0].first_num}}</td>
+                <td>{{item.templateContent[0].datalist[0].first_fee}}</td>
+                <td>{{item.templateContent[0].datalist[0].continue_num}}</td>
+                <td>{{item.templateContent[0].datalist[0].continue_fee}}</td>
+              </tr>
+              <!-- 其他区域以外的表格 -->
+              <tr
+                v-for="(it22,i) in item.templateContent[0].datalist[1]"
+                :key="i"
+                v-show="it22.area_text!== null"
+              >
+                <td>{{it22.area_text}}</td>
+                <td>{{it22.first_num}}</td>
+                <td>{{it22.first_fee}}</td>
+                <td>{{it22.continue_num}}</td>
+                <td>{{it22.continue_fee}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- 表格 -->
+
         </section>
       </section>
     </section>
     <section class="paginationContainer">
-
+      <pagination
+        :pageParams="pageParams"
+        @pagination="initData"
+      />
     </section>
   </div>
 </template>
 <script>
-import { fetchDeliverTemplateList, deliverConfig, deliverDelete } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { formatTemplateData } from '@/util/formatData.js'
+import { deliverConfig, deliverDelete, copyDeliverTemplateApi, getWeightTemplateListApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   name: 'deliverTemplateList',
   components: { pagination },
+  inject: ['reload'], // 注入
   data () {
     // 自定义校验规则
     let checkPrice = (rule, value, callback) => {
@@ -185,7 +121,8 @@ export default {
       isShow: true, // 用来控制显示隐藏
       tableData: [], // 表格的数据
       content: ``, // 后台返回的数据
-      lists: []
+      lists: [],
+      pageParams: {}
     }
   },
   // 局部过滤器
@@ -200,14 +137,34 @@ export default {
   },
 
   created () {
-    this.initPriceData()
+    this.initData()
+    this.$http.$emit('activeName', this.$route.query.active)
   },
+
   methods: {
     // 删除运费模板
-    handleDelTemplate () {
-      deliverDelete({
-        'deliverTemplateId': '24'
-      }).then(res => { console.log(res) }).catch(err => console.log(err))
+    handleDelTemplate (id) {
+      // 删除操作的提示
+      this.$confirm('此操作将永久删除该模板, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deliverDelete({
+          'deliverTemplateId': id
+        }).then(res => {
+          const { error } = res
+          if (error === 0) {
+            this.initData()
+            // 删除成功提示
+            this.$message({
+              type: 'success',
+              center: 'true',
+              message: '删除成功!'
+            })
+          }
+        }).catch(err => console.log(err))
+      }).catch((error) => console.log(error))
     },
     // 选中运费模板的时候
     handleChange (val) {
@@ -218,30 +175,25 @@ export default {
           break
       }
     },
-    // 格式化返回的config
-    formatConfig (config) {
-      // DeliverTemplateConfig(templateName=1, feeLimit=300, price=10)
-      // 截取有限字符串
-      let jsonObj = {}
-      let res = config.slice(22, 60).split(',')
 
-      res.forEach((item, i) => {
-        jsonObj[res[i].split('=')[0].trim()] = res[i].split('=')[1].trim()
-      })
-      return jsonObj
-    },
-    // 初始化运费数据
-    initPriceData () {
-      fetchDeliverTemplateList({}).then(res => {
-        const { error, content: { config, pageResult: { dataList } } } = res
+    // 初始化运费模板数据
+    initData () {
+      getWeightTemplateListApi(this.pageParams).then(res => {
+        console.log(res)
+
+        const { error, content: { page } } = res
         if (error === 0) {
-          console.log(res[`content`][`pageResult`][`dataList`])
-          this.content = res.content
-          this.formData = JSON.parse(config)
-          let resData = this.formatTemplateContent(dataList)
-          // console.log(resData)
+          console.log(res.content.dataList)
+          this.pageParams = page
+          // // console.log(res[`content`][`pageResult`][`dataList`])
+          // // console.log(res.content)
+          // this.content = res.content
+          // // this.formData = JSON.parse(config)
+          let resData = formatTemplateData(res.content.dataList)
+          // // let resData = this.formatTemplateContent(dataList)
+          // // console.log(resData)
           this.lists = resData
-          // console.log(this.lists)
+          console.log(this.lists)
         }
       }).catch(err => console.log(err))
     },
@@ -262,19 +214,26 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    // 格式化模板的内容
-    formatTemplateContent (dataList) {
-      // console.log(dataList[0])
-      let newArrList = []
-      dataList.forEach((item, i) => {
-        newArrList.push({
-          'deliverTemplateId': item.deliverTemplateId,
-          'flag': item.flag,
-          'templateName': item.templateName,
-          'templateContent': JSON.parse(item['templateContent'])
-        })
+
+    // 复制运费模板
+    handleCopyTemplate (deliverTemplateId) {
+      // copyDeliverTemplateApi
+      copyDeliverTemplateApi({ deliverTemplateId }).then(res => {
+        const { error } = res
+        if (error === 0) {
+          console.log(`复制成功`)
+          this.initData()
+          // this.reload() // 局部刷新
+        }
+      }).catch(error => console.log(error))
+    },
+    // 修改运费模板
+    upDateTemplate (deliverTemplateId) {
+      this.$http.$emit('showUpDate', true)
+      this.$router.push({
+        name: `deliverTemplateEdit`,
+        query: { deliverTemplateId }
       })
-      return newArrList
     }
   }
 }
@@ -306,8 +265,33 @@ export default {
 .title {
   color: #333;
   font-size: 14px;
+  margin-left: 20px;
+  font-weight: 700;
 }
+/* .right {
+  margin-left: 250px;
+} */
 .list {
   margin-bottom: 10px;
+}
+table,
+th,
+td {
+  border: 1px solid #ddd;
+}
+table {
+  width: 100%;
+  margin-top: 2px;
+}
+th {
+  height: 30px;
+  text-align: center;
+  vertical-align: middle;
+}
+td {
+  text-align: center;
+  height: 30px;
+  vertical-align: middle;
+  padding: 10px;
 }
 </style>

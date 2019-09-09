@@ -178,7 +178,7 @@ export default {
       // 状态，存储，为0的情况下验证全部通过，否则就是不通过
       /* eslint-disable */
       let stats = 0,
-        freeShippingData = ''
+        freeShippingData = []
       if (
         !this.delivery.goodsDeliverTemplateLimitParam.limit_deliver_area
       ) {
@@ -228,7 +228,7 @@ export default {
 
           data.goodsDeliverTemplateLimitParam.limit_deliver_area = Number(data.goodsDeliverTemplateLimitParam.limit_deliver_area)
           data.goodsDeliverTemplateFeeParam.has_fee_0_condition = Number(data.goodsDeliverTemplateLimitParam.limit_deliver_area)
-
+          console.log(data)
 
           addTemplate(data).then(res => {
             const { error } = res
@@ -236,7 +236,7 @@ export default {
               this.$message.success('模板添加成功')
               this.$router.push({
                 name: `deliverTemplateList`,
-                query: { active: `1` }
+                query: { active: `0` }
               })
             }
           }).catch(err => console.log(err))
