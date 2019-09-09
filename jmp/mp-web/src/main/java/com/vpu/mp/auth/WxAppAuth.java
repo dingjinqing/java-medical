@@ -103,8 +103,8 @@ public class WxAppAuth {
 		sessionUser.setShopId(shopId);
 		sessionUser.setShopFlag(shop.getShopFlag());
 		sessionUser.setUserId(user.getUserId());
-		sessionUser.setUserAvatar(userDetail.getUserAvatar());
-		sessionUser.setUsername(userDetail.getUsername());
+		sessionUser.setUserAvatar(userDetail == null ? null : userDetail.getUserAvatar());
+		sessionUser.setUsername(userDetail == null ? null :userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
 		jedis.set(token, Util.toJson(sessionUser));
 		return sessionUser;
