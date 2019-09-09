@@ -4,7 +4,7 @@
       <ul class="menu_wrap">
         <li
           class="left_menu_item"
-          :class="{active_bg: $route.meta.title === item.span}"
+          :class="{active_bg: $route.meta.title === item.span||$route.meta.parentName === item.span}"
           v-for="(item, index) in filterNavArr"
           :key="index"
           @mouseenter="hoverIndex = index"

@@ -4,6 +4,7 @@ export default {
   },
   mutations: {
     UPDATE_BREADCRUMB_TITLE (state, title) {
+      console.log(title)
       state.breadcrumbTitle = title
     }
   }

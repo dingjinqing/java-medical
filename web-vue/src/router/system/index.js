@@ -84,7 +84,16 @@ const routes = [
         component: () => import('@/view/system_new/views/store_management/version_list/versionList'),
         name: 'versionList',
         meta: {
-          titie: '版本列表'
+          title: '版本列表'
+        }
+      },
+      {
+        path: 'backgroundTaskList',
+        component: () => import('@/view/system_new/views/store_management/program_management/backgroundTaskList'),
+        name: 'backgroundTaskList',
+        meta: {
+          title: '后台任务列表',
+          parentName: '小程序版本'
         }
       }
     ]

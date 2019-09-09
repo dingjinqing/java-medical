@@ -132,6 +132,24 @@
       >
       </el-pagination>
     </div>
+    <!--批量提交弹窗-->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <span>此操作将批量伟所有小程序客户上传模板版本229并提交审核，是否确认此操作</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="handleToBatchSubmit(0)">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToBatchSubmit(1)"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -152,7 +170,8 @@ export default {
       operationData: this.$t('programVersion.operationData'),
       currentPage: 1,
       totle: null,
-      pageCount: null
+      pageCount: null,
+      dialogVisible: false
     }
   },
   mounted () {
@@ -206,6 +225,7 @@ export default {
       console.log(row, index)
       switch (index) {
         case 0:
+          this.dialogVisible = true
           break
         case 1:
           this.$router.push({
@@ -239,6 +259,16 @@ export default {
     // 当前页发生变化
     handleCurrentChange () {
       this.defaluteData()
+    },
+    // 批量提交弹窗确定按钮
+    handleToBatchSubmit (flag) {
+      if (flag === 1) {
+        // 确定时调用接口
+      }
+      this.$router.push({
+        name: 'backgroundTaskList'
+      })
+      this.dialogVisible = false
     }
   }
 }
@@ -301,6 +331,10 @@ export default {
         align-items: center;
       }
     }
+  }
+  /deep/ .el-dialog__header {
+    text-align: center;
+    background-color: #f3f3f3;
   }
 }
 </style>
