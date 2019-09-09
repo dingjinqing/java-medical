@@ -73,6 +73,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
@@ -606,11 +607,11 @@ public class MemberService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public List<String> getTagForMember(MemberParam param) {
-		 return db().select(TAG.TAG_NAME).from(USER_TAG.innerJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID)))
+	public List<TagVo> getTagForMember(MemberParam param) {
+		 return db().select(TAG.TAG_NAME,TAG.TAG_ID).from(USER_TAG.innerJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID)))
 			.where(USER_TAG.USER_ID.eq(param.getUserId()))
 			.fetch()
-			.into(String.class);
+			.into(TagVo.class);
 	}
 	
 	/** 根据用户id获取用户详情 */
