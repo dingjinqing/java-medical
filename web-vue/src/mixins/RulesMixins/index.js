@@ -34,6 +34,8 @@ export default {
       } else {
         callback(new Error('续件运费必须为大于0的数'))
       }
-    }
+    },
+    // 营销活动/消息推送/添加消息推送
+    checkMessagePushName (rule, value, callback) {}
   }
 }

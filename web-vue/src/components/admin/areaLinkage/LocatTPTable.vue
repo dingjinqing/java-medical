@@ -231,6 +231,10 @@ export default {
     appointContent: {
       type: String,
       required: true
+    },
+    // 表格数据
+    tableDataList: {
+      type: Array
     }
   },
   data () {
@@ -292,7 +296,7 @@ export default {
     },
     // 删除一行的功能
     handleDelete(row) {
-      this.$message.success('删除区域成功!!!')
+      this.$message.success('删除区域成功')
       // 删掉显示页面的数据
       this.showTableData = this.showTableData.filter(
         item => item.area_list !== row.area_list
@@ -326,7 +330,7 @@ export default {
     },
     // 获取返回的数据
     changeRegionList(value) {
-      this.$message.success('添加区域成功!!!')
+      this.$message.success('添加区域成功')
       // 当数据没有改变的话，不执行
       const check = value.checkList.filter(
         id => !this.checkListT.includes(id)
@@ -492,7 +496,7 @@ export default {
     },
     // 确认后修改的数据
     editRegionList(val) {
-      this.$message.success('修改区域成功!!!')
+      this.$message.success('修改区域成功')
       // 修改后，存储状态和数据
       if (this.area_list === val.idList.toString()) return // 两者相等，就是没发生改变，不执行下面操作
       // 不相等 执行以下操作

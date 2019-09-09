@@ -198,8 +198,8 @@ export default {
       const regionData = this.$refs.regionData.getTableData()
       if (
         this.delivery.goodsDeliverTemplateLimitParam
-          .limit_deliver_area &&
-        !freeShippingData.length
+          .limit_deliver_area && !regionData
+        // !freeShippingData.length
       ) {
         this.$message.error('可配送区域不能为空')
         return

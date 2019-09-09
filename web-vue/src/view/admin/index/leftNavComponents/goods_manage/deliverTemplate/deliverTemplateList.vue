@@ -206,7 +206,6 @@ export default {
       }
     }
   },
-
   created () {
     this.initData()
     this.$http.$emit('activeName', this.$route.query.active)

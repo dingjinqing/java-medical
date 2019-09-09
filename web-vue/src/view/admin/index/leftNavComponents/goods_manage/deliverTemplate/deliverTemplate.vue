@@ -79,7 +79,7 @@ export default {
       this.isShowUpdate = val
       this.activeName = `4`
     })
-    // this.refresh()
+    this.refresh()
   },
   watch: {
     'activeName': 'fun'
