@@ -160,7 +160,7 @@ public class TagService extends ShopBaseService {
 	 */
 	public List<TagVo> getAllTag() {
 		logger().info("获取所有标签");
-		 return db().select(TAG.TAG_NAME)
+		 return db().select(TAG.TAG_NAME,TAG.TAG_ID)
 			.from(TAG)
 			.fetch()
 			.into(TagVo.class);

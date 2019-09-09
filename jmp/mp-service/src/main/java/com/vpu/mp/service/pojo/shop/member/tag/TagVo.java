@@ -12,6 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TagVo {
+	@JsonProperty("id")
+	private Integer tagId;
 	@JsonProperty("value")
 	private String tagName;
 }
