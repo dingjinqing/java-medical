@@ -254,7 +254,7 @@ export default {
       this.tableData = data
     },
     goodsInfo (data) {
-      if (data.columnIndex === 2 || data.columnIndex === 3) {
+      if (data.columnIndex === 1 || data.columnIndex === 2) {
         return 'no_padding'
       } else {
         return ''

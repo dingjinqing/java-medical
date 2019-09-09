@@ -49,33 +49,36 @@
             <div class="info_mid">
               <div class="clearfix">
                 <span class="sub_title">有效日期</span>
-                <span class=date>
-                  <span v-if="param.available_period === '0'">{{param.coupon_date_datetimerange}}</span>
-                  <span v-else>{{param.coupon_date_info}}</span>
+                <span class="date">
+                  <span v-if="param.availablePeriod === '0'">{{coupon_date_datetimerange}}</span>
+                  <span v-else>{{coupon_date_info}}</span>
                 </span>
               </div>
               <div>
                 <span class="sub_title">使用限制</span>
                 <span
                   class="all"
-                  v-if="param.using_limit==='0'"
+                  v-if="param.userConsumeRestrict==='0'"
                 >无限制</span>
-                <span v-else>订单满<span>{{param.least_consume?param.least_consume:'0'}}</span>元可用</span>
+                <span v-else>订单满<span>{{param.leastConsume?param.leastConsume:'0'}}</span>元可用</span>
                 <span
                   class="part"
-                  v-if="param.radioGoods === '1'"
+                  v-if="param.suitGoods === '1'"
                 >部分商品可用</span>
               </div>
             </div>
             <div class="info_bot">
               <div
                 class="code"
-                v-if="param.validation_code != ''"
+                v-if="param.validationCode != ''"
               >请输入领取码</div>
               <div class="use">立即使用</div>
               <div>
                 <span class="sub_title">使用说明</span>
-                <div class="instruction">{{param.use_explain?param.use_explain:'暂无使用说明'}}</div>
+                <div
+                  class="instruction"
+                  v-html="crlfFormat ? crlfFormat : '暂无使用说明'"
+                ></div>
               </div>
             </div>
           </div>
@@ -316,17 +319,17 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="param.recommendGoodsId"
+                        v-model="param.suitGoods"
                         label="0"
                       >全部商品</el-radio>
                     </p>
                     <p>
                       <el-radio
-                        v-model="param.recommendGoodsId"
+                        v-model="param.suitGoods"
                         label="1"
                       >指定商品</el-radio>
                     </p>
-                    <div v-if="param.recommendGoodsId === '1'">
+                    <div v-if="param.suitGoods === '1'">
                       <div
                         class="noneBlockList"
                         v-for="(item,index) in noneBlockDiscArr"
@@ -340,7 +343,7 @@
                         <div
                           v-if="item.num"
                           class="noneBlockRight"
-                        >已选择分类：{{item.num}}个分类</div>
+                        >已选择{{index === 0 ? '商品':'分类'}}：{{item.num}}个{{index === 0 ? '商品':'分类'}}</div>
                       </div>
                     </div>
                   </div>
@@ -352,11 +355,11 @@
                   <div style="display:flex">
                     <div>
                       <el-radio
-                        v-model="param.suitGoods"
+                        v-model="param.isHide"
                         label="0"
                       >否</el-radio>
                       <el-radio
-                        v-model="param.suitGoods"
+                        v-model="param.isHide"
                         label="1"
                       >是</el-radio>
                     </div>
@@ -425,9 +428,10 @@ export default {
         validityMinute: '',
         totalAmount: '',
         validationCode: '',
-        recommendGoodsId: '0',
-        recommendCatId: '0',
-        recommendSortId: '0',
+        recommendGoodsId: null,
+        recommendCatId: null,
+        recommendSortId: null,
+        isHide: '0',
         suitGoods: '0',
         useExplain: '',
         denomination: null,
@@ -437,6 +441,7 @@ export default {
         AtreeType: null,
         isExclusive: false
       },
+      AtreeType: null,
       activeName: 'second',
       currentPage: 1,
       get_limit: ['不限制', 1, 2, 3, 4, 5, 8, 10, 20],
@@ -453,7 +458,7 @@ export default {
       noneBlockDiscArr: [
         {
           name: '添加商品',
-          num: '1'
+          num: ''
         },
         {
           name: '添加商品分类',
@@ -461,30 +466,29 @@ export default {
         },
         {
           name: '添加平台分类',
-          num: '2'
+          num: ''
         }
       ]
     }
   },
   mounted () {
-    this.$http.$on('ABusClassTrueArr', res => {
-      this.param.recommendCatId = res.join()
-    })
-    this.$http.$on('ABusClassTrueArr', res => {
-      this.param.recommendSortId = res.join()
-    })
+    this.dataDefalut()
   },
   methods: {
     dataDefalut () {
-      this.$http.$on('ABusClassTrueArr', res => {
+      this.$http.$on('result', res => {
+        this.recommendGoodsId = res
+        this.noneBlockDiscArr[0].num = res.length
         console.log(res)
-        console.log(this.AtreeType)
+      })
+      this.$http.$on('ABusClassTrueArr', res => {
         if (this.AtreeType === 1) {
+          this.recommendSortId = res
           this.noneBlockDiscArr[1].num = res.length
         } else {
+          this.recommendCatId = res
           this.noneBlockDiscArr[2].num = res.length
         }
-        console.log(res)
       })
     },
     // 点击指定商品出现的添加类弹窗汇总
@@ -492,7 +496,7 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index)
+          this.$http.$emit('choosingGoodsFlag', index, this.recommendGoodsId)
           break
         case 1:
           this.AtreeType = 1
@@ -501,6 +505,7 @@ export default {
         case 2:
           this.AtreeType = 2
           this.$http.$emit('AuserBrandDialog', index)
+          break
       }
     },
     // 保存优惠券
@@ -520,16 +525,16 @@ export default {
   },
   computed: {
     coupon_date_info () {
-      if (this.coupon_date_day || this.coupon_date_hour || this.coupon_date_minite) {
-        return `领券日开始${this.coupon_date_day ? this.coupon_date_day + '天' : ''}${this.coupon_date_hour ? this.coupon_date_hour + '时' : ''}${this.coupon_date_minite ? this.coupon_date_minite + '分' : ''}内有效`
+      if (this.param.validity || this.param.validityHour || this.param.validityMinute) {
+        return `领券日开始${this.param.validity ? this.param.validity + '天' : ''}${this.param.validityHour ? this.param.validityHour + '时' : ''}${this.param.validityMinute ? this.param.validityMinute + '分' : ''}内有效`
       } else {
         return `领券日开始X天X时X分内有效`
       }
     },
     coupon_date_datetimerange () {
-      if (this.coupon_date) {
+      if (this.param.couponDate) {
         let dateStr = ''
-        this.coupon_date.map(item => {
+        this.param.couponDate.map(item => {
           let date = new Date(item)
           let year = date.getFullYear()
           let month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -543,6 +548,9 @@ export default {
       } else {
         return `xxxx-xx-xx xx:xx:xx xxxx-xx-xx xx:xx:xx`
       }
+    },
+    crlfFormat () {
+      return this.param.useExplain.replace(/\n/g, '<br />')
     }
   }
 }
