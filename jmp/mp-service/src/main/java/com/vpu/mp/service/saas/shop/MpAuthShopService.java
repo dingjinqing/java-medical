@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
@@ -25,6 +26,9 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +39,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
@@ -50,9 +55,11 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
+import com.vpu.mp.service.pojo.shop.market.message.BatchUploadCodeParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -787,11 +794,29 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param userDesc
 	 * @throws WxErrorException
 	 */
-	public void batchUploadCodeAndApplyAudit(Integer templateId)
-			throws WxErrorException {
-		Result<MpAuthShopRecord> records = db().fetch(MP_AUTH_SHOP, MP_AUTH_SHOP.IS_AUTH_OK.eq(AUTH_OK));
-		for (MpAuthShopRecord record : records) {
-			this.uploadCodeAndApplyAudit(record.getAppId(), templateId);
+	public Boolean batchUploadCodeAndApplyAudit(Integer templateId){
+		
+		MpVersionRecord row = saas.shop.mpVersion.getRow(templateId);
+		// TODO 要判读只允许一个提交进程存在
+		
+		int recId = saas.shop.backProcessService.insertByInfo(row.into(MpVersionVo.class), this.getClass().getName(), Integer.parseInt(String.valueOf(Thread.currentThread().getId())));
+		MpAuthShopListParam param = new MpAuthShopListParam();
+		param.setIsAuthOk((byte) 1);
+		param.setAuditState((byte) 1);
+		List<MpAuthShopListVo> mpList = getCanSubmitAuditMps(param,param.buildOptionByUpload()).fetchInto(MpAuthShopListVo.class);
+		if(mpList.size()==0) {
+			//没有要提交的
+			saas.shop.backProcessService.fail(recId, "没有符合要求的小程序");
+			return false;
+		}else {
+			Integer currentUseTemplateId = saas.shop.mpVersion.getCurrentUseTemplateId(null,row.getPackageVersion());
+			BatchUploadCodeParam param1=new BatchUploadCodeParam();
+			param1.setList(mpList);
+			param1.setRecId(recId);
+			param1.setTemplateId(currentUseTemplateId);
+			param1.setPackageVersion(row.getPackageVersion());
+			saas.taskJobMainService.dispatchImmediately(param1,BatchUploadCodeParam.class.getName(),0,TaskJobEnum.BATCH_UPLOAD.getExecutionType());
+			return true;
 		}
 	}
 
@@ -943,35 +968,37 @@ public class MpAuthShopService extends MainBaseService {
      * @return 分页内容
      */
     public PageResult<MpAuthShopListVo> getAuthList(MpAuthShopListParam param) {
-
-        String shopFieldName=SHOP_RENEW.SHOP_ID.getName();
-        String expireFieldName=SHOP_RENEW.EXPIRE_TIME.getName();
-
-        Table<Record2<Integer, Timestamp>> nested =
-            db().select(SHOP_RENEW.SHOP_ID.as(shopFieldName),
-                DSL.max(SHOP_RENEW.EXPIRE_TIME).as(expireFieldName))
-                .from(SHOP_RENEW).groupBy(SHOP_RENEW.SHOP_ID).asTable("nested");
-
-        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
-
-        Condition condition = param.buildOption();
-        if (param.getShopState() != null && param.getShopState() == 0) {
-            condition = condition.and(nested.field(expireFieldName, Timestamp.class).lt(Timestamp.valueOf(LocalDateTime.now())));
-        }
-
-        if (param.getShopState() != null && param.getShopState() == 1) {
-            condition = condition.and(nested.field(expireFieldName, Timestamp.class).ge(Timestamp.valueOf(LocalDateTime.now())));
-        }
-
-        SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> select = db().select(MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.SHOP_ID, MP_AUTH_SHOP.NICK_NAME, MP_AUTH_SHOP.HEAD_IMG,
-            MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.VERIFY_TYPE_INFO, MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.LAST_AUTH_TIME,
-            MP_AUTH_SHOP.BIND_TEMPLATE_ID, MP_AUTH_SHOP.AUDIT_STATE, MP_AUTH_SHOP.PUBLISH_STATE,
-            DSL.when(nested.field(expireFieldName, Timestamp.class).lt(timestamp), 0).otherwise(1).as("shopState"),
-            MP_AUTH_SHOP.CREATE_TIME)
-            .from(MP_AUTH_SHOP).leftJoin(nested).on(nested.field(shopFieldName, Integer.class).eq(MP_AUTH_SHOP.SHOP_ID))
-            .where(condition);
-
+        SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> select =getCanSubmitAuditMps(param,param.buildOption());
         return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MpAuthShopListVo.class);
+    }
+    
+    
+    public SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> getCanSubmitAuditMps(MpAuthShopListParam param, Condition condition) {
+    	  String shopFieldName=SHOP_RENEW.SHOP_ID.getName();
+          String expireFieldName=SHOP_RENEW.EXPIRE_TIME.getName();
+
+          Table<Record2<Integer, Timestamp>> nested =
+              db().select(SHOP_RENEW.SHOP_ID.as(shopFieldName),
+                  DSL.max(SHOP_RENEW.EXPIRE_TIME).as(expireFieldName))
+                  .from(SHOP_RENEW).groupBy(SHOP_RENEW.SHOP_ID).asTable("nested");
+
+          Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+
+          if (param.getShopState() != null && param.getShopState() == 0) {
+              condition = condition.and(nested.field(expireFieldName, Timestamp.class).lt(Timestamp.valueOf(LocalDateTime.now())));
+          }
+
+          if (param.getShopState() != null && param.getShopState() == 1) {
+              condition = condition.and(nested.field(expireFieldName, Timestamp.class).ge(Timestamp.valueOf(LocalDateTime.now())));
+          }
+
+           return db().select(MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.SHOP_ID, MP_AUTH_SHOP.NICK_NAME, MP_AUTH_SHOP.HEAD_IMG,
+              MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.VERIFY_TYPE_INFO, MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.LAST_AUTH_TIME,
+              MP_AUTH_SHOP.BIND_TEMPLATE_ID, MP_AUTH_SHOP.AUDIT_STATE, MP_AUTH_SHOP.PUBLISH_STATE,
+              DSL.when(nested.field(expireFieldName, Timestamp.class).lt(timestamp), 0).otherwise(1).as("shopState"),
+              MP_AUTH_SHOP.CREATE_TIME)
+              .from(MP_AUTH_SHOP).leftJoin(nested).on(nested.field(shopFieldName, Integer.class).eq(MP_AUTH_SHOP.SHOP_ID))
+              .where(condition);
     }
 
     /**
