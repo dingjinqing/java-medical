@@ -94,6 +94,12 @@ export default {
       if (newData) {
         this.$http.$emit('middleDragData', this.flag)
       }
+    },
+    activeBorder (newData) {
+      console.log(this.index)
+      if (newData) {
+        this.$http.$emit('nowHightLightModules', this.index)
+      }
     }
   },
   mounted () {

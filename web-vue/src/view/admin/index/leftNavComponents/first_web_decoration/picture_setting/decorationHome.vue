@@ -352,16 +352,23 @@ export default {
       oldElement: null,
       zbFlag: false,
       topAreaFlag: false,
-      nowRightShowFlag: null
+      nowRightShowIndex: null
     }
   },
   watch: {
     showModulesList (newData) {
+      console.log(newData)
+      if (newData.length === 1) {
+        this.nowRightShowIndex = newData[0]
+      }
       if (newData.length) {
         this.zbFlag = true
       } else {
         this.zbFlag = false
       }
+    },
+    nowRightShowIndex (newData) {
+      console.log(newData, this.activeName)
     }
   },
   computed: {
@@ -414,6 +421,11 @@ export default {
         zIndex: 10000 // 拖动位置在拖放区域上方
       })
       this.handleToAcceptDrag()
+      // 接收当前高亮模块参数
+      this.$http.$on('nowHightLightModules', res => {
+        console.log(res)
+        this.nowRightShowIndex = res
+      })
     },
     // 左侧模块拖拽开始start处理函数
     highlignt_row_item (pos) {
@@ -538,7 +550,6 @@ export default {
             })
             // 改变边框
             let index = flag - 1
-
             console.log(newArr)
             this.showModulesList = arrFliter
             let data = this.showModulesList
@@ -557,7 +568,6 @@ export default {
               return item
             })
             let indexD = flag + 1
-
             console.log(arrFliterD)
             this.showModulesList = arrFliterD
             let dataD = this.showModulesList
