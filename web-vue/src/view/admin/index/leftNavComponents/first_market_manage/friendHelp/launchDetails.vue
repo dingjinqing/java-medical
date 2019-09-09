@@ -6,23 +6,29 @@
         <el-form-item
           size="small"
           label="用户昵称"
-          v-model="username"
         >
-          <el-input placeholder="请输入用户昵称" />
+          <el-input
+            placeholder="请输入用户昵称"
+            v-model="username"
+          />
         </el-form-item>
         <el-form-item
           size="small"
           label="手机号"
-          v-model="mobile"
         >
-          <el-input placeholder="请输入手机号" />
+          <el-input
+            placeholder="请输入手机号"
+            v-model="mobile"
+          />
         </el-form-item>
         <el-form-item
           size="small"
           label="助力活动ID"
-          v-model="id"
         >
-          <el-input placeholder="请输入助力活动ID"></el-input>
+          <el-input
+            placeholder="请输入助力活动ID"
+            v-model="id"
+          ></el-input>
         </el-form-item>
         <br>
 
@@ -37,7 +43,7 @@
             ></el-option>
             <el-option
               label="是"
-              value="1"
+              value="2"
             ></el-option>
             <el-option
               label="否"
@@ -55,17 +61,28 @@
     </div>
 
     <div class="table_list">
+
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
+        :data="tableData"
         border
         style="width: 100%"
       >
+
         <el-table-column
           prop="username"
           label="发起用户昵称"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click="getUser()"
+              type="text"
+            > {{scope.row.username}} </el-button>
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop="mobile"
           label="发起用户手机号"
@@ -80,7 +97,13 @@
           prop="joinNum"
           label="参与人数"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click="getJoinDetails(scope.row.id)"
+              type="text"
+            > {{scope.row.joinNum}} </el-button>
+          </template></el-table-column>
         <el-table-column
           prop="promoteTimes"
           label="助力次数"
@@ -145,13 +168,25 @@ export default {
     },
     handData (data) {
       data.map((item, index) => {
-        if (item.promoteStatus === 1) {
+        if (item.promoteStatus === 2) {
           item.promoteStatus = '是'
         } else {
           item.promoteStatus = '否'
         }
       })
       this.tableData = data
+    },
+    // 用户
+    getUser () {
+      this.$router.push({
+        path: `/admin/home/main/membershipInformation`
+      })
+    },
+    // 参与人
+    getJoinDetails (launchId) {
+      this.$router.push({
+        path: `/admin/home/main/friendHelp/participateDetails/${this.promoteId}/${launchId}`
+      })
     }
   },
   mounted () {

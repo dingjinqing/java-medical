@@ -68,7 +68,7 @@
           <el-button
             type="primary"
             size="small"
-            @click="handleClick()"
+            @click="onSubmit"
           >筛选</el-button>
         </div>
       </div>
@@ -130,29 +130,32 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span>编辑</span>
-              <span>分享</span>
+              <span class="el-icon-edit-outline"></span>
+              <span class="el-icon-share"></span>
               <span @click="receiveDetails(scope.row.id)">领取明细</span>
               <span @click="launchDetails(scope.row.id)">发起明细</span>
               <span @click="participateDetails(scope.row.id)">参与明细</span>
-              <span @click="startOrBlock(scope)">启用</span>
-              <span @click="startOrBlock(scope)">停用</span>
-              <span @click="delAct(scope)">删除</span>
+              <span
+                class="el-icon-circle-check"
+                @click="startOrBlock(scope)"
+              ></span>
+              <span
+                class="el-icon-circle-close"
+                @click="startOrBlock(scope)"
+              ></span>
+              <span
+                class="el-icon-delete"
+                @click="delAct(scope)"
+              ></span>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <div class="footer_right">
-        <span>当前页面1/1，总记录4条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="4"
-        >
-        </el-pagination>
-      </div>
+
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="handleClick"
+      />
 
     </div>
   </div>
@@ -160,10 +163,11 @@
 </template>
 <script>
 import { friendHelpList, deleteActive, switchAct } from '@/api/admin/marketManage/friendHelp.js'
+import pagination from '@/components/admin/pagination/pagination'
 import addHelpAct from './addHelpAct'
 export default {
   components: {
-    // pagination
+    pagination,
     addHelpAct
   },
   data () {
@@ -190,7 +194,7 @@ export default {
       }],
       tabIndex: 2,
       currentPage: 1,
-      tableData: null,
+      tableData: [],
       options: [
         {
           value: '-1',
@@ -205,7 +209,9 @@ export default {
           value: '2',
           label: '赠送优惠券'
         }],
-      pageParams: {}
+      pageParams: {
+
+      }
     }
   },
   created () {
@@ -217,29 +223,36 @@ export default {
     handleCurrentChange () {
       console.log(this.currentPage)
     },
-    handleActClick () {
-      this.isShowAct = true
-      this.activeName = 'sixth'
-    },
+
     handleClick () {
-      let listParam = {
-        'rewardType': this.options.value,
-        'startTime': this.startTime,
-        'endTime': this.endTime,
-        'actName': this.actName,
-        'actState': this.tabSwitch,
-        'currentPage': 1,
-        'pageRows': 20
-      }
-      friendHelpList(listParam).then(res => {
+      this.pageParams.rewardType = this.options.value
+      this.pageParams.startTime = this.startTime
+      this.pageParams.endTime = this.endTime
+      this.pageParams.actName = this.actName
+      this.pageParams.actState = this.tabSwitch
+      friendHelpList(this.pageParams).then(res => {
         console.log(res)
 
         if (res.error === 0) {
           this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
         }
       }).catch(() => {
         this.$message.error('操作失败')
       })
+    },
+    onSubmit () {
+      this.pageParams.currentPage = 1
+      this.handleClick()
+    },
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        item.validDate = `${item.startTime}至${item.endTime}`
+        var jsonObject = JSON.parse(item.rewardContent)
+        item.marketStore = jsonObject[0].market_store
+      })
+      this.tableData = data
     },
     // 删除优惠券
     delAct (scope) {
@@ -265,15 +278,7 @@ export default {
         }
       })
     },
-    // 表格数据处理
-    handleData (data) {
-      data.map((item, index) => {
-        item.validDate = `${item.startTime}至${item.endTime}`
-        var jsonObject = JSON.parse(item.rewardContent)
-        item.marketStore = jsonObject[0].market_store
-      })
-      this.tableData = data
-    },
+
     // 奖励类型转化为文字
     rewardTypeName (row, column) {
       switch (row.rewardType) {
@@ -316,7 +321,9 @@ export default {
     },
     // 参与明细
     participateDetails (id) {
-      this.$router.push(`/admin/home/main/friendHelp/participateDetails/${id}`)
+      this.$router.push({
+        path: `/admin/home/main/friendHelp/participateDetails/${id}/${null}`
+      })
     }
   }
 }

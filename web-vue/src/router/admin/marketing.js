@@ -339,7 +339,7 @@ const routes = [
   },
   // 好友助力参与明细
   {
-    path: '/admin/home/main/friendHelp/participateDetails/:id',
+    path: '/admin/home/main/friendHelp/participateDetails/:id/:launchId',
     name: 'promote_participate_details',
     meta: {
       crumbTitle: 'router.promote_participate_details',

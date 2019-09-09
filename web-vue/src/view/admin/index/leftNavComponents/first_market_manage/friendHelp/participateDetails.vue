@@ -7,33 +7,42 @@
           size="small"
           label="用户昵称"
         >
-          <el-input placeholder="请输入用户昵称" />
+          <el-input
+            placeholder="请输入用户昵称"
+            v-model="username"
+          />
         </el-form-item>
         <el-form-item
           size="small"
           label="手机号"
         >
-          <el-input placeholder="请输入手机号" />
+          <el-input
+            placeholder="请输入手机号"
+            v-model="mobile"
+          />
         </el-form-item>
         <el-form-item
           size="small"
           label="助力活动ID"
         >
-          <el-input placeholder="请输入助力活动ID"></el-input>
+          <el-input
+            placeholder="请输入助力活动ID"
+            v-model="launchId"
+          ></el-input>
         </el-form-item>
         <br>
         <el-form-item
           size="small"
           label="是否是新用户"
         >
-          <el-select>
+          <el-select v-model="inviteSource">
             <el-option
               label="全部"
-              value="-1"
+              value=""
             ></el-option>
             <el-option
               label="是"
-              value="1"
+              value="promote"
             ></el-option>
             <el-option
               label="否"
@@ -44,6 +53,7 @@
         <el-button
           size="small"
           type="primary"
+          @click="onSubmit"
         >筛选</el-button>
         <el-button size="small">导出数据</el-button>
       </el-form>
@@ -53,6 +63,7 @@
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
+        :data="tableData"
         border
         style="width: 100%"
       >
@@ -60,35 +71,49 @@
           prop="username"
           label="参与用户昵称"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click="getUser()"
+              type="text"
+            > {{scope.row.username}} </el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="mobile"
           label="参与用户手机号"
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="groupId"
+          prop="inviteSource"
           label="是否是新用户"
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="groupId"
+          prop="launchId"
           label="助力活动ID"
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="inviteNum"
+          prop="launchUsername"
           label="活动发起人"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click="getUser()"
+              type="text"
+            > {{scope.row.launchUsername}} </el-button>
+          </template>
+        </el-table-column>
 
         <el-table-column
-          prop="integration"
+          prop="promoteTimes"
           label="助力次数"
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="isGrouper"
+          prop="promoteValue"
           label="助力值"
           align="center"
         ></el-table-column>
@@ -102,6 +127,7 @@
   </div>
 </template>
 <script>
+import { participateDetails } from '@/api/admin/marketManage/friendHelp.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: {
@@ -111,13 +137,55 @@ export default {
     return {
       username: '',
       mobile: '',
-      id: '',
-      promoteStatus: '',
-      recTime: '',
-      orderSn: ''
+      launchId: '',
+      inviteSource: '',
+      tableData: [],
+      pageParams: {
+      }
+    }
+  },
+
+  methods: {
+    loadData () {
+      this.pageParams.promoteId = this.promoteId
+      this.pageParams.launchId = this.launchId
+      this.pageParams.mobile = this.mobile
+      this.pageParams.username = this.username
+      this.pageParams.inviteSource = this.inviteSource
+      console.log('pageParams:', this.pageParams)
+      participateDetails(this.pageParams).then(res => {
+        console.log('pageInfo:', res)
+        this.handData(res.content.dataList)
+        this.pageParams = res.content.page
+      })
+    },
+
+    onSubmit () {
+      this.pageParams.currentPage = 1
+      this.loadData()
+    },
+    handData (data) {
+      data.map((item, index) => {
+        if (item.inviteSource === 'promote') {
+          item.inviteSource = '是'
+        } else {
+          item.inviteSource = '否'
+        }
+      })
+      this.tableData = data
+      console.log('tableData:', this.tableData)
+    },
+    // 用户
+    getUser () {
+      this.$router.push({
+        path: `/admin/home/main/membershipInformation`
+      })
     }
   },
   mounted () {
+    console.log(this.$route.params)
+    this.promoteId = this.$route.params.id
+    this.launchId = this.$route.params.launchId
     this.loadData()
   }
 }
