@@ -716,7 +716,9 @@
       @handleSelectImg='handleSelectImg'
     />
     <!--添加优惠卷-->
-    <AddCouponDialog @handleToCheck="handleToCheck" />
+    <AddCouponDialog
+      @handleToCheck="handleToCheck"
+    />
     <!--选择商品弹窗-->
     <ChoosingGoods />
     <!--选择商家分类弹窗-->

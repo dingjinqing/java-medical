@@ -75,10 +75,11 @@ export default {
       couponInput: '',
       dialogData: [],
       data: '',
-      loading: false
+      loading: false,
+      isSingleElection: false
     }
   },
-  props: ['origin'],
+  props: ['origin', 'singleElection'],
   mounted () {
     // 初始化
     this.defaultData()
@@ -86,6 +87,11 @@ export default {
   methods: {
 
     defaultData () {
+      console.log(this.singleElection)
+      if (this.singleElection) {
+        this.isSingleElection = this.singleElection
+      }
+
       this.$http.$on('V-AddCoupon', data => {
         this.data = data
         this.initCouponList(data)
@@ -117,7 +123,14 @@ export default {
     },
     // 优惠卷选中
     handleToClick (index) {
-      this.dialogData[index].ischeck = !this.dialogData[index].ischeck
+      if (this.singleElection) {
+        this.dialogData.forEach(item => {
+          item.ischeck = false
+        })
+        this.dialogData[index].ischeck = !this.dialogData[index].ischeck
+      } else {
+        this.dialogData[index].ischeck = !this.dialogData[index].ischeck
+      }
     },
     // 弹窗确定事件
     handleToSure () {
@@ -149,7 +162,7 @@ export default {
         timingUnit: '0'
       }
       data.map(item => {
-        couponArr.push(Object.assign({}, item, {send_num: '', coupon_set: couponData}))
+        couponArr.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
       })
       return couponArr
     }
