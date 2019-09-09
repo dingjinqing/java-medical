@@ -134,7 +134,24 @@ export default {
         return
       }
       this.$emit('handleToCheck', arr)
+      this.$emit('checkReturnFormat', this.formatCoupon(arr))
       this.dialogVisible = false
+    },
+
+    // 数据格式化
+    formatCoupon (data) {
+      let couponArr = []
+      let couponData = {
+        immediatelyGrantAmount: 0,
+        timingEvery: 0,
+        timingAmount: 0,
+        timingTime: '1',
+        timingUnit: '0'
+      }
+      data.map(item => {
+        couponArr.push(Object.assign({}, item, {send_num: '', coupon_set: couponData}))
+      })
+      return couponArr
     }
   }
 }

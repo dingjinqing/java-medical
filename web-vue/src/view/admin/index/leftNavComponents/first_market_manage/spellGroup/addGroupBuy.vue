@@ -196,7 +196,7 @@
         />
         <!--添加优惠卷弹窗-->
         <addCouponDialog
-                @handleToCheck="handleToCheck"
+                @checkReturnFormat="handleToCheck"
         />
     </wrapper>
 </template>
@@ -205,11 +205,11 @@
 import {mapActions} from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
-import addCouponDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog'
+import addCouponDialog from '@/components/admin/addCouponDialog'
 import actShare from '@/view/admin/index/leftNavComponents/first_market_manage/bargain/actShare'
-import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
-import { addGroupBuyActivity } from '@/api/admin/marketManage/spellGroup.js'
-import { format } from '@/util/date'
+import {getAllGoodsProductList} from '@/api/admin/brandManagement.js'
+import {addGroupBuyActivity} from '@/api/admin/marketManage/spellGroup.js'
+import {format} from '@/util/date'
 
 export default {
   components: {
@@ -402,12 +402,14 @@ export default {
     // 优惠卷回调
     handleToCheck (data) {
       console.log('优惠卷', data)
-      let arr = []
-      data.forEach(item => {
-        arr.push(item.id)
+      let couponKey = []
+      data.map((item) => {
+        couponKey.push(item.id)
       })
-      this.form.rewardCouponId = arr.toString()
-      console.log('conpon', arr.toString())
+      this.couponList = data
+      this.form.rewardCouponId = couponKey.toString()
+      console.log('conpon', couponKey.toString())
+      console.log('conpon', this.couponList)
     },
     // 编辑活动初始化
     editActivityInit (data) {
