@@ -13,7 +13,7 @@
           <div class="card_type">普通卡</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
-              <img src="http://miniimg.com.cn/image/admin/shop_def_y.png">
+              <img :src="$imageHost+'/image/admin/shop_def_y.png'">
             </div>
             <div class="card_content_right">
               <div>会员卡</div>
