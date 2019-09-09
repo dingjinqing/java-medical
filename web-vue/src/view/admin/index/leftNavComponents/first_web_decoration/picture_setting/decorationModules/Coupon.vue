@@ -47,19 +47,19 @@
           class="up_img"
           style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
-          @click="handleToClickIcon(0)"
+          @click.stop.prevent="handleToClickIcon(0)"
         >
         <img
           class="down_img"
           style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
-          @click="handleToClickIcon(1)"
+          @click.stop.prevent="handleToClickIcon(1)"
         >
         <img
           class="del_img"
           style="cursor:pointer"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
-          @click="handleToClickIcon(2)"
+          @click.stop.prevent="handleToClickIcon(2)"
         >
       </div>
     </div>
@@ -103,7 +103,7 @@ export default {
   methods: {
     defaultData () {
       this.$http.$on('decCard', (data, hereFlag) => {
-        console.log(this.flag, data)
+        // console.log(this.flag, data)
         let arr = data.length - 1
         if (this.flag === arr) {
           this.activeBorder = true
@@ -120,7 +120,7 @@ export default {
     },
     // 移上、移下、删除统一处理事件
     handleToClickIcon (flag) {
-      console.log(123)
+      console.log(flag)
       let obj = {
         direction: '',
         flag: this.flag
@@ -131,7 +131,7 @@ export default {
           this.$http.$emit('handleDragIconClick', obj)
           break
         case 1:
-          obj.direction = 'dowm'
+          obj.direction = 'down'
           this.$http.$emit('handleDragIconClick', obj)
           break
         case 2:
@@ -141,7 +141,7 @@ export default {
       }
     },
     mouseOver () {
-      console.log(this.flag)
+      // console.log(this.flag)
       this.$http.$emit('middleDragData', this.flag)
     }
   }

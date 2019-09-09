@@ -93,6 +93,7 @@
                   :class="topAreaFlag?'setHere':''"
                   @mouseover="dragTopOver"
                   @mouseout="dragTopOut"
+                  v-if="isDragging"
                 >
                   <span :class="topAreaFlag?'setHereSpan':''">放这里</span>
                 </div>
@@ -367,7 +368,7 @@ export default {
         },
         drag: function (ev, ui) {
           // console.log($(ui.helper).offset())
-          console.log(ev)
+          // console.log(ev)
           this_.highlignt_row_item($(ui.helper).offset())
         },
         stop: function () {
@@ -389,7 +390,7 @@ export default {
       if (pos.left > p.left && pos.top > p.top &&
         pos.left < p.left + $('.drag_area').width() &&
         pos.top < p.top + $('.drag_area').height()) {
-        console.log('ssssss')
+        // console.log('ssssss')
 
         $('.modules').each(function (idx, item) {
           p = $(this).offset()
@@ -398,7 +399,7 @@ export default {
             pos.top < p.top + $(this).height()
           ) {
             this_.insertModulesId = $(this)[0].__vue__.flag
-            console.log($(this)[0].__vue__.flag)
+            // console.log($(this)[0].__vue__.flag)
             $('.modules').removeClass('placeholder')
             $(this).addClass('placeholder')
           }
@@ -408,7 +409,7 @@ export default {
     // 中间模块拖拽接收
     handleToAcceptDrag () {
       let this_ = this
-      console.log('test')
+      // console.log('test')
       $('.decContent').droppable({
         activeClass: 'ui-state-default',
         hoverClass: 'ui-state-hover',
@@ -489,18 +490,32 @@ export default {
       console.log(1111)
       this.$http.$on('handleDragIconClick', ({ direction, flag }) => {
         let newArr = JSON.parse(JSON.stringify(this.showModulesList))
+        console.log(newArr, flag)
         switch (direction) {
           case 'up':
-            console.log(flag)
+            console.log(newArr, '--', flag)
+            if (flag === 0) {
+              this.$message({
+                message: '已到底部',
+                type: 'warning',
+                duration: 1000
+              })
+              return
+            }
             let temp = newArr[(flag - 1)]
             newArr[(flag - 1)] = newArr[flag]
             newArr[flag] = temp
-            this.showModulesList = newArr
+            let arrFliter = newArr.filter(item => {
+              return item
+            })
+            console.log(newArr)
+            this.showModulesList = arrFliter
             console.log(newArr, '--' + this.showModulesList)
             break
-          case 'dowm':
+          case 'down':
+            console.log(newArr, '--', flag, '123123123')
             let temp2 = newArr[(flag + 1)]
-            if (!newArr[(flag + 1)]) {
+            if ((newArr.length - 1) === flag) {
               this.$message({
                 message: '已到底部',
                 type: 'warning',
@@ -510,7 +525,11 @@ export default {
             }
             newArr[(flag + 1)] = newArr[flag]
             newArr[flag] = temp2
-            this.showModulesList = newArr
+            let arrFliterD = newArr.filter(item => {
+              return item
+            })
+            console.log(arrFliterD)
+            this.showModulesList = arrFliterD
             break
           case 'delete':
             console.log(newArr, flag)
@@ -526,7 +545,7 @@ export default {
     // 中间区域拖拽插入数据处理
     handleToMiddleDragData () {
       this.$http.$on('middleDragData', res => {
-        console.log(res)
+        // console.log(res)
         this.newIndex = res
       })
     },

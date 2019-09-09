@@ -35,19 +35,19 @@
       <div class="item_operation">
         <img
           class="up_img"
-          style="cursor:pointer"
+          style="cursor:pointer;z-index:1000"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
           @click="handleToClickIcon(0)"
         >
         <img
           class="down_img"
-          style="cursor:pointer"
+          style="cursor:pointer;z-index:1000"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
           @click="handleToClickIcon(1)"
         >
         <img
           class="del_img"
-          style="cursor:pointer"
+          style="cursor:pointer;z-index:1000"
           :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
           @click="handleToClickIcon(2)"
         >
@@ -79,12 +79,12 @@ export default {
     }
   },
   watch: {
-    // activeSetHere (newData) {
-    //   console.log(newData)
-    //   if (newData) {
-    //     this.$http.$emit('middleDragData', this.flag)
-    //   }
-    // }
+    activeSetHere (newData) {
+      console.log(newData)
+      if (newData) {
+        this.$http.$emit('middleDragData', this.flag)
+      }
+    }
   },
   mounted () {
     // 初始化数据
@@ -93,8 +93,8 @@ export default {
   methods: {
     defaultData () {
       this.$http.$on('decCard', (data, hereFlag) => {
-        console.log(this.flag, data)
-        console.log(hereFlag)
+        // console.log(this.flag, data)
+        // console.log(hereFlag)
         let arr = data.length - 1
         if (this.flag === arr) {
           this.activeBorder = true
@@ -106,12 +106,12 @@ export default {
         } else {
           this.activeSetHere = false
         }
-        console.log(this.activeBorder)
+        // console.log(this.activeBorder)
       })
     },
     // 移上、移下、删除统一处理事件
     handleToClickIcon (flag) {
-      console.log(123)
+      console.log(flag)
       let obj = {
         direction: '',
         flag: this.flag
@@ -122,7 +122,7 @@ export default {
           this.$http.$emit('handleDragIconClick', obj)
           break
         case 1:
-          obj.direction = 'dowm'
+          obj.direction = 'down'
           this.$http.$emit('handleDragIconClick', obj)
           break
         case 2:
