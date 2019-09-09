@@ -69,7 +69,7 @@ public class DatabaseManager {
 		MpDefaultDslContext db = mainDsl.get();
 		if (db == null) {
 			BasicDataSource ds = datasourceManager.getMainDbDatasource();
-			db = this.getDsl(ds, datasourceManager.getMainDbConfig());
+			db = this.getDsl(ds, datasourceManager.getMainDbConfig(),0);
 		}
 		mainDsl.set(db);
 		return mainDsl.get();
@@ -92,7 +92,7 @@ public class DatabaseManager {
 					throw new RuntimeException("ShopId "+shopId+" Db not found") ;
 				}
 				BasicDataSource ds = datasourceManager.getDatasource(dbConfig);
-				db = getDsl(ds, dbConfig);
+				db = getDsl(ds, dbConfig,shopId);
 				shopDsl.set(db);
 			} else {
 				throw new RuntimeException();
@@ -125,8 +125,9 @@ public class DatabaseManager {
 	/**
 	 * 从数据源获取一个连接
 	 */
-	protected MpDefaultDslContext getDsl(BasicDataSource ds, DbConfig dbConfig) {
+	protected MpDefaultDslContext getDsl(BasicDataSource ds, DbConfig dbConfig,Integer shopId) {
 		MpDefaultDslContext db = new MpDefaultDslContext(configuration(ds, dbConfig.getDatabase()));
+		db.setShopId(shopId);
 		db.setDbConfig(dbConfig);
 		db.execute("SET NAMES utf8mb4");
 		db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
@@ -140,7 +141,7 @@ public class DatabaseManager {
 		try {
 			String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
 			BasicDataSource ds = datasourceManager.getToCreateShopDbDatasource();
-			getDsl(ds, dbConfig).execute(sql);
+			getDsl(ds, dbConfig,0).execute(sql);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 			return false;
