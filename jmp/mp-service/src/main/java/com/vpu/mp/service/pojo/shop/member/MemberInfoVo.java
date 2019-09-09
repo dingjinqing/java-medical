@@ -43,6 +43,8 @@ public class MemberInfoVo {
 	
 	/** 来源名称  如： {@link com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED } */
 	private String sourceName;
+	/** 0：恢复登录 ；1：禁止登录  {@link com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES } */
+	private Byte delFlag;
 	
 	
 }
