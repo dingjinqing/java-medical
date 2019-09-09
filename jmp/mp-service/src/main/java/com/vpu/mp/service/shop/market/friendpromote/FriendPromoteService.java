@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveVo;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdateParam;
+import com.vpu.mp.service.shop.member.MemberService;
 
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
@@ -269,20 +270,20 @@ public class FriendPromoteService extends ShopBaseService {
 				.leftJoin(fpl).on(fpd.LAUNCH_ID.eq(fpl.ID))
 				.leftJoin(b).on(fpl.USER_ID.eq(b.USER_ID))
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId()))
-				.groupBy(fpd.ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
+				.groupBy(fpd.LAUNCH_ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
 						b.USERNAME.as("launchUsername"));
 		/* 查询条件 */
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
-			sql.having(USER.USERNAME.like(this.likeValue(param.getUsername())));
+			sql.having(a.USERNAME.like(this.likeValue(param.getUsername())));
 		}
 		if (!StringUtils.isNullOrEmpty(param.getMobile())) {
-			sql.having(USER.MOBILE.like(this.likeValue(param.getMobile())));
+			sql.having(a.MOBILE.like(this.likeValue(param.getMobile())));
 		}
 		if (param.getId() != null) {
 			sql.having(fpl.ID.eq(param.getId()));
 		}
-		if (FriendPromoteParticipateParam.PROMOTE.equalsIgnoreCase(param.getInviteSource())) {
-			sql.having(USER.INVITE_SOURCE.eq(FriendPromoteParticipateParam.PROMOTE));
+		if (MemberService.INVITE_SOURCE_PROMOTE.equalsIgnoreCase(param.getInviteSource())) {
+			sql.having(a.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE));
 		}
 		/* 整合分页信息 */
 		PageResult<FriendPromoteParticipateVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),

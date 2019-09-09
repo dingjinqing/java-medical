@@ -97,6 +97,7 @@ public class MemberService extends ShopBaseService {
 	public static final String INVITE_SOURCE_MEMBERCARD = "membercard";
 	public static final String INVITE_SOURCE_SCANQRCODE = "scanqrcode";
 	public static final String INVITE_SOURCE_CHANNEL = "channel";
+	public static final String INVITE_SOURCE_PROMOTE="promote";
 	public static final String ZERO = "0";
 	public static final String NEG_ONE = "-1";
 	public static final Integer WEEK = 7;

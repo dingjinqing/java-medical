@@ -21,7 +21,6 @@ public class FriendPromoteParticipateParam {
 
 	/* 是否是新用户 promote:是  else：否 */
 	private String inviteSource;
-	public static final String PROMOTE = "promote";
 	
 	/* 分页信息 */
 	private int currentPage;
