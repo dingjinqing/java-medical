@@ -279,8 +279,8 @@ public class FriendPromoteService extends ShopBaseService {
 		if (!StringUtils.isNullOrEmpty(param.getMobile())) {
 			sql.having(a.MOBILE.like(this.likeValue(param.getMobile())));
 		}
-		if (param.getId() != null) {
-			sql.having(fpl.ID.eq(param.getId()));
+		if (param.getLaunchId() != null) {
+			sql.having(fpd.LAUNCH_ID.eq(param.getLaunchId()));
 		}
 		if (MemberService.INVITE_SOURCE_PROMOTE.equalsIgnoreCase(param.getInviteSource())) {
 			sql.having(a.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE));
