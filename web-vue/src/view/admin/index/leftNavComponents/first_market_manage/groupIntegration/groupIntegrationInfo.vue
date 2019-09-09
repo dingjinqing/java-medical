@@ -1,13 +1,17 @@
 <template>
   <div class="integralAct">
     <el-form
-      ref="form"
+      ref="activity"
       :model="activity"
+      :rules="fromRules"
       labelPosition="left"
       label-width="120px"
       style="padding-left:50px;"
     >
-      <el-form-item label="活动名称：">
+      <el-form-item
+        label="活动名称："
+        prop="name"
+      >
         <el-input
           v-model="activity.name"
           placeholder="请填写活动名称"
@@ -15,7 +19,10 @@
           class="inputWidth"
         ></el-input>
       </el-form-item>
-      <el-form-item label="宣传语：">
+      <el-form-item
+        label="宣传语："
+        prop="advertise"
+      >
         <el-input
           v-model="activity.advertise"
           size="small"
@@ -36,7 +43,10 @@
         <span class="uniteStyle">限制十个字以内</span>
       </el-form-item>
 
-      <el-form-item label="有效期: ">
+      <el-form-item
+        label="有效期: "
+        required
+      >
         <el-date-picker
           v-model="activity.startTime"
           type="datetime"
@@ -58,7 +68,10 @@
         </el-date-picker>
       </el-form-item>
 
-      <el-form-item label="瓜分积分总数：">
+      <el-form-item
+        label="瓜分积分总数："
+        prop="inteTotal"
+      >
         <el-input
           v-model="activity.inteTotal"
           size="small"
@@ -67,7 +80,10 @@
         <span>积分</span>
         <span class="uniteStyle">0表示不限制数量,修改总量时只能增加,不能减少,请谨慎设置</span>
       </el-form-item>
-      <el-form-item label="单团瓜分内容: ">
+      <el-form-item
+        label="单团瓜分内容: "
+        required
+      >
         <section>
           <el-input
             v-model="activity.limitAmount"
@@ -84,7 +100,10 @@
           <span class="uniteStyle">成团人数需≥2人且≤20人,瓜分积分数量需大于成团人数</span>
         </section>
       </el-form-item>
-      <el-form-item label="参团限制：">
+      <el-form-item
+        label="参团限制："
+        prop="joinLimit"
+      >
         <section>
           <span>每人最多参加&nbsp;</span>
           <el-input
@@ -96,7 +115,10 @@
           <span class="uniteStyle">默认为1,0表示不限制数量。仅限制参与其他用户所开的团的数量</span>
         </section>
       </el-form-item>
-      <el-form-item label="瓜分方式：">
+      <el-form-item
+        label="瓜分方式："
+        prop="divideType"
+      >
         <el-radio-group
           v-model="activity.divideType"
           style="line-height:40px"
@@ -114,7 +136,10 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="瓜分限制：">
+      <el-form-item
+        label="瓜分限制："
+        prop="isDayDivide"
+      >
         <span>用户开团24小时后,拼团未满员是否可以瓜分积分</span>
         <br>
         <el-radio-group v-model="activity.isDayDivide">
@@ -129,6 +154,7 @@
         size="small"
         @click="saveActivity()"
       >保存</el-button>
+      <!-- 单团瓜分积分数不能大于积分总数 -->
     </div>
   </div>
 </template>
@@ -151,6 +177,18 @@ export default {
         joinLimit: '',
         divideType: 0,
         isDayDivide: 0
+      },
+      fromRules: {
+        name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
+        advertise: [{ required: true, message: '请填写宣传语', trigger: 'blur' }],
+        startTime: [{ type: 'date', required: true, message: '请选择时间', trigger: 'blur' }],
+        endtTime: [{ type: 'date', required: true, message: '请选择时间', trigger: 'blur' }],
+        inteTotal: [{ required: true, message: '请填写瓜分积分数', trigger: 'blur' }],
+        limitAmount: [{ required: true, message: '请填写瓜分人数', trigger: 'blur' }],
+        inteGroup: [{ required: true, message: '请输入瓜分积分总数', trigger: 'blur' }],
+        joinLimit: [{ required: true, message: '请填写参团限制', trigger: 'blur' }],
+        divideType: [{ required: true, trigger: 'blur' }],
+        isDayDivide: [{ required: true, trigger: 'blur' }]
       },
       srcList: {
         src1: `${this.$imageHost}/image/admin/new_preview_image/pin_integration.jpg`

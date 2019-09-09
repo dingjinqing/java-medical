@@ -80,6 +80,12 @@ export const cn = {
   pin_group_detailList: ['营销管理', '多人拼团', '详情明细'],
   // 营销管理 多人拼团 拼团订单
   pin_group_orderList: ['营销管理', '多人拼团', '详情明细'],
+  // 营销管理 多人拼团 获取新用户明细
+  pin_group_newUserDetail: ['营销管理', '多人拼团', '获取新用户明细'],
+  // 营销管理 多人拼团 拼团退款失败订单
+  pin_group_refundFailureOrder: ['营销管理', '多人拼团', '拼团退款失败订单'],
+  // 营销管理 多人拼团 拼团退款失败订单
+  pin_group_activityEffectData: ['营销管理', '多人拼团', '活动效果数据'],
   // 营销管理 砍价
   bargain: ['营销管理', '砍价'],
   // 营销管理 砍价
@@ -248,6 +254,12 @@ export const en = {
   pin_group_detailList: ['Marketing management', 'Groupon', 'detail'],
   // 营销管理 多人拼团 拼团订单
   pin_group_orderList: ['Marketing management', 'Groupon', 'Groupon Orders'],
+  // 营销管理 多人拼团 获取新用户明细
+  pin_group_newUserDetail: ['Marketing management', 'Groupon', 'Get new user detail'],
+  // 营销管理 多人拼团 拼团退款失败订单
+  pin_group_refundFailureOrder: ['Marketing management', 'Groupon', 'Refund failure order'],
+  // 营销管理 多人拼团 活动效果数据
+  pin_group_activityEffectData: ['Marketing management', 'Groupon', 'activityEffectData'],
   // 营销管理 砍价
   bargain: ['Marketing management', 'Bargain'],
   // 营销管理 砍价

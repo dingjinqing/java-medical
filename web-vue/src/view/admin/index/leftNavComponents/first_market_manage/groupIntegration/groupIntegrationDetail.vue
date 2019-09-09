@@ -5,18 +5,23 @@
       <el-form :inline="true">
         <el-form-item label="用户手机号">
           <el-input
+            size="small"
             placeholder="请输入手机号"
             v-model="queryForm.mobile"
+            style="width: 150px"
           />
         </el-form-item>
         <el-form-item label="用户昵称">
           <el-input
+            size="small"
             placeholder="请输入用户昵称"
             v-model="queryForm.username"
+            style="width: 150px"
           />
         </el-form-item>
         <el-form-item label="参团时间">
           <el-date-picker
+            size="small"
             type="datetimerange"
             value-format="yyyy-MM-dd HH:mm:ss"
             v-model="timeRange"
@@ -24,7 +29,11 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="是否团长">
-          <el-select v-model="queryForm.isGrouper">
+          <el-select
+            v-model="queryForm.isGrouper"
+            size="small"
+            style="width: 150px"
+          >
             <el-option
               label="请选择"
               value=""
@@ -40,21 +49,38 @@
           </el-select>
         </el-form-item>
         <el-form-item label="邀请用户数量">
-          <el-input v-model="queryForm.inviteNum"></el-input>
+          <el-input
+            v-model="queryForm.inviteNum"
+            size="small"
+            style="width: 150px"
+          ></el-input>
         </el-form-item>
         <el-form-item label="瓜分积分">
-          <el-col :span="11">
-            <el-input v-model="queryForm.minIntegration"></el-input>
+          <el-col :span="10">
+            <el-input
+              v-model="queryForm.minIntegration"
+              size="small"
+              style="width: 150px"
+            ></el-input>
           </el-col>
-          <el-col :span="1">至</el-col>
-          <el-col :span="11">
-            <el-input v-model="queryForm.maxIntegration"></el-input>
+          <el-col
+            :span="1"
+            style="margin: 0 5px"
+          >至</el-col>
+          <el-col :span="10">
+            <el-input
+              v-model="queryForm.maxIntegration"
+              size="small"
+              style="width: 150px"
+            ></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="是否新用户">
           <el-select
+            size="small"
             v-model="queryForm.isNew"
             placeholder="请选择"
+            style="width: 150px"
           >
             <el-option
               label="请选择"
@@ -71,7 +97,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="团ID">
-          <el-input v-model="queryForm.groupId"></el-input>
+          <el-input
+            v-model="queryForm.groupId"
+            size="small"
+            style="width: 150px"
+          ></el-input>
         </el-form-item>
         <el-button
           type="primary"

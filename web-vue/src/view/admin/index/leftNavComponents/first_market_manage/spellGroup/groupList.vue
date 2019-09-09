@@ -20,10 +20,12 @@
       </el-tabs>
 
     </div>
-    <addGroupBuy ref="addGroupBuy"
-                 @addGroupBuySubmit="addGroupBuySubmit"
-                 v-if="tableListView===false"
-                 :isEdite="isEdite"/>
+    <addGroupBuy
+      ref="addGroupBuy"
+      @addGroupBuySubmit="addGroupBuySubmit"
+      v-if="tableListView===false"
+      :isEdite="isEdite"
+    />
     <div
       class="table_list"
       v-if="tableListView"
@@ -89,43 +91,93 @@
           :label="$t('groupBuy.validDate')"
           align="center"
         >
-          <template slot-scope="scope" >
+          <template slot-scope="scope">
             <div class="opt">
-              <el-tooltip :content="$t('groupBuy.edit')" placement="top">
-                <span class="el-icon-edit-outline" @click="editActivity(scope.row.id)"></span>
+              <el-tooltip
+                :content="$t('groupBuy.edit')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-edit-outline"
+                  @click="editActivity(scope.row.id)"
+                ></span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.share')" placement="top">
+              <el-tooltip
+                :content="$t('groupBuy.share')"
+                placement="top"
+              >
                 <span class="el-icon-share"></span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.disable')" placement="top">
-              <span   class="el-icon-circle-close"
-                      @click="changeStatus(scope.row.id)"
-                      v-if="scope.row.status==1"
-              > </span>
+              <el-tooltip
+                :content="$t('groupBuy.disable')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-circle-close"
+                  @click="changeStatus(scope.row.id)"
+                  v-if="scope.row.status==1"
+                > </span>
               </el-tooltip>
               <el-tooltip :content="$t('groupBuy.enabled')">
-              <span  class="el-icon-circle-check"
-                      @click="changeStatus(scope.row.id)"
-                      v-if="scope.row.status==0"
-              > </span>
+                <span
+                  class="el-icon-circle-check"
+                  @click="changeStatus(scope.row.id)"
+                  v-if="scope.row.status==0"
+                > </span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.delete')" placement="top">
-                <span class="el-icon-delete" @click="deleteGroupBuy(scope.row.id)"></span>
+              <el-tooltip
+                :content="$t('groupBuy.delete')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-delete"
+                  @click="deleteGroupBuy(scope.row.id)"
+                ></span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.grouponDetailList')" placement="top">
-                <span class="el-icon-tickets" @click="groupBuyDetailList(scope.row.id)"></span>
+              <el-tooltip
+                :content="$t('groupBuy.grouponDetailList')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-tickets"
+                  @click="groupBuyDetailList(scope.row.id)"
+                ></span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.grouponOrderlist')" placement="top">
-                <span class="el-icon-s-unfold"  @click="groupBuyOrderList(scope.row.id)"></span>
+              <el-tooltip
+                :content="$t('groupBuy.grouponOrderlist')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-s-unfold"
+                  @click="groupBuyOrderList(scope.row.id)"
+                ></span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.newUserList')" placement="top">
-                <span class="el-icon-user-solid"></span>
+              <el-tooltip
+                :content="$t('groupBuy.newUserList')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-user-solid"
+                  @click="newUserDetail(scope.row.id)"
+                ></span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.returnFailOrder')" placement="top">
-                <span class="el-icon-warning"></span>
+              <el-tooltip
+                :content=" $t('groupBuy.returnFailOrder')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-warning"
+                  @click="refundFailureOrder(scope.row.id)"
+                ></span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.activityInfo')" placement="top">
-                <span class="el-icon-s-data"></span>
+              <el-tooltip
+                :content="$t('groupBuy.activityInfo')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-s-data"
+                  @click="activityEffectData(scope.row.id)"
+                ></span>
               </el-tooltip>
             </div>
           </template>
@@ -284,11 +336,23 @@ export default {
     },
     groupBuyDetailList (id) {
       console.log('跳转到详情列表页 id = ', id)
-      this.$router.push({path: `/admin/home/main/spellGroup/detailList`, query: {id: id}})
+      this.$router.push({ path: `/admin/home/main/spellGroup/detailList`, query: { id: id } })
     },
     groupBuyOrderList (id) {
-      console.log('跳转到拼团订单也 id = ', id)
-      this.$router.push({path: `/admin/home/main/spellGroup/orderList`, query: {id: id}})
+      console.log('跳转到拼团订单页 id = ', id)
+      this.$router.push({ path: `/admin/home/main/spellGroup/orderList`, query: { id: id } })
+    },
+    newUserDetail (id) {
+      console.log('跳转到获取新用户列表页面 id = ', id)
+      this.$router.push({ path: '/admin/home/main/spellGroup/newUserDetail', query: { id: id } })
+    },
+    refundFailureOrder (id) {
+      console.log('跳转到拼团退款失败订单 id = ', id)
+      this.$router.push({ path: '/admin/home/main/spellGroup/refundFailureOrder', query: { id: id } })
+    },
+    activityEffectData (id) {
+      console.log('跳转到活动效果数据页面 id = ', id)
+      this.$router.push({ path: '/admin/home/main/spellGroup/activityEffectData', query: { id: id } })
     }
   }
 }

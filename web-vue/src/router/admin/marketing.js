@@ -134,6 +134,36 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuyOrderList'
       )
   },
+  // 多人拼团  获取新用户明细
+  {
+    path: '/admin/home/main/spellGroup/newUserDetail',
+    name: ' pin_group_newUserDetail',
+    meta: {
+      crumbTitle: 'router.pin_group_newUserDetail',
+      meta: 'first_market_manage'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/newUserDetail')
+  },
+  // 多人拼团  拼团退款失败订单
+  {
+    path: '/admin/home/main/spellGroup/refundFailureOrder',
+    name: ' pin_group_refundFailureOrder',
+    meta: {
+      crumbTitle: 'router.pin_group_refundFailureOrder',
+      meta: 'first_market_manage'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/refundFailureOrder')
+  },
+  // 多人拼团  活动效果数据
+  {
+    path: '/admin/home/main/spellGroup/activityEffectData',
+    name: ' pin_group_activityEffectData',
+    meta: {
+      crumbTitle: 'router.pin_group_activityEffectData',
+      meta: 'first_market_manage'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/activityEffectData')
+  },
   // 分销
   {
     path: '/admin/home/main/distribution',

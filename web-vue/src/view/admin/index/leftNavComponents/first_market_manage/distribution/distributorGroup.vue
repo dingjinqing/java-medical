@@ -188,7 +188,10 @@
             <thead>
               <tr>
                 <td>
-                  <el-checkbox></el-checkbox><i class="tdTopText">全选本页</i>
+                  <el-checkbox
+                    v-model="checkedAll"
+                    @change="handleAllcheck()"
+                  >全选本页</el-checkbox>
                 </td>
                 <td>分销员ID</td>
                 <td>分销员手机号</td>
@@ -204,13 +207,14 @@
               <tr
                 v-for="(item,index) in distributorList"
                 :key="index"
-                @click.prevent="handleClick(index,item)"
               >
                 <td>
                   <div class="tdCenter">
-                    <el-checkbox v-model="item.ischecked"></el-checkbox>
+                    <el-checkbox
+                      v-model="item.ischecked"
+                      @change="handleClick(item,index)"
+                    ></el-checkbox>
                   </div>
-
                 </td>
                 <td class="isLeft">
                   {{item.userId}}
@@ -286,7 +290,10 @@ export default {
       opt: 0,
       dialogVisible: false,
       centerDialogVisible: false,
-      id: ''
+      id: '',
+      checkedAll: false,
+      allCheckFlag: false,
+      goodsIdsArr: []
     }
   },
   created () {
@@ -330,6 +337,12 @@ export default {
           this.pageParams = res.content.page
         }
       })
+    },
+    // 全部checkbox选中
+    handleAllcheck () {
+      // console.log('全部选中')
+      this.allCheckFlag = false
+      // console.log(this.allCheckFlag)
     },
     handleData (data) {
       data.map((item, index) => {
@@ -426,11 +439,13 @@ export default {
         console.log(res)
       })
     },
-    // 行选中高亮
-    handleClick (index, item) {
+    // 对应行选中高亮
+    handleClick (item, index) {
+      // console.log(1111)
       this.clickIindex = index
+      console.log(this.clickIindex)
       // console.log(this.trList[index].ischecked)
-      this.trLidistributorListst[index].ischecked = !this.distributorList[index].ischecked
+      // this.trLidistributorListst[index].ischecked = !this.distributorList[index].ischecked
       let flag = this.distributorList.filter((item, index) => {
         return item.ischecked === false
       })
@@ -443,7 +458,21 @@ export default {
       // let arr = []
       this.goodsIdsArr.push(item.goodsId)
 
-      console.log('选中', index, item)
+      // console.log('选中', index, item)
+
+      // console.log(123)
+      // // this.trList[index].ischecked = true
+      // let flag = this.distributorList.filter((item, index) => {
+      //   return item.ischecked === false
+      // })
+      // if (flag.length === 0) {
+      //   this.checkedAll = true
+      // } else {
+      //   this.allCheckFlag = true
+      //   this.checkedAll = false
+      // }
+      // this.$forceUpdate()
+      // console.log(flag, 1)
     },
     cancel () {
       this.centerDialogVisible = false
