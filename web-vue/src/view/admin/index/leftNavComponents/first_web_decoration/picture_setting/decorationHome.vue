@@ -500,6 +500,14 @@ export default {
             break
           case 'dowm':
             let temp2 = newArr[(flag + 1)]
+            if (!newArr[(flag + 1)]) {
+              this.$message({
+                message: '已到底部',
+                type: 'warning',
+                duration: 1000
+              })
+              return
+            }
             newArr[(flag + 1)] = newArr[flag]
             newArr[flag] = temp2
             this.showModulesList = newArr
@@ -608,9 +616,9 @@ export default {
           height: 510px;
           background: #fff;
           position: relative;
-          .zwHeight {
-            height: 100%;
-          }
+          // .zwHeight {
+          //   // height: 100%;
+          // }
         }
       }
     }
