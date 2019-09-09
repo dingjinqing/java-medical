@@ -2,21 +2,26 @@ package com.vpu.mp.config.mq;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitBootstrapConfiguration;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 
 /**
@@ -25,6 +30,7 @@ import org.springframework.context.annotation.Lazy;
  * @date 2019-07-30 10:40
  *
 */
+@Import(RabbitBootstrapConfiguration.class)
 @Configuration
 public class RabbitConfig {
 
@@ -43,42 +49,41 @@ public class RabbitConfig {
 
     /** 发送失败消息默认存放队列 */
     public static final String QUEUE_ERROR_SEND = "error.send";
-
     /** 处理失败消息默认存放队列 */
     public static final String QUEUE_ERROR_DEAL = "error.deal";
-    
     /** 发送优惠券默认存放队列 */
     public static final String QUEUE_COUPON_SEND = "marketing.coupon";
     /** 发送消息默认存放队列 */
     public static final String QUEUE_MESSAGE_SEND = "marketing.message";
-    
     /** 获取公众号关注用户*/
     public static final String QUEUE_MA_MAP_BIND="bind.mamp.queue";
-
-
+    /**批量提交小程序 */
+    public static final String QUEUE_BATCH_UPLOAD="batch.upload.queue";
+    
 
     /** 发送失败队列存储的路由 */
     public static final String EXCHANGE_ERROR = "direct.error";
-    
     /** 营销功能的路由 */
     public static final String EXCHANGE_MARKETING = "direct.marketing";
     /**获取关注公众号的用户信息*/
-    public static final String EXCHANGE_MA_MAP_BIND="bind.mamp.template";
+    public static final String EXCHANGE_MA_MAP_BIND="direct.bind.mamp";
+    /**批量提交小程序 */
+    public static final String EXCHANGE_BATCH_UPLOAD="direct.batch.upload";
 
+
+    
     /** 发送失败路由键 */
     public static final String BINDING_EXCHANGE_ERROR_KEY = "direct.error.send";
     /** 处理失败路由键 */
     public static final String BINDING_EXCHANGE_DEAL_KEY = "direct.error.deal";
-
     /** 发送优惠券路由键 */
     public static final String BINDING_EXCHANGE_COUPON_KEY = "direct.marketing.coupon";
-
     /** 发送消息路由键 */
     public static final String BINDING_EXCHANGE_MESSAGE_KEY = "direct.marketing.message";
-    
     /** 获取公众号关注用户的路由键*/
     public static final String BINDING_MA_MAP_BIND_KEY="bind.mamp.key";
-
+    /** 批量提交小程序*/
+    public static final String BINDING_BATCH_UPLOAD_KEY="bind.batch.upload";
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -154,6 +159,16 @@ public class RabbitConfig {
     public Queue sendMpMABindQueue() {
     	return new Queue(QUEUE_MA_MAP_BIND,true);
     }
+    
+    /**
+     * 批量提交小程序和公众号
+     * @return
+     */
+    @Bean
+    public Queue batchUploadQueue() {
+    	return new Queue(QUEUE_BATCH_UPLOAD,true);
+    }
+    
     /**
      * 1.交换机名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -175,7 +190,14 @@ public class RabbitConfig {
     
     @Bean
     public DirectExchange mpTemplateExchange() {
-    	return new DirectExchange(EXCHANGE_MA_MAP_BIND,true,false);    }
+    	return new DirectExchange(EXCHANGE_MA_MAP_BIND,true,false);    
+    }
+    
+    @Bean
+    public DirectExchange batchUploadExchange() {
+    	return new DirectExchange(EXCHANGE_BATCH_UPLOAD,true,false);    
+    }
+    
     /**
      * @return 路由和队列绑定
      */
@@ -203,4 +225,12 @@ public class RabbitConfig {
     public Binding bindingTemplateSend() {
     	return BindingBuilder.bind(sendMpMABindQueue()).to(mpTemplateExchange()).with(BINDING_MA_MAP_BIND_KEY);
     }
+    
+    
+    @Bean
+    public Binding batchUpload() {
+    	return BindingBuilder.bind(batchUploadQueue()).to(batchUploadExchange()).with(BINDING_BATCH_UPLOAD_KEY);
+    }
+    
+
 }
