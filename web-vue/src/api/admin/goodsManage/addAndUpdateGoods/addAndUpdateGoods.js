@@ -7,6 +7,15 @@ export function selectPlatformClassification (parentId) {
     method: 'get'
   })
 }
+
+// 平台分类-根据父ID获取下级分类
+export function selectParentPlatfromClassification (catId) {
+  return service({
+    url: `/api/admin/goods/getSysCatParents?catId=${catId}`,
+    method: 'get'
+  })
+}
+
 // 选择平台分类
 export function cateList () {
   return service({
@@ -25,6 +34,14 @@ export function goodsSortAndGoodsBrandInitApi () {
 export function addGoodsApi (data) {
   return service({
     url: `/api/admin/goods/add`,
+    method: 'post',
+    data
+  })
+}
+// 商品查询详细信息，
+export function selectGoodsApi (data) {
+  return service({
+    url: `/api/admin/goods/select`,
     method: 'post',
     data
   })

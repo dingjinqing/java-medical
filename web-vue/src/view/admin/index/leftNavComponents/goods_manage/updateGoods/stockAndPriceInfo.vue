@@ -895,6 +895,10 @@ export default {
       return true
     },
     /** 此函数由父组件主动调用 **/
+    /* 初始化待修改商品数据 */
+    initData (goodsData) {
+
+    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       // 自定义情况验证

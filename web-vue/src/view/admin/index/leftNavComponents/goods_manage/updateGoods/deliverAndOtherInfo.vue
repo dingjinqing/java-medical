@@ -221,6 +221,14 @@ export default {
     }
   },
   methods: {
+    /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
+    initPageDataLink () {
+      let p1 = this.deliverTemplateDataInit()
+      let p2 = this.cardDataInit()
+      Promise.all([p1, p2]).then(() => {
+
+      })
+    },
     /* loading开始加载遮罩预留函数 */
     beginLoading () {
 
@@ -232,6 +240,7 @@ export default {
     /* 解析运费模板数据 */
     parseDeliverTemplateData (data) {
       // 定义国际化变量
+      let pintAreaOtherDeliverFee = this.$t('goodsAddEditInfo.deliverAndOtherInfo.pintAreaOtherDeliverFee')
       // 件
       let deliverTemplateUnit1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateUnit1')
       // 公斤
@@ -242,8 +251,10 @@ export default {
       let deliverTemplateTitleDesc2 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc2')
       // 元,每增加'
       let deliverTemplateTitleDesc3 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc3')
-      // 加
+      // ,加
       let deliverTemplateTitleDesc4 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc4')
+      // 元
+      let deliverTemplateTitleDesc9 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc9')
       // 内
       let deliverTemplateAreasDesc1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc1')
       // 元,每增加
@@ -284,7 +295,7 @@ export default {
         // retData.deliverTemplateTitleDesc = '除可配送区域外，不可配送'
         retData.deliverTemplateTitleDesc = deliverTemplateTitleDesc1
       } else { // 1件内5元,没增加1件，加10元
-        retData.deliverTemplateTitleDesc = `${temp.first_num} ${unit}${deliverTemplateTitleDesc1}${temp.first_fee}${deliverTemplateTitleDesc2}${temp.continue_num}${unit}${deliverTemplateTitleDesc3}${temp.continue_fee}${deliverTemplateTitleDesc4}`
+        retData.deliverTemplateTitleDesc = `${pintAreaOtherDeliverFee}${temp.first_num} ${unit}${deliverTemplateTitleDesc2}${temp.first_fee}${deliverTemplateTitleDesc3}${temp.continue_num}${unit}${deliverTemplateTitleDesc4}${temp.continue_fee}${deliverTemplateTitleDesc9}`
       }
 
       // 搜索指定可配送区域运费
@@ -369,7 +380,7 @@ export default {
     },
     /* 初始化运费模板数据 */
     deliverTemplateDataInit () {
-      deliverTemplateNameListApi().then(res => {
+      return deliverTemplateNameListApi().then(res => {
         let content = res.content || []
         this.deliverTemplateData = []
 
@@ -413,7 +424,7 @@ export default {
     },
     /* 初始化会员专享卡 */
     cardDataInit () {
-      getExclusiveCardList().then(res => {
+      return getExclusiveCardList().then(res => {
         this.cardsSelectOptions = res.content || []
       })
     },
@@ -429,6 +440,10 @@ export default {
       }
     },
     /** 此函数由父组件主动调用 **/
+    /* 初始化待修改商品数据 */
+    initData (goodsData) {
+
+    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {

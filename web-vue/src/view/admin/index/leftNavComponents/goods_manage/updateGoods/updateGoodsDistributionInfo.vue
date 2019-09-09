@@ -180,6 +180,10 @@ export default {
       }
       this.$http.$emit('dtVisible')
     },
+    /* 初始化待修改商品数据 */
+    initData (goodsData) {
+
+    },
     /* 添加图片点击回调事件 */
     imgDialogSelectedCallback (imgObj) {
       this.goodsDistributionInfo.shareImgObj = {imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl}

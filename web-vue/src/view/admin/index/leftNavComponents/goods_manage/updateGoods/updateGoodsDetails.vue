@@ -208,6 +208,10 @@ export default {
     isStrBlank (val) {
       return isStrBlank(val)
     },
+    /* 初始化待修改商品数据 */
+    initData (goodsData) {
+
+    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       return true

@@ -34,7 +34,7 @@ export default {
     lookEdit () {
       this.$router.push({
         name: 'goods_update',
-        params: {goodsId: 44}
+        params: {goodsId: 46}
       })
     }
   }

@@ -232,6 +232,7 @@ export default {
     /* 解析运费模板数据 */
     parseDeliverTemplateData (data) {
       // 定义国际化变量
+      let pintAreaOtherDeliverFee = this.$t('goodsAddEditInfo.deliverAndOtherInfo.pintAreaOtherDeliverFee')
       // 件
       let deliverTemplateUnit1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateUnit1')
       // 公斤
@@ -242,8 +243,10 @@ export default {
       let deliverTemplateTitleDesc2 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc2')
       // 元,每增加'
       let deliverTemplateTitleDesc3 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc3')
-      // 加
+      // ,加
       let deliverTemplateTitleDesc4 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc4')
+      // 元
+      let deliverTemplateTitleDesc9 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc9')
       // 内
       let deliverTemplateAreasDesc1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc1')
       // 元,每增加
@@ -284,7 +287,7 @@ export default {
         // retData.deliverTemplateTitleDesc = '除可配送区域外，不可配送'
         retData.deliverTemplateTitleDesc = deliverTemplateTitleDesc1
       } else { // 1件内5元,没增加1件，加10元
-        retData.deliverTemplateTitleDesc = `${temp.first_num} ${unit}${deliverTemplateTitleDesc1}${temp.first_fee}${deliverTemplateTitleDesc2}${temp.continue_num}${unit}${deliverTemplateTitleDesc3}${temp.continue_fee}${deliverTemplateTitleDesc4}`
+        retData.deliverTemplateTitleDesc = `${pintAreaOtherDeliverFee}${temp.first_num} ${unit}${deliverTemplateTitleDesc2}${temp.first_fee}${deliverTemplateTitleDesc3}${temp.continue_num}${unit}${deliverTemplateTitleDesc4}${temp.continue_fee}${deliverTemplateTitleDesc9}`
       }
 
       // 搜索指定可配送区域运费

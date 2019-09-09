@@ -115,7 +115,7 @@ import updateGoodsDetails from './updateGoodsDetails'
 import updateGoodsDistributionInfo from './updateGoodsDistributionInfo'
 
 /* 导入js组件 */
-import {addGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import {addGoodsApi, selectGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 
 export default {
   name: 'updateGoods',
@@ -303,12 +303,27 @@ export default {
     returnGoodsList () {
       this.$router.push({name: 'soldOutGoods'})
     },
+    /* 初始化待修改商品数据 */
     loadGoodsData (goodsId) {
-
+      selectGoodsApi({goodsId: goodsId}).then(res => {
+        if (res.error !== 0) {
+          this.$message({
+            type: 'error',
+            message: `服务器错误:${res.error},请联系运维`
+          })
+        } else {
+          let goodsData = res.content
+          console.log(goodsData)
+          this.$refs.goodsProductInfoCmp.initData(goodsData)
+          this.$refs.goodsDetailsCmp.initData(goodsData)
+          this.$refs.goodsDistributionInfoCmp.initData(goodsData)
+        }
+      })
     }
   },
   mounted () {
-
+    let goodsId = this.$route.params.goodsId
+    this.loadGoodsData(goodsId)
   }
 }
 </script>

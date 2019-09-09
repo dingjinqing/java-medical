@@ -17,6 +17,11 @@ import deliverAndOtherInfo from './deliverAndOtherInfo'
 export default {
   components: { basicInfo, stockAndPriceInfo, deliverAndOtherInfo },
   methods: {
+    initData (goodsData) {
+      this.$refs.basicInfo.initData(goodsData)
+      this.$refs.stockAndPriceInfo.initData(goodsData)
+      this.$refs.deliverAndOtherInfo.initData(goodsData)
+    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       return this.$refs.basicInfo.validateFormData() && this.$refs.stockAndPriceInfo.validateFormData() && this.$refs.deliverAndOtherInfo.validateFormData()

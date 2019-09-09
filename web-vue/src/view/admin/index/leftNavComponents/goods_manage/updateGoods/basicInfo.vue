@@ -343,7 +343,8 @@
 // 接口函数引入
 import {
   selectPlatformClassification,
-  goodsSortAndGoodsBrandInitApi
+  goodsSortAndGoodsBrandInitApi,
+  selectParentPlatfromClassification
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import {goodsBrandClassifyListApi, goodsBrandPageListApi} from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
@@ -363,6 +364,7 @@ export default {
         goodsAd: null,
         goodsSn: null,
         catId: null,
+        // [{imgUrl:'http://upload/a.jpg',imgPath:upload/a.jpg}]
         goodsImgs: [],
         unit: null,
         sortId: null,
@@ -394,6 +396,7 @@ export default {
         firstCatId: null,
         secondCatId: null,
         thirdCatId: null,
+        // [{catId:1,catName:'XX'}]
         firstCatData: null,
         secondCatData: null,
         thirdCatData: null
@@ -402,7 +405,7 @@ export default {
       /* 基本信息更多配置部分 */
       collapseActiveName: 'basicMore',
       unitSelectOptions: [],
-      unitSelectedValue: '个',
+      unitSelectedValue: null,
       unitCustomerValue: null,
       // 商家分类下落框
       sortSelectOptions: null,
@@ -509,12 +512,6 @@ export default {
         }
       })
     },
-    /* 初始化平台分类一级下拉框数据 */
-    catIdInit () {
-      selectPlatformClassification(0).then(res => {
-        this.catIdTemp.firstCatData = res.content
-      })
-    },
     /* 添加图片点击事件，弹出图片选择组件 */
     addGoodsImg () {
       this.$http.$emit('dtVisible')
@@ -565,7 +562,7 @@ export default {
     },
     // 初始化商家分类和商品标签
     sortAndLabelAndBrandSelectInit () {
-      goodsSortAndGoodsBrandInitApi().then(res => {
+      return goodsSortAndGoodsBrandInitApi().then(res => {
         const { content: { goodsLabels, goodsSorts } } = res
         this.sortSelectOptions = goodsSorts
         this.labelSelectOptions = goodsLabels
@@ -639,7 +636,110 @@ export default {
     videoInputClick () {
       // TODO: 视频选择弹出未实现
     },
-    /** 此函数由父组件主动调用 **/
+    /* 初始化平台分类 */
+    _initCatId (goodsData) {
+      let catId = goodsData.catId
+      this.goodsProductInfo.catId = catId
+      selectParentPlatfromClassification(catId).then(res => {
+        let catList = res.content
+        if (catList[0] !== undefined) {
+          this.catIdTemp.firstCatId = catList[0].cat_id
+          this.catFirstInit()
+        }
+
+        if (catList[1] !== undefined) {
+          this.catIdTemp.secondCatId = catList[1].cat_id
+          this.catSecondInit(catList[0].cat_id)
+        }
+
+        if (catList[2] !== undefined) {
+          this.catIdTemp.thirdCatId = catList[2].cat_id
+          this.catThirdInit(catList[1].cat_id)
+        }
+      })
+    },
+    /* 初始化平台分类一级下拉框数据 */
+    catFirstInit () {
+      selectPlatformClassification(0).then(res => {
+        this.catIdTemp.firstCatData = res.content
+      })
+    },
+    /* 初始化平台分类二级下拉框数据 */
+    catSecondInit (catId) {
+      selectPlatformClassification(catId).then(res => {
+        this.catIdTemp.secondCatData = res.content
+      })
+    },
+    /* 初始化平台分类三级下拉框数据 */
+    catThirdInit (catId) {
+      selectPlatformClassification(catId).then(res => {
+        this.catIdTemp.thirdCatData = res.content
+      })
+    },
+    /* 初始化图片 */
+    _initGoodsImgs (goodsData) {
+      this.goodsProductInfo.goodsImgs = [{imgUrl: goodsData.goodsImg, imgPath: goodsData.goodsImgPath}]
+      if (goodsData.goodsImgs !== null && goodsData.goodsImgs.length > 0) {
+        for (let i = 0; i < goodsData.goodsImgs.length; i++) {
+          this.goodsProductInfo.goodsImgs.push({imgUrl: goodsData.goodsImgs[i], imgPath: goodsData.goodsImgsPath[i]})
+        }
+      }
+    },
+    /* 初始化商品单位 */
+    _initGoodsUnit (goodsData) {
+      let unit = goodsData.unit
+      // 看是否是用户自定义的,最后那个不等号是为了剔除用户输入的自定义单位也叫做自定义
+      let has = this.unitSelectOptions.some(item => item.label === unit && item.value !== null)
+      // true 不是自定义
+      if (has) {
+        this.unitSelectedValue = unit
+      } else {
+        this.unitSelectedValue = null
+        this.unitCustomerValue = unit
+      }
+      this.unitSelectChange(this.unitSelectedValue)
+    },
+    /* 初始化商品标签 */
+    _initGoodsLabel (goodsData) {
+      let goodsLabelList = goodsData.goodsLabelListVos
+      this.labelSelectedItems = goodsLabelList
+      this.labelSelectOptions = this.labelSelectOptions.filter(item => {
+        let has = this.labelSelectedItems.some(selectedItem => selectedItem.id === item.id)
+        return !has
+      })
+    },
+    /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
+    initPageDataLink () {
+      return this.sortAndLabelAndBrandSelectInit()
+    },
+    /* 初始化待修改商品数据 */
+    initData (goodsData) {
+      // 先初始化页面数据再渲染待修改商品数据
+      this.initPageDataLink().then(() => {
+        this.goodsProductInfo.goodsName = goodsData.goodsName
+        this.goodsProductInfo.goodsAd = goodsData.goodsAd
+        this.goodsProductInfo.goodsSn = goodsData.goodsSn
+        this.goodsProductInfo.catId = goodsData.catId
+        // 初始化平台分类
+        this._initCatId(goodsData)
+        // 初始化图片
+        this._initGoodsImgs(goodsData)
+        // 初始化商品单位
+        this._initGoodsUnit(goodsData)
+        // 初始化商家分类
+        this.goodsProductInfo.sortId = goodsData.sortId
+        // 初始化商品标签
+        this._initGoodsLabel(goodsData)
+        // 初始化商品品牌
+        this.currentGoodsBrandData.id = goodsData.brandId
+        this.currentGoodsBrandData.brandName = goodsData.brandName
+        // 初始化商品视频
+        this.goodsVideo = goodsData.goodsVideo
+        this.goodsVideoImg = goodsData.goodsVideoImg
+        this.goodsVideoSize = goodsData.goodsVideoSize
+        this.goodsVideoId = goodsData.goodsVideoId
+      })
+    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (isStrBlank(this.goodsProductInfo.goodsName)) {
@@ -703,8 +803,7 @@ export default {
     this.langDefault()
     // 初始化平台分类一级下拉框
     this.catIdInit()
-    // 初始化商家分类和商品标签
-    this.sortAndLabelAndBrandSelectInit()
+    // 初始化商家分类和商品标签,转移至initData方法内
   }
 }
 </script>
