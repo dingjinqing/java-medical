@@ -375,7 +375,7 @@
 // TODO: 3.会员价格table表格样式未实现
 
 // 接口函数引入
-import { getLevelCardList } from '@/api/admin/goodsManage/addingGoods/addingGoods'
+import { getLevelCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 

@@ -185,7 +185,7 @@
 </template>
 <script>
 // api导入
-import {getExclusiveCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+import {getExclusiveCardList} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import {deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi} from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'

@@ -344,7 +344,7 @@
 import {
   selectPlatformClassification,
   goodsSortAndGoodsBrandInitApi
-} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import {goodsBrandClassifyListApi, goodsBrandPageListApi} from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
 import { isStrBlank } from '@/util/goodsUtil'

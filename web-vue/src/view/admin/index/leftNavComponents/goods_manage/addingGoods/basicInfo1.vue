@@ -277,7 +277,7 @@
 import {
   selectPlatformClassification,
   goodsSortAndGoodsBrandInitApi
-} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 // import goodsMainPic from './goodsMainPic'
 // 导入图片弹窗扩展组件

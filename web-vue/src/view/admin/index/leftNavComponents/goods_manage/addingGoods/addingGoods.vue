@@ -115,7 +115,7 @@ import addingGoodsDetails from './addingGoodsDetails'
 import addingGoodsDistributionInfo from './addingGoodsDistributionInfo'
 
 /* 导入js组件 */
-import {addGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+import {addGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 
 export default {
   name: 'addingGoods',
