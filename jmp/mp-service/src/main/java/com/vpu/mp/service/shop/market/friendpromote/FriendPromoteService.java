@@ -282,9 +282,14 @@ public class FriendPromoteService extends ShopBaseService {
 		if (param.getLaunchId() != null) {
 			sql.having(fpd.LAUNCH_ID.eq(param.getLaunchId()));
 		}
-		if (MemberService.INVITE_SOURCE_PROMOTE.equalsIgnoreCase(param.getInviteSource())) {
-			sql.having(a.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE));
+		if (!StringUtils.isNullOrEmpty(param.getInviteSource())) {
+			if (MemberService.INVITE_SOURCE_PROMOTE.equalsIgnoreCase(param.getInviteSource())) {
+				sql.having(a.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE));
+			}else {
+				sql.having(a.INVITE_SOURCE.notEqual(MemberService.INVITE_SOURCE_PROMOTE).or(a.INVITE_SOURCE.isNull()));
+			}
 		}
+		
 		/* 整合分页信息 */
 		PageResult<FriendPromoteParticipateVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteParticipateVo.class);
