@@ -502,8 +502,8 @@ export default {
         { value: 3, label: '永泰庄门店' }
       ],
       tagList: [
-        { value: 1, label: '年轻人' },
-        { value: 2, label: '中年人' },
+        { value: 1, label: '年轻人年轻人年轻人人' },
+        { value: 2, label: '中年人中年人中年人人' },
         { value: 3, label: '老年人' },
         { value: 4, label: '儿童' }
       ],
@@ -852,6 +852,7 @@ export default {
               padding: 8px 0;
               font-size: 14px;
               color: #333;
+              font-weight: 600;
             }
           }
         }
