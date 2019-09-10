@@ -57,7 +57,7 @@ public class ReturnOrderService extends ShopBaseService{
 				.where(TABLE.ORDER_SN.in(arrayToSearch))
 				.orderBy(TABLE.RET_ID.desc())
 				.fetch();
-		return goods;	
+		return goods;
 	}
 	
 	/**

@@ -118,6 +118,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 					List<ReturnOrderGoodsRecord> returnGoods = null;
 					if(param.getRetId() != null) {
 						rOrder = returnOrder.getByRetId(param.getRetId());
+						if(rOrder == null) {
+							throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
+						}
 					}
 					if(rOrder == null) {
 						//订单状态记录
@@ -129,7 +132,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 						} else {
 							//通过退款查询获取可退信息
 							RefundVo check = (RefundVo)query(param);
-							//校验、生成退款订单、
+							//校验  生成退款订单、
 							rOrder = notOnlyReturnShippingFee(param , order , check);
 							//生成退款商品
 							returnGoods = returnOrderGoods.add(param, rOrder, check);
@@ -150,7 +153,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 					 * 		不需走退款逻辑：0退货提交物流、1撤销退款
 					 * 商家发起：
 					 * 		不需走退款逻辑：2拒绝仅退款请求与买家提交物流商家拒绝退款、3同意退货请求、4拒绝退货申请、
-					 * 		走退款逻辑（param.returnOperate == null）：商家同意买家退款、商家确认收货并退款
+					 * 		走退款逻辑（param.returnOperate == null）：商家同意买家退款、商家确认收货并退款、后台手动退款
 					 */
 					if(param.getReturnOperate() != null) {
 						//响应订单操作
@@ -177,20 +180,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 						finishUpdateInfo(order , rOrder , param);
 					}
 				} catch (MpException e) {
-					logger.error("退款捕获mp异常", e);
 					throw new MpException(e.getErrorCode());
 				} catch (DataAccessException e) {
 					Throwable cause = e.getCause();
 					if (cause instanceof MpException) {
 						throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
 					} else {
-						logger.error("退款捕获非mp异常", e);
 						throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
 					}
 				}
 			});
 		} catch (DataAccessException e) {
-			logger.error("退款捕获DataAccessException异常", e);
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
 				return ((MpException) cause).getErrorCode();

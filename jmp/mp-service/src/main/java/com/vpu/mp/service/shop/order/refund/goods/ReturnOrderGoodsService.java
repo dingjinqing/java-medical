@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -200,15 +199,11 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 	public void calculateGoodsReturnMoney(ReturnOrderRecord returnOrder,List<ReturnGoods> returnGoods) throws MpException {
 		//手动退款金额map
 		Map<Integer, BigDecimal> returnMoneyMap = null;
+		//手工退款
 		if(OrderConstant.RT_MANUAL == returnOrder.getReturnType()) {
 			returnMoneyMap = new HashMap<Integer, BigDecimal>(returnGoods.size());
-			BigDecimal sum = BigDecimal.ZERO;
 			for (ReturnGoods goods : returnGoods) {
 				returnMoneyMap.put(goods.getRecId(), goods.getMoney());
-				sum = sum.add(goods.getMoney());
-			}
-			if(BigDecimalUtil.compareTo(returnOrder.getMoney(), sum) != 0) {
-				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MANUAL_INCONSISTENT_AMOUNT);
 			}
 		}
 		//此次退款商品
@@ -283,15 +278,18 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 		int num = BigDecimalUtil.divide(difference.getValue(), OrderConstant.CENT).intValue();
 		while(true) {
 			for (ReturnOrderGoodsRecord oneGoods : returnGoods) {
+				//最多可退
+				BigDecimal returnMax = BigDecimalUtil.multiply(oneGoods.getDiscountedGoodsPrice() , new BigDecimal(oneGoods.getGoodsNumber()));
+				if(BigDecimalUtil.compareTo(oneGoods.getReturnMoney() , returnMax) < 1) {
+					
+				}
 				//当前商品假如加上（减去）一分的退款金额
 				BigDecimal future = BigDecimalUtil.addOrSubtrac(
 						BigDecimalPlus.create(oneGoods.getReturnMoney(), difference.getOperator()),
 						BigDecimalPlus.create(OrderConstant.CENT, null)
 						);
 				//是否超限()
-				if(BigDecimalUtil.compareTo(future,
-						BigDecimalUtil.multiply(oneGoods.getReturnMoney() , new BigDecimal(oneGoods.getGoodsNumber())))
-								< 1) {
+				if(BigDecimalUtil.compareTo(future, returnMax) < 1) {
 					//不超限，设置future
 					oneGoods.setReturnMoney(future);
 					//分数-1

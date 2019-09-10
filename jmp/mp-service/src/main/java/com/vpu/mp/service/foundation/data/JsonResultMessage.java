@@ -333,6 +333,7 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_CANCEL_FAIL = "order_cancel_fail";
 	public static final String MSG_ORDER_CLOSE_NOT_CLOSE = "order_close_not_close";
 	public static final String MSG_ORDER_CLOSE_FAIL = "order_close_fail";
+	public static final String MSG_ORDER_RETURN_RETURN_ORDER_NOT_EXIST = "order_return_return_order_not_exist";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
