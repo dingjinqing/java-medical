@@ -166,6 +166,20 @@ public class TaskJobMainService extends MainBaseService {
     }
 
     /**
+     * 判断taskJob里面是否包含对应的数据
+     * @param executionType 指定传输路由{@link TaskJobsConstant.TaskJobEnum}
+     * @param status 状态
+     * @return true:包含 false:不包含
+     */
+    public Boolean assertHasStatusTaskJob(Integer executionType,Byte status){
+        return db()
+            .selectFrom(TASK_JOB_MAIN)
+            .where(TASK_JOB_MAIN.EXECUTION_TYPE.eq(executionType))
+            .and(TASK_JOB_MAIN.STATUS.eq(status))
+            .fetchOptional()
+            .isPresent();
+    }
+    /**
      * 更新进度和状态
      * @param content
      * @param taskJobId
