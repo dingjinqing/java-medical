@@ -922,7 +922,7 @@ export default {
     loadMemberInfo () {
       memberInfoRequest(this.userId).then(res => {
         console.log(res)
-        debugger
+
         if (res.error === 0) {
           console.log(res.content)
           // 设置值 基本信息

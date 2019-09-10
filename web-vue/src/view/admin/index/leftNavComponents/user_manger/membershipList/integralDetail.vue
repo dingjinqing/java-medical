@@ -173,7 +173,7 @@ export default {
     },
     getUserDetailScoreData () {
       // 处理时间格式
-      debugger
+
       if (this.dateInput) {
         this.dateInput[0] = this.dateInput[0] + ' 00:00:00'
         this.dateInput[1] = this.dateInput[1] + ' 23:59:59'
@@ -192,7 +192,6 @@ export default {
 
       console.log(obj)
       scoreDetailRequest(obj).then(res => {
-        debugger
         console.log((res.content.dataList))
         if (res) {
           // 装载数据
