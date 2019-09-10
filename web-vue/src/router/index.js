@@ -85,6 +85,7 @@ router.beforeEach((to, from, next) => {
   } else {
     lang = 'cn'
   }
+  console.log(to)
   console.log(lang)
   loadLanguageAsync(lang).then(() => next())
 })

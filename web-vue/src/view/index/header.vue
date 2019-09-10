@@ -289,7 +289,7 @@ export default {
     handleChangeLang (index) {
       switch (index) {
         case 0:
-          this.$i18n.locale = this.langData_cn[index].lang
+          // this.$i18n.locale = this.langData_cn[index].lang
           this.lang_with = 'width:63px'
           this.langData_show = this.langData_en
           this.loginData_show = this.loginData_en
@@ -298,7 +298,7 @@ export default {
           localStorage.setItem('WEPUBAO_LANGUAGE', 'en_US')
           break
         case 1:
-          this.$i18n.locale = this.langData_cn[index].lang
+          // this.$i18n.locale = this.langData_cn[index].lang
           this.lang_with = 'width:43px'
           this.langData_show = this.langData_cn
           this.loginData_show = this.loginData_cn
@@ -308,6 +308,7 @@ export default {
           break
       }
       console.log(1)
+      console.log(this.langData_cn[index].lang)
       loadLanguageAsync(this.langData_cn[index].lang)
       this.$store.commit('TOCHANGE_LANGCURRENT', this.langData_cn[index].lang)
       this.$http.$emit('lang_change', index)
