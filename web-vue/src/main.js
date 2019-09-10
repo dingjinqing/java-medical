@@ -7,6 +7,8 @@ import router from './router';
 import store from './store';
 import i18n from './i18n/i18n';
 import ElementUI from 'element-ui';
+// 格式化时间
+import Moment from 'moment';
 // 阿里图标
 import './assets/aliIcon/iconfont.css';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -22,7 +24,8 @@ Vue.prototype.$http = new Vue();
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.mixin(myMixins);
-
+// 全局引用Moment
+Vue.prototype.moment = Moment;
 new Vue({
   el: '#app',
   i18n,

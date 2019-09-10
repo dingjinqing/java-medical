@@ -46,8 +46,9 @@
           <div class="mainContentRight">
             <div class="mainContentRightForm">
               <el-form
+                :rules="rules"
                 :model="formData"
-                label-width="120px"
+                label-width="128px"
                 size="small"
               >
                 <el-form-item :label="labels.label1">
@@ -59,6 +60,142 @@
                     style="width:245px"
                   ></el-input>
                   <div class="mainContentRightFormText">只作为商家记录使用，用户不会看到这个名称</div>
+                </el-form-item>
+                <el-form-item :label="labels.label2">
+                  <span>商家活动通知</span>
+                </el-form-item>
+                <el-form-item :label="labels.label3">
+                  <el-input
+                    maxlength="7"
+                    show-word-limit
+                    size="small"
+                    v-model="formData.name"
+                    style="width:245px"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item :label="labels.label4">
+                  <div>
+                    <el-button
+                      @click="choosTemplate"
+                      type="text"
+                    >选择模板</el-button>
+                  </div>
+                  <div>
+                    <el-input
+                      style="width:250px"
+                      type="textarea"
+                      placeholder="请输入小程序推送内容"
+                      v-model="textarea"
+                      maxlength="50"
+                      show-word-limit
+                    >
+                    </el-input>
+                  </div>
+                </el-form-item>
+                <el-form-item :label="labels.label4">
+                  <div>
+                    <el-button
+                      size="small"
+                      @click="handleChooseLink"
+                    > 选择链接</el-button>
+                  </div>
+                </el-form-item>
+                <el-form-item :label="labels.label5">
+                  <div>
+                    <span>以下筛选条件为“或”关系</span>
+                  </div>
+                  <div>
+                    <el-checkbox v-model="checked">加购人群</el-checkbox>
+                    <span>30天内在本店内有加入购物车行为，但没有支付的用户</span>
+                  </div>
+                  <div>
+
+                    <el-checkbox v-model="checked">指定购买商品人群 </el-checkbox>
+                    <span>最多可选择3件商品</span>
+                  </div>
+                  <div class="chooseGoods">
+                    <div class="chooseGoodsLeft">选择商品</div>
+                    <div class="imageWraper">
+                      <el-image :src="urls.url3"></el-image>
+                    </div>
+                  </div>
+                  <div>
+                    <el-checkbox v-model="checked">持有 </el-checkbox>
+                    <el-select
+                      v-model="value"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        label="请选择会员卡"
+                        value="请选择会员卡"
+                      ></el-option>
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                    <span>会员卡人群</span>
+                  </div>
+                  <div>
+                    <el-checkbox v-model="checked">选择指定的会员 </el-checkbox>
+                    <el-button
+                      @click="handleAddMember"
+                      type="text"
+                    >+ 添加会员</el-button>
+                    <span>已选择会员0人</span>
+                  </div>
+                  <div>
+                    <el-checkbox v-model="checked">自定义 </el-checkbox>
+                    <el-select
+                      v-model="value"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        label="请选择"
+                        value="请选择"
+                      ></el-option>
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                  </div>
+                </el-form-item>
+                <el-form-item :label="labels.label7">
+                  <div>
+                    <el-radio
+                      v-model="radio"
+                      label="1"
+                    >立即发送</el-radio>
+                  </div>
+                  <div>
+                    <span>预计送达人数：0 </span>
+                    <el-button type="text">查看</el-button>
+                  </div>
+                  <div>
+                    <el-radio
+                      v-model="radio"
+                      label="1"
+                    >持续发送</el-radio>
+                  </div>
+                  <div class="timePicker">
+
+                  </div>
+                  <div>
+                    所有可送达的用户均会第一时间收到一次此消息
+                  </div>
+                  <div>
+                    <el-radio
+                      v-model="radio"
+                      label="1"
+                    >定时发送</el-radio>
+                  </div>
                 </el-form-item>
               </el-form>
             </div>
@@ -76,7 +213,8 @@ export default {
     return {
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
-        url2: `${this.$imageHost}/image/admin/shop_logo_default.png`
+        url2: `${this.$imageHost}/image/admin/shop_logo_default.png`,
+        url3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
       },
       /**
        * form表单的数据
@@ -85,13 +223,22 @@ export default {
         name: ``
       },
       labels: {
-        label1: `消息名称:`,
-        label2: `消息类型:`,
-        label3: `业务标题:`,
-        label4: `业务内容:`,
-        label5: `进入小程序查看:`,
-        label6: `参与活动人群:`,
-        label7: `发送时间:`
+        label1: `消息名称：`,
+        label2: `消息类型：`,
+        label3: `业务标题：`,
+        label4: `业务内容：`,
+        label5: `进入小程序查看：`,
+        label6: `参与活动人群：`,
+        label7: `发送时间：`
+      },
+      /**
+       * 表单检验
+       */
+      rules: {
+        name: [
+          { required: true, message: '请填写消息名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ]
       }
 
     }
@@ -214,12 +361,28 @@ export default {
       .mainContentRight {
         width: 520px;
         height: 1010px;
-        background-color: #eee;
+        background-color: #f8f8f8;
         margin-left: 20px;
         padding-top: 15px;
         .mainContentRightForm {
           .mainContentRightFormText {
             color: #999;
+          }
+        }
+        .chooseGoods {
+          display: flex;
+          .chooseGoodsLeft {
+            margin-left: 50px;
+            margin-right: 30px;
+          }
+          .imageWraper {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ccc;
+            background: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
         }
       }

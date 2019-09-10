@@ -29,19 +29,24 @@
         <el-form
           :inline="true"
           :model="formData"
-          label-width="120px"
+          label-width="90px"
         >
           <el-form-item :label="labels.label1">
             <el-input
+              style="width:120px"
               v-model="formData.name"
               size="small"
             ></el-input>
           </el-form-item>
           <el-form-item :label="labels.label2">
             <el-input
+              style="width:120px"
               v-model="formData.title"
               size="small"
             ></el-input>
+          </el-form-item>
+          <el-form-item :label="labels.label3">
+            <dateTimePicker @time="handleGetTime" />
           </el-form-item>
           <el-form-item>
             <el-button
@@ -146,9 +151,11 @@
   </div>
 </template>
 <script>
+import dateTimePicker from '../../../../../../components/admin/dateTimePicker/dateTimePicker'
 import { messageTemplateListApi } from '@/api/admin/marketManage/messagePush'
 export default {
   name: 'messagePush',
+  components: { dateTimePicker },
   data () {
     return {
       activeName: `0`,
@@ -175,7 +182,8 @@ export default {
       },
       labels: {
         label1: `消息名称`,
-        label2: `业务标题`
+        label2: `业务标题`,
+        label3: `发送时间`
       },
       /**
        * tableData
@@ -226,7 +234,10 @@ export default {
     },
     // 筛选
     handleFilter () {
-
+    },
+    // 获取筛选的时间
+    handleGetTime (val) {
+      console.log(val)
     }
   }
 }
