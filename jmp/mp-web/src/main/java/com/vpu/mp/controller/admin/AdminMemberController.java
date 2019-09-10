@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
@@ -119,7 +120,12 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/manager/center/{userId}")
 	public JsonResult getMemberInfo(@PathVariable Integer userId) {
 		logger().info("获取会员用户id为 " + userId + " 详情信息");
-		MemberDetailsVo vo = shop().member.getMemberInfoById(userId);
+		MemberDetailsVo vo;
+		try {
+			vo = shop().member.getMemberInfoById(userId);
+		} catch (MpException e) {
+			return fail(e.getErrorCode());
+		}
 		return i18nSuccess(vo);
 	}
 	
