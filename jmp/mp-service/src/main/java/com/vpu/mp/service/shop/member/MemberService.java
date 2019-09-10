@@ -43,6 +43,7 @@ import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
+import org.jooq.Record22;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
@@ -56,6 +57,8 @@ import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -614,8 +617,9 @@ public class MemberService extends ShopBaseService {
 			.into(TagVo.class);
 	}
 	
-	/** 根据用户id获取用户详情 */
-	public MemberDetailsVo getMemberInfoById(Integer userId) {
+	/** 根据用户id获取用户详情 
+	 * @throws MpException */
+	public MemberDetailsVo getMemberInfoById(Integer userId) throws MpException {
 		MemberDetailsVo vo = new MemberDetailsVo();
 		MemberTransactionStatisticsVo transStatistic = new MemberTransactionStatisticsVo();
 
@@ -636,23 +640,30 @@ public class MemberService extends ShopBaseService {
 	 * @param userId
 	 * @param transStatistic
 	 * @return
+	 * @throws MpException 
 	 */
-	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) {
+	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) throws MpException {
 		/** 会员用户基本信息 */
 		logger().info("正在处理会员基本信息");
 
 		User a = USER.as("a");
 		User b = USER.as("b");
 		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
-		MemberBasicInfoVo memberBasicInfoVo = db()
+		MemberBasicInfoVo memberBasicInfoVo = null;
+		try {
+			memberBasicInfoVo = db()
 				.select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID, a.INVITE_ID, a.SOURCE,
 						a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,
 						USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
 						USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR,
 						USER_DETAIL.SEX, USER_DETAIL.MARITAL_STATUS, USER_DETAIL.MONTHLY_INCOME, USER_DETAIL.CID)
-				.from(a.join(USER_DETAIL).on(a.USER_ID.eq(USER_DETAIL.USER_ID))).where(a.USER_ID.eq(userId)).fetchOne()
+				.from(a.leftJoin(USER_DETAIL).on(a.USER_ID.eq(USER_DETAIL.USER_ID))).where(a.USER_ID.eq(userId))
+				.fetchOne()
 				.into(MemberBasicInfoVo.class);
-
+		}catch(NullPointerException e) {
+			logger().info("没有该用户");
+			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
+		}
 		logger().info("生日: " + memberBasicInfoVo.getBirthdayYear());
 
 		/** 最近浏览时间 */
@@ -661,10 +672,12 @@ public class MemberService extends ShopBaseService {
 				.where(USER_LOGIN_RECORD.USER_ID.eq(userId)).orderBy(USER_LOGIN_RECORD.ID.desc()).limit(1).fetchOne();
 
 		/** 最近浏览时间如果updateTime 为null，则设置为createTime */
-		if (loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME) != null) {
-			memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME));
-		} else {
-			memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.CREATE_TIME));
+		if(loginTime != null) {
+			if (loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME) != null) {
+				memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME));
+			} else {
+				memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.CREATE_TIME));
+			}
 		}
 		/** 累计积分 */
 		BigDecimal totalScore = score.getTotalScore(userId);
@@ -679,9 +692,10 @@ public class MemberService extends ShopBaseService {
 
 		/** 受教育程度 */
 		Byte eduCode = memberBasicInfoVo.getEducation();
-		memberBasicInfoVo.setEducationStr(MemberEducationEnum.valueOf(eduCode).getName());
-		logger().info("受教育程度" + MemberEducationEnum.valueOf(eduCode).getName());
-
+		if(eduCode != null) {
+			memberBasicInfoVo.setEducationStr(MemberEducationEnum.valueOf(eduCode).getName());
+			logger().info("受教育程度" + MemberEducationEnum.valueOf(eduCode).getName());
+		}
 		/** 来源 */
 		String source = memberBasicInfoVo.getSource();
 		if (!ZERO.equals(source) && !NEG_ONE.equals(source)) {

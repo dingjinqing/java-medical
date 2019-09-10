@@ -39,7 +39,7 @@ public class MemberBasicInfoVo {
 	private String inviteId;
 	
 	/** b2c_user_detail */
-	/** 真是姓名 */
+	/** 真实姓名 */
 	private String realName;
 	
 	
@@ -69,15 +69,15 @@ public class MemberBasicInfoVo {
 	private String educationStr;
 	
 	/** 省市区，编号，前端做国际化 */
-	private int provinceCode;
-	private int cityCode;
-	private int districtCode;
+	private Integer provinceCode;
+	private Integer cityCode;
+	private Integer districtCode;
 	
 	
 	/** 生日 */
-	private int birthdayYear;
-	private int birthdayMonth;
-	private int birthdayDay;
+	private Integer birthdayYear;
+	private Integer birthdayMonth;
+	private Integer birthdayDay;
 	
 	/** 性别：女f,男m */
 	//private char sex; 经过国际化时报错
@@ -85,9 +85,9 @@ public class MemberBasicInfoVo {
 	
 	
 	/** 婚姻状况：1未婚，2已婚，3保密  */
-	private int maritalStatus;
+	private Integer maritalStatus;
 	/** 月收入 */
-	private int monthlyIncome;
+	private Integer monthlyIncome;
 	/** 身份证 */
 	private String cid;
 	/** 客单价 */

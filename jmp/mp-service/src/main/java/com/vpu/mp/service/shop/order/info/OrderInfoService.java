@@ -740,6 +740,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public Timestamp getRecentOrderInfoByUserId(Integer userId) {
+		try {
 		return db().select(ORDER_INFO.CREATE_TIME)
 				.from(ORDER_INFO)
 			.where(ORDER_INFO.USER_ID.eq(userId))
@@ -748,6 +749,10 @@ public class OrderInfoService extends ShopBaseService {
 			.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
 			.orderBy(ORDER_INFO.CREATE_TIME.desc())
 			.fetchOne().into(Timestamp.class);
+		}catch(NullPointerException e) {
+			logger().info("没有查询到用户下单的时间");
+			return null;
+		}
 	}
 
 	/**
@@ -794,9 +799,12 @@ public class OrderInfoService extends ShopBaseService {
 			.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_STATUS_FINISH))
 			.fetchOne()
 			.into(OrderInfoRecord.class);
-
-		BigDecimal result = record.getMoneyPaid().add(record.getShippingFee());
-		return result;
+		if(record != null ) {
+			BigDecimal result = BigDecimalUtil.add(record.getMoneyPaid(), record.getShippingFee());
+			return result;
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 
 	/**
