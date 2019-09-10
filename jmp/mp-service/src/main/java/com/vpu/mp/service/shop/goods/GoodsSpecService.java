@@ -56,18 +56,18 @@ public class GoodsSpecService extends ShopBaseService {
      * 在插入数据的基础上返回一个预处理的Map对象，供使用者快速通过规格名称字符串获取对应记录的id值。
      * @param goodsSpecs
      * @param goodsId
-     * @return
+     * @return {'颜色':{'specId':1,'红色':11,'绿色':22},'尺寸':{'specId':2,'X':15,'M':28}}
      */
-    protected Map<String, Map<String, Integer>> insertSpecAndSpecValWithPrepareResult(List<GoodsSpec> goodsSpecs, Integer goodsId) {
+    public Map<String, Map<String, Integer>> insertSpecAndSpecValWithPrepareResult(List<GoodsSpec> goodsSpecs, Integer goodsId) {
         insertSpecAndSpecVal(goodsSpecs, goodsId);
         Map<String, Map<String, Integer>> resultMap = prepareResultMap(goodsSpecs);
         return resultMap;
     }
 
     /**
-     * 预处理规格名和规格值，便于通过规格名称或规格值来获得对应记录在数据库中的唯一值。
-     * @param goodsSpecs
-     * @return
+     * 预处理规格名和规格值，便于通过规格名称或规格值来获得对应记录在数据库中的id值。
+     * @param goodsSpecs 已入库的规格值和名
+     * @return {'颜色':{'specId':1,'红色':11,'绿色':22},'尺寸':{'specId':2,'X':15,'M':28}}
      */
     private Map<String, Map<String, Integer>> prepareResultMap(List<GoodsSpec> goodsSpecs) {
         // 产生 规格属性预处理数据
@@ -112,10 +112,11 @@ public class GoodsSpecService extends ShopBaseService {
 
     /**
      * 根据规格值名的id和商品id删除数据（属于商品id，但是不在规格值和名id内）
-     * @param goodsSpecs 规格值
+     * @param goodsSpecs 规格值集合，该集合内包含存在id值的旧数据和不存在id值的新数据
      * @param goodsId 商品id
      */
-    public void deleteByPrdIdsGoodsId(List<GoodsSpec> goodsSpecs, Integer goodsId) {
+    public void deleteForGoodsUpdate(List<GoodsSpec> goodsSpecs, Integer goodsId) {
+        // 没有对应的规格值和名则将该商品下的所有相关内容全部删除
         if (goodsSpecs == null || goodsSpecs.size() == 0) {
             deleteByGoodsIds(db(), Arrays.asList(goodsId));
         } else {
@@ -123,9 +124,18 @@ public class GoodsSpecService extends ShopBaseService {
            List<Integer> specValIds=new ArrayList<>(goodsSpecs.size());
 
            goodsSpecs.forEach(goodsSpec -> {
+                //规格名为空，则其下的所有规格值也都为空
+               if (goodsSpec.getSpecId() == null) {
+                   return;
+               }
                specNameIds.add(goodsSpec.getSpecId());
                List<GoodsSpecVal> goodsSpecVals = goodsSpec.getGoodsSpecVals();
-               goodsSpecVals.forEach(goodsSpecVal -> specValIds.add(goodsSpecVal.getSpecValId()));
+               goodsSpecVals.forEach(goodsSpecVal ->{
+                   // 可能存在无id值的新规格值项
+                   if (goodsSpecVal.getSpecValId() != null) {
+                       specValIds.add(goodsSpecVal.getSpecValId());
+                   }
+               });
            });
 
             db().update(SPEC).set(SPEC.DEL_FLAG, DelFlag.DISABLE.getCode())
@@ -146,7 +156,11 @@ public class GoodsSpecService extends ShopBaseService {
         }
     }
 
-    public void update(List<GoodsSpec> goodsSpecs){
+    /**
+     * 根据规格值名id和进行修改数据
+     * @param goodsSpecs 规格值集合，该集合内包含存在id值的旧数据和不存在id值的新数据
+     */
+    public void updateForGoodsUpdate(List<GoodsSpec> goodsSpecs){
         // 使用了默认规格
         if (goodsSpecs == null || goodsSpecs.size() == 0) {
             return;
@@ -155,6 +169,9 @@ public class GoodsSpecService extends ShopBaseService {
         List<SpecRecord> specRecords=new ArrayList<>(goodsSpecs.size());
         List<SpecValsRecord> specValsRecords=new ArrayList<>(goodsSpecs.size());
         goodsSpecs.forEach(goodsSpec -> {
+            if (goodsSpec.getSpecId() == null) {
+                return;
+            }
             SpecRecord specRecord = db.newRecord(SPEC);
             specRecord.setSpecId(goodsSpec.getSpecId());
             specRecord.setSpecName(goodsSpec.getSpecName());
@@ -162,6 +179,9 @@ public class GoodsSpecService extends ShopBaseService {
             List<GoodsSpecVal> goodsSpecVals = goodsSpec.getGoodsSpecVals();
 
             goodsSpecVals.forEach(goodsSpecVal -> {
+                if (goodsSpecVal.getSpecValId() == null) {
+                    return;
+                }
                 SpecValsRecord specValsRecord = db.newRecord(SPEC_VALS);
                 specValsRecord.setSpecValId(goodsSpecVal.getSpecValId());
                 specValsRecord.setSpecValName(goodsSpecVal.getSpecValName());
@@ -171,6 +191,41 @@ public class GoodsSpecService extends ShopBaseService {
         db.batchUpdate(specRecords).execute();
         db.batchUpdate(specValsRecords).execute();
     }
+
+    /**
+     * 插入规格名值数据，并返回包含经过处理的规格名值id的Map对象，
+     * 但是输入的规格名可能已存在对应的id,这时不应该插入该名称
+     * @param goodsSpecs 规格对象
+     * @param goodsId 商品id
+     * @return {'颜色':{'specId':1,'红色':11,'绿色':22},'尺寸':{'specId':2,'X':15,'M':28}}
+     */
+    public Map<String,Map<String,Integer>> insertSpecAndSpecValWithPrepareResultForGoodsUpdate(List<GoodsSpec> goodsSpecs,Integer goodsId){
+        DSLContext db=db();
+        for (GoodsSpec goodsSpec : goodsSpecs) {
+            goodsSpec.setGoodsId(goodsId);
+
+            // 规格名id存在则不用再插入
+            if (goodsSpec.getSpecId() != null) {
+                SpecRecord specRecord = db.newRecord(SPEC, goodsSpec);
+                specRecord.insert();
+                goodsSpec.setSpecId(specRecord.getSpecId());
+            }
+
+            for (GoodsSpecVal val : goodsSpec.getGoodsSpecVals()) {
+                val.setGoodsId(goodsId);
+                val.setSpecId(goodsSpec.getSpecId());
+                if (val.getSpecValId() != null) {
+                    continue;
+                }
+                SpecValsRecord specValsRecord = db.newRecord(SPEC_VALS, val);
+                specValsRecord.insert();
+                val.setSpecValId(specValsRecord.getSpecValId());
+            }
+        }
+        Map<String, Map<String, Integer>> resultMap = prepareResultMap(goodsSpecs);
+        return resultMap;
+    }
+
     /**
      *  根据商品Id查找规格
      * @param db

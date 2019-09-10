@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,6 +37,11 @@ public class AdminGoodsController extends AdminBaseController {
         return success(goodsInitialVo);
     }
 
+    @GetMapping("/api/admin/goods/getSysCatParents")
+    public JsonResult getSysCatParents(Short catId) {
+        LinkedList<Map<String, Object>> parentByChildId = saas.sysCate.findParentByChildId(catId);
+        return success(parentByChildId);
+    }
     /**
      * 商品分页查询
      *
@@ -359,6 +365,11 @@ public class AdminGoodsController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 判断商品会员卡价格是否正确
+     * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
+     * @return
+     */
     private JsonResult isGradePrdPriceOk(Goods goods){
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
         if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {

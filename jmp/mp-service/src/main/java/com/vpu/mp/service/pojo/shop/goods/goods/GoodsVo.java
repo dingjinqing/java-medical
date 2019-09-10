@@ -21,6 +21,9 @@ public class GoodsVo extends Goods {
     private String brandName;
     private String sortName;
     private String goodsPageName;
+    private String goodsImgPath;
+    private List<String> goodsImgsPath;
+
     @Override
     public List<Integer> getGoodsLabels() {
         return goodsLabels;
