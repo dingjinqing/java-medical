@@ -48,30 +48,25 @@ public class TaskJobMainService extends MainBaseService {
     /**
      * 通用定时任务job处理（BaseTaskJob 自己定义）
      * @param job
+     * @return taskJobMain的ID
      */
-    public void dispatch(BaseTaskJob job) {
-        db().transaction(configuration->{
-            TaskJobMainRecord mainRecord= DSL.using(configuration).newRecord(TASK_JOB_MAIN,job);
-            TaskJobContentRecord record = DSL.using(configuration).insertInto(TASK_JOB_CONTENT)
-                .set(TASK_JOB_CONTENT.CONTENT,job.getContent())
-                .returning(TASK_JOB_CONTENT.ID)
-                .fetchOne();
-            mainRecord.setContentId(record.getId());
-            if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
-                mainRecord.setType(TaskJobsConstant.STATUS_EXECUTING);
-            }
-            TaskJobMainRecord idRecord = DSL.using(configuration)
-                .insertInto(TASK_JOB_MAIN)
-                .set(mainRecord).returning(TASK_JOB_MAIN.ID)
-                .fetchOne();
-            if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
-                TaskJobsConstant.TaskJobEnum jobEnum = TaskJobsConstant.TaskJobEnum
-                    .getTaskJobEnumByExecutionType(job.getExecutionType());
-                rabbitmqSendService.sendMessage(jobEnum.getExchangeName(),
-                    jobEnum.getRoutingKey(),setTaskJobId(job.getContent(),job.getClassName(),idRecord.getId()),job.getClassName());
-            }
-        });
+    public Integer dispatch(BaseTaskJob job) {
+        TaskJobMainRecord mainRecord= db().newRecord(TASK_JOB_MAIN,job);
+        Integer contentId = insertTaskJobContent(job.getContent());
+        mainRecord.setContentId(contentId);
+        if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
+            mainRecord.setType(TaskJobsConstant.STATUS_EXECUTING);
+        }
+        Integer mainId = insertTaskJobMain(mainRecord);
+        if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
+            TaskJobsConstant.TaskJobEnum jobEnum = TaskJobsConstant.TaskJobEnum
+                .getTaskJobEnumByExecutionType(job.getExecutionType());
+            rabbitmqSendService.sendMessage(jobEnum.getExchangeName(),
+                jobEnum.getRoutingKey(),setTaskJobId(job.getContent(),job.getClassName(),mainId),job.getClassName());
+        }
+        return mainId;
     }
+
     private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
         try {
             if(  !jsonStr.contains("taskJobId")&&Class.forName(clzName).getMethod("setTaskJobId",Integer.class)!= null ){
@@ -91,7 +86,7 @@ public class TaskJobMainService extends MainBaseService {
      * @param shopId 门店id
      * @param executionType 指定传输路由{@link TaskJobsConstant.TaskJobEnum}
      */
-    public void dispatchImmediately(Object param,String className,Integer shopId,Integer executionType){
+    public Integer dispatchImmediately(Object param,String className,Integer shopId,Integer executionType){
         TaskJobInfo  info = TaskJobInfo.builder(shopId)
             .type(TaskJobsConstant.TYPE_ONCE)
             .content(param)
@@ -101,11 +96,11 @@ public class TaskJobMainService extends MainBaseService {
             .executionType(Objects.requireNonNull(TaskJobsConstant.TaskJobEnum
                 .getTaskJobEnumByExecutionType(executionType)))
             .builder();
-        dispatch(info);
+         return dispatch(info);
     }
 
     /**
-     * 查询并发送待执行的任务给各自的队列（加入排他锁，防重入）
+     * 查询并发送待执行的任务给各自的队列
      */
     public  void  getAndSendMessage(){
         String uuid = Util.randomId();
@@ -169,5 +164,20 @@ public class TaskJobMainService extends MainBaseService {
             }
             record.update();
         }
+    }
+    private Integer insertTaskJobContent(String content){
+        return  db().insertInto(TASK_JOB_CONTENT)
+            .set(TASK_JOB_CONTENT.CONTENT,content)
+            .returning(TASK_JOB_CONTENT.ID)
+            .fetchOne()
+            .getId();
+    }
+    private Integer insertTaskJobMain(TaskJobMainRecord mainRecord){
+        return db()
+            .insertInto(TASK_JOB_MAIN)
+            .set(mainRecord)
+            .returning(TASK_JOB_MAIN.ID)
+            .fetchOne()
+            .getId();
     }
 }
