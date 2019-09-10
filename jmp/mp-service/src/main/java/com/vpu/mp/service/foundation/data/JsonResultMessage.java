@@ -214,6 +214,8 @@ public class JsonResultMessage {
 	public static final String WX_MA_HAVE_MP = "wx.ma.have.mp";
 	public static final String WX_MP_NEED_CHOOSE_RIGHT = "wx.mp.need.choose.right";
 	public static final String WX_NO_REQUIRED = "wx.no.request";
+	public static final String WX_ONLY_ONE = "wx.only.one";
+	public static final String WX_JOB_PROBLEM = "wx.job.problem";
 	
 	/**
 	 * 门店管理
@@ -333,7 +335,6 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_CANCEL_FAIL = "order_cancel_fail";
 	public static final String MSG_ORDER_CLOSE_NOT_CLOSE = "order_close_not_close";
 	public static final String MSG_ORDER_CLOSE_FAIL = "order_close_fail";
-	public static final String MSG_ORDER_RETURN_RETURN_ORDER_NOT_EXIST = "order_return_return_order_not_exist";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";

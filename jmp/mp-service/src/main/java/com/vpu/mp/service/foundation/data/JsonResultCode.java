@@ -233,6 +233,8 @@ public enum JsonResultCode {
     WX_MA_HAVE_MP(170025,JsonResultMessage.WX_MA_HAVE_MP),
     WX_MP_NEED_CHOOSE_RIGHT(170026,JsonResultMessage.WX_MP_NEED_CHOOSE_RIGHT),
     WX_NO_REQUIRED(170027,JsonResultMessage.WX_NO_REQUIRED),
+    WX_ONLY_ONE(170028,JsonResultMessage.WX_ONLY_ONE),
+    WX_JOB_PROBLEM(170029,JsonResultMessage.WX_JOB_PROBLEM),
     
 	//门店管理
 	CODE_STORE_GROUP_NAME_EXIST(180001,JsonResultMessage.STORE_GROUP_NAME_EXIST),
