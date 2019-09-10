@@ -1,6 +1,7 @@
 package com.vpu.mp.mq.listener;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,19 +9,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import com.rabbitmq.client.Channel;
 import com.vpu.mp.config.mq.RabbitConfig;
+import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.shop.market.message.BatchUploadCodeParam;
 import com.vpu.mp.service.pojo.shop.market.message.BatchUploadVo;
 import com.vpu.mp.service.saas.SaasApplication;
-import com.vpu.mp.service.saas.shop.MpBackProcessService;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
@@ -42,17 +46,31 @@ public class BatchUploadListener implements BaseRabbitHandler {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@RabbitHandler
-	public void handler(@Payload BatchUploadCodeParam param, Message message, Channel channel) throws InterruptedException {
+	public void handler(@Payload BatchUploadCodeParam param, Message message, Channel channel)
+			throws InterruptedException {
 		System.out.println("进来了");
+
+		Thread.sleep(10000);
+		System.out.println("睡醒");
 		List<MpAuthShopListVo> list = param.getList();
 		// 总数
 		BatchUploadVo vo = new BatchUploadVo();
 		int count = list.size();
 		int success = 0;
 		int fail = 0;
-		Short progress = 0;
+		short progress = 0;
+		begin(param.getRecId());
 		setNum(vo, success, fail, count);
+		Boolean isKill = true;
 		for (int i = 0; i < list.size(); i++) {
+			isKill = isKill(param.getRecId());
+			if (!isKill) {
+				// 终结了
+				updateKill(param.getRecId(), "进程终止");
+				System.out.println("终止了");
+				break;
+			}
+			System.out.println("没有终止");
 			int a = i + 1;
 			String appId = list.get(i).getAppId();
 			String nickName = list.get(i).getNickName();
@@ -85,9 +103,13 @@ public class BatchUploadListener implements BaseRabbitHandler {
 
 			}
 		}
-		updateProgress(param.getRecId(), progress, "处理完成");
-		setNum(vo, success, fail, count, 0, null);
-		resultManage(vo, param.getRecId());
+		if (isKill) {
+			// 没有终结
+			updateProgress(param.getRecId(), progress, "处理完成");
+			setNum(vo, success, fail, count, 0, null);
+			resultManage(vo, param.getRecId());
+		}
+		updateJobState(Util.toJson(list), param.getRecId(), fail, count);
 	}
 
 	@Override
@@ -135,9 +157,38 @@ public class BatchUploadListener implements BaseRabbitHandler {
 	private void finish(Integer recId) {
 		saas.shop.backProcessService.finish(recId);
 	}
-	private void updateRow(Integer recId, Integer jobCode, String jobMessage,String jobResult) {
+
+	private void updateRow(Integer recId, Integer jobCode, String jobMessage, String jobResult) {
 		saas.shop.backProcessService.updateRow(recId, jobCode, jobMessage, jobResult);
-		
+	}
+
+	private void begin(Integer recId) {
+		saas.shop.backProcessService.begin(recId);
+	}
+
+	private BackProcessRecord getRecord(Integer recId) {
+		return saas.shop.backProcessService.getRow(recId);
+	}
+
+	//更新b2c_task_job_main表中数据
+	private void updateJobState(String content, Integer recId, int failSize, int allSize) {
+		BackProcessRecord row = getRecord(recId);
+		if (row != null) {
+			saas.taskJobMainService.updateProgress(content, row.getProcessId(), failSize, allSize);
+		}
+	}
+
+	private void updateKill(Integer recId, String failReason) {
+		saas.shop.backProcessService.updateKill(recId, failReason);
+	}
+
+	// 可以运行是true，不可运行是false
+	private Boolean isKill(Integer recId) {
+		BackProcessRecord row = getRecord(recId);
+		if (row != null) {
+			return saas.taskJobMainService.assertExecuting(row.getProcessId());
+		}
+		return true;
 	}
 
 }
