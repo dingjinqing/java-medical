@@ -91,10 +91,7 @@
             prop="groupPrice"
             label="拼团价（元）"
           >
-            <template
-              slot="header"
-              slot-scope="scope"
-            >
+            <template>
               <span>拼团价（元）</span>
               <el-button
                 @click="setCurrent(1)"
@@ -111,10 +108,7 @@
             prop="grouperPrice"
             label="团长优惠价（元）"
           >
-            <template
-              slot="header"
-              slot-scope="scope"
-            >
+            <template>
               <span>团长优惠价（元）</span>
 
               <el-button
@@ -136,10 +130,7 @@
             prop="stock"
             label="拼团库存"
           >
-            <template
-              slot="header"
-              slot-scope="scope"
-            >
+            <template>
               <span>拼团库存</span>
               <el-button
                 @click="setCurrent(3)"
