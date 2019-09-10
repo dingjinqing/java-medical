@@ -67,16 +67,44 @@ public class TaskJobMainService extends MainBaseService {
         return mainId;
     }
 
+    /**
+     * 判断任务是否已被终止
+     * @param id taskJob id
+     * @return false代表不可以执行，反之亦然
+     */
+    public Boolean assertExecuting(Integer id){
+        TaskJobMainRecord record = getTaskJobMainRecordById(id);
+        if( record.getStatus().equals(TaskJobsConstant.STATUS_TERMINATION) ){
+            return Boolean.FALSE;
+        }else{
+            return Boolean.TRUE;
+        }
+    }
+    /**
+     * 修改taskJob的状态
+     * @param id taskJob id
+     * @param status 状态
+     */
+    public void updateTaskJobStatus(Integer id,Byte status){
+        db().update(TASK_JOB_MAIN)
+            .set(TASK_JOB_MAIN.STATUS,status)
+            .where(TASK_JOB_MAIN.ID.eq(id))
+            .execute();
+    }
+
     private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
-        try {
-            if(  !jsonStr.contains("taskJobId")&&Class.forName(clzName).getMethod("setTaskJobId",Integer.class)!= null ){
+            if(  !jsonStr.contains("taskJobId")&& assertContainsTaskJobId(clzName) ){
                 String jobIdStr = "\"taskJobId\":"+jobId+",";
                 return  jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
             }else{
                 return jsonStr;
             }
+    }
+    private Boolean assertContainsTaskJobId(String clzName)  {
+        try {
+            return Class.forName(clzName).getMethod("setTaskJobId",Integer.class) != null;
         } catch (ClassNotFoundException | NoSuchMethodException e) {
-            return jsonStr;
+            return Boolean.FALSE;
         }
     }
     /**
@@ -130,10 +158,10 @@ public class TaskJobMainService extends MainBaseService {
         }
     }
 
-    public TaskJobMainRecord getTaskJobMainRecordById(Integer taskJobId){
+    private TaskJobMainRecord getTaskJobMainRecordById(Integer taskJobId){
         return db().selectFrom(TASK_JOB_MAIN).where(TASK_JOB_MAIN.ID.eq(taskJobId)).fetchOne();
     }
-    public TaskJobContentRecord getTaskJobContentRecordById(Integer taskContentId){
+    private TaskJobContentRecord getTaskJobContentRecordById(Integer taskContentId){
         return db().selectFrom(TASK_JOB_CONTENT).where(TASK_JOB_CONTENT.ID.eq(taskContentId)).fetchOne();
     }
 
