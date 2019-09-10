@@ -256,7 +256,7 @@ public class OrderInfoService extends ShopBaseService {
 		Map<String, List<OrderListInfoVo>> result = new HashMap<String, List<OrderListInfoVo>>();
 		for (OrderListInfoVo order : orders) {
 			if(result.get(order.getMainOrderSn()) != null) {
-				result.get(order.getOrderSn()).add(order);
+				result.get(order.getMainOrderSn()).add(order);
 			}else {
 				ArrayList<OrderListInfoVo> orderList = new ArrayList<OrderListInfoVo>();
 				orderList.add(order);
