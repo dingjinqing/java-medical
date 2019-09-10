@@ -38,7 +38,14 @@
         <div class="fromInfo">
           <div style="display:flex">
             <div class="title">活动实付总金额(元)</div>
-            <i class="el-icon-warning-outline icons"></i>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="活动订单实际付款总金额(包括账户余额、会员卡余额及微信支付，不包含退款部分)"
+              placement="top"
+            >
+              <i class="el-icon-warning-outline icons"></i>
+            </el-tooltip>
           </div>
           <div
             class="num"
@@ -48,7 +55,14 @@
         <div class="fromInfo">
           <div style="display:flex">
             <div class="title">活动优惠总金额(元)</div>
-            <i class="el-icon-warning-outline icons"></i>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="活动优惠的总金额"
+              placement="top"
+            >
+              <i class="el-icon-warning-outline icons"></i>
+            </el-tooltip>
           </div>
           <div
             class="num"
@@ -58,7 +72,14 @@
         <div class="fromInfo">
           <div style="display:flex">
             <div class="title">费效比</div>
-            <i class="el-icon-warning-outline icons"></i>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="活动优惠总金额/活动实付总金额"
+              placement="top"
+            >
+              <i class="el-icon-warning-outline icons"></i>
+            </el-tooltip>
           </div>
           <div
             class="num"
@@ -68,7 +89,14 @@
         <div class="fromInfo">
           <div style="display:flex">
             <div class="title">新成交用户数</div>
-            <i class="el-icon-warning-outline icons"></i>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="活动带来的首次在店铺下单的用户数"
+              placement="top"
+            >
+              <i class="el-icon-warning-outline icons"></i>
+            </el-tooltip>
           </div>
           <div
             class="num"
@@ -78,7 +106,14 @@
         <div class="fromInfo">
           <div style="display:flex">
             <div class="title">老成交用户数</div>
-            <i class="el-icon-warning-outline icons"></i>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="在店铺有过付款订单，参与该活动的用户数"
+              placement="top"
+            >
+              <i class="el-icon-warning-outline icons"></i>
+            </el-tooltip>
           </div>
           <div
             class="num"
@@ -87,12 +122,15 @@
         </div>
       </section>
 
+      <div id="charts"></div>
+
     </wrapper>
   </div>
 </template>
 
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
+import echarts from 'echarts'
 
 export default {
   components: { wrapper },
@@ -100,6 +138,77 @@ export default {
     return {
       value1: ''
     }
+  },
+  mounted () {
+    // let this_ = this
+    let myChart = echarts.init(document.getElementById('charts'))
+    let option = {
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        data: ['活动实付总金额', '活动优惠总金额', '费效比', '新成交用户数', '老成家用户数']
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      // toolbox: {
+      //   feature: {
+      //     saveAsImage: {}
+      //   }
+      // },
+      xAxis: [
+        {
+          type: 'category',
+          data: ['2019-09-01', '2019-09-02', '2019-09-03', '2019-09-04', '2019-09-05', '2019-09-06', '2019-09-07', '2019-09-08', '2019-09-09', '2019-09-10'],
+          boundaryGap: false
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value'
+        }
+      ],
+      series: [
+        {
+          name: '活动实付总金额',
+          type: 'line',
+          stack: '总量',
+          data: [120, 132, 101, 134, 90, 230, 210, 220, 240, 220]
+        },
+        {
+          name: '活动优惠总金额',
+          type: 'line',
+          stack: '总量',
+          data: [220, 182, 191, 234, 290, 330, 310, 300, 320, 323]
+        },
+        {
+          name: '费效比',
+          type: 'line',
+          stack: '总量',
+          data: [150, 232, 201, 154, 190, 330, 410, 440, 430, 424]
+        },
+        {
+          name: '新成交用户数',
+          type: 'line',
+          stack: '总量',
+          data: [320, 332, 301, 334, 390, 330, 320, 313, 329, 321]
+        },
+        {
+          name: '老成交用户数',
+          type: 'line',
+          stack: '总量',
+          data: [820, 932, 901, 934, 1290, 1330, 1320, 1235, 1335, 1285]
+        }
+      ]
+    }
+    myChart.setOption(option)
+
+    // 建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
+    // window.addEventListener('resize', function () { myChart.resize() })
   }
 }
 
@@ -115,7 +224,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 30px 0 20px 0;
+    margin: 30px 0 50px 0;
     .fromInfo {
       flex: 1;
       height: 130px;
@@ -137,6 +246,11 @@ export default {
         font-size: 30px;
       }
     }
+  }
+  #charts {
+    width: 100%;
+    height: 500px;
+    left: -30px;
   }
 }
 </style>

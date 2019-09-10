@@ -5,7 +5,6 @@
       <!-- 左侧内容start -->
       <div class="cententLleft">
         <div class="cententLleft_title"></div>
-        <!-- <div class="cententLleft_bottom"> -->
         <div id="slider">
           <div class="scroll">
             <swiper :options="swiperOption">
@@ -32,217 +31,217 @@
             </swiper>
           </div>
         </div>
-        <!-- </div> -->
       </div>
       <!-- 左侧内容end  -->
 
       <!-- 活动信息部分 -->
-      <div class="contentRight">
-        <div class="actInfo">活动信息</div>
-        <el-form
-          label-position="right"
-          label-width="100px"
-        >
-          <el-form-item label="活动名称：">
-            <el-input
-              size="mini"
-              style="width:200px"
-              v-model="param.name"
-              placeholder="活动名称"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="活动有效期：">
-            <el-radio-group v-model="param.isForever">
-              <div style="display:flex">
-                <el-radio :label=0>固定时间</el-radio>
-                <div style="margin-left: 10px">
-                  <el-date-picker
-                    v-if="this.param.isForever == 0"
-                    style="width: 300px;"
-                    v-model="effectiveDate"
-                    type="datetimerange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    size="small"
-                  >
-                  </el-date-picker>
+      <section class="right_main">
+        <div class="contentRight">
+          <div class="actInfo">活动信息</div>
+          <el-form
+            label-position="right"
+            label-width="100px"
+          >
+            <el-form-item label="活动名称：">
+              <el-input
+                size="mini"
+                style="width:200px"
+                v-model="param.name"
+                placeholder="活动名称"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="活动有效期：">
+              <el-radio-group v-model="param.isForever">
+                <div style="display:flex">
+                  <el-radio :label=0>固定时间</el-radio>
+                  <div style="margin-left: 10px">
+                    <el-date-picker
+                      v-if="this.param.isForever == 0"
+                      style="width: 300px;"
+                      v-model="effectiveDate"
+                      type="datetimerange"
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                      size="small"
+                    >
+                    </el-date-picker>
+                  </div>
                 </div>
-              </div>
-              <el-radio :label=1>永久有效</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="优先级：">
+                <el-radio :label=1>永久有效</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="优先级：">
+              <el-input
+                size="mini"
+                style="width:200px"
+                v-model="param.priority"
+                placeholder="0"
+              ></el-input>
+              <div>用于区分不同分享有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
+            </el-form-item>
+            <el-form-item label="触发条件：">
+              <span>用户分享</span>
+              <el-radio-group v-model="param.condition">
+                <el-radio :label=1>全部商品</el-radio>
+                <el-radio :label=2>指定商品</el-radio>
+                <el-radio :label=3>实际访问量较少商品</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-form>
+          <div v-if="param.condition == 2">
+            <el-button
+              type="primary"
+              @click="showChoosingGoods"
+            >+选择商品</el-button>
+            <span>已选：{{selectGoods}}件商品</span>
+          </div>
+          <div
+            v-if="param.condition == 3"
+            style="margin-left:163px"
+          >
+            <span>实际访问量少于</span>
             <el-input
               size="mini"
-              style="width:200px"
-              v-model="param.priority"
+              style="width:50px"
+              v-model.number="param.goodsPv"
               placeholder="0"
-            ></el-input>
-            <div>用于区分不同分享有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
-          </el-form-item>
-          <el-form-item label="触发条件：">
-            <span>用户分享</span>
-            <el-radio-group v-model="param.condition">
-              <el-radio :label=1>全部商品</el-radio>
-              <el-radio :label=2>指定商品</el-radio>
-              <el-radio :label=3>实际访问量较少商品</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <div v-if="param.condition == 2">
-          <el-button
-            type="primary"
-            @click="showChoosingGoods"
-          >+选择商品</el-button>
-          <span>已选：{{selectGoods}}件商品</span>
-        </div>
-        <div
-          v-if="param.condition == 3"
-          style="margin-left:163px"
-        >
-          <span>实际访问量少于</span>
-          <el-input
-            size="mini"
-            style="width:50px"
-            v-model.number="param.goodsPv"
-            placeholder="0"
-          ></el-input> 条的商品
-        </div>
-      </div>
-
-      <!-- 分享奖励部分 -->
-      <div
-        class="contentRight"
-        style="margin-top:10px;"
-      >
-        <div style="display:flex;border-bottom:1px solid #e5e5e5;">
-          <div class="actInfo">分享奖励</div>
-          <div style="display:flex">
-            <span style="width: 100px">最多可添加三级</span>
-            <span
-              class="addRules"
-              @click="addItem()"
-            >+ 添加规则</span>
+            ></el-input> 条的商品
           </div>
         </div>
-        <el-form>
-          <el-form-item>
-            <el-checkbox v-model="param.visitFirst">仅邀请未访问过店铺的用户有效</el-checkbox>
-          </el-form-item>
 
-          <section
-            v-for="(item,index) in shareRule"
-            :key="index"
-          >
-            <el-form-item :label="(index+1)+'级'">
-              <div>邀请满 <el-input
-                  size="mini"
-                  style="width:60px"
-                  v-model="item.invite_num"
-                  placeholder="0"
-                ></el-input> 人 <span style="color:#999">可填写1-5人</span>
-                <i
-                  v-if="index>0"
-                  class="el-icon-delete"
-                  style="color:#409eff;cursor:pointer"
-                  @click="deleteItem(index)"
-                ></i>
-              </div>
-              <div style="margin-left:43px">可获得
-                <el-radio-group v-model="item.reward_type">
-                  <el-radio :label=1>积分</el-radio>
-                  <el-radio :label=2>优惠券</el-radio>
-                  <el-radio :label=3>幸运大抽奖</el-radio>
-                </el-radio-group>
-              </div>
-              <div
-                style="margin-left:43px"
-                v-if="item.reward_type == 1"
-              >积分：
-                <el-input
-                  v-model="item.score"
-                  size="mini"
-                  style="width: 150px"
-                  placeholder="0"
-                ></el-input>
-              </div>
-
-              <div v-if="item.reward_type == 2">
-                <div style="margin-left:43px;margin-top: 10px;display:flex">
-                  <div style="height:30px;line-height:30px">优惠券：</div>
-                  <el-button @click="handleToCallDialog(index)">添加优惠卷</el-button>
-                  <div style="height:30px; line-height:30px">
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      href="#"
-                      style="margin:0 5px;"
-                    >刷新
-                    </el-link>
-                    |
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      href="#"
-                      style="margin:0 5px;"
-                    >新建标签</el-link>
-                    |
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      href="#"
-                      style="margin:0 5px;"
-                    >管理标签</el-link>
-                  </div>
-                </div>
-                <div style="margin-left: 120px">优惠券可用库存{{couponNum}}份数</div>
-              </div>
-
-              <div v-if="item.reward_type == 3">
-                <div style="margin-left:43px;margin-top: 10px;display:flex">
-                  <div style="height:30px;line-height:30px">幸运大抽奖：</div>
-                  <el-button @click="handleToCallDialog(index)">添加幸运大抽奖</el-button>
-                  <div style="height:30px; line-height:30px">
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      href="#"
-                      style="margin:0 5px;"
-                    >刷新
-                    </el-link>
-                    |
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      href="#"
-                      style="margin:0 5px;"
-                    >新建标签</el-link>
-                    |
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      href="#"
-                      style="margin:0 5px;"
-                    >管理标签</el-link>
-                  </div>
-                </div>
-              </div>
-
-              <div style="margin-left:43px">
-                奖品份数
-                <el-input
-                  size="mini"
-                  style="width:150px"
-                  v-model="item.totalNum"
-                  placeholder="0"
-                ></el-input>份</div>
+        <!-- 分享奖励部分 -->
+        <div
+          class="contentRight"
+          style="margin-top:10px;"
+        >
+          <div style="display:flex;border-bottom:1px solid #e5e5e5;">
+            <div class="actInfo">分享奖励</div>
+            <div style="display:flex">
+              <span style="width: 100px">最多可添加三级</span>
+              <span
+                class="addRules"
+                @click="addItem()"
+              >+ 添加规则</span>
+            </div>
+          </div>
+          <el-form>
+            <el-form-item>
+              <el-checkbox v-model="param.visitFirst">仅邀请未访问过店铺的用户有效</el-checkbox>
             </el-form-item>
-          </section>
-        </el-form>
 
-      </div>
+            <section
+              v-for="(item,index) in shareRule"
+              :key="index"
+            >
+              <el-form-item :label="(index+1)+'级'">
+                <div>邀请满 <el-input
+                    size="mini"
+                    style="width:60px"
+                    v-model="item.invite_num"
+                    placeholder="0"
+                  ></el-input> 人 <span style="color:#999">可填写1-5人</span>
+                  <i
+                    v-if="index>0"
+                    class="el-icon-delete"
+                    style="color:#409eff;cursor:pointer"
+                    @click="deleteItem(index)"
+                  ></i>
+                </div>
+                <div style="margin-left:43px">可获得
+                  <el-radio-group v-model="item.reward_type">
+                    <el-radio :label=1>积分</el-radio>
+                    <el-radio :label=2>优惠券</el-radio>
+                    <el-radio :label=3>幸运大抽奖</el-radio>
+                  </el-radio-group>
+                </div>
+                <div
+                  style="margin-left:43px"
+                  v-if="item.reward_type == 1"
+                >积分：
+                  <el-input
+                    v-model="item.score"
+                    size="mini"
+                    style="width: 150px"
+                    placeholder="0"
+                  ></el-input>
+                </div>
+
+                <div v-if="item.reward_type == 2">
+                  <div style="margin-left:43px;margin-top: 10px;display:flex">
+                    <div style="height:30px;line-height:30px">优惠券：</div>
+                    <el-button @click="handleToCallDialog(index)">添加优惠卷</el-button>
+                    <div style="height:30px; line-height:30px">
+                      <el-link
+                        type="primary"
+                        :underline="false"
+                        href="#"
+                        style="margin:0 5px;"
+                      >刷新
+                      </el-link>
+                      |
+                      <el-link
+                        type="primary"
+                        :underline="false"
+                        href="#"
+                        style="margin:0 5px;"
+                      >新建标签</el-link>
+                      |
+                      <el-link
+                        type="primary"
+                        :underline="false"
+                        href="#"
+                        style="margin:0 5px;"
+                      >管理标签</el-link>
+                    </div>
+                  </div>
+                  <div style="margin-left: 120px">优惠券可用库存{{couponNum}}份数</div>
+                </div>
+
+                <div v-if="item.reward_type == 3">
+                  <div style="margin-left:43px;margin-top: 10px;display:flex">
+                    <div style="height:30px;line-height:30px">幸运大抽奖：</div>
+                    <el-button @click="handleToCallDialog(index)">添加幸运大抽奖</el-button>
+                    <div style="height:30px; line-height:30px">
+                      <el-link
+                        type="primary"
+                        :underline="false"
+                        href="#"
+                        style="margin:0 5px;"
+                      >刷新
+                      </el-link>
+                      |
+                      <el-link
+                        type="primary"
+                        :underline="false"
+                        href="#"
+                        style="margin:0 5px;"
+                      >新建标签</el-link>
+                      |
+                      <el-link
+                        type="primary"
+                        :underline="false"
+                        href="#"
+                        style="margin:0 5px;"
+                      >管理标签</el-link>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-left:43px">
+                  奖品份数
+                  <el-input
+                    size="mini"
+                    style="width:150px"
+                    v-model="item.totalNum"
+                    placeholder="0"
+                  ></el-input>份</div>
+              </el-form-item>
+            </section>
+          </el-form>
+        </div>
+      </section>
 
       <!--保存-->
       <div class="footer">
@@ -262,10 +261,14 @@
   </div>
 </template>
 <script>
+import 'swiper/dist/css/swiper.css'
+import vueSwiper from 'vue-awesome-swiper'
+import Vue from 'vue'
 import { mapActions } from 'vuex'
 import { addShareReward } from '@/api/admin/marketManage/sharePolite.js'
 import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
+Vue.use(vueSwiper)
 // import { couponList } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
@@ -306,7 +309,8 @@ export default {
       effectiveDate: '',
       // 分享奖励规则数组，最多定义三个规则
       shareRule: [
-        { invite_num: '',
+        {
+          invite_num: '',
           reward_type: 1,
           score: '',
           coupon: '',
@@ -497,9 +501,11 @@ export default {
   float: left;
   margin: 70px 0 0 224px;
 }
-.contentRight {
+.right_main {
   float: left;
   margin: 80px 0 0 30px;
+}
+.contentRight {
   border: 1px solid #e5e5e5;
   background: #f8f8f8;
   border-radius: 3px;
