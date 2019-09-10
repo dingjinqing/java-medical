@@ -261,6 +261,7 @@ export default {
     },
     // 顶部导航点击
     headerNavClick (index, name) {
+      console.log(this.$route)
       this.$http.$emit('resit', false)
       this.click_nav_index = index
       console.log(name)

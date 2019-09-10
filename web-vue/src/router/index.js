@@ -7,6 +7,7 @@ import { judgeJurisdictionRequest } from '@/api/admin/util.js'
 import indexRoutes from '@/router/index/index'
 import adminRoutes from '@/router/admin/index'
 import systemRouters from '@/router/system/index'
+// import { loadLanguageAsync } from '@/i18n/i18n.js'
 Vue.use(Router)
 
 const indexlogin = () => import('@/components/index/login')
@@ -44,7 +45,7 @@ const router = new Router({
 })
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
-  const nextRoute = ['shopMain'] // 需要登录的页面
+  const nextRoute = ['shopMain', 'shop_view'] // 需要登录的页面
   let token = Cookies.get('V-Index-Token') // 判断是否登录
   if (nextRoute.indexOf(to.name) >= 0) {
     // 检测是否登录的页面
@@ -52,10 +53,7 @@ router.beforeEach((to, from, next) => {
     console.log(to)
     if (token) {
       console.log('我需要判断权限')
-      judgeJurisdictionRequest({ 'V-EnName': to.name }).then(res => {
-        console.log(res)
-        next()
-      })
+      judgeJurisdictionRequest({ 'V-EnName': to.name }).then(() => next())
     } else {
       // 如果没有登录你访问的不是login就让你强制跳转到login页面
       if (to.path !== '/index/login') {
@@ -78,4 +76,9 @@ router.afterEach((to, from) => {
   store.commit('UPDATE_BREADCRUMB_TITLE', to.meta.title)
 })
 
+// router.beforeEach((to, from, next) => {
+//   let lang = localStorage.getItem('WEPUBAO_LANGUAGE')
+//   console.log(lang)
+//   // loadLanguageAsync(lang).then(() => next())
+// })
 export default router

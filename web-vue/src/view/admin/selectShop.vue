@@ -249,7 +249,7 @@ export default {
   border-top: 2px solid #f7931e !important;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
 }
-.noUse {
+.shop_container .noUse {
   background-color: #fef4e8;
 }
 
