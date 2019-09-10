@@ -273,9 +273,6 @@ public class FriendPromoteService extends ShopBaseService {
 				.groupBy(fpd.LAUNCH_ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
 						b.USERNAME.as("launchUsername"));
 		/* 查询条件 */
-		if (null!=param.getLaunchId()) {
-			sql.having(fpd.LAUNCH_ID.eq(param.getLaunchId()));
-		}
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(a.USERNAME.like(this.likeValue(param.getUsername())));
 		}
