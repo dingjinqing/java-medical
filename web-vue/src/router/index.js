@@ -78,7 +78,13 @@ router.afterEach((to, from) => {
 
 router.beforeEach((to, from, next) => {
   // let lang = localStorage.getItem('WEPUBAO_LANGUAGE')
-  let lang = 'cn'
+
+  let lang = localStorage.getItem('WEPUBAO_LANGUAGE')
+  if (lang === 'en_US') {
+    lang = 'en'
+  } else {
+    lang = 'cn'
+  }
   console.log(lang)
   loadLanguageAsync(lang).then(() => next())
 })

@@ -5,7 +5,8 @@ const crumbs = {
     cropperFlag: null,
     activeFresh: null,
     picSpaceCropperFlag: null,
-    integralDataNotice: null
+    integralDataNotice: null,
+    langFlag: ''
   },
   mutations: {
     TOCHANGE_MENUALL: (state, params) => {
@@ -31,6 +32,9 @@ const crumbs = {
     TOCHANGE_NOTICEINTEGRALDATA: (state, params) => {
       state.integralDataNotice = params
       console.log(state.integralDataNotice)
+    },
+    TOCHANGE_LANGCURRENT: (state, params) => {
+      state.langFlag = params
     }
   },
   actions: {

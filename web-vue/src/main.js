@@ -28,9 +28,9 @@ Vue.mixin(myMixins);
 Vue.prototype.moment = Moment;
 new Vue({
   el: '#app',
+  router,
   i18n,
   store,
-  router,
   components: { App },
   template: '<App/>'
 });

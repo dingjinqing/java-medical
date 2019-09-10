@@ -112,6 +112,7 @@
 <script>
 import Cookies from 'js-cookie'
 import { loginRequestOut } from '@/api/index/login.js'
+import { loadLanguageAsync } from '@/i18n/i18n.js'
 export default {
   data () {
     return {
@@ -293,6 +294,7 @@ export default {
           this.langData_show = this.langData_en
           this.loginData_show = this.loginData_en
           this.mar_class = 'mar_class'
+
           localStorage.setItem('WEPUBAO_LANGUAGE', 'en_US')
           break
         case 1:
@@ -302,8 +304,12 @@ export default {
           this.loginData_show = this.loginData_cn
           this.mar_class = ''
           localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
+
           break
       }
+      console.log(1)
+      loadLanguageAsync(this.langData_cn[index].lang)
+      this.$store.commit('TOCHANGE_LANGCURRENT', this.langData_cn[index].lang)
       this.$http.$emit('lang_change', index)
     },
     // 登录注册跳转
