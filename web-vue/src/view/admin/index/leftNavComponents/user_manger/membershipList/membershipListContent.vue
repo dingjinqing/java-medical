@@ -50,9 +50,9 @@
             >
               <el-option
                 v-for="item in membershipCardOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.id"
+                :label="item.cardName"
+                :value="item.id"
               >
               </el-option>
             </el-select>
@@ -90,7 +90,7 @@
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.Starttime')"
               :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format='yyyy-MM-dd'
+              value-format='yyyy-MM-dd HH:mm:ss'
               size="small"
             >
             </el-date-picker>
@@ -123,7 +123,7 @@
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
-              value-format='yyyy-MM-dd'
+              value-format='yyyy-MM-dd HH:mm:ss'
               size="small"
             >
             </el-date-picker>
@@ -152,7 +152,7 @@
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
-              value-format='yyyy-MM-dd'
+              value-format='yyyy-MM-dd HH:mm:ss'
               size="small"
             >
             </el-date-picker>
@@ -176,12 +176,12 @@
           <div>
             <span>{{$t('membershipIntroduction.transaction')}}</span>
             <el-date-picker
-              v-model="datePickerVal_two"
+              v-model="datePickerVal_three"
               type="daterange"
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
-              value-format='yyyy-MM-dd'
+              value-format='yyyy-MM-dd HH:mm:ss'
               size="small"
             >
             </el-date-picker>
@@ -273,7 +273,7 @@
               </td>
               <td :class="isCenterFlag?'tdCenter':''">
                 <span
-                  @click="hanldeToDetail()"
+                  @click="hanldeToDetail(item.userId)"
                   style="color: #5A8BFF;cursor:pointer"
                 >{{item.userName}}</span>
 
@@ -300,7 +300,7 @@
               </td>
               <td class="tb_decorate_a">
                 <div class="member">
-                  <span>{{item.source}}</span>
+                  <span>{{item.cardName}}</span>
                   <div>
                     <span @click="handleSetUp()">{{$t('membershipIntroduction.setup')}}</span>
                     <span
@@ -311,7 +311,7 @@
                 </div>
               </td>
               <td class="tb_decorate_a">
-                {{item.source}}
+                {{item.sourceName}}
               </td>
               <td class="tb_decorate_a">
                 {{item.createTime}}
@@ -319,16 +319,24 @@
               </td>
               <td class="tb_decorate_a">
                 <div class="lastDiv">
-                  <span @click="handleToTurnMore('balanceDetail',item.userName)">{{$t('membershipIntroduction.Balancedetails')}}</span>
-                  <span @click="handleToTurnMore('integralDetail',item.userName)">{{$t('membershipIntroduction.Integraldetails')}}</span>
-                  <span @click="handleNoLanding()">{{$t('membershipIntroduction.Nolanding')}}</span>
+                  <span @click="handleToTurnMore('balanceDetail',item.userName,item.userId)">{{$t('membershipIntroduction.Balancedetails')}}</span>
+                  <span @click="handleToTurnMore('integralDetail',item.userName,item.userId)">{{$t('membershipIntroduction.Integraldetails')}}</span>
+
+                  <span
+                    v-if="item.delFlag == 0"
+                    @click="handleNoLanding(item.userId,1)"
+                  >{{$t('membershipIntroduction.Nolanding')}}</span>
+                  <span
+                    v-else-if="item.delFlag == 1"
+                    @click="handleNoLanding(item.userId,0)"
+                  >{{$t('membershipIntroduction.ResumeLogin')}}</span>
                 </div>
                 <div
                   class="lastDiv"
                   style="margin-top:5px"
                 >
-                  <span @click="handleToLabel()">{{$t('membershipIntroduction.Labeling')}}</span>
-                  <span @click="hanldeToDetail()">{{$t('membershipIntroduction.Seedetails')}}</span>
+                  <span @click="handleToLabel(item.userId)">{{$t('membershipIntroduction.Labeling')}}</span>
+                  <span @click="hanldeToDetail(item.userId)">{{$t('membershipIntroduction.Seedetails')}}</span>
                 </div>
               </td>
             </tr>
@@ -448,6 +456,7 @@
         </div>
       </div>
     </div>
+    <!-- 选择商品弹窗 -->
     <ChoosingGoods />
     <!--修改余额&修改积分弹窗-->
     <div
@@ -470,7 +479,7 @@
             <span>{{item.addText}}：</span>
             <el-input
               v-model="balanceDialogInput"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
               size="small"
             ></el-input>
             <span>{{item.tips}}</span>
@@ -479,7 +488,7 @@
             <span>{{item.bzText}}：</span>
             <el-input
               v-model="balanceDialogBottomInput"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
               size="small"
             ></el-input>
           </div>
@@ -488,11 +497,19 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="balanceDialogVisible = false">取 消</el-button>
+          <el-button @click="balanceDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
+
           <el-button
+            v-if="item.index === 0"
             type="primary"
             @click="hanldemodifySure()"
-          >确 定</el-button>
+          >{{ $t('membershipIntroduction.accountCertain') }}</el-button>
+
+          <el-button
+            v-else-if="item.index === 1"
+            type="primary"
+            @click="handleScoreSure()"
+          >{{ $t('membershipIntroduction.scoreCertain') }}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -533,7 +550,7 @@
                   <div>
                     <el-select
                       v-model="setUpValOne"
-                      placeholder="请选择"
+                      :placeholder="$t('membershipIntroduction.placeChoise')"
                       size="mini"
                       @change="handleSetUpSelect(0)"
                     >
@@ -590,7 +607,7 @@
                   <div>
                     <el-select
                       v-model="setUpValTwo"
-                      placeholder="请选择"
+                      :placeholder="$t('membershipIntroduction.placeChoise')"
                       size="mini"
                       @change="handleSetUpSelect(1)"
                     >
@@ -647,7 +664,7 @@
                   <div>
                     <el-select
                       v-model="setUpValThree"
-                      placeholder="请选择"
+                      :placeholder="$t('membershipIntroduction.placeChoise')"
                       size="mini"
                       @change="handleSetUpSelect(2)"
                     >
@@ -694,8 +711,10 @@
     </div>
     <!--禁止登陆弹窗-->
     <div class="balanceDialo">
+
+      <!-- 禁止登录弹窗 -->
       <el-dialog
-        title="禁止登陆"
+        :title="$t('membershipIntroduction.Nolanding')"
         :visible.sync="noLandingDialogVisible"
         width="40%"
         :modal-append-to-body="false"
@@ -704,18 +723,43 @@
           class="balanceDialogDiv"
           style="margin-bottom:30px"
         >
-          <span style="color:#f66">提示：</span>
-          <span>禁止登陆后会员将不能登陆了，确定禁止登陆吗?</span>
+          <span style="color:#f66">{{ $t('membershipIntroduction.prompt') }}：</span>
+          <span>{{ $t('membershipIntroduction.NoLandingPrompt') }}</span>
         </div>
         <span
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="noLandingDialogVisible = false">取 消</el-button>
+          <el-button @click="noLandingDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
             type="primary"
-            @click="noLandingDialogVisible = false"
-          >确 定</el-button>
+            @click="changeLoginStatus"
+          >{{ $t('membershipIntroduction.centain') }}</el-button>
+        </span>
+      </el-dialog>
+      <!-- 恢复登录弹窗 -->
+      <el-dialog
+        :title="$t('membershipIntroduction.ResumeLogin')"
+        :visible.sync="resumeLoginVisible"
+        width="40%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="balanceDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <span style="color:#f66">{{ $t('membershipIntroduction.prompt') }}：</span>
+          <span>{{ $t('membershipIntroduction.ResumeLoginPrompt') }}</span>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="resumeLoginVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
+          <el-button
+            type="primary"
+            @click="changeLoginStatus"
+          >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -733,15 +777,16 @@
         >
           <span style="line-height:15px;font-size:12px;color:#a3a3a3;display:block;margin-bottom:10px">一个用户最多可以打5个标签，超过数量的标签将不再被添加给该用户</span>
           <el-select
+            filterable
             v-model="labelDialogInput"
             multiple
-            placeholder="请选择"
+            :placeholder="$t('membershipIntroduction.placeChoise')"
           >
             <el-option
-              v-for="item in hitLabeloptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in tagSource"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -750,11 +795,11 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="labelDialogVisible = false">取 消</el-button>
+          <el-button @click="labelDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
             type="primary"
-            @click="labelDialogVisible = false"
-          >确 定</el-button>
+            @click="setTagForMember"
+          >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -782,7 +827,7 @@
   </div>
 </template>
 <script>
-import { membershipListRequest, accountAddRequest } from '@/api/admin/membershipList.js'
+import { membershipListRequest, accountAddRequest, scoreUpdateRequest, allUserCardRequest, allSourceRequest, allTagRequest, getTagForMemberRequest, setTagForMemberRequest, loginStatusRequest } from '@/api/admin/membershipList.js'
 import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
@@ -799,26 +844,20 @@ export default {
       vxName: '',
       inviteUserName: '',
       sourceOptions: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: '-2',
+        label: this.$t('membershipIntroduction.allSource')
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        value: '-1',
+        label: this.$t('membershipIntroduction.notAcquired')
       }, {
-        value: '选项3',
-        label: '蚵仔煎'
+        value: '0',
+        label: this.$t('membershipIntroduction.backStage')
+      }, {
+        value: '-3',
+        label: this.$t('membershipIntroduction.scanQrCode')
       }],
       sourceValue: '',
-      membershipCardOptions: [{
-        value: '选项1',
-        label: '会员1'
-      }, {
-        value: '选项2',
-        label: '会员2'
-      }, {
-        value: '选项3',
-        label: '会员3'
-      }],
+      membershipCardOptions: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
       membershipCardVal: '',
       labelVal: '',
@@ -829,6 +868,7 @@ export default {
       membershipCard: false,
       noLanding: false,
       importMembership: false,
+      goodsIdsArr: [],
       datePickerVal_one: '',
       datePickerVal_two: '',
       datePickerVal_three: '',
@@ -876,7 +916,8 @@ export default {
           persentMoney: '',
           addText: '增加金额',
           tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
-          bzText: '增加备注'
+          bzText: '增加备注',
+          index: 0
         }
       ],
       integralDialogData: [
@@ -886,7 +927,8 @@ export default {
           persentMoney: '',
           addText: '增加积分',
           tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
-          bzText: '增加备注'
+          bzText: '增加备注',
+          index: 1
         }
       ],
       allCheckFlag: false,
@@ -930,7 +972,8 @@ export default {
       setUpSelectVal_one: [],
       setUpSelectVal_two: [],
       setUpSelectVal_three: [],
-      noLandingDialogVisible: false,
+      noLandingDialogVisible: false, // 禁止登录弹窗控制
+      resumeLoginVisible: false, // 恢复登录弹窗控制
       labelDialogVisible: false,
       labelDialogInput: '',
       totalNum: null,
@@ -963,7 +1006,10 @@ export default {
       ],
       memberListliLast: '',
       specielNav: '',
-      specialliNavTwo: ''
+      specialliNavTwo: '',
+      tagSource: [],
+      tagUserId: ''// 打标签时临时存放的id
+
     }
   },
   watch: {
@@ -981,19 +1027,38 @@ export default {
       }
     },
     labelDialogInput (newData) {
+      console.log('I am watching you')
       console.log(newData)
       if (newData.length === 6) {
         this.labelDialogInput.splice(5, 1)
-        this.$message.error('一个用户最多可以标记5个标签')
+        this.$message.error(this.$t('membershipIntroduction.tagError'))
       }
+    },
+    '$store.goodsManagement.state.goodsIds' (newData) {
+      console.log(newData)
     }
   },
+  created () {
+    console.log('会员列表 created ')
+    // 初始化会员列表数据
+    this.defaultTabelListData()
+    // 初始化会员卡下拉框列表
+    this.getAllUserCard()
+    // 初始化来源下拉框列表
+    this.getAllSource()
+    // 初始化标签数据
+    this.getAllTag()
+    console.log('数据初始化完成')
+  },
   mounted () {
+    // 初始化标签下拉框
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
-    // 初始化会员列表数据
-    this.defaultTabelListData()
+    this.$http.$on('choseGoodsId', res => {
+      console.log(res)
+      this.goodsIdsArr = res
+    })
   },
   methods: {
     ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
@@ -1004,15 +1069,35 @@ export default {
       this.options_four = this.$t('membershipIntroduction.options_four')
       this.options_five = this.$t('membershipIntroduction.options_five')
       let obj = {
-        'source': '',
-        'username': this.vxName,
-        'inviteUserName': this.inviteUserName,
-        'currentPage': this.currentPage3,
-        'pageRows': '20',
         'mobile': this.phoneNum,
-        'createTime': this.datePickerVal
+        'username': this.vxName,
+        'source': this.sourceValue,
+        'cardId': this.membershipCardVal,
+        'tagName': this.labelVal,
+        'createTime': this.datePickerVal[0],
+        'endTime': this.datePickerVal[1],
+        'inviteUserName': this.inviteUserName,
+        'loginStartTime': this.datePickerVal_one[0],
+        'loginEndTime': this.datePickerVal_one[1],
+        'cartStartTime': this.datePickerVal_two[0],
+        'cartEndTime': this.datePickerVal_two[1],
+        'buyStartTime': this.datePickerVal_three[0],
+        'buyEndTime': this.datePickerVal_three[1],
+        'unitPriceLow': this.unitPriceLeft,
+        'unitPriceHight': this.unitPriceRight,
+        'buyCountLow': this.frequencyLeft,
+        'buyCountHight': this.frequencyRight,
+        'goodsId': this.goodsIdsArr,
+        'currentPage': this.currentPage3,
+        'pageRows': '20'
       }
+
+      console.log(obj)
+      console.log(this.phoneNum)
+      console.log(this.checkPhone)
+      console.log(this.checkIntegr)
       membershipListRequest(obj).then((res) => {
+        console.log('获得查询数据')
         if (res) {
           if (res.content.dataList.length === 0) {
             this.tbodyFlag = false
@@ -1020,9 +1105,11 @@ export default {
           }
           this.tbodyFlag = true
           this.trList = res.content.dataList
+          this.trList.reverse()
           this.trList.map((item, index) => {
             item.ischecked = false
           })
+
           console.log(this.trList)
 
           this.totalNum = res.content.page.totalRows
@@ -1037,21 +1124,49 @@ export default {
         }
       })
     },
+
+    // 获取会员卡
+    getAllUserCard () {
+      allUserCardRequest().then(res => {
+        console.log('--------------------------')
+        console.log(res.content)
+        this.membershipCardOptions = res.content
+      })
+    },
+    // 获取来源
+    getAllSource () {
+      allSourceRequest().then(res => {
+        console.log('-------------获取所有门店---------------------')
+        console.log(res.content)
+        this.sourceOptions = this.sourceOptions.concat(res.content)
+        console.log(this.sourceOptions)
+      })
+    },
+    // 获取标签
+    getAllTag () {
+      console.log('-------------获取所有标签---------------------')
+      allTagRequest().then(res => {
+        console.log(res.content)
+        this.tagSource = res.content
+      })
+    },
     // 筛选按钮
     handleScreen () {
       this.defaultTabelListData()
     },
     querySearch (queryString, cb) {
-      var restaurants = this.restaurants
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
-      // 调用 callback 返回建议列表的数据
-      cb(results)
+      var results = this.tagSource
+
+      setTimeout(() => {
+        cb(results)
+      }, 1000 * Math.random())
     },
     createFilter (queryString) {
       return (restaurant) => {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
+    // 获取标签
     loadAll () {
       return [
         { 'value': '三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
@@ -1098,7 +1213,7 @@ export default {
     handleAllcheck () {
       this.allCheckFlag = false
     },
-    // 控制修改余额弹窗
+    // 控制修改余额-积分弹窗
     handlebalanceDialog (index, item, id) {
       console.log(index)
       if (index === 0) {
@@ -1122,12 +1237,49 @@ export default {
       accountAddRequest(obj).then((res) => {
         console.log(res)
 
+        if (res.error === 0) {
+          this.getSuccessMessagePrompt()
+          this.defaultTabelListData()
+        } else {
+          this.getFailMessagePrompt()
+        }
+      }).catch(e => {
+        // 失败弹窗
+        this.getFailMessagePrompt()
+      })
+      // 隐藏弹窗
+      this.balanceDialogVisible = false
+      // 清空数据
+      this.balanceDialogBottomInput = ''
+      this.balanceDialogInput = ''
+    },
+
+    // 修改积分弹窗确认按钮
+    handleScoreSure () {
+      let obj = {
+        'userId': [this.userId],
+        'score': parseInt(this.balanceDialogInput),
+        'remark': this.balanceDialogBottomInput,
+        'scoreDis': this.addDialogData[0].persentMoney
+      }
+      console.log(obj)
+      scoreUpdateRequest(obj).then(res => {
+        console.log(res)
         if (res) {
+          this.getSuccessMessagePrompt()
           this.defaultTabelListData()
         }
+      }).catch(e => {
+        // 失败弹窗
+        this.getFailMessagePrompt()
       })
+      // 隐藏弹窗
       this.balanceDialogVisible = false
+      // 清空数据
+      this.balanceDialogBottomInput = ''
+      this.balanceDialogInput = ''
     },
+
     // 表格底部下拉框选中事件
     handleFooterSelect (index) {
       console.log(index, this.value_five)
@@ -1297,12 +1449,86 @@ export default {
           this.setUpSelectVal_three.push({ text: this.setUpValThree })
       }
     },
-    // 禁止登陆点击
-    handleNoLanding () {
-      this.noLandingDialogVisible = true
+    // 禁止登录 || 恢复登录
+    handleNoLanding (id, status) {
+      this.userId = id
+      if (status === 1) {
+        this.noLandingDialogVisible = true
+      } else if (status === 0) {
+        this.resumeLoginVisible = true
+      }
     },
-    // 打标签点击
-    handleToLabel () {
+
+    // 改变用户登录状态
+    changeLoginStatus () {
+      var isDelete
+      if (this.noLandingDialogVisible) {
+        isDelete = 1
+
+        this.noLandingDialogVisible = false
+      } else if (this.resumeLoginVisible) {
+        isDelete = 0
+
+        this.resumeLoginVisible = false
+      }
+      let obj = {
+        'userIdList': [this.userId],
+        'isDelete': isDelete
+      }
+      console.log(obj)
+      // 请求api
+      loginStatusRequest(obj).then(res => {
+        if (res.error === 0) {
+          // 消息框
+          this.getSuccessMessagePrompt()
+          // 清空userid
+          this.userId = null
+          // 设置成功，重新加载页面
+          this.defaultTabelListData()
+        }
+      })
+    },
+    // 打标签
+    setTagForMember () {
+      // 关闭打标签弹窗
+
+      this.labelDialogVisible = false
+      let obj = {
+        'userIdList': [this.tagUserId],
+        'tagIdList': this.labelDialogInput
+      }
+      console.log(obj)
+      setTagForMemberRequest(obj).then(res => {
+        console.log(res.error)
+        if (res.error === 0) {
+          // 提示框
+          this.getSuccessMessagePrompt()
+          // 清空tagUserId
+          this.tagUserId = null
+        }
+      })
+    },
+    // 获取用户标签
+    handleToLabel (userId) {
+      // 获取当前用户所标记的标签
+      let obj = {
+        'userId': userId
+      }
+      console.log(obj)
+      // 异步请求
+      getTagForMemberRequest(obj).then(res => {
+        if (res.error === 0) {
+          console.log('查询成功')
+          console.log(res)
+          // 设置默认标签列表
+          this.labelDialogInput = res.content.map(({ id }) => id)
+          console.log(this.labelDialogInput)
+          // 存储标签
+          this.tagUserId = userId
+        }
+      })
+      // 渲染到ui组件
+
       this.labelDialogInput = []
       this.labelDialogVisible = true
     },
@@ -1311,14 +1537,33 @@ export default {
 
     },
     // 跳转到会员详情
-    hanldeToDetail () {
+    hanldeToDetail (userId) {
       // this.ToTurnMemberShipDetail('memberDetail')
       this.$router.push({
-        name: 'membershipInformation'
+        name: 'membershipInformation',
+        query: {
+          userId: userId
+        }
       })
     },
+    // 成功消息弹框
+    getSuccessMessagePrompt () {
+      var message = this.$t('membershipIntroduction.success')
+      this.$message.success({
+        showClose: true,
+        message: message,
+        type: 'success' })
+    },
+    // 失败消息弹框
+    getFailMessagePrompt () {
+      var message = this.$t('membershipIntroduction.error')
+      this.$message({
+        showClose: true,
+        message: message,
+        type: 'error' })
+    },
     // 点击表格中更多&&余额明细&&积分明细
-    handleToTurnMore (params, name) {
+    handleToTurnMore (params, name, id) {
       console.log(name)
       console.log(params)
       switch (params) {
@@ -1334,7 +1579,8 @@ export default {
           this.$router.push({
             path: '/admin/home/main/balanceDetail',
             query: {
-              name: name
+              name: name,
+              id: id
             }
           })
           break
@@ -1342,7 +1588,8 @@ export default {
           this.$router.push({
             path: '/admin/home/main/integralDetail',
             query: {
-              name: name
+              name: name,
+              id: id
             }
           })
           break

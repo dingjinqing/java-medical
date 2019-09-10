@@ -134,7 +134,7 @@ export default {
       introducionDate: '',
       tableData: [
         {
-          versionNum: '23',
+          versionNum: '22',
           isAuth: '2019-07-30 19:50:05',
           ispay: '会员卡',
           status1: '成功数量',

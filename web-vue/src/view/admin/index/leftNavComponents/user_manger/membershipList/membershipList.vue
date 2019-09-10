@@ -1,11 +1,13 @@
 <template>
   <div>
     <!-- <Crumbs :mTitle="M_title" /> -->
+
     <MembershipListContent v-if="flagIndex===0" />
     <MembershipInformation v-if="flagIndex===1" />
     <ReceiveDetail v-if="flagIndex===2" />
     <BalanceDetail v-if="flagIndex===3" />
     <IntegralDetail v-if="flagIndex===4" />
+
   </div>
 </template>
 <script>
@@ -52,6 +54,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.flagIndex)
     console.log(this.membershipdetailflag, this.flagIndex)
     switch (this.membershipdetailflag) {
       case 'memberDetail':
@@ -70,6 +73,12 @@ export default {
     }
     // this.flagIndex = this.membershipdetailflag
     // this.
+  },
+  beforeCreate () {
+    console.log('beforeCreate.')
+  },
+  created () {
+    console.log('created')
   }
 }
 </script>

@@ -3,24 +3,32 @@
     <div class="receiveDetailMain">
       <div class="top spDiv">
         <div>
-          <span>订单号</span>
+          <span>{{$t('membershipIntroduction.memberName')}}</span>
           <el-input
-            v-model="phoneNum"
-            placeholder="请输入订单号"
+            v-model="userName"
+            :placeholder="$t('membershipIntroduction.memberName')"
+            size="small"
+          ></el-input>
+        </div>
+        <div>
+          <span>{{$t('membershipIntroduction.orderSn')}}</span>
+          <el-input
+            v-model="orderSn"
+            :placeholder="$t('membershipIntroduction.placeHolderOrderSn')"
             size="small"
           ></el-input>
         </div>
         <div class="receiveDetailDate">
-          <span>时间</span>
+          <span>{{$t('membershipIntroduction.time')}}</span>
           <el-date-picker
             v-model="dateInput"
             type="daterange"
             align="right"
             unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            default-value="2010-10-01"
+            :range-separator="$t('membershipIntroduction.to')"
+            :start-placeholder="$t('membershipIntroduction.Starttime')"
+            :end-placeholder="$t('membershipIntroduction.Endtime')"
+            value-format='yyyy-MM-dd'
             size="small"
           >
           </el-date-picker>
@@ -29,7 +37,8 @@
           <el-button
             type="primary"
             size="small"
-          >筛选</el-button>
+            @click="getUserDetailScoreData()"
+          >{{$t('membershipIntroduction.filter')}}</el-button>
         </div>
       </div>
 
@@ -41,12 +50,13 @@
         <table width='100%'>
           <thead>
             <tr>
-              <td>会员昵称</td>
-              <td>手机号码</td>
-              <td>订单号</td>
-              <td>积分</td>
-              <td>过期时间</td>
-              <td>备注</td>
+              <td>{{$t('membershipIntroduction.memberName')}}</td>
+              <td>{{$t('membershipIntroduction.phoneNum')}}</td>
+              <td>{{$t('membershipIntroduction.orderSn')}}</td>
+              <td>{{$t('membershipIntroduction.score')}}</td>
+              <td>{{$t('membershipIntroduction.time')}}</td>
+              <td>{{$t('membershipIntroduction.expiredTime')}}</td>
+              <td>{{$t('membershipIntroduction.remark')}}</td>
 
             </tr>
           </thead>
@@ -58,13 +68,14 @@
               @click="handleClick(index)"
             >
 
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td class="link">{{item.status}}</td>
+              <td>{{item.username}}</td>
+              <td>{{item.mobile}}</td>
+              <td>{{item.orderSn}}</td>
+              <td>{{item.score}}</td>
+              <td class="link">{{item.createTime}}</td>
+              <td class="link">{{item.expireTime}}</td>
               <td class="tb_decorate_a">
-                {{item.path}}
+                {{item.remark}}
               </td>
             </tr>
           </tbody>
@@ -114,77 +125,94 @@
           <span>暂无相关数据</span>
         </div>
       </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="dealWithPagination"
+      />
     </div>
   </div>
 </template>
 <script>
+
+import { scoreDetailRequest } from '@/api/admin/membershipList.js'
+// 引入分页
+import pagination from '@/components/admin/pagination/pagination'
 export default {
+  components: { pagination },
   data () {
     return {
-      phoneNum: '',
+      id: '', // 用户id
+      userName: '', // 用户名称
+      pageParams: {
+        pageRows: 20
+      }, // 分页信息
+      orderSn: '', // 订单号码
       nameInput: '',
       dateInput: '',
       membershipCardOptins: [
-        {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }
       ],
       membershipCardValue: '',
       CardTypeOptins: [
-        {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }
       ],
       CardTypeValue: '',
       page_one: true,
       tbodyFlag: false,
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          classification: '分类1',
-          status: '营业中',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          classification: '分类2',
-          status: '歇业中'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          classification: '分类3',
-          spanId: '',
-          status: '营业中'
-        }
-
-      ],
+      trList: [],
       clickIindex: null,
       noImg: this.$imageHost + '/image/admin/no_data.png'
     }
   },
   methods: {
+    // 处理分页查询
+    dealWithPagination () {
+      this.getUserDetailScoreData()
+    },
     // 行点击
     handleClick (index) {
       this.clickIindex = index
+    },
+    getUserDetailScoreData () {
+      // 处理时间格式
+      debugger
+      if (this.dateInput) {
+        this.dateInput[0] = this.dateInput[0] + ' 00:00:00'
+        this.dateInput[1] = this.dateInput[1] + ' 23:59:59'
+      }
+      // 准备查询数据
+      let obj = {
+        'pageRows': this.pageParams.pageRows,
+        'currentPage': this.pageParams.currentPage,
+        'userId': this.id,
+        'userName': this.userName,
+        'orderSn': this.orderSn,
+        'startTime': this.dateInput[0],
+        'endTime': this.dateInput[1]
+
+      }
+
+      console.log(obj)
+      scoreDetailRequest(obj).then(res => {
+        debugger
+        console.log((res.content.dataList))
+        if (res) {
+          // 装载数据
+          this.trList = res.content.dataList
+          // 表格可视化
+          this.tbodyFlag = true
+          // 分页信息
+          this.pageParams = res.content.page
+          // 清除id
+          delete this.id
+        }
+      })
     }
+  },
+  created () {
+    // 从路由中获取id,username
+    this.userName = this.$route.query.name
+    this.id = this.$route.query.id
+    // 加载数据： 积分 | 分页数据
+    this.getUserDetailScoreData()
   }
 }
 </script>

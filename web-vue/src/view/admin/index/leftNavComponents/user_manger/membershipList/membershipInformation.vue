@@ -10,10 +10,10 @@
           <div class="headRightDiv">
             <ul>
               <li>
-                <div class="userName">{{$t('membershipIntroduction.nickname')}}：用户12813</div>
+                <div class="userName">{{$t('membershipIntroduction.nickname')}}：{{ this.memberBasicInfo.username }}</div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.Realname')}}：未知</div>
+                <div>{{$t('membershipIntroduction.Realname')}}：{{$t('membershipIntroduction.unknown')}}</div>
                 <div>{{$t('membershipIntroduction.inviter')}}：暂无<span
                     class="modifyLinkPerson"
                     @click="hanldeModifyPerson()"
@@ -22,7 +22,9 @@
               </li>
               <li>
                 <div>{{$t('membershipIntroduction.Recentbrowsing')}}：2019-08-01(1天内)</div>
-                <div>{{$t('membershipIntroduction.phoneNum')}}：未知</div>
+                <div>{{$t('membershipIntroduction.phoneNum')}}：
+                  <span v-if="this.memberBasicInfo.mobile"> {{this.memberBasicInfo.mobile}} </span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span></div>
                 <div>OpenID：o-2MM5JL0q5cpkqdLfHHaJ7noDkw</div>
               </li>
               <li>
@@ -640,10 +642,14 @@
 </template>
 <script>
 import ProAndUrbA from '@/components/system/proAndUrbA'
+import { memberInfoRequest } from '@/api/admin/membershipList.js'
 export default {
   components: { ProAndUrbA },
   data () {
     return {
+      userId: '', // 用户id
+      memberBasicInfo: {}, //  会员基本信息
+      transStatistic: {}, // 会员交易统计
       assetsUl: '',
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
       assetsData: [
@@ -900,14 +906,31 @@ export default {
       ]
     }
   },
+  created () {
+    // 从路由获取userId
+    this.userId = this.$route.query.userId
+    // 加载数据
+    this.loadMemberInfo()
+  },
   mounted () {
     // 初始化语言
     this.langDefault()
     this.defaultData()
   },
   methods: {
-    defaultData () {
-      console.log(this.$route.query)
+    // 加载用户数据
+    loadMemberInfo () {
+      memberInfoRequest(this.userId).then(res => {
+        console.log(res)
+        debugger
+        if (res.error === 0) {
+          console.log(res.content)
+          // 设置值 基本信息
+          this.memberBasicInfo = res.content.memberBasicInfo
+          // 交易统计
+          this.transStatistic = res.content.transStatistic
+        }
+      })
     },
     // 点击查看更多
     handleCheckMore () {

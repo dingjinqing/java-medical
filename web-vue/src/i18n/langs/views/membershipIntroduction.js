@@ -3,7 +3,7 @@ export const cn = {
   placePhoneNum: '请输入手机号',
   wechatNickname: '微信昵称',
   placeWXNameNum: '请输入微信昵称',
-
+  memberName: '会员昵称',
   placeNameNum: '请输入昵称',
   placeinpuLabel: '请输入标签',
   placeChoise: '请选择',
@@ -14,7 +14,7 @@ export const cn = {
   inviter: '邀请人',
   integral: '有积分',
   Balance: '有余额',
-  banLogin: '已禁止登陆',
+  banLogin: '已禁止登录',
   importMembers: '已导入的会员',
   screen: '筛选',
   membershipExport: '会员导出',
@@ -30,68 +30,91 @@ export const cn = {
   operation: '操作',
   Balancedetails: '余额明细',
   Integraldetails: '积分明细',
-  Nolanding: '禁止登陆',
+  Nolanding: '禁止登录',
+  NoLandingPrompt: '禁止登陆后会员将不能登陆了，确定禁止登陆吗?',
+  ResumeLogin: '恢复登录',
+  ResumeLoginPrompt: '确定要恢复会员的登录功能吗?',
   Labeling: '打标签',
   Seedetails: '查看详情',
   Allelection: '全选',
-  options_one: [{
-    value: '0',
-    label: '批量禁止登陆'
-  }, {
-    value: '1',
-    label: '对选中的人禁止登陆'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_two: [{
-    value: '0',
-    label: '批量添加标签'
-  }, {
-    value: '1',
-    label: '对选中的人加标签'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_three: [{
-    value: '0',
-    label: '批量发放会员卡'
-  }, {
-    value: '1',
-    label: '对选中的人发卡'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_four: [{
-    value: '0',
-    label: '批量修改积分'
-  }, {
-    value: '1',
-    label: '对选中的人修改积分'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_five: [{
-    value: '0',
-    label: '批量修改邀请人'
-  }, {
-    value: '1',
-    label: '对选中的人修改邀请人'
-  }, {
-    value: '2',
-    label: ''
-  },
-  {
-    value: '3',
-    label: '对选中的人删除邀请人'
-  },
-  {
-    value: '4',
-    label: ''
-  }],
+  options_one: [
+    {
+      value: '0',
+      label: '批量禁止登录'
+    },
+    {
+      value: '1',
+      label: '对选中的人禁止登录'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_two: [
+    {
+      value: '0',
+      label: '批量添加标签'
+    },
+    {
+      value: '1',
+      label: '对选中的人加标签'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_three: [
+    {
+      value: '0',
+      label: '批量发放会员卡'
+    },
+    {
+      value: '1',
+      label: '对选中的人发卡'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_four: [
+    {
+      value: '0',
+      label: '批量修改积分'
+    },
+    {
+      value: '1',
+      label: '对选中的人修改积分'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_five: [
+    {
+      value: '0',
+      label: '批量修改邀请人'
+    },
+    {
+      value: '1',
+      label: '对选中的人修改邀请人'
+    },
+    {
+      value: '2',
+      label: ''
+    },
+    {
+      value: '3',
+      label: '对选中的人删除邀请人'
+    },
+    {
+      value: '4',
+      label: ''
+    }
+  ],
   currentPage: '当前页面',
   TotalRecords: '总记录',
   strip: '条',
@@ -136,7 +159,14 @@ export const cn = {
   Seemore: '查看更多',
   Labelinformation: '标签信息',
   AssetInformation: '资产信息',
-  assetsData: ['普通卡', '限次卡', '等级卡', '储值余额', '可用积分', '可用优惠券数'],
+  assetsData: [
+    '普通卡',
+    '限次卡',
+    '等级卡',
+    '储值余额',
+    '可用积分',
+    '可用优惠券数'
+  ],
   Transactionstatistics: '交易统计',
   OrderList: '订单列表',
   transactionData: [
@@ -164,7 +194,6 @@ export const cn = {
       title: '累计退款订单数',
       content: '￥ 0.00'
     }
-
   ],
   distributionData: [
     {
@@ -205,7 +234,27 @@ export const cn = {
   Balanceyuan: '余额(元)',
   servicestimes: '门店服务次数(次)',
   ExchangeFrequency: '兑换商品次数(次)',
-  noData: '暂无相关数据'
+  noData: '暂无相关数据',
+  allSource: '全部',
+  notAcquired: '未获取',
+  backStage: '后台',
+  scanQrCode: '扫码进入',
+  filter: '筛选',
+  orderSn: '订单号',
+  placeHolderOrderSn: '请输入订单号',
+  time: '时间',
+  score: '积分',
+  remark: '备注',
+  expiredTime: '过期时间',
+  tagError: '一个用户最多可以标记5个标签',
+  cancel: '取 消',
+  centain: '确 定',
+  prompt: '提示',
+  success: '修改成功',
+  error: '修改失败',
+  accountCertain: '余 额 确 定',
+  scoreCertain: '积 分 确 定',
+  unknown: '未知'
 }
 
 export const en = {
@@ -216,6 +265,7 @@ export const en = {
   state: 'state',
   type: 'type',
   Member: 'Member',
+  memberName: 'memberName',
   CardNumber: 'Membership Card Number',
   membershipcard: 'Type of membership card',
   Collectiontime: 'Collection time',
@@ -275,11 +325,17 @@ export const en = {
       title: 'Cumulative refund orders',
       content: '￥ 0.00'
     }
-
   ],
   OrderList: 'Order List',
   Transactionstatistics: 'Transaction statistics',
-  assetsData: ['Ordinary Card', 'Limit Card', 'Grade Card', 'Reserve balance', 'Available Integral', 'Number of coupons available'],
+  assetsData: [
+    'Ordinary Card',
+    'Limit Card',
+    'Grade Card',
+    'Reserve balance',
+    'Available Integral',
+    'Number of coupons available'
+  ],
   AssetInformation: 'Asset Information',
   Labelinformation: 'Label information',
   Seemore: 'See more',
@@ -346,72 +402,117 @@ export const en = {
   Balancedetails: 'Balance details',
   Integraldetails: 'Integral details',
   Nolanding: 'No landing',
+  NoLandingPrompt:
+    'Members are not allowed to log in after logging in, and it is forbidden to log in?',
+  ResumeLogin: 'Resume Login',
+  ResumeLoginPrompt:
+    "Are you sure you want to restore the member's login feature?",
   Labeling: 'Labeling',
   Seedetails: 'See details',
   Allelection: 'All election',
-  options_one: [{
-    value: '0',
-    label: 'Batch prohibition of landing'
-  }, {
-    value: '1',
-    label: 'No landing for selected persons'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_two: [{
-    value: '0',
-    label: 'Batch labeling'
-  }, {
-    value: '1',
-    label: 'Label the selected person'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_three: [{
-    value: '0',
-    label: 'Mass issuance of membership cards'
-  }, {
-    value: '1',
-    label: 'Hair Cards for Selected Persons'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_four: [{
-    value: '0',
-    label: 'Batch Modified Integral'
-  }, {
-    value: '1',
-    label: 'Modify the points for the selected person'
-  }, {
-    value: '2',
-    label: ''
-  }],
-  options_five: [{
-    value: '0',
-    label: 'Bulk revision inviter'
-  }, {
-    value: '1',
-    label: 'Modify the inviter for the selected person'
-  }, {
-    value: '2',
-    label: ''
-  },
-  {
-    value: '3',
-    label: 'Delete the inviter from the selected person'
-  },
-  {
-    value: '4',
-    label: ''
-  }],
+  options_one: [
+    {
+      value: '0',
+      label: 'Batch prohibition of landing'
+    },
+    {
+      value: '1',
+      label: 'No landing for selected persons'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_two: [
+    {
+      value: '0',
+      label: 'Batch labeling'
+    },
+    {
+      value: '1',
+      label: 'Label the selected person'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_three: [
+    {
+      value: '0',
+      label: 'Mass issuance of membership cards'
+    },
+    {
+      value: '1',
+      label: 'Hair Cards for Selected Persons'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_four: [
+    {
+      value: '0',
+      label: 'Batch Modified Integral'
+    },
+    {
+      value: '1',
+      label: 'Modify the points for the selected person'
+    },
+    {
+      value: '2',
+      label: ''
+    }
+  ],
+  options_five: [
+    {
+      value: '0',
+      label: 'Bulk revision inviter'
+    },
+    {
+      value: '1',
+      label: 'Modify the inviter for the selected person'
+    },
+    {
+      value: '2',
+      label: ''
+    },
+    {
+      value: '3',
+      label: 'Delete the inviter from the selected person'
+    },
+    {
+      value: '4',
+      label: ''
+    }
+  ],
   currentPage: 'Current page',
   TotalRecords: 'Total Records',
   strip: 'strip',
   placePhoneNum: 'Please enter your cell phone number',
   placeWXNameNum: 'Please enter your Weixin nickname',
   placeChoise: 'Please choose',
-  placeinpuLabel: 'Please enter the label'
+  placeinpuLabel: 'Please enter the label',
+  allSource: 'ALL',
+  notAcquired: 'Not acquired',
+  backStage: 'back stage',
+  scanQrCode: 'scanQrCode',
+  filter: 'filter',
+  orderSn: 'orderSn',
+  placeHolderOrderSn: 'please input orderSn',
+  time: 'time',
+  score: 'score',
+  remark: 'remark',
+  expiredTime: 'expired time',
+  tagError: 'A user can own tag at most five',
+  cancel: 'cancel',
+  centain: 'centain',
+  prompt: 'prompt',
+  success: 'success',
+  error: 'error',
+  accountCertain: 'account certain',
+  scoreCertain: 'score certain',
+  unknown: 'unknown'
 }

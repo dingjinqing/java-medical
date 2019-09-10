@@ -3,24 +3,32 @@
     <div class="receiveDetailMain">
       <div class="top spDiv">
         <div>
-          <span>订单号</span>
+          <span>{{$t('membershipIntroduction.memberName')}}</span>
           <el-input
-            v-model="phoneNum"
-            placeholder="请输入订单号"
+            v-model="username"
+            :placeholder="$t('membershipIntroduction.memberName')"
+            size="small"
+          ></el-input>
+        </div>
+        <div>
+          <span>{{$t('membershipIntroduction.orderSn')}}</span>
+          <el-input
+            v-model="orderSn"
+            :placeholder="$t('membershipIntroduction.placeHolderOrderSn')"
             size="small"
           ></el-input>
         </div>
         <div class="receiveDetailDate">
-          <span>时间</span>
+          <span>{{$t('membershipIntroduction.time')}}</span>
           <el-date-picker
             v-model="dateInput"
             type="daterange"
             align="right"
             unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            default-value="2010-10-01"
+            :range-separator="$t('membershipIntroduction.to')"
+            :start-placeholder="$t('membershipIntroduction.Starttime')"
+            :end-placeholder="$t('membershipIntroduction.Endtime')"
+            value-format='yyyy-MM-dd'
             size="small"
           >
           </el-date-picker>
@@ -29,7 +37,8 @@
           <el-button
             type="primary"
             size="small"
-          >筛选</el-button>
+            @click="getUserDetailAcountData()"
+          >{{$t('membershipIntroduction.filter')}}</el-button>
         </div>
       </div>
 
@@ -58,13 +67,13 @@
               @click="handleClick(index)"
             >
 
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td class="link">{{item.status}}</td>
+              <td>{{item.username}}</td>
+              <td>{{item.mobile}}</td>
+              <td>{{item.orderSn}}</td>
+              <td>{{item.amount}}</td>
+              <td class="link">{{item.createTime}}</td>
               <td class="tb_decorate_a">
-                {{item.path}}
+                {{item.remark}}
               </td>
             </tr>
           </tbody>
@@ -114,14 +123,25 @@
           <span>暂无相关数据</span>
         </div>
       </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="dealWithPagination"
+      />
     </div>
   </div>
 </template>
 <script>
+import { accountDetailRequest } from '@/api/admin/membershipList.js'
+// 引入分页
+import pagination from '@/components/admin/pagination/pagination'
 export default {
+  components: { pagination },
   data () {
     return {
-      phoneNum: '',
+      // 用户id
+      id: '',
+      username: '',
+      orderSn: '',
       nameInput: '',
       dateInput: '',
       membershipCardOptins: [
@@ -137,53 +157,86 @@ export default {
         }
       ],
       membershipCardValue: '',
-      CardTypeOptins: [
-        {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }
-      ],
+      CardTypeOptins: [],
       CardTypeValue: '',
       page_one: true,
       tbodyFlag: false,
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          classification: '分类1',
-          status: '营业中',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          classification: '分类2',
-          status: '歇业中'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          classification: '分类3',
-          spanId: '',
-          status: '营业中'
-        }
-
-      ],
+      trList: [],
       clickIindex: null,
-      noImg: this.$imageHost + '/image/admin/no_data.png'
+      noImg: this.$imageHost + '/image/admin/no_data.png',
+      pageParams: {}
+
     }
+  },
+  created () {
+    // 获取会员的id
+
+    this.id = this.$route.query.id
+    this.username = this.$route.query.name
+    console.log(this.id)
+    // 加载用户余额明细数据
+    this.getUserDetailAcountData()
+  },
+  mounted () {
+    console.log('mounted method')
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 行点击
     handleClick (index) {
       this.clickIindex = index
+    },
+    // 获取会员余额详细信息
+    getUserDetailAcountData () {
+      console.log(this.dateInput)
+      if (this.dateInput) {
+        this.dateInput[0] = this.dateInput[0] + ' 00:00:00'
+        this.dateInput[1] = this.dateInput[1] + ' 23:59:59'
+      }
+
+      let obj = {
+        'userId': this.id,
+        'userName': this.username,
+        'orderSn': this.orderSn,
+        'startTime': this.dateInput[0],
+        'endTime': this.dateInput[1]
+      }
+      console.log(obj)
+
+      accountDetailRequest(obj).then(res => {
+        console.log(res)
+        if (res) {
+          // 设置tbody出现
+          this.tbodyFlag = true
+          // 将数据绑定到data中
+          this.trList = res.content.dataList
+          // 获取分页信息
+          this.pageParams = res.content.page
+          console.log(this.pageParams)
+          console.log(this.trList)
+
+          // 清空id
+          this.id = null
+        }
+      })
+    },
+    // 分页信息改变
+    dealWithPagination () {
+      console.log(this.pageParams)
+      let obj = {
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': this.pageParams.pageRows,
+        'userName': this.username
+      }
+      console.log(obj)
+      accountDetailRequest(obj).then(res => {
+        if (res) {
+          // 更新数据
+          this.trList = res.content.dataList
+          console.log(this.trList)
+        }
+      })
     }
   }
 }
