@@ -120,12 +120,8 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/manager/center/{userId}")
 	public JsonResult getMemberInfo(@PathVariable Integer userId) {
 		logger().info("获取会员用户id为 " + userId + " 详情信息");
-		MemberDetailsVo vo;
-		try {
-			vo = shop().member.getMemberInfoById(userId);
-		} catch (MpException e) {
-			return fail(e.getErrorCode());
-		}
+		MemberDetailsVo vo = shop().member.getMemberInfoById(userId);
+		
 		return i18nSuccess(vo);
 	}
 	
