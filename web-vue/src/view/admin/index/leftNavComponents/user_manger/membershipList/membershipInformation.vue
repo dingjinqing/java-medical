@@ -13,15 +13,21 @@
                 <div class="userName">{{$t('membershipIntroduction.nickname')}}：{{ this.memberBasicInfo.username }}</div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.Realname')}}：{{$t('membershipIntroduction.unknown')}}</div>
-                <div>{{$t('membershipIntroduction.inviter')}}：暂无<span
+                <div>{{$t('membershipIntroduction.Realname')}}：
+                  <span v-if='this.memberBasicInfo.realName'> {{ this.memberBasicInfo.realName }} </span>
+                  <span v-else> {{$t('membershipIntroduction.unknown')}} </span>
+                </div>
+                <div>{{$t('membershipIntroduction.inviter')}}：
+                  <span v-if='this.memberBasicInfo.inviteUserName'> {{ this.memberBasicInfo.inviteUserName }} </span>
+                  <span v-else>暂无</span>
+                  <span
                     class="modifyLinkPerson"
                     @click="hanldeModifyPerson()"
                   >{{$t('membershipIntroduction.Modifycontacts')}}</span></div>
-                <div>{{$t('membershipIntroduction.Becomeacustomer')}}：2019-08-01(1天内)</div>
+                <div>{{$t('membershipIntroduction.Becomeacustomer')}}：{{ this.memberBasicInfo.createTime }}</div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.Recentbrowsing')}}：2019-08-01(1天内)</div>
+                <div>{{$t('membershipIntroduction.Recentbrowsing')}}：{{ this.memberBasicInfo.updateTime }}</div>
                 <div>{{$t('membershipIntroduction.phoneNum')}}：
                   <span v-if="this.memberBasicInfo.mobile"> {{this.memberBasicInfo.mobile}} </span>
                   <span v-else>{{$t('membershipIntroduction.unknown')}}</span></div>
@@ -915,7 +921,7 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    this.defaultData()
+    this.loadMemberInfo()
   },
   methods: {
     // 加载用户数据
@@ -929,6 +935,14 @@ export default {
           this.memberBasicInfo = res.content.memberBasicInfo
           // 交易统计
           this.transStatistic = res.content.transStatistic
+
+          // 处理时间
+          if (this.memberBasicInfo.createTime) {
+            this.memberBasicInfo.createTime = this.memberBasicInfo.createTime.split(' ')[0]
+          }
+          if (this.memberBasicInfo.updateTime) {
+            this.memberBasicInfo.updateTime = this.memberBasicInfo.updateTime.split(' ')[0]
+          }
         }
       })
     },
