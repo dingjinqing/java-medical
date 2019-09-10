@@ -405,7 +405,7 @@ export default {
       unitSelectedValue: '个',
       unitCustomerValue: null,
       // 商家分类下落框
-      sortSelectOptions: null,
+      sortSelectOptions: [],
       /* 商品品牌服辅助数据 */
       // 商品品牌选中对象
       currentGoodsBrandData: {
@@ -429,7 +429,7 @@ export default {
       },
       /* 商品标签辅助数据 */
       // 商品标签下拉框
-      labelSelectOptions: null,
+      labelSelectOptions: [],
       // 标签已选中列表
       labelSelectedItems: [],
       // 标签来下框选中瞬间的值
