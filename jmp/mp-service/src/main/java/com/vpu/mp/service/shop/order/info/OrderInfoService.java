@@ -640,12 +640,7 @@ public class OrderInfoService extends ShopBaseService {
 		logger().info("计算会员 "+userId+" 的累积消费金额");
 
 		/** 会员卡消费金额 */
-		BigDecimal memberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE))
-										   .from(ORDER_INFO)
-										   .where(ORDER_INFO.USER_ID.eq(userId))
-										   .and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED))
-										   .fetchOne()
-										   .into(BigDecimal.class);
+		BigDecimal memberCardBalance = getCardConsumpAmount(userId);
 		logger().info("会员卡消费金额: " + memberCardBalance);
 		if(memberCardBalance != null) {
 			totalConsumpAmount = totalConsumpAmount.add(memberCardBalance);
@@ -733,6 +728,29 @@ public class OrderInfoService extends ShopBaseService {
 	}
 
 	/**
+	 * 会员卡消费余额
+	 * @param userId
+	 * @return
+	 */
+	public BigDecimal getCardConsumpAmount(Integer userId) {
+		
+		Record1<BigDecimal> record = getCardConsumpAmountSql(userId);
+		if( record != null) {
+			return record.into(BigDecimal.class);
+		}else {
+			return BigDecimal.ZERO;
+		}
+	}
+	
+	public Record1<BigDecimal> getCardConsumpAmountSql(Integer userId) {
+		 return db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE))
+										   .from(ORDER_INFO)
+										   .where(ORDER_INFO.USER_ID.eq(userId))
+										   .and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED))
+										   .fetchAny();
+	}
+
+	/**
 	 * 获取最近用户下单的订单时间
 	 * @param userId
 	 * @return
@@ -740,19 +758,23 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public Timestamp getRecentOrderInfoByUserId(Integer userId) {
-		try {
-		return db().select(ORDER_INFO.CREATE_TIME)
-				.from(ORDER_INFO)
-			.where(ORDER_INFO.USER_ID.eq(userId))
-			.and(ORDER_INFO.ORDER_STATUS.in(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED))
-			.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS))
-			.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
-			.orderBy(ORDER_INFO.CREATE_TIME.desc())
-			.fetchOne().into(Timestamp.class);
-		}catch(NullPointerException e) {
-			logger().info("没有查询到用户下单的时间");
-			return null;
+		Record1<Timestamp> record = getRecentOrderInfoByUserIdSQL(userId);
+		if(record != null) {
+			return record.into(Timestamp.class);
 		}
+		return null;
+	}
+	
+	public Record1<Timestamp> getRecentOrderInfoByUserIdSQL(Integer userId) {
+		
+		return db().select(ORDER_INFO.CREATE_TIME)
+				   .from(ORDER_INFO)
+				   .where(ORDER_INFO.USER_ID.eq(userId))
+				   .and(ORDER_INFO.ORDER_STATUS.in(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED))
+				   .and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS))
+				   .and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
+				   .orderBy(ORDER_INFO.CREATE_TIME.desc())
+				   .fetchAny();
 	}
 
 	/**
