@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
@@ -26,9 +25,6 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +35,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
+import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
@@ -50,6 +46,7 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
@@ -794,12 +791,17 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param userDesc
 	 * @throws WxErrorException
 	 */
-	public Boolean batchUploadCodeAndApplyAudit(Integer templateId){
+	public JsonResultCode batchUploadCodeAndApplyAudit(Integer templateId){
 		
 		MpVersionRecord row = saas.shop.mpVersion.getRow(templateId);
-		// TODO 要判读只允许一个提交进程存在
-		
+		List<Byte> asList = Arrays.asList(TaskJobsConstant.STATUS_NEW,TaskJobsConstant.STATUS_EXECUTING);
 		int recId = saas.shop.backProcessService.insertByInfo(row.into(MpVersionVo.class), this.getClass().getName(), Integer.parseInt(String.valueOf(Thread.currentThread().getId())));
+		Boolean boolean1 = saas.taskJobMainService.assertHasStatusTaskJob(TaskJobEnum.BATCH_UPLOAD.getExecutionType(), asList);
+		if(boolean1) {
+			//已经有相同任务在运行，当前任务停止
+			saas.shop.backProcessService.fail(recId, "已经有相同任务在运行，当前任务停止");
+			return JsonResultCode.WX_ONLY_ONE;
+		}
 		MpAuthShopListParam param = new MpAuthShopListParam();
 		param.setIsAuthOk((byte) 1);
 		param.setAuditState((byte) 1);
@@ -807,7 +809,7 @@ public class MpAuthShopService extends MainBaseService {
 		if(mpList.size()==0) {
 			//没有要提交的
 			saas.shop.backProcessService.fail(recId, "没有符合要求的小程序");
-			return false;
+			return JsonResultCode.WX_NO_REQUIRED;
 		}else {
 			Integer currentUseTemplateId = saas.shop.mpVersion.getCurrentUseTemplateId(null,row.getPackageVersion());
 			BatchUploadCodeParam param1=new BatchUploadCodeParam();
@@ -815,8 +817,9 @@ public class MpAuthShopService extends MainBaseService {
 			param1.setRecId(recId);
 			param1.setTemplateId(currentUseTemplateId);
 			param1.setPackageVersion(row.getPackageVersion());
-			saas.taskJobMainService.dispatchImmediately(param1,BatchUploadCodeParam.class.getName(),0,TaskJobEnum.BATCH_UPLOAD.getExecutionType());
-			return true;
+			Integer mainId = saas.taskJobMainService.dispatchImmediately(param1,BatchUploadCodeParam.class.getName(),0,TaskJobEnum.BATCH_UPLOAD.getExecutionType());
+			saas.shop.backProcessService.updateProcessId(recId, mainId);
+			return JsonResultCode.CODE_SUCCESS;
 		}
 	}
 
@@ -1498,5 +1501,25 @@ public class MpAuthShopService extends MainBaseService {
 		logger().debug("\n 发给客服的报文：\n{}",build.toXml().toString());
 		return build;
 	}
+
+	/**
+	 * 终止 任务
+	 * @param recId
+	 * @return
+	 */
+	public Boolean stopBatchUpload(Integer recId) {
+		BackProcessRecord row = saas.shop.backProcessService.getRow(recId);
+		if(row==null) {
+			return false;
+		}
+		//判断任务是否可以终止
+		if(saas.taskJobMainService.assertExecuting(row.getProcessId())) {
+			//更改任务状态为 3 ，终止
+			saas.taskJobMainService.updateTaskJobStatus(row.getProcessId(), TaskJobsConstant.STATUS_TERMINATION);			
+			return true;
+		}
+		return false;
+	}
+
 
 }

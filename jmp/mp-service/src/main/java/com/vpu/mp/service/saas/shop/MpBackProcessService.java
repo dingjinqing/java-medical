@@ -24,6 +24,13 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
  */
 @Service
 public class MpBackProcessService extends MainBaseService {
+	//0初始，1执行中，2完成，3失败,4终止
+    private static final byte  STATE_RUN_INIT = 0;
+    private static final byte  STATE_RUN_EXEC = 1;
+    private static final byte  STATE_RUN_FINISH = 2;
+    private static final byte  STATE_RUN_FAILED = 3;
+    private static final byte  STATE_RUN_STOP = 4;
+	
 
 	public int updateProgress(Integer recId, Short progress, String progressInfo) {
 		if (!StringUtils.isEmpty(progressInfo)) {
@@ -36,7 +43,7 @@ public class MpBackProcessService extends MainBaseService {
 	}
 
 	public int fail(Integer recId, String failReason) {
-		return db().update(BACK_PROCESS).set(BACK_PROCESS.FAIL_REASON, failReason).set(BACK_PROCESS.STATE, (byte) 3)
+		return db().update(BACK_PROCESS).set(BACK_PROCESS.FAIL_REASON, failReason).set(BACK_PROCESS.STATE,STATE_RUN_FAILED)
 				.where(BACK_PROCESS.REC_ID.eq(recId)).execute();
 	}
 
@@ -45,14 +52,26 @@ public class MpBackProcessService extends MainBaseService {
 	}
 	
 	public int finish(Integer recId) {
-		return db().update(BACK_PROCESS).set(BACK_PROCESS.STATE, (byte)2).where(BACK_PROCESS.REC_ID.eq(recId)).execute();
+		return updateStatus(recId, STATE_RUN_FINISH);
 	}
 	
 	public int updateRow(Integer recId, Integer jobCode, String jobMessage,String jobResult) {
 		return db().update(BACK_PROCESS).set(BACK_PROCESS.JOB_CODE, jobCode)
 				.set(BACK_PROCESS.JOB_MESSAGE, jobMessage).set(BACK_PROCESS.JOB_RESULT, jobResult).where(BACK_PROCESS.REC_ID.eq(recId)).execute();
 	}
+	
+	public int updateKill(Integer recId,String failReason) {
+		return db().update(BACK_PROCESS).set(BACK_PROCESS.FAIL_REASON, failReason).set(BACK_PROCESS.STATE,STATE_RUN_STOP)
+				.where(BACK_PROCESS.REC_ID.eq(recId)).execute();
+	}
+	
+	public int updateStatus(Integer recId,byte state) {
+		return db().update(BACK_PROCESS).set(BACK_PROCESS.STATE, state).where(BACK_PROCESS.REC_ID.eq(recId)).execute();
+	}
 
+	public int begin(Integer recId) {
+		return updateStatus(recId, STATE_RUN_EXEC);
+	}
 	/**
 	 * 返回主键
 	 * 
@@ -67,7 +86,7 @@ public class MpBackProcessService extends MainBaseService {
 		bProcessRecord.setProcessId(processId);
 		bProcessRecord.setClassName(className);
 		bProcessRecord.setParameters(Util.toJson(vo));
-		bProcessRecord.setState((byte) 0);
+		bProcessRecord.setState(STATE_RUN_INIT);
 		bProcessRecord.setOnlyRunOne((byte) 1);
 		bProcessRecord.setProgress((short) 0);
 		bProcessRecord.setProgressInfo("开始提交");
@@ -92,5 +111,14 @@ public class MpBackProcessService extends MainBaseService {
 			return  this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), MpUploadListVo.class);
 		}
 		return null;
+	}
+	
+	
+	public int updateProcessId(Integer recId, Integer processId) {
+		return db().update(BACK_PROCESS).set(BACK_PROCESS.PROCESS_ID, processId).where(BACK_PROCESS.REC_ID.eq(recId)).execute();
+	}
+	
+	public BackProcessRecord getRow(Integer recId) {
+		 return db().selectFrom(BACK_PROCESS).where(BACK_PROCESS.REC_ID.eq(recId)).fetchAny();
 	}
 }
