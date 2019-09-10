@@ -19,6 +19,8 @@ public class TaskJobsConstant {
 
     public static final Byte STATUS_COMPLETE = 2;
 
+    public static final Byte STATUS_TERMINATION = 3;
+
     /** 立即执行 */
     public static final Byte TYPE_ONCE = 1;
     /** 循环执行（但只执行一次）且schedule值不能为NULL */
