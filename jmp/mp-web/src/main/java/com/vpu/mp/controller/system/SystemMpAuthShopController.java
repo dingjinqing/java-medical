@@ -281,12 +281,11 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		if(templateId==null) {
 			return fail();
 		}
-		Boolean rBoolean = saas.shop.mp.batchUploadCodeAndApplyAudit(templateId);
-		if(!rBoolean) {
-			//没有需要提交的小程序
-			return fail(JsonResultCode.WX_NO_REQUIRED);
+		JsonResultCode rBoolean = saas.shop.mp.batchUploadCodeAndApplyAudit(templateId);
+		if(rBoolean.equals(JsonResultCode.CODE_SUCCESS)) {
+			return success();
 		}
-		return success();		
+		return fail(rBoolean);		
 	}
 	
 	/**
@@ -301,14 +300,17 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	}
 	
 	/**
-	 * 终止 TODO
+	 * 终止小程序审核
 	 * @return
 	 */
-	@GetMapping("/api/system/back/process/stop")
-	public JsonResult stopUpload() {
-		//TODO
+	@GetMapping("/api/system/back/process/stop/{recId}")
+	public JsonResult stopUpload(@PathVariable Integer recId) {
+		Boolean stopBatchUpload = saas.shop.mp.stopBatchUpload(recId);
+		if(!stopBatchUpload) {
+			//任务不存在或已完成，请重新检查
+			return fail(JsonResultCode.WX_JOB_PROBLEM);
+		}
 		return success();
 		
 	}
-	
-}
+	}
