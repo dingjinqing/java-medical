@@ -265,7 +265,7 @@
 import { mapActions } from 'vuex'
 import { addShareReward } from '@/api/admin/marketManage/sharePolite.js'
 import choosingGoods from '@/components/admin/choosingGoods'
-import addCouponDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog'
+import addCouponDialog from '@/components/admin/addCouponDialog'
 // import { couponList } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
@@ -311,7 +311,7 @@ export default {
           score: '',
           coupon: '',
           lottery: '',
-          totalNum: '',
+          totalNum: 0,
           score_num: '',
           coupon_num: '',
           lottery_num: ''
@@ -330,7 +330,10 @@ export default {
         visitFirst: false,
         firstRule: null,
         secondRule: null,
-        thirdRule: null
+        thirdRule: null,
+        firstAwardNum: 0,
+        secondAwardNum: 0,
+        thirdAwardNum: 0
       }
     }
   },
@@ -398,20 +401,31 @@ export default {
             item.lottery_num = item.totalNum
             break
         }
-        delete this.shareRule.totalNum
         switch (this.shareRule.length) {
           case 0:
             break
           case 1:
+            this.param.firstAwardNum = this.shareRule[0].totalNum
+            delete this.shareRule[0].totalNum
             this.param.firstRule = this.shareRule[0]
             break
           case 2:
+            this.param.firstAwardNum = this.shareRule[0].totalNum
+            delete this.shareRule[0].totalNum
             this.param.firstRule = this.shareRule[0]
+            this.param.secondAwardNum = this.shareRule[1].totalNum
+            delete this.shareRule[1].totalNum
             this.param.secondRule = this.shareRule[1]
             break
           case 3:
+            this.param.firstAwardNum = this.shareRule[0].totalNum
+            delete this.shareRule[0].totalNum
             this.param.firstRule = this.shareRule[0]
+            this.param.secondAwardNum = this.shareRule[1].totalNum
+            delete this.shareRule[1].totalNum
             this.param.secondRule = this.shareRule[1]
+            this.param.thirdAwardNum = this.shareRule[2].totalNum
+            delete this.shareRule[2].totalNum
             this.param.thirdRule = this.shareRule[2]
             break
         }
