@@ -10,3 +10,16 @@ export const messageTemplateListApi = data =>
     method: 'post',
     data
   })
+
+// 获取会员卡下拉弹窗
+export const allCardApi = () =>
+  service({
+    url: '/api/admin/member/card/all/get',
+    method: 'post'
+  })
+// 获取所有标签名称
+export const allTagApi = () =>
+  service({
+    url: '/api/admin/tag/all/get',
+    method: 'post'
+  })

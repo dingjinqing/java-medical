@@ -100,18 +100,18 @@
                     > 选择链接</el-button>
                   </div>
                 </el-form-item>
-                <el-form-item :label="labels.label5">
+                <!-- 参与活动人群 -->
+                <el-form-item :label="labels.label6">
                   <div>
-                    <span>以下筛选条件为“或”关系</span>
+                    <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
                   </div>
                   <div>
-                    <el-checkbox v-model="checked">加购人群</el-checkbox>
-                    <span>30天内在本店内有加入购物车行为，但没有支付的用户</span>
+                    <el-checkbox v-model="onClickNoPay">加购人群</el-checkbox>
+                    <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
                   </div>
                   <div>
-
-                    <el-checkbox v-model="checked">指定购买商品人群 </el-checkbox>
-                    <span>最多可选择3件商品</span>
+                    <el-checkbox v-model="onClickGoods">指定购买商品人群 </el-checkbox>
+                    <span style="color:#999;fontSize:12px">最多可选择3件商品</span>
                   </div>
                   <div class="chooseGoods">
                     <div class="chooseGoodsLeft">选择商品</div>
@@ -120,26 +120,53 @@
                     </div>
                   </div>
                   <div>
-                    <el-checkbox v-model="checked">持有 </el-checkbox>
+                    <el-checkbox v-model="onClickCard">持有 </el-checkbox>
                     <el-select
-                      v-model="value"
-                      placeholder="请选择"
+                      size="small"
+                      style="width:160px;margin-right:6px"
+                      v-model="cardValue"
+                      placeholder="请选择会员卡"
+                      @change="getIdList($event)"
                     >
                       <el-option
                         label="请选择会员卡"
                         value="请选择会员卡"
                       ></el-option>
                       <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="item in cardList"
+                        :key="item.id"
+                        :label="item.cardName"
+                        :value="item.id"
                       >
                       </el-option>
                     </el-select>
                     <span>会员卡人群</span>
                   </div>
+                  <!-- 已选的会员卡 -->
+                  <div
+                    class="selectedCard"
+                    v-if="cardIdsList.length>0"
+                  >
+                    <span>已选：</span>
+                    <div
+                      class="oneCardWraper"
+                      v-for="(item) in cardIdsList"
+                      :key="item.id"
+                    >
+                      <span class="oneCard">
+                        {{item.cardName}}
+                      </span>
+                      <el-image
+                        :src="urls.url4"
+                        class="oneCardDel"
+                      ></el-image>
+                    </div>
+                  </div>
                   <div>
+                    <el-checkbox v-model="checked">属于</el-checkbox>
+                    <span>标签人群</span>
+                  </div>
+                  <div style="margin:10px 0">
                     <el-checkbox v-model="checked">选择指定的会员 </el-checkbox>
                     <el-button
                       @click="handleAddMember"
@@ -167,34 +194,44 @@
                     </el-select>
                   </div>
                 </el-form-item>
+                <!-- 发送时间 -->
                 <el-form-item :label="labels.label7">
                   <div>
                     <el-radio
-                      v-model="radio"
-                      label="1"
+                      :label=1
+                      v-model="senAction"
                     >立即发送</el-radio>
                   </div>
                   <div>
-                    <span>预计送达人数：0 </span>
+                    <span style="color:#999;fontSize:12px;margin-right:10px">预计送达人数：0 </span>
                     <el-button type="text">查看</el-button>
                   </div>
                   <div>
                     <el-radio
-                      v-model="radio"
-                      label="1"
+                      :label=2
+                      v-model="senAction"
                     >持续发送</el-radio>
                   </div>
                   <div class="timePicker">
-
+                    <dateTimePicker
+                      :showPicker=1
+                      @time="getTime"
+                    />
                   </div>
-                  <div>
+                  <div style="color:#999;fontSize:12px;margin:5px 0">
                     所有可送达的用户均会第一时间收到一次此消息
                   </div>
                   <div>
                     <el-radio
-                      v-model="radio"
-                      label="1"
+                      :label=4
+                      v-model="senAction"
                     >定时发送</el-radio>
+                  </div>
+                  <div>
+                    <dateTimePicker
+                      :showPicker=2
+                      @startTime="getTime2"
+                    />
                   </div>
                 </el-form-item>
               </el-form>
@@ -203,18 +240,29 @@
           </div>
         </div>
       </div>
+      <div class="saveAndSend">
+        <el-button
+          @click="handleSaveAndSend"
+          size="small"
+          type="primary"
+        >保存并发送</el-button>
+      </div>
     </el-card>
   </div>
 </template>
 <script>
+import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
+import { allCardApi } from '@/api/admin/marketManage/messagePush.js'
 export default {
   name: 'addMessagePush',
+  components: { dateTimePicker },
   data () {
     return {
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
         url2: `${this.$imageHost}/image/admin/shop_logo_default.png`,
-        url3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
+        url3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`,
+        url4: `${this.$imageHost}/image/admin/icon_delete.png`
       },
       /**
        * form表单的数据
@@ -231,6 +279,21 @@ export default {
         label6: `参与活动人群：`,
         label7: `发送时间：`
       },
+      cardList: [
+
+      ],
+      cardValue: `请选择会员卡`,
+      /**
+       * params
+       */
+      senAction: 1,
+      startTime: ``,
+      endTime: ``,
+      startTime1: ``,
+      onClickNoPay: false,
+      onClickGoods: false,
+      onClickCard: false,
+      cardIdsList: [],
       /**
        * 表单检验
        */
@@ -242,10 +305,73 @@ export default {
       }
 
     }
+  },
+  created () {
+    this.initData()
+  },
+  methods: {
+    // 初始化会员卡下拉数据
+    initData () {
+      allCardApi().then(res => {
+        console.log(res)
+        const { error, content } = res
+        if (error === 0) {
+          this.cardList = content
+        }
+      }).catch(err => console.log(err))
+    },
+    // 保存并发送
+    handleSaveAndSend () {
+      const params = {
+        senAction: this.senAction,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        startTime1: this.startTime1,
+        onClickNoPay: this.onClickNoPay,
+        onClickGoods: this.onClickGoods,
+        onClickCard: this.onClickCard
+      }
+      console.log(params)
+    },
+    // 获取时间
+    getTime (val) {
+      this.startTime = val.startTime
+      this.endTime = val.endTime
+    },
+    getTime2 (val) {
+      this.startTime1 = val.startTime
+    },
+    // 会员卡下拉框选中出发
+    getIdList (val) {
+      console.log(val)
+      if (val !== `请选择会员卡`) {
+        const res = this.cardList.find((ele) => ele.id === val)
+        // console.log(res)
+        this.cardIdsList.push(res)
+        // console.log(val)
+        // console.log(this.cardList)
+        this.cardList = this.cardList.filter((item) => item.id !== val)
+        // console.log(this.cardList)
+        this.cardValue = `请选择会员卡`
+      }
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
+.saveAndSend {
+  border-top: 1px solid #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  z-index: 2;
+  width: 88%;
+  height: 50px;
+  background: #f8f8fa;
+  margin-left: -20px;
+}
 .addMessagePush {
   padding: 10px;
   .mainContent {
@@ -371,6 +497,7 @@ export default {
         }
         .chooseGoods {
           display: flex;
+          margin: 20px 0;
           .chooseGoodsLeft {
             margin-left: 50px;
             margin-right: 30px;
@@ -383,6 +510,36 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
+          }
+        }
+        .selectedCard {
+          border: 1px solid #eee;
+          width: 382px;
+          min-height: 56px;
+          margin: 10px 0;
+          display: flex;
+          flex-wrap: wrap;
+          .oneCardWraper {
+            position: relative;
+            margin: 2px 6px;
+            .oneCard {
+              padding: 0 10px;
+              min-width: 70px;
+              // margin: 10px;
+              // display: flex;
+              text-align: center;
+              line-height: 24px;
+              background-color: #fff;
+              height: 24px;
+              border: 1px solid #ccc;
+              display: inline-block;
+            }
+            .oneCardDel {
+              position: absolute;
+              right: -5px;
+              top: -5px;
+              cursor: pointer;
+            }
           }
         }
       }

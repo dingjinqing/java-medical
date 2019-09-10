@@ -142,7 +142,10 @@ const routes = [
       crumbTitle: 'router.pin_group_newUserDetail',
       meta: 'first_market_manage'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/newUserDetail')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/newUserDetail'
+      )
   },
   // 多人拼团  拼团退款失败订单
   {
@@ -152,7 +155,10 @@ const routes = [
       crumbTitle: 'router.pin_group_refundFailureOrder',
       meta: 'first_market_manage'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/refundFailureOrder')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/refundFailureOrder'
+      )
   },
   // 多人拼团  活动效果数据
   {
@@ -162,7 +168,10 @@ const routes = [
       crumbTitle: 'router.pin_group_activityEffectData',
       meta: 'first_market_manage'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/activityEffectData')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/activityEffectData'
+      )
   },
   // 分销
   {
@@ -718,7 +727,7 @@ const routes = [
   },
   // 营销管理/留存复购/消息推送
   {
-    path: '/api/admin/market/messagePush',
+    path: '/api/admin/market/messagePush/all',
     name: 'message_push',
     meta: {
       crumbTitle: 'router.message_push',
@@ -742,6 +751,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/addMessagePush'
+      )
+  },
+  // 营销管理/留存复购/推送统计
+  {
+    path: '/api/admin/market/messagePush/pushStatistics',
+    name: 'push_statistics',
+    meta: {
+      crumbTitle: 'router.message_push',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/messagePushStatistics'
       )
   }
 ]
