@@ -10,4 +10,14 @@ public class MemberConstant {
 	public static final Byte DELETE_NO = 0;
 	
 	public static final String INVITE_USERNAME = "inviteUserName";
+	
+	/** 用于计算时间范围 */
+	public static final int MONTH_DAYS = 30;
+	public static final int YEAR_DAYS = 365;
+	
+	/** 时间标记 */
+	public static final String DAY_FLAG = "-D";
+	public static final String MONTH_FLAG = "-M";
+	public static final String ONE_MONTH_FLAG = "1-M";
+	public static final String YEAR_FLAG = "-Y";
 }

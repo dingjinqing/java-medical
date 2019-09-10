@@ -27,7 +27,12 @@ import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.CHANNAL_PAGE;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
-
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -45,7 +50,6 @@ import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
-import org.jooq.Record22;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
@@ -708,13 +712,13 @@ public class MemberService extends ShopBaseService {
 			long days = Duration.between(tmp.atStartOfDay(), now.atStartOfDay()).toDays();
 			StringBuilder lastAddOrder = new StringBuilder();
 			if (days < WEEK) {
-				lastAddOrder.append(days + "-D");
+				lastAddOrder.append(days + DAY_FLAG );
 			} else if (days < MONTH) {
-				lastAddOrder.append("1-M");
+				lastAddOrder.append(ONE_MONTH_FLAG);
 			} else if (days < YEAR) {
-				lastAddOrder.append((days / 30) + "-M");
+				lastAddOrder.append((days / MONTH_DAYS) + MONTH_FLAG);
 			} else {
-				lastAddOrder.append((days / 365) + "-Y");
+				lastAddOrder.append((days / YEAR_DAYS) + YEAR_FLAG);
 			}
 			logger().info("最近下单距离现在 " + lastAddOrder.toString());
 			transStatistic.setLastAddOrder(lastAddOrder.toString());
@@ -787,8 +791,6 @@ public class MemberService extends ShopBaseService {
 
 				/** 下级用户数 */
 				transStatistic.setSublayerNumber(distributor.getSublayerNumber());
-
-
 
 				/** 获返利订单数量 */
 				transStatistic.setRebateOrderNum(distributorListService.getRebateOrderNum(userId));
