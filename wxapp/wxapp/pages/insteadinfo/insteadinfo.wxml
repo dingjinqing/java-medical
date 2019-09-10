@@ -1,0 +1,127 @@
+<include src="../common/header.wxml" />
+<view class='main_container'>
+  <view class='info_top'>
+    <view style='background:-webkit-linear-gradient(bottom,{{linColor}},{{comColor1}})'  class='ins_top_bg'></view>
+    <view class='user_imgs'>
+      <block wx:if='{{ins_info.wait_pay_money != 0}}'>
+        <image class='um_avater' src='{{ins_info.order_user.user_avatar}}' style='border-color:{{linColor}}'></image>
+        <view class='um_name'>快帮 <text style='margin:0 5rpx;'>{{ins_info.order_user.username}}</text> 达成心愿吧</view>
+      </block>
+      <block wx:if='{{ins_info.wait_pay_money <= 0}}'>
+        <image class='um_avater' src='{{imageUrl}}/image/wxapp/ins_conin1.png'></image>
+        <view class='um_name'>心愿已达成，我会感谢你哒</view>
+      </block>
+    </view>
+  </view>
+  <view class='goods_top clearfix'>
+    <view class='clearfix' wx:for='{{ins_info.order.order_goods}}' wx:key='key'>
+      <view class='goods_img'>
+        <image src='{{item.goods_img}}'></image>
+      </view>
+      <view class='goods_right'>
+        <view class='goods_name'>{{item.goods_name}}</view>
+        <view class='goods_desc' wx:if='{{item.goods_attr != ""}}'>{{item.goods_attr}}</view>
+        <view class='goods_price' style='color:{{comColor}}'>￥{{item.goods_price}}</view>
+      </view>
+    </view>
+  </view>
+  <view class='pay_msg' wx:if='{{ins_info.wait_pay_money > 0}}'>
+    <view class='cm_top'>
+      <view>编辑留言</view>
+    </view>
+    <view class='leave_msg_area'>
+      <input type='text' value='{{manage_msg}}' disabled='{{if_own == 1 ||  ins_info.wait_pay_money <= 0}}' bindblur='set_message'></input>
+    </view>
+  </view>
+  <view class='pay_msg pay_progress'>
+    <view class='other_open'>好朋友们，快来助我一臂之力吧~</view>
+    <view class='gress_top'>
+      <view class='gt_left'>
+        已付款：<text>￥{{ins_info.has_pay_money}}</text>
+      </view>
+      <view class='gt_right'>
+        剩余金额：<text>￥{{ins_info.wait_pay_money}}</text>
+      </view>
+    </view>
+    <view class='gress_bottom'>
+      <view class='have_color' style='width:{{ins_info.pro_width}}rpx'></view>
+    </view>
+  </view>
+  <view class='pay_msg payed_friends' wx:if='{{ins_info.user_list.data != ""}}'>
+    <view class='pf_top'>
+      <view class='pt1 clearfix'>
+        <view class='heng1 heng'></view>
+        <view class='word1'>好友助力</view>
+        <view class='heng2 heng'></view>
+      </view>
+      <view class='view_more' wx:if='{{ins_info.user_list.data.length >= 10}}' bindtap='viewmore'>
+        更多
+        <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+      </view>
+    </view>
+    <view class='friends_list'>
+      <view class='each_friends' wx:for='{{ins_info.user_list.data}}' wx:key='key' style='background:{{item.is_own == 1?"#fafafa":"#ffffff"}}'>
+        <view class='ef_avater'>
+          <image src='{{imageUrl}}/image/wxapp/ins-icon.png' wx:if='{{item.username == "当代活雷锋"}}'></image>
+          <image src='{{item.user_avatar}}' wx:if='{{item.username != "当代活雷锋"}}'></image>
+        </view>
+        <view class='ef_info'>
+          <view class='ef_name'>{{item.username}}<block wx:if='{{item.username == "当代活雷锋"}}'>（匿名好友）</block></view>
+          <view class='ef_msg'>{{item.message}}</view>
+        </view>
+        <view class='ef_price'>
+          <view class='payed'>代付：￥{{item.money_paid}}</view>
+          <view class='returned'>退款：￥{{item.refund_money}}</view>                                
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class='footer clearfix' wx:if="{{ins_info.order.order_status != 1 && ins_info.order.order_status != 2}}">
+    <block wx:if='{{if_own == 0 && ins_info.wait_pay_money != 0}}'>
+      <form report-submit='true' bindsubmit='own_pay_some'>
+        <button class='own_pay' form-type='submit' style='background:{{commonColor}}'>自己付点</button>
+      </form>
+      <button class='send_to_friend' open-type='share' style='background:{{comColor}}'>发送好友</button>
+    </block>
+    <block wx:if='{{if_own == 1 && ins_info.wait_pay_money != 0}}'>
+      <block wx:if='{{getsq == true || click_num == true}}'>
+        <form report-submit='true' bindsubmit='to_item'>
+          <button class='own_pay' form-type='submit' style='background:{{commonColor}}'>我也想买</button>
+        </form>
+        <form report-submit='true' bindsubmit='own_pay_some'>
+          <button class='send_to_friend' form-type='submit' style='background:{{comColor}}'>帮TA付款</button>
+        </form>
+      </block>
+      <block wx:else>
+        <form >
+          <button class='own_pay' open-type='getUserInfo' style='background:{{commonColor}}' bindgetuserinfo='getUserInfo'>我也想买</button>
+        </form>
+        <form>
+          <button class='send_to_friend' open-type='getUserInfo' bindgetuserinfo='getUserInfo ' style='background:{{comColor}}'>帮TA付款</button>
+        </form>
+      </block>
+    </block>
+    <!-- 人满了 -->
+    <block wx:if='{{if_own == 1 && ins_info.wait_pay_money == 0}}'>
+    <block wx:if='{{getsq == true || click_num == true}}'>
+      <form report-submit='true' bindsubmit='to_item'>
+        <button class='just_other' form-type='submit' style='background:{{comColor}}'>我也想买</button>
+      </form>
+    </block>
+    <block wx:else>
+      <form>
+        <button class='just_other'  bindgetuserinfo='getUserInfo' style='background:{{comColor}}'>我也想买</button>
+      </form>
+    </block>
+      
+    </block>
+
+    <block wx:if='{{if_own == 0 && ins_info.wait_pay_money == 0}}'>
+      <form report-submit='true' bindsubmit='orderInfo'>
+        <button class='just_other' form-type='submit' style='background:{{comColor}}'>查看订单</button>
+      </form>
+    </block>
+  </view>
+</view>
+<include src="../common/footer.wxml" />

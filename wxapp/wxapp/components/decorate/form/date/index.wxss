@@ -1,0 +1,38 @@
+.date-container{
+  margin-top: 20rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+}
+.clearfix::after{
+  content: "";
+  display: block;
+  clear: both
+}
+.date-container .box1{
+   height: 90rpx;
+  width: 100%;
+  padding:0rpx 25rpx;
+  line-height: 90rpx;
+}
+.date-container .box1 .picker{
+  float: left;
+  width: 500rpx;
+}
+.date-container .box1 .date_title{
+  width: 200rpx;
+  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 30rpx;
+}
+.date-container .box1 .clock_more{
+  float: right;
+}
+.date-container .box1 image{
+  width: 15rpx;
+  height: 25rpx;
+  margin-top: 10rpx;
+}

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "积分商品详情",
+  "usingComponents": {
+    "v-invite-notice": "/components/invite-notice/index",
+    "v-decorate": "/components/decorate/decorate/index",
+    "v-sel-spec": "/components/item/popup/spec/index",
+    "v-share-gooods": "/components/popup/share_goods/index"
+  }
+}

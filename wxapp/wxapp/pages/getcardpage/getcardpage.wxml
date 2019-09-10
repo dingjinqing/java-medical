@@ -1,0 +1,25 @@
+<include src="../common/header.wxml"/>
+<view class='main_container'>
+  <view class="top_style">
+    <image src="{{imageUrl}}/image/wxapp/get_card_bg.png" mode="widthFix"></image>
+    <view class="top_style_bg" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+    </view>
+    <view class="shop_logo">
+      <image src='{{shop_logo}}' mode="widthFix"></image>
+    </view>
+  </view>
+  <view class="get_card">
+    <view class="input_style clearfix" wx:if="{{type == 1}}">
+      <image src='{{imageUrl}}/image/wxapp/card_num.png' mode="widthFix"></image>
+      <input placeholder='请输入卡号' type='text' bindinput='getCardNum'></input>
+    </view>
+    <view class="input_style clearfix">
+      <image src='{{imageUrl}}/image/wxapp/card_pwd.png' mode="widthFix"></image>
+      <input placeholder='{{type == 1 ? "请输入密码" : "请输入领取码"}}' type='text' bindinput='getCardPwd'></input>
+    </view>
+    <view class="submit" style="background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})" bindtap='getCard'>
+      领取
+    </view>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>

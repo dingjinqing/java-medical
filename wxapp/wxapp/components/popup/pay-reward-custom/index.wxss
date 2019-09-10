@@ -1,0 +1,31 @@
+/* components/popup/pay-reward-custom/index.wxss */
+.custom_container image{
+  width: 560rpx;
+  height: 700rpx;
+  border-radius: 12rpx;
+}
+.custom_container{
+  position: relative;
+}
+.btn_close{
+  position: absolute;
+  z-index: 99999999;
+  top: -100rpx;
+  right: 50rpx;
+  width: 50rpx;
+  height: 50rpx;
+  overflow: hidden
+}
+.btn_close image{
+  width: 50rpx;
+  height: 50rpx;
+}
+.yishu{
+  width: 2rpx;
+  height: 52rpx;
+  background: #fff;
+  position: absolute;
+  z-index: 99999999;
+  top: -50rpx;
+  left: 484rpx;
+}

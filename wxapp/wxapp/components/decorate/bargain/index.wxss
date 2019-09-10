@@ -1,0 +1,240 @@
+.bargain-container {
+  width: 720rpx;
+  margin: 30rpx auto;
+  font-size: 26rpx;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+.each_bargain {
+  width: 350rpx;
+  background: #fff;
+  margin-bottom: 20rpx;
+  float: left;
+  height: 530rpx;
+  overflow: hidden !important;
+}
+
+.each_bargain:nth-of-type(even) {
+  float: right;
+}
+
+.each_img {
+  width: 350rpx;
+  height: 335rpx;
+  margin-bottom: 15rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.each_img .daojishi {
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-size: 24rpx;
+  padding: 5rpx 0;
+}
+
+.each_bargain image {
+  width: 350rpx;
+  height: 335rpx;
+}
+
+.price_info {
+  padding: 0 20rpx;
+  margin-bottom: 15rpx;
+}
+
+.price_info .zero {
+  color: #f66;
+  margin-right: 10rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.price_info .zero text {
+  font-size: 36rpx;
+}
+
+.price_info .original_price {
+  color: #666;
+  text-decoration: line-through;
+  font-size: 24rpx;
+}
+
+.goods_names {
+  width: 310rpx;
+  margin: 0 auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  height: 35rpx;
+}
+
+.number_info {
+  height: 55rpx;
+  line-height: 55rpx;
+  padding: 0 20rpx;
+  margin: 15rpx 0;
+}
+
+.number_info view {
+  height: 55rpx;
+  line-height: 55rpx;
+}
+
+.number_info .more_unit {
+  color: #666;
+  float: left;
+  font-size: 24rpx;
+}
+
+.number_info .free_ntn {
+  float: right;
+  width: 130rpx;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(left, #f66, #ff8585);
+  background: -webkit-linear-gradient(left, #f66, #ff8585);
+  background: -moz-linear-gradient(left, #f66, #ff8585);
+  border-radius: 50rpx;
+}
+
+.number_info .orig_ntn {
+  float: right;
+  width: 140rpx;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(left, #f66, #ff8585);
+  background: -webkit-linear-gradient(left, #f66, #ff8585);
+  background: -moz-linear-gradient(left, #f66, #ff8585);
+  border-radius: 50rpx;
+}
+
+/*danlie  */
+
+.each_bargains {
+  background: #fff;
+  padding: 15rpx 20rpx;
+  font-size: 26rpx;
+  margin-bottom: 20rpx;
+}
+
+.each_bargains .each_left {
+  float: left;
+  width: 260rpx;
+  height: 260rpx;
+  margin-right: 30rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.each_left .daojishi {
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-size: 24rpx;
+  padding: 5rpx 0;
+}
+
+.each_bargains .each_left image {
+  width: 260rpx;
+  height: 260rpx;
+}
+
+.each_bargains .each_right {
+  float: left;
+  width: 415rpx;
+  height: 260rpx;
+  position: relative;
+}
+
+.goods_info {
+  position: absolute;
+  top: 0;
+}
+
+.more_nums {
+  color: #666;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+}
+
+.er_bottom {
+  position: absolute;
+  bottom: 0;
+  height: 55rpx;
+  line-height: 55rpx;
+  overflow: hidden;
+  width: 100%;
+}
+
+.er_bottom .price_info {
+  float: left;
+  height: 55rpx;
+  line-height: 55rpx;
+  padding: 0;
+  overflow: hidden;
+}
+
+.er_bottom .price_info view {
+  height: 55rpx;
+  line-height: 55rpx;
+}
+
+.er_bottom .free_ntn {
+  float: right;
+  width: 130rpx;
+  text-align: center;
+  height: 55rpx;
+  line-height: 55rpx;
+  color: #fff;
+  background: linear-gradient(left, #f66, #ff8585);
+  background: -webkit-linear-gradient(left, #f66, #ff8585);
+  background: -moz-linear-gradient(left, #f66, #ff8585);
+  border-radius: 50rpx;
+}
+
+.er_bottom .orig_ntn {
+  float: right;
+  width: 140rpx;
+  text-align: center;
+  height: 55rpx;
+  line-height: 55rpx;
+  color: #fff;
+  background: linear-gradient(left, #f66, #ff8585);
+  background: -webkit-linear-gradient(left, #f66, #ff8585);
+  background: -moz-linear-gradient(left, #f66, #ff8585);
+  border-radius: 50rpx;
+}
+
+.good_names {
+  width: 100%;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.sell_out {
+  position: absolute !important;
+  width: 130rpx !important;
+  height: 130rpx !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  float: none;
+  z-index: 3;
+}

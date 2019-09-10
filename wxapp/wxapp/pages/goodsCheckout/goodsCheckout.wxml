@@ -1,0 +1,654 @@
+<!--pages/goodsCheckout/goodsCheckout.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <!-- <wxs module="filters" src="checkout.wxs"></wxs> -->
+  <view class='all' wx:if="{{is_delete}}"></view>
+  <view class='all' wx:if="{{is_delete}}">
+    <view class='pay_notice'>
+      <image src='{{imageUrl}}image/wxapp/icon_notice.png'></image>
+      <block wx:if='{{clock == ""}}'>
+        付款时间已截止，订单已被取消，请重新下单
+      </block>
+      <block wx:if='{{clock != ""}}'>
+        请在
+        <text style='color:{{comColor}}'>
+          <block wx:if='{{clock[0] != 0}}'>{{clock[0]}}小时</block>
+          <block wx:if='{{clock[1] != 0}}'>{{clock[1]}}分钟</block>
+          <block wx:if='{{clock[2] != 0}}'>{{clock[2]}}秒</block>
+        </text> 内付款，超时订单将被取消
+      </block>
+     
+    </view>
+    <!-- 配送方式 -->
+    <view class='getway' wx:if="{{deliver_config.disp == 4 && store_array.length > 0 && !(create_order.scan_store_id > 0)}}">
+      <view class='deliver' bindtap='show_kuaidi' style='border-bottom:{{deliver_config.border_1}};color:{{deliver_config.color_1}}'>快递</view>
+      <view class='getbyself' bindtap='show_ziti' style='border-bottom:{{deliver_config.border_2}};color:{{deliver_config.color_2}}'>自提</view>
+    </view>
+    <!-- 配送方式结束 -->
+    <block wx:if="{{create_order.scan_store_id > 0}}">
+      <!-- 门店扫码购 -->
+      <view style='margin-bottom:20rpx;'>
+        <view class='store_addr'>
+          <view>{{ scan_store.store_name }}</view>
+          <view class='sa_detail'>
+            <view>
+              <image class='address_img' src='{{imageUrl}}image/wxapp/address.png'></image>
+            </view>
+            <view>{{ scan_store.address }}</view>
+            <view style="text-align:left">距离当前位置{{scan_store.dis}}km</view>
+          </view>
+        </view>
+      </view>
+      <!-- 门店扫码购结束 -->
+    </block>
+    <block wx:else>
+      <!--快递的地址部分  -->
+      <view style='display:{{deliver_config.kuaidi_view}}' wx:if='{{post_type != "give_gift"}}'>
+        <view wx:if="{{!create_order.address_id}}" bindtap="addAddress" class='no_addr'>
+          <view>
+            <image src='{{imageUrl}}image/wxapp/address.png'></image>
+          </view>
+          <view>请新建收货地址</view>
+          <view>
+            <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+          </view>
+        </view>
+        <view wx:else class='address_detail' bindtap="addAddress">
+          <view class='ad_top'>
+            <view>{{address.userName}}</view>
+            <view>{{address.telNumber}}</view>
+          </view>
+          <view class='ad_middle'>
+            <view>
+              <image src='{{imageUrl}}image/wxapp/address.png'></image>
+            </view>
+            <view>{{address.provinceName}}{{address.cityName}}{{address.countyName}}{{address.detailInfo}}</view>
+            <view>
+              <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+            </view>
+          </view>
+        </view>
+        <view class='ad_end'>
+          <image src='{{imageUrl}}image/wxapp/address_bottom.png'></image>
+        </view>
+      </view>
+      <!--快递的地址部分结束  -->
+      <!--自提部分的地址  -->
+      <view style='display:{{deliver_config.ziti_view}};margin-bottom:20rpx;' wx:if='{{post_type != "give_gift"}}'>
+        <view class='store_addr'>
+          <view>{{choose_store.store_name ? choose_store.store_name : '' }}</view>
+          <view class='sa_detail' bindtap='storeShow'>
+            <view>
+              <image class='address_img' src='{{imageUrl}}image/wxapp/address.png'></image>
+            </view>
+            <view>{{choose_store.address ? choose_store.address : '' }}</view>
+            <view wx:if="{{!choose_store.address}}" style="text-align:left">距离当前位置{{choose_store.dis}}km</view>
+            <view wx:else>距离当前位置{{choose_store.dis}}km</view>
+            <view>
+              <image class='right_to_sth' src='{{imageUrl}}image/wxapp/right_into.png'></image>
+            </view>
+          </view>
+        </view>
+        <view class='customer_message'>
+          <view wx:if="{{!create_order.address_id}}" bindtap="addAddress" class='no_addr'>
+            <view>
+              <image src='{{imageUrl}}image/wxapp/address.png'></image>
+            </view>
+            <view>请选择提货人</view>
+            <view>
+              <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+            </view>
+          </view>
+          <view wx:else class='have_addr' bindtap="addAddress">
+            <view>
+              <image class='address_img' src='{{imageUrl}}image/wxapp/icon_peoson.png'></image>
+            </view>
+            <view>{{address.userName}}</view>
+            <view>{{address.telNumber}}</view>
+            <view>
+              <image class='right_to_sth' src='{{imageUrl}}image/wxapp/right_into.png'></image>
+            </view>
+          </view>
+        </view>
+        <view class='get_times' bindtap='timeShow'>
+          <view>
+            <image class='address_img' src='{{imageUrl}}image/wxapp/date.png'></image>
+          </view>
+          <view class='time_detail'>提货日期：</view>
+          <view style="color:{{comColor}};width:480rpx;float:left;text-align:right">{{create_order.date}} {{create_order.time}}</view>
+          <view>
+            <image class='right_to_sth' src='{{imageUrl}}image/wxapp/right_into.png'></image>
+          </view>
+        </view>
+      </view>
+      <!--自提部分的地址结束  -->
+    </block>
+
+    <!-- 商品模块 -->
+    <view wx:if="{{hasPurchase != 0 || hasFullprice != 0 || hasPackage != 0}}" class='purchase_notice'>
+      <view class='purchase_notice_item'>
+        <image src='{{imageUrl}}/image/wxapp/main_goods_notice.png'></image>
+        <view>
+          <block wx:if='{{hasPurchase == 1 && hasFullprice == 0 && hasPackage == 0}}'>加价购</block>
+          <block wx:if='{{hasPurchase == 0 && hasFullprice == 1 && hasPackage == 0}}'>满折满减</block>
+          <block wx:if='{{hasPurchase == 0 && hasFullprice == 0 && hasPackage == 1}}'>一口价</block>
+          <block wx:if='{{hasPurchase == 1 && hasFullprice == 1 && hasPackage == 0}}'>加价购、满折满减</block>活动不可与会员卡折扣和优惠券共享
+        </view>
+      </view>
+    </view>
+    <block wx:for="{{goods}}" wx:key="key" wx:for-item="goods">
+      <view class='goods_detail'>
+        <view class='goods_image '>
+          <image src='{{goods.prd_img || goods.goods_img}}' style="width:150rpx;height:150rpx;"></image>
+          <view wx:if="{{create_order.store_id <= 0 && !can_shipping[goods.product_id]}}" class="item_untradeable">不支持配送</view>
+          <view wx:if="{{create_order.store_id > 0 && goods.is_can_pick == -1}}" class="item_untradeable">不支持自提</view>
+        </view>
+        <view class='goods_message'>
+          <view class='goods_name_title'>
+            <view class='act_icons' wx:if="{{goods.purchase_price_rule_id > 0}}" style='color:{{comColor}};border-color:{{comColor}}'>换购</view>
+            <view class='act_icons' wx:if="{{goods.is_gift == 1}}" style='color:{{comColor}};border-color:{{comColor}}'>赠品</view>
+            <view class='act_icons' wx:if="{{goods.free_ship == 1}}" style='color:{{comColor}};border-color:{{comColor}}'>满包邮</view>
+            <span>{{goods.goods_name}}</span>
+          </view>
+          <view class='goods_spec' wx:if="{{goods.goods_attr}}">{{goods.goods_attr}}</view>
+          <view class='goods_text'>
+            <block wx:if="{{post_type != 'integral'}}">
+              <view class='grade' wx:if="{{goods.goods_price_action == 1 }}">会员价</view>
+              <view class='reduce' wx:if="{{goods.goods_price_action == 2 }}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+              <view class='reduce' wx:if="{{goods.goods_price_action == 3 }}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
+              <view class='goods_price' style='color:{{comColor}}'>￥{{goods.goods_price}}</view>
+              <view class='ori_prices' wx:if="{{goods.purchase_price_rule_id > 0}}">￥{{goods.market_price}}</view>
+            </block>
+            <view class='goods_price' wx:if="{{post_type == 'integral'}}" style='color:{{comColor}}'>
+              <view class="integral_money" wx:if="{{goods.money >0}}" style='color:{{comColor}}'>
+                <text style='color:{{comColor}}'>￥{{goods.money}}</text> +</view> {{goods.goods_score}}积分</view>
+            <view class='goods_num'>x{{goods.goods_number}}</view>
+          </view>
+
+        </view>
+      </view>
+    </block>
+    <!-- 商品模块结束 -->
+    <!-- 支付方式 -->
+    <view class='payway clearfix' wx:if="{{pay_type_len > 0 && !(post_type == 'integral' && goods[0].money == 0) && post_type != 'lottery_present' && post_type != 'assess_present'}}">
+      <view class='pay_title {{post_type == "integral" ? "integral_pay_style1":""}}'>支付方式</view>
+      <view class='hr' wx:if="{{post_type != 'integral'}}"></view>
+      <view class="payment {{post_type == 'integral' ? 'integral_pay_style2' : ''}}">
+        <radio-group bindchange="radioChange" class='clearfix'>
+          <view wx:if="{{pay_type.wxpay == 1}}">
+            <radio color='{{comColor}}' name='pay_way' value="wxpay" checked="{{pay_type_checked == 'wxpay'}}" /> 微信支付
+          </view>
+          <view wx:if="{{pay_type.cod == 1 && post_type != 'sec_kill'}}">
+            <radio color='{{comColor}}' name='pay_way' value="cod" checked="{{pay_type_checked == 'cod'}}" /> 货到付款
+          </view>
+          <view wx:if="{{pay_type.instead_pay}}">
+            <radio color='{{comColor}}' name='pay_way' value="instead_pay" checked="{{pay_type_checked == 'instead_pay'}}" /> 好友代付
+          </view>
+        </radio-group>
+        <view class='ins_tips' wx:if="{{instead_pay_show}}">
+          温馨提示：24小时内未完成支付，订单将会自动取消，所有款项将自动退回到付款人账户
+        </view>
+      </view>
+    </view>
+    <view class='payway clearfix' wx:if="{{post_type == 'integral' && goods[0].money == 0}}">
+      <view class='pay_title integral_pay_style1'>支付方式</view>
+      <view class='payment integral_pay_style2'>
+        <radio-group bindchange="radioChange">
+          <view class='jifenpay'>
+            <radio color='{{comColor}}' checked readonly/> 积分支付</view>
+        </radio-group>
+      </view>
+    </view>
+    <!-- 支付方式结束 -->
+    <!-- 会员卡，优惠券，积分，余额 -->
+    <view class='pay_type' wx:if="{{!(post_type == 'integral' && goods[0].money == 0) && post_type != 'lottery_present' && post_type != 'assess_present'}}">
+      <block wx:if="{{card_array.length != 0}}">
+        <view class='choose_coupon' bindtap='cardClick' style='padding:24rpx 0;'>
+          <view>会员卡</view>
+          <view style='margin:0;'>
+            <block wx:if="{{ card_choose_name }}">
+              <text style='margin-right:10rpx;'>{{ card_choose_name }}</text>
+            </block>
+            <block wx:else>
+              <text style='margin-right:30rpx;'>选择会员卡</text>
+            </block>
+            <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+          </view>
+        </view>
+        <view class='hr' wx:if="{{card_array.length != 0}}"></view>
+        <view class='yue_pay' wx:if="{{user_money.member_card_money > 0}}">
+          <view>会员卡余额支付:</view>
+          <view class='pay_focus'>
+            <text style='color:{{comColor}}' wx:if='{{pay_card == 1}}'>减{{create_order.member_card_balance}}元</text>
+          </view>
+          <view class='pay_check' bindtap='{{pay_card == 1 ? "" : "payClick"}}' data-type='card'>
+            <image src="{{ checkbox_no }}" mode='widthFix' wx:if='{{pay_card == 0}}' />
+            <text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelCard' wx:else></text>
+          </view>
+        </view>
+        <view class='hr' wx:if="{{user_money.member_card_money > 0}}"></view>
+      </block>
+      <block wx:if='{{coupon_array.length > 1}}'>
+
+        <view class='choose_coupon' style='padding:24rpx 0;'>
+          <view>优惠券</view>
+          <picker class="picker" bindchange="bindPicChange" value="{{coupon_choose_index}}" range="{{coupon_array}}" range-key="act_desc" style='float:left;width:580rpx;height:42rpx;text-align:right'>
+            <view style='float:none'>
+              {{coupon_array[coupon_choose_index].act_desc}}
+            </view>
+          </picker>
+          <view>
+            <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+          </view>
+        </view>
+        <view class='hr'></view>
+      </block>
+
+      <view class='yue_pay' wx:if="{{pay_type.balance && user_money.account > 0}}">
+        <view>余额支付:</view>
+        <view class='pay_focus'>
+          <text style='color:{{comColor}}' wx:if='{{pay_yue == 1}}'>减{{create_order.account_discount}}元</text>
+        </view>
+        <view class='pay_check' bindtap='{{pay_yue == 1 ? "" : "payClick"}}' data-type='yue'>
+          <image src="{{ checkbox_no }}" mode='widthFix' wx:if='{{pay_yue == 0}}' />
+          <text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelYue' wx:else></text>
+        </view>
+      </view>
+      <view class='hr'></view>
+      <block wx:if="{{pay_type.score && user_money.score >= 100}}">
+        <view class='score_pay'>
+          <view>积分支付:</view>
+          <view class='pay_focus'>
+            <text class='pay_icon_text' style='color:{{comColor}}' wx:if="{{ user_money.score_enable >= create_order.score_pay_num && pay_score == 1}}">抵{{create_order.score_discount}}元</text>
+            <text class='pay_icon_text' style='color:{{comColor}}' wx:if="{{ user_money.score_enable < create_order.score_pay_num}}">可用{{ user_money.score_enable }}积分，不足{{ create_order.score_pay_num }}积分不可使用</text>
+          </view>
+          <view class='pay_check' bindtap='{{(user_money.score_enable < create_order.score_pay_num || pay_score == 1) ? "" : "payClick"}}' data-type='score'>
+            <image src="{{ checkbox_no }}" mode='widthFix' style="{{ user_money.score_enable < create_order.score_pay_num ? 'background-color: #eeeeee;' : ''}}" wx:if='{{pay_score == 0}}' />
+            <text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' wx:else='{{pay_score == 1}}' bindtap='checkCancelScore'></text>
+          </view>
+        </view>
+
+      </block>
+    </view>
+    <!-- 会员卡，优惠券，积分，余额结束 -->
+
+    <!-- 下单人信息 -->
+    <view class='payway clearfix' style='padding-bottom:0' wx:if="{{order_real_name == 1 || order_cid == 1}}">
+      <view class='pay_title'>下单人信息</view>
+      <view class='hr'></view>
+      <view class='order_must' wx:if="{{order_real_name == 1}}">
+        <view>
+          <text style='color:red'>*</text>真实姓名:</view>
+        <view class='pay_two'>
+          <input placeholder="请输入" bindblur='must_checkName1' />
+        </view>
+      </view>
+      <view class='hr' wx:if="{{order_real_name == 1 && order_cid == 1}}"></view>
+      <view class='order_must' wx:if="{{order_cid == 1}}">
+        <view>
+          <text style='color:red'>*</text>身份证号:</view>
+        <view class='pay_two'>
+          <input placeholder="请输入" bindblur='must_checkIDcard1' />
+        </view>
+      </view>
+    </view>
+    <!-- 下单人信息结束 -->
+
+    <!-- 收货人信息 -->
+    <view class='payway clearfix' style='padding-bottom:0' wx:if="{{consignee_real_name == 1 || consignee_cid == 1}}">
+      <view class='pay_title'>收货人信息</view>
+      <view class='hr'></view>
+      <view class='order_must' wx:if="{{consignee_real_name == 1}}">
+        <view>
+          <text style='color:red'>*</text>真实姓名:</view>
+        <view class='pay_two'>
+          <input placeholder="请输入" bindblur='must_checkName2' />
+        </view>
+      </view>
+      <view class='hr' wx:if="{{consignee_real_name == 1 && consignee_cid == 1}}"></view>
+      <view class='order_must' wx:if="{{consignee_cid == 1}}">
+        <view>
+          <text style='color:red'>*</text>身份证号:</view>
+        <view class='pay_two'>
+          <input placeholder="请输入" bindblur='must_checkIDcard2' />
+        </view>
+      </view>
+    </view>
+    <!-- 收货人信息结束 -->
+
+    <!-- 自定义信息 -->
+    <view class='wechat' wx:if="{{custom == 1}}">
+      <view class='custom'>
+        <view class='custom' style='padding-top:"0"'>
+          <view>
+            <text style='color:red'>*</text>{{ custom_title }}：</view>
+          <view>
+            <input placeholder="请输入" value='' bindblur='must_custom' />
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 自定义信息结束 -->
+
+    <view class='wechat'>
+      <!--  IDcard & real_name -->
+      <view class='remarks' wx:if='{{shop_flag == 1}}'>
+        <view>真实姓名：</view>
+        <view>
+          <input placeholder='请填写真实姓名' value='' bindblur='checkName' />
+        </view>
+      </view>
+      <view class='remarks' wx:if='{{shop_flag == 1}}'>
+        <view>身份证号：</view>
+        <view>
+          <input placeholder='请填写身份证号' value='' bindblur='checkIDcard' />
+        </view>
+      </view>
+      <!-- 备注 -->
+      <view class='remarks' style='padding-top:{{shop_flag == 1?"20rpx":"0"}}'>
+        <view>备注：</view>
+        <view>
+          <input placeholder="请输入给店铺的留言，可不填写" value='' bindblur='addMsg' />
+        </view>
+      </view>
+    </view>
+    <!-- 备注结束 -->
+    <!-- 发票 -->
+    <view class='invoice_model' bindtap='chooseInvoice' wx:if="{{invoice_module && post_type != 'bargain' && post_type != 'integral' && post_type != 'lottery_present' && post_type != 'assess_present'}}">
+      <view>发票</view>
+      <view wx:if="{{invoice_title}}" class='invo_tit'>{{invoice_title}}</view>
+      <view wx:if="{{!invoice_title}}" class='invo_tit'>请选择发票</view>
+      <view>
+        <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+      </view>
+    </view>
+    <!-- 发票结束 -->
+    <!-- 不可配送 -->
+    <view class="untradeable" wx:if="{{create_order.address_id > 0 && create_order.store_id <= 0 && !can_shipping['all_goods']}}">
+      地址超出配送范围,请重新选择商品后下单
+    </view>
+    <view class="untradeable" wx:if="{{create_order.store_id > 0 && not_pick_tip != ''}}">
+      订单中有部分赠品不支持自提，请确认后下单
+    </view>
+    <!-- 商品总计 -->
+    <view class='checkout_detail' wx:if="{{post_type != 'integral'}}">
+      <view class='price_amount'>
+        <view>商品总计</view>
+        <view style='color:{{comColor}}'>￥{{create_order.original_price}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.package_discount > 0}}">
+        <view>一口价优惠</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.package_discount}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.pre_sale_discount > 0}}">
+        <view>定金抵扣</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.pre_sale_discount}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.member_card_reduce > 0 && exchang_good == 1}}">
+        <view>限次卡抵扣金额</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.member_card_reduce}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{goods[0].goods_number > 0 && exchang_good == 1}}">
+        <view>限次卡抵扣次数</view>
+        <view style='color:{{comColor}}'>-{{goods[0].goods_number}}次</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.member_card_reduce > 0 && exchang_good == 0}}">
+        <view>会员卡折扣</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.member_card_reduce}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.member_card_balance > 0 && pay_card == 1}}">
+        <view>会员卡余额</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.member_card_balance}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.promotion_reduce > 0}}">
+        <view>促销活动</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.promotion_reduce}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.grouper_cheap_reduce > 0}}">
+        <view>团长优惠</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.grouper_cheap_reduce}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.discount > 0}}">
+        <view>优惠券</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.discount}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.score_discount > 0 && pay_score == 1}}">
+        <view>积分抵扣</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.score_discount}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.account_discount > 0 && pay_yue == 1}}">
+        <view>余额支付</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.account_discount}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.shipping_fee > 0}}">
+        <view>运费</view>
+        <view style='color:{{comColor}}'>+￥{{create_order.shipping_fee}}</view>
+      </view>
+    </view>
+    <!-- 商品总计结束 -->
+    <!-- 定金膨胀 -->
+    <view class='presale_area' wx:if="{{post_type == 'pre_sale'}}">
+      <view class='presale_info clearfix'>
+        <view class='red_one' style='background:{{comColor}}'></view>
+        <view class='pre_name'>定金（待付款）</view>
+        <view class='pre_money' style='color:{{comColor}}'>￥{{create_order.pre_sale_money_paid}}
+          <block wx:if='{{create_order.order_pay_way == 1}}'> (可抵￥{{create_order.pre_sale_money}})</block>
+        </view>
+      </view>
+      <!--全款的时候下面二个隐藏 -->
+      <view class='shuxian' wx:if='{{create_order.order_pay_way == 1}}'></view>
+      <view class='presale_info clearfix' wx:if='{{create_order.order_pay_way == 1}}'>
+        <view class='grey_one'></view>
+        <view class='pre_name'>尾款（待付款）</view>
+        <view class='pre_money'>￥{{create_order.bk_order_money}}</view>
+      </view>
+      <view class='pre_time' bindtap='ruleShow'>
+        {{create_order.shipping_time}} 开始发货
+        <image src='{{imageUrl}}/image/wxapp/pre_tice2.png' mode='widthFix'></image>
+      </view>
+    </view>
+    <view class='presale_tips' wx:if="{{post_type == 'pre_sale' && create_order.order_pay_way == 1}}">
+      定金：￥{{create_order.pre_sale_money_paid}}(可抵￥{{create_order.pre_sale_money}})；尾款：￥{{create_order.bk_order_money}}
+    </view>
+    <!-- 定金膨胀结束-->
+    <!--  服务承诺 -->
+    <view class='service_terms clearfix' wx:if="{{create_order.service_terms == 1}}">
+      <text catchtap='checkService' class="iconfont {{create_order.service_choose == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}" style='color:{{comColor}}'></text>
+      <view class='pre_title'>同意《{{create_order.service_name}}》</view>
+      <view class='invo_tit' bindtap='toRule'>查看详情
+        <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+      </view>
+    </view>
+
+    <!-- 提交订单 -->
+    <view class='check_bottom'>
+      <view wx:if="{{post_type != 'integral'}}" style='color:{{comColor}}'>应付余额：{{create_order.money_paid}}元</view>
+      <view wx:if="{{post_type == 'integral'}}" style='color:{{comColor}}'>应付：
+        <text wx:if="{{create_order.money_paid > 0}}" style='color:{{comColor}}'>￥<text>{{create_order.money_paid}}</text> +</text> {{create_order.new_score_integral}}积分</view>
+      <form bindsubmit="order_confirm" report-submit='true'>
+        <button form-type='submit' wx:if='{{post_type != "integral"}}' style='background:{{comColor}}'>{{instead_pay_show ? '去分享' : '提交订单'}}</button>
+        <button form-type='submit' wx:if='{{post_type == "integral"}}' style='background:{{comColor}}'>立即兑换</button>
+      </form>
+    </view>
+    <!-- 应付余额结束 -->
+  </view>
+
+  <!--选择门店的弹窗  -->
+  <action-sheet hidden="{{storeMode}}">
+    <view class='pro_title'>
+      选择自提门店
+      <image src='{{ img_close }}' mode="widthFix" bindtap="storeCancel" class='pro_close' />
+    </view>
+    <view class='pro_content'>
+      <block wx:for="{{ store_array }}" wx:key="key" wx:for-index="id">
+        <view class='choose_store' bindtap='chooseStore' data-id="{{ id }}">
+          <view class='store_name'>
+            <image src="{{item.store_radio}}" mode="widthFix" />
+            <text>{{item.store_name}}</text>
+          </view>
+          <view class='add_content'>
+            <view>{{item.address}}</view>
+            <view wx:if="{{item.dis != 'null'}}">距离现在位置{{item.dis}}km</view>
+            <view>
+              <image class='address_img' src='{{imageUrl}}image/wxapp/address.png'></image>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class='card_sure' bindtap='storeConfirm' style='background:{{comColor}}'>确定</view>
+  </action-sheet>
+
+  <!--  会员卡弹框  -->
+  <action-sheet hidden="{{ cardMode }}">
+    <view class='action_title'> 
+      会员卡
+      <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="cardCancel" class='pro_close' />
+    </view>
+    <view style='height:800rpx;overflow-y:scroll;{{isIpx == 1 ? "margin-bottom:110rpx;padding-bottom:50rpx;" : "margin-bottom:80rpx;"}}'>
+      <block wx:if="{{ card_array.length != 0 }}" wx:for="{{card_array}}" wx:key="index">
+        <view class="card_list clearfix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.card_name }}" data-card_no="{{ item.card_no }}">
+          <view class="card_choose">
+            <image src="{{ item.card_src }}" wx:if='{{item.card_src != 1}}' mode="widthFix" />
+            <text class='iconfont icondanxuan' style='font-size:40rpx;color:{{comColor}}' wx:if='{{item.card_src == 1}}'></text>
+          </view>
+          <view class='card_info'>
+            <view style='background:{{ item.bg }};background-size:cover;' class='card_new_de'>
+              <image src="{{ item.shop_logo }}" mode="widthFix" />
+              <view class='card_infos'>
+                <view class='car_names' style='font-weight:bold;'>{{ item.card_name }}</view>
+                <view class='car_discount' wx:if="{{item.discount}}">折扣：{{item.discount}}折</view>
+                <view class='card_offset' wx:if="{{item.buy_score[0].value == 1}}">
+                  每满{{item.buy_score1.each_money}}送{{item.buy_score1.each_score}}积分
+                </view>
+                <view class='card_offset' wx:if="{{item.buy_score[0].value == 0}}">
+                  <block wx:for="{{item.buy_score1}}" wx:key="index" wx:for-item='key'>
+                    <text>满{{key.money}}送{{key.score}}积分</text>,
+                  </block>
+                </view>
+                <view class='shjjian' wx:if="{{item.card_type==0}}">过期时间: {{item.expire_time == null ? '永久有效' : item.expire_time}}</view>
+                <view class='card_count' wx:if="{{item.card_type==1 && item.is_exchang != 0 && item.exchang_surplus != null && item.exchang_surplus > 0}}">剩余可兑换商品次数：{{item.exchang_surplus}}</view>
+                <view class='card_count' wx:if="{{item.card_type==1 && item.store_use_switch == 0 && item.surplus != null && item.surplus > 0}}">剩余可使用服务次数：{{item.surplus}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class='card_sure' bindtap='cardConfirm' style='background:{{comColor}};bottom:{{isIpx == 1?"80rpx":"0"}}'>确定</view>
+  </action-sheet>
+
+  <!--自提提货时间弹框  -->
+  <action-sheet hidden="{{timesMode}}">
+    <view class='action_title' style='border-bottom:2rpx solid #eee'>
+      选择提货时间
+      <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="timeHidden" class='pro_close' />
+    </view>
+    <view class='time_content'>
+      <view class='pc_left'>
+        <block wx:for="{{date_info}}" wx:key="index">
+          <view bindtap='dataClick' data-key="{{index}}" class='{{choose_times.new_date_id == index ?"ischecked":"normal"}}' style='border-left-color:{{choose_times.new_date_id == index?comColor:""}};color:{{choose_times.new_date_id == index?comColor:""}}'>{{item.date}}</view>
+        </block>
+      </view>
+      <view class='pc_right'>
+        <block wx:for="{{date_info}}" wx:key="index">
+          <view data-id='{{index}}' style="display:{{choose_times.new_date_id == index?'block':'none'}}">
+            <block wx:for="{{item.time}}" wx:key="index" wx:for-item="time" wx:for-index="time_id">
+              <view class="{{choose_times.new_time_id == time_id?'active':'common' }}" style='color:{{choose_times.new_time_id == time_id?comColor:""}};background:{{choose_times.new_time_id == time_id?somColor:""}}' data-time_id="{{time_id}}" bindtap='selectedHour'>{{time}}</view>
+            </block>
+          </view>
+        </block>
+      </view>
+    </view>
+    <view class='card_sure' bindtap='timeConfirm' style='background:{{comColor}}'>确定</view>
+
+  </action-sheet>
+
+  <!-- 定金膨胀的活动规则 -->
+  <action-sheet hidden="{{ruleMode}}" bindchange="preActionSheetChange">
+    <view class='promotion' hidden="{{ ruleMode }}">
+      <view class='pro_title'>
+        活动规则
+        <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" bindtap="ruleCancel" class='pro_close' />
+      </view>
+      <view class='pro_content pre_content'>
+        <view>参与步骤：</view>
+        <view>1.在商品详情页选择商品规格，点击支付定金按钮到结算页下单并支付定金。</view>
+        <view>2.在指定尾款支付时间内，完成尾款支付，即可等待商家发货，具体发货时间以实际发货时间为准。</view>
+        <view>3.在订单列表中，可以随时查看订单进行状态。</view>
+        <view>注意事项：</view>
+        <view>1.定金膨胀商品只能线上支付，不支持货到付款。</view>
+        <view>2.尾款支付只能使用微信支付，不支持使用余额。</view>
+      </view>
+    </view>
+  </action-sheet>
+
+  <!-- 好友代付的弹框 -->
+  <view class='ins_modal' hidden='{{insmode}}'>
+    <view class='ins_zhezhao' bindtap='close_cou'></view>
+    <view class='ins_content'>
+      <view class='action_title'>
+        选择代付方式
+        <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="close_cou" class='pro_close' />
+      </view>
+      <view class='ins_detail'>
+        <view class='ins_type'>
+          <view class='ins_one' bindtap='order_confirm' data-instead_pay_num='1'>
+            <image src='{{imageUrl}}/image/wxapp/ins_one.png'></image>
+            <view>一个好友全额代付</view>
+          </view>
+          <view class='ins_one' bindtap='order_confirm' data-instead_pay_num='0'>
+            <image src='{{imageUrl}}/image/wxapp/ins_more.png'></image>
+            <view>多个好友帮您付款</view>
+          </view>
+        </view>
+        <view class='ins_modal_tips'>温馨提示：24小时内未完成支付，订单将会自动取消，所有款项将自动退回代付款人账户</view>
+      </view>
+    </view>
+  </view>
+
+  <!--  支付弹框  -->
+  <action-sheet hidden="{{ payMode}}">
+    <view class='action_title' style='margin-bottom:0rpx;'>
+      <text wx:if='{{pay_click_type == 1}}'> 积分支付</text>
+      <text wx:elif='{{pay_click_type == 2}}'> 余额支付</text>
+      <text wx:else> 会员卡余额支付</text>
+      <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="payCancel" class='pro_close' />
+    </view>
+    <view class='pay_content'>
+      <view class='pro_tips'>
+        <image src='{{imageUrl}}/image/wxapp/main_goods_notice.png' mode='widthFix'></image>
+        <view wx:if='{{pay_click_type == 1}}'>
+          <view wx:if='{{ create_order.score_pay_num != user_money.score_enable }}'>可编辑支付积分数量，积分数量需为整百,本单可支付{{ create_order.score_pay_num }}-{{ user_money.score_enable }}积分</view>
+          <view wx:else>可编辑支付积分数量，积分数量需为整百,本单可支付{{ user_money.score_enable }}积分</view>
+        </view>
+        <view wx:elif='{{pay_click_type == 2}}'>本单可支付￥{{ create_order.money_paid - user_money.account > 0 ? user_money.account : create_order.money_paid }}，可编辑支付余额数量。</view>
+        <view wx:else='{{pay_click_type == 2}}'>本单可支付￥{{ create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid }}，可编辑支付余额数量。</view>
+      </view>
+      <view class=' action_pay '>
+        <view class='pay_title ' wx:if='{{pay_click_type == 1}}'>支付积分</view>
+        <view class='pay_title ' wx:else>支付余额</view>
+        <view class='pay_prompt '> {{prompt_message}}</view>
+        <view class='contain_input '>
+          <input class='input_num ' bindblur="score_money" bindfocus='jifen_fo' blur='true ' value="{{score_money_input}}" wx:if='{{pay_click_type == 1}}' type='number' />
+          <input class='input_num ' bindblur="user_account" bindfocus='yue_fo' blur='true ' value="{{account_pay_control == 0 ? (create_order.money_paid - user_money.account > 0 ? user_money.account : create_order.money_paid): user_account_input}}" wx:elif='{{pay_click_type == 2}}'
+            type='digit' />
+          <input class='input_num ' bindblur="member_card" bindfocus='mem_fo' blur='true ' value="{{card_account_pay_control == 0 ? (create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid) : member_card_input}}"
+            wx:else type='digit' />
+        </view>
+      </view>
+      <view class='price_show '>
+        <block wx:if='{{pay_click_type == 1}}'>
+          <view>我的积分：{{user_money.score}}</view>
+          <view >抵用现金：￥{{ score_money_input / 100 }}</view>
+        </block>
+        <view wx:if="{{pay_click_type == 2 }}">我的余额：￥{{user_money.account}}</view>
+        <view wx:if='{{pay_click_type == 3}}'>{{card_choose_name}}</view>
+        <view wx:if='{{pay_click_type == 3}}'>会员卡余额：￥{{user_money.member_card_money}}</view>
+
+      </view>
+      <view class='card_sure ' bindtap='payConfirm' style='background:{{ canClick == true ? comColor : "#999"}};bottom:{{isIpx==1 ? "80rpx": "0"}} '>确定</view>
+    </view>
+  </action-sheet>
+</view>
+<include src="../common/footer.wxml" />

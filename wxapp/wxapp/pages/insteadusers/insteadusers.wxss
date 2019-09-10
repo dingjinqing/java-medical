@@ -1,0 +1,102 @@
+page{
+  background: #f5f5f5;
+  padding: 30rpx;
+}
+.main_container{
+  width: 690rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  padding-bottom: 20rpx;
+}
+.pf_top{
+  height: 80rpx;
+  line-height: 80rpx;
+  width: 100%;
+  position: relative;
+}
+.pt1 .heng{
+  width: 70rpx;
+  height: 2rpx;
+  background: #e8e8e8;
+}
+.pt1 .word1{
+  font-size: 26rpx;
+  color: #333; 
+  margin: 0 10rpx;
+}
+.pt1 view{
+  float: left;
+}
+.pt1{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.each_friends{
+  width: 650rpx;
+  height: 80rpx;
+  padding: 20rpx;
+}
+.ef_avater{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 100rpx;
+  float: left;
+  margin-right: 20rpx;
+}
+.ef_avater image{
+  width: 80rpx;
+  height: 80rpx;
+}
+.ef_info{
+  float: left;
+  height: 80rpx;
+  width: 300rpx;
+}
+.ef_info .ef_name{
+  color: #333;
+  font-size: 26rpx;
+}
+.ef_info .ef_msg{
+  color: #666;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+.ef_price{
+  float: right;
+  height: 80rpx;
+  display:flex;
+  flex-direction:column;
+  width:230rpx;
+  text-align:right;
+  justify-content:space-around;
+}
+.ef_price .returned{
+  color: #999;
+  font-size: 24rpx;
+}
+.just_other{
+  width: 100%;
+  background: #f66;
+}
+.load_style{
+    font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center
+}
+.no_state{
+  margin: 0 24rpx;
+  color: #666;
+  font-size: 26rpx;
+  text-align: center;
+}
+.no_state image{
+  width: 200rpx;
+  margin: 36rpx 0 20rpx 0;
+}

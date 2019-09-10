@@ -1,0 +1,10 @@
+<view class="common-header">
+  <view class="footer-text" bindtap='onClickBack' wx:if='{{show_back}}'>
+    <image wx:if="{{imageUrl}}" src="{{imageUrl}}/image/wxapp/back_index.png" mode='widthFix' />
+    <view>返回首页</view>
+  </view>
+</view> 
+<view class='main-container'>
+<web-view src="{{url}}"></web-view>
+</view>
+<include src="../common/footer.wxml"/>

@@ -1,0 +1,42 @@
+<!-- STORELIST.WXML 2018.03.06 -->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <view class='container'>
+    <!--门店预约列表  -->
+    <block wx:if="{{list != ''}}">
+      <block wx:for="{{list}}" wx:key="key">
+        <view class="store-nav-list" data-id="{{item.store_id}}" data-state="{{item.business_state}}" bindtap='jumpUrl'>
+          <view class="list-left">
+            <image class="list-left-img" src='{{item.img}}!small'></image>
+            <image class="list-left-img off-img" src='{{imageUrl}}/image/wxapp/off_state.png' wx:if="{{item.business_state == 0}}"></image>
+          </view>
+          <view class="store-name-info">
+            <view class="list-right-top">
+              <view class="list-center-name">
+                <text class="scancode" style="color:{{comColor}};border-color:{{comColor}}" wx:if="{{scan_stores != 1 && item.scan_buy == true}}">扫码购</text> {{item.store_name}}
+              </view>
+              <text class="right-text" wx:if="{{item.dis>0}}">距您{{item.dis}}km</text>
+            </view>
+            <view class="list-right-bottom">
+              <view style="float:left;">
+                <image src="{{imageUrl}}image/wxapp/address.png" class="icon-bottom"></image>
+              </view>
+              <text style="width:91%;">{{item.area}}</text>
+            </view>
+          </view>
+        </view>
+        <!--门店预约列表END  -->
+      </block>
+    </block>
+    <block wx:else>
+      <view class="order-goodsno-box">
+        <view class="order-no">
+          <image class="order-no-img" src="{{imageUrl}}image/wxapp/no-store.png" mode='widthFix' />
+        </view>
+        <view class="no-zi" style="margin: 0;margin-bottom: 13px;">还没有门店</view>
+        <view class="add-order" bindtap="onIndex" style='background:{{comColor}}'>随便逛逛</view>
+      </view>
+    </block>
+  </view>
+</view>
+<include src="../common/footer.wxml" />

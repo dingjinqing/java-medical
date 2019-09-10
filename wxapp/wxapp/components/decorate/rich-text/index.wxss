@@ -1,0 +1,6 @@
+.rich_container {
+  width: 720rpx;
+  margin: 0 auto;
+  margin-bottom: 20rpx;
+}
+

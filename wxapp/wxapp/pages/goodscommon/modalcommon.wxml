@@ -1,0 +1,59 @@
+<!-- 关注公众号 -->
+<view style='margin-top:20rpx;'>
+  <official-account></official-account>
+</view>
+
+<!--  商品详情1  -->
+<block wx:if="{{ gd.goods_desc != '' && gd.goods_desc != null  && gd.is_page_up == 0}}">
+  <view class='goods-detail'>
+    <view class='goods_detail_title'>商品详情</view>
+    <view class='goods_detail_img' style='overflow-x:hidden'>
+      <view>
+        <rich-text nodes='{{gd.goods_desc}}'></rich-text>
+      </view>
+    </view>
+  </view>
+</block>
+
+<!-- 自定义页面 -->
+<block wx:if="{{ gd.goods_page_id != undefined && gd.goods_page_id > 0}}">
+  <view class='customize-container' style='{{color}}'>
+    <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
+  </view>
+</block>
+
+<!--  商品详情 2 -->
+<block wx:if="{{ gd.goods_desc != '' && gd.goods_desc != null  && gd.is_page_up != 0}}">
+  <view class='goods-detail'>
+    <view class='goods_detail_title'>商品详情</view>
+    <view class='goods_detail_img' style='overflow-x:hidden'>
+      <view>
+        <rich-text nodes='{{gd.goods_desc}}'></rich-text>
+      </view>
+    </view>
+  </view>
+</block>
+
+<!--fenxiang弹框  -->
+<view class='share_bg' style='display:{{is_share == 1?"block":"none"}};margin-top:{{margin_top_nav + 8}}px'>
+  <view class='zhezhao' catchtap='not_show_share'></view>
+  <view class='share_content'>
+    <image src='{{pictorial}}'></image>
+    <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap' style='background:{{comColor}}' data-iftor='{{if_tor}}'>保存图片</view>
+    <view class='save_tips'>保存图片到本地相册</view>
+  </view>
+</view>
+
+<!--视频弹框  -->
+<v-popup-video wx:if="{{is_play == 1}}" show="{{is_play == 1}}" video_url="{{gd.goods_video}}" video_size="{{gd.goods_video_size}}" />
+
+<!-- 绑定手机号弹窗 -->
+<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以去购买商品" />
+
+<!--  登录  -->
+<block wx:if="{{ login_view == 1 }}">
+  <import src="../login/login.wxml" />
+  <view class="login_fix">
+    <template is="login" />
+  </view>
+</block>

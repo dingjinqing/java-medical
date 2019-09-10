@@ -1,0 +1,4 @@
+.hot-area-image {
+  width: 100%;
+  vertical-align: top
+}

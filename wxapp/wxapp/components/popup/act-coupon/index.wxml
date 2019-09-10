@@ -1,0 +1,61 @@
+<v-popup show="{{show}}" bind:close="bindClose">
+  <!-- 活动送券 -->
+  <!--一张样式  -->
+  <view class='one_coupon' wx:if='{{send_coupon.coupon_list.length == 1}}'>
+    <view class='cou_detail' style='background:url({{imageUrl}}image/wxapp/gift_bg_one.png) no-repeat;background-size:100%;'>
+      <view class='tips1'>{{send_coupon.title}}</view>
+      <view class='price_cou clearfix' wx:for='{{send_coupon.coupon_list}}' wx:key='key'>
+        <view class='left_money' wx:if='{{item.act_code == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥
+          <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
+        </view>
+        <view class='left_money' wx:if='{{item.act_code == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
+          <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折</view>
+        <view class='right_money'>{{item.rule}}</view>
+      </view>
+      <view class='tip3'>优惠券已放入个人中心</view>
+      <view class='go_list' bindtap='bindGoCouponList'>去看看
+        <image src='{{imageUrl}}image/wxapp/go_cou_list.png' mode='widthFix'></image>
+      </view>
+    </view>
+  </view>
+  <!--两张样式  -->
+  <view class='two_cou' wx:if='{{send_coupon.coupon_list.length == 2}}'>
+    <view class='two_detail' style='background:url({{imageUrl}}image/wxapp/two_bg.png) no-repeat;background-size:100%;'>
+      <view class='tips1' style='margin-bottom:20rpx;'>{{send_coupon.title}}</view>
+      <view class='price_cou2 clearfix'>
+        <view class='each_tow' wx:for='{{send_coupon.coupon_list}}' style='background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;' wx:key='key'>
+          <view class='et_left' wx:if='{{item.act_code == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥
+            <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
+          </view>
+          <view class='et_left' wx:if='{{item.act_code == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
+            <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折</view>
+          <view class='et_right'>{{item.rule}}</view>
+        </view>
+      </view>
+      <view class='tip3'>优惠券已放入个人中心</view>
+      <view class='go_list' bindtap='bindGoCouponList'>去看看
+        <image src='{{imageUrl}}image/wxapp/go_cou_list.png' mode='widthFix'></image>
+      </view>
+    </view>
+  </view>
+  <!--多张样式  -->
+  <view class='two_cou' wx:if='{{send_coupon.coupon_list.length > 2}}'>
+    <view class='two_detail' style='background:url({{imageUrl}}image/wxapp/two_bg.png) no-repeat;background-size:100%;'>
+      <view class='tips1' style='margin-bottom:20rpx;'>{{send_coupon.title}}</view>
+      <view class='price_cou2 clearfix'>
+        <view class='each_tow' wx:for='{{send_coupon.coupon_list}}' style='background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;height:130rpx;' wx:key='key'>
+          <view class='et_left' wx:if='{{item.act_code == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥
+            <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
+          </view>
+          <view class='et_left' wx:if='{{item.act_code == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
+            <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折</view>
+          <view class='et_right'>{{item.rule}}</view>
+        </view>
+      </view>
+      <view class='tip3'>优惠券已放入个人中心</view>
+      <view class='go_list' bindtap='bindGoCouponList'>去看看
+        <image src='{{imageUrl}}image/wxapp/go_cou_list.png' mode='widthFix'></image>
+      </view>
+    </view>
+  </view>
+</v-popup>

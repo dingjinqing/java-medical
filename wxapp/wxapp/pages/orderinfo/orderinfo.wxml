@@ -1,0 +1,556 @@
+       <!--index.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container' style='padding-bottom:50rpx;'>
+  <view class='lottery_area' wx:if='{{order_info.type == 2 && is_lottery == 1}}'>
+    <image src='{{imageUrl}}/image/wxapp/order_lottery.gif' class='image_icon' mode='widthFix' bindtap='to_lottery'></image>
+    <image src='{{imageUrl}}/image/wxapp/icon_closes.png' class='image_icon1' mode='widthFix' bindtap='close_lottery'></image>
+  </view>
+  <view class="order-main">
+    <block>
+      <block wx:if="{{action == 'verify'}}">
+        <!-- 核销员按钮 -->
+        <view class="panel_fixed" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}' wx:if="{{order_info.order_status == 3}}">
+          <view class="verification_button" bindtap='verifyOrder'
+            style="background:{{comColor}};color:#fff;border: none;">
+            立即核销
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <!--订单信息按钮-->
+        <view class="panel_fixed" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+          <view class="weui_panel_hd">
+            <view class="clearfix yixieanniu" id="weui_panel_hd">
+              <text bindtap="bindOrderOk" data-order_sn="{{order_info.order_sn}}" class="border_button" id="btn-receive" wx:if="{{ order_info.order_status == 4 }}">确认收货</text>
+              <view wx:if="{{ order_info.order_pay_way == 2 || (order_info.order_status == 0 && clock != '已经截止') }}">
+                <text id="btn-pay" class="border_button" style="background: {{comColor}};color: #fff;border: none;" data-order_sn="{{order_info.order_sn}}" data-user_id="{{order_info.user_id}}" bindtap="listenerButton">{{order_info.order_pay_way == 2 ? '好友代付' : (order_info.bk_order_paid == 1 ? '去付尾款' : '去付款')}}</text>
+              </view>
+              <text class="border_button" bindtap="returnOrder" data-order_sn="{{order_info.order_sn}}" data-user_id="{{order_info.user_id}}" wx:if="{{(operation.can_user_apply_refund==true || operation.can_user_apply_return==true) && order_info.pos_flag != 1}}">退货中心</text>
+               <!-- 再次购买 -->
+                   <view class="click-button2" bindtap="addCart" data-order_sn="{{order_info.order_sn}}" data-user_id="{{order_info.user_id}}" wx:if="{{order_info.order_status != 0 && order_info.is_lottery_gift ==0 }}" class="border_button">再次购买</view>
+              <text wx:if="{{operation.can_user_cancel == true && (order_info.order_status != 3 || order_info.pos_flag !=1)}}" bindtap="bindOrderBut" data-order_sn="{{order_info.order_sn}}" id="btn-cancel" class="border_button" data-toggle="modal" data_target="#cancelModal">取消订单</text>
+              <text wx:if="{{order_info.error==0 && order_info.type == 1}}" bindtap='showshare' class='border_button'>分享优惠券</text>
+              <text bindtap='showlottery' class='border_button' wx:if='{{is_lottery == 0 && order_info.type == 2}}'>幸运大抽奖</text>
+              <block wx:if="{{order_info.order_status==5 ||order_info.order_status==6 }}">
+                <text wx:if="{{order_info.comment_flag==0}}" style="background:{{comColor}};color:#fff;border: none;" class="border_button" data-order_sn="{{order_info.order_sn}}" bindtap="comment">{{order_info.can_send == 1 ? '评价有礼' : '商品评价'}}</text>
+                <text wx:else class="border_button" data-order_sn="{{order_info.order_sn}}" bindtap="comment">查看评价</text>
+              </block>
+              <text wx:if='{{order_info.order_sn == order_info.main_order_sn}}' class='border_button' bindtap='to_presnet'>好友礼单</text>
+            </view>
+          </view>
+        </view>
+      </block>
+      
+      <!--订单状态  -->
+      <block wx:if="{{order_info.order_status == 0}}">
+        <view class="order-status" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' >
+          <image src='{{imageUrl}}image/wxapp/status_wait.png' mode='widthFix' style='top:-15rpx' />
+          <text style="font-size:30rpx;position:relative;top:-22rpx;">{{order_info.bk_order_paid == 1 ? '待付尾款' : '待付款'}}</text>
+          <block wx:if="{{order_info.bk_order_paid != 1}}">
+            <view wx:if="{{clock == '已经截止'}}" style='height:20rpx;margin-top:-110rpx'>已经截止</view>
+            <view wx:else style='height:20rpx;margin-top:-110rpx'>请在{{clock}}内完成支付</view>
+          </block>
+          <block wx:else>
+            <view wx:if="{{clock == '已经截止'}}" style='height:20rpx;margin-top:-110rpx'>{{pre_sale_time ? pre_sale_time : '已经截止'}}</view>
+            <view wx:else style='height:20rpx;margin-top:-110rpx'>请于{{clock}}内付尾款，超时订单将自动关闭</view>
+          </block>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="order-status" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+          <block wx:if="{{order_info.order_status == 6 || order_info.order_status == 8 || order_info.order_status == 10 || order_info.order_status == 4 || order_info.order_status == 5}}">
+            <image src='{{imageUrl}}image/wxapp/status_success.png' mode='widthFix' />
+          </block>
+          <block wx:if="{{order_info.order_status == 1 || order_info.order_status == 2}}">
+            <image src='{{imageUrl}}image/wxapp/status_error.png' mode='widthFix' />
+          </block>
+          <block wx:if="{{order_info.order_status == 0 || order_info.order_status == 3 || order_info.order_status == 7 || order_info.order_status == 9 || order_info.order_status == 11}}">
+            <image src='{{imageUrl}}image/wxapp/status_wait.png' mode='widthFix' />
+          </block>
+          <text style="font-size:30rpx;" wx:if='{{order_info.order_sn != order_info.main_order_sn}}'>{{order_info.order_status_name}}</text>
+          <text style="font-size:30rpx;" wx:if='{{order_info.order_sn == order_info.main_order_sn}}'>
+            <block wx:if='{{order_info.order_status >= 3 && order_info.order_status <13}}'>进行中</block>
+            <block wx:else>{{order_info.order_status_name}}</block>
+          </text>
+        </view>
+      </block>
+      <view class='orderinfo_view'>
+        <!--快递信息-->
+        <block wx:if="{{ order_info.deliver_type == 0 }}">
+          <view class="express-info normal-express-info" wx:if='{{order_info.main_order_sn == ""}}'>
+            <navigator path='pages/result/result?nu={{order_info.shipping_no}}&com={{order_info.shipping_com}}&querysource=third_xcx'  target="miniProgram" app-id='wx6885acbedba59c14' open-type="navigate" version="release" extra-data='' hover-class='none' wx:if='{{order_info.logistics_info.action == 1 && order_info.logistics_info}}'>
+              <view class="order-info-top clearfix"  wx:if="{{order_info.logistics_info && order_info.part_ship_flag != 1}}" data-ex_no="{{order_info.shipping_no}}" data-order_sn="{{order_info.order_sn}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
+                <image class="order-info-img" src="{{imageUrl}}image/wxapp/wuliu.png" mode="widthFix"></image>
+                <view style='float:left'>
+                  <view class="order-info-right order-text1 kuaidixinxi">
+                    <text>{{order_info.logistics_info.data[0].context}}</text>
+                  </view>
+                  <view class="order-text1" style="float:left;">
+                    <text class="order-text2" style="color:#888;">{{order_info.logistics_info.data[0].ftime}}</text>
+                  </view>
+                </view>
+              </view>
+            </navigator>
+            <view class="order-info-top clearfix" bindtap='toExpress'  wx:if="{{order_info.logistics_info && order_info.logistics_info.action == 2 && order_info.part_ship_flag != 1}}" 
+                  data-ex_no="{{order_info.shipping_no}}" data-order_sn="{{order_info.order_sn}}" 
+                  style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
+              <image class="order-info-img" src="{{imageUrl}}image/wxapp/wuliu.png" mode="widthFix"></image>
+              <view style='float:left'>
+                <view class="order-info-right order-text1 kuaidixinxi">
+                  <text>{{order_info.logistics_info.data[0].context}}</text>
+                </view>
+                <view class="order-text1" style="float:left;">
+                  <text class="order-text2" style="color:#888;">{{order_info.logistics_info.data[0].ftime}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="order-info-btm clearfix" style="padding-top:20rpx;">
+              <image class="order-info-img" src="{{imageUrl}}image/wxapp/address.png" mode="widthFix"></image>
+              <view class="order-right-btm order-text1" style='padding:0 30rpx;'>
+                <text>收货人：{{order_info.consignee}}</text>
+                <text style="margin-left:20rpx;">{{order_info.mobile}}</text>
+              </view>
+              <view class="order-right-btm order-text1">
+                <view class="order-text22">
+                地址：<text class='address_details'> {{order_info.complete_address}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+        <!--自提快递信息-->
+        <block wx:else>
+          <view class="express-info self-express-info">
+            <view class="order-info-btm" style="padding-top:20rpx;">
+              <view class="order-right-btm">
+                <text>取货人：{{ order_info.consignee ? order_info.consignee : user_name }}</text>
+                <text style="margin-left:20rpx;">{{ order_info.mobile }}</text>
+              </view>
+              <view class="order-right-btm">
+                <text>门店名称：{{ order_info.store_name }}</text>
+              </view>
+              <view class="order-right-btm">
+                <text class='store_addr'>门店地址：{{ order_info.store_info.address }}</text>
+                <text class="look-map" bindtap='showMap'>查看地图</text>
+              </view>
+              <view class='order-right-btm' wx:if="{{order_info.pos_flag != 1}}">
+                <text>提货日期：{{order_info.pickup_time}}</text>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+      <!--拼团信息  -->
+      <view class='group_info' wx:if="{{(order_info.is_pin_group == 1 || order_info.goods_type == 8)  && order_info.pin_user_group != '' && order_info.order_status >= 3 }}">
+        <view class='gf_title' bindtap='toInfo'>
+          <view class='t_left' wx:if="{{order_info.is_pin_group == 1}}">
+            <image src='{{img_group}}' mode='widthFix' />
+            <block wx:if='{{order_info.pin_user_group[0].status == 0}}'>拼团中</block>
+            <block wx:if='{{order_info.pin_user_group[0].status == 1}}'>拼团完成</block>
+          </view>
+          <view class='t_left' wx:if="{{order_info.goods_type == 8}}">
+            <image src='{{img_group}}' mode='widthFix' />
+            <block wx:if='{{order_info.pin_group.status == 0}}'>拼团中</block>
+            <block wx:if='{{order_info.pin_group.status == 1 && order_info.pin_group.draw_status == 0}}'>已成团,等待抽奖</block>
+            <block wx:if='{{order_info.pin_group.status == 1 && order_info.pin_group.draw_status == 2}}'>已成团,未中奖</block>
+            <block wx:if='{{order_info.pin_group.status == 1 && order_info.pin_group.draw_status == 1 && order_info.pin_group.is_win_draw == 0}}'>已成团,未中奖</block>
+            <block wx:if='{{order_info.pin_group.status == 1 && order_info.pin_group.draw_status == 1 && order_info.pin_group.is_win_draw == 1}}'>已成团,已中奖</block>
+            <block wx:if='{{order_info.pin_group.status == 2}}'>拼团失败</block>
+          </view>
+          <view class='t_right'>
+            拼团详情
+            <image src='{{click_more}}' mode='widthFix' />
+          </view>
+        </view>
+        <view class='grouped_person'>
+          <block wx:for="{{order_info.pin_user_group}}" wx:key="index">
+            <view>
+              <image src='{{item.user_avatar}}' /> </view>
+          </block>
+          <view wx:if="{{order_info.pin_group_info.show_noper>0}}">
+            <image src='{{img_noperson}}' />
+          </view>
+          <view wx:if="{{order_info.pin_group_info.show_noper>1}}">
+            <image src='{{img_noperson}}' />
+          </view>
+          <view wx:if="{{order_info.pin_group_info.show_noper>2}}">
+            <image src='{{img_noperson}}' />
+          </view>
+          <view wx:if="{{order_info.pin_group_info.show_noper>3}}">
+            <image src='{{img_noperson}}' />
+          </view>
+          <view wx:if="{{order_info.pin_group_info.limit_amount > 5}}">
+            <image src='{{img_otherperson}}' />
+          </view>
+        </view>
+      </view>
+      <!--自提订单核销信息-->
+      <block wx:if="{{ order_info.deliver_type == 1 && order_info.order_status >= 3}}">
+        <view class="bottom_view self-get-info-all">
+          <view class="weui_panel_hd">
+            <view class="self-get-info">
+              <view class="tips hexiao">
+                <text>核销码：{{ order_info.verify_code }}</text>
+                <view class="hexiao-right">
+                  <block wx:if="{{ order_info.order_status == 3 }}">
+                    <text style="position:absolute;top:8rpx;">待核销</text>
+                  </block>
+                  <block wx:if="{{ order_info.order_status >= 5 }}">
+                    <image src="{{imageUrl}}image/wxapp/selected.png" class="confirm-picture" mode="widthFix"></image>
+                    <text style="position:absolute;top:8rpx;">已自提</text>
+                  </block>
+                </view>
+                <block wx:if="{{order_info.verifier_id > 0}}">
+                <view class="verification_status">
+                  <view>核销人：<text>{{order_info.verifier_name}}</text></view>
+                  <view>核销人手机号：<text>{{order_info.verifier_mobile}}</text></view>
+                </view>
+                </block>
+              </view>
+              
+              <view class="erweima-vw" wx:if="{{order_info.order_status >= 3}}">
+                <image src="{{img_code}}" mode="widthFix" class="erweima"></image>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      <!-- 定金膨胀 -->
+      <view class='presale_areas' wx:if="{{order_info.goods_type == 10}}">
+        <view class='pre_progress clearfix'>
+          <view class='each_status'>
+            <view class='act_no {{(order_info.bk_order_paid > 0) ? "acted" : ""}}' style='background:{{order_info.bk_order_paid > 0 ? comColor:""}};border:10rpx solid {{order_info.bk_order_paid > 0 ? "rgba(255,255,255,0.8)":"#fff"}}'></view>
+            <view class='word_no {{(order_info.bk_order_paid > 0) ? "worded" : ""}}' style='color:{{order_info.bk_order_paid > 0 ? comColor:""}};'>付定金</view>
+          </view>
+          <view class='each_hengxian {{(order_info.bk_order_paid == 2) ? "each_sta_red" : ""}}' style='background:{{order_info.bk_order_paid == 2 ? comColor:""}};'></view>
+          <view class='each_status'>
+            <view class=' act_no {{(order_info.bk_order_paid == 2) ? "acted" : ""}}' style='background:{{order_info.bk_order_paid == 2 ? comColor:""}};border:10rpx solid {{order_info.bk_order_paid == 2? "rgba(255,255,255,0.8)":"#fff"}}'></view>
+            <view class=' word_no {{(order_info.bk_order_paid == 2) ? "worded" : ""}}' style='color:{{order_info.bk_order_paid == 2 ? comColor:""}};'>付尾款</view>
+          </view>
+          <view class='each_hengxian {{(order_info.order_status >= 4) ? "each_sta_red" : ""}}' style='background:{{order_info.order_status >= 4 ? comColor:""}};'></view>
+          <view class='each_status'>
+            <view class='act_no {{(order_info.order_status >= 4) ? "acted" : ""}}' style='background:{{order_info.order_status >= 4 ? comColor:""}};border:10rpx solid {{order_info.order_status >= 4 ? "rgba(255,255,255,0.8)":"#fff"}}'></view>
+            <view class='word_no {{(order_info.order_status >= 4) ? "worded" : ""}}' style='color:{{order_info.order_status >= 4 ? comColor:""}};'>商家发货</view>
+          </view>
+          <view class='each_hengxian {{(order_info.order_status == 6) ? "each_sta_red" : ""}}' style='background:{{order_info.order_status == 6 ? comColor:""}};'></view>
+          <view class='each_status'>
+            <view class='act_no {{(order_info.order_status == 6) ? "acted" : ""}}' style='background:{{order_info.order_status == 6 ? comColor:""}};border:10rpx solid {{order_info.order_status == 6 ? "rgba(255,255,255,0.8)":"#fff"}}'></view>
+            <view class='word_no {{(order_info.order_status == 6) ? "worded" : ""}}' style='color:{{order_info.order_status == 6 ? comColor:""}};'>交易完成</view>
+          </view>
+        </view>
+        <view class='pre_shuoming' wx:if="{{order_info.order_status == 0 && order_info.bk_order_paid == 1 && order_info.bk_return_type == 0}}">
+          注：未在指定时间内支付尾款，则定金不予退还!
+        </view>
+      </view>
+      <!--订单商品信息-->
+      <view class="bottom_view" id="orderlibiao" wx:if='{{order_info.sub_order_list == "" || !order_info.sub_order_list}}'>
+        <view class="weui_panel_hd panel_after" style="width:100%;">
+          <view class="yifahuo">
+            <view id="fahuoed" class="order-text1">
+              <text>配送方式：</text>
+              <text>{{ order_info.deliver_type_name }}</text>
+            </view>
+            <block wx:for="{{ order_goods }}" wx:key="index">
+              <view class="item row item_row_border clearfix">
+                <view class='top'>
+                  <image class="goods_img" bindtap="itemGood" src="{{item.goods_img}}!small" mode="widthFix" data-good_id="{{ item.goods_id }}" />
+                  <view class="goods_title">
+                    <view class="goods_topic">
+                       <text style='color:{{comColor}};border-color:{{comColor}}' wx:if="{{item.is_gift == 1}}" class='act_icons'>赠品</text>
+                       <text style='color:{{comColor}};border-color:{{comColor}}' wx:if="{{item.free_ship == 1 && item.is_gift != 1}}" class='act_icons'>满包邮</text>
+                    {{item.goods_name}}</view>
+                    <text class="order-text2 goods-attr" wx:if="{{ item.goods_attr }}">{{item.goods_attr}}</text>
+                    <view class='clearfixs'>
+                      <text class="goods_price" wx:if='{{order_info.goods_type != 4}}' style='color:{{comColor}}'>￥{{item.goods_price}}</text>
+                      <view class="goods_price" wx:if='{{order_info.goods_type == 4}}' style='color:{{comColor}}'><view class="integral_money" style='color:{{comColor}}' wx:if="{{item.money >0}}"><text>￥{{item.money}}</text> +</view> {{item.goods_score}}积分</view>
+                      <text class="goods_numbers">X{{item.goods_number}}</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              <view class="wxShare" wx:if="{{order_info.wx_shopping_recommend}}" bindtap="wxshopping_recommend" data-goods_id="{{item.goods_id}}" data-order_sn="{{order_info.order_sn}}">
+              <share-button product="{{item.shipping_goods}}" bind:error="on_error" type="1"/>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+
+      <!-- 子订单商品信息 -->
+      <view class='sub_order_area' wx:if='{{order_info.sub_order_list != ""}}'>
+        <view class='each_sub_order' wx:for='{{order_info.sub_order_list}}' wx:key='key'> 
+            <view class='es_order_sn'>
+                <view class='es_sn' wx:if='{{item.order_sn!=null}}'>子订单编号：{{item.order_sn}}</view>
+                <view class='es_sn' wx:if='{{item.order_sn==null}}'></view>
+                <view class='es_order_status' style='color:{{comColor}}'>{{item.status == 1? item.order_status_name : item.status_name}}</view>
+            </view>
+            <view class='es_user_info' wx:if='{{item.draw_time || item.add_time || item.username}}'>
+                <view class='es_person' wx:if='{{item.username}}'>收礼人：{{item.username}}</view>
+                <view class='es_time' wx:if='{{item.draw_time || item.add_time}}'>收礼时间：{{item.gift_type == 3 ? item.draw_time : item.add_time}}</view>
+            </view>
+            <view class='es_user_info' wx:if='{{item.order_sn!=null}}'>配送方式：快递</view>
+            <view class='es_goods_area' wx:if='{{item.order_goods != ""}}'>
+                <view class='es_each_goods each_clearfix' wx:for='{{item.order_goods}}' wx:for-item='item2'>
+                    <image src='{{item2.goods_img}}' class='ec_img'></image>
+                    <view class='ec_info'>
+                        <view class='ec_name_attr'>
+                            <view class='ec_name'>{{item2.goods_name}}</view>
+                            <view class='ec_attr'>{{item2.goods_attr}}</view>
+                        </view>
+                        <view class='ec_price'>
+                            <view class='ec_money' style='color:{{comColor}}'>￥{{item2.goods_price}}</view>
+                            <view>X{{item2.goods_number}}</view>
+                        </view>
+
+                    </view>
+                </view>
+            </view>
+        </view>
+      </view>
+
+      <!--订单金额详情-->
+      <view class="bottom_view" style="margin-bottom:20rpx;">
+        <view class="weui_panel_hd">
+          <view class=" price panel_price">
+            <view style="margin-bottom: 20rpx;font-size:24rpx;color:#888;" wx:if='{{order_info.goods_type != 4}}'>
+              <text class="left-text">合计</text>
+              <text class="left-right">￥{{order_info.order_amount}}</text>
+              <text class="left-text" wx:if="{{order_info.package_discount>0}}">一口价扣减</text>
+              <text class="left-right" wx:if="{{order_info.package_discount>0}}">-￥{{order_info.package_discount}}</text>
+              <text class="left-text" wx:if="{{order_info.pre_sale_discount>0}}">定金抵扣</text>
+              <text class="left-right" wx:if="{{order_info.pre_sale_discount>0}}">-￥{{order_info.pre_sale_discount}}</text>
+              <text class="left-text" wx:if="{{order_info.use_account>0}}">使用余额</text>
+              <text class="left-right" wx:if="{{order_info.use_account>0}}">-￥{{order_info.use_account}}</text>
+              <text class="left-text" wx:if="{{order_info.score_discount>0}}">积分抵扣</text>
+              <text class="left-right" wx:if="{{order_info.score_discount>0}}">-￥{{order_info.score_discount}}</text>
+              <text class="left-text" wx:if="{{order_info.member_card_reduce>0}}"><block wx:if="{{order_info.exchang == 1}}">限次卡抵扣金额</block><block wx:else>会员卡折扣</block></text>
+              <text class="left-right" wx:if="{{order_info.member_card_reduce>0}}">-￥{{order_info.member_card_reduce}}</text>
+              <text class="left-text" wx:if="{{order_goods[0].goods_number>0 && order_info.exchang == 1}}">限次卡抵扣次数</text>
+              <text class="left-right" wx:if="{{order_goods[0].goods_number>0 && order_info.exchang == 1}}">-{{order_goods[0].goods_number}}次</text>
+              <text class="left-text" wx:if="{{order_info.member_card_balance>0}}">会员卡抵扣金额</text>
+              <text class="left-right" wx:if="{{order_info.member_card_balance>0}}">-￥{{order_info.member_card_balance}}</text>
+              <text class="left-text" wx:if="{{order_info.promotion_reduce>0}}">促销活动</text>
+              <text class="left-right" wx:if="{{order_info.promotion_reduce>0}}">-￥{{order_info.promotion_reduce}}</text>
+              <text class="left-text" wx:if="{{order_info.discount>0}}">使用优惠券</text>
+              <text class="left-right" wx:if="{{order_info.discount>0}}">-￥{{order_info.discount}}</text>
+              <text class="left-text" wx:if="{{order_info.grouper_cheap_reduce>0}}">团长优惠</text>
+              <text class="left-right" wx:if="{{order_info.grouper_cheap_reduce>0}}">-￥{{order_info.grouper_cheap_reduce}}</text>
+              <text class="left-text" wx:if="{{order_info.shipping_fee>0}}">运费</text>
+              <text class="left-right" wx:if="{{order_info.shipping_fee>0}}">+￥{{order_info.shipping_fee}}</text>
+              <text class="left-text" wx:if="{{order_info.free_ship>0}}">满包邮</text>
+              <text class="left-right" wx:if="{{order_info.free_ship>0}}">-￥{{order_info.free_ship}}</text>
+            </view>
+            <view style="margin-bottom: 20rpx;font-size:24rpx;color:#888;" wx:if='{{order_info.goods_type == 4}}'>
+              <text class="left-text">合计</text>
+              <text class="left-right"><text wx:if="{{order_info.money > 0}}">￥{{order_info.money}} +</text> {{order_info.score}}积分</text>
+              <text class="left-text" wx:if="{{order_info.use_account>0}}">使用余额</text>
+              <text class="left-right" wx:if="{{order_info.use_account>0}}">-￥{{order_info.use_account}}</text>
+              <text class="left-text" wx:if="{{order_info.member_card_balance>0}}">会员卡抵扣金额</text>
+              <text class="left-right" wx:if="{{order_info.member_card_balance>0}}">-￥{{order_info.member_card_balance}}</text>
+              <text class="left-text" wx:if="{{order_info.shipping_fee>0}}">运费</text>
+              <text class="left-right" wx:if="{{order_info.shipping_fee>0}}">+￥{{order_info.shipping_fee}}</text>
+              <text class="left-text" wx:if="{{order_info.free_ship>0}}">满包邮</text>
+              <text class="left-right" wx:if="{{order_info.free_ship>0}}">-￥{{order_info.free_ship}}</text>
+            </view>
+            <view class="center-btm" style='border-top:{{order_info.goods_type == 4?"none":"2rpx solid #eee"}}'>
+              <text class="real-money" wx:if='{{order_info.goods_type != 4}}'>实付款：<text style="color:{{comColor}};">￥{{order_info.money_paid}}</text></text>
+              <view class="real-money" wx:if='{{order_info.goods_type == 4}}'>实付款：<view class="integral_money" style='color:{{comColor}}'><text wx:if='{{order_info.money_paid > 0}}'>{{order_info.money_paid}}元 +</text> </view>  <text style="color:{{comColor}};">{{order_info.score}}积分</text> </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!--快递信息-->
+      <view wx:if="{{order_info.part_ship_flag==1}}" class="bottom_view" id="orderlibiao" style="background:transparent;">
+        <view class="weui_panel_hd panel_after" style="width:100%;">
+          <view class="yifahuo" style="background:transparent">
+            <block wx:for="{{ order_info.part_ship }}" wx:key="index" wx:for-item='shipItem'>
+              <!--快递信息-->
+              <view style="margin-top:10px;">
+                <view id="fahuoed" class="order-text1" style="display:flex;padding:0 33rpx;line-height:84rpx;background:#fff;border-bottom:2rpx solid #eee;">
+                  <text style="width:300rpx">快递类型：{{ shipItem.goods[0].shipping_name }}</text>
+                  <text style="flex:1;text-align:right">快递单号：{{ shipItem.goods[0].shipping_no }}</text>
+                </view>
+                <block wx:if="{{ order_info.deliver_type == 0 }}">
+                  <navigator path='pages/result/result?nu={{shipItem.goods[0].shipping_no}}&com={{shipItem.goods[0].shipping_name}}&querysource=third_xcx'  target="miniProgram" app-id='wx6885acbedba59c14' open-type="navigate" version="release" extra-data='' hover-class='none' wx:if='{{shipItem.logistics_info.action == 1 && shipItem.logistics_info}}'>
+                    <view class="express-info normal-express-info" style="margin-bottom:0;padding:0">
+                      <view class="order-info-top clearfix" wx:if="{{shipItem.logistics_info}}" data-ex_no="{{shipItem.goods[0].shipping_no}}" data-order_sn="{{shipItem.goods[0].order_sn}}" style='background: #fff url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
+                        <image class="order-info-img" src="{{imageUrl}}image/wxapp/wuliu.png" mode="widthFix"></image>
+                        <view style='float:left'>
+                          <view class="order-info-right order-text1 kuaidixinxi">
+                            <text>{{shipItem.logistics_info.data[0].context}}</text>
+                          </view>
+                          <view class="order-text1" style="float:left;">
+                            <text class="order-text2" style="color:#888;">{{shipItem.logistics_info.data[0].ftime}}</text>
+                          </view>
+                        </view>
+                      </view>
+                    </view>
+                  </navigator>
+                  <view style="background:#fff">
+                    <view class="order-info-top clearfix" bindtap='toExpress'  wx:if="{{shipItem.logistics_info && shipItem.logistics_info.action == 2}}" 
+                        data-ex_no="{{shipItem.goods[0].shipping_no}}" data-order_sn="{{shipItem.goods[0].order_sn}}" 
+                        data-batch_no="{{shipItem.logistics_info.shipping_info.batch_no}}"
+                        style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
+                      <image class="order-info-img" src="{{imageUrl}}image/wxapp/wuliu.png" mode="widthFix"></image>
+                      <view style='float:left'>
+                        <view class="order-info-right order-text1 kuaidixinxi">
+                          <text>{{shipItem.logistics_info.data[0].context}}</text>
+                        </view>
+                        <view class="order-text1" style="float:left;">
+                          <text class="order-text2" style="color:#888;">{{shipItem.logistics_info.data[0].ftime}}</text>
+                        </view>
+                      </view>
+                    </view>
+                  </view>                      
+                </block>
+                <block wx:for="{{ shipItem.goods }}" wx:key="index">
+                  <view wx:if="{{item.send_number>0}}" style='padding:20rpx 0;'>
+                    <view class="item row item_row_border clearfix" style="padding:0 10rpx;">
+                      <view class='top'>
+                        <image class="goods_img" bindtap="itemGood" src="{{item.goods_img}}!small" mode="widthFix" data-good_id="{{ item.goods_id }}" />
+                        <view class="goods_title">
+                          <text class="goods_topic">{{item.goods_name}}</text>
+                          <text class="order-text2" wx:if="{{ item.goods_attr }}" style="position:absolute;top:75rpx;">{{item.goods_attr}}</text>
+                          <view class='clearfix' style="position:absolute;bottom:0rpx;width:100%">
+                            <text class="goods_price" wx:if='{{order_info.goods_type != 4}}' style="color:{{comColor}}">￥{{item.goods_price}}</text>
+                            <view class="goods_price" wx:if='{{order_info.goods_type == 4}}' style="color:{{comColor}}"><view class="integral_money"><text>￥100.00</text> +</view> {{item.goods_price}}积分</view>
+                            <text class="goods_numbers">X{{item.send_number}}</text>
+                          </view>
+                        </view>
+                      </view>
+                    </view>
+                  </view>
+                </block>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+      <!-- 支付送券 -->
+      <view wx:if="{{order_info.error == 0 && order_info.type == 3 && order_info.payreward_count > 0}}" class="coupon_gift" bindtap='go_couponlist'>
+        <text>支付送券</text>
+        <text class="coupon_gift_num" style='color:{{comColor}}'>获得<text>{{order_info.payreward_count}}</text>张优惠券</text>
+      </view>
+      <!-- 定金膨胀 -->
+      <view class='presale_area' wx:if="{{order_info.goods_type == 10}}">
+        <view class='presale_info clearfix'>
+          <view class='{{(order_info.bk_order_paid > 0) ? "red_one" : "grey_one"}}' style='background:{{order_info.bk_order_paid > 0?comColor:""}}'></view>
+          <view class='pre_name'>定金（{{(order_info.bk_order_paid > 0) ? "已付" : "待付款"}}）</view>
+          <view class='pre_money' style='color:{{comColor}}'>￥{{order_info.pre_sale_money}}<block wx:if="{{order_info.order_pay_way == 1}}">(可抵￥{{order_info.pre_order_money}})</block></view>
+        </view>
+        <!--全款的时候下面二个隐藏 -->
+        <view class='shuxian shuxian_red' wx:if='{{order_info.order_pay_way == 1}}' style='background:{{comColor}}'></view>
+        <view class='presale_info clearfix' wx:if='{{order_info.order_pay_way == 1}}'>
+          <view class='{{(order_info.bk_order_paid == 2) ? "red_one" : "grey_one"}}' style='background:{{order_info.bk_order_paid == 2?comColor:""}}'></view>
+          <view class='pre_name'>尾款（{{(order_info.bk_order_paid == 2) ? "已付" : "待付款"}}）</view>
+          <view class='pre_money' style='color:{{comColor}}'>￥{{order_info.bk_order_money}}</view>
+        </view>
+        <view class='pre_time' bindtap='ruleShow'>
+          {{order_info.bk_shipping_time}} 开始发货
+          <image src='{{imageUrl}}/image/wxapp/pre_tice2.png' mode='widthFix'></image>
+        </view>
+      </view>
+      <!-- 定金膨胀结束 -->
+      <!--订单相关信息-->
+      <view class="bottom_view normal-order-info" style="margin-bottom:20rpx;">
+        <view class="weui_panel_hd">
+          <view class="order-info">
+            <view class="tips" style="border-bottom: 1rpx solid #eee;">订单信息</view>
+            <view class='order-text2'>
+              <text class='ps_type' wx:if='{{order_info.type_icon != ""}}'>{{order_info.type_icon}}</text>
+              <text>订单编号： </text>
+              <text>{{order_info.order_sn}}</text>
+              <button class="copy_button" bindtap='copyOrder'>复制</button>
+            </view>
+            <view class='order-text2'>
+              <text>下单时间：</text>
+              <text>{{order_info.add_time}}</text>
+            </view>
+            <view class='order-text2' wx:if="{{ order_info.pay_time != null }}">
+              <text>支付时间：</text>
+              <text>{{order_info.pay_time}}</text>
+            </view>
+            <block wx:if="{{ order_info.deliver_type == 1 }}">
+              <view class='order-text2' wx:if="{{ order_info.confirm_time != null }}">
+                <text>核销时间：</text>
+                <text>{{ order_info.confirm_time }}</text>
+              </view>
+              <view class='order-text2' wx:if="{{ order_info.goods_type != 3 }}">
+                <text>支付方式：</text>
+                <text wx:if="{{ order_info.goods_type == 4 }}">积分兑换</text>
+                <text wx:else>{{ order_info.pay_name }}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+      <!--发票-->
+      <view class="bottom_view invoice-info" wx:if="{{order_info.invoice_info}}">
+        <view class="weui_panel_hd">
+          <view class="shop-info">
+            <view class="tips" style="border-bottom: 1rpx solid #eee;padding-bottom:15rpx;">发票信息</view>
+            <view class='order-text2'>
+              <text>发票类型：</text>
+              <text wx:if="{{order_info.invoice_info.type == '1'}}">个人发票</text>
+              <text wx:if="{{order_info.invoice_info.type == '0'}}">企业发票</text>
+            </view>
+            <view class='order-text2'>
+              <text>发票抬头：</text>
+              <text>{{order_info.invoice_info.title}}</text>
+            </view>
+            <block wx:if="{{order_info.invoice_info.type == '0'}}">
+              <view class='order-text2'>
+                <text>公司税号：</text>
+                <text>{{order_info.invoice_info.taxNumber}}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+
+      <navigator class='to_goods_list' wx:if='{{order_info.wx_shopping_list_enbaled == 1 && order_info.order_status > 2}}' target="miniProgram" app-id='wx56c8f077de74b07c' open-type="navigate" path="/open/function-introduction/function-introduction" version="release"
+        extra-data='' hover-class='none'>
+        <image src='{{imageUrl}}/image/wxapp/stodownload1.jpg' mode='widthFix'></image>
+        <view>已同步至好物圈</view>
+      </navigator>
+    </block>
+    <!--分裂优惠券的弹框  -->
+    <view class='splitMode' style='display:{{order_info.show_split==1?"block":"none"}}' bindtap='guan'>
+      <view class='coupon_content'>
+        <view class='btn_close' bindtap='guan'>
+          <image src='{{imageUrl}}image/wxapp/split_btn1.png' mode='widthFix' />
+        </view>
+        <view class='yishu'></view>
+        <view class='share_detail'>
+          <view class='sd_top' style='background:url("{{imageUrl}}image/wxapp/split_share_bg.png") no-repeat;background-size:100% 100%'>
+            <view class='split_tips'>送您{{order_info.cou_xianshi}}张优惠券</view>
+            <view class='split_notice'>分享到好友群</view>
+          </view>
+          <view class='sd_bottom'>
+            <view class='split_notice1'>您可点击领取</view>
+            <button class='split_btn_get' catchtap='kai' open-type="share">立即分享</button>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 定金膨胀的活动规则 -->
+    <action-sheet hidden="{{ruleMode}}" bindchange="preActionSheetChange">
+      <view class='promotion' hidden="{{ ruleMode }}">
+        <view class='pro_title'>
+          活动规则
+          <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" bindtap="ruleCancel" class='pro_close' />
+        </view>
+        <view class='pro_content pre_content'>
+          <view>参与步骤：</view>
+          <view>1.在商品详情页选择商品规格，点击支付定金按钮到结算页下单并支付定金。</view>
+          <view>2.在指定尾款支付时间内，完成尾款支付，即可等待商家发货，具体发货时间以实际发货时间为准。</view>
+          <view>3.在订单列表中，可以随时查看订单进行状态。</view>
+          <view>注意事项：</view>
+          <view>1.定金膨胀商品只能线上支付，不支持货到付款。</view>
+          <view>2.尾款支付只能使用微信支付，不支持使用余额。</view>
+        </view>
+      </view>
+    </action-sheet>
+  </view>
+</view>
+<include src="../common/footer.wxml" />

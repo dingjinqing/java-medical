@@ -1,0 +1,230 @@
+@import "../../css/iconfont.wxss";
+.container{
+    background: #f5f5f5;
+}
+view,text{
+  box-sizing: border-box;
+}
+.comment{
+    background:white;
+    padding:30rpx 0rpx;
+    margin-bottom:20rpx
+}
+.com_title{
+    border-bottom:1px solid #ddd;
+    padding:0rpx 20rpx 20rpx 20rpx;
+}
+.com_rule{
+    float:right;
+}
+.com_per{
+    height:200rpx;
+    padding:20rpx 20rpx 20rpx 20rpx;
+}
+.good_per{
+    float:left;
+    width:30%;
+    text-align:center;
+    height:100%;
+}
+.good_per_val{
+    color:#ff6666;
+    font-size:18px;
+    font-weight:bold;
+    line-height:100rpx;
+}
+.all_per{
+    float:right;
+    width:65%;
+}
+.all_per_view{
+    padding:10rpx
+}
+progress{
+    display: inline-block;
+    width:55%;
+    margin-left:20rpx;
+
+}
+.com_view{
+    flex: 1;
+    text-align: center;
+}
+.com_detail{
+    background:white;
+    min-height: 400rpx;
+}
+.com_detail_top{
+  display: flex;
+  border-bottom: 1px solid #eee;
+  height: 106rpx;
+  line-height: 106rpx
+}
+.group_over{
+    width: 100%;
+    color: #fff;
+    background: #000;
+    opacity: 0.6;
+    text-align: center;
+    padding:10rpx 0prx;
+}
+.group_act_over{
+    height:40px;
+    line-height:40px;
+}
+.all_per_view text{
+    width:40%;
+}
+.com_tag{
+    padding-top:20rpx;
+}
+.tag{
+    color: #999a9e;
+    background: #f3f4f8;
+    margin-right: 4%;
+    margin-left: 3%;
+    height: 21px;
+    line-height: 21px;
+    padding: 0 7px;
+    margin-bottom:10rpx;
+}
+.com_info{
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.com_info image{
+  width:220rpx;
+  height: 28rpx;
+}
+
+.com_time{
+  overflow:hidden;
+  color:#888;
+}
+.grade-star{
+    width: 220rpx;
+    height: 14px;
+    background-size: auto 100%;
+}
+.g-star1 {
+    background-position-x: 80%;
+}
+.g-star2 {
+    background-position-x: 60%;
+}
+.g-star3 {
+    background-position-x: 40%;
+}
+.g-star4 {
+    background-position-x: 20%;
+}
+.g-star5 {
+    background-position-x: 0%;
+}
+.com_info view{
+    margin:10rpx 0rpx;
+}
+.com_mobile{
+  float:right;
+  margin-left:5px;
+}
+.fl{
+  float: left;
+}
+.fr{
+  float: right;
+}
+.fl image{
+  width: 40rpx;
+  height:40rpx;
+}
+
+.head_img{
+  border-radius:100%;
+}
+.com_img{
+  width: 430rpx;
+}
+.com_img .fl{
+  margin-right: 20rpx;
+  width: 120rpx;
+  height: 120rpx;
+  border: 1px solid #eee;
+}
+.com_img .fl image{
+  width: 100%;
+  height: 100%;
+}
+@media screen and (min-width:370px){
+    .grade-star{
+        width: 185rpx;
+    }
+}
+@media screen and (min-width: 400px){
+    .grade-star{
+        width: 170rpx;
+    }
+}
+
+/* 商家回复 */
+.comment_list_reply{
+  width:100%;
+  height: auto;
+  background-color: #f8f8f8;
+  padding: 15rpx 22rpx;
+  margin-top: 30rpx;
+  overflow: visible;
+  position: relative;
+}
+.reply_content{
+  width: 100%;
+  word-break: break-all;
+}
+.reply_up{
+  position: absolute;
+  top: -13rpx;
+  left: 60rpx;
+  width: 35rpx !important;
+  height: 20rpx !important;
+}
+.reply_text{
+  color: #666;
+  text-align: left;
+  font-size: 26rpx;
+  line-height: 35rpx;
+}
+.reply_text>text{
+  word-break: break-all;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp:5;
+}
+.reply_image{
+   color:#333;
+   margin-top: 18rpx;
+}
+.reply_image > image{
+  width: 18rpx;
+  height: 12rpx;
+  padding-left: 10rpx;
+  padding-bottom: 4rpx;
+}
+
+.reply_hide{
+  display: -webkit-box;
+}
+.reply_show{
+  display: block;
+}
+
+.max_h{
+  max-height: 184rpx;
+  overflow: hidden;
+  height: auto;
+  display: block;
+}
+.max_n{
+  max-height: none;
+  height: auto;
+}

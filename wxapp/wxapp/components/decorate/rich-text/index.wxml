@@ -1,0 +1,3 @@
+<view class='rich_container' style='margin-bottom:{{m.margin_bot}}rpx'>
+  <rich-text nodes="{{m.rich_text}}"></rich-text>
+</view>

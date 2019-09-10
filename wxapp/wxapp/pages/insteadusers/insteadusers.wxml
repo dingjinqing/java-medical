@@ -1,0 +1,34 @@
+<include src="../common/header.wxml" />
+<view class='main_container'>
+  <view class='pf_top'>
+      <view class='pt1 clearfix'>
+        <view class='heng1 heng'></view>
+        <view class='word1'>好友助力</view>
+        <view class='heng2 heng'></view>
+      </view>
+    </view>
+    <view class='friends_list'>
+      <block wx:if='{{user_list.length > 0}}'>
+        <view class='each_friends' wx:for='{{user_list}}' wx:key='key' style='background:{{item.is_own == 1?"#fafafa":"#ffffff"}}'>
+            <view class='ef_avater' wx:if='{{item.username == "当代活雷锋"}}'><image src='{{imageUrl}}/image/wxapp/ins-icon.png'></image></view>
+            <view class='ef_avater' wx:if='{{item.username != "当代活雷锋"}}'><image src='{{item.user_avatar}}'></image></view>
+            <view class='ef_info'>
+                <view class='ef_name'>{{item.username}}<block wx:if='{{item.username == "当代活雷锋"}}'>（匿名好友）</block></view>
+                <view class='ef_msg'>{{item.message}}</view>
+            </view>
+            <view class='ef_price'>
+              <view class='payed'>代付：￥{{item.money_paid}}</view>
+              <view class='returned'>退款：￥{{item.refund_money}}</view>  
+            </view>
+        </view>
+      </block>
+      <block wx:if='{{user_list.length <= 0}}'>
+          <view class='no_state'>
+            <image src='{{imageUrl}}/image/wxapp/no_invite.png' mode='widthFix'></image>
+            <view>暂无好友助力！</view>
+        </view>
+      </block>
+      <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+    </view>
+</view>
+<include src="../common/footer.wxml" />

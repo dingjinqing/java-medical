@@ -1,0 +1,41 @@
+<!--pages/widthdraw/widthdraw.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+    <view class='withdraw_top'>提现到微信钱包</view>
+    <view class='withdraw_area'>
+        <view class='icon_money'>￥</view>
+        <view class='wa_word1'>
+          提现金额<text>（单次最小提现金额：￥{{withdraw_info.withdraw_cash}})</text>
+        </view>
+        <input type='digit' class='wa_money' bindblur='inpu_money' value='{{withdraw_money}}' placeholder='请输入您要提现的金额' placeholder-class="place-holder"></input>
+        <view class='wa_word2'>
+          <view>可提取余额：￥{{withdraw_info.withdraw}}</view>
+          <view bindtap='all_withdraw'>全部提现</view>
+        </view>
+        <form report-submit='true' bindsubmit='take_moneys'>
+            <button class='btn_with' form-type='submit' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>提现</button>
+        </form>
+    </view>
+    <view class='wechat_tips' wx:if='{{withdraw_info.nick_name != 0 && withdraw_info.withdraw_source == "wx_open"}}'>注意：提现前，请确保已关注公众号"{{withdraw_info.nick_name}}"</view>
+    <!-- 输入真实姓名的弹框 -->
+    <block wx:if='{{is_name == 1}}'>
+      <view class="login_back"></view> 
+      <view class='login_content'>
+        <view class="login_title">
+          请填写真实姓名
+          <image src='{{imageUrl}}image/wxapp/close_icon.png' mode='widthFix' bindtap='phoneClose'></image>
+        </view>
+        <view class='phone_content'>
+          <view class='real_money'>
+            <view class='name_title'>真实姓名</view>
+            <view style='flex:1.2'><input type='text' class='input_name' placeholder='输入姓名' value='{{realName}}' bindinput='check_name'></input></view>
+          </view>
+          <view class='name_tips'>为确保提现成功，请填写绑定微信钱包的银行卡账户的真实姓名</view>
+        </view>
+        <view class="to_confirm" bindtap='real_names'>
+          <button style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>确认</button>
+        </view>
+      </view>
+    </block>
+</view>
+<include src="../common/footer.wxml"/>

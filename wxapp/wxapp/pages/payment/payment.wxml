@@ -1,0 +1,113 @@
+<!--pages/payment/payment.wxml-->
+<include src="../common/header.wxml" />
+<view style='margin-bottom:{{ has_reco_goods == 0 ? "490rpx" : "0" }}'>
+  <view class="main-container-order clearfix">
+    <image src='{{imageUrl}}/image/wxapp/icon_payment.png' class='image_icon1'></image>
+    <view class="main-right">
+      <view class="flex">
+        <view wx:if="{{order_info.money_paid >= 0 && order_info.pay_code !== 'cod'}}">微信支付：<text style='color:{{comColor}}'>¥{{order_info.money_paid}}</text></view>
+        <view wx:elif="{{order_info.pay_code === 'cod'}}">货到付款：<text style='color:{{comColor}}'>¥{{order_info.money_paid}}</text></view>
+        <view wx:if="{{order_info.score_discount > 0}}">积分支付：<text style='color:{{comColor}}'>{{order_info.new_score_integral}}积分</text></view>
+        <view wx:if="{{order_info.use_account > 0}}">余额支付：<text style='color:{{comColor}}'>¥{{order_info.use_account}}</text></view>
+        <view wx:if="{{order_info.member_card_balance > 0}}">会员卡支付：<text style='color:{{comColor}}'>¥{{order_info.member_card_balance}}</text></view>
+      </view>
+    </view>
+  </view>
+  <form report-submit='true' bindsubmit='to_order'>
+    <button class="btn-payment see-order" formType='submit' style='background:{{comColor}}'>查看订单</button>
+  </form>
+  <form report-submit='true' bindsubmit='to_index'>
+    <button class="btn-payment back-order" formType='submit'>返回首页</button>
+  </form>
+  <!-- 推荐商品 start-->
+  <v-goods-recommend page-name='payment'></v-goods-recommend>
+  <!-- 推荐商品 end -->
+  <!-- 支付有礼自定义弹框 -->
+    <v-pay-reword-custom show="{{custom_show}}" custom_info="{{custom_info}}"/>
+  <!--分裂优惠券的弹框  -->                                                                                                                                                                             
+  <view class='splitMode' style='display:{{order_info.show_split==1?"block":"none"}}' bindtap='guan'>
+      <view class='coupon_content'>
+          <view class='btn_close' bindtap='guan' style="height:60rpx"><image src='{{imageUrl}}image/wxapp/split_btn1.png' mode='widthFix' ></image></view>
+          <view class='yishu'></view>
+          <view class='share_detail'>
+              <view class='sd_top' style='background:url("{{imageUrl}}image/wxapp/split_share_bg.png") no-repeat;background-size:100% 100%'>
+                  <view class='split_tips'>送您{{order_info.cou_xianshi}}张优惠券</view>
+                  <view class='split_notice'>分享到好友群</view>
+              </view>
+              <view class='sd_bottom'>
+                  <view class='split_notice1'>您可点击领取</view>
+                  <button class='split_btn_get' catchtap='kai' open-type="share">立即分享</button>
+              </view>
+          </view>  
+      </view>
+  </view>
+
+  <!-- 活动送券 -->
+  <view class='act_gift_coupon' wx:if='{{order_info.type == 3 && order_info.error == 0 && order_info.is_display!=0 && order_info.sendCoupon.coupon_list.length >=1}}'>  
+      <view class='gift_zhezhao' bindtap='close_cou'></view>  
+      <!--一张样式  -->
+  <view class='one_coupon' style='top:{{top1}}rpx' wx:if='{{order_info.sendCoupon.coupon_list.length == 1}}'>
+    <view class='btn_close' bindtap='close_cou'>
+      <image src='{{imageUrl}}image/wxapp/split_btn1.png' />
+    </view>
+    <view class='yishu'></view>
+    <view class='cou_detail' style='background:url({{imageUrl}}image/wxapp/gift_bg_one.png) no-repeat;background-size:100%;'>
+      <view class='tips1'>支付送券</view>
+      <view class='price_cou clearfix' wx:for='{{order_info.sendCoupon.coupon_list}}' wx:key='key'>
+        <view class='left_money' wx:if='{{item.act_code == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥
+          <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
+        </view>
+        <view class='left_money' wx:if='{{item.act_code == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
+          <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折</view>
+        <view class='right_money'>{{item.rule}}</view>
+      </view>
+      <view class='tip3'>优惠券已放入个人中心</view>
+      <view class='go_list' bindtap='go_couponlist'>去看看
+        <image src='{{imageUrl}}image/wxapp/go_cou_list.png' mode='widthFix'></image>
+      </view>
+    </view>
+  </view>
+    <!--两张样式  -->
+    <view class='two_cou' style='top:{{top2}}rpx' wx:if='{{order_info.sendCoupon.coupon_list.length == 2}}'>
+      <view class='btn_close' bindtap='close_cou'><image src='{{imageUrl}}image/wxapp/split_btn1.png'/></view>
+      <view class='yishu'></view>
+      <view class='two_detail' style='background:url({{imageUrl}}image/wxapp/two_bg.png) no-repeat;background-size:100%;'>
+          <view class='tips1' style='margin-bottom:20rpx;'>支付送券</view>
+          <view class='price_cou2 clearfix' >
+              <view class='each_tow' wx:for='{{order_info.sendCoupon.coupon_list}}' style='background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;' wx:key='key'>
+                  <view class='et_left' wx:if='{{item.act_code == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥<text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text></view>
+                  <view class='et_left' wx:if='{{item.act_code == "discount"}}' style='font-size:{{item.fontsize2}}rpx'><text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折</view>
+                  <view class='et_right'>{{item.rule}}</view>
+              </view>
+          </view>
+          <view class='tip3'>优惠券已放入个人中心</view>
+          <view class='go_list' bindtap='go_couponlist'>去看看 <image src='{{imageUrl}}image/wxapp/go_cou_list.png' mode='widthFix'></image> </view>
+      </view>
+    </view>
+    <!--多张样式  -->
+  <view class='two_cou' style='top:{{top2}}rpx' wx:if='{{order_info.sendCoupon.coupon_list.length > 2}}'>
+    <view class='btn_close' bindtap='close_cou'>
+      <image src='{{imageUrl}}image/wxapp/split_btn1.png' />
+    </view>
+    <view class='yishu'></view>
+    <view class='two_detail' style='background:url({{imageUrl}}image/wxapp/two_bg.png) no-repeat;background-size:100%;'>
+      <view class='tips1' style='margin-bottom:20rpx;'>支付送券</view>
+      <view class='price_cou2 clearfix'>
+        <view class='each_tow' wx:for='{{order_info.sendCoupon.coupon_list}}' style='background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;height:130rpx;' wx:key='key'>
+          <view class='et_left' wx:if='{{item.act_code == "voucher"}}' style='font-size:{{item.fontsize2}}rpx'>￥
+            <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>
+          </view>
+          <view class='et_left' wx:if='{{item.act_code == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
+            <text style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折</view>
+          <view class='et_right'>{{item.rule}}</view>
+        </view>
+      </view>
+      <view class='tip3'>优惠券已放入个人中心</view>
+      <view class='go_list' bindtap='go_couponlist'>去看看
+        <image src='{{imageUrl}}image/wxapp/go_cou_list.png' mode='widthFix'></image>
+      </view>
+    </view>
+  </view>
+  </view>  
+</view>
+<include src="../common/footer.wxml"/>

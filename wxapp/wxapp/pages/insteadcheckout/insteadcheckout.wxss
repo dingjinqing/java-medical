@@ -1,0 +1,197 @@
+page{
+  background: #f5f5f5;
+}
+.clearfix::after{
+  display: block;
+  clear: both;
+  content: "";
+}
+.main_container{
+  background: #f5f5f5;
+  padding-top: 20rpx;
+}
+.each_area{
+  width: 650rpx;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8rpx;
+  padding: 30rpx 25rpx;
+  font-size: 26rpx;
+  margin-bottom: 20rpx;
+}
+.goods_top{
+  margin-bottom: 20rpx;
+  height: 160rpx;
+  overflow-y: hidden;
+}
+.goods_img{
+  width: 160rpx;
+  height: 160rpx;
+  float: left;
+}
+.goods_img image{
+  width: 160rpx;
+  height: 160rpx;
+}
+.goods_right{
+  float: right;
+  width: 465rpx;
+  height: 160rpx;
+  position: relative;
+}
+.goods_right .goods_name{
+  width: 100%;
+  text-overflow:ellipsis; 
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.goods_right .goods_desc{
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: absolute;
+  left: 0;
+  top: 80rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+.goods_right .goods_price{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: #f66;
+}
+.other_money{
+  width: 100%;
+  border-top: 2rpx solid #eee;
+  padding-top: 20rpx;
+  display: flex;
+  justify-content: space-around;
+}
+.other_money view{
+  flex: 1;
+}
+.other_money .pay_no_money{
+  text-align: right;
+}
+.other_money view text{
+  font-weight: bold;
+}
+.choice_money{
+  padding-bottom: 0
+}
+.cm_top{
+  margin-bottom: 25rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.cm_top view{
+  flex: 1;
+}
+.cm_top image{
+  width: 40rpx;
+  height: 40rpx;
+}
+.cm_edit_price{
+  border-bottom: 2rpx solid #eee;
+  padding-bottom: 30rpx;
+  color: #333;
+}
+.cm_edit_price view{
+  font-size: 48rpx;
+  float: left;
+  margin-right: 10rpx;
+}
+.cm_edit_price input{
+  font-size: 55rpx;
+}
+.each_radio_item{
+  height: 100rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 26rpx;
+  color: #333;
+  border-bottom: 2rpx solid #eee;
+}
+.each_radio_item:last-of-type{
+  border-bottom: none;
+}
+.each_radio_item>view{
+  flex: 1
+}
+.er_left{
+  display: flex;
+  align-items: center;
+  text-align: left
+}
+.er_right{
+  font-weight: bold;
+  text-align: right;
+}
+
+.pay_msg .cm_top{
+  padding-bottom: 30rpx;
+  margin-bottom: 20rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.pay_msg  .my_username{
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border: none
+}
+.btn_pay{
+  width: 690rpx;
+  margin:0 auto;
+  background:#09bb07;
+  border-radius:8rpx;
+  font-size:26rpx;
+  margin-bottom:20rpx;
+  color: #fff;
+  text-align: center;
+  height: 80rpx;
+  line-height: 80rpx;
+  border: none;
+}
+.btn_pay::after{
+  border: none;
+  border-radius: 0;
+}
+.cb{
+  transform: scale(0.8,0.8);
+  position:relative;
+  left:8rpx;
+}
+radio{
+  transform: scale(0.8,0.8);
+}
+.wodenicheng{
+  display: flex;
+  align-items: center;
+  flex: 1.5;
+}
+.wodenicheng text{
+  float: left;
+}
+.wodenicheng input{
+  flex: 1.4
+}
+.pay_money{
+  display: inline-block;
+  width: 590rpx;
+  height: 74rpx;
+}
+
+
+
+
+
+
+

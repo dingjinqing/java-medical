@@ -1,0 +1,43 @@
+.phone-container{
+  width: 650rpx;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  margin: 0 auto;
+  /* margin-bottom: 20rpx; */
+  border-radius: 10rpx;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+}
+.clearfix::after{
+    content: "";
+    display: block;
+    clear: both;
+}
+.main-title{
+  font-size: 30rpx;
+  width: 100%;
+  text-align: left;
+  padding: 20rpx 15rpx;
+}
+.main-title image{
+  width:35rpx;
+  height: 35rpx;
+  vertical-align: middle;
+  margin-right: 10rpx;
+}
+.main-title text{
+  margin-left: 10rpx;
+}
+.phone-container .clock_more{
+    float: right;
+}
+.phone-container .xunfude{
+  width: 120rpx;
+  height: 120rpx;
+  position: fixed;
+  top: 600rpx;
+  right: 0;
+  z-index: 200;
+  overflow: hidden;
+  border-radius: 60rpx;
+}

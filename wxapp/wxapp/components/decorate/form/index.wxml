@@ -1,0 +1,38 @@
+<view class="index-container">
+  <block wx:for="{{pageData}}" wx:key="key" wx:for-item="module">
+    <v-advertise wx:if="{{module.component_name == 'v-advertise'}}" module="{{module}}" />
+    <v-carousel wx:elif="{{module.component_name == 'v-carousel'}}" module="{{module}}" />
+    <v-line wx:elif="{{module.component_name == 'v-line'}}" module="{{module}}" />
+    <v-official-accounts wx:elif="{{module.component_name == 'v-official-accounts'}}" module="{{module}}" />
+    <v-phone wx:elif="{{module.component_name == 'v-phone'}}" module="{{module}}" />
+    <v-space wx:elif="{{module.component_name == 'v-space'}}" module="{{module}}" />
+    <v-text wx:elif="{{module.component_name == 'v-text'}}" module="{{module}}" />
+    <v-rich-text wx:elif="{{module.component_name == 'v-rich-text'}}" module="{{module}}" />
+    <v-address bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-address'}}" module="{{module}}" />
+    <v-choose bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-choose'}}" module="{{module}}" />
+    <v-date bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-date'}}" module="{{module}}" />
+    <v-sex bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-sex'}}" module="{{module}}" />
+    <v-input-email bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-input-email'}}" module="{{module}}" />
+    <v-input-mobile bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-input-mobile'}}" module="{{module}}" />
+    <v-input-name bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-input-name'}}" module="{{module}}" />
+    <v-input-text bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-input-text'}}" module="{{module}}" />
+    <v-slide bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-slide'}}" module="{{module}}" />
+    <v-upimg bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-upimg'}}" module="{{module}}" />
+    <v-upvideo bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-upvideo'}}" module="{{module}}" />
+  </block>
+</view>
+
+<view wx:if='{{page_cfg.notice_name}}' style='background:{{page_cfg.bg_color}};color:{{page_cfg.font_color}}' bindtap='bindSubmit' class='brn_save'>
+  {{page_cfg.notice_name}}
+</view>
+<form wx:else report-submit='true' bindsubmit='bindSubmit'>
+  <button style='background:{{page_cfg.bg_color}};color:{{page_cfg.font_color}}' class='brn_save' formType='submit'>提交</button>
+</form>
+<block wx:if='{{con_cfg.can_submit.status>0}}'>
+  <view class='zhezhaoceng'></view>
+  <view class='tankuang'>
+    <image src='{{con_cfg.imgUrl}}/image/wxapp/no_form.png'></image>
+    <view style='padding:0 15rpx'>{{con_cfg.can_submit.msg}}，暂时不支持填写哦</view>
+    <view class='btn_close' bindtap='bindToIndex'>关闭</view>
+  </view>
+</block>

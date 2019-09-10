@@ -1,0 +1,22 @@
+.advertise-container {
+  width: 720rpx;
+  margin: 0rpx auto;
+  position: relative;
+  margin-bottom: 20rpx;
+}
+
+.advertise-container image {
+  width: 100%;
+}
+
+.advertise-container .advertise-content {
+  width: 700rpx;
+  padding: 10rpx 0;
+  padding-left: 20rpx;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

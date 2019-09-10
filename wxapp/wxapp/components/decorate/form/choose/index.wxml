@@ -1,0 +1,27 @@
+<view class="choose-container">
+  <!--单选  -->
+  <view class='box2 clearfix' wx:if='{{m.show_types == 0}}' data-cur_idx='{{m.idx}}'>
+    <view class='choose_title1'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <radio-group bindchange="bindRadiosChange" data-cur_idx='{{m.idx}}'>
+      <block wx:for='{{m.selects}}' wx:key="index">
+        <label class='choose_list'>
+          <radio name='choose_item' color='{{comColor}}' value="{{index}}" /> {{item}}
+        </label>
+      </block>
+    </radio-group>
+  </view>
+
+  <!--多选  -->
+  <view class='box2 clearfix' wx:if='{{m.show_types == 1}}' data-cur_idx='{{m.idx}}'>
+    <view class='choose_title1'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <checkbox-group bindchange="bindCheckboxChange" data-cur_idx='{{m.idx}}'>
+      <block wx:for='{{m.selects}}' wx:key="index">
+        <label class='choose_list'>
+          <checkbox name='choose_item' color='{{comColor}}' value="{{index}}" /> {{item}}
+        </label>
+      </block>
+    </checkbox-group>
+  </view>
+</view>

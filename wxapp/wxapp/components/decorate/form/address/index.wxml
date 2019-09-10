@@ -1,0 +1,20 @@
+<view class="address-container">
+  <view class='box1 clearfix' data-cur_idx='{{m.idx}}' style='background:url({{m.imgUrl}}image/wxapp/right_into.png) no-repeat;background-size:16rpx;background-position:700rpx center'>
+    <view class='address_title'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <picker class='picker' bindchange="bindRegionChange" mode="region" data-cur_idx='{{m.idx}}'>
+      <view style='float: right; margin-right: 50rpx;' wx:if='{{m.address!= ""}}'>
+        {{m.address[0]}}/{{m.address[1]}}/{{m.address[2]}}
+      </view>
+      <view wx:else style='float: right; margin-right: 50rpx;'>请选择</view>
+    </picker>
+  </view>
+
+  <!--详细地址-->
+  <view class='box2 clearfix' wx:if='{{m.with_detail == 1}}'>
+    <view class='address_title1'>详细地址</view>
+    <view class='add_content'>
+      <input type='text' placeholder='请填写详细地址' data-cur_idx='{{m.idx}}' bindblur='bindCheckAddress'></input>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,186 @@
+  <!--pages/comment/comment.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class='main-container'>
+  <view class="container">
+    <!--评价分类  -->
+    <view class="order-type">
+      <view class="navbar">
+      <block wx:for="{{navbar}}" wx:for-item="item" wx:key="unique">
+        <text data-idx="{{index}}" class="item {{currentTab==index ? 'item_active' : ''}}" style='border-color:{{currentTab==index ?comColor:""}};color:{{currentTab==index ?comColor:""}}' bindtap="navbarTap">{{item}}</text>
+      </block>
+      </view>
+    </view>
+    <!--待评价页面详情  -->
+    <view class="comment_main">
+      <block wx:if="{{com_flag}}">
+        <!--有订单  -->
+        <view class="mocomm_list" wx:for="{{order_completed}}" wx:key="key" wx:for-index="id">
+          <view wx:for="{{item.goods}}" wx:key="index" wx:for-item="gitem" wx:for-index="gId" class="comment_list">
+            <view class="comment_gift clearfix" wx:if="{{item.comment_award[gId].is_gift == 1}}">
+              <image src='{{imageUrl}}image/wxapp/comment_gift_tips.png'></image>
+              <text style="color:#ff6600" wx:if="{{item.comment_award[gId].award_desc == 0}}">评价后有机会获得"{{item.comment_award[gId].award_info}}"</text>
+              <text wx:else>评价<text style="color:#ff6600">{{item.comment_award[gId].award_desc}}</text>,有机会获得"<text>{{item.comment_award[gId].award_info}}</text>"</text>
+            </view>
+            <view class="commm_goods clearfix">
+              <view class="left">
+                  <image src="{{gitem.goods_img}}"></image>
+              </view>
+              <view class="middle">
+                <view class="goods_name">{{gitem.goods_name}}</view>
+                <view class="goods_time clearfix">{{item.add_time}}
+                  <block wx:if="{{gitem.comment_flag == 1}}">
+                    <view bindtap="show_com_info" data-gid="{{gitem.goods_id}}" data-osn="{{item.order_sn}}" data-id="{{id}}" data-itemid = "{{gId}}" class="right">
+                      查看评价
+                      <image src="{{ gitem.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
+                    </view>
+                  </block>
+                  <block wx:else>
+                    <block wx:if="{{item.order_status == 5 ||item.order_status == 6}}">
+                      <view bindtap="com_show" class="right" data-gid="{{gitem.goods_id}}" data-osn="{{item.order_sn}}" data-id="{{id}}" data-itemid = "{{gId}}">
+                        发表评价
+                        <image style="width:10px;height:5px;margin-left:5rpx;" src="{{gitem.src}}"></image>
+                      </view>
+                    </block>
+                    <block wx:else>
+                      <view class="right">
+                        不能评价
+                      </view>
+                    </block>
+                  </block>
+                </view>
+              </view>
+            </view>
+            <block wx:if="{{gitem.show}}">
+              <view class="comm_square">
+                <view class="pingfen">
+                  <view class="ping_left"><text>*</text>评分:</view>
+                  <block wx:for="{{star}}" wx:key="index" wx:for-index="id" wx:for-item="item">
+                    <block wx:if="{{item.show}}">
+                      <!-- <view bindtap="choose_star" data-id="{{id}}" data-enen='{{info.commstar}}' class="star" style='background:url("{{imageUrl}}image/wxapp/collect_yes.png") no-repeat;background-size:cover'></view> -->
+                      <text class='iconfont iconshoucang star' bindtap="choose_star" data-id="{{id}}" data-enen='{{info.commstar}}'  style='color:{{comColor}};font-size:40rpx;float:left' ></text>
+                    </block>
+                    <block wx:else>
+                      <view bindtap="choose_star" data-id="{{id}}" class="no_star" data-enen='{{item.enen}}' style='background:url("{{imageUrl}}image/wxapp/collect_no.png") no-repeat;background-size:cover'></view>
+                    </block>
+                  </block>
+                  <view class='ping_zi' >
+                    <block wx:if='{{info.commstar == 1}}'>非常差</block>
+                    <block wx:if='{{info.commstar == 2}}'>差</block>
+                    <block wx:if='{{info.commstar == 3}}'>一般</block>
+                    <block wx:if='{{info.commstar == 4}}'>好</block>
+                    <block wx:if='{{info.commstar == 5}}'>非常好</block>
+                  </view>
+                </view>
+                <view class="xinde">
+                  <view class="xin_left"><text style='color:#fff;'>*</text>心得:</view>
+                  <textarea bindinput='comm_note' placeholder="商品是否给力？快分享你的购物心得吧" style="float:left"/>
+                  <view style="clear:both"></view>
+                </view>
+                <view class="shaidan">
+                    <view class="shai_left"><text style='color:#fff;'>*</text>晒单:</view>
+                    <view class="shai_content">
+                      <block wx:if="{{image}}">
+                        <block wx:for="{{info.comm_img}}" wx:key="index" wx:for-item="imgitem">
+                          <view class='shai_view'>
+                            <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
+                            <image src="{{imgitem}}" data-idx="{{index}}"></image>
+                          </view>
+                        </block>
+                      </block>
+                      <block wx:if="{{info.comm_img.length < 9}}">
+                        <view class="shai_right" bindtap="upImage">
+                          <image src='{{imageUrl}}/image/wxapp/add.png' mode='widthFix' />
+                        </view>
+                      </block>
+                    </view>
+                    <text class="shai_num">{{info.comm_img.length}}/9</text>
+
+                </view>
+                <view class="square_end">
+                  <view style='margin-left:140rpx;width:570rpx;'>
+                    <view class="niming">
+                      <radio value="" bindtap="flag" checked="{{flag}}" color='{{comColor}}'/>
+                      <text>匿名评价</text>
+                    </view>
+                    <form report-submit='true' bindsubmit='good_commtag' style='float:right'>
+                        <button form-type='submit' class='s_left' style='background:{{comColor}};border-color:{{comColor}}' data-osn="{{item.order_sn}}" data-gid="{{gitem.goods_id}}">评价并继续</button>
+                    </form>
+                    </view>
+                </view>
+              </view>
+            </block>
+            <!--已评价-->
+            <block wx:if="{{gitem.show_info}}">
+              <view class="comm_square">
+                <view class="pingfen">
+                    <view class="ping_left"><text> </text>评分：</view>
+                    <view class="stars" data-enen='{{item.comment[gId].commstar}}'>
+                        <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{item.comment[gId].commstar >= 1}}'></text>
+                        <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{item.comment[gId].commstar >= 2}}'></text>
+                        <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{item.comment[gId].commstar >= 3}}'></text>
+                        <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{item.comment[gId].commstar >= 4}}'></text>
+                        <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{item.comment[gId].commstar >= 5}}'></text>
+                      </view>
+                    <!-- <image src='{{imageUrl}}image/wxapp/comstar_{{item.comment[gId].commstar}}.png' mode="widthFix" />  -->
+                    <view class='ping_zi' style='margin-top:0'>
+                      <block wx:if='{{item.comment[gId].commstar == 1}}'>非常差</block>
+                      <block wx:if='{{item.comment[gId].commstar == 2}}'>差</block>
+                      <block wx:if='{{item.comment[gId].commstar == 3}}'>一般</block>
+                      <block wx:if='{{item.comment[gId].commstar == 4}}'>好</block>
+                      <block wx:if='{{item.comment[gId].commstar == 5}}'>非常好</block>
+                    </view>
+                </view>
+                <view class="xinde">
+                    <view class="xin_left"><text> </text>心得：</view>
+                    <view class="xinde_value">{{item.comment[gId].comm_note}}</view>
+                    <view style="clear:both"></view>
+                </view>
+                <block wx:if="{{item.comment[gId].comm_img != '' && item.comment[gId].comm_img != null}}">
+                  <view class="shaidan">
+                    <view class="shai_left"><text> </text>晒单：</view>
+                    <view class="shai_content">
+                      <block wx:for="{{item.comment[gId].comm_img}}" wx:key="index" wx:for-item="iitem">
+                        <image src="{{iitem}}!small?v=1" class="shai_img" data-src="{{iitem}}" data-srcarr='{{item.comment[gId].comm_img}}' bindtap='bindPreviewImage'></image>
+                      </block>
+                    </view>
+                  </view>
+                </block>
+                <view class="huifu" wx:if="{{item.comment[gId].answer !='' && item.comment[gId].answer != null}}">
+                    <view class="huifu_left"><text> </text>商家回复：</view>
+                    <view class="huifu_value">{{item.comment[gId].answer}}</view>
+                    <view style="clear:both"></view>
+                </view>
+                <view class="comment_gift_info" wx:if="{{item.comment[gId].commentAward}}">
+                  <image src='{{imageUrl}}/image/admin/assess_custon.png' mode='widthFix'></image>
+                  <view class="gift_content">
+                    <text>评价奖励</text>
+                    <text>已获得"<text>{{item.comment[gId].commentAward.type == 1 ? item.comment[gId].commentAward.con + '积分' : ( item.comment[gId].commentAward.type == 2 ? '优惠券' : (item.comment[gId].commentAward.type == 3 ? item.comment[gId].commentAward.con + '余额' : (item.comment[gId].commentAward.type == 4 ? '抽奖机会' : '神秘奖励')) )}}</text>"奖励</text>
+                  </view>
+                  <form report-submit='true' bindsubmit='giftInfo' data-gid="{{gitem.goods_id}}" data-osn="{{item.order_sn}}" data-id="{{id}}" data-itemid = "{{gId}}">
+                    <button class="gift_info_button" formType='submit' style="border-color:{{comColor}};color:{{comColor}}"  >查看</button>
+                  </form>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <!--没有订单时  -->
+        <view class="cm_order">
+          <view class="cm_empty">
+            <view class="cme_image">
+              <image src="{{imageUrl}}image/wxapp/order-no.png" class="" mode="widthFix"></image>
+            </view>
+            <view style="text-align:center">您还没有此类订单</view>
+            <view class="btn_guang" >
+              <text bindtap="go_index" style='background:{{comColor}}'>随便逛逛</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
+<v-pay-reword-custom show="{{show_act_custom}}" custom_info="{{custom}}"/>
+<include src="/pages/common/footer.wxml"/>

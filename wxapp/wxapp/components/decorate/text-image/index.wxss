@@ -1,0 +1,52 @@
+.textimg_container{
+  background-color: #fff;
+  padding: 20rpx;
+  width: 730rpx;
+  margin: 10rpx auto;
+  box-sizing: border-box;
+  border-radius: 16rpx;
+}
+.textimg_container .small_image{
+    width: 180rpx;
+    height: 180rpx;
+}
+.textimg_container .big_image{
+    width: 300rpx;
+    height: 300rpx;
+}
+.textimg_container .small_text{
+    overflow: hidden;
+    word-break: break-all;
+    height: 180rpx;
+}
+.textimg_container .small_text > view{
+    overflow: hidden;
+}
+.textimg_container .big_text > view{
+    overflow: hidden;
+}
+.textimg_container .big_text{
+    overflow: hidden;
+    word-break: break-word;
+    height: 300rpx;
+}
+.textimg_container .s_i_l{
+    float: left;
+    margin-right: 20rpx;
+}
+.textimg_container .s_i_r{
+    float: right;
+}
+.textimg_container .b_i_l{
+    float: left;
+    margin-right: 20rpx;
+}
+.textimg_container .b_i_r{
+    float: right;
+}
+.textimg_container .s_t_r{
+    margin-right: 200rpx;
+}
+.textimg_container .b_t_r{
+    margin-right: 320rpx;
+}

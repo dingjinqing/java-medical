@@ -1,0 +1,24 @@
+@import "/pages/login/login.wxss";
+@import "/pages/goodscommon/goodscommon.wxss";
+@import "/css/iconfont.wxss";
+.goods_price .money_pay{
+  color: #888;
+  text-decoration: line-through;
+  margin-left: 20rpx;
+  font-size: 26rpx;
+}
+.amount_score{
+  background: #fff6e6;
+  font-size: 26rpx;
+  color: #ffb93c;
+  padding: 20rpx 30rpx;
+}
+.footer_1{
+  width:120rpx;
+}
+.footer_1>view::-webkit-scrollbar{
+	display:none;
+}
+.footer form{
+  width:630rpx;
+}

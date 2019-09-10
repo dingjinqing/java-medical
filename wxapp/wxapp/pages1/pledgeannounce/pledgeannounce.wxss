@@ -1,0 +1,32 @@
+page{
+  background: #fff;
+}
+view{
+  box-sizing: border-box;
+}
+.single_service{
+  padding: 20rpx;
+  position: relative;
+}
+.single_left{
+ position: absolute;
+}
+.single_right{
+  margin-left: 50rpx;
+}
+
+.r_top{
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+}
+.r_bottom{
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 10rpx;
+}
+.circle{
+  width:30rpx;
+  height:30rpx;
+  margin-top: 6rpx;
+}

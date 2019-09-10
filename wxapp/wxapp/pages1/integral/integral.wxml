@@ -1,0 +1,94 @@
+<!--pages/integral/integral.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main-container'>
+  <view class="container">
+    <view class="middle" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class='score_des' bindtap='toWeb'>积分说明</view>
+      <view class="score_top">
+        <view class="total">已有
+          <text>{{user_center.score_num}}</text> 积分
+        </view>
+        <block wx:if="{{user_center.sign_score.sign_data.is_sign_in==0}}">
+          <form report-submit='true' bindsubmit='signScore'>
+            <button form-type='submit' class='score_add'>签到领
+              <text>{{user_center.sign_score.sign_data.receive_score}}</text>积分
+            </button>
+          </form>
+        </block>
+        <block wx:if="{{user_center.sign_score.sign_data.is_sign_in==1}}">
+          <view class='score_add' bindtap='toSign'>已领
+            <text>{{user_center.sign_score.sign_data.receive_score}}</text>积分
+          </view>
+          <view class="score_time" bindtap='toSign'>已经连续签到
+            <text>{{user_center.sign_score.sign_data.day}}</text> 天
+          </view>
+        </block>
+      </view>
+      <block wx:if="{{expire.score >= 0}}">
+        <view class="score_bottom">{{expire.time}} 将过期{{expire.score}}积分
+        </view>
+      </block>
+    </view>
+    <view class='customize-container' style='{{color}}' wx:if='{{user_center.page_id != "" && user_center.page_id != undefined}}'>
+      <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
+    </view>
+    <view class="lists">
+      <view class='list_top'>积分收支明细</view>
+      <view class="list_bottom">
+        <view wx:for="{{list}}" wx:key="index" wx:for-item="item" class="tr">
+          <view class='clearfix'>
+            <view class="time_b">
+              <view class="time1" wx:if="{{ item.remark != null }}">{{item.remark}}</view>
+              <view class="time1" wx:else>{{item.order_sn}}</view>
+              <view class="time1" wx:if="{{ item.remark == '评价有礼获得' }}">{{item.order_sn}}</view>
+            </view>
+            <view class="get_b">
+              <block wx:if="{{item.score > 0}}">
+                <text style='color:{{comColor1}}'>
+              +{{item.score}}
+              </text>
+              </block>
+              <block wx:else>
+                <text style="color:#999">
+                {{item.score}}
+              </text>
+              </block>
+            </view>
+          </view>
+          <view class="mingxi_b">{{item.in_time}}</view>
+        </view>
+        <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+      </view>
+    </view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />
+<!--  积分签到  -->
+<view class='zhezhao' wx:if="{{is_sign == 1}}" bindtap='closeSign'></view>
+<view class='modal_sign' wx:if="{{is_sign == 1}}">
+  <view>
+    <image src='{{imageUrl}}/image/wxapp/look_rule.png' class='look_rule' data-rule="{{user_center.sign_score.sign_rule}}" bindtap='lookRule' />
+    <view class='modal_sign_head'>签到有礼</view>
+    <view class='tip tip_one'>今日签到得到
+      <text style='color:{{comColor}}'>{{user_center.sign_score.sign_data.receive_score}}</text> 积分
+    </view>
+    <view class='sub-setting'>
+      <view class="score_item" wx:for='{{user_center.sign_score.sign_rule}}' wx:key='key'>
+        <view class="score_circle" wx:if='{{(index + 1 > user_center.sign_score.sign_data.day)}}' style='border-color:{{somColor}};'></view>
+        <image class="score_image" src="{{imageUrl}}/image/wxapp/score_checkin.png" wx:elif='{{index + 1 == user_center.sign_score.sign_data.day}}'></image>
+        <image class="score_image_correct" src="{{imageUrl}}/image/wxapp/socre_correct.png" wx:else></image>
+        <view class="score_day {{index + 1 == user_center.sign_score.sign_data.day ? 'today' : ''}}" style="color:{{index + 1 == user_center.sign_score.sign_data.day ? 'comColor' : ''}}">
+          {{index + 1 == user_center.sign_score.sign_data.day ? '今' : index + 1}}天
+        </view>
+        <view class="middle_line" wx:if='{{index != 0 && index != 7}}' style='background:{{somColor}}'></view>
+      </view>
+    </view>
+    <view class='tip tip_two' wx:if="{{user_center.sign_score.sign_data.tomoroow_receive > 0}}">连续签到
+      <text style='color:{{comColor}}'>{{user_center.sign_score.sign_data.max_sign_day}}天</text> 可获取
+      <text style='color:{{comColor}}'>{{user_center.sign_score.sign_data.score_value}}</text> 积分
+    </view>
+    <view class='close' bindtap='closeSign'>
+      <image src='{{imageUrl}}image/wxapp/split_btn1.png' mode='widthFix' />
+    </view>
+  </view>
+</view>

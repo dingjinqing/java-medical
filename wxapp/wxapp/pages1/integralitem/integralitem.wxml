@@ -1,0 +1,179 @@
+<block wx:if="{{gd.is_delete == 0}}">
+<include src="/pages/common/header.wxml"/>
+<v-share-gooods show="{{share_good}}" bind:download_img="go_share" bind:share_message="onShareAppMessage"/>
+<view class='main-container' style='overflow:{{is_play == 1?"hidden":"auto"}}'>
+       <view class='back_top' wx:if='{{top_display == 1&& gd.pictorial&&specMove==true}}' bindtap='goTop'>
+         <view><image src='/images/gray_top.png'></image></view>
+         <view>顶部</view>
+     </view>
+  <!-- 轮播图 -->
+  <view>
+    <include src="/pages/goodscommon/swipercommon.wxml"/>
+  </view>
+  <!--  商品基础信息  -->
+  <view class='goods-info'>
+    <view class='clearfix'>
+      <view class='goods_name'>{{ goods_name }}</view>
+      <view class='goods_share' bindtap="shareGoods">
+          <text class='iconfont iconfenxiang' style='color:{{comColor}};font-size:38rpx;'></text>
+      </view>
+    </view>
+    <block wx:if="{{ goods_ad != null }}">
+    <view class='goods_ad'>
+      {{ goods_ad }}
+    </view>
+    </block>
+    <view class='goods_price' style='color:{{comColor}}'>
+        <block wx:if="{{gd.goods_money>0}}"><text>{{gd.goods_money}}</text>元<text>+</text></block>
+        <text>{{gd.goods_integral}}</text>积分
+        <text class='money_pay' style='color:#888'>￥{{ gd.goods_gd_price }}</text>
+    </view>
+
+       <block wx:if="{{gd.labels != null && gd.labels != ''}}">
+     <view class="label-content">
+      <text class='label-style' wx:for="{{gd.labels}}" wx:key='key' style='background:{{somColor}};color:{{comColor}}'>{{item.name}}</text>
+    </view>
+    </block>
+    <view class="flex-wrp">
+      <view class="flex-item">库存：{{ gd.integral_goods_num }}{{gd.unit}}</view>
+       <view class="flex-item" style='{{gd.deliver_fee.code!=-1 ? "text-align:center" : "text-align:right"}}'>已兑换：{{gd.exchange_num}}{{gd.unit}}</view>
+      <view class="flex-item" wx:if="{{gd.deliver_fee.code!=-1}}" style='text-align:right;'>运费：0</view>
+    </view>
+  </view>
+  <view class='amount_score'>您当前拥有的积分总数为：{{gd.score}}积分</view>
+  <!-- 发货地 -->
+  <view class='deliver_place' style='margin-top:20rpx;padding:20rpx 30rpx;background:#fff;color:#353535' wx:if='{{gd.deliver_place && gd.deliver_place != ""}}'>
+    <text style='color:#888;margin-right:10rpx;'>发货地</text>  {{gd.deliver_place}}
+  </view>
+  <view class='goods-act'>
+    <include src="/pages/goodscommon/giftcommon.wxml" />
+  </view>
+
+  <!--  选择规格（包含无规格情况）  -->
+  <v-sel-spec gd="{{gd}}" show="{{show_spec}}" item_type="integral" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+    <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+      <form>
+        <view class='modal_footer_now' bindtap="OneClickBuy" style='background:{{comColor}}'>立即兑换</view>
+      </form>
+    </view>
+  </v-sel-spec>
+  <!--  选择规格  -->
+  <!-- <view class='goods-act' style='margin-bottom:20rpx;'>
+  <block wx:if="{{spec_view == '1' }}">
+      <view class='goods-spc clearfix' bindtap="specShow" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+        <view class='goods_act_title'>选择</view>
+        <view class='goods_cuxiao_info van-ellipsis' bindtap="specShow" >
+      <text wx:if="{{prd_name == undefind}}">{{ spec_name }}</text>
+            <text wx:if="{{prd_name != undefind}}">已选：" {{prd_desc}}"</text>
+        </view>
+      </view>
+  </block> -->
+  <!-- <block wx:else>
+    <view class='goods-spc clearfix' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+      <view class='modal_spec_sum clearfix'>
+        <view class='fl'>兑换数量：<block wx:if="{{gd.max_exchange_num != -1}}">(最多兑换{{gd.max_exchange_num}}{{gd.unit}})</block></view>
+        <view class='fr goods_fr'>
+          <text class="btn_minus" bindtap="btn_minus" data-num="{{good_nums}}"  style='background:#f5f5f5;color:#ccc' wx:if="{{is_min == 1}}">-</text>
+          <text class="btn_minus" bindtap="btn_minus" data-num="{{good_nums}}" style='background:#fff;color:#666' wx:if="{{is_min == 0}}">-</text>
+          <input type="number" class="btn_buy_number" value="{{good_nums}}" bindblur='get_goods_number'/>
+          <text class="btn_plus" bindtap="btn_plus" data-num="{{good_nums}}" data-max="{{gd.max_exchange_num}}" style='background:#fff;color:#666' wx:if="{{is_max == 0}}">+</text>
+          <text class="btn_plus" bindtap="btn_plus" data-num="{{good_nums}}" data-max="{{gd.max_exchange_num}}" style='background:#f5f5f5;color:#ccc' wx:if="{{is_max == 1}}">+</text>
+        </view>
+      </view>
+    </view>
+  </block>
+  </view> -->
+  <!--  评价  -->
+  <block wx:if="{{ comment_info != null }}"  >
+    <include src="/pages/goodscommon/samecomment.wxml"/>
+  </block>
+  <!-- 海报，视频，公众号和商品详情 -->
+  <include src="/pages/goodscommon/modalcommon.wxml"/>
+  <!--  底部  -->
+  <view class='footer clearfix' wx:if="{{gd.disp == 1 || gd.payment != '' || gd.business_state == 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+    <view class='footer_1'>
+      <view wx:if='{{gd.custom_service == 1}}'>
+        <button class='xiaodekfu' open-type='contact' show-message-card="true" session-from="weapp" send-message-title="{{gd.goods_name}}" send-message-path="/pages/integralitem/integralitem?integral_goods_id={{integral_goods_id}}" send-message-img="{{gd.goods_img}}" bindcontact='bindContact'></button>
+        <image src='{{ img_sercer }}' mode="widthFix"></image>
+        <view>客服</view>
+      </view>
+      <view class='back_index' bindtap='to_index' wx:if='{{gd.custom_service != 1}}'>
+          <image src='{{imageUrl}}image/wxapp/back_index_item.png' mode='widthFix'></image>
+          <view>首页</view>
+        </view>
+    </view>
+    <form>
+      <view class='footer_3' bindtap='OneClickBuy' style='background:{{comColor}}' wx:if='{{gd.integral_goods_num != 0 && gd.max_exchange_num != 0}}'>立即兑换</view>
+      <view class='footer_3' wx:if='{{gd.integral_goods_num == 0 || gd.max_exchange_num == 0}}' style='background:#ccc;color:#fff'>立即兑换</view>
+    </form>
+  </view>
+
+  <view class='footer clearfix no_check' wx:if="{{gd.disp == 0 ||  gd.shop_info.business_state != 1}}">
+      <button open-type="contact" class='con_button'></button>
+      <text class='iconfont iconkefu' style='color:{{comColor}};font-size:70rpx;'></text>
+      <view style='color:{{comColor}}'>客服</view>
+  </view>
+  <view wx:else>
+      <!-- 不在配送范围 -->
+      <view class='cannot-deliver' wx:if='{{gd.deliver_fee.code==-1}}' style='bottom:{{isIpx == 1?"165rpx;":"100rpx;"}}'>
+        注：当前所在区域不可配送
+      </view>
+    </view>
+  <!--  库存为0  -->
+  <block wx:if="{{ goods_num <= 0 || gd.is_on_sale == 0}}">
+    <view class='footer_over' bindtap='to_index' wx-if="{{goods_num <= 0}}">此商品已售罄</view>
+  </block>
+
+  <!--  规格弹框  -->
+  <!-- <action-sheet hidden="{{ specMove }}" bindchange="specActionChange">
+    <view class='modal_spec' class="drawer_box" style='height:900rpx;'>
+      <view class='modal_spec_top clearfix'>
+        <view class='modal_spec_nouse'></view>
+        <view class='modal_top_img'>
+          <image src='{{ goods_img }}' mode="widthFix"/>
+        </view>
+        <view class='modal_top_center'>
+          <text style='color:{{comColor}}' wx:if="{{item_money>0}}">{{item_money}}元+</text>
+          <text style='color:{{comColor}}'>{{ item_price }}积分</text>
+          <block wx:if="{{ kucun == true }}">
+            <view>请选择  {{ spec_name }}</view>
+          </block>
+          <block wx:else>
+            <view>库存:   {{ goods_prd_num }}</view>
+          </block>
+        </view>
+        <image src='{{ img_close }}' mode="widthFix" class='moadl_close' bindtap="specCancel" />
+      </view>
+      <view class='modal_spec_info' style='max-height:430rpx;overflow-y:scroll'>
+        <block wx:for="{{ spec_array }}" wx:key="key" wx:for-index="group_idx">
+          <view class='modal_spec_list'>
+            <view class='modal_spec_name'>{{ item.cat.name }}：</view>
+            <view class='modal_spec_other'>
+            <block wx:for="{{ item.val }}" wx:key="index">
+                <text wx:if="{{item.grayed == 0 }}" data-cat="{{item.id}}" data-key="{{index}}" data-group="{{ group_idx }}"  bindtap="{{ item.temp == 0?'specClick':''}}" style="border-color:{{ item.checked == 1?comColor:'#ccc'}};color:{{ item.checked == 1?comColor:'#333' }};background:{{ item.temp == 1  ? '#f5f5f5':'#fff'}};">{{ item.name }}</text>
+                <text wx:else data-cat="{{item.id}}" data-key="{{index}}" data-group="{{ group_idx }}"   style="border-color:#f5f5f5;color:#ccc;background:#f5f5f5;">{{ item.name }}</text>
+            </block>
+            </view>
+          </view>
+        </block>
+      </view>
+      <view class='modal_spec_sum clearfix'>
+        <view class='fl'>购买数量：<block wx:if="{{gd.max_exchange_num != -1}}">(最多兑换{{gd.max_exchange_num}}{{gd.unit}})</block></view>
+        <view class='fr goods_fr'>
+          <text class="btn_minus" bindtap="btn_minus" data-num="{{good_nums}}" data-spec="{{goods_prd_num}}" style='background:#f5f5f5;color:#ccc' wx:if="{{is_min == 1}}">-</text>
+          <text class="btn_minus" bindtap="btn_minus" data-num="{{good_nums}}" data-spec="{{goods_prd_num}}" style='background:#fff;color:#666' wx:if="{{is_min == 0}}">-</text>
+          <input type="number" class="btn_buy_number" value="{{good_nums}}"  bindblur='get_goods_number' data-num="{{good_nums}}" data-spec="{{goods_prd_num}}" data-max="{{gd.max_exchange_num}}"/>
+          <text class="btn_plus" bindtap="btn_plus" data-num="{{good_nums}}" data-spec="{{goods_prd_num}}" data-max="{{gd.max_exchange_num}}" style='background:#fff;color:#666' wx:if="{{is_max == 0}}">+</text>
+          <text class="btn_plus" bindtap="btn_plus" data-num="{{good_nums}}" data-spec="{{goods_prd_num}}" data-max="{{gd.max_exchange_num}}" style='background:#f5f5f5;color:#ccc;' wx:if="{{is_max == 1}}">+</text>
+        </view>
+      </view>
+      <view class='modal_footer'>
+      <form>
+        <view class='modal_footer_now' bindtap="OneClickBuy" style='background:{{comColor}}'>立即兑换</view>
+      </form>
+      </view>
+    </view>
+  </action-sheet> -->
+</view>
+<include src="/pages/common/footer.wxml"/>
+</block>

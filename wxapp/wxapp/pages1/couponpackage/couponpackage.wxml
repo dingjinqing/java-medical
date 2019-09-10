@@ -1,0 +1,65 @@
+<!--pages1/couponpackage/couponpackage.wxml-->
+<include src="/pages/common/header.wxml" />
+  <view class='main_container'>
+      <view class='cp_content' style='background:url({{imageUrl}}/image/wxapp/cou_package_bg1.png) no-repeat;background-size:100%;'>
+          <view class='cp_title'>{{pack_info.pack_info.pack_name}}</view>
+          <view class='cp_cou_list'>
+              <view class='cl_title'>
+                  <view class='cl_hr'><image src='{{imageUrl}}image/wxapp/cou_left_icon.png'></image></view>
+                  <view class='cl_word'>优惠券礼包</view>
+                  <view class='cl_hr'><image src='{{imageUrl}}image/wxapp/cou_right_icon.png'></image></view>
+              </view>
+              <view class='cou_list'>
+                  <view class='each_cou clearfix' wx:for='{{pack_info.pack_list}}' wx:key='key'>
+                      <view class='ec_left'>
+                          <view class='cou_money' wx:if='{{item.act_code == "voucher"}}'>￥ <text>{{item.denomination}}</text> </view>
+                          <view class='cou_money' wx:if='{{item.act_code == "discount"}}'><text>{{item.denomination}}</text> 折</view>
+                          <view class='cou_price_limit' wx:if='{{item.least_consume != null}}'>满{{item.least_consume}}元可用</view>
+                          <view class='cou_price_limit' wx:if='{{item.least_consume == null}}'>无门槛</view>
+                      </view>
+                      <view class='ec_middle'><image src='{{imageUrl}}image/wxapp/cou_midd_icon.png'></image></view>
+                      <view class='ec_right'>
+                          <view class='cou_name'>{{item.act_name}}</view>
+                          <view class='cou_goods_limit' bindtap='to_search' data-al_code='{{item.alias_code}}'>
+                              <block wx:if='{{item.is_all_goods_use == false}}'>部分商品可用</block>
+                              <block wx:if='{{item.is_all_goods_use == true}}'>全部商品可用</block>
+                              <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+                          </view>
+                          <view class='send_rule'>{{item.pack_doc}}</view>
+                          <view class='cou_time' wx:if='{{item.start_time != null}}'>{{item.start_time}} ~ {{item.end_time}}</view>
+                          <view class='cou_time' wx:if='{{item.validity != null || item.validity_hour != null || item.validity_minute != null}}'>
+                              领取后<block wx:if='{{item.validity >0}}'>{{item.validity}}天</block>
+                                    <block wx:if='{{item.validity_hour >0}}'>{{item.validity_hour}}小时</block>
+                                    <block wx:if='{{item.validity_minute >0}}'>{{item.validity_minute}}分钟</block>内有效
+                          </view>
+                          <view class='cou_num'>{{item.total_amount}}张</view>
+                          <view class='send_icons' wx:if='{{pack_info.buy_count > 0 && item.al_get_cou == item.grant_coupon.length}}'>已发放</view>
+                          <view class='send_icons' wx:if='{{pack_info.buy_count > 0 && item.al_get_cou != item.grant_coupon.length&& item.grant_coupon.length != 0}}'>部分发放</view>
+                          <view class='send_icons' wx:if='{{pack_info.buy_count > 0 && item.grant_coupon.length == 0}}'>待发放</view>
+                      </view>
+                  </view>
+              </view>
+              <block wx:if='{{pack_info.buy_count == 0}}'>
+                <form report-submit='true' bindsubmit='get_success'>
+                  <button class='btn_some' formType='submit' wx:if='{{pack_info.pack_info.access_mode == 0}}'>{{pack_info.pack_info.access_cost}}元购买</button>
+                  <button class='btn_some' formType='submit' wx:if='{{pack_info.pack_info.access_mode == 1}}'>{{pack_info.pack_info.access_cost}}积分购买</button>
+                  <button class='btn_some' formType='submit' wx:if='{{pack_info.pack_info.access_mode == 2}}'>立即领取</button>
+                </form>
+              </block>
+              <block wx:if='{{pack_info.buy_count > 0}}'>
+                  <view class='btn_some' bindtap='to_cou_list'>立即查看</view>
+                  <block wx:if='{{pack_info.buy_count < pack_info.pack_info.limit_get_times || pack_info.pack_info.limit_get_times == 0}}'>
+                      <view class='buy_again' bindtap='get_success' wx:if='{{pack_info.pack_info.access_mode == 0}}'>{{pack_info.pack_info.access_cost}}元再次购买</view>
+                      <view class='buy_again' bindtap='get_success' wx:if='{{pack_info.pack_info.access_mode == 1}}'>{{pack_info.pack_info.access_cost}}积分再次购买</view>
+                      <view class='buy_again' bindtap='get_success' wx:if='{{pack_info.pack_info.access_mode == 2}}'>再次领取</view>
+                  </block>
+              </block>
+          </view>
+          <view class='cp_cou_rule'>
+            <view class='rule_title'>活动规则：</view>
+            <text>{{pack_info.pack_info.act_rule}}</text>
+            
+          </view>
+      </view>
+  </view>
+<include src="/pages/common/footer.wxml" />

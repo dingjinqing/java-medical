@@ -1,0 +1,246 @@
+<block wx:if="{{gd.is_delete == 0}}">
+  <include src="/pages/common/header.wxml" />
+
+  <!-- 邀请分享 -->
+  <v-invite-notice invite_id="{{invite_id}}" />
+  <v-share-gooods show="{{share_good}}" bind:download_img="go_share" bind:share_message="onShareAppMessage" />
+  <view class='back_top' wx:if='{{top_display == 1&& pictorial&&specMove==true}}' bindtap='goTop'>
+    <view>
+      <image src='/images/gray_top.png'></image>
+    </view>
+    <view>顶部</view>
+  </view>
+  <view class='main-container' style='overflow:{{is_play == 1?"hidden":"auto"}}'>
+
+    <!-- 轮播图 -->
+    <view>
+      <include src="/pages/goodscommon/swipercommon.wxml"/>
+    </view>
+    <view class='lottery_price' style="background:{{comColor}}">
+      <view class='lp_price'>
+        <view class='lp_icon'>拼团抽奖</view>
+        <view class='lp_pin_p'>￥
+          <text>{{gd.group_draw.pay_money}}</text>
+        </view>
+        <view class='lp_shop_p'>￥{{gd.shop_price}}</view>
+      </view>
+      <view class='lp_time' wx:if='{{gd.surplus_second}}'>
+        <view>距结束仅剩</view>
+        <view wx:if='{{clock.length == 4}}' class='each_times'>
+          <text style='color:{{comColor}}'>{{clock[0]}}</text>天
+          <text style='color:{{comColor}}'>{{clock[1]}}</text>时
+          <text style='color:{{comColor}}'>{{clock[2]}}</text>分
+          <text style='color:{{comColor}}'>{{clock[3]}}</text>秒
+        </view>
+        <view wx:if='{{clock.length == 3}}' class='each_times'>
+          <text style='color:{{comColor}}'>{{clock[0]}}</text>时
+          <text style='color:{{comColor}}'>{{clock[1]}}</text>分
+          <text style='color:{{comColor}}'>{{clock[2]}}</text>秒
+        </view>
+      </view>
+      <view class='lp_time' wx:if='{{!gd.surplus_second}}'>
+        <view>开始时间</view>
+        <view>{{gd.group_draw.start_time}}</view>
+      </view>
+    </view>
+    <!--  商品基础信息  -->
+    <view class='goods-info'>
+      <view class='clearfix'>
+        <view class='goods_name'>
+          <text style='background:{{somColor}};color:{{comColor}};border-color:{{comColor}}'>{{gd.group_draw.limit_amount}}人团</text>{{ goods_name }}
+        </view>
+        <view class='goods_share' bindtap="shareGoods">
+          <text class='iconfont iconfenxiang' style='color:{{comColor}};font-size:38rpx;'></text>
+        </view>
+      </view>
+      <view class='goods_ad' wx:if="{{ goods_ad != null }}">
+        {{ goods_ad }}
+      </view>
+      <view class="flex-wrp">
+        <view class="flex-item" style='color:{{comColor}};text-align:left' wx:if='{{gd.join_user_num && gd.join_user_num!=undefined}}'>{{gd.join_user_num}}人已参与</view>
+        <view class="flex-item" style="text-align:right">免运费</view>
+      </view>
+    </view>
+    <!-- 发货地 -->
+  <view class='deliver_place' style='margin-top:20rpx;padding:20rpx 30rpx;background:#fff;color:#353535' wx:if='{{gd.deliver_place && gd.deliver_place != ""}}'>
+    <text style='color:#888;margin-right:10rpx;'>发货地</text>  {{gd.deliver_place}}
+  </view>
+
+   <view class='goods-act'>
+       <include src="/pages/goodscommon/giftcommon.wxml" />
+   </view>
+
+    <!--  选择规格（包含无规格情况）  -->
+    <v-sel-spec gd="{{gd}}" show="{{show_spec}}" item_type='{{buyType}}' exchang_block="{{exchang_block}}" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+      <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+        <block wx:if="{{getsq == true || click_num == true}}">
+          <view class='pin_buy' bindtap='OneClickBuy' style='background:{{comColor}}'>
+            <view class='pin_price'>
+              <text>￥{{gd.group_draw.pay_money}}</text>发起拼团抽奖
+            </view>
+            <view class='pay_notices'>(如未中奖，将全额退款至原支付账户)</view>
+          </view>
+        </block>
+        <block wx:else>
+          <button class='pin_buy' open-type="getUserInfo" bindgetuserinfo="getUserInfo" data-pt='{{1}}' style='background:{{comColor}}'>
+            <view class='pin_price'>
+              <text>￥{{gd.group_draw.pay_money}}</text>发起拼团抽奖
+            </view>
+            <view class='pay_notices'>(如未中奖，将全额退款至原支付账户)</view>
+          </button>
+        </block>
+      </view>
+    </v-sel-spec>
+    <!--  选择规格  -->
+    <!-- <view class='goods-act' wx:if="{{spec_view == '1' }}">
+      <view class='goods-spc clearfix' bindtap="specShow" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+        <view class='goods_act_title'>选择</view>
+        <view class='goods_cuxiao_info van-ellipsis' bindtap="specShow">
+      <text wx:if="{{prd_name == undefind}}">{{ spec_name }}</text>
+            <text wx:if="{{prd_name != undefind}}">已选：" {{prd_desc}}"</text>
+        </view>
+      </view>
+    </view> -->
+    <!-- 拼团抽奖规则 -->
+    <view class='pinlo_rule'>
+      <view class='pr_top' bindtap='to_rule'>
+        <view class='pt_left'>拼团抽奖玩法</view>
+        <view class='pt_right'>
+          详细说明
+          <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+      <view class='pr_content'>
+        <view class='has_icon'>
+          <view class='icon_img'>
+            <image src='{{imageUrl}}/image/wxapp/pl_icons1.png'></image>
+          </view>
+          <view class='icon_text'>付款开团</view>
+        </view>
+        <view class='one_heng'></view>
+        <view class='has_icon'>
+          <view class='icon_img'>
+            <image src='{{imageUrl}}/image/wxapp/pl_icons2.png'></image>
+          </view>
+          <view class='icon_text'>邀请好友</view>
+        </view>
+        <view class='one_heng'></view>
+        <view class='has_icon'>
+          <view class='icon_img'>
+            <image src='{{imageUrl}}/image/wxapp/pl_icons3.png'></image>
+          </view>
+          <view class='icon_text'>成团抽奖</view>
+        </view>
+        <view class='one_heng'></view>
+        <view class='has_icon'>
+          <view class='icon_img'>
+            <image src='{{imageUrl}}/image/wxapp/pl_icons4.png'></image>
+          </view>
+          <view class='icon_text'>中奖发货</view>
+        </view>
+      </view>
+      <view class='pr_bottom'>
+        <view>开奖时间：活动结束后24小时内开奖</view>
+        <view>退款说明：如未中奖，将全额退款至原支付账户</view>
+      </view>
+    </view>
+
+    <!--  评价  -->
+    <block wx:if="{{ comment_info != null }}">
+      <include src="/pages/goodscommon/samecomment.wxml"/>
+    </block>
+    <!-- 海报，视频，公众号和商品详情 -->
+    <include src="/pages/goodscommon/modalcommon.wxml"/>
+    <!--  底部  -->
+    <view class='footer clearfix' wx:if="{{gd.disp == 1 || gd.payment != '' || gd.business_state == 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+      <view class='normal_buy' bindtap='to_item' style='background:{{commonColor}};color:#fff;'>
+        <view class='nor_price'>￥{{gd.shop_price}}</view>
+        <view class='nor_word'>原价购买</view>
+      </view>
+      <block wx:if="{{ getsq == true || click_num == true}}">
+        <view class='pin_buy' bindtap='OneClickBuy' wx:if='{{gd.surplus_second}}' style='background:{{comColor}}'>
+          <view class='pin_price'>
+            <text>￥{{gd.group_draw.pay_money}}</text>发起拼团抽奖
+          </view>
+          <view class='pay_notices'>(如未中奖，将全额退款至原支付账户)</view>
+        </view>
+      </block>
+      <block wx:else>
+        <button class='pin_buy' wx:if='{{gd.surplus_second}}' style='background:{{comColor}}' open-type="getUserInfo" bindgetuserinfo="getUserInfo" data-pt="{{1}}">
+          <view class='pin_price'>
+            <text>￥{{gd.group_draw.pay_money}}</text>发起拼团抽奖
+          </view>
+          <view class='pay_notices'>(如未中奖，将全额退款至原支付账户)</view>
+        </button>
+      </block>
+      <view class='pin_buy not_begin' wx:if='{{!gd.surplus_second}}' style='background:{{comColor}}' >活动尚未开始</view>
+    </view>
+
+    <view class='footer clearfix no_check' style='padding-bottom:{{isIpx == 1?"30rpx;":"0rpx;"}}height:130rpx;' wx:if="{{gd.disp == 0 || gd.payment == '' || gd.business_state != 1 || gd.is_store_pickup == 1}}">
+       <text class='iconfont iconkefu' style='color:{{comColor}};font-size:70rpx;'></text>
+      <view style='color:{{comColor}};height:75rpx;'>客服</view>
+    </view>
+    <view wx:else>
+      <!-- 不在配送范围 -->
+      <view class='cannot-deliver' wx:if='{{gd.deliver_fee.code==-1}}' style='bottom:{{isIpx == 1?"165rpx;":"100rpx;"}}'>
+        注：当前所在区域不可配送
+      </view>
+    </view>
+
+    <!--  规格弹框  -->
+    <!-- <action-sheet hidden="{{ specMove }}" bindchange="specActionChange">
+      <view class='modal_spec' class="drawer_box" style='height:900rpx;'>
+        <view class='modal_spec_top clearfix'>
+          <view class='modal_spec_nouse'></view>
+          <view class='modal_top_img'>
+            <image src='{{ goods_img }}' mode="widthFix" />
+          </view>
+          <view class='modal_top_center'>
+            <text style='color:{{comColor}}'>￥{{ gd.group_draw.pay_money }}</text>
+            <block wx:if="{{ kucun == true }}">
+              <view>请选择 {{ spec_name }}</view>
+            </block>
+            <block wx:else>
+              <view>库存: {{ goods_prd_num }}</view>
+            </block>
+          </view>
+          <image src='{{ img_close }}' mode="widthFix" class='moadl_close' bindtap="specCancel" />
+        </view>
+        <view class='modal_spec_info' style='max-height:430rpx;overflow-y:scroll'>
+          <block wx:for="{{ spec_array }}" wx:key="key" wx:for-index="group_idx">
+            <view class='modal_spec_list'>
+              <view class='modal_spec_name'>{{ item.cat.name }}：</view>
+              <view class='modal_spec_other'>
+                <block wx:for="{{ item.val }}" wx:key="index">
+                  <text wx:if="{{item.grayed == 0 }}" data-cat="{{item.id}}" data-key="{{index}}" data-group="{{ group_idx }}" bindtap="{{ item.temp == 0?'specClick':''}}" style="border-color:{{ item.checked == 1?comColor:'#ccc'}};color:{{ item.checked == 1?comColor:'#333' }};background:{{ item.temp == 1  ? '#f5f5f5':'#fff'}};">{{ item.name }}</text>
+                  <text wx:else data-cat="{{item.id}}" data-key="{{index}}" data-group="{{ group_idx }}" style="border-color:#f5f5f5;color:#ccc;background:#f5f5f5;">{{ item.name }}</text>
+                </block>
+              </view>
+            </view>
+          </block>
+        </view>
+
+        <view class='modal_footer'>
+          <block wx:if="{{getsq == true || click_num == true}}">
+            <view class='pin_buy' bindtap='OneClickBuy' style='background:{{comColor}}'>
+              <view class='pin_price'>
+                <text>￥{{gd.group_draw.pay_money}}</text>发起拼团抽奖
+              </view>
+              <view class='pay_notices'>(如未中奖，将全额退款至原支付账户)</view>
+            </view>
+          </block>
+          <block wx:else>
+            <button class='pin_buy' open-type="getUserInfo" bindgetuserinfo="getUserInfo" data-pt='{{1}}' style='background:{{comColor}}'>
+              <view class='pin_price'>
+                <text>￥{{gd.group_draw.pay_money}}</text>发起拼团抽奖
+              </view>
+              <view class='pay_notices'>(如未中奖，将全额退款至原支付账户)</view>
+            </button>
+          </block>
+        </view>
+      </view>
+    </action-sheet> -->
+  </view>
+
+  <include src="/pages/common/footer.wxml" />
+</block>

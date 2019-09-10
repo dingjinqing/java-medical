@@ -1,0 +1,21 @@
+<include src="/pages/common/header.wxml"/>
+<view class='main-container' style='background:#fff;height:100%'  wx:if='{{lottery_list.length > 0}}'>
+    <view class='hrngxcian'></view>
+    <view class='rule_container'>
+        <view class='each_item' wx:for='{{lottery_list}}' wx:key='key'>
+            <view class='each_top clearfix'>
+                <view class='award' wx:if='{{item.lottery_type != 3 && item.lottery_type != 4}}' bindtap='to_details' data-types="{{item.lottery_type}}" >获得<text>{{item.lottery_award}}</text></view>
+                <view class='award' wx:if='{{item.lottery_type == 4}}' bindtap='to_details' data-types="{{item.lottery_type}}" >获得<text>{{item.goods_name}}</text></view>
+                <view class='award' wx:if='{{item.lottery_type == 3}}'>{{item.lottery_award}}</view>
+                <image bindtap='to_detail' data-mingxi='{{item.lottery_award}}' wx:if='{{item.lottery_type == 3 && item.is_length == 1}}' src='{{imageUrl}}/image/wxapp/lottery_path.png' mode='widthFix' class='btn_more'></image>
+                <view class='get_namae'>{{item.lottery_grade_name}}</view>
+            </view>
+            <view class='each_bottom'>{{item.add_time}}</view>
+        </view>
+    </view>
+</view>
+<view class='main-container con_img' style=" min-height:590rpx;background:#f5f5f5;"  wx:if='{{lottery_list.length == 0}}'>
+    <image src="{{imageUrl}}image/wxapp/no_record.png?v=1" mode='widthFix' />
+    <view class="p">暂无记录</view>
+</view>
+

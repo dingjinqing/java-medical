@@ -1,0 +1,11 @@
+<view class="slide-container">
+  <view class='box1 clearfix' data-cur_idx='{{m.idx}}' style='background:url({{m.imgUrl}}image/wxapp/right_into.png) no-repeat;background-size:16rpx;background-position:700rpx center'>
+    <view class='slide_title'>
+      <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>{{m.form_title}}</view>
+    <picker class='picker' bindchange="bindSelectChange" data-cur_idx='{{m.idx}}' range='{{m.select_arr}}'>
+      <view style='float: right; margin-right: 50rpx;'>
+        {{m.select}}
+      </view>
+    </picker>
+  </view>
+</view>

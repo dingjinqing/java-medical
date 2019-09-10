@@ -1,0 +1,132 @@
+@import "../../pages/memberinfo/memberinfo.wxss";
+.not_award{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index:9999; 
+}
+.zhezhao{
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+.not_award_detial{
+  width: 700rpx;
+  height: 600rpx;
+  position: absolute;
+  z-index: 100000;
+  top: 300rpx;
+  left: 25rpx;
+}
+.not_award_detial .images1{
+  width: 700rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.images2{
+  width: 550rpx;
+  position: absolute;
+  top: 60rpx;
+  left: 75rpx;
+  z-index: 999
+}
+.detail_content{
+  width:450rpx;
+  position:absolute;
+  top:215rpx;
+  left:125rpx;
+  background:#ffdfbb;
+  color:#e97600;
+  text-align: center;
+  font-size: 26rpx;
+  padding-bottom: 50rpx;
+  border-radius: 20rpx;
+}
+.detail_content .jiangpin{
+  font-size: 36rpx;
+  color: #e97600;
+}
+.detail_content>view:nth-of-type(2){
+  margin-top: 115rpx;
+}
+.detail_content>view:nth-of-type(3){
+  margin:24rpx auto;
+  /* font-weight: bold; */
+}
+.detail_content .kuai_look{
+  margin-bottom: 30rpx;
+  color: #666;
+  font-size: 24rpx;
+}
+.btn_not_award{
+  width: 200rpx;
+  height: 60rpx;
+  position: relative;
+  box-shadow: 0 10rpx 8rpx #fdc247;
+  border-radius: 50rpx;
+  margin: 0 auto
+}
+.btn_not_award button{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200rpx;
+  height: 60rpx;
+  background: linear-gradient(top,#feb83c,#fccc52);
+  background: -webkit-linear-gradient(top,#feb83c,#fccc52);
+  background: -moz-linear-gradient(top,#feb83c,#fccc52);
+  color: #fff;
+  text-align: center;
+  line-height: 60rpx;
+  border-radius: 50rpx;
+  font-size: 26rpx;
+  padding: 0;
+}
+.btn_not_award button::after{
+  border: none
+}
+.goods_gift{
+  margin-top: 20rpx;
+  width: 140rpx !important;
+  border-radius: 50%;
+}
+.actions_tit {
+position: absolute;
+top: -10rpx;
+z-index:99999;
+font-weight:bold;
+color:#fff;
+text-align:center;
+width:100%;
+}
+.text_grade{
+  font-size: 40rpx;
+  margin-left: 40rpx;
+}
+.gift_img{
+  width: 176rpx;
+  height: 176rpx;
+  border: 6rpx solid #fff;
+  border-radius: 10rpx;
+  margin: 0 auto;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+}
+.gift_img image{
+  width: 176rpx;
+  height: 176rpx;
+}
+.btn_close{
+  width: 100%;
+  position: absolute;
+  top:1140rpx;
+  left: 350rpx;
+  z-index: 1000000;
+}
+.btn_close image{
+  width: 50rpx;
+}

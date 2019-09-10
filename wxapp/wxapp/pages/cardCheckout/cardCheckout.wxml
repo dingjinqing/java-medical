@@ -1,0 +1,237 @@
+<!--pages/goodsCheckout/goodsCheckout.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <view class='all'>
+    <!-- 商品模块 -->
+    <block wx:if="{{card_info.card_type == 0 || card_info.card_type == 1}}">
+      <view class="card-top" style="background:{{ bg }};background-size:cover;height:{{ viewHeight }}px">
+        <view class='card_type clearfix'>
+          <view wx:if="{{card_info.card_type == 0}}">普通卡</view> 
+          <view wx:if="{{card_info.card_type == 1}}">限次卡</view> 
+        </view>
+        <view class="card-left">
+          <image src="{{ shop_avatar }}" class="card-image"></image> 
+          <view class="card-name">
+            <view>
+              {{ card_info.card_name }}
+            </view>
+              <block wx:if="{{card_info.expire_type == 1}}">
+                <view class="card-btm">
+                  有效期：自领取之日起{{ card_info.receive_day }}{{ data_type_name }}日内有效
+                </view> 
+              </block>
+              <block wx:elif="{{card_info.expire_type == 0}}">
+                <view class="card-btm">
+                  有效期：{{ card_info.start_time }} 至 {{ card_info.end_time }}
+                </view> 
+              </block>
+              <block wx:else>
+                <view class="card-btm">
+                  有效期：永久有效
+                </view> 
+              </block>
+          </view>  
+        </view>
+        <block wx:if="{{card_info.is_pay == 1}}">
+          <text wx:if="{{card_info.pay_type == 0}}" class="buy_card_price">￥{{card_info.pay_fee}}</text>
+          <text wx:elif="{{card_info.pay_type == 1}}" class="buy_card_price">{{card_info.pay_fee}}积分</text>
+        </block>
+      </view>
+      <!-- 会员卡END  -->
+    </block>
+    <!-- 商品模块结束 -->
+    <!-- 优惠券包 -->
+     <view class='cou_package' wx:if='{{order_action == 2}}'>
+        <view class='cou_title'>优惠券礼包</view>
+        <view class='cou_content'>
+            <view class='each_coupon clearfix' wx:for='{{cou_info}}' wx:key='key'>
+              <view class="left" style='background:{{comColor}}'>
+                <view class='coupon_xian'>
+                  <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+                </view>
+                <view class="price" wx:if='{{item.act_code == "voucher"}}'>￥<text>{{item.denomination}}</text></view>
+                <view class="price" wx:if='{{item.act_code == "discount"}}'> <text>{{item.denomination}}折</text></view>
+                <view class='name' wx:if='{{item.least_consume != null}}'>满{{item.least_consume}}元可用</view>
+                <view class='name' wx:if='{{item.least_consume == null}}'>无门槛</view>
+              </view>
+              <view class="right">
+                <view class="case">{{item.act_name}}</view>
+                <view class="click_to_detail" bindtap='to_search' data-al_code='{{item.alias_code}}'>
+                  <block wx:if='{{item.is_all_goods_use == false}}'>部分商品可用</block>
+                  <block wx:if='{{item.is_all_goods_use == true}}'>全部商品可用</block>
+                  <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image>
+                </view>
+                <view class='send_rule'>{{item.pack_doc}}</view>
+                <view class="time_canuse" wx:if='{{item.start_time != null}}'>{{item.start_time}} ~ {{item.end_time}}</view>
+                <view class="time_canuse" wx:if='{{item.validity != null}}'>自领取之日起{{item.validity}}内有效</view>
+                <view class='cou_num'>{{item.total_amount}}张</view>
+              </view>
+            </view>
+        </view>
+     </view>
+    <!-- 优惠券包结束 -->
+    <!-- 支付方式 -->
+    <view class='payway' wx:if="{{goods.pay_type == 0 || goods.access_mode == 0}}">
+      <view class='pay_title'>支付方式</view>
+      <view class='hr'></view>
+      <view class='payment'>
+        <radio-group bindchange="radioChange">
+          <view> <radio color='{{comColor}}' name='pay_way' value="wxpay" checked/> 微信支付</view>
+        </radio-group>
+      </view>
+    </view>
+
+    <!-- 支付方式结束 -->
+    <!-- 会员卡，优惠券，积分，余额 -->
+    <view class='pay_type'>
+      <!-- 优惠券的会员卡 -->
+      <block wx:if='{{order_info.member_card_list && order_info.member_card_list != ""}}'>
+        <view class='choose_coupon' bindtap='cardClick' style='padding:24rpx 0;' >
+          <view>会员卡</view>
+          <view style='margin:0;'>
+            <block wx:if="{{ card_choose_name }}">
+              <text style='margin-right:10rpx;'>{{ card_choose_name }}</text>
+            </block>
+            <block wx:else>
+              <text style='margin-right:30rpx;'>选择会员卡</text>
+            </block>
+            <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
+          </view>
+        </view>
+        <view class='hr'></view>
+        <!-- 会员卡余额 -->
+        <view class='yue_pay'>
+          <view>会员卡余额支付:</view>
+          <view class='pay_two'>
+            <input style='width:220rpx;position:relative;top:-6rpx;' placeholder="{{(card_account_pay_control == 1 && create_order.money_paid > 0) ? (create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid) : ''  }}" bindfocus='mem_fo' bindblur='member_card' value="{{member_card_input}}" />
+          </view>
+          <view style="{{card_account_pay_control != 0 ? 'text-align: right;' : ''}}">
+            <text wx:if='{{card_account_pay_control == 1}}'>您有￥{{user_money.member_card_money}}余额</text>
+            <text style='color:{{comColor}}' wx:if='{{card_account_pay_control == 2}}'>减{{create_order.member_card_balance}}元</text>
+          </view>
+          <view wx:if='{{card_account_pay_control == 0 && !(create_order.member_card_balance && create_order.member_card_balance > 0)}}'>
+            <text class='pay_icon_text'>可用会员卡余额{{create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid }}元支付</text>
+            <image src='{{imageUrl}}image/wxapp/checkout_circle.png'></image>
+          </view>
+        </view>
+        <view class='hr'></view>
+      </block>
+      <!-- 余额 -->
+      <!-- <view class='yue_pay' wx:if="{{goods.pay_type == 0 || goods.access_mode == 0}}">
+        <view>余额支付:</view>
+        <view class='pay_two'>
+          <input style='width:220rpx;' placeholder="请输入" bindblur='user_account' bindfocus='yue_fo' value="{{user_account_input}}"/>
+        </view>
+        <view>
+          <text style='color:{{comColor}}' wx:if='{{hahh == 0 && create_order.account_discount && create_order.account_discount!=0}}'>减{{create_order.account_discount}}元</text>
+          <block wx:if='{{hahh == 1}}'>您有{{user_money.account}}元余额</block>
+          
+        </view>
+      </view> -->
+      <block wx:if='{{order_info.account != 0}}'>
+        <view class='yue_pay' wx:if="{{goods.pay_type == 0 || goods.access_mode == 0}}">
+          <view>余额支付:</view>
+          <view class='pay_two'>
+            <input style='width:200rpx;position:relative;top:-6rpx' focus='{{yue_focus}}' placeholder="{{(account_pay_control == 1 && create_order.money_paid > 0) ? (create_order.money_paid - user_money.account > 0 ? user_money.account : create_order.money_paid) : ''  }}" bindblur='user_account'  bindfocus='yue_fo' value="{{user_account_input}}" bindinput="user_account_input"/>
+          </view>
+          <view bindtap='yue_focus' style="{{account_pay_control != 0 ? 'text-align: right;' : ''}}">
+            <text wx:if='{{account_pay_control == 1}}'>您有￥{{user_money.account}}余额</text>
+            <text style='color:{{comColor}}' wx:if='{{account_pay_control == 2}}'>减{{create_order.account_discount}}元</text>
+          </view>
+          <view bindtap='yue_focus' wx:if='{{account_pay_control == 0 && !(create_order.account_discount && create_order.account_discount > 0)}}'>
+            <text class='pay_icon_text'>可用余额{{ create_order.money_paid - user_money.account > 0 ? user_money.account : create_order.money_paid }}元支付</text>
+            <image src='{{imageUrl}}image/wxapp/checkout_circle.png'></image>
+          </view>
+        </view>
+      </block>
+      <!-- 积分支付 -->
+      <block wx:if="{{goods.pay_type == 1 || goods.access_mode == 1}}">
+        <view class='score_pay'>
+          <view>积分支付:</view>
+          <view class='pay_two' style="top:0rpx;">{{ create_order.score_discount * user_money.score_ratio }}积分</view>
+        </view>
+        <view class='hr'></view>
+      </block>
+    </view>
+
+    <!-- 备注 -->
+    <view class='wechat' wx:if='{{order_action == 1}}'>
+      <view class='remarks' style='padding-top:{{shop_flag == 1?"20rpx":"0"}}'>
+        <view>备注：</view>
+        <view><input placeholder="请输入给店铺的留言，可不填写" value='' bindblur='addMsg'/></view>
+      </view>
+    </view>
+
+    <!-- 商品总计 -->
+    <view class='checkout_detail'>
+      <!-- 会员卡 -->
+      <block>
+        <view class='price_amount'>
+          <view>商品总计</view>
+          <view style='color:{{comColor}}'>{{ goods.pay_type == 0 || goods.access_mode == 0 ? '￥'+ create_order.order_amount : create_order.order_amount*100 + '积分' }}</view>
+        </view>
+        <view class='pay_nums' wx:if="{{create_order.account_discount > 0}}">
+          <view>余额支付</view>
+          <view style='color:{{comColor}}'>-￥{{create_order.account_discount}}</view>
+        </view>
+        <view class='pay_nums' wx:if="{{create_order.member_card_balance > 0}}">
+          <view>会员卡余额支付</view>
+          <view style='color:{{comColor}}'>-￥{{create_order.member_card_balance}}</view>
+        </view>
+        <view class='pay_nums' wx:if="{{create_order.score_discount > 0 && order_action == 1}}">
+          <view>积分抵扣</view>
+          <view style='color:{{comColor}}'>-{{create_order.score_discount*100}}积分</view>
+        </view>
+      </block>
+    </view>
+    <!-- 商品总计结束 -->
+
+    <!--  服务承诺 -->
+    <!-- <view class='service_terms clearfix' wx:if="{{create_order.service_terms == 1}}">
+     <text catchtap='checkService' class="iconfont {{create_order.service_choose == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text>
+      <view class='pre_title'>同意《{{create_order.service_name}}》</view>
+      <view class='invo_tit' bindtap='toRule'>查看详情 <image src='{{imageUrl}}image/wxapp/right_into.png'></image></view>
+    </view> -->
+
+    <!-- 提交订单 -->
+    <view class='check_bottom'>
+    <view wx:if="{{create_order.score_discount > 0}}" style='color:{{comColor}}'>应付积分：{{create_order.score_discount*100}}积分</view>
+      <view wx:else style='color:{{comColor}}'>应付余额：{{create_order.money_paid}}元</view>
+
+      <form bindsubmit='order_confirm' report-submit='true'>
+          <button form-type='submit' style='background:{{comColor}}'>提交订单</button>
+      </form>
+    </view>
+    <!-- 应付余额结束 -->
+
+
+  </view>
+  <!--  会员卡弹框  -->
+  <action-sheet hidden="{{ cardMode }}">
+    <view class='action_title'>
+      会员卡
+      <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="cardCancel" class='pro_close' />
+    </view>
+    <view style='height:800rpx;overflow-y:scroll;padding-bottom:110rpx;'>
+      <block wx:if="{{ card_array.length != 0 }}" wx:for="{{card_array}}" wx:key="index">
+        <view class="card_list clearfix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.card_name }}" data-card_no="{{ item.card_no }}">
+          <view class="card_choose">
+            <image src="{{ item.card_src }}" wx:if='{{item.card_src != 1}}' mode="widthFix" />
+            <text class='iconfont icondanxuan' style='font-size:40rpx;color:{{comColor}}' wx:if='{{item.card_src == 1}}'></text>
+          </view>
+          <view class='card_info'>
+            <view style='background:{{ item.bg }};background-size:cover;' class='card_new_de'>
+              <image src="{{ item.shop_logo }}" mode="widthFix" />
+              <view class='card_infos'>
+                <view class='car_names' style='font-weight:bold;'>{{ item.card_name }}</view>
+                <view class='car_discount' wx:if="{{item.discount}}">余额 {{ item.member_card_money}}</view>
+                <view class='shjjian' wx:if="{{item.card_type==0}}">过期时间: {{item.expire_time == null ? '永久有效' : item.expire_time}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class='card_sure' bindtap='cardConfirm' style='background:{{comColor}}'>确定</view>
+  </action-sheet>
+</view>

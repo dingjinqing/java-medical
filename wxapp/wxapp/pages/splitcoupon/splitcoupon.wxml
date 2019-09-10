@@ -1,0 +1,43 @@
+<include src="../common/header.wxml"/>
+<view class='main-container'>
+  <view class='all'>
+      <view class='sc_content' style='background:url("{{imageUrl}}image/wxapp/split_coupon_bg.png") no-repeat;background-size:100% 100%'>
+        <!-- 已领取   -->
+          <view class='top_tips' wx:if="{{split_info.error=='-4'}}">
+            <view class='tt_top'>您已经领取过该优惠券</view>
+            <view class='tt_bottom'>只能领一次哦</view>
+          </view> 
+        <!--已过期  -->
+          <view class='top_tips' wx:if="{{split_info.error=='-3'}}">
+            <view class='tt_top'>该优惠券已过期</view>
+            <view class='tt_bottom'>下次早点来哦</view>
+          </view>
+        <!-- 已抢光 -->
+          <view class='top_tips' wx:if="{{split_info.error=='-2' || split_info.error=='-1'}}">
+            <view class='tt_top'>抢光啦！</view>
+            <view class='tt_bottom'>祝您下次好运哦</view>
+          </view>
+        <!--立即领取  -->
+          <view class='top_tips' wx:if="{{split_info.error=='0'}}">
+            <view class='tt_top'>送您1张优惠券</view>
+            <view class='tt_bottom use_expire' wx:if="{{split_info.coupon.validity == null}}">有效期：{{split_info.start_time}}-{{split_info.end_time}}</view> 
+            <view class='tt_bottom use_expire' wx:if="{{split_info.coupon.validity != null}}">有效期：自领取之日起{{split_info.coupon.validity}}日内有效</view>
+          </view>
+      </view>
+      <view class='btn_content'>
+        <!--已过期和已抢光  -->
+          <view class='btn_to_index' wx:if="{{split_info.error=='-3' || split_info.error == '-2'|| split_info.error=='-1'}}" bindtap='goIndex'>进店逛逛</view>
+        <!--已领取  -->
+        <view wx:if="{{split_info.error=='-4'}}" style='display:flex;width:590rpx;margin:0 auto;'>
+          <view class='already_get' wx:if="{{split_info.error=='-4'}}" bindtap='get_this_coupon'>查看领取详情</view>
+          <view class='already_get' wx:if="{{split_info.error=='-4'}}" bindtap='goIndex'>进店逛逛</view>
+        </view>
+        <!--立即领取  -->
+          <view class='get_notice' wx:if="{{split_info.error=='0'}}">您的好友送您1张优惠券，赶快来领取吧~</view>
+          <form class='btn_to_get' report-submit='true' bindsubmit='get_this_coupon'  wx:if="{{split_info.error=='0'}}">
+              <button form-type='submit'>立即领取</button>
+          </form>
+      </view>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>

@@ -1,0 +1,375 @@
+<include src="../common/header.wxml" />
+<view class='main_container' style='padding-bottom:80rpx;min-height:{{full_info.list =="" && purchase_info.list == "" && normal_info.list == ""?"860rpx":"850rpx;"}}'>
+
+  <!-- 优惠券包 -->
+  <view class='cou_package' wx:if='{{pack_info.length > 0}}' bindtap='show_list'>
+    <view>领券最高减{{pack_info[0].total_value}}元</view>
+    <view class='to_get_cou'>领券
+      <image src="{{imageUrl}}image/wxapp/right_into_color.png" mode='widthFix'></image>
+    </view>
+  </view>
+  <block wx:if='{{full_info.list =="" && purchase_info.list == "" && normal_info.list == "" && invalid_goods.list == ""}}'>
+    <view class="con_img" style='height:{{has_reco_goods == 1?"400rpx":"72%"}};background:{{has_reco_goods == 1?"#fff":"#f5f5f5"}}'>
+      <image src="{{imageUrl}}image/wxapp/common_cart_no.png?v=1" mode='widthFix' style='margin-top:{{has_reco_goods == 1?"0":"350rpx"}}' />
+      <view class="p">购物车竟然是空的</view>
+      <view class='btn_to_index' bindtap='go_index' style='background:{{comColor}}'>随便逛逛</view>
+    </view>
+  </block>
+  <block wx:else>
+    <!-- 普通商品 -->
+    <view class='normal_goods_container putong'>
+      <!-- 秒杀标识 -->
+      <view class='enen' wx:for='{{normal_info.list}}' wx:key='key'>
+        <view class='sec_kill_area' style='background:{{somColor}};' wx:if='{{item.goods_type == 5}}' bindtap='to_seckill' data-seckill_id='{{item.seckill_id}}'>
+          <view class='sec_left'>
+            <view class='sec_icon' style='background:{{comColor}};'>秒杀</view>
+            <view class='sec_tips'>该商品正在参与秒杀</view>
+          </view>
+          <view class='sec_right'>
+            <view class='go_kill' style='color:{{comColor}}'>去抢购</view>
+            <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+        </view>
+        <view class='normal_goods clearfix' data-id="{{item.rec_id}}" bindtouchstart="drawStart" data-check_action='{{0}}' bindtouchmove="drawMove" bindtouchend="drawEnd" style="margin-left:{{item.right}}px">
+          <view class='btn_check' bindtap='{{item.tip?(item.tip == "专享商品" ? "card_exclusive" :""):"check_single_goods"}}' data-keys='{{index}}' data-act='{{0}}'>
+            <image wx:if='{{item.is_checked == 0}}' src='{{imageUrl}}/image/wxapp/icon_rectangle.png'></image>
+            <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx' wx:if='{{item.is_checked == 1}}'></text>
+          </view>
+          <view class='n_goods_info'>
+            <view class='ng_left' bindtap='to_goods' data-goods_id='{{item.goods_id}}' data-tips='{{item.tip}}'>
+              <image src='{{item.goods_img}}'></image>
+              <view class='no_click_tips' wx:if='{{item.tip}}'>{{item.tip}}</view>
+            </view>
+            <view class='ng_right'>
+              <view class='ng_goods_name'>{{item.goods_name}}</view>
+              <view class='ng_goods_desc' wx:if='{{item.goods_specs !=""}}'>{{item.goods_specs}}</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{item.less_money > 0 && !item.limit_amount && item.prd_number >= 5}}'>比加入时降了{{item.less_money}}元</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{item.limit_amount > 0}}'>限购{{item.limit_amount}}件</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{!item.limit_amount &&  item.prd_number < 5}}'>库存紧张</view>
+              <view class='ng_goods_price'>
+                <view class='ng_price'>
+                  <view class='member_icon' wx:if='{{item.goods_price_action == 1}}'>会员价</view>
+                  <view class='reduce_icon' wx:if='{{item.goods_price_action == 2}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+                  <view class='reduce_icon' wx:if='{{item.goods_price_action == 3 || item.goods_price_action == 4}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
+                  <view class='goods_prices' style='color:{{comColor}}'>￥
+                    <text>{{item.goods_price}}</text>
+                  </view>
+                </view>
+                <view class='ng_number clearfix'>
+                  <view class='btn_jian' data-act_in='{{0}}' data-act='{{0}}' catchtap='{{item.tip ? "":"btn_del_each"}}' data-indexs="{{index}}" style='background:{{item.is_less == 1 || item.tip?"#f5f5f5":"#fff"}};color:{{item.is_less == 1?"#ccc":"#666"}}'>-</view>
+                  <input type='number' data-act='{{0}}' data-act_in='{{0}}' value='{{item.goods_number}}' bindblur='{{item.tip ? "":"inp_each"}}' data-indexs="{{index}}" class='goods_num_input' />
+                  <view class='btn_add' data-act='{{0}}' data-act_in='{{0}}' bindtap='{{item.tip ? "":"btn_add_each"}}' data-indexs="{{index}}" style='background:{{item.is_most == 1 || item.tip?"#f5f5f5":"#fff"}};color:{{item.is_most == 1?"#ccc":"#666"}}'>+</view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class='del_btn' data-del_id="{{item.rec_id}}" bindtap='good_del' style='background:{{comColor}}'>删除</view>
+        </view>
+        <!--  促销活动部分-->
+        <view class='change_fullact' bindtap='proClcik' wx:if='{{item.can_join_activity != "" && item.can_join_activity}}' data-act_id='{{item.identity_id}}' data-this_rec_id='{{index}}' data-acts='{{0}}' data-rec_id='{{item.rec_id}}'>
+          <view class='cf_left'>
+            <view>促销</view>
+            <view>{{item.can_join_activity[0].name}}</view>
+          </view>
+          <view class='cf_right'>
+            <view>修改</view>
+            <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 满折满减 -->
+    <view class='full_cut_area manzhe' wx:for='{{full_info.list}}' wx:if='{{full_info.list!=""}}' wx:key='key' wx:for-item='item1'>
+      <view class='act_info clearfix' bindtap='to_fullpage' data-ids='{{item1.identity_id}}'>
+        <view class='ai_left'>
+          <view class='full_member_icon' wx:if='{{item1.is_exclusive == 1 && item1.is_can_buy == 0}}'>会员</view>
+          <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
+          <view class='act_content' style='width:350rpx;'>{{item1.condition}}</view>
+        </view>
+        <view class='go_full clearfix'>
+          <view style='color:{{comColor}}'>{{item1.operate_doc}}</view>
+          <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+      <view wx:for="{{item1.goods_list}}" wx:key='key' wx:for-item='item2' wx:for-index='idnex2' class='enen'>
+        <!-- 秒杀标识 -->
+        <view class='sec_kill_area' style='background:{{somColor}};' wx:if='{{item.goods_type == 5}}' bindtap='to_seckill' data-seckill_id='{{item.seckill_id}}'>
+          <view class='sec_left'>
+            <view class='sec_icon' style='background:{{comColor}};'>秒杀</view>
+            <view class='sec_tips'>该商品正在参与秒杀</view>
+          </view>
+          <view class='sec_right'>
+            <view class='go_kill' style='color:{{comColor}}'>去抢购</view>
+            <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+        </view>
+        <view class='normal_goods clearfix' data-id="{{item2.rec_id}}" data-activity_ids='{{item1.identity_id}}' data-check_action='{{item2.action}}' bindtouchstart="drawStart" bindtouchmove="drawMove" bindtouchend="drawEnd" style="margin-left:{{item2.right}}px">
+          <view class='btn_check' bindtap='{{item2.tip?(item2.tip == "专享商品" ? "card_exclusive" : ""):"check_single_goods" }}' data-keys='{{idnex2}}' data-act='{{2}}' data-index_big='{{item1.identity_id}}'>
+            <image wx:if='{{item2.is_checked == 0}}' src='{{imageUrl}}/image/wxapp/icon_rectangle.png'></image>
+            <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx' wx:if='{{item2.is_checked == 1}}'></text>
+          </view>
+          <view class='n_goods_info'>
+            <view class='ng_left' bindtap='to_goods' data-goods_id='{{item2.goods_id}}' data-tips='{{item2.tip}}'>
+              <image src='{{item2.goods_img}}'></image>
+              <view class='no_click_tips' wx:if='{{item2.tip}}'>{{item2.tip}}</view>
+            </view>
+            <view class='ng_right'>
+              <view class='ng_goods_name'>{{item2.goods_name}}</view>
+              <view class='ng_goods_desc' wx:if="{{item2.goods_specs != ''}}">{{item2.goods_specs}}</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{item2.less_money > 0 && !item2.limit_amount && item2.prd_number >= 5}}'>比加入时降了{{item2.less_money}}元</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{item2.limit_amount > 0}}'>限购{{item2.limit_amount}}件</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{!item2.limit_amount &&  item2.prd_number < 5}}'>库存紧张</view>
+              <view class='ng_goods_price'>
+                <view class='ng_price'>
+                  <view class='member_icon' wx:if='{{item2.goods_price_action == 1}}'>会员价</view>
+                  <view class='reduce_icon' wx:if='{{item2.goods_price_action == 2 }}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+                  <view class='reduce_icon' wx:if='{{item2.goods_price_action == 3 || item2.goods_price_action == 4}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
+                  <view class='goods_prices' style='color:{{comColor}}'>￥
+                    <text>{{item2.goods_price}}</text>
+                  </view>
+                </view>
+                <view class='ng_number clearfix'>
+                  <view class='btn_jian' data-act='{{2}}' data-act_in='{{item1.identity_id}}' catchtap='btn_del_each' data-indexs="{{idnex2}}" style='background:{{item2.is_less == 1?"#f5f5f5":"#fff"}};color:{{item2.is_less == 1?"#ccc":"#666"}}'>-</view>
+                  <input type='number' data-act='{{2}}' data-act_in='{{item1.identity_id}}' value='{{item2.goods_number}}' bindblur='inp_each' data-indexs="{{idnex2}}" class='goods_num_input' />
+                  <view class='btn_add' data-act='{{2}}' data-act_in='{{item1.identity_id}}' bindtap='btn_add_each' data-indexs="{{idnex2}}" style='background:{{item2.is_most == 1?"#f5f5f5":"#fff"}};color:{{item2.is_most == 1?"#ccc":"#666"}}'>+</view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class='del_btn' data-del_id="{{item2.rec_id}}" bindtap='good_del' style='background:{{comColor}}'>删除</view>
+        </view>
+        <!--  促销活动部分-->
+        <view class='change_fullact' bindtap='proClcik' wx:if='{{item2.can_join_activity != "" && item2.can_join_activity}}' data-act_id='{{item1.identity_id}}' data-this_rec_id='{{idnex2}}' data-acts='{{2}}' data-rec_id='{{item2.rec_id}}'>
+          <view class='cf_left'>
+            <view>促销</view>
+            <view>{{item2.can_join_activity[0].name}}</view>
+          </view>
+          <view class='cf_right'>
+            <view>修改</view>
+            <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 加价购 -->
+    <view class='full_cut_area purcvhase' wx:for='{{purchase_info.list}}' wx:key='key' wx:for-item='item3'>
+      <view class='act_info clearfix' style='padding-bottom:20rpx;' bindtap='to_purchase' data-ids='{{item3.identity_id}}'>
+        <view class='ai_left'>
+          <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
+          <view class='act_content'>{{item3.condition}}</view>
+        </view>
+        <view class='go_full clearfix'>
+          <view style='color:{{comColor}}'>{{item3.operate_doc}}</view>
+          <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+      <view wx:for='{{item3.goods_list}}' wx:key='key' wx:for-item='item4' wx:for-index='index4' class='enen' wx:if='{{item4.extend_id == 0}}'>
+        <!-- 秒杀标识 -->
+        <view class='sec_kill_area' style='background:{{somColor}};' wx:if='{{item.goods_type == 5}}' bindtap='to_seckill' data-seckill_id='{{item.seckill_id}}'>
+          <view class='sec_left'>
+            <view class='sec_icon' style='background:{{comColor}};'>秒杀</view>
+            <view class='sec_tips'>该商品正在参与秒杀</view>
+          </view>
+          <view class='sec_right'>
+            <view class='go_kill' style='color:{{comColor}}'>去抢购</view>
+            <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+        </view>
+        <view class='normal_goods clearfix' data-id="{{item4.rec_id}}" data-activity_ids='{{item3.identity_id}}' data-check_action='{{item4.action}}' bindtouchstart="drawStart" bindtouchmove="drawMove" bindtouchend="drawEnd" style="margin-left:{{item4.right}}px">
+          <view class='btn_check' bindtap='{{item4.tip?(item4.tip == "专享商品" ? "card_exclusive" : ""):"check_single_goods"}}' data-keys='{{index4}}' data-act='{{1}}' data-index_big='{{item3.identity_id}}'>
+            <image wx:if='{{item4.is_checked == 0}}' src='{{imageUrl}}/image/wxapp/icon_rectangle.png'></image>
+            <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx' wx:if='{{item4.is_checked == 1}}'></text>
+          </view>
+          <view class='n_goods_info'>
+            <view class='ng_left' bindtap='to_goods' data-goods_id='{{item4.goods_id}}' data-tips='{{item4.tip}}'>
+              <image src='{{item4.goods_img}}'></image>
+              <view class='no_click_tips' wx:if='{{item4.tip}}'>{{item4.tip}}</view>
+            </view>
+            <view class='ng_right'>
+              <view class='ng_goods_name'>{{item4.goods_name}}</view>
+              <view class='ng_goods_desc' wx:if="{{item4.goods_specs!=''}}">{{item4.goods_specs}}</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{item4.less_money > 0 && !item4.limit_amount && item4.prd_number >= 5}}'>比加入时降了{{item4.less_money}}元</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{item4.limit_amount > 0}}'>限购{{item4.limit_amount}}件</view>
+              <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{!item4.limit_amount &&  item4.prd_number < 5}}'>库存紧张</view>
+              <view class='ng_goods_price'>
+                <view class='ng_price'>
+                  <view class='member_icon' wx:if='{{item4.goods_price_action == 1}}'>会员价</view>
+                  <view class='reduce_icon' wx:if='{{item4.goods_price_action == 2}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+                  <view class='reduce_icon' wx:if='{{item4.goods_price_action == 3 || item4.goods_price_action == 4}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
+
+                  <view class='goods_prices' style='color:{{comColor}}'>￥
+                    <text>{{item4.goods_price}}</text>
+                  </view>
+                </view>
+                <view class='ng_number clearfix'>
+                  <view class='btn_jian' data-act='{{1}}' data-act_in='{{item3.identity_id}}' catchtap='btn_del_each' data-indexs="{{index4}}" style='background:{{item4.is_less == 1?"#f5f5f5":"#fff"}};color:{{item4.is_less == 1?"#ccc":"#666"}}'>-</view>
+                  <input type='number' data-act='{{1}}' data-act_in='{{item3.identity_id}}' value='{{item4.goods_number}}' bindblur='inp_each' data-indexs="{{index4}}" class='goods_num_input' />
+                  <view class='btn_add' data-act='{{1}}' data-act_in='{{item3.identity_id}}' bindtap='btn_add_each' data-indexs="{{index4}}" style='background:{{item4.is_most == 1?"#f5f5f5":"#fff"}};color:{{item4.is_most == 1?"#ccc":"#666"}}'>+</view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class='del_btn' data-del_id="{{item4.rec_id}}" bindtap='good_del' style='background:{{comColor}}'>删除</view>
+        </view>
+        <!--  促销活动部分-->
+        <view class='change_fullact' wx:if='{{item4.can_join_activity != "" && item4.can_join_activity}}' bindtap='proClcik' data-act_id='{{item3.identity_id}}' data-this_rec_id='{{index4}}' data-acts='{{1}}' data-rec_id='{{item4.rec_id}}'>
+          <view class='cf_left'>
+            <view>促销</view>
+            <view>{{item4.can_join_activity[0].name}}</view>
+          </view>
+          <view class='cf_right'>
+            <view>修改</view>
+            <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+        </view>
+
+      </view>
+      <!-- 换购商品部分 -->
+      <view class='change_goods_area'>
+        <view class='each_cga_goods clearfix' wx:for='{{item3.goods_list}}' wx:key='key' wx:for-item='item4' wx:if='{{item4.extend_id > 0}}'>
+          <view class='cga_left'>
+            <image src='{{item4.goods_img}}' class='cg_img'></image>
+            <image wx:if='{{item4.tip}}' class='no_change_img' src='{{imageUrl}}/image/wxapp/no_change_icon.png'></image>
+          </view>
+          <view class='cga_right'>
+            <view class='cga_names'>
+              <text class='cga_icons' style='color:{{comColor}};border-color:{{comColor}}'>换购</text>{{item4.goods_name}}
+            </view>
+            <view class='cga_specs' wx:if="{{item4.goods_specs!=''}}">{{item4.goods_specs}}</view>
+            <view class='cga_price_info'>
+              <view class='cga_rice'>
+                <view class='cga_market' style='color:{{comColor}}'>￥{{item4.goods_price}}</view>
+              </view>
+              <view class='cga_nums'>X{{item4.goods_number}}</view>
+            </view>
+          </view>
+          <view class='del_btn' data-del_id="{{item4.rec_id}}" bindtap='good_del' style='background:{{comColor}}'>删除</view>
+        </view>
+      </view>
+    </view>
+    <view class='normal_goods_container putong' wx:if="{{invalid_goods.list.length > 0}}">
+      <view style="display:flex; justify-content:space-between; padding: 0 20rpx; line-height: 90rpx;margin-top:20rpx;" class='invalid_goods_header'>
+        <view>失效商品
+          <text style='color:{{comColor}}'>{{ invalid_goods.list.length }}</text>件</view>
+        <text style='color:{{comColor}}' bindtap='remove_invalid_goods'>清空</text>
+      </view>
+      <view wx:for='{{invalid_goods.list}}' wx:key='key' class='enen' style="{{index == 0 ? 'margin-top:0px' : ''}}">
+        <view class='normal_goods clearfix' data-id="{{item.rec_id}}" bindtouchstart="drawStart" data-check_action='{{item.action}}' bindtouchmove="drawMove" bindtouchend="drawEnd" style="margin-left:{{item.right}}px">
+          <view class='btn_check' data-keys='{{index}}' data-act='{{99}}'>
+            <image wx:if='{{item.is_checked == 0}}' src='{{imageUrl}}/image/wxapp/icon_rectangle.png'></image>
+          </view>
+          <view class='n_goods_info'>
+            <view class='ng_left' bindtap='to_goods' data-goods_id='{{item.goods_id}}' data-tips='{{item.tip}}'>
+              <image src='{{item.goods_img}}'></image>
+              <view class='no_click_tips' wx:if='{{item.tip}}'>{{item.tip}}</view>
+            </view>
+            <view class='ng_right'>
+              <view class='ng_goods_name'>{{item.goods_name}}</view>
+              <view class='ng_goods_desc' wx:if='{{item.goods_specs !=""}}'>{{item.goods_specs}}</view>
+              <view class='ng_goods_price'>
+                <view class='ng_price'>
+                  <view class='goods_prices' style='color:{{comColor}}'>￥
+                    <text>{{item.goods_price}}</text>
+                  </view>
+                </view>
+                <view class='ng_number clearfix'>
+                  <view class='btn_jian' data-act_in='{{99}}' data-act='{{99}}' catchtap='' data-indexs="{{index}}" style='background:#f5f5f5;color:#ccc'>-</view>
+                  <input type='number' data-act='{{99}}' data-act_in='{{99}}' value='{{item.goods_number}}' bindblur='' data-indexs="{{index}}" class='goods_num_input' disabled='true' />
+                  <view class='btn_add' data-act='{{99}}' data-act_in='{{99}}' bindtap='' data-indexs="{{index}}" style='background:#f5f5f5;color:#ccc'>+</view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class='del_btn' data-del_id="{{item.rec_id}}" bindtap='good_del' style='background:{{comColor}}'>删除</view>
+        </view>
+      </view>
+    </view>
+    <navigator class='to_goods_list' wx:if='{{cart_info.wx_shopping_list_enbaled == 1}}' target="miniProgram" app-id='wx56c8f077de74b07c' open-type="navigate" path="/open/function-introduction/function-introduction" version="release" extra-data='' hover-class='none'>
+      <image src='{{imageUrl}}/image/wxapp/stodownload1.jpg' mode='widthFix'></image>
+      <view>已同步至好物圈</view>
+    </navigator>
+  </block>
+  <!-- 底部 -->
+  <block wx:if='{{full_info.list !="" || purchase_info.list != ""  || normal_info.list != "" }}'>
+    <view class="footer_fixed" style="bottom:{{show_bottom?'100rpx':'0'}};padding-bottom:{{isIpx == 1?'60rpx':'0'}}" wx:if='{{cart_info.is_can_payment == 1 && cart_info.business_state == 1}}'>
+      <view class="ff_left" bindtap="all_choose">
+        <image src="{{imageUrl}}/image/wxapp/icon_rectangle.png" wx:if='{{cart_info.list.is_all_checked == 0}}'></image>
+        <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx;margin-left:20rpx;margin-right:10rpx;' wx:if='{{cart_info.list.is_all_checked == 1}}'></text> 全选
+      </view>
+      <view class='ff_right'>
+        <view class="total-price22">合计：
+          <text style="color:{{comColor}};">￥{{cart_info.list.total_price}}</text>
+        </view>
+        <button class="btn" bindtap='to_checked' style='background:{{comColor}}'>去结算</button>
+      </view>
+    </view>
+  </block>
+  <view class='end_page' style="bottom:{{show_bottom?'100rpx':'0'}};padding-bottom:{{isIpx == 1?'60rpx':'0'}}" wx:if='{{cart_info.is_can_payment == 0 || cart_info.business_state == 0}}'>
+    <button open-type="contact"></button>
+    <text class='iconfont iconkefu' style='color:{{comColor}};font-size:70rpx;'></text>
+    <view style='color:{{comColor}}'>客服</view>
+  </view>
+  <!-- 扫码购 start-->
+  <view class="scancodebuy" wx:if="{{options.store_id > 0}}" style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}});border-color:{{somColor}}' bindtap="scanBuy">
+
+    <image src="{{imageUrl}}/image/wxapp/scancode_bigqr.png" />
+  </view>
+  <!-- 扫码购 end-->
+  <!-- 推荐商品 start-->
+  <v-goods-recommend page-name='cart'></v-goods-recommend>
+  <!-- 推荐商品 end -->
+  <!-- 切换促销活动弹框  -->
+  <action-sheet hidden="{{proMode}}" bindchange="proActionSheetChange">
+    <view class='promotion' hidden="{{ proMode }}">
+      <view class='pro_title'>
+        切换促销活动
+        <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" bindtap="proCancel" class='pro_close' />
+      </view>
+      <view class='pro_content'>
+        <view class='pro_tips' wx:if='{{if_fullprice != 0 || if_purchase != 0}}'>
+          <image src='{{imageUrl}}/image/wxapp/main_goods_notice.png' mode='widthFix'></image>
+          <view wx:if='{{if_fullprice == 1 && if_purchase == 0}}'>参与满折满减活动，不与优惠券、会员卡折扣叠加使用</view>
+          <view wx:if='{{if_fullprice == 0 && if_purchase == 1}}'>参与加价购活动，不与优惠券、会员卡折扣叠加使用</view>
+          <view wx:if='{{if_fullprice == 1 && if_purchase == 1}}'>参与满折满减、加价购活动，不与优惠券、会员卡折扣叠加使用</view>
+        </view>
+        <view class='pro_con_list clearfix' bindtap='choose_acts' wx:for='{{pro_purchase_info}}' wx:key='key' data-indexs='{{index}}' data-prd_ids='{{item.product_id}}' data-actx='{{item.action}}' data-ids='{{item.identity_id}}' data-rec_id='{{item.rec_id}}'>
+          <view class='btn_check'>
+            <image wx:if='{{item.is_che == 0}}' src='{{imageUrl}}/image/wxapp/icon_rectangle.png'></image>
+            <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx' wx:if='{{item.is_che == 1}}'></text>
+          </view>
+          <view class='for_style'>
+            <view class='pro_list_span jiajiagou_icon' wx:if='{{item.action == 1}}' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
+            <view class='pro_list_span jiajiagou_icon' wx:if='{{item.action == 2}}' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
+            <view wx:if='{{item.action != 1}}'>{{item.name}}</view>
+            <view wx:if='{{item.action == 1}}'>{{item.name}}即可换购商品</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </action-sheet>
+
+  <!-- 优惠券礼包的弹筐 -->
+  <action-sheet hidden="{{couMode}}" bindchange="couActionSheetChange">
+    <view class='promotion' hidden="{{ couMode }}">
+      <view class='pro_title cou_titile'>
+        优惠券礼包
+        <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" bindtap="couCancel" class='pro_close' />
+      </view>
+      <view class='pro_content'>
+        <view class='each_pack_list' wx:for='{{pack_info}}' wx:key='key' data-pack_id='{{item.id}}' bindtap='to_each_package'>
+          <view class='pack_name'>{{item.pack_name}}(含{{item.total_amount}}张券，总价值{{item.total_value}}元)</view>
+          <view class='pack_status'>
+            <text style='color:#fead2d' wx:if='{{item.is_receive == 0}}'>未领取</text>
+            <text style='color:#f66' wx:if='{{item.is_receive == 1}}'>已领取</text>
+            <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  </action-sheet>
+</view>
+
+<!-- 绑定手机号弹窗 -->
+<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以去结算" />
+
+<include src="../common/footer.wxml" />

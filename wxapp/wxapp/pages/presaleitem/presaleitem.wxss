@@ -1,0 +1,206 @@
+@import "../login/login.wxss";
+@import "../goodscommon/goodscommon.wxss";
+@import "../../css/iconfont.wxss";
+.presale_span {
+  width: 690rpx;
+  padding: 15rpx 30rpx;
+  overflow-y: hidden;
+  background: linear-gradient(left, #fe4848, #fe7248);
+  background: -webkit-linear-gradient(left, #fe4848, #fe7248);
+  background: -moz-linear-gradient(left, #fe4848, #fe7248);
+  color: #fff;
+}
+.presale_span .presale_price{
+  float: left;
+  display: flex;
+  align-items: center;
+  width: 430rpx;
+  min-height: 70rpx;
+}
+.presale_span .pre_icon{
+  flex: 0.5;
+  border-radius: 4rpx;
+  border: 2rpx solid #fff;
+  color: #fff;
+  font-size: 22rpx;
+  box-sizing: border-box;
+  margin-right: 30rpx;
+  text-align: center;
+}
+.presale_span .pre_money{
+  flex: 1.5;
+  border-left: 2rpx solid rgba(255, 255, 255, 0.4);
+  padding-left: 30rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+}
+.presale_span .pre_jia{
+  font-size: 30rpx;
+}
+.presale_span .pre_rule{
+  font-size: 22rpx;
+}
+.presale_span .pre_rule image{
+  width: 25rpx;
+  position: relative;
+  top: 5rpx;
+}
+.presale_span .pl_right{
+  float: right;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+  font-size: 24rpx;
+  width: 260rpx;
+}
+
+.presale_span .pl_right view {
+  font-size: 24rpx;
+}
+
+.presale_span .pl_right view text {
+  font-size: 24rpx;
+  width: 34rpx;
+  text-align: center;
+  display: inline-block
+}
+
+.presale_span .pl_right view text:first-of-type {
+  margin-left: 0;
+}
+
+.presale_span .pl_right view:first-of-type {
+  margin-bottom: 10rpx;
+  text-align: right
+}
+.presale_span .daojishis text {
+  background: #fff;
+  color: #f66;
+  border-radius: 4rpx;
+  font-size: 22rpx;
+  margin: 0 10rpx;
+  display: inline-block;
+  width: 35rpx;
+}
+.presale_span .daojishis text:last-of-type{
+  margin-right: 0
+}
+.presale_content{
+  width: 690rpx;
+  background: #fcf0f0;
+  color: #999;
+  font-size: 22rpx;
+  margin-left: -30rpx;
+  padding: 20rpx 30rpx;
+  margin-top: 16rpx;
+  overflow: hidden
+}
+.presale_content view{
+  margin-bottom: 15rpx;
+}
+.presale_content view:last-of-type{
+  margin-bottom: 0
+}
+.presale_content image{
+  width: 30rpx;
+  position: relative;
+  top: 5rpx;
+}
+.pre_content{
+  color:#888;
+  font-size:28rpx;
+  padding:0 25rpx;
+  padding-top:25rpx;
+  height: 500rpx;
+}
+.pre_content view{
+  line-height: 50rpx;
+}
+.footer {
+  overflow-x:hidden 
+}
+.footer_1 {
+  float: left;
+  width: 225rpx;
+  color: #888;
+  font-size: 24rpx;
+  display: flex;
+  height: 100rpx;
+}
+.footer_1 image {
+  width: 44rpx;
+}
+.footer_1>view {
+  flex: 1;
+  text-align: center;
+  padding-top: 12rpx;
+  padding-bottom: 12rpx;
+  position: relative;
+  border-radius: 0;
+}
+.footer_1>view::-webkit-scrollbar {
+  display: none;
+}
+.footer_1>view:first-child {
+  border-right: 1px solid #eee;
+}
+.footer form {
+  width: auto
+}
+.footer_2 {
+  width: 180rpx;
+}
+
+.footer_2::after {
+  border-radius: 0;
+  border: none;
+}
+.footer_3 {
+  width: 346rpx;
+  padding: 0;
+}
+.footer_3::after {
+  border-radius: 0;
+  border: none;
+}
+.modal_footer .modal_footer_add {
+  background: #f66;
+  color: #fff;
+  width: 100%;
+}
+.modal_top_center {
+  margin-top: 50rpx;
+  padding: 0;
+  width: 410rpx;
+  height: 150rpx;
+  position: relative;
+}
+
+.modal_top_center .ori_prices {
+  color: #999;
+  font-size: 26rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.modal_top_center  .goods_kucun{
+  color: #999;
+  font-size: 26rpx;
+  position: absolute;
+  left: 0;
+  top: 40rpx;
+}
+.modal_top_center  .presake_prices{
+  color: #f66;
+  font-size: 26rpx;
+  position: absolute;
+  bottom: 0;
+  left: 0
+}
+.modal_top_center  .presake_prices .kedi_money{
+  margin-left: 60rpx;
+  font-size: 24rpx;
+}

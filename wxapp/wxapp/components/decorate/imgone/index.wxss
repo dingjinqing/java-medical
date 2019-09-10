@@ -1,0 +1,49 @@
+.imgone-container{
+  /* border: 1px solid #dddddd; */
+  /* padding: 8rpx; */
+  width: 720rpx;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20rpx;
+  position:relative;
+}
+.imgone-container .hide_title{
+ position:absolute;
+  left:0;
+  top:315rpx;
+  width:704rpx;
+  margin-left:8rpx;
+  background:#000;
+  opacity:0.5;
+  color:#fff;
+}
+.imgone-container text{
+  line-height: 50rpx;
+}
+.imgone-container image{
+  width: 720rpx;
+  height: 352rpx;
+  margin: 0 auto;
+}
+.goods_name{
+  font-size: 30rpx;
+  margin: 15rpx 0;
+}
+.price text{
+  font-size: 28rpx;
+}
+.price{
+  width: 100%;
+  margin-top: 10rpx;
+  margin-bottom: 10rpx;
+}
+.shop_price{
+  color: red;
+}
+.market_price{
+  float: right;
+  color: #a7a7a7;
+  text-decoration: line-through;
+  margin-top: 8rpx;
+}

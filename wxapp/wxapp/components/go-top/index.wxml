@@ -1,0 +1,10 @@
+<view class="download_share" wx:if='{{isPictorialShow == 1}}' bindtap='go_share'>
+    <view>{{content.share_btn_name}}</view>
+</view>
+
+<view class='back_top {{isPictorialShow == 1 ? "back_top2" : " back_top1"}}' wx:if='{{top_display == 1}}' bindtap='bindGoTop'>
+  <view>
+    <image src='/images/gray_top.png'></image>
+  </view>
+  <view>顶部</view>
+</view>

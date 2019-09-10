@@ -1,0 +1,134 @@
+<!--pages/packagesalelist/packagesalelist.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <view class='fixed_area'>
+    <view class='pro_tips' style='margin-bottom:{{tab_len == 1?"20rpx":""}}'>
+      <block wx:if="{{sale_info.check_package.state == 0}}">{{sale_info.title}}</block>
+      <block wx:if="{{sale_info.check_package.state != 0}}">{{sale_info.check_package.msg}}</block>
+    </view>
+    <view class='goods_group_tab' wx:if='{{tab_len == 0}}'>
+      <view class='each_tab' wx:for='{{tab_list}}' wx:key='key' wx:if='{{tab_list != ""}}' bindtap='change_tab' data-group_id='{{index}}'>
+        <view class='normal {{item.active == 1?"actives":""}}' style='border-bottom-color:{{item.active == 1?comColor:""}}'>{{item.group_name}}({{item.select_number}}/{{item.goods_number}})</view>
+      </view>
+    </view>
+    <view class='search_input'>
+      <icon type="search" class="search-img" size="13"></icon>
+      <input type="text" placeholder="请输入搜索关键字" bindblur='searchGoods' value='{{searchText}}'/>
+    </view>
+    <view class='num_price'>
+      <view class='xiaoliang {{sort_name=="goods_sale_num"?"pink_one":"nomala"}}' style='color:{{sort_name=="goods_sale_num"?comColor:""}}'  bindtap="switchOrder" data-type="goods_sale_num">
+        销量<text class='icon'>{{sort_order=='desc'?'↓':'↑'}}</text>  
+      </view>
+      <view class='jiage  {{sort_name=="shop_price"?"pink_one":"nomala"}}' style='color:{{sort_name=="shop_price"?comColor:""}}'  bindtap="switchOrder" data-type="shop_price">
+        价格<text class='icon'>{{sort_order=='desc'?'↓':'↑'}}</text>  
+      </view>
+    </view>
+  </view>
+  <view class='goods_space' style='padding-top:{{tab_len == 1?"280rpx":"360rpx"}};padding-bottom:{{isIpx == 1 ? "160rpx":"110rpx"}};'>
+    <view class='each_goods_li clearfix' wx:for='{{sale_list}}' wx:key='key' wx:if='{{sale_list!="" && sale_list}}'>
+      <view class='goods_left' bindtap='to_items' data-goods_id='{{item.goods_id}}'>
+        <image src='{{item.goods_img}}'></image>
+          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
+      </view>
+      <view class='goods_right'>
+        <view class='goods_name' bindtap='to_items' data-goods_id='{{item.goods_id}}'>{{item.goods_name}}</view>
+        <view class='goods_info'>
+          <view class='goods_price' bindtap='to_items' data-goods_id='{{item.goods_id}}'>
+            <view class='now_pri' style='color:{{comColor}}'>
+              <view class='member_icon' wx:if='{{item.goods_price_action == 1}}'>会员专享</view>
+              <view class='reduce' wx:if='{{item.goods_price_action == 2}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+               <view class='reduce' wx:if='{{item.goods_price_action == 3}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
+            ￥<text>{{item.shop_price}}</text>
+            </view>
+            <view wx:if='{{item.market_price != null && item.market_price != 0}}' class='ori_pri'>￥{{item.market_price}}</view>
+          </view>
+          <view class='goods_num' bindtap='add_goods' data-goods_id='{{item.goods_id}}'>
+            <view class='geted_num'>已选{{item.choose_number}}件</view>
+            <text class='iconfont icontianjia' style='color:{{comColor}};font-size:45rpx;'></text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class='fix_bottom clearfix' style='height:{{isIpx == 1 ? "160rpx" : "100rpx"}}'>
+    <view class='price_area'>
+      <view class='geted_jian'>已选：
+        <text style='color:{{comColor}}'>{{total_number}}件</text>
+      </view>
+      <view class='sum_price'>合计：
+        <text style='font-size:30rpx;color:{{comColor}}'>￥{{total_money}}</text>
+      </view>
+    </view>
+    <form report-submit='true' bindsubmit='showGoods'>
+        <button class='btn_two btn_geted' formType='submit' style='background:{{commonColor}};color:#fff;'>已选商品</button>
+    </form>
+    <form report-submit='true' bindsubmit='go_check'>
+      <button formType='submit' class='btn_two {{can_bug == 0?"btn_cant":""}}' style='background:{{can_bug == 0?"":comColor}}'>立即结算</button>
+    </form>
+  </view>
+  <!-- 已选商品弹框 -->
+  <action-sheet hidden="{{ changeMove }}" bindchange='proActionChange'>
+    <view class='promotion'>
+      <view class='pro_title'>
+        已选商品
+        <text wx:if='{{can_del == 0 && total_number != 0}}' bindtap='to_del_goods'>编辑</text>
+        <text wx:if='{{can_del == 1 && total_number != 0}}' bindtap='to_del_goods'>完成</text>
+        <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" class='pro_close' bindtap='proActionChange' />
+      </view>
+      <view class='pro_content clearfix' wx:if='{{total_number != 0}}'>
+        <view class='each_change clearfix' wx:for='{{selected_info.goods_list}}' wx:key='key' wx:for-item='item1' wx:for-index='index1' wx:if='{{item1.select_goods != ""}}'>
+          <view class='each_tabs' wx:if='{{selected_info.goods_list.length>1}}'>{{item1.group_name}}</view>
+          <view class='every_goods clearfix' wx:for='{{item1.select_goods}}' wx:key='key' wx:for-item='item2' wx:for-index='index2'>
+            <view class='er_del_icon' wx:if='{{can_del == 1}}' bindtap='to_del_geted' data-goods_number='{{item2.goods_number}}' data-record_id='{{item2.id}}'>
+              <text class='iconfont iconshanchu1' style='color:{{comColor}};font-size:40rpx;'></text>
+            </view>
+            <view class='eg_lefts'>
+              <image wx:if='{{item2.prd_img == ""}}' src='{{item2.goods_img}}'></image>
+              <image wx:if='{{item2.prd_img != ""}}' src='{{item2.prd_img}}'></image>
+            </view>
+            <view class='eg_right' style='width:{{can_del == 0?"490rpx":"430rpx;"}}'>
+              <view class='goods_name'>{{item2.goods_name}}</view>
+              <view class='goods_desc' wx:if='{{item.prd_desc != ""}}'>{{item2.prd_desc}}</view>
+              <view class='goods_bottom clearfix'>
+                <view class='price_info clearfix'>
+                  <view class='sale_price' style='color:{{comColor}}'>￥
+                    <text>{{item2.prd_price}}</text>
+                  </view>
+                  <view class='original_price' wx:if='{{item2.market_price!=null && item2.market_price != 0}}'>￥{{item2.market_price}}</view>
+                </view>
+                <view class='num_choose clearfix'>
+                  <text class="btn_jian" bindtap="goods_jian" data-record_id='{{item2.id}}' data-index1='{{index1}}' data-index2='{{index2}}'  data-num="{{item2.goods_number}}" data-spec="{{item2.prd_number}}" style='background:#fff;color:#666' wx:if="{{item2.if_min == 0}}">-</text>
+                  <text class="btn_jian" bindtap="goods_jian" data-record_id='{{item2.id}}' data-index1='{{index1}}' data-index2='{{index2}}'  data-num="{{item2.goods_number}}" data-spec="{{item2.prd_number}}" style='background:#f5f5f5;color:#ccc' wx:if="{{item2.if_min == 1}}">-</text>
+                  <input type="number" class="goods_num_input" data-record_id='{{item2.id}}' data-index1='{{index1}}' data-index2='{{index2}}' value="{{item2.goods_number}}" data-spec="{{item2.prd_number}}" bindblur='change_select_num' />
+                  <text class="btn_add" bindtap="goods_add" data-record_id='{{item2.id}}' data-index1='{{index1}}' data-index2='{{index2}}' data-num="{{item2.goods_number}}" data-spec="{{item2.prd_number}}" style='background:#fff;color:#666' wx:if="{{item2.if_max == 0}}">+</text>
+                  <text class="btn_add" bindtap="goods_add" data-record_id='{{item2.id}}' data-index1='{{index1}}' data-index2='{{index2}}' data-num="{{item2.goods_number}}" data-spec="{{item2.prd_number}}" style='background:#f5f5f5;color:#ccc' wx:if="{{item2.if_max == 1}}">+</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class='pro_content_no' wx:if='{{total_number == 0}}'>
+        <image src='{{imageUrl}}/image/wxapp/no_result.png' mode='widthFix'></image>
+        <view class='empty_tips'>还没有已选商品，快去选购吧！</view>
+      </view>
+      <view class='change_gooter clearfix' style='padding-bottom:{{isIpx == 1 ? "60rpx" : ""}}'>
+        <view class='cf_left'>
+          已选
+          <text style='color:{{comColor}}'>{{total_number}}件</text> 
+          <block wx:if="{{other_goods != 0}}">再选<text style='color:{{comColor}}'>{{other_goods}}件</text></block>
+          即可以<text style='color:{{comColor}}'>{{sale_info.total_money}}元</text>结算
+        </view>
+        <view class='cf_right' bindtap='to_refresh' style='background:{{comColor}};border-top-color:{{comColor}}'>确定</view>
+      </view>
+    </view>
+  </action-sheet>
+
+  <!--  选择规格（包含无规格情况）  -->
+  <v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" hide_cell='true' use_gd_limit="{{false}}"
+    bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+    <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+      <button bindtap='bindAddGoods' style='background:{{comColor}}'>加入购物车</button>
+    </view>
+  </v-sel-spec>
+</view>

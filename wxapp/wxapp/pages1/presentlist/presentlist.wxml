@@ -1,0 +1,87 @@
+<!--pages1/presentlist/presentlist.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main_container'>
+  <view class='gift_container'>
+      <view class='gift_top' style='top:{{margin_top_nav+8}}px'>
+        <view class='nav_normal' bindtap='change_nav' data-if_send='{{1}}' style='color:{{if_send == 1?comColor:""}};border-color:{{if_send == 1 ? comColor:""}}'>我送出的</view>
+        <view class='nav_normal' bindtap='change_nav' data-if_send='{{0}}' style='color:{{if_send == 1?"":comColor}};border-color:{{if_send == 1 ? "":comColor}}'>我收到的</view>
+      </view>
+      
+      <!-- 收到的-->
+      <view class='order_area' wx:if='{{if_send != 1}}'>
+        <block wx:if="{{get_gift_list !=''}}">
+          <view class='each_order' wx:for='{{get_gift_list}}' wx:key='key'>
+              <view class='eo_top' bindtap='to_get_order' data-orders='{{item.main_order_sn}}' data-sta = "{{item.status}}">
+                  <view class='main_order_sn' wx:if='{{item.order_sn != null}}'>子订单号：{{item.order_sn}}</view>
+                  <view class='main_order_sn' wx:if='{{item.order_sn == null}}'></view>
+                  <view class='order_sta' wx:if='{{item.status != 2}}'>{{item.status == 1? item.order_status_name:item.status_name}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image></view>
+                  <view class='order_sta' wx:if='{{item.gift_type == 3 && item.status == 2}}'>待开奖<image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image></view>
+              </view>
+              <view class='eo_goods'>
+                  <view class='each_eo_goods clearfix' wx:for='{{item.order_goods}}' wx:key='key' wx:for-item='item1'>
+                      <view class='eg_img'><image src='{{item1.goods_img}}'></image></view>
+                      <view class='eg_info'>
+                        <view class='info_top'>
+                            <view class='eg_name'>{{item1.goods_name}}</view>
+                            <view class='eg_desc' wx:if='{{item1.goods_attr != null}}'>{{item1.goods_attr}}</view>
+                        </view>
+                        <view class='info_bottom'>
+                            <view class='eg_money' style='color:{{comColor}}'>￥{{item1.goods_price}}</view>
+                            <view class='eg_num'>x{{item1.goods_number}}</view>
+                        </view>
+                      </view>
+                  </view>
+              </view>
+              <view class='kaijiang_time' style='color:{{comColor}}' wx:if='{{item.draw_time != null}}'>{{item.draw_time}}开奖</view>
+          </view>
+        </block>
+        <block wx:if="{{get_gift_list ==''}}">
+          <view class='no_state'>
+            <image src='{{imageUrl}}/image/wxapp/no_gift.png' mode='widthFix'></image>
+            <view>暂无此类礼物</view>
+          </view>
+        </block>
+      </view>
+
+      <!-- 送出的 -->
+      <view class='order_area' wx:if='{{if_send == 1}}'>
+        <block wx:if="{{send_gift_list!=''}}">
+          <view class='each_order' wx:for='{{send_gift_list}}' wx:key='key' wx:for-item='item2'>
+              <view class='eo_top' bindtap='to_own_order' data-order_sn='{{item2.order_sn}}'>
+                  <view class='main_order_sn'>主订单号：{{item2.order_sn}}</view>
+                  <view class='order_sta' wx:if='{{item2.order_status >= 3 && item2.order_status <13}}'>进行中 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image></view>
+                  <view class='order_sta' wx:else>{{item2.order_status_name}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image></view>
+              </view>
+              <view class='eo_goods'>
+                  <view class='each_eo_goods clearfix' wx:for='{{item2.order_goods}}' wx:key='key' wx:for-item='item3'>
+                      <view class='eg_img'><image src='{{item3.goods_img}}'></image></view>
+                      <view class='eg_info'>
+                        <view class='info_top'>
+                            <view class='eg_name'>{{item3.goods_name}}</view>
+                            <view class='eg_desc' wx:if='{{item3.goods_attr != null}}'>{{item3.goods_attr}}</view>
+                        </view>
+                        <view class='info_bottom'>
+                            <view class='eg_money' style='color:{{comColor}}'>￥{{item3.goods_price}}</view>
+                            <view class='eg_num'>x{{item3.goods_number}}</view>
+                        </view>
+                      </view>
+                  </view>
+              </view>
+              <view class='eg_end'>
+                  <view class='act_type'>{{item2.gift_type_name}}</view>
+                  <view class='act_price'>实付款:<text>￥{{item2.money_paid}}</text></view>
+              </view>
+          </view>
+        </block>
+        <block wx:if='{{send_gift_list == ""}}'>
+          <view class='no_state'>
+            <image src='{{imageUrl}}/image/wxapp/no_gift.png' mode='widthFix'></image>
+            <view>暂无此类礼物</view>
+          </view>
+        </block>
+      </view>
+
+  </view>
+    
+</view>
+<include src="/pages/common/footer.wxml" />

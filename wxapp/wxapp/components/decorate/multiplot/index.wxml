@@ -1,0 +1,10 @@
+<view class="title-container" wx:if="{{m.title !=''}}" style="background-color: #ffffff;">
+  <view class="main-title">{{m.title}}</view>
+</view>
+  <scroll-view class="multiplot-scroll pub_con" scroll-x="true" style='margin-bottom:{{m.margin_bot}}rpx' >
+    <block wx:for="{{m.img_items}}" wx:key="index" wx:for-item="item">
+      <view class="scroll-item" catchtap="bindJumpLink" data-link="{{item.title_link}}"   data-idx='{{m.idx}}'>
+        <image src="{{item.img_url}}!middle?v=1" mode="widthFix" data-src="{{item.img_url}}" bindtap='bindPreviewImage'   data-skip='{{m.is_preview != 1 || item.title_link}}' lazy-load="{{true}}"/>
+      </view>
+    </block>
+  </scroll-view>

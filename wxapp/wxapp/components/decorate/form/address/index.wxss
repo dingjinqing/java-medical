@@ -1,0 +1,67 @@
+.address-container{
+  margin-top: 20rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  flex-direction: column;
+   
+}
+.clearfix::after{
+  content: "";
+  display: block;
+  clear: both
+}
+.address-container .box1{
+  padding:0rpx 25rpx;
+  width: 700rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+}
+.address-container .box1 .picker{
+  float: left;
+  width: 500rpx;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.address-container .box1 .address_title{
+  width: 200rpx;
+  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 30rpx;
+}
+.address-container .box1 .clock_more{
+  float: right;
+}
+.address-container .box1 image{
+  width: 15rpx;
+  height: 25rpx;
+  margin-top: 10rpx;
+}
+.address-container .box2{
+  width: 725rpx;
+  display: flex;
+  align-items: center;
+  height: 90rpx;
+  line-height: 90rpx;
+  border-top: 2rpx solid #eee;
+  margin-left: 25rpx;
+}
+.address-container .box2 .address_title1{
+  float: left;
+  font-size: 30rpx;
+  width: 200rpx;
+}
+.address-container .box2 .add_content{
+  float: left;
+}
+.address-container .box2 .add_content input{
+  width: 490rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 30rpx;
+}

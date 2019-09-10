@@ -1,0 +1,375 @@
+/* pages1/presentdetail/presentdetail.wxss */
+@import "../../css/iconfont.wxss";
+@import '../presentinfo/presentinfo.wxss';
+page{
+  overflow-x: hidden;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+  height: 90%
+}
+.main_container{
+  min-height: 77%
+}
+.clearfix::after{
+  contain: "";
+  display: block;
+  clear: both;
+}
+.pre_top{
+  width: 750rpx;
+  height: 360rpx;
+  background: -webkit-linear-gradient(top,#f66,#ff8585);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pre_content{
+  margin: 0 auto;
+  margin-top: -210rpx;
+  width: 700rpx;
+  background: #fff;
+  position: relative;
+  margin-bottom: 20rpx;
+}
+.user_avator{
+  position: absolute;
+  top: -125rpx;
+  left: 270rpx;
+  border: 2rpx solid #fff;
+  width: 130rpx;
+  height: 130rpx;
+  border-radius: 300rpx;
+}
+.user_avator image{
+  width: 130rpx;
+  height: 130rpx;
+  border-radius: 300rpx;
+}
+.send_num{
+  padding-top: 90rpx;
+  margin-bottom: 30rpx;
+  font-size: 28rpx;
+  text-align: center
+}
+.bless_word{
+  margin-bottom: 40rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center
+}
+.each_goods{
+  border-bottom: none;
+  border-top: 2rpx solid #eee;
+}
+.goods_price .fenshu{
+  text-align: right;
+  width: 100%;
+}
+.each_goods .goods_name{
+  width: 100%;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal
+}
+.each_goods .goods_desc {
+  top: 80rpx;
+}
+.goon_add_line{
+  border-bottom: none;
+  border-top: 2rpx solid #eee; 
+  padding: 30rpx 0;
+  padding-right: 20rpx;
+  margin-left: 20rpx;
+  width: 660rpx;              
+}
+.open_award_time{
+  margin:0 auto 30rpx;
+  width: 400rpx;
+  background: #fee6e6;
+  color: #f66;
+  height: 70rpx;
+  text-align: center;
+  line-height: 70rpx;
+}
+.pre_footer{
+  width: 100%;
+  height: 90rpx;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+.pre_footer>view,button{
+  width: 340rpx;
+  height: 90rpx;
+  border-radius: 8rpx;
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 30rpx;
+}
+.share_pyq{
+  color: #f66;
+  background: #fee6e6;
+  margin-right: 20rpx;
+}
+.share_friend{
+  color: #fff;
+  background: #f66;
+  padding: 0;
+  margin: 0
+}
+.share_friend::after{
+  border: none;
+  border-radius: 0;
+}
+.get_user_list{
+  border-radius: 10rpx;
+  width: 700rpx;
+  margin: 0 auto;
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+.gul_title{
+  padding: 30rpx 0;
+  padding-right: 20rpx;
+  margin-left: 20rpx;
+  width: 660rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2rpx solid #eee
+}
+.each_user{
+  padding: 30rpx 0;
+  padding-right: 20rpx;
+  margin-left: 20rpx;
+  width: 660rpx;
+  border-bottom: 2rpx solid #eee 
+}
+.ueseroinfo {
+  float: left;
+  width: 360rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center
+}
+.ueseroinfo .user_img{
+  width: 80rpx;
+  height: 80rpx;
+  position: relative;
+}
+.ueseroinfo .user_img .zhongjicon{
+  width: 60rpx;
+  height: 32rpx;
+  border-radius: 16rpx;
+  background: #f66;
+  color: #fff;
+  position: absolute;
+  left: 13rpx;
+  top: -4rpx;
+  text-align: center;
+  line-height: 32rpx;
+  font-size: 18rpx;
+}
+.ueseroinfo image{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 200rpx;
+  margin-right: 20rpx;
+}
+.user_name_tips{
+  width: 290rpx;
+  margin-left: 10rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start
+}
+.user_name_tips view:first-of-type{
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsisl;
+  white-space: nowrap;
+}
+.user_name_tips view:nth-of-type(2){
+  color: #f66;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+.award_name{
+  float: right;
+  width: 280rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right
+}
+.gul_bottom{
+  padding: 30rpx 0;
+  padding-right: 20rpx;
+  margin-left: 20rpx;
+  width: 660rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-around
+}
+.gul_bottom>view{
+  flex: 1;
+}
+.gul_bottom>view image{
+  width: 16rpx;
+}
+.btn_to_all_user{
+  color: #5c78bb;
+  text-align: right
+}
+.user_oprn_bg{
+  width: 400rpx;
+  height: 400rpx;
+  margin: 0 auto
+}
+.user_oprn_bg image{
+  width: 100%;
+  height: 100%;
+}
+.daojishia{
+  margin-bottom: 30rpx;
+}
+.btn_get_gift{
+  width: 240rpx;
+  height: 70rpx;
+  margin: 0 auto;
+  line-height: 70rpx;
+  background: #f66;
+  color: #fff;
+  text-align: center;
+  border-radius: 8rpx;
+  border: none;
+}
+.btn_get_gift::after{
+  border: none;
+  border-radius: 0
+}
+.user_open{
+  text-align: center;
+  padding-bottom: 30rpx;
+}
+.daojishia {
+  color: #f66
+}
+.daojishia text{
+  width: 40rpx;
+  height: 40rpx;
+  background: #f66;
+  color: #fff;
+  text-align: center;
+  line-height: 40rpx;
+  border-radius: 4rpx;
+  display: inline-block;
+  margin: 0 10rpx; 
+}
+.daojishia view{
+  color: #333;
+  display: inline
+}
+.no_award{
+  font-size: 30rpx;
+  color: #999;
+}
+.effect_icon{
+  width: 150rpx;
+  height: 150rpx;
+  position: absolute;
+  right: 0;
+  top: 10rpx;
+}
+.effect_icon image{
+  width: 150rpx;
+  height: 150rpx;
+}
+
+.share_bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+.share_bg .zhezhao{
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.share_content{
+  position: absolute;
+  top: 210rpx;
+  left: 85rpx;
+  z-index: 999999;
+}
+.share_content image{
+  width: 580rpx;
+  height: 860rpx;
+  margin-bottom: 20rpx;
+}
+.share_content .btn_save_img{
+  width: 580rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 8rpx;
+  background: #cb463d;
+  color: #fff;
+  text-align: center;
+  font-size: 30rpx;
+  margin-bottom: 15rpx;
+}
+.share_content .save_tips{
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 24rpx;
+}
+.kefu_tips{
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius:40rpx;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  position: fixed;
+  right: 0rpx;
+  top: 200rpx;
+  z-index: 9999;
+  width: 140rpx;
+  text-align: center;
+  height: 50rpx;
+  line-height: 50rpx;
+  font-size: 24rpx
+}
+.kefu_tips .con_button {
+  position: absolute;
+  width: 140rpx;
+  height: 50rpx;
+  opacity: 0;
+  top:0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

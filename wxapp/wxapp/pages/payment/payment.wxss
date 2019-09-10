@@ -1,0 +1,480 @@
+/* pages/payment/payment.wxss */
+/* @import "../recocommon/recocommon.wxss";
+@import "../goodscommon/goodslabel.wxss"; */
+.main-container-order{
+  text-align: center;
+  margin: 0 auto;
+  padding: 100rpx 0;
+  border-top: 1px solid #eee;
+  padding-left: 75rpx;
+}
+.image_icon1{
+  float: left;
+  width:300rpx;
+  height:200rpx;
+  vertical-align: top;
+}
+.main-right{
+  float:left;
+  height: 200rpx;
+  display: flex;
+  align-items: center;
+}
+.main-right view{
+  text-align: left;
+  color: #333;
+  font-size: 28rpx;
+  vertical-align:middle;
+}
+.main-right view text{
+  font-size: 28rpx;
+  color: #ff6666;
+  line-height: 50rpx;
+}
+.btn-payment{
+  width: 600rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 28rpx;
+  border-radius: 12rpx;
+  background: #fff;
+  border: none;
+}
+.btn-payment::after{
+  border: none;
+  border-radius: 0;
+}
+
+.see-order{
+  background: #ff6666;
+  color: white;
+  margin-bottom: 30rpx;
+}
+
+.clearfix{
+  overflow: hidden;
+}
+.clearfix::after{
+  contain: "";
+  display: block;
+  clear: both
+}
+.common-footer .footer-text {
+  margin-top: 0;
+  margin-bottom: 0;
+  background: #f5f5f5;
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.splitMode{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  z-index:999;
+  background-color:rgba(0,0,0,0.5);
+}
+.coupon_content{
+  width:540rpx;
+  height:625rpx;
+  position:absolute;
+  left: 105rpx;
+  top: 30%;
+}
+.coupon_content .btn_close{
+  width: 100%;
+}
+.coupon_content .btn_close image{
+  width: 54rpx;
+  /* margin-left: 415rpx; */
+}
+.coupon_content  .yishu{
+    width: 2rpx;
+    height: 63rpx;
+    background: #fff;
+}
+.coupon_content .share_detail{
+  width: 100%;
+  position: absolute;
+  top: 120rpx;
+}
+.coupon_content .share_detail .sd_top{
+  width: 100%;
+  height:320rpx;
+  margin-top:-5rpx;
+  text-align: center;
+}
+.coupon_content .share_detail .sd_top .split_tips{
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #fd3d24;
+  padding-top: 60rpx;
+}
+.coupon_content .sd_bottom{
+  background: #fb645e;
+  width: 100%;
+  margin-top: -5rpx;
+  text-align: center;
+  padding-top: 15rpx;
+  padding-bottom: 50rpx;
+}
+.coupon_content .sd_top .split_notice{
+  font-size: 30rpx;
+  color: #fff;
+  padding-top: 160rpx;
+}
+.coupon_content .sd_bottom .split_notice1{
+  font-size: 30rpx;
+  color: #fff;
+}
+.coupon_content .sd_bottom .split_btn_get{
+  width: 190rpx;
+  height: 70rpx;
+  margin: 40rpx auto 0;
+  background: #fff;
+  color: #fb645e;
+  font-size: 28rpx;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* 商品标签 */
+.label-style1,.label-style3,.label-style4,.label-style43{
+ position: absolute;
+ top: 0rpx;
+ left: 0rpx;
+ width:68rpx;
+ height:69rpx;
+ text-align:center;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ overflow: hidden;
+ word-break: break-all;
+ z-index: 3;
+}
+.label-style13{
+position: absolute;
+ top: 0rpx;
+ left: 0rpx;
+ width:72rpx;
+ height:74rpx;
+ text-align:center;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ overflow: hidden;
+ word-break: break-all;
+  z-index: 3;
+}
+
+.label-style2,.label-style23{
+ position: absolute;
+ top: 2rpx ;
+ left: 2rpx ;
+ width: 84rpx;
+ height: 84rpx;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ text-align: center;
+  z-index: 3;
+}
+
+
+
+.label-style1 >text,.label-style13>text{
+  color:white;
+  font-size:22rpx;
+  padding-left:5rpx;
+  padding-right:5rpx;
+  line-height:27rpx;
+  padding-bottom: 4rpx;
+}
+.label-style23>text{
+  color:white;
+  font-size:22rpx;
+  padding-left:0rpx !important;
+  padding-right:0rpx !important;
+  line-height:27rpx;
+  padding-bottom: 4rpx;
+}
+.label-style13>text{
+ padding-left:2rpx !important;
+  padding-right:2rpx !important;
+}
+.label-style2>text{
+  padding-bottom: 0rpx !important;
+  padding-left:14rpx;
+  padding-right:14rpx;
+  color:white;
+  font-size:22rpx;
+  line-height:27rpx;
+  text-align: center;
+}
+
+.label-style3,.label-style33{
+  width: 40rpx !important;
+  height: auto !important;
+  border: 1px solid #ff6666;
+  background:transparent;
+  border-radius: 6rpx;
+  top: 4rpx !important;
+  left: 4rpx !important;
+   z-index: 3;
+}
+.label-style3>text,.label-style33>text{
+  color: #ff6666;
+  font-size: 22rpx;
+    padding-left:6rpx;
+  padding-right:6rpx;
+    padding-top: 10rpx;
+  padding-bottom: 10rpx;
+}
+
+.label-style4,.label-style43{
+  height: 50rpx !important;
+  width: auto !important;
+  background:linear-gradient(left,#f66,#ff8585);
+  background:-webkit-linear-gradient(left,#f66,#ff8585);
+  background:-moz-linear-gradient(left,#f66,#ff8585);
+  top: 0rpx ;
+  left: 0rpx;
+  border-bottom-right-radius: 30rpx;
+  line-height: 44rpx;
+  float: left;
+   z-index: 3;
+}
+.label-style4>text,.label-style43>text{
+  color: white;
+  font-size: 22rpx;
+  padding-left: 16rpx;
+  padding-right: 16rpx;
+}
+/* 限时降价 */
+.reduce{
+   position: absolute;
+  width: 100%;
+  height: 45rpx;
+  line-height: 45rpx;
+  text-align: center;
+  color: #ff6666;
+  background: #f9dbdb;
+  bottom: 150rpx;
+  font-size: 24rpx;
+}
+.grade{
+  position: absolute;
+  width: 100%;
+  height: 45rpx;
+  line-height: 45rpx;
+  text-align: center;
+  color: #fff;
+  background: #ddbe85;
+  bottom: 150rpx;
+  font-size: 24rpx;
+}
+
+/*活动送券  */
+.act_gift_coupon{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 9999999
+}
+.gift_zhezhao{
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+}
+.one_coupon{
+  width: 550rpx;
+  height: 620rpx;
+  position: absolute;
+  z-index: 99999999;
+  top: 200rpx;
+  left: 100rpx;
+}
+.btn_close{
+  position: absolute;
+  z-index: 99999999;
+  top: 0rpx;
+  left: 400rpx;
+  width: 50rpx;
+  height: 50rpx;
+  overflow: hidden
+}
+.btn_close image{
+  width: 50rpx;
+  height: 50rpx;
+}
+.yishu{
+  width: 2rpx;
+  height: 40rpx;
+  background: #fff;
+  position: absolute;
+  z-index: 99999999;
+  top: 50rpx;
+  left: 425rpx;
+}
+.cou_detail{
+  width: 550rpx;
+  height: 540rpx;
+  position: absolute;
+  z-index: 99999999;
+  top: 80rpx;
+}
+.cou_detail .tips1{
+  width: 430rpx;
+  margin: 0 auto;
+  margin-top: 40rpx;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+.tips1{
+  color: #fff;
+  font-size: 36rpx;
+  text-align: center;
+  width: 430rpx;
+  margin: 0 auto;
+  margin-top: 40rpx;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+.tips2{
+  color: #fff;
+  font-size: 36rpx;
+  margin-top: 10rpx;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 120rpx;
+}
+.price_cou{
+  width: 400rpx;
+  margin: 50rpx auto;
+  height: 100rpx;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 115rpx;
+}
+.price_cou>view{
+  float: left;
+}
+.left_money{
+  color: #f66;
+  font-size: 50rpx;
+  font-weight: bold;
+  border-right: 2rpx dashed #ddd;
+  width: 200rpx;
+  margin-right: 10rpx;
+  text-align: center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.left_money text{
+  font-size: 70rpx;
+}
+.right_money{
+  width: 170rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 20rpx;
+  color: #333;
+  font-size: 30rpx;
+}
+.tip3{
+  color: #fff;
+  font-size: 30rpx;
+  margin-bottom: 10rpx;
+  text-align: center;
+  width: 100%;
+  margin-top: 85rpx;
+}
+.go_list{
+  color: #fff;
+  font-size: 24rpx;
+  text-align: center;
+  width: 100%;
+}
+.go_list image{
+  width: 15rpx;
+  position: relative;
+  top: 1rpx;
+  left: 3rpx;
+}
+.two_cou{
+  width: 550rpx;
+  height: 770rpx;
+  position: absolute;
+  z-index: 99999999;
+  top: 200rpx;
+  left: 100rpx;
+}
+.price_cou2{
+  height: 360rpx;
+  overflow-y: scroll
+}
+.each_tow{
+  width: 430rpx;
+  height: 170rpx;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.each_tow:last-of-type{
+  margin-bottom: 0
+}
+.two_detail .tips2{
+  margin-bottom: 40rpx;
+}
+.two_detail .tip3{
+  margin-top: 25rpx;
+}
+.two_detail{
+  width:550rpx;
+  height: 690rpx;
+  position: absolute;
+  z-index: 99999999;
+  top: 80rpx;
+  overflow: hidden
+}
+.each_tow .et_left{
+  width: 215rpx;
+  color: #f66;
+  font-size: 50rpx;
+  font-weight: bold;
+  border-right: 2rpx dashed #ddd;
+  text-align: center;
+  display:flex;
+justify-content:center;
+align-items:center;
+
+}
+.each_tow .et_left text{
+  font-size: 70rpx;
+}
+.each_tow .et_right{
+  width: 155rpx;
+  color: #333;
+  font-size: 30rpx;
+  padding: 0 30rpx;
+  text-align: center
+}

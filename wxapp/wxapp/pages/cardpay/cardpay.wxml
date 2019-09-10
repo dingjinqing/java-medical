@@ -1,0 +1,46 @@
+  <!--pages/cardpay/cardpay.wxml-->
+<!--pages/account/account.wxml-->
+<include src="../common/header.wxml" />
+<view class='cardpay' style='height:{{windowHeight}}px'>
+  <view class='main-container'>
+    <!--  选择金额  -->
+    <view class="fixed_money" wx:if="{{info.offset_momey == 0 || info.offset_momey == 1}}">
+      <view class='pay'>充值金额</view>
+      <block wx:if="{{info.offset_momey == 0}}">
+        <view class='fixed_money_list' wx:for="{{recharge_arr}}" wx:key="key" data-money="{{item.money}}" bindtap='fixedRecharge'>
+          <text class='list_hei'>
+            <text>{{item.money}}元</text>
+            <text class='list_text' wx:if="{{item.score}}">充值满{{item.money}}送{{item.score}}</text>
+          </text>
+        </view>
+      </block>
+      <block wx:if="{{info.offset_momey == 1}}">
+        <view class='fixed_money_list' data-money="{{recharge_arr.each_money}}" bindtap='fixedRecharge'>
+          <text class='list_hei'>
+            <text>{{recharge_arr.each_money}}元</text>
+            <text class='list_text'>充值每满{{recharge_arr.each_money}}送{{recharge_arr.each_score}}</text>
+          </text>
+        </view>
+      </block>
+    </view>
+    <!--  自定义  -->
+    <view class='fixed_money'>
+      <view class='pay'>充值金额</view>
+      <view class='custom'>
+        <text>￥</text>
+        <input type='digit' placeholder='请输入充值金额' placeholder-style="#ccc" value='{{ipt_money}}' bindinput="iptMoney" />
+      </view>
+    </view>
+    <view class='toRecharge'>
+      <form report-submit='true' bindsubmit='customRecharge'>
+          <button formType='submit' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor}})' >立即充值</button>
+      </form>
+    </view>
+    <view class='agreement'>
+      点击立即充值,即表示您已经同意
+      <text bindtap='toAgreement' style='color:{{comColor}}'>《充值活动协议》</text>
+    </view>
+  </view>
+  <include src="../common/footer.wxml"/>
+  <view class='footer'>充值活动解释权归{{info.shop_name}}所有</view>
+</view>

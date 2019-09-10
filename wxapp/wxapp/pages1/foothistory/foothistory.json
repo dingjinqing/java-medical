@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "v-sel-spec": "/components/item/popup/spec/index",
+    "v-goods-recommend": "/components/item/recommend/index"
+  }
+}

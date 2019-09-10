@@ -1,0 +1,52 @@
+<!--pages/lotterygift/lotterygift.wxml-->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+    <view class='gift_container'>
+      <view class='gift_top' style="top:{{margin_top_nav + 8}}px;">
+          <view class='nav_normal' bindtap='change_tabs' data-type = '0' style='border-color:{{type == 0?comColor:""}};color:{{type == 0?comColor:""}}'>未领取</view>
+          <view class='nav_normal' bindtap='change_tabs' data-type = '1' style='border-color:{{type == 1?comColor:""}};color:{{type == 1?comColor:""}}'>已领取</view>
+          <view class='nav_normal' bindtap='change_tabs' data-type = '2' style='border-color:{{type == 2?comColor:""}};color:{{type == 2?comColor:""}}'>已过期</view>
+      </view>
+      <block wx:if='{{gift_list.length > 0}}'>
+      <view class='each_order' wx:for='{{gift_list}}' wx:key = 'key'>
+          <view class='nouse_icom' wx:if='{{item.present_status == 2}}'><image src='{{imageUrl}}image/wxapp/out_time.png' mode='widthFix'></image></view>
+          <view class='eo_top' wx:if='{{item.present_status != 2}}'>
+            <view class='et_left' >
+                <view class='send_type' style='color:{{comColor}};border-color:{{comColor}}' wx:if='{{item.source_type == 1}}'>好友助力</view>
+                <view class='order_sna' wx:if='{{item.present_status == 1}}'>订单编号：{{item.order_sn}}</view>
+                <view class='send_type' style='color:{{comColor}};border-color:{{comColor}}' wx:if='{{item.present_status == 1&&item.deliver_type_name != "快递"}}'>{{item.deliver_type_name}}</view>
+            </view>
+            <view class='now_status' style='color:{{comColor}}' wx:if='{{item.present_status == 0}}'>未领取</view>
+            <view class='now_status' style='color:{{comColor}}' wx:if='{{item.present_status == 1}}'>已领取</view>
+          </view>
+          <view class='each_goods clearfix'>
+            <view class='eg_lefts'><image src='{{item.goods_img}}'></image></view>
+            <view class='eg_rights'>
+                <view class='goods_name'>{{item.goods_name}}</view>
+                <view class='goods_desc' wx:if='{{item.prd_desc != null}}'>{{item.prd_desc}}</view>
+                <view class='goods_price clearfix'>
+                    <view class='money' style='color:{{comColor}}'>￥0.00</view>
+                    <view class='buy_num'>X1</view>
+                </view>
+            </view>
+          </view>
+          <view class='eo_bottom' >
+            <view class='eb_lefft'>奖品来源：<text>{{item.source_word}}</text></view>
+            <view class='eb_right' wx:if='{{item.present_status == 1}}'>实付款：<text>￥0.00</text></view>
+          </view>
+          <view class='some_btn clearfix' wx:if='{{item.present_status != 2}}'>
+              <view class='to_get' bindtap='to_get_gift' data-goods_id='{{item.goods_id}}' data-prd_id = "{{item.prd_id}}" data-prd_sn='{{item.prd_sn}}' data-lc_id='{{item.id}}' data-launch_id='{{item.lottery_act_id}}' data-sources='{{item.source_type}}' style='background:{{comColor}}' wx:if='{{item.present_status == 0}}'>立即领取</view>
+              <view class='to_order' style='color:{{comColor}};border-color:{{comColor}}' wx:if='{{item.present_status == 1}}' data-order_sn='{{item.order_sn}}' bindtap='to_order'>查看详情</view>
+          </view>
+      </view>
+      </block>
+      <block wx:if='{{gift_list.length <= 0}}'>
+          <view class='no_state'>
+            <image src='{{imageUrl}}/image/wxapp/no_gift.png' mode='widthFix'></image>
+            <view>暂无此类奖品</view>
+        </view>
+      </block>
+      <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+    </view>
+</view>
+<include src="../common/footer.wxml" />

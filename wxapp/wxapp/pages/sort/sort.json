@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "商品分类",
+  "onReachBottomDistance":100,
+  "disableScroll": true,
+  "usingComponents": {
+    "v-brand": "../../components/brand/index",
+    "v-sel-spec": "/components/item/popup/spec/index"
+  }
+}

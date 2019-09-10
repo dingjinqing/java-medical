@@ -1,4 +1,15 @@
 {
+  "enablePullDownRefresh": true,
   "usingComponents": {
+    "v-go-top": "/components/go-top/index",
+    "v-invite-notice": "/components/invite-notice/index",
+    "v-decorate": "/components/decorate/decorate/index",
+    "v-popup": "/components/popup/popup/index",
+    "v-popup-get-phone-number": "/components/popup/get-phone-number/index",
+    "v-popup-lottery": "/components/popup/lottery/index",
+    "v-popup-act-coupon": "/components/popup/act-coupon/index",
+    "v-popup-collect-mp-tips": "/components/popup/collect-mp-tips/index",
+    "v-popup-collect-coupon": "/components/popup/collect-coupon/index",
+    "v-pay-reword-custom": "/components/popup/pay-reward-custom/index"
   }
 }

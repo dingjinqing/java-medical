@@ -1,0 +1,141 @@
+<include src="/pages/common/header.wxml"/>
+<view class='main-container'>
+  <block wx:if="{{user_block == 1}}">
+    <view class='main'>
+      <!-- 会员昵称 -->
+      <view wx:if='{{if_username == 1 && user_info.username}}'>
+        <text class='main_txt'>会员昵称</text>
+        <view class='main_ipt'>{{user_info.username}}</view>
+      </view>
+      <!-- 真实姓名 -->
+      <view wx:if='{{if_realname == 1}}'>
+        <text class='main_txt'>真实姓名</text>
+        <block wx:if="{{ user_info.real_name != null && user_info.real_name != '' }}">
+          <input class='main_ipt' value='{{ user_info.real_name }}' bindblur='realName'  />
+        </block>
+        <block wx:else>
+          <input placeholder='输入您的真实姓名' placeholder-style='#ccc' class='main_ipt' bindblur='realName'  />
+        </block>
+      </view>
+      <!-- 手机号 -->
+      <view wx:if="{{if_mobile == 1}}">
+        <text class='main_txt'>手机号码</text>
+        <view class='main_ipt' style="width:53%">{{mobile}}</view>
+        <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class="tel" type='default'>授权手机号</button>
+      </view>
+      <!-- 身份证号码 -->
+      <view wx:if='{{if_cid == 1}}'>
+        <text class='main_txt'>身份证号</text>
+        <block wx:if="{{ user_info.cid != null && user_info.cid != '' }}">
+          <input class='main_ipt' value='{{ user_info.cid }}' bindblur='IDnum'  />
+        </block>
+        <block wx:else>
+          <input placeholder='输入您的身份证号' placeholder-style='#ccc' class='main_ipt' bindblur='IDnum'  />
+        </block>
+      </view>
+      <!-- 性别 -->
+      <view wx:if='{{if_sex == 1}}'>
+        <text class='main_txt'>性别</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="selector" value="{{sex_index}}" range="{{array}}" bindchange="bindSexChange">  
+            <view class="picker">  
+              {{array[sex_index]}}  
+            </view>   
+          </picker>  
+        </view>
+      </view>
+      <!-- 生日 -->
+      <view wx:if='{{if_birthdayyear == 1}}'>
+        <text class='main_txt'>生日</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="date" value="{{date}}" start="1978-01-01" end="2020-1-23" bindchange="bindDateChange">  
+            <view  wx:if="{{dates == ''}}">请选择</view>
+            <view class="picker" wx:else>  
+              {{dates}}  
+            </view>   
+          </picker>  
+        </view>
+      </view>
+      <!-- 婚姻状况 -->
+      <view wx:if='{{if_mar == 1}}'>
+        <text class='main_txt'>婚姻状况</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="selector" value="{{marry_index}}" range="{{marry_arr}}" bindchange="bindMarryChange">  
+            <view class="picker">  
+              {{marry_arr[marry_index]}}  
+            </view>   
+          </picker>  
+        </view>
+      </view>
+      <!-- 教育程度 -->
+      <view wx:if='{{if_edu == 1}}'>
+        <text class='main_txt'>教育程度</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="selector" value="{{edu_select}}" range="{{edu_array}}" bindchange="bindEduChange">  
+            <view class="picker">  
+              {{edu_array[edu_select]}}  
+            </view>   
+          </picker>  
+        </view>
+      </view>
+      <!-- 所在行业 -->
+      <view wx:if='{{if_work == 1}}'>
+        <text class='main_txt'>所在行业</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="selector" value="{{work_select}}"  bindchange="bindWorkChange" range='{{work_arr}}'>  
+            <view class="picker">  
+              {{work_arr[work_select]}}  
+            </view>   
+          </picker>  
+        </view>
+      </view>
+      <!-- 所在地 -->
+      <view wx:if='{{if_citydoce == 1}}'>
+        <text class='main_txt'>所在地</text>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+          <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
+            <view class="picker" wx:if="{{region[0] != ''}}">
+              {{region[0]}}，{{region[1]}}，{{region[2]}}
+            </view>
+            <view  wx:else>请选择</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+    <view class='footer'>
+      <form report-submit='true' bindsubmit='toSave'>
+        <block >
+          <button formType="submit" style='background:{{comColor}};'>领取奖品</button>
+        </block>
+      </form>
+    </view>
+  </block>
+</view>
+
+
+  <!-- 中奖的弹框 -->
+<view class='not_award' style='display:{{is_award == 1?"block":"none"}}'>
+  <view class='zhezhao' bindtap='guandiao1'></view>
+  <view class='not_award_detial'>
+    <image src='{{imageUrl}}/image/wxapp/award_bg.png' mode='widthFix' class='images1'></image>
+    <image src='{{imageUrl}}/image/wxapp/is_award1.png' mode='widthFix' class='images2'></image>
+    <view class='detail_content'>
+      <view class='actions_tit'>
+        <text class='text_grade'>恭 喜 您！</text>
+      </view>
+      <view class='jiangpin'>获得</view>
+      <block wx:if='{{reward_type == 2}}'>
+        <view class='gift_img'><image src='{{gift_info.goods_img}}'></image></view>
+      </block>
+      <view class='jiangpin' style='font-weight:bold' wx:if='{{reward_type != 2}}'>{{gift_info}}</view>
+      <view class='kuai_look' wx:if='{{reward_type == 2}}' bindtap='giftInfo'>已放入“我的奖品”快领取吧</view>
+      <view class='kuai_look' wx:if='{{reward_type != 2 && reward_type != 5}}' bindtap='giftInfo'>快去查看吧</view>
+      <view class='btn_not_award' bindtap='to_get_gift' wx:if='{{reward_type == 2}}'>
+        <button>立即领取</button>
+      </view>
+    </view>
+  </view>
+  <view class='btn_close' bindtap='guandiao1'>
+    <image src='{{imageUrl}}image/wxapp/split_btn1.png' mode='widthFix' />
+  </view>
+</view>

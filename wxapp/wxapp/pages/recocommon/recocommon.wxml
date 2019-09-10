@@ -1,0 +1,67 @@
+<!-- 推荐商品 start-->
+
+  <view class='reco_title'>
+    <image src='{{imageUrl}}/image/wxapp/re_l.png' mode='widthFix'></image>
+    <text>猜你喜欢</text>
+    <image src='{{imageUrl}}/image/wxapp/re_r.png' mode='widthFix'></image>
+  </view>
+  <view class='loop_info clearfix'>
+    <view class='each_view' wx:for='{{reco_goods}}' wx:key='key' data-goods_type='{{item.goods_type}}' data-goods_id="{{item.goods_id}}" data-bargin_id="{{item.bargin_id}}" data-pin_id='{{item.pin_group.pin_activity_id}}' data-presale_id='{{item.presale_id}}'
+      data-seckill_id='{{item.seckill_id}}' bindtap='to_item'>
+      <image src="{{item.goods_img}}!middle"></image>
+      <block wx:if="{{item.label_class != null && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 1}}">
+        <block wx:if="{{item.label_pattern == 1}}">
+          <view class='{{item.label_class}}' style='background:url({{imageUrl}}/image/wxapp/label-three.png) no-repeat ; background-size:100%;'>
+            <text>{{item.label_name}}</text>
+          </view>
+        </block>
+        <block wx:if="{{item.label_pattern == 2}}">
+          <view class='{{item.label_class}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+            <text>{{item.label_name}}</text>
+          </view>
+        </block>
+        <block wx:if="{{item.label_pattern == 3}}">
+          <view class='{{item.label_class}}' style='border-color:{{comColor}}'>
+            <text style='color:{{comColor}}'>{{item.label_name}}</text>
+          </view>
+        </block>
+        <block wx:if="{{item.label_pattern == 4}}">
+          <view class='{{item.label_class}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+            <text style='color:#fff'>{{item.label_name}}</text>
+          </view>
+        </block>
+      </block>
+      <view class='reduce' wx:if="{{item.goods_price_action == 2 && item.goods_type != 10 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
+      <view class='exclusive' wx:if="{{item.is_card_exclusive == 1 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 10}}">会员专享商品，立即查看</view>
+      <view class='grade' wx:elif="{{item.goods_price_action == 1 && item.goods_type != 10 && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5}}">专享会员价，立即查看</view>
+      <view class='goods_infos'>
+        <view class='goods_names'>{{item.goods_name}}</view>
+        <view class='price_infos clearfix'>
+          <view class='act_icons' wx:if='{{item.goods_type == 1}}' style='color:{{comColor}};border-color:{{comColor}}'>拼团</view>
+          <view class='act_icons' wx:if='{{item.goods_type == 3}}' style='color:{{comColor}};border-color:{{comColor}}'>砍价</view>
+          <view class='act_icons' wx:if='{{item.goods_type == 5}}' style='color:{{comColor}};border-color:{{comColor}}'>秒杀</view>
+          <view class='act_icons' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};border-color:{{comColor}}'>预售</view>
+          <view class='sale_prices' wx:if='{{item.goods_type == 0  && item.goods_price_action != 2 && item.goods_price_action != 1}}' style='color:{{comColor}}'>￥
+            <text >{{item.shop_price}}</text>
+          </view>
+          <view class='sale_prices' wx:if='{{item.goods_type == 1}}' style='color:{{comColor}}'>￥<text>{{item.pin_group.pin_group_price}}</text>
+          </view>
+          <view class='sale_prices' wx:if='{{item.goods_type == 3}}' style='color:{{comColor}}'>￥<text>{{item.bargain_price}}</text>
+          </view>
+          <view class='sale_prices' wx:if='{{item.goods_type == 5}}' style='color:{{comColor}}'>￥<text>{{item.sec_price}}</text>
+          </view>
+          <view class='sale_prices' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}}'>￥<text>{{item.shop_price}}</text>
+          </view>
+          <view class='sale_prices' style='color:{{comColor}}' wx:if='{{(item.goods_price_action == 2 || item.goods_price_action == 1 ) &&item.goods_type != 1 && item.goods_type !=3 && item.goods_type != 5 &&item.goods_type != 10 }}'>￥
+            <text>{{item.reduce_price}}</text>
+          </view>
+          <view class="ori_prices" wx:if="{{item.goods_type == 0 && item.market_price != null && item.goods_price_action != 1}}">￥{{item.market_price}}</view>
+          <view class="ori_prices" wx:if="{{(item.goods_price_action == 2 ||item.goods_price_action == 1) && item.goods_type != 1 && item.goods_type != 3 && item.goods_type != 5 &&item.goods_type != 10}}">￥{{item.shop_price}}</view>
+          <view class='ori_prices' wx:if='{{item.goods_type == 1}}'>￥{{item.pin_group.original_price}}</view>
+          <view class='ori_prices' wx:if='{{item.goods_type == 3}}'>￥{{item.shop_price}}</view>
+          <view class='ori_prices' wx:if='{{item.goods_type == 5}}'>￥{{item.max_price}}</view>
+          <view class='ori_prices' wx:if='{{item.goods_type == 10 && item.market_price!=null && item.market_price != 0}}'>￥{{item.market_price}}</view>
+        </view>
+      </view>
+    </view>
+  </view>

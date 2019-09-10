@@ -1,0 +1,25 @@
+<block wx:if="{{item.label_class != null && item.goods_type != 3 && item.goods_type != 5 && item.goods_type != 1}}">
+  <block wx:if="{{item.label_pattern == 1}}">
+    <view class='{{item.label_class}}' style='background:url({{imageUrl}}/image/wxapp/label-three.png) no-repeat ; background-size:100%;'>
+      <text>{{item.label_name}}</text>
+    </view>
+  </block>
+  <block wx:if="{{item.label_pattern == 2}}">
+    <view class='{{item.label_class}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <text>{{item.label_name}}</text>
+    </view>
+  </block>
+  <block wx:if="{{item.label_pattern == 3 }}">
+    <view class='{{item.label_class}}' style='border-color:{{comColor}}'>
+      <text style='color:{{comColor}}'>{{item.label_name}}</text>
+    </view>
+  </block>
+  <block wx:if="{{ item.label_pattern == 4}}">
+    <view class='{{item.label_class}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <text style='color:#fff'>{{item.label_name}}</text>
+    </view>
+  </block>
+   <block wx:if="{{ item.label_pattern == 5}}">
+    <image class='new_label_img' src='{{item.new_label_img.label_img_url}}' mode="widthFix" style="height:{{item.new_label_img.label_img_height}}px;width:{{item.new_label_img.label_img_width}}px"></image>
+  </block>
+</block>

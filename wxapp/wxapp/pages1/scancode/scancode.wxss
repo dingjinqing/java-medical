@@ -1,0 +1,128 @@
+/* pages/scancode/scancode.wxss */
+@import "/css/iconfont.wxss";
+page{
+    background: #fff;
+}
+.main-container{
+    overflow-y: hidden;
+}
+.storename{
+    margin-top: 40rpx;
+    font-size: 30rpx;
+    color: #333;
+    padding: 0 30rpx;
+    text-align: center;
+}
+.storelist{
+    display: inline-block;
+    margin: 0 auto;
+}
+.storename .scancode_address{
+    width: 22rpx;
+    height: 27rpx;
+    vertical-align: middle;
+    margin-right: 20rpx;
+    margin-left:80rpx;
+}
+.storename text{
+    vertical-align: middle;
+}
+.storename .scancode_right{
+    width: 12rpx;
+    height: 25rpx;
+    vertical-align: middle;
+    margin-left: 20rpx;
+}
+.help_tips{
+    float: right;
+    font-size: 24rpx;
+    line-height: 40rpx;
+}
+.help_tips image{
+    width: 24rpx;
+    height: 24rpx;
+    vertical-align: middle;
+    margin-left: 10rpx;
+}
+.scancode_button{
+    box-sizing: border-box;
+    width: 320rpx;
+    height: 320rpx;
+    border-radius: 50%;
+    background: linear-gradient(top,#ff9292,#ff6666);
+    background: -webkit-linear-gradient(top,#ff9292,#ff6666);
+    background: -moz-linear-gradient(top,#ff9292,#ff6666);
+    margin: 165rpx auto 0;
+    border: 10rpx solid #ffe6e6;
+    text-align: center;
+}
+.scancode_button image{
+    width: 100rpx;
+    height: 100rpx;
+    margin-top: 70rpx;
+}
+.scancode_button text{
+    font-size: 36rpx;
+    color: #fff;
+    font-weight: 400;
+    display: block;
+    margin-top: 40rpx;
+}
+.scancode_input{
+    margin: 40rpx auto 0;
+    width: 260rpx;
+    height: 60rpx;
+    text-align: center;
+    background-color: #f5f5f5;
+    font-size: 30rpx;
+    color: #999;
+    border-radius: 60rpx;
+    line-height: 60rpx;
+}
+.scancode_operate{
+    box-sizing: border-box;
+    width: 610rpx;
+    background-color: #f5f5f5;
+    margin: 180rpx auto 0;
+    padding: 57rpx 0;
+    border-radius: 20rpx;
+}
+.scancode_operate image{
+    width: 110rpx;
+    height: 110rpx;
+}
+.scancode_operate text{
+    display: block;
+    font-size: 30rpx;
+    color: #333;
+    line-height: 1;
+    text-align: center;
+}
+.scancode_operate .operate_left,
+.scancode_operate .operate_right{
+    width: 50%;
+    height: 100%;
+    float: left;
+    box-sizing: border-box;
+    font-size: 0;
+    text-align: center;
+    position: relative;
+}
+.scancode_operate .operate_left{
+    border-right: 1px solid #ddd;
+}
+.operate_left .cart_num,
+.operate_right .code_num{
+  position: absolute;
+  width: 35rpx;
+  height: 35rpx;
+  line-height: 35rpx;
+  left: 55%;
+  top: 0%;
+  border-radius: 50%;
+  border: 1px solid #ff6666;
+  background-color: #fff;
+  text-align: center;
+  color: #ff6666;
+  font-size: 24rpx;
+}

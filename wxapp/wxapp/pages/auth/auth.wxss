@@ -1,0 +1,22 @@
+@import "../../css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+  color: #666;
+  font-size: 26rpx;
+}
+.main-container{
+  text-align: center;
+  padding: 40rpx;
+}
+.main-container image{
+  width: 320rpx;
+}
+.main-container view{
+  margin: 60rpx 0; 
+}
+button{
+  font-size: 26rpx;
+  margin-bottom: 28rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+}

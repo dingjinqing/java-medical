@@ -1,0 +1,89 @@
+<!--pages1/presentcheckout/presentcheckout.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main_container' style='padding-top:{{gift_info.surplus_second?"":"20rpx"}};padding-bottom:{{ isIpx == 1 ? "60rpx" : "20rpx"}}'>
+    <view class="kefu_tips">
+      客服
+      <button open-type="contact" class='con_button'></button>
+    </view>
+    <view class='time_tips' wx:if='{{gift_info.surplus_second}}'>
+        <image src='{{imageUrl}}image/wxapp/icon_notice.png'></image>
+        请在<text style='color:{{comColor}}'>
+            <block wx:if='{{clock[0] != 0}}'>{{clock[0]}}小时</block>
+            <block wx:if='{{clock[1] != 0}}'>{{clock[1]}}分钟</block>
+            <block wx:if='{{clock[2] != 0}}'>{{clock[2]}}秒</block>
+        </text>内填写收货地址，超时订单将被取消
+    </view>
+    <view class='good_area'>
+      <view class='each_goods clearfix' wx:for='{{gift_info.order_goods}}' wx:key='key'>
+        <view class='goods_img'> <image src='{{item.goods_img}}'></image> </view>
+        <view class='goods_info'>
+            <view class='goods_name'>{{item.goods_name}}</view>
+            <view class='goods_desc' wx:if='{{item.goods_attr != null}}'>{{item.goods_attr}}</view>
+            <view class='goods_price'>
+              <view class='fenshu'>共{{item.goods_number}}件</view>
+            </view>
+        </view>
+      </view>
+    </view>
+    <view class='address_area clearfix'>
+      <view class='add_bg'> <image src='{{imageUrl}}image/wxapp/address_bottom.png'></image> </view>
+      <view class='no_add clearfix' wx:if='{{address == ""}}' bindtap='addAddress'>
+        <view class='no_left'>
+          <image src='{{imageUrl}}image/wxapp/address.png'></image>
+          <view class='no_words'>请选择收货地址</view>
+        </view>
+        <view class='btn_get_add'> <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image> </view>
+      </view>
+      <view class='add_title' wx:if='{{gift_info.receive_record.order_status >= 4}}'>收礼地址</view>
+      <view class='kuaidi_info clearfix' wx:if='{{gift_info.receive_record.shipping_no != "" && gift_info.receive_record.shipping_no }}'>
+        <view class='kuaidi_icon'> <image src='{{imageUrl}}image/wxapp/wuliu.png'></image> </view>
+        <view class='kuaidi_word'>
+        <navigator path='pages/result/result?nu={{gift_info.receive_record.shipping_no}}&com=&querysource=third_xcx'  target="miniProgram" app-id='wx6885acbedba59c14' open-type="navigate" version="release" extra-data='' hover-class='none'>
+            <view class=''>快递单号：{{gift_info.receive_record.shipping_no}}</view>
+            <view>快递公司：{{gift_info.receive_record.shipping_name}}</view>
+          </navigator>
+        </view>
+        <view class='btn_to_kuaidi'><image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image></view>
+      </view>
+      <!-- 有地址 -->
+      <view class='add_detail clearfix' wx:if='{{address != ""}}' bindtap='{{is_from_detail ==1 ? "":"addAddress"}}'>
+          <view class='add_top'>
+              <image src='{{imageUrl}}image/wxapp/address.png'></image>
+          </view>
+          <view class='add_middle'>
+              <view class='aee_user'>
+                <view>收货人:{{address.userName}}</view>
+                <view>{{address.telNumber}}</view>  
+              </view>
+              <view class='add_content'>{{address.provinceName}}{{address.cityName}}{{address.countyName}}{{address.detailInfo}}</view>
+          </view>
+          <view class='add_end'>
+              <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+          </view>
+      </view>   
+    </view>
+    <view class='user_area clearfix'>
+        <view class='user_icon'> <image src='{{gift_info.order_user.user_avatar}}'></image> </view>
+        <view class='user_time'>
+            <view class='us_name'>{{gift_info.order_user.username}}</view>
+            <view class='us_time'>{{gift_info.give_time}} 送出</view>
+        </view>
+    </view>
+    <view class='order_area '>
+        <view class='oa_top' wx:if='{{is_from_detail == 1 && gift_info.receive_record.order_sn != null}}'>
+            <view>订单号：{{gift_info.receive_record.order_sn}}</view>
+            <view>订单状态：{{gift_info.receive_record.order_status_name}}</view>
+        </view>
+        <view class='oa_bottom'>
+            <view>活动玩法：{{gift_info.gift_cart_info.gift_type_name}}</view>
+            <block wx:if='{{gift_info.receive_record != null}}'>
+              <view>活动状态：{{gift_info.receive_record.status_name}}</view>
+              <view>参与时间：{{gift_info.receive_record.add_time}}</view>
+            </block>
+        </view>
+    </view>
+    <form wx:if='{{gift_info.surplus_second}}' report-submit='true' bindsubmit='toCheck'>
+        <button class='btn_confirm'  style='background:{{comColor}}' formType='submit'>提交</button>
+    </form>
+</view>
+<include src="/pages/common/footer.wxml" />

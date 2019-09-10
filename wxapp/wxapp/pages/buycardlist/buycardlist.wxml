@@ -1,0 +1,92 @@
+<include src="../common/header.wxml"/>
+<view class='main-container'>
+  <view class="container">
+    <block wx:if="{{ card_list == '' }}">
+      <view class="order-goodsno-box"  hidden="{{hiddenOrder}}">
+        <view class="order-no">
+          <image class="order-no-img" src="{{imageUrl}}image/wxapp/no_vip.png" mode='widthFix'/>
+        </view>
+        <view class="no-zi" style="margin: 0;margin-bottom: 13px;">暂无可购买会员卡</view>
+      </view>
+    </block>
+    <block wx:else>
+      <block wx:for="{{ card_list }}" wx:key="index" wx:if="{{item.is_delete == 0}}">
+        <block wx:if="{{ item.bg_type == 0 }}">
+          <view class="card-list" bindtap="cardInfo" style="background:{{ item.bg_color}};" data-card_id="{{ item.id }}">
+            <view class='card_type' wx:if="{{item.card_type==1}}">限次卡</view>
+            <view class='card_type' wx:if="{{item.card_type==0}}">普通卡</view>
+            <view class='card_type' wx:if="{{item.card_type==2}}">等级卡</view>
+            <view class="card-left">
+              <view  class='shop_logos'>
+                <image src="{{ item.shop_avatar }}" class="card-image"></image>
+              </view>
+              <view class='card_detail'>
+                  <view class="card-name">
+                    {{ item.card_name }}
+                  </view>
+                  <view class='card_discount' wx:if="{{item.card_type==1}}">剩余使用次数：{{item.surplus}}</view>
+                  <view class='card_discount' wx:if="{{item.card_type==0&&item.discount!=null}}">折扣：{{item.discount}}折</view>
+                   <view class='card_discount' wx:if="{{item.card_type==2&&item.discount!=null}}">折扣：{{item.discount}}折</view>
+                  <view class='card_offset' wx:if="{{item.buy_score[0].value == 1}}">每满{{item.buy_score1.each_money}}送{{item.buy_score1.each_score}}积分</view>
+                  <view class='card_offset'  wx:if="{{item.buy_score[0].value == 0}}">
+                    <block wx:for="{{item.buy_score1}}" wx:for-item='key' wx:for-index = 'items' wx:key='key'>
+                        <text> <text wx:if="{{items != 0}}">,</text>  满{{key.money}}送{{key.score}}积分</text>
+                    </block>
+                  </view>
+              </view>
+            </view>
+            <block wx:if="{{ item.card_type == 0 || item.card_type == 1 }}">
+              <view class="card-list-cover" wx:if="{{item.expire_type == 0}}">
+                <text>{{ item.start_time }} 至 {{ item.end_time }}</text>
+              </view>
+              <view class="card-list-cover" wx:elif="{{item.expire_type == 2}}"><text>永久有效</text></view>
+              <view class="card-list-cover" wx:else>
+                <text>自领取之日起{{item.receive_day}}{{item.data_type_name}}内有效</text>
+              </view>
+            </block>
+            <block wx:if="{{item.is_pay == 1}}">
+              <view class="denomination" wx:if="{{item.pay_type == 0}}">￥{{item.pay_fee}}</view>
+              <view class="denomination" wx:elif="{{item.pay_type == 1}}">{{item.pay_fee}}积分</view>
+            </block>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="card-list" bindtap="cardInfo" style="background: url({{ item.bg_img}}) no-repeat;background-size:cover;" data-card_id="{{ item.id }}">
+            <view class='card_type' wx:if="{{item.card_type==1}}">限次卡</view>
+            <view class='card_type' wx:if="{{item.card_type==0}}">普通卡</view>
+            <view class='card_type' wx:if="{{item.card_type==2}}">等级卡</view>
+            <view class="card-left">
+              <view class='shop_logos'>
+                <image src="{{ item.shop_avatar }}" class="card-image"></image>
+              </view>
+              <view class='card_detail'>
+                  <view class="card-name">
+                  {{ item.card_name }}
+                  </view>
+                  <view class='card_discount' wx:if="{{item.card_type==1}}">剩余使用次数：{{item.surplus}}</view>
+                  <view class='card_discount' wx:if="{{item.card_type==0&&item.discount!=null}}">折扣：{{item.discount}}折</view>
+                   <view class='card_discount' wx:if="{{item.card_type==2&&item.discount!=null}}">折扣：{{item.discount}}折</view>
+                  <view class='card_offset' wx:if="{{item.buy_score[0].value == 1}}">每满{{item.buy_score1.each_money}}送{{item.buy_score1.each_score}}积分</view>
+                  <view class='card_offset' wx:if="{{item.buy_score[0].value == 0}}">
+                    <block wx:for="{{item.buy_score1}}" wx:for-item='key' wx:key='key'>
+                        <text>满{{key.money}}送{{key.score}}积分</text>,
+                    </block>
+                  </view>
+              </view>
+            </view>
+            <block wx:if="{{ item.card_type == 0 || item.card_type == 1 }}">
+              <view class="card-list-cover" wx:if="{{item.expire_type == 0}}">
+                <text>{{ item.start_time }} 至 {{ item.end_time }}</text>
+              </view>
+              <view class="card-list-cover" wx:elif="{{item.expire_type == 2}}"><text>永久有效</text></view>
+              <view class="card-list-cover" wx:else>
+                <text>自领取之日起{{item.receive_day}}{{item.data_type_name}}内有效</text>
+              </view>
+            </block>
+          </view>
+        </block>
+      </block>
+    </block>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>

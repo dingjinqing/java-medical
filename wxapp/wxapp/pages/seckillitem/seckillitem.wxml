@@ -1,0 +1,235 @@
+<!-- <block wx:if="{{gd.is_delete == 0}}"> -->
+<include src="../common/header.wxml" />
+
+<!-- 邀请分享 --> 
+<v-invite-notice invite_id="{{invite_id}}" />
+<v-share-gooods show="{{share_good}}" bind:download_img="go_share" bind:share_message="onShareAppMessage" />
+<view class='back_top' wx:if='{{top_display == 1&& pictorial&&specMove==true}}' bindtap='goTop'>
+  <view>
+    <image src='/images/gray_top.png'></image>
+  </view>
+  <view>顶部</view>
+</view>
+<view class='main-container' style='overflow:{{is_play == 1?"hidden":"auto"}};padding-bottom:60rpx;'>
+
+
+  <!-- 轮播图 -->
+  <view style='position:relative'>
+  <view class="vip_goods_top" wx:if="{{gd.is_exclusive == 1 && gd.is_can_buy == 0}}">会员专享活动，开通会员即可购买</view>
+    <include src="../goodscommon/swipercommon.wxml" />
+  </view>
+  <!--秒杀价格信息 -->
+  <view class='pin_info clearfix' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+    <view class='pl_left'>
+      <text class="pl_seckill_icon">秒杀</text>
+      <view class='pl_pin_price'>￥
+        <text>{{sk_price}}</text>
+      </view>
+      <view class='pl_origin_price'>￥{{ sk_shop_price }}</view>
+    </view>
+    <view class='pl_right' wx:if='{{gd.can_seckill.status == 0 || gd.can_seckill.status == 5 }}'>
+      <view>距离结束仅剩</view>
+      <view wx:if='{{clock.length == 4}}' class='daojishis'>
+        <text  style='color:{{comColor}}'>{{clock[0]}}</text>天
+        <text  style='color:{{comColor}}'>{{clock[1]}}</text>:
+        <text  style='color:{{comColor}}'>{{clock[2]}}</text>:
+        <text  style='color:{{comColor}}'>{{clock[3]}}</text>
+      </view>
+      <view wx:if='{{clock.length == 3}}' class='daojishis'>
+        <text  style='color:{{comColor}}'>{{clock[0]}}</text>:
+        <text  style='color:{{comColor}}'>{{clock[1]}}</text>:
+        <text  style='color:{{comColor}}'>{{clock[2]}}</text>
+      </view>
+    </view>
+    <view class='pl_right' wx:if='{{gd.can_seckill.status == 3 }}'>
+      <view class='start-time' style='color:{{comColor}}'>开始时间</view>
+      <view class='start'>
+        <text class='start-text'>{{gd.skStartTime}}</text>
+      </view>
+    </view>
+    <view class='pl_right' style='align-items:center;' wx:if='{{ gd.can_seckill.status == 2 || gd.can_seckill.status == 4 || gd.can_seckill.status == 1 }}'>
+      <view>{{gd.can_seckill.msg}}</view>
+    </view>
+    <view class='pl_right' style='align-items:center;' wx:if='{{ gd.can_seckill.status == 6}}'>
+      <view>商品已抢光</view>
+    </view>
+  </view>
+
+
+
+
+
+  <!--  商品基础信息  -->
+  <view class='goods-info'>
+    <view class='clearfix'>
+      <view class='goods_name'>{{ goods_name }}</view>
+      <toast hidden="{{toast1Hidden}}" duration="3000" bindchange="toast1Change">
+        收藏成功
+      </toast>
+      <toast hidden="{{toast2Hidden}}" duration="3000" bindchange="toast2Change">
+        取消收藏
+      </toast>
+      <view class='goods_collect' bindtap="toast1Tap">
+        <text class='iconfont iconshoucang1' style='color:{{comColor}};font-size:38rpx;' wx:if="{{collection == 0 }}"></text>
+          <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:38rpx;' wx:else></text>
+      </view>
+      <view class='goods_share' style="margin-right:20rpx" bindtap="shareGoods">
+          <text class='iconfont iconfenxiang' style='color:{{comColor}};font-size:40rpx;'></text>
+      </view>
+    </view>
+    <block wx:if="{{ goods_ad != null }}">
+      <view class='goods_ad'>
+        {{ goods_ad }}
+      </view>
+    </block>
+
+    <block wx:if="{{gd.labels != null && gd.labels != ''}}">
+      <view class="label-content">
+        <text class='label-style' wx:for="{{gd.labels}}" wx:key='key' style='background:{{somColor}};color:{{comColor}}'>{{item.name}}</text>
+      </view>
+    </block>
+    <view class="flex-wrp">
+      <view class="flex-item">剩余可秒杀商品数量：{{ gd.stock }}{{gd.unit}}</view>
+      <view class="flex-item" wx:if="{{gd.deliver_fee}}" style='text-align:right;'>运费：{{ gd.deliver_fee.fee }}</view>
+      <view class="flex-item" wx:else style='text-align:right;'>免运费</view>
+    </view>
+  </view>
+  <!-- 发货地 -->
+  <view class='deliver_place' style='margin-top:20rpx;padding:20rpx 30rpx;background:#fff;color:#353535' wx:if='{{gd.deliver_place && gd.deliver_place != ""}}'>
+    <text style='color:#888;margin-right:10rpx;'>发货地</text>  {{gd.deliver_place}}
+  </view>
+  <!-- 限次卡兑换商品 -->
+    <view class="exchang_card clearfix"  wx:if="{{gd.exchang_card.length > 0}}">
+      <view>可使用限次卡兑换</view>
+      <view bindtap="bindSecKillBuy" data-exchang="1" style="color:{{comColor}}">立即兑换</view>
+    </view>
+  <!-- 会员专享商品 -->
+    <view class="exclusive_goods" wx:if="{{gd.is_exclusive == 1}}">
+      <view class='card_container' wx:if="{{gd.is_exclusive == 1}}">
+        <view class="container_top">
+          <view class="top_tips">会员专享</view>
+          <view class="top_title" wx:if="{{gd.exclusive_card_list.length > 0}}">拥有以下会员卡,即可购买此商品</view>
+          <view class="top_title" wx:elif="{{gd.exclusive_card_list.length < 1}}">拥有指定会员卡,即可购买此商品</view>
+          <view class="top_more" bindtap='top_more' data-id="{{gd.goods_id}}" wx:if="{{gd.exclusive_card_list.length > 2}}">更多</view>
+        </view>
+        <view class='container_bottom' wx:for="{{gd.exclusive_card_list}}" wx:key="index" wx:for-index="index" wx:for-item="item" wx:if="{{index < 2 && item.card_type != 2}}">
+          <text class='card_name'>{{item.card_name}}</text>
+          <block wx:if="{{item.is_pay == 1}}">
+            <text class="goods_card_price" wx:if="{{item.pay_type == 0}}">{{item.pay_fee}}元/卡</text>
+            <text class="goods_card_price" wx:if="{{item.pay_type == 1}}">{{item.pay_fee}}积分/卡</text>
+          </block>
+          <block wx:else>
+            <text class="goods_card_price">免费领取</text>
+          </block>
+          <view class='get_card' bindtap="get_card" data-card_id="{{item.id}}" wx:if="{{item.status == 0}}">我要领卡</view>
+          <view class='get_card' bindtap="get_card" data-card_id="{{item.id}}" wx:if="{{item.status == 1}}">已领取</view>
+          <view class='get_card' bindtap="get_card" data-card_id="{{item.id}}" wx:if="{{item.status == 2}}">去激活</view>
+        </view>
+      </view>
+    </view>
+    <!--分销  -->
+    <view class='diatribution_area clearfix' wx:if='{{ gd.rebate_ratio > 0 && ((gd.is_distributor == 1 && gd.judge_status == 1) || gd.judge_status != 1 )}}' >
+      <view class='da_title' style='color:{{comColor}};border-color:{{comColor}}'>分销</view>
+      <view class='da_tips'>活动商品不参与分销</view>
+    </view>
+   <view class='goods-act'>
+       <include src="../goodscommon/giftcommon.wxml" />
+   </view>
+
+<!--  选择规格（包含无规格情况）  -->
+    <v-sel-spec gd="{{gd}}" show="{{show_spec}}" exchang_block='{{exchang_block}}' item_type="seckill" 
+      bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+      <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+        <form wx:if="{{exchang_block == 1}}" report-submit='true'>
+          <view class='modal_footer_last' bindtap="bindSecKillBuy" data-exchang="1" style='background:{{commonColor}};color:#fff'>立即兑换</view>
+        </form>
+        <form wx:if="{{gd.is_exclusive == 1 && gd.is_can_buy == 0 && exchang_block == 0}}">
+          <view class='modal_footer_last' bindtap="bindTopMore" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}};'>开通会员</view>
+        </form>
+        <form wx:elif='{{gd.can_seckill.status == 3 && exchang_block==0}}'>
+          <view class='modal_footer_last' bindtap="bindOneClickBuy" data-goods="{{gd.goods_id}}" style='background:{{commonColor}};color:#fff'>原价购买</view>
+        </form>
+        <form wx:else bindtap="bindSecKillBuy">
+          <button class='modal_footer_now' form-type='submit' style='background:{{comColor}}'>立即购买</button>
+        </form>
+      </view>
+    </v-sel-spec>
+
+  <!--  评价  -->
+  <block wx:if="{{ comment_info != null }}">
+    <include src="../goodscommon/samecomment.wxml" />
+  </block>
+  <!-- 海报，视频，公众号和商品详情 -->
+  <include src="../goodscommon/modalcommon.wxml" />
+  <!--  底部  -->
+  <view class='footer clearfix' wx:if="{{gd.disp == 1 || gd.payment != '' || gd.business_state == 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+    <view class='footer_1'>
+      <view wx:if='{{gd.custom_service == 1}}'>
+        <button class='xiaodekfu' open-type='contact' show-message-card="true" session-from="weapp" send-message-title="{{gd.goods_name}}" send-message-path="/pages/seckillitem/seckillitem?sk_id={{sk_id}}" send-message-img="{{gd.goods_img}}" bindcontact='bindContact'></button>
+        <image src='{{ img_sercer }}' mode="widthFix"></image>
+        <view>客服</view>
+      </view>
+      <view class='back_index' bindtap='to_index' wx:if='{{gd.custom_service != 1}}'>
+          <image src='{{imageUrl}}image/wxapp/back_index_item.png' mode='widthFix'></image>
+          <view>首页</view>
+        </view>
+      <view bindtap='gotoCart'>
+        <image src='{{ img_cart }}' mode="widthFix"></image>
+        <view class='cart_goods_num' style='color:{{comColor}};border-color:{{comColor}}'>{{cartGoodsNumber}}</view>
+        <view>购物车</view>
+      </view>
+    </view>
+
+    <block wx:if="{{gd.is_exclusive == 1 && gd.is_can_buy == 0}}">
+      <form class='fill_footer'>
+        <button class='footer_4' bindtap='bindTopMore' data-goods="{{gd.goods_id}}" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}};'>开通会员</button>
+      </form>
+    </block>
+    <block wx:else>
+      <block wx:if='{{gd.can_seckill.status != 3}}'>
+        <form class='fill_footer' report-submit='true' bindsubmit='bindSecKillBuy'>
+          <button class='footer_4' form-type='submit' data-goods="{{gd.goods_id}}" style='background:{{comColor}}'>立即购买</button>
+        </form>
+      </block>
+      <block wx:elif='{{gd.can_seckill.status == 3 }}'>
+        <form>
+          <view class='footer_2' bindtap='to_goods' data-goods="{{gd.goods_id}}" style='background:{{commonColor}};color:#fff'>原价购买</view>
+        </form>
+        <form>
+          <view class='footer_3'>秒杀尚未开始</view>
+        </form>
+      </block>
+      <block wx:else>
+         <form class='fill_footer' >
+          <button class='footer_sell_out' style="width:100%">已售罄</button>
+        </form>
+      </block>
+    </block>
+    
+
+
+
+
+
+  </view>
+
+  <view class='footer clearfix no_check' style='padding-bottom:{{isIpx == 1?"30rpx;":"0rpx;"}}' wx:if="{{gd.disp == 0 || gd.payment == '' || (gd.payment[0].pay_code =='ali_mini_pay'&&gd.payment.length == 1) || gd.business_state != 1 || gd.is_store_pickup == 1}}">
+    <text class='iconfont iconkefu' style='color:{{comColor}};font-size:70rpx;'></text>
+      <view style='color:{{comColor}}'>客服</view>
+  </view>
+  <view wx:else>
+    <!-- 不在配送范围 -->
+    <view class='cannot-deliver' wx:if='{{gd.deliver_fee.code==-1}}' style='bottom:{{isIpx == 1?"165rpx;":"100rpx;"}}'>
+      注：当前所在区域不可配送
+    </view>
+  </view>
+
+  <!--  库存为0  -->
+  <block wx:if="{{ goods_num <= 0 || gd.is_on_sale == 0}}">
+    <view class='footer_over' bindtap='to_index' wx-if="{{goods_num <= 0}}">此商品已售罄</view>
+    <view class='footer_over' bindtap='to_index' wx-if="{{gd.is_on_sale == 0}}">此商品已下架</view>
+  </block>
+
+</view>
+<include src="../common/footer.wxml" />
+<!-- </block> -->

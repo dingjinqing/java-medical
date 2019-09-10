@@ -1,0 +1,122 @@
+/* pages/express/express.wxss */
+page{
+  background: #f5f5f5;
+}
+.state_no{
+  margin-top: 300rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.state_no image{
+  width: 200rpx;
+}
+.nitices{
+  width: 750rpx;
+  margin-top: 20rpx;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+.orderinfo_list{
+  background: #fff;
+  padding: 25rpx;
+  margin-bottom: 20rpx;
+}
+.orderinfo_list::after{
+  content: "";
+  clear: both;
+  display: block;
+}
+.ol_left{
+  float: left;
+  width: 130rpx;
+  height: 128rpx;
+}
+.ol_left image{
+  width:120rpx;
+  border: 1px solid #ddd;
+}
+.ol_right{
+  float: left;
+  width: 500rpx;
+  height: 128rpx;
+  position: relative;
+}
+.ex_state{
+  color: #f66;
+  font-size: 15px;
+  position: absolute;
+  top: 0;
+  left: 10rpx;
+}
+.kuaidi_info{
+  color: #888;
+  font-size: 13px;
+  position: absolute;
+  top: 0rpx;
+  left: 10rpx;
+}
+.kuaidi_phone{
+  color: #888;
+  font-size: 12px;
+  position: absolute;
+  bottom: 0rpx;
+  left: 10rpx;
+}
+.express_content{
+  background: #fff;
+  padding: 40rpx 25rpx;
+  padding-right: 0;
+  font-size: 12px;
+  color: #888;
+  padding-top: 20rpx;
+  position: relative;
+}
+.express_content .each:first-of-type{
+  padding-top: 0;
+}
+.express_content .each{
+  padding: 20rpx 0 0 40rpx; 
+  border-left: 2rpx solid #eee;
+  margin-left: 20rpx;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+.express_content .each .each_word{
+  flex: 1.9;
+  padding-right: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.express_content .each .iconn{
+  width: 20rpx;
+  height: 20rpx;
+  background: #ddd;
+  background-image:none; 
+  border-radius: 100%;
+}
+.express_content .each .each_icons{
+    flex: 0.1;
+    position: absolute;
+    left: -12rpx;
+}
+.express_content .each:first-of-type .each_icons{
+  position: absolute;
+  left: -17rpx;
+}
+.express_content .each:first-of-type .each_word{
+  color: #f66;
+}
+
+.hr_left{
+  width: 2rpx;
+  height: 100%;
+  background: #ddd;
+  position: absolute;
+  top: 85rpx;
+  left: 40rpx;
+  display: none;
+}

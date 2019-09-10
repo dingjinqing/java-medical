@@ -1,0 +1,7 @@
+{
+ "navigationBarTitleText": "订单支付成功",
+ "usingComponents": {
+	"v-goods-recommend": "/components/item/recommend/index",
+	"v-pay-reword-custom": "/components/popup/pay-reward-custom/index"
+  }
+}

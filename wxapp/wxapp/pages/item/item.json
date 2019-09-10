@@ -1,0 +1,15 @@
+{
+    "navigationBarTitleText": "商品详情",
+    "usingComponents": {
+      "v-invite-notice": "/components/invite-notice/index",
+      "v-decorate": "/components/decorate/decorate/index",
+      "v-go-top": "/components/go-top/index",
+      "v-sel-spec": "/components/item/popup/spec/index",
+      "v-popup-coupon": "/components/item/popup/coupon/index",
+      "v-popup-get-phone-number": "/components/popup/get-phone-number/index",
+      "v-share-gooods":"/components/popup/share_goods/index",
+      "v-toast":"/components/popup/toast/index",
+      "v-popup": "/components/popup/popup/index",
+      "v-goods-recommend": "/components/item/recommend/index"
+    }
+}

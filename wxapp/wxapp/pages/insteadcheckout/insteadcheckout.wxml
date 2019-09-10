@@ -1,0 +1,66 @@
+<include src="../common/header.wxml" />
+<view class='main_container'>
+  <view class='goods_info each_area'>
+    <view class='goods_top clearfix' wx:for='{{ins_info.order.order_goods}}' wx:key='key'>
+      <view class='goods_img'>
+        <image src='{{item.goods_img}}'></image>
+      </view>
+      <view class='goods_right'>
+        <view class='goods_name'>{{item.goods_name}}</view>
+        <view class='goods_desc' wx:if='{{item.goods_attr != ""}}'>{{item.goods_attr}}</view>
+        <view class='goods_price' style='color:{{comColor}}'>￥{{item.goods_price}}</view>
+      </view>
+    </view>
+    <view class='other_money'>
+      <view class='payed_money'>已付款：<text>￥{{ins_info.has_pay_money}}</text>
+      </view>
+      <view class='pay_no_money'>剩余金额：<text>￥{{ins_info.wait_pay_money}}</text>
+      </view>
+    </view>
+  </view>
+  <view class='choice_money each_area'>
+    <view class='cm_top'>
+      <view>待付款金额</view>
+    </view>
+    <view class='cm_edit_price clearfix'>
+      <view>￥</view>
+      <input type='digit' class='pay_money' value='{{payed_money}}' bindblur='changemoney' bindfocus="change_radio" wx:if="{{is_can_edit}}"></input>
+      <view wx:else>{{payed_money}}</view>
+    </view>
+    <radio-group bindchange="radioChange">
+      <view class='each_radio_item' wx:for='{{ins_info.doc_money.doc_price}}' wx:key='key'>
+        <view class='er_left'>
+          <label>
+          <radio color='{{comColor}}' name='ins_type' value="{{index}}"  checked="{{item.checke}}"/> {{item.text}}
+          </label>
+        </view>
+        <view class='er_right'>￥{{item.price}}</view>
+      </view>
+    </radio-group>
+  </view>
+  <view class='pay_msg each_area'>
+    <view class='cm_top'>
+      <view>编辑留言</view>
+    </view>
+    <view class='leave_msg_area'>
+      <input type='text' value='{{payed_msg}}' bindblur='changemsg'></input>
+    </view>
+  </view>
+  <view class='pay_msg each_area'>
+    <view class='cm_top'>
+      <view>匿名付款</view>
+      <view style='text-align:right'>
+      <checkbox-group bindchange="checkboxChange">
+          <checkbox value="hide_name" checked="" color='{{comColor}}' class='cb' />
+      </checkbox-group>
+      </view>
+    </view>
+    <view class='cm_top my_username'>
+      <view class='wodenicheng'><text>我的昵称：</text><input type='text' value='{{payed_name}}' bindblur='changename'></input> </view>
+    </view>
+  </view>
+  <form report-submit='true' bindsubmit='btn_to_payed'>
+      <button class='btn_pay' formType='submit' style='background:{{comColor}}'>微信支付</button>
+  </form>
+</view>
+<include src="../common/footer.wxml" />

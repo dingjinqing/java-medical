@@ -1,0 +1,12 @@
+  <!--pages/comment/comment.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class='main-container'>
+  <view class="main-top">
+    <text class='iconfont icondanxuan' style="color:{{comColor}};font-size:90rpx"></text>
+    <text class="tips">快去对本次购物体验做个评价吧！</text>
+    <view class="button red" bindtap='goComment' style="background-color:{{comColor}}">{{can_send == 0 ? '商品评价' : '评价有礼'}}</view>
+    <view class="button white" bindtap='goHome'>返回首页</view>
+  </view>
+    <v-goods-recommend  page-name='order_complete'/>
+</view>
+<include src="/pages/common/footer.wxml"/>

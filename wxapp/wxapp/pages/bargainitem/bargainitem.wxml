@@ -1,0 +1,215 @@
+<block wx:if="{{gd.is_delete == 0}}">
+
+  <include src="../common/header.wxml" />
+  <v-share-gooods show="{{share_good}}" bind:download_img="go_share" bind:share_message="onShareAppMessage" />
+  <view class='main-container' style='padding-bottom:60rpx;'>
+    <view class='back_top' wx:if='{{top_display == 1&& pictorial&&specMove==true}}' bindtap='goTop'>
+      <view>
+        <image src='/images/gray_top.png'></image>
+      </view>
+      <view>顶部</view>
+    </view>
+    <!-- 轮播图 -->
+    <view>
+      <include src="../goodscommon/swipercommon.wxml" />
+    </view>
+    <!-- 砍价价格信息 -->
+    <view class='pin_info clearfix' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class='pl_left'>
+        <!-- <image class='kanjiade_icon' src='{{imageUrl}}image/wxapp/kanjia_info_icon.png'></image> -->
+        <view class='pl_pin_price'>￥
+          <text>{{ gd.bargain_price }}</text>砍走</view>
+        <view class='pl_origin_price'>￥{{ gd.shop_price }}</view>
+      </view>
+      <view class='pl_right' wx:if='{{gd.can_bargain.status == 0 || gd.can_bargain.status == 5 }}'>
+        <view>距离结束仅剩：</view>
+        <view wx:if='{{clock.length == 4}}' class='daojishis'>
+          <text style='color:{{comColor}}'>{{clock[0]}}</text>天
+          <text style='color:{{comColor}}'>{{clock[1]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[2]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[3]}}</text>
+        </view>
+        <view wx:if='{{clock.length == 3}}' class='daojishis'>
+          <text style='color:{{comColor}}'>{{clock[0]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[1]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[2]}}</text>
+        </view>
+      </view>
+      <view class='pl_right' wx:if='{{gd.can_bargain.status == 3 }}'>
+        <view>距离开始还剩：</view>
+        <view wx:if='{{clock.length == 4}}' class='daojishis'>
+          <text style='color:{{comColor}}'>{{clock[0]}}</text>天
+          <text style='color:{{comColor}}'>{{clock[1]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[2]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[3]}}</text>
+        </view>
+        <view wx:if='{{clock.length == 3}}' class='daojishis'>
+          <text style='color:{{comColor}}'>{{clock[0]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[1]}}</text>:
+          <text style='color:{{comColor}}'>{{clock[2]}}</text>
+        </view>
+      </view>
+      <view class='pl_right' style='align-items:center;' wx:if='{{ gd.can_bargain.status == 2 || gd.can_bargain.status == 4 || gd.can_bargain.status == 1 }}'>
+        <view>{{gd.can_bargain.msg}}</view>
+      </view>
+      <view class='pl_right' style='align-items:center;' wx:if='{{ gd.can_bargain.status == 6}}'>
+        <view>商品已砍光</view>
+      </view>
+    </view>
+    <!--  商品基础信息  -->
+    <view class='goods-info'>
+      <view class='clearfix'>
+        <view class='goods_name'>
+          <text style='background:{{somColor}};color:{{comColor}};border-color:{{comColor}}'>砍价</text>{{ goods_name }}</view>
+        <toast hidden="{{toast1Hidden}}" duration="3000" bindchange="toast1Change">
+          收藏成功
+        </toast>
+        <toast hidden="{{toast2Hidden}}" duration="3000" bindchange="toast2Change">
+          取消收藏
+        </toast>
+        <view class='goods_collect' bindtap="toast1Tap">
+          <text class='iconfont iconshoucang1' style='color:{{comColor}};font-size:38rpx;' wx:if="{{collection == 0 }}"></text>
+          <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:38rpx;' wx:else></text>
+        </view>
+        <view class='goods_share' style="margin-right:20rpx" bindtap="shareGoods">
+          <text class='iconfont iconfenxiang' style='color:{{comColor}};font-size:38rpx;'></text>
+        </view>
+      </view>
+      <block wx:if="{{ goods_ad != null }}">
+        <view class='goods_ad'>
+          {{ goods_ad }}
+        </view>
+      </block>
+      <block wx:if="{{gd.labels != null && gd.labels != ''}}">
+        <view class="label-content">
+          <text class='label-style' wx:for="{{gd.labels}}" style='background:{{somColor}};color:{{comColor}}' wx:key='key'>{{item.name}}</text>
+        </view>
+      </block>
+
+      <view class="flex-wrp">
+        <view class="flex-item">库存：{{ goods_old_number }}{{gd.unit}}</view>
+        <view class="flex-item" style='text-align:center;'>参与砍价人次:{{ sale_num }}</view>
+        <view class="flex-item" wx:if="{{gd.deliver_fee && gd.deliver_fee.code!=-1}}" style='text-align:right;'>运费：{{ gd.deliver_fee.fee }}</view>
+        <view class="flex-item" wx:else style='text-align:right;'>运费：0</view>
+      </view>
+    </view>
+    <!-- 发货地 -->
+    <view class='deliver_place' style='margin-top:20rpx;padding:20rpx 30rpx;background:#fff;color:#353535' wx:if='{{gd.deliver_place && gd.deliver_place != ""}}'>
+      <text style='color:#888;margin-right:10rpx;'>发货地</text> {{gd.deliver_place}}
+    </view>
+    <!--分销  -->
+    <view class='diatribution_area clearfix' wx:if='{{ gd.rebate_ratio > 0 && ((gd.is_distributor == 1 && gd.judge_status == 1) || gd.judge_status != 1 )}}' >
+      <view class='da_title' style='color:{{comColor}};border-color:{{comColor}}'>分销</view>
+      <view class='da_tips'>活动商品不参与分销</view>
+    </view>
+    <view class='goods-act'>
+      <include src="../goodscommon/giftcommon.wxml" />
+    </view>
+    <!--  选择规格（包含无规格情况）  -->
+    <v-sel-spec gd="{{gd}}" show="{{show_spec}}" bindtap='bindSelectSpec' item_type="{{buyType}}" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+      <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+        <block wx:if="{{buyType == 'bargain'}}">
+          <block wx:if="{{getsq == true || click_num == true}}">
+            <form report-submit='true' bindsubmit='bindBargainBuy'>
+              <button class='modal_footer_now' formType='submit' style='background:{{comColor}}'>{{ gd.bargain_price }}元砍价拿</button>
+            </form>
+          </block>
+          <block wx:else>
+            <button class='modal_footer_now' style='background:{{comColor}}' open-type="getUserInfo" bindgetuserinfo="getUserInfo" data-kj='{{1}}'>{{ gd.bargain_price }}元砍价拿</button>
+          </block>
+        </block>
+        <block wx:else>
+          <form report-submit='true' bindsubmit='bindAddCart'>
+            <button class='modal_footer_add' formType='submit' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>加入购物车</button>
+          </form>
+          <form wx:if="{{(gd.is_card_exclusive == 0 || gd.card_can == true) && exchang_block == 0}}">
+            <view class='modal_footer_now' bindtap="bindOneClickBuy" style='background:{{comColor}}'>立即购买</view>
+          </form>
+        </block>
+      </view>
+    </v-sel-spec>
+    <!--拼团规则  -->
+    <view class='group_info' bindtap='toRule'>
+      <view class='gf_top'>
+        <view>砍价规则</view>
+        <view>
+          详细规则
+          <image src='{{click_more}}' mode='widthFix' />
+        </view>
+      </view>
+      <view class='rule_info'>
+        <view class='rf_each'>
+          <view>1</view>
+          <view>点击下方"砍价拿"按钮开始</view>
+        </view>
+        <view class='rf_each'>
+          <view>2</view>
+          <view>邀请好友来砍价</view>
+        </view>
+        <view class='rf_each'>
+          <view>3</view>
+          <view>砍价成功，商品低价拿</view>
+        </view>
+      </view>
+    </view>
+    <!--  评价  -->
+    <block wx:if="{{ comment_info != null }}">
+      <include src="../goodscommon/samecomment.wxml" />
+    </block>
+    <!-- 海报，视频，公众号和商品详情和绑定手机号 -->
+    <include src="../goodscommon/modalcommon.wxml" />
+  </view>
+  <include src="../common/footer.wxml" />
+  <!--  底部  -->
+  <view class='footer clearfix' wx:if="{{gd.disp == 1 || gd.payment != '' || gd.business_state == 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+    <view class='footer_1'>
+      <view wx:if='{{gd.custom_service == 1}}'>
+        <button class='xiaodekfu' open-type='contact' show-message-card="true" session-from="weapp" send-message-title="{{gd.goods_name}}" send-message-path="/pages/bargainitem/bargainitem?bargain_id={{bargain_id}}" send-message-img="{{gd.goods_img}}" bindcontact='bindContact'></button>
+        <image src='{{ img_sercer }}' mode="widthFix"></image>
+        <view>客服</view>
+      </view>
+      <view class='back_index' bindtap='to_index' wx:if='{{gd.custom_service != 1}}'>
+        <image src='{{imageUrl}}image/wxapp/back_index_item.png' mode='widthFix'></image>
+        <view>首页</view>
+      </view>
+      <view bindtap='to_cart'>
+        <image src='{{ img_cart }}' mode="widthFix"></image>
+        <view class='cart_goods_num' style='color:{{comColor}};border-color:{{comColor}}'>{{cartGoodsNumber}}</view>
+        <view>购物车</view>
+      </view>
+    </view>
+    <block wx:if='{{goods_num > 0}}'>
+      <view class='footer_2' bindtap='bindOneClickBuy' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>
+        <view>￥{{gd.shop_price}}</view>
+        <view>单独购买</view>
+      </view>
+      <block wx:if="{{getsq == true || click_num == true}}">
+        <form report-submit='true' bindsubmit='bindBargainBuy'>
+          <button formType='submit' class='footer_3 btn_na' style='background:{{comColor}}'>
+            <view>￥{{ gd.bargain_price }}</view>
+            <view>砍价拿</view>
+          </button>
+        </form>
+      </block>
+      <block wx:else>
+        <button class='footer_3' open-type="getUserInfo" bindgetuserinfo="getUserInfo" data-kj='{{1}}' style='background:{{comColor}}'>
+          <view>￥{{ gd.bargain_price }}</view>
+          <view>砍价拿</view>
+        </button>
+      </block>
+    </block>
+    <block wx:else>
+     <view class='footer_sell_out'>已售罄</view>
+    </block>
+  </view>
+  <view class='footer clearfix no_check' style='padding-bottom:{{isIpx == 1?"30rpx;":"0rpx;"}}' wx:if="{{gd.disp == 0 || gd.payment == '' || (gd.payment[0].pay_code =='ali_mini_pay'&&gd.payment.length == 1) || gd.business_state != 1}}">
+    <text class='iconfont iconkefu' style='color:{{comColor}};font-size:70rpx;'></text>
+    <view style='color:{{comColor}}'>客服</view>
+  </view>
+  <view wx:else>
+    <!-- 不在配送范围 -->
+    <view class='cannot-deliver' wx:if='{{gd.deliver_fee.code==-1}}' style='bottom:{{isIpx == 1?"165rpx;":"100rpx;"}}'>
+      注：当前所在区域不可配送
+    </view>
+  </view>
+</block>

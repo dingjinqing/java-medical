@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "搜索",
+  "usingComponents": {
+    "v-brand": "/components/brand/index",
+    "v-goods-recommend": "/components/item/recommend/index",
+    "v-sel-spec": "/components/item/popup/spec/index"
+  },
+  "disableScroll": true
+}

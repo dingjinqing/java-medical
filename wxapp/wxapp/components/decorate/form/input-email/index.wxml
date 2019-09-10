@@ -1,0 +1,8 @@
+<view class="email-container">
+  <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>
+  <view class="icon_email" wx:if='{{m.image_type == 1}}'>
+    <image src='{{m.email_url ? m.email_url : m.imgUrl+"image/wxapp/email_change.png" }}' mode='widthFix' wx:if='{{!m.email_url}}' />
+  </view>
+  <view class='email_title'>{{m.form_title}}</view>
+  <input type='text' placeholder='请输入{{m.form_title}}' bindblur='bindCheckEmail' data-cur_idx='{{m.idx}}'></input>
+</view>

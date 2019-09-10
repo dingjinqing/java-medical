@@ -1,0 +1,15 @@
+<!--pages/auth/auth.wxml-->
+<include src="../common/header.wxml"/>
+<view class='main-container' wx:if="{{page_success}}">
+  <block wx:if="{{mobile == ''}}">
+    <image src='{{imageUrl}}image/wxapp/auth_icon.png' mode='widthFix' />
+    <view>为了给您提供更优质的服务和更精准的通知，推荐您授权手机号，以方便系统为您提供更精细化的服务。</view>
+  </block>
+  <block wx:else>
+    <text class='iconfont icondanxuan' style="color:#179B16;font-size:200rpx"></text>
+    <view style="margin-top:30rpx;">手机号已授权</view>
+  </block>
+  <button open-type="getPhoneNumber" bindgetphonenumber="auth_mobile" type='primary' style="{{mobile == '' ? '' : 'background:#fff;color:#666'}}">{{mobile == '' ? '立即授权' : '重新授权'}}</button>
+  <button type='default' bindtap='btn_index' style="{{mobile == '' ? '':'background:#179B16;color:#fff'}}">回到首页</button>
+</view>
+<include src="../common/footer.wxml"/>

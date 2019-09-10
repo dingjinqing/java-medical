@@ -1,0 +1,46 @@
+<include src="../common/header.wxml"/>
+<view class='all'>
+    <view class='sc_content' style='background:url("{{imageUrl}}image/wxapp/split_coupon_bg.png") no-repeat;background-size:100% 100%'>
+      <!--领取详情  -->
+        <view class='top_tips'>
+          <view class='tt_top'>已有<text>{{getsplit_info.count}}</text>人领取</view>
+        </view>
+    </view>
+    <view class='btn_content'>
+      <!--领取详情  -->
+        <view class='get_notice'>快去分享给您的朋友吧~</view>
+        <view class='detail_btn_group'>
+          <view class='share_now'> <button open-type="share">立即分享</button> </view>
+          <view class='btn_to_store' bindtap="to_store">进店逛逛</view>
+        </view>
+        <view class='get_detail'>
+          <view class="gd_bg1"><view class='gd_bg2'></view></view>
+          <view class='gd_content'>
+            <view class='gc_top'>
+              <view class='hr'></view>
+              <view class='gc_top_title'>看朋友们手气如何</view>
+              <view class='hr'></view>
+            </view>
+            <view class='other_get'>
+            <block wx:for='{{getsplit_info.user_list}}' wx:key="index"> 
+              <view class='each_other'>
+                <view class='eo_left'><image src='{{item.user_avatar}}'/></view>
+                <view class='eo_right'>
+                  <view class='eo_name'>{{item.username}}</view>
+                  <view class='eo_money' wx:if="{{getsplit_info.coupon.act_code == 'discount'}}">{{getsplit_info.coupon.denomination}}折</view>
+                  <view class='eo_money' wx:if="{{getsplit_info.coupon.act_code == 'voucher'}}">{{getsplit_info.coupon.denomination}}元</view>
+                  <view class='eo_time'>
+                  <text wx:if="{{item.time.day != '0'}}">{{item.time.day}}天</text>
+                  <text wx:if="{{item.time.hour != '0'}}">{{item.time.hour}}小时</text>
+                  <text wx:if="{{item.time.min != '0'}}">{{item.time.min}}分钟</text>
+                  <text wx:if="{{item.time.min== 0&&item.time.day==0&&item.time.hour==0}}">1分钟</text>前
+                  </view>
+                </view>
+              </view>
+            </block>   
+            </view>
+          </view>
+        </view>
+    </view>
+    <include src="../common/footer.wxml"/>
+</view>
