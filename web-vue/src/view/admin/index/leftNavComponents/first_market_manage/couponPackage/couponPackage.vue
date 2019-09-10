@@ -306,16 +306,16 @@ export default {
         'id': id,
         'status': 1
       }
-      this.$confirm('确定启用该优惠券礼包活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actEnabledConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '启用成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
@@ -328,16 +328,16 @@ export default {
       let param = {
         'id': id
       }
-      this.$confirm('确定删除该优惠券礼包活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actDeleteConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         deleteCouponPackage(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '删除成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
