@@ -20,7 +20,15 @@
             @click="handle_to_shop(item.shopId)"
           >
             <div>
-              <div class="shop_state">
+              <div
+                class="shop_state"
+                :class="item.bgColor?'noUse':''"
+                :style="item.tipStatus===1||item.tipStatus===2?'color:#f7931e':''"
+              >
+                <img :src="item.imgUrl">
+                <span v-if="item.tipStatus===1">已禁用</span>
+                <span v-if="item.tipStatus===2">未营业</span>
+                <span v-if="item.tipStatus===3">已过期</span>
               </div>
               <div class="shop_logo">
                 <img
@@ -95,6 +103,23 @@ export default {
               item.shopType = '旗舰版'
               break
           }
+          if (item.isEnabled) {
+            item.tipStatus = 1
+            item.imgUrl = this.$imageHost + '/image/admin/no_use.png'
+            item.bgColor = true
+          } else if (item.businessState) {
+            item.tipStatus = 2
+            item.imgUrl = this.$imageHost + '/image/admin/no_business.png'
+            item.bgColor = true
+          } else if (item.expireTimeStatus === '1') {
+            item.tipStatus = 3
+            item.imgUrl = this.$imageHost + '/image/admin/no_time.png'
+            item.bgColor = true
+          } else {
+            item.tipStatus = 0
+            item.bgColor = false
+          }
+          console.log(res.content.dataList)
         })
         this.shop_list = res.content.dataList
         this.loading.close()
@@ -158,12 +183,18 @@ export default {
 .main_top img {
   vertical-align: middle;
 }
-.shop_state {
+.shop_state.shop_state {
   height: 40px;
   line-height: 40px;
   color: #999;
   font-size: 14px;
   background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.shop_state img {
+  margin-right: 5px;
 }
 .shop_logo {
   padding: 20px 0 40px;
@@ -218,5 +249,9 @@ export default {
   border-top: 2px solid #f7931e !important;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
 }
+.noUse {
+  background-color: #fef4e8;
+}
+
 /* :class="shop_list_index == index?'shop_li_style':''" */
 </style>

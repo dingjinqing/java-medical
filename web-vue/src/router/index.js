@@ -49,19 +49,17 @@ router.beforeEach((to, from, next) => {
   if (nextRoute.indexOf(to.name) >= 0) {
     // 检测是否登录的页面
     console.log(token)
+    console.log(to)
     if (token) {
-      if (to.meta.meta) {
-        console.log('我需要判断权限')
-        judgeJurisdictionRequest({ 'V-EnName': to.name }).then(res => {
-          console.log(res)
-        })
-      }
-      next()
+      console.log('我需要判断权限')
+      judgeJurisdictionRequest({ 'V-EnName': to.name }).then(res => {
+        console.log(res)
+        next()
+      })
     } else {
       // 如果没有登录你访问的不是login就让你强制跳转到login页面
       if (to.path !== '/index/login') {
         next({ path: '/index/login' })
-      } else {
       }
     }
   } else {
