@@ -171,6 +171,10 @@ export const cn = {
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细
   purchase_redemption_detail: ['营销管理', '加价购', '换购明细'],
+  // 订单管理 全部订单
+  order: ['订单管理', '全部订单'],
+  // 订单管理 查看详情
+  orderInfo: ['订单管理', '查看详情'],
   // 营销管理 消息推送
   message_push: ['营销管理', '消息推送'],
   // 营销管理 消息推送 添加消息推送
@@ -401,6 +405,10 @@ export const en = {
     'Increase Purchase',
     'Redemption Detail'
   ],
+  // 订单管理 全部订单
+  order: ['Order management', 'All orders'],
+  // 订单管理 查看详情
+  orderInfo: ['Order management', 'See details'],
   // 营销管理 消息体送
   message_push: ['Marketing management', 'message_push'],
   add_message_push: ['Marketing management', 'Message push', 'Add message push']

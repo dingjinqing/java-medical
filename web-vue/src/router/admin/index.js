@@ -1,5 +1,6 @@
 import marketing from '@/router/admin/marketing'
 import member from '@/router/admin/member'
+import order from '@/router/admin/order'
 const routes = [
   {
     path: '/admin/home',
@@ -548,19 +549,6 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/goods_manage/goodsImport/goodsImport'
               )
           },
-          // 订单管理系列子路由
-          {
-            path: '/admin/home/main/first_trade_manageL',
-            name: 'order',
-            meta: {
-              crumbTitle: '',
-              meta: 'first_trade_manage'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_trade_manageL/first_trade_manageL'
-              )
-          },
           // 门店管理系列子路由
           {
             path: '/admin/home/main/store_manage',
@@ -587,7 +575,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/base_manger/base_manger'
               )
           }
-        ].concat(marketing, member)
+        ].concat(marketing, member, order)
       }
     ]
   },
