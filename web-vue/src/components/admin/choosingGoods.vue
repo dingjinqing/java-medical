@@ -237,7 +237,7 @@ export default {
     // 是否加载规格
     loadProduct: Boolean
   },
-  data() {
+  data () {
     return {
       pageCount: 1,
       total: null,
@@ -310,7 +310,7 @@ export default {
     ...mapGetters(['goodsIds', 'editGoodsId'])
   },
   watch: {
-    checkedAll(newData, oldData) {
+    checkedAll (newData, oldData) {
       if (newData === true) {
         this.trList.map((item, index) => {
           item.ischecked = true
@@ -331,9 +331,8 @@ export default {
     //   immediate: true
     // }
   },
-  mounted() {
+  mounted () {
     this.$http.$on('choosingGoodsFlag', (res) => {
-
       console.log(res)
 
       this.$http.$on('choosingGoodsFlag', (res) => {
@@ -369,168 +368,168 @@ export default {
         })
         // 品牌分类初始化获取及页编辑回显
         this.defaultGrandClass()
-      },
-        methods: {
-          ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
-          defaultGrandClass() {
-            console.log('defaultGrandClass()', this.editGoodsId)
+      })
+    })
+  },
+  methods: {
+    ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
+    defaultGrandClass () {
+      console.log('defaultGrandClass()', this.editGoodsId)
 
-            if (this.editGoodsId !== 'add' && this.editGoodsId) {
-              let obj = {
-                'id': this.editGoodsId
-              }
-              queryGoodsIdRequest(obj).then((res) => {
-                console.log(res.content)
-                this.NameInput = res.content.brandName
-                this.NameEnlishInput = res.content.ename
-                this.logoImgUrl = res.content.logo
-                this.classSelectValue = res.content.classifyId
-                this.firstInput = res.content.first
-                console.log(res.content.isRecommend)
-                this.radio = res.content.isRecommend.toString()
-                this.hxgoodsIds = res.content.goodsIds
-                this.selectgoodsNum = res.content.goodsIds.length
-              })
-            }
-            classificationSelectRequest().then((res) => {
-              console.log(res)
-              if (!res) return
-              if (res.error === 0) {
-                this.options = res.content
-              }
-            })
-            this.handleClickChoiseGood()
-          },
-          // 初始数据获取
-          handleClickChoiseGood() {
-            let obj = {
-              goodsName: this.goodsName,
-              catId: this.bottomDialogSelectOne,
-              sortId: this.bottomDialogSelectTwo,
-              labelId: this.bottomDialogSelectThree,
-              brandId: this.goodsGrandVal,
-              lowShopPrice: this.inputBottomRange,
-              highShopPrice: this.inputBottomRangeRight,
-              currentPage: 1,
-              pageRows: 20
-            }
-            // 弹窗上方下拉框统一数据获取
-            initGrandgetRequest().then((res) => {
-              if (!res) return
-              if (res.error === 0) {
-                this.bottomOptionsOne = res.content.sysCates
-                this.bottomOptionsTwo = res.content.goodsSorts
-                this.bottomOptionsThree = res.content.goodsLabels
-                this.goodsGrandOptions = res.content.goodsBrands
-              }
-
-              console.log(res)
-            })
-            // 弹窗下方表格数据获取
-            let query = allGoodsQueryRequest
-            if (this.loadProduct) {
-              query = getGoodsProductList
-            }
-            query(obj).then((res) => {
-              if (!res) return
-              if (res.error === 0) {
-                // res.content.dataList.catName = res.content.dataList.catName.replace(',', '、')
-                console.log(res.content.dataList)
-                res.content.dataList.catName = res.content.dataList.map((item, index) => {
-                  console.log(item.catName)
-                  item.catName = item.catName.replace('，', '、')
-                  item.ischecked = false
-                  this.hxgoodsIds.map((childrenItem, childrenIndex) => {
-                    let condition = childrenItem === item.goodsId
-                    if (this.loadProduct) {
-                      // 规格id
-                      condition = childrenItem.prdId === childrenItem
-                    }
-                    if (condition) {
-                      item.ischecked = true
-                    }
-                  })
-                })
-                let flag = res.content.dataList.filter((item, index) => {
-                  return item.ischecked === false
-                })
-                console.log(flag)
-                if (flag.length === 0 && this.choiseOne === false) {
-                  this.checkedAll = true
-                }
-                this.trList = res.content.dataList
-              }
-              console.log(res)
-            })
-          },
-          // 行选中高亮
-          handleClick(index, item) {
-            debugger
-            this.clickIindex = index
-            console.log(this.trList[index].ischecked)
-            let flagBefore = this.trList.filter((tmpitem, index) => {
-              return tmpitem.ischecked === true
-            })
-            console.log('flagBefore', flagBefore)
-            console.log('item', item)
-            // 单选模式
-            if (this.choiseOne) {
-              // item.ischecked = false
-              this.trList.forEach(tmpitem => {
-                if (item.goodsId === tmpitem.goodsId) {
-                  tmpitem.ischecked = true
-                } else {
-                  tmpitem.ischecked = false
-                }
-              })
-              this.goodsRow = item
-              return
-            }
-            this.trList[index].ischecked = !this.trList[index].ischecked
-            let flag = this.trList.filter((item, index) => {
-              return item.ischecked === false
-            })
-            console.log(this.choiseOne)
-            if (!flag.length) {
-              this.checkedAll = true
-            } else {
-              this.checkedAll = false
-            }
-            // let arr = []
-            console.log(this.trList)
-            console.log(this.goodsIdsArr)
-            console.log('选中', index, item)
-          },
-          // 选择商品弹窗确定
-          handleChoiseGooddialog() {
-
-            this.$http.$emit('choseGoodsId', this.goodsIdsArr)
-
-            this.goodsIdsArr = []
-            this.trList.forEach(item => {
-              if (item.ischecked) {
-                let _goodsId = item.goodsId
-                if (this.loadProduct) {
-                  _goodsId = item.prdId
-                }
-
-                this.goodsIdsArr.push(_goodsId)
-              }
-            })
-            console.log(this.goodsIdsArr)
-
-            this.transmitGoodsIds(this.goodsIdsArr)
-            // 关闭对话框
-            this.choiseGooddialogVisible = false
-            this.$http.$emit('result', this.goodsIdsArr)
-            this.$emit('resultGoodsRow', this.goodsRow)
-            this.$emit('resultGoodsIds', this.goodsIdsArr)
-          },
-          // 页数改变
-          handleCurrentChange() {
-            this.defaultGrandClass()
-          }
+      if (this.editGoodsId !== 'add' && this.editGoodsId) {
+        let obj = {
+          'id': this.editGoodsId
         }
+        queryGoodsIdRequest(obj).then((res) => {
+          console.log(res.content)
+          this.NameInput = res.content.brandName
+          this.NameEnlishInput = res.content.ename
+          this.logoImgUrl = res.content.logo
+          this.classSelectValue = res.content.classifyId
+          this.firstInput = res.content.first
+          console.log(res.content.isRecommend)
+          this.radio = res.content.isRecommend.toString()
+          this.hxgoodsIds = res.content.goodsIds
+          this.selectgoodsNum = res.content.goodsIds.length
+        })
+      }
+      classificationSelectRequest().then((res) => {
+        console.log(res)
+        if (!res) return
+        if (res.error === 0) {
+          this.options = res.content
+        }
+      })
+      this.handleClickChoiseGood()
+    },
+    // 初始数据获取
+    handleClickChoiseGood () {
+      let obj = {
+        goodsName: this.goodsName,
+        catId: this.bottomDialogSelectOne,
+        sortId: this.bottomDialogSelectTwo,
+        labelId: this.bottomDialogSelectThree,
+        brandId: this.goodsGrandVal,
+        lowShopPrice: this.inputBottomRange,
+        highShopPrice: this.inputBottomRangeRight,
+        currentPage: 1,
+        pageRows: 20
+      }
+      // 弹窗上方下拉框统一数据获取
+      initGrandgetRequest().then((res) => {
+        if (!res) return
+        if (res.error === 0) {
+          this.bottomOptionsOne = res.content.sysCates
+          this.bottomOptionsTwo = res.content.goodsSorts
+          this.bottomOptionsThree = res.content.goodsLabels
+          this.goodsGrandOptions = res.content.goodsBrands
+        }
+
+        console.log(res)
+      })
+      // 弹窗下方表格数据获取
+      let query = allGoodsQueryRequest
+      if (this.loadProduct) {
+        query = getGoodsProductList
+      }
+      query(obj).then((res) => {
+        if (!res) return
+        if (res.error === 0) {
+          // res.content.dataList.catName = res.content.dataList.catName.replace(',', '、')
+          console.log(res.content.dataList)
+          res.content.dataList.catName = res.content.dataList.map((item, index) => {
+            console.log(item.catName)
+            item.catName = item.catName.replace('，', '、')
+            item.ischecked = false
+            this.hxgoodsIds.map((childrenItem, childrenIndex) => {
+              let condition = childrenItem === item.goodsId
+              if (this.loadProduct) {
+                // 规格id
+                condition = childrenItem.prdId === childrenItem
+              }
+              if (condition) {
+                item.ischecked = true
+              }
+            })
+          })
+          let flag = res.content.dataList.filter((item, index) => {
+            return item.ischecked === false
+          })
+          console.log(flag)
+          if (flag.length === 0 && this.choiseOne === false) {
+            this.checkedAll = true
+          }
+          this.trList = res.content.dataList
+        }
+        console.log(res)
+      })
+    },
+    // 行选中高亮
+    handleClick (index, item) {
+      this.clickIindex = index
+      console.log(this.trList[index].ischecked)
+      let flagBefore = this.trList.filter((tmpitem, index) => {
+        return tmpitem.ischecked === true
+      })
+      console.log('flagBefore', flagBefore)
+      console.log('item', item)
+      // 单选模式
+      if (this.choiseOne) {
+        // item.ischecked = false
+        this.trList.forEach(tmpitem => {
+          if (item.goodsId === tmpitem.goodsId) {
+            tmpitem.ischecked = true
+          } else {
+            tmpitem.ischecked = false
+          }
+        })
+        this.goodsRow = item
+        return
+      }
+      this.trList[index].ischecked = !this.trList[index].ischecked
+      let flag = this.trList.filter((item, index) => {
+        return item.ischecked === false
+      })
+      console.log(this.choiseOne)
+      if (!flag.length) {
+        this.checkedAll = true
+      } else {
+        this.checkedAll = false
+      }
+      // let arr = []
+      console.log(this.trList)
+      console.log(this.goodsIdsArr)
+      console.log('选中', index, item)
+    },
+    // 选择商品弹窗确定
+    handleChoiseGooddialog () {
+      this.$http.$emit('choseGoodsId', this.goodsIdsArr)
+
+      this.goodsIdsArr = []
+      this.trList.forEach(item => {
+        if (item.ischecked) {
+          let _goodsId = item.goodsId
+          if (this.loadProduct) {
+            _goodsId = item.prdId
+          }
+
+          this.goodsIdsArr.push(_goodsId)
+        }
+      })
+      console.log(this.goodsIdsArr)
+
+      this.transmitGoodsIds(this.goodsIdsArr)
+      // 关闭对话框
+      this.choiseGooddialogVisible = false
+      this.$http.$emit('result', this.goodsIdsArr)
+      this.$emit('resultGoodsRow', this.goodsRow)
+      this.$emit('resultGoodsIds', this.goodsIdsArr)
+    },
+    // 页数改变
+    handleCurrentChange () {
+      this.defaultGrandClass()
+    }
+  }
 }
 </script>
 <style scoped>
