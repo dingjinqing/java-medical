@@ -74,7 +74,7 @@ public class TaskJobMainService extends MainBaseService {
      */
     public Boolean assertExecuting(Integer id){
         TaskJobMainRecord record = getTaskJobMainRecordById(id);
-        if( record.getStatus().equals(TaskJobsConstant.STATUS_TERMINATION) ){
+        if( record.getStatus().equals(TaskJobsConstant.STATUS_TERMINATION)|| record.getStatus().equals(TaskJobsConstant.STATUS_COMPLETE)){
             return Boolean.FALSE;
         }else{
             return Boolean.TRUE;
@@ -171,11 +171,11 @@ public class TaskJobMainService extends MainBaseService {
      * @param status 状态
      * @return true:包含 false:不包含
      */
-    public Boolean assertHasStatusTaskJob(Integer executionType,Byte status){
+    public Boolean assertHasStatusTaskJob(Integer executionType,List<Byte> status){
         return db()
             .selectFrom(TASK_JOB_MAIN)
             .where(TASK_JOB_MAIN.EXECUTION_TYPE.eq(executionType))
-            .and(TASK_JOB_MAIN.STATUS.eq(status))
+            .and(TASK_JOB_MAIN.STATUS.in(status))
             .fetchOptional()
             .isPresent();
     }
