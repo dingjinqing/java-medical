@@ -62,6 +62,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -630,7 +631,11 @@ public class MemberService extends ShopBaseService {
 
 		/** 用户基本信息 */
 		MemberBasicInfoVo memberBasicInfoVo = dealWithUserBasicInfo(userId, transStatistic);
-
+		
+		/** -查询不到用户 */
+		if(memberBasicInfoVo == null) {
+			return vo;
+		}
 		/** 分销统计 */
 		dealWithDistributorsInfo(userId, transStatistic, memberBasicInfoVo);
 
@@ -754,7 +759,7 @@ public class MemberService extends ShopBaseService {
 	private void dealWithDistributorsInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,
 			MemberBasicInfoVo memberBasicInfoVo) {
 		
-		if(memberBasicInfoVo.getIsDistributor()==null) {
+		if(memberBasicInfoVo == null) {
 			return;
 		}
 		logger().info("正在获取分销统计信息");
@@ -762,19 +767,17 @@ public class MemberService extends ShopBaseService {
 		/** 判断是不是分销员 */
 		
 		if (YES_DISTRIBUTOR.equals(memberBasicInfoVo.getIsDistributor())) {
-			DistributorListVo distributor = getDistributor(userId, memberBasicInfoVo);
+			
 			/** 用户的分销信息 */
-			DistributionWithdrawRecord distributionWithdraw = distributorWithdrawService.getWithdrawByUserId(userId);
+			DistributorListVo distributor = getDistributor(userId, memberBasicInfoVo);
 			if (distributor != null) {
-
-//				/** 获返利订单数量 */
-//				Integer rebateOrderNum;
 
 				/** 返利商品总金额(元) */
 				transStatistic.setTotalCanFanliMoney(distributor.getTotalCanFanliMoney());
 
 				/** 获返利佣金总额(元) */
-				transStatistic.setRebateMoney(distributor.getTotalFanliMoney().add(distributor.getWaitFanliMoney()));
+				transStatistic.setRebateMoney(BigDecimalUtil.add(distributor.getTotalFanliMoney(), distributor.getWaitFanliMoney()));
+
 
 				/** 分销员分组 */
 				transStatistic.setGroupName(distributor.getGroupName());
@@ -785,13 +788,18 @@ public class MemberService extends ShopBaseService {
 				/** 下级用户数 */
 				transStatistic.setSublayerNumber(distributor.getSublayerNumber());
 
-				/** 已提现佣金总额(元) */
-				transStatistic.setWithdrawCash(distributionWithdraw.getWithdrawCash());
+
 
 				/** 获返利订单数量 */
 				transStatistic.setRebateOrderNum(distributorListService.getRebateOrderNum(userId));
-
 			}
+			/**-获取分销提现 */
+			DistributionWithdrawRecord distributionWithdraw = distributorWithdrawService.getWithdrawByUserId(userId);
+			if(distributionWithdraw != null) {
+				/** -已提现佣金总额(元) */
+				transStatistic.setWithdrawCash(distributionWithdraw.getWithdrawCash());
+			}
+			
 		}
 	}
 
