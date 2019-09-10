@@ -174,7 +174,40 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="订单明细"
+                content="查看砍价订单"
+                placement="top"
+              >
+                <i
+                  class="el-icon-s-order"
+                  @click="checkOrderList(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="获取新用户明细"
+                placement="top"
+              >
+                <i
+                  class="el-icon-user"
+                  @click="checkOrderList(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="查看发起砍价用户"
+                placement="top"
+              >
+                <i
+                  class="el-icon-zoom-in"
+                  @click="checkOrderList(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="活动效果数据"
                 placement="top"
               >
                 <i
