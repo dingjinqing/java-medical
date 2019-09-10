@@ -108,7 +108,7 @@
       <div class="goodsDetailItem">
         <p class="message" style="border-bottom: 1px solid #ccc;"><span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateTitle")}}</span></p>
         <div style="margin:10px 0px;border: 1px solid #ccc;width:calc(100% - 15px);">
-          <tinymceEditor v-model="goodsDetailInfo.goodsDesc"/>
+          <TinymceEditor  v-if="stepData.currentStep === 2" v-model="goodsDetailInfo.goodsDesc"/>
         </div>
       </div>
     </div>
@@ -140,7 +140,7 @@
 /* 接口API导入 */
 
 /* 组件导入 */
-import tinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
+import TinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
 
 /* 工具函数导入 */
 import { isStrBlank } from '@/util/goodsUtil'
@@ -148,8 +148,9 @@ import { isStrBlank } from '@/util/goodsUtil'
 export default {
   name: 'addingGoodsDetails',
   props: ['goodsProductInfoData'],
+  inject: ['stepData'],
   components: {
-    tinymceEditor
+    TinymceEditor
   },
   computed: {
     goodsNumAndPriceComputed () {
@@ -223,6 +224,7 @@ export default {
       if (this.goodsDetailInfo.goodsPageData !== null) {
         retData.goodsPageId = this.goodsDetailInfo.goodsPageData.pageId
       }
+      return retData
     }
   },
   mounted () {

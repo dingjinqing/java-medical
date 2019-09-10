@@ -235,6 +235,7 @@ export default {
         return null
       }
       let productInfoData = this.$refs.goodsProductInfoCmp.getFormData()
+      debugger
       let goodsDetailsData = this.$refs.goodsDetailsCmp.getFormData()
       let distributionInfoData = this.$refs.goodsDistributionInfoCmp.getFormData()
 

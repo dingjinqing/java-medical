@@ -1,21 +1,21 @@
 <template>
   <div>
     <!--基本信息配置模块-->
-    <basicInfo ref="basicInfo" />
+    <updateBasicInfo ref="basicInfo" />
     <!--库存/价格信息-->
-    <stockAndPriceInfo ref="stockAndPriceInfo" />
+    <updateStockAndPriceInfo ref="stockAndPriceInfo" />
     <!--配送信息-->
-    <deliverAndOtherInfo ref="deliverAndOtherInfo" />
+    <updateDeliverAndOtherInfo ref="deliverAndOtherInfo" />
 
   </div>
 </template>
 <script>
 // 组件导入
-import basicInfo from './basicInfo'
-import stockAndPriceInfo from './stockAndPriceInfo'
-import deliverAndOtherInfo from './deliverAndOtherInfo'
+import updateBasicInfo from './updateBasicInfo'
+import updateStockAndPriceInfo from './updateStockAndPriceInfo'
+import updateDeliverAndOtherInfo from './updateDeliverAndOtherInfo'
 export default {
-  components: { basicInfo, stockAndPriceInfo, deliverAndOtherInfo },
+  components: { updateBasicInfo, updateStockAndPriceInfo, updateDeliverAndOtherInfo },
   methods: {
     initData (goodsData) {
       this.$refs.basicInfo.initData(goodsData)

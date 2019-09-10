@@ -119,6 +119,23 @@ export default {
   components: {
     ImageDalog
   },
+  data () {
+    return {
+      goodsDistributionInfo: {
+        canRebate: false,
+        goodsRebatePrices: [],
+        updateGoodsRebatePrices: null,
+        promotionLanguageSwitch: false,
+        promotionLanguage: null,
+        shareAction: 1,
+        shareDoc: null,
+        shareImgAction: 1,
+        shareImgObj: null,
+        imgHost: `${this.$imageHost}`
+      },
+      isUpdate: true
+    }
+  },
   watch: {
     'goodsProductInfoData.goodsSpecProducts': function (goodsSpecProducts) {
       let tempData = []
@@ -136,6 +153,7 @@ export default {
 
         if (!isHas) {
           tempData.push({
+            prdId: item.prdId,
             tempId: item.tempId,
             prdDesc: item.prdDesc,
             prdDescTemp: item.prdDescTemp,
@@ -147,24 +165,37 @@ export default {
         }
       })
       this.goodsDistributionInfo.goodsRebatePrices = tempData
-    }
-  },
-  data () {
-    return {
-      goodsDistributionInfo: {
-        canRebate: false,
-        goodsRebatePrices: [],
-        promotionLanguageSwitch: false,
-        promotionLanguage: null,
-        shareAction: 1,
-        shareDoc: null,
-        shareImgAction: 1,
-        shareImgObj: null,
-        imgHost: `${this.$imageHost}`
+
+      if (this.isUpdate) {
+        this.goodsDistributionInfo.goodsRebatePrices.forEach(item => {
+          let temp = this.goodsDistributionInfo.updateGoodsRebatePrices.filter(updateItem => updateItem.productId === item.prdId)
+          if (temp.length > 0) {
+            item.advisePrice = temp[0].advisePrice
+            item.minPrice = temp[0].minPrice
+            item.maxPrice = temp[0].maxPrice
+          }
+        })
       }
     }
   },
   methods: {
+    /* 初始化待修改商品数据 */
+    initData (goodsData) {
+      this.goodsDistributionInfo.canRebate = goodsData.canRebate === 1
+      // 缓存分销数据，在用户点击到第三步的时候再进行分销数据的回显处理
+      this.goodsDistributionInfo.updateGoodsRebatePrices = goodsData.goodsRebatePrices
+      // 分销推广语按钮初始化
+      this.goodsDistributionInfo.promotionLanguageSwitch = goodsData.promotionLanguageSwitch === 1
+      // 分销推广语初始化
+      this.goodsDistributionInfo.promotionLanguage = goodsData.promotionLanguage
+      // 海报分享样式初始化
+      this.goodsDistributionInfo.shareAction = goodsData.goodsSharePostConfig.shareAction
+      this.goodsDistributionInfo.shareDoc = goodsData.goodsSharePostConfig.shareDoc
+      this.goodsDistributionInfo.shareImgAction = goodsData.goodsSharePostConfig.shareImgAction
+      if (this.goodsDistributionInfo.shareAction === 2 && this.goodsDistributionInfo.shareImgAction === 2) {
+        this.goodsDistributionInfo.shareImgObj = {imgPath: goodsData.goodsSharePostConfig.shareImgPath, imgUrl: goodsData.goodsSharePostConfig.shareImgUrl}
+      }
+    },
     setLowestPrice () {
       let minPrice = this.goodsDistributionInfo.goodsRebatePrices[0].minPrice
       this.goodsDistributionInfo.goodsRebatePrices.forEach(item => { item.minPrice = minPrice })
@@ -179,10 +210,6 @@ export default {
         return
       }
       this.$http.$emit('dtVisible')
-    },
-    /* 初始化待修改商品数据 */
-    initData (goodsData) {
-
     },
     /* 添加图片点击回调事件 */
     imgDialogSelectedCallback (imgObj) {

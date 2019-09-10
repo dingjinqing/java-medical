@@ -408,7 +408,7 @@ export default {
       unitSelectedValue: null,
       unitCustomerValue: null,
       // 商家分类下落框
-      sortSelectOptions: null,
+      sortSelectOptions: [],
       /* 商品品牌服辅助数据 */
       // 商品品牌选中对象
       currentGoodsBrandData: {
@@ -432,7 +432,7 @@ export default {
       },
       /* 商品标签辅助数据 */
       // 商品标签下拉框
-      labelSelectOptions: null,
+      labelSelectOptions: [],
       // 标签已选中列表
       labelSelectedItems: [],
       // 标签来下框选中瞬间的值
@@ -702,6 +702,9 @@ export default {
     /* 初始化商品标签 */
     _initGoodsLabel (goodsData) {
       let goodsLabelList = goodsData.goodsLabelListVos
+      if (goodsLabelList === null) {
+        return
+      }
       this.labelSelectedItems = goodsLabelList
       this.labelSelectOptions = this.labelSelectOptions.filter(item => {
         let has = this.labelSelectedItems.some(selectedItem => selectedItem.id === item.id)
@@ -731,8 +734,10 @@ export default {
         // 初始化商品标签
         this._initGoodsLabel(goodsData)
         // 初始化商品品牌
-        this.currentGoodsBrandData.id = goodsData.brandId
-        this.currentGoodsBrandData.brandName = goodsData.brandName
+        if (goodsData.brandName !== null) {
+          this.currentGoodsBrandData.id = goodsData.brandId
+          this.currentGoodsBrandData.brandName = goodsData.brandName
+        }
         // 初始化商品视频
         this.goodsVideo = goodsData.goodsVideo
         this.goodsVideoImg = goodsData.goodsVideoImg
@@ -801,8 +806,8 @@ export default {
   mounted () {
     // 国际化
     this.langDefault()
-    // 初始化平台分类一级下拉框
-    this.catIdInit()
+    // 初始化平台分类一级下拉框转移至initData内
+
     // 初始化商家分类和商品标签,转移至initData方法内
   }
 }

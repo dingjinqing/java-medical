@@ -189,15 +189,15 @@ import {getExclusiveCardList} from '@/api/admin/goodsManage/addAndUpdateGoods/ad
 import {deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi} from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
-import { format } from '@/util/date'
+import { format, parseDate } from '@/util/date'
 export default {
   data () {
     return {
       lang: '',
       labelWidth: 170,
       goodsProductInfo: {
-        goodsWeight: null,
         deliverTemplateId: null,
+        goodsWeight: null,
         deliverPlace: null,
         isCardExclusive: false,
         saleType: 0,
@@ -225,8 +225,37 @@ export default {
     initPageDataLink () {
       let p1 = this.deliverTemplateDataInit()
       let p2 = this.cardDataInit()
-      Promise.all([p1, p2]).then(() => {
-
+      return Promise.all([p1, p2])
+    },
+    initData (goodsData) {
+      this.initPageDataLink().then(() => {
+        // 初始化运费模板
+        this._initDeliverTemplateId(goodsData)
+        // 初始化商品重量
+        this.goodsProductInfo.goodsWeight = goodsData.goodsWeight
+        // 初始化发货地
+        this.goodsProductInfo.deliverPlace = goodsData.deliverPlace
+        // 初始化专享会员卡
+        this._initExclusiveCard(goodsData)
+        // 初始化上架时间
+        this.goodsProductInfo.saleType = goodsData.saleType
+        this.goodsProductInfo.saleTime = parseDate(goodsData.saleTime)
+      })
+    },
+    /* 初始化运费模板 */
+    _initDeliverTemplateId (goodsData) {
+      this.goodsProductInfo.deliverTemplateId = goodsData.deliverTemplateId
+      this.deliverTemplateChange(goodsData.deliverTemplateId)
+    },
+    /* 初始化专享会员卡 */
+    _initExclusiveCard (goodsData) {
+      this.goodsProductInfo.isCardExclusive = goodsData.isCardExclusive === 1
+      this.cardsSelectOptions = this.cardsSelectOptions.filter(item => {
+        let has = goodsData.memberCardIds.some(cardId => cardId === item.id)
+        if (has) {
+          this.cardSelectedItems.push(item)
+        }
+        return !has
       })
     },
     /* loading开始加载遮罩预留函数 */
@@ -353,7 +382,7 @@ export default {
       // 加载遮罩
       this.beginLoading()
 
-      if (deliverTemplateId === null) {
+      if (deliverTemplateId === null || deliverTemplateId === 0) {
         // 查找默认配置
         getDeliverTemplateConfigApi().then(res => {
           this.deliverTemplateCurrentData = this.parseDeliverTemplateDefaultData(res)
@@ -440,10 +469,6 @@ export default {
       }
     },
     /** 此函数由父组件主动调用 **/
-    /* 初始化待修改商品数据 */
-    initData (goodsData) {
-
-    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {
@@ -454,12 +479,12 @@ export default {
 
       if (this.goodsProductInfo.saleType === 1) {
         if (this.goodsProductInfo.saleTime === null) {
-          this.$message({message: this.$('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
+          this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
-          this.$message({message: this.$('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
+          this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }

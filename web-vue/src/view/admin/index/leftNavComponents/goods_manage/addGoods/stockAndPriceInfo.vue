@@ -668,6 +668,7 @@ export default {
       })
 
       let goodsSpecProducts = [{
+        tempId: this.goodsSpecProductsIndex++,
         prdPrice: 0,
         prdCostPrice: 0,
         prdNumber: 0,

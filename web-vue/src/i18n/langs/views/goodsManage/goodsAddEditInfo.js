@@ -97,7 +97,7 @@ export const cn = {
     maxBuyNum: '最大限购数量：',
     maxBuyNumTip: '0或不填表示不限制购买数量',
     costPrice: '成本价格：',
-    costPriceTip: '0或不填表示不限制购买数量',
+    costPriceTip: '设置了规格成本价格商品价格将失效，不在前端展示',
     addSaleNum: '初始销量：',
     addSaleNumSetting: '设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。',
     goodsPrdSn: '商品规格编码：'
@@ -304,7 +304,7 @@ export const en = {
     maxBuyNum: 'Maximum purchase quantity：',
     maxBuyNumTip: '0 or no indicates no limit on purchase quantity',
     costPrice: 'Cost price：',
-    costPriceTip: '0 or no indicates no limit on purchase quantity',
+    costPriceTip: 'Set up the specification of cost price the price will be invalid, not front - end display',
     addSaleNum: 'Initial sales：',
     addSaleNumSetting: 'After setting, the sales volume seen by your user = initial sales volume + order quantity, the initial sales volume is not counted into the statistics.',
     goodsPrdSn: 'Goods SKU SN：'

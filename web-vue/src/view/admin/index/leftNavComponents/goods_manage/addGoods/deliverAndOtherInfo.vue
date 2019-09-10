@@ -442,12 +442,12 @@ export default {
 
       if (this.goodsProductInfo.saleType === 1) {
         if (this.goodsProductInfo.saleTime === null) {
-          this.$message({message: this.$('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
+          this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
-          this.$message({message: this.$('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
+          this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
