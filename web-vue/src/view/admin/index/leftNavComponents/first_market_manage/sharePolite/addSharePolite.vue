@@ -35,72 +35,89 @@
       <!-- 左侧内容end  -->
 
       <!-- 活动信息部分 -->
-      <section class="right_main">
-        <div class="contentRight">
-          <div class="actInfo">活动信息</div>
-          <el-form
-            label-position="right"
-            label-width="100px"
+      <div class="contentRight">
+        <div class="actInfo">活动信息</div>
+        <el-form
+          :model="param"
+          ref="param"
+          label-position="right"
+          label-width="100px"
+          :rules="fieldValidation"
+        >
+          <el-form-item
+            label="活动名称:"
+            prop="name"
           >
-            <el-form-item label="活动名称：">
-              <el-input
-                size="mini"
-                style="width:200px"
-                v-model="param.name"
-                placeholder="活动名称"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="活动有效期：">
-              <el-radio-group v-model="param.isForever">
-                <div style="display:flex">
+            <el-input
+              size="mini"
+              style="width:200px"
+              v-model="param.name"
+              placeholder="最多支持10汉字"
+            ></el-input>
+          </el-form-item>
+          <br>
+          <br>
+          <el-form-item
+            label="活动有效期:"
+            prop="isForever"
+          >
+            <el-radio-group v-model="param.isForever">
+              <el-form :inline="true">
+                <el-form-item>
                   <el-radio :label=0>固定时间</el-radio>
-                  <div style="margin-left: 10px">
-                    <el-date-picker
-                      v-if="this.param.isForever == 0"
-                      style="width: 300px;"
-                      v-model="effectiveDate"
-                      type="datetimerange"
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
-                      value-format="yyyy-MM-dd HH:mm:ss"
-                      size="small"
-                    >
-                    </el-date-picker>
-                  </div>
-                </div>
+                  <el-date-picker
+                    v-if="this.param.isForever == 0"
+                    v-model="effectiveDate"
+                    style="width: 300px;"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    size="small"
+                  >
+                  </el-date-picker>
+                </el-form-item>
+              </el-form>
+              <el-row>
                 <el-radio :label=1>永久有效</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="优先级：">
-              <el-input
-                size="mini"
-                style="width:200px"
-                v-model="param.priority"
-                placeholder="0"
-              ></el-input>
-              <div>用于区分不同分享有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
-            </el-form-item>
-            <el-form-item label="触发条件：">
-              <span>用户分享</span>
-              <el-radio-group v-model="param.condition">
-                <el-radio :label=1>全部商品</el-radio>
-                <el-radio :label=2>指定商品</el-radio>
-                <el-radio :label=3>实际访问量较少商品</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-form>
-          <div v-if="param.condition == 2">
+              </el-row>
+            </el-radio-group>
+          </el-form-item>
+          <br>
+          <el-form-item
+            label="优先级:"
+            prop="priority"
+          >
+            <el-input
+              size="mini"
+              style="width:200px"
+              v-model.number="param.priority"
+              placeholder="0"
+            ></el-input>
+            <br>
+            <span>用于区分不同分享有礼活动的优先级，请填写正整数，数值越大优先级越高</span>
+          </el-form-item>
+          <br>
+          <el-form-item
+            label="触发条件："
+            prop="condition"
+          >
+            <span>用户分享</span>
+            <el-radio-group v-model="param.condition">
+              <el-radio :label=1>全部商品</el-radio>
+              <el-radio :label=2>指定商品</el-radio>
+              <el-radio :label=3>实际访问量较少商品</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item v-if="param.condition == 2">
             <el-button
-              type="primary"
+              type="success"
               @click="showChoosingGoods"
             >+选择商品</el-button>
             <span>已选：{{selectGoods}}件商品</span>
-          </div>
-          <div
-            v-if="param.condition == 3"
-            style="margin-left:163px"
-          >
+          </el-form-item>
+          <el-form-item v-if="param.condition == 3">
             <span>实际访问量少于</span>
             <el-input
               size="mini"
@@ -108,23 +125,23 @@
               v-model.number="param.goodsPv"
               placeholder="0"
             ></el-input> 条的商品
-          </div>
-        </div>
+          </el-form-item>
+        </el-form>
+      </div>
 
-        <!-- 分享奖励部分 -->
-        <div
-          class="contentRight"
-          style="margin-top:10px;"
-        >
-          <div style="display:flex;border-bottom:1px solid #e5e5e5;">
-            <div class="actInfo">分享奖励</div>
-            <div style="display:flex">
-              <span style="width: 100px">最多可添加三级</span>
-              <span
-                class="addRules"
-                @click="addItem()"
-              >+ 添加规则</span>
-            </div>
+      <!-- 分享奖励部分 -->
+      <div
+        class="contentRight"
+        style="margin-top:10px;"
+      >
+        <div style="display:flex;border-bottom:1px solid #e5e5e5;">
+          <div class="actInfo">分享奖励</div>
+          <div style="display:flex">
+            <span style="width: 100px">最多可添加三级</span>
+            <span
+              class="addRules"
+              @click="addItem()"
+            >+ 添加规则</span>
           </div>
           <el-form>
             <el-form-item>
@@ -161,7 +178,7 @@
                   v-if="item.reward_type == 1"
                 >积分：
                   <el-input
-                    v-model="item.score"
+                    v-model.number="item.score"
                     size="mini"
                     style="width: 150px"
                     placeholder="0"
@@ -234,48 +251,69 @@
                   <el-input
                     size="mini"
                     style="width:150px"
-                    v-model="item.totalNum"
+                    v-model.number="item.totalNum"
                     placeholder="0"
                   ></el-input>份</div>
               </el-form-item>
             </section>
           </el-form>
-        </div>
-      </section>
 
-      <!--保存-->
-      <div class="footer">
-        <div
-          class="save"
-          @click="add()"
-        >保存</div>
+          <!--保存-->
+          <div class="footer">
+            <div
+              class="save"
+              @click="add"
+            >保存</div>
+          </div>
+        </div>
+        <!--添加商品弹窗-->
+        <choosingGoods @resultGoodsIds="choosingGoodsResult" />
+        <!--添加优惠卷弹窗-->
+        <addCouponDialog
+          :singleElection="true"
+          @handleToCheck="handleToCheck"
+        />
       </div>
-    </div>
-    <!--添加商品弹窗-->
-    <choosingGoods @resultGoodsIds="choosingGoodsResult" />
-    <!--添加优惠卷弹窗-->
-    <addCouponDialog
-      :singleElection="true"
-      @handleToCheck="handleToCheck"
-    />
-  </div>
 </template>
 <script>
 import 'swiper/dist/css/swiper.css'
-import vueSwiper from 'vue-awesome-swiper'
-import Vue from 'vue'
+// import vueSwiper from 'vue-awesome-swiper'
+// import Vue from 'vue'
 import { mapActions } from 'vuex'
 import { addShareReward } from '@/api/admin/marketManage/sharePolite.js'
 import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
-Vue.use(vueSwiper)
-// import { couponList } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     choosingGoods,
     addCouponDialog
   },
   data () {
+    // 自定义表单字段验证
+    // 有效期验证
+    var checkValidityPeriod = (rule, value, callback) => {
+      if (this.param.isForever === 0) {
+        if (this.effectiveDate === null || this.effectiveDate === '') {
+          return callback(new Error('请选择固定日期'))
+        }
+      }
+    }
+    // 触发条件验证
+    var checkCondition = (rule, value, callback) => {
+      if (this.param.condition === 2) {
+        if (this.param.goodsIds === null || this.param.goodsIds === '') {
+          return callback(new Error('请至少选择一件商品'))
+        }
+      }
+      if (this.param.condition === 3) {
+        if (this.param.goodsPv === null || this.param.goodsPv === '') {
+          return callback(new Error('请输入访问量！'))
+        }
+        if (!Number.isInteger(this.param.goodsPv)) {
+          callback(new Error('访问量必须为数字值'))
+        }
+      }
+    }
     return {
       swiperOption: {
         autoplay: {
@@ -315,7 +353,7 @@ export default {
           score: '',
           coupon: '',
           lottery: '',
-          totalNum: 0,
+          totalNum: '',
           score_num: '',
           coupon_num: '',
           lottery_num: ''
@@ -338,6 +376,51 @@ export default {
         firstAwardNum: 0,
         secondAwardNum: 0,
         thirdAwardNum: 0
+      },
+      // 表单字段校验
+      fieldValidation: {
+        // 活动名称
+        name: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
+        ],
+        // 有效期
+        isForever: [
+          { validator: checkValidityPeriod, trigger: 'blur' }
+        ],
+        // 有效期为固定时间时不能为空
+        effectiveDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        // 优先级
+        priority: [
+          { required: true, message: '优先级不能为空' },
+          { type: 'number', message: '优先级必须为数字值' }
+        ],
+        // 触发条件
+        condition: [
+          { validator: checkCondition, trigger: 'blur' }
+        ],
+        // 积分
+        score: [
+          { required: true, message: '积分不能为空' },
+          { type: 'number', message: '积分必须为数字值' }
+        ],
+        // 优惠券
+        coupon: [
+          { required: true, message: '请选择优惠券' },
+          { type: 'number', message: '积分必须为数字值' }
+        ],
+        // 幸运大抽奖
+        lottery: [
+          { required: true, message: '请选择幸运大抽奖' },
+          { type: 'number', message: '积分必须为数字值' }
+        ],
+        // 奖品份数
+        totalNum: [
+          { required: true, message: '奖品份数不能为空' },
+          { type: 'number', message: '奖品份数必须为数字值' }
+        ]
       }
     }
   },
@@ -410,26 +493,20 @@ export default {
             break
           case 1:
             this.param.firstAwardNum = this.shareRule[0].totalNum
-            delete this.shareRule[0].totalNum
             this.param.firstRule = this.shareRule[0]
             break
           case 2:
             this.param.firstAwardNum = this.shareRule[0].totalNum
-            delete this.shareRule[0].totalNum
             this.param.firstRule = this.shareRule[0]
             this.param.secondAwardNum = this.shareRule[1].totalNum
-            delete this.shareRule[1].totalNum
             this.param.secondRule = this.shareRule[1]
             break
           case 3:
             this.param.firstAwardNum = this.shareRule[0].totalNum
-            delete this.shareRule[0].totalNum
             this.param.firstRule = this.shareRule[0]
             this.param.secondAwardNum = this.shareRule[1].totalNum
-            delete this.shareRule[1].totalNum
             this.param.secondRule = this.shareRule[1]
             this.param.thirdAwardNum = this.shareRule[2].totalNum
-            delete this.shareRule[2].totalNum
             this.param.thirdRule = this.shareRule[2]
             break
         }
@@ -446,8 +523,18 @@ export default {
       this.param.startTime = this.effectiveDate[0]
       this.param.endTime = this.effectiveDate[1]
       console.log(JSON.parse(JSON.stringify(this.param)))
-      addShareReward(this.param).then((res) => {
-        console.log(JSON.parse(JSON.stringify(res)))
+
+      this.$refs['param'].validate((valid) => {
+        if (valid) {
+          addShareReward(this.param).then((res) => {
+            console.log(JSON.parse(JSON.stringify(res)))
+          }).catch(() => {
+            this.$message.error('操作失败')
+          })
+        } else {
+          this.$message.error('数据不合法')
+          return false
+        }
       })
     }
   }

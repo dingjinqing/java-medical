@@ -173,7 +173,7 @@ export default {
     wrapper
   },
   mounted () {
-    this.$langDefault()
+    this.langDefault()
   },
   watch: {
     'param.status' (n, o) {
