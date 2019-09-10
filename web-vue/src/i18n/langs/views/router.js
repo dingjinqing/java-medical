@@ -175,6 +175,10 @@ export const cn = {
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情
   orderInfo: ['订单管理', '查看详情'],
+  // 订单管理 退货退款订单
+  refundList: ['订单管理', '退货退款订单'],
+  // 订单管理 退款详情
+  orderRefundInfo: ['订单管理', '退款详情'],
   // 营销管理 消息推送
   message_push: ['营销管理', '消息推送'],
   // 营销管理 消息推送 添加消息推送
@@ -409,6 +413,10 @@ export const en = {
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情
   orderInfo: ['Order management', 'See details'],
+  // 订单管理 退货退款订单
+  refundList: ['Order management', 'Refund order'],
+  // 订单管理 退款详情
+  orderRefundInfo: ['Order management', 'Refund details'],
   // 营销管理 消息体送
   message_push: ['Marketing management', 'message_push'],
   add_message_push: ['Marketing management', 'Message push', 'Add message push']

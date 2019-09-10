@@ -26,6 +26,34 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderInfo'
       )
+  },
+  // 退款退货订单
+  {
+    path: '/admin/home/main/orders/refund/list',
+    name: 'order_return',
+    meta: {
+      crumbTitle: 'router.refundList',
+      meta: 'first_trade_manage',
+      category: 'order_return'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/refund_order/refundList'
+      )
+  },
+  // 退款申请详情
+  {
+    path: '/admin/home/main/orders/refund/info',
+    name: 'orderRefundInfo',
+    meta: {
+      crumbTitle: 'router.orderRefundInfo',
+      meta: 'first_trade_manage',
+      category: 'order_return'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/refund_order/orderRefundInfo'
+      )
   }
 ]
 

@@ -193,7 +193,10 @@
               </tr>
             </template>
             <tr>
-              <td colspan="8">
+              <td
+                colspan="8"
+                class="total_box"
+              >
                 <p>
                   商品金额：<span class="text-amount"></span>
                 </p>
@@ -508,6 +511,9 @@ export default {
         border: 1px solid #cfd6ff;
         flex: 1;
         padding: 0 30px;
+        > .title {
+          margin-top: 10px;
+        }
         > .item_box {
           display: flex;
           justify-content: space-between;
@@ -558,6 +564,12 @@ export default {
             font-size: 14px;
             text-align: center;
             vertical-align: middle;
+          }
+          .total_box {
+            text-align: right;
+            > p {
+              line-height: 30px;
+            }
           }
           .order-tb-head {
             background-color: #f5f5f5;
