@@ -256,6 +256,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="search"
           >筛选</el-button>
           <el-button
             type="default"
@@ -403,6 +404,11 @@
   </div>
 </template>
 <script>
+
+import {
+  allList
+} from '@/api/admin/orderManage/list.js'
+
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -412,7 +418,7 @@ export default {
     return {
       moreFilters: false,
       pageParams: {
-        'totalRows': 4,
+        'totalRows': 1,
         'currentPage': 1,
         'firstPage': 1,
         'prePage': 1,
@@ -423,21 +429,21 @@ export default {
       },
       searchParams: {
         searchType: 0,
-        pinStatus: null,
+        pinStatus: [],
         goodsName: '',
         orderSn: '',
-        orderStatus: '-1',
-        goodsType: -1,
+        orderStatus: [],
+        goodsType: null,
         consignee: '',
         mobile: '',
         createTimeStart: null,
         createTimeEnd: null,
-        deliverType: -1,
-        paymentType: -1,
+        deliverType: null,
+        paymentType: null,
         userName: '',
-        source: -1,
+        source: null,
         tagIds: [],
-        storeId: -1,
+        storeId: null,
         verifyCode: '',
         specCode: '',
         finishedTimeStart: null,
@@ -450,7 +456,7 @@ export default {
       orderTime: null,
       completeTime: null,
       orderStatus: [
-        { value: '-1', label: '全部订单' },
+        { value: null, label: '全部订单' },
         { value: '1', label: '待付款' },
         { value: '2', label: '订单取消' },
         { value: '3', label: '订单关闭' },
@@ -467,7 +473,7 @@ export default {
         { value: '15', label: '送礼完成' }
       ],
       goodsType: [
-        { value: -1, label: '全部' },
+        { value: null, label: '全部' },
         { value: 1, label: '普通订单' },
         { value: 2, label: '拼团订单' },
         { value: 3, label: '返利订单' },
@@ -491,12 +497,12 @@ export default {
         { value: 21, label: '扫码购订单' }
       ],
       sourceList: [
-        { value: -1, label: '全部' },
+        { value: null, label: '全部' },
         { value: -2, label: '未获取' },
         { value: -3, label: '后台' }
       ],
       storeList: [
-        { value: -1, label: '请选门店' },
+        { value: null, label: '请选门店' },
         { value: 1, label: '牡丹园门店' },
         { value: 2, label: '西直门门店' },
         { value: 3, label: '永泰庄门店' }
@@ -508,7 +514,7 @@ export default {
         { value: 4, label: '儿童' }
       ],
       paymentType: [
-        { value: -1, label: '全部' },
+        { value: null, label: '全部' },
         { value: 1, label: '微信支付' },
         { value: 2, label: '余额支付' },
         { value: 3, label: '积分支付' },
@@ -517,7 +523,7 @@ export default {
         { value: 6, label: '活动奖品' }
       ],
       tabsOrderStatus: [
-        { value: '-1', label: '全部' },
+        { value: null, label: '全部' },
         { value: '1', label: '待付款' },
         { value: '4', label: '待发货/待核销' },
         { value: '5', label: '已发货' },
@@ -528,239 +534,14 @@ export default {
         { value: '16', label: '追星订单' }
       ],
       orderList: [
-        {
-          'orderId': 1000,
-          'orderSn': 'P201900000000000000',
-          'mainOrderSn': 'P201900000000000000',
-          'goodsType': '0',
-          'childOrders': [
-            {
-              'orderId': 1003,
-              'orderSn': 'P201900000000000003',
-              'mainOrderSn': 'P201900000000000000',
-              'goodsType': '0',
-              'childOrders': null,
-              'goods': [
-                {
-                  'recId': null,
-                  'orderId': 1003,
-                  'orderSn': 'P201900000000000003',
-                  'goodsId': 695,
-                  'goodsSn': 'G101010694',
-                  'goodsName': '首单限时优化-CJ222',
-                  'goodsNumber': 1,
-                  'goodsPrice': 55,
-                  'goodsAttr': '颜色:黑色',
-                  'productId': 4727,
-                  'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-                  'sendNumber': null,
-                  'discountedGoodsPrice': null
-                },
-                {
-                  'recId': null,
-                  'orderId': 1003,
-                  'orderSn': 'P201900000000000003',
-                  'goodsId': 695,
-                  'goodsSn': 'G101010694',
-                  'goodsName': '首单限时优化-CJ222',
-                  'goodsNumber': 1,
-                  'goodsPrice': 55,
-                  'goodsAttr': '颜色:黑色',
-                  'productId': 4727,
-                  'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-                  'sendNumber': null,
-                  'discountedGoodsPrice': null
-                }
-              ],
-              'orderStatus': 10,
-              'consignee': '测试520',
-              'mobile': '12345678910',
-              'payCode': 'balance',
-              'deliverType': 0,
-              'createTime': '2019-08-26 14:02:46',
-              'shippingFee': 22,
-              'moneyPaid': 0,
-              'partShipFlag': 0,
-              'refundStatus': 5
-            }
-          ],
-          'goods': [
-            {
-              'recId': null,
-              'orderId': 1000,
-              'orderSn': 'P201900000000000000',
-              'goodsId': 694,
-              'goodsSn': 'G101010694G101010694G101010694G101010694G101010694G101010694G101010694G101010694G101010694',
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': null,
-              'discountedGoodsPrice': null
-            }
-          ],
-          'orderStatus': 10,
-          'consignee': '测试520',
-          'mobile': '12345678910',
-          'payCode': 'balance',
-          'deliverType': 0,
-          'createTime': '2019-08-26 14:02:46',
-          'shippingFee': 22,
-          'moneyPaid': 0,
-          'partShipFlag': 0,
-          'refundStatus': 5
-        },
-        {
-          'orderId': 1001,
-          'orderSn': 'P201900000000000001',
-          'mainOrderSn': 'P201900000000000001',
-          'goodsType': '0',
-          'childOrders': null,
-          'goods': [
-            {
-              'recId': null,
-              'orderId': 1001,
-              'orderSn': 'P201900000000000001',
-              'goodsId': 694,
-              'goodsSn': 'G101010694',
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': null,
-              'discountedGoodsPrice': null
-            },
-            {
-              'recId': null,
-              'orderId': 1001,
-              'orderSn': 'P201900000000000001',
-              'goodsId': 695,
-              'goodsSn': 'G101010694',
-              'goodsName': '首单限时优化-CJ222',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:黑色',
-              'productId': 4727,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': null,
-              'discountedGoodsPrice': null
-            }
-          ],
-          'orderStatus': 10,
-          'consignee': '测试520',
-          'mobile': '12345678910',
-          'payCode': 'balance',
-          'deliverType': 0,
-          'createTime': '2019-08-26 14:02:46',
-          'shippingFee': 22,
-          'moneyPaid': 0,
-          'partShipFlag': 0,
-          'refundStatus': 5
-        },
-        {
-          'orderId': 1002,
-          'orderSn': 'P201900000000000002',
-          'mainOrderSn': 'P201900000000000002',
-          'goodsType': '0',
-          'childOrders': null,
-          'goods': [
-            {
-              'recId': null,
-              'orderId': 1002,
-              'orderSn': 'P201900000000000002',
-              'goodsId': 694,
-              'goodsSn': 'G101010694',
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': null,
-              'discountedGoodsPrice': null
-            },
-            {
-              'recId': null,
-              'orderId': 1002,
-              'orderSn': 'P201900000000000002',
-              'goodsId': 695,
-              'goodsSn': 'G101010694',
-              'goodsName': '首单限时优化-CJ222',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:黑色',
-              'productId': 4727,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': null,
-              'discountedGoodsPrice': null
-            }
-          ],
-          'orderStatus': 3,
-          'consignee': '测试520',
-          'mobile': '12345678910',
-          'payCode': 'balance',
-          'deliverType': 0,
-          'createTime': '2019-08-26 14:02:46',
-          'shippingFee': 22,
-          'moneyPaid': 0,
-          'partShipFlag': 0,
-          'refundStatus': 4
-        },
-        {
-          'orderId': 6751,
-          'orderSn': 'P201908261402467301',
-          'mainOrderSn': 'P201908261402467301',
-          'goodsType': '0',
-          'childOrders': null,
-          'goods': [
-            {
-              'recId': null,
-              'orderId': 6751,
-              'orderSn': 'P201908261402467301',
-              'goodsId': 694,
-              'goodsSn': 'G101010694',
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': null,
-              'discountedGoodsPrice': null
-            },
-            {
-              'recId': null,
-              'orderId': 6751,
-              'orderSn': 'P201908261402467301',
-              'goodsId': 695,
-              'goodsSn': 'G101010694',
-              'goodsName': '首单限时优化-CJ222',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:黑色',
-              'productId': 4727,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': null,
-              'discountedGoodsPrice': null
-            }
-          ],
-          'orderStatus': 3,
-          'consignee': '测试520',
-          'mobile': '12345678910',
-          'payCode': 'balance',
-          'deliverType': 0,
-          'createTime': '2019-08-26 14:02:46',
-          'shippingFee': 22,
-          'moneyPaid': 0,
-          'partShipFlag': 0,
-          'refundStatus': 4
-        }
       ]
     }
+  },
+  mounted () {
+    console.log('mounted-----------------------')
+    // 初始化数据
+    this.langDefault()
+    this.initDataList()
   },
   methods: {
     handleClick (data) {
@@ -771,8 +552,37 @@ export default {
       this.searchParams.cityCode = data.city
       this.searchParams.districtCode = data.district
     },
-    initDataList (source) {
-
+    initDataList () {
+      this.searchParams.currentPage = this.pageParams.currentPage
+      this.searchParams.pageRows = this.pageParams.pageRows
+      allList(this.searchParams).then(res => {
+        this.pageParams = res.content.page
+        this.currentPage = res.content.page.currentPage
+        this.pageRows = res.content.page.pageRows
+        this.pageCount = res.content.page.pageCount
+        this.totalRows = res.content.page.totalRows
+        this.orderList = res.content.dataList
+      }).catch(() => {
+      })
+    },
+    search () {
+      if (this.completeTime) {
+        this.searchParams.finishedTimeStart = this.completeTime[0] + ' 00:00:00'
+        this.searchParams.finishedTimeEnd = this.completeTime[1] + ' 23:59:59'
+      }
+      if (this.orderTime) {
+        this.searchParams.createTimeStart = this.orderTime[0] + ' 00:00:00'
+        this.searchParams.createTimeEnd = this.orderTime[1] + ' 23:59:59'
+      }
+      allList(this.searchParams).then(res => {
+        this.pageParams = res.content.page
+        this.currentPage = res.content.page.currentPage
+        this.pageRows = res.content.page.pageRows
+        this.pageCount = res.content.page.pageCount
+        this.totalRows = res.content.page.totalRows
+        this.orderList = res.content.dataList
+      }).catch(() => {
+      })
     },
     seeDetails (orderId) {
       console.log(orderId)
