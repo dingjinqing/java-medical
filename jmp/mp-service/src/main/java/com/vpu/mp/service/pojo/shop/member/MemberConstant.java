@@ -8,4 +8,6 @@ public class MemberConstant {
 	/** 会员是否被删除 | 禁止登录 */
 	public static final Byte DELETE_YES = 1;
 	public static final Byte DELETE_NO = 0;
+	
+	public static final String INVITE_USERNAME = "inviteUserName";
 }

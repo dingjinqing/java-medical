@@ -14,6 +14,9 @@ import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.CHANNEL;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
+
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
@@ -24,8 +27,8 @@ import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.CHANNAL_PAGE;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -80,6 +83,7 @@ import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
+import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 
@@ -90,7 +94,7 @@ import jodd.util.StringUtil;
 @Service
 public class MemberService extends ShopBaseService {
 
-	private static final String INVITE_USERNAME = "inviteUserName";
+	
 	private static final String USER_NAME = "userName";
 
 	public static final String INVITE_SOURCE_GROUPBUY = "groupbuy";
@@ -124,7 +128,8 @@ public class MemberService extends ShopBaseService {
 	public DistributorListService distributorListService;
 	@Autowired
 	public DistributorWithdrawService distributorWithdrawService;
-
+	@Autowired
+	public MemberDaoService memberDao;
 	/**
 	 * 会员列表分页查询
 	 * 
@@ -198,6 +203,7 @@ public class MemberService extends ShopBaseService {
 				member.setCardName(cardName);
 			} catch (NullPointerException ex) {
 				logger().info("没有查询到相应的会员卡");
+				logger().error(ex.getMessage(),ex);
 			}
 
 			/** 处理来源信息 */
@@ -619,7 +625,7 @@ public class MemberService extends ShopBaseService {
 	
 	/** 根据用户id获取用户详情 
 	 * @throws MpException */
-	public MemberDetailsVo getMemberInfoById(Integer userId) throws MpException {
+	public MemberDetailsVo getMemberInfoById(Integer userId) {
 		MemberDetailsVo vo = new MemberDetailsVo();
 		MemberTransactionStatisticsVo transStatistic = new MemberTransactionStatisticsVo();
 
@@ -642,34 +648,19 @@ public class MemberService extends ShopBaseService {
 	 * @return
 	 * @throws MpException 
 	 */
-	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) throws MpException {
+	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic){
 		/** 会员用户基本信息 */
 		logger().info("正在处理会员基本信息");
 
-		User a = USER.as("a");
-		User b = USER.as("b");
-		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
-		MemberBasicInfoVo memberBasicInfoVo = null;
-		try {
-			memberBasicInfoVo = db()
-				.select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID, a.INVITE_ID, a.SOURCE,
-						a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,
-						USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
-						USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR,
-						USER_DETAIL.SEX, USER_DETAIL.MARITAL_STATUS, USER_DETAIL.MONTHLY_INCOME, USER_DETAIL.CID)
-				.from(a.leftJoin(USER_DETAIL).on(a.USER_ID.eq(USER_DETAIL.USER_ID))).where(a.USER_ID.eq(userId))
-				.fetchOne()
-				.into(MemberBasicInfoVo.class);
-		}catch(NullPointerException e) {
-			logger().info("没有该用户");
-			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
+		
+		MemberBasicInfoVo memberBasicInfoVo = getMemberInfo(userId);
+		if(memberBasicInfoVo == null) {
+			return memberBasicInfoVo;
 		}
 		logger().info("生日: " + memberBasicInfoVo.getBirthdayYear());
 
 		/** 最近浏览时间 */
-		Record2<Timestamp, Timestamp> loginTime = db()
-				.select(USER_LOGIN_RECORD.CREATE_TIME, USER_LOGIN_RECORD.UPDATE_TIME).from(USER_LOGIN_RECORD)
-				.where(USER_LOGIN_RECORD.USER_ID.eq(userId)).orderBy(USER_LOGIN_RECORD.ID.desc()).limit(1).fetchOne();
+		Record2<Timestamp, Timestamp> loginTime = memberDao.getRecentBrowseTime(userId);
 
 		/** 最近浏览时间如果updateTime 为null，则设置为createTime */
 		if(loginTime != null) {
@@ -698,9 +689,9 @@ public class MemberService extends ShopBaseService {
 		}
 		/** 来源 */
 		String source = memberBasicInfoVo.getSource();
-		if (!ZERO.equals(source) && !NEG_ONE.equals(source)) {
-			source = db().select(STORE.STORE_NAME).from(STORE).where(STORE.STORE_ID.eq(Integer.parseInt(source)))
-					.fetchOne().into(String.class);
+		
+		if (source != null && !ZERO.equals(source) && !NEG_ONE.equals(source)) {
+			source = getStoreName(source);
 			memberBasicInfoVo.setSource(source);
 		}
 
@@ -729,6 +720,31 @@ public class MemberService extends ShopBaseService {
 		return memberBasicInfoVo;
 	}
 
+	public String getStoreName(String source) {
+		Record storeName = memberDao.getStoreName(source);
+		if(storeName != null) {
+			return storeName.into(String.class);
+		}
+		return null;
+	}
+
+	
+
+
+	/**
+	 * 获取会员用户的信息
+	 * @param userId
+	 * @return
+	 */
+	private MemberBasicInfoVo getMemberInfo(Integer userId) {
+		Record record = memberDao.getMemberInfo(userId);
+		if(record != null) {
+			return record.into(MemberBasicInfoVo.class);
+		}else {
+			return null;
+		}
+	}
+
 	/**
 	 * 获取分销信息
 	 * 
@@ -738,18 +754,22 @@ public class MemberService extends ShopBaseService {
 	 */
 	private void dealWithDistributorsInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,
 			MemberBasicInfoVo memberBasicInfoVo) {
-
+		
+		if(memberBasicInfoVo.getIsDistributor()==null) {
+			return;
+		}
 		logger().info("正在获取分销统计信息");
 		/** 分销统计 */
 		/** 判断是不是分销员 */
+		
 		if (YES_DISTRIBUTOR.equals(memberBasicInfoVo.getIsDistributor())) {
 			DistributorListVo distributor = getDistributor(userId, memberBasicInfoVo);
 			/** 用户的分销信息 */
 			DistributionWithdrawRecord distributionWithdraw = distributorWithdrawService.getWithdrawByUserId(userId);
 			if (distributor != null) {
 
-				/** 获返利订单数量 */
-				Integer rebateOrderNum;
+//				/** 获返利订单数量 */
+//				Integer rebateOrderNum;
 
 				/** 返利商品总金额(元) */
 				transStatistic.setTotalCanFanliMoney(distributor.getTotalCanFanliMoney());
@@ -823,5 +843,4 @@ public class MemberService extends ShopBaseService {
 		transStatistic.setReturnOrderNum(returnOrderNum);
 		logger().info("累计退款订单数 " + returnOrderNum);
 	}
-
 }
