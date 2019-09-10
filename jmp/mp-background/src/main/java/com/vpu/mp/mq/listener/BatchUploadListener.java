@@ -46,12 +46,7 @@ public class BatchUploadListener implements BaseRabbitHandler {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@RabbitHandler
-	public void handler(@Payload BatchUploadCodeParam param, Message message, Channel channel)
-			throws InterruptedException {
-		System.out.println("进来了");
-
-		Thread.sleep(10000);
-		System.out.println("睡醒");
+	public void handler(@Payload BatchUploadCodeParam param, Message message, Channel channel){
 		List<MpAuthShopListVo> list = param.getList();
 		// 总数
 		BatchUploadVo vo = new BatchUploadVo();
@@ -63,23 +58,22 @@ public class BatchUploadListener implements BaseRabbitHandler {
 		setNum(vo, success, fail, count);
 		Boolean isKill = true;
 		for (int i = 0; i < list.size(); i++) {
+			int a = i + 1;
+			String appId = list.get(i).getAppId();
+			String nickName = list.get(i).getNickName();
+			String progressInfo = nickName + "(" + appId + ")";
 			isKill = isKill(param.getRecId());
 			if (!isKill) {
 				// 终结了
 				updateKill(param.getRecId(), "进程终止");
-				System.out.println("终止了");
+				log.debug("RecId "+param.getRecId()+nickName+"进程终止");
 				break;
 			}
-			System.out.println("没有终止");
-			int a = i + 1;
-			String appId = list.get(i).getAppId();
-			String nickName = list.get(i).getNickName();
 
 			Byte mpPackageVersion = saas.shop.mp.getMpPackageVersion(appId);
 			// 算进度
 			progress = (short) ((new BigDecimal((float) a / count).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
 					* 100);
-			String progressInfo = nickName + "(" + appId + ")";
 			updateProgress(param.getRecId(), progress, "正在提交" + progressInfo);
 			log.debug("recid" + param.getRecId() + progressInfo + " 进度" + progress + "%");
 			WxOpenResult result = new WxOpenResult();
