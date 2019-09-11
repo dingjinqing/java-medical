@@ -21,6 +21,14 @@ public class OrderListInfoVo {
 
 	private Integer orderId;
 	private String orderSn;
+	/**
+	 * 逻辑订单号
+	 * 普通订单LogicMainOrderSn=orderSn
+	 * 拆单主订单LogicMainOrderSn=orderSn=mainOrderSn
+	 * 拆单子订单LogicMainOrderSn=mainOrderSn
+	 */
+	@JsonIgnore
+	private String LogicMainOrderSn;
 	private String mainOrderSn;
 	private String goodsType;
 	private List<? extends OrderListInfoVo> childOrders;

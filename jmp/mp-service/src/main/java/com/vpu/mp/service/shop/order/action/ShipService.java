@@ -179,9 +179,9 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 		// TODO 修改select*
 		//该单是否支持发货
 		
-		// 正常商品行
+		//TODO Short.valueOf("0")正常商品行
 		List<OrderGoodsVo> orderGoods = db().select(ORDER_GOODS.asterisk()).from(ORDER_GOODS)
-				.where(ORDER_GOODS.ORDER_SN.eq(orderSn)).fetchInto(OrderGoodsVo.class);
+				.where(ORDER_GOODS.ORDER_SN.eq(orderSn).and(ORDER_GOODS.SEND_NUMBER.eq(Short.valueOf("0")))).fetchInto(OrderGoodsVo.class);
 		// 查询退货中信息
 		Map<Integer, List<OrderReturnGoodsVo>> returnOrderGoods = db().select(RETURN_ORDER_GOODS.asterisk()).select()
 				.from(RETURN_ORDER_GOODS)

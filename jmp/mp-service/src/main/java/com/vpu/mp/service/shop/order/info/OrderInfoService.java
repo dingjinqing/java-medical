@@ -250,17 +250,19 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchInto(OrderListInfoVo.class);
 		orders.forEach(order->{
 			if(StringUtils.isBlank(order.getMainOrderSn())) {
-				order.setMainOrderSn(order.getOrderSn());
+				order.setLogicMainOrderSn(order.getOrderSn());
+			}else {
+				order.setLogicMainOrderSn(order.getMainOrderSn());
 			}
 		});
 		Map<String, List<OrderListInfoVo>> result = new HashMap<String, List<OrderListInfoVo>>();
 		for (OrderListInfoVo order : orders) {
-			if(result.get(order.getMainOrderSn()) != null) {
-				result.get(order.getMainOrderSn()).add(order);
+			if(result.get(order.getLogicMainOrderSn()) != null) {
+				result.get(order.getLogicMainOrderSn()).add(order);
 			}else {
 				ArrayList<OrderListInfoVo> orderList = new ArrayList<OrderListInfoVo>();
 				orderList.add(order);
-				result.put(order.getMainOrderSn(), orderList);
+				result.put(order.getLogicMainOrderSn(), orderList);
 			}
 		}
 		return result;

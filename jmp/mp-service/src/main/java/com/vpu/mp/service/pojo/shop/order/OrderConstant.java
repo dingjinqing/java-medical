@@ -83,7 +83,11 @@ public class OrderConstant {
 	public final static byte GOODS_TYPE_GIVE_GIFT = 17;
 	/** 首单特惠 */
 	public final static byte GOODS_TYPE_FIRST_SPECIAL = 18;
-
+	/** 代付订单 */
+	public final static byte GOODS_TYPE_PAY_FOR_ANOTHER = 99;
+	/** 扫码购订单 */
+	public final static byte GOODS_TYPE_SWEEP_CODE_BUY = 100;
+	
 	/**退货状态*/
 	/**审核中,退款且退货申请*/
 	public final static byte  REFUND_STATUS_AUDITING = 1;
