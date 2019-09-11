@@ -44,6 +44,10 @@ import {
 import {
   en as goodsImport
 } from './views/goodsManage/goodsImport'
+// 概览
+import {
+  en as overview
+} from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 
 // 营销管理
 // 营销管理通用词汇
@@ -456,6 +460,7 @@ const en = {
   bottomNavigation,
   promoteList,
   adSharePolite,
+  overview,
   ...enLocale
 }
 export default en

@@ -1,27 +1,27 @@
 <template>
-  <div class="">商城概览
+  <div class="">{{$t('overview.overviewName')}}
     <div class="one_piece">
       <el-row>
         <div v-if="act==='del_bind'">
-          <span>{{this.nickName!==null ?this.nickName: '当前账号'}}已关注公众号，实时接收消息通知</span>
+          <span>{{this.nickName!==null ?this.nickName: $t('overview.bindButtonDelMsg')}}已关注公众号，实时接收消息通知</span>
           <el-button
             class="btn_follow"
             @click="handleSubmit()"
-          >解除绑定</el-button>
+          >{{$t('overview.bindButtonDelBind')}}</el-button>
         </div>
         <div v-else-if="act==='bind'">
-          <span>当前账号已关注公众号，但未绑定，不能实时接收消息通知</span>
+          <span>{{$t('overview.bindButtonBindMessage')}}</span>
           <el-button
             class="btn_follow"
             @click="handleSubmit()"
-          >去绑定</el-button>
+          >{{$t('overview.bindButtonBind')}}</el-button>
         </div>
         <div v-else>
-          <span>关注公众号，实时接收消息通知</span>
+          <span>{{$t('overview.bindButtonNullMessage')}}</span>
           <el-button
             class="btn_follow"
             @click="handleSubmit()"
-          >关注</el-button>
+          >{{$t('overview.bindButtonNull')}}</el-button>
         </div>
       </el-row>
     </div>
@@ -30,7 +30,7 @@
       :visible.sync="centerDialogVisible"
       width="30%"
     >
-      <span>用手机扫下方二维码关注公众号，及时接收新订单提醒</span>
+      <span>{{$t('overview.imageMessage')}}</span>
 
       <div class="demo-fit">
         <div

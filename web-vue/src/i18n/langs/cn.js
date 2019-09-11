@@ -92,6 +92,10 @@ import {
 import {
   cn as adSharePolite
 } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
+// 概览
+import {
+  cn as overview
+} from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 
 const cn = {
   messages: {
@@ -459,6 +463,7 @@ const cn = {
   bottomNavigation,
   promoteList, // 好友助力
   adSharePolite,
+  overview,
   ...zhLocale
 }
 
