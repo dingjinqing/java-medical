@@ -85,10 +85,12 @@
         </el-table-column>
 
         <el-table-column
-          prop="validDate"
           :label="$t('promoteList.actValidityPeriod')"
           align="center"
         >
+          <template slot-scope="scope">
+            <span v-html="scope.row.validDate"></span>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -249,7 +251,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        // item.validDate = ${item.startTime} + this.$t('promoteList.to') + '${item.endTime}'
+        item.validDate = `${item.startTime}<br/>${this.$t('promoteList.to')}<br/>${item.endTime}`
         var jsonObject = JSON.parse(item.rewardContent)
         item.marketStore = jsonObject[0].market_store
       })

@@ -5,28 +5,28 @@
       <el-form :inline="true">
         <el-form-item
           size="small"
-          label="用户昵称"
+          :label="$t('promoteList.username')"
         >
           <el-input
-            placeholder="请输入用户昵称"
+            :placeholder="$t('promoteList.usernamePlaceholder')"
             v-model="username"
           />
         </el-form-item>
         <el-form-item
           size="small"
-          label="手机号"
+          :label="$t('promoteList.mobile')"
         >
           <el-input
-            placeholder="请输入手机号"
+            :placeholder="$t('promoteList.mobilePlaceholder')"
             v-model="mobile"
           />
         </el-form-item>
         <el-form-item
           size="small"
-          label="助力活动ID"
+          :label="$t('promoteList.actId')"
         >
           <el-input
-            placeholder="请输入助力活动ID"
+            :placeholder="$t('promoteList.actIdPlaceHolder')"
             v-model="id"
           ></el-input>
         </el-form-item>
@@ -34,19 +34,19 @@
 
         <el-form-item
           size="small"
-          label="是否成功助力"
+          :label="$t('promoteList.successfulPromotion')"
         >
           <el-select v-model="promoteStatus">
             <el-option
-              label="全部"
+              :label="$t('promoteList.all')"
               value="-1"
             ></el-option>
             <el-option
-              label="是"
+              :label="$t('promoteList.yes')"
               value="2"
             ></el-option>
             <el-option
-              label="否"
+              :label="$t('promoteList.no')"
               value="0"
             ></el-option>
           </el-select>
@@ -55,8 +55,8 @@
           size="small"
           type="primary"
           @click="onSubmit"
-        >筛选</el-button>
-        <el-button size="small">导出数据</el-button>
+        >{{$t('promoteList.filter')}}</el-button>
+        <el-button size="small">{{$t('promoteList.export')}}</el-button>
       </el-form>
     </div>
 
@@ -72,7 +72,7 @@
 
         <el-table-column
           prop="username"
-          label="发起用户昵称"
+          :label="$t('promoteList.launchUsername')"
           align="center"
         >
           <template slot-scope="scope">
@@ -85,17 +85,17 @@
 
         <el-table-column
           prop="mobile"
-          label="发起用户手机号"
+          :label="$t('promoteList.launchMobile')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="id"
-          label="助力活动ID"
+          :label="$t('promoteList.actId')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="joinNum"
-          label="参与人数"
+          :label="$t('promoteList.joinNum')"
           align="center"
         >
           <template slot-scope="scope">
@@ -106,18 +106,18 @@
           </template></el-table-column>
         <el-table-column
           prop="promoteTimes"
-          label="助力次数"
+          :label="$t('promoteList.promoteTimes')"
           align="center"
         ></el-table-column>
 
         <el-table-column
           prop="promoteValue"
-          label="助力值"
+          :label="$t('promoteList.promoteValue')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="promoteStatus"
-          label="是否助力成功"
+          :label="$t('promoteList.successfulPromotion')"
           align="center"
         ></el-table-column>
       </el-table>
@@ -169,9 +169,9 @@ export default {
     handData (data) {
       data.map((item, index) => {
         if (item.promoteStatus === 2) {
-          item.promoteStatus = '是'
+          item.promoteStatus = this.$t('promoteList.yes')
         } else {
-          item.promoteStatus = '否'
+          item.promoteStatus = this.$t('promoteList.no')
         }
       })
       this.tableData = data

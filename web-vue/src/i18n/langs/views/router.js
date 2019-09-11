@@ -287,9 +287,15 @@ export const en = {
   // 营销管理 砍价 - 活动效果数据
   bargain_effect_data: ['Marketing management', 'Bargain', 'Activity effect data'],
   // 营销管理 好友助力
-  promote: ['Marketing management', 'Good friend help'],
+  promote: ['Marketing management', 'Friend promote'],
   // 营销管理 添加好友助力活动
-  promote_activity: ['Marketing management', 'Good friend help'],
+  promote_activity: ['Marketing management', 'Good friend helFriend promote'],
+  // 营销管理 好友助力领取明细
+  promote_receive_details: ['Marketing management', 'Friend promote', 'Receive details'],
+  // 营销管理 好友助力发起明细
+  promote_launch_details: ['Marketing management', 'Friend promote', 'Launch details'],
+  // 营销管理 好友助力参与明细
+  promote_participate_details: ['Marketing management', 'Friend promote', 'Participate details'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
   // 营销管理 普通优惠券 领取明细

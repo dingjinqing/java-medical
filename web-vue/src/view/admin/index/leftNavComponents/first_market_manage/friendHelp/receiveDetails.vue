@@ -5,56 +5,56 @@
       <el-form :inline="true">
         <el-form-item
           size="small"
-          label="用户昵称"
+          :label="$t('promoteList.username')"
         >
           <el-input
             v-model="username"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('promoteList.usernamePlaceholder')"
           />
         </el-form-item>
         <el-form-item
           size="small"
-          label="手机号"
+          :label="$t('promoteList.mobile')"
         >
           <el-input
             v-model="mobile"
-            placeholder="请输入手机号"
+            :placeholder="$t('promoteList.mobilePlaceholder')"
           />
         </el-form-item>
         <el-form-item
           size="small"
-          label="助力活动ID"
+          :label="$t('promoteList.actId')"
         >
           <el-input
             v-model="id"
-            placeholder="请输入助力活动ID"
+            :placeholder="$t('promoteList.actIdPlaceHolder')"
           ></el-input>
         </el-form-item>
         <br>
         <el-form-item
           size="small"
-          label="订单号"
+          :label="$t('promoteList.orderSn')"
         >
           <el-input
             v-model="orderSn"
-            placeholder="请输入订单号"
+            :placeholder="$t('promoteList.orderSnPlaceholder')"
           ></el-input>
         </el-form-item>
         <el-form-item
           size="small"
-          label="是否已领取"
+          :label="$t('promoteList.isReceive')"
         >
           <el-select v-model="promoteStatus">
             <el-option
-              label="全部"
+              :label="$t('promoteList.all')"
               value="-1"
             ></el-option>
             <el-option
-              label="是"
+              :label="$t('promoteList.yes')"
               value="2"
             ></el-option>
             <el-option
-              label="否"
+              :label="$t('promoteList.no')"
               value="1"
             ></el-option>
           </el-select>
@@ -63,8 +63,8 @@
           size="small"
           type="primary"
           @click="onSubmit"
-        >筛选</el-button>
-        <el-button size="small">导出数据</el-button>
+        >{{$t('promoteList.filter')}}</el-button>
+        <el-button size="small">{{$t('promoteList.export')}}</el-button>
       </el-form>
     </div>
 
@@ -78,35 +78,42 @@
       >
         <el-table-column
           prop="username"
-          label="领取用户昵称"
+          :label="$t('promoteList.recUsername')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="mobile"
-          label="领取用户手机号"
+          :label="$t('promoteList.recMobile')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="id"
-          label="助力活动ID"
+          :label="$t('promoteList.actId')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="promoteStatus"
-          label="是否已领取"
+          :label="$t('promoteList.isReceive')"
           align="center"
         ></el-table-column>
 
         <el-table-column
           prop="recTime"
-          label="领取时间"
+          :label="$t('promoteList.recTime')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="orderSn"
-          label="订单号"
+          :label="$t('promoteList.orderSn')"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click="getOrder()"
+              type="text"
+            > {{scope.row.orderSn}} </el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <pagination
         :page-params.sync="pageParams"
@@ -159,9 +166,9 @@ export default {
     handData (data) {
       data.map((item, index) => {
         if (item.promoteStatus === 2) {
-          item.promoteStatus = '是'
+          item.promoteStatus = this.$t('promoteList.yes')
         } else {
-          item.promoteStatus = '否'
+          item.promoteStatus = this.$t('promoteList.no')
         }
       })
       this.tableData = data
