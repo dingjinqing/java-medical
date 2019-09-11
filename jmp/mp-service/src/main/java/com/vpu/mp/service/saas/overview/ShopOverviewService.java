@@ -134,6 +134,7 @@ public class ShopOverviewService extends MainBaseService {
 			MpOfficialAccountUserRecord user2 = saas.shop.mpOfficialAccountUserService.getUser(bindAppId,officialOpenId);
 			nickname = user2.getNickname();
 		}
+		bindofficialVo.setOfficialOpenId(officialOpenId);
 		bindofficialVo.setIsBind(isBind);
 		bindofficialVo.setNickName(nickname);
 		return bindofficialVo;
