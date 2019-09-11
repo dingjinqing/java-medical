@@ -14,6 +14,7 @@ import lombok.Data;
 public class CouponListVo {
 	 	private Integer    id;
 	    private String     actName;
+	    private String     actCode;
 	    private Timestamp  startTime;
 	    private Timestamp  endTime;
 	    private BigDecimal denomination;
