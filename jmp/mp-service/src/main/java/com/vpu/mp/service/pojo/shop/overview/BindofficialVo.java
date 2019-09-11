@@ -19,4 +19,5 @@ public class BindofficialVo {
 	 */
 	private Byte isBind;
 
+	private String officialOpenId;
 }
