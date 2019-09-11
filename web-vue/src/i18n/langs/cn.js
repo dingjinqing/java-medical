@@ -84,6 +84,11 @@ import {
   cn as bottomNavigation
 } from './views/smallProgramManagement/bottomNavigation'
 // console.log(zhLocale)
+// 分享有礼-添加
+import {
+  cn as adSharePolite
+} from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
+
 const cn = {
   messages: {
     lang: '中文',
@@ -448,6 +453,7 @@ const cn = {
   pageDecoration,
   bottomNavigation,
   promoteList, // 好友助力
+  adSharePolite,
   ...zhLocale
 }
 

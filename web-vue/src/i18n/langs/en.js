@@ -83,6 +83,11 @@ import {
 import {
   en as bottomNavigation
 } from './views/smallProgramManagement/bottomNavigation'
+// 分享有礼-添加
+import {
+  en as adSharePolite
+} from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
+
 const en = {
   messages: {
     lang: 'English',
@@ -445,6 +450,7 @@ const en = {
   pageDecoration,
   bottomNavigation,
   promoteList,
+  adSharePolite,
   ...enLocale
 }
 export default en

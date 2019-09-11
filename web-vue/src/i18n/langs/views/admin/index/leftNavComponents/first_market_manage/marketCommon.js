@@ -31,7 +31,10 @@ export const cn = {
   actDeleteConfirmTip: '确定删除该活动吗？',
   actEnabledConfirmTip: '确定启用该活动吗？',
   actDisableConfirmTip: '确定停用该活动吗？',
-  successfulOperation: '操作成功'
+  successfulOperation: '操作成功',
+  startingTime: '开始日期',
+  endTime: '结束日期',
+  save: '保存'
 }
 
 export const en = {
@@ -67,5 +70,8 @@ export const en = {
   actDeleteConfirmTip: 'Are you sure to delete the activity?',
   actEnabledConfirmTip: 'Are you sure to enabled the activity?',
   actDisableConfirmTip: 'Are you sure to disable the activity?',
-  successfulOperation: 'Successful operation'
+  successfulOperation: 'Successful operation',
+  startingTime: 'Starting Time',
+  endTime: 'End Time',
+  save: 'Save'
 }
