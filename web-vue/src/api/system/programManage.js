@@ -101,3 +101,28 @@ export function publishSetRequest (data) {
     data: data
   })
 }
+
+// 批量上传并提交审核
+export function batchUpload (data) {
+  return service({
+    url: `/api/system/mp/version/batch_apply/${data}`,
+    method: 'get'
+  })
+}
+
+// 查询小程序审核状态
+export function processList (data) {
+  return service({
+    url: '/api/system/back/process/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 强行终止小程序批量提交
+export function killBatchUpload (data) {
+  return service({
+    url: `/api/system/back/process/stop/${data}`,
+    method: 'get'
+  })
+}

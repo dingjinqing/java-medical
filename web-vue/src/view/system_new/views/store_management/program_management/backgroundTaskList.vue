@@ -6,6 +6,7 @@
         <el-select
           v-model="value"
           size="small"
+          @change="changeState"
         >
           <el-option
             v-for="item in options"
@@ -29,24 +30,31 @@
           <el-table-column
             align="center"
             label="任务名称"
-            prop="pageName"
+            prop="jobName"
           >
           </el-table-column>
           <el-table-column
-            prop="params"
+            prop="parameters"
             label="参数"
             align="center"
             width="300"
           >
           </el-table-column>
           <el-table-column
-            prop="status"
+            prop="state"
             label="状态"
             align="center"
           >
+            <template slot-scope="scope">
+              <span v-if="scope.row.state ===0">初始</span>
+              <span v-if="scope.row.state ===1">执行中</span>
+              <span v-if="scope.row.state ===2">完成</span>
+              <span v-if="scope.row.state ===3">失败</span>
+              <span v-if="scope.row.state ===4">终止</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="reason"
+            prop="failReason"
             label="失败原因"
             align="center"
           >
@@ -60,7 +68,7 @@
               <el-progress
                 :text-inside="true"
                 :stroke-width="24"
-                :percentage="scope.row.speedOfProgress"
+                :percentage="scope.row.progress"
                 status="success"
               ></el-progress>
 
@@ -68,21 +76,21 @@
           </el-table-column>
 
           <el-table-column
-            prop="speedOfProgressText"
+            prop="progressInfo"
             label="进度信息"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
-            prop="remarks"
+            prop="memo"
             label="备注"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
-            prop="creatTime"
+            prop="created"
             label="创建时间"
             align="center"
           >
@@ -101,6 +109,7 @@
           >
             <template slot-scope="scope">
               <div
+                v-if="scope.row.state===0||scope.row.state===1"
                 class="operation"
                 @click="handleToStop(scope.row)"
               >强行终止</div>
@@ -119,107 +128,62 @@
             :total="totle"
           >
           </el-pagination>
+
+          <el-dialog
+            class="dialog"
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="30%"
+          >
+            <span class="el-dialog-span">确定强行停止此任务吗？</span>
+            <span
+              slot="footer"
+              class="dialog-footer"
+            >
+              <el-button @click="handleToBatchSubmit(0)">取 消</el-button>
+              <el-button
+                type="primary"
+                @click="handleToBatchSubmit(1)"
+              >确 定</el-button>
+            </span>
+          </el-dialog>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { processList, killBatchUpload } from '@/api/system/programManage'
 export default {
   data () {
     return {
       options: [{
-        value: '0',
+        value: '-1',
         label: '--请选择--'
       }, {
-        value: '1',
+        value: '0',
         label: '初始'
       }, {
-        value: '2',
+        value: '1',
         label: '执行中'
       }, {
-        value: '3',
+        value: '2',
         label: '执行完成'
       }, {
-        value: '4',
+        value: '3',
         label: '执行失败'
       },
       {
-        value: '5',
+        value: '4',
         label: '执行停止'
       }],
-      value: '0',
-      tableData: [
-        {
-          pageName: '批量提交小程序审核',
-          params: ' "{\u0022template_id\u0022:229,\u0022user_version\u0022:\u00221.31.2\u0022,\u0022user_desc\u0022:\u00229.6\\u6d4b\\u8bd5\\u7248\\u672c1\u0022,\u0022create_time\u0022:\u00222019-09-06 14:30:58\u0022,\u0022del_flag\u0022:0,\u0022current_in_use\u0022:1,\u0022source_miniprogram_appid\u0022:\u0022wxeaeb5c37a376f415\u0022,\u0022source_miniprogram\u0022:\u0022\\u5fae\\u94fa\\u5b9db2c\\u5546\\u57ce\u0022,\u0022developer\u0022:\u0022\\u65b0\\u623f\\u5ba2\\u4e36\u0022,\u0022package_version\u0022:2}" ',
-          status: '初始',
-          reason: '进程终止',
-          speedOfProgress: '40',
-          speedOfProgressText: '处理完成',
-          remarks: '我爱你',
-          creatTime: '2018-05-14 13:22:07',
-          endTime: '2018-06-14 13:22:07'
-        },
-        {
-          pageName: '批量提交小程序审核',
-          params: ' "{\u0022template_id\u0022:229,\u0022user_version\u0022:\u00221.31.2\u0022,\u0022user_desc\u0022:\u00229.6\\u6d4b\\u8bd5\\u7248\\u672c1\u0022,\u0022create_time\u0022:\u00222019-09-06 14:30:58\u0022,\u0022del_flag\u0022:0,\u0022current_in_use\u0022:1,\u0022source_miniprogram_appid\u0022:\u0022wxeaeb5c37a376f415\u0022,\u0022source_miniprogram\u0022:\u0022\\u5fae\\u94fa\\u5b9db2c\\u5546\\u57ce\u0022,\u0022developer\u0022:\u0022\\u65b0\\u623f\\u5ba2\\u4e36\u0022,\u0022package_version\u0022:2}" ',
-          status: '初始',
-          reason: '进程终止',
-          speedOfProgress: '25',
-          speedOfProgressText: '处理完成',
-          remarks: '我爱你',
-          creatTime: '2018-05-14 13:22:07',
-          endTime: '2018-06-14 13:22:07'
-        },
-        {
-          pageName: '批量提交小程序审核',
-          params: ' "{\u0022template_id\u0022:229,\u0022user_version\u0022:\u00221.31.2\u0022,\u0022user_desc\u0022:\u00229.6\\u6d4b\\u8bd5\\u7248\\u672c1\u0022,\u0022create_time\u0022:\u00222019-09-06 14:30:58\u0022,\u0022del_flag\u0022:0,\u0022current_in_use\u0022:1,\u0022source_miniprogram_appid\u0022:\u0022wxeaeb5c37a376f415\u0022,\u0022source_miniprogram\u0022:\u0022\\u5fae\\u94fa\\u5b9db2c\\u5546\\u57ce\u0022,\u0022developer\u0022:\u0022\\u65b0\\u623f\\u5ba2\\u4e36\u0022,\u0022package_version\u0022:2}" ',
-          status: '初始',
-          reason: '进程终止',
-          speedOfProgress: '56',
-          speedOfProgressText: '处理完成',
-          remarks: '我爱你',
-          creatTime: '2018-05-14 13:22:07',
-          endTime: '2018-06-14 13:22:07'
-        },
-        {
-          pageName: '批量提交小程序审核',
-          params: ' "{\u0022template_id\u0022:229,\u0022user_version\u0022:\u00221.31.2\u0022,\u0022user_desc\u0022:\u00229.6\\u6d4b\\u8bd5\\u7248\\u672c1\u0022,\u0022create_time\u0022:\u00222019-09-06 14:30:58\u0022,\u0022del_flag\u0022:0,\u0022current_in_use\u0022:1,\u0022source_miniprogram_appid\u0022:\u0022wxeaeb5c37a376f415\u0022,\u0022source_miniprogram\u0022:\u0022\\u5fae\\u94fa\\u5b9db2c\\u5546\\u57ce\u0022,\u0022developer\u0022:\u0022\\u65b0\\u623f\\u5ba2\\u4e36\u0022,\u0022package_version\u0022:2}" ',
-          status: '初始',
-          reason: '进程终止',
-          speedOfProgress: '34',
-          speedOfProgressText: '处理完成',
-          remarks: '我爱你',
-          creatTime: '2018-05-14 13:22:07',
-          endTime: '2018-06-14 13:22:07'
-        },
-        {
-          pageName: '批量提交小程序审核',
-          params: ' "{\u0022template_id\u0022:229,\u0022user_version\u0022:\u00221.31.2\u0022,\u0022user_desc\u0022:\u00229.6\\u6d4b\\u8bd5\\u7248\\u672c1\u0022,\u0022create_time\u0022:\u00222019-09-06 14:30:58\u0022,\u0022del_flag\u0022:0,\u0022current_in_use\u0022:1,\u0022source_miniprogram_appid\u0022:\u0022wxeaeb5c37a376f415\u0022,\u0022source_miniprogram\u0022:\u0022\\u5fae\\u94fa\\u5b9db2c\\u5546\\u57ce\u0022,\u0022developer\u0022:\u0022\\u65b0\\u623f\\u5ba2\\u4e36\u0022,\u0022package_version\u0022:2}" ',
-          status: '初始',
-          reason: '进程终止',
-          speedOfProgress: '67',
-          speedOfProgressText: '处理完成',
-          remarks: '我爱你',
-          creatTime: '2018-05-14 13:22:07',
-          endTime: '2018-06-14 13:22:07'
-        },
-        {
-          pageName: '批量提交小程序审核',
-          params: ' "{\u0022template_id\u0022:229,\u0022user_version\u0022:\u00221.31.2\u0022,\u0022user_desc\u0022:\u00229.6\\u6d4b\\u8bd5\\u7248\\u672c1\u0022,\u0022create_time\u0022:\u00222019-09-06 14:30:58\u0022,\u0022del_flag\u0022:0,\u0022current_in_use\u0022:1,\u0022source_miniprogram_appid\u0022:\u0022wxeaeb5c37a376f415\u0022,\u0022source_miniprogram\u0022:\u0022\\u5fae\\u94fa\\u5b9db2c\\u5546\\u57ce\u0022,\u0022developer\u0022:\u0022\\u65b0\\u623f\\u5ba2\\u4e36\u0022,\u0022package_version\u0022:2}" ',
-          status: '初始',
-          reason: '进程终止',
-          speedOfProgress: '89',
-          speedOfProgressText: '处理完成',
-          remarks: '我爱你',
-          creatTime: '2018-05-14 13:22:07',
-          endTime: '2018-06-14 13:22:07'
-        }
-      ],
+      value: '-1',
+      tableData: [],
       currentPage: 1,
-      totle: 1,
-      pageCount: 1
+      totle: 0,
+      pageCount: 1,
+      recId: null,
+      dialogVisible: false
     }
   },
   mounted () {
@@ -230,11 +194,25 @@ export default {
   },
   methods: {
     defaultData () {
-
+      let obj = {
+        'pageRows': 20,
+        'currentPage': this.currentPage,
+        'state': this.value
+      }
+      processList(obj).then((res) => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.totle = res.content.page.totalRows
+          this.currentPage = res.content.page.currentPage
+          this.pageCount = res.content.page.pageCount
+          console.log(this.pageCount)
+        }
+        console.log(res)
+      })
     },
     // 当前页改变
     handleCurrentChange () {
-
+      this.defaultData()
     },
     // 每页显示条数变化
     handleSizeChange () {
@@ -242,12 +220,37 @@ export default {
     },
     // 强行终止
     handleToStop (row) {
+      this.recId = row.recId
+      this.dialogVisible = true
       console.log(row)
+    },
+    changeState (item) {
+      this.value = item
+      this.defaultData()
+    },
+    handleToBatchSubmit (flag) {
+      if (flag === 1) {
+        // 确定时调用接口
+        killBatchUpload(this.recId).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            this.defaluteData()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        this.defaultData()
+      }
+      this.dialogVisible = false
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+/deep/ .el-dialog__body {
+  padding: 0px 20px;
+}
+
 .backgroundTaskList {
   padding-bottom: 68px;
   min-width: 100%;

@@ -138,7 +138,7 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <span>此操作将批量伟所有小程序客户上传模板版本229并提交审核，是否确认此操作</span>
+      <span>此操作将批量伟所有小程序客户上传模板版本{{this.upTemplateId}}并提交审核，是否确认此操作</span>
       <span
         slot="footer"
         class="dialog-footer"
@@ -154,7 +154,7 @@
 </template>
 
 <script>
-import { synchronizationRequest, smallProManRequest, setNowVersionRequest, setCurrentVersionRequest } from '@/api/system/programManage'
+import { synchronizationRequest, smallProManRequest, setNowVersionRequest, setCurrentVersionRequest, batchUpload } from '@/api/system/programManage'
 export default {
   name: 'versionManage',
   data () {
@@ -171,7 +171,8 @@ export default {
       currentPage: 1,
       totle: null,
       pageCount: null,
-      dialogVisible: false
+      dialogVisible: false,
+      upTemplateId: null
     }
   },
   mounted () {
@@ -226,6 +227,7 @@ export default {
       switch (index) {
         case 0:
           this.dialogVisible = true
+          this.upTemplateId = row.templateId
           break
         case 1:
           this.$router.push({
@@ -264,6 +266,12 @@ export default {
     handleToBatchSubmit (flag) {
       if (flag === 1) {
         // 确定时调用接口
+        batchUpload(this.upTemplateId).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            this.defaluteData()
+          }
+        })
       }
       this.$router.push({
         name: 'backgroundTaskList'
