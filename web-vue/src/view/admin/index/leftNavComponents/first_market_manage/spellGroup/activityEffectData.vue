@@ -1,11 +1,12 @@
 <!--
-* 效果数据页面
+* 多人拼团 - 效果数据页面
 *
 * @author:赵鑫
 -->
 <template>
   <div>
     <wrapper class="dataContent">
+      <!-- 日期筛选部分 -->
       <div style="display:flex">
         <div style="height:32px;line-height:32px">筛选日期：</div>
         <div class="selectTime">
@@ -34,6 +35,7 @@
         >筛选</el-button>
       </div>
 
+      <!-- 表格数据部分 -->
       <section>
         <div class="fromInfo">
           <div style="display:flex">
@@ -155,11 +157,6 @@ export default {
         bottom: '3%',
         containLabel: true
       },
-      // toolbox: {
-      //   feature: {
-      //     saveAsImage: {}
-      //   }
-      // },
       xAxis: [
         {
           type: 'category',

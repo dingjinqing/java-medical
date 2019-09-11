@@ -95,6 +95,48 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/bargain/bargainOrderList'
       )
   },
+  // 砍价 - 获取新用户明细
+  {
+    path: '/admin/home/main/bargain/getNewUserList',
+    name: ' bargain_get_newuser_detail',
+    meta: {
+      crumbTitle: 'router.bargain_get_newuser_detail',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/newUserDetail'
+      )
+  },
+  // 砍价 - 查看发起砍价用户
+  {
+    path: '/admin/home/main/bargain/bargainingUser',
+    name: 'bargain_bargain_user',
+    meta: {
+      crumbTitle: 'router.bargain_bargain_user',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/viewBargainUser'
+      )
+  },
+  // 砍价 - 查看发起砍价用户
+  {
+    path: '/admin/home/main/bargain/effectData',
+    name: 'bargain_effect_data',
+    meta: {
+      crumbTitle: 'router.bargain_effect_data',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/activityEffectData'
+      )
+  },
   // 多人拼团
   {
     path: '/admin/home/main/spellGroup',

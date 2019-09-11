@@ -92,6 +92,12 @@ export const cn = {
   bargain_activity: ['营销管理', '砍价', '砍价活动'],
   // 营销管理 砍价订单
   bargain_order_list: ['营销管理', '砍价', '砍价订单'],
+  // 营销管理 砍价 - 获取新用户明细
+  bargain_get_newuser_detail: ['营销管理', '砍价', '获取新用户明细'],
+  // 营销管理 砍价 - 砍价用户
+  bargain_bargain_user: ['营销管理', '砍价', '砍价用户'],
+  // 营销管理 砍价 - 活动效果数据
+  bargain_effect_data: ['营销管理', '砍价', '活动效果数据'],
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 添加好友助力活动
@@ -274,6 +280,12 @@ export const en = {
   bargain_activity: ['Marketing management', 'Bargaining activity'],
   // 营销管理 砍价订单
   bargain_order_list: ['Marketing management', 'Bargain', 'Bargaining Orders'],
+  // 营销管理 砍价 - 获取新用户明细
+  bargain_get_newuser_detail: ['Marketing management', 'Bargain', 'Get new user detail'],
+  // 营销管理 砍价 - 砍价用户
+  bargain_bargain_user: ['Marketing management', 'Bargain', 'Bargaining user'],
+  // 营销管理 砍价 - 活动效果数据
+  bargain_effect_data: ['Marketing management', 'Bargain', 'Activity effect data'],
   // 营销管理 好友助力
   promote: ['Marketing management', 'Good friend help'],
   // 营销管理 添加好友助力活动

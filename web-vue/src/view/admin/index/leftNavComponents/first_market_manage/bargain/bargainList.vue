@@ -190,7 +190,7 @@
               >
                 <i
                   class="el-icon-user"
-                  @click="checkOrderList(scope.row.id)"
+                  @click="getNewUserDetail(scope.row.id)"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -201,7 +201,7 @@
               >
                 <i
                   class="el-icon-zoom-in"
-                  @click="checkOrderList(scope.row.id)"
+                  @click="bargainingUser(scope.row.id)"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -212,7 +212,7 @@
               >
                 <i
                   class="el-icon-s-order"
-                  @click="checkOrderList(scope.row.id)"
+                  @click="effectData(scope.row.id)"
                 ></i>
               </el-tooltip>
             </div>
@@ -385,6 +385,36 @@ export default {
     checkOrderList (id) {
       this.$router.push({
         path: '/admin/home/main/bargain/orderList',
+        query: {
+          id: id
+        }
+      })
+    },
+
+    // 跳转到获取新用户明细页面
+    getNewUserDetail (id) {
+      this.$router.push({
+        path: '/admin/home/main/bargain/getNewUserList',
+        query: {
+          id: id
+        }
+      })
+    },
+
+    // 跳转到查看发起砍价用户页面
+    bargainingUser (id) {
+      this.$router.push({
+        path: '/admin/home/main/bargain/bargainingUser',
+        query: {
+          id: id
+        }
+      })
+    },
+
+    // 跳转到活动效果数据页面
+    effectData (id) {
+      this.$router.push({
+        path: '/admin/home/main/bargain/effectData',
         query: {
           id: id
         }
