@@ -886,7 +886,6 @@ public class GoodsService extends ShopBaseService {
         //设置模板名称
         XcxCustomerPageRecord pageDecorate = shopMpDecorationService.getPageById(goodsVo.getGoodsPageId());
         if (pageDecorate == null) {
-            goodsVo.setGoodsPageId(null);
             goodsVo.setGoodsPageName(null);
         } else {
             goodsVo.setGoodsPageName(pageDecorate.getPageName());
@@ -898,6 +897,7 @@ public class GoodsService extends ShopBaseService {
 
         // 反序列化商品海报分享信息
         GoodsSharePostConfig goodsSharePostConfig = Util.parseJson(goodsVo.getShareConfig(), GoodsSharePostConfig.class);
+        goodsSharePostConfig.setShareImgPath(goodsSharePostConfig.getShareImgUrl());
         goodsSharePostConfig.setShareImgUrl(getImgFullUrlUtil(goodsSharePostConfig.getShareImgUrl()));
         goodsVo.setGoodsSharePostConfig(goodsSharePostConfig);
 
