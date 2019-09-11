@@ -264,7 +264,6 @@ export default {
         this.pageRows = res.content.page.pageRows
         this.pageCount = res.content.page.pageCount
         this.totalRows = res.content.page.totalRows
-        this.tableDataCopy = res.content.dataList
         this.handleData(res.content.dataList)
       }).catch(() => {
         this.$message.error('保存失败')
@@ -272,9 +271,13 @@ export default {
     },
     handleData (tabData) {
       tabData.map((item, index) => {
-        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.vaildDate = `${item.startTime}` + this.$t('marketCommon.to') + `${item.endTime}`
         item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
-        item.activityTypeText = this.activityTypeText[item.activityType]
+        this.activityTypeText.forEach(entity => {
+          if (entity.value === item.activityType) {
+            item.activityTypeText = entity.label
+          }
+        })
       })
       this.tableData = tabData
     },
@@ -303,7 +306,7 @@ export default {
       }
       console.log(typeof this.tabInfo)
       this.tabInfo.push({
-        title: '添加拼团活动',
+        title: this.$t('groupBuy.addActivity'),
         name: '6',
         content: 'New Tab content'
       })
@@ -314,7 +317,7 @@ export default {
     editActivity (id) {
       console.log('编辑', id)
       this.tabInfo.push({
-        title: '编辑活动',
+        title: this.$t('groupBuy.editActivity'),
         name: '6',
         content: 'edit tab content'
       })

@@ -3,229 +3,182 @@
 @author 孔德成
 -->
 <template>
-  <wrapper>
-    <el-form
-      ref="form"
-      :model="form"
-      :rules="fromRules"
-      label-width="150px"
-      :label-position="'right'"
-    >
-      <el-form-item
-        label="拼团类型："
-        prop="resource"
-      >
-        <el-radio-group v-model="form.activityType">
-          <el-radio :label=1>普通拼团</el-radio>
-          <el-radio :label=2>老带新拼团</el-radio>
-        </el-radio-group>
-        <div class="prompt">
-          所有用户都可以开团，但只有新用户才能参团，保存后不可编辑
-        </div>
-      </el-form-item>
-      <el-form-item
-        label="活动名称："
-        prop="name"
-      >
-        <el-col :span="3">
-          <el-input
-            v-model="form.name"
-            size="small"
-            placeholder="请输入活动名称"
-          ></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item
-        label="活动商品："
-        prop="goodsId"
-      >
-        <el-button
-          size="small"
-          @click="showChoosingGoods"
-        >+ 选择商品</el-button>
-        <el-col :span="8">
-          <el-input
-            :disabled="true"
-            v-model="goodsRow.goodsName"
-            v-if="goodsRow.ischecked"
-          ></el-input>
-          <el-input
-            :disabled="true"
-            v-if="false"
-            v-model="form.goodsId"
-          ></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="团长优惠：">
-        <section style="display:flex">
-          <el-checkbox v-model="form.isGrouperCheap">团长优惠：</el-checkbox>
-          <div
-            class="prompt"
-            style="line-height:20px;margin-top:10px"
-          >
-            <p>开启团长(开团人)优惠后，团长将享受更优惠价格，有助于提高开团率和成团率。</p>
-            <p>
-              <span style="color: red;">注：</span>
-              默认成团的团长也能享受团长优惠，为避免不必要的损失，请谨慎设置
-            </p>
-          </div>
-        </section>
-      </el-form-item>
-      <el-form-item label="优惠设置：">
-        <el-table
-          :data="form.product"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="prdDesc"
-            label="商品名称,规格"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="prdPrice"
-            label="原价（元）"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="groupPrice"
-            label="拼团价（元）"
-          >
-            <template>
-              <span>拼团价（元）</span>
-              <el-button
-                @click="setCurrent(1)"
-                size="mini"
-                icon="el-icon-edit"
-              >批量</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.groupPrice" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-if="form.isGrouperCheap === 1"
-            prop="grouperPrice"
-            label="团长优惠价（元）"
-          >
-            <template>
-              <span>团长优惠价（元）</span>
+    <wrapper>
+        <el-form ref="form" :model="form" :rules="fromRules" label-width="150px" :label-position="'right'">
+            <el-form-item :label="$t('groupBuy.groupBuyActivity')" prop="resource">
+                <el-radio-group v-model="form.activityType">
+                    <el-radio :label=1>{{$t('groupBuy.grouponType')[0].label}}</el-radio>
+                    <el-radio :label=2>{{$t('groupBuy.grouponType')[1].label}}</el-radio>
+                </el-radio-group>
+                <div class="prompt">
+                    {{$t('groupBuy.groupBuyActivityComment')}}
+                </div>
+            </el-form-item>
+            <el-form-item :label="$t('groupBuy.activityName')" prop="name">
+                <el-col :span="8">
+                    <el-input v-model="form.name"></el-input>
+                </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('groupBuy.goodsName')" prop="goodsId">
+                <el-button size="small" @click="showChoosingGoods">{{$t('groupBuy.selectGoods')}}</el-button>
+                <el-col :span="8">
+                    <el-input :disabled="true"
+                              v-model="goodsRow.goodsName"
+                              v-if="goodsRow.ischecked"></el-input>
+                    <el-input :disabled="true" v-if="false" v-model="form.goodsId"></el-input>
+                </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('groupBuy.commanderDiscounts')">
+                <el-switch v-model="form.isGrouperCheap"
+                           :active-value=1
+                           :inactive-value=0
+                ></el-switch>
+                <div class="prompt">{{$t('groupBuy.commanderDiscountsComment1')}}
+                    <p>
+                        <span style="color: red;">{{$t('marketCommon.note')}}：</span>
+                        {{$t('groupBuy.commanderDiscountsComment2')}}                    </p>
+                </div>
+            </el-form-item>
+            <el-form-item :label="$t('groupBuy.discountsOption')">
+                <el-table
+                        :data="form.product"
+                        border
+                        style="width: 100%"
+                >
+                    <el-table-column
+                            prop="prdDesc"
+                            :label="$t('groupBuy.goodsNmaeProduct')"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            prop="prdPrice"
+                            :label="$t('groupBuy.originalPrice')"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            prop="groupPrice"
+                            :label="$t('groupBuy.groupBuyPrice')"
+                    >
+                        <template slot="header" slot-scope="scope">
+                            <span>{{$t('groupBuy.groupBuyPrice')}}</span>
+                            <el-button @click="setCurrent(1)" size="mini" icon="el-icon-edit">{{$t('groupBuy.batchOption')}}</el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.groupPrice"/>
+                        </template>
+                    </el-table-column>
+                    <el-table-column v-if="form.isGrouperCheap === 1"
+                                     prop="grouperPrice"
+                                     :label="$t('groupBuy.commanderPrice')"
+                    >
+                        <template slot="header" slot-scope="scope">
+                            <span>{{$t('groupBuy.commanderPrice')}}</span>
+                            <el-button @click="setCurrent(2)" size="mini" icon="el-icon-edit">{{$t('groupBuy.bachOption')}}</el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.grouperPrice"/>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="prdNumber"
+                            :label="$t('groupBuy.originalStock')"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            prop="stock"
+                            :label="$t('groupBuy.groupBuyStock')"
+                    >
+                        <template slot="header" slot-scope="scope">
+                            <span>{{$t('groupBuy.groupBuyStock')}}</span>
+                            <el-button @click="setCurrent(3)" size="mini" icon="el-icon-edit">{{$t('groupBuy.batchOption')}}</el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.stock"/>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-form-item>
 
-              <el-button
-                @click="setCurrent(2)"
-                size="mini"
-                icon="el-icon-edit"
-              >批量</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.grouperPrice" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="prdNumber"
-            label="原库存"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="stock"
-            label="拼团库存"
-          >
-            <template>
-              <span>拼团库存</span>
-              <el-button
-                @click="setCurrent(3)"
-                size="mini"
-                icon="el-icon-edit"
-              >批量</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.stock" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form-item>
-
-      <el-form-item label="有效期：">
-        <el-date-picker
-          v-model="validityDate"
-          type="datetimerange"
-          @change="dateChange(validityDate)"
-          range-separator="~"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right"
-          value-format="yyyy-MM-dd HH:mm:ss"
-        >
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="成团人数：">
-        <el-input-number
-          v-model="form.limitAmount"
-          controls-position="right"
-          :min="2"
-          size="small"
-        ></el-input-number>
-        <div class="prompt">不可小于2人,保存后不可编辑</div>
-      </el-form-item>
-      <el-form-item label="下单商品数量：">
-        <div class="prompt">单次下单购买拼团商品数量最小</div>
-        <el-input-number
-          v-model="form.limitBuyNum"
-          controls-position="right"
-          :min="0"
-          size="small"
-        ></el-input-number>
-        <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
-      </el-form-item>
-      <el-form-item>
-        <div class="prompt"> 单次下单购买拼团商品数量最大</div>
-        <el-input-number
-          v-model="form.limitMaxNum"
-          controls-position="right"
-          :min="0"
-          size="small"
-        ></el-input-number>
-        <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
-      </el-form-item>
-      <el-form-item label="参团限制：">
-        <div class="prompt">每人最多参加</div>
-        <el-input-number
-          v-model="form.joinLimit"
-          controls-position="right"
-          :min="0"
-          size="small"
-        ></el-input-number>
-        <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制参与其他用户所开的团的数量</div>
-      </el-form-item>
-      <el-form-item label="开团限制：">
-        <div class="prompt"> 每人最多开启</div>
-        <el-input-number
-          v-model="form.openLimit"
-          controls-position="right"
-          :min="0"
-          size="small"
-        ></el-input-number>
-        <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制同一用户的开团数量</div>
-      </el-form-item>
-      <el-form-item label="默认成团：">
-        <el-checkbox v-model="form.isDefault">开启默认成团</el-checkbox>
-        <div class="prompt">开启默认成团后，24小时内人数未满的团，系统将会模拟“匿名买家”凑满人数，使该团成团。 你只需要对已付款参团的真实买家发货。建议合理开启，以提高成团率</div>
-      </el-form-item>
-      <el-form-item label="运费设置：">
-        <el-radio-group v-model="form.shippingType">
-          <el-radio :label=1>免运费</el-radio>
-          <el-radio :label=2>使用原商品运费模板</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="鼓励奖：">
-        <span>{{form.rewardCouponId}}</span>
-        <span>
-          买家拼团失败后给予一定奖励，可提升买家复购
-        </span>
-        <el-button @click="handleToCallDialog">添加优惠卷</el-button>
-        <span>
-          最多添加5张优惠券，已过期和已停用的优惠券不能添加
-        </span>
+            <el-form-item label="有效期">
+                <el-date-picker
+                        v-model="validityDate"
+                        type="datetimerange"
+                        @change="dateChange(validityDate)"
+                        :picker-options="pickerOptions"
+                        range-separator="~"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        align="right"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                >
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="成团人数">
+                <el-input-number
+                        v-model="form.limitAmount"
+                        controls-position="right"
+                        :min="2"
+                ></el-input-number>
+                <div class="prompt">不可小于2人,保存后不可编辑</div>
+            </el-form-item>
+            <el-form-item label="下单商品数量">
+                <div class="prompt"> 单次下单购买拼团商品数量最小</div>
+                <el-input-number
+                        v-model="form.limitBuyNum"
+                        controls-position="right"
+                        :min="0"
+                ></el-input-number>
+                <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
+            </el-form-item>
+            <el-form-item>
+                <div class="prompt"> 单次下单购买拼团商品数量最大</div>
+                <el-input-number
+                        v-model="form.limitMaxNum"
+                        controls-position="right"
+                        :min="0"
+                ></el-input-number>
+                <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
+            </el-form-item>
+            <el-form-item label="参团限制">
+                <div class="prompt"> 每人最多参加</div>
+                <el-input-number
+                        v-model="form.joinLimit"
+                        controls-position="right"
+                        :min="0"
+                ></el-input-number>
+                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制参与其他用户所开的团的数量</div>
+            </el-form-item>
+            <el-form-item label="开团限制">
+                <div class="prompt"> 每人最多开启</div>
+                <el-input-number
+                        v-model="form.openLimit"
+                        controls-position="right"
+                        :min="0"
+                ></el-input-number>
+                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制同一用户的开团数量</div>
+            </el-form-item>
+            <el-form-item label="默认成团">
+                <el-switch v-model="form.isDefault"
+                           :active-value=1
+                           :inactive-value=0
+                ></el-switch>
+                <div class="prompt">开启默认成团后，24小时内人数未满的团，系统将会模拟“匿名买家”凑满人数，使该团成团。 你只需要对已付款参团的真实买家发货。建议合理开启，以提高成团率</div>
+            </el-form-item>
+            <el-form-item label="运费设置">
+                <el-radio-group v-model="form.shippingType">
+                    <el-radio :label=1>免运费</el-radio>
+                    <el-radio :label=2>使用原商品运费模板</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="鼓励奖">
+                <span>{{form.rewardCouponId}}</span>
+                <span>
+                    买家拼团失败后给予一定奖励，可提升买家复购
+                </span>
+                <el-button @click="handleToCallDialog">添加优惠卷</el-button>
+                <span>
+                    最多添加5张优惠券，已过期和已停用的优惠券不能添加
+</span>
 
       </el-form-item>
       <!-- 引入活动分享模块 -->
@@ -307,13 +260,47 @@ export default {
       // 优惠卷弹窗
       couponDialogFlag: false,
       couponList: [],
+      // 时间控件
+      pickerOptions: {
+        shortcuts: [{
+          text: this.$t('groupBuy.lastWeek'),
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: this.$t('groupBuy.lastmonth'),
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: this.$t('groupBuy.lastThreeMonths'),
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       validityDate: [],
       props: ['isEdite'],
-      submitText: '提交'
+      submitText: this.$t('marketCommon.ok'),
+      grouponType: []
     }
   },
   mounted () {
 
+  },
+  watch: {
+    lang () {
+      this.grouponType = this.$t('groupBuy.grouponType')
+    }
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),

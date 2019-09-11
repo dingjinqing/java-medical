@@ -67,3 +67,11 @@ export function groupBuyOrderList (data) {
     data: data
   })
 }
+// 退款失败订单
+export function refundFailOrderList (data) {
+  return service({
+    url: '/api/admin/order/list',
+    method: 'post',
+    data: data
+  })
+}

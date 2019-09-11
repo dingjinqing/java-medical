@@ -1,4 +1,6 @@
 export const cn = {
+  note: '注',
+  yuan: '元',
   to: '至',
   ok: '确定',
   cancel: '取消',
@@ -33,6 +35,8 @@ export const cn = {
 }
 
 export const en = {
+  note: 'note',
+  yuan: 'yuan',
   to: 'to',
   ok: 'OK',
   cancel: 'cancel',
