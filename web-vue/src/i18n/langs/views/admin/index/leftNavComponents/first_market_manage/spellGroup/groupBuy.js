@@ -1,4 +1,21 @@
 export const cn = {
+  // 拼团订单列表
+  orderStatus: '订单状态',
+  orderStatusArr: [
+    {value: -1, label: '全部订单'},
+    {value: 1, label: '待付款'},
+    {value: 2, label: '订单取消'},
+    {value: 3, label: '订单关闭'},
+    {value: 4, label: '代发货/待核销'},
+    {value: 5, label: '已发货'},
+    {value: 6, label: '已收货/已自提'},
+    {value: 7, label: '订单完成'},
+    {value: 8, label: '退货中'},
+    {value: 9, label: '退货完成'},
+    {value: 10, label: '退款中'},
+    {value: 11, label: '退款完成'},
+    {value: 12, label: '送礼完成'}
+  ],
   // 添加拼团活动
   groupBuyActivity: '拼团活动',
   groupBuyActivityComment: '开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。 ',
@@ -54,10 +71,10 @@ export const cn = {
   grouponOrderNum: '成团订单数',
   grouponType: [
     {
-      type: 1,
+      value: 1,
       label: '普通拼团'
     }, {
-      type: 2,
+      value: 2,
       label: '老带新拼团'
     }
   ],

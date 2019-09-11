@@ -99,116 +99,115 @@
                 </el-table>
             </el-form-item>
 
-            <el-form-item label="有效期">
+            <el-form-item :label="$t('groupBuy.validDate')">
                 <el-date-picker
                         v-model="validityDate"
                         type="datetimerange"
                         @change="dateChange(validityDate)"
                         :picker-options="pickerOptions"
                         range-separator="~"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
+                        :start-placeholder="$t('groupBuy.startDate')"
+                        :end-placeholder="$t('groupBuy.endDate')"
                         align="right"
                         value-format="yyyy-MM-dd HH:mm:ss"
                 >
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="成团人数">
+            <el-form-item :label="$t('groupBuy.limitAmount')">
                 <el-input-number
                         v-model="form.limitAmount"
                         controls-position="right"
                         :min="2"
                 ></el-input-number>
-                <div class="prompt">不可小于2人,保存后不可编辑</div>
+                <div class="prompt">{{$t('groupBuy.limitAmountComment')}}</div>
             </el-form-item>
-            <el-form-item label="下单商品数量">
-                <div class="prompt"> 单次下单购买拼团商品数量最小</div>
+            <el-form-item :label="$t('groupBuy.orderGoodsNum')">
+                <div class="prompt">{{$t('groupBuy.orderGoodsNumComment1')}}</div>
                 <el-input-number
                         v-model="form.limitBuyNum"
                         controls-position="right"
                         :min="0"
                 ></el-input-number>
-                <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
+                <div class="prompt">{{$t('groupBuy.jian')}} {{$t('groupBuy.orderGoodsNumComment3')}}</div>
             </el-form-item>
             <el-form-item>
-                <div class="prompt"> 单次下单购买拼团商品数量最大</div>
+                <div class="prompt"> {{$t('groupBuy.orderGoodsNumComment2')}}</div>
                 <el-input-number
                         v-model="form.limitMaxNum"
                         controls-position="right"
                         :min="0"
                 ></el-input-number>
-                <div class="prompt">件 请填写正整数，不填或为0表示不限制数量</div>
+                <div class="prompt">{{$t('marketCommon.jian')}} {{$t('groupBuy.orderGoodsNumComment3')}}</div>
             </el-form-item>
-            <el-form-item label="参团限制">
-                <div class="prompt"> 每人最多参加</div>
+            <el-form-item :label="$t('groupBuy.jionLimit')">
+                <div class="prompt"> {{$t('groupBuy.joinLimitComment1')}}</div>
                 <el-input-number
                         v-model="form.joinLimit"
                         controls-position="right"
                         :min="0"
                 ></el-input-number>
-                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制参与其他用户所开的团的数量</div>
+                <div class="prompt"> {{ $t('groupBuy.joinLimitComment2')}}{{ $t('groupBuy.joinLimitComment3')}}</div>
             </el-form-item>
-            <el-form-item label="开团限制">
-                <div class="prompt"> 每人最多开启</div>
+            <el-form-item :label=" $t('groupBuy.openLimit')">
+                <div class="prompt"> {{ $t('groupBuy.openLimitComment1')}}</div>
                 <el-input-number
                         v-model="form.openLimit"
                         controls-position="right"
                         :min="0"
                 ></el-input-number>
-                <div class="prompt">次新团 默认为0，0表示不限制数量。仅限制同一用户的开团数量</div>
+                <div class="prompt">{{$t('groupBuy.joinLimitComment2')}} {{$t('groupBuy.openLimitComment2')}}</div>
             </el-form-item>
-            <el-form-item label="默认成团">
+            <el-form-item :label="$t('groupBuy.openIsDefault')">
                 <el-switch v-model="form.isDefault"
                            :active-value=1
                            :inactive-value=0
                 ></el-switch>
-                <div class="prompt">开启默认成团后，24小时内人数未满的团，系统将会模拟“匿名买家”凑满人数，使该团成团。 你只需要对已付款参团的真实买家发货。建议合理开启，以提高成团率</div>
+                <div class="prompt">{{$t('groupBuy.openIsDefaultComment')}}</div>
             </el-form-item>
-            <el-form-item label="运费设置">
+            <el-form-item :label="$t('groupBuy.shippingOption')">
                 <el-radio-group v-model="form.shippingType">
-                    <el-radio :label=1>免运费</el-radio>
-                    <el-radio :label=2>使用原商品运费模板</el-radio>
+                    <el-radio :label=1>{{$t('groupBuy.freeShipping')}}</el-radio>
+                    <el-radio :label=2>{{$t('groupBuy.shippingOptionComment')}}</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="鼓励奖">
+            <el-form-item :label="$t('groupBuy.consolationPrize')">
                 <span>{{form.rewardCouponId}}</span>
                 <span>
-                    买家拼团失败后给予一定奖励，可提升买家复购
+                    {{$t('groupBuy.consolationPrizeComment1')}}
                 </span>
-                <el-button @click="handleToCallDialog">添加优惠卷</el-button>
+                <el-button @click="handleToCallDialog">{{$t('groupBuy.addCoupon')}}</el-button>
                 <span>
-                    最多添加5张优惠券，已过期和已停用的优惠券不能添加
+                    {{$t('groupBuy.consolationPrizeComment2')}}
 </span>
 
-      </el-form-item>
-      <!-- 引入活动分享模块 -->
-      <actShare :shareConfig="form.share" />
+            </el-form-item>
+            <!-- 引入活动分享模块 -->
+            <actShare :shareConfig="form.share" />
 
-      <!-- 保存按钮 -->
-      <div class="footer">
-        <el-button
-          type="primary"
-          @click="submitForm(form)"
-        >{{submitText}}</el-button>
-      </div>
-    </el-form>
-
-    <!--添加商品弹窗-->
-    <choosingGoods @resultGoodsRow="choosingGoodsResult" />
-    <!--添加优惠卷弹窗-->
-    <addCouponDialog @checkReturnFormat="handleToCheck" />
-  </wrapper>
+            <el-form-item>
+                <el-button  class="footer" type="primary" @click="submitForm(form)">{{submitText}}</el-button>
+            </el-form-item>
+        </el-form>
+        <!--添加商品弹窗-->
+        <choosingGoods
+                @resultGoodsRow="choosingGoodsResult"
+        />
+        <!--添加优惠卷弹窗-->
+        <addCouponDialog
+                @checkReturnFormat="handleToCheck"
+        />
+    </wrapper>
 </template>
 <script>
 
-import { mapActions } from 'vuex'
+import {mapActions} from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import actShare from '@/view/admin/index/leftNavComponents/first_market_manage/bargain/actShare'
-import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
-import { addGroupBuyActivity } from '@/api/admin/marketManage/spellGroup.js'
-import { format } from '@/util/date'
+import {getAllGoodsProductList} from '@/api/admin/brandManagement.js'
+import {addGroupBuyActivity} from '@/api/admin/marketManage/spellGroup.js'
+import {format} from '@/util/date'
 
 export default {
   components: {
@@ -247,11 +246,11 @@ export default {
       // 校验表单
       fromRules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+          {required: true, message: '请输入活动名称', trigger: 'blur'},
+          {max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
         ],
         goodsId: [
-          { required: true, message: '请选择活动商品', trigger: 'blur' }
+          {required: true, message: '请选择活动商品', trigger: 'blur'}
         ]
       },
       // 选中商品id
