@@ -795,7 +795,7 @@ public class MpAuthShopService extends MainBaseService {
 		
 		MpVersionRecord row = saas.shop.mpVersion.getRow(templateId);
 		List<Byte> asList = Arrays.asList(TaskJobsConstant.STATUS_NEW,TaskJobsConstant.STATUS_EXECUTING);
-		int recId = saas.shop.backProcessService.insertByInfo(row.into(MpVersionVo.class), this.getClass().getName(), Integer.parseInt(String.valueOf(Thread.currentThread().getId())));
+		int recId = saas.shop.backProcessService.insertByInfo(row.into(MpVersionVo.class), this.getClass().getName(), 0);
 		Boolean boolean1 = saas.taskJobMainService.assertHasStatusTaskJob(TaskJobEnum.BATCH_UPLOAD.getExecutionType(), asList);
 		if(boolean1) {
 			//已经有相同任务在运行，当前任务停止
@@ -818,6 +818,7 @@ public class MpAuthShopService extends MainBaseService {
 			param1.setTemplateId(currentUseTemplateId);
 			param1.setPackageVersion(row.getPackageVersion());
 			Integer mainId = saas.taskJobMainService.dispatchImmediately(param1,BatchUploadCodeParam.class.getName(),0,TaskJobEnum.BATCH_UPLOAD.getExecutionType());
+			logger().debug("获取的任务id为"+mainId);
 			saas.shop.backProcessService.updateProcessId(recId, mainId);
 			return JsonResultCode.CODE_SUCCESS;
 		}
