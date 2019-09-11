@@ -70,6 +70,9 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.area.AreaCityVo;
+import com.vpu.mp.service.pojo.shop.area.AreaDistrictVo;
+import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
@@ -85,6 +88,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
+import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
@@ -137,6 +141,8 @@ public class MemberService extends ShopBaseService {
 	public DistributorWithdrawService distributorWithdrawService;
 	@Autowired
 	public MemberDaoService memberDao;
+	@Autowired
+	public AreaSelectService area;
 	/**
 	 * 会员列表分页查询
 	 * 
@@ -689,6 +695,8 @@ public class MemberService extends ShopBaseService {
 		}
 		logger().info("生日: " + memberBasicInfoVo.getBirthdayYear());
 
+		/** 处理省市区 */
+		changeProvinceCodeToName(memberBasicInfoVo);
 		/** 最近浏览时间 */
 		Record2<Timestamp, Timestamp> loginTime = memberDao.getRecentBrowseTime(userId);
 
@@ -729,6 +737,61 @@ public class MemberService extends ShopBaseService {
 		setRecentOrderInfo(userId, transStatistic);
 		return memberBasicInfoVo;
 	}
+
+	/**
+	 * 将用户的住址省市区code转化为name
+	 * @param memberBasicInfoVo
+	 */
+	public void changeProvinceCodeToName(MemberBasicInfoVo memberBasicInfoVo) {
+		List<AreaProvinceVo> allArea = area.getAllArea();
+		/** 省代码 */
+		Integer provinceCode = memberBasicInfoVo.getProvinceCode();
+		/** 市代码 */
+		Integer cityCode = memberBasicInfoVo.getCityCode();
+		/** 区代码 */
+		Integer districtCode = memberBasicInfoVo.getDistrictCode();
+		
+		if(provinceCode != null) {
+			for(AreaProvinceVo province: allArea) {
+				
+				if(provinceCode.equals(province.getProvinceId())){
+					/** 设置省名称 */
+					String provinceName = province.getProvinceName();
+					memberBasicInfoVo.setProvinceName(provinceName);
+					List<AreaCityVo> allCity = province.getAreaCity();
+					if(cityCode == null || allCity.size()<1) {
+						return;
+					}
+					/** 设置城市名称 */
+					for(AreaCityVo city: allCity) {
+						if(cityCode.equals(city.getCityId())) {
+							String cityName = city.getCityName();
+							memberBasicInfoVo.setCityName(cityName);
+							
+							/** 获取区|县 */
+							List<AreaDistrictVo> areaDistrict = city.getAreaDistrict();
+							if(districtCode == null || areaDistrict.size()<1) {
+								return;
+							}
+							for(AreaDistrictVo district: areaDistrict) {
+								if(districtCode.equals(district.getDistrictId())){
+									/** 设置区 | 县 */
+									String districtName = district.getDistrictName();
+									memberBasicInfoVo.setDistictName(districtName);
+									return;
+								}
+							}
+							
+						}
+					}
+					
+					
+				}
+			}
+		}
+		
+	}
+
 
 
 	/**

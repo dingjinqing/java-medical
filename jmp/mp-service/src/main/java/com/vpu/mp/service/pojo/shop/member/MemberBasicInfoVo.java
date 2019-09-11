@@ -75,10 +75,13 @@ public class MemberBasicInfoVo {
 	@JsonProperty("education")
 	private String educationStr;
 	
-	/** 省市区，编号，前端做国际化 */
+	/** 省市区，编号 */
 	private Integer provinceCode;
+	private String provinceName;
 	private Integer cityCode;
+	private String cityName;
 	private Integer districtCode;
+	private String distictName;
 	
 	
 	/** 生日 */
