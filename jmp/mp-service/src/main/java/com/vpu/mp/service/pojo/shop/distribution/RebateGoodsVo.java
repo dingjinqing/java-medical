@@ -11,10 +11,30 @@ import lombok.Data;
  */
 @Data
 public class RebateGoodsVo {
+	/**
+	 * 商品名称
+	 */
 	private String goodsName;
-	private BigDecimal goodsPrice;
+	/**
+	 * 商品价格
+	 */
+	private BigDecimal shopPrice;
+	/**
+	 * 所属分类
+	 */
 	private String catName;
+	
+	private short catId;
+	/**
+	 * 商品总销量
+	 */
 	private Integer goodsSaleNum;
+	/**
+	 * 已返利总数量
+	 */
 	private Integer saleNumber;
+	/**
+	 * 已返利总佣金
+	 */
 	private BigDecimal prdTotalFanli;
 }

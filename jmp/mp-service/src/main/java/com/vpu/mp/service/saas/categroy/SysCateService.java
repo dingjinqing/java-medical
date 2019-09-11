@@ -1,16 +1,21 @@
 package com.vpu.mp.service.saas.categroy;
 
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import static com.vpu.mp.db.main.Tables.CATEGORY;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
-import static com.vpu.mp.db.main.Tables.CATEGORY;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
+import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 
 /**
  * 平台分类
@@ -121,5 +126,16 @@ public class SysCateService extends MainBaseService {
             Short catId = goodsPageListVo.getCatId();
             goodsPageListVo.setCatName(catIdNameMap.get(catId));
         }
+    }
+    
+    /**
+     * 根据分类id获取单条信息
+     * @param catId
+     * @return
+     */
+    public SysCatevo getOneCateInfo(Short catId) {
+    	SysCatevo cateInfo = db().select().from(CATEGORY)
+    			.where(CATEGORY.CAT_ID.eq(catId)).fetchOne().into(SysCatevo.class);
+    	return cateInfo;
     }
 }

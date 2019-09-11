@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
@@ -34,10 +35,15 @@ public class RebateGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<RebateGoodsVo> getRebateGoods(RebateGoodsParam param) {
-		 SelectJoinStep<? extends Record> select = db().select(FANLI_GOODS_STATISTICS.SALE_NUMBER,FANLI_GOODS_STATISTICS.PRD_TOTAL_FANLI,GOODS.GOODS_NAME,GOODS.GOODS_SALE_NUM,GOODS.SHOP_PRICE).from(FANLI_GOODS_STATISTICS
+		 SelectJoinStep<? extends Record> select = db().select(FANLI_GOODS_STATISTICS.SALE_NUMBER,FANLI_GOODS_STATISTICS.PRD_TOTAL_FANLI,GOODS.GOODS_NAME,GOODS.GOODS_SALE_NUM,GOODS.SHOP_PRICE,GOODS.CAT_ID).from(FANLI_GOODS_STATISTICS
 				.leftJoin(GOODS).on(FANLI_GOODS_STATISTICS.GOODS_ID.eq(GOODS.GOODS_ID)));
 		optionBuild(select,param);
 		PageResult<RebateGoodsVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsVo.class);
+		//获取商品对应分类名称
+		for(RebateGoodsVo listInfo : pageList.dataList) {
+			SysCatevo catInfo = saas.sysCate.getOneCateInfo(listInfo.getCatId());
+			listInfo.setCatName(catInfo.catName);
+		}
 		return pageList;
 	}
 	

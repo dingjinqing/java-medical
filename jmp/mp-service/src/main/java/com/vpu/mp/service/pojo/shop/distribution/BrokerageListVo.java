@@ -15,12 +15,12 @@ public class BrokerageListVo {
 	private String distributorName;
 	private String distributorMobile;
 	private String realName;
-	private String distributorGroup;
-	private String ordersn;
+	private String groupName;
+	private String orderSn;
 	/**
 	 * 订单总金额
 	 */
-	private BigDecimal totalOrderMoney;
+	private BigDecimal orderAmount;
 	private String userMobile;
 	private String orderUserName;
 	/**
