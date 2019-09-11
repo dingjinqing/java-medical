@@ -309,9 +309,10 @@ export default {
       }
       console.log(1)
       console.log(this.langData_cn[index].lang)
-      loadLanguageAsync(this.langData_cn[index].lang)
-      this.$store.commit('TOCHANGE_LANGCURRENT', this.langData_cn[index].lang)
-      this.$http.$emit('lang_change', index)
+      loadLanguageAsync(this.langData_cn[index].lang).then(() => {
+        this.$store.commit('TOCHANGE_LANGCURRENT', this.langData_cn[index].lang)
+        this.$http.$emit('lang_change', index)
+      })
     },
     // 登录注册跳转
     to_log_rej_page (res) {

@@ -233,9 +233,11 @@ export default {
           localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
           break
       }
-      loadLanguageAsync(this.langData_cn[index].lang)
-      this.$http.$emit('lang_change', index)
-      this.$http.$emit('CHANGE_LANGUAGE', -1)
+      loadLanguageAsync(this.langData_cn[index].lang).then(() => {
+        this.$http.$emit('lang_change', index)
+        this.$http.$emit('CHANGE_LANGUAGE', -1)
+      })
+
       console.log(this.lang)
     }
   }
