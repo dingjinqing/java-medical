@@ -67,6 +67,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
@@ -88,6 +89,7 @@ import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import jodd.util.StringUtil;
 
 /**
@@ -120,6 +122,8 @@ public class MemberService extends ShopBaseService {
 	@Autowired
 	public AccountService account;
 	@Autowired
+	public StoreService store;
+	@Autowired
 	public ScoreService score;
 	@Autowired
 	public MemberCardService card;
@@ -140,40 +144,12 @@ public class MemberService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<MemberInfoVo> getPageList(MemberPageListParam param, String language) {
-
-		User u = USER.as("u");
-		User n = USER.as("n");
-
-		//Table<?> table = u;
-
 		
-		// 自查寻
-		Field<?> inviteUserName = this.db().select(n.USERNAME).from(n).where(n.USER_ID.eq(u.INVITE_ID))
-				.asField(INVITE_USERNAME);
-		//SelectWhereStep<? extends Record> select = 
-		SelectJoinStep<?> from = this.db().selectDistinct(u.USER_ID,
-				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME,u.DEL_FLAG)
-				.from(u);
-		
-		//TODO buildOptionsForTable
-		if(param.getCardId() != null) {
-			from.leftJoin(USER_CARD).on(u.USER_ID.eq(USER_CARD.USER_ID));
-		}
-		if(!StringUtil.isBlank(param.getTagName())) {
-			/** -标签处理 */
-			from.leftJoin(USER_TAG).on(u.USER_ID.eq(USER_TAG.USER_ID));
-		}
-		
-		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) from;
-		
-		/** -构建查询条件 */
-		select = this.buildOptions(select, u, param);
-		PageResult<MemberInfoVo> memberList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				MemberInfoVo.class);
+		/** 获取会员列表的基本信息 */
+		PageResult<MemberInfoVo> memberList = getMemberList(param);
 
-		// TODO加入DateUtil工具
-		LocalDate now = LocalDate.now();
-		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		LocalDate now = DateUtil.getLocalDate();
+
 		DayOfWeek dayOfWeek = now.getDayOfWeek();
 		List<Integer> inData = new ArrayList<>(Arrays.asList(new Integer[] { 0, 1 }));
 
@@ -186,57 +162,15 @@ public class MemberService extends ShopBaseService {
 			Integer userId = member.getUserId();
 
 			/** 只需要一张会员卡的信息即可 */
-			Record recordInfo = db()
-					.select(USER_CARD.asterisk(), MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.DISCOUNT,
-							MEMBER_CARD.BG_TYPE, MEMBER_CARD.BG_COLOR, MEMBER_CARD.BG_IMG, MEMBER_CARD.BUY_SCORE,
-							MEMBER_CARD.EXPIRE_TYPE, MEMBER_CARD.START_TIME, MEMBER_CARD.END_TIME,
-							MEMBER_CARD.RECEIVE_DAY, MEMBER_CARD.DATE_TYPE, MEMBER_CARD.STORE_LIST,
-							MEMBER_CARD.ACTIVATION)
-					.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-					.where(USER_CARD.USER_ID.eq(userId)).and(USER_CARD.FLAG.eq(CARD_USING))
-					.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
-					.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
-					.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(localDateTime)))
-							.or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
-					.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc()).limit(1).fetchOne();
+			Record recordInfo = memberDao.getOneMemberCard(inData, userId);
 
 				if(recordInfo != null) {
 					String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
 					logger().info(cardName);
 					member.setCardName(cardName);
 				}
-			
-
 			/** 处理来源信息 */
-			// TODO 搜索进入
-			String sourceName = null;
-			if (NOT_ACQUIRED.getCode().equals(member.getSource())
-					&& !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))
-					&& !(SCAN_QRCODE.getCode().equals(member.getSource()))) {
-				/** 未获取 */
-				sourceName = Util.translateMessage(language, NOT_ACQUIRED.getName(), "member");
-				logger().info(sourceName);
-			} else if (BACK_STAGE.getCode().equals(member.getSource())) {
-				/** 后台 */
-				Util.translateMessage(language, BACK_STAGE.getName(), "member");
-			} else if (INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
-				/** 渠道页-- */
-				String channelName = db().select(CHANNEL.CHANNEL_NAME).from(CHANNEL)
-						.where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
-				sourceName = Util.translateMessage(language, CHANNAL_PAGE.getName(), "member") + channelName;
-			} else if (SCAN_QRCODE.getCode().equals(member.getSource())
-					|| INVITE_SOURCE_SCANQRCODE.equals(member.getInviteSource())) {
-				/** 扫码进入 */
-				sourceName = Util.translateMessage(language, SCAN_QRCODE.getName(), "member");
-			} else {
-				/** 门店名称 */
-				try {
-					sourceName = db().select(STORE.STORE_NAME).from(STORE)
-							.where(STORE.STORE_ID.eq(new Integer(member.getSource()))).fetchOne().into(String.class);
-				} catch (NullPointerException ex) {
-					logger().info("店铺id->" + member.getSource() + " 不存在");
-				}
-			}
+			String sourceName = getSourceName(language, member);
 
 			logger().info(sourceName);
 			member.setSourceName(sourceName);
@@ -244,6 +178,92 @@ public class MemberService extends ShopBaseService {
 
 		return memberList;
 	}
+	
+
+
+	/**
+	 * 获取会员列表的基本信息 
+	 * @param param
+	 * @return
+	 */
+	private PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
+		User u = USER.as("u");
+		User n = USER.as("n");
+
+		/** 自查寻 */
+		Field<?> inviteUserName = this.db().select(n.USERNAME).from(n).where(n.USER_ID.eq(u.INVITE_ID))
+				.asField(INVITE_USERNAME);
+	
+		SelectJoinStep<?> from = this.db().selectDistinct(u.USER_ID,
+				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME,u.DEL_FLAG)
+				.from(u);
+		
+		/** 动态构建连表 */
+		buildOptionsForTable(param, u, from);
+		
+		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) from;
+		
+		/** -构建查询条件 */
+		select = this.buildOptions(select, u, param);
+		PageResult<MemberInfoVo> memberList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MemberInfoVo.class);
+		return memberList;
+	}
+
+	/**
+	 * 动态连表
+	 * @param param
+	 * @param user
+	 * @param from
+	 */
+	private void buildOptionsForTable(MemberPageListParam param, User user, SelectJoinStep<?> from) {
+		if(param.getCardId() != null) {
+			from.leftJoin(USER_CARD).on(user.USER_ID.eq(USER_CARD.USER_ID));
+		}
+		if(!StringUtil.isBlank(param.getTagName())) {
+			/** -标签处理 */
+			from.leftJoin(USER_TAG).on(user.USER_ID.eq(USER_TAG.USER_ID));
+		}
+	}
+
+	/**
+	 * 获取用户来源
+	 * @param language
+	 * @param member
+	 * @return
+	 */
+	private String getSourceName(String language, MemberInfoVo member) {
+		String sourceName = null;
+		if (NOT_ACQUIRED.getCode().equals(member.getSource())
+				&& !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))
+				&& !(SCAN_QRCODE.getCode().equals(member.getSource()))) {
+			/** 未获取 */
+			sourceName = Util.translateMessage(language, NOT_ACQUIRED.getName(), "member");
+			logger().info(sourceName);
+		} else if (BACK_STAGE.getCode().equals(member.getSource())) {
+			/** 后台 */
+			sourceName = Util.translateMessage(language, BACK_STAGE.getName(), "member");
+		} else if (INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
+			/** 渠道页-- */
+			String channelName = db().select(CHANNEL.CHANNEL_NAME).from(CHANNEL)
+					.where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
+			sourceName = Util.translateMessage(language, CHANNAL_PAGE.getName(), "member") + channelName;
+		} else if (SCAN_QRCODE.getCode().equals(member.getSource())
+				|| INVITE_SOURCE_SCANQRCODE.equals(member.getInviteSource())) {
+			/** 扫码进入 */
+			sourceName = Util.translateMessage(language, SCAN_QRCODE.getName(), "member");
+		} else {
+			/** 门店名称 */
+			if(member.getSource() != null) {
+				 Record record = store.getStoreName(new Integer(member.getSource()));
+				 if(record != null) {
+					 sourceName = record.into(String.class);
+				 }
+			}
+		}
+		return sourceName;
+	}
+	
 
 	/**
 	 * 多条件查询
@@ -631,12 +651,12 @@ public class MemberService extends ShopBaseService {
 	
 	/** 根据用户id获取用户详情 
 	 * @throws MpException */
-	public MemberDetailsVo getMemberInfoById(Integer userId) {
+	public MemberDetailsVo getMemberInfoById(Integer userId,String language) {
 		MemberDetailsVo vo = new MemberDetailsVo();
 		MemberTransactionStatisticsVo transStatistic = new MemberTransactionStatisticsVo();
 
 		/** 用户基本信息 */
-		MemberBasicInfoVo memberBasicInfoVo = dealWithUserBasicInfo(userId, transStatistic);
+		MemberBasicInfoVo memberBasicInfoVo = dealWithUserBasicInfo(userId, transStatistic,language);
 		
 		/** -查询不到用户 */
 		if(memberBasicInfoVo == null) {
@@ -658,7 +678,7 @@ public class MemberService extends ShopBaseService {
 	 * @return
 	 * @throws MpException 
 	 */
-	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic){
+	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,String language){
 		/** 会员用户基本信息 */
 		logger().info("正在处理会员基本信息");
 
@@ -698,15 +718,25 @@ public class MemberService extends ShopBaseService {
 			logger().info("受教育程度" + MemberEducationEnum.valueOf(eduCode).getName());
 		}
 		/** 来源 */
-		String source = memberBasicInfoVo.getSource();
 		
-		if (source != null && !ZERO.equals(source) && !NEG_ONE.equals(source)) {
-			source = getStoreName(source);
-			memberBasicInfoVo.setSource(source);
-		}
+		MemberInfoVo memberInfoVo = new MemberInfoVo();
+		FieldsUtil.assignNotNull(memberBasicInfoVo, memberInfoVo);
+		String sourceName = getSourceName(language,memberInfoVo);
+		memberBasicInfoVo.setSourceName(sourceName);
 
 		/** ---统计信息--- */
 		/** 最近下单的订单信息 */
+		setRecentOrderInfo(userId, transStatistic);
+		return memberBasicInfoVo;
+	}
+
+
+	/**
+	 * 最近下单的订单信息
+	 * @param userId
+	 * @param transStatistic
+	 */
+	public  void setRecentOrderInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) {
 		Timestamp createTime = order.getRecentOrderInfoByUserId(userId);
 		if (createTime != null) {
 			LocalDate now = LocalDate.now();
@@ -727,9 +757,13 @@ public class MemberService extends ShopBaseService {
 		} else {
 			transStatistic.setLastAddOrder("0");
 		}
-		return memberBasicInfoVo;
 	}
 
+	/**
+	 * 获得门店信息
+	 * @param source
+	 * @return
+	 */
 	public String getStoreName(String source) {
 		Record storeName = memberDao.getStoreName(source);
 		if(storeName != null) {

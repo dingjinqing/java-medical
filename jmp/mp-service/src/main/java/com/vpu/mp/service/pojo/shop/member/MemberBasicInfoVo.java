@@ -28,7 +28,14 @@ public class MemberBasicInfoVo {
 	/** OpenId */
 	private String wxOpenid;
 	/** 门店来源-1未录入0后台>0为门店 */
-	private String source;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Byte source;
+	/** 邀请来源 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String inviteSource;
+	/** 来源名称  如： {@link com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED } */
+	@JsonProperty("source")
+	private String sourceName;
 	
 	/** 是否是分销员 0：否，1：是 */
 	private Byte isDistributor;

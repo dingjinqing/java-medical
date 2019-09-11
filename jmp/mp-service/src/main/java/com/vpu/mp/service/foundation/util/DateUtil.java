@@ -65,6 +65,15 @@ public final class DateUtil {
 	}
 	
 	/**
+	 * 获取本地日期
+	 * @return
+	 */
+	public static LocalDate getLocalDate() {
+		return LocalDate.now();
+	}
+	
+	
+	/**
 	 * 转为LocalDateTime类型
 	 * @param format 日期时间格式
 	 * @param dateTime 时间

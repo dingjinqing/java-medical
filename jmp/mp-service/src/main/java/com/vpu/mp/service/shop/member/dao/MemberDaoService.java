@@ -1,11 +1,14 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.Record;
@@ -15,7 +18,13 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
+
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
 
 /**
  * @author 黄壮壮
@@ -61,6 +70,29 @@ public class MemberDaoService extends ShopBaseService {
 	public Record1<String> getStoreName(String source) {
 		return db().select(STORE.STORE_NAME).from(STORE).where(STORE.STORE_ID.eq(Integer.parseInt(source)))
 				.fetchAny();
+	}
+	
+	/** 
+	 * 获取一张会员卡信息
+	 * @param localDateTime
+	 * @param inData 工作日，休息，或 无限制
+	 * @param userId
+	 * @return
+	 */
+	public Record getOneMemberCard(List<Integer> inData, Integer userId) {
+		return db()
+				.select(USER_CARD.asterisk(), MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.DISCOUNT,
+						MEMBER_CARD.BG_TYPE, MEMBER_CARD.BG_COLOR, MEMBER_CARD.BG_IMG, MEMBER_CARD.BUY_SCORE,
+						MEMBER_CARD.EXPIRE_TYPE, MEMBER_CARD.START_TIME, MEMBER_CARD.END_TIME,
+						MEMBER_CARD.RECEIVE_DAY, MEMBER_CARD.DATE_TYPE, MEMBER_CARD.STORE_LIST,
+						MEMBER_CARD.ACTIVATION)
+				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+				.where(USER_CARD.USER_ID.eq(userId)).and(USER_CARD.FLAG.eq(CARD_USING))
+				.and(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
+				.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
+				.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+						.or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
+				.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc()).limit(1).fetchAny();
 	}
 	
 }

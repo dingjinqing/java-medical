@@ -9,6 +9,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -39,7 +40,6 @@ import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
  * 2019年7月4日
  */
 @Service
-
 public class StoreService extends ShopBaseService {
 	
 	/**
@@ -269,5 +269,15 @@ public class StoreService extends ShopBaseService {
 			.from(STORE)
 			.fetch()
 			.into(StoreBasicVo.class);
+	}
+	
+	/**
+	 * 获取门店名称
+	 * @param member
+	 * @return
+	 */
+	public Record1<String> getStoreName(Integer sourceId) {
+		return db().select(STORE.STORE_NAME).from(STORE)
+				.where(STORE.STORE_ID.eq(sourceId)).fetchAny();
 	}
 }
