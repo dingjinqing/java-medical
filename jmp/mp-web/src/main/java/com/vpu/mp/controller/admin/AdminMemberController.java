@@ -120,7 +120,9 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/manager/center/{userId}")
 	public JsonResult getMemberInfo(@PathVariable Integer userId) {
 		logger().info("获取会员用户id为 " + userId + " 详情信息");
-		MemberDetailsVo vo = shop().member.getMemberInfoById(userId);
+		/** 获取语言，用于国际化 */
+		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
+		MemberDetailsVo vo = shop().member.getMemberInfoById(userId,language);
 		
 		return i18nSuccess(vo);
 	}
