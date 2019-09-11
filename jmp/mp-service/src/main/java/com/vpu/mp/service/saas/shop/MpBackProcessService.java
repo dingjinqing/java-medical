@@ -108,6 +108,7 @@ public class MpBackProcessService extends MainBaseService {
 			if (state != -1) {
 				selectFrom.where(BACK_PROCESS.STATE.eq(state));
 			}
+			selectFrom.orderBy(BACK_PROCESS.CREATED.desc());
 			return  this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), MpUploadListVo.class);
 		}
 		return null;
