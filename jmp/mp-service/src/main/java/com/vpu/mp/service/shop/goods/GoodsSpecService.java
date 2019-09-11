@@ -205,7 +205,7 @@ public class GoodsSpecService extends ShopBaseService {
             goodsSpec.setGoodsId(goodsId);
 
             // 规格名id存在则不用再插入
-            if (goodsSpec.getSpecId() != null) {
+            if (goodsSpec.getSpecId() == null) {
                 SpecRecord specRecord = db.newRecord(SPEC, goodsSpec);
                 specRecord.insert();
                 goodsSpec.setSpecId(specRecord.getSpecId());

@@ -221,11 +221,14 @@ public class GoodsSpecProductService extends ShopBaseService {
 
         // 使用了默认规格
         if (goodsSpecs == null || goodsSpecs.size() == 0) {
-            GoodsSpecProduct goodsSpecProduct = goodsSpecProducts.get(0);
+
             //修改前也是使用的默认规格，修改后还是默认规格，则不需要插入默认规格
-            if (goodsSpecProduct == null) {
+            if (goodsSpecProducts.size() == 0) {
                 return;
             }
+
+            GoodsSpecProduct goodsSpecProduct = goodsSpecProducts.get(0);
+
             //修改之前为自定义规格，修改后改为了默认规格
             goodsSpecProduct.setGoodsId(goodsId);
             insert(goodsSpecProduct);

@@ -502,15 +502,26 @@ public class GoodsService extends ShopBaseService {
         // 当存在商品规格时，统计商品总数和最低商品价格
         if (goods.getGoodsSpecProducts().size() > 0) {
             BigDecimal smallestGoodsPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+            BigDecimal smallestMarketPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+            BigDecimal smallestCostPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+
             Integer goodsSumNumber = 0;
             for (GoodsSpecProduct specProduct : goods.getGoodsSpecProducts()) {
                 goodsSumNumber += specProduct.getPrdNumber();
                 if (smallestGoodsPrice.compareTo(specProduct.getPrdPrice()) > 0) {
                     smallestGoodsPrice = specProduct.getPrdPrice();
                 }
+                if (smallestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) > 0) {
+                    smallestMarketPrice = specProduct.getPrdMarketPrice();
+                }
+                if (smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
+                    smallestCostPrice = specProduct.getPrdCostPrice();
+                }
             }
             goods.setGoodsNumber(goodsSumNumber);
             goods.setShopPrice(smallestGoodsPrice);
+            goods.setMarketPrice(smallestMarketPrice);
+            goods.setCostPrice(smallestCostPrice);
         }
     }
 
@@ -699,8 +710,7 @@ public class GoodsService extends ShopBaseService {
      * @param goods
      */
     public void update(Goods goods) {
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
+        transaction(() -> {
 
             updateGoods(goods);
 
@@ -822,7 +832,7 @@ public class GoodsService extends ShopBaseService {
         // 用户在修该商品的时候删除了部分规格项则并修改了部分规格项，则需要将无效规格从数据库删除，并更新相应规格项
         goodsSpecProductService.updateAndDeleteForGoodsUpdate(oldPrds,goods.getGoodsSpecs(),goods.getGoodsId());
 
-        // 用户从默认规格改为自定义规格或者新增加了规格值或规格项
+        // 用户从默认规格改为自定义规格或者新增加了规格值或规格项(可能newPrds是空数组，没有新增规格)
         goodsSpecProductService.insertForUpdate(newPrds,goods.getGoodsSpecs(),goods.getGoodsId());
     }
     /**
