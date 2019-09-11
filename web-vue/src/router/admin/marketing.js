@@ -134,7 +134,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/activityEffectData'
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/viewBargainUser'
       )
   },
   // 多人拼团
