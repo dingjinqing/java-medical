@@ -185,6 +185,10 @@ export const cn = {
   refundList: ['订单管理', '退货退款订单'],
   // 订单管理 退款详情
   orderRefundInfo: ['订单管理', '退款详情'],
+  // 订单管理 买单订单
+  check_order: ['订单管理', '买单订单'],
+  // 订单管理 买单订单详情
+  checkOrderInfo: ['订单管理', '买单订单详情'],
   // 营销管理 消息推送
   message_push: ['营销管理', '消息推送'],
   // 营销管理 消息推送 添加消息推送
@@ -269,11 +273,23 @@ export const en = {
   // 营销管理 多人拼团 拼团订单
   pin_group_orderList: ['Marketing management', 'Groupon', 'Groupon Orders'],
   // 营销管理 多人拼团 获取新用户明细
-  pin_group_newUserDetail: ['Marketing management', 'Groupon', 'Get new user detail'],
+  pin_group_newUserDetail: [
+    'Marketing management',
+    'Groupon',
+    'Get new user detail'
+  ],
   // 营销管理 多人拼团 拼团退款失败订单
-  pin_group_refundFailureOrder: ['Marketing management', 'Groupon', 'Refund failure order'],
+  pin_group_refundFailureOrder: [
+    'Marketing management',
+    'Groupon',
+    'Refund failure order'
+  ],
   // 营销管理 多人拼团 活动效果数据
-  pin_group_activityEffectData: ['Marketing management', 'Groupon', 'activityEffectData'],
+  pin_group_activityEffectData: [
+    'Marketing management',
+    'Groupon',
+    'activityEffectData'
+  ],
   // 营销管理 砍价
   bargain: ['Marketing management', 'Bargain'],
   // 营销管理 砍价
@@ -435,6 +451,10 @@ export const en = {
   refundList: ['Order management', 'Refund order'],
   // 订单管理 退款详情
   orderRefundInfo: ['Order management', 'Refund details'],
+  // 订单管理 买单订单
+  check_order: ['Order management', 'Check order'],
+  // 订单管理 买单订单详情
+  checkOrderInfo: ['Order management', 'Check order info'],
   // 营销管理 消息体送
   message_push: ['Marketing management', 'message_push'],
   add_message_push: ['Marketing management', 'Message push', 'Add message push']

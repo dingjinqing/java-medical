@@ -113,22 +113,61 @@
             </tr>
             <tr>
               <td>退款原因</td>
-              <td colspan="3"></td>
+              <td colspan="3">
+                协商一致退款
+              </td>
             </tr>
             <tr>
               <td><span class="w2">说明</span></td>
-              <td colspan="3"></td>
+              <td colspan="3">
+                xxxxx
+              </td>
             </tr>
             <tr>
               <td>退款图片</td>
-              <td colspan="3"></td>
+              <td colspan="3">
+                <div class="image_box">
+                  <img
+                    :src="$imageHost+'/image/admin/icon_jia.png'"
+                    alt=""
+                  >
+                  <img
+                    :src="$imageHost+'/image/admin/icon_jia.png'"
+                    alt=""
+                  >
+                  <img
+                    :src="$imageHost+'/image/admin/icon_jia.png'"
+                    alt=""
+                  >
+                </div>
+              </td>
             </tr>
             <tr>
               <td>申请时间</td>
-              <td colspan="3"></td>
+              <td colspan="3">
+                XXXXXXXXXXXXXXXXXXXX
+              </td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="item_box">
+        <h2 class="h2_title">协商记录</h2>
+        <div class="recode">
+          <div class="top">
+            <ul>
+              <li>买家</li>
+              <li>2019-10-11 11:11:11</li>
+              <li>商家同意退款，退款成功</li>
+            </ul>
+          </div>
+          <div class="bottom">
+            <ul>
+              <li>商家同意退款，退款成功</li>
+              <li>注：退款将在3个工作日内到达买家账户，本次维权结束。</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -250,6 +289,15 @@ export default {
               .refund_info {
                 color: #333;
               }
+              .image_box {
+                img {
+                  width: 80px;
+                  height: 80px;
+                  & + img {
+                    margin-left: 10px;
+                  }
+                }
+              }
               .text-warning {
                 color: #ff6600;
               }
@@ -258,6 +306,27 @@ export default {
               }
             }
           }
+        }
+      }
+      .recode {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-top: none;
+        color: #333;
+        font-size: 14px;
+        .top {
+          border-bottom: 1px dashed #ccc;
+          padding-bottom: 10px;
+          > ul {
+            > li {
+              display: inline-block;
+              width: 200px;
+              text-align: left;
+            }
+          }
+        }
+        .bottom {
+          padding: 10px;
         }
       }
     }
