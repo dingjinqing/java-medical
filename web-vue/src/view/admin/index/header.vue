@@ -91,6 +91,7 @@
 import { mapActions } from 'vuex'
 import Cookies from 'js-cookie'
 import { loginRequestOut } from '@/api/index/login.js'
+import { loadLanguageAsync } from '@/i18n/i18n.js'
 export default {
   data () {
     return {
@@ -303,6 +304,7 @@ export default {
           localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
           break
       }
+      loadLanguageAsync(this.langData_cn[index].lang)
       this.$http.$emit('lang_change', index)
       this.$http.$emit('CHANGE_LANGUAGE', -1)
       console.log(this.lang)
