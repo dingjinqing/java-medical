@@ -716,9 +716,7 @@
       @handleSelectImg='handleSelectImg'
     />
     <!--添加优惠卷-->
-    <AddCouponDialog
-      @handleToCheck="handleToCheck"
-    />
+    <AddCouponDialog @handleToCheck="handleToCheck" />
     <!--选择商品弹窗-->
     <ChoosingGoods />
     <!--选择商家分类弹窗-->
@@ -746,7 +744,7 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     AddCouponDialog: () => import('@/components/admin/addCouponDialog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
-    AddingBusClassDialog: () => import('./addingBusClassDialog'),
+    AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
     BrandDialog: () => import('./brandDialog'),
     AppointBusDialog: () => import('@/view/admin/layout/addingBusClassDialog'),
     AppointBrandDialog: () => import('@/view/admin/layout/brandDialog'),
@@ -1177,6 +1175,7 @@ export default {
     },
     // 点击指定商品出现的添加类弹窗汇总
     hanldeToAddGoodS (index) {
+      console.log('指定商品')
       this.userDialogFlag = '1'
       console.log(index)
       switch (index) {
@@ -1197,7 +1196,9 @@ export default {
     },
     // 点击会员专享商品出现的添加类弹窗汇总
     hanldeToAddGoodSUser (index) {
+      console.log('会员专享')
       this.userDialogFlag = '2'
+      let arr = ['21', '25']
       console.log(index)
       switch (index) {
         case 0:
@@ -1205,7 +1206,7 @@ export default {
           break
         case 1:
           this.treeType = 1
-          this.$http.$emit('addingBusClassDialog', index)
+          this.$http.$emit('addingBusClassDialog', arr)
           break
         case 2:
           this.treeType = 2

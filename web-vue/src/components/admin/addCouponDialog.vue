@@ -95,7 +95,7 @@ export default {
       this.$http.$on('V-AddCoupon', data => {
         this.data = data
         this.initCouponList(data)
-        this.dialogVisible = data.couponDialogFlag
+        this.dialogVisible = true
       })
     },
     initCouponList (data) {

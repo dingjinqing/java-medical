@@ -10,7 +10,7 @@ import ElementUI from 'element-ui';
 // 格式化时间
 import Moment from 'moment';
 // 阿里图标
-import './assets/aliIcon/iconfont.css';
+// import './assets/aliIcon/iconfont.css';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import myMixins from '@/components/mixins.js';

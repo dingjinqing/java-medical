@@ -2,7 +2,7 @@
   <div class="addingBusClassDialog">
     <div class="addingBusClassDialogMain">
       <el-dialog
-        title="添加商家分类"
+        title="添加商家分类1"
         :visible.sync="dialogVisible"
         width="30%"
       >
@@ -34,7 +34,7 @@
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
 export default {
   components: {
-    Tree: () => import('./tree.vue')
+    Tree: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/tree.vue')
   },
   data () {
     return {
@@ -53,12 +53,12 @@ export default {
     }
   },
   mounted () {
-    this.$http.$on('AaddingBusClassDialog', res => {
+    this.$http.$on('addingBusClassDialog', res => {
       this.dialogVisible = true
       // 初始化数据
       this.defaultData(res)
     })
-    this.$http.$on('AclickBusNode', res => {
+    this.$http.$on('clickBusNode', res => {
       console.log(res)
       let newArr = []
       console.log(this.clickArrBus.length)
@@ -86,7 +86,7 @@ export default {
     // 弹窗确认
     handleSure () {
       console.log(this.trueArr)
-      this.$http.$emit('ABusClassTrueArr', this.trueArr)
+      this.$http.$emit('BusClassTrueArr', this.trueArr)
       this.dialogVisible = false
     },
     defaultData (backData) {

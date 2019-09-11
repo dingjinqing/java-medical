@@ -332,44 +332,36 @@ export default {
     // }
   },
   mounted () {
-    this.$http.$on('choosingGoodsFlag', (res) => {
-      console.log(res)
+    this.$http.$on('choosingGoodsFlag', (res, flag) => {
+      console.log(res, flag)
+      console.log(this.trList)
 
-      this.$http.$on('choosingGoodsFlag', (res) => {
-        console.log(res)
-
-        this.$http.$on('choosingGoodsFlag', (res, flag) => {
-          console.log(res, flag)
-          console.log(this.trList)
-
-          this.choiseGooddialogVisible = true
-          this.trList.forEach(item => {
-            item.ischecked = false
-          })
-          if (flag === 'choiseOne') {
-            console.log('choiseOne', this.editGoodsId)
-            this.choiseOne = true
-            this.trList.forEach(item => {
-              if (item.goodsId === this.editGoodsId) {
-                item.ischecked = true
-              }
-            })
-            return
-          }
-          if (flag) {
-            this.trList.forEach(item => {
-              flag.forEach(itemC => {
-                if (item.goodsId === itemC) {
-                  item.ischecked = true
-                }
-              })
-            })
+      this.choiseGooddialogVisible = true
+      this.trList.forEach(item => {
+        item.ischecked = false
+      })
+      if (flag === 'choiseOne') {
+        console.log('choiseOne', this.editGoodsId)
+        this.choiseOne = true
+        this.trList.forEach(item => {
+          if (item.goodsId === this.editGoodsId) {
+            item.ischecked = true
           }
         })
-        // 品牌分类初始化获取及页编辑回显
-        this.defaultGrandClass()
-      })
+        return
+      }
+      if (flag) {
+        this.trList.forEach(item => {
+          flag.forEach(itemC => {
+            if (item.goodsId === itemC) {
+              item.ischecked = true
+            }
+          })
+        })
+      }
     })
+    // 品牌分类初始化获取及页编辑回显
+    this.defaultGrandClass()
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
