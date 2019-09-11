@@ -4,6 +4,7 @@ import static com.vpu.mp.db.main.tables.BackProcess.BACK_PROCESS;
 
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -11,7 +12,6 @@ import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpUploadListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpUploadListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
@@ -43,7 +43,7 @@ public class MpBackProcessService extends MainBaseService {
 	}
 
 	public int fail(Integer recId, String failReason) {
-		return db().update(BACK_PROCESS).set(BACK_PROCESS.FAIL_REASON, failReason).set(BACK_PROCESS.STATE,STATE_RUN_FAILED)
+		return db().update(BACK_PROCESS).set(BACK_PROCESS.FAIL_REASON, failReason).set(BACK_PROCESS.STATE,STATE_RUN_FAILED).set(BACK_PROCESS.END_TIME,DSL.currentTimestamp())
 				.where(BACK_PROCESS.REC_ID.eq(recId)).execute();
 	}
 
@@ -56,7 +56,7 @@ public class MpBackProcessService extends MainBaseService {
 	}
 	
 	public int updateRow(Integer recId, Integer jobCode, String jobMessage,String jobResult) {
-		return db().update(BACK_PROCESS).set(BACK_PROCESS.JOB_CODE, jobCode)
+		return db().update(BACK_PROCESS).set(BACK_PROCESS.JOB_CODE, jobCode).set(BACK_PROCESS.END_TIME,DSL.currentTimestamp())
 				.set(BACK_PROCESS.JOB_MESSAGE, jobMessage).set(BACK_PROCESS.JOB_RESULT, jobResult).where(BACK_PROCESS.REC_ID.eq(recId)).execute();
 	}
 	
@@ -66,7 +66,7 @@ public class MpBackProcessService extends MainBaseService {
 	}
 	
 	public int updateStatus(Integer recId,byte state) {
-		return db().update(BACK_PROCESS).set(BACK_PROCESS.STATE, state).where(BACK_PROCESS.REC_ID.eq(recId)).execute();
+		return db().update(BACK_PROCESS).set(BACK_PROCESS.STATE, state).set(BACK_PROCESS.END_TIME,DSL.currentTimestamp()).where(BACK_PROCESS.REC_ID.eq(recId)).execute();
 	}
 
 	public int begin(Integer recId) {
