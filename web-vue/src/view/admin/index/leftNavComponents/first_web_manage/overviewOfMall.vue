@@ -92,10 +92,10 @@ export default {
     handleSubmit () {
       if (this.act === null) {
         getOfficialQrCode().then((res) => {
-          this.centerDialogVisible = true
           console.log(res)
           if (res.error === 0) {
             this.imgsrc = res.res
+            this.centerDialogVisible = true
           } else {
             this.$message.error(res.message)
           }
