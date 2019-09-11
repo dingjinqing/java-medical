@@ -1513,6 +1513,9 @@ public class MpAuthShopService extends MainBaseService {
 		if(row==null) {
 			return false;
 		}
+		if(row.getProcessId()==0) {
+			return false;
+		}
 		//判断任务是否可以终止
 		if(saas.taskJobMainService.assertExecuting(row.getProcessId())) {
 			//更改任务状态为 3 ，终止
