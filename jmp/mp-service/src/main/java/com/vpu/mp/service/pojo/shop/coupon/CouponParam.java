@@ -14,6 +14,9 @@ import lombok.Data;
 public class CouponParam {
 
     private Integer    id;
+    /**
+     * 优惠类型 voucher：指定金额  discount：打折
+     */
     private String     actCode;
     /**
      * 优惠券名称
@@ -46,7 +49,7 @@ public class CouponParam {
     /**
      * 使用门槛，0:无门槛；1:满金额使用
      */
-    private Byte       userConsumeRestrict;
+    private Byte       useConsumeRestrict;
     /**
      * 满多少使用
      */
