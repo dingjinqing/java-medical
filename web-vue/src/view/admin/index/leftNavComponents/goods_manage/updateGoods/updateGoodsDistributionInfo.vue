@@ -115,7 +115,7 @@ import { isStrBlank } from '@/util/goodsUtil'
 export default {
   name: 'addingGoodsDistributionInfo',
   props: ['goodsProductInfoData'],
-  inject: ['stepData'],
+  inject: ['stepData', 'isUpdateWrap'],
   components: {
     ImageDalog
   },
@@ -132,8 +132,7 @@ export default {
         shareImgAction: 1,
         shareImgObj: null,
         imgHost: `${this.$imageHost}`
-      },
-      isUpdate: true
+      }
     }
   },
   watch: {
@@ -166,7 +165,7 @@ export default {
       })
       this.goodsDistributionInfo.goodsRebatePrices = tempData
 
-      if (this.isUpdate) {
+      if (this.isUpdateWrap.isUpdate) {
         this.goodsDistributionInfo.goodsRebatePrices.forEach(item => {
           let temp = this.goodsDistributionInfo.updateGoodsRebatePrices.filter(updateItem => updateItem.productId === item.prdId)
           if (temp.length > 0) {
@@ -179,23 +178,6 @@ export default {
     }
   },
   methods: {
-    /* 初始化待修改商品数据 */
-    initData (goodsData) {
-      this.goodsDistributionInfo.canRebate = goodsData.canRebate === 1
-      // 缓存分销数据，在用户点击到第三步的时候再进行分销数据的回显处理
-      this.goodsDistributionInfo.updateGoodsRebatePrices = goodsData.goodsRebatePrices
-      // 分销推广语按钮初始化
-      this.goodsDistributionInfo.promotionLanguageSwitch = goodsData.promotionLanguageSwitch === 1
-      // 分销推广语初始化
-      this.goodsDistributionInfo.promotionLanguage = goodsData.promotionLanguage
-      // 海报分享样式初始化
-      this.goodsDistributionInfo.shareAction = goodsData.goodsSharePostConfig.shareAction
-      this.goodsDistributionInfo.shareDoc = goodsData.goodsSharePostConfig.shareDoc
-      this.goodsDistributionInfo.shareImgAction = goodsData.goodsSharePostConfig.shareImgAction
-      if (this.goodsDistributionInfo.shareAction === 2 && this.goodsDistributionInfo.shareImgAction === 2) {
-        this.goodsDistributionInfo.shareImgObj = {imgPath: goodsData.goodsSharePostConfig.shareImgPath, imgUrl: goodsData.goodsSharePostConfig.shareImgUrl}
-      }
-    },
     setLowestPrice () {
       let minPrice = this.goodsDistributionInfo.goodsRebatePrices[0].minPrice
       this.goodsDistributionInfo.goodsRebatePrices.forEach(item => { item.minPrice = minPrice })
@@ -214,6 +196,26 @@ export default {
     /* 添加图片点击回调事件 */
     imgDialogSelectedCallback (imgObj) {
       this.goodsDistributionInfo.shareImgObj = {imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl}
+    },
+    /* 初始化待修改商品数据 */
+    initDataForUpdate (goodsData) {
+      this.goodsDistributionInfo.canRebate = goodsData.canRebate === 1
+      // 缓存分销数据，在用户点击到第三步的时候再进行分销数据的回显处理
+      this.goodsDistributionInfo.updateGoodsRebatePrices = goodsData.goodsRebatePrices
+      // 分销推广语按钮初始化
+      this.goodsDistributionInfo.promotionLanguageSwitch = goodsData.promotionLanguageSwitch === 1
+      // 分销推广语初始化
+      this.goodsDistributionInfo.promotionLanguage = goodsData.promotionLanguage
+      // 海报分享样式初始化
+      this.goodsDistributionInfo.shareAction = goodsData.goodsSharePostConfig.shareAction
+      this.goodsDistributionInfo.shareDoc = goodsData.goodsSharePostConfig.shareDoc
+      this.goodsDistributionInfo.shareImgAction = goodsData.goodsSharePostConfig.shareImgAction
+      if (this.goodsDistributionInfo.shareAction === 2 && this.goodsDistributionInfo.shareImgAction === 2) {
+        this.goodsDistributionInfo.shareImgObj = {imgPath: goodsData.goodsSharePostConfig.shareImgPath, imgUrl: goodsData.goodsSharePostConfig.shareImgUrl}
+      }
+    },
+    /* 新增数据时数据初始化 */
+    initDataForInsert () {
     },
     /* 验证数据是否全部合法 */
     validateFormData () {

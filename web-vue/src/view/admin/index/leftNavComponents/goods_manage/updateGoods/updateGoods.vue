@@ -56,7 +56,7 @@
           class="btn"
           type="primary"
           size="small"
-          @click="saveGoodsReturnList"
+          @click="saveOrUpdateGoodsReturnList"
         >{{$t('goodsAddEditInfo.saveAndReturnList')}}
         </el-button>
         <el-button
@@ -77,7 +77,7 @@
           class="btn"
           size="small"
           type="primary"
-          @click="saveGoodsContinueAdd"
+          @click="saveOrUpdateGoodsContinueAdd"
           v-show="stepData.currentStep!==1"
         >{{$t('goodsAddEditInfo.saveAndAdd')}}
         </el-button>
@@ -85,7 +85,7 @@
           class="btn"
           size="small"
           type="primary"
-          @click="saveGoodsView"
+          @click="saveOrUpdateGoodsView"
           v-show="stepData.currentStep!==1"
         >{{$t('goodsAddEditInfo.saveAndReview')}}
         </el-button>
@@ -115,7 +115,7 @@ import updateGoodsDetails from './updateGoodsDetails'
 import updateGoodsDistributionInfo from './updateGoodsDistributionInfo'
 
 /* 导入js组件 */
-import {addGoodsApi, selectGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import {addGoodsApi, updateGoodsApi, selectGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 
 export default {
   name: 'updateGoods',
@@ -138,14 +138,24 @@ export default {
   },
   provide () {
     return {
-      stepData: this.stepData
+      stepData: this.stepData,
+      isUpdateWrap: this.isUpdateWrap
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      // 组件实例被复用的情况
+      if ((from.name === 'goods_add' || from.name === 'goods_update') && (to.name === 'goods_add' || to.name === 'goods_update')) {
+        vm.reloadCmp()
+      }
+    })
   },
   data () {
     return {
       reload: true,
       /* 为了能在子组件内部通过inject察觉到变化,默认情况inject不具有响应式 */
       stepData: {currentStep: 1},
+      isUpdateWrap: {isUpdate: false, updateGoodsId: null},
       goodsProductInfoData: {},
       goodsDetailsData: {},
       goodsDistributionInfoData: {},
@@ -156,16 +166,23 @@ export default {
     }
   },
   methods: {
+    /* 手动卸载组件并重新装载 */
     reloadCmp () {
       this.reload = false
       this.$nextTick(() => {
         this.reload = true
         this.stepData.currentStep = 1
+        this.isUpdateWrap.isUpdate = false
+        this.isUpdateWrap.updateGoodsId = null
         this.goodsProductInfoData = {}
         this.goodsDetailsData = {}
         this.goodsDistributionInfoData = {}
         this.qrCodeData.imgFullUrl = null
         this.qrCodeData.isShow = false
+        this.$nextTick(() => {
+          /* 触发重新装载 */
+          this._mounted()
+        })
       })
     },
     /* 顶部导航点击事件 */
@@ -217,7 +234,7 @@ export default {
 
       this.stepData.currentStep = nextStep < 1 ? 1 : nextStep > 3 ? 3 : nextStep
     },
-    validateFormData () {
+    _validateFormData () {
       if (!this.$refs.goodsProductInfoCmp.validateFormData()) {
         return false
       }
@@ -229,8 +246,8 @@ export default {
       }
       return true
     },
-    _saveGoods () {
-      let isOk = this.validateFormData()
+    _getGoodsData () {
+      let isOk = this._validateFormData()
       if (!isOk) {
         return null
       }
@@ -243,14 +260,17 @@ export default {
         ...goodsDetailsData,
         ...distributionInfoData
       }
+      retData.goodsId = this.isUpdateWrap.updateGoodsId
       return retData
     },
-    saveGoodsReturnList () {
-      let goodsData = this._saveGoods()
+    saveOrUpdateGoodsReturnList () {
+      let goodsData = this._getGoodsData()
       if (goodsData === null) {
         return
       }
-      addGoodsApi(goodsData).then(res => {
+      let executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
+
+      executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
           this.$message({
             message: res.message,
@@ -261,24 +281,27 @@ export default {
         }
       })
     },
-    saveGoodsContinueAdd () {
-      let goodsData = this._saveGoods()
+    saveOrUpdateGoodsContinueAdd () {
+      let goodsData = this._getGoodsData()
       if (goodsData === null) {
         return
       }
-      addGoodsApi(goodsData).then(res => {
+      let executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
+
+      executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
           this.$message({
             message: res.message,
             type: 'error'
           })
         } else {
+          this.$router.push({name: 'goods_add'})
           this.reloadCmp()
         }
       })
     },
-    saveGoodsView () {
-      let goodsData = this._saveGoods()
+    saveOrUpdateGoodsView () {
+      let goodsData = this._getGoodsData()
       if (goodsData === null) {
         return
       }
@@ -304,7 +327,7 @@ export default {
       this.$router.push({name: 'soldOutGoods'})
     },
     /* 初始化待修改商品数据 */
-    loadGoodsData (goodsId) {
+    _initDataForUpdate (goodsId) {
       selectGoodsApi({goodsId: goodsId}).then(res => {
         if (res.error !== 0) {
           this.$message({
@@ -312,18 +335,36 @@ export default {
             message: `服务器错误:${res.error},请联系运维`
           })
         } else {
+          console.log(res.content)
           let goodsData = res.content
-          console.log(goodsData)
-          this.$refs.goodsProductInfoCmp.initData(goodsData)
-          this.$refs.goodsDetailsCmp.initData(goodsData)
-          this.$refs.goodsDistributionInfoCmp.initData(goodsData)
+          this.isUpdateWrap.updateGoodsId = goodsId
+          this.$refs.goodsProductInfoCmp.initDataForUpdate(goodsData)
+          this.$refs.goodsDetailsCmp.initDataForUpdate(goodsData)
+          this.$refs.goodsDistributionInfoCmp.initDataForUpdate(goodsData)
         }
       })
+    },
+    /* 新增数据时数据初始化 */
+    _initDataForInsert () {
+      this.$refs.goodsProductInfoCmp.initDataForInsert()
+      this.$refs.goodsDetailsCmp.initDataForInsert()
+      this.$refs.goodsDistributionInfoCmp.initDataForInsert()
+    },
+    /* 页面装载执行函数 */
+    _mounted () {
+      let goodsId = this.$route.params.goodsId
+      if (goodsId === undefined || goodsId === null) {
+        this.isUpdateWrap.isUpdate = false
+        this._initDataForInsert()
+      } else {
+        this.isUpdateWrap.isUpdate = true
+        this._initDataForUpdate(goodsId)
+      }
     }
   },
   mounted () {
-    let goodsId = this.$route.params.goodsId
-    this.loadGoodsData(goodsId)
+    // 页面有其他页面跳转过来
+    this._mounted()
   }
 }
 </script>

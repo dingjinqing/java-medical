@@ -380,6 +380,7 @@ import { getLevelCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addA
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 
 export default {
+  inject: ['isUpdateWrap'],
   data () {
     return {
       lang: '',
@@ -434,12 +435,12 @@ export default {
     }
   },
   methods: {
-    // 注册所有监听器
-    watch () {
-      this.$watch('goodsProductInfo.goodsSpecProducts', this.watchGoodsSpecProducts)
+    /* 注册所有监听器 */
+    _watch () {
+      this.$watch('goodsProductInfo.goodsSpecProducts', this._watchGoodsSpecProducts)
     },
-    // 监听GoodsSpecProducts
-    watchGoodsSpecProducts () {
+    /* 监听GoodsSpecProducts */
+    _watchGoodsSpecProducts () {
       // 当商品规格信息变化时将会员卡信息注入每一个规格项内，用来生成会员价的列表
       this.goodsProductInfo.goodsSpecProducts.forEach(specPrd => {
         if (specPrd.memberCards === undefined) {
@@ -453,148 +454,10 @@ export default {
         }
       })
     },
-    /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
-    initPageDataLink () {
-      return this.memberCardsInit()
-    },
-    // 初始化会员价复选框
-    _initMemberCards (goodsData) {
-      let count = 0
-      let goodsGradePrds = goodsData.goodsGradePrds
-      this.memberCards.forEach(card => {
-        let has = goodsGradePrds.some(item => item.grade === card.grade)
-        card.checked = has
-        if (has) {
-          count++
-        }
-      })
-      this.unifyCardsPriceShow = count > 1
-    },
-    // 初始化商品规格名值
-    _initGoodsSpecs (goodsData, isUseDefaultPrd) {
-      if (isUseDefaultPrd) {
-        return
-      }
-      this.specInfoSwitch = true
-      goodsData.goodsSpecs.forEach(spec => {
-        let specTemp = { specId: spec.specId, specName: spec.specName, goodsSpecVals: [] }
-        spec.goodsSpecVals.forEach(specVal => {
-          specTemp.goodsSpecVals.push({specValId: specVal.specValId, specValName: specVal.specValName})
-        })
-        this.goodsProductInfo.goodsSpecs.push(specTemp)
-      })
-    },
-    // 初始化商品规格项（sku）
-    _initGoodsSpecProducts (goodsData, isUseDefaultPrd) {
-      if (isUseDefaultPrd) {
-        let specPrd = goodsData.goodsSpecProducts[0]
-        this.goodsProductInfo.updateGoodsSpecProduct = {
-          prdId: specPrd.prdId,
-          prdPrice: specPrd.prdPrice,
-          prdCostPrice: specPrd.prdCostPrice,
-          prdNumber: specPrd.prdNumber,
-          prdSn: specPrd.prdSn,
-          prdImg: specPrd.prdImg,
-          prdDesc: specPrd.prdDesc,
-          prdSpecs: specPrd.prdSpecs
-        }
-      }
-      // 一次性赋值，避免监听器重复执行
-      let specProducts = []
-      let reg = new RegExp('^[\\w\\s]+?:|;[\\w\\s]+?:', 'g')
-      goodsData.goodsSpecProducts.forEach(specPrd => {
-        let temp = {
-          tempId: this.goodsSpecProductsIndex++,
-          prdId: specPrd.prdId,
-          prdPrice: specPrd.prdPrice,
-          prdCostPrice: specPrd.prdCostPrice,
-          prdNumber: specPrd.prdNumber,
-          prdSn: specPrd.prdSn,
-          prdImg: specPrd.prdImg,
-          prdDesc: specPrd.prdDesc,
-          prdSpecs: specPrd.prdSpecs,
-          prdDescTemp: specPrd.prdDesc.replace(reg, ' ').trim(),
-          memberCards: []
-        }
-        this.memberCards.forEach(card => {
-          temp.memberCards.push({card: card, cardPrice: null})
-        })
-        specProducts.push(temp)
-      })
-      this.goodsProductInfo.goodsSpecProducts = specProducts
-    },
-    // 初始化商品规格会员卡价格
-    _initMemberCardPrice (goodsData, isUseDefaultPrd) {
-      if (isUseDefaultPrd) {
-        this.memberCards.forEach(card => {
-          let gradeData = this._searchGradeData(goodsData, this.goodsProductInfo.updateGoodsSpecProduct.prdId, card.grade)
-          if (gradeData !== null) {
-            card.cardPrice = gradeData.gradePrice
-          }
-        })
-      } else {
-        this.goodsProductInfo.goodsSpecProducts.forEach(specPrd => {
-          specPrd.memberCards.forEach(cardWrap => {
-            let gradeData = this._searchGradeData(goodsData, specPrd.prdId, cardWrap.card.grade)
-            if (gradeData !== null) {
-              cardWrap.cardPrice = gradeData.gradePrice
-            }
-          })
-        })
-      }
-    },
-    _searchGradeData (goodsData, prdId, grade) {
-      let goodsGradePrds = goodsData.goodsGradePrds
-      let retData = goodsGradePrds.filter(gradePrd => gradePrd.prdId === prdId && gradePrd.grade === grade)
-      if (retData.length > 0) {
-        return retData[0]
-      } else {
-        return null
-      }
-    },
-    // 初始化商品库存，价格，成本等数据
-    _initOtherData (goodsData, isUseDefaultPrd) {
-      this.goodsProductInfo.marketPrice = goodsData.marketPrice
-      this.goodsProductInfo.limitBuyNum = goodsData.limitBuyNum
-      this.goodsProductInfo.limitMaxNum = goodsData.limitMaxNum
-      this.goodsProductInfo.addSaleNum = goodsData.addSaleNum
-      if (isUseDefaultPrd) {
-        this.goodsProductInfo.prdNumber = goodsData.goodsNumber
-        this.goodsProductInfo.prdPrice = goodsData.shopPrice
-        this.goodsProductInfo.prdCost = goodsData.costPrice
-        this.goodsProductInfo.prdNumber = goodsData.goodsSpecProducts[0].prdSn
-      }
-    },
-    /* 初始化待修改商品数据 */
-    initData (goodsData) {
-      this.initPageDataLink().then(() => {
-        let isUseDefaultPrd = false
-
-        // 判断是否使用默认的规格项
-        let prdDesc = goodsData.goodsSpecProducts[0].prdDesc
-        if (goodsData.goodsSpecProducts.length === 1 && isStrBlank(prdDesc)) {
-          isUseDefaultPrd = true
-        }
-        this._initOtherData(goodsData, isUseDefaultPrd)
-        // 初始化商品规格名值
-        this._initGoodsSpecs(goodsData, isUseDefaultPrd)
-        // 初始化商品规格项（sku）
-        this._initGoodsSpecProducts(goodsData, isUseDefaultPrd)
-
-        // 初始化会员卡信息
-        this._initMemberCards(goodsData)
-        // 会员价设置是否显示设置
-        this.memberCardPrdShow = goodsData.goodsGradePrds.length > 0
-        // 初始化商品规格会员卡价格
-        this._initMemberCardPrice(goodsData, isUseDefaultPrd)
-        // 开启监听
-        this.watch()
-      })
-    },
     /** 商品规格交互函数结束**/
     addSpecClick () {
       this.specInfoSwitch = !this.specInfoSwitch
-      this.goodsProductInfo.goodsSpecs.push({ specId: null, specName: null, goodsSpecVals: [{ specValName: null }] })
+      this.goodsProductInfo.goodsSpecs.push({ specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] })
 
       this._recalculateSpec()
     },
@@ -962,7 +825,7 @@ export default {
     },
     /** 会员卡部分交互函数 **/
     /* 等级会员卡数据初始化 */
-    memberCardsInit () {
+    _memberCardsInit () {
       return getLevelCardList().then(rep => {
         let { content: { dataList } } = rep
         for (let item of dataList) {
@@ -1054,8 +917,152 @@ export default {
       }
       return true
     },
-    /** 此函数由父组件主动调用 **/
+    /** 以下是页面数据初始化辅助函数 **/
+    /* 初始化会员价复选框 */
+    _initMemberCards (goodsData) {
+      let count = 0
+      let goodsGradePrds = goodsData.goodsGradePrds
+      this.memberCards.forEach(card => {
+        let has = goodsGradePrds.some(item => item.grade === card.grade)
+        card.checked = has
+        if (has) {
+          count++
+        }
+      })
+      this.unifyCardsPriceShow = count > 1
+    },
+    /* 初始化商品规格名值 */
+    _initGoodsSpecs (goodsData, isUseDefaultPrd) {
+      if (isUseDefaultPrd) {
+        return
+      }
+      this.specInfoSwitch = true
+      goodsData.goodsSpecs.forEach(spec => {
+        let specTemp = { specId: spec.specId, specName: spec.specName, goodsSpecVals: [] }
+        spec.goodsSpecVals.forEach(specVal => {
+          specTemp.goodsSpecVals.push({specValId: specVal.specValId, specValName: specVal.specValName})
+        })
+        this.goodsProductInfo.goodsSpecs.push(specTemp)
+      })
+    },
+    /* 初始化商品规格项（sku） */
+    _initGoodsSpecProducts (goodsData, isUseDefaultPrd) {
+      if (isUseDefaultPrd) {
+        let specPrd = goodsData.goodsSpecProducts[0]
+        this.goodsProductInfo.updateGoodsSpecProduct = {
+          prdId: specPrd.prdId,
+          prdPrice: specPrd.prdPrice,
+          prdCostPrice: specPrd.prdCostPrice,
+          prdNumber: specPrd.prdNumber,
+          prdSn: specPrd.prdSn,
+          prdImg: specPrd.prdImg,
+          prdDesc: specPrd.prdDesc,
+          prdSpecs: specPrd.prdSpecs
+        }
+      }
+      // 一次性赋值，避免监听器重复执行
+      let specProducts = []
+      let reg = new RegExp('^[\\w\\s]+?:|;[\\w\\s]+?:', 'g')
+      goodsData.goodsSpecProducts.forEach(specPrd => {
+        let temp = {
+          tempId: this.goodsSpecProductsIndex++,
+          prdId: specPrd.prdId,
+          prdPrice: specPrd.prdPrice,
+          prdCostPrice: specPrd.prdCostPrice,
+          prdNumber: specPrd.prdNumber,
+          prdSn: specPrd.prdSn,
+          prdImg: specPrd.prdImg,
+          prdDesc: specPrd.prdDesc,
+          prdSpecs: specPrd.prdSpecs,
+          prdDescTemp: specPrd.prdDesc.replace(reg, ' ').trim(),
+          memberCards: []
+        }
+        this.memberCards.forEach(card => {
+          temp.memberCards.push({card: card, cardPrice: null})
+        })
+        specProducts.push(temp)
+      })
+      this.goodsProductInfo.goodsSpecProducts = specProducts
+    },
+    /* 初始化商品规格会员卡价格 */
+    _initMemberCardPrice (goodsData, isUseDefaultPrd) {
+      if (isUseDefaultPrd) {
+        this.memberCards.forEach(card => {
+          let gradeData = this._searchGradeData(goodsData, this.goodsProductInfo.updateGoodsSpecProduct.prdId, card.grade)
+          if (gradeData !== null) {
+            card.cardPrice = gradeData.gradePrice
+          }
+        })
+      } else {
+        this.goodsProductInfo.goodsSpecProducts.forEach(specPrd => {
+          specPrd.memberCards.forEach(cardWrap => {
+            let gradeData = this._searchGradeData(goodsData, specPrd.prdId, cardWrap.card.grade)
+            if (gradeData !== null) {
+              cardWrap.cardPrice = gradeData.gradePrice
+            }
+          })
+        })
+      }
+    },
+    /* 根据规格项id和等级查询对应的会员价对象 */
+    _searchGradeData (goodsData, prdId, grade) {
+      let goodsGradePrds = goodsData.goodsGradePrds
+      let retData = goodsGradePrds.filter(gradePrd => gradePrd.prdId === prdId && gradePrd.grade === grade)
+      if (retData.length > 0) {
+        return retData[0]
+      } else {
+        return null
+      }
+    },
+    /* 初始化商品库存，价格，成本等数据 */
+    _initOtherData (goodsData, isUseDefaultPrd) {
+      this.goodsProductInfo.marketPrice = goodsData.marketPrice
+      this.goodsProductInfo.limitBuyNum = goodsData.limitBuyNum
+      this.goodsProductInfo.limitMaxNum = goodsData.limitMaxNum
+      this.goodsProductInfo.addSaleNum = goodsData.addSaleNum
+      if (isUseDefaultPrd) {
+        this.goodsProductInfo.prdNumber = goodsData.goodsNumber
+        this.goodsProductInfo.prdPrice = goodsData.shopPrice
+        this.goodsProductInfo.prdCost = goodsData.costPrice
+        this.goodsProductInfo.prdSn = goodsData.goodsSpecProducts[0].prdSn
+      }
+    },
+    /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
+    initPageDataLink () {
+      return this._memberCardsInit()
+    },
+    /* 初始化待修改商品数据 */
+    initDataForUpdate (goodsData) {
+      this.initPageDataLink().then(() => {
+        let isUseDefaultPrd = false
 
+        // 判断是否使用默认的规格项
+        let prdDesc = goodsData.goodsSpecProducts[0].prdDesc
+        if (goodsData.goodsSpecProducts.length === 1 && isStrBlank(prdDesc)) {
+          isUseDefaultPrd = true
+        }
+        this._initOtherData(goodsData, isUseDefaultPrd)
+        // 初始化商品规格名值
+        this._initGoodsSpecs(goodsData, isUseDefaultPrd)
+        // 初始化商品规格项（sku）
+        this._initGoodsSpecProducts(goodsData, isUseDefaultPrd)
+
+        // 初始化会员卡信息
+        this._initMemberCards(goodsData)
+        // 会员价设置是否显示设置
+        this.memberCardPrdShow = goodsData.goodsGradePrds.length > 0
+        // 初始化商品规格会员卡价格
+        this._initMemberCardPrice(goodsData, isUseDefaultPrd)
+        // 开启监听
+        this._watch()
+      })
+    },
+    /* 新增商品数据初始化 */
+    initDataForInsert () {
+      this._memberCardsInit()
+      // 开启监听
+      this._watch()
+    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       // 自定义情况验证
@@ -1193,8 +1200,10 @@ export default {
 
         // 填充默认规格
         retData.goodsSpecProducts = [{
-          prdId: this.goodsProductInfo.updateGoodsSpecProduct.prdId,
+          prdId: this.goodsProductInfo.updateGoodsSpecProduct !== null ? this.goodsProductInfo.updateGoodsSpecProduct.prdId : null,
+          tempId: this.goodsSpecProductsIndex++,
           prdDesc: null,
+          prdSpecs: null,
           prdSn: this.goodsProductInfo.prdSn,
           prdNumber: this.goodsProductInfo.prdNumber,
           prdPrice: this.goodsProductInfo.prdPrice,
@@ -1212,6 +1221,7 @@ export default {
             prdId: specProduct.prdId,
             tempId: specProduct.tempId,
             prdDesc: specProduct.prdDesc,
+            prdSpecs: specProduct.prdSpecs,
             prdDescTemp: specProduct.prdDescTemp,
             prdPrice: specProduct.prdPrice,
             prdCostPrice: specProduct.prdCostPrice,

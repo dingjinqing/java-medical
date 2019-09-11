@@ -17,10 +17,17 @@ import updateDeliverAndOtherInfo from './updateDeliverAndOtherInfo'
 export default {
   components: { updateBasicInfo, updateStockAndPriceInfo, updateDeliverAndOtherInfo },
   methods: {
-    initData (goodsData) {
-      this.$refs.basicInfo.initData(goodsData)
-      this.$refs.stockAndPriceInfo.initData(goodsData)
-      this.$refs.deliverAndOtherInfo.initData(goodsData)
+    /* 修改商品数据初始化 */
+    initDataForUpdate (goodsData) {
+      this.$refs.basicInfo.initDataForUpdate(goodsData)
+      this.$refs.stockAndPriceInfo.initDataForUpdate(goodsData)
+      this.$refs.deliverAndOtherInfo.initDataForUpdate(goodsData)
+    },
+    /* 新增商品数据初始化 */
+    initDataForInsert () {
+      this.$refs.basicInfo.initDataForInsert()
+      this.$refs.stockAndPriceInfo.initDataForInsert()
+      this.$refs.deliverAndOtherInfo.initDataForInsert()
     },
     /* 验证数据是否全部合法 */
     validateFormData () {

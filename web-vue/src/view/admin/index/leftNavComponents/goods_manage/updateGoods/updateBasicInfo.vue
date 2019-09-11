@@ -355,7 +355,7 @@ import pagination from '@/components/admin/pagination/pagination'
 
 export default {
   components: { ImageDalog, pagination },
-  inject: ['stepData'],
+  inject: ['stepData', 'isUpdateWrap'],
   data () {
     return {
       goodsProductInfo: {
@@ -642,36 +642,37 @@ export default {
       this.goodsProductInfo.catId = catId
       selectParentPlatfromClassification(catId).then(res => {
         let catList = res.content
+        this._catFirstInit()
+
         if (catList[0] !== undefined) {
           this.catIdTemp.firstCatId = catList[0].cat_id
-          this.catFirstInit()
+          this._catSecondInit(catList[0].cat_id)
         }
 
         if (catList[1] !== undefined) {
           this.catIdTemp.secondCatId = catList[1].cat_id
-          this.catSecondInit(catList[0].cat_id)
+          this._catThirdInit(catList[1].cat_id)
         }
 
         if (catList[2] !== undefined) {
           this.catIdTemp.thirdCatId = catList[2].cat_id
-          this.catThirdInit(catList[1].cat_id)
         }
       })
     },
     /* 初始化平台分类一级下拉框数据 */
-    catFirstInit () {
+    _catFirstInit () {
       selectPlatformClassification(0).then(res => {
         this.catIdTemp.firstCatData = res.content
       })
     },
     /* 初始化平台分类二级下拉框数据 */
-    catSecondInit (catId) {
+    _catSecondInit (catId) {
       selectPlatformClassification(catId).then(res => {
         this.catIdTemp.secondCatData = res.content
       })
     },
     /* 初始化平台分类三级下拉框数据 */
-    catThirdInit (catId) {
+    _catThirdInit (catId) {
       selectPlatformClassification(catId).then(res => {
         this.catIdTemp.thirdCatData = res.content
       })
@@ -716,7 +717,7 @@ export default {
       return this.sortAndLabelAndBrandSelectInit()
     },
     /* 初始化待修改商品数据 */
-    initData (goodsData) {
+    initDataForUpdate (goodsData) {
       // 先初始化页面数据再渲染待修改商品数据
       this.initPageDataLink().then(() => {
         this.goodsProductInfo.goodsName = goodsData.goodsName
@@ -744,6 +745,12 @@ export default {
         this.goodsVideoSize = goodsData.goodsVideoSize
         this.goodsVideoId = goodsData.goodsVideoId
       })
+    },
+    /* 新增数据时数据初始化 */
+    initDataForInsert () {
+      this._catFirstInit()
+      // 商家分类和品牌初始化
+      this.sortAndLabelAndBrandSelectInit()
     },
     /* 验证数据是否全部合法 */
     validateFormData () {
@@ -795,20 +802,13 @@ export default {
         for (let i = 1; i < this.goodsProductInfo.goodsImgs.length; i++) {
           retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i].imgPath)
         }
-      } else {
-        // 没有数据直接设置为null,这样后台不会执行对应的空sql
-        retData.goodsImgs = null
       }
-
       return retData
     }
   },
   mounted () {
     // 国际化
     this.langDefault()
-    // 初始化平台分类一级下拉框转移至initData内
-
-    // 初始化商家分类和商品标签,转移至initData方法内
   }
 }
 </script>

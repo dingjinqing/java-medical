@@ -221,43 +221,6 @@ export default {
     }
   },
   methods: {
-    /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
-    initPageDataLink () {
-      let p1 = this.deliverTemplateDataInit()
-      let p2 = this.cardDataInit()
-      return Promise.all([p1, p2])
-    },
-    initData (goodsData) {
-      this.initPageDataLink().then(() => {
-        // 初始化运费模板
-        this._initDeliverTemplateId(goodsData)
-        // 初始化商品重量
-        this.goodsProductInfo.goodsWeight = goodsData.goodsWeight
-        // 初始化发货地
-        this.goodsProductInfo.deliverPlace = goodsData.deliverPlace
-        // 初始化专享会员卡
-        this._initExclusiveCard(goodsData)
-        // 初始化上架时间
-        this.goodsProductInfo.saleType = goodsData.saleType
-        this.goodsProductInfo.saleTime = parseDate(goodsData.saleTime)
-      })
-    },
-    /* 初始化运费模板 */
-    _initDeliverTemplateId (goodsData) {
-      this.goodsProductInfo.deliverTemplateId = goodsData.deliverTemplateId
-      this.deliverTemplateChange(goodsData.deliverTemplateId)
-    },
-    /* 初始化专享会员卡 */
-    _initExclusiveCard (goodsData) {
-      this.goodsProductInfo.isCardExclusive = goodsData.isCardExclusive === 1
-      this.cardsSelectOptions = this.cardsSelectOptions.filter(item => {
-        let has = goodsData.memberCardIds.some(cardId => cardId === item.id)
-        if (has) {
-          this.cardSelectedItems.push(item)
-        }
-        return !has
-      })
-    },
     /* loading开始加载遮罩预留函数 */
     beginLoading () {
 
@@ -469,6 +432,49 @@ export default {
       }
     },
     /** 此函数由父组件主动调用 **/
+    /* 初始化运费模板 */
+    _initDeliverTemplateId (goodsData) {
+      this.goodsProductInfo.deliverTemplateId = goodsData.deliverTemplateId === 0 ? null : goodsData.deliverTemplateId
+      this.deliverTemplateChange(goodsData.deliverTemplateId)
+    },
+    /* 初始化专享会员卡 */
+    _initExclusiveCard (goodsData) {
+      this.goodsProductInfo.isCardExclusive = goodsData.isCardExclusive === 1
+      this.cardsSelectOptions = this.cardsSelectOptions.filter(item => {
+        let has = goodsData.memberCardIds.some(cardId => cardId === item.id)
+        if (has) {
+          this.cardSelectedItems.push(item)
+        }
+        return !has
+      })
+    },
+    /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
+    initPageDataLink () {
+      let p1 = this.deliverTemplateDataInit()
+      let p2 = this.cardDataInit()
+      return Promise.all([p1, p2])
+    },
+    /* 修改商品数据初始化 */
+    initDataForUpdate (goodsData) {
+      this.initPageDataLink().then(() => {
+        // 初始化运费模板
+        this._initDeliverTemplateId(goodsData)
+        // 初始化商品重量
+        this.goodsProductInfo.goodsWeight = goodsData.goodsWeight
+        // 初始化发货地
+        this.goodsProductInfo.deliverPlace = goodsData.deliverPlace
+        // 初始化专享会员卡
+        this._initExclusiveCard(goodsData)
+        // 初始化上架时间
+        this.goodsProductInfo.saleType = goodsData.saleType
+        this.goodsProductInfo.saleTime = parseDate(goodsData.saleTime)
+      })
+    },
+    /* 新增商品数据初始化 */
+    initDataForInsert () {
+      this.cardDataInit()
+      this.deliverTemplateDataInit()
+    },
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {
@@ -518,10 +524,6 @@ export default {
   mounted () {
     // 国际化
     this.langDefault()
-    /* 运费模板初始化 */
-    this.deliverTemplateDataInit()
-    /* 会员专享卡初始化 */
-    this.cardDataInit()
   }
 }
 

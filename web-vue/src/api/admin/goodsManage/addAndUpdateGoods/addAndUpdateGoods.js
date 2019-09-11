@@ -38,6 +38,14 @@ export function addGoodsApi (data) {
     data
   })
 }
+// 商品修改
+export function updateGoodsApi (data) {
+  return service({
+    url: `/api/admin/goods/update`,
+    method: 'post',
+    data
+  })
+}
 // 商品查询详细信息，
 export function selectGoodsApi (data) {
   return service({

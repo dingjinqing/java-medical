@@ -690,11 +690,7 @@ export default {
         for (let i = 1; i < this.goodsProductInfo.goodsImgs.length; i++) {
           retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i].imgPath)
         }
-      } else {
-        // 没有数据直接设置为null,这样后台不会执行对应的空sql
-        retData.goodsImgs = null
       }
-
       return retData
     }
   },

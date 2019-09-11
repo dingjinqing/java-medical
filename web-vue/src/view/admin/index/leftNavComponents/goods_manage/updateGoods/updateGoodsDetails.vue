@@ -209,12 +209,16 @@ export default {
       return isStrBlank(val)
     },
     /* 初始化待修改商品数据 */
-    initData (goodsData) {
+    initDataForUpdate (goodsData) {
       this.goodsDetailInfo.isPageUp = goodsData.isPageUp
       this.goodsDetailInfo.goodsDesc = goodsData.goodsDesc
       if (goodsData.goodsPageName !== null) {
         this.goodsDetailInfo.goodsPageData = {pageId: goodsData.goodsPageId, pageName: goodsData.goodsPageName}
       }
+    },
+    /* 新增商品数据初始化 */
+    initDataForInsert () {
+
     },
     /* 验证数据是否全部合法 */
     validateFormData () {
