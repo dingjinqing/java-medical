@@ -32,7 +32,13 @@ export const cn = {
   actEnabledConfirmTip: '确定启用该活动吗？',
   actDisableConfirmTip: '确定停用该活动吗？',
   successfulOperation: '操作成功',
-  startingTime: '开始日期',
+  failureOperation: '操作失败',
+  unstarted: '未开始',
+  ongoing: '进行中',
+  ended: '已结束',
+  deactivated: '已停用',
+  validDate: '有效期',
+  startTime: '开始日期',
   endTime: '结束日期',
   save: '保存'
 }
@@ -71,7 +77,13 @@ export const en = {
   actEnabledConfirmTip: 'Are you sure to enabled the activity?',
   actDisableConfirmTip: 'Are you sure to disable the activity?',
   successfulOperation: 'Successful operation',
-  startingTime: 'Starting Time',
-  endTime: 'End Time',
-  save: 'Save'
+  failureOperation: 'Failure Operation',
+  unstarted: 'unstarted',
+  ongoing: 'ongoing',
+  ended: 'ended',
+  deactivated: 'deactivated',
+  validDate: 'validity period',
+  startTime: 'start time',
+  endTime: 'end time',
+  save: 'save'
 }

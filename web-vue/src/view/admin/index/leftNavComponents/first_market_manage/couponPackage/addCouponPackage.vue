@@ -8,17 +8,17 @@
             class="left_top"
             :style="`background-image: url(${$imageHost}/image/admin/cou_top_bg.png)`"
           >
-            优惠券礼包
+            {{$t('couponPackage.couponPackage')}}
           </div>
           <div class="left_content">
             <div class="content_bg">
               <img :src="$imageHost + '/image/admin/cou_package_bg.png'">
             </div>
             <div class="content_info">
-              <div class="text_title">{{param.packName?param.packName:'优惠券礼包'}}</div>
+              <div class="text_title">{{param.packName?param.packName:$t('couponPackage.couponPackage')}}</div>
               <div class="package_info">
                 <div class="package_title">
-                  ——— <span>优惠券礼包</span> ———
+                  ——— <span>{{$t('couponPackage.couponPackage')}}</span> ———
                 </div>
                 <div class="coupon_info">
                   <div
@@ -34,8 +34,8 @@
                       <div
                         class="coupon_price"
                         v-else
-                      ><span>{{item.denomination}}</span>折</div>
-                      <div class="coupon_rule">{{item.useConsumeRestrict > 0? `满${item.leastConsume}元可用`  : `不限制`}}</div>
+                      ><span>{{item.denomination}}</span>{{$t('addCouponPackage.discount')}}</div>
+                      <div class="coupon_rule">{{item.useConsumeRestrict > 0? `$t('addCouponPackage.full')${item.leastConsume}$t('addCouponPackage.yuan')$t('addCouponPackage.available')` : $t('addCouponPackage.unrestricted')}}</div>
                     </div>
                     <div class="coupon_middle">
                       <img
@@ -45,16 +45,16 @@
                     </div>
                     <div class="coupon_right">
                       <div class="coupon_name">{{item.actName}}</div>
-                      <div class="coupon_limits">{{item.recommendCatId || item.recommendGoodsId || item.recommendSortId ? '指定商品可用' : '全部商品可用'}}></div>
+                      <div class="coupon_limits">{{item.recommendCatId || item.recommendGoodsId || item.recommendSortId ? $t('addCouponPackage.forSpecifiedGoods') : $t('addCouponPackage.forAllGoods')}}></div>
                       <div class="coupon_time">2019-08-21--2019-08-31</div>
-                      <div class="coupon_icon">{{item.send_num ?item.send_num:0}}张</div>
+                      <div class="coupon_icon">{{item.send_num ?item.send_num:0}}{{$t('addCouponPackage.sheet')}}</div>
                     </div>
                   </div>
                 </div>
-                <div class="btn_get">立即领取</div>
+                <div class="btn_get">{{$t('addCouponPackage.receiveNow')}}</div>
               </div>
               <div class="package_rule">
-                <div class="rule_title">活动规则</div>
+                <div class="rule_title">{{$t('addCouponPackage.rule')}}</div>
                 <div
                   class="rule_info"
                   v-html="crlfFormat"
@@ -67,31 +67,31 @@
         <!-- 右侧内容 -->
         <div class="right_settings">
           <div class="set_box">
-            <p class="set_title">基础设置</p>
+            <p class="set_title">{{$t('addCouponPackage.basicSettings')}}</p>
             <div class="set_item">
               <div class="item_title">
-                <em>*</em> 活动名称：
+                <em>*</em> {{$t('addCouponPackage.activityName')}}:
               </div>
               <div class="item_right">
                 <el-input
                   v-model="param.actName"
-                  placeholder="最多支持10个字"
+                  :placeholder="$t('addCouponPackage.actNamePlaceholder')"
                   size="small"
                   class="default_input"
                   maxlength="10"
                 ></el-input>
-                <span class="item_tips">只作为商家记录使用，用户不会看到这个名称</span>
+                <span class="item_tips">{{$t('addCouponPackage.actNameTip')}}</span>
               </div>
             </div>
             <div class="set_item">
-              <div class="item_title"><em>*</em> 有效期：</div>
+              <div class="item_title"><em>*</em> {{$t('marketCommon.validDate')}}：</div>
               <div class="item_right">
                 <el-date-picker
                   v-model="effectiveDate"
                   type="datetimerange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  :range-separator="$t('marketCommon.to')"
+                  :start-placeholder="$t('marketCommon.startTime')"
+                  :end-placeholder="$t('marketCommon.endTime')"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   size="small"
                 >
@@ -99,26 +99,26 @@
               </div>
             </div>
             <div class="set_item">
-              <div class="item_title"><em>*</em> 礼包名称：</div>
+              <div class="item_title"><em>*</em> {{$t('couponPackage.packName')}}：</div>
               <div class="item_right">
                 <el-input
                   v-model="param.packName"
-                  placeholder="最多支持8个字"
+                  :placeholder="$t('addCouponPackage.packNamePlaceholder')"
                   size="small"
                   class="default_input"
                   maxlength="8"
                 ></el-input>
-                <span class="item_tips">展示在小程序活动页，最多可填写8个汉字</span>
+                <span class="item_tips">{{$t('addCouponPackage.packNameTip')}}</span>
               </div>
             </div>
             <div class="set_item">
-              <div class="item_title"><em>*</em> 礼包内容：</div>
+              <div class="item_title"><em>*</em> {{$t('addCouponPackage.packageContent')}}：</div>
               <div class="item_right">
                 <a
                   style="color:#409eff;font-size:12px;cursor: pointer;"
                   @click="isEditFlag?'':handleToCallDialog()"
-                >添加优惠券</a>
-                <span class="item_tips">最多可添加10种优惠券，每种优惠券最多送6张</span>
+                >{{$t('addCouponPackage.addCoupon')}}</a>
+                <span class="item_tips">{{$t('addCouponPackage.addCouponTip')}}</span>
               </div>
             </div>
             <div
@@ -131,7 +131,7 @@
                   border
                   style="width: 100%"
                 >
-                  <el-table-column label="优惠券信息">
+                  <el-table-column :label="$t('addCouponPackage.couponInfo')">
                     <template slot-scope="scope">
                       <div class="coupon_info">
                         <span class="coupon_name">{{scope.row.actName}}</span>
@@ -142,13 +142,13 @@
                         <div
                           class="coupon_price"
                           v-else
-                        ><span>{{scope.row.denomination}}</span>折</div>
-                        <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
+                        ><span>{{scope.row.denomination}}</span>{{$t('addCouponPackage.discount')}}</div>
+                        <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `$t('addCouponPackage.full')${scope.row.leastConsume}$t('addCouponPackage.yuan')$t('addCouponPackage.available')`  : $t('addCouponPackage.unrestricted')}}</div>
                       </div>
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="发券数量"
+                    :label="$t('addCouponPackage.sendNum')"
                     width="120"
                   >
                     <template slot-scope="scope">
@@ -165,26 +165,26 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="发放策略"
+                    :label="$t('addCouponPackage.sendStrategy')"
                     width="180"
                   >
                     <template slot-scope="scope">
                       <div class="coupon_set_p">
-                        <p v-if="scope.row.coupon_set.immediatelyGrantAmount > 0">领包后立即发放{{scope.row.coupon_set.immediatelyGrantAmount}}张</p>
+                        <p v-if="scope.row.coupon_set.immediatelyGrantAmount > 0">{{$t('addCouponPackage.sendStrategyImmediatelyTip')}}{{scope.row.coupon_set.immediatelyGrantAmount}}{{$t('addCouponPackage.sheet')}}</p>
                         <p v-if="scope.row.coupon_set.timingEvery > 0 && scope.row.coupon_set.timingAmount > 0">
-                          <span v-if="scope.row.coupon_set.timingUnit ==='0'">领包后每{{scope.row.coupon_set.timingEvery}}天发放{{scope.row.coupon_set.timingAmount}}张</span>
-                          <span v-if="scope.row.coupon_set.timingUnit ==='1'">领包后每{{scope.row.coupon_set.timingEvery}}周的周{{scope.row.coupon_set.timingTime}}发放{{scope.row.coupon_set.timingAmount}}张</span>
-                          <span v-if="scope.row.coupon_set.timingUnit ==='2'">领包后每{{scope.row.coupon_set.timingEvery}}个月的{{scope.row.coupon_set.timingTime}}号发放{{scope.row.coupon_set.timingAmount}}张</span>
+                          <span v-if="scope.row.coupon_set.timingUnit ==='0'">{{$t('addCouponPackage.afterPurchase')}}{{$t('addCouponPackage.every')}}{{scope.row.coupon_set.timingEvery}}{{$t('addCouponPackage.day')}}{{$t('addCouponPackage.issue')}}{{scope.row.coupon_set.timingAmount}}{{$t('addCouponPackage.sheet')}}</span>
+                          <span v-if="scope.row.coupon_set.timingUnit ==='1'">{{$t('addCouponPackage.afterPurchase')}}{{$t('addCouponPackage.every')}}{{scope.row.coupon_set.timingEvery}}{{$t('addCouponPackage.week')}}的周{{scope.row.coupon_set.timingTime}}{{$t('addCouponPackage.issue')}}{{scope.row.coupon_set.timingAmount}}{{$t('addCouponPackage.sheet')}}</span>
+                          <span v-if="scope.row.coupon_set.timingUnit ==='2'">{{$t('addCouponPackage.afterPurchase')}}{{$t('addCouponPackage.every')}}{{scope.row.coupon_set.timingEvery}}{{$t('addCouponPackage.month')}}月的{{scope.row.coupon_set.timingTime}}号{{$t('addCouponPackage.issue')}}{{scope.row.coupon_set.timingAmount}}{{$t('addCouponPackage.sheet')}}</span>
                         </p>
                         <a
                           style="color:#409eff;cursor: pointer;"
                           @click.prevent="isEditFlag?'':handleCouponSet(scope)"
-                        >{{scope.row.coupon_set.immediatelyGrantAmount > 0 || (scope.row.coupon_set.timingEvery > 0 && scope.row.coupon_set.timingTime > 0) ? '重新设置' : '设置'}}</a>
+                        >{{scope.row.coupon_set.immediatelyGrantAmount > 0 || (scope.row.coupon_set.timingEvery > 0 && scope.row.coupon_set.timingTime > 0) ? $t('addCouponPackage.reset') : $t('addCouponPackage.setting')}}</a>
                       </div>
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="操作"
+                    :label="$t('marketCommon.operate')"
                     width="60"
                   >
                     <template slot-scope="scope">
@@ -192,23 +192,23 @@
                         <a
                           style="color:#409eff;cursor: pointer;"
                           @click.prevent="isEditFlag?'':handleCouponDel(scope.$index)"
-                        >删除</a>
+                        >{{$t('marketCommon.delete')}}</a>
                       </div>
                     </template>
                   </el-table-column>
                 </el-table>
               </div>
               <div class="bottom_tips_box">
-                <span>注：</span>
+                <span>{{$t('addCouponPackage.tips')}}:</span>
                 <div class="tips_content">
-                  <p>1.优惠券包发放的优惠券不占用原优惠券库存；</p>
-                  <p>2.任意一张优惠券过期或失效，则不会展示在券礼包中，用户可以设置的价格购买券包中其他优惠券；</p>
-                  <p>3.若所有优惠券全部过期或失效，则该礼包失效，用户不可领取。</p>
+                  <p>1.{{$t('addCouponPackage.tip1')}}</p>
+                  <p>2.{{$t('addCouponPackage.tip2')}}</p>
+                  <p>3.{{$t('addCouponPackage.tip3')}}</p>
                 </div>
               </div>
             </div>
             <div class="set_item">
-              <div class="item_title"><em>*</em> 每人限领礼包数量：</div>
+              <div class="item_title"><em>*</em> {{$t('addCouponPackage.limitGetTimes')}}：</div>
               <div class="item_right">
                 <el-input
                   v-model="param.limitGetTimes"
@@ -216,11 +216,11 @@
                   size="small"
                   class="small_input"
                 ></el-input>
-                <span class="item_tips">单个用户可以领取该礼包的数量，填写0表示不限制</span>
+                <span class="item_tips">{{$t('addCouponPackage.limitGetTimesTip')}}</span>
               </div>
             </div>
             <div class="set_item">
-              <div class="item_title"><em>*</em> 礼包发放数量：</div>
+              <div class="item_title"><em>*</em> {{$t('addCouponPackage.totalAmount')}}：</div>
               <div class="item_right">
                 <el-input
                   v-model="param.totalAmount"
@@ -228,53 +228,53 @@
                   size="small"
                   class="small_input"
                 ></el-input>
-                <span class="item_tips">优惠券包发放的总数量</span>
+                <span class="item_tips">{{$t('addCouponPackage.totalAmountTip')}}</span>
               </div>
             </div>
             <div class="set_item">
-              <div class="item_title"><em>*</em> 礼包领取方式：</div>
+              <div class="item_title"><em>*</em> {{$t('addCouponPackage.packAccessMode')}}：</div>
               <div class="item_right">
                 <p>
                   <el-radio
                     v-model="param.accessMode"
                     :label='0'
-                  >现金购买</el-radio>
+                  >{{$t('couponPackage.accessModeCash')}}</el-radio>
                   <el-radio
                     v-model="param.accessMode"
                     :label='1'
-                  >积分购买</el-radio>
+                  >{{$t('couponPackage.accessModeTntegral')}}</el-radio>
                   <el-radio
                     v-model="param.accessMode"
                     :label='2'
-                  >直接领取</el-radio>
+                  >{{$t('couponPackage.accessModeFree')}}</el-radio>
                 </p>
                 <p class="package_get_choose">
                   <span v-if="param.accessMode===0">
-                    需支付：<el-input
+                    {{$t('addCouponPackage.payable')}}：<el-input
                       v-model="param.accessCost"
                       class="small_input"
                       size="small"
-                    ></el-input> 元，
+                    ></el-input> {{$t('addCouponPackage.yuan')}}，
                   </span>
                   <span v-if="param.accessMode===1">
-                    需支付：<el-input
+                    {{$t('addCouponPackage.payable')}}：<el-input
                       v-model="param.accessCost"
                       class="small_input"
                       size="small"
-                    ></el-input> 积分，
+                    ></el-input> {{$t('addCouponPackage.integral')}}，
                   </span>
                   <span v-if="param.accessMode!==2">
-                    当前已选优惠券可优惠金额总和为 0.00元
+                    {{$t('addCouponPackage.accessModeTip')}} <span>0.00</span>{{$t('addCouponPackage.yuan')}}
                   </span>
                 </p>
               </div>
             </div>
             <div class="set_item">
-              <div class="item_title"><em>*</em> 活动规则：</div>
+              <div class="item_title"><em>*</em> {{$t('addCouponPackage.rule')}}：</div>
               <div class="item_right">
                 <el-input
                   v-model="param.actRule"
-                  placeholder="请输入活动规则"
+                  :placeholder="$t('addCouponPackage.rulePlaceholder')"
                   type="textarea"
                   :rows="5"
                   resize="none"
@@ -291,7 +291,7 @@
         @click="isEditFlag?updateSubmit():addSubmit()"
         type="primary"
         size="small"
-      >保存</el-button>
+      >{{$t('marketCommon.save')}}</el-button>
     </div>
     <!--添加优惠卷-->
     <AddCouponDialog
@@ -302,18 +302,18 @@
     <!-- 设置优惠券内容 -->
     <el-dialog
       :visible.sync="couponSetDialogFlag"
-      title="设置发放策略"
+      :title="$t('addCouponPackage.setSendStrategy')"
       custom-class="couponSetDialog"
       center
     >
       <div class="coupon_info_set">
-        <p>领取后立即发放 <el-input-number
+        <p>{{$t('addCouponPackage.sendStrategyImmediatelyTip')}} <el-input-number
             v-model="coupon_set.immediatelyGrantAmount"
             placeholder=""
             size="small"
             style="width:100px;"
-          ></el-input-number> 张</p>
-        <p>领取后每 <el-input-number
+          ></el-input-number> {{$t('addCouponPackage.sheet')}}</p>
+        <p>{{$t('addCouponPackage.afterPurchase')}}{{$t('addCouponPackage.every')}} <el-input-number
             v-model="coupon_set.timingEvery"
             placeholder=""
             size="small"
@@ -334,7 +334,7 @@
         </p>
         <p style="padding-left: 28px;">
           <span v-if="coupon_set.timingUnit === '1'">
-            每周
+            {{$t('addCouponPackage.every')}}
             <el-select
               v-model="coupon_set.timingTime"
               size="small"
@@ -349,7 +349,7 @@
             </el-select>
           </span>
           <span v-else-if="coupon_set.timingUnit === '2'">
-            每月
+            {{$t('addCouponPackage.every')}}月
             <el-select
               v-model="coupon_set.timingTime"
               size="small"
@@ -365,12 +365,12 @@
             号
           </span>
           <span></span>
-          发放 <el-input-number
+          {{$t('addCouponPackage.issue')}} <el-input-number
             v-model="coupon_set.timingAmount"
             placeholder=""
             size="small"
             style="width:100px;"
-          ></el-input-number> 张</p>
+          ></el-input-number> {{$t('addCouponPackage.sheet')}}</p>
       </div>
       <div
         slot="footer"
@@ -379,12 +379,12 @@
         <el-button
           @click="couponSetDialogFlag = false"
           size="small"
-        >取 消</el-button>
+        >{{$t('marketCommon.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="confrimCouponSet()"
           size="small"
-        >确 定</el-button>
+        >{{$t('marketCommon.ok')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -426,13 +426,13 @@ export default {
       coupon_set_date: [
         {
           value: '0',
-          label: '天'
+          label: this.$t('addCouponPackage.day')
         }, {
           value: '1',
-          label: '自然周'
+          label: this.$t('addCouponPackage.week')
         }, {
           value: '2',
-          label: '自然月'
+          label: this.$t('addCouponPackage.month')
         }
       ],
       target: null,
@@ -573,6 +573,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
       // 编辑时优惠券信息不可修改
@@ -603,6 +604,12 @@ export default {
           this.coupon_info = couponList
         }
       })
+    }
+  },
+  watch: {
+    // data内变量国际化
+    lang () {
+
     }
   }
 }

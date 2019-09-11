@@ -70,6 +70,10 @@ import {
 import {
   en as couponPackage
 } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
+// 优惠券礼包-活动创建页
+import {
+  en as addCouponPackage
+} from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
 // 好友助力
 import {
   en as promoteList
@@ -445,8 +449,9 @@ const en = {
   groupBuy,
   statusTab,
   sharePolite,
-  receiveDetails,
-  couponPackage,
+  receiveDetails, // 分享有礼-领取明细
+  couponPackage, // 优惠券礼包
+  addCouponPackage, // 优惠券礼包-活动创建页
   pageDecoration,
   bottomNavigation,
   promoteList,

@@ -70,6 +70,10 @@ import {
 import {
   cn as couponPackage
 } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
+// 优惠券礼包-活动创建页
+import {
+  cn as addCouponPackage
+} from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
 // 好友助力
 import {
   cn as promoteList
@@ -447,6 +451,7 @@ const cn = {
   goodsAddEditInfo,
   groupBuy, // 多人拼团
   couponPackage, // 优惠券礼包
+  addCouponPackage, // 优惠券礼包-活动创建页
   statusTab, // 营销活动状态 tabs
   sharePolite, // 分享有礼
   receiveDetails,

@@ -18,7 +18,7 @@ const myMixin = {
     },
     adaptation () {
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        // this.$i18n.locale = 'en'
+        this.$i18n.locale = 'en'
         this.Recommend_class = 'Recommend_class'
 
         this.lang_with = 'width:63px'
@@ -74,7 +74,7 @@ const myMixin = {
         this.headerNavEn = 'headerNavEn'
         this.leftMenuEn = 'leftMenuEn'
       } else {
-        // this.$i18n.locale = 'cn'
+        this.$i18n.locale = 'cn'
         this.Recommend_class = ''
 
         this.langData_show = this.langData_cn
@@ -131,19 +131,18 @@ const myMixin = {
       }
     },
     // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用
-    // TODO: 未国际化
     getActStatusString (status, startTime, endTime) {
       let d = new Date()
       if (status === 1) {
         if (d < new Date(startTime)) {
-          return '未开始'
+          return this.$t('marketCommon.unstarted')
         } else if (d > new Date(endTime)) {
-          return '已结束'
+          return this.$t('marketCommon.ended')
         } else {
-          return '进行中'
+          return this.$t('marketCommon.ongoing')
         }
       } else {
-        return '已停用'
+        return this.$t('marketCommon.deactivated')
       }
     }
   }

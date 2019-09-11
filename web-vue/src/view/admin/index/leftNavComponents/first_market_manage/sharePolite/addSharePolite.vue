@@ -75,7 +75,7 @@
                     style="width: 300px;"
                     type="datetimerange"
                     :range-separator=" $t('marketCommon.to') "
-                    :start-placeholder="$t('marketCommon.startingTime')"
+                    :start-placeholder="$t('marketCommon.startTime')"
                     :end-placeholder="$t('marketCommon.endTime')"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     size="small"
