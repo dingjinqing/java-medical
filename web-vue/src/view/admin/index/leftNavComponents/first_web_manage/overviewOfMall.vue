@@ -26,7 +26,7 @@
       </el-row>
     </div>
     <el-dialog
-      title="关注公众号"
+      title="$t('overview.imageTitle')"
       :visible.sync="centerDialogVisible"
       width="30%"
     >
