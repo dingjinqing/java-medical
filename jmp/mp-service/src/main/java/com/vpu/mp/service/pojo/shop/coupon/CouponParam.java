@@ -46,7 +46,7 @@ public class CouponParam {
     /**
      * 使用门槛，0:无门槛；1:满金额使用
      */
-    private Byte       useConsumeRestrict;
+    private Byte       userConsumeRestrict;
     /**
      * 满多少使用
      */

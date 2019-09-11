@@ -46,6 +46,7 @@ public class CouponService extends ShopBaseService{
 	 */
 	public Boolean couponAdd(CouponParam couponInfo) {
 		MrkingVoucherRecord record = new MrkingVoucherRecord();
+		record.setSurplus(couponInfo.getTotalAmount());
 		record.setAliasCode(this.generateAliasCode());
 		this.assign(couponInfo,record);
 		return db().executeInsert(record) > 0 ? true : false;
