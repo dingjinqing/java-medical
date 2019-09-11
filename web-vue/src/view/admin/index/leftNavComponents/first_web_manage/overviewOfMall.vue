@@ -26,7 +26,7 @@
       </el-row>
     </div>
     <el-dialog
-      title="$t('overview.imageTitle')"
+      :title="$t('overview.imageTitle')"
       :visible.sync="centerDialogVisible"
       width="30%"
     >
@@ -92,10 +92,10 @@ export default {
     handleSubmit () {
       if (this.act === null) {
         getOfficialQrCode().then((res) => {
+          this.centerDialogVisible = true
           console.log(res)
           if (res.error === 0) {
             this.imgsrc = res.res
-            this.centerDialogVisible = true
           } else {
             this.$message.error(res.message)
           }
