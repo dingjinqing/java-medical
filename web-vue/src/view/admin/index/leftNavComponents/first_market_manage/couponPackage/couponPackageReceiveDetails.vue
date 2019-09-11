@@ -3,56 +3,66 @@
     <div class="main">
       <div class="filters">
         <div class="filters_item">
-          <span>用户昵称：</span>
+          <span>{{$t('marketCommon.username')}}：</span>
           <el-input
             v-model="pageParams.username"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('marketCommon.usernamePlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>手机号：</span>
+          <span>{{$t('marketCommon.mobile')}}：</span>
           <el-input
             v-model="pageParams.mobile"
-            placeholder="请输入用户手机号"
+            :placeholder="$t('marketCommon.mobilePlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>领取时间：</span>
+          <span>{{$t('couponPackage.receiveTime')}}：</span>
           <el-date-picker
             v-model="effectiveDate"
             type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('marketCommon.to')"
+            :start-placeholder="$t('marketCommon.startTime')"
+            :end-placeholder="$t('marketCommon.endTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
           >
           </el-date-picker>
         </div>
         <div class="filters_item">
-          <span>领取方式：</span>
+          <span>{{$t('couponPackage.accessMode')}}：</span>
           <el-select
             v-model="pageParams.accessMode"
             size="small"
             class="default_input"
           >
             <el-option
-              v-for="item in access_mode_list"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :label="$t('couponPackage.accessModeAll')"
+              :value="-1"
+            ></el-option>
+            <el-option
+              :label="$t('couponPackage.accessModeCash')"
+              :value="0"
+            ></el-option>
+            <el-option
+              :label="$t('couponPackage.accessModeTntegral')"
+              :value="1"
+            ></el-option>
+            <el-option
+              :label="$t('couponPackage.accessModeFree')"
+              :value="2"
             ></el-option>
           </el-select>
         </div>
         <div class="filters_item">
-          <span>订单号：</span>
+          <span>{{$t('marketCommon.orderSn')}}：</span>
           <el-input
             v-model="pageParams.orderSn"
-            placeholder="请输入订单号"
+            :placeholder="$t('marketCommon.orderSnPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
@@ -62,7 +72,7 @@
             @click="initDataList"
             type="primary"
             size="small"
-          >筛选</el-button>
+          >{{$t('marketCommon.filter')}}</el-button>
         </div>
       </div>
       <div class="table_box">
@@ -80,14 +90,30 @@
             'text-align':'center'
           }"
         >
-          <template v-for="(item,index) in tableItem">
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="index"
-            >
-            </el-table-column>
-          </template>
+          <el-table-column
+            prop="username"
+            :label="$t('marketCommon.username')"
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            :label="$t('marketCommon.mobile')"
+          ></el-table-column>
+          <el-table-column
+            prop="accessMode"
+            :label="$t('couponPackage.accessMode')"
+          ></el-table-column>
+          <el-table-column
+            prop="orderSn"
+            :label="$t('marketCommon.orderSn')"
+          ></el-table-column>
+          <el-table-column
+            prop="receiveTime"
+            :label="$t('couponPackage.receiveTime')"
+          ></el-table-column>
+          <el-table-column
+            prop="voucherAccessCount"
+            :label="$t('couponPackage.voucherAccessCount')"
+          ></el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"
@@ -111,20 +137,9 @@ export default {
       effectiveDate: '',
       tableData: [],
       loading: false,
-      tableItem: [
-        { prop: 'username', label: '用户昵称' },
-        { prop: 'mobile', label: '手机号' },
-        { prop: 'accessMode', label: '领取方式' },
-        { prop: 'orderSn', label: '订单号' },
-        { prop: 'createTime', label: '领取时间' },
-        { prop: 'voucherAccessCount', label: '已领取优惠券数量' }
-      ],
-      access_mode_list: [
-        { value: -1, label: '全部' },
-        { value: 0, label: '现金' },
-        { value: 1, label: '积分' },
-        { value: 2, label: '全部' }
-      ]
+
+      // 表格原始数据
+      originalData: []
     }
   },
   methods: {
@@ -135,7 +150,9 @@ export default {
       this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : null
       getCouponPackDetailPageList(this.pageParams).then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.dataList)
+          this.originalData = res.content.dataList
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
         }
@@ -144,22 +161,31 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        // TODO: 国际化
-        item.accessMode = this.getAccessModeString(item.accessMode)
+        switch (item.accessMode) {
+          case 0:
+            item.accessMode = this.$t('couponPackage.accessModeCash')
+            break
+          case 1:
+            item.accessMode = this.$t('couponPackage.accessModeTntegral')
+            break
+          case 2:
+            item.accessMode = this.$t('couponPackage.accessModeFree')
+            break
+        }
       })
       this.tableData = data
-    },
-    getAccessModeString (accessMode) {
-      if (accessMode === 0) {
-        return '现金购买'
-      } else if (accessMode === 1) {
-        return '积分购买'
-      } else {
-        return '直接领取'
-      }
+    }
+  },
+  watch: {
+    // data内变量国际化
+    lang () {
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
     }
   },
   mounted () {
+    this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
     }

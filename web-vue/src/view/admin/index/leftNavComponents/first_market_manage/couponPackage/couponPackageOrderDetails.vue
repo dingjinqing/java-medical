@@ -3,31 +3,31 @@
     <div class="main">
       <div class="filters">
         <div class="filters_item">
-          <span>订单号：</span>
+          <span>{{$t('marketCommon.orderSn')}}：</span>
           <el-input
             v-model="pageParams.orderSn"
-            placeholder="请输入订单号"
+            :placeholder="$t('marketCommon.orderSnPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>下单用户信息：</span>
+          <span>{{$t('marketCommon.userInfo')}}：</span>
           <el-input
             v-model="pageParams.userInfo"
-            placeholder="请输入下单用户昵称/手机号"
+            :placeholder="$t('marketCommon.userInfoPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>下单时间</span>
+          <span>{{$t('marketCommon.orderTime')}}</span>
           <el-date-picker
             v-model="effectiveDate"
             type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('marketCommon.to')"
+            :start-placeholder="$t('marketCommon.startTime')"
+            :end-placeholder="$t('marketCommon.endTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
           >
@@ -38,12 +38,12 @@
             @click="initDataList"
             type="primary"
             size="small"
-          >筛选</el-button>
+          >{{$t('marketCommon.filter')}}</el-button>
           <el-button
             @click="exportDataList"
             type="primary"
             size="small"
-          >导出数据</el-button>
+          >{{$t('marketCommon.export')}}</el-button>
         </div>
       </div>
       <div class="table_box">
@@ -61,14 +61,30 @@
             'text-align':'center'
           }"
         >
-          <template v-for="(item,index) in tableItem">
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="index"
-            >
-            </el-table-column>
-          </template>
+          <el-table-column
+            prop="orderSn"
+            :label="$t('marketCommon.orderSn')"
+          ></el-table-column>
+          <el-table-column
+            prop="realPay"
+            :label="$t('marketCommon.price')"
+          ></el-table-column>
+          <el-table-column
+            prop="username"
+            :label="$t('marketCommon.userInfo')"
+          ></el-table-column>
+          <el-table-column
+            prop="createTime"
+            :label="$t('marketCommon.orderTime')"
+          ></el-table-column>
+          <el-table-column
+            prop="orderStatusFormat"
+            :label="$t('marketCommon.orderStatus')"
+          ></el-table-column>
+          <el-table-column
+            prop="moneyPaid"
+            :label="$t('marketCommon.moneyPaid')"
+          ></el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"
@@ -98,14 +114,9 @@ export default {
       effectiveDate: '',
       tableData: [],
       loading: false,
-      tableItem: [
-        { prop: 'orderSn', label: '订单号' },
-        { prop: 'realPay', label: '单价' },
-        { prop: 'username', label: '下单用户信息' },
-        { prop: 'createTime', label: '下单时间' },
-        { prop: 'orderStatusFormat', label: '订单状态' },
-        { prop: 'moneyPaid', label: '支付金额' }
-      ]
+
+      // 表格原始数据
+      originalData: []
     }
   },
   methods: {
@@ -116,7 +127,9 @@ export default {
       this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : null
       getCouponPackOrderPageList(this.pageParams).then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.dataList)
+          this.originalData = res.content.dataList
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
         }
@@ -136,8 +149,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        // TODO: 国际化
-        item.orderStatusFormat = item.orderStatus === 1 ? '订单完成' : '待付款'
+        item.orderStatusFormat = item.orderStatus === 1 ? this.$t('couponPackage.orderStatusFinished') : this.$t('couponPackage.orderStatusWaitPay')
         item.realPay = this.getRealPrice(item.moneyPaid, item.useAccount, item.useScore, item.memberCardBalance)
       })
       this.tableData = data
@@ -177,7 +189,16 @@ export default {
       link.click()
     }
   },
+  watch: {
+    // data内变量国际化
+    lang () {
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
+    }
+  },
   mounted () {
+    this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
     }

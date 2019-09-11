@@ -19,22 +19,6 @@ export const cn = {
   couponPackageOrderlist: '优惠礼包订单',
   receiveDetails: '领取明细',
   checkOrders: '查看订单',
-  tabInfo: [{
-    title: '全部优惠券礼包活动',
-    name: '0'
-  }, {
-    title: '进行中',
-    name: '1'
-  }, {
-    title: '未开始',
-    name: '2'
-  }, {
-    title: '已过期',
-    name: '3'
-  }, {
-    title: '已停用',
-    name: '4'
-  }],
   // 优惠礼包订单
   orderSnPlaceholder: '请输入订单号',
   userInfo: '下单用户信息',
@@ -43,21 +27,10 @@ export const cn = {
   export: '导出数据',
   price: '单价',
   orderStatus: '订单状态',
-  orderStatusArr: [
-    {
-      title: '待付款',
-      name: '0'
-    }, {
-      title: '已完成',
-      name: '1'
-    }
-  ],
+  orderStatusWaitPay: '待付款',
+  orderStatusFinished: '已完成',
   moneyPaid: '支付金额',
   // 领取明细
-  username: '用户昵称',
-  usernamePlaceholder: '请输入用户昵称',
-  mobile: '手机号',
-  mobilePlaceholder: '请输入用户手机号',
   receiveTime: '领取时间',
   voucherAccessCount: '已领取优惠券数量'
 }
@@ -83,22 +56,6 @@ export const en = {
   couponPackageOrderlist: 'coupon package orders',
   receiveDetails: 'receive details',
   checkOrders: 'orders',
-  tabInfo: [{
-    title: 'all',
-    name: '0'
-  }, {
-    title: 'processing',
-    name: '1'
-  }, {
-    title: 'unstarted',
-    name: '2'
-  }, {
-    title: 'expired',
-    name: '3'
-  }, {
-    title: 'unavailable',
-    name: '4'
-  }],
   // 优惠礼包订单
   orderSnPlaceholder: 'Please enter the order coding',
   userInfo: 'Order user information',
@@ -107,21 +64,10 @@ export const en = {
   export: 'export',
   price: 'price',
   orderStatus: 'order status',
-  orderStatusArr: [
-    {
-      title: 'pending payment',
-      name: '0'
-    }, {
-      title: 'completed',
-      name: '1'
-    }
-  ],
+  orderStatusWaitPay: 'pending payment',
+  orderStatusFinished: 'completed',
   moneyPaid: 'payment amount',
   // 领取明细
-  username: 'username',
-  usernamePlaceholder: 'Please enter a user nickname',
-  mobile: 'mobile',
-  mobilePlaceholder: 'Please enter the mobile number',
   receiveTime: 'receive time',
   voucherAccessCount: 'number of coupons received'
 }
