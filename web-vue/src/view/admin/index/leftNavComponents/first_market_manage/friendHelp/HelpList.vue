@@ -15,47 +15,45 @@
             type="primary"
             class="barginBtn"
             @click="addActive"
-          >添加好友助力活动</el-button>
+          >{{$t('promoteList.addAct')}}</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
     <div class="table_list">
       <div class="select_info">
         <div class="leftarea">
-          <span>活动名称：</span>
+          <span>{{$t('promoteList.actName')}}:</span>
           <el-input
+            :placeholder="$t('promoteList.actNamePlaceholder')"
             size="small"
             v-model="actName"
           ></el-input>
         </div>
         <div class="midarea">
-          <span class="demonstration">活动日期：</span>
+          <span class="demonstration">{{$t('promoteList.actDate')}}:</span>
           <el-date-picker
             size="small"
             v-model="startTime"
             type="datetime"
-            placeholder="开始时间："
             style="weight :100px "
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
-          <span>至 </span>
+          <span>{{$t('promoteList.to')}}</span>
           <el-date-picker
             size="small"
             v-model="endTime"
             type="datetime"
-            placeholder="结束时间："
             style="width: 200px"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
         </div>
         <div class="rightarea">
-          <span>奖励类型：</span>
+          <span>{{$t('promoteList.rewardType')}}:</span>
           <el-select
             v-model="options.value"
             size="small"
-            placeholder="请选择"
           >
             <el-option
               v-for="item in options"
@@ -69,7 +67,7 @@
             type="primary"
             size="small"
             @click="onSubmit"
-          >筛选</el-button>
+          >{{$t('promoteList.filter')}}</el-button>
         </div>
       </div>
       <el-table
@@ -81,21 +79,21 @@
       >
         <el-table-column
           prop="actName"
-          label="活动名称"
+          :label="$t('promoteList.actName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="validDate"
-          label="活动有效期"
+          :label="$t('promoteList.actValidityPeriod')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="rewardType"
-          label="奖励类型"
+          :label="$t('promoteList.rewardType')"
           align="center"
           :formatter="rewardTypeName"
         >
@@ -103,21 +101,21 @@
 
         <el-table-column
           prop="marketStore"
-          label="奖励库存"
+          :label="$t('promoteList.rewardStore')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="recNum"
-          label="已领取奖励数量"
+          :label="$t('promoteList.recNumber')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="actState"
-          label="活动状态"
+          :label="$t('promoteList.activityStatus')"
           align="center"
           :formatter="actStateName"
         >
@@ -125,12 +123,15 @@
 
         <el-table-column
           prop=""
-          label="操作"
+          :label="$t('promoteList.operate')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span class="el-icon-edit-outline"></span>
+              <span
+                class="el-icon-edit-outline"
+                @click="updateActive(scope.row.id)"
+              ></span>
               <span class="el-icon-share"></span>
               <span @click="receiveDetails(scope.row.id)">领取明细</span>
               <span @click="launchDetails(scope.row.id)">发起明细</span>
@@ -177,19 +178,19 @@ export default {
       actName: '',
       tabSwitch: '1',
       tabInfo: [{
-        title: '全部助力活动',
+        title: this.$t('promoteList.allActivity'),
         name: '0'
       }, {
-        title: '进行中',
+        title: this.$t('promoteList.doingActivity'),
         name: '1'
       }, {
-        title: '未开始',
+        title: this.$t('promoteList.notBeginActivity'),
         name: '2'
       }, {
-        title: '已过期',
+        title: this.$t('promoteList.expiredActivity'),
         name: '3'
       }, {
-        title: '已停用',
+        title: this.$t('promoteList.disabledActivity'),
         name: '4'
       }],
       tabIndex: 2,
@@ -248,7 +249,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        item.validDate = `${item.startTime}至${item.endTime}`
+        item.validDate = `${item.startTime}{{$t('promoteList.to')}}${item.endTime}`
         var jsonObject = JSON.parse(item.rewardContent)
         item.marketStore = jsonObject[0].market_store
       })
@@ -282,11 +283,11 @@ export default {
     // 奖励类型转化为文字
     rewardTypeName (row, column) {
       switch (row.rewardType) {
-        case 0: row.rewardType = '赠送商品'
+        case 0: row.rewardType = this.$t('promoteList.giftGoods')
           break
-        case 1: row.rewardType = '折扣商品'
+        case 1: row.rewardType = this.$t('promoteList.discountGoods')
           break
-        case 2: row.rewardType = '赠送优惠券'
+        case 2: row.rewardType = this.$t('promoteList.giftCoupons')
           break
       }
       return row.rewardType
@@ -294,13 +295,13 @@ export default {
     // 活动状态转化为文字
     actStateName (row, column) {
       switch (row.actState) {
-        case 1: row.actState = '进行中'
+        case 1: row.actState = this.$t('promoteList.doingActivity')
           break
-        case 2: row.actState = '未开始'
+        case 2: row.actState = this.$t('promoteList.notBeginActivity')
           break
-        case 3: row.actState = '已过期'
+        case 3: row.actState = this.$t('promoteList.expiredActivity')
           break
-        case 4: row.actState = '已停用'
+        case 4: row.actState = this.$t('promoteList.disabledActivity')
           break
       }
       return row.actState
@@ -308,7 +309,13 @@ export default {
     // 添加好友助力活动
     addActive () {
       this.$router.push({
-        name: 'promote_activity'
+        path: `/admin/home/main/addHelpAct/${null}`
+      })
+    },
+    // 编辑好友助力活动
+    updateActive (id) {
+      this.$router.push({
+        path: `/admin/home/main/addHelpAct/${id}`
       })
     },
     // 领取明细

@@ -339,7 +339,7 @@ const routes = [
   },
   // 添加好友助力活动
   {
-    path: '/admin/home/main/addHelpAct',
+    path: '/admin/home/main/addHelpAct/:id',
     name: 'promote_activity',
     meta: {
       crumbTitle: 'router.promote_activity',

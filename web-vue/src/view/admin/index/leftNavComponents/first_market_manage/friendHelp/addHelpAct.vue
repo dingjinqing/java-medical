@@ -375,6 +375,14 @@
                 @click="isEditFlag?'':handleToCallDialog()"
               >+选择优惠券</el-button>
             </div>
+            <div v-if="form.failedSendType==2">
+              赠送积分值：
+              <el-input
+                size="small"
+                type="primary"
+                v-model="form.failedSendContent"
+              ></el-input>
+            </div>
             <el-table
               v-if="form.failedSendType==1"
               :data="coupon_info"
@@ -510,7 +518,7 @@
     </choosingGoods>
     <!--添加优惠卷-->
     <AddCouponDialog
-      origin="couponPackage"
+      singleElection=“true”
       @handleToCheck="handleToCheck"
     />
     <ImageDalog
@@ -524,7 +532,7 @@
 import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { addActive } from '@/api/admin/marketManage/friendHelp.js'
+import { addActive, selectOneInfo, updateInfo } from '@/api/admin/marketManage/friendHelp.js'
 import { getGoodsProductList } from '@/api/admin/brandManagement.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
@@ -536,6 +544,7 @@ export default {
   },
   data () {
     return {
+      promoteId: '',
       show: false,
       radio: 'one',
       isEditFlag: false,
@@ -600,9 +609,11 @@ export default {
         shareCreateTimes: '',
         promoteCondition: '0',
         failedSendType: '0',
+        failedSendContent: '',
         activityShareType: '0',
         customShareWord: '',
         shareImgType: '0',
+        // customImgPath: '',
         // 选中商品id
         goodsInfo: [{
           goodsIds: '',
@@ -658,12 +669,47 @@ export default {
   created () {
     this.form.rewardDurationUnitSelect = this.form.rewardDurationUnit[0].value
     this.form.launchLimitUnitSelect = this.form.launchLimitUnit[0].value
-    this.form.useDiscount = this.form.useDiscount[1].value
-    this.form.useScore = this.form.useScore[1].value
+    this.promoteId = this.$route.params.id
+    if (this.promoteId != null) {
+      console.log('id:', this.promoteId)
+      this.loadData(this.promoteId)
+    }
+  },
+  mounted () {
+    // console.log(222)
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
-
+    loadData (id) {
+      let selectParam = {
+        'id': id
+      }
+      selectOneInfo(selectParam).then(res => {
+        console.log('pageInfo:', res.content[0])
+        this.form.actName = res.content[0].actName
+        this.form.startTime = res.content[0].startTime
+        this.form.endTime = res.content[0].endTime
+        this.form.rewardType = res.content[0].rewardType
+        this.form.rewardDuration = res.content[0].rewardDuration
+        this.form.rewardDurationUnitSelect = res.content[0].rewardDurationUnit
+        this.form.promoteType = res.content[0].promoteType
+        this.form.promoteAmount = res.content[0].promoteAmount
+        this.form.promoteTimes = res.content[0].promoteTimes
+        this.form.launchLimitDuration = res.content[0].launchLimitDuration
+        this.form.launchLimitUnitSelect = res.content[0].launchLimitUnit
+        this.form.launchLimitTimes = res.content[0].launchLimitTimes
+        this.form.shareCreateTimes = this.content[0].shareCreateTimes
+        this.form.promoteCondition = this.content[0].promoteCondition
+        this.form.useDiscount = res.content[0].useDiscount
+        this.form.useScore = res.content[0].useScore
+        this.form.failedSendType = res.content[0].failedSendType
+        this.form.failedSendContent = res.content[0].failedSendContent
+        this.form.activityShareType = res.content[0].activityShareType
+        this.form.customShareWord = res.content[0].customShareWord
+        this.form.shareImgType = this.content[0].shareImgType
+        // this.form.customImgPath = this.content[0].customImgPath
+      })
+    },
     addAct () {
       console.log('this.form.rewardType:', this.form.rewardType)
       if (this.form.rewardType === '0' || this.form.rewardType === '1') {
@@ -681,6 +727,7 @@ export default {
         console.log('rewardContent:', this.form.rewardContent)
       }
       let addParam = {
+        'id': this.promoteId,
         'actName': this.form.actName,
         'startTime': this.form.startTime,
         'endTime': this.form.endTime,
@@ -696,7 +743,10 @@ export default {
         'launchLimitTimes': this.form.launchLimitTimes,
         'shareCreateTimes': this.form.shareCreateTimes,
         'promoteCondition': this.form.promoteCondition,
+        'useDiscount': this.form.useDiscount,
+        'useScore': this.form.useScore,
         'failedSendType': this.form.failedSendType,
+        'failedSendContent': this.form.failedSendContent,
         'activityShareType': this.form.activityShareType,
         'customShareWord': this.form.customShareWord,
         'shareImgType': this.form.shareImgType
@@ -704,18 +754,33 @@ export default {
       this.$refs['form'].validate((valid) => {
         console.log('submit', this.form)
         if (valid) {
-          addActive(addParam).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              alert('添加成功!')
-
-              this.$router.push({
-                name: 'promote'
-              })
-            }
-          }).catch(() => {
-            this.$message.error('操作失败')
-          })
+          if (this.promoteId != null) {
+            console.log('I am updating!')
+            updateInfo(addParam).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                alert('修改成功!')
+                this.$router.push({
+                  name: 'promote'
+                })
+              }
+            }).catch(() => {
+              this.$message.error('操作失败')
+            })
+          } else {
+            console.log('I am adding!')
+            addActive(addParam).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                alert('添加成功!')
+                this.$router.push({
+                  name: 'promote'
+                })
+              }
+            }).catch(() => {
+              this.$message.error('操作失败')
+            })
+          }
         } else {
           this.$message.error('数据不合法')
           return false

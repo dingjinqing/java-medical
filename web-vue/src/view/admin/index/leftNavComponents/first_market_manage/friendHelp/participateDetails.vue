@@ -183,7 +183,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.params)
     this.promoteId = this.$route.params.id
     this.launchId = this.$route.params.launchId
     this.loadData()

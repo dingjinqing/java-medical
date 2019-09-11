@@ -98,9 +98,9 @@ export const cn = {
   promote_activity: ['营销管理', '好友助力', '添加好友助力活动'],
   // 营销管理 好友助力领取明细
   promote_receive_details: ['营销管理', '好友助力', '好友助力活动领取明细'],
-  // 营销管理 好友助力领取明细
+  // 营销管理 好友助力发起明细
   promote_launch_details: ['营销管理', '好友助力', '好友助力活动发起明细'],
-  // 营销管理 好友助力领取明细
+  // 营销管理 好友助力参与明细
   promote_participate_details: ['营销管理', '好友助力', '好友助力活动参与明细'],
   // 营销管理 分享有礼
   share_polite: ['营销管理', '分享有礼'],

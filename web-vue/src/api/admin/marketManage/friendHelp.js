@@ -56,3 +56,19 @@ export function participateDetails (data) {
     data: data
   })
 }
+// 查询单个助力活动信息
+export function selectOneInfo (data) {
+  return service({
+    url: '/api/admin/market/promote/select',
+    method: 'post',
+    data: data
+  })
+}
+// 编辑好友助力活动信息
+export function updateInfo (data) {
+  return service({
+    url: '/api/admin/market/promote/update',
+    method: 'post',
+    data: data
+  })
+}
