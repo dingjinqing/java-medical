@@ -116,7 +116,7 @@
         width="70%"
         center
       >
-        <div class="options">
+        <div>
           <span>分销员手机号:</span>
           <el-input
             class="optionInput"
@@ -136,15 +136,16 @@
             size="small"
           ></el-input>
         </div>
-        <div class="options">
+        <div>
           <span>分销员ID:</span>
           <el-input
             class="optionInput"
             prop="title"
             size="small"
           ></el-input>
-          <span class="labelClass">分销员等级</span>
+          <span>分销员等级:</span>
           <el-select
+            class="optionInput"
             size="small"
             v-model="valueLevel"
             placeholder="请选择等级"
@@ -157,8 +158,9 @@
             >
             </el-option>
           </el-select>
-          <span class="labelClass">分销员分组</span>
+          <span>分销员分组:</span>
           <el-select
+            class="optionInput"
             size="small"
             v-model="valueGroup"
             placeholder="请选择分组"
@@ -172,24 +174,28 @@
             </el-option>
           </el-select>
         </div>
-        <div class="options">
-          <el-button
-            type="primary"
-            size="small"
-          >筛选</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            plain
-          >重置</el-button>
-        </div>
-        <div class="languageContent">
+        <section style="padding: 10px 0;">
+          <div>
+            <el-button
+              type="primary"
+              size="small"
+            >筛选</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              plain
+            >重置</el-button>
+          </div>
+        </section>
+
+        <div>
           <table width='100%'>
+            <!-- 表头部分 -->
             <thead>
               <tr>
                 <td>
                   <el-checkbox
-                    v-model="checkedAll"
+                    v-model="allChecked"
                     @change="handleAllcheck()"
                   >全选本页</el-checkbox>
                 </td>
@@ -203,6 +209,7 @@
                 <td>当前等级</td>
               </tr>
             </thead>
+            <!-- 表格数据部分 -->
             <tbody>
               <tr
                 v-for="(item,index) in distributorList"
@@ -211,8 +218,8 @@
                 <td>
                   <div class="tdCenter">
                     <el-checkbox
+                      @change="handleClick()"
                       v-model="item.ischecked"
-                      @change="handleClick(item,index)"
                     ></el-checkbox>
                   </div>
                 </td>
@@ -291,7 +298,7 @@ export default {
       dialogVisible: false,
       centerDialogVisible: false,
       id: '',
-      checkedAll: false,
+      allChecked: false,
       allCheckFlag: false,
       goodsIdsArr: []
     }
@@ -303,15 +310,17 @@ export default {
     this.groupList()
   },
   watch: {
-    checkedAll (newData, oldData) {
+    allChecked (newData) {
       if (newData === true) {
         this.distributorList.map((item, index) => {
           item.ischecked = true
         })
       } else {
-        this.distributorList.map((item, index) => {
-          item.ischecked = false
-        })
+        if (this.allCheckFlag === false) {
+          this.distributorList.map((item, index) => {
+            item.ischecked = false
+          })
+        }
       }
     }
   },
@@ -337,12 +346,6 @@ export default {
           this.pageParams = res.content.page
         }
       })
-    },
-    // 全部checkbox选中
-    handleAllcheck () {
-      // console.log('全部选中')
-      this.allCheckFlag = false
-      // console.log(this.allCheckFlag)
     },
     handleData (data) {
       data.map((item, index) => {
@@ -428,51 +431,29 @@ export default {
       distributorList(this.pageParams).then(res => {
         if (res.error === 0) {
           this.distributorList = res.content.dataList
-          let flag = res.content.dataList.filter((item, index) => {
-            return item.ischecked === false
-          })
-          if (flag.length === 0) {
-            this.checkedAll = true
-          }
         }
 
         console.log(res)
       })
     },
-    // 对应行选中高亮
-    handleClick (item, index) {
-      // console.log(1111)
-      this.clickIindex = index
-      console.log(this.clickIindex)
-      // console.log(this.trList[index].ischecked)
-      // this.trLidistributorListst[index].ischecked = !this.distributorList[index].ischecked
+    // 表格对应行选中高亮
+    handleClick () {
+      console.log(1111)
       let flag = this.distributorList.filter((item, index) => {
         return item.ischecked === false
       })
-      console.log(flag)
       if (flag.length === 0) {
-        this.checkedAll = true
+        this.allChecked = true
       } else {
-        this.checkedAll = false
+        this.allCheckFlag = true
+        this.allChecked = false
       }
-      // let arr = []
-      this.goodsIdsArr.push(item.goodsId)
-
-      // console.log('选中', index, item)
-
-      // console.log(123)
-      // // this.trList[index].ischecked = true
-      // let flag = this.distributorList.filter((item, index) => {
-      //   return item.ischecked === false
-      // })
-      // if (flag.length === 0) {
-      //   this.checkedAll = true
-      // } else {
-      //   this.allCheckFlag = true
-      //   this.checkedAll = false
-      // }
-      // this.$forceUpdate()
-      // console.log(flag, 1)
+      this.$forceUpdate()
+      console.log(flag, 1)
+    },
+    // 全选本页 - 全部checkbox选中
+    handleAllcheck () {
+      this.allCheckFlag = false
     },
     cancel () {
       this.centerDialogVisible = false
@@ -493,7 +474,7 @@ export default {
   .main_content {
     position: flex;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 20px 10px 0px;
   }
 }
 
@@ -510,6 +491,7 @@ span {
 }
 .radio {
   line-height: 40px;
+  margin-right: 10px;
 }
 /deep/ .tableClss th {
   background-color: #f5f5f5;
