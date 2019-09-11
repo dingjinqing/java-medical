@@ -14,7 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberPageListParam extends BaseMemberPojo {
-
+	/** 会员id */
+	private Integer userId;
 	/** -手机号 */
 	private String mobile;
 	/** - 微信昵称 */

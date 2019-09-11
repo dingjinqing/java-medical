@@ -437,7 +437,7 @@ public class ScoreService extends ShopBaseService {
 		BigDecimal totalScore = db().select(sum(USER_SCORE.SCORE))
 								.from(USER_SCORE)
 								.where(USER_SCORE.USER_ID.eq(userId).and(USER_SCORE.SCORE.greaterThan(0)))
-								.fetchOne()
+								.fetchAny()
 								.into(BigDecimal.class);
 		return totalScore;
 	}

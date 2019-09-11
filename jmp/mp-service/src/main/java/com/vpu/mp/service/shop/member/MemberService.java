@@ -200,14 +200,12 @@ public class MemberService extends ShopBaseService {
 							.or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
 					.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc()).limit(1).fetchOne();
 
-			try {
-				String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
-				logger().info(cardName);
-				member.setCardName(cardName);
-			} catch (NullPointerException ex) {
-				logger().info("没有查询到相应的会员卡");
-				logger().error(ex.getMessage(),ex);
-			}
+				if(recordInfo != null) {
+					String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
+					logger().info(cardName);
+					member.setCardName(cardName);
+				}
+			
 
 			/** 处理来源信息 */
 			// TODO 搜索进入
@@ -260,6 +258,11 @@ public class MemberService extends ShopBaseService {
 		if (param == null) {
 
 			return select;
+		}
+		
+		/** -会员id */
+		if(param.getUserId() != null) {
+			select.where(u.USER_ID.eq(param.getUserId()));
 		}
 		/** - 手机号 */
 		if (!StringUtils.isEmpty(param.getMobile())) {
