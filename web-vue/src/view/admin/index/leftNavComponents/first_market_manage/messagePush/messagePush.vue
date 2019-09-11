@@ -47,7 +47,10 @@
               ></el-input>
             </el-form-item>
             <el-form-item :label="labels.label3">
-              <dateTimePicker @time="handleGetTime" />
+              <dateTimePicker
+                @time="handleGetTime"
+                :showPicker=1
+              />
             </el-form-item>
             <el-form-item>
               <el-button

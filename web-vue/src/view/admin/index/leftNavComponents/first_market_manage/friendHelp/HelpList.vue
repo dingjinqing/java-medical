@@ -249,7 +249,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        item.validDate = `${item.startTime}{{$t('promoteList.to')}}${item.endTime}`
+        // item.validDate = ${item.startTime} + this.$t('promoteList.to') + '${item.endTime}'
         var jsonObject = JSON.parse(item.rewardContent)
         item.marketStore = jsonObject[0].market_store
       })

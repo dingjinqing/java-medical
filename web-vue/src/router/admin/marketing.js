@@ -123,7 +123,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/bargain/viewBargainUser'
       )
   },
-  // 砍价 - 查看发起砍价用户
+  // 砍价 - 效果数据
   {
     path: '/admin/home/main/bargain/effectData',
     name: 'bargain_effect_data',
@@ -134,7 +134,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/viewBargainUser'
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/activityEffectData'
       )
   },
   // 多人拼团
