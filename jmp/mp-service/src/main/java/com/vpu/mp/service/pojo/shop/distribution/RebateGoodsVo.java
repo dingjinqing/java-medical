@@ -12,6 +12,10 @@ import lombok.Data;
 @Data
 public class RebateGoodsVo {
 	/**
+	 * 商品id
+	 */
+	private Integer goodsId;
+	/**
 	 * 商品名称
 	 */
 	private String goodsName;
@@ -37,4 +41,8 @@ public class RebateGoodsVo {
 	 * 已返利总佣金
 	 */
 	private BigDecimal prdTotalFanli;
+	/**
+	 * 商品规格价
+	 */
+	private BigDecimal prdPrice;
 }

@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.distribution;
 
 import static com.vpu.mp.db.shop.Tables.FANLI_GOODS_STATISTICS;
 import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.USER;
@@ -35,8 +36,9 @@ public class RebateGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<RebateGoodsVo> getRebateGoods(RebateGoodsParam param) {
-		 SelectJoinStep<? extends Record> select = db().select(FANLI_GOODS_STATISTICS.SALE_NUMBER,FANLI_GOODS_STATISTICS.PRD_TOTAL_FANLI,GOODS.GOODS_NAME,GOODS.GOODS_SALE_NUM,GOODS.SHOP_PRICE,GOODS.CAT_ID).from(FANLI_GOODS_STATISTICS
-				.leftJoin(GOODS).on(FANLI_GOODS_STATISTICS.GOODS_ID.eq(GOODS.GOODS_ID)));
+		 SelectJoinStep<? extends Record> select = db().select(GOODS.GOODS_ID,FANLI_GOODS_STATISTICS.SALE_NUMBER,FANLI_GOODS_STATISTICS.PRD_TOTAL_FANLI,GOODS.GOODS_NAME,GOODS.GOODS_SALE_NUM,GOODS.SHOP_PRICE,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS.CAT_ID).from(FANLI_GOODS_STATISTICS
+				.leftJoin(GOODS).on(FANLI_GOODS_STATISTICS.GOODS_ID.eq(GOODS.GOODS_ID)))
+				 .leftJoin(GOODS_SPEC_PRODUCT).on(FANLI_GOODS_STATISTICS.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID));
 		optionBuild(select,param);
 		PageResult<RebateGoodsVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsVo.class);
 		//获取商品对应分类名称
