@@ -81,6 +81,7 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
@@ -731,6 +732,14 @@ public class MemberService extends ShopBaseService {
 		FieldsUtil.assignNotNull(memberBasicInfoVo, memberInfoVo);
 		String sourceName = getSourceName(language,memberInfoVo);
 		memberBasicInfoVo.setSourceName(sourceName);
+		
+		
+		/** 行业 */
+		if(memberBasicInfoVo.getIndustryInfo() != null) {
+			String name = MemberIndustryEnum.getNameByCode(Integer.parseInt(memberBasicInfoVo.getIndustryInfo()));
+			memberBasicInfoVo.setIndustryInfo(name);
+			
+		}
 
 		/** ---统计信息--- */
 		/** 最近下单的订单信息 */

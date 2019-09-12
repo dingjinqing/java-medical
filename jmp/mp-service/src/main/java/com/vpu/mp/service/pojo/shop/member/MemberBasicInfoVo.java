@@ -68,6 +68,7 @@ public class MemberBasicInfoVo {
 	
 	
 	/** b2c_user_detail */
+	/** 受教育程度 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Byte education;
 	
@@ -102,6 +103,10 @@ public class MemberBasicInfoVo {
 	private String cid;
 	/** 客单价 */
 	private BigDecimal unitPrice;
+	
+	/** 行业  {@link com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum}*/
+	@I18N(propertiesFileName = "member")
+	private String industryInfo;
 
 
 }
