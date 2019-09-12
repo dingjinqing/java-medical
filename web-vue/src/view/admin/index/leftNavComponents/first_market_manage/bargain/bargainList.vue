@@ -232,17 +232,21 @@ export default {
   components: { pagination, statusTab },
   data () {
     return {
-      activityName: '砍价',
+      activityName: this.$t('bargainList.bargain'),
       // 默认显示进行中的活动
       tabIndex: 1,
       currentPage: 1,
       tableData: [],
       pageParams: {},
       loading: false,
-      dailyCutTimes: 0
+      dailyCutTimes: 0,
+
+      // 表格原始数据
+      originalData: []
     }
   },
   mounted () {
+    this.langDefault()
     // 初始列表化数据
     this.initDataList()
     // 取单日可帮助砍价的次数
@@ -258,7 +262,9 @@ export default {
       this.pageParams.state = parseInt(this.tabIndex)
       bargainList(this.pageParams).then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.dataList)
+          this.originalData = res.content.dataList
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
         }
@@ -268,8 +274,8 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        item.bargainType = item.bargainType === 0 ? '定人' : '任意价'
-        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.bargainType = item.bargainType === 0 ? this.$t('bargainList.bargainType0') : this.$t('bargainList.bargainType1')
+        item.vaildDate = `${item.startTime}this.$t('mrketCommon.to')${item.endTime}`
         item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
       this.tableData = data
@@ -281,16 +287,16 @@ export default {
         'id': id,
         'status': 0
       }
-      this.$confirm('确定停用该砍价活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actDisableConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         updateBargain(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '停用成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
@@ -304,16 +310,16 @@ export default {
         'id': id,
         'status': 1
       }
-      this.$confirm('确定启用该砍价活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actEnabledConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         updateBargain(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '启用成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
@@ -326,16 +332,16 @@ export default {
       let param = {
         'id': id
       }
-      this.$confirm('确定删除该砍价活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actDeleteConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         deleteBargain(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '删除成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
@@ -348,12 +354,12 @@ export default {
         if (res.error === 0) {
           this.$message({
             type: 'success',
-            message: '设置成功!'
+            message: this.$t('marketCommon.successfulOperation')
           })
         } else {
           this.$message({
             type: 'fail',
-            message: '设置失败!'
+            message: this.$t('marketCommon.failOperation')
           })
         }
       })
@@ -432,6 +438,15 @@ export default {
   watch: {
     'tabIndex' (n, o) {
       this.initDataList()
+    },
+
+    // data内变量国际化
+    lang () {
+      this.activityName = this.$t('bargainList.bargain')
+
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
     }
   }
 }

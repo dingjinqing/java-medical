@@ -40,7 +40,9 @@ export const cn = {
   validDate: '有效期',
   startTime: '开始日期',
   endTime: '结束日期',
-  save: '保存'
+  save: '保存',
+  getSourceUserList: '获取新用户明细',
+  activityEffectData: '活动效果数据'
 }
 
 export const en = {
@@ -85,5 +87,7 @@ export const en = {
   validDate: 'validity period',
   startTime: 'start time',
   endTime: 'end time',
-  save: 'save'
+  save: 'save',
+  getSourceUserList: 'new users from this',
+  activityEffectData: 'Activity effect data'
 }
