@@ -5,8 +5,8 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 
 import java.sql.Timestamp;
@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserDetail extends TableImpl<UserDetailRecord> {
 
-    private static final long serialVersionUID = 1425600177;
+    private static final long serialVersionUID = -1995588152;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_user_detail</code>
+     * The reference instance of <code>MINI_SHOP_471752.b2c_user_detail</code>
      */
     public static final UserDetail USER_DETAIL = new UserDetail();
 
@@ -58,156 +58,156 @@ public class UserDetail extends TableImpl<UserDetailRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.id</code>.
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.id</code>.
      */
     public final TableField<UserDetailRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.user_id</code>.
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.user_id</code>.
      */
     public final TableField<UserDetailRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.shop_id</code>. 店铺id
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.shop_id</code>. 店铺id
      */
     public final TableField<UserDetailRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.username</code>. 昵称
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.username</code>. 昵称
      */
     public final TableField<UserDetailRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR(100), this, "昵称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.sex</code>. 性别：女f,男m
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.sex</code>. 性别：女f,男m
      */
     public final TableField<UserDetailRecord, String> SEX = createField("sex", org.jooq.impl.SQLDataType.CHAR(5), this, "性别：女f,男m");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.birthday_year</code>. 生日年份
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.birthday_year</code>. 生日年份
      */
     public final TableField<UserDetailRecord, Integer> BIRTHDAY_YEAR = createField("birthday_year", org.jooq.impl.SQLDataType.INTEGER, this, "生日年份");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.birthday_month</code>.
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.birthday_month</code>.
      */
     public final TableField<UserDetailRecord, Integer> BIRTHDAY_MONTH = createField("birthday_month", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.birthday_day</code>.
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.birthday_day</code>.
      */
     public final TableField<UserDetailRecord, Integer> BIRTHDAY_DAY = createField("birthday_day", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.email</code>. 邮箱
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.email</code>. 邮箱
      */
     public final TableField<UserDetailRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR(100), this, "邮箱");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.real_name</code>. 真实姓名
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.real_name</code>. 真实姓名
      */
     public final TableField<UserDetailRecord, String> REAL_NAME = createField("real_name", org.jooq.impl.SQLDataType.VARCHAR(50), this, "真实姓名");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.province_code</code>. 所在地省编号
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.province_code</code>. 所在地省编号
      */
     public final TableField<UserDetailRecord, Integer> PROVINCE_CODE = createField("province_code", org.jooq.impl.SQLDataType.INTEGER, this, "所在地省编号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.city_code</code>. 所在地市编号
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.city_code</code>. 所在地市编号
      */
     public final TableField<UserDetailRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER, this, "所在地市编号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.district_code</code>. 所在地区编号
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.district_code</code>. 所在地区编号
      */
     public final TableField<UserDetailRecord, Integer> DISTRICT_CODE = createField("district_code", org.jooq.impl.SQLDataType.INTEGER, this, "所在地区编号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.address</code>. 所在地
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.address</code>. 所在地
      */
     public final TableField<UserDetailRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR(120), this, "所在地");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.marital_status</code>. 婚姻状况：1未婚，2已婚，3保密
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.marital_status</code>. 婚姻状况：1未婚，2已婚，3保密
      */
     public final TableField<UserDetailRecord, Byte> MARITAL_STATUS = createField("marital_status", org.jooq.impl.SQLDataType.TINYINT, this, "婚姻状况：1未婚，2已婚，3保密");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.monthly_income</code>. 月收入
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.monthly_income</code>.
      */
-    public final TableField<UserDetailRecord, Byte> MONTHLY_INCOME = createField("monthly_income", org.jooq.impl.SQLDataType.TINYINT, this, "月收入");
+    public final TableField<UserDetailRecord, Integer> MONTHLY_INCOME = createField("monthly_income", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.cid</code>. 身份证号码
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.cid</code>. 身份证号码
      */
     public final TableField<UserDetailRecord, String> CID = createField("cid", org.jooq.impl.SQLDataType.VARCHAR(18), this, "身份证号码");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.education</code>. 教育程度
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.education</code>. 教育程度
      */
     public final TableField<UserDetailRecord, Byte> EDUCATION = createField("education", org.jooq.impl.SQLDataType.TINYINT, this, "教育程度");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.industry_info</code>. 所在行业
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.industry_info</code>. 所在行业
      */
     public final TableField<UserDetailRecord, Byte> INDUSTRY_INFO = createField("industry_info", org.jooq.impl.SQLDataType.TINYINT, this, "所在行业");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.big_image</code>. 头像
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.big_image</code>. 头像
      */
     public final TableField<UserDetailRecord, String> BIG_IMAGE = createField("big_image", org.jooq.impl.SQLDataType.VARCHAR(191), this, "头像");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.bank_user_name</code>. 开户行姓名
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.bank_user_name</code>. 开户行姓名
      */
     public final TableField<UserDetailRecord, String> BANK_USER_NAME = createField("bank_user_name", org.jooq.impl.SQLDataType.VARCHAR(100), this, "开户行姓名");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.shop_bank</code>. 开户行
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.shop_bank</code>. 开户行
      */
     public final TableField<UserDetailRecord, String> SHOP_BANK = createField("shop_bank", org.jooq.impl.SQLDataType.VARCHAR(100), this, "开户行");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.bank_no</code>. 开户行卡号
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.bank_no</code>. 开户行卡号
      */
     public final TableField<UserDetailRecord, String> BANK_NO = createField("bank_no", org.jooq.impl.SQLDataType.VARCHAR(32), this, "开户行卡号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.withdraw_passwd</code>. 提现密码验证
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.withdraw_passwd</code>. 提现密码验证
      */
     public final TableField<UserDetailRecord, String> WITHDRAW_PASSWD = createField("withdraw_passwd", org.jooq.impl.SQLDataType.VARCHAR(64), this, "提现密码验证");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.user_avatar</code>. 用户头像
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.user_avatar</code>. 用户头像
      */
     public final TableField<UserDetailRecord, String> USER_AVATAR = createField("user_avatar", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("/image/admin/head_icon.png", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户头像");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.create_time</code>.
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.create_time</code>.
      */
     public final TableField<UserDetailRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.update_time</code>. 最后修改时间
+     * The column <code>MINI_SHOP_471752.b2c_user_detail.update_time</code>. 最后修改时间
      */
     public final TableField<UserDetailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_user_detail</code> table reference
+     * Create a <code>MINI_SHOP_471752.b2c_user_detail</code> table reference
      */
     public UserDetail() {
         this(DSL.name("b2c_user_detail"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_user_detail</code> table reference
+     * Create an aliased <code>MINI_SHOP_471752.b2c_user_detail</code> table reference
      */
     public UserDetail(String alias) {
         this(DSL.name(alias), USER_DETAIL);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_user_detail</code> table reference
+     * Create an aliased <code>MINI_SHOP_471752.b2c_user_detail</code> table reference
      */
     public UserDetail(Name alias) {
         this(alias, USER_DETAIL);
