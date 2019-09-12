@@ -398,9 +398,7 @@
     <!--选择商品弹窗-->
     <ChoosingGoods />
     <!--指定商品添加商品分类弹窗-->
-    <AppointBusDialog />
-    <!--指定商品添加平台分类弹窗-->
-    <AppointBrandDialog />
+    <AddingBusClassDialog />
   </div>
 </template>
 <script>
@@ -408,8 +406,7 @@ import { saveCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
-    AppointBusDialog: () => import('@/components/admin/addingBusClassDialog'),
-    AppointBrandDialog: () => import('@/view/admin/layout/brandDialog')
+    AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog')
   },
   data () {
     return {
@@ -482,8 +479,9 @@ export default {
         this.noneBlockDiscArr[0].num = res.length
         console.log(res)
       })
-      this.$http.$on('ABusClassTrueArr', res => {
+      this.$http.$on('BusClassTrueArr', res => {
         if (this.AtreeType === 1) {
+          console.log(res)
           this.param.recommendSortId = res.join()
           this.noneBlockDiscArr[1].num = res.length
         } else {
@@ -497,15 +495,15 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index, this.recommendGoodsId)
+          this.$http.$emit('choosingGoodsFlag', index, this.param.recommendGoodsId)
           break
         case 1:
           this.AtreeType = 1
-          this.$http.$emit('AaddingBusClassDialog', index)
+          this.$http.$emit('addingBusClassDialog', this.param.recommendSortId)
           break
         case 2:
           this.AtreeType = 2
-          this.$http.$emit('AuserBrandDialog', index)
+          this.$http.$emit('addingBusClassDialog', this.param.recommendCatId, this.AtreeType)
           break
       }
     },
