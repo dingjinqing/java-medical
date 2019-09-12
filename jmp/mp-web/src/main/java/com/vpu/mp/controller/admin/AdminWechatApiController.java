@@ -217,11 +217,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	 */
 	@PostMapping("/api/admin/public/service/auth/list")
 	public JsonResult serviceAuthList(@RequestBody MpOfficeAccountListParam oaListParam) {
-		Boolean checkSysId = checkSysId(oaListParam.getSysId());
-		if (!checkSysId) {
-			// 没有查看此公众号权限
-			return fail(JsonResultCode.WX_MP_NO_ACCESS);
-		}
+		oaListParam.setSysId(adminAuth.user().getSysId());
 		return success(saas.shop.officeAccount.getPageList(oaListParam));
 	}
 
@@ -233,12 +229,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	 */
 	@PostMapping("/api/admin/public/service/auth/oneList")
 	public JsonResult serviceAuthDetail(@RequestBody MpOfficeAccountListParam oaListParam) {
-		Boolean checkSysId = checkSysId(oaListParam.getSysId());
-		if (!checkSysId) {
-			// 没有查看此公众号权限
-			return fail(JsonResultCode.WX_MP_NO_ACCESS);
-		}
-		return success(saas.shop.officeAccount.getOfficeAccountByAppIdAndsysId(oaListParam.getAppId(), oaListParam.getSysId()));
+		return success(saas.shop.officeAccount.getOfficeAccountByAppIdAndsysId(oaListParam.getAppId(), adminAuth.user().getSysId()));
 
 	}
 
