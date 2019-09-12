@@ -320,7 +320,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/updateGoods/updateGoods'
+                '@/view/admin/index/leftNavComponents/goods_manage/addAndUpdateGoods/addAndUpdateGoods'
               )
           },
           // 商品管理 编辑商品
@@ -333,7 +333,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/updateGoods/updateGoods'
+                '@/view/admin/index/leftNavComponents/goods_manage/addAndUpdateGoods/addAndUpdateGoods'
               )
           },
           // 商品管理/运费模板

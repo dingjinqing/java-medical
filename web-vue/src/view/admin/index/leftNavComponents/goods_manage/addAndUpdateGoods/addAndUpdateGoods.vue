@@ -1,9 +1,9 @@
 <template>
-  <div class="addGoodsWrap" >
+  <div class="goodsWrap" >
     <div
       v-if="reload"
-      id="addGoods"
-      class="addGoodsContent"
+      id="goodsDiv"
+      class="goodsContent"
     >
       <!-- 头部导航 headerSteps-->
       <el-steps
@@ -33,25 +33,25 @@
 
       <!-- 主要内容区 -->
       <!--商品信息-->
-        <updateGoodsProductInfo
+        <addAndUpdateGoodsProductInfo
           ref="goodsProductInfoCmp"
           v-show="stepData.currentStep===1"
         />
       <!--商品详情-->
-        <updateGoodsDetails
+        <addAndUpdateGoodsDetails
           :goodsProductInfoData="goodsProductInfoDataForDetails"
           ref="goodsDetailsCmp"
           v-show="stepData.currentStep===2"
         />
       <!--商品分销信息-->
-        <updateGoodsDistributionInfo
+        <addAndUpdateGoodsDistributionInfo
           :goodsProductInfoData="goodsProductInfoDataForDistribution"
           ref="goodsDistributionInfoCmp"
           v-show="stepData.currentStep===3"
         />
 
       <!-- 底部按钮组件 -->
-      <div class="addingGoodsFooter">
+      <div class="goodsFooter">
         <el-button
           class="btn"
           type="primary"
@@ -110,16 +110,16 @@
 </template>
 <script>
 /* 导入组件 */
-import updateGoodsProductInfo from './updateGoodsProductInfo'
-import updateGoodsDetails from './updateGoodsDetails'
-import updateGoodsDistributionInfo from './updateGoodsDistributionInfo'
+import addAndUpdateGoodsProductInfo from './addAndUpdateGoodsProductInfo'
+import addAndUpdateGoodsDetails from './addAndUpdateGoodsDetails'
+import addAndUpdateGoodsDistributionInfo from './addAndUpdateGoodsDistributionInfo'
 
 /* 导入js组件 */
 import {addGoodsApi, updateGoodsApi, selectGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 
 export default {
-  name: 'updateGoods',
-  components: {updateGoodsProductInfo, updateGoodsDetails, updateGoodsDistributionInfo},
+  name: 'addAndUpdateGoods',
+  components: {addAndUpdateGoodsProductInfo, addAndUpdateGoodsDetails, addAndUpdateGoodsDistributionInfo},
   computed: {
     goodsProductInfoDataForDetails: function () {
       let retData = {}
@@ -369,18 +369,18 @@ export default {
 }
 </script>
 <style scoped>
-  .addGoodsWrap {
+  .goodsWrap {
     padding: 10px 10px;
     overflow-y: auto;
   }
 
-  .addGoodsContent {
+  .goodsContent {
     background-color: white;
     padding: 10px 10px 100px 10px;
     position: relative;
   }
 
-  .addingGoodsFooter {
+  .goodsFooter {
     background: #f8f8fa;
     text-align: center;
     box-sizing: border-box;
