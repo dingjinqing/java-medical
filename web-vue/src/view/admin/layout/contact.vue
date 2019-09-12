@@ -5,13 +5,13 @@
       @mouseenter="enter(1)"
       @mouseleave="leave(1)"
     >
-      <img src="../../assets/adminImg/left_menu_phone.png">
+      <img src="../../../assets/adminImg/left_menu_phone.png">
       <div
         class="suspension_message"
         :class="en_phone"
         v-if="hidden_phone"
       >
-        <img src="../../assets/adminImg/left_menu_jt.png">
+        <img src="../../../assets/adminImg/left_menu_jt.png">
         {{$t('adminContact.phoneNum')}}
       </div>
     </div>
@@ -20,13 +20,13 @@
       @mouseenter="enter(2)"
       @mouseleave="leave(2)"
     >
-      <img src="../../assets/adminImg/left_menu_zx.png">
+      <img src="../../../assets/adminImg/left_menu_zx.png">
       <div
         class="suspension_message new_calss"
         :class="en_line"
         v-if="hidden_new"
       >
-        <img src="../../assets/adminImg/left_menu_jt.png">
+        <img src="../../../assets/adminImg/left_menu_jt.png">
         {{$t('adminContact.onLine')}}
       </div>
     </div>

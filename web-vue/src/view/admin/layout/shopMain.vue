@@ -10,10 +10,10 @@
   </div>
 </template>
 <script>
-import Header from '@/view/admin/header'
-import SelectShop from '@/view/admin/selectShop'
-import Contact from '@/view/admin/contact'
-import AccountSettings from '@/view/admin/accountSettings'
+import Header from './header'
+import SelectShop from './selectShop'
+import Contact from './contact'
+import AccountSettings from './accountSettings'
 export default {
   components: { Header, SelectShop, Contact, AccountSettings },
   data () {
@@ -22,7 +22,7 @@ export default {
     }
   },
   mounted () {
-    // console.log(this.$route)
+    console.log(this.$route)
     // 初始化组建切换
     this.changeComponents()
   },

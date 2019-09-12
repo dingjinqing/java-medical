@@ -10,7 +10,7 @@ const routes = [
       {
         path: '/admin/home/shopMain',
         name: 'shopMain',
-        component: () => import('@/view/admin/shopMain')
+        component: () => import('@/view/admin/layout/shopMain')
       },
       {
         path: '/admin/home/main',

@@ -6,7 +6,7 @@
 
     <div class="right">
       <div class="right_main">
-        <img src="../../assets/adminImg/notice_ld.png">
+        <img src="../../../assets/adminImg/notice_ld.png">
       </div>
     </div>
     <div
