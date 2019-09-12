@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.sharereward;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.vpu.mp.db.shop.tables.AttendShareUser;
 import com.vpu.mp.db.shop.tables.ShareAward;
 import com.vpu.mp.db.shop.tables.ShareAwardReceive;
@@ -9,12 +10,16 @@ import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.sharereward.*;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -38,6 +43,9 @@ import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.*;
 @Slf4j
 @Service
 public class ShareRewardService extends ShopBaseService {
+    @Autowired
+    private CouponService couponService;
+
     private static ShareAward sa = ShareAward.SHARE_AWARD.as("sa");
     private static ShareAwardRecord sar = ShareAwardRecord.SHARE_AWARD_RECORD.as("sar");
     private static ShareAwardReceive sare = ShareAwardReceive.SHARE_AWARD_RECEIVE.as("sare");
@@ -238,6 +246,10 @@ public class ShareRewardService extends ShopBaseService {
             if (CONDITION_THREE == param.getCondition()) {
                 param.setGoodsIds(null);
             }
+            param.setFirstAwardNum(getAwardNum(param.getFirstRule()));
+            param.setSecondAwardNum(getAwardNum(param.getSecondRule()));
+            param.setThirdAwardNum(getAwardNum(param.getThirdRule()));
+
             param.setFirstLevelRule(MAPPER.writeValueAsString(param.getFirstRule()));
             param.setSecondLevelRule(MAPPER.writeValueAsString(param.getSecondRule()));
             param.setThirdLevelRule(MAPPER.writeValueAsString(param.getThirdRule()));
@@ -248,6 +260,26 @@ public class ShareRewardService extends ShopBaseService {
         } catch (JsonProcessingException e) {
             log.debug(e.getMessage());
             throw new RuntimeException("Serialization Exception !");
+        }
+    }
+    private Integer getAwardNum(ShareRule shareRule){
+        switch (shareRule.getRewardType()){
+            case CONDITION_ONE :
+                return shareRule.getScoreNum();
+            case CONDITION_TWO :
+                CouponView couponView = couponService.getCouponViewById(shareRule.getCoupon());
+                log.debug("分享有礼活动奖励规则，奖励奖项优惠券[ {} ]所剩库存为：{}",couponView.getId(),couponView.getSurplus());
+                Assert.notNull(couponView,"优惠券不存在");
+                // 校验活动定义的奖励数量是否满足奖品的库存数量
+                if(couponView.getSurplus() < shareRule.getCouponNum()){
+                    log.error("优惠券[{}]库存数量小于分享有礼活动定义的奖励数量！",couponView.getId());
+                    throw new RuntimeException("优惠券库存数量小于活动定义的奖励数量！");
+                }
+                return shareRule.getCouponNum();
+            case CONDITION_THREE :
+                return shareRule.getLotteryNum();
+            default:
+                return 0;
         }
     }
 
