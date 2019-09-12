@@ -158,6 +158,12 @@ export default {
         { title: this.$t('adminPageFramework.headerData.title_6'), index: '', meta: 'user_manger', name: 'user_list' },
         { title: this.$t('adminPageFramework.headerData.title_7'), index: '', meta: 'store_manage', name: 'store_list' },
         { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' }]
+      let data = JSON.parse(JSON.stringify(this.$t('shopData')))
+      data.forEach((item, index) => {
+        if (index === 1) {
+          this.$t('shopData').splice(index, 1)
+        }
+      })
       this.hiddle_menu_list = this.$t('shopData')
     }
   },
@@ -188,7 +194,7 @@ export default {
             }
           })
           break
-        case 3:
+        case 2:
           // this.$emit('change_components', '3')
           this.$router.push({
             path: '/admin/home/shopMain',
@@ -197,7 +203,7 @@ export default {
             }
           })
           break
-        case 4:
+        case 3:
           this.$router.push({
             path: '/admin/home/shopMain',
             query: {
@@ -205,7 +211,7 @@ export default {
             }
           })
           break
-        case 5:
+        case 4:
           loginRequestOut().then((res) => {
             console.log(res)
             if (res.error === 0) {

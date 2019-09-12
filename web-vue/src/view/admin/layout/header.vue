@@ -127,6 +127,13 @@ export default {
   watch: {
     lang (newData) {
       console.log(newData)
+      let data = JSON.parse(JSON.stringify(this.$t('shopData')))
+      console.log(data)
+      data.forEach((item, index) => {
+        if (index === 2) {
+          this.$t('shopData').splice(index, 1)
+        }
+      })
       this.hiddle_menu_list = this.$t('shopData')
     }
   },
@@ -162,10 +169,10 @@ export default {
         case 0:
           this.$emit('change_components', '0')
           break
-        case 4:
+        case 3:
           this.$emit('change_components', '3')
           break
-        case 5:
+        case 4:
           loginRequestOut().then((res) => {
             console.log(res)
             if (res.error === 0) {

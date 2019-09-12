@@ -740,9 +740,9 @@ export default {
     AddCouponDialog: () => import('@/components/admin/addCouponDialog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
-    AppointBrandDialog: () => import('@/view/admin/layout/brandDialog'),
     ChioseStoreDialog: () => import('./chioseStoreDialog'),
-    ReceivingCodeDialog: () => import('./receivingCodeDialog')
+    ReceivingCodeDialog: () => import('./receivingCodeDialog'),
+    AddBrandDialog: () => import('./addBrandDialog')
   },
   data () {
     var validiscount = (rule, value, callback) => {
