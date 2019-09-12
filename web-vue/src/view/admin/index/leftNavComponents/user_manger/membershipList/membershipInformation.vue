@@ -19,7 +19,7 @@
                 </div>
                 <div>{{$t('membershipIntroduction.inviter')}}：
                   <span v-if='this.memberBasicInfo.inviteUserName'> {{ this.memberBasicInfo.inviteUserName }} </span>
-                  <span v-else>暂无</span>
+                  <span v-else>{{$t('membershipIntroduction.notExists')}}</span>
                   <span
                     class="modifyLinkPerson"
                     @click="hanldeModifyPerson()"
@@ -99,10 +99,22 @@
                 </div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.B')}}：未知</div>
-                <div>{{$t('membershipIntroduction.Maritalstatus')}}：未知</div>
-                <div>{{$t('membershipIntroduction.monthlyincome')}}：未知</div>
-                <div>{{$t('membershipIntroduction.Gender')}}：未知</div>
+                <div>{{$t('membershipIntroduction.indursty')}}：
+                  <span v-if="this.memberBasicInfo.industryInfo">{{ this.memberBasicInfo.industryInfo }}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.Maritalstatus')}}：
+                  <span v-if="this.maritalStatus">{{ this.maritalStatus}}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.monthlyincome')}}：
+                  <span v-if="this.memberBasicInfo.monthlyIncome">{{ this.memberBasicInfo.monthlyIncome }}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.Gender')}}：
+                  <span v-if="this.memberBasicInfo.sex">{{ this.memberBasicInfo.sex }}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
               </li>
             </ul>
           </div>
@@ -700,6 +712,7 @@ export default {
       userId: '', // 用户id
       memberBasicInfo: {}, //  会员基本信息
       transStatistic: {}, // 会员交易统计
+      maritalStatus: '', // 婚姻状况
       assetsUl: '',
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
       assetsData: [
@@ -962,6 +975,12 @@ export default {
     // 加载数据
     this.loadMemberInfo()
   },
+  watch: {
+    lang () {
+      // 加载数据
+      this.loadMemberInfo()
+    }
+  },
   mounted () {
     // 初始化语言
     this.langDefault()
@@ -986,6 +1005,26 @@ export default {
           }
           if (this.memberBasicInfo.updateTime) {
             this.memberBasicInfo.updateTime = this.memberBasicInfo.updateTime.split(' ')[0]
+          }
+
+          // 处理婚姻状况
+          let status = this.memberBasicInfo.maritalStatus
+          //  1-未婚2-已婚3-保密
+          if (status) {
+            this.maritalStatus = this.$t('membershipIntroduction.maritalStatus')[status - 1]
+          } else {
+            this.maritalStatus = null
+          }
+          console.log(status)
+          console.log(this.maritalStatus)
+
+          // 性别
+          if (this.memberBasicInfo.sex) {
+            let sexArr = this.$t('membershipIntroduction.sex')
+            let map = new Map(sexArr)
+            let sex = map.get(this.memberBasicInfo.sex)
+            this.memberBasicInfo.sex = sex
+            console.log(sex)
           }
         }
       })

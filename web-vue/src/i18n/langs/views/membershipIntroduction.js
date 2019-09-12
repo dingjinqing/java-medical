@@ -152,7 +152,7 @@ export const cn = {
   Educationlevel: '教育程度',
   PermanentResidence: '常住地',
   ID: '身份证',
-  B: '所属行业',
+  indursty: '所属行业',
   Maritalstatus: '婚姻状况',
   monthlyincome: '月收入',
   Gender: '性别',
@@ -255,7 +255,32 @@ export const cn = {
   accountCertain: '余 额 确 定',
   scoreCertain: '积 分 确 定',
   unknown: '未知',
-  notAddYet: '暂未添加'
+  notAddYet: '暂未添加',
+  balanceDialogData: [
+    {
+      title: '修改金额',
+      presentText: '当前金额',
+      persentMoney: '',
+      addText: '增加金额',
+      tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
+      bzText: '增加备注',
+      index: 0
+    }
+  ],
+  integralDialogData: [
+    {
+      title: '修改积分',
+      presentText: '当前积分',
+      persentMoney: '',
+      addText: '增加积分',
+      tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
+      bzText: '增加备注',
+      index: 1
+    }
+  ],
+  maritalStatus: ['未婚', '已婚', '保密'],
+  notExists: '暂无',
+  sex: [['f', '女'], ['m', '男']]
 }
 
 export const en = {
@@ -343,7 +368,7 @@ export const en = {
   Gender: 'Gender',
   monthlyincome: 'monthly income',
   Maritalstatus: 'Marital status',
-  B: 'B.',
+  indursty: 'indursty',
   ID: 'ID',
   PermanentResidence: 'Permanent Residence',
   Educationlevel: 'Education level',
@@ -516,5 +541,30 @@ export const en = {
   accountCertain: 'account certain',
   scoreCertain: 'score certain',
   unknown: 'unknown',
-  notAddYet: 'not add yet'
+  notAddYet: 'not add yet',
+  balanceDialogData: [
+    {
+      title: 'Modified amount',
+      presentText: 'Current amount',
+      persentMoney: '',
+      addText: 'Increase amount',
+      tips: '（*When balance is positive,increase,else reduce*）',
+      bzText: 'Add Remark',
+      index: 0
+    }
+  ],
+  integralDialogData: [
+    {
+      title: 'Modified score',
+      presentText: 'Current score',
+      persentMoney: '',
+      addText: 'Increase score',
+      tips: '（*When score is positive,increase,else reduce*）',
+      bzText: 'Add Remark',
+      index: 1
+    }
+  ],
+  maritalStatus: ['UnMarried', 'Married', 'Secret'],
+  notExists: 'Not Exists',
+  sex: [['f', 'woman'], ['m', 'man']]
 }
