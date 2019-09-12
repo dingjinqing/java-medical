@@ -254,11 +254,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	 */
 	@PostMapping("/api/admin/public/service/auth/payManage")
 	public JsonResult payManage(@RequestBody MpOAPayManageParam oaParam) {
-		Boolean checkSysId = checkSysId(oaParam.getSysId());
-		if (!checkSysId) {
-			// 没有查看此公众号权限
-			return fail(JsonResultCode.WX_MP_NO_ACCESS);
-		}
+		oaParam.setSysId(adminAuth.user().getSysId());
 		Integer updatePayInfo = saas.shop.officeAccount.updatePayInfo(oaParam);
 		if(updatePayInfo>0) {
 			return success();
