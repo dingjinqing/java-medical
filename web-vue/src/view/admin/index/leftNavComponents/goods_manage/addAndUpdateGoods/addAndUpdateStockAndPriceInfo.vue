@@ -517,7 +517,7 @@ export default {
     specInfoChange (specInfoModel, kIndex, newVal, event) {
       // 规格名称重复则将input恢复原值，并返回
       if (this._isSpecInfoNameRepeated(kIndex, newVal)) {
-        this.$message({message: '规格名称重复', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpecNameRepeat'), type: 'warning'})
         event.target.value = specInfoModel.specName
         event.target.focus()
         return
@@ -551,7 +551,7 @@ export default {
     specValChange (specInfoModel, vIndex, newVal, event) {
       // 商品规格值名称有重复的话则将input恢复原值,并返回
       if (this._isSpecValNameRepeated(specInfoModel, vIndex, newVal)) {
-        this.$message({message: '规格值名称重复', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpecValKRepeat'), type: 'warning'})
         event.target.value = specInfoModel.goodsSpecVals[vIndex].specValName
         event.target.focus()
         return
@@ -608,7 +608,7 @@ export default {
       }
 
       if (this._isSpecPrdSnRepeated(index, newVal)) {
-        this.$message({message: 'sku编码重复', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning'})
         item.prdSn = item.prdSnBak
         event.target.focus()
         return
@@ -621,7 +621,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message({message: 'sku编码重复', type: 'warning'})
+          this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning'})
           item.prdSn = item.prdSnBak
           event.target.focus()
         } else {
@@ -927,7 +927,7 @@ export default {
     /* 会员价格change处理函数 */
     memberCardPriceChange (prdPrice, cardPrice, inputId, item) {
       if (cardPrice === undefined || cardPrice === '') {
-        this.$message({message: '会员价格不可以为空', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.gradPrdPriceIsNull'), type: 'warning'})
         document.getElementById(inputId).focus()
         return
       }
@@ -939,7 +939,7 @@ export default {
       }
 
       if (cardPrice > prdPrice) {
-        this.$message({message: '会员价格不可高于原价格', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.gradePrdPriceHigherThanGoodsPrice'), type: 'warning'})
         document.getElementById(inputId).focus()
       }
     },
@@ -950,7 +950,7 @@ export default {
       }
       // 商品价格填写校验正确性
       if (!this.specInfoSwitch && this.goodsProductInfo.prdPrice === undefined) {
-        this.$message({message: '请填写商品价格', type: 'warning'})
+        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsPriceIsNull'), type: 'warning'})
         this.$refs.prdPriceInput.focus()
         memberCard.checked = false
         return false
@@ -960,7 +960,7 @@ export default {
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let item = this.goodsProductInfo.goodsSpecProducts[i]
           if (item.prdPrice === undefined || item.prdPrice === null || item.prdPrice === '') {
-            this.$message('请填写规格价格')
+            this.$message({message: this.$t('goodsAddEditInfo.warningInfo.prdPriceIsNull'), type: 'warning'})
             document.getElementById('prdPrice_' + item.prdDesc).focus()
             memberCard.checked = false
             return false
@@ -982,7 +982,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'warning', message: '商品规格已存在'})
+          this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsPrdSnRepeat'), type: 'warning'})
           this.goodsProductInfo.prdSn = this.goodsProductInfo.prdSnBak
         } else {
           this.goodsProductInfo.prdSnBak = this.goodsProductInfo.prdSn
@@ -1151,13 +1151,13 @@ export default {
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let item = this.goodsProductInfo.goodsSpecProducts[i]
           if (isNumberBlank(item.prdPrice) || item.prdPrice < 0) {
-            this.$message({message: '规格:' + item.prdDescTemp + ' 价格填写错误', type: 'warning'})
+            this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.priceIsWrong'), type: 'warning'})
             document.getElementById('prdPrice_' + item.prdDesc).focus()
             return false
           }
 
           if (isNumberBlank(item.prdNumber) || item.prdNumber < 0) {
-            this.$message({message: '规格：' + item.prdDescTemp + '库存写错误', type: 'warning'})
+            this.$message({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.goodsNumIsWrong'), type: 'warning'})
             document.getElementById('prdNumber_' + item.prdDesc).focus()
             return false
           }
@@ -1173,13 +1173,13 @@ export default {
               continue
             }
             if (isNumberBlank(cardWrap.cardPrice) || cardWrap < 0) {
-              this.$message({message: '会员价格不可为空', type: 'warning'})
+              this.$message({message: this.$t('goodsAddEditInfo.warningInfo.gradPrdPriceIsNull'), type: 'warning'})
               document.getElementById(specProduct.prdDesc + cardWrap.card.cardName).focus()
               return false
             }
 
             if (cardWrap.cardPrice > specProduct.prdPrice) {
-              this.$message({message: '会员价格不可高于商品价格', type: 'warning'})
+              this.$message({message: this.$t('goodsAddEditInfo.warningInfo.gradePrdPriceHigherThanGoodsPrice'), type: 'warning'})
               document.getElementById(specProduct.prdDesc + cardWrap.card.cardName).focus()
               return false
             }

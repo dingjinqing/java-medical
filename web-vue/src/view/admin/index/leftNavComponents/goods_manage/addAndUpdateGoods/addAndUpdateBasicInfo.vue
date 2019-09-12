@@ -495,7 +495,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'warning', message: '商品名称已存在'})
+          this.$message({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsSnRepeat')})
           this.goodsProductInfo.goodsName = this.goodsProductInfo.goodsNameBak
         } else {
           this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
@@ -516,7 +516,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'warning', message: '商品货号已存在'})
+          this.$message({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
           this.goodsProductInfo.goodsSn = this.goodsProductInfo.goodsSnBak
         } else {
           this.goodsProductInfo.goodsSnBak = this.goodsProductInfo.goodsSn

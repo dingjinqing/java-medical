@@ -331,10 +331,9 @@ export default {
         if (res.error !== 0) {
           this.$message({
             type: 'error',
-            message: `服务器错误:${res.error},请联系运维`
+            message: this.$t('goodsAddEditInfo.warningInfo.serverWrong') + res.error + this.$t('goodsAddEditInfo.warningInfo.pleaseConnectUs')
           })
         } else {
-          console.log(res.content)
           let goodsData = res.content
           this.isUpdateWrap.updateGoodsId = goodsId
           this.$refs.goodsProductInfoCmp.initDataForUpdate(goodsData)
