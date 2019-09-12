@@ -254,7 +254,8 @@ export const cn = {
   error: '修改失败',
   accountCertain: '余 额 确 定',
   scoreCertain: '积 分 确 定',
-  unknown: '未知'
+  unknown: '未知',
+  notAddYet: '暂未添加'
 }
 
 export const en = {
@@ -514,5 +515,6 @@ export const en = {
   error: 'error',
   accountCertain: 'account certain',
   scoreCertain: 'score certain',
-  unknown: 'unknown'
+  unknown: 'unknown',
+  notAddYet: 'not add yet'
 }
