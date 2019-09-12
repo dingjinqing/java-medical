@@ -138,7 +138,6 @@ export default {
   },
   provide () {
     return {
-      stepData: this.stepData,
       isUpdateWrap: this.isUpdateWrap
     }
   },

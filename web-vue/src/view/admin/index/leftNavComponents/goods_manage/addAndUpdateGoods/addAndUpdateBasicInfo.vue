@@ -293,7 +293,7 @@
         </el-collapse-item>
       </el-collapse>
       <!--图片dialog-->
-      <ImageDalog v-if="stepData.currentStep === 1"
+      <ImageDalog v-if="selfImgDialogShow"
         pageIndex='pictureSpace'
         @handleSelectImg='imgDialogSelectedCallback'
       />
@@ -355,9 +355,10 @@ import pagination from '@/components/admin/pagination/pagination'
 
 export default {
   components: { ImageDalog, pagination },
-  inject: ['stepData', 'isUpdateWrap'],
+  inject: ['isUpdateWrap'],
   data () {
     return {
+      selfImgDialogShow: false,
       goodsProductInfo: {
         // 基本信息
         goodsName: null,
@@ -514,10 +515,12 @@ export default {
     },
     /* 添加图片点击事件，弹出图片选择组件 */
     addGoodsImg () {
-      this.$http.$emit('dtVisible')
+      this.selfImgDialogShow = true
+      this.$nextTick(() => this.$http.$emit('dtVisible'))
     },
     /* 商品图片点击回调函数 */
     imgDialogSelectedCallback (imgObj) {
+      this.selfImgDialogShow = false
       if (this.goodsProductInfo.goodsImgs.length >= 5) {
         return
       }

@@ -105,7 +105,12 @@
               <td><input :id="'prdCostPrice_'+item.prdCostPrice" v-model.number="item.prdCostPrice" @change="specPrdInputChange(item.prdCostPrice,'prdCostPrice_'+item.prdCostPrice,item)"/></td>
               <td><input :id="'prdNumber_'+item.prdNumber" v-model.number="item.prdNumber" @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdNumber,item)"/></td>
               <td><input :id="'prdSn_'+item.prdDesc" @change="specPrdSnChange(item,index,$event.target.value,$event)"/></td>
-              <td><img src="" alt="">src</td>
+              <td>
+                <div style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;" @click="prdImgClick(item)">
+                  <img v-if="item.prdImg.imgUrl === null" style="width: 30px;height: 30px;"  :src="$imageHost+'/image/admin/add_img.png'">
+                  <img v-else style="width: 30px;height: 30px;"  :src="item.prdImg.imgUrl">
+                </div>
+              </td>
             </tr>
           </table>
           <div style="text-align: center;">
@@ -367,6 +372,11 @@
         </el-form>
       </el-collapse-item>
     </el-collapse>
+    <!--图片dialog-->
+    <ImageDalog v-if="selfImgDialogShow"
+                pageIndex='pictureSpace'
+                @handleSelectImg='imgDialogSelectedCallback'
+    />
   </div>
 </template>
 <script>
@@ -378,12 +388,16 @@
 import { getLevelCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
-
+import ImageDalog from '@/components/admin/imageDalog'
 export default {
   inject: ['isUpdateWrap'],
+  components: {
+    ImageDalog
+  },
   data () {
     return {
       lang: '',
+      selfImgDialogShow: false,
       /* 临时存放和后台交互的数据 */
       goodsProductInfo: {
         // 库存、价格信息
@@ -391,6 +405,7 @@ export default {
         // 根据用户填写的goodsSpecs计算出来的笛卡尔集合：[{tempId:1,prdDesc:'color:red;size:x',prdPrice:0,prdCostPrice:0,prdSn:null,prdImg:null}]
         // 其中tempId是在新增的时候由页面内一个全局变量产生的递增值，仅用于前端页面辅助操作，比如传递给商品分销详情页面
         goodsSpecProducts: [],
+        currentImgClickedSpecPrdItem: null,
         // 修改商品时保存回显的默认规格值
         updateGoodsSpecProduct: null,
         // 存放sku名和值[{specName:'',goodsSpecVals:[{specValName:''},{specValName:''}]}]
@@ -455,6 +470,16 @@ export default {
       })
     },
     /** 商品规格交互函数结束**/
+    prdImgClick (specPrd) {
+      this.goodsProductInfo.currentImgClickedSpecPrdItem = specPrd
+      this.selfImgDialogShow = true
+      this.$nextTick(() => this.$http.$emit('dtVisible'))
+    },
+    imgDialogSelectedCallback (imgObj) {
+      this.selfImgDialogShow = false
+      this.goodsProductInfo.currentImgClickedSpecPrdItem.prdImg.imgUrl = imgObj.imgUrl
+      this.goodsProductInfo.currentImgClickedSpecPrdItem.prdImg.imgPath = imgObj.imgPath
+    },
     addSpecClick () {
       this.specInfoSwitch = !this.specInfoSwitch
       this.goodsProductInfo.goodsSpecs.push({ specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] })
@@ -658,7 +683,14 @@ export default {
       }
       let val = this.goodsProductInfo.goodsSpecProducts[0][attrName]
       this.goodsProductInfo.goodsSpecProducts.forEach(item => {
-        item[attrName] = val
+        if (attrName === 'prdImg') {
+          item.prdImg = {
+            imgUrl: val.imgUrl,
+            imgPath: val.imgPath
+          }
+        } else {
+          item[attrName] = val
+        }
       })
     },
     /* 规格名称改变，当变为null和从null变为非空都会触发重计算，否则就是进行遍历修改 */
@@ -702,7 +734,10 @@ export default {
         prdCostPrice: 0,
         prdNumber: 0,
         prdSn: null,
-        prdImg: null,
+        prdImg: {
+          imgUrl: null,
+          imgPath: null
+        },
         prdDesc: '',
         prdDescTemp: ''
       }]
@@ -761,7 +796,10 @@ export default {
         prdCostPrice: 0,
         prdNumber: 0,
         prdSn: null,
-        prdImg: null,
+        prdImg: {
+          imgUrl: null,
+          imgPath: null
+        },
         prdDesc: '',
         prdDescTemp: ''
       }]
@@ -808,7 +846,10 @@ export default {
             prdCostPrice: 0,
             prdNumber: 0,
             prdSn: null,
-            prdImg: null,
+            prdImg: {
+              imgUrl: null,
+              imgPath: null
+            },
             prdDesc: '',
             prdDescTemp: ''
           }
@@ -964,7 +1005,10 @@ export default {
           prdCostPrice: specPrd.prdCostPrice,
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
-          prdImg: specPrd.prdImg,
+          prdImg: {
+            imgUrl: specPrd.prdImg,
+            imgPath: specPrd.prdImgPath
+          },
           prdDesc: specPrd.prdDesc,
           prdSpecs: specPrd.prdSpecs
         }
@@ -980,7 +1024,10 @@ export default {
           prdCostPrice: specPrd.prdCostPrice,
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
-          prdImg: specPrd.prdImg,
+          prdImg: {
+            imgUrl: specPrd.prdImg,
+            imgPath: specPrd.prdImgPath
+          },
           prdDesc: specPrd.prdDesc,
           prdSpecs: specPrd.prdSpecs,
           prdDescTemp: specPrd.prdDesc.replace(reg, ' ').trim(),
@@ -1237,7 +1284,7 @@ export default {
             prdNumber: specProduct.prdNumber,
             prdMarketPrice: this.goodsProductInfo.marketPrice,
             prdSn: specProduct.prdSn,
-            prdImg: specProduct.prdImg
+            prdImg: specProduct.prdImg.imgPath
           })
 
           // 填充对应规格的会员价格
@@ -1352,6 +1399,8 @@ table th {
   border: 1px solid #cad9ea;
   color: #666;
   height: 30px;
+  vertical-align: middle !important;
+  text-align: center;
 }
 
 table thead th {

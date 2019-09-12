@@ -99,7 +99,7 @@
       </el-form-item>
     </el-form>
     <!--解决图片弹框非单例的问题-->
-    <ImageDalog v-if="stepData.currentStep === 3"
+    <ImageDalog v-if="selfImgDialogShow"
       pageIndex='pictureSpace'
       @handleSelectImg='imgDialogSelectedCallback'
     />
@@ -115,12 +115,13 @@ import { isStrBlank } from '@/util/goodsUtil'
 export default {
   name: 'addingGoodsDistributionInfo',
   props: ['goodsProductInfoData'],
-  inject: ['stepData', 'isUpdateWrap'],
+  inject: ['isUpdateWrap'],
   components: {
     ImageDalog
   },
   data () {
     return {
+      selfImgDialogShow: false,
       goodsDistributionInfo: {
         canRebate: false,
         goodsRebatePrices: [],
@@ -191,10 +192,12 @@ export default {
       if (this.goodsDistributionInfo.shareAction !== 2 || this.goodsDistributionInfo.shareImgAction !== 2) {
         return
       }
-      this.$http.$emit('dtVisible')
+      this.selfImgDialogShow = true
+      this.$nextTick(() => this.$http.$emit('dtVisible'))
     },
     /* 添加图片点击回调事件 */
     imgDialogSelectedCallback (imgObj) {
+      this.selfImgDialogShow = false
       this.goodsDistributionInfo.shareImgObj = {imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl}
     },
     /* 初始化待修改商品数据 */
