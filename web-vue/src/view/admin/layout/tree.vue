@@ -65,6 +65,16 @@ export default {
   },
   mounted () {
     console.log(this.$parent)
+    this.$http.$on('ABusaddingBusBack', res => {
+      console.log(res)
+      res.filter(item => {
+        console.log(this.data.sortId, item)
+        if (`${this.data.sortId}` === item) {
+          this.checked = true
+        }
+      })
+      console.log(res)
+    })
     this.type = false
   },
   methods: {

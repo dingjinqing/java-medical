@@ -1177,6 +1177,7 @@ export default {
     hanldeToAddGoodS (index) {
       console.log('指定商品')
       this.userDialogFlag = '1'
+      let arr = ['21']
       console.log(index)
       switch (index) {
         case 0:
@@ -1184,7 +1185,7 @@ export default {
           break
         case 1:
           this.AtreeType = 1
-          this.$http.$emit('AaddingBusClassDialog', index)
+          this.$http.$emit('AaddingBusClassDialog', arr)
           break
         case 2:
           this.AtreeType = 2

@@ -129,7 +129,7 @@ export default {
           }
           this.newArr = buckets[0].children
           setTimeout(() => {
-            this.$http.$emit('addingBusBack', backData)
+            this.$http.$emit('ABusaddingBusBack', backData)
           }, 100)
           console.log(buckets[0].children)
         }
