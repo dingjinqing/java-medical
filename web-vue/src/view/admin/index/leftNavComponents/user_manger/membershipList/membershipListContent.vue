@@ -843,19 +843,7 @@ export default {
       phoneNum: '',
       vxName: '',
       inviteUserName: '',
-      sourceOptions: [{
-        value: '-2',
-        label: this.$t('membershipIntroduction.allSource')
-      }, {
-        value: '-1',
-        label: this.$t('membershipIntroduction.notAcquired')
-      }, {
-        value: '0',
-        label: this.$t('membershipIntroduction.backStage')
-      }, {
-        value: '-3',
-        label: this.$t('membershipIntroduction.scanQrCode')
-      }],
+      sourceOptions: [],
       sourceValue: '',
       membershipCardOptions: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
@@ -1013,6 +1001,31 @@ export default {
     }
   },
   watch: {
+    lang () {
+      let source = [{
+        value: '-2',
+        label: this.$t('membershipIntroduction.allSource')
+      }, {
+        value: '-1',
+        label: this.$t('membershipIntroduction.notAcquired')
+      }, {
+        value: '0',
+        label: this.$t('membershipIntroduction.backStage')
+      }, {
+        value: '-3',
+        label: this.$t('membershipIntroduction.scanQrCode')
+      }]
+      this.sourceOptions = source
+      // 初始化会员列表数据
+      this.defaultTabelListData()
+      // 初始化会员卡下拉框列表
+      this.getAllUserCard()
+      // 初始化来源下拉框列表
+      this.getAllSource()
+      // 初始化标签数据
+      this.getAllTag()
+      console.log('数据初始化完成')
+    },
     allChecked (newData) {
       if (newData === true) {
         this.trList.map((item, index) => {
@@ -1136,6 +1149,7 @@ export default {
     // 获取来源
     getAllSource () {
       allSourceRequest().then(res => {
+        debugger
         console.log('-------------获取所有门店---------------------')
         console.log(res.content)
         this.sourceOptions = this.sourceOptions.concat(res.content)
