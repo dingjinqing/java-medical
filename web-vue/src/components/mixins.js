@@ -144,6 +144,20 @@ const myMixin = {
       } else {
         return this.$t('marketCommon.deactivated')
       }
+    },
+    // 输出格式yyyy-MM-dd HH:mm:ss
+    getFormatDate (dt) {
+      var year = dt.getFullYear()
+      var month = dt.getMonth() + 1
+      if (month < 10) {
+        month = '0' + month
+      }
+      var day = dt.getDate()
+      var hour = dt.getHours()
+      var minut = dt.getMinutes()
+      var second = dt.getSeconds()
+
+      return year + '-' + month + '-' + day + ' ' + hour + ':' + minut + ':' + second
     }
   }
 }

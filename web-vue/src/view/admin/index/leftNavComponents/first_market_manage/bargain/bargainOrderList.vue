@@ -93,85 +93,76 @@
           }"
           :cell-class-name="goodsInfo"
         >
-          <template v-for="item in tableLabel">
-
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-if="item.index === 2"
-            >
-              <template slot-scope="scope">
-                <div
-                  v-for="goodsItem in scope.row.goods.slice(0, 1)"
-                  :key="goodsItem.goodsId"
-                  class="goods_info"
-                >
-                  <img
-                    :src="$imageHost+'/image/admin/icon_jia.png'"
-                    alt=""
-                    class="goods_img"
-                  >
-                  <span class="goods_name">{{goodsItem.goodsName}}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else-if="item.index === 3"
-            >
-              <template slot-scope="scope">
-                <div
-                  v-for="goodsItem in scope.row.goods.slice(0, 1)"
-                  :key="goodsItem.goodsId"
-                  class="goods_info"
-                >
-                  <span class="goods_price">{{goodsItem.goodsPrice}}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else-if="item.index === 5"
-            >
-              <template
-                slot-scope="scope"
-                @click="jumpUserInfo(scope.row.userId)"
+          <el-table-column
+            prop="orderSn"
+            label="订单号"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            label="砍价商品"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <div
+                v-for="goodsItem in scope.row.goods.slice(0, 1)"
+                :key="goodsItem.goodsId"
+                class="goods_info"
               >
-                <span>{{scope.row.username}}</span><br><span>{{scope.row.userMobile}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else-if="item.index === 6"
+                <img
+                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  alt=""
+                  class="goods_img"
+                >
+                <span class="goods_name">{{goodsItem.goodsName}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="单价"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <div
+                v-for="goodsItem in scope.row.goods.slice(0, 1)"
+                :key="goodsItem.goodsId"
+                class="goods_info"
+              >
+                <span class="goods_price">{{goodsItem.goodsPrice}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="下单时间"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            label="下单人信息"
+            align="center"
+          >
+            <template
+              slot-scope="scope"
+              @click="jumpUserInfo(scope.row.userId)"
             >
-              <template slot-scope="scope">
-                <span>{{scope.row.consignee}}</span><br><span>{{scope.row.mobile}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else-if="item.index === 7"
-            >
-              <template slot-scope="scope">
-                <span>￥{{scope.row.moneyPaid}}</span><br><span>(含快递￥{{scope.row.shippingFee}})</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else
-            ></el-table-column>
-          </template>
+              <span>{{scope.row.username}}</span><br><span>{{scope.row.userMobile}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="收货人信息"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.consignee}}</span><br><span>{{scope.row.mobile}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="orderStatus"
+            label="订单状态"
+            align="center"
+          >
+          </el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"
@@ -201,16 +192,6 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
-      tableLabel: [
-        { index: 1, prop: 'orderSn', label: '订单编号' },
-        { index: 2, prop: '', label: '砍价商品' },
-        { index: 3, prop: 'goodsPrice', label: '单价' },
-        { index: 4, prop: 'createTime', label: '下单时间' },
-        { index: 5, prop: '', label: '下单人信息' },
-        { index: 6, prop: '', label: '收货人信息' },
-        { index: 7, prop: 'moneyPaid', label: '支付金额' },
-        { index: 8, prop: 'orderStatus', label: '订单状态' }
-      ],
       orderStatus: [
         { value: -1, label: '全部订单' },
         { value: 1, label: '待付款' },

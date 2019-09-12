@@ -117,7 +117,6 @@
                 <i
                   class="el-icon-edit-outline"
                   @click="edit(scope.row.id)"
-                  style="color:#409EFF;fontSize:16px"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -130,7 +129,6 @@
                 <i
                   @click="delBargain(scope.row.id)"
                   class="el-icon-delete"
-                  style="color:#409EFF;fontSize:16px"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -143,7 +141,6 @@
                 <i
                   @click="puaseBargain(scope.row.id)"
                   class="el-icon-remove-outline"
-                  style="color:#409EFF;fontSize:16px"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -156,7 +153,6 @@
                 <i
                   @click="enableBargain(scope.row.id)"
                   class="el-icon-check"
-                  style="color:#409EFF;fontSize:16px"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -168,7 +164,6 @@
                 <i
                   @click="shareBargain(scope.row.id)"
                   class="el-icon-share"
-                  style="color:#409EFF;fontSize:16px"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -212,7 +207,7 @@
               >
                 <i
                   class="el-icon-s-order"
-                  @click="effectData(scope.row.id)"
+                  @click="effectData(scope.row.id,scope.row.startTime,scope.row.endTime)"
                 ></i>
               </el-tooltip>
             </div>
@@ -412,11 +407,17 @@ export default {
     },
 
     // 跳转到活动效果数据页面
-    effectData (id) {
+    effectData (id, startTime, endTime) {
+      let d = new Date()
+      if (d < new Date(endTime)) {
+        endTime = this.getFormatDate(d)
+      }
       this.$router.push({
         path: '/admin/home/main/bargain/effectData',
         query: {
-          id: id
+          id: id,
+          startTime: startTime,
+          endTime: endTime
         }
       })
     },
@@ -465,11 +466,13 @@ export default {
 }
 .operation {
   display: flex;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-left: -5px;
   > .item {
     font-size: 22px;
     color: #66b1ff;
     cursor: pointer;
+    margin-left: 5px;
   }
 }
 /deep/ .tableClss th {

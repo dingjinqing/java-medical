@@ -1,12 +1,21 @@
 <!--
-* 砍价 - 获取新用户明细页面
+* 砍价 - 帮忙砍价用户列表
 *
-* @author: 赵鑫
+* @author: 王兵兵
 -->
 <template>
   <div>
     <wrapper>
       <section class="newuserDetailContent">
+        <div>
+          <span>用户昵称</span>
+          <el-input
+            v-model="requestParams.username"
+            class="inputWidth"
+            size="small"
+            placeholder="请输入用户昵称"
+          ></el-input>
+        </div>
         <div>
           <span>手机号</span>
           <el-input
@@ -16,30 +25,18 @@
             placeholder="请输入手机号"
           ></el-input>
         </div>
-        <div>
-          <span>用户昵称</span>
-          <el-input
-            v-model="requestParams.userName"
-            class="inputWidth"
-            size="small"
-            placeholder="请输入用户昵称"
-          ></el-input>
-        </div>
-        <div>
-          <span>邀请人</span>
-          <el-input
-            v-model="requestParams.inviteUserName"
-            class="inputWidth"
-            size="small"
-            placeholder="请输入邀请人昵称"
-          ></el-input>
-        </div>
         <el-button
           @click="initDataList"
           class="btn"
           type="primary"
           size="small"
         >查询</el-button>
+        <el-button
+          @click="exportDataList"
+          class="btn"
+          type="primary"
+          size="small"
+        >导出表格</el-button>
       </section>
     </wrapper>
 
@@ -53,36 +50,36 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="userId"
-            label="新用户ID"
+            prop="id"
+            label="ID"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="userName"
-            label="新用户昵称"
+            prop="username"
+            label="用户昵称"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="mobile"
-            label="新用户手机号"
+            label="手机号"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="createTime"
-            label="注册时间"
+            label="砍价时间"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="inviteUserName"
-            label="邀请人"
+            prop="bargainMoney"
+            label="帮砍价格"
             align="center"
           >
           </el-table-column>
@@ -99,19 +96,20 @@
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination'
-import { getBargainSourceUserList } from '@/api/admin/marketManage/bargain.js'
+import { getBargainUserPageList } from '@/api/admin/marketManage/bargain.js'
 
 export default {
   components: { wrapper, pagination },
   mounted () {
-    if (this.$route.query.id > 0) {
-      this.actId = this.$route.query.id
+    if (this.$route.query.recordId > 0) {
+      this.recordId = this.$route.query.recordId
       this.initDataList()
     }
   },
   data () {
     return {
       loading: false,
+      recordId: null,
       requestParams: {},
       pageParams: {},
       tableData: [],
@@ -123,10 +121,10 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.requestParams.activityId = this.actId
+      this.requestParams.recordId = this.recordId
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
-      getBargainSourceUserList(this.requestParams).then((res) => {
+      getBargainUserPageList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))

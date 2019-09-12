@@ -5,30 +5,27 @@
 -->
 <template>
   <div>
-    <wrapper class="dataContent">
+    <wrapper
+      class="dataContent"
+      v-loading="loading"
+    >
       <!-- 日期筛选部分 -->
       <div style="display:flex">
         <div style="height:32px;line-height:32px">筛选日期：</div>
         <div class="selectTime">
           <el-date-picker
+            v-model="selectDate"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
-            v-model="value1"
-            type="datetime"
-            placeholder="选择开始时间"
-            default-time="12:00:00"
-          >
-          </el-date-picker>
-          <span>至</span>
-          <el-date-picker
-            size="small"
-            v-model="value1"
-            type="datetime"
-            placeholder="选择接受时间"
-            default-time="12:00:00"
           >
           </el-date-picker>
         </div>
         <el-button
+          @click="initDataList"
           style="margin-left: 10px;"
           type="primary"
           size="mini"
@@ -52,7 +49,7 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >1</div>
+          >{{totalNumbers.recordTotal}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -69,7 +66,7 @@
           <div
             class="num"
             style="color: #fc6181;"
-          >2</div>
+          >{{totalNumbers.userTotal}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -86,7 +83,7 @@
           <div
             class="num"
             style="color: #fdb64a;"
-          >0</div>
+          >{{totalNumbers.orderTotal}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -103,7 +100,7 @@
           <div
             class="num"
             style="color: #3dcf9a;"
-          >0</div>
+          >{{totalNumbers.sourceTotal}}</div>
         </div>
       </section>
 
@@ -117,71 +114,100 @@
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
 import echarts from 'echarts'
+import { getRecordAnalysisData } from '@/api/admin/marketManage/bargain.js'
 
 export default {
   components: { wrapper },
   data () {
     return {
-      value1: ''
+      loading: false,
+      actId: null,
+      requestParams: {},
+      selectDate: '',
+      bargainAnalysisTotalVo: {},
+      echartsData: {},
+      totalNumbers: {},
+      originalData: {},
+      myChart: {}
     }
   },
-  mounted () {
-    // let this_ = this
-    let myChart = echarts.init(document.getElementById('charts'))
-    let option = {
-      tooltip: {
-        trigger: 'axis'
-      },
-      legend: {
-        name: ['发起砍价用户数 ', '帮砍人次 ', '活动订单数 ', '拉新用户数 ']
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis: [
+  methods: {
+    initDataList () {
+      this.loading = true
+      this.requestParams.bargainId = this.actId
+      this.requestParams.startTime = this.selectDate[0]
+      this.requestParams.endTime = this.selectDate[1]
+      getRecordAnalysisData(this.requestParams).then((res) => {
+        if (res.error === 0) {
+          this.originalData = res.content
+          console.log(this.originalData)
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
+          this.loading = false
+        }
+      })
+    },
+
+    handleData (data) {
+      // 顶部数据部分
+      this.totalNumbers = data.total
+
+      // echarts数据渲染
+      this.echartsData.tooltip = { trigger: 'axis' }
+      this.echartsData.legend = { name: ['发起砍价用户数 ', '帮砍人次 ', '活动订单数 ', '拉新用户数 '] }
+      this.echartsData.grid = { left: '3%', right: '4%', bottom: '3%', containLabel: true }
+      this.echartsData.xAxis = [
         {
           type: 'category',
-          data: ['2019-09-01', '2019-09-02', '2019-09-03', '2019-09-04', '2019-09-05',
-            '2019-09-06', '2019-09-07', '2019-09-08', '2019-09-09', '2019-09-10', '2019-09-11'],
+          data: data.dateList,
           boundaryGap: false
         }
-      ],
-      yAxis: [
+      ]
+      this.echartsData.yAxis = [
         {
           type: 'value'
         }
-      ],
-      series: [
+      ]
+      this.echartsData.series = [
         {
           name: '发起砍价用户数',
           type: 'line',
           stack: '总量',
-          data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+          data: data.recordNumber
         },
         {
           name: '帮砍人次',
           type: 'line',
           stack: '总量',
-          data: [0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0]
+          data: data.userNumber
         },
         {
           name: '活动订单数',
           type: 'line',
           stack: '总量',
-          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          data: data.orderNumber
         },
         {
           name: '拉新用户数',
           type: 'line',
           stack: '总量',
-          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          data: data.sourceNumber
         }
       ]
+
+      this.myChart.setOption(this.echartsData)
     }
-    myChart.setOption(option)
+
+  },
+  mounted () {
+    if (this.$route.query.id > 0) {
+      this.actId = this.$route.query.id
+      this.selectDate = []
+      this.selectDate.push(this.$route.query.startTime)
+      this.selectDate.push(this.$route.query.endTime)
+      this.initDataList()
+    }
+    this.myChart = echarts.init(document.getElementById('charts'))
 
     // 建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
     // window.addEventListener('resize', function () { myChart.resize() })

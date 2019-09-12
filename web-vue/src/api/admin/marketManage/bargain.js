@@ -69,10 +69,64 @@ export function getBargainByIsd (data) {
   })
 }
 
-// 砍价活动列表
+// 砍价订单列表
 export function getBargainOrderList (data) {
   return service({
     url: '/api/admin/market/bargain/order',
+    method: 'post',
+    data: data
+  })
+}
+
+// 发起砍价的用户列表
+export function getRecordPageList (data) {
+  return service({
+    url: '/api/admin/market/bargain/record/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 导出发起砍价的用户列表
+export function exportBargainRecordList (data) {
+  return service({
+    url: '/api/admin/market/bargain/record/list/export',
+    method: 'post',
+    data: data
+  })
+}
+
+// 帮忙砍价的用户列表
+export function getBargainUserPageList (data) {
+  return service({
+    url: '/api/admin/market/bargain/record/detail',
+    method: 'post',
+    data: data
+  })
+}
+
+// 导出帮忙砍价的用户列表
+export function exportBargainUserList (data) {
+  return service({
+    url: '/api/admin/market/bargain/user/list/export',
+    method: 'post',
+    data: data
+  })
+}
+
+// 砍价效果分析
+export function getRecordAnalysisData (data) {
+  return service({
+    url: '/api/admin/market/bargain/analysis',
+    method: 'post',
+    data: data
+  })
+}
+
+// 砍价拉新用明细
+export function getBargainSourceUserList (data) {
+  return service({
+    url: '/api/admin/market/bargain/source',
     method: 'post',
     data: data
   })

@@ -439,11 +439,13 @@ export default {
     }
     .operation {
       display: flex;
-      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-left: -5px;
       > .item {
         font-size: 22px;
         color: #66b1ff;
         cursor: pointer;
+        margin-left: 5px;
       }
     }
     .tapOneblock {

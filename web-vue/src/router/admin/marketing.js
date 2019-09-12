@@ -137,6 +137,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/bargain/activityEffectData'
       )
   },
+  // 砍价 - 帮忙砍价用户列表
+  {
+    path: '/admin/home/main/bargain/record/detail',
+    name: 'bargain_record_detail',
+    meta: {
+      crumbTitle: 'router.bargain_record_detail',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/recordDetail'
+      )
+  },
   // 多人拼团
   {
     path: '/admin/home/main/spellGroup',
