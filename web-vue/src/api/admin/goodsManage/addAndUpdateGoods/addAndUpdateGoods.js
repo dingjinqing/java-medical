@@ -62,7 +62,14 @@ export function getGoodsList (data) {
     data
   })
 }
-
+// 商品名、商品编码、商品规格编码是否已存在
+export function isGoodsColumnValueExist (data) {
+  return service({
+    url: `/api/admin/goods/columns/exist`,
+    method: 'post',
+    data
+  })
+}
 // 获取所有等级会员卡
 export function getLevelCardList () {
   return service({

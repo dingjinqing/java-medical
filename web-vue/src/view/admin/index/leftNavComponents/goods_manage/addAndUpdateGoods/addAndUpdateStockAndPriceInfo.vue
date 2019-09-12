@@ -104,7 +104,7 @@
               <td><input :id="'prdPrice_'+item.prdDesc" v-model.number="item.prdPrice" @change="specPrdInputChange(item.prdPrice,'prdPrice_'+item.prdDesc,item)"/></td>
               <td><input :id="'prdCostPrice_'+item.prdCostPrice" v-model.number="item.prdCostPrice" @change="specPrdInputChange(item.prdCostPrice,'prdCostPrice_'+item.prdCostPrice,item)"/></td>
               <td><input :id="'prdNumber_'+item.prdNumber" v-model.number="item.prdNumber" @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdNumber,item)"/></td>
-              <td><input :id="'prdSn_'+item.prdDesc" @change="specPrdSnChange(item,index,$event.target.value,$event)"/></td>
+              <td><input :id="'prdSn_'+item.prdDesc" v-model="item.prdSn" @change="specPrdSnChange(item,index,$event.target.value,$event)"/></td>
               <td>
                 <div style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;" @click="prdImgClick(item)">
                   <img v-if="item.prdImg.imgUrl === null" style="width: 30px;height: 30px;"  :src="$imageHost+'/image/admin/add_img.png'">
@@ -366,6 +366,7 @@
               v-model="goodsProductInfo.prdSn"
               size="small"
               style="width:170px;"
+              @change="defaultSpecPrdChangeRepeatCheck"
             />
           </el-form-item>
 
@@ -385,7 +386,7 @@
 // TODO: 3.会员价格table表格样式未实现
 
 // 接口函数引入
-import { getLevelCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import { getLevelCardList, isGoodsColumnValueExist } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 import ImageDalog from '@/components/admin/imageDalog'
@@ -417,7 +418,8 @@ export default {
         prdNumber: 0,
         prdPrice: 0,
         prdCost: 0,
-        prdSn: null
+        prdSn: null,
+        prdSnBak: null
       },
       stockAndPriceRules: {
         prdNumber: [
@@ -599,13 +601,33 @@ export default {
     },
     /* 规格编码改变 */
     specPrdSnChange (item, index, newVal, event) {
+      if (isStrBlank(newVal)) {
+        item.prdSn = null
+        item.prdSnBak = null
+        return
+      }
+
       if (this._isSpecPrdSnRepeated(index, newVal)) {
         this.$message({message: 'sku编码重复', type: 'warning'})
-        event.target.value = item.prdSn
+        item.prdSn = item.prdSnBak
         event.target.focus()
         return
       }
-      item.prdSn = newVal
+
+      let data = {
+        columnCheckFor: 1,
+        prdId: item.prdId,
+        prdSn: newVal
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message({message: 'sku编码重复', type: 'warning'})
+          item.prdSn = item.prdSnBak
+          event.target.focus()
+        } else {
+          item.prdSnBak = item.prdSn
+        }
+      })
     },
     /* 判断规格名称是否存在重复 */
     _isSpecInfoNameRepeated (kIndex, newVal) {
@@ -727,20 +749,7 @@ export default {
         }
       })
 
-      let goodsSpecProducts = [{
-        tempId: this.goodsSpecProductsIndex++,
-        prdId: null,
-        prdPrice: 0,
-        prdCostPrice: 0,
-        prdNumber: 0,
-        prdSn: null,
-        prdImg: {
-          imgUrl: null,
-          imgPath: null
-        },
-        prdDesc: '',
-        prdDescTemp: ''
-      }]
+      let goodsSpecProducts = [this._getGoodsSpecProductObj()]
 
       goodsSpecProducts = this._calculateCartesian(0, goodsSpecs, goodsSpecProducts)
 
@@ -789,20 +798,7 @@ export default {
       }
 
       // 笛卡尔计算初始化操作
-      let goodsSpecProducts = [{
-        tempId: this.goodsSpecProductsIndex++,
-        prdId: null,
-        prdPrice: 0,
-        prdCostPrice: 0,
-        prdNumber: 0,
-        prdSn: null,
-        prdImg: {
-          imgUrl: null,
-          imgPath: null
-        },
-        prdDesc: '',
-        prdDescTemp: ''
-      }]
+      let goodsSpecProducts = [this._getGoodsSpecProductObj()]
 
       this.goodsProductInfo.goodsSpecProducts = this._calculateCartesian(0, this.goodsProductInfo.goodsSpecs, goodsSpecProducts)
     },
@@ -839,20 +835,8 @@ export default {
         for (let j = 0; j < goodsSpecProducts.length; j++) {
           let goodsSpec = goodsSpecProducts[j]
 
-          let tempSpec = {
-            tempId: this.goodsSpecProductsIndex++,
-            prdId: null,
-            prdPrice: 0,
-            prdCostPrice: 0,
-            prdNumber: 0,
-            prdSn: null,
-            prdImg: {
-              imgUrl: null,
-              imgPath: null
-            },
-            prdDesc: '',
-            prdDescTemp: ''
-          }
+          let tempSpec = this._getGoodsSpecProductObj()
+
           tempSpec.prdDesc = item.specName + PRD_VAL_DELIMITER + specVal.specValName
           tempSpec.prdDescTemp = specVal.specValName
 
@@ -872,6 +856,24 @@ export default {
       goodsSpecProducts = tempArr
       // 递归计算下一项规格
       return this._calculateCartesian(curIndex + 1, goodsSpecs, goodsSpecProducts)
+    },
+    // 获取商品规格项对象模板
+    _getGoodsSpecProductObj () {
+      return {
+        tempId: this.goodsSpecProductsIndex++,
+        prdId: null,
+        prdPrice: 0,
+        prdCostPrice: 0,
+        prdNumber: 0,
+        prdSn: null,
+        prdSnBak: null,
+        prdImg: {
+          imgUrl: null,
+          imgPath: null
+        },
+        prdDesc: '',
+        prdDescTemp: ''
+      }
     },
     /** 会员卡部分交互函数 **/
     /* 等级会员卡数据初始化 */
@@ -967,6 +969,26 @@ export default {
       }
       return true
     },
+    defaultSpecPrdChangeRepeatCheck () {
+      if (isStrBlank(this.goodsProductInfo.prdSn)) {
+        this.goodsProductInfo.prdSnBak = this.goodsProductInfo.prdSn
+        return
+      }
+
+      let data = {
+        columnCheckFor: 0,
+        goodsId: this.goodsProductInfo.goodsId,
+        goodsSn: this.goodsProductInfo.prdSn
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message({type: 'warning', message: '商品规格已存在'})
+          this.goodsProductInfo.prdSn = this.goodsProductInfo.prdSnBak
+        } else {
+          this.goodsProductInfo.prdSnBak = this.goodsProductInfo.prdSn
+        }
+      })
+    },
     /** 以下是页面数据初始化辅助函数 **/
     /* 初始化会员价复选框 */
     _initMemberCards (goodsData) {
@@ -1005,6 +1027,7 @@ export default {
           prdCostPrice: specPrd.prdCostPrice,
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
+          prdSnBak: specPrd.prdSn,
           prdImg: {
             imgUrl: specPrd.prdImg,
             imgPath: specPrd.prdImgPath
@@ -1024,6 +1047,7 @@ export default {
           prdCostPrice: specPrd.prdCostPrice,
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
+          prdSnBak: specPrd.prdSn,
           prdImg: {
             imgUrl: specPrd.prdImg,
             imgPath: specPrd.prdImgPath

@@ -17,6 +17,7 @@
             v-model="goodsProductInfo.goodsName"
             size="small"
             style="width:400px"
+            @change="goodsNameChangeRepeatCheck"
           />
         </el-form-item>
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsAd')">
@@ -31,6 +32,7 @@
             v-model="goodsProductInfo.goodsSn"
             size="small"
             style="width:170px;"
+            @change="goodsSnChangeRepeatCheck"
           />
           <span class="inputTip">{{$t("goodsAddEditInfo.basicInfo.goodsSnTip")}}</span>
         </el-form-item>
@@ -344,7 +346,8 @@
 import {
   selectPlatformClassification,
   goodsSortAndGoodsBrandInitApi,
-  selectParentPlatfromClassification
+  selectParentPlatfromClassification,
+  isGoodsColumnValueExist
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import {goodsBrandClassifyListApi, goodsBrandPageListApi} from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
@@ -355,15 +358,17 @@ import pagination from '@/components/admin/pagination/pagination'
 
 export default {
   components: { ImageDalog, pagination },
-  inject: ['isUpdateWrap'],
   data () {
     return {
       selfImgDialogShow: false,
       goodsProductInfo: {
+        goodsId: null,
         // 基本信息
         goodsName: null,
+        goodsNameBak: null,
         goodsAd: null,
         goodsSn: null,
+        goodsSnBak: null,
         catId: null,
         // [{imgUrl:'http://upload/a.jpg',imgPath:upload/a.jpg}]
         goodsImgs: [],
@@ -476,6 +481,48 @@ export default {
   },
   methods: {
     /* 基本信息部分 */
+    // 商品名称重复性检查
+    goodsNameChangeRepeatCheck () {
+      if (isStrBlank(this.goodsProductInfo.goodsName)) {
+        this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
+        return
+      }
+
+      let data = {
+        columnCheckFor: 0,
+        goodsId: this.goodsProductInfo.goodsId,
+        goodsName: this.goodsProductInfo.goodsName
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message({type: 'warning', message: '商品名称已存在'})
+          this.goodsProductInfo.goodsName = this.goodsProductInfo.goodsNameBak
+        } else {
+          this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
+        }
+      })
+    },
+    // 商品货号重复性检查
+    goodsSnChangeRepeatCheck () {
+      if (isStrBlank(this.goodsProductInfo.goodsSn)) {
+        this.goodsProductInfo.goodsSnBak = this.goodsProductInfo.goodsSn
+        return
+      }
+
+      let data = {
+        columnCheckFor: 0,
+        goodsId: this.goodsProductInfo.goodsId,
+        goodsSn: this.goodsProductInfo.goodsSn
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message({type: 'warning', message: '商品货号已存在'})
+          this.goodsProductInfo.goodsSn = this.goodsProductInfo.goodsSnBak
+        } else {
+          this.goodsProductInfo.goodsSnBak = this.goodsProductInfo.goodsSn
+        }
+      })
+    },
     // 平台分类下拉框交互
     catIdSelectChange (level, catId) {
       this.goodsProductInfo.catId = catId
@@ -723,9 +770,12 @@ export default {
     initDataForUpdate (goodsData) {
       // 先初始化页面数据再渲染待修改商品数据
       this.initPageDataLink().then(() => {
+        this.goodsProductInfo.goodsId = goodsData.goodsId
         this.goodsProductInfo.goodsName = goodsData.goodsName
+        this.goodsProductInfo.goodsNameBak = goodsData.goodsName
         this.goodsProductInfo.goodsAd = goodsData.goodsAd
         this.goodsProductInfo.goodsSn = goodsData.goodsSn
+        this.goodsProductInfo.goodsSnBak = goodsData.goodsSn
         this.goodsProductInfo.catId = goodsData.catId
         // 初始化平台分类
         this._initCatId(goodsData)
