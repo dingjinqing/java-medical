@@ -60,6 +60,7 @@
               v-if="item.index === 11"
             >
               <template slot-scope="scope">
+
                 <div class="operation">
                   <el-tooltip
                     class="item"
@@ -120,17 +121,17 @@ export default {
       ],
       tableData: [],
       tableLabel: [
-        { index: 1, prop: 'userName', label: '用户昵称' },
+        { index: 1, prop: 'username', label: '用户昵称' },
         { index: 2, prop: 'mobile', label: '手机号码' },
         { index: 3, prop: 'couponName', label: '优惠券名称' },
-        { index: 4, prop: 'getType', label: '领取方式' },
-        { index: 5, prop: 'score', label: '兑换积分数' },
-        { index: 6, prop: 'useStatus', label: '是否使用' },
+        { index: 4, prop: 'accessMode', label: '领取方式' },
+        { index: 5, prop: 'scoreNumber', label: '兑换积分数' },
+        { index: 6, prop: 'isUsed', label: '是否使用' },
         { index: 7, prop: 'orderSn', label: '使用订单号' },
-        { index: 8, prop: 'validityPeriod', label: '有效期' },
-        { index: 9, prop: 'getTime', label: '领取时间' },
-        { index: 10, prop: 'useTime', label: '使用时间' },
-        { index: 11, prop: '', label: '操作' }
+        { index: 8, prop: 'validityTime', label: '有效期' },
+        { index: 9, prop: 'createTime', label: '领取时间' },
+        { index: 10, prop: 'usedTime', label: '使用时间' },
+        { index: 11, prop: 'delflag', label: '操作' }
       ]
     }
   },
@@ -139,10 +140,23 @@ export default {
       this.pageParams.id = this.id
       couponGetDetail(this.pageParams).then(res => {
         if (res.error === 0) {
-          this.tableData = res.content.dataList
-          this.pageParams = res.page
+          console.log(res)
+          this.handleData(res.content.dataList)
+          // this.tableData = res.content.dataList
+          this.pageParams = res.content.page
         }
       })
+    },
+    handleData (data) {
+      data.map((item, index) => {
+        if (item.accessMode === 0) {
+          item.accessMode = '发放'
+        } else {
+          item.accessMode = '领取'
+        }
+        item.validityTime = `${item.startTime} 至  ${item.endTime}`
+      })
+      this.tableData = data
     },
     foramtUseStatus (data) {
       switch (data) {
