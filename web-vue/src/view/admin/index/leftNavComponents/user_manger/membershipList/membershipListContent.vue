@@ -897,28 +897,8 @@ export default {
       balanceDialogInput: '',
       balanceDialogBottomInput: '',
       addDialogData: [],
-      balanceDialogData: [
-        {
-          title: '修改金额',
-          presentText: '当前金额',
-          persentMoney: '',
-          addText: '增加金额',
-          tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
-          bzText: '增加备注',
-          index: 0
-        }
-      ],
-      integralDialogData: [
-        {
-          title: '修改积分',
-          presentText: '当前积分',
-          persentMoney: '',
-          addText: '增加积分',
-          tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
-          bzText: '增加备注',
-          index: 1
-        }
-      ],
+      balanceDialogData: '',
+      integralDialogData: '',
       allCheckFlag: false,
       setUpDialogVisible: false,
       setUpFalg_1: true,
@@ -1015,6 +995,8 @@ export default {
         value: '-3',
         label: this.$t('membershipIntroduction.scanQrCode')
       }]
+      this.balanceDialogData = this.$t('membershipIntroduction.balanceDialogData')
+      this.integralDialogData = this.$t('membershipIntroduction.integralDialogData')
       this.sourceOptions = source
       // 初始化会员列表数据
       this.defaultTabelListData()
@@ -1149,7 +1131,6 @@ export default {
     // 获取来源
     getAllSource () {
       allSourceRequest().then(res => {
-        debugger
         console.log('-------------获取所有门店---------------------')
         console.log(res.content)
         this.sourceOptions = this.sourceOptions.concat(res.content)
