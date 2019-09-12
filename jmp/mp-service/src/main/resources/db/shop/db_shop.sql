@@ -123,7 +123,7 @@ create table `b2c_user_detail`
     `district_code`   mediumint(10)         default null comment '所在地区编号',
     `address`         varchar(120)          default null comment '所在地',
     `marital_status`  tinyint(1)            default null comment '婚姻状况：1未婚，2已婚，3保密',
-    `monthly_income`  tinyint(1)            default null comment '月收入',
+    `monthly_income`  int(8)            default null comment '月收入',
     `cid`             varchar(18)           default null comment '身份证号码',
     `education`       tinyint(1)            default null comment '教育程度',
     `industry_info`   tinyint(1)            default null comment '所在行业',

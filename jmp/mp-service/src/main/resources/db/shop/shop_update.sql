@@ -867,3 +867,6 @@ create table `b2c_group_buy_define`
 
 -- 分享有礼b2c_share_award表添加删除时间字段 liufei
 alter table b2c_share_award add column `del_time` timestamp null default null comment '删除时间';
+
+-- 黄壮壮： 修改b2c_user_detail中月收入monthly_income 类型tinyint为int(8)
+alter table b2c_user_detail MODIFY COLUMN monthly_income int(8)
