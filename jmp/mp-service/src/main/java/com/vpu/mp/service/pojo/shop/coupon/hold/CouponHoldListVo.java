@@ -23,6 +23,7 @@ public class CouponHoldListVo {
      * 优惠券状态 0 未使用 1 使用 2 过期 3 废除
      */
     private Integer isUsed;
+    private Integer scoreNumber;
     private String orderSn;
     private Timestamp startTime;
     private Timestamp endTime;
