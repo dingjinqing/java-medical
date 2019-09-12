@@ -55,7 +55,7 @@
               size="small"
             >
               <el-option
-                v-for="item in selectOptions"
+                v-for="item in $t('pictureSetting.pageClassification')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -359,9 +359,6 @@ export default {
             item.ischeck = false
           })
       }
-    },
-    lang () {
-      this.selectOptions = this.$t('pictureSetting.pageClassification')
     },
     'tableData': {
       handler (newData) {
