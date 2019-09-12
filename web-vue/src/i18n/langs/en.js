@@ -101,7 +101,7 @@ import {
   en as pictureSetting
 } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 // 订单
-import { cn as order } from './views/admin/index/leftNavComponents/order/order'
+import { en as order } from './views/admin/index/leftNavComponents/order/order'
 const en = {
   messages: {
     lang: 'English',
