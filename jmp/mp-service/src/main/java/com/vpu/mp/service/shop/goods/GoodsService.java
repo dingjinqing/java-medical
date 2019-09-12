@@ -880,6 +880,7 @@ public class GoodsService extends ShopBaseService {
 
         //设置sku
         List<GoodsSpecProduct> goodsSpecProducts = goodsSpecProductService.selectByGoodsId(goodsId);
+        goodsSpecProducts.forEach(goodsSpecProduct -> goodsSpecProduct.setPrdImgPath(getImgFullUrlUtil(goodsSpecProduct.getPrdImg())));
         goodsVo.setGoodsSpecProducts(goodsSpecProducts);
 
         List<GoodsSpec> goodsSpecs = goodsSpecProductService.selectSpecByGoodsId(goodsId);

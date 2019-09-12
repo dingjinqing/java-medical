@@ -29,5 +29,5 @@ public class GoodsSpecProduct {
 
 	private BigDecimal lowShopPrice;
 	private String prdImg;
-
+	private String prdImgPath;
 }
