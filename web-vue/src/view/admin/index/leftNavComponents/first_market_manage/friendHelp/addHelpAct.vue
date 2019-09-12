@@ -57,17 +57,17 @@
           >
             <el-radio
               v-model="form.rewardType"
-              label="0"
+              label=0
             >
               赠送商品
             </el-radio>
             <el-radio
               v-model="form.rewardType"
-              label="1"
+              label=1
             >折扣商品</el-radio>
             <el-radio
               v-model="form.rewardType"
-              label="2"
+              label=2
             >赠送优惠券</el-radio>
             <el-col v-if="form.rewardType==0 || form.rewardType==1">
               <el-button
@@ -577,13 +577,13 @@ export default {
         ruleForm: {},
         rewardDuration: '',
         rewardDurationUnit: [{
-          value: '0',
+          value: 0,
           label: '小时'
         }, {
-          value: '1',
+          value: 1,
           label: '天'
         }, {
-          value: '2',
+          value: 2,
           label: '周'
         }],
         rewardDurationUnitSelect: '',
@@ -592,16 +592,16 @@ export default {
         promoteTimes: '',
         launchLimitDuration: '',
         launchLimitUnit: [{
-          value: '0',
+          value: 0,
           label: '天'
         }, {
-          value: '1',
+          value: 1,
           label: '周'
         }, {
-          value: '2',
+          value: 2,
           label: '月'
         }, {
-          value: '3',
+          value: 3,
           label: '年'
         }],
         launchLimitUnitSelect: '',
@@ -689,25 +689,25 @@ export default {
         this.form.actName = res.content[0].actName
         this.form.startTime = res.content[0].startTime
         this.form.endTime = res.content[0].endTime
-        this.form.rewardType = res.content[0].rewardType
+        this.form.rewardType = res.content[0].rewardType.toString()
         this.form.rewardDuration = res.content[0].rewardDuration
         this.form.rewardDurationUnitSelect = res.content[0].rewardDurationUnit
-        this.form.promoteType = res.content[0].promoteType
+        this.form.promoteType = res.content[0].promoteType.toString()
         this.form.promoteAmount = res.content[0].promoteAmount
         this.form.promoteTimes = res.content[0].promoteTimes
         this.form.launchLimitDuration = res.content[0].launchLimitDuration
         this.form.launchLimitUnitSelect = res.content[0].launchLimitUnit
         this.form.launchLimitTimes = res.content[0].launchLimitTimes
-        this.form.shareCreateTimes = this.content[0].shareCreateTimes
-        this.form.promoteCondition = this.content[0].promoteCondition
-        this.form.useDiscount = res.content[0].useDiscount
-        this.form.useScore = res.content[0].useScore
-        this.form.failedSendType = res.content[0].failedSendType
+        this.form.shareCreateTimes = res.content[0].shareCreateTimes
+        this.form.promoteCondition = res.content[0].promoteCondition.toString()
+        this.form.useDiscount = res.content[0].useDiscount.toString()
+        this.form.useScore = res.content[0].useScore.toString()
+        this.form.failedSendType = res.content[0].failedSendType.toString()
         this.form.failedSendContent = res.content[0].failedSendContent
-        this.form.activityShareType = res.content[0].activityShareType
+        this.form.activityShareType = res.content[0].activityShareType.toString()
         this.form.customShareWord = res.content[0].customShareWord
-        this.form.shareImgType = this.content[0].shareImgType
-        // this.form.customImgPath = this.content[0].customImgPath
+        this.form.shareImgType = res.content[0].shareImgType.toString()
+        this.form.customImgPath = res.content[0].customImgPath
       })
     },
     addAct () {

@@ -139,26 +139,95 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span
-                class="el-icon-edit-outline"
-                @click="updateActive(scope.row.id)"
-              ></span>
-              <span class="el-icon-share"></span>
-              <span @click="receiveDetails(scope.row.id)">领取明细</span>
-              <span @click="launchDetails(scope.row.id)">发起明细</span>
-              <span @click="participateDetails(scope.row.id)">参与明细</span>
-              <span
-                class="el-icon-circle-check"
-                @click="startOrBlock(scope)"
-              ></span>
-              <span
-                class="el-icon-circle-close"
-                @click="startOrBlock(scope)"
-              ></span>
-              <span
-                class="el-icon-delete"
-                @click="delAct(scope)"
-              ></span>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.edit')"
+                placement="top"
+              >
+                <i
+                  class="el-icon-edit-outline"
+                  @click="updateActive(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.share')"
+                placement="top"
+              >
+                <i class="el-icon-share"></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.receiveDetails')"
+                placement="top"
+              >
+                <i
+                  class="el-icon-present"
+                  @click="receiveDetails(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.launchDetails')"
+                placement="top"
+              >
+                <i
+                  class="el-icon-news"
+                  @click="launchDetails(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.participateDetails')"
+                placement="top"
+              >
+                <i
+                  class="el-icon-set-up"
+                  @click="participateDetails(scope.row.id)"
+                ></i>
+              </el-tooltip>
+
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.enabled')"
+                placement="top"
+                v-if="scope.row.isBlock === 1"
+              >
+                <i
+                  class="el-icon-circle-check"
+                  @click="startOrBlock(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.disable')"
+                placement="top"
+                v-else
+              >
+                <i
+                  class="el-icon-circle-close"
+                  @click="startOrBlock(scope.row.id)"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('promoteList.delete')"
+                placement="top"
+              >
+                <i
+                  class="el-icon-delete"
+                  @click="delAct(scope.row.id)"
+                ></i>
+              </el-tooltip>
+
             </div>
           </template>
         </el-table-column>
@@ -254,9 +323,9 @@ export default {
       this.tableData = data
     },
     // 删除优惠券
-    delAct (scope) {
+    delAct (id) {
       let delParam = {
-        'id': scope.row.id
+        'id': id
       }
       deleteActive(delParam).then(res => {
         if (res.error === 0) {
@@ -266,9 +335,9 @@ export default {
       })
     },
     // 停用启用优惠券
-    startOrBlock (scope) {
+    startOrBlock (id) {
       let switchParam = {
-        'id': scope.row.id
+        'id': id
       }
       switchAct(switchParam).then(res => {
         if (res.error === 0) {
@@ -413,9 +482,11 @@ export default {
   margin-left: 65%;
 }
 .opt {
-  text-align: left;
-  color: #5a8bff;
-  span {
+  display: flex;
+  justify-content: space-around;
+  > .item {
+    font-size: 22px;
+    color: #66b1ff;
     cursor: pointer;
   }
 }
