@@ -130,8 +130,14 @@ export default {
   methods: {
     // 弹窗确认
     handleSure () {
+      let arr = ''
+      if (this.flag === 2) {
+        arr = this.$refs.cardTree.getCheckedKeys()
+      } else {
+        arr = this.$refs.sortTree.getCheckedKeys()
+      }
       console.log(this.$refs.cardTree.getCheckedKeys())
-      this.$http.$emit('BusClassTrueArr', this.$refs.cardTree.getCheckedKeys())
+      this.$http.$emit('BusClassTrueArr', arr)
       this.dialogVisible = false
     },
     defaultData (backData, flag) {
