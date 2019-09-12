@@ -100,7 +100,7 @@ global.wxPage({
     return {
       ...showBottomCfg,
       color: color,
-      pictorialContent: pageCfg.pictorial,
+      pictorialContent: pageCfg.pictorial || {},
       isPictorialShow: pageContent.is_pictorial_show
     }
   },

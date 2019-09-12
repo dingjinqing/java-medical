@@ -19,7 +19,9 @@ global.wxComponent({
     requestPageModule(idx) {
       var _this = this;
       util.api('/api/wxapp/page/module', function (d) {
-        _this.refreshModule(idx, d.content);
+        if(d.error == 0){
+          _this.refreshModule(idx, d.content);
+        }
       }, {
           page: _this.page_id,
           idx: idx,

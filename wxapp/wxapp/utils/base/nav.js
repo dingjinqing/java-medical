@@ -49,7 +49,8 @@ const pageConfig = {
 var nav = {
   getUrl(path) {
     path = path.indexOf("/") === 0 ? path.substr(1) : path;
-    return "https://" + config.main_host + "/" + path;
+    var schema = config.schema ? config.schema : "https";
+    return schema + "://" + config.main_host + "/" + path;
   },
   getImageUrl(path) {
     path = path.indexOf("/") === 0 ? path.substr(1) : path;
