@@ -182,7 +182,13 @@ public class ShareRewardService extends ShopBaseService {
      * @param shareId 分享有礼活动id
      */
     public ShareRewardInfoVo getShareRewardInfo(Integer shareId) {
-        return db().selectFrom(sa).where(sa.ID.eq(shareId)).fetchOneInto(ShareRewardInfoVo.class);
+        ShareRewardInfoVo shareRewardInfoVo = db().selectFrom(sa).where(sa.ID.eq(shareId)).fetchOneInto(ShareRewardInfoVo.class);
+        ShareRule[] shareRules = new ShareRule[3];
+        shareRules[0] = MAPPER.convertValue(shareRewardInfoVo.getFirstLevelRule(),ShareRule.class);
+        shareRules[1] = MAPPER.convertValue(shareRewardInfoVo.getSecondLevelRule(),ShareRule.class);
+        shareRules[2] = MAPPER.convertValue(shareRewardInfoVo.getThirdLevelRule(),ShareRule.class);
+        shareRewardInfoVo.setShareRules(shareRules);
+        return shareRewardInfoVo;
     }
 
     /**

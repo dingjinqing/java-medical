@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.sharereward;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -60,13 +61,20 @@ public class ShareRewardInfoVo {
     /**
      * 一级分享规则
      */
+    @JsonIgnore
     private String firstLevelRule;
     /**
      * 二级分享规则
      */
+    @JsonIgnore
     private String secondLevelRule;
     /**
      * 三级分享规则
      */
+    @JsonIgnore
     private String thirdLevelRule;
+    /**
+     * 分享规则数组
+     */
+    private ShareRule[] shareRules;
 }
