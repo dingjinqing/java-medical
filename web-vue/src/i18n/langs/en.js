@@ -100,6 +100,8 @@ import {
 import {
   en as pictureSetting
 } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+// 订单
+import { cn as order } from './views/admin/index/leftNavComponents/order/order'
 const en = {
   messages: {
     lang: 'English',
@@ -466,6 +468,7 @@ const en = {
   adSharePolite,
   overview,
   pictureSetting,
-  ...enLocale
+  ...enLocale,
+  order
 }
 export default en

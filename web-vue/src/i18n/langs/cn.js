@@ -100,6 +100,8 @@ import {
 import {
   cn as pictureSetting
 } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+// 订单
+import { cn as order } from './views/admin/index/leftNavComponents/order/order'
 const cn = {
   messages: {
     lang: '中文',
@@ -468,7 +470,8 @@ const cn = {
   adSharePolite,
   overview,
   pictureSetting,
-  ...zhLocale
+  ...zhLocale,
+  order
 }
 
 export default cn
