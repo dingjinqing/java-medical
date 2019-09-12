@@ -27,19 +27,46 @@
                 <div>{{$t('membershipIntroduction.Becomeacustomer')}}：{{ this.memberBasicInfo.createTime }}</div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.Recentbrowsing')}}：{{ this.memberBasicInfo.updateTime }}</div>
+                <div>{{$t('membershipIntroduction.Recentbrowsing')}}：
+                  <span v-if="this.memberBasicInfo.updateTime">{{ this.memberBasicInfo.updateTime }}</span>
+                  <span v-else> {{$t('membershipIntroduction.unknown')}} </span>
+                </div>
                 <div>{{$t('membershipIntroduction.phoneNum')}}：
                   <span v-if="this.memberBasicInfo.mobile"> {{this.memberBasicInfo.mobile}} </span>
                   <span v-else>{{$t('membershipIntroduction.unknown')}}</span></div>
-                <div>OpenID：o-2MM5JL0q5cpkqdLfHHaJ7noDkw</div>
+                <div>OpenID：
+                  <span v-if="this.memberBasicInfo.wxOpenid">{{ this.memberBasicInfo.wxOpenid }}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
               </li>
               <li>
-                <div>WxUnionID： 未知</div>
-                <div>{{$t('membershipIntroduction.Accumulateintegrals')}}：0</div>
-                <div>{{$t('membershipIntroduction.Cumulativeamount')}}：0</div>
+                <div>WxUnionID：
+                  <span v-if="this.memberBasicInfo.wxUnionId">{{ this.memberBasicInfo.wxUnionId }}</span>
+                  <span v-else>{{ this.memberBasicInfo.unknown }}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.Accumulateintegrals')}}：
+                  <span v-if="this.memberBasicInfo.totalScore">{{ this.memberBasicInfo.totalScore }}</span>
+                  <span v-else>0</span>
+                </div>
+                <div>{{$t('membershipIntroduction.Cumulativeamount')}}：
+                  <span v-if="this.memberBasicInfo.totalConsumpAmount">{{ this.memberBasicInfo.totalConsumpAmount }}</span>
+                  <span v-else>0</span>
+                </div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.address')}}：暂未添加</div>
+                <div>{{$t('membershipIntroduction.address')}}：
+                  <span v-if='this.memberBasicInfo.addressList.length'>
+                    <ul style="font-size: 12px;margin-top: 3px;">
+                      <li
+                        v-for="(item,index) in this.memberBasicInfo.addressList"
+                        :key="index"
+                      >
+                        {{item}}
+                      </li>
+                    </ul>
+
+                  </span>
+                  <span v-else>{{$t('membershipIntroduction.notAddYet')}}</span></div>
               </li>
             </ul>
 
@@ -48,11 +75,28 @@
               v-if="hiddenUlFlag"
             >
               <li>
-                <div>{{$t('membershipIntroduction.Sourcechannel')}}：后台</div>
-                <div>{{$t('membershipIntroduction.Birthday')}}：未知</div>
-                <div>{{$t('membershipIntroduction.Educationlevel')}}：未知</div>
-                <div>{{$t('membershipIntroduction.PermanentResidence')}}：未知</div>
-                <div>{{$t('membershipIntroduction.ID')}}：未知</div>
+                <div>{{$t('membershipIntroduction.Sourcechannel')}}：
+                  <span v-if='this.memberBasicInfo.source'>{{this.memberBasicInfo.source}}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.Birthday')}}：
+                  <span v-if='this.memberBasicInfo.birthdayYear && this.memberBasicInfo.birthdayMonth && this.memberBasicInfo.birthdayDay'>{{this.memberBasicInfo.birthdayYear}}-{{this.memberBasicInfo.birthdayMonth}}-{{ this.memberBasicInfo.birthdayDay }}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.Educationlevel')}}：
+                  <span v-if='this.memberBasicInfo.education'>{{this.memberBasicInfo.education}}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.PermanentResidence')}}：
+                  <span v-if='this.memberBasicInfo.provinceName || this.memberBasicInfo.cityName || this.memberBasicInfo.distictName'>
+                    {{ this.memberBasicInfo.provinceName }} {{ this.memberBasicInfo.cityName }} {{this.memberBasicInfo.distictName}}
+                  </span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
+                <div>{{$t('membershipIntroduction.ID')}}：
+                  <span v-if="this.memberBasicInfo.cid">{{ this.memberBasicInfo.cid }}</span>
+                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                </div>
               </li>
               <li>
                 <div>{{$t('membershipIntroduction.B')}}：未知</div>
