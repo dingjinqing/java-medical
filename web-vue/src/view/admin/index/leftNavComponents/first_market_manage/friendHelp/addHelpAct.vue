@@ -11,19 +11,19 @@
           ref="form"
         >
           <el-form-item
-            label="活动名称："
+            :label="$t('promoteList.actName')"
             prop="actName"
           >
             <el-input
               size="small"
-              placeholder="请填写活动名称"
+              :placeholder="$t('promoteList.actNamePlaceholder')"
               class="morelength"
               v-model="form.actName"
             ></el-input>
             <span style="margin-left: 10px">查看活动规则</span>
           </el-form-item>
           <el-form-item
-            label="活动有效期："
+            :label="$t('promoteList.actValidityPeriod')"
             prop=""
             required
           >
@@ -31,19 +31,19 @@
               <el-date-picker
                 v-model="form.startTime"
                 type="datetime"
-                placeholder="选择日期时间"
+                :placeholder="$t('promoteList.startTime')"
                 class="morelength"
                 size="small"
                 value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
             </el-form-item>
-            <span style="margin: 0 5px">至</span>
+            <span style="margin: 0 5px">{{$t('promoteList.to')}}</span>
             <el-form-item prop="endTime">
               <el-date-picker
                 v-model="form.endTime"
                 type="datetime"
-                placeholder="选择日期时间"
+                :placeholder="$t('promoteList.endTime')"
                 class="morelength"
                 size="small"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -52,41 +52,41 @@
             </el-form-item>
           </el-form-item>
           <el-form-item
-            label="奖励类型："
+            :label="$t('promoteList.rewardType')"
             prop=""
           >
             <el-radio
               v-model="form.rewardType"
               label=0
             >
-              赠送商品
+              {{$t('promoteList.giftGoods')}}
             </el-radio>
             <el-radio
               v-model="form.rewardType"
               label=1
-            >折扣商品</el-radio>
+            >{{$t('promoteList.discountGoods')}}</el-radio>
             <el-radio
               v-model="form.rewardType"
               label=2
-            >赠送优惠券</el-radio>
+            >{{$t('promoteList.giftCoupons')}}</el-radio>
             <el-col v-if="form.rewardType==0 || form.rewardType==1">
               <el-button
                 size="small"
                 type="primary"
                 @click="showChoosingGoods"
-              >+ 选择商品</el-button>
+              >+ {{$t('promoteList.chooseGoods')}}</el-button>
             </el-col>
             <el-col v-if="form.rewardType==2">
               <el-button
                 size="small"
                 type="primary"
                 @click="isEditFlag?'':handleToCallDialog()"
-              >+选择优惠券</el-button>
+              >+ {{$t('promoteList.chooseCoupons')}}</el-button>
             </el-col>
             <div></div>
           </el-form-item>
           <el-form-item
-            label="奖励设置："
+            :label="$t('promoteList.rewardSet')"
             prop=""
           >
             <el-table
@@ -100,7 +100,7 @@
               <el-table-column
                 width="150%"
                 prop="goodsName"
-                label="商品信息"
+                :label="$t('promoteList.goodsInfo')"
                 align="center"
               >
               </el-table-column>
@@ -108,7 +108,7 @@
               <el-table-column
                 width="150%"
                 prop="shopPrice"
-                label="商品价格"
+                :label="$t('promoteList.goodsPrice')"
                 align="center"
               >
               </el-table-column>
@@ -116,27 +116,32 @@
               <el-table-column
                 width="150%"
                 prop="goodsNumber"
-                label="商品库存"
+                :label="$t('promoteList.goodsStore')"
                 align="center"
               >
               </el-table-column>
 
               <el-table-column
                 width="150%"
-                prop=""
-                label="活动库存"
+                prop="market_store"
+                :label="$t('promoteList.actStore')"
                 align="center"
               >
-                <el-input v-model="form.goodsInfo.market_store"></el-input>
+                <template slot-scope="data">
+                  <el-input v-model="data.row.market_store"></el-input>
+                </template>
               </el-table-column>
 
               <el-table-column
                 v-if="form.rewardType==1"
                 width="150%"
-                label="活动价"
+                prop="market_price"
+                :label="$t('promoteList.actPrice')"
                 align="center"
               >
-                <el-input v-model="form.goodsInfo.market_price"></el-input>
+                <template slot-scope="data">
+                  <el-input v-model="data.row.market_price"></el-input>
+                </template>
               </el-table-column>
             </el-table>
 
@@ -149,7 +154,7 @@
               style="width: 20%"
             >
               <el-table-column
-                label="优惠券信息"
+                :label="$t('promoteList.couponInfo')"
                 width="180%"
               >
                 <template slot-scope="scope">
@@ -168,7 +173,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="发券数量"
+                :label="$t('promoteList.couponNum')"
                 width="120%"
               >
                 <template slot-scope="scope">
@@ -185,7 +190,7 @@
           </el-form-item>
 
           <el-form-item
-            label="奖励有效期："
+            :label="$t('promoteList.rewardValidityPeriod')"
             prop=""
           >
             <div style="display:flex">
@@ -212,21 +217,21 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="当次助力值："
+            :label="$t('promoteList.currentPromoteValue')"
             prop=""
           >
             <el-radio
               v-model="form.promoteType"
               label="0"
-            >平均值</el-radio>
+            >{{$t('promoteList.averageValue')}}</el-radio>
             <el-radio
               v-model="form.promoteType"
               label="1"
-            >随机助力值</el-radio>
+            >{{$t('promoteList.randomValue')}}</el-radio>
             <span>查看规则</span>
           </el-form-item>
           <el-form-item
-            label="所需助力值："
+            :label="$t('promoteList.requiredPromoteValue')"
             prop="promoteAmount"
           >
             <div style="display:flex">
@@ -239,7 +244,7 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="所需助力次数："
+            :label="$t('promoteList.requiredPromoteTimes')"
             prop="promoteTimes"
           >
             <div style="display:flex">
@@ -252,7 +257,7 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="发起次数限制："
+            :label="$t('promoteList.launchTimesLimit')"
             prop=""
           >
             <div style="display:flex">
@@ -288,7 +293,7 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="分享增加助力机会："
+            :label="$t('promoteList.sharePromote')"
             prop="shareCreateTimes"
           >
             <div style="display:flex">
@@ -306,17 +311,17 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="好友助力条件："
+            :label="$t('promoteList.promoteCondition')"
             prop=""
           >
             <el-radio
               v-model="form.promoteCondition"
               label="0"
-            >可不授权个人信息</el-radio>
+            >{{$t('promoteList.authorizeNo')}}</el-radio>
             <el-radio
               v-model="form.promoteCondition"
               label="1"
-            >需要授权个人信息</el-radio>
+            >{{$t('promoteList.authorizeYes')}}</el-radio>
             <span class="gray">好友帮忙助力时，是否需要授权个人信息（头像+昵称）</span>
           </el-form-item>
 
@@ -578,13 +583,13 @@ export default {
         rewardDuration: '',
         rewardDurationUnit: [{
           value: 0,
-          label: '小时'
+          label: this.$t('promoteList.hour')
         }, {
           value: 1,
-          label: '天'
+          label: this.$t('promoteList.day')
         }, {
           value: 2,
-          label: '周'
+          label: this.$t('promoteList.week')
         }],
         rewardDurationUnitSelect: '',
         promoteType: '0',
@@ -593,16 +598,16 @@ export default {
         launchLimitDuration: '',
         launchLimitUnit: [{
           value: 0,
-          label: '天'
+          label: this.$t('promoteList.day')
         }, {
           value: 1,
-          label: '周'
+          label: this.$t('promoteList.week')
         }, {
           value: 2,
-          label: '月'
+          label: this.$t('promoteList.month')
         }, {
           value: 3,
-          label: '年'
+          label: this.$t('promoteList.year')
         }],
         launchLimitUnitSelect: '',
         launchLimitTimes: '',
@@ -670,7 +675,7 @@ export default {
     this.form.rewardDurationUnitSelect = this.form.rewardDurationUnit[0].value
     this.form.launchLimitUnitSelect = this.form.launchLimitUnit[0].value
     this.promoteId = this.$route.params.id
-    if (this.promoteId != null) {
+    if (this.promoteId !== 'null') {
       console.log('id:', this.promoteId)
       this.loadData(this.promoteId)
     }
