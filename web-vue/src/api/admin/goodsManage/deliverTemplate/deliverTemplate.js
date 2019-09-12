@@ -96,3 +96,21 @@ export function getWeightTemplateListApi (data) {
     data: data
   })
 }
+
+// 修改自定义运费模版
+export function updateTemplateApi (data) {
+  return service({
+    url: '/api/admin/goods/deliver/updatetemplate',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改自定义重量运费模版
+export function updateWeightTemplateApi (data) {
+  return service({
+    url: '/api/admin/goods/deliver/updateweighttemplate',
+    method: 'post',
+    data: data
+  })
+}

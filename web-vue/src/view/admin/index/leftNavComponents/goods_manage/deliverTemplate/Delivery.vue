@@ -84,8 +84,8 @@
         <LocatTPTable
           ref="regionData"
           :isRegion="true"
-          :tableDataList="tableData1"
           appointContent="指定配送区域和运费"
+          :editLocation="delivery.goodsDeliverTemplateAreaParam"
         />
         <!-- <Region ref="regionData" /> -->
       </el-form-item>
@@ -97,18 +97,18 @@
         <!-- <FreeShipping ref="freeShippingData" /> -->
         <LocatTPTable
           ref="freeShippingData"
-          :tableDataList="tableData2"
           :isRegion="false"
           appointContent="指定可包邮配送区域和条件"
+          :editLocation="delivery.goodsDeliverTemplateFeeConditionParam"
         />
       </el-form-item>
     </el-form>
     <div class="add-template">
       <el-button
-        @click="getData"
         size="small"
+        @click="getData"
         type="primary"
-      >添加模板</el-button>
+      >{{addOrUpdate?addOrUpdate:button }}</el-button>
     </div>
   </div>
 </template>
@@ -116,15 +116,42 @@
 <script>
 import LocatTPTable from '@/components/admin/areaLinkage/LocatTPTable'
 import RulesMixins from '@/mixins/RulesMixins' // mixin混入
-import { addTemplate, getTemplateOneApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+
 export default {
   name: 'delivery',
   components: {
     LocatTPTable
   },
+  props: {
+    propDelivery: {
+      required: false,
+      type: Object
+    },
+    addOrUpdate: {
+      type: String
+    },
+    flag: {
+      required: true,
+      type: Number
+    }
+  },
   mixins: [RulesMixins],
+  watch: {
+    propDelivery: {
+      handler: function (newVal, oldVal) {
+        this.affectation()
+      },
+      immediate: true
+    },
+    flag: {
+      handler: function (newVal, oldVal) {
+        this.delivery.flag = this.flag
+      }
+    }
+  },
   data () {
     return {
+      button: `添加模板`,
       /**
        * 模板名称验证规则
        */
@@ -157,69 +184,70 @@ export default {
        */
       delivery: {
         templateName: '',
-        flag: 0,
+        flag: 0, // 默认添加普通
         goodsDeliverTemplateLimitParam: {
           limit_deliver_area: 0,
-          area_list: 1,
+          area_list: 0,
           area_text: '全国（其他地区）',
           first_num: 1,
-          first_fee: 1,
+          first_fee: 0,
           continue_num: 1,
-          continue_fee: 1
+          continue_fee: 0
         },
         goodsDeliverTemplateAreaParam: [],
         goodsDeliverTemplateFeeParam: {
           has_fee_0_condition: 0
         },
         goodsDeliverTemplateFeeConditionParam: []
-      },
-      /**
-      * 根据id查到的表格数据
-      */
-      tableData1: [],
-      tableData2: []
+      }
     }
   },
   created () {
-    this.fetchOneTemplate()
+    this.affectation()
   },
   methods: {
-    // 根据iD获取模板信息用来展示
-    fetchOneTemplate () {
-      getTemplateOneApi({
-        'deliverTemplateId': this.$route.query.deliverTemplateId
-      }).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          const data = content[0]
-          // console.log(data)
-          this.formatData(data)
+    affectation () {
+      this.delivery.flag = this.flag // 传入类型来判断是普通的还是重量的
+      // 判断有没有传递参数
+      if (
+        this.propDelivery &&
+        this.propDelivery.templateName &&
+        this.propDelivery.goodsDeliverTemplateLimitParam &&
+        this.propDelivery.goodsDeliverTemplateFeeParam
+      ) {
+        const {
+          deliverTemplateId,
+          templateName,
+          goodsDeliverTemplateLimitParam,
+          goodsDeliverTemplateAreaParam,
+          goodsDeliverTemplateFeeParam,
+          goodsDeliverTemplateFeeConditionParam
+        } = this.propDelivery
+        this.delivery = {
+          deliverTemplateId,
+          templateName,
+          goodsDeliverTemplateLimitParam: {
+            ...goodsDeliverTemplateLimitParam,
+            limit_deliver_area: Boolean(
+              goodsDeliverTemplateLimitParam.limit_deliver_area
+            )
+          },
+          goodsDeliverTemplateAreaParam,
+          goodsDeliverTemplateFeeParam: {
+            ...goodsDeliverTemplateFeeParam,
+            has_fee_0_condition: Boolean(
+              goodsDeliverTemplateFeeParam.has_fee_0_condition
+            )
+          },
+          goodsDeliverTemplateFeeConditionParam
         }
-      }).catch(err => console.log(err))
-    },
-    // 处理后台返回的数据
-    formatData (data) {
-      console.log(data)
-      localStorage.setItem('templateData', JSON.stringify(data))
-      data.templateContent = JSON.parse(data.templateContent)
-      // 获取之后进行修改前的展示
-      this.delivery.templateName = data.templateName
-      this.delivery.goodsDeliverTemplateLimitParam.limit_deliver_area = data.templateContent[0].datalist[0].limit_deliver_area === 1
-      this.delivery.goodsDeliverTemplateLimitParam.area_list = data.templateContent[0].datalist[0].area_list
-      this.delivery.goodsDeliverTemplateLimitParam.area_text = data.templateContent[0].datalist[0].area_text
-      this.delivery.goodsDeliverTemplateLimitParam.first_num = data.templateContent[0].datalist[0].first_num
-      this.delivery.goodsDeliverTemplateLimitParam.first_fee = data.templateContent[0].datalist[0].first_fee
-      this.delivery.goodsDeliverTemplateLimitParam.continue_num = data.templateContent[0].datalist[0].continue_num
-      this.delivery.goodsDeliverTemplateLimitParam.continue_fee = data.templateContent[0].datalist[0].continue_fee
-      // 第一个表格的数据
-      this.delivery.goodsDeliverTemplateAreaParam = data.templateContent[0].datalist[1]
-      this.delivery.goodsDeliverTemplateFeeParam.has_fee_0_condition = data.templateContent[1].has_fee_0_condition === 1
+      }
     },
     getData () {
       // 状态，存储，为0的情况下验证全部通过，否则就是不通过
       /* eslint-disable */
       let stats = 0,
-        freeShippingData = []
+        freeShippingData = ''
       if (
         !this.delivery.goodsDeliverTemplateLimitParam.limit_deliver_area
       ) {
@@ -239,8 +267,8 @@ export default {
       const regionData = this.$refs.regionData.getTableData()
       if (
         this.delivery.goodsDeliverTemplateLimitParam
-          .limit_deliver_area && regionData
-        // !freeShippingData.length
+          .limit_deliver_area &&
+        !regionData.length
       ) {
         this.$message.error('可配送区域不能为空')
         return
@@ -258,36 +286,50 @@ export default {
         if (!stats && regionData) {
           // 状态为0，并且freeShippingData和regionData都不为''字符串
           // this.$refs.freeShippingData;
-
+          const {
+            flag,
+            templateName,
+            goodsDeliverTemplateLimitParam,
+            goodsDeliverTemplateFeeParam
+          } = this.delivery
           const data = {
-            ...this.delivery,
+            flag,
+            templateName,
+            goodsDeliverTemplateLimitParam: {
+              ...goodsDeliverTemplateLimitParam,
+              limit_deliver_area: Number(
+                goodsDeliverTemplateLimitParam.limit_deliver_area
+              )
+            },
             goodsDeliverTemplateAreaParam: regionData,
-            goodsDeliverTemplateFeeConditionParam: freeShippingData
-          }
-          // 发送请求,传递data给后台
-          // console.log(data)
-
-          data.goodsDeliverTemplateLimitParam.limit_deliver_area = Number(data.goodsDeliverTemplateLimitParam.limit_deliver_area)
-          data.goodsDeliverTemplateFeeParam.has_fee_0_condition = Number(data.goodsDeliverTemplateLimitParam.limit_deliver_area)
-          console.log(data)
-
-          addTemplate(data).then(res => {
-            const { error } = res
-            if (error === 0) {
-              this.$message.success('模板添加成功')
-              this.$router.push({
-                name: `deliverTemplateList`,
-                query: { active: `0` }
-              })
+            goodsDeliverTemplateFeeParam: {
+              ...goodsDeliverTemplateFeeParam,
+              has_fee_0_condition: Number(
+                goodsDeliverTemplateFeeParam.has_fee_0_condition
+              )
             }
-          }).catch(err => console.log(err))
+          }
+          data[
+            'goodsDeliverTemplateFeeConditionParam'
+          ] = freeShippingData.length ? freeShippingData : []
+          if (this.propDelivery) {
+            data[
+              'deliverTemplateId'
+            ] = this.delivery.deliverTemplateId
+            // 发送请求,传递data给后台,这是修改
+            this.$emit('updateDelivery', data)
+          } else {
+            // 发送请求,传递data给后台
+            this.$emit('addDelivery', data)
+          }
+          this.$message.success('模板添加成功!!!')
         }
       })
     }
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 div.el-alert.el-alert--warning.is-light.checkbox-delivery {
   width: 450px;
   padding: 20px;
@@ -296,15 +338,6 @@ div.el-form-item__error {
   margin-left: -40px;
 }
 div.add-template {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  line-height: 60px;
-  z-index: 10;
-  text-align: center;
-  background-color: #eee;
-
   border-top: 1px solid #f2f2f2;
   display: flex;
   justify-content: center;

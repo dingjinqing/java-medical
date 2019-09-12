@@ -215,8 +215,8 @@
 import LocatTP from './LocatTP.vue'
 import RulesMixins from '@/mixins/RulesMixins' // mixin混入
 import publicMixins from '@/mixins/publicMixins'
-// import chinaData from '../../../assets/china-data'
-import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
+// import chinaData from '../../assets/china-data'
+import { getAreaSelect } from '../../../api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
 export default {
   name: 'locatTPTable',
   components: { LocatTP },
@@ -232,9 +232,17 @@ export default {
       type: String,
       required: true
     },
-    // 表格数据
-    tableDataList: {
-      type: Array
+    editLocation: {
+      type: Array,
+      required: false
+    }
+  },
+  watch: {
+    editLocation: {
+      handler (newVal, oldVal) {
+        this.affecta()
+      },
+      immediate: true
     }
   },
   data () {
@@ -263,19 +271,33 @@ export default {
   },
   // 请求获取数据
   created () {
-    this.fetchData()
-    // this.locationList = chinaData // 初始化参数 也就是请求获取的数据
+    this.affecta()
   },
   methods: {
-    // 获取数据
-    fetchData () {
+
+    affecta () {
       getAreaSelect().then(res => {
         const { error, content } = res
         if (error === 0) {
-          content.unshift({ 'provinceId': 1, 'provinceName': '全选' })
-          this.locationList = content
+          content.unshift({ provinceId: 1, provinceName: '全部' })
+          this.locationList = content // 初始化参数 也就是请求获取的数据
         }
       }).catch(err => console.log(err))
+      // 判断props有没有传递参数什么的
+      if (this.editLocation && this.editLocation.length) {
+        // 调用组件，更新this.locationList，innerObjJ，checkListT
+        this.showTableData = this.editLocation.map(item => {
+          return {
+            ...item,
+            area_list: JSON.stringify(item.area_list)
+          }
+        })
+        this.tableData = this.editLocation
+        this.updateData(this.showTableData)
+      } else {
+        this.showTableData = []
+        this.tableData = []
+      }
     },
     // 定义验证规则
     feeConditionRule (rule, value, callback) {
@@ -296,7 +318,7 @@ export default {
     },
     // 删除一行的功能
     handleDelete(row) {
-      this.$message.success('删除区域成功')
+      this.$message.success('删除区域成功!!!')
       // 删掉显示页面的数据
       this.showTableData = this.showTableData.filter(
         item => item.area_list !== row.area_list
@@ -325,12 +347,11 @@ export default {
     // 开启关闭省市县三级的模态框
     showData(flag) {
       // 取消 还原
-      // this.locationList = this.addState(this.locationList, this.checkListT);
       this.outerVisible = flag
     },
     // 获取返回的数据
     changeRegionList(value) {
-      this.$message.success('添加区域成功')
+      this.$message.success('添加区域成功!!!')
       // 当数据没有改变的话，不执行
       const check = value.checkList.filter(
         id => !this.checkListT.includes(id)
@@ -384,18 +405,18 @@ export default {
       let template = {}
       if (this.isRegion) {
         template = {
-          first_num: 1,
-          first_fee: 1,
-          continue_num: 1,
-          continue_fee: 1
+          first_num: 0,
+          first_fee: 0,
+          continue_num: 0,
+          continue_fee: 0
         }
       } else {
         template = {
           fee_0_condition: 1, // 1.件数，2.金额，3：件数+金额
-          fee_0_con1_num: 1, // 件数的时候的最小件数
-          fee_0_con2_num: 1, // 金额的时候的最小金额
-          fee_0_con3_num: 1, // 第三种的最小件数
-          fee_0_con3_fee: 1 // 第三种的最小金额
+          fee_0_con1_num: 0, // 件数的时候的最小件数
+          fee_0_con2_num: 0, // 金额的时候的最小金额
+          fee_0_con3_num: 0, // 第三种的最小件数
+          fee_0_con3_fee: 0 // 第三种的最小金额
         }
       }
       return {
@@ -408,12 +429,13 @@ export default {
     // 给父组件触发的事件，用于获取子组件的事件
     getTableData() {
       let val = 0, // 用于验证是否全部通过验证,当val为0则表示全部验证通过，返回数据给父组件
-        tableData = this.tableData // 用于存储表格上面的数据，并返回给父组件
+        tableData = [] // 用于存储表格上面的数据，并返回给父组件
+      // console.log(this.showTableData);
       this.showTableData.forEach((item, index) => {
         tableData[index] = {
           ...item,
-          area_list: `[${tableData[index].area_list}]`,
-          area_text: tableData[index].area_text
+          area_list: JSON.stringify(this.tableData[index].area_list),
+          area_text: this.tableData[index].area_text
         }
         // 判断是指定包邮的还是指定配送的 ，然后验证
         if (this.isRegion) {
@@ -496,7 +518,7 @@ export default {
     },
     // 确认后修改的数据
     editRegionList(val) {
-      this.$message.success('修改区域成功')
+      this.$message.success('修改区域成功!!!')
       // 修改后，存储状态和数据
       if (this.area_list === val.idList.toString()) return // 两者相等，就是没发生改变，不执行下面操作
       // 不相等 执行以下操作
@@ -532,11 +554,83 @@ export default {
           this.innerObjJ[key] = val.innerObj[key]
         }
       })
+    },
+    updateData(editLocation) {
+      // this.locationList，innerObjJ，checkListT
+      // 通过this.locationList 和 editLocation 获取到真正的checkListT,innerObjJ 然后显示
+      // 选取出 选中的 id
+      const checkListT = this.selectCheckList(editLocation)
+      if (checkListT.length === 3647) {
+        this.locationList[0].state = true
+        // 全部省市区选中
+        checkListT.push(1)
+      }
+      this.checkListT = checkListT
+    },
+    // 筛选出checkList
+    selectCheckList(editLocation) {
+      const checkList = []
+      editLocation.forEach(item => {
+        checkList.push(...JSON.parse(item.area_list))
+      })
+      return this.getIdList(checkList)
+    },
+    // 通过this.locationList拉取id , 选中this.locationList,以及...
+    getIdList(checkList) {
+      const idList = [] // 存储id
+      const strIdList = checkList.toString() // 获取选中的list
+      const innerObj = {} // 存储id对象
+      this.locationList.forEach(item => {
+        if (
+          strIdList.includes(item.provinceId) &&
+          item.provinceId !== 1
+        ) {
+          // 完全相等,表示自身和以下的省，区都遍历进idList
+          idList.push(item.provinceId)
+          item.state = true
+          item.areaCity &&
+            item.areaCity.forEach(city => {
+              this.addCheckData(innerObj, city, idList)
+            })
+        }
+        // 当和省级不想等的情况下
+        else if (item.areaCity) {
+          item.areaCity.forEach(city => {
+            if (strIdList.includes(city.cityId)) {
+              this.addCheckData(innerObj, city, idList)
+            } else if (city.areaDistrict) {
+              // 当和市不想等的情况下
+              city.areaDistrict.forEach(district => {
+                innerObj[city.cityId] = 0
+                if (strIdList.includes(district.districtId)) {
+                  idList.push(district.districtId)
+                  innerObj[city.cityId]++
+                  district.state = true
+                }
+              })
+            }
+          })
+        }
+      })
+      this.innerObjJ = innerObj
+      return idList
+    },
+    // 添加选中的各种
+    addCheckData(innerObj, city, idList) {
+      innerObj[city.cityId] = 0
+      city.state = true
+      idList.push(city.cityId)
+      city.areaDistrict &&
+        city.areaDistrict.forEach(district => {
+          district.state = true
+          innerObj[city.cityId]++
+          idList.push(district.districtId)
+        })
     }
   }
 }
 </script>
-<style scoped>
+<style>
 .appoint {
   padding: 15px 0;
   border-bottom: 1px solid #eee;

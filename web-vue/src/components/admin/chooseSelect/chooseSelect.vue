@@ -79,7 +79,7 @@ export default {
   methods: {
     // cardList赋值
     formatCardList (content) {
-      console.log(this.text.placeholder)
+      // console.log(this.text.placeholder)
       switch (this.text.placeholder) {
         case `请选择会员卡`:
           this.cardList = content
@@ -94,7 +94,7 @@ export default {
     // 初始化获取数据
     initData () {
       allCardApi().then(res => {
-        console.log(res)
+        // console.log(res)
         const { error, content } = res
         if (error === 0) {
           // this.cardList = content
@@ -103,7 +103,7 @@ export default {
       }).catch(err => console.log(err))
 
       allTagApi().then(res => {
-        console.log(res)
+        // console.log(res)
         const { error, content } = res
         if (error === 0) {
           this.formatCardList(content)
@@ -123,9 +123,13 @@ export default {
         this.cardValue = this.text.placeholder
       }
     },
+
     // 删除每个
     handleDelOne (id) {
       console.log(id)
+      const res = this.cardIdsList.find((item) => item.id === id)
+      this.cardIdsList = this.cardIdsList.filter((item) => item.id !== id)
+      this.cardList.push(res)
     }
   }
 }

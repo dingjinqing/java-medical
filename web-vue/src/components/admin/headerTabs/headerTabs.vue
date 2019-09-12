@@ -31,6 +31,9 @@ export default {
       activeName: this.labels[0]['name']
     }
   },
+  mounted () {
+    this.$emit('index', this.activeName)
+  },
   computed: {
     indexTab () {
       return this.index

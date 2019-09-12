@@ -364,20 +364,6 @@ const routes = [
                     '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateList'
                   )
               },
-              // 商品管理/运费模板/添加运费模板列表
-              {
-                path: '/admin/home/main/goodsManage/deliverTemplate/add',
-                name: 'deliverTemplateAdd',
-                meta: {
-                  crumbTitle: 'router.deliverTemplate',
-                  meta: 'goods_manage',
-                  category: 'deliver'
-                },
-                component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateAdd'
-                  )
-              },
               // 商品管理/运费模板/重量运费模板列表
               {
                 path: '/admin/home/main/goodsManage/deliverTemplate/weightList',
@@ -392,10 +378,25 @@ const routes = [
                     '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightList'
                   )
               },
-              // 商品管理/运费模板/添加重量运费模板列表
+              // 商品管理/运费模板/添加运费模板
               {
                 path:
-                  '/admin/home/main/goodsManage/deliverTemplate/weightListAdd',
+                  '/admin/home/main/goodsManage/deliverTemplate/deliverTemplateAdd',
+                name: 'deliverTemplateAdd',
+                meta: {
+                  crumbTitle: 'router.deliverTemplate',
+                  meta: 'goods_manage',
+                  category: 'deliver'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateAdd'
+                  )
+              },
+              // 商品管理/运费模板/添加重量运费模板
+              {
+                path:
+                  '/admin/home/main/goodsManage/deliverTemplate/deliverTemplateWeightAdd',
                 name: 'deliverTemplateWeightAdd',
                 meta: {
                   crumbTitle: 'router.deliverTemplate',
@@ -407,10 +408,11 @@ const routes = [
                     '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightAdd'
                   )
               },
-              // 商品管理/运费模板/运费模板编辑
+              // 商品管理/运费模板/模板编辑
               {
-                path: '/admin/home/main/goodsManage/deliverTemplate/edit',
-                name: 'deliverTemplateEdit',
+                path:
+                  '/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate',
+                name: 'deliverTemplateUpdate',
                 meta: {
                   crumbTitle: 'router.deliverTemplate',
                   meta: 'goods_manage',
@@ -418,7 +420,7 @@ const routes = [
                 },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateEdit'
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateUpdate'
                   )
               }
             ]

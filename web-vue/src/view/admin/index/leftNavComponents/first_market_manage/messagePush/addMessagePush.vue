@@ -119,8 +119,9 @@
                       <el-image :src="urls.url3"></el-image>
                     </div>
                   </div>
+                  <!-- 持有 -->
                   <div>
-                    <el-checkbox v-model="onClickCard">持有 </el-checkbox>
+                    <el-checkbox v-model="onClickCard">持有</el-checkbox>
                     <el-select
                       size="small"
                       style="width:160px;margin-right:6px"
@@ -162,36 +163,90 @@
                       ></el-image>
                     </div>
                   </div>
-                  <div>
-                    <el-checkbox v-model="checked">属于</el-checkbox>
-                    <span>标签人群</span>
+                  <!-- 属于 -->
+                  <div style="margin:10px 0">
+                    <chooseSelect :text="text" />
                   </div>
                   <div style="margin:10px 0">
                     <el-checkbox v-model="checked">选择指定的会员 </el-checkbox>
-                    <el-button
-                      @click="handleAddMember"
-                      type="text"
-                    >+ 添加会员</el-button>
-                    <span>已选择会员0人</span>
+                    <span style="margin-left:-15px">
+                      <el-button
+                        @click="handleAddMember"
+                        type="text"
+                      >+ 添加会员</el-button>
+                    </span>
+
+                    <span>已选择会员{{memberNum}}人</span>
                   </div>
                   <div>
-                    <el-checkbox v-model="checked">自定义 </el-checkbox>
+                    <el-checkbox v-model="customRuleInfo">自定义</el-checkbox>
                     <el-select
-                      v-model="value"
+                      v-model="customRuleInfoVal"
                       placeholder="请选择"
+                      size="small"
                     >
                       <el-option
                         label="请选择"
                         value="请选择"
                       ></el-option>
                       <el-option
-                        v-for="item in options"
+                        v-for="item in customRuleInfoOptions"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
                       >
                       </el-option>
                     </el-select>
+                    <!--  -->
+                    <div style="margin:10px 0">
+                      <table>
+                        <tr>
+                          <td>N天内有交易记录:</td>
+                          <td>
+                            <el-input style="width:120px"> </el-input><span>天内</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>N天内没有交易记录:</td>
+                          <td>
+                            <el-input style="width:120px"> </el-input><span>天内</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>累计购买次数小于N次</td>
+                          <td>
+                            <el-input style="width:120px"> </el-input><span>天内</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>累计购买次数大于N次：</td>
+                          <td>
+                            <el-input style="width:120px"> </el-input><span>天内</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>购买商品均价大于N元</td>
+                          <td>
+                            <el-input style="width:120px"> </el-input><span>天内</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>购买商品均价小于N元：</td>
+                          <td>
+                            <el-input style="width:120px"> </el-input><span>天内</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>指定时间内有登陆记录：</td>
+                          <td>
+                            <dateTimePicker
+                              :showPicker=1
+                              @time="getTime3"
+                            />
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </div>
                 </el-form-item>
                 <!-- 发送时间 -->
@@ -247,15 +302,24 @@
           type="primary"
         >保存并发送</el-button>
       </div>
+      <!-- 添加会员的弹窗 -->
+      <memberListDialog
+        v-if="dialogOff"
+        @userIdList="getUserIdList"
+        :memberListDialog="dialogOff"
+        @dialog-cancel="closeDialog"
+      />
     </el-card>
   </div>
 </template>
 <script>
+import memberListDialog from './memberListDialog'
+import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import { allCardApi } from '@/api/admin/marketManage/messagePush.js'
 export default {
   name: 'addMessagePush',
-  components: { dateTimePicker },
+  components: { dateTimePicker, chooseSelect, memberListDialog },
   data () {
     return {
       urls: {
@@ -293,6 +357,7 @@ export default {
       onClickNoPay: false,
       onClickGoods: false,
       onClickCard: false,
+      customRuleInfo: false,
       cardIdsList: [],
       /**
        * 表单检验
@@ -302,14 +367,66 @@ export default {
           { required: true, message: '请填写消息名称', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
         ]
-      }
-
+      },
+      /**
+       * 传给组件chooseSelect的数据
+       */
+      text: {
+        title: `属于`,
+        placeholder: `请选择会员标签`,
+        txt: `标签人群`
+      },
+      dialogOff: false,
+      memberNum: 0, // 已选择的会员人数
+      /**
+       * 自定义实体
+       */
+      customRuleInfoVal: `请选择`,
+      noPayDay: ``,
+      payedDay: ``,
+      buyTimesMore: ``,
+      buyTimesLess: ``,
+      moneyAvgMore: ``,
+      moneyAvgLess: ``,
+      loginStart: ``,
+      loginEnd: ``,
+      customRuleInfoOptions: [
+        {
+          label: `N天内有交易记录`,
+          value: `N天内有交易记录`
+        },
+        {
+          label: `N天内没有交易记录`,
+          value: `N天内没有交易记录`
+        },
+        {
+          label: `累计购买次数小于N次`,
+          value: `累计购买次数小于N次`
+        },
+        {
+          label: `累计购买次数大于N次`,
+          value: `累计购买次数大于N次`
+        },
+        {
+          label: `购买商品均价大于N元`,
+          value: `购买商品均价大于N元`
+        },
+        {
+          label: `购买商品均价小于N元`,
+          value: `购买商品均价小于N元`
+        },
+        {
+          label: `指定时间内有登录记录`,
+          value: `指定时间内有登录记录`
+        }
+      ]
     }
   },
   created () {
     this.initData()
   },
   methods: {
+
     // 初始化会员卡下拉数据
     initData () {
       allCardApi().then(res => {
@@ -341,6 +458,9 @@ export default {
     getTime2 (val) {
       this.startTime1 = val.startTime
     },
+    getTime3 (val) {
+
+    },
     // 会员卡下拉框选中出发
     getIdList (val) {
       console.log(val)
@@ -354,6 +474,19 @@ export default {
         // console.log(this.cardList)
         this.cardValue = `请选择会员卡`
       }
+    },
+    // 关闭会员弹窗
+    closeDialog () {
+      this.dialogOff = false
+    },
+    // 添加会员
+    handleAddMember () {
+      this.dialogOff = true
+    },
+    // getUserIdList
+    getUserIdList (val) {
+      console.log(val)
+      this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
     }
   }
 }
