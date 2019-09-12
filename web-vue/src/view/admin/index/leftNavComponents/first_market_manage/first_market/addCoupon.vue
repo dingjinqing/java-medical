@@ -408,7 +408,7 @@ import { saveCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
-    AppointBusDialog: () => import('@/view/admin/layout/addingBusClassDialog'),
+    AppointBusDialog: () => import('@/components/admin/addingBusClassDialog'),
     AppointBrandDialog: () => import('@/view/admin/layout/brandDialog')
   },
   data () {

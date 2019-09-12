@@ -2,18 +2,50 @@
   <div class="addingBusClassDialog">
     <div class="addingBusClassDialogMain">
       <el-dialog
-        title="添加商家分类1"
+        title="添加商家分类"
         :visible.sync="dialogVisible"
         width="30%"
       >
-        <div class="dialogMain">
-          <ul
-            v-for="(item,index) in newArr"
-            :key="index"
-            :class="index%2===0?'':'bgClass'"
+        <div
+          class="dialogMain"
+          v-loading="loading"
+        >
+          <div
+            class="dialogMainDiv"
+            v-show="flag === 2"
           >
-            <Tree :data="item" />
-          </ul>
+            <el-tree
+              :data="newArr"
+              show-checkbox
+              default-expand-all
+              empty-text=''
+              node-key="catId"
+              ref="cardTree"
+              highlight-current
+              :props="defaultArrTwo"
+              :default-checked-keys="defaultArr"
+            >
+            </el-tree>
+
+          </div>
+          <div
+            class="dialogMainDiv"
+            v-show="flag !== 2"
+          >
+            <el-tree
+              :data="newArr"
+              show-checkbox
+              default-expand-all
+              node-key="sortId"
+              empty-text=''
+              ref="sortTree"
+              highlight-current
+              :props="defaultProps"
+              :default-checked-keys="defaultArr"
+            >
+            </el-tree>
+          </div>
+
         </div>
         <span
           slot="footer"
@@ -33,9 +65,6 @@
 <script>
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
 export default {
-  components: {
-    Tree: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/tree.vue')
-  },
   data () {
     return {
       dialogVisible: false,
@@ -49,14 +78,30 @@ export default {
 
       ],
       clickArrBus: [],
-      trueArr: []
+      trueArr: [],
+      defaultProps: {
+        children: 'children',
+        label: 'sortName'
+      },
+      defaultArrTwo: {
+        children: 'children',
+        label: 'catName'
+      },
+      defaultArr: [],
+      sortId: '',
+      flag: null,
+      loading: true
     }
   },
   mounted () {
-    this.$http.$on('addingBusClassDialog', res => {
+    this.$http.$on('addingBusClassDialog', (res, flag) => {
+      console.log(flag)
       this.dialogVisible = true
+      this.loading = true
+      this.newArr = []
+      this.defaultArr = []
       // 初始化数据
-      this.defaultData(res)
+      this.defaultData(res, flag)
     })
     this.$http.$on('clickBusNode', res => {
       console.log(res)
@@ -85,55 +130,112 @@ export default {
   methods: {
     // 弹窗确认
     handleSure () {
-      console.log(this.trueArr)
-      this.$http.$emit('BusClassTrueArr', this.trueArr)
+      console.log(this.$refs.cardTree.getCheckedKeys())
+      this.$http.$emit('BusClassTrueArr', this.$refs.cardTree.getCheckedKeys())
       this.dialogVisible = false
     },
-    defaultData (backData) {
+    defaultData (backData, flag) {
+      console.log(flag)
+      this.flag = flag
       // 弹窗数据获取
       initGrandgetRequest().then((res) => {
         console.log(res.content)
 
         if (res.error === 0) {
-          let goodsSorts = res.content.goodsSorts
-          let buckets = {
-            0: { children: [] }
+          let data = ''
+          if (flag === 2) {
+            data = res.content.sysCates
+          } else {
+            data = res.content.goodsSorts
           }
-
-          for (var i = 0; i < goodsSorts.length; i++) {
-            let item = goodsSorts[i]
-
-            let selfNode = buckets[item.sortId]
-
-            if (selfNode === undefined) {
-              buckets[item.sortId] = item
-              buckets[item.sortId].children = []
-              selfNode = buckets[item.sortId]
-            } else {
-              selfNode.sortId = item.sortId
-              selfNode.sortName = item.sortName
-              selfNode.parentId = item.parentId
-              selfNode.level = item.level
-              selfNode.hasChild = item.hasChild
-            }
-
-            let parentNode = buckets[selfNode.parentId]
-
-            if (parentNode !== undefined) {
-              parentNode.children.push(selfNode)
-            } else {
-              buckets[selfNode.parentId] = { children: [] }
-              parentNode = buckets[selfNode.parentId]
-              parentNode.children.push(selfNode)
-            }
+          let obj = {
+            data,
+            backData,
+            flag
           }
-          this.newArr = buckets[0].children
-          setTimeout(() => {
-            this.$http.$emit('addingBusBack', backData)
-          }, 100)
-          console.log(buckets[0].children)
+          this.handleToData(obj)
         }
       })
+    },
+    // 数据处理
+    handleToData (obj) {
+      let goodsSorts = ''
+      goodsSorts = obj.data
+      let buckets = {
+        0: { children: [] }
+      }
+      let handleData = ''
+      if (obj.flag === 2) {
+        handleData = this.handletoPlatform(goodsSorts, buckets)
+      } else {
+        handleData = this.handletocommodity(goodsSorts, buckets)
+      }
+      console.log(handleData)
+      this.loading = false
+      this.newArr = handleData
+      console.log(this.newArr, obj.backData)
+
+      this.defaultArr = obj.backData
+    },
+    handletocommodity (goodsSorts, buckets) {
+      for (var i = 0; i < goodsSorts.length; i++) {
+        let item = goodsSorts[i]
+
+        let selfNode = buckets[item.sortId]
+
+        if (selfNode === undefined) {
+          buckets[item.sortId] = item
+          buckets[item.sortId].children = []
+          selfNode = buckets[item.sortId]
+        } else {
+          selfNode.sortId = item.sortId
+          selfNode.sortName = item.sortName
+          selfNode.parentId = item.parentId
+          selfNode.level = item.level
+          selfNode.hasChild = item.hasChild
+        }
+
+        let parentNode = buckets[selfNode.parentId]
+
+        if (parentNode !== undefined) {
+          parentNode.children.push(selfNode)
+        } else {
+          buckets[selfNode.parentId] = { children: [] }
+          parentNode = buckets[selfNode.parentId]
+          parentNode.children.push(selfNode)
+        }
+      }
+      return buckets[0].children
+    },
+    handletoPlatform (goodsSorts, buckets) {
+      for (var i = 0; i < goodsSorts.length; i++) {
+        let item = goodsSorts[i]
+
+        let selfNode = buckets[item.catId]
+
+        if (selfNode === undefined) {
+          buckets[item.catId] = item
+          buckets[item.catId].children = []
+          selfNode = buckets[item.catId]
+        } else {
+          selfNode.catId = item.catId
+          selfNode.sortName = item.sortName
+          selfNode.parentId = item.parentId
+          selfNode.level = item.level
+          selfNode.hasChild = item.hasChild
+        }
+
+        let parentNode = buckets[selfNode.parentId]
+
+        if (parentNode !== undefined) {
+          parentNode.children.push(selfNode)
+        } else {
+          buckets[selfNode.parentId] = { children: [] }
+          parentNode = buckets[selfNode.parentId]
+          parentNode.children.push(selfNode)
+        }
+      }
+      return buckets[0].children
     }
 
   }
@@ -149,6 +251,10 @@ export default {
     padding: 20px 20px;
   }
   .dialogMain {
+    .dialogMainDiv {
+      height: 400px;
+      overflow-y: auto;
+    }
     .bgClass {
       background: #f3f3f3;
     }

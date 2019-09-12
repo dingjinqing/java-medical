@@ -721,12 +721,7 @@
     <ChoosingGoods />
     <!--选择商家分类弹窗-->
     <AddingBusClassDialog />
-    <!--添加平台分类弹窗-->
-    <BrandDialog />
-    <!--指定商品添加商品分类弹窗-->
-    <AppointBusDialog />
-    <!--指定商品添加平台分类弹窗-->
-    <AppointBrandDialog />
+
     <!--添加品牌弹窗-->
     <AddBrandDialog />
     <!--添加门店弹窗-->
@@ -745,10 +740,7 @@ export default {
     AddCouponDialog: () => import('@/components/admin/addCouponDialog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
-    BrandDialog: () => import('./brandDialog'),
-    AppointBusDialog: () => import('@/view/admin/layout/addingBusClassDialog'),
     AppointBrandDialog: () => import('@/view/admin/layout/brandDialog'),
-    AddBrandDialog: () => import('./addBrandDialog'),
     ChioseStoreDialog: () => import('./chioseStoreDialog'),
     ReceivingCodeDialog: () => import('./receivingCodeDialog')
   },
@@ -1069,12 +1061,24 @@ export default {
       })
       this.$http.$on('BusClassTrueArr', res => {
         console.log(res)
-        console.log(this.treeType)
-        if (this.treeType === 1) {
-          this.noneBlockVipArr[1].num = res.length
-        } else {
-          this.noneBlockVipArr[2].num = res.length
+        console.log(this.AtreeType)
+        switch (this.userDialogFlag) {
+          case '1':
+            if (this.AtreeType === 1) {
+              this.noneBlockDiscArr[1].num = res.length
+            } else {
+              this.noneBlockDiscArr[2].num = res.length
+            }
+
+            break
+          case '2':
+            if (this.AtreeType === 1) {
+              this.noneBlockVipArr[1].num = res.length
+            } else {
+              this.noneBlockVipArr[2].num = res.length
+            }
         }
+
         console.log(res)
       })
       this.$http.$on('ABusClassTrueArr', res => {
@@ -1185,11 +1189,12 @@ export default {
           break
         case 1:
           this.AtreeType = 1
-          this.$http.$emit('AaddingBusClassDialog', arr)
+          this.$http.$emit('addingBusClassDialog', arr)
+
           break
         case 2:
           this.AtreeType = 2
-          this.$http.$emit('AuserBrandDialog', index)
+          this.$http.$emit('addingBusClassDialog', arr, this.AtreeType)
           break
         case 3:
           this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag1)
@@ -1206,12 +1211,12 @@ export default {
           this.$http.$emit('choosingGoodsFlag', index, this.choosingGoodsDateFlag2)
           break
         case 1:
-          this.treeType = 1
+          this.AtreeType = 1
           this.$http.$emit('addingBusClassDialog', arr)
           break
         case 2:
-          this.treeType = 2
-          this.$http.$emit('userBrandDialog', index)
+          this.AtreeType = 2
+          this.$http.$emit('addingBusClassDialog', arr, this.AtreeType)
           break
         case 3:
           this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag2)

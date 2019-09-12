@@ -48,14 +48,15 @@ export default {
   },
   watch: {
     checked (newData) {
+      console.log(newData)
       let obj = {
         checked: newData,
         sortId: this.data.sortId ? this.data.sortId : this.data.catId
       }
       if (this.data.sortId) {
-        this.$http.$emit('AclickBusNode', obj)
+        this.$http.$emit('clickBusNode', obj)
       } else {
-        this.$http.$emit('AclickBrandNode', obj)
+        this.$http.$emit('clickBrandNode', obj)
       }
     },
     '$parent.checked' (newData) {
@@ -65,7 +66,8 @@ export default {
   },
   mounted () {
     console.log(this.$parent)
-    this.$http.$on('ABusaddingBusBack', res => {
+    console.log(this.data.sortId)
+    this.$http.$on('addingBusBack', res => {
       console.log(res)
       res.filter(item => {
         console.log(this.data.sortId, item)
