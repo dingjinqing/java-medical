@@ -15,6 +15,7 @@ public class CouponHoldListVo {
     private String username;
     private String mobile;
     private String couponName;
+    private Integer delFlag;
     /**
      * 获取方式，0：发放，1：领取
      */
