@@ -288,17 +288,8 @@ export default {
       pageNameInput: '',
       restaurants: [],
       statePage: '',
-      selectValue: '',
-      selectOptions: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
+      selectValue: null,
+      selectOptions: [],
       pageSetvalue: '',
       pageSetoptions: [{
         value: '选项1',
@@ -368,6 +359,9 @@ export default {
             item.ischeck = false
           })
       }
+    },
+    lang () {
+      this.selectOptions = this.$t('pictureSetting.pageClassification')
     },
     'tableData': {
       handler (newData) {

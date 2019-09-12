@@ -96,6 +96,10 @@ import {
   en as adSharePolite
 } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
 
+// 页面装修
+import {
+  en as pictureSetting
+} from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 const en = {
   messages: {
     lang: 'English',
@@ -461,6 +465,7 @@ const en = {
   promoteList,
   adSharePolite,
   overview,
+  pictureSetting,
   ...enLocale
 }
 export default en

@@ -96,7 +96,10 @@ import {
 import {
   cn as overview
 } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
-
+// 页面装修
+import {
+  cn as pictureSetting
+} from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 const cn = {
   messages: {
     lang: '中文',
@@ -464,6 +467,7 @@ const cn = {
   promoteList, // 好友助力
   adSharePolite,
   overview,
+  pictureSetting,
   ...zhLocale
 }
 
