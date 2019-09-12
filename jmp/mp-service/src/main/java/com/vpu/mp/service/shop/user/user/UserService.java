@@ -52,10 +52,10 @@ public class UserService extends ShopBaseService {
 	 */
 	public UserRecord loginGetUser(WxAppLoginParam loginUser) throws WxErrorException {
 		Integer shopId = this.getShopId();
-		WxMaJscode2SessionResult result  = new WxMaJscode2SessionResult();
-		result.setOpenid("wx219832982398");
-//		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
-//		WxMaJscode2SessionResult result = maService.jsCode2SessionInfo(loginUser.getCode());
+//		WxMaJscode2SessionResult result  = new WxMaJscode2SessionResult();
+//		result.setOpenid("wx219832982398");
+		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
+		WxMaJscode2SessionResult result = maService.jsCode2SessionInfo(loginUser.getCode());
 		UserRecord user = getUserByOpenId(result.getOpenid());
 		if (user == null) {
 			user = db().newRecord(USER);
