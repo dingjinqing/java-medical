@@ -30,13 +30,5 @@ public class WxAppLoginController extends WxAppBaseController {
 		return success(user);
 	}
 
-	/**
-	 * 
-	 * @param param
-	 * @return
-	 */
-	@PostMapping("/api/wxapp/cfg/bottom")
-	public JsonResult config(@RequestBody WxAppCommonParam param) {
-		return success(this.shop().config.getAppConfig());
-	}
+	
 }

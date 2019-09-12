@@ -101,7 +101,8 @@ public class RepairDatabaseService extends MainBaseService {
 	 */
 	public void repairDb(List<Table> tables, MpDefaultDslContext db) {
 		for (Table table : tables) {
-			if (table.getTableName().equals("`b2c_mrking_voucher`")) {
+			//if (table.getTableName().equals("`b2c_mrking_voucher`")) 
+			{
 				table.setDatabseName(db.getDbConfig().getDatabase());
 				table.setFullTableName(table.getDatabseName() + "." + table.getTableName());
 				this.processTable(table, db);

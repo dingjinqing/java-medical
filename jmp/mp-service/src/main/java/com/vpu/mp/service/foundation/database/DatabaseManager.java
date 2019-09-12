@@ -95,7 +95,7 @@ public class DatabaseManager {
 				db = getDsl(ds, dbConfig,shopId);
 				shopDsl.set(db);
 			} else {
-				throw new RuntimeException();
+				throw new RuntimeException("ShopId "+shopId+" Db not found") ;
 			}
 		}		
 		return this;

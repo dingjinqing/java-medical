@@ -85,6 +85,9 @@ public class ConfigService extends ShopBaseService {
 	 * @return
 	 */
 	public String[] convertShopStyle(ShopStyleConfig config) {
+		if (config == null || config.getShopStyleValue() == null) {
+			return new String[] { "", "" };
+		}
 		String style = config.getShopStyleValue().trim();
 		if (style.indexOf("rgb") == -1) {
 			return style.split(",");
