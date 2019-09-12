@@ -52,16 +52,25 @@
         <div class="rightarea">
           <span>{{$t('promoteList.rewardType')}}:</span>
           <el-select
-            v-model="options.value"
+            v-model="rewardType"
             size="small"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
+              :label="$t('promoteList.all')"
+              value="-1"
+            ></el-option>
+            <el-option
+              :label="$t('promoteList.giftGoods')"
+              value="0"
+            ></el-option>
+            <el-option
+              :label="$t('promoteList.discountGoods')"
+              value="1"
+            ></el-option>
+            <el-option
+              :label="$t('promoteList.giftCoupons')"
+              value="2"
+            ></el-option>
           </el-select>
           <el-button
             type="primary"
@@ -198,20 +207,7 @@ export default {
       tabIndex: 2,
       currentPage: 1,
       tableData: [],
-      options: [
-        {
-          value: '-1',
-          label: '全部'
-        }, {
-          value: '0',
-          label: '赠送商品'
-        }, {
-          value: '1',
-          label: '折扣商品'
-        }, {
-          value: '2',
-          label: '赠送优惠券'
-        }],
+      rewardType: '-1',
       pageParams: {
 
       }
@@ -228,7 +224,7 @@ export default {
     },
 
     handleClick () {
-      this.pageParams.rewardType = this.options.value
+      this.pageParams.rewardType = this.rewardType
       this.pageParams.startTime = this.startTime
       this.pageParams.endTime = this.endTime
       this.pageParams.actName = this.actName

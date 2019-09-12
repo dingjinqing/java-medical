@@ -31,6 +31,7 @@ export const cn = {
   joinNum: '参与人数',
   promoteTimes: '助力次数',
   promoteValue: '助力值',
+  isNewUser: '是否是新用户',
   //   edit: '编辑',
   //   share: '分享',
   //   disable: '停用',
@@ -54,7 +55,10 @@ export const cn = {
   recUsername: '领取用户昵称',
   recMobile: '领取用户手机号',
   launchUsername: '发起用户昵称',
-  launchMobile: '发起用户手机号'
+  launchMobile: '发起用户手机号',
+  participateUsername: '发起用户昵称',
+  participateMobile: '发起用户手机号',
+  launcher: '活动发起人'
   //   actDeleteConfirmTip: '确定删除该活动吗？',
   //   actEnabledConfirmTip: '确定启用该活动吗？',
   //   actDisableConfirmTip: '确定停用该活动吗？',
@@ -94,6 +98,7 @@ export const en = {
   joinNum: 'number of participants',
   promoteTimes: 'promotion times',
   promoteValue: 'promotion value',
+  isNewUser: 'is it a new user',
   //   edit: 'edit',
   //   share: 'share',
   //   disable: 'disable',
@@ -117,7 +122,10 @@ export const en = {
   recUsername: 'received username',
   recMobile: 'received mobile',
   launchUsername: 'launched username',
-  launchMobile: 'launched mobile'
+  launchMobile: 'launched mobile',
+  participateUsername: 'participated username',
+  participateMobile: 'participated mobile',
+  launcher: 'activity launcher'
   //   actDeleteConfirmTip: 'Are you sure to delete the activity?',
   //   actEnabledConfirmTip: 'Are you sure to enabled the activity?',
   //   actDisableConfirmTip: 'Are you sure to disable the activity?',
