@@ -36,39 +36,40 @@
         header-row-class-name="tableClss"
         border
         style="width: 100%"
+        :data="tableData"
       >
         <el-table-column
-          prop=""
+          prop="goodsName"
           label="商品名称"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="shopPrice"
           label="商品价格"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="catName"
           label="商品所属分类"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="goodsSaleNum"
           label="商品总销量"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="saleNumber"
           label="已返利总数量"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="prdTotalFanli"
           label="已返利总佣金"
           align="center"
         >
@@ -77,18 +78,31 @@
           label="操作"
           align="center"
         >
+          <template slot-scope="scope">
+            <div class="opt">
+              <p @click="showDetail(scope.row.id)">查看明细</p>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </div>
+    <pagination
+      :page-params.sync="pageParams"
+      @pagination="list"
+    />
   </div>
 
 </template>
 
 <script>
-
+import { goodsReturnStatistics } from '@/api/admin/marketManage/distribution.js'
+// 引入分页
+import pagination from '@/components/admin/pagination/pagination'
 export default {
+  components: { pagination },
   data () {
     return {
+      tableData: [],
       value: '',
       options: [{
         value: '选项1',
@@ -100,7 +114,30 @@ export default {
         value: '选项3',
         label: '蚵仔煎'
       }],
-      input2: ''
+      input2: '',
+      pageParams: {}
+    }
+  },
+  mounted () {
+    this.list()
+  },
+  methods: {
+    list () {
+      goodsReturnStatistics(this.pageParams).then(res => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
+    // 分销员邀请用户列表
+    showDetail (id) {
+      this.$router.push({
+        path: '/admin/home/main/distribution/goodsReturnStaticticsDetail',
+        query: {
+          prdId: id
+        }
+      })
     }
   }
 

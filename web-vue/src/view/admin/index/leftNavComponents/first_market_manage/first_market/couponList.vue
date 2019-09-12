@@ -44,7 +44,7 @@
 
         </el-table-column>
         <el-table-column
-          prop="useScore"
+          prop="scoreNumber"
           label="积分兑换"
           align="center"
         >
@@ -57,7 +57,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="useConsumeRestrict"
+          prop="leastConsume"
           label="最低消费"
           align="center"
         >
@@ -161,6 +161,7 @@ export default {
       console.log(this.currentPage)
     },
 
+    // 优惠券列表
     handleClick () {
       this.pageParams.nav = this.nav
       this.pageParams.actName = this.actName
@@ -172,15 +173,28 @@ export default {
         }
       })
     },
+
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        //   if (item.surplus === 0) {
-        //     item.surplus = 'asd'
-        //   }
-        //   item.surplus =
-        item.vaildDate = `${item.startTime}至${item.endTime}`
-        item.receivePerson = `${item.receivePerson}/${item.receiveAmount}`
+        if (item.receivePerPerson === 0) {
+          item.receivePerPerson = '不限制'
+        } else {
+          item.receivePerPerson = `限领${item.receivePerPerson} 张`
+        }
+        if (item.scoreNumber === 0) {
+          item.scoreNumber = '不需要兑换'
+        } else {
+          item.scoreNumber = `${item.scoreNumber}积分兑换`
+        }
+        if (item.useConsumeRestrict === 0) {
+          item.leastConsume = '无门槛'
+        }
+        if (item.actCode === 'discount') {
+          item.denomination = `打${item.denomination}折`
+        }
+        item.vaildDate = `${item.startTime} 至${item.endTime} `
+        item.receivePerson = `${item.receivePerson} /${item.receiveAmount}`
         item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
       })
       this.tableData = data
@@ -221,7 +235,7 @@ export default {
               type: 'success',
               message: '删除成功!'
             })
-            this.seacherCouponList()
+            this.handleClick()
           }
         })
       }).catch(() => {
@@ -231,17 +245,23 @@ export default {
         })
       })
     },
+
+    // 添加优惠券
     addCoupon () {
       this.$router.push({
         name: 'add_coupon'
       })
     },
-    receiveDetails () {
+    // 领取明细
+    receiveDetails (id) {
+      alert(id)
       this.$router.push({
-        name: 'ordinary_coupon_receive_details'
+        path: '/admin/home/main/ordinaryCoupon/receiveDetails',
+        query: {
+          id: id
+        }
       })
     }
-
   },
   watch: {
     'nav' (n, o) {

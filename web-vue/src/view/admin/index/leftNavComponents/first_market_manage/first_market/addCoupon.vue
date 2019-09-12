@@ -139,13 +139,13 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="param.userConsumeRestrict"
+                        v-model="param.useConsumeRestrict"
                         label="0"
                       >不限制</el-radio>
                     </p>
                     <p>
                       <el-radio
-                        v-model="param.userConsumeRestrict"
+                        v-model="param.useConsumeRestrict"
                         label="1"
                       >满<el-input
                           size="small"
@@ -416,8 +416,9 @@ export default {
       tableData: [],
       param: {
         actName: '',
+        actCode: '',
         preferentialType: '0',
-        userConsumeRestrict: '0',
+        useConsumeRestrict: '0',
         useScore: '0',
         receivePerPerson: 0,
         cardId: [],
@@ -477,16 +478,16 @@ export default {
   methods: {
     dataDefalut () {
       this.$http.$on('result', res => {
-        this.recommendGoodsId = res
+        this.param.recommendGoodsId = res.join()
         this.noneBlockDiscArr[0].num = res.length
         console.log(res)
       })
       this.$http.$on('ABusClassTrueArr', res => {
         if (this.AtreeType === 1) {
-          this.recommendSortId = res
+          this.param.recommendSortId = res.join()
           this.noneBlockDiscArr[1].num = res.length
         } else {
-          this.recommendCatId = res
+          this.param.recommendCatId = res.join()
           this.noneBlockDiscArr[2].num = res.length
         }
       })
@@ -510,13 +511,25 @@ export default {
     },
     // 保存优惠券
     saveCoupon () {
-      console.log(this.param)
+      if (this.param.preferentialType === 0) {
+        this.param.actCode = 'voucher'
+      } else {
+        this.param.actCode = 'discount'
+        this.param.denomination = this.param.denomination2
+      }
       this.param.cardId = this.param.cardId.join()
       this.param.startTime = this.param.couponDate[0]
       this.param.endTime = this.param.couponDate[1]
-      console.log(this.param)
       saveCoupon(this.param).then(res => {
-        console.log(res)
+        if (res.error === 0) {
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
+          this.$router.push({
+            'name': 'ordinary_coupon'
+          })
+        }
       })
     }
   },

@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import { deleteCoupon } from '@/api/admin/marketManage/couponList.js'
+import { deleteCoupon, couponGetDetail } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -104,6 +104,7 @@ export default {
   data () {
     return {
       loading: false,
+      id: '',
       pageParams: {},
       searchCondition: {
         mobile: '',
@@ -135,78 +136,13 @@ export default {
   },
   methods: {
     initDataList () {
-      let tableData = [
-        {
-          id: 1,
-          userName: '奔跑的小猪',
-          mobile: '17600236996',
-          couponName: '啊啊啊啊啊啊',
-          getType: 1,
-          score: 100,
-          useStatus: 1,
-          orderSn: '1231231231231',
-          validityPeriod: '',
-          getTime: '2018-09-18 11:11:11',
-          useTime: '2018-09-18 12:11:11'
-        },
-        {
-          id: 2,
-          userName: '奔跑的小猪',
-          mobile: '17600236996',
-          couponName: '啊啊啊啊啊啊',
-          getType: 2,
-          score: 100,
-          useStatus: 2,
-          orderSn: '1231231231231',
-          validityPeriod: '',
-          getTime: '2018-09-18 11:11:11',
-          useTime: '2018-09-18 12:11:11'
-        },
-        {
-          id: 3,
-          userName: '奔跑的小猪',
-          mobile: '17600236996',
-          couponName: '啊啊啊啊啊啊',
-          getType: 3,
-          score: 100,
-          useStatus: 3,
-          orderSn: '1231231231231',
-          validityPeriod: '',
-          getTime: '2018-09-18 11:11:11',
-          useTime: '2018-09-18 12:11:11'
-        },
-        {
-          id: 4,
-          userName: '奔跑的小猪',
-          mobile: '17600236996',
-          couponName: '啊啊啊啊啊啊',
-          getType: 4,
-          score: 100,
-          useStatus: 4,
-          orderSn: '1231231231231',
-          validityPeriod: '',
-          getTime: '2018-09-18 11:11:11',
-          useTime: '2018-09-18 12:11:11'
-        },
-        {
-          id: 5,
-          userName: '奔跑的小猪',
-          mobile: '17600236996',
-          couponName: '啊啊啊啊啊啊',
-          getType: 5,
-          score: 100,
-          useStatus: 1,
-          orderSn: '1231231231231',
-          validityPeriod: '',
-          getTime: '2018-09-18 11:11:11',
-          useTime: '2018-09-18 12:11:11'
+      this.pageParams.id = this.id
+      couponGetDetail(this.pageParams).then(res => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.page
         }
-      ]
-      tableData.map(item => {
-        item.getType = this.foramtGetType(item.getType)
-        item.useStatus = this.foramtUseStatus(item.useStatus)
       })
-      this.tableData = tableData
     },
     foramtUseStatus (data) {
       switch (data) {
@@ -258,6 +194,7 @@ export default {
   mounted () {
     this.initDataList()
   }
+
 }
 </script>
 

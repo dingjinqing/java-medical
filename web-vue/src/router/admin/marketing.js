@@ -241,6 +241,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/inviteUserList'
       )
   },
+  // 查看商品返利详情
+  {
+    path: '/admin/home/main/distribution/goodsReturnStaticticsDetail',
+    name: 'goodsReturnStaticticsDetail',
+    meta: {
+      crumbTitle: 'router.distribution_info',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/goodsReturnStaticticsDetail'
+      )
+  },
   // // 组团瓜分积分
   // {
   //   path: '/admin/home/main/divideIntegral',

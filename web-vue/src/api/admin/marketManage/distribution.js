@@ -151,3 +151,30 @@ export function delDistributor (data) {
     data: data
   })
 }
+
+// 佣金统计列表
+export function brokerageList (data) {
+  return service({
+    url: '/api/admin/distributio/brokerage/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 商品返利统计
+export function goodsReturnStatistics (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/goods/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查看商品返利详情
+export function goodsReturnStatisticsDetail (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/goods/list',
+    method: 'post',
+    data: data
+  })
+}

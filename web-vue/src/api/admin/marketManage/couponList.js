@@ -30,7 +30,16 @@ export function deleteCoupon (data) {
 // 添加保存优惠券
 export function saveCoupon (data) {
   return service({
-    url: `/api/admin/coupon/add`,
+    url: '/api/admin/coupon/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 优惠券领取明细
+export function couponGetDetail (data) {
+  return service({
+    url: '/api/admin/coupon/get/detail',
     method: 'post',
     data: data
   })
