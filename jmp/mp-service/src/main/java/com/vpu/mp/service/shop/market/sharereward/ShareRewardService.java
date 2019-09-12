@@ -184,9 +184,23 @@ public class ShareRewardService extends ShopBaseService {
     public ShareRewardInfoVo getShareRewardInfo(Integer shareId) {
         ShareRewardInfoVo shareRewardInfoVo = db().selectFrom(sa).where(sa.ID.eq(shareId)).fetchOneInto(ShareRewardInfoVo.class);
         ShareRule[] shareRules = new ShareRule[3];
-        shareRules[0] = MAPPER.convertValue(shareRewardInfoVo.getFirstLevelRule(),ShareRule.class);
-        shareRules[1] = MAPPER.convertValue(shareRewardInfoVo.getSecondLevelRule(),ShareRule.class);
-        shareRules[2] = MAPPER.convertValue(shareRewardInfoVo.getThirdLevelRule(),ShareRule.class);
+        try {
+            if (StringUtils.isNotEmpty(shareRewardInfoVo.getFirstLevelRule())) {
+                log.debug("deserialization first rule : {}", shareRewardInfoVo.getFirstLevelRule());
+                shareRules[0] = MAPPER.readValue(shareRewardInfoVo.getFirstLevelRule(), ShareRule.class);
+                if (StringUtils.isNotEmpty(shareRewardInfoVo.getSecondLevelRule())) {
+                    log.debug("deserialization second rule : {}", shareRewardInfoVo.getSecondLevelRule());
+                    shareRules[1] = MAPPER.readValue(shareRewardInfoVo.getSecondLevelRule(), ShareRule.class);
+                    if (StringUtils.isNotEmpty(shareRewardInfoVo.getThirdLevelRule())) {
+                        log.debug("deserialization third rule : {}", shareRewardInfoVo.getThirdLevelRule());
+                        shareRules[2] = MAPPER.readValue(shareRewardInfoVo.getThirdLevelRule(), ShareRule.class);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            log.error("ShareReward rules deserialization failed !");
+            e.printStackTrace();
+        }
         shareRewardInfoVo.setShareRules(shareRules);
         return shareRewardInfoVo;
     }
