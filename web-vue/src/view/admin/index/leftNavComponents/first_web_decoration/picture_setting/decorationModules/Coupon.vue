@@ -98,7 +98,7 @@ export default {
     activeBorder (newData) {
       console.log(newData, this.index)
       if (newData) {
-        this.$http.$emit('nowHightLightModules', this.index)
+        this.$http.$emit('nowHightLightModules', this.flag)
       }
     }
   },
@@ -124,7 +124,6 @@ export default {
           this.activeSetHere = false
         }
       })
-
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
         console.log(this.flag, res)

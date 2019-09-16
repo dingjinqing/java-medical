@@ -89,7 +89,7 @@ export default {
     activeBorder (newData) {
       console.log(newData, this.index)
       if (newData) {
-        this.$http.$emit('nowHightLightModules', this.index)
+        this.$http.$emit('nowHightLightModules', this.flag)
       }
     }
   },

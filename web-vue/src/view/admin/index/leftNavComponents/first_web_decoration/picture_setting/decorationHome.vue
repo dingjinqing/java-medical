@@ -144,9 +144,9 @@
             </div>
           </vue-scroll>
         </div>
-        <!-- <div class="decRight">
-          3
-        </div> -->
+        <div class="decRight">
+          <PageSetup />
+        </div>
       </div>
     </div>
     <!--保存-->
@@ -184,7 +184,8 @@ export default {
     vuescroll,
     draggable,
     MembershipCard: () => import('./decorationModules/membershipCard'),
-    Coupon: () => import('./decorationModules/Coupon')
+    Coupon: () => import('./decorationModules/Coupon'),
+    PageSetup: () => import('./pageSetup')
   },
   data () {
     return {
@@ -359,8 +360,9 @@ export default {
     showModulesList (newData) {
       console.log(newData)
       if (newData.length === 1) {
-        this.nowRightShowIndex = newData[0]
+        this.nowRightShowIndex = 0
       }
+
       if (newData.length) {
         this.zbFlag = true
       } else {
@@ -373,6 +375,9 @@ export default {
       //         this.$http.$emit('modulesClick', indexD)
       //       }, 100)
     }
+  },
+  updated () {
+    this.$http.$emit('modulesClick', this.nowRightShowIndex)
   },
   computed: {
     dragOptions () {
@@ -639,7 +644,7 @@ export default {
     overflow-y: auto;
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 20px;
     .top {
       margin-bottom: 12px;
       span:nth-of-type(2) {
@@ -724,6 +729,10 @@ export default {
             }
           }
         }
+      }
+      .decRight {
+        width: 41.4%;
+        margin-left: 20px;
       }
     }
   }

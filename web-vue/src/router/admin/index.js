@@ -254,7 +254,7 @@ const routes = [
           {
             path: '/admin/home/main/goodsManage/allGoods',
             redirect: '/admin/home/main/goodsManage/goodsForSale',
-            name: 'all_goods',
+            name: 'sale_on',
             meta: {
               crumbTitle: 'router.goodsForSale',
               meta: 'goods_manage'
@@ -271,7 +271,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.goodsForSale',
                   meta: 'goods_manage',
-                  category: 'all_goods'
+                  category: 'sale_on'
                 },
                 component: () =>
                   import(
@@ -285,7 +285,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.goodsForSaleOut',
                   meta: 'goods_manage',
-                  category: 'all_goods'
+                  category: 'sale_on'
                 },
                 component: () =>
                   import(
@@ -299,7 +299,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.goodsForInStock',
                   meta: 'goods_manage',
-                  category: 'all_goods'
+                  category: 'sale_on'
                 },
                 component: () =>
                   import(
