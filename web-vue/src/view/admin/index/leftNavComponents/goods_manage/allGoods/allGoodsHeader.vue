@@ -33,10 +33,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上架时间:">
-          <el-date-picker v-model="goodsFilterFormData.goodsSaleTimeStart"
+          <el-date-picker v-model="goodsFilterFormData.goodsSaleTimeStart" @change="datePickerChange(true)"
                           placeholder="请选择时间" :style="goodsFilterInputStyle"/>
           —
-          <el-date-picker v-model="goodsFilterFormData.goodsSaleTimeEnd"
+          <el-date-picker v-model="goodsFilterFormData.goodsSaleTimeEnd" @change="datePickerChange(false)"
                           placeholder="请选择时间" :style="goodsFilterInputStyle"/>
         </el-form-item>
         <el-form-item label="商品品牌:">
@@ -65,9 +65,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="商品价格:">
-          <el-input v-model="goodsFilterFormData.goodsPriceStart" placeholder="请输入价格" :style="goodsFilterInputStyle"/>
+          <el-input v-model.number="goodsFilterFormData.lowShopPrice" @change="shopPriceChange(true)"
+                    placeholder="请输入价格" :style="goodsFilterInputStyle"/>
           —
-          <el-input v-model="goodsFilterFormData.goodsPriceEnd" placeholder="请输入价格" :style="goodsFilterInputStyle"/>
+          <el-input v-model.number="goodsFilterFormData.highShopPrice" @change="shopPriceChange(false)"
+                    placeholder="请输入价格" :style="goodsFilterInputStyle"/>
         </el-form-item>
       </el-form>
     </div>
@@ -75,6 +77,7 @@
 </template>
 <script>
 import {getAllGoodsInitValue} from '@/api/admin/goodsManage/allGoods/allGoods'
+import {format} from '@/util/date'
 export default {
   name: 'allGoodsHeader',
   watch: {
@@ -108,8 +111,8 @@ export default {
         goodsType: null,
         goodsSaleTimeStart: null,
         goodsSaleTimeEnd: null,
-        goodsPriceStart: null,
-        goodsPriceEnd: null
+        lowShopPrice: null,
+        highShopPrice: null
       },
       goodsFilterInputStyle: {width: '170px'},
       goodsCatOptions: [],
@@ -174,6 +177,57 @@ export default {
         }
       }
       return retArr
+    },
+    /* 验证输入的时间范围是否合法 */
+    datePickerChange (isStart) {
+      if (this.goodsFilterFormData.goodsSaleTimeStart === null || this.goodsFilterFormData.goodsSaleTimeEnd === null) {
+        return
+      }
+      if (this.goodsFilterFormData.goodsSaleTimeStart.getTime() <= this.goodsFilterFormData.goodsSaleTimeEnd.getTime()) {
+        return
+      }
+      if (isStart) {
+        this.goodsFilterFormData.goodsSaleTimeStart = null
+      } else {
+        this.goodsFilterFormData.goodsSaleTimeEnd = null
+      }
+    },
+    /* 商品价格输入范围是否合法 */
+    shopPriceChange (isStart) {
+      if (typeof this.goodsFilterFormData.lowShopPrice !== 'number') {
+        this.goodsFilterFormData.lowShopPrice = null
+        return
+      }
+      if (typeof this.goodsFilterFormData.highShopPrice !== 'number') {
+        this.goodsFilterFormData.highShopPrice = null
+        return
+      }
+
+      if (this.goodsFilterFormData.lowShopPrice === null || this.goodsFilterFormData.highShopPrice === null) {
+        return
+      }
+      if (this.goodsFilterFormData.lowShopPrice <= this.goodsFilterFormData.highShopPrice) {
+        return
+      }
+      if (isStart) {
+        this.goodsFilterFormData.lowShopPrice = null
+      } else {
+        this.goodsFilterFormData.highShopPrice = null
+      }
+    },
+    /* 获取数据 */
+    getFormData () {
+      let retData = {
+        ...this.goodsFilterFormData
+      }
+      retData.goodsSaleTimeStart = format(this.goodsFilterFormData.goodsSaleTimeStart)
+      retData.goodsSaleTimeEnd = format(this.goodsFilterFormData.goodsSaleTimeEnd)
+
+      return retData
+    },
+    /* 清空过滤条件 */
+    resetFormData () {
+      this.$refs.goodsFilterForm.resetFields()
     }
   },
   mounted () {
@@ -201,6 +255,6 @@ export default {
     border-bottom: 2px solid #5a8bff;
   }
   .allGoodsFilter{
-    padding:20px 0px;
+    padding:20px 0px 0px 0px;
   }
 </style>
