@@ -14,7 +14,7 @@
           labelPosition='right'
         >
           <el-form-item
-            label="活动类型："
+            :label="$t('addBargainAct.bargainType')+':'"
             prop=""
           >
             <el-radio-group
@@ -22,34 +22,34 @@
               v-model="param.bargainType"
               size="medium"
             >
-              <el-radio :label='0'>砍到指定金额计算</el-radio>
-              <el-radio :label='1'>砍到任意金额计算</el-radio>
+              <el-radio :label='0'>{{$t('addBargainAct.bargainType1Tip')}}</el-radio>
+              <el-radio :label='1'>{{$t('addBargainAct.bargainType2Tip')}}</el-radio>
             </el-radio-group>
-            <span style="margin-left: 15px;">保存后不可编辑</span>
+            <span style="margin-left: 15px;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
           </el-form-item>
 
           <el-form-item
-            label="活动名称："
+            :label="$t('marketCommon.actName')+':'"
             prop=""
           >
             <el-input
               v-model="param.bargainName"
               size="small"
               style="width:200px;"
-              placeholder="请输入活动名称"
+              :placeholder="$t('marketCommon.actNamePlaceholder')"
             ></el-input>
           </el-form-item>
 
           <el-form-item
-            label="有效期："
+            :label="$t('marketCommon.validDate')+':'"
             prop=""
           >
             <el-date-picker
               v-model="effectiveDate"
               type="datetimerange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('marketCommon.to')"
+              :start-placeholder="$t('marketCommon.startTime')"
+              :end-placeholder="$t('marketCommon.endTime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               size="small"
             >
@@ -57,7 +57,7 @@
           </el-form-item>
 
           <el-form-item
-            label="活动商品："
+            :label="$t('addBargainAct.actGoods')+':'"
             prop=""
           >
             <div
@@ -69,18 +69,17 @@
                 :src="srcList.src3"
                 alt=""
               >
-              <p v-if="this.goodsRow.length == 0">选择商品</p>
-              <p v-else>重新选择</p>
+              <p v-if="this.goodsRow.length == 0">{{$t('addBargainAct.selectGoods')}}</p>
+              <p v-else>{{$t('addBargainAct.reselect')}}</p>
             </div>
-            <div class="fontColor">所有参与砍价的商品，均需要用户将价格砍到底价后才可以砍价成功，
-              若某商品同一时间段内同时参与了砍价和拼团活动，则优先进行砍价活动</div>
+            <div class="fontColor">{{$t('addBargainAct.actGoodsTip')}}</div>
             <el-table
               :data="this.goodsRow"
               :hidden="this.goodsRow.length == 0?true:false"
             >
               <el-table-column
                 prop="goodsName"
-                label="商品名称"
+                :label="$t('addBargainAct.goodsName')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -91,11 +90,11 @@
               </el-table-column>
               <el-table-column
                 prop="goodsNumber"
-                label="商品原库存"
+                :label="$t('addBargainAct.goodsOriginalStock')"
                 align="center"
               ></el-table-column>
               <el-table-column
-                label="砍价库存"
+                :label="$t('addBargainAct.bargainStock')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -111,13 +110,13 @@
               </el-table-column>
               <el-table-column
                 prop="shopPrice"
-                label="商品原价"
+                :label="$t('addBargainAct.goodsOriginalPrice')"
                 align="center"
               ></el-table-column>
               <el-table-column
                 v-if="param.bargainType == 0"
                 prop="shopPrice"
-                label="砍价底价"
+                :label="$t('addBargainAct.bargainReservePrice')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -129,13 +128,13 @@
                     :max="scope.row.shopPrice"
                   >
                   </el-input-number>
-                  (默认0元)
+                  ({{$t('addBargainAct.default0')}})
                 </template>
               </el-table-column>
               <el-table-column
                 v-else
                 prop="shopPrice"
-                label="结算金额"
+                :label="$t('addBargainAct.sttlementAmount')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -148,7 +147,7 @@
                     :max="scope.row.shopPrice"
                   >
                   </el-input-number>
-                  至
+                  {{$t('marketCommon.to')}}
                   <el-input-number
                     :disabled="isEditFlag"
                     v-model="param.expectationPrice"
@@ -158,7 +157,7 @@
                     :max="scope.row.shopPrice"
                   >
                   </el-input-number>
-                  (默认0元)保存后不可编辑
+                  ({{$t('addBargainAct.default0')}}){{$t('addBargainAct.sttlementAmountTip')}}
                 </template>
               </el-table-column>
             </el-table>
@@ -174,16 +173,16 @@
             </el-form-item> -->
 
             <el-form-item
-              label="运费设置："
+              :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
             >
               <el-radio-group v-model="param.freeFreight">
-                <el-radio :label="1">免运费</el-radio>
-                <el-radio :label="0">使用原商品运费模板</el-radio>
+                <el-radio :label="1">{{$t('marketCommon.freeShipping')}}</el-radio>
+                <el-radio :label="0">{{$t('marketCommon.useOriginalProductShippingTemplate')}}</el-radio>
               </el-radio-group>
             </el-form-item>
 
-            <el-form-item label="期望参与砍价人次：">
+            <el-form-item :label="$t('addBargainAct.expectToParticipateInBargaining')+':'">
               <el-input-number
                 :disabled="isEditFlag"
                 v-model="param.expectationNumber"
@@ -191,13 +190,12 @@
                 style="width:150px"
                 :min="3"
               >
-              </el-input-number>&nbsp;人
-              <span style="margin-left:10px">(期望人次最少为3)</span>
-              <div class="fontColor">填写人数为发起人发起砍价后，预计将价格砍到底价时需要参与砍价活动帮助该发起人进行砍价的用户数，
-                默认为100，保存后不可编辑</div>
+              </el-input-number>&nbsp;{{$t('addBargainAct.people')}}
+              <span style="margin-left:10px">({{$t('addBargainAct.expectPeopleMin')}})</span>
+              <div class="fontColor">{{$t('addBargainAct.expectPeopleTip')}}</div>
             </el-form-item>
 
-            <el-form-item label="商品首次砍价可砍价比例区间：">
+            <el-form-item :label="$t('addBargainAct.goodsFirstBargainProportion')">
               <div style="display: flex">
                 <el-input-number
                   v-model="param.bargainMin"
@@ -205,7 +203,7 @@
                   style="width:150px"
                   :min="0"
                   :max="50"
-                ></el-input-number>&nbsp;%&nbsp;至&nbsp;
+                ></el-input-number>&nbsp;%&nbsp;{{$t('marketCommon.to')}}&nbsp;
                 <el-input-number
                   v-model="param.bargainMax"
                   size="small"
@@ -213,45 +211,42 @@
                   :min="0"
                   :max="50"
                 ></el-input-number>&nbsp;%
-                <span style="margin-left:10px">(比例必须在0~50%之间)</span>
+                <span style="margin-left:10px">({{$t('addBargainAct.proportionIntervalTip')}})</span>
               </div>
               <div
                 class="fontColor"
                 style="line-height:24px;margin-top:10px"
-              >用户发起砍价后，首次砍价可以砍掉的金额占商品价格的比例 ，该比例在填写区间内随机产生。
-                不填写则按照系统规则计算， 默认为空，为空表示不填写。 例如填写20%到50%，商品价格为100元，则用户发起砍价，
-                首次给自己砍价时，系统会随机取该 比例区间数字，例如随机为35%， 则该用户发起砍价后首次砍价金额为100*35%*（系统砍价系数），
-                系统砍价系数按照系统逻辑计算。若系统砍价系数为0.5，则本次砍价金额为100*35%*0.5=17.5元。 即该用户给自己 可砍掉17.5元。</div>
+              >{{$t('addBargainAct.proportionInterval')}}</div>
             </el-form-item>
           </div>
 
           <!-- 砍到任意金额计算部分 -->
           <div v-if="this.param.bargainType==1">
             <el-form-item
-              label="单次帮砍金额"
+              :label="$t('addBargainAct.singleBargainMoney')"
               prop=""
             >
               <el-radio-group v-model="param.bargainMoneyType">
-                <el-radio :label='0'>固定金额
+                <el-radio :label='0'>{{$t('addBargainAct.fixedMoney')}}
                   <el-input-number
                     v-model="param.bargainFixedMoney"
                     size="small"
                     style="width:150px"
-                  ></el-input-number>元
+                  ></el-input-number>{{$t('marketCommon.yuan')}}
                 </el-radio>
                 <br>
-                <el-radio :label='1'>随机金额
+                <el-radio :label='1'>{{$t('addBargainAct.randomMoney')}}
                   <el-input-number
                     v-model="param.bargainMinMoney"
                     size="small"
                     style="width:150px"
-                  ></el-input-number>元
-                  <span>至</span>
+                  ></el-input-number>{{$t('marketCommon.yuan')}}
+                  <span>{{$t('marketCommon.to')}}</span>
                   <el-input-number
                     v-model="param.bargainMaxMoney"
                     size="small"
                     style="width:150px"
-                  ></el-input-number>元之间取随机数
+                  ></el-input-number>{{$t('marketCommon.yuan')}}{{$t('addBargainAct.getRandomMoneyBetween')}}
                 </el-radio>
               </el-radio-group>
             </el-form-item>
@@ -264,23 +259,23 @@
             </el-form-item> -->
 
             <el-form-item
-              label="运费设置："
+              :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
             >
               <el-radio-group v-model="param.freeFreight">
-                <el-radio :label='1'>免运费</el-radio>
-                <el-radio :label='0'>使用原商品运费模板</el-radio>
+                <el-radio :label="1">{{$t('marketCommon.freeShipping')}}</el-radio>
+                <el-radio :label="0">{{$t('marketCommon.useOriginalProductShippingTemplate')}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </div>
 
           <!-- 公共更多配置模块部分 -->
           <el-form-item
-            label="好友砍价优惠券："
+            :label="$t('addBargainAct.friendsBargainCoupon')+':'"
             prop=""
           >
             <el-card class="box-card">
-              <div class="fontColor">向帮忙砍价的用户赠送优惠券，可促使帮砍用户在店铺内下单，提高交易量。</div>
+              <div class="fontColor">{{$t('addBargainAct.friendsBargainCouponTip')}}</div>
               <span>{{mrkingVoucherId}}</span>
               <div
                 @click="handleToCallDialog1()"
@@ -290,18 +285,18 @@
                   :src="srcList.src3"
                   alt=""
                 >
-                <p class="fontColor">添加优惠券</p>
+                <p class="fontColor">{{$t('addBargainAct.addCoupon')}}</p>
               </div>
-              <div class="fontColor">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+              <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
             </el-card>
           </el-form-item>
 
           <el-form-item
-            label="鼓励奖："
+            :label="$t('addBargainAct.encouragementAward')+':'"
             prop=""
           >
             <el-card class="box-card">
-              <div class="fontColor">买家砍价失败后给予一定奖励，可提升买家复购</div>
+              <div class="fontColor">{{$t('addBargainAct.encouragementAwardTip')}}</div>
               <span>{{rewardCouponId}}</span>
               <div
                 @click="handleToCallDialog2()"
@@ -311,10 +306,10 @@
                   :src="srcList.src3"
                   alt=""
                 >
-                <p class="fontColor">添加优惠券</p>
+                <p class="fontColor">{{$t('addBargainAct.addCoupon')}}</p>
               </div>
               <!-- <addCoupon /> -->
-              <div class="fontColor">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+              <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
             </el-card>
           </el-form-item>
 
@@ -330,7 +325,7 @@
         @click="isEditFlag?updateSubmit():addSubmit()"
         type="primary"
         size="small"
-      >保存</el-button>
+      >{{$t('marketCommon.save')}}</el-button>
     </div>
     <!--添加优惠卷-->
     <AddCouponDialog @handleToCheck="handleToCheck" />
@@ -341,7 +336,7 @@
 
 <script>
 import addCoupon from './addCoupon'
-import actShare from './actShare'
+import actShare from '@/components/admin/marketActivityShareSetting'
 import AddCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addBargain, getBargainByIsd, updateBargain } from '@/api/admin/marketManage/bargain.js'
@@ -349,6 +344,7 @@ import { addBargain, getBargainByIsd, updateBargain } from '@/api/admin/marketMa
 export default {
   components: { addCoupon, actShare, AddCouponDialog, choosingGoods },
   mounted () {
+    this.langDefault()
     if (this.$route.query.id > 0) {
       // 编辑砍价活动
       this.actId = this.$route.query.id
@@ -456,7 +452,7 @@ export default {
         if (res.error === 0) {
           this.$message({
             type: 'success',
-            message: '保存成功!'
+            message: this.$t('marketCommon.successfulOperation')
           })
           this.$router.push({
             name: 'bargain'
@@ -464,7 +460,7 @@ export default {
         } else {
           this.$message({
             type: 'fail',
-            message: '保存失败!'
+            message: this.$t('marketCommon.failureOperation')
           })
         }
       })
@@ -481,7 +477,7 @@ export default {
         if (res.error === 0) {
           this.$message({
             type: 'success',
-            message: '更新成功!'
+            message: this.$t('marketCommon.successfulOperation')
           })
           this.$router.push({
             name: 'bargain'
@@ -489,7 +485,7 @@ export default {
         } else {
           this.$message({
             type: 'fail',
-            message: '更新失败!'
+            message: this.$t('marketCommon.failureOperation')
           })
         }
       })

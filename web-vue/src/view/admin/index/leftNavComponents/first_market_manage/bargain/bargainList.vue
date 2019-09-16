@@ -10,22 +10,22 @@
         <el-button
           type="primary"
           @click="addActivity"
-        >添加砍价活动</el-button>
+        >{{$t('bargainList.addBargain')}}</el-button>
 
         <div class="rightContent">
-          <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
+          <span>{{$t('bargainList.cutTimesSetTip1')}}</span>
           <el-input
             v-model="dailyCutTimes"
             style="width: 80px"
             size="small"
           ></el-input>
-          <span>次</span>
-          <span>设置为空时，不限制帮助砍价次数</span>
+          <span>{{$t('bargainList.times')}}</span>
+          <span>{{$t('bargainList.cutTimesSetTip2')}}</span>
           <el-button
             @click="updateDailyCutTimes"
             type="primary"
             size="small"
-          >保存设置</el-button>
+          >{{$t('bargainList.settingSave')}}</el-button>
         </div>
       </div>
     </div>
@@ -40,69 +40,69 @@
       >
         <el-table-column
           prop="bargainName"
-          label="砍价活动名称"
+          :label="$t('bargainList.bargainName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="bargainType"
-          label="活动类型"
+          :label="$t('bargainList.bargainType')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="vaildDate"
-          label="有效期"
+          :label="$t('bargainList.vaildDate')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="statusName"
-          label="活动状态"
+          :label="$t('bargainList.statusName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="goodsName"
-          label="商品名称"
+          :label="$t('bargainList.goodsName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="goodsNumber"
-          label="商品库存"
+          :label="$t('bargainList.goodsNumber')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="stock"
-          label="砍价库存"
+          :label="$t('bargainList.stock')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="successNumber"
-          label="成功数量"
+          :label="$t('bargainList.successNumber')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="bargainUserNumber"
-          label="发起砍价人数"
+          :label="$t('bargainList.bargainUserNumber')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          label="操作"
+          :label="$t('marketCommon.operate')"
           align="center"
         >
           <template slot-scope="scope">
@@ -110,7 +110,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="编辑"
+                :content="$t('marketCommon.edit')"
                 placement="top"
                 v-if="scope.row.status === 1"
               >
@@ -122,7 +122,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="删除"
+                :content="$t('marketCommon.delete')"
                 placement="top"
                 v-else
               >
@@ -135,7 +135,7 @@
                 v-if="scope.row.status === 1"
                 class="item"
                 effect="dark"
-                content="停用"
+                :content="$t('marketCommon.disable')"
                 placement="top"
               >
                 <i
@@ -147,7 +147,7 @@
                 v-else
                 class="item"
                 effect="dark"
-                content="启用"
+                :content="$t('marketCommon.enabled')"
                 placement="top"
               >
                 <i
@@ -158,7 +158,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="分享"
+                :content="$t('marketCommon.share')"
                 placement="top"
               >
                 <i
@@ -169,7 +169,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="查看砍价订单"
+                :content="$t('bargainList.getBargainOrders')"
                 placement="top"
               >
                 <i
@@ -180,7 +180,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="获取新用户明细"
+                :content="$t('marketCommon.getSourceUserList')"
                 placement="top"
               >
                 <i
@@ -191,7 +191,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="查看发起砍价用户"
+                :content="$t('bargainList.bargainRecordList')"
                 placement="top"
               >
                 <i
@@ -202,7 +202,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="活动效果数据"
+                :content="$t('marketCommon.activityEffectData')"
                 placement="top"
               >
                 <i

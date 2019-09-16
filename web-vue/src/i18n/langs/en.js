@@ -78,6 +78,14 @@ import {
 import {
   en as addCouponPackage
 } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
+// 砍价列表
+import {
+  en as bargainList
+} from './views/admin/index/leftNavComponents/first_market_manage/bargain/bargainList'
+// 添加砍价活动
+import {
+  en as addBargainAct
+} from './views/admin/index/leftNavComponents/first_market_manage/bargain/addBargainAct'
 // 好友助力
 import {
   en as promoteList
@@ -462,6 +470,8 @@ const en = {
   receiveDetails, // 分享有礼-领取明细
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页
+  bargainList, // 砍价活动列表
+  addBargainAct, // 创建砍价活动
   pageDecoration,
   bottomNavigation,
   promoteList,

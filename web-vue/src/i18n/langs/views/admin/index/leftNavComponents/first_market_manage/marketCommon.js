@@ -42,7 +42,22 @@ export const cn = {
   endTime: '结束日期',
   save: '保存',
   getSourceUserList: '获取新用户明细',
-  activityEffectData: '活动效果数据'
+  activityEffectData: '活动效果数据',
+  shippingSetting: '运费设置',
+  freeShipping: '免运费',
+  useOriginalProductShippingTemplate: '使用原商品运费模板',
+
+  // 活动分享设置
+  activitySharing: '活动分享',
+  defaultStyle: '默认样式',
+  viewExample: '查看示例',
+  downloadPoster: '下载海报',
+  customStyle: '自定义样式',
+  copywriting: '文案',
+  sharedPicture: '分享图',
+  goodsInformationPicture: '活动商品信息图',
+  customPicture: '自定义图片',
+  customPictureTip: '建议尺寸：800*800像素'
 }
 
 export const en = {
@@ -89,5 +104,20 @@ export const en = {
   endTime: 'end time',
   save: 'save',
   getSourceUserList: 'new users from this',
-  activityEffectData: 'Activity effect data'
+  activityEffectData: 'Activity effect data',
+  shippingSetting: 'shipping setting',
+  freeShipping: 'free shipping',
+  useOriginalProductShippingTemplate: 'use original product shipping template',
+
+  // 活动分享设置
+  activitySharing: 'activity sharing',
+  defaultStyle: 'default style',
+  viewExample: 'view the example',
+  downloadPoster: 'download poster',
+  customStyle: 'custom style',
+  copywriting: 'copywriting',
+  sharedPicture: 'shared picture',
+  goodsInformationPicture: 'goods information picture',
+  customPicture: 'custom picture',
+  customPictureTip: 'recommended size: 800*800 pixels'
 }
