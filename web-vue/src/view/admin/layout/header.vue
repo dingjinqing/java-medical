@@ -139,7 +139,6 @@ export default {
         }
       })
       this.hiddle_menu_list = data
-      console.log('11111111111111111111111111111111111111111111111111111111111111')
       console.log(this.hiddle_menu_list)
     }
   },

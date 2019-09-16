@@ -60,6 +60,7 @@ export default {
           break
         default:
           this.flag4 = true
+          this.flag = true
           break
       }
     },
@@ -81,6 +82,7 @@ export default {
             break
           default:
             this.flag4 = true
+            this.flag = true
             break
         }
       }
