@@ -371,9 +371,6 @@ export default {
     },
     nowRightShowIndex (newData) {
       console.log(newData, this.activeName, this.showModulesList)
-      // setTimeout(() => {
-      //         this.$http.$emit('modulesClick', indexD)
-      //       }, 100)
     }
   },
   updated () {
@@ -693,7 +690,7 @@ export default {
           justify-content: center;
           align-items: center;
           flex-direction: column;
-          z-index: 10000;
+          // z-index: 10000;
         }
       }
       .decMiddle {

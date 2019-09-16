@@ -87,14 +87,37 @@
           </div>
         </div>
         <div class="bottomLlist">
-          <el-radio
-            v-model="backgroundRadio"
-            label="2"
-          >背景图片：</el-radio>
+          <div>
+            <el-radio
+              v-model="backgroundRadio"
+              label="2"
+            >背景图片：</el-radio>
+          </div>
+
+          <div class="bottomDiv">
+            <div class="bgBottom">
+
+              <img
+                :src="$imageHost+'/image/admin/add_img_bg.png'"
+                class="bgImgDiv"
+                @click="handleToAddImg()"
+              />
+
+            </div>
+            <el-button
+              type="primary"
+              size="small"
+            >确定</el-button>
+          </div>
         </div>
       </div>
 
     </div>
+    <!--图片弹窗-->
+    <ImageDalog
+      pageIndex='userCardAdd'
+      @handleSelectImg='handleSelectImg'
+    />
   </div>
 </template>
 <script>
@@ -102,6 +125,9 @@ import vcolorpicker from 'vcolorpicker'
 import Vue from 'vue'
 Vue.use(vcolorpicker)
 export default {
+  components: {
+    ImageDalog: () => import('@/components/admin/imageDalog')
+  },
   data () {
     return {
       defaultColorright: '#fff',
@@ -135,6 +161,10 @@ export default {
     // 点击重置
     handleToReset () {
       this.colorRight = '#fff'
+    },
+    // 添加图片
+    handleToAddImg () {
+      this.$http.$emit('dtVisible')
     }
   }
 }
@@ -229,6 +259,27 @@ export default {
         }
         /deep/ .m-colorPicker .box {
           top: -210px;
+        }
+        .bottomDiv {
+          .bgBottom {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            //   background-position: center;
+            .bgImgDiv {
+              width: 47px;
+              height: 44px;
+
+              cursor: pointer;
+            }
+          }
+          /deep/ .el-button {
+            width: 70px;
+            margin-top: 10px;
+          }
         }
       }
     }

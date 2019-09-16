@@ -70,7 +70,7 @@ export default {
     }
   }
   .pageSetContent {
-    height: 415px;
+    height: 500px;
     background-color: #f8f8f8;
     border: 1px solid #e5e5e5;
     padding: 10px 2%;

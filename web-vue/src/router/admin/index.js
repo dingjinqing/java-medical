@@ -149,7 +149,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import('@/components/admin/selectLinksComponents/commonLinks')
@@ -161,7 +161,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import(
@@ -175,7 +175,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import('@/components/admin/selectLinksComponents/customPage')
@@ -187,7 +187,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import(
@@ -202,7 +202,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import(
@@ -216,7 +216,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import('@/components/admin/selectLinksComponents/pageJump')
@@ -228,7 +228,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import(
@@ -242,7 +242,7 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
-                  category: 'bottomNavigation'
+                  category: 'image_manager'
                 },
                 component: () =>
                   import('@/components/admin/selectLinksComponents/formPage')

@@ -193,7 +193,7 @@ export default {
       right: 8px;
       top: 2px;
       display: none;
-      z-index: 8;
+      z-index: 100;
     }
     &:hover {
       border: 2px dashed #5a8bff;
