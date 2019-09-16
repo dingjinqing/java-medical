@@ -633,14 +633,14 @@ export default {
 } */
 </style>
 <style>
-.m-colorPicker {
+.shopStyleContent .m-colorPicker {
   position: absolute !important;
   right: 36px;
   top: 6px;
   width: 24px !important;
   height: 24px !important;
 }
-.colorBtn {
+.shopStyleContent .colorBtn {
   /* width: 100% !important;
   height: 100% !important;
   opacity: 0; */
@@ -649,7 +649,7 @@ export default {
   z-index: 10;
   border: 1px dashed #cccccc;
 }
-.box.open {
+.shopStyleContent .box.open {
   z-index: 1000;
 }
 </style>

@@ -75,6 +75,7 @@ export default {
     border: 1px solid #e5e5e5;
     padding: 10px 2%;
     border-radius: 4px;
+    overflow-y: auto;
   }
 }
 </style>
