@@ -153,12 +153,11 @@ public class OrderReadService extends ShopBaseService {
 		List<String> rOrderSns = new ArrayList<String>();
 		//子订单
 		List<OrderInfoVo> childOrders = size <=1 ? null : new ArrayList<OrderInfoVo>(size -1);
-		//主订单
+		//主订单(正常订单mainOrder=正常订单)
 		OrderInfoVo mainOrder = null;
 		//构造参数
 		for (OrderInfoVo order : orders) {
-			//子订单
-			if(orderInfo.isMainOrder(order)) {
+			if(orderInfo.isMainOrder(order) || StringUtils.isBlank(order.getMainOrderSn())) {
 				mainOrder = order;
 			}else{
 				childOrders.add(order);
