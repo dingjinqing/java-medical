@@ -155,7 +155,7 @@ export default {
       this.header_navData = [
         { title: this.$t('adminPageFramework.headerData.title_1'), index: '', meta: 'first_web_manage', name: 'shop_view' },
         { title: this.$t('adminPageFramework.headerData.title_2'), index: '', meta: 'first_web_decoration', name: 'picture_setting' },
-        { title: this.$t('adminPageFramework.headerData.title_3'), index: '', meta: 'goods_manage', name: 'all_goods' },
+        { title: this.$t('adminPageFramework.headerData.title_3'), index: '', meta: 'goods_manage', name: 'sale_on' },
         { title: this.$t('adminPageFramework.headerData.title_4'), index: '', meta: 'first_trade_manage', name: 'order' },
         { title: this.$t('adminPageFramework.headerData.title_5'), index: '', meta: 'first_market_manage', name: 'first_market_manage' },
         { title: this.$t('adminPageFramework.headerData.title_6'), index: '', meta: 'user_manger', name: 'user_list' },

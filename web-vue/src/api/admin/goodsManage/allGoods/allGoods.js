@@ -8,3 +8,10 @@ export function getGoodsList (data) {
     data: data
   })
 }
+// 初始化全部商品顶部下拉框数据
+export function getAllGoodsInitValue (data) {
+  return service({
+    url: `/api/admin/goods/page/init`,
+    method: 'get'
+  })
+}
