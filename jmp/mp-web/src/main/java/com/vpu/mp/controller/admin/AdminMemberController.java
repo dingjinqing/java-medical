@@ -128,6 +128,19 @@ public class AdminMemberController extends AdminBaseController{
 	}
 	
 	
+	/**
+	 * 更新会员信息
+	 */
+	@PostMapping("/info/update")
+	public JsonResult updateMemberInfo(@RequestBody MemberParam param) {
+		logger().info("");
+		/** 获取语言，用于国际化 */
+		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
+		shop().member.updateMemberInfo(param);
+		
+		return success();
+	}
+	
 	
 //-------------------------------优化代码结构-正在做代码迁移-----------------------------------------------
 	
