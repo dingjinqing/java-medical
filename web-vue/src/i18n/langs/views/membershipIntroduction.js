@@ -184,15 +184,15 @@ export const cn = {
     },
     {
       title: '累计消费订单数',
-      content: '￥ 0.00'
-    },
-    {
-      title: '累计退款',
       content: '0'
     },
     {
-      title: '累计退款订单数',
+      title: '累计退款',
       content: '￥ 0.00'
+    },
+    {
+      title: '累计退款订单数',
+      content: '暂未退单'
     }
   ],
   distributionData: [
@@ -280,7 +280,15 @@ export const cn = {
   ],
   maritalStatus: ['未婚', '已婚', '保密'],
   notExists: '暂无',
-  sex: [['f', '女'], ['m', '男']]
+  sex: [['f', '女'], ['m', '男']],
+  day: '天内',
+  month: '个月内',
+  year: '年内',
+  distributionStatistic: '分销统计',
+  chooseTag: '请选择标签',
+  chooseUser: '选择用户',
+  search: '搜索',
+  userId: '用户ID'
 }
 
 export const en = {
@@ -566,5 +574,13 @@ export const en = {
   ],
   maritalStatus: ['UnMarried', 'Married', 'Secret'],
   notExists: 'Not Exists',
-  sex: [['f', 'woman'], ['m', 'man']]
+  sex: [['f', 'woman'], ['m', 'man']],
+  day: 'day(s)',
+  month: 'month(s)',
+  year: 'year(s)',
+  distributionStatistic: 'Distribution statistics',
+  chooseTag: 'please choose tag',
+  chooseUser: 'choose user',
+  search: 'search',
+  userId: 'USER ID'
 }
