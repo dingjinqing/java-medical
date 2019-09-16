@@ -630,11 +630,13 @@ export default {
   min-width: 100%;
   font-size: 14px;
   height: 100%;
+  padding-bottom: 60px;
   .decHomeMain {
     height: 100%;
+    overflow-y: auto;
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 0 20px;
+    padding: 10px 20px 10px 20px;
     .top {
       margin-bottom: 12px;
       span:nth-of-type(2) {
