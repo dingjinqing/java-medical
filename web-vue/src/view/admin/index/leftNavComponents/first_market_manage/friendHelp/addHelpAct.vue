@@ -20,7 +20,7 @@
               class="morelength"
               v-model="form.actName"
             ></el-input>
-            <span style="margin-left: 10px">查看活动规则</span>
+            <span style="margin-left: 10px">{{$t('promoteList.actRules')}}</span>
           </el-form-item>
           <el-form-item
             :label="$t('promoteList.actValidityPeriod')"
@@ -104,7 +104,6 @@
                 align="center"
               >
               </el-table-column>
-
               <el-table-column
                 width="150%"
                 prop="shopPrice"
@@ -213,7 +212,7 @@
                 >
                 </el-option>
               </el-select>
-              <div class="gray">用户获得奖励后在有效期内未领取则奖励失效，不可再领取</div>
+              <div class="gray">{{$t('promoteList.rewardValidityPeriodText')}}</div>
             </div>
           </el-form-item>
           <el-form-item
@@ -228,7 +227,7 @@
               v-model="form.promoteType"
               label="1"
             >{{$t('promoteList.randomValue')}}</el-radio>
-            <span>查看规则</span>
+            <span>{{$t('promoteList.actRules')}}</span>
           </el-form-item>
           <el-form-item
             :label="$t('promoteList.requiredPromoteValue')"
@@ -240,7 +239,7 @@
                 style="margin-right: 10px"
                 v-model="form.promoteAmount"
               ></el-input>
-              <div class="gray">用户发起抢购活动，助力值达到要求则助力成功，可领取奖励，建议填写大于100的整数</div>
+              <div class="gray">{{$t('promoteList.requiredPromoteValueText')}}</div>
             </div>
           </el-form-item>
           <el-form-item
@@ -253,7 +252,7 @@
                 style="margin-right: 10px"
                 v-model="form.promoteTimes"
               ></el-input>
-              <div class="gray">活动需要好友帮忙助力的总次数</div>
+              <div class="gray">{{$t('promoteList.requiredPromoteValueText')}}</div>
             </div>
           </el-form-item>
           <el-form-item
@@ -289,7 +288,7 @@
               <div
                 style="margin-left:10px"
                 class="gray"
-              >用户在某时间段内最多可发起抢购活动的次数，填写0表示不限制</div>
+              >{{$t('promoteList.launchTimesLimitText')}}</div>
             </div>
           </el-form-item>
           <el-form-item
@@ -307,7 +306,7 @@
               <div
                 style="margin-left: 10px"
                 class="gray"
-              >好友通过帮忙分享可获得的助力次数，除分享获得助力次数外，默认每人最少1次助力机会 </div>
+              >{{$t('promoteList.sharePromoteText')}}</div>
             </div>
           </el-form-item>
           <el-form-item
@@ -322,66 +321,66 @@
               v-model="form.promoteCondition"
               label="1"
             >{{$t('promoteList.authorizeYes')}}</el-radio>
-            <span class="gray">好友帮忙助力时，是否需要授权个人信息（头像+昵称）</span>
+            <span class="gray">{{$t('promoteList.promoteConditionText')}}</span>
           </el-form-item>
 
           <el-form-item
             v-if="form.rewardType == 1"
-            label="优惠叠加策略："
+            :label="$t('promoteList.couponStrategy')"
             prop=""
           >
             <el-radio
               v-model="form.useDiscount"
               label="1"
-            >可叠加</el-radio>
+            >{{$t('promoteList.useDiscount')}}</el-radio>
             <el-radio
               v-model="form.useDiscount"
               label="0"
-            >不可叠加</el-radio>
-            <span class="gray">活动商品结算时是否可与会员卡折扣、优惠券叠加使用</span>
+            >{{$t('promoteList.noUseDiscount')}}</el-radio>
+            <span class="gray">{{$t('promoteList.couponStrategyText')}}</span>
           </el-form-item>
           <el-form-item
             v-if="form.rewardType == 1"
-            label="积分抵扣策略："
+            :label="$t('promoteList.scoreStrategy')"
             prop=""
           >
             <el-radio
               v-model="form.useScore"
               label="1"
-            >可抵扣</el-radio>
+            >{{$t('promoteList.useScore')}}</el-radio>
             <el-radio
               v-model="form.useScore"
               label="0"
-            >不可抵扣</el-radio>
-            <span class="gray">活动商品结算时是否可使用积分抵扣部分金额</span>
+            >{{$t('promoteList.noUseScore')}}</el-radio>
+            <span class="gray">{{$t('promoteList.scoreStrategyText')}}</span>
           </el-form-item>
           <el-form-item
-            label="助力失败赠送："
+            :label="$t('promoteList.promoteFail')"
             prop=""
           >
             <el-radio
               v-model="form.failedSendType"
               label="0"
             >
-              不赠送
+              {{$t('promoteList.giftNothing')}}
             </el-radio>
             <el-radio
               v-model="form.failedSendType"
               label="1"
-            >优惠券</el-radio>
+            >{{$t('promoteList.coupon')}}</el-radio>
             <el-radio
               v-model="form.failedSendType"
               label="2"
-            >积分</el-radio>
+            >{{$t('promoteList.point')}}</el-radio>
             <div v-if="form.failedSendType==1">
               <el-button
                 size="small"
                 type="primary"
                 @click="isEditFlag?'':handleToCallDialog()"
-              >+选择优惠券</el-button>
+              >+ {{$t('promoteList.chooseCoupons')}}</el-button>
             </div>
             <div v-if="form.failedSendType==2">
-              赠送积分值：
+              {{$t('promoteList.giftPoint')}}
               <el-input
                 size="small"
                 type="primary"
@@ -395,7 +394,7 @@
               style="width: 10%"
             >
               <el-table-column
-                label="优惠券信息"
+                :label="$t('promoteList.couponInfo')"
                 width="150%"
               >
                 <template slot-scope="scope">
@@ -420,10 +419,10 @@
           <el-collapse>
             <el-collapse-item>
               <template slot="title">
-                展开更多配置
+                {{$t('promoteList.moreSettings')}}
               </template>
               <el-form-item
-                label="活动分享："
+                :label="$t('promoteList.actShare')"
                 prop=""
               >
                 <div>
@@ -431,20 +430,20 @@
                     v-model="form.activityShareType"
                     label="0"
                   >
-                    默认样式
-                    <span>分享预览</span>
-                    <span>海报预览</span>
+                    {{$t('promoteList.defaultStyle')}}
                   </el-radio>
+                  <span>{{$t('promoteList.sharePreview')}}</span>
+                  <span>{{$t('promoteList.posterPreview')}}</span>
                 </div>
                 <div>
                   <el-radio
                     v-model="form.activityShareType"
                     label="1"
                   >
-                    自定义样式
+                    {{$t('promoteList.customStyle')}}
                     <div v-if="form.activityShareType == 1">
                       <div style="margin: 15px 0">
-                        <span>文案：</span>
+                        <span>{{$t('promoteList.words')}}</span>
                         <el-input
                           size="small"
                           style="width:200px"
@@ -452,16 +451,16 @@
                         ></el-input>
                       </div>
                       <div>
-                        <span>分享图：</span>
+                        <span>{{$t('promoteList.sharePicture')}}</span>
                         <el-radio
                           v-model="form.shareImgType"
                           label="0"
-                        >活动商品信息图</el-radio>
+                        >{{$t('promoteList.goodsPicture')}}</el-radio>
                         <div style="margin: 10px 0 0 60px">
                           <el-radio
                             v-model="form.shareImgType"
                             label="1"
-                          >自定义图片</el-radio>
+                          >{{$t('promoteList.customPicture')}}</el-radio>
 
                           <div
                             style="display: flex;align-items: center;flex-wrap: wrap;"
@@ -495,7 +494,7 @@
                               />
                             </div>
                             <span class="inputTip">
-                              建议尺寸：800*800像素
+                              {{$t('promoteList.pictureTip')}}
                             </span>
                           </div>
 
@@ -516,7 +515,7 @@
           type="primary"
           size="small"
           @click="addAct"
-        >保存</el-button>
+        >{{$t('promoteList.save')}}</el-button>
       </div>
     </div>
     <choosingGoods @resultGoodsRow="choosingGoodsResult">
@@ -648,25 +647,25 @@ export default {
       // 表单约束
       formRules: {
         actName: [
-          { required: true, message: '此处不能为空！', trigger: 'blur' }
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ],
         startTime: [
-          { required: true, message: '此处不能为空！', trigger: 'change' }
+          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
         ],
         endTime: [
-          { required: true, message: '此处不能为空！', trigger: 'change' }
+          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
         ],
         rewardDuration: [
-          { required: true, message: '此处不能为空！', trigger: 'blur' }
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ],
         promoteAmount: [
-          { required: true, message: '此处不能为空！', trigger: 'blur' }
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ],
         promoteTimes: [
-          { required: true, message: '此处不能为空！', trigger: 'blur' }
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ],
         shareCreateTimes: [
-          { required: true, message: '此处不能为空！', trigger: 'blur' }
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ]
       }
     }
@@ -713,13 +712,25 @@ export default {
         this.form.customShareWord = res.content[0].customShareWord
         this.form.shareImgType = res.content[0].shareImgType.toString()
         this.form.customImgPath = res.content[0].customImgPath
+        console.log(this.form.rewardType)
+
+        if (this.form.rewardType === '2') {
+          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
+          console.log(this.form.rewardSet.market_store)
+          this.form.rewardSet.reward_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).reward_ids
+          console.log(this.form.rewardSet.reward_ids)
+        }
       })
     },
     addAct () {
       console.log('this.form.rewardType:', this.form.rewardType)
       if (this.form.rewardType === '0' || this.form.rewardType === '1') {
-        this.form.rewardSet.market_price = this.form.goodsInfo.market_price
-        this.form.rewardSet.market_store = this.form.goodsInfo.market_store
+        if (this.form.goodsInfo[0].market_price == null) {
+          this.form.goodsInfo[0].market_price = ''
+        }
+        this.form.rewardSet.market_price = this.form.goodsInfo[0].market_price
+        this.form.rewardSet.market_store = this.form.goodsInfo[0].market_store
+        console.log(this.form.goodsInfo.market_store)
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
         console.log('rewardSet:', this.form.rewardSet)
@@ -759,35 +770,35 @@ export default {
       this.$refs['form'].validate((valid) => {
         console.log('submit', this.form)
         if (valid) {
-          if (this.promoteId != null) {
+          if (this.promoteId !== 'null') {
             console.log('I am updating!')
             updateInfo(addParam).then(res => {
               console.log(res)
               if (res.error === 0) {
-                alert('修改成功!')
+                alert(this.$t('promoteList.successUpdate'))
                 this.$router.push({
                   name: 'promote'
                 })
               }
             }).catch(() => {
-              this.$message.error('操作失败')
+              this.$message.error(this.$t('promoteList.operationFailed'))
             })
           } else {
             console.log('I am adding!')
             addActive(addParam).then(res => {
               console.log(res)
               if (res.error === 0) {
-                alert('添加成功!')
+                alert(this.$t('promoteList.successAdd'))
                 this.$router.push({
                   name: 'promote'
                 })
               }
             }).catch(() => {
-              this.$message.error('操作失败')
+              this.$message.error(this.$t('promoteList.operationFailed'))
             })
           }
         } else {
-          this.$message.error('数据不合法')
+          this.$message.error(this.$t('promoteList.validCheck'))
           return false
         }
       })
@@ -856,7 +867,7 @@ export default {
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
       // console.log('couponInfo:', data)
-      // this.form.rewardSet.reward_ids = data[0].id
+      this.form.rewardSet.reward_ids = data[0].id
       // console.log('data[0].id', data[0].id)
       let couponArr = this.formatCoupon(data)
       let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
