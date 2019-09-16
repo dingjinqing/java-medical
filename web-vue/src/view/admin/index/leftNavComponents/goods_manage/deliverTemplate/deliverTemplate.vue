@@ -83,13 +83,10 @@ export default {
   },
   // 生命周期钩子
   created () {
-    this.activeName = this.$route.path
-  },
-  mounted () {
     this.$http.$on('edit', (val) => {
       this.edit = val
-      // console.log(this.edit)
     })
+    this.activeName = this.$route.path
   },
   updated () {
     this.activeName = this.$route.path
