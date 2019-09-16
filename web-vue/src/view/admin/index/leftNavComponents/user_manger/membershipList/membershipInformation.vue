@@ -137,8 +137,8 @@
           v-for="(item,index) in lebalDataList"
           :key="index"
           class="lebalSpan"
-        >{{item}}<i
-            @click="hanldeToDelLabel(index)"
+        >{{item.value}}<i
+            @click="handleToDelLabel(item.id)"
             class="fa fa-remove"
           ></i></span>
       </div>
@@ -184,7 +184,7 @@
       </div>
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>分销统计</span></div>
+      <div class="titleEdit"><span>{{$t('membershipIntroduction.distributionStatistic')}}</span></div>
       <div class="transactionDiv">
         <div
           style="flex:1"
@@ -342,7 +342,7 @@
     <!--修改邀请人弹窗-->
     <div class="baseInfo">
       <el-dialog
-        title="选择用户"
+        :title="$t('membershipIntroduction.chooseUser')"
         :visible.sync="modifypersonDialogVisible"
         width="50%"
         :modal-append-to-body="false"
@@ -353,33 +353,34 @@
         >
           <div class="modifypersonDivTop">
             <div>
-              <span>昵称</span>
+              <span>{{ $t('membershipIntroduction.nickname') }}</span>
               <el-input
                 size="small"
-                v-model="nameInput"
-                placeholder="请输入内容"
+                v-model="userNameInput"
+                :placeholder="$t('membershipIntroduction.Pleasecontent')"
               ></el-input>
             </div>
             <div>
-              <span style="width:80px">手机号</span>
+              <span style="width:80px">{{ $t('membershipIntroduction.phoneNum') }}</span>
               <el-input
                 size="small"
-                v-model="nameInput"
-                placeholder="请输入内容"
+                v-model="mobileInput"
+                :placeholder="$t('membershipIntroduction.Pleasecontent')"
               ></el-input>
             </div>
             <div>
-              <span style="width:90px">真实姓名</span>
+              <span style="width:90px">{{ $t('membershipIntroduction.Realname') }}</span>
               <el-input
                 size="small"
-                v-model="nameInput"
-                placeholder="请输入内容"
+                v-model="realNameInput"
+                :placeholder="$t('membershipIntroduction.Pleasecontent')"
               ></el-input>
             </div>
             <el-button
               type="primary"
               size="small"
-            >搜索</el-button>
+              @click="getUserTabelListData"
+            >{{ $t('membershipIntroduction.search')}}</el-button>
           </div>
           <!--底部表格-->
           <div
@@ -389,10 +390,10 @@
             <table width='100%'>
               <thead>
                 <tr>
-                  <td>用户ID</td>
-                  <td>昵称</td>
-                  <td>手机号</td>
-                  <td>真实姓名</td>
+                  <td>{{ $t('membershipIntroduction.userId') }}</td>
+                  <td>{{ $t('membershipIntroduction.nickname') }}</td>
+                  <td>{{ $t('membershipIntroduction.phoneNum') }}</td>
+                  <td>{{ $t('membershipIntroduction.Realname') }}</td>
 
                 </tr>
               </thead>
@@ -400,18 +401,14 @@
                 <tr
                   v-for="(item,index) in trList"
                   :key="index"
-                  :class="clickIindex===index?'clickClass':''"
-                  @click="handleClick(index)"
+                  :class="clickIindex===item.userId?'clickClass':''"
+                  @click="handleClick(item.userId)"
                 >
 
-                  <td>{{item.title}}</td>
-                  <td>{{item.title}}</td>
-                  <td>{{item.title}}</td>
-                  <td>{{item.title}}</td>
-                  <td class="link">{{item.status}}</td>
-                  <td class="tb_decorate_a">
-                    {{item.path}}
-                  </td>
+                  <td>{{item.userId}}</td>
+                  <td>{{item.userName}}</td>
+                  <td>{{item.mobile}}</td>
+                  <td>{{item.realName}}</td>
                 </tr>
               </tbody>
 
@@ -421,7 +418,7 @@
               v-if="!tbodyFlag"
             >
               <img :src="noImg">
-              <span>暂无相关数据</span>
+              <span>{{ $t('membershipIntroduction.noData')}}</span>
             </div>
           </div>
           <div
@@ -468,7 +465,7 @@
           <el-button @click="modifypersonDialogVisible = false">取 消</el-button>
           <el-button
             type="primary"
-            @click="modifypersonDialogVisible = false"
+            @click="handleUserDialogSure()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -476,7 +473,7 @@
     <!--标签信息编辑弹窗-->
     <div class="balanceDialo">
       <el-dialog
-        title="标签"
+        :title="$t('membershipIntroduction.label')"
         :visible.sync="labelEditDialogVisible"
         width="25%"
         :modal-append-to-body="false"
@@ -485,18 +482,17 @@
           class="labelEditDialogDiv"
           style="margin-bottom:30px"
         >
-          <div>请选择标签</div>
+          <div>{{ $t('membershipIntroduction.chooseTag') }}</div>
           <el-select
             v-model="labelEditValue"
-            placeholder="请选择"
-            size="small"
-            @change="handleLebelEdit()"
+            :placeholder="$t('membershipIntroduction.placeChoise')"
+            multiple
           >
             <el-option
               v-for="item in labelEditValueOptions"
-              :key="item.label"
-              :label="item.label"
-              :value="item.label"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -508,7 +504,7 @@
           <el-button @click="labelEditDialogVisible = false">取 消</el-button>
           <el-button
             type="primary"
-            @click="labelEditDialogVisible = false"
+            @click="handleTagDialogSure()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -704,7 +700,7 @@
 </template>
 <script>
 import ProAndUrbA from '@/components/system/proAndUrbA'
-import { memberInfoRequest } from '@/api/admin/membershipList.js'
+import { membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
 export default {
   components: { ProAndUrbA },
   data () {
@@ -713,6 +709,9 @@ export default {
       memberBasicInfo: {}, //  会员基本信息
       transStatistic: {}, // 会员交易统计
       maritalStatus: '', // 婚姻状况
+      userNameInput: '', // 用户输入->昵称
+      mobileInput: '', // 用户输入->手机号
+      realNameInput: '', // 用户输入->真实姓名
       assetsUl: '',
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
       assetsData: [
@@ -759,10 +758,10 @@ export default {
           haveSetUp: false
         }
       ],
-      transactionData: this.$t('membershipIntroduction.transactionData'),
-      distributionData: this.$t('membershipIntroduction.distributionData'),
+      transactionData: '',
+      distributionData: '',
       hiddenUlFlag: false,
-      checkMoreText: this.$t('membershipIntroduction.Seemore'),
+      checkMoreText: '',
       baseInfoDialogVisible: false,
       GenderValue: '',
       GenderValueOptions: [
@@ -864,30 +863,7 @@ export default {
       page_two: true,
       tbodyFlag: false,
       tbodyFlagTwo: true,
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          classification: '分类1',
-          status: '营业中',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          classification: '分类2',
-          status: '歇业中'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          classification: '分类3',
-          spanId: '',
-          status: '营业中'
-        }
-
-      ],
+      trList: [],
       trListTwo: [
         {
           title: '省钱月卡',
@@ -923,21 +899,10 @@ export default {
       clickIindex: null,
       noImg: this.$imageHost + '/image/admin/no_data.png',
       labelEditDialogVisible: false,
-      labelEditValue: '',
-      labelEditValueOptions: [
-        {
-          value: '选项1',
-          label: '计算机硬件及网络设备'
-        }, {
-          value: '选项2',
-          label: '计算机软件'
-        },
-        {
-          value: '选项3',
-          label: 'IT服务(系统/数据/维护/多领域经营)'
-        }
-      ],
-      lebalDataList: ['计算机软件1', '计算机硬件2', '计算机硬件3'],
+      labelEditValue: [], // 用户标签Id的列表缓冲
+      labelEditValueOptions: [], // 所有标签裂变
+      lebalDataList: [], // 用户标签的列表
+      lebalDataIdList: [], // 用户标签Id的列表
       memberCardT1DialogVisible: false,
       cardLlabelsdATa: [],
       newCardsT1Flag: true,
@@ -987,17 +952,26 @@ export default {
     this.loadMemberInfo()
   },
   methods: {
+    defaultMessage () {
+      this.transactionData = this.$t('membershipIntroduction.transactionData')
+      this.distributionData = this.$t('membershipIntroduction.distributionData')
+      this.checkMoreText = this.$t('membershipIntroduction.Seemore')
+    },
     // 加载用户数据
     loadMemberInfo () {
+      this.defaultMessage()
       memberInfoRequest(this.userId).then(res => {
         console.log(res)
 
         if (res.error === 0) {
           console.log(res.content)
+
           // 设置值 基本信息
           this.memberBasicInfo = res.content.memberBasicInfo
+          console.log(this.memberBasicInfo)
           // 交易统计
           this.transStatistic = res.content.transStatistic
+          console.log(this.transStatistic)
 
           // 处理时间
           if (this.memberBasicInfo.createTime) {
@@ -1026,8 +1000,140 @@ export default {
             this.memberBasicInfo.sex = sex
             console.log(sex)
           }
+          // 用户标签信息
+          this.handleToLabel()
+          // 交易 统计
+          this.dealWithTransactionData()
+          // 分销 统计
+          this.dealWithdDistributionData()
         }
       })
+    },
+
+    // 标签弹窗确定按键
+    handleTagDialogSure () {
+      this.labelEditDialogVisible = false
+      this.setTagForMember()
+      // 重新加载
+      this.loadMemberInfo()
+    },
+
+    // 打标签
+    setTagForMember () {
+      // 关闭打标签弹窗
+      let obj = {
+        'userIdList': [this.userId],
+        'tagIdList': this.labelEditValue
+      }
+      console.log(obj)
+      setTagForMemberRequest(obj).then(res => {
+        console.log(res.error)
+        if (res.error === 0) {
+          // 提示框
+          this.getSuccessMessagePrompt()
+        }
+      })
+    },
+
+    // 获取用户标签
+    handleToLabel () {
+      // 获取当前用户所标记的标签
+      let obj = {
+        'userId': this.userId
+      }
+      console.log(obj)
+      // 异步请求
+      getTagForMemberRequest(obj).then(res => {
+        if (res.error === 0) {
+          console.log('查询成功')
+          console.log(res)
+          // 设置默认标签列表
+
+          this.lebalDataIdList = res.content.map(({ id }) => id)
+          this.lebalDataList = res.content
+          console.log(this.labelDialogInput)
+        }
+      })
+    },
+    // 将表示单位转化为可读
+    changeUnit (unit) {
+      switch (unit) {
+        case 'D':
+          return this.$t('membershipIntroduction.day')
+        case 'M':
+          return this.$t('membershipIntroduction.month')
+        case 'Y':
+          return this.$t('membershipIntroduction.year')
+      }
+    },
+    // 交易统计
+    dealWithTransactionData () {
+      // 最近下单时间
+      console.log(this.transStatistic.lastAddOrder)
+      if (this.transStatistic.lastAddOrder !== '0') {
+        let lastAddOrderArr = this.transStatistic.lastAddOrder.split('-')
+        let num = lastAddOrderArr[0]
+        let unit = this.changeUnit(lastAddOrderArr[1])
+        this.changeUnit(unit)
+        this.transactionData[0].content = `${num}${unit}`
+        console.log(this.transactionData[0].content)
+      }
+
+      // 客单价
+      if (this.memberBasicInfo.unitPrice) {
+        let flag = String(this.transactionData[1].content).slice(0, 1)
+
+        this.transactionData[1].content = `${flag} ${this.memberBasicInfo.unitPrice}`
+      }
+
+      // 累计下单金额
+      if (this.transStatistic.orderMoney) {
+        this.transactionData[2].content = `￥ ${this.transStatistic.orderMoney}`
+      }
+
+      // 累计消费订单数
+      if (this.transStatistic.orderNum) {
+        this.transactionData[3].content = this.transStatistic.orderNum
+      }
+      // 累计退款
+      if (this.transStatistic.returnOrderMoney) {
+        this.transactionData[4].content = `￥ ${this.transStatistic.returnOrderMoney}`
+      }
+      // 累计退款订单数
+      if (this.transStatistic.returnOrderNum) {
+        this.transactionData[5].content = this.transStatistic.returnOrderNum
+      }
+    },
+    // 分销 统计
+    dealWithdDistributionData () {
+      // 获返利订单数量
+      if (this.transStatistic.rebateOrderNum) {
+        this.distributionData[0].content = this.transStatistic.rebateOrderNum
+      }
+      // 返利商品总金额(元)
+      if (this.transStatistic.totalCanFanliMoney) {
+        this.distributionData[1].content = this.transStatistic.totalCanFanliMoney
+      }
+      // 获返利佣金总金额(元)
+      if (this.transStatistic.rebateMoney) {
+        this.distributionData[2].content = this.transStatistic.rebateMoney
+      }
+      /**  已提现佣金总金额(元) */
+      if (this.transStatistic.withdrawCash) {
+        this.distributionData[3].content = this.transStatistic.withdrawCash
+      }
+      // 下级用户数
+      if (this.transStatistic.sublayerNumber) {
+        this.distributionData[4].content = this.transStatistic.sublayerNumber
+      }
+      // 分销员等级
+      if (this.transStatistic.levelName) {
+        this.distributionData[5].content = this.transStatistic.levelName
+      }
+      // 分销员分组
+      if (this.transStatistic.groupName) {
+        this.distributionData[6].content = this.transStatistic.groupName
+      }
     },
     // 点击查看更多
     handleCheckMore () {
@@ -1044,22 +1150,75 @@ export default {
       this.baseInfoDialogVisible = true
     },
     // 行点击
-    handleClick (index) {
-      this.clickIindex = index
+    handleClick (id) {
+      console.log(id)
+      this.clickIindex = id
     },
+
+    // 修改邀请人处理逻辑
+    handleUserDialogSure () {
+      this.modifypersonDialogVisible = false
+      let obj = {
+        'userId': this.userId,
+        'inviteId': this.clickIindex
+      }
+
+      updateMemberInfoRequest(obj).then(res => {
+        if (res.error === 0) {
+          // 成功
+          // 重新加载数据
+          this.loadMemberInfo()
+        }
+      })
+    },
+
     // 点击修改联系人
     hanldeModifyPerson () {
+      // 清空弹出框的输入数据
+      this.clearInputData()
       this.modifypersonDialogVisible = true
+      this.getUserTabelListData()
     },
+    // 获取会员用户
+    getUserTabelListData () {
+      let obj = {
+        'mobile': this.mobileInput,
+        'username': this.userNameInput,
+        'realName': this.realNameInput
+      }
+      console.log(obj)
+      membershipListRequest(obj).then(res => {
+        if (res.error === 0) {
+          this.trList = res.content.dataList.reverse()
+          this.tbodyFlag = true
+        }
+      })
+    },
+    // 删除用户输入的查询信息
+    clearInputData () {
+      this.mobileInput = null
+      this.userNameInput = null
+      this.realNameInput = null
+    },
+    // 获取标签
+    getAllTag () {
+      console.log('-------------获取所有标签---------------------')
+      allTagRequest().then(res => {
+        console.log(res.content)
+        this.labelEditValueOptions = res.content
+      })
+    },
+
     // 点击标签信息编辑
     handleLabelEditOpen () {
+      if (this.labelEditValueOptions) {
+        this.getAllTag()
+      }
+      // 将用户实际的标签id加入缓冲
+      this.labelEditValue = this.lebalDataIdList
       this.labelEditDialogVisible = true
     },
-    // 标签信息编辑弹窗选中值
-    handleLebelEdit () {
-      this.lebalDataList.push(this.labelEditValue)
-      this.labelEditDialogVisible = false
-    },
+
     // 点击添加新卡
     hanldeToTurnRows () {
       this.newCardsT1Flag = !this.newCardsT1Flag
@@ -1099,8 +1258,23 @@ export default {
       }
     },
     // 标签列表子项删除
-    hanldeToDelLabel (index) {
-      this.lebalDataList.splice(index, 1)
+    handleToDelLabel (id) {
+      // 删除用户的标签根据标签id
+      this.labelEditValue = this.lebalDataIdList
+      let index = this.labelEditValue.indexOf(id)
+      this.labelEditValue.splice(index, 1)
+      // 更新标签
+      this.setTagForMember()
+      // 重新加载
+      this.loadMemberInfo()
+    },
+    // 成功消息弹框
+    getSuccessMessagePrompt () {
+      var message = this.$t('membershipIntroduction.success')
+      this.$message.success({
+        showClose: true,
+        message: message,
+        type: 'success' })
     }
   }
 
