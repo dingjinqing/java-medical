@@ -14,9 +14,9 @@ export const cn = {
   // 商品管理 出售中商品
   goodsForSale: ['商品管理', '出售中商品'],
   // 商品管理 已售磬商品
-  soldOutGoods: ['商品管理', '已售罄商品'],
+  goodsForSaleOut: ['商品管理', '已售罄商品'],
   // 商品管理 仓库中商品
-  goodsInTheWarehouse: ['商品管理', '仓库中商品'],
+  goodsForInStock: ['商品管理', '仓库中商品'],
   // 商品管理 添加商品
   addGoods: ['商品管理', '添加商品'],
   // 商品管理 修改商品
@@ -218,9 +218,9 @@ export const en = {
   // 商品管理 出售中商品
   goodsForSale: ['Commodity Management', 'Goods For Sale'],
   // 商品管理 已售罄商品
-  soldOutGoods: ['Commodity Management', 'Sold Out Goods'],
+  goodsForSaleOut: ['Commodity Management', 'Goods For Sale Out'],
   // 商品管理 仓库中商品
-  goodsInTheWarehouse: ['Commodity Management', 'Goods In The Warehouse'],
+  goodsForInStock: ['Commodity Management', 'Goods In Stock'],
   // 商品管理 添加商品
   addingGoods: ['Commodity Management', 'Adding Goods'],
   // 商品管理 运费模板
