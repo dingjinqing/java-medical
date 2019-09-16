@@ -26,17 +26,26 @@ export default {
           break
       }
       switch (to.name) {
-        case `deliverTemplateUpdate`: this.$http.$emit('edit', true); this.initData()
+        case `deliverTemplateUpdate`: console.log(to.name); this.$http.$emit('edit', true); this.initData()
           break
       }
       switch (from.name) {
-        case `deliverTemplateUpdate`: this.$http.$emit('edit', false)
+        case `deliverTemplateUpdate`: console.log(to.name); this.$http.$emit('edit', false)
           break
       }
     }
   },
   methods: {
-
+    showEdit () {
+      switch (this.$route.path) {
+        case `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate`:
+          console.log(111111111)
+          this.$http.$emit('edit', true)
+          break
+        default:
+          break
+      }
+    },
     initData () {
       getTemplateOneApi({
         deliverTemplateId: this.$route.query.deliverTemplateId
@@ -95,6 +104,7 @@ export default {
     this.initData()
   },
   mounted () {
+    this.showEdit()
   },
 
   data () {

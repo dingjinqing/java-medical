@@ -1,7 +1,10 @@
 <template>
   <div class="tableDataList">
     <!-- 列表的内容 -->
-    <section class="list_content">
+    <section
+      class="list_content"
+      v-loading="loading"
+    >
       <section
         class="list"
         v-for="(item,i) in lists"
@@ -94,7 +97,8 @@ export default {
       tableData: [], // 表格的数据
       content: ``, // 后台返回的数据
       lists: [],
-      pageParams: {}
+      pageParams: {},
+      loading: true
     }
   },
   created () {
@@ -108,6 +112,8 @@ export default {
         fetchDeliverTemplateList(this.pageParams).then(res => {
           const { error, content: { config, pageResult: { dataList, page } } } = res
           if (error === 0) {
+            this.loading = false
+
             console.log(res)
             this.pageParams = page
             this.content = res.content
@@ -122,6 +128,7 @@ export default {
         getWeightTemplateListApi(this.pageParams).then(res => {
           const { error, content: { page } } = res
           if (error === 0) {
+            this.loading = false
             console.log(res)
             this.pageParams = page
             let resData = formatTemplateData(res.content.dataList)
@@ -145,6 +152,7 @@ export default {
     },
     // 修改运费模板
     upDateTemplate (deliverTemplateId) {
+      this.$http.$emit('showedit', true)
       this.$router.push({
         path: `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate`,
         query: { deliverTemplateId }
@@ -179,6 +187,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// body {
+//   margin: 200px;
+// }
 .block {
   background-color: #e6e9f0;
   width: 100%;

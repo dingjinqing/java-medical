@@ -215,8 +215,9 @@
 import LocatTP from './LocatTP.vue'
 import RulesMixins from '@/mixins/RulesMixins' // mixin混入
 import publicMixins from '@/mixins/publicMixins'
-// import chinaData from '../../assets/china-data'
-import { getAreaSelect } from '../../../api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
+import chinaData from '../../../assets/china-data'
+import { deepCloneObj } from '@/util/deepCloneObj'
+// import { getAreaSelect } from '../../../api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
 export default {
   name: 'locatTPTable',
   components: { LocatTP },
@@ -274,15 +275,16 @@ export default {
     this.affecta()
   },
   methods: {
-
     affecta () {
-      getAreaSelect().then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          content.unshift({ provinceId: 1, provinceName: '全部' })
-          this.locationList = content // 初始化参数 也就是请求获取的数据
-        }
-      }).catch(err => console.log(err))
+      this.locationList = deepCloneObj(chinaData)
+
+      // getAreaSelect().then(res => {
+      //   const { error, content } = res
+      //   if (error === 0) {
+      //     content.unshift({ provinceId: 1, provinceName: '全部' })
+      //     this.locationList = content // 初始化参数 也就是请求获取的数据
+      //   }
+      // }).catch(err => console.log(err))
       // 判断props有没有传递参数什么的
       if (this.editLocation && this.editLocation.length) {
         // 调用组件，更新this.locationList，innerObjJ，checkListT

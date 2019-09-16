@@ -203,37 +203,55 @@
                         <tr>
                           <td>N天内有交易记录:</td>
                           <td>
-                            <el-input style="width:120px"> </el-input><span>天内</span>
+                            <el-input
+                              style="width:120px"
+                              size="small"
+                            > </el-input><span>天内</span>
                           </td>
                         </tr>
                         <tr>
                           <td>N天内没有交易记录:</td>
                           <td>
-                            <el-input style="width:120px"> </el-input><span>天内</span>
+                            <el-input
+                              style="width:120px"
+                              size="small"
+                            > </el-input><span>天内</span>
                           </td>
                         </tr>
                         <tr>
                           <td>累计购买次数小于N次</td>
                           <td>
-                            <el-input style="width:120px"> </el-input><span>天内</span>
+                            <el-input
+                              style="width:120px"
+                              size="small"
+                            > </el-input><span>天内</span>
                           </td>
                         </tr>
                         <tr>
                           <td>累计购买次数大于N次：</td>
                           <td>
-                            <el-input style="width:120px"> </el-input><span>天内</span>
+                            <el-input
+                              style="width:120px"
+                              size="small"
+                            > </el-input><span>天内</span>
                           </td>
                         </tr>
                         <tr>
                           <td>购买商品均价大于N元</td>
                           <td>
-                            <el-input style="width:120px"> </el-input><span>天内</span>
+                            <el-input
+                              style="width:120px"
+                              size="small"
+                            > </el-input><span>天内</span>
                           </td>
                         </tr>
                         <tr>
                           <td>购买商品均价小于N元：</td>
                           <td>
-                            <el-input style="width:120px"> </el-input><span>天内</span>
+                            <el-input
+                              style="width:120px"
+                              size="small"
+                            > </el-input><span>天内</span>
                           </td>
                         </tr>
                         <tr>
@@ -618,8 +636,9 @@ export default {
         }
       }
       .mainContentRight {
+        margin-bottom: 100px;
         width: 520px;
-        height: 1010px;
+        min-height: 1010px;
         background-color: #f8f8f8;
         margin-left: 20px;
         padding-top: 15px;

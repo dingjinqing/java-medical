@@ -68,6 +68,19 @@ export default {
 
     }
   },
+  watch: {
+    $route (to, from) {
+      // console.log(to)
+      switch (to.path) {
+        case `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate`:
+          this.edit = true
+          break
+
+        default:
+          break
+      }
+    }
+  },
   // 生命周期钩子
   created () {
     this.activeName = this.$route.path
@@ -83,7 +96,6 @@ export default {
   },
   // 方法
   methods: {
-
     handleClick (tab) {
       this.$router.push(tab.name)
     }
