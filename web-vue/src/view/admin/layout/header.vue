@@ -170,7 +170,6 @@ export default {
     },
     // 用户选项点击
     handle_user_list (index) {
-      alert('外面' + index)
       console.log(index)
       switch (index) {
         case 0:
@@ -180,6 +179,9 @@ export default {
           this.$emit('change_components', '3')
           break
         case 4:
+          this.$emit('change_components', '4')
+          break
+        case 5:
           loginRequestOut().then((res) => {
             console.log(res)
             if (res.error === 0) {

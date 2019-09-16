@@ -21,6 +21,7 @@
               type="text"
               class="ml-20"
               style="font-size: 14px;"
+              @click="refAuthSubmit()"
             >
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.Reauthorization')}}
             </el-button>
@@ -230,11 +231,36 @@
         </ul>
       </div>
     </el-card>
+    <el-dialog
+      :title="$t('ShopConfiguration.SmallProgramAuthorizationPage.prompt')"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      center
+    >
+      <span>{{$t('ShopConfiguration.SmallProgramAuthorizationPage.ReauthorizationInfo')}}</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <a
+          class="link"
+          :href="hrefDataOne"
+          target="_blank"
+        >
+          <el-button
+            @click="centerDialogVisible = false"
+            type="primary"
+          >{{$t('ShopConfiguration.SmallProgramAuthorizationPage.Reauthorization')}}</el-button>
+        </a>
+        <el-button @click="centerDialogVisible = false">{{$t('ShopConfiguration.SmallProgramAuthorizationPage.cancel')}}</el-button>
+      </span>
+
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { checkGoodThingRequest, setGoodThingRequest } from '@/api/admin/basicConfiguration/shopConfig'
+import { checkGoodThingRequest, setGoodThingRequest, grantAuthorizationRequest } from '@/api/admin/basicConfiguration/shopConfig'
 export default {
   name: 'program_auth_details',
   data () {
@@ -247,7 +273,9 @@ export default {
       },
       isShowOrderDetails: false, // 是否展示订单详情页缩略图
       isShowGoodsDetails: false, // 是否显示商品详情页缩略图,
-      data: {}
+      data: {},
+      hrefDataOne: null,
+      centerDialogVisible: false
     }
   },
   mounted () {
@@ -356,6 +384,15 @@ export default {
             message: '设置成功',
             type: 'success'
           })
+        }
+      })
+    },
+    refAuthSubmit () {
+      this.centerDialogVisible = true
+      grantAuthorizationRequest().then((res) => {
+        if (res.error === 0) {
+          console.log(res.content)
+          this.hrefDataOne = res.content
         }
       })
     }

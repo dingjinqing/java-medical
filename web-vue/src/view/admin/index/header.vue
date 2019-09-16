@@ -203,7 +203,7 @@ export default {
           this.$router.push({
             path: '/admin/home/shopMain',
             query: {
-              change_components: '3'
+              change_components: '2'
             }
           })
           break
@@ -216,6 +216,14 @@ export default {
           })
           break
         case 4:
+          this.$router.push({
+            path: '/admin/home/shopMain',
+            query: {
+              change_components: '4'
+            }
+          })
+          break
+        case 5:
           loginRequestOut().then((res) => {
             console.log(res)
             if (res.error === 0) {
