@@ -45,7 +45,9 @@
           @click="handle_user_list(index)"
           :class="changeColorIndex === index?'changeColor':''"
         >
-          {{item}}
+          <div v-if="item!=='empty'">
+            {{item}}
+          </div>
         </div>
         <img :src="imageUrl[3].img_4">
       </div>
@@ -129,12 +131,15 @@ export default {
       console.log(newData)
       let data = JSON.parse(JSON.stringify(this.$t('shopData')))
       console.log(data)
+      this.hiddle_menu_list = this.$t('shopData')
       data.forEach((item, index) => {
         if (index === 2) {
-          this.$t('shopData').splice(index, 1)
+          // this.$t('shopData').splice(index, 1)
+          delete this.hiddle_menu_list[index]
         }
       })
-      this.hiddle_menu_list = this.$t('shopData')
+      console.log('11111111111111111111111111111111111111111111111111111111111111')
+      console.log(this.hiddle_menu_list)
     }
   },
   methods: {
@@ -164,6 +169,7 @@ export default {
     },
     // 用户选项点击
     handle_user_list (index) {
+      alert('外面' + index)
       console.log(index)
       switch (index) {
         case 0:
