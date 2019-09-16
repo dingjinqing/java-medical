@@ -1,23 +1,24 @@
 <template>
   <div>
-    <Header />
+    <CustomHeader />
     <div class="system_contant">
       <LeftNavigation />
-      <BreadCrumb /> <!--面包屑导航-->
+      <BreadCrumb />
+      <!--面包屑导航-->
       <router-view />
     </div>
   </div>
 </template>
 
 <script>
-import Header from './components/header'
+import CustomHeader from './components/header'
 import LeftNavigation from './components/leftNavigation'
 import BreadCrumb from './components/breadcrumb'
 
 export default {
   name: 'layout',
   components: {
-    Header,
+    CustomHeader,
     LeftNavigation,
     BreadCrumb
   }

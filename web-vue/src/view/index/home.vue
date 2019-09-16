@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <Header />
+    <CustomHeader />
     <router-view v-if="!defaultFlag" />
     <Main v-else />
     <Footer />
@@ -8,12 +8,12 @@
   </div>
 </template>
 <script>
-import Header from '@/view/index/header'
+import CustomHeader from '@/view/index/header'
 import Footer from '@/view/index/footer'
 import Contact from '@/view/index/contact'
 import Main from '@/view/index/main'
 export default {
-  components: { Header, Footer, Contact, Main },
+  components: { CustomHeader, Footer, Contact, Main },
   data () {
     return {
       defaultFlag: true

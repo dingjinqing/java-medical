@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <CustomHeader />
     <div
       class="admin_contant"
       v-show="flag"
@@ -48,10 +48,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import Crumbs from '@/components/admin/crumbs'
-import Header from '@/view/admin/index/header'
+import CustomHeader from '@/view/admin/index/header'
 import LeftNavigation from '@/view/admin/index/leftNavigation'
 export default {
-  components: { Header, LeftNavigation, Crumbs },
+  components: { CustomHeader, LeftNavigation, Crumbs },
   data () {
     return {
       dialogVisible: false,

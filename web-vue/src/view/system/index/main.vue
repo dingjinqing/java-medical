@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <CustomHeader />
     <div class="system_contant">
       <LeftNavigation />
 
@@ -10,10 +10,10 @@
 </template>
 
 <script>
-import Header from '@/view/system/index/header'
+import CustomHeader from '@/view/system/index/header'
 import LeftNavigation from '@/view/system/index/leftNavigation'
 export default {
-  components: { Header, LeftNavigation }
+  components: { CustomHeader, LeftNavigation }
 }
 </script>
 

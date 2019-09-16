@@ -1,6 +1,6 @@
 <template>
   <div class="s_container">
-    <Header @change_components="handleChange" />
+    <CustomHeader @change_components="handleChange" />
     <SelectShop v-if="flag4" />
     <Contact v-if="flag" />
     <AccountSettings
@@ -11,13 +11,13 @@
   </div>
 </template>
 <script>
-import Header from './header'
+import CustomHeader from './header'
 import SelectShop from './selectShop'
 import Contact from './contact'
 import AccountSettings from './accountSettings'
 import ServiceAuthList from './serviceAuthList'
 export default {
-  components: { Header, SelectShop, Contact, AccountSettings, ServiceAuthList },
+  components: { CustomHeader, SelectShop, Contact, AccountSettings, ServiceAuthList },
   data () {
     return {
       flag: false,
