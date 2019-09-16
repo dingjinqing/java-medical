@@ -67,20 +67,23 @@
     </div>
     <div class="bottom">
       <div>
-        <div
-          class="bottomLlist"
-          @click="handleToSelect()"
-        >
+        <div class="bottomLlist">
           <el-radio
             v-model="backgroundRadio"
             label="1"
           >背景颜色：</el-radio>
-          <div :class="colorSelectFlag?'colorSelect':''">
+          <div>
             <colorPicker
               v-model="colorRight"
               :defaultColor="defaultColorright"
               v-on:change="headleChangeColorRight"
             />
+          </div>
+          <div style="margin-left:10px;margin-top:-1px">
+            <el-button
+              @click="handleToReset()"
+              size="small"
+            >重置</el-button>
           </div>
         </div>
         <div class="bottomLlist">
@@ -121,8 +124,7 @@ export default {
       navigationRadio: '2',
       spacingRadio: '2',
       posterRadio: '2',
-      backgroundRadio: '1',
-      colorSelectFlag: false
+      backgroundRadio: '1'
     }
   },
   methods: {
@@ -130,9 +132,9 @@ export default {
     headleChangeColorRight () {
       console.log('颜色选择')
     },
-    // 颜色点击
-    handleToSelect () {
-      this.colorSelectFlag = true
+    // 点击重置
+    handleToReset () {
+      this.colorRight = '#fff'
     }
   }
 }
@@ -214,15 +216,19 @@ export default {
         /deep/ .el-radio {
           width: 100px;
           margin-right: 10px;
+          display: flex;
+          align-items: center;
         }
         div {
           display: block;
         }
-        /deep/ .m-colorPicker .box {
-          display: none;
+        /deep/ .colorBtn {
+          width: 60px;
+          height: 30px;
+          border: 1px solid rgb(169, 169, 169);
         }
-        .colorSelect /deep/ .m-colorPicker .box {
-          display: block !important;
+        /deep/ .m-colorPicker .box {
+          top: -210px;
         }
       }
     }

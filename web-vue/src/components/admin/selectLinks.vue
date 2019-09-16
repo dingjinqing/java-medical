@@ -204,7 +204,7 @@ export default {
   mounted () {
     this.$http.$on('linkDialogFlag', (flag) => {
       console.log(flag)
-      this.dialogVisible = flag
+      this.dialogVisible = true
       // 初始化弹窗子组件
       this.$router.push({
         name: 'commonLinks'
