@@ -308,6 +308,7 @@ export default {
   },
   mounted () {
     this.groupList()
+    this.handleClick()
   },
   watch: {
     allChecked (newData) {
@@ -438,7 +439,6 @@ export default {
     },
     // 表格对应行选中高亮
     handleClick () {
-      console.log(1111)
       let flag = this.distributorList.filter((item, index) => {
         return item.ischecked === false
       })

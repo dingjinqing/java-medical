@@ -27,29 +27,31 @@
             prop=""
             required
           >
-            <el-form-item prop="startTime">
-              <el-date-picker
-                v-model="form.startTime"
-                type="datetime"
-                :placeholder="$t('promoteList.startTime')"
-                class="morelength"
-                size="small"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              >
-              </el-date-picker>
-            </el-form-item>
-            <span style="margin: 0 5px">{{$t('promoteList.to')}}</span>
-            <el-form-item prop="endTime">
-              <el-date-picker
-                v-model="form.endTime"
-                type="datetime"
-                :placeholder="$t('promoteList.endTime')"
-                class="morelength"
-                size="small"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              >
-              </el-date-picker>
-            </el-form-item>
+            <section style="display: flex">
+              <el-form-item prop="startTime">
+                <el-date-picker
+                  v-model="form.startTime"
+                  type="datetime"
+                  :placeholder="$t('promoteList.startTime')"
+                  class="morelength"
+                  size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                >
+                </el-date-picker>
+              </el-form-item>
+              <span style="margin: 0 5px">{{$t('promoteList.to')}}</span>
+              <el-form-item prop="endTime">
+                <el-date-picker
+                  v-model="form.endTime"
+                  type="datetime"
+                  :placeholder="$t('promoteList.endTime')"
+                  class="morelength"
+                  size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                >
+                </el-date-picker>
+              </el-form-item>
+            </section>
           </el-form-item>
           <el-form-item
             :label="$t('promoteList.rewardType')"
@@ -91,21 +93,17 @@
           >
             <el-table
               v-if="form.rewardType==0 || form.rewardType==1"
-              class="version-manage-table"
-              header-row-class-name="tableClass"
               :data="form.goodsInfo"
               border
-              style="width: 50%"
+              style="width:50%"
             >
               <el-table-column
-                width="150%"
                 prop="goodsName"
                 :label="$t('promoteList.goodsInfo')"
                 align="center"
               >
               </el-table-column>
               <el-table-column
-                width="150%"
                 prop="shopPrice"
                 :label="$t('promoteList.goodsPrice')"
                 align="center"
@@ -113,7 +111,6 @@
               </el-table-column>
 
               <el-table-column
-                width="150%"
                 prop="goodsNumber"
                 :label="$t('promoteList.goodsStore')"
                 align="center"
@@ -121,19 +118,20 @@
               </el-table-column>
 
               <el-table-column
-                width="150%"
                 prop="market_store"
                 :label="$t('promoteList.actStore')"
                 align="center"
               >
                 <template slot-scope="data">
-                  <el-input v-model="data.row.market_store"></el-input>
+                  <el-input
+                    v-model="data.row.market_store"
+                    size="small"
+                  ></el-input>
                 </template>
               </el-table-column>
 
               <el-table-column
                 v-if="form.rewardType==1"
-                width="150%"
                 prop="market_price"
                 :label="$t('promoteList.actPrice')"
                 align="center"
@@ -144,36 +142,32 @@
               </el-table-column>
             </el-table>
 
-            <!-- <div v-if="form.rewardType == '2'">hello world</div> -->
-
             <el-table
               v-if="form.rewardType==2"
               :data="coupon_info"
               border
-              style="width: 20%"
+              style="width: 230px;"
             >
               <el-table-column
                 :label="$t('promoteList.couponInfo')"
-                width="180%"
+                align="center"
               >
                 <template slot-scope="scope">
                   <div class="coupon_info">
                     <span class="coupon_name">{{scope.row.actName}}</span>
                     <div
-                      class="coupon_price"
                       v-if="scope.row.actCode == 'voucher'"
+                      style="color:red"
                     >￥<span>{{scope.row.denomination}}</span></div>
-                    <div
-                      class="coupon_price"
-                      v-else
-                    ><span>{{scope.row.denomination}}</span>折</div>
+                    <div v-else><span>{{scope.row.denomination}}</span>折</div>
                     <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 :label="$t('promoteList.couponNum')"
-                width="120%"
+                width="130"
+                align="center"
               >
                 <template slot-scope="scope">
                   <div>
@@ -372,14 +366,14 @@
               v-model="form.failedSendType"
               label="2"
             >{{$t('promoteList.point')}}</el-radio>
-            <div v-if="form.failedSendType==1">
-              <el-button
-                size="small"
-                type="primary"
-                @click="isEditFlag?'':handleToCallDialog()"
-              >+ {{$t('promoteList.chooseCoupons')}}</el-button>
+            <div
+              v-if="form.failedSendType==1"
+              style="width: 80px;height:80px;border:1px solid #000"
+              @click="isEditFlag?'':handleToCallDialog1()"
+            >
             </div>
-            <div v-if="form.failedSendType==2">
+            <div v-if="
+              form.failedSendType==2">
               {{$t('promoteList.giftPoint')}}
               <el-input
                 size="small"
@@ -387,32 +381,6 @@
                 v-model="form.failedSendContent"
               ></el-input>
             </div>
-            <el-table
-              v-if="form.failedSendType==1"
-              :data="coupon_info"
-              border
-              style="width: 10%"
-            >
-              <el-table-column
-                :label="$t('promoteList.couponInfo')"
-                width="150%"
-              >
-                <template slot-scope="scope">
-                  <div class="coupon_info">
-                    <span class="coupon_name">{{scope.row.actName}}</span>
-                    <div
-                      class="coupon_price"
-                      v-if="scope.row.actCode == 'voucher'"
-                    >￥<span>{{scope.row.denomination}}</span></div>
-                    <div
-                      class="coupon_price"
-                      v-else
-                    ><span>{{scope.row.denomination}}</span>折</div>
-                    <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table>
           </el-form-item>
 
           <div></div>
@@ -522,7 +490,7 @@
     </choosingGoods>
     <!--添加优惠卷-->
     <AddCouponDialog
-      singleElection=“true”
+      singleElection="true"
       @handleToCheck="handleToCheck"
     />
     <ImageDalog
@@ -634,6 +602,7 @@ export default {
       coupon_msg: [],
       coupon_info: [],
       couponDialogFlag: false,
+      couponDialogFlag1: false,
       couponSetDialogFlag: false,
       coupon_set: {
         immediatelyGrantAmount: 0,
@@ -689,6 +658,7 @@ export default {
         'id': id
       }
       selectOneInfo(selectParam).then(res => {
+        console.log('message', res)
         console.log('pageInfo:', res.content[0])
         this.form.actName = res.content[0].actName
         this.form.startTime = res.content[0].startTime
@@ -724,7 +694,7 @@ export default {
     },
     addAct () {
       console.log('this.form.rewardType:', this.form.rewardType)
-      if (this.form.rewardType === '0' || this.form.rewardType === '1') {
+      if (this.form.rewardType === 0 || this.form.rewardType === 1) {
         if (this.form.goodsInfo[0].market_price == null) {
           this.form.goodsInfo[0].market_price = ''
         }
@@ -736,7 +706,7 @@ export default {
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
       }
-      if (this.form.rewardType === '2') {
+      if (this.form.rewardType === 2) {
         this.form.rewardSet.market_store = this.coupon_info[0].send_num
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('rewardSet:', this.form.rewardSet)
@@ -825,18 +795,6 @@ export default {
       // console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
     },
-
-    nextStep () {
-      if (!this.validateParam()) {
-        return
-      }
-      this.step++
-      this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
-    },
-    lastStep () {
-      this.step--
-      this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
-    },
     //  获取商品ids
     choosingGoodsResult (row) {
       console.log('获取商品行', row)
@@ -856,7 +814,7 @@ export default {
         this.form.goodsInfo = [dataList[obj.goodsId]]
       })
     },
-    // 选择优惠券弹窗
+    // 奖励类型 - 选择优惠券弹窗
     handleToCallDialog () {
       let obj = {
         couponDialogFlag: !this.couponDialogFlag,
@@ -864,9 +822,17 @@ export default {
       }
       this.$http.$emit('V-AddCoupon', obj)
     },
+    // 助力失败赠送 - 优惠券弹窗
+    handleToCallDialog1 () {
+      let obj = {
+        couponDialogFlag1: !this.couponDialogFlag1,
+        couponList: this.coupon_info
+      }
+      this.$http.$emit('V-AddCoupon', obj)
+    },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      // console.log('couponInfo:', data)
+      console.log('couponInfo:', data)
       this.form.rewardSet.reward_ids = data[0].id
       // console.log('data[0].id', data[0].id)
       let couponArr = this.formatCoupon(data)
@@ -928,7 +894,6 @@ export default {
   margin-left: 15px;
 }
 .content {
-  padding: 10px;
   min-width: 100%;
   font-size: 14px;
   height: 100%;
