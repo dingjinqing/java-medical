@@ -368,7 +368,10 @@ export default {
       }
     },
     nowRightShowIndex (newData) {
-      console.log(newData, this.activeName)
+      console.log(newData, this.activeName, this.showModulesList)
+      // setTimeout(() => {
+      //         this.$http.$emit('modulesClick', indexD)
+      //       }, 100)
     }
   },
   computed: {

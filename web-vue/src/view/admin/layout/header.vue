@@ -43,7 +43,7 @@
           @mouseenter="user_enter(index)"
           @mouseleave="user_leave(index)"
           @click="handle_user_list(index)"
-          :class="changeColorIndex === index?'changeColor':''"
+          :class="[changeColorIndex === index?'changeColor':'',item=== 'empty'?'emptyClass':'logDiv']"
         >
           <div v-if="item!=='empty'">
             {{item}}
@@ -131,13 +131,14 @@ export default {
       console.log(newData)
       let data = JSON.parse(JSON.stringify(this.$t('shopData')))
       console.log(data)
-      this.hiddle_menu_list = this.$t('shopData')
-      data.forEach((item, index) => {
+      // this.hiddle_menu_list = this.$t('shopData')
+      this.$t('shopData').forEach((item, index) => {
         if (index === 2) {
           // this.$t('shopData').splice(index, 1)
-          delete this.hiddle_menu_list[index]
+          data[index] = 'empty'
         }
       })
+      this.hiddle_menu_list = data
       console.log('11111111111111111111111111111111111111111111111111111111111111')
       console.log(this.hiddle_menu_list)
     }
@@ -344,11 +345,15 @@ label {
   right: 33px;
   top: -8px;
 }
-.log-menu div {
+
+.log-menu .logDiv {
   height: 40px;
   line-height: 40px;
   font-size: 14px;
   cursor: pointer;
+}
+.log-menu .emptyClass {
+  height: 0;
 }
 .changeColor {
   color: red;

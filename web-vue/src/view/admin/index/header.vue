@@ -56,9 +56,12 @@
           @mouseenter="user_enter(index)"
           @mouseleave="user_leave(index)"
           @click="handle_user_list(index)"
-          :class="changeColorIndex === index?'changeColor':''"
+          :class="[changeColorIndex === index?'changeColor':'',item=== 'empty'?'emptyClass':'logDiv']"
         >
-          {{item}}
+          <div v-if="item!=='empty'">
+            {{item}}
+          </div>
+
         </div>
         <img :src="imageUrl[3].img_4">
       </div>
@@ -159,12 +162,13 @@ export default {
         { title: this.$t('adminPageFramework.headerData.title_7'), index: '', meta: 'store_manage', name: 'store_list' },
         { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' }]
       let data = JSON.parse(JSON.stringify(this.$t('shopData')))
-      data.forEach((item, index) => {
+      // this.hiddle_menu_list = this.$t('shopData')
+      this.$t('shopData').forEach((item, index) => {
         if (index === 1) {
-          this.$t('shopData').splice(index, 1)
+          data[index] = 'empty'
         }
       })
-      this.hiddle_menu_list = this.$t('shopData')
+      this.hiddle_menu_list = data
     }
   },
   methods: {
@@ -406,11 +410,14 @@ label {
   right: 33px;
   top: -8px;
 }
-.log-menu div {
+.log-menu .logDiv {
   height: 40px;
   line-height: 40px;
   font-size: 14px;
   cursor: pointer;
+}
+.log-menu .emptyClass {
+  height: 0;
 }
 .changeColor {
   color: red;
