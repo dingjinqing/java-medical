@@ -121,7 +121,7 @@
                     <!--会员列表模块-->
                     <div @click="handleToClickModule(index)">
                       <MembershipCard
-                        v-show="item===1"
+                        v-if="item===1"
                         :index="1"
                         :flag="index"
                       />
@@ -130,7 +130,7 @@
                     <!--优惠卷模块-->
                     <div @click="handleToClickModule(index)">
                       <Coupon
-                        v-show="item===2"
+                        v-if="item===2"
                         :index="2"
                         :flag="index"
                       />
@@ -554,7 +554,10 @@ export default {
             this.showModulesList = arrFliter
             let data = this.showModulesList
             this.$http.$emit('decCard', data, -1)
-            this.$http.$emit('modulesClick', index)
+            setTimeout(() => {
+              this.$http.$emit('modulesClick', index)
+            }, 100)
+
             console.log(newArr, '--' + this.showModulesList)
             break
           case 'down':
@@ -572,14 +575,19 @@ export default {
             this.showModulesList = arrFliterD
             let dataD = this.showModulesList
             this.$http.$emit('decCard', dataD, -1)
-            this.$http.$emit('modulesClick', indexD)
+            setTimeout(() => {
+              this.$http.$emit('modulesClick', indexD)
+            }, 100)
             break
           case 'delete':
             console.log(newArr, flag)
             newArr.splice(flag, 1)
             console.log(newArr)
             this.showModulesList = newArr
-            this.$http.$emit('modulesClick', (newArr.length - 1))
+            setTimeout(() => {
+              this.$http.$emit('modulesClick', (newArr.length - 1))
+            }, 100)
+
             break
         }
       })
