@@ -36,7 +36,7 @@
       <div class="pay_detail">
         <div class="pd_title">
           <span>支付明细</span>
-          <span>手动退款</span>
+          <span class="refund">手动退款</span>
         </div>
         <div class="list_item">
           <span>优惠额度：</span>
@@ -138,6 +138,9 @@ export default {
         line-height: 40px;
         background: #f9f9f9;
         padding: 0 10px;
+        .refund {
+          cursor: pointer;
+        }
       }
       .list_item {
         display: flex;

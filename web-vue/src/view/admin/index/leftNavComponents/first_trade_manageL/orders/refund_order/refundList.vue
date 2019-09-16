@@ -656,6 +656,9 @@ export default {
         }
       }
     }
+    .default_input {
+      width: 180px;
+    }
   }
 }
 </style>

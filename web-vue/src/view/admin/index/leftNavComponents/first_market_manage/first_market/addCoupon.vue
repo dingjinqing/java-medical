@@ -481,7 +481,6 @@ export default {
       })
       this.$http.$on('BusClassTrueArr', res => {
         if (this.AtreeType === 1) {
-          console.log(res)
           this.param.recommendSortId = res.join()
           this.noneBlockDiscArr[1].num = res.length
         } else {
@@ -495,15 +494,17 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index, this.param.recommendGoodsId)
+          this.$http.$emit('choosingGoodsFlag', index, this.param.recommendGoodsId ? this.param.recommendGoodsId.split(',') : null)
           break
         case 1:
           this.AtreeType = 1
-          this.$http.$emit('addingBusClassDialog', this.param.recommendSortId)
+          console.log(this.param.recommendSortId)
+          this.$http.$emit('addingBusClassDialog', this.param.recommendSortId ? this.param.recommendSortId.split(',') : null)
           break
         case 2:
           this.AtreeType = 2
-          this.$http.$emit('addingBusClassDialog', this.param.recommendCatId, this.AtreeType)
+          console.log(this.param.recommendCatId)
+          this.$http.$emit('addingBusClassDialog', this.param.recommendCatId ? this.param.recommendCatId.split(',') : null, this.AtreeType)
           break
       }
     },

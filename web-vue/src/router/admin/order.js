@@ -82,6 +82,20 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/check_order/checkOrderInfo'
       )
+  },
+  // 虚拟商品订单-会员卡
+  {
+    path: '/admin/home/main/orders/virtual/order',
+    name: 'member_card_order',
+    meta: {
+      crumbTitle: 'router.memberCardOrder',
+      meta: 'first_trade_manage',
+      category: 'member_card_order'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/virtual_goods_order/virtualGoodsOrder'
+      )
   }
 ]
 

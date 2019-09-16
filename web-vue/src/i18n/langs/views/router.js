@@ -191,6 +191,8 @@ export const cn = {
   check_order: ['订单管理', '买单订单'],
   // 订单管理 买单订单详情
   checkOrderInfo: ['订单管理', '买单订单详情'],
+  // 订单管理 虚拟订单商品
+  memberCardOrder: ['订单管理', '虚拟订单商品'],
   // 营销管理 消息推送
   message_push: ['营销管理', '消息推送'],
   // 营销管理 消息推送 添加消息推送
@@ -299,11 +301,19 @@ export const en = {
   // 营销管理 砍价订单
   bargain_order_list: ['Marketing management', 'Bargain', 'Bargaining Orders'],
   // 营销管理 砍价 - 获取新用户明细
-  bargain_get_newuser_detail: ['Marketing management', 'Bargain', 'Get new user detail'],
+  bargain_get_newuser_detail: [
+    'Marketing management',
+    'Bargain',
+    'Get new user detail'
+  ],
   // 营销管理 砍价 - 砍价用户
   bargain_bargain_user: ['Marketing management', 'Bargain', 'Bargaining user'],
   // 营销管理 砍价 - 活动效果数据
-  bargain_effect_data: ['Marketing management', 'Bargain', 'Activity effect data'],
+  bargain_effect_data: [
+    'Marketing management',
+    'Bargain',
+    'Activity effect data'
+  ],
   // 营销管理 砍价 - 帮忙砍价用户列表
   bargain_record_detail: ['Marketing management', 'Bargain', 'Initiator', 'Participant'],
   // 营销管理 好友助力
@@ -311,11 +321,23 @@ export const en = {
   // 营销管理 添加好友助力活动
   promote_activity: ['Marketing management', 'Good friend helFriend promote'],
   // 营销管理 好友助力领取明细
-  promote_receive_details: ['Marketing management', 'Friend promote', 'Receive details'],
+  promote_receive_details: [
+    'Marketing management',
+    'Friend promote',
+    'Receive details'
+  ],
   // 营销管理 好友助力发起明细
-  promote_launch_details: ['Marketing management', 'Friend promote', 'Launch details'],
+  promote_launch_details: [
+    'Marketing management',
+    'Friend promote',
+    'Launch details'
+  ],
   // 营销管理 好友助力参与明细
-  promote_participate_details: ['Marketing management', 'Friend promote', 'Participate details'],
+  promote_participate_details: [
+    'Marketing management',
+    'Friend promote',
+    'Participate details'
+  ],
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
   // 营销管理 普通优惠券 领取明细
@@ -459,6 +481,8 @@ export const en = {
   check_order: ['Order management', 'Check order'],
   // 订单管理 买单订单详情
   checkOrderInfo: ['Order management', 'Check order info'],
+  // 订单管理 虚拟订单商品
+  memberCardOrder: ['Order management', 'Virtual goods order'],
   // 营销管理 消息体送
   message_push: ['Marketing management', 'message_push'],
   add_message_push: ['Marketing management', 'Message push', 'Add message push']
