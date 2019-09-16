@@ -46,6 +46,10 @@ public class OrderPageListQueryParam {
 	public Integer provinceCode;
 	public Integer cityCode;
 	public Integer districtCode;
+	/**支付方式*/
+	public Byte payWay;
+	/**规格编码*/
+	public String productSn;
 	
 	/**
 	 * 拼团退款失败单

@@ -248,6 +248,22 @@ public class OrderConstant {
 	public final static byte BK_PAID_N = 0;
 	public final static byte BK_PAID_Y = 1;
 	
+	/**
+	 * 综合查询：支付方式
+	 */
+	/**余额*/
+	public final static byte SEARCH_PAY_WAY_USE_ACCOUNT = 1;
+	/**积分支付*/
+	public final static byte SEARCH_PAY_WAY_SCORE_DISCOUNT = 2;
+	/**积分兑换*/
+	public final static byte SEARCH_PAY_WAY_SCORE_EXCHANGE = 3;
+	/**货到付款*/
+	public final static byte SEARCH_PAY_WAY_COD = 4;
+	/**活动奖品*/
+	public final static byte SEARCH_PAY_WAY_EVENT_PRIZE = 5;
+	/**微信支付*/
+	public final static byte SEARCH_PAY_WAY_WXPAY = 6;
+	/***/
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",

@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.info;
 import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -35,8 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -58,6 +58,8 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -134,9 +136,14 @@ public class OrderInfoService extends ShopBaseService {
 	 public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
 		select.orderBy(ORDER_INFO.ORDER_ID);
 		//输入商品名称需要join order_goods表
-		if(!StringUtils.isEmpty(param.goodsName)){
+		if(!StringUtils.isBlank(param.goodsName) || !StringUtils.isBlank(param.productSn)){
 			select.innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
-			select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.goodsName)));
+			if(!StringUtils.isBlank(param.goodsName)) {
+				select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.goodsName)));
+			}
+			if(!StringUtils.isBlank(param.productSn)) {
+				select.where(ORDER_GOODS.PRODUCT_SN.like(likeValue(param.productSn)));
+			}
 		}
 		if(!StringUtils.isEmpty(param.orderSn)){
 			 select.where(ORDER_INFO.ORDER_SN.contains(param.orderSn));
@@ -150,21 +157,18 @@ public class OrderInfoService extends ShopBaseService {
 		if(param.deliverType != null){
 			select.where(ORDER_INFO.DELIVER_TYPE.eq(param.deliverType));
 		}
-		//昵称需要连表查询
-		if(!StringUtils.isEmpty(param.userName)){
+		//昵称、会员标签tag需要连表查询
+		if(!StringUtils.isBlank(param.userName) || (param.tagIds != null && param.tagIds.length != 0)){
 			select.innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
-			select.where(USER.USERNAME.like(likeValue(param.userName)));
+			if(!StringUtils.isBlank(param.userName)) {
+				select.where(USER.USERNAME.like(likeValue(param.userName)));
+			}
+			if(param.tagIds != null && param.tagIds.length != 0) {
+				select.where(USER_TAG.TAG_ID.in(param.tagIds));
+			}
 		}
 		if(!StringUtils.isEmpty(param.source)){
 			select.where(ORDER_INFO.SOURCE.eq(param.source));
-		}
-		//会员标签tag
-		if(param.tagIds != null && param.tagIds.length != 0){
-			if(StringUtils.isEmpty(param.userName)) {
-				select.innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
-			}
-			select.innerJoin(USER_TAG).on(USER_TAG.USER_ID.eq(USER.USER_ID));
-			select.where(USER_TAG.TAG_ID.in(param.tagIds));
 		}
 		if(param.storeId != null){
 			select.where(ORDER_INFO.STORE_ID.eq(param.storeId));
@@ -206,6 +210,32 @@ public class OrderInfoService extends ShopBaseService {
 		if(param.pinStatus != null && param.pinStatus.length != 0){
 			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
 			select.where(GROUP_BUY_LIST.STATUS.in(param.pinStatus));
+		}
+		// 支付方式
+		if (param.payWay != null) {
+			switch (param.payWay) {
+			case OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT:
+				select.where(TABLE.USE_ACCOUNT.greaterThan(BigDecimal.ZERO));
+				break;
+			case OrderConstant.SEARCH_PAY_WAY_SCORE_DISCOUNT:
+				select.where(TABLE.SCORE_DISCOUNT.greaterThan(BigDecimal.ZERO));
+				break;
+			case OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE:
+				select.where(DslPlus.findInSet(OrderConstant.GOODS_TYPE_INTEGRAL, ORDER_INFO.GOODS_TYPE));
+				break;
+			case OrderConstant.SEARCH_PAY_WAY_COD:
+				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
+				break;
+			case OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE:
+				select.innerJoin(LOTTERY_RECORD).on(ORDER_INFO.ORDER_SN.eq(LOTTERY_RECORD.ORDER_SN));
+				//TODO 缺少字段.where(LOTTERY_RECORD.source)
+				break;
+			case OrderConstant.SEARCH_PAY_WAY_WXPAY:
+				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_WX_PAY));
+				break;
+			default:
+				break;
+			}
 		}
 		//构造营销活动查询条件
 		activeBuildOptions(select, param);
@@ -493,7 +523,39 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		order.update();
 	}
-
+	/**
+	 * 设置订单支付方式数组
+	 * @param order
+	 * @param prizesSns
+	 */
+	public void setPayCodeList(OrderListInfoVo order ,List<String> prizesSns) {
+		ArrayList<Byte> payCodes = new ArrayList<Byte>(OrderConstant.SEARCH_PAY_WAY_WXPAY);
+		if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0 ) {
+			/**余额*/
+			payCodes.add(OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT);
+		}
+		if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0 ) {
+			/**积分支付*/
+			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_DISCOUNT);
+		}
+		if(Arrays.asList(order.getGoodsType().split(",")).contains(Byte.valueOf(OrderConstant.GOODS_TYPE_INTEGRAL).toString())) {
+			/**积分兑换*/
+			payCodes.add(OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE);
+		}
+		if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode())) {
+			/**货到付款*/
+			payCodes.add(OrderConstant.SEARCH_PAY_WAY_COD);
+		}
+		if(prizesSns.contains(order.getOrderSn())) {
+			/**活动奖品*/
+			payCodes.add(OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE);
+		}
+		if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
+			/**微信支付*/
+			payCodes.add(OrderConstant.SEARCH_PAY_WAY_WXPAY);
+		}
+		order.setPayCodeList(payCodes);
+	}
 
 	/**
 	 *

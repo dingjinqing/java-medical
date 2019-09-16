@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
@@ -83,10 +84,12 @@ public class OrderReadService extends ShopBaseService {
 		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrders(orderSn.getDataList());
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
 		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>();
-		//主订单
+		//主订单或正常订单
 		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(orderSn.getDataList().size());
 		//现子订单数>0的主订单
 		ArrayList<Integer> orderCountMoreZero = new ArrayList<Integer>();
+		//TODO 查询订单是否为活动奖品
+		List<String> prizesSns = Collections.emptyList();
 		for (String moc : orderSn.getDataList()) {
 			List<OrderListInfoVo> list = allOrder.get(moc);
 			int size = list.size();
@@ -96,6 +99,8 @@ public class OrderReadService extends ShopBaseService {
 				//将所有订单id放入goodsList,在后续向订单添加商品时增加过滤主订单下与子订单重复的商品
 				goodsList.put(order.getOrderId(),order);
 				if(order.getOrderSn().equals(moc)) {
+					//设置订单支付方式（无子单）
+					orderInfo.setPayCodeList(order,prizesSns);
 					mOrder = order;
 					if(size ==1) {		
 						break;

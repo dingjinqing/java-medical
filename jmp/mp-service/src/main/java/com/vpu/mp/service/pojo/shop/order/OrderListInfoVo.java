@@ -38,8 +38,10 @@ public class OrderListInfoVo {
 	private String consignee;
 	/** 收件人手机 */
 	private String mobile;
-	/** 支付方式 */
+	/** 主支付方式 */
 	private String payCode;
+	/** 支付方式列表 */
+	private List<Byte> payCodeList;
 	/** 配送方式:0 快递 1 自提 */
 	private Byte deliverType;
 	/** 下单时间 */
