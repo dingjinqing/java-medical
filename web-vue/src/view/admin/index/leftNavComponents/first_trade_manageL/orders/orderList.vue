@@ -29,8 +29,6 @@
               size="small"
               class="default_input"
               filterable
-              multiple
-              :multiple-limit='1'
             >
               <el-option
                 v-for="item in $t('order.orderStatusList')"
@@ -435,8 +433,8 @@
 <script>
 
 import {
-  allList
-} from '@/api/admin/orderManage/list.js'
+  list
+} from '@/api/admin/orderManage/order.js'
 
 export default {
   components: {
@@ -555,7 +553,7 @@ export default {
         this.searchParams.createTimeEnd = this.orderTime[1] + ' 23:59:59'
       }
       this.orderList = null
-      allList(this.searchParams).then(res => {
+      list(this.searchParams).then(res => {
         this.pageParams = res.content.page
         this.currentPage = res.content.page.currentPage
         this.pageRows = res.content.page.pageRows
