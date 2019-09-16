@@ -275,6 +275,7 @@ export default {
         item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
         this.activityTypeText.forEach(entity => {
           if (entity.value === item.activityType) {
+            console.log('活动类型' + entity.label)
             item.activityTypeText = entity.label
           }
         })

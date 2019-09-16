@@ -8,22 +8,22 @@
     <wrapper class="dataContent">
       <!-- 日期筛选部分 -->
       <div style="display:flex">
-        <div style="height:32px;line-height:32px">筛选日期：</div>
+        <div style="height:32px;line-height:32px">{{$t('groupBuy.screeningDates')}}：</div>
         <div class="selectTime">
           <el-date-picker
             size="small"
-            v-model="value1"
+            v-model="starDate"
             type="datetime"
-            placeholder="选择开始时间"
+            :placeholder="$t('groupBuy.startDate')"
             default-time="12:00:00"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{$t('marketCommon.to')}}</span>
           <el-date-picker
             size="small"
-            v-model="value1"
+            v-model="endDate"
             type="datetime"
-            placeholder="选择接受时间"
+            :placeholder="$t('groupBuy.endDate')"
             default-time="12:00:00"
           >
           </el-date-picker>
@@ -32,18 +32,18 @@
           style="margin-left: 10px;"
           type="primary"
           size="mini"
-        >筛选</el-button>
+        >{{$t('marketCommon.filter')}}</el-button>
       </div>
 
       <!-- 表格数据部分 -->
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">活动实付总金额(元)</div>
+            <div class="title">{{$t('groupBuy.totalAmountPaid')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动订单实际付款总金额(包括账户余额、会员卡余额及微信支付，不包含退款部分)"
+              :content="$t('groupBuy.totalAmountPaidComment')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -52,15 +52,15 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >0</div>
+          >{{this.totalAmountPaid}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">活动优惠总金额(元)</div>
+            <div class="title">{{$t('groupBuy.totalDiscountAmount')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动优惠的总金额"
+              :content="$t('groupBuy.totalDiscountAmountComment')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -69,15 +69,15 @@
           <div
             class="num"
             style="color: #fc6181;"
-          >0</div>
+          >{{this.totalDiscountAmount}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">费效比</div>
+            <div class="title">{{$t('groupBuy.costBenefitRatio')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动优惠总金额/活动实付总金额"
+              :content="$t('groupBuy.costBenefitRatioComment')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -86,15 +86,15 @@
           <div
             class="num"
             style="color: #fdb64a;"
-          >0%</div>
+          >{{this.costBenefitRatio}}%</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">新成交用户数</div>
+            <div class="title">{{$t('groupBuy.numberNewTransactions')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动带来的首次在店铺下单的用户数"
+              :content="$t('groupBuy.numberNewTransactions')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -103,15 +103,15 @@
           <div
             class="num"
             style="color: #3dcf9a;"
-          >0</div>
+          >{{this.numberNewTransactions}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">老成交用户数</div>
+            <div class="title">{{$t('groupBuy.oldNumberUsers')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="在店铺有过付款订单，参与该活动的用户数"
+              :content="$t('groupBuy.oldNumberUsersComment')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -120,7 +120,9 @@
           <div
             class="num"
             style="color: #8379f7;"
-          >0</div>
+          >{{this.oldNumberUsers}}</div>
+          <el-button @click="updateEcharts">aaaaaaa
+          </el-button>
         </div>
       </section>
 
@@ -131,6 +133,7 @@
 </template>
 
 <script>
+import { groupBuyAnalysis } from '@/api/admin/marketManage/spellGroup.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import echarts from 'echarts'
 
@@ -138,74 +141,135 @@ export default {
   components: { wrapper },
   data () {
     return {
-      value1: ''
+      starDate: 0,
+      endDate: 0,
+      totalAmountPaid: 0,
+      totalDiscountAmount: 0,
+      costBenefitRatio: 0,
+      numberNewTransactions: 0,
+      oldNumberUsers: 0,
+      colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#3dcf9a', '#8379f7'],
+      legendData: this.$t('groupBuy.legendData'),
+      dateDataList: ['2019-09-01', '2019-09-02', '2019-09-03', '2019-09-04', '2019-09-05', '2019-09-06', '2019-09-07', '2019-09-08', '2019-09-09', '2019-09-10'],
+      option: {},
+      myChart: {}
+    }
+  },
+  watch: {
+    lang () {
+      this.legendData = this.$t('groupBuy.legendData')
     }
   },
   mounted () {
-    // let this_ = this
-    let myChart = echarts.init(document.getElementById('charts'))
-    let option = {
-      tooltip: {
-        trigger: 'axis'
-      },
-      legend: {
-        data: ['活动实付总金额', '活动优惠总金额', '费效比', '新成交用户数', '老成家用户数']
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis: [
-        {
-          type: 'category',
-          data: ['2019-09-01', '2019-09-02', '2019-09-03', '2019-09-04', '2019-09-05', '2019-09-06', '2019-09-07', '2019-09-08', '2019-09-09', '2019-09-10'],
-          boundaryGap: false
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value'
-        }
-      ],
-      series: [
-        {
-          name: '活动实付总金额',
-          type: 'line',
-          stack: '总量',
-          data: [120, 132, 101, 134, 90, 230, 210, 220, 240, 220]
+    this.initEcharts()
+  },
+  methods: {
+    initEcharts () {
+      this.myChart = echarts.init(document.getElementById('charts'))
+      let obj = {}
+      groupBuyAnalysis(obj).then(res => {
+        console.log(res)
+      })
+      this.option = {
+        tooltip: {
+          trigger: 'axis'
         },
-        {
-          name: '活动优惠总金额',
-          type: 'line',
-          stack: '总量',
-          data: [220, 182, 191, 234, 290, 330, 310, 300, 320, 323]
+        legend: {
+          data: this.legendData
         },
-        {
-          name: '费效比',
-          type: 'line',
-          stack: '总量',
-          data: [150, 232, 201, 154, 190, 330, 410, 440, 430, 424]
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
         },
-        {
-          name: '新成交用户数',
-          type: 'line',
-          stack: '总量',
-          data: [320, 332, 301, 334, 390, 330, 320, 313, 329, 321]
-        },
-        {
-          name: '老成交用户数',
-          type: 'line',
-          stack: '总量',
-          data: [820, 932, 901, 934, 1290, 1330, 1320, 1235, 1335, 1285]
-        }
-      ]
-    }
-    myChart.setOption(option)
+        xAxis: [
+          {
+            type: 'category',
+            data: this.dateDataList,
+            boundaryGap: false
+          }
+        ],
+        yAxis: [
+          {
+            name: this.$t('groupBuy.number'),
+            type: 'value'
+          },
+          {
+            name: this.$t('groupBuy.costBenefitRatio'),
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: this.legendData[0],
+            type: 'line',
+            color: this.colors[0],
+            yAxisIndex: 0,
+            stack: '总量',
+            data: [120, 132, 101, 134, 90, 230, 210, 220, 240, 220]
+          },
+          {
+            name: this.legendData[1],
+            yAxisIndex: 0,
+            color: this.colors[1],
 
-    // 建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
-    // window.addEventListener('resize', function () { myChart.resize() })
+            type: 'line',
+            stack: '总量',
+            data: [220, 182, 191, 234, 290, 330, 310, 300, 320, 323]
+          },
+          {
+            name: this.legendData[2],
+            type: 'line',
+            color: this.colors[2],
+
+            yAxisIndex: 1,
+            stack: '总量',
+            data: [150, 232, 201, 154, 190, 330, 410, 440, 430, 424]
+          },
+          {
+            name: this.legendData[3],
+            type: 'line',
+            color: this.colors[3],
+
+            yAxisIndex: 0,
+            stack: '总量',
+            data: [320, 332, 301, 334, 390, 330, 320, 313, 329, 321]
+          },
+          {
+            name: this.legendData[4],
+            type: 'line',
+            color: this.colors[4],
+            yAxisIndex: 0,
+            stack: '总量',
+            data: [820, 932, 901, 934, 1290, 1330, 1320, 1235, 1335, 1285]
+          }
+        ]
+      }
+      this.myChart.setOption(this.option)
+      // window.addEventListener('resize', function () { myChart.resize() })
+    },
+    updateEcharts () {
+      console.log('国际化', this.legendData)
+      console.log('国际化', this.$t('groupBuy.legendData'))
+      this.legendData = this.$t('groupBuy.legendData')
+      this.initEcharts()
+      // this.myChart.setOption({
+      //   legend: {
+      //     data: this.$t('groupBuy.legendData')
+      //   },
+      //   yAxis: [
+      //     {
+      //       name: this.$t('groupBuy.number'),
+      //       type: 'value'
+      //     },
+      //     {
+      //       name: this.$t('groupBuy.costBenefitRatio'),
+      //       type: 'value'
+      //     }
+      //   ]
+      // })
+    }
   }
 }
 

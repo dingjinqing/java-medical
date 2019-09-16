@@ -25,17 +25,16 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                        <el-form-item label="订单状态">
+                        <el-form-item :label="$t('groupBuy.orderStatus')">
                             <el-select
                                     v-model="requestParams.orderStatus"
-                                    placeholder="请选择"
                                     size="small"
                             >
                                 <el-option
-                                        v-for="item in orderStatus"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value"
+                                        v-for="(val,key) in orderStatusArr"
+                                        :key="key"
+                                        :label="val"
+                                        :value="val"
                                 ></el-option>
                             </el-select>
                         </el-form-item>
@@ -43,31 +42,31 @@
                 </el-row>
                 <el-row :gutter=24>
                     <el-col :span="6">
-                        <el-form-item label="收货人姓名">
+                        <el-form-item :label="$t('groupBuy.consigneeName')">
                             <el-input
                                     v-model="requestParams.consignee"
-                                    placeholder="收货人姓名"
+                                    :placeholder="$t('groupBuy.consigneeName')"
                                     size="small"
                                     clearable
                             ></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                        <el-form-item label="收货人手机号">
+                        <el-form-item :label="$t('groupBuy.consigneeMobile')">
                             <el-input
                                     v-model="requestParams.mobile"
-                                    placeholder="收货人手机号"
+                                    :placeholder="$t('groupBuy.consigneeMobile')"
                                     size="small"
                                     clearable
                             ></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                        <el-form-item label="下单时间">
+                        <el-form-item :label="$t('groupBuy.orderTime')">
                             <el-date-picker
                                     v-model="requestParams.createTimeStart"
                                     type="datetime"
-                                    placeholder="下单时间"
+                                    :placeholder="$t('groupBuy.orderTime')"
                                     size="small"
                                     class="date_picker"
                             ></el-date-picker>
@@ -76,7 +75,7 @@
                 </el-row>
                 <el-row :gutter=24>
                     <el-col :span="10">
-                        <el-form-item label="收货地址">
+                        <el-form-item :label="$t('groupBuy.shippingAddress')">
                             <areaLinkage
                                     @areaData="handleAreaData"
                             />
@@ -87,12 +86,12 @@
                                 @click="initDataList()"
                                 type="primary"
                                 size="small"
-                        >筛选
+                        >{{$t('marketCommon.filter')}}
                         </el-button>
                         <el-button
                                 type="default"
                                 size="small"
-                        >导出表格
+                        >{{$t('marketCommon.export')}}
                         </el-button>
                     </el-col>
 
@@ -109,11 +108,11 @@
             >
                 <el-table-column
                         prop="orderSn"
-                        label="订单号"
+                        :label="$t('groupBuy.orderSn')"
                         align="center"
                 > </el-table-column>
                 <el-table-column
-                        label="拼团商品"
+                        :label="$t('groupBuy.goodsName')"
                         align="center"
                         width="200px"
                 >
@@ -129,7 +128,6 @@
                             </el-table-column>
                             <el-table-column
                                     prop="goodsPrice"
-                                    label="单价"
                                     align="center"
                             > </el-table-column>
                         </el-table>
@@ -137,27 +135,27 @@
                 </el-table-column>
                 <el-table-column
                         prop="createTime"
-                        label="下单时间"
+                        :label="$t('groupBuy.orderTime')"
                         align="center"
                 > </el-table-column>
                 <el-table-column
                         prop="username"
-                        label="下单人信息"
+                        :label="$t('groupBuy.buyerName')"
                         align="center"
                 > </el-table-column>
                 <el-table-column
                         prop="consignee"
-                        label="收货人信息"
+                        :label="$t('groupBuy.consigneeInfo')"
                         align="center"
                 > </el-table-column>
                 <el-table-column
                         prop="moneyPaid"
-                        label="支付金额"
+                        :label="$t('groupBuy.paymentAmount')"
                         align="center"
                 > </el-table-column>
                 <el-table-column
                         prop="orderStatusText"
-                        label="订单状态"
+                        :label="$t('groupBuy.orderStatus')"
                         align="center"
                 > </el-table-column>
             </el-table>
@@ -193,21 +191,13 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
-      orderStatus: [
-        {value: -1, label: '全部订单'},
-        {value: 1, label: '待付款'},
-        {value: 2, label: '订单取消'},
-        {value: 3, label: '订单关闭'},
-        {value: 4, label: '代发货/待核销'},
-        {value: 5, label: '已发货'},
-        {value: 6, label: '已收货/已自提'},
-        {value: 7, label: '订单完成'},
-        {value: 8, label: '退货中'},
-        {value: 9, label: '退货完成'},
-        {value: 10, label: '退款中'},
-        {value: 11, label: '退款完成'},
-        {value: 12, label: '送礼完成'}
-      ]
+      orderStatusArr: this.$t('groupBuy.orderStatusArr')
+    }
+  },
+  watch: {
+    lang () {
+      this.orderStatusArr = this.$t('groupBuy.orderStatusArr')
+      this.initDataList()
     }
   },
   methods: {
@@ -226,8 +216,10 @@ export default {
     },
     // 表格数据处理
     handleData (data) {
+      console.log('订单状态', this.orderStatusArr)
+
       data.forEach(item => {
-        item.orderStatusText = this.getOrderStatusText(item.orderStatus)
+        item.orderStatusText = this.orderStatusArr[item.orderStatus]
       })
       this.tableData = data
     },

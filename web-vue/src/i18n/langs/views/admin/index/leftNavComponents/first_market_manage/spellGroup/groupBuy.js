@@ -1,21 +1,51 @@
 export const cn = {
-  // 拼团订单列表
-  orderStatus: '订单状态',
-  orderStatusArr: [
-    {value: -1, label: '全部订单'},
-    {value: 1, label: '待付款'},
-    {value: 2, label: '订单取消'},
-    {value: 3, label: '订单关闭'},
-    {value: 4, label: '代发货/待核销'},
-    {value: 5, label: '已发货'},
-    {value: 6, label: '已收货/已自提'},
-    {value: 7, label: '订单完成'},
-    {value: 8, label: '退货中'},
-    {value: 9, label: '退货完成'},
-    {value: 10, label: '退款中'},
-    {value: 11, label: '退款完成'},
-    {value: 12, label: '送礼完成'}
+  // 多人拼团活动效果
+  number: '数量',
+  legendData: [
+    '活动实付总金额',
+    '活动优惠总金额',
+    '费效比',
+    '新成交用户数',
+    '老成家用户数'
   ],
+  oldNumberUsers: '老成交用户数',
+  oldNumberUsersComment: '在店铺有过付款订单，参与该活动的用户数',
+  numberNewTransactions: '新成交用户数',
+  numberNewTransactionsComment: '活动带来的首次在店铺下单的用户数',
+  costBenefitRatio: '费效比',
+  costBenefitRatioComment: '活动优惠总金额/活动实付总金额',
+  totalDiscountAmount: '活动优惠总金额(元)',
+  totalDiscountAmountComment: '活动优惠总金额',
+  totalAmountPaid: '活动实付总金额(元)',
+  totalAmountPaidComment: '活动订单实际付款总金额(包括账户余额、会员卡余额及微信支付，不包含退款部分)',
+  screeningDates: '筛选日期',
+  selectTime: '选择开始时间',
+  // 退款失败订单
+
+  // 拼团订单列表
+  paymentAmount: '支付金额',
+  buyerName: '下单人姓名',
+  shippingAddress: '收货地址',
+  orderTime: '下单时间',
+  consigneeInfo: '收货人信息',
+  consigneeMobile: '收件人手机号',
+  consigneeName: '收件人姓名',
+  orderStatus: '订单状态',
+  orderStatusArr: {
+    null: '全部订单',
+    1: '待付款',
+    2: '订单取消',
+    3: '订单关闭',
+    4: '代发货/待核销',
+    5: '已发货',
+    6: '已收货/已自提',
+    7: '订单完成',
+    8: '退货中',
+    9: '退货完成',
+    10: '退款中',
+    11: '退款完成',
+    12: '送礼完成'
+  },
   // 添加拼团活动
   groupBuyActivity: '拼团活动',
   groupBuyActivityComment: '开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。 ',
@@ -137,6 +167,51 @@ export const cn = {
 }
 
 export const en = {
+  // 活动效果数据
+  number: 'number',
+  legendData: [
+    'total amount paid for activities ',
+    'total discount amount ',
+    'cost-effectiveness ratio ',
+    'number of new transactions ',
+    'number of experienced households'
+  ],
+  oldNumberUsers: 'oldNumberUsers ',
+  oldNumberUsersComment: 'number of users who have paid in the store,',
+  numberNewTransactions: 'number of new transactions ',
+  numberNewTransactionsComment: 'activities in order for the first time the number of users',
+  costBenefitRatio: 'cost-benefit ratio',
+  costBenefitRatioComment: 'the benefit total amount/the benefit actual amount of the activity',
+  totalDiscountAmount: 'total amount of event discount (yuan)',
+  totalDiscountAmountComment: 'activities discount total amount',
+  totalAmountPaid: 'totalAmountPaid for activity ',
+  totalAmountPaidComment: 'total amount of actual payment for activity order (including account balance, membership card balance and WeChat payment, excluding refund part)',
+  screeningDates: 'screeningDates ',
+  selectTime: 'select start time ',
+
+  // 订单详情
+  paymentAmount: 'Pay amount',
+  buyerName: 'Next single name',
+  shippingAddress: 'receiving address',
+  orderTime: 'Time to place an order',
+  consigneeInfo: 'Receipt Information',
+  consigneeMobile: 'Recipient phone number',
+  consigneeName: 'Recipient Name',
+  orderStatus: 'Order Status',
+  orderStatusArr: {
+    null: 'All orders',
+    1: 'To be paid',
+    2: 'Order Cancellation',
+    3: 'Order Close',
+    4: 'Shipping/Pending Write-off',
+    5: 'Shipped',
+    6: 'Received/Self-Lifted',
+    7: 'Order Complete',
+    8: 'In return',
+    9: 'Return Complete',
+    10: 'In refund',
+    11: 'Refund Completed',
+    12: 'Gift Done' },
   // 添加拼团活动
   groupBuyActivity: 'groupon Activity',
   groupBuyActivityComment: 'The switch is turned off by default. When the switch is turned on, the user can apply for a store distributor. The distributor invites the user to register to generate an order, and the purchaser invites a commission reward. When the switch is turned off, the mobile terminal personal center "distribution center" menu is hidden, the user places an order, the inviter no longer generates a commission reward, the system distribution mechanism is closed, and the invitation no longer records the invitation relationship.',
