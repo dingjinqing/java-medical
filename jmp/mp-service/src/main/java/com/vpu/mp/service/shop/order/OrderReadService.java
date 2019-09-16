@@ -158,10 +158,10 @@ public class OrderReadService extends ShopBaseService {
 		//构造参数
 		for (OrderInfoVo order : orders) {
 			//子订单
-			if(!order.getOrderSn().equals(order.getMainOrderSn())) {
-				childOrders.add(order);
-			}else{
+			if(orderInfo.isMainOrder(order)) {
 				mainOrder = order;
+			}else{
+				childOrders.add(order);
 			}
 			//所有订单sn
 			orderIds.add(order.getOrderId());
