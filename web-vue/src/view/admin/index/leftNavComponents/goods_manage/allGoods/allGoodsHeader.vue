@@ -1,23 +1,11 @@
 <template>
   <!-- 头部组件 -->
   <div class="allGoodsHeader">
-    <el-tabs
-      v-model="activeName"
-      @tab-click="handleClick"
-    >
-      <el-tab-pane
-        :label="$t('allGoods.allGoodsHeaderData.label1')"
-        name="saleOn"
-      ></el-tab-pane>
-      <el-tab-pane
-        :label="$t('allGoods.allGoodsHeaderData.label2')"
-        name="saleEnd"
-      ></el-tab-pane>
-      <el-tab-pane
-        :label="$t('allGoods.allGoodsHeaderData.label3')"
-        name="saleOff"
-      ></el-tab-pane>
-    </el-tabs>
+    <div class="headerTab">
+      <div class="tabItem" :class="{tabItemActive:tabItemActiveIndex === 0}" @click="tabItemClicked('goodsForSale')">出售中</div>
+      <div class="tabItem" :class="{tabItemActive:tabItemActiveIndex === 1}" @click="tabItemClicked('goodsForSaleOut')">已售罄</div>
+      <div class="tabItem" :class="{tabItemActive:tabItemActiveIndex === 2}" @click="tabItemClicked('goodsForInStock')">仓库中</div>
+    </div>
   </div>
 </template>
 <script>
@@ -26,39 +14,47 @@ export default {
   // 数据data
   data () {
     return {
-      activeName: 'saleOn'
+      tabItemActiveIndex: 0
     }
   },
-
-  // Vue生命周期钩子函数
+  watch: {
+    /* 用来单独处理在 */
+    $route (to) {
+      if (to.name === 'goodsForSaleOut') {
+        this.tabItemActiveIndex = 1
+      } else if (to.name === 'goodsForInStock') {
+        this.tabItemActiveIndex = 2
+      } else {
+        // goodsForSale
+        this.tabItemActiveIndex = 0
+      }
+    }
+  },
+  methods: {
+    tabItemClicked (routerName) {
+      this.$router.push({name: routerName})
+    }
+  },
   mounted () {
     // 初始化国际语言
     this.langDefault()
-  },
-  // methods 方法
-  methods: {
-    handleClick (tab, event) {
-      console.log(tab.name)
-      // 点击进行路由跳转
-      switch (tab.name) {
-        case 'saleOn': this.$router.push({
-          name: 'sale_on'
-        })
-          break
-        case 'saleEnd': this.$router.push({
-          name: 'sale_end'
-        })
-          break
-        case 'saleOff': this.$router.push({
-          name: 'sale_off'
-        })
-          break
-      }
-    }
   }
 }
 </script>
 
-<style lang="css" scoped>
-/* 样式文件 要加scoped作用于当前的组件，方式样式污染 */
+<style scoped>
+  .headerTab{
+    border-bottom: 1px solid #EEEEEE;
+    color: #666;
+    display: flex;
+  }
+  .tabItem{
+    width: 50px;
+    line-height: 50px;
+    margin:0px 5px;
+    cursor: pointer;
+  }
+  .tabItemActive{
+    border-bottom: 2px solid #5a8bff;
+  }
 </style>

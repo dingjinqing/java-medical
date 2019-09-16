@@ -254,7 +254,7 @@ const routes = [
           {
             path: '/admin/home/main/goodsManage/allGoods',
             redirect: '/admin/home/main/goodsManage/goodsForSale',
-            name: 'sale_on',
+            name: 'all_goods',
             meta: {
               crumbTitle: 'router.goodsForSale',
               meta: 'goods_manage'
@@ -271,41 +271,39 @@ const routes = [
                 meta: {
                   crumbTitle: 'router.goodsForSale',
                   meta: 'goods_manage',
-                  category: 'sale_on'
+                  category: 'all_goods'
                 },
-
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/saleOn'
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOnAndInStock'
                   )
               },
               // 商品管理/已售罄
               {
-                path: '/admin/home/main/goodsManage/soldOutGoods',
-                name: 'soldOutGoods',
+                path: '/admin/home/main/goodsManage/goodsForSaleOut',
+                name: 'goodsForSaleOut',
                 meta: {
-                  crumbTitle: 'router.soldOutGoods',
+                  crumbTitle: 'router.goodsForSaleOut',
                   meta: 'goods_manage',
-                  category: 'sale_on'
+                  category: 'all_goods'
                 },
-
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/saleOn'
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOut'
                   )
               },
               // 商品管理/仓库中
               {
-                path: '/admin/home/main/goodsManage/goodsInTheWarehouse',
-                name: 'goodsInTheWarehouse',
+                path: '/admin/home/main/goodsManage/goodsForInStock',
+                name: 'goodsForInStock',
                 meta: {
-                  crumbTitle: 'router.goodsInTheWarehouse',
+                  crumbTitle: 'router.goodsForInStock',
                   meta: 'goods_manage',
-                  category: 'sale_on'
+                  category: 'all_goods'
                 },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/saleOff'
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOnAndInStock'
                   )
               }
             ]

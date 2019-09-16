@@ -184,7 +184,7 @@ export default {
             imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
             span: '',
-            name: 'sale_on',
+            name: 'all_goods',
             flag: false
           },
           {
