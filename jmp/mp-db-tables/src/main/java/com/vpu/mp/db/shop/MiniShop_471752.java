@@ -1057,6 +1057,10 @@ public class MiniShop_471752 extends SchemaImpl {
      * 用户点击分享链接触发分享生效记录表
      */
     public final AttendShareUser ATTEND_SHARE_USER = com.vpu.mp.db.shop.tables.AttendShareUser.ATTEND_SHARE_USER;
+    /**
+     * 基础配置-模版管理
+     */
+    public final MessageTemplateConfig MESSAGE_TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG;
 
     /**
      * No further instances allowed
@@ -1172,6 +1176,7 @@ public class MiniShop_471752 extends SchemaImpl {
             LotteryShare.LOTTERY_SHARE,
             MemberCard.MEMBER_CARD,
             MessageTemplate.MESSAGE_TEMPLATE,
+            MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG,
             MpDailyRetain.MP_DAILY_RETAIN,
             MpDailyVisit.MP_DAILY_VISIT,
             MpDistributionVisit.MP_DISTRIBUTION_VISIT,

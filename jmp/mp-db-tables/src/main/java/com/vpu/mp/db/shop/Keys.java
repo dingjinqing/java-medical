@@ -243,7 +243,6 @@ public class Keys {
     public static final Identity<ShareAwardReceiveRecord, Integer> IDENTITY_SHARE_AWARD_RECEIVE = Identities0.IDENTITY_SHARE_AWARD_RECEIVE;
     public static final Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Identities0.IDENTITY_ATTEND_SHARE_USER;
     public static final Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Identities0.IDENTITY_MP_OFFICIAL_ACCOUNT_USER;
-    
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -479,6 +478,7 @@ public class Keys {
     public static final UniqueKey<AttendShareUserRecord> KEY_B2C_ATTEND_SHARE_USER_PRIMARY = UniqueKeys0.KEY_B2C_ATTEND_SHARE_USER_PRIMARY;
     public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY = UniqueKeys0.KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY;
     public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = UniqueKeys0.KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID;
+    public static final UniqueKey<MessageTemplateConfigRecord> KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY = UniqueKeys0.KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -489,6 +489,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+
         public static Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Internal.createIdentity(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.ID);
         public static Identity<CommentAwardRecord, Integer> IDENTITY_COMMENT_AWARD = Internal.createIdentity(CommentAward.COMMENT_AWARD, CommentAward.COMMENT_AWARD.ID);
         public static Identity<GiveGiftActivityRecord, Integer> IDENTITY_GIVE_GIFT_ACTIVITY = Internal.createIdentity(GiveGiftActivity.GIVE_GIFT_ACTIVITY, GiveGiftActivity.GIVE_GIFT_ACTIVITY.ID);
@@ -697,6 +698,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<MessageTemplateConfigRecord> KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY = Internal.createUniqueKey(MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG, "KEY_b2c_message_template_config_PRIMARY", MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG.ID);
         public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = Internal.createUniqueKey(CommentGoods.COMMENT_GOODS, "KEY_b2c_comment_goods_PRIMARY", CommentGoods.COMMENT_GOODS.ID);
         public static final UniqueKey<CommentAwardRecord> KEY_B2C_COMMENT_AWARD_PRIMARY = Internal.createUniqueKey(CommentAward.COMMENT_AWARD, "KEY_b2c_comment_award_PRIMARY", CommentAward.COMMENT_AWARD.ID);
         public static final UniqueKey<GiveGiftActivityRecord> KEY_B2C_GIVE_GIFT_ACTIVITY_PRIMARY = Internal.createUniqueKey(GiveGiftActivity.GIVE_GIFT_ACTIVITY, "KEY_b2c_give_gift_activity_PRIMARY", GiveGiftActivity.GIVE_GIFT_ACTIVITY.ID);

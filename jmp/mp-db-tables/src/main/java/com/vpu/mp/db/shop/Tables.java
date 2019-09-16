@@ -1041,5 +1041,9 @@ public class Tables {
      * 用户点击分享链接触发分享生效记录表
      */
     public static final AttendShareUser ATTEND_SHARE_USER = com.vpu.mp.db.shop.tables.AttendShareUser.ATTEND_SHARE_USER;
+    /**
+     * The table <code>mini_shop674625.b2c_message_template_config</code>.
+     */
+    public static final MessageTemplateConfig MESSAGE_TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG;
 
 }

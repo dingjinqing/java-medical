@@ -462,7 +462,7 @@ public class Indexes {
     public static final Index MP_OFFICIAL_ACCOUNT_USER_PRIMARY = Indexes0.MP_OFFICIAL_ACCOUNT_USER_PRIMARY;
     public static final Index MP_OFFICIAL_ACCOUNT_USER_SYS_ID = Indexes0.MP_OFFICIAL_ACCOUNT_USER_SYS_ID;
     public static final Index MP_OFFICIAL_ACCOUNT_USER_UNIONID = Indexes0.MP_OFFICIAL_ACCOUNT_USER_UNIONID;
-
+    public static final Index MESSAGE_TEMPLATE_CONFIG_PRIMARY = Indexes0.MESSAGE_TEMPLATE_CONFIG_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -901,5 +901,6 @@ public class Indexes {
         public static Index MP_OFFICIAL_ACCOUNT_USER_PRIMARY = Internal.createIndex("PRIMARY", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID }, true);
         public static Index MP_OFFICIAL_ACCOUNT_USER_SYS_ID = Internal.createIndex("sys_id", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.SYS_ID }, false);
         public static Index MP_OFFICIAL_ACCOUNT_USER_UNIONID = Internal.createIndex("unionid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.UNIONID }, false);
+        public static Index MESSAGE_TEMPLATE_CONFIG_PRIMARY = Internal.createIndex("PRIMARY", MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG, new OrderField[] { MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG.ID }, true);
     }
 }
