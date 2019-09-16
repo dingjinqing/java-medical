@@ -241,5 +241,14 @@ public class MemberDaoService extends ShopBaseService {
 			.fetch();
 	}
 	
+	/**
+	 * 更新用户的邀请人id
+	 * @param userId
+	 * @param invitedId
+	 */
+	public void updateMemberInviteId(Integer userId,Integer invitedId) {
+		db().update(USER).set(USER.INVITE_ID, invitedId).where(USER.USER_ID.eq(userId)).execute();
+	}
+	
 	
 }

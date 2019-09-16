@@ -942,4 +942,18 @@ public class MemberService extends ShopBaseService {
 		transStatistic.setReturnOrderNum(returnOrderNum);
 		logger().info("累计退款订单数 " + returnOrderNum);
 	}
+
+
+	/**
+	 * 更新会员的信息
+	 * @param param
+	 */
+	public void updateMemberInfo(MemberParam param) {
+		/** 更新用户邀请人*/
+		if(param.getInviteId()!=null) {
+			memberDao.updateMemberInviteId(param.getUserId(),param.getInviteId());
+		}else {
+			// TODO 更新user_detail
+		}
+	}
 }
