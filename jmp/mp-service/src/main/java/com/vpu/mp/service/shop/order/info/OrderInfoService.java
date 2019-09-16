@@ -837,14 +837,21 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public Integer getAllReturnOrderNum(Integer userId) {
-		return db().select(count())
+		Record1<Integer> record = db().select(count())
 				.from(ORDER_INFO)
 				.where(ORDER_INFO.USER_ID.eq(userId))
 				.and(ORDER_INFO.ORDER_STATUS.notIn(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED))
 				.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_STATUS_FINISH))
 				.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
-				.fetchOne()
-				.into(Integer.class);
+				.fetchAny();
+		
+		if(record != null) {
+			return record.into(Integer.class);
+		}else {
+			return 0;
+		}
+		
+				
 	}
 
 

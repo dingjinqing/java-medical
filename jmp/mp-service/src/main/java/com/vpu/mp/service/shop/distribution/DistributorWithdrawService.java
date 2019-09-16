@@ -111,7 +111,7 @@ public class DistributorWithdrawService extends ShopBaseService{
 	 * @return
 	 */
 	public DistributionWithdrawRecord getWithdrawByUserId(Integer userId) {
-		return db().selectFrom(DISTRIBUTION_WITHDRAW).where(DISTRIBUTION_WITHDRAW.USER_ID.eq(userId)).fetchOne();
+		return db().selectFrom(DISTRIBUTION_WITHDRAW).where(DISTRIBUTION_WITHDRAW.USER_ID.eq(userId)).fetchAny();
 	}
 	
 }
