@@ -102,3 +102,12 @@ export function memberInfoRequest (userId) {
     data: null
   })
 }
+
+// 更新会员用户信息
+export function updateMemberInfoRequest (data) {
+  return service({
+    url: '/api/admin/member/info/update',
+    method: 'post',
+    data: data
+  })
+}
