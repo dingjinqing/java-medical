@@ -4,108 +4,108 @@
       <div class="search_box">
         <div class="filters">
           <div class="filters_item">
-            <span>商品名称：</span>
+            <span>{{$t('order.goodsName')}}：</span>
             <el-input
               v-model="searchParams.goodsName"
-              placeholder="商品名称"
+              :placeholder="$t('order.goodsName')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>订单号：</span>
+            <span>{{$t('order.orderSn')}}：</span>
             <el-input
               v-model="searchParams.orderSn"
-              placeholder="订单号"
+              :placeholder="$t('order.orderSn')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>订单状态：</span>
+            <span>{{$t('order.orderStatusText')}}：</span>
             <el-select
               v-model="searchParams.orderStatus"
+              :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
+              multiple
+              :multiple-limit='1'
             >
               <el-option
-                v-for="item in orderStatus"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $t('order.orderStatusList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
               ></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span>订单类型：</span>
+            <span>{{$t('order.goodsTypeText')}}：</span>
             <el-select
               v-model="searchParams.goodsType"
+              :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
             >
               <el-option
-                v-for="item in goodsType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $t('order.goodsTypeList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
               ></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span>收货人姓名：</span>
+            <span>{{$t('order.consigneeName')}}：</span>
             <el-input
               v-model="searchParams.consignee"
-              placeholder="收货人姓名"
+              :placeholder="$t('order.consigneeName')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>收货人手机号：</span>
+            <span>{{$t('order.mobile')}}：</span>
             <el-input
               v-model="searchParams.mobile"
-              placeholder="收货人手机号"
+              :placeholder="$t('order.mobile')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>配送方式：</span>
+            <span>{{$t('order.deliverTypeText')}}：</span>
             <el-select
               v-model="searchParams.deliverType"
+              :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
             >
               <el-option
-                label="全部"
-                :value="-1"
-              ></el-option>
-              <el-option
-                label="快递"
-                :value="1"
-              ></el-option>
-              <el-option
-                label="自提"
-                :value="2"
+                v-for="item in $t('order.deliverTypeList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
               ></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span>买家昵称：</span>
+            <span>{{$t('order.userName')}}：</span>
             <el-input
               v-model="searchParams.userName"
-              placeholder="买家昵称"
+              :placeholder="$t('order.userName')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>买家来源：</span>
+            <span>{{$t('order.userSource')}}：</span>
             <el-select
               v-model="searchParams.source"
+              :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
@@ -122,10 +122,10 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>核销码：</span>
+            <span>{{$t('order.verifyCode')}}：</span>
             <el-input
               v-model="searchParams.verifyCode"
-              placeholder="核销码"
+              :placeholder="$t('order.verifyCode')"
               size="small"
               class="default_input"
             ></el-input>
@@ -134,9 +134,10 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>门店：</span>
+            <span>{{$t('order.store')}}：</span>
             <el-select
               v-model="searchParams.storeId"
+              :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
@@ -153,18 +154,19 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>支付方式：</span>
+            <span>{{$t('order.paymentType')}}：</span>
             <el-select
               v-model="searchParams.paymentType"
+              :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
               filterable
             >
               <el-option
-                v-for="item in paymentType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $t('order.paymentTypeList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
               ></el-option>
             </el-select>
           </div>
@@ -172,14 +174,14 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>标签：</span>
+            <span>{{$t('order.tag')}}：</span>
             <el-select
               v-model="searchParams.tagIds"
               multiple
               filterable
               allow-create
               default-first-option
-              placeholder="最多选择3个标签"
+              :placeholder="$t('order.tagDescribe')"
               :multiple-limit="3"
               size="small"
               style="width:auto"
@@ -197,7 +199,7 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>收货地址：</span>
+            <span>{{$t('order.ShippingAddress')}}：</span>
             <areaLinkage
               @areaData="handleAreaData"
               style="width:365px;"
@@ -207,10 +209,10 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>规格编码：</span>
+            <span>{{$t('order.specCode')}}：</span>
             <el-input
               v-model="searchParams.specCode"
-              placeholder="规格编码"
+              :placeholder="$t('order.specCode')"
               size="small"
               class="default_input"
             ></el-input>
@@ -219,13 +221,13 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>下单时间：</span>
+            <span>{{$t('order.orderTime')}}：</span>
             <el-date-picker
               v-model="orderTime"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.Starttime')"
+              :end-placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd"
               size="small"
             >
@@ -235,13 +237,13 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>完成时间：</span>
+            <span>{{$t('order.completeTime')}}：</span>
             <el-date-picker
               v-model="completeTime"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.Starttime')"
+              :end-placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd"
               size="small"
             >
@@ -251,17 +253,17 @@
       </div>
 
       <div class="search_button_box">
-        <span @click="moreFilters = !moreFilters">{{moreFilters ? '收起' : '更多'}}</span>
+        <span @click="moreFilters = !moreFilters">{{moreFilters ? $t('order.collapse') : $t('order.more')}}</span>
         <div class="button_box">
           <el-button
             type="primary"
             size="small"
             @click="search"
-          >筛选</el-button>
+          >{{$t('order.filter')}}</el-button>
           <el-button
             type="default"
             size="small"
-          >导出列表</el-button>
+          >{{$t('order.export')}}</el-button>
         </div>
       </div>
       <div class="table_box">
@@ -303,14 +305,14 @@
         <table>
           <thead>
             <tr>
-              <th width="300px">商品</th>
-              <th width="10%">货号</th>
-              <th width="10%">单价</th>
-              <th width="10%">数量</th>
-              <th width="10%">收货人</th>
-              <th>下单时间</th>
-              <th width="10%">订单状态</th>
-              <th width="10%">支付金额</th>
+              <th width="300px">{{$t('order.goods')}}</th>
+              <th width="10%">{{$t('order.goodsSn')}}</th>
+              <th width="10%">{{$t('order.goodsPrice')}}</th>
+              <th width="10%">{{$t('order.goodsNumber')}}</th>
+              <th width="10%">{{$t('order.consignee')}}</th>
+              <th>{{$t('order.orderTime')}}</th>
+              <th width="10%">{{$t('order.orderStatusText')}}</th>
+              <th width="10%">{{$t('order.moneyPaid')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -327,16 +329,31 @@
                 <td colspan="8">
                   <div class="tb-head_box">
                     <div class="left">
-                      <span>订单号：{{orderItem.orderSn}}</span>
-                      <span>支付方式：<i class="el-icon-shopping-cart-full"></i></span>
-                      <span>配送方式：{{orderItem.deliverType === 0 ? '快递' : '自提'}}</span>
-                      <span>订单类型：普通订单</span>
+                      <span>{{$t('order.orderSn')}}：{{orderItem.orderSn}}</span>
+                      <span>{{$t('order.paymentType')}}：
+                        <span
+                          v-for="(payCode,index) in orderItem.payCodeList"
+                          :key="index"
+                        >
+                          <i :class="payCodeIconClassMap[payCode]"></i>
+                        </span>
+                      </span>
+                      <span>{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(orderItem.deliverType)}}</span>
+                      <span>{{$t('order.goodsTypeText')}}：
+                        <span
+                          v-for="(goodsType,index) in orderItem.goodsType.split(',')"
+                          :key="index"
+                        >
+                          <template v-if="index != 0">,</template>
+                          {{goodsTypeMap.get(Number(goodsType))}}
+                        </span>
+                      </span>
                     </div>
                     <div class="right">
                       <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span>添加备注</span>
-                      <span @click="seeDetails(orderItem.orderId)">查看详情</span>
-                      <span>查看评价</span>
+                      <span>{{$t('order.remark')}}</span>
+                      <span @click="seeDetails(orderItem.orderId)">{{$t('order.details')}}</span>
+                      <span>{{$t('order.comment')}}</span>
                     </div>
                   </div>
                 </td>
@@ -349,7 +366,7 @@
                   <td>
                     <div class="goods_info">
                       <img
-                        :src="$imageHost+'/image/admin/icon_jia.png'"
+                        :src="$imageHost+goodsItem.goodsImg"
                         alt=""
                       >
                       <div class="right_info">
@@ -359,7 +376,7 @@
                     </div>
                   </td>
                   <td>{{goodsItem.goodsSn}}</td>
-                  <td>{{goodsItem.goodsPrice}}</td>
+                  <td>{{goodsItem.goodsPrice.toFixed(2)}}</td>
                   <td>{{goodsItem.goodsNumber}}</td>
                   <td
                     v-if="index === 0"
@@ -378,12 +395,24 @@
                     v-if="index === 0"
                     :rowspan="orderItem.goods.length"
                   >
-                    {{orderItem.orderStatus}}
+                    {{orderStatusMap.get(orderItem.orderStatus)}}
                   </td>
                   <td
                     v-if="index === 0"
                     :rowspan="orderItem.goods.length"
-                  >123</td>
+                  >
+                    <span>
+                      {{orderItem.moneyPaid.toFixed(2)}}
+                    </span>
+                    <span>
+                      ({{
+                        $t('order.includeExpress')
+                      }}
+                      {{orderItem.shippingFee.toFixed(2)}}
+                      )
+                    </span>
+
+                  </td>
                 </tr>
               </template>
             </tbody>
@@ -416,6 +445,18 @@ export default {
   },
   data () {
     return {
+      orderStatusMap: {},
+      goodsTypeMap: {},
+      deliverTypeMap: {},
+      paymentTypeMap: {},
+      payCodeIconClassMap: {
+        1: 'el-icon-shopping-cart-full',
+        2: 'el-icon-shopping-cart-1',
+        3: 'el-icon-shopping-cart-1',
+        4: 'el-icon-shopping-cart-full',
+        5: 'el-icon-shopping-cart-full',
+        6: 'el-icon-shopping-cart-full'
+      },
       moreFilters: false,
       pageParams: {
         'totalRows': 1,
@@ -455,72 +496,11 @@ export default {
       },
       orderTime: null,
       completeTime: null,
-      orderStatus: [
-        { value: null, label: '全部订单' },
-        { value: '1', label: '待付款' },
-        { value: '2', label: '订单取消' },
-        { value: '3', label: '订单关闭' },
-        { value: '4', label: '待发货/待核销' },
-        { value: '5', label: '已发货' },
-        { value: '6', label: '已收货/已自提' },
-        { value: '7', label: '订单完成' },
-        { value: '8', label: '退货中' },
-        { value: '9', label: '退货完成' },
-        { value: '10', label: '退款中' },
-        { value: '11', label: '退款完成' },
-        { value: '13', label: '拼团中' },
-        { value: '14', label: '已成团' },
-        { value: '15', label: '送礼完成' }
-      ],
-      goodsType: [
-        { value: null, label: '全部' },
-        { value: 1, label: '普通订单' },
-        { value: 2, label: '拼团订单' },
-        { value: 3, label: '返利订单' },
-        { value: 4, label: '砍价订单' },
-        { value: 5, label: '积分兑换订单' },
-        { value: 6, label: '秒杀订单' },
-        { value: 7, label: '限时降价订单' },
-        { value: 8, label: '首单特惠订单' },
-        { value: 9, label: '加价购订单' },
-        { value: 10, label: '拼团抽奖订单' },
-        { value: 11, label: '一口价订单' },
-        { value: 12, label: '定金膨胀订单' },
-        { value: 13, label: '赠品订单' },
-        { value: 14, label: '幸运抽奖订单' },
-        { value: 15, label: '限次卡兑换订单' },
-        { value: 16, label: '好友助力订单' },
-        { value: 17, label: '满包邮' },
-        { value: 18, label: '测评订单' },
-        { value: 19, label: '送礼订单' },
-        { value: 20, label: '代付订单' },
-        { value: 21, label: '扫码购订单' }
-      ],
       sourceList: [
-        { value: null, label: '全部' },
-        { value: -2, label: '未获取' },
-        { value: -3, label: '后台' }
       ],
       storeList: [
-        { value: null, label: '请选门店' },
-        { value: 1, label: '牡丹园门店' },
-        { value: 2, label: '西直门门店' },
-        { value: 3, label: '永泰庄门店' }
       ],
       tagList: [
-        { value: 1, label: '年轻人年轻人年轻人人' },
-        { value: 2, label: '中年人中年人中年人人' },
-        { value: 3, label: '老年人' },
-        { value: 4, label: '儿童' }
-      ],
-      paymentType: [
-        { value: null, label: '全部' },
-        { value: 1, label: '微信支付' },
-        { value: 2, label: '余额支付' },
-        { value: 3, label: '积分支付' },
-        { value: 4, label: '积分兑换' },
-        { value: 5, label: '货到付款' },
-        { value: 6, label: '活动奖品' }
       ],
       tabsOrderStatus: [
         { value: null, label: '全部' },
@@ -541,7 +521,14 @@ export default {
     console.log('mounted-----------------------')
     // 初始化数据
     this.langDefault()
+    this.arrayToMap()
     this.initDataList()
+  },
+  watch: {
+    lang () {
+      this.langDefault()
+      this.arrayToMap()
+    }
   },
   methods: {
     handleClick (data) {
@@ -552,18 +539,11 @@ export default {
       this.searchParams.cityCode = data.city
       this.searchParams.districtCode = data.district
     },
-    initDataList () {
-      this.searchParams.currentPage = this.pageParams.currentPage
-      this.searchParams.pageRows = this.pageParams.pageRows
-      allList(this.searchParams).then(res => {
-        this.pageParams = res.content.page
-        this.currentPage = res.content.page.currentPage
-        this.pageRows = res.content.page.pageRows
-        this.pageCount = res.content.page.pageCount
-        this.totalRows = res.content.page.totalRows
-        this.orderList = res.content.dataList
-      }).catch(() => {
-      })
+    arrayToMap () {
+      this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
+      this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
+      this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
+      this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
     },
     search () {
       if (this.completeTime) {
@@ -574,6 +554,7 @@ export default {
         this.searchParams.createTimeStart = this.orderTime[0] + ' 00:00:00'
         this.searchParams.createTimeEnd = this.orderTime[1] + ' 23:59:59'
       }
+      this.orderList = null
       allList(this.searchParams).then(res => {
         this.pageParams = res.content.page
         this.currentPage = res.content.page.currentPage
@@ -584,6 +565,10 @@ export default {
       }).catch(() => {
       })
     },
+    initDataList () {
+      this.search()
+    },
+
     seeDetails (orderId) {
       console.log(orderId)
       this.$router.push({
