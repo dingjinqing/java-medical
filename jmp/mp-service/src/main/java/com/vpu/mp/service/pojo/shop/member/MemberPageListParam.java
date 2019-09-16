@@ -70,4 +70,6 @@ public class MemberPageListParam extends BaseMemberPojo {
 	private Boolean hasDelete=false;
 	/** -是否为导入会员 */
 	private Boolean hasImport=false;
+	
+	private String realName;
 }

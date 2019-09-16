@@ -46,5 +46,8 @@ public class MemberInfoVo {
 	/** 0：恢复登录 ；1：禁止登录  {@link com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES } */
 	private Byte delFlag;
 	
+	/** 真实姓名 */
+	private String realName;
+	
 	
 }

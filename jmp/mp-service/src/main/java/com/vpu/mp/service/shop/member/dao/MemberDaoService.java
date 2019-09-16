@@ -1,9 +1,12 @@
 package com.vpu.mp.service.shop.member.dao;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CART_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 
@@ -14,17 +17,21 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
+import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
+import static org.jooq.impl.DSL.count;
 
 /**
  * @author 黄壮壮
@@ -94,5 +101,145 @@ public class MemberDaoService extends ShopBaseService {
 						.or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
 				.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc()).limit(1).fetchAny();
 	}
+	
+	/**
+	 * 获取持有会员卡的用户id
+	 * @return
+	 */
+	public Result<Record1<Integer>> getUserIdByCardExist() {
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		return db().select(USER_CARD.USER_ID)
+			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+			.where(USER_CARD.FLAG.eq(CARD_USING))
+			.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
+			.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(localDateTime)))
+		            .or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
+			.fetch();
+	}
+	
+	/**
+	 * 通过商品id获取购买过该商品的用户id
+	 * @param param
+	 * @return
+	 */
+	public Result<Record1<Integer>> getMemberIdByGoodsId(MemberPageListParam param) {
+		return db().select(ORDER_INFO.USER_ID)
+			.from(ORDER_GOODS.leftJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)))
+			.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+			.and(ORDER_GOODS.GOODS_ID.in(param.getGoodsId()))
+			.groupBy(ORDER_INFO.USER_ID)
+			.fetch();
+	}
+	
+	/**
+	 * 获取指定范围内最高次数
+	 * @param hight 
+	 * @param param
+	 * @return
+	 */
+	public Result<Record1<Integer>> getBuyCountHight(Integer hight) {
+		return db().select(ORDER_INFO.USER_ID)
+				.from(ORDER_INFO)
+				.groupBy(ORDER_INFO.USER_ID)
+				.having(count(ORDER_INFO.USER_ID).le(hight))
+				.fetch();
+	}
+	
+	/**
+	 * 获取指定范围内最低次数
+	 * @param low
+	 * @return
+	 */
+	public Result<Record1<Integer>> getBuyCountLow(Integer low) {
+		return db().select(ORDER_INFO.USER_ID)
+			.from(ORDER_INFO)
+			.groupBy(ORDER_INFO.USER_ID)
+			.having(count(ORDER_INFO.USER_ID).ge(low))
+			.fetch();
+	}
+	
+	/**
+	 * 时间内有交易记录-开始时间
+	 * @param startTime
+	 * @return
+	 */
+	public Result<Record1<Integer>> getBuyStartTime(String startTime) {
+		return db().select(ORDER_INFO.USER_ID)
+			.from(ORDER_INFO)
+			.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+			.and(ORDER_INFO.CREATE_TIME.ge(DateUtil.convertToTimestamp(startTime)))
+			.groupBy(ORDER_INFO.USER_ID)
+			.fetch();
+	}
+	
+	/**
+	 * 时间内有交易记录-结束时间
+	 * @param startTime
+	 * @return
+	 */
+	public Result<Record1<Integer>> getBuyEndTime(String endTime) {
+		return db().select(ORDER_INFO.USER_ID)
+			.from(ORDER_INFO)
+			.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
+			.and(ORDER_INFO.CREATE_TIME.le(DateUtil.convertToTimestamp(endTime)))
+			.groupBy(ORDER_INFO.USER_ID)
+			.fetch();
+	}
+	
+	/**
+	 * 指定时间内登录-开始时间
+	 * @param startTime
+	 * @return
+	 */
+	public Result<Record1<Integer>> getLoginStartTime(String startTime) {
+		return db().select(USER_LOGIN_RECORD.USER_ID)
+			.from(USER_LOGIN_RECORD)
+			.where(USER_LOGIN_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(startTime)))
+			.groupBy(USER_LOGIN_RECORD.USER_ID)
+			.fetch();
+	}
+
+
+	
+
+	/**
+	 * 指定时间内登录-结束时间
+	 * @param string
+	 * @return
+	 */
+	public Result<Record1<Integer>> getLoginEndTime(String endTime) {
+		return db().select(USER_LOGIN_RECORD.USER_ID)
+			.from(USER_LOGIN_RECORD)
+			.where(USER_LOGIN_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(endTime)))
+			.groupBy(USER_LOGIN_RECORD.USER_ID)
+			.fetch();
+	}
+
+	/**
+	 * 指定时间内有加购行为-开始时间
+	 * @param string
+	 * @return
+	 */
+	public Result<Record1<Integer>> getCartStartTime(String startTime) {
+		return db().select(USER_CART_RECORD.USER_ID)
+			.from(USER_CART_RECORD)
+			.where(USER_CART_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(startTime)))
+			.groupBy(USER_CART_RECORD.USER_ID)
+			.fetch();
+	}
+
+	/**
+	 * 指定时间内有加购行为-结束时间
+	 * @param string
+	 * @return
+	 */
+	public Result<Record1<Integer>> getCartEndTime(String endTime) {
+		return db().select(USER_CART_RECORD.USER_ID)
+			.from(USER_CART_RECORD)
+			.where(USER_CART_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(endTime)))
+			.groupBy(USER_CART_RECORD.USER_ID)
+			.fetch();
+	}
+	
 	
 }

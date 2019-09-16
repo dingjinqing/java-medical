@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.TAG;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.db.shop.Tables.USER_CART_RECORD;
@@ -50,6 +51,7 @@ import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
@@ -202,8 +204,8 @@ public class MemberService extends ShopBaseService {
 				.asField(INVITE_USERNAME);
 	
 		SelectJoinStep<?> from = this.db().selectDistinct(u.USER_ID,
-				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME,u.DEL_FLAG)
-				.from(u);
+				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME,u.DEL_FLAG,USER_DETAIL.REAL_NAME)
+				.from(u.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(u.USER_ID)));
 		
 		/** 动态构建连表 */
 		buildOptionsForTable(param, u, from);
@@ -341,25 +343,21 @@ public class MemberService extends ShopBaseService {
 		/**  -指定时间内有登录 - 开始时间 */
 		if(!StringUtil.isBlank(param.getLoginStartTime())) {
 			logger().info("正在构建指定时间内登录-开始时间");
-			List<Integer> ids = db().select(USER_LOGIN_RECORD.USER_ID)
-				.from(USER_LOGIN_RECORD)
-				.where(USER_LOGIN_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getLoginStartTime())))
-				.groupBy(USER_LOGIN_RECORD.USER_ID)
-				.fetch()
-				.into(Integer.class);
+			Result<Record1<Integer>> record = memberDao.getLoginStartTime(param.getLoginStartTime());
+			if(record != null) {
+			List<Integer> ids = record.into(Integer.class);
 			select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		/**  -指定时间内有登录 - 结束时间 */
 		if(!StringUtil.isBlank(param.getLoginEndTime())) {
 			logger().info("正在构建指定时间内登录-结束时间");
-			List<Integer> ids = db().select(USER_LOGIN_RECORD.USER_ID)
-				.from(USER_LOGIN_RECORD)
-				.where(USER_LOGIN_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getLoginEndTime())))
-				.groupBy(USER_LOGIN_RECORD.USER_ID)
-				.fetch()
-				.into(Integer.class);
+			Result<Record1<Integer>> record = memberDao.getLoginEndTime(param.getLoginEndTime());
+			if(record != null) {
+			List<Integer> ids = record.into(Integer.class);
 			select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		
@@ -367,56 +365,46 @@ public class MemberService extends ShopBaseService {
 		if(!StringUtil.isBlank(param.getCartStartTime())) {
 			logger().info("正在构建指定时间内有加购行为-开始时间");
 			/** -用户添加购物车商品记录表 */
-			List<Integer> ids = db().select(USER_CART_RECORD.USER_ID)
-				.from(USER_CART_RECORD)
-				.where(USER_CART_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getCartStartTime())))
-				.groupBy(USER_CART_RECORD.USER_ID)
-				.fetch()
-				.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
+			Result<Record1<Integer>> record = memberDao.getCartStartTime(param.getCartStartTime());
+			if(record != null) {
+				List<Integer> ids = record.into(Integer.class);
+				select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		/**  -指定时间内有加购行为 */
 		if(!StringUtil.isBlank(param.getCartEndTime())) {
 			logger().info("正在构建指定时间内有加购行为-结束时间");
+			Result<Record1<Integer>> record = memberDao.getCartEndTime(param.getCartEndTime());
 			/** -用户添加购物车商品记录表 */
-			List<Integer> ids = db().select(USER_CART_RECORD.USER_ID)
-				.from(USER_CART_RECORD)
-				.where(USER_CART_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getCartEndTime())))
-				.groupBy(USER_CART_RECORD.USER_ID)
-				.fetch()
-				.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
+			if(record != null) {
+				List<Integer> ids = record.into(Integer.class);
+				select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		
 		/** -指定时间内有交易记录 */
 		if(!StringUtil.isBlank(param.getBuyStartTime())) {
 			logger().info("正在构建指定时间内有交易记录-开始时间");
+			Result<Record1<Integer>> record = memberDao.getBuyStartTime(param.getBuyStartTime());
 			/** -订单表 */
-			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
-				.from(ORDER_INFO)
-				.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
-				.and(ORDER_INFO.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getBuyStartTime())))
-				.groupBy(ORDER_INFO.USER_ID)
-				.fetch()
-				.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
+			if(record != null) {
+				List<Integer> ids = record.into(Integer.class);
+				select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		
 		/** -指定时间内有交易记录 */
 		if(!StringUtil.isBlank(param.getBuyEndTime())) {
 			logger().info("正在构建指定时间内有交易记录-结束时间");
+			Result<Record1<Integer>> record = memberDao.getBuyEndTime(param.getBuyEndTime());
 			/** -订单表 */
-			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
-				.from(ORDER_INFO)
-				.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
-				.and(ORDER_INFO.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getBuyEndTime())))
-				.groupBy(ORDER_INFO.USER_ID)
-				.fetch()
-				.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
+			if(record != null) {
+				List<Integer> ids = record.into(Integer.class);
+				select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		
@@ -435,38 +423,31 @@ public class MemberService extends ShopBaseService {
 		/** -累计购买次数 - 最低次数 */
 		if(param.getBuyCountLow()!=null) {
 			logger().info("正在构建累计购买次数-最低次数");
-			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
-				.from(ORDER_INFO)
-				.groupBy(ORDER_INFO.USER_ID)
-				.having(count(ORDER_INFO.USER_ID).ge(param.getBuyCountLow()))
-				.fetch()
-				.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
+			Result<Record1<Integer>> record = memberDao.getBuyCountLow(param.getBuyCountLow());
+			if(record != null) {
+				List<Integer> ids = record.into(Integer.class);
+				select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		/** -累计购买次数 - 最高次数 */
 		if(param.getBuyCountHight() != null) {
 			logger().info("正在构建累计购买次数-最高次数");
-			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
-					.from(ORDER_INFO)
-					.groupBy(ORDER_INFO.USER_ID)
-					.having(count(ORDER_INFO.USER_ID).le(param.getBuyCountHight()))
-					.fetch()
-					.into(Integer.class);
+			Result<Record1<Integer>> record = memberDao.getBuyCountHight(param.getBuyCountHight());
+			if(record != null) {
+				List<Integer> ids = record.into(Integer.class);
 				select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		/**  -购买指定商品 */
 		if(param.getGoodsId()!=null && param.getGoodsId().size()>0) {
 			logger().info("正在构建购买指定商品");
-			List<Integer> ids = db().select(ORDER_INFO.USER_ID)
-				.from(ORDER_GOODS.leftJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)))
-				.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
-				.and(ORDER_GOODS.GOODS_ID.in(param.getGoodsId()))
-				.groupBy(ORDER_INFO.USER_ID)
-				.fetch()
-				.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
+			Result<Record1<Integer>> record = memberDao.getMemberIdByGoodsId(param);
+			if(record!=null) {
+				List<Integer> ids = record.into(Integer.class);
+				select.where(u.USER_ID.in(ids));
+			}
 		}
 
 		/** -是否有手机号  */
@@ -487,16 +468,11 @@ public class MemberService extends ShopBaseService {
 		/** -是否持有会员卡 */
 		if(param.getHasCard()) {
 			logger().info("正在处理持有会员卡的会员");
-			Timestamp localDateTime = DateUtil.getLocalDateTime();
-			List<Integer> ids = db().select(USER_CARD.USER_ID)
-				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-				.where(USER_CARD.FLAG.eq(CARD_USING))
-				.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
-				.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(localDateTime)))
-                        .or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
-				.fetch()
-				.into(Integer.class);
+			Result<Record1<Integer>> record = memberDao.getUserIdByCardExist();
+			if(record != null) {
+			List<Integer> ids = record.into(Integer.class);
 			select.where(u.USER_ID.in(ids));
+			}
 		}
 		
 		/** -是否已经禁止登录 */
@@ -510,9 +486,15 @@ public class MemberService extends ShopBaseService {
 			SelectConditionStep<Record1<Integer>> subSelect = db().select(USER_IMPORT_DETAIL.ID).from(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.MOBILE.eq(u.MOBILE));
 			select.whereExists(subSelect);
 		}
+		/** 真实姓名 */
+		if(!StringUtil.isBlank(param.getRealName())) {
+			select.where(USER_DETAIL.REAL_NAME.eq(param.getRealName()));
+		}
 		
 		return select;
 	}
+
+
 
 	/**
 	 * 通用会员列表弹窗分页查询
