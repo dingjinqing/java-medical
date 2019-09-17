@@ -34,7 +34,7 @@ import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
-
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -951,9 +951,12 @@ public class MemberService extends ShopBaseService {
 	public void updateMemberInfo(MemberParam param) {
 		/** 更新用户邀请人*/
 		if(param.getInviteId()!=null) {
+			/** 更新user表*/
 			memberDao.updateMemberInviteId(param.getUserId(),param.getInviteId());
-		}else {
-			// TODO 更新user_detail
 		}
+		
+		/** 更新user_detail */
+		memberDao.updateMemberInfoSql(param);
+
 	}
 }

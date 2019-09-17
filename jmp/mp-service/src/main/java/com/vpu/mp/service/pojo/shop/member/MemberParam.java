@@ -25,13 +25,17 @@ public class MemberParam {
 	private Integer birthdayDay;
 	
 	/** 婚姻状况：1未婚，2已婚，3保密  */
-	private Integer maritalStatus;
+	private Byte maritalStatus;
 	/** 月收入 1：2000元以下 2：2000-3999元  3： 4000-5999元  4：6000-7999元  5： 8000元以上*/
-	private Integer monthlyIncome;
+	private Byte monthlyIncome;
 	/** 身份证 */
 	private String cid;
 	/** 性别：女f,男m */
 	private String sex;
 	/** 受教育程度 */
 	private Byte education;
+	/** 真实姓名 */
+	private String realName;
+	/** 所在行业 */
+	private Byte industory;
 }

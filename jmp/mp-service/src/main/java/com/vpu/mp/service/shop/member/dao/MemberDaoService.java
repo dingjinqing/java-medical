@@ -21,9 +21,11 @@ import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberParam;
 
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
@@ -250,5 +252,60 @@ public class MemberDaoService extends ShopBaseService {
 		db().update(USER).set(USER.INVITE_ID, invitedId).where(USER.USER_ID.eq(userId)).execute();
 	}
 	
+	/**
+	 * 更新用户信息
+	 * @param param
+	 */
+	public void updateMemberInfoSql(MemberParam param) {
+		logger().info("正在更新用户信息");
+		UserDetailRecord record = new UserDetailRecord();
+		buildMemberInfoOptions(param, record);
+		db().update(USER_DETAIL).set(record).where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
+	}
+
+	/**
+	 * 构建更新字段
+	 * @param param
+	 * @param record
+	 */
+	private void buildMemberInfoOptions(MemberParam param, UserDetailRecord record) {
+		/** -生日-年 */
+		if(param.getBirthdayYear() != null) {
+			record.setBirthdayYear(param.getBirthdayYear());
+		}
+		/** -生日-月 */
+		if(param.getBirthdayMonth() != null) {
+			record.setBirthdayMonth(param.getBirthdayMonth());
+		}
+		/** -生日-天 */
+		if(param.getBirthdayDay() != null) {
+			record.setBirthdayDay(param.getBirthdayDay());
+		}
+		/** -婚姻状况*/
+		if(param.getMaritalStatus() != null) {
+			record.setMaritalStatus(param.getMaritalStatus());
+		}
+		/** -真实姓名 */
+		if(param.getRealName() != null) {
+			record.setRealName(param.getRealName());
+		}
+		/** -月收入 */
+		if(param.getMonthlyIncome() != null) {
+			record.setMonthlyIncome(param.getMonthlyIncome());
+		}
+		/** -身份证  */
+		if(param.getCid()!=null) {
+			record.setCid(param.getCid());
+		}
+		/** -受教育程度 */
+		if(param.getEducation()!=null) {
+			record.setEducation(param.getEducation());
+		}
+		
+		/** -行业 */
+		if(param.getIndustory()!= null) {
+			record.setIndustryInfo(param.getIndustory());
+		}
+	}
 	
 }
