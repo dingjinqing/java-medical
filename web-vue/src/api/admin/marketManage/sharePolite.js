@@ -11,17 +11,16 @@ export function getList (data) {
 // 添加分享有礼活动
 export function addShareReward (data) {
   return service({
-    url: '/api/admin/market/sharereward/addsharereward',
+    url: `/api/admin/market/sharereward/addsharereward`,
     method: 'post',
     data: data
   })
 }
 // 获取分享有礼活动详情
-export function getShareRewardInfo (data) {
+export function getShareRewardInfo (id) {
   return service({
-    url: '/api/admin/market/sharereward/getsharerewardinfo/65',
-    method: 'get',
-    data: data
+    url: `/api/admin/market/sharereward/getsharerewardinfo/${id}`,
+    method: 'get'
   })
 }
 // 更新分享有礼活动

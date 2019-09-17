@@ -15,10 +15,9 @@
         <div class="rightContent">
           <span>{{$t('sharePolite.userDaily')}}</span>
           <el-input
-            v-model="input"
+            v-model="dailyLimit"
             style="width: 80px"
             size="small"
-            :value="dailyLimit"
           ></el-input>
           <span>{{$t('sharePolite.sharePoliteActivity')}}</span>
           <span>{{$t('sharePolite.unlimited')}}</span>
@@ -102,7 +101,10 @@
                 placement="top"
                 v-if="scope.row.pageStatus != '已停用'"
               >
-                <span class="el-icon-edit-outline iconSpn"></span>
+                <span
+                  class="el-icon-edit-outline iconSpn"
+                  @click="updateActivity(scope.row.id)"
+                ></span>
               </el-tooltip>
               <el-tooltip
                 :content="$t('sharePolite.terminate')"
@@ -193,7 +195,7 @@ export default {
       dailyLimit: 0,
       pageParams: {},
       param: {
-        status: 1,
+        status: 0,
         category: 0,
         // 分页
         currentPage: 0,
@@ -215,17 +217,29 @@ export default {
     // 分模块查询数据列表
     seacherList () {
       this.param.category = this.param.status
-      this.param.currentPage = this.pageParams.currentPage
-      this.param.pageRows = this.pageParams.pageRows
-      console.log(this.param)
+      if (this.pageParams != null) {
+        this.param.currentPage = this.pageParams.currentPage
+        this.param.pageRows = this.pageParams.pageRows
+      }
+      console.log(JSON.parse(JSON.stringify(this.param)))
       getList(this.param).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content)
-          this.input = res.content.dailyShareAward
+          this.dailyLimit = res.content.dailyShareAward
           this.pageParams = res.content.pageResult.page
           this.param.currentPage = res.content.pageResult.page.currentPage
           this.param.pageRows = res.content.pageResult.page.pageRows
+        }
+      })
+    },
+    // 更新活动数据跳转
+    updateActivity (shareId) {
+      this.$router.push({
+        name: 'share_polite_add',
+        params: {
+          id: shareId,
+          flag: true
         }
       })
     },
@@ -291,7 +305,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        updateDailyLimit(this.input).then(res => {
+        updateDailyLimit(this.dailyLimit).then(res => {
           if (res.error === 0) {
             this.$message({
               type: 'success',

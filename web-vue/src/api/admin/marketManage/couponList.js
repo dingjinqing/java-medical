@@ -53,3 +53,11 @@ export function updateCoupon (data) {
     data: data
   })
 }
+
+// 优惠券详情
+export function coupondetail (data) {
+  return service({
+    url: `/api/admin/coupon/update/info?couponId=${data}`,
+    method: 'get'
+  })
+}
