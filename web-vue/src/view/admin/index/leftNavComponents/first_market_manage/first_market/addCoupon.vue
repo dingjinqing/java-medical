@@ -92,6 +92,7 @@
                   </div>
                   <div class="ft">
                     <el-input
+                      prop="actName"
                       size="small"
                       class="coupon_name_input"
                       placeholder="最多输入10个字"
@@ -108,7 +109,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        label="0"
+                        :label=0
                       >指定金额</el-radio>
                       <span>面值：<el-input
                           v-model="param.denomination"
@@ -120,7 +121,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        label="1"
+                        :label=1
                       >折扣<el-input
                           v-model="param.denomination2"
                           size="small"
@@ -140,13 +141,13 @@
                     <p>
                       <el-radio
                         v-model="param.useConsumeRestrict"
-                        label="0"
+                        :label=0
                       >不限制</el-radio>
                     </p>
                     <p>
                       <el-radio
                         v-model="param.useConsumeRestrict"
-                        label="1"
+                        :label=1
                       >满<el-input
                           size="small"
                           v-model="param.leastConsume"
@@ -164,11 +165,11 @@
                   <div>
                     <el-radio
                       v-model="param.useScore"
-                      label="0"
+                      :label=0
                     >不需要</el-radio>
                     <el-radio
                       v-model="param.useScore"
-                      label="1"
+                      :label=1
                     >需要兑换</el-radio>
                     <p v-if="param.useScore == 1">
                       <el-input
@@ -244,11 +245,11 @@
                     <p>
                       <el-radio
                         v-model="param.availablePeriod"
-                        label="0"
+                        :label=0
                       >固定日期</el-radio>
                     </p>
                     <p
-                      v-if='param.availablePeriod==="0"'
+                      v-if='param.availablePeriod===0'
                       style="margin:15px 0;"
                     >
                       <el-date-picker
@@ -266,7 +267,7 @@
                     <p>
                       <el-radio
                         v-model="param.availablePeriod"
-                        label="1"
+                        :label=1
                       >领券开始 <el-input
                           v-model="param.validity"
                           placeholder=""
@@ -320,13 +321,13 @@
                     <p>
                       <el-radio
                         v-model="param.suitGoods"
-                        label="0"
+                        :label=0
                       >全部商品</el-radio>
                     </p>
                     <p>
                       <el-radio
                         v-model="param.suitGoods"
-                        label="1"
+                        :label=1
                       >指定商品</el-radio>
                     </p>
                     <div v-if="param.suitGoods === '1'">
@@ -402,7 +403,7 @@
   </div>
 </template>
 <script>
-import { saveCoupon } from '@/api/admin/marketManage/couponList.js'
+import { saveCoupon, updateCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -410,16 +411,16 @@ export default {
   },
   data () {
     return {
-      tableData: [],
+      couponInfo: {},
       param: {
         actName: '',
         actCode: '',
-        preferentialType: '0',
-        useConsumeRestrict: '0',
-        useScore: '0',
+        preferentialType: 0,
+        useConsumeRestrict: 0,
+        useScore: 0,
         receivePerPerson: 0,
         cardId: [],
-        availablePeriod: '0',
+        availablePeriod: 0,
         couponDate: '',
         validity: '',
         validityHour: '',
@@ -429,7 +430,7 @@ export default {
         recommendGoodsId: null,
         recommendCatId: null,
         recommendSortId: null,
-        isHide: '0',
+        isHide: 0,
         suitGoods: '0',
         useExplain: '',
         denomination: null,
@@ -439,6 +440,7 @@ export default {
         AtreeType: null,
         isExclusive: false
       },
+      couponId: '',
       AtreeType: null,
       activeName: 'second',
       currentPage: 1,
@@ -471,13 +473,18 @@ export default {
   },
   mounted () {
     this.dataDefalut()
+    this.couponId = this.$route.query.id
+
+    this.getOneInfo()
   },
   methods: {
+    handleClick () {
+
+    },
     dataDefalut () {
       this.$http.$on('result', res => {
         this.param.recommendGoodsId = res.join()
         this.noneBlockDiscArr[0].num = res.length
-        console.log(res)
       })
       this.$http.$on('BusClassTrueArr', res => {
         if (this.AtreeType === 1) {
@@ -487,6 +494,27 @@ export default {
           this.param.recommendCatId = res.join()
           this.noneBlockDiscArr[2].num = res.length
         }
+      })
+    },
+    getOneInfo () {
+      updateCoupon(this.couponId).then(res => {
+        this.param = res.content[0]
+        console.log(this.param)
+        if (this.param.startTime != null) {
+          this.param.availablePeriod = 0
+          this.param.couponDate = [
+            this.param.startTime, this.param.startTime
+          ]
+        }
+        if (this.param.actCode === 'discount') {
+          this.param.preferentialType = 0
+        } else {
+          this.param.preferentialType = 1
+          this.param.denomination2 = this.param.denomination
+          this.param.denomination = null
+        }
+
+        console.log(this.param)
       })
     },
     // 点击指定商品出现的添加类弹窗汇总

@@ -113,7 +113,7 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span>编辑</span>
+              <span @click="updateCoupon(scope.row.id)">编辑</span>
               <span>分享</span>
               <span @click="puaseCoupon(scope.row.id)">停用</span>
               <span @click="receiveDetails(scope.row.id)">领取明细</span>
@@ -148,7 +148,8 @@ export default {
       activeName: 'second',
       currentPage: 1,
       nav: 0,
-      pageParams: {}
+      pageParams: {},
+      editData: []
     }
   },
   mounted () {
@@ -222,6 +223,15 @@ export default {
         })
       })
     },
+    // 编辑优惠券
+    updateCoupon (id) {
+      this.$router.push({
+        path: '/admin/home/main/addyCoupon',
+        query: {
+          id: id
+        }
+      })
+    },
     // 删除优惠券
     delCoupon (id) {
       this.$confirm('此操作将永久删除该优惠券活动, 是否继续?', '提示', {
@@ -254,7 +264,6 @@ export default {
     },
     // 领取明细
     receiveDetails (id) {
-      alert(id)
       this.$router.push({
         path: '/admin/home/main/ordinaryCoupon/receiveDetails',
         query: {

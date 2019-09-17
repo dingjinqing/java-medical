@@ -447,14 +447,14 @@ export default {
     // 表格对应行选中高亮
     handleClick () {
       console.log(this.distributorList)
-      let flag = this.distributorList.filter((item, index) => {
+      let noCheck = this.distributorList.filter((item, index) => {
         return item.ischecked === false
       })
-      let flag1 = this.distributorList.filter((item, index) => {
+      let hasCheck = this.distributorList.filter((item, index) => {
         return item.ischecked === true
       })
-      console.log(flag)
-      if (!flag.length) {
+      console.log(noCheck)
+      if (!noCheck.length) {
         this.allChecked = true
       } else {
         console.log(1)
@@ -463,8 +463,8 @@ export default {
       }
       console.log(this.allChecked)
       this.$forceUpdate()
-      console.log(flag)
-      console.log(flag1)
+      console.log(noCheck)
+      console.log(hasCheck)
     },
     // 全选本页 - 全部checkbox选中
     handleAllcheck () {

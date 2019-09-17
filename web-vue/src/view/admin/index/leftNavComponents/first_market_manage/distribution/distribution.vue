@@ -48,7 +48,7 @@
           <goodsReturnStatistics />
         </el-tab-pane>
         <el-tab-pane
-          label="返利体现审核"
+          label="返利提现审核"
           name="eighth"
         >
           <withdrawDepositCheck />
