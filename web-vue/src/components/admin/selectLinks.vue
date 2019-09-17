@@ -77,7 +77,10 @@
           </ul>
         </div>
         <div class="right_box">
-          <router-view></router-view>
+          <!-- <router-view></router-view> -->
+          <!-- 动态组价 -->
+          <!-- 组件会在 currentComponent 改变时改变 -->
+          <component v-bind:is="currentComponent"></component>
         </div>
       </div>
       <span
@@ -95,9 +98,29 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+// 引入组件
+import commonLinks from './selectLinksComponents/commonLinks'
+import commodityLinks from './selectLinksComponents/commodityLinks'
+import formPage from './selectLinksComponents/formPage'
+import customPage from './selectLinksComponents/customPage'
+import pageJump from './selectLinksComponents/pageJump'
+import smallProgramJump from './selectLinksComponents/smallProgramJump'
+import groupDrawing from './selectLinksComponents/groupDrawing'
+import classificationOfCommodities from './selectLinksComponents/classificationOfCommodities'
 export default {
+  components: {
+    commonLinks,
+    commodityLinks,
+    customPage,
+    pageJump,
+    smallProgramJump,
+    formPage,
+    groupDrawing,
+    classificationOfCommodities
+  },
   data () {
     return {
+      currentComponent: commonLinks,
       dialogVisible: false,
       click_active: 'click_active',
       bg_class: 'bg_class',
@@ -206,9 +229,9 @@ export default {
       console.log(flag)
       this.dialogVisible = true
       // 初始化弹窗子组件
-      this.$router.push({
-        name: 'commonLinks'
-      })
+      // this.$router.push({
+      //   name: 'commonLinks'
+      // })
     })
   },
   methods: {
@@ -285,41 +308,34 @@ export default {
       this.bottom_level_line_two = null
       switch (index) {
         case 0:
-          this.$router.push({
-            name: 'commonLinks'
-          })
+          this.currentComponent = commonLinks
           break
         case 1:
-          this.$router.push({
-            name: 'commodityLinks'
-          })
+          this.currentComponent = commodityLinks
           break
         case 2:
-          this.$router.push({
-            name: 'customPage'
-          })
+          this.currentComponent = customPage
+
           break
         case 5:
-          this.$router.push({
-            name: 'pageJump'
-          })
+          this.currentComponent = pageJump
+
           break
         case 6:
-          this.$router.push({
-            name: 'smallProgramJump'
-          })
+          this.currentComponent = smallProgramJump
+
           break
         case 7:
+          this.currentComponent = formPage
+
           this.changeSelectLinkLeft(6)
-          this.$router.push({
-            name: 'formPage'
-          })
+
           break
         case 8:
+          this.currentComponent = formPage
+
           this.changeSelectLinkLeft(7)
-          this.$router.push({
-            name: 'formPage'
-          })
+
           break
       }
     },
@@ -332,9 +348,10 @@ export default {
           index: index
         }
         this.changeSelectlink(obj)
-        this.$router.push({
-          name: 'groupDrawing'
-        })
+        this.currentComponent = groupDrawing
+        // this.$router.push({
+        //   name: 'groupDrawing'
+        // })
 
         this.bottom_line_flagindex = 3
         this.bottom_level_line_two = null
@@ -345,9 +362,11 @@ export default {
           index: index
         }
         this.changeSelectlink(obj)
-        this.$router.push({
-          name: 'classificationOfCommodities'
-        })
+        this.currentComponent = classificationOfCommodities
+
+        // this.$router.push({
+        //   name: 'classificationOfCommodities'
+        // })
         this.bottom_line_flagindex = 4
         this.bottom_level_line_one = null
         this.bottom_level_line_two = index

@@ -310,8 +310,8 @@
   </div>
 </template>
 <script>
-// 引入选择链接
-import selectLinks from '@/components/admin/selectLinksList'
+// 引入选择链接弹窗
+import selectLinks from '@/components/admin/selectLinks'
 // 选择商品弹窗
 import choosingGoods from '@/components/admin/choosingGoods'
 import memberListDialog from './memberListDialog'
@@ -628,8 +628,7 @@ export default {
     },
     // 选择链接
     handleChooseLink () {
-      this.$http.$emit('showSelectLinks', true)
-      console.log(this.$store.state.smallProgramManagement.afferentPath)
+      this.$http.$emit('linkDialogFlag', true)
     },
     // 选择模板
     choosTemplate () {
