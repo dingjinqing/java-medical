@@ -444,38 +444,25 @@
                             style="display: flex;align-items: center;flex-wrap: wrap;"
                             v-if="form.shareImgType == 1"
                           >
+                            <span
+                              @click="deleteGoodsImg()"
+                              v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
+                              class="deleteIcon"
+                            >×</span>
                             <div
-                              v-for="(src,index) in goodsProductInfo.goodsImgs"
-                              :key="index"
-                              class="goodsImgWrap"
-                            >
-                              <el-image
-                                fit="cover"
-                                :src="src"
-                                style="width: 78px; height: 78px;"
-                              ></el-image>
-                              <span
-                                @click="deleteGoodsImg(index)"
-                                class="deleteIcon"
-                              >×</span>
-
-                            </div>
-                            <div
-                              class="goodsImgWrap"
                               @click="addGoodsImg"
-                              v-if="goodsProductInfo.goodsImgs.length < 1"
+                              class="goodsImgWrap"
                             >
                               <el-image
+                                style="width: 80px; height: 80px"
+                                :src="srcList.src"
                                 fit="scale-down"
-                                :src="imgHost+'/image/admin/add_img.png'"
-                                style="width: 78px; height: 78px;cursor: pointer;"
-                              />
+                              ></el-image>
                             </div>
                             <span class="inputTip">
                               {{$t('promoteList.pictureTip')}}
                             </span>
                           </div>
-
                         </div>
                       </div>
                     </div>
@@ -655,6 +642,10 @@ export default {
         shareCreateTimes: [
           { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ]
+      },
+      srcList: {
+        src: `${this.$imageHost}/image/admin/add_img.png`,
+        imageUrl: ``
       }
     }
   },
@@ -668,7 +659,6 @@ export default {
     }
   },
   mounted () {
-    // console.log(222)
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
@@ -813,14 +803,11 @@ export default {
     },
     /* 商品图片点击回调函数 */
     imgDialogSelectedCallback (src) {
-      if (this.goodsProductInfo.goodsImgs.length >= 1) {
-        return
-      }
-      this.goodsProductInfo.goodsImgs.push(src)
+      this.srcList.src = src.imgUrl
     },
     /* 删除商品图片 */
-    deleteGoodsImg (index) {
-      this.goodsProductInfo.goodsImgs.splice(index, 1)
+    deleteGoodsImg () {
+      this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
     },
 
     // 选择商品弹窗
@@ -849,7 +836,7 @@ export default {
         console.log('goodsInfo:', this.form.goodsInfo)
       })
     },
-    // 奖励类型 - 选择优惠券弹窗
+    // 选择优惠券弹窗
     handleToCallDialog (val) {
       switch (val) {
         case 1: {
@@ -1079,7 +1066,7 @@ export default {
   margin: 5px 5px;
   position: relative;
 }
-.goodsImgWrap .deleteIcon {
+.deleteIcon {
   width: 17px;
   height: 17px;
   color: #fff;
@@ -1088,9 +1075,9 @@ export default {
   border-radius: 50%;
   line-height: 17px;
   text-align: center;
-  position: absolute;
-  top: -8px;
-  right: -8px;
+  position: relative;
+  top: -41px;
+  right: -95px;
   cursor: pointer;
   opacity: 0.8;
 }
