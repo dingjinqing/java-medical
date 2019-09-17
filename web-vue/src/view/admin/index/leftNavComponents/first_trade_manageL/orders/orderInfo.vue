@@ -2,8 +2,8 @@
   <div class="main">
     <div class="since-info">
       <div class="since-info-top">
-        <span>订单号：P201909051016068533</span>
-        <span>订单状态：待发货</span>
+        <span>{{$t('order.orderSn')}}：{{order.orderSn}}</span>
+        <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</span>
       </div>
       <div class="since-info-path">
         <el-steps
@@ -24,12 +24,20 @@
       </div>
       <div class="since-info-detail">
         <div class="order_info">
-          <div class="title">订单信息</div>
+          <div class="title">{{$t('order.orderInfo')}}</div>
           <div class="item_box">
-            <div class="item">订单状态： 已发货</div>
-            <div class="item">订单金额： 0.00元</div>
-            <div class="item">下单时间：2019-09-05 10:16:06</div>
-            <div class="item">配送方式：快递</div>
+            <div class="item">{{$t('order.orderStatusText')}}： {{orderStatusMap.get(order.orderStatus)}}</div>
+            <div class="item">{{$t('order.orderAmount')}}：
+              <template v-if="order.goodsType.split(',').indexOf($t('order.goodsTypeList')[5][0]) > -1">
+                {{order.moneyPaid.toFixed(2)}}{{currency}} +
+                {{order.scoreDiscount * monet_to_score}}{{$t('order.score')}}
+              </template>
+              <template v-else>
+                {{order.moneyPaid.toFixed(2)}}{{currency}}
+              </template>
+            </div>
+            <div class="item">{{$t('order.orderTime')}}：{{order.createTime}}</div>
+            <div class="item">{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(order.deliverType)}}</div>
             <div class="item">支付方式：</div>
             <div class="item">订单号：P201909051016068533</div>
             <div class="item">下单人昵称：分隔符</div>
@@ -58,7 +66,7 @@
     </div>
     <div class="order-list-table">
       <div class="title">快递信息</div>
-      <template v-for="orderInfo in dataList.childOrders">
+      <template v-for="orderInfo in order.childOrders">
         <div
           class="table_box"
           :key="orderInfo.orderId"
@@ -132,7 +140,7 @@
               </tr>
             </thead>
           <tbody>
-            <template v-for="childrenOrder in dataList.childOrders">
+            <template v-for="childrenOrder in order.childOrders">
               <tr
                 class="order-tb-head"
                 :key="childrenOrder.orderId"
@@ -242,6 +250,9 @@
 </template>
 
 <script>
+import {
+  info
+} from '@/api/admin/orderManage/order.js'
 export default {
   components: {
     nodesDialog: () => import('./addNotes')
@@ -252,224 +263,17 @@ export default {
       showNodes: false
     }
   },
-  created () {
-    this.initData()
+  mounted () {
+    this.arrayToMap()
+    this.search(this.$route.query.orderSn)
+  },
+  watch: {
+    lang () {
+      this.langDefault()
+      this.arrayToMap()
+    }
   },
   methods: {
-    initData () {
-      this.dataList = {
-        'orderId': 1002,
-        'orderSn': 'P201900000000000002',
-        'mainOrderSn': 'P201900000000000002',
-        'goodsType': '0',
-        'childOrders': [
-          {
-            'orderId': 1004,
-            'orderSn': 'P201900000000000004',
-            'mainOrderSn': 'P201900000000000002',
-            'goodsType': '0',
-            'childOrders': null,
-            'goods': [
-              {
-                'recId': 1008,
-                'mainRecId': 1004,
-                'orderId': 1004,
-                'orderSn': 'P201900000000000004',
-                'goodsId': 694,
-                'goodsSn': 'G101010694',
-                'goodsName': '首单限时优化-CJ111',
-                'goodsNumber': 1,
-                'goodsPrice': 55,
-                'goodsAttr': '颜色:白色',
-                'productId': 4726,
-                'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-                'sendNumber': null,
-                'discountedGoodsPrice': null
-              }
-            ],
-            'orderStatus': 3,
-            'consignee': '测试520',
-            'mobile': '12345678910',
-            'payCode': 'balance',
-            'deliverType': 0,
-            'createTime': '2019-08-26 14:02:46',
-            'shippingFee': 22,
-            'moneyPaid': 0,
-            'partShipFlag': 1,
-            'refundStatus': 4,
-            'payTime': null,
-            'shippingTime': '2019-09-04 18:46:30',
-            'finishedTim': null,
-            'closedTime': null,
-            'cancelledTime': null,
-            'confirmTime': null,
-            'username': null,
-            'completeAddress': '北京市北京市海淀区西直门北大街54号 伊泰大厦',
-            'addMessage': '',
-            'shippingList': [
-              {
-                'orderSn': 'P201900000000000004',
-                'shippingNo': '11rrkkkkkkrrrr1',
-                'shippingName': '',
-                'shippingTime': '2019-09-04 18:46:29',
-                'confirmTime': null,
-                'goods': [
-                  {
-                    'recId': 50,
-                    'goodsName': '首单限时优化-CJ111',
-                    'goodsAttr': '颜色:白色',
-                    'sendNumber': '1'
-                  }
-                ],
-                'batchNo': 'P201900000000000004_20190904184629'
-              }
-            ],
-            'refundList': null
-          },
-          {
-            'orderId': 1005,
-            'orderSn': 'P201900000000000005',
-            'mainOrderSn': 'P201900000000000002',
-            'goodsType': '0',
-            'childOrders': null,
-            'goods': [
-              {
-                'recId': 1010,
-                'mainRecId': 1004,
-                'orderId': 1005,
-                'orderSn': 'P201900000000000005',
-                'goodsId': 694,
-                'goodsSn': 'G101010694',
-                'goodsName': '首单限时优化-CJ111',
-                'goodsNumber': 1,
-                'goodsPrice': 55,
-                'goodsAttr': '颜色:白色',
-                'productId': 4726,
-                'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-                'sendNumber': null,
-                'discountedGoodsPrice': null
-              },
-              {
-                'recId': 1011,
-                'mainRecId': 1005,
-                'orderId': 1005,
-                'orderSn': 'P201900000000000005',
-                'goodsId': 694,
-                'goodsSn': 'G101010694',
-                'goodsName': '首单限时优化-CJ111',
-                'goodsNumber': 1,
-                'goodsPrice': 55,
-                'goodsAttr': '颜色:白色',
-                'productId': 4726,
-                'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-                'sendNumber': null,
-                'discountedGoodsPrice': null
-              }
-            ],
-            'orderStatus': 4,
-            'consignee': '测试520',
-            'mobile': '12345678910',
-            'payCode': 'balance',
-            'deliverType': 0,
-            'createTime': '2019-08-26 14:02:46',
-            'shippingFee': 22,
-            'moneyPaid': 0,
-            'partShipFlag': 0,
-            'refundStatus': 5,
-            'payTime': null,
-            'shippingTime': '2019-09-04 18:48:53',
-            'finishedTim': null,
-            'closedTime': null,
-            'cancelledTime': null,
-            'confirmTime': null,
-            'username': null,
-            'completeAddress': '北京市北京市海淀区西直门北大街54号 伊泰大厦',
-            'addMessage': '',
-            'shippingList': [
-              {
-                'orderSn': 'P201900000000000005',
-                'shippingNo': '11rrkkkkkkrrrr1',
-                'shippingName': '',
-                'shippingTime': '2019-09-04 18:48:52',
-                'confirmTime': null,
-                'goods': [
-                  {
-                    'recId': 52,
-                    'goodsName': '首单限时优化-CJ111',
-                    'goodsAttr': '颜色:白色',
-                    'sendNumber': '1'
-                  },
-                  {
-                    'recId': 51,
-                    'goodsName': '首单限时优化-CJ111',
-                    'goodsAttr': '颜色:白色',
-                    'sendNumber': '1'
-                  }
-                ],
-                'batchNo': 'P201900000000000005_20190904184852'
-              }
-            ],
-            'refundList': [
-              {
-                'retId': 83,
-                'orderId': 1005,
-                'orderSn': 'P201900000000000005',
-                'returnOrderSn': 'R201909041906318788',
-                'returnType': '0',
-                'refundStatus': 5,
-                'money': 10,
-                'apply': null,
-                'success': null,
-                'orderReturnGoodsVo': [
-                  {
-                    'recId': 1010,
-                    'mainRecId': null,
-                    'orderId': null,
-                    'orderSn': 'P201900000000000005',
-                    'goodsId': 694,
-                    'goodsSn': null,
-                    'goodsName': '首单限时优化-CJ111',
-                    'goodsNumber': 1,
-                    'goodsPrice': 55,
-                    'goodsAttr': '颜色:白色',
-                    'productId': 4726,
-                    'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-                    'sendNumber': 1,
-                    'discountedGoodsPrice': 55,
-                    'retId': 83,
-                    'success': 2
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        'goods': [],
-        'orderStatus': 3,
-        'consignee': '测试520',
-        'mobile': '12345678910',
-        'payCode': 'balance',
-        'deliverType': 0,
-        'createTime': '2019-08-26 14:02:46',
-        'shippingFee': 22,
-        'moneyPaid': 0,
-        'partShipFlag': 0,
-        'refundStatus': 4,
-        'payTime': null,
-        'shippingTime': null,
-        'finishedTim': null,
-        'closedTime': null,
-        'cancelledTime': null,
-        'confirmTime': null,
-        'username': null,
-        'completeAddress': '北京市北京市海淀区西直门北大街54号 伊泰大厦',
-        'addMessage': '',
-        'shippingList': null,
-        'refundList': null
-      }
-      this.rebate_list = []
-      console.log(this.dataList)
-    },
     shipTableMethod ({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
         return {
@@ -482,6 +286,22 @@ export default {
       if (columnIndex === 0) {
         return 'no_padding'
       }
+    },
+    search (orderSn) {
+      this.searchParam.orderSn = orderSn
+      info(this.searchParam).then(res => {
+        this.order = res.content
+        console.log(this.currency)
+        console.log(11111111111111111111111111111111)
+        console.log(this.order)
+      }).catch(() => {
+      })
+    },
+    arrayToMap () {
+      this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
+      this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
+      this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
+      this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
     },
     addNodes () {
       this.showNodes = true

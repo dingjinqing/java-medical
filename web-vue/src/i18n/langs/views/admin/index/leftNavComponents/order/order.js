@@ -12,7 +12,7 @@ export const cn = {
   store: '门店',
   paymentType: '支付方式',
   tag: '标签',
-  ShippingAddress: '收货地址',
+  shippingAddress: '收货地址',
   specCode: '规格编码',
   orderTime: '下单时间',
   completeTime: '完成时间',
@@ -33,7 +33,9 @@ export const cn = {
   includeExpress: '含快递',
   collapse: '收起',
   more: '更多',
-  delivery: '发货',
+  orderInfo: '订单信息',
+  orderAmount: '订单金额',
+  score: '积分',
   orderStatusList: [
     [null, '全部订单'],
     [0, '待付款'],
@@ -84,7 +86,23 @@ export const cn = {
     [3, '积分兑换'],
     [4, '货到付款'],
     [5, '活动奖品']
-  ]
+  ],
+  // 订单详情时间流图
+  timeFlowDiagram: {
+    createTime: '买家已下单',
+    payTime: '买家已付款',
+    cancelledTime: '订单已取消',
+    closedTime: '订单已关闭',
+    pinStartTime: '拼团中',
+    pinEndTime: '已成团',
+    confirmTime: '买家已自提',
+    shippingTime: '卖家已发货',
+    refundFinishTime: '退款完成',
+    returnFinishTime: '退货完成',
+    giftGiving: '送礼进行',
+    giveCompletion: '送礼完成',
+    finishedTime: '订单完成'
+  }
 }
 
 export const en = {
@@ -173,5 +191,21 @@ export const en = {
     [4, 'point redemption'],
     [5, 'Cash on delivery'],
     [6, 'Event prizes']
-  ]
+  ],
+  // 订单详情时间流图
+  timeFlowDiagram: {
+    createTime: 'The buyer has placed an order',
+    payTime: 'Buyers have paid',
+    cancelledTime: 'Order cancelled',
+    closedTime: 'Order closed',
+    pinStartTime: 'Picture in the group',
+    pinEndTime: 'has become a group',
+    confirmTime: 'The buyer has picked up',
+    shippingTime: 'Seller has shipped',
+    refundFinishTime: 'Refund completed',
+    returnFinishTime: 'Return completed',
+    giftGiving: 'Gifts are going on',
+    giveCompletion: 'Gift completion',
+    finishedTime: 'Order completed'
+  }
 }
