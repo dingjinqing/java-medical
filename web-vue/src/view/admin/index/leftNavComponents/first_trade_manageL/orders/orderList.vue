@@ -267,7 +267,7 @@
       </div>
       <div class="table_box">
         <el-tabs
-          v-model="searchParams.orderStatus"
+          v-model="searchParams.orderStatus2"
           @tab-click="handleClick"
         >
           <template v-for="item in tabsOrderStatus">
@@ -498,7 +498,7 @@ export default {
         pinStatus: [],
         goodsName: '',
         orderSn: '',
-        orderStatus: [null],
+        orderStatus: [],
         goodsType: null,
         consignee: '',
         mobile: '',
@@ -519,7 +519,8 @@ export default {
         cityCode: null,
         districtCode: null,
         currentPage: null,
-        pageRows: null
+        pageRows: null,
+        orderStatus2: null
       },
       orderTime: null,
       completeTime: null,
@@ -588,6 +589,7 @@ export default {
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       list(this.searchParams).then(res => {
+        console.log(res)
         this.pageParams = res.content.page
         this.orderList = res.content.dataList
       }).catch(() => {

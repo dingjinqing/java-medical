@@ -4,7 +4,7 @@
     :visible.sync="showDelivery"
     v-if="showDelivery === true"
     custom-class="custom"
-    width="40%"
+    width="600px"
   >
     <div class="delivery-info">
       <div class="delivery-info_userinfo">
@@ -15,9 +15,74 @@
         </div>
       </div>
       <div class="delivery-info_shipinfo">
-
+        <div>
+          快递列表：
+          <el-select
+            v-model="shippingId"
+            size="small"
+            class="default_input"
+            filterable
+          >
+            <el-option
+              v-for="item in $t('expressList.company')"
+              :key="item[0]"
+              :label="item[1]"
+              :value="item[0]"
+            ></el-option>
+          </el-select>
+        </div>
+        <div>
+          快递单号：
+          <el-input
+            v-model="shippingNo"
+            placeholder="请输入快递单号"
+            size="small"
+            class="default_input"
+          ></el-input>
+        </div>
       </div>
-      <div class="delivery-info_goodslist"></div>
+      <div class="delivery-info_goodslist">
+        <el-table
+          :data="deliveryInfo.orderGoodsVo"
+          style="width:100%;"
+          border
+          :header-cell-style="{
+            'background-color':'#f5f5f5',
+            'text-align':'center',
+            'border':'none'
+          }"
+          :cell-style="{
+            'text-align':'center'
+          }"
+        >
+          <el-table-column
+            prop=""
+            label="商品名称"
+          >
+            <template slot-scope="scope">
+              <div>
+
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="goodsAttr"
+            label="规格"
+          ></el-table-column>
+          <el-table-column
+            prop="goodsPrice"
+            label="单价"
+          ></el-table-column>
+          <el-table-column
+            prop="goodsNumber"
+            label="数量"
+          ></el-table-column>
+          <el-table-column
+            prop="sendNumber"
+            label="发货数量"
+          ></el-table-column>
+        </el-table>
+      </div>
     </div>
     <span
       slot="footer"
@@ -38,7 +103,8 @@ export default {
     return {
       showDelivery: false,
       deliveryInfo: {},
-      shippingId: 1
+      shippingId: 1,
+      shippingNo: ''
     }
   },
   props: {
@@ -119,6 +185,11 @@ export default {
 .delivery-info {
   display: flex;
   flex-direction: column;
+  > div {
+    & + div {
+      margin-top: 10px;
+    }
+  }
   .delivery-info_userinfo {
     padding: 8px;
     background-color: #f5f5f5;
@@ -132,6 +203,17 @@ export default {
       display: flex;
       flex-direction: column;
     }
+  }
+  .delivery-info_shipinfo {
+    display: flex;
+    > div {
+      & + div {
+        margin-left: 52px;
+      }
+    }
+  }
+  .default_input {
+    width: 180px;
   }
 }
 </style>

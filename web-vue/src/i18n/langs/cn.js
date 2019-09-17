@@ -112,6 +112,10 @@ import {
 import {
   cn as order
 } from './views/admin/index/leftNavComponents/order/order'
+// 快递公司
+import {
+  cn as expressList
+} from './views/admin/index/leftNavComponents/order/expressList'
 const cn = {
   messages: {
     lang: '中文',
@@ -522,7 +526,8 @@ const cn = {
   overview,
   pictureSetting,
   ...zhLocale,
-  order
+  order,
+  expressList
 }
 
 export default cn
