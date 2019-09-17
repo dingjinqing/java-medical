@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop extends TableImpl<ShopRecord> {
 
-    private static final long serialVersionUID = -428488378;
+    private static final long serialVersionUID = 602775872;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop</code>
@@ -262,6 +262,11 @@ public class Shop extends TableImpl<ShopRecord> {
      * The column <code>mini_main.b2c_shop.logo</code>. 小程序logo
      */
     public final TableField<ShopRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR(200), this, "小程序logo");
+
+    /**
+     * The column <code>mini_main.b2c_shop.currency</code>. 币种
+     */
+    public final TableField<ShopRecord, String> CURRENCY = createField("currency", org.jooq.impl.SQLDataType.VARCHAR(45).nullable(false).defaultValue(org.jooq.impl.DSL.inline("CNY", org.jooq.impl.SQLDataType.VARCHAR)), this, "币种");
 
     /**
      * Create a <code>mini_main.b2c_shop</code> table reference
