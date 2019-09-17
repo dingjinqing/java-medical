@@ -82,7 +82,7 @@
               <el-button
                 size="small"
                 type="primary"
-                @click="isEditFlag?'':handleToCallDialog()"
+                @click="isEditFlag?'':handleToCallDialog(1)"
               >+ {{$t('promoteList.chooseCoupons')}}</el-button>
             </el-col>
             <div></div>
@@ -369,8 +369,19 @@
             <div
               v-if="form.failedSendType==1"
               style="width: 80px;height:80px;border:1px solid #000"
-              @click="isEditFlag?'':handleToCallDialog1()"
+              @click="isEditFlag?'':handleToCallDialog(2)"
             >
+              <template slot-scope="coupon">
+                <div class="coupon_info">
+                  <span class="coupon_name">{{coupon.row.actName}}</span>
+                  <div
+                    v-if="coupon.row.actCode == 'voucher'"
+                    style="color:red"
+                  >￥<span>{{coupon.row.denomination}}</span></div>
+                  <div v-else><span>{{coupon.row.denomination}}</span>折</div>
+                  <div class="coupon_rule">{{coupon.row.useConsumeRestrict > 0? `满${coupon.row.leastConsume}元可用`  : `不限制`}}</div>
+                </div>
+              </template>
             </div>
             <div v-if="
               form.failedSendType==2">
@@ -488,11 +499,16 @@
     </div>
     <choosingGoods @resultGoodsRow="choosingGoodsResult">
     </choosingGoods>
-    <!--添加优惠卷-->
+    <!--奖励类型-添加优惠卷-->
     <AddCouponDialog
       singleElection="true"
       @handleToCheck="handleToCheck"
     />
+    <!--失败赠送-添加优惠卷-->
+    <!-- <AddCouponDialog
+      singleElection="true"
+      @handleToCheck="handleToCheck2"
+    /> -->
     <ImageDalog
       pageIndex='pictureSpace'
       @handleSelectImg='imgDialogSelectedCallback'
@@ -505,6 +521,8 @@ import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addActive, selectOneInfo, updateInfo } from '@/api/admin/marketManage/friendHelp.js'
+import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
+import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
 import { getGoodsProductList } from '@/api/admin/brandManagement.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
@@ -601,6 +619,7 @@ export default {
       // 优惠券
       coupon_msg: [],
       coupon_info: [],
+      coupon_duplicate: [],
       couponDialogFlag: false,
       couponDialogFlag1: false,
       couponSetDialogFlag: false,
@@ -682,13 +701,28 @@ export default {
         this.form.customShareWord = res.content[0].customShareWord
         this.form.shareImgType = res.content[0].shareImgType.toString()
         this.form.customImgPath = res.content[0].customImgPath
-        console.log(this.form.rewardType)
 
         if (this.form.rewardType === '2') {
           this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
           console.log(this.form.rewardSet.market_store)
           this.form.rewardSet.reward_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).reward_ids
           console.log(this.form.rewardSet.reward_ids)
+          updateCoupon(this.form.rewardSet.reward_ids).then(res => {
+            this.coupon_info = res.content
+            console.log('couponInfo:', this.coupon_info)
+          })
+        }
+        if (this.form.rewardType === '0') {
+          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
+          console.log(this.form.rewardSet.market_store)
+          this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
+          console.log(this.form.rewardSet.goods_ids)
+          let goodsIdParam = {
+            'goodsId': this.form.rewardSet.goods_ids
+          }
+          selectGoodsApi(goodsIdParam).then(res => {
+            console.log('goodsInfo:', res)
+          })
         }
       })
     },
@@ -815,36 +849,59 @@ export default {
       })
     },
     // 奖励类型 - 选择优惠券弹窗
-    handleToCallDialog () {
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.coupon_info
+    handleToCallDialog (val) {
+      switch (val) {
+        case 1: {
+          console.log(this.couponDialogFlag)
+          console.log(this.coupon_info)
+          let obj = {
+            couponDialogFlag: !this.couponDialogFlag,
+            couponList: this.coupon_info
+          }
+          this.$http.$emit('V-AddCoupon', obj)
+        }
+          break
+        case 2: {
+          let obj = {
+            couponDialogFlag: !this.couponDialogFlag1,
+            couponList: this.coupon_duplicate
+          }
+          this.$http.$emit('V-AddCoupon', obj)
+        }
       }
-      this.$http.$emit('V-AddCoupon', obj)
-    },
-    // 助力失败赠送 - 优惠券弹窗
-    handleToCallDialog1 () {
-      let obj = {
-        couponDialogFlag1: !this.couponDialogFlag1,
-        couponList: this.coupon_info
-      }
-      this.$http.$emit('V-AddCoupon', obj)
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      console.log('couponInfo:', data)
-      this.form.rewardSet.reward_ids = data[0].id
-      // console.log('data[0].id', data[0].id)
-      let couponArr = this.formatCoupon(data)
-      let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
-      let couponKey = []
-      couponArr.map((item) => {
-        couponKey.push(item.id)
-      })
-      this.coupon_info = oldArr.filter((item) => {
-        return couponKey.includes(item.id)
-      })
-      console.log(this.coupon_info)
+      console.log(data)
+      // console.log('couponInfo:', data)
+      // this.form.rewardSet.reward_ids = data[0].id
+      // // console.log('data[0].id', data[0].id)
+      // let couponArr = this.formatCoupon(data)
+      // let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
+      // let couponKey = []
+      // couponArr.map((item) => {
+      //   couponKey.push(item.id)
+      // })
+      // this.coupon_info = oldArr.filter((item) => {
+      //   return couponKey.includes(item.id)
+      // })
+      // console.log(this.coupon_info)
+    },
+    // 确认选择优惠券-新增-删除
+    handleToCheck2 (data) {
+      // console.log('couponInfo:', data)
+      // this.form.failedSendContent = data[0].id
+      // // console.log('data[0].id', data[0].id)
+      // let couponArr = this.formatCoupon(data)
+      // let oldArr = this.unique([...this.coupon_duplicate, ...couponArr], 'id')
+      // let couponKey = []
+      // couponArr.map((item) => {
+      //   couponKey.push(item.id)
+      // })
+      // this.coupon_duplicate = oldArr.filter((item) => {
+      //   return couponKey.includes(item.id)
+      // })
+      // console.log(this.coupon_duplicate)
     },
     // 添加优惠券初始项
     formatCoupon (data) {
@@ -892,6 +949,88 @@ export default {
 .inputTip {
   color: #999;
   margin-left: 15px;
+}
+.coupon_info {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+  margin: 0 auto;
+  margin-bottom: -10px;
+  .coupon_item {
+    margin-bottom: 10px;
+    height: 100px;
+    display: flex;
+    > div {
+      background-color: #fff;
+      height: 100px;
+    }
+    .coupon_left {
+      width: 100px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .coupon_price {
+        color: #f66;
+        margin-bottom: 10px;
+        > span {
+          font-size: 18px;
+          font-weight: 600;
+        }
+      }
+      .coupon_rule {
+        color: #999;
+        font-size: 14px;
+      }
+    }
+    .coupon_middle {
+      width: 25px;
+      background: none;
+      > img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .coupon_right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding-left: 10px;
+      position: relative;
+      overflow: hidden;
+      .coupon_name {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+        width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .coupon_limits {
+        margin-bottom: 15px;
+        font-size: 13px;
+      }
+      .coupon_time {
+        color: #999;
+        font-size: 12px;
+      }
+      .coupon_icon {
+        position: absolute;
+        right: -15px;
+        top: 8px;
+        background: #fead2d;
+        width: 64px;
+        font-size: 12px;
+        color: #fff;
+        transform: rotate(40deg);
+        text-align: center;
+      }
+    }
+  }
 }
 .content {
   min-width: 100%;
