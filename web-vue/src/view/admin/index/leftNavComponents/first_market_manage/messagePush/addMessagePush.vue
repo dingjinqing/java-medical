@@ -34,9 +34,9 @@
                 <div class="leftMainConCenterTime">2018年6月11日</div>
                 <div class="leftMainConCenterTitle">
                   <div class="title">业务标题</div>
-                  <div class="h1title">业务标题</div>
+                  <div class="h1title">{{formData.title===``?`业务标题`:formData.title}}</div>
                 </div>
-                <div class="leftMainConCenterCon"><span>业务内容</span><span class="xxx">xxx</span></div>
+                <div class="leftMainConCenterCon"><span>业务内容</span><span class="xxx">{{formData.content===``?`xxx`:formData.content}}</span></div>
                 <div class="leftMainConCenterComeIn"><span>进入小程序查看</span></div>
                 <div class="leftMainConCenterReject"><span>拒收通知</span></div>
 
@@ -51,6 +51,7 @@
                 label-width="128px"
                 size="small"
               >
+                <!-- 消息名称 -->
                 <el-form-item :label="labels.label1">
                   <el-input
                     maxlength="20"
@@ -61,19 +62,26 @@
                   ></el-input>
                   <div class="mainContentRightFormText">只作为商家记录使用，用户不会看到这个名称</div>
                 </el-form-item>
+
+                <!-- 消息类型 -->
                 <el-form-item :label="labels.label2">
                   <span>商家活动通知</span>
                 </el-form-item>
+                <!-- 业务标题 -->
                 <el-form-item :label="labels.label3">
                   <el-input
                     maxlength="7"
                     show-word-limit
                     size="small"
-                    v-model="formData.name"
+                    v-model="formData.title"
                     style="width:245px"
                   ></el-input>
                 </el-form-item>
-                <el-form-item :label="labels.label4">
+                <!-- 业务内容 -->
+                <el-form-item
+                  :label="labels.label4"
+                  class="addTemplateBtnWrap"
+                >
                   <div>
                     <el-button
                       @click="choosTemplate"
@@ -82,14 +90,26 @@
                   </div>
                   <div>
                     <el-input
-                      style="width:250px"
+                      style="width:250px;"
+                      :rows="7"
                       type="textarea"
                       placeholder="请输入小程序推送内容"
-                      v-model="textarea"
+                      v-model="formData.content"
                       maxlength="50"
                       show-word-limit
+                      @blur="handleShowBtn"
                     >
                     </el-input>
+                  </div>
+                  <div
+                    class="addTemplateBtn"
+                    v-if="isShowBtn"
+                  >
+                    <el-button
+                      size="small"
+                      type="primary"
+                      @click="handleAddTemplate"
+                    >添加为模板</el-button>
                   </div>
                 </el-form-item>
                 <el-form-item :label="labels.label4">
@@ -115,60 +135,41 @@
                   </div>
                   <div class="chooseGoods">
                     <div class="chooseGoodsLeft">选择商品</div>
-                    <div class="imageWraper">
-                      <el-image :src="urls.url3"></el-image>
-                    </div>
-                  </div>
-                  <!-- 持有 -->
-                  <div>
-                    <el-checkbox v-model="onClickCard">持有</el-checkbox>
-                    <el-select
-                      size="small"
-                      style="width:160px;margin-right:6px"
-                      v-model="cardValue"
-                      placeholder="请选择会员卡"
-                      @change="getIdList($event)"
-                    >
-                      <el-option
-                        label="请选择会员卡"
-                        value="请选择会员卡"
-                      ></el-option>
-                      <el-option
-                        v-for="item in cardList"
-                        :key="item.id"
-                        :label="item.cardName"
-                        :value="item.id"
+                    <ul class="imgList">
+                      <li
+                        v-for="(item) in imgsList"
+                        :key="item.goodsId"
                       >
-                      </el-option>
-                    </el-select>
-                    <span>会员卡人群</span>
-                  </div>
-                  <!-- 已选的会员卡 -->
-                  <div
-                    class="selectedCard"
-                    v-if="cardIdsList.length>0"
-                  >
-                    <span>已选：</span>
-                    <div
-                      class="oneCardWraper"
-                      v-for="(item) in cardIdsList"
-                      :key="item.id"
-                    >
-                      <span class="oneCard">
-                        {{item.cardName}}
-                      </span>
-                      <el-image
-                        :src="urls.url4"
-                        class="oneCardDel"
-                      ></el-image>
-                    </div>
+                        <el-image
+                          style="width: 80px; height: 80px"
+                          :src="item.goodsImg"
+                        ></el-image>
+                        <el-image
+                          class="delImg"
+                          :src="urls.url4"
+                          @click="handleDelImg(item.goodsId)"
+                        >
+
+                        </el-image>
+                      </li>
+                      <div
+                        v-show="this.imgsList.length<3"
+                        class="imageWraper"
+                        @click="handleChooseGoods"
+                      >
+                        <el-image :src="urls.url3"></el-image>
+                      </div>
+                    </ul>
+
                   </div>
                   <!-- 属于 -->
+                  <!-- 持有 -->
                   <div style="margin:10px 0">
-                    <chooseSelect :text="text" />
+                    <chooseSelect />
                   </div>
+
                   <div style="margin:10px 0">
-                    <el-checkbox v-model="checked">选择指定的会员 </el-checkbox>
+                    <el-checkbox v-model="onClickUser">选择指定的会员 </el-checkbox>
                     <span style="margin-left:-15px">
                       <el-button
                         @click="handleAddMember"
@@ -179,11 +180,13 @@
                     <span>已选择会员{{memberNum}}人</span>
                   </div>
                   <div>
-                    <el-checkbox v-model="customRuleInfo">自定义</el-checkbox>
+                    <el-checkbox v-model="onClickCustomRule">自定义</el-checkbox>
                     <el-select
+                      :disabled="!onClickCustomRule"
                       v-model="customRuleInfoVal"
                       placeholder="请选择"
                       size="small"
+                      @change="customRuleInfoValChange"
                     >
                       <el-option
                         label="请选择"
@@ -199,71 +202,43 @@
                     </el-select>
                     <!--  -->
                     <div style="margin:10px 0">
-                      <table>
-                        <tr>
-                          <td>N天内有交易记录:</td>
-                          <td>
+                      <ul class="ulList">
+                        <li
+                          v-for="(item,i) in optionsList"
+                          :key="i"
+                        >
+                          <span>{{item}}：</span>
+                          <span>
                             <el-input
+                              :disabled="!onClickCustomRule"
                               style="width:120px"
                               size="small"
-                            > </el-input><span>天内</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>N天内没有交易记录:</td>
-                          <td>
-                            <el-input
-                              style="width:120px"
-                              size="small"
-                            > </el-input><span>天内</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>累计购买次数小于N次</td>
-                          <td>
-                            <el-input
-                              style="width:120px"
-                              size="small"
-                            > </el-input><span>天内</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>累计购买次数大于N次：</td>
-                          <td>
-                            <el-input
-                              style="width:120px"
-                              size="small"
-                            > </el-input><span>天内</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>购买商品均价大于N元</td>
-                          <td>
-                            <el-input
-                              style="width:120px"
-                              size="small"
-                            > </el-input><span>天内</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>购买商品均价小于N元：</td>
-                          <td>
-                            <el-input
-                              style="width:120px"
-                              size="small"
-                            > </el-input><span>天内</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>指定时间内有登陆记录：</td>
-                          <td>
-                            <dateTimePicker
-                              :showPicker=1
-                              @time="getTime3"
-                            />
-                          </td>
-                        </tr>
-                      </table>
+                            > </el-input>
+                            <span>{{ item | filterA  }}</span>
+                          </span>
+                          <div class="img_span">
+                            <el-image
+                              :src="urls.url4"
+                              class="img"
+                              @click="handleDelCustomize(i)"
+                            ></el-image>
+                          </div>
+                        </li>
+                        <li v-show="showTime">
+                          <span>指定时间内有登陆记录：</span>
+                          <div class="img_span">
+                            <el-image
+                              :src="urls.url4"
+                              class="img"
+                              @click="handleDelCustomize(6)"
+                            ></el-image>
+                          </div>
+                          <span>
+                            <dateTimePicker :showPicker=1 />
+                          </span>
+
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </el-form-item>
@@ -327,17 +302,26 @@
         :memberListDialog="dialogOff"
         @dialog-cancel="closeDialog"
       />
+      <!-- 选择链接弹窗 -->
+      <selectLinks />
+      <!-- 选择商品弹窗 -->
+      <choosingGoods @res="getRes" />
     </el-card>
   </div>
 </template>
 <script>
+// 引入选择链接
+import selectLinks from '@/components/admin/selectLinksList'
+// 选择商品弹窗
+import choosingGoods from '@/components/admin/choosingGoods'
 import memberListDialog from './memberListDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import { allCardApi } from '@/api/admin/marketManage/messagePush.js'
+import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
-  components: { dateTimePicker, chooseSelect, memberListDialog },
+  components: { selectLinks, dateTimePicker, chooseSelect, memberListDialog, choosingGoods },
   data () {
     return {
       urls: {
@@ -350,7 +334,9 @@ export default {
        * form表单的数据
        */
       formData: {
-        name: ``
+        name: ``,
+        title: ``,
+        content: ``
       },
       labels: {
         label1: `消息名称：`,
@@ -372,11 +358,17 @@ export default {
       startTime: ``,
       endTime: ``,
       startTime1: ``,
-      onClickNoPay: false,
-      onClickGoods: false,
-      onClickCard: false,
-      customRuleInfo: false,
+      onClickNoPay: false, // 勾选加购人群
+      onClickGoods: false, // 勾选购买指定商品人群
+      goodsIdList: [], // 商品ID集合
+      onClickCard: false, // 勾选指定会员卡人群
       cardIdsList: [],
+      onClickTag: false,
+      tagIdList: [],
+      onClickUser: false, // 勾选指定会员
+      userIdList: [],
+      onClickCustomRule: false,
+      disabledOnClickCustomRule: false,
       /**
        * 表单检验
        */
@@ -389,11 +381,7 @@ export default {
       /**
        * 传给组件chooseSelect的数据
        */
-      text: {
-        title: `属于`,
-        placeholder: `请选择会员标签`,
-        txt: `标签人群`
-      },
+
       dialogOff: false,
       memberNum: 0, // 已选择的会员人数
       /**
@@ -437,16 +425,52 @@ export default {
           label: `指定时间内有登录记录`,
           value: `指定时间内有登录记录`
         }
-      ]
+      ],
+      optionsList: [],
+      showTime: false,
+      isShowBtn: false,
+      arrList: [],
+      imgsList: []
     }
+  },
+  watch: {
+    // 监听自定义是否勾选
+    // onClickCustomRule (newValue, oldValue) {
+    //   console.log(newValue)
+    //   console.log(oldValue)
+    //   switch (newValue) {
+    //     case true:
+    //       this.disabledOnClickCustomRule = false
+    //       break
+    //     case false:
+    //       this.disabledOnClickCustomRule = true
+    //       break
+    //     default:
+    //       break
+    //   }
+    // }
   },
   created () {
     this.initData()
   },
+  mounted () {
+
+  },
+  filters: {
+    filterA: function (val) {
+      // console.log(val.search('N'))
+      if (val.search('N') !== -1) {
+        return val.substr(val.search('N') + 1, 1)
+      }
+    }
+  },
   methods: {
 
-    // 初始化会员卡下拉数据
+    // 初始化数据
     initData () {
+      this.$http.$on('result', res => {
+        console.log(res)
+      })
       allCardApi().then(res => {
         console.log(res)
         const { error, content } = res
@@ -499,12 +523,143 @@ export default {
     },
     // 添加会员
     handleAddMember () {
+      if (this.onClickUser === false) {
+        return
+      }
       this.dialogOff = true
     },
     // getUserIdList
     getUserIdList (val) {
       console.log(val)
       this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
+    },
+    customRuleInfoValChange (val) {
+      if (val === `指定时间内有登录记录`) {
+        console.log(1111111)
+        this.showTime = true
+        this.customRuleInfoOptions = delObj({ arr: this.customRuleInfoOptions, val })
+        this.customRuleInfoVal = `请选择`
+      } else {
+        // this.showTime = false
+        // console.log(val)
+        if (val !== `请选择` && val !== `指定时间内有登陆记录`) {
+          // console.log(this.customRuleInfoOptions)
+          // console.log(val)
+          this.optionsList.push(val)
+          // console.log(this.optionsList)
+          // 移除下拉框的option
+          this.customRuleInfoVal = `请选择`
+
+          this.customRuleInfoOptions = delObj({ arr: this.customRuleInfoOptions, val })
+        }
+      }
+    },
+    // 删除自定义
+    handleDelCustomize (val) {
+      if (this.onClickCustomRule === false) {
+        console.log(1111111111)
+        return
+      }
+      if (val === 6) {
+        console.log(val)
+        this.showTime = false
+        this.customRuleInfoOptions.push({
+          label: `指定时间内有登录记录`,
+          value: `指定时间内有登录记录`
+        })
+      } else {
+        console.log(val)
+        this.optionsList.splice(val, 1)
+        console.log(this.optionsList)
+        console.log(this.customRuleInfoOptions)
+        switch (val) {
+          case 0:
+            this.customRuleInfoOptions.push({
+              label: `N天内有交易记录`,
+              value: `N天内有交易记录`
+            })
+            break
+          case 1:
+            this.customRuleInfoOptions.push({
+              label: `N天内没有交易记录`,
+              value: `N天内没有交易记录`
+            })
+            break
+          case 2:
+            this.customRuleInfoOptions.push({
+              label: `累计购买次数小于N次`,
+              value: `累计购买次数小于N次`
+            })
+            break
+          case 3:
+            this.customRuleInfoOptions.push({
+              label: `累计购买次数大于N次`,
+              value: `累计购买次数大于N次`
+            })
+            break
+          case 4:
+            this.customRuleInfoOptions.push({
+              label: `购买商品均价大于N元`,
+              value: `购买商品均价大于N元`
+            })
+            break
+          case 5:
+            this.customRuleInfoOptions.push({
+              label: `购买商品均价小于N元`,
+              value: `购买商品均价小于N元`
+            })
+            break
+          default:
+            break
+        }
+      }
+    },
+    // 添加为模板
+    handleAddTemplate () {
+
+    },
+    // handleShowBtn
+    handleShowBtn () {
+      if (this.formData.content !== ``) {
+        this.isShowBtn = true
+      } else {
+        this.isShowBtn = false
+      }
+    },
+    // 选择链接
+    handleChooseLink () {
+      this.$http.$emit('showSelectLinks', true)
+      console.log(this.$store.state.smallProgramManagement.afferentPath)
+    },
+    // 选择模板
+    choosTemplate () {
+
+    },
+    // 选择商品
+    handleChooseGoods () {
+      if (this.onClickGoods === false) {
+        return
+      }
+      this.$http.$emit('choosingGoodsFlag', true)
+    },
+    getRes (ids, urls) {
+      if (ids.length > 3) {
+        this.$message.warning('最多选择3个商品')
+      } else {
+        console.log(ids)
+        console.log(urls)
+        this.goodsIdList = ids
+        this.imgsList = urls
+      }
+    },
+    // 删除图片
+    handleDelImg (id) {
+      console.log(id)
+      if (this.onClickGoods === false) {
+        return
+      }
+      this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
+      this.goodsIdList = this.goodsIdList.filter(item => item !== id)
     }
   }
 }
@@ -557,7 +712,7 @@ export default {
         }
         .leftMainCon {
           width: 285px;
-          height: 300px;
+          min-height: 300px;
           background-color: #fff;
           margin-top: 30px;
           margin-left: 15px;
@@ -613,7 +768,7 @@ export default {
             .leftMainConCenterCon {
               border-top: 1px solid #eee;
               border-bottom: 1px solid #eee;
-              height: 36px;
+              min-height: 36px;
               padding: 10px 12px;
             }
             .leftMainConCenterReject {
@@ -646,17 +801,38 @@ export default {
           .mainContentRightFormText {
             color: #999;
           }
+          .addTemplateBtnWrap {
+            position: relative;
+            .addTemplateBtn {
+              position: absolute;
+              bottom: 10px;
+              left: 10px;
+            }
+          }
         }
         .chooseGoods {
           display: flex;
           margin: 20px 0;
           .chooseGoodsLeft {
-            margin-left: 50px;
-            margin-right: 30px;
+            margin-left: 40px;
+            margin-right: 20px;
+          }
+          .imgList {
+            display: flex;
+            li {
+              margin-right: 10px;
+              position: relative;
+              .delImg {
+                position: absolute;
+                top: -6px;
+                right: -6px;
+              }
+            }
           }
           .imageWraper {
             width: 80px;
             height: 80px;
+            cursor: pointer;
             border: 1px solid #ccc;
             background: #f7f7f7;
             display: flex;
@@ -691,6 +867,24 @@ export default {
               right: -5px;
               top: -5px;
               cursor: pointer;
+            }
+          }
+        }
+        .ulList {
+          width: 100%;
+          li {
+            margin: 5px 0;
+            span {
+              margin: 0 5px;
+            }
+            .img_span {
+              position: relative;
+              .img {
+                position: absolute;
+                right: 25px;
+                top: -22px;
+                cursor: pointer;
+              }
             }
           }
         }

@@ -22,3 +22,10 @@ export function formatConfig (config) {
   })
   return jsonObj
 }
+export function delObj ({ arr, val }) {
+  // eslint-disable-next-line
+  const res = arr.find(item => item.label === val);
+  return arr.filter(res => {
+    return res.label !== val
+  })
+}

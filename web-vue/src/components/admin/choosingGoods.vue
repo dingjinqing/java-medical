@@ -303,7 +303,8 @@ export default {
       goodsRow: {},
       selectgoodsNum: 0,
       hxgoodsIds: [],
-      choiseOne: false
+      choiseOne: false,
+      urlLists: [] // 选中的商品url集合
     }
   },
   computed: {
@@ -333,8 +334,8 @@ export default {
   },
   mounted () {
     this.$http.$on('choosingGoodsFlag', (res, flag) => {
-      console.log(res, flag)
-      console.log(this.trList)
+      // console.log(res, flag)
+      // console.log(this.trList)
 
       this.choiseGooddialogVisible = true
       this.trList.forEach(item => {
@@ -498,6 +499,8 @@ export default {
       this.$http.$emit('choseGoodsId', this.goodsIdsArr)
 
       this.goodsIdsArr = []
+      this.urlLists = []
+
       this.trList.forEach(item => {
         if (item.ischecked) {
           let _goodsId = item.goodsId
@@ -506,16 +509,20 @@ export default {
           }
 
           this.goodsIdsArr.push(_goodsId)
+          this.urlLists.push({
+            goodsImg: item.goodsImg,
+            goodsId: _goodsId
+          })
         }
       })
-      console.log(this.goodsIdsArr)
-
       this.transmitGoodsIds(this.goodsIdsArr)
       // 关闭对话框
       this.choiseGooddialogVisible = false
       this.$http.$emit('result', this.goodsIdsArr)
       this.$emit('resultGoodsRow', this.goodsRow)
       this.$emit('resultGoodsIds', this.goodsIdsArr)
+      // 把选中的id集合和url集合回传
+      this.$emit('res', this.goodsIdsArr, this.urlLists)
     },
     // 页数改变
     handleCurrentChange () {

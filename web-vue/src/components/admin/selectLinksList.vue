@@ -84,10 +84,14 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          @click="dialogVisible = false"
+          size="small"
+        >取 消</el-button>
         <el-button
           type="primary"
           @click="handleSure()"
+          size="small"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -202,13 +206,12 @@ export default {
 
   },
   mounted () {
-    this.$http.$on('linkDialogFlag', (flag) => {
-      console.log(flag)
-      this.dialogVisible = true
-      // 初始化弹窗子组件
-      this.$router.push({
-        name: 'commonLinks'
-      })
+    this.$http.$on('showSelectLinks', (flag) => {
+      this.dialogVisible = flag
+      // // 初始化弹窗子组件
+      // this.$router.push({
+      //   name: 'commonLinks'
+      // })
     })
   },
   methods: {
@@ -278,50 +281,11 @@ export default {
     },
     // 一级列表点击
     level_one_click (index) {
-      console.log(12321321)
+      console.log(index)
       if (index === 3 || index === 4) return
       this.bottom_line_flagindex = index
       this.bottom_level_line_one = null
       this.bottom_level_line_two = null
-      switch (index) {
-        case 0:
-          this.$router.push({
-            name: 'commonLinks'
-          })
-          break
-        case 1:
-          this.$router.push({
-            name: 'commodityLinks'
-          })
-          break
-        case 2:
-          this.$router.push({
-            name: 'customPage'
-          })
-          break
-        case 5:
-          this.$router.push({
-            name: 'pageJump'
-          })
-          break
-        case 6:
-          this.$router.push({
-            name: 'smallProgramJump'
-          })
-          break
-        case 7:
-          this.changeSelectLinkLeft(6)
-          this.$router.push({
-            name: 'formPage'
-          })
-          break
-        case 8:
-          this.changeSelectLinkLeft(7)
-          this.$router.push({
-            name: 'formPage'
-          })
-          break
-      }
     },
     // 二级列表点击
     level_two_click (index) {
@@ -332,9 +296,9 @@ export default {
           index: index
         }
         this.changeSelectlink(obj)
-        this.$router.push({
-          name: 'groupDrawing'
-        })
+        // this.$router.push({
+        //   name: 'groupDrawing'
+        // })
 
         this.bottom_line_flagindex = 3
         this.bottom_level_line_two = null
@@ -345,9 +309,9 @@ export default {
           index: index
         }
         this.changeSelectlink(obj)
-        this.$router.push({
-          name: 'classificationOfCommodities'
-        })
+        // this.$router.push({
+        //   name: 'classificationOfCommodities'
+        // })
         this.bottom_line_flagindex = 4
         this.bottom_level_line_one = null
         this.bottom_level_line_two = index

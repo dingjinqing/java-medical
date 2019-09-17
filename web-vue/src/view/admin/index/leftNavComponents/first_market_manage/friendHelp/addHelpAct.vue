@@ -912,7 +912,7 @@ export default {
       data.map(item => {
         arry.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
       })
-      console.log(arry)
+      // console.log(arry)
       return arry
     },
     // 设置优惠券内容弹窗
