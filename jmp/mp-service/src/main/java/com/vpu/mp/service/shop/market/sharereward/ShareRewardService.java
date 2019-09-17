@@ -80,7 +80,9 @@ public class ShareRewardService extends ShopBaseService {
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq(FLAG_ONE).or(sa.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(sa.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
+                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq(FLAG_ONE)).
+                    or(sa.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))
+                    .and(sa.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
                 break;
         }
         Table<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
