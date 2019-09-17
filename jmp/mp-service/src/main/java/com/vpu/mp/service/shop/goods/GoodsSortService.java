@@ -2,8 +2,8 @@ package com.vpu.mp.service.shop.goods;
 
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -229,20 +229,48 @@ public class GoodsSortService extends ShopBaseService {
     }
 
     /**
-     * 根据父节点查询所有子节点
+     * 根据父节点查询所有子孙节点
      *
      * @param parentId
      * @return
      */
     protected List<Integer> findChildrenByParentId(Integer parentId) {
-        Integer[] integers = db().select(SORT.SORT_ID)
-                .from(SORT)
-                .where(SORT.PARENT_ID.eq(parentId))
-                .fetchArray(SORT.SORT_ID);
-        List<Integer> list = new ArrayList<>(integers.length);
-        for (Integer id : integers) {
-            list.add(id);
-        }
-        return list;
+        Integer[] children=new Integer[]{parentId};
+        List<Integer> list = new ArrayList<>(children.length);
+        do {
+            for (Integer id : children) {
+                list.add(id);
+            }
+
+            children= db().select(SORT.SORT_ID).from(SORT).where(SORT.PARENT_ID.in(children)).fetchArray(SORT.SORT_ID);
+
+        }while (children.length>0);
+
+        Set set=new HashSet(list);
+
+
+        return new ArrayList<>(set);
     }
+
+    protected List<Integer> findChildrenByParentId(List<Integer> parentIds) {
+        Integer[] children=new Integer[parentIds.size()];
+        for (int i = 0; i < parentIds.size(); i++) {
+            children[i]=parentIds.get(i);
+        }
+
+        List<Integer> list = new ArrayList<>(children.length);
+        do {
+            for (Integer id : children) {
+                list.add(id);
+            }
+
+            children= db().select(SORT.SORT_ID).from(SORT).where(SORT.PARENT_ID.in(children)).fetchArray(SORT.SORT_ID);
+
+        }while (children.length>0);
+
+        Set set=new HashSet(list);
+
+        return new ArrayList<>(set);
+    }
+
 }

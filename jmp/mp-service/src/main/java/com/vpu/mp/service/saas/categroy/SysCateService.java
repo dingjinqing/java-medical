@@ -2,11 +2,7 @@ package com.vpu.mp.service.saas.categroy;
 
 import static com.vpu.mp.db.main.Tables.CATEGORY;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -70,6 +66,37 @@ public class SysCateService extends MainBaseService {
         return res;
     }
 
+    /**
+     * 根据父节点查询所有子节点,平台分类最多三层
+     * @param parentIds
+     * @return
+     */
+    public List<Short> findChildrenByParentId(List<Integer> parentIds){
+        List<Short> catIds = new ArrayList<>(parentIds.size());
+
+        parentIds.forEach(item ->{
+            catIds.add(item.shortValue());
+        });
+
+        Short[] children=new Short[catIds.size()];
+        for (int i = 0; i < catIds.size(); i++) {
+            children[i]=catIds.get(i);
+        }
+
+        List<Short> list = new ArrayList<>(children.length);
+        do {
+            for (Short id : children) {
+                list.add(id);
+            }
+
+            children= db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.in(children)).fetchArray(CATEGORY.CAT_ID);
+
+        }while (children.length>0);
+
+        Set set=new HashSet(list);
+
+        return new ArrayList<>(set);
+    }
     /**
      * 根据父id获取子分类
      *

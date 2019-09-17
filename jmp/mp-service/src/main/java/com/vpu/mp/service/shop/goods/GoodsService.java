@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.db.main.tables.Shop;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -107,7 +108,7 @@ public class GoodsService extends ShopBaseService {
     public PageResult<GoodsPageListVo> getPageList(GoodsPageListParam goodsPageListParam) {
         SelectOnConditionStep<?> selectFrom = db()
             .select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
-                GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
+                GOODS.SOURCE,GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID));
 
@@ -122,15 +123,23 @@ public class GoodsService extends ShopBaseService {
 
         // 处理商品平台分类：通过id值获取name值
         saas.sysCate.disposeCategoryName(pageResult.getDataList());
-        // 处理标签名称
+        // 处理标签名称准备数据
         List<Integer> goodsIds = new ArrayList<>(pageResult.getDataList().size());
         pageResult.getDataList().forEach(item -> goodsIds.add(item.getGoodsId()));
         Map<Integer, List<GoodsLabelListVo>> goodsLabels = this.getGoodsLabels(goodsIds);
-        pageResult.getDataList().forEach(item -> item.setGoodsLabels(goodsLabels.get(item.getGoodsId())));
+        // 处理商品规格默认id值准备数据
+        Map<Integer, Integer> goodsIdPrdIdMap = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds)).and(GOODS_SPEC_PRODUCT.PRD_SPECS.eq(""))
+            .fetch().intoMap(GOODS_SPEC_PRODUCT.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_ID);
 
-        //商品主图相对地址转换就对地址
-        List<GoodsPageListVo> dataList = pageResult.getDataList();
-        dataList.forEach(item -> item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg())));
+        pageResult.getDataList().forEach(item -> {
+            // 设置标签名称
+            item.setGoodsLabels(goodsLabels.get(item.getGoodsId()));
+            // 设置图片绝对地址
+            item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg()));
+            // 设置商品默认规格id
+            item.setPrdId(goodsIdPrdIdMap.get(item.getGoodsId()));
+        });
 
         return pageResult;
     }
@@ -187,72 +196,77 @@ public class GoodsService extends ShopBaseService {
      * @param goodsPageListParam
      * @return
      */
-    private SelectConditionStep<?> buildOptions(SelectOnConditionStep<?> select,
-                                                GoodsPageListParam goodsPageListParam) {
+    private SelectConditionStep<?> buildOptions(SelectOnConditionStep<?> select, GoodsPageListParam goodsPageListParam) {
         SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
-
         // 默认显示在售商品
         if (goodsPageListParam.getIsOnSale() == null) {
             goodsPageListParam.setIsOnSale(GoodsPageListParam.IS_ON_SALE_DEFAULT);
         }
-
         scs = scs.and(GOODS.IS_ON_SALE.eq(goodsPageListParam.getIsOnSale()));
-
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())) {
             scs = scs.and(GOODS.GOODS_NAME.like(likeValue(goodsPageListParam.getGoodsName())));
         }
-
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsSn())) {
             scs = scs.and(GOODS.GOODS_SN.like(likeValue(goodsPageListParam.getGoodsSn())));
         }
-
-        if (goodsPageListParam.getCatId() != null) {
-            scs = scs.and(GOODS.CAT_ID.eq(goodsPageListParam.getCatId()));
+        if (goodsPageListParam.getBrandId() != null) {
+            scs = scs.and(GOODS.BRAND_ID.eq(goodsPageListParam.getBrandId()));
         }
-
+        if (goodsPageListParam.getSource() != null) {
+            scs = scs.and(GOODS.SOURCE.eq(goodsPageListParam.getSource()));
+        }
+        if (goodsPageListParam.getGoodsType() != null) {
+            scs = scs.and(GOODS.GOODS_TYPE.eq(goodsPageListParam.getGoodsType()));
+        }
+        if (goodsPageListParam.getCatId() != null) {
+            List<Integer> catIds=new ArrayList<>();
+            catIds.add(goodsPageListParam.getCatId().intValue());
+            List<Short> childrenId = saas.sysCate.findChildrenByParentId(catIds);
+            scs = scs.and(GOODS.CAT_ID.in(childrenId));
+        }
         if (goodsPageListParam.getSortId() != null) {
             List<Integer> childrenId = goodsSort.findChildrenByParentId(goodsPageListParam.getSortId());
             childrenId.add(goodsPageListParam.getSortId());
             scs = scs.and(GOODS.SORT_ID.in(childrenId));
         }
-
-        if (goodsPageListParam.getBrandId() != null) {
-            scs = scs.and(GOODS.BRAND_ID.eq(goodsPageListParam.getBrandId()));
+        // 根据标签过滤商品
+        if (goodsPageListParam.getLabelId() != null) {
+            // 根据标签类型和标签id值过滤出该标签对应的商品id或者平台分类id
+            Map<Byte, List<Integer>> byteListMap = goodsLabelCouple.selectGatIdsByLabelIds(Arrays.asList(goodsPageListParam.getLabelId()));
+            List<Integer> integers = byteListMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
+            Condition condition=DSL.noCondition();
+            if (integers!=null && integers.size() > 0) {
+               condition = condition.or(GOODS.GOODS_ID.in(integers));
+            }
+            integers = byteListMap.get(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
+            if (integers != null && integers.size() > 0) {
+                List<Integer> sortChildrenId=goodsSort.findChildrenByParentId(integers);
+                condition = condition.or(GOODS.SORT_ID.in(sortChildrenId));
+            }
+            integers = byteListMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+            if (integers != null && integers.size() > 0) {
+                List<Short> catChildrenId=saas.sysCate.findChildrenByParentId(integers);
+                condition = condition.or(GOODS.CAT_ID.in(catChildrenId));
+            }
+            scs = scs.and(condition);
         }
-
-        if (goodsPageListParam.getGoodsType() != null) {
-            scs = scs.and(GOODS.GOODS_TYPE.eq(goodsPageListParam.getGoodsType()));
+        if (goodsPageListParam.getSaleTimeStart() != null) {
+            scs =scs.and(GOODS.SALE_TIME.ge(goodsPageListParam.getSaleTimeStart()));
         }
-
+        if (goodsPageListParam.getSaleTimeEnd() != null) {
+            scs =scs.and(GOODS.SALE_TIME.le(goodsPageListParam.getSaleTimeEnd()));
+        }
         if (goodsPageListParam.getLowShopPrice() != null) {
             scs = scs.and(GOODS.SHOP_PRICE.ge(goodsPageListParam.getLowShopPrice()));
         }
-
         if (goodsPageListParam.getHighShopPrice() != null) {
             scs = scs.and(GOODS.SHOP_PRICE.le(goodsPageListParam.getHighShopPrice()));
         }
-
-        // 根据标签过滤商品
-        if (goodsPageListParam.getLabelId() != null) {
-
-            // 根据标签类型和标签id值过滤出该标签对应的商品id或者平台分类id
-            List<Integer> gatIds = goodsLabelCouple.selectGatIdsByLabelIds(
-                Arrays.asList(goodsPageListParam.getLabelId()), goodsPageListParam.getLabelType());
-
-            // 目前仅仅考虑了标签属于商品，属于平台分类和全部商品的情况，未考虑标签属于商家分类的情况
-            if (GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(goodsPageListParam.getLabelType())) {
-                // 标签是针对单个商品的类型
-                scs = scs.and(GOODS.GOODS_ID.in(gatIds));
-            } else if (GoodsLabelCoupleTypeEnum.CATTYPE.getCode().equals(goodsPageListParam.getLabelType())) {
-                // 标签是针对平台分类的类型
-                scs = scs.and(GOODS.CAT_ID.in(gatIds));
-            } else if (GoodsLabelCoupleTypeEnum.SORTTYPE.getCode().equals(goodsPageListParam.getLabelType())) {
-                // 标签是针对商家分类的类型
-                scs = scs.and(GOODS.SORT_ID.in(gatIds));
-            } else {
-                //全部商品情况不用添加过滤条件
-            }
-
+        if (goodsPageListParam.getGoodsNumber() != null) {
+            scs = scs.and(GOODS.GOODS_NUMBER.le(goodsPageListParam.getGoodsNumber()));
+        }
+        if (goodsPageListParam.getSaleType() != null) {
+            scs = scs.and(GOODS.SALE_TYPE.le(goodsPageListParam.getSaleType()));
         }
         return scs;
     }
@@ -651,8 +665,8 @@ public class GoodsService extends ShopBaseService {
      */
     public void delete(GoodsBatchOperateParam operateParam) {
         List<Integer> goodsIds = operateParam.getGoodsIds();
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
+        transaction(() -> {
+           DSLContext db=db();
             db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE.getCode())
                 .set(GOODS.GOODS_SN,
                     DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID).concat(DelFlag.DEL_ITEM_SPLITER)
@@ -664,7 +678,7 @@ public class GoodsService extends ShopBaseService {
             // 删除关联图片
             deleteImg(goodsIds);
             // 删除关联规格
-            goodsSpecProductService.deleteByGoodsIds(db, goodsIds);
+            goodsSpecProductService.deleteByGoodsIds(goodsIds);
             //删除关联标签
             goodsLabelCouple.deleteByGoodsIds(goodsIds);
             //删除商品规格会员价信息

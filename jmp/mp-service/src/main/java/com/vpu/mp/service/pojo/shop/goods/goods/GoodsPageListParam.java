@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.goods.goods;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author 李晓冰
@@ -31,15 +32,28 @@ public class GoodsPageListParam {
 
     private String goodsName;
     private String goodsSn;
-    private Integer catId;
+    private Integer brandId;
+    private Byte source;
+    private Byte goodsType;
+    private Short catId;
     private Integer sortId;
     private Integer labelId;
-    private Byte labelType;
-    private Integer brandId;
-    private Byte goodsType;
+    private Timestamp saleTimeStart;
+    private Timestamp saleTimeEnd;
     private BigDecimal lowShopPrice;
     private BigDecimal highShopPrice;
+    /**
+     * 是否在售
+     */
     private Byte isOnSale;
+    /**
+     * 用于过滤已售罄等于0的时候
+     */
+    private Integer goodsNumber;
+    /**
+     * 销售状态2加入仓库中
+     */
+    private Byte saleType;
 
     /**
      * 排序字段

@@ -15,6 +15,8 @@ public class GoodsPageListVo {
     private Integer goodsId;
     private String goodsName;
     private BigDecimal shopPrice;
+    private Byte source;
+    private Byte goodsType;
     private String goodsImg;
     private String goodsSn;
     private Short catId;
@@ -25,6 +27,9 @@ public class GoodsPageListVo {
     private Integer goodsNumber;
     private Integer goodsSaleNum;
     private List<GoodsLabelListVo> goodsLabels;
+    /**
+     * 商品为默认规格时该值为规格id,否则为空
+     */
     private Integer prdId;
     private String prdImg;
     private String prdDesc;

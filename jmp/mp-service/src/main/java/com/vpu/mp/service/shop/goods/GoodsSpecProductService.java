@@ -118,8 +118,8 @@ public class GoodsSpecProductService extends ShopBaseService {
      * @param db
      * @param goodsIds
      */
-    public void deleteByGoodsIds(DSLContext db, List<Integer> goodsIds) {
-
+    public void deleteByGoodsIds(List<Integer> goodsIds) {
+        DSLContext db=db();
         //将sku表内数据备份至sku_bak内
         db.insertInto(GOODS_SPEC_PRODUCT_BAK, GOODS_SPEC_PRODUCT_BAK.PRD_ID, GOODS_SPEC_PRODUCT_BAK.SHOP_ID, GOODS_SPEC_PRODUCT_BAK.GOODS_ID
             , GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_COST_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER

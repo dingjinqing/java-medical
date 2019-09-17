@@ -15,6 +15,8 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 
+import javax.lang.model.type.ErrorType;
+
 /**
  * @author 黄荣刚
  * @date 2019年7月5日
@@ -40,7 +42,7 @@ public class GoodsLabelCoupleService extends ShopBaseService {
     /**
      * 根据标签Id，查询标签的关联信息
      *
-     * @param goodsLabel
+     * @param id
      * @return
      */
     public List<GoodsLabelCouple> getListByLabelId(Integer id) {
@@ -236,11 +238,12 @@ public class GoodsLabelCoupleService extends ShopBaseService {
      * @param labelIds
      * @return
      */
-    public List<Integer> selectGatIdsByLabelIds(List<Integer> labelIds, Byte labelType) {
-        return db().selectDistinct(GOODS_LABEL_COUPLE.GTA_ID).from(GOODS_LABEL_COUPLE)
-                .where(GOODS_LABEL_COUPLE.LABEL_ID.in(labelIds))
-                .and(GOODS_LABEL_COUPLE.TYPE.eq(labelType))
-                .fetch(GOODS_LABEL_COUPLE.GTA_ID);
+    public Map<Byte,List<Integer>> selectGatIdsByLabelIds(List<Integer> labelIds) {
+        Map<Byte, List<Integer>> byteListMap = db().select(GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL_COUPLE.TYPE).from(GOODS_LABEL_COUPLE)
+            .where(GOODS_LABEL_COUPLE.LABEL_ID.in(labelIds))
+            .fetch().intoGroups(GOODS_LABEL_COUPLE.TYPE, GOODS_LABEL_COUPLE.GTA_ID);
+
+        return byteListMap;
     }
 
     /**
