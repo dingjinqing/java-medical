@@ -116,19 +116,21 @@ public class ShareRewardService extends ShopBaseService {
      * 当查询所有的活动时，需要判定每一个活动的实时具体状态
      */
     private Byte getPageStatus(ShareRewardShowVo vo) {
+        // 永久有效的活动没有过期，未开始状态，一直处于进行中状态
+        boolean foreverFlag = FLAG_ONE.equals(vo.getIsForever());
         if (FLAG_ONE.equals(vo.getStatus())) {
             //已停用状态
             return PURCHASE_TERMINATED;
         }
-        if (vo.getEndTime().toLocalDateTime().isBefore(LocalDateTime.now())) {
+        if (!foreverFlag && vo.getEndTime().toLocalDateTime().isBefore(LocalDateTime.now())) {
             //已过期状态
             return PURCHASE_EXPIRED;
         }
-        if (vo.getStartTime().toLocalDateTime().isAfter(LocalDateTime.now())) {
+        if (!foreverFlag && vo.getStartTime().toLocalDateTime().isAfter(LocalDateTime.now())) {
             //未开始状态
             return PURCHASE_PREPARE;
         }
-        if (vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now()) && vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now())) {
+        if (foreverFlag || (vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now()) && vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now()))) {
             //进行中状态
             return PURCHASE_PROCESSING;
         }
@@ -251,9 +253,9 @@ public class ShareRewardService extends ShopBaseService {
             param.setSecondAwardNum(param.getSecondRule()!=null ? getAwardNum(param.getSecondRule()) : 0);
             param.setThirdAwardNum(param.getThirdRule() !=null ? getAwardNum(param.getThirdRule()) : 0);
 
-            param.setFirstLevelRule(MAPPER.writeValueAsString(param.getFirstRule()));
-            param.setSecondLevelRule(MAPPER.writeValueAsString(param.getSecondRule()));
-            param.setThirdLevelRule(MAPPER.writeValueAsString(param.getThirdRule()));
+            param.setFirstLevelRule(param.getFirstRule() !=null ? MAPPER.writeValueAsString(dataClean(param.getFirstRule())) : null);
+            param.setSecondLevelRule(param.getSecondRule()!=null ? MAPPER.writeValueAsString(dataClean(param.getSecondRule())): null);
+            param.setThirdLevelRule(param.getThirdRule() !=null ? MAPPER.writeValueAsString(dataClean(param.getThirdRule())) : null);
 
             FieldsUtil.assignNotNull(param, awardRecord);
 
@@ -261,6 +263,32 @@ public class ShareRewardService extends ShopBaseService {
         } catch (JsonProcessingException e) {
             log.debug(e.getMessage());
             throw new RuntimeException("Serialization Exception !");
+        }
+    }
+    // ShareRule奖励规则数据清洗
+    private ShareRule dataClean(ShareRule shareRule){
+        Assert.notNull(shareRule,"分享有礼奖励规则为空！");
+        switch (shareRule.getRewardType()){
+            case CONDITION_ONE :
+                shareRule.setCoupon(null);
+                shareRule.setCouponNum(null);
+                shareRule.setLottery(null);
+                shareRule.setLotteryNum(null);
+                return shareRule;
+            case CONDITION_TWO :
+                shareRule.setScore(null);
+                shareRule.setScoreNum(null);
+                shareRule.setLottery(null);
+                shareRule.setLotteryNum(null);
+                return shareRule;
+            case CONDITION_THREE :
+                shareRule.setCoupon(null);
+                shareRule.setCouponNum(null);
+                shareRule.setScore(null);
+                shareRule.setScoreNum(null);
+                return shareRule;
+            default:
+                return shareRule;
         }
     }
     private Integer getAwardNum(ShareRule shareRule){
