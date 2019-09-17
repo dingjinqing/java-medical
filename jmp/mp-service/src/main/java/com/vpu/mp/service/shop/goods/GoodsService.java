@@ -867,6 +867,11 @@ public class GoodsService extends ShopBaseService {
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
             .where(GOODS.GOODS_ID.eq(goodsId)).fetchOne().into(GoodsVo.class);
+
+        if (goodsVo == null) {
+            return null;
+        }
+
         //设置主绝对路径图片,都是全路径
         goodsVo.setGoodsImgPath(goodsVo.getGoodsImg());
         goodsVo.setGoodsImg(getImgFullUrlUtil(goodsVo.getGoodsImg()));
