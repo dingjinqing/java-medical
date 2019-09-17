@@ -246,9 +246,10 @@ public class ShareRewardService extends ShopBaseService {
             if (CONDITION_THREE == param.getCondition()) {
                 param.setGoodsIds(null);
             }
-            param.setFirstAwardNum(getAwardNum(param.getFirstRule()));
-            param.setSecondAwardNum(getAwardNum(param.getSecondRule()));
-            param.setThirdAwardNum(getAwardNum(param.getThirdRule()));
+            param.setFirstAwardNum(param.getFirstRule() !=null ? getAwardNum(param.getFirstRule()) : 0);
+            // 奖励规则不为空时进行校验，为空奖励奖品数量直接置为0
+            param.setSecondAwardNum(param.getSecondRule()!=null ? getAwardNum(param.getSecondRule()) : 0);
+            param.setThirdAwardNum(param.getThirdRule() !=null ? getAwardNum(param.getThirdRule()) : 0);
 
             param.setFirstLevelRule(MAPPER.writeValueAsString(param.getFirstRule()));
             param.setSecondLevelRule(MAPPER.writeValueAsString(param.getSecondRule()));
@@ -263,16 +264,17 @@ public class ShareRewardService extends ShopBaseService {
         }
     }
     private Integer getAwardNum(ShareRule shareRule){
+        Assert.notNull(shareRule,"分享有礼奖励规则为空！");
         switch (shareRule.getRewardType()){
             case CONDITION_ONE :
                 return shareRule.getScoreNum();
             case CONDITION_TWO :
                 CouponView couponView = couponService.getCouponViewById(shareRule.getCoupon());
-                log.debug("分享有礼活动奖励规则，奖励奖项优惠券[ {} ]所剩库存为：{}",couponView.getId(),couponView.getSurplus());
+                log.debug("分享有礼活动奖励规则，奖励奖项优惠券[id:{}]所剩库存为：{}",couponView.getId(),couponView.getSurplus());
                 Assert.notNull(couponView,"优惠券不存在");
                 // 校验活动定义的奖励数量是否满足奖品的库存数量
                 if(couponView.getSurplus() < shareRule.getCouponNum()){
-                    log.error("优惠券[{}]库存数量小于分享有礼活动定义的奖励数量！",couponView.getId());
+                    log.error("优惠券[id:{}]库存数量小于分享有礼活动定义的奖励数量！",couponView.getId());
                     throw new RuntimeException("优惠券库存数量小于活动定义的奖励数量！");
                 }
                 return shareRule.getCouponNum();
