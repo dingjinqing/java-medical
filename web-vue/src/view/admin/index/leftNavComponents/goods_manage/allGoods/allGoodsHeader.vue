@@ -8,51 +8,51 @@
     </div>
     <div class="allGoodsFilter">
       <el-form ref="goodsFilterForm" :inline="true" :model="goodsFilterFormData" label-width="120px">
-        <el-form-item label="商品名称:">
+        <el-form-item label="商品名称:" prop="goodsName">
           <el-input v-model="goodsFilterFormData.goodsName" suffix-icon="el-icon-search"
                      placeholder="搜索商品" :style="goodsFilterInputStyle"/>
         </el-form-item>
-        <el-form-item label="平台分类:">
-          <el-select v-model="goodsFilterFormData.goodsCat" :style="goodsFilterInputStyle">
+        <el-form-item label="平台分类:" prop="catId">
+          <el-select v-model="goodsFilterFormData.catId" :style="goodsFilterInputStyle">
             <el-option label="请选择平台分类" :value="null"/>
             <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName" :value="item.catId" :key="index"
-                       :style="{paddingLeft: (item.level+1)*10+'px'}"/>
+                       :style="{paddingLeft: (item.level+1)*20+'px'}"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="商家分类:">
-          <el-select v-model="goodsFilterFormData.goodsSort"  :style="goodsFilterInputStyle">
+        <el-form-item label="商家分类:" prop="sortId">
+          <el-select v-model="goodsFilterFormData.sortId"  :style="goodsFilterInputStyle">
             <el-option label="请选择商家分类" :value="null"/>
             <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName" :value="item.sortId" :key="index"
-                       :style="{paddingLeft: (item.level+1)*10+'px'}"/>
+                       :style="{paddingLeft: (item.level+1)*20+'px'}"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品标签:">
-          <el-select v-model="goodsFilterFormData.goodsLabel"  :style="goodsFilterInputStyle">
+        <el-form-item label="商品标签:" prop="labelId">
+          <el-select v-model="goodsFilterFormData.labelId"  :style="goodsFilterInputStyle">
             <el-option label="请选择商品标签" :value="null"/>
             <el-option v-for="(item,index) in goodsLabelOptions" :label="item.name" :value="item.id" :key="index" />
           </el-select>
         </el-form-item>
         <el-form-item label="上架时间:">
-          <el-date-picker v-model="goodsFilterFormData.goodsSaleTimeStart" @change="datePickerChange(true)"
+          <el-date-picker v-model="goodsFilterFormData.saleTimeStart" @change="datePickerChange(true)"
                           placeholder="请选择时间" :style="goodsFilterInputStyle"/>
           —
-          <el-date-picker v-model="goodsFilterFormData.goodsSaleTimeEnd" @change="datePickerChange(false)"
+          <el-date-picker v-model="goodsFilterFormData.saleTimeEnd" @change="datePickerChange(false)"
                           placeholder="请选择时间" :style="goodsFilterInputStyle"/>
         </el-form-item>
-        <el-form-item label="商品品牌:">
-          <el-select v-model="goodsFilterFormData.goodsBrand" :style="goodsFilterInputStyle">
+        <el-form-item label="商品品牌:" prop="brandId">
+          <el-select v-model="goodsFilterFormData.brandId" :style="goodsFilterInputStyle">
             <el-option label="请选择品牌" :value="null"/>
             <el-option v-for="(item, index) in goodsBrandOptions" :label="item.brandName" :value="item.id" :key="index"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品来源:">
-          <el-select v-model="goodsFilterFormData.goodsSource" :style="goodsFilterInputStyle">
+        <el-form-item label="商品来源:" prop="source">
+          <el-select v-model="goodsFilterFormData.source" :style="goodsFilterInputStyle">
             <el-option label="请选择商品来源" :value="null"/>
             <el-option label="自营商品" :value="0"/>
             <el-option label="非自营商品" :value="1"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="活动类型:">
+        <el-form-item label="活动类型:" prop="goodsType">
           <el-select v-model="goodsFilterFormData.goodsType" :style="goodsFilterInputStyle">
             <el-option label="请选择活动类型" :value="null"/>
             <el-option label="拼团" :value="1"/>
@@ -101,18 +101,21 @@ export default {
       // 查询过滤对象
       goodsFilterFormData: {
         goodsName: null,
-        goodsCat: null,
-        goodsSort: null,
-        goodsLabel: null,
-        goodsBrand: null,
+        catId: null,
+        sortId: null,
+        labelId: null,
+        brandId: null,
         // 商品来源
-        goodsSource: null,
+        source: null,
         // 活动类型
         goodsType: null,
-        goodsSaleTimeStart: null,
-        goodsSaleTimeEnd: null,
+        saleTimeStart: null,
+        saleTimeEnd: null,
         lowShopPrice: null,
-        highShopPrice: null
+        highShopPrice: null,
+        isOnSale: null,
+        goodsNumber: null,
+        saleType: null
       },
       goodsFilterInputStyle: {width: '170px'},
       goodsCatOptions: [],
@@ -180,27 +183,25 @@ export default {
     },
     /* 验证输入的时间范围是否合法 */
     datePickerChange (isStart) {
-      if (this.goodsFilterFormData.goodsSaleTimeStart === null || this.goodsFilterFormData.goodsSaleTimeEnd === null) {
+      if (this.goodsFilterFormData.saleTimeStart === null || this.goodsFilterFormData.saleTimeEnd === null) {
         return
       }
-      if (this.goodsFilterFormData.goodsSaleTimeStart.getTime() <= this.goodsFilterFormData.goodsSaleTimeEnd.getTime()) {
+      if (this.goodsFilterFormData.saleTimeStart.getTime() <= this.goodsFilterFormData.saleTimeEnd.getTime()) {
         return
       }
       if (isStart) {
-        this.goodsFilterFormData.goodsSaleTimeStart = null
+        this.goodsFilterFormData.saleTimeStart = null
       } else {
-        this.goodsFilterFormData.goodsSaleTimeEnd = null
+        this.goodsFilterFormData.saleTimeEnd = null
       }
     },
     /* 商品价格输入范围是否合法 */
     shopPriceChange (isStart) {
       if (typeof this.goodsFilterFormData.lowShopPrice !== 'number') {
         this.goodsFilterFormData.lowShopPrice = null
-        return
       }
       if (typeof this.goodsFilterFormData.highShopPrice !== 'number') {
         this.goodsFilterFormData.highShopPrice = null
-        return
       }
 
       if (this.goodsFilterFormData.lowShopPrice === null || this.goodsFilterFormData.highShopPrice === null) {
@@ -220,14 +221,18 @@ export default {
       let retData = {
         ...this.goodsFilterFormData
       }
-      retData.goodsSaleTimeStart = format(this.goodsFilterFormData.goodsSaleTimeStart)
-      retData.goodsSaleTimeEnd = format(this.goodsFilterFormData.goodsSaleTimeEnd)
+      retData.saleTimeStart = format(this.goodsFilterFormData.saleTimeStart)
+      retData.saleTimeEnd = format(this.goodsFilterFormData.saleTimeEnd)
 
       return retData
     },
     /* 清空过滤条件 */
     resetFormData () {
-      this.$refs.goodsFilterForm.resetFields()
+      this.$refs['goodsFilterForm'].resetFields()
+      this.goodsFilterFormData.lowShopPrice = null
+      this.goodsFilterFormData.highShopPrice = null
+      this.goodsFilterFormData.saleTimeStart = null
+      this.goodsFilterFormData.saleTimeEnd = null
     }
   },
   mounted () {

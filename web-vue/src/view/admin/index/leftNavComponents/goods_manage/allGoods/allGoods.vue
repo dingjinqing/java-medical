@@ -10,7 +10,7 @@
           <el-button type="primary">添加商品</el-button>
         </div>
         <!-- 出售中|已售罄|仓库中路由出口 -->
-        <router-view></router-view>
+        <router-view ref="tableCmp"></router-view>
       </div>
   </div>
 </template>
@@ -31,10 +31,12 @@ export default {
   methods: {
     resetFormData () {
       this.$refs.goodsHeaderCmp.resetFormData()
+      let filterData = this.$refs.goodsHeaderCmp.getFormData()
+      this.$refs.tableCmp.setFilterData(filterData)
     },
     searchGoods () {
       let filterData = this.$refs.goodsHeaderCmp.getFormData()
-      console.log(filterData)
+      this.$refs.tableCmp.fetchGoodsData(filterData)
     }
   },
   // Vue生命周期钩子函数
@@ -50,10 +52,6 @@ export default {
   }
   .content {
     background-color: white;
-    padding: 10px 10px 10px 10px;
-  }
-  .btnWrap{
-    padding-left: 50px;
-    margin-bottom: 15px;
+    padding: 10px 10px 20px 10px;
   }
 </style>

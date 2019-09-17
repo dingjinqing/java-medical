@@ -154,7 +154,7 @@ export default {
       reload: true,
       /* 为了能在子组件内部通过inject察觉到变化,默认情况inject不具有响应式 */
       stepData: {currentStep: 1},
-      isUpdateWrap: {isUpdate: false, updateGoodsId: null},
+      isUpdateWrap: {isUpdate: false, updateGoodsId: null, isCopy: 0},
       goodsProductInfoData: {},
       goodsDetailsData: {},
       goodsDistributionInfoData: {},
@@ -173,6 +173,7 @@ export default {
         this.stepData.currentStep = 1
         this.isUpdateWrap.isUpdate = false
         this.isUpdateWrap.updateGoodsId = null
+        this.isUpdateWrap.isCopy = 0
         this.goodsProductInfoData = {}
         this.goodsDetailsData = {}
         this.goodsDistributionInfoData = {}
@@ -262,13 +263,20 @@ export default {
       retData.goodsId = this.isUpdateWrap.updateGoodsId
       return retData
     },
+    /* 保存或修改并返回列表 */
     saveOrUpdateGoodsReturnList () {
       let goodsData = this._getGoodsData()
       if (goodsData === null) {
         return
       }
-      let executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
 
+      let executeFunc = () => { }
+      if (this.isUpdateWrap.isCopy === 1) {
+        goodsData.goodsId = null
+        executeFunc = addGoodsApi
+      } else {
+        executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
+      }
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
           this.$message({
@@ -276,16 +284,23 @@ export default {
             type: 'error'
           })
         } else {
-          this.$router.push({name: 'soldOutGoods'})
+          this.$router.push({name: 'goodsForSale'})
         }
       })
     },
+    /* 保存或修改并继续添加 */
     saveOrUpdateGoodsContinueAdd () {
       let goodsData = this._getGoodsData()
       if (goodsData === null) {
         return
       }
-      let executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
+      let executeFunc = () => { }
+      if (this.isUpdateWrap.isCopy === 1) {
+        goodsData.goodsId = null
+        executeFunc = addGoodsApi
+      } else {
+        executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
+      }
 
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
@@ -299,13 +314,22 @@ export default {
         }
       })
     },
+    /* 保存或修改并查看商品预览 */
     saveOrUpdateGoodsView () {
       let goodsData = this._getGoodsData()
       if (goodsData === null) {
         return
       }
 
-      addGoodsApi(goodsData).then(res => {
+      let executeFunc = () => { }
+      if (this.isUpdateWrap.isCopy === 1) {
+        goodsData.goodsId = null
+        executeFunc = addGoodsApi
+      } else {
+        executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
+      }
+
+      executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
           this.$message({
             message: res.message,
@@ -351,6 +375,15 @@ export default {
     /* 页面装载执行函数 */
     _mounted () {
       let goodsId = this.$route.params.goodsId
+
+      let isCopy = this.$route.params.isCopy
+      if (isCopy === 1) {
+        this.isUpdateWrap.isUpdate = true
+        this.isUpdateWrap.isCopy = 1
+        this._initDataForUpdate(goodsId)
+        return
+      }
+
       if (goodsId === undefined || goodsId === null) {
         this.isUpdateWrap.isUpdate = false
         this._initDataForInsert()
