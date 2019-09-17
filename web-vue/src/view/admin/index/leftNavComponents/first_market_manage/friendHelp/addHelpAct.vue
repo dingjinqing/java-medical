@@ -118,7 +118,6 @@
               </el-table-column>
 
               <el-table-column
-                prop="market_store"
                 :label="$t('promoteList.actStore')"
                 align="center"
               >
@@ -734,7 +733,7 @@ export default {
         }
         this.form.rewardSet.market_price = this.form.goodsInfo[0].market_price
         this.form.rewardSet.market_store = this.form.goodsInfo[0].market_store
-        console.log(this.form.goodsInfo.market_store)
+        console.log(this.form.goodsInfo[0].market_store)
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
         console.log('rewardSet:', this.form.rewardSet)
