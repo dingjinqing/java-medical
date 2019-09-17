@@ -17,12 +17,14 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 /**
@@ -33,6 +35,17 @@ import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 @RestController
 @RequestMapping(value="/api/admin/member")
 public class AdminMemberController extends AdminBaseController{
+	
+	/**
+	 * 返回所有行业信息
+	 * @return
+	 */
+	@PostMapping("/industry/get")
+	public JsonResult getIndustryList() {
+		List<IndustryVo> allIndustryInfo = MemberIndustryEnum.getAllIndustryInfo();
+		allIndustryInfo.stream().forEach(item->this.i18nSuccess(item));
+		return success(allIndustryInfo);
+	}
 	
 	/**
 	 * 通用会员列表弹窗分页查询
