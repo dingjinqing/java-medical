@@ -17,7 +17,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.overview.BindAndUnParam;
 import com.vpu.mp.service.pojo.shop.overview.BindofficialVo;
 import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
@@ -63,7 +62,7 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @PostMapping("/api/admin/survey/official/bind")
     public JsonResult bindUnBindOfficial(@RequestBody BindAndUnParam param){
-    	boolean bindUnBindOfficial = saas.overviewService.bindUnBindOfficial(param.getAct(),adminAuth.user(),param.getAccountId());
+    	boolean bindUnBindOfficial = saas.overviewService.bindUnBindOfficial(param.getAct(),adminAuth.user(),adminAuth.user().getSubAccountId());
         return bindUnBindOfficial?success():fail();
     }
 
