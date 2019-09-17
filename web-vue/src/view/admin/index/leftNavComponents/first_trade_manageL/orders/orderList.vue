@@ -29,6 +29,7 @@
               size="small"
               class="default_input"
               filterable
+              multiple
             >
               <el-option
                 v-for="item in $t('order.orderStatusList')"
@@ -350,7 +351,7 @@
                     <div class="right">
                       <span class="icon_collect"><i class="el-icon-star-off"></i></span>
                       <span>{{$t('order.remark')}}</span>
-                      <span @click="seeDetails(orderItem.orderId)">{{$t('order.details')}}</span>
+                      <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
                       <span>{{$t('order.comment')}}</span>
                     </div>
                   </div>
@@ -567,12 +568,12 @@ export default {
       this.search()
     },
 
-    seeDetails (orderId) {
-      console.log(orderId)
+    seeDetails (orderSn) {
+      console.log(orderSn)
       this.$router.push({
         name: 'orderInfo',
         query: {
-          id: orderId
+          orderSn: orderSn
         }
       })
     }
