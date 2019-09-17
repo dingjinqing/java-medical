@@ -19,6 +19,7 @@ import org.jooq.DatePart;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record10;
 import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -299,11 +300,11 @@ public class ShopService extends MainBaseService {
 	 * @param subAccountId
 	 * @return
 	 */
-	public Result<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> getRoleShopList(
+	public Result<Record10<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String>> getRoleShopList(
 			Integer sysId, Integer subAccountId) {
-		SelectWhereStep<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> select = db()
+		SelectWhereStep<Record10<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String>> select = db()
 				.selectDistinct(SHOP.SHOP_ID, SHOP.SYS_ID, SHOP.SHOP_NAME, SHOP.SHOP_AVATAR, SHOP.CREATED, SHOP.STATE,
-						SHOP.BUSINESS_STATE, SHOP.IS_ENABLED, SHOP.SHOP_TYPE)
+						SHOP.BUSINESS_STATE, SHOP.IS_ENABLED, SHOP.SHOP_TYPE,SHOP.CURRENCY)
 				.from(SHOP).leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID));
 		select.where(SHOP.SYS_ID.eq(sysId));
 		if (subAccountId > 0) {
@@ -321,11 +322,10 @@ public class ShopService extends MainBaseService {
 		return db().update(SHOP).set(SHOP.SHOP_NAME, shop.getShopName()).set(SHOP.SHOP_AVATAR, shop.getShopAvatar())
 				.set(SHOP.BUSINESS_STATE, shop.getBusinessState()).where(SHOP.SHOP_ID.eq(shop.getShopId())).execute();
 	}
-
 	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info,
-			List<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> shopList) {
+			List<Record10<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String>> shopList) {
 		List<ShopSelectInnerResp> dataList = new ArrayList<>(shopList.size());
-		for (Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String> record : shopList) {
+		for (Record10<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String> record : shopList) {
 			ShopSelectInnerResp shopInner = new ShopSelectInnerResp();
 			Timestamp expireTime = renew.getShopRenewExpireTime(Util.getInteger(record.get(SHOP.SHOP_ID)));
 			String expireStatus = "1";
@@ -350,6 +350,7 @@ public class ShopService extends MainBaseService {
 			shopInner.setShopType(record.get(SHOP.SHOP_TYPE));
 			shopInner.setExpireTime(expireTime);
 			shopInner.setExpireTimeStatus(expireStatus);
+			shopInner.setCurrency(record.get(SHOP.CURRENCY));
 			dataList.add(shopInner);
 		}
 		return dataList;
