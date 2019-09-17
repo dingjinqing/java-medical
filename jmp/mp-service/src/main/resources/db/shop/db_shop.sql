@@ -1123,9 +1123,9 @@ create table `b2c_user_card`
     `expire_time`     timestamp      null     default null,
     `is_default`      tinyint(1)     not null default '0' comment '1:默认会员卡',
     `money`           decimal(10, 2) not null default '0.00' comment '卡余额',
-    `surplus`         int(11)        not null default '0' comment '卡剩余次数',
+    `surplus`         int(11)        not null default 0 comment '卡剩余次数',
     `activation_time` timestamp      null     default null comment '激活时间',
-    `exchang_surplus` int(11)        not null default '0' comment '卡剩余兑换次数',
+    `exchang_surplus` int(11)        not null default 0 comment '卡剩余兑换次数',
     `create_time`     timestamp               default current_timestamp,
     `update_time`     timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     unique key `card_no` (`card_no`)

@@ -966,6 +966,9 @@ public class MemberCardService extends ShopBaseService {
 		for (int i = 0; i < sizeOfUserId; i++) {
 			for (int j = 0; j < sizeOfCardId; j++) {
 				MemberCardRecord memberCard = memberCardList.get(j);
+				if(memberCard.getCount() == null) {
+					memberCard.setCount(0);
+				}
 				insert.values(userIdList.get(i), cardIdList.get(j), cardNoList.poll(), memberCard.getEndTime(),
 						memberCard.getCount(), Timestamp.valueOf(now), memberCard.getExchangCount());
 			}
