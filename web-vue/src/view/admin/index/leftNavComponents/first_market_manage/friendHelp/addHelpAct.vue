@@ -370,18 +370,25 @@
               style="width: 80px;height:80px;border:1px solid #000"
               @click="isEditFlag?'':handleToCallDialog(2)"
             >
-              <template slot-scope="coupon">
-                <div class="coupon_info">
-                  <span class="coupon_name">{{coupon.row.actName}}</span>
-                  <div
-                    v-if="coupon.row.actCode == 'voucher'"
-                    style="color:red"
-                  >￥<span>{{coupon.row.denomination}}</span></div>
-                  <div v-else><span>{{coupon.row.denomination}}</span>折</div>
-                  <div class="coupon_rule">{{coupon.row.useConsumeRestrict > 0? `满${coupon.row.leastConsume}元可用`  : `不限制`}}</div>
-                </div>
-              </template>
+
+              <!--占位-->
+              <div v-if="!coupon_duplicate.length">
+                123
+              </div>
+              <div
+                v-else
+                class=""
+              >
+                <span class="">{{coupon_duplicate[0].denomination}}</span>
+                <div
+                  v-if="coupon_duplicate[0].actCode == 'voucher'"
+                  style="color:red"
+                >￥<span>{{coupon_duplicate[0].denomination}}</span></div>
+                <div v-else><span>{{coupon_duplicate[0].denomination}}</span>折</div>
+                <div class="">{{coupon_duplicate[0].useConsumeRestrict > 0? `满${coupon_duplicate[0].leastConsume}元可用`  : `不限制`}}</div>
+              </div>
             </div>
+
             <div v-if="
               form.failedSendType==2">
               {{$t('promoteList.giftPoint')}}
@@ -509,7 +516,7 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import { addActive, selectOneInfo, updateInfo } from '@/api/admin/marketManage/friendHelp.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
-import { getGoodsProductList } from '@/api/admin/brandManagement.js'
+// import { getGoodsProductList } from '@/api/admin/brandManagement.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: {
@@ -617,6 +624,13 @@ export default {
         timingTime: '1',
         timingUnit: '0'
       },
+      // coupon_set: {
+      //   immediatelyGrantAmount: 0,
+      //   timingEvery: 0,
+      //   timingAmount: 0,
+      //   timingTime: '1',
+      //   timingUnit: '0'
+      // },
       target: null,
 
       // 表单约束
@@ -691,17 +705,6 @@ export default {
         this.form.customShareWord = res.content[0].customShareWord
         this.form.shareImgType = res.content[0].shareImgType.toString()
         this.form.customImgPath = res.content[0].customImgPath
-
-        if (this.form.rewardType === '2') {
-          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
-          console.log(this.form.rewardSet.market_store)
-          this.form.rewardSet.reward_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).reward_ids
-          console.log(this.form.rewardSet.reward_ids)
-          updateCoupon(this.form.rewardSet.reward_ids).then(res => {
-            this.coupon_info = res.content
-            console.log('couponInfo:', this.coupon_info)
-          })
-        }
         if (this.form.rewardType === '0') {
           this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
           console.log(this.form.rewardSet.market_store)
@@ -711,14 +714,46 @@ export default {
             'goodsId': this.form.rewardSet.goods_ids
           }
           selectGoodsApi(goodsIdParam).then(res => {
-            console.log('goodsInfo:', res)
+            this.form.goodsInfo = [res.content]
+            this.form.goodsInfo.market_store = this.form.rewardSet.market_store
+            console.log('goodsInfo:', res.content)
+          })
+        }
+        if (this.form.rewardType === '1') {
+          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
+          this.form.rewardSet.market_price = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_price
+          this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
+          console.log(this.form.rewardSet.goods_ids)
+          let goodsIdParam = {
+            'goodsId': this.form.rewardSet.goods_ids
+          }
+          selectGoodsApi(goodsIdParam).then(res => {
+            this.form.goodsInfo = [res.content]
+            this.form.goodsInfo[0].market_store = this.form.rewardSet.market_store
+            this.form.goodsInfo[0].market_price = this.form.rewardSet.market_price
+            console.log('goodsInfo:', res.content)
+          })
+        }
+        if (this.form.rewardType === '2') {
+          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
+          this.form.rewardSet.reward_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).reward_ids
+          updateCoupon(this.form.rewardSet.reward_ids).then(res => {
+            this.coupon_info = res.content
+            this.coupon_info[0].send_num = this.form.rewardSet.market_store
+            console.log('couponInfo:', this.coupon_info)
+          })
+        }
+        if (this.form.failedSendType === '1') {
+          updateCoupon(this.form.failedSendContent).then(res => {
+            this.coupon_duplicate = res.content
+            console.log('coupon_duplicate:', this.coupon_duplicate)
           })
         }
       })
     },
     addAct () {
       console.log('this.form.rewardType:', this.form.rewardType)
-      if (this.form.rewardType === 0 || this.form.rewardType === 1) {
+      if (this.form.rewardType === '0' || this.form.rewardType === '1') {
         if (this.form.goodsInfo[0].market_price == null) {
           this.form.goodsInfo[0].market_price = ''
         }
@@ -730,7 +765,7 @@ export default {
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
       }
-      if (this.form.rewardType === 2) {
+      if (this.form.rewardType === '2') {
         this.form.rewardSet.market_store = this.coupon_info[0].send_num
         this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('rewardSet:', this.form.rewardSet)
@@ -820,21 +855,12 @@ export default {
     choosingGoodsResult (row) {
       console.log('获取商品行', row)
       this.goodsRow = row
-      this.form.goodsInfo.goodsIds = row.goodsId
+      this.form.goodsInfo = []
+      this.form.goodsInfo.push(row)
+      console.log('goodsInfo:', this.form.goodsInfo[0])
       this.form.rewardSet.goods_ids = row.goodsId
-      // 初始化规格表格
-      let obj = {
-        goodsId: this.form.goodsInfo.goodsIds,
-        currentPage: 1,
-        pageRows: 1024
-      }
-      getGoodsProductList(obj).then(res => {
-        const { content } = res
-        const { dataList } = content
 
-        this.form.goodsInfo = [dataList[obj.goodsId]]
-        console.log('goodsInfo:', this.form.goodsInfo)
-      })
+      // })
     },
     // 选择优惠券弹窗
     handleToCallDialog (val) {
@@ -866,76 +892,13 @@ export default {
       console.log('couponInfo:', data)
       if (this.couponFlag === 1) {
         this.form.rewardSet.reward_ids = data[0].id
-        // console.log('data[0].id', data[0].id)
-        let couponArr = this.formatCoupon(data)
-        let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
-        let couponKey = []
-        couponArr.map((item) => {
-          couponKey.push(item.id)
-        })
-
-        this.coupon_info = oldArr.filter((item) => {
-          return couponKey.includes(item.id)
-        })
+        this.coupon_info = data
+        console.log(this.coupon_info)
       } else {
-        this.handleToCheck2()
+        this.form.failedSendContent = data[0].id
+        this.coupon_duplicate = data
+        console.log(this.coupon_duplicate)
       }
-
-      console.log(this.coupon_info)
-    },
-    // 确认选择优惠券-新增-删除
-    handleToCheck2 (data) {
-      console.log('couponInfo:', data)
-      this.form.failedSendContent = data[0].id
-      // console.log('data[0].id', data[0].id)
-      let couponArr = this.formatCoupon(data)
-      let oldArr = this.unique([...this.coupon_duplicate, ...couponArr], 'id')
-      let couponKey = []
-      couponArr.map((item) => {
-        couponKey.push(item.id)
-      })
-      this.coupon_duplicate = oldArr.filter((item) => {
-        return couponKey.includes(item.id)
-      })
-      // console.log(this.coupon_duplicate)
-    },
-    // 添加优惠券初始项
-    formatCoupon (data) {
-      let arry = []
-      let couponData = {
-        immediatelyGrantAmount: 0,
-        timingEvery: 0,
-        timingAmount: 0,
-        timingTime: '1',
-        timingUnit: '0'
-      }
-      data.map(item => {
-        arry.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
-      })
-      // console.log(arry)
-      return arry
-    },
-    // 设置优惠券内容弹窗
-    handleCouponSet (scope) {
-      let target = this.coupon_info[scope.$index]
-      this.coupon_set = JSON.parse(JSON.stringify(target.coupon_set))
-      this.couponSetDialogFlag = true
-      this.target = scope.$index
-    },
-    // 确认设置优惠券
-    confrimCouponSet () {
-      this.coupon_info[this.target].coupon_set = JSON.parse(JSON.stringify(this.coupon_set))
-      this.couponSetDialogFlag = false
-    },
-    // 同id去重
-    unique (arr, key) {
-      let map = new Map()
-      arr.forEach((item, index) => {
-        if (!map.has(item[key])) {
-          map.set(item[key], item)
-        }
-      })
-      return [...map.values()]
     }
   }
 }
