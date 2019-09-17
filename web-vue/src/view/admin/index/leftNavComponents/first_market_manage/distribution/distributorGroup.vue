@@ -436,6 +436,8 @@ export default {
           res.content.dataList.filter(item => {
             item.ischecked = false
           })
+          this.allCheckFlag = false
+          this.allChecked = false
           this.distributorList = res.content.dataList
         }
 
@@ -444,10 +446,12 @@ export default {
     },
     // 表格对应行选中高亮
     handleClick () {
-      console.log('表格高亮')
       console.log(this.distributorList)
       let flag = this.distributorList.filter((item, index) => {
         return item.ischecked === false
+      })
+      let flag1 = this.distributorList.filter((item, index) => {
+        return item.ischecked === true
       })
       console.log(flag)
       if (!flag.length) {
@@ -459,7 +463,8 @@ export default {
       }
       console.log(this.allChecked)
       this.$forceUpdate()
-      console.log(flag, 1)
+      console.log(flag)
+      console.log(flag1)
     },
     // 全选本页 - 全部checkbox选中
     handleAllcheck () {
