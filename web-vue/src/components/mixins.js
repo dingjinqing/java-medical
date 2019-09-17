@@ -2,7 +2,17 @@ const myMixin = {
   data () {
     return {
       lang: '',
-      currency: []
+      currency: [],
+      currencyPool: {
+        'CNY': {
+          'zh_CN': ['元', '￥', 'CNY'],
+          'en_US': ['yuan', '￥', 'CNY']
+        },
+        'USD': {
+          'zh_CN': ['美元', '$', 'USD'],
+          'en_US': ['dollar', '$', 'USD']
+        }
+      }
     }
   },
   methods: {
@@ -22,18 +32,7 @@ const myMixin = {
     },
     adaptation () {
       console.log(this.lang)
-
-      let currencyPool = {
-        'CNY': {
-          'zh_CN': ['元', '￥', 'CNY'],
-          'en_US': ['yuan', '￥', 'CNY']
-        },
-        'USD': {
-          'zh_CN': ['美元', '$', 'USD'],
-          'en_US': ['dollar', '$', 'USD']
-        }
-      }
-      this.currency = currencyPool[localStorage.getItem('V-Currency')][this.lang]
+      this.currency = this.currencyPool[localStorage.getItem('V-Currency')][this.lang]
       console.log(this.currency)
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         // this.$i18n.locale = 'en'

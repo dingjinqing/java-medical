@@ -379,6 +379,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.currencyPool)
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
