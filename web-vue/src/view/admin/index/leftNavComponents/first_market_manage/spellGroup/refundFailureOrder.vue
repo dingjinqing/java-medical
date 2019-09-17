@@ -426,8 +426,9 @@ export default {
         pageCount: 1
       },
       searchParams: {
+        activityId: this.$route.query.id,
+        pinStatus: [2],
         searchType: 0,
-        pinStatus: [],
         goodsName: '',
         orderSn: '',
         orderStatus: [],
