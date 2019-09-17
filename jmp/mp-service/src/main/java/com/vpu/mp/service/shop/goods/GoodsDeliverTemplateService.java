@@ -31,7 +31,7 @@ import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
  */
 @Service
 
-public class GoodsDeliverTamplateService extends ShopBaseService{
+public class GoodsDeliverTemplateService extends ShopBaseService{
 	
 	/**
 	 *	查询所有省、市、区、县

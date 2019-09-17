@@ -65,7 +65,7 @@ public class GoodsService extends ShopBaseService {
     @Autowired
     public GoodsLabelCoupleService goodsLabelCouple;
     @Autowired
-    public GoodsDeliverTamplateService goodsDeliver;
+    public GoodsDeliverTemplateService goodsDeliver;
     @Autowired
     public ChooseLinkService chooseLink;
     @Autowired
