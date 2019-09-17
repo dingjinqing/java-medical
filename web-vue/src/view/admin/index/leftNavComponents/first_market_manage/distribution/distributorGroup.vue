@@ -308,11 +308,11 @@ export default {
   },
   mounted () {
     this.groupList()
-    this.handleClick()
   },
   watch: {
     allChecked (newData) {
-      if (newData === true) {
+      console.log(newData)
+      if (newData) {
         this.distributorList.map((item, index) => {
           item.ischecked = true
         })
@@ -419,6 +419,7 @@ export default {
       this.opt = 1
     },
     addDistributor () {
+      console.log(1111)
       this.centerDialogVisible = true
       distributorGroupList().then(res => {
         console.log(res)
@@ -431,6 +432,10 @@ export default {
       })
       distributorList(this.pageParams).then(res => {
         if (res.error === 0) {
+          console.log(res.content.dataList)
+          res.content.dataList.filter(item => {
+            item.ischecked = false
+          })
           this.distributorList = res.content.dataList
         }
 
@@ -439,15 +444,20 @@ export default {
     },
     // 表格对应行选中高亮
     handleClick () {
+      console.log('表格高亮')
+      console.log(this.distributorList)
       let flag = this.distributorList.filter((item, index) => {
         return item.ischecked === false
       })
-      if (flag.length === 0) {
+      console.log(flag)
+      if (!flag.length) {
         this.allChecked = true
       } else {
+        console.log(1)
         this.allCheckFlag = true
         this.allChecked = false
       }
+      console.log(this.allChecked)
       this.$forceUpdate()
       console.log(flag, 1)
     },
