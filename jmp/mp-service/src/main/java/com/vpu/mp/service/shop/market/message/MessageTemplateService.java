@@ -1,8 +1,10 @@
 package com.vpu.mp.service.shop.market.message;
 
 
+import com.vpu.mp.db.shop.tables.MessageTemplate;
 import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.MessageTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceMessageRecordRecord;
 import com.vpu.mp.db.shop.tables.records.TemplateConfigRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -10,6 +12,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.saas.schedule.*;
 import com.vpu.mp.service.pojo.shop.market.message.*;
+import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageVo;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
@@ -33,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.MessageTemplate.MESSAGE_TEMPLATE;
 import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
 import static com.vpu.mp.db.shop.tables.ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
 import static com.vpu.mp.db.shop.tables.TemplateConfig.TEMPLATE_CONFIG;
@@ -382,4 +387,13 @@ public class MessageTemplateService extends ShopBaseService {
         return vo;
     }
 
+    public List<ContentMessageVo> getContentTemplate(ContentMessageParam param) {
+        return db().select(MESSAGE_TEMPLATE.CONTENT)
+            .from(MESSAGE_TEMPLATE)
+            .where(MESSAGE_TEMPLATE.ACTION.eq(param.getAction()))
+            .fetchInto(ContentMessageVo.class);
+    }
+    public void addContentTemplate(ContentMessageParam param) {
+        db().newRecord(MESSAGE_TEMPLATE,param).insert();
+    }
 }

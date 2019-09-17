@@ -3,6 +3,9 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.message.*;
+import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -63,5 +66,14 @@ public class AdminTemplateMessageController extends AdminBaseController {
     @PostMapping("/analysis")
     public JsonResult queryMessageStatistics(@RequestBody MessageTemplateQuery param){
         return success(shop().messageTemplateService.queryStatisticsData(param));
+    }
+    @GetMapping("/content/list")
+    public JsonResult getContentTemplate(@RequestBody ContentMessageParam param){
+        return success(shop().messageTemplateService.getContentTemplate(param));
+    }
+    @PostMapping("/content/add")
+    public JsonResult addContentTemplate(@RequestBody @Validated ContentMessageParam param){
+        shop().messageTemplateService.addContentTemplate(param);
+        return success();
     }
 }

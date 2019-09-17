@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,7 +23,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
  * @date: 2019-07-10 11:22
  *
 */
-@RestControllerAdvice(basePackages = "com.vpu.mp.*")
+@RestControllerAdvice(basePackages = "com.vpu.mp.controller")
 public class ExceptionControllerHandler extends BaseController {
 
     Logger logger= LoggerFactory.getLogger(this.getClass());
@@ -30,13 +31,20 @@ public class ExceptionControllerHandler extends BaseController {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public JsonResult request(MethodArgumentNotValidException e){
             BindingResult result = ((MethodArgumentNotValidException) e).getBindingResult();
-            logger.debug("valid msg:"+result.getFieldError().getDefaultMessage());
+            logger.error("valid msg:"+result.getFieldError().getDefaultMessage());
             if( result.hasErrors() ){
                 return this.fail(result.getFieldError().getDefaultMessage());
             }
         return null;
     }
-    
+    @ExceptionHandler(BindException.class)
+    public Object validExceptionHandler(BindException e){
+        BindingResult result = e.getBindingResult();
+        if( result.hasErrors() ){
+            return this.fail(result.getFieldError().getDefaultMessage());
+        }
+        return null;
+    }
     /**
      * 对于WxErrorException的统一处理
      * @param e
