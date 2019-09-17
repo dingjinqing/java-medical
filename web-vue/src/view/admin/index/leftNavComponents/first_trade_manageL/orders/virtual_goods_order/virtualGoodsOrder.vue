@@ -6,7 +6,7 @@
           label="会员卡订单"
           name="card"
         >
-          <memberOrder v-if="activeName ==='card'" />
+          <memberCardOrder v-if="activeName ==='card'" />
         </el-tab-pane>
         <el-tab-pane
           label="优惠券礼包订单"
@@ -22,7 +22,7 @@
 <script>
 export default {
   components: {
-    memberOrder: () => import('./memberOrder'),
+    memberCardOrder: () => import('./memberCardOrder'),
     couponPackageOrder: () => import('./couponPackageOrder')
   },
   data () {

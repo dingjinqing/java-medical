@@ -128,7 +128,9 @@ export default {
       echartsData: {},
       totalNumbers: {},
       originalData: {},
-      myChart: {}
+      myChart: {},
+      langFlag: '',
+      flag: true
     }
   },
   methods: {
@@ -150,7 +152,6 @@ export default {
     handleData (data) {
       // 顶部数据部分
       this.totalNumbers = data.total
-      console.log(data)
       // echarts数据渲染
       this.echartsData.tooltip = { trigger: 'axis' }
       this.echartsData.legend = { name: [this.$t('bargainList.bargainRecordNumber'), this.$t('bargainList.helpCutPeople'), this.$t('bargainList.actOrderNumber'), this.$t('bargainList.sourceUserNumber')] }
@@ -201,13 +202,15 @@ export default {
   watch: {
     // data内变量国际化
     lang () {
+      if (this.langFlag === this.lang && this.flag) return
+      this.flag = false
       // 重新渲染表格数据
       let originalData = JSON.parse(JSON.stringify(this.originalData))
       this.handleData(originalData)
     }
   },
   mounted () {
-    this.langDefault()
+    this.langFlag = localStorage.getItem('WEPUBAO_LANGUAGE')
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
       this.selectDate = []
@@ -216,7 +219,7 @@ export default {
       this.initDataList()
     }
     this.myChart = echarts.init(document.getElementById('charts'))
-
+    this.langDefault()
     // 建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
     // window.addEventListener('resize', function () { myChart.resize() })
   }

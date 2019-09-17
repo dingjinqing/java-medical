@@ -53,7 +53,10 @@
         </div>
       </div>
     </div>
-    <el-tabs v-model="searchParams.refundType">
+    <el-tabs
+      v-model="searchParams.refundType"
+      @tab-click="handleClick"
+    >
       <el-tab-pane
         label="全部"
         name="0"

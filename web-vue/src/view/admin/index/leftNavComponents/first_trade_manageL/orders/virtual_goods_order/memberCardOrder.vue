@@ -59,6 +59,7 @@
         </div>
         <div class="filters_item">
           <el-button
+            @click="initDataList"
             type="primary"
             size="small"
           >筛选</el-button>
@@ -82,7 +83,7 @@
     </el-tabs>
     <div class="table_box">
       <table>
-        <thead>
+        <thead v-loading="loading">
           <tr>
             <th width="150px">商品</th>
             <th>会员卡号</th>
@@ -158,6 +159,7 @@
 </template>
 
 <script>
+import { getMemberCardOrderList } from '@/api/admin/orderManage/virtualGoodsOrder.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
@@ -165,86 +167,24 @@ export default {
   },
   data () {
     return {
+      loading: false,
       showRefund: false,
       refundInfo: null,
-      pageParams: {
-        'totalRows': 4,
-        'currentPage': 1,
-        'firstPage': 1,
-        'prePage': 1,
-        'nextPage': 1,
-        'lastPage': 1,
-        'pageRows': 20,
-        'pageCount': 1
-      },
-      searchParams: {
-        userInfo: null,
-        orderSn: null,
-        cardNo: null,
-        cardType: null,
-        applicationTime: null,
-        refundType: '0',
-        refund: false
-      },
+      pageParams: {},
+      searchParams: {},
       cardTypeList: [
         { value: null, label: '请选择会员卡类型' },
         { value: 1, label: '普通会员卡' },
         { value: 2, label: '限次会员卡' }
       ],
-      memberCardOrderList: [
-        {
-          'orderId': 1,
-          'orderSn': 'M201908011052262504',
-          'cardType': 0,
-          'cardNo': '111222333',
-          'cardName': '测试用会员卡',
-          'moneyPaid': 10,
-          'useAccount': 0,
-          'useScore': 100,
-          'payFee': 0,
-          'payTime': '2019-08-01 05:29:01',
-          'payType': 0,
-          'username': '测试虚拟商品用户',
-          'mobile': '15901408256',
-          'returnFlag': 1,
-          'returnTime': '2018-12-28 14:55:28'
-        },
-        {
-          'orderId': 2,
-          'orderSn': 'M201908011052262505',
-          'cardType': 1,
-          'cardNo': '111222333',
-          'cardName': '测试用会员卡',
-          'moneyPaid': 10,
-          'useAccount': 0,
-          'useScore': 0,
-          'payFee': 0,
-          'payTime': '2019-08-01 05:29:01',
-          'payType': 0,
-          'username': '测试虚拟商品用户',
-          'mobile': '15901408256',
-          'returnFlag': 2,
-          'returnTime': '2018-12-28 14:55:28'
-        },
-        {
-          'orderId': 3,
-          'orderSn': 'M201908011052262506',
-          'cardType': 0,
-          'cardNo': '111222333',
-          'cardName': '测试用会员卡',
-          'moneyPaid': 10,
-          'useAccount': 0,
-          'useScore': 0,
-          'payFee': 0,
-          'payTime': '2019-08-01 05:29:01',
-          'payType': 0,
-          'username': '测试虚拟商品用户',
-          'mobile': '15901408256',
-          'returnFlag': 0,
-          'returnTime': '2018-12-28 14:55:28'
-        }
-      ]
+      memberCardOrderList: [],
+
+      // 原始表格数据
+      originalData: []
     }
+  },
+  mounted () {
+    this.initDataList()
   },
   methods: {
     handleClick (el) {
@@ -255,7 +195,25 @@ export default {
       }
     },
     initDataList () {
-
+      this.loading = true
+      this.searchParams.currentPage = this.pageParams.currentPage
+      this.searchParams.pageRows = this.pageParams.pageRows
+      getMemberCardOrderList(this.searchParams).then((res) => {
+        if (res.error === 0) {
+          this.originalData = res.content.dataList
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
+    },
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        // this.$set(this.memberCardOrderList, index, item)
+      })
+      this.memberCardOrderList = data
     },
     viewUserDetail (userId) {
       this.$router.push({
