@@ -373,6 +373,7 @@ export default {
       }
     },
     nowRightShowIndex (newData) {
+      this.handleToModuleHight()
       console.log(newData, this.activeName, this.showModulesList)
     }
   },
@@ -383,7 +384,7 @@ export default {
   computed: {
     dragOptions () {
       return {
-        animation: 0,
+        animation: 150,
         group: {
           name: 'description',
           pull: 'clone',
@@ -658,6 +659,10 @@ export default {
     handleToClickModule (index) {
       console.log(index)
       this.$http.$emit('modulesClick', index)
+    },
+    // 当前高亮模块处理事件
+    handleToModuleHight () {
+      console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
     }
   }
 }
