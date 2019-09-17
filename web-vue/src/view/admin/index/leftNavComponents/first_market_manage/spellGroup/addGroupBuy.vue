@@ -342,7 +342,8 @@ export default {
     }
   },
   mounted () {
-
+    // 初始化语言
+    this.langDefault()
   },
   watch: {
     lang () {

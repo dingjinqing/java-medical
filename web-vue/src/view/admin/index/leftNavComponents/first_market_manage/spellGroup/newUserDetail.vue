@@ -102,6 +102,10 @@ export default {
     return {
 
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   }
 }
 

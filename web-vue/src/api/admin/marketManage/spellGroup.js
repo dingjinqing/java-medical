@@ -78,7 +78,7 @@ export function refundFailOrderList (data) {
 // 活动效果数据
 export function groupBuyAnalysis (data) {
   return service({
-    url: '/api/market/groupbuy/analysis',
+    url: '/api/admin/market/groupbuy/analysis',
     method: 'post',
     data: data
   })

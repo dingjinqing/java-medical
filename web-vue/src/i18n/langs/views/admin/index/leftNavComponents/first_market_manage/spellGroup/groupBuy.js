@@ -21,7 +21,7 @@ export const cn = {
   screeningDates: '筛选日期',
   selectTime: '选择开始时间',
   // 退款失败订单
-
+  orderSource: '订单来源',
   // 拼团订单列表
   paymentAmount: '支付金额',
   buyerName: '下单人姓名',

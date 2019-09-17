@@ -183,6 +183,8 @@ export default {
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
       this.initDataList()
+      // 初始化语言
+      this.langDefault()
     }
   },
   data () {
