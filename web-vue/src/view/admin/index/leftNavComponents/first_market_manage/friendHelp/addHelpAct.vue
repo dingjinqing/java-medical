@@ -533,6 +533,7 @@ export default {
   },
   data () {
     return {
+      couponFlag: null,
       promoteId: '',
       show: false,
       radio: 'one',
@@ -845,6 +846,7 @@ export default {
         const { dataList } = content
 
         this.form.goodsInfo = [dataList[obj.goodsId]]
+        console.log('goodsInfo:', this.form.goodsInfo)
       })
     },
     // 奖励类型 - 选择优惠券弹窗
@@ -853,6 +855,7 @@ export default {
         case 1: {
           console.log(this.couponDialogFlag)
           console.log(this.coupon_info)
+          this.couponFlag = 1
           let obj = {
             couponDialogFlag: !this.couponDialogFlag,
             couponList: this.coupon_info
@@ -861,6 +864,7 @@ export default {
         }
           break
         case 2: {
+          this.couponFlag = 2
           let obj = {
             couponDialogFlag: !this.couponDialogFlag1,
             couponList: this.coupon_duplicate
@@ -872,34 +876,40 @@ export default {
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
       console.log(data)
-      // console.log('couponInfo:', data)
-      // this.form.rewardSet.reward_ids = data[0].id
-      // // console.log('data[0].id', data[0].id)
-      // let couponArr = this.formatCoupon(data)
-      // let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
-      // let couponKey = []
-      // couponArr.map((item) => {
-      //   couponKey.push(item.id)
-      // })
-      // this.coupon_info = oldArr.filter((item) => {
-      //   return couponKey.includes(item.id)
-      // })
-      // console.log(this.coupon_info)
+      console.log('couponInfo:', data)
+      if (this.couponFlag === 1) {
+        this.form.rewardSet.reward_ids = data[0].id
+        // console.log('data[0].id', data[0].id)
+        let couponArr = this.formatCoupon(data)
+        let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
+        let couponKey = []
+        couponArr.map((item) => {
+          couponKey.push(item.id)
+        })
+
+        this.coupon_info = oldArr.filter((item) => {
+          return couponKey.includes(item.id)
+        })
+      } else {
+        this.handleToCheck2()
+      }
+
+      console.log(this.coupon_info)
     },
     // 确认选择优惠券-新增-删除
     handleToCheck2 (data) {
-      // console.log('couponInfo:', data)
-      // this.form.failedSendContent = data[0].id
-      // // console.log('data[0].id', data[0].id)
-      // let couponArr = this.formatCoupon(data)
-      // let oldArr = this.unique([...this.coupon_duplicate, ...couponArr], 'id')
-      // let couponKey = []
-      // couponArr.map((item) => {
-      //   couponKey.push(item.id)
-      // })
-      // this.coupon_duplicate = oldArr.filter((item) => {
-      //   return couponKey.includes(item.id)
-      // })
+      console.log('couponInfo:', data)
+      this.form.failedSendContent = data[0].id
+      // console.log('data[0].id', data[0].id)
+      let couponArr = this.formatCoupon(data)
+      let oldArr = this.unique([...this.coupon_duplicate, ...couponArr], 'id')
+      let couponKey = []
+      couponArr.map((item) => {
+        couponKey.push(item.id)
+      })
+      this.coupon_duplicate = oldArr.filter((item) => {
+        return couponKey.includes(item.id)
+      })
       // console.log(this.coupon_duplicate)
     },
     // 添加优惠券初始项
