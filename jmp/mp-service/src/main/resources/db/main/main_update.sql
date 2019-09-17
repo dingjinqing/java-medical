@@ -61,3 +61,6 @@ ALTER TABLE `b2c_mp_deploy_history` CHANGE COLUMN `audit_id` `audit_id` BIGINT(6
 
 ALTER TABLE `b2c_mp_operate_log` ADD COLUMN `memo_id` VARCHAR(100) NOT NULL AFTER `create_time`, ADD COLUMN `memo_list` VARCHAR(100) NOT NULL AFTER `memo_id`;
 
+--添加币种
+ALTER TABLE `mini_main`.`b2c_shop`  ADD COLUMN `currency` VARCHAR(45) NOT NULL DEFAULT 'CNY' COMMENT '币种';
+
