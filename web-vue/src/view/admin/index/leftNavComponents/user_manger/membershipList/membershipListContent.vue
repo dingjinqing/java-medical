@@ -30,8 +30,8 @@
               size="small"
             >
               <el-option
-                v-for="item in sourceOptions"
-                :key="item.value"
+                v-for="(item,index) in sourceOptions"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               >
@@ -49,8 +49,8 @@
               size="small"
             >
               <el-option
-                v-for="item in membershipCardOptions"
-                :key="item.id"
+                v-for="(item,index) in membershipCardOptions"
+                :key="index"
                 :label="item.cardName"
                 :value="item.id"
               >
@@ -369,8 +369,8 @@
                 @change="handleFooterSelect(0)"
               >
                 <el-option
-                  v-for="item in options_one"
-                  :key="item.value"
+                  v-for="(item,index) in options_one"
+                  :key="index"
                   :label="item.label"
                   :value="item.value"
                 >
@@ -385,8 +385,8 @@
                 @change="handleFooterSelect(1)"
               >
                 <el-option
-                  v-for="item in options_two"
-                  :key="item.value"
+                  v-for="(item,index) in options_two"
+                  :key="index"
                   :label="item.label"
                   :value="item.value"
                 >
@@ -401,8 +401,8 @@
                 @change="handleFooterSelect(2)"
               >
                 <el-option
-                  v-for="item in options_three"
-                  :key="item.value"
+                  v-for="(item,index) in options_three"
+                  :key="index"
                   :label="item.label"
                   :value="item.value"
                 >
@@ -417,8 +417,8 @@
                 @change="handleFooterSelect(3)"
               >
                 <el-option
-                  v-for="item in options_four"
-                  :key="item.value"
+                  v-for="(item,index) in options_four"
+                  :key="index"
                   :label="item.label"
                   :value="item.value"
                 >
@@ -433,8 +433,8 @@
                 @change="handleFooterSelect(4)"
               >
                 <el-option
-                  v-for="item in options_five"
-                  :key="item.value"
+                  v-for="(item,index) in options_five"
+                  :key="index"
                   :label="item.label"
                   :value="item.value"
                 >
@@ -555,8 +555,8 @@
                       @change="handleSetUpSelect(0)"
                     >
                       <el-option
-                        v-for="item in setUpoptionsOne"
-                        :key="item.value"
+                        v-for="(item,index) in setUpoptionsOne"
+                        :key="index"
                         :label="item.label"
                         :value="item.label"
                       >
@@ -612,8 +612,8 @@
                       @change="handleSetUpSelect(1)"
                     >
                       <el-option
-                        v-for="item in setUpoptionsTwo"
-                        :key="item.value"
+                        v-for="(item,index) in setUpoptionsTwo"
+                        :key="index"
                         :label="item.label"
                         :value="item.label"
                       >
@@ -669,8 +669,8 @@
                       @change="handleSetUpSelect(2)"
                     >
                       <el-option
-                        v-for="item in setUpoptionsThree"
-                        :key="item.value"
+                        v-for="(item,index) in setUpoptionsThree"
+                        :key="index"
                         :label="item.label"
                         :value="item.label"
                       >
@@ -783,8 +783,8 @@
             :placeholder="$t('membershipIntroduction.placeChoise')"
           >
             <el-option
-              v-for="item in tagSource"
-              :key="item.id"
+              v-for="(item,index) in tagSource"
+              :key="index"
               :label="item.value"
               :value="item.id"
             >

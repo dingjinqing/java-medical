@@ -55,7 +55,7 @@
               </li>
               <li>
                 <div>{{$t('membershipIntroduction.address')}}：
-                  <span v-if='this.memberBasicInfo.addressList.length'>
+                  <span v-if='addressListLength'>
                     <ul style="font-size: 12px;margin-top: 3px;">
                       <li
                         v-for="(item,index) in this.memberBasicInfo.addressList"
@@ -200,7 +200,7 @@
     <!--基本信息编辑弹窗-->
     <div class="baseInfo">
       <el-dialog
-        title="编辑"
+        :title="$t('membershipIntroduction.Towrite')"
         :visible.sync="baseInfoDialogVisible"
         width="30%"
         :modal-append-to-body="false"
@@ -210,10 +210,10 @@
           style="margin-bottom:30px"
         >
           <div>
-            <span>性别</span>
+            <span>{{ $t('membershipIntroduction.Gender') }}</span>
             <el-select
               v-model="GenderValue"
-              placeholder="请选择"
+              :placeholder="$t('membershipIntroduction.placeChoise') "
               size="small"
             >
               <el-option
@@ -226,12 +226,12 @@
             </el-select>
           </div>
           <div style="margin-top:10px">
-            <span>生日</span>
+            <span>{{ $t('membershipIntroduction.Birthday') }}</span>
             <el-date-picker
               v-model="birthdayVal"
               type="date"
-              placeholder="选择日期"
-              default-value="2010-10-01"
+              :placeholder="$t('membershipIntroduction.chooseDate')"
+              value-format='yyyy-MM-dd'
               size="small"
             >
             </el-date-picker>
@@ -240,22 +240,22 @@
             class="name"
             style="margin-top:10px"
           >
-            <span>真实姓名</span>
+            <span>{{ $t('membershipIntroduction.Realname') }}</span>
             <el-input
               size="small"
               v-model="nameInput"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
             ></el-input>
           </div>
           <div style="margin-top:10px">
-            <span>所在地</span>
+            <span>{{$t('membershipIntroduction.localtion')}}</span>
             <ProAndUrbA />
           </div>
           <div style="margin-top:10px">
-            <span>婚姻状况</span>
+            <span>{{$t('membershipIntroduction.Maritalstatus')}}</span>
             <el-select
               v-model="MarriageValue"
-              placeholder="请选择"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
               size="small"
             >
               <el-option
@@ -268,10 +268,10 @@
             </el-select>
           </div>
           <div style="margin-top:10px">
-            <span>月收入</span>
+            <span>{{ $t('membershipIntroduction.monthlyincome') }}</span>
             <el-select
               v-model="incomeValue"
-              placeholder="请选择"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
               size="small"
             >
               <el-option
@@ -287,18 +287,18 @@
             style="margin-top:10px"
             class="name"
           >
-            <span>身份证</span>
+            <span>{{ $t('membershipIntroduction.ID') }}</span>
             <el-input
               size="small"
               v-model="IDInput"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
             ></el-input>
           </div>
           <div style="margin-top:10px">
-            <span>教育程度</span>
+            <span>{{ $t('membershipIntroduction.Educationlevel') }}</span>
             <el-select
               v-model="educationValue"
-              placeholder="请选择"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
               size="small"
             >
               <el-option
@@ -311,15 +311,15 @@
             </el-select>
           </div>
           <div style="margin-top:10px">
-            <span>所在行业</span>
+            <span>{{ $t('membershipIntroduction.industry') }}</span>
             <el-select
               v-model="industryValue"
-              placeholder="请选择"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
               size="small"
             >
               <el-option
-                v-for="item in industryValueOptions"
-                :key="item.value"
+                v-for="(item,index) in industryValueOptions"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               >
@@ -331,11 +331,11 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="baseInfoDialogVisible = false">取 消</el-button>
+          <el-button @click="baseInfoDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
             type="primary"
-            @click="baseInfoDialogVisible = false"
-          >确 定</el-button>
+            @click="handleUserDialogSure()"
+          >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -700,7 +700,7 @@
 </template>
 <script>
 import ProAndUrbA from '@/components/system/proAndUrbA'
-import { membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
+import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
 export default {
   components: { ProAndUrbA },
   data () {
@@ -712,6 +712,7 @@ export default {
       userNameInput: '', // 用户输入->昵称
       mobileInput: '', // 用户输入->手机号
       realNameInput: '', // 用户输入->真实姓名
+      addressListLength: '', // 地址长度
       assetsUl: '',
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
       assetsData: [
@@ -764,85 +765,16 @@ export default {
       checkMoreText: '',
       baseInfoDialogVisible: false,
       GenderValue: '',
-      GenderValueOptions: [
-        {
-          value: '选项1',
-          label: '男'
-        }, {
-          value: '选项2',
-          label: '女'
-        }
-      ],
+      GenderValueOptions: [], // 性别下拉选项
       birthdayVal: '',
       nameInput: '',
       MarriageValue: '',
-      MarriageValueOptions: [
-        {
-          value: '选项1',
-          label: '已婚'
-        }, {
-          value: '选项2',
-          label: '未婚'
-        },
-        {
-          value: '选项3',
-          label: '保密'
-        }
-      ],
+      MarriageValueOptions: [], // 婚姻状况下拉选项
       incomeValue: '',
-      incomeValueOptions: [
-        {
-          value: '选项1',
-          label: '2000元以下'
-        }, {
-          value: '选项2',
-          label: '2000-3999元'
-        },
-        {
-          value: '选项3',
-          label: '4000-5999'
-        },
-        {
-          value: '选项1',
-          label: '6000-7999'
-        }, {
-          value: '选项2',
-          label: '8000元以上'
-        }
-      ],
+      incomeValueOptions: [],
       IDInput: '',
       educationValue: '',
-      educationValueOptions: [
-        {
-          value: '选项1',
-          label: '初中'
-        }, {
-          value: '选项2',
-          label: '高中'
-        },
-        {
-          value: '选项3',
-          label: '中专'
-        },
-        {
-          value: '选项1',
-          label: '大专'
-        }, {
-          value: '选项2',
-          label: '本科'
-        },
-        {
-          value: '选项3',
-          label: '硕士'
-        },
-        {
-          value: '选项1',
-          label: '博士'
-        }, {
-          value: '选项2',
-          label: '其它'
-        }
-      ],
+      educationValueOptions: [], // 受教育程度下拉框
       industryValue: '',
       industryValueOptions: [
         {
@@ -956,6 +888,14 @@ export default {
       this.transactionData = this.$t('membershipIntroduction.transactionData')
       this.distributionData = this.$t('membershipIntroduction.distributionData')
       this.checkMoreText = this.$t('membershipIntroduction.Seemore')
+      // 性别
+      this.GenderValueOptions = this.$t('membershipIntroduction.GenderValueOptions')
+      // 婚姻状况
+      this.MarriageValueOptions = this.$t(`membershipIntroduction.MarriageValueOptions`)
+      // 月收入
+      this.incomeValueOptions = this.$t(`membershipIntroduction.incomeValueOptions`)
+      // 受教育程度
+      this.educationValueOptions = this.$t(`membershipIntroduction.educationValueOptions`)
     },
     // 加载用户数据
     loadMemberInfo () {
@@ -965,10 +905,11 @@ export default {
 
         if (res.error === 0) {
           console.log(res.content)
-
+          console.log(res.content.memberBasicInfo.industryInfo)
           // 设置值 基本信息
           this.memberBasicInfo = res.content.memberBasicInfo
           console.log(this.memberBasicInfo)
+          this.addressListLength = this.memberBasicInfo.addressList.length
           // 交易统计
           this.transStatistic = res.content.transStatistic
           console.log(this.transStatistic)
@@ -999,6 +940,19 @@ export default {
             let sex = map.get(this.memberBasicInfo.sex)
             this.memberBasicInfo.sex = sex
             console.log(sex)
+          }
+          console.log(this.memberBasicInfo.monthlyIncome)
+          // 月收入
+          let tmp = String(this.memberBasicInfo.monthlyIncome)
+          if (this.memberBasicInfo.monthlyIncome) {
+            let monthIncomeArr = this.$t('membershipIntroduction.incomeValueOptions')
+            for (let i of monthIncomeArr) {
+              console.log(i)
+              if (tmp === i.value) {
+                this.memberBasicInfo.monthlyIncome = i.label
+                break
+              }
+            }
           }
           // 用户标签信息
           this.handleToLabel()
@@ -1147,7 +1101,16 @@ export default {
     },
     // 基本信息编辑弹窗
     handleBaseInfo () {
+      // 清空数据
+      this.clearInputData()
       this.baseInfoDialogVisible = true
+      // 获取所有行业信息
+      getAllIndustryRequest().then(res => {
+        if (res.error === 0) {
+          // 赋值行业信息
+          this.industryValueOptions = res.content
+        }
+      })
     },
     // 行点击
     handleClick (id) {
@@ -1157,17 +1120,37 @@ export default {
 
     // 修改邀请人处理逻辑
     handleUserDialogSure () {
+      console.log(this.birthdayVal)
+      let tmp = this.birthdayVal.split('-')
+      console.log(tmp)
       this.modifypersonDialogVisible = false
+      this.baseInfoDialogVisible = false
+      let year, month, day
+      if (this.birthdayVal) {
+        [year, month, day] = this.birthdayVal.split('-')
+      }
       let obj = {
         'userId': this.userId,
-        'inviteId': this.clickIindex
+        'inviteId': this.clickIindex,
+        'maritalStatus': this.MarriageValue,
+        'sex': this.GenderValue,
+        'birthdayYear': year,
+        'birthdayMonth': month,
+        'birthdayDay': day,
+        'realName': this.nameInput,
+        'monthlyIncome': this.incomeValue,
+        'cid': this.IDInput,
+        'education': this.educationValue,
+        'industory': this.industryValue
       }
+      console.log(obj)
 
       updateMemberInfoRequest(obj).then(res => {
         if (res.error === 0) {
           // 成功
           // 重新加载数据
           this.loadMemberInfo()
+          this.getSuccessMessagePrompt()
         }
       })
     },
@@ -1199,6 +1182,15 @@ export default {
       this.mobileInput = null
       this.userNameInput = null
       this.realNameInput = null
+
+      this.MarriageValue = null
+      this.GenderValue = null
+
+      this.nameInput = null
+      this.incomeValue = null
+      this.IDInput = null
+      this.educationValue = null
+      this.industryValue = null
     },
     // 获取标签
     getAllTag () {

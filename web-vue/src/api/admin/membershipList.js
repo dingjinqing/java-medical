@@ -111,3 +111,12 @@ export function updateMemberInfoRequest (data) {
     data: data
   })
 }
+
+// 获取所有行业信息
+export function getAllIndustryRequest () {
+  return service({
+    url: '/api/admin/member/industry/get',
+    method: 'post',
+    data: null
+  })
+}

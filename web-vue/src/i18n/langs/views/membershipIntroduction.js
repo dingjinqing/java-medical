@@ -126,6 +126,7 @@ export const cn = {
   Pleasecontent: '请输入内容',
   startdata: '开始日期',
   enddate: '结束日期',
+  chooseDate: '选择日期',
   purchasetimes: '累计购买次数',
   designatedgoods: '累计指定商品',
   choiseGoods: '选择商品',
@@ -279,6 +280,20 @@ export const cn = {
     }
   ],
   maritalStatus: ['未婚', '已婚', '保密'],
+  MarriageValueOptions: [
+    {
+      value: '2',
+      label: '已婚'
+    },
+    {
+      value: '1',
+      label: '未婚'
+    },
+    {
+      value: '3',
+      label: '保密'
+    }
+  ],
   notExists: '暂无',
   sex: [['f', '女'], ['m', '男']],
   day: '天内',
@@ -288,7 +303,75 @@ export const cn = {
   chooseTag: '请选择标签',
   chooseUser: '选择用户',
   search: '搜索',
-  userId: '用户ID'
+  userId: '用户ID',
+  GenderValueOptions: [
+    {
+      value: 'm',
+      label: '男'
+    },
+    {
+      value: 'f',
+      label: '女'
+    }
+  ],
+  incomeValueOptions: [
+    {
+      value: '1',
+      label: '2000元以下'
+    },
+    {
+      value: '2',
+      label: '2000-3999元'
+    },
+    {
+      value: '3',
+      label: '4000-5999'
+    },
+    {
+      value: '4',
+      label: '6000-7999'
+    },
+    {
+      value: '5',
+      label: '8000元以上'
+    }
+  ],
+  educationValueOptions: [
+    {
+      value: '0',
+      label: '初中'
+    },
+    {
+      value: '1',
+      label: '高中'
+    },
+    {
+      value: '2',
+      label: '中专'
+    },
+    {
+      value: '3',
+      label: '大专'
+    },
+    {
+      value: '4',
+      label: '本科'
+    },
+    {
+      value: '5',
+      label: '硕士'
+    },
+    {
+      value: '6',
+      label: '博士'
+    },
+    {
+      value: '7',
+      label: '其它'
+    }
+  ],
+  industry: '所在行业',
+  localtion: '所在地'
 }
 
 export const en = {
@@ -403,6 +486,7 @@ export const en = {
   designatedgoods: 'Cumulative designated goods',
   purchasetimes: 'Accumulated purchase times',
   enddate: 'End date',
+  chooseDate: 'Choose Date',
   startdata: 'Start date',
   Pleasecontent: 'Please enter the content',
   PassengerUnitPrice: 'Passenger Unit Price',
@@ -573,6 +657,20 @@ export const en = {
     }
   ],
   maritalStatus: ['UnMarried', 'Married', 'Secret'],
+  MarriageValueOptions: [
+    {
+      value: '2',
+      label: 'Married'
+    },
+    {
+      value: '1',
+      label: 'UnMarried'
+    },
+    {
+      value: '3',
+      label: 'Secret'
+    }
+  ],
   notExists: 'Not Exists',
   sex: [['f', 'woman'], ['m', 'man']],
   day: 'day(s)',
@@ -582,5 +680,73 @@ export const en = {
   chooseTag: 'please choose tag',
   chooseUser: 'choose user',
   search: 'search',
-  userId: 'USER ID'
+  userId: 'USER ID',
+  GenderValueOptions: [
+    {
+      value: 'm',
+      label: 'man'
+    },
+    {
+      value: 'f',
+      label: 'woman'
+    }
+  ],
+  incomeValueOptions: [
+    {
+      value: '1',
+      label: 'Under 2000'
+    },
+    {
+      value: '2',
+      label: '2000-3999'
+    },
+    {
+      value: '3',
+      label: '4000-5999'
+    },
+    {
+      value: '4',
+      label: '6000-7999'
+    },
+    {
+      value: '5',
+      label: '8000 or more'
+    }
+  ],
+  educationValueOptions: [
+    {
+      value: '0',
+      label: 'JUNIOR'
+    },
+    {
+      value: '1',
+      label: 'HIGH'
+    },
+    {
+      value: '2',
+      label: 'SECONDARY'
+    },
+    {
+      value: '3',
+      label: 'COLLEGE'
+    },
+    {
+      value: '4',
+      label: 'UNDERGRADUATE'
+    },
+    {
+      value: '5',
+      label: 'MASTER'
+    },
+    {
+      value: '6',
+      label: 'DOCTOR'
+    },
+    {
+      value: '7',
+      label: 'OTHER'
+    }
+  ],
+  industry: 'industry',
+  localtion: 'localtion'
 }
