@@ -491,7 +491,9 @@ export default {
         countryCode: null,
         provinceCode: null,
         cityCode: null,
-        districtCode: null
+        districtCode: null,
+        currentPage: this.pageParams.currentPage,
+        pageRows: this.pageParams.pageRows
       },
       orderTime: null,
       completeTime: null,
@@ -555,11 +557,7 @@ export default {
       }
       this.orderList = null
       list(this.searchParams).then(res => {
-        this.pageParams = res.content.page
-        this.currentPage = res.content.page.currentPage
-        this.pageRows = res.content.page.pageRows
-        this.pageCount = res.content.page.pageCount
-        this.totalRows = res.content.page.totalRows
+        this.pageParams = res.content.pag
         this.orderList = res.content.dataList
       }).catch(() => {
       })
