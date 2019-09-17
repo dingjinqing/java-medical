@@ -1,3 +1,4 @@
+
 <template>
   <div class="customPage_Container">
     <div class="top_container">
@@ -71,6 +72,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { pageCustomApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
   data () {
     return {
@@ -177,7 +179,17 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png'
     }
   },
+  created () {
+    this.fetchData()
+  },
   methods: {
+    // 获取数据
+    fetchData () {
+      pageCustomApi({
+        'currentPage': 1,
+        'pageName': ''
+      }).then(res => { console.log(res) }).catch(err => console.log(err))
+    },
     ...mapActions(['choisePagePath']),
     // 行选中高亮
     handleClick (index) {

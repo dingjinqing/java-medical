@@ -59,6 +59,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { goodsListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
   data () {
     return {
@@ -152,7 +153,20 @@ export default {
       immediate: true
     }
   },
+  created () {
+    this.fetchData()
+  },
   methods: {
+    // 获取商品链接的数据
+    fetchData () {
+      goodsListApi({
+        'currentPage': 1,
+        'pageRows': 20,
+        'keyWords': ''
+      }).then(res => {
+        console.log(res)
+      }).catch(err => console.log(err))
+    },
     ...mapActions(['choisePagePath']),
     defaultData (newData) {
       console.log(newData)
