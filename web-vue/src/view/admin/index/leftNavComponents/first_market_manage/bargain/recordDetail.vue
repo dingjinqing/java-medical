@@ -8,21 +8,21 @@
     <wrapper>
       <section class="newuserDetailContent">
         <div>
-          <span>用户昵称</span>
+          <span>{{$t('marketCommon.username')}}</span>
           <el-input
             v-model="requestParams.username"
             class="inputWidth"
             size="small"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('marketCommon.usernamePlaceholder')"
           ></el-input>
         </div>
         <div>
-          <span>手机号</span>
+          <span>{{$t('marketCommon.mobile')}}</span>
           <el-input
             v-model="requestParams.mobile"
             class="inputWidth"
             size="small"
-            placeholder="请输入手机号"
+            :placeholder="$t('marketCommon.mobilePlaceholder')"
           ></el-input>
         </div>
         <el-button
@@ -30,13 +30,13 @@
           class="btn"
           type="primary"
           size="small"
-        >查询</el-button>
+        >{{$t('marketCommon.filter')}}</el-button>
         <el-button
           @click="exportDataList"
           class="btn"
           type="primary"
           size="small"
-        >导出表格</el-button>
+        >{{$t('marketCommon.export')}}</el-button>
       </section>
     </wrapper>
 
@@ -58,28 +58,28 @@
 
           <el-table-column
             prop="username"
-            label="用户昵称"
+            :label="$t('marketCommon.username')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="mobile"
-            label="手机号"
+            :label="$t('marketCommon.mobile')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="createTime"
-            label="砍价时间"
+            :label="$t('bargainList.cutTime')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="bargainMoney"
-            label="帮砍价格"
+            :label="$t('bargainList.cutAmount')"
             align="center"
           >
           </el-table-column>
@@ -96,7 +96,7 @@
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination'
-import { getBargainUserPageList } from '@/api/admin/marketManage/bargain.js'
+import { getBargainUserPageList, exportBargainUserList } from '@/api/admin/marketManage/bargain.js'
 
 export default {
   components: { wrapper, pagination },
@@ -132,6 +132,13 @@ export default {
           this.pageParams = res.content.page
           this.loading = false
         }
+      })
+    },
+    exportDataList () {
+      this.requestParams.recordId = this.recordId
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      exportBargainUserList(this.requestParams).then((res) => {
       })
     },
     // 表格数据处理

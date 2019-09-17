@@ -8,30 +8,30 @@
     <wrapper>
       <section class="newuserDetailContent">
         <div>
-          <span>手机号</span>
+          <span>{{$t('marketCommon.mobile')}}</span>
           <el-input
             v-model="requestParams.mobile"
             class="inputWidth"
             size="small"
-            placeholder="请输入手机号"
+            :placeholder="$t('marketCommon.usernamePlaceholder')"
           ></el-input>
         </div>
         <div>
-          <span>用户昵称</span>
+          <span>{{$t('marketCommon.username')}}</span>
           <el-input
             v-model="requestParams.userName"
             class="inputWidth"
             size="small"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('marketCommon.usernamePlaceholder')"
           ></el-input>
         </div>
         <div>
-          <span>邀请人</span>
+          <span>{{$t('marketCommon.inviter')}}</span>
           <el-input
             v-model="requestParams.inviteUserName"
             class="inputWidth"
             size="small"
-            placeholder="请输入邀请人昵称"
+            :placeholder="$t('marketCommon.inviterPlaceholder')"
           ></el-input>
         </div>
         <el-button
@@ -39,7 +39,7 @@
           class="btn"
           type="primary"
           size="small"
-        >查询</el-button>
+        >{{$t('marketCommon.filter')}}</el-button>
       </section>
     </wrapper>
 
@@ -54,35 +54,35 @@
         >
           <el-table-column
             prop="userId"
-            label="新用户ID"
+            :label="$t('marketCommon.newUserId')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="userName"
-            label="新用户昵称"
+            :label="$t('marketCommon.newUserNickname')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="mobile"
-            label="新用户手机号"
+            :label="$t('marketCommon.newUserMobile')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="createTime"
-            label="注册时间"
+            :label="$t('marketCommon.registrationTime')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="inviteUserName"
-            label="邀请人"
+            :label="$t('marketCommon.inviter')"
             align="center"
           >
           </el-table-column>

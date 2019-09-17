@@ -2,63 +2,63 @@
   <div class="content">
     <div class="main">
       <div class="filters">
-        <div class="filters_item"><span>商品名称：</span>
+        <div class="filters_item"><span>{{$t('marketCommon.goodsName')}}:</span>
           <el-input
             v-model="requestParams.goodsName"
-            placeholder="商品名称"
+            :placeholder="$t('marketCommon.goodsName')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
-        <div class="filters_item"><span>订单号：</span>
+        <div class="filters_item"><span>{{$t('marketCommon.orderSn')}}:</span>
           <el-input
             v-model="requestParams.orderSn"
-            placeholder="订单号"
+            :placeholder="$t('marketCommon.orderSn')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
-        <div class="filters_item"><span>订单状态：</span>
+        <div class="filters_item"><span>{{$t('marketCommon.orderStatus')}}:</span>
           <el-select
-            v-model="requestParams.orderStatus"
-            placeholder="请选择"
+            v-model="requestParams.selectedOrderStatus"
+            :placeholder="$t('marketCommon.selectPlaceholder')"
             size="small"
             class="default_input"
           >
             <el-option
-              v-for="item in orderStatus"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in $t('order.orderStatusList')"
+              :key="item[0]"
+              :label="item[1]"
+              :value="item[0]"
             ></el-option>
           </el-select>
         </div>
-        <div class="filters_item"><span>收货人姓名：</span>
+        <div class="filters_item"><span>{{$t('marketCommon.consigneeName')}}:</span>
           <el-input
             v-model="requestParams.consignee"
-            placeholder="收货人姓名"
+            :placeholder="$t('marketCommon.consigneeNamePlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
-        <div class="filters_item"><span>收货人手机号：</span>
+        <div class="filters_item"><span>{{$t('marketCommon.consigneeMobile')}}:</span>
           <el-input
             v-model="requestParams.mobile"
-            placeholder="收货人手机号"
+            :placeholder="$t('marketCommon.consigneeMobilePlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
-        <div class="filters_item"><span>下单时间：</span>
+        <div class="filters_item"><span>{{$t('marketCommon.orderTime')}}:</span>
           <el-date-picker
             v-model="requestParams.createTimeStart"
             type="datetime"
-            placeholder="下单时间"
+            :placeholder="$t('marketCommon.orderTime')"
             size="small"
             class="date_picker"
           ></el-date-picker>
         </div>
-        <div class="filters_item"><span>收货地址：</span>
+        <div class="filters_item"><span>{{$t('marketCommon.shippingAddress')}}:</span>
           <areaLinkage
             @areaData="handleAreaData"
             style="width:365px;"
@@ -69,11 +69,11 @@
             @click="initDataList()"
             type="primary"
             size="small"
-          >筛选</el-button>
+          >{{$t('marketCommon.filter')}}</el-button>
           <el-button
             type="default"
             size="small"
-          >导出表格</el-button>
+          >{{$t('marketCommon.export')}}</el-button>
         </div>
       </div>
       <div class="table_box">
@@ -95,12 +95,12 @@
         >
           <el-table-column
             prop="orderSn"
-            label="订单号"
+            :label="$t('marketCommon.orderSn')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            label="砍价商品"
+            :label="$t('bargainList.bargainGoods')"
             align="center"
           >
             <template slot-scope="scope">
@@ -119,7 +119,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="单价"
+            :label="$t('marketCommon.price')"
             align="center"
           >
             <template slot-scope="scope">
@@ -134,12 +134,12 @@
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="下单时间"
+            :label="$t('marketCommon.price')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            label="下单人信息"
+            :label="$t('marketCommon.orderUserInfo')"
             align="center"
           >
             <template
@@ -150,7 +150,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="收货人信息"
+            :label="$t('marketCommon.consigneeInfo')"
             align="center"
           >
             <template slot-scope="scope">
@@ -159,7 +159,7 @@
           </el-table-column>
           <el-table-column
             prop="orderStatus"
-            label="订单状态"
+            :label="$t('marketCommon.orderStatus')"
             align="center"
           >
           </el-table-column>
@@ -181,8 +181,10 @@ export default {
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue')
   },
   mounted () {
+    this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
+      this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
       this.initDataList()
     }
   },
@@ -192,22 +194,11 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
-      orderStatus: [
-        { value: -1, label: '全部订单' },
-        { value: 1, label: '待付款' },
-        { value: 2, label: '订单取消' },
-        { value: 3, label: '订单关闭' },
-        { value: 4, label: '代发货/待核销' },
-        { value: 5, label: '已发货' },
-        { value: 6, label: '已收货/已自提' },
-        { value: 7, label: '订单完成' },
-        { value: 8, label: '退货中' },
-        { value: 9, label: '退货完成' },
-        { value: 10, label: '退款中' },
-        { value: 11, label: '退款完成' },
-        { value: 12, label: '送礼完成' }
-      ],
-      actId: null
+      orderStatusMap: {},
+      actId: null,
+
+      // 表格原始数据
+      originalData: []
     }
   },
   methods: {
@@ -216,9 +207,17 @@ export default {
       this.requestParams.activityId = this.actId
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
+
+      let orderStatus = []
+      if (this.requestParams.selectedOrderStatus != null) {
+        orderStatus.push(this.requestParams.selectedOrderStatus)
+      }
+      this.requestParams.orderStatus = orderStatus
       getBargainOrderList(this.requestParams).then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.dataList)
+          this.originalData = res.content.dataList
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
         }
@@ -226,6 +225,9 @@ export default {
     },
     // 表格数据处理
     handleData (data) {
+      data.map((item, index) => {
+        item.orderStatus = this.orderStatusMap.get(item.orderStatus)
+      })
       this.tableData = data
     },
     goodsInfo (data) {
@@ -239,6 +241,14 @@ export default {
       this.provinceCode = data.province
       this.cityCode = data.city
       this.districtCode = data.district
+    }
+  },
+  watch: {
+    // data内变量国际化
+    lang () {
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
     }
   }
 }

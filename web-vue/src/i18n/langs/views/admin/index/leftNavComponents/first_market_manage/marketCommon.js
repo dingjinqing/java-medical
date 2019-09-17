@@ -43,6 +43,10 @@ export const cn = {
   save: '保存',
   getSourceUserList: '获取新用户明细',
   activityEffectData: '活动效果数据',
+  filterDate: '筛选日期',
+  totalAmount: '总量',
+
+  // 活动运费设置
   shippingSetting: '运费设置',
   freeShipping: '免运费',
   useOriginalProductShippingTemplate: '使用原商品运费模板',
@@ -57,7 +61,26 @@ export const cn = {
   sharedPicture: '分享图',
   goodsInformationPicture: '活动商品信息图',
   customPicture: '自定义图片',
-  customPictureTip: '建议尺寸：800*800像素'
+  customPictureTip: '建议尺寸：800*800像素',
+
+  goodsName: '商品名称',
+  consigneeName: '收货人姓名',
+  consigneeNamePlaceholder: '请输入收货人姓名',
+  consigneeMobile: '收货人手机号',
+  consigneeMobilePlaceholder: '请输入收货人手机号',
+  shippingAddress: '收货地址',
+  orderUserInfo: '下单人信息',
+  consigneeInfo: '收货人信息',
+  selectPlaceholder: '请选择',
+
+  // 活动获取新用户明细
+  inviter: '邀请人',
+  inviterPlaceholder: '请输入邀请人昵称',
+  newUserId: '新用户ID',
+  newUserNickname: '新用户昵称',
+  newUserMobile: '新用户手机号',
+  registrationTime: '注册时间'
+
 }
 
 export const en = {
@@ -105,6 +128,10 @@ export const en = {
   save: 'save',
   getSourceUserList: 'new users from this',
   activityEffectData: 'Activity effect data',
+  filterDate: 'filterDate',
+  totalAmount: 'total amount',
+
+  // 活动运费设置
   shippingSetting: 'shipping setting',
   freeShipping: 'free shipping',
   useOriginalProductShippingTemplate: 'use original product shipping template',
@@ -119,5 +146,23 @@ export const en = {
   sharedPicture: 'shared picture',
   goodsInformationPicture: 'goods information picture',
   customPicture: 'custom picture',
-  customPictureTip: 'recommended size: 800*800 pixels'
+  customPictureTip: 'recommended size: 800*800 pixels',
+
+  goodsName: 'goods name',
+  consigneeName: 'consignee name',
+  consigneeNamePlaceholder: 'please enter the consignee name',
+  consigneeMobile: 'consignee mobile',
+  consigneeMobilePlaceholder: 'please enter the consignee mobile',
+  shippingAddress: 'shipping address',
+  orderUserInfo: 'order user info',
+  consigneeInfo: 'consignee info',
+  selectPlaceholder: 'select',
+
+  // 活动获取新用户明细
+  inviter: 'inviter',
+  inviterPlaceholder: 'please enter the inviter nickname',
+  newUserId: 'new user ID',
+  newUserNickname: 'new user nickname',
+  newUserMobile: 'new user mobile',
+  registrationTime: 'registration time'
 }

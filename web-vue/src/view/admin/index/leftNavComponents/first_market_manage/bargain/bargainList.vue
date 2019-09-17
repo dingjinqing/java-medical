@@ -245,6 +245,20 @@ export default {
       originalData: []
     }
   },
+  watch: {
+    'tabIndex' (n, o) {
+      this.initDataList()
+    },
+
+    // data内变量国际化
+    lang () {
+      this.activityName = this.$t('bargainList.bargain')
+
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
+    }
+  },
   mounted () {
     this.langDefault()
     // 初始列表化数据
@@ -275,7 +289,7 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         item.bargainType = item.bargainType === 0 ? this.$t('bargainList.bargainType0') : this.$t('bargainList.bargainType1')
-        item.vaildDate = `${item.startTime}this.$t('mrketCommon.to')${item.endTime}`
+        item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
         item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
       this.tableData = data
@@ -434,21 +448,8 @@ export default {
         name: 'bargain_activity'
       })
     }
-  },
-  watch: {
-    'tabIndex' (n, o) {
-      this.initDataList()
-    },
-
-    // data内变量国际化
-    lang () {
-      this.activityName = this.$t('bargainList.bargain')
-
-      // 重新渲染表格数据
-      let originalData = JSON.parse(JSON.stringify(this.originalData))
-      this.handleData(originalData)
-    }
   }
+
 }
 </script>
 <style lang="scss" scoped>

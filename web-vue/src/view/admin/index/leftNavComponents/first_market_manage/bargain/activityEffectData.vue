@@ -11,14 +11,14 @@
     >
       <!-- 日期筛选部分 -->
       <div style="display:flex">
-        <div style="height:32px;line-height:32px">筛选日期：</div>
+        <div style="height:32px;line-height:32px">{{$t('marketCommon.filterDate')}}:</div>
         <div class="selectTime">
           <el-date-picker
             v-model="selectDate"
             type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('marketCommon.to')"
+            :start-placeholder="$t('marketCommon.startTime')"
+            :end-placeholder="$t('marketCommon.endTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
           >
@@ -29,18 +29,18 @@
           style="margin-left: 10px;"
           type="primary"
           size="mini"
-        >筛选</el-button>
+        >{{$t('marketCommon.filter')}}</el-button>
       </div>
 
       <!-- 表格数据部分 -->
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">发起砍价用户数</div>
+            <div class="title">{{$t('bargainList.bargainRecordNumber')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="发起砍价用户数"
+              :content="$t('bargainList.bargainRecordNumber')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -53,11 +53,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">帮砍人次</div>
+            <div class="title">{{$t('bargainList.helpCutPeople')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动帮助砍价的总人次"
+              :content="$t('bargainList.helpCutPeopleTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -70,11 +70,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">活动订单数</div>
+            <div class="title">{{$t('bargainList.actOrderNumber')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动已付款订单数量（包括退款/货）"
+              :content="$t('bargainList.actOrderNumberTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -87,11 +87,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">拉新用户数</div>
+            <div class="title">{{$t('bargainList.sourceUserNumber')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="在店铺没有过访问记录，通过活动首次访问店铺的用户数"
+              :content="$t('bargainList.sourceUserNumberTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -140,7 +140,6 @@ export default {
       getRecordAnalysisData(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content
-          console.log(this.originalData)
           let originalData = JSON.parse(JSON.stringify(this.originalData))
           this.handleData(originalData)
           this.loading = false
@@ -151,10 +150,10 @@ export default {
     handleData (data) {
       // 顶部数据部分
       this.totalNumbers = data.total
-
+      console.log(data)
       // echarts数据渲染
       this.echartsData.tooltip = { trigger: 'axis' }
-      this.echartsData.legend = { name: ['发起砍价用户数 ', '帮砍人次 ', '活动订单数 ', '拉新用户数 '] }
+      this.echartsData.legend = { name: [this.$t('bargainList.bargainRecordNumber'), this.$t('bargainList.helpCutPeople'), this.$t('bargainList.actOrderNumber'), this.$t('bargainList.sourceUserNumber')] }
       this.echartsData.grid = { left: '3%', right: '4%', bottom: '3%', containLabel: true }
       this.echartsData.xAxis = [
         {
@@ -170,27 +169,27 @@ export default {
       ]
       this.echartsData.series = [
         {
-          name: '发起砍价用户数',
+          name: this.$t('bargainList.bargainRecordNumber'),
           type: 'line',
-          stack: '总量',
+          stack: this.$t('marketCommon.totalAmount'),
           data: data.recordNumber
         },
         {
-          name: '帮砍人次',
+          name: this.$t('bargainList.helpCutPeople'),
           type: 'line',
-          stack: '总量',
+          stack: this.$t('marketCommon.totalAmount'),
           data: data.userNumber
         },
         {
-          name: '活动订单数',
+          name: this.$t('bargainList.actOrderNumber'),
           type: 'line',
-          stack: '总量',
+          stack: this.$t('marketCommon.totalAmount'),
           data: data.orderNumber
         },
         {
-          name: '拉新用户数',
+          name: this.$t('bargainList.sourceUserNumber'),
           type: 'line',
-          stack: '总量',
+          stack: this.$t('marketCommon.totalAmount'),
           data: data.sourceNumber
         }
       ]
@@ -199,7 +198,16 @@ export default {
     }
 
   },
+  watch: {
+    // data内变量国际化
+    lang () {
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
+    }
+  },
   mounted () {
+    this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
       this.selectDate = []

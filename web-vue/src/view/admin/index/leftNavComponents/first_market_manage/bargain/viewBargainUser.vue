@@ -9,7 +9,7 @@
     <wrapper style="padding: 0 30px">
       <section class="bargainUserMain">
         <div class="bargainUserInfo">
-          <span>用户昵称</span>
+          <span>{{$t('marketCommon.username')}}</span>
           <el-input
             v-model="requestParams.username"
             size="small"
@@ -17,7 +17,7 @@
           ></el-input>
         </div>
         <div class="bargainUserInfo">
-          <span>手机号</span>
+          <span>{{$t('marketCommon.mobile')}}</span>
           <el-input
             v-model="requestParams.mobile"
             size="small"
@@ -25,31 +25,38 @@
           ></el-input>
         </div>
         <div class="bargainUserInfo">
-          <span>砍价状态</span>
+          <span>{{$t('bargainList.bargainStatus')}}</span>
           <el-select
             v-model="requestParams.status"
-            placeholder="请选择状态"
+            :placeholder="$t('marketCommon.selectPlaceholder')"
             size="small"
             class="inputWidth"
           >
             <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
+              :value="1"
+              :label="$t('bargainList.bargainStatusSuccessful')"
             ></el-option>
+            <el-option
+              :value="2"
+              :label="$t('bargainList.bargainStatusFailed')"
+            ></el-option>
+            <el-option
+              :value="0"
+              :label="$t('bargainList.bargainStatusProcessing')"
+            ></el-option>
+
           </el-select>
         </div>
       </section>
       <section class="bargainUserMain infoBottom">
         <div style="display:flex">
-          <span style="height:32px;line-height:32px;margin-right:20px">发起时间</span>
+          <span style="height:32px;line-height:32px;margin-right:20px">{{$t('bargainList.initiatedTime')}}</span>
           <el-date-picker
             v-model="createDate"
             type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('marketCommon.to')"
+            :start-placeholder="$t('marketCommon.startTime')"
+            :end-placeholder="$t('marketCommon.endTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
           >
@@ -59,10 +66,10 @@
           <el-button
             type="primary"
             size="small"
-          >筛选</el-button>
+          >{{$t('marketCommon.filter')}}</el-button>
         </div>
         <div>
-          <el-button size="small">导出表格</el-button>
+          <el-button size="small">{{$t('marketCommon.export')}}</el-button>
         </div>
       </section>
     </wrapper>
@@ -79,63 +86,63 @@
         >
           <el-table-column
             prop="goodsName"
-            label="商品名称"
+            :label="$t('bargainList.goodsName')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="username"
-            label="发起砍价用户昵称"
+            :label="$t('bargainList.bargainUsername')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="mobile"
-            label="手机号码"
+            :label="$t('marketCommon.mobile')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="createTime"
-            label="发起时间"
+            :label="$t('bargainList.initiatedTime')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="bargainMoney"
-            label="已砍金额"
+            :label="$t('bargainList.bargainMoney')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="surplusMoney"
-            label="待砍金额"
+            :label="$t('bargainList.surplusMoney')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="userNumber"
-            label="参与砍价人数"
+            :label="$t('bargainList.participationInTheBargaining')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop="status"
-            label="砍价状态"
+            :label="$t('bargainList.bargainStatus')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
             prop=""
-            label="操作"
+            :label="$t('marketCommon.operate')"
             align="center"
           >
             <template slot-scope="scope">
@@ -143,7 +150,7 @@
                 <a
                   @click="goBargainUserPageList(scope.row.id)"
                   href="##"
-                >查看砍价用户</a>
+                >{{$t('bargainList.getBargainUser')}}</a>
               </div>
             </template>
           </el-table-column>
@@ -167,6 +174,7 @@ import { getRecordPageList } from '@/api/admin/marketManage/bargain.js'
 export default {
   components: { wrapper, dateTimePicker, pagination },
   mounted () {
+    this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
       this.initDataList()
@@ -179,19 +187,6 @@ export default {
       pageParams: {},
       tableData: [],
       createDate: '',
-      statusOptions: [
-        {
-          value: '0',
-          label: '成功'
-        }, {
-          value: '1',
-          label: '失败'
-        },
-        {
-          value: '2',
-          label: '砍价中'
-        }
-      ],
 
       // 表格原始数据
       originalData: []
@@ -220,13 +215,13 @@ export default {
       data.map((item, index) => {
         switch (item.status) {
           case 0:
-            item.status = '砍价中'// this.$t('couponPackage.accessModeCash')
+            item.status = this.$t('bargainList.bargainStatusProcessing')
             break
           case 1:
-            item.status = '成功'// this.$t('couponPackage.accessModeTntegral')
+            item.status = this.$t('bargainList.bargainStatusSuccessful')
             break
           case 2:
-            item.status = '失败'// this.$t('couponPackage.accessModeFree')
+            item.status = this.$t('bargainList.bargainStatusFailed')
             break
         }
       })
@@ -241,6 +236,14 @@ export default {
           recordId: id
         }
       })
+    }
+  },
+  watch: {
+    // data内变量国际化
+    lang () {
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
     }
   }
 
