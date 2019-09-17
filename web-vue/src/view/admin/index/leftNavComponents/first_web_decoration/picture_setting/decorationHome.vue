@@ -436,6 +436,7 @@ export default {
     },
     // 左侧模块拖拽开始start处理函数
     highlignt_row_item (pos) {
+      this.topAreaFlag = false
       let this_ = this
       let p = $('.drag_area').offset()
       console.log(p, '--', pos, '--', $('.drag_area').width(), $('.drag_area').height())
@@ -535,9 +536,12 @@ export default {
       this.isDragging = false
       console.log(insertIndex)
       // let hightMoudleIndex = this_.insertModulesId + 1
-      console.log(newArrMiddle.length - 1)
-      if (insertIndex === (newArrMiddle.length - 1)) {
+      let length = newArrMiddle.length
+      console.log(insertIndex, length)
+      if (insertIndex === length) {
         insertIndex--
+      } else if (this.topAreaFlag) {
+        insertIndex = 0
       }
       console.log(insertIndex)
       setTimeout(() => {
