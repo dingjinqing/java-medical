@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo extends TableImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = 1155411400;
+    private static final long serialVersionUID = -924296652;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_order_info</code>
@@ -439,9 +439,9 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, Byte> MANUAL_REFUND = createField("manual_refund", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1代表手动退款，0代表非手动");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2补款
+     * The column <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1含定金尾款的支付
      */
-    public final TableField<OrderInfoRecord, Byte> ORDER_PAY_WAY = createField("order_pay_way", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单付款方式，0全款 1定金 2补款");
+    public final TableField<OrderInfoRecord, Byte> ORDER_PAY_WAY = createField("order_pay_way", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单付款方式，0全款 1含定金尾款的支付");
 
     /**
      * The column <code>mini_shop_6797286.b2c_order_info.bk_order_sn</code>. 补款订单号 order_pay_way=1时有效
@@ -454,9 +454,9 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, BigDecimal> BK_ORDER_MONEY = createField("bk_order_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "补款金额 order_pay_way=1时有效");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
+     * The column <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 定金尾款支付状态，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付
      */
-    public final TableField<OrderInfoRecord, Byte> BK_ORDER_PAID = createField("bk_order_paid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付");
+    public final TableField<OrderInfoRecord, Byte> BK_ORDER_PAID = createField("bk_order_paid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "定金尾款支付状态，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付");
 
     /**
      * The column <code>mini_shop_6797286.b2c_order_info.pin_goods_money</code>. 当前拼团商品金额，阶梯团根据人数时会变化，补款也随之变化
@@ -672,6 +672,11 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
      * The column <code>mini_shop_6797286.b2c_order_info.exchang</code>. 1 兑换 0否
      */
     public final TableField<OrderInfoRecord, Byte> EXCHANG = createField("exchang", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1 兑换 0否");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.currency</code>. 币种
+     */
+    public final TableField<OrderInfoRecord, String> CURRENCY = createField("currency", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("CNY", org.jooq.impl.SQLDataType.VARCHAR)), this, "币种");
 
     /**
      * Create a <code>mini_shop_6797286.b2c_order_info</code> table reference

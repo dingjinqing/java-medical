@@ -870,3 +870,5 @@ alter table b2c_share_award add column `del_time` timestamp null default null co
 
 -- 黄壮壮： 修改b2c_user_detail中月收入monthly_income 类型tinyint为int(8)
 alter table b2c_user_detail MODIFY COLUMN monthly_income int(8)
+-- 王帅订单增加币种
+ALTER TABLE b2c_order_info add column `currency` varchar(10) NOT NULL DEFAULT 'CNY' COMMENT '币种';

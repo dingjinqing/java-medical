@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = -129331268;
+    private static final long serialVersionUID = 627958097;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_info.order_id</code>. 订单id
@@ -1095,14 +1095,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2补款
+     * Setter for <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1含定金尾款的支付
      */
     public void setOrderPayWay(Byte value) {
         set(76, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2补款
+     * Getter for <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1含定金尾款的支付
      */
     public Byte getOrderPayWay() {
         return (Byte) get(76);
@@ -1137,14 +1137,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
+     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 定金尾款支付状态，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付
      */
     public void setBkOrderPaid(Byte value) {
         set(79, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
+     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 定金尾款支付状态，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付
      */
     public Byte getBkOrderPaid() {
         return (Byte) get(79);
@@ -1752,6 +1752,20 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
         return (Byte) get(122);
     }
 
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_order_info.currency</code>. 币种
+     */
+    public void setCurrency(String value) {
+        set(123, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_order_info.currency</code>. 币种
+     */
+    public String getCurrency() {
+        return (String) get(123);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -1778,7 +1792,7 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     /**
      * Create a detached, initialised OrderInfoRecord
      */
-    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp createTime, Timestamp updateTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer activityId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupdateTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang) {
+    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp createTime, Timestamp updateTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer activityId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupdateTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang, String currency) {
         super(OrderInfo.ORDER_INFO);
 
         set(0, orderId);
@@ -1904,5 +1918,6 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
         set(120, isPromote);
         set(121, verifierId);
         set(122, exchang);
+        set(123, currency);
     }
 }

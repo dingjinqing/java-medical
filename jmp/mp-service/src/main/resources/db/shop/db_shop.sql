@@ -551,6 +551,7 @@ CREATE TABLE `b2c_order_info`
     `is_promote`           TINYINT(1)     NOT NULL DEFAULT '0' COMMENT '是否是推广单',
     `verifier_id`          INT(11)        NOT NULL DEFAULT '0' COMMENT '核销员id',
     `exchang`              TINYINT(2)     NOT NULL DEFAULT '0' COMMENT '1 兑换 0否',
+    `currency`             varchar(10)    NOT NULL DEFAULT 'CNY' COMMENT '币种',
     PRIMARY KEY (`order_id`),
     UNIQUE KEY `order_sn` (`order_sn`),
     KEY `main_order_sn` (`main_order_sn`),

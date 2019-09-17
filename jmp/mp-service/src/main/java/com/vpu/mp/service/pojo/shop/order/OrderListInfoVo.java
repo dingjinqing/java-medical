@@ -56,7 +56,6 @@ public class OrderListInfoVo {
 	@JsonIgnore
 	private Byte returnTypeCfg;
 	/**积分抵扣金额*/
-	@JsonIgnore
 	private BigDecimal scoreDiscount;
 	/**用户消费余额*/
 	@JsonIgnore
@@ -84,4 +83,6 @@ public class OrderListInfoVo {
 	private Integer activityId;
 	@JsonIgnore
 	private Byte bkOrderPaid;
+	/**币种*/
+	private String currency;
 }
