@@ -25,4 +25,6 @@ public class ShopSelectInnerResp {
 	private String shopType;
 	private Timestamp expireTime;
 	private String expireTimeStatus;
+	/** 币种*/
+	private String currency;
 }

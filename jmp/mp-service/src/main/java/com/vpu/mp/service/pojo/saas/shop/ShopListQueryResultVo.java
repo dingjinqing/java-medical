@@ -70,4 +70,5 @@ public class ShopListQueryResultVo {
 	private String memberKey;
 	private String tenancyName;
 	private Timestamp endTime;
+	private String currency;
 }

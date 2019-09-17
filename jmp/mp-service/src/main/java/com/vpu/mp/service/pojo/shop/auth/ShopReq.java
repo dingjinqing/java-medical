@@ -40,6 +40,8 @@ public class ShopReq {
 	private Byte hidBottom;
 	private String dbConfig;
 	private Timestamp endTime;
+	/** 币种*/
+	private String currency;
 	/**
 	 * 数据库
 	 */

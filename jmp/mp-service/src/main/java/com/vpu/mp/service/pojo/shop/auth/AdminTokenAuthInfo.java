@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.auth;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,4 +22,6 @@ public class AdminTokenAuthInfo {
 	public boolean shopLogin = false;
 	public String token = "";
 	public String accountName;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	public String currency;
 }
