@@ -19,7 +19,7 @@ import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
-
+import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -34,6 +34,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static org.jooq.impl.DSL.count;
+
 
 /**
  * @author 黄壮壮
@@ -286,7 +287,7 @@ public class MemberDaoService extends ShopBaseService {
 			record.setMaritalStatus(param.getMaritalStatus());
 		}
 		/** -真实姓名 */
-		if(param.getRealName() != null) {
+		if(!StringUtils.isBlank(param.getRealName())) {
 			record.setRealName(param.getRealName());
 		}
 		/** -月收入 */
@@ -294,7 +295,7 @@ public class MemberDaoService extends ShopBaseService {
 			record.setMonthlyIncome(param.getMonthlyIncome());
 		}
 		/** -身份证  */
-		if(param.getCid()!=null) {
+		if(!StringUtils.isBlank(param.getCid())) {
 			record.setCid(param.getCid());
 		}
 		/** -受教育程度 */
@@ -306,6 +307,11 @@ public class MemberDaoService extends ShopBaseService {
 		if(param.getIndustory()!= null) {
 			record.setIndustryInfo(param.getIndustory());
 		}
+		/** -性别 */
+		if(!StringUtils.isBlank(param.getSex())) {
+			record.setSex(param.getSex());
+		}
+		
 	}
 	
 }
