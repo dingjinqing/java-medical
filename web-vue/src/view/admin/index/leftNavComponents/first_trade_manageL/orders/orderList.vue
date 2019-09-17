@@ -198,7 +198,7 @@
             class="filters_item"
             v-show="moreFilters"
           >
-            <span>{{$t('order.ShippingAddress')}}：</span>
+            <span>{{$t('order.shippingAddress')}}：</span>
             <areaLinkage
               @areaData="handleAreaData"
               style="width:365px;"
