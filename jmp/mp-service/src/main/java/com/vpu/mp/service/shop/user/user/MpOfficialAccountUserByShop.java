@@ -1,11 +1,17 @@
 package com.vpu.mp.service.shop.user.user;
 
+import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record4;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+
+import java.util.List;
+
 import static com.vpu.mp.db.shop.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 @Service
 public class MpOfficialAccountUserByShop extends ShopBaseService{
@@ -38,4 +44,18 @@ public class MpOfficialAccountUserByShop extends ShopBaseService{
 			db().executeUpdate(record);
 		}
 	}
+
+	public List<Record4<Integer,String,String,String>> getAccountUserListByUserIds(List<Integer> userIds){
+	    return db().select(
+	            USER.USER_ID,
+                MP_OFFICIAL_ACCOUNT_USER.OPENID,
+                MP_OFFICIAL_ACCOUNT_USER.UNIONID,
+                MP_OFFICIAL_ACCOUNT_USER.APP_ID)
+            .from(MP_OFFICIAL_ACCOUNT_USER)
+            .leftJoin(USER).on(USER.WX_UNION_ID.eq(MP_OFFICIAL_ACCOUNT_USER.UNIONID))
+            .where(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.eq((byte)1))
+            .and(USER.USER_ID.in(userIds))
+            .fetch();
+    }
+
 }

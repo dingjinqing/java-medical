@@ -196,7 +196,9 @@ public class WechatMessageTemplateService extends ShopBaseService {
                 .collect(Collectors.toMap(UserRecord::getUserId, x->x));
             List<MpOfficialAccountUserRecord> accountUserList =
                 accountUserService.getAccountUserListByUnionIds(
-                    userList.stream().map(x->x.get(USER.WX_UNION_ID)).collect(Collectors.toList())
+                    userList.stream()
+                        .map(x->x.get(USER.WX_UNION_ID))
+                        .collect(Collectors.toList())
                 );
             Map<String,MpOfficialAccountUserRecord> accountUserAccountMap = accountUserList.stream()
                 .collect(Collectors.toMap(MpOfficialAccountUserRecord::getUnionid, x->x));

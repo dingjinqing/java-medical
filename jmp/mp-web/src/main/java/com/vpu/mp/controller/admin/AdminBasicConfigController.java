@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.config.message.MessageConfigParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -89,6 +90,24 @@ public class AdminBasicConfigController extends AdminBaseController{
         }else{
             return fail(JsonResultCode.CODE_CONFIG_PLEDGE_EXCEED);
         }
+    }
+
+    /**
+     * 模版配置-更改
+     * @param param
+     */
+    @PostMapping(value = "/message/template/update")
+    public JsonResult updateMessageConfig(@RequestBody MessageConfigParam param){
+        shop().config.messageConfigService.updateMessageConfig(param);
+        return success();
+    }
+    /**
+     * 模版配置-查询
+     * @return
+     */
+    @GetMapping(value = "/message/template/query")
+    public JsonResult queryMessageConfig(){
+        return success(shop().config.messageConfigService.getAllMessageConfig());
     }
     /**
      * 服务承诺--修改

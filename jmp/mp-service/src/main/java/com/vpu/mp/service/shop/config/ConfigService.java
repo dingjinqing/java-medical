@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.config;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.vpu.mp.service.shop.config.message.MessageConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,8 @@ public class ConfigService extends ShopBaseService {
 	public InsteadPayConfig insteadPayConfig;
 	@Autowired
 	public CollectGiftConfigService collectGiftConfigService;
-
+    @Autowired
+    public MessageConfigService messageConfigService;
 	/**
 	 * 得到店铺配置
 	 * 

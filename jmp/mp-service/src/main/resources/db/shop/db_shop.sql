@@ -4575,3 +4575,10 @@ create table `b2c_mp_official_account_user`
     key (`sys_id`),
     key (`unionid`)
 );
+
+CREATE TABLE `b2c_message_template_config` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+	`open_ma` TINYINT(4) NOT NULL DEFAULT '0',
+	`open_mp` TINYINT(4) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`)
+)

@@ -7,10 +7,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Date工具
@@ -154,5 +154,19 @@ public final class DateUtil {
 	public static Timestamp convertToTimestamp(String dateTime) {
 		return Timestamp.valueOf(dateTime);
 	}
+
+    /**
+     * 获取两个日期之间的所有日期
+     * @param startDate 开始
+     * @param endDate  截止
+     * @return LocalDate集合
+     */
+	public static List<LocalDate> getAllDatesBetweenTwoDates(LocalDate startDate,LocalDate endDate){
+        long numberOfDaysBetween = ChronoUnit.DAYS.between(startDate,endDate);
+        return IntStream.iterate(0,i->i+1)
+            .limit(numberOfDaysBetween)
+            .mapToObj(startDate::plusDays)
+            .collect(Collectors.toList());
+    }
 
 }

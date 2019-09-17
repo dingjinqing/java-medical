@@ -7,10 +7,7 @@ import com.vpu.mp.db.shop.tables.records.ServiceMessageRecordRecord;
 import com.vpu.mp.db.shop.tables.records.TemplateConfigRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.MathUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.saas.schedule.*;
 import com.vpu.mp.service.pojo.shop.market.message.*;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -27,10 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
@@ -68,6 +68,46 @@ public class MessageTemplateService extends ShopBaseService {
         vo.setUserKey(key);
         vo.setUserNumber(sendUserService.getSendUserByQuery(query,key));
         return vo;
+    }
+
+
+    public PageResult<UserInfoVo> getUserVoPage(MessageUserQuery query){
+        List<UserInfoByRedis> list = sendUserService.getSendUserInfoByRedisKey(query.getUserKey());
+        Map<Integer,UserInfoByRedis> map = list
+            .stream()
+            .collect(Collectors.toMap(UserInfoByRedis::getUserId,x->x));
+        List<Integer> userIds = list.stream().map(UserInfoByRedis::getUserId).collect(Collectors.toList());
+        PageResult<UserInfoVo> resultPage = sendUserService.getUserInfoByIds(userIds,query);
+        assemblyUserPage(map,resultPage);
+        return resultPage;
+    }
+    public void updateClickStatus(MessageUserQuery query){
+
+        List<UserInfoByRedis> list = sendUserService.getSendUserInfoByRedisKey(query.getUserKey());
+        List<UserInfoByRedis> newList = new ArrayList<>(list.size());
+        Map<Integer,UserInfoByRedis> map = list
+            .stream()
+            .collect(Collectors.toMap(UserInfoByRedis::getUserId,x->x));
+        query.getUserIds().stream().forEach(x->{
+            UserInfoByRedis r = map.get(x);
+            if (r.getIsChecked()) {
+                r.setIsChecked(Boolean.FALSE);
+            } else {
+                r.setIsChecked(Boolean.TRUE);
+            }
+            map.put(x,r);
+        });
+        for(Map.Entry<Integer,UserInfoByRedis> entry:map.entrySet()){
+            newList.add(entry.getValue());
+        }
+        sendUserService.setUserToJedis(query.getUserKey(),newList);
+    }
+
+    private void assemblyUserPage(Map<Integer,UserInfoByRedis> map,PageResult<UserInfoVo> page){
+        for( UserInfoVo vo:page.getDataList() ){
+            UserInfoByRedis r = map.get(vo.getUserId());
+            vo.setIsChecked(r.getIsChecked());
+        }
     }
 
     public void insertMessageTemplate(MessageTemplateParam param){
@@ -263,6 +303,83 @@ public class MessageTemplateService extends ShopBaseService {
             .leftJoin(USER).on(USER.USER_ID.eq(SERVICE_MESSAGE_RECORD.USER_ID))
             .where(buildParams(query));
         return getPageResult(select,query.getCurrentPage(),MessageOutputVo.class);
+    }
+
+    public MessageStatisticsVo queryStatisticsData(MessageTemplateQuery query){
+        MessageStatisticsVo vo = new MessageStatisticsVo();
+        Integer allSendNum = 0,allSentNum = 0,allVisitNum = 0;
+        List<MessageStatisticsVo.StatisticsByDay> allStatistics = new ArrayList<>();
+        List<LocalDate> allDate = DateUtil
+            .getAllDatesBetweenTwoDates(query.getStartTime().toLocalDateTime().toLocalDate(),query.getEndTime().toLocalDateTime().toLocalDate());
+        Map<String,Integer> messageMap = db()
+            .select(dateFormat(TEMPLATE_CONFIG.START_TIME,"%Y-%m-%d").as("everyDate"),DSL.count().as("numbers"))
+            .from(TEMPLATE_CONFIG)
+            .where(TEMPLATE_CONFIG.START_TIME.lessThan(query.getEndTime()))
+            .and(TEMPLATE_CONFIG.START_TIME.greaterThan(query.getStartTime()))
+            .groupBy(DSL.field("everyDate"))
+            .fetch()
+            .stream()
+            .collect(Collectors.toMap(x->x.get("everyDate").toString(),x->Integer.parseInt(x.get("numbers").toString())));
+        Result<Record3<String,Byte,Byte>> serviceMessageResult = db()
+            .select(
+                dateFormat(SERVICE_MESSAGE_RECORD.CREATE_TIME,"%Y-%m-%d").as("everyDate"),
+                SERVICE_MESSAGE_RECORD.SEND_STATUS,
+                SERVICE_MESSAGE_RECORD.IS_VISIT)
+            .from(SERVICE_MESSAGE_RECORD)
+            .where(SERVICE_MESSAGE_RECORD.CREATE_TIME.lessThan(query.getEndTime()))
+            .and(SERVICE_MESSAGE_RECORD.CREATE_TIME.greaterThan(query.getStartTime()))
+            .fetch();
+        Map<String,Integer> sentMap = serviceMessageResult.stream()
+            .filter(x->x.get(SERVICE_MESSAGE_RECORD.SEND_STATUS).equals((byte)1))
+            .collect(Collectors.toMap(x->x.get("everyDate").toString(),x->{
+                int i = 0;
+                return i++;
+            }));
+        Map<String,Integer> visitMap = serviceMessageResult.stream()
+            .filter(x->x.get(SERVICE_MESSAGE_RECORD.IS_VISIT).equals((byte)1))
+            .collect(Collectors.toMap(x->x.get("everyDate").toString(),x->{
+                int i = 0;
+                return i++;
+            }));
+
+        for(LocalDate date: allDate  ){
+            String localDate = date.toString();
+            Integer sentNum = sentMap.getOrDefault(localDate,0);
+            Integer msgNum = messageMap.getOrDefault(localDate,0);
+            Integer visitNum = visitMap.getOrDefault(localDate,0);
+            allSendNum+=msgNum;
+            allSentNum+=sentNum;
+            allVisitNum+=visitNum;
+            MessageStatisticsVo.StatisticsByDay day = vo.new StatisticsByDay();
+            day.setDate(date);
+            day.setSendNumber(msgNum);
+            day.setSendSuccessNumber(sentNum);
+            day.setVisitNumber(visitNum);
+            if( sentNum != 0){
+                day.setVisitPercentage(MathUtil.deciMal(visitNum,sentNum));
+            }else{
+                if( visitNum != 0 ){
+                    day.setVisitPercentage(100.00);
+                }else{
+                    day.setVisitPercentage(0.00);
+                }
+            }
+            allStatistics.add(day);
+        }
+        vo.setAllStatistics(allStatistics);
+        vo.setSendNumber(allSendNum);
+        vo.setSendSuccessNumber(allSentNum);
+        vo.setVisitNumber(allVisitNum);
+        if( allSentNum != 0){
+            vo.setVisitPercentage(MathUtil.deciMal(allVisitNum,allSentNum));
+        }else{
+            if( allVisitNum != 0 ){
+                vo.setVisitPercentage(100.00);
+            }else{
+                vo.setVisitPercentage(0.00);
+            }
+        }
+        return vo;
     }
 
 }

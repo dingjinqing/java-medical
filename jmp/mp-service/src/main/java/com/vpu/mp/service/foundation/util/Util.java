@@ -129,6 +129,16 @@ public class Util {
 		}
 	}
 
+	public static <T> T readValue(String content,Class<?> clz1,Class<?> clz2){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(content,mapper.getTypeFactory().constructParametricType(clz1,clz2));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 	public static String md5(String string) {
 		return DigestUtils.md5DigestAsHex(string.getBytes());
 	}

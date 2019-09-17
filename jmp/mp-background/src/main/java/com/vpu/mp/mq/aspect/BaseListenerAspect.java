@@ -3,14 +3,19 @@ package com.vpu.mp.mq.aspect;
 
 import com.rabbitmq.client.Channel;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
+import com.vpu.mp.service.saas.SaasApplication;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.amqp.core.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  *
@@ -21,6 +26,10 @@ import java.io.IOException;
 @Aspect
 @Component
 public class BaseListenerAspect {
+
+    @Autowired
+    private SaasApplication saas;
+
     @Pointcut("@annotation(org.springframework.amqp.rabbit.annotation.RabbitHandler)")
     public void mqSuccessListenerAspect(){}
 
@@ -30,14 +39,29 @@ public class BaseListenerAspect {
         BaseRabbitHandler handler = (BaseRabbitHandler)point.getThis();
         Object[] dataArray = point.getArgs().clone();
         int len = dataArray.length;
+        Object param = dataArray[0];
         Message msg = (Message)dataArray[len-2];
         Channel channel = (Channel)dataArray[len-1];
         try {
             point.proceed();
+            Integer id = assertTaskJobId(param);
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
         } catch (Throwable throwable) {
             handler.executeException(dataArray,throwable);
             channel.basicNack(msg.getMessageProperties().getDeliveryTag(), false, false);
         }
+    }
+    private Integer assertTaskJobId(Object o){
+        Integer id = null;
+        try {
+            Method m = o.getClass().getMethod("getTaskJobId");
+            if( m != null ){
+                id= Integer.parseInt(m.invoke(o).toString());
+                return id;
+            }
+        } catch (InvocationTargetException |IllegalAccessException | NoSuchMethodException e) {
+            return id;
+        }
+        return id;
     }
 }

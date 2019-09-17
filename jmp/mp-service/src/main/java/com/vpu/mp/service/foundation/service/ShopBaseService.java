@@ -1,15 +1,19 @@
 package com.vpu.mp.service.foundation.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayDeque;
+import java.util.Date;
 import java.util.Deque;
 
 import org.jooq.Configuration;
 import org.jooq.ContextTransactionalRunnable;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import org.jooq.impl.SQLDataType;
 
 
 /**
@@ -90,4 +94,10 @@ public class ShopBaseService extends AbstractCommonBaseService {
 		ShopRecord shop = saas.shop.getShopById(this.getShopId());
 		return shop == null ? 0 : shop.getSysId();
 	}
+
+
+    public Field<String> dateFormat(Field<Timestamp> field, String format) {
+        return DSL.field("date_format({0}, {1})", SQLDataType.VARCHAR,
+            field, DSL.inline(format));
+    }
 }

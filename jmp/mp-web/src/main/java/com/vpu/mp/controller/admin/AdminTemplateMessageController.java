@@ -2,13 +2,10 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateQuery;
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateVo;
+import com.vpu.mp.service.pojo.shop.market.message.*;
 import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateParam;
-import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
 
 /**
  * 营销管理-消息推送
@@ -22,9 +19,23 @@ public class AdminTemplateMessageController extends AdminBaseController {
 
 
 
-    @PostMapping("/getUser")
+    @PostMapping("/getUserNumbers")
     public JsonResult getSendUsers(@RequestBody UserInfoQuery query){
         return success(shop().messageTemplateService.getSendUsersSize(query));
+    }
+    @PostMapping("/getUserArray")
+    public JsonResult getUserArray(@RequestBody MessageUserQuery query){
+        return success(shop().messageTemplateService.getUserVoPage(query));
+    }
+    @PostMapping("/updateCheckedUser")
+    public JsonResult updateCheckedUser(@RequestBody MessageUserQuery query){
+        try{
+            shop().messageTemplateService.updateClickStatus(query);
+            return success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return fail();
+        }
     }
     @PostMapping("/addMessage")
     public JsonResult addMessage(@RequestBody MessageTemplateParam param){
@@ -48,5 +59,9 @@ public class AdminTemplateMessageController extends AdminBaseController {
     @GetMapping("/record/list")
     public JsonResult getSendRecordPage(@RequestBody MessageTemplateQuery param){
         return success(shop().messageTemplateService.getSendRecord(param));
+    }
+    @PostMapping("/analysis")
+    public JsonResult queryMessageStatistics(@RequestBody MessageTemplateQuery param){
+        return success(shop().messageTemplateService.queryStatisticsData(param));
     }
 }
