@@ -77,7 +77,6 @@ public class AdminMemberController extends AdminBaseController{
 	public JsonResult getAllCardList() {
 		logger().info("获取系统中的所有会员卡");
 		MemberCardVo vo  = shop().member.card.getAllCardList();
-		
 		return success(vo);
 	}
 	
