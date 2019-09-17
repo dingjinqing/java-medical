@@ -24,7 +24,9 @@ import org.springframework.util.Assert;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -193,17 +195,17 @@ public class ShareRewardService extends ShopBaseService {
      */
     public ShareRewardInfoVo getShareRewardInfo(Integer shareId) {
         ShareRewardInfoVo shareRewardInfoVo = db().selectFrom(sa).where(sa.ID.eq(shareId)).fetchOneInto(ShareRewardInfoVo.class);
-        ShareRule[] shareRules = new ShareRule[3];
+        List<ShareRule> shareRules = new ArrayList<>();
         try {
             if (StringUtils.isNotEmpty(shareRewardInfoVo.getFirstLevelRule())) {
                 log.debug("deserialization first rule : {}", shareRewardInfoVo.getFirstLevelRule());
-                shareRules[0] = MAPPER.readValue(shareRewardInfoVo.getFirstLevelRule(), ShareRule.class);
+                shareRules.add(MAPPER.readValue(shareRewardInfoVo.getFirstLevelRule(), ShareRule.class));
                 if (StringUtils.isNotEmpty(shareRewardInfoVo.getSecondLevelRule())) {
                     log.debug("deserialization second rule : {}", shareRewardInfoVo.getSecondLevelRule());
-                    shareRules[1] = MAPPER.readValue(shareRewardInfoVo.getSecondLevelRule(), ShareRule.class);
+                    shareRules.add(MAPPER.readValue(shareRewardInfoVo.getSecondLevelRule(), ShareRule.class));
                     if (StringUtils.isNotEmpty(shareRewardInfoVo.getThirdLevelRule())) {
                         log.debug("deserialization third rule : {}", shareRewardInfoVo.getThirdLevelRule());
-                        shareRules[2] = MAPPER.readValue(shareRewardInfoVo.getThirdLevelRule(), ShareRule.class);
+                        shareRules.add(MAPPER.readValue(shareRewardInfoVo.getThirdLevelRule(), ShareRule.class));
                     }
                 }
             }

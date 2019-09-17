@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author liufei
@@ -76,5 +77,5 @@ public class ShareRewardInfoVo {
     /**
      * 分享规则数组
      */
-    private ShareRule[] shareRules;
+    private List<ShareRule> shareRules;
 }
