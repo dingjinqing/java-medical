@@ -241,6 +241,8 @@ export default {
       this.afferentPathToPage(this.suerPath)
       this.dialogVisible = false
       console.log(this.suerPath)
+      // 把选中的链接回传
+      this.$emit('path', this.suerPath)
     },
     handleClose (done) {
       this.dialogVisible = false

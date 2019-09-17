@@ -3,27 +3,27 @@
  */
 import service from '@/util/request.js'
 // 选择链接弹窗-商品链接
-export function goodsListApi (params) {
+export function goodsListApi (data) {
   return service({
     url: '/api/admin/decorate/goods/list',
     method: 'post',
-    params
+    data
   })
 }
 // 选择链接弹窗-自定义页面
-export function pageCustomApi (params) {
+export function pageCustomApi (data) {
   return service({
     url: '/api/admin/decorate/page/custom',
     method: 'post',
-    params
+    data
   })
 }
 // 通用弹窗选择链接-添加网页跳转
-export function webSaveApi (params) {
+export function webSaveApi (data) {
   return service({
     url: '/api/admin/decorate/web/save',
     method: 'post',
-    params
+    data
   })
 }
 // 通用弹窗选择链接-网页跳转列表

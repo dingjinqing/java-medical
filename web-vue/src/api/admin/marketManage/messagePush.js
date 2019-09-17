@@ -23,3 +23,10 @@ export const allTagApi = () =>
     url: '/api/admin/tag/all/get',
     method: 'post'
   })
+// 获取模版内容
+export const contentListApi = params =>
+  service({
+    url: '/api/admin/market/message/template/content/list',
+    method: 'get',
+    params
+  })

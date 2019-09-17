@@ -117,7 +117,7 @@
                     <el-button
                       size="small"
                       @click="handleChooseLink"
-                    > 选择链接</el-button>
+                    > {{this.pageLink === ``?`添加链接`:this.pageLink}}</el-button>
                   </div>
                 </el-form-item>
                 <!-- 参与活动人群 -->
@@ -303,9 +303,16 @@
         @dialog-cancel="closeDialog"
       />
       <!-- 选择链接弹窗 -->
-      <selectLinks />
+      <selectLinks @path="getPath" />
       <!-- 选择商品弹窗 -->
       <choosingGoods @res="getRes" />
+      <!-- 选择内容模板消息 -->
+      <chooseTemplateDialog
+        v-if="whetherShowDialog"
+        @data="getData"
+        :showDialog="whetherShowDialog"
+        @dialog-cancel="closeDialog"
+      />
     </el-card>
   </div>
 </template>
@@ -314,6 +321,8 @@
 import selectLinks from '@/components/admin/selectLinks'
 // 选择商品弹窗
 import choosingGoods from '@/components/admin/choosingGoods'
+// 选择内容模板弹窗
+import chooseTemplateDialog from './chooseTemplateDialog'
 import memberListDialog from './memberListDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
@@ -321,7 +330,7 @@ import { allCardApi } from '@/api/admin/marketManage/messagePush.js'
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
-  components: { selectLinks, dateTimePicker, chooseSelect, memberListDialog, choosingGoods },
+  components: { chooseTemplateDialog, selectLinks, dateTimePicker, chooseSelect, memberListDialog, choosingGoods },
   data () {
     return {
       urls: {
@@ -369,6 +378,7 @@ export default {
       userIdList: [],
       onClickCustomRule: false,
       disabledOnClickCustomRule: false,
+      pageLink: ``,
       /**
        * 表单检验
        */
@@ -383,6 +393,7 @@ export default {
        */
 
       dialogOff: false,
+      whetherShowDialog: false,
       memberNum: 0, // 已选择的会员人数
       /**
        * 自定义实体
@@ -434,21 +445,7 @@ export default {
     }
   },
   watch: {
-    // 监听自定义是否勾选
-    // onClickCustomRule (newValue, oldValue) {
-    //   console.log(newValue)
-    //   console.log(oldValue)
-    //   switch (newValue) {
-    //     case true:
-    //       this.disabledOnClickCustomRule = false
-    //       break
-    //     case false:
-    //       this.disabledOnClickCustomRule = true
-    //       break
-    //     default:
-    //       break
-    //   }
-    // }
+
   },
   created () {
     this.initData()
@@ -520,6 +517,7 @@ export default {
     // 关闭会员弹窗
     closeDialog () {
       this.dialogOff = false
+      this.whetherShowDialog = false
     },
     // 添加会员
     handleAddMember () {
@@ -532,6 +530,10 @@ export default {
     getUserIdList (val) {
       console.log(val)
       this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
+    },
+    // getData
+    getData () {
+
     },
     customRuleInfoValChange (val) {
       if (val === `指定时间内有登录记录`) {
@@ -659,6 +661,11 @@ export default {
       }
       this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
       this.goodsIdList = this.goodsIdList.filter(item => item !== id)
+    },
+    // 获取选中的path
+    getPath (res) {
+      console.log(res)
+      this.pageLink = res
     }
   }
 }
