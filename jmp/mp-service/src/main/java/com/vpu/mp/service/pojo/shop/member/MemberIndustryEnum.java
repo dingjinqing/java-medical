@@ -1,7 +1,11 @@
 package com.vpu.mp.service.pojo.shop.member;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 
 /**
 * @author 黄壮壮
@@ -143,4 +147,19 @@ public enum MemberIndustryEnum {
 	}
 	
 	
+	public static void main(String ...args) {
+		System.out.println("Hello Wolrd");
+		List<IndustryVo> allIndustryInfo = getAllIndustryInfo();
+		allIndustryInfo.stream().forEach(System.out::println);
+	}
+	
+	/** 获取行业所有信息 */
+	public static List<IndustryVo> getAllIndustryInfo() {
+		
+		List<IndustryVo> industryList = new ArrayList<>();
+		for(MemberIndustryEnum item: MemberIndustryEnum.values()) {
+			industryList.add(new IndustryVo(item.code,item.getName()));
+		}
+		return industryList;
+	}
 }

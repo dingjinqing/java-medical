@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -16,5 +18,20 @@ public class MemberParam {
 	
 	/** ------邀请人id-----------*/
 	private Integer inviteId;
-
+	
+	/** 生日 */
+	private Integer birthdayYear;
+	private Integer birthdayMonth;
+	private Integer birthdayDay;
+	
+	/** 婚姻状况：1未婚，2已婚，3保密  */
+	private Integer maritalStatus;
+	/** 月收入 1：2000元以下 2：2000-3999元  3： 4000-5999元  4：6000-7999元  5： 8000元以上*/
+	private Integer monthlyIncome;
+	/** 身份证 */
+	private String cid;
+	/** 性别：女f,男m */
+	private String sex;
+	/** 受教育程度 */
+	private Byte education;
 }

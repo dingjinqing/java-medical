@@ -97,7 +97,7 @@ public class MemberBasicInfoVo {
 	
 	/** 婚姻状况：1未婚，2已婚，3保密  */
 	private Integer maritalStatus;
-	/** 月收入 */
+	/** 月收入 1：2000元以下 2：2000-3999元  3： 4000-5999元  4：6000-7999元  5： 8000元以上*/
 	private Integer monthlyIncome;
 	/** 身份证 */
 	private String cid;
