@@ -143,7 +143,7 @@ export default {
         shopId: data.shopId
       }
       console.log(data)
-      this.currency = localStorage.setItem('V-Currency', 'CNY')
+      localStorage.setItem('V-Currency', 'CNY')
       changeShopRequest(obj).then((res) => {
         console.log(res)
         const { error, message } = res
