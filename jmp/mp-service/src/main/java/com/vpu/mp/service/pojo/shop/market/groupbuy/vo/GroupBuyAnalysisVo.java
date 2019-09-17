@@ -19,6 +19,6 @@ public class GroupBuyAnalysisVo {
     List<BigDecimal> ratioList = new ArrayList<>();
     List<Integer> oldUserList = new ArrayList<>();
     List<Integer> newUserList = new ArrayList<>();
-    List<Timestamp> dateList = new ArrayList<>();;
+    List<String> dateList = new ArrayList<>();;
 
 }

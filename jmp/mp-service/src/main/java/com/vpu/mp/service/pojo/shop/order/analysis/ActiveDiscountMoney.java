@@ -11,6 +11,10 @@ import lombok.Data;
  */
 @Data
 public class ActiveDiscountMoney {
+    public static final String MARKET_PRICE ="marketPrice";
+    public static final String GOODS_PRICE ="goodsPrice";
+    public static final String GOODS_NUMBER ="goodsNumber";
+    public static final String DISCOUNTEDTOTALPRICE ="discountedTotalPrice";
 
     private Timestamp createTime;
 

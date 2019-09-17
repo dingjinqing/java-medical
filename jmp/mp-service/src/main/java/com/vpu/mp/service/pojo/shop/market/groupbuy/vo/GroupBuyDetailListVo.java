@@ -22,7 +22,7 @@ public class GroupBuyDetailListVo {
     /**
      *参团用户
      */
-    private String userName;
+    private String username;
     /**
      * 用户手机号
      */

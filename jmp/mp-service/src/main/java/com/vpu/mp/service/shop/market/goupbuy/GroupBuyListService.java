@@ -163,6 +163,7 @@ public class GroupBuyListService  extends ShopBaseService {
     }
 
     private void builderQuery(SelectConditionStep<? extends Record> select, GroupBuyDetailParam param) {
+        select.and(GROUP_BUY_LIST.ACTIVITY_ID.eq(param.getActivityId()));
         if (param.getMobile() != null && !param.getMobile().isEmpty()) {
             select.and(USER.MOBILE.eq(param.getMobile()));
         }

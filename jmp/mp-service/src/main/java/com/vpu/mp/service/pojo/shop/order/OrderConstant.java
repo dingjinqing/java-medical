@@ -87,7 +87,7 @@ public class OrderConstant {
 	public final static byte GOODS_TYPE_PAY_FOR_ANOTHER = 99;
 	/** 扫码购订单 */
 	public final static byte GOODS_TYPE_SWEEP_CODE_BUY = 100;
-	
+
 	/**退货状态*/
 	/**审核中,退款且退货申请*/
 	public final static byte  REFUND_STATUS_AUDITING = 1;
@@ -171,48 +171,48 @@ public class OrderConstant {
 	public final static List<Byte> IS_RETURNMONEY = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED));
 	/**退货支持状态:已收货 已完成*/
 	public final static List<Byte> IS_RETURNGOODS = new ArrayList<Byte>(Arrays.asList(ORDER_RECEIVED, ORDER_FINISHED));
-	
-	/** 
-	 * return_order return_type 
+
+	/**
+	 * return_order return_type
 	 * 退-退款类型:0仅退款 1:退货退款 2:仅退运费 3:手动退款
 	 */
 	public final static byte RT_ONLY_MONEY = 0;
 	public final static byte RT_GOODS = 1;
 	public final static byte RT_ONLY_SHIPPING_FEE = 2;
 	public final static byte RT_MANUAL = 3;
-	
+
 	public final static String[] RETURN_TYPE_CN = {
 			"仅退款",
 			"退货退款",
 			"仅退运费",
-			"手动退款"	
+			"手动退款"
 	};
-	
+
 	/**
 	 * 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
 	 */
 	public final static byte FANLI_TYPE_DEFAULT = 0;
 	public final static byte FANLI_TYPE_DISTRIBUTION_ORDER = 1;
 	public final static byte FANLI_TYPE_MEMBER_ORDER = 2;
-	
+
 	/**
 	 * 	settlement_flag 返利结算标志：0：未结算，1：已结算，2：不返利
 	 */
-	
+
 	public final static byte SETTLEMENT_WAIT = 0;
 	public final static byte SETTLEMENT_FINISH = 1;
 	public final static byte SETTLEMENT_NOT = 2;
-	
+
 	/**元转化为分的比例*/
 	public final static byte TUAN_TO_FEN = 100;
 
 	/**一分*/
 	public final static BigDecimal CENT = new BigDecimal("0.01");
-	
+
 	/**商家 0 、买家1*/
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_N = 0;
-	
+
 	/**
 	 * 订单退款退货流程操作
 	 */
@@ -234,7 +234,7 @@ public class OrderConstant {
 			"商家同意退货申请",
 			"商家拒绝退货申请"
 	};
-	
+
 	/**
 	 * 订单简单操作
 	 */
@@ -247,7 +247,7 @@ public class OrderConstant {
 	 */
 	public final static byte BK_PAID_N = 0;
 	public final static byte BK_PAID_Y = 1;
-	
+
 	/**
 	 * 综合查询：支付方式
 	 */
@@ -352,9 +352,15 @@ public class OrderConstant {
 	public String getGoodsType(byte goodsTypeCode) {
 		return goodsType[goodsTypeCode];
 	}
-	
+
 	/** 是否删除 0： 否； 1： 是 */
 	public static final Byte DELETE_NO = 0;
 	public static final Byte DELETE_YES = 1;
-	
+
+	/**
+	 * 是否是礼物
+	 */
+	public static final Integer IS_GIFT_Y = 1;
+	public static final Integer IS_GIFT_N = 0;
+
 }

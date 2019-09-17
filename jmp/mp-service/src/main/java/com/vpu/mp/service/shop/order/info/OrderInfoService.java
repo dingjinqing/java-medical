@@ -37,13 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetMoreStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -643,14 +637,17 @@ public class OrderInfoService extends ShopBaseService {
 	public List<ActiveDiscountMoney> getActiveDiscountMoney(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
 		List<ActiveDiscountMoney> record = db().select(
 				DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME),
-				DSL.sum(ORDER_GOODS.MARKET_PRICE),
-				DSL.sum(ORDER_GOODS.GOODS_PRICE),
-				DSL.sum(ORDER_GOODS.DISCOUNTED_TOTAL_PRICE))
+				DSL.sum(ORDER_GOODS.MARKET_PRICE.minus(ORDER_GOODS.GOODS_PRICE).multiply(
+                        ORDER_GOODS.GOODS_NUMBER.minus(ORDER_GOODS.RETURN_NUMBER))).as(ActiveDiscountMoney.MARKET_PRICE),
+				DSL.sum(ORDER_GOODS.GOODS_PRICE).as(ActiveDiscountMoney.GOODS_PRICE),
+				DSL.sum(ORDER_GOODS.DISCOUNTED_GOODS_PRICE).multiply(
+                        ORDER_GOODS.GOODS_NUMBER.minus(ORDER_GOODS.RETURN_NUMBER)).as(ActiveDiscountMoney.DISCOUNTEDTOTALPRICE))
 				.from(ORDER_INFO)
 				.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 				.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
 				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
 				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+				.and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
 				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
 				.groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
 				.orderBy(ORDER_INFO.CREATE_TIME)
@@ -797,7 +794,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public BigDecimal getCardConsumpAmount(Integer userId) {
-		
+
 		Record1<BigDecimal> record = getCardConsumpAmountSql(userId);
 		if( record != null) {
 			return record.into(BigDecimal.class);
@@ -805,7 +802,7 @@ public class OrderInfoService extends ShopBaseService {
 			return BigDecimal.ZERO;
 		}
 	}
-	
+
 	public Record1<BigDecimal> getCardConsumpAmountSql(Integer userId) {
 		 return db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE))
 										   .from(ORDER_INFO)
@@ -828,9 +825,9 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return null;
 	}
-	
+
 	public Record1<Timestamp> getRecentOrderInfoByUserIdSQL(Integer userId) {
-		
+
 		return db().select(ORDER_INFO.CREATE_TIME)
 				   .from(ORDER_INFO)
 				   .where(ORDER_INFO.USER_ID.eq(userId))
@@ -906,14 +903,14 @@ public class OrderInfoService extends ShopBaseService {
 				.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_STATUS_FINISH))
 				.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
 				.fetchAny();
-		
+
 		if(record != null) {
 			return record.into(Integer.class);
 		}else {
 			return 0;
 		}
-		
-				
+
+
 	}
 
 

@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Date工具
- * 
+ *
  * @author: 卢光耀
  * @date: 2019-07-26 10:51
  *
@@ -31,7 +31,7 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
 
 	private static final Integer MILLI_SECOND = 1000;
-	
+
 	/**
 	 * 转换日期格式输出
 	 * @param format
@@ -42,7 +42,7 @@ public final class DateUtil {
 		LocalDateTime localDateTime = convertLocalDate(date);
 		return  localDateTime.format(DateTimeFormatter.ofPattern(format));
 	}
-	
+
 	/**
 	 * Date 转为 LocalDateTime
 	 * @param date
@@ -53,7 +53,7 @@ public final class DateUtil {
 		ZoneId zone = ZoneId.systemDefault();
 		return  LocalDateTime.ofInstant(instant, zone);
 	}
-	
+
 	/**
 	 * 转为LocalDate类型
 	 * @param format 日期格式
@@ -63,7 +63,7 @@ public final class DateUtil {
 	public static LocalDate localDate(String format,String date) {
 		return LocalDate.parse(date,DateTimeFormatter.ofPattern(format));
 	}
-	
+
 	/**
 	 * 获取本地日期
 	 * @return
@@ -71,8 +71,8 @@ public final class DateUtil {
 	public static LocalDate getLocalDate() {
 		return LocalDate.now();
 	}
-	
-	
+
+
 	/**
 	 * 转为LocalDateTime类型
 	 * @param format 日期时间格式
@@ -82,7 +82,7 @@ public final class DateUtil {
 	public static LocalDateTime localDateTime(String format,String dateTime) {
 		return LocalDateTime.parse(dateTime,DateTimeFormatter.ofPattern(format));
 	}
-	
+
 	/**
 	 * 当前时间文本输出
 	 * @param format
@@ -92,7 +92,7 @@ public final class DateUtil {
 		return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
 	}
 
-	
+
 	/**
 	 * 获取本地的时间
 	 */
@@ -105,14 +105,14 @@ public final class DateUtil {
     public static Timestamp getDalyedDateTime(Integer second) {
         return new Timestamp(getLocalDateTime().getTime()+second*MILLI_SECOND);
     }
-	
+
 	/**
 	 * 	获取当前时间戳（可以直接用此值放入数据库）
 	 */
 	public static Timestamp getSqlTimestamp() {
 		return Timestamp.from(Instant.now());
 	}
-	
+
 	/**
 	 * 获取当前/指定月份第一天
 	 */
@@ -121,6 +121,12 @@ public final class DateUtil {
 		calendar.setTime(date != null ? date : new Date());
 		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 		return new Timestamp(calendar.getTime().getTime());
+	}
+	/**
+	 * 获取当前月份第一天
+	 */
+	public static Timestamp currentMonthFirstDay() {
+		return currentMonthFirstDay(null);
 	}
 	/**
 	 * 获取当前月份最后一天
@@ -141,7 +147,7 @@ public final class DateUtil {
 		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 		return new Timestamp(calendar.getTime().getTime());
 	}
-	
+
 	/**
 	 * 转换为时间戳
 	 */

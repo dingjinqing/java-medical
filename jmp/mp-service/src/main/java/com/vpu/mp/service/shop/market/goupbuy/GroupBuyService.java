@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -234,40 +236,49 @@ public class GroupBuyService extends ShopBaseService {
      */
     public GroupBuyAnalysisVo groupBuyAnalysis(GroupBuyAnalysisParam param) {
         GroupBuyAnalysisVo analysisVo = new GroupBuyAnalysisVo();
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate==null||endDate==null){
+             startDate = DateUtil.currentMonthFirstDay();
+             endDate = DateUtil.getLocalDateTime();
+        }
         //获取销售额等金额
-        List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(1, param.getId(), param.getStartTime(), param.getEndTime());
+        List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(1, param.getId(), startDate, endDate);
         //获取参与用户信息
-        ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(1, param.getId(), param.getStartTime(), param.getEndTime());
+        ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(1, param.getId(), startDate,endDate);
 
-        Timestamp date = Util.getStartToday(param.getStartTime());
-        while (Objects.requireNonNull(date).compareTo(param.getEndTime()) <= 0) {
+        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
             //活动实付金额
-            ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, date);
+            ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
             if (discountMoney==null){
                 analysisVo.getGoodsPriceList().add(BigDecimal.ZERO);
                 analysisVo.getMarketPriceList().add(BigDecimal.ZERO);
                 analysisVo.getRatioList().add(BigDecimal.ZERO);
             }else {
-                analysisVo.getGoodsPriceList().add(discountMoney.getGoodsPrice());
-                analysisVo.getMarketPriceList().add(discountMoney.getMarketPrice());
-                analysisVo.getRatioList().add(discountMoney.getDiscountedTotalPrice().compareTo(BigDecimal.ZERO)>0?
-                        discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()).divide(discountMoney.getDiscountedTotalPrice(),BigDecimal.ROUND_FLOOR):BigDecimal.ZERO);
+                BigDecimal  goodsPrice =Optional.ofNullable(discountMoney.getGoodsPrice()).orElse(BigDecimal.ZERO);
+                BigDecimal  marketPric =Optional.ofNullable(discountMoney.getMarketPrice()).orElse(BigDecimal.ZERO);
+                BigDecimal  totalPrice =Optional.ofNullable(discountMoney.getDiscountedTotalPrice()).orElse(BigDecimal.ZERO);
+                analysisVo.getGoodsPriceList().add(goodsPrice);
+                analysisVo.getMarketPriceList().add(marketPric);
+                analysisVo.getRatioList().add(totalPrice.compareTo(BigDecimal.ZERO)>0?
+                        marketPric.subtract(goodsPrice).divide(totalPrice,BigDecimal.ROUND_FLOOR):BigDecimal.ZERO);
             }
             //新用户数
-            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), date);
+            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), startDate);
             if (newUser==null){
                 analysisVo.getNewUserList().add(0);
             }else {
                 analysisVo.getNewUserList().add(newUser.getNum());
             }
             //老用户数
-            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), date);
+            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), startDate);
             if (oldUser==null){
                 analysisVo.getOldUserList().add(0);
             }else {
                 analysisVo.getOldUserList().add(oldUser.getNum());
             }
-            date = Util.getEarlyTimeStamp(date, 1);
+            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,startDate));
+            startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
         return analysisVo;
     }
