@@ -36,6 +36,7 @@ export const cn = {
   orderInfo: '订单信息',
   orderAmount: '订单金额',
   score: '积分',
+  delivery: '发货',
   orderStatusList: [
     [null, '全部订单'],
     [0, '待付款'],

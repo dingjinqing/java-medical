@@ -2,7 +2,6 @@
   <el-dialog
     title="填入快递信息发货"
     :visible.sync="showDelivery"
-    v-if="showDelivery === true"
     custom-class="custom"
     width="600px"
   >
@@ -58,10 +57,17 @@
           <el-table-column
             prop=""
             label="商品名称"
+            width="200"
           >
             <template slot-scope="scope">
-              <div>
-
+              <div class="goods_info">
+                <img
+                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  alt=""
+                >
+                <div class="right_info">
+                  <div class="goods_name">{{scope.row.goodsName}}</div>
+                </div>
               </div>
             </template>
           </el-table-column>
@@ -152,6 +158,7 @@ export default {
         ]
       }
     }
+
   },
   watch: {
     showDelivery (newval) {
@@ -159,11 +166,15 @@ export default {
         this.closeDialog()
       }
     },
-    show (newVal) {
-      if (newVal === true) {
-        this.showDelivery = true
-        this.initData()
-      }
+    show: {
+      handler (newVal) {
+        if (newVal === true) {
+          this.showDelivery = true
+          console.log(123)
+          this.initData()
+        }
+      },
+      immediate: true
     }
   }
 }
@@ -209,6 +220,34 @@ export default {
     > div {
       & + div {
         margin-left: 52px;
+      }
+    }
+  }
+  .delivery-info_goodslist {
+    .goods_info {
+      display: flex;
+      > img {
+        width: 60px;
+        height: 60px;
+        margin-right: 5px;
+      }
+      > .right_info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        justify-content: space-between;
+        .goods_name {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+          /*! autoprefixer: off */
+          -webkit-box-orient: vertical;
+          text-align: left;
+          line-height: 1.1;
+        }
       }
     }
   }

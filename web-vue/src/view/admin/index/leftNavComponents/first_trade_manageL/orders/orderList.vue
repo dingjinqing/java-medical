@@ -459,6 +459,7 @@
     </div>
     <nodesDialog :show.sync="showNodes" />
     <deliveryDialog
+      v-if="showDelivery"
       :show.sync="showDelivery"
       :orderData="orderItemInfo"
     />
