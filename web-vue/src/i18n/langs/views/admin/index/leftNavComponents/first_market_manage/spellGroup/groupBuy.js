@@ -1,4 +1,10 @@
 export const cn = {
+  // 新用户明细
+  invitePeople: '邀请人',
+  newUserId: '新用户id',
+  newUserNickname: '新用户昵称',
+  newUserMobile: '新用户手机号',
+  registrationTime: '注册时间',
   // 多人拼团活动效果
   number: '数量',
   legendData: [
@@ -167,6 +173,12 @@ export const cn = {
 }
 
 export const en = {
+  // 新用户明细
+  invitePeople: 'Inviters',
+  newUserId: 'New user id',
+  newUserNickname: 'New user nickname',
+  newUserMobile: 'New user phone number',
+  registrationTime: 'Registration time',
   // 活动效果数据
   number: 'number',
   legendData: [

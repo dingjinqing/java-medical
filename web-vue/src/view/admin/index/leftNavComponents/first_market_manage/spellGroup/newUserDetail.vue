@@ -8,104 +8,134 @@
     <wrapper>
       <section class="newuserDetailContent">
         <div>
-          <span>手机号</span>
+          <span>{{$t('groupBuy.mobileNumber')}}</span>
           <el-input
             class="inputWidth"
             size="small"
-            placeholder="请输入手机号"
+            :placeholder="$t('groupBuy.mobileNumber')"
           ></el-input>
         </div>
         <div>
-          <span>用户昵称</span>
+          <span>{{$t('groupBuy.userNickname')}}</span>
           <el-input
             class="inputWidth"
             size="small"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('groupBuy.userNickname')"
           ></el-input>
         </div>
         <div>
-          <span>邀请人</span>
+          <span>{{$t('groupBuy.invitePeople')}}</span>
           <el-input
             class="inputWidth"
             size="small"
-            placeholder="请输入邀请人昵称"
+            :placeholder="$t('groupBuy.invitePeople')"
           ></el-input>
         </div>
         <el-button
           class="btn"
           type="primary"
           size="small"
-        >查询</el-button>
+          @click="initDataList"
+        >{{$t('groupBuy.searchDataText')}}</el-button>
       </section>
     </wrapper>
 
     <wrapper>
       <div class="table_list">
         <el-table
+          :data="tableData"
           header-row-class-name="tableClss"
           border
           style="width: 100%"
         >
           <el-table-column
-            prop=""
-            label="活动中心"
+            prop="userName"
+            :label="$t('groupBuy.activityName')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop=""
-            label="新用户ID"
+            prop="userId"
+            :label="$t('groupBuy.newUserId')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop=""
-            label="新用户昵称"
+            prop="userName"
+            :label="$t('groupBuy.newUserNickname')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop=""
-            label="新用户手机号"
+            prop="mobile"
+            :label="$t('groupBuy.newUserMobile')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop=""
-            label="注册时间"
+            prop="createTime"
+            :label="$t('groupBuy.registrationTime')"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop=""
-            label="邀请人"
+            prop="inviteUserName"
+            :label="$t('groupBuy.invitePeople')"
             align="center"
           >
           </el-table-column>
         </el-table>
       </div>
+      <pagination
+              :page-params.sync="pageParams"
+              @pagination="initDataList"
+      />
     </wrapper>
+
   </div>
 </template>
 
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-
+import {newUserList} from '@/api/admin/marketManage/spellGroup.js'
 export default {
-  components: { wrapper },
+  components: { wrapper,
+    pagination: () => import('@/components/admin/pagination/pagination')
+
+  },
   data () {
     return {
-
+      requestParams: {
+        activityId: this.$route.query.id,
+        mobile: null,
+        userName: null,
+        inviteUserName: null,
+        currentPage: null,
+        pageRows: null
+      },
+      tableData: [],
+      pageParams: {}
     }
   },
   mounted () {
     // 初始化语言
     this.langDefault()
+    this.initDataList()
+  },
+  methods: {
+    initDataList () {
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      newUserList(this.requestParams).then(res => {
+        this.pageParams = res.content.page
+        this.tableData = res.content.dataList
+      })
+    }
   }
 }
 

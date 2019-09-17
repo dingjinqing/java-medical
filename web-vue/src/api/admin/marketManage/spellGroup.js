@@ -83,3 +83,11 @@ export function groupBuyAnalysis (data) {
     data: data
   })
 }
+// 活动新用户明细
+export function newUserList (data) {
+  return service({
+    url: '/api/admin/market/groupbuy/user/list',
+    method: 'post',
+    data: data
+  })
+}
