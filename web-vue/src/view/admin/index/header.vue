@@ -188,6 +188,7 @@ export default {
     },
     // 用户选项点击
     handle_user_list (index) {
+      console.log(1111)
       switch (index) {
         case 0:
           // this.$emit('change_components', '0')
@@ -241,6 +242,8 @@ export default {
             }
           })
       }
+
+      this.$http.$emit('changeHeaderComponents')
     },
     // 鼠标划入
     user_enter (index) {

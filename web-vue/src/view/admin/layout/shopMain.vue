@@ -1,23 +1,23 @@
 <template>
   <div class="s_container">
-    <CustomHeader @change_components="handleChange" />
+    <Header />
     <SelectShop v-if="flag4" />
     <Contact v-if="flag" />
-    <AccountSettings
-      v-if="flag0"
-      @change_components="handleChange"
-    />
+    <AccountSettings v-if="flag0" />
     <ServiceAuthList v-if="flag3" />
+    <ServiceAuthListDetail v-if="flag6" />
   </div>
 </template>
 <script>
-import CustomHeader from './header'
+import Header from './header'
 import SelectShop from './selectShop'
 import Contact from './contact'
 import AccountSettings from './accountSettings'
 import ServiceAuthList from './serviceAuthList'
+import ServiceAuthListDetail from './serviceAuthListDetail'
 export default {
-  components: { CustomHeader, SelectShop, Contact, AccountSettings, ServiceAuthList },
+  components: { Header, SelectShop, Contact, AccountSettings, ServiceAuthList, ServiceAuthListDetail },
+
   data () {
     return {
       flag: false,
@@ -25,12 +25,26 @@ export default {
       flag1: false,
       flag2: false,
       flag3: false,
-      flag4: false
+      flag4: false,
+      flag6: false
     }
+  },
+  watch: {
+    '$route' (newData) {
+      console.log(newData)
+      this.changeComponents()
+    }
+
   },
   mounted () {
     console.log(this.$route)
     // 初始化组建切换
+    this.$http.$on('changeHeaderComponents', res => {
+      console.log('触发了')
+      this.changeComponents()
+    })
+    // 初始化数据
+    this.defaluteData()
     this.changeComponents()
   },
   methods: {
@@ -41,33 +55,13 @@ export default {
       this.flag2 = false
       this.flag3 = false
       this.flag4 = false
-    },
-    // 切换组件
-    handleChange (index) {
-      // console.log(index)
-      this.defaluteData()
-      switch (index) {
-        case '0': this.flag0 = true
-          break
-        case '1': this.flag1 = true
-          break
-        case '2': this.flag2 = true
-          break
-        case '3': this.flag3 = true
-          break
-        case '4': this.flag4 = true
-          this.flag = true
-          break
-        default:
-          this.flag4 = true
-          this.flag = true
-          break
-      }
+      this.flag6 = false
     },
     changeComponents () {
+      this.defaluteData()
+      console.log(this.$route.query)
       if (this.$route.query) {
         let query = this.$route.query.change_components
-        this.defaluteData()
         switch (query) {
           case '0': this.flag0 = true
             break
@@ -79,6 +73,9 @@ export default {
             break
           case '4': this.flag4 = true
             this.flag = true
+            break
+          case '6':
+            this.flag6 = true
             break
           default:
             this.flag4 = true

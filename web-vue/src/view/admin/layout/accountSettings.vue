@@ -76,7 +76,7 @@
           >
             <li>
               <div>
-                旧密码：
+                {{$t('accountSetting.oldPaawd')}}：
               </div>
               <div>
                 <el-input
@@ -87,7 +87,7 @@
             </li>
             <li>
               <div>
-                新密码：
+                {{$t('accountSetting.newPaawd')}}：
               </div>
               <div>
                 <el-input
@@ -98,7 +98,7 @@
             </li>
             <li>
               <div>
-                确认新密码：
+                {{$t('accountSetting.comfNewPaawd')}}：
               </div>
               <div>
                 <el-input
@@ -112,14 +112,14 @@
                 type="primary"
                 size="mini"
                 @click="modifyPasswordSure()"
-              >确认修改</el-button>
+              > {{$t('accountSetting.sure')}}</el-button>
               <el-button
                 type="info"
                 plain
                 size="mini"
                 style="margin-left:20px"
                 @click="to_accountmain()"
-              >返回</el-button>
+              >{{$t('accountSetting.back')}}</el-button>
             </li>
           </ul>
         </div>
@@ -212,7 +212,12 @@ export default {
     // 跳转到店铺列表页
     to_allShops () {
       console.log(1)
-      this.$emit('change_components', '3')
+      this.$router.push({
+        path: '/admin/home/shopMain',
+        query: {
+          change_components: '4'
+        }
+      })
     },
     // 修改登录密码页面返回按钮事件
     to_accountmain () {

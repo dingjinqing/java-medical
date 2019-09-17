@@ -172,13 +172,28 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
-          this.$emit('change_components', '0')
+          this.$router.push({
+            path: '/admin/home/shopMain',
+            query: {
+              change_components: '0'
+            }
+          })
           break
         case 3:
-          this.$emit('change_components', '3')
+          this.$router.push({
+            path: '/admin/home/shopMain',
+            query: {
+              change_components: '3'
+            }
+          })
           break
         case 4:
-          this.$emit('change_components', '4')
+          this.$router.push({
+            path: '/admin/home/shopMain',
+            query: {
+              change_components: '4'
+            }
+          })
           break
         case 5:
           loginRequestOut().then((res) => {
@@ -199,6 +214,8 @@ export default {
           })
           break
       }
+      console.log(1111)
+      this.$http.$emit('changeHeaderComponents')
     },
     // 鼠标划入
     user_enter (index) {

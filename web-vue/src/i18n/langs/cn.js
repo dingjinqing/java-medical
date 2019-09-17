@@ -109,7 +109,9 @@ import {
   cn as pictureSetting
 } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 // 订单
-import { cn as order } from './views/admin/index/leftNavComponents/order/order'
+import {
+  cn as order
+} from './views/admin/index/leftNavComponents/order/order'
 const cn = {
   messages: {
     lang: '中文',
@@ -305,7 +307,12 @@ const cn = {
     modify: '修改头像',
     s_modify: '确认修改',
     to_shop_list: '返回店铺列表',
-    modifyPasswordtitle: '修改密码'
+    modifyPasswordtitle: '修改密码',
+    oldPaawd: '旧密码',
+    newPaawd: '新密码',
+    comfNewPaawd: '确认新密码',
+    sure: '确认修改',
+    back: '返回'
   },
   // 浏览图片dialog数据
   imgageDalog: {
@@ -449,7 +456,41 @@ const cn = {
     accountMange: '子账号管理',
     exit: '退出'
   },
+  // 授权公众号
+  serviceAuth: {
+    addButton: '添加授权',
+    tipsOne: '注意：仅可以授权认证服务号.授权完成认证服务号，关注服务号的用户在接收小程序消息通知时优先通过小程序接收',
+    tipsTop1: '由于微信平台相关要求，公众号授权完成后，需要在店铺内小程序管理-小程序授权绑定和该店铺小程序同主体的公众号，绑定后，使用该绑定公众号登录微信公众平台，在公众平台小程序小程序管理页面添加关联小程序，关联该小程序后，关注公众号的用户在接收小程序消息通知时即可通过公众号接收。小程序接收消息限制较大，详情查看',
+    tipsTop2: '模板消息下发条件说明',
+    tipsTop3: '此功能方便商家针对用户进行小程序消息通知。',
+    nickName: '服务号名称',
+    principalName: '主体名称',
+    alias: '公众微信号',
+    lastAuthTime: '授权时间',
+    mpNickName: '已绑定店铺',
+    isAuthOk: '授权状态',
+    operation: '操作',
+    payLook: '查看',
+    payManage: '提现配置',
+    payStoreName: '商户号:',
+    payKey: '支付秘钥:',
+    payCertContent: '支付证书:',
+    payKeyContent: '支付私钥:',
+    sure: '确 定',
+    cancel: '取 消',
+    haveAuth: '已授权',
+    haveCancle: '已取消',
+    title1: '授权列表',
+    title2: '服务号详情',
+    qurl: '公众号二维码',
+    type: '公众号类型',
+    newButton: '重新授权',
+    tipsTop4: ' 如果你的公众号已成功升级（从未认证升为认证号，或从订阅号升为服务号），请点击重新授权',
+    tipsTop5: '如何升级：',
+    tipsTop6: '如需对公众号进行微信认证，请登录“微信公众平台-> 公众号设置”，在“认证情况”栏目，点击申请微信认证',
+    authStats: '授权状态'
 
+  },
   router, // 路由信息
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本

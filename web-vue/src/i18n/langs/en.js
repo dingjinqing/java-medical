@@ -109,7 +109,9 @@ import {
   en as pictureSetting
 } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 // 订单
-import { en as order } from './views/admin/index/leftNavComponents/order/order'
+import {
+  en as order
+} from './views/admin/index/leftNavComponents/order/order'
 const en = {
   messages: {
     lang: 'English',
@@ -305,7 +307,12 @@ const en = {
     modify: 'Modify the Avatar',
     s_modify: 'Confirmation of modifications',
     to_shop_list: 'Return to the store list',
-    modifyPasswordtitle: 'Change Password'
+    modifyPasswordtitle: 'Change Password',
+    oldPaawd: 'old password',
+    newPaawd: 'new password',
+    comfNewPaawd: 'Confirm new password',
+    sure: 'confirm',
+    back: 'return'
   },
   // 浏览图片dialog数据
   imgageDalog: {
@@ -448,6 +455,40 @@ const en = {
     pasModify: 'change password',
     accountMange: 'sub-account management',
     exit: 'exit'
+  },
+  // 授权公众号
+  serviceAuth: {
+    addButton: 'Add Authorization',
+    tipsOne: 'Note: Only the authentication service number can be authorized. Authorization completes the authentication service number. Users who pay attention to the service number receive the priority through the applet when receiving the notification of the applet message.',
+    tipsTop1: 'Because of the requirements of WeChat platform, after the authorization of the public number is completed, it is necessary to manage the small program in the store - the small program authorization binding and the store applet are the same as the public number of the main body. After binding, use the binding public number to log in. The WeChat public platform adds a related applet to the public platform applet applet management page. After the small program is associated, the user who pays attention to the public number can receive the public number when receiving the small program message notification. The applet receives a large message limit, see',
+    tipsTop2: 'Template message delivery condition description',
+    tipsTop3: 'This feature makes it easy for merchants to notify small users about small programs. ',
+    nickName: 'service number name',
+    principalName: 'Principal name',
+    alias: 'public micro-signal',
+    lastAuthTime: 'authorization time',
+    mpNickName: 'Bounded store',
+    isAuthOk: 'status',
+    operation: 'operation',
+    payLook: 'View',
+    payManage: 'configuration',
+    payStoreName: 'Business number:',
+    payKey: 'Payment key:',
+    payCertContent: 'Payment certificate:',
+    payKeyContent: 'Pay private key:',
+    sure: 'confirm',
+    cancel: 'cancel',
+    haveAuth: 'authorized',
+    haveCancle: 'Cancelled',
+    title1: 'authorization list',
+    title2: 'Service number details',
+    qurl: 'public number two-dimensional code',
+    type: 'public number type',
+    newButton: 're-authorize',
+    tipsTop4: ' If your public account has been successfully upgraded (uncertified to an authentication number, or from a subscription number to a service number), click Reauthorize',
+    tipsTop5: 'How to upgrade:',
+    tipsTop6: 'If you need to perform WeChat authentication on the public number, please log in to the "WeChat public platform -> public number setting", in the "Certification status" column, click Apply for WeChat authentication',
+    authStats: 'authorization status'
   },
   router, // 路由信息
   membershipIntroduction, // 会员列表
