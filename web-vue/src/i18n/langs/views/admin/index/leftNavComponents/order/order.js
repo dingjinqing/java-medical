@@ -1,5 +1,4 @@
 export const cn = {
-
   goodsName: '商品名称',
   orderSn: '订单号',
   orderStatusText: '订单状态',
@@ -34,6 +33,7 @@ export const cn = {
   includeExpress: '含快递',
   collapse: '收起',
   more: '更多',
+  delivery: '发货',
   orderStatusList: [
     [null, '全部订单'],
     [0, '待付款'],
@@ -75,11 +75,7 @@ export const cn = {
     [99, '代付订单'],
     [100, '扫码购订单']
   ],
-  deliverTypeList: [
-    [null, '全部'],
-    [0, '快递'],
-    [1, '自提']
-  ],
+  deliverTypeList: [[null, '全部'], [0, '快递'], [1, '自提']],
   paymentTypeList: [
     [null, '全部'],
     [6, '微信支付'],
@@ -126,6 +122,7 @@ export const en = {
   includeExpress: 'With Express',
   collapse: 'collapse',
   more: 'more',
+  delivery: 'Delivery',
   orderStatusList: [
     [null, 'all orders'],
     [0, 'Pending payment'],
@@ -167,11 +164,7 @@ export const en = {
     [99, 'Payment Orders'],
     [100, 'Scan code purchase order']
   ],
-  deliverTypeList: [
-    [null, 'all'],
-    [0, 'Express'],
-    [1, 'self-lifting']
-  ],
+  deliverTypeList: [[null, 'all'], [0, 'Express'], [1, 'self-lifting']],
   paymentTypeList: [
     [null, 'all'],
     [1, 'WeChat payment'],

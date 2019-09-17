@@ -69,10 +69,7 @@
         </div>
       </div>
     </div>
-    <el-tabs
-      v-model="refundType"
-      @tab-click="handleClick"
-    >
+    <el-tabs v-model="searchParams.refundType">
       <el-tab-pane
         label="全部"
         name="0"
@@ -116,17 +113,30 @@
               </td>
             </tr>
             <tr class="order-tb-body">
-              <td>{{orderItem.cardName}}</td>
+              <td class="card_name">
+                <el-tag
+                  size="mini"
+                  effect="plain"
+                  :type="orderItem.cardType === 1 ? 'warning':'danger'"
+                >{{orderItem.cardType === 1 ? '限次会员卡':'普通会员卡'}}</el-tag>{{orderItem.cardName}}
+              </td>
               <td>{{orderItem.cardNo}}</td>
               <td>{{orderItem.moneyPaid}}</td>
-              <td>{{orderItem.username}}<br />{{orderItem.mobile}}</td>
+              <td> <a
+                  class="user_info"
+                  @click="viewUserDetail(orderItem.userId)"
+                >{{orderItem.username}}<br />{{orderItem.mobile}}</a> </td>
               <td>{{orderItem.payTime}}</td>
-              <td>{{orderItem.returnFlag | returnFlagType}}</td>
+              <td
+                v-html="returnFlagType(orderItem.orderSn)"
+                @click="processRefunds(orderItem.orderSn,$event)"
+                class="refund_status"
+              ></td>
               <td>{{orderItem.moneyPaid}}</td>
             </tr>
           </tbody>
           <tbody
-            :key="orderItem.orderId"
+            :key="index - 1"
             v-if="index != memberCardOrderList.length - 1"
           >
             <tr>
@@ -135,21 +145,28 @@
           </tbody>
         </template>
       </table>
-      <pagination
+      <Pagination
         :page-params.sync="pageParams"
         @pagination="initDataList"
       />
     </div>
+    <ManualRefund
+      :dataInfo="refundInfo"
+      :show.sync="showRefund"
+    />
   </div>
 </template>
 
 <script>
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    Pagination: () => import('@/components/admin/pagination/pagination'),
+    ManualRefund: () => import('./refundDialog')
   },
   data () {
     return {
+      showRefund: false,
+      refundInfo: null,
       pageParams: {
         'totalRows': 4,
         'currentPage': 1,
@@ -183,7 +200,7 @@ export default {
           'cardName': '测试用会员卡',
           'moneyPaid': 10,
           'useAccount': 0,
-          'useScore': 0,
+          'useScore': 100,
           'payFee': 0,
           'payTime': '2019-08-01 05:29:01',
           'payType': 0,
@@ -194,8 +211,8 @@ export default {
         },
         {
           'orderId': 2,
-          'orderSn': 'M201908011052262504',
-          'cardType': 0,
+          'orderSn': 'M201908011052262505',
+          'cardType': 1,
           'cardNo': '111222333',
           'cardName': '测试用会员卡',
           'moneyPaid': 10,
@@ -211,7 +228,7 @@ export default {
         },
         {
           'orderId': 3,
-          'orderSn': 'M201908011052262504',
+          'orderSn': 'M201908011052262506',
           'cardType': 0,
           'cardNo': '111222333',
           'cardName': '测试用会员卡',
@@ -239,6 +256,43 @@ export default {
     },
     initDataList () {
 
+    },
+    viewUserDetail (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId: userId
+        }
+      })
+    },
+    returnFlagType (orderSn) {
+      let orderInfo = this.memberCardOrderList.find(item => {
+        return item.orderSn === orderSn
+      })
+      if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
+        return `<div>订单完成<br/><a class="refund" >手动退款</a></div>`
+      } else if (orderInfo.returnFlag === 0) {
+        return `<div>订单完成<div/>`
+      } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
+        return `<div><a class="refund">手动退款</a><br/><a class="view">查看退款</a></div>`
+      } else if (orderInfo.returnFlag === 1) {
+        return `<div>退款完成<br/> <a class="view">查看退款</a></div>`
+      } else {
+        return `<div>退款失败</div>`
+      }
+    },
+    processRefunds (orderSn, event) {
+      this.refundInfo = this.memberCardOrderList.find(item => {
+        return item.orderSn === orderSn
+      })
+      this.$set(this.refundInfo, 'viewOrderType', 'card')
+      if (event.target.className === 'view') {
+        this.$set(this.refundInfo, 'action', 'view')
+        this.showRefund = true
+      } else if (event.target.className === 'refund') {
+        this.$set(this.refundInfo, 'action', 'refund')
+        this.showRefund = true
+      }
     }
   },
   filters: {
@@ -326,6 +380,24 @@ export default {
         td {
           vertical-align: middle;
           color: #666;
+          line-height: 24px;
+          &.card_name {
+            text-align: left;
+            /deep/ .el-tag {
+              margin-right: 5px;
+            }
+          }
+          .user_info {
+            color: #409eff;
+            cursor: pointer;
+          }
+          /deep/ &.refund_status {
+            .view,
+            .refund {
+              color: #409eff;
+              cursor: pointer;
+            }
+          }
         }
       }
     }

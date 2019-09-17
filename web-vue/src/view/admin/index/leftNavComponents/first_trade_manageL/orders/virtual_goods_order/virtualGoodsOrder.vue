@@ -1,21 +1,18 @@
 <template>
   <div class="content">
     <div class="main">
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-      >
+      <el-tabs v-model="activeName">
         <el-tab-pane
           label="会员卡订单"
-          name="1"
+          name="card"
         >
-          <memberOrder v-if="activeName ==='1'" />
+          <memberOrder v-if="activeName ==='card'" />
         </el-tab-pane>
         <el-tab-pane
           label="优惠券礼包订单"
-          name="2"
+          name="couponPackage"
         >
-          <couponPackageOrder v-if="activeName ==='2'" />
+          <couponPackageOrder v-if="activeName ==='couponPackage'" />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -30,7 +27,7 @@ export default {
   },
   data () {
     return {
-      activeName: '1'
+      activeName: 'card'
     }
   }
 }

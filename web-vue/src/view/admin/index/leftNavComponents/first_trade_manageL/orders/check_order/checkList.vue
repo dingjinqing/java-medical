@@ -108,7 +108,7 @@
                     </div>
                     <div class="right">
                       <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span>添加备注</span>
+                      <span @click="addNodes">添加备注</span>
                       <span @click="seeDetails(orderItem.OrderSn)">查看详情</span>
                     </div>
                   </div>
@@ -130,13 +130,15 @@
         />
       </div>
     </div>
+    <nodesDialog :show.sync="showNodes" />
   </div>
 </template>
 
 <script>
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    pagination: () => import('@/components/admin/pagination/pagination'),
+    nodesDialog: () => import('../addNotes')
   },
   data () {
     return {
@@ -172,7 +174,8 @@ export default {
         { orderId: 4, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
         { orderId: 5, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
         { orderId: 6, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' }
-      ]
+      ],
+      showNodes: false
     }
   },
   methods: {
@@ -183,6 +186,10 @@ export default {
           OrderSn: OrderSn
         }
       })
+    },
+    addNodes () {
+      console.log(123)
+      this.showNodes = true
     }
   }
 }

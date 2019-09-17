@@ -319,16 +319,23 @@
               <td colspan="8"></td>
             </tr>
           </tbody>
-          <template v-for="orderItem in orderList">
+          <template v-for="(orderItem,orderIndex) in orderList">
             <tbody
-              :key="orderItem.orderId"
+              :key="orderItem.orderSn"
               class="hasborder"
             >
               <tr class="order-tb-head">
                 <td colspan="8">
                   <div class="tb-head_box">
                     <div class="left">
-                      <span>{{$t('order.orderSn')}}：{{orderItem.orderSn}}</span>
+                      <el-tooltip
+                        class="item"
+                        effect="light"
+                        :content="$t('order.orderSn')+'：'+orderItem.orderSn"
+                        placement="top-start"
+                      >
+                        <span>{{$t('order.orderSn')}}：{{orderItem.orderSn}}</span>
+                      </el-tooltip>
                       <span>{{$t('order.paymentType')}}：
                         <span
                           v-for="(payCode,index) in orderItem.payCodeList"
@@ -337,30 +344,44 @@
                           <i :class="payCodeIconClassMap[payCode]"></i>
                         </span>
                       </span>
-                      <span>{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(orderItem.deliverType)}}</span>
-                      <span>{{$t('order.goodsTypeText')}}：
-                        <span
-                          v-for="(goodsType,index) in orderItem.goodsType.split(',')"
-                          :key="index"
-                        >
-                          <template v-if="index != 0">,</template>
-                          {{goodsTypeMap.get(Number(goodsType))}}
+                      <el-tooltip
+                        class="item"
+                        effect="light"
+                        :content="$t('order.deliverTypeText')+'：'+deliverTypeMap.get(orderItem.deliverType)"
+                        placement="top-start"
+                      >
+                        <span>{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(orderItem.deliverType)}}</span>
+                      </el-tooltip>
+                      <el-tooltip
+                        class="item"
+                        effect="light"
+                        :content="goodsTypeFilter(orderItem.goodsType.split(','))"
+                        placement="top-start"
+                      >
+                        <span>{{$t('order.goodsTypeText')}}：
+                          <span
+                            v-for="(goodsType,index) in orderItem.goodsType.split(',')"
+                            :key="index"
+                          >
+                            <template v-if="index != 0">,</template>
+                            {{goodsTypeMap.get(Number(goodsType))}}
+                          </span>
                         </span>
-                      </span>
+                      </el-tooltip>
                     </div>
                     <div class="right">
                       <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span>{{$t('order.remark')}}</span>
+                      <span @click="addNodes">{{$t('order.remark')}}</span>
                       <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
                       <span>{{$t('order.comment')}}</span>
                     </div>
                   </div>
                 </td>
               </tr>
-              <template v-for="(goodsItem,index) in orderItem.goods">
+              <template v-for="(goodsItem,goodsIndex) in orderItem.goods">
                 <tr
                   class="order-tb-body"
-                  :key="index"
+                  :key="goodsIndex"
                 >
                   <td>
                     <div class="goods_info">
@@ -378,26 +399,33 @@
                   <td>{{goodsItem.goodsPrice.toFixed(2)}}</td>
                   <td>{{goodsItem.goodsNumber}}</td>
                   <td
-                    v-if="index === 0"
+                    v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
                     <p>{{orderItem.consignee}}</p>
                     <p>{{orderItem.mobile}}</p>
                   </td>
                   <td
-                    v-if="index === 0"
+                    v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
                     {{orderItem.createTime}}
                   </td>
                   <td
-                    v-if="index === 0"
+                    v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
                     {{orderStatusMap.get(orderItem.orderStatus)}}
+                    <br />
+                    <el-button
+                      type="primary"
+                      size="small"
+                      v-if="[3,12].indexOf(orderItem.orderStatus) !== -1"
+                      @click="deliver(orderItem)"
+                    >{{$t('order.delivery')}}</el-button>
                   </td>
                   <td
-                    v-if="index === 0"
+                    v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
                     <span>
@@ -415,7 +443,7 @@
                 </tr>
               </template>
             </tbody>
-            <tbody :key="orderItem.orderId">
+            <tbody :key="orderIndex">
               <tr>
                 <td colspan="8"></td>
               </tr>
@@ -429,6 +457,11 @@
         />
       </div>
     </div>
+    <nodesDialog :show.sync="showNodes" />
+    <deliveryDialog
+      :show.sync="showDelivery"
+      :orderData="orderItemInfo"
+    />
   </div>
 </template>
 <script>
@@ -440,7 +473,9 @@ import {
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
-    areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue')
+    areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'),
+    nodesDialog: () => import('./addNotes'),
+    deliveryDialog: () => import('./deliveryDialog')
   },
   data () {
     return {
@@ -463,7 +498,7 @@ export default {
         pinStatus: [],
         goodsName: '',
         orderSn: '',
-        orderStatus: [],
+        orderStatus: [null],
         goodsType: null,
         consignee: '',
         mobile: '',
@@ -506,7 +541,10 @@ export default {
         { value: '16', label: '追星订单' }
       ],
       orderList: [
-      ]
+      ],
+      showNodes: false,
+      showDelivery: false,
+      orderItemInfo: {}
     }
   },
   mounted () {
@@ -567,9 +605,25 @@ export default {
           orderSn: orderSn
         }
       })
+    },
+    addNodes () {
+      this.showNodes = true
+    },
+    goodsTypeFilter (goodsType) {
+      let goodsTypeStr = this.$t('order.goodsTypeText') + '：'
+      goodsType.map((item, index) => {
+        goodsTypeStr += this.goodsTypeMap.get(Number(item))
+        if (index !== goodsType.length - 1) {
+          goodsTypeStr += ','
+        }
+      })
+      return goodsTypeStr
+    },
+    deliver (orderInfo) {
+      this.showDelivery = true
+      this.orderItemInfo = orderInfo
     }
   }
-
 }
 </script>
 <style lang="scss" scoped>
@@ -661,16 +715,26 @@ export default {
                   font-size: 14px;
                   color: #666;
                   justify-content: space-between;
+                  > span {
+                    width: 207px;
+                    text-align: left;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    cursor: pointer;
+                  }
                 }
                 .right {
-                  width: 265px;
-                  margin-left: 200px;
+                  width: 250px;
                   display: flex;
                   justify-content: space-between;
                   color: #409eff;
                   font-size: 14px;
                   > span {
                     cursor: pointer;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                   }
                   .icon_collect {
                     font-size: 20px;
@@ -689,6 +753,7 @@ export default {
             td {
               vertical-align: middle;
               color: #666;
+              line-height: 24px;
             }
             .goods_info {
               display: flex;
@@ -717,6 +782,7 @@ export default {
                   /*! autoprefixer: off */
                   -webkit-box-orient: vertical;
                   text-align: left;
+                  line-height: 1;
                 }
               }
             }

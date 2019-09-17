@@ -49,7 +49,10 @@
         </div>
       </div>
       <div class="order-remark">
-        <i class="icon el-icon-edit-outline"></i>
+        <i
+          class="icon el-icon-edit-outline"
+          @click="addNodes"
+        ></i>
         <span>买家备注：</span>
       </div>
     </div>
@@ -143,7 +146,6 @@
                     </div>
                     <div class="right">
                       <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span>添加备注</span>
                       <span>手动退款退货</span>
                       <span>查看评价</span>
                     </div>
@@ -235,14 +237,19 @@
         </table>
       </div>
     </div>
+    <nodesDialog :show.sync="showNodes" />
   </div>
 </template>
 
 <script>
 export default {
+  components: {
+    nodesDialog: () => import('./addNotes')
+  },
   data () {
     return {
-      dataList: null
+      dataList: null,
+      showNodes: false
     }
   },
   created () {
@@ -475,6 +482,9 @@ export default {
       if (columnIndex === 0) {
         return 'no_padding'
       }
+    },
+    addNodes () {
+      this.showNodes = true
     }
   }
 }

@@ -30,7 +30,10 @@
         </div>
       </div>
       <div class="order-remark">
-        <i class="icon el-icon-edit-outline"></i>
+        <i
+          class="icon el-icon-edit-outline"
+          @click="addNodes"
+        ></i>
         <span>买家备注：</span>
       </div>
       <div class="pay_detail">
@@ -57,12 +60,25 @@
         </div>
       </div>
     </div>
+    <nodesDialog :show.sync="showNodes" />
   </div>
 </template>
 
 <script>
 export default {
-
+  components: {
+    nodesDialog: () => import('../addNotes')
+  },
+  data () {
+    return {
+      showNodes: false
+    }
+  },
+  methods: {
+    addNodes () {
+      this.showNodes = true
+    }
+  }
 }
 </script>
 

@@ -53,10 +53,7 @@
         </div>
       </div>
     </div>
-    <el-tabs
-      v-model="refundType"
-      @tab-click="handleClick"
-    >
+    <el-tabs v-model="searchParams.refundType">
       <el-tab-pane
         label="全部"
         name="0"
@@ -96,11 +93,14 @@
         ></el-table-column>
         <el-table-column label="下单用户信息">
           <template slot-scope="scope">
-            <div>
+            <a
+              class="user_info"
+              @click="viewUserDetail(scope.row.userId)"
+            >
               {{scope.row.username}}
               <br />
               {{scope.row.mobile}}
-            </div>
+            </a>
           </template>
         </el-table-column>
         <el-table-column
@@ -109,8 +109,11 @@
         ></el-table-column>
         <el-table-column label="订单状态">
           <template slot-scope="scope">
-            <div>
-              {{scope.row | returnFlagType}}
+            <div
+              v-html="returnFlagType(scope.row.orderSn)"
+              class="refund_status"
+              @click="processRefunds(scope.row.orderSn,$event)"
+            >
             </div>
           </template>
         </el-table-column>
@@ -124,13 +127,18 @@
         @pagination="initDataList"
       />
     </div>
+    <ManualRefund
+      :dataInfo="refundInfo"
+      :show.sync="showRefund"
+    />
   </div>
 </template>
 
 <script>
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    pagination: () => import('@/components/admin/pagination/pagination'),
+    ManualRefund: () => import('./refundDialog')
   },
   data () {
     return {
@@ -186,8 +194,8 @@ export default {
           'orderId': 1,
           'virtualGoodsId': 1,
           'packName': '超大型优惠券礼包',
-          'orderSn': 'M201812241445471127',
-          'userId': 1,
+          'orderSn': 'M201812241445471128',
+          'userId': 3,
           'username': 'heaven洛络',
           'mobile': '15901408256',
           'moneyPaid': 0,
@@ -201,7 +209,7 @@ export default {
           'paySn': null,
           'orderAmount': 0,
           'createTime': '2018-12-24 22:45:47',
-          'returnFlag': 0,
+          'returnFlag': 1,
           'surplusAmount': 100,
           'returnScore': 0,
           'returnAccount': 0,
@@ -213,7 +221,7 @@ export default {
           'orderId': 1,
           'virtualGoodsId': 1,
           'packName': '超大型优惠券礼包',
-          'orderSn': 'M201812241445471127',
+          'orderSn': 'M201812241445471129',
           'userId': 1,
           'username': 'heaven洛络',
           'mobile': '15901408256',
@@ -236,7 +244,9 @@ export default {
           'returnCardBalance': null,
           'returnTime': '2018-12-28 22:55:28'
         }
-      ]
+      ],
+      showRefund: false,
+      refundInfo: null
     }
   },
   methods: {
@@ -249,6 +259,43 @@ export default {
     },
     initDataList () {
 
+    },
+    viewUserDetail (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId: userId
+        }
+      })
+    },
+    returnFlagType (orderSn) {
+      let orderInfo = this.couponPackageOrderList.find(item => {
+        return item.orderSn === orderSn
+      })
+      if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
+        return `<div>订单完成<br/><a class="refund" >手动退款</a></div>`
+      } else if (orderInfo.returnFlag === 0) {
+        return `<div>订单完成<div/>`
+      } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
+        return `<div>部分退款<br/><a class="refund">手动退款</a><br/><a class="view">查看退款</a></div>`
+      } else if (orderInfo.returnFlag === 1) {
+        return `<div>退款完成<br/> <a class="view">查看退款</a></div>`
+      } else {
+        return `<div>退款失败</div>`
+      }
+    },
+    processRefunds (orderSn, event) {
+      this.refundInfo = this.couponPackageOrderList.find(item => {
+        return item.orderSn === orderSn
+      })
+      this.$set(this.refundInfo, 'viewOrderType', 'couponPackage')
+      if (event.target.className === 'view') {
+        this.$set(this.refundInfo, 'action', 'view')
+        this.showRefund = true
+      } else if (event.target.className === 'refund') {
+        this.$set(this.refundInfo, 'action', 'refund')
+        this.showRefund = true
+      }
     }
   },
   filters: {
@@ -260,4 +307,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.user_info {
+  color: #409eff;
+  cursor: pointer;
+}
+/deep/ .refund_status {
+  .view,
+  .refund {
+    color: #409eff;
+    cursor: pointer;
+  }
+}
 </style>
