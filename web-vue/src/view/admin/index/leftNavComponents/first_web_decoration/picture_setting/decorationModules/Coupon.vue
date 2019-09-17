@@ -111,8 +111,8 @@ export default {
       this.$http.$on('decCard', (data, hereFlag) => {
         console.log(this.flag, data)
 
-        let arr = data.length - 1
-        if (this.flag === arr) {
+        // let arr = data.length - 1
+        if (this.flag === data) {
           this.activeBorder = true
         } else {
           this.activeBorder = false

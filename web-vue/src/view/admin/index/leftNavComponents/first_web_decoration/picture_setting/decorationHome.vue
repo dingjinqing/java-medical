@@ -417,9 +417,11 @@ export default {
           this_.highlignt_row_item($(ui.helper).offset())
         },
         stop: function () {
-          let last = this_.showModulesList
+          // let last = this_.showModulesList
           setTimeout(() => {
-            this_.$http.$emit('decCard', last)
+            console.log(this_.insertModulesId + 1)
+            let hightMoudleIndex = this_.insertModulesId + 1
+            this_.$http.$emit('decCard', hightMoudleIndex)
           }, 50)
           $('.modules').removeClass('placeholder')
         },
@@ -531,9 +533,15 @@ export default {
       })
       this.showModulesList = newArrMiddle
       this.isDragging = false
-      let data = newArrMiddle
+      console.log(insertIndex)
+      // let hightMoudleIndex = this_.insertModulesId + 1
+      console.log(newArrMiddle.length - 1)
+      if (insertIndex === (newArrMiddle.length - 1)) {
+        insertIndex--
+      }
+      console.log(insertIndex)
       setTimeout(() => {
-        this_.$http.$emit('decCard', data, -1)
+        this_.$http.$emit('decCard', insertIndex, -1)
       }, 100)
     },
     // 中间区域模块icon点击数据接收统一处理
@@ -612,7 +620,7 @@ export default {
     dragTopOut () {
       this.topAreaFlag = false
     },
-    // 底部点击统一处理
+    // 底部保存点击统一处理
     handleToFooter (flag) {
       switch (flag) {
         case 0:

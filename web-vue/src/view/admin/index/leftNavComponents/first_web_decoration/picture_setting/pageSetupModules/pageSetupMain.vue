@@ -165,6 +165,9 @@ export default {
     // 添加图片
     handleToAddImg () {
       this.$http.$emit('dtVisible')
+    },
+    handleSelectImg (res) {
+      console.log(res)
     }
   }
 }
@@ -259,6 +262,7 @@ export default {
         }
         /deep/ .m-colorPicker .box {
           top: -210px;
+          z-index: 10000;
         }
         .bottomDiv {
           .bgBottom {

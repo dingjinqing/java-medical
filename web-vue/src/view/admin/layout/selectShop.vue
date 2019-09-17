@@ -17,7 +17,7 @@
             @mouseleave="leave(index)"
             :class="shop_list_index === index?'shop_li_style':''"
             style="margin-bottom:20px"
-            @click="handle_to_shop(item.shopId)"
+            @click="handle_to_shop(item)"
           >
             <div>
               <div
@@ -140,9 +140,10 @@ export default {
     // 店铺点击
     handle_to_shop (data) {
       let obj = {
-        shopId: data
+        shopId: data.shopId
       }
-
+      console.log(data)
+      this.currency = localStorage.setItem('V-Currency', 'CNY')
       changeShopRequest(obj).then((res) => {
         console.log(res)
         const { error, message } = res

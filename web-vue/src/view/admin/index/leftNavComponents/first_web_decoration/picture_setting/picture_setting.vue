@@ -373,6 +373,9 @@ export default {
         }
       },
       deep: true
+    },
+    currency (newData) {
+      console.log(newData)
     }
   },
   mounted () {

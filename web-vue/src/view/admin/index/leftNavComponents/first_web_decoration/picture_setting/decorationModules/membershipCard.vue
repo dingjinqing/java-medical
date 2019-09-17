@@ -103,8 +103,8 @@ export default {
         console.log(this.flag, data)
         // console.log(hereFlag)
 
-        let arr = data.length - 1
-        if (this.flag === arr) {
+        // let arr = data.length - 1
+        if (this.flag === data) {
           this.activeBorder = true
         } else {
           this.activeBorder = false

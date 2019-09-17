@@ -1,15 +1,19 @@
 const myMixin = {
   data () {
     return {
-      lang: ''
+      lang: '',
+      currency: []
     }
   },
   methods: {
     // 初始化语言
     langDefault () {
+      console.log('初始化语言')
       this.$http.$on('CHANGE_LANGUAGE', res => {
         console.log('feifeifei')
         this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
+        // 人民币'CNY' 美元USD
+
         this.adaptation()
       })
       this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
@@ -17,6 +21,20 @@ const myMixin = {
       this.adaptation()
     },
     adaptation () {
+      console.log(this.lang)
+
+      let currencyPool = {
+        'CNY': {
+          'zh_CN': ['元', '￥', 'CNY'],
+          'en_US': ['yuan', '￥', 'CNY']
+        },
+        'USD': {
+          'zh_CN': ['美元', '$', 'USD'],
+          'en_US': ['dollar', '$', 'USD']
+        }
+      }
+      this.currency = currencyPool[localStorage.getItem('V-Currency')][this.lang]
+      console.log(this.currency)
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
         this.Recommend_class = 'Recommend_class'
