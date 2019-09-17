@@ -457,16 +457,7 @@ export default {
         6: 'el-icon-shopping-cart-full'
       },
       moreFilters: false,
-      pageParams: {
-        'totalRows': 1,
-        'currentPage': 1,
-        'firstPage': 1,
-        'prePage': 1,
-        'nextPage': 1,
-        'lastPage': 1,
-        'pageRows': 20,
-        'pageCount': 1
-      },
+      pageParams: {},
       searchParams: {
         searchType: 0,
         pinStatus: [],
@@ -492,8 +483,8 @@ export default {
         provinceCode: null,
         cityCode: null,
         districtCode: null,
-        currentPage: this.pageParams.currentPage,
-        pageRows: this.pageParams.pageRows
+        currentPage: null,
+        pageRows: null
       },
       orderTime: null,
       completeTime: null,
@@ -556,8 +547,10 @@ export default {
         this.searchParams.createTimeEnd = this.orderTime[1] + ' 23:59:59'
       }
       this.orderList = null
+      this.searchParams.currentPage = this.pageParams.currentPage
+      this.searchParams.pageRows = this.pageParams.pageRows
       list(this.searchParams).then(res => {
-        this.pageParams = res.content.pag
+        this.pageParams = res.content.page
         this.orderList = res.content.dataList
       }).catch(() => {
       })
