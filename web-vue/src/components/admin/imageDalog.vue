@@ -161,7 +161,7 @@ import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } fr
 import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree, Cropper },
-  props: ['pageIndex'],
+  props: ['pageIndex', 'tuneUp'],
   data () {
     return {
       dialogTableVisible: false,
@@ -220,21 +220,17 @@ export default {
     activeFresh_ (data) {
       console.log(data, 11111)
       this.queryImgs()
-    }
-  },
-  mounted () {
-    // accountSettings组件控制本组件弹窗
-    this.$http.$on('dtVisible', (flag) => {
-      console.log(123)
+    },
+    tuneUp (newData) {
+      console.log(newData)
+
       this.img_list.forEach((item, index) => {
         item.checked = false
       })
-      if (flag === false) {
-        this.dialogTableVisible = false
-      } else {
-        this.dialogTableVisible = true
-      }
-    })
+      this.dialogTableVisible = true
+    }
+  },
+  mounted () {
     console.log(this.options)
     this.value = this.options[0].value
     // 初始化语言

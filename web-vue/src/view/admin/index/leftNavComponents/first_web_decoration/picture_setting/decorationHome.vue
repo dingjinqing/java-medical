@@ -122,9 +122,10 @@
                   >
                     <!--会员列表模块-->
                     <div @click="handleToClickModule(index)">
-                      <components :is='thirdMiddleModulesList[item]'
-                        :index="1"
-                        :flag="index"></components>
+                      <components
+                        :is='thirdMiddleModulesList[item]'
+                        :flag="index"
+                      ></components>
                     </div>
                   </div>
                   <!--模块列表结束-->
@@ -135,8 +136,7 @@
           </vue-scroll>
         </div>
         <div class="decRight">
-          <PageSetup :index='nowRightShowIndex' />
-          <components :is='thirdRightModulesList[nowRightShowIndex]'></components>
+          <PageSetup :nowRightShowMoudlesName='nowRightShowMoudlesName' />
         </div>
       </div>
     </div>
@@ -175,13 +175,12 @@ export default {
     draggable,
     MembershipCard: () => import('./decorationModules/membershipCard'),
     Coupon: () => import('./decorationModules/Coupon'),
-    PageSetup: () => import('./pageSetup'),
-    RightMembershipCard: () => import('./pageSetupModules/rightMembershipCard')
+    PageSetup: () => import('./pageSetup')
+    // RightMembershipCard: () => import('./pageSetupModules/rightMembershipCard')
   },
   data () {
     return {
       thirdMiddleModulesList: [null, 'MembershipCard', 'Coupon'],
-      thirdRightModulesList: ['RightMembershipCard'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -348,7 +347,9 @@ export default {
       oldElement: null,
       zbFlag: false,
       topAreaFlag: false,
-      nowRightShowIndex: null
+      nowRightShowIndex: null,
+      nowRightShowMoudlesName: null,
+      modulesData: [] // 模块数据
     }
   },
   watch: {
@@ -356,10 +357,6 @@ export default {
       console.log(this.nowRightShowIndex, newData)
       console.log(newData)
       this.$http.$emit('modulesClick', this.nowRightShowIndex)
-      // if (newData.length === 1) {
-      //   this.nowRightShowIndex = 0
-      // }
-
       if (newData.length) {
         this.zbFlag = true
       } else {
@@ -657,6 +654,13 @@ export default {
     // 当前高亮模块处理事件
     handleToModuleHight () {
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
+      this.nowRightShowMoudlesName = this.showModulesList[this.nowRightShowIndex]
+      let obj = {
+        test: 1
+      }
+      this.modulesData.push(obj)
+      this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
+      console.log(this.nowRightShowMoudlesName)
     },
     //  点击左侧模块加到中间模块队列底部并高亮
     handleToClickLeftModule (id) {

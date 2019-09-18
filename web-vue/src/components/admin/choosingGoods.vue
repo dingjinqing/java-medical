@@ -700,7 +700,7 @@ img {
 /* .choosingGoods_Container .el-input__inner {
   width: 140px !important;
 } */
-.choosingGoods_Container .rangeLi .el-input__inner {
+._Container .rangeLi .el-input__inner {
   width: 70px !important;
 }
 .choosingGoods_Container .el-dialog__body {

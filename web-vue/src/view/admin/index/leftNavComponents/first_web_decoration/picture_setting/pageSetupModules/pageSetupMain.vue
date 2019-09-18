@@ -128,7 +128,6 @@ export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog')
   },
-  props: ['index'],
   data () {
     return {
       defaultColorright: '#fff',
@@ -152,11 +151,6 @@ export default {
       spacingRadio: '2',
       posterRadio: '2',
       backgroundRadio: '1'
-    }
-  },
-  watch: {
-    index (newData, oldData) {
-      console.log(newData, oldData)
     }
   },
   methods: {

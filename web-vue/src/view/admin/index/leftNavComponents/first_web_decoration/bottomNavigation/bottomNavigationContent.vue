@@ -87,6 +87,7 @@
     <!--选择图片弹窗 -->
     <ImageDalog
       pageIndex='pictureSpace'
+      :tuneUp="tuneUp"
       @handleSelectImg='handleSelectImg'
     />
     <!--修改icon弹窗-->
@@ -193,7 +194,8 @@ export default {
         }
       ],
       iconindex: '',
-      linksIndex: ''
+      linksIndex: '',
+      tuneUp: false
     }
   },
   computed: {
@@ -264,7 +266,8 @@ export default {
       console.log(first, second)
       this.firstNavIndex = first
       this.secondNavIndex = second
-      this.$http.$emit('dtVisible')
+      this.tuneUp = !this.tuneUp
+      // this.$http.$emit('dtVisible')
     },
     // 弹框确定选中
     handleSelectImg (res) {

@@ -128,6 +128,7 @@
     <!--选择图片弹窗 -->
     <ImageDalog
       pageIndex='imageDalog'
+      :tuneUp="tuneUp"
       @handleSelectImg='handleSelectImg'
     />
   </div>
@@ -154,7 +155,8 @@ export default {
         passwd: '',
         newPasswd: '',
         confNewPasswd: ''
-      }
+      },
+      tuneUp: false
     }
   },
   mounted () {
@@ -167,7 +169,8 @@ export default {
   methods: {
     // 主动调起图片弹窗
     handleChangeHead () {
-      this.$http.$emit('dtVisible')
+      // this.$http.$emit('dtVisible')
+      this.tuneUp = !this.tuneUp
     },
     queryAccount () {
       queryShopRequest().then((res) => {
