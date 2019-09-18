@@ -47,7 +47,7 @@
         <div class="filters_item">
           <span>下单时间：</span>
           <el-date-picker
-            v-model="searchParams.applicationTime"
+            v-model="applicationTime"
             type="datetimerange"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -70,7 +70,10 @@
         </div>
       </div>
     </div>
-    <el-tabs v-model="searchParams.refundType">
+    <el-tabs
+      @tab-click="handleClick"
+      v-model="searchParams.refundType"
+    >
       <el-tab-pane
         label="全部"
         name="0"
@@ -178,6 +181,7 @@ export default {
         { value: 2, label: '限次会员卡' }
       ],
       memberCardOrderList: [],
+      applicationTime: '',
 
       // 原始表格数据
       originalData: []
@@ -193,9 +197,12 @@ export default {
       } else {
         this.searchParams.refund = true
       }
+      this.initDataList()
     },
     initDataList () {
       this.loading = true
+      this.searchParams.startTime = this.applicationTime[0]
+      this.searchParams.endTime = this.applicationTime[1]
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       getMemberCardOrderList(this.searchParams).then((res) => {
@@ -234,9 +241,9 @@ export default {
       } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
         return `<div><a class="refund">手动退款</a><br/><a class="view">查看退款</a></div>`
       } else if (orderInfo.returnFlag === 1) {
-        return `<div>退款完成<br/> <a class="view">查看退款</a></div>`
-      } else {
         return `<div>退款失败</div>`
+      } else {
+        return `<div>退款完成<br/> <a class="view">查看退款</a></div>`
       }
     },
     processRefunds (orderSn, event) {
@@ -259,9 +266,9 @@ export default {
         case 0:
           return `订单完成`
         case 1:
-          return `已退款`
-        case 2:
           return `退款失败`
+        case 2:
+          return `退款成功`
       }
     }
   }

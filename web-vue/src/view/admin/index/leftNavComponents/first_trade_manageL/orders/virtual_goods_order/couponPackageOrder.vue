@@ -31,7 +31,7 @@
         <div class="filters_item">
           <span>下单时间：</span>
           <el-date-picker
-            v-model="searchParams.applicationTime"
+            v-model="applicationTime"
             type="datetimerange"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -43,6 +43,7 @@
         </div>
         <div class="filters_item">
           <el-button
+            @click="initDataList"
             type="primary"
             size="small"
           >筛选</el-button>
@@ -69,6 +70,7 @@
     </el-tabs>
     <div class="table_box">
       <el-table
+        v-loading="loading"
         :data="couponPackageOrderList"
         style="width:100%;"
         border
@@ -138,6 +140,7 @@
 </template>
 
 <script>
+import { getCouponPackageOrderList } from '@/api/admin/orderManage/virtualGoodsOrder.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -145,112 +148,20 @@ export default {
   },
   data () {
     return {
-      pageParams: {
-        'totalRows': 4,
-        'currentPage': 1,
-        'firstPage': 1,
-        'prePage': 1,
-        'nextPage': 1,
-        'lastPage': 1,
-        'pageRows': 20,
-        'pageCount': 1
-      },
-      searchParams: {
-        packName: '',
-        orderSn: '',
-        userInfo: '',
-        startTime: null,
-        endTime: null,
-        applicationTime: null,
-        refundType: '0',
-        refund: false
-      },
-      couponPackageOrderList: [
-        {
-          'orderId': 1,
-          'virtualGoodsId': 1,
-          'packName': '超大型优惠券礼包',
-          'orderSn': 'M201812241445471127',
-          'userId': 1,
-          'username': 'heaven洛络',
-          'mobile': '15901408256',
-          'moneyPaid': 0,
-          'useAccount': 100,
-          'useScore': 0,
-          'memberCardBalance': 0,
-          'cardNo': '0',
-          'payCode': 'balance',
-          'payName': '余额支付',
-          'prepayId': null,
-          'paySn': null,
-          'orderAmount': 0,
-          'createTime': '2018-12-24 22:45:47',
-          'returnFlag': 0,
-          'surplusAmount': 100,
-          'returnScore': 0,
-          'returnAccount': 0,
-          'returnMoney': 0,
-          'returnCardBalance': null,
-          'returnTime': '2018-12-28 22:55:28'
-        },
-        {
-          'orderId': 1,
-          'virtualGoodsId': 1,
-          'packName': '超大型优惠券礼包',
-          'orderSn': 'M201812241445471128',
-          'userId': 3,
-          'username': 'heaven洛络',
-          'mobile': '15901408256',
-          'moneyPaid': 0,
-          'useAccount': 100,
-          'useScore': 0,
-          'memberCardBalance': 0,
-          'cardNo': '0',
-          'payCode': 'balance',
-          'payName': '余额支付',
-          'prepayId': null,
-          'paySn': null,
-          'orderAmount': 0,
-          'createTime': '2018-12-24 22:45:47',
-          'returnFlag': 1,
-          'surplusAmount': 100,
-          'returnScore': 0,
-          'returnAccount': 0,
-          'returnMoney': 0,
-          'returnCardBalance': null,
-          'returnTime': '2018-12-28 22:55:28'
-        },
-        {
-          'orderId': 1,
-          'virtualGoodsId': 1,
-          'packName': '超大型优惠券礼包',
-          'orderSn': 'M201812241445471129',
-          'userId': 1,
-          'username': 'heaven洛络',
-          'mobile': '15901408256',
-          'moneyPaid': 0,
-          'useAccount': 100,
-          'useScore': 0,
-          'memberCardBalance': 0,
-          'cardNo': '0',
-          'payCode': 'balance',
-          'payName': '余额支付',
-          'prepayId': null,
-          'paySn': null,
-          'orderAmount': 0,
-          'createTime': '2018-12-24 22:45:47',
-          'returnFlag': 0,
-          'surplusAmount': 100,
-          'returnScore': 0,
-          'returnAccount': 0,
-          'returnMoney': 0,
-          'returnCardBalance': null,
-          'returnTime': '2018-12-28 22:55:28'
-        }
-      ],
+      loading: false,
+      pageParams: {},
+      searchParams: {},
+      couponPackageOrderList: [],
       showRefund: false,
-      refundInfo: null
+      refundInfo: null,
+      applicationTime: '',
+
+      // 原始表格数据
+      originalData: []
     }
+  },
+  mounted () {
+    this.initDataList()
   },
   methods: {
     handleClick (el) {
@@ -259,9 +170,30 @@ export default {
       } else {
         this.searchParams.refund = true
       }
+      this.initDataList()
     },
     initDataList () {
-
+      this.loading = true
+      this.searchParams.startTime = this.applicationTime[0]
+      this.searchParams.endTime = this.applicationTime[1]
+      this.searchParams.currentPage = this.pageParams.currentPage
+      this.searchParams.pageRows = this.pageParams.pageRows
+      getCouponPackageOrderList(this.searchParams).then((res) => {
+        if (res.error === 0) {
+          this.originalData = res.content.dataList
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
+    },
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        // this.$set(this.memberCardOrderList, index, item)
+      })
+      this.couponPackageOrderList = data
     },
     viewUserDetail (userId) {
       this.$router.push({
@@ -305,7 +237,15 @@ export default {
     returnFlagType (data) {
       console.log(data)
     }
+  },
+  watch: {
+    showRefund (n, o) {
+      if (n === false) {
+        this.initDataList()
+      }
+    }
   }
+
 }
 </script>
 

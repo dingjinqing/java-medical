@@ -28,19 +28,19 @@
     >
       <div class="coupon_refund_top">
         <p>请输入退款金额：</p>
-        <p>退余额：<el-input-number
+        <p v-if="refundInfo.useAccount > 0">退余额：<el-input-number
             v-model="refundData.account"
             size="small"
           ></el-input-number> 元</p>
-        <p>退会员卡余额：<el-input-number
+        <p v-if="refundInfo.memberCardBalance > 0">退会员卡余额：<el-input-number
             v-model="refundData.memberCardBalance"
             size="small"
           ></el-input-number> 元</p>
-        <p>退现金：<el-input-number
+        <p v-if="refundInfo.moneyPaid > 0">退现金：<el-input-number
             v-model="refundData.money"
             size="small"
           ></el-input-number> 元</p>
-        <p>退积分：<el-input-number
+        <p v-if="refundInfo.useScore > 0">退积分：<el-input-number
             v-model="refundData.score"
             size="small"
           ></el-input-number> 分</p>
@@ -79,13 +79,15 @@
       >取 消</el-button>
       <el-button
         type="primary"
-        @click="dialogShow = false"
+        @click="refundConfirm"
       >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+import { refundMemberCardOrder, refundCouponPackageOrder } from '@/api/admin/orderManage/virtualGoodsOrder.js'
+
 export default {
   data () {
     return {
@@ -107,6 +109,46 @@ export default {
   methods: {
     closeDialog () {
       this.$emit('update:show', false)
+    },
+    refundConfirm () {
+      if (this.refundInfo.viewOrderType === 'couponPackage' && this.refundInfo.action === 'refund') {
+        // 优惠券礼包订单确认退款
+        let postData = {}
+        postData.orderId = this.refundData.orderId
+        postData.orderSn = this.refundData.orderSn
+        postData.stillSendFlag = this.refundData.stillSendFlag
+        postData.virtualOrderRefundParam = this.refundData
+        refundCouponPackageOrder(postData).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: this.$t('marketCommon.successfulOperation')
+            })
+            this.dialogShow = false
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message
+            })
+          }
+        })
+      } else if (this.refundInfo.viewOrderType === 'card' && this.refundInfo.action === 'refund') {
+        // 会员卡订单确认退款
+        refundMemberCardOrder(this.refundData).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: this.$t('marketCommon.successfulOperation')
+            })
+            this.dialogShow = false
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message
+            })
+          }
+        })
+      }
     }
   },
   watch: {
@@ -123,7 +165,8 @@ export default {
         this.refundData.score = this.refundInfo.useScore
         this.refundData.account = this.refundInfo.useAccount
         this.refundData.memberCardBalance = this.refundInfo.memberCardBalance ? this.refundInfo.memberCardBalance : 0
-        this.refundData.stillSendFlag = '0'
+        this.refundData.orderId = this.refundInfo.orderId
+        this.refundData.orderSn = this.refundInfo.orderSn
         console.log(this.refundInfo)
       }
     }
