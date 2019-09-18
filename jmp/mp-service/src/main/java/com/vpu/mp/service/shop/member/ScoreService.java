@@ -90,11 +90,12 @@ public class ScoreService extends ShopBaseService {
 		/** -目前会员存在数据录中的积分 */
 		Integer dbScore = dbUser.getScore();
 		/** -校验数据库中的积分与目前从前前端传入的积分是否一致 */
-		if (dbScore < scoreDis) {
-			//throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
-
-			throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
-		}
+		/** -不进行校验积分于数据库中一致 */
+//		if (dbScore < scoreDis) {
+//			//throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
+//
+//			throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
+//		}
 
 		/** 3. 准备数据  */
 
