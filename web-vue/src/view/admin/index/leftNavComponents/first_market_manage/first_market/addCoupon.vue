@@ -321,13 +321,13 @@
                     <p>
                       <el-radio
                         v-model="param.suitGoods"
-                        :label=0
+                        label='0'
                       >全部商品</el-radio>
                     </p>
                     <p>
                       <el-radio
                         v-model="param.suitGoods"
-                        :label=1
+                        label='1'
                       >指定商品</el-radio>
                     </p>
                     <div v-if="param.suitGoods === '1'">
@@ -397,7 +397,10 @@
       >保存</el-button>
     </div>
     <!--选择商品弹窗-->
-    <ChoosingGoods />
+    <ChoosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="goodsIdsList"
+    />
     <!--指定商品添加商品分类弹窗-->
     <AddingBusClassDialog />
   </div>
@@ -468,7 +471,8 @@ export default {
           name: '添加平台分类',
           num: ''
         }
-      ]
+      ],
+      tuneUpChooseGoods: false
     }
   },
   mounted () {
@@ -522,7 +526,7 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index, this.param.recommendGoodsId ? this.param.recommendGoodsId.split(',') : null)
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
           break
         case 1:
           this.AtreeType = 1
@@ -591,6 +595,12 @@ export default {
     },
     crlfFormat () {
       return this.param.useExplain.replace(/\n/g, '<br />')
+    },
+    goodsIdsList () {
+      if (!this.param.recommendGoodsId) return null
+      return this.param.recommendGoodsId.split(',').map(item => {
+        return Number(item)
+      })
     }
   }
 }

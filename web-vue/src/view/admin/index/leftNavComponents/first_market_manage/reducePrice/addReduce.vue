@@ -312,6 +312,7 @@
     <!--图片弹窗-->
     <ImageDalog
       pageIndex='userCardAdd'
+      :tuneUp="tuneUp"
       @handleSelectImg='handleSelectImg'
     />
     <!-- 重复周期弹窗 -->
@@ -319,7 +320,11 @@
       :cycleDialog="cycleDialogShow"
       @handelCycleData="getCycleData"
     />
-    <choosingGoods @resultGoodsIds="getGoodsIds" />
+    <choosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="goodsIdList"
+      @resultGoodsIds="getGoodsIds"
+    />
     <!-- 规格信息弹框 -->
     <productInfo
       :productDialog.sync="productDialogFlag"
@@ -447,7 +452,10 @@ export default {
         { index: 5, prop: 'reducePrice', label: '减价' },
         { index: 6, prop: 'goodsPrice', label: '折后价' },
         { index: 7, prop: '', label: '操作' }
-      ]
+      ],
+      goodsIdList: [],
+      tuneUp: false,
+      tuneUpChooseGoods: false
     }
   },
   mounted () {
@@ -456,7 +464,7 @@ export default {
   methods: {
     // 添加图片
     handleToAddImg () {
-      this.$http.$emit('dtVisible')
+      this.tuneUp = !this.tuneUp
     },
     // 图片选中
     handleSelectImg (res) {
@@ -472,10 +480,11 @@ export default {
       console.log(1)
     },
     showChoosingGoods () {
-      this.$http.$emit('choosingGoodsFlag', true)
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     getGoodsIds (data) {
       console.log(data)
+      this.goodsIdList = data
     },
     delReduceData (id) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {

@@ -296,6 +296,8 @@
     <!--添加优惠卷-->
     <AddCouponDialog
       origin="couponPackage"
+      :tuneUpCoupon="showCouponDialog"
+      :couponBack="couponIdList"
       @handleToCheck="handleToCheck"
     />
 
@@ -437,17 +439,18 @@ export default {
       ],
       target: null,
       isEditFlag: false,
-      actId: null
+      actId: null,
+      showCouponDialog: false
     }
   },
   methods: {
     // 选择优惠券弹窗
     handleToCallDialog () {
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.coupon_info
-      }
-      this.$http.$emit('V-AddCoupon', obj)
+      // let obj = {
+      //   couponDialogFlag: !this.couponDialogFlag,
+      //   couponList: this.coupon_info
+      // }
+      this.showCouponDialog = !this.showCouponDialog
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
@@ -570,6 +573,11 @@ export default {
   computed: {
     crlfFormat () {
       return this.param.actRule.replace(/\n/g, '<br />')
+    },
+    couponIdList () {
+      return this.coupon_info.map(item => {
+        return item.id
+      })
     }
   },
   mounted () {
