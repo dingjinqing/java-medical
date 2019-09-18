@@ -25,6 +25,15 @@ export function batchOperateGoods (data) {
   })
 }
 
+// 根据商品id修改对应的标签
+export function updateLabelByGoodsId (data) {
+  return service({
+    url: `/api/admin/label/couple/updateByGoodsId`,
+    method: 'post',
+    data: data
+  })
+}
+
 // 初始化全部商品顶部下拉框数据
 export function getAllGoodsInitValue (data) {
   return service({

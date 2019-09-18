@@ -19,9 +19,9 @@
         prop="goodsName"
         label="名称" min-width="120px">
         <template slot-scope="scope">
-          <div style="display: flex;align-items: center;">
-            <img style="width: 70px;height: 70px;float: left;flex-shrink: 0;"  :src="scope.row.goodsImg">
-            <div style="width: 150px;float: left;flex-shrink: 0;padding:10px;">
+          <div >
+            <img style="width: 70px;height: 70px;float: left;"  :src="scope.row.goodsImg">
+            <div style="padding:10px;">
               <span v-if="scope.row.sourceName !== null" class="goodsTypeSpanWrap">{{scope.row.sourceName}}</span>
               <span v-if="scope.row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{scope.row.goodsTypeName}}</span>
               {{scope.row.goodsName}}
@@ -33,7 +33,7 @@
         align="center"
         label="价格">
         <template slot-scope="{row}">
-           <span v-if="row.prdId !== null">{{row.shopPrice}}</span>
+           <span v-if="row.prdId === null">{{row.shopPrice}}</span>
            <template v-else>
              <span v-if="!row.shopPriceEdit">
                {{row.shopPrice}}
@@ -65,7 +65,7 @@
         align="center"
         label="库存">
         <template slot-scope="{row}">
-          <span v-if="row.prdId !== null">{{row.goodsNumber}}</span>
+          <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
           <template v-else>
              <span v-if="!row.goodsNumberEdit">
                {{row.goodsNumber}}
@@ -83,13 +83,13 @@
       <el-table-column
         align="center"
         label="商品标签"
-        min-width="100px">
+        min-width="120px">
         <template slot-scope="{row}">
-          <div style="display: flex;align-items: center;">
-            <div style="width:120px; flex-shrink: 0;">
+          <div style="">
+            <div style="width:120px; float: left;">
               <span v-for="(item,index) in row.goodsLabels" :key="index" class="goodsLabelSpanWrap">{{item.name}}</span>
             </div>
-            <div style="width: 50px;flex-shrink: 0;color:#5a8bff;cursor: pointer;">设置</div>
+            <div style="width: 50px;float:right;color:#5a8bff;cursor: pointer;" @click="tdLabelSetClick(row)">设置</div>
           </div>
         </template>
       </el-table-column>
@@ -104,7 +104,7 @@
             <span class="fa fa-copy iconSpan" @click="copyIconClick(row)"></span>
           </el-tooltip>
           <el-tooltip content="分享" placement="top">
-            <span class="el-icon-share iconSpan"></span>
+            <span class="el-icon-share iconSpan" @click="shareIconClick(row)"></span>
           </el-tooltip>
           <el-tooltip content="下架" placement="top">
             <span class="el-icon-bottom iconSpan" @click="withdrawIconClick(row,$index)"></span>
@@ -116,16 +116,53 @@
       </el-table-column>
     </el-table>
     <div class="allGoodsFooter" style="display: flex;">
-      <div class="operateBtnWrap" style="width:50%;"></div>
+      <div class="operateBtnWrap" style="width:50%;">
+      </div>
       <div class="paginationWrap" style="width:50%">
         <pagination :page-params.sync="pageParams" @pagination="fetchGoodsData"/>
       </div>
     </div>
+
+    <!--预览商品太阳码-->
+    <el-dialog :visible.sync="qrCodeData.isShow" title="扫一扫，分享给好友吧~" width="350px">
+      <div style="text-align: center;">
+        <el-image
+          fit="scale-down"
+          :src="qrCodeData.imgFullUrl"
+          style="width: 250px; height: 230px;"
+        />
+        <el-input v-model="qrCodeData.imgFullUrl" disabled />
+        <span>复制</span>
+      </div>
+    </el-dialog>
+
+    <!--标签设置-->
+    <el-dialog :visible.sync="goodsLabelData.isShow" title="设置标签" width="30%" @closed="goodsLabelDialogCancel">
+      <div style="background-color:#FFF7EB;border: 1px solid #FFD5A3;line-height: 30px;padding-left: 20px;margin-bottom: 10px;"> 可以在这里编辑商品标签信息,添加或删除标签</div>
+      <div>
+        <span>商品标签：</span>
+        <el-select v-model="goodsLabelData.labelSelectedTempVal" placeholder="请选择标签" size="small" @change="tdLabelSelectChange" style="width:170px;">
+          <el-option v-for="item in goodsLabelData.labelSelectOptions" :key="item.id" :label="item.name" :value="item.id"/>
+        </el-select>
+      </div>
+      <div v-if="goodsLabelData.labelSelectedOptions.length>0" style="display: flex;flex-wrap: wrap;align-items:center;margin-top: 10px;">
+        <div>已选：</div>
+        <div class="selectedWrap" v-for="(item,index) in goodsLabelData.labelSelectedOptions" :key="index">
+          {{item.name}}
+          <span @click="tdDeleteLabel(item,index)" class="deleteIcon">×</span>
+        </div>
+      </div>
+      <div slot="footer">
+        <el-button @click="goodsLabelDialogConfirm" type="primary" size="small">{{$t('goodsAddEditInfo.confirmBtn')}}</el-button>
+        <el-button @click="goodsLabelDialogCancel" type="primary" size="small">{{$t('goodsAddEditInfo.cancelBtn')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 
-import {getGoodsList, deleteGoods, batchOperateGoods} from '@/api/admin/goodsManage/allGoods/allGoods'
+import {getGoodsList, deleteGoods, batchOperateGoods, updateLabelByGoodsId} from '@/api/admin/goodsManage/allGoods/allGoods'
+import {getGoodsQrCode, goodsSortAndGoodsBrandInitApi} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
 
@@ -147,6 +184,17 @@ export default {
       pageParams: {
         currentPage: 1,
         pageRows: 20
+      },
+      qrCodeData: {
+        imgFullUrl: null,
+        isShow: false
+      },
+      goodsLabelData: {
+        currentRow: null,
+        labelSelectedTempVal: null,
+        labelSelectOptions: [],
+        labelSelectedOptions: [],
+        isShow: false
       }
     }
   },
@@ -216,8 +264,19 @@ export default {
         return
       }
       row.shopPrice = row.shopPriceOld
-
-      // TODO: 执行ajax进行修改操作
+      let shopPrices = {}
+      shopPrices[row.goodsId] = [{
+        prdId: row.prdId,
+        shopPrice: row.shopPrice
+      }]
+      batchOperateGoods({
+        goodsIds: [row.goodsId],
+        goodsPriceNumbers: shopPrices
+      }).then(res => {
+        if (res.error === 0) {
+          this.$message({type: 'info', message: '设置成功!'})
+        }
+      })
     },
     /* 商品数量输入框处理函数 */
     goodsNumberChange (row) {
@@ -230,7 +289,76 @@ export default {
       row.goodsNumber = parseInt(row.goodsNumberOld)
       row.goodsNumberOld = row.goodsNumber
 
-      // TODO:执行ajax进行修改操作
+      let goodsNumbers = {}
+      goodsNumbers[row.goodsId] = [{
+        prdId: row.prdId,
+        goodsNumber: row.goodsNumber
+      }]
+      batchOperateGoods({
+        goodsIds: [row.goodsId],
+        goodsPriceNumbers: goodsNumbers
+      }).then(res => {
+        if (res.error === 0) {
+          this.$message({type: 'info', message: '设置成功!'})
+        }
+      })
+    },
+    /** table表单内标签 **/
+    /* table表单内标签设置按钮 */
+    tdLabelSetClick (row) {
+      goodsSortAndGoodsBrandInitApi().then(res => {
+        const {content: {goodsLabels}} = res
+        this.goodsLabelData.currentRow = row
+        this.goodsLabelData.isShow = true
+        goodsLabels.forEach(item => {
+          if (this.goodsLabelData.currentRow.goodsLabels.some(goodsLabel => goodsLabel.id === item.id)) {
+            this.goodsLabelData.labelSelectedOptions.push(item)
+          } else {
+            this.goodsLabelData.labelSelectOptions.push(item)
+          }
+        })
+      })
+    },
+    /* talbe表单内标签下拉框交互 */
+    tdLabelSelectChange () {
+      this.goodsLabelData.labelSelectOptions = this.goodsLabelData.labelSelectOptions.filter(item => {
+        if (item.id === this.goodsLabelData.labelSelectedTempVal) {
+          this.goodsLabelData.labelSelectedOptions.push(item)
+          return false
+        }
+        return true
+      })
+      this.goodsLabelData.labelSelectedTempVal = null
+    },
+    /* talbe表单内标签删除图标点击 */
+    tdDeleteLabel (item, index) {
+      this.goodsLabelData.labelSelectedOptions.splice(index, 1)
+      this.goodsLabelData.labelSelectOptions.push(item)
+    },
+    /* table表单内标签dialog确认按钮 */
+    goodsLabelDialogConfirm () {
+      let param = {
+        goodsId: this.goodsLabelData.currentRow.goodsId,
+        labelIds: []
+      }
+      this.goodsLabelData.labelSelectedOptions.forEach(item => param.labelIds.push(item.id))
+      updateLabelByGoodsId(param).then((res) => {
+        if (res.error !== 0) {
+          return
+        }
+        this.goodsLabelData.currentRow.goodsLabels = this.goodsLabelData.labelSelectedOptions
+        this.goodsLabelData.labelSelectedOptions = []
+        this.goodsLabelData.labelSelectOptions = []
+        this.goodsLabelData.currentRow = null
+        this.goodsLabelData.isShow = false
+        this.$message({type: 'info', message: '设置成功'})
+      })
+    },
+    goodsLabelDialogCancel () {
+      this.goodsLabelData.labelSelectedOptions = []
+      this.goodsLabelData.labelSelectOptions = []
+      this.goodsLabelData.currentRow = null
+      this.goodsLabelData.isShow = false
     },
     /* 修改图标按钮点击 */
     editIconClick (row) {
@@ -254,7 +382,16 @@ export default {
     },
     /* 复制商品 */
     copyIconClick (row) {
-      this.$router.push({name: 'goods_add', params: {goodsId: row.goodsId, isCopy: 1}})
+      this.$router.push({
+        name: 'goods_add',
+        params: {goodsId: row.goodsId, isCopy: 1}
+      })
+    },
+    shareIconClick (row) {
+      getGoodsQrCode(row.gooodsId).then(res => {
+        this.qrCodeData.imgFullUrl = res.content.imgFullUrl
+        this.qrCodeData.isShow = true
+      })
     },
     /* 操作确认弹框 */
     _$confirm (questionMessage, confirmMesage, confirmCallback, cancelCallback) {
@@ -315,6 +452,32 @@ export default {
     padding: 2px;
     margin-right: 2px;
     display: inline-block;
+  }
+  .selectedWrap {
+    min-width: 70px;
+    height: 22px;
+    border: 1px solid #ccc;
+    line-height: 22px;
+    text-align: center;
+    padding: 0px 5px;
+    margin: 0px 5px;
+    background-color: #fff;
+    position: relative;
+  }
+  .selectedWrap .deleteIcon {
+    width: 17px;
+    height: 17px;
+    color: #fff;
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    line-height: 17px;
+    text-align: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    cursor: pointer;
+    opacity: 0.8;
   }
   .iconSpan{
     font-size: 20px;
