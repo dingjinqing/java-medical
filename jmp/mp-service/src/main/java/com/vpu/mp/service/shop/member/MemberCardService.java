@@ -969,6 +969,9 @@ public class MemberCardService extends ShopBaseService {
 				if(memberCard.getCount() == null) {
 					memberCard.setCount(0);
 				}
+				if(memberCard.getExchangCount() == null) {
+					memberCard.setExchangCount(0);
+				}
 				insert.values(userIdList.get(i), cardIdList.get(j), cardNoList.poll(), memberCard.getEndTime(),
 						memberCard.getCount(), Timestamp.valueOf(now), memberCard.getExchangCount());
 			}
