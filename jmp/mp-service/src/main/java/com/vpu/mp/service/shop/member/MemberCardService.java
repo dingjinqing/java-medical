@@ -933,14 +933,16 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		/** 查询所有的会员卡 */
-		Result<MemberCardRecord> memberCardList = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.ID.in(param.getCardIdList())).fetch();
-		logger.info("一共查询到: " + memberCardList.size() + " 张会员卡");
+		Map<Integer, MemberCardRecord> map = db().selectFrom(MEMBER_CARD)
+				.where(MEMBER_CARD.ID.in(param.getCardIdList())).fetch().intoMap(MEMBER_CARD.ID, MemberCardRecord.class);
+		
+		logger.info("一共查询到: " + map.size() + " 张会员卡");
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expireTime = null;
 		/** 过期时间-多少日内 */
-		for (MemberCardRecord memberCard : memberCardList) {
+		for (Integer i : map.keySet()) {
+			MemberCardRecord memberCard = map.get(i);
 			if (DURING_TIME.equals(memberCard.getExpireType())) {
 				/** 计算过期时间 */
 				Byte dateType = memberCard.getDateType();
@@ -965,7 +967,7 @@ public class MemberCardService extends ShopBaseService {
 
 		for (int i = 0; i < sizeOfUserId; i++) {
 			for (int j = 0; j < sizeOfCardId; j++) {
-				MemberCardRecord memberCard = memberCardList.get(j);
+				MemberCardRecord memberCard = map.get(cardIdList.get(j));	
 				if(memberCard.getCount() == null) {
 					memberCard.setCount(0);
 				}
@@ -990,8 +992,9 @@ public class MemberCardService extends ShopBaseService {
 		/** generate template message */
 		for (int i = 0; i < sizeOfUserId; i++) {
 			for (int j = 0; j < sizeOfCardId; j++) {
+				MemberCardRecord memberCard = map.get(cardIdList.get(j));	
 				tmpData.add(String.format(messageFormat, userIdList.get(i), userNameMap.get(userIdList.get(i)),
-						memberCardList.get(j).getCardName()));
+						memberCard.getCardName()));
 			}
 		}
 
