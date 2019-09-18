@@ -1,7 +1,6 @@
 package com.vpu.mp.controller.admin;
 
 import java.util.List;
-
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
@@ -24,7 +22,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
@@ -162,7 +160,7 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/card/all/get/{userId}")
 	public JsonResult getAllAvailableMemberCard(@PathVariable Integer userId) {
 		logger().info("正在获取用户所有的可用会员卡");
-		List<CardBasicVo> allAvailableMemberCard = shop().member.getAllAvailableMemberCard(userId);
+		List<AvailableMemberCardVo> allAvailableMemberCard = shop().member.getAllAvailableMemberCard(userId);
 		return success(allAvailableMemberCard);
 	}
 	
