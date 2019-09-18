@@ -259,7 +259,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public <T> List<T> getOrdersByCondition(Condition where, Class<T> clz) {
-		return db().select(TABLE.asterisk()).from(TABLE).where(where).fetchInto(clz);
+		return db().select(TABLE.asterisk(),USER.USERNAME,USER.MOBILE.as("userMobile")).from(TABLE).innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID)).where(where).fetchInto(clz);
 	}
 
 	/**
