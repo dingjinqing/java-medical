@@ -152,7 +152,7 @@
                 align="center"
               >
                 <template slot-scope="scope">
-                  <div class="coupon_info">
+                  <div class="">
                     <span class="coupon_name">{{scope.row.actName}}</span>
                     <div
                       v-if="scope.row.actCode == 'voucher'"
@@ -253,12 +253,14 @@
             prop=""
           >
             <div style="display:flex">
-              <span>用户在</span>
-              <el-input
-                style="margin: 0 5px"
-                size="small"
-                v-model="form.launchLimitDuration"
-              ></el-input>
+              <span>{{$t('promoteList.userIn')}}</span>
+              <el-form-item prop="launchLimitDuration">
+                <el-input
+                  style="margin: 0 5px"
+                  size="small"
+                  v-model="form.launchLimitDuration"
+                ></el-input>
+              </el-form-item>
               <el-select
                 size="small"
                 v-model="form.launchLimitUnitSelect"
@@ -272,12 +274,14 @@
                 >
                 </el-option>
               </el-select>
-              <span>内最多可发起</span>
-              <el-input
-                size="small"
-                style="margin:0 5px"
-                v-model="form.launchLimitTimes"
-              ></el-input>次
+              <span>{{$t('promoteList.mostLaunch')}}</span>
+              <el-form-item prop="launchLimitTimes">
+                <el-input
+                  size="small"
+                  style="margin:0 5px"
+                  v-model="form.launchLimitTimes"
+                ></el-input>
+              </el-form-item>{{$t('promoteList.time')}}
               <div
                 style="margin-left:10px"
                 class="gray"
@@ -289,13 +293,13 @@
             prop="shareCreateTimes"
           >
             <div style="display:flex">
-              <span>好友可通过分享获得最多</span>
+              <span>{{$t('promoteList.friendShare')}}</span>
               <el-input
                 style="margin:0 5px"
                 size="small"
                 v-model="form.shareCreateTimes"
               ></el-input>
-              <span>次助力机会</span>
+              <span>{{$t('promoteList.promoteOpportunity')}}</span>
               <div
                 style="margin-left: 10px"
                 class="gray"
@@ -377,15 +381,15 @@
               </div>
               <div
                 v-else
-                class=""
+                class="coupon_info"
               >
-                <span class="">{{coupon_duplicate[0].denomination}}</span>
+                <span class="coupon_name">{{coupon_duplicate[0].denomination}}</span>
                 <div
                   v-if="coupon_duplicate[0].actCode == 'voucher'"
                   style="color:red"
                 >￥<span>{{coupon_duplicate[0].denomination}}</span></div>
                 <div v-else><span>{{coupon_duplicate[0].denomination}}</span>折</div>
-                <div class="">{{coupon_duplicate[0].useConsumeRestrict > 0? `满${coupon_duplicate[0].leastConsume}元可用`  : `不限制`}}</div>
+                <div class="coupon_rule">{{coupon_duplicate[0].useConsumeRestrict > 0? `满${coupon_duplicate[0].leastConsume}元可用`  : `不限制`}}</div>
               </div>
             </div>
 
@@ -653,6 +657,12 @@ export default {
         promoteTimes: [
           { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ],
+        launchLimitDuration: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
+        launchLimitTimes: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
         shareCreateTimes: [
           { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
         ]
@@ -912,12 +922,13 @@ export default {
 .coupon_info {
   display: flex;
   flex-direction: column;
-  width: 97%;
+  width: 200%;
+  line-height: 25px;
   margin: 0 auto;
   margin-bottom: -10px;
   .coupon_item {
     margin-bottom: 10px;
-    height: 100px;
+    height: 50px;
     display: flex;
     > div {
       background-color: #fff;

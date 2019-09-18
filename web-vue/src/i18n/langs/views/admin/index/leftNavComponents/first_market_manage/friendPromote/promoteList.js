@@ -42,11 +42,7 @@ export const cn = {
   receiveDetails: '领取明细',
   launchDetails: '发起明细',
   participateDetails: '参与明细',
-  //   tip: '提示',
   orderSnPlaceholder: '请输入订单号',
-  //   userInfo: '下单用户信息',
-  //   userInfoPlaceholder: '请输入下单用户昵称/手机号',
-  //   orderTime: '下单时间',
   export: '导出数据',
   rewardSet: '奖励设置',
   goodsInfo: '商品信息',
@@ -105,9 +101,6 @@ export const cn = {
   sharePreview: '分享预览',
   posterPreview: '海报预览',
   pictureTip: '建议尺寸：800*800像素',
-  //   price: '单价',
-  //   orderStatus: '订单状态',
-  //   moneyPaid: '支付金额',
   actId: '助力活动ID',
   actIdPlaceholder: '请输入助力活动ID',
   username: '用户昵称',
@@ -126,11 +119,12 @@ export const cn = {
   successUpdate: '修改成功',
   successAdd: '添加成功',
   operationFailed: '操作失败',
-  validCheck: '请按要求输入数据'
-  //   actDeleteConfirmTip: '确定删除该活动吗？',
-  //   actEnabledConfirmTip: '确定启用该活动吗？',
-  //   actDisableConfirmTip: '确定停用该活动吗？',
-  //   successfulOperation: '操作成功'
+  validCheck: '请按要求输入数据',
+  userIn: '用户在',
+  mostLaunch: '内最多可以发起',
+  time: '次',
+  friendShare: '好友可通过分享获得最多',
+  promoteOpportunity: '次助力机会'
 }
 
 export const en = {
@@ -177,11 +171,8 @@ export const en = {
   receiveDetails: 'receiveDetails',
   launchDetails: 'launchDetails',
   participateDetails: 'participateDetails',
-  //   tip: 'tips',
   orderSnPlaceholder: 'Please enter the order coding',
-  //   userInfo: 'Order user information',
-  //   userInfoPlaceholder: 'Please enter the order user nickname / mobile number',
-  //   orderTime: 'order time',
+  orderTime: 'order time',
   export: 'export',
   rewardSet: 'reward settings',
   goodsInfo: 'goods information',
@@ -240,9 +231,6 @@ export const en = {
   sharePreview: 'sharing preview',
   posterPreview: 'poster preview',
   pictureTip: 'Recommended size: 800*800 pixels',
-  //   price: 'price',
-  //   orderStatus: 'order status',
-  //   moneyPaid: 'payment amount',
   actId: 'activity ID',
   actIdPlaceholder: 'Please enter the activity ID',
   username: 'username',
@@ -261,9 +249,10 @@ export const en = {
   successUpdate: 'successfully update',
   successAdd: 'successfully add',
   operationFailed: 'operation failed',
-  validCheck: 'Please input data as required'
-  //   actDeleteConfirmTip: 'Are you sure to delete the activity?',
-  //   actEnabledConfirmTip: 'Are you sure to enabled the activity?',
-  //   actDisableConfirmTip: 'Are you sure to disable the activity?',
-  //   successfulOperation: 'Successful operation'
+  validCheck: 'Please input data as required',
+  userIn: 'User in',
+  mostLaunch: 'can launch at most',
+  time: 'times',
+  friendShare: 'Friends can get up to ',
+  promoteOpportunity: 'help opportunities through sharing'
 }
