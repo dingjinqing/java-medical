@@ -1,15 +1,14 @@
 package com.vpu.mp.service.pojo.shop.market.sharereward;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-
-import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Data;
 
 /**
  * @author liufei
  * @date 2019/8/19
- * @description
  */
 @Data
 public class ShareRewardShowParam {

@@ -1,25 +1,23 @@
 package com.vpu.mp.service.shop.market.sharereward;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-import com.vpu.mp.db.shop.tables.AttendShareUser;
-import com.vpu.mp.db.shop.tables.ShareAward;
-import com.vpu.mp.db.shop.tables.ShareAwardReceive;
-import com.vpu.mp.db.shop.tables.ShareAwardRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import com.vpu.mp.service.pojo.shop.market.sharereward.*;
-import com.vpu.mp.service.shop.coupon.CouponService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ONE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ZERO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_ALL;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_PREPARE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_PROCESSING;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_TERMINATED;
+import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.DAILY_SHARE_AWARD;
+import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.REWARD_TYPE;
+import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.SCORE;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -30,12 +28,38 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
-import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.Record11;
+import org.jooq.Record12;
+import org.jooq.SelectConditionStep;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.db.shop.tables.AttendShareUser;
+import com.vpu.mp.db.shop.tables.ShareAward;
+import com.vpu.mp.db.shop.tables.ShareAwardReceive;
+import com.vpu.mp.db.shop.tables.ShareAwardRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailParam;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailVo;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardAddParam;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardInfoVo;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardShowParam;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardShowVo;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardStatusParam;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRule;
+import com.vpu.mp.service.shop.coupon.CouponService;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author liufei
