@@ -65,6 +65,7 @@
                   v-for="(item,key) in listLeft"
                   :key="key"
                   class="picTextConDivList third_drag"
+                  @click="handleToClickLeftModule(item.id)"
                 >
                   <img :src="item.name">
                   {{item.value}}
@@ -121,22 +122,10 @@
                   >
                     <!--会员列表模块-->
                     <div @click="handleToClickModule(index)">
-                      <MembershipCard
-                        v-if="item===1"
+                      <components :is='thirdMiddleModulesList[item]'
                         :index="1"
-                        :flag="index"
-                      />
+                        :flag="index"></components>
                     </div>
-
-                    <!--优惠卷模块-->
-                    <div @click="handleToClickModule(index)">
-                      <Coupon
-                        v-if="item===2"
-                        :index="2"
-                        :flag="index"
-                      />
-                    </div>
-
                   </div>
                   <!--模块列表结束-->
                 </draggable>
@@ -146,7 +135,8 @@
           </vue-scroll>
         </div>
         <div class="decRight">
-          <PageSetup />
+          <PageSetup :index='nowRightShowIndex' />
+          <components :is='thirdRightModulesList[nowRightShowIndex]'></components>
         </div>
       </div>
     </div>
@@ -171,7 +161,6 @@
   </div>
 </template>
 <script>
-
 import vuescroll from 'vuescroll'
 import draggable from 'vuedraggable'
 import Vue from 'vue'
@@ -186,10 +175,13 @@ export default {
     draggable,
     MembershipCard: () => import('./decorationModules/membershipCard'),
     Coupon: () => import('./decorationModules/Coupon'),
-    PageSetup: () => import('./pageSetup')
+    PageSetup: () => import('./pageSetup'),
+    RightMembershipCard: () => import('./pageSetupModules/rightMembershipCard')
   },
   data () {
     return {
+      thirdMiddleModulesList: [null, 'MembershipCard', 'Coupon'],
+      thirdRightModulesList: ['RightMembershipCard'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -326,10 +318,12 @@ export default {
       isDragging: false,
       listLeft: [{
         name: this.$imageHost + '/image/admin/new_shop_beautify/deco_card.png',
-        value: '会员卡'
+        value: '会员卡',
+        id: 1
       }, {
         name: this.$imageHost + '/image/admin/new_shop_beautify/deco_voucher.png',
-        value: '优惠卷'
+        value: '优惠卷',
+        id: 2
       }, {
         name: this.$imageHost + '/image/admin/new_shop_beautify/bargain.png',
         value: '砍价'
@@ -663,6 +657,19 @@ export default {
     // 当前高亮模块处理事件
     handleToModuleHight () {
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
+    },
+    //  点击左侧模块加到中间模块队列底部并高亮
+    handleToClickLeftModule (id) {
+      this.showModulesList.push(id)
+      console.log(id)
+      let length = this.showModulesList.length - 1
+      console.log(length)
+      // this.$nextTick(() => {
+      //   this.$http.$emit('decCard', length)
+      // })
+      setTimeout(() => {
+        this.$http.$emit('decCard', length)
+      }, 100)
     }
   }
 }
