@@ -89,6 +89,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.saas.area.AreaSelectService;
@@ -958,5 +959,21 @@ public class MemberService extends ShopBaseService {
 		/** 更新user_detail */
 		memberDao.updateMemberInfoSql(param);
 
+	}
+
+
+	/**
+	 * 获取用户的所有可用会员卡
+	 * @param userId
+	 */
+	public List<CardBasicVo> getAllAvailableMemberCard(Integer userId) {
+		Result<Record> allAvailableMemberCard = memberDao.getAllAvailableMemberCard(userId);
+		List<CardBasicVo> cardList = new ArrayList<>();
+		allAvailableMemberCard.stream()
+							  .forEach(
+									  record->cardList.add(new CardBasicVo(record.get(MEMBER_CARD.ID),record.get(MEMBER_CARD.CARD_NAME)))
+									  );
+
+		return cardList;
 	}
 }

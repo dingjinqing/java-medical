@@ -15,4 +15,9 @@ public class CardBasicVo {
 	public Integer id;
 	/** 会员卡id */
 	public String cardName;
+	
+	public CardBasicVo(Integer id,String cardName) {
+		this.id = id;
+		this.cardName = cardName;
+	}
 }
