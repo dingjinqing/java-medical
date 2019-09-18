@@ -83,7 +83,10 @@
       </div>
     </div>
     <!--选择链接弹窗-->
-    <SelectLinks />
+    <SelectLinks
+      :tuneUpSelectLink="tuneUpSelectLink"
+      @selectLinkPath="selectLinkPath"
+    />
     <!--选择图片弹窗 -->
     <ImageDalog
       pageIndex='pictureSpace'
@@ -130,6 +133,7 @@ export default {
   components: { SelectLinks, ImageDalog },
   data () {
     return {
+      tuneUpSelectLink: false,
       ulClickIndex: 0,
       inputValArr: [
         {
@@ -211,10 +215,16 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 初始化查询
     this.queryBottom()
   },
   methods: {
+    // 选中路径
+    selectLinkPath (path) {
+      this.contentList[this.linksIndex].page = path
+    },
     queryBottom () {
       bottomGetRequest().then((res) => {
         if (res.error === 0) {
@@ -233,7 +243,8 @@ export default {
     // 点击选择链接
     handleSelectLinks (index) {
       this.linksIndex = index
-      this.$http.$emit('linkDialogFlag', this.linkFlag)
+      this.tuneUpSelectLink = !this.tuneUpSelectLink
+      // this.$http.$emit('linkDialogFlag', this.linkFlag)
     },
     // 点击底部li
     hanleFooterLi (index) {

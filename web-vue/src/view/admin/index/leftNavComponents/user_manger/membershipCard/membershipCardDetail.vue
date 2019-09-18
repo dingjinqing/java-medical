@@ -713,10 +713,15 @@
     <!--图片弹窗-->
     <ImageDalog
       pageIndex='userCardAdd'
+      :tuneUp="tuneUp"
       @handleSelectImg='handleSelectImg'
     />
     <!--添加优惠卷-->
-    <AddCouponDialog @handleToCheck="handleToCheck" />
+    <AddCouponDialog
+      :tuneUpCoupon="tuneUpCoupon"
+      :couponBack="couponBack"
+      @handleToCheck="handleToCheck"
+    />
     <!--选择商品弹窗-->
     <ChoosingGoods />
     <!--选择商家分类弹窗-->
@@ -874,6 +879,7 @@ export default {
 
       },
       baImgUrl: null,
+      tuneUpCoupon: false,
       noneBlockDiscArr: [
         {
           name: '添加商品',
@@ -923,7 +929,9 @@ export default {
       addBrandDialogDataFlag1: '', // 指定商品-添加品牌弹窗选中数据
       addBrandDialogDataFlag2: '', // 会员专享-添加品牌弹窗选中数据
       choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据
-      choosingGoodsDateFlag2: '' // 会员专享-选择商品选中数据
+      choosingGoodsDateFlag2: '', // 会员专享-选择商品选中数据
+      tuneUp: false,
+      couponBack: ''
     }
   },
   filters: {
@@ -1125,6 +1133,7 @@ export default {
     },
     // 添加图片
     handleToAddImg () {
+      this.tuneUp = !this.tuneUp
       this.$http.$emit('dtVisible')
     },
     // 图片选中
@@ -1161,12 +1170,11 @@ export default {
     },
     // 调起添加优惠卷弹窗
     handleToCallDialog () {
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.couponList
-      }
+      let arr = [41, 40]
+      this.tuneUpCoupon = !this.tuneUpCoupon
 
-      this.$http.$emit('V-AddCoupon', obj)
+      this.couponBack = arr
+      // this.$http.$emit('V-AddCoupon', obj)
     },
     // 添加优惠卷弹窗回传
     handleToCheck (data) {

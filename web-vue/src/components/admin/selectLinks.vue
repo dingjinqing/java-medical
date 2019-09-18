@@ -118,6 +118,9 @@ export default {
     groupDrawing,
     classificationOfCommodities
   },
+  props: {
+    tuneUpSelectLink: Boolean
+  },
   data () {
     return {
       currentComponent: commonLinks,
@@ -221,18 +224,20 @@ export default {
   watch: {
     choisePath_ (newData, oldData) {
       this.suerPath = newData
+    },
+    tuneUpSelectLink () {
+      this.dialogVisible = true
     }
-
   },
   mounted () {
-    this.$http.$on('linkDialogFlag', (flag) => {
-      console.log(flag)
-      this.dialogVisible = true
-      // 初始化弹窗子组件
-      // this.$router.push({
-      //   name: 'commonLinks'
-      // })
-    })
+    // this.$http.$on('linkDialogFlag', (flag) => {
+    //   console.log(flag)
+    //   this.dialogVisible = true
+    //   // 初始化弹窗子组件
+    //   // this.$router.push({
+    //   //   name: 'commonLinks'
+    //   // })
+    // })
   },
   methods: {
     ...mapActions(['changeSelectlink', 'changeSelectLinkLeft', 'afferentPathToPage']),
@@ -242,7 +247,7 @@ export default {
       this.dialogVisible = false
       console.log(this.suerPath)
       // 把选中的链接回传
-      this.$emit('path', this.suerPath)
+      this.$emit('selectLinkPath', this.suerPath)
     },
     handleClose (done) {
       this.dialogVisible = false

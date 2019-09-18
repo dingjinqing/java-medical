@@ -79,10 +79,20 @@ export default {
       isSingleElection: false
     }
   },
-  props: ['origin', 'singleElection'],
+  props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack'],
   mounted () {
     // 初始化
     this.defaultData()
+  },
+  watch: {
+    tuneUpCoupon () {
+      this.dialogVisible = true
+    },
+    couponBack (newData) {
+      console.log(newData)
+      this.data = newData
+      this.initCouponList(newData)
+    }
   },
   methods: {
 
@@ -92,11 +102,11 @@ export default {
         this.isSingleElection = this.singleElection
       }
 
-      this.$http.$on('V-AddCoupon', data => {
-        this.data = data
-        this.initCouponList(data)
-        this.dialogVisible = true
-      })
+      // this.$http.$on('V-AddCoupon', data => {
+      //   this.data = data
+      //   this.initCouponList(data)
+      //   this.dialogVisible = true
+      // })
     },
     initCouponList (data) {
       this.loading = true
@@ -105,14 +115,15 @@ export default {
       }
       getCouponSelectComponentData(param).then((res) => {
         if (res.error === 0) {
+          console.log(res)
           this.dialogData = res.content
           this.dialogData.map((item, index) => {
             this.$set(item, 'ischeck', false)
           })
           this.dialogData.forEach((item, index) => {
             item.ischeck = false
-            data.couponList.forEach((itemC, indexC) => {
-              if (item.id === itemC.id) {
+            data.forEach((itemC, indexC) => {
+              if (item.id === itemC) {
                 item.ischeck = true
               }
             })

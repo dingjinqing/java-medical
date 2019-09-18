@@ -235,7 +235,13 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   props: {
     // 是否加载规格
-    loadProduct: Boolean
+    loadProduct: Boolean,
+    tuneUpChooseGoods: Boolean,
+    singleElection: {
+      type: Boolean,
+      default: false
+    },
+    chooseGoodsBack: Array
   },
   data () {
     return {
@@ -321,7 +327,32 @@ export default {
           item.ischecked = false
         })
       }
+    },
+    tuneUpChooseGoods () {
+      console.log('test')
+      this.choiseGooddialogVisible = true
+      this.trList.forEach(item => {
+        item.ischecked = false
+      })
+      if (this.singleElection) {
+        this.choiseOne = true
+        this.trList.forEach(item => {
+          if (item.goodsId === this.chooseGoodsBack[0]) {
+            item.ischecked = true
+          }
+        })
+      } else {
+        console.log(this.chooseGoodsBack)
+        this.trList.forEach(item => {
+          this.chooseGoodsBack.forEach(itemC => {
+            if (item.goodsId === itemC) {
+              item.ischecked = true
+            }
+          })
+        })
+      }
     }
+
     // goodsIds_: {
     //   handler (newData, oldData) {
     //     console.log(newData)
@@ -333,45 +364,45 @@ export default {
     // }
   },
   mounted () {
-    this.$http.$on('choosingGoodsFlag', (res, flag) => {
-      // console.log(res, flag)
-      // console.log(this.trList)
+    // this.$http.$on('choosingGoodsFlag', (res, flag) => {
+    //   // console.log(res, flag)
+    //   // console.log(this.trList)
 
-      this.choiseGooddialogVisible = true
-      this.trList.forEach(item => {
-        item.ischecked = false
-      })
-      if (flag === 'choiseOne') {
-        console.log('choiseOne', this.editGoodsId)
-        this.choiseOne = true
-        this.trList.forEach(item => {
-          if (item.goodsId === this.editGoodsId) {
-            item.ischecked = true
-          }
-        })
-        return
-      }
-      if (flag) {
-        this.trList.forEach(item => {
-          flag.forEach(itemC => {
-            if (item.goodsId === itemC) {
-              item.ischecked = true
-            }
-          })
-        })
-      }
-    })
+    //   this.choiseGooddialogVisible = true
+    //   this.trList.forEach(item => {
+    //     item.ischecked = false
+    //   })
+    //   if (flag === 'choiseOne') {
+    //     console.log('choiseOne', this.editGoodsId)
+    //     this.choiseOne = true
+    //     this.trList.forEach(item => {
+    //       if (item.goodsId === this.editGoodsId) {
+    //         item.ischecked = true
+    //       }
+    //     })
+    //     return
+    //   }
+    //   if (flag) {
+    //     this.trList.forEach(item => {
+    //       flag.forEach(itemC => {
+    //         if (item.goodsId === itemC) {
+    //           item.ischecked = true
+    //         }
+    //       })
+    //     })
+    //   }
+    // })
     // 品牌分类初始化获取及页编辑回显
     this.defaultGrandClass()
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
     defaultGrandClass () {
-      console.log('defaultGrandClass()', this.editGoodsId)
+      console.log('defaultGrandClass()', this.chooseGoodsBack)
 
-      if (this.editGoodsId !== 'add' && this.editGoodsId) {
+      if (this.editGoodsId !== 'add' && this.chooseGoodsBack) {
         let obj = {
-          'id': this.editGoodsId
+          'id': this.chooseGoodsBack
         }
         queryGoodsIdRequest(obj).then((res) => {
           console.log(res.content)

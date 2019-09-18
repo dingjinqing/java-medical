@@ -457,7 +457,10 @@
       </div>
     </div>
     <!-- 选择商品弹窗 -->
-    <ChoosingGoods />
+    <ChoosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="chooseGoodsBack"
+    />
     <!--修改余额&修改积分弹窗-->
     <div
       class="balanceDialo"
@@ -954,8 +957,10 @@ export default {
       specialliNavTwo: '',
       tagSource: [],
       tagUserId: '', // 打标签时临时存放的id
-      cardUserId: '' // 设置会员卡时临时存放的id
-
+      cardUserId: '', // 设置会员卡时临时存放的id
+      tuneUpChooseGoods: false,
+      singleElection: true,
+      chooseGoodsBack: []
     }
   },
   watch: {
@@ -1161,7 +1166,9 @@ export default {
     },
     // 点击选择商品按钮
     handleClickChoiseGood () {
-      this.$http.$emit('choosingGoodsFlag', true)
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+      this.chooseGoodsBack = [11]
+      // this.$http.$emit('choosingGoodsFlag', true)
     },
     // 当前页发生变化
     handleCurrentChange () {
