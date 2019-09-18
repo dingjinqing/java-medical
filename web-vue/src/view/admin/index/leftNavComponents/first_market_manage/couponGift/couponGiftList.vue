@@ -34,24 +34,24 @@
       >
       </el-table>
       <!-- 分页组件 -->
-      <pagination
+      <!-- <pagination
         :page-params.sync="pageParams"
         @pagination="handleClick"
-      />
+      /> -->
     </div>
   </div>
 </template>
 
 <script>
-import { couponGiftList } from '@/api/admin/marketManage/couponGift.js'
-import pagination from '@/components/admin/pagination/pagination'
+// import { couponGiftList } from '@/api/admin/marketManage/couponGift.js'
+// import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: {
-    pagination
-  },
+  // components: {
+  //   pagination
+  // },
   data () {
     return {
-
+      tableData: []
     }
   }
 }
