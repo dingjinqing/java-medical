@@ -67,7 +67,7 @@ public class AdminTemplateMessageController extends AdminBaseController {
     public JsonResult queryMessageStatistics(@RequestBody MessageTemplateQuery param){
         return success(shop().messageTemplateService.queryStatisticsData(param));
     }
-    @GetMapping("/content/list")
+    @PostMapping("/content/list")
     public JsonResult getContentTemplate(@RequestBody ContentMessageParam param){
         return success(shop().messageTemplateService.getContentTemplate(param));
     }
