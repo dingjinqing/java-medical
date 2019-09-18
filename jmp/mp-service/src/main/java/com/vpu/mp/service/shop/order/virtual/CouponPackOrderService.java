@@ -77,8 +77,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 			condition.and(VIRTUAL_ORDER.ORDER_SN.like(this.likeValue(param.getOrderSn())));
 		}
 		if(!StringUtils.isBlank(param.getUserInfo())) {
-			condition.and(USER.USERNAME.like(likeValue(param.getUserInfo())));
-			condition.and(USER.MOBILE.like(likeValue(param.getUserInfo())));
+			condition.and(USER.USERNAME.like(likeValue(param.getUserInfo())).or(USER.MOBILE.like(likeValue(param.getUserInfo()))));
 		}
 		if(param.getStartTime() != null) {
 			condition.and(VIRTUAL_ORDER.CREATE_TIME.gt(param.getStartTime()));
