@@ -2,14 +2,10 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
-import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.TAG;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.USER_CART_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
@@ -18,14 +14,10 @@ import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SCAN_QRCODE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.CHANNAL_PAGE;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
@@ -34,7 +26,6 @@ import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
-import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -89,7 +80,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.saas.area.AreaSelectService;
@@ -966,12 +957,12 @@ public class MemberService extends ShopBaseService {
 	 * 获取用户的所有可用会员卡
 	 * @param userId
 	 */
-	public List<CardBasicVo> getAllAvailableMemberCard(Integer userId) {
+	public List<AvailableMemberCardVo> getAllAvailableMemberCard(Integer userId) {
 		Result<Record> allAvailableMemberCard = memberDao.getAllAvailableMemberCard(userId);
-		List<CardBasicVo> cardList = new ArrayList<>();
+		List<AvailableMemberCardVo> cardList = new ArrayList<>();
 		allAvailableMemberCard.stream()
 							  .forEach(
-									  record->cardList.add(new CardBasicVo(record.get(MEMBER_CARD.ID),record.get(MEMBER_CARD.CARD_NAME)))
+									  record->cardList.add(new AvailableMemberCardVo(record.get(MEMBER_CARD.ID),record.get(MEMBER_CARD.CARD_TYPE),record.get(MEMBER_CARD.CARD_NAME)))
 									  );
 
 		return cardList;
