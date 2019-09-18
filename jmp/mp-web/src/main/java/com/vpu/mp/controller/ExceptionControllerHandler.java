@@ -2,6 +2,7 @@ package com.vpu.mp.controller;
 
 import java.io.IOException;
 
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -80,5 +81,13 @@ public class ExceptionControllerHandler extends BaseController {
     @ExceptionHandler(IllegalArgumentException.class)
     public JsonResult handleArgumentExceptions(IllegalArgumentException e) {
         return fail(e.getMessage());
+    }
+
+    /**
+     * 常规业务异常
+     */
+    @ExceptionHandler(BusinessException.class)
+    public JsonResult businessException(BusinessException e){
+        return fail(e.getCode());
     }
 }

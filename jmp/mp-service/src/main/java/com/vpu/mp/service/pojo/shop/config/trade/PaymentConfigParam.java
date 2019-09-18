@@ -1,26 +1,53 @@
 package com.vpu.mp.service.pojo.shop.config.trade;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- * @Author:liufei
- * @Date:2019/7/8
- * @Description:
- * true：开启
- * false：未开启
+ * The type Payment config param.
+ *
+ * @author liufei
+ * @date 2019 /7/8
  */
 @Data
 public class PaymentConfigParam {
-    /** 支付方式-微信支付 */
+    /**
+     * 支付方式-payment记录表
+     * 1：开启状态 0：未开启状态
+     * 微信支付
+     */
     private Byte wxpay;
-    /** 支付方式-积分支付 */
+    /**
+     * 积分支付
+     */
     private Byte score;
-    /** 支付方式-余额支付 */
+    /**
+     * 余额支付
+     */
     private Byte balance;
-    /** 支付方式-货到付款 */
+    /**
+     * 货到付款
+     */
     private Byte cod;
-    /** 支付方式-存储卡支付 */
+    /**
+     * 存储卡支付
+     */
     private Byte membercard;
-    /** 支付方式-支付宝支付 */
-//    private boolean aliMiniPay;
+
+    /**
+     * 默认支付配置-shopcfg表
+     * 会员卡余额支付
+     */
+    @JsonProperty(value = "card_first")
+    public Byte cardFirst;
+    /**
+     * The Balance first.余额支付
+     */
+    @JsonProperty(value = "balance_first")
+    public Byte balanceFirst;
+    /**
+     * The Score first.积分支付
+     */
+    @JsonProperty(value = "score_first")
+    public Byte scoreFirst;
 }

@@ -6,9 +6,8 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 /**
- * @Author:liufei
- * @Date:2019/7/10
- * @Description:
+ * @author liufei
+ * @date 2019/7/10
  */
 @Data
 public class RetrunConfigParam {

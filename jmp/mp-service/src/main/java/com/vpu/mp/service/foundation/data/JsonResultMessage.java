@@ -260,6 +260,7 @@ public class JsonResultMessage {
 	public static final String WXPAY_CONFIG_IS_NULL = "wxpay.config.is.null";
 	public static final String CONFIG_A_NUM_GREATER = "config.a.num.greater";
 	public static final String CONFIG_B_NUM_GREATER = "config.b.num.greater";
+	public static final String CODE_CONFIG_UPDATE_FAILED = "config update failed";
 
 	/**
 	 * 会员管理
