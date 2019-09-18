@@ -169,6 +169,7 @@ public class JsonResultMessage {
 	 * 营销-拼团
 	 */
 	public static final String GROUP_BUY_ADD_ACTIVITY_STOP_STATUS="group.buy.add.activity.stop.status";
+	public static final String GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING="group.buy.activity.goods.overlapping";
 
 
     /**
@@ -198,7 +199,7 @@ public class JsonResultMessage {
 
 	public static final String BINDING_MINI_NO_SAME = "binding.mini.no.same";
 	public static final String BINDING_MINI_HAVEBIND = "binding.mini.havebind";
-	
+
 	public static final String WX_MA_APP_ID_NOT_AUTH = "wx.ma.app_id.not.auth";
 	public static final String WX_MA_TEMPLATE_ID_NOT_NULL = "wx.ma.app_template_id.not.null";
 	public static final String WX_MA_PACKAGE_VERSION_NOT_NULL = "wx.ma.package_version.not.null";
@@ -216,7 +217,7 @@ public class JsonResultMessage {
 	public static final String WX_NO_REQUIRED = "wx.no.request";
 	public static final String WX_ONLY_ONE = "wx.only.one";
 	public static final String WX_JOB_PROBLEM = "wx.job.problem";
-	
+
 	/**
 	 * 门店管理
 	 */
@@ -390,7 +391,7 @@ public class JsonResultMessage {
     public static final String REDEMPTION_DETAIL_REDEMPTION_NUM = "market.increase.purchase.redemption.detail.redemption_num";
     public static final String REDEMPTION_DETAIL_REDEMPTION_TOTAL_MONEY = "market.increase.purchase.redemption.detail.redemption_total_money";
 
-	
+
 
 
 }

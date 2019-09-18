@@ -12,7 +12,10 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
@@ -58,18 +61,18 @@ public class GroupBuyService extends ShopBaseService {
      * @param flag
      */
     public void addGroupBuy(GroupBuyParam groupBuy, Boolean status) {
-        transaction(()->{
+        transaction(() -> {
             //分享配置转json
             groupBuy.setShareConfig(Util.toJson(groupBuy.getShare()));
             //订单总库存
-            Integer stock=groupBuy.getProduct().stream().mapToInt(group->group.getStock()).sum();
+            Integer stock = groupBuy.getProduct().stream().mapToInt(group -> group.getStock()).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, groupBuy);
-            groupBuyDefineRecord.setStatus(status==true?USE_STATUS:STOP_STATUS);
+            groupBuyDefineRecord.setStatus(status == true ? USE_STATUS : STOP_STATUS);
             groupBuyDefineRecord.setStock(stock.shortValue());
             groupBuyDefineRecord.insert();
             //拼团商品规格价格信息
-            groupBuy.getProduct().forEach((product)->{
+            groupBuy.getProduct().forEach((product) -> {
                 GroupBuyProductDefineRecord productDefineRecord = db().newRecord(GROUP_BUY_PRODUCT_DEFINE, product);
                 productDefineRecord.setActivityId(groupBuyDefineRecord.getId());
                 productDefineRecord.insert();
@@ -77,6 +80,14 @@ public class GroupBuyService extends ShopBaseService {
         });
     }
 
+    /**
+     * 根据id 获取活动record
+     * @param id
+     * @return
+     */
+    public GroupBuyDefineRecord getGroupBuyRecord(Integer id){
+       return  db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne();
+    }
     /**
      * 删除
      *
@@ -93,14 +104,26 @@ public class GroupBuyService extends ShopBaseService {
      * 编辑测试
      *
      * @param param GroupBuyEditParam
-     * @return  int
+     * @return int
      */
-    public int updateGroupBuy(GroupBuyEditParam param) {
-        param.setShareConfig(Util.toJson(param.getShare()));
-        return db().update(GROUP_BUY_DEFINE)
-                .set(GROUP_BUY_DEFINE.NAME, param.getName())
-                .set(GROUP_BUY_DEFINE.SHARE_CONFIG, param.getShareConfig())
-                .execute();
+    public void updateGroupBuy(GroupBuyEditParam param) {
+        transaction(() -> {
+            //分享配置转json
+            param.setShareConfig(Util.toJson(param.getShare()));
+            //订单总库存
+            Integer stock = param.getProduct().stream().mapToInt(group -> group.getStock()).sum();
+            //拼团信息
+            GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, param);
+            groupBuyDefineRecord.setStock(stock.shortValue());
+            groupBuyDefineRecord.update();
+            //拼团商品规格价格信息
+            db().delete(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(groupBuyDefineRecord.getId())).execute();
+            param.getProduct().forEach((product) -> {
+                GroupBuyProductDefineRecord productDefineRecord = db().newRecord(GROUP_BUY_PRODUCT_DEFINE, product);
+                productDefineRecord.setActivityId(groupBuyDefineRecord.getId());
+                productDefineRecord.insert();
+            });
+        });
 
     }
 
@@ -115,14 +138,14 @@ public class GroupBuyService extends ShopBaseService {
      */
     public int changeStatusActivity(Integer id) {
         Byte status = db().select(GROUP_BUY_DEFINE.STATUS).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne().component1();
-        if (status!=null&&status == STOP_STATUS) {
-             return db().update(GROUP_BUY_DEFINE)
+        if (status != null && status == STOP_STATUS) {
+            return db().update(GROUP_BUY_DEFINE)
                     .set(GROUP_BUY_DEFINE.STATUS, USE_STATUS)
                     .where(GROUP_BUY_DEFINE.ID.eq(id))
                     .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS))
                     .execute();
-        } else if (status!=null&&status == USE_STATUS) {
-             return db().update(GROUP_BUY_DEFINE)
+        } else if (status != null && status == USE_STATUS) {
+            return db().update(GROUP_BUY_DEFINE)
                     .set(GROUP_BUY_DEFINE.STATUS, STOP_STATUS)
                     .where(GROUP_BUY_DEFINE.ID.eq(id))
                     .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
@@ -159,7 +182,7 @@ public class GroupBuyService extends ShopBaseService {
                         GOODS_SPEC_PRODUCT.PRD_DESC,
                         GOODS_SPEC_PRODUCT.PRD_PRICE,
                         GOODS_SPEC_PRODUCT.PRD_NUMBER
-                        )
+                )
                 .from(GROUP_BUY_PRODUCT_DEFINE)
                 .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID))
                 .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(id)).fetch().into(GroupBuyProductVo.class);
@@ -176,17 +199,16 @@ public class GroupBuyService extends ShopBaseService {
     /**
      * 校验商品是否有叠加
      *
-     * @param param  GroupBuyParam
+     * @param param GroupBuyParam
      * @return 0
      */
-    public Boolean validGroupGoods(GroupBuyParam param) {
-        return db().fetchCount(GROUP_BUY_DEFINE,
-                GROUP_BUY_DEFINE.GOODS_ID.eq(param.getGoodsId())
+    public Boolean validGroupGoods(Integer id,Integer goodsId,Timestamp startTime,Timestamp endTime) {
+        return db().fetchCount(GROUP_BUY_DEFINE, GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId)
                         .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
                         .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
-                        .and(GROUP_BUY_DEFINE.ID.notEqual(param.getGoodsId()))
-                        .and(GROUP_BUY_DEFINE.START_TIME.lt(param.getEndTime()))
-                        .and(GROUP_BUY_DEFINE.END_TIME.gt(param.getStartTime()))) == 0;
+                        .and(GROUP_BUY_DEFINE.ID.notEqual(id))
+                        .and(GROUP_BUY_DEFINE.START_TIME.lt(startTime))
+                        .and(GROUP_BUY_DEFINE.END_TIME.gt(endTime))) == 0;
 
     }
 
@@ -238,46 +260,46 @@ public class GroupBuyService extends ShopBaseService {
         GroupBuyAnalysisVo analysisVo = new GroupBuyAnalysisVo();
         Timestamp startDate = param.getStartTime();
         Timestamp endDate = param.getEndTime();
-        if (startDate==null||endDate==null){
-             startDate = DateUtil.currentMonthFirstDay();
-             endDate = DateUtil.getLocalDateTime();
+        if (startDate == null || endDate == null) {
+            startDate = DateUtil.currentMonthFirstDay();
+            endDate = DateUtil.getLocalDateTime();
         }
         //获取销售额等金额
         List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(1, param.getId(), startDate, endDate);
         //获取参与用户信息
-        ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(1, param.getId(), startDate,endDate);
+        ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(1, param.getId(), startDate, endDate);
 
         while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
             //活动实付金额
             ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
-            if (discountMoney==null){
+            if (discountMoney == null) {
                 analysisVo.getGoodsPriceList().add(BigDecimal.ZERO);
                 analysisVo.getMarketPriceList().add(BigDecimal.ZERO);
                 analysisVo.getRatioList().add(BigDecimal.ZERO);
-            }else {
-                BigDecimal  goodsPrice =Optional.ofNullable(discountMoney.getGoodsPrice()).orElse(BigDecimal.ZERO);
-                BigDecimal  marketPric =Optional.ofNullable(discountMoney.getMarketPrice()).orElse(BigDecimal.ZERO);
-                BigDecimal  totalPrice =Optional.ofNullable(discountMoney.getDiscountedTotalPrice()).orElse(BigDecimal.ZERO);
+            } else {
+                BigDecimal goodsPrice = Optional.ofNullable(discountMoney.getGoodsPrice()).orElse(BigDecimal.ZERO);
+                BigDecimal marketPric = Optional.ofNullable(discountMoney.getMarketPrice()).orElse(BigDecimal.ZERO);
+                BigDecimal totalPrice = Optional.ofNullable(discountMoney.getDiscountedTotalPrice()).orElse(BigDecimal.ZERO);
                 analysisVo.getGoodsPriceList().add(goodsPrice);
                 analysisVo.getMarketPriceList().add(marketPric);
-                analysisVo.getRatioList().add(totalPrice.compareTo(BigDecimal.ZERO)>0?
-                        marketPric.subtract(goodsPrice).divide(totalPrice,BigDecimal.ROUND_FLOOR):BigDecimal.ZERO);
+                analysisVo.getRatioList().add(totalPrice.compareTo(BigDecimal.ZERO) > 0 ?
+                        marketPric.subtract(goodsPrice).divide(totalPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
             }
             //新用户数
             OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), startDate);
-            if (newUser==null){
+            if (newUser == null) {
                 analysisVo.getNewUserList().add(0);
-            }else {
+            } else {
                 analysisVo.getNewUserList().add(newUser.getNum());
             }
             //老用户数
             OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), startDate);
-            if (oldUser==null){
+            if (oldUser == null) {
                 analysisVo.getOldUserList().add(0);
-            }else {
+            } else {
                 analysisVo.getOldUserList().add(oldUser.getNum());
             }
-            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,startDate));
+            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
         return analysisVo;

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 public class GroupBuyProductParam extends BasePageGroupBuyParam{
 
-
+    private Integer  id;
     /**
      * 拼团定义Id
      */

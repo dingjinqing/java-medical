@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.Util;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,7 +64,10 @@ public class AdminGroupBuyController extends AdminBaseController {
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
         //校验活动商品是否叠加 (并发不安全)
-        Boolean flag = shop().groupBuy.validGroupGoods(param);
+        Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime());
+        if (!flag){
+            return fail(JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS);
+        }
         //插入数据
         shop().groupBuy.addGroupBuy(param,flag);
         if (flag){
@@ -81,6 +85,9 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/delete")
     public JsonResult deleteGroupBuy(@RequestBody GroupBuyIdParam param) {
+        if (param.getId()==null){
+            return fail(JsonResultCode.CODE_PARAM_ERROR);
+        }
         shop().groupBuy.deleteGroupBuy(param.getId());
         return success();
     }
@@ -99,10 +106,7 @@ public class AdminGroupBuyController extends AdminBaseController {
         param.getProduct() == null || param.getProduct().size() == 0 ) {
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
-        int flag = shop().groupBuy.updateGroupBuy(param);
-        if (flag<=0){
-            return fail();
-        }
+        shop().groupBuy.updateGroupBuy(param);
         return success();
     }
 
@@ -143,8 +147,17 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/change/status")
     public JsonResult changeStatusActivity(@RequestBody GroupBuyIdParam param) {
-        int flag = shop().groupBuy.changeStatusActivity(param.getId());
-        if (flag>0){
+        if (param.getId()==null){
+            return fail(JsonResultCode.CODE_PARAM_ERROR);
+        }
+        //校验活动商品是否叠加
+        GroupBuyDefineRecord groupBuyRecord = shop().groupBuy.getGroupBuyRecord(param.getId());
+        Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime());
+        if (!flag){
+            return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
+        }
+        int resFlag = shop().groupBuy.changeStatusActivity(param.getId());
+        if (resFlag>0){
          return success();
         }
         return fail();
