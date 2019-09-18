@@ -82,8 +82,6 @@ public class MemberCardOrderService extends VirtualOrderService {
         if (null != isRefund) {
             if (isRefund) {
                 select.and(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_SUCCESS).or(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_FAILED)));
-            } else {
-                select.and(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_NORMAL));
             }
         }
         select.and(VIRTUAL_ORDER.DEL_FLAG.eq((byte) 0));

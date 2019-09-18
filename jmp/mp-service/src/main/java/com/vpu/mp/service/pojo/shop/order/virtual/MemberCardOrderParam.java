@@ -14,12 +14,6 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class MemberCardOrderParam extends BasePageParam {
-
-    /** 普通会员卡 **/
-    public static final byte NORMAL_CARD = 0;
-    /** 限次会员卡 **/
-    public static final byte COUNT_CARD = 1;
-
     /** 下单用户信息（下单用户姓名或手机号）**/
     private String userInfo;
     /** 订单编号 **/

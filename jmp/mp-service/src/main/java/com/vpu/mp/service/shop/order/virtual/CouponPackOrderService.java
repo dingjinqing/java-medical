@@ -86,6 +86,11 @@ public class CouponPackOrderService extends VirtualOrderService {
 		if(param.getEndTime() != null) {
 			condition.and(VIRTUAL_ORDER.CREATE_TIME.le(param.getEndTime()));
 		}
+        if (null != param.getRefund()) {
+            if (param.getRefund()) {
+                condition.and(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_SUCCESS).or(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_FAILED)));
+            }
+        }
 		condition.orderBy(VIRTUAL_ORDER.CREATE_TIME);
 		return condition;
 	}

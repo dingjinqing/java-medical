@@ -24,6 +24,9 @@ public class CouponPackOrderPageParam {
 	private Timestamp startTime;
 	/** 下单时间范围 结束 */
 	private Timestamp endTime;
+
+    /** 是否退款订单 **/
+    private Boolean refund;
 	
 	/**
      * 	分页信息
