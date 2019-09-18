@@ -415,7 +415,10 @@
       </div>
       <div class="box3">
         <!-- 定向发券 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="couponGift"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/dxfq.png'"
               alt=""
@@ -574,6 +577,12 @@ export default {
     messagePush () {
       this.$router.push({
         name: 'message_push'
+      })
+    },
+    // 定向发券
+    couponGift () {
+      this.$router.push({
+        name: 'couponGift'
       })
     }
   }

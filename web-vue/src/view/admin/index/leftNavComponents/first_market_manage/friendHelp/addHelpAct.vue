@@ -714,7 +714,7 @@ export default {
         this.form.activityShareType = res.content[0].activityShareType.toString()
         this.form.customShareWord = res.content[0].customShareWord
         this.form.shareImgType = res.content[0].shareImgType.toString()
-        this.form.customImgPath = res.content[0].customImgPath
+        this.srcList.src = res.content[0].customImgPath
         if (this.form.rewardType === '0') {
           this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
           console.log(this.form.rewardSet.market_store)
@@ -804,7 +804,8 @@ export default {
         'failedSendContent': this.form.failedSendContent,
         'activityShareType': this.form.activityShareType,
         'customShareWord': this.form.customShareWord,
-        'shareImgType': this.form.shareImgType
+        'shareImgType': this.form.shareImgType,
+        'customImgPath': this.srcList.src
       }
       this.$refs['form'].validate((valid) => {
         console.log('submit', this.form)

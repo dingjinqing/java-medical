@@ -196,7 +196,9 @@ export const cn = {
   // 营销管理 消息推送
   message_push: ['营销管理', '消息推送'],
   // 营销管理 消息推送 添加消息推送
-  add_message_push: ['营销管理', '消息推送', '添加消息模板']
+  add_message_push: ['营销管理', '消息推送', '添加消息模板'],
+  // 营销管理 定向发券
+  couponGift: ['营销管理', '定向发券']
 }
 
 export const en = {
@@ -485,5 +487,7 @@ export const en = {
   memberCardOrder: ['Order management', 'Virtual goods order'],
   // 营销管理 消息体送
   message_push: ['Marketing management', 'message_push'],
-  add_message_push: ['Marketing management', 'Message push', 'Add message push']
+  add_message_push: ['Marketing management', 'Message push', 'Add message push'],
+  // 营销管理 定向发券
+  couponGift: ['Marketing management', 'Coupon Gift']
 }

@@ -9,7 +9,6 @@
           v-for="(item) in tabInfo"
           :key="item.name"
           :label="item.title"
-          :name="item.name"
         >
           <el-button
             type="primary"
@@ -273,7 +272,6 @@ export default {
         title: this.$t('promoteList.disabledActivity'),
         name: '4'
       }],
-      tabIndex: 2,
       currentPage: 1,
       tableData: [],
       rewardType: '-1',
@@ -293,6 +291,7 @@ export default {
     },
 
     handleClick () {
+      console.log('this.tabSwitch：', this.tabSwitch)
       this.pageParams.rewardType = this.rewardType
       this.pageParams.startTime = this.startTime
       this.pageParams.endTime = this.endTime

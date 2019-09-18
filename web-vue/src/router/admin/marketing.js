@@ -835,6 +835,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/messagePushStatistics'
       )
+  },
+  // 好友助力
+  {
+    path: '/admin/home/main/couponGift',
+    name: 'couponGift',
+    meta: {
+      crumbTitle: 'router.couponGift',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponGift/couponGiftList'
+      )
   }
 ]
 export default routes
