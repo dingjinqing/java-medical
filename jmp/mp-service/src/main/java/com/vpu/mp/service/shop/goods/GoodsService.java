@@ -947,7 +947,7 @@ public class GoodsService extends ShopBaseService {
         // 设置图片绝对路径
         fetch.forEach(item -> {
             goodsImgs.add(getImgFullUrlUtil(item));
-            goodsImgsPath.add(getImgFullUrlUtil(item));
+            goodsImgsPath.add(item);
         });
         goods.setGoodsImgs(goodsImgs);
         goods.setGoodsImgsPath(goodsImgsPath);

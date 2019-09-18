@@ -9,10 +9,7 @@ import java.util.stream.Collectors;
 
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -271,7 +268,7 @@ public class AdminGoodsController extends AdminBaseController {
      * @param goodsId 商品id
      * @return 图片绝对地址和跳转链接相对地址
      */
-    @PostMapping("/api/admin/goods/qrCode/get")
+    @GetMapping("/api/admin/goods/qrCode/get")
     public JsonResult getQrCode(Integer goodsId){
         if (goodsId == null) {
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
