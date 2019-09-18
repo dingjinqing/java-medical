@@ -100,7 +100,7 @@ public class QrCodeService extends ShopBaseService {
 
         try {
             byte[] qrcodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId)
-                .getQrcodeService().createQrcodeBytes(typeUrl, qrcodWidth);
+                .getQrcodeService().createWxaCodeUnlimitBytes(null,typeUrl, qrcodWidth,true,null,true);
 
             relativePath = format("upload/%s/qrcode/%s/T%sP%s_%s.jpg", type, getShopId(), type, paramId,
                 new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
