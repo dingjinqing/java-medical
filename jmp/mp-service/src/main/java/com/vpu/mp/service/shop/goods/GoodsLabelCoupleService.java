@@ -174,7 +174,7 @@ public class GoodsLabelCoupleService extends ShopBaseService {
     }
 
     /**
-     * 去掉在数据库中已存在的对应关系
+     * 插入数据关系，但是不包含在数据库中已存在的对应关系
      * @param gtas
      * @param labels
      * @param type
@@ -230,6 +230,22 @@ public class GoodsLabelCoupleService extends ShopBaseService {
                 .where(GOODS_LABEL_COUPLE.GTA_ID.in(goodsIds))
                 .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()))
                 .execute();
+    }
+
+    public void updateByGoodsId(Integer goodsId, List<Integer> labelIds) {
+        db().delete(GOODS_LABEL_COUPLE)
+            .where(GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId))
+            .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()))
+            .execute();
+        List<GoodsLabelCoupleRecord> list=new ArrayList<>(labelIds.size());
+        labelIds.forEach(labelId ->{
+            GoodsLabelCoupleRecord record=new GoodsLabelCoupleRecord();
+            record.setGtaId(goodsId);
+            record.setLabelId(labelId);
+            record.setType(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
+            list.add(record);
+        });
+        db().batchInsert(list).execute();
     }
 
     /**

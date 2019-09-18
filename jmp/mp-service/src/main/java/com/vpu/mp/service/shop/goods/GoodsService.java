@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.main.tables.Shop;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,7 +12,6 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
@@ -134,7 +132,7 @@ public class GoodsService extends ShopBaseService {
 
         pageResult.getDataList().forEach(item -> {
             // 设置标签名称
-            item.setGoodsLabels(goodsLabels.get(item.getGoodsId()));
+            item.setGoodsLabels(goodsLabels.get(item.getGoodsId()) == null ? new ArrayList<>():goodsLabels.get(item.getGoodsId()));
             // 设置图片绝对地址
             item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg()));
             // 设置商品默认规格id
@@ -637,6 +635,39 @@ public class GoodsService extends ShopBaseService {
      */
     private void batchGoodsOperate(GoodsBatchOperateParam operateParam) {
         List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
+
+        Map<Integer,List<PrdPriceNumberParam>> goodsPriceNumbers = operateParam.getGoodsPriceNumbers();
+        List<GoodsSpecProductRecord> goodsSpecProductRecords=new ArrayList<>(0);
+        // 单独处理规格价格和规格数量
+        if (goodsPriceNumbers != null && goodsPriceNumbers.size() > 0) {
+            goodsRecords.forEach(goodsRecord -> {
+                Integer goodsId = goodsRecord.getGoodsId();
+                List<PrdPriceNumberParam> prdPriceNumberParams = goodsPriceNumbers.get(goodsId);
+                if (prdPriceNumberParams == null || prdPriceNumberParams.size() == 0) {
+                    return;
+                }
+                BigDecimal smallestShopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+                Integer goodsNumberSum = 0;
+                for (PrdPriceNumberParam prdPriceNumberParam : prdPriceNumberParams){
+                    GoodsSpecProductRecord record =new GoodsSpecProductRecord();
+                    record.setPrdId(prdPriceNumberParam.getPrdId());
+                    if (prdPriceNumberParam.getShopPrice() != null) {
+                        record.setPrdPrice(prdPriceNumberParam.getShopPrice());
+                        if (smallestShopPrice.compareTo(prdPriceNumberParam.getShopPrice()) > 0) {
+                            smallestShopPrice = prdPriceNumberParam.getShopPrice();
+                            goodsRecord.setShopPrice(smallestShopPrice);
+                        }
+                    }
+                    if(prdPriceNumberParam.getGoodsNumber() != null){
+                        record.setPrdNumber(prdPriceNumberParam.getGoodsNumber());
+                        goodsNumberSum += prdPriceNumberParam.getGoodsNumber();
+                        goodsRecord.setGoodsNumber(goodsNumberSum);
+                    }
+                    goodsSpecProductRecords.add(record);
+                }
+            });
+        }
+        db().batchUpdate(goodsSpecProductRecords).execute();
         db().batchUpdate(goodsRecords).execute();
     }
 

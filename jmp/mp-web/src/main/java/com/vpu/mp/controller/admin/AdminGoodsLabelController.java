@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelsMapParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
+
+import java.util.List;
 
 /**
  * @author 黄荣刚
@@ -52,7 +55,7 @@ public class AdminGoodsLabelController extends AdminBaseController {
     
     /**
               * 删除商品标签（只是将删除标志位置1）
-     * @param goodsLabel
+     * @param id
      * @return
      */
     @PostMapping("/api/admin/goods/label/delete/{id}")
@@ -94,6 +97,10 @@ public class AdminGoodsLabelController extends AdminBaseController {
     	}
     	return fail(JsonResultCode.GOODS_LABEL_NOT_EXIST);
     }
-    
-    
+
+    @PostMapping("/api/admin/label/couple/updateByGoodsId")
+    public JsonResult updateLabelCoupleByGoodsId(@RequestBody GoodsLabelsMapParam param) {
+        shop().goods.goodsLabelCouple.updateByGoodsId(param.getGoodsId(),param.getLabelIds());
+        return  success();
+    }
 }

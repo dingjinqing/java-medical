@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.goods.goods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +24,9 @@ public class GoodsBatchOperateParam {
     private Byte isOnSale;
     private Timestamp saleTime;
     /**
-     * 价格
+     * goodsId 和价格，数量映射
      */
-    private Map<Integer, BigDecimal> shopPrices;
+    private Map<Integer, List<PrdPriceNumberParam>> goodsPriceNumbers;
     /**
      * 平台分类
      */
@@ -58,7 +57,7 @@ public class GoodsBatchOperateParam {
     private Byte isCardExclusive;
 
     /**
-     * 未处理goodsLabel
+     * 未处理goodsLabel,和shopPrice，仅处理商品表内数据的变化
      * @return
      */
     public List<GoodsRecord> toUpdateGoodsRecord(){
@@ -67,36 +66,32 @@ public class GoodsBatchOperateParam {
         }
         List<GoodsRecord> list=new ArrayList<>(goodsIds.size());
 
-        Optional<Byte> isOnSaleO = Optional.ofNullable(isOnSale);
-        Optional<Timestamp> saleTimeO = Optional.ofNullable(saleTime);
-        Optional<Map<Integer, BigDecimal>> shopPricesO = Optional.ofNullable(shopPrices);
-        Optional<Integer> catIdO = Optional.ofNullable(catId);
-        Optional<Integer> deliverTemplateIdO = Optional.ofNullable(deliverTemplateId);
-        Optional<Integer> limitBuyNumO = Optional.ofNullable(limitBuyNum);
-        Optional<Integer> limitMaxNumO = Optional.ofNullable(limitMaxNum);
-        Optional<Byte> isPageUpO = Optional.ofNullable(isPageUp);
-        Optional<Integer> goodsPageIdO = Optional.ofNullable(goodsPageId);
-        Optional<Integer> brandIdO = Optional.ofNullable(brandId);
+        Optional<Byte> isOnSaleOptional = Optional.ofNullable(isOnSale);
+        Optional<Timestamp> saleTimeOptional = Optional.ofNullable(saleTime);
+        Optional<Integer> catIdOptional = Optional.ofNullable(catId);
+        Optional<Integer> deliverTemplateIdOptional = Optional.ofNullable(deliverTemplateId);
+        Optional<Integer> limitBuyNumOptional = Optional.ofNullable(limitBuyNum);
+        Optional<Integer> limitMaxNumOptional = Optional.ofNullable(limitMaxNum);
+        Optional<Byte> isPageUpOptional = Optional.ofNullable(isPageUp);
+        Optional<Integer> goodsPageIdOptional = Optional.ofNullable(goodsPageId);
+        Optional<Integer> brandIdOptional = Optional.ofNullable(brandId);
 
         goodsIds.forEach(goodsId->{
             GoodsRecord goodsRecord=new GoodsRecord();
             goodsRecord.setGoodsId(goodsId);
 
-            isOnSaleO.ifPresent(goodsRecord::setIsOnSale);
-            saleTimeO.ifPresent(goodsRecord::setSaleTime);
-            shopPricesO.ifPresent(v->goodsRecord.setShopPrice(shopPrices.get(goodsId)));
-            catIdO.ifPresent(goodsRecord::setCatId);
-            deliverTemplateIdO.ifPresent(goodsRecord::setDeliverTemplateId);
-            limitBuyNumO.ifPresent(goodsRecord::setLimitBuyNum);
-            limitMaxNumO.ifPresent(goodsRecord::setLimitMaxNum);
-            isPageUpO.ifPresent(goodsRecord::setIsPageUp);
-            goodsPageIdO.ifPresent(goodsRecord::setGoodsPageId);
-            brandIdO.ifPresent(goodsRecord::setBrandId);
+            isOnSaleOptional.ifPresent(goodsRecord::setIsOnSale);
+            saleTimeOptional.ifPresent(goodsRecord::setSaleTime);
+            catIdOptional.ifPresent(goodsRecord::setCatId);
+            deliverTemplateIdOptional.ifPresent(goodsRecord::setDeliverTemplateId);
+            limitBuyNumOptional.ifPresent(goodsRecord::setLimitBuyNum);
+            limitMaxNumOptional.ifPresent(goodsRecord::setLimitMaxNum);
+            isPageUpOptional.ifPresent(goodsRecord::setIsPageUp);
+            goodsPageIdOptional.ifPresent(goodsRecord::setGoodsPageId);
+            brandIdOptional.ifPresent(goodsRecord::setBrandId);
 
             list.add(goodsRecord);
         });
-
         return list;
     }
-
 }
