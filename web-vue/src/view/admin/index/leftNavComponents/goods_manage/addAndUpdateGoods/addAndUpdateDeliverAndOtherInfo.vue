@@ -456,7 +456,7 @@ export default {
     },
     /* 修改商品数据初始化 */
     initDataForUpdate (goodsData) {
-      this.initPageDataLink().then(() => {
+      return this.initPageDataLink().then(() => {
         // 初始化运费模板
         this._initDeliverTemplateId(goodsData)
         // 初始化商品重量
@@ -469,6 +469,10 @@ export default {
         this.goodsProductInfo.saleType = goodsData.saleType
         this.goodsProductInfo.saleTime = parseDate(goodsData.saleTime)
       })
+    },
+    /* 处理复制操作的数据 */
+    disposeDataForCopy () {
+
     },
     /* 新增商品数据初始化 */
     initDataForInsert () {

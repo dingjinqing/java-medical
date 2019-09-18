@@ -216,6 +216,10 @@ export default {
         this.goodsDetailInfo.goodsPageData = {pageId: goodsData.goodsPageId, pageName: goodsData.goodsPageName}
       }
     },
+    /* 处理复制操作的数据 */
+    disposeDataForCopy () {
+
+    },
     /* 新增商品数据初始化 */
     initDataForInsert () {
 

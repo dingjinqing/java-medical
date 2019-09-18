@@ -251,6 +251,9 @@ export default {
       if (!isOk) {
         return null
       }
+      if (this.isUpdateWrap.isCopy === 1) {
+        this._disposeDataForCopy()
+      }
       let productInfoData = this.$refs.goodsProductInfoCmp.getFormData()
       let goodsDetailsData = this.$refs.goodsDetailsCmp.getFormData()
       let distributionInfoData = this.$refs.goodsDistributionInfoCmp.getFormData()
@@ -261,7 +264,15 @@ export default {
         ...distributionInfoData
       }
       retData.goodsId = this.isUpdateWrap.updateGoodsId
+
       return retData
+    },
+    /* 处理复制操作的数据 */
+    _disposeDataForCopy () {
+      this.isUpdateWrap.isUpdate = false
+      this.$refs.goodsProductInfoCmp.disposeDataForCopy()
+      this.$refs.goodsDetailsCmp.disposeDataForCopy()
+      this.$refs.goodsDistributionInfoCmp.disposeDataForCopy()
     },
     /* 保存或修改并返回列表 */
     saveOrUpdateGoodsReturnList () {
@@ -269,14 +280,8 @@ export default {
       if (goodsData === null) {
         return
       }
+      let executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
 
-      let executeFunc = () => { }
-      if (this.isUpdateWrap.isCopy === 1) {
-        goodsData.goodsId = null
-        executeFunc = addGoodsApi
-      } else {
-        executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
-      }
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
           this.$message({
@@ -294,13 +299,7 @@ export default {
       if (goodsData === null) {
         return
       }
-      let executeFunc = () => { }
-      if (this.isUpdateWrap.isCopy === 1) {
-        goodsData.goodsId = null
-        executeFunc = addGoodsApi
-      } else {
-        executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
-      }
+      let executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
 
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
@@ -320,14 +319,7 @@ export default {
       if (goodsData === null) {
         return
       }
-
-      let executeFunc = () => { }
-      if (this.isUpdateWrap.isCopy === 1) {
-        goodsData.goodsId = null
-        executeFunc = addGoodsApi
-      } else {
-        executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
-      }
+      let executeFunc = this.isUpdateWrap.isUpdate ? updateGoodsApi : addGoodsApi
 
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
@@ -359,12 +351,21 @@ export default {
           })
         } else {
           let goodsData = res.content
-          this.isUpdateWrap.updateGoodsId = goodsId
+          if (this.isUpdateWrap.isCopy === 1) {
+            this._disposeDataForCopyInit(goodsData)
+          }
+          this.isUpdateWrap.updateGoodsId = goodsData.goodsId
           this.$refs.goodsProductInfoCmp.initDataForUpdate(goodsData)
           this.$refs.goodsDetailsCmp.initDataForUpdate(goodsData)
           this.$refs.goodsDistributionInfoCmp.initDataForUpdate(goodsData)
         }
       })
+    },
+    /* 初始化复制数据时处理数据 */
+    _disposeDataForCopyInit (goodsData) {
+      goodsData.goodsId = null
+      goodsData.goodsName = goodsData.goodsName + '-'
+      goodsData.goodsSn = null
     },
     /* 新增数据时数据初始化 */
     _initDataForInsert () {

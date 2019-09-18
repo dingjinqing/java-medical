@@ -495,7 +495,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsSnRepeat')})
+          this.$message({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
           this.goodsProductInfo.goodsName = this.goodsProductInfo.goodsNameBak
         } else {
           this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
@@ -769,7 +769,7 @@ export default {
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
       // 先初始化页面数据再渲染待修改商品数据
-      this.initPageDataLink().then(() => {
+      return this.initPageDataLink().then(() => {
         this.goodsProductInfo.goodsId = goodsData.goodsId
         this.goodsProductInfo.goodsName = goodsData.goodsName
         this.goodsProductInfo.goodsNameBak = goodsData.goodsName
@@ -798,6 +798,9 @@ export default {
         this.goodsVideoSize = goodsData.goodsVideoSize
         this.goodsVideoId = goodsData.goodsVideoId
       })
+    },
+    /* 处理复制操作的数据 */
+    disposeDataForCopy () {
     },
     /* 新增数据时数据初始化 */
     initDataForInsert () {

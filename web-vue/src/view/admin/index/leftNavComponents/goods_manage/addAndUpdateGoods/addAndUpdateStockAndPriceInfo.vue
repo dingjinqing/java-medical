@@ -1113,7 +1113,7 @@ export default {
     },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
-      this.initPageDataLink().then(() => {
+      return this.initPageDataLink().then(() => {
         let isUseDefaultPrd = false
 
         // 判断是否使用默认的规格项
@@ -1135,6 +1135,23 @@ export default {
         this._initMemberCardPrice(goodsData, isUseDefaultPrd)
         // 开启监听
         this._watch()
+      })
+    },
+    /* 处理复制操作的数据 */
+    disposeDataForCopy () {
+      this.goodsProductInfo.goodsSpecs.forEach(item => {
+        item.specId = null
+        item.goodsId = null
+        item.goodsSpecVals.forEach(innerItem => {
+          innerItem.specId = null
+          innerItem.specValId = null
+          innerItem.goodsId = null
+        })
+      })
+      this.goodsProductInfo.updateGoodsSpecProduct = null
+      this.goodsProductInfo.goodsSpecProducts.forEach(item => {
+        item.prdId = null
+        item.prdSnBak = null
       })
     },
     /* 新增商品数据初始化 */

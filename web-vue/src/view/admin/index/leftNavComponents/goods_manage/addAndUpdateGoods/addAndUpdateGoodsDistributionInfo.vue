@@ -138,6 +138,12 @@ export default {
   },
   watch: {
     'goodsProductInfoData.goodsSpecProducts': function (goodsSpecProducts) {
+      // 初始化规格数据
+      this._watchGoodsProductInfoDataGoodsSpecProducts(goodsSpecProducts)
+    }
+  },
+  methods: {
+    _watchGoodsProductInfoDataGoodsSpecProducts (goodsSpecProducts) {
       let tempData = []
       goodsSpecProducts.forEach(item => {
         let isHas = this.goodsDistributionInfo.goodsRebatePrices.some(innerItem => {
@@ -176,9 +182,7 @@ export default {
           }
         })
       }
-    }
-  },
-  methods: {
+    },
     setLowestPrice () {
       let minPrice = this.goodsDistributionInfo.goodsRebatePrices[0].minPrice
       this.goodsDistributionInfo.goodsRebatePrices.forEach(item => { item.minPrice = minPrice })
@@ -216,6 +220,15 @@ export default {
       if (this.goodsDistributionInfo.shareAction === 2 && this.goodsDistributionInfo.shareImgAction === 2) {
         this.goodsDistributionInfo.shareImgObj = {imgPath: goodsData.goodsSharePostConfig.shareImgPath, imgUrl: goodsData.goodsSharePostConfig.shareImgUrl}
       }
+      // 初始化规格数据
+      this._watchGoodsProductInfoDataGoodsSpecProducts(goodsData.goodsSpecProducts)
+    },
+    /* 处理复制操作的数据 */
+    disposeDataForCopy () {
+      this.goodsDistributionInfo.goodsRebatePrices.forEach(item => {
+        item.goodsId = null
+        item.productId = null
+      })
     },
     /* 新增数据时数据初始化 */
     initDataForInsert () {

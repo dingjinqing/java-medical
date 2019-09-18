@@ -22,6 +22,12 @@ export default {
       this.$refs.stockAndPriceInfo.initDataForUpdate(goodsData)
       this.$refs.deliverAndOtherInfo.initDataForUpdate(goodsData)
     },
+    /* 处理复制操作的数据 */
+    disposeDataForCopy () {
+      this.$refs.basicInfo.disposeDataForCopy()
+      this.$refs.stockAndPriceInfo.disposeDataForCopy()
+      this.$refs.deliverAndOtherInfo.disposeDataForCopy()
+    },
     /* 新增商品数据初始化 */
     initDataForInsert () {
       this.$refs.basicInfo.initDataForInsert()
