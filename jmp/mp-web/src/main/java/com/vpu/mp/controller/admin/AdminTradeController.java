@@ -112,7 +112,8 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/orderProcess")
     public JsonResult orderProcess(@RequestBody @Validated OrderProcessParam orderProcessParam) {
-        return shop().trade.updateOrderProcess(orderProcessParam) ? success() : fail(JsonResultMessage.ORDER_PROCESS_CONFIG_UDPATE_FAILED);
+        shop().trade.updateOrderProcess(orderProcessParam);
+        return success();
     }
 
     /**
