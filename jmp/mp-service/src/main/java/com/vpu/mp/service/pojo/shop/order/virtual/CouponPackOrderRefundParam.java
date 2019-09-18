@@ -16,8 +16,6 @@ public class CouponPackOrderRefundParam {
 	/** 订单ID */
 	@NotNull
 	private Integer orderId;
-	/** 用户ID*/
-	private Integer userId;
 	
 	/** 订单号 */
     @NotNull
