@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.jooq.Record;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopToAdminVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
@@ -31,6 +33,7 @@ import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.wechat.OpenPlatform;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -331,6 +334,38 @@ public class AdminWechatApiController extends AdminBaseController {
 		//saas.shop.officeAccount.batchGetUsers(appId, language,adminAuth.user().getSysId());
 		return success();
 
+	}
+	
+	/**
+	 * 上传代码并提交 admin用
+	 * @param param
+	 * @return
+	 * @throws WxErrorException
+	 * @throws IOException
+	 */
+	@PostMapping("/api/admin/mp/publish")
+	public JsonResult mpPublishAction(@RequestBody MpDeployQueryParam param) throws WxErrorException, IOException {
+		MpAuthShopService mp = saas.shop.mp;
+		if (!mp.isAuthOk(param.getAppId())) {
+			return fail(JsonResultCode.WX_MA_APP_ID_NOT_AUTH);
+		}
+		WxOpenResult result = new WxOpenResult();
+		try {
+			result = mp.uploadCodeAndApplyAudit(param.getAppId(), param.getTemplateId());
+		} catch (WxErrorException e) {
+			result.setErrcode(String.valueOf(e.getError().getErrorCode()));
+			result.setErrmsg(e.getError().getErrorMsg());
+			logger().debug(e.getMessage(),e);
+			//加入日志中
+			mp.erroInsert(param, result);
+		}catch (Exception e) {
+			result.setErrcode("500");
+			result.setErrmsg(e.getMessage());
+			logger().debug(e.getMessage(),e);
+			mp.erroInsert(param, result);
+		}
+		return result.isSuccess() ? success(result) : wxfail(result);
+		
 	}
 
 
