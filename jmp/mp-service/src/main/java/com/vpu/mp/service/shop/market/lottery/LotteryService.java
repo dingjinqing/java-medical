@@ -152,26 +152,26 @@ public class LotteryService extends ShopBaseService {
                 .where(LOTTERY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         switch (param.getState()) {
-            case 1:
+            case 2:
                 select.and(LOTTERY.START_TIME.lt(nowTime))
                         .and(LOTTERY.END_TIME.gt(nowTime))
                         .and(LOTTERY.STATUS.eq(USE_STATUS));
                 break;
-            case 2:
+            case 3:
                 select.and(LOTTERY.STATUS.eq(USE_STATUS))
                         .and(LOTTERY.START_TIME.gt(nowTime));
                 break;
-            case 3:
+            case 4:
                 select.and(LOTTERY.STATUS.gt(USE_STATUS))
                         .and(LOTTERY.END_TIME.lt(nowTime));
                 break;
-            case 4:
+            case 5:
                 select.and(LOTTERY.STATUS.eq(STOP_STATUS));
                 break;
             default:
         }
         select.orderBy(LOTTERY.CREATE_TIME.desc());
-        select.groupBy(LOTTERY.ID, LOTTERY.LOTTERY_NAME, LOTTERY.START_TIME, LOTTERY.END_TIME);
+        select.groupBy(LOTTERY.ID, LOTTERY.LOTTERY_NAME, LOTTERY.START_TIME, LOTTERY.END_TIME,LOTTERY.STATUS);
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), LotteryPageListVo.class);
     }
 
