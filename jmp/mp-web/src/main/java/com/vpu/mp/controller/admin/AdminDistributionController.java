@@ -36,6 +36,7 @@ import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
+import com.vpu.mp.service.pojo.shop.distribution.addDistributorToGroupParam;
 
 /**
  * 分销模块
@@ -49,6 +50,10 @@ import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
 @RestController
 @RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
+//	@Override
+//    protected ShopApplication shop() {
+//        return saas.getShopApp(471752);
+//    }
 	//分销配置
 	/**
 	 * 获取分销配置
@@ -242,6 +247,17 @@ public class AdminDistributionController extends AdminBaseController{
 		}else {
 			return this.fail();
 		}
+	}
+	
+	/**
+	 * 分销员分组添加分销员
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/distributor/add")
+	public JsonResult addDistributorToGroup(@RequestBody addDistributorToGroupParam param) {
+		boolean res = shop().distributorGroup.addDistributorGroup(param);
+		return this.success(res);
 	}
 	
 	//分销员等级配置

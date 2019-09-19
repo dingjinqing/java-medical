@@ -4,7 +4,7 @@ import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_GROUP;
 import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.Arrays;
 
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.distribution.addDistributorToGroupParam;
 
 @Service
 public class DistributorGroupService extends ShopBaseService{
@@ -150,6 +151,19 @@ public class DistributorGroupService extends ShopBaseService{
 				.where(DISTRIBUTOR_GROUP.ID.eq(id))
 				.execute();
 		return result > 0 ? true : false;
+	}
+	
+	/**
+	 * 分组添加分销员
+	 * @param param
+	 * @return
+	 */
+	public boolean addDistributorGroup(addDistributorToGroupParam param) {
+		 int result = db().update(USER)
+				.set(USER.INVITE_GROUP,(param.getGroupId()))
+				.where(USER.USER_ID.in(param.getUserIds()))
+				.execute();
+		 return result > 0 ? true : false;
 	}
 
 }
