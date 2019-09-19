@@ -70,19 +70,19 @@ import {
 // 优惠券礼包
 import {
   cn as couponPackage
-} from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
+} from './views/admin_new/cn/index/marketManagement/couponPackage/couponPackageCn'
 // 优惠券礼包-活动创建页
 import {
   cn as addCouponPackage
-} from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
+} from './views/admin_new/cn/index/marketManagement/couponPackage/addCouponPackageCn'
 // 砍价列表
 import {
   cn as bargainList
-} from './views/admin/index/leftNavComponents/first_market_manage/bargain/bargainList'
+} from './views/admin_new/cn/index/marketManagement/bargain/bargainListCn'
 // 添加砍价活动
 import {
   cn as addBargainAct
-} from './views/admin/index/leftNavComponents/first_market_manage/bargain/addBargainAct'
+} from './views/admin_new/cn/index/marketManagement/bargain/addBargainActCn'
 // 好友助力
 import {
   cn as promoteList

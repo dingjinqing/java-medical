@@ -31,13 +31,13 @@ import { en as sharePolite } from './views/admin/index/leftNavComponents/first_m
 // 分享有礼-领取明细
 import { en as receiveDetails } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
 // 优惠券礼包
-import { en as couponPackage } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
+import { en as couponPackage } from './views/admin_new/en/index/marketManagement/couponPackage/couponPackageEn'
 // 优惠券礼包-活动创建页
-import { en as addCouponPackage } from './views/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
+import { en as addCouponPackage } from './views/admin_new/en/index/marketManagement/couponPackage/addCouponPackageEn'
 // 砍价列表
-import { en as bargainList } from './views/admin/index/leftNavComponents/first_market_manage/bargain/bargainList'
+import { en as bargainList } from './views/admin_new/en/index/marketManagement/bargain/bargainListEn'
 // 添加砍价活动
-import { en as addBargainAct } from './views/admin/index/leftNavComponents/first_market_manage/bargain/addBargainAct'
+import { en as addBargainAct } from './views/admin_new/en/index/marketManagement/bargain/addBargainActEn'
 // 好友助力
 import { en as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
 
