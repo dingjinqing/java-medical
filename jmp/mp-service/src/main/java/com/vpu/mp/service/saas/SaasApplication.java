@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas;
 import com.vpu.mp.service.saas.db.DataExportService;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 
+import com.vpu.mp.service.saas.schedule.rabbit.RabbitDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +72,9 @@ public class SaasApplication {
 	
 	@Autowired
 	protected ShopApplication shopApplication;
+
+	@Autowired
+    public RabbitDataService rabbitDataService;
 
 	@Autowired
     public AreaSelectService areaSelectService;

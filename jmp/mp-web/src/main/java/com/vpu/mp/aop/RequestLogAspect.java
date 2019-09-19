@@ -2,9 +2,11 @@ package com.vpu.mp.aop;
 
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Stopwatch;
 import com.vpu.mp.controller.admin.AdminLoginController;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -59,15 +61,18 @@ public class RequestLogAspect {
             logAfterStr.append("\n");
         }
         log.info(logAfterStr.toString());
+        Stopwatch stopwatch = Stopwatch.createStarted();
         try{
             StringBuilder logResponseStr = new StringBuilder();
             result = (JsonResult) point.proceed();
+
             logResponseStr.append("\n");
             logResponseStr.append("#####################Response#####################").append("\n");
             logResponseStr.append("MethodName   :").append(methodName).append("\n");
             logResponseStr.append("UserToken    :").append(token).append("\n");
             logResponseStr.append("RequestIP    :").append(ip).append("\n");
             logResponseStr.append("RequestURI   :").append(request.getRequestURI()).append("\n");
+            logResponseStr.append("RunTime      :").append(stopwatch.elapsed(TimeUnit.MILLISECONDS)).append("ms\n");
             logResponseStr.append("JsonResult   :").append(result);
             log.info(logResponseStr.toString());
         }catch (Throwable e){
