@@ -460,4 +460,15 @@ public class AdminGoodsController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 查询商品和其所有下属规格信息
+     * @param goodsIds
+     * @return
+     */
+    @PostMapping("/api/admin/goods/info/list")
+    public JsonResult getGoodsAndProductsByIds(@RequestBody List<Integer> goodsIds) {
+        // TODO: return List<GoodsAndProductsVo>
+        return null;
+    }
+
 }
