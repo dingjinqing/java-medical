@@ -41,10 +41,8 @@ import com.vpu.mp.service.shop.member.MemberService;
  */
 @Service
 public class LotteryService extends ShopBaseService {
-
-
-    private static final Byte STOP_STATUS = 1;
-    private static final Byte USE_STATUS = 0;
+    private static final Byte STOP_STATUS = 0;
+    private static final Byte USE_STATUS = 1;
 
 
     @Autowired

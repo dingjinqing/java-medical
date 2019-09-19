@@ -39,8 +39,8 @@ public class FreeShippingService extends ShopBaseService {
     /**
      * 启用状态 0 启用 1 停用
      */
-    private static final byte USE_STATUS = 0;
-    private static final byte STOP_STATUS = 1;
+    private static final byte USE_STATUS = 1;
+    private static final byte STOP_STATUS = 0;
     /**
      * 有效期 0 固定期限 1永久有效
      */
