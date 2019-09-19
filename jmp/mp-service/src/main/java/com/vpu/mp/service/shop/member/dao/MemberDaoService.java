@@ -19,6 +19,7 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep3;
 import org.springframework.stereotype.Service;
 import org.jooq.tools.StringUtils;
@@ -339,6 +340,20 @@ public class MemberDaoService extends ShopBaseService {
 			record.setSex(param.getSex());
 		}
 		
+	}
+	
+	/**
+	 *  会员持有会员卡详情
+	 * @param userId
+	 * @return
+	 */
+	public Result<Record> getAllUserCardDetailSql(Integer userId) {
+		SelectOnConditionStep<Record> select = db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,USER.USERNAME)
+													.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+													.leftJoin(USER).on(USER_CARD.USER_ID.eq(USER.USER_ID));
+		
+		 return select.fetch();
+			
 	}
 	
 }
