@@ -295,7 +295,7 @@
         </el-collapse-item>
       </el-collapse>
       <!--图片dialog-->
-      <ImageDalog v-if="selfImgDialogShow"
+      <ImageDalog :tuneUp="selfImgDialogShow"
         pageIndex='pictureSpace'
         @handleSelectImg='imgDialogSelectedCallback'
       />
@@ -562,12 +562,11 @@ export default {
     },
     /* 添加图片点击事件，弹出图片选择组件 */
     addGoodsImg () {
-      this.selfImgDialogShow = true
+      this.selfImgDialogShow = !this.selfImgDialogShow
       this.$nextTick(() => this.$http.$emit('dtVisible'))
     },
     /* 商品图片点击回调函数 */
     imgDialogSelectedCallback (imgObj) {
-      this.selfImgDialogShow = false
       if (this.goodsProductInfo.goodsImgs.length >= 5) {
         return
       }
