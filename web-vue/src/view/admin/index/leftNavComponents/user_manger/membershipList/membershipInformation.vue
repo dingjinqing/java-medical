@@ -259,8 +259,8 @@
               size="small"
             >
               <el-option
-                v-for="item in MarriageValueOptions"
-                :key="item.value"
+                v-for="(item,index) in MarriageValueOptions"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               >
@@ -275,8 +275,8 @@
               size="small"
             >
               <el-option
-                v-for="item in incomeValueOptions"
-                :key="item.value"
+                v-for="(item,index) in incomeValueOptions"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               >
@@ -302,8 +302,8 @@
               size="small"
             >
               <el-option
-                v-for="item in educationValueOptions"
-                :key="item.value"
+                v-for="(item,index) in educationValueOptions"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               >
@@ -489,8 +489,8 @@
             multiple
           >
             <el-option
-              v-for="item in labelEditValueOptions"
-              :key="item.id"
+              v-for="(item,index) in labelEditValueOptions"
+              :key="index"
               :label="item.value"
               :value="item.id"
             >
