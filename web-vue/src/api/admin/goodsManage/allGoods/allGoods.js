@@ -38,6 +38,7 @@ export function updateLabelByGoodsId (data) {
 export function getAllGoodsInitValue (data) {
   return service({
     url: `/api/admin/goods/page/init`,
-    method: 'get'
+    method: 'post',
+    data
   })
 }

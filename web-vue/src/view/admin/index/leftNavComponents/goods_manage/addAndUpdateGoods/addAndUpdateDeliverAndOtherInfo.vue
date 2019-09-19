@@ -508,7 +508,8 @@ export default {
         isCardExclusive: this.goodsProductInfo.isCardExclusive ? 1 : 0,
         memberCardIds: null,
         saleType: this.goodsProductInfo.saleType,
-        saleTime: null
+        saleTime: null,
+        isOnSale: this.goodsProductInfo.saleType === 0 ? 1 : 0
       }
 
       retData.goodsWeight = isNumberBlank(this.goodsProductInfo.goodsWeight) ? null : this.goodsProductInfo.goodsWeight

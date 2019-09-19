@@ -275,7 +275,7 @@ const routes = [
                 },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOnAndInStock'
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/allGoodsSaleOn'
                   )
               },
               // 商品管理/已售罄
@@ -289,7 +289,7 @@ const routes = [
                 },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOut'
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
                   )
               },
               // 商品管理/仓库中
@@ -303,7 +303,7 @@ const routes = [
                 },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOnAndInStock'
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/inStock/allGoodsInStock'
                   )
               }
             ]

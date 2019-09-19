@@ -1,11 +1,6 @@
 <template>
   <!-- 头部组件 -->
   <div class="allGoodsHeader">
-    <div class="headerTab">
-      <div class="tabItem" :class="{tabItemActive:tabItemActiveIndex === 0}" @click="tabItemClicked('goodsForSale')">出售中</div>
-      <div class="tabItem" :class="{tabItemActive:tabItemActiveIndex === 1}" @click="tabItemClicked('goodsForSaleOut')">已售罄</div>
-      <div class="tabItem" :class="{tabItemActive:tabItemActiveIndex === 2}" @click="tabItemClicked('goodsForInStock')">仓库中</div>
-    </div>
     <div class="allGoodsFilter">
       <el-form ref="goodsFilterForm" :inline="true" :model="goodsFilterFormData" label-width="120px">
         <el-form-item label="商品名称:" prop="goodsName">
@@ -15,14 +10,14 @@
         <el-form-item label="平台分类:" prop="catId">
           <el-select v-model="goodsFilterFormData.catId" :style="goodsFilterInputStyle">
             <el-option label="请选择平台分类" :value="null"/>
-            <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName" :value="item.catId" :key="index"
+            <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName+' ('+item.goodsNumber+')'" :value="item.catId" :key="index"
                        :style="{paddingLeft: (item.level+1)*20+'px'}"/>
           </el-select>
         </el-form-item>
         <el-form-item label="商家分类:" prop="sortId">
           <el-select v-model="goodsFilterFormData.sortId"  :style="goodsFilterInputStyle">
             <el-option label="请选择商家分类" :value="null"/>
-            <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName" :value="item.sortId" :key="index"
+            <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName+' ('+item.goodsNumber+')'" :value="item.sortId" :key="index"
                        :style="{paddingLeft: (item.level+1)*20+'px'}"/>
           </el-select>
         </el-form-item>
@@ -80,19 +75,7 @@ import {getAllGoodsInitValue} from '@/api/admin/goodsManage/allGoods/allGoods'
 import {format} from '@/util/date'
 export default {
   name: 'allGoodsHeader',
-  watch: {
-    /* 用来单独处理在 */
-    $route (to) {
-      if (to.name === 'goodsForSaleOut') {
-        this.tabItemActiveIndex = 1
-      } else if (to.name === 'goodsForInStock') {
-        this.tabItemActiveIndex = 2
-      } else {
-        // goodsForSale
-        this.tabItemActiveIndex = 0
-      }
-    }
-  },
+  props: ['initSortCatParams'],
   // 数据data
   data () {
     return {
@@ -126,15 +109,10 @@ export default {
   },
 
   methods: {
-    /* 顶部导航按钮点击事件 */
-    tabItemClicked (routerName) {
-      this.$router.push({name: routerName})
-    },
     /* 初始化form表单下拉框数据 */
     initFilterData () {
-      getAllGoodsInitValue().then(res => {
+      getAllGoodsInitValue(this.initSortCatParams).then(res => {
         let { content } = res
-        console.log(content)
         this.goodsBrandOptions = content.goodsBrands
         this.goodsLabelOptions = content.goodsLabels
         this.goodsSortOptions = this._disposeGoodsSortAndCatData(content.goodsSorts, 'sortId')
@@ -170,6 +148,10 @@ export default {
       }
 
       let retArr = []
+
+      if (data.length === 0) {
+        return retArr
+      }
       let rootArr = retObj['0'].children
       // 处理结果将对象变为数组
       for (let i = 0; i < rootArr.length; i++) {

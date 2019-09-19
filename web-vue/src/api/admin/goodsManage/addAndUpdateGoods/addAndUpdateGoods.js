@@ -26,7 +26,7 @@ export function cateList () {
 // 获取商家分类和
 export function goodsSortAndGoodsBrandInitApi () {
   return service({
-    url: '/api/admin/goods/page/init',
+    url: '/api/admin/goods/sortBrandLabel/list',
     method: 'get'
   })
 }
