@@ -42,6 +42,8 @@ public class ShopReq {
 	private Timestamp endTime;
 	/** 币种*/
 	private String currency;
+	/** 语言*/
+	private String shopLanguage;
 	/**
 	 * 数据库
 	 */

@@ -27,4 +27,6 @@ public class ShopSelectInnerResp {
 	private String expireTimeStatus;
 	/** 币种*/
 	private String currency;
+	/** 语言*/
+	private String shopLanguage;
 }

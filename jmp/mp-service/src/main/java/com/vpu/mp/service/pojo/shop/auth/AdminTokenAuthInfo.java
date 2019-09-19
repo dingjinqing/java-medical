@@ -24,4 +24,6 @@ public class AdminTokenAuthInfo {
 	public String accountName;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public String currency;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	public String shopLanguage;
 }
