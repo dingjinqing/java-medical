@@ -28,31 +28,58 @@
           <div class="item_box">
             <div class="item">{{$t('order.orderStatusText')}}： {{orderStatusMap.get(order.orderStatus)}}</div>
             <div class="item">{{$t('order.orderAmount')}}：
-              <template v-if="order.goodsType.split(',').indexOf($t('order.goodsTypeList')[5][0]) > -1">
-                {{order.moneyPaid.toFixed(2)}}{{currency}} +
-                {{order.scoreDiscount * monet_to_score}}{{$t('order.score')}}
+              <template v-if="goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) > -1">
+                {{order.moneyPaid.toFixed(2)}}{{currencyPool[order.currency][lang][0]}} +
+                {{order.scoreDiscount * monetToScore}}{{$t('order.score')}}
               </template>
               <template v-else>
-                {{order.moneyPaid.toFixed(2)}}{{currency}}
+                {{order.moneyPaid.toFixed(2)}}{{currencyPool[order.currency][lang][0]}}
               </template>
             </div>
             <div class="item">{{$t('order.orderTime')}}：{{order.createTime}}</div>
             <div class="item">{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(order.deliverType)}}</div>
-            <div class="item">支付方式：</div>
-            <div class="item">订单号：P201909051016068533</div>
-            <div class="item">下单人昵称：分隔符</div>
-            <div class="item">下单人手机号：</div>
-            <div class="item">发货时间：2019-09-05 10:16:17</div>
+            <div class="item">{{$t('order.paymentType')}}：</div>
+            <div class="item">{{$t('order.orderSn')}}：{{order.orderSn}}</div>
+            <div class="item">{{$t('order.userNameText')}}：{{order.username}}</div>
+            <div class="item">{{$t('order.userMobileText')}}：{{order.userMobile}}</div>
+            <div
+              class="item"
+              v-if="order.deliverType == 1"
+            >
+              {{$t('order.storeName')}}：{{order.storeName}}
+            </div>
+            <template v-if="order.verifierId > 0 ">
+              <div class="item">
+                {{$t('order.verifierName')}}：{{order.verifierName}}
+              </div>
+              <div class="item">
+                {{$t('order.confirmTime')}}：{{order.confirmTime}}
+              </div>
+            </template>
+            <template v-if="order.deliverType == 0 && order.orderStatus > 2">
+              <template v-if="order.partShipFlag != 1 && order.orderStatus != 3">
+                <template v-if="order.shippingTime != null">
+                  <div class="item">
+                    {{$t('order.shippingTimeText')}}：{{order.shippingTime}}
+                  </div>
+                </template>
+              </template>
+              <template v-else-if="order.partShipFlag == 1">
+                <div class="item">
+                  {{$t('order.partShipText')}}
+                </div>
+              </template>
+            </template>
           </div>
 
         </div>
         <div class="user_info">
-          <div class="title">用户信息</div>
+          <div class="title">{{$t('order.userInfoText')}}</div>
           <div class="item_box">
-            <div class="item">收货客户：XXXX</div>
-            <div class="item">手机号码：XXXXXXXXXXX</div>
-            <div class="item">收货地址：北京市北京市海淀区伊泰大厦(海淀区西直门北大街54号)</div>
-            <div class="item">买家留言：</div>
+            <div class="item">{{$t('order.receivingCustomer')}}：{{order.consignee}}</div>
+            <div class="item">{{$t('order.mobile')}}：{{order.mobile}}</div>
+            <div class="item">{{$t('order.shippingAddress')}}：待实现</div>
+            <div class="item">{{$t('order.customerMessage')}}：{{order.addMessage}}</div>
           </div>
         </div>
       </div>
@@ -61,38 +88,45 @@
           class="icon el-icon-edit-outline"
           @click="addNodes"
         ></i>
-        <span>买家备注：</span>
+        <span>{{$t('order.sellerMessage')}}：</span>
       </div>
     </div>
-    <div class="order-list-table">
-      <div class="title">快递信息</div>
-      <template v-for="orderInfo in order.childOrders">
-        <div
-          class="table_box"
-          :key="orderInfo.orderId"
-        >
-          <table width="100%">
-            <thead>
-              <tr>
-                <th width="300px">商品名称</th>
-                <th width="100px">规格</th>
-                <th width="100px">发货数量</th>
-                <th>物流公司</th>
-                <th>物流单号</th>
-                <th>发货时间</th>
-                <th>确认收货时间</th>
-              </tr>
+    <div
+      v-if="showShippingInfo"
+      class="order-list-table"
+    >
+      <div class="title">{{$t('order.shippingInfoText')}}</div>
+      <div class="table_box">
+        <table width="100%">
+          <thead>
+            <tr>
+              <th width="300px">{{$t('order.goodsName')}}</th>
+              <th width="100px">{{$t('order.specText')}}</th>
+              <template v-if="order.deliverType == 0">
+                <th width="100px">{{$t('order.shippingNum')}}</th>
+                <th>{{$t('order.shippingCompany')}}</th>
+                <th>{{$t('order.shippingNo')}}</th>
+                <th>{{$t('order.shippingTimeText')}}</th>
+                <th>{{$t('order.confirmTimeText')}}</th>
+              </template>
+              <template v-else>
+                <th width="100px">{{$t('order.collectGoodsNum')}}</th>
+                <th width="100px">{{$t('order.storeName')}}</th>
+                <th width="100px">{{$t('order.collectGoodsTime')}}</th>
+              </template>
+            </tr>
 
-            </thead>
-            <template v-for="(item,index1) in orderInfo.shippingList">
-              <tbody :key="index1">
-                <tr
-                  v-for="(shipGoods , index) in item.goods"
-                  :key="shipGoods.recId"
-                >
-                  <td>{{shipGoods.goodsName}}</td>
-                  <td>{{shipGoods.goodsAttr}}</td>
-                  <td>{{shipGoods.sendNumber}}</td>
+          </thead>
+          <tbody>
+            <template v-for="item in showShippingList">
+              <tr
+                v-for="(shipGoods , index) in item.goods"
+                :key="shipGoods.recId"
+              >
+                <td>{{shipGoods.goodsName}}</td>
+                <td>{{shipGoods.goodsAttr}}</td>
+                <td>{{shipGoods.sendNumber}}</td>
+                <template v-if="order.deliverType == 0">
                   <td
                     v-if="index === 0"
                     :rowspan="item.goods.length"
@@ -109,16 +143,107 @@
                     v-if="index === 0"
                     :rowspan="item.goods.length"
                   >{{item.confirmTime}}</td>
-                </tr>
-              </tbody>
+                </template>
+                <template v-else>
+                  <th width="100px">{{order.storeId}}</th>
+                  <th width="100px">{{order.confirmTime}}</th>
+                </template>
+              </tr>
             </template>
-
-          </table>
-        </div>
-      </template>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="order-list-table">
-      <div class="title">退货/退款信息</div>
+    <div
+      v-if="showReturnInfo"
+      class="order-list-table"
+    >
+      <div class="title">{{$t('order.returnInfoText')}}</div>
+      <div class="table_box">
+        <table width="100%">
+          <thead>
+            <tr>
+              <th width="300px">{{$t('order.goodsName')}}</th>
+              <th width="100px">{{$t('order.specText')}}</th>
+              <th>{{$t('order.returnNumText')}}</th>
+              <th>{{$t('order.returnType')}}</th>
+              <th>{{$t('order.returnStatus')}}</th>
+              <th width="100px">{{$t('order.returnMoney')}}</th>
+              <th width="100px">{{$t('order.applyTime')}}</th>
+              <th width="100px">{{$t('order.finishTime')}}</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <template v-for="item in showReturnList">
+              <template v-if="item.orderReturnGoodsVo == null">
+                <tr
+                  v-for="(returnGoods , index) in item.orderReturnGoodsVo"
+                  :key="returnGoods.recId"
+                >
+                  <td>{{returnGoods.goodsName}}</td>
+                  <td>{{returnGoods.goodsAttr}}</td>
+                  <td>{{returnGoods.goodsNumber}}</td>
+                  <template v-if="order.deliverType == 0">
+                    <td
+                      v-if="index === 0"
+                      :rowspan="item.orderReturnGoodsVo.length"
+                    >{{item.returnType}}</td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="item.orderReturnGoodsVo.length"
+                    >{{item.refundStatus}}</td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="item.orderReturnGoodsVo.length"
+                    >{{(item.money + item.shippingFee).toFixed(2)}}
+                      审?批
+                    </td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="item.orderReturnGoodsVo.length"
+                    >
+                      <template v-if="item.returnType == 1">
+                        {{order.applyTime}}
+                      </template>
+                      <template v-else>
+                        {{order.shippingOrRefundTime}}
+                      </template>
+                    </td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="item.orderReturnGoodsVo.length"
+                    >{{order.refundSuccessTime}}
+                    </td>
+                  </template>
+                </tr>
+              </template>
+              <template v-else>
+                <tr :key="item.retId">
+                  <td>{{$t('order.nullValue')}}</td>
+                  <td>{{$t('order.nullValue')}}</td>
+                  <td>{{$t('order.nullValue')}}</td>
+                  <td>{{item.returnType}}</td>
+                  <td>{{item.refundStatus}}</td>
+                  <td>{{item.shippingFee.toFixed(2)}}
+                    审?批
+                  </td>
+                  <td>
+                    <template v-if="item.returnType == 1">
+                      {{order.applyTime}}
+                    </template>
+                    <template v-else>
+                      {{order.shippingOrRefundTime}}
+                    </template>
+                  </td>
+                  <td>{{order.refundSuccessTime}}
+                  </td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="order-list-table">
       <div class="table_box">
@@ -126,43 +251,51 @@
           <thead>
             <thead>
               <tr>
-                <th width="270px">商品</th>
-                <th width="100px">货号</th>
-                <th width="100px">单价</th>
-                <th width="100px">数量</th>
-                <th>收货人信息</th>
-                <th>下单时间</th>
-                <th>订单状态</th>
-                <th>支付金额</th>
+                <th width="270px">{{$t('order.goods')}}</th>
+                <th width="100px">{{$t('order.goodsSn')}}</th>
+                <th width="100px">{{$t('order.goodsPrice')}}</th>
+                <th width="100px">{{$t('order.goodsNumber')}}</th>
+                <th>{{$t('order.consigneeInfo')}}</th>
+                <th>{{$t('order.orderTime')}}</th>
+                <th>{{$t('order.orderStatusText')}}</th>
+                <th>{{$t('order.moneyPaid')}}</th>
               </tr>
               <tr class="jiange">
-                <th colspan="8"></th>
+                <th :colspan="order.fanliType > 0 ? 9 : 8"></th>
               </tr>
             </thead>
           <tbody>
-            <template v-for="childrenOrder in order.childOrders">
+            <template v-for="oneOrder in orderList">
               <tr
+                v-if="oneOrder.goods !== null && oneOrder.goods.length !== 0"
                 class="order-tb-head"
-                :key="childrenOrder.orderId"
+                :key="oneOrder.orderSn"
               >
                 <td colspan="8">
                   <div class="tb-head_box">
                     <div class="left">
-                      <span>订单号：{{childrenOrder.orderSn}}</span>
-                      <span>支付方式：<i class="el-icon-shopping-cart-full"></i></span>
-                      <span>配送方式：快递</span>
+                      <span>
+                        {{
+                          (oneOrder.mainOrderSn == '' ? $t('order.orderSn') : oneOrder.mainOrderSn == oneOrder.orderSn ? $t('order.mainOrderSn') : $t('order.childOrderSn')) + '：'+order.orderSn
+                        }}
+                      </span>
+                      <span>{{$t('order.paymentType')}}：<i class="el-icon-shopping-cart-full"></i></span>
+                      <span>{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(oneOrder.deliverType)}}</span>
+                      <span v-if="oneOrder.partShipFlag == 1 ">
+                        {{$t('order.partShipText')}}</span>
                     </div>
                     <div class="right">
                       <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span>手动退款退货</span>
-                      <span>查看评价</span>
+                      <span @click="addNodes">{{$t('order.remark')}}</span>
+                      <span @click="manualReturn('')">{{$t('order.manualReturnText')}}</span>
+                      <span>{{$t('order.comment')}}</span>
                     </div>
                   </div>
                 </td>
               </tr>
               <tr
                 class="order-tb-body"
-                v-for="(goodsInfo,index) in childrenOrder.goods"
+                v-for="(goodsInfo,index) in oneOrder.goods"
                 :key="goodsInfo.recId"
               >
                 <td>
@@ -178,39 +311,155 @@
                   </div>
                 </td>
                 <td>{{goodsInfo.goodsSn}}</td>
-                <td>{{goodsInfo.goodsPrice}}</td>
+                <td>{{goodsInfo.goodsPrice.toFixed(2)}}</td>
                 <td>{{goodsInfo.goodsNumber}}</td>
                 <td
                   v-if="index == 0"
-                  :rowspan="childrenOrder.goods.length"
+                  :rowspan="oneOrder.goods.length"
                 >
-                  <p>{{childrenOrder.consignee}}</p>
-                  <p>{{childrenOrder.mobile}}</p>
-                  <p><span>收货地址</span></p>
+                  <p>{{oneOrder.consignee}}</p>
+                  <p>{{oneOrder.mobile}}</p>
+                  <p><span>{{$t('order.shippingAddress')}}</span></p>
                 </td>
                 <td
                   v-if="index == 0"
-                  :rowspan="childrenOrder.goods.length"
-                >{{childrenOrder.createTime}}</td>
+                  :rowspan="oneOrder.goods.length"
+                >{{oneOrder.createTime}}</td>
                 <td
                   v-if="index == 0"
-                  :rowspan="childrenOrder.goods.length"
-                >{{childrenOrder.orderStatus}}</td>
+                  :rowspan="oneOrder.goods.length"
+                >{{orderStatusMap.get(oneOrder.orderStatus)}}</td>
                 <td
                   v-if="index == 0"
-                  :rowspan="childrenOrder.goods.length"
-                >123123123</td>
+                  :rowspan="oneOrder.goods.length"
+                > <span>
+                    {{currencyPool[order.currency][lang][1]}}{{oneOrder.moneyPaid.toFixed(2)}}
+                  </span>
+                  <template v-if="goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) > -1">
+                    <span>
+                      + {{order.scoreDiscount * monetToScore}}{{$t('order.score')}}
+                    </span>
+                    <span>
+                      ({{$t('order.freeShipping')}})
+                    </span>
+                  </template>
+                  <template v-else-if="order.mainOrderSn == null">
+                    <span>({{$t('order.freeFhipping')}})</span>
+                  </template>
+                  <span v-else-if="order.deliverType == 0">
+                    ({{
+                        $t('order.includeExpress')
+                      }}:
+                    {{currencyPool[order.currency][lang][1]}}
+                    {{oneOrder.shippingFee.toFixed(2)}}
+                    )
+                  </span>
+                </td>
               </tr>
             </template>
             <tr>
               <td
-                colspan="8"
+                :colspan="order.fanliType> 0 ? 9 : 8"
                 class="total_box"
               >
                 <p>
-                  商品金额：<span class="text-amount"></span>
+                  {{$t('order.goodsAmount')}}：
+                  <span class="text-amount">
+                    {{
+                      goodsTypeArray.indexOf($t('goodsTypeList')[5][0]) !== -1 ?
+                        (currencyPool[order.currency][lang][1] + order.orderAmount.toFixed(2)) :
+                        (currencyPool[order.currency][lang][1] + (order.orderAmount - order.scoreDiscount).toFixed(2) + '+' + order.scoreDiscount * monetToScore + $t('order.score'))
+                    }}
+                  </span>
                 </p>
-                <p>运费：</p>
+                <p v-if="order.deliverType == 0">
+                  {{$t('order.shipping')}}：
+                  <span>
+                    +{{currencyPool[order.currency][lang][1] + order.shippingFee.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.packageDiscount > 0">
+                  {{$t('order.packageDiscount')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.packageDiscount.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.memberCardReduce > 0">
+                  <span>
+                    {{
+                       (order.exchang == 1 && goodsTypeArray.indexOf($t('goodsTypeList')[14][0]) !== -1) ?
+                         $t('limitedCard',{
+                           cardName:order.cardName,
+                           cardNo:order.cardNo,
+                           currency:'-' + currencyPool[order.currency][lang][1],
+                           reduceMoney:(order.memberCardReduce / order.goodsAmount).toFixed(2),
+                           goodsAmount:order.goodsAmount}) :
+                       ('-' + currencyPool[order.currency][lang][1] + $t('limitedCard')+'：'+order.memberCardReduce)
+                    }}
+                  </span>
+                </p>
+                <p v-if="order.promotionReduce > 0">
+                  {{$t('order.packageDiscount')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.promotionReduce.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.couponDiscount > 0">
+                  {{$t('order.couponDiscount')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.couponDiscount.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.grouperCheapReduce > 0">
+                  {{$t('order.grouperCheapReduce')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.grouperCheapReduce.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.useAccount > 0">
+                  {{$t('order.useAccount')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.scoreDiscount > 0">
+                  <span>
+                    {{
+                       (goodsTypeArray.indexOf($t('goodsTypeList')[5][0] == -1)) ?
+                       ($t('scoreDiscount') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2)) :
+                       ($t('scoreExchange') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2))
+                    }}
+                  </span>
+                </p>
+                <p v-if="order.discountPrice > 0">
+                  {{$t('order.discountPrice')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.discountPrice.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.dapeiReduceAmount > 0">
+                  {{$t('order.dapeiReduceAmount')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.dapeiReduceAmount.toFixed(2)}}
+                  </span>
+                </p>
+                <p v-if="order.memberCardBalance > 0">
+                  {{$t('order.memberCardBalance')}}：
+                  <span>
+                    -{{currencyPool[order.currency][lang][1] + order.memberCardBalance.toFixed(2)}}
+                  </span>
+                </p>
+                <p>
+                  {{$t('order.amountSum')}}：
+                  <span>
+                    {{
+                      currencyPool[order.currency][lang][1] +
+                      order.bk_order_paid > 0 ?
+                      (order.moneyPaid + order.bkOrderMoney).toFixed(2):
+                      order.moneyPaid.toFixed(2)
+                    }}
+                  </span>
+                </p>
               </td>
             </tr>
           </tbody>
@@ -239,7 +488,6 @@
           </thead>
           <tbody>
             <template>
-              <tr></tr>
             </template>
           </tbody>
         </table>
@@ -259,17 +507,46 @@ export default {
   },
   data () {
     return {
-      dataList: null,
-      showNodes: false
+      order: null,
+      showNodes: false,
+      searchParam: {
+        orderSn: null
+      },
+      orderStatusMap: {},
+      goodsTypeMap: {},
+      deliverTypeMap: {},
+      paymentTypeMap: {},
+      // n-m(n订单状态，m配送方式0快递1自提);n(不区分配送方式)
+      timeFlowDiagramMapping: {
+        '0': ['createTime', 'payTime', 'shippingTime', 'finishedTime'],
+        '1': ['createTime', 'cancelledTime'],
+        '2': ['createTime', 'closedTime'],
+        '3-0': ['createTime', 'payTime', 'shippingTime', 'finishedTime'],
+        '3-1': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
+        '4': ['createTime', 'payTime', 'shippingTime', 'finishedTime'],
+        '5-0': ['createTime', 'payTime', 'shippingTime', 'finishedTime'],
+        '5-1': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
+        '6-0': ['createTime', 'payTime', 'shippingTime', 'finishedTime'],
+        '6-1': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
+        '7': null,
+        '8': ['createTime', 'payTime', 'returnFinishTime'],
+        '9': null,
+        '10': ['createTime', 'payTime', 'refundFinishTime'],
+        '11': ['createTime', 'payTime', 'pinStartTime', 'shippingTime', 'finishedTime'],
+        '12': ['createTime', 'payTime', 'pinEndTime', 'shippingTime', 'finishedTime'],
+        '13': ['createTime', 'payTime', 'giftGiving', 'giveCompletion']
+      },
+      monetToScore: 100,
+      goodsTypeArray: null
     }
   },
   mounted () {
     this.arrayToMap()
     this.search(this.$route.query.orderSn)
+    this.langDefault()
   },
   watch: {
     lang () {
-      this.langDefault()
       this.arrayToMap()
     }
   },
@@ -291,9 +568,7 @@ export default {
       this.searchParam.orderSn = orderSn
       info(this.searchParam).then(res => {
         this.order = res.content
-        console.log(this.currency)
-        console.log(11111111111111111111111111111111)
-        console.log(this.order)
+        this.goodsTypeArray = this.order.goodsType.split(',')
       }).catch(() => {
       })
     },
@@ -305,6 +580,88 @@ export default {
     },
     addNodes () {
       this.showNodes = true
+    },
+    seeDetails (orderSn) {
+      console.log(orderSn)
+      this.$router.push({
+        name: 'orderInfo',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    manualReturn (val) {
+
+    }
+  },
+  computed: {
+    showShippingInfo () {
+      let mainFlag = this.order.shippingList
+      let childFlag = null
+      if (this.order.childOrders != null) {
+        childFlag = this.order.childOrders.forEach(childOrder => {
+          if (childOrder.shippingList != null) {
+            return true
+          }
+        })
+      }
+      if (mainFlag || childFlag) {
+        return true
+      }
+    },
+    showReturnInfo () {
+      let mainFlag = this.order.refundList
+      let childFlag = null
+      if (this.order.childOrders != null) {
+        childFlag = this.order.childOrders.forEach(childOrder => {
+          if (childOrder.refundList != null) {
+            return true
+          }
+        })
+      }
+      if (mainFlag || childFlag) {
+        return true
+      }
+    },
+    showShippingList () {
+      let shippingList = []
+      if (this.order.shippingList != null) {
+        shippingList = shippingList.concat(this.order.shippingList)
+      }
+      if (this.order.childOrders != null) {
+        this.order.childOrders.forEach(childOrder => {
+          if (childOrder.shippingList != null) {
+            shippingList = shippingList.concat(childOrder.shippingList)
+          }
+        })
+      }
+      return shippingList
+    },
+    showReturnList () {
+      let refundList = []
+      if (this.order.refundList != null) {
+        refundList = refundList.concat(this.order.refundList)
+      }
+      if (this.order.childOrders != null) {
+        this.order.childOrders.forEach(childOrder => {
+          if (childOrder.refundList != null) {
+            refundList = refundList.concat(childOrder.refundList)
+          }
+        })
+      }
+      return refundList
+    },
+    orderList () {
+      let orderList = []
+      orderList = orderList.concat(this.order)
+      if (this.order.childOrders != null) {
+        this.order.childOrders.forEach(childOrder => {
+          if (childOrder != null) {
+            orderList = orderList.concat(childOrder)
+          }
+        })
+      }
+      return orderList
     }
   }
 }
