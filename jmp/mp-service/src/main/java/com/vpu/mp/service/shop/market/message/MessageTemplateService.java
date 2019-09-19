@@ -388,7 +388,7 @@ public class MessageTemplateService extends ShopBaseService {
     }
 
     public List<ContentMessageVo> getContentTemplate(ContentMessageParam param) {
-        return db().select(MESSAGE_TEMPLATE.CONTENT)
+        return db().select(MESSAGE_TEMPLATE.CONTENT,MESSAGE_TEMPLATE.ID)
             .from(MESSAGE_TEMPLATE)
             .where(MESSAGE_TEMPLATE.ACTION.eq(param.getAction()))
             .fetchInto(ContentMessageVo.class);

@@ -12,4 +12,6 @@ import lombok.Data;
 public class ContentMessageVo {
 
     private String content;
+
+    private Integer id;
 }
