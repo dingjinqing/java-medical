@@ -66,12 +66,9 @@
 
 export default {
   props: {
-    index: {
-      type: Number
-    },
-    flag: {
-      type: Number
-    }
+    flag: Number,
+    nowRightShowIndex: Number,
+    middleHereFlag: Boolean
   },
   data () {
     return {
@@ -80,16 +77,30 @@ export default {
     }
   },
   watch: {
+    nowRightShowIndex (newData) {
+      if (this.flag === newData) {
+        this.activeBorder = true
+      } else {
+        this.activeBorder = false
+      }
+    },
     activeSetHere (newData) {
       console.log(newData)
       if (newData) {
-        this.$http.$emit('middleDragData', this.flag)
+        this.$emit('middleDragData', this.flag)
       }
     },
     activeBorder (newData) {
       console.log(newData, this.index)
       if (newData) {
         this.$http.$emit('nowHightLightModules', this.flag)
+      }
+    },
+    middleHereFlag (newData) {
+      if (newData) {
+        this.activeSetHere = true
+      } else {
+        this.activeSetHere = false
       }
     }
   },
@@ -99,25 +110,6 @@ export default {
   },
   methods: {
     defaultData () {
-      this.$http.$on('decCard', (data, hereFlag) => {
-        console.log(this.flag, data)
-        // console.log(hereFlag)
-
-        // let arr = data.length - 1
-        if (this.flag === data) {
-          this.activeBorder = true
-        } else {
-          this.activeBorder = false
-        }
-        if (hereFlag >= 0) {
-          this.activeSetHere = true
-        } else {
-          this.activeSetHere = false
-        }
-
-        // console.log(this.activeBorder)
-      })
-
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
         console.log(this.flag, res)
@@ -139,21 +131,19 @@ export default {
       switch (flag) {
         case 0:
           obj.direction = 'up'
-          this.$http.$emit('handleDragIconClick', obj)
           break
         case 1:
           obj.direction = 'down'
-          this.$http.$emit('handleDragIconClick', obj)
           break
         case 2:
           obj.direction = 'delete'
-          this.$http.$emit('handleDragIconClick', obj)
           break
       }
+      this.$emit('handleToClickIcon', obj)
     },
     // 模块划过
     mouseOver () {
-      this.$http.$emit('middleDragData', this.flag)
+      this.$emit('middleDragData', this.flag)
     }
   }
 }

@@ -125,6 +125,10 @@
                       <components
                         :is='thirdMiddleModulesList[item]'
                         :flag="index"
+                        :middleHereFlag="middleHereFlag"
+                        :nowRightShowIndex="nowRightShowIndex"
+                        @handleToClickIcon="handleToClickIcon"
+                        @middleDragData='middleDragData'
                       ></components>
                     </div>
                   </div>
@@ -349,7 +353,8 @@ export default {
       topAreaFlag: false,
       nowRightShowIndex: null,
       nowRightShowMoudlesName: null,
-      modulesData: [] // 模块数据
+      modulesData: [], // 模块数据
+      middleHereFlag: false
     }
   },
   watch: {
@@ -396,10 +401,8 @@ export default {
   methods: {
     // 初始化拖拽事件
     init_drag_event () {
-      // 模块icon点击数据接收统一处理
-      this.handleTohandleIconClick()
       // 中间区域拖拽插入数据处理
-      this.handleToMiddleDragData()
+      // this.middleDragData()
       let this_ = this
       // 左侧模块向中间区域拖拽
       $('.third_drag').draggable({
@@ -415,17 +418,17 @@ export default {
         },
         stop: function () {
           // let last = this_.showModulesList
-          setTimeout(() => {
-            let hightMoudleIndex = this_.insertModulesId + 1
+          // setTimeout(() => {
+          let hightMoudleIndex = this_.insertModulesId + 1
 
-            if (this_.nowRightShowIndex === -1) {
-              this_.nowRightShowIndex = 0
-            } else {
-              this_.nowRightShowIndex = hightMoudleIndex
-            }
-            console.log(this_.nowRightShowIndex)
-            this_.$http.$emit('decCard', this_.nowRightShowIndex)
-          }, 200)
+          if (this_.nowRightShowIndex === -1) {
+            this_.nowRightShowIndex = 0
+          } else {
+            this_.nowRightShowIndex = hightMoudleIndex
+          }
+          console.log(this_.nowRightShowIndex)
+          // this_.$http.$emit('decCard', this_.nowRightShowIndex)
+          // }, 200)
           $('.modules').removeClass('placeholder')
         },
         zIndex: 10000 // 拖动位置在拖放区域上方
@@ -499,6 +502,7 @@ export default {
     // 中间区域元素开始拖动时处理函数
     handleToStart ({ oldIndex }) {
       console.log(oldIndex)
+      this.middleHereFlag = true
       this.topAreaFlag = false
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
       this.oldElement = newArr[oldIndex]
@@ -512,14 +516,15 @@ export default {
 
       // let data = newArr
       this.$nextTick(() => {
-        this.$http.$emit('decCard', -1, 1)
+        this.nowRightShowIndex = -1
+        // this.$http.$emit('decCard', -1, 1)
       })
 
       this.isDragging = true
     },
     // 中间区域元素停止拖动是处理函数
     handleToEnd (e) {
-      let this_ = this
+      // let this_ = this
       console.log(this.oldIndex, this.newIndex, this.oldElement)
 
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
@@ -553,85 +558,82 @@ export default {
       }
       console.log(insertIndex)
       this.$nextTick(() => {
-        this_.$http.$emit('decCard', insertIndex, -1)
+        this.nowRightShowIndex = insertIndex
+        this.middleHereFlag = false
+        // this_.$http.$emit('decCard', insertIndex, -1)
       })
     },
     // 中间区域模块icon点击数据接收统一处理
-    handleTohandleIconClick () {
+    handleToClickIcon ({ direction, flag }) {
       console.log(1111)
-      this.$http.$on('handleDragIconClick', ({ direction, flag }) => {
-        switch (direction) {
-          case 'up':
-            let newArr1 = JSON.parse(JSON.stringify(this.showModulesList))
-            console.log(newArr1, '--', flag)
-            // 顶部判断
-            if (flag === 0) return
-            let temp = newArr1[(flag - 1)]
-            newArr1[(flag - 1)] = newArr1[flag]
-            newArr1[flag] = temp
-            let arrFliter = newArr1.filter(item => {
-              return item
-            })
-            // 改变边框
-            let index = flag - 1
-            console.log(newArr1)
-            this.showModulesList = arrFliter
-            let data = this.showModulesList
-            this.$http.$emit('decCard', data, -1)
-            this.$nextTick(() => {
-              this.$http.$emit('modulesClick', index)
-            })
-            console.log(newArr1, '--' + this.showModulesList)
-            break
-          case 'down':
-            let newArr2 = JSON.parse(JSON.stringify(this.showModulesList))
-            console.log(newArr2, '--', flag, '123123123')
-            let temp2 = newArr2[(flag + 1)]
-            // 底部判断
-            if ((newArr2.length - 1) === flag) return
-            newArr2[(flag + 1)] = newArr2[flag]
-            newArr2[flag] = temp2
-            let arrFliterD = newArr2.filter(item => {
-              return item
-            })
-            let indexD = flag + 1
-            console.log(arrFliterD)
-            this.showModulesList = arrFliterD
-            let dataD = this.showModulesList
-            this.$http.$emit('decCard', dataD, -1)
-            this.$nextTick(() => {
-              this.$http.$emit('modulesClick', indexD)
-            })
+      switch (direction) {
+        case 'up':
+          let newArr1 = JSON.parse(JSON.stringify(this.showModulesList))
+          console.log(newArr1, '--', flag)
+          // 顶部判断
+          if (flag === 0) return
+          let temp = newArr1[(flag - 1)]
+          newArr1[(flag - 1)] = newArr1[flag]
+          newArr1[flag] = temp
+          let arrFliter = newArr1.filter(item => {
+            return item
+          })
+          // 改变边框
+          let index = flag - 1
+          console.log(newArr1)
+          this.showModulesList = arrFliter
+          // let data = this.showModulesList
+          // this.$http.$emit('decCard', data, -1)
+          this.$nextTick(() => {
+            this.nowRightShowIndex = index
+            // this.$http.$emit('modulesClick', index)
+          })
+          console.log(newArr1, '--' + this.showModulesList)
+          break
+        case 'down':
+          let newArr2 = JSON.parse(JSON.stringify(this.showModulesList))
+          console.log(newArr2, '--', flag, '123123123')
+          let temp2 = newArr2[(flag + 1)]
+          // 底部判断
+          if ((newArr2.length - 1) === flag) return
+          newArr2[(flag + 1)] = newArr2[flag]
+          newArr2[flag] = temp2
+          let arrFliterD = newArr2.filter(item => {
+            return item
+          })
+          let indexD = flag + 1
+          console.log(arrFliterD)
+          this.showModulesList = arrFliterD
+          // let dataD = this.showModulesList
+          // this.$http.$emit('decCard', dataD, -1)
+          this.$nextTick(() => {
+            // this.$http.$emit('modulesClick', indexD)
+            this.nowRightShowIndex = indexD
+          })
 
-            break
-          case 'delete':
-            let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
-            console.log(this.nowRightShowIndex)
-            console.log(this.insertModulesId, flag)
-            if (this.nowRightShowIndex > flag) {
-              this.nowRightShowIndex--
-            } else if (this.nowRightShowIndex === flag) {
-              this.nowRightShowIndex = -1
-              this.$http.$emit('decCard', -1)
-            }
+          break
+        case 'delete':
+          let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
+          console.log(this.nowRightShowIndex)
+          console.log(this.insertModulesId, flag)
+          if (this.nowRightShowIndex > flag) {
+            this.nowRightShowIndex--
+          } else if (this.nowRightShowIndex === flag) {
+            this.nowRightShowIndex = -1
+          }
 
-            console.log(this.nowRightShowIndex)
+          console.log(this.nowRightShowIndex)
 
-            console.log(newArr3, flag)
-            newArr3.splice(flag, 1)
-            console.log(newArr3)
-            this.showModulesList = newArr3
-
-            break
-        }
-      })
+          console.log(newArr3, flag)
+          newArr3.splice(flag, 1)
+          console.log(newArr3)
+          this.showModulesList = newArr3
+      }
     },
     // 中间区域拖拽插入数据处理
-    handleToMiddleDragData () {
-      this.$http.$on('middleDragData', res => {
-        console.log(res)
-        this.newIndex = res
-      })
+    middleDragData (res) {
+      console.log(res)
+      this.newIndex = res
     },
     // 顶部滑动
     dragTopOver () {
@@ -672,12 +674,9 @@ export default {
       console.log(id)
       let length = this.showModulesList.length - 1
       console.log(length)
-      // this.$nextTick(() => {
-      //   this.$http.$emit('decCard', length)
-      // })
-      setTimeout(() => {
-        this.$http.$emit('decCard', length)
-      }, 100)
+      this.$nextTick(() => {
+        this.nowRightShowIndex = length
+      })
     }
   }
 }
