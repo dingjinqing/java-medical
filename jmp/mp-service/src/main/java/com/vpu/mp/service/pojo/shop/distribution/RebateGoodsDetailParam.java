@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class RebateGoodsDetailParam {
+	private Integer goodsId;
 	private String distributorMobile;
 	private String distributorName;
 	private String mobile;

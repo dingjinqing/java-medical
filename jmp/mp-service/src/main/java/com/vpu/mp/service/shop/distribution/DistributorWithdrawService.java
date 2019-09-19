@@ -28,7 +28,7 @@ public class DistributorWithdrawService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<DistributorWithdrawListVo> getWithdrawList(DistributorWithdrawListParam param) {
-		SelectJoinStep<? extends Record> select = db().select(USER.USERNAME,USER.MOBILE,USER_DETAIL.REAL_NAME,DISTRIBUTION_WITHDRAW.CREATE_TIME,DISTRIBUTION_WITHDRAW.ORDER_SN,
+		SelectJoinStep<? extends Record> select = db().select(DISTRIBUTION_WITHDRAW.ID,USER.USERNAME,USER.MOBILE,USER_DETAIL.REAL_NAME,DISTRIBUTION_WITHDRAW.CREATE_TIME,DISTRIBUTION_WITHDRAW.ORDER_SN,
 					DISTRIBUTION_WITHDRAW.WITHDRAW_CASH,DISTRIBUTION_WITHDRAW.CHECK_TIME,DISTRIBUTION_WITHDRAW.STATUS,DISTRIBUTION_WITHDRAW.REFUSE_DESC,DISTRIBUTION_WITHDRAW.DESC)
 				.from(DISTRIBUTION_WITHDRAW
 				.leftJoin(USER).on(DISTRIBUTION_WITHDRAW.USER_ID.eq(USER.USER_ID)))
@@ -83,17 +83,17 @@ public class DistributorWithdrawService extends ShopBaseService{
 	 * @param orderSn
 	 * @return
 	 */
-	public DistributorWithdrawDetailVo getWithdrawDetail(String orderSn) {
+	public DistributorWithdrawDetailVo getWithdrawDetail(Integer id) {
 		DistributorWithdrawDetailVo detail = db().select(USER.USERNAME,USER.MOBILE,USER_DETAIL.REAL_NAME,DISTRIBUTION_WITHDRAW.CREATE_TIME,DISTRIBUTION_WITHDRAW.ORDER_SN,
 				DISTRIBUTION_WITHDRAW.WITHDRAW_CASH,DISTRIBUTION_WITHDRAW.CHECK_TIME,DISTRIBUTION_WITHDRAW.STATUS,DISTRIBUTION_WITHDRAW.REFUSE_DESC,DISTRIBUTION_WITHDRAW.DESC,
 				DISTRIBUTION_WITHDRAW.TYPE,DISTRIBUTION_WITHDRAW.WITHDRAW_USER_NUM,DISTRIBUTION_WITHDRAW.WITHDRAW_NUM)
 			.from(DISTRIBUTION_WITHDRAW
 			.leftJoin(USER).on(DISTRIBUTION_WITHDRAW.USER_ID.eq(USER.USER_ID)))
 			.leftJoin(USER_DETAIL).on(DISTRIBUTION_WITHDRAW.USER_ID.eq(USER_DETAIL.USER_ID))
-			.where(DISTRIBUTION_WITHDRAW.ORDER_SN.eq(orderSn))
+			.where(DISTRIBUTION_WITHDRAW.ID.eq(id))
 			.fetchOne().into(DistributorWithdrawDetailVo.class);
 		//获取当前用户ID
-		int userId = db().select(DISTRIBUTION_WITHDRAW.USER_ID).from(DISTRIBUTION_WITHDRAW).where(DISTRIBUTION_WITHDRAW.ORDER_SN.eq(orderSn)).fetchOne().into(Integer.class);
+		int userId = db().select(DISTRIBUTION_WITHDRAW.USER_ID).from(DISTRIBUTION_WITHDRAW).where(DISTRIBUTION_WITHDRAW.ID.eq(id)).fetchOne().into(Integer.class);
 		
 		DistributorWithdrawListParam param = new DistributorWithdrawListParam();
 		param.setUserId(userId);

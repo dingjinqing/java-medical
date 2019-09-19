@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.db.shop.Tables.USER;
 
 import org.jooq.Record;
@@ -74,13 +75,16 @@ public class RebateGoodsService extends ShopBaseService{
 	public PageResult<RebateGoodsDetailVo> getRebateGoodsDetail(RebateGoodsDetailParam param) {
 		SelectJoinStep<? extends Record> select = db().select(ORDER_GOODS_REBATE.ORDER_SN,ORDER_GOODS_REBATE.REBATE_MONEY,
 				ORDER_GOODS_REBATE.REBATE_USER_ID,ORDER_GOODS_REBATE.REBATE_PERCENT,ORDER_INFO.SETTLEMENT_FLAG,
-				ORDER_INFO.FINISHED_TIME,ORDER_INFO.USER_ID,ORDER_INFO.MOBILE,USER.as(INVITE).USERNAME.as("distributorName"))
+				ORDER_INFO.FINISHED_TIME,ORDER_INFO.USER_ID,ORDER_GOODS.RETURN_NUMBER,ORDER_GOODS.CAN_CALCULATE_MONEY,
+				ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_NUMBER,ORDER_INFO.MOBILE,USER.as(INVITE).USERNAME.as("distributorName"))
 				.from(ORDER_GOODS_REBATE
 				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 				.leftJoin(USER.as(INVITE)).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER.as(INVITE).USER_ID))
-				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID)));
+				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID)))
+				.leftJoin(ORDER_GOODS).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
 		buildOptionDetail(select,param);
 		PageResult<RebateGoodsDetailVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsDetailVo.class);
+		
 		return pageList;
 	}
 	
@@ -90,7 +94,7 @@ public class RebateGoodsService extends ShopBaseService{
 	 * @param param
 	 */
 	public void buildOptionDetail(SelectJoinStep<? extends Record> select,RebateGoodsDetailParam param) {
-		select.where(ORDER_INFO.FANLI_TYPE.eq((byte) 1));
+		select.where(ORDER_INFO.FANLI_TYPE.eq((byte) 1).and(ORDER_GOODS_REBATE.GOODS_ID.eq(param.getGoodsId())));
 		//被邀请人手机号
 		if(param.getMobile() != null) {
 			select.where(USER.MOBILE.contains(param.getMobile()));

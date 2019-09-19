@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.config.trade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
 /**
  * The type Order process param.
