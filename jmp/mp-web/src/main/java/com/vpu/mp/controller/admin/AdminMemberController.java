@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
@@ -162,6 +163,18 @@ public class AdminMemberController extends AdminBaseController{
 		logger().info("正在获取用户所有的可用会员卡");
 		List<AvailableMemberCardVo> allAvailableMemberCard = shop().member.getAllAvailableMemberCard(userId);
 		return success(allAvailableMemberCard);
+	}
+	
+	/**
+	 * 获取用户持有会员卡明细
+	 * @param userId
+	 * @return
+	 */
+	@PostMapping("/manage/card/list/{userId}")
+	public JsonResult getAllUserCardDetail(@PathVariable Integer userId) {
+		logger().info("正在获取会员领取会员卡明细");
+		List<UserCardDetailVo> allUserCardDetail = shop().member.getAllUserCardDetail(userId);
+		return success(allUserCardDetail);
 	}
 	
 //-------------------------------优化代码结构-正在做代码迁移-----------------------------------------------
