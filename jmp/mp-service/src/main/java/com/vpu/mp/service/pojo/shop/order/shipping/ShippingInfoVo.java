@@ -21,6 +21,8 @@ public class ShippingInfoVo {
 	private String orderSn;
 	/**物流单号*/
 	private String shippingNo;
+	/**快递公司id*/
+	private Byte shippingId;
 	/**物流名称*/
 	private String shippingName;
 	/**发货时间*/

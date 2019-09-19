@@ -57,5 +57,8 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**（券）折扣金额*/
 	@JsonIgnore
 	private BigDecimal discount;
-	
+	/**918新增*/
+	private String storeName;
+	private Integer verifierId;
+	private String verifierName;
 }

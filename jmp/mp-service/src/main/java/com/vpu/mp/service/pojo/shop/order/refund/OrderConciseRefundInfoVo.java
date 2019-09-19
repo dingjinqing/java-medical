@@ -22,13 +22,14 @@ public class OrderConciseRefundInfoVo {
 	private String returnType;
 	private Byte refundStatus;
 	private BigDecimal money;
-	private Timestamp apply;
 	private Timestamp success;
 	private List<OrderReturnGoodsVo> orderReturnGoodsVo;
 	/**退货时的申请时间*/
-	@JsonIgnore
 	private Timestamp applyTime;
 	/**退款时的申请时间*/
-	@JsonIgnore
 	private Timestamp shippingOrRefundTime;
+	/**成功时间*/
+	private Timestamp refundSuccessTime;
+	/**退运费*/
+	private BigDecimal shippingFee;
 }

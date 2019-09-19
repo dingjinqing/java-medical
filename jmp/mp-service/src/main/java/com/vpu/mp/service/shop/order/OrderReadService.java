@@ -41,6 +41,7 @@ import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
+import com.vpu.mp.service.shop.user.user.UserService;
 
 /**
  * 	订单模块普通查询service
@@ -62,6 +63,8 @@ public class OrderReadService extends ShopBaseService {
 	private ReturnOrderGoodsService returnOrderGoods;
 	@Autowired
 	private StoreOrderService storeOrder;
+	@Autowired
+	private UserService user;
 	/**
 	 * 订单查询
 	 * @param OrderPageListQueryParam
@@ -197,6 +200,10 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//设置订单支付方式（无子单）
 		orderInfo.setPayCodeList(mainOrder,prizesSns);
+		//设置核销员
+		if(mainOrder.getVerifierId() > 0) {
+			mainOrder.setVerifierName(user.getUserByUserId(mainOrder.getVerifierId()).getUsername());
+		}
 		//设置
 		mainOrder.setChildOrders(childOrders);
 		if(size > 1) {
