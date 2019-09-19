@@ -362,6 +362,7 @@ export default {
       console.log(this.nowRightShowIndex, newData)
       console.log(newData)
       this.$http.$emit('modulesClick', this.nowRightShowIndex)
+      this.handleToModuleHight()
       if (newData.length) {
         this.zbFlag = true
       } else {
@@ -369,7 +370,6 @@ export default {
       }
     },
     nowRightShowIndex (newData) {
-      this.handleToModuleHight()
       console.log(newData, this.activeName, this.showModulesList)
     }
   },
@@ -380,6 +380,7 @@ export default {
   computed: {
     dragOptions () {
       return {
+        scroll: true,
         animation: 150,
         group: {
           name: 'description',
@@ -478,14 +479,14 @@ export default {
           console.log('test')
           console.log(this_.insertModulesId, '--', this_.showModulesList)
           let insert = this_.insertModulesId + 1
-          // 判断id是否为-1，若是则不插入数组中
+          console.log(insert)
+          // 判断id是否为-1，若是则插入尾部，否则插入指定位置
           switch (ui.draggable[0].innerText) {
             case '会员卡':
               if (this_.insertModulesId === -1) {
                 this_.showModulesList.push(1)
               } else {
                 this_.showModulesList.splice(insert, 0, 1)
-                console.log(this_.showModulesList)
               }
 
               break
@@ -495,6 +496,9 @@ export default {
               } else {
                 this_.showModulesList.splice(insert, 0, 2)
               }
+          }
+          if (this_.insertModulesId !== -1) {
+            this_.handleToSortModulesData(insert)
           }
         }
       })
@@ -657,14 +661,28 @@ export default {
       console.log(index)
       this.$http.$emit('modulesClick', index)
     },
-    // 当前高亮模块处理事件
+    // 当前高亮模块数据处理向右侧传递事件
     handleToModuleHight () {
+      let flag = true
+      this.showModulesList.forEach(item => {
+        if (item === -1) {
+          flag = false
+        }
+      })
+      console.log(flag)
+      if (!flag) return
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
-      this.nowRightShowMoudlesName = this.showModulesList[this.nowRightShowIndex]
-      let obj = {
-        test: 1
+
+      console.log(this.showModulesList, this.modulesData)
+      if (this.showModulesList.length !== this.modulesData.length) {
+        this.nowRightShowMoudlesName = this.showModulesList[this.nowRightShowIndex]
+        let obj = { // 传递当前模块json数据模拟
+          test: 1
+        }
+        this.modulesData.push(obj)
       }
-      this.modulesData.push(obj)
+
+      console.log(this.modulesData)
       this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
       console.log(this.nowRightShowMoudlesName)
     },
@@ -677,6 +695,10 @@ export default {
       this.$nextTick(() => {
         this.nowRightShowIndex = length
       })
+    },
+    // 当中部模块数据排序发生变化时处理保存模块数组的排序
+    handleToSortModulesData (insert, obj) {
+      console.log(insert, this.showModulesList)
     }
   }
 }
