@@ -276,7 +276,7 @@
           >
             <el-card class="box-card">
               <div class="fontColor">{{$t('addBargainAct.friendsBargainCouponTip')}}</div>
-              <span>{{mrkingVoucherId}}</span>
+              <span>{{mrkingVoucherObjs}}</span>
               <div
                 @click="handleToCallDialog1()"
                 class="addInfo"
@@ -297,7 +297,7 @@
           >
             <el-card class="box-card">
               <div class="fontColor">{{$t('addBargainAct.encouragementAwardTip')}}</div>
-              <span>{{rewardCouponId}}</span>
+              <span>{{rewardCouponObjs}}</span>
               <div
                 @click="handleToCallDialog2()"
                 class="addInfo"
@@ -328,7 +328,11 @@
       >{{$t('marketCommon.save')}}</el-button>
     </div>
     <!--添加优惠卷-->
-    <AddCouponDialog @handleToCheck="handleToCheck" />
+    <AddCouponDialog
+      @handleToCheck="handleToCheck"
+      :tuneUpCoupon="showCouponDialog"
+      :couponBack="couponIdList"
+    />
     <!--商品选择-->
     <choosingGoods @resultGoodsRow="choosingGoodsResult" />
   </div>
@@ -361,8 +365,8 @@ export default {
           this.effectiveDate = []
           this.effectiveDate.push(res.content.startTime)
           this.effectiveDate.push(res.content.endTime)
-          this.mrkingVoucherId = res.content.mrkingVoucherList
-          this.rewardCouponId = res.content.rewardCouponList
+          this.mrkingVoucherObjs = res.content.mrkingVoucherList
+          this.rewardCouponObjs = res.content.rewardCouponList
           this.goodsRow.push(res.content.goods)
         }
       })
@@ -371,9 +375,9 @@ export default {
   data () {
     return {
       // 向帮忙砍价的用户赠送优惠券
-      mrkingVoucherId: [],
+      mrkingVoucherObjs: [],
       // 砍价失败后向买家赠送优惠券
-      rewardCouponId: [],
+      rewardCouponObjs: [],
       // 优惠券弹窗区分，1鼓励奖，0好友砍价优惠券
       dialogFlag: 1,
       effectiveDate: '',
@@ -400,35 +404,36 @@ export default {
         'share_img': ''
       },
       isEditFlag: false,
-      actId: null
+      actId: null,
+
+      showCouponDialog1: false,
+      showCouponDialog2: false,
+      couponIdList: [],
+      showCouponDialog: false
     }
   },
   methods: {
     // 选择优惠券弹窗-帮忙砍价的用户
     handleToCallDialog1 () {
       this.dialogFlag = 0
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.mrkingVoucherId
-      }
-      this.$http.$emit('V-AddCoupon', obj)
+      this.couponIdList = this.getCouponIdsArray(this.mrkingVoucherObjs)
+      console.log(this.couponIdList)
+      this.showCouponDialog = !this.showCouponDialog
     },
     // 选择优惠券弹窗-砍价失败后向买家赠送
     handleToCallDialog2 () {
       this.dialogFlag = 1
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.rewardCouponId
-      }
-      this.$http.$emit('V-AddCoupon', obj)
+      this.couponIdList = this.getCouponIdsArray(this.rewardCouponObjs)
+      console.log(this.couponIdList)
+      this.showCouponDialog = !this.showCouponDialog
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
       console.log(data)
       if (this.dialogFlag === 1) {
-        this.rewardCouponId = data
+        this.rewardCouponObjs = data
       } else {
-        this.mrkingVoucherId = data
+        this.mrkingVoucherObjs = data
       }
     },
     // 选择商品弹窗
@@ -446,8 +451,8 @@ export default {
       this.param.shareConfig = this.shareConfig
       this.param.startTime = this.effectiveDate[0]
       this.param.endTime = this.effectiveDate[1]
-      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherId)
-      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponId)
+      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
+      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
       addBargain(this.param).then((res) => {
         if (res.error === 0) {
           this.$message({
@@ -471,8 +476,8 @@ export default {
       this.param.shareConfig = this.shareConfig
       this.param.startTime = this.effectiveDate[0]
       this.param.endTime = this.effectiveDate[1]
-      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherId)
-      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponId)
+      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
+      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
       updateBargain(this.param).then((res) => {
         if (res.error === 0) {
           this.$message({
@@ -498,6 +503,13 @@ export default {
         } else {
           res += ',' + item.id
         }
+      })
+      return res
+    },
+    getCouponIdsArray (data) {
+      let res = []
+      data.forEach((item, index) => {
+        res.push(item.id)
       })
       return res
     }
