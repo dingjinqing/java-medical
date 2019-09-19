@@ -76,14 +76,21 @@
             <el-table
               :data="this.goodsRow"
               :hidden="this.goodsRow.length == 0?true:false"
+              border
+              class="actGoodsTable"
+              header-row-class-name="tableClss"
             >
               <el-table-column
                 prop="goodsName"
                 :label="$t('addBargainAct.goodsName')"
                 align="center"
+                class="tableHeaderHeight"
               >
                 <template slot-scope="scope">
-                  <img :src="scope.row.goodsImg">
+                  <img
+                    :src="scope.row.goodsImg"
+                    class="goodsName_img"
+                  >
                   <span>{{scope.row.goodsName}}</span>
                 </template>
 
@@ -92,16 +99,18 @@
                 prop="goodsNumber"
                 :label="$t('addBargainAct.goodsOriginalStock')"
                 align="center"
+                class="tableHeaderHeight"
               ></el-table-column>
               <el-table-column
                 :label="$t('addBargainAct.bargainStock')"
                 align="center"
+                class="tableHeaderHeight"
               >
                 <template slot-scope="scope">
                   <el-input-number
                     v-model="param.stock"
-                    size="small"
-                    style="width:120px"
+                    size="mini"
+                    style="width:90px"
                     :min="1"
                     :max="scope.row.goodsNumber"
                   >
@@ -112,18 +121,20 @@
                 prop="shopPrice"
                 :label="$t('addBargainAct.goodsOriginalPrice')"
                 align="center"
+                class="tableHeaderHeight"
               ></el-table-column>
               <el-table-column
                 v-if="param.bargainType == 0"
                 prop="shopPrice"
                 :label="$t('addBargainAct.bargainReservePrice')"
                 align="center"
+                class="tableHeaderHeight"
               >
                 <template slot-scope="scope">
                   <el-input-number
                     v-model="param.expectationPrice"
-                    size="small"
-                    style="width:120px"
+                    size="mini"
+                    style="width:90px"
                     :min="0"
                     :max="scope.row.shopPrice"
                   >
@@ -136,12 +147,13 @@
                 prop="shopPrice"
                 :label="$t('addBargainAct.sttlementAmount')"
                 align="center"
+                class="tableHeaderHeight"
               >
                 <template slot-scope="scope">
                   <el-input-number
                     :disabled="isEditFlag"
                     v-model="param.floorPrice"
-                    size="small"
+                    size="mini"
                     style="width:120px"
                     :min="0"
                     :max="scope.row.shopPrice"
@@ -274,18 +286,48 @@
             :label="$t('addBargainAct.friendsBargainCoupon')+':'"
             prop=""
           >
+            <!-- 好友砍价优惠券部分 -->
             <el-card class="box-card">
               <div class="fontColor">{{$t('addBargainAct.friendsBargainCouponTip')}}</div>
-              <span>{{mrkingVoucherObjs}}</span>
               <div
-                @click="handleToCallDialog1()"
+                v-for="(item,index) in mrkingVoucherObjs"
+                :key="index"
                 class="addInfo"
+                style="margin-right: 5px;"
               >
-                <img
-                  :src="srcList.src3"
-                  alt=""
+                <section
+                  class="couponImgWrapper"
+                  style="line-height:normal"
                 >
-                <p class="fontColor">{{$t('addBargainAct.addCoupon')}}</p>
+
+                  <div class="coupon_list_top">
+                    <span>￥</span>
+                    <span class="number">{{item.denomination}}</span>
+                  </div>
+                  <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                  <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                  <div
+                    class="coupon_list_bottom"
+                    style="font-size:12px"
+                  >领取</div>
+                </section>
+                <span
+                  @click="deleteCouponImg(index)"
+                  class="deleteIcon"
+                >×</span>
+              </div>
+
+              <div
+                class="addInfo"
+                @click="handleToCallDialog1()"
+                v-if="mrkingVoucherObjs.length < 5"
+              >
+                <el-image
+                  fit="scale-down"
+                  :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                  style="width: 78px;height:78px;cursor:pointer"
+                ></el-image>
+                <p>{{$t('addBargainAct.addCoupon')}}</p>
               </div>
               <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
             </el-card>
@@ -295,20 +337,49 @@
             :label="$t('addBargainAct.encouragementAward')+':'"
             prop=""
           >
+            <!-- 鼓励奖优惠券部分 -->
             <el-card class="box-card">
               <div class="fontColor">{{$t('addBargainAct.encouragementAwardTip')}}</div>
-              <span>{{rewardCouponObjs}}</span>
               <div
-                @click="handleToCallDialog2()"
+                v-for="(item,index) in rewardCouponObjs"
+                :key="index"
                 class="addInfo"
+                style="margin-right: 5px;"
               >
-                <img
-                  :src="srcList.src3"
-                  alt=""
+                <section
+                  class="couponImgWrapper"
+                  style="line-height: normal"
                 >
-                <p class="fontColor">{{$t('addBargainAct.addCoupon')}}</p>
+                  <div class="coupon_list_top">
+                    <span>￥</span>
+                    <span class="number">{{item.denomination}}</span>
+                  </div>
+                  <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                  <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                  <div
+                    class="coupon_list_bottom"
+                    style="font-size:12px"
+                  >领取</div>
+                </section>
+                <span
+                  @click="deleteCouponImg2(index)"
+                  class="deleteIcon"
+                >×</span>
               </div>
-              <!-- <addCoupon /> -->
+
+              <div
+                class="addInfo"
+                @click="handleToCallDialog2()"
+                v-if="rewardCouponObjs.length < 5"
+                style="line-height: normal"
+              >
+                <el-image
+                  fit="scale-down"
+                  :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                  style="width: 78px;height:78px;cursor:pointer"
+                ></el-image>
+                <p>{{$t('addBargainAct.addCoupon')}}</p>
+              </div>
               <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
             </el-card>
           </el-form-item>
@@ -364,6 +435,7 @@ export default {
         'id': this.$route.query.id
       }
       getBargainByIsd(SimpleBargainParam).then((res) => {
+        console.log(res)
         if (res.error === 0) {
           this.param = res.content
           this.effectiveDate = []
@@ -374,6 +446,15 @@ export default {
           this.goodsRow.push(res.content.goods)
         }
       })
+    }
+  },
+  filters: {
+    formatLeastConsume (useConsumeRestrict, leastConsume) {
+      if (useConsumeRestrict === 0) {
+        return `不限制`
+      } else {
+        return `满${leastConsume}元可用`
+      }
     }
   },
   data () {
@@ -409,12 +490,12 @@ export default {
       },
       isEditFlag: false,
       actId: null,
-
+      couponImg: [],
+      imgHost: `${this.$imageHost}`,
       showCouponDialog1: false,
       showCouponDialog2: false,
       couponIdList: [],
       showCouponDialog: false,
-
       tuneUpChooseGoods: false,
       goodsIdList: []
     }
@@ -433,12 +514,31 @@ export default {
       this.showCouponDialog = !this.showCouponDialog
     },
     // 确认选择优惠券-新增-删除
-    handleToCheck (data) {
+    handleToCheck (data, index) {
+      console.log(data)
+      console.log(this.rewardCouponObjs)
       if (this.dialogFlag === 1) {
+        // console.log(this.rewardCouponObjs)
+        if (this.rewardCouponObjs.length >= 5) {
+          return
+        }
         this.rewardCouponObjs = data
       } else {
+        // console.log(this.mrkingVoucherObjs)
+        // console.log(this.mrkingVoucherObjs)
+        if (this.mrkingVoucherObjs.length >= 5) {
+          return
+        }
         this.mrkingVoucherObjs = data
       }
+    },
+    // 删除好友砍价优惠券图片
+    deleteCouponImg (index) {
+      this.mrkingVoucherObjs.splice(index, 1)
+    },
+    // 删除鼓励奖优惠券图片
+    deleteCouponImg2 (index) {
+      this.rewardCouponObjs.splice(index, 1)
     },
     // 选择商品弹窗
     showChoosingGoods () {
@@ -540,19 +640,54 @@ export default {
         background-color: #f5f5f5;
         .addInfo {
           display: inline-block;
+          position: relative;
           width: 100px;
-          height: 98px;
+          height: 101px;
           margin-bottom: 10px;
           background: #fff;
           border: 1px solid #e4e4e4;
-          padding: 13px 0;
           cursor: pointer;
           text-align: center;
           img {
             margin-top: 10px;
           }
           p {
-            margin-top: -15px;
+            line-height: normal;
+            margin-top: -30px;
+            color: #999;
+          }
+          .couponImgWrapper {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #fbb;
+            border-radius: 10px;
+            .coupon_list_top {
+              margin-top: 10px;
+              color: #f60;
+              :nth-of-type(2) {
+                font-size: 20px;
+                font-weight: bold;
+              }
+            }
+            .coupon_center_limit {
+              height: 20px;
+              color: #f60;
+              font-size: 12px !important;
+            }
+            .coupon_center_number {
+              height: 20px;
+              color: #fbb;
+            }
+            .coupon_list_bottom {
+              height: 24px;
+              line-height: 30px;
+              border-bottom-left-radius: 8px;
+              border-bottom-right-radius: 8px;
+              color: #fff;
+              background: #f66;
+              background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+              background-repeat: repeat-x;
+            }
           }
         }
       }
@@ -602,5 +737,14 @@ export default {
     background: #f8f8f8;
     text-align: center;
   }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  height: 20px;
+  border: none;
+}
+.goodsName_img {
+  width: 28px;
+  height: 28px;
 }
 </style>
