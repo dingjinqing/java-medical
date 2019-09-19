@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 插入商品sku之前预处理器prdSpecs字段，目前用于用户填写了自己的sku
+     *
      * @param goodsSpecProducts 规格属性
      * @param goodsSpecs        规格名值
      * @param goodsId           商品id
@@ -66,17 +68,18 @@ public class GoodsSpecProductService extends ShopBaseService {
             Map<String, Map<String, Integer>> goodsSpecsMap = goodsSpecService
                 .insertSpecAndSpecValWithPrepareResult(goodsSpecs, goodsId);
 
-            insertAndSetPrdSpec(goodsSpecProducts,goodsSpecsMap,goodsId);
+            insertAndSetPrdSpec(goodsSpecProducts, goodsSpecsMap, goodsId);
         }
     }
 
     /**
      * 根据处理后的商品规格名值数据插入规格项（sku）,在插入前动态计算其prdSpec
+     *
      * @param goodsSpecProducts sku
-     * @param goodsSpecsMap {'颜色':{'specId':1,'红色':11,'绿色':22},'尺寸':{'specId':2,'X':15,'M':28}}
-     * @param goodsId 商品id
+     * @param goodsSpecsMap     {'颜色':{'specId':1,'红色':11,'绿色':22},'尺寸':{'specId':2,'X':15,'M':28}}
+     * @param goodsId           商品id
      */
-    private void insertAndSetPrdSpec(List<GoodsSpecProduct> goodsSpecProducts,Map<String, Map<String, Integer>> goodsSpecsMap,Integer goodsId){
+    private void insertAndSetPrdSpec(List<GoodsSpecProduct> goodsSpecProducts, Map<String, Map<String, Integer>> goodsSpecsMap, Integer goodsId) {
         for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
             goodsSpecProduct.setGoodsId(goodsId);
             String prdDescs = goodsSpecProduct.getPrdDesc();
@@ -115,11 +118,11 @@ public class GoodsSpecProductService extends ShopBaseService {
     /**
      * 根据商品ids删除规格值
      *
-     * @param db
+     * @param goodsIds
      * @param goodsIds
      */
     public void deleteByGoodsIds(List<Integer> goodsIds) {
-        DSLContext db=db();
+        DSLContext db = db();
         //将sku表内数据备份至sku_bak内
         db.insertInto(GOODS_SPEC_PRODUCT_BAK, GOODS_SPEC_PRODUCT_BAK.PRD_ID, GOODS_SPEC_PRODUCT_BAK.SHOP_ID, GOODS_SPEC_PRODUCT_BAK.GOODS_ID
             , GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_COST_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER
@@ -161,6 +164,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据prdId修改商品规格信息并删除无用的（数据库中存在但是出入的对象集合中不存在）
+     *
      * @param goodsSpecProducts 规格对象集合
      */
     public void updateAndDeleteForGoodsUpdate(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs, Integer goodsId) {
@@ -187,10 +191,11 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 删除属于商品id但是不在prdIds集合内的所有项
+     *
      * @param prdIds  规格项id
      * @param goodsId 商品id
      */
-    private void deleteForGoodsUpdate(List<Integer> prdIds,Integer goodsId) {
+    private void deleteForGoodsUpdate(List<Integer> prdIds, Integer goodsId) {
         DSLContext db = db();
         //将sku表内数据备份至sku_bak内
         db.insertInto(GOODS_SPEC_PRODUCT_BAK, GOODS_SPEC_PRODUCT_BAK.PRD_ID, GOODS_SPEC_PRODUCT_BAK.SHOP_ID, GOODS_SPEC_PRODUCT_BAK.GOODS_ID
@@ -213,6 +218,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 插入商品sku之前预处理器prdSpecs字段，目前用于用户填写了自己的sku
+     *
      * @param goodsSpecProducts 规格属性
      * @param goodsSpecs        规格名值
      * @param goodsId           商品id
@@ -242,7 +248,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             Map<String, Map<String, Integer>> goodsSpecsMap = goodsSpecService
                 .insertSpecAndSpecValWithPrepareResultForGoodsUpdate(goodsSpecs, goodsId);
             //插入规格项
-            insertAndSetPrdSpec(goodsSpecProducts,goodsSpecsMap,goodsId);
+            insertAndSetPrdSpec(goodsSpecProducts, goodsSpecsMap, goodsId);
         }
     }
 
@@ -267,5 +273,16 @@ public class GoodsSpecProductService extends ShopBaseService {
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
             .fetch();
         return recordResult;
+    }
+
+    /**
+     * 查询规格售罄的商品id
+     *
+     * @return goodsIds
+     */
+    public List<Integer> selectSaleOutGoodsIds() {
+        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).groupBy(GOODS_SPEC_PRODUCT.GOODS_ID)
+            .having(DSL.sum(GOODS_SPEC_PRODUCT.PRD_NUMBER).eq(BigDecimal.ZERO))
+            .fetchInto(Integer.class);
     }
 }

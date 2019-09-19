@@ -29,5 +29,6 @@ public class Sort {
     private Short first;
     private Byte type;
     private String sortDesc;
+    private Integer goodsNumber;
     private List<? extends Sort> children;
 }

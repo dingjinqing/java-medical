@@ -28,9 +28,15 @@ import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 public class AdminGoodsController extends AdminBaseController {
 
 
-    @GetMapping("/api/admin/goods/page/init")
-    public JsonResult getPageInitValue() {
-        GoodsInitialVo goodsInitialVo = shop().goods.pageInitValue();
+    @PostMapping("/api/admin/goods/page/init")
+    public JsonResult getPageInitValue(@RequestBody GoodsPageListParam param) {
+        GoodsInitialVo goodsInitialVo = shop().goods.pageInitValue(param);
+        return success(goodsInitialVo);
+    }
+
+    @GetMapping("/api/admin/goods/sortBrandLabel/list")
+    public JsonResult getSortBrandLabelList(){
+        GoodsInitialVo goodsInitialVo = shop().goods.getSortBrandLabelList();
         return success(goodsInitialVo);
     }
 

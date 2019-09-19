@@ -14,9 +14,14 @@ public class GoodsPageListParam {
 
 	
 	/**
-	 * 	出售状态默认值
+	 * 	在售状态值
 	 */
     public static final Byte IS_ON_SALE_DEFAULT=1;
+    /**
+     * 已下架状态值
+     */
+    public static final Byte NOT_ON_SALE=0;
+
     public static final String ASC="asc";
     public static final String DESC="desc";
     
@@ -47,13 +52,9 @@ public class GoodsPageListParam {
      */
     private Byte isOnSale;
     /**
-     * 用于过滤已售罄等于0的时候
+     * true表示已售罄
      */
-    private Integer goodsNumber;
-    /**
-     * 销售状态2加入仓库中
-     */
-    private Byte saleType;
+    private Boolean isSaleOut;
 
     /**
      * 排序字段
