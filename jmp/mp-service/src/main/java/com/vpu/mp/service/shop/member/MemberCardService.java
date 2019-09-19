@@ -902,7 +902,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	private Result<MemberCardRecord> selectAllMemberCard() {
 		logger.info("查询所有会员卡");
-		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD).fetch();
+		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO)).fetch();
 		return cardRecords;
 	}
 
