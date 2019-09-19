@@ -257,7 +257,7 @@ public class JsonResultMessage {
 	public static final String RETURN_CONFIG_UPDATE_FAILED = "config.return.config.update.failed";
 	public static final String PAYMENT_CONFIG_IS_NULL = "config.payment.config.is.null";
 	public static final String ORDER_PROCESS_CONFIG_IS_NULL = "config.order.process.config.is.null";
-	public static final String RETURN_CONFIG_IS_NULL = "config.return.config.is.null";
+    public static final String RETURN_CONFIG_SELECT_FAILED = "config.return.config.select.failed";
 	public static final String WXPAY_CONFIG_IS_NULL = "wxpay.config.is.null";
 	public static final String CONFIG_A_NUM_GREATER = "config.a.num.greater";
 	public static final String CONFIG_B_NUM_GREATER = "config.b.num.greater";

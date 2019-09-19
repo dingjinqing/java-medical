@@ -1,19 +1,29 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnPackageParam;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.sql.Timestamp;
+import java.util.Arrays;
+
+import static com.vpu.mp.service.shop.config.TradeService.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
- * @Author:liufei
- * @Date:2019/7/10
- * @Description:
+ * @author liufei
+ * @date 2019/7/10
  */
+@Slf4j
 @Service
-
 public class ShopReturnConfigService extends BaseShopConfigService {
 
     /**
@@ -42,6 +52,11 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     final public static String K_RETURN_SHOPPING_DAYS = "return_shopping_days";
 
     /**
+     * 商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
+     */
+    final public static String K_RETURN_PASS_DAYS = "return_pass_days";
+
+    /**
      * 是否退优惠卷
      */
     final public static String K_IS_REFUND_COUPON = "is_refund_coupon";
@@ -62,7 +77,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     final public static String K_ORDER_RETURN_GOODS_PACKAGE = "order_return_goods_package";
 
     public Byte getAutoReturn() {
-        return this.get(K_AUTO_RETURN, Byte.class, (byte)0);
+        return this.get(K_AUTO_RETURN, Byte.class, BYTE_ZERO);
     }
 
     public int setAutoReturn(Byte autoReturn) {
@@ -79,7 +94,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public Byte getReturnMoneyDays() {
-        return this.get(K_RETURN_MONEY_DAYS, Byte.class, (byte)0);
+        return this.get(K_RETURN_MONEY_DAYS, Byte.class, BYTE_ZERO);
     }
 
     public int setReturnMoneyDays(Byte returnMoneyDays) {
@@ -87,7 +102,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public Byte getReturnAddressDays() {
-        return this.get(K_RETURN_ADDRESS_DAYS, Byte.class, (byte)0);
+        return this.get(K_RETURN_ADDRESS_DAYS, Byte.class, BYTE_ZERO);
     }
 
     public int setReturnAddressDays(Byte returnAddressDays) {
@@ -95,15 +110,23 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public Byte getReturnShoppingDays() {
-        return this.get(K_RETURN_SHOPPING_DAYS, Byte.class, (byte)0);
+        return this.get(K_RETURN_SHOPPING_DAYS, Byte.class, BYTE_ZERO);
     }
 
     public int setReturnShoppingDays(Byte returnShoppingDays) {
         return returnShoppingDays !=null ? this.set(K_RETURN_SHOPPING_DAYS, returnShoppingDays,Byte.class) : -1;
     }
 
+    public Byte getReturnPassDays() {
+        return this.get(K_RETURN_PASS_DAYS, Byte.class, BYTE_ZERO);
+    }
+
+    public int setReturnPassDays(Byte returnPassDays) {
+        return returnPassDays != null ? this.set(K_RETURN_PASS_DAYS, returnPassDays, Byte.class) : -1;
+    }
+
     public Byte getIsReturnCoupon() {
-        return this.get(K_IS_REFUND_COUPON, Byte.class, (byte)0);
+        return this.get(K_IS_REFUND_COUPON, Byte.class, BYTE_ZERO);
     }
 
     public int setIsReturnCoupon(Byte isReturnCoupon) {
@@ -120,7 +143,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public Byte getReturnChangeGoodsStatus() {
-        return this.get(K_RETURN_CHANGE_GOODS_STATUS, Byte.class, (byte)0);
+        return this.get(K_RETURN_CHANGE_GOODS_STATUS, Byte.class, BYTE_ZERO);
     }
 
     public int setReturnChangeGoodsStatus(Byte returnChangeGoodsStatus) {
@@ -128,28 +151,33 @@ public class ShopReturnConfigService extends BaseShopConfigService {
         return this.set(K_RETURN_CHANGE_GOODS_STATUS, returnChangeGoodsStatus,Byte.class);
     }
 
-    public ReturnPackageParam getOrderReturnGoodsPackage() {
-        return this.getJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, ReturnPackageParam.class, null);
+    public GoodsPackageParam getOrderReturnGoodsPackage() {
+        return this.getJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, GoodsPackageParam.class, null);
     }
 
-    public int setOrderReturnGoodsPackage(ReturnPackageParam orderReturnGoodsPackage) {
+    public int setOrderReturnGoodsPackage(GoodsPackageParam orderReturnGoodsPackage) {
         return orderReturnGoodsPackage !=null ? this.setJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, orderReturnGoodsPackage) : -1;
     }
 
-    public RetrunConfigParam getRetrunConfigParam() {
-        RetrunConfigParam retrunConfigParam = new RetrunConfigParam();
-        this.transaction(()->{
-            retrunConfigParam.setAutoReturn(this.getAutoReturn());
-            retrunConfigParam.setAutoReturnTime(this.getAutoReturnTime());
-            retrunConfigParam.setBusinessAddress(this.getBusinessAddress());
-            retrunConfigParam.setIsReturnCoupon(this.getIsReturnCoupon());
-            retrunConfigParam.setOrderReturnGoodsPackage(this.getOrderReturnGoodsPackage());
-            retrunConfigParam.setReturnAddressDays(this.getReturnAddressDays());
-            retrunConfigParam.setReturnChangeGoodsStatus(this.getReturnChangeGoodsStatus());
-            retrunConfigParam.setReturnMoneyDays(this.getReturnMoneyDays());
-            retrunConfigParam.setReturnShoppingDays(this.getReturnShoppingDays());
-        });
-        return retrunConfigParam;
+    /**
+     * 获取退换货配置项信息
+     *
+     * @return 退换货配置项信息
+     * {@value com.vpu.mp.service.shop.config.TradeService#FIELD_CLAZZ}
+     */
+    public ReturnConfigParam getReturnConfigParam() {
+        ReturnConfigParam param = new ReturnConfigParam();
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
+            PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+            Arrays.stream(descriptors)
+                .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
+                .forEach((e) -> selectInvoke(e, param, this));
+        } catch (IntrospectionException e) {
+            log.error("内省获取bean[{}]信息失败：{}", param, e.getMessage());
+            throw new BusinessException(JsonResultCode.RETURN_CONFIG_SELECT_FAILED);
+        }
+        return param;
     }
 
     /**
@@ -161,26 +189,18 @@ public class ShopReturnConfigService extends BaseShopConfigService {
 
     /**
      * 更新退换货配置
-     *
+     * {@value com.vpu.mp.service.shop.config.TradeService#FIELD_CLAZZ}
      */
-    public Boolean updateReturnConfig(RetrunConfigParam retrunConfigParam) {
+    public void updateReturnConfig(ReturnConfigParam param) {
         try {
-            db().transaction(configuration -> {
-                this.setAutoReturn(retrunConfigParam.getAutoReturn());
-                this.setAutoReturnTime(retrunConfigParam.getAutoReturnTime());
-                this.setReturnMoneyDays(retrunConfigParam.getReturnMoneyDays());
-                this.setReturnAddressDays(retrunConfigParam.getReturnAddressDays());
-                this.setReturnShoppingDays(retrunConfigParam.getReturnShoppingDays());
-                this.setIsReturnCoupon(retrunConfigParam.getIsReturnCoupon());
-                this.setBusinessAddress(retrunConfigParam.getBusinessAddress());
-                this.setReturnChangeGoodsStatus(retrunConfigParam.getReturnChangeGoodsStatus());
-                this.setOrderReturnGoodsPackage(retrunConfigParam.getOrderReturnGoodsPackage());
-            });
+            BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
+            PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+            Arrays.stream(descriptors)
+                .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
+                .forEach((e) -> updateInvoke(e, param, this));
+        } catch (IntrospectionException e) {
+            log.error("内省获取bean[{}]信息失败：{}", param, e.getMessage());
+            throw new BusinessException(JsonResultCode.RETURN_CONFIG_UPDATE_FAILED);
         }
-        catch(RuntimeException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 }

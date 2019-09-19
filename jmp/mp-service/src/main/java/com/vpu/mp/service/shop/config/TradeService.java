@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
@@ -134,7 +135,7 @@ public class TradeService extends BaseShopConfigService {
      * 选择下单需要填写必填信息的商品，json格式如下
      * {"add_goods":"","add_cate":"","add_sort":"","add_label":"","add_brand":""}
      */
-    final public static String K_ORDER_REQUEIRE_GOODS_PACKAGE = "order_require_goods_package";
+    final public static String K_ORDER_REQUIRE_GOODS_PACKAGE = "order_require_goods_package";
 
     /**
      * 微信物流助手
@@ -144,7 +145,7 @@ public class TradeService extends BaseShopConfigService {
      * 开关打开，已发货商品物流信息将展示在小程序前端订单页面，用户可直接查看物流信息。
      * 开关关闭，用户在小程序端查看物流信息时将自动跳转至“快递100”小程序。
      */
-    final public static String K_SHIPPING_EXPRESSS = "shipping_express";
+    final public static String K_SHIPPING_EXPRESS = "shipping_express";
     /**
      * 发货地址，json格式如下：
      * {"province_code":"610000","city_code":"610100","district_code":"610116","address":"西直门"}
@@ -574,8 +575,8 @@ public class TradeService extends BaseShopConfigService {
      *
      * @return the order requeire goods package
      */
-    public String getOrderRequeireGoodsPackage() {
-        return this.get(K_ORDER_REQUEIRE_GOODS_PACKAGE, String.class, "");
+    public GoodsPackageParam getOrderRequireGoodsPackage() {
+        return this.get(K_ORDER_REQUIRE_GOODS_PACKAGE, GoodsPackageParam.class, null);
     }
 
     /**
@@ -584,29 +585,29 @@ public class TradeService extends BaseShopConfigService {
      * @param orderRequireGoodsPackage the order require goods package
      * @return the order requeire goods package
      */
-    public int setOrderRequeireGoodsPackage(String orderRequireGoodsPackage) {
+    public int setOrderRequireGoodsPackage(GoodsPackageParam orderRequireGoodsPackage) {
         assert (orderRequireGoodsPackage != null );
-        return this.set(K_ORDER_REQUEIRE_GOODS_PACKAGE, orderRequireGoodsPackage, String.class);
+        return this.set(K_ORDER_REQUIRE_GOODS_PACKAGE, orderRequireGoodsPackage, GoodsPackageParam.class);
     }
 
     /**
-     * Gets shipping expresss.
+     * Gets shipping express.
      *
-     * @return the shipping expresss
+     * @return the shipping express
      */
-    public Byte getShippingExpresss() {
-        return this.get(K_SHIPPING_EXPRESSS, Byte.class, BYTE_ZERO);
+    public Byte getShippingExpress() {
+        return this.get(K_SHIPPING_EXPRESS, Byte.class, BYTE_ZERO);
     }
 
     /**
-     * Sets shipping expresss.
+     * Sets shipping express.
      *
      * @param shippingExpress the shipping express
-     * @return the shipping expresss
+     * @return the shipping express
      */
-    public int setShippingExpresss(Byte shippingExpress) {
+    public int setShippingExpress(Byte shippingExpress) {
         assert (shippingExpress == (byte) 0 || shippingExpress == (byte) 1);
-        return this.set(K_SHIPPING_EXPRESSS, shippingExpress, Byte.class);
+        return this.set(K_SHIPPING_EXPRESS, shippingExpress, Byte.class);
     }
 
     /**
@@ -700,39 +701,6 @@ public class TradeService extends BaseShopConfigService {
      */
     public static final String FIELD_CLAZZ = "class";
 
-    private void updateInvoke(PropertyDescriptor descriptor, OrderProcessParam param){
-        String fieldName = descriptor.getName();
-        Object conf = null;
-        try {
-            conf = descriptor.getReadMethod().invoke(param);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            log.error("内省获取field[{}]字段属性值：{}",fieldName,e.getMessage());
-        }
-        if (conf != null) {
-            Method method = null;
-            String methodName = getMethodName(fieldName,"set");
-            try {
-                //根据方法名称和方法所需参数类型获取Method实例对象
-                method = this.getClass().getMethod(methodName, descriptor.getPropertyType());
-            } catch (NoSuchMethodException e) {
-                log.error("field[{}]字段对应的setXXX方法[{}]不存在：{}",fieldName,methodName,e.getMessage());
-                e.printStackTrace();
-            }
-            Assert.notNull(method,"Method方法实例获取为空");
-            try {
-                method.invoke(this,conf);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                log.error("field[{}]字段对应的setXXX方法执行失败：{}",fieldName,e.getMessage());
-            }
-        }
-    }
-    private String getMethodName(String fieldName,String args){
-        StringBuilder stringBuilder = new StringBuilder(args);
-        char[] temp = fieldName.toCharArray();
-        temp[0] -= 32;
-        return stringBuilder.append(temp).toString();
-    }
-
     /**
      * 更新订单流程配置
      *
@@ -745,72 +713,59 @@ public class TradeService extends BaseShopConfigService {
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
             Arrays.stream(descriptors)
                 .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
-                .forEach((e) -> updateInvoke(e, param));
+                .forEach((e) -> updateInvoke(e, param, this));
         } catch (IntrospectionException e) {
             log.error("内省获取bean[{}]信息失败：{}",param,e.getMessage());
         }
+    }
 
+    /**
+     * b2c_shop_cfg配置表配置项通用更新
+     * 根据属性名称自动执行置取方法，避免了手动书写每个属性的置取方法
+     *
+     * @param descriptor 属性描述
+     * @param param      更新入参对象实例
+     * @param service    执行更新操作的service类实例
+     */
+    public static void updateInvoke(PropertyDescriptor descriptor, Object param, Object service) {
+        String fieldName = descriptor.getName();
+        Object conf = null;
+        try {
+            conf = descriptor.getReadMethod().invoke(param);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            log.error("内省获取field[{}]字段属性值：{}", fieldName, e.getMessage());
+        }
+        if (conf != null) {
+            Method method = null;
+            String methodName = getMethodName(fieldName, "set");
+            try {
+                //根据方法名称和方法所需参数类型获取Method实例对象
+                method = service.getClass().getMethod(methodName, descriptor.getPropertyType());
+            } catch (NoSuchMethodException e) {
+                log.error("field[{}]字段对应的setXXX方法[{}]不存在：{}", fieldName, methodName, e.getMessage());
+                e.printStackTrace();
+            }
+            Assert.notNull(method, "Method方法实例获取为空");
+            try {
+                method.invoke(service, conf);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.error("field[{}]字段对应的setXXX方法执行失败：{}", fieldName, e.getMessage());
+            }
+        }
+    }
 
-        /*if(param.getExpress()!=null) {
-            this.setExpress(param.getExpress());
-        }
-        if(param.getFetch()!=null) {
-            this.setFetch(param.getFetch());
-        }
-        if(param.getCancelTime()!=null) {
-            this.setCancelTime(param.getCancelTime());
-        }
-        if(param.getDrawbackDays()!=null) {
-            this.setDrawbackDays(param.getDrawbackDays());
-        }
-        if(param.getOrderTimeoutDays()!=null) {
-            this.setOrderTimeoutDays(param.getOrderTimeoutDays());
-        }
-        if(param.getExtendReceiveGoods()!=null) {
-            this.setExtendReceiveGoods(param.getExtendReceiveGoods());
-        }
-        if(param.getOrderTimeoutDays()!=null) {
-            this.setExtendReceiveDays(param.getOrderTimeoutDays());
-        }
-        if(param.getInvoice()!=null) {
-            this.setInvoice(param.getInvoice());
-        }
-        if(param.getServiceTerms()!=null) {
-            this.setServiceTerms(param.getServiceTerms());
-        }
-        if(param.getServiceName()!=null) {
-            this.setServiceName(param.getServiceName());
-        }
-        if(param.getServiceChoose()!=null) {
-            this.setServiceChoose(param.getServiceChoose());
-        }
-        if(param.getOrderRealName()!=null) {
-            this.setOrderRealName(param.getOrderRealName());
-        }
-        if(param.getOrderCid()!=null) {
-            this.setOrderCid(param.getOrderCid());
-        }
-        if(param.getConsigneeRealName()!=null) {
-            this.setConsigneeRealName(param.getConsigneeRealName());
-        }
-        if(param.getConsigneeCid()!=null) {
-            this.setConsigneeCid(param.getConsigneeCid());
-        }
-        if(param.getCustom()!=null) {
-            this.setCustom(param.getCustom());
-        }
-        if(param.getCustomTitle()!=null) {
-            this.setCustomTitle(param.getCustomTitle());
-        }
-        if(param.getOrderRequireGoodsPackage()!=null) {
-            this.setOrderRequeireGoodsPackage(param.getOrderRequireGoodsPackage());
-        }
-        if(param.getShippingExpress()!=null) {
-            this.setShippingExpresss(param.getShippingExpress());
-        }
-        if(param.getShopAddress()!=null) {
-            this.setShopAddress(param.getShopAddress());
-        }*/
+    /**
+     * 根据字段名获取置取方法名称
+     *
+     * @param fieldName 字段名
+     * @param args      参数决定得到的是set方法还是get方法
+     * @return 置取方法名称
+     */
+    private static String getMethodName(String fieldName, String args) {
+        StringBuilder stringBuilder = new StringBuilder(args);
+        char[] temp = fieldName.toCharArray();
+        temp[0] -= 32;
+        return stringBuilder.append(temp).toString();
     }
 
     /**
@@ -821,46 +776,32 @@ public class TradeService extends BaseShopConfigService {
      */
     public OrderProcessParam getOrderProcessConfig() {
         OrderProcessParam param = new OrderProcessParam();
-
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
             Arrays.stream(descriptors)
                 .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
-                .forEach((e) -> updateInvoke(e, param));
+                .forEach((e) -> selectInvoke(e, param, this));
         } catch (IntrospectionException e) {
             log.error("内省获取bean[{}]信息失败：{}",param,e.getMessage());
         }
-
-        /*param.setExpress(this.getExpress());
-        param.setFetch(this.getFetch());
-        param.setDrawbackDays(this.getDrawbackDays());
-        param.setOrderTimeoutDays(this.getOrderTimeoutDays());
-        param.setCancelTime(this.getOrderTimeoutDays());
-        param.setConsigneeCid(this.getConsigneeCid());
-        param.setConsigneeRealName(this.getConsigneeRealName());
-        param.setCustom(this.getCustom());
-        param.setCustomTitle(this.getCustomTitle());
-        param.setExtendReceiveDays(this.getExtendReceiveDays());
-        param.setExtendReceiveGoods(this.getExtendReceiveGoods());
-        param.setInvoice(this.getInvoice());
-        param.setOrderCid(this.getOrderCid());
-        param.setOrderRealName(this.getOrderRealName());
-        param.setOrderRequireGoodsPackage(this.getOrderRequeireGoodsPackage());
-        param.setServiceChoose(this.getServiceChoose());
-        param.setServiceName(this.getServiceName());
-        param.setServiceTerms(this.getServiceTerms());
-        param.setShippingExpress(this.getShippingExpresss());
-        param.setShopAddress(this.getShopAddress());*/
         return param;
     }
-    private void selectInvoke(PropertyDescriptor descriptor, OrderProcessParam param){
-        String fieldName = descriptor.getName();
 
+    /**
+     * b2c_shop_cfg配置表配置项查询
+     * 根据属性名称自动执行置取方法，避免了手动书写每个属性的置取方法
+     *
+     * @param descriptor 属性描述
+     * @param param      更新入参对象实例
+     * @param service    执行查询操作的service类实例
+     */
+    public static void selectInvoke(PropertyDescriptor descriptor, Object param, Object service){
+        String fieldName = descriptor.getName();
         Method method = null;
-        String methodName = getMethodName(fieldName,"get");
+        String methodName = getMethodName(fieldName, "get");
         try {
-            method = this.getClass().getMethod(methodName);
+            method = service.getClass().getMethod(methodName);
         } catch (NoSuchMethodException e) {
             log.error("field[{}]字段对应的getXXX方法[{}]不存在：{}",fieldName,methodName,e.getMessage());
             e.printStackTrace();
@@ -868,7 +809,7 @@ public class TradeService extends BaseShopConfigService {
         Assert.notNull(method,"Method方法实例获取为空");
         Object conf = null;
         try {
-            conf = method.invoke(this);
+            conf = method.invoke(service);
         } catch (IllegalAccessException | InvocationTargetException e) {
             log.error("field[{}]字段对应的getXXX方法执行失败：{}",fieldName,e.getMessage());
         }

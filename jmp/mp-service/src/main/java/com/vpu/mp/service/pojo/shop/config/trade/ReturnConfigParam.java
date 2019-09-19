@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * @date 2019/7/10
  */
 @Data
-public class RetrunConfigParam {
+public class ReturnConfigParam {
     @JsonProperty(value = "auto_return")
     public Byte autoReturn;
     @JsonProperty(value = "auto_return_time")
@@ -21,6 +21,8 @@ public class RetrunConfigParam {
     public Byte returnAddressDays;
     @JsonProperty(value = "return_shopping_days")
     public Byte returnShoppingDays;
+    @JsonProperty(value = "return_pass_days")
+    public Byte returnPassDays;
     @JsonProperty(value = "is_refund_coupon")
     public Byte isReturnCoupon;
     @JsonProperty(value = "business_address")
@@ -28,8 +30,8 @@ public class RetrunConfigParam {
     @JsonProperty(value = "return_change_goods_status")
     public Byte returnChangeGoodsStatus;
     @JsonProperty(value = "order_return_goods_package")
-    public ReturnPackageParam orderReturnGoodsPackage;
-    
-    
-    
+    public GoodsPackageParam orderReturnGoodsPackage;
+
+
+
 }

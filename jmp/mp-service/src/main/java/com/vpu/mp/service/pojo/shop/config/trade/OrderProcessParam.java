@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.config.trade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 /**
@@ -101,7 +100,7 @@ public class OrderProcessParam {
      * The Order require goods package.选择下单需要填写必填信息的商品
      */
     @JsonProperty(value = "order_require_goods_package")
-    public String orderRequireGoodsPackage;
+    public GoodsPackageParam orderRequireGoodsPackage;
     /**
      * The Shipping express.微信物流助手对接配置
      */

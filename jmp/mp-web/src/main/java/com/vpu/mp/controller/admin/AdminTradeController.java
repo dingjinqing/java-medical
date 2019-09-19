@@ -100,10 +100,8 @@ public class AdminTradeController extends AdminBaseController {
         WxpayConfigParam wxpayConfigParam = null;
         if (saas.shop.mp.checkAuthShopExist(wxpaySearchParam.getAppId())) {
             wxpayConfigParam = saas.shop.mp.getWxpayConfig(wxpaySearchParam);
-            return success(wxpayConfigParam);
-        } else {
-            return success(wxpayConfigParam);
         }
+        return success(wxpayConfigParam);
     }
 
     /**
@@ -129,11 +127,12 @@ public class AdminTradeController extends AdminBaseController {
     /**
      * 退换货配置更新
      *
-     * @param retrunConfigParam 退换货配置型信息
+     * @param returnConfigParam 退换货配置型信息
      */
     @PostMapping("/api/admin/config/trade/returnConfig")
-    public JsonResult returnConfig(@RequestBody @Validated RetrunConfigParam retrunConfigParam) {
-        return shop().config.returnConfigService.updateReturnConfig(retrunConfigParam) ? success() : fail(JsonResultMessage.RETURN_CONFIG_UPDATE_FAILED);
+    public JsonResult returnConfig(@RequestBody @Validated ReturnConfigParam returnConfigParam) {
+        shop().config.returnConfigService.updateReturnConfig(returnConfigParam);
+        return success();
     }
 
     /**
@@ -141,8 +140,7 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/getReturnConfig")
     public JsonResult getReturnConfig() {
-        RetrunConfigParam param = shop().config.returnConfigService.getRetrunConfigParam();
-        return param != null ? success(param) : fail(JsonResultMessage.RETURN_CONFIG_IS_NULL);
+        return success(shop().config.returnConfigService.getReturnConfigParam());
     }
 
     /**
