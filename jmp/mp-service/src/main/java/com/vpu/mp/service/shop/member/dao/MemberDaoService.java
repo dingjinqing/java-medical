@@ -352,7 +352,7 @@ public class MemberDaoService extends ShopBaseService {
 													.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 													.leftJoin(USER).on(USER_CARD.USER_ID.eq(USER.USER_ID));
 		
-		 return select.fetch();
+		 return select.where(USER_CARD.USER_ID.equal(userId)).fetch();
 			
 	}
 	
