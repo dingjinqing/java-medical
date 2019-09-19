@@ -15,9 +15,10 @@ import {
 import {
   cn as versionList
 } from './views/versionList'
+
 import {
   cn as router
-} from './views/router'
+} from './views/admin_new/cn/routerCn'
 import {
   cn as membershipIntroduction
 } from './views/membershipIntroduction'
