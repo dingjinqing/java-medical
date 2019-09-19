@@ -16,6 +16,7 @@ export function pageCustomApi (data) {
     url: '/api/admin/decorate/page/custom',
     method: 'post',
     data
+
   })
 }
 // 通用弹窗选择链接-添加网页跳转

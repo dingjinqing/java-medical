@@ -185,10 +185,7 @@ export default {
   methods: {
     // 获取数据
     fetchData () {
-      pageCustomApi({
-        'currentPage': 1,
-        'pageName': ''
-      }).then(res => { console.log(res) }).catch(err => console.log(err))
+      pageCustomApi({}).then(res => { console.log(res) }).catch(err => console.log(err))
     },
     ...mapActions(['choisePagePath']),
     // 行选中高亮

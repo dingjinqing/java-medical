@@ -152,6 +152,15 @@ export function delDistributor (data) {
   })
 }
 
+// 分销员分组添加分销员
+export function addDistributor (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/add',
+    method: 'post',
+    data: data
+  })
+}
+
 // 佣金统计列表
 export function brokerageList (data) {
   return service({

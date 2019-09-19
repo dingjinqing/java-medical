@@ -104,7 +104,7 @@
             <div class="opt">
               <span @click="edit(scope.row.id)">编辑</span>
               <span @click="del(scope.row.id)">删除</span>
-              <span @click="addDistributor">添加分销员</span>
+              <span @click="addDistributor(scope.row.id)">添加分销员</span>
             </div>
           </template>
         </el-table-column>
@@ -274,7 +274,11 @@
 </template>
 
 <script>
-import { distributionGroup, distributionGroupDel, distributionGroupAdd, distributionGroupEdit, distributionGroupSave, distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+import {
+  distributionGroup, distributionGroupDel, distributionGroupAdd,
+  distributionGroupEdit, distributionGroupSave, distributorList,
+  distributorLevelList, distributorGroupList, addDistributor
+} from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -300,7 +304,13 @@ export default {
       id: '',
       allChecked: false,
       allCheckFlag: false,
-      goodsIdsArr: []
+      goodsIdsArr: [],
+      hasCheck: '',
+      addData: {
+        userIds: [],
+        groupId: ''
+      }
+
     }
   },
   created () {
@@ -386,7 +396,6 @@ export default {
       if (this.opt === 0) {
         distributionGroupAdd(this.param).then(res => {
           if (res.error === 0) {
-            console.log(res)
             this.$message({
               type: 'success',
               message: '添加成功!'
@@ -407,9 +416,9 @@ export default {
       }
       this.groupList()
     },
+    // 编辑分组
     edit (id) {
       distributionGroupEdit(id).then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.param.groupName = res.content.groupName
           this.id = res.content.id
@@ -418,11 +427,11 @@ export default {
       this.dialogVisible = true
       this.opt = 1
     },
-    addDistributor () {
-      console.log(1111)
+    // 添加分销员
+    addDistributor (id) {
+      this.addData.groupId = id
       this.centerDialogVisible = true
       distributorGroupList().then(res => {
-        console.log(res)
         this.groupNameList = res.content
       })
 
@@ -443,6 +452,7 @@ export default {
 
         console.log(res)
       })
+      console.log(this.hasCheck)
     },
     // 表格对应行选中高亮
     handleClick () {
@@ -453,18 +463,14 @@ export default {
       let hasCheck = this.distributorList.filter((item, index) => {
         return item.ischecked === true
       })
-      console.log(noCheck)
+      this.hasCheck = hasCheck
       if (!noCheck.length) {
         this.allChecked = true
       } else {
-        console.log(1)
         this.allCheckFlag = true
         this.allChecked = false
       }
-      console.log(this.allChecked)
       this.$forceUpdate()
-      console.log(noCheck)
-      console.log(hasCheck)
     },
     // 全选本页 - 全部checkbox选中
     handleAllcheck () {
@@ -474,6 +480,19 @@ export default {
       this.centerDialogVisible = false
     },
     addConfirm () {
+      this.hasCheck.map((item, index) => {
+        this.addData.userIds.push(item.userId)
+      })
+      addDistributor(this.addData).then(res => {
+        if (res.error === 0) {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+          this.groupList()
+        }
+      })
+
       this.centerDialogVisible = false
     }
   }
