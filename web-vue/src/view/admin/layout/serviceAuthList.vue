@@ -64,10 +64,9 @@
             >
             </el-table-column>
             <el-table-column
-              prop="isAuthOk"
+              prop="isAuthOkTrans"
               :label="$t('serviceAuth.isAuthOk')"
               width="150"
-              :formatter="formatter"
             >
             </el-table-column>
             <el-table-column
@@ -104,25 +103,32 @@
       </div>
     </div>
     <!--设置页面分类弹窗-->
-    <div class="pageDialog">
+    <div class="pageDialogMy">
       <el-dialog
         :title="$t('serviceAuth.payManage')"
         :visible.sync="dialogFormVisible"
+        width="680px"
       >
         <el-form
           :model="form"
-          label-width="80px"
-          :label-position="left"
+          label-width="300px"
+          style="text-align: center;"
+          :label-position="labelPosition"
         >
           <el-form-item :label="$t('serviceAuth.payStoreName')">
             <el-input
+              class="inputClass"
               v-model="form.payMchId"
               autocomplete="off"
             ></el-input>
           </el-form-item>
 
-          <el-form-item :label="$t('serviceAuth.payKey')">
+          <el-form-item
+            style="background-color: #f1f1f1;"
+            :label="$t('serviceAuth.payKey')"
+          >
             <el-input
+              class="inputClass"
               v-model="form.payKey"
               autocomplete="off"
             ></el-input>
@@ -130,6 +136,7 @@
 
           <el-form-item :label="$t('serviceAuth.payCertContent')">
             <el-input
+              class="textareaClass"
               type="textarea"
               :rows="4"
               v-model="form.payCertContent"
@@ -137,8 +144,12 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item :label="$t('serviceAuth.payKeyContent')">
+          <el-form-item
+            style="background-color: #f1f1f1;"
+            :label="$t('serviceAuth.payKeyContent')"
+          >
             <el-input
+              class="textareaClass"
               type="textarea"
               :rows="4"
               v-model="form.payKeyContent"
@@ -148,7 +159,7 @@
         </el-form>
         <div
           slot="footer"
-          class="dialog-footer"
+          class="dialog-footer changeMa"
         >
           <el-button @click="dialogFormVisible = false">{{$t('serviceAuth.cancel')}}</el-button>
           <el-button
@@ -168,7 +179,7 @@ export default {
     return {
       iconUrl: this.$imageHost + '/image/admin/system_icon.png',
       restaurants: [],
-
+      labelPosition: 'left',
       tableData: [
       ],
       currentPage: 1,
@@ -186,8 +197,14 @@ export default {
       }
     }
   },
+  watch: {
+    lang () {
+      this.formatter(this.tableData)
+    }
+  },
   mounted () {
     // 初始化数据
+    this.langDefault()
     this.defaluteData()
   },
   methods: {
@@ -203,6 +220,7 @@ export default {
       }
       serviceAuthListRequest(params).then((res) => {
         if (res.error === 0) {
+          this.formatter(res.content.dataList)
           this.tableData = res.content.dataList
           this.totle = res.content.page.totalRows
           this.currentPage = res.content.page.currentPage
@@ -241,16 +259,20 @@ export default {
         }
       })
     },
-    formatter (row, column) {
-      switch (row.isAuthOk) {
-        case 0:
-          row.isAuthOk = '已取消'
-          break
-        case 1:
-          row.isAuthOk = '已授权'
-          break
+    formatter (data) {
+      for (var i = 0; i < data.length; i++) {
+        switch (data[i].isAuthOk) {
+          case 0:
+            data[i].isAuthOkTrans = this.$t('serviceAuth.haveCancle')
+            break
+          case 1:
+            data[i].isAuthOkTrans = this.$t('serviceAuth.haveAuth')
+            break
+        }
       }
-      return row.isAuthOk
+    },
+    handleCurrentChange () {
+      this.defaultData()
     }
   }
 }
@@ -275,13 +297,13 @@ export default {
   .tipsDiv {
     position: relative;
     cursor: pointer;
-    height: 30px;
+    height: auto;
     font-size: 14px;
     line-height: 30px;
-    text-indent: 2em;
     color: #999;
     padding: 0 12px;
     margin-bottom: 10px;
+    margin-left: 30px;
     &:hover .tipsHidden {
       display: block;
     }
@@ -354,6 +376,32 @@ export default {
       align-items: center;
     }
   }
+}
+.inputClass {
+  width: 270px;
+  height: 25px;
+  margin-left: -160px;
+}
+.textareaClass {
+  width: 270px;
+  height: 100px;
+  margin-left: -160px;
+}
+.pageDialogMy {
+  text-align: center;
+  /deep/ .el-form-item {
+    margin-bottom: 15px;
+  }
+  /deep/ .el-form--label-left .el-form-item__label {
+    text-align: center;
+  }
+  /deep/ .el-dialog__header {
+    background-color: #f1f1f1;
+    margin-bottom: -18px;
+  }
+}
+.changeMa {
+  margin-top: -36px;
 }
 </style>
 <style>

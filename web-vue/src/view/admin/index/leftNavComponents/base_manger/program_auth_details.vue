@@ -26,23 +26,106 @@
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.Reauthorization')}}
             </el-button>
           </li>
-          <li class="details-item">
+
+          <li
+            class="details-item"
+            v-show="isEmpty(this.data.linkOfficialAppId)"
+          >
+            <span class="item-label">
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.chooseOffice')}}
+            </span>
+            <span class="item-title ml-20">
+              <el-select
+                size="mini"
+                style="width: 140px;"
+                v-model="appIdValue"
+                :placeholder="$t('ShopConfiguration.SmallProgramAuthorizationPage.please')"
+              >
+                <el-option
+                  v-for="(item, index) in this.officialList"
+                  :key="index"
+                  :value="item.value"
+                  :label="item.label"
+                >
+                </el-option>
+
+              </el-select>
+            </span>
+            <span class="info-text ml-20">
+              <el-button
+                type="text"
+                @click="bind()"
+              > {{$t('ShopConfiguration.SmallProgramAuthorizationPage.sure')}}</el-button>
+            </span>
+            <span
+              class="ml-20"
+              v-if="isEmpty(this.data.principalName)"
+            >
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.firest')}}<el-button
+                size="mini"
+                type="text"
+                class="ml-20"
+                style="font-size: 14px;margin-left: 0px"
+                @click="refAuthSubmit()"
+              >
+                {{$t('ShopConfiguration.SmallProgramAuthorizationPage.Reauthorization')}}
+              </el-button>{{$t('ShopConfiguration.SmallProgramAuthorizationPage.firest2')}}
+            </span>
+
+            <span
+              class="ml-20"
+              v-if="this.official"
+            >
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.noOffice')}}
+              <router-link
+                target="_blank"
+                style="text-decoration:none;color:#66b1ff"
+                :to="{path:'/admin/home/shopMain',query:{ change_components: '3'}}"
+              > {{$t('ShopConfiguration.SmallProgramAuthorizationPage.noOffice2')}}</router-link>
+            </span>
+
+          </li>
+          <li
+            class="auth_p"
+            v-show="isEmpty(this.data.linkOfficialAppId)"
+          >
+            <span>
+              <p>{{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip7')}}</p>
+            </span>
+          </li>
+
+          <li
+            class="details-item"
+            v-if="(!isEmpty(this.data.linkOfficialAppId))&&this.isAuthOk2===1"
+          >
             <span class="item-label">
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.BindedPublicNumber')}}:
             </span>
             <span class="item-title ml-20">
-              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.MicroshopEnterpriseService')}}
+              {{this.nickName}}
+            </span>
+          </li>
+
+          <li
+            class="details-item"
+            v-if="(!isEmpty(this.data.linkOfficialAppId))&&this.isAuthOk2!==1"
+          >
+            <span class="item-label">
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.BindedPublicNumber')}}:
+            </span>
+            <span class="item-title ml-20">
+              {{this.nickName}}
             </span>
             <span class="info-text ml-20">
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip1')}}
             </span>
           </li>
-          <li class="details-item">
+          <li class="details-item moreHight">
             <span class="item-label">
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.SmallProgramVersion')}}:
             </span>
             <span class="item-title ml-20">
-              {{data.bindUserVersion}}
+              {{this.data.bindUserVersion}}
             </span>
             <span
               class="info-text ml-20"
@@ -56,15 +139,39 @@
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.AuditStatus')}}:
             </span>
             <span class="item-title ml-20">
-              {{data.auditState}}
+              {{this.data.auditStateTrans}}
+            </span>
+            <span
+              class="item-title ml-20"
+              v-if="this.reUpload"
+            >
+              <el-button
+                type="text"
+                @click="uploadAudit()"
+              > {{$t('ShopConfiguration.SmallProgramAuthorizationPage.uploadAudit')}}</el-button>
             </span>
           </li>
+          <li
+            class="details-item"
+            v-if="this.auditState===3"
+          >
+            <span class="item-label">
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.failReason')}}
+            </span>
+            <span
+              class="item-title ml-20"
+              style="color: red;"
+            >
+              {{this.data.auditFailReason}}
+            </span>
+          </li>
+
           <li class="details-item">
             <span class="item-label">
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.AuthorizationStatus')}}:
             </span>
             <span class="item-title ml-20">
-              {{data.isAuthOk}}
+              {{this.data.isAuthOkTrans}}
             </span>
           </li>
           <li class="details-item img-row">
@@ -93,7 +200,7 @@
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.WechatAuthentication')}}:
             </span>
             <span class="item-title ml-20">
-              {{data.verifyTypeInfo}}
+              {{this.data.verifyTypeInfoTrans}}
             </span>
           </li>
           <li class="details-item">
@@ -101,7 +208,7 @@
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.OriginalID')}}:
             </span>
             <span class="item-title ml-20">
-              {{data.userName}}
+              {{this.data.userName}}
             </span>
           </li>
           <li class="details-item">
@@ -109,7 +216,7 @@
               AppID:
             </span>
             <span class="item-title ml-20">
-              {{data.appId}}
+              {{this.data.appId}}
             </span>
           </li>
         </ul>
@@ -260,7 +367,7 @@
 </template>
 
 <script>
-import { checkGoodThingRequest, setGoodThingRequest, grantAuthorizationRequest } from '@/api/admin/basicConfiguration/shopConfig'
+import { checkGoodThingRequest, setGoodThingRequest, grantAuthorizationRequest, bindOfficial, queryAuthdritionRequest, publishSetRequest } from '@/api/admin/basicConfiguration/shopConfig'
 export default {
   name: 'program_auth_details',
   data () {
@@ -275,18 +382,46 @@ export default {
       isShowGoodsDetails: false, // 是否显示商品详情页缩略图,
       data: {},
       hrefDataOne: null,
-      centerDialogVisible: false
+      centerDialogVisible: false,
+      appIdValue: null,
+      isAuthOk2: null,
+      nickName: null,
+      reUpload: false,
+      auditState1: [0, 3],
+      auditState2: [0, 2, 3],
+      auditState: null,
+      official: false,
+      officialList: [],
+      data2: {},
+      length: null,
+      length2: null
+    }
+  },
+  watch: {
+    lang () {
+      if (!this.isEmpty(this.data2.appId)) {
+        console.log(333333 + this.lang)
+        console.log(this.data2)
+        this.handleData(this.data2)
+        this.addOfficialList()
+      }
+      this.changeCss()
     }
   },
   mounted () {
-    // 初始化数据
+    this.langDefault()
     this.defaultData()
+    this.changeCss()
+    // 初始化数据
   },
   methods: {
     defaultData () {
       this.$http.$on('handleToAuthData', res => {
-        console.log(res)
-        this.handleData(res)
+        this.data2 = res
+        if (!this.isEmpty(this.data2.appId)) {
+          this.handleData(this.data2)
+          this.addOfficialList()
+        }
       })
       checkGoodThingRequest().then(res => {
         if (res.error === 0) {
@@ -309,47 +444,71 @@ export default {
             case '1,2':
               this.isShowDetails = true
               this.isShowGoodsDetails = true
+              break
           }
         }
-        console.log(res)
       })
     },
     // 初始化数据处理
     handleData (res) {
+      if (res.isAuthOk === 1 && (((res.currentTemplateId === res.bindTemplateId) && this.auditState1.includes(res.auditState)) || ((res.currentTemplateId !== res.bindTemplateId) && this.auditState2.includes(res.auditState)))) {
+        this.reUpload = true
+      }
+      this.auditState = res.auditState
+      console.log('handleData', this.lang)
+      console.log('前', res.auditStateTrans)
       switch (res.auditState) {
         case 0:
-          res.auditState = '未提交'
+          res.auditStateTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.auditState0')
           break
         case 1:
-          res.auditState = '审核中'
+          res.auditStateTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.auditState1')
           break
         case 2:
-          res.auditState = '审核中'
+          res.auditStateTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.auditState2')
           break
         case 3:
-          res.auditState = '审核失败'
+          res.auditStateTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.auditState3')
           break
+      }
+      console.log('后', res.auditStateTrans)
+      if (res.officialAccount === null) {
+        this.isAuthOk2 = null
+        this.nickName = null
+      } else {
+        this.isAuthOk2 = res.officialAccount.isAuthOk
+        this.nickName = res.officialAccount.nickName
+      }
+      if (this.isEmpty(res.officialList)) {
+        this.official = true
       }
       switch (res.isAuthOk) {
         case 0:
-          res.isAuthOk = '未授权'
+          res.isAuthOkTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.isAuthOk0')
           break
         case 1:
-          res.isAuthOk = '已授权'
+          res.isAuthOkTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.isAuthOk1')
+          break
       }
       switch (res.verifyTypeInfo) {
         case '-1':
-          res.verifyTypeInfo = '未认证'
+          res.verifyTypeInfoTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.verifyType1')
           break
         case '0':
-          res.verifyTypeInfo = '微信认证'
+          res.verifyTypeInfoTrans = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.verifyType0')
+          break
       }
-      if (res.isAuthOk === res.currentTemplateId) {
+      if (res.bindTemplateId === res.currentTemplateId) {
         this.bindshow = false
       } else {
         this.bindshow = true
       }
+      if (!this.isEmpty(res.auditFailReason)) {
+        res.auditFailReason = res.auditFailReason.replace(/<br>/g, '')
+      }
       this.data = res
+      console.log('真假', this.isEmpty(this.data.linkOfficialAppId))
+      console.log('吼吼吼', this.data)
     },
     handleChange (val) {
       console.log(val)
@@ -381,7 +540,7 @@ export default {
       setGoodThingRequest(obj).then(res => {
         if (res.error === 0) {
           this.$message({
-            message: '设置成功',
+            message: this.$t('ShopConfiguration.SmallProgramAuthorizationPage.success'),
             type: 'success'
           })
         }
@@ -395,7 +554,91 @@ export default {
           this.hrefDataOne = res.content
         }
       })
+    },
+    bind () {
+      if (this.isEmpty(this.appIdValue) && (this.isEmpty(this.data.linkOfficialAppId))) {
+        this.$message.error(this.$t('ShopConfiguration.SmallProgramAuthorizationPage.needOffice'))
+      }
+      bindOfficial(this.appIdValue).then((res) => {
+        if (res.error === 0) {
+          this.$message.success(res.message)
+          this.reflushData()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
+    },
+    uploadAudit () {
+      let data2 = {
+        appId: this.data.appId,
+        templateId: this.data.currentTemplateId
+      }
+      publishSetRequest(data2).then((res) => {
+        if (res.error === 0) {
+          console.log(res.content)
+          this.$message.success(res.message)
+          this.reflushData()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    reflushData () {
+      queryAuthdritionRequest().then(res => {
+        if (res.error === 170016) {
+          this.flag = false
+        } else {
+          this.flag = true
+          if (res.error === 0) {
+            if (window.location.href.split('/').pop() === 'authok') {
+              this.activeName = 'third'
+            }
+
+            this.$http.$emit('handleToAuthData', res.content)
+          }
+          console.log(res)
+        }
+      })
+    },
+    addOfficialList () {
+      let obj = this.data.officialList
+      let arr = []
+      let defaultObj = {}
+      defaultObj.value = ''
+      defaultObj.label = this.$t('ShopConfiguration.SmallProgramAuthorizationPage.please')
+      arr.push(defaultObj)
+      obj.map((item, index) => {
+        let obj = {}
+        obj.value = item.appId
+        obj.label = item.nickName
+        arr.push(obj)
+      })
+      this.officialList = arr
+    },
+    changeCss () {
+      var className = document.getElementsByClassName('item-label')
+      var className2 = document.getElementsByClassName('auth_p')
+      if (this.lang === 'en_US') {
+        this.length = '270px'
+        this.length2 = '292px'
+      } else {
+        this.length = '170px'
+        this.length2 = '192px'
+      }
+
+      className2[0].style.marginLeft = this.length2
+      for (var i = 0; i < className.length; i++) {
+        className[i].style.width = this.length
+      }
     }
+
   }
 }
 </script>
@@ -459,5 +702,14 @@ export default {
   display: block;
   width: 200px;
   height: 356px;
+}
+.auth_p {
+  color: #999;
+  margin-left: 192px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.moreHight {
+  margin-top: 10px;
 }
 </style>

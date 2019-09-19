@@ -52,7 +52,7 @@
             <el-col :span="span2">
               <div class="grid-content bg-purpleR tipsDiv">
                 <span>
-                  {{data.accountType}}
+                  {{data.accountTypeTrans}}
                 </span><a
                   class="link"
                   :href="hrefMpData"
@@ -78,7 +78,7 @@
             </el-col>
             <el-col :span="span2">
               <div class="grid-content bg-purple">
-                <span> {{data.isAuthOk}}</span>
+                <span> {{data.isAuthOkTrans}}</span>
               </div>
             </el-col>
           </el-row>
@@ -101,11 +101,16 @@ export default {
       span2: 21
     }
   },
+  watch: {
+    lang () {
+      this.defaluteData()
+    }
+  },
   mounted () {
-    // 初始化数据
-    this.defaluteData()
     // 初始化语言
     this.langDefault()
+    // 初始化数据
+    this.defaluteData()
   },
   methods: {
     defaluteData () {
@@ -131,24 +136,24 @@ export default {
     chageMessage () {
       switch (this.data.accountType) {
         case 0:
-          this.data.accountType = '订阅号'
+          this.data.accountTypeTrans = this.$t('serviceAuth.Wechat0')
           break
         case 1:
-          this.data.accountType = '微信认证订阅号'
+          this.data.accountTypeTrans = this.$t('serviceAuth.Wechat1')
           break
         case 2:
-          this.data.accountType = '服务号'
+          this.data.accountTypeTrans = this.$t('serviceAuth.Wechat2')
           break
         case 3:
-          this.data.accountType = '微信认证服务号'
+          this.data.accountTypeTrans = this.$t('serviceAuth.Wechat3')
           break
       }
       switch (this.data.isAuthOk) {
         case 0:
-          this.data.isAuthOk = '已取消'
+          this.data.isAuthOkTrans = this.$t('serviceAuth.haveCancle')
           break
         case 1:
-          this.data.isAuthOk = '已授权'
+          this.data.isAuthOkTrans = this.$t('serviceAuth.haveAuth')
           break
       }
     }
@@ -259,7 +264,8 @@ ul li {
     border: 1px solid #ccc;
     font-size: 12px;
     position: absolute;
-    margin: -80px 0 0 300px;
+    margin-top: -80px;
+    margin-left: 400px;
     display: none;
     .tipsTop {
       border-bottom: 1px solid #eee;

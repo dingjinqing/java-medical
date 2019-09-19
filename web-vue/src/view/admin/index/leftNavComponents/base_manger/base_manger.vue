@@ -39,6 +39,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     // 初始化
     this.defaultData()
   },
@@ -54,6 +55,7 @@ export default {
               console.log(11111)
               this.activeName = 'third'
             }
+            console.log(2222)
             this.$http.$emit('handleToAuthData', res.content)
           }
           console.log(res)

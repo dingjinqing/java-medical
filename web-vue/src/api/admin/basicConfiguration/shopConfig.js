@@ -32,3 +32,19 @@ export function setGoodThingRequest (data) {
     data: data
   })
 }
+//  小程序与公众号绑定
+export function bindOfficial (data) {
+  return service({
+    url: `/api/admin/public/service/bind/official/${data}`,
+    method: 'get'
+  })
+}
+
+// 小程序授权信息页面按钮统一处理接口  上传代码并提交审核
+export function publishSetRequest (data) {
+  return service({
+    url: '/api/admin/mp/publish',
+    method: 'post',
+    data: data
+  })
+}

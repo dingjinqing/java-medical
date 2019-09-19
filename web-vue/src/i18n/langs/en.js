@@ -503,7 +503,11 @@ const en = {
     tipsTop5: 'How to upgrade:',
     tipsTop6:
       'If you need to perform WeChat authentication on the public number, please log in to the "WeChat public platform -> public number setting", in the "Certification status" column, click Apply for WeChat authentication',
-    authStats: 'authorization status'
+    authStats: 'authorization status',
+    Wechat0: 'Subscription number',
+    Wechat1: 'Wechat Authentication Subscription Number',
+    Wechat2: 'Service number',
+    Wechat3: 'Wechat Certification Service Number'
   },
   router, // 路由信息
 
