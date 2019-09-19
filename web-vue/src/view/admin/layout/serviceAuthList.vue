@@ -60,6 +60,7 @@
             <el-table-column
               :label="$t('serviceAuth.mpNickName')"
               width="150"
+              align="center"
             >
               <template slot-scope="scope">
                 <div
@@ -74,6 +75,7 @@
               prop="isAuthOkTrans"
               :label="$t('serviceAuth.isAuthOk')"
               width="150"
+              align="center"
             >
             </el-table-column>
             <el-table-column
