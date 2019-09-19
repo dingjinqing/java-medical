@@ -187,3 +187,21 @@ export function goodsReturnStatisticsDetail (data) {
     data: data
   })
 }
+
+// 返利提现审核
+export function withdrawCheck (data) {
+  return service({
+    url: '/api/admin/distribution/withdraw/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查看返利提现审核详情
+export function withdrawDetail (data) {
+  return service({
+    url: `/api/admin/distribution/withdraw/detail?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}

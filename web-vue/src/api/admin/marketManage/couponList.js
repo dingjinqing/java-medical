@@ -45,15 +45,6 @@ export function couponGetDetail (data) {
   })
 }
 
-// 编辑优惠券获取单条数据
-export function editCoupon (data) {
-  return service({
-    url: `/api/admin/coupon/update/info?couponId=${data}`,
-    method: 'get',
-    data: data
-  })
-}
-
 // 编辑获取单条记录信息
 export function updateCoupon (data) {
   return service({

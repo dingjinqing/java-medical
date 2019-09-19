@@ -255,6 +255,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/inviteUserList'
       )
   },
+  // 返利提现详情
+  {
+    path: '/admin/home/main/distribution/withdraw/detail',
+    name: 'withdrawDetail',
+    meta: {
+      crumbTitle: 'router.distribution_info',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/withdrawDetail'
+      )
+  },
   // 查看商品返利详情
   {
     path: '/admin/home/main/distribution/goodsReturnStaticticsDetail',

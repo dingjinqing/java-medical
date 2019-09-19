@@ -102,14 +102,14 @@
       >
 
         <el-table-column
-          prop="distributorName"
-          label="分销员昵称"
+          prop="username"
+          label="申请人"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="distributorMobile"
+          prop="mobile"
           label="手机号"
           align="center"
         >
@@ -123,71 +123,66 @@
         </el-table-column>
 
         <el-table-column
-          prop="distributorGroup"
-          label="分销员分组"
+          prop="createTime"
+          label="申请时间"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="ordersn"
-          label="返利订单号"
+          prop="orderSn"
+          label="提现单号"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="totalOrderMoney"
-          label="订单总金额"
+          prop="withdrawCash"
+          label="提现金额"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="userMobile"
-          label="下单用户手机号"
+          prop="checkTime"
+          label="操作时间"
           align="
           center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="rebateLevel"
-          label="返利关系"
+          prop="status"
+          label="处理状态"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="totalRebateMoney"
-          label="订单返利商品总金额"
+          prop="refuseDesc"
+          label="驳回原因"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="realRebateMoney"
-          label="返利佣金金额"
+          prop="desc"
+          label="处理备注"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="createTime"
-          label="下单时间"
+          prop=""
+          label="操作"
           align="center"
         >
-        </el-table-column>
+          <template slot-scope="scope">
+            <div class="opt">
+              <p @click="withdrawDetail(scope.row.id)">查看详情</p>
 
-        <el-table-column
-          label="返利状态"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          label="返利日期"
-          align="center"
-        >
+            </div>
+          </template>
         </el-table-column>
       </el-table>
 
@@ -200,7 +195,7 @@
 </template>
 
 <script>
-import { brokerageList } from '@/api/admin/marketManage/distribution.js'
+import { withdrawCheck } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -220,11 +215,22 @@ export default {
     this.list()
   },
   methods: {
+    // 提现审核列表
     list () {
-      brokerageList(this.pageParams).then(res => {
+      withdrawCheck(this.pageParams).then(res => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
+        }
+      })
+    },
+    // 查看提现详情
+    withdrawDetail (id) {
+      alert(id)
+      this.$router.push({
+        path: '/admin/home/main/distribution/withdraw/detail',
+        query: {
+          id: id
         }
       })
     }
@@ -284,5 +290,9 @@ export default {
   font-weight: bold;
   color: #000;
   padding: 8px 10px;
+}
+.opt {
+  text-align: center;
+  color: #5a8bff;
 }
 </style>
