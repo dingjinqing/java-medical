@@ -4,6 +4,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -23,7 +24,12 @@ public class RankCardVo extends BaseCardVo {
 	
 	/**
 	 * 等级会员卡
-	 */ 	
+	 */ 
+	/** 开始时间 */
+	private Timestamp startTime;
+	/** 结束时间 */
+	private Timestamp endTime;
+	
 	/** 会员卡等级 */
 	private String grade;
 	/** 等级卡升级策略 */
