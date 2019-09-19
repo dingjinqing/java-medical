@@ -484,7 +484,7 @@ const cn = {
     principalName: '主体名称',
     alias: '公众微信号',
     lastAuthTime: '授权时间',
-    mpNickName: '已绑定店铺',
+    mpNickName: '已绑定小程序',
     isAuthOk: '授权状态',
     operation: '操作',
     payLook: '查看',

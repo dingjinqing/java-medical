@@ -58,10 +58,17 @@
             >
             </el-table-column>
             <el-table-column
-              prop="mpNickName"
               :label="$t('serviceAuth.mpNickName')"
               width="150"
             >
+              <template slot-scope="scope">
+                <div
+                  v-for='(item,index) in scope.row.mpNickName'
+                  :key="index"
+                >
+                  {{item}}
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
               prop="isAuthOkTrans"
@@ -75,7 +82,6 @@
               width="150"
             >
               <template slot-scope="scope">
-
                 <el-button
                   type="text"
                   @click="detailOperation(scope.row)"
@@ -222,6 +228,8 @@ export default {
         if (res.error === 0) {
           this.formatter(res.content.dataList)
           this.tableData = res.content.dataList
+          console.log('this.tableData')
+          console.log(this.tableData)
           this.totle = res.content.page.totalRows
           this.currentPage = res.content.page.currentPage
           this.pageCount = res.content.page.pageCount
