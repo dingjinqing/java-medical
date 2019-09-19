@@ -304,10 +304,10 @@ public class GoodsLabelService extends ShopBaseService {
 	}
 
     /**
-     *  根据标签的类型和gta集合查找结果，提供可用于快速的标签匹配的结果。
+     *  根据标签的类型和gta集合查找结果，产生和gta对应的分组数据。
      * @author 李晓冰
-     * @param gtas
-     * @param type
+     * @param gtas 要筛选的key值集合
+     * @param type map key:type对应类型的id值，value 标签列表
      * @return
      */
 	public Map<Integer,List<GoodsLabelListVo>> getGtaLabelMap(List<Integer> gtas,GoodsLabelCoupleTypeEnum type) {
@@ -318,6 +318,11 @@ public class GoodsLabelService extends ShopBaseService {
                 .intoGroups(GOODS_LABEL_COUPLE.GTA_ID, GoodsLabelListVo.class);
     }
 
+    /**
+     *  根据type类型对标签数据进行分组
+     * @param type 标签对应的类型
+     * @return
+     */
     public Map<Integer,List<GoodsLabelListVo>> getGtaLabelMap(GoodsLabelCoupleTypeEnum type) {
         return db().select()
                 .from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
@@ -326,6 +331,10 @@ public class GoodsLabelService extends ShopBaseService {
                 .intoGroups(GOODS_LABEL_COUPLE.GTA_ID,GoodsLabelListVo.class);
     }
 
+    /**
+     *  列出所有关联了商品的label集合
+     * @return
+     */
     public List<GoodsLabel> listGoodsLabelName(){
 	    return db().select(GOODS_LABEL.ID,GOODS_LABEL.NAME)
                 .from(GOODS_LABEL)
