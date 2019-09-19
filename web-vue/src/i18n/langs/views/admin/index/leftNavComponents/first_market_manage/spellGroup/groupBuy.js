@@ -1,4 +1,11 @@
 export const cn = {
+  // 校验
+  activityNameRequiredRules: '请输入活动名称',
+  goodsIdRequireRules: '请选择活动商品',
+  limitAmountRequireRules: '请填写成团人数',
+  joinLimitRequireRules: '请填写参团限制',
+  openLimitRequireRules: '请填写开团限制',
+  lengthMax20: '长度在 1 到 20 个字符',
   // 新用户明细
   invitePeople: '邀请人',
   newUserId: '新用户id',
@@ -73,7 +80,7 @@ export const cn = {
   orderGoodsNumComment2: '单次下单购买拼团商品数量最大',
   orderGoodsNumComment3: '请填写正整数，不填或为0表示不限制数量',
   jian: '件',
-  jionLimit: '参团限制',
+  joinLimit: '参团限制',
   joinLimitComment1: '每人最多参加',
   joinLimitComment2: '次新团 ',
   joinLimitComment3: '默认为0，0表示不限制数量。仅限制参与其他用户所开的团的数量',
@@ -173,6 +180,13 @@ export const cn = {
 }
 
 export const en = {
+  // Check
+  activityNameRequiredRules: 'Please enter the event name',
+  goodsIdRequireRules: 'Please select the event product',
+  LimitAmountRequireRules: 'Please fill in the number of people',
+  joinLimitRequireRules: 'Please fill in the tour limit',
+  openLimitRequireRules: 'Please fill in the opening limit',
+  lengthMax20: '1 to 20 characters in length',
   // 新用户明细
   invitePeople: 'Inviters',
   newUserId: 'New user id',
@@ -244,7 +258,7 @@ export const en = {
   orderGoodsNumComment2: 'The largest number of purchase orders for a single order',
   orderGoodsNumComment3: 'Please fill in a positive integer, do not fill in or 0 to indicate no limit',
   jian: 'Piece',
-  jionLimit: 'jion Limit',
+  joinLimit: 'jion Limit',
   joinLimitComment1: 'Maximum participation per person',
   joinLimitComment2: 'Secondary group ',
   joinLimitComment3: 'The default is 0, 0 means no limit. Limit only the number of groups that participate in other users',

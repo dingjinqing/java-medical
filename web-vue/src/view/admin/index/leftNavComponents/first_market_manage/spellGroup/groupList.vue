@@ -4,6 +4,7 @@
       <el-tabs
         v-model="tabSwitch"
         @tab-click="initDataList"
+        :lazy="true"
       >
         <el-tab-pane
           v-for="(item) in tabInfo"
@@ -21,10 +22,10 @@
 
     </div>
     <addGroupBuy
-      ref="addGroupBuy"
+      :editData="editData"
+      :isEdite="isEdite"
       @addGroupBuySubmit="addGroupBuySubmit"
       v-if="tableListView===false"
-      :isEdite="isEdite"
     />
     <div
       class="table_list"
@@ -213,7 +214,6 @@ export default {
     return {
       pageParams: {},
       tableData: [],
-      isEdite: true,
       tabSwitch: '2',
       tabIndex: 3,
       currentPage: 0,
@@ -221,19 +221,20 @@ export default {
       totalRows: 0,
       pageCount: undefined,
       tableListView: true,
-      tabInfo: {},
-      activityTypeText: []
+      tabInfo: this.$t('groupBuy.tabInfo'),
+      activityTypeText: [],
+      editData: {},
+      isEdite: true
     }
   },
   watch: {
     lang () {
       this.tabInfo = this.$t('groupBuy.tabInfo')
       this.activityTypeText = this.$t('groupBuy.grouponType')
-      this.initDataList()
     }
   },
   mounted () {
-    console.log('mounted-----------------------')
+    console.log('groupBuy')
     // 初始化数据
     this.langDefault()
     this.initDataList()
@@ -245,17 +246,8 @@ export default {
         'currentPage': this.pageParams.currentPage,
         'pageRows': this.pageParams.pageRows
       }
-      console.log(this.tabInfo.length)
-      // 新增标签
-      if (this.tabSwitch === '6') {
-        return
-      }
-      // 不是新增
-      if (this.tabInfo.length > 5) {
-        console.log('新增活动')
-        this.tableListView = true
-        this.tabInfo = this.tabInfo.filter(tab => tab.name !== '6')
-      }
+      console.log(' this.tabSwitch', this.tabSwitch)
+      this.closeTabAddGroup()
       groupBuyList(obj).then(res => {
         console.log(res.content.page)
         console.log(res.content.page.pageRows)
@@ -288,6 +280,11 @@ export default {
       }
       changeStatusActivity(obj).then(res => {
         console.log('change=>res = ' + res)
+        if (res.error === 0) {
+          this.$message.success(res.message)
+        } else {
+          this.$message.error(res.message)
+        }
         this.initDataList()
       })
     },
@@ -302,37 +299,55 @@ export default {
     // 添加新活动
     addActivity () {
       console.log('添加拼团活动--------------' + this.tabInfo.length)
-      if (this.tabInfo.length > 5) {
-        return
-      }
-      console.log(typeof this.tabInfo)
-      this.tabInfo.push({
-        title: this.$t('groupBuy.addActivity'),
-        name: '6',
-        content: 'New Tab content'
-      })
-      this.tableListView = false
-      this.tabSwitch = '6'
+      this.isEdite = false
+
+      this.showTabAddGroup(this.$t('groupBuy.addActivity'))
     },
     // 编辑
     editActivity (id) {
       console.log('编辑', id)
-      this.tabInfo.push({
-        title: this.$t('groupBuy.editActivity'),
-        name: '6',
-        content: 'edit tab content'
-      })
       let obj = {
         id: id
       }
-      this.tableListView = false
-      this.tabSwitch = '6'
-
+      this.isEdite = true
       getGroupBuyDetail(obj).then(res => {
-        console.log('拼团详情', res)
-        this.isEdite = true
-        this.$refs.addGroupBuy.editActivityInit(res.content)
+        if (res.error === 0) {
+          console.log('拼团详情', res)
+          this.editData = res.content
+          this.showTabAddGroup(this.$t('groupBuy.editActivity'))
+        } else {
+          this.$message.error(res.message)
+        }
       })
+    },
+    showTabAddGroup (title) {
+      if (this.tabSwitch === '6' || this.tabInfo.length > 5) {
+        this.closeTabAddGroup()
+      }
+      this.tabInfo.push({
+        title: title,
+        name: '6',
+        content: 'edit tab content'
+      })
+      this.tabSwitch = '6'
+      this.tableListView = false
+    },
+    closeTabAddGroup () {
+      // 新增标签
+      if (this.tabSwitch === '6') {
+        return
+      }
+      // 不是新增
+      if (this.tabInfo.length > 5) {
+        this.tableListView = true
+        this.tabInfo.pop({
+          title: this.$t('groupBuy.editActivity'),
+          name: '6',
+          content: 'edit tab content'
+        })
+        console.log('closeTabAddGroup', this.tabInfo)
+      }
+      return this.tabInfo
     },
     addGroupBuySubmit () {
       this.tabSwitch = '2'

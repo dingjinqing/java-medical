@@ -3,6 +3,7 @@
 @author 孔德成
 -->
 <template>
+  <div>
   <wrapper>
     <el-form
       ref="form"
@@ -15,7 +16,7 @@
         :label="$t('groupBuy.groupBuyActivity')"
         prop="resource"
       >
-        <el-radio-group v-model="form.activityType">
+        <el-radio-group :disabled ='isEdite' v-model="form.activityType">
           <el-radio :label=1>{{$t('groupBuy.grouponType')[0].label}}</el-radio>
           <el-radio :label=2>{{$t('groupBuy.grouponType')[1].label}}</el-radio>
         </el-radio-group>
@@ -36,6 +37,7 @@
         prop="goodsId"
       >
         <el-button
+                :disabled="isEdite"
           size="small"
           @click="showChoosingGoods"
         >{{$t('groupBuy.selectGoods')}}</el-button>
@@ -54,6 +56,7 @@
       </el-form-item>
       <el-form-item :label="$t('groupBuy.commanderDiscounts')">
         <el-switch
+          :disabled="isEdite"
           v-model="form.isGrouperCheap"
           :active-value=1
           :inactive-value=0
@@ -113,7 +116,7 @@
                 @click="setCurrent(2)"
                 size="mini"
                 icon="el-icon-edit"
-              >{{$t('groupBuy.bachOption')}}</el-button>
+              >{{$t('groupBuy.batchOption')}}</el-button>
             </template>
             <template slot-scope="scope">
               <el-input v-model="scope.row.grouperPrice" />
@@ -160,8 +163,9 @@
         >
         </el-date-picker>
       </el-form-item>
-      <el-form-item :label="$t('groupBuy.limitAmount')">
+      <el-form-item :label="$t('groupBuy.limitAmount')"  prop="limitAmount">
         <el-input-number
+          :disabled="isEdite"
           v-model="form.limitAmount"
           controls-position="right"
           :min="2"
@@ -186,7 +190,7 @@
         ></el-input-number>
         <div class="prompt">{{$t('marketCommon.jian')}} {{$t('groupBuy.orderGoodsNumComment3')}}</div>
       </el-form-item>
-      <el-form-item :label="$t('groupBuy.jionLimit')">
+      <el-form-item :label="$t('groupBuy.joinLimit')" prop="joinLimit">
         <div class="prompt"> {{$t('groupBuy.joinLimitComment1')}}</div>
         <el-input-number
           v-model="form.joinLimit"
@@ -195,7 +199,7 @@
         ></el-input-number>
         <div class="prompt"> {{ $t('groupBuy.joinLimitComment2')}}{{ $t('groupBuy.joinLimitComment3')}}</div>
       </el-form-item>
-      <el-form-item :label=" $t('groupBuy.openLimit')">
+      <el-form-item :label=" $t('groupBuy.openLimit')" prop="openLimit">
         <div class="prompt"> {{ $t('groupBuy.openLimitComment1')}}</div>
         <el-input-number
           v-model="form.openLimit"
@@ -229,15 +233,10 @@
         </span>
 
       </el-form-item>
-      <!-- 引入活动分享模块 -->
-      <actShare :shareConfig="form.share" />
-
       <el-form-item>
-        <el-button
-          class="footer"
-          type="primary"
-          @click="submitForm(form)"
-        >{{submitText}}</el-button>
+        <!-- 引入活动分享模块 -->
+        <actShare :shareConfig="form.share" />
+
       </el-form-item>
     </el-form>
     <!--添加商品弹窗-->
@@ -245,6 +244,20 @@
     <!--添加优惠卷弹窗-->
     <addCouponDialog @checkReturnFormat="handleToCheck" />
   </wrapper>
+
+  <wrapper>
+    <el-row  type="flex" justify="center">
+      <el-col :span="6">
+        <el-button
+                type="primary"
+                style="width: 100%"
+                :disabled="submitStatus"
+                @click="submitForm(form)"
+        >{{$t('marketCommon.ok')}}</el-button>
+      </el-col>
+    </el-row>
+  </wrapper>
+  </div>
 </template>
 <script>
 
@@ -254,7 +267,7 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import actShare from '@/components/admin/marketActivityShareSetting'
 import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
-import { addGroupBuyActivity } from '@/api/admin/marketManage/spellGroup.js'
+import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { format } from '@/util/date'
 
 export default {
@@ -264,6 +277,7 @@ export default {
     addCouponDialog,
     actShare
   },
+  props: ['isEdite', 'editData'],
   data () {
     return {
       // from 表单数据
@@ -294,11 +308,20 @@ export default {
       // 校验表单
       fromRules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+          { required: true, message: this.$t('groupBuy.activityNameRequiredRules'), trigger: 'blur' },
+          { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
         ],
         goodsId: [
-          { required: true, message: '请选择活动商品', trigger: 'blur' }
+          { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'blur' }
+        ],
+        limitAmount: [
+          { type: 'integer', required: true, message: this.$t('groupBuy.limitAmountRequireRules'), trigger: 'blur' }
+        ],
+        joinLimit: [
+          { type: 'integer', required: true, message: this.$t('groupBuy.joinLimitRequireRules'), trigger: 'blur' }
+        ],
+        openLimit: [
+          { type: 'integer', required: true, message: this.$t('groupBuy.openLimitRequireRules'), trigger: 'blur' }
         ]
       },
       // 选中商品id
@@ -337,13 +360,15 @@ export default {
       },
       validityDate: [],
       props: ['isEdite'],
-      submitText: this.$t('marketCommon.ok'),
+      submitStatus: false,
       grouponType: []
     }
   },
   mounted () {
+    console.log('addGroupBuy')
     // 初始化语言
     this.langDefault()
+    this.editActivityInit()
   },
   watch: {
     lang () {
@@ -354,14 +379,27 @@ export default {
     ...mapActions(['transmitEditGoodsId']),
     // 提交表单
     submitForm (formName) {
+      this.submitStatus = true
       this.$refs['form'].validate((valid) => {
-        console.log('submit', formName)
+        console.log('提交表单', formName)
         console.log('this.form', this.form)
         if (valid) {
           if (this.isEdite) {
+            updateGroupBuy(this.form).then(res => {
+              console.log('updateGroupBuy', res)
+              if (res.error === 0) {
+                this.success(res.content)
+                this.$emit('addGroupBuySubmit')
+              } else {
+                this.fail(res.message)
+              }
+            }).catch(e => {
+              console.log(e)
+              this.fail(e.toString())
+            })
           } else {
             addGroupBuyActivity(this.form).then(res => {
-              console.log(res)
+              console.log('addGroupBuyActivity', res)
               if (res.error === 0) {
                 this.success(res.content)
                 this.$emit('addGroupBuySubmit')
@@ -372,23 +410,23 @@ export default {
           }
         } else {
           this.fail('error submit!!')
-          return false
         }
       })
+      this.submitStatus = false
     },
     // 选择商品弹窗
     showChoosingGoods () {
-      this.transmitEditGoodsId(this.form.goodsId)
       console.log('初始化商品弹窗', this.form.goodsId)
+      this.transmitEditGoodsId(this.form.goodsId)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
     },
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log('获取商品行', row)
       this.goodsRow = row
-      this.form.goodsId = row.goodsId
       console.log('goodsRow', this.goodsRow)
       console.log('tmpGoodsIds', this.form.goodsId)
+      this.form.goodsId = row.goodsId
       // 初始化规格表格
       let obj = {
         goodsId: this.form.goodsId
@@ -465,29 +503,34 @@ export default {
       console.log('conpon', this.couponList)
     },
     // 编辑活动初始化
-    editActivityInit (data) {
-      console.log('编辑活动初始化', data)
-      console.log('活动名称', this.form.name)
-      this.isEdite = true
-      this.goodsRow.goodsName = data.goodsName
-      this.validityDate = [format(data.startTime), format(data.endTime)]
-      this.form.name = data.name
-      this.form.goodsId = data.goodsId
-      this.form.limitAmount = data.limitAmount
-      this.form.joinLimit = data.joinLimit
-      this.form.openLimit = data.openLimit
-      this.form.isDefault = data.isDefault
-      this.form.startTime = data.startTime
-      this.form.endTime = data.endTime
-      this.form.shippingType = data.shippingType
-      this.form.activityType = data.activityType
-      this.form.isGrouperCheap = data.isGrouperCheap
-      this.form.rewardCouponId = data.rewardCouponId
-      this.form.limitMaxNum = data.limitMaxNum
-      this.form.limitBuyNum = data.limitBuyNum
-      this.form.share = data.share
-      this.form.product = data.productList
-      console.log(this.form)
+    editActivityInit () {
+      console.log('this.isEdite', this.isEdite)
+      if (this.isEdite) {
+        let data = this.editData
+        console.log('编辑活动初始化', data)
+        console.log('活动名称', this.form.name)
+        this.goodsRow.ischecked = true
+        this.goodsRow.goodsName = data.goodsName
+        this.validityDate = [format(data.startTime), format(data.endTime)]
+        this.form.id = data.id
+        this.form.name = data.name
+        this.form.goodsId = data.goodsId
+        this.form.limitAmount = data.limitAmount
+        this.form.joinLimit = data.joinLimit
+        this.form.openLimit = data.openLimit
+        this.form.isDefault = data.isDefault
+        this.form.startTime = data.startTime
+        this.form.endTime = data.endTime
+        this.form.shippingType = data.shippingType
+        this.form.activityType = data.activityType
+        this.form.isGrouperCheap = data.isGrouperCheap
+        this.form.rewardCouponId = data.rewardCouponId
+        this.form.limitMaxNum = data.limitMaxNum
+        this.form.limitBuyNum = data.limitBuyNum
+        this.form.share = data.share
+        this.form.product = data.productList
+        console.log(this.form)
+      }
     }
   }
 }
