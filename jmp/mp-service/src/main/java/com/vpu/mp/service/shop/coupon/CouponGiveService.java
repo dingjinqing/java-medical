@@ -69,8 +69,7 @@ public class CouponGiveService extends ShopBaseService {
 	@Autowired
     private RabbitmqSendService rabbitmqSendService;
 	
-    private static final MrkingVoucher mv = MrkingVoucher.MRKING_VOUCHER.as("mv");
-    private static final CustomerAvailCoupons cac = CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.as("cac");
+    private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
 
     /** 是否有最低消费使用限制，0不限制，1有限制 */
     public static final byte USE_CONSUME_RESTRICT_EFFECTIVE = 1;
@@ -117,7 +116,11 @@ public class CouponGiveService extends ShopBaseService {
                 /* 优惠券信息 */
                 List<CouponGiveListConditionVo> tempListVo = new ArrayList<CouponGiveListConditionVo>();
                 for (String selectId : idArray) {
-                    Optional<CouponGiveListConditionVo> couponVo = db().select(MRKING_VOUCHER.ACT_NAME.as("coupon_name"), MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.VALIDITY).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(Integer.valueOf(selectId))).fetchOptionalInto(CouponGiveListConditionVo.class);
+                    Optional<CouponGiveListConditionVo> couponVo = db().select(MRKING_VOUCHER.ACT_NAME.as("coupon_name"), MRKING_VOUCHER.LEAST_CONSUME, 
+                    		MRKING_VOUCHER.DENOMINATION,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME, MRKING_VOUCHER.VALIDITY_TYPE,
+                    		MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE).from(MRKING_VOUCHER)
+                    		.where(MRKING_VOUCHER.ID.eq(Integer.valueOf(selectId)))
+                    		.fetchOptionalInto(CouponGiveListConditionVo.class);
                     tempListVo.add(couponVo.isPresent() ? couponVo.get() : null);
                 }
                 /* 完善某一活动对应的优惠券信息 */
@@ -370,7 +373,7 @@ public class CouponGiveService extends ShopBaseService {
      * @return 优惠券编号
      */
     public String collectingCoupons(Integer couponId, Integer userId) {
-        Optional<MrkingVoucherRecord> result = db().selectFrom(mv).where(mv.ID.eq(couponId)).fetchOptional();
+        Optional<MrkingVoucherRecord> result = db().selectFrom(MV).where(MV.ID.eq(couponId)).fetchOptional();
         MrkingVoucherRecord record = result.orElseThrow(()->new RuntimeException("Coupon_id Info doesn't exist"));
         CustomerAvailCouponsRecord couponsRecord = new CustomerAvailCouponsRecord();
         couponsRecord.setUserId(userId);
