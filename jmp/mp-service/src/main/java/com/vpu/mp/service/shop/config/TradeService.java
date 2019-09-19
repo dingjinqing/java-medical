@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
@@ -10,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.management.Descriptor;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -22,19 +24,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
+ * The type Trade service.
+ *
  * @author liufei
- * @date 2019/7/8
+ * @date 2019 /7/8
  */
 @Slf4j
 @Service
 public class TradeService extends BaseShopConfigService {
     /**
      * 支付配置项
-     *
+     * <p>
      * 会员卡余额支付
      */
     final public static String K_CARD_FIRST = "card_first";
@@ -49,7 +53,7 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 交易流程配置项
-     *
+     * <p>
      * 是否启用快递
      */
     final public static String K_EXPRESS = "express";
@@ -84,7 +88,7 @@ public class TradeService extends BaseShopConfigService {
     final public static String K_INVOICE = "invoice";
     /**
      * 服务条款设置
-     *
+     * <p>
      * 服务条款设置开关开启，结算页会展示服务条款，用户需勾选“同意”才可继续下单
      */
     final public static String K_SERVICE_TERMS = "service_terms";
@@ -93,12 +97,16 @@ public class TradeService extends BaseShopConfigService {
      */
     final public static String K_SERVICE_NAME = "service_name";
     /**
+     * 服务条款配置内容
+     */
+    final public static String K_SERVICE_DOCUMENT = "service_document";
+    /**
      * 服务条款设置首次下单是否默认勾选
      */
     final public static String K_SERVICE_CHOOSE = "service_choose";
     /**
      * 下单必填信息设置
-     *
+     * <p>
      * 下单人真实姓名
      */
     final public static String K_ORDER_REAL_NAME = "order_real_name";
@@ -130,9 +138,9 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 微信物流助手
-     *
+     * <p>
      * 微信物流助手对接配置
-     * <P>
+     * <p>
      * 开关打开，已发货商品物流信息将展示在小程序前端订单页面，用户可直接查看物流信息。
      * 开关关闭，用户在小程序端查看物流信息时将自动跳转至“快递100”小程序。
      */
@@ -143,190 +151,479 @@ public class TradeService extends BaseShopConfigService {
      */
     final public static String K_SHOP_ADDRESS = "shop_address";
 
+    /**
+     * Gets express.
+     *
+     * @return the express
+     */
     public Byte getExpress() {
         return this.get(K_EXPRESS, Byte.class, BYTE_ZERO);
     }
 
+    /**
+     * Sets express.
+     *
+     * @param express the express
+     * @return the express
+     */
     public int setExpress(Byte express) {
         assert (express == (byte) 0 || express == (byte) 1);
         return this.set(K_EXPRESS, express, Byte.class);
     }
 
+    /**
+     * Gets fetch.
+     *
+     * @return the fetch
+     */
     public Byte getFetch() {
         return this.get(K_FETCH, Byte.class, BYTE_ZERO);
     }
 
+    /**
+     * Sets fetch.
+     *
+     * @param fetch the fetch
+     * @return the fetch
+     */
     public int setFetch(Byte fetch) {
         assert (fetch == (byte) 0 || fetch == (byte) 1);
         return this.set(K_FETCH, fetch, Byte.class);
     }
 
+    /**
+     * Gets drawback days.
+     *
+     * @return the drawback days
+     */
     public Integer getDrawbackDays() {
         return this.get(K_DRAWBACK_DAYS, Integer.class, 0);
     }
 
+    /**
+     * Sets drawback days.
+     *
+     * @param drawbackDays the drawback days
+     * @return the drawback days
+     */
     public int setDrawbackDays(Integer drawbackDays) {
         return drawbackDays != null ? this.set(K_DRAWBACK_DAYS, drawbackDays, Integer.class) : -1;
     }
 
+    /**
+     * Gets order timeout days.
+     *
+     * @return the order timeout days
+     */
     public Integer getOrderTimeoutDays() {
         return this.get(K_ORDER_TIMEOUT_DAYS, Integer.class, 0);
     }
 
+    /**
+     * Sets order timeout days.
+     *
+     * @param orderTimeoutDays the order timeout days
+     * @return the order timeout days
+     */
     public int setOrderTimeoutDays(Integer orderTimeoutDays) {
         return orderTimeoutDays != null ? this.set(K_ORDER_TIMEOUT_DAYS, orderTimeoutDays, Integer.class) : -1;
     }
 
+    /**
+     * Gets card first.
+     *
+     * @return the card first
+     */
     public Byte getCardFirst() {
         return this.get(K_CARD_FIRST, Byte.class, BYTE_ZERO);
     }
 
+    /**
+     * Gets balance first.
+     *
+     * @return the balance first
+     */
     public Byte getBalanceFirst() {
         return this.get(K_BALANCE_FIRST, Byte.class, BYTE_ZERO);
     }
 
+    /**
+     * Gets score first.
+     *
+     * @return the score first
+     */
     public Byte getScoreFirst() {
         return this.get(K_SCORE_FIRST, Byte.class, BYTE_ZERO);
     }
 
+    /**
+     * Sets card first.
+     *
+     * @param cardFirst the card first
+     * @return the card first
+     */
     public int setCardFirst(Byte cardFirst) {
         assert (cardFirst == (byte) 0 || cardFirst == (byte) 1);
         return this.set(K_CARD_FIRST, cardFirst, Byte.class);
     }
 
+    /**
+     * Sets balance first.
+     *
+     * @param balanceFirst the balance first
+     * @return the balance first
+     */
     public int setBalanceFirst(Byte balanceFirst) {
         assert (balanceFirst == (byte) 0 || balanceFirst == (byte) 1);
         return this.set(K_BALANCE_FIRST, balanceFirst, Byte.class);
     }
 
+    /**
+     * Sets score first.
+     *
+     * @param scoreFirst the score first
+     * @return the score first
+     */
     public int setScoreFirst(Byte scoreFirst) {
         assert (scoreFirst == (byte) 0 || scoreFirst == (byte) 1);
         return this.set(K_SCORE_FIRST, scoreFirst, Byte.class);
     }
 
+    /**
+     * Gets cancel time.
+     *
+     * @return the cancel time
+     */
     public Integer getCancelTime() {
         return this.get(K_CANCEL_TIME, Integer.class, 0);
     }
+
+    /**
+     * Sets cancel time.
+     *
+     * @param cancelTime the cancel time
+     * @return the cancel time
+     */
     public int setCancelTime(Integer cancelTime) {
         assert (cancelTime >= 0);
         return this.set(K_CANCEL_TIME, cancelTime, Integer.class);
     }
 
+    /**
+     * Gets extend receive goods.
+     *
+     * @return the extend receive goods
+     */
     public Byte getExtendReceiveGoods() {
         return this.get(K_EXTEND_RECEIVE_GOODS, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets extend receive goods.
+     *
+     * @param extendReceiveGoods the extend receive goods
+     * @return the extend receive goods
+     */
     public int setExtendReceiveGoods(Byte extendReceiveGoods) {
         assert (extendReceiveGoods == (byte) 0 || extendReceiveGoods == (byte) 1);
         return this.set(K_EXTEND_RECEIVE_GOODS, extendReceiveGoods, Byte.class);
     }
 
+    /**
+     * Gets extend receive days.
+     *
+     * @return the extend receive days
+     */
     public Integer getExtendReceiveDays() {
         return this.get(K_EXTEND_RECEIVE_DAYS, Integer.class, 0);
     }
+
+    /**
+     * Sets extend receive days.
+     *
+     * @param extendReceiveDays the extend receive days
+     * @return the extend receive days
+     */
     public int setExtendReceiveDays(Integer extendReceiveDays) {
         assert (extendReceiveDays >= 0);
         return this.set(K_EXTEND_RECEIVE_DAYS, extendReceiveDays, Integer.class);
     }
 
+    /**
+     * Gets invoice.
+     *
+     * @return the invoice
+     */
     public Byte getInvoice() {
         return this.get(K_INVOICE, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets invoice.
+     *
+     * @param invoice the invoice
+     * @return the invoice
+     */
     public int setInvoice(Byte invoice) {
         assert (invoice == (byte) 0 || invoice == (byte) 1);
         return this.set(K_INVOICE, invoice, Byte.class);
     }
 
+    /**
+     * Gets service terms.
+     *
+     * @return the service terms
+     */
     public Byte getServiceTerms() {
         return this.get(K_SERVICE_TERMS, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets service terms.
+     *
+     * @param serviceTerms the service terms
+     * @return the service terms
+     */
     public int setServiceTerms(Byte serviceTerms) {
         assert (serviceTerms == (byte) 0 || serviceTerms == (byte) 1);
         return this.set(K_SERVICE_TERMS, serviceTerms, Byte.class);
     }
 
+    /**
+     * Gets service name.
+     *
+     * @return the service name
+     */
     public String getServiceName() {
         return this.get(K_SERVICE_NAME, String.class, "");
     }
+
+    /**
+     * Sets service name.
+     *
+     * @param serviceName the service name
+     * @return the service name
+     */
     public int setServiceName(String serviceName) {
         assert (serviceName != null);
         return this.set(K_SERVICE_NAME, serviceName, String.class);
     }
 
+    /**
+     * Gets service document.
+     *
+     * @return the service document
+     */
+    public String getServiceDocument() {
+        return this.get(K_SERVICE_DOCUMENT, String.class, "");
+    }
+
+    /**
+     * Sets service document.
+     *
+     * @param serviceDocument the service document
+     * @return the service document
+     */
+    public int setServiceDocument(String serviceDocument) {
+        assert (serviceDocument != null);
+        return this.set(K_SERVICE_DOCUMENT, serviceDocument, String.class);
+    }
+
+    /**
+     * Gets service choose.
+     *
+     * @return the service choose
+     */
     public Byte getServiceChoose() {
         return this.get(K_SERVICE_CHOOSE, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets service choose.
+     *
+     * @param serviceChoose the service choose
+     * @return the service choose
+     */
     public int setServiceChoose(Byte serviceChoose) {
         assert (serviceChoose == (byte) 0 || serviceChoose == (byte) 1);
         return this.set(K_SERVICE_CHOOSE, serviceChoose, Byte.class);
     }
 
+    /**
+     * Gets order real name.
+     *
+     * @return the order real name
+     */
     public Byte getOrderRealName() {
         return this.get(K_ORDER_REAL_NAME, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets order real name.
+     *
+     * @param orderRealName the order real name
+     * @return the order real name
+     */
     public int setOrderRealName(Byte orderRealName) {
         assert (orderRealName == (byte) 0 || orderRealName == (byte) 1);
         return this.set(K_ORDER_REAL_NAME, orderRealName, Byte.class);
     }
 
+    /**
+     * Gets order cid.
+     *
+     * @return the order cid
+     */
     public Byte getOrderCid() {
         return this.get(K_ORDER_CID, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets order cid.
+     *
+     * @param orderCid the order cid
+     * @return the order cid
+     */
     public int setOrderCid(Byte orderCid) {
         assert (orderCid == (byte) 0 || orderCid == (byte) 1);
         return this.set(K_ORDER_CID, orderCid, Byte.class);
     }
 
+    /**
+     * Gets consignee real name.
+     *
+     * @return the consignee real name
+     */
     public Byte getConsigneeRealName() {
         return this.get(K_CONSIGNEE_REAL_NAME, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets consignee real name.
+     *
+     * @param consigneeRealName the consignee real name
+     * @return the consignee real name
+     */
     public int setConsigneeRealName(Byte consigneeRealName) {
         assert (consigneeRealName == (byte) 0 || consigneeRealName == (byte) 1);
         return this.set(K_CONSIGNEE_REAL_NAME, consigneeRealName, Byte.class);
     }
 
+    /**
+     * Gets consignee cid.
+     *
+     * @return the consignee cid
+     */
     public Byte getConsigneeCid() {
         return this.get(K_CONSIGNEE_CID, Byte.class,BYTE_ZERO);
     }
+
+    /**
+     * Sets consignee cid.
+     *
+     * @param consigneeCid the consignee cid
+     * @return the consignee cid
+     */
     public int setConsigneeCid(Byte consigneeCid) {
         assert (consigneeCid == (byte) 0 || consigneeCid == (byte) 1);
         return this.set(K_CONSIGNEE_CID, consigneeCid, Byte.class);
     }
 
+    /**
+     * Gets custom.
+     *
+     * @return the custom
+     */
     public Byte getCustom() {
         return this.get(K_CUSTOM, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets custom.
+     *
+     * @param custom the custom
+     * @return the custom
+     */
     public int setCustom(Byte custom) {
         assert (custom == (byte) 0 || custom == (byte) 1);
         return this.set(K_CUSTOM, custom, Byte.class);
     }
 
+    /**
+     * Gets custom title.
+     *
+     * @return the custom title
+     */
     public String getCustomTitle() {
         return this.get(K_CUSTOM_TITLE, String.class, "");
     }
+
+    /**
+     * Sets custom title.
+     *
+     * @param customTitle the custom title
+     * @return the custom title
+     */
     public int setCustomTitle(String customTitle) {
         assert (customTitle != null);
         return this.set(K_CUSTOM_TITLE, customTitle, String.class);
     }
 
+    /**
+     * Gets order requeire goods package.
+     *
+     * @return the order requeire goods package
+     */
     public String getOrderRequeireGoodsPackage() {
         return this.get(K_ORDER_REQUEIRE_GOODS_PACKAGE, String.class, "");
     }
+
+    /**
+     * Sets order requeire goods package.
+     *
+     * @param orderRequireGoodsPackage the order require goods package
+     * @return the order requeire goods package
+     */
     public int setOrderRequeireGoodsPackage(String orderRequireGoodsPackage) {
         assert (orderRequireGoodsPackage != null );
         return this.set(K_ORDER_REQUEIRE_GOODS_PACKAGE, orderRequireGoodsPackage, String.class);
     }
 
+    /**
+     * Gets shipping expresss.
+     *
+     * @return the shipping expresss
+     */
     public Byte getShippingExpresss() {
         return this.get(K_SHIPPING_EXPRESSS, Byte.class, BYTE_ZERO);
     }
+
+    /**
+     * Sets shipping expresss.
+     *
+     * @param shippingExpress the shipping express
+     * @return the shipping expresss
+     */
     public int setShippingExpresss(Byte shippingExpress) {
         assert (shippingExpress == (byte) 0 || shippingExpress == (byte) 1);
         return this.set(K_SHIPPING_EXPRESSS, shippingExpress, Byte.class);
     }
 
+    /**
+     * Gets shop address.
+     *
+     * @return the shop address
+     */
     public String getShopAddress() {
         return this.get(K_SHOP_ADDRESS, String.class, "");
     }
+
+    /**
+     * Sets shop address.
+     *
+     * @param shopAddress the shop address
+     * @return the shop address
+     */
     public int setShopAddress(String shopAddress) {
         assert (shopAddress != null);
         return this.set(K_SHOP_ADDRESS, shopAddress, String.class);
@@ -348,6 +645,8 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 更新默认支付配置
+     *
+     * @param param the param
      */
     public void updateDefaultPayConf(PaymentConfigParam param) {
         try {
@@ -370,6 +669,8 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 查询支付方式开关
+     *
+     * @return the payment enabled
      */
     public List<PaymentConfigVo> getPaymentEnabled() {
         return db().select(Payment.PAYMENT.PAY_CODE, Payment.PAYMENT.PAY_NAME, Payment.PAYMENT.ENABLED)
@@ -378,6 +679,8 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 查询默认支付配置
+     *
+     * @return the default pay conf
      */
     public Map<String, Byte> getDefaultPayConf() {
         Byte cardFirst = this.getCardFirst();
@@ -392,6 +695,11 @@ public class TradeService extends BaseShopConfigService {
         };
     }
 
+    /**
+     * {@value} 使用内省获取到的类属性列表中会多一个class属性
+     */
+    public static final String FIELD_CLAZZ = "class";
+
     private void updateInvoke(PropertyDescriptor descriptor, OrderProcessParam param){
         String fieldName = descriptor.getName();
         Object conf = null;
@@ -404,7 +712,8 @@ public class TradeService extends BaseShopConfigService {
             Method method = null;
             String methodName = getMethodName(fieldName,"set");
             try {
-                method = this.getClass().getMethod(methodName);
+                //根据方法名称和方法所需参数类型获取Method实例对象
+                method = this.getClass().getMethod(methodName, descriptor.getPropertyType());
             } catch (NoSuchMethodException e) {
                 log.error("field[{}]字段对应的setXXX方法[{}]不存在：{}",fieldName,methodName,e.getMessage());
                 e.printStackTrace();
@@ -423,16 +732,20 @@ public class TradeService extends BaseShopConfigService {
         temp[0] -= 32;
         return stringBuilder.append(temp).toString();
     }
+
     /**
      * 更新订单流程配置
      *
      * @param param 订单流程配置项信息
+     * {@value FIELD_CLAZZ}
      */
     public void updateOrderProcess(OrderProcessParam param) {
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-            Arrays.asList(descriptors).forEach((e) -> updateInvoke(e, param));
+            Arrays.stream(descriptors)
+                .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
+                .forEach((e) -> updateInvoke(e, param));
         } catch (IntrospectionException e) {
             log.error("内省获取bean[{}]信息失败：{}",param,e.getMessage());
         }
@@ -502,6 +815,9 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 查询订单流程配置
+     * {@value FIELD_CLAZZ}
+     *
+     * @return the order process config
      */
     public OrderProcessParam getOrderProcessConfig() {
         OrderProcessParam param = new OrderProcessParam();
@@ -509,7 +825,9 @@ public class TradeService extends BaseShopConfigService {
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-            Arrays.asList(descriptors).forEach((e) -> selectInvoke(e, param));
+            Arrays.stream(descriptors)
+                .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
+                .forEach((e) -> updateInvoke(e, param));
         } catch (IntrospectionException e) {
             log.error("内省获取bean[{}]信息失败：{}",param,e.getMessage());
         }
@@ -561,5 +879,33 @@ public class TradeService extends BaseShopConfigService {
                 log.error("OrderProcessParam类中属性[{}]的set方法执行错误：{}",fieldName,e.getMessage());
             }
         }
+    }
+
+    private static final String DOCUMENT = "document";
+    private static final String UPDATE_TIME = "update_time";
+
+    /**
+     * 服务条款配置
+     *
+     * @param document 服务条款配置内容
+     *                 数据库保存内容格式为json，样例如下： { 	"document": "此处直接为html页面格式的字符串", 	"update_time": 1568859761 }
+     * @throws JsonProcessingException the json processing exception
+     */
+    public void confTermsOfService(String document) throws JsonProcessingException {
+        String serviceDocument = MAPPER.writeValueAsString(new HashMap<String, Object>(2) {
+            {
+                put(DOCUMENT, document);
+                put(UPDATE_TIME, System.currentTimeMillis());
+            }
+        });
+        this.setServiceDocument(serviceDocument);
+    }
+
+    /**
+     * 查询服务条款配置
+     */
+    public String getTermsOfService() throws IOException {
+        JsonNode node = MAPPER.readTree(this.getServiceDocument());
+        return node.get(DOCUMENT).asText("");
     }
 }

@@ -1,19 +1,20 @@
 package com.vpu.mp.controller.admin;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.config.trade.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
@@ -152,4 +153,34 @@ public class AdminTradeController extends AdminBaseController {
         return success(shop().config.returnConfigService.getDefaultAddress());
     }
 
+    /**
+     * 服务条款配置
+     *
+     * @param serviceDocument 服务条款配置内容
+     */
+    @RequestMapping("/api/admin/config/trade/conftermsofservice")
+    public JsonResult confTermsOfService(@RequestParam("service_document") String serviceDocument) {
+        try {
+            shop().trade.confTermsOfService(serviceDocument);
+            return success();
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            return fail(JsonResultCode.CODE_CONFIG_UPDATE_FAILED, e.getMessage());
+        }
+    }
+
+    /**
+     * 查询服务条款配置
+     *
+     * @return 服务条款配置内容
+     */
+    @RequestMapping("/api/admin/config/trade/gettermsofservice")
+    public JsonResult getTermsOfService() {
+        try {
+            return success(shop().trade.getTermsOfService());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return fail();
+        }
+    }
 }
