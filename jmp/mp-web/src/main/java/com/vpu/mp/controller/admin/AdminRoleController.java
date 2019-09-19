@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.jooq.Record10;
+import org.jooq.Record11;
 import org.jooq.Record9;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -48,7 +49,7 @@ public class AdminRoleController extends AdminBaseController {
 			return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
 		}
 		// saas.shop.accout
-		List<Record10<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String>> shopList = saas.shop
+		List<Record11<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, String>> shopList = saas.shop
 				.getRoleShopList(info.getSysId(), info.getSubAccountId());
 		if (shopList.size() == 0) {
 			logger().info("用户sysId：" + info.getSysId() + "，店铺列表为空");
