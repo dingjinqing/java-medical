@@ -47,6 +47,7 @@ import {
 } from './views/goodsManage/goodsImport'
 
 // 营销管理
+
 // 营销管理通用词汇
 import {
   cn as marketCommon
@@ -109,10 +110,21 @@ import {
 import {
   cn as pictureSetting
 } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+
 // 订单
+// 订单通用
+import {
+  cn as orderCommon
+} from './views/admin_new/cn/index/orderManagement/orderCommonCn'
+// 订单列表
 import {
   cn as order
 } from './views/admin/index/leftNavComponents/order/order'
+// 虚拟商品订单-会员卡订单
+import {
+  cn as memberCardOrder
+} from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/memberCardOrderCn'
+
 // 快递公司
 import {
   cn as expressList
@@ -497,21 +509,38 @@ const cn = {
 
   },
   router, // 路由信息
+
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表
   publishList, // system 发布列表
   versionList, // system 版本列表
-  marketManage, // 营销管理
-  ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置
   adminPageFramework, // admin页面框架
+
+  // 概览
+  overview,
+
+  // 小程序管理
+  pictureSetting,
+  pageDecoration,
+  bottomNavigation,
+
+  // 商品
   allGoods, // 商品管理/全部商品
   goodsImport,
-
-  marketCommon, // 营销管理通用词汇
   goodsAddEditInfo,
+
+  // 订单
+  order,
+  orderCommon, // 订单通用
+  memberCardOrder, // 虚拟商品订单-会员卡订单
+
+  // 营销
+  marketManage, // 营销管理
+  marketCommon, // 营销管理通用词汇
+  ordinaryCoupon, // 普通优惠券
   groupBuy, // 多人拼团
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页
@@ -520,14 +549,10 @@ const cn = {
   statusTab, // 营销活动状态 tabs
   sharePolite, // 分享有礼
   receiveDetails,
-  pageDecoration,
-  bottomNavigation,
   promoteList, // 好友助力
-  adSharePolite,
-  overview,
-  pictureSetting,
+  adSharePolite, // 添加分享有礼
+
   ...zhLocale,
-  order,
   expressList
 }
 

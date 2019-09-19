@@ -1,0 +1,27 @@
+export const cn = {
+  selectPlaceholder: '请选择',
+  to: '至',
+  startTime: '开始时间',
+  endTime: '结束时间',
+  filter: '筛选',
+  export: '导出',
+  exportData: '导出数据',
+  exportTable: '导出表格',
+  all: '全部',
+
+  order: '订单',
+  orderSn: '订单号',
+  orderSnPlaceholder: '请输入订单号',
+  orderCoding: '订单编号',
+  allOrders: '全部订单',
+  orderManagement: '订单管理',
+  virtualGoodsOrder: '虚拟商品订单',
+  orderUserInfo: '下单用户信息',
+  orderUserInfoPlaceholder: '请输入用户昵称/手机号',
+  orderTime: '下单时间',
+  refundOrder: '退款订单',
+  goods: '商品',
+  price: '单价',
+  orderStatus: '订单状态',
+  moneyPaid: '支付金额'
+}

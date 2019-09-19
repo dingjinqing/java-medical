@@ -1,0 +1,27 @@
+export const en = {
+  selectPlaceholder: 'select',
+  to: 'to',
+  startTime: 'start time',
+  endTime: 'end time',
+  filter: 'filter',
+  export: 'export',
+  exportData: 'export data',
+  exportTable: 'export table',
+  all: 'all',
+
+  order: 'order',
+  orderSn: 'order sn',
+  orderSnPlaceholder: 'please enter the order sn',
+  orderCoding: 'order sn',
+  allOrders: 'all orders',
+  orderManagement: 'order management',
+  virtualGoodsOrder: 'virtual goods order',
+  orderUserInfo: 'order user info',
+  orderUserInfoPlaceholder: 'please enter the user nickname / mobile number',
+  orderTime: 'order time',
+  refundOrder: 'refund order',
+  goods: 'goods',
+  price: 'price',
+  orderStatus: 'order status',
+  moneyPaid: 'paid amount'
+}

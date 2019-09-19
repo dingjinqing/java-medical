@@ -50,8 +50,18 @@ import { en as adSharePolite } from './views/admin/index/leftNavComponents/first
 
 // 页面装修
 import { en as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+
 // 订单
 import { en as order } from './views/admin/index/leftNavComponents/order/order'
+// 订单通用
+import {
+  en as orderCommon
+} from './views/admin_new/en/index/orderManagement/orderCommonEn'
+// 虚拟商品订单-会员卡订单
+import {
+  en as memberCardOrder
+} from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/memberCardOrderEn'
+
 // 快递公司
 import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
 const en = {
@@ -496,36 +506,50 @@ const en = {
     authStats: 'authorization status'
   },
   router, // 路由信息
+
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
-  shopList, // system 店铺列表
+  shopList, // sysytem 店铺列表
   publishList, // system 发布列表
   versionList, // system 版本列表
-  marketManage, // 营销管理
-  ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置
-  adminPageFramework, // admin 页面框架
+  adminPageFramework, // admin页面框架
+
+  // 概览
+  overview,
+
+  // 小程序管理
+  pictureSetting,
+  pageDecoration,
+  bottomNavigation,
+
+  // 商品
   allGoods, // 商品管理/全部商品
   goodsImport,
-  marketCommon, // 营销管理通用词汇
   goodsAddEditInfo,
-  groupBuy,
-  statusTab,
-  sharePolite,
-  receiveDetails, // 分享有礼-领取明细
+
+  // 订单
+  order,
+  orderCommon, // 订单通用
+  memberCardOrder, // 虚拟商品订单-会员卡订单
+
+  // 营销
+  marketManage, // 营销管理
+  marketCommon, // 营销管理通用词汇
+  ordinaryCoupon, // 普通优惠券
+  groupBuy, // 多人拼团
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页
   bargainList, // 砍价活动列表
   addBargainAct, // 创建砍价活动
-  pageDecoration,
-  bottomNavigation,
-  promoteList,
-  adSharePolite,
-  overview,
-  pictureSetting,
+  statusTab, // 营销活动状态 tabs
+  sharePolite, // 分享有礼
+  receiveDetails,
+  promoteList, // 好友助力
+  adSharePolite, // 添加分享有礼
+
   ...enLocale,
-  order,
   expressList
 }
 export default en
