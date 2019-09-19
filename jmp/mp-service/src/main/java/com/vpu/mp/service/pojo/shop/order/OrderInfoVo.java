@@ -47,7 +47,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private List<OrderConciseRefundInfoVo> refundList;
 	/**其他信息...*/
 	/**返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单*/
-	@JsonIgnore
 	private Integer fanliType;
 	@JsonIgnore
 	private Integer cardId;
@@ -61,4 +60,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private String storeName;
 	private Integer verifierId;
 	private String verifierName;
+	private BigDecimal orderAmount;
+	
 }
