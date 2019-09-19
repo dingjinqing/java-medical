@@ -54,12 +54,23 @@ public class OrderInfoVo extends OrderListInfoVo {
 	@JsonIgnore
 	private Byte orderPayWay;
 	/**（券）折扣金额*/
-	@JsonIgnore
+	/**918新增*/
 	private BigDecimal discount;
 	/**918新增*/
 	private String storeName;
 	private Integer verifierId;
 	private String verifierName;
 	private BigDecimal orderAmount;
-	
+	private BigDecimal packageDiscount;
+	private BigDecimal memberCardReduce;
+	private Byte exchang;
+	private Short goodsAmount;
+	/**满折满减优惠*/
+	private BigDecimal promotionReduce;
+	/**团长优惠金额*/
+	private BigDecimal grouperCheapReduce;
+	/**会员等级优惠*/
+	private BigDecimal discountPrice;
+	/**搭配立减优惠*/
+	private BigDecimal dapeiReduceAmount;
 }

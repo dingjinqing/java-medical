@@ -58,10 +58,10 @@ public class OrderListInfoVo {
 	/**积分抵扣金额*/
 	private BigDecimal scoreDiscount;
 	/**用户消费余额*/
-	@JsonIgnore
+	/**918*/
 	private BigDecimal useAccount;
 	/**会员卡消费金额*/
-	@JsonIgnore
+	/**918*/
 	private BigDecimal memberCardBalance;
 	/**TODO 数据库没字段子单金额*/
 	@JsonIgnore
@@ -69,7 +69,7 @@ public class OrderListInfoVo {
 	/**退款/退货状态*/
 	private Byte refundStatus;
 	/**补款金额*/
-	@JsonIgnore
+	/**918*/
 	private BigDecimal bkOrderMoney;
 	@JsonIgnore
 	private Integer userId;
@@ -81,7 +81,7 @@ public class OrderListInfoVo {
 	private String bkOrderSn;
 	@JsonIgnore
 	private Integer activityId;
-	@JsonIgnore
+	/**918*/
 	private Byte bkOrderPaid;
 	/**币种*/
 	private String currency;
