@@ -505,13 +505,14 @@ export default {
       this.oldIndex = oldIndex
       console.log(newArr.length, oldIndex)
       // let arrLength = newArr.length - 1
+      // newArr.splice(oldIndex, 1)
       newArr[oldIndex] = -1
       console.log(newArr)
       this.showModulesList = newArr
 
       // let data = newArr
       this.$nextTick(() => {
-        this.$http.$emit('decCard', -1, oldIndex)
+        this.$http.$emit('decCard', -1, 1)
       })
 
       this.isDragging = true
@@ -520,6 +521,7 @@ export default {
     handleToEnd (e) {
       let this_ = this
       console.log(this.oldIndex, this.newIndex, this.oldElement)
+
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
       let insertIndex = this.newIndex + 1
       if (this.topAreaFlag) {
@@ -527,7 +529,9 @@ export default {
       } else {
         newArr.splice(insertIndex, 0, this.oldElement)
       }
-
+      if (this.oldIndex < this.newIndex) {
+        insertIndex--
+      }
       console.log(newArr)
       let newArrMiddle = JSON.parse(JSON.stringify(newArr))
 
@@ -541,7 +545,7 @@ export default {
       console.log(insertIndex)
       // let hightMoudleIndex = this_.insertModulesId + 1
       let length = newArrMiddle.length
-      console.log(insertIndex, length)
+      console.log(insertIndex, length, this.topAreaFlag)
       if (insertIndex === length) {
         insertIndex--
       } else if (this.topAreaFlag) {
@@ -625,7 +629,7 @@ export default {
     // 中间区域拖拽插入数据处理
     handleToMiddleDragData () {
       this.$http.$on('middleDragData', res => {
-        // console.log(res)
+        console.log(res)
         this.newIndex = res
       })
     },

@@ -549,7 +549,7 @@ export default {
       this.transmitGoodsIds(this.goodsIdsArr)
       // 关闭对话框
       this.choiseGooddialogVisible = false
-      this.$http.$emit('result', this.goodsIdsArr)
+      this.$emit('result', this.goodsIdsArr)
       this.$emit('resultGoodsRow', this.goodsRow)
       this.$emit('resultGoodsIds', this.goodsIdsArr)
       // 把选中的id集合和url集合回传
