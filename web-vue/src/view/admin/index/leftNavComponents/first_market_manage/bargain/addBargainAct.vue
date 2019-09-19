@@ -334,7 +334,12 @@
       :couponBack="couponIdList"
     />
     <!--商品选择-->
-    <choosingGoods @resultGoodsRow="choosingGoodsResult" />
+    <choosingGoods
+      @resultGoodsRow="choosingGoodsResult"
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="goodsIdList"
+      :singleElection="true"
+    />
   </div>
 </template>
 
@@ -359,7 +364,6 @@ export default {
         'id': this.$route.query.id
       }
       getBargainByIsd(SimpleBargainParam).then((res) => {
-        console.log(res)
         if (res.error === 0) {
           this.param = res.content
           this.effectiveDate = []
@@ -409,7 +413,10 @@ export default {
       showCouponDialog1: false,
       showCouponDialog2: false,
       couponIdList: [],
-      showCouponDialog: false
+      showCouponDialog: false,
+
+      tuneUpChooseGoods: false,
+      goodsIdList: []
     }
   },
   methods: {
@@ -417,19 +424,16 @@ export default {
     handleToCallDialog1 () {
       this.dialogFlag = 0
       this.couponIdList = this.getCouponIdsArray(this.mrkingVoucherObjs)
-      console.log(this.couponIdList)
       this.showCouponDialog = !this.showCouponDialog
     },
     // 选择优惠券弹窗-砍价失败后向买家赠送
     handleToCallDialog2 () {
       this.dialogFlag = 1
       this.couponIdList = this.getCouponIdsArray(this.rewardCouponObjs)
-      console.log(this.couponIdList)
       this.showCouponDialog = !this.showCouponDialog
     },
     // 确认选择优惠券-新增-删除
     handleToCheck (data) {
-      console.log(data)
       if (this.dialogFlag === 1) {
         this.rewardCouponObjs = data
       } else {
@@ -438,13 +442,15 @@ export default {
     },
     // 选择商品弹窗
     showChoosingGoods () {
-      this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     //  选择商品弹窗确认
     choosingGoodsResult (row) {
       this.param.goodsId = row.goodsId
       this.goodsRow = []
       this.goodsRow.push(row)
+      this.goodsIdList = []
+      this.goodsIdList.push(row.goodsId)
       this.param.stock = this.goodsRow[0].goodsNumber
     },
     addSubmit () {
