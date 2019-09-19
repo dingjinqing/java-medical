@@ -63,4 +63,5 @@ ALTER TABLE `b2c_mp_operate_log` ADD COLUMN `memo_id` VARCHAR(100) NOT NULL AFTE
 
 --添加币种
 ALTER TABLE `mini_main`.`b2c_shop`  ADD COLUMN `currency` VARCHAR(45) NOT NULL DEFAULT 'CNY' COMMENT '币种';
-
+--添加语言
+ALTER TABLE `mini_main`.`b2c_shop`  ADD COLUMN `shopLanguage` VARCHAR(45) NOT NULL DEFAULT 'zh-CN' COMMENT '语言';
