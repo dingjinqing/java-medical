@@ -23,5 +23,10 @@ export const en = {
   goods: 'goods',
   price: 'price',
   orderStatus: 'order status',
-  moneyPaid: 'paid amount'
+  moneyPaid: 'paid amount',
+  orderFinished: 'order completed',
+  refundFailed: 'refund failed',
+  refundCompleted: 'refund completed',
+  checkRefund: 'check refund',
+  manualRefund: 'manual refund'
 }

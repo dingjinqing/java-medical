@@ -3,25 +3,25 @@
     <div class="search_box">
       <div class="filters">
         <div class="filters_item">
-          <span>下单用户信息：</span>
+          <span>{{$t('orderCommon.orderUserInfo')}}:</span>
           <el-input
             v-model="searchParams.userInfo"
-            placeholder="请输入姓名/手机号"
+            :placeholder="$t('orderCommon.orderUserInfoPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>订单号：</span>
+          <span>{{$t('orderCommon.orderSn')}}:</span>
           <el-input
             v-model="searchParams.orderSn"
-            placeholder="请输入订单号"
+            :placeholder="$t('orderCommon.orderSnPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>优惠券包：</span>
+          <span>{{$t('couponPackageOrder.couponPackage')}}:</span>
           <el-input
             v-model="searchParams.packName"
             size="small"
@@ -29,14 +29,14 @@
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>下单时间：</span>
+          <span>{{$t('orderCommon.orderTime')}}:</span>
           <el-date-picker
             v-model="applicationTime"
             type="datetimerange"
-            range-separator="至"
+            :range-separator="$t('orderCommon.to')"
             value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :start-placeholder="$t('orderCommon.startTime')"
+            :end-placeholder="$t('orderCommon.endTime')"
             size="small"
           >
           </el-date-picker>
@@ -46,11 +46,11 @@
             @click="initDataList"
             type="primary"
             size="small"
-          >筛选</el-button>
+          >{{$t('orderCommon.filter')}}</el-button>
           <el-button
             type="default"
             size="small"
-          >导出表格</el-button>
+          >{{$t('orderCommon.exportTable')}}</el-button>
         </div>
       </div>
     </div>
@@ -59,12 +59,12 @@
       @tab-click="handleClick"
     >
       <el-tab-pane
-        label="全部"
+        :label="$t('orderCommon.all')"
         name="0"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="退款订单"
+        :label="$t('orderCommon.refundOrder')"
         name="1"
       ></el-tab-pane>
     </el-tabs>
@@ -85,18 +85,18 @@
       >
         <el-table-column
           prop="packName"
-          label="优惠券包"
+          :label="$t('couponPackageOrder.couponPackage')"
         ></el-table-column>
         <el-table-column
           prop="orderSn"
-          label="订单号"
+          :label="$t('orderCommon.orderSn')"
           width="200"
         ></el-table-column>
         <el-table-column
           prop="moneyPaid"
-          label="单价"
+          :label="$t('orderCommon.price')"
         ></el-table-column>
-        <el-table-column label="下单用户信息">
+        <el-table-column :label="$t('orderCommon.orderUserInfo')">
           <template slot-scope="scope">
             <a
               class="user_info"
@@ -110,9 +110,9 @@
         </el-table-column>
         <el-table-column
           prop="createTime"
-          label="下单时间"
+          :label="$t('orderCommon.orderTime')"
         ></el-table-column>
-        <el-table-column label="订单状态">
+        <el-table-column :label="$t('orderCommon.orderStatus')">
           <template slot-scope="scope">
             <div
               v-html="returnFlagType(scope.row.orderSn)"
@@ -124,7 +124,7 @@
         </el-table-column>
         <el-table-column
           prop="moneyPaid"
-          label="支付金额"
+          :label="$t('orderCommon.moneyPaid')"
         ></el-table-column>
       </el-table>
       <pagination
@@ -208,15 +208,15 @@ export default {
         return item.orderSn === orderSn
       })
       if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
-        return `<div>订单完成<br/><a class="refund" >手动退款</a></div>`
+        return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
       } else if (orderInfo.returnFlag === 0) {
-        return `<div>订单完成<div/>`
+        return `<div>${this.$t('orderCommon.orderFinished')}<div/>`
       } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
-        return `<div>部分退款<br/><a class="refund">手动退款</a><br/><a class="view">查看退款</a></div>`
+        return `<div><a class="refund">${this.$t('orderCommon.manualRefund')}</a><br/><a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       } else if (orderInfo.returnFlag === 1) {
-        return `<div>退款完成<br/> <a class="view">查看退款</a></div>`
+        return `<div>${this.$t('orderCommon.refundFailed')}</div>`
       } else {
-        return `<div>退款失败</div>`
+        return `<div>${this.$t('orderCommon.refundCompleted')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       }
     },
     processRefunds (orderSn, event) {

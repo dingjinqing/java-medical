@@ -23,5 +23,10 @@ export const cn = {
   goods: '商品',
   price: '单价',
   orderStatus: '订单状态',
-  moneyPaid: '支付金额'
+  moneyPaid: '支付金额',
+  orderFinished: '订单完成',
+  refundFailed: '退款失败',
+  refundCompleted: '退款完成',
+  checkRefund: '查看退款',
+  manualRefund: '手动退款'
 }

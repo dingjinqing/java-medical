@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="手动退款"
+    :title="$t('orderCommon.manualRefund')"
     :visible.sync="dialogShow"
     custom-class="custom"
     width="30%"
@@ -9,53 +9,53 @@
       class="card_refund"
       v-if="refundInfo.viewOrderType === 'card' && refundInfo.action === 'refund'"
     >
-      <p v-if="refundInfo.useScore > 0">积分：<el-input-number
+      <p v-if="refundInfo.useScore > 0">{{$t('refundDialog.integral')}}:<el-input-number
           v-model="refundData.score"
           size="small"
-        ></el-input-number> 积分</p>
-      <p v-if="refundInfo.useAccount > 0">余额：<el-input-number
+        ></el-input-number> {{$t('refundDialog.integral')}}</p>
+      <p v-if="refundInfo.useAccount > 0">{{$t('refundDialog.balance')}}:<el-input-number
           v-model="refundData.account"
           size="small"
-        ></el-input-number> 元</p>
-      <p v-if="refundInfo.moneyPaid > 0">现金：<el-input-number
+        ></el-input-number> {{$t('refundDialog.yuan')}}</p>
+      <p v-if="refundInfo.moneyPaid > 0">{{$t('refundDialog.cash')}}:<el-input-number
           v-model="refundData.money"
           size="small"
-        ></el-input-number> 元</p>
+        ></el-input-number> {{$t('refundDialog.yuan')}}</p>
     </div>
     <div
       class="coupon_refund"
       v-if="refundInfo.viewOrderType === 'couponPackage' && refundInfo.action === 'refund'"
     >
       <div class="coupon_refund_top">
-        <p>请输入退款金额：</p>
-        <p v-if="refundInfo.useAccount > 0">退余额：<el-input-number
+        <p>{{$t('refundDialog.refundTip')}}:</p>
+        <p v-if="refundInfo.useAccount > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.balance')}}:<el-input-number
             v-model="refundData.account"
             size="small"
-          ></el-input-number> 元</p>
-        <p v-if="refundInfo.memberCardBalance > 0">退会员卡余额：<el-input-number
+          ></el-input-number> {{$t('refundDialog.yuan')}}</p>
+        <p v-if="refundInfo.memberCardBalance > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.memberCardBalance')}}:<el-input-number
             v-model="refundData.memberCardBalance"
             size="small"
-          ></el-input-number> 元</p>
-        <p v-if="refundInfo.moneyPaid > 0">退现金：<el-input-number
+          ></el-input-number> {{$t('refundDialog.yuan')}}</p>
+        <p v-if="refundInfo.moneyPaid > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.cash')}}:<el-input-number
             v-model="refundData.money"
             size="small"
-          ></el-input-number> 元</p>
-        <p v-if="refundInfo.useScore > 0">退积分：<el-input-number
+          ></el-input-number> {{$t('refundDialog.yuan')}}</p>
+        <p v-if="refundInfo.useScore > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.integral')}}:<el-input-number
             v-model="refundData.score"
             size="small"
-          ></el-input-number> 分</p>
+          ></el-input-number> {{$t('refundDialog.integral')}}</p>
       </div>
       <div class="coupon_refund_bottom">
-        <p>剩余{{refundInfo.surplusAmount ?  refundInfo.surplusAmount : 0}}张优惠券未发放是否继续发放</p>
+        <p>{{$t('refundDialog.remainingCouponTip')}}:{{refundInfo.surplusAmount ?  refundInfo.surplusAmount : 0}},{{$t('refundDialog.whetherToContinueToIssue')}}</p>
         <p>
           <el-radio
             v-model="refundData.stillSendFlag"
             label="0"
-          >停止发放</el-radio>
+          >{{$t('refundDialog.stopIssuing')}}</el-radio>
           <el-radio
             v-model="refundData.stillSendFlag"
             label="1"
-          >继续发放</el-radio>
+          >{{$t('refundDialog.continueToIssue')}}</el-radio>
         </p>
       </div>
     </div>
@@ -63,11 +63,11 @@
       class="view_refund"
       v-if="refundInfo.action === 'view'"
     >
-      <p>退款时间：{{refundInfo.returnTime}}</p>
-      <p v-if="refundInfo.returnAccount > 0">已退余额：{{refundInfo.returnAccount}}</p>
-      <p v-if="refundInfo.returnCardBalance > 0">已退会员卡余额：{{refundInfo.returnCardBalance}}</p>
-      <p v-if="refundInfo.returnMoney > 0">已退现金：{{refundInfo.returnMoney}}</p>
-      <p v-if="refundInfo.returnScore > 0">已退积分：{{refundInfo.returnScore}}</p>
+      <p>{{$t('refundDialog.refundTime')}}:{{refundInfo.returnTime}}</p>
+      <p v-if="refundInfo.returnAccount > 0">{{$t('refundDialog.refunded')}}{{$t('refundDialog.balance')}}:{{refundInfo.returnAccount}}</p>
+      <p v-if="refundInfo.returnCardBalance > 0">{{$t('refundDialog.refunded')}}{{$t('refundDialog.memberCardBalance')}}:{{refundInfo.returnCardBalance}}</p>
+      <p v-if="refundInfo.returnMoney > 0">{{$t('refundDialog.refunded')}}{{$t('refundDialog.cash')}}:{{refundInfo.returnMoney}}</p>
+      <p v-if="refundInfo.returnScore > 0">{{$t('refundDialog.refunded')}}{{$t('refundDialog.integral')}}:{{refundInfo.returnScore}}</p>
     </div>
     <span
       slot="footer"
@@ -76,11 +76,11 @@
       <el-button
         @click="dialogShow = false"
         v-if="refundInfo.action === 'refund'"
-      >取 消</el-button>
+      >{{$t('refundDialog.cancel')}}</el-button>
       <el-button
         type="primary"
         @click="refundConfirm"
-      >确 定</el-button>
+      >{{$t('refundDialog.confirm')}}</el-button>
     </span>
   </el-dialog>
 </template>
@@ -167,7 +167,6 @@ export default {
         this.refundData.memberCardBalance = this.refundInfo.memberCardBalance ? this.refundInfo.memberCardBalance : 0
         this.refundData.orderId = this.refundInfo.orderId
         this.refundData.orderSn = this.refundInfo.orderSn
-        console.log(this.refundInfo)
       }
     }
   }

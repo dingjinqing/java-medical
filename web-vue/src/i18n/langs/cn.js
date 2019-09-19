@@ -124,6 +124,14 @@ import {
 import {
   cn as memberCardOrder
 } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/memberCardOrderCn'
+// 虚拟商品订单-优惠券包订单
+import {
+  cn as couponPackageOrder
+} from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/couponPackageOrderCn'
+// 虚拟商品订单-手动退款弹窗
+import {
+  cn as refundDialog
+} from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/refundDialogCn'
 
 // 快递公司
 import {
@@ -540,6 +548,8 @@ const cn = {
   order,
   orderCommon, // 订单通用
   memberCardOrder, // 虚拟商品订单-会员卡订单
+  couponPackageOrder, // 虚拟商品订单- 优惠券包订单
+  refundDialog, // 虚拟商品订单- 手动退款弹窗
 
   // 营销
   marketManage, // 营销管理

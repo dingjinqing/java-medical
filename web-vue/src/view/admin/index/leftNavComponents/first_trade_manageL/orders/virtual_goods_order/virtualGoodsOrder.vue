@@ -3,13 +3,13 @@
     <div class="main">
       <el-tabs v-model="activeName">
         <el-tab-pane
-          label="会员卡订单"
+          :label="$t('memberCardOrder.memberCardOrder')"
           name="card"
         >
           <memberCardOrder v-if="activeName ==='card'" />
         </el-tab-pane>
         <el-tab-pane
-          label="优惠券礼包订单"
+          :label="$t('couponPackageOrder.couponPackageOrder')"
           name="couponPackage"
         >
           <couponPackageOrder v-if="activeName ==='couponPackage'" />

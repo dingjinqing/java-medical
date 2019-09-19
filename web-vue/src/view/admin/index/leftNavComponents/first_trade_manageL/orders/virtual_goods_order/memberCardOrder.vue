@@ -3,25 +3,25 @@
     <div class="search_box">
       <div class="filters">
         <div class="filters_item">
-          <span>下单用户信息：</span>
+          <span>{{$t('orderCommon.orderUserInfo')}}:</span>
           <el-input
             v-model="searchParams.userInfo"
-            placeholder="请输入姓名/手机号"
+            :placeholder="$t('orderCommon.orderUserInfoPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>订单号：</span>
+          <span>{{$t('orderCommon.orderSn')}}:</span>
           <el-input
             v-model="searchParams.orderSn"
-            placeholder="请输入订单号"
+            :placeholder="$t('orderCommon.orderSnPlaceholder')"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>会员卡号：</span>
+          <span>{{$t('memberCardOrder.memberCardSn')}}:</span>
           <el-input
             v-model="searchParams.cardNo"
             size="small"
@@ -29,30 +29,33 @@
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>会员卡类型：</span>
+          <span>{{$t('memberCardOrder.memberCardType')}}:</span>
           <el-select
             v-model="searchParams.cardType"
+            :placeholder="$t('orderCommon.selectPlaceholder')"
             size="small"
             class="default_input"
             filterable
           >
             <el-option
-              v-for="item in cardTypeList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :label="$t('memberCardOrder.normalMemberCard')"
+              :value="0"
+            ></el-option>
+            <el-option
+              :label="$t('memberCardOrder.limitNumMemberCard')"
+              :value="1"
             ></el-option>
           </el-select>
         </div>
         <div class="filters_item">
-          <span>下单时间：</span>
+          <span>{{$t('orderCommon.orderTime')}}:</span>
           <el-date-picker
             v-model="applicationTime"
             type="datetimerange"
-            range-separator="至"
+            :range-separator="$t('orderCommon.to')"
             value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :start-placeholder="$t('orderCommon.startTime')"
+            :end-placeholder="$t('orderCommon.endTime')"
             size="small"
           >
           </el-date-picker>
@@ -62,11 +65,11 @@
             @click="initDataList"
             type="primary"
             size="small"
-          >筛选</el-button>
+          >{{$t('orderCommon.filter')}}</el-button>
           <el-button
             type="default"
             size="small"
-          >导出表格</el-button>
+          >{{$t('orderCommon.exportTable')}}</el-button>
         </div>
       </div>
     </div>
@@ -75,12 +78,12 @@
       v-model="searchParams.refundType"
     >
       <el-tab-pane
-        label="全部"
+        :label="$t('orderCommon.all')"
         name="0"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="退款订单"
+        :label="$t('orderCommon.refundOrder')"
         name="1"
       ></el-tab-pane>
     </el-tabs>
@@ -88,13 +91,13 @@
       <table>
         <thead v-loading="loading">
           <tr>
-            <th width="150px">商品</th>
-            <th>会员卡号</th>
-            <th>单价</th>
-            <th>下单用户信息</th>
-            <th>下单时间</th>
-            <th>订单状态</th>
-            <th>支付金额</th>
+            <th width="150px">{{$t('orderCommon.goods')}}</th>
+            <th>{{$t('memberCardOrder.memberCardSn')}}</th>
+            <th>{{$t('orderCommon.price')}}</th>
+            <th>{{$t('orderCommon.orderUserInfo')}}</th>
+            <th>{{$t('orderCommon.orderTime')}}</th>
+            <th>{{$t('orderCommon.orderStatus')}}</th>
+            <th>{{$t('orderCommon.moneyPaid')}}</th>
           </tr>
         </thead>
         <tbody>
@@ -111,7 +114,7 @@
               <td colspan="8">
                 <div class="tb-head_box">
                   <div class="left">
-                    <span>订单编号：{{orderItem.orderSn}}</span>
+                    <span>{{$t('orderCommon.orderCoding')}}:{{orderItem.orderSn}}</span>
                   </div>
                 </div>
               </td>
@@ -122,7 +125,7 @@
                   size="mini"
                   effect="plain"
                   :type="orderItem.cardType === 1 ? 'warning':'danger'"
-                >{{orderItem.cardType === 1 ? '限次会员卡':'普通会员卡'}}</el-tag>{{orderItem.cardName}}
+                >{{orderItem.cardType === 1 ? $t('memberCardOrder.limitNumMemberCard'):$t('memberCardOrder.normalMemberCard')}}</el-tag>{{orderItem.cardName}}
               </td>
               <td>{{orderItem.cardNo}}</td>
               <td>{{orderItem.moneyPaid}}</td>
@@ -175,11 +178,6 @@ export default {
       refundInfo: null,
       pageParams: {},
       searchParams: {},
-      cardTypeList: [
-        { value: null, label: '请选择会员卡类型' },
-        { value: 1, label: '普通会员卡' },
-        { value: 2, label: '限次会员卡' }
-      ],
       memberCardOrderList: [],
       applicationTime: '',
 
@@ -187,7 +185,15 @@ export default {
       originalData: []
     }
   },
+  watch: {
+    lang () {
+      // 重新渲染表格数据
+      let originalData = JSON.parse(JSON.stringify(this.originalData))
+      this.handleData(originalData)
+    }
+  },
   mounted () {
+    this.langDefault()
     this.initDataList()
   },
   methods: {
@@ -235,15 +241,15 @@ export default {
         return item.orderSn === orderSn
       })
       if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
-        return `<div>订单完成<br/><a class="refund" >手动退款</a></div>`
+        return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
       } else if (orderInfo.returnFlag === 0) {
-        return `<div>订单完成<div/>`
+        return `<div>${this.$t('orderCommon.orderFinished')}<div/>`
       } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
-        return `<div><a class="refund">手动退款</a><br/><a class="view">查看退款</a></div>`
+        return `<div><a class="refund">${this.$t('orderCommon.manualRefund')}</a><br/><a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       } else if (orderInfo.returnFlag === 1) {
-        return `<div>退款失败</div>`
+        return `<div>${this.$t('orderCommon.refundFailed')}</div>`
       } else {
-        return `<div>退款完成<br/> <a class="view">查看退款</a></div>`
+        return `<div>${this.$t('orderCommon.refundCompleted')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       }
     },
     processRefunds (orderSn, event) {
@@ -264,11 +270,11 @@ export default {
     returnFlagType (val) {
       switch (val) {
         case 0:
-          return `订单完成`
+          return this.$t('orderCommon.orderFinished')
         case 1:
-          return `退款失败`
+          return this.$t('orderCommon.refundFailed')
         case 2:
-          return `退款成功`
+          return this.$t('orderCommon.refundCompleted')
       }
     }
   }
