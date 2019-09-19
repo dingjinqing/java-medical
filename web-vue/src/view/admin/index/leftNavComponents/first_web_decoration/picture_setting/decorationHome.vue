@@ -140,7 +140,11 @@
           </vue-scroll>
         </div>
         <div class="decRight">
-          <PageSetup :nowRightShowMoudlesName='nowRightShowMoudlesName' />
+          <PageSetup
+            :nowRightShowMoudlesIndex='nowRightShowMoudlesIndex'
+            :nowRightModulesData="nowRightModulesData"
+            @handleToClearIndex='handleToClearIndex'
+          />
         </div>
       </div>
     </div>
@@ -352,9 +356,10 @@ export default {
       zbFlag: false,
       topAreaFlag: false,
       nowRightShowIndex: null,
-      nowRightShowMoudlesName: null,
+      nowRightShowMoudlesIndex: null,
       modulesData: [], // 模块数据
-      middleHereFlag: false
+      middleHereFlag: false,
+      nowRightModulesData: {}
     }
   },
   watch: {
@@ -371,6 +376,7 @@ export default {
     },
     nowRightShowIndex (newData) {
       console.log(newData, this.activeName, this.showModulesList)
+      this.handleToModuleHight()
     }
   },
   updated () {
@@ -675,15 +681,15 @@ export default {
 
       console.log(this.showModulesList, this.modulesData)
       if (this.showModulesList.length !== this.modulesData.length) {
-        this.nowRightShowMoudlesName = this.showModulesList[this.nowRightShowIndex]
         let obj = { // 传递当前模块json数据模拟
           test: 1
         }
         this.modulesData.push(obj)
       }
-
-      console.log(this.modulesData)
-      this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
+      this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
+      console.log(this.nowRightShowMoudlesIndex)
+      this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
+      // this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
       console.log(this.nowRightShowMoudlesName)
     },
     //  点击左侧模块加到中间模块队列底部并高亮
@@ -699,6 +705,10 @@ export default {
     // 当中部模块数据排序发生变化时处理保存模块数组的排序
     handleToSortModulesData (insert, obj) {
       console.log(insert, this.showModulesList)
+    },
+    // 右侧点击页面设置重置中部显示
+    handleToClearIndex () {
+      this.nowRightShowIndex = -1
     }
   }
 }

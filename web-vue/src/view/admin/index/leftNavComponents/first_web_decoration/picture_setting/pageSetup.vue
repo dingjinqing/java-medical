@@ -31,9 +31,8 @@ export default {
     RightCoupon: () => import('./pageSetupModules/rightCoupon')
   },
   props: {
-    nowRightShowMoudlesName: {
-      type: Number
-    }
+    nowRightShowMoudlesIndex: Number,
+    nowRightModulesData: Object
   },
   data () {
     return {
@@ -41,23 +40,36 @@ export default {
       topIconDown: this.$imageHost + '/image/admin/shop_deco/icon_down.png',
       topIconFlag: true,
       modulesShow: false,
-      thirdRightModulesList: ['RightMembershipCard', 'RightCoupon'],
+      thirdRightModulesList: [
+        {
+          id: 1,
+          name: 'RightMembershipCard'
+        },
+        {
+          id: 2,
+          name: 'RightCoupon'
+        }
+      ],
       showModule: null
     }
   },
   watch: {
-    nowRightShowMoudlesName: {
+    nowRightShowMoudlesIndex: {
       handler (newData) {
         console.log(newData)
         if (newData) {
           this.topIconFlag = false
+          this.thirdRightModulesList.forEach(item => {
+            if (item.id === newData) {
+              this.showModule = item.name
+            }
+          })
         }
-        this.showModule = this.thirdRightModulesList[(newData - 1)]
         console.log(newData)
       },
       immediate: true
     },
-    '$store.state.decorationModules.ModulesData': {
+    nowRightModulesData: {
       handler (newData) {
         console.log(newData)
       },
@@ -67,8 +79,9 @@ export default {
   methods: {
     // 点击顶部icon
     handleToChangeIcon () {
-      this.$http.$emit('decCard', -1)
+      this.$emit('handleToClearIndex')
       this.topIconFlag = !this.topIconFlag
+      this.showModule = ''
     }
   }
 }
