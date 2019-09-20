@@ -377,7 +377,7 @@
 
               <!--占位-->
               <div v-if="!coupon_duplicate.length">
-                123
+                请添加优惠券
               </div>
               <div
                 v-else
@@ -510,11 +510,7 @@
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
     />
-    <!--失败赠送-添加优惠卷-->
-    <!-- <AddCouponDialog
-      singleElection="true"
-      @handleToCheck="handleToCheck2"
-    /> -->
+
     <ImageDalog
       pageIndex='pictureSpace'
       :tuneUp="showImageDialog"
