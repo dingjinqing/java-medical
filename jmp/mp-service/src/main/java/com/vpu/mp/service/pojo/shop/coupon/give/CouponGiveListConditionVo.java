@@ -13,6 +13,8 @@ import lombok.Data;
 
 @Data
 public class CouponGiveListConditionVo {
+	/** 优惠券id*/
+	private Integer    couponId;
 	/** 优惠券名称 */
 	private String 		couponName;
 	/** 使用限制 */

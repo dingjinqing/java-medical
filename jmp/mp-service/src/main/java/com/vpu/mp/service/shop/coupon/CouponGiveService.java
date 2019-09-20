@@ -10,6 +10,8 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.TAG;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -33,7 +35,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.config.mq.RabbitConfig;
-import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
@@ -96,10 +97,10 @@ public class CouponGiveService extends ShopBaseService {
     public PageResult<CouponGiveListVo> getCouponGiveList(CouponGiveListParam param) {
         try {
             /* 查询活动信息 */
-            SelectLimitStep<Record5<String, Timestamp, String, Byte, Byte>> couponGiveListVo = db().select(GIVE_VOUCHER.ACT_NAME, GIVE_VOUCHER.CREATE_TIME, GIVE_VOUCHER.SEND_CONDITION, GIVE_VOUCHER.SEND_ACTION, GIVE_VOUCHER.SEND_STATUS).from(GIVE_VOUCHER);
+            SelectLimitStep<Record> couponGiveListVo = db().select().from(GIVE_VOUCHER);
             /* 模糊查询 */
             if (!StringUtils.isNullOrEmpty(param.getActName())) {
-                couponGiveListVo = ((SelectWhereStep<Record5<String, Timestamp, String, Byte, Byte>>) couponGiveListVo).where(GIVE_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())));
+                couponGiveListVo = ( (SelectWhereStep<Record>) couponGiveListVo).where(GIVE_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())));
             }
             /* 整合分页信息 */
             PageResult<CouponGiveListVo> listVo = this.getPageResult(couponGiveListVo, param.getCurrentPage(), param.getPageRows(), CouponGiveListVo.class);
@@ -116,15 +117,42 @@ public class CouponGiveService extends ShopBaseService {
                 /* 优惠券信息 */
                 List<CouponGiveListConditionVo> tempListVo = new ArrayList<CouponGiveListConditionVo>();
                 for (String selectId : idArray) {
-                    Optional<CouponGiveListConditionVo> couponVo = db().select(MRKING_VOUCHER.ACT_NAME.as("coupon_name"), MRKING_VOUCHER.LEAST_CONSUME, 
+                    Optional<CouponGiveListConditionVo> couponVo = db().select(MRKING_VOUCHER.ID.as("couponId"),MRKING_VOUCHER.ACT_NAME.as("coupon_name"), MRKING_VOUCHER.LEAST_CONSUME, 
                     		MRKING_VOUCHER.DENOMINATION,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME, MRKING_VOUCHER.VALIDITY_TYPE,
                     		MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE).from(MRKING_VOUCHER)
                     		.where(MRKING_VOUCHER.ID.eq(Integer.valueOf(selectId)))
                     		.fetchOptionalInto(CouponGiveListConditionVo.class);
                     tempListVo.add(couponVo.isPresent() ? couponVo.get() : null);
                 }
-                /* 完善某一活动对应的优惠券信息 */
+                
+                /** 完善某一活动对应的优惠券信息 */
                 vo.setCouponGiveListConditionVo(tempListVo);
+               //会员卡信息
+                if (!StringUtils.isNullOrEmpty(vo.getCardId())) {
+                	String[] cardId = vo.getCardId().split(",");
+                	List<String> cardIdList = new ArrayList<String>();
+                	for (String cId : cardId) {
+						cardIdList.add(cId);
+					}
+                	 List<String> cardName = db().select(MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
+                     		.where(MEMBER_CARD.ID.in(cardIdList))
+                     		.fetchInto(String.class);
+                	 //将信息返回
+                	 vo.setCardName(cardName);
+                }
+              //标签信息
+                if (!StringUtils.isNullOrEmpty(vo.getTagId())) {
+                	String[] tagId = vo.getTagId().split(",");
+                	List<String> tagIdList = new ArrayList<String>();
+                	for (String tId : tagId) {
+						tagIdList.add(tId);
+					}
+                	 List<String> tagName = db().select(TAG.TAG_NAME).from(TAG)
+                     		.where(TAG.TAG_ID.in(tagIdList))
+                     		.fetchInto(String.class);
+                	 //将信息返回
+                	 vo.setTagName(tagName);
+                }
             }
 
             return listVo;
