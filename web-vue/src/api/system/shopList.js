@@ -17,3 +17,12 @@ export function newShopRequest (data) {
     data: data
   })
 }
+
+// 校验手机号是否重复
+export function checkMobileRequest (data) {
+  return service({
+    url: '/api/system/shop/check/mobile',
+    method: 'post',
+    data: data
+  })
+}

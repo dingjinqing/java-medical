@@ -6,7 +6,7 @@
         :model="Data"
         label-width="100px"
         @submit.prevent="onSubmit"
-        style="margin:0px 0px 0px 50px;width:25%;min-width:300px;"
+        style="margin:0px 0px 0px 50px;min-width:300px;"
         label-position="left"
       >
         <el-form-item :label="$t('shopList.addInfo.sysId')">
@@ -33,8 +33,10 @@
             size="small"
           >
             <el-option
-              label="vpu_user(172.21.0.3)"
-              value="1"
+              v-for="item in dbVersion"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -47,7 +49,51 @@
             type="text"
             key="2"
             size="small"
+            ref="mobile"
           ></el-input>
+          <span v-if="this.phoneHave">手机号已注册</span>
+        </el-form-item>
+
+        <el-form-item
+          :label="$t('shopList.addInfo.shopLanguage')"
+          :required=true
+        >
+          <el-select
+            v-model="Data.shopLanguage"
+            placeholder="请选择语言"
+            size="small"
+          >
+            <el-option
+              v-for="item in languageType"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              ref="shopLanguage"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item
+          :label="$t('shopList.addInfo.currency')"
+          :required=true
+        >
+          <el-select
+            v-model="Data.currency"
+            placeholder="请选择币种"
+            size="small"
+            ref="currency"
+          >
+            <el-option
+              v-for="item in currencyType"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+              <span style="float: left">{{ item.label }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.sign }}</span>
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item
           :label="$t('shopList.addInfo.shopType')"
@@ -57,22 +103,13 @@
             v-model="Data.shopType"
             :placeholder="$t('shopList.selectType')"
             size="small"
+            ref="shopType"
           >
             <el-option
-              :label="$t('shopList.versionName.exp')"
-              value="v1"
-            ></el-option>
-            <el-option
-              :label="$t('shopList.versionName.base')"
-              value="v2"
-            ></el-option>
-            <el-option
-              :label="$t('shopList.versionName.high')"
-              value="v3"
-            ></el-option>
-            <el-option
-              :label="$t('shopList.versionName.unique')"
-              value="v4"
+              v-for="item in shopVersion"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -103,6 +140,7 @@
             v-model="Data.shopName"
             label='100'
             size="small"
+            ref="shopName"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('shopList.addInfo.shopPhone')">
@@ -149,12 +187,10 @@
             clearable
           >
             <el-option
-              :label="$t('shopList.flag_type.type1')"
-              value="1"
-            ></el-option>
-            <el-option
-              :label="$t('shopList.flag_type.type2')"
-              value="2"
+              v-for="item in flagType"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -203,18 +239,36 @@
         <el-button
           size="small"
           type="primary"
-          @click="save()"
+          @click="beforeSave()"
         >
           {{$t('shopList.save')}}
         </el-button>
         <span class="text">{{$t('shopList.prompt')}}</span>
       </div>
     </div>
+    <el-dialog
+      title="提示"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      center
+    >
+      <span>已提交</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="centerDialogVisible = false"
+          type="primary"
+        >确认</el-button>
+      </span>
+
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { newShopRequest, shopSearchRequest } from '@/api/system/shopList.js'
+import { newShopRequest, shopSearchRequest, checkMobileRequest } from '@/api/system/shopList.js'
 export default {
   name: 'newShop',
   data () {
@@ -238,19 +292,25 @@ export default {
         password: '',
         hidBottom: '',
         dbConfigId: '',
-        endTime: ''
+        endTime: '',
+        currency: '',
+        shopLanguage: ''
       },
       name: '',
-      flag: ''
+      flag: '',
+      phoneHave: false,
+      centerDialogVisible: false,
+      languageType: this.$t('shopList.language_type'),
+      currencyType: this.$t('shopList.currency_type'),
+      shopVersion: this.$t('shopList.shop_version'),
+      dbVersion: this.$t('shopList.db_version'),
+      flagType: this.$t('shopList.flag_type'),
+      phonereg: /^1[3|7|8]\d{9}$|^19[8-9]\d{8}$|^166\d{8}|^15[0-3|5-9]\d{8}|^14[5|7]\d{8}$/
     }
   },
-  // mounted () {
-  //   console.log(this.$route.params)
-  //   if (this.$route.params.flag === true) {
-  //     let name = this.$route.params.name
-  //     console.log(name)
-  //   }
-  // },
+  mounted () {
+
+  },
   methods: {
     getList () {
       shopSearchRequest({
@@ -258,40 +318,11 @@ export default {
         'pageRows': 10
       }).then(res => console.log(res)).catch(err => console.log(err))
     },
-    addOne () {
-      newShopRequest({
-        'sysId': 85,
-        'mobile': '18237093404',
-        'shopType': 'v4',
-        'shopName': '旺店'
-      }).then(res => console.log(res)).catch(err => console.log(err))
-    },
     // 添加商家账户
     save () {
-      let obj = {
-        'sysId': '85',
-        'mobile': '18722222233',
-        'shopType': 'v4',
-        'receiveMobile': '18722222234',
-        'shopName': 'json测试4443',
-        'shopPhone': '18722222235',
-        'shopNotice': '店铺公告',
-        'shopWx': 'weixin',
-        'shopEmail': 'lalala@163.com',
-        'isEnabled': '0',
-        'shopFlag': '2',
-        'hidBottom': '0',
-        'shopQq': '99887766',
-        'memberKey': '欧派店铺标识',
-        'tenancyName': '欧派大屏租户名称',
-        'userName': '欧派大屏用户名',
-        'password': '123456'
-      }
-      console.log(this.Data)
-      let params = Object.assign(obj, this.Data)
-      console.log(params)
-      newShopRequest(params).then(res => {
+      newShopRequest(this.Data).then(res => {
         console.log(res)
+        this.centerDialogVisible = false
         if (res.error === 0) {
           this.$message({
             message: '保存成功',
@@ -306,6 +337,85 @@ export default {
       }).catch(() => {
         this.$message.error('保存失败')
       })
+    },
+    beforeSave () {
+      if (this.checkData()) {
+        this.checkMobile()
+      }
+    },
+    checkData () {
+      if (this.isEmpty(this.Data.sysId)) {
+        this.$message.error('sysId不能为空')
+        return false
+      } if (this.isEmpty(this.Data.mobile)) {
+        this.$message.error('手机号不能为空')
+        this.$refs.mobile.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.Data.shopType)) {
+        this.$message.error('店铺类型不能为空')
+        this.$refs.shopType.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.Data.currency)) {
+        this.$message.error('币种不能为空')
+        this.$refs.currency.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.Data.shopLanguage)) {
+        this.$message.error('默认语言不能为空')
+        this.$refs.shopLanguage.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.Data.shopName)) {
+        this.$message.error('店铺名称不能为空')
+        this.$refs.shopName.$el.querySelector('input').focus()
+        return false
+      } else {
+        if (!(this.phonereg.test(this.Data.mobile))) {
+          this.$message.error('手机号格式错误')
+          this.$refs.mobile.$el.querySelector('input').focus()
+          return false
+        }
+        return true
+      }
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
+    },
+    checkMobile () {
+      let params = {
+        'mobile': this.Data.mobile
+      }
+      checkMobileRequest(params).then((res) => {
+        if (res.error === 100002) {
+          this.phoneHave = true
+          this.$confirm('手机号已注册，确定继续创建此店铺吗？', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '开始提交'
+            })
+            this.loadingUp()
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
+        } if (res.error === 0) {
+          this.loadingUp()
+        } if ((res.error !== 0) && (res.error !== 100002)) {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    loadingUp () {
+      this.save()
+      this.centerDialogVisible = true
     }
   }
 }

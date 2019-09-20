@@ -79,26 +79,128 @@ export const cn = {
     tenancyName: '欧派大屏租户名称',
     userName: '欧派大屏用户名',
     password: '欧派大屏密码',
-    hidBottom: '隐藏底部'
+    hidBottom: '隐藏底部',
+    needSelect: '请选择',
+    currency: '币种',
+    shopLanguage: '店铺语言'
   },
   selectDb: '请选择数据库',
-  selectType: '请选择店铺类型',
-  versionName: {
-    exp: '体验版',
-    base: '基础版',
-    high: '高级版',
-    unique: '旗舰版'
+  db_version: [{
+    value: '',
+    label: '选择数据库'
   },
+  {
+    value: '1',
+    label: 'vpu_user(172.21.0.3)'
+  }
+  ],
+  selectType: '请选择店铺类型',
+  shop_version: [{
+    value: '',
+    label: '选择店铺类型'
+  },
+  {
+    value: 'v1',
+    label: '体验版'
+  },
+  {
+    value: 'v2',
+    label: '基础版'
+  },
+  {
+    value: 'v3',
+    label: '高级版'
+  },
+  {
+    value: 'v4',
+    label: '旗舰版'
+  }
+  ],
   selectData: '请选择日期时间',
   selectFlag: '请选择店铺标记',
-  flag_type: {
-    type1: '欧派',
-    type2: '寺库'
+  flag_type: [{
+    value: '',
+    label: '选择店铺标记'
   },
+  {
+    value: '1',
+    label: '欧派'
+  },
+  {
+    value: '2',
+    label: '寺库'
+  }
+  ],
   shopDisabled: '禁用',
   hideFooter: '隐藏',
   save: '保存',
-  prompt: '添加新店铺，会创建此店铺的数据库。添加店铺只可以禁用，不能删除！谨慎添加'
+  prompt: '添加新店铺，会创建此店铺的数据库。添加店铺只可以禁用，不能删除！谨慎添加',
+  language_type: [{
+    value: '',
+    label: '选择语言'
+  },
+  {
+    value: 'zh_CN',
+    label: '中文'
+  },
+  {
+    value: 'zh_HK',
+    label: '中文(香港)'
+  },
+  {
+    value: 'zh_TW',
+    label: '中文(台湾)'
+  },
+  {
+    value: 'zh_SG',
+    label: '中文(新加坡)'
+  },
+  {
+    value: 'en_US',
+    label: 'English (US)'
+  }
+  ],
+  currency_type: [{
+    value: '',
+    label: '选择币种',
+    sign: '¤'
+  },
+  {
+    value: 'CNY',
+    label: '人民币',
+    sign: '¥'
+  },
+  {
+    value: 'HKD',
+    label: '港元',
+    sign: 'HK$'
+  },
+  {
+    value: 'TWD',
+    label: '台币',
+    sign: 'NT'
+  },
+  {
+    value: 'USD',
+    label: '美元',
+    sign: '$'
+  },
+  {
+    value: 'EUR',
+    label: '欧元',
+    sign: '€'
+  },
+  {
+    value: 'JPY',
+    label: '日元',
+    sign: '￥'
+  },
+  {
+    value: 'GBP',
+    label: '英镑 ',
+    sign: '￡'
+  }
+  ]
 }
 
 export const en = {
