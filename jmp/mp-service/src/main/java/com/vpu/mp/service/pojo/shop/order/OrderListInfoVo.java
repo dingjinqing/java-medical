@@ -46,7 +46,7 @@ public class OrderListInfoVo {
 	private Byte deliverType;
 	/** 下单时间 */
 	private Timestamp createTime;
-	/** 快递费金额 */
+	/** 快递费金额(退款时为退运费金额) */
 	private BigDecimal shippingFee;
 	/** 支付金额 */
 	private BigDecimal moneyPaid;

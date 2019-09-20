@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
 
-    private static final long serialVersionUID = -1846399433;
+    private static final long serialVersionUID = 2025320934;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_return_order.ret_id</code>.
@@ -199,14 +199,14 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_return_order.reason_desc</code>. 退款说明
+     * Setter for <code>mini_shop_6797286.b2c_return_order.reason_desc</code>. 退款/退货描述
      */
     public void setReasonDesc(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_return_order.reason_desc</code>. 退款说明
+     * Getter for <code>mini_shop_6797286.b2c_return_order.reason_desc</code>. 退款/退货描述
      */
     public String getReasonDesc() {
         return (String) get(12);
@@ -465,31 +465,45 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     }
 
     /**
+     * Setter for <code>mini_shop_6797286.b2c_return_order.currency</code>. 币种
+     */
+    public void setCurrency(String value) {
+        set(31, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_return_order.currency</code>. 币种
+     */
+    public String getCurrency() {
+        return (String) get(31);
+    }
+
+    /**
      * Setter for <code>mini_shop_6797286.b2c_return_order.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(31, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_return_order.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(31);
+        return (Timestamp) get(32);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_return_order.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(32, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_return_order.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(32);
+        return (Timestamp) get(33);
     }
 
     // -------------------------------------------------------------------------
@@ -518,7 +532,7 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     /**
      * Create a detached, initialised ReturnOrderRecord
      */
-    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, Byte reasonType, String reasonDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, Timestamp createTime, Timestamp updateTime) {
+    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, Byte reasonType, String reasonDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, String currency, Timestamp createTime, Timestamp updateTime) {
         super(ReturnOrder.RETURN_ORDER);
 
         set(0, retId);
@@ -552,7 +566,8 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
         set(28, merchantTelephone);
         set(29, consignee);
         set(30, zipCode);
-        set(31, createTime);
-        set(32, updateTime);
+        set(31, currency);
+        set(32, createTime);
+        set(33, updateTime);
     }
 }

@@ -19,14 +19,13 @@ public class OrderConciseRefundInfoVo {
 	private Integer orderId;
 	private String orderSn;
 	private String returnOrderSn;
-	private String returnType;
+	private Byte returnType;
 	private Byte refundStatus;
 	private BigDecimal money;
-	private Timestamp success;
 	private List<OrderReturnGoodsVo> orderReturnGoodsVo;
 	/**退货时的申请时间*/
 	private Timestamp applyTime;
-	/**退款时的申请时间*/
+	/**只退款时为退款申请时间，退货又退款时为提交物流信息时间*/
 	private Timestamp shippingOrRefundTime;
 	/**成功时间*/
 	private Timestamp refundSuccessTime;

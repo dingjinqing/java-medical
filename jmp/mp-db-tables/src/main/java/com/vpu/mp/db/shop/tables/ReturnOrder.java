@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrder extends TableImpl<ReturnOrderRecord> {
 
-    private static final long serialVersionUID = -1929883842;
+    private static final long serialVersionUID = -480463410;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_return_order</code>
@@ -119,9 +119,9 @@ public class ReturnOrder extends TableImpl<ReturnOrderRecord> {
     public final TableField<ReturnOrderRecord, Byte> REASON_TYPE = createField("reason_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "退款/退货原因类型，0：协商一致退款，1：未按约定时间发货，2：缺货，3：拍错/多拍/不想要，4：其他");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_return_order.reason_desc</code>. 退款说明
+     * The column <code>mini_shop_6797286.b2c_return_order.reason_desc</code>. 退款/退货描述
      */
-    public final TableField<ReturnOrderRecord, String> REASON_DESC = createField("reason_desc", org.jooq.impl.SQLDataType.CLOB, this, "退款说明");
+    public final TableField<ReturnOrderRecord, String> REASON_DESC = createField("reason_desc", org.jooq.impl.SQLDataType.CLOB, this, "退款/退货描述");
 
     /**
      * The column <code>mini_shop_6797286.b2c_return_order.shipping_type</code>. 快递类型
@@ -212,6 +212,11 @@ public class ReturnOrder extends TableImpl<ReturnOrderRecord> {
      * The column <code>mini_shop_6797286.b2c_return_order.zip_code</code>. 邮编
      */
     public final TableField<ReturnOrderRecord, String> ZIP_CODE = createField("zip_code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮编");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_return_order.currency</code>. 币种
+     */
+    public final TableField<ReturnOrderRecord, String> CURRENCY = createField("currency", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("CNY", org.jooq.impl.SQLDataType.VARCHAR)), this, "币种");
 
     /**
      * The column <code>mini_shop_6797286.b2c_return_order.create_time</code>.

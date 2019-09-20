@@ -900,6 +900,7 @@ create table `b2c_return_order`
     `merchant_telephone`      varchar(12)    not null default '' comment '商家电话',
     `consignee`               varchar(32)    not null default '' comment '收货人',
     `zip_code`                varchar(10)    not null default '' comment '邮编',
+    `currency`                varchar(10)    NOT NULL DEFAULT 'CNY' COMMENT '币种',
     `create_time`             timestamp               default current_timestamp,
     `update_time`             timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`ret_id`),

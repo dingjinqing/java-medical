@@ -157,6 +157,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setVoucherImages(param.getVoucherImages());
 		returnOrder.setUserId(order.getUserId());
 		returnOrder.setShopId(getShopId());
+		returnOrder.setCurrency(order.getCurrency());
 		//除退货外,refund_status为4
 		returnOrder.setRefundStatus(param.getReturnType() == OrderConstant.RT_GOODS ? OrderConstant.REFUND_STATUS_AUDITING : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		if(param.getReturnType() == OrderConstant.RT_GOODS) {
