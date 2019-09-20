@@ -809,7 +809,8 @@ const routes = [
   },
   // 营销管理/留存复购/消息推送
   {
-    path: '/api/admin/market/messagePush/all',
+    path: '/api/admin/market/messagePush',
+    redirect: `/api/admin/market/messagePush/all`,
     name: 'message_push',
     meta: {
       crumbTitle: 'router.message_push',
@@ -819,7 +820,36 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/messagePush'
-      )
+      ),
+    children: [
+      // 营销管理/留存复购/推送统计
+      {
+        path: '/api/admin/market/messagePush/pushStatistics',
+        name: 'push_statistics',
+        meta: {
+          crumbTitle: 'router.message_push',
+          meta: 'first_market_manage',
+          category: 'first_market_manage'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/messagePushStatistics'
+          )
+      },
+      {
+        path: '/api/admin/market/messagePush/all',
+        name: 'all_message_push',
+        meta: {
+          crumbTitle: 'router.message_push',
+          meta: 'first_market_manage',
+          category: 'first_market_manage'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/allMessagePush'
+          )
+      }
+    ]
   },
   // 营销管理/留存复购/消息推送/添加消息模板
   {
@@ -835,20 +865,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/addMessagePush'
       )
   },
-  // 营销管理/留存复购/推送统计
-  {
-    path: '/api/admin/market/messagePush/pushStatistics',
-    name: 'push_statistics',
-    meta: {
-      crumbTitle: 'router.message_push',
-      meta: 'first_market_manage',
-      category: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/messagePushStatistics'
-      )
-  },
+
   // 好友助力
   {
     path: '/admin/home/main/couponGift',

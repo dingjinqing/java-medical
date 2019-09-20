@@ -14,6 +14,9 @@ import Moment from 'moment';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import myMixins from '@/components/mixins.js';
+// 引入基于 Vue2.0 和 echarts 封装的 v-charts 图表组件
+import VCharts from 'v-charts';
+Vue.use(VCharts);
 // 全局flag
 localStorage.setItem('V-overallFlag', true);
 Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn';

@@ -1,79 +1,289 @@
 <template>
+  <!-- 推送统计 -->
   <div class="pushStatistics">
-    <el-card>
-      <!-- header -->
-      <div class="header">
-        <el-tabs
-          v-model="activeName"
-          @tab-click="handleClick"
+    <div class="inline">
+      <div class="time">
+        <span>筛选日期：</span>
+        <el-select
+          v-model="value"
+          placeholder="请选择筛选日期"
+          size="small"
+          @change="timeChange"
         >
-          <el-tab-pane
-            v-for="(item,index) in headers"
+          <el-option
+            v-for="item in options"
+            :key="item.value"
             :label="item.label"
-            :name="item.name"
-            :key="index"
-          ></el-tab-pane>
-        </el-tabs>
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+
       </div>
-      <!-- 测试封装的组件 -->
-      <div>
-        <chooseSelect :text="text" />
+      <div
+        class="timeAndBtn"
+        v-if="isShowTimePicker"
+      >
+        <div class="timePicker">
+          <dateTimePicker
+            :showPicker=1
+            @time="getChooseTime"
+          />
+        </div>
+        <div>
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleFilter"
+          >筛选</el-button>
+        </div>
       </div>
-    </el-card>
+
+    </div>
+    <!-- 比率展示 -->
+    <div class="ulListContent">
+      <ul class="ulList">
+        <li>
+          <div>消息推送数量</div>
+          <div
+            class="number1"
+            v-loading="loading"
+          >{{sendNumber}}</div>
+          <el-image
+            class="left_image"
+            style="width:44px;height:40px"
+            :src="urls.url4"
+          ></el-image>
+        </li>
+        <li>
+          <div>消息送达数量</div>
+          <div
+            class="number2"
+            v-loading="loading"
+          >{{sendSuccessNumber}}</div>
+          <el-image
+            class="left_image"
+            style="width:44px;height:40px"
+            :src="urls.url1"
+          ></el-image>
+        </li>
+        <li>
+          <div>回访数量</div>
+          <div
+            class="number3"
+            v-loading="loading"
+          >{{visitNumber}}</div>
+          <el-image
+            class="left_image"
+            style="width:44px;height:40px"
+            :src="urls.url2"
+          ></el-image>
+        </li>
+        <li>
+          <div>平均回访率</div>
+          <div
+            class="number4"
+            v-loading="loading"
+          >{{visitPercentage}}</div>
+          <el-image
+            class="left_image"
+            style="width:44px;height:40px"
+            :src="urls.url3"
+          ></el-image>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 图表 -->
+    <div>
+      <div id="charts">
+        <ve-line
+          v-loading="loading"
+          :data="chartData"
+          :settings="chartSettings"
+        ></ve-line>
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
+// 引入推送统计api
+import { analysisApi } from '@/api/admin/marketManage/messagePush.js'
+// 引入选择时间组件
+import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 export default {
   name: `pushStatistics`,
-  components: { chooseSelect },
+  components: { dateTimePicker },
   data () {
+    this.chartSettings = {
+      axisSite: { right: ['回访率'] },
+      yAxisType: ['KMB', 'percent'],
+      yAxisName: ['数量', '百分比']
+    }
     return {
-      activeName: `1`,
       /**
-       * header 标签页的数据
+       * 图表的数据
        */
-      headers: [
+      chartData: {
+        columns: ['日期', '消息推送数量', '消息送达数量', '回访数量', '回访率'],
+        rows: [
+
+        ]
+      },
+      /**
+       * options
+       */
+      options: [
         {
-          label: `全部消息推送`,
-          name: `0`
+          label: `最近1天`,
+          value: `最近1天`
         },
         {
-          label: `推送统计`,
-          name: `1`
+          label: `最近7天`,
+          value: `最近7天`
+        },
+        {
+          label: `最近30天`,
+          value: `最近30天`
+        },
+        {
+          label: `自定义`,
+          value: `自定义`
         }
       ],
-      /**
-       * 测试组件的数据
-       */
-      text: {
-        title: `属于`,
-        placeholder: `请选择会员标签`,
-        txt: `标签人群`
-      }
+      value: `最近1天`,
+      urls: {
+        url1: `${this.$imageHost}/image/admin/any_coner/any_coner_blue.png`,
+        url2: `${this.$imageHost}/image/admin/any_coner/any_coner_pink.png`,
+        url3: `${this.$imageHost}/image/admin/any_coner/any_coner_orange.png`,
+        url4: `${this.$imageHost}/image/admin/any_coner/any_coner_green.png`
+      },
+      sendNumber: null,
+      sendSuccessNumber: null,
+      visitNumber: null,
+      visitPercentage: null,
+      dataList: [{
+        date: `"2019-09-18"`,
+        sendNumber: 0, // 消息推送数量
+        sendSuccessNumber: 0, // 消息送达数量
+        visitNumber: 0, // 回访数量
+        visitPercentage: 0 // 平均回访率
+      }, {
+        date: `"2019-09-18"`,
+        sendNumber: 0, // 消息推送数量
+        sendSuccessNumber: 0, // 消息送达数量
+        visitNumber: 0, // 回访数量
+        visitPercentage: 0 // 平均回访率
+      }, {
+        date: `"2019-09-18"`,
+        sendNumber: 0, // 消息推送数量
+        sendSuccessNumber: 0, // 消息送达数量
+        visitNumber: 0, // 回访数量
+        visitPercentage: 0 // 平均回访率
+      }],
+      loading: false,
+      isShowTimePicker: false
+
     }
   },
+
+  created () {
+    this.fetchData({
+      'startTime': this.getTime().lastDay,
+      'endTime': this.getTime().now
+    })
+  },
   watch: {
-    activeName: 'watchActive'
+    // data内变量国际化
+
+  },
+  mounted () {
   },
   methods: {
-    // 监听activeName
-    watchActive (currentVal, oldVal) {
-      console.log(currentVal)
-      switch (currentVal) {
-        case `0`:
-          this.$router.push({
-            path: `/api/admin/market/messagePush/all`
+    // 获取数据
+    fetchData (params) {
+      this.loading = true
+      analysisApi(params).then(res => {
+        console.log(res)
+        const { error, content } = res
+        if (error === 0) {
+          console.log(content)
+          const { sendNumber, sendSuccessNumber, visitNumber, visitPercentage } = content
+          this.sendNumber = sendNumber
+          this.sendSuccessNumber = sendSuccessNumber
+          this.visitNumber = visitNumber
+          this.visitPercentage = visitPercentage
+          this.formatAllStatistics(content.allStatistics)
+          this.loading = false
+        }
+      }
+      ).catch(err => console.log(err))
+    },
+    formatAllStatistics (data) {
+      console.log(data)
+      let arr = []
+      data.forEach((item, index) => {
+        arr.push({
+          '日期': item.date,
+          '消息推送数量': item.sendNumber,
+          '消息送达数量': item.sendSuccessNumber,
+          '回访数量': item.visitNumber,
+          '回访率': item.visitPercentage
+        })
+      })
+      this.chartData.rows = arr
+    },
+    // timeChange 当选择的时间发生变化的时候
+    timeChange (val) {
+      console.log(val)
+      const now = this.getTime().now
+      const last7 = this.getTime().last7
+      const last30 = this.getTime().last30
+      const lastDay = this.getTime().lastDay
+      console.log(lastDay)
+      switch (val) {
+        case `最近1天`:
+          this.fetchData({
+            'startTime': lastDay,
+            'endTime': now
           })
           break
-        case `1`:
-          this.$router.push({
-            path: `/api/admin/market/messagePush/pushStatistics`
+        case `最近7天`:
+          this.fetchData({
+            'startTime': last7,
+            'endTime': now
           })
+          break
+        case `最近30天`:
+          this.fetchData({
+            'startTime': last30,
+            'endTime': now
+          })
+          break
+        case `自定义`:
+          this.isShowTimePicker = true
+          this.loading = true
           break
         default:
           break
       }
+    },
+    getChooseTime (val) {
+      console.log(val)
+      this.fetchData(val)
+    },
+
+    // 获取时间
+    getTime () {
+      let now = this.moment().format('YYYY-MM-DD 00:00:00')
+      let lastDay = this.moment().subtract(1, 'days').format('YYYY-MM-DD 00:00:00')
+      var last7 = this.moment().subtract(6, 'days').format('YYYY-MM-DD 00:00:00') // 7天前
+      var last30 = this.moment().subtract(29, 'days').format('YYYY-MM-DD 00:00:00')// 30天前
+      return { now, lastDay, last7, last30 }
+    },
+    // 筛选
+    handleFilter () {
+
     }
   }
 }
@@ -82,5 +292,71 @@ export default {
 <style lang="scss" scoped>
 .pushStatistics {
   padding: 10px;
+  .inline {
+    display: flex;
+    .time {
+      margin-bottom: 10px;
+      margin-right: 10px;
+    }
+    .timeAndBtn {
+      display: flex;
+      .timePicker {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .ulListContent {
+    display: flex;
+    justify-content: center;
+    .ulList {
+      width: 1000px;
+      height: 130px;
+      display: flex;
+      border: 1px solid #eee;
+      li {
+        position: relative;
+        width: 25%;
+        height: 130px;
+        border-right: 1px solid #eee;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .number1 {
+          color: #3dcf9a;
+
+          font-size: 30px;
+          margin-top: 10px;
+        }
+        .number2 {
+          color: #5a8bff;
+
+          font-size: 30px;
+          margin-top: 10px;
+        }
+        .number3 {
+          color: #fc6181;
+
+          font-size: 30px;
+          margin-top: 10px;
+        }
+        .number4 {
+          color: #fdb64a;
+          font-size: 30px;
+          margin-top: 10px;
+        }
+        .left_image {
+          position: absolute;
+          bottom: 1px;
+          left: 0;
+        }
+      }
+    }
+  }
+  #charts {
+    width: 90%;
+    margin-top: 20px;
+  }
 }
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div class="messagePush">
-    <!-- 消息推送卡片 -->
     <el-card>
       <!-- header -->
       <div>
@@ -16,261 +15,49 @@
           ></el-tab-pane>
         </el-tabs>
       </div>
-      <div>
-        <!-- 添加消息推送 -->
-        <div>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleAddMessagePush"
-          > 添加消息推送</el-button>
-        </div>
-        <!-- 筛选条件 -->
-        <div>
-          <el-form
-            :inline="true"
-            :model="formData"
-            label-width="90px"
-          >
-            <el-form-item :label="labels.label1">
-              <el-input
-                style="width:120px"
-                v-model="formData.name"
-                size="small"
-              ></el-input>
-            </el-form-item>
-            <el-form-item :label="labels.label2">
-              <el-input
-                style="width:120px"
-                v-model="formData.title"
-                size="small"
-              ></el-input>
-            </el-form-item>
-            <el-form-item :label="labels.label3">
-              <dateTimePicker
-                @time="handleGetTime"
-                :showPicker=1
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button
-                type="primary"
-                @click="handleFilter"
-                size="small"
-              >筛选</el-button>
-
-            </el-form-item>
-          </el-form>
-        </div>
-        <!-- 表格数据 -->
-        <div>
-          <el-table
-            :data="dataList"
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="name"
-              label="消息名称"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="title"
-              label="业务标题"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="startTime"
-              label="发送时间"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="sentNumber"
-              label="送达数量"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="clickedNumber"
-              label="回访数量"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="percentage"
-              label="回访率"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="sendStatus"
-              label="发送状态"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="operating"
-              label="操作"
-            >
-              <template slot-scope="">
-                <div>
-                  <!-- {{scope.row}} -->
-                  <el-tooltip
-                    content="查看详情"
-                    placement="top"
-                  >
-                    <el-button
-                      size="mini"
-                      type="primary"
-                      icon="el-icon-view"
-                      circle
-                    ></el-button>
-                  </el-tooltip>
-                  <el-tooltip
-                    content="发送记录"
-                    placement="top"
-                  >
-                    <el-button
-                      size="mini"
-                      type="primary"
-                      icon="el-icon-s-unfold"
-                      circle
-                    ></el-button>
-                  </el-tooltip>
-                  <el-tooltip
-                    content="删除"
-                    placement="top"
-                  >
-                    <el-button
-                      size="mini"
-                      type="primary"
-                      icon="el-icon-delete"
-                      circle
-                    ></el-button>
-                  </el-tooltip>
-                  <!-- <i class="el-icon-view"></i>
-                <i class="el-icon-s-unfold"></i>
-                <i class="el-icon-delete"></i> -->
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-
-      </div>
-
+      <!-- 路由出口 -->
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </el-card>
+
   </div>
 </template>
+
 <script>
-import dateTimePicker from '../../../../../../components/admin/dateTimePicker/dateTimePicker'
-import { messageTemplateListApi } from '@/api/admin/marketManage/messagePush'
 export default {
-  name: 'messagePush',
-  components: { dateTimePicker },
+  name: `messagePush`,
   data () {
     return {
-      activeName: `0`,
-      /**
-       * header 标签页的数据
-       */
+      activeName: ``,
       headers: [
         {
           label: `全部消息推送`,
-          name: `0`
+          name: `/api/admin/market/messagePush/all`
         },
         {
           label: `推送统计`,
-          name: `1`
-        }
-      ],
-      /**
-       * formData 的相关数据
-       */
-      formData: {
-        name: ``,
-        title: ``
-
-      },
-      labels: {
-        label1: `消息名称`,
-        label2: `业务标题`,
-        label3: `发送时间`
-      },
-      /**
-       * tableData
-       */
-      dataList: [
-        {
-          'id': 1,
-          'name': '名称',
-          'title': '标题',
-          'startTime': '2019-09-03 15:04:32',
-          'sentNumber': 0,
-          'clickedNumber': 0,
-          'percentage': 0.0,
-          'sendStatus': 0
+          name: `/api/admin/market/messagePush/pushStatistics`
         }
       ]
     }
   },
   created () {
-    // this.initData() // 初始化获取数据
+    this.activeName = this.$route.path
   },
-  watch: {
-    activeName: 'watchActive'
+  updated () {
+    this.activeName = this.$route.path
   },
+  // 方法
   methods: {
-    // 监听activeName
-    watchActive (currentVal, oldVal) {
-      console.log(currentVal)
-      switch (currentVal) {
-        case `0`:
-          this.$router.push({
-            path: `/api/admin/market/messagePush/all`
-          })
-          break
-        case `1`:
-          this.$router.push({
-            path: `/api/admin/market/messagePush/pushStatistics`
-          })
-          break
-        default:
-          break
-      }
-    },
-    // 初始化数据方法
-    initData () {
-      // 请求参数
-      const params = {
-        'currentPage': 1,
-        'pageRows': 1
-      }
-      messageTemplateListApi(params).then(res => {
-        console.log(res)
-        const { error, content: { page, dataList } } = res
-        if (error === 0) {
-          console.log(page)
-          console.log(dataList)
-        }
-      }).catch(err => console.log(err))
-    },
-    // 点击标签页
-    handleClick (val) {
-      console.log(val.index)
-    },
-    // 添加消息推送
-    handleAddMessagePush () {
-      this.$router.push({
-        path: `/api/admin/market/messagePush/addMessage`
-      })
-    },
-    // 筛选
-    handleFilter () {
-    },
-    // 获取筛选的时间
-    handleGetTime (val) {
-      console.log(val)
+    handleClick (tab) {
+      this.$router.push(tab.name)
     }
   }
 }
 </script>
-<style lang="scss">
+
+<style lang="scss" scoped>
 .messagePush {
   padding: 10px;
 }

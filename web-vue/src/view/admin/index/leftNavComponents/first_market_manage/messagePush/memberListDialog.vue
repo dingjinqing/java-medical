@@ -57,7 +57,7 @@
       <div class="table">
         <el-table
           ref="table"
-          :data="tableData"
+          :data="questions"
           tooltip-effect="dark"
           style="width: 100%"
           :row-key="(row)=>{ return row.userId}"
@@ -108,11 +108,11 @@
 </template>
 <script>
 import { membershipListRequest } from '@/api/admin/membershipList'
-
+import pagination from '@/components/admin/pagination/pagination'
 export default {
   name: 'memberListDialog',
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    pagination
   },
   props: {
     /**
@@ -135,13 +135,18 @@ export default {
         label3: `手机号`
       },
       pageParams: {
-        'currentPage': '',
-        'pageRows': '',
+        'currentPage': null,
+        'pageRows': null,
         'mobile': null,
         'userId': null,
         'userName': null
       },
-      tableData: [],
+      /**
+       * 翻页的时候将questions的数据在allSelecteds判断是否存在,存在就设置为选中
+       */
+      questions: [], // 分页时从后台获取的本页面数据
+      multipleSelection: [], // 当前页选中的项
+      allSelecteds: [], // 所有选中的项
       /**
        * 已选择的数组
        */
@@ -164,9 +169,10 @@ export default {
       membershipListRequest(this.pageParams).then(res => {
         const { error, content: { page, dataList } } = res
         if (error === 0) {
-          // console.log(res)
-          this.tableData = dataList
+          console.log(res)
+          this.questions = dataList
           this.pageParams = page
+          console.log(this.pageParams)
         }
       }).catch(err => console.log(err))
     },

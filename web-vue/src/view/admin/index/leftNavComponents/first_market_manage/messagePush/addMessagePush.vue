@@ -126,7 +126,10 @@
                     <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
                   </div>
                   <div>
-                    <el-checkbox v-model="onClickNoPay">加购人群</el-checkbox>
+                    <el-checkbox
+                      v-model="onClickNoPay"
+                      @change="handleOnClickNoPayChange"
+                    >加购人群</el-checkbox>
                     <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
                   </div>
                   <div>
@@ -176,7 +179,25 @@
                         type="text"
                       >+ 添加会员</el-button>
                     </span>
-
+                    <!-- 测试 开始-->
+                    <!-- <div>
+                      <div>
+                        <dg-table
+                          title="弹窗组件选择数据"
+                          :checked-data="checkedData"
+                          @handleChooseData="handleChooseData"
+                        ></dg-table>
+                        <br /><br /><br />
+                        <el-input
+                          type="textarea"
+                          :rows="10"
+                          placeholder="已选择内容"
+                          :value="JSON.stringify(checkedData)"
+                        >
+                        </el-input>
+                      </div>
+                    </div> -->
+                    <!-- 测试结束 -->
                     <span>已选择会员{{memberNum}}人</span>
                   </div>
                   <div>
@@ -252,7 +273,10 @@
                   </div>
                   <div>
                     <span style="color:#999;fontSize:12px;margin-right:10px">预计送达人数：0 </span>
-                    <el-button type="text">查看</el-button>
+                    <el-button
+                      type="text"
+                      @click="handleGetUser"
+                    >查看</el-button>
                   </div>
                   <div>
                     <el-radio
@@ -309,14 +333,21 @@
       <!-- 选择内容模板消息 -->
       <chooseTemplateDialog
         v-if="whetherShowDialog"
-        @data="getData"
+        @content="getContent"
         :showDialog="whetherShowDialog"
         @dialog-cancel="closeDialog"
+      />
+      <!-- 获取人群弹窗 -->
+      <getUserDialog
+        @dialog-cancel="closeDialog"
+        :dialogVisible="dialogVisible"
       />
     </el-card>
   </div>
 </template>
 <script>
+//
+import dialogTable from './chooseDialogTable'
 // 引入选择链接弹窗
 import selectLinks from '@/components/admin/selectLinks'
 // 选择商品弹窗
@@ -324,15 +355,25 @@ import choosingGoods from '@/components/admin/choosingGoods'
 // 选择内容模板弹窗
 import chooseTemplateDialog from './chooseTemplateDialog'
 import memberListDialog from './memberListDialog'
+import getUserDialog from './getUserDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
-import { allCardApi } from '@/api/admin/marketManage/messagePush.js'
+import { allCardApi, contentAddApi, getUserNumberApi } from '@/api/admin/marketManage/messagePush.js'
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
-  components: { chooseTemplateDialog, selectLinks, dateTimePicker, chooseSelect, memberListDialog, choosingGoods },
+  components: {
+    'dgTable': dialogTable,
+    chooseTemplateDialog,
+    selectLinks,
+    dateTimePicker,
+    chooseSelect,
+    memberListDialog,
+    choosingGoods,
+    getUserDialog },
   data () {
     return {
+      checkedData: [], // 初始化弹窗选中的行
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
         url2: `${this.$imageHost}/image/admin/shop_logo_default.png`,
@@ -394,6 +435,7 @@ export default {
 
       dialogOff: false,
       whetherShowDialog: false,
+      dialogVisible: false,
       memberNum: 0, // 已选择的会员人数
       /**
        * 自定义实体
@@ -462,7 +504,10 @@ export default {
     }
   },
   methods: {
-
+    handleChooseData (data) {
+      this.$message({ message: `已经选择了${data.length}条数据！`, type: 'success' })
+      this.checkedData = data
+    },
     // 初始化数据
     initData () {
       this.$http.$on('result', res => {
@@ -479,13 +524,38 @@ export default {
     // 保存并发送
     handleSaveAndSend () {
       const params = {
-        senAction: this.senAction,
-        startTime: this.startTime,
-        endTime: this.endTime,
-        startTime1: this.startTime1,
-        onClickNoPay: this.onClickNoPay,
-        onClickGoods: this.onClickGoods,
-        onClickCard: this.onClickCard
+        name: this.formData.name,
+        title: this.formData.title,
+        action: 7,
+        // templateId: 2,
+        content: this.formData.content,
+        pageLink: this.pageLink,
+        userInfo: {
+          onClickNoPay: this.onClickNoPay,
+          onClickGoods: this.onClickGoods,
+          goodsIdList: this.goodsIdList,
+          onClickCard: this.onClickCard,
+          cardIdsList: this.cardIdsList,
+          onClickTag: this.onClickTag,
+          tagIdList: this.tagIdList,
+          onClickUser: this.onClickUser,
+          userIdList: this.userIdList,
+          onClickCustomRule: this.onClickCustomRule,
+          customRuleInfo: {
+            noPayDay: `1`,
+            payedDay: `1`,
+            buyTimesMore: `1`,
+            buyTimesLess: `1`,
+            moneyAvgMore: `1`,
+            moneyAvgLess: `1`,
+            loginStart: `1`,
+            loginEnd: `1`
+          }
+        },
+        userKey: `1`,
+        senAction: this.senAction
+        // startTime: this.startTime,
+        // endTime: this.endTime
       }
       console.log(params)
     },
@@ -518,6 +588,7 @@ export default {
     closeDialog () {
       this.dialogOff = false
       this.whetherShowDialog = false
+      this.dialogVisible = false
     },
     // 添加会员
     handleAddMember () {
@@ -531,9 +602,9 @@ export default {
       console.log(val)
       this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
     },
-    // getData
-    getData () {
-
+    // getContent
+    getContent (res) {
+      this.formData.content = res
     },
     customRuleInfoValChange (val) {
       if (val === `指定时间内有登录记录`) {
@@ -618,7 +689,18 @@ export default {
     },
     // 添加为模板
     handleAddTemplate () {
-
+      console.log(this.formData.content)
+      if (this.formData.content === ``) { }
+      contentAddApi({
+        'action': 2,
+        'content': this.formData.content
+      }).then(res => {
+        console.log(res)
+        const { error } = res
+        if (error === 0) {
+          this.$message.success('添加模板成功')
+        }
+      }).catch(err => console.log(err))
     },
     // handleShowBtn
     handleShowBtn () {
@@ -634,7 +716,7 @@ export default {
     },
     // 选择模板
     choosTemplate () {
-
+      this.whetherShowDialog = true
     },
     // 选择商品
     handleChooseGoods () {
@@ -666,6 +748,24 @@ export default {
     getPath (res) {
       console.log(res)
       this.pageLink = res
+    },
+    // 查看
+    handleGetUser () {
+      this.dialogVisible = true
+    },
+    fetchUserList (params) {
+      getUserNumberApi(params).then(res => {
+        console.log(res)
+      }).catch(err => console.log(err))
+    },
+    // 加购人群发生变化的时候
+    handleOnClickNoPayChange (val) {
+      console.log(val)
+      // 获取发送人群的数量
+      const params = {
+        onClickNoPay: val
+      }
+      this.fetchUserList(params)
     }
   }
 }

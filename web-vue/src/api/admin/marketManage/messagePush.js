@@ -24,9 +24,40 @@ export const allTagApi = () =>
     method: 'post'
   })
 // 获取模版内容
-export const contentListApi = params =>
+export const contentListApi = data =>
   service({
-    url: '/api/admin/market/message/template/content/list',
-    method: 'get',
-    params
+    url: `/api/admin/market/message/template/content/list`,
+    method: 'post',
+    data
+  })
+
+// 添加模板
+export const contentAddApi = data =>
+  service({
+    url: `/api/admin/market/message/template/content/add`,
+    method: 'post',
+    data
+  })
+// 获取发送人群列表
+export const getUserArrayApi = data =>
+  service({
+    url: `/api/admin/market/message/template/getUserArray`,
+    method: 'post',
+    data
+  })
+// 获取发送人群
+export const getUserNumberApi = data =>
+  service({
+    url: `/api/admin/market/message/template/getUser`,
+    method: 'post',
+    data
+  })
+
+// 推送统计
+
+export const analysisApi = data =>
+  service({
+    url: `/api/admin/market/message/template/analysis`,
+    method: 'post',
+    data
   })
