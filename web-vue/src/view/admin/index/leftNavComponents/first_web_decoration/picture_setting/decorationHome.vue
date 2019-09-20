@@ -120,8 +120,8 @@
                     v-for="(item,index) in showModulesList"
                     :key="index"
                   >
-                    <!--会员列表模块-->
-                    <div @click="handleToClickModule(index)">
+                    <!--模块-->
+                    <div @click.stop.prevent="handleToClickModule(index)">
                       <components
                         :is='thirdMiddleModulesList[item]'
                         :flag="index"
@@ -359,7 +359,15 @@ export default {
       nowRightShowMoudlesIndex: null,
       modulesData: [], // 模块数据
       middleHereFlag: false,
-      nowRightModulesData: {}
+      nowRightModulesData: {},
+      dragOptions: {
+        scroll: false,
+        forceFallback: true,
+        fallbackClass: 'active',
+        sort: false,
+        preventOnFilter: true,
+        fallbackTolerance: '5px'
+      }
     }
   },
   watch: {
@@ -367,7 +375,12 @@ export default {
       console.log(this.nowRightShowIndex, newData)
       console.log(newData)
       this.$http.$emit('modulesClick', this.nowRightShowIndex)
-      this.handleToModuleHight()
+      console.log(this.showModulesList, this.modulesData)
+      // // 当前显示的数组池和保存的数组池不相等时说明此时发生了当前显示的nowRightShowIndex未发生改变
+      // if (this.showModulesList.length !== this.modulesData.length) {
+      //   this.handleToModuleHight()
+      // }
+      // this.handleToModuleHight()
       if (newData.length) {
         this.zbFlag = true
       } else {
@@ -376,7 +389,7 @@ export default {
     },
     nowRightShowIndex (newData) {
       console.log(newData, this.activeName, this.showModulesList)
-      // this.handleToModuleHight()
+      this.handleToModuleHight()
     }
   },
   updated () {
@@ -384,20 +397,16 @@ export default {
     this.$http.$emit('modulesClick', this.nowRightShowIndex)
   },
   computed: {
-    dragOptions () {
-      return {
-        scroll: true,
-        animation: 300,
-        group: {
-          name: 'description',
-          pull: 'clone',
-          put: false
-        },
-        forceFallback: true,
-        fallbackClass: 'active',
-        sort: false
-      }
-    }
+    // dragOptions () {
+    //   return {
+    //     scroll: false,
+    //     forceFallback: true,
+    //     fallbackClass: 'active',
+    //     sort: false,
+    //     preventOnFilter: true,
+    //     fallbackTolerance: '5px'
+    //   }
+    // }
   },
   mounted () {
     // 初始化数据
@@ -428,7 +437,7 @@ export default {
           // setTimeout(() => {
           this_.$nextTick(() => {
             let hightMoudleIndex = this_.insertModulesId + 1
-
+            console.log(hightMoudleIndex)
             if (this_.nowRightShowIndex === -1) {
               this_.nowRightShowIndex = 0
             } else {
@@ -467,7 +476,7 @@ export default {
             pos.top < p.top + $(this).height()
           ) {
             this_.insertModulesId = $(this)[0].__vue__.flag
-            // console.log($(this)[0].__vue__.flag)
+            console.log($(this)[0].__vue__.flag)
             $('.modules').removeClass('placeholder')
             $(this).addClass('placeholder')
           }
@@ -515,6 +524,7 @@ export default {
     // 中间区域元素开始拖动时处理函数
     handleToStart ({ oldIndex }) {
       console.log(oldIndex)
+
       this.middleHereFlag = true
       this.topAreaFlag = false
       let newArr = JSON.parse(JSON.stringify(this.showModulesList))
@@ -639,6 +649,10 @@ export default {
 
           console.log(newArr3, flag)
           newArr3.splice(flag, 1)
+          // 如果数组为空就重置当前插入模块id
+          if (!newArr3.length) {
+            this.insertModulesId = -1
+          }
           console.log(newArr3)
           this.showModulesList = newArr3
       }
@@ -669,7 +683,7 @@ export default {
     handleToClickModule (index) {
       console.log(index)
       this.$http.$emit('modulesClick', index)
-      this.handleToModuleHight()
+      // this.handleToModuleHight()
     },
     // 当前高亮模块数据处理向右侧传递事件
     handleToModuleHight () {
@@ -705,6 +719,7 @@ export default {
         this.modulesData.splice(this.nowRightShowIndex, 0, obj)
       }
       // this.nowRightShowMoudlesIndex  当前高亮模块类型的index
+      console.log(this.showModulesList, this.nowRightShowIndex)
       this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
       console.log(this.nowRightShowMoudlesIndex)
       console.log(this.insertModulesId)

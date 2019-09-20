@@ -40,7 +40,7 @@
         </div>
       </div>
       <div class="item_module_title">
-        <span>会员卡</span>
+        <span>优惠卷</span>
       </div>
       <div class="item_operation">
         <img
@@ -160,6 +160,7 @@ export default {
 <style lang="scss" scoped>
 .Coupon {
   .showModule {
+    border: 2px dashed #fff;
     min-height: 10px;
     background-color: #ffffff;
     position: relative;
@@ -265,6 +266,9 @@ export default {
 .placeholder {
   .activeSetHere {
     display: block;
+  }
+  .showModule {
+    border: 2px dashed #5a8bff !important;
   }
 }
 </style>

@@ -154,6 +154,7 @@ export default {
     min-height: 10px;
     background-color: #ffffff;
     position: relative;
+    border: 2px dashed #fff;
     .item_module_title {
       position: absolute;
       top: 0px;
@@ -286,6 +287,9 @@ export default {
 .placeholder {
   .activeSetHere {
     display: block;
+  }
+  .showModule {
+    border: 2px dashed #5a8bff !important;
   }
 }
 </style>
