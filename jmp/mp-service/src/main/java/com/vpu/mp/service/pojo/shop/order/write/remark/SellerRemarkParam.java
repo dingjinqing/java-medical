@@ -26,6 +26,5 @@ public class SellerRemarkParam {
 	@Min(0)
 	@Max(1)
 	private Byte type;
-	@NotBlank(message = JsonResultMessage.MSG_ORDER_REMARK_NOT_NULL)
 	private String remark;
 }
