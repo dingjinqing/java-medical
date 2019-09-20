@@ -302,7 +302,7 @@ public class ShopService extends MainBaseService {
 			Integer sysId, Integer subAccountId) {
 		SelectWhereStep<Record11<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, String>> select = db()
 				.selectDistinct(SHOP.SHOP_ID, SHOP.SYS_ID, SHOP.SHOP_NAME, SHOP.SHOP_AVATAR, SHOP.CREATED, SHOP.STATE,
-						SHOP.BUSINESS_STATE, SHOP.IS_ENABLED, SHOP.SHOP_TYPE,SHOP.CURRENCY,SHOP.SHOPLANGUAGE)
+						SHOP.BUSINESS_STATE, SHOP.IS_ENABLED, SHOP.SHOP_TYPE,SHOP.CURRENCY,SHOP.SHOP_LANGUAGE)
 				.from(SHOP).leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID));
 		select.where(SHOP.SYS_ID.eq(sysId));
 		if (subAccountId > 0) {
@@ -349,7 +349,7 @@ public class ShopService extends MainBaseService {
 			shopInner.setExpireTime(expireTime);
 			shopInner.setExpireTimeStatus(expireStatus);
 			shopInner.setCurrency(record.get(SHOP.CURRENCY));
-			shopInner.setShopLanguage(record.get(SHOP.SHOPLANGUAGE));
+			shopInner.setShopLanguage(record.get(SHOP.SHOP_LANGUAGE));
 			dataList.add(shopInner);
 		}
 		return dataList;
