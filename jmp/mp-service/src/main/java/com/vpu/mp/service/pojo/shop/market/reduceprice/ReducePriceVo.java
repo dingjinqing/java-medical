@@ -46,5 +46,5 @@ public class ReducePriceVo {
     private List<ReducePriceGoodsVo> reducePriceGoods;
 
     /** 分享设置 */
-    private ShopShareConfig shopShareConfig;
+    private ShopShareConfig shareConfig;
 }
