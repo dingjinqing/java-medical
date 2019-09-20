@@ -11,7 +11,7 @@
 <script>
 import VDistpicker from 'v-distpicker'
 export default {
-  component: { VDistpicker },
+  components: { VDistpicker },
   data () {
     return {
       temp: {

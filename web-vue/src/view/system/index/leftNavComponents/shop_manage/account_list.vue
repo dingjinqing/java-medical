@@ -336,7 +336,7 @@ import { mapGetters } from 'vuex'
 import { addCoountRequest, searchAccountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
-  component: { VDistpicker },
+  components: { VDistpicker },
   data () {
     return {
       formData: {
@@ -531,8 +531,7 @@ export default {
 .outside {
   width: 100%;
   background: #e6e9f0;
-  overflow-y: scroll;
-  overflow-x: scroll;
+  overflow: auto;
 }
 .content {
   width: 100%;

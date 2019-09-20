@@ -176,7 +176,7 @@ import { addCoountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
   name: 'editAccount',
-  component: { VDistpicker },
+  components: { VDistpicker },
   computed: {
     ...mapGetters(['proAndUrData']),
     proAndUrData_ () {
