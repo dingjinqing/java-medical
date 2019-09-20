@@ -14,6 +14,8 @@ import lombok.Data;
 public class UserCardDetailVo {
 	/** - 领取时间 */
 	private Timestamp createTime;
+	/** - 过期时间 */
+	private Timestamp expireTime;
 	/** - 会员卡号 */
 	private String cardNo;
 	/** - 用户名 */
