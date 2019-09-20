@@ -292,4 +292,7 @@ export default {
     border: 2px dashed #5a8bff !important;
   }
 }
+div {
+  cursor: Move;
+}
 </style>

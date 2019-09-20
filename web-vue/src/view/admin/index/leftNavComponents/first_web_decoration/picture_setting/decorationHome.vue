@@ -365,8 +365,8 @@ export default {
         forceFallback: true,
         fallbackClass: 'active',
         sort: false,
-        preventOnFilter: true,
-        fallbackTolerance: '5px'
+        preventOnFilter: false,
+        fallbackTolerance: '1'
       }
     }
   },
@@ -395,18 +395,6 @@ export default {
   updated () {
     console.log(this.nowRightShowIndex)
     this.$http.$emit('modulesClick', this.nowRightShowIndex)
-  },
-  computed: {
-    // dragOptions () {
-    //   return {
-    //     scroll: false,
-    //     forceFallback: true,
-    //     fallbackClass: 'active',
-    //     sort: false,
-    //     preventOnFilter: true,
-    //     fallbackTolerance: '5px'
-    //   }
-    // }
   },
   mounted () {
     // 初始化数据
