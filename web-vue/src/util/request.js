@@ -3,7 +3,6 @@ import Cookies from 'js-cookie'
 // import qs from 'qs'
 import router from '@/router/index.js'
 import { Message } from 'element-ui'
-
 // 环境的切换
 let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
@@ -56,7 +55,7 @@ service.interceptors.response.use(
     const res = response
     let flag = localStorage.getItem('V-overallFlag')
     // console.log(flag, res)
-    // console.log(res)
+    console.log(res)
     if (res) {
       switch (res.status) {
         // 成功
@@ -82,12 +81,15 @@ service.interceptors.response.use(
               showClose: true
             })
           }
+
           localStorage.setItem('V-overallFlag', false)
-          if (flag !== 'false') {
+
+          if (flag === 'false') {
             setTimeout(() => {
               localStorage.setItem('V-overallFlag', true)
             }, 3000)
           }
+
           return res.data
       }
     }
@@ -95,41 +97,33 @@ service.interceptors.response.use(
     return res
   },
   error => {
-    // console.log(2, error)
-    let flag = localStorage.getItem('V-overallFlag')
-
+    console.log(2, error.response.status)
     if (error && error.response) {
+      console.log(error.response.status)
       switch (error.response.status) {
         case 401:
-          if (flag !== 'false') {
-            error.message = '抱歉，您没有访问此操作的权限！'
-          }
+          error.message = '抱歉，您没有访问此操作的权限！'
           // eslint-disable-next-line
           break;
         case 404:
-          if (flag !== 'false') {
-            error.message = '抱歉，您请求的资源不存在！'
-          }
+          error.message = '抱歉，您请求的资源不存在！'
           // eslint-disable-next-line
           break;
+        case 400:
+          error.message = '参数错误！'
+          // console.log(window.vm.$t('case.title'))
+          break
         default:
-          if (flag !== 'false') {
-            error.message = `服务正在处理，请稍后。`
-          }
+
+          error.message = `服务正在处理，请稍后。`
       }
     } else {
-      if (flag !== 'false') {
-        error.message = '服务正在处理，请稍后。'
-      }
+      error.message = '服务正在处理，请稍后。'
     }
-
-    localStorage.setItem('V-overallFlag', false)
-    if (flag !== 'false') {
-      setTimeout(() => {
-        localStorage.setItem('V-overallFlag', true)
-      }, 3000)
-    }
-    // console.log(flag)
+    Message.error({
+      message: error.message,
+      showClose: true
+    })
 
     return Promise.reject(error)
   }

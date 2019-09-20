@@ -194,6 +194,7 @@ export default {
       }
       .item_operation {
         display: block;
+        z-index: 1000;
       }
     }
     .coupon_module {

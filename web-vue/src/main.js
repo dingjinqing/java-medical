@@ -26,7 +26,7 @@ Vue.config.productionTip = false;
 Vue.mixin(myMixins);
 // 全局引用Moment
 Vue.prototype.moment = Moment;
-new Vue({
+window.vm = new Vue({
   el: '#app',
   router,
   i18n,

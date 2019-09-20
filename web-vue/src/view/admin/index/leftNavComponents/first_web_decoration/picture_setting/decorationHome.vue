@@ -376,7 +376,7 @@ export default {
     },
     nowRightShowIndex (newData) {
       console.log(newData, this.activeName, this.showModulesList)
-      this.handleToModuleHight()
+      // this.handleToModuleHight()
     }
   },
   updated () {
@@ -387,7 +387,7 @@ export default {
     dragOptions () {
       return {
         scroll: true,
-        animation: 150,
+        animation: 300,
         group: {
           name: 'description',
           pull: 'clone',
@@ -426,13 +426,16 @@ export default {
         stop: function () {
           // let last = this_.showModulesList
           // setTimeout(() => {
-          let hightMoudleIndex = this_.insertModulesId + 1
+          this_.$nextTick(() => {
+            let hightMoudleIndex = this_.insertModulesId + 1
 
-          if (this_.nowRightShowIndex === -1) {
-            this_.nowRightShowIndex = 0
-          } else {
-            this_.nowRightShowIndex = hightMoudleIndex
-          }
+            if (this_.nowRightShowIndex === -1) {
+              this_.nowRightShowIndex = 0
+            } else {
+              this_.nowRightShowIndex = hightMoudleIndex
+            }
+          })
+
           console.log(this_.nowRightShowIndex)
           // this_.$http.$emit('decCard', this_.nowRightShowIndex)
           // }, 200)
@@ -503,9 +506,9 @@ export default {
                 this_.showModulesList.splice(insert, 0, 2)
               }
           }
-          if (this_.insertModulesId !== -1) {
-            this_.handleToSortModulesData(insert)
-          }
+          // if (this_.insertModulesId !== -1) {
+          //   this_.handleToSortModulesData(insert)
+          // }
         }
       })
     },
@@ -625,11 +628,11 @@ export default {
         case 'delete':
           let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
           console.log(this.nowRightShowIndex)
-          console.log(this.insertModulesId, flag)
+          console.log(this.nowRightShowIndex, flag)
           if (this.nowRightShowIndex > flag) {
             this.nowRightShowIndex--
           } else if (this.nowRightShowIndex === flag) {
-            this.nowRightShowIndex = -1
+            this.nowRightShowIndex = null
           }
 
           console.log(this.nowRightShowIndex)
@@ -666,6 +669,7 @@ export default {
     handleToClickModule (index) {
       console.log(index)
       this.$http.$emit('modulesClick', index)
+      this.handleToModuleHight()
     },
     // 当前高亮模块数据处理向右侧传递事件
     handleToModuleHight () {
@@ -677,20 +681,36 @@ export default {
       })
       console.log(flag)
       if (!flag) return
+      // this.nowRightShowIndex 当前高亮模块在模块数组池中的index
+
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
 
       console.log(this.showModulesList, this.modulesData)
-      if (this.showModulesList.length !== this.modulesData.length) {
-        let obj = { // 传递当前模块json数据模拟
-          test: 1
+      if (this.showModulesList.length > this.modulesData.length) {
+        console.log(this.showModulesList[this.nowRightShowIndex])
+        let name = ''
+        switch (this.showModulesList[this.nowRightShowIndex]) {
+          case 1:
+            name = '会员卡'
+            break
+          case 2:
+            name = '优惠卷'
         }
-        this.modulesData.push(obj)
+        let obj = { // 传递当前模块json数据模拟
+          modulesIndex: this.showModulesList[this.nowRightShowIndex],
+          name: name,
+          sorIndex: this.nowRightShowIndex
+        }
+
+        this.modulesData.splice(this.nowRightShowIndex, 0, obj)
       }
+      // this.nowRightShowMoudlesIndex  当前高亮模块类型的index
       this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
       console.log(this.nowRightShowMoudlesIndex)
+      console.log(this.insertModulesId)
       this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
       // this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
-      console.log(this.nowRightShowMoudlesName)
+      console.log(this.showModulesList, this.modulesData)
     },
     //  点击左侧模块加到中间模块队列底部并高亮
     handleToClickLeftModule (id) {
@@ -704,11 +724,13 @@ export default {
     },
     // 当中部模块数据排序发生变化时处理保存模块数组的排序
     handleToSortModulesData (insert, obj) {
-      console.log(insert, this.showModulesList)
+      console.log(insert, this.showModulesList, this.modulesData)
+      if (this.showModulesList.length <= 1) return
+      console.log(insert, this.showModulesList, this.modulesData)
     },
     // 右侧点击页面设置重置中部显示
     handleToClearIndex () {
-      this.nowRightShowIndex = -1
+      this.nowRightShowIndex = null
     }
   }
 }

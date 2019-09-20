@@ -64,6 +64,8 @@ export default {
               this.showModule = item.name
             }
           })
+        } else {
+          this.showModule = ''
         }
         console.log(newData)
       },
