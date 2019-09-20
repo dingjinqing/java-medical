@@ -197,6 +197,12 @@ public class AdminGoodsController extends AdminBaseController {
         return success();
     }
 
+    @PostMapping("/api/admin/goodsPrd/updatePriceNumber")
+    public JsonResult updateGoodsPrdPriceNumbers(@RequestBody GoodsBatchOperateParam param){
+        shop().goods.updateGoodsPrdPriceNumbers(param);
+        return success();
+    }
+
     @PostMapping("/api/admin/goods/delete")
     public JsonResult delete(@RequestBody GoodsBatchOperateParam param) {
         if (param.getGoodsIds() == null || param.getGoodsIds().size() == 0) {

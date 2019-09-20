@@ -57,7 +57,7 @@ public class GoodsBatchOperateParam {
     private Byte isCardExclusive;
 
     /**
-     * 未处理goodsLabel,和shopPrice，仅处理商品表内数据的变化
+     * 未处理goodsLabel,和shopPrice,goodsNumber，仅处理商品表内数据的变化
      * @return
      */
     public List<GoodsRecord> toUpdateGoodsRecord(){

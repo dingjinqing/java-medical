@@ -48,7 +48,8 @@ public class GoodsPageListParam {
     private BigDecimal lowShopPrice;
     private BigDecimal highShopPrice;
     /**
-     * 是否在售
+     * 是否在售1 在售（上架），0下架（仓库中）
+     * 商品数量为0时属于售罄状态，但是依然可以为（上架状态）
      */
     private Byte isOnSale;
     /**

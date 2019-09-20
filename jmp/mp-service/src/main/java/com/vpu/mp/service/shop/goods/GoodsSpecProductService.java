@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
 
@@ -117,7 +118,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品ids删除规格值
-     *
      * @param goodsIds
      * @param goodsIds
      */
@@ -146,7 +146,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品id查找对应sku
-     *
      * @param goodsId
      * @return
      */
@@ -157,6 +156,11 @@ public class GoodsSpecProductService extends ShopBaseService {
         return goodsSpecProducts;
     }
 
+    /**
+     * 根据商品id查询对应的规格属性名值对象
+     * @param goodsId 商品id
+     * @return 规格属性名值对象
+     */
     public List<GoodsSpec> selectSpecByGoodsId(Integer goodsId) {
         List<GoodsSpec> goodsSpecs = goodsSpecService.selectByGoodsId(db(), goodsId);
         return goodsSpecs;
@@ -164,7 +168,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据prdId修改商品规格信息并删除无用的（数据库中存在但是出入的对象集合中不存在）
-     *
      * @param goodsSpecProducts 规格对象集合
      */
     public void updateAndDeleteForGoodsUpdate(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs, Integer goodsId) {
@@ -191,7 +194,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 删除属于商品id但是不在prdIds集合内的所有项
-     *
      * @param prdIds  规格项id
      * @param goodsId 商品id
      */
@@ -218,7 +220,6 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 插入商品sku之前预处理器prdSpecs字段，目前用于用户填写了自己的sku
-     *
      * @param goodsSpecProducts 规格属性
      * @param goodsSpecs        规格名值
      * @param goodsId           商品id
@@ -253,6 +254,34 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 查询规格存在售罄的商品id
+     * @return goodsIds
+     */
+    public List<Integer> selectSaleOutGoodsIds() {
+        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_NUMBER.eq(0))
+            .fetchInto(Integer.class);
+    }
+
+    /**
+     * 根据商品id集合查询出商品id和规格项的对应分组映射
+     * @param goodsIds 商品id集合
+     * @return map key: 商品id value:规格项集合
+     */
+    public Map<Integer,List<GoodsSpecProduct>> selectGoodsSpecPrdGroup(List<Integer> goodsIds){
+         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+            .fetch().intoGroups(GOODS_SPEC_PRODUCT.GOODS_ID, GoodsSpecProduct.class);
+    }
+
+    /**
+     * 根据商品id查询出所有规格id和规格的详细信息map映射
+     * @param goodsId 商品id
+     * @return map key:规格id，value:规格详情
+     */
+    public Map<Integer, GoodsSpecProductRecord> selectSpecPrdIdMap(Integer goodsId) {
+       return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
+    }
+
+    /**
      * 根据规格id查询规格明细
      *
      * @return
@@ -275,12 +304,4 @@ public class GoodsSpecProductService extends ShopBaseService {
         return recordResult;
     }
 
-    /**
-     * 查询规格存在售罄的商品id
-     * @return goodsIds
-     */
-    public List<Integer> selectSaleOutGoodsIds() {
-        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_NUMBER.eq(0))
-            .fetchInto(Integer.class);
-    }
 }
