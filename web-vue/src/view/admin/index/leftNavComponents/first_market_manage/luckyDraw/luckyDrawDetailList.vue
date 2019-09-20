@@ -53,7 +53,7 @@
                                 <el-form-item :label="$t('luckyDraw.chanceSource')">
                                     <el-select
                                             v-model="requestParams.chanceSource"
-                                            :placeholder="$t('luckyDraw.chanceSource')"7
+                                            :placeholder="$t('luckyDraw.chanceSource')"
                                             size="small"
                                             class="inputWidth"
                                             filterable
