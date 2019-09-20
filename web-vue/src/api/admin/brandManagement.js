@@ -152,10 +152,11 @@ export function saveShowBrandgetRequest (data) {
 }
 
 // 选择商品弹窗顶部下拉框统一接口
-export function initGrandgetRequest () {
+export function initGrandgetRequest (data) {
   return service({
     url: '/api/admin/goods/page/init',
-    method: 'get'
+    method: 'post',
+    data
   })
 }
 

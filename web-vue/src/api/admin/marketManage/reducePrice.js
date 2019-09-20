@@ -44,3 +44,12 @@ export function getReducePriceOrderList (data) {
     data: data
   })
 }
+
+// 取单个限时降价活动信息
+export function getReducePriceById (data) {
+  return service({
+    url: '/api/admin/market/reduceprice/get',
+    method: 'post',
+    data: data
+  })
+}

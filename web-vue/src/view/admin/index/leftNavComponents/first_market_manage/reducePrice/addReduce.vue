@@ -10,6 +10,7 @@
             <el-input
               v-model="reduceData.name"
               placeholder="请填写活动名称"
+              minlength="1"
               size="small"
               class="default_input"
             ></el-input>
@@ -28,6 +29,7 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               size="small"
             >
             </el-date-picker>
@@ -64,7 +66,7 @@
               class="limit"
               v-if="reduceData.isLimit === '1'"
             >
-              <el-checkbox v-model="reduceData.isLimit2">超出限购数量后，买家不可继续添加购买该商品</el-checkbox>
+              <el-checkbox v-model="reduceData.limitFlag">超出限购数量后，买家不可继续添加购买该商品</el-checkbox>
             </div>
           </div>
         </div>
@@ -212,8 +214,8 @@
                   <p
                     class="price_blue"
                     @click="getProductInfo(scope.row)"
-                    v-if="scope.row.goodsProductAddParams && scope.row.goodsProductAddParams.length>0"
-                  >{{scope.row.goodsProductAddParams.length}}个规格降价</p>
+                    v-if="scope.row.reducePriceProduct && scope.row.reducePriceProduct.length>0"
+                  >{{scope.row.reducePriceProduct.length}}个规格降价</p>
                 </template>
               </el-table-column>
               <el-table-column
@@ -247,67 +249,18 @@
             :title="activeName === '1' ? '收起更多配置':'展开更多配置'"
             name="1"
           >
-            <div class="set_item">
-              <div class="item_title">
-                <em>*</em> 活动分享：
-              </div>
-              <div class="item_right">
-                <el-radio
-                  v-model="reduceData.shareConfig.share_action"
-                  label="1"
-                >默认样式</el-radio>
-                <br />
-                <el-radio
-                  v-model="reduceData.shareConfig.share_action"
-                  label="2"
-                >自定义样式</el-radio>
-                <div
-                  v-if="reduceData.shareConfig.share_action ==='2'"
-                  class="custom_share"
-                >
-                  <div class="custom_share_item">
-                    <div class="item_title">文案：</div>
-                    <div class="item_right">
-                      <el-input
-                        v-model="reduceData.shareConfig.share_doc"
-                        placeholder="请输入分享图文案"
-                        size="small"
-                        class="default_input"
-                      ></el-input>
-                    </div>
-                  </div>
-                  <div class="custom_share_item">
-                    <div class="item_title">自定义图片：</div>
-                    <div class="item_right">
-                      <el-radio
-                        v-model="reduceData.shareConfig.share_img_action"
-                        label="1"
-                      >活动商品信息图</el-radio>
-                      <br />
-                      <el-radio
-                        v-model="reduceData.shareConfig.share_img_action"
-                        label="2"
-                      >自定义图片</el-radio>
-                      <div
-                        v-if="reduceData.shareConfig.share_img_action === '2'"
-                        class="upload_img"
-                      >
-                        <img
-                          :src="reduceData.shareConfig.share_img ? $imageHost +'/' + reduceData.shareConfig.share_img : ' '"
-                          class="bgImgDiv"
-                          @click="handleToAddImg()"
-                          :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
+            <!-- 引入活动分享模块 -->
+            <actShare :shareConfig="reduceData.shareConfig" />
           </el-collapse-item>
         </el-collapse>
       </div>
+    </div>
+    <div class="footer">
+      <el-button
+        @click="isEditFlag?updateSubmit():addSubmit()"
+        type="primary"
+        size="small"
+      >{{$t('marketCommon.save')}}</el-button>
     </div>
     <!--图片弹窗-->
     <ImageDalog
@@ -336,23 +289,28 @@
 </template>
 
 <script>
+import { addReducePrice, getReducePriceById } from '@/api/admin/marketManage/reducePrice.js'
+import actShare from '@/components/admin/marketActivityShareSetting'
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     CycleDialog: () => import('./repeatCycle'),
     choosingGoods: () => import('@/components/admin/choosingGoods'),
-    productInfo: () => import('./productInfo')
+    productInfo: () => import('./productInfo'),
+    actShare
   },
   data () {
     return {
+      isEditFlag: false,
+      actId: null,
       batchFlag: null,
       reduceData: {
         name: '',
-        effectiveDate: [],
-        periodAction: '1',
+        effectiveDate: '',
+        periodAction: '0',
         isCycle: false,
         isLimit: '0',
-        isLimit2: false,
+        limitFlag: '0',
         limitAmount: 1,
         batchDiscount: '',
         batchReduce: '',
@@ -361,7 +319,7 @@ export default {
           share_action: '1',
           share_doc: '',
           share_img_action: '1',
-          share_img: null
+          share_img: ''
         }
       },
       activeName: null,
@@ -371,7 +329,7 @@ export default {
       productInfo: {},
       pageShowGoodsList: [
         {
-          goodsId: 1,
+          goodsId: 28,
           shopPrice: 321,
           goodsNumber: 10,
           goodsName: '第一古拉良品kookastyle原创2019新款收腰气质显瘦印花',
@@ -379,17 +337,11 @@ export default {
           discount: '',
           reducePrice: '',
           goodsPrice: '',
-          goodsProductAddParams: [
-            {
-              productId: 12,
-              prdDesc: '828272',
-              originalPrice: '',
-              prdPrice: 200
-            }
+          reducePriceProduct: [
           ]
         },
         {
-          goodsId: 2,
+          goodsId: 29,
           shopPrice: 400,
           goodsNumber: 10,
           goodsName: '第二古拉良品kookastyle原创2019新款收腰气质显瘦印花',
@@ -397,23 +349,11 @@ export default {
           discount: '',
           reducePrice: '',
           goodsPrice: '',
-          goodsProductAddParams: [
-            {
-              productId: 12,
-              prdDesc: '828272',
-              originalPrice: '',
-              prdPrice: 200
-            },
-            {
-              productId: 12,
-              prdDesc: '828272',
-              originalPrice: '',
-              prdPrice: 200
-            }
+          reducePriceProduct: [
           ]
         },
         {
-          goodsId: 3,
+          goodsId: 30,
           shopPrice: 400,
           goodsNumber: 10,
           goodsName: '第一古拉良品kookastyle原创2019第二古拉良品kookastyle原创2019新款收腰气质显瘦印花第二古拉良品kookastyle原创2019新款收腰气质显瘦印花新款收腰气质显瘦印花',
@@ -421,17 +361,17 @@ export default {
           discount: '',
           reducePrice: '',
           goodsPrice: '',
-          goodsProductAddParams: [
+          reducePriceProduct: [
             {
-              productId: 12,
-              prdDesc: '828272',
-              originalPrice: '',
-              prdPrice: 200
+              productId: 5129,
+              prdDesc: '规格zz',
+              originalPrice: 400,
+              prdPrice: ''
             }
           ]
         },
         {
-          goodsId: 4,
+          goodsId: 31,
           shopPrice: 400,
           goodsNumber: 10,
           goodsName: '第二古拉良品kookastyle原创2019新款收腰气质显瘦印花第二古拉良品kookastyle原创2019新款收腰气质显瘦印花第二古拉良品kookastyle原创2019新款收腰气质显瘦印花',
@@ -439,8 +379,13 @@ export default {
           discount: '',
           reducePrice: '',
           goodsPrice: '',
-          goodsProductAddParams: [
-
+          reducePriceProduct: [
+            {
+              productId: 5130,
+              prdDesc: '规格sad',
+              originalPrice: 400,
+              prdPrice: ''
+            }
           ]
         }
       ],
@@ -459,7 +404,38 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
+
     this.changeFlag = true
+
+    if (this.$route.query.id > 0) {
+      // 编辑限时降价活动
+      this.actId = this.$route.query.id
+      // 编辑时部分信息不可修改
+      this.isEditFlag = true
+      // 点击编辑按钮进来，初始化页面数据
+      let SimpleBargainParam = {
+        'id': this.$route.query.id
+      }
+      getReducePriceById(SimpleBargainParam).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          // 解析返回的数据结构，回显
+          this.reduceData = res.content
+          this.reduceData.effectiveDate = []
+          this.reduceData.effectiveDate.push(res.content.startTime)
+          this.reduceData.effectiveDate.push(res.content.endTime)
+          this.reduceData.shareConfig = res.content.shopShareConfig
+          res.content.reducePriceGoods.map(item => {
+            item.goodsName = item.goodsView.goodsName
+            item.goodsNumber = item.goodsView.goodsNumber
+            item.goodsImg = item.goodsView.goodsImg
+            item.shopPrice = item.goodsView.shopPrice
+          })
+          this.pageShowGoodsList = res.content.reducePriceGoods
+        }
+      })
+    }
   },
   methods: {
     // 添加图片
@@ -501,8 +477,7 @@ export default {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
         return goodsId === item.goodsId
       })
-      console.log(goodsTarget)
-      this.pageShowGoodsList[goodsTarget].goodsProductAddParams = ProductInfo
+      this.pageShowGoodsList[goodsTarget].reducePriceProduct = ProductInfo
     },
     batchSet () {
       console.log(this.$refs.multipleTable.selection)
@@ -526,11 +501,11 @@ export default {
               item.goodsPrice = goodsPrice
               item.reducePrice = reducePrice
               item.discount = this.reduceData.batchDiscount
-              if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
-                item.goodsProductAddParams.map(item2 => {
-                  let prdPrice = item2.prdPrice
-                  let originalPrice = (prdPrice * (parseFloat(this.reduceData.batchDiscount / 10))).toFixed(2)
-                  item2.originalPrice = originalPrice
+              if (item.reducePriceProduct && item.reducePriceProduct.length) {
+                item.reducePriceProduct.map(item2 => {
+                  let originalPrice = item2.originalPrice
+                  let prdPrice = (originalPrice * (parseFloat(this.reduceData.batchDiscount / 10))).toFixed(2)
+                  item2.prdPrice = prdPrice
                 })
               }
             })
@@ -543,10 +518,10 @@ export default {
               item.goodsPrice = goodsPrice
               item.reducePrice = this.reduceData.batchReduce
               item.discount = discount
-              if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
-                item.goodsProductAddParams.map(item2 => {
-                  let prdPrice = item2.prdPrice
-                  item2.originalPrice = parseFloat(prdPrice - this.reduceData.batchReduce).toFixed(2)
+              if (item.reducePriceProduct && item.reducePriceProduct.length) {
+                item.reducePriceProduct.map(item2 => {
+                  let originalPrice = item2.originalPrice
+                  item2.prdPrice = parseFloat(originalPrice - this.reduceData.batchReduce).toFixed(2)
                 })
               }
             })
@@ -559,9 +534,9 @@ export default {
               item.goodsPrice = this.reduceData.batchFinalPrice
               item.reducePrice = reducePrice
               item.discount = discount
-              if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
-                item.goodsProductAddParams.map(item2 => {
-                  item2.originalPrice = this.reduceData.batchFinalPrice
+              if (item.reducePriceProduct && item.reducePriceProduct.length) {
+                item.reducePriceProduct.map(item2 => {
+                  item2.prdPrice = this.reduceData.batchFinalPrice
                 })
               }
             })
@@ -577,8 +552,8 @@ export default {
         item.goodsPrice = ''
         item.reducePrice = ''
         item.discount = ''
-        if (item.goodsProductAddParams && item.goodsProductAddParams.length) {
-          item.goodsProductAddParams.map(item2 => {
+        if (item.reducePriceProduct && item.reducePriceProduct.length) {
+          item.reducePriceProduct.map(item2 => {
             item2.originalPrice = ''
           })
         }
@@ -594,10 +569,10 @@ export default {
       let reducePrice = parseFloat(shopPrice - goodsPrice).toFixed(2)
       itemData.goodsPrice = goodsPrice
       itemData.reducePrice = reducePrice
-      if (itemData.goodsProductAddParams && itemData.goodsProductAddParams.length) {
-        itemData.goodsProductAddParams.map(item => {
-          let prdPrice = item.prdPrice
-          item.originalPrice = (prdPrice * (parseFloat(rowData.discount / 10))).toFixed(2)
+      if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+        itemData.reducePriceProduct.map(item => {
+          let originalPrice = item.originalPrice
+          item.prdPrice = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(2)
         })
       }
     },
@@ -611,10 +586,10 @@ export default {
       let discount = (parseFloat(goodsPrice / shopPrice) * 10).toFixed(2)
       itemData.goodsPrice = goodsPrice
       itemData.discount = discount
-      if (itemData.goodsProductAddParams && itemData.goodsProductAddParams.length) {
-        itemData.goodsProductAddParams.map(item => {
-          let prdPrice = item.prdPrice
-          item.originalPrice = parseFloat(prdPrice - rowData.reducePrice).toFixed(2)
+      if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+        itemData.reducePriceProduct.map(item => {
+          let originalPrice = item.originalPrice
+          item.prdPrice = parseFloat(originalPrice - rowData.reducePrice).toFixed(2)
         })
       }
     },
@@ -628,11 +603,37 @@ export default {
       let discount = (parseFloat(rowData.goodsPrice / shopPrice) * 10).toFixed(2)
       itemData.reducePrice = reducePrice
       itemData.discount = discount
-      if (itemData.goodsProductAddParams && itemData.goodsProductAddParams.length) {
-        itemData.goodsProductAddParams.map(item => {
-          item.originalPrice = rowData.goodsPrice
+      if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+        itemData.reducePriceProduct.map(item => {
+          item.prdPrice = rowData.goodsPrice
         })
       }
+    },
+    addSubmit () {
+      this.reduceData.startTime = this.reduceData.effectiveDate[0]
+      this.reduceData.endTime = this.reduceData.effectiveDate[1]
+      this.reduceData.reducePriceGoodsAddParams = this.pageShowGoodsList
+      this.reduceData.limitFlag = this.reduceData.limitFlag ? 1 : 0
+
+      addReducePrice(this.reduceData).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            type: 'success',
+            message: this.$t('marketCommon.successfulOperation')
+          })
+          this.$router.push({
+            name: 'reduce'
+          })
+        } else {
+          this.$message({
+            type: 'fail',
+            message: this.$t('marketCommon.failureOperation')
+          })
+        }
+      })
+    },
+    updateSubmit () {
+      // 更新活动
     }
   }
 }
@@ -774,5 +775,12 @@ export default {
     color: #66b1ff;
     cursor: pointer;
   }
+}
+.footer {
+  width: 100%;
+  height: 50px;
+  padding: 10px 0;
+  background: #f8f8f8;
+  text-align: center;
 }
 </style>

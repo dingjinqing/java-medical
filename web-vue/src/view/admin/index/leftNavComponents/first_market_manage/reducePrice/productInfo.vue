@@ -6,7 +6,7 @@
     center
   >
     <el-table
-      :data="goodsProductAddParams"
+      :data="reducePriceProduct"
       border
       :header-cell-style="{
             'background-color':'#f5f5f5',
@@ -26,7 +26,7 @@
         >
           <template slot-scope="scope">
             <el-input
-              v-model="scope.row.originalPrice"
+              v-model="scope.row.prdPrice"
               size="small"
               class="small_input"
             ></el-input>
@@ -65,10 +65,10 @@ export default {
       productShow: false,
       tableLabel: [
         { index: 1, prop: 'prdDesc', label: '规格名称' },
-        { index: 2, prop: 'prdPrice', label: '原价' },
-        { index: 3, prop: 'originalPrice', label: '折后价' }
+        { index: 2, prop: 'originalPrice', label: '原价' },
+        { index: 3, prop: 'prdPrice', label: '折后价' }
       ],
-      goodsProductAddParams: null
+      reducePriceProduct: null
     }
   },
   props: {
@@ -85,7 +85,7 @@ export default {
     productShow (val) {
       this.$emit('update:productDialog', val)
       if (val === true) {
-        this.goodsProductAddParams = JSON.parse(JSON.stringify(this.productInfo.goodsProductAddParams))
+        this.reducePriceProduct = JSON.parse(JSON.stringify(this.productInfo.reducePriceProduct))
       }
     },
     productDialog (val) {
@@ -98,7 +98,7 @@ export default {
       this.productShow = false
     },
     confrim () {
-      this.$emit('confrim', this.productInfo.goodsId, this.goodsProductAddParams)
+      this.$emit('confrim', this.productInfo.goodsId, this.reducePriceProduct)
       this.productShow = false
     }
   }
