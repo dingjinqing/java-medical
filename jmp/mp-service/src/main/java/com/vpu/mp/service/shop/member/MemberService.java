@@ -81,6 +81,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
@@ -971,8 +972,8 @@ public class MemberService extends ShopBaseService {
 
 
 
-	public List<UserCardDetailVo> getAllUserCardDetail(Integer userId) {
-		Result<Record> allUserCardDetail = memberDao.getAllUserCardDetailSql(userId);
+	public List<UserCardDetailVo> getAllUserCardDetail(Integer userId,UserCardDetailParam param) {
+		Result<Record> allUserCardDetail = memberDao.getAllUserCardDetailSql(userId,param);
 		return allUserCardDetail.into(UserCardDetailVo.class);
 		
 	}

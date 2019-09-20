@@ -29,6 +29,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
@@ -347,13 +348,47 @@ public class MemberDaoService extends ShopBaseService {
 	 * @param userId
 	 * @return
 	 */
-	public Result<Record> getAllUserCardDetailSql(Integer userId) {
+	public Result<Record> getAllUserCardDetailSql(Integer userId,UserCardDetailParam param) {
 		SelectOnConditionStep<Record> select = db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,USER.USERNAME)
 													.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 													.leftJoin(USER).on(USER_CARD.USER_ID.eq(USER.USER_ID));
-		
-		 return select.where(USER_CARD.USER_ID.equal(userId)).fetch();
+		buildOptionsForUserCard(select,param);
+		return select.where(USER_CARD.USER_ID.equal(userId)).fetch();
 			
+	}
+	/**
+	 * 构建查询会员持有会员卡详情的参数
+	 * @param select
+	 * @param param
+	 */
+	private void buildOptionsForUserCard(SelectOnConditionStep<Record> select, UserCardDetailParam param) {
+		/** -手机号 */
+		if(!StringUtils.isBlank(param.getMobile())) {
+			select.where(USER.MOBILE.eq(param.getMobile()));
+		}
+		/** - 昵称 */
+		if(!StringUtils.isBlank(param.getUsername())) {
+			select.where(USER.USERNAME.eq(param.getUsername()));
+		}
+		/** -领取时间 -开始 */
+		if(!StringUtils.isBlank(param.getCreateTimeFirst())) {
+			select.where(USER_CARD.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getCreateTimeFirst())));
+		}
+		
+		/** - 领取时间-结束 */
+		if(!StringUtils.isBlank(param.getCreateTimeSecond())) {
+			select.where(USER_CARD.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getCreateTimeSecond())));
+		}
+		
+		/** - 会员卡id */
+		if(param.getCardId()!=null) {
+			select.where(MEMBER_CARD.ID.eq(param.getCardId()));
+		}
+		
+		/** - 会员卡类型 */
+		if(param.getCardType() != null) {
+			select.where(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
+		}
 	}
 	
 }
