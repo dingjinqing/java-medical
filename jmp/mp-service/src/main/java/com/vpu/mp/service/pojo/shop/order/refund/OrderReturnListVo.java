@@ -19,5 +19,6 @@ public class OrderReturnListVo extends OrderListInfoVo {
 	private Timestamp applyTime;
 	private BigDecimal money;
 	private Byte returnType;
-	private String reason;
+	private Byte reasonType;
+	private String reasonDesc;
 }
