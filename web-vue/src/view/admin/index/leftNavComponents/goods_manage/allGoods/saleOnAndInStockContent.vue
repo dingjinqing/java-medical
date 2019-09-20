@@ -33,7 +33,14 @@
         align="center"
         label="价格">
         <template slot-scope="{row}">
-           <span v-if="row.prdId === null">{{row.shopPrice}}</span>
+           <span v-if="row.prdId === null">
+             <template v-if="row.prdMinShopPrice === row.prdMaxShopPrice">
+               {{row.prdMinShopPrice}}
+             </template>
+             <template v-else>
+               {{row.prdMinShopPrice}}~{{row.prdMaxShopPrice}}
+             </template>
+           </span>
            <template v-else>
              <span v-if="!row.shopPriceEdit">
                {{row.shopPrice}}
@@ -169,14 +176,6 @@ import pagination from '@/components/admin/pagination/pagination'
 export default {
   name: 'saleOnAndInStock',
   components: {pagination},
-  beforeRouteEnter  (to, from, next) {
-    if (to.name === 'goodsForSale') {
-
-    } else {
-
-    }
-    next()
-  },
   data () {
     return {
       filterData: {},
@@ -199,52 +198,6 @@ export default {
     }
   },
   methods: {
-    setFilterData (filterData) {
-      this.filterData = filterData
-    },
-    /* 分页查询数据 */
-    fetchGoodsData (filterData) {
-      if (filterData !== undefined) {
-        this.filterData = filterData
-      }
-      let param = {
-        ...this.pageParams,
-        ...this.filterData
-      }
-      getGoodsList(param).then(res => {
-        let {content: {page, dataList}} = res
-
-        this.pageParams.totalRows = page.totalRows
-        this.pageParams.currentPage = page.currentPage
-        this.pageParams.pageRows = page.pageRows
-
-        dataList.forEach(item => {
-          item.sourceName = item.source === 0 ? '自营' : '非自营'
-
-          switch (item.goodsType) {
-            case 1: item.goodsTypeName = '拼团商品'
-              break
-            case 2: item.goodsTypeName = '分销'
-              break
-            case 3: item.goodsTypeName = '砍价商品'
-              break
-            case 4: item.goodsTypeName = '积分商品'
-              break
-            case 5: item.goodsTypeName = '秒杀商品'
-              break
-            default:
-              item.goodsTypeName = null
-          }
-
-          item.shopPriceEdit = false
-          item.shopPriceOld = item.shopPrice
-          item.goodsNumberEdit = false
-          item.goodsNumberOld = item.goodsNumber
-        })
-
-        this.goodsData = dataList
-      })
-    },
     /* 商品价格和库存修改图标点击事件 */
     shopPriceAndGoodsNumberEditClick (row, type) {
       if (type === 'price') {
@@ -411,10 +364,50 @@ export default {
           cancelCallback()
         }
       })
+    },
+    /* 分页查询数据 */
+    fetchGoodsData (filterData) {
+      if (filterData !== undefined) {
+        this.filterData = filterData
+      }
+      let params = {
+        ...this.pageParams,
+        ...this.filterData
+      }
+      getGoodsList(params).then(res => {
+        let {content: {page, dataList}} = res
+
+        this.pageParams.totalRows = page.totalRows
+        this.pageParams.currentPage = page.currentPage
+        this.pageParams.pageRows = page.pageRows
+
+        dataList.forEach(item => {
+          item.sourceName = item.source === 0 ? '自营' : '非自营'
+
+          switch (item.goodsType) {
+            case 1: item.goodsTypeName = '拼团商品'
+              break
+            case 2: item.goodsTypeName = '分销'
+              break
+            case 3: item.goodsTypeName = '砍价商品'
+              break
+            case 4: item.goodsTypeName = '积分商品'
+              break
+            case 5: item.goodsTypeName = '秒杀商品'
+              break
+            default:
+              item.goodsTypeName = null
+          }
+
+          item.shopPriceEdit = false
+          item.shopPriceOld = item.shopPrice
+          item.goodsNumberEdit = false
+          item.goodsNumberOld = item.goodsNumber
+        })
+
+        this.goodsData = dataList
+      })
     }
-  },
-  mounted () {
-    this.fetchGoodsData()
   }
 }
 </script>

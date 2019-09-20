@@ -24,6 +24,14 @@ export function batchOperateGoods (data) {
     data: data
   })
 }
+// 商品规格价格和数量批量修改
+export function batchOperateSpecPrdPriceNumber (data) {
+  return service({
+    url: `/api/admin/goodsPrd/updatePriceNumber`,
+    method: 'post',
+    data: data
+  })
+}
 
 // 根据商品id修改对应的标签
 export function updateLabelByGoodsId (data) {

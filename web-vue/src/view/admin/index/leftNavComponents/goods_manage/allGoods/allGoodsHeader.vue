@@ -10,14 +10,14 @@
         <el-form-item label="平台分类:" prop="catId">
           <el-select v-model="goodsFilterFormData.catId" :style="goodsFilterInputStyle">
             <el-option label="请选择平台分类" :value="null"/>
-            <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName+' ('+item.goodsNumber+')'" :value="item.catId" :key="index"
+            <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName+' ('+item.goodsNumberSum+')'" :value="item.catId" :key="index"
                        :style="{paddingLeft: (item.level+1)*20+'px'}"/>
           </el-select>
         </el-form-item>
         <el-form-item label="商家分类:" prop="sortId">
           <el-select v-model="goodsFilterFormData.sortId"  :style="goodsFilterInputStyle">
             <el-option label="请选择商家分类" :value="null"/>
-            <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName+' ('+item.goodsNumber+')'" :value="item.sortId" :key="index"
+            <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName+' ('+item.goodsNumberSum+')'" :value="item.sortId" :key="index"
                        :style="{paddingLeft: (item.level+1)*20+'px'}"/>
           </el-select>
         </el-form-item>
@@ -76,11 +76,8 @@ import {format} from '@/util/date'
 export default {
   name: 'allGoodsHeader',
   props: ['initSortCatParams'],
-  // 数据data
   data () {
     return {
-      // 当前商品页面状态 0出售中 1已售罄 2仓库中
-      tabItemActiveIndex: 0,
       // 查询过滤对象
       goodsFilterFormData: {
         goodsName: null,
