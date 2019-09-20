@@ -8,7 +8,12 @@
       <LeftNavigation />
       <div class="rightContainer">
         <Crumbs />
-        <router-view class="right_container" />
+        <vue-scroll
+          :ops="ops"
+          style="height:100%"
+        >
+          <router-view class="right_container" />
+        </vue-scroll>
       </div>
 
       <!--模块无权限弹窗-->
@@ -50,10 +55,28 @@ import { mapGetters } from 'vuex'
 import Crumbs from '@/components/admin/crumbs'
 import CustomHeader from '@/view/admin/index/header'
 import LeftNavigation from '@/view/admin/index/leftNavigation'
+import vuescroll from 'vuescroll'
+import Vue from 'vue'
+import 'vuescroll/dist/vuescroll.css'
+Vue.use(vuescroll)
 export default {
-  components: { CustomHeader, LeftNavigation, Crumbs },
+  components: { CustomHeader, LeftNavigation, Crumbs, vuescroll },
   data () {
     return {
+      ops: {
+        vuescroll: {
+          mode: 'native'
+        },
+        scrollPanel: {},
+        rail: {
+          keepShow: true
+        },
+        bar: {
+          hoverStyle: true,
+          onlyShowBarOnScroll: false, // 是否只有滚动的时候才显示滚动条
+          background: 'rgba(0,0,0,0.2)'
+        }
+      },
       dialogVisible: false,
       flag: true,
       imgUrl: this.$imageHost + '/image/admin/no_authority.png'
@@ -130,6 +153,9 @@ p {
   flex-direction: column;
   overflow-x: hidden;
   /* overflow-y: auto; */
+  /deep/ .__vuescroll {
+    background-color: #e6e9f0;
+  }
 }
 .hiddleContainer {
   background-color: #fff;
