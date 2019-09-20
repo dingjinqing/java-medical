@@ -175,7 +175,7 @@ public class AdminAuth {
 		info.setLoginShopId(shopId);
 		info.setShopLogin(true);
 		info.setCurrency(shop.getCurrency());
-		info.setShopLanguage(shop.getShoplanguage());
+		info.setShopLanguage(shop.getShopLanguage());
 		this.saveTokenInfo(info);
 		insert(info, shop);
 		return true;
