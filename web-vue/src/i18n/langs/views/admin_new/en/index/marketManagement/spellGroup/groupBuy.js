@@ -167,5 +167,10 @@ export const en = {
   }, {
     value: 3,
     label: 'Groupon failure'
-  }]
+  }],
+  changeStatusComment: 'This operation will enable the activity, do you want to continue?',
+  deleteComment: 'TThis operation will delete the activity, will it continue?',
+  confirm: 'OK',
+  cancel: 'Cancel',
+  cancelMessage: 'Cancelled'
 }

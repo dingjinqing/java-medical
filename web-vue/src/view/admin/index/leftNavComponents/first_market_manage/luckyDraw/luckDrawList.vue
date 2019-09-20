@@ -130,9 +130,6 @@
                         :page-params.sync="pageParams"
                         @pagination="handlePagination"
                 />
-                {{this.currency[0]}}
-                {{$t('groupBuy.totalDiscountAmount',this)}}
-                {{$t('groupBuy.totalAmountPaid',this.currency)}}
             </div>
         </div>
     </div>
@@ -207,26 +204,48 @@ export default {
     },
     changeStatus (id) {
       console.log('changeStatus', id)
-      changeStatus({id: id}).then(res => {
-        console.log('res', res)
-        if (res.error === 0) {
-          this.$message.success(res.message)
-          this.initPageData()
-        } else {
-          this.$message.warning(res.message)
-        }
+      this.$confirm(this.$t('luckDraw.changeStatusComment'), {
+        confirmButtonText: this.$t('luckDraw.confirm'),
+        cancelButtonText: this.$t('luckDraw.cancel'),
+        type: 'warning'
+      }).then(() => {
+        changeStatus({id: id}).then(res => {
+          console.log('res', res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+            this.initPageData()
+          } else {
+            this.$message.warning(res.message)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: this.$t('luckDraw.cancelMessage')
+        })
       })
     },
     deleteLuckDraw (id) {
       console.log('deleteluckDraw', id)
-      deleteLottery({id: id}).then(res => {
-        console.log('res', res)
-        if (res.error === 0) {
-          this.$message.success(res.message)
-          this.initPageData()
-        } else {
-          this.$message.warning(res.message)
-        }
+      this.$confirm(this.$t('luckDraw.deleteLuckDrawComment'), {
+        confirmButtonText: this.$t('luckDraw.confirm'),
+        cancelButtonText: this.$t('luckDraw.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deleteLottery({id: id}).then(res => {
+          console.log('res', res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+            this.initPageData()
+          } else {
+            this.$message.warning(res.message)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: this.$t('luckDraw.cancelMessage')
+        })
       })
     }
   }

@@ -28,7 +28,7 @@ export const cn = {
   numberNewTransactionsComment: '活动带来的首次在店铺下单的用户数',
   costBenefitRatio: '费效比',
   costBenefitRatioComment: '活动优惠总金额/活动实付总金额',
-  totalDiscountAmount: '活动优惠总金额({currency})',
+  totalDiscountAmount: '活动优惠总金额({0})',
   totalDiscountAmountComment: '活动优惠总金额',
   totalAmountPaid: '活动实付总金额({0})',
   totalAmountPaidComment: '活动订单实际付款总金额(包括账户余额、会员卡余额及微信支付，不包含退款部分)',
@@ -151,6 +151,11 @@ export const cn = {
     title: '已停用',
     name: '5'
   }],
+  changeStatusComment: '此操作将启用该活动, 是否继续?',
+  deleteComment: '此操作将删除该活动, 是否继续?',
+  confirm: '确定',
+  cancel: '取消',
+  cancelMessage: '已取消',
   // 拼团详情-成团状态
   userMobileNumber: '用户手机号',
   mobileNumber: '手机号',

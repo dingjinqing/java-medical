@@ -28,6 +28,10 @@ export const en = {
     name: '4'
   }, {
     Title: 'Disabled',
-    name: '5' }]
-
+    name: '5' }],
+  changeStatusComment: 'This operation will enable the activity, do you want to continue?',
+  DeleteLuckDrawComment: 'This operation will delete the activity, will it continue?',
+  confirm: 'OK',
+  cancel: 'Cancel',
+  cancelMessage: 'Cancelled'
 }

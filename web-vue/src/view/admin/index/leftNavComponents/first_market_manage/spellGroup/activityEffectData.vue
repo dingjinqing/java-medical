@@ -40,7 +40,7 @@
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">{{$t('groupBuy.totalAmountPaid')}}</div>
+            <div class="title">{{$t('groupBuy.totalAmountPaid',[this.currency[0]])}}</div>
             <el-tooltip
               class="item"
               effect="light"
@@ -53,11 +53,11 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >{{this.totalAmountPaid}}</div>
+          >{{this.totalAmountPaid,[this.currency[0]]}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="title">{{$t('groupBuy.totalDiscountAmount')}}</div>
+            <div class="title">{{$t('groupBuy.totalDiscountAmount',[this.currency[0]])}}</div>
             <el-tooltip
               class="item"
               effect="light"
@@ -70,7 +70,7 @@
           <div
             class="num"
             style="color: #fc6181;"
-          >{{this.totalDiscountAmount}}</div>
+          >{{this.totalDiscountAmount,[this.currency[0]]}}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">

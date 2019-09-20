@@ -275,31 +275,47 @@ export default {
       this.tableData = tabData
     },
     changeStatus (id) {
-      let obj = {
-        'id': id
-      }
-      changeStatusActivity(obj).then(res => {
-        console.log('change=>res = ' + res)
-        if (res.error === 0) {
-          this.$message.success(res.message)
-        } else {
-          this.$message.error(res.message)
-        }
-        this.initDataList()
+      this.$confirm(this.$t('groupBuy.changeStatusComment'), {
+        confirmButtonText: this.$t('groupBuy.confirm'),
+        cancelButtonText: this.$t('groupBuy.cancel'),
+        type: 'warning'
+      }).then(() => {
+        changeStatusActivity({'id': id}).then(res => {
+          console.log('change=>res = ' + res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+          this.initDataList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: this.$t('groupBuy.cancelMessage')
+        })
       })
     },
     deleteGroupBuy (data) {
-      let obj = {
-        'id': data
-      }
-      deleteGroupBuyActivity(obj).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$message.success(res.message)
-        } else {
-          this.$message.error(res.message)
-        }
-        this.initDataList()
+      this.$confirm(this.$t('groupBuy.deleteComment'), {
+        confirmButtonText: this.$t('groupBuy.confirm'),
+        cancelButtonText: this.$t('groupBuy.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deleteGroupBuyActivity({'id': data}).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+          this.initDataList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: this.$t('groupBuy.cancelMessage')
+        })
       })
     },
     // 添加新活动
