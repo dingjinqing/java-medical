@@ -276,13 +276,11 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
-     * 查询规格售罄的商品id
-     *
+     * 查询规格存在售罄的商品id
      * @return goodsIds
      */
     public List<Integer> selectSaleOutGoodsIds() {
-        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).groupBy(GOODS_SPEC_PRODUCT.GOODS_ID)
-            .having(DSL.sum(GOODS_SPEC_PRODUCT.PRD_NUMBER).eq(BigDecimal.ZERO))
+        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_NUMBER.eq(0))
             .fetchInto(Integer.class);
     }
 }

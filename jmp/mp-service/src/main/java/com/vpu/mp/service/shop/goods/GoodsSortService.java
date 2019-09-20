@@ -85,6 +85,14 @@ public class GoodsSortService extends ShopBaseService {
             .where(SORT.SORT_ID.in(db().select(GOODS.SORT_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(condition)))
             .fetchInto(Sort.class);
 
+        String goodsNumberFiledName = "goods_number";
+        Map<Integer, Integer> goodsNumberMap = db().select(GOODS.SORT_ID, DSL.count().as(goodsNumberFiledName))
+            .from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(condition)
+            .groupBy(GOODS.SORT_ID).fetch().intoMap(GOODS.SORT_ID, DSL.field(goodsNumberFiledName,Integer.class));
+
+        // 设置数据的商品数量并放置到sortIdMap中，为后期计算商品数量准备
+        Map<Integer,Sort> sortIdMap=new HashMap<>(tempData.size());
+
         List<Sort> resultSort = new ArrayList<>(tempData.size());
         resultSort.addAll(tempData);
 
@@ -97,6 +105,11 @@ public class GoodsSortService extends ShopBaseService {
             tempData.forEach(sort -> {
                 tempParentIds.add(sort.getParentId());
                 tempIds.add(sort.getSortId());
+
+                Integer num = goodsNumberMap.get(sort.getSortId());
+                sort.setGoodsNumber(num == null? 0:num);
+                sort.setGoodsNumberSum(sort.getGoodsNumber());
+                sortIdMap.put(sort.getSortId(),sort);
             });
             tempData = db().select().from(SORT).where(SORT.SORT_ID.in(tempParentIds)).and(SORT.SORT_ID.notIn(tempIds)).fetchInto(Sort.class);
 
@@ -104,24 +117,11 @@ public class GoodsSortService extends ShopBaseService {
             resultSort.addAll(tempData);
         }
 
-        String goodsNumberFiledName = "goods_number";
-        Map<Integer, Integer> goodsNumberMap = db().select(GOODS.SORT_ID, DSL.count().as(goodsNumberFiledName))
-            .from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(condition)
-            .groupBy(GOODS.SORT_ID).fetch().intoMap(GOODS.SORT_ID, DSL.field(goodsNumberFiledName,Integer.class));
-
-        // 设置数据的商品数量并放置到sortIdMap中，为后期计算商品数量准备
-        Map<Integer,Sort> sortIdMap=new HashMap<>(resultSort.size());
         resultSort.forEach(sort -> {
-            Integer num = goodsNumberMap.get(sort.getSortId());
-            sort.setGoodsNumber(num == null? 0:num);
-            sortIdMap.put(sort.getSortId(),sort);
-        });
-
-        resultSort.forEach(sort -> {
+            Integer baseNum = sort.getGoodsNumber();
             Sort parent = sortIdMap.get(sort.getParentId());
             while (parent != null) {
-                parent.setGoodsNumber(parent.getGoodsNumber()+sort.getGoodsNumber());
-                sort = parent;
+                parent.setGoodsNumberSum(parent.getGoodsNumberSum()+baseNum);
                 parent = sortIdMap.get(parent.getParentId());
             }
         });
@@ -275,7 +275,6 @@ public class GoodsSortService extends ShopBaseService {
 
     /**
      * 商家分类修改
-     *
      * @param sort
      */
     public void update(Sort sort) {
@@ -293,12 +292,11 @@ public class GoodsSortService extends ShopBaseService {
     }
 
     /**
-     * 根据父节点查询所有子孙节点
-     *
+     * 根据父节点查询所有子孙节点，包含传入节点
      * @param parentId
      * @return
      */
-    protected List<Integer> findChildrenByParentId(Integer parentId) {
+    public List<Integer> findChildrenByParentId(Integer parentId) {
         Integer[] children = new Integer[]{parentId};
         List<Integer> list = new ArrayList<>(children.length);
         do {
@@ -310,24 +308,23 @@ public class GoodsSortService extends ShopBaseService {
 
         } while (children.length > 0);
 
-        Set set = new HashSet(list);
-
-
-        return new ArrayList<>(set);
+        return list;
     }
 
-    protected List<Integer> findChildrenByParentId(List<Integer> parentIds) {
+    /**
+     * @param parentIds
+     * @return
+     */
+    public List<Integer> findChildrenByParentId(List<Integer> parentIds) {
         Integer[] children = new Integer[parentIds.size()];
         for (int i = 0; i < parentIds.size(); i++) {
             children[i] = parentIds.get(i);
         }
-
         List<Integer> list = new ArrayList<>(children.length);
         do {
             for (Integer id : children) {
                 list.add(id);
             }
-
             children = db().select(SORT.SORT_ID).from(SORT).where(SORT.PARENT_ID.in(children)).fetchArray(SORT.SORT_ID);
 
         } while (children.length > 0);

@@ -97,7 +97,7 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, Integer> goodsNumberMap = db().select(GOODS.CAT_ID, DSL.count().as(goodsNumberFiledName))
             .from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(condition)
             .groupBy(GOODS.CAT_ID).fetch().intoMap(GOODS.CAT_ID, DSL.field(goodsNumberFiledName,Integer.class));
-
+        // 此处商品表里cat字段为int类型而category表里该字段为smallint类型，在这里做转换处理
         List<Short> catIds=new ArrayList<>(goodsNumberMap.size());
         goodsNumberMap.keySet().forEach(id ->{catIds.add(id.shortValue());});
         goodsInitialVo.setSysCates(saas.sysCate.getList(catIds,goodsNumberMap));
@@ -118,7 +118,7 @@ public class GoodsService extends ShopBaseService {
         if(GoodsPageListParam.NOT_ON_SALE.equals(param.getIsOnSale())) {
             condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.NOT_ON_SALE));
         }
-        // 是否已售罄
+        // 是否查询存在售罄规格的商品
         if (Boolean.TRUE.equals(param.getIsSaleOut())) {
             condition = condition.and(GOODS.GOODS_ID.in(goodsSpecProductService.selectSaleOutGoodsIds()));
         }
@@ -127,7 +127,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商家、平台分类，标签，品牌list全数据
-     *
+     * 该方法不需要进行特殊处理，仅需查询出平台、商家下所有的分类，标签，品牌即可。
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
      */
     public GoodsInitialVo getSortBrandLabelList() {
@@ -144,7 +144,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 全部商品界面：商品分页查询
-     *
      * @param goodsPageListParam
      * @return
      */
@@ -168,6 +167,7 @@ public class GoodsService extends ShopBaseService {
         saas.sysCate.disposeCategoryName(pageResult.getDataList());
         // 处理标签名称准备数据
         List<Integer> goodsIds = new ArrayList<>(pageResult.getDataList().size());
+
         pageResult.getDataList().forEach(item -> goodsIds.add(item.getGoodsId()));
         Map<Integer, List<GoodsLabelListVo>> goodsLabels = this.getGoodsLabels(goodsIds);
         // 处理商品规格默认id值准备数据
@@ -234,7 +234,6 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 分页条件拼凑
-     *
      * @param select
      * @param goodsPageListParam
      * @return
@@ -244,10 +243,10 @@ public class GoodsService extends ShopBaseService {
 
 
         if (GoodsPageListParam.IS_ON_SALE_DEFAULT.equals(goodsPageListParam.getIsOnSale())) {
-            scs = scs.and(GOODS.IS_ON_SALE.ne(GoodsPageListParam.IS_ON_SALE_DEFAULT));
+            scs = scs.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.IS_ON_SALE_DEFAULT));
         }
         if(GoodsPageListParam.NOT_ON_SALE.equals(goodsPageListParam.getIsOnSale())) {
-            scs = scs.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.IS_ON_SALE_DEFAULT));
+            scs = scs.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.NOT_ON_SALE));
         }
         if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())) {
             scs = scs.and(GOODS.GOODS_NAME.like(likeValue(goodsPageListParam.getGoodsName())));
@@ -264,24 +263,26 @@ public class GoodsService extends ShopBaseService {
         if (goodsPageListParam.getGoodsType() != null) {
             scs = scs.and(GOODS.GOODS_TYPE.eq(goodsPageListParam.getGoodsType()));
         }
+        // 平台分类，首先需要根据当前平台分类id查询出所有的子孙节点
         if (goodsPageListParam.getCatId() != null) {
             List<Integer> catIds = new ArrayList<>();
             catIds.add(goodsPageListParam.getCatId().intValue());
             List<Short> childrenId = saas.sysCate.findChildrenByParentId(catIds);
             scs = scs.and(GOODS.CAT_ID.in(childrenId));
         }
+        // 商家分类
         if (goodsPageListParam.getSortId() != null) {
             List<Integer> childrenId = goodsSort.findChildrenByParentId(goodsPageListParam.getSortId());
-            childrenId.add(goodsPageListParam.getSortId());
             scs = scs.and(GOODS.SORT_ID.in(childrenId));
         }
-        // TODO:未处理售罄状态查找对应规格数据
+
         // 根据标签过滤商品
         if (goodsPageListParam.getLabelId() != null) {
-            // 根据标签类型和标签id值过滤出该标签对应的商品id或者平台分类id
+            // 根据标签类型和标签id值过滤出该标签对应的商品id或者平台、商家分类id
             Map<Byte, List<Integer>> byteListMap = goodsLabelCouple.selectGatIdsByLabelIds(Arrays.asList(goodsPageListParam.getLabelId()));
-            List<Integer> integers = byteListMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
             Condition condition = DSL.noCondition();
+            // 处理标签直接打在商品上的情况
+            List<Integer> integers = byteListMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
             if (integers != null && integers.size() > 0) {
                 condition = condition.or(GOODS.GOODS_ID.in(integers));
             }

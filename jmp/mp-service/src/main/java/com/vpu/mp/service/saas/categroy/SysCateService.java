@@ -43,6 +43,8 @@ public class SysCateService extends MainBaseService {
         List<SysCatevo> resultCat = new ArrayList<>(catIds.size());
         List<SysCatevo> tempData = db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(catIds)).fetchInto(SysCatevo.class);
         resultCat.addAll(tempData);
+        // 设置数据的商品数量并放置到catIdMap中，为后期计算商品数量准备
+        Map<Short,SysCatevo> catIdMap=new HashMap<>(resultCat.size());
 
         while (tempData.size() > 0) {
             List<Short> tempParentIds = new ArrayList<>(tempData.size());
@@ -50,24 +52,21 @@ public class SysCateService extends MainBaseService {
             tempData.forEach(sysCatevo -> {
                 tempParentIds.add(sysCatevo.getParentId());
                 tempIds.add(sysCatevo.getCatId());
+
+                Integer num = goodsNumberMap.get(sysCatevo.getCatId().intValue());
+                sysCatevo.setGoodsNumber(num ==null ? 0:num);
+                sysCatevo.setGoodsNumberSum(sysCatevo.getGoodsNumber());
+                catIdMap.put(sysCatevo.getCatId(),sysCatevo);
             });
             tempData= db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(tempParentIds)).and(CATEGORY.CAT_ID.notIn(tempIds)).fetchInto(SysCatevo.class);
             resultCat.addAll(tempData);
         }
 
-        Map<Short,SysCatevo> catIdMap=new HashMap<>(resultCat.size());
-        // 设置数据的商品数量并放置到catIdMap中，为后期计算商品数量准备
         resultCat.forEach(sysCatevo -> {
-            Integer num = goodsNumberMap.get(sysCatevo.getCatId().intValue());
-            sysCatevo.setGoodsNumber(num ==null ? 0:num);
-            catIdMap.put(sysCatevo.getCatId(),sysCatevo);
-        });
-
-        resultCat.forEach(sysCatevo -> {
+            Integer baseNum = sysCatevo.getGoodsNumber();
             SysCatevo parent = catIdMap.get(sysCatevo.getParentId());
             while (parent != null) {
-                parent.setGoodsNumber(parent.getGoodsNumber()+sysCatevo.getGoodsNumber());
-                sysCatevo = parent;
+                parent.setGoodsNumberSum(parent.getGoodsNumberSum()+baseNum);
                 parent = catIdMap.get(parent.getParentId());
             }
         });
@@ -114,35 +113,26 @@ public class SysCateService extends MainBaseService {
     }
 
     /**
-     * 根据父节点查询所有子节点,平台分类最多三层
+     * 根据父节点查询所有子节点,包含传入节点,平台分类最多三层
      * @param parentIds
      * @return
      */
     public List<Short> findChildrenByParentId(List<Integer> parentIds){
-        List<Short> catIds = new ArrayList<>(parentIds.size());
+        List<Short> tempIds = new ArrayList<>(parentIds.size());
 
-        parentIds.forEach(item ->{
-            catIds.add(item.shortValue());
-        });
-
-        Short[] children=new Short[catIds.size()];
-        for (int i = 0; i < catIds.size(); i++) {
-            children[i]=catIds.get(i);
+        for (Integer id : parentIds) {
+            tempIds.add(id.shortValue());
         }
 
-        List<Short> list = new ArrayList<>(children.length);
+        List<Short> list = new ArrayList<>(tempIds.size());
         do {
-            for (Short id : children) {
+            for (Short id : tempIds) {
                 list.add(id);
             }
+            tempIds=db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.in(tempIds)).fetchInto(Short.class);
+        }while (tempIds.size()>0);
 
-            children= db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.in(children)).fetchArray(CATEGORY.CAT_ID);
-
-        }while (children.length>0);
-
-        Set set=new HashSet(list);
-
-        return new ArrayList<>(set);
+        return list;
     }
     /**
      * 根据父id获取子分类
