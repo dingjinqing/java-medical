@@ -153,17 +153,23 @@
           </li>
           <li
             class="details-item"
-            v-if="this.auditState===3"
+            style="height: auto;"
+            v-show="this.auditState===3"
           >
-            <span class="item-label">
-              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.failReason')}}
-            </span>
-            <span
-              class="item-title ml-20"
-              style="color: red;"
+            <div style="position: absolute; ">
+              <span class="item-label">
+                {{$t('ShopConfiguration.SmallProgramAuthorizationPage.failReason')}}
+              </span>
+            </div>
+
+            <div
+              class="auoDiv"
+              style="color: red; width: auto;position: relative;"
             >
-              {{this.data.auditFailReason}}
-            </span>
+              <span>
+                {{this.data.auditFailReason}}
+              </span>
+            </div>
           </li>
 
           <li class="details-item">
@@ -625,6 +631,7 @@ export default {
     changeCss () {
       var className = document.getElementsByClassName('item-label')
       var className2 = document.getElementsByClassName('auth_p')
+      var className3 = document.getElementsByClassName('auoDiv')
       if (this.lang === 'en_US') {
         this.length = '270px'
         this.length2 = '292px'
@@ -634,6 +641,7 @@ export default {
       }
 
       className2[0].style.marginLeft = this.length2
+      className3[0].style.marginLeft = this.length2
       for (var i = 0; i < className.length; i++) {
         className[i].style.width = this.length
       }
