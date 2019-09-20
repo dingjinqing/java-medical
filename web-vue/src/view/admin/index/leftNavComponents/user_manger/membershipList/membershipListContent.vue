@@ -304,7 +304,7 @@
                   <div>
                     <span @click="handleSetUp(item.userId)">{{$t('membershipIntroduction.setup')}}</span>
                     <span
-                      @click="handleToTurnMore('receiveDetail',item.userName)"
+                      @click="handleToTurnMore('receiveDetail',item.userName,item.userId)"
                       style="margin-top:8px"
                     >{{$t('membershipIntroduction.more')}}</span>
                   </div>
@@ -1674,6 +1674,7 @@ export default {
           this.$router.push({
             path: '/admin/home/main/receiveDetail',
             query: {
+              id: id,
               name: name
             }
           })

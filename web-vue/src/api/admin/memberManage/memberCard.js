@@ -26,3 +26,21 @@ export function getAllAvailableMemberCardRequest (userId) {
     data: null
   })
 }
+
+// 获取会员卡信息
+export function getMemberCard (data) {
+  return service({
+    url: '/api/admin/member/card/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取会员持有会员卡详细信息
+export function getAllMemberCardDetailRequest (data) {
+  return service({
+    url: '/api/admin/member/card/detail/list',
+    method: 'post',
+    data: data
+  })
+}

@@ -230,8 +230,8 @@ export const cn = {
   membershipcard: '会员卡类型',
   CardNumber: '会员卡号',
   Member: '会员',
-  type: 'type',
-  state: 'state',
+  type: '类型',
+  state: '状态',
   Balanceyuan: '余额(元)',
   servicestimes: '门店服务次数(次)',
   ExchangeFrequency: '兑换商品次数(次)',
@@ -371,7 +371,43 @@ export const cn = {
     }
   ],
   industry: '所在行业',
-  localtion: '所在地'
+  localtion: '所在地',
+  disCount: '折;',
+  memberCount: '会员折扣',
+  powerPayOwnGood: '会员专享商品;',
+  powerCard: '充值奖励;',
+  powerScore: '积分奖励',
+  times: '次;',
+  storeExchange: '门店兑换',
+  goodsExchange: '商品兑换',
+  normalCard: '普通卡',
+  limiteCard: '限次卡',
+  rankCard: '等级卡',
+  using: '使用中',
+  abolished: '已废除',
+  expired: '已过期',
+  cardTypeArray: [
+    {
+      value: null,
+      label: '全部'
+    },
+    {
+      value: 0,
+      label: '普通卡'
+    },
+    {
+      value: 1,
+      label: '限次卡'
+    },
+    {
+      value: 2,
+      label: '等级卡'
+    }
+  ],
+  allCard: {
+    id: null,
+    cardName: '全部'
+  }
 }
 
 export const en = {
@@ -748,5 +784,41 @@ export const en = {
     }
   ],
   industry: 'industry',
-  localtion: 'localtion'
+  localtion: 'localtion',
+  disCount: 'discount;',
+  memberCount: 'Member discount',
+  powerPayOwnGood: 'pay own Good;',
+  powerCard: 'recharge reward;',
+  powerScore: 'score reward;',
+  times: 'time(s);',
+  storeExchange: 'store exchange',
+  goodsExchange: 'goods exchange',
+  normalCard: 'Ordinary Card',
+  limiteCard: 'Limited Card',
+  rankCard: 'Grade Card',
+  using: 'USING',
+  abolished: 'DEPRECATED',
+  expired: 'EXPIRED',
+  cardTypeArray: [
+    {
+      value: null,
+      label: 'All Card'
+    },
+    {
+      value: 0,
+      label: 'Ordinary Card'
+    },
+    {
+      value: 1,
+      label: 'Limited  Card'
+    },
+    {
+      value: 2,
+      label: 'Grade    Card'
+    }
+  ],
+  allCard: {
+    id: null,
+    cardName: 'All Card'
+  }
 }

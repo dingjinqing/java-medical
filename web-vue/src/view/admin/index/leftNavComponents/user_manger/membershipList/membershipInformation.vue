@@ -538,7 +538,7 @@
                   v-for="(item,index) in cardLlabelsdATa"
                   :key="index"
                 >
-                  <span>{{item}}<i
+                  <span>{{item.cardName}}<i
                       @click="hanldeToDelCard(index)"
                       class="fa fa-remove"
                     ></i></span>
@@ -575,8 +575,8 @@
                       :key="index"
                       :class="item.index===index?'clickClass':''"
                     >
-                      <td style="white-space: nowrap;">{{item.title}}</td>
-                      <td>{{item.time}}</td>
+                      <td style="white-space: nowrap;">{{item.cardName}}</td>
+                      <td>{{item.startTime}}</td>
                       <td class="link">{{item.content}}</td>
                       <td class="lastTd">
                         <span @click="handleClickMemberCard(index)">{{item.index===index?'-':'添加'}}</span>
@@ -636,10 +636,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="memberCardT1DialogVisible = false">取 消</el-button>
+          <el-button @click="closeMemberCardDialog()">取 消</el-button>
           <el-button
             type="primary"
-            @click="memberCardT1DialogVisible = false"
+            @click="handleForSetMemberCard()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -701,6 +701,7 @@
 <script>
 import ProAndUrbA from '@/components/system/proAndUrbA'
 import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
+import { getMemberCard, getAllAvailableMemberCardRequest, setCardForMemberRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: { ProAndUrbA },
   data () {
@@ -715,7 +716,121 @@ export default {
       addressListLength: '', // 地址长度
       assetsUl: '',
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
-      assetsData: [
+      assetsData: [],
+      transactionData: '',
+      distributionData: '',
+      hiddenUlFlag: false,
+      checkMoreText: '',
+      baseInfoDialogVisible: false,
+      GenderValue: '',
+      GenderValueOptions: [], // 性别下拉选项
+      birthdayVal: '',
+      nameInput: '',
+      MarriageValue: '',
+      MarriageValueOptions: [], // 婚姻状况下拉选项
+      incomeValue: '',
+      incomeValueOptions: [],
+      IDInput: '',
+      educationValue: '',
+      educationValueOptions: [], // 受教育程度下拉框
+      industryValue: '',
+      industryValueOptions: [
+        {
+          value: '选项1',
+          label: '计算机硬件及网络设备'
+        }, {
+          value: '选项2',
+          label: '计算机软件'
+        },
+        {
+          value: '选项3',
+          label: 'IT服务(系统/数据/维护/多领域经营)'
+        }
+
+      ],
+      modifypersonDialogVisible: false,
+      page_one: true,
+      page_two: true,
+      tbodyFlag: false,
+      tbodyFlagTwo: true,
+      trList: [],
+      trListTwo: [],
+      clickIindex: null,
+      noImg: this.$imageHost + '/image/admin/no_data.png',
+      labelEditDialogVisible: false,
+      labelEditValue: [], // 用户标签Id的列表缓冲
+      labelEditValueOptions: [], // 所有标签裂变
+      lebalDataList: [], // 用户标签的列表
+      lebalDataIdList: [], // 用户标签Id的列表
+      memberCardT1DialogVisible: false,
+      cardLlabelsdATa: [], // 临时缓冲
+      normalCardTmp: [], // 普通会员卡
+      normalTmpSize: 0,
+      limitCardTmp: [], // 限次会员卡
+      limitTmpSize: 0,
+      rankCardTmp: [], // 等级会员卡
+      cardDialogFlag: null, // 会员卡弹窗目前的类型
+      rankTmpSize: 0,
+      newCardsT1Flag: true,
+      clickIindexTwo: null,
+      memberTableFlag: false,
+      addDialogData: [],
+      balanceDialogInput: '',
+      balanceDialogBottomInput: '',
+      memberLabelVisible: false,
+      balanceDialogData: [
+        {
+          title: '修改金额',
+          presentText: '当前金额',
+          persentMoney: '0.00',
+          addText: '增加金额',
+          tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
+          bzText: '增加备注'
+        }
+      ],
+      integralDialogData: [
+        {
+          title: '修改积分',
+          presentText: '当前积分',
+          persentMoney: '0.00',
+          addText: '增加积分',
+          tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
+          bzText: '增加备注'
+        }
+      ]
+    }
+  },
+  created () {
+    // 从路由获取userId
+    this.userId = this.$route.query.userId
+  },
+  watch: {
+    lang () {
+      // 加载数据
+
+      this.loadMemberInfo()
+    }
+  },
+  mounted () {
+    // 初始化语言
+
+    this.langDefault()
+  },
+  methods: {
+    defaultMessage () {
+      this.transactionData = this.$t('membershipIntroduction.transactionData')
+      this.distributionData = this.$t('membershipIntroduction.distributionData')
+      this.checkMoreText = this.$t('membershipIntroduction.Seemore')
+      // 性别
+      this.GenderValueOptions = this.$t('membershipIntroduction.GenderValueOptions')
+      // 婚姻状况
+      this.MarriageValueOptions = this.$t(`membershipIntroduction.MarriageValueOptions`)
+      // 月收入
+      this.incomeValueOptions = this.$t(`membershipIntroduction.incomeValueOptions`)
+      // 受教育程度
+      this.educationValueOptions = this.$t(`membershipIntroduction.educationValueOptions`)
+
+      this.assetsData = [
         {
           img: this.$imageHost + '/image/admin/asset1.png',
           cardName: this.$t('membershipIntroduction.assetsData[0]'),
@@ -758,144 +873,7 @@ export default {
           numColor: 1,
           haveSetUp: false
         }
-      ],
-      transactionData: '',
-      distributionData: '',
-      hiddenUlFlag: false,
-      checkMoreText: '',
-      baseInfoDialogVisible: false,
-      GenderValue: '',
-      GenderValueOptions: [], // 性别下拉选项
-      birthdayVal: '',
-      nameInput: '',
-      MarriageValue: '',
-      MarriageValueOptions: [], // 婚姻状况下拉选项
-      incomeValue: '',
-      incomeValueOptions: [],
-      IDInput: '',
-      educationValue: '',
-      educationValueOptions: [], // 受教育程度下拉框
-      industryValue: '',
-      industryValueOptions: [
-        {
-          value: '选项1',
-          label: '计算机硬件及网络设备'
-        }, {
-          value: '选项2',
-          label: '计算机软件'
-        },
-        {
-          value: '选项3',
-          label: 'IT服务(系统/数据/维护/多领域经营)'
-        }
-
-      ],
-      modifypersonDialogVisible: false,
-      page_one: true,
-      page_two: true,
-      tbodyFlag: false,
-      tbodyFlagTwo: true,
-      trList: [],
-      trListTwo: [
-        {
-          title: '省钱月卡',
-          time: '2019-06-03 16:11:20',
-          content: '会员折扣5.00折；会员专享商品；积分奖励；',
-          index: ''
-        },
-        {
-          title: '省钱月卡2',
-          time: '2019-06-03 16:11:20',
-          content: '会员折扣5.00折；会员专享商品；积分奖励；',
-          index: ''
-        },
-        {
-          title: '省钱月卡3',
-          time: '2019-06-03 16:11:20',
-          content: '会员折扣5.00折；会员专享商品；积分奖励；',
-          index: ''
-        },
-        {
-          title: '省钱月卡4',
-          time: '2019-06-03 16:11:20',
-          content: '会员折扣5.00折；会员专享商品；积分奖励；',
-          index: ''
-        },
-        {
-          title: '省钱月卡5',
-          time: '2019-06-03 16:11:20',
-          content: '会员折扣5.00折；会员专享商品；积分奖励；',
-          index: ''
-        }
-      ],
-      clickIindex: null,
-      noImg: this.$imageHost + '/image/admin/no_data.png',
-      labelEditDialogVisible: false,
-      labelEditValue: [], // 用户标签Id的列表缓冲
-      labelEditValueOptions: [], // 所有标签裂变
-      lebalDataList: [], // 用户标签的列表
-      lebalDataIdList: [], // 用户标签Id的列表
-      memberCardT1DialogVisible: false,
-      cardLlabelsdATa: [],
-      newCardsT1Flag: true,
-      clickIindexTwo: null,
-      memberTableFlag: false,
-      addDialogData: [],
-      balanceDialogInput: '',
-      balanceDialogBottomInput: '',
-      memberLabelVisible: false,
-      balanceDialogData: [
-        {
-          title: '修改金额',
-          presentText: '当前金额',
-          persentMoney: '0.00',
-          addText: '增加金额',
-          tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
-          bzText: '增加备注'
-        }
-      ],
-      integralDialogData: [
-        {
-          title: '修改积分',
-          presentText: '当前积分',
-          persentMoney: '0.00',
-          addText: '增加积分',
-          tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
-          bzText: '增加备注'
-        }
       ]
-    }
-  },
-  created () {
-    // 从路由获取userId
-    this.userId = this.$route.query.userId
-    // 加载数据
-    this.loadMemberInfo()
-  },
-  watch: {
-    lang () {
-      // 加载数据
-      this.loadMemberInfo()
-    }
-  },
-  mounted () {
-    // 初始化语言
-    this.langDefault()
-    this.loadMemberInfo()
-  },
-  methods: {
-    defaultMessage () {
-      this.transactionData = this.$t('membershipIntroduction.transactionData')
-      this.distributionData = this.$t('membershipIntroduction.distributionData')
-      this.checkMoreText = this.$t('membershipIntroduction.Seemore')
-      // 性别
-      this.GenderValueOptions = this.$t('membershipIntroduction.GenderValueOptions')
-      // 婚姻状况
-      this.MarriageValueOptions = this.$t(`membershipIntroduction.MarriageValueOptions`)
-      // 月收入
-      this.incomeValueOptions = this.$t(`membershipIntroduction.incomeValueOptions`)
-      // 受教育程度
-      this.educationValueOptions = this.$t(`membershipIntroduction.educationValueOptions`)
     },
     // 加载用户数据
     loadMemberInfo () {
@@ -962,8 +940,55 @@ export default {
           this.dealWithdDistributionData()
         }
       })
+      this.getAllAvailableMemberCard()
     },
+    closeMemberCardDialog () {
+      this.memberCardT1DialogVisible = false
+      this.clearCardTmpData()
+    },
+    getAllAvailableMemberCard () {
+      // 用户持有的会员卡
+      getAllAvailableMemberCardRequest(this.userId).then(res => {
+        if (res.error === 0) {
+          // 清空缓冲数据
+          this.clearCardTmpData()
+          for (let card of res.content) {
+            switch (card.cardType) {
+              case 0:
+                this.normalCardTmp.push(card) // 普通会员卡
+                break
+              case 1:
+                this.limitCardTmp.push(card) // 限次会员卡
+                break
+              case 2:
+                this.rankCardTmp.push(card) // 等级会员卡
+                break
+              default:
+                break
+            }
+          }
 
+          // 设置会员卡拥有的数量
+          this.assetsData[0].num = this.normalCardTmp.length
+          this.assetsData[1].num = this.limitCardTmp.length
+          this.assetsData[2].num = this.rankCardTmp.length
+          this.normalTmpSize = this.normalCardTmp.length
+          this.limitTmpSize = this.limitCardTmp.length
+          this.rankTmpSize = this.rankCardTmp.length
+          console.log(this.assetsData)
+        }
+      })
+    },
+    // 清空设置会员卡的相关缓冲数据
+    clearCardTmpData () {
+      this.trListTwo = []
+      this.normalCardTmp = []
+      this.limitCardTmp = []
+      this.rankCardTmp = []
+      this.rankTmpSize = 0
+      this.limitTmpSize = 0
+      this.normalTmpSize = 0
+    },
     // 标签弹窗确定按键
     handleTagDialogSure () {
       this.labelEditDialogVisible = false
@@ -971,7 +996,6 @@ export default {
       // 重新加载
       this.loadMemberInfo()
     },
-
     // 打标签
     setTagForMember () {
       // 关闭打标签弹窗
@@ -1117,7 +1141,50 @@ export default {
       console.log(id)
       this.clickIindex = id
     },
-
+    // 处理缓冲区，防止提交重复
+    dealWithCardLlabelBeforeSubmit () {
+      switch (this.cardDialogFlag) {
+        case 0:
+          while (this.normalTmpSize > 0) {
+            this.cardLlabelsdATa.splice(0, 1)
+            this.normalTmpSize--
+          }
+          break
+        case 1:
+          while (this.limitTmpSize > 0) {
+            this.cardLlabelsdATa.splice(0, 1)
+            this.limitTmpSize--
+          }
+          break
+        case 2:
+          while (this.rankTmpSize > 0) {
+            this.cardLlabelsdATa.splice(0, 1)
+            this.rankTmpSize--
+          }
+          break
+        default:
+          break
+      }
+    },
+    // 处理提交会员卡设置
+    handleForSetMemberCard () {
+      // 关闭弹窗
+      this.memberCardT1DialogVisible = false
+      this.dealWithCardLlabelBeforeSubmit()
+      let lst = this.cardLlabelsdATa.map(({ id }) => id)
+      let obj = {
+        'userIdList': [this.userId],
+        'cardIdList': lst
+      }
+      console.log(obj)
+      setCardForMemberRequest(obj).then(res => {
+        if (res.error === 0) {
+          // 成功
+          this.getSuccessMessagePrompt()
+          this.loadMemberInfo()
+        }
+      })
+    },
     // 修改邀请人处理逻辑
     handleUserDialogSure () {
       console.log(this.birthdayVal)
@@ -1218,24 +1285,60 @@ export default {
     },
     // 点击设置会员卡里卡片删除icon
     hanldeToDelCard (index) {
-      this.cardLlabelsdATa.splice(index, 1)
+      if (this.cardDialogFlag === 0 && this.normalTmpSize > index) {
+        // 普通会员卡
+        this.cardLlabelsdATa.splice(index, 1)
+        this.normalTmpSize--
+      } else if (this.cardDialogFlag === 1 && this.limitTmpSize > index) {
+        // 限次会员卡
+        this.cardLlabelsdATa.splice(index, 1)
+        this.limitTmpSize--
+      } else if (this.cardDialogFlag === 2 && this.rankTmpSize > index) {
+        // 等级会员卡
+        this.cardLlabelsdATa.splice(index, 1)
+        this.rankTmpSize--
+      } else {
+        let tmp = this.cardLlabelsdATa[index]
+        this.cardLlabelsdATa.splice(index, 1)
+
+        for (let card of this.trListTwo) {
+          if (card.id === tmp.id) {
+            card.index = null
+          }
+        }
+      }
     },
     // 设置会员卡弹窗表格选中
     handleClickMemberCard (index) {
+      if (this.trListTwo[index].index === index) {
+        return
+      }
+      console.log(this.cardLlabelsdATa)
       this.trListTwo[index].index = index
-      this.cardLlabelsdATa.push(this.trListTwo[index].title)
+      this.cardLlabelsdATa.push(this.trListTwo[index])
+      console.log(this.cardLlabelsdATa)
+      console.log(this.trListTwo)
     },
     // 资产信息点击设置
     handleSetUp (index) {
+      if ([0, 1, 2].includes(index)) {
+        console.log('正在设置会员卡')
+        // 调用接口获取数据
+        this.getMemberCardForData(index)
+        this.cardDialogFlag = index
+      }
       switch (index) {
         case 0:
           this.memberCardT1DialogVisible = true
+          this.cardLlabelsdATa = this.normalCardTmp
           break
         case 1:
           this.memberCardT1DialogVisible = true
+          this.cardLlabelsdATa = this.limitCardTmp
           break
         case 2:
           this.memberCardT1DialogVisible = true
+          this.cardLlabelsdATa = this.rankCardTmp
           break
         case 3:
           console.log(3)
@@ -1248,6 +1351,61 @@ export default {
           this.addDialogData = this.integralDialogData
           break
       }
+    },
+    /** 后台请求api获取会员卡数据 */
+    getMemberCardForData (type) {
+      let obj = {
+        'cardType': type
+      }
+      console.log(obj)
+      getMemberCard(obj).then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          this.trListTwo = res.content.dataList
+          // 处理会员卡的卡权益
+          this.dealWithCardBehavior()
+        }
+      })
+    },
+    // 处理会员卡的卡权益
+    dealWithCardBehavior () {
+      for (let card of this.trListTwo) {
+        let content = ''
+        console.log(card)
+        console.log(card.powerCount, typeof card.powerCount)
+        // 会员折扣
+        if (card.powerCount === 1) {
+          content += `${this.$t('membershipIntroduction.memberCount')}${card.disCount}${this.$t('membershipIntroduction.disCount')}`
+        }
+
+        // 会员专享商品
+        if (card.powerPayOwnGood === 'on') {
+          content += this.$t('membershipIntroduction.powerPayOwnGood')
+        }
+
+        // 充值奖励
+        if (card.powerCard === 1) {
+          content += this.$t('membershipIntroduction.powerCard')
+        }
+
+        // 积分奖励
+        if (card.powerScore === 1) {
+          content += this.$t('membershipIntroduction.powerScore')
+        }
+
+        // 门店兑换次数
+        if (card.count > 0) {
+          content += `${this.$t('membershipIntroduction.storeExchange')}${card.count}${this.$t('membershipIntroduction.times')}`
+        }
+
+        // 商品兑换次数
+        if (card.exchangCount > 0) {
+          content += `${this.$t('membershipIntroduction.goodsExchange')}${card.exchangCount}${this.$t('membershipIntroduction.times')}`
+        }
+
+        card.content = content
+      }
+      console.log(this.trListTwo)
     },
     // 标签列表子项删除
     handleToDelLabel (id) {
@@ -1269,9 +1427,9 @@ export default {
         type: 'success' })
     }
   }
-
 }
 </script>
+
 <style scoped>
 .lebalSpan {
   display: inline-block;

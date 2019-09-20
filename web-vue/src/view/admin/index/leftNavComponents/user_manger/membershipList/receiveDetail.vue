@@ -28,8 +28,7 @@
             :range-separator="$t('membershipIntroduction.to')"
             :start-placeholder="$t('membershipIntroduction.startdata')"
             :end-placeholder="$t('membershipIntroduction.enddate')"
-            default-value="2010-10-01"
-            size="small"
+            value-format='yyyy-MM-dd'
           >
           </el-date-picker>
         </div>
@@ -44,10 +43,10 @@
             size="small"
           >
             <el-option
-              v-for="item in membershipCardOptins"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="(item,index) in membershipCardOptins"
+              :key="index"
+              :label="item.cardName"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -72,6 +71,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="loadUserCardData()"
           >{{$t('membershipIntroduction.screen')}}</el-button>
         </div>
       </div>
@@ -102,13 +102,42 @@
               :class="clickIindex===index?'clickClass':''"
               @click="handleClick(index)"
             >
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.title}}</td>
+              <td>{{item.createTime}}</td>
+              <td>{{item.cardNo}}</td>
+              <td>{{item.username}} </td>
+              <td>{{item.cardName}}
+                <div id="memberCard">
+                  <div v-if="item.cardType==='0'">
+                    {{$t('membershipIntroduction.normalCard')}}
+                  </div>
+                  <div v-else-if="item.cardType==='1'">
+                    {{$t('membershipIntroduction.limiteCard')}}
+                  </div>
+                  <div v-else-if="item.cardType==='2'">
+                    {{$t('membershipIntroduction.rankCard')}}
+                  </div>
+                </div>
+
+              </td>
+              <td>
+                <span v-if="item.flag==0">
+                  <!-- 已过期 -->
+                  <span v-if="item.expireTime && Date.now()>Date.parse(item.expireTime)">
+                    {{$t('membershipIntroduction.expired')}}
+                  </span>
+                  <span v-else>
+                    <!-- 使用中 -->
+                    {{$t('membershipIntroduction.using')}}
+                  </span>
+                </span>
+                <span v-else-if="item.flag==1">
+                  <!-- 已弃用 -->
+                  {{$t('membershipIntroduction.abolished')}}
+                </span>
+              </td>
+              <td>{{item.money}}</td>
+              <td>{{item.surplus}}</td>
+              <td>{{item.exchang_surplus}}</td>
               <td class="link">{{item.status}}</td>
               <td class="tb_decorate_a">
                 {{item.path}}
@@ -165,77 +194,134 @@
   </div>
 </template>
 <script>
+import { getAllMemberCardDetailRequest } from '@/api/admin/memberManage/memberCard.js'
+import { allUserCardRequest } from '@/api/admin/membershipList.js'
+
 export default {
   data () {
     return {
-
+      userId: '', // 用户id
+      username: '', // 用户名
       phoneNum: '',
       nameInput: '',
       dateInput: '',
-      membershipCardOptins: [
-        {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }
-      ],
+      membershipCardOptins: [],
       membershipCardValue: '',
-      CardTypeOptins: [
-        {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }
-      ],
+      CardTypeOptins: [],
       CardTypeValue: '',
       page_one: true,
       tbodyFlag: false,
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          classification: '分类1',
-          status: '营业中',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          classification: '分类2',
-          status: '歇业中'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          classification: '分类3',
-          spanId: '',
-          status: '营业中'
-        }
-
-      ],
+      trList: [], // 表格数据
       clickIindex: null,
       noImg: this.$imageHost + '/image/admin/no_data.png',
       mixinleftDiv: ''
     }
   },
+  created () {
+    // 从路由获取userId
+    this.userId = this.$route.query.id
+    this.username = this.$route.query.name
+    this.nameInput = this.$route.query.name
+    console.log(this.userId, this.username)
+
+    // 加载数据
+    this.loadAllPageDate()
+  },
+  mounted () {
+    this.langDefault()
+  },
+  watch: {
+    lang () {
+      // 加载数据
+      this.loadAllOptionsData()
+    }
+  },
   methods: {
-    // 行点击
+    // 1- 行点击
     handleClick (index) {
       this.clickIindex = index
+    },
+    // 2- 初始化页面所有数据
+    loadAllPageDate () {
+      // 加载表格数据
+      this.loadUserCardData()
+      // 加载选项数据
+      this.loadAllOptionsData()
+    },
+    // 3- 加载表格数据
+    loadUserCardData () {
+      console.log(this.dateInput, this.dateInput.length)
+      console.log(typeof this.dateInput)
+      if (this.dateInput) {
+        this.dateInput[0] = this.dateInput[0] + ' 00:00:00'
+        this.dateInput[1] = this.dateInput[1] + ' 23:59:59'
+      }
+      let obj = {
+        'userId': this.userId,
+        'mobile': this.phoneNum,
+        'username': this.nameInput,
+        'createTimeFirst': this.dateInput[0],
+        'createTimeSecond': this.dateInput[1],
+        'cardId': this.membershipCardValue,
+        'cardType': this.CardTypeValue
+      }
+      console.log(obj)
+      getAllMemberCardDetailRequest(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          // 绑定数据
+          if (res.content.length > 0) {
+            this.trList = res.content
+            console.log(this.trList)
+            // 显示数据
+            this.tbodyFlag = true
+          } else {
+            this.trList = []
+            this.tbodyFlag = false
+          }
+        }
+      })
+    },
+
+    // 3- 加载选项数据
+    loadAllOptionsData () {
+      this.getAllUserCard()
+      this.getAllCardType()
+    },
+    // 3.1- 获取所有所有会员卡下拉框数据
+    getAllUserCard () {
+      allUserCardRequest().then(res => {
+        console.log(this.membershipCardOptins)
+        this.membershipCardOptins = []
+        this.membershipCardOptins.push(this.$t('membershipIntroduction.allCard'))
+        console.log(this.membershipCardOptins)
+        if (res.error === 0) {
+          this.membershipCardOptins.push(...res.content)
+          console.log(this.membershipCardOptins)
+        }
+      })
+    },
+    // 3.2- 获取所有会员卡类型
+    getAllCardType () {
+      console.log(this.CardTypeOptins)
+      this.CardTypeOptins = this.$t('membershipIntroduction.cardTypeArray')
+      console.log(this.CardTypeOptins)
+    },
+    // 4- 清空缓存
+    clearCacheData () {
+
+    },
+    // 5- 成功消息弹框
+    getSuccessMessagePrompt () {
+      var message = this.$t('membershipIntroduction.success')
+      this.$message.success({
+        showClose: true,
+        message: message,
+        type: 'success' })
     }
   }
 }
+
 </script>
 <style scoped>
 .noData {
@@ -361,5 +447,8 @@ td {
 }
 .receiveDetail .receiveDetailMain .receiveDetailDate .el-input__inner {
   width: 350px !important;
+}
+#memberCard {
+  margin: 10px auto;
 }
 </style>
