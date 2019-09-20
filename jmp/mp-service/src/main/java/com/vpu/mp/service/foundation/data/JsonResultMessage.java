@@ -218,6 +218,11 @@ public class JsonResultMessage {
 	public static final String WX_ONLY_ONE = "wx.only.one";
 	public static final String WX_JOB_PROBLEM = "wx.job.problem";
 
+    public static final String WX_9300529 = "wx.ma.account.already.bind";
+    public static final String WX_9300530 = "wx.ma.biz_id.not.exist";
+    public static final String WX_9300531 = "wx.ma.account.or.password.error";
+    public static final String WX_9300532 = "wx.ma.under.review";
+
 	/**
 	 * 门店管理
 	 */

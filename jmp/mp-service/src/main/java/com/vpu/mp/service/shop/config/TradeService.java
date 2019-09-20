@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
-import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
+import com.vpu.mp.service.pojo.shop.config.trade.*;
+import com.vpu.mp.service.shop.logistics.LogisticsService;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -37,6 +39,10 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 @Slf4j
 @Service
 public class TradeService extends BaseShopConfigService {
+
+    @Autowired
+    LogisticsService logisticsService;
+
     /**
      * 支付配置项
      * <p>
@@ -702,7 +708,7 @@ public class TradeService extends BaseShopConfigService {
     public static final String FIELD_CLAZZ = "class";
 
     /**
-     * 更新订单流程配置
+     * 更新交易流程配置
      *
      * @param param 订单流程配置项信息
      * {@value FIELD_CLAZZ}
@@ -769,7 +775,7 @@ public class TradeService extends BaseShopConfigService {
     }
 
     /**
-     * 查询订单流程配置
+     * 查询交易流程配置
      * {@value FIELD_CLAZZ}
      *
      * @return the order process config
@@ -848,5 +854,26 @@ public class TradeService extends BaseShopConfigService {
     public String getTermsOfService() throws IOException {
         JsonNode node = MAPPER.readTree(this.getServiceDocument());
         return node.get(DOCUMENT).asText("");
+    }
+
+    /**
+     * 获取支持的快递公司列表
+     */
+    public String getAllDelivery() throws WxErrorException {
+        return logisticsService.getAllDelivery();
+    }
+
+    /**
+     * 绑定物流公司
+     */
+    public WxOpenResult bindAccount(BindAccountParam param) throws WxErrorException {
+        String jsonParam = StringUtils.EMPTY;
+        try {
+            jsonParam = MAPPER.writeValueAsString(param);
+        } catch (JsonProcessingException e) {
+            log.error("对象BindAccountParam[{}]转json字符串失败：{}", param, e.getMessage());
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
+        return logisticsService.bindAccount(jsonParam);
     }
 }

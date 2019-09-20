@@ -236,6 +236,11 @@ public enum JsonResultCode {
     WX_ONLY_ONE(170028,JsonResultMessage.WX_ONLY_ONE),
     WX_JOB_PROBLEM(170029,JsonResultMessage.WX_JOB_PROBLEM),
 
+    WX_9300529(170030, JsonResultMessage.WX_9300529),
+    WX_9300530(170031, JsonResultMessage.WX_9300530),
+    WX_9300531(170032, JsonResultMessage.WX_9300531),
+    WX_9300532(170033, JsonResultMessage.WX_9300532),
+
 	//门店管理
 	CODE_STORE_GROUP_NAME_EXIST(180001,JsonResultMessage.STORE_GROUP_NAME_EXIST),
 	CODE_POS_SHOP_ID_EXIST(180002,JsonResultMessage.STORE_POS_SHOP_ID_EXIST),

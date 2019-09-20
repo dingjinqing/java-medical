@@ -6,6 +6,8 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.config.trade.*;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -179,6 +182,33 @@ public class AdminTradeController extends AdminBaseController {
         } catch (IOException e) {
             log.error(e.getMessage());
             return fail();
+        }
+    }
+
+    /**
+     * 微信物流助手-绑定物流公司
+     */
+    @RequestMapping("/api/admin/config/trade/bindaccount")
+    public JsonResult bindAccount(@RequestBody @Validated BindAccountParam param) {
+        try {
+            WxOpenResult result = shop().trade.bindAccount(param);
+            switch (result.getErrcode()) {
+                case WXERROR_10000001:
+                    return fail(JsonResultCode.CODE_FAIL);
+                case WXERROR_9300529:
+                    return fail(JsonResultCode.WX_9300529);
+                case WXERROR_9300530:
+                    return fail(JsonResultCode.WX_9300530);
+                case WXERROR_9300531:
+                    return fail(JsonResultCode.WX_9300531);
+                case WXERROR_9300532:
+                    return fail(JsonResultCode.WX_9300532);
+                default:
+                    return success();
+            }
+        } catch (WxErrorException e) {
+            log.error("微信api logistics.bindAccount 调用失败：{}", e.getMessage());
+            return fail(JsonResultCode.CODE_FAIL);
         }
     }
 }
