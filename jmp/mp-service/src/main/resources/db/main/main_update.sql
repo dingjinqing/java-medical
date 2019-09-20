@@ -68,3 +68,6 @@ ALTER TABLE `mini_main`.`b2c_shop`  ADD COLUMN `shop_language` VARCHAR(45) NOT N
 --语言字段更改，如果数据库字段是shopLanguage
 ALTER TABLE `mini_main`.`b2c_shop` CHANGE COLUMN `shopLanguage` `shop_language` VARCHAR(45) NOT NULL DEFAULT 'zh_CN' COMMENT '语言' ;
 
+-- 修改b2c_category主键字段
+ALTER TABLE b2c_category CHANGE COLUMN `cat_id` `cat_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE b2c_category CHANGE COLUMN `parent_id` `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父ID';

@@ -39,16 +39,16 @@ public class SysCateService extends MainBaseService {
      * @param goodsNumberMap 平台分类id对应的商品数量
      * @return {@link com.vpu.mp.service.pojo.saas.category.SysCatevo}
      */
-    public List<SysCatevo> getList(List<Short> catIds,Map<Integer,Integer> goodsNumberMap) {
+    public List<SysCatevo> getList(List<Integer> catIds,Map<Integer,Integer> goodsNumberMap) {
         List<SysCatevo> resultCat = new ArrayList<>(catIds.size());
         List<SysCatevo> tempData = db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(catIds)).fetchInto(SysCatevo.class);
         resultCat.addAll(tempData);
         // 设置数据的商品数量并放置到catIdMap中，为后期计算商品数量准备
-        Map<Short,SysCatevo> catIdMap=new HashMap<>(resultCat.size());
+        Map<Integer,SysCatevo> catIdMap=new HashMap<>(resultCat.size());
 
         while (tempData.size() > 0) {
-            List<Short> tempParentIds = new ArrayList<>(tempData.size());
-            List<Short> tempIds = new ArrayList<>(tempData.size());
+            List<Integer> tempParentIds = new ArrayList<>(tempData.size());
+            List<Integer> tempIds = new ArrayList<>(tempData.size());
             tempData.forEach(sysCatevo -> {
                 tempParentIds.add(sysCatevo.getParentId());
                 tempIds.add(sysCatevo.getCatId());
@@ -86,8 +86,8 @@ public class SysCateService extends MainBaseService {
      * @param catId
      * @return
      */
-    public List<Short> findChildrenByParentId(Short catId) {
-        List<Short> res = new ArrayList<Short>();
+    public List<Integer> findChildrenByParentId(Integer catId) {
+        List<Integer> res = new ArrayList<>();
         Short level = db().select(CATEGORY.LEVEL).from(CATEGORY).where(CATEGORY.CAT_ID.eq(catId)).fetchOne()
             .into(Short.class);
         res.add(catId);
@@ -95,16 +95,16 @@ public class SysCateService extends MainBaseService {
             /** 第三级，子分类 */
         } else if (level == 1) {
             /** 第二级分类 */
-            List<Short> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
+            List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
                 .fetch(CATEGORY.CAT_ID);
             res.addAll(children);
         } else if (level == 0) {
             /** 第一级分类 */
-            List<Short> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
+            List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
                 .fetch(CATEGORY.CAT_ID);
             res.addAll(children);
-            for (Short id : children) {
-                List<Short> grandchildren = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(id))
+            for (Integer id : children) {
+                List<Integer> grandchildren = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(id))
                     .fetch(CATEGORY.CAT_ID);
                 res.addAll(grandchildren);
             }
@@ -117,19 +117,19 @@ public class SysCateService extends MainBaseService {
      * @param parentIds
      * @return
      */
-    public List<Short> findChildrenByParentId(List<Integer> parentIds){
-        List<Short> tempIds = new ArrayList<>(parentIds.size());
+    public List<Integer> findChildrenByParentId(List<Integer> parentIds){
+        List<Integer> tempIds = new ArrayList<>(parentIds.size());
 
         for (Integer id : parentIds) {
-            tempIds.add(id.shortValue());
+            tempIds.add(id);
         }
 
-        List<Short> list = new ArrayList<>(tempIds.size());
+        List<Integer> list = new ArrayList<>(tempIds.size());
         do {
-            for (Short id : tempIds) {
+            for (Integer id : tempIds) {
                 list.add(id);
             }
-            tempIds=db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.in(tempIds)).fetchInto(Short.class);
+            tempIds=db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.in(tempIds)).fetchInto(Integer.class);
         }while (tempIds.size()>0);
 
         return list;
@@ -140,19 +140,19 @@ public class SysCateService extends MainBaseService {
      * @param parentId
      * @return
      */
-    public List<ChildCateVo> getSysCateChild(Short parentId) {
+    public List<ChildCateVo> getSysCateChild(Integer parentId) {
         List<ChildCateVo> child = db().select().from(CATEGORY).where(CATEGORY.PARENT_ID.eq(parentId)).fetch().into(ChildCateVo.class);
         return child;
     }
 
-    public  LinkedList<Map<String,Object>> findParentByChildId(Short catId) {
+    public  LinkedList<Map<String,Object>> findParentByChildId(Integer catId) {
         LinkedList<Map<String,Object>> result=new LinkedList<>();
 
         Map<String, Object> parents = new HashMap<>(2);
 
-        Record2<String, Short> stringShortRecord2 = db().select(CATEGORY.CAT_NAME, CATEGORY.PARENT_ID)
+        Record2<String, Integer> stringShortRecord2 = db().select(CATEGORY.CAT_NAME, CATEGORY.PARENT_ID)
             .from(CATEGORY).where(CATEGORY.CAT_ID.eq(catId)).fetchAny();
-        Short parentId = stringShortRecord2.get(CATEGORY.PARENT_ID);
+        Integer parentId = stringShortRecord2.get(CATEGORY.PARENT_ID);
 
         parents.put(CATEGORY.CAT_ID.getName(),catId);
         parents.put(CATEGORY.CAT_NAME.getName(),stringShortRecord2.get(CATEGORY.CAT_NAME));
@@ -160,7 +160,7 @@ public class SysCateService extends MainBaseService {
         result.addFirst(parents);
 
         while (parentId != 0) {
-            Record3<Short, String, Short> record3 = db().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME, CATEGORY.PARENT_ID).from(CATEGORY)
+            Record3<Integer, String, Integer> record3 = db().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME, CATEGORY.PARENT_ID).from(CATEGORY)
                 .where(CATEGORY.CAT_ID.eq(parentId)).fetchAny();
             parents=new HashMap<>();
             parents.put(CATEGORY.CAT_ID.getName(),record3.get(CATEGORY.CAT_ID));
@@ -183,7 +183,7 @@ public class SysCateService extends MainBaseService {
             catIds.add(vo.getCatId());
         }
 
-        Map<Short, String> catIdNameMap = db().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME).from(CATEGORY)
+        Map<Integer, String> catIdNameMap = db().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME).from(CATEGORY)
             .where(CATEGORY.CAT_ID.in(catIds)).fetch().intoMap(CATEGORY.CAT_ID, CATEGORY.CAT_NAME);
 
         for (GoodsPageListVo goodsPageListVo : goodsPageListVos) {
@@ -197,7 +197,7 @@ public class SysCateService extends MainBaseService {
      * @param catId
      * @return
      */
-    public SysCatevo getOneCateInfo(Short catId) {
+    public SysCatevo getOneCateInfo(Integer catId) {
     	SysCatevo cateInfo = db().select().from(CATEGORY)
     			.where(CATEGORY.CAT_ID.eq(catId)).fetchOne().into(SysCatevo.class);
     	return cateInfo;

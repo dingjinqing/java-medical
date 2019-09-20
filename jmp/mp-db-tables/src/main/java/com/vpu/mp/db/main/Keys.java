@@ -45,7 +45,7 @@ public class Keys {
     public static final Identity<ArticleRecordRecord, Integer> IDENTITY_ARTICLE_RECORD = Identities0.IDENTITY_ARTICLE_RECORD;
     public static final Identity<BackProcessRecord, Integer> IDENTITY_BACK_PROCESS = Identities0.IDENTITY_BACK_PROCESS;
     public static final Identity<CacheRecord, Integer> IDENTITY_CACHE = Identities0.IDENTITY_CACHE;
-    public static final Identity<CategoryRecord, Short> IDENTITY_CATEGORY = Identities0.IDENTITY_CATEGORY;
+    public static final Identity<CategoryRecord, Integer> IDENTITY_CATEGORY = Identities0.IDENTITY_CATEGORY;
     public static final Identity<ChargeRenewRecord, Integer> IDENTITY_CHARGE_RENEW = Identities0.IDENTITY_CHARGE_RENEW;
     public static final Identity<DbOptionRecordRecord, Integer> IDENTITY_DB_OPTION_RECORD = Identities0.IDENTITY_DB_OPTION_RECORD;
     public static final Identity<DecorationTemplateRecord, Integer> IDENTITY_DECORATION_TEMPLATE = Identities0.IDENTITY_DECORATION_TEMPLATE;
@@ -220,7 +220,7 @@ public class Keys {
         public static Identity<ArticleRecordRecord, Integer> IDENTITY_ARTICLE_RECORD = Internal.createIdentity(com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD, com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD.ID);
         public static Identity<BackProcessRecord, Integer> IDENTITY_BACK_PROCESS = Internal.createIdentity(BackProcess.BACK_PROCESS, BackProcess.BACK_PROCESS.REC_ID);
         public static Identity<CacheRecord, Integer> IDENTITY_CACHE = Internal.createIdentity(Cache.CACHE, Cache.CACHE.ID);
-        public static Identity<CategoryRecord, Short> IDENTITY_CATEGORY = Internal.createIdentity(Category.CATEGORY, Category.CATEGORY.CAT_ID);
+        public static Identity<CategoryRecord, Integer> IDENTITY_CATEGORY = Internal.createIdentity(Category.CATEGORY, Category.CATEGORY.CAT_ID);
         public static Identity<ChargeRenewRecord, Integer> IDENTITY_CHARGE_RENEW = Internal.createIdentity(ChargeRenew.CHARGE_RENEW, ChargeRenew.CHARGE_RENEW.ID);
         public static Identity<DbOptionRecordRecord, Integer> IDENTITY_DB_OPTION_RECORD = Internal.createIdentity(DbOptionRecord.DB_OPTION_RECORD, DbOptionRecord.DB_OPTION_RECORD.RECORD_ID);
         public static Identity<DecorationTemplateRecord, Integer> IDENTITY_DECORATION_TEMPLATE = Internal.createIdentity(DecorationTemplate.DECORATION_TEMPLATE, DecorationTemplate.DECORATION_TEMPLATE.PAGE_ID);

@@ -276,7 +276,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping(value = "/admin/decorate/cate/child")
-	public JsonResult sysCate(Short parentId) {
+	public JsonResult sysCate(Integer parentId) {
 		List<ChildCateVo> parentList = saas.sysCate.getSysCateChild(parentId);
 		return this.success(parentList);
 	}

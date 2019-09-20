@@ -29,7 +29,7 @@ public class StoreGoodsService extends ShopBaseService{
 
 	/**
 	 * 门店商品列表分页查询
-	 * @param StoreListQueryParam
+	 * @param StoreGoodsListQueryParam
 	 * @return StorePageListVo
 	 */
 	public PageResult<StoreGoodsListQueryVo> getPageList(StoreGoodsListQueryParam param) {
@@ -63,7 +63,7 @@ public class StoreGoodsService extends ShopBaseService{
 			select.where(STORE_GOODS.IS_SYNC.eq(param.getIsSync()));
 		}
 		if (param.getCatId() != null && param.getCatId() > 0) {
-			List<Short> allCatId = saas().sysCate.findChildrenByParentId(param.getCatId());
+			List<Integer> allCatId = saas().sysCate.findChildrenByParentId(param.getCatId());
 			select.where(GOODS.CAT_ID.in(allCatId));
 		}
 		if (!StringUtils.isEmpty(param.getKeywords())) {

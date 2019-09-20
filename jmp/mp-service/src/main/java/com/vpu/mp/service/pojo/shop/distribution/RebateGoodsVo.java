@@ -28,7 +28,7 @@ public class RebateGoodsVo {
 	 */
 	private String catName;
 	
-	private short catId;
+	private Integer catId;
 	/**
 	 * 商品总销量
 	 */

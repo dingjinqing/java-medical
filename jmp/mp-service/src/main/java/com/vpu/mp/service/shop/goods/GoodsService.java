@@ -99,10 +99,8 @@ public class GoodsService extends ShopBaseService {
             .from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(condition)
             .groupBy(GOODS.CAT_ID).fetch().intoMap(GOODS.CAT_ID, DSL.field(goodsNumberFiledName, Integer.class));
         // 此处商品表里cat字段为int类型而category表里该字段为smallint类型，在这里做转换处理
-        List<Short> catIds = new ArrayList<>(goodsNumberMap.size());
-        goodsNumberMap.keySet().forEach(id -> {
-            catIds.add(id.shortValue());
-        });
+        List<Integer> catIds = new ArrayList<>(goodsNumberMap.keySet());
+
         goodsInitialVo.setSysCates(saas.sysCate.getList(catIds, goodsNumberMap));
 
         return goodsInitialVo;
@@ -290,7 +288,7 @@ public class GoodsService extends ShopBaseService {
         if (goodsPageListParam.getCatId() != null) {
             List<Integer> catIds = new ArrayList<>();
             catIds.add(goodsPageListParam.getCatId().intValue());
-            List<Short> childrenId = saas.sysCate.findChildrenByParentId(catIds);
+            List<Integer> childrenId = saas.sysCate.findChildrenByParentId(catIds);
             scs = scs.and(GOODS.CAT_ID.in(childrenId));
         }
         // 商家分类
@@ -316,7 +314,7 @@ public class GoodsService extends ShopBaseService {
             }
             integers = byteListMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
             if (integers != null && integers.size() > 0) {
-                List<Short> catChildrenId = saas.sysCate.findChildrenByParentId(integers);
+                List<Integer> catChildrenId = saas.sysCate.findChildrenByParentId(integers);
                 condition = condition.or(GOODS.CAT_ID.in(catChildrenId));
             }
             scs = scs.and(condition);

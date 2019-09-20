@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Category extends TableImpl<CategoryRecord> {
 
-    private static final long serialVersionUID = -1999055137;
+    private static final long serialVersionUID = 1423333201;
 
     /**
      * The reference instance of <code>mini_main.b2c_category</code>
@@ -60,52 +60,52 @@ public class Category extends TableImpl<CategoryRecord> {
     /**
      * The column <code>mini_main.b2c_category.cat_id</code>.
      */
-    public final TableField<CategoryRecord, Short> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).identity(true), this, "");
+    public final TableField<CategoryRecord, Integer> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>mini_main.b2c_category.cat_name</code>. 分类名称
      */
-    public final TableField<CategoryRecord, String> CAT_NAME = createField("cat_name", org.jooq.impl.SQLDataType.VARCHAR(90).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分类名称");
+    public final TableField<CategoryRecord, String> CAT_NAME = createField("cat_name", org.jooq.impl.SQLDataType.VARCHAR(90).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分类名称");
 
     /**
      * The column <code>mini_main.b2c_category.keywords</code>. 关键词
      */
-    public final TableField<CategoryRecord, String> KEYWORDS = createField("keywords", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关键词");
+    public final TableField<CategoryRecord, String> KEYWORDS = createField("keywords", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关键词");
 
     /**
      * The column <code>mini_main.b2c_category.cat_desc</code>. 分类描述
      */
-    public final TableField<CategoryRecord, String> CAT_DESC = createField("cat_desc", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分类描述");
+    public final TableField<CategoryRecord, String> CAT_DESC = createField("cat_desc", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分类描述");
 
     /**
      * The column <code>mini_main.b2c_category.parent_id</code>. 父ID
      */
-    public final TableField<CategoryRecord, Short> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "父ID");
+    public final TableField<CategoryRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "父ID");
 
     /**
      * The column <code>mini_main.b2c_category.level</code>. 层级
      */
-    public final TableField<CategoryRecord, Short> LEVEL = createField("level", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "层级");
+    public final TableField<CategoryRecord, Short> LEVEL = createField("level", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "层级");
 
     /**
      * The column <code>mini_main.b2c_category.has_child</code>. 是否是子节点
      */
-    public final TableField<CategoryRecord, Byte> HAS_CHILD = createField("has_child", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是子节点");
+    public final TableField<CategoryRecord, Byte> HAS_CHILD = createField("has_child", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是子节点");
 
     /**
      * The column <code>mini_main.b2c_category.create_time</code>. 添加时间
      */
-    public final TableField<CategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<CategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
 
     /**
      * The column <code>mini_main.b2c_category.cat_img</code>. 分类图标
      */
-    public final TableField<CategoryRecord, String> CAT_IMG = createField("cat_img", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分类图标");
+    public final TableField<CategoryRecord, String> CAT_IMG = createField("cat_img", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分类图标");
 
     /**
      * The column <code>mini_main.b2c_category.first</code>. 优先级
      */
-    public final TableField<CategoryRecord, Short> FIRST = createField("first", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "优先级");
+    public final TableField<CategoryRecord, Short> FIRST = createField("first", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "优先级");
 
     /**
      * Create a <code>mini_main.b2c_category</code> table reference
@@ -160,7 +160,7 @@ public class Category extends TableImpl<CategoryRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<CategoryRecord, Short> getIdentity() {
+    public Identity<CategoryRecord, Integer> getIdentity() {
         return Keys.IDENTITY_CATEGORY;
     }
 

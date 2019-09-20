@@ -41,7 +41,7 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     @GetMapping("/api/admin/goods/getSysCatParents")
-    public JsonResult getSysCatParents(Short catId) {
+    public JsonResult getSysCatParents(Integer catId) {
         LinkedList<Map<String, Object>> parentByChildId = saas.sysCate.findParentByChildId(catId);
         return success(parentByChildId);
     }
