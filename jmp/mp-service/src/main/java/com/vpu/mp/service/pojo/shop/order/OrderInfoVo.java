@@ -57,6 +57,7 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**918新增*/
 	private BigDecimal discount;
 	/**918新增*/
+	private Integer storeId;
 	private String storeName;
 	private Integer verifierId;
 	private String verifierName;
@@ -73,4 +74,5 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private BigDecimal discountPrice;
 	/**搭配立减优惠*/
 	private BigDecimal dapeiReduceAmount;
+	private String sellerRemark;
 }
