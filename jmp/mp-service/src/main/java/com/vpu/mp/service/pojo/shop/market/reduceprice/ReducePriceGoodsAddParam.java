@@ -30,5 +30,5 @@ public class ReducePriceGoodsAddParam {
     private BigDecimal goodsPrice;
 
     /** 改价的规格数组 */
-    private ReducePriceGoodsProductAddParam[] goodsProductAddParams;
+    private ReducePriceGoodsProductAddParam[] reducePriceProduct;
 }

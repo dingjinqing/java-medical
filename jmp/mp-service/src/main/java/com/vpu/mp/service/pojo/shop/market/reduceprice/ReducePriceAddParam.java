@@ -59,6 +59,9 @@ public class ReducePriceAddParam {
     /** 是否批量取整 */
     private Byte isBatchInteger;
 
+    /** 超限购买设置标记，1禁止超限购买，0超限全部恢复原价 */
+    private Byte limitFlag;
+
     /** 分享设置 */
     @NotNull
     private ShopShareConfig shareConfig;
