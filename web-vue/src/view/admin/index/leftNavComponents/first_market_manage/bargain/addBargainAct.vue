@@ -289,46 +289,51 @@
             <!-- 好友砍价优惠券部分 -->
             <el-card class="box-card">
               <div class="fontColor">{{$t('addBargainAct.friendsBargainCouponTip')}}</div>
-              <div
-                v-for="(item,index) in mrkingVoucherObjs"
-                :key="index"
-                class="addInfo"
-                style="margin-right: 5px;"
-              >
-                <section
-                  class="couponImgWrapper"
-                  style="line-height:normal"
-                >
-
-                  <div class="coupon_list_top">
-                    <span>￥</span>
-                    <span class="number">{{item.denomination}}</span>
-                  </div>
-                  <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                  <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+              <div class="middleContainer">
+                <div>
                   <div
-                    class="coupon_list_bottom"
-                    style="font-size:12px"
-                  >领取</div>
-                </section>
-                <span
-                  @click="deleteCouponImg(index)"
-                  class="deleteIcon"
-                >×</span>
+                    v-for="(item,index) in mrkingVoucherObjs"
+                    :key="index"
+                    class="addInfo"
+                    style="margin-right: 5px;"
+                  >
+                    <section
+                      class="couponImgWrapper"
+                      style="line-height:normal"
+                    >
+
+                      <div class="coupon_list_top">
+                        <span>￥</span>
+                        <span class="number">{{item.denomination}}</span>
+                      </div>
+                      <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_list_bottom"
+                        style="font-size:12px"
+                      >领取</div>
+                    </section>
+                    <span
+                      @click="deleteCouponImg(index)"
+                      class="deleteIcon"
+                    >×</span>
+                  </div>
+                </div>
+
+                <div
+                  class="addInfo"
+                  @click="handleToCallDialog1()"
+                  v-if="mrkingVoucherObjs.length < 5"
+                >
+                  <el-image
+                    fit="scale-down"
+                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    style="width: 78px;height:78px;cursor:pointer"
+                  ></el-image>
+                  <p>{{$t('addBargainAct.addCoupon')}}</p>
+                </div>
               </div>
 
-              <div
-                class="addInfo"
-                @click="handleToCallDialog1()"
-                v-if="mrkingVoucherObjs.length < 5"
-              >
-                <el-image
-                  fit="scale-down"
-                  :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                  style="width: 78px;height:78px;cursor:pointer"
-                ></el-image>
-                <p>{{$t('addBargainAct.addCoupon')}}</p>
-              </div>
               <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
             </el-card>
           </el-form-item>
@@ -340,45 +345,47 @@
             <!-- 鼓励奖优惠券部分 -->
             <el-card class="box-card">
               <div class="fontColor">{{$t('addBargainAct.encouragementAwardTip')}}</div>
-              <div
-                v-for="(item,index) in rewardCouponObjs"
-                :key="index"
-                class="addInfo"
-                style="margin-right: 5px;"
-              >
-                <section
-                  class="couponImgWrapper"
+              <div class="middleContainer">
+                <div
+                  v-for="(item,index) in rewardCouponObjs"
+                  :key="index"
+                  class="addInfo"
+                  style="margin-right: 5px;"
+                >
+                  <section
+                    class="couponImgWrapper"
+                    style="line-height: normal"
+                  >
+                    <div class="coupon_list_top">
+                      <span>￥</span>
+                      <span class="number">{{item.denomination}}</span>
+                    </div>
+                    <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                    <div
+                      class="coupon_list_bottom"
+                      style="font-size:12px"
+                    >领取</div>
+                  </section>
+                  <span
+                    @click="deleteCouponImg2(index)"
+                    class="deleteIcon"
+                  >×</span>
+                </div>
+
+                <div
+                  class="addInfo"
+                  @click="handleToCallDialog2()"
+                  v-if="rewardCouponObjs.length < 5"
                   style="line-height: normal"
                 >
-                  <div class="coupon_list_top">
-                    <span>￥</span>
-                    <span class="number">{{item.denomination}}</span>
-                  </div>
-                  <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                  <div class="coupon_center_number">剩余{{item.surplus}}张</div>
-                  <div
-                    class="coupon_list_bottom"
-                    style="font-size:12px"
-                  >领取</div>
-                </section>
-                <span
-                  @click="deleteCouponImg2(index)"
-                  class="deleteIcon"
-                >×</span>
-              </div>
-
-              <div
-                class="addInfo"
-                @click="handleToCallDialog2()"
-                v-if="rewardCouponObjs.length < 5"
-                style="line-height: normal"
-              >
-                <el-image
-                  fit="scale-down"
-                  :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                  style="width: 78px;height:78px;cursor:pointer"
-                ></el-image>
-                <p>{{$t('addBargainAct.addCoupon')}}</p>
+                  <el-image
+                    fit="scale-down"
+                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    style="width: 78px;height:78px;cursor:pointer"
+                  ></el-image>
+                  <p>{{$t('addBargainAct.addCoupon')}}</p>
+                </div>
               </div>
               <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
             </el-card>
@@ -492,8 +499,6 @@ export default {
       actId: null,
       couponImg: [],
       imgHost: `${this.$imageHost}`,
-      showCouponDialog1: false,
-      showCouponDialog2: false,
       couponIdList: [],
       showCouponDialog: false,
       tuneUpChooseGoods: false,
@@ -638,6 +643,24 @@ export default {
       .box-card {
         width: 630px;
         background-color: #f5f5f5;
+        .middleContainer {
+          display: flex;
+          .deleteIcon {
+            position: relative;
+            width: 17px !important;
+            height: 17px;
+            line-height: 17px;
+            top: -118px;
+            left: 45px;
+            cursor: pointer;
+            opacity: 0.8;
+            color: #fff;
+            background: #ccc;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            text-align: center;
+          }
+        }
         .addInfo {
           display: inline-block;
           position: relative;

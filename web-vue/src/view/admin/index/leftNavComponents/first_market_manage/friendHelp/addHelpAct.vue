@@ -444,7 +444,9 @@
                         <el-radio
                           v-model="form.shareImgType"
                           label="0"
+                          style="margin-left:10px"
                         >{{$t('promoteList.goodsPicture')}}</el-radio>
+
                         <div style="margin: 10px 0 0 60px">
                           <el-radio
                             v-model="form.shareImgType"
@@ -462,7 +464,7 @@
                             >×</span>
                             <div
                               @click="addGoodsImg"
-                              class="goodsImgWrap"
+                              class="ImgWrap"
                             >
                               <el-image
                                 style="width: 80px; height: 80px"
@@ -494,12 +496,19 @@
         >{{$t('promoteList.save')}}</el-button>
       </div>
     </div>
-    <choosingGoods @resultGoodsRow="choosingGoodsResult">
+    <choosingGoods
+      @resultGoodsRow="choosingGoodsResult"
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="goodsIdList"
+      :singleElection="true"
+    >
     </choosingGoods>
     <!--奖励类型-添加优惠卷-->
     <AddCouponDialog
       singleElection="true"
       @handleToCheck="handleToCheck"
+      :tuneUpCoupon="showCouponDialog"
+      :couponBack="couponIdList"
     />
     <!--失败赠送-添加优惠卷-->
     <!-- <AddCouponDialog
@@ -508,6 +517,7 @@
     /> -->
     <ImageDalog
       pageIndex='pictureSpace'
+      :tuneUp="showImageDialog"
       @handleSelectImg='imgDialogSelectedCallback'
     />
   </wrapper>
@@ -536,6 +546,8 @@ export default {
       show: false,
       radio: 'one',
       isEditFlag: false,
+      tuneUpChooseGoods: false,
+      goodsIdList: [],
       goodsProductInfo: {
         // 基本信息
         goodsName: null,
@@ -670,7 +682,10 @@ export default {
       srcList: {
         src: `${this.$imageHost}/image/admin/add_img.png`,
         imageUrl: ``
-      }
+      },
+      showCouponDialog: false,
+      couponIdList: [],
+      showImageDialog: false
     }
   },
   created () {
@@ -843,15 +858,15 @@ export default {
         }
       })
     },
-    /* 添加图片点击事件，弹出图片选择组件 */
+    // 活动分享 -- 添加图片点击事件，弹出图片选择组件
     addGoodsImg () {
-      this.$http.$emit('dtVisible')
+      this.showImageDialog = !this.showImageDialog
     },
-    /* 商品图片点击回调函数 */
+    // 图片点击回调函数
     imgDialogSelectedCallback (src) {
       this.srcList.src = src.imgUrl
     },
-    /* 删除商品图片 */
+    // 删除图片
     deleteGoodsImg () {
       this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
     },
@@ -861,6 +876,7 @@ export default {
       this.transmitEditGoodsId(this.form.goodsInfo.goodsIds)
       // console.log('初始化商品弹窗', this.form.rewardContent.goodsIds)
       this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     //  获取商品ids
     choosingGoodsResult (row) {
@@ -868,6 +884,8 @@ export default {
       this.goodsRow = row
       this.form.goodsInfo = []
       this.form.goodsInfo.push(row)
+      this.goodsIdList = []
+      this.goodsIdList.push(row.goodsId)
       console.log('goodsInfo:', this.form.goodsInfo[0])
       this.form.rewardSet.goods_ids = row.goodsId
 
@@ -885,6 +903,7 @@ export default {
             couponList: this.coupon_info
           }
           this.$http.$emit('V-AddCoupon', obj)
+          this.showCouponDialog = !this.showCouponDialog
         }
           break
         case 2: {
@@ -894,6 +913,7 @@ export default {
             couponList: this.coupon_duplicate
           }
           this.$http.$emit('V-AddCoupon', obj)
+          this.showCouponDialog = !this.showCouponDialog
         }
       }
     },
@@ -1034,7 +1054,7 @@ export default {
     }
   }
 }
-.goodsImgWrap {
+.ImgWrap {
   width: 80px;
   height: 80px;
   border: 1px solid #ccc;
@@ -1056,7 +1076,7 @@ export default {
   cursor: pointer;
   opacity: 0.8;
 }
-.goodsImgWrap .moveIcon {
+.ImgWrap .moveIcon {
   width: 17px;
   height: 17px;
   display: none;
@@ -1070,7 +1090,7 @@ export default {
   cursor: pointer;
   opacity: 0.8;
 }
-.goodsImgWrap:hover .moveIcon {
+.ImgWrap:hover .moveIcon {
   display: block;
 }
 .selectedWrap {
