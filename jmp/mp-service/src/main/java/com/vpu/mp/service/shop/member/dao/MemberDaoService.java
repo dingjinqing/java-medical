@@ -348,12 +348,12 @@ public class MemberDaoService extends ShopBaseService {
 	 * @param userId
 	 * @return
 	 */
-	public Result<Record> getAllUserCardDetailSql(Integer userId,UserCardDetailParam param) {
+	public Result<Record> getAllUserCardDetailSql(UserCardDetailParam param) {
 		SelectOnConditionStep<Record> select = db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,USER.USERNAME)
 													.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 													.leftJoin(USER).on(USER_CARD.USER_ID.eq(USER.USER_ID));
 		buildOptionsForUserCard(select,param);
-		return select.where(USER_CARD.USER_ID.equal(userId)).fetch();
+		return select.fetch();
 			
 	}
 	/**
@@ -362,6 +362,10 @@ public class MemberDaoService extends ShopBaseService {
 	 * @param param
 	 */
 	private void buildOptionsForUserCard(SelectOnConditionStep<Record> select, UserCardDetailParam param) {
+		/** - 用户id */
+		if(param.getUserId()!=null) {
+			select.where(USER_CARD.USER_ID.equal(param.getUserId()));
+		}
 		/** -手机号 */
 		if(!StringUtils.isBlank(param.getMobile())) {
 			select.where(USER.MOBILE.eq(param.getMobile()));

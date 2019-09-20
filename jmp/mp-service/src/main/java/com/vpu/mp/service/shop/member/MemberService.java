@@ -971,9 +971,14 @@ public class MemberService extends ShopBaseService {
 	}
 
 
-
-	public List<UserCardDetailVo> getAllUserCardDetail(Integer userId,UserCardDetailParam param) {
-		Result<Record> allUserCardDetail = memberDao.getAllUserCardDetailSql(userId,param);
+	/**
+	 * 处理会员获取会员卡详情
+	 * @param userId
+	 * @param param
+	 * @return
+	 */
+	public List<UserCardDetailVo> getAllUserCardDetail(UserCardDetailParam param) {
+		Result<Record> allUserCardDetail = memberDao.getAllUserCardDetailSql(param);
 		return allUserCardDetail.into(UserCardDetailVo.class);
 		
 	}

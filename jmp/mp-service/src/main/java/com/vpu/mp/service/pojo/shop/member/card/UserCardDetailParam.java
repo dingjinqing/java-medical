@@ -10,6 +10,8 @@ import lombok.Data;
 */
 @Data
 public class UserCardDetailParam {
+	/** - 用户id */
+	private Integer userId;
 	/** -手机号 */
 	private String mobile; 
 	/** -昵称 */
