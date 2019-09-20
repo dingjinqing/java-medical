@@ -126,7 +126,7 @@ public class ReducePriceService extends ShopBaseService {
             REDUCE_PRICE.LIMIT_AMOUNT,REDUCE_PRICE.PERIOD_ACTION,REDUCE_PRICE.POINT_TIME,REDUCE_PRICE.EXTEND_TIME,REDUCE_PRICE.LIMIT_FLAG,REDUCE_PRICE.SHARE_CONFIG).
             from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOne().into(ReducePriceRecord.class);
         ReducePriceVo res = record.into(ReducePriceVo.class);
-        res.setShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
+        res.setShopShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
         res.setReducePriceGoods(getReducePriceGoodsVoList(id));
 
         return res;
