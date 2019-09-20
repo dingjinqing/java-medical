@@ -1,15 +1,15 @@
 <template>
   <div>
-    <luckDrawList />
+    <luckyDrawList />
   </div>
 </template>
 
 <script>
-import luckDrawList from './luckDrawList'
+import luckyDrawList from './luckyDrawList'
 
 export default {
   components: {
-    luckDrawList
+    luckyDrawList
   },
   data () {
     return {

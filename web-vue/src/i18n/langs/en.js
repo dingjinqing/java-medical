@@ -88,7 +88,7 @@ import {
 import { en as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
 // 幸运大抽奖
 import {
-  en as luckDraw } from './views/admin_new/en/index/marketManagement/luckDraw/luckDraw'
+  en as luckyDraw } from './views/admin_new/en/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
 import {
   en as pageDecoration
@@ -559,7 +559,7 @@ const en = {
   receiveDetails,
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
-  luckDraw, // 幸运大抽奖
+  luckyDraw, // 幸运大抽奖
   ...enLocale,
   expressList
 }

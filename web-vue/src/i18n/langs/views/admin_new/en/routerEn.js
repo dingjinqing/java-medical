@@ -213,6 +213,8 @@ export const en = {
   friend_pay: ['Marketing management', 'friends paid'],
   // 营销管理 幸运大抽奖
   lottery_activity: ['Marketing management', 'Lucky draw'],
+  // 营销管理 幸运大抽奖  抽奖明细
+  lottery_activity_detail: ['Marketing management', 'Lucky draw', 'Detail'],
   // 营销管理 分享有礼
   share_polite: ['Marketing management', 'share polite'],
   // 营销管理 分享有礼 领取明细

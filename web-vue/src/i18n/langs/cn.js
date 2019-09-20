@@ -90,7 +90,7 @@ import {
 } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
 // 幸运大抽奖
 import {
-  cn as luckDraw } from './views/admin_new/cn/index/marketManagement/luckDraw/luckDraw'
+  cn as luckyDraw } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
 import {
   cn as pageDecoration
@@ -567,7 +567,7 @@ const cn = {
   receiveDetails,
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
-  luckDraw, // 幸运大抽奖
+  luckyDraw, // 幸运大抽奖
   ...zhLocale,
   expressList
 }

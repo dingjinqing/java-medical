@@ -34,5 +34,20 @@ export const cn = {
   deleteLuckDrawComment: '此操作将删除该活动, 是否继续?',
   confirm: '确定',
   cancel: '取消',
-  cancelMessage: '已取消'
+  cancelMessage: '已取消',
+  // 抽奖明细列表
+  mobile: '手机号',
+  userName: '用户名',
+  luckSource: '抽奖来源',
+  chanceSource: '抽奖次数来源',
+  lotteryGrade: '中奖等级',
+  luckSourceList: [
+    [0, '全部'],
+    [1, '分享'],
+    [2, '开屏有礼'],
+    [3, '支付有礼']
+  ],
+  chanceSourceList: [
+    [1, '全部']
+  ]
 }

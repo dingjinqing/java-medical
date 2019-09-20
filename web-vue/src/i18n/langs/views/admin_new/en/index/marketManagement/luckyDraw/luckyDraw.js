@@ -15,19 +15,19 @@ export const en = {
   detailList: 'Sweepstakes Details',
   newUserList: 'Get new user details',
   tabInfo: [{
-    Title: 'All sweepstakes',
+    title: 'All sweepstakes',
     name: '1'
   }, {
-    Title: 'In Progress',
+    title: 'In Progress',
     name: '2'
   }, {
-    Title: 'Not started',
+    title: 'Not started',
     name: '3'
   }, {
-    Title: 'Expired',
+    title: 'Expired',
     name: '4'
   }, {
-    Title: 'Disabled',
+    title: 'Disabled',
     name: '5' }],
   changeStatusComment: 'This operation will enable the activity, do you want to continue?',
   DeleteLuckDrawComment: 'This operation will delete the activity, will it continue?',
