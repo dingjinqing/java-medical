@@ -85,4 +85,5 @@ public class OrderListInfoVo {
 	private Byte bkOrderPaid;
 	/**币种*/
 	private String currency;
+	private Byte starFlag;
 }
