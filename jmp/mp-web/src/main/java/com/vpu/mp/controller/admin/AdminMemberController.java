@@ -171,10 +171,10 @@ public class AdminMemberController extends AdminBaseController{
 	 * @param userId
 	 * @return
 	 */
-	@PostMapping("/manage/card/list/{userId}")
-	public JsonResult getAllUserCardDetail(@PathVariable Integer userId,@RequestBody UserCardDetailParam param) {
+	@PostMapping("/card/detail/list")
+	public JsonResult getAllUserCardDetail(@RequestBody UserCardDetailParam param) {
 		logger().info("正在获取会员领取会员卡明细");
-		List<UserCardDetailVo> allUserCardDetail = shop().member.getAllUserCardDetail(userId,param);
+		List<UserCardDetailVo> allUserCardDetail = shop().member.getAllUserCardDetail(param);
 		return success(allUserCardDetail);
 	}
 	
