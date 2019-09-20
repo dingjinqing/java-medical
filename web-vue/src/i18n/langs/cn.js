@@ -55,7 +55,7 @@ import {
 // 多人拼团
 import {
   cn as groupBuy
-} from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
+} from './views/admin_new/cn/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
 import {
   cn as statusTab
@@ -88,7 +88,9 @@ import {
 import {
   cn as promoteList
 } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
-
+// 幸运大抽奖
+import {
+  cn as luckDraw } from './views/admin_new/cn/index/marketManagement/luckDraw/luckDraw'
 // 小程序装修
 import {
   cn as pageDecoration
@@ -565,7 +567,7 @@ const cn = {
   receiveDetails,
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
-
+  luckDraw, // 幸运大抽奖
   ...zhLocale,
   expressList
 }

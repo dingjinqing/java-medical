@@ -89,7 +89,7 @@
 
         <el-table-column
           prop=""
-          :label="$t('groupBuy.validDate')"
+          :label="$t('groupBuy.option')"
           align="center"
         >
           <template slot-scope="scope">
@@ -294,6 +294,12 @@ export default {
       }
       deleteGroupBuyActivity(obj).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          this.$message.success(res.message)
+        } else {
+          this.$message.error(res.message)
+        }
+        this.initDataList()
       })
     },
     // 添加新活动

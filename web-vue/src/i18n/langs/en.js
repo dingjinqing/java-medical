@@ -55,9 +55,7 @@ import {
   en as marketCommon
 } from './views/admin/index/leftNavComponents/first_market_manage/marketCommon'
 // 多人拼团
-import {
-  en as groupBuy
-} from './views/admin/index/leftNavComponents/first_market_manage/spellGroup/groupBuy'
+import { en as groupBuy } from './views/admin_new/en/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
 import {
   en as statusTab
@@ -87,10 +85,10 @@ import {
   en as addBargainAct
 } from './views/admin_new/en/index/marketManagement/bargain/addBargainActEn'
 // 好友助力
+import { en as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
+// 幸运大抽奖
 import {
-  en as promoteList
-} from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
-
+  en as luckDraw } from './views/admin_new/en/index/marketManagement/luckDraw/luckDraw'
 // 小程序装修
 import {
   en as pageDecoration
@@ -561,7 +559,7 @@ const en = {
   receiveDetails,
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
-
+  luckDraw, // 幸运大抽奖
   ...enLocale,
   expressList
 }
