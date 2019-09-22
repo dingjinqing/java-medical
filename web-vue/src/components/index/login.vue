@@ -105,7 +105,7 @@ export default {
     return {
       mainData: {
         username: '',
-        // password: '',
+        password: '',
         isSubLogin: false
       },
       subData: {
