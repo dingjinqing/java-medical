@@ -273,5 +273,6 @@ export default {
 }
 div {
   cursor: Move;
+  user-select: none;
 }
 </style>

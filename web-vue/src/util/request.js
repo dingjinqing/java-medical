@@ -1,8 +1,9 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import vm from '../main'
 // import qs from 'qs'
 import router from '@/router/index.js'
-import { Message } from 'element-ui'
+
 // 环境的切换
 let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
@@ -15,6 +16,7 @@ if (process.env.NODE_ENV === 'development') {
   // localStorage.setItem('V-ImageHost', 'http://mpimg2.weipubao.cn')
 }
 // console.log(process.env.NODE_ENV, baseURL)
+
 // 创建axios实例
 const service = axios.create({
   baseURL: baseURL, // api的base_url
@@ -42,7 +44,7 @@ service.interceptors.request.use(
   },
   error => {
     // Do something with request error
-    Message.error({ message: '请求超时!' })
+    vm.$message.error({ message: '请求超时!' })
     // console.log('err：' + error) // for debug
     Promise.reject(error)
   }
@@ -53,47 +55,39 @@ service.interceptors.response.use(
   response => {
     // console.log(response)
     const res = response
-    let flag = localStorage.getItem('V-overallFlag')
+    // let flag = localStorage.getItem('V-overallFlag')
     // console.log(flag, res)
+    console.log(vm)
     console.log(res)
     if (res) {
       switch (res.status) {
         // 成功
         case 200:
-          if (res.data.error === 100004 && flag !== 'false') {
+          if (res.data.error === 100004) {
             // console.log(res)
-            Message.error({
+            vm.$message.error({
               message: res.data.message,
               showClose: true
             })
             localStorage.removeItem('V-Username')
             router.push('/index/login')
-          } else if (res.data.error === 100033 && flag !== 'false') {
-            Message.error({
+          } else if (res.data.error === 100033) {
+            vm.$message.error({
               message: res.data.message,
               showClose: true
             })
             router.push('/system/login')
           }
-          if (res.data.error === 100001 && flag !== 'false') {
-            Message.error({
+          if (res.data.error === 100001) {
+            console.log('test message')
+            vm.$message.error({
               message: res.data.message,
               showClose: true
             })
           }
-
-          localStorage.setItem('V-overallFlag', false)
-
-          if (flag === 'false') {
-            setTimeout(() => {
-              localStorage.setItem('V-overallFlag', true)
-            }, 3000)
-          }
-
           return res.data
       }
     }
-
     return res
   },
   error => {
@@ -114,17 +108,15 @@ service.interceptors.response.use(
           // console.log(window.vm.$t('case.title'))
           break
         default:
-
           error.message = `服务正在处理，请稍后。`
       }
     } else {
       error.message = '服务正在处理，请稍后。'
     }
-    Message.error({
+    vm.$message.error({
       message: error.message,
       showClose: true
     })
-
     return Promise.reject(error)
   }
 )

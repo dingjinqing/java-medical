@@ -121,7 +121,7 @@
                     :key="index"
                   >
                     <!--模块-->
-                    <div @click.stop.prevent="handleToClickModule(index)">
+                    <div @click.prevent="handleToClickModule(index)">
                       <components
                         :is='thirdMiddleModulesList[item]'
                         :flag="index"
