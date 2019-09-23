@@ -66,23 +66,24 @@ module.exports = {
     return pageObj ? pageObj.components : {};
   },
 
-  $on(fromObj, event, fn) {
-    var pageId = this.patchPageId(fromObj).getPageId();
+  $on(subscriber, event, fn, publisher = "*") {
+    var pageId = this.patchPageId(subscriber).getPageId();
     this.initPageId(pageId);
     if (helper.isArr(event)) {
       event.forEach((item) => {
         if (helper.isStr(item)) {
-          this.$on(fromObj, item, fn);
+          this.$on(subscriber, item, fn, publisher);
         } else if (helper.isObject(item)) {
-          this.$on(fromObj, item.event, item.fn);
+          this.$on(subscriber, item.event, item.fn, item.publisher);
         }
       })
     } else {
-      (_pages[pageId].events[event] || (_pages[pageId].events[event] = [])).push({ fn: fn, obj: fromObj });
+      var events = _pages[pageId].events[event] = _pages[pageId].events[event] || [];
+      events.push({ fn: fn, subscriber: subscriber, publisher: publisher });
     }
   },
-  $off(fromObj, event, fn) {
-    var pageId = this.patchPageId(fromObj).getPageId();
+  $off(subscriber, event, fn) {
+    var pageId = this.patchPageId(subscriber).getPageId();
     if (!event && !fn) return;
 
     if (!_pages[pageId]) return;
@@ -90,9 +91,9 @@ module.exports = {
     if (helper.isArr(event)) {
       event.forEach((item) => {
         if (helper.isStr(item)) {
-          this.$off(fromObj, item, fn);
+          this.$off(subscriber, item, fn);
         } else if (helper.isObj(item)) {
-          this.$off(fromObj, item.event, item.fn);
+          this.$off(subscriber, item.event, item.fn);
         }
       });
       return;
@@ -103,21 +104,29 @@ module.exports = {
     let i = evts.length;
     while (i--) {
       let tmp = evts[i];
-      if (tmp.obj == fromObj && (!fn || tmp.fn === fn)) {
+      if (tmp.subscriber == subscriber && (!fn || tmp.fn === fn)) {
         evts.splice(i, 1);
       }
     }
   },
-  $emit(fromObj, event) {
-    var pageId = this.patchPageId(fromObj).getPageId();
+  $emit(publisher, event) {
+    var pageId = this.patchPageId(publisher).getPageId();
     this.initPageId(pageId);
-    let lowerCaseEvent = event.toLowerCase();
+    var subscriber = null;
+    if (helper.isObject(event)) {
+      subscriber = event.subscriber;
+      event = event.event;
+    }
     let args = helper.toArray(arguments, 2);
     let evts = _pages[pageId].events[event];
     if (!evts) return;
     evts.forEach(evt => {
       try {
-        evt.fn.apply(evt.obj, args);
+        if ((!subscriber || subscriber == "*" || subscriber == evt.subscriber || subscriber == evt.subscriber.is)
+          && (!evt.publisher || evt.publisher == "*" || evt.publisher == publisher || evt.publisher == publisher.is
+          )) {
+          evt.fn.apply(evt.subscriber, args);
+        }
       } catch (e) {
         console.error(e, evt.obj, `event handler for "${event}"`);
       }

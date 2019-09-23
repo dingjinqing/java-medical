@@ -1,7 +1,7 @@
 var nav = require("../base/nav.js")
 var pages = require("../init/pages.js")
 var helper = require("../base/helper.js")
-module.exports  = {
+module.exports = {
   getRect(selector, all) {
     var _this = this;
     return new Promise(function (resolve) {
@@ -88,8 +88,8 @@ module.exports  = {
     return pages.getComponents(obj);
   },
 
-  $on(event, fn) {
-    pages.$on(this, event, fn);
+  $on(event, fn, publisher = "*") {
+    pages.$on(this, event, fn, publisher);
   },
 
   $off(event, fn) {
@@ -97,7 +97,7 @@ module.exports  = {
   },
 
   $emit(event) {
-    var args = helper.toArray(arguments,1);
+    var args = helper.toArray(arguments, 1);
     pages.$emit(this, event, ...args);
   },
 
