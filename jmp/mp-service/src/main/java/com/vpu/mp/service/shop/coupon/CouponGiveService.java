@@ -386,7 +386,8 @@ public class CouponGiveService extends ShopBaseService {
      */
     public void deleteCoupon(CouponGiveDeleteParam param) {
         /* 假删除实现废除某个用户的某张优惠券 */
-        db().update(CUSTOMER_AVAIL_COUPONS).set(CUSTOMER_AVAIL_COUPONS.DEL_FLAG, (byte) 1).where(CUSTOMER_AVAIL_COUPONS.ID.eq(param.getId())).execute();
+        db().update(CUSTOMER_AVAIL_COUPONS).set(CUSTOMER_AVAIL_COUPONS.IS_USED, (byte) 3)
+        .where(CUSTOMER_AVAIL_COUPONS.ID.eq(param.getId())).execute();
     }
 
     /**
