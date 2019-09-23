@@ -156,14 +156,14 @@ export default {
       let passwordReg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
       if (index === 1) {
         if (!userNameReg.test(this.mainData.username)) {
-          this.$message.succsss({
+          this.$message.success({
             message: '主账号用户名应为非中文且不能为空',
             type: 'warning'
           })
           return false
         }
         if (!passwordReg.test(this.mainData.password)) {
-          this.$message.succsss({
+          this.$message.success({
             message: '密码应为6至16位非中文且不能为空',
             type: 'warning'
           })
@@ -171,21 +171,21 @@ export default {
         }
       } else {
         if (!userNameReg.test(this.subData.username)) {
-          this.$message.succsss({
+          this.$message.success({
             message: '主账号用户名应为非中文且不能为空',
             type: 'warning'
           })
           return false
         }
         if (!userNameReg.test(this.subData.subUsername)) {
-          this.$message.succsss({
+          this.$message.success({
             message: '子账号用户名或手机号应为非中文且不能为空',
             type: 'warning'
           })
           return false
         }
         if (!passwordReg.test(this.subData.password)) {
-          this.$message.succsss({
+          this.$message.success({
             message: '密码应为6至16位非中文且不能为空',
             type: 'warning'
           })
@@ -209,11 +209,12 @@ export default {
             localStorage.setItem('V-Username', res.content.userName)
             localStorage.setItem('V-loginType', 0)
             localStorage.setItem('V-AccountName', res.content.accountName)
-            // this.$message.succsss({
-            //   showClose: true,
-            //   message: res.message,
-            //   type: 'success'
-            // })
+            console.log(this.$message)
+            this.$message.success({
+              showClose: true,
+              message: res.message,
+              type: 'success'
+            })
             console.log(1111)
             this.$router.push({
               name: 'shopMain'
@@ -231,7 +232,7 @@ export default {
             Cookies.set('V-Index-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             localStorage.setItem('V-AccountName', res.content.accountName)
-            this.$message.succsss({
+            this.$message.success({
               showClose: true,
               message: res.message,
               type: 'success'
