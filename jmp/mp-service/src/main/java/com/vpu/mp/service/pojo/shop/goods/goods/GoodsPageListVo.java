@@ -19,7 +19,7 @@ public class GoodsPageListVo {
     private Byte goodsType;
     private String goodsImg;
     private String goodsSn;
-    private Short catId;
+    private Integer catId;
     private String catName;
     private String sortName;
     private Integer sortId;
