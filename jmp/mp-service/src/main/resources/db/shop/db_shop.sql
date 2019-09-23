@@ -2354,6 +2354,33 @@ create table `b2c_lottery`
     primary key (`id`)
 );
 
+-- --  抽奖活动 奖品及等级
+-- drop table if exists `b2c_lottery_prize`;
+CREATE TABLE `b2c_lottery_prize`
+(
+    `id`                 int(11)   NOT NULL,
+    `lottery_id`         int(11)                                 DEFAULT NULL COMMENT '抽奖编号',
+    `chance_numerator`   int(11)                                 DEFAULT NULL COMMENT '中奖概率--分子',
+    `chance_denominator` int(11)                                 DEFAULT NULL COMMENT '中奖概率--分母',
+    `lottery_grade`      tinyint(2)                              DEFAULT NULL COMMENT '中奖等级：1一等奖，2二等奖，3三等奖，4四等奖 5.。。。',
+    `lottery_detail`     varchar(32) COLLATE utf8mb4_unicode_ci  DEFAULT NULL COMMENT '奖品信息',
+    `icon_imgs_image`    varchar(199) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '中奖图片',
+    `icon_imgs`          varchar(20) COLLATE utf8mb4_unicode_ci  DEFAULT NULL COMMENT '中奖提示',
+    `lottery_type`       tinyint(4)                              DEFAULT NULL COMMENT '选择奖类型 0积分 1 用户余额 2优惠券 3赠品 4 自定义',
+    `lottery_number`     int(11)                                 DEFAULT NULL COMMENT '奖品份数',
+    `award_times`        int(11)                                 DEFAULT NULL COMMENT '已发生中奖数',
+    `integral_score`     int(11)                                 DEFAULT NULL COMMENT '积分数量',
+    `coupon_id`          int(10)                                 DEFAULT NULL COMMENT '优惠券id',
+    `prd_id`             int(10)                                 DEFAULT NULL COMMENT '赠品规格id',
+    `prd_keep_days`      smallint(6)                             DEFAULT NULL COMMENT '赠品有效期',
+    `del_flag`           tinyint(4)                              DEFAULT '0' COMMENT '1删除',
+    `update_time`        timestamp NOT NULL                      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `create_time`        timestamp NOT NULL                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
 -- --  抽奖活动表
 -- drop table if exists `b2c_lottery_share`;
 create table `b2c_lottery_share`
@@ -4436,7 +4463,7 @@ CREATE TABLE `b2c_share_award`
     `visit_first`       tinyint(1)   NULL     DEFAULT NULL COMMENT '仅邀请未访问过的用户有效',
     `status`            tinyint(1)   NOT NULL DEFAULT 0 COMMENT '状态：0启用，1停用',
     `del_flag`          tinyint(1)   NOT NULL DEFAULT 0 COMMENT '是否删除：0未删除，1删除',
-    `del_time` timestamp null default null COMMENT '删除时间',
+    `del_time`          timestamp    null     default null COMMENT '删除时间',
     `first_level_rule`  varchar(500) NULL     DEFAULT NULL COMMENT '一级规则设置（json）：规则优先级从一到三依次增强，规则一满足后方可进行规则二',
     `second_level_rule` varchar(500) NULL     DEFAULT NULL COMMENT '二级规则设置（json）',
     `third_level_rule`  varchar(500) NULL     DEFAULT NULL COMMENT '三级规则设置（json）',
@@ -4509,30 +4536,30 @@ create table `b2c_comment_award`
 (
     `id`                  int(9)       not null auto_increment,
     `name`                varchar(120) not null comment '活动名称',
-    `start_time`          timestamp      null default null comment '开始时间',
-    `end_time`            timestamp      null default null comment '结束时间',
-    `is_forever`          tinyint(1)     default null comment '是否永久',
-    `leve`                int(9)         default '1' comment '优先级',
+    `start_time`          timestamp    null default null comment '开始时间',
+    `end_time`            timestamp    null default null comment '结束时间',
+    `is_forever`          tinyint(1)        default null comment '是否永久',
+    `leve`                int(9)            default '1' comment '优先级',
     `goods_type`          tinyint(4)   not null comment '触发条件 1全部商品 2指定商品 3 实际品论比较少的商品',
-    `goods_ids`           varchar(199)   default null comment '对应商品',
-    `comment_num`         int(8)         default null comment '品论数',
+    `goods_ids`           varchar(199)      default null comment '对应商品',
+    `comment_num`         int(8)            default null comment '品论数',
     `comment_type`        tinyint(4)   not null comment '评价类型 1评价即送 2 自定义',
-    `comment_words`       int(8)         default null comment '评价字数条件',
-    `has_pic_num`         tinyint(4)     default null comment '嗮图',
-    `has_five_stars`      tinyint(4)     default null comment '五星好评',
+    `comment_words`       int(8)            default null comment '评价字数条件',
+    `has_pic_num`         tinyint(4)        default null comment '嗮图',
+    `has_five_stars`      tinyint(4)        default null comment '五星好评',
     `award_type`          int(2)       not null comment '奖品类型 1积分 2优惠卷 3 余额 4幸运大抽奖 5自定义',
     `score`               int(11)      not null comment '积分数',
-    `activity_id`         varchar(200)   default null comment ' 评价奖励活动id，逗号分隔  优惠卷或者抽奖',
-    `account`             decimal(10, 2) default '0.00' comment '用户余额',
-    `award_num`           int(8)         default null comment '奖品份数',
-    `send_num`            int(8)         default '0' comment '奖品送出份数',
-    `award_path`          varchar(100)   default null comment '设置链接',
-    `award_img`           varchar(100)   default null comment '活动图片',
-    `first_comment_goods` tinyint(1)     DEFAULT NULL COMMENT '首次平价商品',
-    `status`              tinyint(2)     default '1' comment '状态：1启用',
-    `del_flag`            tinyint(2)     default '0' comment '1删除',
-    `create_time`         timestamp      default current_timestamp,
-    `update_time`         timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+    `activity_id`         varchar(200)      default null comment ' 评价奖励活动id，逗号分隔  优惠卷或者抽奖',
+    `account`             decimal(10, 2)    default '0.00' comment '用户余额',
+    `award_num`           int(8)            default null comment '奖品份数',
+    `send_num`            int(8)            default '0' comment '奖品送出份数',
+    `award_path`          varchar(100)      default null comment '设置链接',
+    `award_img`           varchar(100)      default null comment '活动图片',
+    `first_comment_goods` tinyint(1)        DEFAULT NULL COMMENT '首次平价商品',
+    `status`              tinyint(2)        default '1' comment '状态：1启用',
+    `del_flag`            tinyint(2)        default '0' comment '1删除',
+    `create_time`         timestamp         default current_timestamp,
+    `update_time`         timestamp         default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
 );
 
@@ -4579,9 +4606,10 @@ create table `b2c_mp_official_account_user`
     key (`unionid`)
 );
 
-CREATE TABLE `b2c_message_template_config` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-	`open_ma` TINYINT(4) NOT NULL DEFAULT '0',
-	`open_mp` TINYINT(4) NOT NULL DEFAULT '0',
-	PRIMARY KEY (`id`)
+CREATE TABLE `b2c_message_template_config`
+(
+    `id`      INT(11)    NOT NULL AUTO_INCREMENT,
+    `open_ma` TINYINT(4) NOT NULL DEFAULT '0',
+    `open_mp` TINYINT(4) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`)
 )

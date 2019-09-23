@@ -18,9 +18,9 @@ public class LotteryPrizeParam {
     private Integer lotteryNumber;
     private Integer awardTimes;
     private Integer integralScore;
-    private Byte    couponId;
-    private Byte    prdId;
-    private Byte    prdKeepDays;
+    private Integer    couponId;
+    private Integer    prdId;
+    private Short    prdKeepDays;
     private String  lotteryDetail;
     private String  iconImgsImage;
     private String  iconImgs;
