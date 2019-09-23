@@ -16,6 +16,7 @@
             type="primary"
             size="small"
             @click="handleSelect"
+            style="margin-left:10px"
           >查询
           </el-button>
           <el-button
@@ -36,17 +37,25 @@
             style="width: 100%"
           >
             <thead>
-              <tr>
-                <th>发券活动名称</th>
-                <th>创建时间</th>
-                <th>活动人群</th>
-                <th>发放类型</th>
-                <th>发放状态</th>
-                <th>优惠券名称</th>
-                <th>优惠券使用条件</th>
-                <th>优惠券价值</th>
-                <th>优惠券有效期</th>
-                <th>操作</th>
+              <tr class="tableHeader">
+                <th style="width:10%">发券活动名称</th>
+                <th style="width:10%">创建时间</th>
+                <th style="width:17%">活动人群</th>
+                <th style="width:7%">发放类型</th>
+                <th style="width:7%">发放状态</th>
+                <th>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style="width:7%">优惠券名称</th>
+                        <th style="width:7%">优惠券使用条件</th>
+                        <th style="width:7%">优惠券价值</th>
+                        <th style="width:9%">优惠券有效期</th>
+                        <th style="width:4%">操作</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </th>
               </tr>
             </thead>
 
@@ -54,6 +63,7 @@
               <tr
                 v-for="(item,index) in tableData"
                 :key="index"
+                class="tableBody"
               >
                 <!-- 1 -->
                 <td>{{item.actName}}</td>
@@ -65,61 +75,39 @@
                 <td>{{item.sendAction | sendAction}}</td>
                 <!-- 5 -->
                 <td>{{item.sendStatus | sendStatus}}</td>
-                <!-- 6 -->
-                <td>
-              <tr
-                v-for="(it,i) in item.couponGiveListConditionVo"
-                :key="i"
-              >
-                <td>
-                  {{it.couponName}}
+                <!-- 6 ~ 10 -->
+                <td class="rightContent">
+                  <table>
+                    <tbody>
+                      <tr
+                        v-for="(it,i) in item.couponGiveListConditionVo"
+                        :key="i"
+                        style="border: 1px solid yellow"
+                      >
+                        <td
+                          style="width:7%"
+                          class="listContent"
+                        >{{it.couponName}}</td>
+                        <td
+                          style="width:7%"
+                          class="listContent"
+                        >{{it.leastConsume | leastConsume}}</td>
+                        <td
+                          style="width:7%"
+                          class="listContent"
+                        >{{it.denomination | denomination}}</td>
+                        <td
+                          style="width:9%"
+                          class="listContent"
+                        >{{it.time}}</td>
+                        <td
+                          style="width:4%"
+                          class="listContent"
+                        >发放明细</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </td>
-              </tr>
-              </td>
-              <!-- 7 -->
-              <td>
-                <tr
-                  v-for="(it,i) in item.couponGiveListConditionVo"
-                  :key="i"
-                >
-                  <td>
-                    {{it.leastConsume | leastConsume}}
-                  </td>
-                </tr>
-              </td>
-              <!-- 8 -->
-              <td>
-                <tr
-                  v-for="(it,i) in item.couponGiveListConditionVo"
-                  :key="i"
-                >
-                  <td>
-                    {{it.denomination | denomination}}
-                  </td>
-                </tr>
-              </td>
-              <!--9 -->
-              <td>
-                <tr
-                  v-for="(it,i) in item.couponGiveListConditionVo"
-                  :key="i"
-                >
-                  <td>
-                    {{it.time}}
-                  </td>
-                </tr>
-              </td>
-              <!-- 10 -->
-              <td>
-                <tr
-                  v-for="(it,i) in item.couponGiveListConditionVo"
-                  :key="i"
-                >
-                  <td>
-                    发放明细
-                  </td>
-                </tr>
-              </td>
               </tr>
             </tbody>
 
@@ -259,10 +247,33 @@ export default {
     background-color: #fff;
     display: flex;
   }
-}
-table,
-th,
-td {
-  border: 1px solid #ddd;
+  .table_list {
+    position: relative;
+    margin-top: 10px;
+    background-color: #fff;
+    padding: 0 0 10px 0;
+    .tableHeader {
+      border: none;
+      background: #eee;
+      text-align: center;
+    }
+    .tableBody {
+      td {
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid #ddd;
+      }
+      .rightContent {
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        .listContent {
+          border: 1px solid #ddd;
+          height: 100% !important;
+        }
+      }
+    }
+  }
 }
 </style>
