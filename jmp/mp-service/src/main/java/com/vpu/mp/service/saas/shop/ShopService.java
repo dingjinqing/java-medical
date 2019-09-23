@@ -112,7 +112,20 @@ public class ShopService extends MainBaseService {
 				ShopListQueryResultVo.class);
 		for (ShopListQueryResultVo shopList : result.dataList) {
 			shopList.setRenewMoney(this.renew.getShopRenewTotal(shopList.getShopId()));
-			shopList.setExpireTime(this.renew.getShopRenewExpireTime(shopList.getShopId()));
+			Timestamp expireTime = this.renew.getShopRenewExpireTime(shopList.getShopId());
+			String expireStatus = "1";
+			if (expireTime != null) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(expireTime);
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+					expireStatus = "0";
+				}
+			}
+			shopList.setExpireTime(expireTime);
+			shopList.setShopExpireStatus(expireStatus);
 
 		}
 		return result;
