@@ -15,7 +15,7 @@ import lombok.Data;
 public class LotteryRecordPageListVo {
 
     private Integer id;
-    private String userName;
+    private String username;
     private String mobile;
     /**
      * 抽奖时间
