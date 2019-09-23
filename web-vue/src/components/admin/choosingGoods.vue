@@ -352,73 +352,30 @@ export default {
         })
       }
     }
-
-    // goodsIds_: {
-    //   handler (newData, oldData) {
-    //     console.log(newData)
-    //     this.goodsIdsArr = [...new Set(newData)]
-    //     this.selectgoodsNum = this.goodsIdsArr.length
-    //     console.log(this.goodsIdsArr)
-    //   },
-    //   immediate: true
-    // }
   },
   mounted () {
-    // this.$http.$on('choosingGoodsFlag', (res, flag) => {
-    //   // console.log(res, flag)
-    //   // console.log(this.trList)
-
-    //   this.choiseGooddialogVisible = true
-    //   this.trList.forEach(item => {
-    //     item.ischecked = false
-    //   })
-    //   if (flag === 'choiseOne') {
-    //     console.log('choiseOne', this.editGoodsId)
-    //     this.choiseOne = true
-    //     this.trList.forEach(item => {
-    //       if (item.goodsId === this.editGoodsId) {
-    //         item.ischecked = true
-    //       }
-    //     })
-    //     return
-    //   }
-    //   if (flag) {
-    //     this.trList.forEach(item => {
-    //       flag.forEach(itemC => {
-    //         if (item.goodsId === itemC) {
-    //           item.ischecked = true
-    //         }
-    //       })
-    //     })
-    //   }
-    // })
     // 品牌分类初始化获取及页编辑回显
     this.defaultGrandClass()
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
     defaultGrandClass () {
-      console.log('defaultGrandClass()', this.chooseGoodsBack)
-
       if (this.editGoodsId !== 'add' && this.chooseGoodsBack) {
         let obj = {
           'id': this.chooseGoodsBack
         }
         queryGoodsIdRequest(obj).then((res) => {
-          console.log(res.content)
           this.NameInput = res.content.brandName
           this.NameEnlishInput = res.content.ename
           this.logoImgUrl = res.content.logo
           this.classSelectValue = res.content.classifyId
           this.firstInput = res.content.first
-          console.log(res.content.isRecommend)
           this.radio = res.content.isRecommend.toString()
           this.hxgoodsIds = res.content.goodsIds
           this.selectgoodsNum = res.content.goodsIds.length
         })
       }
       classificationSelectRequest().then((res) => {
-        console.log(res)
         if (!res) return
         if (res.error === 0) {
           this.options = res.content
@@ -448,8 +405,6 @@ export default {
           this.bottomOptionsThree = res.content.goodsLabels
           this.goodsGrandOptions = res.content.goodsBrands
         }
-
-        console.log(res)
       })
       // 弹窗下方表格数据获取
       let query = allGoodsQueryRequest
@@ -459,10 +414,7 @@ export default {
       query(obj).then((res) => {
         if (!res) return
         if (res.error === 0) {
-          // res.content.dataList.catName = res.content.dataList.catName.replace(',', '、')
-          console.log(res.content.dataList)
           res.content.dataList.catName = res.content.dataList.map((item, index) => {
-            console.log(item.catName)
             item.catName = item.catName.replace('，', '、')
             item.ischecked = false
             this.hxgoodsIds.map((childrenItem, childrenIndex) => {
@@ -479,27 +431,18 @@ export default {
           let flag = res.content.dataList.filter((item, index) => {
             return item.ischecked === false
           })
-          console.log(flag)
           if (flag.length === 0 && this.choiseOne === false) {
             this.checkedAll = true
           }
           this.trList = res.content.dataList
         }
-        console.log(res)
       })
     },
     // 行选中高亮
     handleClick (index, item) {
       this.clickIindex = index
-      console.log(this.trList[index].ischecked)
-      let flagBefore = this.trList.filter((tmpitem, index) => {
-        return tmpitem.ischecked === true
-      })
-      console.log('flagBefore', flagBefore)
-      console.log('item', item)
       // 单选模式
       if (this.choiseOne) {
-        // item.ischecked = false
         this.trList.forEach(tmpitem => {
           if (item.goodsId === tmpitem.goodsId) {
             tmpitem.ischecked = true
@@ -514,16 +457,11 @@ export default {
       let flag = this.trList.filter((item, index) => {
         return item.ischecked === false
       })
-      console.log(this.choiseOne)
       if (!flag.length) {
         this.checkedAll = true
       } else {
         this.checkedAll = false
       }
-      // let arr = []
-      console.log(this.trList)
-      console.log(this.goodsIdsArr)
-      console.log('选中', index, item)
     },
     // 选择商品弹窗确定
     handleChoiseGooddialog () {
