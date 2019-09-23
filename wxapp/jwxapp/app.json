@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/bottom/bottom",
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "首页",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "以便向您推荐距离您最近的门店！"
+    }
+  },
+  "sitemapLocation": "sitemap.json"
+}

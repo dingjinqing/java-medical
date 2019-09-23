@@ -1,0 +1,17 @@
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix {
+  _height: auto;
+}
+
+.clearfix::after {
+  display: block;
+  content: "";
+  clear: both;
+}
