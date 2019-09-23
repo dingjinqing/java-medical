@@ -88,7 +88,8 @@ import {
 import { en as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
 // 幸运大抽奖
 import {
-  en as luckyDraw } from './views/admin_new/en/index/marketManagement/luckyDraw/luckyDraw'
+  en as luckyDraw
+} from './views/admin_new/en/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
 import {
   en as pageDecoration
@@ -101,6 +102,10 @@ import {
 import {
   en as adSharePolite
 } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
+// 分销
+import {
+  en as distribution
+} from './views/admin_new/en/index/marketManagement/distribution/distributionEn'
 
 // 页面装修
 import {
@@ -560,6 +565,7 @@ const en = {
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
   luckyDraw, // 幸运大抽奖
+  distribution, // 分销
   ...enLocale,
   expressList
 }

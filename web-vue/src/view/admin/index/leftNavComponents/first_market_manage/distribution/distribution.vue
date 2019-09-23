@@ -6,61 +6,61 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="分销配置"
+          :label="$t('distribution.distributionCfg')"
           name="first"
         >
           <distributeSetting />
         </el-tab-pane>
         <el-tab-pane
-          label="分销员等级配置"
+          :label="$t('distribution.distributorLevelCfg')"
           name="second"
         >
           <distributorLevelSetting />
         </el-tab-pane>
         <el-tab-pane
-          label="返利策略配置"
+          :label="$t('distribution.rebateStrategyCfg')"
           name="third"
         >
           <returnPolicySetting />
         </el-tab-pane>
         <el-tab-pane
-          label="分销员列表"
+          :label="$t('distribution.distributorList')"
           name="fouth"
         >
           <distributorList />
         </el-tab-pane>
         <el-tab-pane
-          label="分销员分组"
+          :label="$t('distribution.distributorGroup')"
           name="fifth"
         >
           <distributorGroup />
         </el-tab-pane>
         <el-tab-pane
-          label="佣金统计"
+          :label="$t('distribution.commissionStatistics')"
           name="sixth"
         >
           <moneyStatistics />
         </el-tab-pane>
         <el-tab-pane
-          label="商品返利统计"
+          :label="$t('distribution.rebateGoodsStatistics')"
           name="seventh"
         >
           <goodsReturnStatistics />
         </el-tab-pane>
         <el-tab-pane
-          label="返利提现审核"
+          :label="$t('distribution.withdrawAudit')"
           name="eighth"
         >
           <withdrawDepositCheck />
         </el-tab-pane>
         <el-tab-pane
-          label="分销员审核"
+          :label="$t('distribution.distributorAudit')"
           name="ninth"
         >
           <distributorCheck />
         </el-tab-pane>
         <el-tab-pane
-          label="分销推广语"
+          :label="$t('distribution.advertisement')"
           name="tenth"
         >
           <advertisement />

@@ -98,7 +98,7 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="待审和分销员"
+          label="待审核分销员"
           name="first"
         >用户管理</el-tab-pane>
         <el-tab-pane
@@ -110,6 +110,53 @@
           name="third"
         >角色管理</el-tab-pane>
       </el-tabs>
+      <div>
+        <table class="checkList">
+          <tr class='title'>
+            <td colspan="6">ID:</td>
+            <td>11</td>
+            <td>11</td>
+            <td>11</td>
+          </tr>
+          <tr>
+            <td>真实姓名</td>
+            <td>常乐</td>
+            <td>手机号</td>
+            <td>13716024041</td>
+            <td>身份证号</td>
+            <td>214423452232561</td>
+            <td rowspan="5">22</td>
+            <td rowspan="5">22</td>
+            <td rowspan="5">22</td>
+          </tr>
+          <tr>
+            <td>性别</td>
+            <td>男</td>
+            <td>生日</td>
+            <td>1987.03.21</td>
+            <td>婚姻状况</td>
+            <td>未婚</td>
+
+          </tr>
+          <tr>
+            <td>教育程度</td>
+            <td>小学</td>
+            <td>所在行业</td>
+            <td>互联网</td>
+            <td>所在地</td>
+            <td>朔州</td>
+
+          </tr>
+          <tr>
+            <td>备注</td>
+            <td colspan="5">7个工作日没审核通过，联系110</td>
+          </tr>
+          <tr>
+            <td>图片</td>
+            <td colspan="5">6</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -127,8 +174,8 @@ export default {
     // handleCurrentChange (tab) {
 
     // }
-    handleClick () {
-
+    handleClick (tab, event) {
+      console.log(tab, event)
     }
   }
 
@@ -211,6 +258,22 @@ export default {
       height: 32px;
       line-height: 32px;
     }
+  }
+  tr {
+    height: 35px;
+    line-height: 35px;
+    border: 1px solid lightgray;
+  }
+  td {
+    padding-left: 10px;
+    text-align: center;
+    border: 1px solid lightgray;
+  }
+  .checkList {
+    width: 100%;
+  }
+  .title {
+    background-color: #eee;
   }
 }
 </style>

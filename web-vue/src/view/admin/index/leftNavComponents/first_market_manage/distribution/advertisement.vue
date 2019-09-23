@@ -3,51 +3,51 @@
     <div class="table_list">
       <div class="select_info">
         <div class="leftarea">
-          <span>创建时间</span>
+          <span>{{$t('distribution.createTime')}}</span>
           <el-date-picker
             v-model="time.startCreateTime"
             type="datetime"
-            placeholder="选择日期"
+            :placeholder="$t('distribution.chooseDate')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{$t('distribution.to')}}</span>
           <el-date-picker
             v-model="time.endCreateTime"
             type="datetime"
-            placeholder="选择日期"
+            :placeholder="$t('distribution.chooseDate')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
         </div>
         <div class="leftarea">
-          <span>最后修改时间</span>
+          <span>{{$t('distribution.endModifyTime')}}</span>
           <el-date-picker
             v-model="time.startUpdateTime"
             type="datetime"
-            placeholder="选择日期"
+            :placeholder="$t('distribution.chooseDate')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{$t('distribution.to')}}</span>
           <el-date-picker
             v-model="time.endUpdateTime"
             type="datetime"
-            placeholder="选择日期"
+            :placeholder="$t('distribution.chooseDate')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
         </div>
         <div class="midarea">
-          <span>推广语内容</span>
+          <span>{{$t('distribution.advertisementContent')}}</span>
           <el-input
             v-model="promotionLanguage"
             size="small"
-            placeholder="请输入推广语"
+            :placeholder="$t('distribution.inputAdvertisement')"
           ></el-input>
         </div>
         <div class="rightarea">
@@ -55,7 +55,7 @@
             type="primary"
             size="small"
             @click="search()"
-          >查询</el-button>
+          >{{$t('distribution.search')}}</el-button>
         </div>
       </div>
       <el-button
@@ -63,7 +63,7 @@
         type="primary"
         size="small"
         @click="add"
-      >添加推广语</el-button>
+      >{{$t('distribution.addAdvertisement')}}</el-button>
       <el-dialog
         title="添加推广语"
         :visible.sync="centerDialogVisible"
