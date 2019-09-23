@@ -44,3 +44,12 @@ export function getAllMemberCardDetailRequest (data) {
     data: data
   })
 }
+
+// 获取系统中指定类型的所有可用会员卡
+export function getAllMemberCardRequest (data) {
+  return service({
+    url: '/api/admin/member/card/list',
+    method: 'post',
+    data: data
+  })
+}

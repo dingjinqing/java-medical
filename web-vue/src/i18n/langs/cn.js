@@ -1,149 +1,79 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
-import {
-  cn as programVersion
-} from './views/programVersion'
-import {
-  cn as shopAccountList
-} from './views/shopAccountList'
-import {
-  cn as shopList
-} from './views/shopList'
-import {
-  cn as publishList
-} from './views/publishList'
-import {
-  cn as versionList
-} from './views/versionList'
+import { cn as programVersion } from './views/programVersion'
+import { cn as shopAccountList } from './views/shopAccountList'
+import { cn as shopList } from './views/shopList'
+import { cn as publishList } from './views/publishList'
+import { cn as versionList } from './views/versionList'
 
-import {
-  cn as router
-} from './views/admin_new/cn/routerCn'
-import {
-  cn as membershipIntroduction
-} from './views/membershipIntroduction'
-import {
-  cn as marketManage
-} from './views/marketManage'
-import {
-  cn as ordinaryCoupon
-} from './views/ordinaryCoupon'
-import {
-  cn as ShopConfiguration
-} from './views/ShopConfiguration'
-import {
-  cn as adminPageFramework
-} from './views/adminPageFramework'
-import {
-  cn as goodsAddEditInfo
-} from './views/goodsManage/goodsAddEditInfo'
+import { cn as router } from './views/admin_new/cn/routerCn'
+import { cn as membershipIntroduction } from './views/membershipIntroduction'
+import { cn as marketManage } from './views/marketManage'
+import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
+import { cn as ShopConfiguration } from './views/ShopConfiguration'
+import { cn as adminPageFramework } from './views/adminPageFramework'
+import { cn as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
 // 商品管理系列国际化
 // 商品管理/全部商品
-import {
-  cn as allGoods
-} from './views/goodsManage/allGoods'
-import {
-  cn as goodsImport
-} from './views/goodsManage/goodsImport'
+import { cn as allGoods } from './views/goodsManage/allGoods'
+import { cn as goodsImport } from './views/goodsManage/goodsImport'
 
 // 营销管理
 
 // 营销管理通用词汇
-import {
-  cn as marketCommon
-} from './views/admin/index/leftNavComponents/first_market_manage/marketCommon'
+import { cn as marketCommon } from './views/admin/index/leftNavComponents/first_market_manage/marketCommon'
 // 多人拼团
-import {
-  cn as groupBuy
-} from './views/admin_new/cn/index/marketManagement/spellGroup/groupBuy'
+import { cn as groupBuy } from './views/admin_new/cn/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
-import {
-  cn as statusTab
-} from './views/components/status/statusTab'
+import { cn as statusTab } from './views/components/status/statusTab'
 // 分享有礼
-import {
-  cn as sharePolite
-} from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePolite'
+import { cn as sharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePolite'
 // 分享有礼-领取明细
-import {
-  cn as receiveDetails
-} from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
+import { cn as receiveDetails } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
 // 优惠券礼包
-import {
-  cn as couponPackage
-} from './views/admin_new/cn/index/marketManagement/couponPackage/couponPackageCn'
+import { cn as couponPackage } from './views/admin_new/cn/index/marketManagement/couponPackage/couponPackageCn'
 // 优惠券礼包-活动创建页
-import {
-  cn as addCouponPackage
-} from './views/admin_new/cn/index/marketManagement/couponPackage/addCouponPackageCn'
+import { cn as addCouponPackage } from './views/admin_new/cn/index/marketManagement/couponPackage/addCouponPackageCn'
 // 砍价列表
-import {
-  cn as bargainList
-} from './views/admin_new/cn/index/marketManagement/bargain/bargainListCn'
+import { cn as bargainList } from './views/admin_new/cn/index/marketManagement/bargain/bargainListCn'
 // 添加砍价活动
-import {
-  cn as addBargainAct
-} from './views/admin_new/cn/index/marketManagement/bargain/addBargainActCn'
+import { cn as addBargainAct } from './views/admin_new/cn/index/marketManagement/bargain/addBargainActCn'
 // 好友助力
-import {
-  cn as promoteList
-} from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
+import { cn as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
 // 幸运大抽奖
-import {
-  cn as luckyDraw
-} from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
+import { cn as luckyDraw } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
-import {
-  cn as pageDecoration
-} from './views/smallProgramManagement/pageDecoration'
+import { cn as pageDecoration } from './views/smallProgramManagement/pageDecoration'
 // 底部导航配置
-import {
-  cn as bottomNavigation
-} from './views/smallProgramManagement/bottomNavigation'
+import { cn as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
 // console.log(zhLocale)
 // 分享有礼-添加
-import {
-  cn as adSharePolite
-} from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
+import { cn as adSharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
 // 概览
-import {
-  cn as overview
-} from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
+import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 // 页面装修
-import {
-  cn as pictureSetting
-} from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+import { cn as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 // 分销
-import {
-  cn as distribution
-} from './views/admin_new/cn/index/marketManagement/distribution/distributionCn'
+import { cn as distribution } from './views/admin_new/cn/index/marketManagement/distribution/distributionCn'
 
 // 订单
 // 订单通用
-import {
-  cn as orderCommon
-} from './views/admin_new/cn/index/orderManagement/orderCommonCn'
+import { cn as orderCommon } from './views/admin_new/cn/index/orderManagement/orderCommonCn'
 // 订单列表
-import {
-  cn as order
-} from './views/admin/index/leftNavComponents/order/order'
+import { cn as order } from './views/admin/index/leftNavComponents/order/order'
 // 虚拟商品订单-会员卡订单
-import {
-  cn as memberCardOrder
-} from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/memberCardOrderCn'
+import { cn as memberCardOrder } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/memberCardOrderCn'
 // 虚拟商品订单-优惠券包订单
-import {
-  cn as couponPackageOrder
-} from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/couponPackageOrderCn'
+import { cn as couponPackageOrder } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/couponPackageOrderCn'
 // 虚拟商品订单-手动退款弹窗
-import {
-  cn as refundDialog
-} from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/refundDialogCn'
+import { cn as refundDialog } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/refundDialogCn'
 
 // 快递公司
-import {
-  cn as expressList
-} from './views/admin/index/leftNavComponents/order/expressList'
+import { cn as expressList } from './views/admin/index/leftNavComponents/order/expressList'
+
+// 会员管理
+// 会员管理-会员卡
+import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card/memberCardCn'
 const cn = {
   messages: {
     lang: '中文',
@@ -156,37 +86,51 @@ const cn = {
     index_application_title_1: '多样营销功能应用',
     index_application_content_1: '丰富的营销工具，多样营销，助力畅享千亿级流量',
     index_application_title_2: '预约服务',
-    index_application_content_2: '多种预约模式，帮您提高顾客体验，自动化解决顾客预约难、等位久的问题',
+    index_application_content_2:
+      '多种预约模式，帮您提高顾客体验，自动化解决顾客预约难、等位久的问题',
     index_application_title_3: '砍价活动',
-    index_application_content_3: '高扩散、低价让利消费者，从而宣传品牌、提高人气、大量引流，提高转化率',
+    index_application_content_3:
+      '高扩散、低价让利消费者，从而宣传品牌、提高人气、大量引流，提高转化率',
     index_application_title_4: '分销模式',
-    index_application_content_4: '一键分享，邀请下级，成单分佣。海量用户转发引流量，提高店铺曝光',
+    index_application_content_4:
+      '一键分享，邀请下级，成单分佣。海量用户转发引流量，提高店铺曝光',
     index_application_title_5: '拼团活动',
-    index_application_content_5: '低价限时多人团购，快速下单，海量分享。助您累积会员、走量促销，成交更轻松',
+    index_application_content_5:
+      '低价限时多人团购，快速下单，海量分享。助您累积会员、走量促销，成交更轻松',
     index_advantage_top_title: '小程序核心功能优势',
-    index_advantage_top_content: '众多核心功能，一键应用，提前布局微信新生态，抢占红利',
+    index_advantage_top_content:
+      '众多核心功能，一键应用，提前布局微信新生态，抢占红利',
     index_advantage_title_1: '营销活动',
-    index_advantage_content_1: '分裂优惠券：下单获得优惠券，分享到群、多人领取享优惠',
-    index_advantage_content_2: '表单统计：问卷调查、简单预约信息收集，获取顾客喜好',
+    index_advantage_content_1:
+      '分裂优惠券：下单获得优惠券，分享到群、多人领取享优惠',
+    index_advantage_content_2:
+      '表单统计：问卷调查、简单预约信息收集，获取顾客喜好',
     index_advantage_content_3: '满折满减：实现刺激消费、促进消费、走量促销',
-    index_advantage_content_4: '消息模板：自定义活动消息模板，定向选择顾客发送小程序消息信息',
-    index_advantage_content_5: '更包含：拼团、砍价、秒杀、分销、抽奖、优惠券、积分商城、活动',
+    index_advantage_content_4:
+      '消息模板：自定义活动消息模板，定向选择顾客发送小程序消息信息',
+    index_advantage_content_5:
+      '更包含：拼团、砍价、秒杀、分销、抽奖、优惠券、积分商城、活动',
     index_advantage_content_6: '有礼、支付有礼等丰富营销活动',
     index_advantage_title_2: '立即使用',
     index_advantage_2_title_1: '会员管理',
-    index_advantage_2_content_1: '会员等级、会员积分、会员余额、会员卡、限次卡（规定使用次数的卡）',
+    index_advantage_2_content_1:
+      '会员等级、会员积分、会员余额、会员卡、限次卡（规定使用次数的卡）',
     index_advantage_2_content_2: '为会员提供精准的营销活动',
-    index_advantage_2_content_3: '线上线下的会员打通，全时全地的为用户提供持续服务',
+    index_advantage_2_content_3:
+      '线上线下的会员打通，全时全地的为用户提供持续服务',
     index_advantage_2_title_2: '立即使用',
     index_advantage_3_title_1: '门店管理',
     index_advantage_3_content_1: '支持多门店连锁经营，增加门店曝光率',
     index_advantage_3_content_2: '门店细分获客、店员分销，降低门店获客成本',
-    index_advantage_3_content_3: '门店预约服务单独设定，提高顾客体验，降低管理成本',
+    index_advantage_3_content_3:
+      '门店预约服务单独设定，提高顾客体验，降低管理成本',
     index_advantage_3_title_2: '立即使用',
     index_advantage_4_title_1: '模板装修',
-    index_advantage_4_content_1: '多种行业模板按需选择使用，模块拖拽即可完成装修',
+    index_advantage_4_content_1:
+      '多种行业模板按需选择使用，模块拖拽即可完成装修',
     index_advantage_4_content_2: '导航菜单灵活设置。无需代码编辑',
-    index_advantage_4_content_3: '图片广告、会员卡、优惠券、地图定位板块，一键添加展示',
+    index_advantage_4_content_3:
+      '图片广告、会员卡、优惠券、地图定位板块，一键添加展示',
     index_advantage_4_title_2: '立即使用',
     index_advantage_5_title_1: '数据统计',
     index_advantage_5_content_1: '销量、流量、转化率全面统计',
@@ -194,8 +138,10 @@ const cn = {
     index_advantage_5_content_3: '用户画像形象展示，为您精准分析提供依据',
     index_advantage_5_title_2: '立即使用',
     index_advantage_6_title_1: '在线交易',
-    index_advantage_6_content_1: '商品展示、在线下单、在线微信支付、余额支付、积分抵现',
-    index_advantage_6_content_2: '完整线上交易流程；门店网店一键打通，降低运营成本，提升用户体验',
+    index_advantage_6_content_1:
+      '商品展示、在线下单、在线微信支付、余额支付、积分抵现',
+    index_advantage_6_content_2:
+      '完整线上交易流程；门店网店一键打通，降低运营成本，提升用户体验',
     index_advantage_6_title_2: '立即使用'
   },
   industry: {
@@ -265,25 +211,33 @@ const cn = {
     kehu: '皇冠以上客户',
     xufei: '客户续费率',
     renzheng: '国际认证',
-    p_1: '北京掌上先机网络科技有限公司，零售云服务提供商，基于云计算SaaS服务模式，以体系化解决方案，助力零售企业数字化智能化管理升级，成就企业规模化发展之路。',
-    p_2: '2012年，旺店通成立于北京，之后在天津、上海、广州、杭州、义乌等25个省市设立了分支机构，员工近1000人，服务范围辐射全国并延伸至海外。 凭借技术创新、产品创新、服务创新和市场创新，旺店通实现了每年100%以上的客户增长；10万+客户涵盖了中粮、强生、3M、百威、周黑鸭、MG小象、水密码等世界500强、上市公司、知名品牌、TOP商家……2017全年交易额近万亿。规模化客户及头部客户优势给予了旺店通更高更全的行业视角，市场敏感度及强执行力。旺店通创始团队来自互联网上市公司技术管理层，产品及研发团队占比35% 以上，核心成员皆为清华、北大、北邮等985大学研究生，拥有ACM、数学建模等重量级竞赛获奖经历，具有千万用户运营经验。多年来旺店通构建了内外部“互联网、电商、管理”等资源池，“技术流”行业大咖云集。',
-    p_3: '扎实的技术根基，使旺店通通过了CMMI3级国际认证、ISO27001信息安全认证、国家级高新技术企业认证、双软认证等多项资质认证，并获得了多项荣誉 ：中国电子商务服务商五十强企业、中国产业创新领域十佳SaaS服务商、电商奥斯卡金麦奖“最佳技术服务奖”、中国国际电商博览会“最佳电商服务企业奖”、阿里巴巴CCO“AG最佳赋能合作伙伴奖”、淘宝金牌淘拍档、京东“京卓越”奖项、苏宁易购“金牌易伙伴”等，现已与天猫、淘宝、京东等80+主流电商、外卖等平台建立了战略合作关系。',
-    p_4: '未来，旺店通仍将继续秉持以人为本、客户至上、持续创新、产业共赢的发展理念，打造“ERP+”一体化零售企业服务生态。'
+    p_1:
+      '北京掌上先机网络科技有限公司，零售云服务提供商，基于云计算SaaS服务模式，以体系化解决方案，助力零售企业数字化智能化管理升级，成就企业规模化发展之路。',
+    p_2:
+      '2012年，旺店通成立于北京，之后在天津、上海、广州、杭州、义乌等25个省市设立了分支机构，员工近1000人，服务范围辐射全国并延伸至海外。 凭借技术创新、产品创新、服务创新和市场创新，旺店通实现了每年100%以上的客户增长；10万+客户涵盖了中粮、强生、3M、百威、周黑鸭、MG小象、水密码等世界500强、上市公司、知名品牌、TOP商家……2017全年交易额近万亿。规模化客户及头部客户优势给予了旺店通更高更全的行业视角，市场敏感度及强执行力。旺店通创始团队来自互联网上市公司技术管理层，产品及研发团队占比35% 以上，核心成员皆为清华、北大、北邮等985大学研究生，拥有ACM、数学建模等重量级竞赛获奖经历，具有千万用户运营经验。多年来旺店通构建了内外部“互联网、电商、管理”等资源池，“技术流”行业大咖云集。',
+    p_3:
+      '扎实的技术根基，使旺店通通过了CMMI3级国际认证、ISO27001信息安全认证、国家级高新技术企业认证、双软认证等多项资质认证，并获得了多项荣誉 ：中国电子商务服务商五十强企业、中国产业创新领域十佳SaaS服务商、电商奥斯卡金麦奖“最佳技术服务奖”、中国国际电商博览会“最佳电商服务企业奖”、阿里巴巴CCO“AG最佳赋能合作伙伴奖”、淘宝金牌淘拍档、京东“京卓越”奖项、苏宁易购“金牌易伙伴”等，现已与天猫、淘宝、京东等80+主流电商、外卖等平台建立了战略合作关系。',
+    p_4:
+      '未来，旺店通仍将继续秉持以人为本、客户至上、持续创新、产业共赢的发展理念，打造“ERP+”一体化零售企业服务生态。'
   },
   development: {
     title: '发展历程',
     p_1_1: '2017年 旺店通旗舰版上线，开创零售信息服务领域SaaS时代',
     p_1_2: '2017年 小程序SaaS平台正式上线，服务覆盖多行业',
-    p_1_3: '2017年 员工超过800人，设立25家分支机构，服务范围辐射全国，延伸至海外',
-    p_1_4: '2017年 连续5年客户超100%增长，双11订单总量2.89亿单，交易总额402亿，实现5连增',
+    p_1_3:
+      '2017年 员工超过800人，设立25家分支机构，服务范围辐射全国，延伸至海外',
+    p_1_4:
+      '2017年 连续5年客户超100%增长，双11订单总量2.89亿单，交易总额402亿，实现5连增',
     p_2_1: '2016年10月 服务超过100000家线上线下店铺',
     p_2_2: '2016年11月 双11客户总交易额237.7亿，订单量16800万',
     p_2_3: '2016年 E快帮、旺店通WMS、POS门店管理系统上线，服务覆盖大中小商家',
     p_2_4: '2016年 荣获淘宝服务市场金牌淘拍档称号',
-    p_3_1: '2015年 与中粮、强生、好想你、来伊份、君乐宝、云集小也、十月妈咪、RIO锐澳、同仁堂、洽洽等世界500强、上市企业、知名品牌等重量级客户达成合作',
+    p_3_1:
+      '2015年 与中粮、强生、好想你、来伊份、君乐宝、云集小也、十月妈咪、RIO锐澳、同仁堂、洽洽等世界500强、上市企业、知名品牌等重量级客户达成合作',
     p_3_2: '2015年11月 双11客户总交易额超过100亿元，单客户最大订单量97万单',
     p_3_3: '2015年 设立15家分支机构，服务遍及全国',
-    p_4_1: '2014年 旺店通ERP企业版、微商城、B2B2C商城等多个产品上线，开始布局电商企业服务领域',
+    p_4_1:
+      '2014年 旺店通ERP企业版、微商城、B2B2C商城等多个产品上线，开始布局电商企业服务领域',
     p_4_2: '2014年 旺店通与周黑鸭达成战略合作，打造订单全渠道解决方案',
     p_4_3: '2014年 荣获中国电子商务协会“中国电子商务百强企业”称号',
     p_5_1: '2013年7月 全网第一家五金冠商家——朵朵云签约旺店通',
@@ -350,7 +304,8 @@ const cn = {
   imgageDalog: {
     title: '浏览图片',
     upload: '上传图片',
-    tip: '上传图片支持jpeg、jpg、png、bmp格式，为保障前端加载顺利，单张图片大小不能超过5M',
+    tip:
+      '上传图片支持jpeg、jpg、png、bmp格式，为保障前端加载顺利，单张图片大小不能超过5M',
     imagePlaceholder: '请输入图片名称',
     search: '搜索',
     OriginalImg: '原图',
@@ -362,35 +317,37 @@ const cn = {
     Determine: '确定'
   },
   // admin 浏览图片弹窗 selectoptions数据
-  options: [{
-    value: 0,
-    label: '按上传时间从晚到早'
-  },
-  {
-    value: 1,
-    label: '按上传时间从早到晚'
-  },
-  {
-    value: 2,
-    label: '按图片从大到小'
-  },
-  {
-    value: 3,
-    label: '按图片从小到大'
-  },
-  {
-    value: 4,
-    label: '按图片名降序'
-  },
-  {
-    value: 5,
-    label: '按图片名升序'
-  }
+  options: [
+    {
+      value: 0,
+      label: '按上传时间从晚到早'
+    },
+    {
+      value: 1,
+      label: '按上传时间从早到晚'
+    },
+    {
+      value: 2,
+      label: '按图片从大到小'
+    },
+    {
+      value: 3,
+      label: '按图片从小到大'
+    },
+    {
+      value: 4,
+      label: '按图片名降序'
+    },
+    {
+      value: 5,
+      label: '按图片名升序'
+    }
   ],
   // 图片空间数据
   imgsSpace: {
     tipTitle: '当前版本为旗舰版，剩余9845.36M内存空间',
-    hiddleTitle: '体验版100M内存空间，基础版500M内存空间，高级版2048M内存空间，旗舰版10240M内存空间',
+    hiddleTitle:
+      '体验版100M内存空间，基础版500M内存空间，高级版2048M内存空间，旗舰版10240M内存空间',
     modeText: '了解更多',
     allCheckedText: '全选',
     deleteImgsText: '批量删除',
@@ -412,55 +369,56 @@ const cn = {
     right_count_2: '应付总额：0元',
     right_submit: '提交订单',
     saveText: '保存',
-    topTitleList: [{
-      title: '配色1',
-      colorLeft: 'background: #ff6666;',
-      colorRight: 'background: #fee7e7',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色2',
-      colorLeft: 'background: #e53e24;',
-      colorRight: 'background: #f2ad3c',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色3',
-      colorLeft: 'background: #7e56c5;',
-      colorRight: 'background: #333333',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色4',
-      colorLeft: 'background: #09bb07;',
-      colorRight: 'background: #333333',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色5',
-      colorLeft: 'background: #4a90e2;',
-      colorRight: 'background: #dbe9f9',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色6',
-      colorLeft: 'background: #feb609;',
-      colorRight: 'background: #333333',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '自定义',
-      colorLeft: 'background: #fff;',
-      colorRight: 'background: #fff',
-      id: 6,
-      choiseId: ''
-    }
+    topTitleList: [
+      {
+        title: '配色1',
+        colorLeft: 'background: #ff6666;',
+        colorRight: 'background: #fee7e7',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色2',
+        colorLeft: 'background: #e53e24;',
+        colorRight: 'background: #f2ad3c',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色3',
+        colorLeft: 'background: #7e56c5;',
+        colorRight: 'background: #333333',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色4',
+        colorLeft: 'background: #09bb07;',
+        colorRight: 'background: #333333',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色5',
+        colorLeft: 'background: #4a90e2;',
+        colorRight: 'background: #dbe9f9',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色6',
+        colorLeft: 'background: #feb609;',
+        colorRight: 'background: #333333',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '自定义',
+        colorLeft: 'background: #fff;',
+        colorRight: 'background: #fff',
+        id: 6,
+        choiseId: ''
+      }
     ]
   },
   // system 列表首页页面
@@ -491,8 +449,10 @@ const cn = {
   // 授权公众号
   serviceAuth: {
     addButton: '添加授权',
-    tipsOne: '注意：仅可以授权认证服务号.授权完成认证服务号，关注服务号的用户在接收小程序消息通知时优先通过小程序接收',
-    tipsTop1: '由于微信平台相关要求，公众号授权完成后，需要在店铺内小程序管理-小程序授权绑定和该店铺小程序同主体的公众号，绑定后，使用该绑定公众号登录微信公众平台，在公众平台小程序小程序管理页面添加关联小程序，关联该小程序后，关注公众号的用户在接收小程序消息通知时即可通过公众号接收。小程序接收消息限制较大，详情查看',
+    tipsOne:
+      '注意：仅可以授权认证服务号.授权完成认证服务号，关注服务号的用户在接收小程序消息通知时优先通过小程序接收',
+    tipsTop1:
+      '由于微信平台相关要求，公众号授权完成后，需要在店铺内小程序管理-小程序授权绑定和该店铺小程序同主体的公众号，绑定后，使用该绑定公众号登录微信公众平台，在公众平台小程序小程序管理页面添加关联小程序，关联该小程序后，关注公众号的用户在接收小程序消息通知时即可通过公众号接收。小程序接收消息限制较大，详情查看',
     tipsTop2: '模板消息下发条件说明',
     tipsTop3: '此功能方便商家针对用户进行小程序消息通知。',
     nickName: '服务号名称',
@@ -517,15 +477,16 @@ const cn = {
     qurl: '公众号二维码',
     type: '公众号类型',
     newButton: '重新授权',
-    tipsTop4: ' 如果你的公众号已成功升级（从未认证升为认证号，或从订阅号升为服务号），请点击重新授权',
+    tipsTop4:
+      ' 如果你的公众号已成功升级（从未认证升为认证号，或从订阅号升为服务号），请点击重新授权',
     tipsTop5: '如何升级：',
-    tipsTop6: '如需对公众号进行微信认证，请登录“微信公众平台-> 公众号设置”，在“认证情况”栏目，点击申请微信认证',
+    tipsTop6:
+      '如需对公众号进行微信认证，请登录“微信公众平台-> 公众号设置”，在“认证情况”栏目，点击申请微信认证',
     authStats: '授权状态',
     Wechat0: '订阅号',
     Wechat1: '微信认证订阅号',
     Wechat2: '服务号',
     Wechat3: '微信认证服务号'
-
   },
   router, // 路由信息
 
@@ -575,7 +536,10 @@ const cn = {
   luckyDraw, // 幸运大抽奖
   distribution, // 分销
   ...zhLocale,
-  expressList
+  expressList,
+
+  // 会员管理
+  memberCard // 会员管理-会员卡
 }
 
 export default cn

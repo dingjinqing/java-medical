@@ -20,19 +20,43 @@
                 :style="getStyle(item,index)"
               >
                 <img
-                  v-if="item.isStop"
+                  v-if="item.flag === 2"
                   class="hidden"
                   :src="$imageHost+'/image/admin/card_no_use.png'"
                 >
-                <div class="card_status">{{item.isStop?item.noUse:item.tips}}</div>
+                <div class="card_status">
+                  <span v-if="item.flag === 1">
+                    {{$t('memberCard.tips')}}
+                  </span>
+                  <span v-else-if="item.flag === 2">
+                    {{$t('memberCard.noUser')}}
+                  </span>
+                  <span v-else-if="item.flag === 3">
+                    {{$t('memberCard.expired')}}
+                  </span>
+                </div>
                 <div class="card_info_box">
                   <img
                     class="user_head"
-                    :src="item.headImgUrl"
+                    :src="avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
-                    <div class="time">{{item.data}}</div>
+                    <div class="time">
+                      <span v-if="item.expireType === 0">
+                        <!-- 固定日期 -->
+                        {{item.startTime}}到{{item.endTime}}
+                      </span>
+                      <span v-else-if="item.expireType === 1">
+                        <!-- 自领取多少内有效 -->
+
+                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}{{$t('memberCard.endDate')}}
+                      </span>
+                      <span v-else-if="item.expireType === 2">
+                        <!-- 永久有效 -->
+                        {{$t('memberCard.ForeverEffective')}}
+                      </span>
+                    </div>
                   </div>
                   <div class="card_edit">
                     <div @click="handleToTips(0,item,index,0)">
@@ -53,10 +77,10 @@
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        :content="item.isStop?'删除':'分享'"
+                        :content="item.flag===1?'分享':'删除'"
                         placement="top-start"
                       >
-                        <img :src="item.isStop?item.noUseIcon.img1:item.useIcon.img2">
+                        <img :src="item.flag===1?item.useIcon.img2:item.noUseIcon.img1">
                       </el-tooltip>
                     </div>
 
@@ -64,10 +88,10 @@
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        :content="item.isStop?'启用':'停用'"
+                        :content="item.flag===2?'启用':'停用'"
                         placement="top-start"
                       >
-                        <img :src="item.isStop?item.noUseIcon.img2:item.useIcon.img1">
+                        <img :src="item.flag===2?item.useIcon.img1:item.noUseIcon.img2">
                       </el-tooltip>
                     </div>
 
@@ -75,8 +99,8 @@
                 </div>
               </div>
               <div class="card_condition">
-                <p>领取条件:<span>{{item.conditions}}</span></p>
-                <p style="margin-top:7px">会员权益:<span>{{item.equity}}</span></p>
+                <p>{{ $t('memberCard.receiveCondition') }}:<span>{{item.conditions}}</span></p>
+                <p style="margin-top:7px">{{ $t('memberCard.memberPower') }}:<span>{{item.equity}}</span></p>
               </div>
               <div class="card_footer">
                 <span
@@ -92,7 +116,7 @@
               @click="handleToCardDetail(0)"
             >
               <img :src="new_card_img">
-              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">添加会员卡</span>
+              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
             </div>
           </div>
         </el-tab-pane>
@@ -111,19 +135,43 @@
                 :style="getStyle(item,index)"
               >
                 <img
-                  v-if="item.isStop"
+                  v-if="item.flag === 2"
                   class="hidden"
                   :src="$imageHost+'/image/admin/card_no_use.png'"
                 >
-                <div class="card_status">{{item.isStop?item.noUse:item.tips}}</div>
+                <div class="card_status">
+                  <span v-if="item.flag === 1">
+                    {{$t('memberCard.tips')}}
+                  </span>
+                  <span v-else-if="item.flag === 2">
+                    {{$t('memberCard.noUser')}}
+                  </span>
+                  <span v-else-if="item.flag === 3">
+                    {{$t('memberCard.expired')}}
+                  </span>
+                </div>
                 <div class="card_info_box">
                   <img
                     class="user_head"
-                    :src="item.headImgUrl"
+                    :src=" avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
-                    <div class="time">{{item.data}}</div>
+                    <div class="time">
+                      <span v-if="item.expireType === 0">
+                        <!-- 固定日期 -->
+                        {{item.startTime}}到{{item.endTime}}
+                      </span>
+                      <span v-else-if="item.expireType === 1">
+                        <!-- 自领取多少内有效 -->
+
+                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}{{$t('memberCard.endDate')}}
+                      </span>
+                      <span v-else-if="item.expireType === 2">
+                        <!-- 永久有效 -->
+                        {{$t('memberCard.ForeverEffective')}}
+                      </span>
+                    </div>
                   </div>
                   <div class="card_edit">
                     <div @click="handleToTips(0,item,index,1)">
@@ -143,20 +191,20 @@
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        :content="item.isStop?'删除':'分享'"
+                        :content="item.flag===1?'分享':'删除'"
                         placement="top-start"
                       >
-                        <img :src="$imageHost + '/image/admin/card_share_new.png'">
+                        <img :src="item.flag===1?item.useIcon.img2:item.noUseIcon.img1">
                       </el-tooltip>
                     </div>
                     <div @click="handleToTips(2,item,index,1)">
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        content="停用"
+                        :content="item.flag===2?'启用':'停用'"
                         placement="top-start"
                       >
-                        <img :src="$imageHost + '/image/admin/card_disable.png'">
+                        <img :src="item.flag===2?item.useIcon.img1:item.noUseIcon.img2">
                       </el-tooltip>
                     </div>
 
@@ -164,8 +212,8 @@
                 </div>
               </div>
               <div class="card_condition">
-                <p>领取条件:<span>{{item.conditions}}</span></p>
-                <p style="margin-top:7px">会员权益:<span>{{item.equity}}</span></p>
+                <p>{{ $t('memberCard.receiveCondition') }}:<span>{{item.conditions}}</span></p>
+                <p style="margin-top:7px">{{ $t('memberCard.memberPower') }}:<span>{{item.equity}}</span></p>
               </div>
               <div class="card_footer">
                 <span
@@ -181,7 +229,7 @@
               @click="handleToCardDetail(1)"
             >
               <img :src="new_card_img">
-              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">添加会员卡</span>
+              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
             </div>
           </div>
         </el-tab-pane>
@@ -200,19 +248,43 @@
                 :style="getStyle(item,index)"
               >
                 <img
-                  v-if="item.isStop"
+                  v-if="item.flag === 2"
                   class="hidden"
                   :src="$imageHost+'/image/admin/card_no_use.png'"
                 >
-                <div class="card_status">{{item.isStop?item.noUse:item.tips}}</div>
+                <div class="card_status">
+                  <span v-if="item.flag === 1">
+                    {{$t('memberCard.tips')}}
+                  </span>
+                  <span v-else-if="item.flag === 2">
+                    {{$t('memberCard.noUser')}}
+                  </span>
+                  <span v-else-if="item.flag === 3">
+                    {{$t('memberCard.expired')}}
+                  </span>
+                </div>
                 <div class="card_info_box">
                   <img
                     class="user_head"
-                    :src="item.headImgUrl"
+                    :src="avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
-                    <div class="time">{{item.data}}</div>
+                    <div class="time">
+                      <span v-if="item.expireType === 0">
+                        <!-- 固定日期 -->
+                        {{item.startTime}}到{{item.endTime}}
+                      </span>
+                      <span v-else-if="item.expireType === 1">
+                        <!-- 自领取多少内有效 -->
+
+                        {{$t('memberCard.fromDate')}} {{item.receiveDay}}{{$t('memberCard.endDate')}}
+                      </span>
+                      <span v-else-if="item.expireType === 2">
+                        <!-- 永久有效 -->
+                        {{$t('memberCard.ForeverEffective')}}
+                      </span>
+                    </div>
                   </div>
                   <div class="card_edit">
                     <div @click="handleToTips(0,item,index,2)">
@@ -232,28 +304,28 @@
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        :content="item.isStop?'删除':'分享'"
+                        :content="item.flag===1?'分享':'删除'"
                         placement="top-start"
                       >
-                        <img :src="$imageHost + '/image/admin/card_share_new.png'">
+                        <img :src="item.flag===1?item.useIcon.img2:item.noUseIcon.img1">
                       </el-tooltip>
                     </div>
                     <div @click="handleToTips(2,item,index,2)">
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        content="停用"
+                        :content="item.flag===2?'启用':'停用'"
                         placement="top-start"
                       >
-                        <img :src="$imageHost + '/image/admin/card_disable.png'">
+                        <img :src="item.flag===2?item.useIcon.img1:item.noUseIcon.img2">
                       </el-tooltip>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="card_condition">
-                <p>领取条件:<span>{{item.conditions}}</span></p>
-                <p style="margin-top:7px">会员权益:<span>{{item.equity}}</span></p>
+                <p>{{ $t('memberCard.receiveCondition') }}:<span>{{item.conditions}}</span></p>
+                <p style="margin-top:7px">{{ $t('memberCard.memberPower') }}:<span>{{item.equity}}</span></p>
               </div>
               <div class="card_footer">
                 <span
@@ -267,9 +339,10 @@
             <div
               class="new_card"
               @click="handleToCardDetail(2)"
+              v-show="addStatus"
             >
               <img :src="new_card_img">
-              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">添加会员卡</span>
+              <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
             </div>
           </div>
         </el-tab-pane>
@@ -280,462 +353,58 @@
   </div>
 </template>
 <script>
+import { getAllMemberCardRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: {
     ShareCodeDialog: () => import('@/components/admin/shareCodeDialog')
   },
   data () {
     return {
+      currentCardType: 0, // 默认的会员卡为普通会员卡
       activeName: 'first',
-      cardData: [
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录', '领取详情', '激活审核', '查看订单'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: true,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡1',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 1,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 1,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 1,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 0
-        }
-      ],
-      cardDataSecond: [
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 1
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 1,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 1
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 1,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 1
-        },
-
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 1
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 1
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 1
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 1
-        }
-      ],
-      cardDataThird: [
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 0,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 2
-        },
-        {
-          tips: '使用中',
-          noUse: '停止使用',
-          headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          cardName: '我的会员卡',
-          data: '永久有效',
-          conditions: '直接领取;需要激活;无需审核;',
-          equity: '会员折扣3.00折;充值奖励;积分奖励;',
-          detailsOfRights: ['持卡会员', '充值记录'],
-          type: 1,
-          backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
-          isStop: false,
-          useIcon: {
-            img2: this.$imageHost + '/image/admin/card_share_new.png',
-            img1: this.$imageHost + '/image/admin/card_disable.png'
-          },
-          noUseIcon: {
-            img1: this.$imageHost + '/image/admin/card_del.png',
-            img2: this.$imageHost + '/image/admin/card_enable.png'
-          },
-          flag: 2
-        }
-
-      ],
+      cardData: [], // 普通会员卡容器
+      avatar: '', // 会员卡头像,
+      detailsOfRights: [], // 功能
+      cardDataSecond: [],
+      cardDataThird: [],
+      addStatus: true, // 等级会员卡，九张时值为none
       new_card_img: this.$imageHost + '/image/admin/add_card.png'
     }
   },
+  created () {
+    this.clearCardData()
+    // 获取头像数据
+    this.avatar = localStorage.getItem('V-shopAvatar')
+  },
+  watch: {
+
+    lang () {
+      this.detailsOfRights = this.$t('memberCard.detailsOfRights')
+    },
+    //  检测会员卡类型变化 加载数据
+    currentCardType () {
+      this.loadAllPageData()
+    },
+    // 标签页变化
+    activeName () {
+      switch (this.activeName) {
+        case 'first':
+          this.currentCardType = 0
+          break
+        case 'second':
+          this.currentCardType = 1
+          break
+        case 'third':
+          this.currentCardType = 2
+          break
+        default:
+          break
+      }
+    }
+  },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 初始化tap切换
     let name = this.$route.name
     switch (name) {
@@ -749,10 +418,123 @@ export default {
         this.activeName = 'third'
         break
     }
+    this.loadAllPageData()
   },
   methods: {
-    // tap切换
+    // 1- 获取页面所有数据
+    loadAllPageData () {
+      // 如果数据已经存在该组件中就不再向后端请求数据
+      switch (Number(this.currentCardType)) {
+        case 0:
+          if (this.cardData.length > 0) {
+            return
+          }
+          break
+        case 1:
+          if (this.cardDataSecond.length > 0) {
+            return
+          }
+          break
+        case 2:
+          if (this.cardDataThird.length > 0) {
+            return
+          }
+          break
+        default:
+          break
+      }
+
+      // 准备数据
+      let obj = {
+        'cardType': this.currentCardType
+      }
+      // 请求后台api
+      this.getBackEndData(obj)
+    },
+    // 2- 处理会员卡权益
+    dealWithCardBehavior (card) {
+      let content = ''
+      // 会员折扣
+      if (card.powerCount === 1) {
+        content += `${this.$t('membershipIntroduction.memberCount')}${card.disCount}${this.$t('membershipIntroduction.disCount')}`
+      }
+
+      // 会员专享商品
+      if (card.powerPayOwnGood === 'on') {
+        content += this.$t('membershipIntroduction.powerPayOwnGood')
+      }
+
+      // 充值奖励
+      if (card.powerCard === 1) {
+        content += this.$t('membershipIntroduction.powerCard')
+      }
+
+      // 积分奖励
+      if (card.powerScore === 1) {
+        content += this.$t('membershipIntroduction.powerScore')
+      }
+
+      // 门店兑换次数
+      if (card.count > 0) {
+        content += `${this.$t('membershipIntroduction.storeExchange')}${card.count}${this.$t('membershipIntroduction.times')}`
+      }
+
+      // 商品兑换次数
+      if (card.exchangCount > 0) {
+        content += `${this.$t('membershipIntroduction.goodsExchange')}${card.exchangCount}${this.$t('membershipIntroduction.times')}`
+      }
+
+      card.equity = content
+    },
+    // 3- 领取条件
+    dealWithReceiveConditions (card) {
+      let content = ''
+      // 0：直接领取；1：需要购买；2：需要领取码
+      if (card.isPay === 0) {
+        content += this.$t('memberCard.receiveDirect') + ';'
+      } else if (card.isPay === 1) {
+        content += this.$t('memberCard.needBuy') + ';'
+      } else if (card.isPay === 2) {
+        content += this.$t('memberCard.needReceiveCode') + ';'
+      }
+
+      // 是否需要激活 0： 否；1： 是
+      if (card.activation) {
+        content += this.$t('memberCard.activationYes') + ';'
+        //  是否审核 0： 否；1： 是
+        if (card.examine) {
+          content += this.$t('memberCard.examineYes') + ';'
+        } else {
+          content += this.$t('memberCard.examineNo') + ';'
+        }
+      } else {
+        content += this.$t('memberCard.activationNo') + ';'
+      }
+
+      card.conditions = content
+    },
+    // 4- 处理额外的会员卡功能
+    dealWithMemCardExtralRight (card) {
+      card.detailsOfRights = []
+      // 持卡会员
+      card.detailsOfRights.push(this.detailsOfRights[0])
+      // 领取详情
+      if (card.isPay === 2) {
+        card.detailsOfRights.push(this.detailsOfRights[1])
+      }
+      // 激活审核
+      if (card.examine) {
+        card.detailsOfRights.push(this.detailsOfRights[2])
+      }
+      // 普通会员卡与限次卡
+      if ([0, 1].includes(this.currentCardType)) {
+        card.detailsOfRights.push(...this.detailsOfRights.slice(3))
+      }
+    },
+    // 5- tap切换 会员卡类型切换
     handleClick (tab, event) {
+      // 主要目的是更换路由连接，以及面包屑
+      this.currentCardType = tab.index
       switch (tab.index) {
         case '0':
           this.$router.push({
@@ -772,22 +554,98 @@ export default {
 
       console.log(tab, event)
     },
+    // 6- 清空数据
+    clearCardData () {
+      this.cardData = []
+      this.cardDataSecond = []
+      this.cardDataThird = []
+    },
+
+    // 7- 请求后台数据
+    getBackEndData (obj) {
+      getAllMemberCardRequest(obj).then(res => {
+        if (res.error === 0) {
+          let cardData = {}
+          // 请求成功
+          console.log(res.content.dataList)
+          cardData = res.content.dataList
+          console.log(cardData)
+          // 添加头像
+          cardData.map(item => {
+            item.useIcon = {
+              img2: this.$imageHost + '/image/admin/card_share_new.png',
+              img1: this.$imageHost + '/image/admin/card_disable.png'
+            }
+            item.noUseIcon = {
+              img1: this.$imageHost + '/image/admin/card_del.png',
+              img2: this.$imageHost + '/image/admin/card_enable.png'
+            }
+
+            // 处理会员卡权益
+            this.dealWithCardBehavior(item)
+            // 处理领取条件
+            this.dealWithReceiveConditions(item)
+
+            // 处理会员卡的额外功能
+            this.dealWithMemCardExtralRight(item)
+            console.log(item)
+          })
+          console.log(cardData)
+          return new Promise((resolve, reject) => {
+            resolve(cardData)
+          })
+        } else {
+          // 错误的捕捉500等，都在前端全局捕捉了
+          return new Promise((resolve, reject) => {
+            resolve(null)
+          })
+        }
+      }).then(data => {
+        // 会员卡
+        switch (Number(this.currentCardType)) {
+          case 0:
+            // 普通会员卡
+            this.cardData = data
+            break
+          case 1:
+            // 限次会员卡
+            this.cardDataSecond = data
+            console.log(this.cardDataSecond)
+            break
+          case 2:
+            // 等级会员卡
+            this.cardDataThird = data
+            // 等级会员卡添加按钮样式控制
+            this.changeAddStatus()
+            break
+          default:
+            break
+        }
+      })
+    },
+    // 8- 控制等级会员卡添加按钮
+    changeAddStatus () {
+      if (this.cardDataThird.length >= 9) {
+        this.addStatus = false
+      }
+    },
     // 动态改变行间样式
     getStyle (item, index) {
-      if (item.isStop) {
+      /** 会员卡状态 flag 1:使用中，2:停止使用 ,3：过期 */
+      if ([2, 3].includes(item.flag)) {
+        // 停止状态灰色
         return 'background-color:#ddd'
       }
-      if (item.type === 0) {
-        console.log('背景颜色')
-        return 'background-color:' + item.backgroundColor
+
+      /** 会员卡背景 bgType 0： 背景色；1：背景图 */
+      if (item.bgType === 0) {
+        return 'background-color:' + item.bgColor
       } else {
-        console.log('背景图片', item.backgroundImg)
-        return 'backgroundImage:url(' + item.backgroundImg + ')'
+        return 'backgroundImage:url(' + this.$imageHost + item.bgImg + ')'
       }
     },
     // 跳转到会员卡详情页
     handleToCardDetail () {
-      console.log(1111)
       this.$router.push({
         name: 'membershipCardDetail'
       })
