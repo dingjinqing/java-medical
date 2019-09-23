@@ -129,6 +129,7 @@
                         :nowRightShowIndex="nowRightShowIndex"
                         @handleToClickIcon="handleToClickIcon"
                         @middleDragData='middleDragData'
+                        :backData='modulesData[index]'
                       ></components>
                     </div>
                   </div>
@@ -143,7 +144,9 @@
           <PageSetup
             :nowRightShowMoudlesIndex='nowRightShowMoudlesIndex'
             :nowRightModulesData="nowRightModulesData"
+            :nowRightShowIndex='nowRightShowIndex'
             @handleToClearIndex='handleToClearIndex'
+            @handleToBackMiddleData='handleToBackMiddleData'
           />
         </div>
       </div>
@@ -184,7 +187,6 @@ export default {
     MembershipCard: () => import('./decorationModules/membershipCard'),
     Coupon: () => import('./decorationModules/Coupon'),
     PageSetup: () => import('./pageSetup')
-    // RightMembershipCard: () => import('./pageSetupModules/rightMembershipCard')
   },
   data () {
     return {
@@ -493,6 +495,11 @@ export default {
                 this_.showModulesList.push(1)
               } else {
                 this_.showModulesList.splice(insert, 0, 1)
+                if (this_.nowRightShowIndex === insert) {
+                  this_.handleToModuleHight()
+                }
+                console.log(this_.nowRightShowIndex, insert)
+                // this_.handleToModuleHight()
               }
 
               break
@@ -501,11 +508,14 @@ export default {
                 this_.showModulesList.push(2)
               } else {
                 this_.showModulesList.splice(insert, 0, 2)
+                if (this_.nowRightShowIndex === insert) {
+                  this_.handleToModuleHight()
+                }
+                // this_.handleToModuleHight()
               }
           }
-          // if (this_.insertModulesId !== -1) {
-          //   this_.handleToSortModulesData(insert)
-          // }
+
+          console.log(this_.showModulesList, this_.modulesData)
         }
       })
     },
@@ -577,10 +587,12 @@ export default {
     // 中间区域模块icon点击数据接收统一处理
     handleToClickIcon ({ direction, flag }) {
       console.log(1111)
+      this.topAreaFlag = false
       switch (direction) {
         case 'up':
           let newArr1 = JSON.parse(JSON.stringify(this.showModulesList))
           console.log(newArr1, '--', flag)
+          this.oldIndex = flag
           // 顶部判断
           if (flag === 0) return
           let temp = newArr1[(flag - 1)]
@@ -604,6 +616,7 @@ export default {
         case 'down':
           let newArr2 = JSON.parse(JSON.stringify(this.showModulesList))
           console.log(newArr2, '--', flag, '123123123')
+          this.oldIndex = flag
           let temp2 = newArr2[(flag + 1)]
           // 底部判断
           if ((newArr2.length - 1) === flag) return
@@ -637,6 +650,7 @@ export default {
 
           console.log(newArr3, flag)
           newArr3.splice(flag, 1)
+          this.modulesData.splice(flag, 1)
           // 如果数组为空就重置当前插入模块id
           if (!newArr3.length) {
             this.insertModulesId = -1
@@ -688,24 +702,8 @@ export default {
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
 
       console.log(this.showModulesList, this.modulesData)
-      if (this.showModulesList.length > this.modulesData.length) {
-        console.log(this.showModulesList[this.nowRightShowIndex])
-        let name = ''
-        switch (this.showModulesList[this.nowRightShowIndex]) {
-          case 1:
-            name = '会员卡'
-            break
-          case 2:
-            name = '优惠卷'
-        }
-        let obj = { // 传递当前模块json数据模拟
-          modulesIndex: this.showModulesList[this.nowRightShowIndex],
-          name: name,
-          sorIndex: this.nowRightShowIndex
-        }
+      this.handleToSaveModules(this.showModulesList, this.modulesData)
 
-        this.modulesData.splice(this.nowRightShowIndex, 0, obj)
-      }
       // this.nowRightShowMoudlesIndex  当前高亮模块类型的index
       console.log(this.showModulesList, this.nowRightShowIndex)
       this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
@@ -714,6 +712,37 @@ export default {
       this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
       // this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
       console.log(this.showModulesList, this.modulesData)
+    },
+    // 当中间模块数组showModulesList被插入新的数据时、保存数组处理函数
+    handleToSaveModules (showModulesList, modulesData) {
+      if (this.showModulesList.length > this.modulesData.length) {
+        console.log(this.showModulesList[this.nowRightShowIndex])
+        let obj = this.handleToAddModules(this.showModulesList[this.nowRightShowIndex])
+        console.log(obj)
+        this.modulesData.splice(this.nowRightShowIndex, 0, obj)
+        console.log(this.modulesData)
+      } else if (this.showModulesList.length === this.modulesData.length) {
+        console.log(this.oldIndex, this.modulesData, this.topAreaFlag)
+        if (this.oldIndex === -1) return
+        let temp = this.modulesData[this.oldIndex]
+        console.log(this.topAreaFlag, temp)
+        if (this.topAreaFlag) {
+          this.modulesData.splice(this.oldIndex, 1)
+          this.modulesData.unshift(temp)
+        } else {
+          this.modulesData[this.oldIndex] = this.modulesData[this.nowRightShowIndex]
+          this.modulesData[this.nowRightShowIndex] = temp
+        }
+        this.oldIndex = -1
+      }
+      console.log(this.oldIndex, this.nowRightShowIndex)
+      let newArr = JSON.parse(JSON.stringify(this.modulesData))
+      this.modulesData = []
+      this.modulesData = newArr
+      console.log(this.modulesData)
+      // this.$nextTick(() => {
+      //   this.$forceUpdate()
+      // })
     },
     //  点击左侧模块加到中间模块队列底部并高亮
     handleToClickLeftModule (id) {
@@ -734,6 +763,31 @@ export default {
     // 右侧点击页面设置重置中部显示
     handleToClearIndex () {
       this.nowRightShowIndex = null
+    },
+    // 模块数据填充处理
+    handleToAddModules (index) {
+      let obj = {}
+      switch (index) {
+        case 1:
+          obj.name = '会员卡'
+          obj.backgroundColor = '#ecc98f'
+          break
+        case 2:
+          obj.name = '优惠卷'
+      }
+      // let obj = { // 传递当前模块json数据模拟
+      //   modulesIndex: index,
+      //   name: name,
+      //   sorIndex: this.nowRightShowIndex
+      // }
+      return obj
+    },
+    // 右侧编辑回显数据
+    handleToBackMiddleData (data) {
+      this.modulesData[this.nowRightShowIndex] = data
+      this.$forceUpdate()
+      console.log(this.modulesData[this.nowRightShowIndex])
+      console.log(data)
     }
   }
 }

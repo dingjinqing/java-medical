@@ -16,7 +16,7 @@
               <img :src="$imageHost+'/image/admin/shop_def_y.png'">
             </div>
             <div class="card_content_right">
-              <div>会员卡</div>
+              <div>{{carName}}</div>
               <p>××××××××</p>
             </div>
             <!-- <div
@@ -68,12 +68,14 @@ export default {
   props: {
     flag: Number,
     nowRightShowIndex: Number,
-    middleHereFlag: Boolean
+    middleHereFlag: Boolean,
+    backData: Object
   },
   data () {
     return {
       activeBorder: false,
-      activeSetHere: false
+      activeSetHere: false,
+      carName: '会员卡'
     }
   },
   watch: {
@@ -102,6 +104,15 @@ export default {
       } else {
         this.activeSetHere = false
       }
+    },
+    backData: {
+      handler (newData) {
+        if (newData) {
+          this.carName = newData.name
+        }
+        console.log(newData)
+      },
+      immediate: true
     }
   },
   mounted () {

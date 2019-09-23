@@ -77,7 +77,8 @@ export default {
   props: {
     flag: Number,
     nowRightShowIndex: Number,
-    middleHereFlag: Boolean
+    middleHereFlag: Boolean,
+    backData: Object
   },
   data () {
     return {
@@ -110,6 +111,12 @@ export default {
       } else {
         this.activeSetHere = false
       }
+    },
+    backData: {
+      handler (newData) {
+        console.log(newData)
+      },
+      immediate: true
     }
   },
   mounted () {

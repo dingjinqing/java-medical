@@ -19,7 +19,12 @@
     </div>
     <!--模块配置-->
     <div v-if="!topIconFlag">
-      <components :is="showModule"></components>
+      <components
+        :is="showModule"
+        :modulesData='modulesData'
+        :sortIndex='sortIndex'
+        @handleToBackData='handleToBackData'
+      ></components>
     </div>
   </div>
 </template>
@@ -32,7 +37,8 @@ export default {
   },
   props: {
     nowRightShowMoudlesIndex: Number,
-    nowRightModulesData: Object
+    nowRightModulesData: Object,
+    nowRightShowIndex: Number
   },
   data () {
     return {
@@ -50,7 +56,9 @@ export default {
           name: 'RightCoupon'
         }
       ],
-      showModule: null
+      showModule: null,
+      modulesData: {},
+      sortIndex: -1
     }
   },
   watch: {
@@ -71,11 +79,13 @@ export default {
       },
       immediate: true
     },
-    nowRightModulesData: {
+    nowRightShowIndex: {
       handler (newData) {
         console.log(newData)
+        this.modulesData = this.nowRightModulesData
+        this.sortIndex = newData
       },
-      deep: true
+      immediate: true
     }
   },
   methods: {
@@ -84,6 +94,10 @@ export default {
       this.$emit('handleToClearIndex')
       this.topIconFlag = !this.topIconFlag
       this.showModule = ''
+    },
+    handleToBackData (data) {
+      console.log(data)
+      this.$emit('handleToBackMiddleData', data)
     }
   }
 }
