@@ -15,7 +15,9 @@ import java.beans.PropertyDescriptor;
 import java.sql.Timestamp;
 import java.util.Arrays;
 
-import static com.vpu.mp.service.shop.config.TradeService.*;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
+import static com.vpu.mp.service.shop.config.TradeService.selectInvoke;
+import static com.vpu.mp.service.shop.config.TradeService.updateInvoke;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
@@ -163,7 +165,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
      * 获取退换货配置项信息
      *
      * @return 退换货配置项信息
-     * {@value com.vpu.mp.service.shop.config.TradeService#FIELD_CLAZZ}
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
      */
     public ReturnConfigParam getReturnConfigParam() {
         ReturnConfigParam param = new ReturnConfigParam();
@@ -189,7 +191,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
 
     /**
      * 更新退换货配置
-     * {@value com.vpu.mp.service.shop.config.TradeService#FIELD_CLAZZ}
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
      */
     public void updateReturnConfig(ReturnConfigParam param) {
         try {

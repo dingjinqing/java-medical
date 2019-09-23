@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.config.trade;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * The type Order process param.
  *
@@ -111,4 +113,10 @@ public class OrderProcessParam {
      */
     @JsonProperty(value = "shop_address")
     public String shopAddress;
+
+    /**
+     * The Delivery list. 微信物流助手物流公司列表
+     */
+    @JsonProperty(value = "delivery_list")
+    public List<LogisticsAccountInfo> deliveryList;
 }

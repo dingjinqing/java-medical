@@ -16,12 +16,16 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
      * {@value}
      */
     static final String LOGISTICS_GET_ALL_DELIVERY = "https://api.weixin.qq.com/cgi-bin/express/business/delivery/getall";
-
     /**
      * 绑定物流公司 HTTPS调用请求地址
      * {@value}
      */
     static final String LOGISTICS_BIND_ACCOUNT = "https://api.weixin.qq.com/cgi-bin/express/business/account/bind";
+    /**
+     * 拉取已绑定账号 HTTPS调用请求地址
+     * {@value}
+     */
+    static final String LOGISTICS_GET_ALL_ACCOUNT = "POST https://api.weixin.qq.com/cgi-bin/express/business/account/getall";
 
 
     /**
@@ -46,4 +50,13 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
         return WxOpenGsonBuilder.create().fromJson(jsonResult, WxOpenResult.class);
     }
 
+    /**
+     * 拉取已绑定账号
+     *
+     * @param appId https调用凭证
+     *              {@value LOGISTICS_GET_ALL_ACCOUNT}
+     */
+    default String getAllAccount(String appId) throws WxErrorException {
+        return post(appId, LOGISTICS_GET_ALL_ACCOUNT, StringUtils.EMPTY);
+    }
 }

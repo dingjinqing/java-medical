@@ -123,8 +123,14 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/getOrderProcessConfig")
     public JsonResult getOrderProcessConfig() {
-        OrderProcessParam param = shop().trade.getOrderProcessConfig();
-        return param != null ? success(param) : fail(JsonResultMessage.ORDER_PROCESS_CONFIG_IS_NULL);
+        OrderProcessParam param = null;
+        try {
+            param = shop().trade.getOrderProcessConfig();
+        } catch (WxErrorException e) {
+            log.error("微信物流助手api调用失败，获取支持物流公司列表失败：{}", e.getMessage());
+            return fail(JsonResultCode.CODE_FAIL);
+        }
+        return success(param);
     }
 
     /**

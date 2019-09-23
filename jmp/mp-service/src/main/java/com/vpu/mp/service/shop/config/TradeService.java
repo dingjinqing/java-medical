@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -522,7 +523,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the consignee cid
      */
     public Byte getConsigneeCid() {
-        return this.get(K_CONSIGNEE_CID, Byte.class,BYTE_ZERO);
+        return this.get(K_CONSIGNEE_CID, Byte.class, BYTE_ZERO);
     }
 
     /**
@@ -592,7 +593,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the order requeire goods package
      */
     public int setOrderRequireGoodsPackage(GoodsPackageParam orderRequireGoodsPackage) {
-        assert (orderRequireGoodsPackage != null );
+        assert (orderRequireGoodsPackage != null);
         return this.set(K_ORDER_REQUIRE_GOODS_PACKAGE, orderRequireGoodsPackage, GoodsPackageParam.class);
     }
 
@@ -658,13 +659,13 @@ public class TradeService extends BaseShopConfigService {
     public void updateDefaultPayConf(PaymentConfigParam param) {
         try {
             this.transaction(() -> {
-                if(param.getCardFirst()!=null){
+                if (param.getCardFirst() != null) {
                     this.setCardFirst(param.getCardFirst());
                 }
-                if(param.getBalanceFirst()!=null){
+                if (param.getBalanceFirst() != null) {
                     this.setBalanceFirst(param.getBalanceFirst());
                 }
-                if(param.getScoreFirst()!=null){
+                if (param.getScoreFirst() != null) {
                     this.setScoreFirst(param.getScoreFirst());
                 }
             });
@@ -703,15 +704,10 @@ public class TradeService extends BaseShopConfigService {
     }
 
     /**
-     * {@value} 使用内省获取到的类属性列表中会多一个class属性
-     */
-    public static final String FIELD_CLAZZ = "class";
-
-    /**
      * 更新交易流程配置
      *
      * @param param 订单流程配置项信息
-     * {@value FIELD_CLAZZ}
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
      */
     public void updateOrderProcess(OrderProcessParam param) {
         try {
@@ -721,7 +717,7 @@ public class TradeService extends BaseShopConfigService {
                 .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
                 .forEach((e) -> updateInvoke(e, param, this));
         } catch (IntrospectionException e) {
-            log.error("内省获取bean[{}]信息失败：{}",param,e.getMessage());
+            log.error("内省获取bean[{}]信息失败：{}", param, e.getMessage());
         }
     }
 
@@ -776,11 +772,10 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 查询交易流程配置
-     * {@value FIELD_CLAZZ}
-     *
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
      * @return the order process config
      */
-    public OrderProcessParam getOrderProcessConfig() {
+    public OrderProcessParam getOrderProcessConfig() throws WxErrorException {
         OrderProcessParam param = new OrderProcessParam();
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
@@ -789,8 +784,9 @@ public class TradeService extends BaseShopConfigService {
                 .filter(des -> !FIELD_CLAZZ.equalsIgnoreCase(des.getName()))
                 .forEach((e) -> selectInvoke(e, param, this));
         } catch (IntrospectionException e) {
-            log.error("内省获取bean[{}]信息失败：{}",param,e.getMessage());
+            log.error("内省获取bean[{}]信息失败：{}", param, e.getMessage());
         }
+        param.setDeliveryList(combineAllLogisticsAccountInfo());
         return param;
     }
 
@@ -802,41 +798,40 @@ public class TradeService extends BaseShopConfigService {
      * @param param      更新入参对象实例
      * @param service    执行查询操作的service类实例
      */
-    public static void selectInvoke(PropertyDescriptor descriptor, Object param, Object service){
+    public static void selectInvoke(PropertyDescriptor descriptor, Object param, Object service) {
         String fieldName = descriptor.getName();
         Method method = null;
         String methodName = getMethodName(fieldName, "get");
         try {
             method = service.getClass().getMethod(methodName);
         } catch (NoSuchMethodException e) {
-            log.error("field[{}]字段对应的getXXX方法[{}]不存在：{}",fieldName,methodName,e.getMessage());
+            log.error("field[{}]字段对应的getXXX方法[{}]不存在：{}", fieldName, methodName, e.getMessage());
             e.printStackTrace();
         }
-        Assert.notNull(method,"Method方法实例获取为空");
+        Assert.notNull(method, "Method方法实例获取为空");
         Object conf = null;
         try {
             conf = method.invoke(service);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            log.error("field[{}]字段对应的getXXX方法执行失败：{}",fieldName,e.getMessage());
+            log.error("field[{}]字段对应的getXXX方法执行失败：{}", fieldName, e.getMessage());
         }
         if (conf != null) {
             try {
-                descriptor.getWriteMethod().invoke(param,conf);
+                descriptor.getWriteMethod().invoke(param, conf);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                log.error("OrderProcessParam类中属性[{}]的set方法执行错误：{}",fieldName,e.getMessage());
+                log.error("OrderProcessParam类中属性[{}]的set方法执行错误：{}", fieldName, e.getMessage());
             }
         }
     }
-
-    private static final String DOCUMENT = "document";
-    private static final String UPDATE_TIME = "update_time";
 
     /**
      * 服务条款配置
      *
      * @param document 服务条款配置内容
-     *                 数据库保存内容格式为json，样例如下： { 	"document": "此处直接为html页面格式的字符串", 	"update_time": 1568859761 }
+     * 数据库保存内容格式为json，样例如下： { 	"document": "此处直接为html页面格式的字符串", 	"update_time": 1568859761 }
      * @throws JsonProcessingException the json processing exception
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#UPDATE_TIME}
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DOCUMENT}
      */
     public void confTermsOfService(String document) throws JsonProcessingException {
         String serviceDocument = MAPPER.writeValueAsString(new HashMap<String, Object>(2) {
@@ -857,13 +852,6 @@ public class TradeService extends BaseShopConfigService {
     }
 
     /**
-     * 获取支持的快递公司列表
-     */
-    public String getAllDelivery() throws WxErrorException {
-        return logisticsService.getAllDelivery();
-    }
-
-    /**
      * 绑定物流公司
      */
     public WxOpenResult bindAccount(BindAccountParam param) throws WxErrorException {
@@ -875,5 +863,32 @@ public class TradeService extends BaseShopConfigService {
             throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
         return logisticsService.bindAccount(jsonParam);
+    }
+
+    /**
+     * @throws WxErrorException {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_ID}
+     *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_NAME}
+     *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#STATUS_CODE}
+     */
+    public List<LogisticsAccountInfo> combineAllLogisticsAccountInfo() throws WxErrorException {
+        //已绑定账号物流公司列表，不包含未绑定物流公司
+        List<LogisticsAccountInfo> accountInfos = logisticsService.getAllAccount();
+        //目前支持的快递公司列表，只包含id和name，不含其他详细信息
+        List<Map<String, String>> allDelivery = logisticsService.getAllDelivery();
+        //组合上述两个列表信息得到返回果
+        Map<String, String> temp = new HashMap<String, String>(allDelivery.size()) {
+            {
+                allDelivery.forEach(d -> put(d.get(DELIVERY_ID), d.get(DELIVERY_NAME)));
+            }
+        };
+        accountInfos.forEach(info -> {
+            String deliveryId = info.getDeliveryId();
+            if (temp.containsKey(deliveryId)) {
+                info.setDeliveryName(temp.get(deliveryId));
+                temp.remove(deliveryId);
+            }
+        });
+        temp.forEach((k, v) -> accountInfos.add(new LogisticsAccountInfo(k, v, STATUS_CODE)));
+        return accountInfos;
     }
 }
