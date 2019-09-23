@@ -1730,6 +1730,7 @@ create table `b2c_store_order`
     `seller_remark`       varchar(512)   not null default '' comment '卖家备注',
     `star_flag`           tinyint(1)     not null default '0' comment '标星订单：0 未标星 1 标星',
     `del_flag`            tinyint(1)     not null default '0' comment '删除',
+    `card_no`             varchar(32)    NOT NULL DEFAULT '' COMMENT '会员卡号',
     `ali_trade_no`        varchar(60)    not null default '' comment '支付宝交易单号',
     `create_time`         timestamp               default current_timestamp,
     `update_time`         timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',

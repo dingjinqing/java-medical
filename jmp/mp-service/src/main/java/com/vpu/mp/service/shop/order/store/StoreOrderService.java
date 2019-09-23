@@ -35,7 +35,7 @@ public class StoreOrderService extends ShopBaseService {
 				.from(STORE_ORDER).leftJoin(USER)
 				.on(USER.USER_ID.eq(STORE_ORDER.USER_ID));
 		buildOptionsStore(select,param);
-		PageResult<StoreOrderListInfoVo> result = getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),StoreOrderListInfoVo.class);
+		PageResult<StoreOrderListInfoVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreOrderListInfoVo.class);
 		return result;
 	}
 	

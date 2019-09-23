@@ -12,7 +12,8 @@ import lombok.Data;
  */
 @Data
 public class StoreOrderPageListQueryParam {
-	private Page page;
+	public Integer currentPage;
+	public Integer pageRows;
 	private String orderSn;
 	private Timestamp payTimeStart;
 	private Timestamp payTimeEnd;
