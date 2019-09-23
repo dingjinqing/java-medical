@@ -485,5 +485,12 @@ public class ShopService extends MainBaseService {
 		return db().select(SHOP.asterisk()).from(SHOP).join(MP_AUTH_SHOP)
 				.on(SHOP.SHOP_ID.eq(MP_AUTH_SHOP.SHOP_ID)).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 	}
+	
+	public Integer updateRowIsEnable(Integer shopId,Byte isEnable) {
+		return db().update(SHOP).set(SHOP.IS_ENABLED,isEnable).where(SHOP.SHOP_ID.eq(shopId)).execute();
+	}
+	public Integer updateRowHidBottom(Integer shopId,Byte hidBottem) {
+		return db().update(SHOP).set(SHOP.HID_BOTTOM,hidBottem).where(SHOP.SHOP_ID.eq(shopId)).execute();
+	}
 
 }
