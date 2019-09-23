@@ -185,7 +185,7 @@ public class SystemShopController extends SystemBaseController {
 				isEnable=0;
 			}
 			if(!StringUtils.isEmpty(isEnable)) {
-				saas.shop.updateRowIsEnable(vParam.getShopId(), vParam.getIsEnable());	
+				saas.shop.updateRowIsEnable(vParam.getShopId(), isEnable);	
 				return success(JsonResultCode.CODE_SUCCESS);
 			}
 		}
@@ -208,7 +208,7 @@ public class SystemShopController extends SystemBaseController {
 				hidBottom=0;
 			}
 			if(!StringUtils.isEmpty(hidBottom)) {
-				saas.shop.updateRowHidBottom(vParam.getShopId(), vParam.getHidBottom());	
+				saas.shop.updateRowHidBottom(vParam.getShopId(), hidBottom);	
 				return success(JsonResultCode.CODE_SUCCESS);
 			}
 		}
