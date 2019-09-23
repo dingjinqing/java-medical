@@ -108,7 +108,7 @@ export default {
       let passwordReg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         if (!userNameReg.test(this.mainData.username)) {
-          this.$message({
+          this.$message.success({
             showClose: true,
             message: 'Please enter your username or mobile phone number',
             type: 'warning'
@@ -117,7 +117,7 @@ export default {
           return
         }
         if (!passwordReg.test(this.mainData.password)) {
-          this.$message({
+          this.$message.success({
             showClose: true,
             message: 'Please input a password',
             type: 'warning'
@@ -127,7 +127,7 @@ export default {
         return
       }
       if (!userNameReg.test(this.mainData.username)) {
-        this.$message({
+        this.$message.success({
           showClose: true,
           message: '请输入用户名或者手机号',
           type: 'warning'
@@ -136,7 +136,7 @@ export default {
         return
       }
       if (!passwordReg.test(this.mainData.password)) {
-        this.$message({
+        this.$message.success({
           showClose: true,
           message: '请输入密码',
           type: 'warning'
@@ -153,7 +153,7 @@ export default {
       loginRequest(this.mainData).then((res) => {
         console.log(res)
         if (res.error !== 0) {
-          this.$message({
+          this.$message.success({
             showClose: true,
             message: res.message,
             type: 'error'
@@ -163,7 +163,7 @@ export default {
           localStorage.setItem('V-loginType', 1)
           Cookies.set('V-System-Token', res.content.token, { expires: 1 / 48 })
           localStorage.setItem('System-Username', res.content.userName)
-          this.$message({
+          this.$message.success({
             showClose: true,
             message: res.message,
             type: 'success'
