@@ -104,7 +104,9 @@ export default {
     },
     // 获取模板内容选中的值
     handleChange (val) {
-      this.val = val
+      console.log(val)
+      const res = this.content.find(item => item.content === val)
+      this.val = res
     },
     /**
      * 声明了一个函数的接口给父组件，让父组件可以通过一个函数操作子组件
@@ -116,7 +118,7 @@ export default {
     handleSave () {
       // 处理完确定之后的操作关闭弹窗
       if (this.val === ``) {
-        this.$emit(`content`, this.content[0].content)
+        this.$emit(`content`, this.content[0])
       } else {
         this.$emit(`content`, this.val)
       }

@@ -127,14 +127,14 @@
                   </div>
                   <div>
                     <el-checkbox
-                      v-model="onClickNoPay"
+                      v-model="params.onClickNoPay"
                       @change="handleOnClickNoPayChange"
                     >加购人群</el-checkbox>
                     <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
                   </div>
                   <div>
                     <el-checkbox
-                      v-model="onClickGoods"
+                      v-model="params.onClickGoods"
                       @change="handleOnClickGoodsChange"
                     >指定购买商品人群 </el-checkbox>
                     <span style="color:#999;fontSize:12px">最多可选择3件商品</span>
@@ -173,40 +173,26 @@
                   <div style="margin:10px 0">
                     <chooseSelect @chooseSelectVal="getChooseSelectVal" />
                   </div>
-
                   <div style="margin:10px 0">
-                    <el-checkbox v-model="onClickUser">选择指定的会员 </el-checkbox>
+                    <el-checkbox
+                      v-model="params.onClickUser"
+                      @change="handleOnClickUserChange"
+                    >选择指定的会员 </el-checkbox>
                     <span style="margin-left:-15px">
                       <el-button
                         @click="handleAddMember"
                         type="text"
                       >+ 添加会员</el-button>
                     </span>
-                    <!-- 测试 开始-->
-                    <!-- <div>
-                      <div>
-                        <dg-table
-                          title="弹窗组件选择数据"
-                          :checked-data="checkedData"
-                          @handleChooseData="handleChooseData"
-                        ></dg-table>
-                        <br /><br /><br />
-                        <el-input
-                          type="textarea"
-                          :rows="10"
-                          placeholder="已选择内容"
-                          :value="JSON.stringify(checkedData)"
-                        >
-                        </el-input>
-                      </div>
-                    </div> -->
-                    <!-- 测试结束 -->
                     <span>已选择会员{{memberNum}}人</span>
                   </div>
                   <div>
-                    <el-checkbox v-model="onClickCustomRule">自定义</el-checkbox>
+                    <el-checkbox
+                      v-model="params.onClickCustomRule"
+                      @change="handleOnClickCustomRuleChange"
+                    >自定义</el-checkbox>
                     <el-select
-                      :disabled="!onClickCustomRule"
+                      :disabled="!params.onClickCustomRule"
                       v-model="customRuleInfoVal"
                       placeholder="请选择"
                       size="small"
@@ -244,7 +230,7 @@
                             <el-image
                               :src="urls.url4"
                               class="img"
-                              @click="handleDelCustomize(i)"
+                              @click="handleDelCustomize(item)"
                             ></el-image>
                           </div>
                         </li>
@@ -258,7 +244,10 @@
                             ></el-image>
                           </div>
                           <span>
-                            <dateTimePicker :showPicker=1 />
+                            <dateTimePicker
+                              :showPicker=1
+                              @time="loginStartAndLoginEnd"
+                            />
                           </span>
 
                         </li>
@@ -335,7 +324,7 @@
       <choosingGoods
         @res="getRes"
         :tuneUpChooseGoods="tuneUpChooseGoods"
-        :chooseGoodsBack="goodsIdList"
+        :chooseGoodsBack="params.goodsIdList"
       />
       <!-- 选择内容模板消息 -->
       <chooseTemplateDialog
@@ -396,6 +385,7 @@ export default {
         title: ``,
         content: ``
       },
+      templateId: null,
       labels: {
         label1: `消息名称：`,
         label2: `消息类型：`,
@@ -409,6 +399,23 @@ export default {
 
       ],
       cardValue: `请选择会员卡`,
+      /**
+      * 动态获取人数的参数集合
+      */
+      params: {
+        userKey: null,
+        onClickNoPay: false,
+        onClickGoods: false,
+        // 商品列表idList
+        onClickCard: false,
+        cardIdsList: [],
+        onClickTag: false,
+        tagIdList: [],
+        onClickUser: false,
+        userIdList: [],
+        onClickCustomRule: false,
+        customRuleInfo: {}
+      },
       /**
        * params
        */
@@ -449,12 +456,7 @@ export default {
        * 自定义实体
        */
       customRuleInfoVal: `请选择`,
-      noPayDay: ``,
-      payedDay: ``,
-      buyTimesMore: ``,
-      buyTimesLess: ``,
-      moneyAvgMore: ``,
-      moneyAvgLess: ``,
+      customRuleInfo: {},
       loginStart: ``,
       loginEnd: ``,
       customRuleInfoOptions: [
@@ -494,6 +496,7 @@ export default {
       imgsList: [],
       userNumber: 0,
       tuneUpChooseGoods: false
+
     }
   },
   watch: {
@@ -537,31 +540,10 @@ export default {
         name: this.formData.name,
         title: this.formData.title,
         action: 7,
-        // templateId: 2,
+        templateId: 2,
         content: this.formData.content,
         pageLink: this.pageLink,
-        userInfo: {
-          onClickNoPay: this.onClickNoPay,
-          onClickGoods: this.onClickGoods,
-          goodsIdList: this.goodsIdList,
-          cardIdsList: this.cardIdsList,
-          onClickTag: this.onClickTag,
-          tagIdList: this.tagIdList,
-          onClickUser: this.onClickUser,
-          userIdList: this.userIdList,
-          onClickCustomRule: this.onClickCustomRule,
-          customRuleInfo: {
-            noPayDay: `1`,
-            payedDay: `1`,
-            buyTimesMore: `1`,
-            buyTimesLess: `1`,
-            moneyAvgMore: `1`,
-            moneyAvgLess: `1`,
-            loginStart: `1`,
-            loginEnd: `1`
-          }
-        },
-        userKey: null,
+        userInfo: this.params,
         senAction: this.senAction
         // startTime: this.startTime,
         // endTime: this.endTime
@@ -579,20 +561,7 @@ export default {
     getTime3 (val) {
 
     },
-    // // 会员卡下拉框选中出发
-    // getIdList (val) {
-    //   console.log(val)
-    //   if (val !== `请选择会员卡`) {
-    //     const res = this.cardList.find((ele) => ele.id === val)
-    //     // console.log(res)
-    //     this.cardIdsList.push(res)
-    //     // console.log(val)
-    //     // console.log(this.cardList)
-    //     this.cardList = this.cardList.filter((item) => item.id !== val)
-    //     // console.log(this.cardList)
-    //     this.cardValue = `请选择会员卡`
-    //   }
-    // },
+
     // 关闭会员弹窗
     closeDialog () {
       this.dialogOff = false
@@ -601,7 +570,7 @@ export default {
     },
     // 添加会员
     handleAddMember () {
-      if (this.onClickUser === false) {
+      if (this.params.onClickUser === false) {
         return
       }
       this.dialogOff = true
@@ -609,26 +578,68 @@ export default {
     // getUserIdList
     getUserIdList (val) {
       console.log(val)
+      this.params.userIdList = this.formatUserIdList(val)
       this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
+      // 当添加会员后 发送获取人数接口
+      this.fetchUserList(this.params)
+    },
+    formatUserIdList (userIdList) {
+      let arr = []
+      userIdList.forEach(item => {
+        arr.push(item.userId
+        )
+      })
+      return arr
     },
     // getContent
     getContent (res) {
-      this.formData.content = res
+      this.formData.content = res.content
+      this.templateId = res.id
+    },
+    formatOptionsList (optionsList) {
+      console.log(optionsList)
+      let obj = {
+
+      }
+      optionsList.forEach(item => {
+        switch (item) {
+          case `N天内有交易记录`:
+            obj.payedDay = item
+            break
+          case `N天内没有交易记录`:
+            obj.noPayDay = item
+            break
+          case `累计购买次数小于N次`:
+            obj.buyTimesLess = item
+            break
+          case `累计购买次数大于N次`:
+            obj.buyTimesMore = item
+            break
+          case `购买商品均价大于N元`:
+            obj.moneyAvgMore = item
+            break
+          case `购买商品均价小于N元`:
+            obj.moneyAvgLess = item
+            break
+          default:
+            break
+        }
+      })
+
+      console.log(obj)
+      this.customRuleInfo = obj
     },
     customRuleInfoValChange (val) {
       if (val === `指定时间内有登录记录`) {
-        console.log(1111111)
         this.showTime = true
         this.customRuleInfoOptions = delObj({ arr: this.customRuleInfoOptions, val })
         this.customRuleInfoVal = `请选择`
       } else {
-        // this.showTime = false
-        // console.log(val)
         if (val !== `请选择` && val !== `指定时间内有登陆记录`) {
-          // console.log(this.customRuleInfoOptions)
-          // console.log(val)
           this.optionsList.push(val)
-          // console.log(this.optionsList)
+          this.formatOptionsList(this.optionsList)
+          // 发送请求
+          this.fetchUserList(this.params)
           // 移除下拉框的option
           this.customRuleInfoVal = `请选择`
 
@@ -638,54 +649,55 @@ export default {
     },
     // 删除自定义
     handleDelCustomize (val) {
-      if (this.onClickCustomRule === false) {
-        console.log(1111111111)
+      // 自定义勾选状态为false 删除不可点
+      if (this.params.onClickCustomRule === false) {
         return
       }
       if (val === 6) {
-        console.log(val)
         this.showTime = false
         this.customRuleInfoOptions.push({
           label: `指定时间内有登录记录`,
           value: `指定时间内有登录记录`
         })
+        this.params.customRuleInfo.loginEnd = ``
+        this.params.loginStart.loginStart = ``
+        this.fetchUserList(this.params)
       } else {
-        console.log(val)
-        this.optionsList.splice(val, 1)
-        console.log(this.optionsList)
-        console.log(this.customRuleInfoOptions)
+        this.optionsList = this.optionsList.filter(item => item !== val)
+        this.formatOptionsList(this.optionsList)
+        this.fetchUserList(this.params)
         switch (val) {
-          case 0:
+          case `N天内有交易记录`:
             this.customRuleInfoOptions.push({
               label: `N天内有交易记录`,
               value: `N天内有交易记录`
             })
             break
-          case 1:
+          case `N天内没有交易记录`:
             this.customRuleInfoOptions.push({
               label: `N天内没有交易记录`,
               value: `N天内没有交易记录`
             })
             break
-          case 2:
+          case `累计购买次数小于N次`:
             this.customRuleInfoOptions.push({
               label: `累计购买次数小于N次`,
               value: `累计购买次数小于N次`
             })
             break
-          case 3:
+          case `累计购买次数大于N次`:
             this.customRuleInfoOptions.push({
               label: `累计购买次数大于N次`,
               value: `累计购买次数大于N次`
             })
             break
-          case 4:
+          case `购买商品均价大于N元`:
             this.customRuleInfoOptions.push({
               label: `购买商品均价大于N元`,
               value: `购买商品均价大于N元`
             })
             break
-          case 5:
+          case `购买商品均价小于N元`:
             this.customRuleInfoOptions.push({
               label: `购买商品均价小于N元`,
               value: `购买商品均价小于N元`
@@ -729,7 +741,7 @@ export default {
     },
     // 选择商品
     handleChooseGoods () {
-      if (this.onClickGoods === false) {
+      if (this.params.onClickGoods === false) {
         return
       }
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -738,34 +750,20 @@ export default {
       if (ids.length > 3) {
         this.$message.warning('最多选择3个商品')
       } else {
-        console.log(ids)
-        console.log(urls)
-        this.goodsIdList = []
-        this.goodsIdList = ids
+        this.params.goodsIdList = ids
         this.imgsList = urls
         // 发送获取人数
-        this.fetchUserList({
-          userKey: this.userKey,
-          onClickNoPay: this.onClickNoPay,
-          onClickGoods: this.onClickGoods,
-          goodsIdList: this.goodsIdList
-        })
+        this.fetchUserList(this.params)
       }
     },
     // 删除图片
     handleDelImg (id) {
-      console.log(id)
-      if (this.onClickGoods === false) {
+      if (this.params.onClickGoods === false) {
         return
       }
       this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
-      this.goodsIdList = this.goodsIdList.filter(item => item !== id)
-      this.fetchUserList({
-        userKey: this.userKey,
-        onClickNoPay: this.onClickNoPay,
-        onClickGoods: this.onClickGoods,
-        goodsIdList: this.goodsIdList
-      })
+      this.params.goodsIdList = this.goodsIdList.filter(item => item !== id)
+      this.fetchUserList(this.params)
     },
     // 获取选中的path
     getPath (res) {
@@ -774,67 +772,30 @@ export default {
     },
     // 获取持有属于的值
     getChooseSelectVal (val) {
-      const { onClickCard, cardIdsList, onClickTag } = val
-      console.log(val)
-      this.onClickCard = onClickCard
-      this.cardIdsList = cardIdsList
-      this.onClickTag = onClickTag
-      switch (onClickTag) {
+      const { onClickCard, cardIdsList, onClickTag, tagIdList } = val
+      this.params.onClickCard = onClickCard
+      this.params.cardIdsList = cardIdsList
+      this.params.onClickTag = onClickTag
+      this.params.tagIdList = tagIdList
+      // 请选择会员卡
+      switch (onClickCard) {
         case true:
-          this.fetchUserList({
-            userKey: this.userKey,
-            onClickNoPay: this.onClickNoPay,
-            onClickGoods: this.onClickGoods,
-            goodsIdList: this.goodsIdList,
-            onClickCard: this.onClickCard,
-            cardIdsList: this.cardIdsList,
-            onClickTag: this.onClickTag
-          })
+          console.log(this.params)
+          this.fetchUserList(this.params)
           break
         case false:
-          this.fetchUserList({
-            userKey: this.userKey,
-            onClickNoPay: this.onClickNoPay,
-            onClickGoods: this.onClickGoods,
-            goodsIdList: this.goodsIdList,
-            onClickCard: this.onClickCard,
-            cardIdsList: this.cardIdsList,
-            onClickTag: this.onClickTag
-          })
+          this.fetchUserList(this.params)
           break
-
         default:
           break
       }
-      switch (onClickCard) {
+      // 请选择会员标签
+      switch (onClickTag) {
         case true:
-          console.log(this.cardIdsList)
-
-          this.fetchUserList({
-            userKey: this.userKey,
-            onClickNoPay: this.onClickNoPay,
-            onClickGoods: this.onClickGoods,
-            goodsIdList: this.goodsIdList,
-            onClickCard: this.onClickCard,
-            cardIdsList: this.cardIdsList
-          })
+          this.fetchUserList(this.params)
           break
         case false:
-          console.log({
-            userKey: this.userKey,
-            onClickNoPay: this.onClickNoPay,
-            onClickGoods: this.onClickGoods,
-            goodsIdList: this.goodsIdList,
-            onClickCard: this.onClickCard,
-            cardIdsList: this.cardIdsList
-          })
-          this.fetchUserList({
-            userKey: this.userKey,
-            onClickNoPay: this.onClickNoPay,
-            onClickGoods: this.onClickGoods,
-            goodsIdList: this.goodsIdList,
-            onClickCard: this.onClickCard
-          })
+          this.fetchUserList(this.params)
           break
         default:
           break
@@ -843,41 +804,46 @@ export default {
     handleGetUser () {
       this.dialogVisible = true
     },
+    // 获取发送人群数量
     fetchUserList (params) {
       getUserNumberApi(params).then(res => {
-        console.log(res) // 返回发送人群的数量
         const { error, content } = res
         if (error === 0) {
+          console.log(res) // 返回发送人群的数量
           const { userKey, userNumber } = content
-          console.log(userKey, userNumber)
+          console.log(`key+num${userKey}, ${userNumber}`)
           this.userNumber = userNumber
-          this.userKey = userKey
+          this.params.userKey = userKey
         }
       }).catch(err => console.log(err))
     },
     // 加购人群发生变化的时候
     handleOnClickNoPayChange (val) {
-      console.log(val)
       // 获取发送人群的数量
-      const params = {
-        userKey: this.userKey,
-        onClickNoPay: val,
-        onClickGoods: this.onClickNoPay,
-        goodsIdList: this.goodsIdList
-      }
-      this.fetchUserList(params)
+      console.log(this.params)
+      this.fetchUserList(this.params)
     },
     // 指定购买商品人群发生变化的时候
     handleOnClickGoodsChange (val) {
-      const params = {
-        userKey: this.userKey,
-        onClickNoPay: this.onClickNoPay,
-        onClickGoods: val,
-        goodsIdList: this.goodsIdList
-      }
-      console.log(params)
-      console.log(this.goodsIdList)
-      this.fetchUserList(params)
+      console.log(this.params)
+      this.fetchUserList(this.params)
+    },
+    // 选择指定的会员状态发生变化的时候
+    handleOnClickUserChange (val) {
+      console.log(this.params)
+      this.fetchUserList(this.params)
+    },
+    // 当自定义发生变化的时候
+    handleOnClickCustomRuleChange (val) {
+      this.fetchUserList(this.params)
+    },
+    loginStartAndLoginEnd (val) {
+      const { startTime, endTime } = val
+      this.loginStart = startTime
+      this.loginEnd = endTime
+      this.params.customRuleInfo.loginStart = this.loginStart
+      this.params.customRuleInfo.loginEnd = this.loginEnd
+      this.fetchUserList(this.params)
     }
   }
 }

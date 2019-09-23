@@ -171,13 +171,14 @@ export default {
     }
   },
   created () {
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
     // 初始化数据
     fetchData () {
       getUserArrayApi({
-        'currentPage': 1
+        'userKey': 'send:user:245547.a5d94ec0-2ce9-4ba1-b7c5-9991eba5d2fe',
+        currentPage: 1
       }).then(res => {
         console.log(res)
       }).catch(error => console.log(error))
