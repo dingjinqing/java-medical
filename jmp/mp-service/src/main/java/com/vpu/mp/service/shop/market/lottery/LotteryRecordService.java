@@ -51,25 +51,25 @@ public class LotteryRecordService extends ShopBaseService {
 
     private void buildSelect(SelectOnConditionStep<Record> select, LotteryRecordPageListParam param){
         if (param.getLotteryId()!=null){
-            select.and(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
+            select.where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
         }
         if (param.getUsername() != null) {
-            select.and(USER.USERNAME.like(likeValue(param.getUsername())));
+            select.where(USER.USERNAME.like(likeValue(param.getUsername())));
         }
         if (param.getMobile() != null) {
-            select.and(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
+            select.where(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
         }
         if (param.getLotteryGrade() != null&&param.getLotteryGrade()>=0) {
-            select.and(LOTTERY_RECORD.LOTTERY_GRADE.eq(param.getLotteryGrade()));
+            select.where(LOTTERY_RECORD.LOTTERY_GRADE.eq(param.getLotteryGrade()));
         }
         if (param.getLotterySource() != null&&param.getLotterySource()>=0) {
-            select.and(LOTTERY_RECORD.LOTTERY_SOURCE.eq(param.getLotterySource()));
+            select.where(LOTTERY_RECORD.LOTTERY_SOURCE.eq(param.getLotterySource()));
         }
         if (param.getChanceSource() != null&&param.getChanceSource()>=0) {
-            select.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(param.getChanceSource()));
+            select.where(LOTTERY_RECORD.CHANCE_SOURCE.eq(param.getChanceSource()));
         }
         if (param.getLotteryActId()!=null){
-            select.and(LOTTERY_RECORD.LOTTERY_ACT_ID.eq(param.getLotteryActId()));
+            select.where(LOTTERY_RECORD.LOTTERY_ACT_ID.eq(param.getLotteryActId()));
 
         }
     }
