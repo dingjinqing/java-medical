@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class CouponGiveDetailParam {
 	/* 活动Id */
-	private Integer actId;
+	private Integer accessId;
 	/* 优惠券Id */
-	private Integer couponId;
+	private Integer actId;
 	/* 手机号 */
 	private String mobile;
 	/* 用户昵称 */

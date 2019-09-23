@@ -14,9 +14,9 @@ public class CouponHoldListParam {
     /* 发放活动id*/
     private Integer accessId;
     /**
-     * 获取方式，0：发放，1：领取
+     * 1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券
      */
-    private Byte accessMode;
+    private Byte getSource;
 
     /**
      * 用户id

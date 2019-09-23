@@ -177,6 +177,8 @@ public class CouponGiveService extends ShopBaseService {
 		couponParam.setStatus(param.getIsUsed().byteValue());
 		couponParam.setCurrentPage(param.getCurrentPage());
 		couponParam.setPageRows(param.getPageRows());
+		couponParam.setAccessId(param.getAccessId());		
+		couponParam.setGetSource((byte)9);	
 		return   couponHold.getCouponHoldList(couponParam);
 
 	}

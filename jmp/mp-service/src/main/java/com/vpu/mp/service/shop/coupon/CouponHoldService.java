@@ -84,11 +84,13 @@ public class CouponHoldService extends ShopBaseService {
                 select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 3));
             }
         }
-        if (param.getAccessId()!=null){
+        if (param.getAccessId()!=null && param.getGetSource()!=null){
             select.where(CUSTOMER_AVAIL_COUPONS.ACCESS_ID.eq(param.getAccessId()))
-                    .and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(param.getAccessMode()));
+            .and(CUSTOMER_AVAIL_COUPONS.GET_SOURCE.eq(param.getGetSource()));
         }
-
+        else if (param.getGetSource()!=null){
+            select.where(CUSTOMER_AVAIL_COUPONS.GET_SOURCE.eq(param.getGetSource()));
+        }
         return select;
 
     }
