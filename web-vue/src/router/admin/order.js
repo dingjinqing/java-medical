@@ -55,6 +55,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/refund_order/orderRefundInfo'
       )
   },
+  // 手动退货退款
+  {
+    path: '/admin/home/main/orders/refund/manual',
+    name: 'manualRefund',
+    meta: {
+      crumbTitle: 'router.manualRefund',
+      meta: 'first_trade_manage',
+      category: 'order'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/refund_order/manualRefundInfo'
+      )
+  },
   // 买单订单列表
   {
     path: '/admin/home/main/orders/check/list',
@@ -66,21 +80,21 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/check_order/checkList'
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/store_order/storeOrderList'
       )
   },
   // 买单订单详情
   {
     path: '/admin/home/main/orders/check/info',
-    name: 'checkOrderInfo',
+    name: 'storeOrderInfo',
     meta: {
-      crumbTitle: 'router.checkOrderInfo',
+      crumbTitle: 'router.storeOrderInfo',
       meta: 'first_trade_manage',
       category: 'check_order'
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/check_order/checkOrderInfo'
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/store_order/storeOrderInfo'
       )
   },
   // 虚拟商品订单-会员卡
@@ -95,6 +109,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/virtual_goods_order/virtualGoodsOrder'
+      )
+  },
+  // 待发货订单
+  {
+    path: '/admin/home/main/orders/waiting',
+    name: 'order_wait',
+    meta: {
+      crumbTitle: 'router.order',
+      meta: 'first_trade_manage',
+      category: 'order_wait'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderList'
       )
   }
 ]

@@ -334,15 +334,24 @@
                         :content="$t('order.orderSn')+'：'+orderItem.orderSn"
                         placement="top-start"
                       >
-                        <span>{{$t('order.orderSn')}}：{{orderItem.orderSn}}</span>
+                        <span>{{(orderItem.mainOrderSn == '' ? $t('order.orderSn') : orderItem.mainOrderSn == orderItem.orderSn ? $t('order.mainOrderSn') : $t('order.childOrderSn')) + '：'+orderItem.orderSn}}
+                        </span>
                       </el-tooltip>
-                      <span>{{$t('order.paymentType')}}：
-                        <span
+                      <span class="paymentType">{{$t('order.paymentType')}}：
+
+                        <el-tooltip
                           v-for="(payCode,index) in orderItem.payCodeList"
                           :key="index"
+                          class="item"
+                          effect="light"
+                          :content="paymentTypeMap.get(payCode)"
+                          placement="top-start"
                         >
-                          <i :class="payCodeIconClassMap[payCode]"></i>
-                        </span>
+                          <img
+                            :src="payCodeIconClassMap[payCode]"
+                            :alt="paymentTypeMap[payCode]"
+                          >
+                        </el-tooltip>
                       </span>
                       <el-tooltip
                         class="item"
@@ -370,8 +379,11 @@
                       </el-tooltip>
                     </div>
                     <div class="right">
-                      <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span @click="addNodes">{{$t('order.remark')}}</span>
+                      <span class="icon_collect"><i
+                          :class="{'el-icon-star-off':!orderItem.starFlag,'el-icon-star-on':orderItem.starFlag}"
+                          @click="toggleStar(orderItem.orderSn,orderItem.starFlag)"
+                        ></i></span>
+                      <span @click="addNodes(orderItem.orderSn)">{{$t('order.remark')}}</span>
                       <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
                       <span>{{$t('order.comment')}}</span>
                     </div>
@@ -442,6 +454,72 @@
                   </td>
                 </tr>
               </template>
+              <template v-for="childOrder in orderItem.childOrders">
+                <template v-for="(childGoods,childGoodsIndex) in childOrder.goods">
+                  <tr
+                    class="order-tb-body"
+                    :key="childGoodsIndex"
+                  >
+                    <td>
+                      <div class="goods_info">
+                        <img
+                          :src="$imageHost+childGoods.goodsImg"
+                          alt=""
+                        >
+                        <div class="right_info">
+                          <div class="goods_name">{{childGoods.goodsName}}</div>
+                          <div class="goods_spec">{{childGoods.goodsAttr}}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{{childGoods.goodsSn}}</td>
+                    <td>{{childGoods.goodsPrice.toFixed(2)}}</td>
+                    <td>{{childGoods.goodsNumber}}</td>
+                    <td
+                      v-if="childGoodsIndex === 0"
+                      :rowspan="childOrder.goods.length"
+                    >
+                      <p>{{childOrder.consignee}}</p>
+                      <p>{{childOrder.mobile}}</p>
+                    </td>
+                    <td
+                      v-if="childGoodsIndex === 0"
+                      :rowspan="childOrder.goods.length"
+                    >
+                      {{orderItem.createTime}}
+                    </td>
+                    <td
+                      v-if="childGoodsIndex === 0"
+                      :rowspan="childOrder.goods.length"
+                    >
+                      {{orderStatusMap.get(childOrder.orderStatus)}}
+                      <br />
+                      <el-button
+                        type="primary"
+                        size="small"
+                        v-if="[3,12].indexOf(childOrder.orderStatus) !== -1"
+                        @click="deliver(childOrder)"
+                      >{{$t('order.delivery')}}</el-button>
+                    </td>
+                    <td
+                      v-if="childGoodsIndex === 0"
+                      :rowspan="childOrder.goods.length"
+                    >
+                      <span>
+                        {{childOrder.moneyPaid.toFixed(2)}}
+                      </span>
+                      <span>
+                        ({{
+                        $t('order.includeExpress')
+                      }}
+                        {{childOrder.shippingFee.toFixed(2)}}
+                        )
+                      </span>
+
+                    </td>
+                  </tr>
+                </template>
+              </template>
             </tbody>
             <tbody :key="orderIndex">
               <tr>
@@ -457,7 +535,10 @@
         />
       </div>
     </div>
-    <nodesDialog :show.sync="showNodes" />
+    <nodesDialog
+      :show.sync="showNodes"
+      :orderSn="notesOrderSn"
+    />
     <deliveryDialog
       v-if="showDelivery"
       :show.sync="showDelivery"
@@ -468,7 +549,7 @@
 <script>
 
 import {
-  list
+  list, star
 } from '@/api/admin/orderManage/order.js'
 
 export default {
@@ -485,12 +566,12 @@ export default {
       deliverTypeMap: {},
       paymentTypeMap: {},
       payCodeIconClassMap: {
-        1: 'el-icon-shopping-cart-full',
-        2: 'el-icon-shopping-cart-1',
-        3: 'el-icon-shopping-cart-1',
-        4: 'el-icon-shopping-cart-full',
-        5: 'el-icon-shopping-cart-full',
-        6: 'el-icon-shopping-cart-full'
+        1: `${this.$imageHost}/image/admin/pay_account.png`,
+        2: `${this.$imageHost}/image/admin/pay_score.png`,
+        3: `${this.$imageHost}/image/admin/pay_lottery.png`,
+        4: `${this.$imageHost}/image/admin/pay_cod.png`,
+        5: `${this.$imageHost}/image/admin/pay_rewards_points.png`,
+        6: `${this.$imageHost}/image/admin/pay_wx.png`
       },
       moreFilters: false,
       pageParams: {},
@@ -546,9 +627,11 @@ export default {
       ],
       showNodes: false,
       showDelivery: false,
-      orderItemInfo: {}
+      orderItemInfo: {},
+      notesOrderSn: null
     }
   },
+  inject: ['adminReload'],
   mounted () {
     console.log('mounted-----------------------')
     // 初始化数据
@@ -559,6 +642,11 @@ export default {
     lang () {
       this.langDefault()
       this.arrayToMap()
+    },
+    '$route': {
+      handler () {
+        this.adminReload()
+      }
     }
   },
   methods: {
@@ -585,7 +673,6 @@ export default {
         this.searchParams.createTimeStart = this.orderTime[0] + ' 00:00:00'
         this.searchParams.createTimeEnd = this.orderTime[1] + ' 23:59:59'
       }
-      this.orderList = null
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       list(this.searchParams).then(res => {
@@ -608,8 +695,9 @@ export default {
         }
       })
     },
-    addNodes () {
+    addNodes (orderSn) {
       this.showNodes = true
+      this.notesOrderSn = orderSn
     },
     goodsTypeFilter (goodsType) {
       let goodsTypeStr = this.$t('order.goodsTypeText') + '：'
@@ -624,6 +712,19 @@ export default {
     deliver (orderInfo) {
       this.showDelivery = true
       this.orderItemInfo = orderInfo
+    },
+    toggleStar (orderSn, starFlag) {
+      let obj = {
+        orderSn: [orderSn],
+        type: 0,
+        starFlag: starFlag === 1 ? 0 : 1
+      }
+      star(obj).then(res => {
+        if (res.error === 0) {
+          this.$message.success(starFlag === 1 ? '取消标星成功' : '标星成功')
+          this.search()
+        }
+      })
     }
   }
 }
@@ -724,6 +825,14 @@ export default {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     cursor: pointer;
+                    &.paymentType {
+                      img {
+                        vertical-align: middle;
+                        & + img {
+                          margin-left: 5px;
+                        }
+                      }
+                    }
                   }
                 }
                 .right {
@@ -744,7 +853,7 @@ export default {
                       color: #666;
                     }
                     .el-icon-star-on {
-                      color: red;
+                      color: #e96463;
                     }
                   }
                 }

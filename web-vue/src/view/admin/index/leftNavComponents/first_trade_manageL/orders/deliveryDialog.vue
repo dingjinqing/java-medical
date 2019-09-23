@@ -170,7 +170,6 @@ export default {
       handler (newVal) {
         if (newVal === true) {
           this.showDelivery = true
-          console.log(123)
           this.initData()
         }
       },

@@ -2,10 +2,10 @@
   <div class="main">
     <div class="since-info">
       <div class="since-info-top">
-        <span>{{$t('order.orderSn')}}：{{order.orderSn}}</span>
+        <span>{{$t('order.orderSn')}}：{{searchParam.orderSn}}</span>
         <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</span>
       </div>
-      <div class="since-info-path">
+      <!-- <div class="since-info-path">
         <el-steps
           :active="2"
           align-center
@@ -21,7 +21,7 @@
           <el-step title="卖家已发货"></el-step>
           <el-step title="订单完成"></el-step>
         </el-steps>
-      </div>
+      </div> -->
       <div class="since-info-detail">
         <div class="order_info">
           <div class="title">{{$t('order.orderInfo')}}</div>
@@ -88,7 +88,7 @@
           class="icon el-icon-edit-outline"
           @click="addNodes"
         ></i>
-        <span>{{$t('order.sellerMessage')}}：</span>
+        <span>{{$t('order.sellerMessage')}}：{{order.sellerRemark}}</span>
       </div>
     </div>
     <div
@@ -279,15 +279,28 @@
                           (oneOrder.mainOrderSn == '' ? $t('order.orderSn') : oneOrder.mainOrderSn == oneOrder.orderSn ? $t('order.mainOrderSn') : $t('order.childOrderSn')) + '：'+order.orderSn
                         }}
                       </span>
-                      <span>{{$t('order.paymentType')}}：<i class="el-icon-shopping-cart-full"></i></span>
+                      <span class="paymentType">{{$t('order.paymentType')}}：
+                        <el-tooltip
+                          v-for="(payCode,index) in oneOrder.payCodeList"
+                          :key="index"
+                          class="item"
+                          effect="light"
+                          :content="paymentTypeMap.get(payCode)"
+                          placement="top-start"
+                        >
+                          <img
+                            :src="payCodeIconClassMap[payCode]"
+                            :alt="paymentTypeMap[payCode]"
+                          >
+                        </el-tooltip>
+
+                      </span>
                       <span>{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(oneOrder.deliverType)}}</span>
                       <span v-if="oneOrder.partShipFlag == 1 ">
                         {{$t('order.partShipText')}}</span>
                     </div>
                     <div class="right">
-                      <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span @click="addNodes">{{$t('order.remark')}}</span>
-                      <span @click="manualReturn('')">{{$t('order.manualReturnText')}}</span>
+                      <span @click="manualReturn(oneOrder.orderSn)">{{$t('order.manualReturnText')}}</span>
                       <span>{{$t('order.comment')}}</span>
                     </div>
                   </div>
@@ -319,7 +332,10 @@
                 >
                   <p>{{oneOrder.consignee}}</p>
                   <p>{{oneOrder.mobile}}</p>
-                  <p><span>{{$t('order.shippingAddress')}}</span></p>
+                  <p v-if="oneOrder.mainOrderSn != '' && oneOrder.mainOrderSn != oneOrder.orderSn"><span
+                      class="shipping_address"
+                      @click="showAddressInfo(oneOrder.completeAddress)"
+                    >{{$t('order.shippingAddress')}}</span></p>
                 </td>
                 <td
                   v-if="index == 0"
@@ -493,22 +509,48 @@
         </table>
       </div>
     </div>
-    <nodesDialog :show.sync="showNodes" />
+    <nodesDialog
+      :show.sync="showNodes"
+      :orderSn="notesOrderSn"
+      @handlerResetData="search"
+    />
+    <orderStatuSteps />
+    <el-dialog
+      title="收货地址"
+      :visible.sync="showAddress"
+      width="30%"
+    >
+      <div>
+        {{$t('order.shippingAddress')}}：{{itemAddressInfo}}
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="showAddress = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {
   info
-} from '@/api/admin/orderManage/order.js'
+} from '@/api/admin/orderManage/order'
 export default {
   components: {
-    nodesDialog: () => import('./addNotes')
+    nodesDialog: () => import('./addNotes'),
+    orderStatuSteps: () => import('./orderStatuSteps')
   },
   data () {
     return {
-      order: null,
+      order: {},
       showNodes: false,
+      showAddress: false,
+      itemAddressInfo: null,
       searchParam: {
         orderSn: null
       },
@@ -516,6 +558,14 @@ export default {
       goodsTypeMap: {},
       deliverTypeMap: {},
       paymentTypeMap: {},
+      payCodeIconClassMap: {
+        1: `${this.$imageHost}/image/admin/pay_account.png`,
+        2: `${this.$imageHost}/image/admin/pay_score.png`,
+        3: `${this.$imageHost}/image/admin/pay_lottery.png`,
+        4: `${this.$imageHost}/image/admin/pay_cod.png`,
+        5: `${this.$imageHost}/image/admin/pay_rewards_points.png`,
+        6: `${this.$imageHost}/image/admin/pay_wx.png`
+      },
       // n-m(n订单状态，m配送方式0快递1自提);n(不区分配送方式)
       timeFlowDiagramMapping: {
         '0': ['createTime', 'payTime', 'shippingTime', 'finishedTime'],
@@ -537,10 +587,11 @@ export default {
         '13': ['createTime', 'payTime', 'giftGiving', 'giveCompletion']
       },
       monetToScore: 100,
-      goodsTypeArray: null
+      goodsTypeArray: [],
+      notesOrderSn: ''
     }
   },
-  mounted () {
+  created () {
     this.arrayToMap()
     this.search(this.$route.query.orderSn)
     this.langDefault()
@@ -580,6 +631,7 @@ export default {
     },
     addNodes () {
       this.showNodes = true
+      this.notesOrderSn = this.searchParam.orderSn
     },
     seeDetails (orderSn) {
       console.log(orderSn)
@@ -590,8 +642,17 @@ export default {
         }
       })
     },
-    manualReturn (val) {
-
+    manualReturn (orderSn) {
+      this.$router.push({
+        name: 'manualRefund',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    showAddressInfo (Address) {
+      this.showAddress = true
+      this.itemAddressInfo = Address
     }
   },
   computed: {
@@ -770,10 +831,25 @@ export default {
                 font-size: 14px;
                 color: #666;
                 justify-content: space-between;
+                > span {
+                  width: 207px;
+                  text-align: left;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  cursor: pointer;
+                  &.paymentType {
+                    img {
+                      vertical-align: middle;
+                      & + img {
+                        margin-left: 5px;
+                      }
+                    }
+                  }
+                }
               }
               .right {
-                width: 265px;
-                margin-left: 200px;
+                width: 250px;
                 display: flex;
                 justify-content: space-between;
                 color: #409eff;
@@ -835,6 +911,10 @@ export default {
   }
   .no_padding {
     padding: 0 !important;
+  }
+  .shipping_address {
+    color: #409eff;
+    cursor: pointer;
   }
 }
 </style>

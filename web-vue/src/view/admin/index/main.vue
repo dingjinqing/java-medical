@@ -12,7 +12,10 @@
           :ops="ops"
           style="height:100%"
         >
-          <router-view class="right_container" />
+          <router-view
+            v-if="adminRouterAlive"
+            class="right_container"
+          />
         </vue-scroll>
       </div>
 
@@ -77,6 +80,7 @@ export default {
           background: 'rgba(0,0,0,0.2)'
         }
       },
+      adminRouterAlive: true,
       dialogVisible: false,
       flag: true,
       imgUrl: this.$imageHost + '/image/admin/no_authority.png'
@@ -89,6 +93,19 @@ export default {
     },
     activeFlag_ () {
       return this.activeFlag
+    }
+  },
+  provide () { // 提供
+    return {
+      adminReload: this.reload
+    }
+  },
+  methods: {
+    reload () {
+      this.adminRouterAlive = false
+      this.$nextTick(function () {
+        this.adminRouterAlive = true
+      })
     }
   },
   watch: {

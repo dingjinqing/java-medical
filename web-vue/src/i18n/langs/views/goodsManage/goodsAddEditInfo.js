@@ -50,7 +50,8 @@ export const cn = {
     goodsSn: '商品货号：',
     goodsSnTip: '不填则由系统自动生成货号',
     catId: '平台分类：',
-    catIdTip: '“平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。',
+    catIdTip:
+      '“平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。',
     catIdWarning: '请选择平台分类',
     catIdSelectDefault: '请选择平台分类',
     catIdGo: '前往',
@@ -59,7 +60,28 @@ export const cn = {
   },
   basicInfoOther: {
     unit: '单位：',
-    unitOptions: ['个', '包', '箱', '袋', '套', '箱', '卷', '件', '台', '吨', '平方米', '本', '幅', '张', '支', '盒', '份', '令', '千克', '自定义'],
+    unitOptions: [
+      '个',
+      '包',
+      '箱',
+      '袋',
+      '套',
+      '箱',
+      '卷',
+      '件',
+      '台',
+      '吨',
+      '平方米',
+      '本',
+      '幅',
+      '张',
+      '支',
+      '盒',
+      '份',
+      '令',
+      '千克',
+      '自定义'
+    ],
     unitTip: '长度限制为3个中文字符',
     sortId: '商家分类：',
     sortIdDefault: '请选择商家分类',
@@ -76,7 +98,8 @@ export const cn = {
     goodsBrandClassify: '品牌分类',
     goodsBrandClassifyDefault: '请选择',
     goodsVideo: '商品视频',
-    goodsVideoTip: '上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。'
+    goodsVideoTip:
+      '上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。'
   },
   stockAndPriceInfo: {
     title: '库存/价格信息',
@@ -103,7 +126,8 @@ export const cn = {
     goodsShopPriceTip: '设置了规格价格商品价格将失效，不在前端展示',
     goodsMarketPrice: '市场价格：',
     goodsGradeMember: '会员价：',
-    goodsGradeMemberTip: '会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价',
+    goodsGradeMemberTip:
+      '会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价',
     goodsGradeMemberSetting: '会员价设置：'
   },
   stockAndPriceInfoOther: {
@@ -114,7 +138,8 @@ export const cn = {
     costPrice: '成本价格：',
     costPriceTip: '设置了规格成本价格商品价格将失效，不在前端展示',
     addSaleNum: '初始销量：',
-    addSaleNumSetting: '设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。',
+    addSaleNumSetting:
+      '设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。',
     goodsPrdSn: '商品规格编码：'
   },
   deliverAndOtherInfo: {
@@ -257,7 +282,8 @@ export const en = {
     goodsSpecValKRepeat: 'goods spec val name repeat',
     goodsSkuSnRepeat: 'sku sn repeat',
     gradPrdPriceIsNull: 'grad prd price can not be null',
-    gradePrdPriceHigherThanGoodsPrice: 'grade prd price is higher than goods price',
+    gradePrdPriceHigherThanGoodsPrice:
+      'grade prd price is higher than goods price',
     goodsPriceIsNull: 'goods price can not be null',
     prdPriceIsNull: 'prd price can not be null',
     goodsPrdSnRepeat: 'goods prd sn repeat',
@@ -270,9 +296,11 @@ export const en = {
     goodsName: 'Goods name：',
     goodsAd: 'Goods advertisement：',
     goodsSn: 'Goods sn：',
-    goodsSnTip: 'If not filled in, the system will automatically generate the article number',
+    goodsSnTip:
+      'If not filled in, the system will automatically generate the article number',
     catId: 'Platform classification：',
-    catIdTip: '“Platform classification”is goods\'s attributes in system，won\'t show for user.can be setted in “Basic Setting”for default setting。',
+    catIdTip:
+      "“Platform classification”is goods's attributes in system，won't show for user.can be setted in “Basic Setting”for default setting。",
     catIdWarning: 'Choose Platform classification',
     catIdSelectDefault: 'Choose Platform classification',
     catIdGo: 'go',
@@ -281,7 +309,28 @@ export const en = {
   },
   basicInfoOther: {
     unit: 'Unit：',
-    unitOptions: ['individual', 'package', 'box', 'bug', 'stock', 'luggage', 'roll', 'sheet', 'stage', 'ton', 'square meter', 'capital', 'paire', 'pice', 'branch', 'case', 'part', 'rm', 'kg', 'custom'],
+    unitOptions: [
+      'individual',
+      'package',
+      'box',
+      'bug',
+      'stock',
+      'luggage',
+      'roll',
+      'sheet',
+      'stage',
+      'ton',
+      'square meter',
+      'capital',
+      'paire',
+      'pice',
+      'branch',
+      'case',
+      'part',
+      'rm',
+      'kg',
+      'custom'
+    ],
     unitTip: 'The length limit is 3 words',
     sortId: 'Merchant classification：',
     sortIdDefault: 'Choose Merchant classification',
@@ -298,7 +347,8 @@ export const en = {
     goodsBrandClassify: 'Brand classification',
     goodsBrandClassifyDefault: 'Choose',
     goodsVideo: 'Goods video',
-    goodsVideoTip: 'Uploading video only supports MP4 format.In order to ensure normal playback in various network environments at the wireless terminal, only video with upload size no more than 10M and duration no more than 3 minutes is supported'
+    goodsVideoTip:
+      'Uploading video only supports MP4 format.In order to ensure normal playback in various network environments at the wireless terminal, only video with upload size no more than 10M and duration no more than 3 minutes is supported'
   },
   stockAndPriceInfo: {
     title: 'Stock/Price Info',
@@ -320,12 +370,15 @@ export const en = {
     batchNum: 'Stock',
     batchImgSrc: 'SKU Picture',
     goodsNumber: 'Goods Stock：',
-    goodsNumberTip: 'Set up the specification of inventory goods inventory will be invalid, not front - end display',
+    goodsNumberTip:
+      'Set up the specification of inventory goods inventory will be invalid, not front - end display',
     goodsShopPrice: 'Goods price：',
     goodsMarketPrice: 'Market price：',
-    goodsShopPriceTip: 'Set up the specification of inventory goods shop price will be invalid, not front - end display',
+    goodsShopPriceTip:
+      'Set up the specification of inventory goods shop price will be invalid, not front - end display',
     goodsGradeMember: 'Membership price：',
-    goodsGradeMemberTip: 'Membership price is only set for grade membership card, non-grade membership card can not set membership price.If the grade membership card also contains member discount, then member price and member discount can be enjoyed at the same time',
+    goodsGradeMemberTip:
+      'Membership price is only set for grade membership card, non-grade membership card can not set membership price.If the grade membership card also contains member discount, then member price and member discount can be enjoyed at the same time',
     goodsGradeMemberSetting: 'Membership price setting：'
   },
   stockAndPriceInfoOther: {
@@ -334,9 +387,11 @@ export const en = {
     maxBuyNum: 'Maximum purchase quantity：',
     maxBuyNumTip: '0 or no indicates no limit on purchase quantity',
     costPrice: 'Cost price：',
-    costPriceTip: 'Set up the specification of cost price the price will be invalid, not front - end display',
+    costPriceTip:
+      'Set up the specification of cost price the price will be invalid, not front - end display',
     addSaleNum: 'Initial sales：',
-    addSaleNumSetting: 'After setting, the sales volume seen by your user = initial sales volume + order quantity, the initial sales volume is not counted into the statistics.',
+    addSaleNumSetting:
+      'After setting, the sales volume seen by your user = initial sales volume + order quantity, the initial sales volume is not counted into the statistics.',
     goodsPrdSn: 'Goods SKU SN：'
   },
   deliverAndOtherInfo: {
@@ -347,11 +402,13 @@ export const en = {
     deliverTemplateManage: 'Manage deliver template',
     pintAreaOtherDeliverFee: 'Area other deliver fee：',
     pointAreaForFreeDeliverTemplate: 'Point area for free deliver template：',
-    pointConditionForFreeDeliverTemplate: 'Point condition for free deliver template：',
+    pointConditionForFreeDeliverTemplate:
+      'Point condition for free deliver template：',
     deliverTemplateDefault: 'Shop default deliver template ',
     deliverTemplateUnit1: ' piece ',
     deliverTemplateUnit2: ' kg ',
-    deliverTemplateTitleDesc1: ' Not available except in the distribution area ',
+    deliverTemplateTitleDesc1:
+      ' Not available except in the distribution area ',
     deliverTemplateTitleDesc2: ' inner ',
     deliverTemplateTitleDesc3: ' dollar,peer add ',
     deliverTemplateTitleDesc4: ',add ',
@@ -392,13 +449,16 @@ export const en = {
     phoneNum: 'Stock',
     phoneGoodsDesc: 'Goods Desc',
     phoneGoodsDescTip1: 'Can edit the product details on the right',
-    phoneGoodsDescTip2: 'When no content is added, the content of this module is not displayed',
+    phoneGoodsDescTip2:
+      'When no content is added, the content of this module is not displayed',
     phoneGoodsTempTip1: 'Customize the content area',
     phoneGoodsTempTip2: 'Can select the product page template on the right',
-    phoneGoodsTempTip3: 'When no content is added, the content of this module is not displayed',
+    phoneGoodsTempTip3:
+      'When no content is added, the content of this module is not displayed',
     phoneGoodsTempTip4: 'Selected template:',
     goodsItemTitle: 'Goods basic info',
-    goodsItemStyleTip: 'Product information is a fixed style for reference only, please refer to the actual effect',
+    goodsItemStyleTip:
+      'Product information is a fixed style for reference only, please refer to the actual effect',
     goodsItemPositionTitle: 'Module position',
     goodsItemPositionRadio1: 'Custom content is on top',
     goodsItemPositionRadio2: 'Goods detail info is on top',
@@ -417,13 +477,15 @@ export const en = {
   },
   goodsDistribution: {
     distributionTitle: 'Distribution change price:',
-    distributionTitleTip: 'Allows the distributor to modify the price of a product while distributing it',
+    distributionTitleTip:
+      'Allows the distributor to modify the price of a product while distributing it',
     goodsPrice: 'Goods price(dollar)',
     advicePrice: 'Advise price(dollar)',
     minPrice: 'Minimum price(dollar)',
     maxPrice: 'Maximum price(dollar)',
     promotionTitle: 'Distribution promotion language：',
-    promotionTitleTip: 'The distributor will copy this message directly to the mobile clipboard when downloading the current product poster',
+    promotionTitleTip:
+      'The distributor will copy this message directly to the mobile clipboard when downloading the current product poster',
     promotionSwitchOn: 'ON',
     promotionSwitchOff: 'OFF',
     promotionLanguage: 'PromotionLanguage：',

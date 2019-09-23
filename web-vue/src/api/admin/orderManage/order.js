@@ -16,3 +16,19 @@ export function info (data) {
     data: data
   })
 }
+// 卖家备注
+export function notes (data) {
+  return service({
+    url: '/api/admin/order/sellerRemark',
+    method: 'post',
+    data: data
+  })
+}
+// 标星
+export function star (data) {
+  return service({
+    url: '/api/admin/order/star',
+    method: 'post',
+    data: data
+  })
+}

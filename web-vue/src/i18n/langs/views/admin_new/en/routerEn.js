@@ -114,7 +114,12 @@ export const en = {
     'Activity effect data'
   ],
   // 营销管理 砍价 - 帮忙砍价用户列表
-  bargain_record_detail: ['Marketing management', 'Bargain', 'Initiator', 'Participant'],
+  bargain_record_detail: [
+    'Marketing management',
+    'Bargain',
+    'Initiator',
+    'Participant'
+  ],
   // 营销管理 好友助力
   promote: ['Marketing management', 'Friend promote'],
   // 营销管理 添加好友助力活动
@@ -281,12 +286,18 @@ export const en = {
   // 订单管理 买单订单
   check_order: ['Order management', 'Check order'],
   // 订单管理 买单订单详情
-  checkOrderInfo: ['Order management', 'Check order info'],
+  storeOrderInfo: ['Order management', 'Check order info'],
   // 订单管理 虚拟订单商品
   memberCardOrder: ['Order management', 'Virtual goods order'],
+  // 订单管理 手动退货退款
+  manualRefund: ['Order management', 'Manual return refund'],
   // 营销管理 消息体送
   message_push: ['Marketing management', 'message_push'],
-  add_message_push: ['Marketing management', 'Message push', 'Add message push'],
+  add_message_push: [
+    'Marketing management',
+    'Message push',
+    'Add message push'
+  ],
   // 营销管理 定向发券
   couponGift: ['Marketing management', 'Coupon Gift']
 }

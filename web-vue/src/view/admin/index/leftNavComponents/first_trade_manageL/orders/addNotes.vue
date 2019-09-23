@@ -19,27 +19,53 @@
       <el-button @click="showNodes = false">取 消</el-button>
       <el-button
         type="primary"
-        @click="showNodes = fasle"
+        @click="confirm"
       >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+import { notes } from '@/api/admin/orderManage/order.js'
 export default {
   data () {
     return {
       textarea: null,
-      showNodes: false
+      showNodes: false,
+      type: 0
     }
   },
   props: {
     show: Boolean,
-    handleClose: Function
+    orderSn: String
   },
   methods: {
     closeDialog () {
       this.$emit('update:show', false)
+    },
+    initData () {
+      let obj = {
+        orderSn: this.orderSn,
+        type: this.type,
+        remark: this.textarea
+      }
+      notes(obj).then(res => {
+        if (res.error === 0) {
+          if (this.type === 0) {
+            this.textarea = res.content.sellerRemark
+          }
+          if (this.type === 1) {
+            this.$message.success('添加备注成功！')
+            this.showNodes = false
+            this.$emit('handlerResetData', this.orderSn)
+          }
+        }
+      }).catch(() => {
+      })
+    },
+    confirm () {
+      this.type = 1
+      this.initData()
     }
   },
   watch: {
@@ -48,8 +74,10 @@ export default {
     },
     show (newVal) {
       if (newVal === true) {
-        this.textarea = null
         this.showNodes = true
+        this.type = 0
+        this.textarea = null
+        this.initData()
       }
     }
   }

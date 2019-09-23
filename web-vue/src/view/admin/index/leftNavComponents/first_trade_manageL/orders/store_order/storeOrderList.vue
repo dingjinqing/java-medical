@@ -181,7 +181,7 @@ export default {
   methods: {
     seeDetails (OrderSn) {
       this.$router.push({
-        name: 'checkOrderInfo',
+        name: 'storeOrderInfo',
         query: {
           OrderSn: OrderSn
         }
