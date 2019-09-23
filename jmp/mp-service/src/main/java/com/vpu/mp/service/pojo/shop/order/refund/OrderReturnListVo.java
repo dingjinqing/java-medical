@@ -21,4 +21,5 @@ public class OrderReturnListVo extends OrderListInfoVo {
 	private Byte returnType;
 	private Byte reasonType;
 	private String reasonDesc;
+	private Timestamp shippingOrRefundTime;
 }

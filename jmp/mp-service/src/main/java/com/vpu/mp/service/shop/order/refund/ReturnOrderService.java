@@ -98,8 +98,23 @@ public class ReturnOrderService extends ShopBaseService{
 		if (!StringUtils.isEmpty(param.getReturnOrderSn())) {
 			select.where(TABLE.RETURN_ORDER_SN.eq(param.getReturnOrderSn()));
 		}
-		if (param.getRefundStatus() != null && param.getRefundStatus().length != 0) {
-			select.where(TABLE.REFUND_STATUS.in(param.getRefundStatus()));
+		if (param.getRefundStatus() != null) {
+			switch (param.getRefundStatus()) {
+			case OrderConstant.SEARCH_RETURNSTATUS_14:
+				select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDITING).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING).and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_ONLY_MONEY))));
+				break;
+			case OrderConstant.SEARCH_RETURNSTATUS_41:
+				select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING).and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_GOODS)));
+				break;
+			case OrderConstant.SEARCH_RETURNSTATUS_60:
+				select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_REFUSE).and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_ONLY_MONEY)));
+				break;
+			case OrderConstant.SEARCH_RETURNSTATUS_61:
+				select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_REFUSE).and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_GOODS)));
+				break;
+			default:
+				select.where(TABLE.REFUND_STATUS.eq(param.getRefundStatus()));
+			}
 		}
 		if (param.getReturnType() != null && param.getReturnType().length != 0) {
 			select.where(TABLE.RETURN_TYPE.in(param.getReturnType()));

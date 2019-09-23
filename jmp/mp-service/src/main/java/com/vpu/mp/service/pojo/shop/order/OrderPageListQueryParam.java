@@ -68,8 +68,8 @@ public class OrderPageListQueryParam {
 	public Timestamp returnStart;
 	/** 退-申请时间 */
 	public Timestamp returnEnd;
-	/** 退款退货状态:0是默认,1是审核中,2是通过审核,3退货没通过审核,4买家再次提交申请,5：退款退货成功,6拒绝退款退货,7撤销退款 */
-	public Byte[] refundStatus;
+	/** 退款退货状态*/
+	public Byte refundStatus;
     /**营销活动主键 过滤某营销活动订单*/
 	public Integer activityId;
 }

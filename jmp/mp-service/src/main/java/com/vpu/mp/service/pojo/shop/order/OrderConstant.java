@@ -362,5 +362,16 @@ public class OrderConstant {
 	 */
 	public static final Integer IS_GIFT_Y = 1;
 	public static final Integer IS_GIFT_N = 0;
-
+	
+	/**
+	 * 	前端搜索退款订单的returnStatus与sql对应的关系
+	 */
+	/**退款、退货申请等待商家确认*/
+	public static final byte SEARCH_RETURNSTATUS_14 = 14;
+	/**买家已退货，等待商家确认收货*/
+	public static final byte SEARCH_RETURNSTATUS_41 = 41;
+	/**商家未收货，拒绝退款*/
+	public static final byte SEARCH_RETURNSTATUS_61 = 61;
+	/**商家拒绝退款申请*/
+	public static final byte SEARCH_RETURNSTATUS_60 = 60;
 }
