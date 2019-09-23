@@ -62,11 +62,11 @@ public class CouponHoldService extends ShopBaseService {
         if (param.getActId()!=null){
             select.where(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(param.getActId()));
         }
-        if(StringUtils.isNullOrEmpty(param.getMobile())) {
-            select.where(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
+        if(!StringUtils.isNullOrEmpty(param.getMobile())) {
+            select.where(USER.MOBILE.like(this.likeValue(param.getMobile())));
         }
-        if(StringUtils.isNullOrEmpty(param.getUsername())) {
-            select.where(USER.USERNAME.like(likeReplace(param.getUsername())));
+        if(!StringUtils.isNullOrEmpty(param.getUsername())) {
+            select.where(USER.USERNAME.like(this.likeValue(param.getUsername())));
         }
         if (param.getUserId()!=null){
             select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
