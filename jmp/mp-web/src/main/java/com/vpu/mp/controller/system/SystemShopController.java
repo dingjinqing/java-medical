@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionShowParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.shop.auth.ShopEnableReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopMobileReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewListParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
@@ -164,6 +165,52 @@ public class SystemShopController extends SystemBaseController {
 	public JsonResult editVersion(@RequestBody VersionEditParam vParam) {
 		if(saas.shop.version.editVersion(vParam)==1) {
 			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	/**
+	 * 更改是否禁用
+	 * @param vParam
+	 * @return
+	 */
+	@PostMapping("/system/shop/upEnable")
+	public JsonResult changeIsEnable(@RequestBody ShopEnableReq vParam) {
+		if(!StringUtils.isEmpty(vParam.getIsEnable())) {
+			Byte isEnable=null;
+			if(vParam.getIsEnable().equals("yes")) {
+				isEnable=1;
+			}
+			if(vParam.getIsEnable().equals("no")) {
+				isEnable=0;
+			}
+			if(!StringUtils.isEmpty(isEnable)) {
+				saas.shop.updateRowIsEnable(vParam.getShopId(), vParam.getIsEnable());	
+				return success(JsonResultCode.CODE_SUCCESS);
+			}
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	/**
+	 * 更改隐藏底部导航
+	 * @param vParam
+	 * @return
+	 */
+	@PostMapping("/system/shop/upBottom")
+	public JsonResult changeHidBottom(@RequestBody ShopEnableReq vParam) {
+		if(!StringUtils.isEmpty(vParam.getHidBottom())) {
+			Byte hidBottom=null;
+			if(vParam.getHidBottom().equals("yes")) {
+				hidBottom=1;
+			}
+			if(vParam.getHidBottom().equals("no")) {
+				hidBottom=0;
+			}
+			if(!StringUtils.isEmpty(hidBottom)) {
+				saas.shop.updateRowHidBottom(vParam.getShopId(), vParam.getHidBottom());	
+				return success(JsonResultCode.CODE_SUCCESS);
+			}
 		}
 		return fail(JsonResultCode.CODE_FAIL);
 	}
