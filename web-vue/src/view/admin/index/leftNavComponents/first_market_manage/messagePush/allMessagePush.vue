@@ -2,7 +2,7 @@
   <div class="messagePush">
 
     <!-- 添加消息推送 -->
-    <div>
+    <div style="margin-bottom:10px">
       <el-button
         type="primary"
         size="small"
@@ -19,14 +19,14 @@
         <el-form-item :label="labels.label1">
           <el-input
             style="width:120px"
-            v-model="formData.name"
+            v-model="formData.messageName"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item :label="labels.label2">
           <el-input
             style="width:120px"
-            v-model="formData.title"
+            v-model="formData.businessTitle"
             size="small"
           ></el-input>
         </el-form-item>
@@ -51,6 +51,7 @@
       <el-table
         :data="dataList"
         style="width: 100%"
+        v-loading="loading"
       >
         <el-table-column
           prop="name"
@@ -86,14 +87,18 @@
           prop="sendStatus"
           label="发送状态"
         >
+          <template slot-scope="data">
+            <div>
+              {{ data.row.sendStatus === 0?`未发送`:`已发送`}}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="operating"
+          prop="id"
           label="操作"
         >
-          <template slot-scope="">
+          <template slot-scope="data">
             <div>
-              <!-- {{scope.row}} -->
               <el-tooltip
                 content="查看详情"
                 placement="top"
@@ -125,6 +130,7 @@
                   type="primary"
                   icon="el-icon-delete"
                   circle
+                  @click="handleDelTemplate(data.row.id)"
                 ></el-button>
               </el-tooltip>
               <!-- <i class="el-icon-view"></i>
@@ -135,16 +141,23 @@
         </el-table-column>
       </el-table>
     </div>
-
+    <!-- 分页 -->
+    <div>
+      <pagination
+        :pageParams="pageParams"
+        @pagination="initData"
+      />
+    </div>
   </div>
 
 </template>
 <script>
+import pagination from '../../../../../../components/admin/pagination/pagination'
 import dateTimePicker from '../../../../../../components/admin/dateTimePicker/dateTimePicker'
-import { messageTemplateListApi } from '@/api/admin/marketManage/messagePush'
+import { messageTemplateListApi, templateDeleteApi } from '@/api/admin/marketManage/messagePush'
 export default {
   name: 'messagePush',
-  components: { dateTimePicker },
+  components: { dateTimePicker, pagination },
   data () {
     return {
 
@@ -152,10 +165,12 @@ export default {
        * formData 的相关数据
        */
       formData: {
-        name: ``,
-        title: ``
+        messageName: ``,
+        businessTitle: ``
 
       },
+      startTime: null,
+      endTime: null,
       labels: {
         label1: `消息名称`,
         label2: `业务标题`,
@@ -175,11 +190,15 @@ export default {
           'percentage': 0.0,
           'sendStatus': 0
         }
-      ]
+      ],
+      loading: false,
+      pageParams: {
+
+      }
     }
   },
   created () {
-    // this.initData() // 初始化获取数据
+    this.initData() // 初始化获取数据
   },
   watch: {
     activeName: 'watchActive'
@@ -188,17 +207,16 @@ export default {
 
     // 初始化数据方法
     initData () {
+      this.loading = true
       // 请求参数
-      const params = {
-        'currentPage': 1,
-        'pageRows': 1
-      }
-      messageTemplateListApi(params).then(res => {
-        console.log(res)
+
+      messageTemplateListApi(this.pageParams).then(res => {
         const { error, content: { page, dataList } } = res
         if (error === 0) {
-          console.log(page)
-          console.log(dataList)
+          console.log(res)
+          this.dataList = dataList
+          this.pageParams = page
+          this.loading = false
         }
       }).catch(err => console.log(err))
     },
@@ -214,15 +232,62 @@ export default {
     },
     // 筛选
     handleFilter () {
+      const params = {
+        currentPage: this.pageParams.currentPage,
+        pageRows: this.pageParams.pageRows,
+        messageName: this.formData.messageName,
+        businessTitle: this.formData.businessTitle,
+        startTime: this.startTime,
+        endTime: this.endTime
+      }
+      console.log(params)
+      this.loading = true
+      messageTemplateListApi(params).then(res => {
+        const { error, content: { page, dataList } } = res
+        if (error === 0) {
+          console.log(res)
+          this.dataList = dataList
+          this.pageParams = page
+          this.loading = false
+        }
+      }).catch(err => console.log(err))
     },
     // 获取筛选的时间
     handleGetTime (val) {
-      console.log(val)
+      const { startTime, endTime } = val
+      this.startTime = startTime
+      this.endTime = endTime
+    },
+    // 删除消息推送
+    handleDelTemplate (id) {
+      console.log(id)
+      this.$confirm('此操作将永久删除该消息推送, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        templateDeleteApi(id).then(res => {
+          console.log(res)
+          const { error } = res
+          if (error === 0) {
+            this.$message.success({
+              type: 'success',
+              message: '删除成功'
+            })
+            this.initData()
+          }
+        }).catch(err => console.log(err))
+      }).catch(() => {
+        this.$message.success({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .messagePush {
   padding: 10px;
 }

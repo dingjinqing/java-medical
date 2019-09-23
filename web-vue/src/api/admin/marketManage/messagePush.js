@@ -48,7 +48,7 @@ export const getUserArrayApi = data =>
 // 获取发送人群
 export const getUserNumberApi = data =>
   service({
-    url: `/api/admin/market/message/template/getUser`,
+    url: `/api/admin/market/message/template/getUserNumbers`,
     method: 'post',
     data
   })
@@ -58,6 +58,13 @@ export const getUserNumberApi = data =>
 export const analysisApi = data =>
   service({
     url: `/api/admin/market/message/template/analysis`,
+    method: 'post',
+    data
+  })
+// 删除消息推送
+export const templateDeleteApi = data =>
+  service({
+    url: `/api/admin/market/message/template/delete`,
     method: 'post',
     data
   })

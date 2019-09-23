@@ -526,6 +526,21 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDraw'
       )
+    // children: [
+    //   {
+    //     path: '/admin/home/main/luckyDraw/luckyDrawAdd',
+    //     name: 'lucky_draw_add',
+    //     meta: {
+    //       crumbTitle: 'router.lottery_activity',
+    //       meta: 'first_market_manage',
+    //       category: 'first_market_manage'
+    //     },
+    //     component: () =>
+    //       import(
+    //         '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDrawAdd'
+    //       )
+    //   }
+    // ]
   },
   // 幸运大抽奖活动--详情页面
   {

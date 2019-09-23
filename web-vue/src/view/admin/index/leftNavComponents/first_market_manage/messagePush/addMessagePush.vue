@@ -133,7 +133,10 @@
                     <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
                   </div>
                   <div>
-                    <el-checkbox v-model="onClickGoods">指定购买商品人群 </el-checkbox>
+                    <el-checkbox
+                      v-model="onClickGoods"
+                      @change="handleOnClickGoodsChange"
+                    >指定购买商品人群 </el-checkbox>
                     <span style="color:#999;fontSize:12px">最多可选择3件商品</span>
                   </div>
                   <div class="chooseGoods">
@@ -168,7 +171,7 @@
                   <!-- 属于 -->
                   <!-- 持有 -->
                   <div style="margin:10px 0">
-                    <chooseSelect />
+                    <chooseSelect @chooseSelectVal="getChooseSelectVal" />
                   </div>
 
                   <div style="margin:10px 0">
@@ -272,7 +275,7 @@
                     >立即发送</el-radio>
                   </div>
                   <div>
-                    <span style="color:#999;fontSize:12px;margin-right:10px">预计送达人数：0 </span>
+                    <span style="color:#999;fontSize:12px;margin-right:10px">预计送达人数：{{userNumber}} </span>
                     <el-button
                       type="text"
                       @click="handleGetUser"
@@ -329,7 +332,11 @@
       <!-- 选择链接弹窗 -->
       <selectLinks @path="getPath" />
       <!-- 选择商品弹窗 -->
-      <choosingGoods @res="getRes" />
+      <choosingGoods
+        @res="getRes"
+        :tuneUpChooseGoods="tuneUpChooseGoods"
+        :chooseGoodsBack="goodsIdList"
+      />
       <!-- 选择内容模板消息 -->
       <chooseTemplateDialog
         v-if="whetherShowDialog"
@@ -373,6 +380,7 @@ export default {
     getUserDialog },
   data () {
     return {
+
       checkedData: [], // 初始化弹窗选中的行
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
@@ -411,7 +419,7 @@ export default {
       onClickNoPay: false, // 勾选加购人群
       onClickGoods: false, // 勾选购买指定商品人群
       goodsIdList: [], // 商品ID集合
-      onClickCard: false, // 勾选指定会员卡人群
+      onClickCard: false,
       cardIdsList: [],
       onClickTag: false,
       tagIdList: [],
@@ -483,7 +491,9 @@ export default {
       showTime: false,
       isShowBtn: false,
       arrList: [],
-      imgsList: []
+      imgsList: [],
+      userNumber: 0,
+      tuneUpChooseGoods: false
     }
   },
   watch: {
@@ -534,7 +544,6 @@ export default {
           onClickNoPay: this.onClickNoPay,
           onClickGoods: this.onClickGoods,
           goodsIdList: this.goodsIdList,
-          onClickCard: this.onClickCard,
           cardIdsList: this.cardIdsList,
           onClickTag: this.onClickTag,
           tagIdList: this.tagIdList,
@@ -552,7 +561,7 @@ export default {
             loginEnd: `1`
           }
         },
-        userKey: `1`,
+        userKey: null,
         senAction: this.senAction
         // startTime: this.startTime,
         // endTime: this.endTime
@@ -570,20 +579,20 @@ export default {
     getTime3 (val) {
 
     },
-    // 会员卡下拉框选中出发
-    getIdList (val) {
-      console.log(val)
-      if (val !== `请选择会员卡`) {
-        const res = this.cardList.find((ele) => ele.id === val)
-        // console.log(res)
-        this.cardIdsList.push(res)
-        // console.log(val)
-        // console.log(this.cardList)
-        this.cardList = this.cardList.filter((item) => item.id !== val)
-        // console.log(this.cardList)
-        this.cardValue = `请选择会员卡`
-      }
-    },
+    // // 会员卡下拉框选中出发
+    // getIdList (val) {
+    //   console.log(val)
+    //   if (val !== `请选择会员卡`) {
+    //     const res = this.cardList.find((ele) => ele.id === val)
+    //     // console.log(res)
+    //     this.cardIdsList.push(res)
+    //     // console.log(val)
+    //     // console.log(this.cardList)
+    //     this.cardList = this.cardList.filter((item) => item.id !== val)
+    //     // console.log(this.cardList)
+    //     this.cardValue = `请选择会员卡`
+    //   }
+    // },
     // 关闭会员弹窗
     closeDialog () {
       this.dialogOff = false
@@ -723,7 +732,7 @@ export default {
       if (this.onClickGoods === false) {
         return
       }
-      this.$http.$emit('choosingGoodsFlag', true)
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     getRes (ids, urls) {
       if (ids.length > 3) {
@@ -731,8 +740,16 @@ export default {
       } else {
         console.log(ids)
         console.log(urls)
+        this.goodsIdList = []
         this.goodsIdList = ids
         this.imgsList = urls
+        // 发送获取人数
+        this.fetchUserList({
+          userKey: this.userKey,
+          onClickNoPay: this.onClickNoPay,
+          onClickGoods: this.onClickGoods,
+          goodsIdList: this.goodsIdList
+        })
       }
     },
     // 删除图片
@@ -743,19 +760,99 @@ export default {
       }
       this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
       this.goodsIdList = this.goodsIdList.filter(item => item !== id)
+      this.fetchUserList({
+        userKey: this.userKey,
+        onClickNoPay: this.onClickNoPay,
+        onClickGoods: this.onClickGoods,
+        goodsIdList: this.goodsIdList
+      })
     },
     // 获取选中的path
     getPath (res) {
       console.log(res)
       this.pageLink = res
     },
-    // 查看
+    // 获取持有属于的值
+    getChooseSelectVal (val) {
+      const { onClickCard, cardIdsList, onClickTag } = val
+      console.log(val)
+      this.onClickCard = onClickCard
+      this.cardIdsList = cardIdsList
+      this.onClickTag = onClickTag
+      switch (onClickTag) {
+        case true:
+          this.fetchUserList({
+            userKey: this.userKey,
+            onClickNoPay: this.onClickNoPay,
+            onClickGoods: this.onClickGoods,
+            goodsIdList: this.goodsIdList,
+            onClickCard: this.onClickCard,
+            cardIdsList: this.cardIdsList,
+            onClickTag: this.onClickTag
+          })
+          break
+        case false:
+          this.fetchUserList({
+            userKey: this.userKey,
+            onClickNoPay: this.onClickNoPay,
+            onClickGoods: this.onClickGoods,
+            goodsIdList: this.goodsIdList,
+            onClickCard: this.onClickCard,
+            cardIdsList: this.cardIdsList,
+            onClickTag: this.onClickTag
+          })
+          break
+
+        default:
+          break
+      }
+      switch (onClickCard) {
+        case true:
+          console.log(this.cardIdsList)
+
+          this.fetchUserList({
+            userKey: this.userKey,
+            onClickNoPay: this.onClickNoPay,
+            onClickGoods: this.onClickGoods,
+            goodsIdList: this.goodsIdList,
+            onClickCard: this.onClickCard,
+            cardIdsList: this.cardIdsList
+          })
+          break
+        case false:
+          console.log({
+            userKey: this.userKey,
+            onClickNoPay: this.onClickNoPay,
+            onClickGoods: this.onClickGoods,
+            goodsIdList: this.goodsIdList,
+            onClickCard: this.onClickCard,
+            cardIdsList: this.cardIdsList
+          })
+          this.fetchUserList({
+            userKey: this.userKey,
+            onClickNoPay: this.onClickNoPay,
+            onClickGoods: this.onClickGoods,
+            goodsIdList: this.goodsIdList,
+            onClickCard: this.onClickCard
+          })
+          break
+        default:
+          break
+      }
+    },
     handleGetUser () {
       this.dialogVisible = true
     },
     fetchUserList (params) {
       getUserNumberApi(params).then(res => {
-        console.log(res)
+        console.log(res) // 返回发送人群的数量
+        const { error, content } = res
+        if (error === 0) {
+          const { userKey, userNumber } = content
+          console.log(userKey, userNumber)
+          this.userNumber = userNumber
+          this.userKey = userKey
+        }
       }).catch(err => console.log(err))
     },
     // 加购人群发生变化的时候
@@ -763,8 +860,23 @@ export default {
       console.log(val)
       // 获取发送人群的数量
       const params = {
-        onClickNoPay: val
+        userKey: this.userKey,
+        onClickNoPay: val,
+        onClickGoods: this.onClickNoPay,
+        goodsIdList: this.goodsIdList
       }
+      this.fetchUserList(params)
+    },
+    // 指定购买商品人群发生变化的时候
+    handleOnClickGoodsChange (val) {
+      const params = {
+        userKey: this.userKey,
+        onClickNoPay: this.onClickNoPay,
+        onClickGoods: val,
+        goodsIdList: this.goodsIdList
+      }
+      console.log(params)
+      console.log(this.goodsIdList)
       this.fetchUserList(params)
     }
   }

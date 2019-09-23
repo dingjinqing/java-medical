@@ -3,7 +3,10 @@
     <!-- 请选择会员卡 -->
     <div>
       <div>
-        <el-checkbox v-model="onClickCard">持有</el-checkbox>
+        <el-checkbox
+          v-model="onClickCard"
+          @change="handleOnClickCardChange"
+        >持有</el-checkbox>
         <el-select
           :disabled="!onClickCard"
           size="small"
@@ -52,7 +55,10 @@
     <div style="margin:10px 0">
       <div>
         <div>
-          <el-checkbox v-model="onClickTag">属于</el-checkbox>
+          <el-checkbox
+            v-model="onClickTag"
+            @change="handleOnClickTagChange"
+          >属于</el-checkbox>
           <el-select
             :disabled="!onClickTag"
             size="small"
@@ -122,8 +128,10 @@ export default {
       tagList: [
 
       ],
+      cardIdsLists: [],
       cardIdsList: [], // 会员卡ID集合
       tagIdsList: [], // 标签ID集合
+      tagIdLists: [],
       cardValue: `请选择会员卡`,
       tagValue: `请选择会员标签`,
       urls: {
@@ -134,9 +142,22 @@ export default {
   created () {
     this.initData()
   },
+  mounted () {
+  },
 
   methods: {
-
+    /**
+     * 勾选指定会员卡人群发生变化的时候
+     */
+    handleOnClickCardChange (val) {
+      this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
+    },
+    /**
+     * 勾选指定标签人群变化的时候
+     */
+    handleOnClickTagChange (val) {
+      this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
+    },
     // 初始化获取数据
     initData () {
       // 会员卡数据
@@ -160,6 +181,13 @@ export default {
         this.cardIdsList.push(res)
         this.cardList = this.cardList.filter((item) => item.id !== val)
         this.cardValue = `请选择会员卡`
+        // 派发cardIdsList
+        let cardIdsLists = []
+        this.cardIdsList.forEach(item => {
+          cardIdsLists.push(item.id)
+        })
+        this.cardIdsLists = cardIdsLists
+        this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
       }
     },
     getTagIdList (val) {
@@ -168,6 +196,14 @@ export default {
         this.tagIdsList.push(res)
         this.tagList = this.tagList.filter((item) => item.id !== val)
         this.tagValue = `请选择会员标签`
+        // 派发tagIdList
+        let tagIdLists = []
+        this.tagIdsList.forEach(item => {
+          tagIdLists.push(item.id)
+        })
+        this.tagIdLists = tagIdLists
+
+        this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
       }
     },
     // 删除每个
@@ -178,7 +214,16 @@ export default {
       const res = this.cardIdsList.find((item) => item.id === id)
       this.cardIdsList = this.cardIdsList.filter((item) => item.id !== id)
       this.cardList.push(res)
+      // 派发id
+      // 派发cardIdsList
+      let cardIdsLists = []
+      this.cardIdsList.forEach(item => {
+        cardIdsLists.push(item.id)
+      })
+      this.cardIdsLists = cardIdsLists
+      this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     },
+
     handleDelTag (id) {
       if (this.onClickTag === false) {
         return
@@ -186,6 +231,14 @@ export default {
       const res = this.tagIdsList.find((item) => item.id === id)
       this.tagIdsList = this.tagIdsList.filter((item) => item.id !== id)
       this.tagList.push(res)
+      // 派发tagIdList
+      let tagIdLists = []
+      this.tagIdsList.forEach(item => {
+        tagIdLists.push(item.id)
+      })
+      this.tagIdLists = tagIdLists
+
+      this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     }
   }
 }
