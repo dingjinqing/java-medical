@@ -553,7 +553,6 @@ export default {
     console.log('mounted-----------------------')
     // 初始化数据
     this.langDefault()
-    this.arrayToMap()
     this.initDataList()
   },
   watch: {

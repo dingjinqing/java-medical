@@ -4,7 +4,7 @@
       <div class="search_box">
         <div class="filters">
           <div class="filters_item">
-            <span>订单编号：</span>
+            <span>{{$t('order.orderSn')}}：</span>
             <el-input
               v-model="searchParams.orderSn"
               placeholder="订单编号"
@@ -13,16 +13,16 @@
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>退款编号：</span>
+            <span>{{$t('order.returnSn')}}：</span>
             <el-input
               v-model="searchParams.refundSn"
-              placeholder="退款编号"
+              :placeholder="$t('order.returnSn')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>退款状态：</span>
+            <span>{{$t('order.returnStatus')}}：</span>
             <el-select
               v-model="searchParams.refundStatus"
               size="small"
@@ -30,37 +30,38 @@
               filterable
             >
               <el-option
-                v-for="item in refundStatus"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $t('order.returnStatusList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
               ></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span>退款类型：</span>
+            <span>{{$t('order.returntype')}}：</span>
             <el-select
-              v-model="searchParams.refundType"
+              v-model="searchParams.returnType"
               size="small"
               class="default_input"
               filterable
+              multiple
             >
               <el-option
-                v-for="item in refundType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $t('order.returnTypeList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
               ></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span>申请时间：</span>
+            <span>{{$t('order.applyTime')}}：</span>
             <el-date-picker
-              v-model="searchParams.applicationTime"
+              v-model="applyTime"
               type="daterange"
-              range-separator="至"
-              start-placeholder="选择时间"
-              end-placeholder="选择时间"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.Starttime')"
+              :end-placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd"
               size="small"
               :picker-options="pickerOptions"
@@ -71,7 +72,8 @@
             <el-button
               type="primary"
               size="small"
-            >筛选</el-button>
+              @click="search"
+            >{{$t('order.filter')}}</el-button>
           </div>
         </div>
       </div>
@@ -91,13 +93,13 @@
         <table>
           <thead>
             <tr>
-              <th width="300px">商品名称</th>
-              <th>退款类型</th>
-              <th>商品数量</th>
-              <th>商品价格</th>
-              <th>退款原因</th>
-              <th>退款状态</th>
-              <th width="130px">操作</th>
+              <th width="300px">{{$t('order.goodsName')}}</th>
+              <th>{{$t('order.goodsNum')}}</th>
+              <th>{{$t('order.goodsPrice')}}</th>
+              <th>{{$t('order.returntype')}}</th>
+              <th>{{$t('order.returnReasonText')}}</th>
+              <th>{{$t('order.returnStatus')}}</th>
+              <th width="130px">{{$t('order.operate')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -107,18 +109,25 @@
           </tbody>
           <template v-for="orderItem in refundOrderList">
             <tbody
-              :key="orderItem.orderId"
+              :key="orderItem.retId"
               class="hasborder"
             >
               <tr class="order-tb-head">
                 <td colspan="8">
                   <div class="tb-head_box">
                     <div class="left">
-                      <span>退款编号：{{orderItem.returnOrderSn}}</span>
-                      <span>订单编号：{{orderItem.orderSn}}</span>
-                      <span>申请时间：{{orderItem.createTime}}</span>
-                      <span>退款金额：10</span>
-                      <span>运费退款金额：100</span>
+                      <span>{{$t('order.returnSn') + '：'+ orderItem.returnOrderSn}}</span>
+                      <span>{{$t('order.orderSn') + '：'+orderItem.orderSn}}</span>
+                      <span>
+                        {{
+                          $t('order.applyTime') + '：'+
+                          (orderItem.returnType == 0 ?
+                          orderItem. shippingOrRefundTime:
+                          orderItem.applyTime)
+                        }}
+                      </span>
+                      <span>{{$t('order.returnMoney') + '：'+ currencyPool[orderItem.currency][lang][1] + orderItem.money.toFixed(2)}}</span>
+                      <span>{{$t('order.returnShipping') + '：'+ currencyPool[orderItem.currency][lang][1] + orderItem.shippingFee.toFixed(2)}}</span>
                     </div>
                   </div>
                 </td>
@@ -131,7 +140,7 @@
                   <td>
                     <div class="goods_info">
                       <img
-                        :src="$imageHost+'/image/admin/icon_jia.png'"
+                        :src="$imageHost+goodsItem.goodsImg"
                         alt=""
                       >
                       <div class="right_info">
@@ -141,25 +150,32 @@
                     </div>
                   </td>
                   <td>
-                    {{orderItem.returnType}}
-                  </td>
-                  <td>
                     {{goodsItem.goodsNumber}}
                   </td>
                   <td>
-                    {{goodsItem.goodsPrice}}
+                    {{goodsItem.goodsPrice.toFixed(2)}}
                   </td>
                   <td
                     v-if="index === 0"
                     :rowspan="orderItem.goods.length"
                   >
-                    {{orderItem.refundStatus}}
+                    {{returnTypeMap.get(orderItem.returnType)}}
                   </td>
                   <td
                     v-if="index === 0"
                     :rowspan="orderItem.goods.length"
                   >
-                    {{orderItem.deliverType}}
+                    {{$t('order.reasonTypeList')[orderItem.reasonType]}}
+                  </td>
+                  <td
+                    v-if="index === 0"
+                    :rowspan="orderItem.goods.length"
+                  >
+                    {{
+                      returnStatusToShowMapping[orderItem.refundStatus + ''] == null ?
+                      returnStatusToShowMapping[orderItem.refundStatus + '_' + orderItem.returnType] :
+                      returnStatusToShowMapping[orderItem.refundStatus + '']
+                    }}
                   </td>
                   <td
                     v-if="index === 0"
@@ -174,11 +190,6 @@
                 </tr>
               </template>
             </tbody>
-            <tbody :key="orderItem.orderId">
-              <tr>
-                <td colspan="8"></td>
-              </tr>
-            </tbody>
           </template>
         </table>
         <pagination
@@ -191,29 +202,50 @@
 </template>
 
 <script>
+import {
+  list
+} from '@/api/admin/orderManage/order.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
     return {
+      applyTime: null,
       pageParams: {
-        'totalRows': 4,
-        'currentPage': 1,
-        'firstPage': 1,
-        'prePage': 1,
-        'nextPage': 1,
-        'lastPage': 1,
-        'pageRows': 20,
-        'pageCount': 1
+        'totalRows': null,
+        'currentPage': null,
+        'firstPage': null,
+        'prePage': null,
+        'nextPage': null,
+        'lastPage': null,
+        'pageRows': null,
+        'pageCount': null
       },
       searchParams: {
-        orderSn: '',
-        refundSn: '',
-        refundStatus: -1,
-        refundType: -1,
-        applicationTime: null,
-        tabIndex: '-1'
+        searchType: 1,
+        orderSn: null,
+        refundSn: null,
+        refundStatus: null,
+        returnType: null,
+        returnStart: null,
+        returnEnd: null,
+        currentPage: null,
+        pageRows: null,
+        tabIndex: null
+      },
+      returnTypeMap: null,
+      returnStatusMap: null,
+      returnStatusToShowMapping: {
+        '1': this.$t('order.returnStatusMapping_1'),
+        '2': this.$t('order.returnStatusList')[3][1],
+        '3': this.$t('order.returnStatusList')[2][1],
+        '4_0': this.$t('order.returnStatusMapping_4_0'),
+        '4_1': this.$t('order.returnStatusList')[4][1],
+        '6_0': this.$t('order.returnStatusList')[6][1],
+        '6_1': this.$t('order.returnStatusList')[5][1],
+        '7': this.$t('order.returnStatusList')[7][1],
+        '5': this.$t('order.returnStatusList')[8][1]
       },
       refundStatus: [
         { value: -1, label: '全部' },
@@ -224,13 +256,6 @@ export default {
         { value: 5, label: '商家未收货，拒绝退款' },
         { value: 6, label: '退款撤销' },
         { value: 7, label: '退款成功' }
-      ],
-      refundType: [
-        { value: -1, label: '全部' },
-        { value: 1, label: '仅退款' },
-        { value: 2, label: '退货退款' },
-        { value: 3, label: '仅退运费' },
-        { value: 4, label: '手动退款' }
       ],
       pickerOptions: {
         shortcuts: [
@@ -259,217 +284,24 @@ export default {
         { value: '2', label: '买家待处理' },
         { value: '3', label: '已完成' }
       ],
-      refundOrderList: [
-        {
-          'orderId': 6751,
-          'orderSn': 'P201908261402467301',
-          'mainOrderSn': null,
-          'goodsType': null,
-          'childOrders': null,
-          'goods': [
-            {
-              'recId': 8313,
-              'mainRecId': null,
-              'orderId': null,
-              'orderSn': 'P201908261402467301',
-              'goodsId': 694,
-              'goodsSn': null,
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': 0,
-              'discountedGoodsPrice': 55,
-              'retId': 78,
-              'success': 2
-            }
-          ],
-          'orderStatus': null,
-          'consignee': '',
-          'mobile': null,
-          'payCode': null,
-          'deliverType': null,
-          'createTime': '2019-09-02 18:12:11',
-          'shippingFee': 0,
-          'moneyPaid': null,
-          'partShipFlag': null,
-          'refundStatus': 1,
-          'returnOrderSn': 'R201909021812112881',
-          'applyTime': null,
-          'money': 10,
-          'returnType': 0,
-          'reason': null
-        },
-        {
-          'orderId': 1000,
-          'orderSn': 'P201900000000000000',
-          'mainOrderSn': null,
-          'goodsType': null,
-          'childOrders': null,
-          'goods': [
-            {
-              'recId': 1000,
-              'mainRecId': null,
-              'orderId': null,
-              'orderSn': 'P201900000000000000',
-              'goodsId': 694,
-              'goodsSn': null,
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': 0,
-              'discountedGoodsPrice': 55,
-              'retId': 79,
-              'success': 2
-            },
-            {
-              'recId': 1001,
-              'mainRecId': null,
-              'orderId': null,
-              'orderSn': 'P201900000000000000',
-              'goodsId': 695,
-              'goodsSn': null,
-              'goodsName': '首单限时优化-CJ222',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:黑色',
-              'productId': 4727,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': 0,
-              'discountedGoodsPrice': 55,
-              'retId': 79,
-              'success': 2
-            }
-          ],
-          'orderStatus': null,
-          'consignee': '',
-          'mobile': null,
-          'payCode': null,
-          'deliverType': null,
-          'createTime': '2019-09-03 17:31:19',
-          'shippingFee': 0,
-          'moneyPaid': null,
-          'partShipFlag': null,
-          'refundStatus': 2,
-          'returnOrderSn': 'R201909031731185091',
-          'applyTime': null,
-          'money': 10.01,
-          'returnType': 0,
-          'reason': null
-        },
-        {
-          'orderId': 1001,
-          'orderSn': 'P201900000000000001',
-          'mainOrderSn': null,
-          'goodsType': null,
-          'childOrders': null,
-          'goods': [
-            {
-              'recId': 1002,
-              'mainRecId': null,
-              'orderId': null,
-              'orderSn': 'P201900000000000001',
-              'goodsId': 694,
-              'goodsSn': null,
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': 0,
-              'discountedGoodsPrice': 55,
-              'retId': 81,
-              'success': 2
-            },
-            {
-              'recId': 1003,
-              'mainRecId': null,
-              'orderId': null,
-              'orderSn': 'P201900000000000001',
-              'goodsId': 695,
-              'goodsSn': null,
-              'goodsName': '首单限时优化-CJ222',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:黑色',
-              'productId': 4727,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': 0,
-              'discountedGoodsPrice': 55,
-              'retId': 81,
-              'success': 2
-            }
-          ],
-          'orderStatus': null,
-          'consignee': '',
-          'mobile': null,
-          'payCode': null,
-          'deliverType': null,
-          'createTime': '2019-09-03 19:22:30',
-          'shippingFee': 22,
-          'moneyPaid': null,
-          'partShipFlag': null,
-          'refundStatus': 1,
-          'returnOrderSn': 'R201909031922307382',
-          'applyTime': null,
-          'money': 110,
-          'returnType': 0,
-          'reason': null
-        },
-        {
-          'orderId': 1005,
-          'orderSn': 'P201900000000000005',
-          'mainOrderSn': null,
-          'goodsType': null,
-          'childOrders': null,
-          'goods': [
-            {
-              'recId': 1010,
-              'mainRecId': null,
-              'orderId': null,
-              'orderSn': 'P201900000000000005',
-              'goodsId': 694,
-              'goodsSn': null,
-              'goodsName': '首单限时优化-CJ111',
-              'goodsNumber': 1,
-              'goodsPrice': 55,
-              'goodsAttr': '颜色:白色',
-              'productId': 4726,
-              'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/0/image/20190807/crop_0mf3fRQPXxNt1Kot.jpeg',
-              'sendNumber': 1,
-              'discountedGoodsPrice': 55,
-              'retId': 83,
-              'success': 2
-            }
-          ],
-          'orderStatus': null,
-          'consignee': '',
-          'mobile': null,
-          'payCode': null,
-          'deliverType': null,
-          'createTime': '2019-09-04 19:06:31',
-          'shippingFee': 0,
-          'moneyPaid': null,
-          'partShipFlag': null,
-          'refundStatus': 5,
-          'returnOrderSn': 'R201909041906318788',
-          'applyTime': null,
-          'money': 10,
-          'returnType': 0,
-          'reason': null
-        }
-      ]
+      refundOrderList: []
+    }
+  },
+  mounted () {
+    console.log('mounted-----------------------')
+    // 初始化数据
+    this.langDefault()
+    this.initDataList()
+  },
+  watch: {
+    lang () {
+      this.langDefault()
+      this.arrayToMap()
     }
   },
   methods: {
     initDataList () {
-
+      this.search()
     },
     handleClick (index) {
       console.log(index)
@@ -481,6 +313,25 @@ export default {
           refundSn: refundSn
         }
       })
+    },
+    search () {
+      if (this.applyTime) {
+        this.searchParams.returnStart = this.applyTime[0] + ' 00:00:00'
+        this.searchParams.returnEnd = this.applyTime[1] + ' 23:59:59'
+      }
+      this.refundOrderList = null
+      this.searchParams.currentPage = this.pageParams.currentPage
+      this.searchParams.pageRows = this.pageParams.pageRows
+      list(this.searchParams).then(res => {
+        console.log(res)
+        this.pageParams = res.content.page
+        this.refundOrderList = res.content.dataList
+      }).catch(() => {
+      })
+    },
+    arrayToMap () {
+      this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
+      this.returnStatusMap = new Map(this.$t('order.returnStatusList'))
     }
   }
 }

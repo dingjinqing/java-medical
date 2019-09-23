@@ -84,6 +84,14 @@ export const cn = {
   dapeiReduceAmount: '搭配立减优惠',
   memberCardBalance: '会员卡消费金额',
   amountSum: '实收款',
+  returnSn: '退款编号',
+  returntype: '退款类型',
+  goodsNum: '商品数量',
+  returnReasonText: '退款原因',
+  operate: '操作',
+  returnShipping: '运费退款金额',
+  returnStatusMapping_1: '退货退款申请等待商家确认',
+  returnStatusMapping_4_0: '退款申请等待商家确认',
   orderStatusList: [
     [null, '全部订单'],
     [0, '待付款'],
@@ -150,9 +158,33 @@ export const cn = {
     giftGiving: '送礼进行',
     giveCompletion: '送礼完成',
     finishedTime: '订单完成'
-  }
+  },
+  returnStatusList: [
+    [null, '全部'],
+    [14, '退款、退货申请等待商家确认'],
+    [3, '商家拒绝退货退款申请'],
+    [2, '商家同意退货退款，等待买家退货'],
+    [41, '买家已退货，等待商家确认收货'],
+    [61, '商家未收货，拒绝退款'],
+    [60, '商家拒绝退款申请'],
+    [7, '退款撤销'],
+    [5, '退款成功']
+  ],
+  returnTypeList: [
+    [null, '全部'],
+    [0, '仅退款'],
+    [1, '退货退款'],
+    [2, '仅退运费'],
+    [3, '手动退款']
+  ],
+  reasonTypeList: [
+    '协商一致退款',
+    '未按约定时间发货',
+    '缺货',
+    '拍错/多拍/不想要',
+    '其他'
+  ]
 }
-
 export const en = {
   goodsName: 'Product Name',
   orderSn: 'Order No',

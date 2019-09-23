@@ -8,7 +8,7 @@ export function list (data) {
     data: data
   })
 }
-// 全部订单
+// 订单详情
 export function info (data) {
   return service({
     url: '/api/admin/order/get',
