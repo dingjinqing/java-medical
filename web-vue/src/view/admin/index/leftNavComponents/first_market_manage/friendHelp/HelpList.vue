@@ -9,6 +9,7 @@
           v-for="(item) in tabInfo"
           :key="item.name"
           :label="item.title"
+          :name="item.name"
         >
           <el-button
             type="primary"
@@ -271,6 +272,9 @@ export default {
       }, {
         title: this.$t('promoteList.disabledActivity'),
         name: '4'
+      }, {
+        title: '添加好友助力活动',
+        name: '5'
       }],
       currentPage: 1,
       tableData: [],

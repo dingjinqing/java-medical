@@ -65,6 +65,8 @@ export const en = {
   program_auth_details: ['Base Management', 'Mini Program auth'],
   // 基础配置  店铺基础配置
   base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
+  // 基础配置  交易配置
+  pay: ['Basic configuration', 'Pay Configuration'],
   // 小程序管理 自定义页面装修
   picture_setting: ['Small Program Management', 'Custom Page Decoration'],
   // 营销管理

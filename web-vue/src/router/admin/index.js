@@ -574,6 +574,19 @@ const routes = [
               import(
                 '@/view/admin/index/leftNavComponents/base_manger/base_manger'
               )
+          },
+          // 基础配置 - 交易配置
+          {
+            path: '/admin/home/main/base_manger/tradeConfigure',
+            name: 'pay',
+            meta: {
+              crumbTitle: 'router.pay',
+              meta: 'base_manger'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/tradeConfigure/tradeConfigure'
+              )
           }
         ].concat(marketing, member, order)
       }
