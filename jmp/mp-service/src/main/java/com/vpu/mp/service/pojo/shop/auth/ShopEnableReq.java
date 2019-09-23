@@ -4,6 +4,7 @@ package com.vpu.mp.service.pojo.shop.auth;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
  * 2019年9月23日 下午4:06:12
  */
 @Data
+@ToString
 @NoArgsConstructor
 public class ShopEnableReq {
 
