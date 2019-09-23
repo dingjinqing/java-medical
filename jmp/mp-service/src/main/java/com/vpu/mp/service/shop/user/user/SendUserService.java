@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.message.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Record3;
@@ -80,16 +81,16 @@ public class SendUserService extends ShopBaseService {
         if(query.getOnClickNoPay()){
             userIdSet.addAll(getSendUserByShoppingcartNoPay());
         }
-        if(query.getOnClickGoods() && !query.getGoodsIdList().isEmpty()){
+        if(query.getOnClickGoods() && !CollectionUtils.isEmpty(query.getGoodsIdList()) ){
             userIdSet.addAll(getSendUserByGoodsIdList(query.getGoodsIdList()));
         }
-        if (query.getOnClickCard() && !query.getCardIdsList().isEmpty()){
+        if (query.getOnClickCard() && !CollectionUtils.isEmpty(query.getCardIdsList()) ){
             userIdSet.addAll(getSendUserByMemberCardList(query.getCardIdsList()));
         }
-        if (query.getOnClickTag() && !query.getTagIdList().isEmpty()){
+        if (query.getOnClickTag() && !CollectionUtils.isEmpty(query.getTagIdList())){
             userIdSet.addAll(getSendUserByUserTagList(query.getTagIdList()));
         }
-        if (query.getOnClickUser() && !query.getUserIdList().isEmpty()){
+        if (query.getOnClickUser() && !CollectionUtils.isEmpty(query.getUserIdList())){
             userIdSet.addAll(new ArrayList<>(query.getUserIdList()));
         }
         if (query.getOnClickCustomRule()){
