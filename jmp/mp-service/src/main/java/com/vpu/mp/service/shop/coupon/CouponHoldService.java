@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.coupon;
 
+import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.User;
@@ -61,10 +62,10 @@ public class CouponHoldService extends ShopBaseService {
         if (param.getActId()!=null){
             select.where(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(param.getActId()));
         }
-        if(param.getMobile() != null) {
+        if(StringUtils.isNullOrEmpty(param.getMobile())) {
             select.where(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
         }
-        if(param.getUsername() != null) {
+        if(StringUtils.isNullOrEmpty(param.getUsername())) {
             select.where(USER.USERNAME.like(likeReplace(param.getUsername())));
         }
         if (param.getUserId()!=null){
