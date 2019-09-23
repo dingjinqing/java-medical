@@ -240,7 +240,7 @@
       </el-form-item>
     </el-form>
     <!--添加商品弹窗-->
-    <choosingGoods @resultGoodsRow="choosingGoodsResult" />
+    <choosingGoods @resultGoodsRow="choosingGoodsResult" :tuneUpChooseGoods="isShowChoosingGoodsDialog"/>
     <!--添加优惠卷弹窗-->
     <addCouponDialog @checkReturnFormat="handleToCheck" />
   </wrapper>
@@ -361,7 +361,8 @@ export default {
       validityDate: [],
       props: ['isEdite'],
       submitStatus: false,
-      grouponType: []
+      grouponType: [],
+      isShowChoosingGoodsDialog: false
     }
   },
   mounted () {
@@ -418,7 +419,8 @@ export default {
     showChoosingGoods () {
       console.log('初始化商品弹窗', this.form.goodsId)
       this.transmitEditGoodsId(this.form.goodsId)
-      this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
+      // this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
+      this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     // 获取商品ids
     choosingGoodsResult (row) {
