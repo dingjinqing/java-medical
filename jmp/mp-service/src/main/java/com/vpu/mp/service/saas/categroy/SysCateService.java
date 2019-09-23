@@ -150,12 +150,12 @@ public class SysCateService extends MainBaseService {
 
         Map<String, Object> parents = new HashMap<>(2);
 
-        Record2<String, Integer> stringShortRecord2 = db().select(CATEGORY.CAT_NAME, CATEGORY.PARENT_ID)
+        Record2<String, Integer> stringIntegerRecord2 = db().select(CATEGORY.CAT_NAME, CATEGORY.PARENT_ID)
             .from(CATEGORY).where(CATEGORY.CAT_ID.eq(catId)).fetchAny();
-        Integer parentId = stringShortRecord2.get(CATEGORY.PARENT_ID);
+        Integer parentId = stringIntegerRecord2.get(CATEGORY.PARENT_ID);
 
         parents.put(CATEGORY.CAT_ID.getName(),catId);
-        parents.put(CATEGORY.CAT_NAME.getName(),stringShortRecord2.get(CATEGORY.CAT_NAME));
+        parents.put(CATEGORY.CAT_NAME.getName(),stringIntegerRecord2.get(CATEGORY.CAT_NAME));
 
         result.addFirst(parents);
 
@@ -177,7 +177,7 @@ public class SysCateService extends MainBaseService {
      * @param goodsPageListVos
      */
     public void disposeCategoryName(List<GoodsPageListVo> goodsPageListVos) {
-        List<Short> catIds = new ArrayList<Short>(goodsPageListVos.size());
+        List<Integer> catIds = new ArrayList<Integer>(goodsPageListVos.size());
 
         for (GoodsPageListVo vo : goodsPageListVos) {
             catIds.add(vo.getCatId());
@@ -187,7 +187,7 @@ public class SysCateService extends MainBaseService {
             .where(CATEGORY.CAT_ID.in(catIds)).fetch().intoMap(CATEGORY.CAT_ID, CATEGORY.CAT_NAME);
 
         for (GoodsPageListVo goodsPageListVo : goodsPageListVos) {
-            Short catId = goodsPageListVo.getCatId();
+            Integer catId = goodsPageListVo.getCatId();
             goodsPageListVo.setCatName(catIdNameMap.get(catId));
         }
     }
