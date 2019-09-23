@@ -280,7 +280,6 @@
               <el-popover
                 placement="right"
                 trigger="hover"
-                v-model="isShowOrderDetails"
               >
                 <img
                   :src="$imageHost + '/image/admin/new_preview_image/order_thing.jpg'"
@@ -308,7 +307,6 @@
               <el-popover
                 placement="right"
                 trigger="hover"
-                v-model="isShowGoodsDetails"
               >
                 <img
                   src="http://mpdevimg2.weipubao.cn/image/admin/new_preview_image/goods_thing.jpg"
@@ -384,8 +382,6 @@ export default {
         isShowDetails: false, // 订单详情页是否展示
         isShowGoodsDetails: false // 商品详情页是否展示
       },
-      isShowOrderDetails: false, // 是否展示订单详情页缩略图
-      isShowGoodsDetails: false, // 是否显示商品详情页缩略图,
       data: {},
       hrefDataOne: null,
       centerDialogVisible: false,
@@ -436,20 +432,21 @@ export default {
           } else {
             this.queryData.switch = true
           }
+          console.log('res.content.wxShoppingRecommend', res.content.wxShoppingRecommend)
           switch (res.content.wxShoppingRecommend) {
             case '':
-              this.isShowDetails = false
-              this.isShowGoodsDetails = false
+              this.queryData.isShowDetails = false
+              this.queryData.isShowGoodsDetails = false
               break
             case '1':
-              this.isShowDetails = true
+              this.queryData.isShowDetails = true
               break
             case '2':
-              this.isShowGoodsDetails = true
+              this.queryData.isShowGoodsDetails = true
               break
             case '1,2':
-              this.isShowDetails = true
-              this.isShowGoodsDetails = true
+              this.queryData.isShowDetails = true
+              this.queryData.isShowGoodsDetails = true
               break
           }
         }
