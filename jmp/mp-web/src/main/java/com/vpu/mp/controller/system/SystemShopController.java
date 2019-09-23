@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +38,8 @@ import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 @RequestMapping("/api")
 public class SystemShopController extends SystemBaseController {
 	final String TOKEN = "V-Token";
-
+	private static Logger log = LoggerFactory.getLogger(SystemShopController.class);
+	
 	/**
 	 * 验证手机号是否重复
 	 * 
@@ -176,6 +179,7 @@ public class SystemShopController extends SystemBaseController {
 	 */
 	@PostMapping("/system/shop/upEnable")
 	public JsonResult changeIsEnable(@RequestBody ShopEnableReq vParam) {
+		log.info("更改禁用"+vParam.toString());
 		if(!StringUtils.isEmpty(vParam.getIsEnable())) {
 			Byte isEnable=null;
 			if(vParam.getIsEnable().equals("yes")) {
@@ -185,6 +189,7 @@ public class SystemShopController extends SystemBaseController {
 				isEnable=0;
 			}
 			if(!StringUtils.isEmpty(isEnable)) {
+				log.info("开始更新"+isEnable);
 				saas.shop.updateRowIsEnable(vParam.getShopId(), isEnable);	
 				return success(JsonResultCode.CODE_SUCCESS);
 			}
@@ -199,6 +204,7 @@ public class SystemShopController extends SystemBaseController {
 	 */
 	@PostMapping("/system/shop/upBottom")
 	public JsonResult changeHidBottom(@RequestBody ShopEnableReq vParam) {
+		log.info("更改隐藏底部导航"+vParam.toString());
 		if(!StringUtils.isEmpty(vParam.getHidBottom())) {
 			Byte hidBottom=null;
 			if(vParam.getHidBottom().equals("yes")) {
@@ -208,6 +214,7 @@ public class SystemShopController extends SystemBaseController {
 				hidBottom=0;
 			}
 			if(!StringUtils.isEmpty(hidBottom)) {
+				log.info("开始更新"+hidBottom);
 				saas.shop.updateRowHidBottom(vParam.getShopId(), hidBottom);	
 				return success(JsonResultCode.CODE_SUCCESS);
 			}
