@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShopEnableReq {
 
-	public Byte isEnable;
+	public String isEnable;
 	public Integer shopId;
-	public Byte hidBottom;
+	public String hidBottom;
 	
 
 }
