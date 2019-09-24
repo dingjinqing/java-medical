@@ -707,7 +707,7 @@ public class TradeService extends BaseShopConfigService {
      * 更新交易流程配置
      *
      * @param param 订单流程配置项信息
-     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
+     *              {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
      */
     public void updateOrderProcess(OrderProcessParam param) {
         try {
@@ -773,9 +773,10 @@ public class TradeService extends BaseShopConfigService {
     /**
      * 查询交易流程配置
      * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
+     *
      * @return the order process config
      */
-    public OrderProcessParam getOrderProcessConfig() throws WxErrorException {
+    public OrderProcessParam getOrderProcessConfig() {
         OrderProcessParam param = new OrderProcessParam();
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
@@ -786,7 +787,6 @@ public class TradeService extends BaseShopConfigService {
         } catch (IntrospectionException e) {
             log.error("内省获取bean[{}]信息失败：{}", param, e.getMessage());
         }
-        param.setDeliveryList(combineAllLogisticsAccountInfo());
         return param;
     }
 
@@ -828,10 +828,10 @@ public class TradeService extends BaseShopConfigService {
      * 服务条款配置
      *
      * @param document 服务条款配置内容
-     * 数据库保存内容格式为json，样例如下： { 	"document": "此处直接为html页面格式的字符串", 	"update_time": 1568859761 }
+     *                 数据库保存内容格式为json，样例如下： { 	"document": "此处直接为html页面格式的字符串", 	"update_time": 1568859761 }
      * @throws JsonProcessingException the json processing exception
-     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#UPDATE_TIME}
-     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DOCUMENT}
+     *                                 {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#UPDATE_TIME}
+     *                                 {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DOCUMENT}
      */
     public void confTermsOfService(String document) throws JsonProcessingException {
         String serviceDocument = MAPPER.writeValueAsString(new HashMap<String, Object>(2) {
@@ -866,9 +866,10 @@ public class TradeService extends BaseShopConfigService {
     }
 
     /**
-     * @throws WxErrorException {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_ID}
-     *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_NAME}
-     *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#STATUS_CODE}
+     * @throws WxErrorException 微信api调用异常
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_ID}
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_NAME}
+     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#STATUS_CODE}
      */
     public List<LogisticsAccountInfo> combineAllLogisticsAccountInfo() throws WxErrorException {
         //已绑定账号物流公司列表，不包含未绑定物流公司

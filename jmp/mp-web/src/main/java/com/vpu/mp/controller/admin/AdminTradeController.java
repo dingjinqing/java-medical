@@ -19,6 +19,7 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -123,14 +124,22 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/getOrderProcessConfig")
     public JsonResult getOrderProcessConfig() {
-        OrderProcessParam param = null;
+        //微信物流助手物流公司列表
+        List<LogisticsAccountInfo> deliveryList;
+        //基本配置项信息
+        OrderProcessParam param = shop().trade.getOrderProcessConfig();
         try {
-            param = shop().trade.getOrderProcessConfig();
+            deliveryList = shop().trade.combineAllLogisticsAccountInfo();
         } catch (WxErrorException e) {
             log.error("微信物流助手api调用失败，获取支持物流公司列表失败：{}", e.getMessage());
             return fail(JsonResultCode.CODE_FAIL);
         }
-        return success(param);
+        return success(new HashMap<String, Object>(2) {
+            {
+                put("trade_process_config", param);
+                put("delivery_list", deliveryList);
+            }
+        });
     }
 
     /**

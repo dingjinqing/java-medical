@@ -50,6 +50,7 @@ public class LogisticsService extends ShopBaseService {
     public List<Map<String, String>> getAllDelivery() throws WxErrorException {
         WxOpenMaServiceExtraImpl maService = open.getMaExtService();
         String jsonResult = maService.getAllDelivery(getAppId());
+        log.debug("微信api调用：获取支持的快递公司列表调用结果为：{}", jsonResult);
         List<Map<String, String>> deliveryList;
         try {
             JsonNode node = MAPPER.readTree(jsonResult);
@@ -88,6 +89,7 @@ public class LogisticsService extends ShopBaseService {
         List<LogisticsAccountInfo> accountInfos = null;
         WxOpenMaServiceExtraImpl maService = open.getMaExtService();
         String jsonResult = maService.getAllAccount(getAppId());
+        log.debug("微信api调用：拉取已绑定账号调用结果为：{}", jsonResult);
         if (StringUtils.isBlank(jsonResult)) {
             return null;
         }
