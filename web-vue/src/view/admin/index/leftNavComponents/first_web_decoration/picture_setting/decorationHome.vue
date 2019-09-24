@@ -769,8 +769,10 @@ export default {
       let obj = {}
       switch (index) {
         case 1:
-          obj.name = '会员卡'
+          obj.cardName = '会员卡'
           obj.backgroundColor = '#ecc98f'
+          obj.tips = '********'
+          obj.isHidden = false
           break
         case 2:
           obj.name = '优惠卷'
@@ -785,6 +787,7 @@ export default {
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
       this.modulesData[this.nowRightShowIndex] = data
+      console.log(this.modulesData)
       this.$forceUpdate()
       console.log(this.modulesData[this.nowRightShowIndex])
       console.log(data)
@@ -819,6 +822,9 @@ export default {
       .decMiddle {
         width: 254px;
         margin: 2px;
+        /deep/ .__vuescroll {
+          background-color: #fff;
+        }
         // padding: 0 2px;
         .hereDaily {
           height: 5px;

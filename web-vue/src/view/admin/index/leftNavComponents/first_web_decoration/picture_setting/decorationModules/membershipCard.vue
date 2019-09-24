@@ -9,15 +9,18 @@
       :class="activeBorder?'activeBorder':''"
     >
       <div class="carModule">
-        <div class="card_back_module">
-          <div class="card_type">普通卡</div>
+        <div
+          class="card_back_module"
+          :style="carData.backgroundColor?`backgroundColor:${carData.backgroundColor}`:`backgroundImage:url('${carData.bgImgUrl}')`"
+        >
+          <div class="card_type">{{carClass}}</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
               <img :src="$imageHost+'/image/admin/shop_def_y.png'">
             </div>
             <div class="card_content_right">
               <div>{{carName}}</div>
-              <p>××××××××</p>
+              <p>{{tips}}</p>
             </div>
             <!-- <div
                       class="card_pay_fee"
@@ -75,7 +78,13 @@ export default {
     return {
       activeBorder: false,
       activeSetHere: false,
-      carName: '会员卡'
+      carClass: '普通卡',
+      carName: '会员卡',
+      tips: '*********',
+      carData: {
+        backgroundColor: '#ecc98f',
+        bgImgUrl: ''
+      }
     }
   },
   watch: {
@@ -108,7 +117,19 @@ export default {
     backData: {
       handler (newData) {
         if (newData) {
-          this.carName = newData.name
+          this.carData = newData
+          this.carName = newData.cardName
+          this.tips = newData.tips
+          switch (newData.carClass) {
+            case '1':
+              this.carClass = '普通卡'
+              break
+            case '2':
+              this.carClass = '限次卡'
+              break
+            case '3':
+              this.carClass = '等级卡'
+          }
         }
         console.log(newData)
       },
