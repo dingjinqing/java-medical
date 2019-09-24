@@ -1,6 +1,7 @@
 import marketing from '@/router/admin/marketing'
 import member from '@/router/admin/member'
 import order from '@/router/admin/order'
+import store from '@/router/admin/store'
 const routes = [
   {
     path: '/admin/home',
@@ -551,8 +552,8 @@ const routes = [
           },
           // 门店管理系列子路由
           {
-            path: '/admin/home/main/store_manage',
-            name: 'store_list',
+            path: '/admin/home/main/store',
+            name: 'store',
             meta: {
               crumbTitle: '',
               meta: 'store_manage'
@@ -588,7 +589,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/base_manger/tradeConfigure/tradeConfigure'
               )
           }
-        ].concat(marketing, member, order)
+        ].concat(marketing, member, order, store)
       }
     ]
   },

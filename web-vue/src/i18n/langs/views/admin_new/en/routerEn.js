@@ -277,6 +277,22 @@ export const en = {
   ],
   // 营销管理 我要送礼
   giveGift: ['Marketing management', 'give Gift'],
+  // 营销管理 消息推送
+  message_push: ['Marketing management', 'Message Push'],
+  add_message_push: [
+    'Marketing management',
+    'Message push',
+    'Add message push'
+  ],
+  // 营销管理 消息推送 发送记录
+  send_record: ['Marketing management', 'Message push', 'Send Record'],
+  // 营销管理 定向发券
+  couponGift: ['Marketing management', 'Coupon Gift'],
+  // 营销管理 定向发券 领取明细
+  couponGift_receive_details: ['Marketing management', 'Coupon Gift', 'Receive Details'],
+  // 营销管理 定向发券 发放优惠券
+  couponGift_grant_coupons: ['Marketing management', 'Coupon Gift', 'Grant Coupons'],
+
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情
@@ -295,19 +311,8 @@ export const en = {
   memberCardOrder: ['Order management', 'Virtual goods order'],
   // 订单管理 手动退货退款
   manualRefund: ['Order management', 'Manual return refund'],
-  // 营销管理 消息推送
-  message_push: ['Marketing management', 'Message Push'],
-  add_message_push: [
-    'Marketing management',
-    'Message push',
-    'Add message push'
-  ],
-  // 营销管理 消息推送 发送记录
-  send_record: ['Marketing management', 'Message push', 'Send Record'],
-  // 营销管理 定向发券
-  couponGift: ['Marketing management', 'Coupon Gift'],
-  // 营销管理 定向发券 领取明细
-  couponGift_receive_details: ['Marketing management', 'Coupon Gift', 'Receive Details'],
-  // 营销管理 定向发券 发放优惠券
-  couponGift_grant_coupons: ['Marketing management', 'Coupon Gift', 'Grant Coupons']
+
+  // 门店管理 门店列表
+  store_list: ['Store management', 'Stores list']
+
 }
