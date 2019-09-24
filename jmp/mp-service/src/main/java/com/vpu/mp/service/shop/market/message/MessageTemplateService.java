@@ -304,7 +304,7 @@ public class MessageTemplateService extends ShopBaseService {
             .fetchAny();
     }
     public PageResult<MessageOutputVo> getSendRecord(MessageTemplateQuery query){
-        SelectConditionStep<Record> select  = db().select().from(SERVICE_MESSAGE_RECORD)
+        SelectConditionStep<Record> select  = db().select(SERVICE_MESSAGE_RECORD.fields()).from(SERVICE_MESSAGE_RECORD)
             .leftJoin(USER).on(USER.USER_ID.eq(SERVICE_MESSAGE_RECORD.USER_ID))
             .where(buildParams(query));
         return getPageResult(select,query.getCurrentPage(),MessageOutputVo.class);
