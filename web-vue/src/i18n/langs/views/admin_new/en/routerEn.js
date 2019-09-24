@@ -283,6 +283,8 @@ export const en = {
   orderInfo: ['Order management', 'See details'],
   // 订单管理 退货退款订单
   refundList: ['Order management', 'Refund order'],
+  // 订单管理 拼团退款失败
+  pin_group_fail: ['Order management', 'Group fail order'],
   // 订单管理 退款详情
   orderRefundInfo: ['Order management', 'Refund details'],
   // 订单管理 买单订单

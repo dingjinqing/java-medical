@@ -629,6 +629,13 @@ export default {
             order_status: 3
           }
         })
+      } else if (name === "pin_group_fail") {
+        this.$router.push({
+          name: name,
+          query: {
+            pinStatus: 2
+          }
+        })
       } else {
         this.$router.push({
           name: name

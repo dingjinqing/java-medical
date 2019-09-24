@@ -124,6 +124,20 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderList'
       )
+  },
+  // 拼团退款失败
+  {
+    path: '/admin/home/main/orders/pinGroup/fail',
+    name: 'pin_group_fail',
+    meta: {
+      crumbTitle: 'router.pin_group_fail',
+      meta: 'first_trade_manage',
+      category: 'pin_group_fail'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderList'
+      )
   }
 ]
 

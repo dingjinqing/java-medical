@@ -17,6 +17,7 @@
           v-model="params.returnType"
           size="small"
           class="mini_input"
+          @change="returnTypeChange"
         >
           <el-option
             v-for="item in returnType"
@@ -85,15 +86,14 @@
           label="退款/退货数量"
         >
           <template slot-scope="scope">
-            <span v-if="params.returnType !== 1">0</span>
-            <span v-else>
-              <el-input-number
-                v-model="scope.row.returnable"
-                class="mini_input"
-                size="small"
-                @change="selectionChange"
-              ></el-input-number>
-            </span>
+            <el-input-number
+              v-model="scope.row.canRefundNum"
+              class="mini_input"
+              size="small"
+              @change="selectionChange"
+              :min="0"
+              :max="scope.row.returnable"
+            ></el-input-number>
           </template>
         </el-table-column>
         <el-table-column
@@ -106,22 +106,27 @@
         <div class="item_content money_set">
           <p>
             <span v-if="params.returnType != 2">退商品金额：<el-input-number
-                v-model="params.returnMoney"
+                v-model="canRefundPrice"
+                :precision="2"
                 class="mini_input"
                 size="small"
+                :min="0"
+                :max="max_refund_price"
               >
               </el-input-number>{{currency[0]}}，</span>
             <span>
               退运费金额：
               <el-input-number
                 v-model="params.shippingFee"
+                :precision="2"
                 class="mini_input"
                 size="small"
+                :min="0"
               ></el-input-number>{{currency[0]}},
               可退最大运费：0.00{{currency[0]}}
             </span>
           </p>
-          <p>总退款金额：{{currency[1]}}<span class="text-warning">0.00</span> =退会员卡余额：{{currency[1]}}<span class="text-warning">0.00</span> +退余额：{{currency[1]}}<span class="text-warning">0.00</span>+退积分抵扣：{{currency[1]}}<span class="text-warning">0.00</span> + 退支付金额：{{currency[1]}}<span class="text-warning">0.00</span> </p>
+          <p>总退款金额：{{currency[1]}}<span class="text-warning">{{canRefundPrice.toFixed(2)}}</span> =退会员卡余额：{{currency[1]}}<span class="text-warning">{{member_card_balance.toFixed(2)}}</span> +退余额：{{currency[1]}}<span class="text-warning">{{refund_balance_money.toFixed(2)}}</span>+退积分抵扣：{{currency[1]}}<span class="text-warning">{{refund_score_money.toFixed(2)}}</span> + 退支付金额：{{currency[1]}}<span class="text-warning">{{refund_pay_money.toFixed(2)}}</span> </p>
           <p class="text-warning">注：总退款金额 = 退商品金额 + 退运费金额，扣款优先级： 员卡余额，余额，积分，支付金额</p>
         </div>
       </div>
@@ -171,7 +176,7 @@
       <el-button
         type="primary"
         size="small"
-      >确定{{goodsNumber}}</el-button>
+      >确定</el-button>
     </div>
     <ImageDalog
       pageIndex='userCardAdd'
@@ -209,7 +214,45 @@ export default {
         { key: 3, label: '排错/多拍/不想要' },
         { key: 4, label: '其他' }
       ],
-      refundGoods: [
+      refundGoods: null,
+      returnAmountMap: {
+        bk_order_money: 0,
+        member_card_balance: 0,
+        use_account: 55.00,
+        score_discount: 0,
+        money_paid: 0
+      },
+      tuneUp: false,
+      canRefundPrice: 0.00,
+      member_card_balance: 0.00,
+      refund_balance_money: 0.00,
+      refund_score_money: 0.00,
+      refund_pay_money: 0.00,
+      bk_order_money: 0.00,
+      max_refund_price: 0.00
+    }
+  },
+  methods: {
+    handleToAddImg () {
+      this.tuneUp = !this.tuneUp
+    },
+    handleSelectImg (res) {
+      console.log(res.imgPath)
+      this.params.voucherImages = res.imgPath
+    },
+    selectionChange (val) {
+      this.canRefundPrice = this.$refs.multipleTable.selection.reduce((total, currentValue) => {
+        return total + currentValue.discountedGoodsPrice * currentValue.returnable
+      }, 0)
+      this.max_refund_price = this.canRefundPrice
+    },
+    returnTypeChange (changeVal) {
+      if (changeVal === 2) {
+        this.canRefundPrice = 0.00
+      }
+    },
+    initData () {
+      let res = [
         {
           recId: 8313,
           orderId: 6751,
@@ -217,8 +260,8 @@ export default {
           productId: 4726,
           goodsName: '首单限时优化首单限时优化首单限时优化首单限时优化首单限时优化-CJ',
           goodsAttr: '颜色:白色',
-          goodsPrice: 20.00,
-          discountedGoodsPrice: 55.00,
+          goodsPrice: 55.00,
+          discountedGoodsPrice: 25.00,
           returnable: 1,
           submitted: 0,
           total: 1,
@@ -232,48 +275,46 @@ export default {
           productId: 4726,
           goodsName: '首单限时优化-CJ',
           goodsAttr: '颜色:白色',
-          goodsPrice: 25.00,
-          discountedGoodsPrice: 55.00,
+          goodsPrice: 55.00,
+          discountedGoodsPrice: 30.00,
           returnable: 1,
           submitted: 0,
           total: 1,
           isCanReturn: 1,
           isGift: 0
         }
-      ],
-      returnAmountMap: {
-        bk_order_money: 0,
-        member_card_balance: 0,
-        use_account: 55.00,
-        score_discount: 0,
-        money_paid: 0
-      },
-      tuneUp: false,
-      allPrice: 0.00,
-      goodsNumber: 0
+      ]
+      this.refundGoods = res.map(item => {
+        item.canRefundNum = item.returnable
+        return item
+      })
     }
-  },
-  methods: {
-    handleToAddImg () {
-      this.tuneUp = !this.tuneUp
-    },
-    handleSelectImg (res) {
-      console.log(res.imgPath)
-      this.params.voucherImages = res.imgPath
-    },
-    selectionChange (val) {
-      this.allPrice = this.$refs.multipleTable.selection.map(el => el.goodsPrice).reduce((accumulator, currentValue) => accumulator + currentValue)
-      this.goodsNumber = this.$refs.multipleTable.selection.map(el => el.returnable).reduce((accumulator, currentValue) => accumulator + currentValue)
-    }
-
   },
   mounted () {
     // 初始化数据
     this.langDefault()
+    this.initData()
   },
   watch: {
     lang () {
       this.langDefault()
+    },
+    canRefundPrice (newVal) {
+      let totalPrice = newVal
+      this.bk_order_money = totalPrice > this.returnAmountMap.bk_order_money ? this.returnAmountMap.bk_order_money : totalPrice
+      totalPrice -= this.bk_order_money
+
+      this.member_card_balance = totalPrice > this.returnAmountMap.member_card_balance ? this.returnAmountMap.member_card_balance : totalPrice
+      totalPrice -= this.member_card_balance
+
+      this.refund_balance_money = totalPrice > this.returnAmountMap.use_account ? this.returnAmountMap.use_account : totalPrice
+      totalPrice -= this.refund_balance_money
+
+      this.refund_score_money = totalPrice > this.returnAmountMap.score_discount ? this.returnAmountMap.score_discount : totalPrice
+      totalPrice -= this.refund_score_money
+
+      this.refund_pay_money = totalPrice > this.returnAmountMap.money_paid ? this.returnAmountMap.money_paid : totalPrice
+      totalPrice -= this.refund_pay_money
     }
   }
 }

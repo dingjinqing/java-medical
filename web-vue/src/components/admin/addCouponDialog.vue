@@ -88,10 +88,13 @@ export default {
     tuneUpCoupon () {
       this.dialogVisible = true
     },
-    couponBack (newData) {
-      console.log(newData)
-      this.data = newData
-      this.initCouponList(newData)
+    couponBack: {
+      handler (newData) {
+        console.log(newData)
+        this.data = newData
+        this.initCouponList(newData)
+      },
+      immediate: true
     }
   },
   methods: {
