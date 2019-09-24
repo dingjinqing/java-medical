@@ -17,6 +17,8 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
@@ -134,6 +136,16 @@ public class AdminMemberCardController extends AdminBaseController {
 		logger.info("获取所有专享会员卡弹窗");
 		List<CardBasicVo> allUserCard = shop().member.card.getCardExclusive();
 		return success(allUserCard);
+	}
+	
+	/**
+	 * 获取持卡会员
+	 */
+	@PostMapping("/cardholder")
+	public JsonResult getAllCardHolders(@RequestBody CardHolderParam param) {
+		logger.info("获取所有持卡会员");
+		PageResult<CardHolderVo> result = shop().member.card.getAllCardHolder(param);
+		return success(result);
 	}
 	
 }
