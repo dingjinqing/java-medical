@@ -117,6 +117,7 @@
                 <el-button
                   size="mini"
                   type="primary"
+                  @click="handleSendRecord(data.row)"
                   icon="el-icon-s-unfold"
                   circle
                 ></el-button>
@@ -258,6 +259,16 @@ export default {
       const { startTime, endTime } = val
       this.startTime = startTime
       this.endTime = endTime
+    },
+    // 发送记录
+    handleSendRecord (row) {
+      console.log(row)
+      this.$router.push({
+        name: `send_record`,
+        query: {
+          id: row.id
+        }
+      })
     },
     // 删除消息推送
     handleDelTemplate (id) {

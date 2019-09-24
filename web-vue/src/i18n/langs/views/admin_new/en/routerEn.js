@@ -289,9 +289,17 @@ export const en = {
   // 营销管理 定向发券
   couponGift: ['Marketing management', 'Coupon Gift'],
   // 营销管理 定向发券 领取明细
-  couponGift_receive_details: ['Marketing management', 'Coupon Gift', 'Receive Details'],
+  couponGift_receive_details: [
+    'Marketing management',
+    'Coupon Gift',
+    'Receive Details'
+  ],
   // 营销管理 定向发券 发放优惠券
-  couponGift_grant_coupons: ['Marketing management', 'Coupon Gift', 'Grant Coupons'],
+  couponGift_grant_coupons: [
+    'Marketing management',
+    'Coupon Gift',
+    'Grant Coupons'
+  ],
 
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
@@ -314,5 +322,4 @@ export const en = {
 
   // 门店管理 门店列表
   store_list: ['Store management', 'Stores list']
-
 }
