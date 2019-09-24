@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
 
-    private static final long serialVersionUID = -176783542;
+    private static final long serialVersionUID = 585483509;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_store_order.order_id</code>. 订单id
@@ -395,31 +395,45 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
     }
 
     /**
+     * Setter for <code>mini_shop_6797286.b2c_store_order.currency</code>. 币种
+     */
+    public void setCurrency(String value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_store_order.currency</code>. 币种
+     */
+    public String getCurrency() {
+        return (String) get(26);
+    }
+
+    /**
      * Setter for <code>mini_shop_6797286.b2c_store_order.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(26, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_store_order.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(26);
+        return (Timestamp) get(27);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_store_order.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(27, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_store_order.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(27);
+        return (Timestamp) get(28);
     }
 
     // -------------------------------------------------------------------------
@@ -448,7 +462,7 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
     /**
      * Create a detached, initialised StoreOrderRecord
      */
-    public StoreOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, String memberCardNo, BigDecimal memberCardRedunce, BigDecimal memberCardBalance, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String cardNo, String aliTradeNo, Timestamp createTime, Timestamp updateTime) {
+    public StoreOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, String memberCardNo, BigDecimal memberCardRedunce, BigDecimal memberCardBalance, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String cardNo, String aliTradeNo, String currency, Timestamp createTime, Timestamp updateTime) {
         super(StoreOrder.STORE_ORDER);
 
         set(0, orderId);
@@ -477,7 +491,8 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
         set(23, delFlag);
         set(24, cardNo);
         set(25, aliTradeNo);
-        set(26, createTime);
-        set(27, updateTime);
+        set(26, currency);
+        set(27, createTime);
+        set(28, updateTime);
     }
 }

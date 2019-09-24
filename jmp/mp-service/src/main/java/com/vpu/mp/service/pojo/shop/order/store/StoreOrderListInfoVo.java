@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import lombok.Data;
 
 /**
- * 订单列表展示订单信息
+ * 买单订单列表展示订单信息
  * @author wangshuai
  */
 
@@ -21,5 +21,4 @@ public class StoreOrderListInfoVo {
 	private Timestamp payTime;
 	private BigDecimal moneyPaid;
 	private String payCode;
-	//private String payName;
 }

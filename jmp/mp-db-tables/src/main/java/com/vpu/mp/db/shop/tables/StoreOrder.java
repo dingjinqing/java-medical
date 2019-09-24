@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreOrder extends TableImpl<StoreOrderRecord> {
 
-    private static final long serialVersionUID = 434017318;
+    private static final long serialVersionUID = -685379156;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_store_order</code>
@@ -187,6 +187,11 @@ public class StoreOrder extends TableImpl<StoreOrderRecord> {
      * The column <code>mini_shop_6797286.b2c_store_order.ali_trade_no</code>. 支付宝交易单号
      */
     public final TableField<StoreOrderRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_store_order.currency</code>. 币种
+     */
+    public final TableField<StoreOrderRecord, String> CURRENCY = createField("currency", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("CNY", org.jooq.impl.SQLDataType.VARCHAR)), this, "币种");
 
     /**
      * The column <code>mini_shop_6797286.b2c_store_order.create_time</code>.

@@ -18,7 +18,6 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
-import static com.vpu.mp.service.pojo.shop.order.store.StoreOrderConstant.STORE_ORDER_PAID;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
@@ -738,7 +737,7 @@ public class OrderInfoService extends ShopBaseService {
 		BigDecimal storeMemberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE))
 												.from(STORE_ORDER)
 												.where(STORE_ORDER.USER_ID.eq(userId))
-												.and(STORE_ORDER.ORDER_STATUS.eq(STORE_ORDER_PAID))
+												.and(STORE_ORDER.ORDER_STATUS.eq(OrderConstant.STORE_STATUS_PAY))
 												.fetchOne()
 												.into(BigDecimal.class);
 		logger().info("门店-会员卡消费金额"+storeMemberCardBalance);
@@ -750,7 +749,7 @@ public class OrderInfoService extends ShopBaseService {
 		BigDecimal storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID))
 			.from(STORE_ORDER)
 			.where(STORE_ORDER.USER_ID.eq(userId))
-			.and(STORE_ORDER.ORDER_STATUS.eq(STORE_ORDER_PAID))
+			.and(STORE_ORDER.ORDER_STATUS.eq(OrderConstant.STORE_STATUS_PAY))
 			.fetchOne()
 			.into(BigDecimal.class);
 
@@ -763,7 +762,7 @@ public class OrderInfoService extends ShopBaseService {
 		BigDecimal storeUserAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT))
 											.from(STORE_ORDER)
 											.where(STORE_ORDER.USER_ID.eq(userId))
-											.and(STORE_ORDER.ORDER_STATUS.eq(STORE_ORDER_PAID))
+											.and(STORE_ORDER.ORDER_STATUS.eq(OrderConstant.STORE_STATUS_PAY))
 											.fetchOne()
 											.into(BigDecimal.class);
 		logger().info("门店-用户消费余额"+storeUserAccount);

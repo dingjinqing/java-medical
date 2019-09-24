@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
+import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -244,6 +245,15 @@ public class OrderReadService extends ShopBaseService {
 		PageResult<StoreOrderListInfoVo> result = storeOrder.getPageList(param);
 		return result;
 	 }
+	 
+	/**
+	 * 买单订单详情
+	 * @param param
+	 * @return
+	 */
+	 public StoreOrderInfoVo getStoreOrder(String orderSn) {
+		return storeOrder.get(orderSn);
+	}
 
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据

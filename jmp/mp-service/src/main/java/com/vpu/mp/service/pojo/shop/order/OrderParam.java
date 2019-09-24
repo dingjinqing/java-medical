@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import javax.validation.constraints.NotBlank;
+
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -9,7 +12,7 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@NoArgsConstructor
 public class OrderParam {
+	@NotBlank(message = JsonResultMessage.MSG_ORDER_REMARK_ORDERSN_NOT_NULL)
 	private String orderSn;
 }

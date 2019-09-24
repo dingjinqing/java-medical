@@ -1732,6 +1732,7 @@ create table `b2c_store_order`
     `del_flag`            tinyint(1)     not null default '0' comment '删除',
     `card_no`             varchar(32)    NOT NULL DEFAULT '' COMMENT '会员卡号',
     `ali_trade_no`        varchar(60)    not null default '' comment '支付宝交易单号',
+    `currency`            varchar(10)    NOT NULL DEFAULT 'CNY' COMMENT '币种',
     `create_time`         timestamp               default current_timestamp,
     `update_time`         timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`order_id`)

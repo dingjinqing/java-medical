@@ -374,4 +374,15 @@ public class OrderConstant {
 	public static final byte SEARCH_RETURNSTATUS_61 = 61;
 	/**商家拒绝退款申请*/
 	public static final byte SEARCH_RETURNSTATUS_60 = 60;
+	
+	/**
+	 * 买单订单状态
+	 */
+	/**未支付*/
+	public static final byte STORE_STATUS_DEFAULT = 0;
+	/**已支付*/
+	public static final byte STORE_STATUS_PAY = 1;
+	/**退款*/
+	public static final byte STORE_STATUS_RETURN = 2;
+
 }

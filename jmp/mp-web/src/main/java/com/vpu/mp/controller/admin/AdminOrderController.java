@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -50,6 +51,15 @@ public class AdminOrderController extends AdminBaseController {
 		PageResult<StoreOrderListInfoVo> result = shop().readOrder.getPageList(param);
 		return success(result);
 	}
+	
+	/**
+	 * 	买单订单详情查询
+	 */
+	@PostMapping("/store/get")
+	public JsonResult getStoreOrder(@RequestBody @Valid OrderParam order) {
+		StoreOrderInfoVo result = shop().readOrder.getStoreOrder(order.getOrderSn());
+		return success(result);
+	}
 
 	/**
 	 * 	订单详情（不包括退款货、买单订单、虚拟商品订单）
@@ -58,7 +68,7 @@ public class AdminOrderController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/get")
-	public JsonResult get(@RequestBody OrderParam order) {
+	public JsonResult get(@RequestBody @Valid OrderParam order) {
 		return success(shop().readOrder.get(order.getOrderSn()));
 	}
 

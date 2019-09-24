@@ -877,3 +877,5 @@ ALTER TABLE b2c_return_order add column `currency` varchar(10) NOT NULL DEFAULT 
 -- 王帅买单订单增加'会员卡号'
 ALTER TABLE `b2c_store_order`
 ADD COLUMN `card_no` varchar(32) NOT NULL DEFAULT '' COMMENT '会员卡号';
+-- 王帅买单订单增加币种
+ALTER TABLE b2c_store_order add column `currency` varchar(10) NOT NULL DEFAULT 'CNY' COMMENT '币种';
