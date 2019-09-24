@@ -665,6 +665,7 @@ export default {
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
     },
     search () {
+      this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus.split(',') : []
       if (this.completeTime) {
         this.searchParams.finishedTimeStart = this.completeTime[0] + ' 00:00:00'
         this.searchParams.finishedTimeEnd = this.completeTime[1] + ' 23:59:59'
