@@ -95,6 +95,25 @@ export const cn = {
   returnShipping: '运费退款金额',
   returnStatusMapping_1: '退货退款申请等待商家确认',
   returnStatusMapping_4_0: '退款申请等待商家确认',
+  payTime: '支付时间',
+  payerName: '买单人',
+  storeNameText: '买单门店',
+  storeTime: '买单时间',
+  storeMoneyPaid: '买单收银金额',
+  storeOrderSn: '支付单号',
+  storeUserInfo: '买家信息',
+  storeUsertext: '买单客户',
+  clientMessages: '客户留言',
+  invoiceType: '发票类型',
+  InvoiceTitle: '发票抬头',
+  CompanyTaxNumber: '公司税号',
+  companyAddress: '公司地址',
+  payInfo: '支付明细',
+  discountInfo: '优惠额度',
+  memberCardDiscount: '会员卡抵扣',
+  memberCardReduce: '会员卡折扣',
+  totalPrice: '总价',
+  balance: '余额',
   orderStatusList: [
     [null, '全部订单'],
     [0, '待付款'],
@@ -186,7 +205,16 @@ export const cn = {
     '缺货',
     '拍错/多拍/不想要',
     '其他'
-  ]
+  ],
+  storeStatusList: [
+    [null, '全部'],
+    [1, '已支付'],
+    [2, '已退款']
+  ],
+  payTypeObj: {
+    wxpay: '微信支付',
+    balance: '余额支付'
+  }
 }
 export const en = {
   goodsName: 'Product Name',
