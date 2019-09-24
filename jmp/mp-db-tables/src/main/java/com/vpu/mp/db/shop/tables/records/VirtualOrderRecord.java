@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> {
 
-    private static final long serialVersionUID = -441607242;
+    private static final long serialVersionUID = 863492738;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_virtual_order.order_id</code>. 订单id
@@ -534,6 +534,20 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
         return (Byte) get(35);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.currency</code>. 币种
+     */
+    public void setCurrency(String value) {
+        set(36, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.currency</code>. 币种
+     */
+    public String getCurrency() {
+        return (String) get(36);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -560,7 +574,7 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
     /**
      * Create a detached, initialised VirtualOrderRecord
      */
-    public VirtualOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, Integer useScore, BigDecimal memberCardBalance, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, Integer returnScore, BigDecimal returnAccount, BigDecimal returnMoney, BigDecimal returnCardBalance, Timestamp returnTime, Timestamp delTime, Timestamp createTime, Timestamp updateTime, Byte goodsType, Integer virtualGoodsId, String cardNo, Byte stillSendFlag, Byte accessMode) {
+    public VirtualOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, Integer useScore, BigDecimal memberCardBalance, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, Integer returnScore, BigDecimal returnAccount, BigDecimal returnMoney, BigDecimal returnCardBalance, Timestamp returnTime, Timestamp delTime, Timestamp createTime, Timestamp updateTime, Byte goodsType, Integer virtualGoodsId, String cardNo, Byte stillSendFlag, Byte accessMode, String currency) {
         super(VirtualOrder.VIRTUAL_ORDER);
 
         set(0, orderId);
@@ -599,5 +613,6 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
         set(33, cardNo);
         set(34, stillSendFlag);
         set(35, accessMode);
+        set(36, currency);
     }
 }

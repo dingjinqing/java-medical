@@ -41,4 +41,7 @@ public class MemberCardOrderVo {
     private Byte returnFlag;
     /** 退款时间 **/
     private Timestamp returnTime;
+
+    /** 币种 */
+    private String currency;
 }

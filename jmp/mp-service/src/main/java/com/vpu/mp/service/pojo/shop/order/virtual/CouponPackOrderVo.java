@@ -74,6 +74,9 @@ public class CouponPackOrderVo {
 	
 	/** 退款时间 */
 	private Timestamp returnTime;
+
+    /** 币种 */
+    private String currency;
 	
 	
 	

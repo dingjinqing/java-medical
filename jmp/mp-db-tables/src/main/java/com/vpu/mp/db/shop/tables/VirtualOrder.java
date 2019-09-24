@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
 
-    private static final long serialVersionUID = 1967213618;
+    private static final long serialVersionUID = -459051;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_virtual_order</code>
@@ -237,6 +237,11 @@ public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
      * The column <code>mini_shop_471752.b2c_virtual_order.access_mode</code>. 优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取
      */
     public final TableField<VirtualOrderRecord, Byte> ACCESS_MODE = createField("access_mode", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_virtual_order.currency</code>. 币种
+     */
+    public final TableField<VirtualOrderRecord, String> CURRENCY = createField("currency", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("CNY", org.jooq.impl.SQLDataType.VARCHAR)), this, "币种");
 
     /**
      * Create a <code>mini_shop_471752.b2c_virtual_order</code> table reference
