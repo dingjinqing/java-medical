@@ -35,6 +35,7 @@
         class="version-manage-table"
         header-row-class-name="tableClss"
         :data="tableData"
+        v-loading="loading"
         border
         style="width: 100%"
       >
@@ -224,7 +225,8 @@ export default {
       tabInfo: this.$t('groupBuy.tabInfo'),
       activityTypeText: [],
       editData: {},
-      isEdite: true
+      isEdite: true,
+      loading: false
     }
   },
   watch: {
@@ -248,6 +250,7 @@ export default {
       }
       console.log(' this.tabSwitch', this.tabSwitch)
       this.closeTabAddGroup()
+      this.loading = true
       groupBuyList(obj).then(res => {
         console.log(res.content.page)
         console.log(res.content.page.pageRows)
@@ -257,8 +260,10 @@ export default {
         this.pageCount = res.content.page.pageCount
         this.totalRows = res.content.page.totalRows
         this.handleData(res.content.dataList)
+        this.loading = false
       }).catch(() => {
         this.$message.error('保存失败')
+        this.loading = false
       })
     },
     handleData (tabData) {

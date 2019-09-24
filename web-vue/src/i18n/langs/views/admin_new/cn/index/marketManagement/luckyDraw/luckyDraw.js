@@ -38,16 +38,37 @@ export const cn = {
   // 抽奖明细列表
   mobile: '手机号',
   userName: '用户名',
-  luckSource: '抽奖来源',
+  lotterySource: '抽奖来源',
   chanceSource: '抽奖次数来源',
   lotteryGrade: '中奖等级',
+  createTime: '创建时间',
+  lotteryPrize: '奖品',
   luckSourceList: [
-    [0, '全部'],
-    [1, '分享'],
-    [2, '开屏有礼'],
-    [3, '支付有礼']
+    [null, '全部'],
+    [0, '分享'],
+    [1, '开屏有礼'],
+    [2, '支付有礼']
   ],
   chanceSourceList: [
-    [1, '全部']
-  ]
+    [null, '全部'],
+    [0, '免费'],
+    [1, '分享'],
+    [2, '积分']
+  ],
+  lotteryGradeList: [
+    [null, '全部'],
+    [0, '未中奖'],
+    [1, '一等奖'],
+    [2, '二等奖'],
+    [3, '三等奖'],
+    [4, '四等奖']
+  ],
+  query: '查询',
+  // 新用户明细
+  invitePeople: '邀请人',
+  newUserId: '新用户id',
+  newUserNickname: '新用户昵称',
+  newUserMobile: '新用户手机号',
+  registrationTime: '注册时间',
+  userNickname: '用户昵称'
 }

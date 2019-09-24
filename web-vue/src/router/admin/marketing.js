@@ -547,13 +547,27 @@ const routes = [
     path: '/admin/home/main/luckyDraw/detailList',
     name: 'lottery_activity_detail',
     meta: {
-      crumbTitle: 'router.lottery_activity',
+      crumbTitle: 'router.lottery_activity_detail',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDrawDetailList'
+      )
+  },
+  // 幸运大抽奖活动 -- 获取新用户明细
+  {
+    path: '/admin/home/main/luckyDraw/newUserList/:id/:activityName',
+    name: 'lottery_activity_newUserList',
+    meta: {
+      crumbTitle: 'router.lottery_activity_newUserList',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/newUserList'
       )
   },
   // 好友代付
