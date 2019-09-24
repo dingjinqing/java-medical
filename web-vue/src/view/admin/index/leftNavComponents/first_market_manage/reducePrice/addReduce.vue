@@ -155,7 +155,7 @@
                 <template slot-scope="scope">
                   <div class="goods_info">
                     <img
-                      :src="$imageHost+'/image/admin/icon_jia.png'"
+                      :src="$imageHost+scope.row.goodsImg"
                       alt=""
                       class="goods_img"
                     >
@@ -328,68 +328,7 @@ export default {
       changeFlag: false,
       productDialogFlag: false,
       productInfo: {},
-      pageShowGoodsList: [
-        {
-          goodsId: 28,
-          shopPrice: 321,
-          goodsNumber: 10,
-          goodsName: '第一古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-          goodsImg: '',
-          discount: '',
-          reducePrice: '',
-          goodsPrice: '',
-          reducePriceProduct: [
-          ]
-        },
-        {
-          goodsId: 29,
-          shopPrice: 400,
-          goodsNumber: 10,
-          goodsName: '第二古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-          goodsImg: '',
-          discount: '',
-          reducePrice: '',
-          goodsPrice: '',
-          reducePriceProduct: [
-          ]
-        },
-        {
-          goodsId: 30,
-          shopPrice: 400,
-          goodsNumber: 10,
-          goodsName: '第一古拉良品kookastyle原创2019第二古拉良品kookastyle原创2019新款收腰气质显瘦印花第二古拉良品kookastyle原创2019新款收腰气质显瘦印花新款收腰气质显瘦印花',
-          goodsImg: '',
-          discount: '',
-          reducePrice: '',
-          goodsPrice: '',
-          reducePriceProduct: [
-            {
-              productId: 5129,
-              prdDesc: '规格zz',
-              originalPrice: 400,
-              prdPrice: ''
-            }
-          ]
-        },
-        {
-          goodsId: 31,
-          shopPrice: 400,
-          goodsNumber: 10,
-          goodsName: '第二古拉良品kookastyle原创2019新款收腰气质显瘦印花第二古拉良品kookastyle原创2019新款收腰气质显瘦印花第二古拉良品kookastyle原创2019新款收腰气质显瘦印花',
-          goodsImg: '',
-          discount: '',
-          reducePrice: '',
-          goodsPrice: '',
-          reducePriceProduct: [
-            {
-              productId: 5130,
-              prdDesc: '规格sad',
-              originalPrice: 400,
-              prdPrice: ''
-            }
-          ]
-        }
-      ],
+      pageShowGoodsList: [],
       tableLabel: [
         { index: 1, prop: 'goodsName', label: this.$t('marketCommon.goodsName') },
         { index: 2, prop: 'shopPrice', label: this.$t('reducePriceList.originalPrice') },
@@ -433,7 +372,6 @@ export default {
         'id': this.$route.query.id
       }
       getReducePriceById(SimpleBargainParam).then((res) => {
-        console.log(res)
         if (res.error === 0) {
           // 解析返回的数据结构，回显
           this.reduceData = res.content
@@ -451,18 +389,6 @@ export default {
         }
       })
     }
-
-    getGoodsInfosByGoodIds({goodsIds: [65, 64, 56]}).then(res => {
-      let content = res.content
-      content.forEach(item => {
-        console.log(item.goodsId, item.goodsName, item.goodsImg, item.goodsNumber, item.shopPrice)
-        if (item.goodsSpecProducts != null) {
-          let prd = item.goodsSpecProducts[0]
-          console.log(prd.prdDesc, prd.prdPrice)
-        }
-      })
-      console.log(res)
-    })
   },
   methods: {
     // 添加图片
@@ -485,9 +411,27 @@ export default {
     showChoosingGoods () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
+    // 选择商品
     getGoodsIds (data) {
-      console.log(data)
       this.goodsIdList = data
+      var param = {
+        goodsIds: this.goodsIdList
+      }
+
+      getGoodsInfosByGoodIds(param).then(res => {
+        if (res.error === 0) {
+          res.content.forEach(item => {
+            item.reducePriceProduct = item.goodsSpecProducts
+            if (item.reducePriceProduct != null && item.reducePriceProduct.length > 0) {
+              item.reducePriceProduct.forEach(spec => {
+                spec.originalPrice = spec.prdPrice
+              })
+            }
+          })
+          this.pageShowGoodsList = res.content
+          console.log(this.pageShowGoodsList)
+        }
+      })
     },
     delReduceData (id) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
