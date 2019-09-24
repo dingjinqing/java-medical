@@ -19,7 +19,7 @@ export function getGoodsProductList (data) {
 // 根据商品ID集合查询对应商品信息
 export function getGoodsInfosByGoodIds (data) {
   return service({
-    url: `/api/admin/goods/infos`,
+    url: `/api/admin/goods/info/list`,
     method: 'post',
     data: data
   })
