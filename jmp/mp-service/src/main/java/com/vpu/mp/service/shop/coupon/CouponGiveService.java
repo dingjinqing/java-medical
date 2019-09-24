@@ -99,7 +99,7 @@ public class CouponGiveService extends ShopBaseService {
             /* 查询活动信息 */
             SelectLimitStep<Record> couponGiveListVo = db().select().from(GIVE_VOUCHER);
             /* 模糊查询 */
-            if (!StringUtils.isNullOrEmpty(param.getActName())) {
+            if (!StringUtils.isNullOrEmpty(param.getActName()) || param.getActName().contentEquals("")) {
                 couponGiveListVo = ( (SelectWhereStep<Record>) couponGiveListVo).where(GIVE_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())));
             }
             /* 整合分页信息 */
