@@ -290,6 +290,7 @@
 
 <script>
 import { addReducePrice, getReducePriceById } from '@/api/admin/marketManage/reducePrice.js'
+import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import actShare from '@/components/admin/marketActivityShareSetting'
 export default {
   components: {
@@ -450,6 +451,18 @@ export default {
         }
       })
     }
+
+    getGoodsInfosByGoodIds({goodsIds: [65, 64, 56]}).then(res => {
+      let content = res.content
+      content.forEach(item => {
+        console.log(item.goodsId, item.goodsName, item.goodsImg, item.goodsNumber, item.shopPrice)
+        if (item.goodsSpecProducts != null) {
+          let prd = item.goodsSpecProducts[0]
+          console.log(prd.prdDesc, prd.prdPrice)
+        }
+      })
+      console.log(res)
+    })
   },
   methods: {
     // 添加图片
