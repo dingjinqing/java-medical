@@ -29,9 +29,9 @@ import { en as groupBuy } from './views/admin_new/en/index/marketManagement/spel
 // 营销活动状态 tabs
 import { en as statusTab } from './views/components/status/statusTab'
 // 分享有礼
-import { en as sharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePolite'
+import { en as sharePolite } from './views/admin_new/en/index/marketManagement/sharePolite/sharePolite'
 // 分享有礼-领取明细
-import { en as receiveDetails } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/receiveDetails'
+import { en as receiveDetails } from './views/admin_new/en/index/marketManagement/sharePolite/receiveDetails'
 // 优惠券礼包
 import { en as couponPackage } from './views/admin_new/en/index/marketManagement/couponPackage/couponPackageEn'
 // 优惠券礼包-活动创建页
@@ -51,7 +51,7 @@ import {
   en as reducePriceList
 } from './views/admin_new/en/index/marketManagement/reducePrice/reducePriceListEn'
 // 分享有礼-添加
-import { en as adSharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
+import { en as adSharePolite } from './views/admin_new/en/index/marketManagement/sharePolite/adSharePolite'
 
 // 小程序装修
 import {
