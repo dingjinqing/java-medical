@@ -227,7 +227,8 @@
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.Starttime')"
               :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -243,7 +244,8 @@
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.Starttime')"
               :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -648,6 +650,14 @@ export default {
       handler () {
         this.adminReload()
       }
+    },
+    completeTime (val) {
+      this.searchParams.finishedTimeStart = val ? val[0] : null
+      this.searchParams.finishedTimeEnd = val ? val[1] : null
+    },
+    orderTime (val) {
+      this.searchParams.createTimeStart = val ? val[0] : null
+      this.searchParams.createTimeEnd = val ? val[1] : null
     }
   },
   methods: {
@@ -667,14 +677,6 @@ export default {
     },
     search () {
       this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus.split(',') : []
-      if (this.completeTime) {
-        this.searchParams.finishedTimeStart = this.completeTime[0] + ' 00:00:00'
-        this.searchParams.finishedTimeEnd = this.completeTime[1] + ' 23:59:59'
-      }
-      if (this.orderTime) {
-        this.searchParams.createTimeStart = this.orderTime[0] + ' 00:00:00'
-        this.searchParams.createTimeEnd = this.orderTime[1] + ' 23:59:59'
-      }
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       list(this.searchParams).then(res => {
