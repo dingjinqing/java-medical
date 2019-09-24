@@ -25,7 +25,7 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
      * 拉取已绑定账号 HTTPS调用请求地址
      * {@value}
      */
-    static final String LOGISTICS_GET_ALL_ACCOUNT = "POST https://api.weixin.qq.com/cgi-bin/express/business/account/getall";
+    static final String LOGISTICS_GET_ALL_ACCOUNT = "https://api.weixin.qq.com/cgi-bin/express/business/account/getall";
 
 
     /**
