@@ -1,6 +1,6 @@
 <template>
   <div class="payContent">
-    <el-tabs>
+    <el-tabs v-model="defaultBtn">
       <el-tab-pane
         label="支付配置"
         name="first"
@@ -38,7 +38,7 @@ export default {
   },
   data () {
     return {
-
+      defaultBtn: 'second'
     }
   }
 }

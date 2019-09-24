@@ -1,5 +1,6 @@
 <template>
   <div class="payConfigure">
+    <!-- 四种支付配置内容区域 -->
     <el-card class="payCard">
       <div
         v-for="item in payConfigure"
@@ -23,6 +24,7 @@
       </div>
     </el-card>
 
+    <!-- 默认支付配置内容区域 -->
     <div class="defaultPayCongigure">
       <div class="title">
         <span></span>
@@ -54,6 +56,53 @@
       </div>
     </div>
     <div class="btn">保存</div>
+
+    <!-- 微信支付配置弹窗 -->
+    <el-dialog
+      title="微信支付配置"
+      :visible.sync="showSettingDialog"
+      width=50%
+      center
+    >
+      <ul class="settingContent">
+        <li>
+          <span>appid：</span>
+          <el-input size="small"></el-input>
+        </li>
+        <li>
+          <span>商户号：</span>
+          <el-input size="small"></el-input>
+        </li>
+        <li>
+          <span>支付秘钥：</span>
+          <el-input size="small"></el-input>
+        </li>
+        <li>
+          <span>支付证书：</span>
+          <el-input
+            type="textarea"
+            style="height:100px;width:240px"
+          ></el-input>
+        </li>
+        <li>
+          <span>支付私钥：</span>
+          <el-input
+            type="textarea"
+            style="height:100px;width:240px"
+          ></el-input>
+        </li>
+      </ul>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="save"
+        >保 存</el-button>
+        <el-button @click="cancle">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -71,12 +120,22 @@ export default {
       checked1: '',
       checked2: '',
       checked3: '',
-      src: `${this.$imageHost}/image/admin/share/pay_config_share.jpg`
+      src: `${this.$imageHost}/image/admin/share/pay_config_share.jpg`,
+      showSettingDialog: false
     }
   },
   methods: {
+    // 微信支付配置事件
     handleSetting () {
       console.log('配置')
+      this.showSettingDialog = true
+    },
+    // 配置弹出保存、取消事件
+    cancle () {
+      this.showSettingDialog = false
+    },
+    save () {
+      this.showSettingDialog = false
     }
   }
 }
@@ -149,6 +208,28 @@ export default {
     text-align: center;
     border: 1px solid #5a8bff;
     background: #5a8bff;
+  }
+  .settingContent {
+    li {
+      height: 40px;
+      line-height: 40px;
+      margin-bottom: 15px;
+      display: flex;
+      span {
+        vertical-align: middle;
+        margin-right: 30px;
+      }
+      .el-input {
+        width: 240px !important;
+        height: 25px !important;
+      }
+    }
+    li:nth-of-type(even) {
+      background: #f3f3f3;
+    }
+  }
+  .el-dialog__body {
+    padding: 0 20px !important;
   }
 }
 </style>
