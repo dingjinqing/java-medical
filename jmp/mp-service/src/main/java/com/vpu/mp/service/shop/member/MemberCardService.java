@@ -96,6 +96,8 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
@@ -111,6 +113,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 
@@ -123,6 +126,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 @Service
 public class MemberCardService extends ShopBaseService {
 	@Autowired private RecordMemberTradeService tradeService;
+	@Autowired private CardDaoService cardDao;
 	Logger logger = logger();
 
 	/**
@@ -1349,5 +1353,14 @@ public class MemberCardService extends ShopBaseService {
     public MemberCardPojo getMemberCardInfoById(int id){
         return db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(id)).and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(MemberCardPojo.class);
     }
+
+    /**
+     * - 获取所有的持卡会员
+     * @param param
+     */
+	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
+		
+		 return cardDao.getAllCardHolder(param);
+	}
 		
 }

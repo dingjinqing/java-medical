@@ -123,9 +123,10 @@ public class CardConstant {
 	public static final Byte PAY_OWN_GOOD_ON = 1 ;
 	
 	/** -----------------user_card表常量--------------------------*/
-	/** user_card表 flag 0 正常使用，1已经删除*/
+	/** user_card表 flag 0 正常使用，1已经删除  2 已过期*/
 	public static final Byte CARD_USING = 0;
 	public static final Byte CARD_DELETE = 1;
+	public static final Byte CARD_EXPIRED = 2;
 	/** --------------------------------------------------------*/
 	
 	/** -----------------member_card表常量--------------------------*/

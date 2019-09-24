@@ -20,4 +20,6 @@ public class MemberConstant {
 	public static final String MONTH_FLAG = "-M";
 	public static final String ONE_MONTH_FLAG = "1-M";
 	public static final String YEAR_FLAG = "-Y";
+	
+	
 }
