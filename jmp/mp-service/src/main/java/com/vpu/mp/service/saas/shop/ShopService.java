@@ -520,17 +520,19 @@ public class ShopService extends MainBaseService {
 			//隐藏底部功能开启
 			specialInfo.add("HidBottom");
 		}
-		VersionConfig parseJson = Util.parseJson(shopList.getVersionConfig(), VersionConfig.class);
-		VersionNumberConfig numConfig = parseJson.numConfig;
-		if(numConfig.pictureNumPlus!=null) {
-			//图片空间已扩容
-			specialInfo.add("PictureNumPlus");
-		}if(numConfig.videoNumPlus!=null) {
-			//视频空间已扩容
-			specialInfo.add("VideoNumPlus");
-		}if(numConfig.getDecorateNumPlus()!=null) {
-			//页面装修数量已扩容
-			specialInfo.add("DecorateNumPlus");
+		if(shopList.getVersionConfig()!=null) {
+			VersionConfig parseJson = Util.parseJson(shopList.getVersionConfig(), VersionConfig.class);
+			VersionNumberConfig numConfig = parseJson.numConfig;
+			if(numConfig.pictureNumPlus!=null) {
+				//图片空间已扩容
+				specialInfo.add("PictureNumPlus");
+			}if(numConfig.videoNumPlus!=null) {
+				//视频空间已扩容
+				specialInfo.add("VideoNumPlus");
+			}if(numConfig.getDecorateNumPlus()!=null) {
+				//页面装修数量已扩容
+				specialInfo.add("DecorateNumPlus");
+			}			
 		}
 		return specialInfo;
 	}
