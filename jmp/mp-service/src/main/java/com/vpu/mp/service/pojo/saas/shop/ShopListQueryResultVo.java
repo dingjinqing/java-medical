@@ -2,8 +2,11 @@ package com.vpu.mp.service.pojo.saas.shop;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -72,4 +75,7 @@ public class ShopListQueryResultVo {
 	private Timestamp endTime;
 	private String currency;
 	private String shopExpireStatus;
+	@JsonIgnore
+	private String versionConfig;
+	private List<String> specialInfo;
 }

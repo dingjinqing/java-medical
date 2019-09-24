@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.vpu.mp.db.main.tables.records.AppAuthRecord;
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
@@ -41,6 +43,7 @@ import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
@@ -96,6 +99,9 @@ public class ShopService extends MainBaseService {
     
     @Autowired
     public MpBackProcessService backProcessService;
+    
+    @Autowired
+    public ShopAppService shopApp;
 
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()
@@ -103,7 +109,7 @@ public class ShopService extends MainBaseService {
 						SHOP.IS_ENABLED, SHOP_ACCOUNT.USER_NAME, SHOP.SHOP_FLAG, SHOP.HID_BOTTOM, SHOP.RECEIVE_MOBILE,
 						SHOP.SHOP_PHONE, SHOP.SHOP_NOTICE, SHOP.SHOP_WX, SHOP.SHOP_EMAIL, SHOP.SHOP_QQ, SHOP.MEMBER_KEY,
 						SHOP.TENANCY_NAME, MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
-						MP_AUTH_SHOP.PRINCIPAL_NAME)
+						MP_AUTH_SHOP.PRINCIPAL_NAME,SHOP.VERSION_CONFIG)
 				.from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).leftJoin(MP_AUTH_SHOP)
 				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
@@ -126,7 +132,7 @@ public class ShopService extends MainBaseService {
 			}
 			shopList.setExpireTime(expireTime);
 			shopList.setShopExpireStatus(expireStatus);
-
+			shopList.setSpecialInfo(shopSpecialConf(shopList));
 		}
 		return result;
 	}
@@ -491,6 +497,42 @@ public class ShopService extends MainBaseService {
 	}
 	public Integer updateRowHidBottom(Integer shopId,Byte hidBottem) {
 		return db().update(SHOP).set(SHOP.HID_BOTTOM,hidBottem).where(SHOP.SHOP_ID.eq(shopId)).execute();
+	}
+	
+	public List<String> shopSpecialConf(ShopListQueryResultVo shopList) {
+		List<String> specialInfo=new ArrayList<String>();
+		ShopAccountRecord accountInfoForId = account.getAccountInfoForId(shopList.getSysId());
+		if(accountInfoForId.getBaseSale()==1) {
+			//初始销量功能开启
+			specialInfo.add("BaseSale");
+		}if(accountInfoForId.getAddCommentSwitch()==1) {
+			//商家添加评价功能开启
+			specialInfo.add("AddCommentSwitch");
+		}
+		AppAuthRecord shopAppByErp = shopApp.getShopAppByErp(shopList.getShopId());
+		if(shopAppByErp!=null) {
+			if(shopAppByErp.getStatus()==1) {
+				specialInfo.add("ErpStatus");
+			}			
+		}
+		//TODO  开启微信全链路 shop表加 seller_account
+		if(shopList.getHidBottom()==1) {
+			//隐藏底部功能开启
+			specialInfo.add("HidBottom");
+		}
+		VersionConfig parseJson = Util.parseJson(shopList.getVersionConfig(), VersionConfig.class);
+		VersionNumberConfig numConfig = parseJson.numConfig;
+		if(numConfig.pictureNumPlus!=null) {
+			//图片空间已扩容
+			specialInfo.add("PictureNumPlus");
+		}if(numConfig.videoNumPlus!=null) {
+			//视频空间已扩容
+			specialInfo.add("VideoNumPlus");
+		}if(numConfig.getDecorateNumPlus()!=null) {
+			//页面装修数量已扩容
+			specialInfo.add("DecorateNumPlus");
+		}
+		return specialInfo;
 	}
 
 }
