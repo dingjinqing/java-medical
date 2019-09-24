@@ -107,8 +107,11 @@
                       <span>支付方式：{{orderItem.payType}}</span>
                     </div>
                     <div class="right">
-                      <span class="icon_collect"><i class="el-icon-star-off"></i></span>
-                      <span @click="addNodes">添加备注</span>
+                      <span class="icon_collect"><i
+                          :class="{'el-icon-star-off':!orderItem.starFlag,'el-icon-star-on':orderItem.starFlag}"
+                          @click="toggleStar(orderItem.orderSn,orderItem.starFlag)"
+                        ></i></span>
+                      <span @click="addNodes(orderItem.orderSn)">添加备注</span>
                       <span @click="seeDetails(orderItem.OrderSn)">查看详情</span>
                     </div>
                   </div>
@@ -130,11 +133,17 @@
         />
       </div>
     </div>
-    <nodesDialog :show.sync="showNodes" />
+    <nodesDialog
+      :show.sync="showNodes"
+      :orderSn="notesOrderSn"
+    />
   </div>
 </template>
 
 <script>
+import {
+  star
+} from '@/api/admin/orderManage/order.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -175,7 +184,8 @@ export default {
         { orderId: 5, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
         { orderId: 6, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' }
       ],
-      showNodes: false
+      showNodes: false,
+      notesOrderSn: null
     }
   },
   methods: {
@@ -187,9 +197,25 @@ export default {
         }
       })
     },
-    addNodes () {
-      console.log(123)
+    addNodes (orderSn) {
       this.showNodes = true
+      this.notesOrderSn = orderSn
+    },
+    toggleStar (orderSn, starFlag) {
+      let obj = {
+        orderSn: [orderSn],
+        type: 0,
+        starFlag: starFlag === 1 ? 0 : 1
+      }
+      star(obj).then(res => {
+        if (res.error === 0) {
+          this.$message.success(starFlag === 1 ? '取消标星成功' : '标星成功')
+          this.search()
+        }
+      })
+    },
+    initDataList () {
+
     }
   }
 }

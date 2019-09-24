@@ -34,7 +34,7 @@
           class="icon el-icon-edit-outline"
           @click="addNodes"
         ></i>
-        <span>买家备注：</span>
+        <span>买家备注：{{order.sellerRemark}}</span>
       </div>
       <div class="pay_detail">
         <div class="pd_title">
@@ -60,7 +60,10 @@
         </div>
       </div>
     </div>
-    <nodesDialog :show.sync="showNodes" />
+    <nodesDialog
+      :show.sync="showNodes"
+      :orderSn="notesOrderSn"
+    />
   </div>
 </template>
 
@@ -71,12 +74,14 @@ export default {
   },
   data () {
     return {
-      showNodes: false
+      showNodes: false,
+      notesOrderSn: null
     }
   },
   methods: {
     addNodes () {
       this.showNodes = true
+      this.notesOrderSn = this.$route.query.orderSn
     }
   }
 }
