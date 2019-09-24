@@ -512,6 +512,7 @@ public class ShopService extends MainBaseService {
 		AppAuthRecord shopAppByErp = shopApp.getShopAppByErp(shopList.getShopId());
 		if(shopAppByErp!=null) {
 			if(shopAppByErp.getStatus()==1) {
+				//erp已对接
 				specialInfo.add("ErpStatus");
 			}			
 		}
@@ -523,13 +524,13 @@ public class ShopService extends MainBaseService {
 		if(shopList.getVersionConfig()!=null) {
 			VersionConfig parseJson = Util.parseJson(shopList.getVersionConfig(), VersionConfig.class);
 			VersionNumberConfig numConfig = parseJson.numConfig;
-			if(numConfig.pictureNumPlus!=null) {
+			if(numConfig.pictureNumPlus!=null&&numConfig.pictureNumPlus!=0) {
 				//图片空间已扩容
 				specialInfo.add("PictureNumPlus");
-			}if(numConfig.videoNumPlus!=null) {
+			}if(numConfig.videoNumPlus!=null&&numConfig.videoNumPlus!=0) {
 				//视频空间已扩容
 				specialInfo.add("VideoNumPlus");
-			}if(numConfig.getDecorateNumPlus()!=null) {
+			}if(numConfig.decorateNumPlus!=null&&numConfig.decorateNumPlus!=0) {
 				//页面装修数量已扩容
 				specialInfo.add("DecorateNumPlus");
 			}			
