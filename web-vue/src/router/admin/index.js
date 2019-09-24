@@ -577,7 +577,7 @@ const routes = [
           },
           // 基础配置 - 交易配置
           {
-            path: '/admin/home/main/base_manger/tradeConfigure',
+            path: '/admin/home/main/tradeConfigure',
             name: 'pay',
             meta: {
               crumbTitle: 'router.pay',
