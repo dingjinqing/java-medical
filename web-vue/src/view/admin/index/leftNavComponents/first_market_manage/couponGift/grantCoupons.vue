@@ -28,10 +28,20 @@
           >
             <div class="gray">以下筛选条件为"或"的关系</div>
             <el-checkbox-group v-model="form.checkList">
-              <el-checkbox label="加购人群"></el-checkbox>
-              <div class="gray">30天内在本店内有加入购物车行为，但没有支付的用户</div><br>
+              <el-checkbox>
+                <div style="display: flex">
+                  <span>加购人群</span>
+                  <div class="gray">30天内在本店内有加入购物车行为，但没有支付的用户</div>
+                </div>
+              </el-checkbox>
+              <br />
               <el-checkbox label="购买指定商品人群"></el-checkbox><br>
-              <el-checkbox label="持有 会员卡人群"></el-checkbox><br>
+              <el-checkbox>持有
+                <el-input
+                  size="small"
+                  style="width: 200px;"
+                ></el-input>
+              </el-checkbox><br>
               <el-checkbox label="属于 标签人群"></el-checkbox><br>
               <el-checkbox label="选择指定的会员 已选择会员 0 人"></el-checkbox><br>
               <el-checkbox label="自定义"></el-checkbox><br>
@@ -47,7 +57,7 @@
           <!-- 发送时间 -->
           <el-form-item
             label="发送时间"
-            prop=""
+            prop="sendAction"
           >
             <el-radio
               v-model="form.sendAction"
