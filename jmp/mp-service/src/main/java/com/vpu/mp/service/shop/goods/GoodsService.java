@@ -455,7 +455,7 @@ public class GoodsService extends ShopBaseService {
             GoodsSpecProduct prd = goodsSpecProducts.get(0);
             goods.setPrdId(prd.getPrdId());
             goods.setPrdMaxShopPrice(prd.getPrdPrice());
-            goods.setPrdMaxShopPrice(prd.getPrdPrice());
+            goods.setPrdMinShopPrice(prd.getPrdPrice());
             goods.setPrdTypeNum(0);
             goods.setIsDefaultPrd(true);
         } else {
