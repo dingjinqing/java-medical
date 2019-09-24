@@ -32,6 +32,22 @@ export function star (data) {
     data: data
   })
 }
+// 发货查询
+export function deliveryInfo (data) {
+  return service({
+    url: '/api/admin/order/shipGoods',
+    method: 'post',
+    data: data
+  })
+}
+// 发货
+export function delivery (data) {
+  return service({
+    url: '/api/admin/order/ship',
+    method: 'post',
+    data: data
+  })
+}
 // 买单订单
 export function store (data) {
   return service({

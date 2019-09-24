@@ -543,6 +543,7 @@
       v-if="showDelivery"
       :show.sync="showDelivery"
       :orderData="orderItemInfo"
+      @handlerResetData="search"
     />
   </div>
 </template>

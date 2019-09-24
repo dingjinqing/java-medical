@@ -3,9 +3,12 @@
     title="填入快递信息发货"
     :visible.sync="showDelivery"
     custom-class="custom"
-    width="600px"
+    width="620px"
   >
-    <div class="delivery-info">
+    <div
+      class="delivery-info"
+      v-loading="!deliveryInfo"
+    >
       <div class="delivery-info_userinfo">
         <span class="title">配送信息</span>
         <div class="userinfo">
@@ -23,10 +26,10 @@
             filterable
           >
             <el-option
-              v-for="item in $t('expressList.company')"
-              :key="item[0]"
-              :label="item[1]"
-              :value="item[0]"
+              v-for="(item, key) in $t('expressList.company')"
+              :key="key"
+              :label="item"
+              :value="key"
             ></el-option>
           </el-select>
         </div>
@@ -42,6 +45,7 @@
       </div>
       <div class="delivery-info_goodslist">
         <el-table
+          ref="multipleTable"
           :data="deliveryInfo.orderGoodsVo"
           style="width:100%;"
           border
@@ -54,6 +58,11 @@
             'text-align':'center'
           }"
         >
+          <el-table-column
+            type="selection"
+            width="55"
+          >
+          </el-table-column>
           <el-table-column
             prop=""
             label="商品名称"
@@ -84,7 +93,7 @@
             label="数量"
           ></el-table-column>
           <el-table-column
-            prop="sendNumber"
+            prop="goodsNumber"
             label="发货数量"
           ></el-table-column>
         </el-table>
@@ -97,19 +106,20 @@
       <el-button @click="showDelivery = false">取 消</el-button>
       <el-button
         type="primary"
-        @click="showDelivery = fasle"
+        @click="goodsDelivery"
       >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+import { deliveryInfo, delivery } from '@/api/admin/orderManage/order.js'
 export default {
   data () {
     return {
       showDelivery: false,
       deliveryInfo: {},
-      shippingId: 1,
+      shippingId: '1',
       shippingNo: ''
     }
   },
@@ -122,41 +132,36 @@ export default {
       this.$emit('update:show', false)
     },
     initData () {
-      this.deliveryInfo = {
-        'consignee': '北京',
-        'mobile': '11111111111',
-        'completeAddress': '北京紫禁城',
-        'orderGoodsVo': [
-          {
-            'recId': 2,
-            'orderId': 4,
-            'orderSn': '3',
-            'goodsId': 0,
-            'goodsSn': '2',
-            'goodsName': 'good名称1',
-            'goodsNumber': 1,
-            'goodsPrice': 200,
-            'goodsAttr': '黑',
-            'productId': 2,
-            'goodsImg': '',
-            'sendNumber': 1
-          },
-          {
-            'recId': 5,
-            'orderId': 4,
-            'orderSn': '3',
-            'goodsId': 0,
-            'goodsSn': '4',
-            'goodsName': 'good名称3',
-            'goodsNumber': 3,
-            'goodsPrice': 100,
-            'goodsAttr': '白',
-            'productId': 4,
-            'goodsImg': '',
-            'sendNumber': 1
-          }
-        ]
+      let obj = {
+        orderId: this.orderData.orderId,
+        orderSn: this.orderData.orderSn,
+        action: 0
       }
+      deliveryInfo(obj).then(res => {
+        if (res.error === 0) {
+          this.deliveryInfo = res.content
+        }
+      })
+    },
+    goodsDelivery () {
+      let obj = {
+        orderId: this.orderData.orderId,
+        orderSn: this.orderData.orderSn,
+        action: 0,
+        isMp: false,
+        shippingNo: this.shippingNo,
+        shippingId: this.shippingId,
+        shipGoods: []
+      }
+      obj.shipGoods = this.$refs.multipleTable.selection.map(item => {
+        return { recId: item.recId, sendNumber: item.goodsNumber }
+      })
+      console.log(obj)
+      delivery(obj).then(res => {
+        console.log(res)
+        this.showDelivery = false
+        this.$emit('handlerResetData')
+      })
     }
 
   },
@@ -218,7 +223,7 @@ export default {
     display: flex;
     > div {
       & + div {
-        margin-left: 52px;
+        margin-left: 72px;
       }
     }
   }

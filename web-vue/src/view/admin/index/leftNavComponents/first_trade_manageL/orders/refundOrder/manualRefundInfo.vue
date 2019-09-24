@@ -127,7 +127,7 @@
             </span>
           </p>
           <p>总退款金额：{{currency[1]}}<span class="text-warning">{{canRefundPrice.toFixed(2)}}</span> =退会员卡余额：{{currency[1]}}<span class="text-warning">{{member_card_balance.toFixed(2)}}</span> +退余额：{{currency[1]}}<span class="text-warning">{{refund_balance_money.toFixed(2)}}</span>+退积分抵扣：{{currency[1]}}<span class="text-warning">{{refund_score_money.toFixed(2)}}</span> + 退支付金额：{{currency[1]}}<span class="text-warning">{{refund_pay_money.toFixed(2)}}</span> </p>
-          <p class="text-warning">注：总退款金额 = 退商品金额 + 退运费金额，扣款优先级： 员卡余额，余额，积分，支付金额</p>
+          <p class="text-warning">注：总退款金额 = 退商品金额 + 退运费金额，扣款优先级： 会员卡余额，余额，积分，支付金额</p>
         </div>
       </div>
       <div class="return_item">
