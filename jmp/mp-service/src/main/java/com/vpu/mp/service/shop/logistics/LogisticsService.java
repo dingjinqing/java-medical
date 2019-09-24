@@ -110,6 +110,8 @@ public class LogisticsService extends ShopBaseService {
      * 获取接口调用凭证appid
      */
     private String getAppId() {
-        return saas.shop.mp.getAuthShopByShopId(getShopId()).getAppId();
+        String appid = saas.shop.mp.getAuthShopByShopId(getShopId()).getAppId();
+        log.info("appid:{}", appid);
+        return appid;
     }
 }
