@@ -164,14 +164,22 @@ public class GoodsService extends ShopBaseService {
         return pageResult;
     }
 
-    public List<GoodsPageListVo> getGoodsInfosList(List<Integer> goodsIds) {
-        List<GoodsPageListVo> goodsPageListVos =db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
+    /**
+     *  根据商品id集合获取对应的商品信息和规格信息
+     * @param goodsIds
+     * @return GoodsPageListVo
+     */
+    public List<GoodsPageListVo> getGoodsAndProductsByGoodsIds(List<Integer> goodsIds) {
+        List<GoodsPageListVo> goodsPageListVos = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsIds))
             .fetchInto(GoodsPageListVo.class);
 
-        this.disposeGoodsPageListVo(goodsPageListVos,new GoodsPageListParam());
+        GoodsPageListParam pageListParam=new GoodsPageListParam();
+        pageListParam.setSelectType(GoodsPageListParam.GOODS_LIST_WITH_PRD);
+
+        this.disposeGoodsPageListVo(goodsPageListVos,pageListParam);
 
         return goodsPageListVos;
     }
@@ -204,6 +212,7 @@ public class GoodsService extends ShopBaseService {
 
         return pageResult;
     }
+
 
     /**
      * 分页条件拼凑
@@ -433,7 +442,7 @@ public class GoodsService extends ShopBaseService {
             item.setGoodsLabels(goodsLabels.get(item.getGoodsId()) == null ? new ArrayList<>() : goodsLabels.get(item.getGoodsId()));
             // 设置图片绝对地址
             item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg()));
-            // 处理商品对应的规格数据
+            // 处理商品对应的规格数据,由于分页问题导致无法连表查询
             List<GoodsSpecProduct> goodsSpecProducts = goodsIdPrdGroups.get(item.getGoodsId());
 
             this.disposeGoodsSpecProductsInfo(item, goodsSpecProducts,pageListParam);
@@ -473,10 +482,10 @@ public class GoodsService extends ShopBaseService {
             goods.setPrdMinShopPrice(minPrice);
             goods.setPrdTypeNum(goodsSpecProducts.size());
             goods.setIsDefaultPrd(false);
-        }
 
-        if (GoodsPageListParam.GOODS_LIST_WITH_PRD.equals(pageListParam.getSelectType())) {
-            goods.setGoodsSpecProducts(goodsSpecProducts);
+            if (GoodsPageListParam.GOODS_LIST_WITH_PRD.equals(pageListParam.getSelectType())) {
+                goods.setGoodsSpecProducts(goodsSpecProducts);
+            }
         }
     }
 

@@ -80,13 +80,13 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
-     * 根据商品id集合获取对应的商品信息集合
+     * 查询商品和其所有下属规格信息
      * @param goodsIdParams
      * @return
      */
-    @PostMapping("/api/admin/goods/infos")
-    public JsonResult selectGoodsInfoByGoodsIds(@RequestBody GoodsIdParams goodsIdParams) {
-        return success(shop().goods.getGoodsInfosList(goodsIdParams.getGoodsIds()));
+    @PostMapping("/api/admin/goods/info/list")
+    public JsonResult getGoodsAndProductsByIds(@RequestBody GoodsIdParams goodsIdParams) {
+        return success(shop().goods.getGoodsAndProductsByGoodsIds(goodsIdParams.getGoodsIds()));
     }
 
     /**
@@ -493,17 +493,6 @@ public class AdminGoodsController extends AdminBaseController {
             }
         }
         return success();
-    }
-
-    /**
-     * 查询商品和其所有下属规格信息
-     * @param goodsIds
-     * @return
-     */
-    @PostMapping("/api/admin/goods/info/list")
-    public JsonResult getGoodsAndProductsByIds(@RequestBody List<Integer> goodsIds) {
-        // TODO: return List<GoodsAndProductsVo>
-        return null;
     }
 
 }
