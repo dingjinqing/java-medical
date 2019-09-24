@@ -21,7 +21,9 @@ import { en as overview } from './views/admin/index/firstWebManage/firstWebManag
 
 // 营销管理
 // 营销管理通用词汇
-import { en as marketCommon } from './views/admin/index/leftNavComponents/first_market_manage/marketCommon'
+import {
+  en as marketCommon
+} from './views/admin_new/en/index/marketManagement/marketCommonEn'
 // 多人拼团
 import { en as groupBuy } from './views/admin_new/en/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
@@ -41,16 +43,24 @@ import { en as addBargainAct } from './views/admin_new/en/index/marketManagement
 // 好友助力
 import { en as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
 // 幸运大抽奖
-import { en as luckyDraw } from './views/admin_new/en/index/marketManagement/luckyDraw/luckyDraw'
-// 小程序装修
-import { en as pageDecoration } from './views/smallProgramManagement/pageDecoration'
-// 底部导航配置
-import { en as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
+import {
+  en as luckyDraw
+} from './views/admin_new/en/index/marketManagement/luckyDraw/luckyDraw'
+// 限时降价列表
+import {
+  en as reducePriceList
+} from './views/admin_new/en/index/marketManagement/reducePrice/reducePriceListEn'
 // 分享有礼-添加
 import { en as adSharePolite } from './views/admin/index/leftNavComponents/first_market_manage/sharePolite/adSharePolite'
+
+// 小程序装修
+import {
+  en as pageDecoration
+} from './views/smallProgramManagement/pageDecoration'
+// 底部导航配置
+import { en as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
 // 分销
 import { en as distribution } from './views/admin_new/en/index/marketManagement/distribution/distributionEn'
-
 // 页面装修
 import { en as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 
@@ -563,7 +573,9 @@ const en = {
   promoteList, // 好友助力
   adSharePolite, // 添加分享有礼
   luckyDraw, // 幸运大抽奖
+  reducePriceList, // 限时降价活动列表
   distribution, // 分销
+
   ...enLocale,
   expressList,
 

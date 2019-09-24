@@ -4,13 +4,13 @@
       <div class="navBox">
         <statusTab
           v-model="tabIndex"
-          :activityName="activityName"
+          :activityName="$t('reducePriceList.reducePrice')"
           :standard="true"
         />
         <el-button
           type="primary"
           @click="addReduce()"
-        >添加限时降价</el-button>
+        >{{$t('reducePriceList.addReducePrice')}}</el-button>
       </div>
       <div class="table_box">
         <el-table
@@ -27,98 +27,118 @@
             'text-align':'center'
           }"
         >
-          <template v-for="(item,index) in tableItem">
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="index"
-              v-if="item.label === '有效期'"
-              width="170"
-            >
-              <template slot-scope="scope">
-                <span v-html="scope.row.startTime+'<br/>至<br/>'+scope.row.endTime"></span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="index"
-              v-else-if="item.label === '操作'"
-              width="130"
-            >
-              <template slot-scope="scope">
-                <div class="operation">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="编辑"
-                    placement="top"
-                    v-if="scope.row.status === 1"
-                  >
-                    <i
-                      class="el-icon-edit-outline"
-                      @click="edit(scope.row.id)"
-                    ></i>
-                  </el-tooltip>
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="删除"
-                    placement="top"
-                    v-else
-                  >
-                    <i
-                      @click="del(scope.row.id)"
-                      class="el-icon-delete"
-                    ></i>
-                  </el-tooltip>
-                  <el-tooltip
-                    v-if="scope.row.status === 1"
-                    class="item"
-                    effect="dark"
-                    content="停用"
-                    placement="top"
-                  >
-                    <i
-                      @click="disable(scope.row.id)"
-                      class="el-icon-remove-outline"
-                    ></i>
-                  </el-tooltip>
-                  <el-tooltip
-                    v-else
-                    class="item"
-                    effect="dark"
-                    content="启用"
-                    placement="top"
-                  >
-                    <i
-                      @click="enable(scope.row.id)"
-                      class="el-icon-check"
-                    ></i>
-                  </el-tooltip>
 
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="订单明细"
-                    placement="top"
-                  >
-                    <i
-                      class="el-icon-s-order"
-                      @click="checkOrderList(scope.row.id)"
-                    ></i>
-                  </el-tooltip>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="index"
-              v-else
-            >
-            </el-table-column>
-          </template>
+          <el-table-column
+            prop="name"
+            :label="$t('marketCommon.actName')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="goodsAmount"
+            :label="$t('reducePriceList.goodsAmount')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="validDate"
+            :label="$t('marketCommon.validDate')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="statusName"
+            :label="$t('marketCommon.activityStatus')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="orderAmount"
+            :label="$t('reducePriceList.paidOrderNumber')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="userAmount"
+            :label="$t('reducePriceList.paidUserNumber')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="paymentTotalAmount"
+            :label="$t('reducePriceList.totalMoneyPaid')"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            :label="$t('marketCommon.operate')"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <div class="operation">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="$t('marketCommon.edit')"
+                  placement="top"
+                  v-if="scope.row.status === 1"
+                >
+                  <i
+                    class="el-icon-edit-outline"
+                    @click="edit(scope.row.id)"
+                  ></i>
+                </el-tooltip>
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="$t('marketCommon.delete')"
+                  placement="top"
+                  v-else
+                >
+                  <i
+                    @click="del(scope.row.id)"
+                    class="el-icon-delete"
+                  ></i>
+                </el-tooltip>
+                <el-tooltip
+                  v-if="scope.row.status === 1"
+                  class="item"
+                  effect="dark"
+                  :content="$t('marketCommon.disable')"
+                  placement="top"
+                >
+                  <i
+                    @click="disable(scope.row.id)"
+                    class="el-icon-remove-outline"
+                  ></i>
+                </el-tooltip>
+                <el-tooltip
+                  v-else
+                  class="item"
+                  effect="dark"
+                  :content="$t('marketCommon.enabled')"
+                  placement="top"
+                >
+                  <i
+                    @click="enable(scope.row.id)"
+                    class="el-icon-check"
+                  ></i>
+                </el-tooltip>
+
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="$t('reducePriceList.orderDetails')"
+                  placement="top"
+                >
+                  <i
+                    class="el-icon-s-order"
+                    @click="checkOrderList(scope.row.id)"
+                  ></i>
+                </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"
@@ -138,23 +158,12 @@ export default {
   },
   data () {
     return {
-      activityName: '限时降价',
       // 默认显示进行中的活动
       tabIndex: 1,
       currentPage: 1,
       pageParams: {},
       tableData: [],
-      loading: false,
-      tableItem: [
-        { prop: 'name', label: '活动名称' },
-        { prop: 'goodsAmount', label: '商品数量' },
-        { prop: 'vaildDate', label: '有效期' },
-        { prop: 'statusName', label: '活动状态' },
-        { prop: 'orderAmount', label: '付款订单数' },
-        { prop: 'userAmount', label: '付款用户数' },
-        { prop: 'paymentTotalAmount', label: '付款总金额' },
-        { prop: '', label: '操作' }
-      ]
+      loading: false
     }
   },
   methods: {
@@ -175,8 +184,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        // TODO: 国际化
-        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.validDate = `${item.startTime} ${this.$t('marketCommon.to')} ${item.endTime}`
         item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
       this.tableData = data
@@ -198,16 +206,16 @@ export default {
       let param = {
         'id': id
       }
-      this.$confirm('确定删除该限时降价活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actDeleteConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         deleteReducePrice(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '删除成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
@@ -219,16 +227,16 @@ export default {
         'id': id,
         'status': 0
       }
-      this.$confirm('确定停用该限时降价活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actDisableConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         updateReducePrice(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '停用成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }
@@ -240,16 +248,16 @@ export default {
         'id': id,
         'status': 1
       }
-      this.$confirm('确定启用该限时降价活动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('marketCommon.actEnabledConfirmTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         updateReducePrice(param).then((res) => {
           if (res.error === 0) {
             this.$message({
               type: 'success',
-              message: '启用成功!'
+              message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
           }

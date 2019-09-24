@@ -4,30 +4,30 @@
       <div class="set_box">
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> 活动名称：
+            <em>*</em> {{$t('marketCommon.actName')}}:
           </div>
           <div class="item_right">
             <el-input
               v-model="reduceData.name"
-              placeholder="请填写活动名称"
+              :placeholder="$t('marketCommon.actNamePlaceholder')"
               minlength="1"
               size="small"
               class="default_input"
             ></el-input>
-            <p class="item_tips">只作为商家记录使用，用户不会看到这个名称</p>
+            <p class="item_tips">{{$t('reducePriceList.actNameTip')}}</p>
           </div>
         </div>
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> 有效期：
+            <em>*</em> {{$t('marketCommon.validDate')}}:
           </div>
           <div class="item_right">
             <el-date-picker
               v-model="reduceData.effectiveDate"
               type="datetimerange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('marketCommon.to')"
+              :start-placeholder="$t('marketCommon.startTime')"
+              :end-placeholder="$t('marketCommon.endTime')"
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
               size="small"
@@ -36,23 +36,23 @@
             <el-checkbox
               v-model="reduceData.isCycle"
               @change="showCycleDialog"
-            >按周期重复</el-checkbox>
+            >{{$t('reducePriceList.repeatByCycle')}}</el-checkbox>
           </div>
         </div>
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> 限购数量：
+            <em>*</em> {{$t('reducePriceList.purchaseQuantity')}}:
           </div>
           <div class="item_right">
             <el-radio
               v-model="reduceData.isLimit"
               label="0"
-            >不限制</el-radio>
+            >{{$t('reducePriceList.noLimit')}}</el-radio>
             <br />
             <el-radio
               v-model="reduceData.isLimit"
               label="1"
-            >限制数量
+            >{{$t('reducePriceList.limitQuantity')}}
               <el-input-number
                 v-model="reduceData.limitAmount"
                 controls-position="right"
@@ -60,19 +60,19 @@
                 size="small"
                 class="small_input"
               ></el-input-number>
-              件
+              {{$t('reducePriceList.piece')}}
             </el-radio>
             <div
               class="limit"
               v-if="reduceData.isLimit === '1'"
             >
-              <el-checkbox v-model="reduceData.limitFlag">超出限购数量后，买家不可继续添加购买该商品</el-checkbox>
+              <el-checkbox v-model="reduceData.limitFlag">{{$t('reducePriceList.limitQuantityTip')}}</el-checkbox>
             </div>
           </div>
         </div>
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> 活动商品：
+            <em>*</em> {{$t('marketCommon.activityGoods')}}:
           </div>
           <div class="item_right">
             <div class="choose_list">
@@ -82,7 +82,7 @@
                   @click="showChoosingGoods"
                 >
                   <img :src="$imageHost+'/image/admin/icon_jia.png'">
-                  选择商品
+                  {{$t('marketCommon.selectGoods')}}
                 </div>
               </div>
             </div>
@@ -91,39 +91,39 @@
         <div v-if="pageShowGoodsList.length">
           <div class="set_item batch_item">
             <div class="item_title">
-              <em>*</em> 设置折扣：
+              <em>*</em> {{$t('reducePriceList.setDiscount')}}:
             </div>
             <div class="item_right">
               <el-radio-group v-model="batchFlag">
-                <el-radio :label="1">批量打<el-input
+                <el-radio :label="1">{{$t('reducePriceList.batch')}}<el-input
                     :disabled="batchFlag != 1 ? true : false"
                     v-model="reduceData.batchDiscount"
                     size="small"
                     class="small_input"
-                  ></el-input>折</el-radio>
-                <el-radio :label="2">批量减价<el-input
+                  ></el-input>{{$t('reducePriceList.discount')}}</el-radio>
+                <el-radio :label="2">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}<el-input
                     :disabled="batchFlag != 2 ? true : false"
                     v-model="reduceData.batchReduce"
                     size="small"
                     class="small_input"
-                  ></el-input>元</el-radio>
-                <el-radio :label="3">批量折后价<el-input
+                  ></el-input>{{$t('marketCommon.yuan')}}</el-radio>
+                <el-radio :label="3">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}<el-input
                     :disabled="batchFlag != 3 ? true : false"
                     v-model="reduceData.batchFinalPrice"
                     size="small"
                     class="small_input"
-                  ></el-input>元</el-radio>
+                  ></el-input>{{$t('marketCommon.yuan')}}</el-radio>
               </el-radio-group>
               <el-button
                 type="primary"
                 size="small"
                 @click="batchSet"
-              >确定</el-button>
+              >{{$t('marketCommon.ok')}}</el-button>
               <el-button
                 type="default"
                 size="small"
                 @click="resetPrice"
-              >取消</el-button>
+              >{{$t('marketCommon.cancel')}}</el-button>
             </div>
           </div>
           <el-table
@@ -178,7 +178,7 @@
                     size="small"
                     class="small_input"
                     @input="changeItemDiscount(scope.row)"
-                  ></el-input> 折
+                  ></el-input> {{$t('reducePriceList.discount')}}
                 </template>
               </el-table-column>
               <el-table-column
@@ -194,7 +194,7 @@
                     size="small"
                     class="small_input"
                     @input="changeItemReducePrice(scope.row)"
-                  ></el-input> 元
+                  ></el-input> {{$t('marketCommon.yuan')}}
                 </template>
               </el-table-column>
               <el-table-column
@@ -210,12 +210,12 @@
                     size="small"
                     class="small_input"
                     @input="changeItemGoodsPrice(scope.row)"
-                  ></el-input> 元
+                  ></el-input> {{$t('marketCommon.yuan')}}
                   <p
                     class="price_blue"
                     @click="getProductInfo(scope.row)"
                     v-if="scope.row.reducePriceProduct && scope.row.reducePriceProduct.length>0"
-                  >{{scope.row.reducePriceProduct.length}}个规格降价</p>
+                  >{{scope.row.reducePriceProduct.length}}{{$t('reducePriceList.productReducePriceTip')}}</p>
                 </template>
               </el-table-column>
               <el-table-column
@@ -229,7 +229,7 @@
                   <a
                     class="del_item"
                     @click="delReduceData(scope.row.goodsId)"
-                  >删除</a>
+                  >{{$t('marketCommon.delete')}}</a>
                 </template>
               </el-table-column>
               <el-table-column
@@ -246,7 +246,7 @@
           accordion
         >
           <el-collapse-item
-            :title="activeName === '1' ? '收起更多配置':'展开更多配置'"
+            :title="activeName === '1' ? $t('marketCommon.collapseMoreConfigurations'):$t('marketCommon.expandMoreConfigurations')"
             name="1"
           >
             <!-- 引入活动分享模块 -->
@@ -390,17 +390,31 @@ export default {
         }
       ],
       tableLabel: [
-        { index: 1, prop: 'goodsName', label: '商品名称' },
-        { index: 2, prop: 'shopPrice', label: '原价' },
-        { index: 3, prop: 'goodsNumber', label: '库存' },
-        { index: 4, prop: 'discount', label: '折扣' },
-        { index: 5, prop: 'reducePrice', label: '减价' },
-        { index: 6, prop: 'goodsPrice', label: '折后价' },
-        { index: 7, prop: '', label: '操作' }
+        { index: 1, prop: 'goodsName', label: this.$t('marketCommon.goodsName') },
+        { index: 2, prop: 'shopPrice', label: this.$t('reducePriceList.originalPrice') },
+        { index: 3, prop: 'goodsNumber', label: this.$t('reducePriceList.stock') },
+        { index: 4, prop: 'discount', label: this.$t('reducePriceList.discount') },
+        { index: 5, prop: 'reducePrice', label: this.$t('reducePriceList.priceReduction') },
+        { index: 6, prop: 'goodsPrice', label: this.$t('reducePriceList.priceAfterDiscount') },
+        { index: 7, prop: '', label: this.$t('marketCommon.operate') }
       ],
       goodsIdList: [],
       tuneUp: false,
       tuneUpChooseGoods: false
+    }
+  },
+  watch: {
+    // 国际化
+    lang () {
+      this.tableLabel = [
+        { index: 1, prop: 'goodsName', label: this.$t('marketCommon.goodsName') },
+        { index: 2, prop: 'shopPrice', label: this.$t('reducePriceList.originalPrice') },
+        { index: 3, prop: 'goodsNumber', label: this.$t('reducePriceList.stock') },
+        { index: 4, prop: 'discount', label: this.$t('reducePriceList.discount') },
+        { index: 5, prop: 'reducePrice', label: this.$t('reducePriceList.priceReduction') },
+        { index: 6, prop: 'goodsPrice', label: this.$t('reducePriceList.priceAfterDiscount') },
+        { index: 7, prop: '', label: this.$t('marketCommon.operate') }
+      ]
     }
   },
   mounted () {
