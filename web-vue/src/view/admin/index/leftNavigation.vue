@@ -633,7 +633,7 @@ export default {
         this.$router.push({
           name: name,
           query: {
-            pinStatus: 2
+            pinStatus: '2'
           }
         })
       } else {
