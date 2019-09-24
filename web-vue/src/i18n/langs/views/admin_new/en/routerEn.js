@@ -13,7 +13,6 @@ export const en = {
   shopStyle: ['Small Program Management', 'shop style'],
   // 小程序管理 底部导航
   bottomNavigation: ['Small Program Management', 'Bottom navigation'],
-  // ----------------------------------------------------------
   // 商品管理 出售中商品
   goodsForSale: ['Commodity Management', 'Goods For Sale'],
   // 商品管理 已售罄商品
@@ -38,7 +37,6 @@ export const en = {
   goodsLabel: ['Commodity Management', 'Goods Label'],
   // 商品管理 商品导入
   goodsImport: ['Commodity Management', 'Goods Import'],
-  // ----------------------------------------------------------
   // 会员管理 会员列表 会员卡领取
   receiveDetail: [
     'Membership management',
@@ -297,13 +295,15 @@ export const en = {
   memberCardOrder: ['Order management', 'Virtual goods order'],
   // 订单管理 手动退货退款
   manualRefund: ['Order management', 'Manual return refund'],
-  // 营销管理 消息体送
-  message_push: ['Marketing management', 'message_push'],
+  // 营销管理 消息推送
+  message_push: ['Marketing management', 'Message Push'],
   add_message_push: [
     'Marketing management',
     'Message push',
     'Add message push'
   ],
+  // 营销管理 消息推送 发送记录
+  send_record: ['Marketing management', 'Message push', 'Send Record'],
   // 营销管理 定向发券
   couponGift: ['Marketing management', 'Coupon Gift']
 }

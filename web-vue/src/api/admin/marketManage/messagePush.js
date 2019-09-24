@@ -68,3 +68,17 @@ export const templateDeleteApi = data =>
     method: 'post',
     data
   })
+// 发送记录
+export const recordListApi = data =>
+  service({
+    url: `/api/admin/market/message/template/record/list`,
+    method: 'post',
+    data
+  })
+// 添加消息推送
+export const addMessageApi = data =>
+  service({
+    url: `/api/admin/market/message/template/addMessage`,
+    method: 'post',
+    data
+  })

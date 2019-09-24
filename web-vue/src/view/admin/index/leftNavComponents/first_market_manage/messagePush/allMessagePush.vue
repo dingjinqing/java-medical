@@ -244,8 +244,9 @@ export default {
       this.loading = true
       messageTemplateListApi(params).then(res => {
         const { error, content: { page, dataList } } = res
+        console.log(res)
+
         if (error === 0) {
-          console.log(res)
           this.dataList = dataList
           this.pageParams = page
           this.loading = false

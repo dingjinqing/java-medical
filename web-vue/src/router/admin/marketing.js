@@ -908,7 +908,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/addMessagePush'
       )
   },
-
+  // 营销管理/留存复购/消息推送/发送记录
+  {
+    path: '/api/admin/market/messagePush/sendRecord',
+    name: 'send_record',
+    meta: {
+      crumbTitle: 'router.send_record',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/sendRecord'
+      )
+  },
   // 好友助力
   {
     path: '/admin/home/main/couponGift',

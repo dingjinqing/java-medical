@@ -204,27 +204,30 @@
                       ></el-option>
                       <el-option
                         v-for="item in customRuleInfoOptions"
-                        :key="item.value"
+                        :key="item.key"
                         :label="item.label"
                         :value="item.value"
                       >
                       </el-option>
                     </el-select>
-                    <!--  -->
-                    <div style="margin:10px 0">
+                    <!-- 自定义集合 -->
+                    <div style="margin:10px 0;">
                       <ul class="ulList">
                         <li
-                          v-for="(item,i) in optionsList"
-                          :key="i"
+                          v-for="(item) in optionsList"
+                          :key="item.key"
                         >
-                          <span>{{item}}：</span>
+                          <span>{{item.label}}：</span>
                           <span>
                             <el-input
-                              :disabled="!onClickCustomRule"
+                              @blur="handleIpt(item)"
+                              @focus="handleIpt(item)"
+                              :disabled="!params.onClickCustomRule"
                               style="width:120px"
                               size="small"
+                              v-model="item.ipt"
                             > </el-input>
-                            <span>{{ item | filterA  }}</span>
+                            <span>{{ item.label | filterA  }}</span>
                           </span>
                           <div class="img_span">
                             <el-image
@@ -319,7 +322,10 @@
         @dialog-cancel="closeDialog"
       />
       <!-- 选择链接弹窗 -->
-      <selectLinks @path="getPath" />
+      <selectLinks
+        @selectLinkPath="getPath"
+        :tuneUpSelectLink="tuneUpSelectLink"
+      />
       <!-- 选择商品弹窗 -->
       <choosingGoods
         @res="getRes"
@@ -354,7 +360,7 @@ import memberListDialog from './memberListDialog'
 import getUserDialog from './getUserDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
-import { allCardApi, contentAddApi, getUserNumberApi } from '@/api/admin/marketManage/messagePush.js'
+import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi } from '@/api/admin/marketManage/messagePush.js'
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
@@ -414,7 +420,16 @@ export default {
         onClickUser: false,
         userIdList: [],
         onClickCustomRule: false,
-        customRuleInfo: {}
+        customRuleInfo: {
+          payedDay: ``,
+          noPayDay: ``,
+          buyTimesMore: ``,
+          buyTimesLess: ``,
+          moneyAvgMore: ``,
+          moneyAvgLess: ``,
+          loginStart: ``,
+          loginEnd: ``
+        }
       },
       /**
        * params
@@ -435,6 +450,7 @@ export default {
       onClickCustomRule: false,
       disabledOnClickCustomRule: false,
       pageLink: ``,
+      time: {},
       /**
        * 表单检验
        */
@@ -456,51 +472,117 @@ export default {
        * 自定义实体
        */
       customRuleInfoVal: `请选择`,
-      customRuleInfo: {},
       loginStart: ``,
       loginEnd: ``,
       customRuleInfoOptions: [
         {
           label: `N天内有交易记录`,
-          value: `N天内有交易记录`
+          value: `N天内有交易记录`,
+          key: `payedDay`,
+          ipt: ``
         },
         {
           label: `N天内没有交易记录`,
-          value: `N天内没有交易记录`
+          value: `N天内没有交易记录`,
+          key: `noPayDay`,
+          ipt: ``
+
         },
         {
           label: `累计购买次数小于N次`,
-          value: `累计购买次数小于N次`
+          value: `累计购买次数小于N次`,
+          key: `buyTimesLess`,
+          ipt: ``
+
         },
         {
           label: `累计购买次数大于N次`,
-          value: `累计购买次数大于N次`
+          value: `累计购买次数大于N次`,
+          key: `buyTimesMore`,
+          ipt: ``
+
         },
         {
           label: `购买商品均价大于N元`,
-          value: `购买商品均价大于N元`
+          value: `购买商品均价大于N元`,
+          key: `moneyAvgMore`,
+          ipt: ``
+
         },
         {
           label: `购买商品均价小于N元`,
-          value: `购买商品均价小于N元`
+          value: `购买商品均价小于N元`,
+          key: `moneyAvgLess`,
+          ipt: ``
+
         },
         {
           label: `指定时间内有登录记录`,
-          value: `指定时间内有登录记录`
+          value: `指定时间内有登录记录`,
+          key: `time`
+
         }
       ],
-      optionsList: [],
+      optionsList: [
+        // {
+        //   label: `N天内有交易记录`,
+        //   ipt: ``,
+        //   key: `payedDay`
+        // },
+        // {
+        //   label: `N天内没有交易记录`,
+        //   ipt: ``,
+        //   key: `noPayDay`
+        // },
+
+        // {
+        //   label: `累计购买次数大于N次`,
+        //   ipt: ``,
+        //   key: `buyTimesMore`
+        // },
+        // {
+        //   label: `累计购买次数小于N次`,
+        //   ipt: ``,
+        //   key: `buyTimesLess`
+        // },
+        // {
+        //   label: `购买商品均价大于N元`,
+        //   ipt: ``,
+        //   key: `moneyAvgMore`
+        // },
+        // {
+        //   label: `购买商品均价小于N元`,
+        //   ipt: ``,
+        //   key: `moneyAvgLess`
+        // }
+      ],
       showTime: false,
       isShowBtn: false,
       arrList: [],
       imgsList: [],
       userNumber: 0,
-      tuneUpChooseGoods: false
+      tuneUpChooseGoods: false,
+      tuneUpSelectLink: false
 
     }
   },
   watch: {
-
+    senAction (newVal, oldVal) {
+      switch (newVal) {
+        case 1:
+          this.startTime = this.moment().format('YYYY-MM-DD HH:mm:ss')
+          break
+        case 2:
+          this.startTime = this.time.startTime
+          this.endTime = this.time.endTime
+          break
+        case 4:
+          this.startTime = this.time.startTime
+          break
+        default:
+          break
+      }
+    }
   },
   created () {
     this.initData()
@@ -540,28 +622,40 @@ export default {
         name: this.formData.name,
         title: this.formData.title,
         action: 7,
-        templateId: 2,
+        templateId: this.templateId,
         content: this.formData.content,
         pageLink: this.pageLink,
         userInfo: this.params,
-        senAction: this.senAction
-        // startTime: this.startTime,
-        // endTime: this.endTime
+        senAction: this.senAction,
+        userKey: this.params.userKey,
+        startTime: this.startTime,
+        endTime: this.endTime
       }
       console.log(params)
+      addMessageApi(params).then(res => {
+        const { error } = res
+        if (error === 0) {
+          this.$message.success({
+            type: 'success',
+            message: `保存成功`
+          })
+
+          this.$router.push({
+            name: `all_message_push`
+          })
+        }
+      }).catch(err => console.log(err))
     },
     // 获取时间
     getTime (val) {
+      this.time = val
       this.startTime = val.startTime
       this.endTime = val.endTime
     },
     getTime2 (val) {
-      this.startTime1 = val.startTime
+      this.time = val
+      this.startTime = val.startTime
     },
-    getTime3 (val) {
-
-    },
-
     // 关闭会员弹窗
     closeDialog () {
       this.dialogOff = false
@@ -596,56 +690,47 @@ export default {
       this.formData.content = res.content
       this.templateId = res.id
     },
-    formatOptionsList (optionsList) {
-      console.log(optionsList)
-      let obj = {
-
-      }
-      optionsList.forEach(item => {
-        switch (item) {
-          case `N天内有交易记录`:
-            obj.payedDay = item
-            break
-          case `N天内没有交易记录`:
-            obj.noPayDay = item
-            break
-          case `累计购买次数小于N次`:
-            obj.buyTimesLess = item
-            break
-          case `累计购买次数大于N次`:
-            obj.buyTimesMore = item
-            break
-          case `购买商品均价大于N元`:
-            obj.moneyAvgMore = item
-            break
-          case `购买商品均价小于N元`:
-            obj.moneyAvgLess = item
-            break
-          default:
-            break
-        }
-      })
-
-      console.log(obj)
-      this.customRuleInfo = obj
-    },
     customRuleInfoValChange (val) {
+      console.log(val)
       if (val === `指定时间内有登录记录`) {
         this.showTime = true
         this.customRuleInfoOptions = delObj({ arr: this.customRuleInfoOptions, val })
         this.customRuleInfoVal = `请选择`
       } else {
         if (val !== `请选择` && val !== `指定时间内有登陆记录`) {
-          this.optionsList.push(val)
-          this.formatOptionsList(this.optionsList)
-          // 发送请求
-          this.fetchUserList(this.params)
-          // 移除下拉框的option
+          const res = this.customRuleInfoOptions.find(item => item.value === val)
+          this.optionsList.push(res)
+          this.customRuleInfoOptions = this.customRuleInfoOptions.filter(item => item.value !== res.value)
           this.customRuleInfoVal = `请选择`
-
-          this.customRuleInfoOptions = delObj({ arr: this.customRuleInfoOptions, val })
         }
       }
+    },
+    // 输入框发生变化的shih
+    handleIpt (item) {
+      console.log(item)
+      const { key, ipt } = item
+      for (let a in this.params.customRuleInfo) {
+        if (a === key) {
+          switch (a) {
+            case `payedDay`: this.params.customRuleInfo.payedDay = ipt
+              break
+            case `noPayDay`: this.params.customRuleInfo.noPayDay = ipt
+              break
+            case `buyTimesMore`: this.params.customRuleInfo.buyTimesMore = ipt
+              break
+            case `buyTimesLess`: this.params.customRuleInfo.buyTimesLess = ipt
+              break
+            case `moneyAvgMore`: this.params.customRuleInfo.moneyAvgMore = ipt
+              break
+            case `moneyAvgLess`: this.params.customRuleInfo.moneyAvgLess = ipt
+              break
+            default:
+              break
+          }
+        }
+      }
+      console.log(this.params.customRuleInfo)
+      this.fetchUserList(this.params)
     },
     // 删除自定义
     handleDelCustomize (val) {
@@ -663,49 +748,31 @@ export default {
         this.params.loginStart.loginStart = ``
         this.fetchUserList(this.params)
       } else {
-        this.optionsList = this.optionsList.filter(item => item !== val)
-        this.formatOptionsList(this.optionsList)
-        this.fetchUserList(this.params)
-        switch (val) {
-          case `N天内有交易记录`:
-            this.customRuleInfoOptions.push({
-              label: `N天内有交易记录`,
-              value: `N天内有交易记录`
-            })
-            break
-          case `N天内没有交易记录`:
-            this.customRuleInfoOptions.push({
-              label: `N天内没有交易记录`,
-              value: `N天内没有交易记录`
-            })
-            break
-          case `累计购买次数小于N次`:
-            this.customRuleInfoOptions.push({
-              label: `累计购买次数小于N次`,
-              value: `累计购买次数小于N次`
-            })
-            break
-          case `累计购买次数大于N次`:
-            this.customRuleInfoOptions.push({
-              label: `累计购买次数大于N次`,
-              value: `累计购买次数大于N次`
-            })
-            break
-          case `购买商品均价大于N元`:
-            this.customRuleInfoOptions.push({
-              label: `购买商品均价大于N元`,
-              value: `购买商品均价大于N元`
-            })
-            break
-          case `购买商品均价小于N元`:
-            this.customRuleInfoOptions.push({
-              label: `购买商品均价小于N元`,
-              value: `购买商品均价小于N元`
-            })
-            break
-          default:
-            break
+        console.log(val)
+        for (let a in this.params.customRuleInfo) {
+          if (a === val.key) {
+            switch (a) {
+              case `payedDay`: this.params.customRuleInfo.payedDay = ``
+                break
+              case `noPayDay`: this.params.customRuleInfo.noPayDay = ``
+                break
+              case `buyTimesMore`: this.params.customRuleInfo.buyTimesMore = ``
+                break
+              case `buyTimesLess`: this.params.customRuleInfo.buyTimesLess = ``
+                break
+              case `moneyAvgMore`: this.params.customRuleInfo.moneyAvgMore = ``
+                break
+              case `moneyAvgLess`: this.params.customRuleInfo.moneyAvgLess = ``
+                break
+              default:
+                break
+            }
+          }
         }
+        console.log(this.params.customRuleInfo)
+        this.optionsList = this.optionsList.filter(item => item.key !== val.key)
+        this.customRuleInfoOptions.unshift(val)
+        this.fetchUserList(this.params)
       }
     },
     // 添加为模板
@@ -733,7 +800,7 @@ export default {
     },
     // 选择链接
     handleChooseLink () {
-      this.$http.$emit('linkDialogFlag', true)
+      this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
     // 选择模板
     choosTemplate () {
