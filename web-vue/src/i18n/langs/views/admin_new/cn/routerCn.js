@@ -213,5 +213,9 @@ export const cn = {
   // 营销管理 消息推送 添加消息推送
   send_record: ['营销管理', '消息推送', '发送记录'],
   // 营销管理 定向发券
-  couponGift: ['营销管理', '定向发券']
+  couponGift: ['营销管理', '定向发券'],
+  // 营销管理 定向发券 领取明细
+  couponGift_receive_details: ['营销管理', '定向发券', '领取明细'],
+  // 营销管理 定向发券 发放优惠券
+  couponGift_grant_coupons: ['营销管理', '定向发券', '发放优惠券']
 }

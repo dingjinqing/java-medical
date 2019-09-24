@@ -23,6 +23,7 @@
             type="primary"
             size="small"
             class="barginBtn"
+            @click="addAct"
           >发券
           </el-button>
         </div>
@@ -103,6 +104,7 @@
                         <td
                           style="width:4%"
                           class="listContent"
+                          @click="receiveDetails(item.id,it.couponId)"
                         >发放明细</td>
                       </tr>
                     </tbody>
@@ -216,6 +218,16 @@ export default {
       })
       this.tableData = data
       console.log(data)
+    },
+    receiveDetails (id, couponId) {
+      this.$router.push({
+        path: `/admin/home/main/couponGift/receiveDetails/${id}/${couponId}`
+      })
+    },
+    addAct () {
+      this.$router.push({
+        path: `/admin/home/main/couponGift/grantCoupons`
+      })
     }
   },
   filters: {

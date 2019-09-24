@@ -922,7 +922,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/sendRecord'
       )
   },
-  // 好友助力
+  // 定向发券
   {
     path: '/admin/home/main/couponGift',
     name: 'couponGift',
@@ -946,6 +946,32 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/giveGift/giveGift'
+      )
+  },
+  // 定向发券/领取明细
+  {
+    path: '/admin/home/main/couponGift/receiveDetails/:id/:couponId',
+    name: 'couponGift_receive_details',
+    meta: {
+      crumbTitle: 'router.couponGift_receive_details',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponGift/receiveDetails'
+      )
+  },
+  // 定向发券/添加发券活动
+  {
+    path: '/admin/home/main/couponGift/grantCoupons',
+    name: 'couponGift_grant_coupons',
+    meta: {
+      crumbTitle: 'router.couponGift_grant_coupons',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponGift/grantCoupons'
       )
   }
 ]
