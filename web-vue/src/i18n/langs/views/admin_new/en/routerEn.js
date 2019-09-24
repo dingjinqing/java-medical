@@ -277,6 +277,8 @@ export const en = {
     'Increase Purchase',
     'Redemption Detail'
   ],
+  // 营销管理 我要送礼
+  giveGift: ['Marketing management', 'give Gift'],
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情

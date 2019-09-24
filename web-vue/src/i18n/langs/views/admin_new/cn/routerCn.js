@@ -188,6 +188,8 @@ export const cn = {
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细
   purchase_redemption_detail: ['营销管理', '加价购', '换购明细'],
+  // 营销管理 我要送礼
+  giveGift: ['营销管理', '我要送礼'],
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情

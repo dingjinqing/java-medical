@@ -205,7 +205,7 @@ const routes = [
   },
   // 多人拼团  拼团退款失败订单
   {
-    path: '/admin/home/main/spellGroup/refundFailureOrder',
+    path: '/admin/home/main/spellGroup/refundFailureOrder/:pintStatus/:activityId',
     name: ' pin_group_refundFailureOrder',
     meta: {
       crumbTitle: 'router.pin_group_refundFailureOrder',
@@ -213,7 +213,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/refundFailureOrder'
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderList'
       )
   },
   // 多人拼团  活动效果数据
@@ -920,6 +920,19 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/couponGift/couponGiftList'
+      )
+  },
+  // 我要送礼
+  {
+    path: '/admin/home/main/giveGift',
+    name: 'giveGift',
+    meta: {
+      crumbTitle: 'router.giveGift',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/giveGift/giveGift'
       )
   }
 ]

@@ -1,10 +1,17 @@
 <template>
+    <div>
+        <giveGiftList/>
+    </div>
 
 </template>
 
 <script>
+import giveGiftList from './giveGiftList'
 export default {
-  name: 'giveGift'
+  name: 'giveGift',
+  components: {
+    giveGiftList
+  }
 }
 </script>
 

@@ -128,6 +128,7 @@
         <div class="voucher box_style">
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/wysl.png'"
+              @click="giveGift"
               alt=""
             ></div>
           <div class="activity_title">
@@ -584,6 +585,14 @@ export default {
       this.$router.push({
         name: 'couponGift'
       })
+    },
+    // 我要送礼
+    giveGift () {
+      this.$router.push(
+        {
+          name: 'giveGift'
+        }
+      )
     }
   }
 }

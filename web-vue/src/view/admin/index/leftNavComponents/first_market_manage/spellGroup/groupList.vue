@@ -394,7 +394,7 @@ export default {
     },
     refundFailureOrder (id) {
       console.log('跳转到拼团退款失败订单 id = ', id)
-      this.$router.push({ path: '/admin/home/main/spellGroup/refundFailureOrder', query: { id: id } })
+      this.$router.push({ path: `/admin/home/main/spellGroup/refundFailureOrder/2/${id}` })
     },
     activityEffectData (id) {
       console.log('跳转到活动效果数据页面 id = ', id)
