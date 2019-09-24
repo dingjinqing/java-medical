@@ -30,9 +30,11 @@ export default {
   },
   data () {
     return {
+      // 在售未售罄状态
       initFilterData: {
         isOnSale: 1,
-        isSaleOut: null
+        isSaleOut: false,
+        selectType: 1
       }
     }
   },

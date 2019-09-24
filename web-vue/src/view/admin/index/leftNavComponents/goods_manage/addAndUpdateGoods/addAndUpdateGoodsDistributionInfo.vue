@@ -237,14 +237,14 @@ export default {
       // 分销推广语长度超长
       if (this.goodsDistributionInfo.promotionLanguageSwitch && !isStrBlank(this.goodsDistributionInfo.promotionLanguage) &&
         this.goodsDistributionInfo.promotionLanguage.length > 200) {
-        this.$message({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionLanguageTooLong'), type: 'warning'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionLanguageTooLong'), type: 'warning'})
         this.$refs.promotionLanguageInput.focus()
         return false
       }
 
       if (this.goodsDistributionInfo.shareAction === 2 && !isStrBlank(this.goodsDistributionInfo.shareDoc) &&
         this.goodsDistributionInfo.shareDoc.length > 15) {
-        this.$message({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionDocTooLong'), type: 'warning'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionDocTooLong'), type: 'warning'})
         this.$refs.shareDocInput.focus()
         return false
       }

@@ -89,11 +89,10 @@ export const getGoodsProductList = data => {
   })
 }
 //  查询商品全部规格
-export const getAllGoodsProductList = data => {
+export const getAllGoodsProductList = goodsId => {
   return service({
-    url: '/api/admin/goods/product/all',
-    method: 'post',
-    data
+    url: `/api/admin/goods/product/all/${goodsId}`,
+    method: 'get'
   })
 }
 

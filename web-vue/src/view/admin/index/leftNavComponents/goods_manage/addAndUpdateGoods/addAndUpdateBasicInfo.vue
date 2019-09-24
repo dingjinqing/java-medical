@@ -495,7 +495,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
+          this.$message.warning({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
           this.goodsProductInfo.goodsName = this.goodsProductInfo.goodsNameBak
         } else {
           this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
@@ -516,7 +516,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
+          this.$message.warning({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
           this.goodsProductInfo.goodsSn = this.goodsProductInfo.goodsSnBak
         } else {
           this.goodsProductInfo.goodsSnBak = this.goodsProductInfo.goodsSn
@@ -810,24 +810,24 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (isStrBlank(this.goodsProductInfo.goodsName)) {
-        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsName'), type: 'warning'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsName'), type: 'warning'})
         this.$refs.goodsNameInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.catId === null) {
-        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning'})
         this.$refs.catSelect.focus()
         return false
       }
 
       if (this.goodsProductInfo.goodsImgs.length === 0) {
-        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning'})
         return false
       }
 
       if (isStrBlank(this.goodsProductInfo.unit)) {
-        this.$message({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning'})
         this.$refs.unitSelect.focus()
         return false
       }

@@ -20,7 +20,7 @@
         label="名称" min-width="120px">
         <template slot-scope="{row}">
           <div >
-            <img style="width: 70px;height: 70px;float: left;"  :src="row.goodsImg">
+            <img style="width: 70px;height: 70px;float: left;"  :src="row.prdImg">
             <div style="padding:10px;">
               <span v-if="row.sourceName !== null" class="goodsTypeSpanWrap">{{row.sourceName}}</span>
               <span v-if="row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{row.goodsTypeName}}</span>
@@ -39,17 +39,17 @@
         align="center"
         label="价格">
         <template slot-scope="{row}">
-           <span v-if="!row.shopPriceEdit">
-             {{row.shopPrice}}
-             <span class="el-icon-edit-outline iconSpan" style="margin-left: 10px;" @click="shopPriceAndGoodsNumberEditClick(row,'price')"></span>
+           <span v-if="!row.prdPriceEdit">
+             {{row.prdPrice}}
+             <span class="el-icon-edit-outline iconSpan" style="margin-left: 10px;" @click="prdPriceAndPrdNumberEditClick(row,'price')"></span>
            </span>
-          <input :id="'shopPrice_'+row.goodsId" v-else v-model.number="row.shopPriceOld"
-                 @change="shopPriceChange(row)" @blur="row.shopPriceEdit = false" class="editInput"/>
+          <input :id="'prdPrice_'+row.prdId" v-else v-model.number="row.prdPriceOld"
+                 @change="prdPriceChange(row)" @blur="row.prdPriceEdit = false" class="editInput"/>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
-        prop="goodsSn"
+        prop="prdSn"
         label="商品货号" />
       <el-table-column
         align="center"
@@ -68,12 +68,12 @@
         align="center"
         label="库存">
         <template slot-scope="{row}">
-           <span v-if="!row.goodsNumberEdit">
-             {{row.goodsNumber}}
-             <span class="el-icon-edit-outline iconSpan" style="margin-left: 10px;" @click="shopPriceAndGoodsNumberEditClick(row,'number')"></span>
+           <span v-if="!row.prdNumberEdit">
+             {{row.prdNumber}}
+             <span class="el-icon-edit-outline iconSpan" style="margin-left: 10px;" @click="prdPriceAndPrdNumberEditClick(row,'number')"></span>
            </span>
-          <input v-else :id="'goodsNumber_'+row.goodsId" v-model.number="row.goodsNumberOld"
-                 @change="goodsNumberChange(row)" @blur="row.goodsNumberEdit = false" class="editInput"/>
+          <input v-else :id="'prdNumber_'+row.prdId" v-model.number="row.prdNumberOld"
+                 @change="goodsNumberChange(row)" @blur="row.prdNumberEdit = false" class="editInput"/>
         </template>
       </el-table-column>
       <el-table-column
@@ -148,7 +148,7 @@
 </template>
 <script>
 
-import {getGoodsList, batchOperateSpecPrdPriceNumber, updateLabelByGoodsId} from '@/api/admin/goodsManage/allGoods/allGoods'
+import {getGoodsProductList, batchOperateSpecPrdPriceNumber, updateLabelByGoodsId} from '@/api/admin/goodsManage/allGoods/allGoods'
 import {getGoodsQrCode, goodsSortAndGoodsBrandInitApi} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
@@ -179,24 +179,24 @@ export default {
   },
   methods: {
     /* 商品价格和库存修改图标点击事件 */
-    shopPriceAndGoodsNumberEditClick (row, type) {
+    prdPriceAndPrdNumberEditClick (row, type) {
       if (type === 'price') {
-        row.shopPriceEdit = true
-        this.$nextTick(() => document.getElementById('shopPrice_' + row.goodsId).focus())
+        row.prdPriceEdit = true
+        this.$nextTick(() => document.getElementById('prdPrice_' + row.prdId).focus())
       } else {
-        row.goodsNumberEdit = true
-        this.$nextTick(() => document.getElementById('goodsNumber_' + row.goodsId).focus())
+        row.prdNumberEdit = true
+        this.$nextTick(() => document.getElementById('prdNumber_' + row.prdId).focus())
       }
     },
     /* 商品价格输入框处理函数 */
-    shopPriceChange (row) {
-      row.shopPriceEdit = false
-      if (typeof row.shopPriceOld !== 'number' || row.shopPriceOld < 0) {
-        row.shopPriceOld = row.shopPrice
-        this.$message({type: 'warning', message: '请输入正确价格'})
+    prdPriceChange (row) {
+      row.prdPriceEdit = false
+      if (typeof row.prdPriceOld !== 'number' || row.prdPriceOld < 0) {
+        row.prdPriceOld = row.shopPrice
+        this.$message.warning({type: 'warning', message: '请输入正确价格'})
         return
       }
-      row.shopPrice = row.shopPriceOld
+      row.shopPrice = row.prdPriceOld
       let shopPrices = {}
       shopPrices[row.goodsId] = [{
         prdId: row.prdId,
@@ -207,20 +207,20 @@ export default {
         goodsPriceNumbers: shopPrices
       }).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'info', message: '设置成功!'})
+          this.$message.success({type: 'info', message: '设置成功!'})
         }
       })
     },
     /* 商品数量输入框处理函数 */
     goodsNumberChange (row) {
-      row.goodsNumberEdit = false
-      if (typeof row.goodsNumberOld !== 'number' || row.goodsNumberOld < 0) {
-        row.goodsNumberOld = row.goodsNumber
-        this.$message({type: 'warning', message: '请输入正确商品数量'})
+      row.prdNumberEdit = false
+      if (typeof row.prdNumberOld !== 'number' || row.prdNumberOld < 0) {
+        row.prdNumberOld = row.goodsNumber
+        this.$message.warning({type: 'warning', message: '请输入正确商品数量'})
         return
       }
-      row.goodsNumber = parseInt(row.goodsNumberOld)
-      row.goodsNumberOld = row.goodsNumber
+      row.goodsNumber = parseInt(row.prdNumberOld)
+      row.prdNumberOld = row.goodsNumber
 
       let goodsNumbers = {}
       goodsNumbers[row.goodsId] = [{
@@ -232,7 +232,7 @@ export default {
         goodsPriceNumbers: goodsNumbers
       }).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'info', message: '设置成功!'})
+          this.$message.success({type: 'info', message: '设置成功!'})
           this.fetchGoodsData()
         }
       })
@@ -285,7 +285,7 @@ export default {
         this.goodsLabelData.labelSelectOptions = []
         this.goodsLabelData.currentRow = null
         this.goodsLabelData.isShow = false
-        this.$message({type: 'info', message: '设置成功'})
+        this.$message.success.success({type: 'info', message: '设置成功'})
         // 刷新数据
         this.fetchGoodsData()
       })
@@ -315,7 +315,7 @@ export default {
       }).then(() => {
         return confirmCallback()
       }).then(() => {
-        this.$message({
+        this.$message.success({
           type: 'success',
           message: confirmMesage
         })
@@ -334,7 +334,7 @@ export default {
         ...this.pageParams,
         ...this.filterData
       }
-      getGoodsList(params).then(res => {
+      getGoodsProductList(params).then(res => {
         let {content: {page, dataList}} = res
 
         this.pageParams.totalRows = page.totalRows
@@ -359,10 +359,10 @@ export default {
               item.goodsTypeName = null
           }
 
-          item.shopPriceEdit = false
-          item.shopPriceOld = item.shopPrice
-          item.goodsNumberEdit = false
-          item.goodsNumberOld = item.goodsNumber
+          item.prdPriceEdit = false
+          item.prdPriceOld = item.shopPrice
+          item.prdNumberEdit = false
+          item.prdNumberOld = item.goodsNumber
         })
 
         this.goodsData = dataList

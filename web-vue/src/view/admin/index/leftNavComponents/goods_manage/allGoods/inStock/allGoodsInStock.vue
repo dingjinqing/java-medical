@@ -31,7 +31,7 @@ export default {
     return {
       initFilterData: {
         isOnSale: 0,
-        isSaleOut: null
+        selectType: 1
       }
     }
   },

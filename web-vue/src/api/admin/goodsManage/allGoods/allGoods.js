@@ -8,6 +8,22 @@ export function getGoodsList (data) {
     data: data
   })
 }
+// 全部商品查询
+export function getGoodsProductList (data) {
+  return service({
+    url: `/api/admin/goods/product/list`,
+    method: 'post',
+    data: data
+  })
+}
+// 根据商品ID集合查询对应商品信息
+export function getGoodsInfosByGoodIds (data) {
+  return service({
+    url: `/api/admin/goods/infos`,
+    method: 'post',
+    data: data
+  })
+}
 // 商品删除
 export function deleteGoods (data) {
   return service({

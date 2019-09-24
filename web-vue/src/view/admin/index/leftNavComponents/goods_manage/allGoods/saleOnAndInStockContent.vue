@@ -213,7 +213,7 @@ export default {
       row.shopPriceEdit = false
       if (typeof row.shopPriceOld !== 'number' || row.shopPriceOld < 0) {
         row.shopPriceOld = row.shopPrice
-        this.$message({type: 'warning', message: '请输入正确价格'})
+        this.$message.warning({type: 'warning', message: '请输入正确价格'})
         return
       }
       row.shopPrice = row.shopPriceOld
@@ -227,7 +227,7 @@ export default {
         goodsPriceNumbers: shopPrices
       }).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'info', message: '设置成功!'})
+          this.$message.success({type: 'info', message: '设置成功!'})
         }
       })
     },
@@ -236,7 +236,7 @@ export default {
       row.goodsNumberEdit = false
       if (typeof row.goodsNumberOld !== 'number' || row.goodsNumberOld < 0) {
         row.goodsNumberOld = row.goodsNumber
-        this.$message({type: 'warning', message: '请输入正确商品数量'})
+        this.$message.warning({type: 'warning', message: '请输入正确商品数量'})
         return
       }
       row.goodsNumber = parseInt(row.goodsNumberOld)
@@ -252,7 +252,7 @@ export default {
         goodsPriceNumbers: goodsNumbers
       }).then(res => {
         if (res.error === 0) {
-          this.$message({type: 'info', message: '设置成功!'})
+          this.$message.success({type: 'info', message: '设置成功!'})
         }
       })
     },
@@ -304,7 +304,7 @@ export default {
         this.goodsLabelData.labelSelectOptions = []
         this.goodsLabelData.currentRow = null
         this.goodsLabelData.isShow = false
-        this.$message({type: 'info', message: '设置成功'})
+        this.$message.success({type: 'info', message: '设置成功'})
       })
     },
     goodsLabelDialogCancel () {
@@ -355,7 +355,7 @@ export default {
       }).then(() => {
         return confirmCallback()
       }).then(() => {
-        this.$message({
+        this.$message.success({
           type: 'success',
           message: confirmMesage
         })

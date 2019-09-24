@@ -430,10 +430,7 @@ export default {
       console.log('tmpGoodsIds', this.form.goodsId)
       this.form.goodsId = row.goodsId
       // 初始化规格表格
-      let obj = {
-        goodsId: this.form.goodsId
-      }
-      getAllGoodsProductList(obj).then(res => {
+      getAllGoodsProductList(this.form.goodsId).then(res => {
         console.log('product', res.content)
         this.form.product = res.content
       })

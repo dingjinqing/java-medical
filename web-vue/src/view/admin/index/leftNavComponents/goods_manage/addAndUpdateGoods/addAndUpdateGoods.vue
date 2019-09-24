@@ -284,7 +284,7 @@ export default {
 
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
-          this.$message({
+          this.$message.error({
             message: res.message,
             type: 'error'
           })
@@ -303,7 +303,7 @@ export default {
 
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
-          this.$message({
+          this.$message.error({
             message: res.message,
             type: 'error'
           })
@@ -323,7 +323,7 @@ export default {
 
       executeFunc(goodsData).then(res => {
         if (res.error !== 0) {
-          this.$message({
+          this.$message.error({
             message: res.message,
             type: 'error'
           })
@@ -345,7 +345,7 @@ export default {
     _initDataForUpdate (goodsId) {
       selectGoodsApi({goodsId: goodsId}).then(res => {
         if (res.error !== 0) {
-          this.$message({
+          this.$message.error({
             type: 'error',
             message: this.$t('goodsAddEditInfo.warningInfo.serverWrong') + res.error + this.$t('goodsAddEditInfo.warningInfo.pleaseConnectUs')
           })

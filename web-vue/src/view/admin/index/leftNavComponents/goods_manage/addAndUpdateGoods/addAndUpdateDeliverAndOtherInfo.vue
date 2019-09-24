@@ -482,19 +482,19 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {
-        this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip'), type: 'warning'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip'), type: 'warning'})
         this.$refs.deliverPlaceInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.saleType === 1) {
         if (this.goodsProductInfo.saleTime === null) {
-          this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
+          this.$message.warning({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
-          this.$message({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
+          this.$message.warning({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
           this.$refs.saleTimeInput.focus()
           return false
         }

@@ -12,44 +12,35 @@
           <ul>
             <li>平台分类：
               <el-select
-                v-model="bottomDialogSelectOne"
+                v-model="goodsCatId"
                 placeholder="请选择平台分类"
                 size="small"
               >
-                <el-option
-                  v-for="item in bottomOptionsOne"
-                  :key="item.catId"
-                  :label="item.catName"
-                  :value="item.catId"
-                  :class="[item.level ===1?'level_1':'',item.level ===2?'level_2':'']"
-                >
-                </el-option>
+                <el-option label="请选择平台分类" :value="null"/>
+                <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName+' ('+item.goodsNumberSum+')'" :value="item.catId" :key="index"
+                           :style="{paddingLeft: (item.level+1)*20+'px'}"/>
+
               </el-select>
             </li>
             <li>商家分类：
               <el-select
-                v-model="bottomDialogSelectTwo"
+                v-model="goodsSortId"
                 placeholder="请选择商家分类"
                 size="small"
               >
-                <el-option
-                  v-for="item in bottomOptionsTwo"
-                  :key="item.sortId"
-                  :label="item.sortName"
-                  :value="item.sortId"
-                  :class="[item.level ===1?'level_1':'',item.level ===2?'level_2':'']"
-                >
-                </el-option>
+                <el-option label="请选择商家分类" :value="null"/>
+                <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName+' ('+item.goodsNumberSum+')'" :value="item.sortId" :key="index"
+                           :style="{paddingLeft: (item.level+1)*20+'px'}"/>
               </el-select>
             </li>
             <li>商品标签：
               <el-select
-                v-model="bottomDialogSelectThree"
+                v-model="goodsLabelId"
                 placeholder="请选择商品标签"
                 size="small"
               >
                 <el-option
-                  v-for="item in bottomOptionsThree"
+                  v-for="item in goodsLabelOptions"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -59,12 +50,12 @@
             </li>
             <li class="rangeLi">商品价格范围：
               <el-input
-                v-model="inputBottomRange"
+                v-model="shopPriceLow"
                 placeholder="请输入内容"
                 size="small"
               ></el-input>&nbsp;元至&nbsp;
               <el-input
-                v-model="inputBottomRangeRight"
+                v-model="shopPriceHigh"
                 placeholder="请输入内容"
                 size="small"
               ></el-input>
@@ -80,19 +71,19 @@
             </li>
             <li>商品货号：
               <el-input
-                v-model="goodsNum"
+                v-model="goodsSn"
                 placeholder="请输入商品货号"
                 size="small"
               ></el-input>
             </li>
             <li>商品品牌：
               <el-select
-                v-model="goodsGrandVal"
+                v-model="goodsBrandId"
                 placeholder="请选择商品品牌"
                 size="small"
               >
                 <el-option
-                  v-for="item in goodsGrandOptions"
+                  v-for="item in goodsBrandOptions"
                   :key="item.id"
                   :label="item.brandName"
                   :value="item.id"
@@ -103,11 +94,13 @@
           </ul>
           <div class="middleBbtnDiv">
             <el-button
+              @click="selectGoodsData"
               type="primary"
               size="small"
               style="margin-right:10px"
             >筛选</el-button>
             <el-button
+              @click="resetFilterData"
               type="info"
               plain
               size="small"
@@ -225,78 +218,58 @@
 </template>
 <script>
 import {
-  initGrandgetRequest,
   queryGoodsIdRequest,
   classificationSelectRequest,
   allGoodsQueryRequest,
   getGoodsProductList
 } from '@/api/admin/brandManagement.js'
+import {getAllGoodsInitValue} from '@/api/admin/goodsManage/allGoods/allGoods'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   props: {
     // 是否加载规格
-    loadProduct: Boolean,
+    loadProduct: {
+      type: Boolean,
+      default: false
+    },
     tuneUpChooseGoods: Boolean,
     singleElection: {
       type: Boolean,
       default: false
     },
-    chooseGoodsBack: Array
+    chooseGoodsBack: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
   },
   data () {
     return {
+      // 顶部过滤条件和表格数据商品查询固定毕传字段
+      filterBaseParam: {
+        isOnSale: 1,
+        isSaleOut: false,
+        // 查询商品时值为1，规格查询值为2
+        selectType: 1
+      },
       pageCount: 1,
       total: null,
       currentPage: 1,
+      pageRows: 20,
       choiseGooddialogVisible: false,
-      bottomDialogSelectOne: '',
-      bottomOptionsOne: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
-      bottomDialogSelectTwo: '',
-      bottomOptionsTwo: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
-      bottomDialogSelectThree: '',
-      bottomOptionsThree: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
-      inputBottomRange: '',
-      inputBottomRangeRight: '',
-      goodsName: '',
-      goodsNum: '',
-      goodsGrandVal: '',
-      goodsGrandOptions: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
+      goodsCatId: null,
+      goodsCatOptions: [],
+      goodsSortId: null,
+      goodsSortOptions: [],
+      goodsLabelId: null,
+      goodsLabelOptions: [],
+      shopPriceLow: null,
+      shopPriceHigh: null,
+      goodsName: null,
+      goodsSn: null,
+      goodsBrandId: null,
+      goodsBrandOptions: [],
       checkedAll: false,
       tbodyFlag: true,
       trList: [],
@@ -329,7 +302,6 @@ export default {
       }
     },
     tuneUpChooseGoods () {
-      console.log('test')
       this.choiseGooddialogVisible = true
       this.trList.forEach(item => {
         item.ischecked = false
@@ -342,7 +314,6 @@ export default {
           }
         })
       } else {
-        console.log(this.chooseGoodsBack)
         this.trList.forEach(item => {
           this.chooseGoodsBack.forEach(itemC => {
             if (item.goodsId === itemC) {
@@ -354,13 +325,14 @@ export default {
     }
   },
   mounted () {
-    // 品牌分类初始化获取及页编辑回显
-    this.defaultGrandClass()
+    this._initFilterDatas().then(res => {
+      this.defaultGrandClass()
+    })
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
     defaultGrandClass () {
-      if (this.editGoodsId !== 'add' && this.chooseGoodsBack) {
+      if (this.editGoodsId !== 'add' && this.chooseGoodsBack && this.chooseGoodsBack.length > 0) {
         let obj = {
           'id': this.chooseGoodsBack
         }
@@ -381,62 +353,68 @@ export default {
           this.options = res.content
         }
       })
-      this.handleClickChoiseGood()
+      this.selectGoodsData()
     },
-    // 初始数据获取
-    handleClickChoiseGood () {
-      let obj = {
-        goodsName: this.goodsName,
-        catId: this.bottomDialogSelectOne,
-        sortId: this.bottomDialogSelectTwo,
-        labelId: this.bottomDialogSelectThree,
-        brandId: this.goodsGrandVal,
-        lowShopPrice: this.inputBottomRange,
-        highShopPrice: this.inputBottomRangeRight,
-        currentPage: 1,
-        pageRows: 20
-      }
-      // 弹窗上方下拉框统一数据获取
-      initGrandgetRequest().then((res) => {
-        if (!res) return
-        if (res.error === 0) {
-          this.bottomOptionsOne = res.content.sysCates
-          this.bottomOptionsTwo = res.content.goodsSorts
-          this.bottomOptionsThree = res.content.goodsLabels
-          this.goodsGrandOptions = res.content.goodsBrands
-        }
-      })
-      // 弹窗下方表格数据获取
-      let query = allGoodsQueryRequest
+    /* 初始化过滤条件下拉框数据 */
+    _initFilterDatas () {
       if (this.loadProduct) {
-        query = getGoodsProductList
+        this.filterBaseParam.selectType = 2
+      } else {
+        this.filterBaseParam.selectType = 1
       }
-      query(obj).then((res) => {
+      return getAllGoodsInitValue(this.filterBaseParam).then((res) => {
         if (!res) return
         if (res.error === 0) {
-          res.content.dataList.catName = res.content.dataList.map((item, index) => {
-            item.catName = item.catName.replace('，', '、')
-            item.ischecked = false
-            this.hxgoodsIds.map((childrenItem, childrenIndex) => {
-              let condition = childrenItem === item.goodsId
-              if (this.loadProduct) {
-                // 规格id
-                condition = childrenItem.prdId === childrenItem
-              }
-              if (condition) {
-                item.ischecked = true
-              }
-            })
-          })
-          let flag = res.content.dataList.filter((item, index) => {
-            return item.ischecked === false
-          })
-          if (flag.length === 0 && this.choiseOne === false) {
-            this.checkedAll = true
-          }
-          this.trList = res.content.dataList
+          this.goodsCatOptions = this._disposeGoodsSortAndCatData(res.content.sysCates, 'catId')
+          this.goodsSortOptions = this._disposeGoodsSortAndCatData(res.content.goodsSorts, 'sortId')
+          this.goodsLabelOptions = res.content.goodsLabels
+          this.goodsBrandOptions = res.content.goodsBrands
         }
       })
+    },
+    /* 处理后台传入的商家分类数据 */
+    _disposeGoodsSortAndCatData (data, idName) {
+      let retObj = {}
+
+      for (let i = 0; i < data.length; i++) {
+        let item = data[i]
+
+        // 是否自身节点被创建过（子节点先遍历到了）
+        let selfItem = retObj[item[idName]]
+        if (selfItem === undefined) {
+          // 未遍历到则初始化自己
+          retObj[item[idName]] = {'item': item, children: []}
+          selfItem = retObj[item[idName]]
+        } else {
+          // 已创建过，（因提前遍历了子节点而创建）
+          selfItem.item = item
+        }
+
+        let parentItem = retObj[item.parentId]
+        // 有父亲直接插入
+        if (parentItem !== undefined) {
+          parentItem.children.push(selfItem)
+        } else {
+          // 没有则创建临时父亲
+          retObj[item.parentId] = {'item': null, children: [selfItem]}
+        }
+      }
+
+      let retArr = []
+
+      if (data.length === 0) {
+        return retArr
+      }
+      let rootArr = retObj['0'].children
+      // 处理结果将对象变为数组
+      for (let i = 0; i < rootArr.length; i++) {
+        let retItem = rootArr[i]
+        retArr.push(retItem.item)
+        if (retItem.children.length > 0) {
+          rootArr.splice(i + 1, 0, ...(retItem.children))
+        }
+      }
+      return retArr
     },
     // 行选中高亮
     handleClick (index, item) {
@@ -496,6 +474,77 @@ export default {
     // 页数改变
     handleCurrentChange () {
       this.defaultGrandClass()
+    },
+    /* 筛选商品或规格数据 */
+    selectGoodsData () {
+      let query = null
+
+      if (this.loadProduct) {
+        query = getGoodsProductList
+      } else {
+        query = allGoodsQueryRequest
+      }
+      let params = this.getFilterData()
+      query(params).then((res) => {
+        if (!res) return
+        if (res.error === 0) {
+          res.content.dataList.catName = res.content.dataList.map((item, index) => {
+            item.catName = item.catName.replace('，', '、')
+            item.ischecked = false
+            this.hxgoodsIds.map((childrenItem, childrenIndex) => {
+              let condition = childrenItem === item.goodsId
+              if (this.loadProduct) {
+                // 规格id
+                condition = childrenItem.prdId === childrenItem
+              }
+              if (condition) {
+                item.ischecked = true
+              }
+            })
+          })
+          let flag = res.content.dataList.filter((item, index) => {
+            return item.ischecked === false
+          })
+          if (flag.length === 0 && this.choiseOne === false) {
+            this.checkedAll = true
+          }
+          this.trList = res.content.dataList
+        }
+      })
+    },
+    /* 重置过滤条件数据 */
+    resetFilterData () {
+      this.goodsCatId = null
+      this.goodsSortId = null
+      this.goodsLabelId = null
+      this.shopPriceLow = null
+      this.shopPriceHigh = null
+      this.goodsName = null
+      this.goodsSn = null
+      this.goodsBrandId = null
+    },
+    /* 获取过滤数据 */
+    getFilterData () {
+      if (this.loadProduct) {
+        this.filterBaseParam.selectType = 2
+      } else {
+        this.filterBaseParam.selectType = 1
+      }
+
+      let filterData = {
+        catId: this.goodsCatId,
+        sortId: this.goodsSortId,
+        labelId: this.goodsLabelId,
+        lowShopPrice: this.shopPriceLow,
+        highShopPrice: this.shopPriceHigh,
+        goodsName: this.goodsName,
+        goodsSn: this.goodsSn,
+        brandId: this.goodsBrandId,
+        currentPage: this.currentPage,
+        pageRows: this.pageRows,
+        ...this.filterBaseParam
+      }
+      return filterData
     }
   }
 }
