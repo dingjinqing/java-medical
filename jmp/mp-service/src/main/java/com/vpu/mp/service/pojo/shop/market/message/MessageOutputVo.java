@@ -21,4 +21,6 @@ public class MessageOutputVo {
     private Byte isVisit;
 
     private Timestamp visitTime;
+
+    private Timestamp createTime;
 }
