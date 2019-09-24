@@ -27,19 +27,34 @@ import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 @RestController
 public class AdminGoodsController extends AdminBaseController {
 
-
+    /**
+     * 商品分页查询页面过滤框数据初始化，包含了全部品牌，全部标签，店铺内商品对应的平台分类和商家分类,
+     * 对于平台分类和商家分类会根据对应的查询条件进行过滤
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
+     */
     @PostMapping("/api/admin/goods/page/init")
     public JsonResult getPageInitValue(@RequestBody GoodsPageListParam param) {
         GoodsInitialVo goodsInitialVo = shop().goods.pageInitValue(param);
         return success(goodsInitialVo);
     }
 
+    /**
+     * 获取全品牌，标签，商家分类数据
+     * @return
+     */
     @GetMapping("/api/admin/goods/sortBrandLabel/list")
     public JsonResult getSortBrandLabelList(){
         GoodsInitialVo goodsInitialVo = shop().goods.getSortBrandLabelList();
         return success(goodsInitialVo);
     }
 
+    /**
+     *  根据平台分类id获取其所有的祖先节点数据，
+     * （修改商品回显商品平台分类数据的时候使用到）
+     * @param catId 平台分类id
+     * @return LinkedList:有序链表，按照祖先顺序排列， map {'cat_id':1,'cat_name':'裤子'}
+     */
     @GetMapping("/api/admin/goods/getSysCatParents")
     public JsonResult getSysCatParents(Integer catId) {
         LinkedList<Map<String, Object>> parentByChildId = saas.sysCate.findParentByChildId(catId);
@@ -47,14 +62,12 @@ public class AdminGoodsController extends AdminBaseController {
     }
     /**
      * 商品分页查询
-     *
-     * @param param
+     * @param param 过滤条件
      * @return
      */
     @PostMapping("/api/admin/goods/list")
     public JsonResult getPageList(@RequestBody GoodsPageListParam param) {
         PageResult<GoodsPageListVo> pageList = shop().goods.getPageList(param);
-
         return success(pageList);
     }
 
@@ -67,13 +80,23 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
+     * 根据商品id集合获取对应的商品信息集合
+     * @param goodsIdParams
+     * @return
+     */
+    @PostMapping("/api/admin/goods/infos")
+    public JsonResult selectGoodsInfoByGoodsIds(@RequestBody GoodsIdParams goodsIdParams) {
+        return success(shop().goods.getGoodsInfosList(goodsIdParams.getGoodsIds()));
+    }
+
+    /**
      * 查询商品所有规则信息
-     * @param param 商品ID goodsid
+     * @param goodsId 商品ID
      * @return  规则信息
      */
-    @PostMapping("/api/admin/goods/product/all")
-    public JsonResult getAllProductListByGoodsId(@RequestBody GoodsIdParam param){
-        List<GoodsProductVo> productVos = shop().goods.getAllProductListByGoodsId(param.getGoodsId());
+    @PostMapping("/api/admin/goods/product/all/{goodsId}")
+    public JsonResult getAllProductListByGoodsId(@PathVariable("goodsId") Integer goodsId){
+        List<GoodsProductVo> productVos = shop().goods.getAllProductListByGoodsId(goodsId);
         return success(productVos);
     }
 

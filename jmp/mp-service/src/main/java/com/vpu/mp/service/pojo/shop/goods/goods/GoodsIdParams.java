@@ -1,0 +1,18 @@
+package com.vpu.mp.service.pojo.shop.goods.goods;
+
+import lombok.Data;
+
+import java.util.List;
+
+/**
+ * @author 孔德成
+ * @date 2019/8/29 14:22
+ */
+@Data
+public class GoodsIdParams {
+
+    /**
+     * 商品id
+     */
+    private List<Integer> goodsIds;
+}

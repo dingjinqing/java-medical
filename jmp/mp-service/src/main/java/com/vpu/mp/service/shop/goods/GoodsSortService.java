@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 import java.util.*;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -79,25 +81,33 @@ public class GoodsSortService extends ShopBaseService {
      * 查询出绑定了商品的的商家分类(如果是子分类则包含该分类的祖先级分类)
      * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.Sort}
      */
-    public List<Sort> getListBindedGoods(Condition condition) {
+    public List<Sort> getListBindedGoods(Condition condition,Integer selectType) {
 
-        List<Sort> tempData = db().select().from(SORT)
-            .where(SORT.SORT_ID.in(db().select(GOODS.SORT_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(condition)))
-            .fetchInto(Sort.class);
+        // 查询sortId 对应的所有sort集合，集合内都是相同的数据，仅仅是为了统计数量
+        Map<Integer,List<Sort>> sortsMap = null;
+        if (GoodsPageListParam.GOODS_LIST.equals(selectType)) {
+            sortsMap = db().select(SORT.asterisk()).from(SORT).innerJoin(GOODS).on(SORT.SORT_ID.eq(GOODS.SORT_ID)).where(condition).fetch().intoGroups(SORT.SORT_ID, Sort.class);
+        } else {
+            sortsMap = db().select(SORT.asterisk()).from(SORT).innerJoin(GOODS).on(SORT.SORT_ID.eq(GOODS.SORT_ID))
+                .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(condition).fetch().intoGroups(SORT.SORT_ID,Sort.class);
+        }
 
-        String goodsNumberFiledName = "goods_number";
-        Map<Integer, Integer> goodsNumberMap = db().select(GOODS.SORT_ID, DSL.count().as(goodsNumberFiledName))
-            .from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(condition)
-            .groupBy(GOODS.SORT_ID).fetch().intoMap(GOODS.SORT_ID, DSL.field(goodsNumberFiledName,Integer.class));
-
+        // 临时存储当前查出来的sort数据
+        List<Sort> tempData = new ArrayList<>(sortsMap.size());
         // 设置数据的商品数量并放置到sortIdMap中，为后期计算商品数量准备
         Map<Integer,Sort> sortIdMap=new HashMap<>(tempData.size());
-
+        // 设置最初分类的商品或规格数量，并放入sortIdMap和tempData中
+        for (Map.Entry<Integer, List<Sort>> entry : sortsMap.entrySet()) {
+            Sort sort = entry.getValue().get(0);
+            sort.setGoodsNumber(entry.getValue().size());
+            sortIdMap.put(entry.getKey(),sort);
+            tempData.add(sort);
+        }
+        // 返回的结果对象
         List<Sort> resultSort = new ArrayList<>(tempData.size());
         resultSort.addAll(tempData);
 
-        Set<Integer> sortIds=new HashSet<>(0);
-
+        // 迭代查询所有的祖先数据，并将祖先数据的商品或规格数全部设置为0
         while (tempData.size() > 0) {
             List<Integer> tempParentIds = new ArrayList<>(tempData.size());
             List<Integer> tempIds = new ArrayList<>(tempData.size());
@@ -106,17 +116,17 @@ public class GoodsSortService extends ShopBaseService {
                 tempParentIds.add(sort.getParentId());
                 tempIds.add(sort.getSortId());
 
-                Integer num = goodsNumberMap.get(sort.getSortId());
-                sort.setGoodsNumber(num == null? 0:num);
+                if (sort.getGoodsNumber() == null) {
+                    sort.setGoodsNumber(0);
+                }
                 sort.setGoodsNumberSum(sort.getGoodsNumber());
                 sortIdMap.put(sort.getSortId(),sort);
             });
             tempData = db().select().from(SORT).where(SORT.SORT_ID.in(tempParentIds)).and(SORT.SORT_ID.notIn(tempIds)).fetchInto(Sort.class);
 
-            sortIds.addAll(tempIds);
             resultSort.addAll(tempData);
         }
-
+        // 迭代计算平台分类对应的所有商品或规格数量
         resultSort.forEach(sort -> {
             Integer baseNum = sort.getGoodsNumber();
             Sort parent = sortIdMap.get(sort.getParentId());
@@ -125,7 +135,7 @@ public class GoodsSortService extends ShopBaseService {
                 parent = sortIdMap.get(parent.getParentId());
             }
         });
-
+        // 根据first和creteTime 排序
         resultSort.sort((s1,s2)->{
             if (s1.getFirst().equals(s2.getFirst())){
                 return s2.getCreateTime().compareTo(s1.getCreateTime());

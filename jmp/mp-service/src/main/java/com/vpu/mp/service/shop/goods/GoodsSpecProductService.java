@@ -254,15 +254,6 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
-     * 查询规格存在售罄的商品id
-     * @return goodsIds
-     */
-    public List<Integer> selectSaleOutGoodsIds() {
-        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_NUMBER.eq(0))
-            .fetchInto(Integer.class);
-    }
-
-    /**
      * 根据商品id集合查询出商品id和规格项的对应分组映射
      * @param goodsIds 商品id集合
      * @return map key: 商品id value:规格项集合

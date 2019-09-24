@@ -11,49 +11,68 @@ import java.sql.Timestamp;
  */
 @Data
 public class GoodsPageListParam {
-
-	
-	/**
-	 * 	在售状态值
-	 */
+    /**
+     * 	在售状态值
+     */
     public static final Byte IS_ON_SALE_DEFAULT=1;
     /**
      * 已下架状态值
      */
     public static final Byte NOT_ON_SALE=0;
 
+    /**
+     * 前台传入的控制排序方向
+     */
     public static final String ASC="asc";
     public static final String DESC="desc";
-    
     /**
      * 	待排序字段
      */
     public static final String SHOP_PRICE="shopPrice";
     public static final String GOODS_NUMBER="goodsNumber";
     public static final String GOODS_SALE_NUM="goodsSaleNum";
-    
+
+    /**
+     * 分别为查询：1商品分页列表信息，2规格分页列表信息，3商品分页信息（每一条商品数据附带了对应的所有规格数据）
+     */
+    public static final Integer GOODS_LIST=1;
+    public static final Integer GOODS_PRD_LIST=2;
+    public static final Integer GOODS_LIST_WITH_PRD=3;
 
     private Integer goodsId;
-
     private String goodsName;
     private String goodsSn;
     private Integer brandId;
+    /**
+     * 商品来源,0：店铺自带；1、2..等：不同类型店铺第三方抓取自带商品来源
+     */
     private Byte source;
+    /**
+     * 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品.
+     * 在活动中动态设置商品所处于的类型状态，目前仅有以上几种
+     */
     private Byte goodsType;
-    private Short catId;
+    private Integer catId;
     private Integer sortId;
     private Integer labelId;
     private Timestamp saleTimeStart;
     private Timestamp saleTimeEnd;
+    /**
+     * 在查询规格时该字段表示对规格价格进行过滤
+     */
     private BigDecimal lowShopPrice;
     private BigDecimal highShopPrice;
     /**
-     * 是否在售1 在售（上架），0下架（仓库中）
+     * 查询类型分类：1商品分页列表信息，2规格分页列表信息，3商品分页信息（每一条商品数据附带了对应的所有规格数据）
+     */
+    private Integer selectType;
+    /**
+     * 是否在售 1 在售（上架），0下架（仓库中）
      * 商品数量为0时属于售罄状态，但是依然可以为（上架状态）
      */
     private Byte isOnSale;
     /**
-     * true表示已售罄
+     * true表示查询已售罄，isOnSale=1 and goodsNumbers=0
      */
     private Boolean isSaleOut;
 
@@ -69,6 +88,6 @@ public class GoodsPageListParam {
     /**
      * 	分页信息
      */
-    private int currentPage;
-    private int pageRows;
+    private Integer currentPage;
+    private Integer pageRows;
 }
