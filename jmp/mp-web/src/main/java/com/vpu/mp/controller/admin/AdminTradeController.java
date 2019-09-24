@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -207,9 +209,19 @@ public class AdminTradeController extends AdminBaseController {
     public JsonResult bindAccount(@RequestBody @Validated BindAccountParam param) {
         try {
             WxOpenResult result = shop().trade.bindAccount(param);
-            switch (result.getErrcode()) {
-                case WXERROR_10000001:
-                    return fail(JsonResultCode.CODE_FAIL);
+            return success(result);
+        } catch (WxErrorException e) {
+            String message = e.getMessage();
+            log.error("微信api logistics.bindAccount 调用失败：{}", message);
+            JsonNode errorNode = null;
+            try {
+                errorNode = MAPPER.readTree(message);
+            } catch (IOException ex) {
+                log.error("微信错误消息[{}]反序列化过程失败：{}", message, ex.getMessage());
+                return fail(JsonResultCode.CODE_FAIL);
+            }
+            String errorCode = errorNode.get("errcode").asText();
+            switch (errorCode) {
                 case WXERROR_9300529:
                     return fail(JsonResultCode.WX_9300529);
                 case WXERROR_9300530:
@@ -219,11 +231,8 @@ public class AdminTradeController extends AdminBaseController {
                 case WXERROR_9300532:
                     return fail(JsonResultCode.WX_9300532);
                 default:
-                    return success();
+                    return fail(JsonResultCode.CODE_FAIL);
             }
-        } catch (WxErrorException e) {
-            log.error("微信api logistics.bindAccount 调用失败：{}", e.getMessage());
-            return fail(JsonResultCode.CODE_FAIL);
         }
     }
 }
