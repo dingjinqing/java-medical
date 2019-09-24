@@ -60,6 +60,15 @@ public class AdminStoreController extends AdminBaseController{
         PageResult<StoreGroup> storeGroupPageResult = shop().store.storeGroup.getStoreGroupPageList(param);
         return success(storeGroupPageResult);
     }
+
+    /**
+     * 门店分组-全部分组
+     * @return
+     */
+    @GetMapping(value = "/api/admin/store/group/all")
+    public JsonResult getAllStoreGroup() {
+        return success(shop().store.storeGroup.getAllStoreGroup());
+    }
     
     /**
      * 获取门店列表

@@ -26,5 +26,6 @@ public class StorePageListVo {
 	public String mobile;
 	public String openingTime;
 	public String closeTime;
+	/**营业状态1:营业，0:关店*/
 	public Byte businessState;
 }

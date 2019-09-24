@@ -115,4 +115,14 @@ public class StoreGroupService extends ShopBaseService{
 					.execute();
 		});
 	}
+
+    /**
+     * 全部门店分组列
+     * @return
+     */
+    public List<StoreGroup> getAllStoreGroup(){
+        return db()
+            .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME)
+            .from(STORE_GROUP).orderBy(STORE_GROUP.CREATE_TIME.asc()).fetchInto(StoreGroup.class);
+    }
 }
