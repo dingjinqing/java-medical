@@ -128,7 +128,7 @@
                 >{{orderItem.cardType === 1 ? $t('memberCardOrder.limitNumMemberCard'):$t('memberCardOrder.normalMemberCard')}}</el-tag>{{orderItem.cardName}}
               </td>
               <td>{{orderItem.cardNo}}</td>
-              <td>{{orderItem.moneyPaid}}</td>
+              <td>{{orderItem.price}}</td>
               <td> <a
                   class="user_info"
                   @click="viewUserDetail(orderItem.userId)"
@@ -224,7 +224,13 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        // this.$set(this.memberCardOrderList, index, item)
+        if (item.useScore > 0) {
+          item.price = item.useScore + this.$t('orderCommon.integral')
+        } else {
+          item.price = item.orderAmount + this.currencyPool[item.currency][this.lang][0]
+        }
+
+        item.moneyPaid += this.currencyPool[item.currency][this.lang][0]
       })
       this.memberCardOrderList = data
     },

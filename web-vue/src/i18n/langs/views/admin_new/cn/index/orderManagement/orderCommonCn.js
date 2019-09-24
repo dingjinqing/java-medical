@@ -28,5 +28,6 @@ export const cn = {
   refundFailed: '退款失败',
   refundCompleted: '退款完成',
   checkRefund: '查看退款',
-  manualRefund: '手动退款'
+  manualRefund: '手动退款',
+  integral: '积分'
 }

@@ -28,5 +28,6 @@ export const en = {
   refundFailed: 'refund failed',
   refundCompleted: 'refund completed',
   checkRefund: 'check refund',
-  manualRefund: 'manual refund'
+  manualRefund: 'manual refund',
+  integral: 'integral'
 }

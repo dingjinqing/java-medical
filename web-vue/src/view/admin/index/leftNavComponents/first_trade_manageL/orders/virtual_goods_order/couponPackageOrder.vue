@@ -93,7 +93,7 @@
           width="200"
         ></el-table-column>
         <el-table-column
-          prop="moneyPaid"
+          prop="price"
           :label="$t('orderCommon.price')"
         ></el-table-column>
         <el-table-column :label="$t('orderCommon.orderUserInfo')">
@@ -161,6 +161,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.initDataList()
   },
   methods: {
@@ -191,7 +192,14 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        // this.$set(this.memberCardOrderList, index, item)
+        // 优惠券礼包的价格可以更改，所以单个订单价格以实际支付金额为准
+        if (item.useScore > 0) {
+          item.price = item.useScore + this.$t('orderCommon.integral')
+        } else {
+          item.price = item.orderAmount + this.currencyPool[item.currency][this.lang][0]
+        }
+
+        item.moneyPaid += this.currencyPool[item.currency][this.lang][0]
       })
       this.couponPackageOrderList = data
     },
@@ -235,7 +243,6 @@ export default {
   },
   filters: {
     returnFlagType (data) {
-      console.log(data)
     }
   },
   watch: {
