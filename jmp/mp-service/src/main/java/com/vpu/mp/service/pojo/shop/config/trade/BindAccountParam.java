@@ -2,7 +2,9 @@ package com.vpu.mp.service.pojo.shop.config.trade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.NonNull;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * The type Bind account param.
@@ -15,25 +17,25 @@ public class BindAccountParam {
     /**
      * The Type. bind表示绑定，unbind表示解除绑定
      */
-    @NonNull
+    @NotBlank
     @JsonProperty(value = "type")
     public String type;
     /**
      * The Biz id. 快递公司客户编码
      */
-    @NonNull
+    @NotBlank
     @JsonProperty(value = "biz_id")
     public String bizId;
     /**
      * The Delivery id. 快递公司ID，参见getAllDelivery
      */
-    @NonNull
+    @NotBlank
     @JsonProperty(value = "delivery_id")
     public String deliveryId;
     /**
      * The Password. 快递公司客户密码
      */
-    @NonNull
+    @NotEmpty
     @JsonProperty(value = "password")
     public String password;
     /**

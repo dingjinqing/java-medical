@@ -190,7 +190,7 @@ public class AdminTradeController extends AdminBaseController {
      *
      * @return 服务条款配置内容
      */
-    @RequestMapping("/api/admin/config/trade/gettermsofservice")
+    @GetMapping("/api/admin/config/trade/gettermsofservice")
     public JsonResult getTermsOfService() {
         try {
             return success(shop().trade.getTermsOfService());
@@ -203,7 +203,7 @@ public class AdminTradeController extends AdminBaseController {
     /**
      * 微信物流助手-绑定物流公司
      */
-    @RequestMapping("/api/admin/config/trade/bindaccount")
+    @PostMapping("/api/admin/config/trade/bindaccount")
     public JsonResult bindAccount(@RequestBody @Validated BindAccountParam param) {
         try {
             WxOpenResult result = shop().trade.bindAccount(param);
