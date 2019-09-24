@@ -203,7 +203,7 @@ public class MessageTemplateService extends ShopBaseService {
      */
     private PageResult<MessageTemplateVo> buildPageVo(PageResult<MessageTemplateVo> resultPage,PageResult<TemplateConfigRecord> templatePage){
         List<TemplateConfigRecord> templateList = templatePage.getDataList();
-        List<Integer> templateIdList = templateList.stream().map(x->x.getId()).collect(Collectors.toList());
+        List<Integer> templateIdList = templateList.stream().map(TemplateConfigRecord::getId).collect(Collectors.toList());
         Map<String,Integer> sendMap = getSentPersonByTemplateId(templateIdList);
         Map<String,Integer> visitMap = getVisitedPersonByTemplateId(templateIdList);
         List<MessageTemplateVo> resultVoList = new ArrayList<>();
