@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.order.virtual;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -22,13 +23,11 @@ public class MemberCardOrderVo {
     /** 卡名 **/
     private String cardName;
     /** 支付金额 **/
-    private Double moneyPaid;
+    private BigDecimal moneyPaid;
     /** 支付余额 **/
-    private Double useAccount;
+    private BigDecimal useAccount;
     /** 支付积分 **/
-    private Double useScore;
-    /** 单价 **/
-    private Double payFee;
+    private Integer useScore;
     /** 支付时间 **/
     private Timestamp payTime;
     /** 购买方式：0：积分，1：现金 **/
@@ -42,6 +41,8 @@ public class MemberCardOrderVo {
     /** 退款时间 **/
     private Timestamp returnTime;
 
+    /** 订单总金额 */
+    private BigDecimal orderAmount;
     /** 币种 */
     private String currency;
 }
