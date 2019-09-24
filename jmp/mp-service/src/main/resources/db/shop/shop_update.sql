@@ -883,4 +883,7 @@ ALTER TABLE b2c_store_order add column `currency` varchar(10) NOT NULL DEFAULT '
 
 -- 2019-09-24虚拟商品订单增加币种
 alter table b2c_virtual_order add column `currency` varchar(10) NOT NULL DEFAULT 'CNY' COMMENT '币种';
+-- 王帅买单订单修改英文
+ALTER TABLE `b2c_store_order` 
+CHANGE COLUMN `member_card_redunce` `member_card_reduce` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '会员卡抵扣金额' ;
 

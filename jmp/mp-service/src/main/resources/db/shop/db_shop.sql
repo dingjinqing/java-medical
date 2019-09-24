@@ -1721,7 +1721,7 @@ create table `b2c_store_order`
     `pay_sn`              varchar(32)             default null comment '支付流水号',
     `money_paid`          decimal(10, 2) not null default '0.00' comment '订单应付金额',
     `member_card_no`      varchar(32)    not null default '0' comment '会员卡no',
-    `member_card_redunce` decimal(10, 2) not null default '0.00' comment '会员卡抵扣金额',
+    `member_card_reduce` decimal(10, 2) not null default '0.00' comment '会员卡抵扣金额',
     `member_card_balance` decimal(10, 2) not null default '0.00' comment '会员卡消费金额',
     `score_discount`      decimal(10, 2) not null default '0.00' comment '积分抵扣金额',
     `use_account`         decimal(10, 2) not null default '0.00' comment '用户消费余额',

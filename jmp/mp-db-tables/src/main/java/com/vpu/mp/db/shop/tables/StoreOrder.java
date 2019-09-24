@@ -136,7 +136,7 @@ public class StoreOrder extends TableImpl<StoreOrderRecord> {
     /**
      * The column <code>mini_shop_6797286.b2c_store_order.member_card_redunce</code>. 会员卡抵扣金额
      */
-    public final TableField<StoreOrderRecord, BigDecimal> MEMBER_CARD_REDUNCE = createField("member_card_redunce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡抵扣金额");
+    public final TableField<StoreOrderRecord, BigDecimal> MEMBER_CARD_REDUCE = createField("member_card_reduce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡抵扣金额");
 
     /**
      * The column <code>mini_shop_6797286.b2c_store_order.member_card_balance</code>. 会员卡消费金额
