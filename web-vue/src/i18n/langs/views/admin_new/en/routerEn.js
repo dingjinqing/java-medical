@@ -286,6 +286,12 @@ export const en = {
   ],
   // 营销管理 消息推送 发送记录
   send_record: ['Marketing management', 'Message push', 'Send Record'],
+  // 营销管理 消息推送 查看消息模板
+  template_detail: [
+    'Marketing management',
+    'Message push',
+    'View Message Template'
+  ],
   // 营销管理 定向发券
   couponGift: ['Marketing management', 'Coupon Gift'],
   // 营销管理 定向发券 领取明细

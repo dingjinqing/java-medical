@@ -28,7 +28,6 @@
     <div
       v-if="!isShowAddFlag"
       class="table_list"
-      style="backgroundColor:skyblue"
     >
       <el-table
         :data="tableData"
@@ -132,11 +131,13 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                      :content="$t('luckyDraw.newUserList')"
-                      placement="top">
+                :content="$t('luckyDraw.newUserList')"
+                placement="top"
+              >
                 <span
-                        class="el-icon-user-solid"
-                        @click="newUserDetail(scope.row.id,scope.row.lotteryName)"></span>
+                  class="el-icon-user-solid"
+                  @click="newUserDetail(scope.row.id,scope.row.lotteryName)"
+                ></span>
               </el-tooltip>
             </div>
           </template>
@@ -325,90 +326,90 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    .content {
-        padding: 10px;
-        min-width: 100%;
-        font-size: 14px;
-        height: 100%;
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
 
-        .main {
-            position: relative;
-            background-color: #fff;
-            padding: 10px 20px 10px 20px;
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 20px 10px 20px;
 
-            .wrapper {
-                display: flex;
-                justify-content: space-between;
+    .wrapper {
+      display: flex;
+      justify-content: space-between;
 
-                .rightContent {
-                    .el-button {
-                        margin-left: 5px;
-                    }
-
-                    span {
-                        height: 30px;
-                        line-height: 30px;
-                    }
-
-                    :nth-of-type(3) {
-                        color: #999;
-                    }
-                }
-            }
+      .rightContent {
+        .el-button {
+          margin-left: 5px;
         }
-    }
-
-    /deep/ .tableClss th {
-        background-color: #f5f5f5;
-        border: none;
-        height: 36px;
-        font-weight: bold;
-        color: #000;
-        padding: 8px 10px;
-    }
-
-    .table_list {
-        position: relative;
-        margin-top: 10px;
-        background-color: #fff;
-        padding: 10px 20px 10px 20px;
-    }
-
-    .balanceDialo .el-dialog__body {
-        padding-bottom: 0 !important;
-    }
-
-    .balanceDialo .el-dialog__footer {
-        border-top: 1px solid #eee;
-    }
-
-    .setUpDialog .el-dialog__body {
-        padding-top: 10px !important;
-    }
-
-    .opt {
-        text-align: left;
-        color: #5a8bff;
 
         span {
-            cursor: pointer;
+          height: 30px;
+          line-height: 30px;
         }
-    }
 
-    .add_coupon {
-        float: left;
-        margin-left: 65%;
-    }
-
-    .footer {
-        padding: 20px 0 20px 20px;
-        display: flex;
-        justify-content: flex-end;
-
-        span {
-            display: block;
-            height: 32px;
-            line-height: 32px;
+        :nth-of-type(3) {
+          color: #999;
         }
+      }
     }
+  }
+}
+
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+
+.table_list {
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+}
+
+.balanceDialo .el-dialog__body {
+  padding-bottom: 0 !important;
+}
+
+.balanceDialo .el-dialog__footer {
+  border-top: 1px solid #eee;
+}
+
+.setUpDialog .el-dialog__body {
+  padding-top: 10px !important;
+}
+
+.opt {
+  text-align: left;
+  color: #5a8bff;
+
+  span {
+    cursor: pointer;
+  }
+}
+
+.add_coupon {
+  float: left;
+  margin-left: 65%;
+}
+
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
+}
 </style>

@@ -108,6 +108,7 @@
                   type="primary"
                   icon="el-icon-view"
                   circle
+                  @click="handleGetDetails(data.row)"
                 ></el-button>
               </el-tooltip>
               <el-tooltip
@@ -265,6 +266,15 @@ export default {
       console.log(row)
       this.$router.push({
         name: `send_record`,
+        query: {
+          id: row.id
+        }
+      })
+    },
+    // 查看详情
+    handleGetDetails (row) {
+      this.$router.push({
+        name: `template_detail`,
         query: {
           id: row.id
         }

@@ -1,5 +1,6 @@
 /**
  * 营销管理/留存复购/消息推送
+ * @ Author 杨万里
  */
 import service from '@/util/request'
 
@@ -79,6 +80,13 @@ export const recordListApi = data =>
 export const addMessageApi = data =>
   service({
     url: `/api/admin/market/message/template/addMessage`,
+    method: 'post',
+    data
+  })
+// 查看消息模板
+export const getDetailApi = data =>
+  service({
+    url: `/api/admin/market/message/template/getDetail`,
     method: 'post',
     data
   })

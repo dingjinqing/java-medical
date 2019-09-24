@@ -892,21 +892,22 @@ const routes = [
           import(
             '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/allMessagePush'
           )
-      },
-      {
-        path: '/api/admin/market/messagePush/detail',
-        name: 'template_detail',
-        meta: {
-          crumbTitle: 'router.template_detail',
-          meta: 'first_market_manage',
-          category: 'first_market_manage'
-        },
-        component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/viewMessageTemplate'
-          )
       }
     ]
+  },
+  // 营销管理/留存复购/消息推送/查看消息模板
+  {
+    path: '/api/admin/market/messagePush/detail',
+    name: 'template_detail',
+    meta: {
+      crumbTitle: 'router.template_detail',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/messagePush/viewMessageTemplate'
+      )
   },
   // 营销管理/留存复购/消息推送/添加消息模板
   {

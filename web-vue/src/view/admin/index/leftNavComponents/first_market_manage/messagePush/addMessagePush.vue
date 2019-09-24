@@ -51,6 +51,7 @@
                 label-width="128px"
                 size="small"
               >
+
                 <!-- 消息名称 -->
                 <el-form-item :label="labels.label1">
                   <el-input
@@ -59,7 +60,8 @@
                     size="small"
                     v-model="formData.name"
                     style="width:245px"
-                  ></el-input>
+                  >
+                  </el-input>
                   <div class="mainContentRightFormText">只作为商家记录使用，用户不会看到这个名称</div>
                 </el-form-item>
 
@@ -364,6 +366,12 @@ import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi } from '@/ap
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
+  /**
+   * 接收查看组件的值
+   */
+  props: {
+
+  },
   components: {
     'dgTable': dialogTable,
     chooseTemplateDialog,
