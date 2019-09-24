@@ -4,38 +4,39 @@
       <div class="search_box">
         <div class="filters">
           <div class="filters_item">
-            <span>订单号：</span>
+            <span>{{$t('order.orderSn')}}：</span>
             <el-input
               v-model="searchParams.orderSn"
-              placeholder="请输入订单号"
+              :placeholder="$t('order.orderSn')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>支付时间：</span>
+            <span>{{$t('order.payTime')}}：</span>
             <el-date-picker
-              v-model="searchParams.applicationTime"
+              v-model="payTime"
               type="daterange"
-              range-separator="至"
-              start-placeholder="支付时间"
-              end-placeholder="支付时间"
-              value-format="yyyy-MM-dd"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.Starttime')"
+              :end-placeholder="$t('membershipIntroduction.Endtime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
             </el-date-picker>
           </div>
           <div class="filters_item">
-            <span>买单人：</span>
+            <span>{{$t('order.payerName')}}：</span>
             <el-input
               v-model="searchParams.userName"
-              placeholder="请输入买单人昵称"
+              :placeholder="$t('order.payerName')"
               size="small"
               class="default_input"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>门店：</span>
+            <span>{{$t('order.store')}}：</span>
             <el-select
               v-model="searchParams.storeId"
               size="small"
@@ -45,14 +46,14 @@
             >
               <el-option
                 v-for="item in storeList"
-                :key="item.storeId"
-                :label="item.name"
-                :value="item.storeId"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               ></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span>订单状态：</span>
+            <span>{{$t('order.orderStatusText')}}：</span>
             <el-select
               v-model="searchParams.orderStatus"
               size="small"
@@ -61,12 +62,10 @@
               clearable
             >
               <el-option
-                label="已支付"
-                value="1"
-              ></el-option>
-              <el-option
-                label="已退款"
-                value="2"
+                v-for="item in $t('order.storeStatusList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
               ></el-option>
             </el-select>
           </div>
@@ -74,7 +73,8 @@
             <el-button
               type="primary"
               size="small"
-            >筛选</el-button>
+              @click="search"
+            >{{$t('order.filter')}}</el-button>
           </div>
         </div>
       </div>
@@ -82,11 +82,11 @@
         <table>
           <thead>
             <tr>
-              <th width="300px">买单门店</th>
-              <th>买单人</th>
-              <th>买单时间</th>
-              <th>订单状态</th>
-              <th>买单收银金额</th>
+              <th width="300px">{{$t('order.storeNameText')}}</th>
+              <th>{{$t('order.payerName')}}</th>
+              <th>{{$t('order.storeTime')}}</th>
+              <th>{{$t('order.orderStatusText')}}</th>
+              <th>{{$t('order.storeMoneyPaid')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -94,7 +94,7 @@
               <td colspan="5"></td>
             </tr>
           </tbody>
-          <template v-for="orderItem in checkOrderList">
+          <template v-for="orderItem in storeOrderList">
             <tbody
               :key="orderItem.orderId"
               class="hasborder"
@@ -103,8 +103,8 @@
                 <td colspan="8">
                   <div class="tb-head_box">
                     <div class="left">
-                      <span>支付单号：{{orderItem.OrderSn}}</span>
-                      <span>支付方式：{{orderItem.payType}}</span>
+                      <span>{{$t('order.storeOrderSn')}}：{{orderItem.orderSn}}</span>
+                      <span>{{$t('order.paymentType')}}：{{$t('order.payTypeObj')[orderItem.payCode]}}</span>
                     </div>
                     <div class="right">
                       <span class="icon_collect"><i
@@ -112,17 +112,17 @@
                           @click="toggleStar(orderItem.orderSn,orderItem.starFlag)"
                         ></i></span>
                       <span @click="addNodes(orderItem.orderSn)">添加备注</span>
-                      <span @click="seeDetails(orderItem.OrderSn)">查看详情</span>
+                      <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
                     </div>
                   </div>
                 </td>
               </tr>
               <tr class="order-tb-body">
-                <td>{{orderItem.storeName}}</td>
-                <td>{{orderItem.userName}}</td>
-                <td>{{orderItem.createTime}}</td>
-                <td>{{orderItem.orderStatus}}</td>
-                <td>{{orderItem.moneypaid}}</td>
+                <td>{{storeMap.get(orderItem.storeId)}}</td>
+                <td>{{orderItem.username}}</td>
+                <td>{{orderItem.payTime}}</td>
+                <td>{{$t('order.storeStatusList')[orderItem.orderStatus][1]}}</td>
+                <td>{{orderItem.moneyPaid.toFixed(2)}}</td>
               </tr>
             </tbody>
           </template>
@@ -141,9 +141,11 @@
 </template>
 
 <script>
-import {
+import { store,
   star
 } from '@/api/admin/orderManage/order.js'
+import { allSourceRequest } from '@/api/admin/membershipList.js'
+
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -152,54 +154,94 @@ export default {
   data () {
     return {
       pageParams: {
-        'totalRows': 4,
-        'currentPage': 1,
-        'firstPage': 1,
-        'prePage': 1,
-        'nextPage': 1,
-        'lastPage': 1,
-        'pageRows': 20,
-        'pageCount': 1
+        'totalRows': null,
+        'currentPage': null,
+        'firstPage': null,
+        'prePage': null,
+        'nextPage': null,
+        'lastPage': null,
+        'pageRows': null,
+        'pageCount': null
       },
+      payTime: null,
       searchParams: {
         orderSn: null,
         userName: null,
         storeId: null,
         orderStatus: null,
-        payTimeStart: '',
-        payTimeEnd: '',
-        applicationTime: null
+        payTimeStart: null,
+        payTimeEnd: null
       },
-      storeList: [
-        { storeId: 1, name: '牡丹园门店' },
-        { storeId: 2, name: '西直门门店' },
-        { storeId: 3, name: '东直门门店' },
-        { storeId: 4, name: '天安门门店' }
-      ],
-      checkOrderList: [
-        { orderId: 1, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
-        { orderId: 2, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
-        { orderId: 3, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
-        { orderId: 4, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
-        { orderId: 5, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' },
-        { orderId: 6, OrderSn: '1231231313', payType: '微信支付', storeName: '牡丹园门店', userName: '奔跑的蜗牛', createTime: '2019-08-12 11:11:11', orderStatus: '已支付', moneypaid: '0' }
-      ],
+      storeOrderList: [],
       showNodes: false,
+      defaultStore: null,
+      storeList: [
+        {
+          value: null,
+          label: this.defaultStore
+        }
+      ],
+      storeMap: new Map(),
       notesOrderSn: null
     }
   },
+  mounted () {
+    console.log('mounted-----------------------')
+    // 初始化数据
+    this.langDefault()
+    this.initDataList()
+  },
+  watch: {
+    lang () {
+      this.langDefault()
+      this.defaultStore = [
+        {
+          value: null,
+          label: this.$t('order.defaultSelect')
+        }
+      ]
+    },
+    payTime (val) {
+      this.searchParams.payTimeStart = val ? val[0] : null
+      this.searchParams.payTimeEnd = val ? val[1] : null
+    }
+  },
   methods: {
-    seeDetails (OrderSn) {
+    initDataList () {
+      this.getAllStore()
+      this.search()
+    },
+    search () {
+      this.storeOrderList = null
+      this.searchParams.currentPage = this.pageParams.currentPage
+      this.searchParams.pageRows = this.pageParams.pageRows
+      store(this.searchParams).then(res => {
+        console.log(res)
+        this.pageParams = res.content.page
+        this.storeOrderList = res.content.dataList
+      }).catch(() => {
+      })
+    },
+    seeDetails (orderSn) {
       this.$router.push({
         name: 'storeOrderInfo',
         query: {
-          OrderSn: OrderSn
+          orderSn: orderSn
         }
       })
     },
     addNodes (orderSn) {
       this.showNodes = true
       this.notesOrderSn = orderSn
+    },
+    // 获取来源
+    getAllStore () {
+      allSourceRequest().then(res => {
+        this.storeList = this.storeList.concat(res.content)
+        res.content.forEach(store => {
+          this.storeMap.set(store.value, store.label)
+        })
+      })
     },
     toggleStar (orderSn, starFlag) {
       let obj = {
@@ -213,9 +255,6 @@ export default {
           this.search()
         }
       })
-    },
-    initDataList () {
-
     }
   }
 }

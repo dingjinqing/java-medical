@@ -214,7 +214,12 @@ export const cn = {
   payTypeObj: {
     wxpay: '微信支付',
     balance: '余额支付'
+  },
+  invoiceTypeObj: {
+    0: '企业发票',
+    1: '个人发票'
   }
+
 }
 export const en = {
   goodsName: 'Product Name',

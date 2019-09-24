@@ -2,30 +2,41 @@
   <div class="main">
     <div class="since-info">
       <div class="since-info-top">
-        <span>订单号：P201909051016068533</span>
+        <span>{{$t('order.orderSn')}}：{{order.orderSn }}</span>
       </div>
       <div class="since-info-detail">
         <div class="order_info">
-          <div class="title">订单信息</div>
+          <div class="title">{{$t('order.orderInfo')}}</div>
           <div class="item_box">
-            <div class="item"><span class="item_title">订单金额：</span>0.00元</div>
-            <div class="item"><span class="item_title">买单时间：</span>2019-09-05 10:16:06</div>
-            <div class="item"><span class="item_title">支付方式：</span>微信支付</div>
-            <div class="item"><span class="item_title">订单状态：</span>已支付</div>
-            <div class="item"><span class="item_title">买单门店：</span>牡丹园门店</div>
+            <div class="item"><span class="item_title">{{$t('order.orderAmount')}}：</span>{{order.moneyPaid.toFixed(2)}}</div>
+            <div class="item"><span class="item_title">{{$t('order.storeTime')}}：</span>{{order.payTime}}</div>
+            <div class="item"><span class="item_title">{{$t('order.paymentType')}}：</span>{{$t('order.payTypeObj')[order.payCode]}}</div>
+            <div class="item"><span class="item_title">{{$t('order.orderStatusText')}}：</span>{{$t('order.storeStatusList')[order.orderStatus][1]}}</div>
+            <div class="item"><span class="item_title">{{$t('order.storeNameText')}}：</span>{{order.storeName}}</div>
 
           </div>
 
         </div>
         <div class="user_info">
-          <div class="title">买家信息</div>
+          <div class="title">{{$t('order.storeUserInfo')}}</div>
           <div class="item_box">
-            <div class="item"> <span class="item_title"> 买单客户：</span>XXXXXX</div>
-            <div class="item"> <span class="item_title">客户留言：</span> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</div>
-            <div class="item"> <span class="item_title">发票类型：</span> 企业发票</div>
-            <div class="item"> <span class="item_title">发票抬头：</span> XXXX</div>
-            <div class="item"> <span class="item_title">公司税号：</span> XXXXX</div>
-            <div class="item"> <span class="item_title">公司地址：</span> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</div>
+            <div class="item"> <span class="item_title">{{$t('order.storeUsertext')}}：</span>{{order.username}}</div>
+            <div class="item"> <span class="item_title">{{$t('order.clientMessages')}}：</span>{{order.addMessage}}</div>
+            <template v-if="order.type != null">
+              <div class="item"> <span class="item_title">{{$t('order.invoiceType')}}：</span>{{$t('order.invoiceTypeObj')[order.type]}}</div>
+              <div class="item"> <span class="item_title">{{$t('order.InvoiceTitle')}}：</span>{{order.title}}</div>
+              <template v-if="order.type == 0">
+                <div
+                  v-if="order.taxNumber != null"
+                  class="item"
+                > <span class="item_title">{{$t('order.CompanyTaxNumber')}}：</span>{{order.taxNumber}}</div>
+                <div
+                  v-if="order.taxNumber != null"
+                  class="item"
+                > <span class="item_title">{{$t('order.companyAddress')}}：</span>{{order.companyAddress}}</div>
+              </template>
+            </template>
+
           </div>
         </div>
       </div>
@@ -38,25 +49,25 @@
       </div>
       <div class="pay_detail">
         <div class="pd_title">
-          <span>支付明细</span>
+          <span>{{$t('order.payInfo')}}</span>
           <span class="refund">手动退款</span>
         </div>
         <div class="list_item">
-          <span>优惠额度：</span>
+          <span>{{$t('order.discountInfo')}}：</span>
           <div class="preference_list">
-            <div><span>会员卡折扣</span>-XXX元</div>
-            <div><span>会员卡抵扣</span>-XXX元</div>
-            <div><span class="w2">积分</span>-XXX元</div>
-            <div><span class="w2">余额</span>-XXX元</div>
+            <div><span>{{$t('order.memberCardReduce')}}</span> - {{order.memberCardReduce.toFixed(2)}}元</div>
+            <div><span>{{$t('order.memberCardDiscount')}}</span> - {{order.memberCardBalance.toFixed(2)}}元</div>
+            <div><span class="w2">{{$t('order.score')}}</span> - {{order.scoreDiscount.toFixed(2)}}元</div>
+            <div><span class="w2">{{$t('order.balance')}}</span> - {{order.useAccount.toFixed(2)}}元</div>
           </div>
         </div>
         <div class="list_item">
-          <span>总价：</span>
-          <div>XXX元</div>
+          <span>{{$t('order.totalPrice')}}：</span>
+          <div>{{order.orderAmount.toFixed(2)}}元</div>
         </div>
         <div class="list_item">
-          <span>实收款：</span>
-          <div class="m_color">XXX元</div>
+          <span>{{$t('order.amountSum')}}：</span>
+          <div class="m_color">{{order.moneyPaid.toFixed(2)}}元</div>
         </div>
       </div>
     </div>
@@ -68,6 +79,7 @@
 </template>
 
 <script>
+import { storeInfo } from '@/api/admin/orderManage/order.js'
 export default {
   components: {
     nodesDialog: () => import('../addNotes')
@@ -75,13 +87,27 @@ export default {
   data () {
     return {
       showNodes: false,
+      searchParam: {
+        orderSn: null
+      },
+      order: null,
       notesOrderSn: null
     }
+  },
+  created () {
+    this.search(this.$route.query.orderSn)
   },
   methods: {
     addNodes () {
       this.showNodes = true
       this.notesOrderSn = this.$route.query.orderSn
+    },
+    search (orderSn) {
+      this.searchParam.orderSn = orderSn
+      storeInfo(this.searchParam).then(res => {
+        this.order = res.content
+      }).catch(() => {
+      })
     }
   }
 }

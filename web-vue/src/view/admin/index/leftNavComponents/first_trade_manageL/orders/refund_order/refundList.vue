@@ -62,7 +62,8 @@
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.Starttime')"
               :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00','23:59:59']"
               size="small"
               :picker-options="pickerOptions"
             >
@@ -173,7 +174,7 @@
                   >
                     {{
                       returnStatusToShowMapping[orderItem.refundStatus + ''] == null ?
-                      returnStatusToShowMapping[orderItem.refundStatus + '_' + orderItem.returnType] :
+                      returnStatusToShowMapping[orderItem.refundStatus + '-' + orderItem.returnType] :
                       returnStatusToShowMapping[orderItem.refundStatus + '']
                     }}
                   </td>
@@ -240,10 +241,10 @@ export default {
         '1': this.$t('order.returnStatusMapping_1'),
         '2': this.$t('order.returnStatusList')[3][1],
         '3': this.$t('order.returnStatusList')[2][1],
-        '4_0': this.$t('order.returnStatusMapping_4_0'),
-        '4_1': this.$t('order.returnStatusList')[4][1],
-        '6_0': this.$t('order.returnStatusList')[6][1],
-        '6_1': this.$t('order.returnStatusList')[5][1],
+        '4-0': this.$t('order.returnStatusMapping_4_0'),
+        '4-1': this.$t('order.returnStatusList')[4][1],
+        '6-0': this.$t('order.returnStatusList')[6][1],
+        '6-1': this.$t('order.returnStatusList')[5][1],
         '7': this.$t('order.returnStatusList')[7][1],
         '5': this.$t('order.returnStatusList')[8][1]
       },
@@ -297,6 +298,10 @@ export default {
     lang () {
       this.langDefault()
       this.arrayToMap()
+    },
+    applyTime (val) {
+      this.searchParams.returnStart = val ? val[0] : null
+      this.searchParams.returnEnd = val ? val[1] : null
     }
   },
   methods: {
@@ -315,10 +320,6 @@ export default {
       })
     },
     search () {
-      if (this.applyTime) {
-        this.searchParams.returnStart = this.applyTime[0] + ' 00:00:00'
-        this.searchParams.returnEnd = this.applyTime[1] + ' 23:59:59'
-      }
       this.refundOrderList = null
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
