@@ -75,7 +75,9 @@ public class LogisticsService extends ShopBaseService {
      */
     public WxOpenResult bindAccount(String bindAccountParam) throws WxErrorException {
         WxOpenMaServiceExtraImpl maService = open.getMaExtService();
-        return maService.bindAccount(getAppId(), bindAccountParam);
+        WxOpenResult result = maService.bindAccount(getAppId(), bindAccountParam);
+        log.debug("调用微信api返回结果为：{}", result.getErrcode() + "---" + result.getErrmsg());
+        return result;
     }
 
     /**
