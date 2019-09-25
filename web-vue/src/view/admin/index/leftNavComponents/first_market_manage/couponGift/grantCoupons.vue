@@ -184,6 +184,7 @@
         <el-button
           type="primary"
           size="small"
+          @click="showParam"
         >确认发放</el-button>
       </div>
       <!-- 添加会员的弹窗 -->
@@ -401,6 +402,36 @@ export default {
   },
 
   methods: {
+    showParam () {
+      console.log('params:', this.params)
+      let param = {
+        'actName': '全部条件优惠券',
+        'couponGiveGrantInfoParams': {
+          'custom_box': this.params.onClickCustomRule,
+          'point_start_time': this.params.customRuleInfo.loginStart,
+          'point_end_time': this.params.customRuleInfo.loginEnd,
+          'cart_box': this.params.onClickNoPay,
+          'card_box': this.params.onClickCard,
+          'tag_box': this.params.onClickTag,
+          'goods_box': this.params.onClickGoods,
+          'goods_ids': '',
+          'member_box': this.params.onClickUser,
+          'coupon_ids': ''
+        },
+        'cardId': this.params.cardIdsList.toString,
+        'tagId': this.params.tagIdList.toString,
+        'user': this.params.userIdList.toString,
+        'havePay': this.params.customRuleInfo.payedDay,
+        'noPay': this.params.customRuleInfo.noPayDay,
+        'maxCount': this.params.customRuleInfo.buyTimesLess,
+        'minCount': this.params.customRuleInfo.buyTimesMore,
+        'maxAvePrice': this.params.customRuleInfo.moneyAvgLess,
+        'minAvePrice': this.params.customRuleInfo.moneyAvgMore,
+        'sendAction': '',
+        'startTime': ''
+      }
+      console.log('param:', param)
+    },
     handleChooseData (data) {
       this.$message({ message: `已经选择了${data.length}条数据！`, type: 'success' })
       this.checkedData = data
