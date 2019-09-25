@@ -31,7 +31,7 @@
               </div>
               <div class="leftMainConCenter">
                 <div class="leftMainConCenterTips">商家活动通知</div>
-                <div class="leftMainConCenterTime">2018年6月11日</div>
+                <div class="leftMainConCenterTime">2019年9月24日</div>
                 <div class="leftMainConCenterTitle">
                   <div class="title">业务标题</div>
                   <div class="h1title">{{formData.title===``?`业务标题`:formData.title}}</div>
@@ -351,7 +351,6 @@
 </template>
 <script>
 //
-import dialogTable from './chooseDialogTable'
 // 引入选择链接弹窗
 import selectLinks from '@/components/admin/selectLinks'
 // 选择商品弹窗
@@ -373,7 +372,6 @@ export default {
 
   },
   components: {
-    'dgTable': dialogTable,
     chooseTemplateDialog,
     selectLinks,
     dateTimePicker,

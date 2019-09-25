@@ -31,12 +31,12 @@
               </div>
               <div class="leftMainConCenter">
                 <div class="leftMainConCenterTips">商家活动通知</div>
-                <div class="leftMainConCenterTime">2018年6月11日</div>
+                <div class="leftMainConCenterTime">2019年9月24日</div>
                 <div class="leftMainConCenterTitle">
                   <div class="title">业务标题</div>
-                  <div class="h1title">{{formData.title===``?`业务标题`:formData.title}}</div>
+                  <div class="h1title">{{detailData.title}}</div>
                 </div>
-                <div class="leftMainConCenterCon"><span>业务内容</span><span class="xxx">{{formData.content===``?`xxx`:formData.content}}</span></div>
+                <div class="leftMainConCenterCon"><span>业务内容</span><span class="xxx">{{detailData.content}}</span></div>
                 <div class="leftMainConCenterComeIn"><span>进入小程序查看</span></div>
                 <div class="leftMainConCenterReject"><span>拒收通知</span></div>
 
@@ -51,75 +51,119 @@
                 label-width="128px"
                 size="small"
               >
-
+                <!-- 后台返回的数据 -->
+                <div>
+                  <!-- {{detailData}} -->
+                </div>
                 <!-- 消息名称 -->
                 <el-form-item :label="labels.label1">
-                  <el-input
-                    maxlength="20"
-                    show-word-limit
-                    size="small"
-                    :disabled="true"
-                    v-model="detailData.name"
-                    style="width:245px"
-                  >
-                  </el-input>
+                  <div class="detailDataName">
+                    {{detailData.name}}
+                  </div>
                   <div class="mainContentRightFormText">只作为商家记录使用，用户不会看到这个名称</div>
                 </el-form-item>
 
                 <!-- 消息类型 -->
                 <el-form-item :label="labels.label2">
-                  <!-- <el-input v-model="detailData."></el-input> -->
+                  <div class="detailDataName">
+                    {{detailData.action===7?`商家活动通知`:`其他`}}
+                  </div>
                 </el-form-item>
                 <!-- 业务标题 -->
                 <el-form-item :label="labels.label3">
-                  <el-input
-                    maxlength="7"
-                    show-word-limit
-                    size="small"
-                    v-model="formData.title"
-                    style="width:245px"
-                  ></el-input>
+                  <div class="detailDataName">
+                    {{detailData.title}}
+                  </div>
                 </el-form-item>
                 <!-- 业务内容 -->
                 <el-form-item
                   :label="labels.label4"
                   class="addTemplateBtnWrap"
                 >
-                  <div>
-
-                  </div>
-                  <div>
-                    <el-input
-                      style="width:250px;"
-                      :rows="7"
-                      type="textarea"
-                      placeholder="请输入小程序推送内容"
-                      v-model="formData.content"
-                      maxlength="50"
-                      show-word-limit
-                    >
-                    </el-input>
-                  </div>
-                  <div
-                    class="addTemplateBtn"
-                    v-if="isShowBtn"
-                  >
-                    <el-button
-                      size="small"
-                      type="primary"
-                      @click="handleAddTemplate"
-                    >添加为模板</el-button>
+                  <div class="detailDataContent">
+                    {{detailData.content}}
                   </div>
                 </el-form-item>
-                <el-form-item :label="labels.label4">
-                  <div>
-                    <el-button size="small"> {{this.pageLink === ``?`添加链接`:this.pageLink}}</el-button>
+                <!-- 进入小程序查看 -->
+                <el-form-item :label="labels.label5">
+                  <div class="detailDataName">
+                    {{detailData.pageLink}}
                   </div>
                 </el-form-item>
+                <!-- 参与活动人群 -->
+                <el-form-item :label="labels.label6">
+                  <div>
+                    <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
+                  </div>
+                  <ul class="ulList">
+                    <li>12 天内有交易记录</li>
+                    <li>30天内在本店内有加入购物车行为，但没有支付的用户</li>
+                    <li>指定的会员</li>
+                  </ul>
 
+                </el-form-item>
+                <!-- 发送时间 -->
+                <el-form-item :label="labels.label7">
+                  <!-- 立即发送 -->
+                  <div v-if="detailData.sendAction ===1">
+                    <el-radio
+                      :label=1
+                      v-model="detailData.sendAction"
+                    >立即发送</el-radio>
+                    <div class="sendAction1">
+                      <el-date-picker
+                        v-model="detailData.startTime"
+                        type="datetime"
+                        placeholder="选择日期时间"
+                        readonly
+                      >
+                      </el-date-picker>
+                    </div>
+                  </div>
+                  <!-- 持续发送 -->
+                  <div v-else-if="detailData.sendAction ===2">
+                    <div>
+                      <el-radio
+                        :label=2
+                        v-model="detailData.sendAction"
+                      >持续发送</el-radio>
+                    </div>
+                    <div class="sendAction2">
+                      <el-date-picker
+                        v-model="sendAction2"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        readonly
+                      >
+                      </el-date-picker>
+                    </div>
+                    <div style="color:#999;fontSize:12px;margin:5px 0">
+                      所有可送达的用户均会第一时间收到一次此消息
+                    </div>
+                  </div>
+                  <!-- 定时发送 -->
+                  <div v-else>
+                    <div>
+                      <el-radio
+                        :label=4
+                        v-model="detailData.sendAction"
+                      >定时发送</el-radio>
+                    </div>
+                    <div>
+                      <el-date-picker
+                        v-model="detailData.startTime"
+                        type="datetime"
+                        placeholder="选择日期时间"
+                        readonly
+                      >
+                      </el-date-picker>
+                    </div>
+                  </div>
+                </el-form-item>
               </el-form>
             </div>
-
           </div>
         </div>
       </div>
@@ -128,17 +172,6 @@
   </div>
 </template>
 <script>
-//
-import dialogTable from './chooseDialogTable'
-// 引入选择链接弹窗
-import selectLinks from '@/components/admin/selectLinks'
-// 选择商品弹窗
-import choosingGoods from '@/components/admin/choosingGoods'
-// 选择内容模板弹窗
-import chooseTemplateDialog from './chooseTemplateDialog'
-import memberListDialog from './memberListDialog'
-import getUserDialog from './getUserDialog'
-import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import { getDetailApi } from '@/api/admin/marketManage/messagePush.js'
 export default {
@@ -150,14 +183,8 @@ export default {
 
   },
   components: {
-    'dgTable': dialogTable,
-    chooseTemplateDialog,
-    selectLinks,
-    dateTimePicker,
-    chooseSelect,
-    memberListDialog,
-    choosingGoods,
-    getUserDialog },
+    dateTimePicker
+  },
   data () {
     return {
       /**
@@ -165,6 +192,9 @@ export default {
        */
       id: this.$route.query.id,
       detailData: {},
+      sendAction2: [],
+      // sendAction2: [this.detailData.startTime, this.detailData.endTime],
+
       /**
        *
        */
@@ -193,157 +223,16 @@ export default {
         label6: `参与活动人群：`,
         label7: `发送时间：`
       },
-      cardList: [
-
-      ],
-      cardValue: `请选择会员卡`,
-      /**
-      * 动态获取人数的参数集合
-      */
-      params: {
-        userKey: null,
-        onClickNoPay: false,
-        onClickGoods: false,
-        // 商品列表idList
-        onClickCard: false,
-        cardIdsList: [],
-        onClickTag: false,
-        tagIdList: [],
-        onClickUser: false,
-        userIdList: [],
-        onClickCustomRule: false,
-        customRuleInfo: {
-          payedDay: ``,
-          noPayDay: ``,
-          buyTimesMore: ``,
-          buyTimesLess: ``,
-          moneyAvgMore: ``,
-          moneyAvgLess: ``,
-          loginStart: ``,
-          loginEnd: ``
-        }
-      },
-      /**
-       * params
-       */
-      senAction: 1,
-      startTime: ``,
-      endTime: ``,
-      startTime1: ``,
-      onClickNoPay: false, // 勾选加购人群
-      onClickGoods: false, // 勾选购买指定商品人群
-      goodsIdList: [], // 商品ID集合
-      onClickCard: false,
-      cardIdsList: [],
-      onClickTag: false,
-      tagIdList: [],
-      onClickUser: false, // 勾选指定会员
-      userIdList: [],
-      onClickCustomRule: false,
-      disabledOnClickCustomRule: false,
-      pageLink: ``,
-      time: {},
-      /**
-       * 表单检验
-       */
-      rules: {
-        name: [
-          { required: true, message: '请填写消息名称', trigger: 'blur' },
-          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
-        ]
-      },
-      /**
-       * 传给组件chooseSelect的数据
-       */
-
-      dialogOff: false,
-      whetherShowDialog: false,
-      dialogVisible: false,
-      memberNum: 0, // 已选择的会员人数
-      /**
-       * 自定义实体
-       */
-      customRuleInfoVal: `请选择`,
-      loginStart: ``,
-      loginEnd: ``,
-      customRuleInfoOptions: [
-        {
-          label: `N天内有交易记录`,
-          value: `N天内有交易记录`,
-          key: `payedDay`,
-          ipt: ``
-        },
-        {
-          label: `N天内没有交易记录`,
-          value: `N天内没有交易记录`,
-          key: `noPayDay`,
-          ipt: ``
-
-        },
-        {
-          label: `累计购买次数小于N次`,
-          value: `累计购买次数小于N次`,
-          key: `buyTimesLess`,
-          ipt: ``
-
-        },
-        {
-          label: `累计购买次数大于N次`,
-          value: `累计购买次数大于N次`,
-          key: `buyTimesMore`,
-          ipt: ``
-
-        },
-        {
-          label: `购买商品均价大于N元`,
-          value: `购买商品均价大于N元`,
-          key: `moneyAvgMore`,
-          ipt: ``
-
-        },
-        {
-          label: `购买商品均价小于N元`,
-          value: `购买商品均价小于N元`,
-          key: `moneyAvgLess`,
-          ipt: ``
-
-        },
-        {
-          label: `指定时间内有登录记录`,
-          value: `指定时间内有登录记录`,
-          key: `time`
-
-        }
-      ],
-      optionsList: [
-
-      ],
-      showTime: false,
-      isShowBtn: false,
-      arrList: [],
-      imgsList: [],
-      userNumber: 0,
-      tuneUpChooseGoods: false,
-      tuneUpSelectLink: false
+      rules: {}
 
     }
   },
   watch: {
-    senAction (newVal, oldVal) {
-      switch (newVal) {
-        case 1:
-          this.startTime = this.moment().format('YYYY-MM-DD HH:mm:ss')
-          break
-        case 2:
-          this.startTime = this.time.startTime
-          this.endTime = this.time.endTime
-          break
-        case 4:
-          this.startTime = this.time.startTime
-          break
-        default:
-          break
-      }
+    detailData: {
+      handler: function (newVal, oldVal) {
+        this.sendAction2 = [newVal.startTime, newVal.endTime]
+      },
+      deep: true
     }
   },
   created () {
@@ -509,6 +398,27 @@ export default {
         margin-left: 20px;
         padding-top: 15px;
         .mainContentRightForm {
+          .detailDataName {
+            height: 30px;
+            width: 245px;
+            border: 1px solid #dbdbdb;
+            background: #fff;
+            line-height: 30px;
+            padding-left: 12px;
+          }
+          .detailDataContent {
+            padding: 10px 0 0 12px;
+            height: 120px;
+            width: 330px;
+            border: 1px solid #dbdbdb;
+          }
+          .ulList {
+            border: 1px solid #eee;
+            background: #fff;
+            padding: 0px 10px 10px 30px;
+            margin: 10px 0;
+            list-style-type: disc;
+          }
           .mainContentRightFormText {
             color: #999;
           }
