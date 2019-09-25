@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class PaymentConfigVo {
-    private String payCode;
-    private String payName;
-    private String enabled;
+    public String payCode;
+    public String payName;
+    public Byte enabled;
 }
