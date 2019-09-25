@@ -13,21 +13,13 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * @author liufei
@@ -44,34 +36,11 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/enablePayment")
     public JsonResult enablePayment(@RequestBody @Validated PaymentConfigParam paymentConfigParam) {
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(paymentConfigParam.getClass());
-            PropertyDescriptor[] descriptor = beanInfo.getPropertyDescriptors();
-            //更新支付配置开关
-            Arrays.asList(descriptor).forEach((e) -> invoke(e, paymentConfigParam));
-            //更新默认支付配置
-            shop().trade.updateDefaultPayConf(paymentConfigParam);
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
+        //更新支付配置开关
+        shop().trade.updatePayment(paymentConfigParam.getBasicConfig());
+        //更新默认支付配置
+        shop().trade.updateDefaultPayConf(paymentConfigParam);
         return success();
-    }
-
-    /**
-     * 循环更新每一种支付方式的开启状态
-     */
-    private void invoke(PropertyDescriptor descriptor, PaymentConfigParam paymentConfigParam) {
-        try {
-            String paycode = descriptor.getName();
-            Object enabled = descriptor.getReadMethod().invoke(paymentConfigParam);
-            if (enabled != null) {
-                log.debug("支付方式：{}，开关状态：{}", paycode, enabled.toString());
-                Byte payStatus = "1".equals(enabled.toString()) ? BYTE_ONE : BYTE_ZERO;
-                shop().trade.updatePayment(paycode, payStatus);
-            }
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

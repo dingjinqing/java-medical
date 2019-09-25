@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.config.trade;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.Map;
+
 /**
  * The type Payment config param.
  *
@@ -14,25 +16,12 @@ public class PaymentConfigParam {
     /**
      * 支付方式-payment记录表
      * 1：开启状态 0：未开启状态
-     * 微信支付
+     * k: 微信支付(wxpay)payCode   v:状态status
+     * k: 积分支付(score)   v:状态
+     * k: 余额支付(balance)   v:状态
+     * k: 货到付款(cod)   v:状态
      */
-    private Byte wxpay;
-    /**
-     * 积分支付
-     */
-    private Byte score;
-    /**
-     * 余额支付
-     */
-    private Byte balance;
-    /**
-     * 货到付款
-     */
-    private Byte cod;
-    /**
-     * 存储卡支付
-     */
-    private Byte membercard;
+    Map<String, Byte> basicConfig;
 
     /**
      * 默认支付配置-shopcfg表

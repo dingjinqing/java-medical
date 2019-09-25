@@ -640,15 +640,11 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * 更新支付方式开关
-     *
-     * @param payCode 支付方式码
-     * @param enabled 支付开关状态
      */
-    public void updatePayment(String payCode, Byte enabled) {
-        db().update(Payment.PAYMENT)
-            .set(Payment.PAYMENT.ENABLED, enabled)
-            .where(Payment.PAYMENT.PAY_CODE.eq(payCode))
-            .execute();
+    public void updatePayment(Map<String, Byte> basicConfig) {
+        basicConfig.forEach((k, v) -> {
+            db().update(Payment.PAYMENT).set(Payment.PAYMENT.ENABLED, v).where(Payment.PAYMENT.PAY_CODE.eq(k)).execute();
+        });
     }
 
     /**
@@ -867,9 +863,9 @@ public class TradeService extends BaseShopConfigService {
 
     /**
      * @throws WxErrorException 微信api调用异常
-     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_ID}
-     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_NAME}
-     * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#STATUS_CODE}
+     *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_ID}
+     *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_NAME}
+     *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#STATUS_CODE}
      */
     public List<LogisticsAccountInfo> combineAllLogisticsAccountInfo() throws WxErrorException {
         //已绑定账号物流公司列表，不包含未绑定物流公司
