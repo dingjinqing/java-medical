@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +18,13 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
@@ -147,5 +151,30 @@ public class AdminMemberCardController extends AdminBaseController {
 		PageResult<CardHolderVo> result = shop().member.card.getAllCardHolder(param);
 		return success(result);
 	}
+	
+	
+	
+	/**
+	 * 获取会员卡领取详情
+	 */
+	@PostMapping("/code/receivelist")
+	public JsonResult getReceiveList(@RequestBody CodeReceiveParam param) {
+		logger.info("获取所有持卡会员");
+		PageResult<CodeReceiveVo> result = shop().member.card.getReceiveList(param);
+		return success(result);
+	}
+	
+	/**
+	 * 获取会员卡批次
+	 * @param cardId
+	 * @return
+	 */
+	@PostMapping("/card/batch/get/{cardId}")
+	public JsonResult getCardBatchList(@PathVariable Integer cardId) {
+		logger.info("获取会员卡所有批次");
+		List<CardBatchVo> cardBatchList = shop().member.card.getCardBatchList(cardId);
+		return success(cardBatchList);
+	}
+	
 	
 }
