@@ -139,7 +139,7 @@ export default {
       actName: '',
       tableData: [],
       pageParams: {
-        actNname: null
+
       }
     }
   },
@@ -151,6 +151,8 @@ export default {
     handleSelect () {
       this.pageParams.actName = this.actName
       couponGiftList(this.pageParams).then(res => {
+        console.log('入参:', this.pageParams)
+        console.log('tableData:', res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           console.log('tableData:', res.content.dataList)

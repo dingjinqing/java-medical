@@ -24,27 +24,92 @@
           <!-- 选择人群 -->
           <el-form-item
             label="选择人群"
-            prop="people"
+            prop=""
           >
             <div class="gray">以下筛选条件为"或"的关系</div>
             <el-checkbox-group v-model="form.checkList">
-              <el-checkbox>
+              <el-checkbox label="cartBox">
                 <div style="display: flex">
                   <span>加购人群</span>
-                  <div class="gray">30天内在本店内有加入购物车行为，但没有支付的用户</div>
+                  <div class="gray"> 30天内在本店内有加入购物车行为，但没有支付的用户</div>
                 </div>
               </el-checkbox>
               <br />
-              <el-checkbox label="购买指定商品人群"></el-checkbox><br>
-              <el-checkbox>持有
-                <el-input
-                  size="small"
-                  style="width: 200px;"
-                ></el-input>
+              <el-checkbox label="goodsBox">
+                <div style="display: flex">
+                  <span>购买指定商品人群</span>
+                  <div class="gray"> 最多可选择3件商品</div>
+                </div>
               </el-checkbox><br>
-              <el-checkbox label="属于 标签人群"></el-checkbox><br>
+              <el-checkbox label="cardBox">持有
+                <el-select
+                  v-model="membershipCardVal"
+                  placeholder="请选择会员卡"
+                  size="small"
+                >
+                  <el-option
+                    v-for="(item,index) in membershipCardOptions"
+                    :key="index"
+                    :label="item.cardName"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>会员卡人群
+              </el-checkbox><br>
+              <el-checkbox label="tagBox">属于
+                <el-select
+                  filterable
+                  v-model="labelDialogInput"
+                  multiple
+                  placeholder="请选择会员标签"
+                  size="small"
+                >
+                  <el-option
+                    v-for="(item,index) in tagSource"
+                    :key="index"
+                    :label="item.value"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>标签人群
+              </el-checkbox><br>
               <el-checkbox label="选择指定的会员 已选择会员 0 人"></el-checkbox><br>
-              <el-checkbox label="自定义"></el-checkbox><br>
+              <el-checkbox label="customBox">自定义
+                <el-select
+                  v-model="customInfo"
+                  placeholder="请选择"
+                  size="small"
+                >
+                  <el-option
+                    label="N天内有交易记录"
+                    value="0"
+                  ></el-option>
+                  <el-option
+                    label="N天内没有交易记录"
+                    value="1"
+                  ></el-option>
+                  <el-option
+                    label="累计购买次数小于N次"
+                    value="2"
+                  ></el-option>
+                  <el-option
+                    label="累计购买次数大于N次"
+                    value="3"
+                  ></el-option>
+                  <el-option
+                    label="购买商品均价小于N元"
+                    value="4"
+                  ></el-option>
+                  <el-option
+                    label="购买商品均价大于N元"
+                    value="5"
+                  ></el-option>
+                  <el-option
+                    label="指定时间内有登陆记录"
+                    value="6"
+                  ></el-option>
+                </el-select>
+              </el-checkbox><br>
             </el-checkbox-group>
           </el-form-item>
           <!-- 选择优惠券 -->
@@ -92,6 +157,8 @@
 
 <script>
 // import { mapActions } from 'vuex'
+import { allUserCardRequest, allTagRequest } from '@/api/admin/membershipList.js'
+
 import wrapper from '@/components/admin/wrapper/wrapper'
 // import choosingGoods from '@/components/admin/choosingGoods'
 import { addActivity } from '@/api/admin/marketManage/couponGift.js'
@@ -109,9 +176,15 @@ export default {
       form: {
         actName: '',
         checkList: [],
+        couponGiveGrantInfoParams: {},
         sendAction: '',
         startTime: ''
       },
+      membershipCardVal: '',
+      membershipCardOptions: [],
+      labelDialogInput: '',
+      tagSource: [],
+      customInfo: '',
       // 表单约束
       formRules: {
         actName: [
@@ -123,7 +196,31 @@ export default {
       }
     }
   },
+  created () {
+    // 初始化会员卡下拉框列表
+    this.getAllUserCard()
+
+    // 初始化标签数据
+    this.getAllTag()
+  },
   methods: {
+    // 获取会员卡
+    getAllUserCard () {
+      allUserCardRequest().then(res => {
+        console.log('--------------------------')
+        console.log(res.content)
+        this.membershipCardOptions = res.content
+      })
+    },
+    // 获取标签
+    getAllTag () {
+      console.log('-------------获取所有标签------------')
+      allTagRequest().then(res => {
+        console.log(res.content)
+        this.tagSource = res.content
+      })
+    },
+    // 发放优惠券
     addAct () {
       let addParam = {
         'actName': this.form.actName,
