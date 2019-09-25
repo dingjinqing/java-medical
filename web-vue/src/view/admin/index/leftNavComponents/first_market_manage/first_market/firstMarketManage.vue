@@ -577,7 +577,7 @@ export default {
     // 消息推送
     messagePush () {
       this.$router.push({
-        name: 'message_push'
+        name: 'business_template_message'
       })
     },
     // 定向发券

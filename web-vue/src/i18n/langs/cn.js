@@ -21,9 +21,7 @@ import { cn as goodsImport } from './views/goodsManage/goodsImport'
 // 营销管理
 
 // 营销管理通用词汇
-import {
-  cn as marketCommon
-} from './views/admin_new/cn/index/marketManagement/marketCommonCn'
+import { cn as marketCommon } from './views/admin_new/cn/index/marketManagement/marketCommonCn'
 // 多人拼团
 import { cn as groupBuy } from './views/admin_new/cn/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
@@ -43,9 +41,7 @@ import { cn as addBargainAct } from './views/admin_new/cn/index/marketManagement
 // 好友助力
 import { cn as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
 // 幸运大抽奖
-import {
-  cn as luckyDraw
-} from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
+import { cn as luckyDraw } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
 import { cn as pageDecoration } from './views/smallProgramManagement/pageDecoration'
 // 底部导航配置
@@ -53,10 +49,9 @@ import { cn as bottomNavigation } from './views/smallProgramManagement/bottomNav
 // 分享有礼-添加
 import { cn as adSharePolite } from './views/admin_new/cn/index/marketManagement/sharePolite/adSharePolite'
 // 限时降价列表
-import {
-  cn as reducePriceList
-} from './views/admin_new/cn/index/marketManagement/reducePrice/reducePriceListCn'
-
+import { cn as reducePriceList } from './views/admin_new/cn/index/marketManagement/reducePrice/reducePriceListCn'
+// 营销管理/消息推送
+import { cn as messagePush } from './views/admin_new/cn/index/marketManagement/messagePush/messagePushCn'
 // 概览
 import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 // 页面装修
@@ -544,7 +539,7 @@ const cn = {
   luckyDraw, // 幸运大抽奖
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
-
+  messagePush, // 营销管理/消息推送
   ...zhLocale,
   expressList,
 
