@@ -233,7 +233,7 @@ public class SystemShopController extends SystemBaseController {
 	 * @return
 	 */
 	@GetMapping("/system/shop/editList/{shopId}")
-	public JsonResult editListShopAccount(@PathVariable Integer shopId) {
+	public JsonResult editListShopBefore(@PathVariable Integer shopId) {
 		ShopRecord shopRecord = saas.shop.getShopById(shopId);
 		if(shopRecord!=null) {
 			Timestamp shopRenewExpireTime = saas.shop.renew.getShopRenewExpireTime(shopId);
@@ -244,5 +244,27 @@ public class SystemShopController extends SystemBaseController {
 		}
 		//店铺不存在
 		return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
+	}
+	
+	
+	/**
+	 * 修改店铺
+	 * @param account
+	 * @return
+	 */
+	@PostMapping("/system/shop/edit")
+	public JsonResult editShop(@RequestBody @Valid ShopReq shopReq) {
+		ShopRecord shopRecord = saas.shop.getShopById(shopReq.getShopId());
+		if(shopRecord==null) {
+			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
+		}
+		ShopAccountRecord accountInfo = saas.shop.account.getAccountInfoForId(shopReq.getSysId());
+		if (accountInfo == null) {
+			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
+		}
+		if (saas.shop.editShop(shopReq, sysAuth.user(), request,shopRecord)) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail();
 	}
 }
