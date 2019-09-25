@@ -534,7 +534,31 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/goodsLabel'
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/allGoodsLabel'
+              )
+          },
+          {
+            path: '/admin/home/main/goodsManage/goodsLabel/addGoodsLabel',
+            name: 'addGoodsLabel',
+            meta: {
+              crumbTitle: 'router.addGoodsLabel',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/addAndUpdateGoodsLabel'
+              )
+          },
+          {
+            path: '/admin/home/main/goodsManage/goodsLabel/updateGoodsLabel/:id',
+            name: 'updateGoodsLabel',
+            meta: {
+              crumbTitle: 'router.updateGoodsLabel',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/addAndUpdateGoodsLabel'
               )
           },
           // 商品管理/商品导入
