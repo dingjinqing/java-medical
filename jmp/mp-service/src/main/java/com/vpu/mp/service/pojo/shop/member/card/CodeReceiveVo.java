@@ -15,6 +15,8 @@ public class CodeReceiveVo {
 	private String name;
 	/** - 会员卡领取码表id */
 	private Integer id;
+	/** - 用户id */
+	private Integer userId;
 	/** - 用户名 */
 	private String username;
 	/** -手机号 */
