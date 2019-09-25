@@ -48,7 +48,7 @@
               <el-form
                 :rules="rules"
                 :model="formData"
-                label-width="128px"
+                label-width="140px"
                 size="small"
               >
                 <!-- 后台返回的数据 -->
@@ -56,7 +56,10 @@
                   <!-- {{detailData}} -->
                 </div>
                 <!-- 消息名称 -->
-                <el-form-item :label="labels.label1">
+                <el-form-item
+                  :label="labels.label1"
+                  :rules="[{required:true}]"
+                >
                   <div class="detailDataName">
                     {{detailData.name}}
                   </div>
@@ -64,13 +67,19 @@
                 </el-form-item>
 
                 <!-- 消息类型 -->
-                <el-form-item :label="labels.label2">
+                <el-form-item
+                  :label="labels.label2"
+                  :rules="[{required:true}]"
+                >
                   <div class="detailDataName">
                     {{detailData.action===7?`商家活动通知`:`其他`}}
                   </div>
                 </el-form-item>
                 <!-- 业务标题 -->
-                <el-form-item :label="labels.label3">
+                <el-form-item
+                  :label="labels.label3"
+                  :rules="[{required:true}]"
+                >
                   <div class="detailDataName">
                     {{detailData.title}}
                   </div>
@@ -79,19 +88,26 @@
                 <el-form-item
                   :label="labels.label4"
                   class="addTemplateBtnWrap"
+                  :rules="[{required:true}]"
                 >
                   <div class="detailDataContent">
                     {{detailData.content}}
                   </div>
                 </el-form-item>
                 <!-- 进入小程序查看 -->
-                <el-form-item :label="labels.label5">
+                <el-form-item
+                  :label="labels.label5"
+                  :rules="[{required:true}]"
+                >
                   <div class="detailDataName">
                     {{detailData.pageLink}}
                   </div>
                 </el-form-item>
                 <!-- 参与活动人群 -->
-                <el-form-item :label="labels.label6">
+                <el-form-item
+                  :label="labels.label6"
+                  :rules="[{required:true}]"
+                >
                   <div>
                     <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
                   </div>
@@ -103,7 +119,10 @@
 
                 </el-form-item>
                 <!-- 发送时间 -->
-                <el-form-item :label="labels.label7">
+                <el-form-item
+                  :label="labels.label7"
+                  :rules="[{required:true}]"
+                >
                   <!-- 立即发送 -->
                   <div v-if="detailData.sendAction ===1">
                     <el-radio
@@ -172,6 +191,7 @@
   </div>
 </template>
 <script>
+import RulesMixins from '@/mixins/RulesMixins'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import { getDetailApi } from '@/api/admin/marketManage/messagePush.js'
 export default {
@@ -179,9 +199,7 @@ export default {
   /**
    * 接收查看组件的值
    */
-  props: {
-
-  },
+  mixins: [RulesMixins],
   components: {
     dateTimePicker
   },
@@ -223,7 +241,21 @@ export default {
         label6: `参与活动人群：`,
         label7: `发送时间：`
       },
-      rules: {}
+      rules: {
+        // 消息名称
+        name: [
+          { validator: this.checkMessageName, trigger: 'blur', required: true }
+        ],
+        // 业务标题
+        title: [
+          { validator: this.checkMessageTitle, trigger: 'blur', required: true }
+        ],
+        // 业务内容
+        content: [
+          { validator: this.checkMessageContent, trigger: 'blur', required: true }
+
+        ]
+      }
 
     }
   },
@@ -392,7 +424,7 @@ export default {
       }
       .mainContentRight {
         margin-bottom: 100px;
-        width: 520px;
+        min-width: 520px;
         min-height: 600px;
         background-color: #f8f8f8;
         margin-left: 20px;

@@ -36,6 +36,28 @@ export default {
       }
     },
     // 营销活动/消息推送/添加消息推送
-    checkMessagePushName (rule, value, callback) {}
+    checkMessageName (rule, value, callback) {
+      if (!value) {
+        callback(new Error(`请填写消息名称`))
+      } else {
+        callback()
+      }
+    },
+    // 营销活动/消息推送/添加消息推送
+    checkMessageTitle (rule, value, callback) {
+      if (!value) {
+        callback(new Error(`请填写业务标题`))
+      } else {
+        callback()
+      }
+    },
+    // 营销活动/消息推送/业务内容
+    checkMessageContent (rule, value, callback) {
+      if (!value) {
+        callback(new Error(`请填写业务内容`))
+      } else {
+        callback()
+      }
+    }
   }
 }

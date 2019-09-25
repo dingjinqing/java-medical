@@ -48,12 +48,15 @@
               <el-form
                 :rules="rules"
                 :model="formData"
-                label-width="128px"
+                label-width="140px"
                 size="small"
               >
 
                 <!-- 消息名称 -->
-                <el-form-item :label="labels.label1">
+                <el-form-item
+                  :label="labels.label1"
+                  prop="name"
+                >
                   <el-input
                     maxlength="20"
                     show-word-limit
@@ -66,11 +69,17 @@
                 </el-form-item>
 
                 <!-- 消息类型 -->
-                <el-form-item :label="labels.label2">
+                <el-form-item
+                  :label="labels.label2"
+                  :rules="[ { required: true}]"
+                >
                   <span>商家活动通知</span>
                 </el-form-item>
                 <!-- 业务标题 -->
-                <el-form-item :label="labels.label3">
+                <el-form-item
+                  :label="labels.label3"
+                  prop="title"
+                >
                   <el-input
                     maxlength="7"
                     show-word-limit
@@ -83,6 +92,7 @@
                 <el-form-item
                   :label="labels.label4"
                   class="addTemplateBtnWrap"
+                  prop="content"
                 >
                   <div>
                     <el-button
@@ -114,7 +124,12 @@
                     >添加为模板</el-button>
                   </div>
                 </el-form-item>
-                <el-form-item :label="labels.label4">
+                <el-form-item
+                  :label="labels.label5"
+                  :rules="[
+                {required: true}
+                ]"
+                >
                   <div>
                     <el-button
                       size="small"
@@ -123,7 +138,10 @@
                   </div>
                 </el-form-item>
                 <!-- 参与活动人群 -->
-                <el-form-item :label="labels.label6">
+                <el-form-item
+                  :label="labels.label6"
+                  :rules="[{required: true }]"
+                >
                   <div>
                     <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
                   </div>
@@ -261,7 +279,10 @@
                   </div>
                 </el-form-item>
                 <!-- 发送时间 -->
-                <el-form-item :label="labels.label7">
+                <el-form-item
+                  :label="labels.label7"
+                  :rules="[{required: true }]"
+                >
                   <div>
                     <el-radio
                       :label=1
@@ -350,7 +371,8 @@
   </div>
 </template>
 <script>
-//
+// 引入表单校验混入
+import RulesMixins from '@/mixins/RulesMixins'
 // 引入选择链接弹窗
 import selectLinks from '@/components/admin/selectLinks'
 // 选择商品弹窗
@@ -365,6 +387,7 @@ import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi } from '@/ap
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
+  mixins: [RulesMixins],
   components: {
     chooseTemplateDialog,
     selectLinks,
@@ -455,9 +478,18 @@ export default {
        * 表单检验
        */
       rules: {
+        // 消息名称
         name: [
-          { required: true, message: '请填写消息名称', trigger: 'blur' },
-          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+          { validator: this.checkMessageName, trigger: 'blur', required: true }
+        ],
+        // 业务标题
+        title: [
+          { validator: this.checkMessageTitle, trigger: 'blur', required: true }
+        ],
+        // 业务内容
+        content: [
+          { validator: this.checkMessageContent, trigger: 'blur', required: true }
+
         ]
       },
       /**
@@ -1044,7 +1076,7 @@ export default {
       }
       .mainContentRight {
         margin-bottom: 100px;
-        width: 520px;
+        min-width: 520px;
         min-height: 1010px;
         background-color: #f8f8f8;
         margin-left: 20px;
