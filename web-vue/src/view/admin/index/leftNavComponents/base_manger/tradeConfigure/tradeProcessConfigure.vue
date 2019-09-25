@@ -257,7 +257,7 @@
                   <td style="width:190px">{{item.name}}</td>
                   <td style="width:150px">{{item.account}}</td>
                   <td style="width:90px">{{item.state}}</td>
-                  <td style="color:5A8BFF;cursor:pointer;width:70px">{{item.operate}}</td>
+                  <td style="color:#5A8BFF;cursor:pointer;width:70px">{{item.operate}}</td>
                 </tr>
               </tbody>
             </table>
