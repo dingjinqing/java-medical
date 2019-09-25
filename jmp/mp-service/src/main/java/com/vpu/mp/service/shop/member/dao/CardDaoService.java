@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop.member.dao;
 
 import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Record8;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 import org.jooq.tools.StringUtils;
@@ -10,12 +14,17 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
+import static com.vpu.mp.db.shop.Tables.CARD_BATCH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
 import java.sql.Timestamp;
 
 /**
@@ -29,7 +38,7 @@ public class CardDaoService extends ShopBaseService {
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
 
 		User invitedUser = USER.as("a");
-		SelectJoinStep<?> select = db().select(USER_CARD.USER_ID,USER.USERNAME,USER.MOBILE,invitedUser.USERNAME.as("invitedName"),USER_CARD.CREATE_TIME,USER_CARD.CARD_NO,USER_CARD.FLAG)
+		SelectJoinStep<?> select = db().select(USER_CARD.USER_ID,USER.USERNAME,USER.MOBILE,invitedUser.USERNAME.as("invitedName"),USER_CARD.CREATE_TIME,USER_CARD.CARD_NO,USER_CARD.FLAG,USER_CARD.EXPIRE_TIME)
 			.from( USER_CARD.leftJoin(USER
 										.leftJoin(invitedUser).on(USER.INVITE_ID.eq(invitedUser.USER_ID))
 					
@@ -81,6 +90,55 @@ public class CardDaoService extends ShopBaseService {
 		if(param.getSecondDateTime() != null) {
 			select.where(USER_CARD.CREATE_TIME.le(param.getSecondDateTime()));
 		}
+	}
+	
+	/**
+	 * 分页查询会员卡领取详情
+	 * @param param
+	 * @return
+	 */
+	public PageResult<CodeReceiveVo> getReceiveListSql(CodeReceiveParam param) {
+		// CARD_RECEIVE_CODE
+		SelectConditionStep<?> select = db().select(CARD_BATCH.NAME,CARD_RECEIVE_CODE.ID,USER.USERNAME,USER.MOBILE,CARD_RECEIVE_CODE.RECEIVE_TIME,CARD_RECEIVE_CODE.CARD_NO,CARD_RECEIVE_CODE.CODE,CARD_RECEIVE_CODE.CARD_PWD)
+		.from(CARD_RECEIVE_CODE
+							.leftJoin(USER).on(CARD_RECEIVE_CODE.USER_ID.eq(USER.USER_ID))
+							.leftJoin(CARD_BATCH).on(CARD_RECEIVE_CODE.BATCH_ID.eq(CARD_BATCH.ID))
+		     ).where(CARD_RECEIVE_CODE.CARD_ID.eq(param.getCardId()));
+		
+		buildOptionForReceiveCode(param, select);
+		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), CodeReceiveVo.class);
+		
+	}
+	
+	/**
+	 * 会员卡领取详情构建多条件查询参数
+	 * @param param
+	 * @param select
+	 */
+	private void buildOptionForReceiveCode(CodeReceiveParam param, SelectConditionStep<?> select) {
+		/** -手机号 */
+		if(!StringUtils.isBlank(param.getMobile())) {
+			select.and(USER.MOBILE.eq(param.getMobile()));
+		}
+		/** -用户名 */
+		if(!StringUtils.isBlank(param.getUsername())) {
+			String likeValue = this.likeValue(param.getUsername());
+			select.and(USER.USERNAME.like(likeValue));
+		}
+		/** -批次号 */
+		if(param.getBatchId() != null) {
+			select.and(CARD_RECEIVE_CODE.BATCH_ID.eq(param.getBatchId()));
+		}
+	}
+	
+	
+	public Result<?> getCardBatchList(Integer cardId) {
+		 return db().select(CARD_BATCH.ID,CARD_BATCH.NAME)
+				 	.from(CARD_BATCH)
+				 	.where(CARD_BATCH.CARD_ID.eq(cardId))
+				 	.and(CARD_BATCH.DEL_FLAG.eq(DELETE_NO))
+				 	.fetch();
+		
 	}
 
 }

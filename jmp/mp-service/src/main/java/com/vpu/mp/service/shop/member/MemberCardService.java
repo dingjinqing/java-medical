@@ -62,6 +62,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
@@ -101,6 +103,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
@@ -117,6 +121,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 
 /**
  * 
@@ -1362,11 +1367,55 @@ public class MemberCardService extends ShopBaseService {
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
 		
 		 PageResult<CardHolderVo> allCardHolder = cardDao.getAllCardHolder(param);
-		 /** - 如果查询的状态是过期的，设置返回的flag为3 过期  */
-		 if(CARD_EXPIRED.equals(param.getFlag())) {
-			 allCardHolder.dataList.stream().forEach(item->item.setFlag(CARD_EXPIRED));
+		 /** - 如果查询的状态是过期的，设置返回的flag为2过期  */
+		 for(CardHolderVo item: allCardHolder.dataList) {
+			 if(DateUtil.getLocalDateTime().after(item.getExpireTime())) {
+				 item.setFlag(CARD_EXPIRED);
+			 }
 		 }
 		 return allCardHolder;
+	}
+
+	/**
+	 * 分页查询会员卡领取详情
+	 * @param param
+	 * @return
+	 */
+	public PageResult<CodeReceiveVo> getReceiveList(CodeReceiveParam param) {
+		PageResult<CodeReceiveVo> result = cardDao.getReceiveListSql(param);
+		/** 处理code 和 card_pwd */
+		for(CodeReceiveVo vo: result.dataList) {
+			String code = vo.getCode();
+			int lengthOfCode = code.length()-4;
+			
+			if(lengthOfCode>0) {
+				String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
+				vo.setCode(code.substring(0,2).concat(tmp).concat(code.substring(lengthOfCode+2)));
+			}
+			
+			String cardPwd = vo.getCardPwd();
+			int lengthOfCardPwd = cardPwd.length()-4;
+			if(lengthOfCardPwd>0) {
+				String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i->"*").collect(Collectors.joining());
+				vo.setCardPwd(cardPwd.substring(0,2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd+2)));
+			}
+		}
+		return result;
+		 
+	}
+	/**
+	 * 返回会员卡所有批次信息
+	 * @param cardId
+	 * @return
+	 */
+	public List<CardBatchVo> getCardBatchList(Integer cardId) {
+		Result<?> cardBatchList = cardDao.getCardBatchList(cardId);
+		if(cardBatchList != null) {
+			return cardBatchList.into(CardBatchVo.class);
+		}else {
+			return null;
+		}
+
 	}
 		
 }

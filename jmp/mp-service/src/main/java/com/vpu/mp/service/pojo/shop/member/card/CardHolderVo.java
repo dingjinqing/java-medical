@@ -25,4 +25,6 @@ public class CardHolderVo {
 	private Byte flag;
 	/** -领卡时间 */
 	private Timestamp createTime;
+	/** -过期时间 */
+	private Timestamp expireTime;
 }
