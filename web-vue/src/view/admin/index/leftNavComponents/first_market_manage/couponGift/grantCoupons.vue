@@ -3,151 +3,157 @@
     <div class="content">
       <div class="main">
         <el-form
-          :model="form"
           label-width="150px"
           labelPosition='right'
-          :rules="formRules"
-          ref="form"
         >
           <!-- 活动名称 -->
           <el-form-item
             label="活动名称"
-            prop="actName"
+            prop=""
           >
             <el-input
               size="small"
               placeholder="请输入活动名称"
               class="morelength"
-              v-model="form.actName"
             ></el-input>
           </el-form-item>
-          <!-- 选择人群 -->
-          <el-form-item
-            label="选择人群"
-            prop=""
-          >
-            <div class="gray">以下筛选条件为"或"的关系</div>
-            <el-checkbox-group v-model="form.checkList">
-              <el-checkbox label="cartBox">
-                <div style="display: flex">
-                  <span>加购人群</span>
-                  <div class="gray"> 30天内在本店内有加入购物车行为，但没有支付的用户</div>
-                </div>
-              </el-checkbox>
-              <br />
-              <el-checkbox label="goodsBox">
-                <div style="display: flex">
-                  <span>购买指定商品人群</span>
-                  <div class="gray"> 最多可选择3件商品</div>
-                </div>
-              </el-checkbox><br>
-              <el-checkbox label="cardBox">持有
-                <el-select
-                  v-model="membershipCardVal"
-                  placeholder="请选择会员卡"
-                  size="small"
+          <!-- 参与活动人群 -->
+          <el-form-item :label="labels.label6">
+            <div>
+              <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
+            </div>
+            <div>
+              <el-checkbox
+                v-model="params.onClickNoPay"
+                @change="handleOnClickNoPayChange"
+              >加购人群</el-checkbox>
+              <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
+            </div>
+            <div>
+              <el-checkbox
+                v-model="params.onClickGoods"
+                @change="handleOnClickGoodsChange"
+              >指定购买商品人群 </el-checkbox>
+              <span style="color:#999;fontSize:12px">最多可选择3件商品</span>
+            </div>
+            <div class="chooseGoods">
+              <div class="chooseGoodsLeft">选择商品</div>
+              <ul class="imgList">
+                <li
+                  v-for="(item) in imgsList"
+                  :key="item.goodsId"
                 >
-                  <el-option
-                    v-for="(item,index) in membershipCardOptions"
-                    :key="index"
-                    :label="item.cardName"
-                    :value="item.id"
+                  <el-image
+                    style="width: 80px; height: 80px"
+                    :src="item.goodsImg"
+                  ></el-image>
+                  <el-image
+                    class="delImg"
+                    :src="urls.url4"
+                    @click="handleDelImg(item.goodsId)"
                   >
-                  </el-option>
-                </el-select>会员卡人群
-              </el-checkbox><br>
-              <el-checkbox label="tagBox">属于
-                <el-select
-                  filterable
-                  v-model="labelDialogInput"
-                  multiple
-                  placeholder="请选择会员标签"
-                  size="small"
-                >
-                  <el-option
-                    v-for="(item,index) in tagSource"
-                    :key="index"
-                    :label="item.value"
-                    :value="item.id"
-                  >
-                  </el-option>
-                </el-select>标签人群
-              </el-checkbox><br>
-              <el-checkbox label="选择指定的会员 已选择会员 0 人"></el-checkbox><br>
 
-              <div>
-                <el-checkbox
-                  v-model="params.onClickCustomRule"
-                  @change="handleOnClickCustomRuleChange"
-                >自定义</el-checkbox>
-                <el-select
-                  :disabled="!params.onClickCustomRule"
-                  v-model="customRuleInfoVal"
-                  placeholder="请选择"
-                  size="small"
-                  @change="customRuleInfoValChange"
+                  </el-image>
+                </li>
+                <div
+                  v-show="this.imgsList.length<3"
+                  class="imageWraper"
+                  @click="handleChooseGoods"
                 >
-                  <el-option
-                    label="请选择"
-                    value="请选择"
-                  ></el-option>
-                  <el-option
-                    v-for="item in customRuleInfoOptions"
+                  <el-image :src="urls.url3"></el-image>
+                </div>
+              </ul>
+
+            </div>
+            <!-- 属于 -->
+            <!-- 持有 -->
+            <div style="margin:10px 0">
+              <chooseSelect @chooseSelectVal="getChooseSelectVal" />
+            </div>
+            <div style="margin:10px 0">
+              <el-checkbox
+                v-model="params.onClickUser"
+                @change="handleOnClickUserChange"
+              >选择指定的会员 </el-checkbox>
+              <span style="margin-left:-15px">
+                <el-button
+                  @click="handleAddMember"
+                  type="text"
+                >+ 添加会员</el-button>
+              </span>
+              <span>已选择会员{{memberNum}}人</span>
+            </div>
+            <div>
+              <el-checkbox
+                v-model="params.onClickCustomRule"
+                @change="handleOnClickCustomRuleChange"
+              >自定义</el-checkbox>
+              <el-select
+                :disabled="!params.onClickCustomRule"
+                v-model="customRuleInfoVal"
+                placeholder="请选择"
+                size="small"
+                @change="customRuleInfoValChange"
+              >
+                <el-option
+                  label="请选择"
+                  value="请选择"
+                ></el-option>
+                <el-option
+                  v-for="item in customRuleInfoOptions"
+                  :key="item.key"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+              <!-- 自定义集合 -->
+              <div style="margin:10px 0;">
+                <ul class="ulList">
+                  <li
+                    v-for="(item) in optionsList"
                     :key="item.key"
-                    :label="item.label"
-                    :value="item.value"
                   >
-                  </el-option>
-                </el-select>
-                <!-- 自定义集合 -->
-                <div style="margin:10px 0;">
-                  <ul class="ulList">
-                    <li
-                      v-for="(item) in optionsList"
-                      :key="item.key"
-                    >
-                      <span>{{item.label}}：</span>
-                      <span>
-                        <el-input
-                          @blur="handleIpt(item)"
-                          @focus="handleIpt(item)"
-                          :disabled="!params.onClickCustomRule"
-                          style="width:120px"
-                          size="small"
-                          v-model="item.ipt"
-                        > </el-input>
-                        <span>{{ item.label | filterA  }}</span>
-                      </span>
-                      <div class="img_span">
-                        <el-image
-                          :src="urls.url4"
-                          class="img"
-                          @click="handleDelCustomize(item)"
-                        ></el-image>
-                      </div>
-                    </li>
-                    <li v-show="showTime">
-                      <span>指定时间内有登陆记录：</span>
-                      <div class="img_span">
-                        <el-image
-                          :src="urls.url4"
-                          class="img"
-                          @click="handleDelCustomize(6)"
-                        ></el-image>
-                      </div>
-                      <span>
-                        <dateTimePicker
-                          :showPicker=1
-                          @time="loginStartAndLoginEnd"
-                        />
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+                    <span>{{item.label}}：</span>
+                    <span>
+                      <el-input
+                        @blur="handleIpt(item)"
+                        @focus="handleIpt(item)"
+                        :disabled="!params.onClickCustomRule"
+                        style="width:120px"
+                        size="small"
+                        v-model="item.ipt"
+                      > </el-input>
+                      <span>{{ item.label | filterA  }}</span>
+                    </span>
+                    <div class="img_span">
+                      <el-image
+                        :src="urls.url4"
+                        class="img"
+                        @click="handleDelCustomize(item)"
+                      ></el-image>
+                    </div>
+                  </li>
+                  <li v-show="showTime">
+                    <span>指定时间内有登陆记录：</span>
+                    <div class="img_span">
+                      <el-image
+                        :src="urls.url4"
+                        class="img"
+                        @click="handleDelCustomize(6)"
+                      ></el-image>
+                    </div>
+                    <span>
+                      <dateTimePicker
+                        :showPicker=1
+                        @time="loginStartAndLoginEnd"
+                      />
+                    </span>
 
-              <br>
-            </el-checkbox-group>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </el-form-item>
           <!-- 选择优惠券 -->
           <el-form-item
@@ -161,17 +167,10 @@
             label="发送时间"
             prop="sendAction"
           >
-            <el-radio
-              v-model="form.sendAction"
-              label="0"
-            >立即发送</el-radio>
+            <el-radio label="0">立即发送</el-radio>
             <br>
-            <el-radio
-              v-model="form.sendAction"
-              label="1"
-            >定时发送</el-radio>
+            <el-radio label="1">定时发送</el-radio>
             <el-date-picker
-              v-model="form.startTime"
               type="datetime"
               class="morelength"
               size="small"
@@ -185,74 +184,89 @@
         <el-button
           type="primary"
           size="small"
-          @click="addAct"
         >确认发放</el-button>
       </div>
+      <!-- 添加会员的弹窗 -->
+      <memberListDialog
+        v-if="dialogOff"
+        @userIdList="getUserIdList"
+        :memberListDialog="dialogOff"
+        @dialog-cancel="closeDialog"
+      />
+      <!-- 选择商品弹窗 -->
+      <choosingGoods
+        @res="getRes"
+        :tuneUpChooseGoods="tuneUpChooseGoods"
+        :chooseGoodsBack="params.goodsIdList"
+      />
+      <!-- 获取人群弹窗 -->
+      <getUserDialog
+        @dialog-cancel="closeDialog"
+        :dialogVisible="dialogVisible"
+      />
     </div>
   </wrapper>
 </template>>
 
 <script>
 // import { mapActions } from 'vuex'
-import { allUserCardRequest, allTagRequest } from '@/api/admin/membershipList.js'
+// 选择商品弹窗
+import choosingGoods from '@/components/admin/choosingGoods'
 
+import memberListDialog from '../messagePush/memberListDialog'
+import getUserDialog from '../messagePush/getUserDialog'
+import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import wrapper from '@/components/admin/wrapper/wrapper'
 // import choosingGoods from '@/components/admin/choosingGoods'
-import { addActivity } from '@/api/admin/marketManage/couponGift.js'
+// import { addActivity } from '@/api/admin/marketManage/couponGift.js'
 // // import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 // // import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
 import { delObj } from '@/util/formatData'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
+import { getUserNumberApi } from '@/api/admin/marketManage/messagePush.js'
 
 export default {
   components: {
     wrapper,
-    dateTimePicker
+    dateTimePicker,
+    chooseSelect,
+    memberListDialog,
+    choosingGoods,
+    getUserDialog
     // choosingGoods,
     // AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
     return {
-      /**
-       * params
-       */
-      senAction: 1,
-      startTime: ``,
-      endTime: ``,
-      startTime1: ``,
-      onClickNoPay: false, // 勾选加购人群
-      onClickGoods: false, // 勾选购买指定商品人群
-      goodsIdList: [], // 商品ID集合
-      onClickCard: false,
-      cardIdsList: [],
-      onClickTag: false,
-      tagIdList: [],
-      onClickUser: false, // 勾选指定会员
-      userIdList: [],
-      onClickCustomRule: false,
-      disabledOnClickCustomRule: false,
-      pageLink: ``,
-      time: {},
+      checkedData: [], // 初始化弹窗选中的行
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
         url2: `${this.$imageHost}/image/admin/shop_logo_default.png`,
         url3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`,
         url4: `${this.$imageHost}/image/admin/icon_delete.png`
       },
-      showTime: false,
-      // 表单
-      form: {
-        actName: '',
-        checkList: [],
-        couponGiveGrantInfoParams: {},
-        sendAction: '',
-        startTime: ''
+      /**
+       * form表单的数据
+       */
+      formData: {
+        name: ``,
+        title: ``,
+        content: ``
       },
-      membershipCardVal: '',
-      membershipCardOptions: [],
-      labelDialogInput: '',
-      tagSource: [],
-      customInfo: '',
+      templateId: null,
+      labels: {
+        label1: `消息名称：`,
+        label2: `消息类型：`,
+        label3: `业务标题：`,
+        label4: `业务内容：`,
+        label5: `进入小程序查看：`,
+        label6: `参与活动人群：`,
+        label7: `发送时间：`
+      },
+      cardList: [
+
+      ],
+      cardValue: `请选择会员卡`,
       /**
       * 动态获取人数的参数集合
       */
@@ -279,6 +293,43 @@ export default {
           loginEnd: ``
         }
       },
+      /**
+       * params
+       */
+      senAction: 1,
+      startTime: ``,
+      endTime: ``,
+      startTime1: ``,
+      onClickNoPay: false, // 勾选加购人群
+      onClickGoods: false, // 勾选购买指定商品人群
+      goodsIdList: [], // 商品ID集合
+      onClickCard: false,
+      cardIdsList: [],
+      onClickTag: false,
+      tagIdList: [],
+      onClickUser: false, // 勾选指定会员
+      userIdList: [],
+      onClickCustomRule: false,
+      disabledOnClickCustomRule: false,
+      pageLink: ``,
+      time: {},
+      /**
+       * 表单检验
+       */
+      rules: {
+        name: [
+          { required: true, message: '请填写消息名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ]
+      },
+      /**
+       * 传给组件chooseSelect的数据
+       */
+
+      dialogOff: false,
+      whetherShowDialog: false,
+      dialogVisible: false,
+      memberNum: 0, // 已选择的会员人数
       /**
        * 自定义实体
        */
@@ -335,67 +386,178 @@ export default {
         }
       ],
       optionsList: [],
-      // 表单约束
-      formRules: {
-        actName: [
-          { required: true, message: '此处不能为空!', trigger: 'blur' }
-        ],
-        sendAction: [
-          { required: true, message: '此处不能为空!', trigger: 'blur' }
-        ]
-      }
+      showTime: false,
+      isShowBtn: false,
+      arrList: [],
+      imgsList: [],
+      userNumber: 0,
+      tuneUpChooseGoods: false,
+      tuneUpSelectLink: false
+
     }
   },
   created () {
-    // 初始化会员卡下拉框列表
-    this.getAllUserCard()
 
-    // 初始化标签数据
-    this.getAllTag()
   },
 
   methods: {
-    // 获取会员卡
-    getAllUserCard () {
-      allUserCardRequest().then(res => {
-        console.log('--------------------------')
-        console.log(res.content)
-        this.membershipCardOptions = res.content
-      })
+    handleChooseData (data) {
+      this.$message({ message: `已经选择了${data.length}条数据！`, type: 'success' })
+      this.checkedData = data
     },
-    // 获取标签
-    getAllTag () {
-      console.log('-------------获取所有标签------------')
-      allTagRequest().then(res => {
-        console.log(res.content)
-        this.tagSource = res.content
+    // 关闭会员弹窗
+    closeDialog () {
+      this.dialogOff = false
+      this.whetherShowDialog = false
+      this.dialogVisible = false
+    },
+    // 添加会员
+    handleAddMember () {
+      if (this.params.onClickUser === false) {
+        return
+      }
+      this.dialogOff = true
+    },
+    // getUserIdList
+    getUserIdList (val) {
+      console.log(val)
+      this.params.userIdList = this.formatUserIdList(val)
+      this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
+      // 当添加会员后 发送获取人数接口
+      this.fetchUserList(this.params)
+    },
+    formatUserIdList (userIdList) {
+      let arr = []
+      userIdList.forEach(item => {
+        arr.push(item.userId
+        )
       })
+      return arr
+    },
+    // getContent
+    getContent (res) {
+      this.formData.content = res.content
+      this.templateId = res.id
     },
     // 发放优惠券
-    addAct () {
-      let addParam = {
-        'actName': this.form.actName,
-        'sendAction': this.form.sendAction,
-        'startTime': this.form.startTimes
+    // addAct () {
+    //   let addParam = {
+    //     'actName': this.form.actName,
+    //     'sendAction': this.form.sendAction,
+    //     'startTime': this.form.startTimes
+    //   }
+    //   this.$refs['form'].validate((valid) => {
+    //     if (valid) {
+    //       addActivity(addParam).then(res => {
+    //         console.log(res)
+    //         if (res.error === 0) {
+    //           alert('操作成功')
+    //           this.$router.push({
+    //             name: 'couponGift'
+    //           })
+    //         }
+    //       }).catch(() => {
+    //         this.$message.error('操作失败')
+    //       })
+    //     } else {
+    //       this.$message.error('数据不符合要求')
+    //       return false
+    //     }
+    //   })
+    // },
+    // 选择商品
+    handleChooseGoods () {
+      if (this.params.onClickGoods === false) {
+        return
       }
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          addActivity(addParam).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              alert('操作成功')
-              this.$router.push({
-                name: 'couponGift'
-              })
-            }
-          }).catch(() => {
-            this.$message.error('操作失败')
-          })
-        } else {
-          this.$message.error('数据不符合要求')
-          return false
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    getRes (ids, urls) {
+      if (ids.length > 3) {
+        this.$message.warning('最多选择3个商品')
+      } else {
+        this.params.goodsIdList = ids
+        this.imgsList = urls
+        // 发送获取人数
+        this.fetchUserList(this.params)
+      }
+    },
+    // 删除图片
+    handleDelImg (id) {
+      if (this.params.onClickGoods === false) {
+        return
+      }
+      this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
+      this.params.goodsIdList = this.goodsIdList.filter(item => item !== id)
+      this.fetchUserList(this.params)
+    },
+    // 获取选中的path
+    getPath (res) {
+      console.log(res)
+      this.pageLink = res
+    },
+    // 获取持有属于的值
+    getChooseSelectVal (val) {
+      const { onClickCard, cardIdsList, onClickTag, tagIdList } = val
+      this.params.onClickCard = onClickCard
+      this.params.cardIdsList = cardIdsList
+      this.params.onClickTag = onClickTag
+      this.params.tagIdList = tagIdList
+      // 请选择会员卡
+      switch (onClickCard) {
+        case true:
+          console.log(this.params)
+          this.fetchUserList(this.params)
+          break
+        case false:
+          this.fetchUserList(this.params)
+          break
+        default:
+          break
+      }
+      // 请选择会员标签
+      switch (onClickTag) {
+        case true:
+          this.fetchUserList(this.params)
+          break
+        case false:
+          this.fetchUserList(this.params)
+          break
+        default:
+          break
+      }
+    },
+    handleGetUser () {
+      this.dialogVisible = true
+    },
+    // 获取发送人群数量
+    fetchUserList (params) {
+      getUserNumberApi(params).then(res => {
+        const { error, content } = res
+        if (error === 0) {
+          console.log(res) // 返回发送人群的数量
+          const { userKey, userNumber } = content
+          console.log(`key+num${userKey}, ${userNumber}`)
+          this.userNumber = userNumber
+          this.params.userKey = userKey
         }
-      })
+      }).catch(err => console.log(err))
+    },
+    // 加购人群发生变化的时候
+    handleOnClickNoPayChange (val) {
+      // 获取发送人群的数量
+      console.log(this.params)
+      this.fetchUserList(this.params)
+    },
+    // 指定购买商品人群发生变化的时候
+    handleOnClickGoodsChange (val) {
+      console.log(this.params)
+      this.fetchUserList(this.params)
+    },
+    // 选择指定的会员状态发生变化的时候
+    handleOnClickUserChange (val) {
+      console.log(this.params)
+      this.fetchUserList(this.params)
     },
     // 当自定义发生变化的时候
     handleOnClickCustomRuleChange (val) {
@@ -694,4 +856,22 @@ export default {
   z-index: 1;
   width: 100%;
 }
+// .ulList {
+//   width: 100%;
+//   li {
+//     margin: 5px 0;
+//     span {
+//       margin: 0 5px;
+//     }
+//     .img_span {
+//       position: relative;
+//       .img {
+//         position: absolute;
+//         right: 25px;
+//         top: -22px;
+//         cursor: pointer;
+//       }
+//     }
+//   }
+// }
 </style>
