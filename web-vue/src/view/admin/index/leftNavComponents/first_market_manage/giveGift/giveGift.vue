@@ -8,7 +8,6 @@
 <script>
 import giveGiftList from './giveGiftList'
 export default {
-  name: 'giveGift',
   components: {
     giveGiftList
   }

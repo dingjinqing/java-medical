@@ -125,10 +125,10 @@
           </div>
         </div>
         <!-- 我要送礼 -->
-        <div class="voucher box_style">
+        <div class="voucher box_style"
+             @click="giveGift">
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/wysl.png'"
-              @click="giveGift"
               alt=""
             ></div>
           <div class="activity_title">
@@ -590,7 +590,8 @@ export default {
     giveGift () {
       this.$router.push(
         {
-          name: 'giveGift'
+          name: 'giveGift',
+          params: { tabSwitch: 'inProgress' }
         }
       )
     }

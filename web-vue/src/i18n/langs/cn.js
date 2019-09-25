@@ -50,6 +50,8 @@ import { cn as bottomNavigation } from './views/smallProgramManagement/bottomNav
 import { cn as adSharePolite } from './views/admin_new/cn/index/marketManagement/sharePolite/adSharePolite'
 // 限时降价列表
 import { cn as reducePriceList } from './views/admin_new/cn/index/marketManagement/reducePrice/reducePriceListCn'
+// 我要送礼
+import { cn as giveGift } from './views/admin_new/cn/index/marketManagement/giveGift/giveGift'
 // 营销管理/消息推送
 import { cn as messagePush } from './views/admin_new/cn/index/marketManagement/messagePush/messagePushCn'
 // 概览
@@ -540,6 +542,7 @@ const cn = {
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
   messagePush, // 营销管理/消息推送
+  giveGift, // 我要送礼
   ...zhLocale,
   expressList,
 

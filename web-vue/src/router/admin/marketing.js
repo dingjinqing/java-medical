@@ -953,7 +953,7 @@ const routes = [
   },
   // 我要送礼
   {
-    path: '/admin/home/main/giveGift',
+    path: '/admin/home/main/giveGift/:tabSwitch',
     name: 'giveGift',
     meta: {
       crumbTitle: 'router.giveGift',
