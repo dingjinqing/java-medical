@@ -241,7 +241,7 @@ public class ShopService extends MainBaseService {
 			logger().info("更新version_config成功");			
 		}
 		// 更新记录表
-		if (updateOperation(record, user, request) == 1) {			
+		if (updateOperation(record, user, request,new ShopRecord()) == 1) {			
 			logger().info("更新ShopOperation记录表成功");
 		}
 		return true;
@@ -416,7 +416,7 @@ public class ShopService extends MainBaseService {
 				.where(SHOP.SHOP_ID.eq(shopReq.getShopId())).execute();
 	}
 
-	public Integer updateOperation(ShopRecord shopRecord, SystemTokenAuthInfo user, HttpServletRequest request) {
+	public Integer updateOperation(ShopRecord shopRecord, SystemTokenAuthInfo user, HttpServletRequest request,ShopRecord newShopRecord) {
 		ShopOperationRecord sRecord = new ShopOperationRecord();
 		sRecord.setShopId(shopRecord.getShopId());
 		if (user.isSubLogin()) {
@@ -425,7 +425,7 @@ public class ShopService extends MainBaseService {
 		}
 		sRecord.setOperator(user.getUserName());
 		sRecord.setOperatorId(user.getSystemUserId());
-		sRecord.setDesc(diffEdit(shopRecord, new ShopRecord()));
+		sRecord.setDesc(diffEdit(shopRecord, newShopRecord));
 		sRecord.setIp(Util.getCleintIp(request));
 		return db().executeInsert(sRecord);
 	}
@@ -536,6 +536,28 @@ public class ShopService extends MainBaseService {
 			}			
 		}
 		return specialInfo;
+	}
+	
+	/**
+	 * 编辑店铺
+	 * @param shopReq
+	 * @param user
+	 * @param request
+	 * @return
+	 */
+	public Boolean editShop(ShopReq shopReq, SystemTokenAuthInfo user, HttpServletRequest request,ShopRecord oldShopReq) {
+		ShopRecord record = new ShopRecord();
+		FieldsUtil.assignNotNull(shopReq, record);
+		if (db().executeUpdate(record) != 1) {
+			return false;
+		}
+		logger().info("更新数据成功");
+		
+		// 更新记录表
+		if (updateOperation(record, user, request,oldShopReq) == 1) {			
+			logger().info("更新ShopOperation记录表成功");
+		}
+		return true;
 	}
 
 }
