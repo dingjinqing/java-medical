@@ -2,7 +2,8 @@ export const cn = {
   title: {
     experienceVersion: '体验版',
     payVersion: '付费版',
-    newShop: '店铺添加'
+    newShop: '店铺添加',
+    editShop: '店铺编辑'
   },
 
   // 体验版和付费版页面共同字段，二者基本相同
@@ -123,11 +124,11 @@ export const cn = {
     label: '选择店铺标记'
   },
   {
-    value: '1',
+    value: 1,
     label: '欧派'
   },
   {
-    value: '2',
+    value: 2,
     label: '寺库'
   }
   ],
@@ -295,10 +296,19 @@ export const en = {
   },
   selectData: 'Please select a date and time',
   selectFlag: 'Please select a store tag',
-  flag_type: {
-    type1: 'European',
-    type2: 'Temple library'
+  flag_type: [{
+    value: '',
+    label: '选择店铺标记'
   },
+  {
+    value: 1,
+    label: '欧派'
+  },
+  {
+    value: 2,
+    label: '寺库'
+  }
+  ],
   shopDisabled: 'Disable',
   hideFooter: 'hide',
   save: 'save',

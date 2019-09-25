@@ -182,7 +182,6 @@ export default {
         label: this.$t('shopAccountList.stateOption.state4')
       }],
       mainData: {
-        currentPage3: 1,
         state: '',
         keywords: '',
         company: ''
@@ -209,7 +208,14 @@ export default {
       text: ''
     }
   },
-  created () {
+  mounted () {
+    let toUserName = this.$route.params.toUserName
+    if (!this.isEmpty(toUserName)) {
+      this.mainData.keywords = toUserName
+    }
+    console.log('toUserName')
+    console.log(toUserName)
+    console.log(this.$route)
     this.searchAccount()
   },
   methods: {
@@ -249,15 +255,7 @@ export default {
 
     // 商家账户列表查询
     searchAccount () {
-      let obj1 = {
-        'currentPage': this.currentPage3,
-        'pageRows': '20',
-        'state': '',
-        'accountName': '',
-        'company': ''
-      }
-      let parameter = Object.assign(obj1, this.mainData)
-      searchAccountRequest(parameter).then((res) => {
+      searchAccountRequest(this.mainData).then((res) => {
         console.log(res)
         const { error, content } = res
         if (error === 0) {
@@ -276,6 +274,13 @@ export default {
       }).catch(() => {
         this.$message.error('保存失败')
       })
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }

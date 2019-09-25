@@ -1,6 +1,6 @@
 import service from '@/util/request.js'
 
-// 商家账号信息
+// 编辑商家账号信息
 export function accountInfoRequest () {
   return service({
     url: '/api/system/shop/account/edit',

@@ -113,11 +113,12 @@
       :data="formTable"
       header-row-class-name="table-th"
       border
-      style="width: 100%"
-      height="400"
+      style="width: 120%;cellspacing='1';cellpadding='3';"
+      max-width='120%'
+      :height="tableHeight"
     >
       <el-table-column
-        prop="shopId"
+        prop="sysId"
         :label="$t('shopList.table.ID')"
         align="center"
       >
@@ -125,9 +126,16 @@
       <el-table-column
         prop="shopType"
         :label="$t('shopList.table.shopID')"
-        :formatter="changeShopId"
         align="center"
       >
+
+        <template slot-scope="scope">
+          <div>{{scope.row.shopId}}</div>
+          <div v-if="scope.row.shopType==='v1'">基础版</div>
+          <div v-if="scope.row.shopType==='v2'">中极版</div>
+          <div v-if="scope.row.shopType==='v3'">高级版</div>
+          <div v-if="scope.row.shopType==='v4'">旗舰版</div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="shopName"
@@ -157,20 +165,47 @@
         prop="expireTime"
         align="center"
         :label="$t('shopList.table.endTime')"
-        :formatter="changeShopState"
       >
+        <template slot-scope="scope">
+          <div v-if="scope.row.expireTime===null">
+            暂未续费
+          </div>
+          <div v-if="scope.row.expireTime!==null">
+            {{scope.row.expireTime.substring(0, 10)}}
+          </div>
+          <div v-if="scope.row.shopExpireStatus==='0'">
+            使用中
+          </div>
+          <div v-if="scope.row.shopExpireStatus==='1'">
+            已过期
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="isEnabled"
         align="center"
         :label="$t('shopList.table.isDisabled')"
-        :formatter="changeIsDisabled"
       >
+        <template slot-scope="scope">
+          <div v-if="scope.row.isEnabled===1">
+            <el-button
+              type="text"
+              @click="changeEnable(scope.row.shopId,1)"
+            > 已禁止</el-button>
+          </div>
+          <div v-if="scope.row.isEnabled===0">
+            <el-button
+              type="text"
+              @click="changeEnable(scope.row.shopId,0)"
+            > 未禁止</el-button>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="isAuthOk"
         align="center"
         :label="$t('shopList.table.permission')"
+        :formatter="permissionFormatter"
       >
       </el-table-column>
       <el-table-column
@@ -178,6 +213,12 @@
         align="center"
         :label="$t('shopList.table.account')"
       >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="toAccountList(scope.row.userName)"
+          > {{scope.row.userName}}</el-button>
+        </template>
       </el-table-column>
       <el-table-column
         prop="renewMoney"
@@ -196,20 +237,74 @@
         prop="hidBottom"
         align="center"
         :label="$t('shopList.table.bottom')"
-        :formatter="changeBottom"
       >
+        <template slot-scope="scope">
+          <div v-if="scope.row.hidBottom===0">
+            <el-button
+              type="text"
+              @click="changeBottom(scope.row.shopId,1)"
+            > 显示</el-button>
+          </div>
+          <div v-if="scope.row.hidBottom===1">
+            <el-button
+              type="text"
+              @click="changeBottom(scope.row.shopId,0)"
+            > 隐藏</el-button>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="specialsetting"
+        prop="showSpecialInfo"
         align="center"
         :label="$t('shopList.table.special')"
       >
+        <template slot-scope="scope">
+          <div
+            v-for='(item,index) in scope.row.showSpecialInfo'
+            :key="index"
+          >
+            {{item}}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="operate"
         align="center"
         :label="$t('shopList.table.operating')"
       >
+        <template slot-scope="scope">
+          <div>
+            <el-button
+              class="xbutton"
+              type="text"
+              @click="btnEdit(scope.row)"
+            > 编辑</el-button>
+            <br>
+            <el-button
+              class="xbutton"
+              type="text"
+              @click="btnRenew(scope.row.shopId,0)"
+            > 续费</el-button>
+            <br>
+            <el-button
+              class="xbutton"
+              type="text"
+              @click="btnShowVersion(scope.row.shopId,0)"
+            > 版本权限</el-button>
+            <br>
+            <el-button
+              class="xbutton"
+              type="text"
+              @click="ShowRenew(scope.row.shopId,0)"
+            > 查看续费</el-button>
+            <br>
+            <el-button
+              class="xbutton"
+              type="text"
+              @click="changeBottom(scope.row.shopId,0)"
+            > 运营数据</el-button>
+          </div>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -228,7 +323,7 @@
 </template>
 
 <script>
-import { shopSearchRequest } from '@/api/system/shopList.js'
+import { shopSearchRequest, upEnableRequest, upBottomRequest } from '@/api/system/shopList.js'
 export default {
   name: 'experienceVersion',
   data () {
@@ -299,12 +394,21 @@ export default {
         userName: '',
         renewMoney: '',
         shopFlag: '',
-        hidBottom: ''
-      }]
+        hidBottom: '',
+        notice: '',
+        specialInfo: [],
+        showSpecialInfo: []
+      }],
+      showSpecialInfo: [],
+      tableHeight: document.body.clientHeight - 381
     }
   },
 
   created () {
+    this.tableHeight = document.body.clientHeight - 381
+    if (this.tableHeight < 0) {
+      this.tableHeight = 400
+    }
     this.search()
   },
   methods: {
@@ -374,19 +478,6 @@ export default {
       return row.isEnabled
     },
 
-    // 底部导航文字转化
-    changeBottom (row, rol) {
-      switch (row.hidBottom) {
-        case 0:
-          row.hidBottom = '显示'
-          break
-        case 1:
-          row.hidBottom = '隐藏'
-          break
-      }
-      return row.hidBottom
-    },
-
     // 店铺列表查询
     search () {
       let obj = {
@@ -402,8 +493,25 @@ export default {
         const { error, content } = res
         if (error === 0) {
           let formList = content.dataList
+          console.log('formList')
+          console.log(formList)
           this.formTable = formList
-
+          for (var i = 0; i < this.formTable.length; i++) {
+            var specialInfoList = this.formTable[i].specialInfo
+            if (!this.isEmpty(specialInfoList)) {
+              console.log('进来', specialInfoList.length)
+              for (var n = 0; n < specialInfoList.length; n++) {
+                console.log('循环')
+                console.log(this.specialInfoExchange(specialInfoList[n]))
+                this.showSpecialInfo.push(this.specialInfoExchange(specialInfoList[n]))
+              }
+            }
+            console.log(this.showSpecialInfo)
+            this.formTable[i].showSpecialInfo = this.showSpecialInfo
+            this.showSpecialInfo = []
+          }
+          console.log('处理结束')
+          console.log(this.formTable)
           this.currentPage = content.page.currentPage
           this.pageRows = content.page.pageRows
           this.pageCount = content.page.pageCount
@@ -415,6 +523,145 @@ export default {
       }).catch(() => {
         this.$message.error('操作失败')
       })
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
+    },
+    permissionFormatter (row, rol) {
+      switch (row.isAuthOk) {
+        case 0:
+          row.isAuthOkTrane = '未绑定授权'
+          break
+        case 1:
+          row.isAuthOkTrane = '已授权'
+          break
+        default:
+          row.isAuthOkTrane = '未绑定授权'
+          break
+      }
+      return row.isAuthOkTrane
+    },
+    changeEnable (row, data) {
+      let message = '确认要启用么'
+      let isEnabled = 'yes'
+      if (data === 1) {
+        // 确认要启用么
+        message = '确认要启用么'
+        isEnabled = 'no'
+      } if (data === 0) {
+        // 确认要禁用么
+        message = '确认要禁用么'
+        isEnabled = 'yes'
+      }
+      let parame = {
+        'shopId': row,
+        'isEnable': isEnabled
+      }
+      console.log(parame)
+      this.$confirm(message, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        upEnableRequest(parame).then((res) => {
+          console.log('结果')
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+            this.search()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      }).catch(() => {
+        this.$message.info('已取消更改')
+      })
+    },
+    changeBottom (row, data) {
+      let message = '确认要隐藏么'
+      let hidBottom = 'yes'
+      if (data === 0) {
+        // 确认要隐藏么
+        message = '确认要显示么'
+        hidBottom = 'no'
+      } if (data === 1) {
+        // 确认要显示么
+        message = '确认要隐藏么'
+        hidBottom = 'yes'
+      }
+      let parame = {
+        'shopId': row,
+        'hidBottom': hidBottom
+      }
+      console.log(parame)
+      this.$confirm(message, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        upBottomRequest(parame).then((res) => {
+          console.log('结果')
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+            this.search()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      }).catch(() => {
+        this.$message.info('已取消更改')
+      })
+    },
+    specialInfoExchange (data) {
+      if (data === 'BaseSale') {
+        return '初始销量功能开启'
+      }
+      if (data === 'AddCommentSwitch') {
+        return '商家添加评价功能开启'
+      }
+      if (data === 'ErpStatus') {
+        return 'erp已对接'
+      }
+      if (data === 'SellerAccount') {
+        return '微信全链路开启'
+      }
+      if (data === 'HidBottom') {
+        return '隐藏底部功能开启'
+      }
+      if (data === 'PictureNumPlus') {
+        return '图片空间已扩容'
+      }
+
+      if (data === 'VideoNumPlus') {
+        return '视频空间已扩容'
+      }
+      if (data === 'DecorateNumPlus') {
+        return '页面装修数量已扩容'
+      }
+    },
+    toAccountList (data) {
+      this.$router.push(
+        {
+          name: 'accountList',
+          params: {
+            toUserName: data
+          }
+        }
+      )
+    },
+    btnEdit (data) {
+      console.log('点了')
+      let params = {
+        'shopId': data.shopId,
+        'userName': data.userName,
+        'flag': 4
+      }
+      this.$emit('sendShopId', params)
     }
   }
 }
@@ -441,5 +688,8 @@ export default {
   display: flex;
   margin-left: 15px;
   font-size: 14px;
+}
+/deep/ .xbutton {
+  padding: 0;
 }
 </style>

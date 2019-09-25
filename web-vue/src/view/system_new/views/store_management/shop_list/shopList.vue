@@ -8,7 +8,7 @@
       :label="$t('shopList.title.experienceVersion')"
       name="first"
     >
-      <experienceVersion />
+      <experienceVersion @sendShopId="show" />
     </el-tab-pane>
     <el-tab-pane
       :label="$t('shopList.title.payVersion')"
@@ -24,6 +24,17 @@
     >
       <newShop />
     </el-tab-pane>
+
+    <el-tab-pane
+      :label="$t('shopList.title.editShop')"
+      name="fourth"
+      v-if="isEditShop"
+    >
+      <editShop
+        :editParam="editParam"
+        @goHome="show"
+      />
+    </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -31,56 +42,52 @@
 import experienceVersion from './experienceVersion.vue'
 import payVersion from './payVersion'
 import newShop from './newShop'
+import editShop from './editShop'
 
 export default {
   name: 'shopList',
   components: {
     experienceVersion,
     payVersion,
-    newShop
+    newShop,
+    editShop
   },
   data () {
     return {
       tabActive: 'first',
-      isShowShopList: false
+      isShowShopList: false,
+      isEditShop: false,
+      editParam: null
     }
   },
-  created () {
+  mounted () {
+    console.log('this.$route.params')
     console.log(this.$route.params)
     if (this.$route.params.flag === true) {
       this.tabActive = 'third'
       this.isShowShopList = true
     }
   },
-  // beforeRouteEnter: (to, from, next) => {
-  //   // if (this.$route.path === `/system/store_management/account_list`) {
-  //   next(vm => {
-  //     alert(vm.name)
-  //   })
-  //   // }
-  // },
-
-  // mounted () {
-  //   console.log(this.$route.params)
-  //   if (this.$route.params.flag === true) {
-  //     this.tabActive = 'third'
-  //     this.isShowShopList = true
-  //   }
-  // },
-  // created () {
-  //   console.log(this.$route.params.name)
-  //   if (this.$route.params.flag === true) {
-  //     console.log(111)
-  //     this.tabActive = 'third'
-  //     this.isShowEditAccount = true
-  //   }
-  // },
   methods: {
     getUserName () {
       console.log(this.$route.params.name)
       if (this.$route.params.name) {
         this.isShowEditAccount = true
         this.tabActive = 'third'
+      }
+    },
+    show (data) {
+      console.log('收到')
+      console.log(data)
+      if (data) {
+        if (data.flag === 4) {
+          this.tabActive = 'fourth'
+          this.isEditShop = true
+          this.editParam = data
+        }
+        if (data.flag === 1) {
+          this.tabActive = 'first'
+        }
       }
     }
   },

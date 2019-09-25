@@ -26,3 +26,37 @@ export function checkMobileRequest (data) {
     data: data
   })
 }
+
+// 更改是否禁用
+export function upEnableRequest (data) {
+  return service({
+    url: '/api/system/shop/upEnable',
+    method: 'post',
+    data: data
+  })
+}
+
+// 更改是否隐藏底部导航
+export function upBottomRequest (data) {
+  return service({
+    url: '/api/system/shop/upBottom',
+    method: 'post',
+    data: data
+  })
+}
+// 单个店铺查询
+export function searchAccountByOneRequest (data) {
+  return service({
+    url: `/api/system/shop/editList/${data}`,
+    method: 'get'
+  })
+}
+
+// 编辑店铺
+export function editShopRequest (data) {
+  return service({
+    url: '/api/system/shop/edit',
+    method: 'post',
+    data: data
+  })
+}
