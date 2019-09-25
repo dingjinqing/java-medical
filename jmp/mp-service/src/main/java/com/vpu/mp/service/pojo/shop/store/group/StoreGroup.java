@@ -44,11 +44,11 @@ public class StoreGroup implements Serializable {
     public StoreGroup(
         Integer   groupId,
         String    groupName,
-        Timestamp inTime
+        Timestamp createTime
     ) {
         this.groupId = groupId;
         this.groupName = groupName;
-        this.createTime = inTime;
+        this.createTime = createTime;
     }
 
     public Integer getGroupId() {
@@ -67,11 +67,11 @@ public class StoreGroup implements Serializable {
         this.groupName = groupName;
     }
 
-    public Timestamp getInTime() {
+    public Timestamp getCreateTime() {
         return this.createTime;
     }
 
-    public void setInTime(Timestamp createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
 
