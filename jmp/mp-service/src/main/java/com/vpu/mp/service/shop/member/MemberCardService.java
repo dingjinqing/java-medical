@@ -1417,5 +1417,14 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 	}
+	
+	/**
+	 * 废除指定会员卡批次
+	 * @param id
+	 */
+	public void deleteCardBatch(Integer id) {
+		
+		 cardDao.deleteCardBatchSql(id);
+	}
 		
 }

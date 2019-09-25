@@ -25,6 +25,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
 import java.sql.Timestamp;
 
@@ -141,6 +142,16 @@ public class CardDaoService extends ShopBaseService {
 				 	.and(CARD_BATCH.DEL_FLAG.eq(DELETE_NO))
 				 	.fetch();
 		
+	}
+	/**
+	 * 设置del_flag为删除状态
+	 * @param id
+	 */
+	public Integer deleteCardBatchSql(Integer id) {
+		return db().update(CARD_RECEIVE_CODE)
+			.set(CARD_RECEIVE_CODE.DEL_FLAG,DELETE_YES)
+			.where(CARD_RECEIVE_CODE.ID.eq(id))
+			.execute();
 	}
 
 }
