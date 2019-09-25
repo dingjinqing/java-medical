@@ -24,7 +24,7 @@ import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListVo;
  * @date 2019/8/15 16:56
  */
 @RestController
-@RequestMapping("/api/admin/marker/givegift/")
+@RequestMapping("/api/admin/marker/givegift")
 public class AdminGiveGiftController extends AdminBaseController {
 
 
