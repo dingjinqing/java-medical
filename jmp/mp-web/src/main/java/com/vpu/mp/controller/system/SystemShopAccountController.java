@@ -77,24 +77,5 @@ public class SystemShopAccountController extends SystemBaseController {
 		}
 	}
 	
-	
-	/**
-	 * 修改添加商家账户之前查询
-	 * @param account
-	 * @return
-	 */
-	@GetMapping("/system/shop/account/editList/{shopId}")
-	public JsonResult editListShopAccount(@PathVariable Integer shopId) {
-		ShopRecord shopRecord = saas.shop.getShopById(shopId);
-		if(shopRecord!=null) {
-			Timestamp shopRenewExpireTime = saas.shop.renew.getShopRenewExpireTime(shopId);
-			ShopAccountRecord shop = saas.shop.account.getAccountInfoForId(shopRecord.getSysId());
-			ShopAccountOnePojo pojo = shop.into(ShopAccountOnePojo.class);
-			pojo.setExpireTime(shopRenewExpireTime);
-			return success(pojo);
-		}
-		//店铺不存在
-		return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
-	}
 
 }
