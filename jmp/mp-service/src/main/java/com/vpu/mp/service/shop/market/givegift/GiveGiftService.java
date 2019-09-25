@@ -74,26 +74,26 @@ public class GiveGiftService extends ShopBaseService {
     private void buildParam(SelectConditionStep<? extends Record> select, GiveGiftListParam param) {
         Timestamp nowTime =new Timestamp(System.currentTimeMillis());
         switch (param.getNavType()) {
-            case 1:
+            case 2:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
-                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 1)
+                        .or(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 1)
                             .or(    GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 0)
                                     .and(GIVE_GIFT_ACTIVITY.START_TIME.le(nowTime))
                                     .and(GIVE_GIFT_ACTIVITY.END_TIME.ge(nowTime))
                             )
                         );
                 break;
-            case 2:
+            case 3:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
                         .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 0))
                         .and(GIVE_GIFT_ACTIVITY.START_TIME.gt(nowTime));
                 break;
-            case 3:
+            case 4:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
                         .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 0))
                         .and(GIVE_GIFT_ACTIVITY.END_TIME.le(nowTime));
                 break;
-            case 4:
+            case 5:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq((byte) 0));
                 break;
             default:
