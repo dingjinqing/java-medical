@@ -14,67 +14,35 @@
               label="图文组件"
               name="first"
             >
-              <vue-scroll
-                :ops="ops"
-                style="height:520px"
-              >
-                <div class="picTextConDiv">
-                  <div
-                    v-for="(item,index) in pivTextConArr"
-                    :key="index"
-                    class="picTextConDivList"
-                  >
-                    <img
-                      :src="item.imgUrl"
-                      :alt="item.text"
-                    >
-                    <div style="height:24px;margin-top:-10px">{{item.text}}</div>
-                  </div>
-                </div>
-              </vue-scroll>
             </el-tab-pane>
             <el-tab-pane
               label="商品组件"
               name="second"
             >
-              <vue-scroll
-                :ops="ops"
-                style="height:520px"
-              >
-                <div class="picTextConDiv">
-                  <div
-                    v-for="(item,index) in goodsTextConArr"
-                    :key="index"
-                    class="picTextConDivList"
-                  >
-                    <img
-                      :src="item.imgUrl"
-                      :alt="item.text"
-                    >
-                    <div style="height:24px;margin-top:-10px">{{item.text}}</div>
-                  </div>
-                </div>
-              </vue-scroll>
             </el-tab-pane>
             <el-tab-pane
               label="营销组件"
               name="third"
             >
-              <div id="listLeft">
-                <div
-                  v-for="(item,key) in listLeft"
-                  :key="key"
-                  class="picTextConDivList third_drag"
-                  @click="handleToClickLeftModule(item.id)"
-                >
-                  <img :src="item.name">
-                  {{item.value}}
-
-                </div>
-              </div>
-
             </el-tab-pane>
           </el-tabs>
+          <vue-scroll
+            :ops="ops"
+            style="height:520px"
+          >
+            <div id="listLeft">
+              <div
+                v-for="(item,key) in nowShowLeftModules"
+                :key="key"
+                class="picTextConDivList third_drag"
+                @click="handleToClickLeftModule(item.id)"
+              >
+                <img :src="item.imgUrl">
+                {{item.text}}
+
+              </div>
+            </div>
+          </vue-scroll>
         </div>
         <div class="decMiddle">
           <div class="decTop"></div>
@@ -123,7 +91,7 @@
                     <!--模块-->
                     <div @click.prevent="handleToClickModule(index)">
                       <components
-                        :is='thirdMiddleModulesList[item]'
+                        :is='middleModulesList[item]'
                         :flag="index"
                         :middleHereFlag="middleHereFlag"
                         :nowRightShowIndex="nowRightShowIndex"
@@ -169,6 +137,28 @@
         >预览效果</el-button>
       </div>
     </div>
+    <!--中间模块是否删除弹窗-->
+    <el-dialog
+      title="提醒"
+      :visible.sync="deleteVisible"
+      width="30%"
+    >
+      <span>确认要删除吗？</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="deleteVisible = false"
+        >取 消</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="handleToSureDelete(deleteFlag)"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -184,13 +174,19 @@ export default {
   components: {
     vuescroll,
     draggable,
-    MembershipCard: () => import('./decorationModules/membershipCard'),
-    Coupon: () => import('./decorationModules/Coupon'),
-    PageSetup: () => import('./pageSetup')
+    // 营销组件库
+    MembershipCard: () => import('./decorationModules/marketingComponents/membershipCard'),
+    Coupon: () => import('./decorationModules/marketingComponents/Coupon'),
+    // 右侧显示出口组件
+    PageSetup: () => import('./pageSetup'),
+    // 商品组件库
+    Commodity: () => import('./decorationModules/commodityComponents/commodity')
   },
   data () {
     return {
-      thirdMiddleModulesList: [null, 'MembershipCard', 'Coupon'],
+      deleteVisible: false,
+      deleteFlag: null,
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Commodity'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -209,146 +205,151 @@ export default {
       pivTextConArr: [
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
-          text: '轮播图'
+          text: '轮播图',
+          id: 11
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_guide.png',
-          text: '图片导航'
+          text: '图片导航',
+          id: 12
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_img_advertist.png',
-          text: '图片广告'
+          text: '图片广告',
+          id: 13
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_imgwindow.png',
-          text: '魔方多图'
+          text: '魔方多图',
+          id: 14
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/hot-area.png',
-          text: '图片热区'
+          text: '图片热区',
+          id: 15
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/text_image.png',
-          text: '左图右文'
+          text: '左图右文',
+          id: 16
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_text.png',
-          text: '文本模块'
+          text: '文本模块',
+          id: 17
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rich_text.png',
-          text: '富文本'
+          text: '富文本',
+          id: 18
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_helpblank.png',
-          text: '辅助空白'
+          text: '辅助空白',
+          id: 19
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_helpline.png',
-          text: '辅助线'
+          text: '辅助线',
+          id: 20
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_title.png',
-          text: '标题模块'
+          text: '标题模块',
+          id: 21
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/icon_video.png',
-          text: '视频模块'
+          text: '视频模块',
+          id: 22
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/shop_announce.png',
-          text: '店铺公告'
+          text: '店铺公告',
+          id: 23
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/official_account.png',
-          text: '公众号'
+          text: '公众号',
+          id: 24
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/service.png',
-          text: '客服模块'
+          text: '客服模块',
+          id: 25
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/drag_phone.png',
-          text: '电话模块'
+          text: '电话模块',
+          id: 26
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_navigation.png',
-          text: '店招设置'
+          text: '店招设置',
+          id: 27
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/icon_map.png',
-          text: '地图模块'
+          text: '地图模块',
+          id: 28
         }
       ],
       goodsTextConArr: [
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/deco_goods.png',
-          text: '商品'
+          text: '商品',
+          id: 8
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_search.png',
-          text: '商品搜索'
+          text: '商品搜索',
+          id: 9
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/goods_group.png',
-          text: '商品分组'
+          text: '商品分组',
+          id: 10
         }
       ],
       marketingTextConArr: [
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/deco_card.png',
-          text: '会员卡'
+          text: '会员卡',
+          id: 1
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/deco_voucher.png',
-          text: '优惠卷'
+          text: '优惠卷',
+          id: 2
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/bargain.png',
-          text: '砍价'
+          text: '砍价',
+          id: 3
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/icon_integral_deco.png',
-          text: '积分兑换'
+          text: '积分兑换',
+          id: 4
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/secKill.png',
-          text: '秒杀'
+          text: '秒杀',
+          id: 5
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/fight_group.png',
-          text: '拼团抽奖'
+          text: '拼团抽奖',
+          id: 6
         },
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
-          text: '瓜分积分'
+          text: '瓜分积分',
+          id: 7
         }
       ],
       isDragging: false,
-      listLeft: [{
-        name: this.$imageHost + '/image/admin/new_shop_beautify/deco_card.png',
-        value: '会员卡',
-        id: 1
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/deco_voucher.png',
-        value: '优惠卷',
-        id: 2
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/bargain.png',
-        value: '砍价'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/icon_integral_deco.png',
-        value: '积分兑换'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/secKill.png',
-        value: '秒杀'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/fight_group.png',
-        value: '拼团抽奖'
-      }, {
-        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
-        value: '瓜分积分'
-      }],
+      nowShowLeftModules: [],
       showModulesList: [],
       insertModulesId: -1,
       drag_flag: false,
@@ -377,12 +378,6 @@ export default {
       console.log(this.nowRightShowIndex, newData)
       console.log(newData)
       this.$http.$emit('modulesClick', this.nowRightShowIndex)
-      console.log(this.showModulesList, this.modulesData)
-      // // 当前显示的数组池和保存的数组池不相等时说明此时发生了当前显示的nowRightShowIndex未发生改变
-      // if (this.showModulesList.length !== this.modulesData.length) {
-      //   this.handleToModuleHight()
-      // }
-      // this.handleToModuleHight()
       if (newData.length) {
         this.zbFlag = true
       } else {
@@ -392,6 +387,9 @@ export default {
     nowRightShowIndex (newData) {
       console.log(newData, this.activeName, this.showModulesList)
       this.handleToModuleHight()
+    },
+    activeName (newData) {
+      this.initLeftModulesShow(newData)
     }
   },
   updated () {
@@ -403,8 +401,22 @@ export default {
     this.$nextTick(() => {
       this.init_drag_event()
     })
+    this.initLeftModulesShow(this.activeName)
   },
   methods: {
+    // 初始化左侧模块显示
+    initLeftModulesShow (activeName) {
+      switch (activeName) {
+        case 'first':
+          this.nowShowLeftModules = this.pivTextConArr
+          break
+        case 'second':
+          this.nowShowLeftModules = this.goodsTextConArr
+          break
+        case 'third':
+          this.nowShowLeftModules = this.marketingTextConArr
+      }
+    },
     // 初始化拖拽事件
     init_drag_event () {
       // 中间区域拖拽插入数据处理
@@ -488,36 +500,32 @@ export default {
           console.log(this_.insertModulesId, '--', this_.showModulesList)
           let insert = this_.insertModulesId + 1
           console.log(insert)
-          // 判断id是否为-1，若是则插入尾部，否则插入指定位置
           switch (ui.draggable[0].innerText) {
             case '会员卡':
-              if (this_.insertModulesId === -1) {
-                this_.showModulesList.push(1)
-              } else {
-                this_.showModulesList.splice(insert, 0, 1)
-                if (this_.nowRightShowIndex === insert) {
-                  this_.handleToModuleHight()
-                }
-                console.log(this_.nowRightShowIndex, insert)
-                // this_.handleToModuleHight()
-              }
-
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 1)
               break
             case '优惠卷':
-              if (this_.insertModulesId === -1) {
-                this_.showModulesList.push(2)
-              } else {
-                this_.showModulesList.splice(insert, 0, 2)
-                if (this_.nowRightShowIndex === insert) {
-                  this_.handleToModuleHight()
-                }
-                // this_.handleToModuleHight()
-              }
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 2)
+              break
+            case '商品':
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 3)
           }
-
-          console.log(this_.showModulesList, this_.modulesData)
+          console.log(this_.showModulesList, this_.modulesData, insert)
         }
       })
+    },
+    // 左侧模块拖入中间区域后，中间区域数据处理函数
+    handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
+      // 判断id是否为-1，若是则插入尾部，否则插入指定位置
+      if (insertModulesId === -1) {
+        showModulesList.push(index)
+      } else {
+        showModulesList.splice(insert, 0, index)
+        if (this.nowRightShowIndex === insert) {
+          this.handleToModuleHight()
+        }
+        // this_.handleToModuleHight()
+      }
     },
     // 中间区域元素开始拖动时处理函数
     handleToStart ({ oldIndex }) {
@@ -637,27 +645,33 @@ export default {
 
           break
         case 'delete':
-          let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
-          console.log(this.nowRightShowIndex)
-          console.log(this.nowRightShowIndex, flag)
-          if (this.nowRightShowIndex > flag) {
-            this.nowRightShowIndex--
-          } else if (this.nowRightShowIndex === flag) {
-            this.nowRightShowIndex = null
-          }
-
-          console.log(this.nowRightShowIndex)
-
-          console.log(newArr3, flag)
-          newArr3.splice(flag, 1)
-          this.modulesData.splice(flag, 1)
-          // 如果数组为空就重置当前插入模块id
-          if (!newArr3.length) {
-            this.insertModulesId = -1
-          }
-          console.log(newArr3)
-          this.showModulesList = newArr3
+          this.deleteFlag = flag
+          this.deleteVisible = true
       }
+    },
+    // 中间模块是否删除弹窗点击确定事件
+    handleToSureDelete (flag) {
+      let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
+      console.log(this.nowRightShowIndex)
+      console.log(this.nowRightShowIndex, flag)
+      if (this.nowRightShowIndex > flag) {
+        this.nowRightShowIndex--
+      } else if (this.nowRightShowIndex === flag) {
+        this.nowRightShowIndex = null
+      }
+
+      console.log(this.nowRightShowIndex)
+
+      console.log(newArr3, flag)
+      newArr3.splice(flag, 1)
+      this.modulesData.splice(flag, 1)
+      // 如果数组为空就重置当前插入模块id
+      if (!newArr3.length) {
+        this.insertModulesId = -1
+      }
+      console.log(newArr3)
+      this.showModulesList = newArr3
+      this.deleteVisible = false
     },
     // 中间区域拖拽插入数据处理
     middleDragData (res) {

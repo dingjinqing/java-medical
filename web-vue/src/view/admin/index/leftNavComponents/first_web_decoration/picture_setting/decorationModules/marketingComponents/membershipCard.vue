@@ -181,151 +181,76 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.membershipCard {
-  .showModule {
-    min-height: 10px;
-    background-color: #ffffff;
-    position: relative;
-    border: 2px dashed #fff;
-    .item_module_title {
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      display: none;
-      z-index: 8;
-      width: 88px;
-      height: 30px;
-      background-color: #9ebbff;
-      color: #fff;
-      text-align: center;
-      line-height: 30px;
-      border-bottom-right-radius: 15px;
-      -webkit-border-bottom-right-radius: 15px;
-      -moz-border-bottom-right-radius: 15px;
-      border-top-right-radius: 15px;
-    }
-    .item_operation {
-      position: absolute;
-      right: 8px;
-      top: 2px;
-      display: none;
-      z-index: 100;
-    }
-    &:hover {
-      border: 2px dashed #5a8bff;
-      .item_module_title {
-        display: block;
-      }
-      .item_operation {
-        display: block;
-        z-index: 1000;
-      }
-    }
-    .carModule {
-      padding: 12px;
-      .card_back_module {
-        width: 100%;
-        -webkit-border-radius: 8px;
-        -moz-border-radius: 8px;
-        border-radius: 8px;
-        background: #ecc98f;
-        color: #fff;
-        padding: 0 20px;
-        position: relative;
-        overflow: hidden;
-        font-size: 14px;
-        .card_type {
-          position: absolute;
-          top: 0;
-          right: 0;
-          background: rgba(0, 0, 0, 0.1);
-          width: 60px;
-          height: 20px;
-          text-align: center;
-          line-height: 20px;
-          border-bottom-left-radius: 8px;
-          font-size: 12px;
-        }
-        .card_content {
-          padding: 20px 0;
-          border-bottom: 1px solid #fff;
-          -webkit-box-sizing: border-box;
-          -moz-box-sizing: border-box;
-          position: relative;
-          overflow: hidden;
-          .card_shop_icon {
-            img {
-              display: inline-block;
-              width: 100%;
-            }
-            float: left;
-            width: 40px;
-            height: 40px;
-            -webkit-border-radius: 100%;
-            -moz-border-radius: 100%;
-            border-radius: 100%;
-            overflow: hidden;
-          }
-          .card_content_right {
-            float: left;
-            margin-left: 10px;
-            p {
-              font-size: 12px;
-              margin: 5px 0 0 0;
-            }
-          }
-        }
-        .card_bottom {
-          text-align: right;
-          line-height: 20px;
-          padding: 6px 0;
-          font-size: 12px;
-          span {
-            display: inline-block;
-            border: 1px solid #fff;
-            border-radius: 12px;
-            height: 20px;
-            line-height: 20px;
-            padding: 0 10px;
-            margin-left: 5px;
-          }
-        }
-      }
-    }
-  }
-
-  .setHere {
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
-    background-color: #8baeff;
-    font-size: 14px;
+@import "@/style/admin/decorationModules.scss";
+.carModule {
+  padding: 12px;
+  .card_back_module {
+    width: 100%;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    background: #ecc98f;
     color: #fff;
-    border: 1px dashed #2589ff;
+    padding: 0 20px;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+    .card_type {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.1);
+      width: 60px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      border-bottom-left-radius: 8px;
+      font-size: 12px;
+    }
+    .card_content {
+      padding: 20px 0;
+      border-bottom: 1px solid #fff;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      .card_shop_icon {
+        img {
+          display: inline-block;
+          width: 100%;
+        }
+        float: left;
+        width: 40px;
+        height: 40px;
+        -webkit-border-radius: 100%;
+        -moz-border-radius: 100%;
+        border-radius: 100%;
+        overflow: hidden;
+      }
+      .card_content_right {
+        float: left;
+        margin-left: 10px;
+        p {
+          font-size: 12px;
+          margin: 5px 0 0 0;
+        }
+      }
+    }
+    .card_bottom {
+      text-align: right;
+      line-height: 20px;
+      padding: 6px 0;
+      font-size: 12px;
+      span {
+        display: inline-block;
+        border: 1px solid #fff;
+        border-radius: 12px;
+        height: 20px;
+        line-height: 20px;
+        padding: 0 10px;
+        margin-left: 5px;
+      }
+    }
   }
-  .activeSetHere {
-    display: none;
-  }
-}
-.activeBorder {
-  border: 2px dashed #5a8bff !important;
-}
-.membershipCard:hover,
-.placeholder {
-  .middleModulesActive {
-    display: block;
-  }
-}
-.placeholder {
-  .activeSetHere {
-    display: block;
-  }
-  .showModule {
-    border: 2px dashed #5a8bff !important;
-  }
-}
-div {
-  cursor: Move;
-  user-select: none;
 }
 </style>
