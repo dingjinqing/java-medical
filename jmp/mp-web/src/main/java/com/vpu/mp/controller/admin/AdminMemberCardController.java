@@ -176,5 +176,20 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(cardBatchList);
 	}
 	
+	/**
+	 * 废除指定的会员卡批次
+	 * @param cardId
+	 * @return
+	 */
+	@PostMapping("/card/batch/delete/{id}")
+	public JsonResult deleteCardBatch(@PathVariable Integer id) {
+		logger.info("删除会员卡批次");
+		shop().member.card.deleteCardBatch(id);
+		return success();
+	}
+	
+	
+
+	
 	
 }
