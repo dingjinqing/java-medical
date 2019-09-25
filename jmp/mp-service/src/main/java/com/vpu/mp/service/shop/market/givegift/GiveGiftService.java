@@ -76,7 +76,7 @@ public class GiveGiftService extends ShopBaseService {
         switch (param.getNavType()) {
             case 2:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
-                        .or(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 1)
+                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 1)
                             .or(    GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 0)
                                     .and(GIVE_GIFT_ACTIVITY.START_TIME.le(nowTime))
                                     .and(GIVE_GIFT_ACTIVITY.END_TIME.ge(nowTime))
