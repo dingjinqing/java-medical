@@ -36,16 +36,16 @@ public class StoreGroupService extends ShopBaseService{
 	@RecordAction(templateId = {RecordContentTemplate.GOODS_CONTENT_ADD},templateData = {"#{param.groupId}"})
 	public PageResult<StoreGroup> getStoreGroupPageList(StoreGroupQueryParam param){
 		SelectWhereStep<? extends Record> select = db()
-            .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME, DSL.count(STORE.GROUP).as("numbers"))
-            .from(STORE_GROUP)
-            .leftJoin(STORE).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
+            .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME)
+            .from(STORE_GROUP);
 		buildParams(select,param);
 		select.groupBy(STORE_GROUP.GROUP_ID).orderBy(STORE_GROUP.CREATE_TIME.asc());
-		if(null != param.getCurrentPage()) {
-			return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreGroup.class);
-		}else {
-			return getPageResult(select,param.getPageRows(),StoreGroup.class);
-		}
+
+        PageResult<StoreGroup> res =  getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreGroup.class);
+        for (StoreGroup g: res.dataList) {
+            g.setNumbers(this.getGroupNumberInGroup(g.getGroupId()));
+        }
+        return res;
 	}
 	public void buildParams(SelectWhereStep<? extends  Record> select, StoreGroupQueryParam param) {
 		if (param != null) {
@@ -58,6 +58,10 @@ public class StoreGroupService extends ShopBaseService{
 			}
 		}
 	}
+
+	private int getGroupNumberInGroup(int groupId){
+        return db().selectCount().from(STORE).where(STORE.GROUP.eq(groupId)).fetchOne().into(Integer.class);
+    }
 
     /**
      * 门店分组-(检查组名是否可用)
