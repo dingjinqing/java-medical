@@ -220,7 +220,7 @@ export default {
     initDataList () {
       this.loading = true
 
-      storeList(this.queryParams).then((res) => {
+      storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))

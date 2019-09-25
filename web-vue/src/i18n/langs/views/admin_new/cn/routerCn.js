@@ -225,5 +225,7 @@ export const cn = {
   manualRefund: ['订单管理', '手动退货退款'],
 
   // 门店管理 门店列表
-  store_list: ['门店管理', '门店列表']
+  store_list: ['门店管理', '门店列表'],
+  // 门店管理 分组管理
+  store_group_list: ['门店管理', '分组管理']
 }

@@ -329,5 +329,7 @@ export const en = {
   manualRefund: ['Order management', 'Manual return refund'],
 
   // 门店管理 门店列表
-  store_list: ['Store management', 'Stores list']
+  store_list: ['Store management', 'Stores list'],
+  // 门店管理 分组管理
+  store_group_list: ['Store management', 'Store groups list']
 }

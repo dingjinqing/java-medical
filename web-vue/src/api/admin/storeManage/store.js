@@ -16,3 +16,30 @@ export function allStoreGroup () {
     method: 'get'
   })
 }
+
+// 门店分组列表
+export function storeGroupList (data) {
+  return service({
+    url: '/api/admin/store/group/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 门店删除
+export function delStore (data) {
+  return service({
+    url: '/api/admin/store/del',
+    method: 'post',
+    data: data
+  })
+}
+
+// 门店更新
+export function updateStore (data) {
+  return service({
+    url: '/api/admin/store/update',
+    method: 'post',
+    data: data
+  })
+}
