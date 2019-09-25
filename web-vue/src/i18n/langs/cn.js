@@ -79,6 +79,10 @@ import { cn as expressList } from './views/admin/index/leftNavComponents/order/e
 // 会员管理
 // 会员管理-会员卡
 import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card/memberCardCn'
+
+// admin>公共组件
+// 选择时间
+import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePicker/dateTimePickerCn'
 const cn = {
   messages: {
     lang: '中文',
@@ -542,6 +546,7 @@ const cn = {
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
   messagePush, // 营销管理/消息推送
+  dateTimePicker, // 选择时间
   giveGift, // 我要送礼
   ...zhLocale,
   expressList,

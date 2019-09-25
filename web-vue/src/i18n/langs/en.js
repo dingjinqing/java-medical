@@ -75,6 +75,9 @@ import { en as expressList } from './views/admin/index/leftNavComponents/order/e
 // 会员管理-会员卡
 import { en as memberCard } from './views/admin_new/en/index/userManagement/card/memberCardEn'
 
+// admin>公共组件
+// 选择时间
+import { en as dateTimePicker } from './views/admin_new/en/components/dateTimePicker/dateTimePickerEn'
 const en = {
   messages: {
     lang: 'English',
@@ -569,6 +572,7 @@ const en = {
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
   messagePush, // 营销管理/消息推送
+  dateTimePicker, // 选择时间
   ...enLocale,
   expressList,
 

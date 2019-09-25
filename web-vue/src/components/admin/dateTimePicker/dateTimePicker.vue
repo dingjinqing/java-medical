@@ -7,9 +7,9 @@
         style="width:390px"
         v-model="value"
         type="datetimerange"
-        range-separator="至"
-        start-placeholder="请选择日期"
-        end-placeholder="请选择日期"
+        :range-separator="$t(`dateTimePicker.to`)"
+        :start-placeholder="$t(`dateTimePicker.pleaseSelectTheStartTime`)"
+        :end-placeholder="$t(`dateTimePicker.pleaseSelectTheEndTime`)"
         @change="handleChange"
       >
       </el-date-picker>
@@ -19,7 +19,7 @@
       <el-date-picker
         v-model="value1"
         type="datetime"
-        placeholder="选择日期时间"
+        :placeholder="$t(`dateTimePicker.pleaseSelectDateAndTime`)"
         @change="handleChange1"
       >
       </el-date-picker>
@@ -42,6 +42,9 @@ export default {
       value: [],
       value1: ``
     }
+  },
+  mounted () {
+    this.langDefault()
   },
   methods: {
     handleChange () {

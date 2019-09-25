@@ -32,11 +32,11 @@ export default {
       activeName: ``,
       headers: [
         {
-          label: `全部消息推送`,
+          label: this.$t(`messagePush.fullMessagePush`),
           name: `/api/admin/market/messagePush/all`
         },
         {
-          label: `推送统计`,
+          label: this.$t(`messagePush.pushTheStatistics`),
           name: `/api/admin/market/messagePush/pushStatistics`
         }
       ]
@@ -44,6 +44,24 @@ export default {
   },
   created () {
     this.activeName = this.$route.path
+  },
+  watch: {
+    lang () {
+      this.headers = [
+        {
+          label: this.$t(`messagePush.fullMessagePush`),
+          name: `/api/admin/market/messagePush/all`
+        },
+        {
+          label: this.$t(`messagePush.pushTheStatistics`),
+          name: `/api/admin/market/messagePush/pushStatistics`
+        }
+      ]
+    }
+  },
+  mounted () {
+    // 初始化国际化
+    this.langDefault()
   },
   updated () {
     this.activeName = this.$route.path

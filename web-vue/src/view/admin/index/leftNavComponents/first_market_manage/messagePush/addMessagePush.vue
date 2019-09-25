@@ -365,12 +365,6 @@ import { allCardApi, contentAddApi, getUserNumberApi, addMessageApi } from '@/ap
 import { delObj } from '@/util/formatData'
 export default {
   name: 'addMessagePush',
-  /**
-   * 接收查看组件的值
-   */
-  props: {
-
-  },
   components: {
     chooseTemplateDialog,
     selectLinks,
@@ -594,7 +588,8 @@ export default {
     this.initData()
   },
   mounted () {
-
+    // 初始化国际化语言
+    this.langDefault()
   },
   filters: {
     filterA: function (val) {

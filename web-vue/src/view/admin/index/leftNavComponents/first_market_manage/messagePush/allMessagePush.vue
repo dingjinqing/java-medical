@@ -7,14 +7,13 @@
         type="primary"
         size="small"
         @click="handleAddMessagePush"
-      > 添加消息推送</el-button>
+      >{{$t(`messagePush.addMessagePush`)}}</el-button>
     </div>
     <!-- 筛选条件 -->
     <div>
       <el-form
         :inline="true"
         :model="formData"
-        label-width="90px"
       >
         <el-form-item :label="labels.label1">
           <el-input
@@ -41,7 +40,7 @@
             type="primary"
             @click="handleFilter"
             size="small"
-          >筛选</el-button>
+          >{{$t(`messagePush.btnFilter`)}}</el-button>
 
         </el-form-item>
       </el-form>
@@ -51,56 +50,59 @@
       <el-table
         :data="dataList"
         style="width: 100%"
+        border
+        class="version-manage-table"
+        header-row-class-name="tableClass"
         v-loading="loading"
       >
         <el-table-column
           prop="name"
-          label="消息名称"
+          :label="$t(`messagePush.name`)"
         >
         </el-table-column>
         <el-table-column
           prop="title"
-          label="业务标题"
+          :label="$t(`messagePush.thebusinessTitle`)"
         >
         </el-table-column>
         <el-table-column
           prop="startTime"
-          label="发送时间"
+          :label="$t(`messagePush.sendtime`)"
         >
         </el-table-column>
         <el-table-column
           prop="sentNumber"
-          label="送达数量"
+          :label="$t(`messagePush.sentNumber`)"
         >
         </el-table-column>
         <el-table-column
           prop="clickedNumber"
-          label="回访数量"
+          :label="$t(`messagePush.returnTheNumber`)"
         >
         </el-table-column>
         <el-table-column
           prop="percentage"
-          label="回访率"
+          :label="$t(`messagePush.rateOfReturn`)"
         >
         </el-table-column>
         <el-table-column
           prop="sendStatus"
-          label="发送状态"
+          :label="$t(`messagePush.sendStatus`)"
         >
           <template slot-scope="data">
             <div>
-              {{ data.row.sendStatus === 0?`未发送`:`已发送`}}
+              {{ data.row.sendStatus === 0?"未发送":"已发送"}}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop="id"
-          label="操作"
+          :label="$t(`messagePush.operation`)"
         >
           <template slot-scope="data">
             <div>
               <el-tooltip
-                content="查看详情"
+                :content="$t(`messagePush.viewDetail`)"
                 placement="top"
               >
                 <el-button
@@ -112,7 +114,7 @@
                 ></el-button>
               </el-tooltip>
               <el-tooltip
-                content="发送记录"
+                :content="$t(`messagePush.sendTheRecord`)"
                 placement="top"
               >
                 <el-button
@@ -124,7 +126,7 @@
                 ></el-button>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t(`messagePush.delete`)"
                 placement="top"
               >
                 <el-button
@@ -174,9 +176,9 @@ export default {
       startTime: null,
       endTime: null,
       labels: {
-        label1: `消息名称`,
-        label2: `业务标题`,
-        label3: `发送时间`
+        label1: this.$t(`messagePush.messageName`),
+        label2: this.$t(`messagePush.theBusinessTitle`),
+        label3: this.$t(`messagePush.sendTime`)
       },
       /**
        * tableData
@@ -202,8 +204,18 @@ export default {
   created () {
     this.initData() // 初始化获取数据
   },
+  mounted () {
+    this.langDefault()
+  },
   watch: {
-    activeName: 'watchActive'
+    activeName: 'watchActive',
+    lang () {
+      this.labels = {
+        label1: this.$t(`messagePush.messageName`),
+        label2: this.$t(`messagePush.theBusinessTitle`),
+        label3: this.$t(`messagePush.sendTime`)
+      }
+    }
   },
   methods: {
 
@@ -312,5 +324,13 @@ export default {
 <style lang="scss" scoped>
 .messagePush {
   padding: 10px;
+  /deep/ .tableClass th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
 }
 </style>
