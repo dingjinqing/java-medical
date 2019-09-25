@@ -133,7 +133,6 @@ create table `b2c_shop`
     `order_real_name`  tinyint(1)              default '0' comment '下单实名制',
     `hid_bottom`       tinyint(1)              default 0 null comment '是否隐藏底部 1是 ',
     `logo`             varchar(200)   null comment '小程序logo',
-    `expire_time`      date                    default null comment '到期时间',
     `currency`         varchar(45)  NOT NULL DEFAULT 'CNY' COMMENT '币种',
   	`shop_language`    varchar(45) NOT NULL DEFAULT 'zh_CN' COMMENT '语言',
     primary key (`shop_id`),
