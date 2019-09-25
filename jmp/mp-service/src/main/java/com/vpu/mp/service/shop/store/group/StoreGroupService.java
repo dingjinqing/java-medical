@@ -39,7 +39,7 @@ public class StoreGroupService extends ShopBaseService{
             .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME)
             .from(STORE_GROUP);
 		buildParams(select,param);
-		select.groupBy(STORE_GROUP.GROUP_ID).orderBy(STORE_GROUP.CREATE_TIME.asc());
+		select.orderBy(STORE_GROUP.CREATE_TIME.asc());
 
         PageResult<StoreGroup> res =  getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreGroup.class);
         for (StoreGroup g: res.dataList) {
