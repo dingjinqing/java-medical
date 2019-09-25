@@ -25,6 +25,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
 import java.sql.Timestamp;
 
 /**
@@ -126,7 +127,7 @@ public class CardDaoService extends ShopBaseService {
 			select.and(USER.USERNAME.like(likeValue));
 		}
 		/** -批次号 */
-		if(param.getBatchId() != null) {
+		if(param.getBatchId() != null && !param.getBatchId().equals(ALL_BATCH)) {
 			select.and(CARD_RECEIVE_CODE.BATCH_ID.eq(param.getBatchId()));
 		}
 	}

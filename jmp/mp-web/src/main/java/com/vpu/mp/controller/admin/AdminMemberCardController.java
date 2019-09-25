@@ -159,7 +159,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/code/receivelist")
 	public JsonResult getReceiveList(@RequestBody CodeReceiveParam param) {
-		logger.info("获取所有持卡会员");
+		logger.info("获取会员卡领取详情");
 		PageResult<CodeReceiveVo> result = shop().member.card.getReceiveList(param);
 		return success(result);
 	}
