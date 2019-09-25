@@ -652,7 +652,7 @@ create table `b2c_customer_avail_coupons`
     `act_id`             mediumint(8)   not null default '0',
     `start_time`         timestamp      null     default null,
     `end_time`           timestamp      null     default null,
-    `type`               tinyint(2)     not null default '0' comment '1为减价，2为打折',
+    `type`               tinyint(2)     not null default '0' comment '0为减价，1为打折',
     `amount`             decimal(10, 2) not null default '0.00' comment '打折或减价量',
     `act_desc`           varchar(128)   not null default '',
     `limit_order_amount` mediumint(8)   not null default '0',
