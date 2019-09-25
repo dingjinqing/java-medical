@@ -44,6 +44,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STOR
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
@@ -1360,7 +1361,12 @@ public class MemberCardService extends ShopBaseService {
      */
 	public PageResult<CardHolderVo> getAllCardHolder(CardHolderParam param) {
 		
-		 return cardDao.getAllCardHolder(param);
+		 PageResult<CardHolderVo> allCardHolder = cardDao.getAllCardHolder(param);
+		 /** - 如果查询的状态是过期的，设置返回的flag为3 过期  */
+		 if(CARD_EXPIRED.equals(param.getFlag())) {
+			 allCardHolder.dataList.stream().forEach(item->item.setFlag(CARD_EXPIRED));
+		 }
+		 return allCardHolder;
 	}
 		
 }

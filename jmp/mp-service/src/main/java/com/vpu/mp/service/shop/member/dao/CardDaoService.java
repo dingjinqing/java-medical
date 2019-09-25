@@ -14,6 +14,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import java.sql.Timestamp;
 
 /**
@@ -57,12 +59,16 @@ public class CardDaoService extends ShopBaseService {
 		if(!StringUtils.isBlank(param.getMobile())) {
 			select.where(USER.MOBILE.eq(param.getMobile()));
 		}
+		/** - 会员卡号 */
+		if(!StringUtils.isBlank(param.getCardNo())) {
+			select.where(USER_CARD.CARD_NO.eq(param.getCardNo()));
+		}
 		/** - 卡状态 */
 		if(param.getFlag() != null) {
 			/** - 状态为过期 */
 			if(param.getFlag().equals(CARD_EXPIRED)) {
 				select.where(USER_CARD.EXPIRE_TIME.le(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()));
-			}else {
+			}else if(param.getFlag().equals(CARD_USING) || param.getFlag().equals(CARD_DELETE)) {
 				select.where(USER_CARD.FLAG.eq(param.getFlag()));
 			}
 		}
