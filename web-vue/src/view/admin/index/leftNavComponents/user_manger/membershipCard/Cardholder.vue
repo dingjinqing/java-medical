@@ -44,8 +44,8 @@
               size="small"
             >
               <el-option
-                v-for="item in selectOptions"
-                :key="item.value"
+                v-for="(item,index) in selectOptions"
+                :key="index"
                 :label="item.label"
                 :value="item.value"
               >
@@ -60,6 +60,8 @@
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -95,7 +97,7 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="userID"
+          prop="userId"
           align="center"
           label="会员ID"
           width="120"
@@ -110,41 +112,45 @@
               @click="handleToUserDetail(scope.row)"
               style="cursor:pointer;color:#5a8bff"
             >
-              {{scope.row.sickName}}
+              {{scope.row.username}}
             </span>
           </template>
         </el-table-column>
         <el-table-column
-          prop="phoneNum"
+          prop="mobile"
           label="手机号"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="inviter"
+          prop="invitedName"
           label="邀请人"
           width="120"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="createTime"
           label="领卡时间"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="cardNum"
+          prop="cardNo"
           label="会员卡号"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="status"
           label="卡状态"
           width="120"
           align="center"
         >
+          <template slot-scope="scope">
+            <span v-if="scope.row.flag === 0"> 正常 </span>
+            <span v-else-if="scope.row.flag === 1"> 已废除 </span>
+            <span v-else-if="scope.row.flag === 2"> 已过期 </span>
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -170,35 +176,38 @@
   </div>
 </template>
 <script>
+import { getAllCardHolders } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
+
   data () {
     return {
       pageParams: {
-        totalRows: 10,
+        totalRows: null,
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
+      cardId: null, // 会员卡id
       carIdInput: '',
       carNameInput: '',
       phoneInput: '',
       cardNuberInput: '',
       selectOptions: [{
-        value: '0',
+        value: -1,
         label: '全部'
       }, {
-        value: '1',
+        value: 0,
         label: '正常'
       }, {
-        value: '2',
+        value: 1,
         label: '已废除'
       },
       {
-        value: '3',
+        value: 2,
         label: '已过期'
       }],
-      statusValue: '0',
-      dateValue: '',
+      statusValue: -1, // 卡状态默认值
+      dateValue: null, // 领取时间
       tableData: [
         {
           userID: '51',
@@ -231,43 +240,77 @@ export default {
       operation: ['充值明细', '消费明细', '废除']
     }
   },
+  created () {
+    debugger
+    this.cardId = this.$route.query.cardId
+  },
   mounted () {
     // 初始化数据
     this.defaultData()
   },
   methods: {
+    // 1- 加载默认的数据
     defaultData () {
-
+      debugger
+      let obj = {
+        'pageRows': this.pageParams.pageRows,
+        'currentPage': this.pageParams.currentPage,
+        'cardId': this.cardId,
+        'userId': this.carIdInput,
+        'username': this.carNameInput,
+        'mobile': this.phoneInput,
+        'cardNo': this.cardNuberInput,
+        'flag': this.statusValue,
+        'firstDateTime': this.dateValue ? this.dateValue[0] : null,
+        'secondDateTime': this.dateValue ? this.dateValue[1] : null
+      }
+      console.log(obj)
+      // 获取api
+      getAllCardHolders(obj).then(res => {
+        if (res.error === 0) {
+          // 成功
+          this.tableData = res.content.dataList
+          // 分页信息
+          this.pageParams = res.content.page
+        }
+      })
+    },
+    // 2- 顶部按钮系列点击
+    handleTobtn (index) {
+      switch (index) {
+        case 0:
+          // 筛选
+          this.defaultData()
+          break
+        case 1:
+          // 重置
+          this.carIdInput = ''
+          this.carNameInput = ''
+          this.phoneInput = ''
+          this.cardNuberInput = ''
+          this.statusValue = -1
+          this.dateValue = null
+          break
+        case 2:
+      }
+    },
+    // 3- 处理分页信息传递出来的分页数据
+    search (data) {
+      console.log(data)
+      this.defaultData()
     },
     // 操作部分点击
     handleToOperation (row, index) {
       console.log(row, index)
     },
-    search (data) {
-      console.log(data)
-    },
+
     // 跳转到会员详情页
     handleToUserDetail (row) {
       this.$router.push({
         name: 'membershipInformation'
       })
-    },
-    // 顶部按钮系列点击
-    handleTobtn (index) {
-      switch (index) {
-        case 0:
-          break
-        case 1:
-          this.carIdInput = ''
-          this.carNameInput = ''
-          this.phoneInput = ''
-          this.cardNuberInput = ''
-          this.statusValue = '0'
-          this.dateValue = ''
-          break
-        case 2:
-      }
     }
+
   }
 }
 </script>

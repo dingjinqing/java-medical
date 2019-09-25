@@ -137,7 +137,10 @@ const routes = [
       meta: 'user_manger',
       category: 'user_card'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/cardholder')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/cardholder'
+      )
   },
   // 充值明细
   {
@@ -148,7 +151,10 @@ const routes = [
       meta: 'user_manger',
       category: 'user_list'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/refillDetails')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/refillDetails'
+      )
   },
   // 充值明细子路由
   {
@@ -159,7 +165,10 @@ const routes = [
       meta: 'user_manger',
       category: 'user_list'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/refillDetails')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/refillDetails'
+      )
   },
   // 领取详情
   {
@@ -170,7 +179,10 @@ const routes = [
       meta: 'user_manger',
       category: 'user_card'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/receivingDetails')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/receivingDetails'
+      )
   },
   // 激活审核
   {
@@ -181,7 +193,10 @@ const routes = [
       meta: 'user_manger',
       category: 'user_card'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/activateAudit')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/activateAudit'
+      )
   },
   // 查看订单
   {
@@ -192,7 +207,10 @@ const routes = [
       meta: 'user_manger',
       category: 'user_card'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/viewOrders')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/viewOrders'
+      )
   },
   // 标签管理
   {
@@ -202,7 +220,10 @@ const routes = [
       crumbTitle: 'router.labelManagement',
       meta: 'user_manger'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/labelManagement/labelManagement')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/labelManagement/labelManagement'
+      )
   },
   // 积分管理
   {
@@ -212,7 +233,10 @@ const routes = [
       crumbTitle: 'router.integralManagement',
       meta: 'user_manger'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralManagement')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralManagement'
+      )
   },
   // 查看签到会员
   {
@@ -223,7 +247,10 @@ const routes = [
       meta: 'user_manger',
       category: 'user_list'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/integralManagement/viewSigninMembers')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/integralManagement/viewSigninMembers'
+      )
   },
   // 积分说明
   {
@@ -234,7 +261,10 @@ const routes = [
       meta: 'user_manger',
       category: 'score'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralDescription')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralDescription'
+      )
   }
 ]
 

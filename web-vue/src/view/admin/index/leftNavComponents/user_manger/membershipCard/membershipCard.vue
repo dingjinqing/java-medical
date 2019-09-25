@@ -98,7 +98,10 @@
                   </div>
                 </div>
               </div>
-              <div class="card_condition">
+              <div
+                class="card_condition"
+                style="width: 260px"
+              >
                 <p>{{ $t('memberCard.receiveCondition') }}:<span>{{item.conditions}}</span></p>
                 <p style="margin-top:7px">{{ $t('memberCard.memberPower') }}:<span>{{item.equity}}</span></p>
               </div>
@@ -380,6 +383,17 @@ export default {
 
     lang () {
       this.detailsOfRights = this.$t('memberCard.detailsOfRights')
+      this.cardData.map(card => {
+        this.dealWithAllInfo(card)
+      })
+
+      this.cardDataSecond.map(card => {
+        this.dealWithAllInfo(card)
+      })
+
+      this.cardDataThird.map(card => {
+        this.dealWithAllInfo(card)
+      })
     },
     //  检测会员卡类型变化 加载数据
     currentCardType () {
@@ -629,6 +643,12 @@ export default {
         this.addStatus = false
       }
     },
+    // 9- 批量处理格式信息
+    dealWithAllInfo (card) {
+      this.dealWithCardBehavior(card)
+      this.dealWithReceiveConditions(card)
+      this.dealWithMemCardExtralRight(card)
+    },
     // 动态改变行间样式
     getStyle (item, index) {
       /** 会员卡状态 flag 1:使用中，2:停止使用 ,3：过期 */
@@ -705,13 +725,19 @@ export default {
         case '持卡会员':
           this.$store.commit('TOCHANFE_CARDCRUMDATA', obj)
           this.$router.push({
-            name: 'Cardholder'
+            name: 'Cardholder',
+            query: {
+              cardId: item.id
+            }
           })
           break
         case '领取详情':
           this.$store.commit('TOCHANFE_CARDCRUMDATA', obj)
           this.$router.push({
-            name: 'receivingDetails'
+            name: 'receivingDetails',
+            query: {
+              cardId: item.id
+            }
           })
           break
         case '激活审核':
@@ -823,7 +849,7 @@ export default {
         .card_condition {
           margin: 0 7px;
           border-bottom: 1px solid #eee;
-          padding-bottom: 34px;
+          padding-bottom: 20px;
           margin-top: 10px;
           p {
             font-size: 12px;

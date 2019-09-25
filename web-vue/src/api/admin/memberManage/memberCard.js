@@ -53,3 +53,39 @@ export function getAllMemberCardRequest (data) {
     data: data
   })
 }
+
+// 获取持卡会员
+export function getAllCardHolders (data) {
+  return service({
+    url: '/api/admin/member/cardholder',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取会员卡领取批次
+export function getgetCardBatchListRequest (cardId) {
+  return service({
+    url: `/api/admin/member/card/batch/get/${cardId}`,
+    method: 'post',
+    data: null
+  })
+}
+
+// 会卡领取详情-查询
+export function getReceiveListRequest (data) {
+  return service({
+    url: '/api/admin/member/code/receivelist',
+    method: 'post',
+    data: data
+  })
+}
+
+// 废除会员卡指定批次
+export function deleteCardBatchRequest (id) {
+  return service({
+    url: `/api/admin/member/card/batch/delete/${id}`,
+    method: 'post',
+    data: null
+  })
+}

@@ -26,10 +26,10 @@
             size="small"
           >
             <el-option
-              v-for="item in selectSortOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="(item,index) in selectSortOptions"
+              :key="index"
+              :label="item.name"
+              :value="item.batchId"
             >
             </el-option>
           </el-select>
@@ -38,6 +38,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="filterData"
           >筛选</el-button>
         </div>
       </div>
@@ -50,14 +51,14 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="userID"
+            prop="name"
             align="center"
             label="批次名称"
             width="120"
           >
           </el-table-column>
           <el-table-column
-            prop="userID"
+            prop="id"
             align="center"
             label="ID"
             width="120"
@@ -69,40 +70,52 @@
           >
             <template slot-scope="scope">
               <span
-                @click="handleToUserDetail(scope.row)"
+                @click="handleToUserDetail(scope.row.userId)"
                 style="cursor:pointer;color:#5a8bff"
               >
-                {{scope.row.sickName}}
+                {{scope.row.username}}
               </span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="phoneNum"
+            prop="mobile"
             label="手机号"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="inviter"
+            prop="receiveTime"
             label="领取时间"
             width="120"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="date"
-            label="领取码"
+            label="领取码 / 卡号+密码"
             align="center"
           >
+            <template slot-scope="scope">
+              <span style="cursor:pointer;color:#5a8bff">
+                {{scope.row.code}}/
+                {{scope.row.cardNo}}+
+                {{scope.row.cardPwd}}
+              </span>
+            </template>
+
           </el-table-column>
           <el-table-column
             label="操作"
             align="center"
           >
+
             <template slot-scope="scope">
+              <span v-if="scope.row.delFlag===1">
+                已废除
+              </span>
               <span
+                v-else
                 style="cursor:pointer;color:#5a8bff"
-                @click="handleToOperation(scope.row)"
+                @click="handleToOperation(scope.row.id)"
               >废除</span>
             </template>
           </el-table-column>
@@ -135,6 +148,7 @@
   </div>
 </template>
 <script>
+import { getReceiveListRequest, getgetCardBatchListRequest, deleteCardBatchRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
   data () {
@@ -142,71 +156,113 @@ export default {
       pageParams: {
         totalRows: 10,
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
+      cardId: null, // 会员卡id
       dialogVisible: false,
       phoneNumInput: '',
       carNameInput: '',
       sortNameInput: '',
-      selectSortvalue: '0',
-      selectSortOptions: [{
-        value: '0',
-        label: '请选择批次名称'
-      }, {
-        value: '1',
-        label: 'test2'
-      }],
-      tableData: [
+      selectSortvalue: 0,
+      selectSortOptions: [
         {
-          userID: '51',
-          phoneNum: '18811309193',
-          sickName: '啦啦啦',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '12',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '43',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
+          batchId: 0,
+          name: '全部'
         }
       ],
-      userID: ''
+      tableData: [],
+      discardId: null
+    }
+  },
+  created () {
+    this.cardId = this.$route.query.cardId
+    this.loadAllDefaultData()
+  },
+  watch: {
+    lang () {
+      alert('语言切换')
     }
   },
   methods: {
+    // 1- 加载数据
+    loadAllDefaultData () {
+      debugger
+      this.loadAllTableData()
+      // 批次数据
+      this.getgetCardBatchList()
+    },
+    // 2- 加载列表数据
+    loadAllTableData () {
+      debugger
+      let obj = {
+        'pageRows': this.pageParams.pageRows,
+        'currentPage': this.pageParams.currentPage,
+        'cardId': this.cardId,
+        'mobile': this.phoneNumInput,
+        'username': this.carNameInput,
+        'batchId': this.selectSortvalue
+      }
+      console.log(obj)
+      // 会卡领取详情-查询
+      this.getReceiveList(obj)
+    },
+
+    // 2- 会卡领取详情-查询
+    getReceiveList (obj) {
+      getReceiveListRequest(obj).then(res => {
+        debugger
+        if (res.error === 0) {
+          // 设置分页
+          this.pageParams = res.content.page
+          // 设置数据
+          this.tableData = res.content.dataList
+          console.log(this.tableData)
+        }
+      })
+    },
+
+    // 3- 获取会员卡领取批次
+    getgetCardBatchList () {
+      getgetCardBatchListRequest(this.cardId).then(res => {
+        if (res.error === 0) {
+          this.selectSortOptions.push(...res.content)
+        }
+      })
+    },
+
+    // 4- 筛选
+    filterData () {
+      this.loadAllTableData()
+    },
     search (data) {
       console.log(data)
     },
     // 用户昵称点击
-    handleToUserDetail (row) {
+    handleToUserDetail (userId) {
       this.$router.push({
-        name: 'membershipInformation'
+        name: 'membershipInformation',
+        query: {
+          userId
+        }
       })
     },
     // 点击废除
-    handleToOperation (row) {
-      console.log(row)
-      this.userID = row.userID
+    handleToOperation (id) {
+      console.log(id)
+      this.discardId = id
       this.dialogVisible = true
     },
     // 废除弹窗确认事件
     handleToSuer () {
-      console.log(this.userID)
+      // api调用
+      deleteCardBatchRequest(this.discardId).then(res => {
+        if (res.error === 0) {
+          console.log('discard success')
+          // 重新加载数据
+          this.loadAllTableData()
+        }
+      })
+      this.dialogVisible = false
     }
   }
 }

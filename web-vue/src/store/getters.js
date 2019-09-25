@@ -12,6 +12,7 @@ const getters = {
   goodsIds: state => state.goodsManagement.goodsIds,
   editGoodsId: state => state.goodsManagement.editGoodsId,
   proAndUrData: state => state.crumbs.proAndUrData,
+  cardholderData: state => state.crumbs.cardholderData,
   membershipdetailflag: state => state.membershipList.membershipdetailflag,
   toHandleSetUpMemflag: state => state.membershipList.toHandleSetUpMemflag,
   toHandleSelectingUsersflag: state =>

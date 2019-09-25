@@ -28,7 +28,8 @@
             :range-separator="$t('membershipIntroduction.to')"
             :start-placeholder="$t('membershipIntroduction.Starttime')"
             :end-placeholder="$t('membershipIntroduction.Endtime')"
-            value-format='yyyy-MM-dd'
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00','23:59:59']"
             size="small"
           >
           </el-date-picker>
@@ -148,7 +149,7 @@ export default {
       }, // 分页信息
       orderSn: '', // 订单号码
       nameInput: '',
-      dateInput: '',
+      dateInput: null,
       membershipCardOptins: [
       ],
       membershipCardValue: '',
@@ -172,12 +173,6 @@ export default {
       this.clickIindex = index
     },
     getUserDetailScoreData () {
-      // 处理时间格式
-
-      if (this.dateInput) {
-        this.dateInput[0] = this.dateInput[0] + ' 00:00:00'
-        this.dateInput[1] = this.dateInput[1] + ' 23:59:59'
-      }
       // 准备查询数据
       let obj = {
         'pageRows': this.pageParams.pageRows,
@@ -185,8 +180,8 @@ export default {
         'userId': this.id,
         'userName': this.userName,
         'orderSn': this.orderSn,
-        'startTime': this.dateInput[0],
-        'endTime': this.dateInput[1]
+        'startTime': this.dateInput ? this.dateInput[0] : null,
+        'endTime': this.dateInput ? this.dateInput[1] : null
 
       }
 
