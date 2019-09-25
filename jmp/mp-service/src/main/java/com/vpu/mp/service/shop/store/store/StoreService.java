@@ -134,9 +134,9 @@ public class StoreService extends ShopBaseService {
 	 * @return
 	 */
 	public Boolean updateStore(StorePojo store) {
-		StoreRecord record = db().newRecord(STORE,store);
+		StoreRecord record = new StoreRecord();
         this.assign(store,record);
-		return record.update() > 0 ? true : false;
+		return db().executeUpdate(record) > 0 ? true : false;
 	}
 	
 	/**
