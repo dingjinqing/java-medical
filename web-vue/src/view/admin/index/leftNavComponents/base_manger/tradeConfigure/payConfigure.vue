@@ -4,20 +4,20 @@
     <el-card class="payCard">
       <div
         v-for="item in payConfigure"
-        :key="item.name"
+        :key="item.payName"
         class="payContent"
       >
-        <span>{{item.name}}</span>
+        <span>{{item.payName}}</span>
         <el-switch
-          v-model="item.value"
+          v-model="item.enabled"
           active-color="#13ce66"
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span>{{item.value?'已开启':'已关闭'}}</span>
+        <span>{{item.enabled?'已开启':'已关闭'}}</span>
         <span>{{item.title}}</span>
         <span
-          v-if="item.name==='微信支付'"
+          v-if="item.payName==='微信支付'"
           class="setting"
           @click="handleSetting"
         >配置</span>
@@ -31,9 +31,9 @@
         默认支付配置
       </div>
       <div class="payMethod">
-        <el-checkbox v-model="checked1">会员卡余额支付</el-checkbox>
-        <el-checkbox v-model="checked2">余额支付</el-checkbox>
-        <el-checkbox v-model="checked3">积分支付</el-checkbox>
+        <el-checkbox v-model="card_first">会员卡余额支付</el-checkbox>
+        <el-checkbox v-model="balance_first">余额支付</el-checkbox>
+        <el-checkbox v-model="score_first">积分支付</el-checkbox>
       </div>
       <div class="tips">
         <span>注：</span>
@@ -55,7 +55,7 @@
         </span>
       </div>
     </div>
-    <div class="btn">保存</div>
+    <div class="btn" @click="updateConfig">保存</div>
 
     <!-- 微信支付配置弹窗 -->
     <el-dialog
@@ -107,24 +107,145 @@
 </template>
 
 <script>
-
+import { paySelect, payUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 export default {
+  created () {
+    this.initData()
+  },
   data () {
     return {
+      // 支付配置
       payConfigure: [
-        { name: '微信支付', title: '开关开启，用户可以通过微信支付完成订单支付 ', value: '' },
-        { name: '积分支付', title: '开关开启，用户购买商品时可以用积分抵扣一定金额', value: '' },
-        { name: '余额支付', title: '开关开启，用户可以使用余额进行支付', value: '' },
-        { name: '货到付款', title: '开关开启，用户在提交订单时可以使用货到付款方式支付；开关关闭则不显示货到付款支付方式', value: '' }
+        { payName: '微信支付', payCode: 'wxpay', title: '开关开启，用户可以通过微信支付完成订单支付 ', enabled: false },
+        { payName: '积分支付', payCode: 'score', title: '开关开启，用户购买商品时可以用积分抵扣一定金额', enabled: false },
+        { payName: '余额支付', payCode: 'balance', title: '开关开启，用户可以使用余额进行支付', enabled: false },
+        { payName: '货到付款', payCode: 'cod', title: '开关开启，用户在提交订单时可以使用货到付款方式支付；开关关闭则不显示货到付款支付方式', enabled: false }
       ],
-      checked1: '',
-      checked2: '',
-      checked3: '',
+      // 默认支付配置
+      card_first: 0,
+      balance_first: 0,
+      score_first: 0,
       src: `${this.$imageHost}/image/admin/share/pay_config_share.jpg`,
       showSettingDialog: false
     }
   },
   methods: {
+    // 初始化配置信息
+    initData () {
+      paySelect().then(res => {
+        console.log('查询配置结果为')
+        console.log(res)
+        if (res.error === 0) {
+          this.handlerData(res.content)
+        } else {
+          this.$message.error('数据拉取失败')
+        }
+      })
+    },
+    handlerData (data) {
+      this.payConfigure.map((item, index) => {
+        data.v1.map((item1, index1) => {
+          if (item.payCode === item1.payCode) {
+            if (item1.enabled === 1) {
+              item.enabled = true
+            } else {
+              item.enabled = false
+            }
+          }
+        })
+      })
+      if (data.v2.card_first === 1) {
+        this.card_first = true
+      } else {
+        this.card_first = false
+      }
+      if (data.v2.balance_first === 1) {
+        this.balance_first = true
+      } else {
+        this.balance_first = false
+      }
+      if (data.v2.score_first === 1) {
+        this.score_first = true
+      } else {
+        this.score_first = false
+      }
+      console.log(this.payConfigure)
+    },
+    // 更新支付配置
+    updateConfig () {
+      let basicconf = {
+        wxpay: null,
+        score: null,
+        balance: null,
+        cod: null
+      }
+      let param = {
+        basicConfig: null,
+        card_first: null,
+        balance_first: null,
+        score_first: null
+      }
+      this.payConfigure.map((item, index) => {
+        switch (item.payCode) {
+          case 'wxpay':
+            if (item.enabled === true) {
+              basicconf.wxpay = 1
+            } else {
+              basicconf.wxpay = 0
+            }
+            break
+          case 'score' :
+            if (item.enabled === true) {
+              basicconf.score = 1
+            } else {
+              basicconf.score = 0
+            }
+            break
+          case 'balance' :
+            basicconf.balance = item.enabled
+            if (item.enabled === true) {
+              basicconf.balance = 1
+            } else {
+              basicconf.balance = 0
+            }
+            break
+          case 'cod' :
+            basicconf.cod = item.enabled
+            if (item.enabled === true) {
+              basicconf.cod = 1
+            } else {
+              basicconf.cod = 0
+            }
+            break
+        }
+      })
+      param.basicConfig = basicconf
+      if (this.card_first === true) {
+        param.card_first = 1
+      } else {
+        param.card_first = 0
+      }
+      if (this.balance_first === true) {
+        param.balance_first = 1
+      } else {
+        param.balance_first = 0
+      }
+      if (this.score_first === true) {
+        param.score_first = 1
+      } else {
+        param.score_first = 0
+      }
+      console.log('更细参数为')
+      console.log(param)
+      payUpdate(param).then(res => {
+        if (res.error === 0) {
+          this.$message.success('更新成功！')
+          this.initData()
+        } else {
+          this.$message.error('更新失败！')
+        }
+      })
+    },
     // 微信支付配置事件
     handleSetting () {
       console.log('配置')
