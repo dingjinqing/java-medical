@@ -1,16 +1,23 @@
 package com.vpu.mp.controller.system;
 
+import java.sql.Timestamp;
+
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.ShopAccountOnePojo;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 
 /**
@@ -70,5 +77,24 @@ public class SystemShopAccountController extends SystemBaseController {
 		}
 	}
 	
+	
+	/**
+	 * 修改添加商家账户之前查询
+	 * @param account
+	 * @return
+	 */
+	@GetMapping("/system/shop/account/editList/{shopId}")
+	public JsonResult editListShopAccount(@PathVariable Integer shopId) {
+		ShopRecord shopRecord = saas.shop.getShopById(shopId);
+		if(shopRecord!=null) {
+			Timestamp shopRenewExpireTime = saas.shop.renew.getShopRenewExpireTime(shopId);
+			ShopAccountRecord shop = saas.shop.account.getAccountInfoForId(shopRecord.getSysId());
+			ShopAccountOnePojo pojo = shop.into(ShopAccountOnePojo.class);
+			pojo.setExpireTime(shopRenewExpireTime);
+			return success(pojo);
+		}
+		//店铺不存在
+		return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
+	}
 
 }
