@@ -588,6 +588,19 @@ const routes = [
               import(
                 '@/view/admin/index/leftNavComponents/base_manger/tradeConfigure/tradeConfigure'
               )
+          },
+          // 基础配置/模板消息
+          {
+            path: '/admin/home/main/basicConfig/templateMessage',
+            name: 'message_config',
+            meta: {
+              crumbTitle: 'router.templateMessage',
+              meta: 'base_manger'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/templateMessage/templateMessage'
+              )
           }
         ].concat(marketing, member, order, store)
       }

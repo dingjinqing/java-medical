@@ -65,6 +65,8 @@ export const en = {
   base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
   // 基础配置  交易配置
   pay: ['Basic configuration', 'Pay Configuration'],
+  // 基础配置  模板消息
+  templateMessage: ['Basic configuration', 'Template Message'],
   // 小程序管理 自定义页面装修
   picture_setting: ['Small Program Management', 'Custom Page Decoration'],
   // 营销管理

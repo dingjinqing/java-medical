@@ -855,7 +855,8 @@ const routes = [
   {
     path: '/api/admin/market/messagePush',
     redirect: `/api/admin/market/messagePush/all`,
-    name: 'message_push',
+    // name: 'message_push',
+    name: 'business_template_message',
     meta: {
       crumbTitle: 'router.message_push',
       meta: 'first_market_manage',
