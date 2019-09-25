@@ -447,14 +447,15 @@ export default {
 
       this.goodsIdsArr = []
       this.urlLists = []
-
+      // 选中行的商品或规格信息结合
+      let selectedGoodsDatas = []
       this.trList.forEach(item => {
         if (item.ischecked) {
           let _goodsId = item.goodsId
           if (this.loadProduct) {
             _goodsId = item.prdId
           }
-
+          selectedGoodsDatas.push(item)
           this.goodsIdsArr.push(_goodsId)
           this.urlLists.push({
             goodsImg: item.goodsImg,
@@ -466,6 +467,8 @@ export default {
       // 关闭对话框
       this.choiseGooddialogVisible = false
       this.$emit('result', this.goodsIdsArr)
+      // 在商品标签添加时使用到，回传选中的商品信息
+      this.$emit('resultGoodsDatas', selectedGoodsDatas)
       this.$emit('resultGoodsRow', this.goodsRow)
       this.$emit('resultGoodsIds', this.goodsIdsArr)
       // 把选中的id集合和url集合回传
