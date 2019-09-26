@@ -69,6 +69,7 @@ public class AdminTradeController extends AdminBaseController {
     /**
      * 查询微信支付密钥配置
      */
+    @GetMapping("/api/admin/config/trade/getWxpayConfig")
     public JsonResult getWxpayConfig() {
         String appId = saas.shop.mp.getAuthShopByShopId(shop().trade.getShopId()).getAppId();
         if (saas.shop.mp.checkAuthShopExist(appId)) {
