@@ -180,13 +180,14 @@ export default {
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 商品组件库
-    Commodity: () => import('./decorationModules/commodityComponents/commodity')
+    Commodity: () => import('./decorationModules/commodityComponents/commodity'),
+    CommoditySearch: () => import('./decorationModules/commodityComponents/commoditySearch')
   },
   data () {
     return {
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Commodity'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -508,7 +509,10 @@ export default {
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 2)
               break
             case '商品':
-              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 3)
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 8)
+              break
+            case '商品搜索':
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 9)
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }
@@ -790,6 +794,17 @@ export default {
           break
         case 2:
           obj.name = '优惠卷'
+          break
+        case 8:
+          obj.name = '商品'
+          break
+        case 9:
+          obj.name = '商品搜索'
+          obj.styleRadio = '2'
+          obj.heightRadio = '2'
+          obj.colorBorder = '#eee'
+          obj.colorBg = '#fff'
+          obj.classificationRadio = '1'
       }
       // let obj = { // 传递当前模块json数据模拟
       //   modulesIndex: index,

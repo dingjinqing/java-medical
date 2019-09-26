@@ -518,6 +518,8 @@ export default {
         }
         .mainRightMiddle {
           ul {
+            display: flex;
+            flex-wrap: wrap;
             li {
               width: 205px;
               height: 80px;
@@ -528,11 +530,11 @@ export default {
               margin-top: 20px;
               cursor: pointer;
               padding: 16px 8px 0 20px;
-              float: left;
+              // float: left;
               position: relative;
-              &:nth-of-type(odd) {
-                margin-right: 20px;
-              }
+              // &:nth-of-type(odd) {
+              margin-right: 20px;
+              // }
               .isCheck {
                 position: absolute;
                 top: -5px;

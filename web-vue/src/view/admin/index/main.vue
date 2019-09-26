@@ -55,15 +55,20 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import Crumbs from '@/components/admin/crumbs'
-import CustomHeader from '@/view/admin/index/header'
-import LeftNavigation from '@/view/admin/index/leftNavigation'
+// import Crumbs from '@/components/admin/crumbs'
+// import CustomHeader from '@/view/admin/index/header'
+// import LeftNavigation from '@/view/admin/index/leftNavigation'
 import vuescroll from 'vuescroll'
 import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 Vue.use(vuescroll)
 export default {
-  components: { CustomHeader, LeftNavigation, Crumbs, vuescroll },
+  components: {
+    CustomHeader: () => import('@/view/admin/index/header'),
+    LeftNavigation: () => import('@/view/admin/index/leftNavigation'),
+    Crumbs: () => import('@/components/admin/crumbs'),
+    vuescroll
+  },
   data () {
     return {
       ops: {

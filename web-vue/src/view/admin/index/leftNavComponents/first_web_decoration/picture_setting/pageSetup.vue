@@ -34,7 +34,8 @@ export default {
     pageSetupMain: () => import('./pageSetupModules/pageSetupMain'),
     RightMembershipCard: () => import('./pageSetupModules/marketingComponents/rightMembershipCard'),
     RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'),
-    RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity')
+    RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'),
+    RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch')
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -57,8 +58,12 @@ export default {
           name: 'RightCoupon'
         },
         {
-          id: 3,
+          id: 8,
           name: 'RightCommodity'
+        },
+        {
+          id: 9,
+          name: 'RightCommoditySearch'
         }
       ],
       showModule: null,
@@ -86,7 +91,7 @@ export default {
     },
     nowRightShowIndex: {
       handler (newData) {
-        console.log(newData)
+        console.log(newData, this.nowRightModulesData)
         this.modulesData = this.nowRightModulesData
         this.sortIndex = newData
       },

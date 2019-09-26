@@ -9,14 +9,21 @@
   </div>
 </template>
 <script>
-import Header from './header'
-import SelectShop from './selectShop'
-import Contact from './contact'
-import AccountSettings from './accountSettings'
-import ServiceAuthList from './serviceAuthList'
-import ServiceAuthListDetail from './serviceAuthListDetail'
+// import Header from './header'
+// import SelectShop from './selectShop'
+// import Contact from './contact'
+// import AccountSettings from './accountSettings'
+// import ServiceAuthList from './serviceAuthList'
+// import ServiceAuthListDetail from './serviceAuthListDetail'
 export default {
-  components: { Header, SelectShop, Contact, AccountSettings, ServiceAuthList, ServiceAuthListDetail },
+  components: {
+    Header: () => import('./header'),
+    SelectShop: () => import('./selectShop'),
+    Contact: () => import('./contact'),
+    AccountSettings: () => import('./accountSettings'),
+    ServiceAuthList: () => import('./serviceAuthList'),
+    ServiceAuthListDetail: () => import('./serviceAuthListDetail')
+  },
 
   data () {
     return {

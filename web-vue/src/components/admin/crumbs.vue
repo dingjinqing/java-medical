@@ -37,11 +37,12 @@ export default {
   },
   mounted () {
     this.langDefault()
-    this.changeText()
+    // this.changeText()
   },
   methods: {
     // 特例更改数据
     changeText () {
+      // console.log(this.$t(`${this.$route.meta.crumbTitle}`))
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
       console.log(data, this.$route)
       if (data[1] === '会员列表' && data[2]) {
@@ -55,6 +56,7 @@ export default {
         console.log(localData)
       } else if (this.$route.name === 'refillDetails') {
         let localData = JSON.parse(localStorage.getItem('V-UserCardCrumb'))
+        console.log(localData)
         this.handleToRefllDet(localData)
       } else {
         this.titleLeft = data[0]

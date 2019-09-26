@@ -5,6 +5,8 @@ export const en = {
     'Membership management',
     'Membership Editorial Information'
   ],
+  // 会员管理 持卡会员
+  Cardholder: ['Membership management'],
   // 小程序管理 页面分类
   pageClassification: ['Small Program Management', 'Page classification'],
   // 小程序管理 图片空间

@@ -3,7 +3,7 @@
     class="membershipCard modules"
     @mouseover="mouseOver"
   >
-    <!--会员列表模块-->
+    <!--列表模块-->
     <div
       class="showModule"
       :class="activeBorder?'activeBorder':''"
@@ -19,8 +19,16 @@
               <div class="containter">
                 <div class="commodityTop">
                   <div class="label">
-                    <img :src="item.labelUrl">
-
+                    <img
+                      v-if="!item.isNewGoods"
+                      :src="item.labelUrl"
+                    >
+                    <div
+                      class="label newGoods"
+                      v-else
+                    >
+                      <span>新品</span>
+                    </div>
                   </div>
                   <img :src="item.imgUrl">
                 </div>
@@ -95,25 +103,29 @@ export default {
           goodsName: '商品修改测试1',
           imgUrl: this.$imageHost + '/image/admin/0a2kFnVCg46fdTNw.jpeg',
           price: 112,
-          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
+          isNewGoods: false
         },
         {
           goodsName: '商品修改测试2',
           imgUrl: this.$imageHost + '/image/admin/0a2kFnVCg46fdTNw.jpeg',
           price: 544,
-          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
+          isNewGoods: false
         },
         {
           goodsName: '商品修改测试3',
           imgUrl: this.$imageHost + '/image/admin/crop_wlEjGAPFNMXl1EVr.jpeg',
           price: 323,
-          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
+          isNewGoods: true
         },
         {
           goodsName: '商品修改测试4',
           imgUrl: this.$imageHost + '/image/admin/crop_wlEjGAPFNMXl1EVr.jpeg',
           price: 334,
-          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
+          isNewGoods: true
         }
       ]
 
@@ -218,12 +230,31 @@ export default {
           position: relative;
           height: 145px;
           .label {
-            // position: absolute;
-            // top: 0px;
-            // left: 0px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
             img {
               width: 60px;
             }
+          }
+          .newGoods {
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            text-align: center;
+            width: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            font-size: 12px;
+            padding-left: 5px;
+            padding-right: 5px;
+            border-radius: 1px;
+            line-height: 15px;
+            word-break: break-all;
+            color: rgb(64, 128, 128);
+            border: 1px solid rgb(64, 128, 128);
           }
           img {
             max-height: 145px;
