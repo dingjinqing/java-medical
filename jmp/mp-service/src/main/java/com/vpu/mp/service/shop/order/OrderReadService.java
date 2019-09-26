@@ -50,6 +50,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
+import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
@@ -276,6 +277,13 @@ public class OrderReadService extends ShopBaseService {
 		ReturnOrderInfoVo vo = rOrder.into(ReturnOrderInfoVo.class);
 		//vo set order
 		vo.setOrderInfo(order.into(OrderInfoVo.class));
+		//set can return shipping fee
+		//获取已退运费
+		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(rOrder.getOrderSn());
+		//退运费校验
+		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo() , returnShipingFee)){
+			vo.setCanReturnShippingFee(rOrder.getShippingFee().subtract(returnShipingFee));
+		}
 		//退款商品
 		if(rOrder.getReturnType() != OrderConstant.RT_ONLY_SHIPPING_FEE) {
 			List<OrderReturnGoodsVo> goods = returnOrderGoods.getReturnGoods(rOrder.getOrderSn(),rOrder.getRetId()).into(OrderReturnGoodsVo.class);

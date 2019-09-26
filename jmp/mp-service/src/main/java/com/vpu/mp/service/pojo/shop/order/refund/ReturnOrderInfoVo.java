@@ -20,6 +20,7 @@ public class ReturnOrderInfoVo {
 	private Long returnAddressDays;
 	private Long returnShoppingDays;
 	private Long returnAuditPassNotShoppingDays;
+	private BigDecimal canReturnShippingFee;
 	/** order info */
 	private OrderInfoVo orderInfo;
 	/** return goods */
