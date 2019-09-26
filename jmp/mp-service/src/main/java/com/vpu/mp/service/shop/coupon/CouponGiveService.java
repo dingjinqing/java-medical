@@ -100,7 +100,7 @@ public class CouponGiveService extends ShopBaseService {
     public PageResult<CouponGiveListVo> getCouponGiveList(CouponGiveListParam param) {
         try {
             /* 查询活动信息 */
-            SelectLimitStep<Record> couponGiveListVo = db().select().from(GIVE_VOUCHER);
+            SelectLimitStep<Record> couponGiveListVo = db().select().from(GIVE_VOUCHER).orderBy(GIVE_VOUCHER.ID.desc());
             /* 模糊查询 */
             if (!StringUtils.isNullOrEmpty(param.getActName())) {
                 couponGiveListVo = ( (SelectWhereStep<Record>) couponGiveListVo).where(GIVE_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())));
