@@ -14,13 +14,13 @@
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span>{{item.enabled?'已开启':'已关闭'}}</span>
+        <span>{{item.enabled?$t('payConfiguration.activated'):$t('payConfiguration.inactived')}}</span>
         <span>{{item.title}}</span>
         <span
           v-if="item.payName==='微信支付'"
           class="setting"
           @click="handleSetting"
-        >配置</span>
+        >{{$t('payConfiguration.config')}}</span>
       </div>
     </el-card>
 
@@ -28,18 +28,17 @@
     <div class="defaultPayCongigure">
       <div class="title">
         <span></span>
-        默认支付配置
+        {{$t('payConfiguration.defaultConfig')}}
       </div>
       <div class="payMethod">
-        <el-checkbox v-model="card_first">会员卡余额支付</el-checkbox>
-        <el-checkbox v-model="balance_first">余额支付</el-checkbox>
-        <el-checkbox v-model="score_first">积分支付</el-checkbox>
+        <el-checkbox v-model="card_first">{{$t('payConfiguration.cardpay')}}</el-checkbox>
+        <el-checkbox v-model="balance_first">{{$t('payConfiguration.balancepay')}}</el-checkbox>
+        <el-checkbox v-model="score_first">{{$t('payConfiguration.scorepay')}}</el-checkbox>
       </div>
       <div class="tips">
-        <span>注：</span>
-        <span>1、用户在结算时将会默认优先使用以上勾选的支付方式</span>
+        <span>{{$t('payConfiguration.Note1')}}</span>
         <br>
-        <span class="secondTips">2、如果勾选以上全部支付方式，计算优先级为会员卡余额>余额支付>积分支付</span>
+        <span class="secondTips">{{$t('payConfiguration.Note2')}}</span>
         <span style="margin-left: 10px;">
           <el-popover
             placement="right-start"
@@ -50,12 +49,12 @@
             <el-button
               slot="reference"
               type="text"
-            >查看示例</el-button>
+            >{{$t('payConfiguration.example')}}</el-button>
           </el-popover>
         </span>
       </div>
     </div>
-    <div class="btn" @click="updateConfig">保存</div>
+    <div class="btn" @click="updateConfig">{{$t('payConfiguration.save')}}</div>
 
     <!-- 微信支付配置弹窗 -->
     <el-dialog
@@ -116,10 +115,10 @@ export default {
     return {
       // 支付配置
       payConfigure: [
-        { payName: '微信支付', payCode: 'wxpay', title: '开关开启，用户可以通过微信支付完成订单支付 ', enabled: false },
-        { payName: '积分支付', payCode: 'score', title: '开关开启，用户购买商品时可以用积分抵扣一定金额', enabled: false },
-        { payName: '余额支付', payCode: 'balance', title: '开关开启，用户可以使用余额进行支付', enabled: false },
-        { payName: '货到付款', payCode: 'cod', title: '开关开启，用户在提交订单时可以使用货到付款方式支付；开关关闭则不显示货到付款支付方式', enabled: false }
+        { payName: '微信支付', payCode: 'wxpay', title: this.$t('payConfiguration.wedesc'), enabled: false },
+        { payName: '积分支付', payCode: 'score', title: this.$t('payConfiguration.scoredesc'), enabled: false },
+        { payName: '余额支付', payCode: 'balance', title: this.$t('payConfiguration.balancedesc'), enabled: false },
+        { payName: '货到付款', payCode: 'cod', title: this.$t('payConfiguration.coddesc'), enabled: false }
       ],
       // 默认支付配置
       card_first: 0,
@@ -133,7 +132,6 @@ export default {
     // 初始化配置信息
     initData () {
       paySelect().then(res => {
-        console.log('查询配置结果为')
         console.log(res)
         if (res.error === 0) {
           this.handlerData(res.content)
@@ -235,7 +233,6 @@ export default {
       } else {
         param.score_first = 0
       }
-      console.log('更细参数为')
       console.log(param)
       payUpdate(param).then(res => {
         if (res.error === 0) {
@@ -248,7 +245,6 @@ export default {
     },
     // 微信支付配置事件
     handleSetting () {
-      console.log('配置')
       this.showSettingDialog = true
     },
     // 配置弹出保存、取消事件

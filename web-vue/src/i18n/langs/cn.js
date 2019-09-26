@@ -80,6 +80,9 @@ import { cn as expressList } from './views/admin/index/leftNavComponents/order/e
 // 会员管理-会员卡
 import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card/memberCardCn'
 
+// 支付配置
+import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/payConfigurationCn'
+
 // admin>公共组件
 // 选择时间
 import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePicker/dateTimePickerCn'
@@ -548,6 +551,7 @@ const cn = {
   messagePush, // 营销管理/消息推送
   dateTimePicker, // 选择时间
   giveGift, // 我要送礼
+  payConfiguration, // 支付配置
   ...zhLocale,
   expressList,
 
