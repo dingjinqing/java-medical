@@ -3,18 +3,28 @@
     v-model="tabActive"
     type="border-card"
     class="tab"
+    @tab-click="handleClick"
   >
     <el-tab-pane
       :label="$t('shopList.title.experienceVersion')"
       name="first"
     >
-      <experienceVersion @sendShopId="show" />
+      <experienceVersion
+        v-if="firstShow"
+        @sendShopId="show"
+        :shopType="shopTypes"
+      />
     </el-tab-pane>
     <el-tab-pane
       :label="$t('shopList.title.payVersion')"
       name="second"
     >
-      <payVersion />
+      <experienceVersion
+        v-if="secondShow"
+        @sendShopId="show"
+        :shopType="shopTypes"
+      />
+      <!-- <payVersion /> -->
     </el-tab-pane>
     <el-tab-pane
       :label="$t('shopList.title.newShop')"
@@ -40,7 +50,6 @@
 
 <script>
 import experienceVersion from './experienceVersion.vue'
-import payVersion from './payVersion'
 import newShop from './newShop'
 import editShop from './editShop'
 
@@ -48,16 +57,18 @@ export default {
   name: 'shopList',
   components: {
     experienceVersion,
-    payVersion,
     newShop,
     editShop
   },
   data () {
     return {
-      tabActive: 'first',
+      tabActive: 'second',
       isShowShopList: false,
       isEditShop: false,
-      editParam: null
+      editParam: null,
+      shopTypes: '2',
+      firstShow: false,
+      secondShow: true
     }
   },
   mounted () {
@@ -88,6 +99,17 @@ export default {
         if (data.flag === 1) {
           this.tabActive = 'first'
         }
+      }
+    },
+    handleClick (tab, event) {
+      if (this.tabActive === 'first') {
+        this.shopTypes = '1'
+        this.firstShow = true
+        this.secondShow = false
+      } if (this.tabActive === 'second') {
+        this.shopTypes = '2'
+        this.firstShow = false
+        this.secondShow = true
       }
     }
   },

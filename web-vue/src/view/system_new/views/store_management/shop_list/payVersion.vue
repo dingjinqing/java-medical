@@ -344,10 +344,10 @@ export default {
     changeShopId (row, rol) {
       switch (row.shopType) {
         case 'v1':
-          row.shopType = '基础版'
+          row.shopType = '体验版'
           break
         case 'v2':
-          row.shopType = '中极版'
+          row.shopType = '基础版'
           break
         case 'v3':
           row.shopType = '高级版'

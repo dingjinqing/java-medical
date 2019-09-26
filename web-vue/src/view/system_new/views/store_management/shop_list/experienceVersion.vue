@@ -131,8 +131,8 @@
 
         <template slot-scope="scope">
           <div>{{scope.row.shopId}}</div>
-          <div v-if="scope.row.shopType==='v1'">基础版</div>
-          <div v-if="scope.row.shopType==='v2'">中极版</div>
+          <div v-if="scope.row.shopType==='v1'">体验版</div>
+          <div v-if="scope.row.shopType==='v2'">基础版</div>
           <div v-if="scope.row.shopType==='v3'">高级版</div>
           <div v-if="scope.row.shopType==='v4'">旗舰版</div>
         </template>
@@ -596,11 +596,12 @@ export default {
       send_function_show: false,
       renewDesc: null,
       renewMoney: null,
+      shopTypes: '2',
       tableHeight: document.body.clientHeight - 381
     }
   },
-
-  created () {
+  props: ['shopType'],
+  mounted () {
     this.tableHeight = document.body.clientHeight - 381
     if (this.tableHeight < 0) {
       this.tableHeight = 400
@@ -617,10 +618,10 @@ export default {
     changeShopId (row, rol) {
       switch (row.shopType) {
         case 'v1':
-          row.shopType = '基础版'
+          row.shopType = '体验版'
           break
         case 'v2':
-          row.shopType = '中极版'
+          row.shopType = '基础版'
           break
         case 'v3':
           row.shopType = '高级版'
@@ -676,9 +677,15 @@ export default {
 
     // 店铺列表查询
     search () {
+      if (!this.isEmpty(this.shopType)) {
+        this.shopTypes = this.shopType
+      }
+      console.log('shopTypes的值')
+      console.log(this.shopTypes)
       let obj = {
         'currentPage': this.currentPage3,
-        'pageRows': 20
+        'pageRows': 20,
+        'shopTypes': this.shopTypes
       }
 
       console.log(this.mainData)
@@ -695,10 +702,7 @@ export default {
           for (var i = 0; i < this.formTable.length; i++) {
             var specialInfoList = this.formTable[i].specialInfo
             if (!this.isEmpty(specialInfoList)) {
-              console.log('进来', specialInfoList.length)
               for (var n = 0; n < specialInfoList.length; n++) {
-                console.log('循环')
-                console.log(this.specialInfoExchange(specialInfoList[n]))
                 this.showSpecialInfo.push(this.specialInfoExchange(specialInfoList[n]))
               }
             }
@@ -706,7 +710,6 @@ export default {
             this.formTable[i].showSpecialInfo = this.showSpecialInfo
             this.showSpecialInfo = []
           }
-          console.log('处理结束')
           console.log(this.formTable)
           this.currentPage = content.page.currentPage
           this.pageRows = content.page.pageRows
