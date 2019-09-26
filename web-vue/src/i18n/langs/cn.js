@@ -12,7 +12,6 @@ import { cn as marketManage } from './views/marketManage'
 import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
 import { cn as adminPageFramework } from './views/adminPageFramework'
-import { cn as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
 
 // 概览
 import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
@@ -21,8 +20,10 @@ import { cn as pictureSetting } from './views/admin/index/leftNavComponents/firs
 
 // 商品管理系列国际化
 // 商品管理/全部商品
-import { cn as allGoods } from './views/goodsManage/allGoods'
-import { cn as goodsImport } from './views/goodsManage/goodsImport'
+import { cn as allGoods } from './views/admin_new/cn/index/goodsManagement/allGoodsCn'
+import { cn as goodsAddEditInfo } from './views/admin_new/cn/index/goodsManagement/goodsAddEditInfoCn'
+import { cn as allGoodsLabel } from './views/admin_new/cn/index/goodsManagement/allGoodsLabelCn'
+import { cn as addAndUpdateGoodsLabel } from './views/admin_new/cn/index/goodsManagement/addAndUpdateGoodsLabelCn'
 
 // 营销管理系列国际化
 // 营销管理通用词汇
@@ -528,8 +529,9 @@ const cn = {
 
   // 商品
   allGoods, // 商品管理/全部商品
-  goodsImport,
   goodsAddEditInfo,
+  allGoodsLabel, // 全部标签
+  addAndUpdateGoodsLabel, // 标签添加和修改
 
   // 订单
   order,

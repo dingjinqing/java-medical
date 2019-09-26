@@ -2,10 +2,10 @@
   <div class="contentWrap">
     <div class="content">
       <div class="contentHeader">
-        <span style="margin-right: 10px;">标签名称:</span>
-        <el-input v-model="labelName" size="small" style="width:180px;" placeholder="请输入标签名称"/>
-        <el-button type="primary" size="small" @click="fetchGoodsLabelData" style="cursor:pointer;">查询</el-button>
-        <el-button type="primary" size="small" style="float: right;" @click="addGoodsLabelClicked">添加商品标签</el-button>
+        <span style="margin-right: 10px;">{{$t('allGoodsLabel.labelName')}}:</span>
+        <el-input v-model="labelName" size="small" style="width:180px;" :placeholder="$t('allGoodsLabel.inputLabelName')"/>
+        <el-button type="primary" size="small" @click="fetchGoodsLabelData" style="cursor:pointer;">{{$t('allGoodsLabel.search')}}</el-button>
+        <el-button type="primary" size="small" style="float: right;" @click="addGoodsLabelClicked">{{$t('allGoodsLabel.addLabel')}}</el-button>
       </div>
       <div class="contentBody">
         <el-table
@@ -16,55 +16,55 @@
           <el-table-column
             align="center"
             prop="name"
-            label="标签名称"/>
+            :label="$t('allGoodsLabel.labelName')"/>
           <el-table-column
             align="center"
             prop="updateTime"
-            label="更新时间"/>
+            :label="$t('allGoodsLabel.updateTime')"/>
           <el-table-column
             align="center"
-            label="前端应用模块">
+            :label="$t('allGoodsLabel.webUseModel')">
             <template slot-scope="{row}">
               <div style="display: flex;justify-content: space-around;align-items: center;">
                 <ul>
-                  <li v-if="row.goodsDetail === 1">商品详情页</li>
-                  <li v-if="row.goodsList === 1">商品列表页</li>
-                  <li v-if="row.goodsSelect === 1">商品筛选页</li>
+                  <li v-if="row.goodsDetail === 1">{{$t('allGoodsLabel.goodsDetailPage')}}</li>
+                  <li v-if="row.goodsList === 1">{{$t('allGoodsLabel.goodsListPage')}}</li>
+                  <li v-if="row.goodsSelect === 1">{{$t('allGoodsLabel.goodsSelectPage')}}</li>
                 </ul>
-                <span class="operateSpan" @click="useModelSettingClicked(row)">设置</span>
+                <span class="operateSpan" @click="useModelSettingClicked(row)">{{$t('allGoodsLabel.setting')}}</span>
               </div>
             </template>
           </el-table-column>
           <el-table-column
             align="center"
             prop="level"
-            label="优先级"/>
+            :label="$t('allGoodsLabel.priority')"/>
           <el-table-column
             align="center"
-            label="商品数量">
+            :label="$t('allGoodsLabel.goodsNumber')">
             php查询了es,目前未实现
           </el-table-column>
           <el-table-column
             align="center"
-            label="操作">
+            :label="$t('allGoodsLabel.operate')">
             <template slot-scope="{row}">
-              <span class="operateSpan" @click="updateLabelSettingClicked(row)">编辑</span>
-              <span class="operateSpan" @click="deleteLabelSettingClicked(row)">删除</span>
+              <span class="operateSpan" @click="updateLabelSettingClicked(row)">{{$t('allGoodsLabel.update')}}</span>
+              <span class="operateSpan" @click="deleteLabelSettingClicked(row)">{{$t('allGoodsLabel.delete')}}</span>
             </template>
           </el-table-column>
         </el-table>
         <pagination :page-params.sync="pageParams" @pagination="fetchGoodsLabelData"/>
       </div>
     </div>
-    <el-dialog title="选择应用位置" :visible.sync="dialogVisible"  width="40%">
-      <div style="font-size: 12px;border: 1px solid #FFD5A3;margin: 0 auto;padding: 5px;background: #FFF7EB;">可以在这里选择商品标签应用位置</div>
+    <el-dialog :title="$t('allGoodsLabel.chooseUsePosition')" :visible.sync="dialogVisible"  width="40%">
+      <div style="font-size: 12px;border: 1px solid #FFD5A3;margin: 0 auto;padding: 5px;background: #FFF7EB;">{{$t('allGoodsLabel.chooseUsePositionTip')}}</div>
       <ul>
-        <li><el-checkbox v-model="currentData.goodsDetail" :true-label="1" :false-label="0">商品详情页</el-checkbox></li>
-        <li><el-checkbox v-model="currentData.goodsList" :true-label="1" :false-label="0">商品列表页</el-checkbox></li>
-        <li><el-checkbox v-model="currentData.goodsSelect" :true-label="1" :false-label="0">商品筛选页</el-checkbox></li>
+        <li><el-checkbox v-model="currentData.goodsDetail" :true-label="1" :false-label="0">{{$t('allGoodsLabel.goodsDetailPage')}}</el-checkbox></li>
+        <li><el-checkbox v-model="currentData.goodsList" :true-label="1" :false-label="0">{{$t('allGoodsLabel.goodsListPage')}}</el-checkbox></li>
+        <li><el-checkbox v-model="currentData.goodsSelect" :true-label="1" :false-label="0">{{$t('allGoodsLabel.goodsSelectPage')}}</el-checkbox></li>
       </ul>
       <div v-if="currentData.goodsList === 1" style="margin-top: 5px;background: #f8f8f8;padding: 10px 15px 20px 10px;border: 1px solid #eee;border-radius: 5px;">
-        <span><em style="color: red;">*</em>标签样式:</span>
+        <span><em style="color: red;">*</em>{{$t('allGoodsLabel.labelStyle')}}:</span>
         <div style="margin-top: 5px;display: flex;justify-content: space-around;">
           <div style="flex-grow: 1;text-align: center;">
             <div>图片1</div>
@@ -85,8 +85,8 @@
         </div>
       </div>
       <div slot="footer">
-        <el-button @click="updateGoodsLabelUseModel" type="primary">确定</el-button>
-        <el-button @click="dialogCancel">取消</el-button>
+        <el-button @click="updateGoodsLabelUseModel" type="primary">{{$t('allGoodsLabel.confirm')}}</el-button>
+        <el-button @click="dialogCancel">{{$t('allGoodsLabel.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -147,9 +147,9 @@ export default {
       })
     },
     deleteLabelSettingClicked (row) {
-      this.$confirm('确认删除?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('allGoodsLabel.confirmDelete'), this.$t('allGoodsLabel.confirmTip'), {
+        confirmButtonText: this.$t('allGoodsLabel.confirm'),
+        cancelButtonText: this.$t('allGoodsLabel.cancel'),
         type: 'warning'
       }).then(() => {
         return deleteGoodsLabel(row.id)
@@ -173,6 +173,7 @@ export default {
   },
   mounted () {
     this.fetchGoodsLabelData()
+    this.langDefault()
   }
 }
 </script>

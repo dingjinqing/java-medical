@@ -1,0 +1,23 @@
+export const en = {
+  labelName: 'labelName',
+  inputLabelName: 'please input label name',
+  search: 'Search',
+  addLabel: 'Add Goods Label',
+  updateTime: 'Update Time',
+  webUseModel: 'Web Use Model',
+  priority: 'Priority',
+  goodsNumber: 'Goods Number',
+  operate: 'Operate',
+  update: 'Edit',
+  delete: 'Delete',
+  setting: 'Setting',
+  chooseUsePosition: 'Choose Use Position',
+  goodsDetailPage: 'Goods Detail Page',
+  goodsListPage: 'Goods List Page',
+  goodsSelectPage: 'Goods Select Page',
+  labelStyle: 'Label Style',
+  confirm: 'OK',
+  cancel: 'Cancel',
+  confirmDelete: 'Confrim Delete？',
+  confirmTip: 'Tip'
+}

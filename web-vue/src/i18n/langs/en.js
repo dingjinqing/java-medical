@@ -11,11 +11,12 @@ import { en as marketManage } from './views/marketManage'
 import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
 import { en as adminPageFramework } from './views/adminPageFramework'
-import { en as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
 // 商品管理系列国际化
 // 商品管理/全部商品
-import { en as allGoods } from './views/goodsManage/allGoods'
-import { en as goodsImport } from './views/goodsManage/goodsImport'
+import { en as allGoods } from './views/admin_new/en/index/goodsManagement/allGoodsEn'
+import { en as goodsAddEditInfo } from './views/admin_new/en/index/goodsManagement/goodsAddEditInfoEn'
+import { en as allGoodsLabel } from './views/admin_new/en/index/goodsManagement/allGoodsLabelEn'
+import { en as addAndUpdateGoodsLabel } from './views/admin_new/en/index/goodsManagement/addAndUpdateGoodsLabelEn'
 // 概览
 import { en as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 
@@ -554,9 +555,9 @@ const en = {
 
   // 商品
   allGoods, // 商品管理/全部商品
-  goodsImport,
   goodsAddEditInfo,
-
+  allGoodsLabel, // 全部标签
+  addAndUpdateGoodsLabel, // 修改标签
   // 订单
   order,
   orderCommon, // 订单通用
