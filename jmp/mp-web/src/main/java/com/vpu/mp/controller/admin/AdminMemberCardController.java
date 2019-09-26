@@ -196,7 +196,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/card/charge/list")
-	public JsonResult getChargeList(ChargeParam param) {
+	public JsonResult getChargeList(@RequestBody ChargeParam param) {
 		PageResult<ChargeVo> chargeList = shop().member.card.getChargeList(param);
 		return success(chargeList);
 	}
@@ -209,7 +209,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/card/consume/list")
-	public JsonResult getConsumeList(ChargeParam param) {
+	public JsonResult getConsumeList(@RequestBody ChargeParam param) {
 		PageResult<ChargeVo> chargeList = shop().member.card.getConsumeList(param);
 		return success(chargeList);
 	}
