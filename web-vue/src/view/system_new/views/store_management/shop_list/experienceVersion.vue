@@ -107,207 +107,209 @@
         @click="search()"
       >{{$t('shopList.info.account_info10')}}</el-button>
     </div>
-
-    <el-table
-      class="experience-log mt-10 formTable"
-      :data="formTable"
-      header-row-class-name="table-th"
-      border
-      style="width: 120%;cellspacing='1';cellpadding='3';"
-      max-width='120%'
-      :height="tableHeight"
+    <div
+      class="tableSize"
+      id="tableSize"
+      :style="{maxWidth:'100%',width: '100%',height:tableHeight+ 'px',overflowY:'scroll',overflowX:'scroll'}"
     >
-      <el-table-column
-        prop="sysId"
-        :label="$t('shopList.table.ID')"
-        align="center"
+      <el-table
+        class="experience-log mt-10 formTable"
+        :data="formTable"
+        header-row-class-name="table-th"
+        border
+        style="width: 120%;cellspacing='1';cellpadding='3';max-width:120%"
       >
-      </el-table-column>
-      <el-table-column
-        prop="shopType"
-        :label="$t('shopList.table.shopID')"
-        align="center"
-      >
+        <el-table-column
+          prop="sysId"
+          :label="$t('shopList.table.ID')"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="shopType"
+          :label="$t('shopList.table.shopID')"
+          align="center"
+        >
 
-        <template slot-scope="scope">
-          <div>{{scope.row.shopId}}</div>
-          <div v-if="scope.row.shopType==='v1'">体验版</div>
-          <div v-if="scope.row.shopType==='v2'">基础版</div>
-          <div v-if="scope.row.shopType==='v3'">高级版</div>
-          <div v-if="scope.row.shopType==='v4'">旗舰版</div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="shopName"
-        align="center"
-        :label="$t('shopList.table.shopName')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="nickName"
-        align="center"
-        :label="$t('shopList.table.wechatName')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="mobile"
-        align="center"
-        :label="$t('shopList.table.mobile')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="created"
-        align="center"
-        :label="$t('shopList.table.createTime')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="expireTime"
-        align="center"
-        :label="$t('shopList.table.endTime')"
-      >
-        <template slot-scope="scope">
-          <div v-if="scope.row.expireTime===null">
-            暂未续费
-          </div>
-          <div v-if="scope.row.expireTime!==null">
-            {{scope.row.expireTime.substring(0, 10)}}
-          </div>
-          <div v-if="scope.row.shopExpireStatus==='0'">
-            使用中
-          </div>
-          <div v-if="scope.row.shopExpireStatus==='1'">
-            已过期
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="isEnabled"
-        align="center"
-        :label="$t('shopList.table.isDisabled')"
-      >
-        <template slot-scope="scope">
-          <div v-if="scope.row.isEnabled===1">
+          <template slot-scope="scope">
+            <div>{{scope.row.shopId}}</div>
+            <div v-if="scope.row.shopType==='v1'">体验版</div>
+            <div v-if="scope.row.shopType==='v2'">基础版</div>
+            <div v-if="scope.row.shopType==='v3'">高级版</div>
+            <div v-if="scope.row.shopType==='v4'">旗舰版</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="shopName"
+          align="center"
+          :label="$t('shopList.table.shopName')"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="nickName"
+          align="center"
+          :label="$t('shopList.table.wechatName')"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="mobile"
+          align="center"
+          :label="$t('shopList.table.mobile')"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="created"
+          align="center"
+          :label="$t('shopList.table.createTime')"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="expireTime"
+          align="center"
+          :label="$t('shopList.table.endTime')"
+        >
+          <template slot-scope="scope">
+            <div v-if="scope.row.expireTime===null">
+              暂未续费
+            </div>
+            <div v-if="scope.row.expireTime!==null">
+              {{scope.row.expireTime.substring(0, 10)}}
+            </div>
+            <div v-if="scope.row.shopExpireStatus==='0'">
+              使用中
+            </div>
+            <div v-if="scope.row.shopExpireStatus==='1'">
+              已过期
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="isEnabled"
+          align="center"
+          :label="$t('shopList.table.isDisabled')"
+        >
+          <template slot-scope="scope">
+            <div v-if="scope.row.isEnabled===1">
+              <el-button
+                type="text"
+                @click="changeEnable(scope.row.shopId,1)"
+              > 已禁止</el-button>
+            </div>
+            <div v-if="scope.row.isEnabled===0">
+              <el-button
+                type="text"
+                @click="changeEnable(scope.row.shopId,0)"
+              > 未禁止</el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="isAuthOk"
+          align="center"
+          :label="$t('shopList.table.permission')"
+          :formatter="permissionFormatter"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="userName"
+          align="center"
+          :label="$t('shopList.table.account')"
+        >
+          <template slot-scope="scope">
             <el-button
               type="text"
-              @click="changeEnable(scope.row.shopId,1)"
-            > 已禁止</el-button>
-          </div>
-          <div v-if="scope.row.isEnabled===0">
-            <el-button
-              type="text"
-              @click="changeEnable(scope.row.shopId,0)"
-            > 未禁止</el-button>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="isAuthOk"
-        align="center"
-        :label="$t('shopList.table.permission')"
-        :formatter="permissionFormatter"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="userName"
-        align="center"
-        :label="$t('shopList.table.account')"
-      >
-        <template slot-scope="scope">
-          <el-button
-            type="text"
-            @click="toAccountList(scope.row.userName)"
-          > {{scope.row.userName}}</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="renewMoney"
-        align="center"
-        :label="$t('shopList.table.money')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="shopFlag"
-        align="center"
-        :label="$t('shopList.table.shopFlag')"
-        :formatter="changeShopFlag"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="hidBottom"
-        align="center"
-        :label="$t('shopList.table.bottom')"
-      >
-        <template slot-scope="scope">
-          <div v-if="scope.row.hidBottom===0">
-            <el-button
-              type="text"
-              @click="changeBottom(scope.row.shopId,1)"
-            > 显示</el-button>
-          </div>
-          <div v-if="scope.row.hidBottom===1">
-            <el-button
-              type="text"
-              @click="changeBottom(scope.row.shopId,0)"
-            > 隐藏</el-button>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="showSpecialInfo"
-        align="center"
-        :label="$t('shopList.table.special')"
-      >
-        <template slot-scope="scope">
-          <div
-            v-for='(item,index) in scope.row.showSpecialInfo'
-            :key="index"
-          >
-            {{item}}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="operate"
-        align="center"
-        :label="$t('shopList.table.operating')"
-      >
-        <template slot-scope="scope">
-          <div>
-            <el-button
-              class="xbutton"
-              type="text"
-              @click="btnEdit(scope.row)"
-            > 编辑</el-button>
-            <br>
-            <el-button
-              class="xbutton"
-              type="text"
-              @click="btnRenew(scope.row)"
-            > 续费</el-button>
-            <br>
-            <el-button
-              class="xbutton"
-              type="text"
-              @click="btnShowVersion(scope.row.shopId)"
-            > 版本权限</el-button>
-            <br>
-            <el-button
-              class="xbutton"
-              type="text"
-              @click="ShowRenew(scope.row.shopId)"
-            > 查看续费</el-button>
-            <br>
-            <el-button
-              class="xbutton"
-              type="text"
-              @click="changeBottom(scope.row.shopId)"
-            > 运营数据</el-button>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-
+              @click="toAccountList(scope.row.userName)"
+            > {{scope.row.userName}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="renewMoney"
+          align="center"
+          :label="$t('shopList.table.money')"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="shopFlag"
+          align="center"
+          :label="$t('shopList.table.shopFlag')"
+          :formatter="changeShopFlag"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="hidBottom"
+          align="center"
+          :label="$t('shopList.table.bottom')"
+        >
+          <template slot-scope="scope">
+            <div v-if="scope.row.hidBottom===0">
+              <el-button
+                type="text"
+                @click="changeBottom(scope.row.shopId,1)"
+              > 显示</el-button>
+            </div>
+            <div v-if="scope.row.hidBottom===1">
+              <el-button
+                type="text"
+                @click="changeBottom(scope.row.shopId,0)"
+              > 隐藏</el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="showSpecialInfo"
+          align="center"
+          :label="$t('shopList.table.special')"
+        >
+          <template slot-scope="scope">
+            <div
+              v-for='(item,index) in scope.row.showSpecialInfo'
+              :key="index"
+            >
+              {{item}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="operate"
+          align="center"
+          :label="$t('shopList.table.operating')"
+        >
+          <template slot-scope="scope">
+            <div>
+              <el-button
+                class="xbutton"
+                type="text"
+                @click="btnEdit(scope.row)"
+              > 编辑</el-button>
+              <br>
+              <el-button
+                class="xbutton"
+                type="text"
+                @click="btnRenew(scope.row)"
+              > 续费</el-button>
+              <br>
+              <el-button
+                class="xbutton"
+                type="text"
+                @click="btnShowVersion(scope.row.shopId)"
+              > 版本权限</el-button>
+              <br>
+              <el-button
+                class="xbutton"
+                type="text"
+                @click="ShowRenew(scope.row.shopId)"
+              > 查看续费</el-button>
+              <br>
+              <el-button
+                class="xbutton"
+                type="text"
+                @click="changeBottom(scope.row.shopId)"
+              > 运营数据</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <div class="footer clearfixed pagination-wrap">
       <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
       <el-pagination
@@ -597,16 +599,19 @@ export default {
       renewDesc: null,
       renewMoney: null,
       shopTypes: '2',
-      tableHeight: document.body.clientHeight - 381
+      tableHeight: document.documentElement.clientHeight - 381
     }
   },
   props: ['shopType'],
   mounted () {
-    this.tableHeight = document.body.clientHeight - 381
+    this.tableHeight = document.documentElement.clientHeight - 381
     if (this.tableHeight < 0) {
       this.tableHeight = 400
     }
+    console.log('高度')
+    console.log(this.tableHeight)
     this.search()
+    // document.getElementById('tableSize').style.height = this.tableHeight + 'px'
   },
   methods: {
     // currnentPage 改变时会触发
