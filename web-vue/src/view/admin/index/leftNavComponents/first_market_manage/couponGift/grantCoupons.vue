@@ -482,7 +482,7 @@ export default {
         if (res.error === 0) {
           alert('操作成功')
           this.$router.push({
-            path: `/admin/home/main/couponGift/couponGiftList`
+            path: `/admin/home/main/couponGift`
           })
         }
       }).catch(() => {
