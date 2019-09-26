@@ -78,4 +78,5 @@ public class ShopListQueryResultVo {
 	@JsonIgnore
 	private String versionConfig;
 	private List<String> specialInfo;
+	private String principalName;
 }
