@@ -54,33 +54,46 @@
         </span>
       </div>
     </div>
-    <div class="btn" @click="updateConfig">{{$t('payConfiguration.save')}}</div>
+    <div
+      class="btn"
+      @click="updateConfig"
+    >{{$t('payConfiguration.save')}}</div>
 
     <!-- 微信支付配置弹窗 -->
     <el-dialog
       title="微信支付配置"
       :visible.sync="showSettingDialog"
-      width=50%
+      width=25%
       center
     >
       <ul class="settingContent">
         <li>
           <span>appid：</span>
-          <el-input size="small"></el-input>
+          <el-input
+            size="small"
+            v-model="wechatpayconf.appId"
+          ></el-input>
         </li>
         <li>
           <span>商户号：</span>
-          <el-input size="small"></el-input>
+          <el-input
+            size="small"
+            v-model="wechatpayconf.payMchId"
+          ></el-input>
         </li>
         <li>
           <span>支付秘钥：</span>
-          <el-input size="small"></el-input>
+          <el-input
+            size="small"
+            v-model="wechatpayconf.payKey"
+          ></el-input>
         </li>
         <li>
           <span>支付证书：</span>
           <el-input
             type="textarea"
             style="height:100px;width:240px"
+            v-model="wechatpayconf.payCertContent"
           ></el-input>
         </li>
         <li>
@@ -88,6 +101,7 @@
           <el-input
             type="textarea"
             style="height:100px;width:240px"
+            v-model="wechatpayconf.payKeyContent"
           ></el-input>
         </li>
       </ul>
@@ -106,13 +120,21 @@
 </template>
 
 <script>
-import { paySelect, payUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import { paySelect, payUpdate, wechatPaySelect, wechatPayUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 export default {
   created () {
     this.initData()
   },
   data () {
     return {
+      // 微信支付配置
+      wechatpayconf: {
+        appId: '',
+        payMchId: '',
+        payKey: '',
+        payCertContent: '',
+        payKeyContent: ''
+      },
       // 支付配置
       payConfigure: [
         { payName: '微信支付', payCode: 'wxpay', title: this.$t('payConfiguration.wedesc'), enabled: false },
@@ -192,14 +214,14 @@ export default {
               basicconf.wxpay = 0
             }
             break
-          case 'score' :
+          case 'score':
             if (item.enabled === true) {
               basicconf.score = 1
             } else {
               basicconf.score = 0
             }
             break
-          case 'balance' :
+          case 'balance':
             basicconf.balance = item.enabled
             if (item.enabled === true) {
               basicconf.balance = 1
@@ -207,7 +229,7 @@ export default {
               basicconf.balance = 0
             }
             break
-          case 'cod' :
+          case 'cod':
             basicconf.cod = item.enabled
             if (item.enabled === true) {
               basicconf.cod = 1
@@ -245,6 +267,14 @@ export default {
     },
     // 微信支付配置事件
     handleSetting () {
+      wechatPaySelect().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.wechatpayconf = res.content
+        } else {
+          this.$message.error(res.message)
+        }
+      })
       this.showSettingDialog = true
     },
     // 配置弹出保存、取消事件
@@ -252,7 +282,15 @@ export default {
       this.showSettingDialog = false
     },
     save () {
-      this.showSettingDialog = false
+      wechatPayUpdate(this.wechatpayconf).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success('保存成功！')
+          this.showSettingDialog = false
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }

@@ -23,10 +23,9 @@ export const wechatPayUpdate = data => service({
 })
 
 // 查询微信支付配置
-export const wechatPaySelect = data => service({
+export const wechatPaySelect = () => service({
   url: '/api/admin/config/trade/getWxpayConfig',
-  method: 'post',
-  data
+  method: 'get'
 })
 
 // 交易流程配置更新
