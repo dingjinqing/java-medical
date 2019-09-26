@@ -15,6 +15,7 @@ import java.beans.PropertyDescriptor;
 import java.sql.Timestamp;
 import java.util.Arrays;
 
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.BYTE_SEVEN;
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
 import static com.vpu.mp.service.shop.config.TradeService.selectInvoke;
 import static com.vpu.mp.service.shop.config.TradeService.updateInvoke;
@@ -29,7 +30,7 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 public class ShopReturnConfigService extends BaseShopConfigService {
 
     /**
-     * 自动退款退货设置开关
+     * 自动退款退货设置开关，默认为0关闭，1开启
      */
     final public static String K_AUTO_RETURN = "auto_return";
 
@@ -194,6 +195,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
      * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
      */
     public void updateReturnConfig(ReturnConfigParam param) {
+        prefixhandler(param);
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(param.getClass());
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
@@ -204,5 +206,24 @@ public class ShopReturnConfigService extends BaseShopConfigService {
             log.error("内省获取bean[{}]信息失败：{}", param, e.getMessage());
             throw new BusinessException(JsonResultCode.RETURN_CONFIG_UPDATE_FAILED);
         }
+    }
+
+    /**
+     * 退换货配置项数据预处理
+     */
+    private void prefixhandler(ReturnConfigParam param) {
+        // 自动退款/退货设置为关闭状态0或者实际配置项填写0表示不设置，默认处理期限均为7天
+        if (BYTE_ZERO.equals(param.getAutoReturn())) {
+            param.setReturnAddressDays(BYTE_ZERO);
+            param.setReturnMoneyDays(BYTE_ZERO);
+            param.setReturnPassDays(BYTE_ZERO);
+            param.setReturnShoppingDays(BYTE_ZERO);
+        } else {
+            param.setReturnAddressDays(BYTE_ZERO.equals(param.getReturnAddressDays()) ? BYTE_SEVEN : param.getReturnAddressDays());
+            param.setReturnMoneyDays(BYTE_ZERO.equals(param.getReturnMoneyDays()) ? BYTE_SEVEN : param.getReturnMoneyDays());
+            param.setReturnPassDays(BYTE_ZERO.equals(param.getReturnPassDays()) ? BYTE_SEVEN : param.getReturnPassDays());
+            param.setReturnShoppingDays(BYTE_ZERO.equals(param.getReturnShoppingDays()) ? BYTE_SEVEN : param.getReturnShoppingDays());
+        }
+
     }
 }
