@@ -8,15 +8,15 @@
       <LeftNavigation />
       <div class="rightContainer">
         <Crumbs />
-        <vue-scroll
+        <!-- <vue-scroll
           :ops="ops"
           style="height:100%"
-        >
-          <router-view
-            v-if="adminRouterAlive"
-            class="right_container"
-          />
-        </vue-scroll>
+        > -->
+        <router-view
+          v-if="adminRouterAlive"
+          class="right_container"
+        />
+        <!-- </vue-scroll> -->
       </div>
 
       <!--模块无权限弹窗-->
