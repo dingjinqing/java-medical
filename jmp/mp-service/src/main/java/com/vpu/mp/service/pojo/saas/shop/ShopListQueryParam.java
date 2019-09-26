@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.saas.shop;
 
+import java.sql.Timestamp;
+
 import lombok.Data;
 
 /**
@@ -23,4 +25,7 @@ public class ShopListQueryParam {
 	 * 1为体验版，2为付费版
 	 */
 	public String shopTypes;
+	
+	public Timestamp expireStartTime;
+	public Timestamp expireEndTime;
 }
