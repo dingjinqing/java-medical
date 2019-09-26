@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods.label;
 
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -26,6 +28,15 @@ public class GoodsLabelVo {
 	private Byte goodsSelect;
 	
 	private List<GoodsView> goodsViewList;
+    /**
+     * 旧的类结构，后期优化建议删除
+     */
 	private List<Integer> catIdList;
 	private List<Integer> sortIdList;
+    /**
+     * 李晓冰添加，修改标签回显使用
+     */
+	private List<SysCatevo> catList;
+	private List<Sort> sortList;
+
 }

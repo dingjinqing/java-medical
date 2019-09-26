@@ -489,7 +489,6 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
-
     /**
      * 获取商品的关联的标签
      * @param goodsIds 商品ids

@@ -51,6 +51,15 @@ public class GoodsSortService extends ShopBaseService {
         return sorts;
     }
 
+    /**
+     * 根据分类id集合查询说所有分类
+     * @param sortIds 分类id集合
+     * @return 分类集合
+     */
+    public List<Sort> getList(List<Integer> sortIds) {
+        return db().selectFrom(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(Sort.class);
+    }
+
     private SelectConditionStep<?> buildOptions(SelectWhereStep<?> select, GoodsSortListParam param) {
         List<Condition> list = new ArrayList<>(10);
 

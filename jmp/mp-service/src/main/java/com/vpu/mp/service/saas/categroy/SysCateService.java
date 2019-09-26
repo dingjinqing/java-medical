@@ -80,9 +80,17 @@ public class SysCateService extends MainBaseService {
 
         return resultCat;
     }
+
+    /**
+     * 根据传入的平台分类id集合获取对应平台分类对象集合
+     * @param catIds 平台分类id结合
+     * @return 平台分类集合
+     */
+    public List<SysCatevo> getList(List<Integer> catIds) {
+        return db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(catIds)).fetchInto(SysCatevo.class);
+    }
     /**
      * 根据父节点查询所有子节点,平台分类最多三层
-     *
      * @param catId
      * @return
      */

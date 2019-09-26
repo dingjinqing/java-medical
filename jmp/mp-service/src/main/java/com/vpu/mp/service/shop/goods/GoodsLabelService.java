@@ -46,6 +46,7 @@ public class GoodsLabelService extends ShopBaseService {
 	@Autowired public GoodsLabelCoupleService goodsLabelCoupleService;
 	
 	@Autowired public GoodsService goodsService;
+	@Autowired public GoodsSortService sortService;
 	 /**
      * 分页获取商品标签信息
      *
@@ -107,12 +108,15 @@ public class GoodsLabelService extends ShopBaseService {
 		goodsLabelVo.setGoodsViewList(goodsViewList);
 		goodsLabelVo.setCatIdList(goodsLabel.getCatId());
 		goodsLabelVo.setSortIdList(goodsLabel.getSortId());
+
+		goodsLabelVo.setSortList(sortService.getList(goodsLabel.getSortId()));
+		goodsLabelVo.setCatList(saas().sysCate.getList(goodsLabel.getCatId()));
 		return goodsLabelVo;
 	}
 	
 	/**
 	 * 从数据库中将商品标签应用到哪些商品、平台分类和商家分类的详情查出来
-	 * @param goodsLabelVo
+	 * @param goodsLabelId
 	 * @return
 	 */
 	private GoodsLabel selectGoodsLabelApplyDetail(Integer goodsLabelId) {
