@@ -81,8 +81,8 @@
         <div class="block">
           <el-date-picker
             size="small"
-            v-model="mainData.flag"
-            type="datetime"
+            v-model="mainData.expireStartTime"
+            type="date"
             :placeholder="$t('shopList.info.account_info8')"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
@@ -92,8 +92,8 @@
         <div class="block">
           <el-date-picker
             size="small"
-            v-model="mainData.flag"
-            type="datetime"
+            v-model="mainData.expireEndTime"
+            type="date"
             :placeholder="$t('shopList.info.account_info8')"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
@@ -162,6 +162,10 @@
           align="center"
           :label="$t('shopList.table.createTime')"
         >
+          <template slot-scope="scope">
+            <div>{{moment(scope.row.created).format('YYYY-MM-DD')}}</div>
+            <div>{{moment(scope.row.created).format('HH:mm:ss')}}</div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="expireTime"
@@ -173,7 +177,7 @@
               暂未续费
             </div>
             <div v-if="scope.row.expireTime!==null">
-              {{scope.row.expireTime.substring(0, 10)}}
+              {{moment(scope.row.expireTime).format('YYYY-MM-DD')}}
             </div>
             <div v-if="scope.row.shopExpireStatus==='0'">
               使用中
@@ -337,7 +341,7 @@
             <label class="fl">店铺名称：</label>
             <span>{{this.renData.shopName}}</span>
             <label for="last_time">上次续费到期时间：</label>
-            <span v-if="this.renData.expireTime!==null">{{this.renData.expireTime.substring(0, 10)}}</span>
+            <span v-if="this.renData.expireTime!==null">{{moment(this.renData.expireTime).format('YYYY-MM-DD')}}</span>
           </li>
           <li>
             <label class="fl">交费类型：</label>
@@ -496,27 +500,38 @@ export default {
   name: 'experienceVersion',
   data () {
     return {
-      state: [{
-        value: '1',
-        label: '未过期'
-      }, {
-        value: '3',
-        label: '即将过期'
-      }, {
-        value: '2',
-        label: '已过期'
-      }],
-      flag: [{
-        value: '0',
-        label: '店+'
-      }, {
-        value: '1',
-        label: '欧派'
-      }, {
-        value: '2',
-        label: '寺库'
-      }],
+      state: [
+        {
+          value: '',
+          label: '选择店铺状态'
+        }, {
+          value: '1',
+          label: '未过期'
+        }, {
+          value: '3',
+          label: '即将过期'
+        }, {
+          value: '2',
+          label: '已过期'
+        }],
+      flag: [
+        {
+          value: '',
+          label: '选择店铺类型'
+        }, {
+          value: '0',
+          label: '店+'
+        }, {
+          value: '1',
+          label: '欧派'
+        }, {
+          value: '2',
+          label: '寺库'
+        }],
       disabled: [{
+        value: '',
+        label: '选择禁用状态'
+      }, {
         value: '0',
         label: '未禁用'
       }, {
@@ -524,6 +539,9 @@ export default {
         label: '已禁用'
       }],
       bottom: [{
+        value: '',
+        label: '底部导航'
+      }, {
         value: '0',
         label: '显示'
       }, {
@@ -599,12 +617,12 @@ export default {
       renewDesc: null,
       renewMoney: null,
       shopTypes: '2',
-      tableHeight: document.documentElement.clientHeight - 381
+      tableHeight: document.documentElement.clientHeight - 370
     }
   },
   props: ['shopType'],
   mounted () {
-    this.tableHeight = document.documentElement.clientHeight - 381
+    this.tableHeight = document.documentElement.clientHeight - 370
     if (this.tableHeight < 0) {
       this.tableHeight = 400
     }
@@ -687,16 +705,9 @@ export default {
       }
       console.log('shopTypes的值')
       console.log(this.shopTypes)
-      let obj = {
-        'currentPage': this.currentPage3,
-        'pageRows': 20,
-        'shopTypes': this.shopTypes
-      }
 
-      console.log(this.mainData)
-      let parame = Object.assign(obj, this.mainData)
-      console.log(parame)
-      shopSearchRequest(parame).then((res) => {
+      this.mainData.shopTypes = this.shopTypes
+      shopSearchRequest(this.mainData).then((res) => {
         console.log(res)
         const { error, content } = res
         if (error === 0) {
