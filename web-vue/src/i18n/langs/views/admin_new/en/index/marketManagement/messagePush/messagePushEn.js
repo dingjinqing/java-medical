@@ -43,5 +43,12 @@ export const en = {
   lastDay: `Last day`,
   lastSevenDays: `Last seven days`,
   lastMonth: `Last 30 days`,
-  customize: `customize`
+  customize: `customize`,
+  // ------------添加消息模板------------
+  top: `Each person can send up to one custom template message per day, please do not send harassment information, the offender will be punished by WeChat official, and the severe one will be banned.`,
+  appletName: `the name of the applet`,
+  notice: `Merchant event notification`,
+  september242019: `September 24, 2019`,
+  businessTitle: `businessTitle`,
+  businessContent: `Business content`
 }

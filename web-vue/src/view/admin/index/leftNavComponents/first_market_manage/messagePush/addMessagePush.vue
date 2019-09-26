@@ -11,7 +11,7 @@
               :src="urls.url1"
               fit="fill"
             ></el-image>
-            <span>每人每天最多发送一条自定义模板消息，请勿发送骚扰信息，违者将受到微信官方相应处罚，严重者将被封禁小程序</span>
+            <span>{{$t(`messagePush.top`)}}</span>
           </div>
         </div>
 
@@ -26,17 +26,17 @@
                   :src="urls.url2"
                   fit="fill"
                 ></el-image>
-                <span>此处为小程序的名称</span>
+                <span>{{$t(`messagePush.appletName`)}}</span>
                 <span class="fr">...</span>
               </div>
               <div class="leftMainConCenter">
-                <div class="leftMainConCenterTips">商家活动通知</div>
-                <div class="leftMainConCenterTime">2019年9月24日</div>
+                <div class="leftMainConCenterTips">{{$t(`messagePush.notice`)}}</div>
+                <div class="leftMainConCenterTime">{{$t(`messagePush.september242019`)}}</div>
                 <div class="leftMainConCenterTitle">
-                  <div class="title">业务标题</div>
-                  <div class="h1title">{{formData.title===``?`业务标题`:formData.title}}</div>
+                  <div class="title">{{$t(`messagePush.businessTitle`)}}</div>
+                  <div class="h1title">{{formData.title===``?this.$t(`messagePush.businessTitle`):formData.title}}</div>
                 </div>
-                <div class="leftMainConCenterCon"><span>业务内容</span><span class="xxx">{{formData.content===``?`xxx`:formData.content}}</span></div>
+                <div class="leftMainConCenterCon"><span>{{$t(`messagePush.businessContent`)}}</span><span class="xxx">{{formData.content===``?`xxx`:formData.content}}</span></div>
                 <div class="leftMainConCenterComeIn"><span>进入小程序查看</span></div>
                 <div class="leftMainConCenterReject"><span>拒收通知</span></div>
 

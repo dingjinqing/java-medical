@@ -42,5 +42,11 @@ export const cn = {
   lastDay: `最近一天`,
   lastSevenDays: `最近七天`,
   lastMonth: `最近30天`,
-  customize: `自定义`
+  customize: `自定义`,
+  top: `每人每天最多发送一条自定义模板消息，请勿发送骚扰信息，违者将受到微信官方相应处罚，严重者将被封禁小程序`,
+  appletName: `此处为小程序的名称`,
+  notice: `商家活动通知`,
+  september242019: `2019年9月24日`,
+  businessTitle: `业务标题`,
+  businessContent: `业务内容`
 }
