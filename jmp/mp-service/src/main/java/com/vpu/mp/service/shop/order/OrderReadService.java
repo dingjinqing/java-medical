@@ -264,13 +264,13 @@ public class OrderReadService extends ShopBaseService {
 	 * @throws MpException 
 	 */
 	public ReturnOrderInfoVo getReturnOrder(ReturnOrderParam param) throws MpException{
-		OrderInfoRecord order = orderInfo.getOrderByOrderSn(param.getOrderSn());
-		if(Objects.isNull(order)) {
-			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
-		}
-		ReturnOrderRecord rOrder = returnOrder.getByRetId(param.getRetId());
+		ReturnOrderRecord rOrder = returnOrder.getByReturnOrderSn(param.getReturnOrderSn());
 		if(Objects.isNull(rOrder)) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_ORDER_NOT_EXIST);
+		}
+		OrderInfoRecord order = orderInfo.getOrderByOrderSn(rOrder.getOrderSn());
+		if(Objects.isNull(order)) {
+			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		//init vo
 		ReturnOrderInfoVo vo = rOrder.into(ReturnOrderInfoVo.class);
@@ -286,7 +286,7 @@ public class OrderReadService extends ShopBaseService {
 		//金额计算
 		setCalculateMoney(vo);
 		//获取最后一次操作此订单type
-		ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(param.getRetId());
+		ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
 		if(Objects.nonNull(lastOperator)) {
 			vo.setOperatorLastType(lastOperator.getType());
 		}

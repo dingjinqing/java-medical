@@ -62,12 +62,21 @@ public class ReturnOrderService extends ShopBaseService{
 	}
 	
 	/**
-	 * 	通过订单[]查询其下退货订单信息
+	 * 	通过retid查询退货订单信息
 	 * @param arrayToSearch
 	 * @return Result<?>
 	 */
 	public ReturnOrderRecord getByRetId(Integer retId) {
 		 return db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId)).fetchOne();
+	}
+	
+	/**
+	 * 	通过returnordersn查询退货订单信息
+	 * @param arrayToSearch
+	 * @return Result<?>
+	 */
+	public ReturnOrderRecord getByReturnOrderSn(String returnOrderSn) {
+		 return db().selectFrom(TABLE).where(TABLE.RETURN_ORDER_SN.eq(returnOrderSn)).fetchOne();
 	}
 	
 	/**

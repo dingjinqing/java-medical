@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.refund;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -14,7 +15,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ReturnOrderParam extends OrderParam{
-	@NotNull(message = JsonResultMessage.MSG_ORDER_RETID_NOT_NULL)
-	private Integer retId;
+public class ReturnOrderParam {
+	@NotBlank(message = JsonResultMessage.MSG_ORDER_RETURN_ORDER_SN_NOT_NULL)
+	private String returnOrderSn;
 }
