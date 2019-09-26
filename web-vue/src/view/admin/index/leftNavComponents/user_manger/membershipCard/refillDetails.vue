@@ -6,41 +6,43 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="充值明细"
+          :label="$t('memberCard.chargeDetail')"
           name="first"
         ></el-tab-pane>
         <el-tab-pane
-          label="消费明细"
+          :label="$t('memberCard.consumeDetail')"
           name="second"
         ></el-tab-pane>
       </el-tabs>
       <!--template-->
       <div class="refillDetailsTop">
         <div>
-          <span>昵称</span>
+          <span>{{$t('memberCard.username')}}</span>
           <el-input
             v-model="nackNameInput"
-            placeholder="请输入昵称"
+            :placeholder="$t('memberCard.pleaseInputUsername')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>手机号码</span>
+          <span>{{$t('memberCard.mobile')}}</span>
           <el-input
             v-model="phoneNumInput"
-            placeholder="请输入手机号码"
+            :placeholder="$t('memberCard.pleaseInputMobile')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>余额变动时间</span>
+          <span>{{ $t('memberCard.balanceChangeTime') }}</span>
           <el-date-picker
             size="small"
             v-model="dateValue"
             type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('memberCard.to')"
+            :start-placeholder="$t('memberCard.startDate')"
+            :end-placeholder="$t('memberCard.overDate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00','23:59:59']"
           >
           </el-date-picker>
         </div>
@@ -48,7 +50,8 @@
           <el-button
             type="primary"
             size="small"
-          >筛选</el-button>
+            @click="search"
+          >{{$t('memberCard.filter')}}</el-button>
         </div>
       </div>
       <div class="bottom">
@@ -60,39 +63,39 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="userID"
+            prop="username"
             align="center"
-            label="会员昵称"
+            :label="$t('memberCard.memberName')"
             width="120"
           >
           </el-table-column>
           <el-table-column
-            prop="phoneNum"
-            label="手机号"
+            prop="mobile"
+            :label="$t('memberCard.mobile')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="inviter"
-            label="余额变动明细"
+            prop="money"
+            :label="$t('memberCard.balanceChangeDetail')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="date"
-            label="余额变动原因"
+            prop="reason"
+            :label="$t('memberCard.balanceChangeReason')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="cardNum"
-            label="余额变动时间"
+            prop="createTime"
+            :label="$t('memberCard.balanceChangeTime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="status"
-            label="备注"
+            prop="message"
+            :label="$t('memberCard.message')"
             align="center"
           >
           </el-table-column>
@@ -106,6 +109,7 @@
   </div>
 </template>
 <script>
+import { getConsumeListRequest, getChargeListRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
   data () {
@@ -113,45 +117,27 @@ export default {
       pageParams: {
         totalRows: 10,
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
+      cardId: null,
       activeName: 'first',
       nackNameInput: '',
       phoneNumInput: '',
       dateValue: '',
-      tableData: [
-        {
-          userID: '51',
-          phoneNum: '18811309193',
-          sickName: '啦啦啦',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '12',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '43',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        }
-      ]
+      tableData: [],
+      chargeData: [], // 充值明细数据
+      consumeData: [] // 消费明细数据
 
     }
   },
+  created () {
+    this.cardId = this.$route.query.cardId
+    this.loadDefaultData()
+  },
   watch: {
+    lang () {
+
+    },
     activeName (newData) {
       let name = ''
       if (newData === 'first') {
@@ -164,18 +150,71 @@ export default {
       })
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
-    // taps切换
+    // 1- 加载默认数据
+    loadDefaultData () {
+      let obj = {
+        'pageRows': this.pageParams.pageRows,
+        'currentPage': this.pageParams.currentPage,
+        'cardId': this.cardId,
+        'username': this.nackNameInput,
+        'mobile': this.phoneNumInput,
+        'firstTime': this.dateValue ? this.dateValue[0] : null,
+        'endTime': this.dateValue ? this.dateValue[1] : null
+      }
+      console.log(obj)
+      if (this.activeName === 'first') {
+        this.getChargeList(obj)
+      } else if (this.activeName === 'second') {
+        this.getConsumeList(obj)
+      }
+    },
+
+    // 2- 请求后台充值明细
+    getChargeList (data) {
+      getChargeListRequest(data).then(res => {
+        if (res.error === 0) {
+          // success
+          // set table data
+          this.tableData = res.content.dataList
+          // set pagination
+          this.pageParams = res.content.page
+          console.log(this.tableData)
+        }
+      })
+    },
+    // 3- 请求后台消费明细
+    getConsumeList (data) {
+      getConsumeListRequest(data).then(res => {
+        if (res.error === 0) {
+          // success
+          // set table data
+          this.tableData = res.content.dataList
+          // set pagination
+          this.pageParams = res.content.page
+          console.log(this.tableData)
+        }
+      })
+    },
+    // 4- taps切换
     handleClick (tab, event) {
       console.log(tab, event)
-      if (tab.index === '0') {
-
-      } else {
-
-      }
+      this.clearInputData()
+      this.loadDefaultData()
+    },
+    // 5- clear input data
+    clearInputData () {
+      this.nackNameInput = null
+      this.phoneNumInput = null
+      this.dateValue = null
     },
     search (data) {
       console.log(data)
+      this.loadDefaultData()
     }
   }
 }

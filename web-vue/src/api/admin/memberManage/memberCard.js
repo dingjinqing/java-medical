@@ -89,3 +89,21 @@ export function deleteCardBatchRequest (id) {
     data: null
   })
 }
+
+// 充值明细
+export function getChargeListRequest (data) {
+  return service({
+    url: '/api/admin/member/card/charge/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 消费明细
+export function getConsumeListRequest (data) {
+  return service({
+    url: '/api/admin/member/card/consume/list',
+    method: 'post',
+    data: data
+  })
+}

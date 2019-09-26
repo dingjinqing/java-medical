@@ -22,5 +22,21 @@ export const cn = {
     '充值记录',
     '查看订单',
     '续费记录'
-  ]
+  ],
+  memberChargeDetail: '会员卡充值明细',
+  chargeDetail: '充值明细',
+  consumeDetail: '消费明细',
+  username: '昵称',
+  pleaseInputUsername: '请输入昵称',
+  mobile: '手机号码',
+  pleaseInputMobile: '请输入手机号码',
+  balanceChangeTime: '余额变动时间',
+  to: '至',
+  startDate: '开始日期',
+  overDate: '结束日期',
+  filter: '筛选',
+  memberName: '会员昵称',
+  balanceChangeDetail: '余额变动明细',
+  balanceChangeReason: '余额变动原因',
+  message: '备注'
 }

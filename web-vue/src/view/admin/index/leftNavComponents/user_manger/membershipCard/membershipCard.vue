@@ -755,7 +755,10 @@ export default {
         case '充值记录':
           this.$store.commit('TOCHANFE_FILLDETAILCRUMB', obj)
           this.$router.push({
-            name: 'refillDetails'
+            name: 'refillDetails',
+            query: {
+              cardId: item.id
+            }
           })
       }
 
