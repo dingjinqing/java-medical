@@ -29,6 +29,23 @@
         </el-option>
       </el-select>
       <el-select
+        v-if="shopTypes==='2'"
+        v-model="mainData.shopType"
+        :placeholder="$t('shopList.selectType')"
+        size="small"
+        class="select-input ml-6"
+        clearable
+      >
+        <el-option
+          v-for="item in shopVersion"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+
+      <el-select
         v-model="mainData.shopFlag"
         :placeholder="$t('shopList.info.account_info4')"
         size="small"
@@ -517,7 +534,7 @@ export default {
       flag: [
         {
           value: '',
-          label: '选择店铺类型'
+          label: '选择店铺标识'
         }, {
           value: '0',
           label: '店+'
@@ -617,6 +634,23 @@ export default {
       renewDesc: null,
       renewMoney: null,
       shopTypes: '2',
+      shopVersion: [{
+        value: '',
+        label: '选择店铺类型'
+      },
+      {
+        value: 'v2',
+        label: '基础版'
+      },
+      {
+        value: 'v3',
+        label: '高级版'
+      },
+      {
+        value: 'v4',
+        label: '旗舰版'
+      }
+      ],
       tableHeight: document.documentElement.clientHeight - 370
     }
   },
