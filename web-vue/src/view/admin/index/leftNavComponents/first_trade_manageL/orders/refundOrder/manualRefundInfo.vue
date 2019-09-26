@@ -1,8 +1,11 @@
 <template>
-  <div class="main">
+  <div
+    class="main"
+    v-loading="loading"
+  >
     <div class="order_info">
-      <p>{{$t('order.orderSn')}}：</p>
-      <p>{{$t('order.orderTime')}}：</p>
+      <p>{{$t('order.orderSn')}}：{{$route.query.orderSn}}</p>
+      <p>{{$t('order.orderTime')}}：{{$route.query.orderTime}}</p>
       <div>
         <el-button
           type="primary"
@@ -20,17 +23,16 @@
           @change="returnTypeChange"
         >
           <el-option
-            v-for="item in returnType"
-            :key="item.key"
-            :label="item.label"
-            :value="item.key"
+            v-for="(item, index) in returnType"
+            :key="index"
+            :label="new Map($t('order.returnTypeList')).get(item)"
+            :value="item"
           >
           </el-option>
         </el-select>
       </p>
       <el-table
         :data="refundGoods"
-        style="width:100%;"
         border
         ref="multipleTable"
         v-if="params.returnType != 2"
@@ -49,13 +51,14 @@
           width="55"
         >
         </el-table-column>
-        <el-table-column label="商品名称">
+        <el-table-column :label="$t('order.goodsName')">
           <template slot-scope="scope">
             <div>
               <el-tag
                 type="danger"
                 effect="plain"
                 size="mini"
+                v-if="scope.row.isGift"
               >
                 赠品
               </el-tag>{{scope.row.goodsName}}
@@ -64,17 +67,17 @@
         </el-table-column>
         <el-table-column
           prop="goodsAttr"
-          label="规格"
+          :label="$t('order.specText')"
         ></el-table-column>
         <el-table-column
           prop="goodsPrice"
-          label="商品价格"
+          :label="$t('order.goods') + $t('order.goodsPrice')"
         ></el-table-column>
         <el-table-column
           prop="discountedGoodsPrice"
-          label="购买折后价格"
+          :label="$t('order.purchaseDiscountedPrice')"
         ></el-table-column>
-        <el-table-column label="可退货数量/已提交/总数量">
+        <el-table-column :label="`${$t('order.canReturnNum')}/${$t('order.submitted')}/${$t('order.totalNum')}`">
           <template slot-scope="scope">
             <div>
               {{scope.row.returnable}}/{{scope.row.submitted}}/{{scope.row.total}}
@@ -83,7 +86,7 @@
         </el-table-column>
         <el-table-column
           prop="returnable"
-          label="退款/退货数量"
+          :label="`${$t('order.refund')}/${$t('order.returnNumText')}`"
         >
           <template slot-scope="scope">
             <el-input-number
@@ -98,14 +101,14 @@
         </el-table-column>
         <el-table-column
           prop="discountedGoodsPrice"
-          label="退货商品折后总计金额"
+          :label="$t('order.totalPriceAfterReturningGoods')"
         ></el-table-column>
       </el-table>
       <div class="return_item">
-        <div class="item_title">退款/退货金额：</div>
+        <div class="item_title">{{$t('order.refundPrice')}}：</div>
         <div class="item_content money_set">
           <p>
-            <span v-if="params.returnType != 2">退商品金额：<el-input-number
+            <span v-if="params.returnType != 2">{{$t('order.refundGoodsPrice')}}：<el-input-number
                 v-model="canRefundPrice"
                 :precision="2"
                 class="mini_input"
@@ -115,23 +118,24 @@
               >
               </el-input-number>{{currency[0]}}，</span>
             <span>
-              退运费金额：
+              {{$t('order.shippingFee')}}：
               <el-input-number
                 v-model="params.shippingFee"
                 :precision="2"
                 class="mini_input"
                 size="small"
                 :min="0"
+                :max="returnShippingFee"
               ></el-input-number>{{currency[0]}},
-              可退最大运费：0.00{{currency[0]}}
+              {{$t('order.maxRefundShippingFee')}}：{{returnShippingFee.toFixed(2)}}{{currency[0]}}
             </span>
           </p>
-          <p>总退款金额：{{currency[1]}}<span class="text-warning">{{canRefundPrice.toFixed(2)}}</span> =退会员卡余额：{{currency[1]}}<span class="text-warning">{{member_card_balance.toFixed(2)}}</span> +退余额：{{currency[1]}}<span class="text-warning">{{refund_balance_money.toFixed(2)}}</span>+退积分抵扣：{{currency[1]}}<span class="text-warning">{{refund_score_money.toFixed(2)}}</span> + 退支付金额：{{currency[1]}}<span class="text-warning">{{refund_pay_money.toFixed(2)}}</span> </p>
-          <p class="text-warning">注：总退款金额 = 退商品金额 + 退运费金额，扣款优先级： 会员卡余额，余额，积分，支付金额</p>
+          <p>{{$t('order.totalRefundPrice')}}：{{currency[1]}}<span class="text-warning">{{refundtotalPrice.toFixed(2)}}</span> ={{$t('order.refundMemberCardBalance')}}：{{currency[1]}}<span class="text-warning">{{member_card_balance.toFixed(2)}}</span> +{{$t('order.refundBalanceMoney')}}：{{currency[1]}}<span class="text-warning">{{refund_balance_money.toFixed(2)}}</span>+{{$t('order.refundScoreMoney')}}：{{currency[1]}}<span class="text-warning">{{refund_score_money.toFixed(2)}}</span> + {{$t('order.refundPayMoney')}}：{{currency[1]}}<span class="text-warning">{{refund_pay_money.toFixed(2)}}</span> </p>
+          <p class="text-warning">{{$t('order.refundTips')}}</p>
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">退款/退货原因：</div>
+        <div class="item_title">{{$t('order.refundReason')}}：</div>
         <div class="item_content">
           <el-select
             v-model="params.reasonType"
@@ -139,21 +143,20 @@
             class="default_input"
           >
             <el-option
-              v-for="item in reasonType"
-              :key="item.key"
-              :value="item.key"
-              :label="item.label"
+              v-for="(item,index) in $t('order.reasonTypeList')"
+              :key="index"
+              :value="index"
+              :label="item"
             ></el-option>
           </el-select>
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">退款/退货原因说明：</div>
+        <div class="item_title">{{$t('order.refundReasonDescription')}}：</div>
         <div class="item_content">
           <el-input
             type="textarea"
             v-model="params.reason"
-            placeholder="请输入退款/退货原因说明"
             :rows="5"
             class="textarea_width"
             resize="none"
@@ -161,7 +164,7 @@
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">凭证图片：</div>
+        <div class="item_title">{{$t('order.voucherPicture')}}：</div>
         <div class="item_content">
           <img
             :src="params.voucherImages ? $imageHost +'/' + params.voucherImages : ' '"
@@ -176,6 +179,7 @@
       <el-button
         type="primary"
         size="small"
+        @click="comfirmRefund"
       >确定</el-button>
     </div>
     <ImageDalog
@@ -187,6 +191,8 @@
 </template>
 
 <script>
+import { manualReturnInfo } from '@/api/admin/orderManage/order.js'
+
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog')
@@ -201,19 +207,10 @@ export default {
         returnMoney: null,
         shippingFee: null
       },
-      returnType: [
-        { key: 0, label: '仅退款' },
-        { key: 1, label: '退货退款' },
-        { key: 2, label: '仅退运费' },
-        { key: 3, label: '手动退款' }
-      ],
-      reasonType: [
-        { key: 0, label: '协商一致退款' },
-        { key: 1, label: '未按约定时间发货' },
-        { key: 2, label: '缺货' },
-        { key: 3, label: '排错/多拍/不想要' },
-        { key: 4, label: '其他' }
-      ],
+      refundData: null,
+      returnType: [],
+      reasonType: [],
+      returnShippingFee: 0.00,
       refundGoods: null,
       returnAmountMap: {
         bk_order_money: 0,
@@ -229,7 +226,8 @@ export default {
       refund_score_money: 0.00,
       refund_pay_money: 0.00,
       bk_order_money: 0.00,
-      max_refund_price: 0.00
+      max_refund_price: 0.00,
+      loading: false
     }
   },
   methods: {
@@ -242,7 +240,7 @@ export default {
     },
     selectionChange (val) {
       this.canRefundPrice = this.$refs.multipleTable.selection.reduce((total, currentValue) => {
-        return total + currentValue.discountedGoodsPrice * currentValue.returnable
+        return total + currentValue.discountedGoodsPrice * currentValue.canRefundNum
       }, 0)
       this.max_refund_price = this.canRefundPrice
     },
@@ -252,42 +250,54 @@ export default {
       }
     },
     initData () {
-      let res = [
-        {
-          recId: 8313,
-          orderId: 6751,
-          orderSn: 'P201908261402467301',
-          productId: 4726,
-          goodsName: '首单限时优化首单限时优化首单限时优化首单限时优化首单限时优化-CJ',
-          goodsAttr: '颜色:白色',
-          goodsPrice: 55.00,
-          discountedGoodsPrice: 25.00,
-          returnable: 1,
-          submitted: 0,
-          total: 1,
-          isCanReturn: 1,
-          isGift: 0
-        },
-        {
-          recId: 8314,
-          orderId: 6752,
-          orderSn: 'P201908261402467301',
-          productId: 4726,
-          goodsName: '首单限时优化-CJ',
-          goodsAttr: '颜色:白色',
-          goodsPrice: 55.00,
-          discountedGoodsPrice: 30.00,
-          returnable: 1,
-          submitted: 0,
-          total: 1,
-          isCanReturn: 1,
-          isGift: 0
+      this.loading = true
+      let obj = {
+        orderId: this.$route.query.orderId,
+        orderSn: this.$route.query.orderSn,
+        action: 1
+      }
+      manualReturnInfo(obj).then(res => {
+        if (res.error === 0) {
+          this.refundGoods = res.content.refundGoods.map(item => {
+            item.canRefundNum = item.returnable
+            return item
+          })
+          let returnTypeArr = []
+          res.content.returnType.forEach((item, index) => {
+            if (item === true) {
+              returnTypeArr.push(index)
+            }
+          })
+          this.returnType = returnTypeArr
+          this.params.returnType = this.returnType[0]
+          this.returnAmountMap = res.content.returnAmountMap
+          this.returnShippingFee = res.content.returnShippingFee
+          this.params.shippingFee = this.returnShippingFee
+
+          this.loading = false
         }
-      ]
-      this.refundGoods = res.map(item => {
-        item.canRefundNum = item.returnable
-        return item
       })
+    },
+    comfirmRefund () {
+      let obj = {
+        orderId: this.$route.query.orderId,
+        orderSn: this.$route.query.orderSn,
+        action: 1,
+        returnType: this.params.returnType,
+        returnMoney: this.canRefundPrice,
+        shippingFee: this.params.shippingFee,
+        reasonType: this.params.reasonType,
+        voucherImages: this.params.voucherImages
+      }
+      obj.shipGoods = this.params.returnType === 2 ? null : []
+      if (Array.isArray(obj.shipGoods)) {
+        let shipGoods = []
+        this.$refs.multipleTable.selection.forEach(item => {
+          shipGoods = [...shipGoods, { recId: item.recId, returnNumber: item.canRefundNum, money: this.params.reasonType !== 3 ? null : 'TODO' }]
+        })
+        obj.shipGoods = shipGoods
+      }
+      console.log(obj)
     }
   },
   mounted () {
@@ -299,7 +309,7 @@ export default {
     lang () {
       this.langDefault()
     },
-    canRefundPrice (newVal) {
+    refundtotalPrice (newVal) {
       let totalPrice = newVal
       this.bk_order_money = totalPrice > this.returnAmountMap.bk_order_money ? this.returnAmountMap.bk_order_money : totalPrice
       totalPrice -= this.bk_order_money
@@ -315,6 +325,11 @@ export default {
 
       this.refund_pay_money = totalPrice > this.returnAmountMap.money_paid ? this.returnAmountMap.money_paid : totalPrice
       totalPrice -= this.refund_pay_money
+    }
+  },
+  computed: {
+    refundtotalPrice () {
+      return this.params.shippingFee + this.canRefundPrice
     }
   }
 }

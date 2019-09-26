@@ -114,6 +114,28 @@ export const cn = {
   memberCardReduce: '会员卡折扣',
   totalPrice: '总价',
   balance: '余额',
+  purchaseDiscountedPrice: '购买折后价格',
+  canReturnNum: '可退货数量',
+  submitted: '已提交',
+  totalNum: '总数量',
+  refund: '退款',
+  totalPriceAfterReturningGoods: '退货商品折后总计价格',
+  refundPrice: '退款/退货金额',
+  refundGoodsPrice: '退商品金额',
+  shippingFee: '退运费金额',
+  maxRefundShippingFee: '可退最大运费',
+  totalRefundPrice: '总退款金额',
+  refundMemberCardBalance: '退会员卡余额',
+  refundBalanceMoney: '退余额',
+  refundScoreMoney: '退积分抵扣',
+  refundPayMoney: '退支付金额',
+  refundTips:
+    '注：总退款金额 = 退商品金额 + 退运费金额，扣款优先级： 会员卡余额，余额，积分，支付金额',
+  refundReason: '退款/退货原因',
+  refundReasonDescription: '退款/退货原因说明',
+  Description: '说明',
+  voucherPicture: '凭证图片',
+  applicationDetails: '申请详情',
   orderStatusList: [
     [null, '全部订单'],
     [0, '待付款'],
@@ -206,11 +228,7 @@ export const cn = {
     '拍错/多拍/不想要',
     '其他'
   ],
-  storeStatusList: [
-    [null, '全部'],
-    [1, '已支付'],
-    [2, '已退款']
-  ],
+  storeStatusList: [[null, '全部'], [1, '已支付'], [2, '已退款']],
   payTypeObj: {
     wxpay: '微信支付',
     balance: '余额支付'
@@ -219,7 +237,6 @@ export const cn = {
     0: '企业发票',
     1: '个人发票'
   }
-
 }
 export const en = {
   goodsName: 'Product Name',

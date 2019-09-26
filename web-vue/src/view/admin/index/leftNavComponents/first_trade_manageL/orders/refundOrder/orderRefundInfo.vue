@@ -24,13 +24,13 @@
         </div>
       </div>
       <div class="item_box">
-        <h2 class="h2_title">仅退款申请详情</h2>
+        <h2 class="h2_title">{{new Map($t('order.returnTypeList')).get(1)}}{{$t('order.applicationDetails')}}</h2>
         <table class="refund_info_table">
           <tbody>
             <tr>
-              <td>订单编号</td>
+              <td>{{$t('order.orderSn')}}</td>
               <td></td>
-              <td>退款编号</td>
+              <td>{{$t('order.returnSn')}}</td>
               <td></td>
             </tr>
             <tr>
@@ -61,70 +61,70 @@
               </td>
             </tr>
             <tr>
-              <td>退款类型</td>
-              <td colspan="3">仅退款</td>
+              <td>{{$t('order.returnType')}}</td>
+              <td colspan="3">{{new Map($t('order.returnTypeList')).get(0)}}</td>
             </tr>
             <tr>
-              <td>退款状态</td>
-              <td colspan="3">退款成功</td>
+              <td>{{$t('order.returnStatus')}}</td>
+              <td colspan="3">{{new Map($t('order.returnStatusList')).get(5)}}</td>
             </tr>
             <tr>
-              <td>退款金额</td>
+              <td>{{$t('order.returnMoney')}}</td>
               <td
                 colspan="3"
                 class="refund_info_td"
               >
                 <template v-if="1">
-                  <p class="refund_info"> 退商品金额：<el-input-number
+                  <p class="refund_info"> {{$t('order.refundGoodsPrice')}}：<el-input-number
                       v-model="refundGoodsMoney"
                       :precision="2"
                       :controls="false"
                       :min="0"
                       size="small"
-                    ></el-input-number> 元，退运费金额：<el-input-number
+                    ></el-input-number> 元，{{$t('order.shippingFee')}}：<el-input-number
                       v-model="refundFreight"
                       size="small"
                       :precision="2"
                       :controls="false"
                       :min="0"
-                    ></el-input-number> 元，可退最大运费xx元</p>
+                    ></el-input-number> 元，{{$t('order.maxRefundShippingFee')}}xx元</p>
                   <p>
-                    总退款金额：￥<span class="text-warning refund-money">0.00</span> =
+                    {{$t('order.totalRefundPrice')}}：￥<span class="text-warning refund-money">0.00</span> =
                     <span>退尾款：￥<span class="text-warning refund-bk-order-money">0.00</span> + </span>
-                    退会员卡余额：￥<span class="text-warning refund-member-card-money">0.00</span>
-                    + 退余额：￥<span class="text-warning refund-balance-money">0.00</span>
-                    + 退积分抵扣：￥<span class="text-warning refund-score-money">0.00</span>
-                    + 退支付金额：￥<span class="text-warning refund-pay-money">0.00</span>
+                    {{$t('order.refundMemberCardBalance')}}：￥<span class="text-warning refund-member-card-money">0.00</span>
+                    + {{$t('order.refundBalanceMoney')}}：￥<span class="text-warning refund-balance-money">0.00</span>
+                    + {{$t('order.refundScoreMoney')}}：￥<span class="text-warning refund-score-money">0.00</span>
+                    + {{$t('order.refundPayMoney')}}：￥<span class="text-warning refund-pay-money">0.00</span>
                   </p>
-                  <p class="tips">注：总退款金额 = 退商品金额+退运费金额，扣款优先级：会员卡余额，余额，积分，支付金额</p>
+                  <p class="tips">{{$t('order.refundTips')}}</p>
                 </template>
                 <template v-else>
-                  <p class="refund_info">退商品金额：<span class="text-warning">￥100.00</span></p>
-                  <p class="refund_info">退运费金额：<span class="text-warning">￥200.00</span></p>
+                  <p class="refund_info">{{$t('order.refundGoodsPrice')}}：<span class="text-warning">￥100.00</span></p>
+                  <p class="refund_info">{{$t('order.shippingFee')}}：<span class="text-warning">￥200.00</span></p>
                   <p class="refund_info">退款详情：
                     <span>退尾款：<span class="text-warning">￥100.00</span></span>
-                    <span>退会员卡余额：<span class="text-warning">￥100.00</span></span>
-                    <span>退余额：<span class="text-warning">￥100.00</span></span>
-                    <span>退积分抵扣：<span class="text-warning">￥100.00</span></span>
-                    <span>退支付金额：<span class="text-warning">￥100.00</span></span>
+                    <span>{{$t('order.refundMemberCardBalance')}}：<span class="text-warning">￥100.00</span></span>
+                    <span>{{$t('order.refundBalanceMoney')}}：<span class="text-warning">￥100.00</span></span>
+                    <span>{{$t('order.refundScoreMoney')}}：<span class="text-warning">￥100.00</span></span>
+                    <span>{{$t('order.refundPayMoney')}}：<span class="text-warning">￥100.00</span></span>
                   </p>
                 </template>
               </td>
             </tr>
             <tr>
-              <td>退款原因</td>
+              <td>{{$t('order.refundReason')}}</td>
               <td colspan="3">
-                协商一致退款
+                {{$t('order.reasonTypeList')[1]}}
               </td>
             </tr>
             <tr>
-              <td><span class="w2">说明</span></td>
+              <td><span class="w2">{{$t('order.Description')}}</span></td>
               <td colspan="3">
                 xxxxx
               </td>
             </tr>
             <tr>
-              <td>退款图片</td>
+              <td>{{$t('order.voucherPicture')}}</td>
               <td colspan="3">
                 <div class="image_box">
                   <img
@@ -143,7 +143,7 @@
               </td>
             </tr>
             <tr>
-              <td>申请时间</td>
+              <td>{{$t('order.applyTime')}}</td>
               <td colspan="3">
                 XXXXXXXXXXXXXXXXXXXX
               </td>
@@ -152,7 +152,7 @@
         </table>
       </div>
       <div class="item_box">
-        <h2 class="h2_title">协商记录</h2>
+        <h2 class="h2_title">协商记录{{countDownStr}}</h2>
         <div class="recode">
           <div class="top">
             <ul>
@@ -178,7 +178,36 @@ export default {
   data () {
     return {
       refundGoodsMoney: null,
-      refundFreight: null
+      refundFreight: null,
+      countDownStr: '',
+      start: 1571554186
+    }
+  },
+  mounted: function () {
+    this.langDefault()
+    this._interval = setInterval(() => {
+      this.countDownStr = this.countdown()
+    }, 1000)
+  },
+  destroyed () {
+    clearInterval(this._interval)
+  },
+  methods: {
+    countdown: function () {
+      const end = Date.parse(new Date(this.start))
+      const now = Date.parse(new Date())
+      const msec = end - now / 1000
+      console.log(msec)
+      let day = parseInt(msec / 60 / 60 / 24)
+      let hr = parseInt(msec / 60 / 60 % 24) > 9 ? parseInt(msec / 60 / 60 % 24) : '0' + parseInt(msec / 60 / 60 % 24)
+      let min = parseInt(msec / 60 % 60) > 9 ? parseInt(msec / 60 % 60) : '0' + parseInt(msec / 60 % 60)
+      let sec = parseInt(msec % 60) > 9 ? parseInt(msec % 60) : '0' + parseInt(msec % 60)
+      return `${day}天${hr}时${min}分${sec}秒`
+    }
+  },
+  watch: {
+    lang () {
+      this.langDefault()
     }
   }
 }

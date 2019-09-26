@@ -300,7 +300,7 @@
                         {{$t('order.partShipText')}}</span>
                     </div>
                     <div class="right">
-                      <span @click="manualReturn(oneOrder.orderSn)">{{$t('order.manualReturnText')}}</span>
+                      <span @click="manualReturn(oneOrder.orderSn,oneOrder.orderId,oneOrder.createTime)">{{$t('order.manualReturnText')}}</span>
                       <span>{{$t('order.comment')}}</span>
                     </div>
                   </div>
@@ -642,11 +642,13 @@ export default {
         }
       })
     },
-    manualReturn (orderSn) {
+    manualReturn (orderSn, orderId, orderTime) {
       this.$router.push({
         name: 'manualRefund',
         query: {
-          orderSn: orderSn
+          orderSn: orderSn,
+          orderId: orderId,
+          orderTime: orderTime
         }
       })
     },

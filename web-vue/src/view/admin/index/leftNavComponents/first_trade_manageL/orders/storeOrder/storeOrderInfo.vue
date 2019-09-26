@@ -45,7 +45,7 @@
           class="icon el-icon-edit-outline"
           @click="addNodes"
         ></i>
-        <span>买家备注：{{order.sellerRemark}}</span>
+        <span>买家备注：{{order.addMessage}}</span>
       </div>
       <div class="pay_detail">
         <div class="pd_title">

@@ -72,3 +72,11 @@ export function returnInfo (data) {
     data: data
   })
 }
+// 手动退货退款详情
+export function manualReturnInfo (data) {
+  return service({
+    url: '/api/admin/order/refund/list',
+    method: 'post',
+    data: data
+  })
+}

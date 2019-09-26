@@ -141,9 +141,7 @@
 </template>
 
 <script>
-import { store,
-  star
-} from '@/api/admin/orderManage/order.js'
+import { store, star } from '@/api/admin/orderManage/order.js'
 import { allSourceRequest } from '@/api/admin/membershipList.js'
 
 export default {
@@ -212,7 +210,6 @@ export default {
       this.search()
     },
     search () {
-      this.storeOrderList = null
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       store(this.searchParams).then(res => {
@@ -246,7 +243,7 @@ export default {
     toggleStar (orderSn, starFlag) {
       let obj = {
         orderSn: [orderSn],
-        type: 0,
+        type: 1,
         starFlag: starFlag === 1 ? 0 : 1
       }
       star(obj).then(res => {
