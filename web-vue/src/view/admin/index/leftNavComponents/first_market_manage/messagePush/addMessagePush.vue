@@ -50,6 +50,7 @@
                 :model="formData"
                 label-width="140px"
                 size="small"
+                ref="form"
               >
 
                 <!-- 消息名称 -->
@@ -332,7 +333,7 @@
       </div>
       <div class="saveAndSend">
         <el-button
-          @click="handleSaveAndSend"
+          @click="handleSaveAndSend()"
           size="small"
           type="primary"
         >保存并发送</el-button>
@@ -665,6 +666,11 @@ export default {
         endTime: this.endTime
       }
       console.log(params)
+      console.log(this.$refs.form)
+      // 验证输入框是否为空
+      if (this.formData.name === `` || this.formData.title === `` || this.formData.content === ``) {
+        return
+      }
       addMessageApi(params).then(res => {
         const { error } = res
         if (error === 0) {

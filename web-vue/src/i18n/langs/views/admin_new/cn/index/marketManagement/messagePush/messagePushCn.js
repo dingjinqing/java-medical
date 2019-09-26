@@ -26,5 +26,21 @@ export const cn = {
   operation: `操作`,
   viewDetail: `查看详情`,
   sendTheRecord: `发送记录`,
-  delete: `删除`
+  delete: `删除`,
+  // ------------推送统计------------
+  filterDate: `筛选日期`,
+  pleaseSelectAFilterDate: `请选择筛选日期`,
+  messagePushNumber: `消息推送数量`,
+  messageSentNumber: `消息送达数量`,
+  numberOfReturnVisits: `回访数量`,
+  averageReturnVisitRate: `平均回访率`,
+  returnRate: `回访率`,
+  number: `数量`,
+  percent: `百分比`,
+  date: `日期`,
+  // ------------筛选时间下拉------------
+  lastDay: `最近一天`,
+  lastSevenDays: `最近七天`,
+  lastMonth: `最近30天`,
+  customize: `自定义`
 }

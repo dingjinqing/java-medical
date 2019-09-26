@@ -86,7 +86,7 @@ import { en as dateTimePicker } from './views/admin_new/en/components/dateTimePi
 
 // 支付配置
 import { en as payConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/payConfigurationEn'
-
+// 通用组件 日期时间选择
 // 快递公司
 import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
 const en = {

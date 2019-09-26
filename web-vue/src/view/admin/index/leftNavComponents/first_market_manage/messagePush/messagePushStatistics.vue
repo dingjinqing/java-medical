@@ -3,10 +3,10 @@
   <div class="pushStatistics">
     <div class="inline">
       <div class="time">
-        <span>筛选日期：</span>
+        <span>{{$t(`messagePush.filterDate`)}}</span>
         <el-select
           v-model="value"
-          placeholder="请选择筛选日期"
+          :placeholder="$t(`messagePush.pleaseSelectAFilterDate`)"
           size="small"
           @change="timeChange"
         >
@@ -35,7 +35,7 @@
             type="primary"
             size="small"
             @click="handleFilter"
-          >筛选</el-button>
+          >{{$t(`messagePush.btnFilter`)}}</el-button>
         </div>
       </div>
 
@@ -44,7 +44,7 @@
     <div class="ulListContent">
       <ul class="ulList">
         <li>
-          <div>消息推送数量</div>
+          <div>{{$t(`messagePush.messagePushNumber`)}}</div>
           <div
             class="number1"
             v-loading="loading"
@@ -56,7 +56,7 @@
           ></el-image>
         </li>
         <li>
-          <div>消息送达数量</div>
+          <div>{{$t(`messagePush.messageSentNumber`)}}</div>
           <div
             class="number2"
             v-loading="loading"
@@ -68,7 +68,7 @@
           ></el-image>
         </li>
         <li>
-          <div>回访数量</div>
+          <div>{{$t(`messagePush.numberOfReturnVisits`)}}</div>
           <div
             class="number3"
             v-loading="loading"
@@ -80,7 +80,7 @@
           ></el-image>
         </li>
         <li>
-          <div>平均回访率</div>
+          <div>{{$t(`messagePush.averageReturnVisitRate`)}}</div>
           <div
             class="number4"
             v-loading="loading"
@@ -125,7 +125,13 @@ export default {
        * 图表的数据
        */
       chartData: {
-        columns: ['日期', '消息推送数量', '消息送达数量', '回访数量', '回访率'],
+        columns: [
+          '日期',
+          '消息推送数量',
+          '消息送达数量',
+          '回访数量',
+          '回访率'
+        ],
         rows: [
 
         ]
@@ -135,23 +141,23 @@ export default {
        */
       options: [
         {
-          label: `最近1天`,
-          value: `最近1天`
+          label: this.$t(`messagePush.lastDay`),
+          value: this.$t(`messagePush.lastDay`)
         },
         {
-          label: `最近7天`,
-          value: `最近7天`
+          label: this.$t(`messagePush.lastSevenDays`),
+          value: this.$t(`messagePush.lastSevenDays`)
         },
         {
-          label: `最近30天`,
-          value: `最近30天`
+          label: this.$t(`messagePush.lastMonth`),
+          value: this.$t(`messagePush.lastMonth`)
         },
         {
-          label: `自定义`,
-          value: `自定义`
+          label: this.$t(`messagePush.customize`),
+          value: this.$t(`messagePush.customize`)
         }
       ],
-      value: `最近1天`,
+      value: this.$t(`messagePush.lastDay`),
       urls: {
         url1: `${this.$imageHost}/image/admin/any_coner/any_coner_blue.png`,
         url2: `${this.$imageHost}/image/admin/any_coner/any_coner_pink.png`,
@@ -198,6 +204,7 @@ export default {
 
   },
   mounted () {
+    this.langDefault()
   },
   methods: {
     // 获取数据
@@ -242,25 +249,25 @@ export default {
       const lastDay = this.getTime().lastDay
       console.log(lastDay)
       switch (val) {
-        case `最近1天`:
+        case this.$t(`messagePush.lastDay`):
           this.fetchData({
             'startTime': lastDay,
             'endTime': now
           })
           break
-        case `最近7天`:
+        case this.$t(`messagePush.lastSevenDays`):
           this.fetchData({
             'startTime': last7,
             'endTime': now
           })
           break
-        case `最近30天`:
+        case this.$t(`messagePush.lastMonth`):
           this.fetchData({
             'startTime': last30,
             'endTime': now
           })
           break
-        case `自定义`:
+        case this.$t(`messagePush.customize`):
           this.isShowTimePicker = true
           this.loading = true
           break

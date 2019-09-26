@@ -1,3 +1,7 @@
+/**
+ * 营销管理>消息推送英文语言包
+ * @ Author 杨万里
+ */
 export const en = {
   // ------------tab页------------
   fullMessagePush: `Full Message Push`,
@@ -22,5 +26,22 @@ export const en = {
   operation: `operation`,
   viewDetail: `View detail`,
   sendTheRecord: `Send the record`,
-  delete: `delete`
+  delete: `delete`,
+  // ------------推送统计------------
+  filterDate: `filterDate`,
+  pleaseSelectAFilterDate: `Please select a filter date`,
+  messagePushNumber: `Message push number`,
+  messageSentNumber: `Message sent number`,
+  numberOfReturnVisits: `Number of return visits`,
+  averageReturnVisitRate: `Average return visit rate`,
+
+  returnRate: `Return rate`,
+  number: `number`,
+  percent: `percent`,
+  date: `date`,
+  // ------------筛选时间下拉------------
+  lastDay: `Last day`,
+  lastSevenDays: `Last seven days`,
+  lastMonth: `Last 30 days`,
+  customize: `customize`
 }
