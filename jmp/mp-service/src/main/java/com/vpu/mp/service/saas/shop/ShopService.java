@@ -162,9 +162,14 @@ public class ShopService extends MainBaseService {
 
 		if (param.isUse != null && param.isUse.equals(shopExpiredStatus)) {
 			// 店铺已过期
-			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW)
-					.where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID))
-					.and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentTimestamp()).or(SHOP_RENEW.EXPIRE_TIME.isNull()))));
+			select.where(SHOP.SHOP_ID.notIn(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
+					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
+			/*
+			 * select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(
+			 * SHOP_RENEW) .where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID))
+			 * .and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentTimestamp()).or(SHOP_RENEW.
+			 * EXPIRE_TIME.isNull()))));
+			 */
 		}
 		if (param.isUse != null && param.isUse.equals(shopSoonExpiredStatus)) {
 			// 即将过期
