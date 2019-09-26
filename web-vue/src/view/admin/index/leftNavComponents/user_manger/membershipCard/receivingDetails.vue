@@ -186,14 +186,12 @@ export default {
   methods: {
     // 1- 加载数据
     loadAllDefaultData () {
-      debugger
       this.loadAllTableData()
       // 批次数据
       this.getgetCardBatchList()
     },
     // 2- 加载列表数据
     loadAllTableData () {
-      debugger
       let obj = {
         'pageRows': this.pageParams.pageRows,
         'currentPage': this.pageParams.currentPage,
@@ -210,7 +208,6 @@ export default {
     // 2- 会卡领取详情-查询
     getReceiveList (obj) {
       getReceiveListRequest(obj).then(res => {
-        debugger
         if (res.error === 0) {
           // 设置分页
           this.pageParams = res.content.page

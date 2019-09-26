@@ -241,7 +241,6 @@ export default {
     }
   },
   created () {
-    debugger
     this.cardId = this.$route.query.cardId
   },
   mounted () {
@@ -251,7 +250,6 @@ export default {
   methods: {
     // 1- 加载默认的数据
     defaultData () {
-      debugger
       let obj = {
         'pageRows': this.pageParams.pageRows,
         'currentPage': this.pageParams.currentPage,
