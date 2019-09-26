@@ -89,7 +89,6 @@
           >
             <template
               slot="header"
-              slot-scope="scope"
             >
               <span>{{$t('groupBuy.groupBuyPrice')}}</span>
               <el-button
@@ -109,7 +108,6 @@
           >
             <template
               slot="header"
-              slot-scope="scope"
             >
               <span>{{$t('groupBuy.commanderPrice')}}</span>
               <el-button
@@ -132,9 +130,7 @@
             :label="$t('groupBuy.groupBuyStock')"
           >
             <template
-              slot="header"
-              slot-scope="scope"
-            >
+              slot="header">
               <span>{{$t('groupBuy.groupBuyStock')}}</span>
               <el-button
                 @click="setCurrent(3)"
