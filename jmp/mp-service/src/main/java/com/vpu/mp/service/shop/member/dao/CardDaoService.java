@@ -172,19 +172,6 @@ public class CardDaoService extends ShopBaseService {
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
 		
 	}
-	
-	/**
-	 * 会员卡消费明细
-	 * @param param
-	 * @return
-	 */
-	public PageResult<ChargeVo> getConsumeList(ChargeParam param) {
-		SelectJoinStep<?> select = db().select(USER.USERNAME,USER.MOBILE,CARD_CONSUMER.MONEY,CARD_CONSUMER.REASON,CARD_CONSUMER.CREATE_TIME,CARD_CONSUMER.MESSAGE)
-			.from(CARD_CONSUMER.leftJoin(USER).on(CARD_CONSUMER.USER_ID.eq(USER.USER_ID)));
-		buildOptionsForCharge(param, select);
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
-	}
-	
 	/**
 	 * 充值明细多条件构建
 	 * @param param
@@ -218,6 +205,53 @@ public class CardDaoService extends ShopBaseService {
 			select.where(CHARGE_MONEY.CREATE_TIME.le(param.getEndTime()));
 		}
 	}
+	
+	/**
+	 * 会员卡消费明细
+	 * @param param
+	 * @return
+	 */
+	public PageResult<ChargeVo> getConsumeList(ChargeParam param) {
+		SelectJoinStep<?> select = db().select(USER.USERNAME,USER.MOBILE,CARD_CONSUMER.MONEY,CARD_CONSUMER.REASON,CARD_CONSUMER.CREATE_TIME,CARD_CONSUMER.MESSAGE)
+			.from(CARD_CONSUMER.leftJoin(USER).on(CARD_CONSUMER.USER_ID.eq(USER.USER_ID)));
+		buildOptionsForConsume(param, select);
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
+	}
+	/**
+	 * 消费明细多条件查询构建
+	 * @param param
+	 * @param select
+	 */
+	private void buildOptionsForConsume(ChargeParam param, SelectJoinStep<?> select) {
+	
+		// 会员卡id
+		if(param.getCardId()!=null) {
+			select.where(CARD_CONSUMER.CARD_ID.eq(param.getCardId()));
+		}
+		// 会员卡类型
+		if(param.getCardType()!=null) {
+			select.where(CARD_CONSUMER.TYPE.eq(param.getCardType()));
+		}
+		// 用户名
+		if(!StringUtils.isBlank(param.getUsername())) {
+			select.where(USER.USERNAME.eq(param.getUsername()));
+		}
+				
+		// 手机号
+		if(!StringUtils.isBlank(param.getMobile())) {
+			select.where(USER.MOBILE.eq(param.getMobile()));
+		}
+		
+		// 余额变动时间 - 开始
+		if(param.getStartTime()!=null) {
+			select.where(CARD_CONSUMER.CREATE_TIME.ge(param.getStartTime()));
+		}
+		// 余额变动时间 - 结束
+		if(param.getEndTime()!=null) {
+			select.where(CARD_CONSUMER.CREATE_TIME.le(param.getEndTime()));
+		}
+	}
+	
 
 
 	
