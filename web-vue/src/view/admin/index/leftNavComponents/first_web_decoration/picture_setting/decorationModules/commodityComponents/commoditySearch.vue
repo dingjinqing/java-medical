@@ -21,8 +21,13 @@
             <span class="el-icon-search"></span>
             <span>商品搜索：请输入商品关键字</span>
           </div>
-          <div>
-
+          <div
+            v-if="classificationRadio==='2'"
+            class="icon"
+            :style="'color:'+data.colorIcon"
+          >
+            <span class="el-icon-c-scale-to-original"></span>
+            <span>分类</span>
           </div>
         </div>
 
@@ -173,8 +178,11 @@ export default {
   background: rgb(238, 238, 238);
   padding: 5px 0px;
   .commoditySearchMain {
+    display: flex;
+    justify-content: space-between;
     position: relative;
     .Search {
+      flex: 1;
       line-height: 24px;
       padding: 0 5px;
       margin: 5px 10px;
@@ -182,6 +190,21 @@ export default {
       border: 1px solid transparent;
       span {
         color: #b4b4b4;
+      }
+    }
+    .icon {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-right: 10px;
+      color: red;
+      span:nth-of-type(1) {
+        font-size: 30px;
+        display: inline-block;
+      }
+      span:nth-of-type(2) {
+        display: inline-block;
+        text-align: right;
       }
     }
   }
