@@ -16,10 +16,10 @@
               v-for="(item,index) in goodsDataList"
               :key="index"
             >
-              <div>
+              <div class="containter">
                 <div class="commodityTop">
                   <div class="label">
-                    <!-- <img :src="item.labelUrl"> -->
+                    <img :src="item.labelUrl">
 
                   </div>
                   <img :src="item.imgUrl">
@@ -95,25 +95,25 @@ export default {
           goodsName: '商品修改测试1',
           imgUrl: this.$imageHost + '/image/admin/0a2kFnVCg46fdTNw.jpeg',
           price: 112,
-          labelUrl: this.$imageHost + 'crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
         },
         {
           goodsName: '商品修改测试2',
           imgUrl: this.$imageHost + '/image/admin/0a2kFnVCg46fdTNw.jpeg',
           price: 544,
-          labelUrl: this.$imageHost + 'crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
         },
         {
           goodsName: '商品修改测试3',
           imgUrl: this.$imageHost + '/image/admin/crop_wlEjGAPFNMXl1EVr.jpeg',
           price: 323,
-          labelUrl: this.$imageHost + 'crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
         },
         {
           goodsName: '商品修改测试4',
           imgUrl: this.$imageHost + '/image/admin/crop_wlEjGAPFNMXl1EVr.jpeg',
           price: 334,
-          labelUrl: this.$imageHost + 'crop_2Slxp6DbLukZ1EJl.png'
+          labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png'
         }
       ]
 
@@ -206,48 +206,68 @@ export default {
 
 .commodity {
   ul {
-    display: flex;
-    flex-wrap: wrap;
+    // display: flex;
+    // flex-wrap: wrap;
     li {
       width: 50%;
       padding: 8px 10px;
-      .commodityTop {
-        position: relative;
-        height: 165px;
-        img {
-          max-height: 165px;
-        }
-      }
-      .commodityBottom {
-        height: 72px;
-        .bottomHead {
-          height: 35px;
-          white-space: normal;
-          word-break: break-all;
-          margin-bottom: 10px;
-          div:nth-of-type(2) {
-            font-size: 12px;
-            margin-top: 5px;
-            span {
-              padding: 1px 4px;
-              border-radius: 2px;
-              border: 1px solid rgb(64, 128, 128);
-              color: rgb(64, 128, 128);
+      .containter {
+        display: flex;
+        height: 145px;
+        .commodityTop {
+          position: relative;
+          height: 145px;
+          .label {
+            // position: absolute;
+            // top: 0px;
+            // left: 0px;
+            img {
+              width: 60px;
             }
           }
+          img {
+            max-height: 145px;
+          }
         }
-        .bottomFooter {
-          display: flex;
-          justify-content: space-between;
-          span {
-            margin: 0 2px 0px 0;
-            min-height: 17px;
-            &:nth-of-type(1) {
-              color: rgb(64, 128, 128);
+        .commodityBottom {
+          // height: 72px;
+          padding: 10px 10px 0 0;
+          height: 100%;
+          .bottomHead {
+            // height: 35px;
+            white-space: normal;
+            word-break: break-all;
+            margin-bottom: 10px;
+            div {
+              white-space: nowrap;
             }
-            &:nth-of-type(2) {
-              color: #c0c0c0;
-              text-decoration: line-through;
+            div:nth-of-type(2) {
+              font-size: 12px;
+              margin-top: 5px;
+              margin-top: 50px;
+              span {
+                padding: 1px 4px;
+                border-radius: 2px;
+                border: 1px solid rgb(64, 128, 128);
+                color: rgb(64, 128, 128);
+              }
+            }
+          }
+          .bottomFooter {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            height: 40px;
+            span {
+              margin: 0 2px 0px 0;
+              min-height: 17px;
+              &:nth-of-type(1) {
+                color: rgb(64, 128, 128);
+              }
+              &:nth-of-type(2) {
+                color: #c0c0c0;
+                text-decoration: line-through;
+              }
             }
           }
         }

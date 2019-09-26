@@ -48,7 +48,7 @@
           <div class="decTop"></div>
           <vue-scroll
             :ops="ops"
-            style="height:510px"
+            style="height:530px"
           >
             <div class="decContent">
 
@@ -886,7 +886,7 @@ export default {
             no-repeat;
         }
         .decContent {
-          height: 510px;
+          height: 530px;
           background: #fff;
           position: relative;
           // padding-bottom: 30px;
