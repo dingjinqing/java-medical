@@ -214,6 +214,15 @@ public class ShopService extends MainBaseService {
 		if (param.hidBottom != null) {
 			select.where(SHOP.HID_BOTTOM.eq(param.hidBottom));
 		}
+		
+		if(!StringUtils.isEmpty(param.expireStartTime)) {
+			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
+					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.ge(param.expireStartTime)))));
+		}
+		if(!StringUtils.isEmpty(param.expireEndTime)) {
+			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
+					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.le(param.expireEndTime)))));
+		}
 		return select;
 	}
 
