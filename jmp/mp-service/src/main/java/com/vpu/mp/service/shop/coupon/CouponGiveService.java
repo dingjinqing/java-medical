@@ -246,7 +246,7 @@ public class CouponGiveService extends ShopBaseService {
                 String tagIds = param.getTagId();
                 String[] tagArray = tagIds.split(",");
                 for (String tagId : tagArray) {
-                    List<Record1<Integer>> tagUserIds = db().select(USER_TAG.USER_ID).from(USER_TAG).where(USER_TAG.IS_DELETE.eq((byte) 0)).and(USER_TAG.TAG_ID.eq(Integer.valueOf(tagId))).fetch();
+                    List<Record1<Integer>> tagUserIds = db().select(USER_TAG.USER_ID).from(USER_TAG).where(USER_TAG.TAG_ID.eq(Integer.valueOf(tagId))).fetch();
                     for (Record1<Integer> userId : tagUserIds) {
                         userIds.add(userId.value1());
                     }
