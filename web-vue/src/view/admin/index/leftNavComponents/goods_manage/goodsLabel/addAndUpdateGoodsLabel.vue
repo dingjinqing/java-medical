@@ -7,21 +7,29 @@
         :rules="goodsLabelRules"
         label-width="120px">
         <el-form-item label="标签名称："
-          prop="name">
-          <el-input ref="labelRef" v-model="goodsLabelData.name" size="small"  style="width: 170px;"/>
+          prop="nameOld">
+          <el-input ref="nameRef" v-model="goodsLabelData.nameOld" size="small"  style="width: 170px;" @change="labelNameChanged"/>
         </el-form-item>
         <el-form-item label="优先级："
-                      prop="level">
-          <el-input ref="levelRef" v-model="goodsLabelData.level" size="small"  style="width: 80px;"/>
+                      prop="levelOld">
+          <el-input ref="levelRef" v-model.number="goodsLabelData.levelOld" size="small"  style="width: 80px;" @change="labelLevelChanged"/>
         </el-form-item>
         <el-form-item label="前端应用模块：">
           <ul class="useModelUl">
             <li>
               <el-checkbox v-model="goodsLabelData.goodsDetail" :true-label="1" :false-label="0">商品详情页</el-checkbox>
+              <el-popover placement="right-start" trigger="hover">
+                <el-image :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
+                <span slot="reference" style="color:#409EFF;cursor:pointer;">查看示例</span>
+              </el-popover>
             </li>
             <li><el-checkbox v-model="goodsLabelData.goodsList" :true-label="1" :false-label="0">商品列表</el-checkbox></li>
             <li>
               <el-checkbox v-model="goodsLabelData.goodsSelect" :true-label="1" :false-label="0">商品筛选页</el-checkbox>
+              <el-popover placement="right-start" trigger="hover">
+                <el-image :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
+                <span slot="reference" style="color:#409EFF;cursor:pointer;">查看示例</span>
+              </el-popover>
             </li>
           </ul>
           <div v-if="goodsLabelData.goodsList === 1" class="useModelListPattern">
@@ -50,10 +58,10 @@
           <span class="inputTip">选择需要添加商品标签的商品</span>
           <div class="goodsInfoWrap">
             <div>
-              <el-radio v-model="goodsInfoRadio" :label="0">全部商品</el-radio>
-              <el-radio v-model="goodsInfoRadio" :label="1">指定商品</el-radio>
+              <el-radio v-model="goodsLabelData.isAll" :label="1">全部商品</el-radio>
+              <el-radio v-model="goodsLabelData.isAll" :label="0">指定商品</el-radio>
             </div>
-            <div v-if="goodsInfoRadio ===1">
+            <div v-if="goodsLabelData.isAll ===0">
               <div>
                 <el-button @click="addGoodsClicked">+添加商品</el-button>
                 <div v-if="selectedGoodsList.length > 0">
@@ -94,13 +102,19 @@
       </el-form>
     </div>
     <choosingGoods :tuneUpChooseGoods="tuneUpChooseGoods" @resultGoodsDatas="chooseGoodsResult"/>
+    <div class="contentFooter">
+      <el-button type="primary" @click="saveGoodsLabel">保存</el-button>
+    </div>
   </div>
 </template>
 
 <script>
+// api引入
+import {isGoodsLabelNameOk, addGoodsLabel, updateGoodsLabel, getGoodsLabel} from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 // 组件引入
 import choosingGoods from '@/components/admin/choosingGoods'
-
+// 工具类引入
+import {isStrBlank} from '@/util/goodsUtil'
 export default {
   name: 'addAndUpdateGoodsLabel',
   components: {choosingGoods},
@@ -109,38 +123,72 @@ export default {
       isUpdate: false,
       // 修改或者新增的接口数据
       goodsLabelData: {
+        id: null,
+        nameOld: null,
         name: null,
+        levelOld: null,
         level: null,
-        goodsDetail: null,
-        goodsList: null,
-        goodsSelect: null,
-        listPattern: null,
-        isAll: null,
-        goodsId: [],
-        sortId: [],
-        catId: []
+        goodsDetail: 0,
+        goodsList: 0,
+        listPattern: 1,
+        goodsSelect: 0,
+        isAll: 1
       },
       goodsLabelRules: {
-        name: [
+        nameOld: [
           { required: true, message: '请输入标签名称', trigger: 'change' }
         ],
-        level: [
+        levelOld: [
           { required: true, message: '优先级', trigger: 'change' }
         ]
       },
-      // 全部商品0，1指定商品或分类
-      goodsInfoRadio: 0,
+      /* 以下数据再goodsLabelData.isAll 为0时才有效 */
+      // 关联的商品信息
       selectedGoodsList: [],
       tuneUpChooseGoods: true,
+      // 关联的商家分类信息
       selectedSortList: [],
+      // 关联的平台分类信息
       selectedCatList: []
     }
   },
   methods: {
+    /* 标签名称改变事件 */
+    labelNameChanged () {
+      if (isStrBlank(this.goodsLabelData.nameOld)) {
+        this.$message.warning({message: '标签名称不可为空'})
+        this.goodsLabelData.nameOld = this.goodsLabelData.name
+        this.$refs.nameRef.focus()
+        return
+      }
+      let params = {
+        id: this.goodsLabelData.id,
+        goodsLabelName: this.goodsLabelData.nameOld,
+        isUpdate: this.isUpdate
+      }
+      isGoodsLabelNameOk(params).then(res => {
+        if (res.error !== 0) {
+          this.$message.warning({message: res.message})
+          this.goodsLabelData.nameOld = this.goodsLabelData.name
+          this.$refs.nameRef.focus()
+        } else {
+          this.goodsLabelData.name = this.goodsLabelData.nameOld
+        }
+      })
+    },
+    /* 标签优先级改变事件 */
+    labelLevelChanged () {
+      if (typeof this.goodsLabelData.levelOld !== 'number') {
+        this.$message.warning({message: '优先级填写错误'})
+        this.goodsLabelData.levelOld = this.goodsLabelData.level
+        this.$refs.labelRef.focus()
+      } else {
+        this.goodsLabelData.level = this.goodsLabelData.levelOld
+      }
+    },
     /* 添加标签关联的商品信息 */
     addGoodsClicked () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-      console.log(this.selectedGoodsList)
     },
     /* 添加标签关联的商家分类信息 */
     addSortClicked () {
@@ -157,12 +205,102 @@ export default {
     /* 删除已选中的需要关联的商品某一项 */
     selectedGoodsDeleteItem (index) {
       this.selectedGoodsList.splice(index, 1)
+    },
+    /* 初始化关联商品信息 */
+    _initSelectedList (labelData) {
+      if (labelData.goodsViewList !== null && labelData.goodsViewList.length > 0) {
+        this.selectedGoodsList = labelData.goodsViewList
+      }
+      if (labelData.sortList !== null && labelData.sortList.length > 0) {
+        this.selectedSortList = labelData.sortList
+      }
+      if (labelData.catList !== null && labelData.catList.length > 0) {
+        this.selectedCatList = labelData.catList
+      }
+    },
+    /* 修改标签内容回显 */
+    _initDataForUpdate (labelId) {
+      getGoodsLabel(labelId).then(res => {
+        if (res.error !== 0) {
+          this.$message.error({message: res.message})
+        }
+        let labelData = res.content
+        this.goodsLabelData.id = labelData.id
+        this.goodsLabelData.name = labelData.name
+        this.goodsLabelData.nameOld = labelData.name
+        this.goodsLabelData.level = labelData.level
+        this.goodsLabelData.levelOld = labelData.level
+        this.goodsLabelData.goodsDetail = labelData.goodsDetail
+        this.goodsLabelData.goodsList = labelData.goodsList
+        this.goodsLabelData.listPattern = labelData.listPattern
+        this.goodsLabelData.goodsSelect = labelData.goodsSelect
+        this.goodsLabelData.isAll = labelData.isAll
+        if (this.goodsLabelData.isAll === 0) {
+          this._initSelectedList(labelData)
+        }
+      })
+    },
+    /* 验证数据正确性 */
+    _validateGoodsLabelData () {
+      if (isStrBlank(this.goodsLabelData.name)) {
+        this.$message.warning({message: '标签名称不可为空'})
+        this.$refs.nameRef.focus()
+        this.$refs.goodsLabelFormRef.validate()
+        return false
+      }
+
+      if (typeof this.goodsLabelData.level !== 'number') {
+        this.$message.warning({message: '标签优先级不可为空'})
+        this.$refs.nameRef.focus()
+        this.$refs.goodsLabelFormRef.validate()
+        return false
+      }
+
+      return true
+    },
+    /* 收集待交互数据 */
+    _getFormData () {
+      let params = {
+        id: this.goodsLabelData.id,
+        name: this.goodsLabelData.name,
+        level: this.goodsLabelData.level,
+        goodsDetail: this.goodsLabelData.goodsDetail,
+        goodsList: this.goodsLabelData.goodsList,
+        listPattern: this.goodsLabelData.listPattern,
+        goodsSelect: this.goodsLabelData.goodsSelect,
+        isAll: this.goodsLabelData.isAll,
+        goodsId: [],
+        sortId: [],
+        catId: []
+      }
+      if (this.goodsLabelData.isAll === 0) {
+        this.selectedGoodsList.forEach(item => params.goodsId.push(item.goodsId))
+        this.selectedSortList.forEach(item => params.sortId.push(item.sortId))
+        this.selectedCatList.forEach(item => params.catId.push(item.catId))
+      }
+      return params
+    },
+    /* 新增或修改标签 */
+    saveGoodsLabel () {
+      if (!this._validateGoodsLabelData()) {
+        return
+      }
+      let params = this._getFormData()
+
+      let execFun = this.isUpdate ? updateGoodsLabel : addGoodsLabel
+      execFun(params).then(res => {
+        if (res.error === 0) {
+          this.$router.push({name: 'label'})
+        } else {
+          this.$message.error({message: res.message})
+        }
+      })
     }
   },
   mounted () {
     if (this.$route.params.id !== undefined) {
       this.isUpdate = true
-      this.goodsLabelData.id = this.$route.params.id
+      this._initDataForUpdate(this.$route.params.id)
     }
   }
 }
@@ -213,5 +351,17 @@ export default {
     font-size: 16px;
     color: #5a8bff;
     cursor: pointer !important;
+  }
+  .contentFooter{
+    background: #f8f8fa;
+    text-align: center;
+    box-sizing: border-box;
+    height: 60px;
+    padding-top: 10px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
   }
 </style>
