@@ -1,46 +1,11 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record13;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
-import com.vpu.mp.db.main.tables.records.BackProcessRecord;
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
-import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.db.main.tables.records.*;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -48,14 +13,9 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.*;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
 import com.vpu.mp.service.pojo.shop.market.message.BatchUploadCodeParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -72,8 +32,6 @@ import com.vpu.mp.service.wechat.bean.ma.WxContentTemplate;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInListInner;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
-
-import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -88,13 +46,23 @@ import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaSubmitAudit;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
-import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaCategoryListResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaDomainResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaPageListResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import me.chanjar.weixin.open.bean.result.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 /**
  *
@@ -354,28 +322,24 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 根据appid检测MpAuthShop表中数据存在性
-	 *
-	 * @param appId
 	 * @return true存在，false不存在
 	 */
 	public boolean checkAuthShopExist(String appId) {
 		Condition conditionAuthShop = MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(appId);
-		return db().fetchCount(MpAuthShop.MP_AUTH_SHOP, conditionAuthShop) > 0;
+        return db().fetchExists(MpAuthShop.MP_AUTH_SHOP, conditionAuthShop);
 	}
 
 	/**
 	 * 查询微信支付配置
-	 *
-	 * @return
 	 */
-	public WxpayConfigParam getWxpayConfig(WxpaySearchParam wxpaySearchParam) {
-		List<WxpayConfigParam> wxpayConfigParams = db()
-				.select(MpAuthShop.MP_AUTH_SHOP.APP_ID, MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID,
-						MpAuthShop.MP_AUTH_SHOP.PAY_KEY, MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT,
-						MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT)
-				.from(MpAuthShop.MP_AUTH_SHOP).where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpaySearchParam.getAppId()))
-				.fetchInto(WxpayConfigParam.class);
-		return wxpayConfigParams != null && !wxpayConfigParams.isEmpty() ? wxpayConfigParams.get(0) : null;
+    public WxpayConfigParam getWxpayConfig(String appId) {
+        Optional<WxpayConfigParam> optionalInto = db()
+            .select(MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.PAY_MCH_ID,
+                MP_AUTH_SHOP.PAY_KEY, MP_AUTH_SHOP.PAY_CERT_CONTENT,
+                MP_AUTH_SHOP.PAY_KEY_CONTENT)
+            .from(MP_AUTH_SHOP).where(MP_AUTH_SHOP.APP_ID.eq(appId))
+            .fetchOptionalInto(WxpayConfigParam.class);
+        return optionalInto.orElse(new WxpayConfigParam());
 	}
 
 	/**
@@ -792,7 +756,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public JsonResultCode batchUploadCodeAndApplyAudit(Integer templateId){
-		
+
 		MpVersionRecord row = saas.shop.mpVersion.getRow(templateId);
 		List<Byte> asList = Arrays.asList(TaskJobsConstant.STATUS_NEW,TaskJobsConstant.STATUS_EXECUTING);
 		int recId = saas.shop.backProcessService.insertByInfo(row.into(MpVersionVo.class), this.getClass().getName(), 0);
@@ -975,8 +939,8 @@ public class MpAuthShopService extends MainBaseService {
         SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> select =getCanSubmitAuditMps(param,param.buildOption());
         return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MpAuthShopListVo.class);
     }
-    
-    
+
+
     public SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> getCanSubmitAuditMps(MpAuthShopListParam param, Condition condition) {
     	  String shopFieldName=SHOP_RENEW.SHOP_ID.getName();
           String expireFieldName=SHOP_RENEW.EXPIRE_TIME.getName();
@@ -1519,7 +1483,7 @@ public class MpAuthShopService extends MainBaseService {
 		//判断任务是否可以终止
 		if(saas.taskJobMainService.assertExecuting(row.getProcessId())) {
 			//更改任务状态为 3 ，终止
-			saas.taskJobMainService.updateTaskJobStatus(row.getProcessId(), TaskJobsConstant.STATUS_TERMINATION);			
+            saas.taskJobMainService.updateTaskJobStatus(row.getProcessId(), TaskJobsConstant.STATUS_TERMINATION);
 			return true;
 		}
 		return false;

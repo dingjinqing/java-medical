@@ -58,5 +58,9 @@ public class TradeConstant {
      * {@value} 使用内省获取到的类属性列表中会多一个class属性
      */
     public static final String FIELD_CLAZZ = "class";
+    /**
+     * 退换货相关默认期限：7天
+     * {@value}
+     */
     public static final Byte BYTE_SEVEN = 7;
 }

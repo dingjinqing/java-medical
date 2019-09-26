@@ -5,9 +5,8 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @Author:liufei
- * @Date:2019/7/9
- * @Description:
+ * @author liufei
+ * @date 2019/7/9
  */
 @Data
 public class WxpayConfigParam {

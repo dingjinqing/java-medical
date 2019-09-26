@@ -63,20 +63,18 @@ public class AdminTradeController extends AdminBaseController {
         if (!saas.shop.mp.checkAuthShopExist(wxpayConfigParam.getAppId())) {
             return fail(JsonResultMessage.AUTH_SHOP_NOT_EXIST);
         }
-
         return saas.shop.mp.udpateWxpayConfig(wxpayConfigParam) > 0 ? success() : fail(JsonResultMessage.WECAHT_PAY_CONFIG_UPDATE_DAILED);
     }
 
     /**
      * 查询微信支付密钥配置
      */
-    @PostMapping("/api/admin/config/trade/getWxpayConfig")
-    public JsonResult getWxpayConfig(@RequestBody @Validated WxpaySearchParam wxpaySearchParam) {
-        WxpayConfigParam wxpayConfigParam = null;
-        if (saas.shop.mp.checkAuthShopExist(wxpaySearchParam.getAppId())) {
-            wxpayConfigParam = saas.shop.mp.getWxpayConfig(wxpaySearchParam);
+    public JsonResult getWxpayConfig() {
+        String appId = saas.shop.mp.getAuthShopByShopId(shop().trade.getShopId()).getAppId();
+        if (saas.shop.mp.checkAuthShopExist(appId)) {
+            return success(saas.shop.mp.getWxpayConfig(appId));
         }
-        return success(wxpayConfigParam);
+        return fail(JsonResultMessage.AUTH_SHOP_NOT_EXIST);
     }
 
     /**

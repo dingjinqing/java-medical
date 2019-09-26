@@ -3,9 +3,8 @@ package com.vpu.mp.service.pojo.shop.config.trade;
 import lombok.Data;
 
 /**
- * @Author:liufei
- * @Date:2019/7/11
- * @Description:
+ * @author liufei
+ * @date 2019/7/11
  */
 @Data
 public class PaymentConfigVo {
