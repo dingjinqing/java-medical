@@ -51,7 +51,7 @@ public class GiveGiftRecordListVo {
     /**
      * 名称
      */
-    String userName;
+    String username;
     /**
      * 电话
      */
