@@ -302,28 +302,35 @@
           <template slot-scope="scope">
             <div>
               <el-button
+                v-if="scope.row.nickName!==null"
+                class="xbutton"
+                type="text"
+                @click="handleOperation(scope.row)"
+              >查看小程序授权信息</el-button>
+              <br>
+              <el-button
                 class="xbutton"
                 type="text"
                 @click="btnEdit(scope.row)"
-              > 编辑</el-button>
+              >编辑</el-button>
               <br>
               <el-button
                 class="xbutton"
                 type="text"
                 @click="btnRenew(scope.row)"
-              > 续费</el-button>
+              >续费</el-button>
               <br>
               <el-button
                 class="xbutton"
                 type="text"
                 @click="btnShowVersion(scope.row.shopId)"
-              > 版本权限</el-button>
+              >版本权限</el-button>
               <br>
               <el-button
                 class="xbutton"
                 type="text"
                 @click="ShowRenew(scope.row.shopId)"
-              > 查看续费</el-button>
+              >查看续费</el-button>
               <br>
               <el-button
                 class="xbutton"
@@ -1012,6 +1019,15 @@ export default {
           this.search()
         } else {
           this.$message.error(res.message)
+        }
+      })
+    },
+    handleOperation (data) {
+      this.$router.push({
+        name: 'programManage',
+        params: {
+          page: 'authMsg',
+          appId: data.appId
         }
       })
     }
