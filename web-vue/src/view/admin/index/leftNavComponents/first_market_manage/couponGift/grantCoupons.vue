@@ -5,16 +5,20 @@
         <el-form
           label-width="150px"
           labelPosition='right'
+          :rules="rules"
+          :model="form"
+          size="small"
         >
           <!-- 活动名称 -->
           <el-form-item
             label="活动名称"
-            prop=""
+            prop="actName"
           >
             <el-input
               size="small"
               placeholder="请输入活动名称"
               class="morelength"
+              v-model="form.actName"
             ></el-input>
           </el-form-item>
           <!-- 参与活动人群 -->
@@ -160,21 +164,30 @@
             label="选择优惠券"
             prop="coupon"
           >
-            <div class="gray">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div><br>
+            <div class="gray">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+            <span>{{couponId}}</span>
+            <el-button @click="handleToCallDialog">选择优惠券</el-button>
           </el-form-item>
           <!-- 发送时间 -->
           <el-form-item
             label="发送时间"
             prop="sendAction"
           >
-            <el-radio label="0">立即发送</el-radio>
+            <el-radio
+              label="0"
+              v-model="form.sendAction"
+            >立即发送</el-radio>
             <br>
-            <el-radio label="1">定时发送</el-radio>
+            <el-radio
+              label="1"
+              v-model="form.sendAction"
+            >定时发送</el-radio>
             <el-date-picker
               type="datetime"
               class="morelength"
               size="small"
               value-format="yyyy-MM-dd HH:mm:ss"
+              v-model="form.startTime"
             >
             </el-date-picker>
           </el-form-item>
@@ -184,7 +197,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="showParam"
+          @click="addAct"
         >确认发放</el-button>
       </div>
       <!-- 添加会员的弹窗 -->
@@ -205,6 +218,8 @@
         @dialog-cancel="closeDialog"
         :dialogVisible="dialogVisible"
       />
+      <!--添加优惠卷弹窗-->
+      <addCouponDialog @checkReturnFormat="handleToCheck" />
     </div>
   </wrapper>
 </template>>
@@ -219,12 +234,13 @@ import getUserDialog from '../messagePush/getUserDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import wrapper from '@/components/admin/wrapper/wrapper'
 // import choosingGoods from '@/components/admin/choosingGoods'
-// import { addActivity } from '@/api/admin/marketManage/couponGift.js'
+import { addActivity } from '@/api/admin/marketManage/couponGift.js'
 // // import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 // // import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
 import { delObj } from '@/util/formatData'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import { getUserNumberApi } from '@/api/admin/marketManage/messagePush.js'
+import addCouponDialog from '@/components/admin/addCouponDialog'
 
 export default {
   components: {
@@ -233,13 +249,20 @@ export default {
     chooseSelect,
     memberListDialog,
     choosingGoods,
-    getUserDialog
+    getUserDialog,
+    addCouponDialog
+
     // choosingGoods,
     // AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
     return {
-      checkedData: [], // 初始化弹窗选中的行
+      // 优惠卷弹窗
+      couponDialogFlag: false,
+      couponData: [],
+      couponId: '',
+      checkedData: [],
+      // 初始化弹窗选中的行
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
         url2: `${this.$imageHost}/image/admin/shop_logo_default.png`,
@@ -249,10 +272,19 @@ export default {
       /**
        * form表单的数据
        */
-      formData: {
-        name: ``,
-        title: ``,
-        content: ``
+      form: {
+        actName: ``,
+        sendAction: ``,
+        startTime: ``
+      },
+      /**
+       * 表单检验
+       */
+      rules: {
+        actName: [
+          { required: true, message: '请填写消息名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ]
       },
       templateId: null,
       labels: {
@@ -314,15 +346,7 @@ export default {
       disabledOnClickCustomRule: false,
       pageLink: ``,
       time: {},
-      /**
-       * 表单检验
-       */
-      rules: {
-        name: [
-          { required: true, message: '请填写消息名称', trigger: 'blur' },
-          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
-        ]
-      },
+
       /**
        * 传给组件chooseSelect的数据
        */
@@ -402,35 +426,68 @@ export default {
   },
 
   methods: {
-    showParam () {
+    // 选择优惠券弹窗
+    handleToCallDialog () {
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: this.couponList
+      }
+      this.$http.$emit('V-AddCoupon', obj)
+    },
+    // 优惠卷回调
+    handleToCheck (data) {
+      console.log('优惠卷', data)
+      let couponKey = []
+      data.map((item) => {
+        couponKey.push(item.id)
+      })
+      this.couponData = data
+      this.couponId = couponKey.toString()
+      console.log('conponId', couponKey.toString())
+      console.log('conponData', this.couponData)
+    },
+    // 发放优惠券
+    addAct () {
       console.log('params:', this.params)
       let param = {
-        'actName': '全部条件优惠券',
+        'actName': this.form.actName,
         'couponGiveGrantInfoParams': {
-          'custom_box': this.params.onClickCustomRule,
+          'custom_box': Number(this.params.onClickCustomRule),
           'point_start_time': this.params.customRuleInfo.loginStart,
           'point_end_time': this.params.customRuleInfo.loginEnd,
-          'cart_box': this.params.onClickNoPay,
-          'card_box': this.params.onClickCard,
-          'tag_box': this.params.onClickTag,
-          'goods_box': this.params.onClickGoods,
+          'cart_box': Number(this.params.onClickNoPay),
+          'card_box': Number(this.params.onClickCard),
+          'tag_box': Number(this.params.onClickTag),
+          'goods_box': Number(this.params.onClickGoods),
           'goods_ids': '',
-          'member_box': this.params.onClickUser,
-          'coupon_ids': ''
+          'member_box': Number(this.params.onClickUser),
+          'coupon_ids': this.couponId
         },
-        'cardId': this.params.cardIdsList.toString,
-        'tagId': this.params.tagIdList.toString,
-        'user': this.params.userIdList.toString,
+        'cardId': this.params.cardIdsList.toString(),
+        'tagId': this.params.tagIdList.toString(),
+        'user': this.params.userIdList.toString(),
         'havePay': this.params.customRuleInfo.payedDay,
         'noPay': this.params.customRuleInfo.noPayDay,
         'maxCount': this.params.customRuleInfo.buyTimesLess,
         'minCount': this.params.customRuleInfo.buyTimesMore,
         'maxAvePrice': this.params.customRuleInfo.moneyAvgLess,
         'minAvePrice': this.params.customRuleInfo.moneyAvgMore,
-        'sendAction': '',
-        'startTime': ''
+        'sendAction': this.form.sendAction,
+        'startTime': this.form.startTime
       }
       console.log('param:', param)
+
+      addActivity(param).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          alert('操作成功')
+          this.$router.push({
+            path: `/admin/home/main/couponGift/couponGiftList`
+          })
+        }
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
     },
     handleChooseData (data) {
       this.$message({ message: `已经选择了${data.length}条数据！`, type: 'success' })
@@ -470,32 +527,6 @@ export default {
       this.formData.content = res.content
       this.templateId = res.id
     },
-    // 发放优惠券
-    // addAct () {
-    //   let addParam = {
-    //     'actName': this.form.actName,
-    //     'sendAction': this.form.sendAction,
-    //     'startTime': this.form.startTimes
-    //   }
-    //   this.$refs['form'].validate((valid) => {
-    //     if (valid) {
-    //       addActivity(addParam).then(res => {
-    //         console.log(res)
-    //         if (res.error === 0) {
-    //           alert('操作成功')
-    //           this.$router.push({
-    //             name: 'couponGift'
-    //           })
-    //         }
-    //       }).catch(() => {
-    //         this.$message.error('操作失败')
-    //       })
-    //     } else {
-    //       this.$message.error('数据不符合要求')
-    //       return false
-    //     }
-    //   })
-    // },
     // 选择商品
     handleChooseGoods () {
       if (this.params.onClickGoods === false) {

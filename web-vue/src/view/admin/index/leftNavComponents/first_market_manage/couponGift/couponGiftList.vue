@@ -104,8 +104,12 @@
                         <td
                           style="width:4%"
                           class="listContent"
-                          @click="receiveDetails(item.id,it.couponId)"
-                        >发放明细</td>
+                        >
+                          <el-button
+                            @click="receiveDetails(item.id,it.couponId)"
+                            type="text"
+                          >发放明细</el-button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -174,23 +178,23 @@ export default {
         })
         data[index].obj = JSON.parse(data[index]['sendCondition'])
         data[index].people = []
-        if (data[index].obj.member_box === '1') {
+        if (data[index].obj.member_box === 1) {
           // data[index].people = '手动添加会员'
           data[index].people.push('手动添加会员')
         }
-        if (data[index].obj.cart_box === '1') {
+        if (data[index].obj.cart_box === 1) {
           data[index].people.push('30天内在本店内有加入购物车行为人群')
         }
-        if (data[index].obj.goods_box === '1') {
+        if (data[index].obj.goods_box === 1) {
           data[index].people.push('购买指定商品')
         }
-        if (data[index].obj.card_box === '1') {
+        if (data[index].obj.card_box === 1) {
           data[index].people.push('持有会员卡')
         }
-        if (data[index].obj.tag_box === '1') {
+        if (data[index].obj.tag_box === 1) {
           data[index].people.push('属于标签')
         }
-        if (data[index].obj.custom_box === '1') {
+        if (data[index].obj.custom_box === 1) {
           if (data[index].havePay != null) {
             data[index].people.push(`${item.havePay}天内有交易记录`)
           }

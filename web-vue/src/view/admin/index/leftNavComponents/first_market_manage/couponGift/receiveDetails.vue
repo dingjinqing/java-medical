@@ -124,10 +124,13 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span
+
+              <el-button
                 v-if="scope.row.isUsed === '未使用'"
                 @click="stopCoupon(scope.row.id)"
-              >废除</span>
+                type="text"
+              >废除
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
