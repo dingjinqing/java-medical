@@ -79,4 +79,6 @@ public class ShopListQueryResultVo {
 	private String versionConfig;
 	private List<String> specialInfo;
 	private String principalName;
+	
+	private String appId;
 }
