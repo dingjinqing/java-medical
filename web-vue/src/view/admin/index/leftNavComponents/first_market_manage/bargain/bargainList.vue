@@ -430,7 +430,7 @@ export default {
     effectData (id, startTime, endTime) {
       let d = new Date()
       if (d < new Date(endTime)) {
-        endTime = this.getFormatDate(d)
+        endTime = this.moment(d).format('YYYY-MM-DD HH:mm:ss')
       }
       this.$router.push({
         path: '/admin/home/main/bargain/effectData',

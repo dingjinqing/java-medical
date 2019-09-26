@@ -5,16 +5,16 @@
         <el-button
           type="primary"
           @click="add()"
-        >新建分组</el-button>
+        >{{$t('marketCommon.filter')}}</el-button>
       </div>
       <div class="table_box">
         <div class="filters">
-          <div class="filters_item"><span>分组名：</span>
+          <div class="filters_item"><span>{{$t('storeList.groupName')}}:</span>
             <el-input
               v-model="queryParams.groupName"
               class="inputWidth"
               size="small"
-              placeholder="请输入分组名"
+              :placeholder="$t('storeList.groupNamePlaceholder')"
             ></el-input>
           </div>
           <el-button
@@ -40,15 +40,15 @@
         >
           <el-table-column
             prop="groupName"
-            label="分组名"
+            :label="$t('storeList.groupName')"
           ></el-table-column>
           <el-table-column
             prop="createTime"
-            label="创建时间"
+            :label="$t('storeCommon.createTime')"
           ></el-table-column>
           <el-table-column
             prop="numbers"
-            label="门店数"
+            :label="$t('storeList.storeNumber')"
           >
           </el-table-column>
 
@@ -61,27 +61,27 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="编辑"
+                  :content="$t('storeCommon.edit')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">编辑</a>
+                  <a @click="edit(scope.row.id)">{{$t('storeCommon.edit')}}</a>
                 </el-tooltip>
 
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="删除"
+                  :content="$t('storeCommon.delete')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">删除</a>
+                  <a @click="edit(scope.row.id)">{{$t('storeCommon.delete')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="查看门店"
+                  :content="$t('storeList.checkStores')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">查看门店</a>
+                  <a @click="edit(scope.row.id)">{{$t('storeList.checkStores')}}</a>
                 </el-tooltip>
               </div>
             </template>

@@ -5,17 +5,17 @@
         <el-button
           type="primary"
           @click="add()"
-        >新建门店</el-button>
+        >{{$t('storeList.addStore')}}</el-button>
       </div>
       <div class="table_box">
         <div class="filters">
-          <div class="filters_item"><span>门店分组：</span>
+          <div class="filters_item"><span>{{$t('storeList.storeGroup')}}:</span>
             <el-select
               v-model="queryParams.groupId"
               size="small"
             >
               <el-option
-                label="全部"
+                :label="$t('storeCommon.all')"
                 :value="null"
               ></el-option>
               <el-option
@@ -26,32 +26,32 @@
               ></el-option>
             </el-select>
           </div>
-          <div class="filters_item"><span>是否已授权POS：</span>
+          <div class="filters_item"><span>{{$t('storeList.isAuthPos')}}:</span>
             <el-select
               v-model="queryParams.isAuthPos"
               size="small"
             >
               <el-option
-                label="全部"
+                :label="$t('storeCommon.all')"
                 selected
                 :value="null"
               ></el-option>
               <el-option
-                label="是"
+                :label="$t('storeCommon.yes')"
                 :value="true"
               ></el-option>
               <el-option
-                label="否"
+                :label="$t('storeCommon.no')"
                 :value="false"
               ></el-option>
             </el-select>
           </div>
-          <div class="filters_item"><span>门店信息：</span>
+          <div class="filters_item"><span>{{$t('storeList.storeInfo')}}:</span>
             <el-input
               v-model="queryParams.keywords"
               class="inputWidth"
               size="small"
-              placeholder="门店名称|编码|负责人"
+              :placeholder="$t('storeList.storeInfoPlaceholder')"
             ></el-input>
           </div>
           <el-button
@@ -59,7 +59,7 @@
             class="btn"
             type="primary"
             size="small"
-          >{{$t('marketCommon.filter')}}</el-button>
+          >{{$t('storeCommon.filter')}}</el-button>
         </div>
         <el-table
           v-loading="loading"
@@ -77,52 +77,54 @@
         >
           <el-table-column
             prop="storeName"
-            label="门店名称"
+            :label="$t('storeList.storeName')"
           ></el-table-column>
           <el-table-column
             prop="posShopId"
-            label="门店编码"
+            :label="$t('storeList.posShopId')"
           ></el-table-column>
           <el-table-column
             prop="groupName"
-            label="分组名"
+            :label="$t('storeList.groupName')"
           >
           </el-table-column>
           <el-table-column
             prop="address"
-            label="门店地址"
+            :label="$t('storeList.storeAddress')"
           ></el-table-column>
           <el-table-column
             prop="manager"
-            label="负责人"
+            :label="$t('storeList.manager')"
           ></el-table-column>
           <el-table-column
             prop="mobile"
-            label="联系电话"
+            :label="$t('storeList.mobile')"
           ></el-table-column>
           <el-table-column
             prop="businessHours"
-            label="营业时间"
+            :label="$t('storeList.businessHours')"
           ></el-table-column>
           <el-table-column
             prop="businessStateName"
-            label="营业状态"
+            :label="$t('storeList.businessState')"
           >
             <template slot-scope="scope">
               {{scope.row.businessStateName}}
               <a
+                @click="closeDown(scope.row.storeId)"
                 class="businessStateOperate"
                 v-if="scope.row.businessState === 1"
-              >歇业</a>
+              >{{$t('storeList.closeDown')}}</a>
               <a
+                @click="opening(scope.row.storeId)"
                 class="businessStateOperate"
                 v-else
-              >开业</a>
+              >{{$t('storeList.opening')}}</a>
             </template>
           </el-table-column>
           <el-table-column
             prop=""
-            label="买单码"
+            :label="$t('storeList.purchaseOrderCode')"
           ></el-table-column>
 
           <el-table-column
@@ -134,50 +136,50 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="编辑"
+                  :content="$t('storeCommon.edit')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">编辑</a>
+                  <a @click="edit(scope.row.storeId)">{{$t('storeCommon.edit')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="商品管理"
+                  :content="$t('storeList.goodsManage')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">商品管理</a>
+                  <a @click="edit(scope.row.storeId)">{{$t('storeList.goodsManage')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="核销员管理"
+                  :content="$t('storeList.verifierManage')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">核销员管理</a>
+                  <a @click="edit(scope.row.storeId)">{{$t('storeList.verifierManage')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="删除"
+                  :content="$t('storeCommon.delete')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">删除</a>
+                  <a @click="del(scope.row.storeId)">{{$t('storeCommon.delete')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="门店管理"
+                  :content="$t('storeList.storeManage')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">门店管理</a>
+                  <a @click="edit(scope.row.storeId)">{{$t('storeList.storeManage')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="分享"
+                  :content="$t('storeCommon.share')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">分享</a>
+                  <a @click="edit(scope.row.storeId)">{{$t('storeCommon.share')}}</a>
                 </el-tooltip>
               </div>
             </template>
@@ -193,7 +195,7 @@
 </template>
 
 <script>
-import { storeList, allStoreGroup } from '@/api/admin/storeManage/store'
+import { storeList, allStoreGroup, updateStore, delStore } from '@/api/admin/storeManage/store'
 import pagination from '@/components/admin/pagination/pagination'
 // 地区编码
 import chinaData from '@/assets/china-data'
@@ -235,7 +237,7 @@ export default {
       data.map((item, index) => {
         item.address = this.getFullAddress(item)
         item.businessHours = item.openingTime + ' - ' + item.closeTime
-        item.businessStateName = item.businessState === 1 ? '营业' : '未营业'
+        item.businessStateName = item.businessState === 1 ? this.$t('storeList.open') : this.$t('storeList.notOpen')
       })
       this.tableData = data
       this.langDefaultFlag = true
@@ -267,6 +269,54 @@ export default {
       address += ' ' + areaDistrict.districtName + ' ' + item.address
 
       return address
+    },
+    // 歇业
+    closeDown (id) {
+      var param = {}
+      param.storeId = id
+      param.businessState = 0
+      updateStore(param).then((res) => {
+        if (res.error === 0) {
+          this.$message.success({
+            message: this.$t('marketCommon.successfulOperation')
+          })
+          this.initDataList()
+        }
+      })
+    },
+    // 开业
+    opening (id) {
+      var param = {}
+      param.storeId = id
+      param.businessState = 1
+      updateStore(param).then((res) => {
+        if (res.error === 0) {
+          this.$message.success({
+            message: this.$t('marketCommon.successfulOperation')
+          })
+          this.initDataList()
+        }
+      })
+    },
+    // 删除门店
+    del (id) {
+      let param = {
+        'storeId': id
+      }
+      this.$confirm(this.$t('storeList.delStoreTip'), this.$t('marketCommon.tip'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
+        type: 'warning'
+      }).then(() => {
+        delStore(param).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: this.$t('marketCommon.successfulOperation')
+            })
+            this.initDataList()
+          }
+        })
+      })
     },
     edit (id) {
 

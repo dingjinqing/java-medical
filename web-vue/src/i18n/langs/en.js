@@ -19,6 +19,14 @@ import { en as goodsImport } from './views/goodsManage/goodsImport'
 // 概览
 import { en as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 
+// 小程序管理
+// 页面装修
+import { en as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+// 小程序装修
+import { en as pageDecoration } from './views/smallProgramManagement/pageDecoration'
+// 底部导航配置
+import { en as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
+
 // 营销管理
 // 营销管理通用词汇
 import { en as marketCommon } from './views/admin_new/en/index/marketManagement/marketCommonEn'
@@ -48,14 +56,8 @@ import { en as reducePriceList } from './views/admin_new/en/index/marketManageme
 import { en as adSharePolite } from './views/admin_new/en/index/marketManagement/sharePolite/adSharePolite'
 // 营销管理/消息推送
 import { en as messagePush } from './views/admin_new/en/index/marketManagement/messagePush/messagePushEn'
-// 小程序装修
-import { en as pageDecoration } from './views/smallProgramManagement/pageDecoration'
-// 底部导航配置
-import { en as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
 // 分销
 import { en as distribution } from './views/admin_new/en/index/marketManagement/distribution/distributionEn'
-// 页面装修
-import { en as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 
 // 订单
 import { en as order } from './views/admin/index/leftNavComponents/order/order'
@@ -68,16 +70,24 @@ import { en as couponPackageOrder } from './views/admin_new/en/index/orderManage
 // 虚拟商品订单-手动退款弹窗
 import { en as refundDialog } from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/refundDialogEn'
 
-// 快递公司
-import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
-
 // 会员管理
 // 会员管理-会员卡
 import { en as memberCard } from './views/admin_new/en/index/userManagement/card/memberCardEn'
+// 门店
+// 门店通用
+import { en as storeCommon } from './views/admin_new/en/index/storeManagement/storeCommonEn'
+// 门店列表
+import { en as storeList } from './views/admin_new/en/index/storeManagement/store/storeListEn'
+
+// admin>公共组件
+// 选择时间
+import { en as dateTimePicker } from './views/admin_new/en/components/dateTimePicker/dateTimePickerEn'
 
 // 支付配置
 import { en as payConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/payConfigurationEn'
 
+// 快递公司
+import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
 const en = {
   messages: {
     lang: 'English',
@@ -576,7 +586,13 @@ const en = {
   ...enLocale,
   expressList,
 
+  dateTimePicker, // 选择时间
+
   // 会员管理
-  memberCard // 会员管理-会员卡
+  memberCard, // 会员管理-会员卡
+
+  // 门店
+  storeCommon, // 门店通用
+  storeList // 门店列表
 }
 export default en

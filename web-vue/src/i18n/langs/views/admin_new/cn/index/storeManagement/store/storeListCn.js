@@ -1,0 +1,30 @@
+export const cn = {
+  addStore: '新建门店',
+  storeGroup: '门店分组',
+  isAuthPos: '是否已授权POS',
+  storeInfo: '门店信息',
+  storeInfoPlaceholder: '门店名称|编码|负责人',
+  storeName: '门店名称',
+  posShopId: '门店编码',
+  groupName: '分组名',
+  storeAddress: '门店地址',
+  manager: '负责人',
+  mobile: '联系电话',
+  businessHours: '营业时间',
+  businessState: '营业状态',
+  purchaseOrderCode: '买单码',
+  notOpen: '未营业',
+  open: '营业',
+  opening: '开业',
+  closeDown: '歇业',
+  goodsManage: '商品管理',
+  verifierManage: '核销员管理',
+  storeManage: '门店管理',
+  delStoreTip: '确定删除该门店？',
+
+  // 分组列表
+  addGroup: '新建分组',
+  groupNamePlaceholder: '请输入分组名',
+  storeNumber: '门店数',
+  checkStores: '查看门店'
+}

@@ -13,13 +13,18 @@ import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
 import { cn as adminPageFramework } from './views/adminPageFramework'
 import { cn as goodsAddEditInfo } from './views/goodsManage/goodsAddEditInfo'
+
+// 概览
+import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
+// 页面装修
+import { cn as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { cn as allGoods } from './views/goodsManage/allGoods'
 import { cn as goodsImport } from './views/goodsManage/goodsImport'
 
-// 营销管理
-
+// 营销管理系列国际化
 // 营销管理通用词汇
 import { cn as marketCommon } from './views/admin_new/cn/index/marketManagement/marketCommonCn'
 // 多人拼团
@@ -54,10 +59,6 @@ import { cn as reducePriceList } from './views/admin_new/cn/index/marketManageme
 import { cn as giveGift } from './views/admin_new/cn/index/marketManagement/giveGift/giveGift'
 // 营销管理/消息推送
 import { cn as messagePush } from './views/admin_new/cn/index/marketManagement/messagePush/messagePushCn'
-// 概览
-import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
-// 页面装修
-import { cn as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 // 分销
 import { cn as distribution } from './views/admin_new/cn/index/marketManagement/distribution/distributionCn'
 
@@ -73,12 +74,15 @@ import { cn as couponPackageOrder } from './views/admin_new/cn/index/orderManage
 // 虚拟商品订单-手动退款弹窗
 import { cn as refundDialog } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/refundDialogCn'
 
-// 快递公司
-import { cn as expressList } from './views/admin/index/leftNavComponents/order/expressList'
-
 // 会员管理
 // 会员管理-会员卡
 import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card/memberCardCn'
+
+// 门店
+// 门店通用
+import { cn as storeCommon } from './views/admin_new/cn/index/storeManagement/storeCommonCn'
+// 门店列表
+import { cn as storeList } from './views/admin_new/cn/index/storeManagement/store/storeListCn'
 
 // 支付配置
 import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/payConfigurationCn'
@@ -86,6 +90,9 @@ import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings
 // admin>公共组件
 // 选择时间
 import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePicker/dateTimePickerCn'
+
+// 快递公司
+import { cn as expressList } from './views/admin/index/leftNavComponents/order/expressList'
 const cn = {
   messages: {
     lang: '中文',
@@ -556,7 +563,11 @@ const cn = {
   expressList,
 
   // 会员管理
-  memberCard // 会员管理-会员卡
+  memberCard, // 会员管理-会员卡
+
+  // 门店
+  storeCommon, // 门店通用
+  storeList // 门店列表
 }
 
 export default cn
