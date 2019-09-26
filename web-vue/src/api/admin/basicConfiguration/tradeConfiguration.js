@@ -36,10 +36,9 @@ export const tradeUpdate = data => service({
 })
 
 // 查询交易流程配置
-export const tradeSelect = data => service({
+export const tradeSelect = () => service({
   url: '/api/admin/config/trade/getOrderProcessConfig',
-  method: 'get',
-  data
+  method: 'post'
 })
 
 // 退换货配置更新
