@@ -60,3 +60,12 @@ export function editShopRequest (data) {
     data: data
   })
 }
+
+// 续费店铺
+export function renewShopRequest (data) {
+  return service({
+    url: '/api/system/shop/renew',
+    method: 'post',
+    data: data
+  })
+}

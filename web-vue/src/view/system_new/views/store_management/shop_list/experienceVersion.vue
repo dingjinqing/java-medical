@@ -283,25 +283,25 @@
             <el-button
               class="xbutton"
               type="text"
-              @click="btnRenew(scope.row.shopId,0)"
+              @click="btnRenew(scope.row)"
             > 续费</el-button>
             <br>
             <el-button
               class="xbutton"
               type="text"
-              @click="btnShowVersion(scope.row.shopId,0)"
+              @click="btnShowVersion(scope.row.shopId)"
             > 版本权限</el-button>
             <br>
             <el-button
               class="xbutton"
               type="text"
-              @click="ShowRenew(scope.row.shopId,0)"
+              @click="ShowRenew(scope.row.shopId)"
             > 查看续费</el-button>
             <br>
             <el-button
               class="xbutton"
               type="text"
-              @click="changeBottom(scope.row.shopId,0)"
+              @click="changeBottom(scope.row.shopId)"
             > 运营数据</el-button>
           </div>
         </template>
@@ -319,11 +319,177 @@
       >
       </el-pagination>
     </div>
+    <div
+      class="renew"
+      v-if="dialogVisible"
+    >
+      <el-dialog
+        title="店铺续费窗口"
+        :visible.sync="dialogVisible"
+        width="780px"
+        center
+      >
+
+        <ul>
+          <li class="shop_message">
+            <label class="fl">店铺名称：</label>
+            <span>{{this.renData.shopName}}</span>
+            <label for="last_time">上次续费到期时间：</label>
+            <span v-if="this.renData.expireTime!==null">{{this.renData.expireTime.substring(0, 10)}}</span>
+          </li>
+          <li>
+            <label class="fl">交费类型：</label>
+            <el-select
+              size="mini"
+              v-model="renewTypeValue"
+              @change="changeRenew"
+              style="width: 96px;"
+            >
+              <el-option
+                v-for="item in renewType"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <label
+              class="renew_money"
+              v-if="renew_money_show"
+            ><span>{{this.renewMoneyName}}</span>金额：</label>
+            <el-input
+              type="text"
+              size="mini"
+              ref="renewMoney"
+              v-if="renew_money_show"
+              v-model="renewMoney"
+              placeholder="请输入金额"
+              style="width:20%"
+            ></el-input>
+            <label
+              class="renew_time"
+              v-if="renew_time_show"
+            ><span>{{this.renewMoneyName}}</span>时长：</label>
+            <el-input
+              size="mini"
+              v-if="renew_time_show"
+              type="number"
+              name="year"
+              class="time_change"
+              v-model="year"
+              @change="changeExpireTime"
+              style="width:8%"
+            ></el-input> 年 <el-input
+              size="mini"
+              type="number"
+              name="month"
+              class="time_change"
+              v-model="month"
+              @change="changeExpireTime"
+              style="width:8%"
+            ></el-input>月
+          </li>
+          <li>
+            <label class="fl">赠送类型：</label>
+            <el-select
+              size="mini"
+              v-model="sendTypeValue"
+              @change="changeSend"
+              style="width: 96px;"
+            >
+              <el-option
+                v-for="item in sendTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <span
+              class="send_time_length"
+              is_show="1"
+            >
+              <label v-if="rend_show">赠送时长：</label>
+              <el-input
+                v-if="rend_show"
+                size="mini"
+                type="number"
+                name="send_year"
+                class="time_change"
+                v-model="send_year"
+                @change="changeExpireTime"
+                style="width:8%"
+              ></el-input><span v-if="rend_show">年</span>
+              <el-input
+                v-if="rend_show"
+                size="mini"
+                type="number"
+                name="send_month"
+                class="time_change"
+                v-model="send_month"
+                @change="changeExpireTime"
+                style="width:8%"
+              ></el-input><span v-if="rend_show">月</span>
+            </span>
+
+            <span
+              v-if="send_function_show"
+              class="send_function"
+              style="margin-left: 4%;"
+            >
+              <el-input
+                size="mini"
+                type="button"
+                value="选择功能"
+                style="width:12%"
+                class="bt_sel"
+              ></el-input>
+              <span></span>
+            </span>
+
+          </li>
+          <li>
+            <label class="fl">有效期：</label>
+            <el-date-picker
+              v-model="newExpire_time"
+              ref="newExpire_time"
+              size="mini"
+              type="date"
+              placeholder="到期日期"
+              value-format="yyyy-MM-dd"
+              style="width:20%"
+            >
+            </el-date-picker>
+          </li>
+          <li>
+            <label class="fl">备注：</label>
+            <el-input
+              style="width:20%"
+              size="mini"
+              type="text"
+              ref="renewDesc"
+              v-model="renewDesc"
+              name="renew_desc"
+            ></el-input>
+          </li>
+        </ul>
+        <div style="margin-bottom: 10px;margin-right: 20px;text-align: right;">
+          <el-button
+            type="primary"
+            size="medium"
+            @click="beforeButton()"
+          >确 定</el-button>
+          <el-button
+            @click="dialogVisible = false"
+            size="medium"
+          >取 消</el-button>
+        </div>
+
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-import { shopSearchRequest, upEnableRequest, upBottomRequest } from '@/api/system/shopList.js'
+import { shopSearchRequest, upEnableRequest, upBottomRequest, renewShopRequest } from '@/api/system/shopList.js'
 export default {
   name: 'experienceVersion',
   data () {
@@ -399,7 +565,37 @@ export default {
         specialInfo: [],
         showSpecialInfo: []
       }],
+      sendTypes: [{
+        value: 0,
+        label: '无'
+      },
+      {
+        value: 2,
+        label: '时间'
+      },
+      {
+        value: 3,
+        label: '功能'
+      }
+      ],
+      dialogVisible: false,
       showSpecialInfo: [],
+      renData: null,
+      renewTypeValue: 1,
+      renewType: this.$t('shopList.renew_Type'),
+      renewMoneyName: '续费',
+      renew_money_show: true,
+      renew_time_show: true,
+      sendTypeValue: 0,
+      year: 0,
+      month: 0,
+      send_year: 0,
+      send_month: 0,
+      newExpire_time: null,
+      rend_show: false,
+      send_function_show: false,
+      renewDesc: null,
+      renewMoney: null,
       tableHeight: document.body.clientHeight - 381
     }
   },
@@ -662,6 +858,105 @@ export default {
         'flag': 4
       }
       this.$emit('sendShopId', params)
+    },
+    btnRenew (data) {
+      this.dialogVisible = true
+      this.renData = data
+      this.year = 0
+      this.month = 0
+      this.send_year = 0
+      this.send_month = 0
+      this.renewDesc = null
+      this.renewMoney = null
+      this.newExpire_time = null
+    },
+    changeRenew (data) {
+      console.log(data)
+      this.renewMoneyName = '续费'
+      if (data === 1) {
+        this.renewMoneyName = '续费'
+      } else if (data === 2) {
+        this.renewMoneyName = '试用'
+      } else if (data === 3) {
+        this.renewMoneyName = '赠送'
+      } else if (data === 4) {
+        this.renewMoneyName = '退款'
+      }
+      if (data === 2 || data === 3) {
+        this.renew_money_show = false
+      } else {
+        this.renew_money_show = true
+      }
+    },
+    changeSend (data) {
+      console.log(data)
+      if (data === 1) {
+        this.rend_show = false
+        this.send_function_show = false
+      } if (data === 2) {
+        this.rend_show = true
+        this.send_function_show = false
+      } if (data === 3) {
+        this.rend_show = false
+        this.send_function_show = true
+      }
+    },
+    changeExpireTime () {
+      let now = this.moment().format('YYYY-MM-DD')
+      let newTime = this.moment().add(this.year, 'y').add(this.month, 'M').add(this.send_year, 'y').add(this.send_month, 'M')
+      this.newExpire_time = this.moment(newTime).format('YYYY-MM-DD 00:00:00')
+      console.log(now)
+      console.log(this.newExpire_time)
+    },
+    beforeButton () {
+      if (this.checkData()) {
+        this.renewButton()
+      }
+    },
+    checkData () {
+      if (this.isEmpty(this.renewMoney)) {
+        this.$message.error('金额不能为空')
+        this.$refs.renewMoney.$el.querySelector('input').focus()
+        return false
+      }
+      if (this.isEmpty(this.newExpire_time)) {
+        this.$message.error('有效期不能为空')
+        this.$refs.newExpire_time.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.renewDesc)) {
+        this.$message.error('说明不能为空')
+        this.$refs.renewDesc.$el.querySelector('input').focus()
+        return false
+      }
+      return true
+    },
+    renewButton () {
+      let params = {
+        'shopId': this.renData.shopId,
+        'sysId': this.renData.sysId,
+        'mobile': this.renData.mobile,
+        'renewMoney': this.renewMoney,
+        'expireTime': this.moment(this.newExpire_time).format('YYYY-MM-DD 00:00:00'),
+        'renewDesc': this.renewDesc,
+        'renewType': this.renewTypeValue,
+        'year': this.year,
+        'month': this.month,
+        'sendType': this.sendTypeValue,
+        'sendYear': this.send_year,
+        'sendMonth': this.send_month
+      }
+      console.log(params)
+      renewShopRequest(params).then(res => {
+        console.log(res)
+        this.centerDialogVisible = false
+        if (res.error === 0) {
+          this.$message.success('保存成功')
+          this.dialogVisible = false
+          this.search()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }
@@ -691,5 +986,38 @@ export default {
 }
 /deep/ .xbutton {
   padding: 0;
+}
+.renew {
+  z-index: 9999;
+  border: 1px solid #eee;
+  background: #ffffff;
+  .send_type {
+    width: 96px;
+  }
+}
+.renew label {
+  margin-left: 4%;
+}
+
+.renew ul li {
+  height: 40px;
+}
+
+.renew ul li .fl {
+  width: 70px;
+  text-align: right;
+}
+.re_title {
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  padding: 15px 0;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.btn_conf {
+  background: #86a7cb;
+  color: #fff;
+  margin-left: 20%;
+  margin-right: 3%;
 }
 </style>

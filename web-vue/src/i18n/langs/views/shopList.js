@@ -201,6 +201,31 @@ export const cn = {
     label: '英镑 ',
     sign: '￡'
   }
+  ],
+  renew_Type: [{
+    value: 1,
+    label: '续费'
+  },
+  {
+    value: 2,
+    label: '试用'
+  },
+  {
+    value: 3,
+    label: '赠送'
+  },
+  {
+    value: 4,
+    label: '退款'
+  },
+  {
+    value: 5,
+    label: '初次付费'
+  },
+  {
+    value: 6,
+    label: '试用转付费'
+  }
   ]
 }
 
