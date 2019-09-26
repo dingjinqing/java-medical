@@ -21,4 +21,5 @@ public class StoreOrderListInfoVo {
 	private Timestamp payTime;
 	private BigDecimal moneyPaid;
 	private String payCode;
+	private String currency;
 }

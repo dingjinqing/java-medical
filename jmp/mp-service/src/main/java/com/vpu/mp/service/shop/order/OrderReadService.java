@@ -1,13 +1,18 @@
 package com.vpu.mp.service.shop.order;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,7 +22,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -32,14 +43,19 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
+import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -66,6 +82,12 @@ public class OrderReadService extends ShopBaseService {
 	private StoreOrderService storeOrder;
 	@Autowired
 	private UserService user;
+	@Autowired
+	private RefundAmountRecordService refundAmountRecord;
+	@Autowired
+	private ReturnStatusChangeService returnStatusChange;
+	@Autowired
+	private ShopReturnConfigService shopReturnConfig;
 	/**
 	 * 订单查询
 	 * @param OrderPageListQueryParam
@@ -234,7 +256,113 @@ public class OrderReadService extends ShopBaseService {
 		}
 		return result;
 	}
+	
+	/**
+	 * 	退款订单详情
+	 * @param param
+	 * @return
+	 * @throws MpException 
+	 */
+	public ReturnOrderInfoVo getReturnOrder(ReturnOrderParam param) throws MpException{
+		OrderInfoRecord order = orderInfo.getOrderByOrderSn(param.getOrderSn());
+		if(Objects.isNull(order)) {
+			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
+		}
+		ReturnOrderRecord rOrder = returnOrder.getByRetId(param.getRetId());
+		if(Objects.isNull(rOrder)) {
+			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_ORDER_NOT_EXIST);
+		}
+		//init vo
+		ReturnOrderInfoVo vo = rOrder.into(ReturnOrderInfoVo.class);
+		//vo set order
+		vo.setOrderInfo(order.into(OrderInfoVo.class));
+		//退款商品
+		if(rOrder.getReturnType() != OrderConstant.RT_ONLY_SHIPPING_FEE) {
+			List<OrderReturnGoodsVo> goods = returnOrderGoods.getReturnGoods(rOrder.getOrderSn(),rOrder.getRetId()).into(OrderReturnGoodsVo.class);
+			vo.setReturnGoods(goods);
+		}
+		//快递code
+		vo.setShippingCode(returnOrder.getShippingCode(rOrder));
+		//金额计算
+		setCalculateMoney(vo);
+		//获取最后一次操作此订单type
+		ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(param.getRetId());
+		if(Objects.nonNull(lastOperator)) {
+			vo.setOperatorLastType(lastOperator.getType());
+		}
+		//设置自动处理时间
+		setReturnCfg(vo, rOrder);
+		return vo;
+	}
+	
+	/**
+	 * 	设置自动处理时间
+	 * @param vo
+	 * @param rOrder
+	 */
+	public void setReturnCfg(ReturnOrderInfoVo vo , ReturnOrderRecord rOrder) {
+		if(shopReturnConfig.getAutoReturn() == null || shopReturnConfig.getAutoReturn() == 0) {
+			return;
+		}
+		if (shopReturnConfig.getAutoReturnTime() == null
+				|| shopReturnConfig.getAutoReturnTime().after(DateUtil.getSqlTimestamp())) {
+			return;
+		}
 
+		if (rOrder.getReturnType() != OrderConstant.RT_GOODS
+				&& rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING
+				&& shopReturnConfig.getReturnMoneyDays() != null) {
+			//买家发起仅退款申请后，商家在return_money_days日内未处理，系统将自动退款
+			vo.setReturnMoneyDays(rOrder.getShippingOrRefundTime().toInstant()
+					.plus(Duration.ofDays(shopReturnConfig.getReturnMoneyDays())).toEpochMilli());
+			return;
+		}
+		if (rOrder.getReturnType() == OrderConstant.RT_GOODS) {
+			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDITING 
+					&& shopReturnConfig.getReturnAddressDays() != null
+					) {
+				//商家已发货，买家发起退款退货申请，商家在return_address_days日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收货地址
+				vo.setReturnAddressDays(rOrder.getApplyTime().toInstant()
+					.plus(Duration.ofDays(shopReturnConfig.getReturnAddressDays())).toEpochMilli());
+				return;
+			}
+			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING 
+					&& shopReturnConfig.getReturnShoppingDays() != null
+					) {
+				//买家已提交物流信息，商家在return_shopping_days日内未处理，系统将默认同意退款退货，并自动退款给买家。
+				vo.setReturnShoppingDays(rOrder.getShippingOrRefundTime().toInstant()
+						.plus(Duration.ofDays(shopReturnConfig.getReturnShoppingDays())).toEpochMilli());
+				return;
+			}
+			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS
+					) {
+				//商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
+				vo.setReturnAuditPassNotShoppingDays(rOrder.getApplyPassTime().toInstant()
+						.plus(Duration.ofDays(7)).toEpochMilli());
+				return;
+			}
+		}
+		
+	}
+	/**
+	 * 	金额计算
+	 * @param vo
+	 * @param rOrder
+	 */
+	public void setCalculateMoney (ReturnOrderInfoVo vo) {
+		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
+			//成功状态查此次退款记录
+			vo.setCalculateMoney(refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),vo.getRetId()));
+			return;
+		}
+		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS || vo.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
+			//查询可退金额
+			LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),null);
+			final BigDecimal amount = orderInfo.getOrderFinalAmount(vo.getOrderInfo() , Boolean.TRUE);
+			vo.setCalculateMoney(orderInfo.getCanReturn(vo.getOrderInfo() , amount , returnAmountMap));
+		}
+		//其他情况不用查询
+	}
 	/**
 	 * 	买单订单查询
 	 * 

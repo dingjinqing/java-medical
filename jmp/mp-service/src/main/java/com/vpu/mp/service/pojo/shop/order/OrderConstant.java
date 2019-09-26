@@ -211,8 +211,9 @@ public class OrderConstant {
 
 	/**商家 0 、买家1*/
 	public final static byte IS_MP_Y = 1;
-	public final static byte IS_MP_N = 0;
-
+	public final static byte IS_MP_ADMIN = 0;
+	public final static byte IS_MP_AUTO = 2;
+	
 	/**
 	 * 订单退款退货流程操作
 	 */

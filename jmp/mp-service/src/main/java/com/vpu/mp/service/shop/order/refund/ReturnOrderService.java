@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.ReturnOrder;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.ExpressMapping;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -234,7 +235,7 @@ public class ReturnOrderService extends ShopBaseService{
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_RETURN_COMPLETED);
 			}
 			//买家校验商家是否配置可退
-			if(param.getIsMp()) {
+			if(param.getIsMp() == OrderConstant.IS_MP_Y) {
 				if(checkGoods.getIsCanReturn() == OrderConstant.IS_CAN_RETURN_N) {
 					logger().error("退款时订单sn:{},退款类型为:{},商品id:{}，商品配置不可退",order.getOrderSn(),param.getReturnType(),paramGoods.getRecId());
 					//商品配置不可退
@@ -315,7 +316,7 @@ public class ReturnOrderService extends ShopBaseService{
 	}
 	
 	public void responseReturnOperate(RefundParam param , ReturnOrderRecord returnOrder) throws MpException {
-		if(param.getIsMp()) {
+		if(param.getIsMp().equals(OrderConstant.IS_MP_Y)) {
 			/**mp端操作*/
 			switch (param.getReturnOperate()) {
 			case OrderConstant.RETURN_OPERATE_MP_SUBMIT_SHIPPING:
@@ -439,6 +440,20 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS);
 		returnOrder.setApplyNotPassReason(param.getApplyNotPassReason());
 		returnOrder.update();
+	}
+	
+	/**
+	 * 	获取该退款订单物流code(快递100对应code)
+	 * @param returnOrder
+	 * @return
+	 */
+	public String getShippingCode(ReturnOrderRecord returnOrder) {
+		if(returnOrder.getReturnType() == OrderConstant.RT_GOODS && returnOrder.getRefundStatus() >= OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
+			//TODO 修改数据库类型
+			return ExpressMapping.mapping.get(returnOrder.getShippingType());
+		}else {
+			return null;
+		}
 	}
 }
 

@@ -11,9 +11,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
@@ -71,7 +73,21 @@ public class AdminOrderController extends AdminBaseController {
 	public JsonResult get(@RequestBody @Valid OrderParam order) {
 		return success(shop().readOrder.get(order.getOrderSn()));
 	}
-
+	
+	/**
+	 * 	退款订单详情
+	 * @param order
+	 * @return
+	 */
+	@PostMapping("/return/get")
+	public JsonResult get(@RequestBody @Valid ReturnOrderParam order) {
+		try {
+			return success(shop().readOrder.getReturnOrder(order));
+		} catch (MpException e) {
+			return fail(e.getErrorCode());
+		}
+	}
+	
 	/**
 	 * 	订单标星切换
 	 */
@@ -94,7 +110,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/shipGoods")
 	public JsonResult shipGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
-		param.setIsMp(false);
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
@@ -107,7 +123,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/ship")
 	public JsonResult ship(@RequestBody @Valid ShipParam param ) {
-		param.setIsMp(false);
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
@@ -118,7 +134,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund/list")
 	public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
-		param.setIsMp(false);
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
@@ -131,7 +147,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund")
 	public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
-		param.setIsMp(false);
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
@@ -142,7 +158,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/close")
 	public JsonResult close(@RequestBody @Valid RefundParam param) {
-		param.setIsMp(false);
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);

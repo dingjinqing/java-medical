@@ -83,8 +83,8 @@ public class RefundVo {
 		return Boolean.TRUE;
 	}
 	
-	public Boolean isReturn(Boolean isMap) {
-		if(isMap) {
+	public Boolean isReturn(Byte isMp) {
+		if(isMp == OrderConstant.IS_MP_Y) {
 			return mpIsReturn();
 		}else {
 			return adminIsReturn();

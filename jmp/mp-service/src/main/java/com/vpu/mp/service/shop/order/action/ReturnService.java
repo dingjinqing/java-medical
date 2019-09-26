@@ -170,7 +170,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), OrderConstant.RETURN_OPERATE[param.getReturnOperate()]+",falg:"+param.getReturnOperateFlag());
 						return;
 					}
-					if(param.getIsMp()) {
+					if(param.getIsMp() == OrderConstant.IS_MP_Y) {
 						return;
 					}
 					//退款逻辑
@@ -209,7 +209,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	@Override
 	public Object query(OrderOperateQueryParam param) throws MpException  {
 		logger.info("获取可退款、退货信息参数为:" + param.toString());
-		Boolean isMp = param.getIsMp();
+		Byte isMp = param.getIsMp();
 		RefundVo vo = new RefundVo();
 		//获取当前订单
 		OrderListInfoVo currentOrder = orderInfo.getByOrderId(param.getOrderId(),OrderListInfoVo.class);
@@ -233,7 +233,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			vo.setReturnShippingFee(currentOrder.getShippingFee().subtract(returnShipingFee));
 		}
 		//手动退款校验,已退金额<sum(已退R商品数量*折后单价)
-		if(!isMp) {
+		if((isMp != OrderConstant.IS_MP_Y)) {
 			//是否退过商品（数量角度）
 			List<OrderGoodsVo> returnGoods = orderGoods.getReturnGoods(currentOrder.getOrderSn());
 			//判断金额
@@ -273,7 +273,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			sns.addAll(cOrderSns);
 		}
 		//退款数据汇总(该汇总信息会在'构造优先级退款信息'复用)
-		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns);	
+		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns,null);	
 		//构造优先级退款信息
 		Map<String, BigDecimal> canReturn = orderInfo.getCanReturn(currentOrder , amount , returnAmountMap);
 		//查询订单下商品(如果为主订单则包含子订单商品)
@@ -286,7 +286,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		Iterator<RefundVoGoods> currentGoods = goods.get(currentOrder.getOrderSn()).iterator();
 		//如果后台查询且满足手动退款则需查询已退金额
 		Map<Integer, BigDecimal> manualReturnMoney = null;
-		if(!isMp && vo.getReturnType()[OrderConstant.RT_MANUAL] == true) {
+		if((isMp != OrderConstant.IS_MP_Y) && vo.getReturnType()[OrderConstant.RT_MANUAL] == true) {
 			manualReturnMoney = returnOrderGoods.getManualReturnMoney(param.getOrderSn());
 		}
 		while (currentGoods.hasNext()) {
@@ -306,7 +306,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			Integer returnable = oneGoods.getTotal() - oneGoods.getSubmitted();
 			oneGoods.setReturnable(returnable);
 			//处理前后端不同逻辑
-			if(isMp) {
+			if(isMp == OrderConstant.IS_MP_Y) {
 				if(oneGoods.getReturnable() <= 0) {
 					//前端可退数量为0不展示
 					currentGoods.remove();
@@ -317,7 +317,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				oneGoods.setIsCanReturn(OrderConstant.IS_CAN_RETURN_Y);
 			}
 			//如果后台查询且满足手动退款则需查询已退金额
-			if(!isMp && vo.getReturnType()[3] == true) {
+			if(isMp != OrderConstant.IS_MP_Y && vo.getReturnType()[3] == true) {
 				oneGoods.setReturnMoney(manualReturnMoney.get(oneGoods.getRecId()) == null ? BigDecimal.ZERO : manualReturnMoney.get(oneGoods.getRecId()));
 			}
 		}
@@ -413,7 +413,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			sns.addAll(cOrderSns);
 		}
 		//优先级退款数据汇总
-		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns);
+		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns,null);
 		for (Entry<String, BigDecimal> entry : returnAmountMap.entrySet()) {
 			//当前优先级名称
 			String key = entry.getKey();

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 
@@ -27,7 +28,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	 */
 	@PostMapping("/refund/list")
 	public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
-		param.setIsMp(true);
+		param.setIsMp(OrderConstant.IS_MP_Y);
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {
@@ -40,7 +41,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	 */
 	@PostMapping("/refund")
 	public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
-		param.setIsMp(true);
+		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user().getWxUser());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
@@ -51,7 +52,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	 */
 	@PostMapping("/cancel")
 	public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
-		param.setIsMp(true);
+		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user().getWxUser());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);

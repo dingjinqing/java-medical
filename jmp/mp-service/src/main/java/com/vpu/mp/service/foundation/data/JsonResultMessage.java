@@ -310,7 +310,8 @@ public class JsonResultMessage {
 	 */
 	public static final String MSG_ORDER = "order";
 	public static final String MSG_ORDER_OPERATE_NO_INSTANCEOF = "order_operate_no_instanceof";
-	public static final String MSG_ORDER_REMARK_ORDERSN_NOT_NULL = "order_remark_ordersn_not_null";
+	public static final String MSG_ORDER_RETID_NOT_NULL = "order_retid_not_null";
+	public static final String MSG_ORDER_ORDERSN_NOT_NULL = "order_ordersn_not_null";
 	public static final String MSG_ORDER_REMARK_NOT_NULL = "order_remark_not_null";
 	public static final String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order_remark_type_not_null";
 	public static final String MSG_ORDER_RETURN_WX_FAILL ="order_return_wx_fail";

@@ -105,6 +105,7 @@ public class OrderInfoService extends ShopBaseService {
 	public OrderInfoRecord getOrderByOrderSn(String orderSn) {
 		return db().fetchAny(TABLE,TABLE.ORDER_SN.eq(orderSn));
 	}
+	 
 
 	/**
 	 * 	订单综合查询:通过条件获得订单号

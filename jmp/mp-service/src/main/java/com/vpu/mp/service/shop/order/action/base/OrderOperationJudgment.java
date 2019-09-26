@@ -21,9 +21,9 @@ public class OrderOperationJudgment {
 	 * @param isMp true小程序；false后台
 	 * @return true可退；false不可退
 	 */
-	public static boolean isReturnMoney(OrderListInfoVo order , Boolean isMp) {
+	public static boolean isReturnMoney(OrderListInfoVo order , Byte isMp) {
 		//后台权限大,不支持退的也可以退
-		if(OrderConstant.CFG_RETURN_TYPE_N == order.getReturnTypeCfg() && isMp) {
+		if(OrderConstant.CFG_RETURN_TYPE_N == order.getReturnTypeCfg() && (isMp == OrderConstant.IS_MP_Y)) {
 			return false;
 		}
 		/**
@@ -113,8 +113,8 @@ public class OrderOperationJudgment {
 	 * @param isMp
 	 * @return
 	 */
-	public static boolean isReturnGoods(OrderListInfoVo order , Boolean isMp) {
-		if(isMp) {
+	public static boolean isReturnGoods(OrderListInfoVo order , Byte isMp) {
+		if(isMp == OrderConstant.IS_MP_Y) {
 			//判断mp是否可以退货
 			if(mpIsReturnGoods(order)) {
 				return true;

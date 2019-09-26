@@ -6,9 +6,11 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +45,10 @@ public class RefundAmountRecordService extends ShopBaseService{
 	 * @param orderSns
 	 * @return Map<支付种类(细分) , 金额>
 	 */
-	public LinkedHashMap<String , BigDecimal> getReturnAmountMap(List<String> orderSns ){
+	public LinkedHashMap<String , BigDecimal> getReturnAmountMap(List<String> orderSns ,Integer retId){
 		//构造成功退款的汇总
 		LinkedHashMap<String, BigDecimal> result = new LinkedHashMap<String , BigDecimal>(orderInfo.PAY_SUBDIVISION.length);
-		Map<String, Result<Record2<String, BigDecimal>>> map = getOrderRefundAmount(orderSns);
+		Map<String, Result<Record2<String, BigDecimal>>> map = getOrderRefundAmount(orderSns , retId);
 		for (String key : orderInfo.PAY_SUBDIVISION) {
 			if(map.get(key) == null || map.get(key).size() == 0) {
 				result.put(key, BigDecimal.ZERO);
@@ -68,8 +70,12 @@ public class RefundAmountRecordService extends ShopBaseService{
 	 * @param orderSns
 	 * @return Map<String, Record2<String, BigDecimal>>>
 	 */
-	public Map<String, Result<Record2<String, BigDecimal>>> getOrderRefundAmount(List<String> orderSns){
-		Map<String, Result<Record2<String, BigDecimal>>> map = db().select(TABLE.REFUND_FIELD,TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.in(orderSns)).fetchGroups(TABLE.REFUND_FIELD);
+	public Map<String, Result<Record2<String, BigDecimal>>> getOrderRefundAmount(List<String> orderSns ,Integer retId){
+		SelectConditionStep<Record2<String, BigDecimal>> where = db().select(TABLE.REFUND_FIELD,TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.in(orderSns));
+		if(Objects.isNull(retId)) {
+			where.and(TABLE.RET_ID.eq(retId));
+		}
+		Map<String, Result<Record2<String, BigDecimal>>> map = where.fetchGroups(TABLE.REFUND_FIELD);
 		return map;
 	}
 	/**
@@ -87,5 +93,4 @@ public class RefundAmountRecordService extends ShopBaseService{
 		record.setRetId(retId);
 		record.insert();
 	}
-	
 }
