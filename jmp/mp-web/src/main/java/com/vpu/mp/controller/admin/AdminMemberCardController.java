@@ -23,6 +23,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
@@ -188,8 +190,33 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success();
 	}
 	
+	/**
+	 * 获取充值明细
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/card/charge/list")
+	public JsonResult getChargeList(ChargeParam param) {
+		PageResult<ChargeVo> chargeList = shop().member.card.getChargeList(param);
+		return success(chargeList);
+	}
 	
-
+	
+	
+	/**
+	 * 获取消费明细
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/card/consume/list")
+	public JsonResult getConsumeList(ChargeParam param) {
+		PageResult<ChargeVo> chargeList = shop().member.card.getConsumeList(param);
+		return success(chargeList);
+	}
+	
+	
+	
+	
 	
 	
 }
