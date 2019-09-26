@@ -8,9 +8,7 @@ import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftConstant;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,21 +45,31 @@ public class GiveGiftReceiveService extends ShopBaseService {
     }
 
     /**
+     * 收礼人数
+     * @param mainOrderSn
+     * @return
+     */
+    public Integer getReceiveNumByoOrderSn(String mainOrderSn) {
+        return db().selectCount().from(GIVE_GIFT_RECEIVE).where(GIVE_GIFT_RECEIVE.MAIN_ORDER_SN.eq(mainOrderSn)).fetchOne().component1();
+    }
+
+    /**
      * 获取收礼列表
+     *
      * @param param GiveGiftReceiveListParam
-     * @return  PageResult<GiveGiftReceiveListVo>
+     * @return PageResult<GiveGiftReceiveListVo>
      */
     public PageResult<GiveGiftReceiveListVo> giveGiftReceiveList(GiveGiftReceiveListParam param) {
         User receive = USER.as("receive");
         User giver = USER.as("giver");
         SelectConditionStep<? extends Record> select = db()
                 .select(
-                        receive.USER_ID.as(receive.getName()+receive.USER_ID.getName()),
-                        receive.USERNAME.as(receive.getName()+receive.USERNAME.getName()),
-                        receive.MOBILE.as(receive.getName()+receive.MOBILE.getName()),
-                        giver.USER_ID.as(giver.getName()+giver.USER_ID.getName()),
-                        giver.USERNAME.as(giver.getName()+giver.USERNAME.getName()),
-                        giver.MOBILE.as(giver.getName()+giver.MOBILE.getName()),
+                        receive.USER_ID.as(receive.getName() + receive.USER_ID.getName()),
+                        receive.USERNAME.as(receive.getName() + receive.USERNAME.getName()),
+                        receive.MOBILE.as(receive.getName() + receive.MOBILE.getName()),
+                        giver.USER_ID.as(giver.getName() + giver.USER_ID.getName()),
+                        giver.USERNAME.as(giver.getName() + giver.USERNAME.getName()),
+                        giver.MOBILE.as(giver.getName() + giver.MOBILE.getName()),
                         GIVE_GIFT_RECEIVE.PRODUCT_ID,
                         GIVE_GIFT_RECEIVE.MAIN_ORDER_SN,
                         GIVE_GIFT_RECEIVE.CREATE_TIME,
@@ -82,7 +90,7 @@ public class GiveGiftReceiveService extends ShopBaseService {
                 .where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()));
         buildSelect(select, param, receive, giver);
 
-       return  getPageResult(select,param.getCurrentPage(),param.getPageRows(), GiveGiftReceiveListVo.class);
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GiveGiftReceiveListVo.class);
     }
 
     private void buildSelect(SelectConditionStep<? extends Record> select, GiveGiftReceiveListParam param, User receive, User giver) {
@@ -105,10 +113,10 @@ public class GiveGiftReceiveService extends ShopBaseService {
         if (param.getGiveMobile() != null) {
             select.and(giver.MOBILE.like(likeValue(param.getGiveMobile())));
         }
-        if (param.getMainOrderSn()!=null){
+        if (param.getMainOrderSn() != null) {
             select.and(ORDER_INFO.MAIN_ORDER_SN.eq(param.getMainOrderSn()));
         }
-        if (param.getReturnFinished()!=null&&param.getReturnFinished()>0){
+        if (param.getReturnFinished() != null && param.getReturnFinished() > 0) {
             select.and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_RETURN_FINISHED)
                     .or(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_REFUND_FINISHED)));
         }

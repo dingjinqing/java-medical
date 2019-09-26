@@ -913,8 +913,16 @@ public class OrderInfoService extends ShopBaseService {
 
 	}
 
-
-
+	/**
+	 * 获取一个组订单的退款数量
+	 * @param mainOrderSn
+	 * @return
+	 */
+	public Integer getReturnNumByMainOrderSn(String  mainOrderSn){
+		return  db().selectCount().from(TABLE).where(TABLE.ORDER_STATUS.eq(ORDER_RETURN_FINISHED).or(TABLE.ORDER_STATUS.eq(ORDER_REFUND_FINISHED)))
+				.and(TABLE.MAIN_ORDER_SN.notEqual(TABLE.ORDER_SN))
+				.and(TABLE.MAIN_ORDER_SN.eq(mainOrderSn)).fetchOne().component1();
+	}
 
 	/**
 	 *  我要送礼
@@ -945,17 +953,13 @@ public class OrderInfoService extends ShopBaseService {
 						TABLE.CREATE_TIME,
 						TABLE.PAY_TIME,
 						TABLE.ORDER_STATUS,
-						TABLE.ORDER_STATUS_NAME,
 						GIVE_GIFT_CART.GIFT_TYPE,
-						GIVE_GIFT_ACTIVITY.RECOMMEND_GOODS_ID,
 						USER.USER_ID,
 						USER.USERNAME,
 						USER.MOBILE
 				)
 				.from(TABLE)
-				.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(TABLE.ORDER_SN))
 				.leftJoin(GIVE_GIFT_CART).on(GIVE_GIFT_CART.ID.eq(TABLE.ACTIVITY_ID))
-				.leftJoin(GIVE_GIFT_ACTIVITY).on(GIVE_GIFT_ACTIVITY.ID.eq(GIVE_GIFT_CART.GIVE_GIFT_ID))
 				.leftJoin(USER).on(USER.USER_ID.eq(GIVE_GIFT_CART.USER_ID))
 				.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()))
 				.and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))

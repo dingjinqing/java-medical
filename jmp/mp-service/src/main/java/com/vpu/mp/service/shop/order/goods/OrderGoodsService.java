@@ -11,10 +11,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Result;
+import org.apache.poi.ss.formula.functions.T;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +33,11 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVo
  */
 @Service
 public class OrderGoodsService extends ShopBaseService{
-	
+
 	public final OrderGoods TABLE = ORDER_GOODS;
 	/** 商品数量 发货数量 退款成功数量*/
 	public static byte TOTAL_GOODSNUMBER = 0,TOTAL_SENDNUMBER = 1,TOTAL_SUCCESSRETURNNUMBER = 2;
-	
+
 	/**
 	 * 	通过订单id[]查询其下商品
 	 * @param arrayToSearch
@@ -50,9 +48,9 @@ public class OrderGoodsService extends ShopBaseService{
 			.where(TABLE.ORDER_ID.in(arrayToSearch))
 			.orderBy(TABLE.ORDER_ID.desc())
 			.fetch();
-		return goods;	
+		return goods;
 	}
-	
+
 	/**
 	 * 	通过订单id[]查询其下商品
 	 * @param arrayToSearch
@@ -61,7 +59,7 @@ public class OrderGoodsService extends ShopBaseService{
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
-	
+
 	/**
 	 * 	通过订单sn[]查询其下商品
 	 * @param orderSns
@@ -96,7 +94,7 @@ public class OrderGoodsService extends ShopBaseService{
 		}
 		return new HashMap<Integer,Integer>(0);
 	}
-	
+
 	/**
 	 * 	退款完成后，更新状态及退款退货数量
 	 * @param returnOrder
@@ -126,7 +124,7 @@ public class OrderGoodsService extends ShopBaseService{
 		}
 		db().batchUpdate(orderGoods).execute();
 	}
-	
+
 	/**
 	 * 	判断当前订单是否可以退商品（有无可退商品数量）
 	 * 	(有状态依赖于ordergoods表的商品数量与已经退货退款数量)
@@ -139,14 +137,14 @@ public class OrderGoodsService extends ShopBaseService{
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 	计算订单商品数量 ，发货数量， 退款成功数量
 	 * @param orderSn
-	 * @return 
+	 * @return
 	 */
 	public int[] getTotalNumber(String orderSn) {
-		Record3<BigDecimal, BigDecimal, BigDecimal> result = db().select(DSL.sum(TABLE.GOODS_NUMBER),DSL.sum(TABLE.SEND_NUMBER),DSL.sum(TABLE.RETURN_NUMBER)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOne(); 
+		Record3<BigDecimal, BigDecimal, BigDecimal> result = db().select(DSL.sum(TABLE.GOODS_NUMBER),DSL.sum(TABLE.SEND_NUMBER),DSL.sum(TABLE.RETURN_NUMBER)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOne();
 		int[] total = {TOTAL_GOODSNUMBER ,TOTAL_SENDNUMBER ,TOTAL_SUCCESSRETURNNUMBER};
 		if(result != null) {
 			total[TOTAL_GOODSNUMBER] = result.value1() != null ? result.value1().intValue() : 0;
@@ -170,11 +168,11 @@ public class OrderGoodsService extends ShopBaseService{
 		}
 		return false;
 	}
-	
+
 	public Result<Record> selectWhere(Condition where) {
 		return db().select(TABLE.asterisk()).from(TABLE).where(where).fetch();
 	}
-	
+
 	public List<OrderGoodsVo> getReturnGoods(String orderSn) {
 		return selectWhere(TABLE.ORDER_SN.eq(orderSn).and(TABLE.RETURN_NUMBER.gt((short)0))).into(OrderGoodsVo.class);
 	}
@@ -187,4 +185,16 @@ public class OrderGoodsService extends ShopBaseService{
     public List<MarketOrderGoodsListVo> getMarketOrderGoodsByOrderSn(String orderSn) {
         return db().select(TABLE.GOODS_ID,TABLE.GOODS_NAME,TABLE.GOODS_IMG,TABLE.GOODS_PRICE).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(MarketOrderGoodsListVo.class);
     }
+
+	/**
+	 * 根据订单号查询商品
+	 * @param mainOrderSn
+	 * @return
+	 */
+	public Result<? extends Record> getGoodsInfoByMainOrderSn(String mainOrderSn){
+		Result<Record6<Integer, String, String, String, BigDecimal, Short>> record6s = db()
+				.select(TABLE.GOODS_ID, TABLE.GOODS_SN, TABLE.GOODS_NAME, TABLE.GOODS_IMG, TABLE.GOODS_PRICE, TABLE.GOODS_NUMBER)
+				.from(TABLE).where(TABLE.ORDER_SN.eq(mainOrderSn)).fetch();
+		return record6s;
+	}
 }

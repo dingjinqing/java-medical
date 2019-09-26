@@ -3,8 +3,8 @@ package com.vpu.mp.service.pojo.shop.market.givegift.record;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.nio.ByteOrder;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -32,18 +32,12 @@ public class GiveGiftRecordListVo {
      * 订单状态
      */
     Byte orderStatus;
-    /**
-     * 订单状态名称
-     */
-    String orderStatusName;
+
     /**
      * 礼单类型
      */
     Byte giftType;
-    /**
-     * 指定商品可用 id
-     */
-    String recommendGoodsId;
+
     /**
      * 送人ID
      */
@@ -56,4 +50,16 @@ public class GiveGiftRecordListVo {
      * 电话
      */
     String mobile;
+    /**
+     * 收礼人数
+     */
+    Integer receiveNum;
+    /**
+     * 退款数量
+     */
+    Integer returnNum;
+    /**
+     * 商量列表
+     */
+    List<GiftRecordGoodsVo> giftGoodsList;
 }
