@@ -167,6 +167,10 @@
           align="center"
           :label="$t('shopList.table.wechatName')"
         >
+          <template slot-scope="scope">
+            <div>{{scope.row.nickName}}</div>
+            <div style="color: #d2d2d2;">({{scope.row.principalName}})</div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="mobile"
@@ -197,10 +201,10 @@
               {{moment(scope.row.expireTime).format('YYYY-MM-DD')}}
             </div>
             <div v-if="scope.row.shopExpireStatus==='0'">
-              使用中
+              (使用中)
             </div>
             <div v-if="scope.row.shopExpireStatus==='1'">
-              已过期
+              (已过期)
             </div>
           </template>
         </el-table-column>
