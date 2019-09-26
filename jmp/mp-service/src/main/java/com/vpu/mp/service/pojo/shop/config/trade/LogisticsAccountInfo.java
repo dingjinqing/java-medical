@@ -34,13 +34,11 @@ public class LogisticsAccountInfo {
      * The Create time.账号绑定时间
      */
     @JsonIgnore
-    @JsonProperty(value = "create_time")
     public Timestamp createTime;
     /**
      * The Update time.账号更新时间
      */
     @JsonIgnore
-    @JsonProperty(value = "update_time")
     public Timestamp updateTime;
     /**
      * The Status code.绑定状态
@@ -51,29 +49,27 @@ public class LogisticsAccountInfo {
     /**
      * The Alias.账号别名
      */
-    @JsonProperty(value = "alias")
+    @JsonIgnore
     public String alias;
     /**
      * The Remark wrong msg.账号绑定失败的错误信息（EMS审核结果）
      */
-    @JsonProperty(value = "remark_wrong_msg")
+    @JsonIgnore
     public String remarkWrongMsg;
     /**
      * The Remark content.账号绑定时的备注内容（提交EMS审核需要)）
      */
-    @JsonProperty(value = "remark_content")
+    @JsonIgnore
     public String remarkContent;
     /**
      * The Quota num.电子面单余额
      */
     @JsonIgnore
-    @JsonProperty(value = "quota_num")
     public BigDecimal quotaNum;
     /**
      * The Quota update time.电子面单余额更新时间
      */
     @JsonIgnore
-    @JsonProperty(value = "quota_update_time")
     public Timestamp quotaUpdateTime;
 
     public LogisticsAccountInfo() {
