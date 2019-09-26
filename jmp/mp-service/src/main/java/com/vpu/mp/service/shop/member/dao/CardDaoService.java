@@ -1,19 +1,19 @@
 package com.vpu.mp.service.shop.member.dao;
 
 import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record8;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
-import org.jooq.tools.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 
@@ -21,12 +21,16 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
 import static com.vpu.mp.db.shop.Tables.CARD_BATCH;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
+
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -153,5 +157,69 @@ public class CardDaoService extends ShopBaseService {
 			.where(CARD_RECEIVE_CODE.ID.eq(id))
 			.execute();
 	}
+	
+	/**
+	 * 会员卡充值明细
+	 * @param param
+	 * @return
+	 */
+	public PageResult<ChargeVo> getChargeList(ChargeParam param) {
+		SelectJoinStep<?> select = db().select(USER.USERNAME,USER.MOBILE,CHARGE_MONEY.CHARGE.as("money"),CHARGE_MONEY.REASON,CHARGE_MONEY.CREATE_TIME,CHARGE_MONEY.MESSAGE)
+			.from(CHARGE_MONEY.leftJoin(USER).on(CHARGE_MONEY.USER_ID.eq(USER.USER_ID)));
+		
+		buildOptionsForCharge(param, select);
+		
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
+		
+	}
+	
+	/**
+	 * 会员卡消费明细
+	 * @param param
+	 * @return
+	 */
+	public PageResult<ChargeVo> getConsumeList(ChargeParam param) {
+		SelectJoinStep<?> select = db().select(USER.USERNAME,USER.MOBILE,CARD_CONSUMER.MONEY,CARD_CONSUMER.REASON,CARD_CONSUMER.CREATE_TIME,CARD_CONSUMER.MESSAGE)
+			.from(CARD_CONSUMER.leftJoin(USER).on(CARD_CONSUMER.USER_ID.eq(USER.USER_ID)));
+		buildOptionsForCharge(param, select);
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ChargeVo.class);
+	}
+	
+	/**
+	 * 充值明细多条件构建
+	 * @param param
+	 * @param select
+	 */
+	private void buildOptionsForCharge(ChargeParam param, SelectJoinStep<?> select) {
+		// 会员卡id
+		if(param.getCardId()!=null) {
+			select.where(CHARGE_MONEY.CARD_ID.eq(param.getCardId()));
+		}
+		// 会员卡类型
+		if(param.getCardType()!=null) {
+			select.where(CHARGE_MONEY.TYPE.eq(param.getCardType()));
+		}
+		// 用户名
+		if(!StringUtils.isBlank(param.getUsername())) {
+			select.where(USER.USERNAME.eq(param.getUsername()));
+		}
+				
+		// 手机号
+		if(!StringUtils.isBlank(param.getMobile())) {
+			select.where(USER.MOBILE.eq(param.getMobile()));
+		}
+		
+		// 余额变动时间 - 开始
+		if(param.getStartTime()!=null) {
+			select.where(CHARGE_MONEY.CREATE_TIME.ge(param.getStartTime()));
+		}
+		// 余额变动时间 - 结束
+		if(param.getEndTime()!=null) {
+			select.where(CHARGE_MONEY.CREATE_TIME.le(param.getEndTime()));
+		}
+	}
 
+
+	
+	
 }

@@ -103,6 +103,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
@@ -1425,6 +1427,19 @@ public class MemberCardService extends ShopBaseService {
 	public void deleteCardBatch(Integer id) {
 		
 		 cardDao.deleteCardBatchSql(id);
+	}
+	/**
+	 * 分页查询会员卡充值明细
+	 * @param param
+	 * @return
+	 */
+	public PageResult<ChargeVo> getChargeList(ChargeParam param) {
+		 return  cardDao.getChargeList(param);
+	}
+
+	public PageResult<ChargeVo> getConsumeList(ChargeParam param) {
+		
+		return cardDao.getConsumeList(param);
 	}
 		
 }
