@@ -219,7 +219,11 @@
         :dialogVisible="dialogVisible"
       />
       <!--添加优惠卷弹窗-->
-      <addCouponDialog @checkReturnFormat="handleToCheck" />
+      <addCouponDialog
+        @checkReturnFormat="handleToCheck"
+        :tuneUpCoupon="showCouponDialog"
+        :couponBack="couponIdList"
+      />
     </div>
   </wrapper>
 </template>>
@@ -261,6 +265,8 @@ export default {
       couponDialogFlag: false,
       couponData: [],
       couponId: '',
+      showCouponDialog: false,
+      couponIdList: [],
       checkedData: [],
       // 初始化弹窗选中的行
       urls: {
@@ -433,6 +439,7 @@ export default {
         couponList: this.couponList
       }
       this.$http.$emit('V-AddCoupon', obj)
+      this.showCouponDialog = !this.showCouponDialog
     },
     // 优惠卷回调
     handleToCheck (data) {
