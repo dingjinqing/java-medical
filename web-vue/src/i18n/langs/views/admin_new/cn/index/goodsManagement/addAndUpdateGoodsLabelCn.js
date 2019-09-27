@@ -1,4 +1,28 @@
 // 英文
 export const cn = {
-
+  labelName: '标签名称',
+  labelNameRequired: '请输入标签名称',
+  labelNameTip: '每个商品最多可以设置5个标签，若超出，优先级最低的标签将自动失效',
+  labelLevel: '优先级',
+  labelLevelRequired: '优先级不可为空',
+  labelLevelTip: '用于确定商品标签的优先程度，请填写正整数，数值越大，优先级越高',
+  webUseModel: '前端应用模块',
+  goodsDetailPage: '商品详情页',
+  exampleTip: '查看示例',
+  goodsListPage: '商品列表',
+  labelStyle: '标签样式',
+  goodsSelectPage: '商品筛选页',
+  addGoods: '添加商品',
+  addGoodsTip: '选择需要添加商品标签的商品',
+  allGoods: '全部商品',
+  pointGoods: '指定商品',
+  addSort: '添加商家分类',
+  addCategory: '添加平台分类',
+  goodsName: '商品名称',
+  shopPrice: '价格',
+  goodsNumber: '库存',
+  operate: '操作',
+  deleteOperate: '删除',
+  save: '保存',
+  labelLevelIsWrong: '优先级填写错误'
 }

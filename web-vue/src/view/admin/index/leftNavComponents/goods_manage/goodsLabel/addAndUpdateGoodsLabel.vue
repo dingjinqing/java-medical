@@ -6,34 +6,37 @@
         :model="goodsLabelData"
         :rules="goodsLabelRules"
         label-width="120px">
-        <el-form-item label="标签名称："
+        <el-form-item
+          :label="$t('addAndUpdateGoodsLabel.labelName')+'：'"
           prop="nameOld">
           <el-input ref="nameRef" v-model="goodsLabelData.nameOld" size="small"  style="width: 170px;" @change="labelNameChanged"/>
+          <span class="inputTip">{{$t('addAndUpdateGoodsLabel.labelNameTip')}}</span>
         </el-form-item>
-        <el-form-item label="优先级："
+        <el-form-item :label="$t('addAndUpdateGoodsLabel.labelLevel')+'：'"
                       prop="levelOld">
           <el-input ref="levelRef" v-model.number="goodsLabelData.levelOld" size="small"  style="width: 80px;" @change="labelLevelChanged"/>
+          <span class="inputTip">{{$t('addAndUpdateGoodsLabel.labelNameTip')}}</span>
         </el-form-item>
-        <el-form-item label="前端应用模块：">
+        <el-form-item :label="$t('addAndUpdateGoodsLabel.webUseModel')+'：'">
           <ul class="useModelUl">
             <li>
-              <el-checkbox v-model="goodsLabelData.goodsDetail" :true-label="1" :false-label="0">商品详情页</el-checkbox>
+              <el-checkbox v-model="goodsLabelData.goodsDetail" :true-label="1" :false-label="0">{{$t('addAndUpdateGoodsLabel.goodsDetailPage')}}</el-checkbox>
               <el-popover placement="right-start" trigger="hover">
                 <el-image :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-                <span slot="reference" style="color:#409EFF;cursor:pointer;">查看示例</span>
+                <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('addAndUpdateGoodsLabel.exampleTip')}}</span>
               </el-popover>
             </li>
-            <li><el-checkbox v-model="goodsLabelData.goodsList" :true-label="1" :false-label="0">商品列表</el-checkbox></li>
+            <li><el-checkbox v-model="goodsLabelData.goodsList" :true-label="1" :false-label="0">{{$t('addAndUpdateGoodsLabel.goodsListPage')}}</el-checkbox></li>
             <li>
-              <el-checkbox v-model="goodsLabelData.goodsSelect" :true-label="1" :false-label="0">商品筛选页</el-checkbox>
+              <el-checkbox v-model="goodsLabelData.goodsSelect" :true-label="1" :false-label="0">{{$t('addAndUpdateGoodsLabel.goodsSelectPage')}}</el-checkbox>
               <el-popover placement="right-start" trigger="hover">
                 <el-image :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-                <span slot="reference" style="color:#409EFF;cursor:pointer;">查看示例</span>
+                <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('addAndUpdateGoodsLabel.exampleTip')}}</span>
               </el-popover>
             </li>
           </ul>
           <div v-if="goodsLabelData.goodsList === 1" class="useModelListPattern">
-            <span><em style="color: red;">*</em>标签样式:</span>
+            <span><em style="color: red;">*</em>{{$t('addAndUpdateGoodsLabel.labelStyle')+':'}}</span>
             <div style="margin-top: 5px;display: flex;justify-content: space-around;">
               <div style="flex-grow: 1;text-align: center;">
                 <div>图片1</div>
@@ -54,23 +57,23 @@
             </div>
           </div>
         </el-form-item>
-        <el-form-item label="添加商品：">
-          <span class="inputTip">选择需要添加商品标签的商品</span>
+        <el-form-item :label="$t('addAndUpdateGoodsLabel.addGoods')+'：'">
+          <span class="inputTip">{{$t('addAndUpdateGoodsLabel.addGoodsTip')}}</span>
           <div class="goodsInfoWrap">
             <div>
-              <el-radio v-model="goodsLabelData.isAll" :label="1">全部商品</el-radio>
-              <el-radio v-model="goodsLabelData.isAll" :label="0">指定商品</el-radio>
+              <el-radio v-model="goodsLabelData.isAll" :label="1">{{$t('addAndUpdateGoodsLabel.allGoods')}}</el-radio>
+              <el-radio v-model="goodsLabelData.isAll" :label="0">{{$t('addAndUpdateGoodsLabel.pointGoods')}}</el-radio>
             </div>
             <div v-if="goodsLabelData.isAll ===0">
               <div>
-                <el-button @click="addGoodsClicked">+添加商品</el-button>
+                <el-button @click="addGoodsClicked">+{{$t('addAndUpdateGoodsLabel.addGoods')}}</el-button>
                 <div v-if="selectedGoodsList.length > 0">
                   <el-table
                     :data="selectedGoodsList"
                     class="tableClass"
                     border
                     style="width: 100%">
-                    <el-table-column align="center" prop="name" label="商品名称">
+                    <el-table-column align="center" prop="name" :label="$t('addAndUpdateGoodsLabel.goodsName')">
                       <template slot-scope="{row}">
                         <img style="width: 50px;height: 50px;float: left;" :src="row.goodsImg"/>
                         <div style="padding:10px;">
@@ -78,22 +81,22 @@
                         </div>
                       </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="shopPrice" label="价格" width="100px" />
-                    <el-table-column align="center" prop="goodsNumber" label="库存" width="100px" />
-                    <el-table-column align="center" label="操作" width="100px">
+                    <el-table-column align="center" prop="shopPrice" :label="$t('addAndUpdateGoodsLabel.shopPrice')" width="100px" />
+                    <el-table-column align="center" prop="goodsNumber" :label="$t('addAndUpdateGoodsLabel.goodsNumber')" width="100px" />
+                    <el-table-column align="center" :label="$t('addAndUpdateGoodsLabel.operate')" width="100px">
                       <template slot-scope="{$index}">
-                        <span class="operateSpan" @click="selectedGoodsDeleteItem($index)">删除</span>
+                        <span class="operateSpan" @click="selectedGoodsDeleteItem($index)">{{$t('addAndUpdateGoodsLabel.deleteOperate')}}</span>
                       </template>
                     </el-table-column>
                   </el-table>
                 </div>
               </div>
               <div>
-                <el-button @click="addSortClicked">+添加商家分类</el-button>
+                <el-button @click="addSortClicked">+{{$t('addAndUpdateGoodsLabel.addSort')}}</el-button>
                 <div></div>
               </div>
               <div>
-                <el-button @click="addCatClicked">+添加平台分类</el-button>
+                <el-button @click="addCatClicked">+{{$t('addAndUpdateGoodsLabel.addCategory')}}</el-button>
                 <div></div>
               </div>
             </div>
@@ -103,7 +106,7 @@
     </div>
     <choosingGoods :tuneUpChooseGoods="tuneUpChooseGoods" @resultGoodsDatas="chooseGoodsResult"/>
     <div class="contentFooter">
-      <el-button type="primary" @click="saveGoodsLabel">保存</el-button>
+      <el-button type="primary" @click="saveGoodsLabel">{{$t('addAndUpdateGoodsLabel.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -118,6 +121,12 @@ import {isStrBlank} from '@/util/goodsUtil'
 export default {
   name: 'addAndUpdateGoodsLabel',
   components: {choosingGoods},
+  watch: {
+    lang () {
+      this.goodsLabelRules.nameOld[0].message = this.$t('addAndUpdateGoodsLabel.labelNameRequired')
+      this.goodsLabelRules.levelOld[0].message = this.$t('addAndUpdateGoodsLabel.labelLevelRequired')
+    }
+  },
   data () {
     return {
       isUpdate: false,
@@ -139,7 +148,7 @@ export default {
           { required: true, message: '请输入标签名称', trigger: 'change' }
         ],
         levelOld: [
-          { required: true, message: '优先级', trigger: 'change' }
+          { required: true, message: '优先级不可为空', trigger: 'change' }
         ]
       },
       /* 以下数据再goodsLabelData.isAll 为0时才有效 */
@@ -156,7 +165,7 @@ export default {
     /* 标签名称改变事件 */
     labelNameChanged () {
       if (isStrBlank(this.goodsLabelData.nameOld)) {
-        this.$message.warning({message: '标签名称不可为空'})
+        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelNameRequired')})
         this.goodsLabelData.nameOld = this.goodsLabelData.name
         this.$refs.nameRef.focus()
         return
@@ -179,7 +188,7 @@ export default {
     /* 标签优先级改变事件 */
     labelLevelChanged () {
       if (typeof this.goodsLabelData.levelOld !== 'number') {
-        this.$message.warning({message: '优先级填写错误'})
+        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired')})
         this.goodsLabelData.levelOld = this.goodsLabelData.level
         this.$refs.labelRef.focus()
       } else {
@@ -243,14 +252,14 @@ export default {
     /* 验证数据正确性 */
     _validateGoodsLabelData () {
       if (isStrBlank(this.goodsLabelData.name)) {
-        this.$message.warning({message: '标签名称不可为空'})
+        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelNameRequired')})
         this.$refs.nameRef.focus()
         this.$refs.goodsLabelFormRef.validate()
         return false
       }
 
       if (typeof this.goodsLabelData.level !== 'number') {
-        this.$message.warning({message: '标签优先级不可为空'})
+        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired')})
         this.$refs.nameRef.focus()
         this.$refs.goodsLabelFormRef.validate()
         return false
@@ -298,6 +307,8 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
+
     if (this.$route.params.id !== undefined) {
       this.isUpdate = true
       this._initDataForUpdate(this.$route.params.id)
