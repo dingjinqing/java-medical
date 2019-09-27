@@ -11,6 +11,8 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.saas.schedule.*;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.*;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageVo;
@@ -395,5 +397,21 @@ public class MessageTemplateService extends ShopBaseService {
     }
     public void addContentTemplate(ContentMessageParam param) {
         db().newRecord(MESSAGE_TEMPLATE,param).insert();
+    }
+    /**
+     * 创建定向发券TaskJob
+     * @param shopId 门店ID
+     * @param messageTemplateParam 消息内容
+     * @param param 消息的一些配置参数
+     */
+    public void createCouponTaskJob(Integer shopId,CouponGiveQueueParam couponGiveQueueParam,Timestamp startTime){
+        TaskJobInfo  info = TaskJobInfo.builder(shopId)
+            .type(TaskJobsConstant.EXECUTION_TIMING)
+            .content(couponGiveQueueParam)
+            .className(CouponGiveQueueParam.class.getName())
+            .startTime(startTime)
+            .executionType(TaskJobsConstant.TaskJobEnum.GIVE_COUPON)
+            .builder();
+        taskJobMainService.dispatch(info);
     }
 }

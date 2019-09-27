@@ -95,7 +95,11 @@ public class TaskJobMainService extends MainBaseService {
     private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
             if(  !jsonStr.contains("taskJobId")&& assertContainsTaskJobId(clzName) ){
                 String jobIdStr = "\"taskJobId\":"+jobId+",";
-                return  jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
+                String resultString = jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
+                if (!resultString.contains("taskJobId")) {
+					resultString = resultString.replaceFirst("\\{", "{"+jobIdStr);
+				}
+                return  resultString;
             }else{
                 return jsonStr;
             }

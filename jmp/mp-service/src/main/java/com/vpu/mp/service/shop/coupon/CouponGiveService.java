@@ -334,7 +334,12 @@ public class CouponGiveService extends ShopBaseService {
             String[] couponArray = couponIds.split(",");
 //            rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_COUPON_KEY, TaskJobEnum.GIVE_COUPON);
             CouponGiveQueueParam newParam = new CouponGiveQueueParam(getShopId(), userIdList, actId, couponArray);
-            saas.taskJobMainService.dispatchImmediately(newParam,CouponGiveQueueParam.class.getName(),getShopId(),TaskJobEnum.GIVE_COUPON.getExecutionType());
+            if (param.getSendAction() == 0) {
+            	saas.taskJobMainService.dispatchImmediately(newParam,CouponGiveQueueParam.class.getName(),getShopId(),TaskJobEnum.GIVE_COUPON.getExecutionType());
+			}
+            if (param.getSendAction() == 1) {
+				saas.messageTemplateService.createCouponTaskJob(getShopId(), newParam, param.getStartTime());
+			}
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -346,7 +351,8 @@ public class CouponGiveService extends ShopBaseService {
      * 定向发券，后台异步执行
      * @param param
      */
-    public void handlerGouonGive(CouponGiveQueueParam param) {
+    public List<Integer> handlerGouonGive(CouponGiveQueueParam param) {
+    	List<Integer> failList = new ArrayList<>();
             /* 插入user-coupon关联表 */
             for (String couponId : param.getCouponArray()) {
             	
@@ -355,18 +361,21 @@ public class CouponGiveService extends ShopBaseService {
                 BigDecimal denomination = db().select(MRKING_VOUCHER.DENOMINATION).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId))).fetchOptionalInto(BigDecimal.class).orElse(null);
                 if (actCode.equals(VOUCHER)) {
                 	for (Integer userId : param.getUserIds()) {
-                        db().insertInto(CUSTOMER_AVAIL_COUPONS,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.GET_SOURCE,CUSTOMER_AVAIL_COUPONS.ACT_ID, CUSTOMER_AVAIL_COUPONS.USER_ID, CUSTOMER_AVAIL_COUPONS.ACT_DESC, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.COUPON_SN)
+                        Integer rows = db().insertInto(CUSTOMER_AVAIL_COUPONS,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.GET_SOURCE,CUSTOMER_AVAIL_COUPONS.ACT_ID, CUSTOMER_AVAIL_COUPONS.USER_ID, CUSTOMER_AVAIL_COUPONS.ACT_DESC, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.COUPON_SN)
                         .values((byte)0,(byte)9,param.getActId(), userId, couponName, denomination, getCouponSn()).execute();
-                    }
+                        failList.add(rows);
+                	}
 				}
                 if (actCode.equals(DISCOUNT)) {
                 	for (Integer userId : param.getUserIds()) {
-                        db().insertInto(CUSTOMER_AVAIL_COUPONS,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.GET_SOURCE,CUSTOMER_AVAIL_COUPONS.ACT_ID, CUSTOMER_AVAIL_COUPONS.USER_ID, CUSTOMER_AVAIL_COUPONS.ACT_DESC, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.COUPON_SN)
+                		Integer rows = db().insertInto(CUSTOMER_AVAIL_COUPONS,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.GET_SOURCE,CUSTOMER_AVAIL_COUPONS.ACT_ID, CUSTOMER_AVAIL_COUPONS.USER_ID, CUSTOMER_AVAIL_COUPONS.ACT_DESC, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.COUPON_SN)
                         .values((byte)1,(byte)9,param.getActId(), userId, couponName, denomination, getCouponSn()).execute();
-                    }
+                		failList.add(rows);
+                	}
 				}
                 
             }
+            return failList;
     }
 
     /** 生成优惠券编号 */
