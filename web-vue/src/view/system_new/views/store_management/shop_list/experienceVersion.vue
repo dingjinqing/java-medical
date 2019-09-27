@@ -169,7 +169,10 @@
         >
           <template slot-scope="scope">
             <div>{{scope.row.nickName}}</div>
-            <div style="color: #d2d2d2;">({{scope.row.principalName}})</div>
+            <div
+              style="color: #d2d2d2;"
+              v-show="scope.row.principalName!==null"
+            >({{scope.row.principalName}})</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -363,7 +366,6 @@
         width="780px"
         center
       >
-
         <ul>
           <li class="shop_message">
             <label class="fl">店铺名称：</label>
@@ -1064,8 +1066,8 @@ export default {
   z-index: 9999;
   border: 1px solid #eee;
   background: #ffffff;
-  .send_type {
-    width: 96px;
+  /deep/ .el-dialog__header {
+    border-bottom: 1px solid #ccc;
   }
 }
 .renew label {
