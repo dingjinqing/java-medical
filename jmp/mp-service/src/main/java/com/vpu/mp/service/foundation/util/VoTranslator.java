@@ -1,7 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,7 +8,7 @@ import java.util.List;
  * @author 郑保乐
  */
 public class VoTranslator {
-
+	final static String STRING_TYPE = "String";
 
     /**
      * 递归查找对象中需要翻译的字段并进行翻译
@@ -29,7 +28,7 @@ public class VoTranslator {
             try {
                 field.setAccessible(true);
                 translateStringValue(field, object,language);
-                translateListValue(field, object,language);
+            	translateListValue(field, object,language);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -50,9 +49,16 @@ public class VoTranslator {
     private static void translateListValue(Field field, Object object,String language) throws IllegalAccessException {
         I18N annotation = getI18nAnnotation(field);
         if (List.class.isAssignableFrom(field.getType())) {
-            ParameterizedType type = (ParameterizedType) field.getGenericType();
-            Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
-            if (null != annotation && realType.equals(String.class)) {
+        	
+      //     ParameterizedType type = (ParameterizedType) field.getGenericType();            
+     //      Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
+            List<?> listObj = (List<?>)field.get(object);
+            String realType = null;
+            if(listObj != null && listObj.size()>0) {
+            	realType = listObj.get(0).getClass().getSimpleName();
+            } 
+            
+            if (null != annotation && STRING_TYPE.equals(realType)) {
                 String fileName = annotation.propertiesFileName();
                 List<String> list = (List<String>) field.get(object);
                 if (null != list) {
