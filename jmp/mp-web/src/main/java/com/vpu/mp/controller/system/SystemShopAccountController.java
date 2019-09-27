@@ -80,7 +80,7 @@ public class SystemShopAccountController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping("/system/shop/account/getOne")
-	public JsonResult getShopAccount(@RequestBody ShopAccountOneParam param) {
+	public JsonResult getShopAccount(@RequestBody @Valid ShopAccountOneParam param) {
 		ShopAccountRecord record = saas.shop.account.checkByIdAndNameOnMain(param.getUserName(),param.getSysId());
 		if(record!=null) {
 			return success(record.into(ShopAccountOnePojo.class));
