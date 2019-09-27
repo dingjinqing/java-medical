@@ -150,10 +150,10 @@
 
           <template slot-scope="scope">
             <div>{{scope.row.shopId}}</div>
-            <div v-if="scope.row.shopType==='v1'">体验版</div>
-            <div v-if="scope.row.shopType==='v2'">基础版</div>
-            <div v-if="scope.row.shopType==='v3'">高级版</div>
-            <div v-if="scope.row.shopType==='v4'">旗舰版</div>
+            <div v-if="scope.row.shopType==='v1'">(体验版)</div>
+            <div v-if="scope.row.shopType==='v2'">(基础版)</div>
+            <div v-if="scope.row.shopType==='v3'">(高级版)</div>
+            <div v-if="scope.row.shopType==='v4'">(旗舰版)</div>
           </template>
         </el-table-column>
         <el-table-column
