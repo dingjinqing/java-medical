@@ -38,7 +38,7 @@ export default {
   },
   data () {
     return {
-      defaultBtn: 'third'
+      defaultBtn: 'first'
     }
   }
 }

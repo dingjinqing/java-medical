@@ -63,8 +63,8 @@
     <el-dialog
       title="微信支付配置"
       :visible.sync="showSettingDialog"
-      width=25%
-      center
+      :close-on-click-modal='false'
+      width=40%
     >
       <ul class="settingContent">
         <li>
@@ -88,19 +88,17 @@
             v-model="wechatpayconf.payKey"
           ></el-input>
         </li>
-        <li>
+        <li class="specialHeight">
           <span>支付证书：</span>
           <el-input
-            type="textarea"
-            style="height:100px;width:240px"
+            class="textarea"
             v-model="wechatpayconf.payCertContent"
           ></el-input>
         </li>
-        <li>
+        <li class="specialHeight">
           <span>支付私钥：</span>
           <el-input
-            type="textarea"
-            style="height:100px;width:240px"
+            class="textarea"
             v-model="wechatpayconf.payKeyContent"
           ></el-input>
         </li>
@@ -147,7 +145,9 @@ export default {
       balance_first: 0,
       score_first: 0,
       src: `${this.$imageHost}/image/admin/share/pay_config_share.jpg`,
-      showSettingDialog: false
+      showSettingDialog: false,
+      text1: '',
+      text2: 'bao'
     }
   },
   methods: {
@@ -363,25 +363,46 @@ export default {
     text-align: center;
     border: 1px solid #5a8bff;
     background: #5a8bff;
+    cursor: pointer;
   }
+
+  // 微信支付配置弹窗样式
   .settingContent {
     li {
       height: 40px;
       line-height: 40px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
+      padding-left: 10px;
       display: flex;
       span {
         vertical-align: middle;
-        margin-right: 30px;
+        margin-right: 10px;
+        width: 150px;
       }
       .el-input {
         width: 240px !important;
-        height: 25px !important;
+        height: 22px !important;
       }
     }
     li:nth-of-type(even) {
       background: #f3f3f3;
     }
+    .specialHeight {
+      height: 115px;
+      line-height: 115px;
+      .textarea {
+        width: 240px;
+        // line-height: 100px;
+        // height: 100px !important;
+        // overflow-y: auto;
+      }
+      .textarea > .el-input__inner {
+        height: 100px !important;
+      }
+    }
+  }
+  .el-dialog__header {
+    text-align: center !important;
   }
   .el-dialog__body {
     padding: 0 20px !important;

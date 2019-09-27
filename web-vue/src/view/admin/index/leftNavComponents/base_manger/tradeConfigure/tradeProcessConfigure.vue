@@ -108,26 +108,61 @@
       </div>
     </section>
 
-    <!-- 发票展示设置、服务条款设置 -->
-    <section
-      v-for="item in options"
-      :key="item.name"
-      class="settingWrapper"
-    >
+    <!-- 发票展示设置 -->
+    <section class="settingWrapper">
       <div class="title">
         <span></span>
-        {{item.title}}
+        发票展示设置
       </div>
       <div class="settingContent">
-        <span>{{item.title}}</span>
         <el-switch
-          v-model="item.value"
+          v-model="switch1"
           active-color="#13ce66"
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{item.value?'已开启':'已关闭'}}</span>
-        <span style="color:#999;margin-left: 15px">开关开启，{{item.content}}</span>
+        <span style="font-size: 14px; color:#333;">{{this.value?'已开启':'已关闭'}}</span>
+        <span style="color:#999;margin-left: 15px">开关开启，用户在购买时可以使用发票功能</span>
+      </div>
+    </section>
+
+    <!--服务条款设置 -->
+    <section class="settingWrapper">
+      <div class="title">
+        <span></span>
+        服务条款设置
+      </div>
+      <div class="settingContent defaultSelect">
+        <el-switch
+          v-model="switch2"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          style="margin: 0 10px;"
+        ></el-switch>
+        <span style="font-size: 14px; color:#333;">{{this.value3?'已开启':'已关闭'}}</span>
+        <span style="color:#999;margin-left: 15px">开关开启，结算页会展示服务条款，用户需勾选“同意”才可继续下单</span>
+      </div>
+      <div
+        class="serviceTerms settingContent"
+        v-if="this.value3===true"
+      >
+        <div class="termsName">
+          <span>条款名称：</span>
+          <el-input
+            size="small"
+            style="width:165px"
+          ></el-input>
+          <span>展示在结算页的服务条款名称 </span>
+          <span>编辑条款</span>
+          <span>查看示例</span>
+        </div>
+      </div>
+      <div class="defaultOption settingContent">
+        <span>首次下单是否默认勾选：</span>
+        <el-radio-group v-model="firstOrder">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="2">否</el-radio>
+        </el-radio-group>
       </div>
     </section>
 
@@ -281,14 +316,90 @@
       >保存</el-button>
     </div>
 
+    <!-- 设置自提门店弹窗 -->
+    <el-dialog
+      title="设置自提门店"
+      :visible.sync="showStoreDialog"
+      :close-on-click-modal='false'
+      width=50%
+    >
+      <div class="table_list">
+        <el-table
+          class="version-manage-table"
+          header-row-class-name="tableClss"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop=""
+            label="门店名称"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="门店地址"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="负责人"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="联系电话"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="营业时间"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="营业状态"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="是否自提"
+            align="center"
+          >
+          </el-table-column>
+        </el-table>
+        <div class="table_footer">
+          <pagination
+            :page-params.sync="pageParams"
+            @pagination="initDataList"
+          />
+        </div>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="initDataList"
+        >保 存</el-button>
+        <el-button @click="cancle">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
+import pagination from '@/components/admin/pagination/pagination'
 import { tradeSelect, tradeUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 export default {
-  components: { areaLinkage },
+  components: { areaLinkage, pagination },
   created () {
     this.initData()
   },
@@ -309,10 +420,16 @@ export default {
         { code: 'consignee_cid', info: '收货人身份证号码', content: '收货人身份证号码', value: false },
         { code: 'custom', info: '自定义信息', value: false }
       ],
+      value3: '',
+      switch1: '',
+      switch2: '',
       src: `${this.$imageHost}/image/admin/icon_jia.png`,
       province: ``,
       district: ``,
       city: ``,
+      firstOrder: '',
+      showStoreDialog: false,
+      pageParams: {},
       expressCompany: [
         { delivery_name: '百世快递', biz_id: '', status_code: '未签约', operate: '签约' }
       ],
@@ -496,10 +613,18 @@ export default {
       })
     },
     handleTake () {
-      console.log('自提')
+      this.showStoreDialog = true
     },
     handleAreaData (val) {
       this.province = val['province']
+    },
+    // 配置弹出取消按钮点击
+    cancle () {
+      this.showStoreDialog = false
+    },
+    // 配置弹出按钮确认点击
+    initDataList () {
+      this.showStoreDialog = false
     }
   }
 }
@@ -635,6 +760,19 @@ export default {
     justify-content: center;
     width: 100%;
     margin-top: 30px;
+  }
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    padding: 8px 10px;
+    color: #333;
+  }
+  .table_list {
+    position: relative;
+    .table_footer {
+      background: #666;
+    }
   }
 }
 </style>
