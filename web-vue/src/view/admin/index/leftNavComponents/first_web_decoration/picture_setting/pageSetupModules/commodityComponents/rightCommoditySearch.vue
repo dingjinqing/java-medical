@@ -94,7 +94,7 @@
             <el-button
               plain
               size="small"
-              @click="handleToReset(3)"
+              @click="handleToReset(2)"
             >重置</el-button>
           </span>
 

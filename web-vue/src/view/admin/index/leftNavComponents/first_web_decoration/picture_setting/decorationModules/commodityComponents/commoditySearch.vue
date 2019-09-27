@@ -22,7 +22,7 @@
             <span>商品搜索：请输入商品关键字</span>
           </div>
           <div
-            v-if="classificationRadio==='2'"
+            v-if="data.classificationRadio==='2'"
             class="icon"
             :style="'color:'+data.colorIcon"
           >
@@ -197,7 +197,6 @@ export default {
       flex-direction: column;
       justify-content: space-around;
       margin-right: 10px;
-      color: red;
       span:nth-of-type(1) {
         font-size: 30px;
         display: inline-block;
