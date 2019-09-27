@@ -147,7 +147,7 @@ public class TaskJobMainService extends MainBaseService {
                         TaskJobsConstant.TaskJobEnum.getTaskJobEnumByExecutionType(r.get(TASK_JOB_MAIN.EXECUTION_TYPE));
                     if (job != null) {
                         rabbitmqSendService.sendMessage(job.getExchangeName(),job.getRoutingKey(),
-                            r.get(TASK_JOB_CONTENT.CONTENT),r.get(TASK_JOB_MAIN.CLASS_NAME));
+                            setTaskJobId(r.get(TASK_JOB_CONTENT.CONTENT),r.get(TASK_JOB_MAIN.CLASS_NAME),r.get(TASK_JOB_MAIN.ID)) ,r.get(TASK_JOB_MAIN.CLASS_NAME));
                     }
                 });
                 db().update(TASK_JOB_MAIN)
