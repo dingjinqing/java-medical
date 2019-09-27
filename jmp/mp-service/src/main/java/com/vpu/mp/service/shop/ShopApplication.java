@@ -171,6 +171,11 @@ public class ShopApplication {
     @Autowired
 	public RebateGoodsService rebateGoods;
     /**
+     * 分销员审核
+     */
+    @Autowired
+   	public DistributorCheckService distributorCheck;
+    /**
      * 分销推广语
      */
     @Autowired

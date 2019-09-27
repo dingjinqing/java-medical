@@ -23,6 +23,9 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
 
 
 /**
@@ -229,5 +232,37 @@ public class CouponService extends ShopBaseService{
 				.from(MRKING_VOUCHER)
 				.where(MRKING_VOUCHER.ID.in(ids)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 				.fetchInto(CouponView.class);
+	}
+	
+	/**
+	 * 用户优惠券列表
+	 * @param param
+	 * @return
+	 */
+	public AvailCouponListVo getCouponByUser(AvailCouponParam param) {
+		//某用户全部优惠券
+		List<AvailCouponVo> res = db().select(CUSTOMER_AVAIL_COUPONS.ID,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.AMOUNT,CUSTOMER_AVAIL_COUPONS.START_TIME,
+				CUSTOMER_AVAIL_COUPONS.END_TIME,CUSTOMER_AVAIL_COUPONS.IS_USED,CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT,MRKING_VOUCHER.ACT_NAME).from(CUSTOMER_AVAIL_COUPONS
+				.leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
+				.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()))
+				.fetch().into(AvailCouponVo.class);
+		AvailCouponListVo couponList = new AvailCouponListVo();
+		//整理数据为未使用、已使用、已过期3个状态list
+		for(AvailCouponVo coupon : res) {
+			if(coupon.isUsed == 0) {
+				couponList.unused.add(coupon);
+			}
+			if(coupon.isUsed == 1) {
+				couponList.used.add(coupon);
+			}
+			if(coupon.isUsed == 2) {
+				couponList.expired.add(coupon);
+			}
+			//各状态优惠券数量
+			couponList.setUnusedNum(couponList.unused.size());
+			couponList.setUsedNum(couponList.used.size());
+			couponList.setExpiredNum(couponList.expired.size());
+		}
+		return couponList;
 	}
 }
