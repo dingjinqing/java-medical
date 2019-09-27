@@ -144,11 +144,17 @@ public class CardConstant {
 	public static final Byte STORE_CATEGORY_TYPE=2;
 	public static final Byte PLATFORM_CATEGORY_TYPE=3; 
 	
-	/** ----------------------------------------------------------*/
+	/** ----------------------------------------------------------------*/
 	
 	/** -----------------card_receive_code表常量--------------------------*/
 	public static final Integer ALL_BATCH = 0;
-	/** ----------------------------------------------------------*/
+	/** ----------------------------------------------------------------*/
 	
+	/** -------------------card_examine表常量---------------------------------------*/
+	public static final Byte UNDER_REVIEW = 1;
+	public static final Byte VERIFIED = 2;
+	public static final Byte REFUSED = 3;
+	
+	/** --------------------------------------------------------------------------*/
 	
 }
