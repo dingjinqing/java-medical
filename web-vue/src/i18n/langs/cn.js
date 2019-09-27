@@ -7,7 +7,6 @@ import { cn as publishList } from './views/publishList'
 import { cn as versionList } from './views/system/cn/smallProgramVersion/versionListCn'
 
 import { cn as router } from './views/admin_new/cn/routerCn'
-import { cn as membershipIntroduction } from './views/membershipIntroduction'
 import { cn as marketManage } from './views/marketManage'
 import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
@@ -76,6 +75,8 @@ import { cn as couponPackageOrder } from './views/admin_new/cn/index/orderManage
 import { cn as refundDialog } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/refundDialogCn'
 
 // 会员管理
+// 会员列表
+import { cn as membershipIntroduction } from './views/admin_new/cn/index/userManagement/member/membershipIntroductionCn'
 // 会员管理-会员卡
 import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card/memberCardCn'
 

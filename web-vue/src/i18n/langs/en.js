@@ -6,7 +6,6 @@ import { en as shopList } from './views/shopList'
 import { en as publishList } from './views/publishList'
 import { en as versionList } from './views/system/en/smallProgramVersion/versionListEn'
 import { en as router } from './views/admin_new/en/routerEn'
-import { en as membershipIntroduction } from './views/membershipIntroduction'
 import { en as marketManage } from './views/marketManage'
 import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
@@ -74,6 +73,8 @@ import { en as couponPackageOrder } from './views/admin_new/en/index/orderManage
 import { en as refundDialog } from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/refundDialogEn'
 
 // 会员管理
+// 会员列表
+import { en as membershipIntroduction } from './views/admin_new/en/index/userManagement/member/membershipIntroductionEn'
 // 会员管理-会员卡
 import { en as memberCard } from './views/admin_new/en/index/userManagement/card/memberCardEn'
 // 门店
