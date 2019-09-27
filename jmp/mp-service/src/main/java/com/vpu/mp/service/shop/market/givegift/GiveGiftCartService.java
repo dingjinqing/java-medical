@@ -50,7 +50,7 @@ public class GiveGiftCartService extends ShopBaseService {
         SelectConditionStep<? extends Record> selectConditionStep = orderInfo.giveGiftRecordList(param);
         PageResult<GiveGiftRecordListVo> pageResult = getPageResult(selectConditionStep, param.getCurrentPage(), param.getPageRows(), GiveGiftRecordListVo.class);
         pageResult.dataList.forEach(giftCart->{
-            Result<? extends Record> records = orderGoods.getGoodsInfoByMainOrderSn(giftCart.getMainOrderSn());
+            Result<? extends Record> records = orderGoods.getGoodsInfoByOrderSn(giftCart.getMainOrderSn());
             Integer receiveNum = giftReceive.getReceiveNumByoOrderSn(giftCart.getMainOrderSn());
             Integer returnNum = orderInfo.getReturnNumByMainOrderSn(giftCart.getMainOrderSn());
             giftCart.setReturnNum(returnNum);

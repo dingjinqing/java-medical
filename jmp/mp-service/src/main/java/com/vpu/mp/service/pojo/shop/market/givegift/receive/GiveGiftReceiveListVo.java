@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.givegift.receive;
 
+import com.vpu.mp.service.pojo.shop.market.givegift.record.GiftRecordGoodsVo;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -26,4 +28,8 @@ public class GiveGiftReceiveListVo {
     String orderStatusName;
     Byte giftType;
     String goodsName;
+    /**
+     *  商品列表
+     */
+    private List<GiftRecordGoodsVo> giftGoodsList;
 }

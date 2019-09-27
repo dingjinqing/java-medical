@@ -9,9 +9,12 @@ import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
+import com.vpu.mp.service.pojo.shop.market.givegift.record.GiftRecordGoodsVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListVo;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,8 @@ public class GiveGiftService extends ShopBaseService {
     private GiveGiftCartService giveGiftCart;
     @Autowired
     private GiveGiftReceiveService giveGiftReceive;
+    @Autowired
+    private OrderGoodsService orderGoods;
     /**
      * 查询送礼活动列表
      *
@@ -183,6 +188,11 @@ public class GiveGiftService extends ShopBaseService {
      * @return PageResult<GiveGiftReceiveListVo>
      */
     public PageResult<GiveGiftReceiveListVo> giveGiftReceiveList(GiveGiftReceiveListParam param) {
-        return giveGiftReceive.giveGiftReceiveList(param);
+        PageResult<GiveGiftReceiveListVo> giftReceiveList = giveGiftReceive.giveGiftReceiveList(param);
+        giftReceiveList.getDataList().forEach(giftReceive->{
+            Result<? extends Record> records = orderGoods.getGoodsInfoByOrderSn(giftReceive.getMainOrderSn());
+            giftReceive.setGiftGoodsList(records.into(GiftRecordGoodsVo.class));
+        });
+        return giftReceiveList;
     }
 }

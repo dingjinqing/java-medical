@@ -188,13 +188,13 @@ public class OrderGoodsService extends ShopBaseService{
 
 	/**
 	 * 根据订单号查询商品
-	 * @param mainOrderSn
+	 * @param orderSn
 	 * @return
 	 */
-	public Result<? extends Record> getGoodsInfoByMainOrderSn(String mainOrderSn){
+	public Result<? extends Record> getGoodsInfoByOrderSn(String orderSn){
 		Result<Record6<Integer, String, String, String, BigDecimal, Short>> record6s = db()
 				.select(TABLE.GOODS_ID, TABLE.GOODS_SN, TABLE.GOODS_NAME, TABLE.GOODS_IMG, TABLE.GOODS_PRICE, TABLE.GOODS_NUMBER)
-				.from(TABLE).where(TABLE.ORDER_SN.eq(mainOrderSn)).fetch();
+				.from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
 		return record6s;
 	}
 }

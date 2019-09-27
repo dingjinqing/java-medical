@@ -121,8 +121,8 @@ public class GiveGiftReceiveService extends ShopBaseService {
                     .or(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_REFUND_FINISHED)));
         }
 
-        if (param.getGiftReceiveStatus() != null && param.getGiftReceiveStatus() > -1) {
-            switch (param.getGiftReceiveStatus()) {
+        if (param.getOrderStatus() != null && param.getOrderStatus() > -1) {
+            switch (param.getOrderStatus()) {
                 case 0:
                     select.and(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_UNSUBMITTED_ADDRESS))
                             .and(GIVE_GIFT_RECEIVE.CREATE_TIME.gt(nowTime));
@@ -144,7 +144,7 @@ public class GiveGiftReceiveService extends ShopBaseService {
                             .and(GIVE_GIFT_RECEIVE.CREATE_TIME.le(nowTime));
                     break;
                 default:
-                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(param.getGiftReceiveStatus()));
+                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(param.getOrderStatus()));
             }
         }
 

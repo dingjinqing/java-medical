@@ -1,6 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.givegift.receive;
 
+import com.vpu.mp.service.pojo.shop.market.givegift.record.GiftRecordGoodsVo;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 我要送礼 收礼列表
@@ -44,7 +47,7 @@ public class GiveGiftReceiveListParam {
     /**
      * 接收状态
      */
-    private Byte giftReceiveStatus;
+    private Byte orderStatus;
     /**
      * 礼品订单号
      */
@@ -53,5 +56,6 @@ public class GiveGiftReceiveListParam {
      *
      */
     private Byte returnFinished;
+
 
 }
