@@ -5,8 +5,9 @@
         :title="$t('imgageDalog.title')"
         :visible.sync="dialogTableVisible"
         width="825px"
-        :modal-append-to-body='false'
+        :append-to-body='true'
       >
+        <Cropper />
         <div class="dialog_top">
           <el-upload
             class="upload-demo"
@@ -150,7 +151,7 @@
       </el-dialog>
 
     </div>
-    <Cropper />
+
   </div>
 </template>
 <script>

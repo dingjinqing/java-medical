@@ -113,8 +113,10 @@
             :nowRightShowMoudlesIndex='nowRightShowMoudlesIndex'
             :nowRightModulesData="nowRightModulesData"
             :nowRightShowIndex='nowRightShowIndex'
+            :pageSetData='pageSetData'
             @handleToClearIndex='handleToClearIndex'
             @handleToBackMiddleData='handleToBackMiddleData'
+            @hanelToPageSet='hanelToPageSet'
           />
         </div>
       </div>
@@ -371,7 +373,8 @@ export default {
         sort: false,
         preventOnFilter: false,
         fallbackTolerance: '1'
-      }
+      },
+      pageSetData: {}
     }
   },
   watch: {
@@ -418,10 +421,37 @@ export default {
           this.nowShowLeftModules = this.marketingTextConArr
       }
     },
+    // 初始化页面配置
+    handleToSenPageSetData () {
+      let pageSetData = {
+        'is_ok': 1,
+        'page_name': '13423',
+        'bg_types': '0',
+        'has_bottom': '0',
+        'page_bg_color': '#ffffff',
+        'page_bg_image': '',
+        'show_margin': '1',
+        'margin_val': '10',
+        'pictorial': {
+          'is_add': '0',
+          'user_visibility': '0',
+          'share_btn_name': '',
+          'share_desc': '',
+          'share_img_path': '',
+          'name_length': 0
+        }
+      }
+      this.pageSetData = pageSetData
+    },
+    // 页面设置回显
+    hanelToPageSet (res) {
+      console.log(res)
+      this.pageSetData = res
+    },
     // 初始化拖拽事件
     init_drag_event () {
-      // 中间区域拖拽插入数据处理
-      // this.middleDragData()
+      // 初始化页面设置
+      this.handleToSenPageSetData()
       let this_ = this
       // 左侧模块向中间区域拖拽
       $('.third_drag').draggable({

@@ -6,6 +6,8 @@
         title="裁剪图片"
         :visible.sync="dialogVisible"
         width="35%"
+        :append-to-body='true'
+        :modal-append-to-body='false'
       >
         <div class="CropperContainer">
           <div class="CropperTop">
@@ -219,66 +221,64 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 //裁剪样式
-.vue-cropper {
-  .CropperContainer {
+.CropperContainer {
+  display: flex;
+  flex-direction: column;
+}
+.CropperTop {
+  display: flex;
+  margin-bottom: 10px;
+  .topDiv {
     display: flex;
-    flex-direction: column;
-  }
-  .CropperTop {
-    display: flex;
-    margin-bottom: 10px;
-    .topDiv {
-      display: flex;
-      height: 28px;
-      line-height: 28px;
-      &:nth-of-type(2) {
-        margin: 0 10px;
-      }
-      div {
-        white-space: nowrap;
-      }
-      /deep/ .el-input__inner {
-        width: 52px;
-      }
+    height: 28px;
+    line-height: 28px;
+    &:nth-of-type(2) {
+      margin: 0 10px;
+    }
+    div {
+      white-space: nowrap;
+    }
+    /deep/ .el-input__inner {
+      width: 52px;
     }
   }
-  .tips {
-    color: #c09853;
-    margin-bottom: 10px;
+}
+.tips {
+  color: #c09853;
+  margin-bottom: 10px;
+}
+.middleCOntainer {
+  display: flex;
+}
+.CropperMiddle {
+  height: 150px;
+  width: 150px;
+  /deep/ .vue-cropper {
+    background-image: none;
   }
-  .middleCOntainer {
-    display: flex;
-  }
-  .CropperMiddle {
-    height: 150px;
-    width: 150px;
-    /deep/ .vue-cropper {
-      background-image: none;
-    }
-  }
-  /deep/ .el-dialog__header {
-    background: #f3f3f3;
-    height: 42px;
-    text-align: center;
+}
+/deep/ .el-dialog__header {
+  background: #f3f3f3;
+  height: 42px;
+  text-align: center;
 
-    padding: 10px;
-    span {
-      font-size: 14px;
-      line-height: 14px;
-    }
-    .el-dialog__headerbtn {
-      top: 13px;
-    }
+  padding: 10px;
+  span {
+    font-size: 14px;
+    line-height: 14px;
   }
-  .cropper {
-    width: auto;
-    height: 150px;
-    width: 150px;
+  .el-dialog__headerbtn {
+    top: 13px;
   }
-  .CropperContainer {
-    display: flex;
-  }
+}
+.cropper {
+  width: auto;
+  height: 150px;
+  width: 150px;
+}
+.CropperContainer {
+  display: flex;
 }
 </style>

@@ -66,5 +66,20 @@
   margin-bottom: 10px;
 }
 
-
+.el-dialog__header {
+  text-align: center;
+  font-size: 14px;
+  background-color: #f3f3f3;
+  padding-top: 10px;
+}
+.el-dialog__header .el-dialog__title {
+  font-size: 14px;
+}
+.el-dialog__header .el-dialog__headerbtn {
+  top: 12px;
+}
+.el-dialog__footer {
+  padding-bottom: 10px;
+  border-top: 1px solid #f3f3f3;
+}
 

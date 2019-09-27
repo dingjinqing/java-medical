@@ -15,7 +15,10 @@
       v-if="topIconFlag"
       class="pageSetContent"
     >
-      <pageSetupMain />
+      <pageSetupMain
+        :pageSet='pageSet'
+        @hanelToPageSet='hanelToPageSet'
+      />
     </div>
     <!--模块配置-->
     <div v-if="!topIconFlag">
@@ -40,7 +43,8 @@ export default {
   props: {
     nowRightShowMoudlesIndex: Number,
     nowRightModulesData: Object,
-    nowRightShowIndex: Number
+    nowRightShowIndex: Number,
+    pageSetData: Object
   },
   data () {
     return {
@@ -68,7 +72,8 @@ export default {
       ],
       showModule: null,
       modulesData: {},
-      sortIndex: -1
+      sortIndex: -1,
+      pageSet: {}
     }
   },
   watch: {
@@ -96,6 +101,16 @@ export default {
         this.sortIndex = newData
       },
       immediate: true
+    },
+    pageSetData: {
+      handler (newData) {
+        console.log(newData)
+        if (newData) {
+          this.pageSet = newData
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
@@ -108,6 +123,11 @@ export default {
     handleToBackData (data) {
       console.log(data)
       this.$emit('handleToBackMiddleData', data)
+    },
+    // 页面设置回显
+    hanelToPageSet (res) {
+      console.log(res)
+      this.$emit('hanelToPageSet', res)
     }
   }
 }
@@ -141,6 +161,8 @@ export default {
     padding: 10px 2%;
     border-radius: 4px;
     overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 20px;
   }
 }
 </style>
