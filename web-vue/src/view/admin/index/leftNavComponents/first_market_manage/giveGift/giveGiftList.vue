@@ -68,7 +68,7 @@
 
                 <el-table-column
                         prop="statusText"
-                        :label="$t('giveGift.activityType')"
+                        :label="$t('giveGift.activityStatus')"
                         align="center"
                 >
                 </el-table-column>
@@ -114,29 +114,26 @@
                             </el-tooltip>
                             <el-tooltip
                                     :content="$t('giveGift.delete')"
-                                    placement="top"
-                            >
+                                    placement="top">
                                 <span
                                         class="el-icon-delete"
-                                        @click="deletegiveGift(scope.row.id)"
-                                ></span>
+                                        @click="deletegiveGift(scope.row.id)">
+                                </span>
                             </el-tooltip>
                             <el-tooltip
                                     :content="$t('giveGift.giveGiftDetail')"
-                                    placement="top"
-                            >
+                                    placement="top">
                                 <span
                                         class="el-icon-tickets"
-                                        @click="giveGiftDetail(scope.row.id)"
-                                ></span>
+                                        @click="giveGiftDetail(scope.row.id,scope.row.actName)">
+                                </span>
                             </el-tooltip>
                             <el-tooltip
-                                    :content="$t('giveGift.receiveDatail')"
-                                    placement="top"
-                            >
+                                    :content="$t('giveGift.receiveDetail')"
+                                    placement="top">
                                 <span
                                         class="el-icon-s-unfold"
-                                        @click="receiveDatail(scope.row.id)"
+                                        @click="receiveDetail(scope.row.id)"
                                 ></span>
                             </el-tooltip>
                         </div>
@@ -169,7 +166,7 @@ export default {
       tableData: [],
       pageParams: {},
       tabInfo: this.$t('giveGift.tabInfo'),
-      tabSwitch: this.$router.tabSwitch,
+      tabSwitch: this.$route.params.tabSwitch,
       tableListView: true,
       loading: false
     }
@@ -179,7 +176,7 @@ export default {
     this.tabSwitch = this.$route.params.tabSwitch
     // 初始化数据
     this.langDefault()
-    // this.initDataList()
+    this.initDataList()
   },
   watch: {
     land () {
@@ -190,6 +187,7 @@ export default {
       console.log('$route', to, to.path.split('/')[5])
       if (this.tabSwitch !== this.$route.params.tabSwitch) {
         this.tabSwitch = to.path.split('/')[5]
+        this.initDataList()
       }
     }
   },
@@ -208,6 +206,7 @@ export default {
         if (res.error === 0) {
           this.$message.success(res.message)
           this.resDataFilter(res.content.dataList)
+          this.pageParams = res.content.page
         } else {
           this.$message.warning(res.error, res.message)
         }
@@ -283,11 +282,13 @@ export default {
         })
       })
     },
-    receiveDatail (id) {
+    receiveDetail (id) {
       // 收礼明细
     },
-    giveGiftDetail (id) {
+    giveGiftDetail (id, activityName) {
       // 送礼明细
+      console.log('跳转到送礼明细列表页面 id = ', id, 'activityName: ', activityName)
+      this.$router.push({ path: `/admin/home/main/giveGift/detail/${activityName}/${id}` })
     }
   }
 }

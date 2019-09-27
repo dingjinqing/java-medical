@@ -194,6 +194,8 @@ export const cn = {
   purchase_redemption_detail: ['营销管理', '加价购', '换购明细'],
   // 营销管理 我要送礼
   giveGift: ['营销管理', '我要送礼'],
+  // 营销管理 我要送礼 送礼明细
+  giveGift_details: ['营销管理', '我要送礼', '送礼明细'],
   // 营销管理 消息推送
   message_push: ['营销管理', '消息推送'],
   // 营销管理 消息推送 添加消息模板

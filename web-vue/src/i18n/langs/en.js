@@ -55,6 +55,8 @@ import { en as luckyDraw } from './views/admin_new/en/index/marketManagement/luc
 import { en as reducePriceList } from './views/admin_new/en/index/marketManagement/reducePrice/reducePriceListEn'
 // 分享有礼-添加
 import { en as adSharePolite } from './views/admin_new/en/index/marketManagement/sharePolite/adSharePolite'
+// 我要送礼
+import { en as giveGift } from './views/admin_new/en/index/marketManagement/giveGift/giveGift'
 // 营销管理/消息推送
 import { en as messagePush } from './views/admin_new/en/index/marketManagement/messagePush/messagePushEn'
 // 分销
@@ -584,6 +586,7 @@ const en = {
   distribution, // 分销
   messagePush, // 营销管理/消息推送
   payConfiguration, // 支付配置
+  giveGift, // 我要送礼
   ...enLocale,
   expressList,
 
