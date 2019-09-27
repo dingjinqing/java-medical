@@ -1,10 +1,11 @@
 import service from '@/util/request.js'
 
 // 编辑商家账号信息
-export function accountInfoRequest () {
+export function editAccountRequest (data) {
   return service({
     url: '/api/system/shop/account/edit',
-    method: 'post'
+    method: 'post',
+    data: data
   })
 }
 
@@ -21,6 +22,15 @@ export function addCoountRequest (data) {
 export function searchAccountRequest (data) {
   return service({
     url: '/api/system/shop/account/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 单个商家账户列表查询
+export function searchOneAccountRequest (data) {
+  return service({
+    url: '/api/system/shop/account/getOne',
     method: 'post',
     data: data
   })

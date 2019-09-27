@@ -276,15 +276,9 @@ export default {
       addCoountRequest(params).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.$message({
-            message: '保存成功',
-            type: 'success'
-          })
+          this.$message.success('保存成功')
         } else {
-          this.$message({
-            message: res.message,
-            type: 'warning'
-          })
+          this.$message.error(res.message)
         }
       }).catch(() => {
         this.$message.error('保存失败')

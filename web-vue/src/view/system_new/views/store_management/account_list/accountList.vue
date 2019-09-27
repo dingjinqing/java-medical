@@ -3,26 +3,36 @@
     v-model="tabActive"
     type="border-card"
     class="tab"
+    @tab-click="handleClick"
   >
     <el-tab-pane
       name="first"
       :label="$t('shopAccountList.title.list')"
     >
-      <list @send="send(arguments)" />
+      <list
+        v-if="firstShow"
+        @send="send"
+      />
     </el-tab-pane>
     <el-tab-pane
       name="second"
       :label="$t('shopAccountList.title.addAccount')"
     >
-      <addAccount />
+      <addAccount
+        @send="send"
+        v-if="secondShow"
+      />
     </el-tab-pane>
     <el-tab-pane
       name="third"
       :label="$t('shopAccountList.title.editAccount')"
       v-if="isShowEditAccount"
-      @send="revice()"
     >
-      <editAccount />
+      <editAccount
+        v-if="thirdShow"
+        :sendData="sendData"
+        @send="send"
+      />
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -38,15 +48,15 @@ export default {
     list,
     addAccount,
     editAccount
-
-    // list: () => import('./list'),
-    // addAccount: () => import('./addAccount'),
-    // editAccount: () => import('./editAccount')
   },
   data () {
     return {
       tabActive: 'first',
-      isShowEditAccount: false
+      isShowEditAccount: false,
+      sendData: null,
+      firstShow: true,
+      secondShow: true,
+      thirdShow: false
     }
   },
   created () {
@@ -57,24 +67,48 @@ export default {
     }
   },
   methods: {
-    // getInfo (val) {
-    //   console.log(val)
-    //   let receiveSysId = val[1]
-    //   let receiveUserName = val[0]
-    //   if (val[0] === 'third') {
-    //     this.isShowEditAccount = true
-    //     this.tabActive = 'third'
-    //   }
-    // }
-    send (val) {
-      if (val) {
-        this.isShowEditAccount = true
-        this.tabActive = 'third'
+    send (data) {
+      console.log('接收')
+      console.log(data)
+      if (data) {
+        if (data.name === 'third') {
+          this.isShowEditAccount = true
+          this.tabActive = 'third'
+          this.thirdShow = true
+          this.firstShow = false
+          this.sendData = data
+          console.log('发送sendData')
+          console.log(this.sendData)
+        }
+        if (data.name === 'secondOver') {
+          this.firstShow = true
+          this.tabActive = 'first'
+          this.secondShow = false
+          this.isShowEditAccount = false
+        }
+        if (data.name === 'thirdOver') {
+          this.firstShow = true
+          this.tabActive = 'first'
+          this.thirdShow = false
+          this.isShowEditAccount = false
+        }
+      }
+    },
+    handleClick (tab, event) {
+      if (this.tabActive === 'first') {
+        this.firstShow = true
+        this.secondShow = false
+        this.thirdShow = false
+        this.isShowEditAccount = false
+      } if (this.tabActive === 'second') {
+        this.firstShow = false
+        this.secondShow = true
+        this.thirdShow = false
+        this.isShowEditAccount = false
       }
     }
   },
   watch: {
-    '$route': 'revice'
   }
 }
 </script>

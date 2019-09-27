@@ -139,7 +139,7 @@
           <el-button
             type="text"
             style="color:#000"
-            @click="handleEditAccount(scope.row.sysId, scope.row.userName)"
+            @click="handleEditAccount(scope.row)"
           >
             {{$t('shopAccountList.ashopAccountList.edit')}}
           </el-button>
@@ -234,9 +234,14 @@ export default {
         }
       })
     },
-    handleEditAccount () {
-      this.name = 'third'
-      this.$emit('send', this.name)
+    handleEditAccount (data) {
+      console.log('点击编辑')
+      let params = {
+        'sysId': data.sysId,
+        'userName': data.userName,
+        'name': 'third'
+      }
+      this.$emit('send', params)
     },
     // 审核状态的四种数字转化为文字
     changeState (row, col) {

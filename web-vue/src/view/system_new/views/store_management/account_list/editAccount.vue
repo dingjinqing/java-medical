@@ -9,74 +9,66 @@
         label-position="left"
         status-icon
       >
-        <el-form-item
-          :label="$t('shopAccountList.accountAdd.userName')"
-          prop="userName"
-        >
+        <el-form-item :label="$t('shopAccountList.accountAdd.userName')">
           <el-input
             type="text"
+            ref="userName"
             v-model="formData.userName"
-            key="1"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          :label="$t('shopAccountList.accountAdd.password')"
-          prop="password"
-        >
+        <el-form-item :label="$t('shopAccountList.accountAdd.password')">
           <el-input
             v-model="formData.password"
-            autocomplete="new-password"
-            onfocus="this.removeAttribute('readonly')"
-            onblur="this.setAttribute('readonly',true)"
-            type="password"
-            readonly
-            key="2"
+            show-password
+            ref="password"
             size="small"
+            autocomplete="off"
           ></el-input>
+          <span
+            v-show="formData.sysId!==null"
+            style="color: #c09853;"
+          >密码为空，则不修改原密码</span>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.accountName')">
           <el-input
             v-model="formData.accountName"
+            ref="accountName"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.state')">
           <el-select
             v-model="formData.state"
+            ref="state"
             :placeholder="$t('shopAccountList.selectState')"
             size="small"
           >
             <el-option
-              :label="$t('shopAccountList.stateOption.state1')"
-              value="1"
-            ></el-option>
-            <el-option
-              :label="$t('shopAccountList.stateOption.state2')"
-              value="2"
-            ></el-option>
-            <el-option
-              :label="$t('shopAccountList.stateOption.state3')"
-              value="3"
-            ></el-option>
-            <el-option
-              :label="$t('shopAccountList.stateOption.state4')"
-              value="4"
-            ></el-option>
+              v-for="item in authStates"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.maxSkuNum')">
           <el-input
             v-model="formData.maxSkuNum"
-            label='1000'
+            ref="maxSkuNum"
             size="small"
+            type="number"
+            min=1
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.maxShopNum')">
           <el-input
             v-model="formData.maxShopNum"
-            label='100'
+            ref="maxShopNum"
             size="small"
+            type="number"
+            min=1
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.buyTime')">
@@ -84,6 +76,7 @@
             <el-date-picker
               size="small"
               v-model="formData.buyTime"
+              ref="buyTime"
               type="datetime"
               :placeholder="$t('shopAccountList.timeSelect')"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -96,6 +89,7 @@
             <el-date-picker
               size="small"
               v-model="formData.endTime"
+              ref="endTime"
               type="datetime"
               :placeholder="$t('shopAccountList.timeSelect')"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -106,18 +100,21 @@
         <el-form-item :label="$t('shopAccountList.accountAdd.mobile')">
           <el-input
             v-model="formData.mobile"
+            ref="mobile"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.company')">
           <el-input
             v-model="formData.company"
+            ref="company"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.salesperson')">
           <el-input
             v-model="formData.salesperson"
+            ref="salesperson"
             size="small"
           ></el-input>
         </el-form-item>
@@ -128,6 +125,9 @@
               @province="getProvinceCode"
               @city="getCityCode"
               @area="getDistrictCode"
+              :province="formData.provinceCode"
+              :city="formData.cityCode"
+              :area="formData.districtCode"
             ></v-distpicker>
           </div>
         </el-form-item>
@@ -139,21 +139,17 @@
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.baseSale')">
           <el-switch
-            active-value="1"
-            inactive-value="0"
+            v-model="baseSaleTran"
             active-color="#f7931e"
             inactive-color="#ddd"
-            v-model="formData.baseSale"
           >
           </el-switch>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.addCommentSwitch')">
           <el-switch
-            active-value="1"
-            inactive-value="0"
+            v-model="addCommentSwitchTran"
             active-color="#f7931e"
             inactive-color="#ddd"
-            v-model="formData.addCommentSwitch"
           >
           </el-switch>
         </el-form-item>
@@ -162,7 +158,7 @@
         size="small"
         type="primary"
         style="margin-left: 158px; padding: 0!important"
-        @click="save('formData')"
+        @click="saveBefore"
       >
         {{$t('shopAccountList.accountAdd.save')}}
       </el-button>
@@ -171,23 +167,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { addCoountRequest } from '@/api/system/accountList.js'
+import { editAccountRequest, searchOneAccountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
   name: 'editAccount',
   components: { VDistpicker },
   computed: {
-    ...mapGetters(['proAndUrData']),
-    proAndUrData_ () {
-      return this.proAndUrData
-    }
   },
+  props: ['sendData'],
   watch: {
-    proAndUrData_ (newData, oldData) {
-      console.log(newData)
-      this.query()
-    }
   },
   data () {
     return {
@@ -195,20 +183,49 @@ export default {
         userName: '',
         password: '',
         accountName: '',
-        maxSkuNum: '10000',
-        maxShopNum: '100',
+        maxSkuNum: '',
+        maxShopNum: '',
         buyTime: '',
         endTime: '',
         mobile: '',
         company: '',
         salesperson: '',
         area: '',
-        addCommentSwitch: false,
-        baseSale: false
-      }
+        addCommentSwitch: 0,
+        baseSale: 0
+      },
+      sendDatas: null,
+      baseSaleTran: false,
+      addCommentSwitchTran: false,
+      authStates: this.$t('shopAccountList.auth_state'),
+      phonereg: /^1[3|7|8]\d{9}$|^19[8-9]\d{8}$|^166\d{8}|^15[0-3|5-9]\d{8}|^14[5|7]\d{8}$/
     }
   },
+  mounted () {
+    this.search()
+  },
   methods: {
+    search () {
+      console.log('编辑传送的值')
+      console.log(this.sendData)
+      if (!this.isEmpty(this.sendData)) {
+        this.sendDatas = this.sendData
+        console.log(this.sendDatas)
+      }
+      searchOneAccountRequest(this.sendDatas).then((res) => {
+        if (res.error === 0) {
+          this.formData = res.content
+          this.exchangeSwitch()
+          console.log('结果')
+          console.log(res.content)
+          console.log(this.baseSaleTran, this.addCommentSwitchTran)
+        } else {
+          this.$message.error(res.message)
+        }
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
+    },
     // 省市区数据更新
     onSelected (data) {
       this.formData.provinceCode = data.province.code
@@ -224,38 +241,108 @@ export default {
     getDistrictCode (data) {
       this.formData.districtCode = data.code
     },
-    // 添加商家账户
-    save (formData) {
-      let obj = {
-        'sysId': '',
-        'userName': '',
-        'state': '1',
-        'shopGrade': '1',
-        'maxSkuNum': '10000',
-        'maxShopNum': '100',
-        'provinceCode': '110000',
-        'cityCode': '110100',
-        'districtCode': '110101'
+    saveBefore () {
+      if (this.checkData()) {
+        this.save()
       }
-      console.log(this.formData)
-      let params = Object.assign(obj, this.formData)
-      console.log(params)
-      addCoountRequest(params).then(res => {
+    },
+    // 添加商家账户
+    save () {
+      this.switchChange()
+      editAccountRequest(this.formData).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.$message({
-            message: '保存成功',
-            type: 'success'
-          })
+          this.$message.success(res.message)
+          let params = {
+            'name': 'thirdOver'
+          }
+          this.$emit('send', params)
         } else {
-          this.$message({
-            message: res.message,
-            type: 'warning'
-          })
+          this.$message.error(res.message)
         }
       }).catch(() => {
         this.$message.error('保存失败')
       })
+    },
+    checkData () {
+      if (this.isEmpty(this.formData.userName)) {
+        this.$message.error('用户名不能为空')
+        this.$refs.userName.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.formData.state)) {
+        this.$message.error('审核状态不能为空')
+        this.$refs.state.$el.querySelector('input').focus()
+        return false
+      } if (this.isGreaterZero(this.formData.maxSkuNum)) {
+        this.$message.error('最大SKU数量不能为空或0')
+        this.$refs.maxSkuNum.$el.querySelector('input').focus()
+        return false
+      } if (this.isGreaterZero(this.formData.maxShopNum)) {
+        this.$message.error('最大店铺数量不能为空或0')
+        this.$refs.maxShopNum.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.formData.buyTime)) {
+        this.$message.error('首次续费时间不能为空')
+        this.$refs.buyTime.$el.querySelector('input').focus()
+        return false
+      } if (this.isEmpty(this.formData.endTime)) {
+        this.$message.error('到期时间不能为空')
+        this.$refs.endTime.$el.querySelector('input').focus()
+        return false
+      } else {
+        if (!this.isEmpty(this.formData.mobile)) {
+          if (!(this.phonereg.test(this.formData.mobile))) {
+            this.$message.error('手机号格式错误')
+            this.$refs.mobile.$el.querySelector('input').focus()
+            return false
+          }
+        }
+        return true
+      }
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
+    },
+    isGreaterZero (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        if (obj > 0) {
+          return false
+        }
+        return true
+      }
+    },
+    exchangeSwitch () {
+      if (!this.isEmpty(this.formData.baseSale)) {
+        if (this.formData.baseSale === 1) {
+          this.baseSaleTran = true
+        } if (this.formData.baseSale === 0) {
+          this.baseSaleTran = false
+        }
+      }
+      if (!this.isEmpty(this.formData.addCommentSwitch)) {
+        if (this.formData.addCommentSwitch === 1) {
+          this.addCommentSwitchTran = true
+        } if (this.formData.addCommentSwitch === 0) {
+          this.addCommentSwitchTran = false
+        }
+      }
+    },
+    switchChange () {
+      if (this.baseSaleTran === true) {
+        this.formData.baseSale = 1
+      } if (this.baseSaleTran === false) {
+        this.formData.baseSale = 0
+      } if (this.addCommentSwitchTran === true) {
+        this.formData.addCommentSwitch = 1
+      } if (this.addCommentSwitchTran === false) {
+        this.formData.addCommentSwitch = 0
+      }
     }
   }
 }
