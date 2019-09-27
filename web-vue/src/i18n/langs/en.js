@@ -50,7 +50,7 @@ import { en as bargainList } from './views/admin_new/en/index/marketManagement/b
 // 添加砍价活动
 import { en as addBargainAct } from './views/admin_new/en/index/marketManagement/bargain/addBargainActEn'
 // 好友助力
-import { en as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
+import { en as promoteList } from './views/admin_new/en/index/marketManagement/friendPromote/promoteListEn'
 // 幸运大抽奖
 import { en as luckyDraw } from './views/admin_new/en/index/marketManagement/luckyDraw/luckyDraw'
 // 限时降价列表

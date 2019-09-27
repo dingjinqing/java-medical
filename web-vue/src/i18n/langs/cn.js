@@ -47,7 +47,7 @@ import { cn as bargainList } from './views/admin_new/cn/index/marketManagement/b
 // 添加砍价活动
 import { cn as addBargainAct } from './views/admin_new/cn/index/marketManagement/bargain/addBargainActCn'
 // 好友助力
-import { cn as promoteList } from './views/admin/index/leftNavComponents/first_market_manage/friendPromote/promoteList'
+import { cn as promoteList } from './views/admin_new/cn/index/marketManagement/friendPromote/promoteListCn'
 // 幸运大抽奖
 import { cn as luckyDraw } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
