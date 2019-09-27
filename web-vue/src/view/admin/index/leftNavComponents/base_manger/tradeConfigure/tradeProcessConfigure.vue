@@ -121,7 +121,7 @@
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.value?'已开启':'已关闭'}}</span>
+        <span style="font-size: 14px; color:#333;">{{this.switch1?'已开启':'已关闭'}}</span>
         <span style="color:#999;margin-left: 15px">开关开启，用户在购买时可以使用发票功能</span>
       </div>
     </section>
@@ -139,12 +139,12 @@
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.value3?'已开启':'已关闭'}}</span>
+        <span style="font-size: 14px; color:#333;">{{this.switch2?'已开启':'已关闭'}}</span>
         <span style="color:#999;margin-left: 15px">开关开启，结算页会展示服务条款，用户需勾选“同意”才可继续下单</span>
       </div>
       <div
         class="serviceTerms settingContent"
-        v-if="this.value3===true"
+        v-if="this.switch2===true"
       >
         <div class="termsName">
           <span>条款名称：</span>
@@ -458,6 +458,20 @@ export default {
         city_code: '',
         district_code: '',
         address: ''
+      },
+      // 自提门店参数
+      storeParam: {
+        storeId: null,
+        storeName: null,
+        provinceCod: null,
+        cityCode: null,
+        districtCod: null,
+        address: null,
+        manager: null,
+        mobile: null,
+        business_type: null,
+        business_state: null,
+        auto_pick: null
       }
     }
   },
