@@ -116,12 +116,12 @@
       </div>
       <div class="settingContent">
         <el-switch
-          v-model="switch1"
+          v-model="invoice"
           active-color="#13ce66"
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.switch1?'已开启':'已关闭'}}</span>
+        <span style="font-size: 14px; color:#333;">{{this.invoice?'已开启':'已关闭'}}</span>
         <span style="color:#999;margin-left: 15px">开关开启，用户在购买时可以使用发票功能</span>
       </div>
     </section>
@@ -134,34 +134,38 @@
       </div>
       <div class="settingContent defaultSelect">
         <el-switch
-          v-model="switch2"
+          v-model="serviceTerms"
           active-color="#13ce66"
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.switch2?'已开启':'已关闭'}}</span>
+        <span style="font-size: 14px; color:#333;">{{this.serviceTerms?'已开启':'已关闭'}}</span>
         <span style="color:#999;margin-left: 15px">开关开启，结算页会展示服务条款，用户需勾选“同意”才可继续下单</span>
       </div>
       <div
         class="serviceTerms settingContent"
-        v-if="this.switch2===true"
+        v-if="this.serviceTerms===true"
       >
         <div class="termsName">
           <span>条款名称：</span>
           <el-input
             size="small"
             style="width:165px"
+            v-model="tradeProcessConfig.service_name"
           ></el-input>
           <span>展示在结算页的服务条款名称 </span>
           <span>编辑条款</span>
           <span>查看示例</span>
         </div>
       </div>
-      <div class="defaultOption settingContent">
+      <div
+        class="defaultOption settingContent"
+        v-if="this.serviceTerms===true"
+      >
         <span>首次下单是否默认勾选：</span>
-        <el-radio-group v-model="firstOrder">
+        <el-radio-group v-model="tradeProcessConfig.service_choose">
           <el-radio :label="1">是</el-radio>
-          <el-radio :label="2">否</el-radio>
+          <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </div>
     </section>
@@ -409,10 +413,6 @@ export default {
         { code: 'express', name: '快递', title: '启用后，卖家下单可以选择快递发货，由你安排快递送货上门 ', value: false },
         { code: 'fetch', name: '自提', title: '启用上门自提功能后，买家可以就近选择你预设的自提门店进行提货。默认所有门店均可自提', value: false }
       ],
-      options: [
-        { code: 'invoice', title: '发票展示设置', content: '用户在购买时可以使用发票功能', value: false },
-        { code: 'service_terms', title: '服务条款设置', content: '结算页会展示服务条款，用户需勾选“同意”才可继续下单', value: false }
-      ],
       isRequiredInfo: [
         { code: 'order_real_name', info: '下单人真实姓名', content: '下单人真实姓名', value: false },
         { code: 'order_cid', info: '下单人身份证号码', content: '下单人身份证号码', value: false },
@@ -420,14 +420,13 @@ export default {
         { code: 'consignee_cid', info: '收货人身份证号码', content: '收货人身份证号码', value: false },
         { code: 'custom', info: '自定义信息', value: false }
       ],
-      value3: '',
-      switch1: '',
-      switch2: '',
+      invoice: '',
+      serviceTerms: '',
+      serviceChoose: null,
       src: `${this.$imageHost}/image/admin/icon_jia.png`,
       province: ``,
       district: ``,
       city: ``,
-      firstOrder: '',
       showStoreDialog: false,
       pageParams: {},
       expressCompany: [
@@ -449,6 +448,8 @@ export default {
         fetch: null,
         invoice: null,
         service_terms: null,
+        service_name: null,
+        service_choose: 0,
         order_real_name: null,
         order_cid: null,
         consignee_real_name: null,
@@ -517,16 +518,6 @@ export default {
                 break
             }
           })
-          this.options.map((item, index) => {
-            switch (item.code) {
-              case 'invoice':
-                item.value = this.number2boolean(this.tradeProcessConfig.invoice)
-                break
-              case 'service_terms':
-                item.value = this.number2boolean(this.tradeProcessConfig.service_terms)
-                break
-            }
-          })
           this.isRequiredInfo.map((item, index) => {
             switch (item.code) {
               case 'order_real_name':
@@ -547,6 +538,8 @@ export default {
             }
             this.shippingExpress = this.number2boolean(this.tradeProcessConfig.shipping_express)
             this.extenReceiveGoods = this.number2boolean(this.tradeProcessConfig.extend_receive_goods)
+            this.invoice = this.number2boolean(this.tradeProcessConfig.invoice)
+            this.serviceTerms = this.number2boolean(this.tradeProcessConfig.service_terms)
             this.addresssConf = JSON.parse(this.tradeProcessConfig.shop_address)
           })
         } else {
@@ -582,16 +575,6 @@ export default {
             break
         }
       })
-      this.options.map((item, index) => {
-        switch (item.code) {
-          case 'invoice':
-            this.tradeProcessConfig.invoice = this.boolean2number(item.value)
-            break
-          case 'service_terms':
-            this.tradeProcessConfig.service_terms = this.boolean2number(item.value)
-            break
-        }
-      })
       this.isRequiredInfo.map((item, index) => {
         switch (item.code) {
           case 'order_real_name':
@@ -613,6 +596,8 @@ export default {
       })
       this.tradeProcessConfig.extend_receive_goods = this.boolean2number(this.extenReceiveGoods)
       this.tradeProcessConfig.shipping_express = this.boolean2number(this.shippingExpress)
+      this.tradeProcessConfig.invoice = this.boolean2number(this.invoice)
+      this.tradeProcessConfig.service_terms = this.boolean2number(this.serviceTerms)
       console.log(JSON.parse(JSON.stringify(this.tradeProcessConfig)))
       tradeUpdate(this.tradeProcessConfig).then(res => {
         console.log(res)

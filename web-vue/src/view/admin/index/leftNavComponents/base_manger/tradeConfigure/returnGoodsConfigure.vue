@@ -5,18 +5,18 @@
       <div class='title'>退货配置</div>
       <div class="content">
         <el-radio-group
-          v-model="returnGoodsRequirement"
+          v-model="returnParam.return_change_goods_status"
           class="requirement"
         >
           <el-radio :label="1">除不可退换货商品外，其他均可退换 </el-radio>
-          <el-radio :label="2">除可退换货商品外，其他均不可退换</el-radio>
+          <el-radio :label="0">除可退换货商品外，其他均不可退换</el-radio>
         </el-radio-group>
         <div
-          v-if="returnGoodsRequirement === 1"
+          v-if="returnParam.return_change_goods_status === 1"
           class="chooseInfo"
         >选择不可退换货商品</div>
         <div
-          v-if="returnGoodsRequirement === 2"
+          v-if="returnParam.return_change_goods_status === 0"
           class="chooseInfo"
         >选择可退换货商品</div>
 
@@ -74,9 +74,9 @@
         下单必填信息设置
       </div>
       <div class="configureContent baseInfo">
-        <el-radio-group v-model="returnCoupon">
+        <el-radio-group v-model="returnParam.is_refund_coupon">
           <el-radio :label="1">开启</el-radio>
-          <el-radio :label="2">关闭</el-radio>
+          <el-radio :label="0">关闭</el-radio>
         </el-radio-group>
         <span class="onText">开启后，未完成的订单全额退款时会将优惠券退还给买家</span>
       </div>
@@ -90,16 +90,16 @@
       </div>
       <div class="configureContent">
         <el-radio-group
-          v-model="returnMoney"
+          v-model="returnParam.auto_return"
           class="radio"
         >
           <el-radio :label="1">开启</el-radio>
-          <el-radio :label="2">关闭</el-radio>
+          <el-radio :label="0">关闭</el-radio>
         </el-radio-group>
         <!-- 开启时的显示内容 -->
         <div
           class="returnMoneySetting"
-          v-if="returnMoney === 1"
+          v-if="returnParam.auto_return === 1"
         >
           <span class="tips">注：默认自动退款/退货处理时间为7日，填写0表示不设置</span>
           <div>
@@ -107,6 +107,7 @@
             <el-input
               size="mini"
               class="inputWidth"
+              v-model="returnParam.return_money_days"
             ></el-input>
             <span>日内未处理，系统将自动退款。</span>
           </div>
@@ -115,6 +116,7 @@
             <el-input
               size="mini"
               class="inputWidth"
+              v-model="returnParam.return_address_days"
             ></el-input>
             <span>日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收货地址。</span>
           </div>
@@ -123,19 +125,27 @@
             <el-input
               size="mini"
               class="inputWidth"
+              v-model="returnParam.return_shopping_days"
             ></el-input>
             <span>日内未处理，系统将默认同意退款退货，并自动退款给买家。</span>
           </div>
           <div>
-            4、商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
+            <span>4、商家同意退款退货，买家在</span>
+            <el-input
+              size="mini"
+              class="inputWidth"
+              v-model="returnParam.return_pass_days"
+            ></el-input>
+            <span>日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。</span>
           </div>
         </div>
         <!-- 关闭时的显示内容 -->
         <div
           class="returnMoneySetting"
-          v-if="returnMoney === 2"
+          v-if="returnParam.auto_return === 2"
         >
-          <div>商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。</div>
+          <div>
+            商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。</div>
         </div>
       </div>
     </section>
@@ -152,6 +162,7 @@
           <el-input
             size="small"
             style="width:245px"
+            v-model="returnParam.business_address.consignee"
           ></el-input>
         </div>
         <div class="receiveInfo">
@@ -159,6 +170,7 @@
           <el-input
             size="small"
             style="width:245px"
+            v-model="returnParam.business_address.merchant_telephone"
           ></el-input>
         </div>
         <div class="receiveInfo">
@@ -166,6 +178,7 @@
           <el-input
             size="small"
             style="width:245px"
+            v-model="returnParam.business_address.zip_code"
           ></el-input>
         </div>
         <div class="receiveInfo">
@@ -173,26 +186,45 @@
           <el-input
             size="small"
             style="width:245px"
+            v-model="returnParam.business_address.return_address"
           ></el-input>
         </div>
       </div>
     </section>
 
     <div class="btn">
-      <el-button type="primary">保存</el-button>
+      <el-button
+        type="primary"
+        @click="updateConfig"
+      >保存</el-button>
     </div>
 
   </div>
 </template>
 
 <script>
-
+import { returnSelect, retrunUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 export default {
+  created () {
+    this.initData()
+  },
   data () {
     return {
-      returnGoodsRequirement: 1,
-      returnCoupon: 1,
-      returnMoney: 1,
+      returnParam: {
+        return_change_goods_status: 0,
+        is_refund_coupon: 0,
+        auto_return: 0,
+        return_money_days: 7,
+        return_address_days: 7,
+        return_shopping_days: 7,
+        return_pass_days: 7,
+        business_address: {
+          consignee: '',
+          merchant_telephone: '',
+          zip_code: '',
+          return_address: ''
+        }
+      },
       src: `${this.$imageHost}/image/admin/icon_jia.png`,
       goodsDialog: [
         { name: '百世快递', price: '67', number: '334', operate: '删除' },
@@ -202,6 +234,31 @@ export default {
         { name: '中通', price: '32', number: '323', operate: '删除' },
         { name: '中国邮政', price: '32', number: '434', operate: '删除' }
       ]
+    }
+  },
+  methods: {
+    initData () {
+      returnSelect().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.returnParam = res.content
+        } else {
+          this.$message.error('操作失败，请稍后重试！')
+        }
+      })
+    },
+    // 更新配置项
+    updateConfig () {
+      console.log(JSON.parse(JSON.stringify(this.returnParam)))
+      retrunUpdate(this.returnParam).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success('更新成功！')
+          this.initData()
+        } else {
+          this.$message.error('更新失败！')
+        }
+      })
     }
   }
 }

@@ -49,10 +49,9 @@ export const retrunUpdate = data => service({
 })
 
 // 查询退换货配置
-export const returnSelect = data => service({
+export const returnSelect = () => service({
   url: '/api/admin/config/trade/getReturnConfig',
-  method: 'get',
-  data
+  method: 'post'
 })
 
 // 服务条款配置
