@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.order.info;
 
-import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
@@ -105,7 +104,7 @@ public class OrderInfoService extends ShopBaseService {
 	public OrderInfoRecord getOrderByOrderSn(String orderSn) {
 		return db().fetchAny(TABLE,TABLE.ORDER_SN.eq(orderSn));
 	}
-	 
+
 
 	/**
 	 * 	订单综合查询:通过条件获得订单号
@@ -946,8 +945,8 @@ public class OrderInfoService extends ShopBaseService {
 	 * @param param GiveGiftReceiveListParam
 	 * @return SelectConditionStep<? extends Record>
 	 */
-	public SelectConditionStep<? extends Record> giveGiftRecordList(GiveGiftRecordListParam param) {
-		SelectConditionStep<? extends Record> select = db()
+	public SelectJoinStep<? extends Record> giveGiftRecordList(GiveGiftRecordListParam param) {
+		SelectJoinStep<? extends Record> select = db()
 				.select(TABLE.MAIN_ORDER_SN,
 						TABLE.ORDER_AMOUNT,
 						TABLE.CREATE_TIME,
@@ -960,30 +959,34 @@ public class OrderInfoService extends ShopBaseService {
 				)
 				.from(TABLE)
 				.leftJoin(GIVE_GIFT_CART).on(GIVE_GIFT_CART.ID.eq(TABLE.ACTIVITY_ID))
-				.leftJoin(USER).on(USER.USER_ID.eq(GIVE_GIFT_CART.USER_ID))
-				.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()))
+				.leftJoin(USER).on(USER.USER_ID.eq(GIVE_GIFT_CART.USER_ID));
+
+		select.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()))
 				.and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 				.and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT, TABLE.GOODS_TYPE))
 				.and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN));
 
 		if (param.getGoodsName()!=null){
-			select.and(USER.USER_ID.like(prefixLikeValue(param.getGoodsName())));
+			select.where(USER.USER_ID.like(prefixLikeValue(param.getGoodsName())));
 		}
 		if (param.getMobile()!=null){
-			select.and(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
+			select.where(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
 		}
-		if (param.getGoodsName()!=null){
-			select.and(ORDER_GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
-		}
-		if (param.getGoodsSn()!=null){
-			select.and(ORDER_GOODS.ORDER_SN.like(likeValue(param.getGoodsSn())));
+		if (param.getGoodsName()!=null||param.getGoodsSn()!=null) {
+			select.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN));
+			if (param.getGoodsName() != null) {
+				select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
+			}
+			if (param.getGoodsSn() != null) {
+				select.where(ORDER_GOODS.ORDER_SN.like(likeValue(param.getGoodsSn())));
+			}
 		}
 		if (param.getOrderStatus()!=null&&param.getOrderStatus()>=OrderConstant.ORDER_WAIT_PAY){
 			if (param.getOrderStatus()==OrderConstant.ORDER_GIVE_GIFT_FINISHED){
-				select.and(TABLE.ORDER_STATUS.eq(param.getOrderStatus()));
+				select.where(TABLE.ORDER_STATUS.eq(param.getOrderStatus()));
 			}else {
-				select.and(TABLE.ORDER_STATUS.lt(OrderConstant.ORDER_GIVE_GIFT_FINISHED));
+				select.where(TABLE.ORDER_STATUS.lt(OrderConstant.ORDER_GIVE_GIFT_FINISHED));
 			}
 		}
 		return select;

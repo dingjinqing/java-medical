@@ -62,7 +62,7 @@ public class GiveGiftReceiveService extends ShopBaseService {
     public PageResult<GiveGiftReceiveListVo> giveGiftReceiveList(GiveGiftReceiveListParam param) {
         User receive = USER.as("receive");
         User giver = USER.as("giver");
-        SelectConditionStep<? extends Record> select = db()
+        SelectJoinStep<? extends Record> select = db()
                 .select(
                         receive.USER_ID.as(receive.getName() + receive.USER_ID.getName()),
                         receive.USERNAME.as(receive.getName() + receive.USERNAME.getName()),
@@ -78,76 +78,77 @@ public class GiveGiftReceiveService extends ShopBaseService {
                         GIVE_GIFT_RECEIVE.STATUS_NAME,
                         ORDER_INFO.ORDER_STATUS,
                         ORDER_INFO.ORDER_STATUS_NAME,
-                        GIVE_GIFT_CART.GIFT_TYPE,
-                        ORDER_GOODS.GOODS_NAME
+                        GIVE_GIFT_CART.GIFT_TYPE
                 )
                 .from(GIVE_GIFT_RECEIVE)
-                .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(GIVE_GIFT_RECEIVE.ORDER_SN))
                 .leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(GIVE_GIFT_RECEIVE.ORDER_SN))
                 .leftJoin(GIVE_GIFT_CART).on(GIVE_GIFT_CART.ID.eq(GIVE_GIFT_RECEIVE.GIFT_CART_ID))
                 .leftJoin(receive).on(receive.USER_ID.eq(GIVE_GIFT_RECEIVE.USER_ID))
-                .leftJoin(giver).on(giver.USER_ID.eq(GIVE_GIFT_CART.USER_ID))
-                .where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()));
+                .leftJoin(giver).on(giver.USER_ID.eq(GIVE_GIFT_CART.USER_ID));
+        select.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()));
         buildSelect(select, param, receive, giver);
 
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GiveGiftReceiveListVo.class);
     }
 
-    private void buildSelect(SelectConditionStep<? extends Record> select, GiveGiftReceiveListParam param, User receive, User giver) {
+    private void buildSelect(SelectJoinStep<? extends Record> select, GiveGiftReceiveListParam param, User receive, User giver) {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
-        if (param.getGoodsName() != null) {
-            select.and(ORDER_GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
-        }
-        if (param.getGoodsSn() != null) {
-            select.and(ORDER_GOODS.GOODS_SN.like(likeValue(param.getGoodsSn())));
+
+        if (param.getGoodsSn() != null||param.getGoodsName() != null) {
+            select.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN));
+            if (param.getGoodsName() != null) {
+                select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
+            }
+            if (param.getGoodsSn() != null) {
+                select.where(ORDER_GOODS.GOODS_SN.like(likeValue(param.getGoodsSn())));
+            }
         }
         if (param.getReceiveMobile() != null) {
-            select.and(receive.MOBILE.like(likeValue(param.getReceiveMobile())));
+            select.where(receive.MOBILE.like(likeValue(param.getReceiveMobile())));
         }
         if (param.getReceiveUserName() != null) {
-            select.and(receive.USERNAME.like(likeValue(param.getReceiveUserName())));
+            select.where(receive.USERNAME.like(likeValue(param.getReceiveUserName())));
         }
         if (param.getGiveUserName() != null) {
-            select.and(giver.USERNAME.like(param.getGiveUserName()));
+            select.where(giver.USERNAME.like(param.getGiveUserName()));
         }
         if (param.getGiveMobile() != null) {
-            select.and(giver.MOBILE.like(likeValue(param.getGiveMobile())));
+            select.where(giver.MOBILE.like(likeValue(param.getGiveMobile())));
         }
         if (param.getMainOrderSn() != null) {
-            select.and(ORDER_INFO.MAIN_ORDER_SN.eq(param.getMainOrderSn()));
+            select.where(ORDER_INFO.MAIN_ORDER_SN.eq(param.getMainOrderSn()));
         }
         if (param.getReturnFinished() != null && param.getReturnFinished() > 0) {
-            select.and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_RETURN_FINISHED)
+            select.where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_RETURN_FINISHED)
                     .or(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_REFUND_FINISHED)));
         }
 
         if (param.getOrderStatus() != null && param.getOrderStatus() > -1) {
             switch (param.getOrderStatus()) {
                 case 0:
-                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_UNSUBMITTED_ADDRESS))
+                    select.where(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_UNSUBMITTED_ADDRESS))
                             .and(GIVE_GIFT_RECEIVE.CREATE_TIME.gt(nowTime));
                     break;
                 case 4:
-                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_HAVE_GIFT))
+                    select.where(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_HAVE_GIFT))
                             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY));
                     break;
                 case 5:
-                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_HAVE_GIFT))
+                    select.where(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_HAVE_GIFT))
                             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED));
                     break;
                 case 6:
-                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_HAVE_GIFT))
+                    select.where(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_HAVE_GIFT))
                             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_FINISHED));
                     break;
                 case 7:
-                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_UNSUBMITTED_ADDRESS))
+                    select.where(GIVE_GIFT_RECEIVE.STATUS.eq(GiveGiftConstant.GIFT_RECEIVE_UNSUBMITTED_ADDRESS))
                             .and(GIVE_GIFT_RECEIVE.CREATE_TIME.le(nowTime));
                     break;
                 default:
-                    select.and(GIVE_GIFT_RECEIVE.STATUS.eq(param.getOrderStatus()));
+                    select.where(GIVE_GIFT_RECEIVE.STATUS.eq(param.getOrderStatus()));
             }
         }
-
 
     }
 }

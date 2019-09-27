@@ -11,6 +11,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +48,8 @@ public class GiveGiftCartService extends ShopBaseService {
      * @return PageResult<GiveGiftRecordListVo>
      */
     public PageResult<GiveGiftRecordListVo> giveGiftRecordList(GiveGiftRecordListParam param) {
-        SelectConditionStep<? extends Record> selectConditionStep = orderInfo.giveGiftRecordList(param);
-        PageResult<GiveGiftRecordListVo> pageResult = getPageResult(selectConditionStep, param.getCurrentPage(), param.getPageRows(), GiveGiftRecordListVo.class);
+        SelectJoinStep<? extends Record> selectJoinStep = orderInfo.giveGiftRecordList(param);
+        PageResult<GiveGiftRecordListVo> pageResult = getPageResult(selectJoinStep, param.getCurrentPage(), param.getPageRows(), GiveGiftRecordListVo.class);
         pageResult.dataList.forEach(giftCart->{
             Result<? extends Record> records = orderGoods.getGoodsInfoByOrderSn(giftCart.getMainOrderSn());
             Integer receiveNum = giftReceive.getReceiveNumByoOrderSn(giftCart.getMainOrderSn());
