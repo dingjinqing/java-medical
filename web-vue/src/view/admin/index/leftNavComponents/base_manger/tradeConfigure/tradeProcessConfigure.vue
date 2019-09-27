@@ -89,12 +89,12 @@
       </div>
       <div class="settingContent delay top">
         <el-switch
-          v-model="tradeProcessConfig.extend_receive_goods"
+          v-model="extenReceiveGoods"
           active-color="#13ce66"
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.tradeProcessConfig.extend_receive_goods?'已开启':'已关闭'}}</span>
+        <span style="font-size: 14px; color:#333;">{{this.extenReceiveGoods?'已开启':'已关闭'}}</span>
         <span style="color:#999;margin-left: 15px">开关开启，用户可在前端申请延长收货时间</span>
       </div>
       <div class="settingContent delay bottom">
@@ -256,12 +256,12 @@
         style="display:flex;"
       >
         <el-switch
-          v-model="tradeProcessConfig.shipping_express"
+          v-model="shippingExpress"
           active-color="#13ce66"
           inactive-color="#ff4949"
           style="margin: 17px 10px 0;"
         ></el-switch>
-        <div class="switchText">{{this.tradeProcessConfig.shipping_express?'已开启':'已关闭'}}</div>
+        <div class="switchText">{{this.shippingExpress?'已开启':'已关闭'}}</div>
         <!-- 右侧第三部分 - 已开启、已关闭后边的内容 -->
         <div class="expressInfo">
           <div class="grayText">开关打开，已发货商品物流信息将展示在小程序前端订单页面，用户可直接查看物流信息。</div>
@@ -433,15 +433,17 @@ export default {
       expressCompany: [
         { delivery_name: '百世快递', biz_id: '', status_code: '未签约', operate: '签约' }
       ],
+      shippingExpress: false,
+      extenReceiveGoods: false,
       tradeProcessConfig: {
         cancel_time: null,
         cancelHour: null,
         cancelMinute: null,
         drawback_days: null,
         order_timeout_days: null,
-        extend_receive_goods: null,
+        extend_receive_goods: false,
         extend_receive_days: null,
-        shipping_express: null,
+        shipping_express: false,
         shop_address: null,
         express: null,
         fetch: null,
@@ -503,8 +505,6 @@ export default {
             }
           })
           this.tradeProcessConfig = res.content.trade_process_config
-          console.log('***************************')
-          console.log(this.tradeProcessConfig)
           this.tradeProcessConfig.cancelHour = Math.floor(this.tradeProcessConfig.cancel_time / 60)
           this.tradeProcessConfig.cancelMinute = this.tradeProcessConfig.cancel_time % 60
           this.deliverMethods.map((item, index) => {
@@ -545,12 +545,10 @@ export default {
                 item.value = this.number2boolean(this.tradeProcessConfig.custom)
                 break
             }
-            this.tradeProcessConfig.shipping_express = this.number2boolean(this.tradeProcessConfig.shipping_express)
-            this.tradeProcessConfig.extend_receive_goods = this.number2boolean(this.tradeProcessConfig.extend_receive_goods)
+            this.shippingExpress = this.number2boolean(this.tradeProcessConfig.shipping_express)
+            this.extenReceiveGoods = this.number2boolean(this.tradeProcessConfig.extend_receive_goods)
             this.addresssConf = JSON.parse(this.tradeProcessConfig.shop_address)
           })
-          console.log(this.tradeProcessConfig)
-          console.log(this.addresssConf)
         } else {
           this.$message.error('操作失败，请稍后重试！')
         }
@@ -613,8 +611,8 @@ export default {
             break
         }
       })
-      this.tradeProcessConfig.extend_receive_goods = this.boolean2number(this.tradeProcessConfig.extend_receive_goods)
-      this.tradeProcessConfig.shipping_express = this.boolean2number(this.tradeProcessConfig.shipping_express)
+      this.tradeProcessConfig.extend_receive_goods = this.boolean2number(this.extenReceiveGoods)
+      this.tradeProcessConfig.shipping_express = this.boolean2number(this.shippingExpress)
       console.log(JSON.parse(JSON.stringify(this.tradeProcessConfig)))
       tradeUpdate(this.tradeProcessConfig).then(res => {
         console.log(res)
