@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
@@ -214,9 +216,18 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(chargeList);
 	}
 	
+	/**
+	 * 获取激活列表信息
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/activateAudit/list")
+	public JsonResult getActivateAuditList(@RequestBody ActiveAuditParam param) {
+		PageResult<ActiveAuditVo> activateAuditList = shop().member.card.getActivateAuditList(param);
+		return this.i18nSuccess(activateAuditList);
+		//return success(activateAuditList);
+	}
 	
-	
-	
-	
+
 	
 }
