@@ -205,8 +205,7 @@ const routes = [
   },
   // 多人拼团  拼团退款失败订单
   {
-    path:
-      '/admin/home/main/spellGroup/refundFailureOrder/:pintStatus/:activityId',
+    path: '/admin/home/main/spellGroup/refundFailureOrder/:pintStatus/:activityId',
     name: ' pin_group_refundFailureOrder',
     meta: {
       crumbTitle: 'router.pin_group_refundFailureOrder',
@@ -940,15 +939,15 @@ const routes = [
   },
   // 定向发券
   {
-    path: '/admin/home/main/couponGift',
-    name: 'couponGift',
+    path: '/admin/home/main/couponGive',
+    name: 'couponGive',
     meta: {
-      crumbTitle: 'router.couponGift',
+      crumbTitle: 'router.couponGive',
       meta: 'first_market_manage'
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/couponGift/couponGiftList'
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponGive/couponGiveList'
       )
   },
   // 我要送礼
@@ -979,28 +978,28 @@ const routes = [
   },
   // 定向发券/领取明细
   {
-    path: '/admin/home/main/couponGift/receiveDetails/:id/:couponId',
-    name: 'couponGift_receive_details',
+    path: '/admin/home/main/couponGive/receiveDetails/:id/:couponId',
+    name: 'couponGive_receive_details',
     meta: {
-      crumbTitle: 'router.couponGift_receive_details',
+      crumbTitle: 'router.couponGive_receive_details',
       meta: 'first_market_manage'
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/couponGift/receiveDetails'
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponGive/receiveDetails'
       )
   },
   // 定向发券/添加发券活动
   {
-    path: '/admin/home/main/couponGift/grantCoupons',
-    name: 'couponGift_grant_coupons',
+    path: '/admin/home/main/couponGive/grantCoupons',
+    name: 'couponGive_grant_coupons',
     meta: {
-      crumbTitle: 'router.couponGift_grant_coupons',
+      crumbTitle: 'router.couponGive_grant_coupons',
       meta: 'first_market_manage'
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/couponGift/grantCoupons'
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponGive/grantCoupons'
       )
   }
 ]

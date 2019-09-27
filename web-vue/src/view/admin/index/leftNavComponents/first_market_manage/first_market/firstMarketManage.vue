@@ -125,8 +125,10 @@
           </div>
         </div>
         <!-- 我要送礼 -->
-        <div class="voucher box_style"
-             @click="giveGift">
+        <div
+          class="voucher box_style"
+          @click="giveGift"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/wysl.png'"
               alt=""
@@ -418,7 +420,7 @@
         <!-- 定向发券 -->
         <div
           class="voucher box_style"
-          @click="couponGift"
+          @click="couponGive"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/dxfq.png'"
@@ -581,9 +583,9 @@ export default {
       })
     },
     // 定向发券
-    couponGift () {
+    couponGive () {
       this.$router.push({
-        name: 'couponGift'
+        name: 'couponGive'
       })
     },
     // 我要送礼

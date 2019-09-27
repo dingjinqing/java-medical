@@ -144,7 +144,7 @@
   </div>
 </template>
 <script>
-import { receiveDetails, stopCoupon } from '@/api/admin/marketManage/couponGift.js'
+import { receiveDetails, stopCoupon } from '@/api/admin/marketManage/couponGive.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination'
 export default {

@@ -132,7 +132,7 @@
 
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import { couponGiftList } from '@/api/admin/marketManage/couponGift.js'
+import { couponGiveList } from '@/api/admin/marketManage/couponGive.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: {
@@ -154,7 +154,7 @@ export default {
     // 分页信息查询
     handleSelect () {
       this.pageParams.actName = this.actName
-      couponGiftList(this.pageParams).then(res => {
+      couponGiveList(this.pageParams).then(res => {
         console.log('入参:', this.pageParams)
         console.log('tableData:', res)
         if (res.error === 0) {
@@ -227,12 +227,12 @@ export default {
     },
     receiveDetails (id, couponId) {
       this.$router.push({
-        path: `/admin/home/main/couponGift/receiveDetails/${id}/${couponId}`
+        path: `/admin/home/main/couponGive/receiveDetails/${id}/${couponId}`
       })
     },
     addAct () {
       this.$router.push({
-        path: `/admin/home/main/couponGift/grantCoupons`
+        path: `/admin/home/main/couponGive/grantCoupons`
       })
     }
   },

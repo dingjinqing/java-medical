@@ -303,15 +303,15 @@ export const en = {
     'View Message Template'
   ],
   // 营销管理 定向发券
-  couponGift: ['Marketing management', 'Coupon Gift'],
+  couponGive: ['Marketing management', 'Coupon Gift'],
   // 营销管理 定向发券 领取明细
-  couponGift_receive_details: [
+  couponGive_receive_details: [
     'Marketing management',
     'Coupon Gift',
     'Receive Details'
   ],
   // 营销管理 定向发券 发放优惠券
-  couponGift_grant_coupons: [
+  couponGive_grant_coupons: [
     'Marketing management',
     'Coupon Gift',
     'Grant Coupons'

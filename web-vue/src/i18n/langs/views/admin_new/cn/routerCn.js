@@ -205,11 +205,11 @@ export const cn = {
   // 营销管理 消息推送 查看消息模板
   template_detail: ['营销管理', '消息推送', '查看消息模板'],
   // 营销管理 定向发券
-  couponGift: ['营销管理', '定向发券'],
+  couponGive: ['营销管理', '定向发券'],
   // 营销管理 定向发券 领取明细
-  couponGift_receive_details: ['营销管理', '定向发券', '领取明细'],
+  couponGive_receive_details: ['营销管理', '定向发券', '领取明细'],
   // 营销管理 定向发券 发放优惠券
-  couponGift_grant_coupons: ['营销管理', '定向发券', '发放优惠券'],
+  couponGive_grant_coupons: ['营销管理', '定向发券', '发放优惠券'],
 
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],

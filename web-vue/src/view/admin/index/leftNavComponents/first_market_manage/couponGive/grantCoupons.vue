@@ -238,7 +238,7 @@ import getUserDialog from '../messagePush/getUserDialog'
 import chooseSelect from '@/components/admin/chooseSelect/chooseSelect'
 import wrapper from '@/components/admin/wrapper/wrapper'
 // import choosingGoods from '@/components/admin/choosingGoods'
-import { addActivity } from '@/api/admin/marketManage/couponGift.js'
+import { addActivity } from '@/api/admin/marketManage/couponGive.js'
 // // import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 // // import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
 import { delObj } from '@/util/formatData'
@@ -489,7 +489,7 @@ export default {
         if (res.error === 0) {
           alert('操作成功')
           this.$router.push({
-            path: `/admin/home/main/couponGift`
+            path: `/admin/home/main/couponGive`
           })
         }
       }).catch(() => {
