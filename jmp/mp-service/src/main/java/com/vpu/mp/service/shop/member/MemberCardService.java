@@ -53,6 +53,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
 import static org.jooq.impl.DSL.count;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -97,6 +98,8 @@ import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
@@ -124,7 +127,8 @@ import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
-
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 /**
  * 
  * @author 黄壮壮
@@ -1436,10 +1440,34 @@ public class MemberCardService extends ShopBaseService {
 	public PageResult<ChargeVo> getChargeList(ChargeParam param) {
 		 return  cardDao.getChargeList(param);
 	}
-
+	/**
+	 * 分页查询会员卡消费明细
+	 * @param param
+	 * @return
+	 */
 	public PageResult<ChargeVo> getConsumeList(ChargeParam param) {
 		
 		return cardDao.getConsumeList(param);
+	}
+	/**
+	 * 分页查询激活审核信息
+	 * @param param
+	 * @return
+	 */
+	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
+		
+		PageResult<ActiveAuditVo> results = cardDao.getActivateAuditList(param);
+		// deal with industry and education 
+		for(ActiveAuditVo activeAuditVo: results.dataList) {
+			// education
+			String educationStr = MemberEducationEnum.getNameByCode(activeAuditVo.getEducation());
+			activeAuditVo.setEducationStr(educationStr);
+			// industry
+			String industry = MemberIndustryEnum.getNameByCode(activeAuditVo.getIndustryInfo());
+			activeAuditVo.setIndustry(industry);
+		}
+		return results;
+		
 	}
 		
 }
