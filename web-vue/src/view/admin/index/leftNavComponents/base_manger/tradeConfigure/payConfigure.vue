@@ -120,6 +120,19 @@
 <script>
 import { paySelect, payUpdate, wechatPaySelect, wechatPayUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 export default {
+  mounted () {
+    this.langDefault()
+  },
+  watch: {
+    lang () {
+      this.payConfigure = [
+        { payName: '微信支付', payCode: 'wxpay', title: this.$t('payConfiguration.wedesc'), enabled: false },
+        { payName: '积分支付', payCode: 'score', title: this.$t('payConfiguration.scoredesc'), enabled: false },
+        { payName: '余额支付', payCode: 'balance', title: this.$t('payConfiguration.balancedesc'), enabled: false },
+        { payName: '货到付款', payCode: 'cod', title: this.$t('payConfiguration.coddesc'), enabled: false }
+      ]
+    }
+  },
   created () {
     this.initData()
   },

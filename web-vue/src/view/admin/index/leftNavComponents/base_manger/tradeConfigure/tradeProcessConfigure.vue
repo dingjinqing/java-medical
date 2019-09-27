@@ -14,13 +14,13 @@
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span>{{item.value?'已开启':'已关闭'}}</span>
+        <span>{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
         <span>{{item.title}}</span>
         <span
           v-if="item.name==='自提'"
           class="takeByself"
           @click="handleTake"
-        >设置自提门店</span>
+        >{{$t('tradeConfiguration.setAutoPack')}}</span>
       </div>
     </el-card>
 
@@ -28,22 +28,22 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        待付款订单取消时间设置
+        {{$t('tradeConfiguration.wait2payconf')}}
       </div>
       <div class="settingContent">
-        <span>拍下未付款订单</span>
+        <span>{{$t('tradeConfiguration.takenotpay')}}</span>
         <el-input
           size="mini"
           class="inputWidth"
-          v-model.number="tradeProcessConfig.cancelHour"
+          v-model.number="cancelHour"
         ></el-input>
-        <span>小时</span>
+        <span>{{$t('tradeConfiguration.hour')}}</span>
         <el-input
           size="mini"
           class="inputWidth"
-          v-model.number="tradeProcessConfig.cancelMinute"
+          v-model.number="cancelMinute"
         ></el-input>
-        <span>分钟内未付款，自动取消订单</span>
+        <span>{{$t('tradeConfiguration.mintuesnotpayautocancel')}}</span>
       </div>
     </section>
 
@@ -51,16 +51,16 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        发货后自动确认收货时间设置
+        {{$t('tradeConfiguration.deliveryautoconfirm')}}
       </div>
       <div class="settingContent">
-        发货后
+        {{$t('tradeConfiguration.alreadydeliver')}}
         <el-input
           size="mini"
           class="inputWidth"
           v-model.number="tradeProcessConfig.drawback_days"
         ></el-input>
-        天，自动确认收货
+        {{$t('tradeConfiguration.autoconfirmgoods')}}
       </div>
     </section>
 
@@ -68,16 +68,16 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        确认收货后自动订单完成时间设置(订单完成则不可退换货)
+        {{$t('tradeConfiguration.alreadyconfirmgoods')}}
       </div>
       <div class="settingContent">
-        确认收货后
+        {{$t('tradeConfiguration.confirmgoodslater')}}
         <el-input
           size="mini"
           class="inputWidth"
           v-model.number="tradeProcessConfig.order_timeout_days"
         ></el-input>
-        天，订单完成
+        {{$t('tradeConfiguration.orderautodone')}}
       </div>
     </section>
 
@@ -85,7 +85,7 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        申请延长收货配置
+        {{$t('tradeConfiguration.applicationextend')}}
       </div>
       <div class="settingContent delay top">
         <el-switch
@@ -94,17 +94,17 @@
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.extenReceiveGoods?'已开启':'已关闭'}}</span>
-        <span style="color:#999;margin-left: 15px">开关开启，用户可在前端申请延长收货时间</span>
+        <span style="font-size: 14px; color:#333;">{{this.extenReceiveGoods?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
+        <span style="color:#999;margin-left: 15px">{{$t('tradeConfiguration.openapplicationextend')}}</span>
       </div>
       <div class="settingContent delay bottom">
-        用户对单笔订单可申请一次延长收货时间，申请后可延长
+        {{$t('tradeConfiguration.applicatoinextenddays')}}
         <el-input
           size="mini"
           class="inputWidth"
           v-model.number="tradeProcessConfig.extend_receive_days"
         ></el-input>
-        天
+        {{$t('tradeConfiguration.days')}}
       </div>
     </section>
 
@@ -112,7 +112,7 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        发票展示设置
+        {{$t('tradeConfiguration.invoiceshow')}}
       </div>
       <div class="settingContent">
         <el-switch
@@ -121,8 +121,8 @@
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.invoice?'已开启':'已关闭'}}</span>
-        <span style="color:#999;margin-left: 15px">开关开启，用户在购买时可以使用发票功能</span>
+        <span style="font-size: 14px; color:#333;">{{this.invoice?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
+        <span style="color:#999;margin-left: 15px">{{$t('tradeConfiguration.useinvoice')}}</span>
       </div>
     </section>
 
@@ -130,7 +130,7 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        服务条款设置
+        {{$t('tradeConfiguration.servicetermconf')}}
       </div>
       <div class="settingContent defaultSelect">
         <el-switch
@@ -139,33 +139,33 @@
           inactive-color="#ff4949"
           style="margin: 0 10px;"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{this.serviceTerms?'已开启':'已关闭'}}</span>
-        <span style="color:#999;margin-left: 15px">开关开启，结算页会展示服务条款，用户需勾选“同意”才可继续下单</span>
+        <span style="font-size: 14px; color:#333;">{{this.serviceTerms?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
+        <span style="color:#999;margin-left: 15px">{{$t('tradeConfiguration.showserviceterm')}}</span>
       </div>
       <div
         class="serviceTerms settingContent"
         v-if="this.serviceTerms===true"
       >
         <div class="termsName">
-          <span>条款名称：</span>
+          <span>{{$t('tradeConfiguration.servicename')}}</span>
           <el-input
             size="small"
             style="width:165px"
             v-model="tradeProcessConfig.service_name"
           ></el-input>
-          <span>展示在结算页的服务条款名称 </span>
-          <span>编辑条款</span>
-          <span>查看示例</span>
+          <span>{{$t('tradeConfiguration.servicenameshow')}} </span>
+          <span>{{$t('tradeConfiguration.udpateterm')}}</span>
+          <span>{{$t('tradeConfiguration.showexample')}}</span>
         </div>
       </div>
       <div
         class="defaultOption settingContent"
         v-if="this.serviceTerms===true"
       >
-        <span>首次下单是否默认勾选：</span>
+        <span>{{$t('tradeConfiguration.firstorderdafauleselected')}}</span>
         <el-radio-group v-model="tradeProcessConfig.service_choose">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+          <el-radio :label="1">{{$t('tradeConfiguration.yes')}}</el-radio>
+          <el-radio :label="0">{{$t('tradeConfiguration.no')}}</el-radio>
         </el-radio-group>
       </div>
     </section>
@@ -174,7 +174,7 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        下单必填信息设置
+        {{$t('tradeConfiguration.ordernecessaryinfo')}}
       </div>
       <div
         v-for="item in isRequiredInfo"
@@ -189,62 +189,62 @@
           inactive-color="#ff4949"
           style="margin:0 10px;height:60px;line-height:60px"
         ></el-switch>
-        <span style="font-size: 14px; color:#333;">{{item.value?'已开启':'已关闭'}}</span>
+        <span style="font-size: 14px; color:#333;">{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
         <span
           style="color:#999;margin-left: 15px"
           v-if="item.info !=='自定义信息'"
-        >开关开启，用户下单时须填写{{item.content}}</span>
+        >{{$t('tradeConfiguration.openordernecessary')}}{{item.content}}</span>
         <span
           v-else
           style="color:#999;margin-left: 15px"
         >
-          标题：
+          {{$t('tradeConfiguration.title')}}
           <el-input
             size="mini"
             style="width:100px; margin: 0 5px"
             v-model.number="tradeProcessConfig.custom_title"
           ></el-input>
-          限制输入不超过6个字
+          {{$t('tradeConfiguration.limitinput')}}
         </span>
       </div>
     </section>
 
     <!-- 选择下单需要填写必填信息的商品： -->
     <section class="requiredInfo">
-      <div class="necessaryGoodsInfo">选择下单需要填写必填信息的商品：</div>
+      <div class="necessaryGoodsInfo">{{$t('tradeConfiguration.ordernecessarygoodsinfo')}}</div>
       <!-- <div class="boxList"> -->
       <div class="goodsWrapper">
         <div class="addGoods">
           <img :src="src">
-          <span>选择商品</span>
+          <span>{{$t('tradeConfiguration.selectgoods')}}</span>
         </div>
         <div
           class="addGoods"
           style="margin: 10px 0"
         >
           <img :src="src">
-          <span>选择平台分类</span>
+          <span>{{$t('tradeConfiguration.selectplant')}}</span>
         </div>
         <div
           class="addGoods"
           style="margin: 10px 0"
         >
           <img :src="src">
-          <span>选择商家分类</span>
+          <span>{{$t('tradeConfiguration.selectshop')}}</span>
         </div>
         <div
           class="addGoods"
           style="margin: 10px 0"
         >
           <img :src="src">
-          <span>选择商品标签</span>
+          <span>{{$t('tradeConfiguration.selectlabel')}}</span>
         </div>
         <div
           class="addGoods"
           style="margin: 10px 0"
         >
           <img :src="src">
-          <span>选择商品品牌</span>
+          <span>{{$t('tradeConfiguration.selectbrand')}}</span>
         </div>
       </div>
     </section>
@@ -253,7 +253,7 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        微信物流助手对接配置
+        {{$t('tradeConfiguration.logisconf')}}
       </div>
       <div
         class="WeChatExpress"
@@ -265,18 +265,18 @@
           inactive-color="#ff4949"
           style="margin: 17px 10px 0;"
         ></el-switch>
-        <div class="switchText">{{this.shippingExpress?'已开启':'已关闭'}}</div>
+        <div class="switchText">{{this.shippingExpress?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</div>
         <!-- 右侧第三部分 - 已开启、已关闭后边的内容 -->
         <div class="expressInfo">
-          <div class="grayText">开关打开，已发货商品物流信息将展示在小程序前端订单页面，用户可直接查看物流信息。</div>
-          <div class="grayText">开关关闭，用户在小程序端查看物流信息时将自动跳转至“快递100”小程序。</div>
+          <div class="grayText">{{$t('tradeConfiguration.logiscaption1')}}</div>
+          <div class="grayText">{{$t('tradeConfiguration.logiscaption2')}}</div>
           <div style="display:flex;line-height:25px">
-            <span style="color:red;">注：开关开启时，若选用微信物流助手不支持的物流公司发货，将无法在小程序端查看物流信息 </span>
-            <span style="color: #5A8BFF;margin-left: 20px;">查看支持的物流公司</span>
+            <span style="color:red;">{{$t('tradeConfiguration.logiscaption3')}} </span>
+            <span style="color: #5A8BFF;margin-left: 20px;">{{$t('tradeConfiguration.showsupportcompany')}}</span>
           </div>
           <!-- 发货地址部分 -->
           <div class="addressContent">
-            <span class="address">请选择发货地址</span>
+            <span class="address">{{$t('tradeConfiguration.selectaddress')}}</span>
             <areaLinkage @areaData="handleAreaData" />
             <el-input
               size="small"
@@ -289,10 +289,10 @@
             <table>
               <thead>
                 <tr>
-                  <td>物流公司</td>
-                  <td>电子面单账号</td>
-                  <td>状态</td>
-                  <td>操作</td>
+                  <td>{{$t('tradeConfiguration.logiscompany')}}</td>
+                  <td>{{$t('tradeConfiguration.account')}}</td>
+                  <td>{{$t('tradeConfiguration.status')}}</td>
+                  <td>{{$t('tradeConfiguration.operation')}}</td>
                 </tr>
               </thead>
               <tbody>
@@ -317,12 +317,12 @@
         type="primary"
         size="small"
         @click="updateConfig"
-      >保存</el-button>
+      >{{$t('tradeConfiguration.save')}}</el-button>
     </div>
 
     <!-- 设置自提门店弹窗 -->
     <el-dialog
-      title="设置自提门店"
+      :title="$t('tradeConfiguration.setAutoPack')"
       :visible.sync="showStoreDialog"
       :close-on-click-modal='false'
       width=50%
@@ -336,43 +336,43 @@
         >
           <el-table-column
             prop=""
-            label="门店名称"
+            :label="$t('tradeConfiguration.storename')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop=""
-            label="门店地址"
+            :label="$t('tradeConfiguration.storeaddress')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop=""
-            label="负责人"
+            :label="$t('tradeConfiguration.storeperson')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop=""
-            label="联系电话"
+            :label="$t('tradeConfiguration.storephone')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop=""
-            label="营业时间"
+            :label="$t('tradeConfiguration.storebusinesstime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop=""
-            label="营业状态"
+            :label="$t('tradeConfiguration.storebusinessstatus')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop=""
-            label="是否自提"
+            :label="$t('tradeConfiguration.storeautopack')"
             align="center"
           >
           </el-table-column>
@@ -391,8 +391,8 @@
         <el-button
           type="primary"
           @click="initDataList"
-        >保 存</el-button>
-        <el-button @click="cancle">取 消</el-button>
+        >{{$t('tradeConfiguration.save')}}</el-button>
+        <el-button @click="cancle">{{$t('tradeConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -404,21 +404,39 @@ import pagination from '@/components/admin/pagination/pagination'
 import { tradeSelect, tradeUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 export default {
   components: { areaLinkage, pagination },
+  mounted () {
+    this.langDefault()
+  },
+  watch: {
+    lang () {
+      this.deliverMethods = [
+        { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
+        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
+      ]
+      this.isRequiredInfo = [
+        { code: 'order_real_name', info: this.$t('tradeConfiguration.orderrealname'), content: this.$t('tradeConfiguration.orderrealname'), value: false },
+        { code: 'order_cid', info: this.$t('tradeConfiguration.ordercreadid'), content: this.$t('tradeConfiguration.ordercreadid'), value: false },
+        { code: 'consignee_real_name', info: this.$t('tradeConfiguration.realname'), content: this.$t('tradeConfiguration.realname'), value: false },
+        { code: 'consignee_cid', info: this.$t('tradeConfiguration.creadid'), content: this.$t('tradeConfiguration.creadid'), value: false },
+        { code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false }
+      ]
+    }
+  },
   created () {
     this.initData()
   },
   data () {
     return {
       deliverMethods: [
-        { code: 'express', name: '快递', title: '启用后，卖家下单可以选择快递发货，由你安排快递送货上门 ', value: false },
-        { code: 'fetch', name: '自提', title: '启用上门自提功能后，买家可以就近选择你预设的自提门店进行提货。默认所有门店均可自提', value: false }
+        { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
+        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
       ],
       isRequiredInfo: [
-        { code: 'order_real_name', info: '下单人真实姓名', content: '下单人真实姓名', value: false },
-        { code: 'order_cid', info: '下单人身份证号码', content: '下单人身份证号码', value: false },
-        { code: 'consignee_real_name', info: '收货人真实姓名', content: '收货人真实姓名', value: false },
-        { code: 'consignee_cid', info: '收货人身份证号码', content: '收货人身份证号码', value: false },
-        { code: 'custom', info: '自定义信息', value: false }
+        { code: 'order_real_name', info: this.$t('tradeConfiguration.orderrealname'), content: this.$t('tradeConfiguration.orderrealname'), value: false },
+        { code: 'order_cid', info: this.$t('tradeConfiguration.ordercreadid'), content: this.$t('tradeConfiguration.ordercreadid'), value: false },
+        { code: 'consignee_real_name', info: this.$t('tradeConfiguration.realname'), content: this.$t('tradeConfiguration.realname'), value: false },
+        { code: 'consignee_cid', info: this.$t('tradeConfiguration.creadid'), content: this.$t('tradeConfiguration.creadid'), value: false },
+        { code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false }
       ],
       invoice: '',
       serviceTerms: '',
@@ -432,12 +450,12 @@ export default {
       expressCompany: [
         { delivery_name: '百世快递', biz_id: '', status_code: '未签约', operate: '签约' }
       ],
+      cancelHour: 0,
+      cancelMinute: 0,
       shippingExpress: false,
       extenReceiveGoods: false,
       tradeProcessConfig: {
         cancel_time: null,
-        cancelHour: null,
-        cancelMinute: null,
         drawback_days: null,
         order_timeout_days: null,
         extend_receive_goods: false,
@@ -506,8 +524,8 @@ export default {
             }
           })
           this.tradeProcessConfig = res.content.trade_process_config
-          this.tradeProcessConfig.cancelHour = Math.floor(this.tradeProcessConfig.cancel_time / 60)
-          this.tradeProcessConfig.cancelMinute = this.tradeProcessConfig.cancel_time % 60
+          this.cancelHour = Math.floor(this.tradeProcessConfig.cancel_time / 60)
+          this.cancelMinute = this.tradeProcessConfig.cancel_time % 60
           this.deliverMethods.map((item, index) => {
             switch (item.code) {
               case 'express':
@@ -563,7 +581,7 @@ export default {
     },
     // 更新配置项
     updateConfig () {
-      this.tradeProcessConfig.cancel_time = this.tradeProcessConfig.cancelHour * 60 + this.tradeProcessConfig.cancelMinute
+      this.tradeProcessConfig.cancel_time = this.cancelHour * 60 + this.cancelMinute
       this.tradeProcessConfig.shop_address = JSON.stringify(this.addresssConf)
       this.deliverMethods.map((item, index) => {
         switch (item.code) {

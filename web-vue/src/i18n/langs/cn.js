@@ -98,6 +98,10 @@ import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePi
 
 // 快递公司
 import { cn as expressList } from './views/admin/index/leftNavComponents/order/expressList'
+
+// 支付配置
+import { cn as tradeConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/tradeProcessConfigCn'
+
 const cn = {
   messages: {
     lang: '中文',
@@ -573,7 +577,8 @@ const cn = {
 
   // 门店
   storeCommon, // 门店通用
-  storeList // 门店列表
+  storeList, // 门店列表
+  tradeConfiguration // 交易流程配置
 }
 
 export default cn

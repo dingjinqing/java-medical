@@ -95,6 +95,9 @@ import { en as payConfiguration } from './views/admin_new/en/index/basicSettings
 // 通用组件 日期时间选择
 // 快递公司
 import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
+// 支付配置
+import { en as tradeConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/tradeProcessConfigEn'
+
 const en = {
   messages: {
     lang: 'English',
@@ -601,6 +604,7 @@ const en = {
 
   // 门店
   storeCommon, // 门店通用
-  storeList // 门店列表
+  storeList, // 门店列表
+  tradeConfiguration // 交易流程配置
 }
 export default en

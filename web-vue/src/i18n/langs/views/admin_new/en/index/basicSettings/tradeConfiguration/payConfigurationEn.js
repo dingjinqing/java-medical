@@ -1,5 +1,5 @@
 export const en = {
-  // 分享有礼-添加
+  // 支付配置
   config: 'config',
   defaultConfig: 'Default Configuraion',
   activated: 'Activated',
