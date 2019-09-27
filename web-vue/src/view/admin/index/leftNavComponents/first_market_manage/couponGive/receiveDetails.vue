@@ -6,45 +6,45 @@
         <el-form :inline="true">
           <el-form-item
             size="small"
-            :label="$t('promoteList.username')"
+            :label="$t('couponGive.username')"
           >
             <el-input
               v-model="username"
-              :placeholder="$t('promoteList.usernamePlaceholder')"
+              :placeholder="$t('couponGive.usernamePlaceholder')"
             />
           </el-form-item>
           <el-form-item
             size="small"
-            :label="$t('promoteList.mobile')"
+            :label="$t('couponGive.mobile')"
           >
             <el-input
               v-model="mobile"
-              :placeholder="$t('promoteList.mobilePlaceholder')"
+              :placeholder="$t('couponGive.mobilePlaceholder')"
             />
           </el-form-item>
           <el-form-item
             size="small"
-            label="使用状态"
+            :label="$t('couponGive.useStatus')"
           >
             <el-select v-model="isUsed">
               <el-option
-                label="全部"
+                :label="$t('couponGive.all')"
                 value="-1"
               ></el-option>
               <el-option
-                label="未使用"
+                :label="$t('couponGive.notUsed')"
                 value="0"
               ></el-option>
               <el-option
-                label="已使用"
+                :label="$t('couponGive.alreadyUsed')"
                 value="1"
               ></el-option>
               <el-option
-                label="已过期"
+                :label="$t('couponGive.expired')"
                 value="2"
               ></el-option>
               <el-option
-                label="已废除"
+                :label="$t('couponGive.repealed')"
                 value="3"
               ></el-option>
             </el-select>
@@ -53,8 +53,8 @@
             size="small"
             type="primary"
             @click="onSubmit"
-          >{{$t('promoteList.filter')}}</el-button>
-          <el-button size="small">{{$t('promoteList.export')}}</el-button>
+          >{{$t('couponGive.filter')}}</el-button>
+          <el-button size="small">{{$t('couponGive.export')}}</el-button>
         </el-form>
       </div>
     </wrapper>

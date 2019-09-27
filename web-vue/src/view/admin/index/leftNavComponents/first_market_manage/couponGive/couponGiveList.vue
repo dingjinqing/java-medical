@@ -7,7 +7,7 @@
           class="leftarea"
           style="display:flex"
         >
-          <span style="width: 180px;height:30px;line-height: 30px">发券活动名称</span>
+          <span style="width: 180px;height:30px;line-height: 30px">{{$t('couponGive.actName')}}</span>
           <el-input
             size="small"
             v-model="actName"
@@ -17,14 +17,14 @@
             size="small"
             @click="handleSelect"
             style="margin-left:10px"
-          >查询
+          >{{$t('couponGive.select')}}
           </el-button>
           <el-button
             type="primary"
             size="small"
             class="barginBtn"
             @click="addAct"
-          >发券
+          >{{$t('couponGive.giveCoupon')}}
           </el-button>
         </div>
       </div>
