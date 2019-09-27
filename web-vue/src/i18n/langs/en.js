@@ -21,7 +21,7 @@ import { en as overview } from './views/admin/index/firstWebManage/firstWebManag
 
 // 小程序管理
 // 页面装修
-import { en as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+import { en as pictureSetting } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/pictureSettingEn'
 // 小程序装修
 import { en as pageDecoration } from './views/admin_new/en/components/pageDecoration/pageDecorationEn'
 // 底部导航配置

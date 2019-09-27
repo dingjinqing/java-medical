@@ -15,7 +15,7 @@ import { cn as adminPageFramework } from './views/admin_new/cn/adminPageFramewor
 // 概览
 import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 // 页面装修
-import { cn as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
+import { cn as pictureSetting } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/pictureSettingCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
