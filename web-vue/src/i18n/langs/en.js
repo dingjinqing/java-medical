@@ -1,9 +1,12 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
 import { en as programVersion } from './views/system/en/smallProgramVersion/programVersionEn'
-import { en as shopAccountList } from './views/shopAccountList'
-import { en as shopList } from './views/shopList'
-import { en as publishList } from './views/publishList'
+// system 店铺管理-店铺账户列表
+import { en as shopAccountList } from './views/system/en/shopAccountList/shopAccountListEn'
+// system 店铺管理-店铺列表
+import { en as shopList } from './views/system/en/shopList/shopListEn'
+// system 店铺管理-发布列表
+import { en as publishList } from './views/system/en/publishList/publishListEn'
 import { en as versionList } from './views/system/en/smallProgramVersion/versionListEn'
 import { en as router } from './views/admin_new/en/routerEn'
 import { en as marketManage } from './views/admin_new/en/index/marketManagement/marketManageEn'

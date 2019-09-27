@@ -1,9 +1,12 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import { cn as programVersion } from './views/system/cn/smallProgramVersion/programVersionCn'
-import { cn as shopAccountList } from './views/shopAccountList'
-import { cn as shopList } from './views/shopList'
-import { cn as publishList } from './views/publishList'
+// system 店铺管理-店铺账户列表
+import { cn as shopAccountList } from './views/system/cn/shopAccountList/shopAccountListCn'
+// system 店铺管理-店铺列表
+import { cn as shopList } from './views/system/cn/shopList/shopListCn'
+// system 店铺管理-发布列表
+import { cn as publishList } from './views/system/cn/publishList/publishListCn'
 import { cn as versionList } from './views/system/cn/smallProgramVersion/versionListCn'
 
 import { cn as router } from './views/admin_new/cn/routerCn'
