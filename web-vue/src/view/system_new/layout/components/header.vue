@@ -158,7 +158,7 @@ export default {
     // 初始化登录
     judgeuserinfo () {
       console.log(this)
-      if (Cookies.get('V-Token')) {
+      if (Cookies.get('V-System-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('System-Username') // 获取到登录用户的名字
       } else {
