@@ -1,22 +1,18 @@
 package com.vpu.mp.controller.system;
 
-import java.sql.Timestamp;
-
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.ShopAccountOneParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountOnePojo;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 
@@ -75,6 +71,22 @@ public class SystemShopAccountController extends SystemBaseController {
 		} else {
 			return fail(code);
 		}
+	}
+	
+	
+	/**
+	 * 查询单个商家账户
+	 * @param account
+	 * @return
+	 */
+	@PostMapping("/system/shop/account/getOne")
+	public JsonResult getShopAccount(@RequestBody ShopAccountOneParam param) {
+		ShopAccountRecord record = saas.shop.account.checkByIdAndNameOnMain(param.getUserName(),param.getSysId());
+		if(record!=null) {
+			return success(record.into(ShopAccountOnePojo.class));
+		}
+		return fail();
+
 	}
 	
 
