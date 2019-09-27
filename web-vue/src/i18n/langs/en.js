@@ -33,7 +33,7 @@ import { en as marketCommon } from './views/admin_new/en/index/marketManagement/
 // 多人拼团
 import { en as groupBuy } from './views/admin_new/en/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
-import { en as statusTab } from './views/components/status/statusTab'
+import { en as statusTab } from './views/admin_new/en/components/status/statusTabEn'
 // 分享有礼
 import { en as sharePolite } from './views/admin_new/en/index/marketManagement/sharePolite/sharePolite'
 // 分享有礼-领取明细

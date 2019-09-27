@@ -30,7 +30,7 @@ import { cn as marketCommon } from './views/admin_new/cn/index/marketManagement/
 // 多人拼团
 import { cn as groupBuy } from './views/admin_new/cn/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
-import { cn as statusTab } from './views/components/status/statusTab'
+import { cn as statusTab } from './views/admin_new/cn/components/status/statusTabCn'
 // 分享有礼
 import { cn as sharePolite } from './views/admin_new/cn/index/marketManagement/sharePolite/sharePolite'
 // 分享有礼-领取明细
