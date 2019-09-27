@@ -27,6 +27,27 @@ export const cn = {
     state3: '审核不通过',
     state4: '已禁用'
   },
+  auth_state: [{
+    value: '',
+    label: '选择审核状态'
+  },
+  {
+    value: 1,
+    label: '申请中'
+  },
+  {
+    value: 2,
+    label: '审核通过'
+  },
+  {
+    value: 3,
+    label: '审核不通过'
+  },
+  {
+    value: 4,
+    label: '已禁用'
+  }
+  ],
   selectState: '选择审核状态',
   inputName: '请输入用户名、昵称',
   inputCompany: '请输入公司名称',

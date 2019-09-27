@@ -51,21 +51,12 @@
             clearable
           >
             <el-option
-              :label="$t('shopAccountList.stateOption.state1')"
-              value="1"
-            ></el-option>
-            <el-option
-              :label="$t('shopAccountList.stateOption.state2')"
-              value="2"
-            ></el-option>
-            <el-option
-              :label="$t('shopAccountList.stateOption.state3')"
-              value="3"
-            ></el-option>
-            <el-option
-              :label="$t('shopAccountList.stateOption.state4')"
-              value="4"
-            ></el-option>
+              v-for="item in authStates"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('shopAccountList.accountAdd.maxSkuNum')">
@@ -230,7 +221,8 @@ export default {
         password: [
           { validator: checkPassword, trigger: 'change' }
         ]
-      }
+      },
+      authStates: this.$t('shopAccountList.auth_state')
     }
   },
   methods: {
