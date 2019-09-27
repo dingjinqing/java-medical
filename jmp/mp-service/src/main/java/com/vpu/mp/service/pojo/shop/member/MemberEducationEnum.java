@@ -46,6 +46,14 @@ public enum MemberEducationEnum {
 	public static MemberEducationEnum valueOf(int code) {
 		return (MemberEducationEnum)map.get(code);
 	}
+	/**
+	 * 根据 code id 获取相应的name
+	 * @return
+	 */
+	public static String getNameByCode(int code) {
+		MemberEducationEnum obj = valueOf(code);
+		return obj.getName();
+	}
 	
 	public int getCode() {
 		return code;
