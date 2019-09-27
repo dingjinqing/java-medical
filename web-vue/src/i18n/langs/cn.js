@@ -1,16 +1,16 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
-import { cn as programVersion } from './views/programVersion'
+import { cn as programVersion } from './views/system/cn/smallProgramVersion/programVersionCn'
 import { cn as shopAccountList } from './views/shopAccountList'
 import { cn as shopList } from './views/shopList'
 import { cn as publishList } from './views/publishList'
 import { cn as versionList } from './views/system/cn/smallProgramVersion/versionListCn'
 
 import { cn as router } from './views/admin_new/cn/routerCn'
-import { cn as marketManage } from './views/marketManage'
-import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
+import { cn as marketManage } from './views/admin_new/cn/index/marketManagement/marketManageCn'
+// import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
-import { cn as adminPageFramework } from './views/adminPageFramework'
+import { cn as adminPageFramework } from './views/admin_new/cn/adminPageFrameworkCn'
 
 // 概览
 import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
@@ -48,9 +48,9 @@ import { cn as promoteList } from './views/admin/index/leftNavComponents/first_m
 // 幸运大抽奖
 import { cn as luckyDraw } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
-import { cn as pageDecoration } from './views/smallProgramManagement/pageDecoration'
+import { cn as pageDecoration } from './views/admin_new/cn/components/pageDecoration/pageDecorationCn'
 // 底部导航配置
-import { cn as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
+import { cn as bottomNavigation } from './views/admin_new/cn/index/miniProgramManagement/bottomNavigation/bottomNavigationCn'
 // 分享有礼-添加
 import { cn as adSharePolite } from './views/admin_new/cn/index/marketManagement/sharePolite/adSharePolite'
 // 限时降价列表
@@ -544,7 +544,7 @@ const cn = {
   // 营销
   marketManage, // 营销管理
   marketCommon, // 营销管理通用词汇
-  ordinaryCoupon, // 普通优惠券
+  // ordinaryCoupon, // 普通优惠券
   groupBuy, // 多人拼团
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页

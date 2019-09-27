@@ -1,15 +1,15 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
-import { en as programVersion } from './views/programVersion'
+import { en as programVersion } from './views/system/en/smallProgramVersion/programVersionEn'
 import { en as shopAccountList } from './views/shopAccountList'
 import { en as shopList } from './views/shopList'
 import { en as publishList } from './views/publishList'
 import { en as versionList } from './views/system/en/smallProgramVersion/versionListEn'
 import { en as router } from './views/admin_new/en/routerEn'
-import { en as marketManage } from './views/marketManage'
-import { en as ordinaryCoupon } from './views/ordinaryCoupon'
+import { en as marketManage } from './views/admin_new/en/index/marketManagement/marketManageEn'
+// import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
-import { en as adminPageFramework } from './views/adminPageFramework'
+import { en as adminPageFramework } from './views/admin_new/en/adminPageFrameworkEn'
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { en as allGoods } from './views/admin_new/en/index/goodsManagement/allGoodsEn'
@@ -23,9 +23,9 @@ import { en as overview } from './views/admin/index/firstWebManage/firstWebManag
 // 页面装修
 import { en as pictureSetting } from './views/admin/index/leftNavComponents/first_web_decoration/pictureSetting/pictureSetting'
 // 小程序装修
-import { en as pageDecoration } from './views/smallProgramManagement/pageDecoration'
+import { en as pageDecoration } from './views/admin_new/en/components/pageDecoration/pageDecorationEn'
 // 底部导航配置
-import { en as bottomNavigation } from './views/smallProgramManagement/bottomNavigation'
+import { en as bottomNavigation } from './views/admin_new/en/index/miniProgramManagement/bottomNavigation/bottomNavigationEn'
 
 // 营销管理
 // 营销管理通用词汇
@@ -571,7 +571,7 @@ const en = {
   // 营销
   marketManage, // 营销管理
   marketCommon, // 营销管理通用词汇
-  ordinaryCoupon, // 普通优惠券
+  // ordinaryCoupon, // 普通优惠券
   groupBuy, // 多人拼团
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页
