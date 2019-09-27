@@ -4,7 +4,7 @@ import { cn as programVersion } from './views/programVersion'
 import { cn as shopAccountList } from './views/shopAccountList'
 import { cn as shopList } from './views/shopList'
 import { cn as publishList } from './views/publishList'
-import { cn as versionList } from './views/versionList'
+import { cn as versionList } from './views/system/cn/smallProgramVersion/versionListCn'
 
 import { cn as router } from './views/admin_new/cn/routerCn'
 import { cn as membershipIntroduction } from './views/membershipIntroduction'
