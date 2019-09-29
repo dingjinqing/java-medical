@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
@@ -293,10 +294,12 @@ public class OrderReadService extends ShopBaseService {
 		vo.setShippingCode(returnOrder.getShippingCode(rOrder));
 		//金额计算
 		setCalculateMoney(vo);
+		//获取该退款订单操作记录
+		List<OperatorRecord> operatorRecord = returnStatusChange.getOperatorRecord(rOrder.getRetId());
+		vo.setOperatorRecord(operatorRecord);
 		//获取最后一次操作此订单type
-		ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
-		if(Objects.nonNull(lastOperator)) {
-			vo.setOperatorLastType(lastOperator.getType());
+		if(operatorRecord.size() != 0) {
+			vo.setOperatorLastType(operatorRecord.get(operatorRecord.size() - 1).getType());
 		}
 		//设置自动处理时间
 		setReturnCfg(vo, rOrder);

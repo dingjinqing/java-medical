@@ -16,6 +16,7 @@ public class ReturnOrderInfoVo {
 	private Map<String, BigDecimal> calculateMoney;
 	/** 最后一次操作人类型 */
 	private Byte operatorLastType;
+	private List<OperatorRecord> operatorRecord;
 	private Long returnMoneyDays;
 	private Long returnAddressDays;
 	private Long returnShoppingDays;
@@ -92,3 +93,33 @@ public class ReturnOrderInfoVo {
  * 买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销refund_cancel_time
  * 买家已自动撤销refund_cancel_time 提交物流 商家未收货，拒绝退款退货 商家退款，退款成功
  */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
