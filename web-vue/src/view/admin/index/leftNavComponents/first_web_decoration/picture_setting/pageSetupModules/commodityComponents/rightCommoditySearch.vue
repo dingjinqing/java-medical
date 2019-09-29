@@ -7,35 +7,35 @@
         <div class="container">
           <span>框体样式：</span>
           <el-radio
-            v-model="data.styleRadio"
-            label="1"
+            v-model="data.search_style"
+            label="0"
           >方形</el-radio>
           <el-radio
-            v-model="data.styleRadio"
-            label="2"
+            v-model="data.search_style"
+            label="1"
           >圆形</el-radio>
         </div>
         <div class="container">
           <span>框体高度：</span>
           <el-radio
-            v-model="data.heightRadio"
-            label="1"
+            v-model="data.search_font"
+            label="0"
           >高</el-radio>
           <el-radio
-            v-model="data.heightRadio"
-            label="2"
+            v-model="data.search_font"
+            label="1"
           >中</el-radio>
           <el-radio
-            v-model="data.heightRadio"
-            label="3"
+            v-model="data.search_font"
+            label="2"
           >低</el-radio>
         </div>
         <div class="container color">
           <span>框体颜色：</span>
           <span class="colorSelect">
             <colorPicker
-              v-model="data.colorBorder"
-              :defaultColor="data.defaultColorBorder"
+              v-model="data.box_color"
+              :defaultColor="defaultColorBorder"
               style="width:60px;height:30px;"
             />
           </span>
@@ -52,8 +52,8 @@
           <span>背景颜色：</span>
           <span class="colorSelect">
             <colorPicker
-              v-model="data.colorBg"
-              :defaultColor="data.defaultColorBorderBg"
+              v-model="data.back_color"
+              :defaultColor="defaultColorBorderBg"
               style="width:60px;height:30px;"
             />
           </span>
@@ -69,24 +69,24 @@
         <div class="container">
           <span>商家分类：</span>
           <el-radio
-            v-model="data.classificationRadio"
-            label="1"
+            v-model="data.search_sort"
+            label="0"
           >不显示</el-radio>
           <el-radio
-            v-model="data.classificationRadio"
-            label="2"
+            v-model="data.search_sort"
+            label="1"
           >显示</el-radio>
         </div>
 
         <div
           class="container color"
-          v-if="data.classificationRadio==='2'"
+          v-if="data.search_sort==='1'"
         >
           <span>图标颜色：</span>
           <span class="colorSelect">
             <colorPicker
-              v-model="data.colorIcon"
-              :defaultColor="data.defaultColorBorderIcon"
+              v-model="data.sort_bg_color"
+              :defaultColor="defaultColorBorderIcon"
               style="width:60px;height:30px;"
             />
           </span>
@@ -116,16 +116,17 @@ export default {
   data () {
     return {
       data: {
-        styleRadio: '2',
-        heightRadio: '2',
-        colorBorder: '#eee', // 框体颜色
-        defaultColorBorder: '#eee', // 框体默认颜色
-        colorBg: '#fff',
-        defaultColorBorderBg: '#fff',
-        classificationRadio: '1',
-        colorIcon: '#666666',
-        defaultColorBorderIcon: '#666666'
-      }
+        'module_name': 'm_goods_search', // 模块名称
+        'search_style': '1', // 框体样式
+        'search_font': '1', // 框体高度
+        'box_color': '#eee', // 框体颜色
+        'back_color': '#fff', // 背景颜色
+        'search_sort': '0', // 商家分类是否显示
+        'sort_bg_color': '#666666' // 图标颜色
+      },
+      defaultColorBorder: '#eee',
+      defaultColorBorderBg: '#fff',
+      defaultColorBorderIcon: '#666666'
     }
   },
   watch: {
@@ -151,13 +152,13 @@ export default {
     handleToReset (index) {
       switch (index) {
         case 0:
-          this.data.colorBorder = '#eee'
+          this.data.box_color = '#eee'
           break
         case 1:
-          this.data.colorBg = '#fff'
+          this.data.back_color = '#fff'
           break
         case 2:
-          this.data.colorIcon = '#666666'
+          this.data.sort_bg_color = '#666666'
       }
     }
   }

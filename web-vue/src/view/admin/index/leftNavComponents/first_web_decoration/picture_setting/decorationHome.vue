@@ -50,7 +50,10 @@
             :ops="ops"
             style="height:530px"
           >
-            <div class="decContent">
+            <div
+              class="decContent"
+              :style="pageSetData.bg_types==='1'?`backgroundImage:url('${pageSetData.page_bg_image}');background-repeat:no-repeat;background-size:cover`:`background-color:${pageSetData.page_bg_color}`"
+            >
 
               <div
                 class="drag_area"
@@ -70,6 +73,7 @@
                 <div
                   class="zbTips"
                   v-if="!showModulesList.length"
+                  style='z-index:1000'
                 >
                   <div class="drag_notice">拖拽左侧模块进行装修</div>
                 </div>
@@ -89,7 +93,10 @@
                     :key="index"
                   >
                     <!--模块-->
-                    <div @click.prevent="handleToClickModule(index)">
+                    <div
+                      :style="pageSetData.show_margin==='1'?`margin-bottom:${pageSetData.margin_val}px`:''"
+                      @click.prevent="handleToClickModule(index)"
+                    >
                       <components
                         :is='middleModulesList[item]'
                         :flag="index"
@@ -169,10 +176,12 @@ import draggable from 'vuedraggable'
 import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
+import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
 export default {
+  mixins: [decMixins],
   components: {
     vuescroll,
     draggable,
@@ -374,7 +383,8 @@ export default {
         preventOnFilter: false,
         fallbackTolerance: '1'
       },
-      pageSetData: {}
+      pageSetData: {},
+      cur_idx: 100
     }
   },
   watch: {
@@ -425,13 +435,14 @@ export default {
     handleToSenPageSetData () {
       let pageSetData = {
         'is_ok': 1,
-        'page_name': '13423',
+        'cat_id': '',
+        'page_name': '',
         'bg_types': '0',
         'has_bottom': '0',
         'page_bg_color': '#ffffff',
         'page_bg_image': '',
         'show_margin': '1',
-        'margin_val': '10',
+        'margin_val': '0',
         'pictorial': {
           'is_add': '0',
           'user_visibility': '0',
@@ -720,16 +731,6 @@ export default {
     dragTopOut () {
       this.topAreaFlag = false
     },
-    // 底部保存点击统一处理
-    handleToFooter (flag) {
-      switch (flag) {
-        case 0:
-          break
-        case 1:
-          break
-        case 2:
-      }
-    },
     handleToClickModule (index) {
       console.log(index)
       this.$http.$emit('modulesClick', index)
@@ -767,6 +768,9 @@ export default {
         console.log(this.showModulesList[this.nowRightShowIndex])
         let obj = this.handleToAddModules(this.showModulesList[this.nowRightShowIndex])
         console.log(obj)
+        this.cur_idx = this.cur_idx + 1
+        console.log(this.cur_idx)
+        obj.cur_idx = this.cur_idx
         this.modulesData.splice(this.nowRightShowIndex, 0, obj)
         console.log(this.modulesData)
       } else if (this.showModulesList.length === this.modulesData.length) {
@@ -813,36 +817,49 @@ export default {
       this.nowRightShowIndex = null
     },
     // 模块数据填充处理
-    handleToAddModules (index) {
-      let obj = {}
-      switch (index) {
-        case 1:
-          obj.cardName = '会员卡'
-          obj.backgroundColor = '#ecc98f'
-          obj.tips = '********'
-          obj.isHidden = false
-          break
-        case 2:
-          obj.name = '优惠卷'
-          break
-        case 8:
-          obj.name = '商品'
-          break
-        case 9:
-          obj.name = '商品搜索'
-          obj.styleRadio = '2'
-          obj.heightRadio = '2'
-          obj.colorBorder = '#eee'
-          obj.colorBg = '#fff'
-          obj.classificationRadio = '1'
-      }
-      // let obj = { // 传递当前模块json数据模拟
-      //   modulesIndex: index,
-      //   name: name,
-      //   sorIndex: this.nowRightShowIndex
-      // }
-      return obj
-    },
+    // handleToAddModules (index) {
+    //   let obj = {}
+    //   switch (index) {
+    //     case 1:
+    //       obj = {
+    //         'module_name': 'm_card', // 模块名称
+    //         'card_id': '', // 会员卡id
+    //         'hidden_card': 0, // 是否用户领取后隐藏会员卡
+    //         'card_name': 'V1代理卡', // 会员卡名称
+    //         'card_state': '使用中', // 会员卡使用状态
+    //         'card_grade': 'v1', // 会员卡等级
+    //         'receive_day': '有效期:永久有效', // 有效期
+    //         'card_type': '0', // 会员卡等级
+    //         'legal': '会员折扣9折', // 会员卡描述
+    //         'exchang_count_legal': '', // 会员卡折扣描述
+    //         'bg_type': '0', // 背景类型
+    //         'bg_color': '#ecc98f', // 背景颜色
+    //         'bg_img': '', // 背景图片
+    //         'is_pay': '2',
+    //         'pay_type': '0',
+    //         'pay_fee': '0.00'
+    //       }
+    //       break
+    //     case 2:
+    //       obj.name = '优惠卷'
+    //       break
+    //     case 8:
+    //       obj.name = '商品'
+    //       break
+    //     case 9:
+    //       obj = {
+    //         'module_name': 'm_goods_search', // 模块名称
+    //         'search_style': '1', // 框体样式
+    //         'search_font': '1', // 框体高度
+    //         'box_color': '#eee', // 框体颜色
+    //         'back_color': '#fff', // 背景颜色
+    //         'search_sort': '0', // 商家分类是否显示
+    //         'sort_bg_color': '#666666' // 图标颜色
+    //       }
+    //   }
+
+    //   return obj
+    // },
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
       this.modulesData[this.nowRightShowIndex] = data
@@ -850,6 +867,56 @@ export default {
       this.$forceUpdate()
       console.log(this.modulesData[this.nowRightShowIndex])
       console.log(data)
+    },
+    // 底部保存等按钮点击统一处理
+    handleToFooter (flag) {
+      let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
+      // 对模块某些数据进行非空校验
+      this.handleToJudgeModulesData(saveMosulesData)
+      saveMosulesData.push(this.pageSetData)
+      console.log(saveMosulesData, this.modulesData, this.pageSetData)
+      let params = {
+        page_content: saveMosulesData,
+        page_publish_content: saveMosulesData,
+        page_state: '',
+        cat_id: this.pageSetData.cat_id,
+        page_name: this.pageSetData.page_name
+      }
+      switch (flag) {
+        case 0:
+          params.page_state = 0
+          break
+        case 1:
+          params.page_state = 1
+          break
+        case 2:
+      }
+      console.log(flag)
+      if (flag === 0 || flag === 1) {
+        this.$message.success({
+          message: '保存成功',
+          showClose: true,
+          duration: 1000
+        })
+      } else {
+        this.$message.success({
+          message: '预览测试',
+          showClose: true,
+          duration: 1000
+        })
+      }
+      console.log(params)
+    },
+    // 对保存模块数据进行校验
+    handleToJudgeModulesData (data) {
+      console.log(data)
+      data.forEach((item, index) => {
+        switch (item.module_name) {
+          case 'm_card': // 会员卡
+
+            break
+        }
+      })
     }
   }
 }

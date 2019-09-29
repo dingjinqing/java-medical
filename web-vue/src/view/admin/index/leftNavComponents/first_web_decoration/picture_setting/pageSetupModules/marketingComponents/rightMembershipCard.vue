@@ -16,7 +16,7 @@
             <div
               class="card_add"
               @click="handlCallCardDialog()"
-              v-if="nowChecked.tips==='********'"
+              v-if="!nowChecked.card_id"
             >
               <img :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'">
               <p>添加会员卡</p>
@@ -26,27 +26,28 @@
               v-else
               @click="handlCallCardDialog()"
               class="selectCard"
-              :style="nowChecked.backgroundColor?`backgroundColor:${nowChecked.backgroundColor}`:`backgroundImage:url('${nowChecked.bgImgUrl}')`"
+              :style="nowChecked.bg_type==='0'?`backgroundColor:${nowChecked.bg_color}`:`backgroundImage:url('${nowChecked.bg_img}')`"
             >
               <div>
-                <span class="card_name">{{nowChecked.cardName}}</span>
+                <span class="card_name">{{nowChecked.card_name}}</span>
                 <span
                   style="margin-bottom:8px"
                   v-if="radio==='3'"
-                >{{nowChecked.grade}}</span>
+                >{{nowChecked.card_grade}}</span>
                 <span
                   v-else
                   class="card_state"
-                >使用中</span>
+                >{{nowChecked.card_state}}</span>
               </div>
-              <p
+              <!-- <p
                 class="receive_day"
                 v-if="typeof nowChecked.expired === 'number'&&radio!== '3'"
               >领取之日起{{nowChecked.expired}}日内有效</p>
               <p
                 v-if="typeof nowChecked.expired !== 'number'&&radio!== '3'"
                 class="receive_day"
-              >有效期：永久有效</p>
+              >有效期：永久有效</p> -->
+              <p class="receive_day">{{nowChecked.receive_day}}</p>
             </div>
             <div class="footer">
               <el-checkbox v-model="checked"></el-checkbox>
@@ -112,7 +113,7 @@
                   <li
                     v-for="(item,index) in showCardList"
                     :key="index"
-                    :style="item.backgroundColor?`backgroundColor:${item.backgroundColor}`:`backgroundImage:url('${item.bgImgUrl}')`"
+                    :style="item.bg_type === '0'?`backgroundColor:${item.bg_color}`:`backgroundImage:url('${item.bg_img}')`"
                     @click="handleToClickCard(index)"
                   >
                     <img
@@ -121,24 +122,25 @@
                       :src="$imageHost+'/image/admin/shop_beautify/checked_card.png'"
                     >
                     <div>
-                      <span class="card_name">{{item.cardName}}</span>
+                      <span class="card_name">{{item.card_name}}</span>
                       <span
                         style="margin-bottom:8px"
                         v-if="radio==='3'"
-                      >{{item.grade}}</span>
+                      >{{item.card_grade}}</span>
                       <span
                         v-else
                         class="card_state"
                       >使用中</span>
                     </div>
-                    <p
+                    <!-- <p
                       class="receive_day"
                       v-if="typeof item.expired === 'number'&&radio!== '3'"
                     >领取之日起{{item.expired}}日内有效</p>
                     <p
                       v-if="typeof item.expired !== 'number'&&radio!== '3'"
                       class="receive_day"
-                    >有效期：永久有效</p>
+                    >有效期：永久有效</p> -->
+                    <p class="receive_day">{{item.receive_day}}</p>
                   </li>
                   <!--添加会员卡-->
                   <li
@@ -187,123 +189,213 @@ export default {
       showCardList: [],
       ordinaryCardData: [
         {
-          cardName: '普通卡续费测试1',
-          expired: 1,
-          backgroundColor: '#ecca90',
-          cardId: 1,
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '普通卡续费测试1',
+          'card_id': 1,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#ecca90',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+
         },
         {
-          cardName: '普通卡续费测试2',
-          expired: '永久有效',
-          backgroundColor: '#990000',
-          cardId: 2,
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '普通卡续费测试2',
+          'card_id': 2,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#990000',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '普通卡续费测试3',
-          expired: 3,
-          backgroundColor: '#66FF2B',
-          cardId: 3,
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '普通卡续费测试3',
+          'card_id': 3,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#66FF2B',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '普通卡续费测试4',
-          expired: '永久有效',
-          backgroundColor: '',
-          cardId: 4,
-          isChecked: false,
-          bgImgUrl: this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '普通卡续费测试4',
+          'card_id': 4,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '1',
+          'bg_color': '#666666',
+          'bg_img': this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         }
       ],
       limitCardData: [
         {
-          cardName: '限次卡续费测试1',
-          expired: 1,
-          backgroundColor: '#ecca90',
-          cardId: 5,
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '限次卡续费测试1',
+          'card_id': 5,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#ecca90',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '限次卡续费测试2',
-          expired: '永久有效',
-          backgroundColor: '#990000',
-          cardId: 6,
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '限次卡续费测试2',
+          'card_id': 6,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#990000',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '限次卡续费测试3',
-          expired: 3,
-          backgroundColor: '#66FF2B',
-          cardId: 7,
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '限次卡续费测试3',
+          'card_id': 7,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#66FF2B',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '限次卡续费测试4',
-          expired: '永久有效',
-          backgroundColor: '',
-          cardId: 8,
-          isChecked: false,
-          bgImgUrl: this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '限次卡续费测试4',
+          'card_id': 8,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '1',
+          'bg_color': '#666666',
+          'bg_img': this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         }
       ],
       gradeCardData: [
         {
-          cardName: '限次卡续费测试1',
-          expired: 1,
-          backgroundColor: '#ecca90',
-          cardId: 5,
-          grade: 'v1',
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '等级卡续费测试1',
+          'card_id': 5,
+          'card_grade': 'v9',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#ecca90',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '限次卡续费测试2',
-          expired: '永久有效',
-          backgroundColor: '#990000',
-          cardId: 6,
-          grade: 'v3',
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '等级卡续费测试2',
+          'card_id': 6,
+          'card_grade': 'v6',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#990000',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '限次卡续费测试3',
-          expired: 3,
-          backgroundColor: '#66FF2B',
-          cardId: 7,
-          grade: 'v6',
-          isChecked: false,
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '等级卡续费测试3',
+          'card_id': 7,
+          'card_grade': 'v2',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#66FF2B',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         },
         {
-          cardName: '限次卡续费测试4',
-          expired: '永久有效',
-          backgroundColor: '',
-          cardId: 8,
-          grade: 'v10',
-          isChecked: false,
-          bgImgUrl: this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
-          tips: '购物满100赠100积分',
-          isHidden: false
+          'card_name': '等级卡续费测试4',
+          'card_id': 8,
+          'card_grade': 'v4',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '1',
+          'bg_color': '#666666',
+          'bg_img': this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
         }
       ],
       nowChecked: '',
@@ -315,8 +407,12 @@ export default {
     sortIndex: {
       handler (newData) {
         if (this.modulesData) {
-          this.nowChecked = this.modulesData
-          this.checked = this.modulesData.isHidden
+          this.nowChecked = this.modulesData // 回显数据
+          if (this.modulesData.hidden_card) { // 是否选中用户领取后隐藏会员卡回显
+            this.checked = true
+          } else {
+            this.checked = false
+          }
         }
         console.log(newData, this.modulesData)
       },
@@ -339,8 +435,12 @@ export default {
     },
     checked (newData) {
       // 如果已经有选中数据则直接改变数据里的isHidden项，若果没有则等待弹窗选中确认后，将是否隐藏卡片checked值赋予选中的数据中的isHidden.
-      if (this.nowChecked) {
-        this.nowChecked.isHidden = newData
+      if (this.nowChecked.card_id) {
+        if (newData) { // 将checked得值转化为0 1
+          this.nowChecked.hidden_card = 1
+        } else {
+          this.nowChecked.hidden_card = 0
+        }
 
         console.log(this.nowChecked)
         this.$emit('handleToBackData', this.nowChecked)
@@ -358,15 +458,8 @@ export default {
     // 弹窗确定事件
     handleToSelectCuopon () {
       console.log(this.nowChecked)
-      this.nowChecked = this.zcCheckedData
-      let obj = {
-        carClass: this.radio
-
-      }
-      this.nowChecked.isHidden = this.checked
-      let data = Object.assign(obj, this.nowChecked)
-      console.log(data)
-      this.$emit('handleToBackData', data)
+      let obj = Object.assign(this.nowChecked, this.zcCheckedData)
+      this.$emit('handleToBackData', obj)
       this.dialogVisible = false
     },
     // 卡片点击

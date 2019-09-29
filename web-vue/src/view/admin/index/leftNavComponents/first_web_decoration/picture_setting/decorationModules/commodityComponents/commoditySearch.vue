@@ -11,20 +11,20 @@
       <!--模块编辑区-->
       <div
         class="commoditySearch"
-        :style="'backgroundColor:'+data.colorBorder"
+        :style="'backgroundColor:'+data.box_color"
       >
         <div class="commoditySearchMain">
           <div
             class="Search"
-            :style="{'border-radius':data.styleRadio==='2'?'30px':'','height':data.heightRadio==='2'?'34px':data.heightRadio==='1'?'40px':'28px','backgroundColor':data.colorBg}"
+            :style="{'border-radius':data.search_style==='1'?'30px':'','height':data.search_font==='1'?'34px':data.search_font==='0'?'40px':'28px','backgroundColor':data.back_color}"
           >
             <span class="el-icon-search"></span>
             <span>商品搜索：请输入商品关键字</span>
           </div>
           <div
-            v-if="data.classificationRadio==='2'"
+            v-if="data.search_sort==='1'"
             class="icon"
-            :style="'color:'+data.colorIcon"
+            :style="'color:'+data.sort_bg_color"
           >
             <span class="el-icon-c-scale-to-original"></span>
             <span>分类</span>
@@ -81,10 +81,12 @@ export default {
       activeSetHere: false,
       // 模块私有
       data: {
-        styleRadio: '2',
-        heightRadio: '2',
-        colorBorder: '',
-        colorBg: ''
+        search_style: '1',
+        search_font: '1',
+        box_color: '',
+        sort_bg_color: '',
+        back_color: '',
+        search_sort: ''
       }
     }
   },

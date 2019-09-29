@@ -11,7 +11,7 @@
       <div class="carModule">
         <div
           class="card_back_module"
-          :style="carData.backgroundColor?`backgroundColor:${carData.backgroundColor}`:`backgroundImage:url('${carData.bgImgUrl}')`"
+          :style="carData.bg_type==='0'?`backgroundColor:${carData.bg_color}`:`backgroundImage:url('${carData.bg_img}')`"
         >
           <div class="card_type">{{carClass}}</div>
           <div class="card_content clearfix">
@@ -19,8 +19,9 @@
               <img :src="$imageHost+'/image/admin/shop_def_y.png'">
             </div>
             <div class="card_content_right">
-              <div>{{carName}}</div>
-              <p>{{tips}}</p>
+              <div>{{carData.card_name}}</div>
+              <p>{{carData.legal}}</p>
+              <p>{{carData.exchang_count_legal}}</p>
             </div>
             <!-- <div
                       class="card_pay_fee"
@@ -79,8 +80,6 @@ export default {
       activeBorder: false,
       activeSetHere: false,
       carClass: '普通卡',
-      carName: '会员卡',
-      tips: '*********',
       carData: {
         backgroundColor: '#ecc98f',
         bgImgUrl: ''
@@ -117,23 +116,23 @@ export default {
     backData: {
       handler (newData) {
         if (newData) {
+          console.log(newData)
           this.carData = newData
-          this.carName = newData.cardName
-          this.tips = newData.tips
-          switch (newData.carClass) {
-            case '1':
+          switch (newData.card_type) {
+            case '0':
               this.carClass = '普通卡'
               break
-            case '2':
+            case '1':
               this.carClass = '限次卡'
               break
-            case '3':
+            case '2':
               this.carClass = '等级卡'
           }
         }
         console.log(newData)
       },
-      immediate: true
+      immediate: true,
+      deep: true
     }
   },
   mounted () {

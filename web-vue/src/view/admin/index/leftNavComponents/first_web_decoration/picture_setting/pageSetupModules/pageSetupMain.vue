@@ -4,7 +4,7 @@
       <div>
         <span>页面名称：</span>
         <el-input
-          v-model="pageData.page_name"
+          v-model="ruleForm.page_name"
           placeholder="请输入页面名称"
           size="small"
         ></el-input>
@@ -12,7 +12,7 @@
       <div>
         <span>页面分类：</span>
         <el-select
-          v-model="classificationValue"
+          v-model="ruleForm.cat_id"
           placeholder="请选择"
           size="small"
         >
@@ -28,11 +28,11 @@
       <div class="radio">
         <span>底部导航：</span>
         <el-radio
-          v-model="pageData.has_bottom"
+          v-model="ruleForm.has_bottom"
           label="1"
         >添加</el-radio>
         <el-radio
-          v-model="pageData.has_bottom"
+          v-model="ruleForm.has_bottom"
           label="0"
         >不添加</el-radio>
       </div>
@@ -43,21 +43,21 @@
         <span>模块间距：</span>
         <div style="display:block">
           <el-radio
-            v-model="pageData.show_margin"
+            v-model="ruleForm.show_margin"
             label="1"
           >添加</el-radio>
           <el-radio
-            v-model="pageData.show_margin"
+            v-model="ruleForm.show_margin"
             label="0"
           >不添加</el-radio>
           <div
             class="marginHeight"
-            v-if="pageData.show_margin==='1'"
+            v-if="ruleForm.show_margin==='1'"
           >
             <span style="width:70px;white-space:nowrap">间距高度：</span>
             <el-input
               size="small"
-              v-model="pageData.margin_val"
+              v-model="ruleForm.margin_val"
             ></el-input>像素
           </div>
         </div>
@@ -66,12 +66,12 @@
       <div class="radio">
         <span>分享海报：</span>
         <el-radio
-          v-model="posterRadio"
+          v-model="ruleForm.pictorial.is_add"
           label="1"
         >添加</el-radio>
         <el-radio
-          v-model="posterRadio"
-          label="2"
+          v-model="ruleForm.pictorial.is_add"
+          label="0"
         >不添加</el-radio>
         <div class="example">
           <span>查看示例</span>
@@ -82,7 +82,7 @@
       </div>
       <!--点击添加分享海报后出现的模块-->
       <div
-        v-if="posterRadio==='1'"
+        v-if="ruleForm.pictorial.is_add==='1'"
         class="radio"
       >
         <el-form
@@ -93,25 +93,25 @@
         >
           <el-form-item
             label="用户范围："
-            prop="rangeRadio"
+            prop="pictorial.user_visibility"
           >
             <el-radio
-              v-model="ruleForm.rangeRadio"
+              v-model="ruleForm.pictorial.user_visibility"
               label="1"
             >所有用户可见</el-radio>
             <el-radio
-              v-model="ruleForm.rangeRadio"
-              label="2"
+              v-model="ruleForm.pictorial.user_visibility"
+              label="0"
             >仅分销员可见</el-radio>
           </el-form-item>
           <el-form-item
             label="按钮名称："
-            prop="btnName"
+            prop="pictorial.share_btn_name"
           >
             <div class="btnName">
               <el-input
                 size="small"
-                v-model="ruleForm.btnName"
+                v-model="ruleForm.pictorial.share_btn_name"
               ></el-input>
               <span class="popover">
                 <el-popover
@@ -132,14 +132,14 @@
           </el-form-item>
           <el-form-item
             label="分享语："
-            prop="sharedLanguage"
+            prop="pictorial.share_desc"
             class="sharedLanguage"
           >
             <div class="shareContainer">
               <div style="display:block;">
                 <el-input
                   size="small"
-                  v-model="ruleForm.sharedLanguage"
+                  v-model="ruleForm.pictorial.share_desc"
                 ></el-input>
                 <div class="tips">
                   最多可填写20个汉字
@@ -161,14 +161,14 @@
           </el-form-item>
           <el-form-item
             label="分享图："
-            prop="sharedLanguage"
+            prop="pictorial.share_img_path"
             class="sharedLanguage shareP"
           >
             <div class="bottomDiv">
               <div class="bgBottom">
 
                 <img
-                  v-if="!shareImgUrl"
+                  v-if="!ruleForm.pictorial.share_img_path"
                   :src="$imageHost+'/image/admin/add_img_bg.png'"
                   class="bgImgDiv"
                   @click="handleToAddImg(true)"
@@ -176,7 +176,7 @@
                 <img
                   v-else
                   style="width:100%;height:40px"
-                  :src="shareImgUrl"
+                  :src="ruleForm.pictorial.share_img_path"
                   @click="handleToAddImg(true)"
                 >
               </div>
@@ -192,12 +192,12 @@
       <div>
         <div class="bottomLlist">
           <el-radio
-            v-model="pageData.bg_types"
+            v-model="ruleForm.bg_types"
             label="0"
           >背景颜色：</el-radio>
           <span class="colorSelect">
             <colorPicker
-              v-model="colorRight"
+              v-model="ruleForm.page_bg_color"
               :defaultColor="defaultColorright"
               style="width:60px;height:30px;"
             />
@@ -212,7 +212,7 @@
         <div class="bottomLlist">
           <div style="margin-right:5px">
             <el-radio
-              v-model="pageData.bg_types"
+              v-model="ruleForm.bg_types"
               label="1"
             >背景图片：</el-radio>
           </div>
@@ -221,7 +221,7 @@
             <div class="bgBottom">
 
               <img
-                v-if="!bgImgUrl"
+                v-if="!ruleForm.page_bg_image"
                 :src="$imageHost+'/image/admin/add_img_bg.png'"
                 class="bgImgDiv"
                 @click="handleToAddImg(false)"
@@ -229,7 +229,7 @@
               <img
                 v-else
                 style="width:100%;height:40px"
-                :src="bgImgUrl"
+                :src="ruleForm.page_bg_image"
                 @click="handleToAddImg(false)"
               >
             </div>
@@ -265,8 +265,7 @@ export default {
     return {
       tuneUp: false,
       defaultColorright: '#fff',
-      colorRight: '',
-      classificationValue: '',
+      cat_id: '',
       classificationOptions: [{
         value: null,
         label: '请选择页面分类'
@@ -280,58 +279,73 @@ export default {
         value: '2',
         label: '测试页面3'
       }],
-      posterRadio: '2',
       ruleForm: {
-        rangeRadio: '1',
-        btnName: '',
-        sharedLanguage: ''
-      },
-      rules: {
-        rangeRadio: [
-          { required: true, message: '请选择用户范围', trigger: 'change' }
-        ],
-        btnName: [
-          { required: true, message: '页面分享按钮名称不能为空', trigger: 'blur' }
-        ],
-        sharedLanguage: [
-          { required: true, message: '页面分享语不能为空', trigger: 'blur' }
-        ]
-      },
-      picFlag: null,
-      shareImgUrl: '',
-      bgImgUrl: '',
-      pageData: {
         'is_ok': 1,
+        'cat_id': '',
         'page_name': '',
         'bg_types': '0',
-        'has_bottom': 0,
-        'page_bg_color': '#ffffff',
-        'page_bg_image': '',
+        'has_bottom': '0',
         'show_margin': '1',
         'margin_val': '10',
-        'pictorial': {
-          'is_add': '0',
-          'user_visibility': '0',
-          'share_btn_name': '',
-          'share_desc': '',
-          'share_img_path': '',
-          'name_length': 0
+        'page_bg_color': '#ffffff',
+        'page_bg_image': '',
+        'pictorial': { // 分享海报相关配置
+          'is_add': '0', // 是否添加分享海报
+          'user_visibility': '1', // 是所有用户可见还是仅分销员可见
+          'share_btn_name': '', // 按钮名称
+          'share_desc': '', // 分享语
+          'share_img_path': '', // 分享图片路径
+          'name_length': 0 // 按钮名称长度
         }
-      }
+      },
+      rules: {
+        'pictorial.user_visibility': [
+          { required: true, message: '请选择用户范围', trigger: 'change' }
+        ],
+        'pictorial.share_btn_name': [
+          { required: true, message: '页面分享按钮名称不能为空', trigger: 'blur' }
+        ],
+        'pictorial.share_desc': [
+          { required: true, message: '页面分享语不能为空', trigger: 'blur' }
+        ],
+        'pictorial.share_img_path': [
+          { required: true, message: '页面分享图不能为空', trigger: 'change' }
+        ]
+      },
+      picFlag: null
+      // pageData: {
+      //   'is_ok': 1,
+      //   'page_name': '', // 页面名称
+      //   'bg_types': '0', // 背景类型
+      //   'has_bottom': '0', // 是否添加底部导航
+      //   'page_bg_color': '#ffffff', // 背景颜色
+      //   'page_bg_image': '', // 背景图片
+      //   'show_margin': '1', // 是否添加模块边距
+      //   'margin_val': '10', // 模块边距
+      //   'pictorial': { // 分享海报相关配置
+      //     'is_add': '0', // 是否添加分享海报
+      //     'user_visibility': '0', // 是所有用户可见还是仅分销员可见
+      //     'share_btn_name': '', // 按钮名称
+      //     'share_desc': '', // 分享语
+      //     'share_img_path': '', // 分享图片路径
+      //     'name_length': 0 // 按钮名称长度
+      //   }
+      // }
     }
   },
   watch: {
     pageSet: {
       handler (newData) {
         console.log(newData)
-        this.pageData = newData
+        this.ruleForm = newData
       },
       immediate: true,
       deep: true
     },
-    pageData: {
+    ruleForm: {
       handler (newData) {
         console.log(newData)
+        newData.pictorial.name_length = newData.pictorial.share_btn_name.length
         this.$emit('hanelToPageSet', newData)
       },
       deep: true
@@ -340,7 +354,7 @@ export default {
   methods: {
     // 点击重置
     handleToReset () {
-      this.colorRight = '#fff'
+      this.ruleForm.page_bg_color = '#fff'
     },
     // 添加图片
     handleToAddImg (flag) {
@@ -349,9 +363,9 @@ export default {
     },
     handleSelectImg ({ imgUrl }) {
       if (this.picFlag) {
-        this.shareImgUrl = imgUrl
+        this.ruleForm.pictorial.share_img_path = imgUrl
       } else {
-        this.bgImgUrl = imgUrl
+        this.ruleForm.page_bg_image = imgUrl
       }
     }
   }
@@ -409,6 +423,13 @@ export default {
           /deep/ .el-form-item__error {
             white-space: nowrap;
           }
+          /deep/ .el-form-item__error {
+            padding-top: 0;
+          }
+        }
+        /deep/ .is-error {
+          margin-bottom: 18px;
+          white-space: nowrap;
         }
         .sharedLanguage {
           padding-left: 15px;
