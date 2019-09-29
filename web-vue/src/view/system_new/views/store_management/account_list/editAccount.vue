@@ -121,13 +121,14 @@
         <el-form-item :label="$t('shopAccountList.accountAdd.geoLocation')">
           <div style="display: flex; width: 800px">
             <v-distpicker
+              v-if="showDis"
+              :province="select.province"
+              :city="select.city"
+              :area="select.area"
               @selected="onSelected"
               @province="getProvinceCode"
               @city="getCityCode"
               @area="getDistrictCode"
-              :province="formData.provinceCode"
-              :city="formData.cityCode"
-              :area="formData.districtCode"
             ></v-distpicker>
           </div>
         </el-form-item>
@@ -198,10 +199,13 @@ export default {
       baseSaleTran: false,
       addCommentSwitchTran: false,
       authStates: this.$t('shopAccountList.auth_state'),
-      phonereg: /^1[3|7|8]\d{9}$|^19[8-9]\d{8}$|^166\d{8}|^15[0-3|5-9]\d{8}|^14[5|7]\d{8}$/
+      phonereg: /^1[3|7|8]\d{9}$|^19[8-9]\d{8}$|^166\d{8}|^15[0-3|5-9]\d{8}|^14[5|7]\d{8}$/,
+      select: { province: null, city: null, area: null },
+      showDis: false
     }
   },
   mounted () {
+    console.log(this.select)
     this.search()
   },
   methods: {
@@ -216,10 +220,18 @@ export default {
         if (res.error === 0) {
           this.formData = res.content
           this.exchangeSwitch()
+          // distpicker插件的数据初始化在页面加载时候，我们需要动态赋值之后再让其初始化，用v-if控制，
+          // 此插件的值为number，需要格式化
+          this.select.province = Number(this.formData.provinceCode)
+          this.select.city = Number(this.formData.cityCode)
+          this.select.area = Number(this.formData.districtCode)
+          this.showDis = true
           console.log('结果')
-          console.log(res.content)
+          console.log(this.formData)
+          console.log(this.select)
           console.log(this.baseSaleTran, this.addCommentSwitchTran)
         } else {
+          this.showDis = true
           this.$message.error(res.message)
         }
       }).catch(() => {
@@ -332,6 +344,9 @@ export default {
           this.addCommentSwitchTran = false
         }
       }
+      this.provinceCode = this.formData.provinceCode
+      this.cityCode = this.formData.cityCode
+      this.districtCode = this.formData.districtCode
     },
     switchChange () {
       if (this.baseSaleTran === true) {
