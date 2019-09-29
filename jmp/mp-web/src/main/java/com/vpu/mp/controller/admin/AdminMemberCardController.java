@@ -224,9 +224,30 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping("/activateAudit/list")
 	public JsonResult getActivateAuditList(@RequestBody ActiveAuditParam param) {
 		PageResult<ActiveAuditVo> activateAuditList = shop().member.card.getActivateAuditList(param);
-		return this.i18nSuccess(activateAuditList);
+		return i18nSuccess(activateAuditList);
 	}
 	
+	/**
+	 * 审核用户激活通过
+	 * @param id
+	 * @return
+	 */
+	@PostMapping("/activateAudit/activate")
+	public JsonResult passActivateAudit(@RequestBody ActiveAuditParam param) {
+		shop().member.card.passActivateAudit(param);
+		return success();
+	}
+	
+	/**
+	 * 拒绝通过审核
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/activateAudit/reject")
+	public JsonResult rejectActivateAudit(@RequestBody ActiveAuditParam param) {
+		shop().member.card.rejectActivateAudit(param);
+		return success();
+	}
 
 	
 }
