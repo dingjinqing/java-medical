@@ -426,46 +426,102 @@ const routes = [
           },
           // 商品管理/商家分类管理
           {
-            path: '/admin/home/main/goodsManage/businessSortManagement',
+            path: '/admin/home/main/goodsManage/goodsSortManagement',
             redirect:
-              '/admin/home/main/goodsManage/businessSortManagement/list',
+              '/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort',
             name: 'sort',
             meta: {
-              crumbTitle: 'router.businessSortManagement',
+              crumbTitle: 'router.goodsSortManagement',
               meta: 'goods_manage'
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/businessSortManagement'
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/sortManagement'
               ),
             children: [
               //  商品管理/商家分类管理/分类列表
               {
                 path:
-                  '/admin/home/main/goodsManage/businessSortManagement/list',
-                name: 'list',
+                  '/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort',
+                name: 'allGoodsSort',
                 meta: {
-                  crumbTitle: 'router.businessSortManagement',
+                  crumbTitle: 'router.goodsSortManagement',
                   meta: 'goods_manage',
                   category: 'sort'
                 },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/businessSortList'
+                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/allGoodsSort'
                   )
               },
               {
                 path:
-                  '/admin/home/main/goodsManage/businessSortManagement/addSort',
-                name: 'addSort',
+                  '/admin/home/main/goodsManage/goodsSortManagement/allGoodsRecommendSort',
+                name: 'allGoodsRecommendSort',
                 meta: {
-                  crumbTitle: 'router.businessSortManagement',
+                  crumbTitle: 'router.goodsSortManagement',
                   meta: 'goods_manage',
                   category: 'sort'
                 },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/addSort'
+                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/allGoodsRecommendSort'
+                  )
+              },
+              {
+                path:
+                  '/admin/home/main/goodsManage/goodsSortManagement/addGoodsSort',
+                name: 'addGoodsSort',
+                meta: {
+                  crumbTitle: 'router.goodsSortManagement',
+                  meta: 'goods_manage',
+                  category: 'sort'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsSort'
+                  )
+              },
+              {
+                path:
+                  '/admin/home/main/goodsManage/goodsSortManagement/updateGoodsSort',
+                name: 'updateGoodsSort',
+                meta: {
+                  crumbTitle: 'router.goodsSortManagement',
+                  meta: 'goods_manage',
+                  category: 'sort'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsSort'
+                  )
+              },
+              {
+                path:
+                  '/admin/home/main/goodsManage/goodsSortManagement/addGoodsRecommendSort',
+                name: 'addGoodsRecommendSort',
+                meta: {
+                  crumbTitle: 'router.goodsSortManagement',
+                  meta: 'goods_manage',
+                  category: 'sort'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsRecommendSort'
+                  )
+              },
+              {
+                path:
+                  '/admin/home/main/goodsManage/goodsSortManagement/updateGoodsRecommendSort',
+                name: 'updateGoodsRecommendSort',
+                meta: {
+                  crumbTitle: 'router.goodsSortManagement',
+                  meta: 'goods_manage',
+                  category: 'sort'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/goodsSortManagement/addAndUpdateGoodsRecommendSort'
                   )
               }
             ]

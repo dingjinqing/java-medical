@@ -106,7 +106,7 @@
   </div>
 </template>
 <script>
-import { getSortList, deleteSort } from '@/api/admin/goodsManage/businessSortManagement/businessSortManagement'
+import { getSortList, deleteSort } from '@/api/admin/goodsManage/goodsSortManagement/businessSortManagement'
 export default {
   // 组件名
   name: '',

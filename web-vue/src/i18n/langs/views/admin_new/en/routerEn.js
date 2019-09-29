@@ -26,7 +26,7 @@ export const en = {
   // 商品管理 运费模板
   deliverTemplate: ['Commodity Management', 'Deliver Template'],
   // 商品管理 商家分类管理
-  businessSortManagement: ['Commodity Management', 'Business Sort Management'],
+  goodsSortManagement: ['Commodity Management', 'Goods Sort Management'],
   // 商品管理 品牌管理
   brandManagement: ['Brand Management', 'Brand Management'],
   // 商品管理 品牌管理 添加品牌

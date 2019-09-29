@@ -1,7 +1,7 @@
 import service from '@/util/request.js'
 
 // 商品分类查询
-export function getSortList (data) {
+export function getGoodsSortList (data) {
   return service({
     url: `/api/admin/goods/sort/list`,
     method: 'post',
@@ -9,7 +9,7 @@ export function getSortList (data) {
   })
 }
 // 商品分类删除
-export function deleteSort (data) {
+export function deleteGoodsSort (data) {
   return service({
     url: `/api/admin/goods/sort/delete`,
     method: 'post',

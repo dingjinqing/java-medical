@@ -145,10 +145,10 @@ export default {
       },
       goodsLabelRules: {
         nameOld: [
-          { required: true, message: '请输入标签名称', trigger: 'change' }
+          { required: true, message: this.$t('addAndUpdateGoodsLabel.labelNameRequired'), trigger: 'change' }
         ],
         levelOld: [
-          { required: true, message: '优先级不可为空', trigger: 'change' }
+          { required: true, message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired'), trigger: 'change' }
         ]
       },
       /* 以下数据再goodsLabelData.isAll 为0时才有效 */

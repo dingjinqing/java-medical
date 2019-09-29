@@ -23,7 +23,7 @@ export const cn = {
   // 商品管理 运费模板
   deliverTemplate: ['商品管理', '运费模板'],
   // 商品管理 商家分类管理
-  businessSortManagement: ['商品管理', '商家分类管理'],
+  goodsSortManagement: ['商品管理', '商家分类管理'],
   // 商品管理 品牌管理
   brandManagement: ['商品管理', '品牌管理'],
   // 商品管理 品牌管理 添加品牌

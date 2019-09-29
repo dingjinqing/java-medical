@@ -188,7 +188,6 @@
   </div>
 </template>
 <script>
-// import { addSort } from '@/api/admin/goodsManage/businessSortManagement/businessSortManagement'
 export default {
   data () {
     return {
