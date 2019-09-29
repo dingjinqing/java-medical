@@ -4300,7 +4300,7 @@ CREATE TABLE `b2c_gift_cart`
     `product_id`   text COMMENT '已选商品，逗号分隔',
     `goods_number` text COMMENT '已选商品数，逗号分隔',
     `gift_type`    tinyint(1) NOT NULL DEFAULT '1' COMMENT '赠送方式：1:直接送礼 2:先到先得 3:定时开奖',
-    `draw_time`    timestamp            DEFAULT NULL COMMENT '开奖时间',
+    `draw_time`       timestamp  null     default null comment '开奖时间',
     `message`      varchar(200)        DEFAULT NULL COMMENT '祝福语',
     `status`       tinyint(1) NOT NULL DEFAULT '0',
     `create_time`  timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -4613,4 +4613,4 @@ CREATE TABLE `b2c_message_template_config`
     `open_ma` TINYINT(4) NOT NULL DEFAULT '0',
     `open_mp` TINYINT(4) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`)
-)
+);
