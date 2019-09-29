@@ -237,27 +237,7 @@ export default {
       },
       returnTypeMap: null,
       returnStatusMap: null,
-      returnStatusToShowMapping: {
-        '1': this.$t('order.returnStatusMapping_1'),
-        '2': this.$t('order.returnStatusList')[3][1],
-        '3': this.$t('order.returnStatusList')[2][1],
-        '4-0': this.$t('order.returnStatusMapping_4_0'),
-        '4-1': this.$t('order.returnStatusList')[4][1],
-        '6-0': this.$t('order.returnStatusList')[6][1],
-        '6-1': this.$t('order.returnStatusList')[5][1],
-        '7': this.$t('order.returnStatusList')[7][1],
-        '5': this.$t('order.returnStatusList')[8][1]
-      },
-      refundStatus: [
-        { value: -1, label: '全部' },
-        { value: 1, label: '退款申请等待商家确认' },
-        { value: 2, label: '商家拒绝退款申请' },
-        { value: 3, label: '商家同意退货退款，等待买家退货' },
-        { value: 4, label: '买家已退货，等待商家确认收货' },
-        { value: 5, label: '商家未收货，拒绝退款' },
-        { value: 6, label: '退款撤销' },
-        { value: 7, label: '退款成功' }
-      ],
+      returnStatusToShowMapping: null,
       pickerOptions: {
         shortcuts: [
           {
@@ -311,11 +291,11 @@ export default {
     handleClick (index) {
       console.log(index)
     },
-    checkDetail (refundSn) {
+    checkDetail (returnOrderSn) {
       this.$router.push({
         name: 'orderRefundInfo',
         query: {
-          refundSn: refundSn
+          returnOrderSn: returnOrderSn
         }
       })
     },
@@ -333,6 +313,17 @@ export default {
     arrayToMap () {
       this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
       this.returnStatusMap = new Map(this.$t('order.returnStatusList'))
+      this.returnStatusToShowMapping = {
+        '1': this.$t('order.returnStatusMapping_1'),
+        '2': this.$t('order.returnStatusList')[3][1],
+        '3': this.$t('order.returnStatusList')[2][1],
+        '4-0': this.$t('order.returnStatusMapping_4_0'),
+        '4-1': this.$t('order.returnStatusList')[4][1],
+        '6-0': this.$t('order.returnStatusList')[6][1],
+        '6-1': this.$t('order.returnStatusList')[5][1],
+        '7': this.$t('order.returnStatusList')[7][1],
+        '5': this.$t('order.returnStatusList')[8][1]
+      }
     }
   }
 }

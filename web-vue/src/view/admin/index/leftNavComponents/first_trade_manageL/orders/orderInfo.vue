@@ -130,7 +130,7 @@
                   <td
                     v-if="index === 0"
                     :rowspan="item.goods.length"
-                  >{{item.shippingName}}</td>
+                  >{{$t('expressList.company')[item.shippingId]}}</td>
                   <td
                     v-if="index === 0"
                     :rowspan="item.goods.length"

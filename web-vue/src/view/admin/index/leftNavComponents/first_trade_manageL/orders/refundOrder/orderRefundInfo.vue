@@ -2,71 +2,223 @@
   <div class="content">
     <div class="main">
       <div class="item_box">
-        <h2 class="h2_title">仅退款申请</h2>
+        <h2 class="h2_title">{{returnTypeMap.get(returnInfo.returnType) + $t('order.applyText')}}</h2>
         <div class="refund_status_desc">
-          <div class="refund_description">
-            <h3>
-              等待商家处理退款申请
-            </h3>
-            <div class="tips">如果您同意，需要您退款给买家。</div>
-            <div class="tips">如果您拒绝，将需要您填写拒绝理由。</div>
-          </div>
-          <div class="btn_box">
-            <el-button
-              type="primary"
-              size="small"
-            >同意买家仅退款</el-button>
-            <el-button
-              type="default"
-              size="small"
-            >拒绝仅退款申请</el-button>
-          </div>
+          <template v-if="returnInfo.returnType == 1">
+            <template v-if="returnInfo.refundStatus == 1">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_1_1')}}
+                </h3>
+                <div class="tips">{{$t('order.refundNote_1_1_2')}}</div>
+                <div class="tips">{{$t('order.refundNote_1_1_3')}}</div>
+                <div
+                  v-if="autoTime != null"
+                  class="tips"
+                  v-html="$t('order.refundNote_1_1_4',[showCountdown])"
+                >
+                </div>
+              </div>
+              <div class="btn_box">
+                <el-button
+                  type="primary"
+                  size="small"
+                >{{$t('order.refundBtn_1_1_1')}}</el-button>
+                <el-button
+                  type="default"
+                  size="small"
+                >{{$t('order.refundBtn_1_1_2')}}</el-button>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 2">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_2_1')}}
+                </h3>
+                <div class="tips">{{$t('order.refundNote_1_2_2')}}</div>
+                <div
+                  v-if="autoTime != null"
+                  class="tips"
+                  v-html="$t('order.refundNote_1_2_3',[showCountdown])"
+                >
+                </div>
+              </div>
+              <div class="btn_box">
+                <el-button
+                  type="primary"
+                  size="small"
+                >{{$t('order.refundBtn_1_2_1')}}</el-button>
+                <el-button
+                  type="default"
+                  size="small"
+                >{{$t('order.refundBtn_1_2_2')}}</el-button>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 3">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_3_1')}}
+                </h3>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 4">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_4_1')}}
+                </h3>
+                <div class="tips">{{$t('order.refundNote_1_4_2',[todo])}}</div>
+                <div
+                  v-if="autoTime != null"
+                  class="tips"
+                  v-html="$t('order.refundNote_1_2_3',[showCountdown])"
+                >
+                </div>
+              </div>
+              <div class="btn_box">
+                <el-button
+                  type="primary"
+                  size="small"
+                >{{$t('order.refundBtn_1_4_1')}}</el-button>
+                <el-button
+                  type="default"
+                  size="small"
+                >{{$t('order.refundBtn_1_4_2')}}</el-button>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 5">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_5_1')}}
+                </h3>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 6">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_6_1')}}
+                </h3>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 7 && returnInfo.operatorLastType == 1">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_7_1')}}
+                </h3>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 7 && returnInfo.operatorLastType == 2">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_1_8_1')}}
+                </h3>
+                <div class="tips">{{$t('order.refundNote_1_8_2')}}</div>
+              </div>
+            </template>
+          </template>
+          <template v-else>
+            <template v-if="returnInfo.refundStatus == 4">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_4_1')}}
+                </h3>
+                <div class="tips">{{$t('order.refundNote_4_2')}}</div>
+                <div class="tips">{{$t('order.refundNote_4_3')}}</div>
+                <div
+                  v-if="autoTime != null"
+                  class="tips"
+                  v-html="$t('order.refundNote_4_4',[showCountdown])"
+                >
+                </div>
+              </div>
+              <div class="btn_box">
+                <el-button
+                  type="primary"
+                  size="small"
+                >{{$t('order.refundBtn_4_1',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
+                <el-button
+                  type="default"
+                  size="small"
+                >{{$t('order.refundBtn_4_2',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 5">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_5_1',[returnTypeMap.get(returnInfo.returnType)])}}
+                </h3>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 6">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_6_1',[returnTypeMap.get(returnInfo.returnType)])}}
+                </h3>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 7 && returnInfo.operatorLastType == 1">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_7_1',[returnTypeMap.get(returnInfo.returnType)])}}
+                </h3>
+              </div>
+            </template>
+            <template v-else-if="returnInfo.refundStatus == 7 && returnInfo.operatorLastType == 2">
+              <div class="refund_description">
+                <h3>
+                  {{$t('order.refundNote_8_1')}}
+                </h3>
+                <div class="tips">{{$t('order.refundNote_8_2',[returnTypeMap.get(returnInfo.returnType)])}}</div>
+              </div>
+            </template>
+          </template>
         </div>
+
       </div>
       <div class="item_box">
-        <h2 class="h2_title">{{new Map($t('order.returnTypeList')).get(1)}}{{$t('order.applicationDetails')}}</h2>
+        <h2 class="h2_title">{{returnTypeMap.get(returnInfo.returnType)}}{{$t('order.applicationDetails')}}</h2>
         <table class="refund_info_table">
           <tbody>
             <tr>
               <td>{{$t('order.orderSn')}}</td>
-              <td></td>
+              <td>{{returnInfo.orderSn}}</td>
               <td>{{$t('order.returnSn')}}</td>
-              <td></td>
+              <td>{{returnInfo.returnOrderSn}}</td>
             </tr>
             <tr>
-              <td>退货商品</td>
+              <td>{{$t('order.returnOrderGoods')}}</td>
               <td colspan="3">
-                <div class="goods_info">
-                  <img
-                    :src="$imageHost+'/image/admin/icon_jia.png'"
-                    alt=""
+                <template v-for="goods in returnInfo.returnGoods">
+                  <div
+                    class="goods_info"
+                    :key="goods.recId"
                   >
-                  <div class="goods_info_right">
-                    <div class="goods_name">春季复古格纹连衣裙--意杰店转卖，勿改</div>
-                    <div class="goods_spec">尺码:L</div>
-                    <div class="goods_price_box"><span class="goods_price">￥400.00</span>X5</div>
+                    <img
+                      :src="$imageHost + goods.goodsImg"
+                      alt=""
+                    >
+                    <div class="goods_info_right">
+                      <div class="goods_name">{{goods.goodsName}}</div>
+                      <div class="goods_spec">{{goods.goodsAttr}}</div>
+                      <div class="goods_price_box"><span class="goods_price">
+                          {{getCurrencyPool_1 + goods.goodsPrice.toFixed(2)}}
+                        </span>X{{goods.goodsNumber}}</div>
+                    </div>
                   </div>
-                </div>
-                <div class="goods_info">
-                  <img
-                    :src="$imageHost+'/image/admin/icon_jia.png'"
-                    alt=""
-                  >
-                  <div class="goods_info_right">
-                    <div class="goods_name">春季复古格纹连衣裙--意杰店转卖，勿改</div>
-                    <div class="goods_spec">尺码:L</div>
-                    <div class="goods_price_box"><span class="goods_price">￥100.00</span>X20</div>
-                  </div>
-                </div>
+                </template>
+
               </td>
             </tr>
             <tr>
               <td>{{$t('order.returnType')}}</td>
-              <td colspan="3">{{new Map($t('order.returnTypeList')).get(0)}}</td>
+              <td colspan="3">{{returnTypeMap.get(returnInfo.returnType)}}</td>
             </tr>
             <tr>
               <td>{{$t('order.returnStatus')}}</td>
-              <td colspan="3">{{new Map($t('order.returnStatusList')).get(5)}}</td>
+              <td colspan="3">{{
+                 returnStatusToShowMapping[returnInfo.refundStatus + ''] == null ?
+                 returnStatusToShowMapping[returnInfo.refundStatus + '-' + returnInfo.returnType] :
+                 returnStatusToShowMapping[returnInfo.refundStatus + '']
+                }}</td>
             </tr>
             <tr>
               <td>{{$t('order.returnMoney')}}</td>
@@ -74,140 +226,438 @@
                 colspan="3"
                 class="refund_info_td"
               >
-                <template v-if="1">
-                  <p class="refund_info"> {{$t('order.refundGoodsPrice')}}：<el-input-number
-                      v-model="refundGoodsMoney"
+                <template v-if="returnInfo.refundStatus == 2 || returnInfo.refundStatus == 4">
+                  <p class="refund_info"> {{$t('order.refundGoodsPrice')}}：
+                    <el-input-number
+                      v-model="returnInfo.money"
                       :precision="2"
                       :controls="false"
                       :min="0"
                       size="small"
-                    ></el-input-number> 元，{{$t('order.shippingFee')}}：<el-input-number
-                      v-model="refundFreight"
+                    ></el-input-number>
+                    {{
+                         getCurrencyPool_0 + '，' +
+                         $t('order.shippingFee')
+                      }}：
+                    <el-input-number
+                      v-model="canReturnShippingFee"
                       size="small"
                       :precision="2"
                       :controls="false"
                       :min="0"
-                    ></el-input-number> 元，{{$t('order.maxRefundShippingFee')}}xx元</p>
+                    ></el-input-number>
+                    {{
+                        getCurrencyPool_0 + '，' + $t('order.maxRefundShippingFee') +
+                        (returnInfo.canReturnShippingFee == null ? 0.00 : returnInfo.canReturnShippingFee.toFixed(2) +
+                        getCurrencyPool_0)
+                      }}
+                  </p>
                   <p>
-                    {{$t('order.totalRefundPrice')}}：￥<span class="text-warning refund-money">0.00</span> =
-                    <span>退尾款：￥<span class="text-warning refund-bk-order-money">0.00</span> + </span>
-                    {{$t('order.refundMemberCardBalance')}}：￥<span class="text-warning refund-member-card-money">0.00</span>
-                    + {{$t('order.refundBalanceMoney')}}：￥<span class="text-warning refund-balance-money">0.00</span>
-                    + {{$t('order.refundScoreMoney')}}：￥<span class="text-warning refund-score-money">0.00</span>
-                    + {{$t('order.refundPayMoney')}}：￥<span class="text-warning refund-pay-money">0.00</span>
+                    {{$t('order.totalRefundPrice') + '：' + getCurrencyPool_1}}
+                    <span class="text-warning refund-money">0.00</span>
+                    =
+                    <template v-if="returnInfo.orderInfo.bkOrderMoney > 0">
+                      <span>{{$t('order.bk_order_money') + '：' + getCurrencyPool_1}}
+                        <span class="text-warning refund-bk-order-money">0.00</span> +
+                      </span>
+                    </template>
+                    {{$t('order.member_card_balance') + '：' + getCurrencyPool_1}}
+                    <span class="text-warning refund-member-card-money">0.00</span> +
+                    {{$t('order.use_account') + '：' + getCurrencyPool_1}}
+                    <span class="text-warning refund-balance-money">0.00</span> +
+                    {{$t('order.score_discount') + '：' + getCurrencyPool_1}}
+                    <span class="text-warning refund-score-money">0.00</span> +
+                    {{$t('order.money_paid') + '：' + getCurrencyPool_1}}
+                    <span class="text-warning refund-pay-money">0.00</span>
                   </p>
                   <p class="tips">{{$t('order.refundTips')}}</p>
                 </template>
                 <template v-else>
-                  <p class="refund_info">{{$t('order.refundGoodsPrice')}}：<span class="text-warning">￥100.00</span></p>
-                  <p class="refund_info">{{$t('order.shippingFee')}}：<span class="text-warning">￥200.00</span></p>
-                  <p class="refund_info">退款详情：
-                    <span>退尾款：<span class="text-warning">￥100.00</span></span>
-                    <span>{{$t('order.refundMemberCardBalance')}}：<span class="text-warning">￥100.00</span></span>
-                    <span>{{$t('order.refundBalanceMoney')}}：<span class="text-warning">￥100.00</span></span>
-                    <span>{{$t('order.refundScoreMoney')}}：<span class="text-warning">￥100.00</span></span>
-                    <span>{{$t('order.refundPayMoney')}}：<span class="text-warning">￥100.00</span></span>
+                  <p class="refund_info">{{$t('order.refundGoodsPrice')}}：<span class="text-warning"> {{getCurrencyPool_1 + returnInfo.money}}</span></p>
+                  <p class="refund_info">{{$t('order.shippingFee')}}：<span class="text-warning">{{getCurrencyPool_1 + returnInfo.shippingFee}}</span></p>
+
+                  <p v-if="returnInfo.refundStatus == 5">
+                    {{$t('order.returnInfo')}}：
+                    <span
+                      v-for="(value,key,index) in returnInfo.calculateMoney"
+                      class="refund_info"
+                      :key="index"
+                    >
+                      <template v-if="value > 0">
+                        <span class="refund_info">
+                          {{$t('order')[key]}}:
+                        </span>
+                        <span class="text-warning">
+                          {{getCurrencyPool_1 + value.toFixed(2)}}
+                        </span>
+                      </template>
+                    </span>
                   </p>
                 </template>
               </td>
             </tr>
+            <template v-if="returnInfo.refundStatus == 4 && returnInfo.returnType == 1">
+              <tr>
+                <td>{{$t('order.customerPhone')}}</td>
+                <td colspan="3">
+                  {{returnInfo.phone}}
+                </td>
+              </tr>
+              <tr>
+                <td>{{$t('order.shippingCompany')}}</td>
+                <td colspan="3">
+                  {{$t('expressList.company')[returnInfo.shippingType]}}
+                </td>
+              </tr>
+              <tr>
+                <td>{{$t('order.shippingNo')}}</td>
+                <td colspan="3">
+                  {{returnInfo.shippingNo}}
+                  <a
+                    class="text-info"
+                    target="blank"
+                    :href=toShippingView
+                  >{{$t('order.select')}}</a>
+                </td>
+              </tr>
+            </template>
             <tr>
               <td>{{$t('order.refundReason')}}</td>
               <td colspan="3">
-                {{$t('order.reasonTypeList')[1]}}
+                {{$t('order.reasonTypeList')[returnInfo.reasonType]}}
               </td>
             </tr>
             <tr>
-              <td><span class="w2">{{$t('order.Description')}}</span></td>
+              <td><span class="w2">{{$t('order.description')}}</span></td>
               <td colspan="3">
-                xxxxx
+                {{returnInfo.reasonDesc}}
               </td>
             </tr>
             <tr>
-              <td>{{$t('order.voucherPicture')}}</td>
+              <td>{{$t('order.returnImage')}}</td>
               <td colspan="3">
                 <div class="image_box">
-                  <img
-                    :src="$imageHost+'/image/admin/icon_jia.png'"
-                    alt=""
-                  >
-                  <img
-                    :src="$imageHost+'/image/admin/icon_jia.png'"
-                    alt=""
-                  >
-                  <img
-                    :src="$imageHost+'/image/admin/icon_jia.png'"
-                    alt=""
-                  >
+                  <template>
+                    <img
+                      v-for="(image , index) in getReturnImageArray"
+                      :src="$imageHost + image"
+                      alt=""
+                      :key="index"
+                    />
+                  </template>
                 </div>
               </td>
             </tr>
             <tr>
               <td>{{$t('order.applyTime')}}</td>
               <td colspan="3">
-                XXXXXXXXXXXXXXXXXXXX
+                {{
+                  returnInfo.returnType != 1 ?
+                  returnInfo. shippingOrRefundTime:
+                  returnInfo.applyTime
+                }}
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      <div
+        class="item_box"
+        v-if=" 1 != 1"
+      >
+        <h2 class="h2_title">{{$t('order.helpBuyInfo')}}</h2>
+        <template>
+          <el-table
+            :data="returnInfo.helpBuyInfo"
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="helpBuyPayNumbeer"
+              :label="$t('order.helpBuyPayNumbeer')"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="payTime"
+              :label="$t('order.payTime')"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="helpBuyUserName"
+              :label="$t('order.helpBuyUserName')"
+            ></el-table-column>
+            <el-table-column
+              prop="helpBuyMoney"
+              :label="$t('order.helpBuyMoney')"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="returnMoney"
+              :label="$t('order.returnMoney')"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="finishTime"
+              :label="$t('order.finishTime')"
+            >
+            </el-table-column>
+          </el-table>
+        </template>
+      </div>
       <div class="item_box">
-        <h2 class="h2_title">协商记录{{countDownStr}}</h2>
-        <div class="recode">
-          <div class="top">
-            <ul>
-              <li>买家</li>
-              <li>2019-10-11 11:11:11</li>
-              <li>商家同意退款，退款成功</li>
-            </ul>
+        <h2 class="h2_title">{{$t('order.negotiationRecord')}}</h2>
+        <template v-for="(record , index ) in returnInfo.operatorRecord">
+          <div
+            class="recode"
+            :key="index"
+          >
+            <div class="top">
+              <ul>
+                <li>{{$t('order.recordTypeObj')[record.type]}}</li>
+                <li>{{record.createTime}}</li>
+                <li>
+                  {{recordLogicStatus[record.logicStatus]}}
+                </li>
+              </ul>
+            </div>
+            <div class="bottom">
+              <ul>
+                <template v-if="record.logicStatus == 1">
+                  <li>{{$t('order.returntype')}}：{{returnTypeMap.get(returnInfo.returnType)}}</li>
+                  <li>{{$t('order.returnReasonText')}}：{{$t('order.reasonTypeList')[returnInfo.reasonType]}}</li>
+                  <li>{{$t('order.returnMoney')}}：{{(returnInfo.money + returnInfo.shippingFee).toFixed(2)}}</li>
+                  <li>{{$t('order.returnDescription')}}：{{returnInfo.reasonDesc}}</li>
+                </template>
+                <template v-else-if="record.logicStatus == 2">
+                  <li>{{recordLogicStatus[record.logicStatus]}}</li>
+                  <li>{{$t('order.refusedReason') + '：' + returnInfo.refundRefuseReason}}</li>
+                </template>
+                <template v-else-if="record.logicStatus == 3">
+                  <li>{{recordLogicStatus[record.logicStatus]}}</li>
+                  <li>{{$t('order.returnSuccessNote')}}</li>
+                </template>
+                <template v-else-if="record.logicStatus == 4">
+                  <li>{{$t('order.passReturnApplyNote')}}</li>
+                  <li>{{$t('order.passReturnApplyNote1',returnInfo.returnAddress,returnInfo.consignee,returnInfo.merchantTelephone)}}</li>
+                </template>
+                <template v-else-if="record.logicStatus == 5">
+                  <li>{{$t('order.refusedReturngoodsApply')}}</li>
+                </template>
+                <template v-else-if="record.logicStatus == 6">
+                  <li>{{$t('order.autoCancelNote')}}</li>
+                </template>
+                <template v-else-if="record.logicStatus == 7">
+                  <li>{{$t('order.buyersCancel')}}</li>
+                </template>
+                <template v-else-if="record.logicStatus == 8">
+                  <li>{{$t('order.submitLogisticsNote')}}</li>
+                  <li>{{$t('order.shippingCompany') + '：' + $t('expressList.company')[returnInfo.shippingType]}}</li>
+                  <li>
+                    {{$t('order.shippingNo') + '：' + returnInfo.shippingNo}}
+                    <a
+                      class="text-info"
+                      target="blank"
+                      :href=toShippingView
+                    >{{$t('order.select')}}
+                    </a>
+                  </li>
+                  <li>{{$t('order.phone') + '：' + returnInfo.phone}}</li>
+                  <li>{{$t('order.logisticsVoucherImages') + '：'}}
+                    <a
+                      v-for="(image , index) in getVoucherImages"
+                      :href="$imageHost + image"
+                      :title="$t('order.showBigImage')"
+                      target="_blank"
+                      :key="index"
+                    >
+                      <img
+                        :src="$imageHost + image"
+                        alt=""
+                        style='max-width: 50px;max-height: 50px'
+                      />
+                    </a>
+                  </li>
+                </template>
+                <template v-else-if="record.logicStatus == 9">
+                  <li>{{recordLogicStatus[record.logicStatus]}}</li>
+                </template>
+              </ul>
+            </div>
           </div>
-          <div class="bottom">
-            <ul>
-              <li>商家同意退款，退款成功</li>
-              <li>注：退款将在3个工作日内到达买家账户，本次维权结束。</li>
-            </ul>
-          </div>
-        </div>
+        </template>
+
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {
+  returnInfo
+} from '@/api/admin/orderManage/order.js'
 export default {
   data () {
     return {
+      returnTypeMap: null,
+      searchParam: {
+        returnOrderSn: null
+      },
+      returnInfo: null,
+      returnStatusToShowMapping: null,
+      recordLogicStatus: null,
+      negotiationMap: null,
+      autoTime: null,
+      showCountdown: null,
       refundGoodsMoney: null,
       refundFreight: null,
       countDownStr: '',
       start: 1571554186
     }
   },
+  created () {
+    this.search(this.$route.query.returnOrderSn)
+  },
   mounted: function () {
     this.langDefault()
-    this._interval = setInterval(() => {
-      this.countDownStr = this.countdown()
+    this.timer = setInterval(() => {
+      this.countdown()
     }, 1000)
   },
   destroyed () {
-    clearInterval(this._interval)
+    clearInterval(this.timer)
   },
   methods: {
     countdown: function () {
-      const end = Date.parse(new Date(this.start))
+      const end = Date.parse(new Date(this.autoTime))
       const now = Date.parse(new Date())
-      const msec = end - now / 1000
-      console.log(msec)
-      let day = parseInt(msec / 60 / 60 / 24)
-      let hr = parseInt(msec / 60 / 60 % 24) > 9 ? parseInt(msec / 60 / 60 % 24) : '0' + parseInt(msec / 60 / 60 % 24)
-      let min = parseInt(msec / 60 % 60) > 9 ? parseInt(msec / 60 % 60) : '0' + parseInt(msec / 60 % 60)
-      let sec = parseInt(msec % 60) > 9 ? parseInt(msec % 60) : '0' + parseInt(msec % 60)
-      return `${day}天${hr}时${min}分${sec}秒`
+      const interval = end - now
+      let day = Math.floor(interval / (24 * 3600 * 1000))
+      let hoursInterval = interval % (24 * 3600 * 1000)
+      let hours = Math.floor(hoursInterval / (3600 * 1000))
+      let minutesInterval = hoursInterval % (3600 * 1000)
+      let minutes = Math.floor(minutesInterval / (60 * 1000))
+      let secondsInterval = minutesInterval % (60 * 1000)
+      let seconds = Math.round(secondsInterval / 1000)
+      this.showCountdown = `${day}${this.$t('order.day')}${hours}${this.$t('order.hours')}${minutes}${this.$t('order.minutes')}${seconds}${this.$t('order.seconds')}`
+    },
+    search (returnOrderSn) {
+      this.searchParam.returnOrderSn = returnOrderSn
+      returnInfo(this.searchParam).then(res => {
+        this.returnInfo = res.content
+        this.setRecordLogicStatus(this.returnInfo.operatorRecord)
+        this.setAutoTime()
+      }).catch(() => {
+      })
+    },
+    setRecordLogicStatus (operatorRecord) {
+      operatorRecord.forEach(record => {
+        if ((record.status === 4 && returnInfo.returnType === 0) || record.status === 1) {
+          // 发起申请
+          record.logicStatus = 1
+        } else if (record.status === 6 && returnInfo.returnType === 0) {
+          // 商家拒绝退款申请
+          record.logicStatus = 2
+        } else if (record.status === 5) {
+          // 退款成功
+          record.logicStatus = 3
+        } else if (record.status === 2) {
+          // 商家同意退货退款
+          record.logicStatus = 4
+        } else if (record.status === 2) {
+          // 商家审核不通过
+          record.logicStatus = 5
+        } else if (record.status === 7 && record.type === 2) {
+          // 系统自动撤销退款
+          record.logicStatus = 6
+        } else if (record.status === 7 && record.type === 1) {
+          // 买家撤销
+          record.logicStatus = 7
+        } else if (record.status === 4 && this.returnInfo.returnType === 1) {
+          // 提交物流
+          record.logicStatus = 8
+        } else if (record.status === 6 && this.returnInfo.returnType === 1) {
+          // 提交物流
+          record.logicStatus = 9
+        }
+      })
+    },
+    setAutoTime () {
+      if (this.returnInfo.returnMoneyDays != null) {
+        this.autoTime = this.returnInfo.returnMoneyDays
+        return
+      }
+      if (this.returnInfo.returnAddressDays != null) {
+        this.autoTime = this.returnInfo.returnAddressDays
+        return
+      }
+      if (this.returnInfo.returnShoppingDays != null) {
+        this.autoTime = this.returnInfo.returnShoppingDays
+        return
+      }
+      if (this.returnInfo.returnAuditPassNotShoppingDays != null) {
+        this.autoTime = this.returnInfo.returnAuditPassNotShoppingDays
+      }
+      clearInterval(this.timer)
+    },
+    submit () {
+
+    },
+    arrayToMap () {
+      this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
+      this.returnStatusToShowMapping = {
+        '1': this.$t('order.returnStatusMapping_1'),
+        '2': this.$t('order.returnStatusList')[3][1],
+        '3': this.$t('order.returnStatusList')[2][1],
+        '4-0': this.$t('order.returnStatusMapping_4_0'),
+        '4-1': this.$t('order.returnStatusList')[4][1],
+        '6-0': this.$t('order.returnStatusList')[6][1],
+        '6-1': this.$t('order.returnStatusList')[5][1],
+        '7': this.$t('order.returnStatusList')[7][1],
+        '5': this.$t('order.returnStatusList')[8][1]
+      }
+      this.recordLogicStatus = {
+        1: this.$t('order.apply'),
+        2: this.$t('order.refusedApply'),
+        3: this.$t('order.returnStatusList')[8][1],
+        4: this.$t('order.passReturnApply'),
+        5: this.$t('order.returnStatusList')[2][1],
+        6: this.$t('order.autoCancel'),
+        7: this.$t('order.buyersCancel'),
+        8: this.$t('order.submitLogistics'),
+        9: this.$t('order.refusedReturnGoods')
+      }
     }
   },
   watch: {
     lang () {
       this.langDefault()
+      this.arrayToMap()
+    }
+  },
+  computed: {
+    getCurrencyPool_0 () {
+      // eg:元
+      return this.currencyPool[this.returnInfo.currency][this.lang][0]
+    },
+    getCurrencyPool_1 () {
+      // eg:￥
+      return this.currencyPool[this.returnInfo.currency][this.lang][1]
+    },
+    getReturnImageArray () {
+      return (this.returnInfo.goodsImages == null
+        ? []
+        : this.returnInfo.goodsImages.split(','))
+    },
+    getVoucherImages () {
+      return (this.returnInfo.voucherImages == null
+        ? []
+        : this.returnInfo.voucherImages.split(','))
+    },
+    toShippingView () {
+      return 'https://www.kuaidi100.com/chaxun?com=' + this.returnInfo.shippingCode + '&nu=' + this.returnInfo.shippingNo
     }
   }
 }
