@@ -14,5 +14,12 @@ export const cn = {
   Note1: '注： 1、用户在结算时将会默认优先使用以上勾选的支付方式',
   Note2: '2、如果勾选以上全部支付方式，计算优先级为会员卡余额>余额支付>积分支付',
   save: '保存',
-  example: '查看示例'
+  example: '查看示例',
+
+  wechatpayconf: '微信支付配置',
+  payMchId: '商户号：',
+  payKey: '支付秘钥：',
+  payCertContent: '支付证书：',
+  payKeyContent: '支付私钥：',
+  cancel: '取 消'
 }

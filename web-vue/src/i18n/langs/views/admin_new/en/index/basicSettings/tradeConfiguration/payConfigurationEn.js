@@ -14,5 +14,12 @@ export const en = {
   Note1: 'Note: 1. When the user settles, the user will default to the above selected payment method.',
   Note2: '2. If all the above payment methods are checked, the calculation priority is the membership card balance > balance payment > point payment',
   save: 'Save',
-  example: 'View example'
+  example: 'View example',
+
+  wechatpayconf: 'WeChat payment configuration',
+  payMchId: 'business number:',
+  payKey: 'Payment key:',
+  payCertContent: 'Payment certificate:',
+  payKeyContent: 'Pay private key:',
+  cancel: 'cancel'
 }

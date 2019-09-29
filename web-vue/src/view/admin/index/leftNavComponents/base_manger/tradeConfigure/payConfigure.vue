@@ -61,7 +61,7 @@
 
     <!-- 微信支付配置弹窗 -->
     <el-dialog
-      title="微信支付配置"
+      :title="$t('payConfiguration.wechatpayconf')"
       :visible.sync="showSettingDialog"
       :close-on-click-modal='false'
       width=40%
@@ -75,28 +75,28 @@
           ></el-input>
         </li>
         <li>
-          <span>商户号：</span>
+          <span>{{$t('payConfiguration.payMchId')}}</span>
           <el-input
             size="small"
             v-model="wechatpayconf.payMchId"
           ></el-input>
         </li>
         <li>
-          <span>支付秘钥：</span>
+          <span>{{$t('payConfiguration.payKey')}}</span>
           <el-input
             size="small"
             v-model="wechatpayconf.payKey"
           ></el-input>
         </li>
         <li class="specialHeight">
-          <span>支付证书：</span>
+          <span>{{$t('payConfiguration.payCertContent')}}</span>
           <el-input
             class="textarea"
             v-model="wechatpayconf.payCertContent"
           ></el-input>
         </li>
         <li class="specialHeight">
-          <span>支付私钥：</span>
+          <span>{{$t('payConfiguration.payKeyContent')}}</span>
           <el-input
             class="textarea"
             v-model="wechatpayconf.payKeyContent"
@@ -110,8 +110,8 @@
         <el-button
           type="primary"
           @click="save"
-        >保 存</el-button>
-        <el-button @click="cancle">取 消</el-button>
+        >{{$t('payConfiguration.save')}}</el-button>
+        <el-button @click="cancle">{{$t('payConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
   </div>
