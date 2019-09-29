@@ -408,7 +408,6 @@
             <el-input
               size="mini"
               v-if="renew_time_show"
-              type="number"
               name="year"
               class="time_change"
               v-model="year"
@@ -417,7 +416,6 @@
               style="width:8%"
             ></el-input> 年 <el-input
               size="mini"
-              type="number"
               name="month"
               class="time_change"
               v-model="month"
@@ -449,7 +447,6 @@
               <el-input
                 v-if="rend_show"
                 size="mini"
-                type="number"
                 name="send_year"
                 class="time_change"
                 v-model="send_year"
@@ -460,7 +457,6 @@
               <el-input
                 v-if="rend_show"
                 size="mini"
-                type="number"
                 name="send_month"
                 class="time_change"
                 v-model="send_month"
