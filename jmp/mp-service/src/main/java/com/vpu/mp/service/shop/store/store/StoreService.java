@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Store.STORE;
@@ -133,6 +134,22 @@ public class StoreService extends ShopBaseService {
         this.assign(store,record);
 		return db().executeUpdate(record) > 0 ? true : false;
 	}
+
+    /**
+     * 批量更新门店信息
+     */
+    public void batchUpdateStore(List<StorePojo> storeList) {
+        List<StoreRecord> resultList = new ArrayList<StoreRecord>(64) {
+            {
+                storeList.forEach(store -> {
+                    StoreRecord record = new StoreRecord();
+                    assign(store, record);
+                    add(record);
+                });
+            }
+        };
+        db().batchUpdate(resultList).execute();
+    }
 
     /**
 	 * 删除门店

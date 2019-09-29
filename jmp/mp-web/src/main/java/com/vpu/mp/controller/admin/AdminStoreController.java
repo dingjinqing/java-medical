@@ -1,15 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -24,16 +14,9 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryP
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAddParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAdminMessageParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderChargeParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderCountingDataVo;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.*;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreAddValidatedGroup;
@@ -42,6 +25,14 @@ import com.vpu.mp.service.pojo.shop.store.validated.StoreUpdateValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 门店管理
@@ -69,7 +60,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getAllStoreGroup() {
         return success(shop().store.storeGroup.getAllStoreGroup());
     }
-    
+
     /**
      * 获取门店列表
      * @return
@@ -78,7 +69,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getStorePageList(@RequestBody(required = false) StoreListQueryParam param) {
         return success(shop().store.getPageList(param));
     }
-    
+
     /**
      * 门店-新增
      * @return
@@ -91,7 +82,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
     /**
      * 门店-修改
      * @return
@@ -104,7 +95,15 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
+    /**
+     * 门店-批量修改
+     */
+    @PostMapping(value = "/api/admin/store/batchupdate")
+    public JsonResult batchUpdateStore(@RequestBody(required = true) @Validated({StoreUpdateValidatedGroup.class}) List<StorePojo> storeList) {
+        shop().store.batchUpdateStore(storeList);
+        return success();
+    }
 
     /**
      * 门店-删除
@@ -118,7 +117,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
     /**
      * 门店-取单个门店信息
      * @return
@@ -132,7 +131,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
     /**
      * 检查门店编码
      * @return
@@ -195,16 +194,16 @@ public class AdminStoreController extends AdminBaseController{
         return success();
 
     }
-    
+
     /**
      * 获取门店服务配置
      * @return
      */
     @GetMapping(value = "/api/admin/store/config/get")
     public JsonResult getStoreServiceConfig() {
-    	return success(shop().config.storeConfigService.getStoreServiceConfig()); 
+        return success(shop().config.storeConfigService.getStoreServiceConfig());
     }
-    
+
     /**
      * 更新门店服务配置
      * @return
@@ -217,7 +216,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail();
     	}
     }
-    
+
     /**
      * 获取核销员分页列表
      * @return
@@ -226,7 +225,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getStoreVerifierList(@RequestBody(required = true) @Valid VerifierListQueryParam verifierListQueryParam) {
     	return success(shop().store.storeVerifier.getPageList(verifierListQueryParam));
     }
-    
+
     /**
      * 添加核销员
      * @return
@@ -239,7 +238,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail();
     	}
     }
-    
+
     /**
      * 获取门店商品分页列表
      * @return
@@ -248,7 +247,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getStoreGoodsList(@RequestBody(required = false) @Valid StoreGoodsListQueryParam param) {
     	return success(shop().store.storeGoods.getPageList(param));
     }
-    
+
     /**
      * 获取门店服务分类分页列表
      * @return
@@ -257,7 +256,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getStoreServiceCategoryList(@RequestBody(required = false) @Valid StoreServiceCategoryListQueryParam param) {
     	return success(shop().store.storeService.getCatePageList(param));
     }
-    
+
     /**
      * 获取全部门店服务分类列表
      * @return
@@ -266,7 +265,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getStoreServiceAllCategory(@RequestBody(required = false) @Valid StoreServiceCategoryListQueryParam param) {
     	return success(shop().store.storeService.getAllStoreServiceCategory(param));
     }
-    
+
     /**
      * 门店服务分类-添加
      * @return
@@ -279,7 +278,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
     /**
      * 门店服务分类-修改
      * @return
@@ -292,7 +291,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
 
     /**
      * 门店服务分类-删除
@@ -306,7 +305,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
     /**
      * 获取门店服务分页列表
      * @return
@@ -315,7 +314,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getStoreServicePageList(@RequestBody(required = false) @Valid StoreServiceListQueryParam param) {
     	return success(shop().store.storeService.getServicePageList(param));
     }
-    
+
     /**
      * 获取所有门店服务
      * @return
@@ -324,7 +323,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getAllStoreServiceList(@RequestBody(required = false) @Valid StoreServiceListQueryParam param) {
     	return success(shop().store.storeService.getAllStoreServiceByStoreId(param.getStoreId()));
     }
-    
+
     /**
      * 批量上架门店服务
      * @return
@@ -337,7 +336,7 @@ public class AdminStoreController extends AdminBaseController{
      	   return fail();
         }
     }
-    
+
     /**
      * 批量下架门店服务
      * @return
@@ -350,7 +349,7 @@ public class AdminStoreController extends AdminBaseController{
      	   return fail();
         }
     }
-    
+
     /**
      * 门店服务-添加
      * @return
@@ -363,7 +362,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
     /**
      * 门店服务-修改
      * @return
@@ -376,7 +375,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
 
     /**
      * 门店服务-删除
@@ -390,7 +389,7 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
-    
+
     /**
      * 获取门店服务预约分页列表
      * @return
@@ -418,7 +417,7 @@ public class AdminStoreController extends AdminBaseController{
     	vo.setCountingData(countingData);
     	return success(vo);
     }
-    
+
     /**
      * 获取服务预约订单详情
      * @return
@@ -427,7 +426,7 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getServiceOrderDetail(@Valid String orderSn) {
     	return success(shop().store.serviceOrder.getServiceOrderDetail(orderSn));
     }
-    
+
     /**
      * 预约添加卖家留言
      * @return
@@ -440,7 +439,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail();
     	}
     }
-    
+
     /**
      * 后台添加服务预约
      * @return
@@ -532,7 +531,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail();
     	}
     }
-    
+
 
     /**
      * 服务预约订单后台取消
@@ -547,14 +546,14 @@ public class AdminStoreController extends AdminBaseController{
 		updateParam.setCancelledTime(DateUtil.getLocalDateTime());
 		FieldsUtil.assignNotNull(param, updateParam);
 		if(shop().store.serviceOrder.serviceOrderUpdate(updateParam)) {
-			
-			/** TODO:队列发送模板消息，通知用户预约取消 */
-			
-    		return success();
+
+            /** TODO:队列发送模板消息，通知用户预约取消 */
+
+            return success();
     	}else {
     		return fail();
     	}
-    	
+
     }
     /**
      * -门店下拉框弹窗api
