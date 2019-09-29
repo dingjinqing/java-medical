@@ -55,6 +55,7 @@ import static org.jooq.impl.DSL.count;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -125,10 +126,16 @@ import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 /**
@@ -141,6 +148,8 @@ import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 public class MemberCardService extends ShopBaseService {
 	@Autowired private RecordMemberTradeService tradeService;
 	@Autowired private CardDaoService cardDao;
+	@Autowired private OrderGoodsService orderGoodsDao;
+	@Autowired private ServiceOrderService serviceOrderDao;
 	Logger logger = logger();
 
 	/**
@@ -1522,5 +1531,54 @@ public class MemberCardService extends ShopBaseService {
 		CardExamineRecord record = setRejectData(param);
 		cardDao.updateCardExamine(record);
 	}
+	
+	/**
+	 * 会员卡订单分页查询
+	 * @param param
+	 * @return
+	 */
+	public PageResult<CardConsumeVo> getCardConsumeOrderList(CardConsumeParam param) {
+		PageResult<CardConsumeVo> result = cardDao.getCardConsumeOrderList(param);
+		for(CardConsumeVo vo: result.dataList) {
+			// 门店服务
+			if(!SHORT_ZERO.equals(vo.getCount())) {
+				ServiceOrderDetailVo serviceOrder = getServiceOrderInfo(vo.getOrderSn());
+				if(serviceOrder != null) {
+					vo.setGoodsImg(serviceOrder.getServiceImg());
+					vo.setGoodsName(serviceOrder.getServiceName());
+				}
+			}
+			// 商品兑换服务
+			if(!SHORT_ZERO.equals(vo.getExchangCount())) {
+				OrderGoodsVo orderGoods = getOrderGoodsInfo(vo.getOrderSn());
+				if(orderGoods != null) {
+					vo.setGoodsImg(orderGoods.getGoodsImg());
+					vo.setGoodsName(orderGoods.getGoodsName());
+				}
+			}
+		}
 		
+		return result;
+	}
+	
+	/**
+	 * 获取一个订单商品信息
+	 * @param orderSn
+	 * @return
+	 */
+	private OrderGoodsVo getOrderGoodsInfo(String orderSn) {
+		List<OrderGoodsVo> results = orderGoodsDao.getGoodsInfoByOrderSn(orderSn).into(OrderGoodsVo.class);
+		if(results.size()>0) {
+			return results.get(0);
+		}
+		return null;
+	}
+	/**
+	 * 获取门店服务订单服务
+	 * @param orderSn
+	 * @return
+	 */
+	private ServiceOrderDetailVo getServiceOrderInfo(String orderSn) {
+		return serviceOrderDao.getServiceOrderDetail(orderSn);
+	}
 }

@@ -26,44 +26,44 @@ public class RankCardVo extends BaseCardVo {
 	 * 等级会员卡
 	 */ 
 	/** 开始时间 */
-	private Timestamp startTime;
+	protected Timestamp startTime;
 	/** 结束时间 */
-	private Timestamp endTime;
+	protected Timestamp endTime;
 	
 	/** 会员卡等级 */
-	private String grade;
+	protected String grade;
 	/** 等级卡升级策略 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String gradeCondition;
-	private GradeConditionJson gradeConditionJson;
+	protected String gradeCondition;
+	protected GradeConditionJson gradeConditionJson;
 	
 	
 	/**
 	 * 2-会员权益
 	 */
 	/** 会员折扣开关， 0表示关闭，1表示开启 */
-	private Byte powerCount;
+	protected Byte powerCount;
 	/** 会员折扣 值为 0-10之间 */
 	@JsonProperty("disCount")
-	private BigDecimal discount;
+	protected BigDecimal discount;
 	
 	/** 会员专享商品 on表示打开 */
 	/** 是否专属购买商品 0不是 1是 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private Byte payOwnGood;
-	private String powerPayOwnGood;
+	protected Byte payOwnGood;
+	protected String powerPayOwnGood;
 	
 	/**
 	 * 积分获取开关， 0表示关闭，1表示开启
 	 */
-	private Byte powerScore;
+	protected Byte powerScore;
 	/** 购物送积分策略json序列化对象 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String buyScore;
+	protected String buyScore;
 	
 	
 	/** 1:使用中，2:停止使用  */
-	private Byte flag;
+	protected Byte flag;
 	
 	@Override
 	public void changeJsonCfg() {

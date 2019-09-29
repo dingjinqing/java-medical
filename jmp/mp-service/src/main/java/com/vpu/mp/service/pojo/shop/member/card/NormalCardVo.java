@@ -72,6 +72,7 @@ public class NormalCardVo extends BaseCardVo {
 	/**
 	 * 设置开关及是否过期
 	 */
+	@Override
 	public void changeJsonCfg() {
 		log.info("正在执行NormalCardVo的changeJsonCfg.");
 		/** 会员折扣开关， 0表示关闭，1表示开启 */

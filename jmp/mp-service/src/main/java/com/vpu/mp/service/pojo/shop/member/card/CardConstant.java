@@ -157,4 +157,9 @@ public class CardConstant {
 	
 	/** --------------------------------------------------------------------------*/
 	
+	/** -------------------card_consumer表常量---------------------------------------*/
+	public static final Short SHORT_ZERO = 0;
+	public static final Byte EXCHANG_COUNT_TYPE = 1;
+	public static final Byte COUNT_TYPE = 2;
+	/** --------------------------------------------------------------------------*/
 }

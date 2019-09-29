@@ -24,7 +24,7 @@ public class RankCardToVo extends RankCardVo {
 	/**
 	 * 会员卡是否启用 1:使用中，2:停止使用
 	 */
-	private Byte flag;
+	//private Byte flag;
 	
 	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
@@ -37,14 +37,14 @@ public class RankCardToVo extends RankCardVo {
 	private Integer sorce;
 	/** 购物送积分策略json序列化对象 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String buyScore;
+	//private String buyScore;
 	/** 购物送积分策略json序列化对象 */
 	private ScoreJson scoreJson;
 	
 	/** 等级卡升级策略 */
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String gradeCondition;
-	private GradeConditionJson gradeConditionJson;
+//	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//	private String gradeCondition;
+//	private GradeConditionJson gradeConditionJson;
 	
 	
 	/** 激活需要的信息 */
@@ -75,13 +75,13 @@ public class RankCardToVo extends RankCardVo {
 		 * 等级会员卡升级策略
 		 */
 		/** 等级卡升级策略 */
-		if(gradeCondition !=null && !gradeCondition.equals("")) {
-			try {
-				gradeConditionJson = MAPPER.readValue(gradeCondition, GradeConditionJson.class);
-			} catch (Exception e) {
-				log.info("等级卡升级策略json解析失败");
-			} 
-		}
+//		if(gradeCondition !=null && !gradeCondition.equals("")) {
+//			try {
+//				gradeConditionJson = MAPPER.readValue(gradeCondition, GradeConditionJson.class);
+//			} catch (Exception e) {
+//				log.info("等级卡升级策略json解析失败");
+//			} 
+//		}
 		
 		/** 激活需要填写的信息 */
 		String activationCfg = getActivationCfg();

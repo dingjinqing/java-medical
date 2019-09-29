@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -13,6 +12,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
@@ -33,7 +34,9 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -316,6 +319,61 @@ public class CardDaoService extends ShopBaseService {
 			.execute();
 	}
 	
+	/**
+	 * 获取会员卡订单信息
+	 * @param param
+	 * @return 
+	 */
+	public PageResult<CardConsumeVo> getCardConsumeOrderList(CardConsumeParam param) {
+		SelectConditionStep<?> select = db().select(CARD_CONSUMER.ORDER_SN,CARD_CONSUMER.EXCHANG_COUNT,CARD_CONSUMER.COUNT,CARD_CONSUMER.CREATE_TIME,
+				USER.USERNAME,USER.MOBILE)
+			.from(CARD_CONSUMER.leftJoin(USER).on(CARD_CONSUMER.USER_ID.eq(USER.USER_ID)))
+			.where(CARD_CONSUMER.CARD_ID.eq(param.getCardId()))
+			.and(CARD_CONSUMER.ORDER_SN.isNotNull());
+		
+		buildOptionsForCardConsumer(select,param);
+		select.orderBy(CARD_CONSUMER.CREATE_TIME.desc());
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardConsumeVo.class);
+	}
+	/**
+	 * 会员卡查询获取参数s
+	 * @param select
+	 * @param param
+	 */
+	private void buildOptionsForCardConsumer(SelectConditionStep<?> select, CardConsumeParam param) {
+		// 订单号
+		if(!StringUtils.isBlank(param.getOrderSn())) {
+			select.and(CARD_CONSUMER.ORDER_SN.eq(param.getOrderSn()));
+		}
+		// 会员昵称
+		if(!StringUtils.isBlank(param.getUsername())) {
+			String likeValue = this.likeValue(param.getUsername());
+			select.and(USER.USERNAME.like(likeValue));
+		}
+		// 手机号
+		if(!StringUtils.isBlank(param.getMobile())) {
+			select.and(USER.MOBILE.eq(param.getMobile()));
+		}
+		// 次数使用类型
+		if(param.getType() != null) {
+			// 1 兑换商品
+			if(EXCHANG_COUNT_TYPE.equals(param.getType().intValue())) {
+				select.and(CARD_CONSUMER.EXCHANG_COUNT.notEqual(SHORT_ZERO));
+			}else if(COUNT_TYPE.equals(param.getType())) {
+				// 2 门店服务
+				select.and(CARD_CONSUMER.COUNT.notEqual(SHORT_ZERO));
+			}
+		}
+		
+		// 次数变动时间
+		if(param.getFirstTime() != null) {
+			select.and(CARD_CONSUMER.CREATE_TIME.ge(param.getFirstTime()));
+		}
+		if(param.getSecondTime()!=null) {
+			select.and(CARD_CONSUMER.CREATE_TIME.le(param.getSecondTime()));
+		}
+	}
+
 
 
 	
