@@ -225,7 +225,6 @@ public class AdminMemberCardController extends AdminBaseController {
 	public JsonResult getActivateAuditList(@RequestBody ActiveAuditParam param) {
 		PageResult<ActiveAuditVo> activateAuditList = shop().member.card.getActivateAuditList(param);
 		return this.i18nSuccess(activateAuditList);
-		//return success(activateAuditList);
 	}
 	
 
