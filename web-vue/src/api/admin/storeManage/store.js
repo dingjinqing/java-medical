@@ -43,3 +43,12 @@ export function updateStore (data) {
     data: data
   })
 }
+
+// 批量更新门店信息
+export function batchUpdateStore (data) {
+  return service({
+    url: '/api/admin/store/batchupdate',
+    method: 'post',
+    data: data
+  })
+}

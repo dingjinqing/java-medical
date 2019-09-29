@@ -331,56 +331,65 @@
         <el-table
           class="version-manage-table"
           header-row-class-name="tableClss"
+          :data="storeParamList"
           border
           style="width: 100%"
         >
           <el-table-column
-            prop=""
+            prop="storeName"
             :label="$t('tradeConfiguration.storename')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="address"
             :label="$t('tradeConfiguration.storeaddress')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="manager"
             :label="$t('tradeConfiguration.storeperson')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="mobile"
             :label="$t('tradeConfiguration.storephone')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="businessTime"
             :label="$t('tradeConfiguration.storebusinesstime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="businessState"
             :label="$t('tradeConfiguration.storebusinessstatus')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop=""
             :label="$t('tradeConfiguration.storeautopack')"
             align="center"
           >
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.autoPick"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                style="margin: 0 10px;"
+              ></el-switch>
+              <span style="font-size: 14px; color:#333;">{{scope.row.autoPick?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
+            </template>
           </el-table-column>
         </el-table>
         <div class="table_footer">
           <pagination
             :page-params.sync="pageParams"
-            @pagination="initDataList"
+            @pagination="handleTake"
           />
         </div>
       </div>
@@ -402,6 +411,7 @@
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
 import pagination from '@/components/admin/pagination/pagination'
 import { tradeSelect, tradeUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import { storeList, batchUpdateStore } from '@/api/admin/storeManage/store'
 export default {
   components: { areaLinkage, pagination },
   mounted () {
@@ -480,20 +490,24 @@ export default {
         district_code: '',
         address: ''
       },
-      // 自提门店参数
-      storeParam: {
-        storeId: null,
-        storeName: null,
-        provinceCod: null,
-        cityCode: null,
-        districtCod: null,
-        address: null,
-        manager: null,
-        mobile: null,
-        business_type: null,
-        business_state: null,
-        auto_pick: null
-      }
+      // 自提门店列表
+      storeParamList: [
+        {
+          storeId: null,
+          storeName: null,
+          provinceCod: null,
+          cityCode: null,
+          districtCod: null,
+          address: null,
+          manager: null,
+          mobile: null,
+          businessTime: null,
+          openingTime: null,
+          closeTime: null,
+          businessState: null,
+          autoPick: null
+        }
+      ]
     }
   },
   methods: {
@@ -627,7 +641,55 @@ export default {
         }
       })
     },
+    // 获取门店列表
+    getStoreList () {
+      let storPageParam = {
+        currentPage: 0,
+        pageRows: 20
+      }
+      if (this.pageParams != null) {
+        storPageParam.currentPage = this.pageParams.currentPage
+        storPageParam.pageRows = this.pageParams.pageRows
+      }
+      storeList(storPageParam).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+          this.storeParamList = res.content.dataList
+          this.storeParamList.map((item, index) => {
+            if (item.businessState === 0) {
+              item.businessState = '关店'
+            } else if (item.businessState === 1) {
+              item.businessState = '营业'
+            }
+            item.autoPick = this.number2boolean(item.autoPick)
+            item.businessTime = item.openingTime + '-' + item.closeTime
+          })
+        } else {
+          this.$message.error('获取门店列表失败！')
+        }
+      })
+    },
+    // 更新门店自提状态
+    updateSetPick () {
+      var updateParam = []
+      const stores = this.storeParamList.map(({ storeId, autoPick }) => ({ storeId, autoPick }))
+      updateParam = stores
+      updateParam.map((item, index) => {
+        item.autoPick = this.boolean2number(item.autoPick)
+      })
+      console.log(updateParam)
+      batchUpdateStore(updateParam).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success('更新成功！')
+        } else {
+          this.$message.error('更新失败！')
+        }
+      })
+    },
     handleTake () {
+      this.getStoreList()
       this.showStoreDialog = true
     },
     handleAreaData (val) {
@@ -640,6 +702,7 @@ export default {
     // 配置弹出按钮确认点击
     initDataList () {
       this.showStoreDialog = false
+      this.updateSetPick()
     }
   }
 }
@@ -650,7 +713,7 @@ export default {
   padding-bottom: 20px;
   .deliverMethods {
     position: relative;
-    width: 890px;
+    width: 80%;
     padding-top: 0 !important;
     .deliverContent {
       height: 50px;
