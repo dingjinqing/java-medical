@@ -19,6 +19,7 @@ import com.vpu.mp.db.main.tables.ShopAccount;
 import com.vpu.mp.db.main.tables.ShopRenew;
 import com.vpu.mp.db.main.tables.records.ShopRenewRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
@@ -96,6 +97,7 @@ public class ShopRenewService extends MainBaseService {
 		FieldsUtil.assignNotNull(sReq, sRecord);
 		sRecord.setRenewDuration(sReq.getYear()+","+sReq.getMonth());
 		sRecord.setSendContent(sReq.getSendYear()+","+sReq.getSendMonth());
+		sRecord.setRenewDate(DateUtil.getSqlTimestamp());
 		if(info.isSubLogin()) {
 			//子账户登录
 			sRecord.setOperator(info.getSubAccountId());
