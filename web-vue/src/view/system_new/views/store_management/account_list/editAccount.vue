@@ -205,13 +205,10 @@ export default {
     }
   },
   mounted () {
-    console.log(this.select)
     this.search()
   },
   methods: {
     search () {
-      console.log('编辑传送的值')
-      console.log(this.sendData)
       if (!this.isEmpty(this.sendData)) {
         this.sendDatas = this.sendData
         console.log(this.sendDatas)
@@ -226,10 +223,6 @@ export default {
           this.select.city = Number(this.formData.cityCode)
           this.select.area = Number(this.formData.districtCode)
           this.showDis = true
-          console.log('结果')
-          console.log(this.formData)
-          console.log(this.select)
-          console.log(this.baseSaleTran, this.addCommentSwitchTran)
         } else {
           this.showDis = true
           this.$message.error(res.message)
