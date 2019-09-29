@@ -192,6 +192,9 @@ import {
 // 支付配置
 import { en as tradeConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/tradeProcessConfigEn'
 
+// 退换货配置
+import { en as returnconfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/returnGoodsConfigurationEn'
+
 const en = {
   messages: {
     lang: 'English',
@@ -637,6 +640,7 @@ const en = {
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表
-  tradeConfiguration // 交易流程配置
+  tradeConfiguration, // 交易流程配置
+  returnconfiguration // 退换货配置
 }
 export default en

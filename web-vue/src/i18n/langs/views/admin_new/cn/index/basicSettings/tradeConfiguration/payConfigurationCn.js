@@ -1,5 +1,6 @@
 export const cn = {
-  // 支付方配置
+  // 支付配置
+  title: '支付配置',
   config: '配置',
   defaultConfig: '默认配置',
   activated: '已开启',

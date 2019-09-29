@@ -1,5 +1,6 @@
 export const en = {
   // 交易流程配置
+  pagetitle: 'Transaction process related configuration',
   activated: 'activated',
   inactived: 'inactived',
   setAutoPack: 'Set up from the store',

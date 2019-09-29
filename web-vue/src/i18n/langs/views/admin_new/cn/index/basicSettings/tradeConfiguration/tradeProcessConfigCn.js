@@ -1,5 +1,6 @@
 export const cn = {
   // 交易流程配置
+  pagetitle: '交易流程相关配置',
   activated: '已开启',
   inactived: '已关闭',
   setAutoPack: '设置自提门店',

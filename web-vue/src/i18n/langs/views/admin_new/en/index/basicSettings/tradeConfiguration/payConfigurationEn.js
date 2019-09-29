@@ -1,5 +1,6 @@
 export const en = {
   // 支付配置
+  title: 'Payment configuration',
   config: 'config',
   defaultConfig: 'Default Configuraion',
   activated: 'Activated',

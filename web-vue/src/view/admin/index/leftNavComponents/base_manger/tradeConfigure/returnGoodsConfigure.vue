@@ -2,23 +2,23 @@
   <div class="returnGoodsConfigure">
     <!-- 退货配置 -->
     <section class="returnGoods">
-      <div class='title'>退货配置</div>
+      <div class='title'>{{$t('returnconfiguration.returnconfig')}}</div>
       <div class="content">
         <el-radio-group
           v-model="returnParam.return_change_goods_status"
           class="requirement"
         >
-          <el-radio :label="1">除不可退换货商品外，其他均可退换 </el-radio>
-          <el-radio :label="0">除可退换货商品外，其他均不可退换</el-radio>
+          <el-radio :label="1">{{$t('returnconfiguration.cannotreturngoods')}} </el-radio>
+          <el-radio :label="0">{{$t('returnconfiguration.canreturngoods')}}</el-radio>
         </el-radio-group>
         <div
           v-if="returnParam.return_change_goods_status === 1"
           class="chooseInfo"
-        >选择不可退换货商品</div>
+        >{{$t('returnconfiguration.choosecannotreturn')}}</div>
         <div
           v-if="returnParam.return_change_goods_status === 0"
           class="chooseInfo"
-        >选择可退换货商品</div>
+        >{{$t('returnconfiguration.choosecanreturn')}}</div>
 
         <div class="chooseBtn">
           <img :src="src">
@@ -71,14 +71,14 @@
     <section class="configureWrapper">
       <div class="title">
         <span></span>
-        下单必填信息设置
+        {{$t('returnconfiguration.ordernecessaryinfo')}}
       </div>
       <div class="configureContent baseInfo">
         <el-radio-group v-model="returnParam.is_refund_coupon">
-          <el-radio :label="1">开启</el-radio>
-          <el-radio :label="0">关闭</el-radio>
+          <el-radio :label="1">{{$t('returnconfiguration.activated')}}</el-radio>
+          <el-radio :label="0">{{$t('returnconfiguration.inactived')}}</el-radio>
         </el-radio-group>
-        <span class="onText">开启后，未完成的订单全额退款时会将优惠券退还给买家</span>
+        <span class="onText">{{$t('returnconfiguration.ordernecessarydesc')}}</span>
       </div>
     </section>
 
@@ -86,57 +86,57 @@
     <section class="configureWrapper">
       <div class="title">
         <span></span>
-        自动退款/退货设置
+        {{$t('returnconfiguration.autoreturn')}}
       </div>
       <div class="configureContent">
         <el-radio-group
           v-model="returnParam.auto_return"
           class="radio"
         >
-          <el-radio :label="1">开启</el-radio>
-          <el-radio :label="0">关闭</el-radio>
+          <el-radio :label="1">{{$t('returnconfiguration.activated')}}</el-radio>
+          <el-radio :label="0">{{$t('returnconfiguration.inactived')}}</el-radio>
         </el-radio-group>
         <!-- 开启时的显示内容 -->
         <div
           class="returnMoneySetting"
           v-if="returnParam.auto_return === 1"
         >
-          <span class="tips">注：默认自动退款/退货处理时间为7日，填写0表示不设置</span>
+          <span class="tips">{{$t('returnconfiguration.note')}}</span>
           <div>
-            <span>1、买家发起仅退款申请后，商家在</span>
+            <span>{{$t('returnconfiguration.note1')}}</span>
             <el-input
               size="mini"
               class="inputWidth"
               v-model="returnParam.return_money_days"
             ></el-input>
-            <span>日内未处理，系统将自动退款。</span>
+            <span>{{$t('returnconfiguration.note11')}}</span>
           </div>
           <div>
-            <span>2、商家已发货，买家发起退款退货申请，商家在</span>
+            <span>{{$t('returnconfiguration.note2')}}</span>
             <el-input
               size="mini"
               class="inputWidth"
               v-model="returnParam.return_address_days"
             ></el-input>
-            <span>日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收货地址。</span>
+            <span>{{$t('returnconfiguration.note22')}}</span>
           </div>
           <div>
-            <span>3、买家已提交物流信息，商家在</span>
+            <span>{{$t('returnconfiguration.note3')}}</span>
             <el-input
               size="mini"
               class="inputWidth"
               v-model="returnParam.return_shopping_days"
             ></el-input>
-            <span>日内未处理，系统将默认同意退款退货，并自动退款给买家。</span>
+            <span>{{$t('returnconfiguration.note33')}}</span>
           </div>
           <div>
-            <span>4、商家同意退款退货，买家在</span>
+            <span>{{$t('returnconfiguration.note4')}}</span>
             <el-input
               size="mini"
               class="inputWidth"
               v-model="returnParam.return_pass_days"
             ></el-input>
-            <span>日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。</span>
+            <span>{{$t('returnconfiguration.note44')}}</span>
           </div>
         </div>
         <!-- 关闭时的显示内容 -->
@@ -145,7 +145,7 @@
           v-if="returnParam.auto_return === 2"
         >
           <div>
-            商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。</div>
+            {{$t('returnconfiguration.note5')}}</div>
         </div>
       </div>
     </section>
@@ -154,11 +154,11 @@
     <section class="configureWrapper">
       <div class="title">
         <span></span>
-        商家默认收货地址
+        {{$t('returnconfiguration.defaultaddress')}}
       </div>
       <div class="configureContent">
         <div class="receiveInfo">
-          <span>收件人：</span>
+          <span>{{$t('returnconfiguration.consignee')}}</span>
           <el-input
             size="small"
             style="width:245px"
@@ -166,7 +166,7 @@
           ></el-input>
         </div>
         <div class="receiveInfo">
-          <span>收件电话：</span>
+          <span>{{$t('returnconfiguration.merchant_telephone')}}</span>
           <el-input
             size="small"
             style="width:245px"
@@ -174,7 +174,7 @@
           ></el-input>
         </div>
         <div class="receiveInfo">
-          <span>邮编：</span>
+          <span>{{$t('returnconfiguration.zip_code')}}</span>
           <el-input
             size="small"
             style="width:245px"
@@ -182,7 +182,7 @@
           ></el-input>
         </div>
         <div class="receiveInfo">
-          <span>退货地址：</span>
+          <span>{{$t('returnconfiguration.return_address')}}</span>
           <el-input
             size="small"
             style="width:245px"
@@ -196,7 +196,7 @@
       <el-button
         type="primary"
         @click="updateConfig"
-      >保存</el-button>
+      >{{$t('returnconfiguration.save')}}</el-button>
     </div>
 
   </div>
@@ -322,7 +322,7 @@ export default {
         display: inline-block;
         border-left: 2px solid #5a8bff;
         height: 14px;
-        width: 8px;
+        width: 20px;
         margin-bottom: -1px;
       }
     }

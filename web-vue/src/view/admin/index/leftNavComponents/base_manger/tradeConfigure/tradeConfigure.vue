@@ -2,19 +2,19 @@
   <div class="payContent">
     <el-tabs v-model="defaultBtn">
       <el-tab-pane
-        label="支付配置"
+        :label="$t('payConfiguration.title')"
         name="first"
       >
         <payConfigure />
       </el-tab-pane>
       <el-tab-pane
-        label="交易流程相关配置"
+        :label="$t('tradeConfiguration.pagetitle')"
         name="second"
       >
         <tradeProcessConfigure />
       </el-tab-pane>
       <el-tab-pane
-        label="退换货配置"
+        :label="$t('returnconfiguration.title')"
         name="third"
       >
         <returnGoodsConfigure />

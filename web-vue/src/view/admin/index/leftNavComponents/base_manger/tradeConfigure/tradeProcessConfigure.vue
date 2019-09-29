@@ -871,11 +871,11 @@ export default {
     // 配置弹出按钮确认点击
     initDataList () {
       this.showStoreDialog = false
+      this.updateSetPick()
     },
     // 选择商品弹窗调起
     showChoosingGoods () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-      this.updateSetPick()
     }
   }
 }
