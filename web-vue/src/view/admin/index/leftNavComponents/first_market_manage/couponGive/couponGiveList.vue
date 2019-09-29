@@ -71,7 +71,7 @@
                 <!-- 2 -->
                 <td>{{item.createTime}}</td>
                 <!-- 3 -->
-                <td>{{item.people}}</td>
+                <td><span v-html="item.people.join(`<br/>`)"></span></td>
                 <!-- 4 -->
                 <td>{{item.sendAction | sendAction}}</td>
                 <!-- 5 -->
@@ -180,7 +180,7 @@ export default {
         data[index].people = []
         if (data[index].obj.member_box === 1) {
           // data[index].people = '手动添加会员'
-          data[index].people.push('手动添加会员')
+          data[index].people.push(`手动添加会员`)
         }
         if (data[index].obj.cart_box === 1) {
           data[index].people.push('30天内在本店内有加入购物车行为人群')
@@ -217,7 +217,7 @@ export default {
             data[index].people.push(`${item.obj.point_start_time}-${item.obj.point_start_time}内有登录记录`)
           }
         }
-        console.log(item.people)
+        console.log(item.people.join(`<br/>`))
         data[index].people.forEach((item, index) => {
           console.log(item)
         })

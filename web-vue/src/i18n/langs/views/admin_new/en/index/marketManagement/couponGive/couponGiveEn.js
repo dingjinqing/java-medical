@@ -12,7 +12,7 @@ export const en = {
   repealed: 'repealed',
   filter: 'filter',
   export: 'export',
-  giveCoupon: 'issuing voucher',
+  giveCoupon: 'send voucher',
   actName: 'title of invoicing activity',
   select: 'select'
   //   ok: 'OK',
