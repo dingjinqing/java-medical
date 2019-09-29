@@ -27,14 +27,12 @@
 import payConfigure from './payConfigure'
 import tradeProcessConfigure from './tradeProcessConfigure'
 import returnGoodsConfigure from './returnGoodsConfigure'
-import wrapper from '@/components/admin/wrapper/wrapper'
 
 export default {
   components: {
     payConfigure,
     tradeProcessConfigure,
-    returnGoodsConfigure,
-    wrapper
+    returnGoodsConfigure
   },
   data () {
     return {

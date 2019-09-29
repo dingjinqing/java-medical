@@ -214,7 +214,10 @@
       <div class="necessaryGoodsInfo">{{$t('tradeConfiguration.ordernecessarygoodsinfo')}}</div>
       <!-- <div class="boxList"> -->
       <div class="goodsWrapper">
-        <div class="addGoods">
+        <div
+          class="addGoods"
+          @click="showChoosingGoods"
+        >
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectgoods')}}</span>
         </div>
@@ -242,6 +245,7 @@
         <div
           class="addGoods"
           style="margin: 10px 0"
+          @click="handleTake"
         >
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectbrand')}}</span>
@@ -404,6 +408,108 @@
         <el-button @click="cancle">{{$t('tradeConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
+
+    <!--选择商品弹窗-->
+    <ChoosingGoods :tuneUpChooseGoods="tuneUpChooseGoods" />
+
+    <!-- 选择商品品牌弹窗 -->
+    <div class="chooseGoodsBrand">
+      <el-dialog
+        title="选择商品品牌"
+        :visible.sync="showStoreDialog"
+        :close-on-click-modal='false'
+        width=50%
+      >
+        <div class="selectCondition">
+          <div class="brandName">
+            <span>品牌名称：</span>
+            <el-input
+              size="small"
+              style="width: 100px"
+            ></el-input>
+          </div>
+          <div class="brandClassify">
+            <span>品牌分类：</span>
+            <el-select
+              v-model="brandClassify"
+              placeholder="请选择"
+              size="small"
+            >
+              <el-option
+                v-for="item in classifyList"
+                :key="item.value"
+                :value="item.label"
+                :label="item.label"
+              >{{item.label}}</el-option>
+            </el-select>
+          </div>
+          <el-button
+            type="primary"
+            size="small"
+          >查询</el-button>
+        </div>
+        <div class="table_list">
+          <el-table
+            class="version-manage-table"
+            header-row-class-name="tableClss"
+            border
+            :data="brandData"
+            style="width: 100%"
+          >
+            <el-table-column
+              prop=""
+              label="本业全选"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-checkbox v-model="scope.row.isChecked"></el-checkbox>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="品牌名称"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="classify"
+              label="品牌分类"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="创建时间"
+              align="center"
+            >
+            </el-table-column>
+          </el-table>
+          <div>
+            <el-checkbox
+              v-model="allChecked"
+              @change="handleAllcheck()"
+            >全选</el-checkbox>
+          </div>
+          <div class="table_footer">
+            <pagination
+              :page-params.sync="pageParams"
+              @pagination="initDataList"
+            />
+          </div>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            type="primary"
+            @click="initDataList"
+          >保 存</el-button>
+          <el-button @click="cancle">取 消</el-button>
+        </span>
+      </el-dialog>
+    </div>
+
   </div>
 </template>
 
@@ -411,9 +517,14 @@
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
 import pagination from '@/components/admin/pagination/pagination'
 import { tradeSelect, tradeUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import ChoosingGoods from '@/components/admin/choosingGoods'
 import { storeList, batchUpdateStore } from '@/api/admin/storeManage/store'
 export default {
-  components: { areaLinkage, pagination },
+  components: {
+    areaLinkage,
+    pagination,
+    ChoosingGoods
+  },
   mounted () {
     this.langDefault()
   },
@@ -430,6 +541,41 @@ export default {
         { code: 'consignee_cid', info: this.$t('tradeConfiguration.creadid'), content: this.$t('tradeConfiguration.creadid'), value: false },
         { code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false }
       ]
+    },
+    allChecked (newData) {
+      console.log(newData)
+      switch (newData) {
+        case true:
+          this.brandData.map((item, index) => {
+            item.isChecked = true
+          })
+          break
+        case false:
+          console.log(1111)
+          if (this.allCheckFlag === false) {
+            this.brandData.map((item, index) => {
+              item.isChecked = false
+            })
+          }
+      }
+    },
+    'brandData': {
+      handler (newData) {
+        console.log(newData)
+        let arr = newData.filter((item, index) => {
+          return item.isChecked === false
+        })
+        if (!arr.length) {
+          this.allChecked = true
+        } else {
+          this.allCheckFlag = true
+          this.allChecked = false
+        }
+      },
+      deep: true
+    },
+    currency (newData) {
+      console.log(newData)
     }
   },
   created () {
@@ -507,7 +653,26 @@ export default {
           businessState: null,
           autoPick: null
         }
-      ]
+      ],
+      brandClassify: '',
+      classifyList: [
+        { value: 1, label: '运动品牌' },
+        { value: 2, label: '奢侈品' },
+        { value: 3, label: '电子产品' },
+        { value: 4, label: 'SONY' },
+        { value: 5, label: '商品测试' }
+      ],
+      brandData: [
+        { isChecked: false, name: '耐克', classify: '运动系列', createTime: '2019-09-27' },
+        { isChecked: false, name: '阿迪', classify: '运动系列', createTime: '2019-09-27' },
+        { isChecked: false, name: '李宁', classify: '运动系列', createTime: '2019-09-27' },
+        { isChecked: false, name: '安踏', classify: '运动系列', createTime: '2019-09-27' },
+        { isChecked: false, name: '361', classify: '运动系列', createTime: '2019-09-27' }
+
+      ],
+      allChecked: false,
+      allCheckFlag: false,
+      tuneUpChooseGoods: false
     }
   },
   methods: {
@@ -641,6 +806,10 @@ export default {
         }
       })
     },
+    // 全选本页 - 全部checkbox选中
+    handleAllcheck () {
+      this.allCheckFlag = false
+    },
     // 获取门店列表
     getStoreList () {
       let storPageParam = {
@@ -702,6 +871,10 @@ export default {
     // 配置弹出按钮确认点击
     initDataList () {
       this.showStoreDialog = false
+    },
+    // 选择商品弹窗调起
+    showChoosingGoods () {
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       this.updateSetPick()
     }
   }
@@ -850,6 +1023,15 @@ export default {
     position: relative;
     .table_footer {
       background: #666;
+    }
+  }
+  .chooseGoodsBrand {
+    .selectCondition {
+      display: flex;
+      margin-bottom: 15px;
+      .brandClassify {
+        margin: 0 30px 0 20px;
+      }
     }
   }
 }
