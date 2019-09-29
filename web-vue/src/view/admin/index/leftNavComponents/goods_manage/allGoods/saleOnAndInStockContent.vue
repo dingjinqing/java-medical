@@ -17,7 +17,7 @@
       <el-table-column
         align="center"
         prop="goodsName"
-        label="名称" min-width="120px">
+        :label="$t('allGoods.allGoodsData.goodsName')" min-width="120px">
         <template slot-scope="scope">
           <div >
             <img style="width: 70px;height: 70px;float: left;"  :src="scope.row.goodsImg">
@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="价格">
+        :label="$t('allGoods.allGoodsData.shopPrice')">
         <template slot-scope="{row}">
            <span v-if="row.prdId === null">
              <template v-if="row.prdMinShopPrice === row.prdMaxShopPrice">
@@ -54,23 +54,23 @@
       <el-table-column
         align="center"
         prop="goodsSn"
-        label="商品货号" />
+        :label="$t('allGoods.allGoodsData.goodsSn')" />
       <el-table-column
         align="center"
         prop="catName"
-        label="平台分类" />
+        :label="$t('allGoods.allGoodsData.cat')"/>
       <el-table-column
         align="center"
         prop="sortName"
-        label="商家分类" />
+        :label="$t('allGoods.allGoodsData.sort')" />
       <el-table-column
         align="center"
         prop="brandName"
-        label="品牌">
+        :label="$t('allGoods.allGoodsData.goodsBrand')">
       </el-table-column>
       <el-table-column
         align="center"
-        label="库存">
+        :label="$t('allGoods.allGoodsData.goodsNumber')">
         <template slot-scope="{row}">
           <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
           <template v-else>
@@ -86,37 +86,37 @@
       <el-table-column
         align="center"
         prop="goodsSaleNum"
-        label="销量" />
+        :label="$t('allGoods.allGoodsData.saleNumber')" />
       <el-table-column
         align="center"
-        label="商品标签"
+        :label="$t('allGoods.allGoodsData.goodsLabel')"
         min-width="120px">
         <template slot-scope="{row}">
           <div style="">
             <div style="width:120px; float: left;">
               <span v-for="(item,index) in row.goodsLabels" :key="index" class="goodsLabelSpanWrap">{{item.name}}</span>
             </div>
-            <div style="width: 50px;float:right;color:#5a8bff;cursor: pointer;" @click="tdLabelSetClick(row)">设置</div>
+            <div style="width: 50px;float:right;color:#5a8bff;cursor: pointer;" @click="tdLabelSetClick(row)">{{$t('allGoods.allGoodsData.setting')}}</div>
           </div>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
-        label="操作">
+        :label="$t('allGoods.allGoodsData.operate')">
         <template slot-scope="{row,$index}">
-          <el-tooltip content="编辑" placement="top">
+          <el-tooltip :content="$t('allGoods.allGoodsData.edit')" placement="top">
             <span class="el-icon-edit-outline iconSpan" @click="editIconClick(row)"></span>
           </el-tooltip>
-          <el-tooltip content="复制" placement="top">
+          <el-tooltip :content="$t('allGoods.allGoodsData.copy')" placement="top">
             <span class="fa fa-copy iconSpan" @click="copyIconClick(row)"></span>
           </el-tooltip>
-          <el-tooltip content="分享" placement="top">
+          <el-tooltip :content="$t('allGoods.allGoodsData.share')" placement="top">
             <span class="el-icon-share iconSpan" @click="shareIconClick(row)"></span>
           </el-tooltip>
-          <el-tooltip content="下架" placement="top">
+          <el-tooltip :content="$t('allGoods.allGoodsData.underCarriage')" placement="top">
             <span class="el-icon-bottom iconSpan" @click="withdrawIconClick(row,$index)"></span>
           </el-tooltip>
-          <el-tooltip content="删除" placement="top">
+          <el-tooltip :content="$t('allGoods.allGoodsData.delete')" placement="top">
             <span class="el-icon-delete iconSpan" @click="deleteIconClick(row,$index)"></span>
           </el-tooltip>
         </template>
@@ -131,7 +131,7 @@
     </div>
 
     <!--预览商品太阳码-->
-    <el-dialog :visible.sync="qrCodeData.isShow" title="扫一扫，分享给好友吧~" width="350px">
+    <el-dialog :visible.sync="qrCodeData.isShow" :title="$t('allGoods.allGoodsData.shareGoodsTitle')" width="350px">
       <div style="text-align: center;">
         <el-image
           fit="scale-down"
@@ -139,21 +139,23 @@
           style="width: 250px; height: 230px;"
         />
         <el-input v-model="qrCodeData.imgFullUrl" disabled />
-        <span>复制</span>
+        <span>{{this.$t('allGoods.allGoodsData.copy')}}</span>
       </div>
     </el-dialog>
 
     <!--标签设置-->
-    <el-dialog :visible.sync="goodsLabelData.isShow" title="设置标签" width="30%" @closed="goodsLabelDialogCancel">
-      <div style="background-color:#FFF7EB;border: 1px solid #FFD5A3;line-height: 30px;padding-left: 20px;margin-bottom: 10px;"> 可以在这里编辑商品标签信息,添加或删除标签</div>
+    <el-dialog :visible.sync="goodsLabelData.isShow" :title="$t('allGoods.allGoodsData.setLabelTitle')" width="30%" @closed="goodsLabelDialogCancel">
+      <div style="background-color:#FFF7EB;border: 1px solid #FFD5A3;line-height: 30px;padding-left: 20px;margin-bottom: 10px;">
+        {{this.$t('allGoods.allGoodsData.setLabelTip')}}
+      </div>
       <div>
-        <span>商品标签：</span>
-        <el-select v-model="goodsLabelData.labelSelectedTempVal" placeholder="请选择标签" size="small" @change="tdLabelSelectChange" style="width:170px;">
+        <span> {{this.$t('allGoods.allGoodsData.goodsLabel')}}：</span>
+        <el-select v-model="goodsLabelData.labelSelectedTempVal" :placeholder="$t('allGoods.allGoodsData.chooseGoodsLabel')" size="small" @change="tdLabelSelectChange" style="width:170px;">
           <el-option v-for="item in goodsLabelData.labelSelectOptions" :key="item.id" :label="item.name" :value="item.id"/>
         </el-select>
       </div>
       <div v-if="goodsLabelData.labelSelectedOptions.length>0" style="display: flex;flex-wrap: wrap;align-items:center;margin-top: 10px;">
-        <div>已选：</div>
+        <div> {{this.$t('allGoods.allGoodsData.selected')}}：</div>
         <div class="selectedWrap" v-for="(item,index) in goodsLabelData.labelSelectedOptions" :key="index">
           {{item.name}}
           <span @click="tdDeleteLabel(item,index)" class="deleteIcon">×</span>
@@ -213,7 +215,7 @@ export default {
       row.shopPriceEdit = false
       if (typeof row.shopPriceOld !== 'number' || row.shopPriceOld < 0) {
         row.shopPriceOld = row.shopPrice
-        this.$message.warning({type: 'warning', message: '请输入正确价格'})
+        this.$message.warning({type: 'warning', message: this.$t('allGoods.allGoodsData.shopPriceRequired')})
         return
       }
       row.shopPrice = row.shopPriceOld
@@ -227,7 +229,7 @@ export default {
         goodsPriceNumbers: shopPrices
       }).then(res => {
         if (res.error === 0) {
-          this.$message.success({type: 'info', message: '设置成功!'})
+          this.$message.success({type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess')})
         }
       })
     },
@@ -236,7 +238,7 @@ export default {
       row.goodsNumberEdit = false
       if (typeof row.goodsNumberOld !== 'number' || row.goodsNumberOld < 0) {
         row.goodsNumberOld = row.goodsNumber
-        this.$message.warning({type: 'warning', message: '请输入正确商品数量'})
+        this.$message.warning({type: 'warning', message: this.$t('allGoods.allGoodsData.goodsNumberRequired')})
         return
       }
       row.goodsNumber = parseInt(row.goodsNumberOld)
@@ -252,7 +254,7 @@ export default {
         goodsPriceNumbers: goodsNumbers
       }).then(res => {
         if (res.error === 0) {
-          this.$message.success({type: 'info', message: '设置成功!'})
+          this.$message.success({type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess')})
         }
       })
     },
@@ -304,7 +306,7 @@ export default {
         this.goodsLabelData.labelSelectOptions = []
         this.goodsLabelData.currentRow = null
         this.goodsLabelData.isShow = false
-        this.$message.success({type: 'info', message: '设置成功'})
+        this.$message.success({type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess')})
       })
     },
     goodsLabelDialogCancel () {
@@ -319,7 +321,7 @@ export default {
     },
     /* 删除图标按钮点击 */
     deleteIconClick (row, index) {
-      this._$confirm('确认要删除吗？', '删除成功!', () => {
+      this._$confirm(this.$t('allGoods.allGoodsData.deleteTipMsg'), this.$t('allGoods.allGoodsData.deleteOk'), () => {
         return deleteGoods({goodsIds: [row.goodsId]}).then((res) => {
           this.goodsData.splice(index, 1)
         })
@@ -327,7 +329,7 @@ export default {
     },
     /* 下架图标按钮点击 */
     withdrawIconClick (row, index) {
-      this._$confirm('确认下架该商品吗？', '下架成功!', () => {
+      this._$confirm(this.$t('allGoods.allGoodsData.underCarriageTipMsg'), this.$t('allGoods.allGoodsData.underCarriageOk'), () => {
         return batchOperateGoods({goodsIds: [row.goodsId], isOnSale: 0}).then((res) => {
           this.goodsData.splice(index, 1)
         })
@@ -348,9 +350,9 @@ export default {
     },
     /* 操作确认弹框 */
     _$confirm (questionMessage, confirmMesage, confirmCallback, cancelCallback) {
-      this.$confirm(questionMessage, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(questionMessage, this.$t('allGoods.allGoodsData.tip'), {
+        confirmButtonText: this.$t('allGoods.allGoodsData.confirm'),
+        cancelButtonText: this.$t('allGoods.allGoodsData.cancel'),
         type: 'warning'
       }).then(() => {
         return confirmCallback()
@@ -382,18 +384,24 @@ export default {
         this.pageParams.pageRows = page.pageRows
 
         dataList.forEach(item => {
-          item.sourceName = item.source === 0 ? '自营' : '非自营'
+          // item.sourceName = item.source === 0 ? '自营' : '非自营'
+          item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
 
           switch (item.goodsType) {
-            case 1: item.goodsTypeName = '拼团商品'
+            // case 1: item.goodsTypeName = '拼团商品'
+            case 1: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[0]
               break
-            case 2: item.goodsTypeName = '分销'
+            // case 2: item.goodsTypeName = '分销'
+            case 2: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[1]
               break
-            case 3: item.goodsTypeName = '砍价商品'
+            // case 3: item.goodsTypeName = '砍价商品'
+            case 3: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[2]
               break
-            case 4: item.goodsTypeName = '积分商品'
+            // case 4: item.goodsTypeName = '积分商品'
+            case 4: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[3]
               break
-            case 5: item.goodsTypeName = '秒杀商品'
+            // case 5: item.goodsTypeName = '秒杀商品'
+            case 5: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[4]
               break
             default:
               item.goodsTypeName = null
@@ -408,6 +416,9 @@ export default {
         this.goodsData = dataList
       })
     }
+  },
+  mounted () {
+    this.langDefault()
   }
 }
 </script>

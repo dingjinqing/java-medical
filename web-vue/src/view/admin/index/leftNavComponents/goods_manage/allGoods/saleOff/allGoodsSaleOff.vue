@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="headerTab">
-      <div class="tabItem" @click="tabItemClicked('goodsForSale')">出售中</div>
-      <div class="tabItem tabItemActive">已售罄</div>
-      <div class="tabItem" @click="tabItemClicked('goodsForInStock')">仓库中</div>
+      <div class="tabItem" @click="tabItemClicked('goodsForSale')">{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
+      <div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.saleOut')}}</div>
+      <div class="tabItem" @click="tabItemClicked('goodsForInStock')">{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
     </div>
     <allGoodsHeader ref="goodsHeaderFormCmp" :initSortCatParams="initFilterData"/>
     <div class="btnWrap">
-      <el-button type="primary" @click="searchGoodsData">查询</el-button>
-      <el-button type="primary" @click="resetFormData">重置</el-button>
-      <el-button type="primary">导出商品</el-button>
-      <el-button type="primary">添加商品</el-button>
+      <el-button type="primary" @click="searchGoodsData">{{$t('allGoods.allGoodsRouterHeader.searchBtn')}}</el-button>
+      <el-button type="primary" @click="resetFormData">{{$t('allGoods.allGoodsRouterHeader.resetBtn')}}</el-button>
+      <el-button type="primary">{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
+      <el-button type="primary">{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
     </div>
     <saleOut ref="saleOutCmp"/>
   </div>
@@ -66,7 +66,7 @@ export default {
     display: flex;
   }
   .tabItem{
-    width: 50px;
+    min-width: 50px;
     line-height: 50px;
     margin:0px 5px;
     cursor: pointer;
