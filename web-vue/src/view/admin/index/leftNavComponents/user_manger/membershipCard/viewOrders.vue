@@ -7,14 +7,14 @@
           <el-input
             v-model="orderNumInput"
             size="small"
-            placeholder="请输入订单号"
+            :placeholder="$t('memberCard.pleaseInputOrderSn')"
           ></el-input>
         </div>
         <div>
-          <span>会员昵称：</span>
+          <span>{{ $t('memberCard.memberName') }}：</span>
           <el-input
             v-model="userNameInput"
-            placeholder="请输入会员昵称"
+            :placeholder="$t('memberCard.pleaseInputUsername')"
             size="small"
           ></el-input>
         </div>
@@ -22,12 +22,12 @@
           <span>手机号：</span>
           <el-input
             v-model="phoneNumInput"
-            placeholder="请输入会员手机号"
+            :placeholder="$t('memberCard.pleaseInputMobile')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>次数使用类型</span>
+          <span>{{ $t('memberCard.useTimesType') }}</span>
           <el-select
             v-model="selectValue"
             size="small"
@@ -45,15 +45,16 @@
       </div>
       <div class="topDiv middle">
         <div>
-          <span>次数变动时间：</span>
+          <span>{{ $t('memberCard.changeTime') }}：</span>
           <el-date-picker
             size="small"
             v-model="dateValue"
             type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format='yyyy-MM-dd'
+            :range-separator="$t('memberCard.to')"
+            :start-placeholder="$t('memberCard.startDate')"
+            :end-placeholder="$t('memberCard.overDate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00','23:59:59']"
           >
           </el-date-picker>
         </div>
@@ -61,12 +62,13 @@
           <el-button
             type="primary"
             size="small"
-          >筛选</el-button>
+            @click="search"
+          >{{ $t('memberCard.filter') }}</el-button>
           <el-button
             type="info"
             plain
             size="small"
-          >导出表格</el-button>
+          >{{ $t('memberCard.exportExcel') }}</el-button>
         </div>
       </div>
     </div>
@@ -80,65 +82,80 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="userID"
+            prop="orderSn"
             align="center"
-            label="单号"
+            :label="$t('memberCard.orderSn')"
           >
             <template slot-scope="scope">
 
               <span
                 @click="hanldeToClick(0,scope.row)"
                 style="cursor:pointer;color:#5a8bff"
-              >{{scope.row.userID}}</span>
+              >{{scope.row.orderSn}}</span>
 
             </template>
           </el-table-column>
           <el-table-column
             prop="userID"
-            label="核销内容"
+            :label="$t('memberCard.goodsName')"
             align="center"
           >
             <template slot-scope="scope">
               <div class="content">
-                <img :src="scope.row.imgUrl">
-                <span>{{scope.row.userID}}</span>
+                <img :src="$imageHost+scope.row.goodsImg">
+                <span>{{scope.row.goodsName}}</span>
               </div>
 
             </template>
           </el-table-column>
           <el-table-column
-            prop="inviter"
-            label="会员昵称"
+            prop="username"
+            :label="$t('memberCard.memberName')"
             align="center"
           >
             <template slot-scope="scope">
               <span
                 @click="hanldeToClick(1,scope.row)"
                 style="cursor:pointer;color:#5a8bff"
-              >{{scope.row.inviter}}</span>
+              >{{scope.row.username}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="phoneNum"
-            label="手机号"
+            prop="mobile"
+            :label="$t('memberCard.mobile')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="date"
-            label="变动次数"
+            :label="$t('memberCard.changeNumbers')"
             align="center"
           >
+            <template slot-scope="scope">
+              <span v-if="scope.row.count !== 0">
+                {{scope.row.count }}
+              </span>
+              <span v-else-if="scope.row.exchangCount !== 0">
+                {{scope.row.exchangCount }}
+              </span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="cardNum"
-            label="次数使用类型"
+            :label="$t('memberCard.useTimesType')"
             align="center"
           >
+            <template slot-scope="scope">
+              <span v-if="scope.row.count !== 0">
+                {{ $t('memberCard.storeService') }}
+              </span>
+              <span v-else-if="scope.row.exchangCount !== 0">
+                {{ $t('memberCard.exchangGoods') }}
+              </span>
+            </template>
+
           </el-table-column>
           <el-table-column
-            prop="status"
-            label="次数变动时间"
+            prop="createTime"
+            :label="$t('memberCard.changeTime')"
             align="center"
           >
           </el-table-column>
@@ -152,6 +169,7 @@
   </div>
 </template>
 <script>
+import { getCardConsumeOrderList } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
   data () {
@@ -159,60 +177,55 @@ export default {
       pageParams: {
         totalRows: 10,
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
+      cardId: null, // 会员卡id
       orderNumInput: '',
       userNameInput: '',
       phoneNumInput: '',
-      selectValue: '0',
-      selectOptions: [{
-        value: '0',
-        label: '请选择'
-      }, {
-        value: '1',
-        label: '兑换商品'
-      }, {
-        value: '2',
-        label: '门店服务'
-      }],
-      dateValue: '',
-      tableData: [
-        {
-          userID: '51',
-          phoneNum: '18811309193',
-          sickName: '啦啦啦',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常',
-          imgUrl: this.$imageHost + '/image/admin/first_5.png'
-        },
-        {
-          userID: '12',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常',
-          imgUrl: this.$imageHost + '/image/admin/first_5.png'
-        },
-        {
-          userID: '43',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常',
-          imgUrl: this.$imageHost + '/image/admin/first_5.png'
-        }
-      ]
+      selectValue: 0,
+      selectOptions: []
     }
   },
+  created () {
+    this.cardId = this.$route.query.cardId
+    this.loadDefaultData()
+  },
+  watch: {
+    lang () {
+      this.selectOptions = this.$t('memberCard.selectOptions')
+    }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
+    // 1- 加载数据
+    loadDefaultData () {
+      let obj = {
+        'pageRows': this.pageParams.pageRows,
+        'currentPage': this.pageParams.currentPage,
+        'cardId': this.cardId,
+        'orderSn': this.orderNumInput,
+        'username': this.userNameInput,
+        'type': this.selectValue,
+        'mobile': this.phoneNumInput,
+        'firstTime': this.dateValue ? this.dataValue[0] : null,
+        'secondTime': this.dataValue ? this.dataValue[1] : null
+      }
+      getCardConsumeOrderList(obj).then(res => {
+        if (res.error === 0) {
+          // success
+          this.pageParams = res.content.page
+          this.tableData = res.content.dataList
+        }
+      })
+    },
+    // 分页-筛选
     search (data) {
       console.log(data)
+      this.loadDefaultData()
     },
     // 表格中单号和会员昵称点击
     hanldeToClick (flag, row) {

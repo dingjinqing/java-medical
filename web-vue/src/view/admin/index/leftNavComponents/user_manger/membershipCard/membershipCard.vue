@@ -743,13 +743,19 @@ export default {
         case '激活审核':
           this.$store.commit('TOCHANFE_CARDCRUMDATA', obj)
           this.$router.push({
-            name: 'activateAudit'
+            name: 'activateAudit',
+            query: {
+              cardId: item.id
+            }
           })
           break
         case '查看订单':
           this.$store.commit('TOCHANFE_CARDCRUMDATA', obj)
           this.$router.push({
-            name: 'viewOrders'
+            name: 'viewOrders',
+            query: {
+              cardId: item.id
+            }
           })
           break
         case '充值记录':

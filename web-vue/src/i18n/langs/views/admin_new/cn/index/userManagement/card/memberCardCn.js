@@ -38,5 +38,42 @@ export const cn = {
   memberName: '会员昵称',
   balanceChangeDetail: '余额变动明细',
   balanceChangeReason: '余额变动原因',
-  message: '备注'
+  message: '备注',
+  auditOption: '审核操作成功',
+  realName: '真实姓名',
+  applyTime: '申请时间',
+  search: '查询',
+  waitAudit: '待审核',
+  successAudit: '审核通过',
+  failedAudit: '未通过',
+  options: '操作',
+  cid: '身份证号码',
+  education: '受教育程度',
+  industry: '所在行业',
+  pass: '通过',
+  unpass: '不通过',
+  failedAuditT: '审核未通过',
+  selectOptions: [
+    {
+      value: 0,
+      label: '请选择'
+    },
+    {
+      value: 1,
+      label: '兑换商品'
+    },
+    {
+      value: 2,
+      label: '门店服务'
+    }
+  ],
+  pleaseInputOrderSn: '请输入订单号',
+  useTimesType: '次数使用类型',
+  changeTime: '次数变动时间',
+  exportExcel: '导出表格',
+  orderSn: '单号',
+  goodsName: '核销内容',
+  changeNumbers: '变动次数',
+  storeService: '门店服务',
+  exchangGoods: '兑换商品'
 }

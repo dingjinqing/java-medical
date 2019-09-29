@@ -107,3 +107,39 @@ export function getConsumeListRequest (data) {
     data: data
   })
 }
+
+// 获取激活列表信息
+export function getActivateAuditListRequest (data) {
+  return service({
+    url: '/api/admin/member/activateAudit/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 审核用户激活通过
+export function passActivateAuditRequest (data) {
+  return service({
+    url: '/api/admin/member/activateAudit/activate',
+    method: 'post',
+    data: data
+  })
+}
+
+// 拒绝通过审核
+export function rejectActivateAudit (data) {
+  return service({
+    url: '/api/admin/member/activateAudit/reject',
+    method: 'post',
+    data: data
+  })
+}
+
+//  会员卡订单-查询
+export function getCardConsumeOrderList (data) {
+  return service({
+    url: '/api/admin/member/card/order/list',
+    method: 'post',
+    data: data
+  })
+}

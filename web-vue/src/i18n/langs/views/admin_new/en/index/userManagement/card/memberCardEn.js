@@ -22,5 +22,58 @@ export const en = {
     'RECHARGE',
     'CHECK',
     'RENEWRAL'
-  ]
+  ],
+  memberChargeDetail: 'Member Charge Details',
+  chargeDetail: 'Charge Detail',
+  consumeDetail: 'Consume Detail',
+  username: 'username',
+  pleaseInputUsername: 'Please Input username',
+  mobile: 'Mobile',
+  pleaseInputMobile: 'Please Input Phonenum',
+  balanceChangeTime: 'Balance Change Time',
+  to: 'TO',
+  startDate: 'START-DATE',
+  overDate: 'OVER-DATE',
+  filter: 'filter',
+  memberName: 'Member Name',
+  balanceChangeDetail: 'Balance Change Detail',
+  balanceChangeReason: 'Balance Change Reason',
+  message: 'REMARK',
+  auditOption: 'Audit Options Success',
+  realName: 'REAL NAME',
+  applyTime: 'APPLY TIME',
+  search: 'SELECT',
+  waitAudit: 'AUDITING',
+  successAudit: 'AUDIT SUCCESS',
+  failedAudit: 'AUDIT FAILED',
+  options: 'OPTIONS',
+  cid: 'CID',
+  education: 'EDUCATION',
+  industry: 'INDUSTRY',
+  pass: 'PASS',
+  unpass: 'REJECT',
+  failedAuditT: 'AUDIT FAILED',
+  selectOptions: [
+    {
+      value: 0,
+      label: 'Choosing'
+    },
+    {
+      value: 1,
+      label: 'EXCHANGE-GOODS'
+    },
+    {
+      value: 2,
+      label: 'STORE-SERVICE'
+    }
+  ],
+  pleaseInputOrderSn: 'Please input order number',
+  useTimesType: 'type of using',
+  changeTime: 'Time of change',
+  exportExcel: 'Export Excel',
+  orderSn: 'OrderSn',
+  goodsName: 'Goods Name',
+  changeNumbers: 'Change Number',
+  storeService: 'STORE-SERVICE',
+  exchangGoods: 'EXCHANG-GOODS'
 }

@@ -3,29 +3,32 @@
     <div class="activateAuditMain">
       <div class="topDiv">
         <div>
-          <span>真实姓名</span>
+          <span>{{ $t('memberCard.realName') }}</span>
           <el-input
             v-model="userNameInput"
+            :placeholder="$t('memberCard.pleaseInputUsername')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>手机号</span>
+          <span>{{ $t('memberCard.mobile') }}</span>
           <el-input
             v-model="phoneNumInput"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('memberCard.pleaseInputMobile')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>申请时间</span>
+          <span>{{ $t('memberCard.applyTime') }}</span>
           <el-date-picker
             size="small"
             v-model="dataValue"
             type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('memberCard.to')"
+            :start-placeholder="$t('memberCard.startDate')"
+            :end-placeholder="$t('memberCard.overDate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00','23:59:59']"
           >
           </el-date-picker>
         </div>
@@ -33,23 +36,24 @@
           <el-button
             type="primary"
             size="small"
-          >查询</el-button>
+            @click="search"
+          >{{ $t('memberCard.search') }}</el-button>
         </div>
       </div>
     </div>
     <div class="activateAuditMain">
       <el-tabs v-model="activeName">
         <el-tab-pane
-          label="待审核"
+          :label="$t('memberCard.waitAudit')"
           name="first"
         >
         </el-tab-pane>
         <el-tab-pane
-          label="审核通过"
+          :label="$t('memberCard.successAudit')"
           name="second"
         ></el-tab-pane>
         <el-tab-pane
-          label="未通过"
+          :label="$t('memberCard.failedAudit')"
           name="third"
         ></el-tab-pane>
       </el-tabs>
@@ -59,50 +63,55 @@
         :key="index"
       >
         <div class="member_title">
-          <span>ID：<strong>{{item.ID}}</strong></span>
-          <span>昵称：<strong>{{item.nackName}}</strong></span>
-          <span>手机号：<strong>{{item.phoneNum}}</strong></span>
-          <span>申请时间：<strong>{{item.date}}</strong></span>
-          <span class="operate">操作</span>
+          <span>ID：<strong>{{item.id}}</strong></span>
+          <span>{{ $t('memberCard.username') }}：<strong>{{item.username}}</strong></span>
+          <span>{{ $t('memberCard.mobile') }}：<strong>{{item.mobile}}</strong></span>
+          <span>{{ $t('memberCard.applyTime') }}：<strong>{{item.createTime}}</strong></span>
+          <span class="operate">{{ $t('memberCard.options') }}</span>
         </div>
         <div class="member_content">
           <ul>
-            <li>真实姓名：<strong>{{item.realName}}</strong></li>
+            <li>{{ $t('memberCard.realName') }}：<strong>{{item.realName}}</strong></li>
+            <li>{{ $t('memberCard.cid') }}：<strong>{{item.cid}}</strong></li>
+            <li>{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
+          </ul>
+          <ul>
+            <li>{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
           </ul>
           <div class="operate_box">
             <div
               class="content"
-              v-if='item.opStatus === 0'
+              v-if='item.status === 1'
             >
               <div style="margin-bottom:5px">
                 <el-button
                   type="primary"
                   plain
                   size="small"
-                  @click="handleToIsAdopt(0)"
-                >通过</el-button>
+                  @click="handleToIsAdopt(0,item)"
+                >{{ $t('memberCard.pass') }}</el-button>
               </div>
               <div>
                 <el-button
                   type="info"
                   plain
                   size="small"
-                  @click="handleToIsAdopt(1)"
-                >不通过</el-button>
+                  @click="handleToIsAdopt(1,item)"
+                >{{ $t('memberCard.unpass') }}</el-button>
               </div>
 
             </div>
             <div
               class="content"
-              v-if='item.opStatus === 1'
+              v-if='item.status === 2'
             >
-              <div>审核通过</div>
+              <div>{{ $t('memberCard.successAudit') }}</div>
             </div>
             <div
               class="content"
-              v-if='item.opStatus === 2'
+              v-if='item.status === 3'
             >
-              <div>审核未通过</div>
+              <div>{{ $t('memberCard.failedAuditT') }}</div>
             </div>
           </div>
         </div>
@@ -116,6 +125,7 @@
   </div>
 </template>
 <script>
+import { getActivateAuditListRequest, passActivateAuditRequest, rejectActivateAudit } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
   data () {
@@ -123,82 +133,120 @@ export default {
       pageParams: {
         totalRows: 10,
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
+      cardId: null, // 会员卡id
       userNameInput: '',
       phoneNumInput: '',
       dataValue: '',
+      status: 1, //  默认是待审核
       activeName: 'first',
       tabData: [],
-      tabOneData: [
-        {
-          ID: 1,
-          nackName: '帅飞1',
-          phoneNum: '18236936252',
-          date: '2019-08-27 18:00:29',
-          realName: '王义博',
-          opStatus: 0
-        }
-      ],
-      tabTwoData: [
-        {
-          ID: 2,
-          nackName: '帅飞2',
-          phoneNum: '18236936252',
-          date: '2019-08-27 18:00:29',
-          realName: '王义博',
-          opStatus: 1
-        }
-      ],
-      tabThreeData: [
-        {
-          ID: 3,
-          nackName: '帅飞3',
-          phoneNum: '18236936252',
-          date: '2019-08-27 18:00:29',
-          realName: '王义博',
-          opStatus: 2
-        }
-      ]
+      tabOneData: [],
+      tabTwoData: [],
+      tabThreeData: []
     }
   },
   watch: {
+    lang () {
+      this.defaultData()
+    },
     activeName (newData) {
       console.log(newData)
-      this.handleToData(newData)
+      this.handleStatus(newData)
     }
   },
-  mounted () {
+  created () {
+    this.cardId = this.$route.query.cardId
     // 初始化数据
     this.defaultData()
   },
+  mounted () {
+    // 加载语言
+    this.langDefault()
+  },
   methods: {
+    // 1- 获取数据
     defaultData () {
-      this.handleToData(this.activeName)
+      let obj = {
+        'pageRows': this.pageParams.pageRows,
+        'currentPage': this.pageParams.currentPage,
+        'cardId': this.cardId,
+        'status': this.status,
+        'realName': this.userNameInput,
+        'mobile': this.phoneNumInput,
+        'firstTime': this.dataValue ? this.dataValue[0] : null,
+        'secondTime': this.dataValue ? this.dataValue[1] : null
+      }
+
+      getActivateAuditListRequest(obj).then(res => {
+        if (res.error === 0) {
+          // success
+          this.tabData = res.content.dataList
+          // pagination
+          this.pageParams = res.content.page
+        }
+      })
+    },
+
+    // 清除输入框数据
+    clearInputDate () {
+      this.tabData = this.userNameInput = this.phoneNumInput = this.dataValue = null
+    },
+
+    // 2- 数据处理
+    handleStatus (newData) {
+      this.clearInputDate()
+      console.log(newData)
+      switch (newData) {
+        case 'first':
+          this.status = 1
+          break
+        case 'second':
+          this.status = 2
+          break
+        case 'third':
+          this.status = 3
+          break
+      }
+      // 重新加载数据
+      this.defaultData()
     },
     search (data) {
       console.log(data)
+      this.defaultData()
     },
-    // 数据处理
-    handleToData (newData) {
-      switch (newData) {
-        case 'first':
-          this.tabData = this.tabOneData
-          break
-        case 'second':
-          this.tabData = this.tabTwoData
-          break
-        case 'third':
-          this.tabData = this.tabThreeData
-          break
-      }
-    },
+
     // 是否通过点击
-    handleToIsAdopt (flag) {
+    handleToIsAdopt (flag, item) {
+      console.log(flag, item.id, item.cardNo)
       if (flag === 0) {
+        // pass
+        let obj = {
+          'id': item.id,
+          'cardNo': item.cardNo
+        }
+        passActivateAuditRequest(obj).then(res => {
+          if (res.error === 0) {
+            // success message
+            this.$message.success(this.$t('memberCard.auditOption'))
+            this.defaultData()
+          }
+        })
+      } else if (flag === 1) {
+        // reject
+        let obj = {
+          'id': item.id,
+          'refuseDesc': this.refuseDesc
+        }
 
-      } else {
-
+        rejectActivateAudit(obj).then(res => {
+          if (res.error === 0) {
+            // success message
+            this.$message.success(this.$t('memberCard.auditOption'))
+            this.defaultData()
+          }
+        })
       }
     }
   }
@@ -269,6 +317,12 @@ export default {
           flex-wrap: wrap;
           float: left;
         }
+        li {
+          float: left;
+          padding: 10px 0 0 0;
+          flex: 0 1 33.3%;
+        }
+
         .operate_box {
           width: 20%;
           border-left: 1px solid #eee;
