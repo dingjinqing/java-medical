@@ -324,15 +324,9 @@ export default {
         console.log(res)
         this.centerDialogVisible = false
         if (res.error === 0) {
-          this.$message({
-            message: '保存成功',
-            type: 'success'
-          })
+          this.$message.success('保存成功')
         } else {
-          this.$message({
-            message: res.message,
-            type: 'warning'
-          })
+          this.$message.error(res.message)
         }
       }).catch(() => {
         this.$message.error('保存失败')
@@ -395,16 +389,10 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '开始提交'
-            })
+            this.$message.success('开始提交')
             this.loadingUp()
           }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消提交'
-            })
+            this.$message.success('已取消提交')
           })
         } if (res.error === 0) {
           this.loadingUp()
