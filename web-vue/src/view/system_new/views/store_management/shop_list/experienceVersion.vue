@@ -332,7 +332,7 @@
               <el-button
                 class="xbutton"
                 type="text"
-                @click="ShowRenew(scope.row.shopId)"
+                @click="ShowRenew(scope.row)"
               >查看续费</el-button>
               <br>
               <el-button
@@ -413,6 +413,7 @@
               class="time_change"
               v-model="year"
               @change="changeExpireTime"
+              :min="0"
               style="width:8%"
             ></el-input> 年 <el-input
               size="mini"
@@ -422,6 +423,7 @@
               v-model="month"
               @change="changeExpireTime"
               style="width:8%"
+              :min="0"
             ></el-input>月
           </li>
           <li>
@@ -453,6 +455,7 @@
                 v-model="send_year"
                 @change="changeExpireTime"
                 style="width:8%"
+                :min="0"
               ></el-input><span v-if="rend_show">年</span>
               <el-input
                 v-if="rend_show"
@@ -463,6 +466,7 @@
                 v-model="send_month"
                 @change="changeExpireTime"
                 style="width:8%"
+                :min="0"
               ></el-input><span v-if="rend_show">月</span>
             </span>
 
@@ -528,6 +532,9 @@
 import { shopSearchRequest, upEnableRequest, upBottomRequest, renewShopRequest } from '@/api/system/shopList.js'
 export default {
   name: 'experienceVersion',
+  components: {
+    shopRenenwList: () => import('./shopRenenwList')
+  },
   data () {
     return {
       state: [
@@ -620,11 +627,11 @@ export default {
         label: '无'
       },
       {
-        value: 2,
+        value: 1,
         label: '时间'
       },
       {
-        value: 3,
+        value: 2,
         label: '功能'
       }
       ],
@@ -956,13 +963,13 @@ export default {
     },
     changeSend (data) {
       console.log(data)
-      if (data === 1) {
+      if (data === 0) {
         this.rend_show = false
         this.send_function_show = false
-      } if (data === 2) {
+      } if (data === 1) {
         this.rend_show = true
         this.send_function_show = false
-      } if (data === 3) {
+      } if (data === 2) {
         this.rend_show = false
         this.send_function_show = true
       }
@@ -1032,6 +1039,16 @@ export default {
           appId: data.appId
         }
       })
+    },
+    ShowRenew (data) {
+      console.log('点击续费')
+      let params = {
+        'shopId': data.shopId,
+        'sysId': data.sysId,
+        'shopName': data.shopName,
+        'flag': 5
+      }
+      this.$emit('sendShopId', params)
     }
   }
 }

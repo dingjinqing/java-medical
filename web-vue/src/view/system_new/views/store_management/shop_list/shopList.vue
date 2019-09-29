@@ -1,64 +1,73 @@
 <template>
-  <el-tabs
-    v-model="tabActive"
-    type="border-card"
-    class="tab"
-    @tab-click="handleClick"
-  >
-    <el-tab-pane
-      :label="$t('shopList.title.experienceVersion')"
-      name="first"
+  <div>
+    <el-tabs
+      v-model="tabActive"
+      type="border-card"
+      class="tab"
+      @tab-click="handleClick"
+      v-if="!isShopRenenw"
     >
-      <experienceVersion
-        v-if="firstShow"
-        @sendShopId="show"
-        :shopType="shopTypes"
-      />
-    </el-tab-pane>
-    <el-tab-pane
-      :label="$t('shopList.title.payVersion')"
-      name="second"
-    >
-      <experienceVersion
-        v-if="secondShow"
-        @sendShopId="show"
-        :shopType="shopTypes"
-      />
-      <!-- <payVersion /> -->
-    </el-tab-pane>
-    <el-tab-pane
-      :label="$t('shopList.title.newShop')"
-      name="third"
-      v-if="isShowShopList"
-      @getUserName="revice()"
-    >
-      <newShop />
-    </el-tab-pane>
+      <el-tab-pane
+        :label="$t('shopList.title.experienceVersion')"
+        name="first"
+      >
+        <experienceVersion
+          v-if="firstShow"
+          @sendShopId="show"
+          :shopType="shopTypes"
+        />
+      </el-tab-pane>
+      <el-tab-pane
+        :label="$t('shopList.title.payVersion')"
+        name="second"
+      >
+        <experienceVersion
+          v-if="secondShow"
+          @sendShopId="show"
+          :shopType="shopTypes"
+        />
+        <!-- <payVersion /> -->
+      </el-tab-pane>
+      <el-tab-pane
+        :label="$t('shopList.title.newShop')"
+        name="third"
+        v-if="isShowShopList"
+        @getUserName="revice()"
+      >
+        <newShop />
+      </el-tab-pane>
 
-    <el-tab-pane
-      :label="$t('shopList.title.editShop')"
-      name="fourth"
-      v-if="isEditShop"
-    >
-      <editShop
-        :editParam="editParam"
-        @goHome="show"
-      />
-    </el-tab-pane>
-  </el-tabs>
+      <el-tab-pane
+        :label="$t('shopList.title.editShop')"
+        name="fourth"
+        v-if="isEditShop"
+      >
+        <editShop
+          :editParam="editParam"
+          @goHome="show"
+        />
+      </el-tab-pane>
+    </el-tabs>
+    <shopRenenwList
+      v-if="isShopRenenw"
+      @sendShopId="show"
+      :sendShowReData="sendShowRe"
+    />
+  </div>
 </template>
 
 <script>
 import experienceVersion from './experienceVersion.vue'
 import newShop from './newShop'
 import editShop from './editShop'
-
+import shopRenenwList from './shopRenenwList'
 export default {
   name: 'shopList',
   components: {
     experienceVersion,
     newShop,
-    editShop
+    editShop,
+    shopRenenwList
   },
   data () {
     return {
@@ -68,7 +77,10 @@ export default {
       editParam: null,
       shopTypes: '2',
       firstShow: false,
-      secondShow: true
+      secondShow: true,
+      isShopRenenw: false,
+      sendShowRe: null
+
     }
   },
   mounted () {
@@ -98,6 +110,11 @@ export default {
         }
         if (data.flag === 1) {
           this.tabActive = 'first'
+        }
+        if (data.flag === 5) {
+          this.$store.commit('UPDATE_BREADCRUMB_TITLE', '店铺续费明细')
+          this.isShopRenenw = true
+          this.sendShowRe = data
         }
       }
     },

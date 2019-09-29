@@ -69,3 +69,12 @@ export function renewShopRequest (data) {
     data: data
   })
 }
+
+// 店铺续费列表
+export function renewShopListRequest (data) {
+  return service({
+    url: '/api/system/shop/renew/queryList',
+    method: 'post',
+    data: data
+  })
+}
