@@ -102,18 +102,30 @@
         align="center"
         :label="$t('shopAccountList.ashopAccountList.addTime')"
       >
+        <template slot-scope="scope">
+          <div>{{moment(scope.row.addTime).format('YYYY-MM-DD')}}</div>
+          <div>{{moment(scope.row.addTime).format('HH:mm:ss')}}</div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="buyTime"
         align="center"
         :label="$t('shopAccountList.ashopAccountList.buyTime')"
       >
+        <template slot-scope="scope">
+          <div v-show="scope.row.buyTime!==null">{{moment(scope.row.buyTime).format('YYYY-MM-DD')}}</div>
+          <div v-show="scope.row.buyTime!==null">{{moment(scope.row.buyTime).format('HH:mm:ss')}}</div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="endTime"
         align="center"
         :label="$t('shopAccountList.ashopAccountList.endTime')"
       >
+        <template slot-scope="scope">
+          <div v-show="scope.row.endTime!==null">{{moment(scope.row.endTime).format('YYYY-MM-DD')}}</div>
+          <div v-show="scope.row.endTime!==null">{{moment(scope.row.endTime).format('HH:mm:ss')}}</div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="renewMoney"

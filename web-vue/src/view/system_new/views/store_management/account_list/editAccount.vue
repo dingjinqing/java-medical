@@ -223,6 +223,8 @@ export default {
           this.select.city = Number(this.formData.cityCode)
           this.select.area = Number(this.formData.districtCode)
           this.showDis = true
+          console.log('结果')
+          console.log(this.formData)
         } else {
           this.showDis = true
           this.$message.error(res.message)
