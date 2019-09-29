@@ -106,10 +106,12 @@ export default {
         this.shopTypes = '1'
         this.firstShow = true
         this.secondShow = false
+        this.isShowShopList = false
       } if (this.tabActive === 'second') {
         this.shopTypes = '2'
         this.firstShow = false
         this.secondShow = true
+        this.isShowShopList = false
       }
     }
   },
