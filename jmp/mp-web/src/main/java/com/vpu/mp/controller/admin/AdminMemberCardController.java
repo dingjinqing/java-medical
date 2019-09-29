@@ -21,6 +21,8 @@ import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
@@ -249,5 +251,14 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success();
 	}
 
-	
+	/**
+	 * 查询会员卡订单
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/card/order/list")
+	public JsonResult getCardConsumeOrderList(@RequestBody CardConsumeParam param) {
+		PageResult<CardConsumeVo> results = shop().member.card.getCardConsumeOrderList(param);
+		return success(results);
+	}
 }
