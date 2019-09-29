@@ -15,6 +15,10 @@ public class ActiveAuditParam {
 	public Integer pageRows;
 	/** -当前页 */
 	public Integer currentPage;
+	// id
+	public Integer id;
+	// 会员卡号
+	public String cardNo;
 	// 会员卡id
 	private Integer cardId;
 	/** 审核状态 1审核中 2通过 3拒绝  {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.UNDER_REVIEW}*/
@@ -27,5 +31,7 @@ public class ActiveAuditParam {
 	private Timestamp firstTime;
 	// 申请时间 - 结束
 	private Timestamp secondTime;
+	// 审核不通过原因
+	private String refuseDesc;
 
 }

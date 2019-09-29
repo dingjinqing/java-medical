@@ -7,6 +7,7 @@ import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -256,7 +257,7 @@ public class CardDaoService extends ShopBaseService {
 	}
 	
 	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
-		SelectJoinStep<?> select = db().select(CARD_EXAMINE.ID,CARD_EXAMINE.REAL_NAME,CARD_EXAMINE.STATUS,CARD_EXAMINE.CREATE_TIME,CARD_EXAMINE.CID,CARD_EXAMINE.EDUCATION,
+		SelectJoinStep<?> select = db().select(CARD_EXAMINE.ID,CARD_EXAMINE.REAL_NAME,CARD_EXAMINE.CARD_NO,CARD_EXAMINE.STATUS,CARD_EXAMINE.CREATE_TIME,CARD_EXAMINE.CID,CARD_EXAMINE.EDUCATION,
 				CARD_EXAMINE.INDUSTRY_INFO,USER.MOBILE,USER.USERNAME)
 			.from(CARD_EXAMINE.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID)));
 		buildOptionsForActivateAudit(select,param);
@@ -294,6 +295,25 @@ public class CardDaoService extends ShopBaseService {
 		if(param.getSecondTime() != null) {
 			select.where(CARD_EXAMINE.CREATE_TIME.le(param.getSecondTime()));
 		}
+	}
+	
+	/**
+	 * 更新审核会员卡表
+	 * @param record
+	 */
+	public void updateCardExamine(CardExamineRecord record) {
+		db().executeUpdate(record, CARD_EXAMINE.ID.eq(record.getId()));
+	}
+	/**
+	 * 更新user_card 激活时间
+	 * @param cardNo
+	 * @param now
+	 */
+	public void updateUserCardByCardNo(String cardNo, Timestamp now) {
+		db().update(USER_CARD)
+			.set(USER_CARD.ACTIVATION_TIME, now)
+			.where(USER_CARD.CARD_NO.eq(cardNo))
+			.execute();
 	}
 	
 

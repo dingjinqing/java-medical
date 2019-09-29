@@ -19,6 +19,8 @@ public class ActiveAuditVo {
 	private String realName;
 	// 状态
 	private Byte status;
+	// 会员卡号
+	private String cardNo;
 	// 身份证号
 	private String cid;
 	// 受教育程度 - 状态信号

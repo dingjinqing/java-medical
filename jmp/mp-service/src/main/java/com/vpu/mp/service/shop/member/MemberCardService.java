@@ -53,7 +53,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
 import static org.jooq.impl.DSL.count;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -79,6 +80,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -1468,6 +1470,57 @@ public class MemberCardService extends ShopBaseService {
 		}
 		return results;
 		
+	}
+
+	/**
+	 * 审核通过
+	 * @param param
+	 * @return
+	 */
+	public void passActivateAudit(ActiveAuditParam param) {
+		this.transaction(()->{
+			Timestamp now = DateUtil.getSqlTimestamp();
+			logger().info("申请激活会员卡通过: "+ now);
+			// 更新card_examine 信息
+			CardExamineRecord record = setPassData(param.getId(),now);
+			cardDao.updateCardExamine(record);
+			// 更新激活
+			cardDao.updateUserCardByCardNo(param.getCardNo(),now);
+		});
+	}
+	
+	/**
+	 * 审核通过数据
+	 * @param id
+	 * @return
+	 */
+	private CardExamineRecord setPassData(Integer id,Timestamp now) {
+		CardExamineRecord record = new CardExamineRecord();
+		record.setId(id);
+		record.setPassTime(now);
+		record.setStatus(VERIFIED);
+		return record;
+	}
+	/**
+	 * 审核不通过数据
+	 * @param 
+	 * @return
+	 */
+	private CardExamineRecord setRejectData(ActiveAuditParam param) {
+		CardExamineRecord record = new CardExamineRecord();
+		record.setId(param.getId());
+		record.setRefuseTime(DateUtil.getSqlTimestamp());
+		record.setRefuseDesc(param.getRefuseDesc());
+		record.setStatus(REFUSED);
+		return record;
+	}
+	/**
+	 * 审核不通过
+	 * @param param
+	 */
+	public void rejectActivateAudit(ActiveAuditParam param) {
+		CardExamineRecord record = setRejectData(param);
+		cardDao.updateCardExamine(record);
 	}
 		
 }
