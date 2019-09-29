@@ -486,7 +486,7 @@
             </span>
 
           </li>
-          <li>
+          <li style="margin-left: 2%;">
             <label class="fl">有效期：</label>
             <el-date-picker
               v-model="newExpire_time"
@@ -499,7 +499,7 @@
             >
             </el-date-picker>
           </li>
-          <li>
+          <li style="margin-left: 4%;">
             <label class="fl">备注：</label>
             <el-input
               style="width:20%"
@@ -1105,11 +1105,5 @@ export default {
   padding: 15px 0;
   text-align: center;
   margin-bottom: 20px;
-}
-.btn_conf {
-  background: #86a7cb;
-  color: #fff;
-  margin-left: 20%;
-  margin-right: 3%;
 }
 </style>
