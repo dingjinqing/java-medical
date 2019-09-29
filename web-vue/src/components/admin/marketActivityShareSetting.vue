@@ -1,13 +1,7 @@
-<!--
-* 活动分享设置模块
-*
-* @author 赵鑫
--->
-
 <!--活动分享模块-->
 <template>
   <div>
-    <div
+    <el-form-item
       :label="$t('marketCommon.activitySharing') + ':'"
       prop=''
     >
@@ -97,7 +91,7 @@
           @handleSelectImg='handleSelectImg'
         />
       </section>
-    </div>
+    </el-form-item>
   </div>
 </template>
 

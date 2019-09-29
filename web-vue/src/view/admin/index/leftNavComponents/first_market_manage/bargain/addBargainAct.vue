@@ -177,12 +177,6 @@
 
           <!-- 砍到指定金额计算部分内容区域 -->
           <div v-if="this.param.bargainType==0">
-            <!-- <el-form-item
-              label="帮砍设置："
-              prop=""
-            >
-              <el-checkbox v-model="checked">帮砍好友需要授权手机号才可以参与砍价</el-checkbox>
-            </el-form-item> -->
 
             <el-form-item
               :label="$t('marketCommon.shippingSetting')+':'"
@@ -263,13 +257,6 @@
               </el-radio-group>
             </el-form-item>
 
-            <!-- <el-form-item
-              label="帮砍设置："
-              prop=""
-            >
-              <el-checkbox v-model="checked">帮砍好友需要授权手机号才可以参与砍价</el-checkbox>
-            </el-form-item> -->
-
             <el-form-item
               :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
@@ -281,27 +268,97 @@
             </el-form-item>
           </div>
 
-          <!-- 公共更多配置模块部分 -->
-          <el-form-item
-            :label="$t('addBargainAct.friendsBargainCoupon')+':'"
-            prop=""
+          <!-- 收起、展开更多配置 -->
+          <div
+            @click="handleToChangeArror()"
+            style="margin: 0 0 10px 90px"
           >
-            <!-- 好友砍价优惠券部分 -->
-            <el-card class="box-card">
-              <div class="fontColor">{{$t('addBargainAct.friendsBargainCouponTip')}}</div>
-              <div class="middleContainer">
-                <div>
+            <div
+              v-if="arrorFlag"
+              style="color:rgb(90, 139, 255);cursor:pointer"
+            >{{$t('membershipIntroduction.more')}}&nbsp;<img :src="ArrowArr[0].img_1"></div>
+            <div
+              v-if="!arrorFlag"
+              style="color:rgb(90, 139, 255);cursor:pointer"
+            >{{$t('membershipIntroduction.retract')}}&nbsp;<img :src="ArrowArr[1].img_2"></div>
+          </div>
+
+          <!-- 公共更多配置模块部分 -->
+          <div v-if='!arrorFlag'>
+            <el-form-item
+              :label="$t('addBargainAct.friendsBargainCoupon')+':'"
+              prop=""
+            >
+              <!-- 好友砍价优惠券部分 -->
+              <el-card class="box-card">
+                <div class="fontColor">{{$t('addBargainAct.friendsBargainCouponTip')}}</div>
+                <div class="middleContainer">
+                  <div>
+                    <div
+                      v-for="(item,index) in mrkingVoucherObjs"
+                      :key="index"
+                      class="addInfo"
+                      style="margin-right: 5px;"
+                    >
+                      <section
+                        class="couponImgWrapper"
+                        style="line-height:normal"
+                      >
+
+                        <div class="coupon_list_top">
+                          <span>￥</span>
+                          <span class="number">{{item.denomination}}</span>
+                        </div>
+                        <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                        <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                        <div
+                          class="coupon_list_bottom"
+                          style="font-size:12px"
+                        >领取</div>
+                      </section>
+                      <span
+                        @click="deleteCouponImg(index)"
+                        class="deleteIcon"
+                      >×</span>
+                    </div>
+                  </div>
+
                   <div
-                    v-for="(item,index) in mrkingVoucherObjs"
+                    class="addInfo"
+                    @click="handleToCallDialog1()"
+                    v-if="mrkingVoucherObjs.length < 5"
+                  >
+                    <el-image
+                      fit="scale-down"
+                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                      style="width: 78px;height:78px;cursor:pointer"
+                    ></el-image>
+                    <p>{{$t('addBargainAct.addCoupon')}}</p>
+                  </div>
+                </div>
+
+                <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
+              </el-card>
+            </el-form-item>
+
+            <el-form-item
+              :label="$t('addBargainAct.encouragementAward')+':'"
+              prop=""
+            >
+              <!-- 鼓励奖优惠券部分 -->
+              <el-card class="box-card">
+                <div class="fontColor">{{$t('addBargainAct.encouragementAwardTip')}}</div>
+                <div class="middleContainer">
+                  <div
+                    v-for="(item,index) in rewardCouponObjs"
                     :key="index"
                     class="addInfo"
                     style="margin-right: 5px;"
                   >
                     <section
                       class="couponImgWrapper"
-                      style="line-height:normal"
+                      style="line-height: normal"
                     >
-
                       <div class="coupon_list_top">
                         <span>￥</span>
                         <span class="number">{{item.denomination}}</span>
@@ -314,85 +371,32 @@
                       >领取</div>
                     </section>
                     <span
-                      @click="deleteCouponImg(index)"
+                      @click="deleteCouponImg2(index)"
                       class="deleteIcon"
                     >×</span>
                   </div>
-                </div>
 
-                <div
-                  class="addInfo"
-                  @click="handleToCallDialog1()"
-                  v-if="mrkingVoucherObjs.length < 5"
-                >
-                  <el-image
-                    fit="scale-down"
-                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                    style="width: 78px;height:78px;cursor:pointer"
-                  ></el-image>
-                  <p>{{$t('addBargainAct.addCoupon')}}</p>
-                </div>
-              </div>
-
-              <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
-            </el-card>
-          </el-form-item>
-
-          <el-form-item
-            :label="$t('addBargainAct.encouragementAward')+':'"
-            prop=""
-          >
-            <!-- 鼓励奖优惠券部分 -->
-            <el-card class="box-card">
-              <div class="fontColor">{{$t('addBargainAct.encouragementAwardTip')}}</div>
-              <div class="middleContainer">
-                <div
-                  v-for="(item,index) in rewardCouponObjs"
-                  :key="index"
-                  class="addInfo"
-                  style="margin-right: 5px;"
-                >
-                  <section
-                    class="couponImgWrapper"
+                  <div
+                    class="addInfo"
+                    @click="handleToCallDialog2()"
+                    v-if="rewardCouponObjs.length < 5"
                     style="line-height: normal"
                   >
-                    <div class="coupon_list_top">
-                      <span>￥</span>
-                      <span class="number">{{item.denomination}}</span>
-                    </div>
-                    <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
-                    <div
-                      class="coupon_list_bottom"
-                      style="font-size:12px"
-                    >领取</div>
-                  </section>
-                  <span
-                    @click="deleteCouponImg2(index)"
-                    class="deleteIcon"
-                  >×</span>
+                    <el-image
+                      fit="scale-down"
+                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                      style="width: 78px;height:78px;cursor:pointer"
+                    ></el-image>
+                    <p>{{$t('addBargainAct.addCoupon')}}</p>
+                  </div>
                 </div>
+                <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
+              </el-card>
+            </el-form-item>
 
-                <div
-                  class="addInfo"
-                  @click="handleToCallDialog2()"
-                  v-if="rewardCouponObjs.length < 5"
-                  style="line-height: normal"
-                >
-                  <el-image
-                    fit="scale-down"
-                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                    style="width: 78px;height:78px;cursor:pointer"
-                  ></el-image>
-                  <p>{{$t('addBargainAct.addCoupon')}}</p>
-                </div>
-              </div>
-              <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
-            </el-card>
-          </el-form-item>
-
-          <!-- 引入活动分享模块 -->
-          <actShare :shareConfig="shareConfig" />
+            <!-- 引入活动分享模块 -->
+            <actShare :shareConfig="shareConfig" />
+          </div>
 
         </el-form>
 
@@ -502,7 +506,16 @@ export default {
       couponIdList: [],
       showCouponDialog: false,
       tuneUpChooseGoods: false,
-      goodsIdList: []
+      goodsIdList: [],
+      arrorFlag: true,
+      ArrowArr: [
+        {
+          img_1: this.$imageHost + '/image/admin/show_more.png'
+        },
+        {
+          img_2: this.$imageHost + '/image/admin/hid_some.png'
+        }
+      ]
     }
   },
   methods: {
@@ -529,8 +542,6 @@ export default {
         }
         this.rewardCouponObjs = data
       } else {
-        // console.log(this.mrkingVoucherObjs)
-        // console.log(this.mrkingVoucherObjs)
         if (this.mrkingVoucherObjs.length >= 5) {
           return
         }
@@ -623,6 +634,10 @@ export default {
         res.push(item.id)
       })
       return res
+    },
+    // 改变箭头事件
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
     }
   }
 }

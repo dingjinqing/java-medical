@@ -2,82 +2,91 @@
   <div class="content">
     <div class="main">
       <div class="filters">
-        <div class="filters_item"><span>{{$t('marketCommon.goodsName')}}:</span>
-          <el-input
-            v-model="requestParams.goodsName"
-            :placeholder="$t('marketCommon.goodsName')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.orderSn')}}:</span>
-          <el-input
-            v-model="requestParams.orderSn"
-            :placeholder="$t('marketCommon.orderSn')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.orderStatus')}}:</span>
-          <el-select
-            v-model="requestParams.selectedOrderStatus"
-            :placeholder="$t('marketCommon.selectPlaceholder')"
-            size="small"
-            class="default_input"
-          >
-            <el-option
-              v-for="item in $t('order.orderStatusList')"
-              :key="item[0]"
-              :label="item[1]"
-              :value="item[0]"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.consigneeName')}}:</span>
-          <el-input
-            v-model="requestParams.consignee"
-            :placeholder="$t('marketCommon.consigneeNamePlaceholder')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.consigneeMobile')}}:</span>
-          <el-input
-            v-model="requestParams.mobile"
-            :placeholder="$t('marketCommon.consigneeMobilePlaceholder')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.orderTime')}}:</span>
-          <el-date-picker
-            v-model="requestParams.createTimeStart"
-            type="datetime"
-            :placeholder="$t('marketCommon.orderTime')"
-            size="small"
-            class="date_picker"
-          ></el-date-picker>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.shippingAddress')}}:</span>
-          <areaLinkage
-            @areaData="handleAreaData"
-            style="width:365px;"
-          />
-        </div>
-        <div class="filters_item">
-          <el-button
-            @click="initDataList()"
-            type="primary"
-            size="small"
-          >{{$t('marketCommon.filter')}}</el-button>
-          <el-button
-            type="default"
-            size="small"
-          >{{$t('marketCommon.export')}}</el-button>
-        </div>
+        <section style="display: flex;margin-bottom: 10px;width:100%">
+          <div class="filters_item"><span>{{$t('marketCommon.goodsName')}}</span>
+            <el-input
+              v-model="requestParams.goodsName"
+              :placeholder="$t('marketCommon.goodsName')"
+              size="small"
+              class="default_input"
+            ></el-input>
+          </div>
+          <div class="filters_item"><span>{{$t('marketCommon.orderSn')}}</span>
+            <el-input
+              v-model="requestParams.orderSn"
+              :placeholder="$t('marketCommon.orderSn')"
+              size="small"
+              class="default_input"
+            ></el-input>
+          </div>
+          <div class="filters_item"><span>{{$t('marketCommon.orderStatus')}}</span>
+            <el-select
+              v-model="requestParams.selectedOrderStatus"
+              :placeholder="$t('marketCommon.selectPlaceholder')"
+              size="small"
+              class="default_input"
+            >
+              <el-option
+                v-for="item in $t('order.orderStatusList')"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
+              ></el-option>
+            </el-select>
+          </div>
+        </section>
+        <section style="display: flex;margin-bottom: 10px;width:100%">
+          <div class="filters_item"><span>{{$t('marketCommon.consigneeName')}}</span>
+            <el-input
+              v-model="requestParams.consignee"
+              :placeholder="$t('marketCommon.consigneeNamePlaceholder')"
+              size="small"
+              class="default_input"
+            ></el-input>
+          </div>
+          <div class="filters_item"><span>{{$t('marketCommon.consigneeMobile')}}</span>
+            <el-input
+              v-model="requestParams.mobile"
+              :placeholder="$t('marketCommon.consigneeMobilePlaceholder')"
+              size="small"
+              class="default_input"
+            ></el-input>
+          </div>
+          <div class="filters_item"><span>{{$t('marketCommon.orderTime')}}</span>
+            <el-date-picker
+              v-model="requestParams.createTimeStart"
+              type="datetime"
+              :placeholder="$t('marketCommon.orderTime')"
+              size="small"
+              class="date_picker"
+            ></el-date-picker>
+          </div>
+        </section>
+        <section style="display: flex;width:100%">
+          <div
+            class="filters_item"
+            style="width: 485px"
+          ><span>{{$t('marketCommon.shippingAddress')}}</span>
+            <areaLinkage
+              @areaData="handleAreaData"
+              style="width:365px;"
+            />
+          </div>
+          <div class="filters_item">
+            <el-button
+              @click="initDataList()"
+              type="primary"
+              size="small"
+            >{{$t('marketCommon.filter')}}</el-button>
+            <el-button
+              type="default"
+              size="small"
+            >{{$t('marketCommon.export')}}</el-button>
+          </div>
+        </section>
       </div>
-      <div class="table_box">
 
+      <div class="table_box">
         <el-table
           v-loading="loading"
           :data="tableData"
@@ -262,16 +271,18 @@ export default {
     line-height: 32px;
     margin-bottom: 10px;
     background-color: #fff;
-    padding: 10px 15px 0 0;
+    padding: 20px 0;
     flex-wrap: wrap;
     .filters_item {
-      max-width: 465px;
+      width: 320px;
       display: flex;
       margin-left: 15px;
       margin-bottom: 10px;
+      text-align: right;
       > span {
-        min-width: 100px;
+        width: 85px;
         font-size: 14px;
+        margin-right: 20px;
       }
     }
   }
@@ -320,10 +331,10 @@ export default {
     }
   }
   .default_input {
-    width: 150px;
+    width: 175px;
   }
   .date_picker {
-    width: 185px;
+    width: 175px;
   }
   .address_choose {
     margin-left: 10px;
