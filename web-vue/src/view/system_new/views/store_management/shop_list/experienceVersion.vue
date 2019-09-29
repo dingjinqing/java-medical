@@ -987,10 +987,12 @@ export default {
       }
     },
     checkData () {
-      if (this.isEmpty(this.renewMoney)) {
-        this.$message.error('金额不能为空')
-        this.$refs.renewMoney.$el.querySelector('input').focus()
-        return false
+      if (this.renew_money_show === true) {
+        if (this.isEmpty(this.renewMoney)) {
+          this.$message.error('金额不能为空')
+          this.$refs.renewMoney.$el.querySelector('input').focus()
+          return false
+        }
       }
       if (this.isEmpty(this.newExpire_time)) {
         this.$message.error('有效期不能为空')
