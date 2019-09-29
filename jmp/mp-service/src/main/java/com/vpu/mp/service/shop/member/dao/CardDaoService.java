@@ -256,7 +256,7 @@ public class CardDaoService extends ShopBaseService {
 	}
 	
 	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
-		SelectJoinStep<?> select = db().select(CARD_EXAMINE.ID,CARD_EXAMINE.REAL_NAME,CARD_EXAMINE.CREATE_TIME,CARD_EXAMINE.CID,CARD_EXAMINE.EDUCATION,
+		SelectJoinStep<?> select = db().select(CARD_EXAMINE.ID,CARD_EXAMINE.REAL_NAME,CARD_EXAMINE.STATUS,CARD_EXAMINE.CREATE_TIME,CARD_EXAMINE.CID,CARD_EXAMINE.EDUCATION,
 				CARD_EXAMINE.INDUSTRY_INFO,USER.MOBILE,USER.USERNAME)
 			.from(CARD_EXAMINE.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID)));
 		buildOptionsForActivateAudit(select,param);
