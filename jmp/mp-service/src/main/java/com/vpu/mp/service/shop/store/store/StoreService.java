@@ -1,21 +1,5 @@
 package com.vpu.mp.service.shop.store.store;
 
-import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -33,6 +17,17 @@ import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.Store.STORE;
+import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
 /**
  * @author 王兵兵
@@ -41,23 +36,23 @@ import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
  */
 @Service
 public class StoreService extends ShopBaseService {
-	
+
 	/**
 	 * 核销员
 	 */
 	@Autowired public StoreVerifierService storeVerifier;
-	
-	/**
+
+    /**
 	 * 门店商品
 	 */
 	@Autowired public StoreGoodsService storeGoods;
-	
-	/**
+
+    /**
 	 * 门店服务
 	 */
 	@Autowired public StoreServiceService storeService;
-	
-	/**
+
+    /**
 	 * 门店分组
 	 */
 	@Autowired public StoreGroupService storeGroup;
@@ -71,13 +66,13 @@ public class StoreService extends ShopBaseService {
 	 * 服务预约（serviceOrder）
 	 */
 	@Autowired public ServiceOrderService serviceOrder;
-	
-	/**
+
+    /**
 	 * 服务评价管理
 	 */
 	@Autowired public ServiceCommentService serviceComment;
-	
-	/**
+
+    /**
 	 * 门店列表分页查询
 	 * @param param
 	 * @return StorePageListVo
@@ -85,11 +80,11 @@ public class StoreService extends ShopBaseService {
 	public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
             STORE.STORE_ID,STORE.STORE_NAME,STORE.POS_SHOP_ID,STORE_GROUP.GROUP_NAME,STORE.PROVINCE_CODE,STORE.CITY_CODE,STORE.DISTRICT_CODE,STORE.ADDRESS,STORE.MANAGER,
-				STORE.MOBILE,STORE.OPENING_TIME,STORE.CLOSE_TIME,STORE.BUSINESS_STATE
+            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK
 				).from(STORE)
 				.leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
-				
-		select = this.buildOptions(select, param);
+
+        select = this.buildOptions(select, param);
 		select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListVo.class);
 	}
@@ -116,8 +111,8 @@ public class StoreService extends ShopBaseService {
 		}
 		return select;
 	}
-	
-	/**
+
+    /**
 	 * 新增门店
 	 * @param store
 	 * @return
@@ -127,8 +122,8 @@ public class StoreService extends ShopBaseService {
 		this.assign(store,record);
 		return db().executeInsert(record) > 0 ? true : false;
 	}
-	
-	/**
+
+    /**
 	 * 更新门店
 	 * @param store
 	 * @return
@@ -138,8 +133,8 @@ public class StoreService extends ShopBaseService {
         this.assign(store,record);
 		return db().executeUpdate(record) > 0 ? true : false;
 	}
-	
-	/**
+
+    /**
 	 * 删除门店
 	 * @param StorePojo
 	 * @return
@@ -147,8 +142,8 @@ public class StoreService extends ShopBaseService {
 	public Boolean delStore(Integer storeId) {
 		return db().update(STORE).set(STORE.DEL_FLAG,DelFlag.DISABLE.getCode()).where(STORE.STORE_ID.eq(storeId)).execute() > 0 ? true : false;
 	}
-	
-	/**
+
+    /**
 	 * 取单个门店信息
 	 * @param Integer
 	 * @return StorePojo
@@ -156,8 +151,8 @@ public class StoreService extends ShopBaseService {
 	public StorePojo getStore(Integer storeId) {
 		return db().fetchOne(STORE,STORE.STORE_ID.eq(storeId)).into(StorePojo.class);
 	}
-	
-	/**
+
+    /**
 	 * 检查门店编码是否可用,返回true表示可用
 	 * @param Integer
 	 * @return Boolean
@@ -271,8 +266,8 @@ public class StoreService extends ShopBaseService {
 			.fetch()
 			.into(StoreBasicVo.class);
 	}
-	
-	/**
+
+    /**
 	 * 获取门店名称
 	 * @param member
 	 * @return

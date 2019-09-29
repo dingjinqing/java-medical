@@ -29,4 +29,9 @@ public class StorePageListVo {
 	public String closeTime;
 	/**营业状态1:营业，0:关店*/
 	public Byte businessState;
+
+    /**
+     * The Auto pick.是否自提设置，0否，1是
+     */
+    public Byte autoPick;
 }
