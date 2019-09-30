@@ -1,4 +1,6 @@
 {
-  "enablePullDownRefresh": true
-  
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "v-decorate": "/components/decorate/decorate/index"
+  }
 }

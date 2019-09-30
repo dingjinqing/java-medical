@@ -5,6 +5,7 @@ var init = {
     status: 0,
   },
   onLoad(options) {
+    console.log(options)
     this._options = options;
     this.currentUrl = util.getCurrentPath(options);
     this.user_id = util.getCache("user_id");
@@ -14,23 +15,24 @@ var init = {
       loading: this.loading
     });
     console.log("init onLoad path: ", this.currentUrl);
- //暂时注释
-    // if (this.loading) {
-    //   if (!this.isBottomPage()) {
-    //     var url = "/pages/bottom/bottom?url=" + encodeURIComponent(this.currentUrl);
-    //     util.jumpLink(url, "reLaunch");
-    //   } else {
-    //     this.loadSetting(options);
-    //   }
-    //   return false;
-    // }
-   
-    // if (this.bottom.status == 0 && this.isBottomPage()) {
-    //   this._initRequest(options);
-    //   this.bottomPageJump(options);
-    //   // util.jumpLink('pages/index/index', "reLaunch");
-    //   return false;
-    // }
+    console.log(this.loading, this.bottom.status)
+    //暂时注释
+    if (this.loading) {
+      if (!this.isBottomPage()) {
+        var url = "/pages/bottom/bottom?url=" + encodeURIComponent(this.currentUrl);
+        util.jumpLink(url, "reLaunch");
+      } else {
+        this.loadSetting(options);
+      }
+      return false;
+    }
+    console.log(this.bottom.status, this.isBottomPage())
+    if (this.bottom.status == 0 && this.isBottomPage()) {
+      this._initRequest(options);
+      this.bottomPageJump(options);
+      // util.jumpLink('pages/index/index', "reLaunch");
+      return false;
+    }
 
     if (this.bottom.status > 0 && !this.isBottomPage()) {
       var url = "/pages/bottom/bottom?url=" + encodeURIComponent(this.currentUrl);
@@ -62,8 +64,10 @@ var init = {
   loadSetting(options) {
     var _this = this;
     var stack = [this._wxLogin(), this._getUserGlobalConfig()];
+
     if (this.user_id) stack.splice(0, 1);
-    Promise.all(stack).then(function(res) {
+    Promise.all(stack).then(function (res) {
+      console.log(res, options)
       _this.onLoad(options);
     });
     return false;
@@ -101,12 +105,12 @@ var init = {
       show_bottom: show_bottom,
       idx: idx,
       show_back: show_back,
-      show_logo:this.bottom.show_logo,
-      logo_link: this.bottom.logo_link ? this.bottom.logo_link:"",
+      show_logo: this.bottom.show_logo,
+      logo_link: this.bottom.logo_link ? this.bottom.logo_link : "",
       margin_top_nav: margin_top_nav
     }
-console.log(data)
-    data = Object.assign(data, this._getColors());    
+    console.log(data)
+    data = Object.assign(data, this._getColors());
 
     this.setData(data);
   },
@@ -114,17 +118,17 @@ console.log(data)
 
   _initRequest(options) {
     if (this.user_id && options.invite_id) { //邀请人
-      util.api("/api/wxapp/user/invite", function(res) {}, {
+      util.api("/api/wxapp/user/invite", function (res) { }, {
         invite_id: options.invite_id
       })
     }
     if (this.user_id && options.template_config_id) {
-      util.api("/api/wxapp/user/visit", function(res) {}, {
+      util.api("/api/wxapp/user/visit", function (res) { }, {
         template_config_id: options.template_config_id
       })
     }
     if (this.user_id && options.channel) { //渠道分享
-      util.api("/api/wxapp/channel/record", function(res) {}, {
+      util.api("/api/wxapp/channel/record", function (res) { }, {
         channel: options.channel
       })
     }
@@ -210,23 +214,23 @@ console.log(data)
   },
 
   _wxLogin(options) {
-    return new Promise(function(resolve) {
-      util.wxLogin(function() {
+    return new Promise(function (resolve) {
+      util.wxLogin(function () {
         resolve()
       }, options);
     });
   },
   _getUserGlobalConfig() {
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       if (util.getCache('geographic_location') == 1) {
         util.getUserLocation(function (loc) {
           util.api("/api/wxapp/cfg/bottom", function (d) {
             util.setCache('bottom', d.content);
             resolve(d.content);
           }, {
-              lat: loc ? parseFloat(loc.latitude).toFixed(5) : null,
-              lng: loc ? parseFloat(loc.longitude).toFixed(5) : null
-            }, false, false)
+            lat: loc ? parseFloat(loc.latitude).toFixed(5) : null,
+            lng: loc ? parseFloat(loc.longitude).toFixed(5) : null
+          }, false, false)
         });
       } else {
         util.api("/api/wxapp/cfg/bottom", function (d) {

@@ -1,11 +1,6 @@
 <include src="../common/header.wxml" />
-<view>这是java小程序首页装修内容</view>
-
-
 <!-- 装修 -->
 <view class='main-container' style='{{color}};padding-bottom:80rpx;'>
-  <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
-  <include src="../common/footer.wxml" />
+    <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
+    <include src="../common/footer.wxml" />
 </view>
-
-

@@ -4,7 +4,7 @@
   <view class='mp_no'>
     <image wx:if="{{imageUrl}}" src='{{imageUrl}}/image/admin/icon_mp/no_use.png' mode='widthFix'></image>
     <view wx:if="{{status == 2}}">该店铺已禁用</view>
-    <view wx:if="{{status == 1}}">该店铺已过期</view>
+    <view wx:if="{{status == 0}}">该店铺已过期</view>
     <view wx:if="{{status == 3}}">该店铺已停业</view>
     <view wx:if="{{status == 4}}">您已被禁止登录</view>
     <view class='contact_kefu'>

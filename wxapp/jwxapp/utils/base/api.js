@@ -19,6 +19,7 @@ function api(path, cb, data, content_type, shadow) {
   }
   data = _initData(data, path);
   console.log("api request:", path, data);
+  console.log(_getHeader())
   wx.request({
     url: nav.getUrl(path),
     data: data,

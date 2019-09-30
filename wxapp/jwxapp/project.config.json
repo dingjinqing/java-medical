@@ -9,16 +9,27 @@
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
-		"autoAudits": false
+		"coverView": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.8.3",
 	"appid": "wxbb38922409fdaa24",
-	"projectname": "Jwxapp",
+	"projectname": "miniprogram-1",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
 	"isGameTourist": false,
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,
@@ -37,33 +48,12 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 0,
 			"list": [
 				{
-					"id": -1,
-					"name": "index",
+					"id": 0,
+					"name": "首页",
 					"pathName": "pages/index/index",
-					"query": "",
-					"scene": null
-				},
-				{
-					"id": 1,
-					"name": "coupon",
-					"pathName": "pages/coupon/coupon",
-					"query": "",
-					"scene": null
-				},
-				{
-					"id": -1,
-					"name": "bottom",
-					"pathName": "pages/bottom/bottom",
-					"query": "",
-					"scene": null
-				},
-				{
-					"id": -1,
-					"name": "getcoupon",
-					"pathName": "pages/getCoupon/getCoupon",
 					"query": "",
 					"scene": null
 				}

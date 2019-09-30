@@ -88,7 +88,7 @@ function getTitle(pageUrl,that){
     "cardpay":"会员卡充值",
     "collect":"我的收藏",
     "comment":"商品评价",
-    "coupon":"优惠券列表",
+    "couponlist":"优惠券列表",
     "distribution":"分销中心",
     "distributionorder":"返利订单明细",
     "distributionspread":"申请分销员",
@@ -127,7 +127,7 @@ function getTitle(pageUrl,that){
     "pinlotterylist":"拼团抽奖",
     "presaleitem":"商品详情",
     "return_order_list":"退货中心",
-    "returnorder":"退货/退款申请",
+    "returnorder":"申请退货/退款",
     "returnrecord":"协商记录",
     "scancode":"扫码购",
     "codeverification":"扫码核销",
@@ -146,7 +146,6 @@ function getTitle(pageUrl,that){
     "usercardrecord":"使用记录",
     "usercardup":"升降级记录",
     "usercenter":"个人中心",
-    "usercardrenew": "会员卡续费",
     "userinfo":"编辑",
     "userqrcode":"我的二维码",
     "webview":"浏览器",
@@ -183,11 +182,8 @@ function getTitle(pageUrl,that){
     "presentlist":"礼物记录",
     "presentchoose":"礼物商品",
     // 购买历史和足迹
-    "foothistory":"我的足迹",
-    "usercardgoods":"适用商品",
-    "index":"首页"
+    "foothistory":"我的足迹"
   }
-  console.log(pageUrl);
   that.setData({
     page_title: pageList[pageUrl]
   })
