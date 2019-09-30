@@ -16,6 +16,7 @@ public class AvailCouponParam {
 	
 	/**
 	 * 当前用户ID
+	 * 暂时指定1
 	 */
 	public Integer userId=1;
 }

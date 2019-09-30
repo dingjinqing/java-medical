@@ -23,6 +23,9 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
@@ -241,7 +244,7 @@ public class CouponService extends ShopBaseService{
 	 */
 	public AvailCouponListVo getCouponByUser(AvailCouponParam param) {
 		//某用户全部优惠券
-		List<AvailCouponVo> res = db().select(CUSTOMER_AVAIL_COUPONS.ID,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.AMOUNT,CUSTOMER_AVAIL_COUPONS.START_TIME,
+		List<AvailCouponVo> res = db().select(CUSTOMER_AVAIL_COUPONS.ID,CUSTOMER_AVAIL_COUPONS.COUPON_SN,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.AMOUNT,CUSTOMER_AVAIL_COUPONS.START_TIME,
 				CUSTOMER_AVAIL_COUPONS.END_TIME,CUSTOMER_AVAIL_COUPONS.IS_USED,CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT,MRKING_VOUCHER.ACT_NAME).from(CUSTOMER_AVAIL_COUPONS
 				.leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
 				.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()))
@@ -264,5 +267,19 @@ public class CouponService extends ShopBaseService{
 			couponList.setExpiredNum(couponList.expired.size());
 		}
 		return couponList;
+	}
+	
+	/**
+	 * 优惠券详情
+	 * @param prama ：couponSn优惠券编码
+	 * @return
+	 */
+	public AvailCouponDetailVo getCouponDetail(AvailCouponDetailParam param) {
+		AvailCouponDetailVo detail = db().select(CUSTOMER_AVAIL_COUPONS.ID,CUSTOMER_AVAIL_COUPONS.COUPON_SN,CUSTOMER_AVAIL_COUPONS.TYPE,CUSTOMER_AVAIL_COUPONS.AMOUNT,CUSTOMER_AVAIL_COUPONS.START_TIME,
+				CUSTOMER_AVAIL_COUPONS.END_TIME,CUSTOMER_AVAIL_COUPONS.IS_USED,CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT,MRKING_VOUCHER.ACT_NAME).from(CUSTOMER_AVAIL_COUPONS
+				.leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
+				.where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.couponSn))
+				.fetchOne().into(AvailCouponDetailVo.class);
+		return detail;
 	}
 }

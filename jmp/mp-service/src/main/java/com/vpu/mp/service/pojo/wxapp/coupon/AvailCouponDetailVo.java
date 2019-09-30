@@ -6,12 +6,12 @@ import java.sql.Timestamp;
 import lombok.Data;
 
 /**
- * 用户优惠券列表出参
+ * 优惠券详情出参类
  * @author 常乐
- * 2019年9月25日
+ * 2019年9月27日
  */
 @Data
-public class AvailCouponVo {
+public class AvailCouponDetailVo {
 	/**
 	 * 记录ID
 	 */
@@ -22,10 +22,6 @@ public class AvailCouponVo {
 	public String actName;
 	/**
 	 * 优惠券码
-	 */
-	public String couponSn;
-	/**
-	 * 有效期开始时间
 	 */
 	public Timestamp startTime;
 	/**
@@ -49,3 +45,4 @@ public class AvailCouponVo {
 	 */
 	public Integer isUsed;
 }
+
