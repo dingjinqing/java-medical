@@ -967,18 +967,18 @@ public class OrderInfoService extends ShopBaseService {
 				.and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT, TABLE.GOODS_TYPE))
 				.and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN));
 
-		if (param.getGoodsName()!=null){
+		if (!StringUtils.isBlank(param.getGoodsName())){
 			select.where(USER.USER_ID.like(prefixLikeValue(param.getGoodsName())));
 		}
-		if (param.getMobile()!=null){
+		if (!StringUtils.isBlank(param.getMobile())){
 			select.where(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
 		}
-		if (param.getGoodsName()!=null||param.getGoodsSn()!=null) {
+		if (!StringUtils.isBlank(param.getGoodsName())||!StringUtils.isBlank(param.getGoodsSn())) {
 			select.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN));
-			if (param.getGoodsName() != null) {
+			if (!StringUtils.isBlank(param.getGoodsName())) {
 				select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
 			}
-			if (param.getGoodsSn() != null) {
+			if (!StringUtils.isBlank(param.getGoodsSn())) {
 				select.where(ORDER_GOODS.ORDER_SN.like(likeValue(param.getGoodsSn())));
 			}
 		}

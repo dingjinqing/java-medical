@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListP
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.jooq.*;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -94,28 +95,28 @@ public class GiveGiftReceiveService extends ShopBaseService {
     private void buildSelect(SelectJoinStep<? extends Record> select, GiveGiftReceiveListParam param, User receive, User giver) {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
 
-        if (param.getGoodsSn() != null||param.getGoodsName() != null) {
+        if (!StringUtils.isBlank(param.getGoodsSn())||!StringUtils.isBlank(param.getGoodsName())) {
             select.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN));
-            if (param.getGoodsName() != null) {
+            if (!StringUtils.isBlank(param.getGoodsName())) {
                 select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
             }
-            if (param.getGoodsSn() != null) {
+            if (!StringUtils.isBlank(param.getGoodsSn())) {
                 select.where(ORDER_GOODS.GOODS_SN.like(likeValue(param.getGoodsSn())));
             }
         }
-        if (param.getReceiveMobile() != null) {
+        if (!StringUtils.isBlank(param.getReceiveMobile())) {
             select.where(receive.MOBILE.like(likeValue(param.getReceiveMobile())));
         }
-        if (param.getReceiveUserName() != null) {
+        if (!StringUtils.isBlank(param.getReceiveUserName())) {
             select.where(receive.USERNAME.like(likeValue(param.getReceiveUserName())));
         }
-        if (param.getGiveUserName() != null) {
+        if (!StringUtils.isBlank(param.getGiveUserName())) {
             select.where(giver.USERNAME.like(param.getGiveUserName()));
         }
-        if (param.getGiveMobile() != null) {
+        if (!StringUtils.isBlank(param.getGiveMobile())) {
             select.where(giver.MOBILE.like(likeValue(param.getGiveMobile())));
         }
-        if (param.getMainOrderSn() != null) {
+        if (!StringUtils.isBlank(param.getMainOrderSn())) {
             select.where(ORDER_INFO.MAIN_ORDER_SN.eq(param.getMainOrderSn()));
         }
         if (param.getReturnFinished() != null && param.getReturnFinished() > 0) {
