@@ -162,4 +162,6 @@ public class CardConstant {
 	public static final Byte EXCHANG_COUNT_TYPE = 1;
 	public static final Byte COUNT_TYPE = 2;
 	/** --------------------------------------------------------------------------*/
+	
+	public static final String NUM_LETTERS = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 }

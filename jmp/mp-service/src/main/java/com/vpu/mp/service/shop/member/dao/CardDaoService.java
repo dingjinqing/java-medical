@@ -1,17 +1,25 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import org.jooq.InsertValuesStep3;
+import org.jooq.InsertValuesStep4;
+import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.ResultQuery;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
+
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
+import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
@@ -28,6 +36,8 @@ import static com.vpu.mp.db.shop.Tables.CARD_BATCH;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CARD_BATCH;
+import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
@@ -39,6 +49,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUN
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
 * @author 黄壮壮
@@ -373,9 +384,100 @@ public class CardDaoService extends ShopBaseService {
 			select.and(CARD_CONSUMER.CREATE_TIME.le(param.getSecondTime()));
 		}
 	}
-
-
-
+	/**
+	 * 插入card_batch 批次记录
+	 * @param param
+	 * @return 批次id
+	 */
+	public Integer createCardBatch(CardBatchParam param) {
+		Record1<Integer> batchId = db().insertInto(CARD_BATCH,CARD_BATCH.ACTION,CARD_BATCH.CODE_PREFIX,CARD_BATCH.NAME,CARD_BATCH.CODE_SIZE,CARD_BATCH.NUMBER)
+			.values(param.getAction(), param.getCodePrefix(), param.getBatchName(), param.getCodeSize(), param.getNumber())
+			.returningResult(CARD_BATCH.ID)
+			.fetchOne();
+		
+		if(batchId != null) {
+			logger().info("批次id为： "+batchId.get(CARD_BATCH.ID));
+			return batchId.get(CARD_BATCH.ID);
+		}else {
+			return 0;
+		}
 	
+	}
+	/**
+	 * 生成分组ID
+	 * @param batchId
+	 */
+	public Integer generateGroupId(Integer batchId) {
+		Record1<Integer> maxGroupId = db().select(DSL.max(CARD_RECEIVE_CODE.GROUP_ID))
+			.from(CARD_RECEIVE_CODE)
+			.where(CARD_RECEIVE_CODE.BATCH_ID.eq(batchId))
+			.fetchOne();
+		if(maxGroupId.value1() != null) {
+			return maxGroupId.into(Integer.class)+1;
+		}else {
+			return 1;
+		}
+	}
+
+	/**
+	 * code是否存在，是返回true，否返回false
+	 * @param code
+	 * @return
+	 */
+	public boolean isExistCode(String code) {
+		
+		CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE)
+			.where(CARD_RECEIVE_CODE.CODE.eq(code))
+			.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(DELETE_NO))
+			.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())
+			.fetchAny();
+		
+		return r!=null;
+	}
+	/**
+	 * 将领取批次的生成码存入数据库
+	 * @param param
+	 * @param codeList
+	 */
+	public void insertIntoCardReceiveCode(CardBatchParam param, List<String> codeList) {
+		InsertValuesStep3<CardReceiveCodeRecord, Integer, Integer, String> insert = db().insertInto(CARD_RECEIVE_CODE)
+			.columns(CARD_RECEIVE_CODE.BATCH_ID,CARD_RECEIVE_CODE.GROUP_ID,CARD_RECEIVE_CODE.CODE);
+		
+		for(String code: codeList) {
+			insert.values(param.getBatchId(), param.getGroupId(), code);
+		}
+		int res = insert.execute();
+		logger().info("成功生成领取码"+res+"条");
+		
+	}
 	
+	/**
+	 * 卡号存在 是 true, 否 false
+	 * @param cardNo
+	 * @return
+	 */
+	public boolean isExistCardNo(String cardNo) {
+		CardReceiveCodeRecord res = db().selectFrom(CARD_RECEIVE_CODE)
+			.where(CARD_RECEIVE_CODE.CARD_NO.eq(cardNo))
+			.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())
+			.fetchAny();
+		return res != null;
+	}
+	/**
+	 * 插入数据
+	 * @param param
+	 * @param cardNoList
+	 * @param pwdList
+	 */
+	public void insertIntoCardReceiveCode(CardBatchParam param, List<String> cardNoList, List<String> pwdList) {
+		InsertValuesStep4<CardReceiveCodeRecord, Integer, Integer, String, String> insert = db().insertInto(CARD_RECEIVE_CODE)
+			.columns(CARD_RECEIVE_CODE.BATCH_ID,CARD_RECEIVE_CODE.GROUP_ID,CARD_RECEIVE_CODE.CARD_NO,CARD_RECEIVE_CODE.CARD_PWD);
+		
+		for(int i = 0;i<param.getNumber();i++) {
+			insert.values(param.getBatchId(), param.getGroupId(), cardNoList.get(i), pwdList.get(i));
+		}
+		int res = insert.execute();
+		logger().info("成功执行"+res+"条");
+		
+	}
 }

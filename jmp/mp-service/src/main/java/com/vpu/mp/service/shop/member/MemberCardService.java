@@ -56,6 +56,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYP
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -133,6 +134,7 @@ import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
@@ -1581,4 +1583,119 @@ public class MemberCardService extends ShopBaseService {
 	private ServiceOrderDetailVo getServiceOrderInfo(String orderSn) {
 		return serviceOrderDao.getServiceOrderDetail(orderSn);
 	}
+	
+	
+	
+	public void generateCardCode(CardBatchParam param) {
+		logger().info("正在添加添加领取码");
+		this.transaction(()->{
+			// 插入并获取批次Id
+			Integer batchId = cardDao.createCardBatch(param);
+			param.setBatchId(batchId);
+
+			Integer groupId = cardDao.generateGroupId(batchId);
+			param.setGroupId(groupId);
+			
+			if(param.getReceiveAction()==1) {
+				// 获取领取码
+				List<String> codeList = generateRandomCode(param);
+				cardDao.insertIntoCardReceiveCode(param,codeList);
+			}else if(param.getReceiveAction() == 2) {
+				// 获取卡号
+				List<String> cardNoList = generateRandCardNo(param);
+				// 获取密码
+				List<String> pwdList = generateRandCardPwd(param);
+				cardDao.insertIntoCardReceiveCode(param, cardNoList,pwdList);
+			}
+			
+		});
+
+		
+	}
+	
+	/**
+	 * 生成随机的领取码
+	 * @param param
+	 * @return
+	 */
+	private List<String> generateRandomCode(CardBatchParam param) {
+		Integer number = param.getNumber();
+		List<String> codeList = new ArrayList<>();
+		for(int i = 0;i<number;i++) {
+			while(true) {
+				String code = generateRandomStr(param.getCodePrefix(),param.getCodeSize());
+				if(!codeList.contains(code) && !cardDao.isExistCode(code)) {
+					codeList.add(code);
+					break;
+				}
+			}
+		}
+		return codeList;
+	}
+	
+	/**
+	 * 生成随机密码
+	 * @param param
+	 * @return
+	 */
+	private List<String> generateRandCardPwd(CardBatchParam param) {
+		List<String> pwdList = new ArrayList<>();
+		Integer number = param.getNumber();
+		for(int i = 0;i<number;i++) {
+			while(true) {
+				String pwd = generateRandomStr("",param.getCardPwdSize());
+				if(!pwdList.contains(pwd)) {
+					pwdList.add(pwd);
+					break;
+				}
+			}
+		}
+		return pwdList;
+	}
+	
+	/**
+	 * 生成随机的卡号
+	 * @param param
+	 * @return
+	 */
+	private List<String> generateRandCardNo(CardBatchParam param){
+		List<String> cardNoList = new ArrayList<>();
+		Integer number = param.getNumber();
+		for(int i = 0;i<number;i++) {
+			while(true) {
+				String cardNo = generateRandomStr(param.getCodePrefix(),param.getCodeSize());
+				if(!cardNoList.contains(cardNo) && !cardDao.isExistCardNo(cardNo)) {
+					cardNoList.add(cardNo);
+					break;
+				}
+			}
+		}
+		return cardNoList;
+	}
+	
+	
+	/**
+	 * 生成随机的字符串
+	 * @param param
+	 */
+	private String generateRandomStr(String prefix,int length) {
+		char[] arr = NUM_LETTERS.toCharArray();
+		StringBuilder container = new StringBuilder(prefix);
+		for(int i=0;i<length;i++) {
+			if(i==0) {
+				char c = arr[Util.randomInteger(0, arr.length)];
+				container.append(c);
+			}else {
+				char c = arr[Util.randomInteger(0, 9)];
+				container.append(c);
+			}
+		}
+		return container.toString();
+	}
+	
+	
+
+	
+	
+	
 }
