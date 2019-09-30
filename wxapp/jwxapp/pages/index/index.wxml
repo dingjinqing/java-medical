@@ -1,10 +1,6 @@
 <include src="../common/header.wxml" />
 <view>这是java小程序首页装修内容</view>
-<!-- 一键顶部 -->
-<v-go-top content='{{pictorialContent}}'  isPictorialShow='{{isPictorialShow}}'   bind:go_share='go_share'/>
 
-<!-- 邀请分享 -->
-<v-invite-notice invite_id="{{invite_id}}" />
 
 <!-- 装修 -->
 <view class='main-container' style='{{color}};padding-bottom:80rpx;'>
@@ -12,32 +8,4 @@
   <include src="../common/footer.wxml" />
 </view>
 
-<!-- 立即抽奖弹窗 -->
-<v-popup-lottery show="{{show_lottery}}" activity_id="{{pageContent.send_coupon.activity_id}}" lottery_id="{{pageContent.send_coupon.lottery_id}}" />
 
-<!-- 活动送券弹窗 -->
-<v-popup-act-coupon show="{{show_act_coupon}}" send_coupon="{{pageContent.send_coupon}}" />
-
-<!-- 收藏小程序提示弹窗 -->
-<v-popup-collect-mp-tips show="{{show_collect_mp_tips}}" collect_info="{{pageContent.shop_collect}}" />
-
-<!-- 收藏有礼送优惠券积分弹窗 -->
-<v-popup-collect-coupon show="{{collect_coupon_display}}" bind:closeCollectMp="closeCollectMp" collect_score="{{collect_score}}" collect_coupons="{{collect_coupons}}" />
-
-<!-- 收藏小程序提示按钮 -->
-<view class="collect_gifts" bindtap='bindShowCollectMp' wx:if="{{collect_gift}}">
-  <image src='{{pageContent.shop_collect.collect_logo == 0 ? imageUrl+"image/wxapp/collect_gifts.png" : pageContent.shop_collect.collect_logo_src}}'></image>
-</view>
-
-<!-- 开屏有礼自定义弹窗 -->
-    <v-pay-reword-custom show="{{show_act_custom}}" custom_info="{{custom}}"/>
-
-<!--fenxiang弹框  -->
-<view class='share_bg' style='display:{{is_share == 1?"block":"none"}};margin-top:{{margin_top_nav + 8}}px'>
-	<view class='zhezhao' catchtap='not_show_share'></view>
-	<view class='share_content'>
-	  <image src='{{pictorial}}'></image>
-	  <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap' style='background:{{comColor}}'>保存图片</view>
-	  <view class='save_tips'>保存图片到本地相册</view>
-	</view>
-</view>
