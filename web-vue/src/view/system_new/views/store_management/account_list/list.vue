@@ -46,8 +46,7 @@
       header-row-class-name="table-th"
       :data="formTable"
       border
-      style="width: 100%"
-      height="400"
+      :style="{maxWidth:'100%',width: '100%',height:tableHeight+ 'px',overflowY:'auto'}"
     >
       <el-table-column
         prop="userName"
@@ -217,13 +216,18 @@ export default {
       pageCount: null,
       pagination_b: true,
       value: '',
-      text: ''
+      text: '',
+      tableHeight: document.documentElement.clientHeight - 330
     }
   },
   mounted () {
     let toUserName = this.$route.params.toUserName
     if (!this.isEmpty(toUserName)) {
       this.mainData.keywords = toUserName
+    }
+    this.tableHeight = document.documentElement.clientHeight - 330
+    if (this.tableHeight < 0) {
+      this.tableHeight = 400
     }
     console.log('toUserName')
     console.log(toUserName)
