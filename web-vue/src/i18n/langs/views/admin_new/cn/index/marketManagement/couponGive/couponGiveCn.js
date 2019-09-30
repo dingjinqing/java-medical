@@ -78,7 +78,7 @@ export const cn = {
   grantTime: '发放时间',
   confirmGrant: '确认发放',
   actNameTip: '请填写活动名称',
-  Participants: '参与活动人群',
+  participants: '参与活动人群',
   chooseCard: '请选择会员卡',
   hasBeenChosen: '已经选择了',
   data: '数据',
