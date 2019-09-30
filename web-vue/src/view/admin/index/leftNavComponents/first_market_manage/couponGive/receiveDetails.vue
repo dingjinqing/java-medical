@@ -70,38 +70,38 @@
         >
           <el-table-column
             prop="username"
-            label="用户昵称"
+            :label="$t('couponGive.username')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="mobile"
-            label="手机号码"
+            :label="$t('couponGive.mobile')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="couponName"
-            label="优惠券名称"
+            :label="$t('couponGive.couponName')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="accessMode"
-            label="获取方式"
+            :label="$t('couponGive.accessMode')"
             align="center"
             :formatter="accessModeName"
           ></el-table-column>
           <el-table-column
             prop="isUsed"
-            label="是否使用"
+            :label="$t('couponGive.isUsed')"
             align="center"
             :formatter="isUsedName"
           ></el-table-column>
           <el-table-column
             prop="orderSn"
-            label="使用订单号"
+            :label="$t('couponGive.orderSn')"
             align="center"
           ></el-table-column>
           <el-table-column
-            label="有效期"
+            :label="$t('couponGive.validityPeriod')"
             align="center"
           >
             <template slot-scope="scope">
@@ -110,26 +110,26 @@
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="领取时间"
+            :label="$t('couponGive.recTime')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="usedTime"
-            label="使用时间"
+            :label="$t('couponGive.useTime')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop=""
-            label="操作"
+            :label="$t('couponGive.operate')"
             align="center"
           >
             <template slot-scope="scope">
 
               <el-button
-                v-if="scope.row.isUsed === '未使用'"
+                v-if="scope.row.isUsed === `未使用`"
                 @click="stopCoupon(scope.row.id)"
                 type="text"
-              >废除
+              >{{$t('couponGive.abolish')}}
               </el-button>
             </template>
           </el-table-column>
@@ -197,9 +197,9 @@ export default {
     // 获取方式 标识转文字
     accessModeName (row, column) {
       switch (row.accessMode) {
-        case 0: row.accessMode = '发放'
+        case 0: row.accessMode = `${this.$t('couponGive.grant')}`
           break
-        case 1: row.accessMode = '领取'
+        case 1: row.accessMode = `${this.$t('couponGive.receive')}`
           break
       }
       return row.accessMode
@@ -207,13 +207,13 @@ export default {
     // 是否使用 标识转文字
     isUsedName (row, column) {
       switch (row.isUsed) {
-        case 0: row.isUsed = '未使用'
+        case 0: row.isUsed = `${this.$t('couponGive.notUsed')}`
           break
-        case 1: row.isUsed = '已使用'
+        case 1: row.isUsed = `${this.$t('couponGive.alreadyUsed')}`
           break
-        case 2: row.isUsed = '已使用'
+        case 2: row.isUsed = `${this.$t('couponGive.expired')}`
           break
-        case 3: row.isUsed = '已废除'
+        case 3: row.isUsed = `${this.$t('couponGive.repealed')}`
           break
       }
       return row.isUsed

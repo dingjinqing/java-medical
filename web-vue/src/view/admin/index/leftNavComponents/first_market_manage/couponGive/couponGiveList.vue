@@ -39,20 +39,20 @@
           >
             <thead>
               <tr class="tableHeader">
-                <th style="width:10%">发券活动名称</th>
-                <th style="width:10%">创建时间</th>
-                <th style="width:17%">活动人群</th>
-                <th style="width:7%">发放类型</th>
-                <th style="width:7%">发放状态</th>
+                <th style="width:10%">{{$t('couponGive.actName')}}</th>
+                <th style="width:10%">{{$t('couponGive.creationTime')}}</th>
+                <th style="width:17%">{{$t('couponGive.actCrowd')}}</th>
+                <th style="width:7%">{{$t('couponGive.grantType')}}</th>
+                <th style="width:7%">{{$t('couponGive.grantState')}}</th>
                 <th>
                   <table>
                     <thead>
                       <tr>
-                        <th style="width:7%">优惠券名称</th>
-                        <th style="width:7%">优惠券使用条件</th>
-                        <th style="width:7%">优惠券价值</th>
-                        <th style="width:9%">优惠券有效期</th>
-                        <th style="width:4%">操作</th>
+                        <th style="width:7%">{{$t('couponGive.couponName')}}</th>
+                        <th style="width:7%">{{$t('couponGive.usingCondition')}}</th>
+                        <th style="width:7%">{{$t('couponGive.couponValue')}}</th>
+                        <th style="width:9%">{{$t('couponGive.couponValidityPeriod')}}</th>
+                        <th style="width:4%">{{$t('couponGive.operate')}}</th>
                       </tr>
                     </thead>
                   </table>
@@ -100,7 +100,7 @@
                         <td
                           style="width:9%"
                           class="listContent"
-                        >{{it.time}}</td>
+                        ><span v-html="it.time"></span></td>
                         <td
                           style="width:4%"
                           class="listContent"
@@ -108,7 +108,7 @@
                           <el-button
                             @click="receiveDetails(item.id,it.couponId)"
                             type="text"
-                          >发放明细</el-button>
+                          >{{$t('couponGive.grantDetail')}}</el-button>
                         </td>
                       </tr>
                     </tbody>
@@ -155,7 +155,7 @@ export default {
     handleSelect () {
       this.pageParams.actName = this.actName
       couponGiveList(this.pageParams).then(res => {
-        console.log('入参:', this.pageParams)
+        console.log('pageParams:', this.pageParams)
         console.log('tableData:', res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -163,7 +163,7 @@ export default {
           this.pageParams = res.content.page
         }
       }).catch(() => {
-        this.$message.error('操作失败')
+        this.$message.error(this.$t('couponGive.operationFailed'))
       })
     },
     // 表格数据处理
@@ -171,50 +171,49 @@ export default {
       data.forEach((item, index) => {
         data[index][`couponGiveListConditionVo`].forEach((item, index) => {
           if (item.validityType === 0) {
-            item['time'] = `${item.startTime}至${item.endTime}`
+            item['time'] = `${item.startTime}<br/>${this.$t('couponGive.to')}<br/>${item.endTime}`
           } else {
-            item['time'] = `自领取之日起 ${item.validity}天 ${item.validityHour}小时 ${item.validityMinute}分钟 内有效`
+            item['time'] = `${this.$t('couponGive.fromTime')} ${item.validity}${this.$t('couponGive.day')} ${item.validityHour}${this.$t('couponGive.hour')} ${item.validityMinute}${this.$t('couponGive.minute')} ${this.$t('couponGive.effective')}`
           }
         })
         data[index].obj = JSON.parse(data[index]['sendCondition'])
         data[index].people = []
         if (data[index].obj.member_box === 1) {
-          // data[index].people = '手动添加会员'
-          data[index].people.push(`手动添加会员`)
+          data[index].people.push(`${this.$t('couponGive.member')}`)
         }
         if (data[index].obj.cart_box === 1) {
-          data[index].people.push('30天内在本店内有加入购物车行为人群')
+          data[index].people.push(`${this.$t('couponGive.addCart')}`)
         }
         if (data[index].obj.goods_box === 1) {
-          data[index].people.push('购买指定商品')
+          data[index].people.push(`${this.$t('couponGive.addGoods')}`)
         }
         if (data[index].obj.card_box === 1) {
-          data[index].people.push('持有会员卡')
+          data[index].people.push(`${this.$t('couponGive.holdCard')} ${data[index].cardName}`)
         }
         if (data[index].obj.tag_box === 1) {
-          data[index].people.push('属于标签')
+          data[index].people.push(`${this.$t('couponGive.belongTag')} ${data[index].tagName}`)
         }
         if (data[index].obj.custom_box === 1) {
           if (data[index].havePay != null) {
-            data[index].people.push(`${item.havePay}天内有交易记录`)
+            data[index].people.push(`${item.havePay}${this.$t('couponGive.haveRecord')}`)
           }
           if (data[index].noPay != null) {
-            data[index].people.push(`${item.noPay}天内无交易记录`)
+            data[index].people.push(`${item.noPay}${this.$t('couponGive.noRecord')}`)
           }
           if (data[index].minCount != null) {
-            data[index].people.push(`购买次数大于${item.minCount}次`)
+            data[index].people.push(`${this.$t('couponGive.buyMore')}${item.minCount}`)
           }
           if (data[index].maxCount != null) {
-            data[index].people.push(`购买次数小于${item.maxCount}次`)
+            data[index].people.push(`${this.$t('couponGive.buyLess')}${item.maxCount}`)
           }
           if (data[index].minAvePrice != null) {
-            data[index].people.push(`购买商品均价大于${item.minAvePrice}元`)
+            data[index].people.push(`${this.$t('couponGive.priceHigher')}${item.minAvePrice}`)
           }
           if (data[index].maxAvePrice != null) {
-            data[index].people.push(`购买商品均价小于${item.maxAvePrice}元`)
+            data[index].people.push(`${this.$t('couponGive.priceLess')}${item.maxAvePrice}`)
           }
           if (data[index].obj.point_start_time != null && data[index].obj.point_end_time != null) {
-            data[index].people.push(`${item.obj.point_start_time}-${item.obj.point_start_time}内有登录记录`)
+            data[index].people.push(`${item.obj.point_start_time}-${item.obj.point_start_time}${this.$t('couponGive.loginRecord')}`)
           }
         }
         console.log(item.people.join(`<br/>`))
@@ -238,8 +237,8 @@ export default {
   },
   filters: {
     sendAction: function (value) {
-      if (value === '0') return '立即发放'
-      else return '定时发放'
+      if (value === '0') return `立即发放`
+      else return `定时发放`
     },
     sendStatus: function (value) {
       if (value === '0') return '未发放'

@@ -11,12 +11,12 @@
         >
           <!-- 活动名称 -->
           <el-form-item
-            label="活动名称"
+            :label="$t('couponGive.actName')"
             prop="actName"
           >
             <el-input
               size="small"
-              placeholder="请输入活动名称"
+              :placeholder="$t('couponGive.actNamePlaceholder')"
               class="morelength"
               v-model="form.actName"
             ></el-input>
@@ -24,24 +24,24 @@
           <!-- 参与活动人群 -->
           <el-form-item :label="labels.label6">
             <div>
-              <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
+              <span style="color:#999;fontSize:12px">{{$t('couponGive.peopleTip')}}</span>
             </div>
             <div>
               <el-checkbox
                 v-model="params.onClickNoPay"
                 @change="handleOnClickNoPayChange"
-              >加购人群</el-checkbox>
-              <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
+              >{{$t('couponGive.addCartPeople')}}</el-checkbox>
+              <span style="color:#999;fontSize:12px;margin-left:-15px">{{$t('couponGive.addCartTip')}}</span>
             </div>
             <div>
               <el-checkbox
                 v-model="params.onClickGoods"
                 @change="handleOnClickGoodsChange"
-              >指定购买商品人群 </el-checkbox>
-              <span style="color:#999;fontSize:12px">最多可选择3件商品</span>
+              >{{$t('couponGive.buyGoodsPeople')}} </el-checkbox>
+              <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
             </div>
             <div class="chooseGoods">
-              <div class="chooseGoodsLeft">选择商品</div>
+              <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
               <ul class="imgList">
                 <li
                   v-for="(item) in imgsList"
@@ -78,30 +78,30 @@
               <el-checkbox
                 v-model="params.onClickUser"
                 @change="handleOnClickUserChange"
-              >选择指定的会员 </el-checkbox>
+              >{{$t('couponGive.chooseMember')}} </el-checkbox>
               <span style="margin-left:-15px">
                 <el-button
                   @click="handleAddMember"
                   type="text"
-                >+ 添加会员</el-button>
+                >+ {{$t('couponGive.addMember')}}</el-button>
               </span>
-              <span>已选择会员{{memberNum}}人</span>
+              <span>{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
             </div>
             <div>
               <el-checkbox
                 v-model="params.onClickCustomRule"
                 @change="handleOnClickCustomRuleChange"
-              >自定义</el-checkbox>
+              >{{$t('couponGive.custom')}}</el-checkbox>
               <el-select
                 :disabled="!params.onClickCustomRule"
                 v-model="customRuleInfoVal"
-                placeholder="请选择"
+                :placeholder="$t('couponGive.choose')"
                 size="small"
                 @change="customRuleInfoValChange"
               >
                 <el-option
-                  label="请选择"
-                  value="请选择"
+                  :label="$t('couponGive.choose')"
+                  :value="$t('couponGive.choose')"
                 ></el-option>
                 <el-option
                   v-for="item in customRuleInfoOptions"
@@ -139,7 +139,7 @@
                     </div>
                   </li>
                   <li v-show="showTime">
-                    <span>指定时间内有登陆记录：</span>
+                    <span>{{$t('couponGive.timeLoginRecord')}}</span>
                     <div class="img_span">
                       <el-image
                         :src="urls.url4"
@@ -161,27 +161,27 @@
           </el-form-item>
           <!-- 选择优惠券 -->
           <el-form-item
-            label="选择优惠券"
+            :label="$t('couponGive.chooseCoupons')"
             prop="coupon"
           >
-            <div class="gray">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+            <div class="gray">{{$t('couponGive.couponTip')}}</div>
             <span>{{couponId}}</span>
-            <el-button @click="handleToCallDialog">选择优惠券</el-button>
+            <el-button @click="handleToCallDialog">{{$t('couponGive.chooseCoupons')}}</el-button>
           </el-form-item>
           <!-- 发送时间 -->
           <el-form-item
-            label="发送时间"
+            :label="$t('couponGive.grantTime')"
             prop="sendAction"
           >
             <el-radio
               label="0"
               v-model="form.sendAction"
-            >立即发送</el-radio>
+            >{{$t('couponGive.immediatelyGrant')}}</el-radio>
             <br>
             <el-radio
               label="1"
               v-model="form.sendAction"
-            >定时发送</el-radio>
+            >{{$t('couponGive.regularlyGrant')}}</el-radio>
             <el-date-picker
               type="datetime"
               class="morelength"
@@ -198,7 +198,7 @@
           type="primary"
           size="small"
           @click="addAct"
-        >确认发放</el-button>
+        >{{$t('couponGive.confirmGrant')}}</el-button>
       </div>
       <!-- 添加会员的弹窗 -->
       <memberListDialog
@@ -288,24 +288,17 @@ export default {
        */
       rules: {
         actName: [
-          { required: true, message: '请填写消息名称', trigger: 'blur' },
-          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+          { required: true, message: `${this.$t('couponGive.actNameTip')}`, trigger: 'blur' }
         ]
       },
       templateId: null,
       labels: {
-        label1: `消息名称：`,
-        label2: `消息类型：`,
-        label3: `业务标题：`,
-        label4: `业务内容：`,
-        label5: `进入小程序查看：`,
-        label6: `参与活动人群：`,
-        label7: `发送时间：`
+        label6: `${this.$t('couponGive.participants')}`
       },
       cardList: [
 
       ],
-      cardValue: `请选择会员卡`,
+      cardValue: `${this.$t('couponGive.chooseCard')}`,
       /**
       * 动态获取人数的参数集合
       */
@@ -364,54 +357,54 @@ export default {
       /**
        * 自定义实体
        */
-      customRuleInfoVal: `请选择`,
+      customRuleInfoVal: `${this.$t('couponGive.choose')}`,
       loginStart: ``,
       loginEnd: ``,
       customRuleInfoOptions: [
         {
-          label: `N天内有交易记录`,
-          value: `N天内有交易记录`,
+          label: `N ${this.$t('couponGive.haveRecord')}`,
+          value: `N ${this.$t('couponGive.haveRecord')}`,
           key: `payedDay`,
           ipt: ``
         },
         {
-          label: `N天内没有交易记录`,
-          value: `N天内没有交易记录`,
+          label: `N ${this.$t('couponGive.noRecord')}`,
+          value: `N ${this.$t('couponGive.noRecord')}`,
           key: `noPayDay`,
           ipt: ``
 
         },
         {
-          label: `累计购买次数小于N次`,
-          value: `累计购买次数小于N次`,
+          label: `${this.$t('couponGive.buyLess')} N`,
+          value: `${this.$t('couponGive.buyLess')} N`,
           key: `buyTimesLess`,
           ipt: ``
 
         },
         {
-          label: `累计购买次数大于N次`,
-          value: `累计购买次数大于N次`,
+          label: `${this.$t('couponGive.buyMore')} N`,
+          value: `${this.$t('couponGive.buyMore')} N`,
           key: `buyTimesMore`,
           ipt: ``
 
         },
         {
-          label: `购买商品均价大于N元`,
-          value: `购买商品均价大于N元`,
+          label: `${this.$t('couponGive.priceHigher')} N`,
+          value: `${this.$t('couponGive.priceHigher')} N`,
           key: `moneyAvgMore`,
           ipt: ``
 
         },
         {
-          label: `购买商品均价小于N元`,
-          value: `购买商品均价小于N元`,
+          label: `${this.$t('couponGive.priceLess')} N`,
+          value: `${this.$t('couponGive.priceLess')} N`,
           key: `moneyAvgLess`,
           ipt: ``
 
         },
         {
-          label: `指定时间内有登录记录`,
-          value: `指定时间内有登录记录`,
+          label: `${this.$t('couponGive.timeLoginRecord')}`,
+          value: `${this.$t('couponGive.timeLoginRecord')}`,
           key: `time`
 
         }
@@ -443,7 +436,7 @@ export default {
     },
     // 优惠卷回调
     handleToCheck (data) {
-      console.log('优惠卷', data)
+      console.log('ciupon', data)
       let couponKey = []
       data.map((item) => {
         couponKey.push(item.id)
@@ -487,17 +480,17 @@ export default {
       addActivity(param).then(res => {
         console.log(res)
         if (res.error === 0) {
-          alert('操作成功')
+          alert(`${this.$t('couponGive.operationSuccess')}`)
           this.$router.push({
             path: `/admin/home/main/couponGive`
           })
         }
       }).catch(() => {
-        this.$message.error('操作失败')
+        this.$message.error(`${this.$t('couponGive.operationFailed')}`)
       })
     },
     handleChooseData (data) {
-      this.$message({ message: `已经选择了${data.length}条数据！`, type: 'success' })
+      this.$message({ message: `${this.$t('couponGive.hasBeenChosen')}${data.length}${this.$t('couponGive.data')}`, type: 'success' })
       this.checkedData = data
     },
     // 关闭会员弹窗
@@ -543,7 +536,7 @@ export default {
     },
     getRes (ids, urls) {
       if (ids.length > 3) {
-        this.$message.warning('最多选择3个商品')
+        this.$message.warning(`${this.$t('couponGive.chooseUp')}`)
       } else {
         this.params.goodsIdList = ids
         this.imgsList = urls
@@ -643,16 +636,16 @@ export default {
     //
     customRuleInfoValChange (val) {
       console.log(val)
-      if (val === `指定时间内有登录记录`) {
+      if (val === `${this.$t('couponGive.timeLoginRecord')}`) {
         this.showTime = true
         this.customRuleInfoOptions = delObj({ arr: this.customRuleInfoOptions, val })
-        this.customRuleInfoVal = `请选择`
+        this.customRuleInfoVal = `${this.$t('couponGive.choose')}`
       } else {
-        if (val !== `请选择` && val !== `指定时间内有登陆记录`) {
+        if (val !== `${this.$t('couponGive.choose')}` && val !== `${this.$t('couponGive.timeLoginRecord')}`) {
           const res = this.customRuleInfoOptions.find(item => item.value === val)
           this.optionsList.push(res)
           this.customRuleInfoOptions = this.customRuleInfoOptions.filter(item => item.value !== res.value)
-          this.customRuleInfoVal = `请选择`
+          this.customRuleInfoVal = `${this.$t('couponGive.choose')}`
         }
       }
     },
@@ -692,8 +685,8 @@ export default {
       if (val === 6) {
         this.showTime = false
         this.customRuleInfoOptions.push({
-          label: `指定时间内有登录记录`,
-          value: `指定时间内有登录记录`
+          label: `${this.$t('couponGive.timeLoginRecord')}`,
+          value: `${this.$t('couponGive.timeLoginRecord')}`
         })
         this.params.customRuleInfo.loginEnd = ``
         this.params.loginStart.loginStart = ``
@@ -925,22 +918,83 @@ export default {
   z-index: 1;
   width: 100%;
 }
-// .ulList {
-//   width: 100%;
-//   li {
-//     margin: 5px 0;
-//     span {
-//       margin: 0 5px;
-//     }
-//     .img_span {
-//       position: relative;
-//       .img {
-//         position: absolute;
-//         right: 25px;
-//         top: -22px;
-//         cursor: pointer;
-//       }
-//     }
-//   }
-// }
+
+.chooseGoods {
+  display: flex;
+  margin: 20px 0;
+  .chooseGoodsLeft {
+    margin-left: 40px;
+    margin-right: 20px;
+  }
+  .imgList {
+    display: flex;
+    li {
+      margin-right: 10px;
+      position: relative;
+      .delImg {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+      }
+    }
+  }
+  .imageWraper {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.selectedCard {
+  border: 1px solid #eee;
+  width: 382px;
+  min-height: 56px;
+  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  .oneCardWraper {
+    position: relative;
+    margin: 2px 6px;
+    .oneCard {
+      padding: 0 10px;
+      min-width: 70px;
+      // margin: 10px;
+      // display: flex;
+      text-align: center;
+      line-height: 24px;
+      background-color: #fff;
+      height: 24px;
+      border: 1px solid #ccc;
+      display: inline-block;
+    }
+    .oneCardDel {
+      position: absolute;
+      right: -5px;
+      top: -5px;
+      cursor: pointer;
+    }
+  }
+}
+.ulList {
+  width: 100%;
+  li {
+    margin: 5px 0;
+    span {
+      margin: 0 5px;
+    }
+    .img_span {
+      position: relative;
+      .img {
+        position: absolute;
+        right: 25px;
+        top: -22px;
+        cursor: pointer;
+      }
+    }
+  }
+}
 </style>
