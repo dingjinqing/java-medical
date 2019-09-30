@@ -16,3 +16,26 @@ export function deleteGoodsSort (data) {
     data: data
   })
 }
+// 商品分类新增
+export function addGoodsSort (data) {
+  return service({
+    url: `/api/admin/goods/sort/add`,
+    method: 'post',
+    data: data
+  })
+}
+// 商品分类修改
+export function updateGoodsSort (data) {
+  return service({
+    url: `/api/admin/goods/sort/update`,
+    method: 'post',
+    data: data
+  })
+}
+// 商品分类详情查询
+export function getGoodsSort (sortId) {
+  return service({
+    url: `/api/admin/goods/sort/get/${sortId}`,
+    method: 'get'
+  })
+}
