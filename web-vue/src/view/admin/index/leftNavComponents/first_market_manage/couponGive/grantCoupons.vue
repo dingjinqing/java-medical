@@ -19,8 +19,8 @@
                 <el-input
                   size="small"
                   :placeholder="$t('couponGive.actNamePlaceholder')"
-                  class="morelength"
                   v-model="form.actName"
+                  style="width: 160px"
                 ></el-input>
               </el-form-item>
               <!-- 参与活动人群 -->
@@ -1081,7 +1081,7 @@ export default {
             position: relative;
             .img {
               position: absolute;
-              right: 1200px;
+              right: 1400px;
               top: -22px;
               cursor: pointer;
             }

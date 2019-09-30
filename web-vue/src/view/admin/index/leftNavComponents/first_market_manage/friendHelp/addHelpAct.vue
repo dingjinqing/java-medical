@@ -1,6 +1,6 @@
 
 <template>
-  <wrapper>
+  <div class="actWrapper">
     <div class="content">
       <div class="main">
         <el-form
@@ -405,6 +405,7 @@
           </el-form-item>
 
           <div></div>
+          <!-- 收起、展开更多配置 -->
           <el-collapse>
             <el-collapse-item>
               <template slot="title">
@@ -447,7 +448,7 @@
                           style="margin-left:10px"
                         >{{$t('promoteList.goodsPicture')}}</el-radio>
 
-                        <div style="margin: 10px 0 0 60px">
+                        <div style="margin: 10px 0 0 57px">
                           <el-radio
                             v-model="form.shareImgType"
                             label="1"
@@ -516,12 +517,11 @@
       :tuneUp="showImageDialog"
       @handleSelectImg='imgDialogSelectedCallback'
     />
-  </wrapper>
+  </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
-import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addActive, selectOneInfo, updateInfo } from '@/api/admin/marketManage/friendHelp.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
@@ -530,7 +530,6 @@ import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAnd
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: {
-    wrapper,
     choosingGoods,
     ImageDalog,
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
@@ -932,10 +931,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.inputTip {
-  color: #999;
-  margin-left: 15px;
-}
 .coupon_info {
   display: flex;
   flex-direction: column;
@@ -943,110 +938,64 @@ export default {
   line-height: 25px;
   margin: 0 auto;
   margin-bottom: -10px;
-  .coupon_item {
-    margin-bottom: 10px;
-    height: 50px;
-    display: flex;
-    > div {
-      background-color: #fff;
-      height: 100px;
-    }
-    .coupon_left {
-      width: 100px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      .coupon_price {
-        color: #f66;
-        margin-bottom: 10px;
-        > span {
-          font-size: 18px;
-          font-weight: 600;
-        }
-      }
-      .coupon_rule {
-        color: #999;
-        font-size: 14px;
-      }
-    }
-    .coupon_middle {
-      width: 25px;
-      background: none;
-      > img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    .coupon_right {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding-left: 10px;
-      position: relative;
-      overflow: hidden;
-      .coupon_name {
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 5px;
-        width: 100%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-      .coupon_limits {
-        margin-bottom: 15px;
-        font-size: 13px;
-      }
-      .coupon_time {
-        color: #999;
-        font-size: 12px;
-      }
-      .coupon_icon {
-        position: absolute;
-        right: -15px;
-        top: 8px;
-        background: #fead2d;
-        width: 64px;
-        font-size: 12px;
-        color: #fff;
-        transform: rotate(40deg);
-        text-align: center;
-      }
-    }
+  .coupon_rule {
+    color: #999;
+    font-size: 14px;
+  }
+  .coupon_name {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
-.content {
+.actWrapper {
+  position: relative;
+  padding: 10px;
   min-width: 100%;
   font-size: 14px;
   height: 100%;
-  position: relative;
-  overflow-y: auto;
-  padding-bottom: 50px;
-  .main {
-    background-color: #fff;
-    padding: 10px 20px 10px 20px;
-    .el-form-item {
-      margin-bottom: 16px;
+  padding-bottom: 60px;
+
+  .content {
+    position: relative;
+    // overflow-y: auto;
+    .main {
+      background-color: #fff;
+      padding: 10px 20px 10px 20px;
+      .el-form-item {
+        margin-bottom: 16px;
+      }
+      .el-input {
+        width: 90px;
+      }
+      .morelength {
+        width: 200px;
+      }
+      .chooseGoods {
+        width: 120px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        border: 1px solid #ccc;
+      }
+      .gray {
+        color: #999;
+      }
     }
-    .el-input {
-      width: 90px;
-    }
-    .morelength {
-      width: 200px;
-    }
-    .chooseGoods {
-      width: 120px;
-      height: 30px;
-      line-height: 30px;
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      right: 27px;
+      left: 160px;
+      height: 52px;
+      padding: 10px 0;
+      background: #fff;
       text-align: center;
-      border: 1px solid #ccc;
-    }
-    .gray {
-      color: #999;
     }
   }
 }
@@ -1088,26 +1037,5 @@ export default {
 }
 .ImgWrap:hover .moveIcon {
   display: block;
-}
-.selectedWrap {
-  min-width: 70px;
-  height: 22px;
-  border: 1px solid #ccc;
-  line-height: 22px;
-  text-align: center;
-  padding: 0px 5px;
-  margin: 0px 5px;
-  background-color: #fff;
-  position: relative;
-}
-.footer {
-  padding: 10px 0px 10px 0px;
-  text-align: center;
-  background: #f8f8f8;
-  margin-top: 10px;
-  position: fixed;
-  bottom: 0;
-  z-index: 1;
-  width: 100%;
 }
 </style>

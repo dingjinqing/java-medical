@@ -22,7 +22,7 @@
     <div class="table_list">
       <div class="select_info">
         <div class="leftarea">
-          <span>{{$t('promoteList.actName')}}:</span>
+          <span>{{$t('promoteList.actName')}}：&nbsp;</span>
           <el-input
             :placeholder="$t('promoteList.actNamePlaceholder')"
             size="small"
@@ -30,27 +30,31 @@
           ></el-input>
         </div>
         <div class="midarea">
-          <span class="demonstration">{{$t('promoteList.actDate')}}:</span>
-          <el-date-picker
-            size="small"
-            v-model="startTime"
-            type="datetime"
-            style="weight :100px "
-            value-format="yyyy-MM-dd HH:mm:ss"
-          >
-          </el-date-picker>
+          <span class="demonstration">{{$t('promoteList.actDate')}}：&nbsp;</span>
+          <div>
+            <el-date-picker
+              size="small"
+              v-model="startTime"
+              type="datetime"
+              style="width:200px "
+              value-format="yyyy-MM-dd HH:mm:ss"
+            >
+            </el-date-picker>
+          </div>
           <span>{{$t('promoteList.to')}}</span>
-          <el-date-picker
-            size="small"
-            v-model="endTime"
-            type="datetime"
-            style="width: 200px"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          >
-          </el-date-picker>
+          <div>
+            <el-date-picker
+              size="small"
+              v-model="endTime"
+              type="datetime"
+              style="width: 200px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            >
+            </el-date-picker>
+          </div>
         </div>
         <div class="rightarea">
-          <span>{{$t('promoteList.rewardType')}}:</span>
+          <span>{{$t('promoteList.rewardType')}}：&nbsp;</span>
           <el-select
             v-model="rewardType"
             size="small"
@@ -432,7 +436,7 @@ export default {
   padding: 10px 20px 10px 20px;
   .select_info {
     display: flex;
-    margin: 10px 0px;
+    margin: 10px 0px 20px;
     .leftarea {
       display: flex;
       margin-right: 30px;
