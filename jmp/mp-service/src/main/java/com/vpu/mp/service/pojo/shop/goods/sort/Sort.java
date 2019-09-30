@@ -25,6 +25,7 @@ public class Sort {
     private Timestamp createTime;
     private Timestamp updateTime;
     private String sortImg;
+    private String sortImgUrl;
     private String imgLink;
     private Short first;
     private Byte type;

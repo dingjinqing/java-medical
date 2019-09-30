@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -35,9 +33,17 @@ public class AdminGoodsSortController extends AdminBaseController {
         return success(list);
     }
 
+    @GetMapping("/api/admin/goods/sort/get/{sortId}")
+    public JsonResult getSort(@PathVariable("sortId") Integer sortId) {
+        if (sortId == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+        }
+
+        return success(shop().goods.goodsSort.getSort(sortId));
+    }
+
     /**
      * 新增
-     *
      * @param sort
      * @return
      */
@@ -70,7 +76,7 @@ public class AdminGoodsSortController extends AdminBaseController {
         }
 
         //如果提交的内容内部有重复
-        if (isSortNameRepeate(sorts)) {
+        if (isSortNameRepeat(sorts)) {
             return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
         }
 
@@ -91,7 +97,7 @@ public class AdminGoodsSortController extends AdminBaseController {
      * @param sorts
      * @return
      */
-    private boolean isSortNameRepeate(List<Sort> sorts) {
+    private boolean isSortNameRepeat(List<Sort> sorts) {
         Map<String,Object> map=new HashMap<>(sorts.size());
         for (Sort sort : sorts) {
             map.put(sort.getSortName(),null);
@@ -106,7 +112,6 @@ public class AdminGoodsSortController extends AdminBaseController {
 
     /**
      * 删除
-     *
      * @param sort
      * @return
      */

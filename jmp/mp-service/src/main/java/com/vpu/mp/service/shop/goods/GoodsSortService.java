@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -18,6 +19,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.SortRecord;
@@ -33,6 +35,9 @@ import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 
 public class GoodsSortService extends ShopBaseService {
 
+    @Autowired
+    protected ImageService imageService;
+
     /**
      * 根据父分类和分类类型查询
      *
@@ -47,6 +52,8 @@ public class GoodsSortService extends ShopBaseService {
         select.orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc());
 
         List<Sort> sorts = select.fetchInto(Sort.class);
+        /* 处理图片路径 */
+        sorts.forEach(sort -> sort.setSortImg(getImgFullUrlUtil(sort.getSortImg())));
 
         return sorts;
     }
@@ -57,7 +64,27 @@ public class GoodsSortService extends ShopBaseService {
      * @return 分类集合
      */
     public List<Sort> getList(List<Integer> sortIds) {
-        return db().selectFrom(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(Sort.class);
+        List<Sort> sorts = db().selectFrom(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(Sort.class);
+
+        /* 处理图片路径 */
+        sorts.forEach(sort -> sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg())));
+
+        return sorts;
+    }
+
+    /**
+     *  查询分类详细信息
+     * @param sortId
+     * @return
+     */
+    public Sort getSort(Integer sortId) {
+        Sort sort= db().selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny().into(Sort.class);
+        if (sort == null) {
+            return null;
+        }
+        /* 处理图片路径 */
+        sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg()));
+        return sort;
     }
 
     private SelectConditionStep<?> buildOptions(SelectWhereStep<?> select, GoodsSortListParam param) {
@@ -162,9 +189,8 @@ public class GoodsSortService extends ShopBaseService {
      * @return 受影响行数
      */
     public void insert(Sort sort) {
-
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
+        transaction(() -> {
+            DSLContext db= db();
             //防止故意传递错误的类型
             sort.setType(Sort.NORMAL_TYPE_CODE);
             sort.setHasChild(Sort.HAS_NO_CHILD_CODE);
@@ -351,6 +377,20 @@ public class GoodsSortService extends ShopBaseService {
         Set set = new HashSet(list);
 
         return new ArrayList<>(set);
+    }
+
+    /**
+     * 将相对路劲修改为全路径
+     *
+     * @param relativePath 相对路径
+     * @return null或全路径
+     */
+    private String getImgFullUrlUtil(String relativePath) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return imageService.imageUrl(relativePath);
+        }
     }
 
 }
