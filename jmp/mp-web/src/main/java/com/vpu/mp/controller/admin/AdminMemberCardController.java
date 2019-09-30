@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
@@ -260,5 +261,11 @@ public class AdminMemberCardController extends AdminBaseController {
 	public JsonResult getCardConsumeOrderList(@RequestBody CardConsumeParam param) {
 		PageResult<CardConsumeVo> results = shop().member.card.getCardConsumeOrderList(param);
 		return success(results);
+	}
+	
+	@PostMapping("/card/generatecode")
+	public JsonResult generateCardCode(@RequestBody CardBatchParam param) {
+		shop().member.card.generateCardCode(param);
+		return success();
 	}
 }
