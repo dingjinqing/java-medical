@@ -16,9 +16,17 @@
                 placeholder="请选择平台分类"
                 size="small"
               >
-                <el-option label="请选择平台分类" :value="null"/>
-                <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName+' ('+item.goodsNumberSum+')'" :value="item.catId" :key="index"
-                           :style="{paddingLeft: (item.level+1)*20+'px'}"/>
+                <el-option
+                  label="请选择平台分类"
+                  :value="null"
+                />
+                <el-option
+                  v-for="(item,index) in goodsCatOptions"
+                  :label="item.catName+' ('+item.goodsNumberSum+')'"
+                  :value="item.catId"
+                  :key="index"
+                  :style="{paddingLeft: (item.level+1)*20+'px'}"
+                />
 
               </el-select>
             </li>
@@ -28,9 +36,17 @@
                 placeholder="请选择商家分类"
                 size="small"
               >
-                <el-option label="请选择商家分类" :value="null"/>
-                <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName+' ('+item.goodsNumberSum+')'" :value="item.sortId" :key="index"
-                           :style="{paddingLeft: (item.level+1)*20+'px'}"/>
+                <el-option
+                  label="请选择商家分类"
+                  :value="null"
+                />
+                <el-option
+                  v-for="(item,index) in goodsSortOptions"
+                  :label="item.sortName+' ('+item.goodsNumberSum+')'"
+                  :value="item.sortId"
+                  :key="index"
+                  :style="{paddingLeft: (item.level+1)*20+'px'}"
+                />
               </el-select>
             </li>
             <li>商品标签：
@@ -223,7 +239,7 @@ import {
   allGoodsQueryRequest,
   getGoodsProductList
 } from '@/api/admin/brandManagement.js'
-import {getAllGoodsInitValue} from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getAllGoodsInitValue } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   props: {
@@ -383,7 +399,7 @@ export default {
         let selfItem = retObj[item[idName]]
         if (selfItem === undefined) {
           // 未遍历到则初始化自己
-          retObj[item[idName]] = {'item': item, children: []}
+          retObj[item[idName]] = { 'item': item, children: [] }
           selfItem = retObj[item[idName]]
         } else {
           // 已创建过，（因提前遍历了子节点而创建）
@@ -396,7 +412,7 @@ export default {
           parentItem.children.push(selfItem)
         } else {
           // 没有则创建临时父亲
-          retObj[item.parentId] = {'item': null, children: [selfItem]}
+          retObj[item.parentId] = { 'item': null, children: [selfItem] }
         }
       }
 

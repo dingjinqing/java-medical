@@ -150,26 +150,28 @@
                 class="tableHeaderHeight"
               >
                 <template slot-scope="scope">
-                  <el-input-number
-                    :disabled="isEditFlag"
-                    v-model="param.floorPrice"
-                    size="mini"
-                    style="width:120px"
-                    :min="0"
-                    :max="scope.row.shopPrice"
-                  >
-                  </el-input-number>
-                  {{$t('marketCommon.to')}}
-                  <el-input-number
-                    :disabled="isEditFlag"
-                    v-model="param.expectationPrice"
-                    size="small"
-                    style="width:120px"
-                    :min="0"
-                    :max="scope.row.shopPrice"
-                  >
-                  </el-input-number>
-                  ({{$t('addBargainAct.default0')}}){{$t('addBargainAct.sttlementAmountTip')}}
+                  <div style="display: flex">
+                    <el-input-number
+                      :disabled="isEditFlag"
+                      v-model="param.floorPrice"
+                      size="mini"
+                      style="width:120px"
+                      :min="0"
+                      :max="scope.row.shopPrice"
+                    >
+                    </el-input-number>
+                    {{$t('marketCommon.to')}}
+                    <el-input-number
+                      :disabled="isEditFlag"
+                      v-model="param.expectationPrice"
+                      size="small"
+                      style="width:120px"
+                      :min="0"
+                      :max="scope.row.shopPrice"
+                    >
+                    </el-input-number>
+                    ({{$t('addBargainAct.default0')}}){{$t('addBargainAct.sttlementAmountTip')}}
+                  </div>
                 </template>
               </el-table-column>
             </el-table>
@@ -236,22 +238,22 @@
                 <el-radio :label='0'>{{$t('addBargainAct.fixedMoney')}}
                   <el-input-number
                     v-model="param.bargainFixedMoney"
-                    size="small"
+                    size="mini"
                     style="width:150px"
-                  ></el-input-number>{{$t('marketCommon.yuan')}}
+                  ></el-input-number>&nbsp;{{$t('marketCommon.yuan')}}
                 </el-radio>
                 <br>
                 <el-radio :label='1'>{{$t('addBargainAct.randomMoney')}}
                   <el-input-number
                     v-model="param.bargainMinMoney"
-                    size="small"
+                    size="mini"
                     style="width:150px"
-                  ></el-input-number>{{$t('marketCommon.yuan')}}
+                  ></el-input-number>&nbsp;{{$t('marketCommon.yuan')}}
                   <span>{{$t('marketCommon.to')}}</span>
                   <el-input-number
                     v-model="param.bargainMaxMoney"
-                    size="small"
-                    style="width:150px"
+                    size="mini"
+                    style="width:150px;margin-top: 10px"
                   ></el-input-number>{{$t('marketCommon.yuan')}}{{$t('addBargainAct.getRandomMoneyBetween')}}
                 </el-radio>
               </el-radio-group>
@@ -648,9 +650,10 @@ export default {
   min-width: 100%;
   font-size: 14px;
   height: 100%;
-  position: relative;
   .bargainContent {
+    position: relative;
     padding: 10px;
+    margin-bottom: 52px;
     .bargainActMain {
       position: relative;
       background-color: #fff;
@@ -769,16 +772,19 @@ export default {
     margin-bottom: 15px;
   }
   .footer {
-    width: 100%;
-    height: 50px;
+    position: absolute;
+    bottom: 0;
+    right: 27px;
+    left: 160px;
+    height: 52px;
     padding: 10px 0;
-    background: #f8f8f8;
+    background-color: #fff;
     text-align: center;
   }
 }
 /deep/ .tableClss th {
   background-color: #f5f5f5;
-  height: 20px;
+  height: 20px !important;
   border: none;
 }
 .goodsName_img {

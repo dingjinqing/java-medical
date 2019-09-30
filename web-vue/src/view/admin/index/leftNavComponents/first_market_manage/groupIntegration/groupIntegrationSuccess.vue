@@ -33,6 +33,7 @@
         </el-form-item>
         <el-form-item label="结束时间">
           <el-date-picker
+            style="width: 300px"
             size="small"
             type="datetimerange"
             value-format="yyyy-MM-dd HH:mm:ss"

@@ -129,13 +129,69 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span @click="gotoEdit(scope.row.id)">编辑</span>
-              <span @click="shareHandle(scope.row.id)">分享</span>
-              <span @click="puaseGroupIntegration(scope.row.id)">停用</span>
-              <span @click="upGroupIntegration(scope.row.id)">启用</span>
-              <span @click="gotoDetail(scope.row.id)">参团明细</span>
-              <span @click="gotoSuccess(scope.row.id)">成团明细</span>
-              <span @click="delGroupIntegration(scope.row.id)">删除</span>
+              <el-tooltip
+                content="编辑"
+                placement="top"
+              >
+                <span
+                  class="el-icon-edit-outline"
+                  @click="gotoEdit(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="分享"
+                placement="top"
+              >
+                <span
+                  class="el-icon-share"
+                  @click="shareHandle(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="停用"
+                placement="top"
+              >
+                <span
+                  @click="puaseGroupIntegration(scope.row.id)"
+                  class="el-icon-circle-close"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="启用"
+                placement="top"
+              >
+                <span
+                  @click="upGroupIntegration(scope.row.id)"
+                  class="el-icon-circle-check"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="参与明细"
+                placement="top"
+              >
+                <span
+                  @click="gotoDetail(scope.row.id)"
+                  class="el-icon-present"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="成团明细"
+                placement="top"
+              >
+                <span
+                  @click="gotoSuccess(scope.row.id)"
+                  class="el-icon-user-solid"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="删除"
+                placement="top"
+              >
+                <span
+                  @click="delGroupIntegration(scope.row.id)"
+                  class="el-icon-delete iconSpn"
+                ></span>
+              </el-tooltip>
             </div>
           </template>
         </el-table-column>
