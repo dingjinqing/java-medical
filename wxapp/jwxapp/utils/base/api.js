@@ -26,7 +26,9 @@ function api(path, cb, data, content_type, shadow) {
     header: _getHeader(),
     dataType: "json",
     success: function(res) {
+      console.log(_getHeader());
       if (path == "/api/wxapp/login" && res.data.error == 0) {
+        console.log(123)
         _cacheToken(res.data.content.token);
       }
       if (res.data.language) {

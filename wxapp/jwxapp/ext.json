@@ -1,0 +1,15 @@
+{
+  "extEnable": true,
+  "extAppid": "wxbb38922409fdaa24",
+  "directCommit": false,
+  "ext": {
+    "main_host": "jmpdev.weipubao.cn",
+    "image_host": "jmpdevimg.weipubao.cn",
+    "shop_id": "245547",
+    "schema": "http"
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  }
+}

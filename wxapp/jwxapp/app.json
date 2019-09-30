@@ -1,7 +1,9 @@
 {
   "pages": [
+    "pages/index/index",
     "pages/bottom/bottom",
-    "pages/index/index"
+    "pages/coupon/coupon",
+    "pages/getCoupon/getCoupon"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -14,6 +16,9 @@
     "scope.userLocation": {
       "desc": "以便向您推荐距离您最近的门店！"
     }
+  },
+  "usingComponents": {
+    "v-navigation": "/components/custom-navigation/index"
   },
   "sitemapLocation": "sitemap.json"
 }

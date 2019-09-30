@@ -14,22 +14,23 @@ var init = {
       loading: this.loading
     });
     console.log("init onLoad path: ", this.currentUrl);
-
-    if (this.loading) {
-      if (!this.isBottomPage()) {
-        var url = "/pages/bottom/bottom?url=" + encodeURIComponent(this.currentUrl);
-        util.jumpLink(url, "reLaunch");
-      } else {
-        this.loadSetting(options);
-      }
-      return false;
-    }
-    if (this.bottom.status == 0 && this.isBottomPage()) {
-      this._initRequest(options);
-      this.bottomPageJump(options);
-      // util.jumpLink('pages/index/index', "reLaunch");
-      return false;
-    }
+ //暂时注释
+    // if (this.loading) {
+    //   if (!this.isBottomPage()) {
+    //     var url = "/pages/bottom/bottom?url=" + encodeURIComponent(this.currentUrl);
+    //     util.jumpLink(url, "reLaunch");
+    //   } else {
+    //     this.loadSetting(options);
+    //   }
+    //   return false;
+    // }
+   
+    // if (this.bottom.status == 0 && this.isBottomPage()) {
+    //   this._initRequest(options);
+    //   this.bottomPageJump(options);
+    //   // util.jumpLink('pages/index/index', "reLaunch");
+    //   return false;
+    // }
 
     if (this.bottom.status > 0 && !this.isBottomPage()) {
       var url = "/pages/bottom/bottom?url=" + encodeURIComponent(this.currentUrl);
@@ -104,7 +105,8 @@ var init = {
       logo_link: this.bottom.logo_link ? this.bottom.logo_link:"",
       margin_top_nav: margin_top_nav
     }
-    data = Object.assign(data, this._getColors());
+console.log(data)
+    data = Object.assign(data, this._getColors());    
 
     this.setData(data);
   },
@@ -203,6 +205,7 @@ var init = {
         item.open_type = "getUserInfo";
       }
     }
+    console.log(bottom);
     return bottom;
   },
 

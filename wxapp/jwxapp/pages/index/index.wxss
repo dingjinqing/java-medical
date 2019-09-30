@@ -1,1 +1,85 @@
-/* pages/index/index.wxss */
+
+.collect_gifts{
+  position: fixed;
+  top: 300rpx;
+  z-index: 200;
+  right: 0;
+  width: 150rpx;
+  height: 160rpx;
+}
+.collect_gifts image{
+  width: 150rpx;
+  height: 150rpx;
+}
+
+/* 回到顶部 */
+.back_top{
+   width: 110rpx;
+   height: 110rpx;
+   position: fixed;
+   top: 860rpx;
+   right: 8rpx;
+   color: #999;
+   border-radius: 1000rpx;
+   border: 1px solid #eee;
+   background: white;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   box-shadow: 0rpx 4rpx 6rpx 1rpx #ddd;
+   z-index: 9999;
+}
+.back_top image{
+    width: 35rpx;
+    height: 15rpx;
+}
+.common-footer .footer-text{
+  background: none
+}
+
+
+.share_bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index:9999999;
+}
+.share_bg .zhezhao{
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.share_content{
+  position: absolute;
+  top: 80rpx;
+  left: 85rpx;
+  z-index: 999999;
+}
+.share_content image{
+  width: 580rpx;
+  height: 860rpx;
+  margin-bottom: 20rpx;
+}
+.share_content .btn_save_img{
+  width: 580rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 8rpx;
+  background: #f66;
+  color: #fff;
+  text-align: center;
+  font-size: 30rpx;
+  margin-bottom: 15rpx;
+}
+.share_content .save_tips{
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 24rpx;
+}

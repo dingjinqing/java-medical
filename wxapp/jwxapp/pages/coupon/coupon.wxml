@@ -1,0 +1,59 @@
+<!--pages/couponlist/couponlist.wxml-->
+<include src="../common/header.wxml"/>
+<view class='main-container'>
+  <view class="container">
+    <view class="top" style='top:{{margin_top_nav+8}}px'>
+        <view class="{{this_type == 1 ? 'use' : ''}}" bindtap="change" data-name="can" style='color:{{this_type == 1 ? comColor :"" }};border-bottom-color:{{this_type == 1 ? comColor : ""}}'>
+          未使用({{unusedNum}})
+        </view>
+        <view class="{{this_type == 2 ? 'use' : ''}}" bindtap="change" data-name="used" style='color:{{this_type == 2 ? comColor :"" }};border-bottom-color:{{this_type == 2 ? comColor : ""}}'>
+          已使用({{usedNum}})
+        </view>
+        <view class="{{this_type == 3 ? 'use' : ''}}" bindtap="change" data-name="time" style='color:{{this_type == 3 ? comColor :"" }};border-bottom-color:{{this_type == 3 ? comColor : ""}}'>
+          已过期({{expiredNum}})
+        </view>
+    </view>
+    <view class="cou_area">
+        <block> 
+            <view bindtap="couponDetail" data-couponSn="{{item.couponSn}}" wx:for="{{cou_list}}" wx:if="{{cou_list != ''}}" wx:key="key">
+              <!-- <view class="left" style='background:{{comColor}}'> -->
+              <view class="left" style='background:#ff6666;'>
+                <view class="vip_exclusive" wx:if="{{item.is_exclusive == 1}}">会员</view>
+                <view class='coupon_xian'>
+                  <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+                </view>
+                <view class="price" wx:if="{{item.type == '0'}}">￥<text>{{item.amount}}</text></view>
+                <view class="price" wx:if="{{item.type == '1'}}"><text>{{item.amount}}折</text></view>
+                <view class='name'>{{item.actName}}</view>
+              </view>
+              <view class="right">
+                  <view class="case">
+                    <block wx:if="{{item.limit_order_amount != 0 && item.limit_order_amount != null}}"> 
+                      使用条件:满{{item.limit_order_amount}}可用(不含运费)
+                    </block> 
+                    <block wx:else> 
+                      使用条件:无门槛(不含运费)
+                    </block> 
+                  </view>
+                  <view class="click_to_detail">{{item.is_all_goods}}</view>
+                  <view class="time_canuse" wx:if='{{item.remain_days != 0}}'>{{item.startTime}}-{{item.endTime}}</view>
+                  <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remain_days == 0}}'>
+                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
+                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
+                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
+                    <text style='color:#666'>后失效</text>
+                  </view>
+              </view>  
+              <view class="go_use" catchtap="to_search" data-coupon_sn="{{item.coupon_sn}}" style='color:{{comColor}}'>
+                去使用
+              </view>  
+            </view>
+            <view class="no_cou" wx:if="{{cou_list == ''}}">
+              <view class="icon_no"><image src='{{imageUrl}}image/wxapp/coupo-no.png' mode='widthFix'/></view>
+              <view class="no_tips">您目前还没有优惠券</view>
+            </view>
+        </block>
+     </view> 
+  </view>
+</view>
+<include src="../common/footer.wxml"/>
