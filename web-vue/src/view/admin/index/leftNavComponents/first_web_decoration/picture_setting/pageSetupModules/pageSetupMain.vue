@@ -112,6 +112,7 @@
               <el-input
                 size="small"
                 v-model="ruleForm.pictorial.share_btn_name"
+                maxlength="4"
               ></el-input>
               <span class="popover">
                 <el-popover
