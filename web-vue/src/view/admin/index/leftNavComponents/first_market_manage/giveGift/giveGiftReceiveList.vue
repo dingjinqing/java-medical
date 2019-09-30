@@ -1,5 +1,5 @@
 <!--
-* 我要送礼--送礼列表
+* 我要送礼-- 收礼列表
 *
 * @author 孔德成
 -->
@@ -10,23 +10,12 @@
                 <el-col :span='24'>
                     <el-form label-width="100px">
                         <el-row :gutter="20">
-                            <el-col :span="6">
-                                <div class="grid-content">
-                                    <el-form-item :label="$t('giveGift.givePeopleMobile')">
-                                        <el-input
-                                                v-model="requestParams.mobile"
-                                                :placeholder="$t('giveGift.givePeopleMobile')"
-                                                size="small"
-                                                clearable
-                                        ></el-input>
-                                    </el-form-item>
-                                </div>
-                            </el-col>
+
                             <el-col :span="6">
                                 <div class="grid-content">
                                     <el-form-item :label="$t('giveGift.givePeopleName')">
                                         <el-input
-                                                v-model="requestParams.userName"
+                                                v-model="requestParams.giveUserName"
                                                 :placeholder="$t('giveGift.givePeopleName')"
                                                 size="small"
                                                 clearable
@@ -35,19 +24,56 @@
                                 </div>
                             </el-col>
                             <el-col :span="6">
-                                <div class="grid-content ">
-                                    <el-form-item :label="$t('giveGift.goodsName')">
-                                            <el-input
-                                                    v-model="requestParams.goodsName"
-                                                    :placeholder="$t('giveGift.goodsName')"
-                                                    size="small"
-                                                    clearable
-                                            ></el-input>
-                                        </el-form-item>
+                                <div class="grid-content">
+                                    <el-form-item :label="$t('giveGift.givePeopleMobile')">
+                                        <el-input
+                                                v-model="requestParams.giveMobile"
+                                                :placeholder="$t('giveGift.givePeopleMobile')"
+                                                size="small"
+                                                clearable
+                                        ></el-input>
+                                    </el-form-item>
+                                </div>
+                            </el-col>
+
+                            <el-col :span="6">
+                                <div class="grid-content">
+                                    <el-form-item :label="$t('giveGift.receiveUserName')">
+                                        <el-input
+                                                v-model="requestParams.receiveUserName"
+                                                :placeholder="$t('giveGift.receiveUserName')"
+                                                size="small"
+                                                clearable
+                                        ></el-input>
+                                    </el-form-item>
+                                </div>
+                            </el-col>
+                            <el-col :span="6">
+                                <div class="grid-content">
+                                    <el-form-item :label="$t('giveGift.receiveMobile')">
+                                        <el-input
+                                                v-model="requestParams.receiveMobile"
+                                                :placeholder="$t('giveGift.receiveMobile')"
+                                                size="small"
+                                                clearable
+                                        ></el-input>
+                                    </el-form-item>
                                 </div>
                             </el-col>
                         </el-row>
                         <el-row :gutter="20">
+                            <el-col :span="6">
+                                <div class="grid-content ">
+                                    <el-form-item :label="$t('giveGift.goodsName')">
+                                        <el-input
+                                                v-model="requestParams.goodsName"
+                                                :placeholder="$t('giveGift.goodsName')"
+                                                size="small"
+                                                clearable
+                                        ></el-input>
+                                    </el-form-item>
+                                </div>
+                            </el-col>
                             <el-col :span="6">
                                 <div class="grid-content ">
                                     <el-form-item :label="$t('giveGift.goodsSn')">
@@ -115,18 +141,38 @@
                     </template>
                 </el-table-column>
                 <el-table-column
+                        prop="orderSn"
+                        :label="$t('giveGift.childOrderSn')"
+                        align="center"
+                >
+                    <template slot-scope="scope">
+                        <el-button @click="mainOrderPage(scope.row.mainOrderSn)" type="text" size="small">
+                            {{scope.row.mainOrderSn}}
+                        </el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column
                         prop="people"
                         :label="$t('giveGift.givePeople')"
                         align="center"
                 >
                     <template slot-scope="scope">
-                        <el-button @click="userDetailPage(scope.row.userId)" type="text" size="small">
-                            {{scope.row.username}}<br/>{{scope.row.mobile}}
+                        <el-button @click="userDetailPage(scope.row.giveruserId)" type="text" size="small">
+                            {{scope.row.giverusername}}<br/>{{scope.row.givermobile}}
                         </el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="recommendGoodsId"
+                        :label="$t('giveGift.receivePoeple')"
+                        align="center"
+                >
+                    <template slot-scope="scope">
+                        <el-button @click="userDetailPage(scope.row.receiveuserId)" type="text" size="small">
+                            {{scope.row.receiveusername}}<br/>{{scope.row.receivemobile}}
+                        </el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column
                         :label="$t('giveGift.giftGoods')"
                         align="center"
                 >
@@ -135,26 +181,14 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="payTime"
-                        :label="$t('giveGift.payTime')"
+                        prop="createTime"
+                        :label="$t('giveGift.receiveTime')"
                         align="center"
                 >
                 </el-table-column>
                 <el-table-column
-                        prop="giftType"
+                        prop="giftTypeText"
                         :label="$t('giveGift.activityType')"
-                        align="center"
-                >
-                </el-table-column>
-                <el-table-column
-                        prop="receiveNum"
-                        :label="$t('giveGift.receivePoepleNum')"
-                        align="center"
-                >
-                </el-table-column>
-                <el-table-column
-                        prop="returnNum"
-                        :label="$t('giveGift.returnMoneyNum')"
                         align="center"
                 >
                 </el-table-column>
@@ -176,7 +210,7 @@
 <script>
 import pagination from '@/components/admin/pagination/pagination.vue'
 import {
-  giveGiftRecordList
+  giveGiftReceiveList
 } from '@/api/admin/marketManage/giveGift'
 
 export default {
@@ -193,13 +227,16 @@ export default {
         currentPage: 1,
         pageRows: 20,
         activityId: this.$route.params.id,
-        userName: null,
-        mobile: null,
+        giveUserName: null,
+        giveMobile: null,
+        receiveUserName: null,
+        receiveMobile: null,
         goodsName: null,
         goodsSn: null,
         orderStatus: null
       },
-      orderStatusMap: this.$t('order.orderStatusList')
+      orderStatusMap: this.$t('order.orderStatusList'),
+      giveGiftTypeArr: null
 
     }
   },
@@ -210,7 +247,9 @@ export default {
   },
   watch: {
     lang () {
+      this.giveGiftTypeArr = this.$t('giveGift.giveGiftTypeArr')
       this.orderStatusMap = this.$t('order.orderStatusList')
+      this.initDataList()
     }
   },
   methods: {
@@ -218,7 +257,7 @@ export default {
       this.loading = true
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
-      giveGiftRecordList(this.requestParams).then(res => {
+      giveGiftReceiveList(this.requestParams).then(res => {
         if (res.error === 0) {
           this.$message.success(res.message)
           this.resDataFilter(res.content.dataList)
@@ -235,7 +274,7 @@ export default {
     resDataFilter (data) {
       data.forEach(item => {
         item.orderStatusName = new Map(this.orderStatusMap).get(item.orderStatus)
-        item.people = {name: item.username, mobile: item.mobile, userId: item.userId}
+        item.giftTypeText = new Map(this.giveGiftTypeArr).get(item.giftType)
         item.goodsList = JSON.stringify(item.giftGoodsList)
       })
       console.log('resDataFilter', data)

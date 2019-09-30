@@ -286,7 +286,9 @@ export const en = {
   // 营销管理 我要送礼
   giveGift: ['Marketing management', 'give gift'],
   // 营销管理 我要送礼 送礼明细
-  giveGift_details: ['arketing management', 'give Gift', 'give gift detail'],
+  giveGift_details: ['arketing management', 'give gift', 'give gift detail'],
+  // 营销管理 我要送礼 收礼明细
+  giveGift_receive: ['arketing management', 'give gift', 'receive gift detail'],
   // 营销管理 消息推送
   message_push: ['Marketing management', 'Message Push'],
   add_message_push: [

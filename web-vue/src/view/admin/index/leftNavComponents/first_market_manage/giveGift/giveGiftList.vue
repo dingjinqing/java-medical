@@ -1,3 +1,8 @@
+<!--
+* 我要送礼--活动列表
+*
+* @author 孔德成
+-->
 <template>
     <div class="content">
         <div class="main">
@@ -12,13 +17,14 @@
                                 :label="item.title"
                                 :name="item.name">
                             <el-button
-                                    v-if="item.name!=='disabled'"
+                                    v-if="tableListView"
                                     type="primary"
                                     @click="addActivity">
                                 {{$t('giveGift.addActivity')}}
                             </el-button>
                         </el-tab-pane>
                     </el-tabs>
+
                 </el-col>
             </el-row>
         </div>
@@ -117,7 +123,7 @@
                                     placement="top">
                                 <span
                                         class="el-icon-delete"
-                                        @click="deletegiveGift(scope.row.id)">
+                                        @click="deleteGiveGiftActivity(scope.row.id)">
                                 </span>
                             </el-tooltip>
                             <el-tooltip
@@ -146,11 +152,14 @@
                     :page-params.sync="pageParams"
                     @pagination="initDataList"/>
         </div>
+        <addGiveGift v-if="!tableListView" @submitFormJump="submitFormJump()"></addGiveGift>
     </div>
 </template>
 
 <script>
+import addGiveGift from './addGiveGift.vue'
 import pagination from '@/components/admin/pagination/pagination.vue'
+
 import {
   giveGiftList,
   changeGiveGift,
@@ -159,12 +168,13 @@ import {
 
 export default {
   components: {
+    addGiveGift,
     pagination
   },
   data: function () {
     return {
       tableData: [],
-      pageParams: {},
+      pageParams: {id: null},
       tabInfo: this.$t('giveGift.tabInfo'),
       tabSwitch: this.$route.params.tabSwitch,
       tableListView: true,
@@ -179,12 +189,13 @@ export default {
     this.initDataList()
   },
   watch: {
-    land () {
+    lang () {
       this.tabInfo = this.$t('giveGift.tabInfo')
-      this.tabSwitch = this.$router.tabSwitch
+      this.tabSwitch = this.$route.params.tabSwitch
     },
     $route (to) {
-      console.log('$route', to, to.path.split('/')[5])
+      console.log('to', to, to.path.split('/')[5])
+      console.log('$route', this.$route, this.$route.params.tabSwitch)
       if (this.tabSwitch !== this.$route.params.tabSwitch) {
         this.tabSwitch = to.path.split('/')[5]
         this.initDataList()
@@ -192,7 +203,21 @@ export default {
     }
   },
   methods: {
+    // 初始化
     initDataList () {
+      console.log(' this.tabSwitch', this.tabSwitch)
+      // 判断是不是添加活动页面
+      if (this.tabSwitch === 'add') {
+        this.addActivity()
+        return
+      }
+      if (this.tabSwitch === 'edit') {
+        this.editActivity(this.$route.query.id)
+        return
+      }
+      if (this.tabInfo.length > 5) {
+        this.chooseTab()
+      }
       let obj = {
         currentPage: this.pageParams.currentPage,
         pageRows: this.pageParams.pageRows
@@ -216,6 +241,7 @@ export default {
         this.loading = false
       })
     },
+    // 列表数据格式化
     resDataFilter (data) {
       data.forEach(item => {
         item.validDate = item.startTime + this.$t('giveGift.to') + item.endTime
@@ -225,19 +251,32 @@ export default {
     },
     // 添加
     addActivity () {
-
+      console.log('添加活动 ')
+      this.addNewTab('add')
     },
     // 编辑
-    editActivity () {
-
+    editActivity (id) {
+      console.log('编辑活动,id= ', id)
+      this.addNewTab('edit', {id: id})
     },
+    // 切换tab
     chooseTab () {
       console.log('chooseTab', this.tabSwitch)
+      if (this.tabSwitch === 'add') {
+        this.addActivity()
+        return
+      }
+      if (this.tabSwitch === 'edit') {
+        this.editActivity(this.$route.query.id)
+        return
+      }
+      this.closeNewTab()
       this.$router.push({
         path: this.tabSwitch
       })
       this.initDataList()
     },
+    // 改变状态
     changeStatus (id) {
       this.$confirm(this.$t('giveGift.changeStatusComment'), {
         confirmButtonText: this.$t('giveGift.confirm'),
@@ -260,7 +299,8 @@ export default {
         })
       })
     },
-    deletegiveGift (id) {
+    // 删除活动
+    deleteGiveGiftActivity (id) {
       this.$confirm(this.$t('giveGift.deleteComment'), {
         confirmButtonText: this.$t('giveGift.confirm'),
         cancelButtonText: this.$t('giveGift.cancel'),
@@ -282,13 +322,69 @@ export default {
         })
       })
     },
+    // 收礼详情
     receiveDetail (id) {
       // 收礼明细
+      this.$router.push({
+        name: 'giveGift_receive',
+        params: {
+          id: id
+        }
+      })
     },
+    // 送礼详情
     giveGiftDetail (id, activityName) {
       // 送礼明细
       console.log('跳转到送礼明细列表页面 id = ', id, 'activityName: ', activityName)
-      this.$router.push({ path: `/admin/home/main/giveGift/detail/${activityName}/${id}` })
+      this.$router.push({
+        name: 'giveGift_details',
+        params: {
+          id: id,
+          activityName: activityName
+        }
+      })
+    },
+    // 添加tab
+    addNewTab (index, params = null) {
+      if (this.tabInfo.length > 5) {
+        this.tabSwitch = index
+        this.tableListView = false
+        this.add = false
+        return
+      }
+      // 该变路由
+      this.$router.push({path: index, query: params})
+      // 添加tab
+      this.tabInfo.push({
+        title: index === 'add' ? this.$t('giveGift.addActivity') : this.$t('giveGift.editActicity'),
+        name: index
+      })
+      this.tableListView = false
+      this.tabSwitch = index
+      this.add = false
+    },
+    // 关闭tab
+    closeNewTab () {
+      // 新增标签
+      if (this.tabSwitch === 'add' || this.tabSwitch === 'edit') {
+        return
+      }
+      // 不是新增
+      if (this.tabInfo.length > 5) {
+        this.tableListView = true
+        this.tabInfo.pop({
+          title: this.$t('groupBuy.editActivity'),
+          name: 'add'
+        })
+        console.log('closeTabAddGroup', this.tabInfo)
+      }
+      return this.tabInfo
+    },
+    // 添加或编辑后
+    submitFormJump () {
+      console.log('submitFormJump')
+      this.tabSwitch = 'inProgress'
+      this.chooseTab()
     }
   }
 }

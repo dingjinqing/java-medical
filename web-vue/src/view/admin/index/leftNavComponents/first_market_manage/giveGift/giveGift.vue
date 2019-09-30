@@ -1,3 +1,8 @@
+<!--
+* 我要送礼
+*
+* @author 孔德成
+-->
 <template>
     <div>
         <giveGiftList/>

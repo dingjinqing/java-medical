@@ -236,7 +236,7 @@
       </el-form-item>
     </el-form>
     <!--添加商品弹窗-->
-    <choosingGoods @resultGoodsRow="choosingGoodsResult" :tuneUpChooseGoods="isShowChoosingGoodsDialog"/>
+    <choosingGoods @resultGoodsRow="choosingGoodsResult" :tuneUpChooseGoods="isShowChoosingGoodsDialog" :singleElection="true"/>
     <!--添加优惠卷弹窗-->
     <addCouponDialog @checkReturnFormat="handleToCheck" />
   </wrapper>
@@ -415,7 +415,6 @@ export default {
     showChoosingGoods () {
       console.log('初始化商品弹窗', this.form.goodsId)
       this.transmitEditGoodsId(this.form.goodsId)
-      // this.$http.$emit('choosingGoodsFlag', true, 'choiseOne')
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     // 获取商品ids

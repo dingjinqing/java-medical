@@ -976,6 +976,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/giveGift/giveGiftDetailList'
       )
   },
+  // 我要送礼 收礼列表
+  {
+    path: '/admin/home/main/giveGift/receive/:id',
+    name: 'giveGift_receive',
+    meta: {
+      crumbTitle: 'router.giveGift_receive',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/giveGift/giveGiftReceiveList'
+      )
+  },
   // 定向发券/领取明细
   {
     path: '/admin/home/main/couponGive/receiveDetails/:id/:couponId',
