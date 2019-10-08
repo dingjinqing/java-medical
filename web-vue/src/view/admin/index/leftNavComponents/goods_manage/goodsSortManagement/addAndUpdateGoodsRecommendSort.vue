@@ -50,12 +50,10 @@
                <div class="formItemVal">
                  <div style="display: flex;justify-content: left;align-items: center;line-height: 20px;">
                    <span style="align-self: flex-start;color: #5a8bff;cursor: pointer;" @click="chooseSortImg(item)">修改</span>
-                   <div style="position: relative;margin: 0px 10px;height: 70px;cursor: pointer;border: 1px solid #ccc;" @click="chooseSortImg(item)">
-                     <img v-if="item.sortImgObj.imgUrl===undefined"  :src="$imageHost+'/image/admin/sort_moren.png'" style="width: 70px;height: 70px;">
-                     <template v-else>
-                       <img :src="item.sortImgObj.imgUrl" style="width: 70px;height: 70px;">
-                       <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">更换图标</div>
-                     </template>
+                   <div style="position: relative;margin: 0px 10px;height: 70px;cursor: pointer;" @click="chooseSortImg(item)">
+                     <img v-if="item.sortImgObj.imgUrl===undefined"  :src="$imageHost+'/image/admin/sort_moren.png'" style="width: 70px;height: 70px;border: 1px solid #ccc;">
+                     <img v-else :src="item.sortImgObj.imgUrl" style="width: 70px;height: 70px;">
+                     <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">更换图标</div>
                    </div>
                    <span style="align-self: flex-end;color:#666;">150*140</span>
                  </div>
@@ -197,7 +195,7 @@ export default {
           sortId: item.sortId,
           sortName: item.sortName,
           imgLink: item.imgLink,
-          sortImgUrl: item.sortImgObj.imgPath,
+          sortImg: item.sortImgObj.imgPath,
           type: 1,
           level: 1
         })
