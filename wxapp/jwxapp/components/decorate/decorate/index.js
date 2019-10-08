@@ -15,7 +15,7 @@ global.wxComponent({
       value: {},
       observer(newVal, oldVal) {
         console.log(newVal, '222')
-        // if (newVal) this.processModuleData(newVal);
+        if (newVal) this.processModuleData(newVal);
       }
     }
   },
@@ -25,7 +25,7 @@ global.wxComponent({
     processModuleData(page_content) {
       if (!page_content) return;
       console.log(page_content, '222', module)
-      if (!pageInfo) return;
+      if (!page_content) return;
       let pageData = [];
       // 转化模块名称
       let componentName = this._convertComponentName('m_goods_search');
