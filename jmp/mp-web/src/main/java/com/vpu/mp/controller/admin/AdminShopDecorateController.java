@@ -39,6 +39,18 @@ public class AdminShopDecorateController extends AdminBaseController {
 		PageResult<XcxCustomerPageVo> list = shop().mpDecoration.getPageList(param);
 		return success(list);
 	}
+	
+	/**
+	 * 新建装修页面
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/page/add")
+	public JsonResult addPage(@RequestBody XcxCustomerPageVo param) {
+		System.out.println(param);
+		boolean res = shop().mpDecoration.addPage(param);
+		return this.success(res);
+	}
 
 	/**
 	 * 装修页面详情
@@ -125,7 +137,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/save")
 	public JsonResult saveDecoration(@RequestBody XcxCustomerPageVo param) {
-		System.out.println(param);
+		System.out.println(111);
+		System.out.println(param.getPageId());
 		boolean res = shop().mpDecoration.saveDecoration(param);
 		if(res) {
 			return this.success();

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -126,10 +127,10 @@ public class ShopMpDecorationService extends ShopBaseService {
 	 * @param page
 	 * @return
 	 */
-	public XcxCustomerPageRecord addPage(XcxCustomerPageVo page) {
-		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, page);
-		record.insert();
-		return record;
+	public boolean addPage(XcxCustomerPageVo param) {
+		XcxCustomerPageRecord record = new XcxCustomerPageRecord();
+		this.assign(param,record);
+		return db().executeInsert(record) > 0 ? true : false;
 	}
 
 	public int setPageCatId(Integer pageId, Integer catId) {
