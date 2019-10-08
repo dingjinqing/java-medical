@@ -385,28 +385,28 @@ export default {
             updateGroupBuy(this.form).then(res => {
               console.log('updateGroupBuy', res)
               if (res.error === 0) {
-                this.success(res.content)
+                this.$message.success(res.message)
                 this.$emit('addGroupBuySubmit')
               } else {
-                this.fail(res.message)
+                this.$message.warning(res.message)
               }
             }).catch(e => {
               console.log(e)
-              this.fail(e.toString())
+              this.$message.warning(e.message)
             })
           } else {
             addGroupBuyActivity(this.form).then(res => {
               console.log('addGroupBuyActivity', res)
               if (res.error === 0) {
-                this.success(res.content)
+                this.$message.success(res.message)
                 this.$emit('addGroupBuySubmit')
               } else {
-                this.fail(res.message)
+                this.$message.warning(res.message)
               }
             })
           }
         } else {
-          this.fail('error submit!!')
+          this.$message.warning('error submit!!')
         }
       })
       this.submitStatus = false
@@ -446,20 +446,6 @@ export default {
       this.form.startTime = date[0]
       this.form.endTime = date[1]
       console.log(date)
-    },
-    fail (message) {
-      this.$message({
-        showClose: true,
-        message,
-        type: 'warning'
-      })
-    },
-    success (message) {
-      this.$message({
-        showClose: true,
-        message,
-        type: 'success'
-      })
     },
     // 设置数据
     setCurrent (index) {
