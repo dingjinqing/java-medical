@@ -2,11 +2,13 @@ package com.vpu.mp.service.foundation.util;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vpu.mp.config.es.annotation.EsFiledSerializer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
@@ -61,6 +63,26 @@ public class Util {
 		return null;
 	}
 
+    /**
+     * jackson解析自定义注解的json
+     * @param o
+     * @param ai 自定义注解解析器
+     * @return
+     */
+    public static String toJson(Object o, AnnotationIntrospector ai) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setAnnotationIntrospector(new EsFiledSerializer());
+        try {
+            return mapper.writeValueAsString(o);
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 	public static <T> T parseJson(String json, Class<T> valueType) {
 		if(StringUtils.isBlank(json)) return null;
 		ObjectMapper mapper = new ObjectMapper();
