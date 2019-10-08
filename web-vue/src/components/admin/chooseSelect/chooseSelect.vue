@@ -4,9 +4,10 @@
     <div>
       <div>
         <el-checkbox
+          label="持有"
           v-model="onClickCard"
           @change="handleOnClickCardChange"
-        >持有</el-checkbox>
+        ></el-checkbox>
         <el-select
           :disabled="!onClickCard"
           size="small"
@@ -56,9 +57,10 @@
       <div>
         <div>
           <el-checkbox
+            label="属于"
             v-model="onClickTag"
             @change="handleOnClickTagChange"
-          >属于</el-checkbox>
+          ></el-checkbox>
           <el-select
             :disabled="!onClickTag"
             size="small"
@@ -150,12 +152,14 @@ export default {
      * 勾选指定会员卡人群发生变化的时候
      */
     handleOnClickCardChange (val) {
+      this.onClickCard = !this.onClickCard
       this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     },
     /**
      * 勾选指定标签人群变化的时候
      */
     handleOnClickTagChange (val) {
+      this.onClickTag = !this.onClickTag
       this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     },
     // 初始化获取数据
