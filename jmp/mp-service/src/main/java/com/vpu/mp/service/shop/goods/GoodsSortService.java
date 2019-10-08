@@ -1,42 +1,34 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.Sort.SORT;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
+import com.vpu.mp.db.shop.tables.records.SortRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
+import com.vpu.mp.service.shop.config.GoodsRecommendSortConfigService;
 import com.vpu.mp.service.shop.image.ImageService;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.SortRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
+import java.util.*;
+
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 /**
  * @author 李晓冰
  * @date 2019年06月27日
  */
 @Service
-
 public class GoodsSortService extends ShopBaseService {
 
     @Autowired
     protected ImageService imageService;
+    @Autowired
+    public GoodsRecommendSortConfigService recommendSortConfigService;
 
     /**
      * 根据父分类和分类类型查询
@@ -53,7 +45,7 @@ public class GoodsSortService extends ShopBaseService {
 
         List<Sort> sorts = select.fetchInto(Sort.class);
         /* 处理图片路径 */
-        sorts.forEach(sort -> sort.setSortImg(getImgFullUrlUtil(sort.getSortImg())));
+        sorts.forEach(sort -> sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg())));
 
         return sorts;
     }
@@ -84,6 +76,21 @@ public class GoodsSortService extends ShopBaseService {
         }
         /* 处理图片路径 */
         sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg()));
+        return sort;
+    }
+
+    /**
+     *  获取推荐分类详细信息
+     * @param sortId
+     * @return
+     */
+    public Sort getRecommendSort(Integer sortId) {
+       Sort sort = getSort(sortId);
+        GoodsSortListParam param = new GoodsSortListParam();
+        param.setParentId(sort.getSortId());
+        param.setType(sort.getType());
+        List<Sort> children = getList(param);
+        sort.setChildren(children);
         return sort;
     }
 
@@ -212,10 +219,10 @@ public class GoodsSortService extends ShopBaseService {
      * 批量插入推荐分类
      * 默认列表中第一个分类为一级分类
      */
-    public void insertRecommendSort(List<Sort> sorts) {
+    public void insertRecommendSort(Sort parentSort) {
         transaction(() -> {
             DSLContext db = db();
-            Sort parentSort = sorts.remove(0);
+            List<? extends Sort> sorts = parentSort.getChildren();
 
             //存在子分类
             if (sorts.size() > 0) {
@@ -245,7 +252,6 @@ public class GoodsSortService extends ShopBaseService {
 
     /**
      * 商家分类名称是否存在，用来新增检查
-     *
      * @param sort
      * @return
      */
@@ -264,7 +270,6 @@ public class GoodsSortService extends ShopBaseService {
 
     /**
      * 商家分类名称是否存在，修改使用
-     *
      * @param sort
      * @return
      */
@@ -291,8 +296,8 @@ public class GoodsSortService extends ShopBaseService {
 
         Integer sortId = sort.getSortId();
 
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
+        transaction(() -> {
+            DSLContext db = db();
 
             Sort s = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchOneInto(Sort.class);
 
@@ -334,6 +339,49 @@ public class GoodsSortService extends ShopBaseService {
         SortRecord sortRecord = new SortRecord();
         assign(sort, sortRecord);
         db().executeUpdate(sortRecord);
+    }
+
+    /**
+     * 修改推荐分类及其子分类
+     * @param sort
+     */
+    public void updateRecommendSort(Sort sort) {
+        List<? extends Sort> children = sort.getChildren();
+        List<Integer> childrenId = new ArrayList<>(children.size());
+        List<SortRecord> childrenSortRecordForUpdate =new ArrayList<>(children.size());
+        List<SortRecord> childrenSortRecordForInsert =new ArrayList<>(children.size());
+
+        children.forEach((Sort item)->{
+            SortRecord sortRecord=new SortRecord();
+            sortRecord.setType(Sort.RECOMMENT_TYPE_CODE);
+            sortRecord.setHasChild(Sort.HAS_NO_CHILD_CODE);
+            sortRecord.setParentId(sort.getSortId());
+            sortRecord.setSortName(item.getSortName());
+            sortRecord.setSortImg(item.getSortImg());
+            sortRecord.setImgLink(item.getImgLink());
+
+            if (item.getSortId() != null) {
+                sortRecord.setSortId(item.getSortId());
+                childrenId.add(item.getSortId());
+                childrenSortRecordForUpdate.add(sortRecord);
+            } else {
+                childrenSortRecordForInsert.add(sortRecord);
+            }
+        });
+        SortRecord parentSort =new SortRecord();
+        parentSort.setSortId(sort.getSortId());
+        parentSort.setSortName(sort.getSortName());
+        parentSort.setFirst(sort.getFirst());
+        if (childrenSortRecordForInsert.size() == 0 && childrenSortRecordForUpdate.size() == 0) {
+            parentSort.setHasChild(Sort.HAS_NO_CHILD_CODE);
+        }
+
+        transaction(()->{
+            db().deleteFrom(SORT).where(SORT.PARENT_ID.eq(sort.getSortId())).and(SORT.SORT_ID.notIn(childrenId)).execute();
+            db().batchUpdate(childrenSortRecordForUpdate).execute();
+            db().batchInsert(childrenSortRecordForInsert).execute();
+            db().executeUpdate(parentSort);
+        });
     }
 
     /**
