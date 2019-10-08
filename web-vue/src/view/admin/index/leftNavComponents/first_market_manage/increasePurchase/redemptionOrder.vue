@@ -4,31 +4,31 @@
       <el-row>
         <el-col :span="6">
           <el-form label-width="100px">
-            <el-form-item label="商品名称">
+            <el-form-item :label="$t('purchase.goodsName')">
               <el-input
                 v-model="param.goodsName"
-                placeholder="请输入商品名称"
+                :placeholder="$t('purchase.inputgoodsName')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="6">
           <el-form label-width="100px">
-            <el-form-item label="订单号">
+            <el-form-item :label="$t('purchase.orderSn')">
               <el-input
                 v-model="param.orderSn"
-                placeholder="请输入订单号"
+                :placeholder="$t('purchase.inputorderSn')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="6">
           <el-form label-width="100px">
-            <el-form-item label="订单状态">
+            <el-form-item :label="$t('purchase.orderStatus')">
               <template>
                 <el-select
                   v-model="param.orderStatus"
-                  placeholder="请选择"
+                  :placeholder="$t('purchase.choose')"
                 >
                   <el-option
                     v-for="item in options"
@@ -44,20 +44,20 @@
         </el-col>
         <el-col :span="6">
           <el-form label-width="120px">
-            <el-form-item label="收货人姓名">
+            <el-form-item :label="$t('purchase.consigneename')">
               <el-input
                 v-model="param.receiverName"
-                placeholder="请输入收货人姓名"
+                :placeholder="$t('purchase.inputconsigneename')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="6">
           <el-form label-width="120px">
-            <el-form-item label="收货人手机号">
+            <el-form-item :label="$t('purchase.mobile')">
               <el-input
                 v-model="param.receiverPhone"
-                placeholder="请输入收货人手机号"
+                :placeholder="$t('purchase.inputconsigneemobile')"
               ></el-input>
             </el-form-item>
           </el-form>
@@ -67,7 +67,7 @@
             label-width="100px"
             :inline="false"
           >
-            <el-form-item label="收货地址">
+            <el-form-item :label="$t('purchase.consigneeaddress')">
               <template>
                 <div>
                   <areaLinkage @areaData="handleAreaData" />
@@ -83,7 +83,7 @@
           <el-button
             type="primary"
             @click="initDateList"
-          >查询</el-button>
+          >{{$t('purchase.serach')}}</el-button>
         </el-col>
         <el-col
           :span="2"
@@ -93,7 +93,7 @@
             type="info"
             style="float:right;"
           >
-            导出excel
+            {{$t('purchase.export')}}
           </el-button>
         </el-col>
       </el-row>
@@ -107,13 +107,13 @@
         >
           <el-table-column
             prop="orderSn"
-            label="订单号"
+            :label="$t('purchase.orderSn')"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
-            label="主商品"
+            :label="$t('purchase.majorgoods')"
             align="left"
           >
             <template slot-scope="scope">
@@ -142,7 +142,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="换购商品"
+            :label="$t('purchase.redemptiongoods')"
             align="left"
           >
             <template slot-scope="scope">
@@ -172,12 +172,12 @@
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="下单时间"
+            :label="$t('purchase.ordertime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            label="收货人信息"
+            :label="$t('purchase.consigneemobile')"
             align="center"
           >
             <template slot-scope="scope">
@@ -186,7 +186,7 @@
           </el-table-column>
           <el-table-column
             prop="orderStatusName"
-            label="订单状态"
+            :label="$t('purchase.orderStatus')"
             align="center"
           >
 

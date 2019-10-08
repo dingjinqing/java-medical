@@ -9,10 +9,10 @@
       <el-row>
         <el-col :span="5">
           <el-form label-width="100px">
-            <el-form-item label="活动名称">
+            <el-form-item :label="$t('purchase.activityName')">
               <el-input
                 v-model="param.name"
-                placeholder="请输入活动名称"
+                :placeholder="$t('purchase.inputactivityName')"
               ></el-input>
             </el-form-item>
           </el-form>
@@ -22,13 +22,13 @@
           :offset=1
         >
           <el-form label-width="100px">
-            <el-form-item label="活动时间">
+            <el-form-item :label="$t('purchase.activityTime')">
               <el-date-picker
                 v-model="param.dateRange"
                 type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
+                :range-separator="$t('purchase.to')"
+                :start-placeholder="$t('purchase.startdate')"
+                :end-placeholder="$t('purchase.enddate')"
                 value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
@@ -39,7 +39,7 @@
       <el-row>
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="加价购条件:满">
+            <el-form-item :label="$t('purchase.Priceincreaseconditions')">
               <el-input
                 v-model.number="param.fullPriceDown"
                 placeholder="0"
@@ -49,7 +49,7 @@
         </el-col>
         <el-col :span="3">
           <el-form label-width="50px">
-            <el-form-item label="元 至">
+            <el-form-item :label="$t('purchase.rmbto')">
               <el-input
                 v-model.number="param.fullPriceUp"
                 placeholder="0"
@@ -59,7 +59,7 @@
         </el-col>
         <el-col :span="1">
           <el-form label-width="30px">
-            <el-form-item label="元">
+            <el-form-item :label="$t('purchase.rmb')">
             </el-form-item>
           </el-form>
         </el-col>
@@ -68,7 +68,7 @@
           :offset=1
         >
           <el-form label-width="100px">
-            <el-form-item label="换购条件:满">
+            <el-form-item :label="$t('purchase.redemptioncondition')">
               <el-input
                 v-model.number="param.purchasePriceDown"
                 placeholder="0"
@@ -78,7 +78,7 @@
         </el-col>
         <el-col :span="3">
           <el-form label-width="50px">
-            <el-form-item label="元 至">
+            <el-form-item :label="$t('purchase.rmbto')">
               <el-input
                 v-model.number="param.purchasePriceUp"
                 placeholder="0"
@@ -88,7 +88,7 @@
         </el-col>
         <el-col :span="1">
           <el-form label-width="30px">
-            <el-form-item label="元">
+            <el-form-item :label="$t('purchase.rmb')">
             </el-form-item>
           </el-form>
         </el-col>
@@ -96,14 +96,14 @@
           <el-button
             type="primary"
             @click="initDateList"
-          >查询</el-button>
+          >{{$t('purchase.serach')}}</el-button>
         </el-col>
         <el-col :span="4">
           <el-button
             type="primary"
             style="float:right;"
           >
-            添加加价购活动
+            {{$t('purchase.addactivity')}}
           </el-button>
         </el-col>
       </el-row>
@@ -117,22 +117,22 @@
         >
           <el-table-column
             prop="name"
-            label="活动名称"
+            :label="$t('purchase.activityName')"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
-            label="活动时间"
+            :label="$t('purchase.activityTime')"
             align="center"
           >
             <template slot-scope="scope">
-              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+              {{scope.row.startTime}}<br>{{$t('purchase.to')}}<br>{{scope.row.endTime}}
             </template>
           </el-table-column>
           <el-table-column
             prop="level"
-            label="活动优先级"
+            :label="$t('purchase.activityprioty')"
             align="center"
           >
             <template slot-scope="scope">
@@ -143,7 +143,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="活动信息"
+            :label="$t('purchase.activityinfo')"
             align="center"
           >
             <template slot-scope="scope">
@@ -154,7 +154,7 @@
                 >
                   <el-form :inline="true">
                     <el-form-item>
-                      满{{item.replace('---','加价')}}换购<br>
+                      {{$t('purchase.full')}}{{item.replace('---','加价')}}{{$t('purchase.redemption')}}<br>
                     </el-form-item>
                   </el-form>
                 </li>
@@ -163,33 +163,33 @@
           </el-table-column>
           <el-table-column
             prop="maxChangePurchase"
-            label="单笔最大换购数量"
+            :label="$t('purchase.singlemax')"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
             prop="resaleQuantity"
-            label="已换购数量"
+            :label="$t('purchase.alreadyredemption')"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('purchase.opration')"
             align="center"
           >
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
-                  content="编辑"
+                  :content="$t('purchase.edit')"
                   placement="top"
                   v-if="scope.row.status === 0"
                 >
                   <span class="el-icon-edit-outline iconSpn"></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="停用"
+                  :content="$t('purchase.Disable')"
                   placement="top"
                   v-if="scope.row.status === 0"
                 >
@@ -199,7 +199,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="启用"
+                  :content="$t('purchase.Enable')"
                   placement="top"
                   v-if="scope.row.status === 1"
                 >
@@ -209,7 +209,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="删除"
+                  :content="$t('purchase.delete')"
                   placement="top"
                 >
                   <span
@@ -218,7 +218,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="查看换购订单"
+                  :content="$t('purchase.searchredemptionorder')"
                   placement="top"
                 >
                   <span
@@ -227,7 +227,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="换购明细"
+                  :content="$t('purchase.redemptiondetail')"
                   placement="top"
                 >
                   <span
@@ -236,7 +236,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="分享"
+                  :content="$t('purchase.share')"
                   placement="top"
                 >
                   <span class="el-icon-share iconSpn"></span>

@@ -195,6 +195,11 @@ import { en as tradeConfiguration } from './views/admin_new/en/index/basicSettin
 // 退换货配置
 import { en as returnconfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/returnGoodsConfigurationEn'
 
+// 加价购-列表展示页
+import {
+  en as purchase
+} from './views/admin_new/en/index/marketManagement/increasePurchase/purchaseEn'
+
 const en = {
   messages: {
     lang: 'English',
@@ -641,6 +646,7 @@ const en = {
   storeCommon, // 门店通用
   storeList, // 门店列表
   tradeConfiguration, // 交易流程配置
-  returnconfiguration // 退换货配置
+  returnconfiguration, // 退换货配置
+  purchase // 加价购
 }
 export default en

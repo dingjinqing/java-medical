@@ -199,6 +199,11 @@ import { cn as tradeConfiguration } from './views/admin_new/cn/index/basicSettin
 // 退换货配置
 import { cn as returnconfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/returnGoodsConfigurationCn'
 
+// 加价购-列表展示页
+import {
+  cn as purchase
+} from './views/admin_new/cn/index/marketManagement/increasePurchase/purchaseCn'
+
 const cn = {
   messages: {
     lang: '中文',
@@ -645,7 +650,8 @@ const cn = {
   storeCommon, // 门店通用
   storeList, // 门店列表
   tradeConfiguration, // 交易流程配置
-  returnconfiguration // 退换货配置
+  returnconfiguration, // 退换货配置
+  purchase // 加价购
 }
 
 export default cn

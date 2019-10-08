@@ -4,30 +4,30 @@
       <el-row :gutter="20">
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="昵称">
+            <el-form-item :label="$t('purchase.nickName')">
               <el-input
                 v-model="param.nickName"
-                placeholder="请输入昵称"
+                :placeholder="$t('purchase.inputnickName')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="手机号">
+            <el-form-item :label="$t('purchase.phone')">
               <el-input
                 v-model="param.phoneNumber"
-                placeholder="请输入手机号"
+                :placeholder="$t('purchase.inputphone')"
               ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="4">
           <el-form label-width="100px">
-            <el-form-item label="换购数量">
+            <el-form-item :label="$t('purchase.redemptionNum')">
               <el-input
                 v-model="param.redemptionNum"
-                placeholder="请输入换购数量"
+                :placeholder="$t('purchase.inputredemptionNum')"
               ></el-input>
             </el-form-item>
           </el-form>
@@ -39,7 +39,7 @@
           <el-button
             type="primary"
             @click="initDateList"
-          >查询</el-button>
+          >{{$t('purchase.serach')}}</el-button>
         </el-col>
         <el-col
           :span="2"
@@ -49,7 +49,7 @@
             type="info"
             style="float:right;"
           >
-            导出excel
+            {{$t('purchase.export')}}
           </el-button>
         </el-col>
       </el-row>
@@ -63,51 +63,51 @@
         >
           <el-table-column
             prop="userId"
-            label="用户id"
+            :label="$t('purchase.userid')"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
             prop="username"
-            label="昵称"
+            :label="$t('purchase.nickName')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="mobile"
-            label="手机号"
+            :label="$t('purchase.phone')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="orderSn"
-            label="订单号"
+            :label="$t('purchase.orderSn')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="换购时间"
+            :label="$t('purchase.redemptiontime')"
             align="center"
           >
 
           </el-table-column>
           <el-table-column
             prop="mainGoodsTotalMoney"
-            label="主商品总金额"
+            :label="$t('purchase.mainGoodsTotalMoney')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="redemptionNum"
-            label="换购数量"
+            :label="$t('purchase.redemptionNum')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="redemptionTotalMoney"
-            label="换购总金额"
+            :label="$t('purchase.redemptionTotalMoney')"
             align="center"
           >
           </el-table-column>
