@@ -279,6 +279,12 @@ export default {
       })
     },
     comfirmRefund () {
+      if (this.params.returnType === 2) {
+        if (this.params.shippingFee <= 0) {
+          this.$message.error('仅退运费时运费必须大于0')
+          return
+        }
+      }
       let obj = {
         orderId: this.$route.query.orderId,
         orderSn: this.$route.query.orderSn,

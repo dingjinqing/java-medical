@@ -95,24 +95,31 @@
             </div>
             <div class="item_right">
               <el-radio-group v-model="batchFlag">
-                <el-radio :label="1">{{$t('reducePriceList.batch')}}<el-input
+                <el-radio :label="1">{{$t('reducePriceList.batch')}}<el-input-number
                     :disabled="batchFlag != 1 ? true : false"
                     v-model="reduceData.batchDiscount"
+                    :controls="false"
                     size="small"
                     class="small_input"
-                  ></el-input>{{$t('reducePriceList.discount')}}</el-radio>
-                <el-radio :label="2">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}<el-input
+                    :min="0"
+                    :max="10"
+                  ></el-input-number>{{$t('reducePriceList.discount')}}</el-radio>
+                <el-radio :label="2">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceReduction')}}<el-input-number
                     :disabled="batchFlag != 2 ? true : false"
                     v-model="reduceData.batchReduce"
+                    :controls="false"
                     size="small"
                     class="small_input"
-                  ></el-input>{{$t('marketCommon.yuan')}}</el-radio>
-                <el-radio :label="3">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}<el-input
+                    :min="0"
+                  ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
+                <el-radio :label="3">{{$t('reducePriceList.batch')}}{{$t('reducePriceList.priceAfterDiscount')}}<el-input-number
                     :disabled="batchFlag != 3 ? true : false"
                     v-model="reduceData.batchFinalPrice"
+                    :controls="false"
                     size="small"
                     class="small_input"
-                  ></el-input>{{$t('marketCommon.yuan')}}</el-radio>
+                    :min="0"
+                  ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
               </el-radio-group>
               <el-button
                 type="primary"
@@ -150,7 +157,6 @@
                 :label="item.label"
                 :key="item.index"
                 v-if="item.index === 1"
-                width="400"
               >
                 <template slot-scope="scope">
                   <div class="goods_info">
@@ -170,15 +176,17 @@
                 :label="item.label"
                 :key="item.index"
                 v-else-if="item.index === 4"
-                width="130"
+                width="150"
               >
                 <template slot-scope="scope">
-                  <el-input
+                  <el-input-number
                     v-model="scope.row.discount"
+                    :controls="false"
+                    :precision="2"
                     size="small"
                     class="small_input"
                     @input="changeItemDiscount(scope.row)"
-                  ></el-input> {{$t('reducePriceList.discount')}}
+                  ></el-input-number> {{$t('reducePriceList.discount')}}
                 </template>
               </el-table-column>
               <el-table-column
@@ -186,15 +194,17 @@
                 :label="item.label"
                 :key="item.index"
                 v-else-if="item.index === 5"
-                width="130"
+                width="150"
               >
                 <template slot-scope="scope">
-                  <el-input
+                  <el-input-number
                     v-model="scope.row.reducePrice"
+                    :controls="false"
+                    :precision="2"
                     size="small"
                     class="small_input"
                     @input="changeItemReducePrice(scope.row)"
-                  ></el-input> {{$t('marketCommon.yuan')}}
+                  ></el-input-number> {{$t('marketCommon.yuan')}}
                 </template>
               </el-table-column>
               <el-table-column
@@ -205,12 +215,15 @@
                 width="150"
               >
                 <template slot-scope="scope">
-                  <el-input
+                  <p class="price_red">{{reduceError(scope.row)}}</p>
+                  <el-input-number
                     v-model="scope.row.goodsPrice"
+                    :controls="false"
+                    :precision="2"
                     size="small"
                     class="small_input"
                     @input="changeItemGoodsPrice(scope.row)"
-                  ></el-input> {{$t('marketCommon.yuan')}}
+                  ></el-input-number> {{$t('marketCommon.yuan')}}
                   <p
                     class="price_blue"
                     @click="getProductInfo(scope.row)"
@@ -422,6 +435,9 @@ export default {
         if (res.error === 0) {
           res.content.forEach(item => {
             item.reducePriceProduct = item.goodsSpecProducts
+            item.discount = 10
+            item.reducePrice = 0
+            item.goodsPrice = item.shopPrice
             if (item.reducePriceProduct != null && item.reducePriceProduct.length > 0) {
               item.reducePriceProduct.forEach(spec => {
                 spec.originalPrice = spec.prdPrice
@@ -578,6 +594,19 @@ export default {
         itemData.reducePriceProduct.map(item => {
           item.prdPrice = rowData.goodsPrice
         })
+      }
+    },
+    reduceError (rowData) {
+      if (rowData.discount || rowData.reducePrice || rowData.goodsPrice) {
+        if (rowData.goodsPrice > rowData.shopPrice) {
+          return `降价金额需小于原价`
+        } else if (rowData.goodsPrice < 0) {
+          return `降价后金额不得小于0`
+        } else if (rowData.shopPrice > 0 && rowData.shopPrice < 0.01) {
+          return `此商品不可降价`
+        } else {
+          return ''
+        }
       }
     },
     addSubmit () {
@@ -741,6 +770,12 @@ export default {
     color: #5a8bff;
     padding-top: 2px;
     cursor: pointer;
+  }
+  .price_red {
+    color: red;
+    padding-bottom: 2px;
+    cursor: pointer;
+    font-size: 12px;
   }
   .del_item {
     color: #66b1ff;

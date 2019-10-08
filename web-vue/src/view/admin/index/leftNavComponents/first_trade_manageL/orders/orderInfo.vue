@@ -509,12 +509,39 @@
         </table>
       </div>
     </div>
+    <div
+      class="status_box"
+      :class="{hide:!showStatus}"
+    >
+      <div
+        class="view"
+        @click="toogleShow"
+      >{{showStatus ? '收起':'打开'}}</div>
+      <div class="step_content">
+        <template v-for="(item,index) in timeFlowDiagramMapping[statusKey]">
+
+          <div
+            class="item_content"
+            :key="index"
+            :class="{'is_end':index === timeFlowDiagramMapping[statusKey].length -1,'is-finish':order[item],'is_wait': !order[item] && order[timeFlowDiagramMapping[statusKey][index - 1]]}"
+          >
+            <div class="item_head">
+              <div class="item_line"></div>
+              <div class="item_text">{{index + 1}}</div>
+            </div>
+            <div class="item_main">
+              <div class="item_title">{{$t('order.timeFlowDiagram')[item]}}</div>
+              <div class="item_description">{{order[item]}}</div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
     <nodesDialog
       :show.sync="showNodes"
       :orderSn="notesOrderSn"
       @handlerResetData="search"
     />
-    <orderStatuSteps />
     <el-dialog
       title="收货地址"
       :visible.sync="showAddress"
@@ -542,8 +569,8 @@ import {
 } from '@/api/admin/orderManage/order'
 export default {
   components: {
-    nodesDialog: () => import('./addNotes'),
-    orderStatuSteps: () => import('./orderStatuSteps')
+    nodesDialog: () => import('./addNotes')
+    // orderStatuSteps: () => import('./orderStatuSteps')
   },
   data () {
     return {
@@ -551,6 +578,7 @@ export default {
       showNodes: false,
       showAddress: false,
       itemAddressInfo: null,
+      showStatus: true,
       searchParam: {
         orderSn: null
       },
@@ -655,9 +683,19 @@ export default {
     showAddressInfo (Address) {
       this.showAddress = true
       this.itemAddressInfo = Address
+    },
+    toogleShow () {
+      this.showStatus = !this.showStatus
     }
   },
   computed: {
+    statusKey () {
+      if (this.order.orderStatus === 3 || this.order.orderStatus === 5 || this.order.orderStatus === 6) {
+        return `${this.order.orderStatus}-${this.order.deliverType}`
+      } else {
+        return `${this.order.orderStatus}`
+      }
+    },
     showShippingInfo () {
       let mainFlag = this.order.shippingList
       let childFlag = null
@@ -917,6 +955,101 @@ export default {
   .shipping_address {
     color: #409eff;
     cursor: pointer;
+  }
+}
+.status_box {
+  position: fixed;
+  right: 0;
+  width: 215px;
+  top: 140px;
+  bottom: 0;
+  margin-bottom: 0 !important;
+  display: flex;
+  align-items: center;
+  transition: right 0.3s ease-in;
+  padding: 0;
+  z-index: 2;
+  &.hide {
+    right: -180px;
+  }
+  .view {
+    width: 35px;
+    cursor: pointer;
+  }
+  .step_content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #fff;
+    padding: 10px 0 10px 10px;
+    .item_content {
+      flex-shrink: 1;
+      flex-basis: 50%;
+      display: flex;
+      color: #666;
+      &.is-finish {
+        color: skyblue;
+      }
+      &.is_wait {
+        color: #000;
+      }
+      &.is_end {
+        flex-basis: auto !important;
+        flex-shrink: 0;
+        flex-grow: 0;
+      }
+      &:last-of-type {
+        .item_line {
+          display: none;
+        }
+      }
+      .item_head {
+        width: 24px;
+        position: relative;
+        .item_line {
+          position: absolute;
+          width: 2px;
+          top: 0;
+          bottom: 0;
+          left: 11px;
+          background-color: #c0c4cc;
+        }
+        .item_text {
+          border-radius: 50%;
+          border: 2px solid;
+          border-color: inherit;
+          position: relative;
+          z-index: 1;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          width: 24px;
+          height: 24px;
+          font-size: 14px;
+          box-sizing: border-box;
+          background: #fff;
+          transition: 0.15s ease-out;
+          font-weight: 600;
+          line-height: 1;
+          color: inherit;
+        }
+      }
+      .item_main {
+        flex: 1;
+        padding-left: 10px;
+        .item_title {
+          line-height: 24px;
+          padding-bottom: 8px;
+        }
+        .item_description {
+          margin-top: -5px;
+          font-size: 12px;
+          line-height: 20px;
+          font-weight: 400;
+        }
+      }
+    }
   }
 }
 </style>
