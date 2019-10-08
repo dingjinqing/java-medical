@@ -110,7 +110,6 @@
                   <el-input-number
                     v-model="param.stock"
                     size="mini"
-                    style="width:90px"
                     :min="1"
                     :max="scope.row.goodsNumber"
                   >
@@ -134,7 +133,6 @@
                   <el-input-number
                     v-model="param.expectationPrice"
                     size="mini"
-                    style="width:90px"
                     :min="0"
                     :max="scope.row.shopPrice"
                   >
@@ -155,7 +153,6 @@
                       :disabled="isEditFlag"
                       v-model="param.floorPrice"
                       size="mini"
-                      style="width:120px"
                       :min="0"
                       :max="scope.row.shopPrice"
                     >
@@ -165,7 +162,6 @@
                       :disabled="isEditFlag"
                       v-model="param.expectationPrice"
                       size="small"
-                      style="width:120px"
                       :min="0"
                       :max="scope.row.shopPrice"
                     >

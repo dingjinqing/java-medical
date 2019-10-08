@@ -285,7 +285,7 @@ export default {
         cancelButtonText: this.$t('groupBuy.cancel'),
         type: 'warning'
       }).then(() => {
-        changeStatusActivity({'id': id}).then(res => {
+        changeStatusActivity({ 'id': id }).then(res => {
           console.log('change=>res = ' + res)
           if (res.error === 0) {
             this.$message.success(res.message)
@@ -307,7 +307,7 @@ export default {
         cancelButtonText: this.$t('groupBuy.cancel'),
         type: 'warning'
       }).then(() => {
-        deleteGroupBuyActivity({'id': data}).then(res => {
+        deleteGroupBuyActivity({ 'id': data }).then(res => {
           console.log(res)
           if (res.error === 0) {
             this.$message.success(res.message)

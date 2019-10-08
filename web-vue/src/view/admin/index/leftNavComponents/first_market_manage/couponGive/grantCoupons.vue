@@ -36,7 +36,6 @@
                   <div>
                     <el-checkbox
                       :label="$t('couponGive.addCartPeople')"
-                      v-model="params.onClickNoPay"
                       @change="handleOnClickNoPayChange"
                       name="type"
                     ></el-checkbox>
@@ -45,10 +44,9 @@
                   <div>
                     <el-checkbox
                       :label="$t('couponGive.buyGoodsPeople')"
-                      v-model="params.onClickGoods"
                       @change="handleOnClickGoodsChange"
                       name="type"
-                    > </el-checkbox>
+                    ></el-checkbox>
                     <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
                   </div>
                   <div class="chooseGoods">
@@ -67,7 +65,6 @@
                           :src="urls.url4"
                           @click="handleDelImg(item.goodsId)"
                         >
-
                         </el-image>
                       </li>
                       <div
@@ -88,7 +85,6 @@
                   <div style="margin:10px 0">
                     <el-checkbox
                       :label="$t('couponGive.chooseMember')"
-                      v-model="params.onClickUser"
                       @change="handleOnClickUserChange"
                       name="type"
                     ></el-checkbox>
@@ -103,12 +99,10 @@
                   <div>
                     <el-checkbox
                       :label="$t('couponGive.custom')"
-                      v-model="params.onClickCustomRule"
                       @change="handleOnClickCustomRuleChange"
                     ></el-checkbox>
                     <el-select
                       :disabled="!params.onClickCustomRule"
-                      v-model="customRuleInfoVal"
                       :placeholder="$t('couponGive.choose')"
                       size="small"
                       @change="customRuleInfoValChange"
@@ -142,7 +136,7 @@
                               size="small"
                               v-model="item.ipt"
                             > </el-input>
-                            <span>{{ item.label | filterA  }}</span>
+                            <div>{{ item.label | filterA  }}</div>
                           </span>
                           <div class="img_span">
                             <el-image

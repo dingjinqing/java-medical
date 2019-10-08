@@ -62,7 +62,7 @@ export const cn = {
   },
   // 添加拼团活动
   groupBuyActivity: '拼团活动',
-  groupBuyActivityComment: '开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。 ',
+  groupBuyActivityComment: '所有用户都可以开团，但只有新用户才能参团，保存后不可编辑 ',
   selectGoods: '选择商品',
   commanderDiscounts: '团长优惠',
   commanderDiscountsComment1: '开启团长(开团人)优惠后，团长将享受更优惠价格，有助于提高开团率和成团率。 ',
