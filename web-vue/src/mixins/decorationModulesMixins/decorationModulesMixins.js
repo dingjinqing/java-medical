@@ -65,7 +65,7 @@ export default {
       // 判断页面设置分享海报的分享语是否为空
       if (this.pageSetData.pictorial.is_add === '1' && !this.pageSetData.pictorial.share_desc) {
         this.$message.error({
-          message: '页面分享按钮不能为空',
+          message: '页面分享语不能为空',
           showClose: true
         })
         return false
@@ -73,7 +73,7 @@ export default {
       // 判断页面设置分享海报的分享图不能为空
       if (this.pageSetData.pictorial.is_add === '1' && !this.pageSetData.pictorial.share_img_path) {
         this.$message.error({
-          message: '页面分享按钮不能为空',
+          message: '页面分享图不能为空',
           showClose: true
         })
         return false
@@ -81,7 +81,14 @@ export default {
       data.forEach((item, index) => {
         switch (item.module_name) {
           case 'm_card': // 会员卡
-
+            console.log(item)
+            if (!item.card_id) {
+              this.$message.error({
+                message: '请选择会员卡',
+                showClose: true
+              })
+              return false
+            }
             break
         }
       })

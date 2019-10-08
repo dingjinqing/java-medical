@@ -5,6 +5,15 @@ export function shopDecorateList (data) {
   return service({
     url: '/api/admin/decorate/list',
     method: 'post',
-    data
+    data: data
+  })
+}
+
+// 页面装修编辑保存接口
+export function saveDecorationPage (data) {
+  return service({
+    url: '/api/admin/decorate/page/add',
+    method: 'post',
+    data: data
   })
 }

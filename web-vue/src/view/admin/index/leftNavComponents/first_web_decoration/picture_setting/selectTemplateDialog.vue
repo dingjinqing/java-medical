@@ -45,8 +45,10 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 export default {
+  props: {
+    tuneUpMiniPage: Boolean
+  },
   data () {
     return {
       dialogVisible: false,
@@ -125,7 +127,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['Micropage']),
     Micropage_ () {
       return this.Micropage
     }
@@ -141,8 +142,14 @@ export default {
       console.log(newData)
     },
     dialogVisible (newData) {
-      if (newData === false) {
-        this.$store.commit('TOCALLMICROPAGE', null)
+      console.log(newData)
+      if (!newData) {
+        this.$emit('update:tuneUpMiniPage', false)
+      }
+    },
+    tuneUpMiniPage (newData) {
+      if (newData) {
+        this.dialogVisible = true
       }
     }
   },

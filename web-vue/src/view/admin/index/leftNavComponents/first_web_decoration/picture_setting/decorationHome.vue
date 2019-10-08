@@ -178,6 +178,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
+import { saveDecorationPage } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
@@ -833,28 +834,40 @@ export default {
       if (!judgeFlag) return
       saveMosulesData.push(this.pageSetData)
       console.log(saveMosulesData, this.modulesData, this.pageSetData)
+      console.log(localStorage.getItem('V-ShopId'))
+      if (!this.pageSetData.cat_id) {
+        this.pageSetData.cat_id = 0
+      }
       let params = {
-        page_content: saveMosulesData,
-        page_publish_content: saveMosulesData,
-        page_state: '',
-        cat_id: this.pageSetData.cat_id,
-        page_name: this.pageSetData.page_name
+        shopId: Number(localStorage.getItem('V-ShopId')),
+        pageName: this.pageSetData.page_name,
+        pageContent: JSON.stringify(saveMosulesData),
+        pagePublishContent: JSON.stringify(saveMosulesData),
+        pageState: '',
+        catId: this.pageSetData.cat_id
+
       }
       switch (flag) {
         case 0:
-          params.page_state = 0
+          params.pageState = 1
           break
         case 1:
-          params.page_state = 1
+          params.pageState = 0
           break
         case 2:
       }
       console.log(flag)
       if (flag === 0 || flag === 1) {
-        this.$message.success({
-          message: '保存成功',
-          showClose: true,
-          duration: 1000
+        console.log(params)
+        saveDecorationPage(params).then(res => {
+          console.log(res)
+          if (res === 0) {
+            this.$message.success({
+              message: '保存成功',
+              showClose: true,
+              duration: 1000
+            })
+          }
         })
       } else {
         this.$message.success({

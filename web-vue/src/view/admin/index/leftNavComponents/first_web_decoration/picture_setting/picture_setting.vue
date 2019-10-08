@@ -274,11 +274,10 @@
       </el-dialog>
     </div>
     <!--新建微页面弹窗-->
-    <SelectTemplateDialog />
+    <SelectTemplateDialog :tuneUpMiniPage.sync="tuneUpMiniPage" />
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
 import SelectTemplateDialog from './selectTemplateDialog'
 export default {
   components: { SelectTemplateDialog },
@@ -342,7 +341,8 @@ export default {
       dialogVisibleShare: false,
       shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
       pathInput: '',
-      flag: true
+      flag: true,
+      tuneUpMiniPage: false
     }
   },
   watch: {
@@ -385,7 +385,6 @@ export default {
     this.langDefault()
   },
   methods: {
-    ...mapActions(['handleToCallMicropage']),
     querySearch (queryString, cb) {
       var restaurants = this.restaurants
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
@@ -462,8 +461,7 @@ export default {
     },
     // 点击新建微页面
     handleToNewPage () {
-      this.flag = !this.flag
-      this.handleToCallMicropage(this.flag)
+      this.tuneUpMiniPage = true
     },
     // 表格设置点击
     handleSet () {
