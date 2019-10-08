@@ -512,7 +512,7 @@ const routes = [
               },
               {
                 path:
-                  '/admin/home/main/goodsManage/goodsSortManagement/updateGoodsRecommendSort',
+                  '/admin/home/main/goodsManage/goodsSortManagement/updateGoodsRecommendSort/:sortId',
                 name: 'updateGoodsRecommendSort',
                 meta: {
                   crumbTitle: 'router.goodsSortManagement',

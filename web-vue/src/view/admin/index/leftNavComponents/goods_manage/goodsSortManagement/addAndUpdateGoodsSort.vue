@@ -33,7 +33,7 @@
           <span class="inputTip">显示在分类页顶部，不填写则不显示，建议尺寸510*200</span>
           <span style="font-size: 14px;color: #666;">头图链接：</span>
           <el-input v-model="goodsSortDataFirst.imgLink" size="small" style="width: 280px;"/>
-          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #ccc;">添加链接</el-button>
+          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">添加链接</el-button>
         </el-form-item>
       </el-form>
       <!-- 二级分类表单 -->
@@ -288,8 +288,8 @@ export default {
 
 <style scoped>
   .content{
-    margin: 20px 0px;
-  }
+       margin: 20px 0px;
+     }
   .inputTip {
     color: #999;
     display: block;
