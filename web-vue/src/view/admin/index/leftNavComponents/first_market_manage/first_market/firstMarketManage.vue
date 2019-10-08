@@ -383,7 +383,10 @@
       </div>
       <div class="box3">
         <!-- 收藏有礼 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="collectGift"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/scyl.png'"
               alt=""
@@ -596,6 +599,12 @@ export default {
           params: { tabSwitch: 'inProgress' }
         }
       )
+    },
+    // 收藏有礼
+    collectGift () {
+      this.$router.push({
+        name: 'collectGift'
+      })
     }
   }
 }

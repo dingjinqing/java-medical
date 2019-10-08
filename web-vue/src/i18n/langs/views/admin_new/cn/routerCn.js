@@ -212,6 +212,8 @@ export const cn = {
   couponGive_receive_details: ['营销管理', '定向发券', '领取明细'],
   // 营销管理 定向发券 发放优惠券
   couponGive_grant_coupons: ['营销管理', '定向发券', '发放优惠券'],
+  // 营销管理 收藏有礼
+  collectGift: ['营销管理', '收藏有礼'],
 
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],

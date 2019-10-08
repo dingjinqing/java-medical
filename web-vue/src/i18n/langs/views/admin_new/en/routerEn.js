@@ -318,6 +318,8 @@ export const en = {
     'Coupon Give',
     'Grant Coupons'
   ],
+  // 营销管理 收藏有礼
+  collectGift: ['Marketing management', 'Collect Gift'],
 
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],

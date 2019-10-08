@@ -1014,6 +1014,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/couponGive/grantCoupons'
       )
+  },
+  // 收藏有礼
+  {
+    path: '/admin/home/main/collectGift',
+    name: 'collectGift',
+    meta: {
+      crumbTitle: 'router.collectGift',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/collectGift/collectGift'
+      )
   }
 ]
 export default routes
