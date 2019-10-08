@@ -56,7 +56,12 @@ import {
 import {
   cn as addAndUpdateGoodsLabel
 } from './views/admin_new/cn/index/goodsManagement/addAndUpdateGoodsLabelCn'
-
+import {
+  cn as goodsSorts
+} from './views/admin_new/cn/index/goodsManagement/goodsSortsCn'
+import {
+  cn as goodsRecommendSorts
+} from './views/admin_new/cn/index/goodsManagement/goodsRecommendSortsCn'
 // 营销管理系列国际化
 // 营销管理通用词汇
 import {
@@ -610,6 +615,8 @@ const cn = {
   goodsAddEditInfo,
   allGoodsLabel, // 全部标签
   addAndUpdateGoodsLabel, // 标签添加和修改
+  goodsSorts, // 商家分类全部，修改，新增
+  goodsRecommendSorts, // 商家推荐分类全部，修改，新增
 
   // 订单
   order,

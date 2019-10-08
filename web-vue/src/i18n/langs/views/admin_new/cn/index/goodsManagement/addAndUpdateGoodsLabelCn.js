@@ -1,4 +1,4 @@
-// 英文
+// 中文
 export const cn = {
   labelName: '标签名称',
   labelNameRequired: '请输入标签名称',

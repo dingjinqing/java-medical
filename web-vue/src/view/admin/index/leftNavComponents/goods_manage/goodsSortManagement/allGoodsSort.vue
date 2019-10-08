@@ -2,11 +2,11 @@
 <div class="allGoodsSort">
   <allGoodsSortHeaderTab :tabIndex="0"/>
   <div class="goodsSortForm">
-    <el-button type="primary" size="small" @click="addGoodsSortClicked">添加分类</el-button>
+    <el-button type="primary" size="small" @click="addGoodsSortClicked">{{$t('goodsSorts.goodsSortsAdd')}}</el-button>
   </div>
   <div>
     <el-table :data="goodsSortData" class="tableClass" border style="width: 100%">
-      <el-table-column align="center" label="分类名称">
+      <el-table-column align="center" :label="$t('goodsSorts.goodsSortName')">
         <template slot-scope="{row,$index}">
           <template v-if="row.level === 0">
             <span v-if="!row.open" class="collapseIcon el-icon-folder-add" @click="collapseIconClicked(row,$index)"></span>
@@ -19,18 +19,18 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类图标">
+      <el-table-column align="center" :label="$t('goodsSorts.goodsSortImg')">
         <template slot-scope="{row}">
           <img :src="row.sortImg" style="height: 50px;min-width: 160px;"/>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类链接" prop="imgLink"/>
-      <el-table-column align="center" label="分类优先级" prop="first"/>
-      <el-table-column align="center" label="添加时间" prop="createTime"/>
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" :label="$t('goodsSorts.goodsSortImgLink')" prop="imgLink"/>
+      <el-table-column align="center" :label="$t('goodsSorts.goodsSortFirst')" prop="first"/>
+      <el-table-column align="center" :label="$t('goodsSorts.goodsSortCreateTime')" prop="createTime"/>
+      <el-table-column align="center" :label="$t('goodsSorts.goodsSortOperate')">
         <template slot-scope="{row}">
-          <span class="operateSpan" @click="editGoodsSortClicked(row)">编辑</span>
-          <span class="operateSpan" @click="deleteGoodsSortClicked(row)">删除</span>
+          <span class="operateSpan" @click="editGoodsSortClicked(row)">{{$t('goodsSorts.edit')}}</span>
+          <span class="operateSpan" @click="deleteGoodsSortClicked(row)">{{$t('goodsSorts.delete')}}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -71,8 +71,14 @@ export default {
     },
     /* 删除商品分类 */
     deleteGoodsSortClicked (row) {
-      deleteGoodsSort({sortId: row.sortId}).then(res => {
-        this._fetchGoodsSortData()
+      this.$confirm(this.$t('goodsSorts.goodsSortDeleteMsg'), this.$t('goodsSorts.goodsSortDeleteTip'), {
+        confirmButtonText: this.$t('goodsSorts.ok'),
+        cancelButtonText: this.$t('goodsSorts.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deleteGoodsSort({sortId: row.sortId}).then(res => {
+          this._fetchGoodsSortData()
+        })
       })
     },
     /* 获取商品分类 */

@@ -3,8 +3,8 @@
     <allGoodsSortHeaderTab :tabIndex="isUpdate ? 4 : 2"/>
     <div class="content">
       <el-radio-group v-model="level" style="margin-bottom: 10px;">
-        <el-radio :label="0">一级分类</el-radio>
-        <el-radio :label="1">二级分类</el-radio>
+        <el-radio :label="0">{{$t('goodsSorts.addFirstLevel')}}</el-radio>
+        <el-radio :label="1">{{$t('goodsSorts.addSecondLevel')}}</el-radio>
       </el-radio-group>
       <!-- 一级分类表单 -->
       <el-form v-show="level === 0"
@@ -12,28 +12,28 @@
         :rules="goodsSortRules"
         :model="goodsSortDataFirst"
         label-width="120px">
-        <el-form-item label="分类名称：" prop="sortName">
+        <el-form-item :label="$t('goodsSorts.goodsSortName')" prop="sortName">
           <el-input ref="sortNameFirst" v-model="goodsSortDataFirst.sortName" size="small"  style="width: 170px;"/>
         </el-form-item>
-        <el-form-item label="分类优先级：">
+        <el-form-item :label="$t('goodsSorts.goodsSortFirst')">
           <el-input @change="firstChanged" v-model.number="goodsSortDataFirst.firstOld" size="small"  style="width: 170px;"/>
           <br/>
-          <span class="inputTip">可填写1到100间的整数，数字越大前端排列顺序越靠前。优先级重复，则按照分类添加时间排序，添加越早越靠前排列</span>
+          <span class="inputTip">{{$t('goodsSorts.goodsSortFirstTip')}}</span>
         </el-form-item>
-        <el-form-item label="分类头图：">
+        <el-form-item :label="$t('goodsSorts.goodsSortHeadImg')">
             <img v-if="goodsSortDataFirst.sortImgObj === null"  @click="chooseSortImg"
                  style=" display:block;width: 230px;height: 90px;cursor:pointer;"
                  :src="$imageHost+'/image/admin/addSort/add_simple.png'"/>
           <div v-else style="width: 230px;height: 90px;position: relative;" @click="chooseSortImg">
             <img style="width: 100%;height: 100%;cursor: pointer;"
                  :src="goodsSortDataFirst.sortImgObj.imgUrl"/>
-            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">更换图标</div>
+            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">{{$t('goodsSorts.changeIcon')}}</div>
             <span @click.stop="deleteSortImg" class="deleteIcon">×</span>
           </div>
-          <span class="inputTip">显示在分类页顶部，不填写则不显示，建议尺寸510*200</span>
-          <span style="font-size: 14px;color: #666;">头图链接：</span>
+          <span class="inputTip">{{$t('goodsSorts.goodsSortHeadImgTip')}}</span>
+          <span style="font-size: 14px;color: #666;">{{$t('goodsSorts.goodsSortHeadImgLink')}}：</span>
           <el-input v-model="goodsSortDataFirst.imgLink" size="small" style="width: 280px;"/>
-          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">添加链接</el-button>
+          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">{{$t('goodsSorts.addImgLink')}}</el-button>
         </el-form-item>
       </el-form>
       <!-- 二级分类表单 -->
@@ -42,31 +42,31 @@
         :rules="goodsSortRules"
         :model="goodsSortDataSecond"
         label-width="120px">
-        <el-form-item label="一级分类：" prop="firstSortId">
+        <el-form-item :label="$t('goodsSorts.firstLevel')" prop="firstSortId">
           <el-select ref="firstSortIdSelector" v-model="goodsSortDataSecond.firstSortId">
-            <el-option label="请选择" :value="null"/>
+            <el-option :label="$t('goodsSorts.pleaseChoose')" :value="null"/>
             <el-option v-for="(item,index) in firstSortOptions" :label="item.sortName" :value="item.sortId" :key="index"/>
           </el-select>
           <el-popover placement="right" trigger="hover">
             <el-image :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-            <span slot="reference" style="color:#409EFF;cursor:pointer;">查看示例</span>
+            <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('goodsSorts.lookExample')}}</span>
           </el-popover>
         </el-form-item>
-        <el-form-item label="分类名称：" prop="sortName">
+        <el-form-item :label="$t('goodsSorts.goodsSortName')" prop="sortName">
           <el-input ref="sortNameSecond" v-model="goodsSortDataSecond.sortName" size="small"  style="width: 170px;"/>
         </el-form-item>
-        <el-form-item label="分类优先级：">
+        <el-form-item :label="$t('goodsSorts.goodsSortFirst')">
           <el-input @change="firstChanged" v-model.number="goodsSortDataSecond.firstOld" size="small"  style="width: 170px;"/>
           <br/>
-          <span class="inputTip">可填写1到100间的整数，数字越大前端排列顺序越靠前。优先级重复，则按照分类添加时间排序，添加越早越靠前排列</span>
+          <span class="inputTip">{{$t('goodsSorts.goodsSortFirstTip')}}</span>
         </el-form-item>
-        <el-form-item label="分类图标：" prop="sortImg">
+        <el-form-item :label="$t('goodsSorts.goodsSortImg')" prop="sortImg">
           <div style="display: flex;justify-content: left;align-items: center;line-height: 20px;">
-            <span style="align-self: flex-start;color: #5a8bff;cursor: pointer;">修改</span>
+            <span style="align-self: flex-start;color: #5a8bff;cursor: pointer;">{{$t('goodsSorts.update')}}</span>
             <div style="position: relative;margin: 0px 10px;height: 70px;cursor: pointer;" @click="chooseSortImg" >
               <img v-if="goodsSortDataSecond.sortImgObj === null" :src="$imageHost+'/image/admin/sort_moren.png'" style="width: 70px;height: 70px;">
               <img v-else :src="goodsSortDataSecond.sortImgObj.imgUrl"  style="width: 70px;height: 70px;">
-              <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">更换图标</div>
+              <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">{{$t('goodsSorts.changeIcon')}}</div>
             </div>
             <span style="align-self: flex-end;">150*140</span>
           </div>
@@ -74,7 +74,7 @@
       </el-form>
     </div>
     <div class="contentFooter">
-      <el-button type="primary" @click="save">保存</el-button>
+      <el-button type="primary" @click="save">{{$t('goodsSorts.save')}}</el-button>
     </div>
     <!--图片dialog-->
     <ImageDialog :tuneUp="imgDialogShow" pageIndex='pictureSpace' @handleSelectImg='imgDialogSelectedCallback'/>
@@ -125,13 +125,13 @@ export default {
       },
       goodsSortRules: {
         sortName: [
-          { required: true, message: '分类名称不可为空', trigger: 'change' }
+          { required: true, message: this.$t('goodsSorts.sortNameNotNull'), trigger: 'change' }
         ],
         firstSortId: [
-          { required: true, message: '请选择一级分类', trigger: 'change' }
+          { required: true, message: this.$t('goodsSorts.chooseFirstLevel'), trigger: 'change' }
         ],
         sortImg: [
-          { required: true, message: '请选择分类图标', trigger: 'change' }
+          { required: true, message: this.$t('goodsSorts.chooseSortIcon'), trigger: 'change' }
         ]
       },
       firstSortOptions: [],
@@ -212,25 +212,25 @@ export default {
     _validateFormData () {
       if (this.level === 0) {
         if (isStrBlank(this.goodsSortDataFirst.sortName)) {
-          this.$message.warning({message: '分类名称不可为空'})
+          this.$message.warning({message: this.$t('goodsSorts.sortNameNotNull')})
           this.$refs.sortNameFirst.focus()
           return false
         }
       } else {
         if (this.goodsSortDataSecond.firstSortId === null) {
-          this.$message.warning({message: '请选择一级分类'})
+          this.$message.warning({message: this.$t('goodsSorts.chooseFirstLevel')})
           this.$refs.firstSortIdSelector.focus()
           return false
         }
 
         if (isStrBlank(this.goodsSortDataSecond.sortName)) {
-          this.$message.warning({message: '分类名称不可为空'})
+          this.$message.warning({message: this.$t('goodsSorts.sortNameNotNull')})
           this.$refs.sortNameSecond.focus()
           return false
         }
 
         if (this.goodsSortDataSecond.sortImgObj === null) {
-          this.$message.warning({message: '分类图标不可为空'})
+          this.$message.warning({message: this.$t('goodsSorts.chooseSortIcon')})
           return false
         }
       }
@@ -276,6 +276,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     let sortId = this.$route.params.sortId
     if (sortId !== undefined) {
       this.isUpdate = true

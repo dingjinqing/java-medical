@@ -45,6 +45,12 @@ import {
 import {
   en as addAndUpdateGoodsLabel
 } from './views/admin_new/en/index/goodsManagement/addAndUpdateGoodsLabelEn'
+import {
+  en as goodsSorts
+} from './views/admin_new/en/index/goodsManagement/goodsSortsEn'
+import {
+  en as goodsRecommendSorts
+} from './views/admin_new/en/index/goodsManagement/goodsRecommendSortsEn'
 // 概览
 import {
   en as overview
@@ -606,6 +612,8 @@ const en = {
   goodsAddEditInfo,
   allGoodsLabel, // 全部标签
   addAndUpdateGoodsLabel, // 修改标签
+  goodsSorts, // 商家分类全部，修改，新增
+  goodsRecommendSorts, // 商家推荐分类全部，修改，新增
   // 订单
   order,
   orderCommon, // 订单通用
