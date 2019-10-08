@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.db.main.tables.ShopRole;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
@@ -268,6 +269,22 @@ public class GoodsSortService extends ShopBaseService {
         }
     }
 
+    public boolean isSortNameExist(List<Sort> sorts) {
+        List<String> sortNames = new ArrayList<>();
+        sorts.forEach(item -> sortNames.add(item.getSortName()));
+
+        Record1<Integer> countRecord = db().selectCount().from(SORT)
+            .where(SORT.SORT_NAME.in(sorts))
+            .fetchOne();
+
+        Integer count = countRecord.getValue(0, Integer.class);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * 商家分类名称是否存在，修改使用
      * @param sort
@@ -286,6 +303,35 @@ public class GoodsSortService extends ShopBaseService {
         }
     }
 
+    /**
+     *  推荐分类修改时名称重复判断
+     * @param sorts
+     * @param parentId
+     * @return
+     */
+    public boolean isOtherSortNameExist(List<Sort> sorts,Integer parentId) {
+        List<String> sortNames = new ArrayList<>(sorts.size());
+        List<Integer> sortIds = new ArrayList<>(sorts.size());
+        sorts.forEach(item -> {
+            sortNames.add(item.getSortName());
+            sortIds.add(item.getSortId());
+        });
+
+        List<Integer> readyToDeleteIds = db().selectFrom(SORT).where(SORT.SORT_ID.notIn(sortIds)).and(SORT.PARENT_ID.eq(parentId)).fetch(SORT.SORT_ID);
+
+        sortIds.addAll(readyToDeleteIds);
+
+        Record1<Integer> countRecord = db().selectCount().from(SORT)
+            .where(SORT.SORT_NAME.in(sortNames)).and(SORT.SORT_ID.notIn(sortIds))
+            .fetchOne();
+
+        Integer count = countRecord.getValue(0, Integer.class);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      * 删除商家分类
      *

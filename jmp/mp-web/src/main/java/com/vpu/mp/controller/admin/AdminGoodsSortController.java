@@ -85,11 +85,10 @@ public class AdminGoodsSortController extends AdminBaseController {
         }
 
         //判断内容和数据库内有重复
-        for (Sort s : sorts) {
-            if (shop().goods.goodsSort.isSortNameExist(s)) {
-                return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
-            }
+        if (shop().goods.goodsSort.isSortNameExist(sorts)) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
         }
+
         shop().goods.goodsSort.insertRecommendSort(sort);
         return success();
     }
@@ -165,6 +164,21 @@ public class AdminGoodsSortController extends AdminBaseController {
         if (sort.getSortId() == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
+
+        //如果提交的内容内部有重复
+        List<Sort> sorts = new ArrayList<>();
+        sorts.add(sort);
+
+        sorts.addAll(sort.getChildren());
+        if (isSortNameRepeat(sorts)) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
+
+        //判断子分类内容和数据库内有重复
+        if (shop().goods.goodsSort.isOtherSortNameExist(sorts,sort.getSortId())) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
+
         shop().goods.goodsSort.updateRecommendSort(sort);
         return success();
     }
