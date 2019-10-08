@@ -247,6 +247,9 @@
                 >
                 </el-date-picker>
               </el-form-item>
+              <el-form-item>
+                <span>预计发放用户数:{{this.userNumber}}人</span>
+              </el-form-item>
             </el-form>
           </div>
         </div>
@@ -542,7 +545,12 @@ export default {
     addAct () {
       console.log('params:', this.params)
       console.log('couponId:', this.couponId)
+      console.log('onClickNoPay:', Number(this.params.onClickNoPay))
+      console.log('onClickGoods:', Number(this.params.onClickGoods))
       console.log('onClickCard:', Number(this.params.onClickCard))
+      console.log('onClickTag:', Number(this.params.onClickTag))
+      console.log('onClickUser:', Number(this.params.onClickUser))
+      console.log('onClickCustomRule:', Number(this.params.onClickCustomRule))
       console.log('type:', this.params.type)
       let param = {
         'actName': this.params.actName,
@@ -707,42 +715,26 @@ export default {
     },
     // 加购人群发生变化的时候
     handleOnClickNoPayChange (val) {
-      for (var i = 0; i < this.params.type.length; i++) {
-        if (`加购人群` === this.params.type[i]) {
-          this.params.onClickNoPay = true
-        }
-      }
+      this.params.onClickNoPay = !this.params.onClickNoPay
       // 获取发送人群的数量
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 指定购买商品人群发生变化的时候
     handleOnClickGoodsChange (val) {
-      for (var i = 0; i < this.params.type.length; i++) {
-        if (`购买指定商品人群` === this.params.type[i]) {
-          this.params.onClickGoods = true
-        }
-      }
+      this.params.onClickGoods = !this.params.onClickGoods
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 选择指定的会员状态发生变化的时候
     handleOnClickUserChange (val) {
-      for (var i = 0; i < this.params.type.length; i++) {
-        if (`选择指定的会员` === this.params.type[i]) {
-          this.params.onClickUser = true
-        }
-      }
+      this.params.onClickUser = !this.params.onClickUser
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 当自定义发生变化的时候
     handleOnClickCustomRuleChange (val) {
-      for (var i = 0; i < this.params.type.length; i++) {
-        if (`自定义` === this.params.type[i]) {
-          this.params.onClickCustomRule = true
-        }
-      }
+      this.params.onClickCustomRule = !this.params.onClickCustomRule
       this.fetchUserList(this.params)
     },
     loginStartAndLoginEnd (val) {
