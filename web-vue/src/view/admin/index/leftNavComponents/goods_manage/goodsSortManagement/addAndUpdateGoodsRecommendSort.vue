@@ -15,7 +15,7 @@
           分类优先级：
         </div>
         <div class="formItemVal">
-          <el-input v-model="recommendSort.first" size="small"/>
+          <el-input v-model.number="recommendSort.first" size="small"/>
         </div>
       </div>
       <div class="formItem">
@@ -87,7 +87,8 @@
 <script>
 // 导入api
 import {addRecommendGoodsSort, updateRecommendGoodsSort, getGoodsRecommendSort} from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
-
+// 导入工具
+import {isStrBlank} from '@/util/goodsUtil'
 // 组件导入
 import allGoodsSortHeaderTab from './allGoodsSortHeaderTab'
 import ImageDialog from '@/components/admin/imageDalog'
@@ -178,6 +179,28 @@ export default {
         })
       })
     },
+    /* 验证表单数据正确性 */
+    _validateFormData () {
+      if (isStrBlank(this.recommendSort.sortName)) {
+        this.$message.warning({message: '分类名称不可为空!'})
+        return
+      }
+      if (typeof this.recommendSort.first !== 'number') {
+        this.$message.warning({message: '请输入正确分类优先级!'})
+        return
+      }
+      for (let i = 0; i < this.recommendSortChildren.length; i++) {
+        let sort = this.recommendSortChildren[i]
+        if (isStrBlank(sort.sortName)) {
+          this.$message.warning({message: '分类名称不可为空!'})
+          return
+        }
+        if (sort.sortImgObj.imgPath === undefined) {
+          this.$message.warning({message: '请选择分类图标!'})
+          return
+        }
+      }
+    },
     /* 获取表单数据 */
     _getFormData () {
       let recommendSort = {
@@ -204,6 +227,10 @@ export default {
       return recommendSort
     },
     save () {
+      if (!this._validateFormData()) {
+        return
+      }
+
       let params = this._getFormData()
       let execFunc = this.isUpdate ? updateRecommendGoodsSort : addRecommendGoodsSort
       execFunc(params).then(res => {
