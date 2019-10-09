@@ -1,5 +1,6 @@
 <view>
     <block wx:for="{{pageData}}" wx:key="key" wx:for-item="module">
         <v-search wx:if="{{module.component_name == 'v-search'}}" module="{{module}}" />
+        <v-card wx:if="{{module.component_name == 'v-card'}}" module="{{module}}" bind:get_card_success="onGetCardSuccess"/>
     </block>
 </view>

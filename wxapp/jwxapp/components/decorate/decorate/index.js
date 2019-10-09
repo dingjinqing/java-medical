@@ -19,26 +19,40 @@ global.wxComponent({
       }
     }
   },
-
   methods: {
     // 处理模块渲染数据
     processModuleData(page_content) {
       if (!page_content) return;
-      console.log(page_content, '222', module)
-      if (!page_content) return;
+      console.log(page_content, '111', module)
+      let pageInfo = page_content.page_info || null;
+      console.log(pageInfo)
+      if (!pageInfo) return;
       let pageData = [];
-      // 转化模块名称
-      let componentName = this._convertComponentName('m_goods_search');
-      module['component_name'] = componentName
-      console.log(module)
-      pageData.push(module);
+      for (var idx in pageInfo) {
+        module = pageInfo[idx];
+        // 转化模块名称
+        let componentName = this._convertComponentName(module['module_name']);
+        if (!componentName) continue;
+        module['component_name'] = componentName
+        module['margin_bot'] = pageInfo.page_cfg.show_margin == 1 ? 0 : pageInfo.page_cfg.margin_val;
+        module['main_setting'] = page_content.main_setting;
+        pageData.push(module);
+      }
+
+
+      console.log(pageData)
+
       this.setData({
         pageData: pageData
       })
     },
+    // 会员卡  card 模块点击
+    onGetCardSuccess(card) {
+
+    },
     //  模块名称汇总
     _convertComponentName(tmplateName) {
-      var modules = {
+      let modules = {
         "m_scroll_image": "v-carousel",
         "m_goods_search": "v-search",
         "m_image_guide": "v-imgnav",

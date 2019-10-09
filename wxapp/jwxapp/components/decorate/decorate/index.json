@@ -1,6 +1,7 @@
 {
   "components": true,
   "usingComponents": {
-    "v-search": "../search/index"
+    "v-search": "../search/index",
+    "v-card": "../card/index"
   }
 }

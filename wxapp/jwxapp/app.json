@@ -3,7 +3,8 @@
     "pages/bottom/bottom",
     "pages/index/index",
     "pages/coupon/coupon",
-    "pages/getCoupon/getCoupon"
+    "pages/getCoupon/getCoupon",
+    "components/decorate/card/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",
