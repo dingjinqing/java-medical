@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class CollectGiftParam {
 	
-	/** 开关配置 0：关闭 1：开启*/
+	/** 开关状态  0：关闭 1：开启*/
 	@JsonProperty(value = "on_off")
 	private Integer onOff;
 	/** 开始时间*/
