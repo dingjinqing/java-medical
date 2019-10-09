@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
@@ -25,11 +26,14 @@ import org.springframework.stereotype.Service;
 @Service
 
 public class StoreGoodsService extends ShopBaseService{
+
+    private static final Byte ON_SALE = 1;
+    private static final Byte OFF_SALE = 0;
 	
 
 	/**
 	 * 门店商品列表分页查询
-	 * @param StoreGoodsListQueryParam
+	 * @param param
 	 * @return StorePageListVo
 	 */
 	public PageResult<StoreGoodsListQueryVo> getPageList(StoreGoodsListQueryParam param) {
@@ -71,5 +75,21 @@ public class StoreGoodsService extends ShopBaseService{
 		}
 		return select;
 	}
+
+    /**
+     * 门店商品-上架
+     * @param param
+     */
+    public void storeGoodsPutOnSale(StoreGoodsUpdateParam param) {
+        db().update(STORE_GOODS).set(STORE_GOODS.IS_ON_SALE,ON_SALE).where(STORE_GOODS.PRD_ID.in(param.getPrdId()).and(STORE_GOODS.STORE_ID.eq(param.getStoreId()))).execute();
+    }
+
+    /**
+     * 门店商品-下架
+     * @param param
+     */
+    public void storeGoodsPutOffSale(StoreGoodsUpdateParam param) {
+        db().update(STORE_GOODS).set(STORE_GOODS.IS_ON_SALE,OFF_SALE).where(STORE_GOODS.PRD_ID.in(param.getPrdId()).and(STORE_GOODS.STORE_ID.eq(param.getStoreId()))).execute();
+    }
 
 }

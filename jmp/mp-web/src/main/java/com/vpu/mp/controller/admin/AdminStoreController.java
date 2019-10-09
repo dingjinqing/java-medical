@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -254,6 +255,26 @@ public class AdminStoreController extends AdminBaseController{
     @PostMapping(value = "/api/admin/store/goods/list")
     public JsonResult getStoreGoodsList(@RequestBody(required = false) @Valid StoreGoodsListQueryParam param) {
     	return success(shop().store.storeGoods.getPageList(param));
+    }
+
+    /**
+     * 门店商品-上架
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/goods/on")
+    public JsonResult storeGoodsPutOnSale(@RequestBody @Valid StoreGoodsUpdateParam param) {
+        shop().store.storeGoods.storeGoodsPutOnSale(param);
+        return success();
+    }
+
+    /**
+     * 门店商品-下架
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/goods/off")
+    public JsonResult storeGoodsPutOffSale(@RequestBody @Valid StoreGoodsUpdateParam param) {
+        shop().store.storeGoods.storeGoodsPutOffSale(param);
+        return success();
     }
 
     /**
