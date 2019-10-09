@@ -24,7 +24,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 		CollectGiftParam param = this.getJsonObject(K_COLLECT_GIFT,CollectGiftParam.class);
 		if (param == null) {
 			param = new CollectGiftParam();;
-			param.setStatus(0);
+			param.setOnOff(0);
 			this.setJsonObject(K_COLLECT_GIFT, param);
 		}
 		return param;
@@ -38,13 +38,13 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 	public void updateStatus() {
 		/**	查看当前状态 */
 		CollectGiftParam param = this.getJsonObject(K_COLLECT_GIFT,CollectGiftParam.class);
-		int nowStatus = param.getStatus();
+		int nowStatus = param.getOnOff();
 		/**	根据当前状态选择开或关*/
 		if (0==nowStatus) {
-			param.setStatus(1);
+			param.setOnOff(1);
 			this.setJsonObject(K_COLLECT_GIFT,param);
 		} else {
-			param.setStatus(0);
+			param.setOnOff(0);
 			this.setJsonObject(K_COLLECT_GIFT, param);
 		}
 	}

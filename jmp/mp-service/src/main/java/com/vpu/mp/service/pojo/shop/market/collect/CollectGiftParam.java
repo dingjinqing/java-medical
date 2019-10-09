@@ -15,8 +15,8 @@ import lombok.Data;
 public class CollectGiftParam {
 	
 	/** 开关配置 0：关闭 1：开启*/
-	@JsonProperty(value = "status")
-	private Integer status;
+	@JsonProperty(value = "on_off")
+	private Integer onOff;
 	/** 开始时间*/
 	@JsonProperty(value = "start_time")
 	private Timestamp startTime;
