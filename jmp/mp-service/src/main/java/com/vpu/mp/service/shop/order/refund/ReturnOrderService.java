@@ -324,10 +324,10 @@ public class ReturnOrderService extends ShopBaseService{
 		return addRecord(param ,order ,currentMaxReturnMoney);
 	}
 	
-	public Integer getOrderCount(String orderSn , Byte status) {
+	public Integer getOrderCount(String orderSn , Byte... status) {
 		Record1<Integer> count = db().selectCount().
 		from(TABLE).
-		where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.eq(status))).
+		where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.in(status))).
 		fetchOne();
 		return count.value1();
 	}
