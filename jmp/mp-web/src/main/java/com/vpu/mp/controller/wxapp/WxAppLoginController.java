@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -27,6 +28,10 @@ public class WxAppLoginController extends WxAppBaseController {
 	@PostMapping("/api/wxapp/login")
 	public JsonResult login(@RequestBody WxAppLoginParam param) throws WxErrorException {
 		WxAppSessionUser user = wxAppAuth.login(param);
+		if(user==null) {
+			//登录失败
+			return fail(JsonResultCode.ERR_CODE_LOGIN_FAILED);
+		}
 		return success(user);
 	}
 
