@@ -88,6 +88,10 @@ public class WxAppAuth {
 		ShopApplication shopApp = saas.getShopApp(shopId);
 		ShopRecord shop = saas.shop.getShopById(shopId);
 		UserRecord user = shopApp.user.loginGetUser(param);
+		if(user==null) {
+			return null;
+		}
+		
 		UserDetailRecord userDetail = shopApp.user.userDetail.getUserDetailByUserId(user.getUserId());
 
 		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder()
