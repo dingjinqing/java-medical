@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.main.tables.ShopRole;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
@@ -28,8 +27,7 @@ public class GoodsSortService extends ShopBaseService {
 
     @Autowired
     protected ImageService imageService;
-    @Autowired
-    public GoodsRecommendSortConfigService recommendSortConfigService;
+
 
     /**
      * 根据父分类和分类类型查询

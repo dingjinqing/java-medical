@@ -49,6 +49,8 @@ public class ConfigService extends ShopBaseService {
 	public BargainConfigService bargainCfg;
 	@Autowired
 	public GoodsBrandConfigService goodsBrandConfigService;
+    @Autowired
+    public GoodsRecommendSortConfigService recommendSortConfigService;
 	@Autowired
 	public DeliverTemplateConfigService deliverTemplateConfigService;
 	@Autowired

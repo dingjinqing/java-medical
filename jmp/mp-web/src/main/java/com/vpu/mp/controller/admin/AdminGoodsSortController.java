@@ -190,7 +190,7 @@ public class AdminGoodsSortController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/sort/setConfig")
     public JsonResult setRecommendSortConfig(@RequestBody GoodsRecommendSortConfig goodsRecommendSortConfig){
-        shop().goods.goodsSort.recommendSortConfigService.setRecommendSortConfig(goodsRecommendSortConfig);
+        shop().config.recommendSortConfigService.setRecommendSortConfig(goodsRecommendSortConfig);
         return success();
     }
 
@@ -200,7 +200,7 @@ public class AdminGoodsSortController extends AdminBaseController {
      */
     @GetMapping("/api/admin/goods/sort/getConfig")
     public JsonResult getRecommendSortConfig() {
-        return success(shop().goods.goodsSort.recommendSortConfigService.getRecommendSortConfig());
+        return success(shop().config.recommendSortConfigService.getRecommendSortConfig());
     }
 
 }
