@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
@@ -36,27 +37,27 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_BUY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_CODE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NONE_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_PLATFORM_CATEGORY_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STORE_CATEGORY_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ZERO;
+
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
 import static org.jooq.impl.DSL.count;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -96,8 +97,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
-import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
@@ -105,11 +104,6 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
@@ -138,6 +132,13 @@ import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 /**
  * 
  * @author 黄壮壮
@@ -751,18 +752,32 @@ public class MemberCardService extends ShopBaseService {
 	public PageResult<? extends BaseCardVo> getCardList(SearchCardParam param) {
 
 		Byte cardType = param.getCardType();
+		PageResult<? extends BaseCardVo> result = null;
 		/** 处理普通会员卡 */
 		if (NORMAL_TYPE.equals(cardType)) {
 			logger.info("正在分页查询普通会员卡");
-			return getNormalCardList(param);
+			result =  getNormalCardList(param);
 		} else if (LIMIT_NUM_TYPE.equals(cardType)) {
 			logger.info("正在分页查询限次会员卡");
-			return getLimitCardList(param);
+			result = getLimitCardList(param);
 		} else if (RANK_TYPE.equals(cardType)) {
 			logger.info("正在分页查询等级会员卡");
-			return getRankCardList(param);
+			result = getRankCardList(param);
 		}
-		return null;
+		
+		if(result != null) {
+			// 获取头像
+			List<String> list = this.databaseManager.mainDb().select(SHOP.SHOP_AVATAR)
+												.from(SHOP)
+												.where(SHOP.SHOP_ID.eq(this.getShopId()))
+												.fetch()
+												.into(String.class);
+			if(list.size()>0) {
+				String avatar = list.get(0);
+				result.dataList.stream().forEach(item->item.setAvatar(avatar));
+			}
+		}
+		return result;
 	}
 
 	/**
