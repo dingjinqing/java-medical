@@ -263,6 +263,18 @@ const routes = [
               }
             ]
           },
+          {
+            path: '/admin/home/main/personalCenter',
+            name: 'user_center_config',
+            meta: {
+              crumbTitle: 'router.personalCenter',
+              meta: 'first_web_decoration'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/personalCenter/personalCenter'
+              )
+          },
           // 商品管理系列
           // 商品管理/全部商品
           {

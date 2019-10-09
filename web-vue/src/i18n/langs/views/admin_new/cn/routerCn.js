@@ -12,6 +12,8 @@ export const cn = {
   shopStyle: ['小程序管理', '店铺风格'],
   // 小程序管理 底部导航
   bottomNavigation: ['小程序管理', '底部导航'],
+  // 小程序管理 个人中心
+  personalCenter: ['小程序管理', '个人中心'],
   // 商品管理 出售中商品
   goodsForSale: ['商品管理', '出售中商品'],
   // 商品管理 已售磬商品
@@ -242,5 +244,7 @@ export const cn = {
   // 门店管理 核销员管理
   verifierManage: ['门店管理', '门店列表', '核销员管理'],
   // 门店管理 分组管理
-  store_group_list: ['门店管理', '分组管理']
+  store_group_list: ['门店管理', '分组管理'],
+  // 门店管理 新增门店
+  add_store: ['门店管理', '新增门店'],
 }

@@ -26,6 +26,15 @@ export function storeGroupList (data) {
   })
 }
 
+// 门店新增
+export function addStore (data) {
+  return service({
+    url: '/api/admin/store/add',
+    method: 'post',
+    data: data
+  })
+}
+
 // 门店删除
 export function delStore (data) {
   return service({

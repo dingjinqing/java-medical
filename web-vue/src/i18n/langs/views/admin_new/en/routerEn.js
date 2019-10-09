@@ -77,6 +77,8 @@ export const en = {
   templateMessage: ['Basic configuration', 'Template Message'],
   // 小程序管理 自定义页面装修
   picture_setting: ['Small Program Management', 'Custom Page Decoration'],
+  // 小程序管理 个人中心
+  personalCenter: ['Small Program Management', 'Personal Center'],
   // 营销管理
   market_manage: ['Marketing management'],
   // 营销管理 多人拼团
@@ -349,5 +351,7 @@ export const en = {
   // 门店管理 核销员管理
   verifierManage: ['Store management', 'Store list', 'verifier management'],
   // 门店管理 分组管理
-  store_group_list: ['Store management', 'Store groups list']
+  store_group_list: ['Store management', 'Store groups list'],
+  // 门店管理 新增门店
+  add_store: ['Store management', 'Add Store'],
 }

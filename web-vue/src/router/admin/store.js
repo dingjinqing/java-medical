@@ -52,6 +52,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/store_manage/store/storeGroupList'
       )
+  },
+  //   新增门店
+  {
+    path: '/admin/home/main/store/addStore',
+    name: 'add_store',
+    meta: {
+      crumbTitle: 'router.add_store',
+      meta: 'store_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/store_manage/store/addStoreGroup'
+      )
   }
 ]
 
