@@ -59,7 +59,7 @@ public class WxAppSessionUser {
 	@Data
 	@Builder
 	public static  class WxUserInfo{
-		@JsonProperty(value = "open_id")
+		@JsonProperty(value = "openid")
 		String openId;
 		String mobile;
 		String unionid;

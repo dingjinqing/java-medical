@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ public class WxAppLoginParam  extends WxAppCommonParam{
 	
 	String avatar;
 	
+	String name;
 	@JsonProperty(value = "path_query")
 	PathQuery pathQuery;
 	
@@ -29,6 +31,7 @@ public class WxAppLoginParam  extends WxAppCommonParam{
 	/**
 	 * 小程序启动时的参数
 	 */
+	@Data
 	public static final class PathQuery{
 		/**
 		 * 启动小程序的路径
@@ -54,8 +57,10 @@ public class WxAppLoginParam  extends WxAppCommonParam{
 		 * 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 {}。
 		 */
 		ReferrerInfo referrerInfo;
+		//TODO
+		String channel;
 	}
-	
+	@Data
 	public static final class ReferrerInfo{
 		/**
 		 * 来源小程序、公众号或 App 的 appId
