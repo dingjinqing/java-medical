@@ -124,8 +124,16 @@ public class UserService extends ShopBaseService {
 			int insert = user.insert();
 			logger().info("插入user结果 "+insert);
 			//avatar==null?"/image/admin/head_icon.png":avatar
-			
+			if(insert<0) {
+				return null;
+			}
 			Integer userId = getUserByOpenId(openid).getUserId();
+			if(userName==null) {
+				String name="用户"+(10000+userId);
+				user.setUsername(name);
+				user.update();				
+				logger().info("更新用户名为"+name);
+			}
 			UserDetailRecord uDetailRecord=db().newRecord(USER_DETAIL);
 			uDetailRecord.setUserId(userId);
 			uDetailRecord.setUsername(userName==null?openid:userName);
