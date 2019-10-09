@@ -86,4 +86,11 @@ public class OrderListInfoVo {
 	/**币种*/
 	private String currency;
 	private Byte starFlag;
+	/**确认收货时间*/
+	private Timestamp confirmTime;
+	/**确认收货后自动订单完成时间,单位天*/
+	@JsonIgnore
+	private Short orderTimeoutDays;
+	private Boolean canClose;
+	private Boolean canFinish;
 }

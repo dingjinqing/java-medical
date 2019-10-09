@@ -40,4 +40,7 @@ public class OrderGoodsVo {
 	private Integer sendNumber;
 	/**折后单价*/
 	private BigDecimal discountedGoodsPrice;
+	
+	private String productSn;
+	private BigDecimal marketPrice;
 }

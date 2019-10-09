@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -126,6 +125,13 @@ public class OrderReadService extends ShopBaseService {
 			for (OrderListInfoVo order : list) {
 				//将所有订单id放入goodsList,在后续向订单添加商品时增加过滤主订单下与子订单重复的商品
 				goodsList.put(order.getOrderId(),order);
+				//设置所有订单是否可以关闭、完成
+				if(OrderOperationJudgment.mpIsClose(order)) {
+					order.setCanClose(Boolean.TRUE);
+				}
+				if(OrderOperationJudgment.mpIsFinish(order , returnOrder.getOrderCount(order.getOrderSn(), OrderConstant.REFUND_STATUS_AUDITING))) {
+					order.setCanFinish(Boolean.TRUE);
+				}
 				if(order.getOrderSn().equals(moc)) {
 					//设置订单支付方式（无子单）
 					orderInfo.setPayCodeList(order,prizesSns);

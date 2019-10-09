@@ -324,6 +324,14 @@ public class ReturnOrderService extends ShopBaseService{
 		return addRecord(param ,order ,currentMaxReturnMoney);
 	}
 	
+	public Integer getOrderCount(String orderSn , Byte status) {
+		Record1<Integer> count = db().selectCount().
+		from(TABLE).
+		where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.eq(status))).
+		fetchOne();
+		return count.value1();
+	}
+	
 	public void responseReturnOperate(RefundParam param , ReturnOrderRecord returnOrder) throws MpException {
 		if(param.getIsMp().equals(OrderConstant.IS_MP_Y)) {
 			/**mp端操作*/

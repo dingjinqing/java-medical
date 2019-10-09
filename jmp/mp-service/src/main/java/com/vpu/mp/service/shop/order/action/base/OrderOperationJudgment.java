@@ -1,10 +1,12 @@
 package com.vpu.mp.service.shop.order.action.base;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 
@@ -169,6 +171,27 @@ public class OrderOperationJudgment {
 			//待发货 且 货到付款 且 系统支付0
 			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0 && order.getPayCode() == OrderConstant.PAY_CODE_COD) {
 			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 订单是否可以完成
+	 * @param order
+	 * @return
+	 */
+	public static boolean mpIsFinish(OrderListInfoVo order , Integer isReturnCount) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_RECEIVED) {
+			if(order.getReturnTypeCfg() == OrderConstant.CFG_RETURN_TYPE_N) {
+				return true;
+			}
+			if(isReturnCount > 0) {
+				return false;
+			}
+			if(order.getReturnTypeCfg() == OrderConstant.CFG_RETURN_TYPE_Y
+					&& Instant.now().isAfter(order.getConfirmTime().toInstant().plusSeconds(order.getOrderTimeoutDays() * 24 * 60 * 60))) {
+				return true;
+			}
 		}
 		return false;
 	}
