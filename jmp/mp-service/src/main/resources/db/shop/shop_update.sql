@@ -890,3 +890,6 @@ CHANGE COLUMN `member_card_redunce` `member_card_reduce` decimal(10, 2) NOT NULL
 --梁晨 用户-优惠券表修改type字段
 ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `type` TINYINT NOT NULL DEFAULT '0' COMMENT '0为减价，1为打折';
 
+--user添加字段
+ALTER TABLE b2c_user
+ADD COLUMN `scene` INT(11) NULL DEFAULT -1 COMMENT '用户微信来源 -1搜索、公众号等入口（主动）进入，-2分享（被动）进入，-3扫码进入 -4未获取' AFTER `invite_time`;

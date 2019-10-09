@@ -43,6 +43,7 @@ create table `b2c_user`
     `invite_group`        int(6)         not null default 0 comment '分销员分组',
     `unit_price`          decimal(10, 2) not null default '0.00' comment '客单价',
     `invite_time`         timestamp      null comment '邀请时间',
+    `scene` int(11) DEFAULT -1 COMMENT '用户微信来源 -1搜索、公众号等入口（主动）进入，-2分享（被动）进入，-3扫码进入 -4未获取',
     primary key (`user_id`),
     unique key `mobile` (`mobile`, `shop_id`),
     key (`user_code`),
