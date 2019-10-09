@@ -573,5 +573,20 @@ public class ShopService extends MainBaseService {
 		}
 		return true;
 	}
+	
+	/**
+	    * 根据店铺id获取店铺头像
+	 * @param shopId
+	 * @return
+	 */
+	public String getShopAvatarById(Integer shopId) {
+		List<String> list = db().select(SHOP.SHOP_AVATAR).from(SHOP).where(SHOP.SHOP_ID.eq(shopId))
+			.fetch().into(String.class);
+		if(list.size()>0) {
+			return list.get(0);
+		}else {
+			return null;
+		}
+	}
 
 }
