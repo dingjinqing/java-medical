@@ -121,7 +121,8 @@ public class UserService extends ShopBaseService {
 			}
 			String unionId = (!StringUtils.isBlank(result.getUnionid())) ? result.getUnionid() : "";
 			user.setWxUnionId(unionId);
-			user.insert();
+			int insert = user.insert();
+			logger().info("插入user结果 "+insert);
 			//avatar==null?"/image/admin/head_icon.png":avatar
 			
 			Integer userId = getUserByOpenId(openid).getUserId();
