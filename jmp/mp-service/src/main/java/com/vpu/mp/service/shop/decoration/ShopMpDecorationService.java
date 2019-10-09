@@ -452,6 +452,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 			pageId = record.getPageId();
 			pageContent = param.getSceneId() != null && param.getSceneId() > 0 ? record.getPageContent()
 					: record.getPagePublishContent();
+
 		} else {
 			record = this.getPageById(pageId);
 			pageContent = record.getPagePublishContent();
@@ -468,7 +469,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 		page.setSceneId(param.getSceneId());
 		page.setPageName(record.getPageName());
 		page.setPageType(record.getPageType());
-		this.setCollectInfo(page.getCollectInfo(), shop, userRecord);
+//		this.setCollectInfo(page.getCollectInfo(), shop, userRecord);
 		this.setShareConfig(page.getShareInfo());
 		return page;
 	}
