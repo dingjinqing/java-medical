@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -1281,6 +1278,13 @@ public class GoodsService extends ShopBaseService {
     public Map<Integer, GoodsRecord> getGoodsByIds(List<Integer> goodsIds) {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
             fetchMap(GOODS.GOODS_ID);
+    }
+    /**
+     * 通过商品id查询商品
+     */
+    public Optional<GoodsRecord> getGoodsById(Integer goodsId) {
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
+            fetchOptional();
     }
 
     /**
