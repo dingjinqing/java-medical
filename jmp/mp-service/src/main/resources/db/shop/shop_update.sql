@@ -893,3 +893,25 @@ ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `type` TINYINT NOT NULL D
 --user添加字段
 ALTER TABLE b2c_user
 ADD COLUMN `scene` INT(11) NULL DEFAULT -1 COMMENT '用户微信来源 -1搜索、公众号等入口（主动）进入，-2分享（被动）进入，-3扫码进入 -4未获取' AFTER `invite_time`;
+
+-- 添加视频字段
+
+alter table b2c_uploaded_video add column `duration` INT(6) DEFAULT 0  NULL   COMMENT '视频时长';
+alter table b2c_uploaded_video add column    `user_id`          INT(11) DEFAULT 0  NULL   COMMENT '用户ID';
+alter table b2c_uploaded_video add column    `del_time` timestamp NULL DEFAULT  null COMMENT '删除时间';
+alter table b2c_uploaded_video add column   `upyun_del` TINYINT(1) DEFAULT 0  NULL   COMMENT '又拍云是否删除';
+
+-- 添加视频分类表
+create table `b2c_uploaded_video_category` (
+  `video_cat_id`        int(10) not null auto_increment,
+  `shop_id`             int(11)          not null default 0 comment '店铺ID',
+  `video_cat_name`      varchar(60)      not null default '',
+  `video_cat_parent_id` int(10)          not null default 0,
+  `cat_ids`             varchar(191)     not null default '0' comment '层级ID串,逗号分隔',
+  `level`               tinyint                   default 0 comment '层级，0开始',
+  `sort`                int(11)                   default 1 comment '排序优先级',
+  `create_time`          timestamp            default current_timestamp,
+  `update_time`          timestamp            default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`video_cat_id`),
+  key (`shop_id`)
+);
