@@ -260,9 +260,9 @@ export default {
       let obj = this.contentList
       bottomUpdateRequest(obj).then((res) => {
         if (res.error === 0) {
-          this.$message({
+          this.$message.success({
             message: '保存成功',
-            type: 'success'
+            showClose: true
           })
         }
         console.log(res)

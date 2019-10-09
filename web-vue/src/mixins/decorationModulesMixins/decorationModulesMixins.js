@@ -93,6 +93,16 @@ export default {
         }
       })
       return true
+    },
+    // 处理保存数据
+    handleToSaveModulesData (data, pageSetData) {
+      console.log(data, pageSetData)
+      let obj = {}
+      data.forEach(item => {
+        obj[`c_${item.cur_idx}`] = item
+      })
+      obj['page_cfg'] = pageSetData
+      return obj
     }
   }
 }

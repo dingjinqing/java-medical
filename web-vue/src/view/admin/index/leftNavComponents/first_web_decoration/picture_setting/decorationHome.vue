@@ -832,7 +832,8 @@ export default {
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
       if (!judgeFlag) return
-      saveMosulesData.push(this.pageSetData)
+      let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
+
       console.log(saveMosulesData, this.modulesData, this.pageSetData)
       console.log(localStorage.getItem('V-ShopId'))
       if (!this.pageSetData.cat_id) {
@@ -841,8 +842,8 @@ export default {
       let params = {
         shopId: Number(localStorage.getItem('V-ShopId')),
         pageName: this.pageSetData.page_name,
-        pageContent: JSON.stringify(saveMosulesData),
-        pagePublishContent: JSON.stringify(saveMosulesData),
+        pageContent: JSON.stringify(data),
+        pagePublishContent: JSON.stringify(data),
         pageState: '',
         catId: this.pageSetData.cat_id
 
@@ -861,7 +862,7 @@ export default {
         console.log(params)
         saveDecorationPage(params).then(res => {
           console.log(res)
-          if (res === 0) {
+          if (res.error === 0) {
             this.$message.success({
               message: '保存成功',
               showClose: true,
