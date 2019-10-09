@@ -293,7 +293,7 @@ export default {
       }).then(() => {
         advertisementPause(id).then(res => {
           if (res.error === 0) {
-            this.$message({
+            this.$message.success({
               type: 'success',
               message: '停用成功!'
             })

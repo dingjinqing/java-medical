@@ -95,7 +95,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="creatTime"
+            prop="createTime"
             label="创建时间"
             align="center"
           >
@@ -106,11 +106,11 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.isFirstPage">是</span>
+              <span v-if="scope.row.pageType">是</span>
               <span
                 style="color:#5A8BFF;cursor:pointer"
-                v-if="!scope.row.isFirstPage"
-                @click="handleSetFirstPage()"
+                v-if="!scope.row.pageType"
+                @click="handleSetFirstPage(scope.row.pageId)"
               >设为首页</span>
             </template>
           </el-table-column>
@@ -186,17 +186,10 @@
             style="color:#5a8bff;cursor:pointer"
           >批量设置分类</span>
         </div>
-        <div class="footer_right">
-          <span>当前页面1/1，总记录4条</span>
-          <el-pagination
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="20"
-            layout="prev, pager, next, jumper"
-            :total="4"
-          >
-          </el-pagination>
-        </div>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="list"
+        />
       </div>
 
     </div>
@@ -279,8 +272,10 @@
 </template>
 <script>
 import SelectTemplateDialog from './selectTemplateDialog'
+import pagination from '@/components/admin/pagination/pagination'
+import { pageList, setFirstPage } from '@/api/admin/decoration/pageSet.js'
 export default {
-  components: { SelectTemplateDialog },
+  components: { SelectTemplateDialog, pagination },
   data () {
     return {
       iconUrl: this.$imageHost + '/image/admin/system_icon.png',
@@ -300,40 +295,7 @@ export default {
         value: '选项3',
         label: '蚵仔煎'
       }],
-      tableData: [
-        {
-          ischeck: false,
-          pageName: '尾浦巴普电商运营',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: true,
-          pageClass: '测试页面'
-
-        },
-        {
-          ischeck: false,
-          pageName: '测试页面',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
-
-        },
-        {
-          ischeck: false,
-          pageName: '帅飞',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
-
-        },
-        {
-          ischeck: false,
-          pageName: '帅飞啊',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
-
-        }
-      ],
+      tableData: [],
       allChecked: false,
       allCheckedFlag: false,
       pageSetdialogVisible: false,
@@ -342,7 +304,10 @@ export default {
       shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
       pathInput: '',
       flag: true,
-      tuneUpMiniPage: false
+      tuneUpMiniPage: false,
+      pageParams: {},
+      param: {}
+
     }
   },
   watch: {
@@ -383,6 +348,7 @@ export default {
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
+    this.list()
   },
   methods: {
     querySearch (queryString, cb) {
@@ -405,6 +371,15 @@ export default {
 
       ]
     },
+    // 页面列表
+    list () {
+      pageList(this.pageParams).then((res) => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
     // 当前页发生变化
     handleCurrentChange () {
       console.log(this.currentPage)
@@ -418,8 +393,17 @@ export default {
       console.log(this.statePage, this.selectValue)
     },
     // 设置首页
-    handleSetFirstPage () {
-
+    handleSetFirstPage (pageId) {
+      this.param.pageId = pageId
+      setFirstPage(this.param).then((res) => {
+        if (res.error === 0) {
+          this.$message.success({
+            type: 'success',
+            message: '设置成功!'
+          })
+          this.list()
+        }
+      })
     },
     // 删除
     handleOperation (data, flag) {

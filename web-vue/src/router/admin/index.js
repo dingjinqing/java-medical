@@ -117,6 +117,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_decoration/shopStyle/shopStyle'
               )
           },
+          // 页面装修
           {
             path: '/admin/home/main/pictureSetting',
             name: 'picture_setting',
