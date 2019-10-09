@@ -397,6 +397,17 @@ public class JsonResultMessage {
     public static final String REDEMPTION_DETAIL_MAIN_GOODS_TOTAL_MONEY = "market.increase.purchase.redemption.detail.main_goods_total_money";
     public static final String REDEMPTION_DETAIL_REDEMPTION_NUM = "market.increase.purchase.redemption.detail.redemption_num";
     public static final String REDEMPTION_DETAIL_REDEMPTION_TOTAL_MONEY = "market.increase.purchase.redemption.detail.redemption_total_money";
+    
+    
+    /**
+     * WxAppCode
+     */
+	public static final String ERR_CODE_INVALID_SIGN = "invalid.credential";
+	public static final String ERR_CODE_TOKEN_ERROR = "invalid.grant_type";
+	public static final String ERR_CODE_EXCEPTION = "invalid.openid";
+	public static final String ERR_CODE_OPERATION_FAILED = "invalid.media.type";
+	public static final String ERR_CODE_LOGIN_FAILED = "login.failed";
+	public static final String ERR_CODE_PAY_FAILED = "pay.failed";
 
 
 
