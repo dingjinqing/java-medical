@@ -77,12 +77,6 @@
               <el-image fit="scale-down" :src="imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;"/>
             </div>
             <span style="color: #999;">最多可上传6张图，每张大小不可超过5M，格式要求为jpg，png</span>
-            <!-- <div v-for="(item,index) in goodsProductInfo.goodsImgs" :key="index" class="goodsImgWrap">
-              <el-image fit="cover" :src="item.imgUrl" style="width: 78px; height: 78px;"></el-image>
-              <span @click="deleteGoodsImg(index)" class="deleteIcon">×</span>
-              <span @click="moveGoodsImgIndex(index,-1)" class="moveIcon" style="left: 0px;">←</span>
-              <span @click="moveGoodsImgIndex(index,1)" class="moveIcon" style="right: 0px;">→</span>
-            </div> -->
           </div>
         </el-form-item>
         <el-form-item label="店面详情：" prop="storeDetail">
