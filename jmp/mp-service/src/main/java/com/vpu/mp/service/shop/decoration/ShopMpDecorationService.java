@@ -36,6 +36,8 @@ import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
+import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBase;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
@@ -242,7 +244,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 	 * @param pageId
 	 * @return
 	 */
-	public boolean setIndex(Integer pageId) {
+	public boolean setIndex(setIndexParam param) {
 		this.transaction(() -> {
 			db().update(XCX_CUSTOMER_PAGE)
 					.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 0)
@@ -250,7 +252,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 					.execute();
 			db().update(XCX_CUSTOMER_PAGE)
 					.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 1)
-					.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
+					.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((param.getPageId())))
 					.execute();
 		});
 		return true;
