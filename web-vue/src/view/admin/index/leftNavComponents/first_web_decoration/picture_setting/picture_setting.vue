@@ -186,10 +186,18 @@
             style="color:#5a8bff;cursor:pointer"
           >批量设置分类</span>
         </div>
-        <pagination
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page.sync="pageParams.currentPage"
+          :page-size="pageParams.pageRows"
+          layout="total, prev, pager, next, jumper"
+          :total="pageParams.totalRows"
+        >
+        </el-pagination>
+        <!-- <pagination
           :page-params.sync="pageParams"
           @pagination="list"
-        />
+        /> -->
       </div>
 
     </div>
@@ -271,11 +279,9 @@
   </div>
 </template>
 <script>
-import SelectTemplateDialog from './selectTemplateDialog'
-import pagination from '@/components/admin/pagination/pagination'
 import { pageList, setFirstPage } from '@/api/admin/decoration/pageSet.js'
 export default {
-  components: { SelectTemplateDialog, pagination },
+  components: { SelectTemplateDialog: () => import('./selectTemplateDialog') },
   data () {
     return {
       iconUrl: this.$imageHost + '/image/admin/system_icon.png',
@@ -299,13 +305,16 @@ export default {
       allChecked: false,
       allCheckedFlag: false,
       pageSetdialogVisible: false,
-      currentPage: null,
       dialogVisibleShare: false,
       shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
       pathInput: '',
       flag: true,
       tuneUpMiniPage: false,
-      pageParams: {},
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20,
+        totalRows: null
+      },
       param: {}
 
     }
@@ -373,16 +382,29 @@ export default {
     },
     // 页面列表
     list () {
-      pageList(this.pageParams).then((res) => {
+      console.log(this.currentPage)
+      let obj = {
+        currentPage: this.pageParams.currentPage,
+        pageRows: this.pageParams.pageRows
+      }
+      console.log(obj)
+      pageList(obj).then((res) => {
         if (res.error === 0) {
+          console.log(res.content.dataList)
+          res.content.dataList.forEach(item => {
+            item.ischeck = false
+          })
           this.tableData = res.content.dataList
-          this.pageParams = res.content.page
+          this.pageParams.totalRows = res.content.page.totalRows
+          console.log(this.pageParams)
         }
       })
     },
     // 当前页发生变化
-    handleCurrentChange () {
-      console.log(this.currentPage)
+    handleCurrentChange (val) {
+      console.log(val)
+      this.pageParams.currentPage = val
+      this.list()
     },
     // 页面名称输入框监听回车事件
     handlePageName () {
@@ -422,7 +444,7 @@ export default {
     },
     // 下载图片
     downs () {
-      // var alink = document.createElement('a')
+      //  var alink = document.createElement('a')
       // alink.href = this.shareImg
       // alink.download = name || 'pic' // 图片名
       // alink.click()
