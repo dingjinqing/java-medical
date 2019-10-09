@@ -1,5 +1,404 @@
 <template>
-  <div>
-    11111111111111
-  </div>
+  <wrapper>
+    <div>
+
+      <!-- 开关配置 -->
+      <div>
+        <el-switch
+          v-model="switchValue"
+          active-text="已开启"
+          inactive-text="已关闭"
+          @change="tabSwitch()"
+        >
+        </el-switch><br><br>
+        <span>现在的状态：{{this.switchValue}}</span><br><br>
+      </div>
+
+      <!-- 活动内容 -->
+      <div>
+        <el-form>
+          <!-- 活动时间 -->
+          <el-form-item
+            label="活动时间"
+            prop="actTime"
+          >
+            <div class="block">
+              <el-date-picker
+                v-model="actTime"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
+              <span>{{this.actTime}}</span>
+            </div>
+          </el-form-item>
+          <!-- 图标 -->
+          <el-form-item
+            label="图标"
+            prop="logo"
+          >
+            <el-radio
+              v-model="logo"
+              label="0"
+            >默认</el-radio>
+            <el-radio
+              v-model="logo"
+              label="1"
+            >自定义</el-radio>
+            <!-- 图片弹窗 -->
+            <div
+              style="display: flex;align-items: center;flex-wrap: wrap;"
+              v-if="this.logo==1"
+            >
+              <span
+                @click="deleteGoodsImg()"
+                v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
+                class="deleteIcon"
+              >×</span>
+              <div
+                @click="addGoodsImg"
+                class="ImgWrap"
+              >
+                <el-image
+                  style="width: 80px; height: 80px"
+                  :src="srcList.src"
+                  fit="scale-down"
+                ></el-image>
+              </div>
+              <span class="inputTip">
+                建议尺寸：150px * 150px
+              </span>
+            </div>
+          </el-form-item>
+          <!-- 收藏奖励 -->
+          <el-form-item
+            label="收藏奖励"
+            prop="reward"
+          >
+            <el-checkbox-group v-model="checkList">
+              <!-- 积分 -->
+              <el-checkbox label="积分"></el-checkbox>
+              <el-input
+                size="small"
+                style="width: 180px"
+                v-model="score"
+              ></el-input>
+              积分
+              <br>
+              <!-- 优惠券 -->
+              <el-checkbox label="优惠券"></el-checkbox>
+              <div class="middleContainer">
+                <div>
+                  <div
+                    v-for="(item,index) in couponData"
+                    :key="index"
+                    class="addInfo"
+                    style="margin-right: 5px;"
+                  >
+                    <section
+                      class="couponImgWrapper"
+                      style="line-height:normal"
+                    >
+                      <div class="coupon_list_top">
+                        <span>￥</span>
+                        <span class="number">{{item.denomination}}</span>
+                      </div>
+                      <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_list_bottom"
+                        style="font-size:12px"
+                      >领取</div>
+                    </section>
+                    <span
+                      @click="deleteCouponImg(index)"
+                      class="deleteIcon"
+                    >×lllll</span>
+                  </div>
+                </div>
+                <div
+                  class="addInfo"
+                  @click="handleToCallDialog()"
+                  v-if="couponData.length < 5"
+                >
+                  <el-image
+                    fit="scale-down"
+                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    style="width: 78px;height:78px;cursor:pointer"
+                  ></el-image>
+                </div>
+              </div>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <!-- 保存修改 -->
+      <div class="footer">
+        <el-button
+          type="primary"
+          size="small"
+        >保存</el-button>
+      </div>
+      <!-- 图片弹窗 -->
+      <ImageDalog
+        pageIndex='pictureSpace'
+        :tuneUp="showImageDialog"
+        @handleSelectImg='imgDialogSelectedCallback'
+      />
+      <!--添加优惠卷弹窗-->
+      <addCouponDialog
+        @checkReturnFormat="handleToCheck"
+        :tuneUpCoupon="showCouponDialog"
+        :couponBack="couponIdList"
+      />
+    </div>
+  </wrapper>
 </template>
+
+<script>
+import wrapper from '@/components/admin/wrapper/wrapper'
+import ImageDalog from '@/components/admin/imageDalog'
+import addCouponDialog from '@/components/admin/addCouponDialog'
+import { collectGiftStatus, collectGiftSelect } from '@/api/admin/marketManage/collectGift.js'
+export default {
+  components: {
+    wrapper,
+    ImageDalog,
+    addCouponDialog
+  },
+
+  data () {
+    return {
+      // 开关
+      switchValue: true,
+      actTime: '',
+      logo: '0',
+
+      // 图片弹窗
+      srcList: {
+        src: `${this.$imageHost}/image/admin/add_img.png`,
+        imageUrl: ``
+      },
+      showImageDialog: false,
+      // 复选框
+      checkList: [],
+      score: '',
+      // 优惠卷弹窗
+      couponDialogFlag: false,
+      couponData: [],
+      couponId: '',
+      showCouponDialog: false,
+      couponIdList: [],
+      imgHost: `${this.$imageHost}`,
+      checkedData: []
+
+    }
+  },
+  created () {
+    this.selectInfo()
+  },
+  mounted () {
+    // 初始化国际化语言
+    this.langDefault()
+  },
+  methods: {
+    tabSwitch () {
+      console.log('进入方法！')
+      collectGiftStatus().then(res => {
+        if (res.error === 0) {
+          console.log('开关切换成功')
+        }
+      })
+      console.log('出来了！')
+    },
+    selectInfo () {
+      console.log('进入方法！')
+      collectGiftSelect().then(res => {
+        if (res.error === 0) {
+          console.log('收藏有礼配置为：', res.content)
+          if (res.content.on_off === 0) {
+            this.switchValue = false
+          } else { this.switchValue = true }
+        }
+      })
+      console.log('出来了！')
+    },
+    // 优惠卷回调
+    handleToCheck (data) {
+      console.log('coupon', data)
+      let couponKey = []
+      data.map((item) => {
+        couponKey.push(item.id)
+      })
+      this.couponData = data
+      this.couponId = couponKey.toString()
+      console.log('conponId', couponKey.toString())
+      console.log('conponData', this.couponData)
+    },
+    // 删除优惠券图片
+    deleteCouponImg (index) {
+      this.couponData.splice(index, 1)
+    },
+    // 选择优惠券弹窗-
+    handleToCallDialog () {
+      this.dialogFlag = 0
+      this.couponIdList = this.getCouponIdsArray(this.couponData)
+      this.showCouponDialog = !this.showCouponDialog
+    },
+    getCouponIdsArray (data) {
+      let res = []
+      data.forEach((item, index) => {
+        res.push(item.id)
+      })
+      return res
+    },
+    // 活动分享 -- 添加图片点击事件，弹出图片选择组件
+    addGoodsImg () {
+      this.showImageDialog = !this.showImageDialog
+    },
+    // 图片点击回调函数
+    imgDialogSelectedCallback (src) {
+      this.srcList.src = src.imgUrl
+    },
+    // 删除图片
+    deleteGoodsImg () {
+      this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
+    }
+  },
+  filters: {
+    formatLeastConsume (useConsumeRestrict, leastConsume) {
+      if (useConsumeRestrict === 0) {
+        return `不限制`
+      } else {
+        return `满${leastConsume}元可用`
+      }
+    }
+  }
+
+}
+</script>
+<style lang="scss" scoped>
+.footer {
+  padding: 10px 0px 10px 0px;
+  text-align: center;
+  background: #f8f8f8;
+  margin-top: 10px;
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+}
+.ImgWrap {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #ccc;
+  margin: 5px 5px;
+  position: relative;
+}
+.deleteIcon {
+  width: 17px;
+  height: 17px;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  line-height: 17px;
+  text-align: center;
+  position: relative;
+  top: -41px;
+  right: -95px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.ImgWrap .moveIcon {
+  width: 17px;
+  height: 17px;
+  display: none;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  line-height: 17px;
+  text-align: center;
+  position: absolute;
+  bottom: 0px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.ImgWrap:hover .moveIcon {
+  display: block;
+}
+.middleContainer {
+  display: flex;
+  .deleteIcon {
+    position: relative;
+    width: 17px !important;
+    height: 17px;
+    line-height: 17px;
+    top: -118px;
+    left: 45px;
+    cursor: pointer;
+    opacity: 0.8;
+    color: #fff;
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    text-align: center;
+  }
+}
+.addInfo {
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  height: 101px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  cursor: pointer;
+  text-align: center;
+  img {
+    margin-top: 10px;
+  }
+  p {
+    line-height: normal;
+    margin-top: -30px;
+    color: #999;
+  }
+  .couponImgWrapper {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fbb;
+    border-radius: 10px;
+    .coupon_list_top {
+      margin-top: 10px;
+      color: #f60;
+      :nth-of-type(2) {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+    .coupon_center_limit {
+      height: 20px;
+      color: #f60;
+      font-size: 12px !important;
+    }
+    .coupon_center_number {
+      height: 20px;
+      color: #fbb;
+    }
+    .coupon_list_bottom {
+      height: 24px;
+      line-height: 30px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      color: #fff;
+      background: #f66;
+      background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+      background-repeat: repeat-x;
+    }
+  }
+}
+</style>
