@@ -11,6 +11,8 @@ export const en = {
   pageClassification: ['Small Program Management', 'Page classification'],
   // 小程序管理 图片空间
   pictureSpace: ['Small Program Management', 'Picture space'],
+  // 小程序管理 图片空间
+  videoSpace: ['Small Program Management', 'Video space'],
   // 小程序管理 店铺风格
   shopStyle: ['Small Program Management', 'shop style'],
   // 小程序管理 底部导航

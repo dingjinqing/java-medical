@@ -94,6 +94,18 @@ const routes = [
               )
           },
           {
+            path: '/admin/home/main/video_space',
+            name: 'video_list',
+            meta: {
+              crumbTitle: 'router.videoSpace',
+              meta: 'first_web_decoration'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/videoSpace/videoSpace'
+              )
+          },
+          {
             path: '/admin/home/main/shopStyle',
             name: 'shop_style',
             meta: {

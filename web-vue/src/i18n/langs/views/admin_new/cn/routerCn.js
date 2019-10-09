@@ -6,6 +6,8 @@ export const cn = {
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
   pictureSpace: ['小程序管理', '图片空间'],
+  // 小程序管理 视频空间
+  videoSpace: ['小程序管理', '视频空间'],
   // 小程序管理 店铺风格
   shopStyle: ['小程序管理', '店铺风格'],
   // 小程序管理 底部导航

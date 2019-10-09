@@ -33,6 +33,10 @@ import {
   cn as adminPageFramework
 } from './views/admin_new/cn/adminPageFrameworkCn'
 
+import {
+  cn as videoSpace
+} from './views/admin_new/cn/index/videoSpace/videoSpaceCn'
+
 // 概览
 import {
   cn as overview
@@ -208,6 +212,8 @@ import { cn as returnconfiguration } from './views/admin_new/cn/index/basicSetti
 import {
   cn as purchase
 } from './views/admin_new/cn/index/marketManagement/increasePurchase/purchaseCn'
+
+import { cn as vTree } from './views/admin_new/cn/components/vTree/vTreeCn'
 
 const cn = {
   messages: {
@@ -658,7 +664,9 @@ const cn = {
   storeList, // 门店列表
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
-  purchase // 加价购
+  purchase, // 加价购
+  videoSpace,
+  vTree
 }
 
 export default cn

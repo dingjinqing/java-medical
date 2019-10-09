@@ -46,7 +46,7 @@ export default {
     },
     layout: {
       type: String,
-      default: 'total, sizes, prev, pager, next, jumper' // 组件布局，子组件名用逗号分隔
+      default: 'total, prev, pager, next, jumper' // 组件布局，子组件名用逗号分隔 sizes
     }
   },
   computed: {
