@@ -161,6 +161,50 @@ const myMixin = {
       } else {
         return this.$t('marketCommon.deactivated')
       }
+    },
+    // 处理平台分类、商家分类下拉框数据函数  data是接口原始数据 idName：catId是平台分类  sortId是商家分类
+    disposeGoodsSortAndCatData (data, idName) {
+      let retObj = {}
+
+      for (let i = 0; i < data.length; i++) {
+        let item = data[i]
+
+        // 是否自身节点被创建过（子节点先遍历到了）
+        let selfItem = retObj[item[idName]]
+        if (selfItem === undefined) {
+          // 未遍历到则初始化自己
+          retObj[item[idName]] = { 'item': item, children: [] }
+          selfItem = retObj[item[idName]]
+        } else {
+          // 已创建过，（因提前遍历了子节点而创建）
+          selfItem.item = item
+        }
+
+        let parentItem = retObj[item.parentId]
+        // 有父亲直接插入
+        if (parentItem !== undefined) {
+          parentItem.children.push(selfItem)
+        } else {
+          // 没有则创建临时父亲
+          retObj[item.parentId] = { 'item': null, children: [selfItem] }
+        }
+      }
+
+      let retArr = []
+
+      if (data.length === 0) {
+        return retArr
+      }
+      let rootArr = retObj['0'].children
+      // 处理结果将对象变为数组
+      for (let i = 0; i < rootArr.length; i++) {
+        let retItem = rootArr[i]
+        retArr.push(retItem.item)
+        if (retItem.children.length > 0) {
+          rootArr.splice(i + 1, 0, ...(retItem.children))
+        }
+      }
+      return retArr
     }
   }
 }
