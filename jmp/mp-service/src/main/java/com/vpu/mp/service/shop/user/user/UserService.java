@@ -112,8 +112,13 @@ public class UserService extends ShopBaseService {
 			user.setWxOpenid(openid);
 			user.setScene(userSource);
 			user.setUsername(userName==null?openid:userName);
-			user.setInviteSource(source.get("invite_source"));
-			user.setInviteActId(Integer.parseInt(source.get("invite_act_id")));
+			if(!source.isEmpty()) {
+				logger().info("邀请来源不空"+source.toString());
+				user.setInviteSource(source.get("invite_source"));
+				user.setInviteActId(Integer.parseInt(source.get("invite_act_id")));
+			}else {
+				logger().info("邀请来源为空");
+			}
 			String unionId = (!StringUtils.isBlank(result.getUnionid())) ? result.getUnionid() : "";
 			user.setWxUnionId(unionId);
 			user.insert();
