@@ -91,7 +91,6 @@ service.interceptors.response.use(
     return res
   },
   error => {
-    console.log(2, error.response.status)
     if (error && error.response) {
       console.log(error.response.status)
       switch (error.response.status) {
