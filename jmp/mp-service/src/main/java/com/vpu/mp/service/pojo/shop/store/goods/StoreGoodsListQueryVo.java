@@ -37,7 +37,8 @@ public class StoreGoodsListQueryVo {
 	 * 同步之后的规格库存
 	 */
 	private Integer productNumber;
-	
+
+    private Integer prdId;
 	private String prdSn;
 	private String prdCodes;
 }
