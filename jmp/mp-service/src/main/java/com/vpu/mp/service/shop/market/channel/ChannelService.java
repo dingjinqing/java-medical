@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.tables.Channel.CHANNEL;
+import static com.vpu.mp.db.shop.tables.ChannelRecord.CHANNEL_RECORD;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.math.BigInteger;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.impl.DSL;
@@ -22,9 +24,11 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
+import com.vpu.mp.db.shop.tables.records.ChannelRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelStatisticalRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelConstant;
@@ -309,7 +313,35 @@ public class ChannelService extends ShopBaseService {
 
 	}
 
+	public ChannelRecord getChannelInfo(String share) {
+		return db().selectFrom(CHANNEL).where(CHANNEL.SHARE.eq(share)).and(CHANNEL.DEL_FLAG.eq((byte)0)).fetchAny();
+	}
 	
+	/**
+	 * 渠道统计
+	 * @param share
+	 * @param userId
+	 * @param type
+	 */
+	public void recordChannel(String share,Integer userId,Byte type) {
+		ChannelRecord channelRecord = db().selectFrom(CHANNEL).where(CHANNEL.SHARE.eq(share)).fetchAny();
+		Result<ChannelRecordRecord> records = db().selectFrom(CHANNEL_RECORD).where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId())).and(CHANNEL_RECORD.CREATE_TIME.eq(DateUtil.getLocalTimeDate()))).fetch();
+		if(records.size()>0) {
+			db().update(CHANNEL_RECORD).set(CHANNEL_RECORD.COUNT,records.size()+1)
+			.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
+					.and(CHANNEL_RECORD.CREATE_TIME.eq(DateUtil.getLocalTimeDate())).and(CHANNEL_RECORD.TYPE.eq((byte)0))).execute();
+		}else {
+			if(channelRecord!=null) {
+				ChannelRecordRecord newRecord = db().newRecord(CHANNEL_RECORD);
+				newRecord.setChannelId(channelRecord.getId());
+				newRecord.setUserId(userId);
+				newRecord.setType(type);
+				newRecord.setCount(1);
+				newRecord.insert();
+			}
+			
+		}
+	}
 }
 @Data
 @NoArgsConstructor
