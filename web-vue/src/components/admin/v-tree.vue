@@ -1,7 +1,7 @@
 <template>
   <div class="tree_container">
     <div v-show="showContextMenu">
-      <ul id="menu_">
+      <ul id="menu_video">
         <span class="menu">
           <el-button
             size="mini"
@@ -86,7 +86,7 @@ export default {
     onNodeRight (event, object, value, element) {
       this.showContextMenu = true
       this.contextObject = object
-      let menu = document.querySelector('#menu_')
+      let menu = document.querySelector('#menu_video')
 
       menu.style.left = event.clientX + 2 + 'px'
       menu.style.top = event.clientY + 'px'
@@ -150,7 +150,7 @@ export default {
 .tree_container {
   width: 160px;
 }
-#menu_ {
+#menu_video {
   position: fixed;
   z-index: 10000;
 }
@@ -183,8 +183,6 @@ export default {
   height: 100%;
 }
 .ly-tree-container {
-  //   margin: 20px 0 20px 20px;
-  //   width: 60%;
   padding: 20px;
   .menu {
     display: flex !important;
@@ -203,15 +201,9 @@ export default {
   }
 
   .ly-visible {
-    // margin-left: 50px;
     visibility: hidden;
-    // background-color: #fff;
     z-index: 10;
     background-color: #f3f3f3 !important;
-
-    // position: absolute;
-    // left: 10px;
-    // top: 30px;
   }
 
   .ly-edit__text {
@@ -232,7 +224,6 @@ export default {
     flex: 1;
     display: flex;
     align-items: center;
-    // justify-content: space-between;
     justify-content: flex-start;
     font-size: 14px;
     padding-right: 8px;
@@ -241,30 +232,16 @@ export default {
 
   .ly-tree-node > div > span:last-child {
     display: inline-block;
-    // width: 110px;
     text-align: left;
   }
 
   .ly-tree-node > span:last-child {
     display: inline-block;
-    // width: 110px;
     text-align: left;
   }
 
   .el-tree-node .el-tree-node__content {
     height: 30px;
-
-    // &:hover .ly-visible {
-    //   visibility: visible;
-    //   background-color: #fff;
-    //   z-index: 10;
-    //   // position: absolute;
-    //   // left: 10px;
-    //   // top: 30px;
-    // }
-    // &:hover .menu {
-    //   // display: none !important;
-    // }
     .rows {
       background-image: url(../../assets/adminImg/menu_down.png);
       background-position: center center;
@@ -275,12 +252,6 @@ export default {
       margin-left: 5px;
       display: block;
     }
-    // .rows:hover {
-    //   display: none !important;
-    // }
-    // .rows:hover .menu {
-    //   // display: block !important;
-    // }
     &::before,
     &::after {
       content: "";

@@ -46,6 +46,7 @@ export const cn = {
     cancel: '取消',
     ok: '确定',
     uploadFitVideo: '请上传小于{maxVideoSize}的视频',
-    selectVideo: '请选择视频'
+    selectVideo: '请选择视频',
+    browseVideo: '浏览视频'
   }
 }

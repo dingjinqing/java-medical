@@ -1,16 +1,22 @@
 <template>
-  <div class="freight_container">
-    <div class="main_acontainer">
-      <VideoSpaceTree />
+  <div class="main_container">
+    <div class="video_container">
+      <videoSpaceCore />
     </div>
   </div>
 </template>
 <script>
-import VideoSpaceTree from '@/view/admin/index/leftNavComponents/first_web_decoration/videoSpace/videoSpaceTree'
+import videoSpaceCore from '@/components/admin/videoSpace/videoSpaceCore'
 export default {
-  components: { VideoSpaceTree }
-
+  components: { videoSpaceCore }
 }
 </script>
 <style scoped>
+  .main_container{
+    padding: 10px 20px;
+  }
+  .video_container{
+    background: #fff;
+    padding: 10px 10px;
+  }
 </style>

@@ -282,8 +282,36 @@
             <el-form-item
               :label="$t('goodsAddEditInfo.basicInfoOther.goodsVideo')"
               prop="video"
-              @click="videoInputClick"
             >
+              <VideoSpaceDialog :visible.sync="showVideoSpaceDialog"
+                                @video-click="videoSelected"
+              />
+              <div class="add-video-container"  >
+                <el-image
+                        fit="scale-down"
+                        class="add-goods-video"
+                        :src="videoSnapShotUrl"
+                        @click="videoInputClick"
+                />
+                <el-image
+                        fit="scale-down"
+                        @click="videoRemove"
+                        :src="imgHost+'/image/admin/icon_delete.png'"
+                        class="img-delete good_img_deletes" v-show="showRemoveVideoIcon"
+
+                />
+
+                <el-link
+                        type="primary"
+                        :underline="false"
+                        :href="videoUrl"
+                        v-show="showRemoveVideoIcon"
+                        class="btn_playa"
+                        target="_blank">
+                  {{$t('videoSpace.upload.play')}}
+                </el-link>
+              </div>
+
               <span class="inputTip">{{$t('goodsAddEditInfo.basicInfoOther.goodsVideoTip')}}</span>
             </el-form-item>
           </el-form>
@@ -294,7 +322,6 @@
         pageIndex='pictureSpace'
         @handleSelectImg='imgDialogSelectedCallback'
       />
-
       <!--添加品牌dialog-->
       <el-dialog :title="$t('goodsAddEditInfo.basicInfoOther.goodsBrandTitle')"
                  :visible.sync="goodsBrandDialogData.goodsBrandDialogShow" @open="goodsBrandDialogBeforeOpen"
@@ -350,11 +377,15 @@ import { isStrBlank } from '@/util/goodsUtil'
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
 import pagination from '@/components/admin/pagination/pagination'
-
+import VideoSpaceDialog from '@/components/admin/videoSpace/VideoSpaceDialog'
 export default {
-  components: { ImageDalog, pagination },
+  components: { ImageDalog, pagination, VideoSpaceDialog },
   data () {
     return {
+      showVideoSpaceDialog: false,
+      videoSnapShotUrl: this.$imageHost + '/image/admin/add_video.png',
+      videoUrl: '',
+      showRemoveVideoIcon: false,
       selfImgDialogShow: false,
       goodsProductInfo: {
         goodsId: null,
@@ -722,7 +753,19 @@ export default {
       this.goodsBrandDialogData.goodsBrandDialogShow = false
     },
     videoInputClick () {
-      // TODO: 视频选择弹出未实现
+      this.showVideoSpaceDialog = true
+    },
+    videoSelected (item) {
+      console.log('videoSelected', item)
+      this.refreshVideo(item.snapshotUrl, item.videoUrl)
+    },
+    refreshVideo (snapshotUrl, videoUrl) {
+      this.videoSnapShotUrl = snapshotUrl || this.$imageHost + '/image/admin/add_video.png'
+      this.showRemoveVideoIcon = !!snapshotUrl
+      this.videoUrl = videoUrl
+    },
+    videoRemove () {
+      this.refreshVideo()
     },
     /* 初始化平台分类 */
     _initCatId (goodsData) {
@@ -910,6 +953,7 @@ export default {
 .inputTip {
   color: #999;
   margin-left: 15px;
+  line-height: 80px;
 }
 .title {
   font-weight: bold;
@@ -984,5 +1028,38 @@ export default {
   right: -8px;
   cursor: pointer;
   opacity: 0.8;
+}
+  .add-video-container{
+    float: left;
+    position: relative;
+    margin-right: 15px;
+    background: #f7f7f7;
+    border: 1px solid #ccc;
+    width: 80px;
+    height: 81px;
+    text-align: center;
+    line-height: 80px;
+    cursor: pointer;
+  }
+  .add-goods-video{
+    width: 100%;
+    height: 100%;
+  }
+  .good_img_deletes{
+    position: absolute;
+    right: -10px;
+    top: -7px;
+    cursor: pointer;
+  }
+.btn_playa {
+  color: #5a8bff !important;
+  width: 80px;
+  height: 20px;
+  line-height: 20px;
+  position: absolute;
+  left: 88px;
+  text-align: left;
+  top: 0;
+  z-index: 999;
 }
 </style>

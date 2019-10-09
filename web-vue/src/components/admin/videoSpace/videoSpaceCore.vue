@@ -139,7 +139,7 @@
                 </li>
               </ul>
               <div class="bottom">
-                <div class="bottom_radio">
+                <div class="bottom_radio" v-show="!dialogMode">
                   <el-checkbox
                     v-model="allChecked"
                     true-label="1"
@@ -213,11 +213,9 @@
         >{{$t('videoSpace.upload.ok')}}</el-button>
       </span>
     </el-dialog>
-    <Cropper />
   </div>
 </template>
 <script>
-import Cropper from '@/components/admin/cropper'
 import VTree from '@/components/admin/v-tree'
 import VPagination from '@/components/admin/pagination/pagination'
 import {
@@ -231,7 +229,13 @@ import {
   uploadVideoRequest
 } from '@/api/admin/videoSpace.js'
 export default {
-  components: { VTree, Cropper, VPagination },
+  components: { VTree, VPagination },
+  props: {
+    dialogMode: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       selectedCatId: 0,
@@ -348,7 +352,8 @@ export default {
         'page': 1,
         'videoCatId': this.selectedCatId,
         'keywords': '',
-        'uploadSortId': this.sortId
+        'uploadSortId': this.sortId,
+        'pageRows': this.dialogMode ? 9 : 20
       }
       getVideoListRequest(obj).then((res) => {
         if (res.error === 0) {
@@ -420,6 +425,9 @@ export default {
     onVideoClick (index) {
       this.videoList[index].checked = !this.videoList[index].checked
       this.allChecked = this.getCheckedIds().length === this.videoList.length ? '1' : ''
+      if (this.videoList[index].checked) {
+        this.$emit('video-click', this.videoList[index])
+      }
     },
     // 全部选中
     onAllChecked () {
@@ -485,7 +493,8 @@ export default {
         'keywords': this.videoNameInput,
         'videoWidth': '',
         'videoHeight': '',
-        'uploadSortId': this.sortId
+        'uploadSortId': this.sortId,
+        'pageRows': this.dialogMode ? 9 : 20
       }
       getVideoListRequest(obj).then((res) => {
         if (res.error === 0) {
@@ -515,7 +524,7 @@ export default {
 .img_sel {
   width: 18px;
   height: 18px;
-  background: url(../../../../../../assets/adminImg/img_sel.png) no-repeat;
+  background: url(../../../assets/adminImg/img_sel.png) no-repeat;
   position: absolute;
   right: -9px;
   top: -9px;
@@ -566,10 +575,10 @@ export default {
   top: 2px;
 }
 .dialog_top {
-  padding: 15px 20px;
+  padding: 15px 0;
 }
 .video_container {
-  padding: 10px;
+  /*padding: 10px;*/
   /* padding-right: 23px; */
   min-width: 100%;
 }
@@ -586,16 +595,20 @@ export default {
   display: none !important;
 }
 .tips {
-  height: 30px;
-  line-height: 30px;
+  margin-top: 10px;
+  height: 40px;
   padding: 0 20px;
   color: #666;
   font-size: 12px;
+  line-height: 20px;
   background-color: #fff7eb;
   border: 1px solid #ffd5a3;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
-  margin-top: 10px;
 }
 .tips img {
   margin-right: 10px;
@@ -603,7 +616,7 @@ export default {
 .dialog_middle {
   /* height: 320px; */
   width: 100%;
-  padding: 0 20px;
+  /*padding: 0 20px;*/
 }
 .dialog_middle_top {
   /* width: 24%; */
