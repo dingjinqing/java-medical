@@ -179,6 +179,14 @@ import {
 import {
   en as storeList
 } from './views/admin_new/en/index/storeManagement/store/storeListEn'
+// 门店列表-商品管理
+import {
+  en as storeGoodsList
+} from './views/admin_new/en/index/storeManagement/store/storeGoodsListEn'
+// 门店列表-核销员管理
+import {
+  en as verifierManage
+} from './views/admin_new/en/index/storeManagement/store/verifierManageEn'
 
 // admin>公共组件
 // 选择时间
@@ -653,6 +661,8 @@ const en = {
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表
+  storeGoodsList, // 门店列表-商品管理
+  verifierManage, // 门店列表-核销员管理
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
   purchase // 加价购

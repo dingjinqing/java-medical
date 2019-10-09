@@ -344,6 +344,10 @@ export const en = {
 
   // 门店管理 门店列表
   store_list: ['Store management', 'Stores list'],
+  // 门店管理 商品管理
+  storeGoodsList: ['Store management', 'Commodity management'],
+  // 门店管理 核销员管理
+  verifierManage: ['Store management', 'Store list', 'verifier management'],
   // 门店管理 分组管理
   store_group_list: ['Store management', 'Store groups list']
 }

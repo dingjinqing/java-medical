@@ -238,6 +238,9 @@ export const cn = {
 
   // 门店管理 门店列表
   store_list: ['门店管理', '门店列表'],
+  storeGoodsList: ['门店管理', '商品管理'],
+  // 门店管理 核销员管理
+  verifierManage: ['门店管理', '门店列表', '核销员管理'],
   // 门店管理 分组管理
   store_group_list: ['门店管理', '分组管理']
 }

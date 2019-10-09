@@ -185,6 +185,14 @@ import {
 import {
   cn as storeList
 } from './views/admin_new/cn/index/storeManagement/store/storeListCn'
+// 门店列表-商品管理
+import {
+  cn as storeGoodsList
+} from './views/admin_new/cn/index/storeManagement/store/storeGoodsListCn'
+// 门店列表-核销员管理
+import {
+  cn as verifierManage
+} from './views/admin_new/cn/index/storeManagement/store/verifierManageCn'
 
 // 支付配置
 import {
@@ -662,6 +670,8 @@ const cn = {
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表
+  storeGoodsList, // 门店列表-商品管理
+  verifierManage, // 门店列表-核销员管理
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
   purchase, // 加价购

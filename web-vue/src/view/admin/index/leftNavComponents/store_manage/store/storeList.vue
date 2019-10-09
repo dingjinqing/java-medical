@@ -147,7 +147,7 @@
                   :content="$t('storeList.goodsManage')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.storeId)">{{$t('storeList.goodsManage')}}</a>
+                  <a @click="edit('goodsManage', scope.row.storeId, scope.row)">{{$t('storeList.goodsManage')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -155,7 +155,7 @@
                   :content="$t('storeList.verifierManage')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.storeId)">{{$t('storeList.verifierManage')}}</a>
+                  <a @click="edit('verifierManage', scope.row.storeId, scope.row)">{{$t('storeList.verifierManage')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -318,8 +318,26 @@ export default {
         })
       })
     },
-    edit (id) {
-
+    edit (param, id, row) {
+      console.log(param, id, row)
+      switch (param) {
+        case 'goodsManage':
+          this.$router.push({
+            path: '/admin/home/main/store/goods/list',
+            query: {
+              name: row.storeName,
+              id: id
+            }
+          })
+          break
+        case 'verifierManage':
+          this.$router.push({
+            path: '/admin/home/main/store/verification/list',
+            query: {
+              id: id
+            }
+          })
+      }
     }
   },
   watch: {
