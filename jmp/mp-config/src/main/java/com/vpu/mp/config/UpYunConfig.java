@@ -23,4 +23,20 @@ public class UpYunConfig {
 	@Value(value = "${uyun.image.op.pwd}")
 	protected String password;
 
+	@Value(value = "${uyun.video.sv}")
+	protected String videoServer;
+
+	@Value(value = "${uyun.video.op.name}")
+	protected String videoOpName;
+
+	@Value(value = "${uyun.video.op.pwd}")
+	protected String videoOpPassword;
+
+	@Value(value = "${uyun.video.domain}")
+	protected String videoDomain;
+
+	public String videoUrl(String path) {
+		return "http://" + this.videoDomain + path;
+	}
+
 }

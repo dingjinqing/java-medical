@@ -1,12 +1,10 @@
 package com.vpu.mp.service.shop;
 
-import com.vpu.mp.service.shop.assess.AssessService;
-import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
-import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
-import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
+import com.vpu.mp.service.shop.distribution.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -16,7 +14,6 @@ import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
-import com.vpu.mp.service.shop.distribution.*;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
@@ -28,6 +25,7 @@ import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.channel.ChannelService;
 import com.vpu.mp.service.shop.market.channel.ChannelStatisticalService;
 import com.vpu.mp.service.shop.market.commentaward.CommentAwardService;
+import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.market.firstspecial.FirstSpecialService;
 import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
@@ -36,7 +34,12 @@ import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
 import com.vpu.mp.service.shop.market.gift.GiftService;
 import com.vpu.mp.service.shop.market.givegift.GiveGiftService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.groupdraw.*;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawGroupService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawInviteService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawJoinUserService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawOrderService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawUserService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
@@ -48,17 +51,23 @@ import com.vpu.mp.service.shop.market.presale.PreSaleOrderService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
+import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
-import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
-import com.vpu.mp.service.shop.overview.*;
+import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
+import com.vpu.mp.service.shop.overview.AssetManagementService;
+import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
+import com.vpu.mp.service.shop.overview.MallOverviewService;
+import com.vpu.mp.service.shop.overview.OverviewService;
+import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
+import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
@@ -67,9 +76,11 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.shop.version.VersionService;
+import com.vpu.mp.service.shop.video.VideoService;
 
 /**
  * 
@@ -87,6 +98,9 @@ public class ShopApplication {
 	public QrCodeService qrCode;
 	@Autowired
 	public ImageCategoryService imageCatgory;
+	@Autowired
+	public VideoService video;
+
 	@Autowired
 	public ShopMpDecorationService mpDecoration;
 	/**

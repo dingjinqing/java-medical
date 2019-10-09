@@ -7,6 +7,8 @@
 		<artifactId>mp</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+
+	
 	<artifactId>mp-config</artifactId>
 	<name>mp-config</name>
 	<dependencies>

@@ -363,6 +363,8 @@ public class Indexes {
     public static final Index UPLOADED_IMAGE_CATEGORY_PRIMARY = Indexes0.UPLOADED_IMAGE_CATEGORY_PRIMARY;
     public static final Index UPLOADED_IMAGE_CATEGORY_SHOP_ID = Indexes0.UPLOADED_IMAGE_CATEGORY_SHOP_ID;
     public static final Index UPLOADED_VIDEO_PRIMARY = Indexes0.UPLOADED_VIDEO_PRIMARY;
+    public static final Index UPLOADED_VIDEO_CATEGORY_PRIMARY = Indexes0.UPLOADED_VIDEO_CATEGORY_PRIMARY;
+    public static final Index UPLOADED_VIDEO_CATEGORY_SHOP_ID = Indexes0.UPLOADED_VIDEO_CATEGORY_SHOP_ID;
     public static final Index UPLOADED_VIDEO_SHOP_ID = Indexes0.UPLOADED_VIDEO_SHOP_ID;
     public static final Index UPLOADED_VIDEO_VIDEO_ORIG_FNAME = Indexes0.UPLOADED_VIDEO_VIDEO_ORIG_FNAME;
     public static final Index USER_MOBILE = Indexes0.USER_MOBILE;
@@ -797,6 +799,8 @@ public class Indexes {
         public static Index UPLOADED_VIDEO_PRIMARY = Internal.createIndex("PRIMARY", UploadedVideo.UPLOADED_VIDEO, new OrderField[] { UploadedVideo.UPLOADED_VIDEO.VIDEO_ID }, true);
         public static Index UPLOADED_VIDEO_SHOP_ID = Internal.createIndex("shop_id", UploadedVideo.UPLOADED_VIDEO, new OrderField[] { UploadedVideo.UPLOADED_VIDEO.SHOP_ID }, false);
         public static Index UPLOADED_VIDEO_VIDEO_ORIG_FNAME = Internal.createIndex("video_orig_fname", UploadedVideo.UPLOADED_VIDEO, new OrderField[] { UploadedVideo.UPLOADED_VIDEO.VIDEO_ORIG_FNAME }, false);
+        public static Index UPLOADED_VIDEO_CATEGORY_PRIMARY = Internal.createIndex("PRIMARY", UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY, new OrderField[] { UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY.VIDEO_CAT_ID }, true);
+        public static Index UPLOADED_VIDEO_CATEGORY_SHOP_ID = Internal.createIndex("shop_id", UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY, new OrderField[] { UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY.SHOP_ID }, false);
         public static Index USER_MOBILE = Internal.createIndex("mobile", User.USER, new OrderField[] { User.USER.MOBILE, User.USER.SHOP_ID }, true);
         public static Index USER_PRIMARY = Internal.createIndex("PRIMARY", User.USER, new OrderField[] { User.USER.USER_ID }, true);
         public static Index USER_USER_CODE = Internal.createIndex("user_code", User.USER, new OrderField[] { User.USER.USER_CODE }, false);

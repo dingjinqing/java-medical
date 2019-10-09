@@ -1774,7 +1774,7 @@ create table `b2c_upload_uyun_record`
     `upload_status`    tinyint(2)            default 0 comment '文件上传状态 0：上传成功；1：上传失败（或开关关闭后未上传的文件）',
     `upload_time`      timestamp             default now() comment '文件上传时间',
     `fail_reason`      text         not null comment '失败原因',
-    `fail_date`        timestamp    not null comment '失败时间',
+    `fail_date`        timestamp    null default null comment '失败时间',
     primary key (`record_id`),
     key `file_url` (`file_url`),
     key `shop_id` (`shop_id`)

@@ -58,6 +58,13 @@ public class JsonResultMessage {
 	public static final String MSG_IMAGE_CATEGORY_IMGCATPARENTID_NOT_NULL = "image.category.imgCatParentId.notNull";
 	public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_NOT_NULL = "image.category.imgCatName.notNull";
 
+	public static final String MSG_VIDEO_UPLOAD_FAILED = "video.upload.failed";
+	public static final String MSG_VIDEO_FORMAT_INVALID = "video.format.invalid";
+	public static final String MSG_VIDEO_CATEGORY_VIDEOCATID_NOT_NULL = "video.category.videoCatId.notNull";
+	public static final String MSG_VIDEO_CATEGORY_VIDEOCATPARENTID_NOT_NULL = "video.category.videoCatParentId.notNull";
+	public static final String MSG_VIDEO_CATEGORY_VIDEOCATNAME_NOT_NULL = "video.category.videoCatName.notNull";
+	public static final String MSG_VIDEO_UPLOAD_GT_10M = "video.upload.gt10m";
+	
 	/**
 	 * 商品
 	 */

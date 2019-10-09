@@ -479,6 +479,8 @@ public class Keys {
     public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY = UniqueKeys0.KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY;
     public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = UniqueKeys0.KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID;
     public static final UniqueKey<MessageTemplateConfigRecord> KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY = UniqueKeys0.KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY;
+    public static final UniqueKey<UploadedVideoCategoryRecord> KEY_B2C_UPLOADED_VIDEO_CATEGORY_PRIMARY =  UniqueKeys0.KEY_B2C_UPLOADED_VIDEO_CATEGORY_PRIMARY;
+    public static final Identity<UploadedVideoCategoryRecord, Integer> IDENTITY_UPLOADED_VIDEO_CATEGORY = Identities0.IDENTITY_UPLOADED_VIDEO_CATEGORY;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -649,6 +651,7 @@ public class Keys {
         public static Identity<UploadedImageRecord, Integer> IDENTITY_UPLOADED_IMAGE = Internal.createIdentity(UploadedImage.UPLOADED_IMAGE, UploadedImage.UPLOADED_IMAGE.IMG_ID);
         public static Identity<UploadedImageCategoryRecord, Integer> IDENTITY_UPLOADED_IMAGE_CATEGORY = Internal.createIdentity(UploadedImageCategory.UPLOADED_IMAGE_CATEGORY, UploadedImageCategory.UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static Identity<UploadedVideoRecord, Integer> IDENTITY_UPLOADED_VIDEO = Internal.createIdentity(UploadedVideo.UPLOADED_VIDEO, UploadedVideo.UPLOADED_VIDEO.VIDEO_ID);
+        public static Identity<UploadedVideoCategoryRecord, Integer> IDENTITY_UPLOADED_VIDEO_CATEGORY = Internal.createIdentity(UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY, UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY.VIDEO_CAT_ID);
         public static Identity<UserRecord, Integer> IDENTITY_USER = Internal.createIdentity(User.USER, User.USER.USER_ID);
         public static Identity<UserAccountRecord, Integer> IDENTITY_USER_ACCOUNT = Internal.createIdentity(UserAccount.USER_ACCOUNT, UserAccount.USER_ACCOUNT.ID);
         public static Identity<UserAddressRecord, Integer> IDENTITY_USER_ADDRESS = Internal.createIdentity(UserAddress.USER_ADDRESS, UserAddress.USER_ADDRESS.ADDRESS_ID);
@@ -878,6 +881,7 @@ public class Keys {
         public static final UniqueKey<UploadedImageRecord> KEY_B2C_UPLOADED_IMAGE_PRIMARY = Internal.createUniqueKey(UploadedImage.UPLOADED_IMAGE, "KEY_b2c_uploaded_image_PRIMARY", UploadedImage.UPLOADED_IMAGE.IMG_ID);
         public static final UniqueKey<UploadedImageCategoryRecord> KEY_B2C_UPLOADED_IMAGE_CATEGORY_PRIMARY = Internal.createUniqueKey(UploadedImageCategory.UPLOADED_IMAGE_CATEGORY, "KEY_b2c_uploaded_image_category_PRIMARY", UploadedImageCategory.UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static final UniqueKey<UploadedVideoRecord> KEY_B2C_UPLOADED_VIDEO_PRIMARY = Internal.createUniqueKey(UploadedVideo.UPLOADED_VIDEO, "KEY_b2c_uploaded_video_PRIMARY", UploadedVideo.UPLOADED_VIDEO.VIDEO_ID);
+        public static final UniqueKey<UploadedVideoCategoryRecord> KEY_B2C_UPLOADED_VIDEO_CATEGORY_PRIMARY = Internal.createUniqueKey(UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY, "KEY_b2c_uploaded_video_category_PRIMARY", UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY.VIDEO_CAT_ID);
         public static final UniqueKey<UserRecord> KEY_B2C_USER_PRIMARY = Internal.createUniqueKey(User.USER, "KEY_b2c_user_PRIMARY", User.USER.USER_ID);
         public static final UniqueKey<UserRecord> KEY_B2C_USER_MOBILE = Internal.createUniqueKey(User.USER, "KEY_b2c_user_mobile", User.USER.MOBILE, User.USER.SHOP_ID);
         public static final UniqueKey<UserAccountRecord> KEY_B2C_USER_ACCOUNT_PRIMARY = Internal.createUniqueKey(UserAccount.USER_ACCOUNT, "KEY_b2c_user_account_PRIMARY", UserAccount.USER_ACCOUNT.ID);

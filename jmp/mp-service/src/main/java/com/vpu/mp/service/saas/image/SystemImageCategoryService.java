@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.main.tables.records.UploadedImageCategoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.image.category.CategoryTreeItemVo;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
+import com.vpu.mp.service.pojo.shop.video.category.CategoryTreeItemVo;
 
 /**
  * @author 新国，孔德成

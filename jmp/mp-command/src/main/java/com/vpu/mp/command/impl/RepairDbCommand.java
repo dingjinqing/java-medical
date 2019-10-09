@@ -17,7 +17,13 @@ import com.vpu.mp.service.saas.SaasApplication;
  */
 @Service
 public class RepairDbCommand implements CommandRunner {
+	
+	protected final String ARG_MAIN = "main";
+	protected final String ARG_SHOP = "shop";
+	protected final String ARG_SHOP_ID = "shop_id";
+	protected final String ARG_OPT_ONLY_CHECK = "only_check";
 
+	
 	final Logger logger = LoggerFactory.getLogger(RepairDbCommand.class);
 
 	@Autowired
@@ -29,14 +35,14 @@ public class RepairDbCommand implements CommandRunner {
 			logger.error(description());
 			return;
 		}
-		Boolean onlyCheck = this.getOption(args, "only_check", Boolean.class, true);
+		Boolean onlyCheck = this.getOption(args, ARG_OPT_ONLY_CHECK, Boolean.class, true);
 
 		String type = this.getNonOption(args, 1);
-		if (type.equals("main")) {
+		if (ARG_MAIN.equals(type)) {
 			saas.repairDb.repairMainDb(onlyCheck);
-		} else if (type.equals("shop")) {
-			if (hasOption(args, "shop_id")) {
-				Integer shopId = this.getOption(args, "shop_id", Integer.class, 0);
+		} else if (ARG_SHOP.equals(type)) {
+			if (hasOption(args, ARG_SHOP_ID)) {
+				Integer shopId = this.getOption(args, ARG_SHOP_ID, Integer.class, 0);
 				if (shopId.intValue() == 0) {
 					logger.error("--shop_id is invalid,usage: {} ", description());
 					return;

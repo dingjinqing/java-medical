@@ -71,6 +71,7 @@ public class DatabaseManager {
 			BasicDataSource ds = datasourceManager.getMainDbDatasource();
 			db = this.getDsl(ds, datasourceManager.getMainDbConfig(),0);
 		}
+		mainDsl.remove();
 		mainDsl.set(db);
 		return mainDsl.get();
 	}
@@ -84,7 +85,7 @@ public class DatabaseManager {
 	public DatabaseManager switchShopDb(Integer shopId) {
 		loger.debug("switchShopDb==="+shopId);
 		MpDefaultDslContext db = shopDsl.get();
-		if(db == null || db !=null && !db.getShopId().equals(shopId)) {
+		if(db == null ||  !db.getShopId().equals(shopId)) {
 			ShopRecord shop = mainDb().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 			if (shop != null) {
 				DbConfig dbConfig = Util.parseJson(shop.getDbConfig(), DbConfig.class);
@@ -93,6 +94,7 @@ public class DatabaseManager {
 				}
 				BasicDataSource ds = datasourceManager.getDatasource(dbConfig);
 				db = getDsl(ds, dbConfig,shopId);
+				shopDsl.remove();
 				shopDsl.set(db);
 			} else {
 				throw new RuntimeException("ShopId "+shopId+" Db not found") ;

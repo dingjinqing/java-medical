@@ -4,6 +4,11 @@ import com.vpu.mp.command.impl.RepairDbCommand;
 
 import lombok.Getter;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public enum CommandsEnum {
 	REPAIR_DB_COMMAND("db:repair", RepairDbCommand.class);
 
