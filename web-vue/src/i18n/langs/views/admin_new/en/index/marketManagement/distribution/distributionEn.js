@@ -20,6 +20,7 @@ export const en = {
   chooseDate: 'choose date',
   to: 'to',
   search: 'Search',
+
   // ------------------------tab-------------------
   distributionCfg: 'Distribution Config',
   distributorLevelCfg: 'Distribution Level Config',
@@ -44,6 +45,7 @@ export const en = {
   status: 'status',
   edit: 'edit',
   pause: 'pause',
+  open: 'open',
   delete: 'delete',
   // 添加推广语弹窗
   title: 'title',

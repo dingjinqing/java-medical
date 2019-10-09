@@ -65,13 +65,13 @@
         @click="add"
       >{{$t('distribution.addAdvertisement')}}</el-button>
       <el-dialog
-        title="添加推广语"
+        :title="$t('distribution.addAdvertisement')"
         :visible.sync="centerDialogVisible"
         width="30%"
         center
       >
         <div class="title">
-          <span>标题：</span>
+          <span>{{$t('distribution.title')}}</span>
           <el-input
             prop="title"
             size="small"
@@ -79,12 +79,12 @@
           ></el-input>
         </div>
         <div class="languageContent">
-          <span>请输入分销员推广语，将帮助分销员朋友圈推广：</span>
+          <span>{{$t('distribution.addNote')}}</span>
 
           <el-input
             v-model="param.promotionLanguage"
             type="textarea"
-            placeholder="请输入"
+            :placeholder="$t('distribution.inputAdvertisement')"
             rows=6
           ></el-input>
 
@@ -93,12 +93,12 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="cancel">取 消</el-button>
+          <el-button @click="cancel">{{$t('distribution.cancleBtn')}}</el-button>
           <el-button
             v-model="opt"
             type="primary"
             @click="confirm()"
-          >确 定</el-button>
+          >{{$t('distribution.confirmBt')}}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -114,35 +114,35 @@
       >
         <el-table-column
           prop="title"
-          label="推广语标签"
+          :label="$t('distribution.advertisementTag')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="promotionLanguage"
-          label="推广语内容"
+          :label="$t('distribution.inputAdvertisement')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="createTime"
-          label="创建时间"
+          :label="$t('distribution.createTime')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="updateTime"
-          label="更新时间"
+          :label="$t('distribution.updateTime')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="isBlock"
-          label="状态"
+          :label="$t('distribution.status')"
           align="center"
           :formatter="changeState"
         >
@@ -150,23 +150,23 @@
 
         <el-table-column
           prop=""
-          label="操作"
+          :label="$t('distribution.opt')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span @click="edit(scope.row.id)">编辑</span>
+              <span @click="edit(scope.row.id)">{{$t('distribution.edit')}}</span>
               <span
                 prop="isPause"
                 @click="stop(scope.row.id)"
                 v-if="scope.row.isPause"
-              >停用</span>
+              >{{$t('distribution.pause')}}</span>
               <span
                 prop="isPause"
                 @click="start(scope.row.id)"
                 v-else
-              >启用</span>
-              <span @click="del(scope.row.id)">删除</span>
+              >{{$t('distribution.open')}}</span>
+              <span @click="del(scope.row.id)">{{$t('distribution.delete')}}</span>
             </div>
           </template>
         </el-table-column>

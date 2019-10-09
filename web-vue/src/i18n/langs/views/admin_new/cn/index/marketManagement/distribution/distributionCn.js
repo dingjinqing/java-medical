@@ -1,6 +1,18 @@
 export const cn = {
 
-  // --------------------通用--------------------
+  // -------------------------tab-------------------
+  distributionCfg: '分销配置',
+  distributorLevelCfg: '分销员等级配置',
+  rebateStrategyCfg: '返利策略配置',
+  distributorList: '分销员列表',
+  distributorGroup: '分销员分组',
+  commissionStatistics: '佣金统计',
+  rebateGoodsStatistics: '商品返利统计',
+  withdrawAudit: '返利提现审核',
+  distributorAudit: '分销员审核',
+  advertisement: '分销推广语',
+
+  // --------------------通用---------------------
   createTime: '创建时间',
   advertisementContent: '推广语内容',
   mobile: '手机号',
@@ -21,18 +33,84 @@ export const cn = {
   chooseDate: '选择日期',
   to: '至',
   search: '查询',
+  registTime: '注册时间',
+  username: '用户昵称',
+  rebateVailDate: '返利有效期',
+  distributorMobile: '分销员手机号',
 
-  // ------------------------tab-------------------
-  distributionCfg: '分销配置',
-  distributorLevelCfg: '分销员等级配置',
-  rebateStrategyCfg: '返利策略配置',
-  distributorList: '分销员列表',
-  distributorGroup: '分销员分组',
-  commissionStatistics: '佣金统计',
-  rebateGoodsStatistics: '商品返利统计',
-  withdrawAudit: '返利提现审核',
-  distributorAudit: '分销员审核',
-  advertisement: '分销推广语',
+  // -----------------------分销配置-----------------
+  wdistributionSitch: '分销开关',
+  wdistributionSitchDesc: '开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。',
+  distributorCheck: '分销员审核',
+  distributorCheckDesc: '开启分销员审核功能后，普通用户申请成为分销员时需要经过商家审核。关闭则成为店铺分销员不需要申请审核，全部用户均默认为店铺分销员。',
+
+  distributionRanking: '分销排名',
+  distributionRankingDesc: '开关默认关闭，开启开关，且拥有返利数据的分销员数大于等于3位时分销员中心显示分销员佣金排名。关闭则不显示分销员佣金排名页面。',
+  rebateVailDateDesc: '用户被分销员邀请注册开始计算，在该天数限制内该用户购买分销商品给分销员计算佣金返利，一旦超过该天数，则不再给分销员佣金返利，默认为空，为空表示不限制。',
+  distributorProtectDate: '分销员保护期',
+  distributorProtectDateDesc: '在保护期内，分销员发展的客户不会变更绑定关系，保护期过后可通过分享链接重新绑定邀请关系。 超过保护期若未重新建立邀请关系，则原绑定关系仍然有效，可依据返利配置条件返利。若保护期设置为0天，则用户可随时通过他人分享进入小程序实现其邀请人的变更。',
+  distributionCenterPage: '分销中心页面名称',
+  recommendGoods: '推荐商品',
+  recommendGoodsDesc: '将从已选商品中随机抽取10个展示在小程序端“分销中心”，引导分销员推广商品',
+  noShow: '不显示',
+  default: '默认',
+  custom: '自定义',
+  customContent: '自定义内容',
+  selectTemplate: '选择模版',
+  refresh: '刷新',
+  addTemplate: '添加模版',
+  openMoreCfg: '展开更多配置',
+  rebateWithdrawSet: '返利提现设置',
+  rebateWithdrawSwitch: '返利提现开关',
+  withdrawSwitchDesc: '开启提现功能开关前，请阅读《返利提现配置操作说明》',
+
+  // -----------------分销员等级配置---------------
+
+  // -------------------返利策略配置---------------
+
+  // ---------------------分销员列表----------------
+  wxName: '微信昵称',
+  invitedUserMobile: '被邀请用户手机号',
+  invitedUserName: '被邀请用户昵称',
+  distributorLevel: '分销员等级',
+  distributorListfont: '注：',
+  distributorListDesc: '未开启分销员审核时，列表只展示有下级用户的分销员',
+  id: 'ID',
+  nextUserNum: '下级用户数',
+  indirectInviteUserNum: '间接邀请用户数',
+  rebateGoodsAmount: '累积返利商品总额',
+  rebateFanliAmount: '累积获得佣金金额',
+  waitFanliAmount: '待返利佣金金额',
+  showHasInviteUsers: '产看已邀请用户',
+  showFanliDetail: '查看返利佣金明细',
+  clear: '清除',
+  userMobile: '用户手机号',
+  rebateOrderNum: '累计返利订单数',
+  orderGoodsRebateAmount: '累积订单商品返利总金额',
+  inviteProtectDate: '邀请保护日期',
+
+  // -------------------分销员分组-----------------
+  distributionGroup: '',
+  switchDesc: '分组是否展示在小程序端',
+  show: '展示',
+  notShow: '不展示',
+  save: '保存',
+  addDistributorGroup: '添加分销员分组',
+  groupName: '分组名称',
+  includeDistributorNum: '包含分销员数量',
+  isDefaultGroup: '是否为默认分组',
+  addDistributor: '添加分销员',
+  distributorUsername: '分销员昵称',
+  distributorId: '分销员ID',
+  currentLevel: '当前分组',
+  reset: '重置',
+  deny: '否',
+  setDefault: '设置默认',
+
+  // --------------------佣金统计------------------
+
+  orderTime: '下单时间',
+  rebateOrderSn: '返利订单号',
 
   // -------------------商品返利统计---------------
   goodsName: '商品名称',
@@ -47,7 +125,6 @@ export const cn = {
   orderUsername: '下单用户昵称',
   orderUsermobile: '下单用户手机号',
   distributorName: '分销员昵称',
-  distributorMobile: '分销员手机号',
   distributorRealName: '分销员真实姓名',
   rebateTime: '返利时间',
   rebateRelation: '返利关系',
@@ -75,8 +152,6 @@ export const cn = {
   // 基本信息
   applyMoney: '申请金额',
   userId: '用户ID',
-  registTime: '注册时间',
-  username: '用户昵称',
   dsecInfo: '备注信息',
   refuseApplyReason: '驳回申请原因',
   // 转账明细信息
@@ -96,6 +171,7 @@ export const cn = {
   status: '状态',
   edit: '编辑',
   pause: '停用',
+  open: '启用',
   delete: '删除',
   // 添加推广语弹窗
   title: '标题',
