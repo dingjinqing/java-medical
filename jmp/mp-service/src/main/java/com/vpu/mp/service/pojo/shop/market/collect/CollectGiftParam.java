@@ -24,11 +24,11 @@ public class CollectGiftParam {
 	@JsonProperty(value = "end_time")
 	private Timestamp endTime;
 	/** 图标*/
-	@JsonProperty(value = "logo")
-	private Integer logo;
+	@JsonProperty(value = "collect_logo")
+	private Integer collectLogo;
 	/** 自定义图标路径*/
-	@JsonProperty(value = "logo_src")
-	private String logoSrc;
+	@JsonProperty(value = "collect_logo_src")
+	private String collectLogoSrc;
 	/** 积分*/
 	@JsonProperty(value = "score")
 	private Integer score;
