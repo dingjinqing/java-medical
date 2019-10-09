@@ -8,6 +8,7 @@ import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -349,6 +350,22 @@ public class FriendPromoteService extends ShopBaseService {
 		FieldsUtil.assignNotNull(param, record);
 		db().executeUpdate(record);
 
+	}
+	
+	/**
+	 * 助力活动信息
+	 * @param promoteId
+	 * @param actCode
+	 * @return
+	 */
+	public FriendPromoteActivityRecord promoteInfo(Integer promoteId,String actCode) {
+		SelectWhereStep<FriendPromoteActivityRecord> selectFrom = db().selectFrom(fpa);
+		if(promoteId>0) {
+			selectFrom.where(fpa.ID.eq(promoteId));
+		}if(!org.springframework.util.StringUtils.isEmpty(actCode)) {
+			selectFrom.where(fpa.ACT_CODE.eq(actCode));
+		}
+		return selectFrom.fetchAny();
 	}
 	
 }
