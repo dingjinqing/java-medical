@@ -84,12 +84,23 @@ public class AdminGoodsController extends AdminBaseController {
         return success(pageList);
     }
 
+    @PostMapping("/api/admin/goods/listAllIds")
+    public JsonResult getGoodsIdsListAll(@RequestBody GoodsPageListParam param) {
+        List<Integer> goodsIds = shop().goods.getGoodsIdsListAll(param);
+        return success(goodsIds);
+    }
+
     /**
      * 商品规格分页查询
      */
     @PostMapping("/api/admin/goods/product/list")
     public JsonResult getProductPageList(@RequestBody GoodsPageListParam param) {
         return success(shop().goods.getProductPageList(param));
+    }
+
+    @PostMapping("/api/admin/goods/product/listAllIds")
+    public JsonResult getProductIdsListAll(@RequestBody GoodsPageListParam param){
+        return success(shop().goods.getProductIdsListAll(param));
     }
 
     /**

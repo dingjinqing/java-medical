@@ -162,6 +162,22 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     *  获取所有符合条件的商品id集合
+     * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
+     * @return 商品id结合
+     */
+    public List<Integer> getGoodsIdsListAll(GoodsPageListParam goodsPageListParam) {
+        // 拼接过滤条件
+        Condition condition = this.buildOptions(goodsPageListParam);
+
+        List<Integer> goodsIds = db().select(GOODS.GOODS_ID)
+            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
+
+        return goodsIds;
+    }
+
+    /**
      *  根据商品id集合获取对应的商品信息和规格信息
      * @param goodsIds
      * @return GoodsPageListVo
@@ -210,6 +226,22 @@ public class GoodsService extends ShopBaseService {
         return pageResult;
     }
 
+    /**
+     * 获取符合条件的全部商品规格id集合
+     * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
+     * @return 规格id集合
+     */
+    public List<Integer> getProductIdsListAll(GoodsPageListParam goodsPageListParam) {
+        // 拼接过滤条件
+        Condition condition = this.buildOptions(goodsPageListParam);
+
+        List<Integer> prdIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID)
+            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .where(condition).fetch(GOODS_SPEC_PRODUCT.PRD_ID);
+
+        return prdIds;
+    }
 
     /**
      * 分页条件拼凑
