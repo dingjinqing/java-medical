@@ -23,6 +23,8 @@ public abstract class BaseCardVo {
 	 */
 	/** 会员卡id */
 	private Integer id;
+	/** 会员卡头像 */
+	private String avatar;
 	/** 会员卡名称 */
 	private String cardName;
 
