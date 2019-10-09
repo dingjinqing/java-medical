@@ -69,7 +69,7 @@ public class AdminRoleController extends AdminBaseController {
 	public JsonResult switchShop(@RequestBody ShopReq shopReq) {
 		// 更新redis
 		if (adminAuth.switchShopLogin(shopReq.getShopId())) {
-			return success(JsonResultCode.CODE_SUCCESS);
+			return success();
 		}
 		return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
 	}
