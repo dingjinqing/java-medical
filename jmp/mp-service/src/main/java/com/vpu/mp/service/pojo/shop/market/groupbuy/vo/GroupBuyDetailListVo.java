@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

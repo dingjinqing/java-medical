@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market;
 
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * 营销活动订单

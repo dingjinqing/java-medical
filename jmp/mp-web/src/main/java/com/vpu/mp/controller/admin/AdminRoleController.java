@@ -5,9 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.jooq.Record10;
 import org.jooq.Record11;
-import org.jooq.Record9;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;

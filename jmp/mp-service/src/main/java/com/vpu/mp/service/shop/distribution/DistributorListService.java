@@ -17,13 +17,11 @@ import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record6;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.main.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;

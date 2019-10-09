@@ -6,19 +6,17 @@ import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.shop.operation.aop.RecordAction;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-
-import org.springframework.stereotype.Service;
+import com.vpu.mp.service.shop.operation.aop.RecordAction;
 
 /**
  * @author 王兵兵

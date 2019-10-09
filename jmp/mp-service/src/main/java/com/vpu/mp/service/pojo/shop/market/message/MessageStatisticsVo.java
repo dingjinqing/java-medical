@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
-import lombok.Data;
-
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * 推送统计VO

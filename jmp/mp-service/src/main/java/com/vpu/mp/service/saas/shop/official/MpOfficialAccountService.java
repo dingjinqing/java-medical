@@ -1,8 +1,8 @@
 package com.vpu.mp.service.saas.shop.official;
 
-import org.springframework.stereotype.Service;
-
 import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
+
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;

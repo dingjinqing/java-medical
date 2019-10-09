@@ -7,13 +7,6 @@ package com.vpu.mp.service.pojo.saas.shop;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-
 import lombok.Data;
 
 /**

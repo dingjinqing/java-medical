@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.image;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

@@ -1,15 +1,9 @@
 package com.vpu.mp.mq.listener;
 
 
-import com.rabbitmq.client.Channel;
-import com.vpu.mp.config.mq.RabbitConfig;
-import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
-import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
-import com.vpu.mp.service.saas.SaasApplication;
-import org.jooq.Result;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -17,9 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.rabbitmq.client.Channel;
+import com.vpu.mp.config.mq.RabbitConfig;
+import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
+import com.vpu.mp.service.saas.SaasApplication;
 
 /**
  * 模版消息监听

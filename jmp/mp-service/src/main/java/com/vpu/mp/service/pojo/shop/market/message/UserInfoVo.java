@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UserInfoVo extends UserInfoByRedis {
 
     private String username;

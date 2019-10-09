@@ -1,11 +1,11 @@
 package com.vpu.mp.service.saas.shop;
 
+import static com.vpu.mp.db.main.tables.AppAuth.APP_AUTH;
+
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-
-import static com.vpu.mp.db.main.tables.AppAuth.APP_AUTH;
 
 /**
  * 

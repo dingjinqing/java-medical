@@ -1,11 +1,14 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import lombok.Data;
-
 import java.util.List;
 
-@Data
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class MessageUserQuery extends BasePageParam {
 
     private String userKey;

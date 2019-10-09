@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.shop.member.score;
 
 import java.sql.Timestamp;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.Getter;
 import lombok.Setter;
 

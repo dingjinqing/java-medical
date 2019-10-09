@@ -4,7 +4,6 @@ import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_GROUP;
 import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;

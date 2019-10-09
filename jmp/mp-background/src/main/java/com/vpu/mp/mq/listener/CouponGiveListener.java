@@ -1,9 +1,7 @@
 package com.vpu.mp.mq.listener;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

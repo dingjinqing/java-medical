@@ -2,7 +2,6 @@ package com.vpu.mp.service.foundation.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +9,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.vpu.mp.service.foundation.language.LanguageManager;
 
 /**
  * 自动国际化翻译器测试

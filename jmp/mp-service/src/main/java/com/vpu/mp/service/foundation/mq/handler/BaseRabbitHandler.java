@@ -2,11 +2,9 @@ package com.vpu.mp.service.foundation.mq.handler;
 
 import java.io.IOException;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.amqp.core.Message;
 
 import com.rabbitmq.client.Channel;
-import org.springframework.messaging.handler.annotation.Payload;
 
 /**
  * MQ消费者默认实现接口 所有消费者都要手动ACK，确保消息被消费

@@ -1,19 +1,13 @@
 package com.vpu.mp.controller.admin;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
 
-import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
-import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadedImageVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +18,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadedImageVo;
 import com.vpu.mp.service.pojo.shop.image.BatchDeleteImageParam;
 import com.vpu.mp.service.pojo.shop.image.BatchMoveImageParam;
 import com.vpu.mp.service.pojo.shop.image.CropImageParam;
@@ -32,7 +27,6 @@ import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
 import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageVo;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  *

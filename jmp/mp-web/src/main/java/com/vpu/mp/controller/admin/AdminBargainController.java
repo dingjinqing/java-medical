@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.vpu.mp.service.pojo.shop.market.bargain.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +19,15 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.SimpleBargainParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 

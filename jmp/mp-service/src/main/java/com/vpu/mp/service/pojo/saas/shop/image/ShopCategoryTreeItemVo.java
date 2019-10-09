@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.saas.shop.image;
 
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

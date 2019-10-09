@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.saas.shop.image;
 
 import com.vpu.mp.service.pojo.shop.image.CropImageParam;
+
 import lombok.Data;
 
 /**

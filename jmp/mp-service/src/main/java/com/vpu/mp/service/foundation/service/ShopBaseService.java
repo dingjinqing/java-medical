@@ -2,7 +2,6 @@ package com.vpu.mp.service.foundation.service;
 
 import java.sql.Timestamp;
 import java.util.ArrayDeque;
-import java.util.Date;
 import java.util.Deque;
 
 import org.jooq.Configuration;
@@ -10,10 +9,10 @@ import org.jooq.ContextTransactionalRunnable;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
+import org.jooq.impl.SQLDataType;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import org.jooq.impl.SQLDataType;
 
 
 /**

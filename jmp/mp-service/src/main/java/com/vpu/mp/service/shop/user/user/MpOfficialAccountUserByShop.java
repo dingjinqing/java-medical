@@ -1,17 +1,16 @@
 package com.vpu.mp.service.shop.user.user;
 
-import com.vpu.mp.db.shop.tables.User;
+import static com.vpu.mp.db.shop.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
+import static com.vpu.mp.db.shop.tables.User.USER;
+
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record4;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-
-import java.util.List;
-
-import static com.vpu.mp.db.shop.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
-import static com.vpu.mp.db.shop.tables.User.USER;
 
 @Service
 public class MpOfficialAccountUserByShop extends ShopBaseService{

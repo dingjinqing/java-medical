@@ -1,5 +1,11 @@
 package com.vpu.mp.service.shop.market.givegift;
 
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiftRecordGoodsVo;
@@ -7,15 +13,6 @@ import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListPar
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListVo;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.checkerframework.checker.units.qual.A;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  *

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.vpu.mp.service.pojo.shop.config.message.MessageConfigParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -38,6 +37,7 @@ import com.vpu.mp.service.pojo.shop.config.group.ShopRoleGroupUpdateParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
+import com.vpu.mp.service.pojo.shop.config.message.MessageConfigParam;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;

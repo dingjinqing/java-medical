@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
 import java.math.BigDecimal;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

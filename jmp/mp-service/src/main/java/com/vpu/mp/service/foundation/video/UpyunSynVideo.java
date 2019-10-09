@@ -139,9 +139,6 @@ public class UpyunSynVideo extends AsyncProcessHandler {
 		if (os != null) {
 			os.close();
 		}
-		if (is != null) {
-			is.close();
-		}
 		if (conn != null) {
 			conn.disconnect();
 		}

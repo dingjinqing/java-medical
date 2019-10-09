@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.foundation.util.Page;
-import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,22 +1,32 @@
 package com.vpu.mp.service.saas.shop;
 
-import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.*;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
+import org.jooq.Record;
+import org.jooq.Record7;
+import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionIdVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
 
 /**
  * 

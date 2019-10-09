@@ -1,19 +1,13 @@
 package com.vpu.mp.service.shop.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vpu.mp.db.shop.tables.Payment;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.pojo.shop.config.trade.*;
-import com.vpu.mp.service.shop.logistics.LogisticsService;
-import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.DELIVERY_ID;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.DELIVERY_NAME;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.DOCUMENT;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.STATUS_CODE;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.UPDATE_TIME;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -27,9 +21,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.db.shop.tables.Payment;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.pojo.shop.config.trade.BindAccountParam;
+import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
+import com.vpu.mp.service.pojo.shop.config.trade.LogisticsAccountInfo;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
+import com.vpu.mp.service.shop.logistics.LogisticsService;
+
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * The type Trade service.

@@ -1,19 +1,54 @@
 package com.vpu.mp.service.shop.market.message;
 
 
-import com.vpu.mp.db.shop.tables.MessageTemplate;
-import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
-import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.records.MessageTemplateRecord;
-import com.vpu.mp.db.shop.tables.records.ServiceMessageRecordRecord;
+import static com.vpu.mp.db.shop.tables.MessageTemplate.MESSAGE_TEMPLATE;
+import static com.vpu.mp.db.shop.tables.ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
+import static com.vpu.mp.db.shop.tables.TemplateConfig.TEMPLATE_CONFIG;
+import static com.vpu.mp.db.shop.tables.User.USER;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.TemplateConfigRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.*;
-import com.vpu.mp.service.pojo.saas.schedule.*;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.MathUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.market.message.*;
+import com.vpu.mp.service.pojo.shop.market.message.MessageOutputVo;
+import com.vpu.mp.service.pojo.shop.market.message.MessageStatisticsVo;
+import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateDetailVo;
+import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateParam;
+import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateQuery;
+import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateVo;
+import com.vpu.mp.service.pojo.shop.market.message.MessageUserQuery;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.market.message.SendUserVo;
+import com.vpu.mp.service.pojo.shop.market.message.UserInfoByRedis;
+import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
+import com.vpu.mp.service.pojo.shop.market.message.UserInfoVo;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageVo;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -22,28 +57,6 @@ import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 import com.vpu.mp.service.shop.user.user.SendUserService;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.tables.MessageTemplate.MESSAGE_TEMPLATE;
-import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
-import static com.vpu.mp.db.shop.tables.ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
-import static com.vpu.mp.db.shop.tables.TemplateConfig.TEMPLATE_CONFIG;
-import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * 营销管理--推送消息实现类

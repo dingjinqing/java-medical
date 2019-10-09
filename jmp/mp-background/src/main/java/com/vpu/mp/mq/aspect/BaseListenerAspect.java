@@ -1,9 +1,10 @@
 package com.vpu.mp.mq.aspect;
 
 
-import com.rabbitmq.client.Channel;
-import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
-import com.vpu.mp.service.saas.SaasApplication;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,10 +13,9 @@ import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import com.rabbitmq.client.Channel;
+import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
+import com.vpu.mp.service.saas.SaasApplication;
 
 /**
  *

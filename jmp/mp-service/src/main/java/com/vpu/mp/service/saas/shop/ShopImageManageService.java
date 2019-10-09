@@ -9,16 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.UpYun;
-import com.upyun.UpException;
-import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.config.StorageConfig;
-import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.image.ImageDefault;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.pojo.saas.shop.image.*;
-import com.vpu.mp.service.pojo.shop.image.CropImageParam;
+import javax.imageio.ImageIO;
+import javax.servlet.http.Part;
+
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -28,15 +21,27 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.UpYun;
+import com.upyun.UpException;
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.StorageConfig;
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageCategoryRecord;
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopCategoryTreeItemVo;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopCropImageParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopImageCategoryParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopImageListQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadImageCatNameVo;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadImageParam;
+import com.vpu.mp.service.pojo.shop.image.CropImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.shop.image.ImageService;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.Part;
 
 
 /**

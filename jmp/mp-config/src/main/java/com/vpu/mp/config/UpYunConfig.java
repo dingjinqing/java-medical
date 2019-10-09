@@ -38,5 +38,9 @@ public class UpYunConfig {
 	public String videoUrl(String path) {
 		return "http://" + this.videoDomain + path;
 	}
+	
+	public String imageUrl(String path) {
+		return "http://" + this.videoDomain + path;
+	}
 
 }

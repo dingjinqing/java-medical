@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 /**
  * 消息推送详情

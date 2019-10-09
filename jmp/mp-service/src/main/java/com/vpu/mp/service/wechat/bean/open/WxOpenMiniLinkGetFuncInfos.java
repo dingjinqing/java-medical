@@ -1,10 +1,8 @@
 package com.vpu.mp.service.wechat.bean.open;
 
 import java.io.Serializable;
-import java.util.List;
 
 import lombok.Data;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * 

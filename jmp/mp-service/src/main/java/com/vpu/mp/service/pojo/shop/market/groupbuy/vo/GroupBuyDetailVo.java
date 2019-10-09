@@ -1,14 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.sql.Timestamp;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 孔德成

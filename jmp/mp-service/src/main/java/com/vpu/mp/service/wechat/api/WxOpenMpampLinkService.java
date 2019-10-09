@@ -1,11 +1,9 @@
 package com.vpu.mp.service.wechat.api;
 
 import com.google.gson.JsonObject;
-import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetResult;
 
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 
 /**
  * 

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
@@ -14,8 +13,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-
-import javax.lang.model.type.ErrorType;
 
 /**
  * @author 黄荣刚

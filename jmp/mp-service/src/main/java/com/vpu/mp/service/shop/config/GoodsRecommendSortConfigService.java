@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
-import com.vpu.mp.service.shop.image.ImageService;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
+import com.vpu.mp.service.shop.image.ImageService;
 
 /**
  * @author 李晓冰

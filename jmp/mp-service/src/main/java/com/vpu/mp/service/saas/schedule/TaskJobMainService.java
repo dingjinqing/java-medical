@@ -1,7 +1,19 @@
 package com.vpu.mp.service.saas.schedule;
 
-import com.vpu.mp.db.main.tables.TaskJobContent;
-import com.vpu.mp.db.main.tables.TaskJobMain;
+import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
+import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.jooq.Record4;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.main.tables.records.TaskJobContentRecord;
 import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
@@ -14,20 +26,6 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.BaseTaskJob;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import org.jooq.*;
-import org.jooq.conf.Settings;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
-import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
 
 
 /**

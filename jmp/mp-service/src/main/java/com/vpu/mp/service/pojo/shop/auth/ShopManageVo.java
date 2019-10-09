@@ -1,9 +1,5 @@
 package com.vpu.mp.service.pojo.shop.auth;
 
-import javax.validation.constraints.NotBlank;
-
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

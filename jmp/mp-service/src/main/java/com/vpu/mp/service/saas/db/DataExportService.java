@@ -1,24 +1,24 @@
 package com.vpu.mp.service.saas.db;
 
-import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
+import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
+import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FileUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
-import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
 
 /**
  * 数据导出

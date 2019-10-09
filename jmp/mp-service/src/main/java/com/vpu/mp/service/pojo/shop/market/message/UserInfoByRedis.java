@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

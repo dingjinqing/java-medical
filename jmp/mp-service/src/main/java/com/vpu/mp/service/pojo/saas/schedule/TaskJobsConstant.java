@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.saas.schedule;
 
 import com.vpu.mp.config.mq.RabbitConfig;
 
-import java.util.Arrays;
-
 /**
  * TaskJobsMain的TypeConstant
  * @author 卢光耀

@@ -3,9 +3,9 @@ package com.vpu.mp.service.pojo.shop.member;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import lombok.Data;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 /**
  * 
  * @author 黄壮壮

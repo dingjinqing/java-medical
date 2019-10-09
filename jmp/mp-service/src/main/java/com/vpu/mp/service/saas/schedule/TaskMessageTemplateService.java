@@ -1,17 +1,17 @@
 package com.vpu.mp.service.saas.schedule;
 
-import com.vpu.mp.db.main.tables.TaskJobContent;
-import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
+import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
+
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
-import static com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
+import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 
 /**
  * 消息发送TaskService

@@ -1,33 +1,26 @@
 package com.vpu.mp.service.saas.shop;
 
-import com.vpu.mp.db.main.tables.MpOperateLog;
+import static com.vpu.mp.db.main.Tables.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+
+import org.jooq.Record8;
+import org.jooq.SelectConditionStep;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOperateLogRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
-import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.wechat.bean.ma.WxContentTemplate;
-
-import org.jooq.Record6;
-import org.jooq.Record8;
-import org.jooq.SelectConditionStep;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.vpu.mp.db.main.Tables.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 /**
  * 

@@ -1,12 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.increasepurchase;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
 
 /**
  * @author liufei

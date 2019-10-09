@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.saas.shop.image;
 
-import lombok.Data;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

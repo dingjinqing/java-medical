@@ -8,7 +8,6 @@ import java.util.List;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,6 +87,7 @@ public class AdminVideoController extends AdminBaseController {
 			if(values[0].equals("filename")) {
 				filename = values[1].trim();
 				filename = filename.substring(1,filename.length()-1);
+				break;
 			}
 		}
 		String ext = shop().video.getFileType(filename);

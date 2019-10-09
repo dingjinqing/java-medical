@@ -4,7 +4,6 @@ import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.LANGUAGE
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +13,14 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.AddPurchaseParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePriorityParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
 
 /**
  * @author liufei

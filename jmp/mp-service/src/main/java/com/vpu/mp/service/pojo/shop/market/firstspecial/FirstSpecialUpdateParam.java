@@ -1,15 +1,15 @@
 package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialUpdateValidatedGroup;
-import lombok.Data;
+import java.sql.Timestamp;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Timestamp;
+
+import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+
+import lombok.Data;
 
 /**
  * @author: 王兵兵

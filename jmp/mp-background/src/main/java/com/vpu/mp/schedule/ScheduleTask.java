@@ -1,22 +1,12 @@
 package com.vpu.mp.schedule;
 
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import org.jooq.Condition;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.stereotype.Component;
 
-import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 支持多线程，异步执行

@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

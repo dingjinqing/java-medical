@@ -2,7 +2,6 @@ package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.BackProcess.BACK_PROCESS;
 
-import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;

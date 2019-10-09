@@ -1,5 +1,13 @@
 package com.vpu.mp.service.shop.market.commentaward;
 
+import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
+
+import java.sql.Timestamp;
+
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.CommentAwardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -8,14 +16,6 @@ import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListVo;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardVo;
-import lombok.Data;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-
-import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
 
 /**
  * @author 孔德成

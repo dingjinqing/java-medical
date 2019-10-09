@@ -1,6 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelsMapParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +12,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
-
-import java.util.List;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelsMapParam;
 
 /**
  * @author 黄荣刚

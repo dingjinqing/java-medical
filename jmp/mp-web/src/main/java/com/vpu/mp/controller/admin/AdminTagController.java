@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.shop.member.DeleteTagParam;
 import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
-import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 
 /**

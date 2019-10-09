@@ -1,14 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigParam;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.sql.Timestamp;
 import java.util.List;
+
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigParam;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 孔德成

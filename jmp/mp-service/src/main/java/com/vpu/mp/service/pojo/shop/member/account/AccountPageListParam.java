@@ -7,8 +7,6 @@ package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.sql.Timestamp;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.Getter;
 import lombok.Setter;
 

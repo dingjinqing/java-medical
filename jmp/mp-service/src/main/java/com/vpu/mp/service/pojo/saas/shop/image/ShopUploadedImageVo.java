@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.saas.shop.image;
 
+import java.sql.Timestamp;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
 
 /**
  * @author 孔德成
