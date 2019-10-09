@@ -129,7 +129,7 @@ public class OrderReadService extends ShopBaseService {
 				if(OrderOperationJudgment.mpIsClose(order)) {
 					order.setCanClose(Boolean.TRUE);
 				}
-				if(OrderOperationJudgment.mpIsFinish(order , returnOrder.getOrderCount(order.getOrderSn(), OrderConstant.REFUND_STATUS_AUDITING))) {
+				if(OrderOperationJudgment.mpIsFinish(order , returnOrder.getOrderCount(order.getOrderSn(), OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING))) {
 					order.setCanFinish(Boolean.TRUE);
 				}
 				if(order.getOrderSn().equals(moc)) {
