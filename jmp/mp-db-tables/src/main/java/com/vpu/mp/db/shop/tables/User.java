@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = 1186636461;
+    private static final long serialVersionUID = 891600875;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user</code>
@@ -248,6 +248,16 @@ public class User extends TableImpl<UserRecord> {
      * The column <code>mini_shop_471752.b2c_user.unit_price</code>. 客单价
      */
     public final TableField<UserRecord, BigDecimal> UNIT_PRICE = createField("unit_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "客单价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user.invite_time</code>. 邀请时间
+     */
+    public final TableField<UserRecord, Timestamp> INVITE_TIME = createField("invite_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "邀请时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user.scene</code>. 用户微信来源 -1搜索、公众号等入口（主动）进入，-2分享（被动）进入，-3扫码进入 -4未获取
+     */
+    public final TableField<UserRecord, Integer> SCENE = createField("scene", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "用户微信来源 -1搜索、公众号等入口（主动）进入，-2分享（被动）进入，-3扫码进入 -4未获取");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user</code> table reference
