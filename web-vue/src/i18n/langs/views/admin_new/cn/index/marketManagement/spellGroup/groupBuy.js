@@ -183,5 +183,7 @@ export const cn = {
   }, {
     value: 3,
     label: '未成团'
-  }]
+  }],
+  moreConfigure: '展开更多配置',
+  packUpConfigure: '收起更多配置'
 }

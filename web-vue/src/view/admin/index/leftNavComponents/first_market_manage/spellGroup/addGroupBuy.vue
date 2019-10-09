@@ -4,255 +4,351 @@
 -->
 <template>
   <div>
-  <wrapper>
-    <el-form
-      ref="form"
-      :model="form"
-      :rules="fromRules"
-      label-width="150px"
-      :label-position="'right'"
-    >
-      <el-form-item
-        :label="$t('groupBuy.groupBuyActivity')"
-        prop="resource"
+    <wrapper>
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="fromRules"
+        label-width="150px"
+        :label-position="'right'"
       >
-        <el-radio-group :disabled ='isEdite' v-model="form.activityType">
-          <el-radio :label=1>{{$t('groupBuy.grouponType')[0].label}}</el-radio>
-          <el-radio :label=2>{{$t('groupBuy.grouponType')[1].label}}</el-radio>
-        </el-radio-group>
-        <div class="prompt">
-          {{$t('groupBuy.groupBuyActivityComment')}}
-        </div>
-      </el-form-item>
-      <el-form-item
-        :label="$t('groupBuy.activityName')"
-        prop="name"
-      >
-        <el-col :span="8">
-          <el-input v-model="form.name"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item
-        :label="$t('groupBuy.goodsName')"
-        prop="goodsId"
-      >
-        <el-button
+        <el-form-item
+          :label="$t('groupBuy.groupBuyActivity')"
+          prop="resource"
+        >
+          <el-radio-group
+            :disabled='isEdite'
+            v-model="form.activityType"
+          >
+            <el-radio :label=1>{{$t('groupBuy.grouponType')[0].label}}</el-radio>
+            <el-radio :label=2>{{$t('groupBuy.grouponType')[1].label}}</el-radio>
+          </el-radio-group>
+          <div class="prompt">
+            {{$t('groupBuy.groupBuyActivityComment')}}
+          </div>
+        </el-form-item>
+        <el-form-item
+          :label="$t('groupBuy.activityName')"
+          prop="name"
+        >
+          <el-col :span="8">
+            <el-input
+              size="small"
+              v-model="form.name"
+              style="width: 165px"
+            ></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          :label="$t('groupBuy.goodsName')"
+          prop="goodsId"
+        >
+          <el-button
+            :disabled="isEdite"
+            size="small"
+            @click="showChoosingGoods"
+          >{{$t('groupBuy.selectGoods')}}</el-button>
+          <el-col :span="8">
+            <el-input
+              :disabled="true"
+              v-model="goodsRow.goodsName"
+              v-if="goodsRow.ischecked"
+            ></el-input>
+            <el-input
+              :disabled="true"
+              v-if="false"
+              v-model="form.goodsId"
+            ></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item :label="$t('groupBuy.commanderDiscounts')">
+          <section style="display: flex">
+            <div style="width: 70px">
+              <el-switch
                 :disabled="isEdite"
-          size="small"
-          @click="showChoosingGoods"
-        >{{$t('groupBuy.selectGoods')}}</el-button>
-        <el-col :span="8">
-          <el-input
-            :disabled="true"
-            v-model="goodsRow.goodsName"
-            v-if="goodsRow.ischecked"
-          ></el-input>
-          <el-input
-            :disabled="true"
-            v-if="false"
-            v-model="form.goodsId"
-          ></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.commanderDiscounts')">
-        <el-switch
-          :disabled="isEdite"
-          v-model="form.isGrouperCheap"
-          :active-value=1
-          :inactive-value=0
-        ></el-switch>
-        <div class="prompt">{{$t('groupBuy.commanderDiscountsComment1')}}
-          <p>
-            <span style="color: red;">{{$t('marketCommon.note')}}：</span>
-            {{$t('groupBuy.commanderDiscountsComment2')}} </p>
+                v-model="form.isGrouperCheap"
+                :active-value=1
+                :inactive-value=0
+              ></el-switch>
+            </div>
+            <div class="prompt">
+              <div>
+                {{$t('groupBuy.commanderDiscountsComment1')}}
+              </div>
+              <p style="line-height:20px">
+                <span style="color: red;">{{$t('marketCommon.note')}}：</span>
+                {{$t('groupBuy.commanderDiscountsComment2')}}
+              </p>
+            </div>
+          </section>
+        </el-form-item>
+        <el-form-item :label="$t('groupBuy.discountsOption')">
+          <el-table
+            :data="form.product"
+            border
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="prdDesc"
+              :label="$t('groupBuy.goodsNmaeProduct')"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="prdPrice"
+              :label="$t('groupBuy.originalPrice')"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="groupPrice"
+              :label="$t('groupBuy.groupBuyPrice')"
+            >
+              <template slot="header">
+                <span>{{$t('groupBuy.groupBuyPrice')}}</span>
+                <el-button
+                  @click="setCurrent(1)"
+                  size="mini"
+                  icon="el-icon-edit"
+                >{{$t('groupBuy.batchOption')}}</el-button>
+              </template>
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.groupPrice" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if="form.isGrouperCheap === 1"
+              prop="grouperPrice"
+              :label="$t('groupBuy.commanderPrice')"
+            >
+              <template slot="header">
+                <span>{{$t('groupBuy.commanderPrice')}}</span>
+                <el-button
+                  @click="setCurrent(2)"
+                  size="mini"
+                  icon="el-icon-edit"
+                >{{$t('groupBuy.batchOption')}}</el-button>
+              </template>
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.grouperPrice" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="prdNumber"
+              :label="$t('groupBuy.originalStock')"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="stock"
+              :label="$t('groupBuy.groupBuyStock')"
+            >
+              <template slot="header">
+                <span>{{$t('groupBuy.groupBuyStock')}}</span>
+                <el-button
+                  @click="setCurrent(3)"
+                  size="mini"
+                  icon="el-icon-edit"
+                >{{$t('groupBuy.batchOption')}}</el-button>
+              </template>
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.stock" />
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+
+        <el-form-item :label="$t('groupBuy.validDate')">
+          <el-date-picker
+            v-model="validityDate"
+            type="datetimerange"
+            @change="dateChange(validityDate)"
+            :picker-options="pickerOptions"
+            range-separator="~"
+            :start-placeholder="$t('groupBuy.startDate')"
+            :end-placeholder="$t('groupBuy.endDate')"
+            align="right"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item
+          :label="$t('groupBuy.limitAmount')"
+          prop="limitAmount"
+        >
+          <el-input-number
+            :disabled="isEdite"
+            v-model="form.limitAmount"
+            controls-position="right"
+            :min="2"
+          ></el-input-number>
+          <div class="prompt">{{$t('groupBuy.limitAmountComment')}}</div>
+        </el-form-item>
+        <el-form-item :label="$t('groupBuy.orderGoodsNum')">
+          <div class="prompt fontColor">{{$t('groupBuy.orderGoodsNumComment1')}}</div>
+          <el-input-number
+            v-model="form.limitBuyNum"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <div class="prompt fontColor">
+            {{$t('groupBuy.jian')}}
+            <span class="prompt">{{$t('groupBuy.orderGoodsNumComment3')}}</span>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <div class="prompt fontColor"> {{$t('groupBuy.orderGoodsNumComment2')}}</div>
+          <el-input-number
+            v-model="form.limitMaxNum"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <div class="prompt fontColor">
+            {{$t('groupBuy.jian')}}
+            <span class="prompt">{{$t('groupBuy.orderGoodsNumComment3')}}</span>
+          </div>
+        </el-form-item>
+        <el-form-item
+          :label="$t('groupBuy.joinLimit')"
+          prop="joinLimit"
+        >
+          <div class="prompt fontColor"> {{$t('groupBuy.joinLimitComment1')}}</div>
+          <el-input-number
+            v-model="form.joinLimit"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <div class="prompt fontColor">
+            {{ $t('groupBuy.joinLimitComment2')}}
+            <span class="prompt">{{ $t('groupBuy.joinLimitComment3')}}</span>
+          </div>
+        </el-form-item>
+        <el-form-item
+          :label=" $t('groupBuy.openLimit')"
+          prop="openLimit"
+        >
+          <div class="prompt fontColor"> {{ $t('groupBuy.openLimitComment1')}}</div>
+          <el-input-number
+            v-model="form.openLimit"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <div class="prompt fontColor">
+            {{$t('groupBuy.joinLimitComment2')}}
+            <span class="prompt"> {{$t('groupBuy.openLimitComment2')}}</span>
+          </div>
+        </el-form-item>
+        <el-form-item :label="$t('groupBuy.openIsDefault')">
+          <el-switch
+            v-model="form.isDefault"
+            :active-value=1
+            :inactive-value=0
+          ></el-switch>
+          <div class="prompt">{{$t('groupBuy.openIsDefaultComment')}}</div>
+        </el-form-item>
+        <el-form-item :label="$t('groupBuy.shippingOption')">
+          <el-radio-group v-model="form.shippingType">
+            <el-radio :label=1>{{$t('groupBuy.freeShipping')}}</el-radio>
+            <el-radio :label=2>{{$t('groupBuy.shippingOptionComment')}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <!-- 收起、展开更多配置 -->
+        <div
+          @click="handleToChangeArror()"
+          style="margin: 0 0 10px 33px"
+        >
+          <div
+            v-if="arrorFlag"
+            style="color:rgb(90, 139, 255);cursor:pointer"
+          >{{$t('groupBuy.moreConfigure')}}&nbsp;<img :src="ArrowArr[0].img_1"></div>
+          <div
+            v-if="!arrorFlag"
+            style="color:rgb(90, 139, 255);cursor:pointer"
+          >{{$t('groupBuy.packUpConfigure')}}&nbsp;<img :src="ArrowArr[1].img_2"></div>
         </div>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.discountsOption')">
-        <el-table
-          :data="form.product"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="prdDesc"
-            :label="$t('groupBuy.goodsNmaeProduct')"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="prdPrice"
-            :label="$t('groupBuy.originalPrice')"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="groupPrice"
-            :label="$t('groupBuy.groupBuyPrice')"
-          >
-            <template
-              slot="header"
-            >
-              <span>{{$t('groupBuy.groupBuyPrice')}}</span>
-              <el-button
-                @click="setCurrent(1)"
-                size="mini"
-                icon="el-icon-edit"
-              >{{$t('groupBuy.batchOption')}}</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.groupPrice" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-if="form.isGrouperCheap === 1"
-            prop="grouperPrice"
-            :label="$t('groupBuy.commanderPrice')"
-          >
-            <template
-              slot="header"
-            >
-              <span>{{$t('groupBuy.commanderPrice')}}</span>
-              <el-button
-                @click="setCurrent(2)"
-                size="mini"
-                icon="el-icon-edit"
-              >{{$t('groupBuy.batchOption')}}</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.grouperPrice" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="prdNumber"
-            :label="$t('groupBuy.originalStock')"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="stock"
-            :label="$t('groupBuy.groupBuyStock')"
-          >
-            <template
-              slot="header">
-              <span>{{$t('groupBuy.groupBuyStock')}}</span>
-              <el-button
-                @click="setCurrent(3)"
-                size="mini"
-                icon="el-icon-edit"
-              >{{$t('groupBuy.batchOption')}}</el-button>
-            </template>
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.stock" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form-item>
 
-      <el-form-item :label="$t('groupBuy.validDate')">
-        <el-date-picker
-          v-model="validityDate"
-          type="datetimerange"
-          @change="dateChange(validityDate)"
-          :picker-options="pickerOptions"
-          range-separator="~"
-          :start-placeholder="$t('groupBuy.startDate')"
-          :end-placeholder="$t('groupBuy.endDate')"
-          align="right"
-          value-format="yyyy-MM-dd HH:mm:ss"
-        >
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.limitAmount')"  prop="limitAmount">
-        <el-input-number
-          :disabled="isEdite"
-          v-model="form.limitAmount"
-          controls-position="right"
-          :min="2"
-        ></el-input-number>
-        <div class="prompt">{{$t('groupBuy.limitAmountComment')}}</div>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.orderGoodsNum')">
-        <div class="prompt">{{$t('groupBuy.orderGoodsNumComment1')}}</div>
-        <el-input-number
-          v-model="form.limitBuyNum"
-          controls-position="right"
-          :min="0"
-        ></el-input-number>
-        <div class="prompt">{{$t('groupBuy.jian')}} {{$t('groupBuy.orderGoodsNumComment3')}}</div>
-      </el-form-item>
-      <el-form-item>
-        <div class="prompt"> {{$t('groupBuy.orderGoodsNumComment2')}}</div>
-        <el-input-number
-          v-model="form.limitMaxNum"
-          controls-position="right"
-          :min="0"
-        ></el-input-number>
-        <div class="prompt">{{$t('marketCommon.jian')}} {{$t('groupBuy.orderGoodsNumComment3')}}</div>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.joinLimit')" prop="joinLimit">
-        <div class="prompt"> {{$t('groupBuy.joinLimitComment1')}}</div>
-        <el-input-number
-          v-model="form.joinLimit"
-          controls-position="right"
-          :min="0"
-        ></el-input-number>
-        <div class="prompt"> {{ $t('groupBuy.joinLimitComment2')}}{{ $t('groupBuy.joinLimitComment3')}}</div>
-      </el-form-item>
-      <el-form-item :label=" $t('groupBuy.openLimit')" prop="openLimit">
-        <div class="prompt"> {{ $t('groupBuy.openLimitComment1')}}</div>
-        <el-input-number
-          v-model="form.openLimit"
-          controls-position="right"
-          :min="0"
-        ></el-input-number>
-        <div class="prompt">{{$t('groupBuy.joinLimitComment2')}} {{$t('groupBuy.openLimitComment2')}}</div>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.openIsDefault')">
-        <el-switch
-          v-model="form.isDefault"
-          :active-value=1
-          :inactive-value=0
-        ></el-switch>
-        <div class="prompt">{{$t('groupBuy.openIsDefaultComment')}}</div>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.shippingOption')">
-        <el-radio-group v-model="form.shippingType">
-          <el-radio :label=1>{{$t('groupBuy.freeShipping')}}</el-radio>
-          <el-radio :label=2>{{$t('groupBuy.shippingOptionComment')}}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item :label="$t('groupBuy.consolationPrize')">
-        <span>{{form.rewardCouponId}}</span>
-        <span>
-          {{$t('groupBuy.consolationPrizeComment1')}}
-        </span>
-        <el-button @click="handleToCallDialog">{{$t('groupBuy.addCoupon')}}</el-button>
-        <span>
-          {{$t('groupBuy.consolationPrizeComment2')}}
-        </span>
+        <div v-if="!arrorFlag">
+          <!-- 鼓励奖部分内容 -->
+          <el-form-item :label="$t('groupBuy.consolationPrize')">
+            <span>{{form.rewardCouponId}}</span>
+            <span>
+              {{$t('groupBuy.consolationPrizeComment1')}}
+            </span>
+            <el-button @click="handleToCallDialog">{{$t('groupBuy.addCoupon')}}</el-button>
+            <span>
+              {{$t('groupBuy.consolationPrizeComment2')}}
+            </span>
+          </el-form-item>
 
-      </el-form-item>
-      <el-form-item>
-        <!-- 引入活动分享模块 -->
-        <actShare :shareConfig="form.share" />
+          <el-form-item :label="$t('groupBuy.consolationPrize')">
+            <el-card class="box-card">
+              <div class="fontColor">买家拼团失败后给予一定奖励，可提升买家复购</div>
+              <div class="middleContainer">
+                <div
+                  v-for="(item,index) in rewardCouponList"
+                  :key="index"
+                  class="rewardCouponInfo"
+                >
+                  <section
+                    class="couponImgWrapper"
+                    style="line-height: normal"
+                  >
+                    <div class="coupon_list_top">
+                      <span>￥</span>
+                      <span class="number">10</span>
+                    </div>
+                    <div class="coupon_center_limit">满100元使用</div>
+                    <div class="coupon_center_number">剩余10张</div>
+                    <div
+                      class="coupon_list_bottom"
+                      style="font-size: 12px"
+                    >领取</div>
+                  </section>
+                  <span class="deleteIcon">×</span>
+                </div>
 
-      </el-form-item>
-    </el-form>
-    <!--添加商品弹窗-->
-    <choosingGoods @resultGoodsRow="choosingGoodsResult" :tuneUpChooseGoods="isShowChoosingGoodsDialog" :singleElection="true"/>
-    <!--添加优惠卷弹窗-->
-    <addCouponDialog @checkReturnFormat="handleToCheck" />
-  </wrapper>
+                <div
+                  class="rewardCouponInfo"
+                  v-if="rewardCouponList.length<5"
+                  style="line-height:normal"
+                >
+                  <el-image
+                    class="picture"
+                    fit="scale-down"
+                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    style="width:78px;height:78px;cursor:pointer"
+                  ></el-image>
+                  <p class="textDesc">添加优惠券</p>
+                </div>
+              </div>
 
-  <wrapper>
-    <el-row  type="flex" justify="center">
-      <el-col :span="6">
+              <div class="fontColor">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+            </el-card>
+          </el-form-item>
+
+          <!-- 引入活动分享模块 -->
+          <actShare :shareConfig="form.share" />
+        </div>
+
+      </el-form>
+      <!--添加商品弹窗-->
+      <choosingGoods
+        @resultGoodsRow="choosingGoodsResult"
+        :tuneUpChooseGoods="isShowChoosingGoodsDialog"
+        :singleElection="true"
+      />
+      <!--添加优惠卷弹窗-->
+      <addCouponDialog @checkReturnFormat="handleToCheck" />
+    </wrapper>
+
+    <wrapper>
+      <div class="footer">
         <el-button
-                type="primary"
-                style="width: 100%"
-                :disabled="submitStatus"
-                @click="submitForm(form)"
+          size="small"
+          type="primary"
+          :disabled="submitStatus"
+          @click="submitForm(form)"
         >{{$t('marketCommon.ok')}}</el-button>
-      </el-col>
-    </el-row>
-  </wrapper>
+      </div>
+    </wrapper>
   </div>
 </template>
 <script>
@@ -358,7 +454,18 @@ export default {
       props: ['isEdite'],
       submitStatus: false,
       grouponType: [],
-      isShowChoosingGoodsDialog: false
+      isShowChoosingGoodsDialog: false,
+      arrorFlag: true,
+      ArrowArr: [
+        {
+          img_1: this.$imageHost + '/image/admin/show_more.png'
+        },
+        {
+          img_2: this.$imageHost + '/image/admin/hid_some.png'
+        }
+      ],
+      rewardCouponList: [],
+      imgHost: `${this.$imageHost}`
     }
   },
   mounted () {
@@ -482,6 +589,11 @@ export default {
       console.log('conpon', couponKey.toString())
       console.log('conpon', this.couponList)
     },
+
+    // 改变箭头事件
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
+    },
     // 编辑活动初始化
     editActivityInit () {
       console.log('this.isEdite', this.isEdite)
@@ -520,6 +632,81 @@ export default {
   color: #999;
   margin-left: 20px;
   display: inline;
+}
+.fontColor {
+  color: #606266;
+}
+.box-card {
+  width: 630px;
+  background: #f5f5f5;
+}
+.middleContainer {
+  display: flex;
+}
+.deleteIcon {
+  position: relative;
+  width: 17px;
+  height: 17px;
+  top: -118px;
+  left: 45px;
+  cursor: pointer;
+  opacity: 0.8;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  text-align: center;
+}
+.rewardCouponInfo {
+  display: inline-flex;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  cursor: pointer;
+  text-align: center;
+}
+.picture {
+  margin-top: 10px;
+}
+.textDesc {
+  line-height: normal;
+  color: #999;
+}
+.couponImgWrapper {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #fbb;
+  border-radius: 10px;
+}
+.coupon_list_top {
+  margin-top: 10px;
+  color: #f60;
+}
+.coupon_list_top:nth-of-type(2) {
+  font-size: 20px;
+  font-weight: bold;
+}
+.coupon_center_limit {
+  height: 20px;
+  color: #f60;
+  font-size: 12px !important;
+}
+.coupon_center_number {
+  height: 20px;
+  color: #fbb;
+}
+.coupon_list_bottom {
+  height: 24px;
+  line-height: 30px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: #fff;
+  background: #f66;
+  background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+  background-repeat: repeat-x;
 }
 .footer {
   position: absolute;

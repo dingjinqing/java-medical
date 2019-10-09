@@ -92,8 +92,8 @@
         </el-table>
       </div>
       <pagination
-              :page-params.sync="pageParams"
-              @pagination="initDataList"
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
       />
     </wrapper>
 
@@ -102,7 +102,7 @@
 
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import {newUserList} from '@/api/admin/marketManage/spellGroup.js'
+import { newUserList } from '@/api/admin/marketManage/spellGroup.js'
 export default {
   components: { wrapper,
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -143,6 +143,7 @@ export default {
 <style lang="scss" scoped>
 .newuserDetailContent {
   display: flex;
+  font-size: 14px;
   div {
     margin-right: 10px;
     span {

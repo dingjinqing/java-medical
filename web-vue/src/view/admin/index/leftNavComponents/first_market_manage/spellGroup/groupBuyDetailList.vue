@@ -1,32 +1,44 @@
 <template>
-
   <div>
-    <wrapper>
-
+    <div class="groupBuyDetailList">
       <el-form label-width="100px">
         <el-row :gutter=24>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item :label="$t('groupBuy.userMobileNumber')">
               <el-input
+                size="small"
                 v-model="mobile"
                 :placeholder="$t('groupBuy.mobileNumber')"
                 maxlength="11"
                 clearable
+                class="inputWidth"
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col
+            :span="5"
+            style="margin-left: -20px"
+          >
             <el-form-item :label="$t('groupBuy.userNickname')">
               <el-input
+                size="small"
                 v-model="nickname"
                 :placeholder="$t('groupBuy.nickname')"
                 clearable
+                class="inputWidth"
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col
+            :span="4"
+            style="margin-left: -20px"
+          >
             <el-form-item :label="$t('groupBuy.grouponState')">
-              <el-select v-model="stauts">
+              <el-select
+                size="small"
+                v-model="stauts"
+                class="inputWidth"
+              >
                 <el-option
                   v-for="item in stateOptions"
                   :key="item.value"
@@ -42,17 +54,19 @@
             :offset="2"
           >
             <el-button
+              size="small"
               type="primary"
               @click="searchData"
+              style="margin: 4px 0 0 0"
             >{{$t('groupBuy.searchDataText')}}
             </el-button>
           </el-col>
         </el-row>
       </el-form>
-    </wrapper>
+    </div>
+
     <wrapper>
       <el-main>
-
         <el-table
           class="version-manage-table"
           header-row-class-name="tableHeader"
@@ -105,9 +119,9 @@
             :label="$t('groupBuy.endTime')"
             align="center"
           ></el-table-column>
-
         </el-table>
       </el-main>
+
       <pagination
         :page-params.sync="pageParams"
         @pagination="initialize"
@@ -179,4 +193,21 @@ export default {
 
 </script>
 <style scoped>
+.groupBuyDetailList {
+  padding: 20px 0 0 30px;
+  margin: 10px 10px 0px;
+  background: #fff;
+}
+.el-main {
+  padding: 0 !important;
+}
+.el-form {
+  line-height: normal;
+}
+.table_list {
+  padding: 0 !important;
+}
+.inputWidth {
+  width: 160px;
+}
 </style>
