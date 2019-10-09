@@ -71,7 +71,7 @@ public class Util {
      */
     public static String toJson(Object o, AnnotationIntrospector ai) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setAnnotationIntrospector(new EsFiledSerializer());
+        mapper.setAnnotationIntrospector(ai);
         try {
             return mapper.writeValueAsString(o);
         } catch (JsonParseException e) {
