@@ -85,6 +85,7 @@ public class AdminMemberCardController extends AdminBaseController {
 
 		logger.info(param.toString());
 		PageResult<? extends BaseCardVo> result = shop().member.card.getCardList(param);
+		
 		return success(result);
 	}
 
