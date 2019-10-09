@@ -4,7 +4,6 @@ import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
@@ -767,15 +766,8 @@ public class MemberCardService extends ShopBaseService {
 		
 		if(result != null) {
 			// 获取头像
-			List<String> list = this.databaseManager.mainDb().select(SHOP.SHOP_AVATAR)
-												.from(SHOP)
-												.where(SHOP.SHOP_ID.eq(this.getShopId()))
-												.fetch()
-												.into(String.class);
-			if(list.size()>0) {
-				String avatar = list.get(0);
-				result.dataList.stream().forEach(item->item.setAvatar(avatar));
-			}
+			String avatar = saas().shop.getShopAvatarById(this.getShopId());	
+			result.dataList.stream().forEach(item->item.setAvatar(avatar));
 		}
 		return result;
 	}
