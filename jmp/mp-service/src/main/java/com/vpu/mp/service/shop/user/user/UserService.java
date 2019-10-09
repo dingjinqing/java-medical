@@ -70,8 +70,10 @@ public class UserService extends ShopBaseService {
 		Integer shopId = this.getShopId();
 		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
 		WxMaJscode2SessionResult result = maService.jsCode2SessionInfo(loginUser.getCode());
+		logger().info("获取登录后的session信息. "+result.toString());
 		UserRecord record =null;
 		if(StringUtils.isNotEmpty(result.getOpenid())) {
+			logger().info("进入getUserId");
 			record = getUserId(result.getOpenid(), loginUser.getName(), loginUser.getAvatar(), loginUser.getPathQuery(), result);
 		}
 		return record;
@@ -97,8 +99,10 @@ public class UserService extends ShopBaseService {
 					}
 				}
 			}
+			logger().info(openid+" 老用户");
 			return ret;
 		}else {
+			logger().info(openid+" 新用户");
 			//新用户
 			Map<String, String> source = getInviteSource(pathQuery);
 			//根据微信场景值判断会员来源

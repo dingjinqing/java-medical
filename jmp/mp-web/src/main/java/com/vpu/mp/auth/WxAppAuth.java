@@ -3,6 +3,8 @@ package com.vpu.mp.auth;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +46,8 @@ public class WxAppAuth {
 	public static final String TOKEN_PREFIX = "WXAPP@";
 
 	public static final String SHOP_ID = "V-ShopId";
+	
+	private final Logger log= LoggerFactory.getLogger(WxAppAuth.class);
 
 	/**
 	 * 
@@ -85,6 +89,7 @@ public class WxAppAuth {
 	 */
 	public WxAppSessionUser login(WxAppLoginParam param) throws WxErrorException {
 		Integer shopId = shopId();
+		log.info("登录店铺"+shopId);
 		ShopApplication shopApp = saas.getShopApp(shopId);
 		ShopRecord shop = saas.shop.getShopById(shopId);
 		UserRecord user = shopApp.user.loginGetUser(param);
