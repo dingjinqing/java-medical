@@ -94,6 +94,10 @@
                   v-for="(item,index) in videoList"
                   :key="index"
                 >
+                    <div
+                            v-show="item.checked"
+                            class="img_sel"
+                    ></div>
                   <div class="img-container" style="position:relative">
                     <a :title="item.videoName">
                       <img
@@ -101,10 +105,7 @@
                         @click="onVideoClick(index)"
                       >
                     </a>
-                    <div
-                      v-show="item.checked"
-                      class="img_sel"
-                    ></div>
+
                   </div>
                   <div
                     class="img_mask"
@@ -185,7 +186,8 @@
     <el-dialog
       :title="$t('videoSpace.upload.tip')"
       :visible.sync="showBatchMoveDialog"
-      width="30%"
+      class="batch-move-dialog"
+      width="400px"
     >
       <el-select
         v-model="selectMoveCatId"
@@ -517,6 +519,7 @@ export default {
   position: absolute;
   right: -9px;
   top: -9px;
+  z-index: 1024;
 }
 .bottom_right_p {
   display: flex;
@@ -759,4 +762,5 @@ ul {
   font-size: 12px !important;
   border-radius: 3px !important;
 }
+
 </style>

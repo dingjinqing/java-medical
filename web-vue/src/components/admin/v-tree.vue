@@ -6,7 +6,7 @@
           <el-button
             size="mini"
             type="text"
-            @click="onUpdate(node, data)"
+            @click="onUpdate()"
             v-if="showBtn.edit"
           >
             {{$t("vTree.edit")}}
@@ -15,7 +15,7 @@
           <el-button
             size="mini"
             type="text"
-            @click="onAppend(node, data)"
+            @click="onAppend()"
             v-if="showBtn.add"
           >
             {{$t("vTree.add")}}
@@ -23,7 +23,7 @@
           <el-button
             size="mini"
             type="text"
-            @click="onRemove(node, data)"
+            @click="onRemove()"
             v-if="showBtn.del"
           >
              {{$t("vTree.del")}}
@@ -34,7 +34,7 @@
     <el-card>
       <div class="ly-tree-container">
         <el-tree
-                ref="tree"
+          ref="tree"
           :data="treeData"
           :props="defaultProps"
           default-expand-all
@@ -107,7 +107,7 @@ export default {
       this.$emit('node-click', data)
     },
 
-    onAppend (node, data, e) {
+    onAppend () {
       this.showContextMenu = false
       let _this = this
       this.$prompt(this.$t('vTree.pleaseInputName'), this.$t('vTree.tip'), {
@@ -115,13 +115,13 @@ export default {
         cancelButtonText: this.$t('vTree.cancel')
       }).then(({ value }) => {
         _this.$emit('node-append', _this.contextObject, value)
-      })
+      }).catch(() => {})
     },
     setCurrentKey (key) {
       this.$refs.tree.setCurrentKey(key)
     },
 
-    onRemove (node, data, e) {
+    onRemove () {
       this.showContextMenu = false
       let _this = this
       this.$confirm(this.$t('vTree.delVideoTip'), this.$t('vTree.tip'), {
@@ -130,10 +130,10 @@ export default {
         type: 'warning'
       }).then(() => {
         _this.$emit('node-remove', _this.contextObject)
-      })
+      }).catch(() => {})
     },
 
-    onUpdate (node, data, e) {
+    onUpdate () {
       this.showContextMenu = false
       let _this = this
       this.$prompt(this.$t('vTree.pleaseInputName'), this.$t('vTree.tip'), {
@@ -141,7 +141,7 @@ export default {
         cancelButtonText: this.$t('vTree.cancel')
       }).then(({ value }) => {
         _this.$emit('node-update', _this.contextObject, value)
-      })
+      }).catch(() => {})
     }
   }
 }

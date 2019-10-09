@@ -43,7 +43,7 @@ export const cn = {
     del: '删除',
     delVideo: '删除视频',
     tip: '提示',
-    cancel: '删除视频',
+    cancel: '取消',
     ok: '确定',
     uploadFitVideo: '请上传小于{maxVideoSize}的视频',
     selectVideo: '请选择视频'
