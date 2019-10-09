@@ -135,7 +135,7 @@ public class UserService extends ShopBaseService {
 			}
 			UserDetailRecord uDetailRecord=db().newRecord(USER_DETAIL);
 			uDetailRecord.setUserId(userId);
-			uDetailRecord.setUsername(userName==null?openid:userName);
+			uDetailRecord.setUsername(user.getUsername());
 			uDetailRecord.setUserAvatar(avatar==null?"/image/admin/head_icon.png":avatar);
 			uDetailRecord.insert();
 
