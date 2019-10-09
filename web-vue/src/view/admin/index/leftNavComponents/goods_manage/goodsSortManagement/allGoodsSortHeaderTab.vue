@@ -1,11 +1,11 @@
 <template>
   <div class="allGoodsSortHeaderTab">
     <div class="tabItem" @click="itemClicked('allGoodsSort')" :class="{tabItemActive: tabIndex === 0}">{{$t('goodsSorts.goodsSortsList')}}</div>
-    <div class="tabItem" @click="itemClicked('allGoodsRecommendSort')" :class="{tabItemActive: tabIndex === 1}">推荐分类</div>
+    <div class="tabItem" @click="itemClicked('allGoodsRecommendSort')" :class="{tabItemActive: tabIndex === 1}">{{$t('goodsRecommendSorts.recommendSortsList')}}</div>
     <div class="tabItem tabItemActive" v-if="tabIndex === 2">{{$t('goodsSorts.goodsSortsAdd')}}</div>
-    <div class="tabItem tabItemActive" v-if="tabIndex === 3">添加推荐分类</div>
+    <div class="tabItem tabItemActive" v-if="tabIndex === 3">{{$t('goodsRecommendSorts.recommendSortsAdd')}}</div>
     <div class="tabItem tabItemActive" v-if="tabIndex === 4">{{$t('goodsSorts.goodsSortsEdit')}}</div>
-    <div class="tabItem tabItemActive" v-if="tabIndex === 5">编辑推荐分类</div>
+    <div class="tabItem tabItemActive" v-if="tabIndex === 5">{{$t('goodsRecommendSorts.recommendSortsEdit')}}</div>
   </div>
 </template>
 

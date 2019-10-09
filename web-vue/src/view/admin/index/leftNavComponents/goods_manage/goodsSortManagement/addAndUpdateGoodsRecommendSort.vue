@@ -4,7 +4,7 @@
     <div class="content">
       <div class="formItem">
         <div class="formItemKey">
-          <span class="mustInput">*</span>分类名称：
+          <span class="mustInput">*</span>{{$t('goodsRecommendSorts.goodsSortName')}}：
         </div>
         <div class="formItemVal">
           <el-input v-model="recommendSort.sortName" size="small"/>
@@ -12,7 +12,7 @@
       </div>
       <div class="formItem">
         <div class="formItemKey">
-          分类优先级：
+          {{$t('goodsRecommendSorts.goodsSortFirst')}}：
         </div>
         <div class="formItemVal">
           <el-input v-model.number="recommendSort.first" size="small"/>
@@ -22,12 +22,12 @@
         <div class="formItemKey">
         </div>
         <div class="formItemVal">
-          <span class="inputTip">仅可填写1到100间的整数数字越大前端排列顺序越靠前</span>
+          <span class="inputTip">{{$t('goodsRecommendSorts.goodsSortFirstTip')}}：</span>
         </div>
       </div>
       <div class="formItem">
         <div class="formItemKey" style="align-self: flex-start;">
-          <span class="mustInput">*</span>子类
+          <span class="mustInput">*</span>{{$t('goodsRecommendSorts.child')}}
         </div>
         <div class="formItemVal">
          <div class="sortChildWrap">
@@ -36,7 +36,7 @@
              <div class="formItem">
                <div class="formItemKey">
                  <span class="mustInput">*</span>
-                 子类名称：
+                 {{$t('goodsRecommendSorts.childName')}}：
                </div>
                <div class="formItemVal">
                  <el-input v-model="item.sortName" size="small"/>
@@ -45,15 +45,17 @@
              <div class="formItem">
                <div class="formItemKey" style="align-self: flex-start;">
                  <span class="mustInput">*</span>
-                 图片：
+                 {{$t('goodsRecommendSorts.goodsSortImg')}}：
                </div>
                <div class="formItemVal">
                  <div style="display: flex;justify-content: left;align-items: center;line-height: 20px;">
-                   <span style="align-self: flex-start;color: #5a8bff;cursor: pointer;" @click="chooseSortImg(item)">修改</span>
+                   <span style="align-self: flex-start;color: #5a8bff;cursor: pointer;" @click="chooseSortImg(item)">{{$t('goodsRecommendSorts.update')}}</span>
                    <div style="position: relative;margin: 0px 10px;height: 70px;cursor: pointer;" @click="chooseSortImg(item)">
                      <img v-if="item.sortImgObj.imgUrl===undefined"  :src="$imageHost+'/image/admin/sort_moren.png'" style="width: 70px;height: 70px;border: 1px solid #ccc;">
                      <img v-else :src="item.sortImgObj.imgUrl" style="width: 70px;height: 70px;">
-                     <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">更换图标</div>
+                     <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">
+                       {{$t('goodsRecommendSorts.changeIcon')}}
+                     </div>
                    </div>
                    <span style="align-self: flex-end;color:#666;">150*140</span>
                  </div>
@@ -61,21 +63,23 @@
              </div>
              <div class="formItem">
                <div class="formItemKey">
-                 添加链接：
+                 {{$t('goodsRecommendSorts.goodsSortImgLink')}}：
                </div>
                <div class="formItemVal">
                  <el-input v-model="item.imgLink" size="small" style="width: 250px;"/>
-                 <el-button @click="chooseImgLink(item)" size="small" style="margin-left: 5px;color: #666666;">添加链接</el-button>
+                 <el-button @click="chooseImgLink(item)" size="small" style="margin-left: 5px;color: #666666;">
+                   {{$t('goodsRecommendSorts.addHeadSortImgLink')}}
+                 </el-button>
                </div>
              </div>
            </div>
-           <el-button @click="addSortChild" size="small" type="primary">添加</el-button>
+           <el-button @click="addSortChild" size="small" type="primary">{{$t('goodsRecommendSorts.add')}}</el-button>
          </div>
         </div>
       </div>
     </div>
     <div class="contentFooter">
-      <el-button @click="save" type="primary">保存</el-button>
+      <el-button @click="save" type="primary">{{$t('goodsRecommendSorts.save')}}</el-button>
     </div>
     <!--图片dialog-->
     <ImageDialog :tuneUp="imgDialogShow" pageIndex='pictureSpace' @handleSelectImg='imgDialogSelectedCallback'/>
@@ -182,21 +186,21 @@ export default {
     /* 验证表单数据正确性 */
     _validateFormData () {
       if (isStrBlank(this.recommendSort.sortName)) {
-        this.$message.warning({message: '分类名称不可为空!'})
+        this.$message.warning({message: this.$t('goodsRecommendSorts.sortNameNotNull')})
         return
       }
       if (typeof this.recommendSort.first !== 'number') {
-        this.$message.warning({message: '请输入正确分类优先级!'})
+        this.$message.warning({message: this.$t('goodsRecommendSorts.pleaseInputRightPriority')})
         return
       }
       for (let i = 0; i < this.recommendSortChildren.length; i++) {
         let sort = this.recommendSortChildren[i]
         if (isStrBlank(sort.sortName)) {
-          this.$message.warning({message: '分类名称不可为空!'})
+          this.$message.warning({message: this.$t('goodsRecommendSorts.sortNameNotNull')})
           return
         }
         if (sort.sortImgObj.imgPath === undefined) {
-          this.$message.warning({message: '请选择分类图标!'})
+          this.$message.warning({message: this.$t('goodsRecommendSorts.pleaseInputSortImg')})
           return
         }
       }

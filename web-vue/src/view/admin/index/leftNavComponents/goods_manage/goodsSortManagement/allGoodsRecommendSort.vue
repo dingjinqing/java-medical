@@ -3,46 +3,46 @@
     <allGoodsSortHeaderTab :tabIndex="1"/>
     <div class="content">
       <el-form label-width="140px">
-        <el-form-item label="是否启用推荐分类：">
-            <el-radio v-model="recommendSortCfg.recommendSortStatus" :label="1">启用</el-radio>
-            <el-radio v-model="recommendSortCfg.recommendSortStatus" :label="0">关闭</el-radio>
-            <span class="inputTip">限制小程序前端分类列表是否展示推荐分类</span>
+        <el-form-item :label="$t('goodsRecommendSorts.isEnableRecommendSort')">
+            <el-radio v-model="recommendSortCfg.recommendSortStatus" :label="1">{{$t('goodsRecommendSorts.enable')}}</el-radio>
+            <el-radio v-model="recommendSortCfg.recommendSortStatus" :label="0">{{$t('goodsRecommendSorts.disable')}}</el-radio>
+            <span class="inputTip">{{$t('goodsRecommendSorts.enableRecommendSortTip')}}</span>
         </el-form-item>
-        <el-form-item label="分类头图：">
+        <el-form-item :label="$t('goodsRecommendSorts.goodsSortHeadImg')">
           <img v-if="recommendSortCfg.recommendSortImgObj === null" @click="chooseSortImg" style=" display:block;width: 230px;height: 90px;cursor:pointer;" :src="$imageHost+'/image/admin/addSort/add_simple.png'"/>
           <div v-else style="width: 230px;height: 90px;position: relative;" @click="chooseSortImg">
             <img style="width: 100%;height: 100%;cursor: pointer;"
                  :src="recommendSortCfg.recommendSortImgObj.imgUrl"/>
-            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">更换图标</div>
+            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">{{$t('goodsRecommendSorts.changeIcon')}}</div>
             <span @click.stop="deleteSortImg" class="deleteIcon">×</span>
           </div>
-          <span class="inputTip">显示在分类页顶部，不填写则不显示，建议尺寸510*200</span>
-          <span style="font-size: 14px;color: #666;">头图链接：</span>
+          <span class="inputTip">{{$t('goodsRecommendSorts.goodsSortHeadImgTip')}}</span>
+          <span style="font-size: 14px;color: #666;">{{$t('goodsRecommendSorts.goodsSortHeadImgLink')}}：</span>
           <el-input v-model="recommendSortCfg.recommendImgLink" size="small" style="width: 280px;"/>
-          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">添加链接</el-button>
+          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">{{$t('goodsRecommendSorts.addHeadSortImgLink')}}</el-button>
         </el-form-item>
       </el-form>
-      <el-button @click="addGoodsRecommendSort" type="primary" style="margin-bottom: 10px;">添加推荐分类</el-button>
+      <el-button @click="addGoodsRecommendSort" type="primary" style="margin-bottom: 10px;">{{$t('goodsRecommendSorts.addRecommendSort')}}</el-button>
       <el-table :data="goodsRecommendSortData" class="tableClass" border style="width: 100%">
-        <el-table-column align="center" label="分类名称" prop="sortName"/>
-        <el-table-column align="center" label="分类图标">
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortName')" prop="sortName"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortImg')">
           <template slot-scope="{row}">
             <img :src="row.sortImg" style="height: 50px;min-width: 160px;"/>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="分类链接" prop="imgLink"/>
-        <el-table-column align="center" label="分类优先级" prop="first"/>
-        <el-table-column align="center" label="添加时间" prop="createTime"/>
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortImgLink')" prop="imgLink"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortFirst')" prop="first"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortCreateTime')" prop="createTime"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortOperate')">
           <template slot-scope="{row}">
-            <span class="operateSpan" @click="editGoodsRecommendSortClicked(row)">编辑</span>
-            <span class="operateSpan" @click="deleteGoodsRecommendSortClicked(row)">删除</span>
+            <span class="operateSpan" @click="editGoodsRecommendSortClicked(row)">{{$t('goodsRecommendSorts.edit')}}</span>
+            <span class="operateSpan" @click="deleteGoodsRecommendSortClicked(row)">{{$t('goodsRecommendSorts.delete')}}</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="contentFooter">
-      <el-button @click="save" type="primary">保存</el-button>
+      <el-button @click="save" type="primary">{{$t('goodsRecommendSorts.save')}}</el-button>
     </div>
     <!--图片dialog-->
     <ImageDialog :tuneUp="imgDialogShow" pageIndex='pictureSpace' @handleSelectImg='imgDialogSelectedCallback'/>
@@ -110,9 +110,9 @@ export default {
     },
     /* 删除商品分类 */
     deleteGoodsRecommendSortClicked (row) {
-      this.$confirm('删除一级分类，会删除该分类下的所有子类，确定删除吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('goodsRecommendSorts.goodsSortDeleteMsg'), this.$t('goodsRecommendSorts.goodsSortDeleteTip'), {
+        confirmButtonText: this.$t('goodsRecommendSorts.ok'),
+        cancelButtonText: this.$t('goodsRecommendSorts.cancel'),
         type: 'info'
       }).then(() => {
         deleteGoodsSort({sortId: row.sortId}).then(res => {
@@ -150,7 +150,7 @@ export default {
           this.$message.error({message: res.message()})
           return
         }
-        this.$message.info({message: '保存成功!'})
+        this.$message.info({message: this.$t('goodsRecommendSorts.saveSuccess')})
       })
     }
   },
