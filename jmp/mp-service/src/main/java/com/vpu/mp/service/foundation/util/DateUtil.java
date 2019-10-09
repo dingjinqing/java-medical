@@ -168,5 +168,13 @@ public final class DateUtil {
             .mapToObj(startDate::plusDays)
             .collect(Collectors.toList());
     }
+	
+	
+	/**
+	 * 获取本地的时间
+	 */
+	public static Timestamp getLocalTimeDate() {
+		return Timestamp.valueOf(dateFormat(DATE_FORMAT_SIMPLE));
+	}
 
 }
