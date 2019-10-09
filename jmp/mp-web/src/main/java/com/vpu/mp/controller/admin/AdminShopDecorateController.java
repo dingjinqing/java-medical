@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
@@ -18,7 +19,6 @@ import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 装修模块
@@ -27,12 +27,8 @@ import com.vpu.mp.service.shop.ShopApplication;
  * 2019年6月27日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
 	/**
 	 * 装修页面列表
 	 * 
