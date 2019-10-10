@@ -1,16 +1,15 @@
 package com.vpu.mp.service.saas.shop.official;
 
-import com.vpu.mp.db.main.tables.MpOfficialAccountUser;
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
+import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
 
 import java.util.List;
 
-import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 
 @Service
 public class MpOfficialAccountUserService extends MainBaseService {

@@ -217,6 +217,7 @@ public interface ImageDefault {
 	 *
 	 * @param path
 	 * @return
+	 * @throws IOException
 	 */
     public default BufferedImage getImageInfo(String path) throws IOException {
         BufferedImage bufferedImage = null;
@@ -242,6 +243,7 @@ public interface ImageDefault {
 	 * 下载
 	 * @param imageUrl
 	 * @return
+	 * @throws IOException
 	 */
 	public default InputStream getStreamInfo(String imageUrl) throws IOException {
 		try (InputStream inputStream =new URL(imageUrl).openStream()) {
@@ -334,8 +336,10 @@ public interface ImageDefault {
 		/**
          * 裁剪图片
          * @param  param
+         * @param  sysId
          * @return
-         * @throws Exception
+         * @throws IOException
+         * @throws UpException
          */
 	public default UploadPath makeCrop(CropImageParam param,Integer sysId) throws IOException, UpException {
 		String fullPath = fullPath(param.remoteImgPath);
@@ -387,7 +391,7 @@ public interface ImageDefault {
 	 * @param  inStream
 	 * @return
 	 * @throws IOException
-	 * @throws Exception
+	 * @throws UpException
 	 */
 	public default boolean uploadToUpYunBySteam(String upYunPath, InputStream inStream) throws IOException, UpException {
 		return this.getUpYunClient().writeFile(upYunPath, inStream, true, null);
@@ -397,10 +401,9 @@ public interface ImageDefault {
 	 * 根据byte[] 上传图片到又拍云
 	 *
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
 	 */
-	public default boolean uploadToUpYunByByte(String filePath, byte[] datas) throws IOException, Exception {
+	public default boolean uploadToUpYunByByte(String filePath, byte[] datas) throws Exception {
 		return this.getUpYunClient().writeFile(filePath,datas,true);
 	}
 

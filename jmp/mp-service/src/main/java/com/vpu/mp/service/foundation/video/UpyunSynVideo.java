@@ -20,6 +20,11 @@ import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class UpyunSynVideo extends AsyncProcessHandler {
 
 	final String SYN_HOST = "p1.api.upyun.com";
@@ -100,9 +105,9 @@ public class UpyunSynVideo extends AsyncProcessHandler {
 		return null;
 	}
 
+	@Override
 	protected Result process(Map<String, Object> params) throws IOException, UpException {
 
-		InputStream is = null;
 		OutputStream os;
 		HttpURLConnection conn;
 
