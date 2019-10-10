@@ -20,7 +20,7 @@
         :label="$t('allGoods.allGoodsData.goodsName')" min-width="120px">
         <template slot-scope="{row}">
           <div >
-            <img style="width: 70px;height: 70px;float: left;"  :src="row.prdImg">
+            <img style="width: 70px;height: 70px;float: left;"  :src="row.prdDesc === ''? row.goodsImg : row.prdImg">
             <div style="padding:10px;">
               <span v-if="row.sourceName !== null" class="goodsTypeSpanWrap">{{row.sourceName}}</span>
               <span v-if="row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{row.goodsTypeName}}</span>

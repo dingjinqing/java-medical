@@ -286,33 +286,34 @@
               <VideoSpaceDialog :visible.sync="showVideoSpaceDialog"
                                 @video-click="videoSelected"
               />
-              <div class="add-video-container"  >
-                <el-image
-                        fit="scale-down"
-                        class="add-goods-video"
-                        :src="videoSnapShotUrl"
-                        @click="videoInputClick"
-                />
-                <el-image
-                        fit="scale-down"
-                        @click="videoRemove"
-                        :src="imgHost+'/image/admin/icon_delete.png'"
-                        class="img-delete good_img_deletes" v-show="showRemoveVideoIcon"
+              <div style="display: flex; align-items: center;flex-wrap: wrap;">
+                <div class="add-video-container"  >
+                  <el-image
+                    fit="scale-down"
+                    class="add-goods-video"
+                    :src="videoSnapShotUrl"
+                    @click="videoInputClick"
+                  />
+                  <el-image
+                    fit="scale-down"
+                    @click="videoRemove"
+                    :src="imgHost+'/image/admin/icon_delete.png'"
+                    class="img-delete good_img_deletes" v-show="showRemoveVideoIcon"
 
-                />
+                  />
 
-                <el-link
-                        type="primary"
-                        :underline="false"
-                        :href="videoUrl"
-                        v-show="showRemoveVideoIcon"
-                        class="btn_playa"
-                        target="_blank">
-                  {{$t('videoSpace.upload.play')}}
-                </el-link>
+                  <el-link
+                    type="primary"
+                    :underline="false"
+                    :href="videoUrl"
+                    v-show="showRemoveVideoIcon"
+                    class="btn_playa"
+                    target="_blank">
+                    {{$t('videoSpace.upload.play')}}
+                  </el-link>
+                </div>
+                <span class="inputTip">{{$t('goodsAddEditInfo.basicInfoOther.goodsVideoTip')}}</span>
               </div>
-
-              <span class="inputTip">{{$t('goodsAddEditInfo.basicInfoOther.goodsVideoTip')}}</span>
             </el-form-item>
           </el-form>
         </el-collapse-item>
@@ -382,10 +383,6 @@ export default {
   components: { ImageDalog, pagination, VideoSpaceDialog },
   data () {
     return {
-      showVideoSpaceDialog: false,
-      videoSnapShotUrl: this.$imageHost + '/image/admin/add_video.png',
-      videoUrl: '',
-      showRemoveVideoIcon: false,
       selfImgDialogShow: false,
       goodsProductInfo: {
         goodsId: null,
@@ -468,7 +465,12 @@ export default {
       // 标签已选中列表
       labelSelectedItems: [],
       // 标签来下框选中瞬间的值
-      labelSelectedTempVal: null
+      labelSelectedTempVal: null,
+      // 视频辅助数据
+      showVideoSpaceDialog: false,
+      videoSnapShotUrl: this.$imageHost + '/image/admin/add_video.png',
+      videoUrl: '',
+      showRemoveVideoIcon: false
     }
   },
   watch: {
@@ -710,7 +712,7 @@ export default {
       this.labelSelectedItems.splice(index, 1)
       this.labelSelectOptions.push(item)
     },
-    /** 品牌辅助函数 **/
+    /* 品牌辅助函数 */
     /* brandDialog 打开前预处理 */
     goodsBrandDialogBeforeOpen () {
       // 商品品牌下拉列表初始化
@@ -757,12 +759,17 @@ export default {
     },
     videoSelected (item) {
       console.log('videoSelected', item)
-      this.refreshVideo(item.snapshotUrl, item.videoUrl)
+      this.refreshVideo(item.snapshotUrl, item.videoSnapPath, item.videoUrl, item.videoPath, item.videoSize, item.videoId)
     },
-    refreshVideo (snapshotUrl, videoUrl) {
+    /* 快照全路径，快照相对路径，视频全路径，视频相对路径，视频大小，视频id */
+    refreshVideo (snapshotUrl, snapshotPath, videoUrl, videoPath, videoSize, videoId) {
       this.videoSnapShotUrl = snapshotUrl || this.$imageHost + '/image/admin/add_video.png'
-      this.showRemoveVideoIcon = !!snapshotUrl
+      this.goodsProductInfo.goodsVideoImg = snapshotPath
       this.videoUrl = videoUrl
+      this.goodsProductInfo.goodsVideo = videoPath
+      this.goodsProductInfo.goodsVideoId = videoId
+      this.goodsProductInfo.goodsVideoSize = videoSize
+      this.showRemoveVideoIcon = !!snapshotUrl
     },
     videoRemove () {
       this.refreshVideo()
@@ -807,6 +814,10 @@ export default {
       selectPlatformClassification(catId).then(res => {
         this.catIdTemp.thirdCatData = res.content
       })
+    },
+    /* 初始化视频信息 */
+    _initGoodsVideo (goodsData) {
+      this.refreshVideo(goodsData.goodsVideoImgUrl, goodsData.goodsVideoImg, goodsData.goodsVideoUrl, goodsData.goodsVideo, goodsData.goodsVideoSize, goodsData.goodsVideoId)
     },
     /* 初始化图片 */
     _initGoodsImgs (goodsData) {
@@ -862,6 +873,8 @@ export default {
         this._initCatId(goodsData)
         // 初始化图片
         this._initGoodsImgs(goodsData)
+        // 初始化视频
+        this._initGoodsVideo(goodsData)
         // 初始化商品单位
         this._initGoodsUnit(goodsData)
         // 初始化商家分类
@@ -953,7 +966,6 @@ export default {
 .inputTip {
   color: #999;
   margin-left: 15px;
-  line-height: 80px;
 }
 .title {
   font-weight: bold;
