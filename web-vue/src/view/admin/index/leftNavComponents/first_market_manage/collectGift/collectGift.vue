@@ -52,11 +52,11 @@
             prop="logo"
           >
             <el-radio
-              v-model="this.form.logo"
+              v-model="form.logo"
               label="0"
             >默认</el-radio>
             <el-radio
-              v-model="this.form.logo"
+              v-model="form.logo"
               label="1"
             >自定义</el-radio>
             <!-- 图片弹窗 -->
@@ -192,20 +192,38 @@ export default {
   data () {
     // 自定义校验规则
     var validateLogo = (rule, value, callback) => {
-      if (this.form.logo === '1') {
-        console.log('value???', value)
-        // if (value === '') {
-        //   callback(new Error('请填写发送时间'))
-        // }
+      if (value === '1') {
+        if (this.srcList.src === `${this.$imageHost}/image/admin/add_img.png`) {
+          callback(new Error('请选择自定义图标'))
+        }
       } else { callback() }
+    }
+    var validateReward = (rule, value, callback) => {
+      console.log('优惠券id：', this.couponId)
+      if (this.integral === false && this.coupon === false) {
+        callback(new Error('请至少选择一种奖励方式'))
+      } else if (this.integral === true && this.score === '' && this.coupon === false) {
+        callback(new Error('请输入奖励积分'))
+      } else if (this.integral === true && this.score === '' && this.coupon === true && this.couponId !== '') {
+        callback(new Error('请输入奖励积分'))
+      } else if (this.coupon === true && this.couponId === '' && this.integral === false) {
+        callback(new Error('请选择优惠券'))
+      } else if (this.coupon === true && this.couponId === '' && this.integral === true && this.score !== '') {
+        callback(new Error('请选择优惠券'))
+      } else if (this.integral === true && this.score === '' && this.coupon === true && this.couponId === '') {
+        callback(new Error('请输入奖励积分,请选择优惠券'))
+      } else {
+        callback()
+      }
     }
     return {
       // 开关
       switchValue: true,
       // 表单内容
       form: {
-        actTime: '',
-        logo: '0'
+        actTime: [],
+        logo: '0',
+        reward: ''
       },
       // 表单校验
       rules: {
@@ -214,6 +232,9 @@ export default {
         ],
         logo: [
           { validator: validateLogo, trigger: 'change' }
+        ],
+        reward: [
+          { validator: validateReward, trigger: 'change' }
         ]
       },
 
@@ -223,7 +244,6 @@ export default {
       },
       showImageDialog: false,
       // 复选框
-      checkList: [],
       score: '',
       scoreTemp: '',
       // 优惠卷弹窗
@@ -247,31 +267,38 @@ export default {
   },
   methods: {
     tabSwitch () {
-      console.log('进入方法！')
       collectGiftStatus().then(res => {
         if (res.error === 0) {
           console.log('开关切换成功')
         }
       })
-      console.log('出来了！')
     },
     selectInfo () {
-      console.log('进入方法！')
       collectGiftSelect().then(res => {
         if (res.error === 0) {
           console.log('收藏有礼配置为：', res.content)
           if (res.content.on_off === 0) {
             this.switchValue = false
           } else { this.switchValue = true }
+          this.form.actTime.push(res.content.start_time)
+          this.form.actTime.push(res.content.end_time)
+          this.form.logo = `${res.content.collect_logo}`
+          this.srcList.src = res.content.collect_logo_src
+          if (res.content.score !== null) {
+            this.integral = true
+            this.score = res.content.score
+          }
+          if (res.content.coupon_ids !== null) {
+            this.coupon = true
+          }
         }
       })
-      console.log('出来了！')
     },
     submit () {
       this.scoreTemp = this.score
-      if (this.form.logo === '0') {
-        this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
-      }
+      // if (this.form.logo === '0') {
+      //   this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
+      // }
       if (this.integral === false) {
         this.scoreTemp = null
       }
@@ -282,21 +309,24 @@ export default {
         'on_off': 1,
         'start_time': this.form.actTime[0],
         'end_time': this.form.actTime[1],
-        'collect_logo': this.form.logo,
+        'collect_logo': Number(this.form.logo),
         'collect_logo_src': this.srcList.src,
         'score': this.scoreTemp,
         'coupon_ids': this.couponId
       }
       console.log('入参：', submitParam)
       this.$refs['form'].validate((valid) => {
+        console.log('***************')
         if (valid) {
+          console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
           collectGiftUpdate(submitParam).then(res => {
             if (res.error === 0) {
               alert('保存成功！')
               console.log('保存成功')
-            }
+            } else console.log('保存失败', res)
           })
         } else {
+          console.log('未通过校验')
           return false
         }
       })
@@ -315,6 +345,11 @@ export default {
     },
     // 删除优惠券图片
     deleteCouponImg (index) {
+      this.couponIdTemp = this.couponId.split(',')
+      console.log('before couponIdTemp:', this.couponIdTemp)
+      this.couponIdTemp.splice(index, 1)
+      console.log('after couponIdTemp:', this.couponIdTemp)
+      this.couponId = this.couponIdTemp.toString()
       this.couponData.splice(index, 1)
     },
     // 选择优惠券弹窗-

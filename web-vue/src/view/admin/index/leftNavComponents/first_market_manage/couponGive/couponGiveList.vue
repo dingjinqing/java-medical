@@ -28,9 +28,9 @@
           </el-button>
         </div>
       </div>
-    </wrapper>
-    <!-- 表格数据 -->
-    <wrapper>
+
+      <!-- 表格数据 -->
+
       <div class="table_list">
         <section>
           <table

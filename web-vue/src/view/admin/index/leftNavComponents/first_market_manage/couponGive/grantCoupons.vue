@@ -27,146 +27,146 @@
               <!-- 参与活动人群 -->
               <el-form-item
                 :label="$t('couponGive.participants')"
-                prop="type"
+                prop="crowd"
               >
                 <div>
                   <span style="color:#999;fontSize:12px">{{$t('couponGive.peopleTip')}}</span>
                 </div>
-                <el-checkbox-group v-model="params.type">
-                  <div>
-                    <el-checkbox
-                      :label="$t('couponGive.addCartPeople')"
-                      @change="handleOnClickNoPayChange"
-                      name="type"
-                    ></el-checkbox>
-                    <span style="color:#999;fontSize:12px;margin-left:-15px">{{$t('couponGive.addCartTip')}}</span>
-                  </div>
-                  <div>
-                    <el-checkbox
-                      :label="$t('couponGive.buyGoodsPeople')"
-                      @change="handleOnClickGoodsChange"
-                      name="type"
-                    ></el-checkbox>
-                    <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
-                  </div>
-                  <div class="chooseGoods">
-                    <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
-                    <ul class="imgList">
-                      <li
-                        v-for="(item) in imgsList"
-                        :key="item.goodsId"
-                      >
-                        <el-image
-                          style="width: 80px; height: 80px"
-                          :src="item.goodsImg"
-                        ></el-image>
-                        <el-image
-                          class="delImg"
-                          :src="urls.url4"
-                          @click="handleDelImg(item.goodsId)"
-                        >
-                        </el-image>
-                      </li>
-                      <div
-                        v-show="this.imgsList.length<3"
-                        class="imageWraper"
-                        @click="handleChooseGoods"
-                      >
-                        <el-image :src="urls.url3"></el-image>
-                      </div>
-                    </ul>
-
-                  </div>
-                  <!-- 属于 -->
-                  <!-- 持有 -->
-                  <div style="margin:10px 0">
-                    <chooseSelect @chooseSelectVal="getChooseSelectVal" />
-                  </div>
-                  <div style="margin:10px 0">
-                    <el-checkbox
-                      :label="$t('couponGive.chooseMember')"
-                      @change="handleOnClickUserChange"
-                      name="type"
-                    ></el-checkbox>
-                    <span style="margin-left:-15px">
-                      <el-button
-                        @click="handleAddMember"
-                        type="text"
-                      >+ {{$t('couponGive.addMember')}}</el-button>
-                    </span>
-                    <span>{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
-                  </div>
-                  <div>
-                    <el-checkbox
-                      :label="$t('couponGive.custom')"
-                      @change="handleOnClickCustomRuleChange"
-                    ></el-checkbox>
-                    <el-select
-                      :disabled="!params.onClickCustomRule"
-                      :placeholder="$t('couponGive.choose')"
-                      size="small"
-                      @change="customRuleInfoValChange"
+                <div>
+                  <el-checkbox
+                    :label="$t('couponGive.addCartPeople')"
+                    @change="handleOnClickNoPayChange"
+                    v-model="params.onClickNoPay"
+                  ></el-checkbox>
+                  <span style="color:#999;fontSize:12px;margin-left:-15px">{{$t('couponGive.addCartTip')}}</span>
+                </div>
+                <div>
+                  <el-checkbox
+                    :label="$t('couponGive.buyGoodsPeople')"
+                    @change="handleOnClickGoodsChange"
+                    v-model="params.onClickGoods"
+                  ></el-checkbox>
+                  <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
+                </div>
+                <div class="chooseGoods">
+                  <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
+                  <ul class="imgList">
+                    <li
+                      v-for="(item) in imgsList"
+                      :key="item.goodsId"
                     >
-                      <el-option
-                        :label="$t('couponGive.choose')"
-                        :value="$t('couponGive.choose')"
-                      ></el-option>
-                      <el-option
-                        v-for="item in customRuleInfoOptions"
-                        :key="item.key"
-                        :label="item.label"
-                        :value="item.value"
+                      <el-image
+                        style="width: 80px; height: 80px"
+                        :src="item.goodsImg"
+                      ></el-image>
+                      <el-image
+                        class="delImg"
+                        :src="urls.url4"
+                        @click="handleDelImg(item.goodsId)"
                       >
-                      </el-option>
-                    </el-select>
-                    <!-- 自定义集合 -->
-                    <div style="margin:10px 0;">
-                      <ul class="ulList">
-                        <li
-                          v-for="(item) in optionsList"
-                          :key="item.key"
-                        >
-                          <span>{{item.label}}：</span>
-                          <span>
-                            <el-input
-                              @blur="handleIpt(item)"
-                              @focus="handleIpt(item)"
-                              :disabled="!params.onClickCustomRule"
-                              style="width:120px"
-                              size="small"
-                              v-model="item.ipt"
-                            > </el-input>
-                            <div>{{ item.label | filterA  }}</div>
-                          </span>
-                          <div class="img_span">
-                            <el-image
-                              :src="urls.url4"
-                              class="img"
-                              @click="handleDelCustomize(item)"
-                            ></el-image>
-                          </div>
-                        </li>
-                        <li v-show="showTime">
-                          <span>{{$t('couponGive.timeLoginRecord')}}</span>
-                          <div class="img_span">
-                            <el-image
-                              :src="urls.url4"
-                              class="img"
-                              @click="handleDelCustomize(6)"
-                            ></el-image>
-                          </div>
-                          <span>
-                            <dateTimePicker
-                              :showPicker=1
-                              @time="loginStartAndLoginEnd"
-                            />
-                          </span>
-
-                        </li>
-                      </ul>
+                      </el-image>
+                    </li>
+                    <div
+                      v-show="this.imgsList.length<3"
+                      class="imageWraper"
+                      @click="handleChooseGoods"
+                    >
+                      <el-image :src="urls.url3"></el-image>
                     </div>
+                  </ul>
+
+                </div>
+                <!-- 属于 -->
+                <!-- 持有 -->
+                <div style="margin:10px 0">
+                  <chooseSelect @chooseSelectVal="getChooseSelectVal" />
+                </div>
+                <div style="margin:10px 0">
+                  <el-checkbox
+                    :label="$t('couponGive.chooseMember')"
+                    @change="handleOnClickUserChange"
+                    v-model="params.onClickUser"
+                  ></el-checkbox>
+                  <span style="margin-left:-15px">
+                    <el-button
+                      @click="handleAddMember"
+                      type="text"
+                    >+ {{$t('couponGive.addMember')}}</el-button>
+                  </span>
+                  <span>{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
+                </div>
+                <div>
+                  <el-checkbox
+                    :label="$t('couponGive.custom')"
+                    @change="handleOnClickCustomRuleChange"
+                    v-model="params.onClickCustomRule"
+                  ></el-checkbox>
+                  <el-select
+                    v-model="customRuleInfoVal"
+                    :disabled="!params.onClickCustomRule"
+                    :placeholder="$t('couponGive.choose')"
+                    size="small"
+                    @change="customRuleInfoValChange"
+                  >
+                    <el-option
+                      :label="$t('couponGive.choose')"
+                      :value="$t('couponGive.choose')"
+                    ></el-option>
+                    <el-option
+                      v-for="item in customRuleInfoOptions"
+                      :key="item.key"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <!-- 自定义集合 -->
+                  <div style="margin:10px 0;">
+                    <ul class="ulList">
+                      <li
+                        v-for="(item) in optionsList"
+                        :key="item.key"
+                      >
+                        <span>{{item.label}}：</span>
+                        <span>
+                          <el-input
+                            @blur="handleIpt(item)"
+                            @focus="handleIpt(item)"
+                            :disabled="!params.onClickCustomRule"
+                            style="width:120px"
+                            size="small"
+                            v-model="item.ipt"
+                          > </el-input>
+                          <div>{{ item.label | filterA  }}</div>
+                        </span>
+                        <div class="img_span">
+                          <el-image
+                            :src="urls.url4"
+                            class="img"
+                            @click="handleDelCustomize(item)"
+                          ></el-image>
+                        </div>
+                      </li>
+                      <li v-show="showTime">
+                        <span>{{$t('couponGive.timeLoginRecord')}}</span>
+                        <div class="img_span">
+                          <el-image
+                            :src="urls.url4"
+                            class="img"
+                            @click="handleDelCustomize(6)"
+                          ></el-image>
+                        </div>
+                        <span>
+                          <dateTimePicker
+                            :showPicker=1
+                            @time="loginStartAndLoginEnd"
+                          />
+                        </span>
+
+                      </li>
+                    </ul>
                   </div>
-                </el-checkbox-group>
+                </div>
               </el-form-item>
               <!-- 选择优惠券 -->
               <el-form-item
@@ -327,7 +327,22 @@ export default {
         callback(new Error('请选择优惠券'))
       } else { callback() }
     }
-
+    var validateCrowd = (rule, value, callback) => {
+      if (this.params.onClickNoPay === false &&
+        this.params.onClickGoods === false &&
+        this.params.onClickCard === false &&
+        this.params.onClickTag === false &&
+        this.params.onClickUser === false &&
+        this.params.onClickCustomRule === false) {
+        callback(new Error('请至少选择一种类型发送人群'))
+      } else if (this.params.onClickCard === true && (this.params.cardIdsList === undefined || this.params.cardIdsList.length <= 0)) {
+        callback(new Error('请选择会员卡'))
+      } else if (this.params.onClickTag === true && (this.params.tagIdsList === undefined || this.params.tagIdsList.length <= 0)) {
+        callback(new Error('请选择标签'))
+      } else if (this.params.onClickUser === true && (this.params.userIdList === undefined || this.params.userIdList.length <= 0)) {
+        callback(new Error('请选择会员'))
+      } else { callback() }
+    }
     return {
       // 优惠卷弹窗
       couponDialogFlag: false,
@@ -388,7 +403,6 @@ export default {
         },
 
         actName: ``,
-        type: [],
         coupon: ``,
         sendAction: `0`,
         startTime: ``
@@ -404,11 +418,11 @@ export default {
         startTime: [
           { validator: validateTime, trigger: 'change' }
         ],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一种类型发送人群', trigger: 'change' }
-        ],
         coupon: [
           { validator: validateCoupon, trigger: 'change' }
+        ],
+        crowd: [
+          { validator: validateCrowd, trigger: 'change' }
         ]
       },
 
@@ -518,8 +532,11 @@ export default {
       console.log('conponId', couponKey.toString())
       console.log('conponData', this.couponData)
     },
-    // 删除好友砍价优惠券图片
+    // 删除优惠券图片
     deleteCouponImg (index) {
+      this.couponIdTemp = this.couponId.split(',')
+      this.couponIdTemp.splice(index, 1)
+      this.couponId = this.couponIdTemp.toString()
       this.couponData.splice(index, 1)
     },
     // 选择优惠券弹窗-
@@ -545,7 +562,6 @@ export default {
       console.log('onClickTag:', Number(this.params.onClickTag))
       console.log('onClickUser:', Number(this.params.onClickUser))
       console.log('onClickCustomRule:', Number(this.params.onClickCustomRule))
-      console.log('type:', this.params.type)
       let param = {
         'actName': this.params.actName,
         'couponGiveGrantInfoParams': {
@@ -1125,7 +1141,7 @@ export default {
             .img {
               position: absolute;
               left: 400px;
-              top: -18px;
+              top: -50px;
               cursor: pointer;
             }
           }
