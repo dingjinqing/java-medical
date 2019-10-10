@@ -13,6 +13,7 @@ import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
@@ -287,6 +288,16 @@ public class ScoreCfgService extends BaseShopConfigService {
 													.from(USER_SCORE_SET)
 													.where(USER_SCORE_SET.SCORE_NAME.eq(value)).fetch();
 		return result;
+	}
+	
+	
+	/**
+	 * 查询某种活动对应积分
+	 * @param k
+	 * @return 
+	 */
+	public ShopCfgRecord getScoreNum(String k) {
+		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny();
 	}
 	
 }
