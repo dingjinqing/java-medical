@@ -95,6 +95,7 @@ public class StoreGoodsService extends ShopBaseService{
         Map<Integer, String> sysCateMap = sysCate.stream().collect(Collectors.toMap(SysCatevo::getCatId, SysCatevo::getCatName));
         pageResult.dataList.forEach(vo -> {
             vo.setCatName(sysCateMap.get(vo.getCatId()));
+            vo.setGoodsImg(getImgFullUrlUtil(vo.getGoodsImg()));
         });
 
         return pageResult;
@@ -142,4 +143,17 @@ public class StoreGoodsService extends ShopBaseService{
         db().update(STORE_GOODS).set(STORE_GOODS.IS_ON_SALE,OFF_SALE).where(STORE_GOODS.PRD_ID.in(param.getPrdId()).and(STORE_GOODS.STORE_ID.eq(param.getStoreId()))).execute();
     }
 
+    /**
+     * 将相对路劲修改为全路径
+     *
+     * @param relativePath 相对路径
+     * @return null或全路径
+     */
+    private String getImgFullUrlUtil(String relativePath) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return saas.shop.image.imageUrl(relativePath);
+        }
+    }
 }
