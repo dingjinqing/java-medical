@@ -50,8 +50,8 @@ public class WxAppAuth {
 	public static final String TOKEN_PREFIX = "WXAPP@";
 
 	public static final String SHOP_ID = "V-ShopId";
-	
-	private final Logger log= LoggerFactory.getLogger(WxAppAuth.class);
+
+	private final Logger log = LoggerFactory.getLogger(WxAppAuth.class);
 
 	/**
 	 * 
@@ -68,7 +68,7 @@ public class WxAppAuth {
 	 */
 	public Integer shopId() {
 		Integer shopId = Util.getInteger(this.request.getHeader(SHOP_ID));
-		if(shopId == 0) {
+		if (shopId == 0) {
 			throw new IllegalArgumentException("Invalid shopId");
 		}
 		return shopId;
@@ -88,60 +88,55 @@ public class WxAppAuth {
 	 * 登录账户
 	 * 
 	 * @param param
-	 * @param request 
+	 * @param request
 	 * @return
 	 * @throws WxErrorException
 	 */
 	public WxAppSessionUser login(WxAppLoginParam param, HttpServletRequest request) throws WxErrorException {
 		Integer shopId = shopId();
-		log.info("登录店铺"+shopId);
+		log.info("登录店铺" + shopId);
 		ShopApplication shopApp = saas.getShopApp(shopId);
 		ShopRecord shop = saas.shop.getShopById(shopId);
 		UserRecord user = shopApp.user.loginGetUser(param);
-		if(user==null) {
+		if (user == null) {
 			log.info("登录失败，user为null");
 			return null;
 		}
-		//更新记录表
-		UserLoginRecordVo record2=new UserLoginRecordVo();
+		// 更新记录表
+		UserLoginRecordVo record2 = new UserLoginRecordVo();
 		record2.setUserId(user.getUserId());
 		record2.setUserIp(Util.getCleintIp(request));
-		record2.setLat(request.getHeader("lng"));
-		record2.setLat(request.getHeader("lat"));
 		shopApp.userLoginRecordService.userLoginRecord(user.getUserId(), record2);
 		log.info("积分相关操作");
-		//积分相关操作
+		// 积分相关操作
 		UserScoreRecord scoreInDay = shopApp.member.score.getScoreInDay(user.getUserId(), "score_login");
-		//获取登录送积分开关配置
+		// 获取登录送积分开关配置
 		ShopCfgRecord isLoginScore = shopApp.score.getScoreNum("login_score");
-		if(scoreInDay!=null||(isLoginScore==null||isLoginScore.getV()=="0")) {
-			//没有登录送积分设置
+		if (scoreInDay != null || (isLoginScore == null || isLoginScore.getV() == "0")) {
+			// 没有登录送积分设置
 			log.info("没有设置登录送积分");
-			//return 
-		}else {
+			// return
+		} else {
 			log.info("设置登录送积分");
 			ShopCfgRecord scoreNum = shopApp.score.getScoreNum("score_login");
-			if(scoreNum.getV()!="0") {
-				UserScoreVo data=new UserScoreVo();
+			if (scoreNum.getV() != "0") {
+				UserScoreVo data = new UserScoreVo();
 				data.setUserId(user.getUserId());
-				//php注释掉后面addUserScore中对ScoreDis的处理
-				//data.setScoreDis(shopApp.user.getUserByUserId(user.getUserId()).getScore());
+				// php注释掉后面addUserScore中对ScoreDis的处理
+				// data.setScoreDis(shopApp.user.getUserByUserId(user.getUserId()).getScore());
 				data.setScore(Integer.parseInt(scoreNum.getV()));
 				data.setDesc("score_login");
 				data.setRemark("每日登录送积分");
 				data.setShopId(shopId);
 				data.setExpireTime(shopApp.member.score.getScoreExpireTime());
-				shopApp.member.score.addUserScore(data, "0", (byte)5,  (byte)1);
+				shopApp.member.score.addUserScore(data, "0", (byte) 5, (byte) 1);
 			}
 		}
-		
+
 		UserDetailRecord userDetail = shopApp.user.userDetail.getUserDetailByUserId(user.getUserId());
-		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder()
-				.openId(user.getWxOpenid())
-				.unionid(user.getWxUnionId())
-				.mobile(user.getMobile())
-				.build();
-		
+		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder().openId(user.getWxOpenid())
+				.unionid(user.getWxUnionId()).mobile(user.getMobile()).build();
+
 		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
 		sessionUser.setWxUser(wxUser);
@@ -150,7 +145,7 @@ public class WxAppAuth {
 		sessionUser.setShopFlag(shop.getShopFlag());
 		sessionUser.setUserId(user.getUserId());
 		sessionUser.setUserAvatar(userDetail == null ? null : userDetail.getUserAvatar());
-		sessionUser.setUsername(userDetail == null ? null :userDetail.getUsername());
+		sessionUser.setUsername(userDetail == null ? null : userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
 		jedis.set(token, Util.toJson(sessionUser));
 		return sessionUser;
