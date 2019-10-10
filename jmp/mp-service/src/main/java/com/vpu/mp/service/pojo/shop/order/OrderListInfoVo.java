@@ -93,4 +93,5 @@ public class OrderListInfoVo {
 	private Short orderTimeoutDays;
 	private Boolean canClose;
 	private Boolean canFinish;
+	private Boolean canDeliver;
 }

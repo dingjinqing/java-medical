@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 /**
@@ -55,6 +57,8 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 	OrderActionService orderAction;
 	@Autowired
 	public RecordAdminActionService record;
+	@Autowired
+	public OrderGoodsService orderGoods;
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -112,7 +116,7 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 			recordList.add(orderGoodsVo);
 			shipInfo.addRecord(shipInfoList, orderGoodsVo, batchNo, param, sendNumber);
 		}
-		//判断是否为部分发货
+		//判断此次发货是否为部分发货
 		byte partShipFlag = OrderConstant.NO_PART_SHIP;
 		if(canBeShipped.size() > shipGoods.length || flag) {
 			partShipFlag = OrderConstant.PART_SHIP;
@@ -120,24 +124,21 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 		//构造主表基本信息 b2c_order_info
 		OrderInfoRecord orderRecord = db().fetchOne(ORDER_INFO, ORDER_INFO.ORDER_SN.eq(param.getOrderSn()));
 		//设置是否部分发货
-		if(orderRecord.getPartShipFlag() == 0 && partShipFlag == OrderConstant.PART_SHIP) {
+		if(partShipFlag == OrderConstant.PART_SHIP) {
 			orderRecord.setPartShipFlag(OrderConstant.PART_SHIP);
 		}
-		//判断此次发货是否全部发货
-		if(cbsMap.values().stream().mapToInt(OrderGoodsVo::getGoodsNumber).sum() <= 0 ) {
-			orderRecord.setOrderStatus(OrderConstant.ORDER_SHIPPED);
-		}
-		cbsMap.values().stream().filter(orderVo ->{
-			return false;
-		});
 		orderRecord.setShippingTime(Timestamp.from(Instant.now()));
 		orderRecord.setShippingNo(param.getShippingNo());
 		orderRecord.setShippingId(param.getShippingId());
 		transaction(()->{
-			//添加部分发货信息 b2c_part_order_goods_ship
+			//添加（部分）发货信息 b2c_part_order_goods_ship
 			db().batchInsert(shipInfoList).execute();
 			//更新发货数量 b2c_order_goods
 			db().batchUpdate(recordList).execute();
+			//判断此次发货是否全部发货
+			if(setOrderStatus(orderRecord)) {
+				orderRecord.setOrderStatus(OrderConstant.ORDER_SHIPPED);
+			}
 			//更新主表基本信息 b2c_order_info
 			db().executeUpdate(orderRecord, ORDER_INFO.ORDER_SN.eq(param.getOrderSn()));
 			
@@ -202,6 +203,16 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 			}
 		}
 		return orderGoods;
+	}
+	
+	public boolean setOrderStatus(OrderInfoRecord order) {
+		Result<OrderGoodsRecord> goods = orderGoods.getByOrderId(order.getOrderId());
+		for (OrderGoodsRecord goodsRecord : goods) {
+			if(goodsRecord.getGoodsNumber() > goodsRecord.getSendNumber() + goodsRecord.getReturnNumber()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

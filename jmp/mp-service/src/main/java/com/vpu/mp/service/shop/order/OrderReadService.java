@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
+import com.vpu.mp.service.shop.order.action.ShipService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -89,6 +91,9 @@ public class OrderReadService extends ShopBaseService {
 	private ReturnStatusChangeService returnStatusChange;
 	@Autowired
 	private ShopReturnConfigService shopReturnConfig;
+	@Autowired
+	private ShipService ship;
+	
 	/**
 	 * 订单查询
 	 * @param OrderPageListQueryParam
@@ -125,13 +130,6 @@ public class OrderReadService extends ShopBaseService {
 			for (OrderListInfoVo order : list) {
 				//将所有订单id放入goodsList,在后续向订单添加商品时增加过滤主订单下与子订单重复的商品
 				goodsList.put(order.getOrderId(),order);
-				//设置所有订单是否可以关闭、完成
-				if(OrderOperationJudgment.mpIsClose(order)) {
-					order.setCanClose(Boolean.TRUE);
-				}
-				if(OrderOperationJudgment.mpIsFinish(order , returnOrder.getOrderCount(order.getOrderSn(), OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING))) {
-					order.setCanFinish(Boolean.TRUE);
-				}
 				if(order.getOrderSn().equals(moc)) {
 					//设置订单支付方式（无子单）
 					orderInfo.setPayCodeList(order,prizesSns);
@@ -150,9 +148,9 @@ public class OrderReadService extends ShopBaseService {
 			mainOrderList.add(mOrder);	
 		}
 		//需要查询商品的订单
-		Integer[] goodsListToSearch = goodsList.keySet().toArray(new Integer[0]);
+		Integer[] allOrderSn = goodsList.keySet().toArray(new Integer[0]);
 		//key为order_id,v为其下商品
-		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderIds(goodsListToSearch).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
+		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderIds(allOrderSn).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
 		Set<Entry<Integer, List<OrderGoodsVo>>> entrySet = goods.entrySet();
 		for (Entry<Integer, List<OrderGoodsVo>> entry : entrySet) {
 			//过滤主订单中已经拆到子订单的商品(依赖于orderinfo表自增id,当循环到主订单时其子订单下的商品都已插入到childOrders.goods里)
@@ -161,6 +159,29 @@ public class OrderReadService extends ShopBaseService {
 				continue;
 			}
 			goodsList.get(entry.getKey()).setGoods(entry.getValue());
+		}
+		//查询订单订单是否存在退款中订单
+		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(allOrderSn, OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
+		//设置订单操作
+		for (List<OrderListInfoVo> orderList: allOrder.values()) {
+			for(OrderListInfoVo order : orderList) {
+				//设置所有订单是否可以关闭
+				if(OrderOperationJudgment.mpIsClose(order)) {
+					order.setCanClose(Boolean.TRUE);
+				}
+				//设置所有订单是否可以完成
+				if(OrderOperationJudgment.mpIsFinish(order , returningCount.get(order.getOrderId()))) {
+					order.setCanFinish(Boolean.TRUE);
+				}
+				//待发货状态判断是否可发货
+				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
+					if(CollectionUtils.isNotEmpty(ship.canBeShipped(order.getOrderSn()))) {
+						order.setCanDeliver(Boolean.TRUE);
+					}
+					
+				}
+			}
+			
 		}
 		pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");

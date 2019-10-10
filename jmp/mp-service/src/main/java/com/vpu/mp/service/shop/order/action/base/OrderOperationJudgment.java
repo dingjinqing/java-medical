@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.order.action.base;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 
@@ -185,11 +185,11 @@ public class OrderOperationJudgment {
 			if(order.getReturnTypeCfg() == OrderConstant.CFG_RETURN_TYPE_N) {
 				return true;
 			}
-			if(isReturnCount > 0) {
+			if(isReturnCount != null && isReturnCount > 0) {
 				return false;
 			}
 			if(order.getReturnTypeCfg() == OrderConstant.CFG_RETURN_TYPE_Y
-					&& Instant.now().isAfter(order.getConfirmTime().toInstant().plusSeconds(order.getOrderTimeoutDays() * 24 * 60 * 60))) {
+					&& Instant.now().isAfter(order.getConfirmTime().toInstant().plusSeconds(Duration.ofDays(order.getOrderTimeoutDays()).getSeconds()))) {
 				return true;
 			}
 		}

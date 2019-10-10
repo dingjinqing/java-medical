@@ -324,12 +324,18 @@ public class ReturnOrderService extends ShopBaseService{
 		return addRecord(param ,order ,currentMaxReturnMoney);
 	}
 	
-	public Integer getOrderCount(String orderSn , Byte... status) {
-		Record1<Integer> count = db().selectCount().
+	/**
+	 * 获取退款订单特定状态
+	 * @param orderIds
+	 * @param status
+	 * @return
+	 */
+	public Map<Integer, Integer> getOrderCount(Integer[] orderIds , Byte... status) {
+		return db().select(DSL.count(TABLE.ORDER_ID).as("count") , TABLE.ORDER_ID).
 		from(TABLE).
-		where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.in(status))).
-		fetchOne();
-		return count.value1();
+		where(TABLE.ORDER_ID.in(orderIds).and(TABLE.REFUND_STATUS.in(status))).
+		groupBy(TABLE.ORDER_ID).
+		fetch().intoMap(TABLE.ORDER_ID , DSL.count(TABLE.ORDER_ID).as("count"));
 	}
 	
 	public void responseReturnOperate(RefundParam param , ReturnOrderRecord returnOrder) throws MpException {
