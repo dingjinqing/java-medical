@@ -665,9 +665,12 @@ export default {
       }
     },
     // 跳转到会员卡详情页
-    handleToCardDetail () {
+    handleToCardDetail (type) {
       this.$router.push({
-        name: 'membershipCardDetail'
+        name: 'membershipCardDetail',
+        query: {
+          'cardType': type
+        }
       })
     },
     // tips系列点击
@@ -676,7 +679,11 @@ export default {
       switch (flag) {
         case 0:
           this.$router.push({
-            name: 'membershipCardDetail'
+            name: 'membershipCardDetail',
+            query: {
+              cardType: this.currentCardType,
+              cardId: item.id
+            }
           })
           break
         case 1:

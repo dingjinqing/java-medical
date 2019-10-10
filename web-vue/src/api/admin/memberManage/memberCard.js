@@ -143,3 +143,30 @@ export function getCardConsumeOrderList (data) {
     data: data
   })
 }
+
+// 会员卡创建
+export function createMemberCardRequest (data) {
+  return service({
+    url: '/api/admin/member/card/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取单张会员卡详细信息
+export function getCardDetailInfoRequest (data) {
+  return service({
+    url: '/api/admin/member/card/get',
+    method: 'post',
+    data: data
+  })
+}
+
+// 更新会员卡信息数据
+export function updateCardRequest (data) {
+  return service({
+    url: '/api/admin/member/card/update',
+    method: 'post',
+    data
+  })
+}
