@@ -1085,7 +1085,6 @@ export default {
           }
           this.tbodyFlag = true
           this.trList = res.content.dataList
-          this.trList.reverse()
           this.trList.map((item, index) => {
             item.ischecked = false
           })
