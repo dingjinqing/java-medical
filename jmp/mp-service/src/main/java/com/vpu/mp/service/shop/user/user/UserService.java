@@ -12,15 +12,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
+import com.vpu.mp.service.shop.ShopApplication;
 
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 
@@ -37,6 +44,11 @@ public class UserService extends ShopBaseService {
 	private int userPassiveEnter[] = { 1007, 1008, 1017, 1029, 1036, 1044, 1047, 1048, 1049, 1096 };
 
 	private int scanqrode[] = { 1011, 1012, 1013, 1025, 1031, 1032 };
+	
+	private String SESSION_SIGN_KEY = "weipubao!@#miniprogram";
+	
+	@Autowired
+	protected JedisManager jedis;
 
 	/**
 	 * 通过openId获取用户
@@ -75,7 +87,28 @@ public class UserService extends ShopBaseService {
 			logger().info("进入getUserId");
 			record = getUserId(result.getOpenid(), loginUser.getName(), loginUser.getAvatar(), loginUser.getPathQuery(), result);
 		}
+		// 记录unionid
+		if(record!=null&&StringUtils.isNotEmpty(result.getUnionid())) {
+			if(!result.getUnionid().equals(record.getWxUnionId())) {
+				record.setWxUnionId(result.getUnionid());
+				int update = record.update();
+				logger().info("更新unionid"+update);
+				//TODO syncUserToCrm
+			}
+		}
+		if(StringUtils.isNotEmpty(loginUser.getSystemVersion())&&(!loginUser.getSystemVersion().equals(record.getDevice()))) {
+			record.setDevice(loginUser.getSystemVersion());
+			int update = record.update();
+			logger().info("更新Device"+update);
+		}
+		String sessionKey = getSessionKey(shopId,record.getUserId());
+		jedis.set(sessionKey, result.getSessionKey(),60*60*24);
+		logger().info("更新sessionKey");
 		return record;
+	}
+	
+	private String getSessionKey(Integer shopId,Integer userId) {
+		return SESSION_SIGN_KEY + Util.md5(shopId + "_" + userId);
 	}
 
 	public List<UserRecord> getUserRecordByIds(List<Integer> idList) {
@@ -260,4 +293,62 @@ public class UserService extends ShopBaseService {
 		}
 		return map;
 	}
+	
+	
+	/**
+	 * 更新用户昵称，头像
+	 * @param param
+	 * @return
+	 */
+	public boolean updateUser(WxAppAccountParam param) {
+		Integer userId = param.getUserId();
+		String username = param.getUsername();
+		String userAvatar = param.getUserAvatar();
+		UserRecord record = getUserByUserId(userId);
+		//更新昵称
+		if (StringUtils.isNotEmpty(username)
+				&& (StringUtils.isEmpty(record.getUsername()) || (!username.equals(record.getUsername())))) {
+			db().update(USER).set(USER.USERNAME,username).where(USER.USER_ID.eq(param.getUserId())).execute();
+			db().update(USER_DETAIL).set(USER_DETAIL.USERNAME,username).where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
+		}
+		//更新头像
+		UserDetailRecord userDetailRecord = getUserDetail(userId);
+		if (StringUtils.isNotEmpty(userAvatar)
+				&& (StringUtils.isEmpty(userDetailRecord.getUserAvatar()) || (!userAvatar.equals(userDetailRecord.getUserAvatar())))) {
+			db().update(USER_DETAIL).set(USER_DETAIL.USER_AVATAR,userAvatar).where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
+		}
+		Integer shopId = this.getShopId();
+		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
+		WxMaUserInfo userInfo = maService.getUserService().getUserInfo(getSessionKey(shopId, userId), param.getEncryptedData(), param.getIv());
+		if(userInfo!=null) {
+			if(!userInfo.getUnionId().equals(record.getWxUnionId())) {
+				db().update(USER).set(USER.WX_UNION_ID,userInfo.getUnionId()).where(USER.USER_ID.eq(userId)).execute();
+				//TODO   $crmResult =  shop($shopId)->serviceRequest->crmApi->init();
+			}
+		}else {
+			logger().error("wxDecryptData error:"+userInfo.toString());
+			return false;
+		}
+		return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
