@@ -365,6 +365,7 @@ export default {
         if (!res) return
         if (res.error === 0) {
           this.goodsCatOptions = this._disposeGoodsSortAndCatData(res.content.sysCates, 'catId')
+
           this.goodsSortOptions = this._disposeGoodsSortAndCatData(res.content.goodsSorts, 'sortId')
           this.goodsLabelOptions = res.content.goodsLabels
           this.goodsBrandOptions = res.content.goodsBrands
@@ -408,6 +409,7 @@ export default {
           rootArr.splice(i + 1, 0, ...(retItem.children))
         }
       }
+      console.log(retArr)
       return retArr
     },
     /* 筛选商品或规格数据 */

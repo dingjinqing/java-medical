@@ -138,6 +138,44 @@
           </div>
 
         </div>
+        <div
+          v-if="isDraggable"
+          class="selectImgList"
+        >
+          <p>已选5长图片,拖动可修改插入顺序</p>
+          <div class="selectImgContainer">
+            <div
+              class="selectList"
+              @mouseenter='backArr[index].imgIndex = index'
+              @mouseleave="backArr[index].imgIndex = ''"
+              v-for="(item,index) in backArr"
+              :key="index"
+            >
+              <div
+                class="imgDit"
+                v-if="backArr[index].imgIndex === index"
+              >
+                <a
+                  target="_blank"
+                  title="显示原图"
+                  style="cursor:pointer"
+                  :href="item.imgUrl"
+                >原</a>
+                <a
+                  href="javascript:void(0)"
+                  title="移出图片"
+                  style="cursor:pointer"
+                  @click="handleToDelDraggableData(item,index)"
+                >X</a>
+              </div>
+              <img :src="item.imgUrl">
+              <div
+                class="imgDim"
+                v-if="backArr[index].imgIndex !== index"
+              ></div>
+            </div>
+          </div>
+        </div>
         <span
           slot="footer"
           class="dialog-footer"
@@ -145,7 +183,7 @@
           <el-button @click="dialogTableVisible = false">{{$t('imgageDalog.cancel')}}</el-button>
           <el-button
             type="primary"
-            @click="dialogTableVisible = false"
+            @click="handleToSure()"
           >{{$t('imgageDalog.Determine')}}</el-button>
         </span>
       </el-dialog>
@@ -155,13 +193,14 @@
   </div>
 </template>
 <script>
+import draggable from 'vuedraggable'
 import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
 import Cropper from '@/components/admin/cropper'
 import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } from '@/api/admin/tree.js'
 import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
-  components: { Tree, Cropper },
+  components: { Tree, Cropper, draggable },
   props: ['pageIndex', 'tuneUp'],
   data () {
     return {
@@ -194,7 +233,10 @@ export default {
       sizeW: '',
       sizeH: '',
       width: '',
-      height: ''
+      height: '',
+      isDraggable: false,
+      backArr: [],
+      showMask: true
     }
   },
   computed: {
@@ -428,10 +470,49 @@ export default {
           })
       }
     },
-    // 单图片选中
+    // 图片选中
     handleChecked (index) {
       this.img_list[index].checked = !this.img_list[index].checked
-      this.$emit('handleSelectImg', this.img_list[index])
+      if (this.isDraggable) {
+        console.log(this.img_list[index])
+        let data = JSON.parse(JSON.stringify(this.img_list[index]))
+        data.imgIndex = null
+        if (data.checked) {
+          this.backArr.push(data)
+        } else {
+          console.log(data)
+          let delIndex = ''
+          this.backArr.forEach((item, index) => {
+            if (item.imgId === data.imgId) {
+              delIndex = index
+            }
+          })
+          this.backArr.splice(delIndex, 1)
+        }
+
+        console.log(this.backArr)
+      } else {
+        this.$emit('handleSelectImg', this.img_list[index])
+        this.dialogTableVisible = false
+      }
+    },
+    // 弹窗底部拖拽部分点击图片右上角删除icon
+    handleToDelDraggableData (item, index) {
+      this.backArr.splice(index, 1)
+      this.img_list.forEach((itemC, indexC) => {
+        if (itemC.imgId === item.imgId) {
+          console.log(111)
+          itemC.checked = false
+        }
+      })
+
+      console.log(item, index, this.img_list)
+    },
+    // 弹窗点击确定事件
+    handleToSure () {
+      if (this.isDraggable) {
+        this.$emit('handleSelectImg', this.backArr)
+      }
       this.dialogTableVisible = false
     },
     // 鼠标划入
@@ -465,6 +546,9 @@ export default {
 }
 </script>
 <style scoped>
+.dialog_top {
+  margin-top: 10px;
+}
 .img_sel {
   width: 18px;
   height: 18px;
@@ -592,6 +676,57 @@ ul {
 }
 .imageDalogTip_lineHeight {
   line-height: 14px !important;
+}
+.selectImgList {
+  width: 100%;
+  margin-top: 3px;
+  padding: 3px 0;
+  min-height: 70px;
+}
+.selectImgList p {
+  background: #eee;
+  padding: 5px 0;
+}
+.selectImgContainer {
+  background: #fff;
+  min-height: 60px;
+  padding-bottom: 5px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+}
+.selectList {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  position: relative;
+}
+.selectList img {
+  width: 50px;
+  height: 50px;
+}
+.selectList .imgDit {
+  position: absolute;
+  top: 0;
+  height: 25px;
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 3px 0 3px;
+}
+.selectList .imgDit a {
+  color: #fff;
+  text-decoration: none;
+}
+.selectList .imgDim {
+  position: absolute;
+  bottom: 0;
+  height: 25px;
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
 }
 </style>
 <style>

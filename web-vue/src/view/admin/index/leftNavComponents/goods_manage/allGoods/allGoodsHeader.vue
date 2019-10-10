@@ -2,68 +2,174 @@
   <!-- 头部组件 -->
   <div class="allGoodsHeader">
     <div class="allGoodsFilter">
-      <el-form ref="goodsFilterForm" :inline="true" :model="goodsFilterFormData" label-width="120px">
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.goodsName')+'：'" prop="goodsName">
-          <el-input v-model="goodsFilterFormData.goodsName" suffix-icon="el-icon-search"
-                     :placeholder="$t('allGoods.allGoodsHeaderData.searchGoods')" :style="goodsFilterInputStyle"/>
+      <el-form
+        ref="goodsFilterForm"
+        :inline="true"
+        :model="goodsFilterFormData"
+        label-width="120px"
+      >
+        <el-form-item
+          :label="$t('allGoods.allGoodsHeaderData.goodsName')+'：'"
+          prop="goodsName"
+        >
+          <el-input
+            v-model="goodsFilterFormData.goodsName"
+            suffix-icon="el-icon-search"
+            :placeholder="$t('allGoods.allGoodsHeaderData.searchGoods')"
+            :style="goodsFilterInputStyle"
+          />
         </el-form-item>
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.category')+'：'" prop="catId">
-          <el-select v-model="goodsFilterFormData.catId" :style="goodsFilterInputStyle">
-            <el-option :label="$t('allGoods.allGoodsHeaderData.chooseCategory')" :value="null"/>
-            <el-option v-for="(item,index) in goodsCatOptions" :label="item.catName+' ('+item.goodsNumberSum+')'" :value="item.catId" :key="index"
-                       :style="{paddingLeft: (item.level+1)*20+'px'}"/>
+        <el-form-item
+          :label="$t('allGoods.allGoodsHeaderData.category')+'：'"
+          prop="catId"
+        >
+          <el-select
+            v-model="goodsFilterFormData.catId"
+            :style="goodsFilterInputStyle"
+          >
+            <el-option
+              :label="$t('allGoods.allGoodsHeaderData.chooseCategory')"
+              :value="null"
+            />
+            <el-option
+              v-for="(item,index) in goodsCatOptions"
+              :label="item.catName+' ('+item.goodsNumberSum+')'"
+              :value="item.catId"
+              :key="index"
+              :style="{paddingLeft: (item.level+1)*20+'px'}"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.sort')+'：'" prop="sortId">
-          <el-select v-model="goodsFilterFormData.sortId"  :style="goodsFilterInputStyle">
-            <el-option :label="$t('allGoods.allGoodsHeaderData.chooseSort')" :value="null"/>
-            <el-option v-for="(item,index) in goodsSortOptions" :label="item.sortName+' ('+item.goodsNumberSum+')'" :value="item.sortId" :key="index"
-                       :style="{paddingLeft: (item.level+1)*20+'px'}"/>
+        <el-form-item
+          :label="$t('allGoods.allGoodsHeaderData.sort')+'：'"
+          prop="sortId"
+        >
+          <el-select
+            v-model="goodsFilterFormData.sortId"
+            :style="goodsFilterInputStyle"
+          >
+            <el-option
+              :label="$t('allGoods.allGoodsHeaderData.chooseSort')"
+              :value="null"
+            />
+            <el-option
+              v-for="(item,index) in goodsSortOptions"
+              :label="item.sortName+' ('+item.goodsNumberSum+')'"
+              :value="item.sortId"
+              :key="index"
+              :style="{paddingLeft: (item.level+1)*20+'px'}"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.goodsLabel')+'：'" prop="labelId">
-          <el-select v-model="goodsFilterFormData.labelId"  :style="goodsFilterInputStyle">
-            <el-option :label="$t('allGoods.allGoodsHeaderData.chooseGoodsLabel')" :value="null"/>
-            <el-option v-for="(item,index) in goodsLabelOptions" :label="item.name" :value="item.id" :key="index" />
+        <el-form-item
+          :label="$t('allGoods.allGoodsHeaderData.goodsLabel')+'：'"
+          prop="labelId"
+        >
+          <el-select
+            v-model="goodsFilterFormData.labelId"
+            :style="goodsFilterInputStyle"
+          >
+            <el-option
+              :label="$t('allGoods.allGoodsHeaderData.chooseGoodsLabel')"
+              :value="null"
+            />
+            <el-option
+              v-for="(item,index) in goodsLabelOptions"
+              :label="item.name"
+              :value="item.id"
+              :key="index"
+            />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('allGoods.allGoodsHeaderData.saleTime')">
-          <el-date-picker v-model="goodsFilterFormData.saleTimeStart" @change="datePickerChange(true)"
-                          :placeholder="$t('allGoods.allGoodsHeaderData.chooseSaleTime')" :style="goodsFilterInputStyle"/>
+          <el-date-picker
+            v-model="goodsFilterFormData.saleTimeStart"
+            @change="datePickerChange(true)"
+            :placeholder="$t('allGoods.allGoodsHeaderData.chooseSaleTime')"
+            :style="goodsFilterInputStyle"
+          />
           —
-          <el-date-picker v-model="goodsFilterFormData.saleTimeEnd" @change="datePickerChange(false)"
-                          :placeholder="$t('allGoods.allGoodsHeaderData.chooseSaleTime')" :style="goodsFilterInputStyle"/>
+          <el-date-picker
+            v-model="goodsFilterFormData.saleTimeEnd"
+            @change="datePickerChange(false)"
+            :placeholder="$t('allGoods.allGoodsHeaderData.chooseSaleTime')"
+            :style="goodsFilterInputStyle"
+          />
         </el-form-item>
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.goodsBrand')+'：'" prop="brandId">
-          <el-select v-model="goodsFilterFormData.brandId" :style="goodsFilterInputStyle">
-            <el-option :label="$t('allGoods.allGoodsHeaderData.chooseGoodsBrand')" :value="null"/>
-            <el-option v-for="(item, index) in goodsBrandOptions" :label="item.brandName" :value="item.id" :key="index"/>
+        <el-form-item
+          :label="$t('allGoods.allGoodsHeaderData.goodsBrand')+'：'"
+          prop="brandId"
+        >
+          <el-select
+            v-model="goodsFilterFormData.brandId"
+            :style="goodsFilterInputStyle"
+          >
+            <el-option
+              :label="$t('allGoods.allGoodsHeaderData.chooseGoodsBrand')"
+              :value="null"
+            />
+            <el-option
+              v-for="(item, index) in goodsBrandOptions"
+              :label="item.brandName"
+              :value="item.id"
+              :key="index"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.goodsSource')+'：'" prop="source">
-          <el-select v-model="goodsFilterFormData.source" :style="goodsFilterInputStyle">
-           <el-option v-for="(item,index) in goodsSourceOptions" :label="item.label" :value="item.value" :key="index"/>
+        <el-form-item
+          :label="$t('allGoods.allGoodsHeaderData.goodsSource')+'：'"
+          prop="source"
+        >
+          <el-select
+            v-model="goodsFilterFormData.source"
+            :style="goodsFilterInputStyle"
+          >
+            <el-option
+              v-for="(item,index) in goodsSourceOptions"
+              :label="item.label"
+              :value="item.value"
+              :key="index"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.goodsType')+'：'" prop="goodsType">
-          <el-select v-model="goodsFilterFormData.goodsType" :style="goodsFilterInputStyle">
-            <el-option v-for="(item,index) in goodsTypeOptions" :label="item.label" :value="item.value" :key="index"/>
+        <el-form-item
+          :label="$t('allGoods.allGoodsHeaderData.goodsType')+'：'"
+          prop="goodsType"
+        >
+          <el-select
+            v-model="goodsFilterFormData.goodsType"
+            :style="goodsFilterInputStyle"
+          >
+            <el-option
+              v-for="(item,index) in goodsTypeOptions"
+              :label="item.label"
+              :value="item.value"
+              :key="index"
+            />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('allGoods.allGoodsHeaderData.shopPrice')+'：'">
-          <el-input v-model.number="goodsFilterFormData.lowShopPrice" @change="shopPriceChange(true)"
-                    :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')" :style="goodsFilterInputStyle"/>
+          <el-input
+            v-model.number="goodsFilterFormData.lowShopPrice"
+            @change="shopPriceChange(true)"
+            :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')"
+            :style="goodsFilterInputStyle"
+          />
           —
-          <el-input v-model.number="goodsFilterFormData.highShopPrice" @change="shopPriceChange(false)"
-                    :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')" :style="goodsFilterInputStyle"/>
+          <el-input
+            v-model.number="goodsFilterFormData.highShopPrice"
+            @change="shopPriceChange(false)"
+            :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')"
+            :style="goodsFilterInputStyle"
+          />
         </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 <script>
-import {getAllGoodsInitValue} from '@/api/admin/goodsManage/allGoods/allGoods'
-import {format} from '@/util/date'
+import { getAllGoodsInitValue } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { format } from '@/util/date'
 export default {
   name: 'allGoodsHeader',
   props: ['initSortCatParams'],
@@ -143,7 +249,7 @@ export default {
         goodsNumber: null,
         saleType: null
       },
-      goodsFilterInputStyle: {width: '170px'},
+      goodsFilterInputStyle: { width: '170px' },
       goodsCatOptions: [],
       goodsSortOptions: [],
       goodsBrandOptions: [],
@@ -173,7 +279,7 @@ export default {
         let selfItem = retObj[item[idName]]
         if (selfItem === undefined) {
           // 未遍历到则初始化自己
-          retObj[item[idName]] = {'item': item, children: []}
+          retObj[item[idName]] = { 'item': item, children: [] }
           selfItem = retObj[item[idName]]
         } else {
           // 已创建过，（因提前遍历了子节点而创建）
@@ -186,7 +292,7 @@ export default {
           parentItem.children.push(selfItem)
         } else {
           // 没有则创建临时父亲
-          retObj[item.parentId] = {'item': null, children: [selfItem]}
+          retObj[item.parentId] = { 'item': null, children: [selfItem] }
         }
       }
 
@@ -270,21 +376,21 @@ export default {
 </script>
 
 <style scoped>
-  .headerTab{
-    border-bottom: 1px solid #EEEEEE;
-    color: #666;
-    display: flex;
-  }
-  .tabItem{
-    width: 50px;
-    line-height: 50px;
-    margin:0px 5px;
-    cursor: pointer;
-  }
-  .tabItemActive{
-    border-bottom: 2px solid #5a8bff;
-  }
-  .allGoodsFilter{
-    padding:20px 0px 0px 0px;
-  }
+.headerTab {
+  border-bottom: 1px solid #eeeeee;
+  color: #666;
+  display: flex;
+}
+.tabItem {
+  width: 50px;
+  line-height: 50px;
+  margin: 0px 5px;
+  cursor: pointer;
+}
+.tabItemActive {
+  border-bottom: 2px solid #5a8bff;
+}
+.allGoodsFilter {
+  padding: 20px 0px 0px 0px;
+}
 </style>

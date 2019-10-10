@@ -34,11 +34,12 @@
 <script>
 export default {
   components: {
-    pageSetupMain: () => import('./pageSetupModules/pageSetupMain'),
-    RightMembershipCard: () => import('./pageSetupModules/marketingComponents/rightMembershipCard'),
-    RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'),
-    RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'),
-    RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch')
+    pageSetupMain: () => import('./pageSetupModules/pageSetupMain'), // 页面配置
+    RightMembershipCard: () => import('./pageSetupModules/marketingComponents/rightMembershipCard'), // 右侧会员卡配置页面
+    RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'), // 右侧优惠卷配置页面
+    RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'), // 右侧商品配置页面
+    RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch'), // 右侧页面商品搜索配置页面
+    rightPictureNavigation: () => import('./pageSetupModules/graphicAndTextComponents/rightPictureNavigation') // 右侧图片导航配置页面
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -68,6 +69,10 @@ export default {
         {
           id: 9,
           name: 'RightCommoditySearch'
+        },
+        {
+          id: 12,
+          name: 'rightPictureNavigation'
         }
       ],
       showModule: null,

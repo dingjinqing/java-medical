@@ -188,19 +188,21 @@ export default {
     vuescroll,
     draggable,
     // 营销组件库
-    MembershipCard: () => import('./decorationModules/marketingComponents/membershipCard'),
-    Coupon: () => import('./decorationModules/marketingComponents/Coupon'),
+    MembershipCard: () => import('./decorationModules/marketingComponents/membershipCard'), // 会员卡
+    Coupon: () => import('./decorationModules/marketingComponents/Coupon'), // 优惠卷
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 商品组件库
-    Commodity: () => import('./decorationModules/commodityComponents/commodity'),
-    CommoditySearch: () => import('./decorationModules/commodityComponents/commoditySearch')
+    Commodity: () => import('./decorationModules/commodityComponents/commodity'), // 商品
+    CommoditySearch: () => import('./decorationModules/commodityComponents/commoditySearch'), // 商品搜索
+    // 图文组件库
+    PictureNavigation: () => import('./decorationModules/graphicAndTextComponents/pictureNavigation') // 图片导航
   },
   data () {
     return {
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'zb', 'zb', 'PictureNavigation'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -556,6 +558,9 @@ export default {
               break
             case '商品搜索':
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 9)
+              break
+            case '图片导航':
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 12)
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }
