@@ -12,12 +12,12 @@ import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
@@ -103,9 +103,11 @@ public class WxAppAuth {
 			return null;
 		}
 		//更新记录表
-		UserLoginRecordRecord record2=new UserLoginRecordRecord();
+		UserLoginRecordVo record2=new UserLoginRecordVo();
 		record2.setUserId(user.getUserId());
 		record2.setUserIp(Util.getCleintIp(request));
+		record2.setLat(request.getHeader("lng"));
+		record2.setLat(request.getHeader("lat"));
 		shopApp.userLoginRecordService.userLoginRecord(user.getUserId(), record2);
 		log.info("积分相关操作");
 		//积分相关操作
