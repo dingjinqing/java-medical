@@ -142,38 +142,47 @@
           v-if="isDraggable"
           class="selectImgList"
         >
-          <p>已选5长图片,拖动可修改插入顺序</p>
+          <p>已选{{backArr.length}}长图片,拖动可修改插入顺序</p>
           <div class="selectImgContainer">
-            <div
-              class="selectList"
-              @mouseenter='backArr[index].imgIndex = index'
-              @mouseleave="backArr[index].imgIndex = ''"
-              v-for="(item,index) in backArr"
-              :key="index"
+            <draggable
+              class="list-group"
+              element="div"
+              v-model="backArr"
+              :options="dragOptions"
             >
+
               <div
-                class="imgDit"
-                v-if="backArr[index].imgIndex === index"
+                class="selectList"
+                @mouseenter='backArr[index].imgIndex = index'
+                @mouseleave="backArr[index].imgIndex = ''"
+                v-for="(item,index) in backArr"
+                :key="index"
               >
-                <a
-                  target="_blank"
-                  title="显示原图"
-                  style="cursor:pointer"
-                  :href="item.imgUrl"
-                >原</a>
-                <a
-                  href="javascript:void(0)"
-                  title="移出图片"
-                  style="cursor:pointer"
-                  @click="handleToDelDraggableData(item,index)"
-                >X</a>
+                <div
+                  class="imgDit"
+                  v-if="backArr[index].imgIndex === index"
+                >
+                  <a
+                    target="_blank"
+                    title="显示原图"
+                    style="cursor:pointer"
+                    :href="item.imgUrl"
+                  >原</a>
+                  <a
+                    href="javascript:void(0)"
+                    title="移出图片"
+                    style="cursor:pointer"
+                    @click="handleToDelDraggableData(item,index)"
+                  >X</a>
+                </div>
+                <img :src="item.imgUrl">
+                <div
+                  class="imgDim"
+                  v-if="backArr[index].imgIndex !== index"
+                ></div>
               </div>
-              <img :src="item.imgUrl">
-              <div
-                class="imgDim"
-                v-if="backArr[index].imgIndex !== index"
-              ></div>
-            </div>
+
+            </draggable>
           </div>
         </div>
         <span
@@ -201,7 +210,7 @@ import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } fr
 import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree, Cropper, draggable },
-  props: ['pageIndex', 'tuneUp'],
+  props: ['pageIndex', 'tuneUp', 'isDraggable'],
   data () {
     return {
       dialogTableVisible: false,
@@ -234,9 +243,14 @@ export default {
       sizeH: '',
       width: '',
       height: '',
-      isDraggable: false,
       backArr: [],
-      showMask: true
+      showMask: true,
+      dragOptions: {
+        sort: true,
+        fallbackTolerance: '1',
+        scroll: true,
+        animation: 300
+      }
     }
   },
   computed: {
@@ -694,13 +708,14 @@ ul {
   overflow-y: hidden;
   overflow-x: auto;
   white-space: nowrap;
-  display: flex;
 }
 .selectList {
   width: 50px;
   height: 50px;
   margin: 5px;
   position: relative;
+  display: inline-block;
+  cursor: Move;
 }
 .selectList img {
   width: 50px;

@@ -130,6 +130,7 @@
     <ImageDialog
       :tuneUp='tuneUp'
       pageIndex='pictureSpace'
+      :isDraggable='true'
       @handleSelectImg='handleToGetImgUrl'
     />
   </div>
