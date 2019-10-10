@@ -72,7 +72,7 @@ public class RefundAmountRecordService extends ShopBaseService{
 	 */
 	public Map<String, Result<Record2<String, BigDecimal>>> getOrderRefundAmount(List<String> orderSns ,Integer retId){
 		SelectConditionStep<Record2<String, BigDecimal>> where = db().select(TABLE.REFUND_FIELD,TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.in(orderSns));
-		if(Objects.isNull(retId)) {
+		if(Objects.nonNull(retId)) {
 			where.and(TABLE.RET_ID.eq(retId));
 		}
 		Map<String, Result<Record2<String, BigDecimal>>> map = where.fetchGroups(TABLE.REFUND_FIELD);
