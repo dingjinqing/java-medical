@@ -6,17 +6,29 @@
       <div>
         <el-switch
           v-model="switchValue"
+          v-if="this.switchValue"
           active-text="已开启"
-          inactive-text="已关闭"
+          @change="tabSwitch()"
+        ></el-switch>
+        <el-switch
+          v-model="switchValue"
+          v-if="!this.switchValue"
+          active-text="已关闭"
           @change="tabSwitch()"
         >
         </el-switch><br><br>
-        <span>现在的状态：{{this.switchValue}}</span><br><br>
       </div>
 
       <!-- 活动内容 -->
-      <div>
-        <el-form>
+      <div v-if="this.switchValue">
+        <el-form
+          label-width="150px"
+          labelPosition='right'
+          :rules="rules"
+          :model="form"
+          size="small"
+          ref="form"
+        >
           <!-- 活动时间 -->
           <el-form-item
             label="活动时间"
@@ -24,7 +36,7 @@
           >
             <div class="block">
               <el-date-picker
-                v-model="actTime"
+                v-model="form.actTime"
                 type="datetimerange"
                 range-separator="至"
                 start-placeholder="开始日期"
@@ -32,7 +44,6 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
-              <span>{{this.actTime}}</span>
             </div>
           </el-form-item>
           <!-- 图标 -->
@@ -41,17 +52,17 @@
             prop="logo"
           >
             <el-radio
-              v-model="logo"
+              v-model="this.form.logo"
               label="0"
             >默认</el-radio>
             <el-radio
-              v-model="logo"
+              v-model="this.form.logo"
               label="1"
             >自定义</el-radio>
             <!-- 图片弹窗 -->
             <div
               style="display: flex;align-items: center;flex-wrap: wrap;"
-              v-if="this.logo==1"
+              v-if="this.form.logo==1"
             >
               <span
                 @click="deleteGoodsImg()"
@@ -78,9 +89,12 @@
             label="收藏奖励"
             prop="reward"
           >
-            <el-checkbox-group v-model="checkList">
+            <div>
               <!-- 积分 -->
-              <el-checkbox label="积分"></el-checkbox>
+              <el-checkbox
+                label="积分"
+                v-model="integral"
+              ></el-checkbox>
               <el-input
                 size="small"
                 style="width: 180px"
@@ -89,7 +103,10 @@
               积分
               <br>
               <!-- 优惠券 -->
-              <el-checkbox label="优惠券"></el-checkbox>
+              <el-checkbox
+                label="优惠券"
+                v-model="coupon"
+              ></el-checkbox>
               <div class="middleContainer">
                 <div>
                   <div
@@ -116,7 +133,7 @@
                     <span
                       @click="deleteCouponImg(index)"
                       class="deleteIcon"
-                    >×lllll</span>
+                    >×</span>
                   </div>
                 </div>
                 <div
@@ -131,7 +148,7 @@
                   ></el-image>
                 </div>
               </div>
-            </el-checkbox-group>
+            </div>
           </el-form-item>
         </el-form>
       </div>
@@ -141,6 +158,7 @@
         <el-button
           type="primary"
           size="small"
+          @click="submit"
         >保存</el-button>
       </div>
       <!-- 图片弹窗 -->
@@ -163,7 +181,7 @@
 import wrapper from '@/components/admin/wrapper/wrapper'
 import ImageDalog from '@/components/admin/imageDalog'
 import addCouponDialog from '@/components/admin/addCouponDialog'
-import { collectGiftStatus, collectGiftSelect } from '@/api/admin/marketManage/collectGift.js'
+import { collectGiftStatus, collectGiftSelect, collectGiftUpdate } from '@/api/admin/marketManage/collectGift.js'
 export default {
   components: {
     wrapper,
@@ -172,21 +190,42 @@ export default {
   },
 
   data () {
+    // 自定义校验规则
+    var validateLogo = (rule, value, callback) => {
+      if (this.form.logo === '1') {
+        console.log('value???', value)
+        // if (value === '') {
+        //   callback(new Error('请填写发送时间'))
+        // }
+      } else { callback() }
+    }
     return {
       // 开关
       switchValue: true,
-      actTime: '',
-      logo: '0',
+      // 表单内容
+      form: {
+        actTime: '',
+        logo: '0'
+      },
+      // 表单校验
+      rules: {
+        actTime: [
+          { required: true, message: `请选择活动时间`, trigger: 'blur' }
+        ],
+        logo: [
+          { validator: validateLogo, trigger: 'change' }
+        ]
+      },
 
       // 图片弹窗
       srcList: {
-        src: `${this.$imageHost}/image/admin/add_img.png`,
-        imageUrl: ``
+        src: `${this.$imageHost}/image/admin/add_img.png`
       },
       showImageDialog: false,
       // 复选框
       checkList: [],
       score: '',
+      scoreTemp: '',
       // 优惠卷弹窗
       couponDialogFlag: false,
       couponData: [],
@@ -194,8 +233,9 @@ export default {
       showCouponDialog: false,
       couponIdList: [],
       imgHost: `${this.$imageHost}`,
-      checkedData: []
-
+      checkedData: [],
+      integral: false,
+      coupon: false
     }
   },
   created () {
@@ -226,6 +266,40 @@ export default {
         }
       })
       console.log('出来了！')
+    },
+    submit () {
+      this.scoreTemp = this.score
+      if (this.form.logo === '0') {
+        this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
+      }
+      if (this.integral === false) {
+        this.scoreTemp = null
+      }
+      if (this.coupon === false) {
+        this.couponId = null
+      }
+      let submitParam = {
+        'on_off': 1,
+        'start_time': this.form.actTime[0],
+        'end_time': this.form.actTime[1],
+        'collect_logo': this.form.logo,
+        'collect_logo_src': this.srcList.src,
+        'score': this.scoreTemp,
+        'coupon_ids': this.couponId
+      }
+      console.log('入参：', submitParam)
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          collectGiftUpdate(submitParam).then(res => {
+            if (res.error === 0) {
+              alert('保存成功！')
+              console.log('保存成功')
+            }
+          })
+        } else {
+          return false
+        }
+      })
     },
     // 优惠卷回调
     handleToCheck (data) {
