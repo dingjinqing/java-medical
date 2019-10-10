@@ -277,14 +277,16 @@ public class BargainService extends ShopBaseService  {
     /**
      * 根据商品id获取砍价信息
      * @param goodsId 商品id
+     * @param date 当前时间
      * @return BargainRecord
      */
-    public BargainRecord getBargainRecordByGoodsId(Integer goodsId){
+    public BargainRecord getBargainRecordByGoodsId(Integer goodsId,Timestamp date){
 	    return db().select(BARGAIN.ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
             .from(BARGAIN)
             .where(BARGAIN.STATUS.eq(STATUS_DISABLED))
-            .and(BARGAIN.START_TIME.lessThan(DateUtil.getLocalDateTime()))
-            .and(BARGAIN.END_TIME.greaterThan(DateUtil.getLocalDateTime()))
+            .and(BARGAIN.GOODS_ID.eq(goodsId))
+            .and(BARGAIN.START_TIME.lessThan(date))
+            .and(BARGAIN.END_TIME.greaterThan(date))
             .fetchOneInto(BARGAIN);
     }
     /**
