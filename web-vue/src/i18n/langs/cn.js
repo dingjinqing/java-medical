@@ -119,6 +119,10 @@ import {
 import {
   cn as bottomNavigation
 } from './views/admin_new/cn/index/miniProgramManagement/bottomNavigation/bottomNavigationCn'
+// 个人中心配置
+import {
+  cn as personalCenter
+} from './views/admin_new/cn/index/miniProgramManagement/personalCenter/personalCenterCn'
 // 分享有礼-添加
 import {
   cn as adSharePolite
@@ -623,6 +627,7 @@ const cn = {
   pictureSetting,
   pageDecoration,
   bottomNavigation,
+  personalCenter,
 
   // 商品
   allGoods, // 商品管理/全部商品

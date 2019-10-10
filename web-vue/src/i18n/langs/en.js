@@ -69,6 +69,10 @@ import {
 import {
   en as bottomNavigation
 } from './views/admin_new/en/index/miniProgramManagement/bottomNavigation/bottomNavigationEn'
+// 底部导航配置
+import {
+  en as personalCenter
+} from './views/admin_new/en/index/miniProgramManagement/personalCenter/personalCenterEn'
 
 // 营销管理
 // 营销管理通用词汇
@@ -614,6 +618,7 @@ const en = {
   pictureSetting,
   pageDecoration,
   bottomNavigation,
+  personalCenter,
 
   // 商品
   allGoods, // 商品管理/全部商品
