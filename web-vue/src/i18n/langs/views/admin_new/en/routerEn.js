@@ -353,5 +353,5 @@ export const en = {
   // 门店管理 分组管理
   store_group_list: ['Store management', 'Store groups list'],
   // 门店管理 新增门店
-  add_store: ['Store management', 'Add Store'],
+  add_store: ['Store management', 'Add Store']
 }
