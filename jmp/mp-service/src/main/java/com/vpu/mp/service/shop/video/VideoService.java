@@ -90,7 +90,7 @@ public class VideoService extends ShopBaseService {
 	/**
 	 * 判断视频格式格式是否支持，简单判断下扩展名
 	 *
-	 * @param type
+	 * @param contentType
 	 * @return boolean
 	 */
 	public boolean validVideoContentType(String contentType) {
@@ -193,7 +193,7 @@ public class VideoService extends ShopBaseService {
 		record.setVideoCatId(catId);
 		record.setVideoWidth(videoStream.getVideoWidth());
 		record.setVideoHeight(videoStream.getVideoHeight());
-		record.setDuration(videoStream.getDuration().intValue());
+		record.setVideoDuration(videoStream.getDuration().intValue());
 		record.setVideoMeta(Util.toJson(avMeta));
 		record.setUserId(userId);
 		record.insert();
@@ -245,7 +245,7 @@ public class VideoService extends ShopBaseService {
 				UploadVideoCatNameVo.class);
 		for (UploadedVideoVo uploadedVideo : result.dataList) {
 			uploadedVideo.setSnapshotUrl(this.upYunConfig.videoUrl(uploadedVideo.getVideoSnapPath()));
-			Integer dur = uploadedVideo.getDuration();
+			Integer dur = uploadedVideo.getVideoDuration();
 			if (dur != null) {
 				String formatDuration = String.format("%02d:%02d:%02d", Math.floorMod(Math.floorDiv(dur, 3600), 24),
 						Math.floorMod(Math.floorDiv(dur, 60), 60), Math.floorMod(dur, 60));

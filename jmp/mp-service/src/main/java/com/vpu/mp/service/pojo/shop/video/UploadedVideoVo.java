@@ -11,10 +11,11 @@ public class UploadedVideoVo {
 	private Integer videoSize;
 	private String videoName;
 	private String videoUrl;
+	private String videoPath;
 	private Integer videoCatId;
 	private Integer videoWidth;
 	private Integer videoHeight;
-	private Integer duration;
+	private Integer videoDuration;
 	private Timestamp createTime;
 	private String videoSnapPath;
 	private String snapshotUrl;

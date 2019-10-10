@@ -896,7 +896,7 @@ ADD COLUMN `scene` INT(11) NULL DEFAULT -1 COMMENT '用户微信来源 -1搜索�
 
 -- 添加视频字段
 
-alter table b2c_uploaded_video add column `duration` INT(6) DEFAULT 0  NULL   COMMENT '视频时长';
+alter table b2c_uploaded_video add column `video_duration` INT(6) DEFAULT 0  NULL   COMMENT '视频时长';
 alter table b2c_uploaded_video add column    `user_id`          INT(11) DEFAULT 0  NULL   COMMENT '用户ID';
 alter table b2c_uploaded_video add column    `del_time` timestamp NULL DEFAULT  null COMMENT '删除时间';
 alter table b2c_uploaded_video add column   `upyun_del` TINYINT(1) DEFAULT 0  NULL   COMMENT '又拍云是否删除';

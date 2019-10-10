@@ -400,7 +400,7 @@ create table `b2c_uploaded_video`
     `is_refer`         tinyint(1)   not null default 0 comment '是否引用',
     `shop_id`          int(11)      not null default 0 comment '店铺id',
     `del_flag`         tinyint(1)   not null default 0,
-    `duration` INT(6) DEFAULT 0  NULL   COMMENT '视频时长',
+    `video_duration` INT(6) DEFAULT 0  NULL   COMMENT '视频时长',
     `user_id`          INT(11) DEFAULT 0  NULL   COMMENT '用户ID',
     `del_time` timestamp NULL DEFAULT  null COMMENT '删除时间',
     `upyun_del` TINYINT(1) DEFAULT 0  NULL   COMMENT '又拍云是否删除',
