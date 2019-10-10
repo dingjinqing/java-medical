@@ -27,7 +27,7 @@ public class WxAppLoginController extends WxAppBaseController {
 	@PostMapping("/api/wxapp/login")
 	public JsonResult login(@RequestBody WxAppLoginParam param) throws WxErrorException {
 		logger().info("小程序登录");
-		WxAppSessionUser user = wxAppAuth.login(param);
+		WxAppSessionUser user = wxAppAuth.login(param,request);
 		if(user==null) {
 			//登录失败
 			return fail(JsonResultCode.ERR_CODE_LOGIN_FAILED);
