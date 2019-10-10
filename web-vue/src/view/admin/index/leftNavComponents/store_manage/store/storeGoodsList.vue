@@ -7,32 +7,37 @@
           <ul class="list-store-filters">
             <li>
               <el-select
-                v-model="queryParams.goodsSort"
+                v-model="queryParams.catId"
                 size="small"
+                filterable
+                @change="selectChangeHandle"
               >
                 <el-option
                   :label="$t('storeGoodsList.goodsSort')"
                   :value="null"
                 ></el-option>
                 <el-option
-                  v-for="item in goodsSorts"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
+                  v-for="item in catIds"
+                  :key="item.catId"
+                  :label="item.catName"
+                  :value="item.catId"
+                >
+                  <span :style="'paddingLeft:' + item.level*20 + 'px'">{{item.catName}}</span>
+                </el-option>
               </el-select>
             </li>
             <li>
               <el-select
-                v-model="queryParams.shelfStatus"
+                v-model="queryParams.isOnSale"
                 size="small"
+                @change="selectChangeHandle"
               >
                 <el-option
                   :label="$t('storeGoodsList.shelfStatus')"
                   :value="null"
                 ></el-option>
                 <el-option
-                  v-for="item in goodsSorts"
+                  v-for="item in isOnSale"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -41,15 +46,16 @@
             </li>
             <li>
               <el-select
-                v-model="queryParams.syncPos"
+                v-model="queryParams.isSync"
                 size="small"
+                @change="selectChangeHandle"
               >
                 <el-option
                   :label="$t('storeGoodsList.syncPos')"
                   :value="null"
                 ></el-option>
                 <el-option
-                  v-for="item in goodsSorts"
+                  v-for="item in isSync"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -58,8 +64,8 @@
             </li>
             <li>
               <el-input
-                placeholder="搜索商品 | 条码"
-                v-model="queryParams.search"
+                :placeholder="$t('storeGoodsList.searchProductsbarcode')"
+                v-model="queryParams.keywords"
                 size="small"
               >
                 <i
@@ -74,7 +80,7 @@
                 type="primary"
                 size="small"
                 @click="updateGoodsHandle"
-              >更新商品</el-button>
+              >{{$t('storeGoodsList.updateGoods')}}</el-button>
             </div>
           </ul>
         </div>
@@ -83,7 +89,6 @@
             ref="goodsTable"
             :data="goodsData"
             class="tableClass"
-            max-height="500"
             border
             @selection-change="selectionChangeHandle"
             :header-cell-style="{
@@ -107,17 +112,9 @@
                   <img
                     style="width: 70px;height: 70px;float: left;"
                     :src="row.goodsImg"
-                    alt="暂无图片"
+                    alt="no picture"
                   >
-                  <div style="padding:10px;">
-                    <!-- <span
-                      v-if="row.sourceName !== null"
-                      class="goodsTypeSpanWrap"
-                    >{{row.sourceName}}</span>
-                    <span
-                      v-if="row.goodsTypeName !== null"
-                      class="goodsSourceSpanWrap"
-                    >{{row.goodsTypeName}}</span> -->
+                  <div style="margin-left:70px; padding-left:5px; line-height: 1; vertical-align: top;">
                     {{row.goodsName}}
                   </div>
                 </div>
@@ -125,27 +122,40 @@
             </el-table-column>
             <el-table-column
               :label="$t('storeGoodsList.specification')"
-              prop="goodsName"
+              prop="prdDesc"
               align="center"
             ></el-table-column>
             <el-table-column
               :label="$t('storeGoodsList.classification')"
-              prop="goodsName"
+              prop="catName"
               align="center"
             ></el-table-column>
+            <el-table-column
+              :label="$t('storeGoodsList.price')"
+              align="center"
+            >
+              <template slot-scope="{row}">
+                <span v-if="row.isSync === 1">{{row.productPrice}}</span>
+                <span v-else>{{row.prdPrice}}</span>
+              </template>
+            </el-table-column>
             <el-table-column
               :label="$t('storeGoodsList.inStock')"
-              prop="goodsName"
               align="center"
-            ></el-table-column>
+            >
+              <template slot-scope="{row}">
+                <span v-if="row.isSync === 1">{{row.productNumber}}</span>
+                <span v-else>{{row.prdNumber}}</span>
+              </template>
+            </el-table-column>
             <el-table-column
               :label="$t('storeGoodsList.merchantCoding')"
-              prop="goodsName"
+              prop="prdSn"
               align="center"
             ></el-table-column>
             <el-table-column
               :label="$t('storeGoodsList.barcode')"
-              prop="goodsName"
+              prop="prdCodes"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -154,25 +164,25 @@
               width=""
               align="center"
             >
-              <template slot-scope="{row,$index}">
+              <template slot-scope="{row}">
                 <el-tooltip
-                  v-if="row.shelfStatus === 1"
+                  v-if="row.isOnSale === 0"
                   :content="$t('storeGoodsList.shelf')"
                   placement="top"
                 >
                   <span
                     class="iconSpan"
-                    @click="edit('shelf', row, $index)"
+                    @click=shelfGoodsHandle(row.prdId)
                   >{{$t('storeGoodsList.shelf')}}</span>
                 </el-tooltip>
                 <el-tooltip
-                  v-if="row.shelfStatus === 0"
-                  :content="$t('storeGoodsList.shelf')"
+                  v-else
+                  :content="$t('storeGoodsList.obtain')"
                   placement="top"
                 >
                   <span
                     class="iconSpan"
-                    @click="edit('obtain', row, $index)"
+                    @click=obtainGoodsHandle(row.prdId)
                   >{{$t('storeGoodsList.obtain')}}</span>
                 </el-tooltip>
               </template>
@@ -185,17 +195,17 @@
             </div>
           </el-table>
           <div class="table-page">
-            <div>
+            <div class="table-page-left">
               <el-button
                 size="small"
-                @click="shelfGoodsHandle"
+                @click="shelfGoodsHandle()"
               >{{$t('storeGoodsList.shelf')}}</el-button>
               <el-button
                 size="small"
-                @click="obtainGoodsHandle"
+                @click="obtainGoodsHandle()"
               >{{$t('storeGoodsList.obtain')}}</el-button>
             </div>
-            <div>
+            <div class="table-page-right">
               <pagination
                 :page-params.sync="pageParams"
                 @pagination="initDataList"
@@ -209,65 +219,136 @@
 </template>
 
 <script>
+import { getGoodsList, getCateList, updateGoods, shelfGoods, obtainGoods } from '@/api/admin/storeManage/storeGoods'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
   data () {
     return {
-      id: '',
+      loading: false,
       storeName: '',
       queryParams: {
-        goodsSort: null,
-        shelfStatus: null,
-        syncPos: null,
-        search: null
+        storeId: '', // 商家id
+        catId: null, // 平台分类
+        isOnSale: null, // 是否上架
+        isSync: null, // 是否同步POS
+        keywords: null // 商品名或条码
       },
-      goodsSorts: [
-        { id: 1, name: '图书，音响' },
-        { id: 2, name: '家具' },
-        { id: 3, name: '厨具' }
+      catIds: [],
+      isOnSale: [
+        { id: 1, name: '上架的商品' },
+        { id: 0, name: '下架的商品' }
+      ],
+      isSync: [
+        { id: 1, name: '是' },
+        { id: 0, name: '否' }
       ],
       selected: [],
-      goodsData: [
-        {
-          goodsImg: 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20190929/7ce184c55534ed40.jpg',
-          goodsTypeName: '',
-          goodsName: '砍价商品3',
-          shelfStatus: 1
-        }
-      ],
+      tableData: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
       pageParams: {}
     }
   },
+  computed: {
+    goodsData: function () {
+      return this.tableData
+    }
+  },
   created () {
-    this.id = this.$route.query.id
+    this.queryParams.storeId = this.$route.query.id
     this.storeName = this.$route.query.name
   },
   mounted () {
+    this.langDefault()
+    this.initCategory()
     this.initDataList()
   },
   methods: {
     searchHandle () {
       console.log('search...' + this.queryParams)
+      this.initDataList()
     },
     updateGoodsHandle () {
-      console.log('update...' + this.selected)
+      const params = {
+        storeId: this.queryParams.storeId
+      }
+      updateGoods(params).then(res => {
+        if (res.error === 0) {
+          this.initDataList()
+        }
+      }).catch(err => {
+        console.error(err)
+      })
     },
-    selectionChangeHandle () {
-      console.log(arguments)
+    selectionChangeHandle (rows) {
+      this.selected = rows
     },
-    edit (param, row, index) {
-      console.log(param, row, index)
+    shelfGoodsHandle (data) {
+      let params = {
+        storeId: this.queryParams.storeId,
+        prdId: []
+      }
+      if (!data) {
+        data = this.selected.map(item => item.prdId)
+      }
+      if (Array.isArray(data)) {
+        params.prdId = data
+      } else {
+        params.prdId.push(data)
+      }
+      shelfGoods(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('storeGoodsList.success'))
+          this.initDataList()
+        }
+      })
     },
-    shelfGoodsHandle () {
-
+    obtainGoodsHandle (data) {
+      let params = {
+        storeId: this.queryParams.storeId,
+        prdId: []
+      }
+      if (!data) {
+        data = this.selected.map(item => item.prdId)
+      }
+      if (Array.isArray(data)) {
+        params.prdId = data
+      } else {
+        params.prdId.push(data)
+      }
+      obtainGoods(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('storeGoodsList.success'))
+          this.initDataList()
+        }
+      }).catch(err => {
+        console.error(err)
+      })
     },
-    obtainGoodsHandle () {
-
+    initCategory () {
+      getCateList().then(res => {
+        if (res.error === 0) {
+          this.catIds = this.formatCateDatas(res.content)
+        }
+      })
+    },
+    formatCateDatas (datas) {
+      const treeDatas = this.disposeGoodsSortAndCatData(datas, 'catId')
+      return treeDatas
     },
     initDataList () {
-
+      let params = Object.assign({}, this.queryParams, this.pageParams)
+      getGoodsList(params).then(res => {
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+          this.tableData = res.content.dataList
+        }
+      }).catch(err => {
+        console.error(err)
+      })
+    },
+    selectChangeHandle () {
+      this.initDataList()
     }
   }
 }
@@ -334,8 +415,16 @@ export default {
   margin: 10px;
 }
 .table-page {
-  height: 100px;
+  height: 52px;
+  overflow: hidden;
   padding: 10px;
   background: #fff;
+}
+.table-page-left {
+  line-height: 52px;
+  float: left;
+}
+.table-page-right {
+  float: right;
 }
 </style>

@@ -28,5 +28,6 @@
     "wxml": "html"
   },
   "minapp-vscode.disableAutoConfig": true,
-  "code-runner.runInTerminal": true
+  "code-runner.runInTerminal": true,
+  "files.autoSave": "off"
 }

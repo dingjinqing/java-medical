@@ -12,5 +12,11 @@ export const cn = {
   nickname: '昵称',
   phoneNumber: '手机号',
   checkOrderQuantity: '核销订单数量',
-  operate: '操作'
+  operate: '操作',
+  // 添加核销员
+  determine: '确定',
+  cancel: '取消',
+  search: '搜索',
+  checkOrder: '查看订单',
+  delete: '删除'
 }

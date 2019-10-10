@@ -12,5 +12,10 @@ export const en = {
   nickname: 'nickname',
   phoneNumber: 'phone',
   checkOrderQuantity: 'checkoutOrderQuantity',
-  operate: 'operate'
+  operate: 'operate',
+  determine: 'determine',
+  cancel: 'cancel',
+  search: 'search',
+  checkOrder: 'checkOrder',
+  delete: 'delete'
 }
