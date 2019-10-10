@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.user.user;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 
 import org.jooq.impl.DSL;
@@ -22,9 +24,11 @@ public class UserLoginRecordService extends ShopBaseService {
 		UserLoginRecordRecord res = db().selectFrom(USER_LOGIN_RECORD).where(USER_LOGIN_RECORD.USER_ID.eq(userId))
 				.and(USER_LOGIN_RECORD.CREATE_TIME.gt(DSL.currentTimestamp())).fetchAny();
 		// 有记录更新登陆次数，没有记录加记录 一小时一条数据
+		UserLoginRecordRecord record2=USER_LOGIN_RECORD.newRecord();
+		FieldsUtil.assignNotNull(record, record2);
 		if (res == null) {
-			record.setCount(1);
-			int insert = record.insert();
+			record2.setCount(1);
+			int insert = record2.insert();
 			logger().info("插入小程序登录"+insert);
 		} else {
 			res.setCount(res.getCount() + 1);
