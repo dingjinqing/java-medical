@@ -84,74 +84,103 @@
         </el-form-item>
         <el-form-item :label="$t('groupBuy.discountsOption')">
           <el-table
+            header-row-class-name="tableHeader"
             :data="form.product"
             border
             style="width: 100%"
+            empty-text=''
           >
             <el-table-column
+              align="center"
               prop="prdDesc"
               :label="$t('groupBuy.goodsNmaeProduct')"
             >
             </el-table-column>
             <el-table-column
+              align="center"
               prop="prdPrice"
               :label="$t('groupBuy.originalPrice')"
             >
             </el-table-column>
             <el-table-column
+              align="center"
               prop="groupPrice"
               :label="$t('groupBuy.groupBuyPrice')"
             >
-              <template slot="header">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.groupBuyPrice')}}</span>
                 <el-button
                   @click="setCurrent(1)"
                   size="mini"
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}</el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-input v-model="scope.row.groupPrice" />
               </template>
             </el-table-column>
             <el-table-column
+              align="center"
               v-if="form.isGrouperCheap === 1"
               prop="grouperPrice"
               :label="$t('groupBuy.commanderPrice')"
             >
-              <template slot="header">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.commanderPrice')}}</span>
                 <el-button
                   @click="setCurrent(2)"
                   size="mini"
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}</el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-input v-model="scope.row.grouperPrice" />
               </template>
             </el-table-column>
             <el-table-column
+              align="center"
               prop="prdNumber"
               :label="$t('groupBuy.originalStock')"
             >
             </el-table-column>
             <el-table-column
+              align="center"
               prop="stock"
               :label="$t('groupBuy.groupBuyStock')"
             >
-              <template slot="header">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.groupBuyStock')}}</span>
                 <el-button
                   @click="setCurrent(3)"
                   size="mini"
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}</el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-input v-model="scope.row.stock" />
               </template>
             </el-table-column>
+            <template
+              slot="empty"
+              style="height：0"
+            >
+            </template>
+
+            <div slot="append">
+              <span>更多设置:</span>
+              <span
+                class="settings"
+                @click="setCurrent(1)"
+              >拼团价</span>
+              <span
+                class="settings"
+                @click="setCurrent(2)"
+              >团长优惠价</span>
+              <span
+                class="settings"
+                @click="setCurrent(3)"
+              >拼团库存</span>
+            </div>
           </el-table>
         </el-form-item>
 
@@ -268,24 +297,14 @@
         <div v-if="!arrorFlag">
           <!-- 鼓励奖部分内容 -->
           <el-form-item :label="$t('groupBuy.consolationPrize')">
-            <span>{{form.rewardCouponId}}</span>
-            <span>
-              {{$t('groupBuy.consolationPrizeComment1')}}
-            </span>
-            <el-button @click="handleToCallDialog">{{$t('groupBuy.addCoupon')}}</el-button>
-            <span>
-              {{$t('groupBuy.consolationPrizeComment2')}}
-            </span>
-          </el-form-item>
-
-          <el-form-item :label="$t('groupBuy.consolationPrize')">
             <el-card class="box-card">
-              <div class="fontColor">买家拼团失败后给予一定奖励，可提升买家复购</div>
+              <div class="fontColor"> {{$t('groupBuy.consolationPrizeComment1')}}</div>
               <div class="middleContainer">
                 <div
                   v-for="(item,index) in rewardCouponList"
                   :key="index"
                   class="rewardCouponInfo"
+                  style="margin-right: 5px;"
                 >
                   <section
                     class="couponImgWrapper"
@@ -293,34 +312,40 @@
                   >
                     <div class="coupon_list_top">
                       <span>￥</span>
-                      <span class="number">10</span>
+                      <span class="number">{{item.denomination}}</span>
                     </div>
-                    <div class="coupon_center_limit">满100元使用</div>
-                    <div class="coupon_center_number">剩余10张</div>
+                    <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
                       style="font-size: 12px"
                     >领取</div>
                   </section>
-                  <span class="deleteIcon">×</span>
+                  <span
+                    class="deleteIcon"
+                    @click="deleteCouponImg(index)"
+                  >×</span>
                 </div>
 
                 <div
                   class="rewardCouponInfo"
+                  @click="handleToCallDialog()"
                   v-if="rewardCouponList.length<5"
                   style="line-height:normal"
                 >
-                  <el-image
-                    class="picture"
-                    fit="scale-down"
-                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                    style="width:78px;height:78px;cursor:pointer"
-                  ></el-image>
-                  <p class="textDesc">添加优惠券</p>
+                  <div>
+                    <el-image
+                      fit="scale-down"
+                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                      style="width:78px;height:78px;cursor:pointer;"
+                    ></el-image>
+                  </div>
+                  <br>
+                  <p class="textDesc">{{$t('groupBuy.addCoupon')}}</p>
                 </div>
               </div>
 
-              <div class="fontColor">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+              <div class="fontColor">{{$t('groupBuy.consolationPrizeComment2')}}</div>
             </el-card>
           </el-form-item>
 
@@ -335,8 +360,13 @@
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
       />
-      <!--添加优惠卷弹窗-->
-      <addCouponDialog @checkReturnFormat="handleToCheck" />
+
+      <!--添加优惠卷-->
+      <addCouponDialog
+        @handleToCheck="handleToCheck"
+        :tuneUpCoupon="showCouponDialog"
+        :couponBack="couponIdList"
+      />
     </wrapper>
 
     <wrapper>
@@ -370,6 +400,15 @@ export default {
     actShare
   },
   props: ['isEdite', 'editData'],
+  filters: {
+    formatLeastConsume (useConsumeRestrict, leastConsume) {
+      if (useConsumeRestrict === 0) {
+        return `不限制`
+      } else {
+        return `满${leastConsume}元可用`
+      }
+    }
+  },
   data () {
     return {
       // from 表单数据
@@ -465,7 +504,9 @@ export default {
         }
       ],
       rewardCouponList: [],
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+      showCouponDialog: false,
+      couponIdList: []
     }
   },
   mounted () {
@@ -537,14 +578,33 @@ export default {
         this.form.product = res.content
       })
     },
-    // 选择优惠券弹窗
-    handleToCallDialog () {
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.couponList
+
+    // 确认选择优惠券-新增
+    handleToCheck (data, index) {
+      console.log(data)
+      console.log(this.rewardCouponList)
+      if (this.rewardCouponList.length >= 5) {
+        return
       }
-      this.$http.$emit('V-AddCoupon', obj)
+      this.rewardCouponList = data
     },
+    // 删除鼓励奖优惠券图片
+    deleteCouponImg (index) {
+      this.rewardCouponList.splice(index, 1)
+    },
+    // 选择优惠券弹窗-砍价失败后向买家赠送
+    handleToCallDialog () {
+      this.couponIdList = this.getCouponIdsArray(this.rewardCouponList)
+      this.showCouponDialog = !this.showCouponDialog
+    },
+    getCouponIdsArray (data) {
+      let res = []
+      data.forEach((item, index) => {
+        res.push(item)
+      })
+      return res
+    },
+
     arrayToString (arr) {
 
     },
@@ -576,18 +636,6 @@ export default {
           break
       }
       this.form.product = price
-    },
-    // 优惠卷回调
-    handleToCheck (data) {
-      console.log('优惠卷', data)
-      let couponKey = []
-      data.map((item) => {
-        couponKey.push(item.id)
-      })
-      this.couponList = data
-      this.form.rewardCouponId = couponKey.toString()
-      console.log('conpon', couponKey.toString())
-      console.log('conpon', this.couponList)
     },
 
     // 改变箭头事件
@@ -658,21 +706,23 @@ export default {
   text-align: center;
 }
 .rewardCouponInfo {
-  display: inline-flex;
+  display: inline-block;
   position: relative;
   width: 100px;
-  height: 100px;
+  height: 96px;
   margin-bottom: 10px;
   background: #fff;
   border: 1px solid #e4e4e4;
   cursor: pointer;
   text-align: center;
+  border-radius: 10px;
 }
 .picture {
   margin-top: 10px;
 }
 .textDesc {
   line-height: normal;
+  margin-top: -38px;
   color: #999;
 }
 .couponImgWrapper {
@@ -717,5 +767,27 @@ export default {
   padding: 10px 0;
   background-color: #fff;
   text-align: center;
+}
+.wrapper {
+  margin: 10px 0 !important;
+}
+.tableHeader th {
+  /* background: green;
+  border: none;
+  height: 36px !important;
+  font-weight: bold;
+  color: red !important;
+  padding: 8px 10px; */
+  background: red;
+  font-weight: bold;
+}
+.el-table__header {
+  height: 35px !important;
+  background: red !important;
+}
+.settings {
+  margin-right: 30px;
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>

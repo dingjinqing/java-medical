@@ -195,6 +195,8 @@ export default {
       if (value === '1') {
         if (this.srcList.src === `${this.$imageHost}/image/admin/add_img.png`) {
           callback(new Error('请选择自定义图标'))
+        } else {
+          callback()
         }
       } else { callback() }
     }
