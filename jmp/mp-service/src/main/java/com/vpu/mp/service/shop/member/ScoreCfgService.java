@@ -249,15 +249,14 @@ public class ScoreCfgService extends BaseShopConfigService {
 	 * @throws IllegalArgumentException 
 	 */
 	public ScoreCfgVo getShopScoreCfg() {
-		String[] fieldsStr = ScoreCfgVo.getFields();
-		Field[] fields = ScoreCfgVo.class.getFields();
+
 		ScoreCfgVo vo = new ScoreCfgVo();
 		
-		//代码优化
-		//查询配置文件的key-value
+		// 代码优化
+		// 查询配置文件的key-value
 		Map<String, String> intoMap = db().select(SHOP_CFG.K,SHOP_CFG.V).from(SHOP_CFG).fetch().intoMap(SHOP_CFG.K, SHOP_CFG.V);
 		ObjectMapper objectMapper = new ObjectMapper();
-		//将查询的结果赋值到pojo
+		// 将查询的结果赋值到pojo
 		vo = objectMapper.convertValue(intoMap, ScoreCfgVo.class);
 
 		

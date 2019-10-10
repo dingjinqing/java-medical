@@ -130,7 +130,7 @@ public class ScoreService extends ShopBaseService {
 						}
 						/** -消耗积分 */
 						//useUserScore(userId, Math.abs(score), orderSn);
-						useUserScore(userId, Math.abs(score));
+						useUserScore(userId, Math.abs(score),orderSn);
 					}
 			
 				}catch(MpException e) {
@@ -277,12 +277,16 @@ public class ScoreService extends ShopBaseService {
 	 * @return true操作成功，false无可用积分
 	 * @throws MpException
 	 */
-	public boolean useUserScore(Integer userId, int score) throws MpException {
+	public boolean useUserScore(Integer userId, int score,String orderSn) throws MpException {
 	
 		while (true) {
 
 			/** 1 获取最早一条可用记录 */
 			UserScoreRecord userRecord = getEarlyUsableRecord(userId);
+			/** 更新 关联其他属性：例如order_sn */
+			if(!StringUtil.isBlank(orderSn)) {
+				userRecord.setIdentityId(userRecord.getIdentityId()+","+orderSn);
+			}
 			if (userRecord == null) {
 				throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
 			}

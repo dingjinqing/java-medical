@@ -768,6 +768,7 @@ public class MemberCardService extends ShopBaseService {
 			// 获取头像
 			String avatar = saas().shop.getShopAvatarById(this.getShopId());	
 			result.dataList.stream().forEach(item->item.setAvatar(avatar));
+			
 		}
 		return result;
 	}
