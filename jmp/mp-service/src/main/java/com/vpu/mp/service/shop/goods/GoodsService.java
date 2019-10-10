@@ -1275,10 +1275,9 @@ public class GoodsService extends ShopBaseService {
      * @param goodsId
      * @return
      */
-    private List<GoodsGradePrd> selectGoodsGradePrd(Integer goodsId) {
-        List<GoodsGradePrd> goodsGradePrds = db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.eq(goodsId))
+    public List<GoodsGradePrd> selectGoodsGradePrd(Integer goodsId) {
+        return db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.eq(goodsId))
             .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class);
-        return goodsGradePrds;
     }
     /**
      * 批量获取商品规格会员价
@@ -1286,10 +1285,9 @@ public class GoodsService extends ShopBaseService {
      * @param goodsIds
      * @return
      */
-    private List<GoodsGradePrd> selectGoodsGradePrd(List<Integer> goodsIds) {
-        List<GoodsGradePrd> goodsGradePrds = db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.in(goodsIds))
+    public List<GoodsGradePrd> selectGoodsGradePrd(List<Integer> goodsIds) {
+        return db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.in(goodsIds))
             .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class);
-        return goodsGradePrds;
     }
     /**
      * 获取商品专享会员卡
