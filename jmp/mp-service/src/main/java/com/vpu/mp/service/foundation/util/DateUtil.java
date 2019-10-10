@@ -177,4 +177,12 @@ public final class DateUtil {
 		return Timestamp.valueOf(dateFormat(DATE_FORMAT_SIMPLE));
 	}
 
+	
+	/**
+	 * 获取本地的时间
+	 */
+	public static Timestamp getLocalTimeDateBySelf(String format) {
+		return Timestamp.valueOf(dateFormat(format));
+	}
+	
 }
