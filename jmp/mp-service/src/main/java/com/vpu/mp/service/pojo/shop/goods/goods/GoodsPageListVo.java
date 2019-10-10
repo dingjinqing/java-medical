@@ -34,10 +34,10 @@ public class GoodsPageListVo {
      * 商品对应的规格数据,未使用
      */
     private List<GoodsSpecProduct> goodsSpecProducts;
+    private Boolean isDefaultPrd;
     /**
      * 查询商品对应的规格时该值为规格id,或者表示默认规格的id，否则为空
      */
-    private Boolean isDefaultPrd;
     private Integer prdId;
     private String prdDesc;
     private String prdImg;

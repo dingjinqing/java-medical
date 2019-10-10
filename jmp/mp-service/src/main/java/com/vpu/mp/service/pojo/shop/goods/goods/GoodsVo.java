@@ -23,6 +23,15 @@ public class GoodsVo extends Goods {
     private String goodsPageName;
     private String goodsImgPath;
     private List<String> goodsImgsPath;
+    /**
+     * 商品视频全路径
+     */
+    private String goodsVideoUrl;
+
+    /**
+     * 商品视频快照全路径
+     */
+    private String goodsVideoImgUrl;
 
     @Override
     public List<Integer> getGoodsLabels() {

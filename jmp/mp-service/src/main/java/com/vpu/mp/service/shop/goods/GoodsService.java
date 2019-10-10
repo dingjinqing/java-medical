@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -72,6 +73,8 @@ public class GoodsService extends ShopBaseService {
     protected QrCodeService qrCodeService;
     @Autowired
     protected ImageService imageService;
+    @Autowired
+    protected UpYunConfig upYunConfig;
     @Autowired
     protected ShopMpDecorationService shopMpDecorationService;
 
@@ -1205,6 +1208,10 @@ public class GoodsService extends ShopBaseService {
         goodsVo.setGoodsImgPath(goodsVo.getGoodsImg());
         goodsVo.setGoodsImg(getImgFullUrlUtil(goodsVo.getGoodsImg()));
 
+        // 设置商品视频全路径信息
+        goodsVo.setGoodsVideoUrl(getVideoFullUrlUtil(goodsVo.getGoodsVideo(),true));
+        goodsVo.setGoodsVideoImgUrl(getVideoFullUrlUtil(goodsVo.getGoodsVideoImg(),false));
+
         // 设置幅图片
         setGoodsImgs(goodsVo);
 
@@ -1280,16 +1287,6 @@ public class GoodsService extends ShopBaseService {
             .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class);
     }
     /**
-     * 批量获取商品规格会员价
-     *
-     * @param goodsIds
-     * @return
-     */
-    public List<GoodsGradePrd> selectGoodsGradePrd(List<Integer> goodsIds) {
-        return db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.in(goodsIds))
-            .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class);
-    }
-    /**
      * 获取商品专享会员卡
      *
      * @param goodsId 商品id
@@ -1319,13 +1316,6 @@ public class GoodsService extends ShopBaseService {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
             fetchMap(GOODS.GOODS_ID);
     }
-    /**
-     * 通过商品id查询商品
-     */
-    public Optional<GoodsRecord> getGoodsById(Integer goodsId) {
-        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
-            fetchOptional();
-    }
 
     /**
      * 获取商品小程序展示页面
@@ -1354,6 +1344,20 @@ public class GoodsService extends ShopBaseService {
             return null;
         } else {
             return imageService.imageUrl(relativePath);
+        }
+    }
+
+    /**
+     *  商品视频和快照图片相对路径转换全路径
+     * @param relativePath 相对路径
+     * @param videoOrSnapShop true: 视频，false: 快照
+     * @return 全路径
+     */
+    private String getVideoFullUrlUtil(String relativePath,boolean videoOrSnapShop){
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return videoOrSnapShop ? upYunConfig.videoUrl(relativePath) : upYunConfig.imageUrl(relativePath);
         }
     }
 }
