@@ -359,6 +359,7 @@
         @resultGoodsRow="choosingGoodsResult"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
+        :showTips="true"
       />
 
       <!--添加优惠卷-->

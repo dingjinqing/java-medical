@@ -7,7 +7,7 @@
       width="70%"
       :modal-append-to-body="false"
     >
-        <div class="tips">
+        <div class="tips" v-if="showTips">
             <i class="el-icon-warning-outline"></i>
             <span>规则说明：同一个商品若同时参加多个营销活动在商品列表中优先显示规则为 秒杀 > 定金膨胀 > 砍价 > 多人拼团 > 首单特惠 > 限时降价</span>
         </div>
@@ -208,7 +208,7 @@
           </table>
 
           <div class="tablefooter">
-              <div style="display: block;float: left;margin-left: 15px;">
+              <div style="display: block;float: left;margin-left: 15px;" v-if="!singleElection">
                   <el-checkbox v-model="checkAllFlag" @change="checkedAllRow(checkAllFlag)" ></el-checkbox><i class="tdTopText">选择全部</i>
               </div>
               <div style="display: block;float: right">
@@ -265,14 +265,20 @@ export default {
       type: Boolean,
       default: false
     },
-    // 弹出窗口
-    tuneUpChooseGoods: Boolean,
     // 单选/多选
     singleElection: {
       type: Boolean,
       default: false
     },
+    // 多选最大数量
     checkedNumMax: Number,
+    // 是否显示提示
+    showTips: {
+      type: Boolean,
+      default: false
+    },
+    // 弹出窗口
+    tuneUpChooseGoods: Boolean,
     // 选择的商品id
     chooseGoodsBack: {
       type: Array,
@@ -328,6 +334,7 @@ export default {
   },
   watch: {
     chooseGoodsBack () {
+      console.log('chooseGoodsBack')
       this.checkedIdList = this.chooseGoodsBack
     },
     tuneUpChooseGoods () {
