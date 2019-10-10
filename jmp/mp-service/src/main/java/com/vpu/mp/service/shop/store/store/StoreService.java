@@ -145,7 +145,8 @@ public class StoreService extends ShopBaseService {
      */
     public void batchUpdateStore(List<StorePojo> storeList) {
         List<StoreRecord> resultList = new ArrayList<StoreRecord>(64) {
-            {
+			private static final long serialVersionUID = 8882723512039998814L;
+			{
                 storeList.forEach(store -> {
                     StoreRecord record = new StoreRecord();
                     assign(store, record);

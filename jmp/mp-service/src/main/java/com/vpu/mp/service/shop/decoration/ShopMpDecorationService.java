@@ -37,7 +37,6 @@ import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBase;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;

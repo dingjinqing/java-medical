@@ -3,11 +3,12 @@ package com.vpu.mp.service.foundation.exception;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 
 /**
- * @author liufei
- * @date 9/17/2019
+ * @author 
+ * @date 
  */
 public class BusinessException extends RuntimeException {
-    JsonResultCode code;
+	private static final long serialVersionUID = -8931074513310486813L;
+	JsonResultCode code;
 
     public BusinessException(JsonResultCode code){
         this.code = code;

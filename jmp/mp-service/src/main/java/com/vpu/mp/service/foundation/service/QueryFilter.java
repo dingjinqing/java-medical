@@ -11,10 +11,11 @@ import org.jooq.ExecuteContext;
  *
  * @author 郑保乐
  */
-@Slf4j
 public class QueryFilter extends SqlExcuteListener {
 
-    @Override
+	private static final long serialVersionUID = -3172666378145934837L;
+
+	@Override
     public void renderEnd(ExecuteContext ctx) {
         super.renderEnd(ctx);
         if (ctx.sql().matches("^(?i:(UPDATE|DELETE)(?!.* WHERE ).*)$")) {
@@ -23,8 +24,9 @@ public class QueryFilter extends SqlExcuteListener {
     }
 
     private class DeleteOrUpdateWithoutWhereException extends RuntimeException {
+		private static final long serialVersionUID = 1263216828793967446L;
 
-        @Override
+		@Override
         public String getMessage() {
             return "Delete or update operation without where cannot be executed.";
         }

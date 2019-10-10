@@ -1,9 +1,11 @@
 package com.vpu.mp.service.foundation.database;
 
+import static org.jooq.impl.DSL.cast;
+import static org.jooq.impl.DSL.concat;
+
 import java.sql.Timestamp;
 import java.util.Arrays;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SortField;
@@ -11,9 +13,6 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.jooq.impl.DSL.cast;
-import static org.jooq.impl.DSL.concat;
 
 
 /**
@@ -83,7 +82,7 @@ public class DslPlus {
      * @param <T>
      * @return
      */
-    public static <T> Field<?> groupConCat(Field<?> field, SortField<?> sortField, String separator) {
+    public static Field<?> groupConCat(Field<?> field, SortField<?> sortField, String separator) {
         // TODO: 2019/8/2    函数有最大长度限制1024 #SET GLOBAL group_concat_max_len = 1024;
         return DSL.field("group_concat({0} order by {1}   separator '{2}')",field,sortField,separator);
     }

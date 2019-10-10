@@ -51,14 +51,14 @@ public class ShopOverviewService extends MainBaseService {
 			return false;
 		}
 		byte isBind = 0;
-		if (act.equals("bind")) {
+		if ("bind".equals(act)) {
 			// 绑定
 			isBind = 1;
 		}
-		if (act.equals("del_bind")) {
+		if ("del_bind".equals(act)) {
 			// 解绑
 			isBind = 0;
-		}if(!(act.equals("bind")||act.equals("del_bind"))) {
+		}if(!("bind".equals(act)||"del_bind".equals(act))) {
 			logger().debug("绑定解绑传入act参数错误："+act);
 			return false;
 		}

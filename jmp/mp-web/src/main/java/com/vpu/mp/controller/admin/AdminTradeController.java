@@ -121,7 +121,8 @@ public class AdminTradeController extends AdminBaseController {
             return fail(JsonResultCode.CODE_FAIL);
         }
         return success(new HashMap<String, Object>(2) {
-            {
+			private static final long serialVersionUID = 533497335184152545L;
+			{
                 put("trade_process_config", param);
                 put("delivery_list", deliveryList);
             }

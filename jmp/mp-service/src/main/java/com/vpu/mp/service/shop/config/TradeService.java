@@ -703,7 +703,8 @@ public class TradeService extends BaseShopConfigService {
         Byte balanceFirst = this.getBalanceFirst();
         Byte scoreFirst = this.getScoreFirst();
         return new HashMap<String, Byte>(3) {
-            {
+			private static final long serialVersionUID = -8116540563458868251L;
+			{
                 put(K_CARD_FIRST, cardFirst);
                 put(K_BALANCE_FIRST, balanceFirst);
                 put(K_SCORE_FIRST, scoreFirst);
@@ -843,7 +844,8 @@ public class TradeService extends BaseShopConfigService {
      */
     public void confTermsOfService(String document) throws JsonProcessingException {
         String serviceDocument = MAPPER.writeValueAsString(new HashMap<String, Object>(2) {
-            {
+			private static final long serialVersionUID = 7869445296870051056L;
+			{
                 put(DOCUMENT, document);
                 put(UPDATE_TIME, System.currentTimeMillis());
             }
@@ -886,7 +888,8 @@ public class TradeService extends BaseShopConfigService {
         List<Map<String, String>> allDelivery = logisticsService.getAllDelivery();
         //组合上述两个列表信息得到返回果
         Map<String, String> temp = new HashMap<String, String>(allDelivery.size()) {
-            {
+			private static final long serialVersionUID = 6286507281294185183L;
+			{
                 allDelivery.forEach(d -> put(d.get(DELIVERY_ID), d.get(DELIVERY_NAME)));
             }
         };
