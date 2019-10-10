@@ -135,7 +135,7 @@ public class WxAppAuth {
 
 		UserDetailRecord userDetail = shopApp.user.userDetail.getUserDetailByUserId(user.getUserId());
 		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder().openId(user.getWxOpenid())
-				.unionid(user.getWxUnionId()).mobile(user.getMobile()).build();
+				.unionid(user.getWxUnionId()).mobile(user.getMobile() != null ? user.getMobile() : "").build();
 
 		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
