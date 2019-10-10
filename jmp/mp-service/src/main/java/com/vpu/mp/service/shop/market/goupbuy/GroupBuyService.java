@@ -305,6 +305,21 @@ public class GroupBuyService extends ShopBaseService {
         return analysisVo;
     }
 
+    /**
+     * 根据goodsId获取拼团定义
+     * @param goodsId 商品id
+     * @return List<GroupBuyProductDefineRecord>
+     */
+    public List<GroupBuyProductDefineRecord> getGroupBuyProductByGoodsId(Integer goodsId){
+        return db().selectFrom(GROUP_BUY_DEFINE)
+            .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+            .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
+            .and(GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId))
+            .and(GROUP_BUY_DEFINE.START_TIME.lessThan(DateUtil.getLocalDateTime()))
+            .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(DateUtil.getLocalDateTime()))
+            .fetchInto(GroupBuyProductDefineRecord.class);
+    }
 
     private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
         for (ActiveDiscountMoney data : discountMoneyList) {
