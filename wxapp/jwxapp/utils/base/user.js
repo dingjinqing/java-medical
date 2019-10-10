@@ -11,11 +11,13 @@ var user = {
             path_query: wx.getLaunchOptionsSync(),
             system_verion: wx.getSystemInfoSync().system
           };
+          console.log('登录', data)
           api.api("/api/wxapp/login", function(d) {
+            console.log('返回信息',d)
             if (d.error == 0) {
-              cache.setCache("openid", d.content.openid);
+              cache.setCache("openid", d.content.res.openid);
               cache.setCache("user_id", d.content.user_id);
-              cache.setCache("mobile", d.content.mobile);
+              cache.setCache("mobile", d.content.res.mobile);
               cache.setCache("nickName", d.content.username);
               cache.setCache("avatarUrl", d.content.user_avatar);
               cache.setCache("shop_flag", d.content.shop_flag);
