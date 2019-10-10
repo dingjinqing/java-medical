@@ -275,6 +275,19 @@ public class BargainService extends ShopBaseService  {
     }
 
     /**
+     * 根据商品id获取砍价信息
+     * @param goodsId 商品id
+     * @return BargainRecord
+     */
+    public BargainRecord getBargainRecordByGoodsId(Integer goodsId){
+	    return db().select(BARGAIN.ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
+            .from(BARGAIN)
+            .where(BARGAIN.STATUS.eq(STATUS_DISABLED))
+            .and(BARGAIN.START_TIME.lessThan(DateUtil.getLocalDateTime()))
+            .and(BARGAIN.END_TIME.greaterThan(DateUtil.getLocalDateTime()))
+            .fetchOneInto(BARGAIN);
+    }
+    /**
      * 获取小程序码
      */
     public ShareQrCodeVo getMpQrCode(Integer id) {
