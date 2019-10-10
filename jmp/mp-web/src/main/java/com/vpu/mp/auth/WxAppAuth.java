@@ -107,7 +107,7 @@ public class WxAppAuth {
 		record2.setUserId(user.getUserId());
 		record2.setUserIp(Util.getCleintIp(request));
 		shopApp.userLoginRecordService.userLoginRecord(user.getUserId(), record2);
-		
+		log.info("积分相关操作");
 		//积分相关操作
 		UserScoreRecord scoreInDay = shopApp.member.score.getScoreInDay(user.getUserId(), "score_login");
 		//获取登录送积分开关配置
