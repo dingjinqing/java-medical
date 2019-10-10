@@ -135,6 +135,7 @@ public class CardConstant {
 	public static final Byte MEMBER_CARD_DELETE = 2;
 	/** 是否专属购买商品 0不是 1是 */
 	public static final Byte PAY_OWN_GOOD_YES=1; 
+	public static final String LOWEST_GRADE = "0";
 	/** ----------------------------------------------------------*/
 	
 	

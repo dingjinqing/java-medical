@@ -57,6 +57,9 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -73,6 +76,7 @@ import javax.validation.Valid;
 
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
+import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.tools.StringUtils;
@@ -1699,7 +1703,26 @@ public class MemberCardService extends ShopBaseService {
 		return container.toString();
 	}
 	
-	
+	/**
+	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回null
+	 * @param user_id
+	 * @return
+	 */
+	public String getUserGrade(Integer user_id) {
+		
+		Record1<String> result = db().select(MEMBER_CARD.GRADE).from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
+			.where(USER_CARD.FLAG.eq(CARD_USING))
+			.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
+			.and(USER_CARD.USER_ID.eq(user_id))
+			.and((MEMBER_CARD.ACTIVATION.eq(ACTIVE_NO)).or(MEMBER_CARD.ACTIVATION.eq(ACTIVE_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
+			.fetchAny();
+		
+		if(result != null) {
+			return result.get(MEMBER_CARD.GRADE);
+		}else {
+			return LOWEST_GRADE;
+		}
+	}
 
 	
 	
