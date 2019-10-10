@@ -2,11 +2,11 @@ package com.vpu.mp.service.shop.user.user;
 
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 
-import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 
@@ -22,7 +22,7 @@ public class UserLoginRecordService extends ShopBaseService {
 	public void userLoginRecord(Integer userId, UserLoginRecordVo vo) {
 		logger().info("记录小程序登录");
 		UserLoginRecordRecord res = db().selectFrom(USER_LOGIN_RECORD).where(USER_LOGIN_RECORD.USER_ID.eq(userId))
-				.and(USER_LOGIN_RECORD.CREATE_TIME.gt(DSL.currentTimestamp())).fetchAny();
+				.and(USER_LOGIN_RECORD.CREATE_TIME.gt(DateUtil.getLocalTimeDateBySelf("yyyy-MM-dd HH:00:00"))).fetchAny();
 		// 有记录更新登陆次数，没有记录加记录 一小时一条数据
 		UserLoginRecordRecord record2=db().newRecord(USER_LOGIN_RECORD);
 		FieldsUtil.assignNotNull(vo, record2);
