@@ -10,10 +10,14 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
@@ -84,21 +88,52 @@ public class WxAppAuth {
 	 * 登录账户
 	 * 
 	 * @param param
+	 * @param request 
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public WxAppSessionUser login(WxAppLoginParam param) throws WxErrorException {
+	public WxAppSessionUser login(WxAppLoginParam param, HttpServletRequest request) throws WxErrorException {
 		Integer shopId = shopId();
 		log.info("登录店铺"+shopId);
 		ShopApplication shopApp = saas.getShopApp(shopId);
 		ShopRecord shop = saas.shop.getShopById(shopId);
 		UserRecord user = shopApp.user.loginGetUser(param);
 		if(user==null) {
+			log.info("登录失败，user为null");
 			return null;
+		}
+		//更新记录表
+		UserLoginRecordRecord record2=new UserLoginRecordRecord();
+		record2.setUserId(user.getUserId());
+		record2.setUserIp(Util.getCleintIp(request));
+		shopApp.userLoginRecordService.userLoginRecord(user.getUserId(), record2);
+		
+		//积分相关操作
+		UserScoreRecord scoreInDay = shopApp.member.score.getScoreInDay(user.getUserId(), "score_login");
+		//获取登录送积分开关配置
+		ShopCfgRecord isLoginScore = shopApp.score.getScoreNum("login_score");
+		if(scoreInDay!=null||(isLoginScore==null||isLoginScore.getV()=="0")) {
+			//没有登录送积分设置
+			log.info("没有设置登录送积分");
+			//return 
+		}else {
+			log.info("设置登录送积分");
+			ShopCfgRecord scoreNum = shopApp.score.getScoreNum("score_login");
+			if(scoreNum.getV()!="0") {
+				UserScoreVo data=new UserScoreVo();
+				data.setUserId(user.getUserId());
+				//php注释掉后面addUserScore中对ScoreDis的处理
+				//data.setScoreDis(shopApp.user.getUserByUserId(user.getUserId()).getScore());
+				data.setScore(Integer.parseInt(scoreNum.getV()));
+				data.setDesc("score_login");
+				data.setRemark("每日登录送积分");
+				data.setShopId(shopId);
+				data.setExpireTime(shopApp.member.score.getScoreExpireTime());
+				shopApp.member.score.addUserScore(data, "0", (byte)5,  (byte)1);
+			}
 		}
 		
 		UserDetailRecord userDetail = shopApp.user.userDetail.getUserDetailByUserId(user.getUserId());
-
 		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder()
 				.openId(user.getWxOpenid())
 				.unionid(user.getWxUnionId())
