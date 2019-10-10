@@ -7,12 +7,16 @@
       width="70%"
       :modal-append-to-body="false"
     >
+        <div class="tips">
+            <i class="el-icon-warning-outline"></i>
+            <span>规则说明：同一个商品若同时参加多个营销活动在商品列表中优先显示规则为 秒杀 > 定金膨胀 > 砍价 > 多人拼团 > 首单特惠 > 限时降价</span>
+        </div>
       <div class="choiseDialog">
         <div>
           <ul>
             <li>平台分类：
               <el-select
-                v-model="goodsCatId"
+                v-model="requestParam.catId"
                 placeholder="请选择平台分类"
                 size="small"
               >
@@ -32,7 +36,7 @@
             </li>
             <li>商家分类：
               <el-select
-                v-model="goodsSortId"
+                v-model="requestParam.goodsSortId"
                 placeholder="请选择商家分类"
                 size="small"
               >
@@ -51,7 +55,7 @@
             </li>
             <li>商品标签：
               <el-select
-                v-model="goodsLabelId"
+                v-model="requestParam.goodsLabelId"
                 placeholder="请选择商品标签"
                 size="small"
               >
@@ -66,12 +70,12 @@
             </li>
             <li class="rangeLi">商品价格范围：
               <el-input
-                v-model="shopPriceLow"
+                v-model="requestParam.shopPriceLow"
                 placeholder="请输入内容"
                 size="small"
               ></el-input>&nbsp;元至&nbsp;
               <el-input
-                v-model="shopPriceHigh"
+                v-model="requestParam.shopPriceHigh"
                 placeholder="请输入内容"
                 size="small"
               ></el-input>
@@ -80,21 +84,21 @@
           <ul>
             <li>商品名称：
               <el-input
-                v-model="goodsName"
+                v-model="requestParam.goodsName"
                 placeholder="请输入商品名称"
                 size="small"
               ></el-input>
             </li>
             <li>商品货号：
               <el-input
-                v-model="goodsSn"
+                v-model="requestParam.goodsSn"
                 placeholder="请输入商品货号"
                 size="small"
               ></el-input>
             </li>
             <li>商品品牌：
               <el-select
-                v-model="goodsBrandId"
+                v-model="requestParam.goodsBrandId"
                 placeholder="请选择商品品牌"
                 size="small"
               >
@@ -109,18 +113,24 @@
             </li>
           </ul>
           <div class="middleBbtnDiv">
-            <el-button
-              @click="selectGoodsData"
-              type="primary"
-              size="small"
-              style="margin-right:10px"
-            >筛选</el-button>
-            <el-button
-              @click="resetFilterData"
-              type="info"
-              plain
-              size="small"
-            >重置筛选条件</el-button>
+              <div>
+                  <el-button
+
+                          @click="selectGoodsData"
+                          type="primary"
+                          size="small"
+                          style="margin-right:10px"
+                  >筛选</el-button>
+                  <el-button
+                          @click="resetFilterData"
+                          type="info"
+                          plain
+                          size="small"
+                  >重置筛选条件</el-button>
+              </div>
+              <div style="padding: 10px;">
+                  <span>已经选择{{checkedIdList.length}}件商品</span>
+              </div>
           </div>
         </div>
         <!--选择商品弹窗表格-->
@@ -128,9 +138,10 @@
           <table width='100%'>
             <thead>
               <tr>
-                <td>
-                  <el-checkbox v-model="checkedAll"></el-checkbox><i class="tdTopText">全选本页</i>
+                <td v-if="!singleElection" >
+                  <el-checkbox v-model="checkPageAllFlag" @change="checkedPageRow(checkPageAllFlag)" ></el-checkbox><i class="tdTopText">全选本页</i>
                 </td>
+
                 <td>商品信息</td>
                 <td>商品货号</td>
                 <td>售价</td>
@@ -143,23 +154,23 @@
             </thead>
             <tbody v-if="tbodyFlag">
               <tr
-                v-for="(item,index) in trList"
+                v-for="(item,index) in tableData"
                 :key="index"
-                :class="clickIindex===index?'clickClass':''"
-                @click.prevent="handleClick(index,item)"
+                :class="{goods_tr_choose: item.ischecked}"
+                @click.prevent="handleRowClick(index,item,$event)"
               >
-                <td>
-                  <div class="tdCenter">
-                    <el-checkbox v-model="item.ischecked"></el-checkbox>
+                <td v-if="!singleElection">
+                  <div class="tdCenter" >
+                    <el-checkbox v-model="item.ischecked" ></el-checkbox>
                   </div>
 
                 </td>
                 <td
                   class="isLeft"
-                  :class="isCenterFlag?'tdCenter':''"
+                  :class="loadProduct?'tdCenter':''"
+                  v-if="!loadProduct"
                 >
                   <img
-                    v-if="!isCenterFlag"
                     :src="item.prdImg || item.goodsImg"
                   >
                   <span>{{item.goodsName}}</span>
@@ -195,17 +206,18 @@
             </tbody>
 
           </table>
+
           <div class="tablefooter">
-            <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.total}}</div>
-            <el-pagination
-              @current-change="handleCurrentChange"
-              :current-page.sync="currentPage"
-              :page-size="20"
-              layout="prev, pager, next, jumper"
-              :total="total"
-            >
-            </el-pagination>
+              <div style="display: block;float: left;margin-left: 15px;">
+                  <el-checkbox v-model="checkAllFlag" @change="checkedAllRow(checkAllFlag)" ></el-checkbox><i class="tdTopText">选择全部</i>
+              </div>
+              <div style="display: block;float: right">
+                  <pagination
+                          :page-params.sync="pageParams"
+                          @pagination="paginationChange"/>
+              </div>
           </div>
+
         </div>
         <div
           class="noData"
@@ -234,25 +246,34 @@
 </template>
 <script>
 import {
-  queryGoodsIdRequest,
-  classificationSelectRequest,
+  getProductIdsListAll,
+  getGoodsIdsListAll,
   allGoodsQueryRequest,
   getGoodsProductList
 } from '@/api/admin/brandManagement.js'
+import pagination from '@/components/admin/pagination/pagination.vue'
 import { getAllGoodsInitValue } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+
 export default {
+  components: {
+    pagination
+  },
   props: {
     // 是否加载规格
     loadProduct: {
       type: Boolean,
       default: false
     },
+    // 弹出窗口
     tuneUpChooseGoods: Boolean,
+    // 单选/多选
     singleElection: {
       type: Boolean,
       default: false
     },
+    checkedNumMax: Number,
+    // 选择的商品id
     chooseGoodsBack: {
       type: Array,
       default () {
@@ -262,123 +283,78 @@ export default {
   },
   data () {
     return {
-      // 顶部过滤条件和表格数据商品查询固定毕传字段
-      filterBaseParam: {
+      // 弹窗
+      choiseGooddialogVisible: false,
+      // 分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 3
+      },
+      // 筛选条件
+      requestParam: {
+        currentPage: 1,
+        pageRows: 3,
+        // 在售商品
         isOnSale: 1,
         isSaleOut: false,
-        // 查询商品时值为1，规格查询值为2
-        selectType: 1
+        catId: null,
+        sortId: null,
+        labelId: null,
+        lowShopPrice: null,
+        highShopPrice: null,
+        goodsName: null,
+        goodsSn: null,
+        brandId: null
       },
-      pageCount: 1,
-      total: null,
-      currentPage: 1,
-      pageRows: 20,
-      choiseGooddialogVisible: false,
-      goodsCatId: null,
+      // 表格数据
+      tableData: [],
+      // 下拉框数据
       goodsCatOptions: [],
-      goodsSortId: null,
       goodsSortOptions: [],
-      goodsLabelId: null,
       goodsLabelOptions: [],
-      shopPriceLow: null,
-      shopPriceHigh: null,
-      goodsName: null,
-      goodsSn: null,
-      goodsBrandId: null,
       goodsBrandOptions: [],
-      checkedAll: false,
-      tbodyFlag: true,
-      trList: [],
-      clickIindex: '',
-      isCenterFlag: '',
-      tdHiddenImg: this.$imageHost + '/upload/7467397/image/20190507/crop_N7Fu7EaKRtaZri18.gif',
-      logoImgUrl: '',
-      NameEnlishInput: '',
-      goodsIdsArr: [],
-      goodsRow: {},
-      selectgoodsNum: 0,
-      hxgoodsIds: [],
-      choiseOne: false,
-      urlLists: [] // 选中的商品url集合
+      allGoodsProductId: [],
+      // 本页全选
+      checkPageAllFlag: false,
+      // 全部选择
+      checkAllFlag: false,
+      // 选中的数据
+      checkedId: {},
+      checkedIdList: [],
+      checkedRow: {},
+      checkedRowList: [],
+      tbodyFlag: true
     }
   },
-  computed: {
-    ...mapGetters(['goodsIds', 'editGoodsId'])
-  },
   watch: {
-    checkedAll (newData, oldData) {
-      if (newData === true) {
-        this.trList.map((item, index) => {
-          item.ischecked = true
-        })
-      } else {
-        this.trList.map((item, index) => {
-          item.ischecked = false
-        })
-      }
+    chooseGoodsBack () {
+      this.checkedIdList = this.chooseGoodsBack
     },
     tuneUpChooseGoods () {
+      console.log('tuneUpChooseGoods')
       this.choiseGooddialogVisible = true
-      this.trList.forEach(item => {
-        item.ischecked = false
-      })
-      if (this.singleElection) {
-        this.choiseOne = true
-        this.trList.forEach(item => {
-          if (item.goodsId === this.chooseGoodsBack[0]) {
-            item.ischecked = true
-          }
-        })
-      } else {
-        this.trList.forEach(item => {
-          this.chooseGoodsBack.forEach(itemC => {
-            if (item.goodsId === itemC) {
-              item.ischecked = true
-            }
-          })
-        })
-      }
+      this.selectGoodsData()
     }
   },
   mounted () {
+    // 初始化数据
+    console.log('choosingGoods', 'mounted')
     this._initFilterDatas().then(res => {
-      this.defaultGrandClass()
+      // this.selectGoodsData()
     })
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
-    defaultGrandClass () {
-      if (this.editGoodsId !== 'add' && this.chooseGoodsBack && this.chooseGoodsBack.length > 0) {
-        let obj = {
-          'id': this.chooseGoodsBack
-        }
-        queryGoodsIdRequest(obj).then((res) => {
-          this.NameInput = res.content.brandName
-          this.NameEnlishInput = res.content.ename
-          this.logoImgUrl = res.content.logo
-          this.classSelectValue = res.content.classifyId
-          this.firstInput = res.content.first
-          this.radio = res.content.isRecommend.toString()
-          this.hxgoodsIds = res.content.goodsIds
-          this.selectgoodsNum = res.content.goodsIds.length
-        })
-      }
-      classificationSelectRequest().then((res) => {
-        if (!res) return
-        if (res.error === 0) {
-          this.options = res.content
-        }
-      })
-      this.selectGoodsData()
-    },
-    /* 初始化过滤条件下拉框数据 */
+    /* 初始化 */
     _initFilterDatas () {
-      if (this.loadProduct) {
-        this.filterBaseParam.selectType = 2
-      } else {
-        this.filterBaseParam.selectType = 1
+      let filterBaseParam = {
+        isOnSale: 1,
+        isSaleOut: false,
+        // 查询商品时值为1，规格查询值为2
+        selectType: this.loadProduct ? 2 : 1
       }
-      return getAllGoodsInitValue(this.filterBaseParam).then((res) => {
+      // 过滤条件下拉框数据
+      return getAllGoodsInitValue(filterBaseParam).then((res) => {
         if (!res) return
         if (res.error === 0) {
           this.goodsCatOptions = this._disposeGoodsSortAndCatData(res.content.sysCates, 'catId')
@@ -391,10 +367,8 @@ export default {
     /* 处理后台传入的商家分类数据 */
     _disposeGoodsSortAndCatData (data, idName) {
       let retObj = {}
-
       for (let i = 0; i < data.length; i++) {
         let item = data[i]
-
         // 是否自身节点被创建过（子节点先遍历到了）
         let selfItem = retObj[item[idName]]
         if (selfItem === undefined) {
@@ -405,7 +379,6 @@ export default {
           // 已创建过，（因提前遍历了子节点而创建）
           selfItem.item = item
         }
-
         let parentItem = retObj[item.parentId]
         // 有父亲直接插入
         if (parentItem !== undefined) {
@@ -415,9 +388,7 @@ export default {
           retObj[item.parentId] = { 'item': null, children: [selfItem] }
         }
       }
-
       let retArr = []
-
       if (data.length === 0) {
         return retArr
       }
@@ -432,46 +403,93 @@ export default {
       }
       return retArr
     },
-    // 行选中高亮
-    handleClick (index, item) {
-      this.clickIindex = index
-      // 单选模式
-      if (this.choiseOne) {
-        this.trList.forEach(tmpitem => {
-          if (item.goodsId === tmpitem.goodsId) {
-            tmpitem.ischecked = true
-          } else {
-            tmpitem.ischecked = false
+    /* 筛选商品或规格数据 */
+    selectGoodsData () {
+      let query = null
+      let queryAllId = null
+      if (this.loadProduct) {
+        query = getGoodsProductList
+        queryAllId = getProductIdsListAll
+      } else {
+        query = allGoodsQueryRequest
+        queryAllId = getGoodsIdsListAll
+      }
+      this.requestParam.currentPage = this.pageParams.currentPage
+      this.requestParam.pageRows = this.pageParams.pageRows
+      // 分页请求
+      query(this.requestParam).then((res) => {
+        if (!res) return
+        if (res.error === 0) {
+          console.log('selectGoodsData', this.checkedIdList, this.tableData)
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+          // 数据回显
+          this.hxTableData()
+        }
+      })
+      // 全部数据
+      if (!this.singleElection) {
+        queryAllId(this.requestParam).then(res => {
+          if (!res) return
+          if (res.error === 0) {
+            this.allGoodsProductId = res.content
+            console.log('getALLId', res)
           }
         })
-        this.goodsRow = item
-        return
-      }
-      this.trList[index].ischecked = !this.trList[index].ischecked
-      let flag = this.trList.filter((item, index) => {
-        return item.ischecked === false
-      })
-      if (!flag.length) {
-        this.checkedAll = true
-      } else {
-        this.checkedAll = false
       }
     },
-    // 选择商品弹窗确定
+    /* 数据回显,全选 */
+    hxTableData () {
+      this.tableData.forEach(item => {
+        item.ischecked = false
+        this.checkedIdList.forEach(checkeId => {
+          if (this.loadProduct) {
+            if (item.prdId === checkeId) { item.ischecked = true }
+          } else {
+            if (item.goodsId === checkeId) { item.ischecked = true }
+          }
+        })
+      })
+      let flag = this.tableData.filter((item, index) => {
+        return item.ischecked === false
+      })
+      if (flag.length === 0 && this.singleElection === false) {
+        this.checkPageAllFlag = true
+      } else {
+        this.checkPageAllFlag = false
+        this.checkAllFlag = false
+      }
+    },
+    /* 重置过滤条件数据 */
+    resetFilterData () {
+      this.requestParam = {
+        // 在售商品
+        isOnSale: 1,
+        isSaleOut: false
+      }
+    },
+    /* 确定 */
     handleChoiseGooddialog () {
-      this.$http.$emit('choseGoodsId', this.goodsIdsArr)
+      // 关闭对话框
+      this.choiseGooddialogVisible = false
+      // 单选id
+      this.$emit('resultGoodsRow', this.checkedRow)
+      // 多选id
+      this.$http.$emit('choseGoodsId', this.checkedIdList)
+      this.transmitGoodsIds(this.checkedIdList)
+      this.$emit('resultGoodsIds', this.checkedIdList)
+      this.$emit('result', this.checkedIdList)
+      this.$emit('resultGoodsDatas', this.checkedRowList)
 
-      this.goodsIdsArr = []
-      this.urlLists = []
+      let goodsIdsArr = []
+      let urlLists = []
       // 选中行的商品或规格信息结合
-      let selectedGoodsDatas = []
-      this.trList.forEach(item => {
+      this.tableData.forEach(item => {
         if (item.ischecked) {
           let _goodsId = item.goodsId
           if (this.loadProduct) {
             _goodsId = item.prdId
           }
-          selectedGoodsDatas.push(item)
           this.goodsIdsArr.push(_goodsId)
           this.urlLists.push({
             goodsImg: item.goodsImg,
@@ -479,98 +497,110 @@ export default {
           })
         }
       })
-      this.transmitGoodsIds(this.goodsIdsArr)
-      // 关闭对话框
-      this.choiseGooddialogVisible = false
-      this.$emit('result', this.goodsIdsArr)
-      // 在商品标签添加时使用到，回传选中的商品信息
-      this.$emit('resultGoodsDatas', selectedGoodsDatas)
-      this.$emit('resultGoodsRow', this.goodsRow)
-      this.$emit('resultGoodsIds', this.goodsIdsArr)
       // 把选中的id集合和url集合回传
-      this.$emit('res', this.goodsIdsArr, this.urlLists)
+      this.$emit('res', goodsIdsArr, urlLists)
     },
-    // 页数改变
-    handleCurrentChange () {
-      this.defaultGrandClass()
+    /* 翻页方法 */
+    paginationChange () {
+      this.selectGoodsData()
     },
-    /* 筛选商品或规格数据 */
-    selectGoodsData () {
-      let query = null
-
-      if (this.loadProduct) {
-        query = getGoodsProductList
-      } else {
-        query = allGoodsQueryRequest
-      }
-      let params = this.getFilterData()
-      query(params).then((res) => {
-        if (!res) return
-        if (res.error === 0) {
-          res.content.dataList.catName = res.content.dataList.map((item, index) => {
-            item.catName = item.catName.replace('，', '、')
-            item.ischecked = false
-            this.hxgoodsIds.map((childrenItem, childrenIndex) => {
-              let condition = childrenItem === item.goodsId
-              if (this.loadProduct) {
-                // 规格id
-                condition = childrenItem.prdId === childrenItem
-              }
-              if (condition) {
-                item.ischecked = true
-              }
-            })
-          })
-          let flag = res.content.dataList.filter((item, index) => {
-            return item.ischecked === false
-          })
-          if (flag.length === 0 && this.choiseOne === false) {
-            this.checkedAll = true
+    /* 选择一行 */
+    handleRowClick (index, item, e) {
+      console.log('handleRowClik', index, item, e)
+      item.ischecked = !item.ischecked
+      // 单选
+      if (this.singleElection) {
+        this.clearCheckedRow(item)
+        this.tableData.forEach(i => {
+          if (i !== item && i.ischecked) {
+            i.ischecked = false
           }
-          this.trList = res.content.dataList
+        })
+      }
+      if (item.ischecked) {
+        this.addCheckedRow(item)
+      } else {
+        this.removeCheckedRow(item)
+      }
+      // 更新
+      this.$forceUpdate()
+    },
+    /* 获取id */
+    getRowId: function (row) {
+      if (this.loadProduct) {
+        return row.prdId
+      }
+      return row.goodsId
+    },
+    /* 选中添加 */
+    addCheckedRow (row) {
+      this.checkedId = this.getRowId(row)
+      this.checkedRow = row
+      this.checkedIdList.push(this.getRowId(row))
+      this.checkedRowList.push(row)
+      if (!this.singleElection) {
+        let flag = this.tableData.filter((item, index) => {
+          return item.ischecked === false
+        })
+        if (flag.length === 0) {
+          this.checkPageAllFlag = true
         }
+        if (this.allGoodsProductId.every(val => this.checkedIdList.includes(val))) {
+          this.checkAllFlag = true
+        }
+      }
+    },
+    /* 取消选择删除 */
+    removeCheckedRow (row) {
+      this.checkPageAllFlag = false
+      this.checkAllFlag = false
+      this.checkedId = {}
+      this.checkedRow = {}
+      this.checkedIdList.splice(this.checkedIdList.lastIndexOf(this.getRowId(row)), 1)
+      this.checkedRowList = this.checkedRowList.filter(item => {
+        return this.getRowId(item) !== this.getRowId(row)
       })
     },
-    /* 重置过滤条件数据 */
-    resetFilterData () {
-      this.goodsCatId = null
-      this.goodsSortId = null
-      this.goodsLabelId = null
-      this.shopPriceLow = null
-      this.shopPriceHigh = null
-      this.goodsName = null
-      this.goodsSn = null
-      this.goodsBrandId = null
+    clearCheckedRow () {
+      this.checkedId = {}
+      this.checkedRow = {}
+      this.checkedIdList = []
+      this.checkedRowList = []
     },
-    /* 获取过滤数据 */
-    getFilterData () {
-      if (this.loadProduct) {
-        this.filterBaseParam.selectType = 2
+    /* 选择本页商品 */
+    checkedPageRow (newData) {
+      console.log('checkedPageRow')
+      this.tableData.forEach(item => {
+        if (item.ischecked !== newData) {
+          if (newData) {
+            this.addCheckedRow(item)
+          } else {
+            this.removeCheckedRow(item)
+          }
+        }
+        item.ischecked = newData
+      })
+    },
+    /* 选择全部商品 */
+    checkedAllRow (flag) {
+      console.log('checkedAllRow')
+      this.checkPageAllFlag = flag
+      this.checkedPageRow(flag)
+      if (flag) {
+        // 选择全部只有全部商品id
+        this.checkedIdList = this.allGoodsProductId
       } else {
-        this.filterBaseParam.selectType = 1
+        this.clearCheckedRow()
       }
-
-      let filterData = {
-        catId: this.goodsCatId,
-        sortId: this.goodsSortId,
-        labelId: this.goodsLabelId,
-        lowShopPrice: this.shopPriceLow,
-        highShopPrice: this.shopPriceHigh,
-        goodsName: this.goodsName,
-        goodsSn: this.goodsSn,
-        brandId: this.goodsBrandId,
-        currentPage: this.currentPage,
-        pageRows: this.pageRows,
-        ...this.filterBaseParam
-      }
-      return filterData
     }
+
   }
 }
 </script>
 <style scoped>
 .middleBbtnDiv {
   padding: 10px 30px;
+    display: flex;
 }
 .table_container {
   padding: 10px 30px;
@@ -579,6 +609,19 @@ export default {
 }
 .clickClass {
   background-color: #eee !important;
+}
+.goods_tr_choose {
+  background: #eee;
+}
+.tips {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+.tips span {
+    display: inline-block;
+    margin-left: 5px;
+    color: #888;
+    font-size: 14px;
 }
 ul {
   padding-left: 30px;
@@ -758,8 +801,8 @@ img {
   line-height: 50px;
   color: #333;
   font-size: 14px;
-  display: flex;
-  justify-content: flex-end;
+  display: block;
+  justify-content: normal;
   padding-right: 10px;
   /deep/ .el-pagination {
     display: flex;

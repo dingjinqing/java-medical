@@ -79,11 +79,26 @@ export function allGoodsQueryRequest (data) {
     data: data
   })
 }
-
+// 商品分页查询
+export function getGoodsIdsListAll (data) {
+  return service({
+    url: '/api/admin/goods/listAllIds',
+    method: 'post',
+    data: data
+  })
+}
 // 全部商品规格查询
 export const getGoodsProductList = data => {
   return service({
     url: '/api/admin/goods/product/list',
+    method: 'post',
+    data
+  })
+}
+// 全部商品规格查询
+export const getProductIdsListAll = data => {
+  return service({
+    url: '/api/admin/goods/product/listAllIds',
     method: 'post',
     data
   })
