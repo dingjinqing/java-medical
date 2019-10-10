@@ -6,10 +6,7 @@ import javax.validation.Valid;
 
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -246,6 +243,15 @@ public class AdminStoreController extends AdminBaseController{
     	}else {
     		return fail();
     	}
+    }
+
+    @GetMapping("/api/admin/store/goods/updateFromShop/{storeId}")
+    public JsonResult updateGoodsDataFromShop(@PathVariable("storeId") Integer storeId){
+        if (storeId == null) {
+            return fail();
+        }
+        shop().store.storeGoods.updateGoodsDataFromShop(storeId);
+        return success();
     }
 
     /**

@@ -13,7 +13,18 @@ import lombok.Data;
 public class StoreGoodsListQueryVo {
 	private String goodsImg;
 	private String goodsName;
-	
+    /**
+     * 平台分类id
+     */
+	private Integer catId;
+    /**
+     * 平台分类名称
+     */
+	private String catName;
+    /**
+     * 上架状态：1上架,0下架
+     */
+	private Byte isOnSale;
 	/**
 	 * 是否已同步pos,1是已同步
 	 */

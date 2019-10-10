@@ -40,8 +40,7 @@ public class GoodsSortService extends ShopBaseService {
 
 
     /**
-     * 根据父分类和分类类型查询
-     *
+     * 根据条件查询符合条件的分类信息
      * @param param
      * @return
      */
@@ -128,6 +127,7 @@ public class GoodsSortService extends ShopBaseService {
 
         return select.where(list);
     }
+
 
     /**
      * 查询出绑定了商品的的商家分类(如果是子分类则包含该分类的祖先级分类)
@@ -277,6 +277,11 @@ public class GoodsSortService extends ShopBaseService {
         }
     }
 
+    /**
+     * 商家分类名称是否存在，新增推荐分类时使用
+     * @param sorts
+     * @return
+     */
     public boolean isSortNameExist(List<Sort> sorts) {
         List<String> sortNames = new ArrayList<>();
         sorts.forEach(item -> sortNames.add(item.getSortName()));
