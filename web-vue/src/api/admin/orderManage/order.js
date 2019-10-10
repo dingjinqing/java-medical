@@ -80,3 +80,11 @@ export function manualReturnInfo (data) {
     data: data
   })
 }
+// 退款订单详情操作
+export function handleReturnInfo (data) {
+  return service({
+    url: '/api/admin/order/refund',
+    method: 'post',
+    data: data
+  })
+}

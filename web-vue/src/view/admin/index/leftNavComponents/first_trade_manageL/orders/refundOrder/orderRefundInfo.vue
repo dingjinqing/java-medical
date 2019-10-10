@@ -23,10 +23,12 @@
                 <el-button
                   type="primary"
                   size="small"
+                  @click="showRefund"
                 >{{$t('order.refundBtn_1_1_1')}}</el-button>
                 <el-button
                   type="default"
                   size="small"
+                  @click="showRefusal"
                 >{{$t('order.refundBtn_1_1_2')}}</el-button>
               </div>
             </template>
@@ -47,10 +49,12 @@
                 <el-button
                   type="primary"
                   size="small"
+                  @click="showRefund"
                 >{{$t('order.refundBtn_1_2_1')}}</el-button>
                 <el-button
                   type="default"
                   size="small"
+                  @click="showRefusal"
                 >{{$t('order.refundBtn_1_2_2')}}</el-button>
               </div>
             </template>
@@ -78,10 +82,12 @@
                 <el-button
                   type="primary"
                   size="small"
+                  @click="showRefund"
                 >{{$t('order.refundBtn_1_4_1')}}</el-button>
                 <el-button
                   type="default"
                   size="small"
+                  @click="showRefusal"
                 >{{$t('order.refundBtn_1_4_2')}}</el-button>
               </div>
             </template>
@@ -134,10 +140,12 @@
                 <el-button
                   type="primary"
                   size="small"
+                  @click="showRefund"
                 >{{$t('order.refundBtn_4_1',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
                 <el-button
                   type="default"
                   size="small"
+                  @click="showRefusal"
                 >{{$t('order.refundBtn_4_2',[returnTypeMap.get(returnInfo.returnType)])}}</el-button>
               </div>
             </template>
@@ -491,12 +499,120 @@
 
       </div>
     </div>
+    <el-dialog
+      title="请输入拒绝理由"
+      :visible.sync="refusal"
+      custom-class="custom"
+      width="30%"
+    >
+      <el-input
+        type="textarea"
+        v-model="refusalInfo"
+        placeholder="请输入内容"
+        resize="none"
+        rows="5"
+      ></el-input>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="refusal = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="refusalConfirm"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="确认退货完成"
+      :visible.sync="refundDialog"
+      custom-class="custom"
+      width="30%"
+    >
+      <div>
+        <template v-if="returnInfo.returnType == 1 && returnInfo.refundStatus == 1">
+          <el-form
+            label-position="right"
+            label-width="80px"
+            :model="returnAddressInfo"
+            ref="returnAddressInfoForm"
+          >
+            <el-form-item
+              :label="$t('order.consignee')"
+              prop="consignee"
+            >
+              <el-input
+                v-model="returnAddressInfo.consignee"
+                size="small"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              :label="$t('order.shippingAddress')"
+              prop="return_address"
+            >
+              <el-input
+                v-model="returnAddressInfo.return_address"
+                size="small"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              :label="$t('order.phone')"
+              prop="mobile"
+            >
+              <el-input
+                v-model="returnAddressInfo.mobile"
+                size="small"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="邮编"
+              prop="zip_code"
+            >
+              <el-input
+                v-model="returnAddressInfo.zip_code"
+                size="small"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+        </template>
+        <template v-else-if="returnInfo.refundStatus == 4 || returnInfo.refundStatus == 2">
+          <span style="display:inline-block;width: 100%;">
+            提醒：
+            <span>请在 <span style="color: #f66;">确认已收到退货实物或者协商通过后再操作退货完成，本操作会同步退款给顾客(货款退回到顾客支付的账户)，请谨慎操作</span></span>
+          </span>
+          <span>
+            由于支付渠道（如跨行退款）的延迟，会在 <span style="color: #f66;">3个工作日内到账，</span>
+            <P>您确定要对订单操作退货完成吗？</P>
+          </span>
+        </template>
+        <template v-else>
+          <span style="display:inline-block;width: 100%;">
+            提醒：
+            <span style="color: #f66;">退款操作会把订单金额全部退回给顾客付款账户，</span>
+          </span>-
+          <span>
+            由于支付渠道（如跨行退款）的延迟，会在 <span style="color: #f66;">3个工作日内到账，</span>
+            <p>您确定要对订单退款吗？</p>
+          </span>
+        </template>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="refundDialog = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="refundConfirm"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {
-  returnInfo
+  returnInfo, handleReturnInfo
 } from '@/api/admin/orderManage/order.js'
 export default {
   data () {
@@ -514,7 +630,16 @@ export default {
       refundGoodsMoney: null,
       refundFreight: null,
       countDownStr: '',
-      start: 1571554186
+      start: 1571554186,
+      refusalInfo: null,
+      refusal: false,
+      refundDialog: false,
+      returnAddressInfo: {
+        consignee: null,
+        return_address: null,
+        mobile: null,
+        zip_code: null
+      }
     }
   },
   created () {
@@ -542,6 +667,48 @@ export default {
       let secondsInterval = minutesInterval % (60 * 1000)
       let seconds = Math.round(secondsInterval / 1000)
       this.showCountdown = `${day}${this.$t('order.day')}${hours}${this.$t('order.hours')}${minutes}${this.$t('order.minutes')}${seconds}${this.$t('order.seconds')}`
+    },
+    showRefund () {
+      this.refundDialog = true
+      this.$refs.returnAddressInfoForm.resetFields()
+    },
+    showRefusal () {
+      this.refusal = true
+      this.refusalInfo = null
+    },
+    refundConfirm () {
+      this.handleReturn()
+    },
+    refusalConfirm () {
+      this.handleReturn('refusal')
+    },
+    handleReturn (target = null) {
+      let returnOperate = null
+      if (this.returnInfo.returnType !== 1 && this.returnInfo.refundStatus === 6 && target) {
+        returnOperate = 2
+      } else if (this.returnInfo.returnType === 1 && this.returnInfo.refundStatus === 1 && !target) {
+        returnOperate = 3
+      } else if (this.returnInfo.returnType === 1 && this.returnInfo.refundStatus === 1 && target) {
+        returnOperate = 4
+      }
+      let obj = {
+        orderId: this.returnInfo.orderId,
+        orderSn: this.returnInfo.orderSn,
+        action: 1,
+        returnOperate: returnOperate,
+        returnMoney: this.returnInfo.money,
+        shippingFee: this.returnInfo.canReturnShippingFee,
+        reasonDesc: this.refusalInfo,
+        returnType: this.returnInfo.returnType,
+        retId: this.returnInfo.retId,
+        ...this.returnAddressInfo
+      }
+      handleReturnInfo(obj).then(res => {
+        console.log(res)
+        this.search(this.$route.query.returnOrderSn)
+        this.refundDialog = false
+        this.refusal = false
+      })
     },
     search (returnOrderSn) {
       this.searchParam.returnOrderSn = returnOrderSn
@@ -811,6 +978,24 @@ export default {
     }
     .item_box + .item_box {
       margin-top: 10px;
+    }
+  }
+  /deep/ .custom {
+    .el-dialog__header {
+      background: #f3f3f3;
+      padding-top: 10px;
+      .el-dialog__title {
+        font-size: 14px;
+      }
+      .el-dialog__headerbtn {
+        top: 10px;
+      }
+      .el-form-item {
+        margin-bottom: 0;
+      }
+    }
+    .el-checkbox-button.is-disabled .el-checkbox-button__inner {
+      background-color: #f5f7fa;
     }
   }
 }

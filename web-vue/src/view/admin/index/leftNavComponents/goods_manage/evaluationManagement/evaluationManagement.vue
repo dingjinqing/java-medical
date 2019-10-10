@@ -1,16 +1,13 @@
 <template>
   <div class="evaluationManagement">
-    <el-button @click="handleShare">分享</el-button>
-    <!-- <testDialog
-      :isShow="isShow"
-      @test="handleTest"
-    /> -->
+    <evaluationManagement />
   </div>
 </template>
 <script>
-// import testDialog from './testDialog'
 export default {
-  // components: { testDialog },
+  components: {
+    evaluationManagement: () => import('./evaluationManagementContent')
+  },
   data () {
     return {
       isShow: true
@@ -20,12 +17,6 @@ export default {
 
   },
   methods: {
-    handleShare () {
-
-    },
-    handleTest (val) {
-      // console.log(val)
-    }
   }
 }
 </script>

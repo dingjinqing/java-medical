@@ -158,9 +158,11 @@ export const cn = {
   refusedReason: '拒绝理由',
   returnSuccessNote: '注：退款将在3个工作日内到达买家账户，本次维权结束。',
   passReturnApplyNote: '您已同意退货退款，请等待买家处理',
-  passReturnApplyNote1: '退货地址：{{returnAddress}}； 联系人：{{consignee}}； 电话：{{merchantTelephone}}',
+  passReturnApplyNote1:
+    '退货地址：{{returnAddress}}； 联系人：{{consignee}}； 电话：{{merchantTelephone}}',
   refusedReturngoodsApply: '您已拒绝退货退款',
-  autoCancelNote: '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
+  autoCancelNote:
+    '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
   submitLogisticsNote: '买家已退货，等待商家确认收货并退款',
   phone: '联系电话',
   logisticsVoucherImages: '物流凭证',
@@ -173,13 +175,15 @@ export const cn = {
   refundNote_1_1_1: '等待商家处理退货退款申请',
   refundNote_1_1_2: '如果您同意，需要您发送退货地址给买家。',
   refundNote_1_1_3: '如果您拒绝，将需要您填写拒绝理由。',
-  refundNote_1_1_4: '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动发送您的默认退货地址。',
+  refundNote_1_1_4:
+    '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动发送您的默认退货地址。',
   refundBtn_1_1_1: '同意退货，发送退货地址',
   refundBtn_1_1_2: '拒绝退货退款申请',
   // 1_2_1
   refundNote_1_2_1: '商家同意退货退款',
   refundNote_1_2_2: '您已同意退货退款，请等待买家处理。',
-  refundNote_1_2_3: '买家在<span style="color:#ff785f;">{0}</span>内未响应，且商家未确认收货并退款，退款申请将自动完成。',
+  refundNote_1_2_3:
+    '买家在<span style="color:#ff785f;">{0}</span>内未响应，且商家未确认收货并退款，退款申请将自动完成。',
   refundBtn_1_2_1: '确认收货并退款',
   refundBtn_1_2_2: '拒绝确认收货',
   // 1_3_1
@@ -187,7 +191,8 @@ export const cn = {
   // 1_4_1
   refundNote_1_4_1: '买家已退货，等待商家确认收货并退款',
   refundNote_1_4_2: '买家已退货，物流公司：{0}；物流单号：{1}',
-  refundNote_1_4_3: '请在<span style="color:#ff785f;">{0}</span>内确认，如逾期未处理，将自动退款给买家。',
+  refundNote_1_4_3:
+    '请在<span style="color:#ff785f;">{0}</span>内确认，如逾期未处理，将自动退款给买家。',
   refundBtn_1_4_1: '确认收货并退款',
   refundBtn_1_4_2: '拒绝确认收货',
   // 1_5_1
@@ -198,12 +203,14 @@ export const cn = {
   refundNote_1_7_1: '买家主动撤销退款申请',
   // 1_8_1
   refundNote_1_8_1: '撤销退款申请（系统自动处理）',
-  refundNote_1_8_2: '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
+  refundNote_1_8_2:
+    '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
   // 4_1 非退货退款，status;序号
   refundNote_4_1: '等待商家处理退款申请',
   refundNote_4_2: '如果您同意，需要您退款给买家。',
   refundNote_4_3: '如果您拒绝，将需要您填写拒绝理由。',
-  refundNote_4_4: '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动退款。',
+  refundNote_4_4:
+    '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动退款。',
   refundBtn_4_1: '同意买家{0}',
   refundBtn_4_2: '拒绝{0}',
   // 5_1 非退货退款，status;序号
@@ -214,7 +221,8 @@ export const cn = {
   refundNote_7_1: '买家主动撤销{0}申请',
   // 8_1 非退货退款，status;序号
   refundNote_8_1: '撤销退款申请（系统自动处理）',
-  refundNote_8_2: '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
+  refundNote_8_2:
+    '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
   recordTypeObj: {
     0: '商家',
     1: '买家',
@@ -529,8 +537,14 @@ export const en = {
     [null, 'all'],
     [14, 'Refund, return request waiting for merchant confirmation'],
     [3, 'The merchant refuses to return the refund request'],
-    [2, 'Businesses agree to return the refund, waiting for the buyer to return '],
-    [41, 'The buyer has returned, waiting for the merchant to confirm the receipt'],
+    [
+      2,
+      'Businesses agree to return the refund, waiting for the buyer to return '
+    ],
+    [
+      41,
+      'The buyer has returned, waiting for the merchant to confirm the receipt'
+    ],
     [61, 'Business has not received the goods, refused to refund'],
     [60, 'Business refuses refund request'],
     [7, 'Refund cancellation'],

@@ -42,7 +42,11 @@ export const en = {
   // 商品管理 商品标签 新增标签
   addGoodsLabel: ['Commodity Management', 'Goods Label', 'Add Goods Label'],
   // 商品管理 商品标签 修改标签
-  updateGoodsLabel: ['Commodity Management', 'Goods Label', 'Update Goods Label'],
+  updateGoodsLabel: [
+    'Commodity Management',
+    'Goods Label',
+    'Update Goods Label'
+  ],
   // 商品管理 商品导入
   goodsImport: ['Commodity Management', 'Goods Import'],
   // 会员管理 会员列表 会员卡领取
