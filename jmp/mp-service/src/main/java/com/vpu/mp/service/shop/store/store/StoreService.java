@@ -95,6 +95,18 @@ public class StoreService extends ShopBaseService {
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListVo.class);
 	}
 
+    /**
+     * 门店列表查询-不分页
+     * @param param
+     * @return StorePageListVo
+     */
+    public List<StorePageListVo> getList(StoreListQueryParam param) {
+        SelectWhereStep<? extends Record> select = db().selectFrom(STORE);
+        select = this.buildOptions(select, param);
+        select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
+        return select.fetchInto(StorePageListVo.class);
+    }
+
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, StoreListQueryParam param) {
 		if (param == null) {
 			return select;
