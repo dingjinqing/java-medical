@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
 
+import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
@@ -14,6 +15,7 @@ import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
@@ -35,11 +38,15 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
+import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 
 import jodd.util.StringUtil;
 /**
@@ -50,6 +57,9 @@ import jodd.util.StringUtil;
  */
 @Service
 public class ScoreService extends ShopBaseService {
+	
+	@Autowired
+	private TradesRecordService tradesRecord;
 	
 	/** -积分有效的状态 */
 	final Byte[] AVAILABLE_STATUS = new Byte[] { NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS };
@@ -262,11 +272,6 @@ public class ScoreService extends ShopBaseService {
 	 */
 	private void addUserScoreRecord(UserScoreRecord record) {
 		db().executeInsert(record);
-//		db().insertInto(USER_SCORE, USER_SCORE.SCORE, USER_SCORE.USER_ID, USER_SCORE.REMARK, USER_SCORE.ADMIN_USER,
-//				USER_SCORE.ORDER_SN, USER_SCORE.FLOW_NO, USER_SCORE.USABLE_SCORE)
-//				.values(record.getScore(), record.getUserId(), record.getRemark(), record.getAdminUser(),
-//						record.getOrderSn(), record.getFlowNo(), record.getUsableScore())
-//				.execute();
 	}
 
 	
@@ -444,4 +449,111 @@ public class ScoreService extends ShopBaseService {
 								.into(BigDecimal.class);
 		return totalScore;
 	}
+	
+	/**
+	 * 查询今天是否有某种积分
+	 * @param userId
+	 * @param desc
+	 * @return 
+	 */
+	public UserScoreRecord getScoreInDay(Integer userId, String desc) {
+		return db()
+				.selectFrom(
+						USER_SCORE)
+				.where(USER_SCORE.USER_ID.eq(userId).and(
+						USER_SCORE.DESC.eq(desc).and((dateFormat(USER_SCORE.CREATE_TIME, DateUtil.DATE_FORMAT_SIMPLE))
+								.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))))
+				.fetchAny();
+	}
+	
+	/**
+	 * 创建用户积分记录
+	 * @param data
+	 * @param adminUser
+	 * @param tradeType
+	 * @param tradeFlow
+	 */
+	public void addUserScore(UserScoreVo data, String adminUser, Byte tradeType, Byte tradeFlow) {
+		// 生成新的充值记录
+		// 验证现有积分跟提交的积分是否一致
+		// 销毁score_dis
+		try {
+
+			if (StringUtils.isEmpty(data.getRemark())) {
+				data.setRemark("管理员操作");
+			}
+			UserScoreRecord record = USER_SCORE.newRecord();
+			FieldsUtil.assignNotNull(data, record);
+			record.setAdminUser(adminUser);
+			record.setFlowNo(generateFlowNo());
+			record.setUsableScore(data.getScore() > 0 ? data.getScore() : 0);
+			if (data.getIsFromCrm()) {
+				record.setExpireTime(getScoreExpireTime());
+			}
+			if (data.getScore() < 0) {
+				if (data.getIsFromOverdue()) {
+					boolean useUserScore = useUserScore(data.getUserId(), Math.abs(data.getScore()),data.getOrderSn());
+					if(!useUserScore) {
+						logger().info("消耗积分异常："+data.toString());
+					}
+				}
+			}if(data.getIsFromRefund()) {
+				 // 退款处理积分
+				record.setStatus(REFUND_SCORE_STATUS);
+				UserScoreRecord scoreRecordByOrderSn = getScoreRecordByOrderSn(data.getUserId(), data.getOrderSn());
+				record.setExpireTime(scoreRecordByOrderSn.getExpireTime()!=null?scoreRecordByOrderSn.getExpireTime():data.getExpireTime());
+			}
+			//TODO  UserScore.php $crmResult = shop($this->getShopId())->serviceRequest->crmApi->init();
+			
+			record.insert();
+			//TODO    shop($this->getShopId())->serviceRequest->crmApi->syncUserScore($data['user_id'], $data);
+		} catch (Exception e) {
+			logger().error("addUserScore error, message:");
+			logger().error(e.getMessage(),e);
+		}
+		//更新用户积分
+		Integer canUseScore  = getTotalAvailableScoreById(data.getUserId());
+		db().update(USER).set(USER.SCORE,canUseScore).where(USER.USER_ID.eq(data.getUserId())).execute();
+		if(data.getScore()<0) {
+			tradeFlow=0;
+		}
+		tradesRecord.addRecord(new BigDecimal(Math.abs(data.getScore())), data.getOrderSn(), data.getUserId(), (byte)1, tradeType, tradeFlow, tradeFlow);
+		String userGrade = member.card.getUserGrade(data.getUserId());
+		if(!userGrade.equals(CardConstant.LOWEST_GRADE)) {
+			//TODO 等黄壮壮提供  updateGrade			
+		}
+	}
+	
+	
+	/**
+	 * 获取积分过期时间
+	 * @return
+	 */
+	public Timestamp getScoreExpireTime() {
+		Timestamp expireTime = null;
+		ShopCfgRecord scoreLimit = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_limit")).fetchAny();
+		LocalDate date=LocalDate.now();		
+		if (scoreLimit != null) {
+			if (scoreLimit.getV().equals("1")) {
+				//从获取之日起
+				ShopCfgRecord scoreYear = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_year")).fetchAny();
+				ShopCfgRecord scoreMonth = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_month")).fetchAny();
+				ShopCfgRecord scoreDay = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_day")).fetchAny();
+				LocalDateTime localDateTime = LocalDateTime.of(date.getYear()+Integer.parseInt(scoreYear.getV()), Integer.parseInt(scoreMonth.getV()), Integer.parseInt(scoreDay.getV()), 23, 59, 59);
+				expireTime = Timestamp.valueOf(localDateTime);
+			}
+			if (scoreLimit.getV().equals("2")) {
+				ShopCfgRecord scoreLimitNumber = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_limit_number")).fetchAny();
+				ShopCfgRecord scorePeriod = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_period")).fetchAny();
+				if(scoreLimitNumber!=null&&scorePeriod!=null) {
+					LocalDateTime localDateTime=LocalDateTime.now();
+					localDateTime.plusDays(Integer.parseInt(scoreLimitNumber.getV())+Integer.parseInt(scorePeriod.getV()));		
+					expireTime = Timestamp.valueOf(localDateTime);
+				}
+			}
+		}
+		logger().info("获取积分过期时间"+expireTime);
+		return expireTime;
+	}
+	
 }
