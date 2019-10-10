@@ -529,8 +529,7 @@ public class MemberService extends ShopBaseService {
 		 * 过滤已经是该门店核销员的用户，用于为该门店添加核销员
 		 */
 		if (null != param.getStoreId() && param.getStoreId() > 0) {
-			select.leftJoin(ORDER_VERIFIER).on(USER.USER_ID.eq(ORDER_VERIFIER.USER_ID))
-					.where(ORDER_VERIFIER.STORE_ID.ne(param.getStoreId()));
+			select.leftJoin(ORDER_VERIFIER).on(USER.USER_ID.eq(ORDER_VERIFIER.USER_ID).and(ORDER_VERIFIER.STORE_ID.ne(param.getStoreId())));
 		}
 
 		return select;
@@ -973,7 +972,6 @@ public class MemberService extends ShopBaseService {
 
 	/**
 	 * 处理会员获取会员卡详情
-	 * @param userId
 	 * @param param
 	 * @return
 	 */
