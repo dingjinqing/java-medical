@@ -15,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderReturnListVo extends OrderListInfoVo {
+	private Integer retId;
 	private String returnOrderSn;
 	private Timestamp applyTime;
 	private BigDecimal money;

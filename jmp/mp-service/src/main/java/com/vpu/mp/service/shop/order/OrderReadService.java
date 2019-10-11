@@ -263,9 +263,9 @@ public class OrderReadService extends ShopBaseService {
 			return result;
 		}
 		//获取订单再分组
-		Map<String, List<OrderReturnGoodsVo>> goods = returnOrderGoods.getByOrderSn(collect.toArray(new String[collect.size()])).intoGroups(returnOrderGoods.TABLE.ORDER_SN,OrderReturnGoodsVo.class);;
+		Map<Integer, List<OrderReturnGoodsVo>> goods = returnOrderGoods.getByOrderSn(collect.toArray(new String[collect.size()])).intoGroups(returnOrderGoods.TABLE.RET_ID,OrderReturnGoodsVo.class);;
 		for (OrderReturnListVo order : dataList) {
-			order.setGoods(goods.get(order.getOrderSn()));
+			order.setGoods(goods.get(order.getRetId()));
 		}
 		return result;
 	}
