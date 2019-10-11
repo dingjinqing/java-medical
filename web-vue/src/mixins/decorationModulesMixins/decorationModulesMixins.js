@@ -40,6 +40,36 @@ export default {
             'search_sort': '0', // 商家分类是否显示
             'sort_bg_color': '#666666' // 图标颜色
           }
+          break
+        case 12: // 图片导航模块
+          obj = {
+            'module_name': 'm_image_guide',
+            'nav_style': '1',
+            'font_color': '#92b0e4',
+            'bg_color': '#ffffff',
+            'nav_group': [
+              {
+                'nav_name': '导航一',
+                'nav_link': '',
+                'nav_src': ''
+              },
+              {
+                'nav_name': '导航二',
+                'nav_link': '',
+                'nav_src': ''
+              },
+              {
+                'nav_name': '导航三',
+                'nav_link': '',
+                'nav_src': ''
+              },
+              {
+                'nav_name': '导航四',
+                'nav_link': '',
+                'nav_src': ''
+              }
+            ]
+          }
       }
       return obj
     },
@@ -78,9 +108,10 @@ export default {
         })
         return false
       }
+      //  模块私有校验
       data.forEach((item, index) => {
         switch (item.module_name) {
-          case 'm_card': // 会员卡
+          case 'm_card': // 会员卡相关校验
             console.log(item)
             if (!item.card_id) {
               this.$message.error({
@@ -90,6 +121,16 @@ export default {
               return false
             }
             break
+          case 'm_image_guide': // 图片导航相关校验
+            item.nav_group.forEach((item, index) => {
+              if (!item.nav_src) {
+                this.$message.error({
+                  message: '请上传图片导航模块图片',
+                  showClose: true
+                })
+                return false
+              }
+            })
         }
       })
       return true

@@ -9,30 +9,23 @@
       :class="activeBorder?'activeBorder':''"
     >
       <!--模块编辑区-->
-      <div class="pictureNavigation">
-        <div class="pictureNavList">
-          <div style="backgroundColor:#eaf2ff;border-radius: 50%;">
-            <img src="">
+      <div
+        class="pictureNavigation"
+        :style="'backgroundColor:'+data.bg_color"
+      >
+        <div
+          class="pictureNavList"
+          v-for="(item,index) in data.nav_group"
+          :key="index"
+        >
+          <div :style="'backgroundColor:#eaf2ff;border-radius:'+(data.nav_style==='1'?'50%':'0')">
+            <img
+              v-if="item.nav_src"
+              :src="item.nav_src"
+              :style="'border-radius:'+(data.nav_style==='1'?'50%':'0')"
+            >
           </div>
-          <p>导航一</p>
-        </div>
-        <div class="pictureNavList">
-          <div style="backgroundColor:#eaf2ff;border-radius: 50%;">
-            <img src="">
-          </div>
-          <p>导航二</p>
-        </div>
-        <div class="pictureNavList">
-          <div style="backgroundColor:#eaf2ff;border-radius: 50%;">
-            <img src="">
-          </div>
-          <p>导航三</p>
-        </div>
-        <div class="pictureNavList">
-          <div style="backgroundColor:#eaf2ff;border-radius: 50%;">
-            <img src="">
-          </div>
-          <p>导航四</p>
+          <p :style="'color:'+data.font_color">{{item.nav_name}}</p>
         </div>
       </div>
       <!--模块编辑区结束-->
@@ -194,6 +187,10 @@ export default {
       &:hover {
         text-decoration: underline;
       }
+    }
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
 }

@@ -825,6 +825,7 @@ export default {
     },
     // 右侧编辑回显数据
     handleToBackMiddleData (data) {
+      console.log(data)
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)
       this.$forceUpdate()

@@ -284,6 +284,7 @@ export default {
       this.img_list.forEach((item, index) => {
         item.checked = false
       })
+      this.backArr = []
       this.dialogTableVisible = true
     }
   },

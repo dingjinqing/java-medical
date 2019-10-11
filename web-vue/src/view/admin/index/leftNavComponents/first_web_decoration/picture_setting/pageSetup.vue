@@ -35,11 +35,14 @@
 export default {
   components: {
     pageSetupMain: () => import('./pageSetupModules/pageSetupMain'), // 页面配置
+    // 营销组件库
     RightMembershipCard: () => import('./pageSetupModules/marketingComponents/rightMembershipCard'), // 右侧会员卡配置页面
     RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'), // 右侧优惠卷配置页面
+    // 商品组件库
     RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'), // 右侧商品配置页面
     RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch'), // 右侧页面商品搜索配置页面
-    rightPictureNavigation: () => import('./pageSetupModules/graphicAndTextComponents/rightPictureNavigation') // 右侧图片导航配置页面
+    // 图文组件库
+    RightPictureNavigation: () => import('./pageSetupModules/graphicAndTextComponents/rightPictureNavigation') // 右侧图片导航配置页面
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -72,7 +75,7 @@ export default {
         },
         {
           id: 12,
-          name: 'rightPictureNavigation'
+          name: 'RightPictureNavigation'
         }
       ],
       showModule: null,

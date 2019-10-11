@@ -8,8 +8,8 @@
           <span>导航样式：</span>
           <div
             class="guide_circle"
-            :style="isChecked===0?'border: 1px solid #5a8BFF':''"
-            @click="isChecked = 0"
+            :style="data.nav_style==='1'?'border: 1px solid #5a8BFF':''"
+            @click="data.nav_style='1'"
           >
             <div
               v-for="(item,index) in guidList"
@@ -22,8 +22,8 @@
           </div>
           <div
             class="guide_circle"
-            :style="isChecked===1?'border: 1px solid #5a8BFF':''"
-            @click="isChecked = 1"
+            :style="data.nav_style==='2'?'border: 1px solid #5a8BFF':''"
+            @click="data.nav_style='2'"
           >
             <div
               v-for="(item,index) in guidList"
@@ -39,7 +39,7 @@
           <span class="left">字体颜色：</span>
           <span class="colorSelect">
             <colorPicker
-              v-model="typefaceColor"
+              v-model="data.font_color"
               :defaultColor="defaultTypefaceColor"
               style="width:60px;height:30px;"
             />
@@ -55,7 +55,7 @@
           <span class="left">背景颜色：</span>
           <span class="colorSelect">
             <colorPicker
-              v-model="bgColor"
+              v-model="data.bg_color"
               :defaultColor="defaultBgColor"
               style="width:60px;height:30px;"
             />
@@ -70,27 +70,31 @@
         <div class="bottom">
           <div
             class="chiose"
-            v-for="(item,index) in navigationList"
+            v-for="(item,index) in data.nav_group"
             :key="index"
           >
             <div
               class="addImg"
               :style="`background:url('${$imageHost}/image/admin/shop_beautify/add_decorete.png') no-repeat;background-size: 45%;background-position: center`"
+              @click="handleToCallImgDialog(index)"
             >
-              <!-- <img src=""> -->
+              <img
+                v-if="item.nav_src"
+                :src="item.nav_src"
+              >
             </div>
             <div class="chioseRight">
               <div>
                 <span>文字：</span>
                 <el-input
-                  v-model="item.input"
+                  v-model="item.nav_name"
                   size="small"
                 ></el-input>
               </div>
               <div>
                 <span>链接：</span>
                 <el-input
-                  v-model="item.linkPpath"
+                  v-model="item.nav_link"
                   placeholder="文字链接可为空"
                   size="small"
                 ></el-input>
@@ -130,7 +134,7 @@
     <ImageDialog
       :tuneUp='tuneUp'
       pageIndex='pictureSpace'
-      :isDraggable='true'
+      :isDraggable='isDraggable'
       @handleSelectImg='handleToGetImgUrl'
     />
   </div>
@@ -152,28 +156,40 @@ export default {
       tuneUp: false,
       guidList: ['导航一', '导航二', '导航三'],
       isChecked: 0,
-      typefaceColor: '#92b0e4',
       defaultTypefaceColor: '#92b0e4',
-      bgColor: '#fff',
       defaultBgColor: '#fff',
       navigationList: [
         {
           input: '导航一',
-          linkPpath: ''
+          linkPpath: '',
+          imgUrl: ''
         },
         {
           input: '导航二',
-          linkPpath: ''
+          linkPpath: '',
+          imgUrl: ''
         },
         {
           input: '导航三',
-          linkPpath: ''
+          linkPpath: '',
+          imgUrl: ''
         },
         {
           input: '导航四',
-          linkPpath: ''
+          linkPpath: '',
+          imgUrl: ''
         }
-      ]
+      ],
+      isDraggable: false,
+      changeLeft: true,
+      changeLeftIndex: null,
+      // 模块保存数据
+      data: {
+        nav_style: '1',
+        font_color: '#92b0e4',
+        bg_color: '#ffffff',
+        nav_group: []
+      }
     }
   },
   watch: {
@@ -198,40 +214,81 @@ export default {
     // 点击重置
     handleToReset (index) {
       if (index === 0) {
-        this.typefaceColor = '#fff'
+        this.data.font_color = '#fff'
       } else {
-        this.bgColor = '#fff'
+        this.bg_color = '#fff'
       }
     },
     // 导航配置列表右上角icon点击统一处理
     handleToClickIcon (index, flag) {
       console.log(index, flag)
-      let item = this.navigationList[index]
+      let item = this.data.nav_group[index]
       switch (flag) {
         case 0:
           if (index !== 0) {
-            this.navigationList[index] = this.navigationList[(index - 1)]
-            this.navigationList[(index - 1)] = item
+            let data = JSON.parse(JSON.stringify(this.data))
+            data.nav_group[index] = data.nav_group[(index - 1)]
+            data.nav_group[(index - 1)] = item
+            this.data = data
           }
           break
         case 1:
-          if (index !== (this.navigationList.length - 1)) {
+          if (index !== (this.data.nav_group.length - 1)) {
             console.log(1111)
-            this.navigationList[index] = this.navigationList[(index + 1)]
-            this.navigationList[(index + 1)] = item
+            let data = JSON.parse(JSON.stringify(this.data))
+            data.nav_group[index] = data.nav_group[(index + 1)]
+            data.nav_group[(index + 1)] = item
+            this.data = data
           }
           break
         case 2:
-          this.navigationList.splice(index, 1)
+          this.data.nav_group.splice(index, 1)
       }
       this.$forceUpdate()
     },
-    // 点击添加列表选中图片后回传
+    // 图片弹窗选中后回传图片信息
     handleToGetImgUrl (res) {
       console.log(res)
+      if (this.changeLeft) {
+        this.data.nav_group[this.changeLeftIndex].nav_src = res.imgUrl
+      } else {
+        let length = 5 - this.data.nav_group.length
+        if (res.length > length) {
+          this.$message.warning({
+            message: '列表超过上限',
+            showClose: true
+          })
+        } else {
+          let arr = []
+          res.forEach((item, index) => {
+            let obj = {
+              nav_name: '',
+              nav_link: '',
+              nav_src: ''
+            }
+            obj.nav_src = item.imgUrl
+            arr.push(obj)
+          })
+          console.log(arr)
+          let newArr = this.data.nav_group.concat(arr)
+          this.data.nav_group = newArr
+          console.log(newArr)
+        }
+        console.log(res)
+        // this.navigationList.push(res)
+      }
     },
-    // 点击添加列表调起图片弹窗
+    // 点击底部添加列表调起图片弹窗
     handleToClickAddList () {
+      this.changeLeft = false
+      this.isDraggable = true
+      this.tuneUp = !this.tuneUp
+    },
+    // 点击导航条左边添加图片调起弹窗
+    handleToCallImgDialog (index) {
+      this.changeLeft = true
+      this.changeLeftIndex = index
+      this.isDraggable = false
       this.tuneUp = !this.tuneUp
     }
   }
@@ -317,6 +374,10 @@ export default {
             height: 70px;
             width: 70px;
             border: 1px solid #e5e5e5;
+            img {
+              width: 100%;
+              height: 100%;
+            }
           }
           .chioseRight {
             margin-left: 10px;
