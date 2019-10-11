@@ -99,6 +99,7 @@
             <el-table-column
               type="selection"
               width="60"
+              align="center"
             >
             </el-table-column>
             <el-table-column
@@ -415,7 +416,7 @@ export default {
   margin: 10px;
 }
 .table-page {
-  height: 52px;
+  height: 100px;
   overflow: hidden;
   padding: 10px;
   background: #fff;
