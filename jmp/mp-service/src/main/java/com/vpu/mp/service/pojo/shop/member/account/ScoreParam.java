@@ -19,6 +19,8 @@ import lombok.Data;
 public class ScoreParam {
 	/** -备注 */
 	private String remark;
+	/** -描述 */
+	private String desc;
 	
 	/** -需要更新的用户id */
 	@NotNull(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_NULL)

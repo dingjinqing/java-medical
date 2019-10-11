@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberCard {
 	private Integer id;
 	private String cardName;
+
 	/** 创建时间 */
 	private Timestamp createTime;
 	
@@ -42,6 +43,9 @@ public class MemberCard {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String chargeMoney;
 	
+	public MemberCard(Integer cardId) {
+		id = cardId;
+	}
 	
 	/**
 	 * 设置开关及是否过期
