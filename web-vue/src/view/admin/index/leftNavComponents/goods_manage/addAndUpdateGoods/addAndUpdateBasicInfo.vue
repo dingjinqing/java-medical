@@ -378,7 +378,7 @@ import { isStrBlank } from '@/util/goodsUtil'
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
 import pagination from '@/components/admin/pagination/pagination'
-import VideoSpaceDialog from '@/components/admin/videoSpace/VideoSpaceDialog'
+import VideoSpaceDialog from '@/components/admin/videoSpace/videoSpaceDialog'
 export default {
   components: { ImageDalog, pagination, VideoSpaceDialog },
   data () {

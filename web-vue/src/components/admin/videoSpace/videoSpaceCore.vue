@@ -261,6 +261,11 @@ export default {
     this.requestTreeNodes()
     this.requestVersionInfo()
   },
+  watch: {
+    lang (newData) {
+      this.sortOptions = this.$t('videoSpace.options')
+    }
+  },
   methods: {
     requestVersionInfo () {
       // todo: request version and leftSpace
@@ -372,19 +377,7 @@ export default {
         }
       })
     },
-    // 遮罩层删除点击
-    delMaskVideo (data) {
-      // console.log(data)
-      let obj = {
-        videoIds: [data]
-      }
-      batchDeleteVideoRequest(obj).then((res) => {
-        // console.log(res)
-        if (res.error === 0) {
-          this.searchVideos()
-        }
-      })
-    },
+
     upLoadVideo ({ file, maxVideoSize }) {
       if (file.size > maxVideoSize) {
         let msg = this.$t('videoSpace.upload.uploadFitVideo', {maxVideoSize: maxVideoSize})
@@ -442,6 +435,28 @@ export default {
       })
       return ids
     },
+    confirmDeleteVideo (ids) {
+      let _this = this
+      this.$confirm(this.$t('vTree.delVideoTip'), this.$t('vTree.tip'), {
+        confirmButtonText: this.$t('vTree.ok'),
+        cancelButtonText: this.$t('vTree.cancel'),
+        type: 'warning'
+      }).then(() => {
+        let obj = {
+          videoIds: ids
+        }
+        batchDeleteVideoRequest(obj).then((res) => {
+          if (res.error === 0) {
+            _this.allChecked = false
+            _this.searchVideos()
+          }
+        })
+      }).catch(() => {})
+    },
+    // 遮罩层删除点击
+    delMaskVideo (data) {
+      this.confirmDeleteVideo([data])
+    },
     // 视频批量删除
     deleteVideos () {
       let checkedIds = this.getCheckedIds()
@@ -449,16 +464,7 @@ export default {
         this.$message(this.$t('videoSpace.upload.selectVideo'))
         return
       }
-      let obj = {
-        videoIds: checkedIds
-      }
-      batchDeleteVideoRequest(obj).then((res) => {
-        // console.log(res)
-        if (res.error === 0) {
-          this.allChecked = false
-          this.searchVideos()
-        }
-      })
+      this.confirmDeleteVideo(checkedIds)
     },
     // 视频批量移动
     handleMoveVideos () {
@@ -562,7 +568,7 @@ export default {
 .title_tip {
   display: inline-block;
   line-height: 30px;
-  height: 30px;
+  min-height: 30px;
   color: #999;
   padding: 0 12px;
   font-size: 12px;
@@ -596,8 +602,8 @@ export default {
 }
 .tips {
   margin-top: 10px;
-  height: 40px;
-  padding: 0 20px;
+  min-height: 40px;
+  padding: 5px 20px;
   color: #666;
   font-size: 12px;
   line-height: 20px;

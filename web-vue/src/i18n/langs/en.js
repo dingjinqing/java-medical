@@ -218,6 +218,13 @@ import {
   en as purchase
 } from './views/admin_new/en/index/marketManagement/increasePurchase/purchaseEn'
 
+// 视频空间
+import {
+  en as videoSpace
+} from './views/admin_new/en/index/videoSpace/videoSpaceEn'
+
+import { en as vTree } from './views/admin_new/en/components/vTree/vTreeEn'
+
 const en = {
   messages: {
     lang: 'English',
@@ -670,6 +677,8 @@ const en = {
   verifierManage, // 门店列表-核销员管理
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
-  purchase // 加价购
+  purchase, // 加价购
+  videoSpace,
+  vTree
 }
 export default en
