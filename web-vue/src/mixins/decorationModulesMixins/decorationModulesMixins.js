@@ -43,15 +43,15 @@ export default {
           break
         case 12: // 图片导航模块
           obj = {
-            'module_name': 'm_image_guide',
-            'nav_style': '1',
-            'font_color': '#92b0e4',
-            'bg_color': '#ffffff',
-            'nav_group': [
+            'module_name': 'm_image_guide', // 模块名称
+            'nav_style': '1', // 导航样式  1 为样式一   2 为样式二
+            'font_color': '#92b0e4', // 字体颜色
+            'bg_color': '#ffffff', // 背景颜色
+            'nav_group': [ // 导航列表
               {
-                'nav_name': '导航一',
-                'nav_link': '',
-                'nav_src': ''
+                'nav_name': '导航一', // 导航名称
+                'nav_link': '', // 导航链接
+                'nav_src': '' // 导航左侧图片路径
               },
               {
                 'nav_name': '导航二',

@@ -98,7 +98,10 @@
                   placeholder="文字链接可为空"
                   size="small"
                 ></el-input>
-                <el-button size="small">选择链接</el-button>
+                <el-button
+                  @click="handleToCallLinkDialog(index)"
+                  size="small"
+                >选择链接</el-button>
               </div>
             </div>
             <!--右上角icon-->
@@ -137,6 +140,11 @@
       :isDraggable='isDraggable'
       @handleSelectImg='handleToGetImgUrl'
     />
+    <!--选择链接弹窗-->
+    <SelectLinks
+      :tuneUpSelectLink='tuneUpSelectLink'
+      @selectLinkPath='handleToGetLinkPath'
+    />
   </div>
 </template>
 <script>
@@ -145,7 +153,8 @@ import Vue from 'vue'
 Vue.use(vcolorpicker)
 export default {
   components: {
-    ImageDialog: () => import('@/components/admin/imageDalog')
+    ImageDialog: () => import('@/components/admin/imageDalog'),
+    SelectLinks: () => import('@/components/admin/selectLinks')
   },
   props: {
     modulesData: Object,
@@ -153,6 +162,7 @@ export default {
   },
   data () {
     return {
+      tuneUpSelectLink: false,
       tuneUp: false,
       guidList: ['导航一', '导航二', '导航三'],
       isChecked: 0,
@@ -183,6 +193,7 @@ export default {
       isDraggable: false,
       changeLeft: true,
       changeLeftIndex: null,
+      nowPathClick: null, // 当前点击的选择链接按钮所在列表的下标
       // 模块保存数据
       data: {
         nav_style: '1',
@@ -290,6 +301,16 @@ export default {
       this.changeLeftIndex = index
       this.isDraggable = false
       this.tuneUp = !this.tuneUp
+    },
+    // 调起选择链接弹窗
+    handleToCallLinkDialog (index) {
+      this.nowPathClick = index
+      this.tuneUpSelectLink = !this.tuneUpSelectLink
+    },
+    // 选择链接弹窗回传数据
+    handleToGetLinkPath (path) {
+      console.log(path)
+      this.data.nav_group[this.nowPathClick].nav_link = path
     }
   }
 }

@@ -5,9 +5,8 @@
       title="选择链接"
       :visible.sync="dialogVisible"
       width="70%"
-      :before-close="handleClose"
-      :lock-scroll='true'
       :fullscreen='true'
+      :modal-append-to-body='false'
     >
       <div class="body">
         <div class="left_box">
