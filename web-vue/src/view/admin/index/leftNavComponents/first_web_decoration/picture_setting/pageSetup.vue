@@ -128,6 +128,7 @@ export default {
       this.topIconFlag = !this.topIconFlag
       this.showModule = ''
     },
+    // 右侧模块编辑向上层传回数据
     handleToBackData (data) {
       console.log(data)
       this.$emit('handleToBackMiddleData', data)

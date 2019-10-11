@@ -219,7 +219,7 @@ export default {
           background: '#eee'
         }
       },
-      activeName: 'third',
+      activeName: 'first',
       pivTextConArr: [
         {
           imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',

@@ -72,9 +72,12 @@
             </div>
           </div>
         </div>
-          <div class="cententLRight_content_container">
-              <el-button v-if='contentList.length<5' @click="addNav">{{$t('bottomNavigation.addMenu')}}</el-button>
-          </div>
+        <div class="cententLRight_content_container">
+          <el-button
+            v-if='contentList.length<5'
+            @click="addNav"
+          >{{$t('bottomNavigation.addMenu')}}</el-button>
+        </div>
       </div>
       <!--保存-->
       <div class="footer">
@@ -225,6 +228,7 @@ export default {
   methods: {
     // 选中路径
     selectLinkPath (path) {
+      console.log(path)
       this.contentList[this.linksIndex].page = path
     },
     queryBottom () {

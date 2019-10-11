@@ -10,9 +10,6 @@ import systemRouters from '@/router/system/index'
 import { loadLanguageAsync } from '@/i18n/i18n.js'
 Vue.use(Router)
 
-const indexlogin = () => import('@/components/index/login')
-const systemlogin = () => import('@/components/system/login')
-
 const baseRoutes = [
   {
     path: '/',
@@ -24,12 +21,12 @@ const baseRoutes = [
   {
     path: '/index/login',
     name: 'indexLogin',
-    component: indexlogin
+    component: () => import('@/components/index/login')
   },
   {
     path: '/system/login',
     name: 'systemLogin',
-    component: systemlogin
+    component: () => import('@/components/system/login')
   }
 ]
 const routes = baseRoutes.concat(

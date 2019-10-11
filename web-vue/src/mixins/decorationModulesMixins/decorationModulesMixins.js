@@ -28,7 +28,38 @@ export default {
           obj.name = '优惠卷'
           break
         case 8: // 商品模块
-          obj.name = '商品'
+          obj = {
+            'module_name': 'm_goods',
+            'title': '',
+            'title_link': '',
+            'recommend_type': '0',
+            'goods_items': [
+
+            ],
+            'col_type': '4', // 4  1  2  3  0
+            'goods_display': '0',
+            'goods_num': '4',
+            'min_price': '',
+            'max_price': '',
+            'keywords': '',
+            'sort_type': '1',
+            'img_url': '',
+            'goods_module_title': '0',
+            'img_title_url': '',
+            'hide_name': 0,
+            'hide_price': 0,
+            'hide_label': 0,
+            'cart_btn': 1,
+            'other_message': 0,
+            'if_radius': '0',
+            'goods_module_style': '0',
+            'goods_area': 'all',
+            'goods_area_data': '',
+            'goods_type': '0',
+            'show_market': '1',
+            'goods_module_bg': '0',
+            'goods_bg_color': '#f5f5f5'
+          }
           break
         case 9: // 商品搜索模块
           obj = {
