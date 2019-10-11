@@ -56,6 +56,7 @@ public class GoodsCommentService extends ShopBaseService {
                 .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(COMMENT_GOODS.GOODS_ID))
                 .leftJoin(USER).on(USER.USER_ID.eq(COMMENT_GOODS.USER_ID))
                 .leftJoin(COMMENT_AWARD).on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
+                .leftJoin(COMMENT_GOODS_ANSWER).on(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID))
                 .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         this.buildOptions(select, param);
 
