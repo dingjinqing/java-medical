@@ -72,6 +72,13 @@ export default {
             'sort_bg_color': '#666666' // 图标颜色
           }
           break
+        case 11: // 轮播图模块
+          obj = {
+            'module_name': 'm_scroll_image', // 模块名称
+            'img_items': [], // 轮播图片列表
+            'is_preview': 0 // 是否在小程序中可以预览原图
+          }
+          break
         case 12: // 图片导航模块
           obj = {
             'module_name': 'm_image_guide', // 模块名称

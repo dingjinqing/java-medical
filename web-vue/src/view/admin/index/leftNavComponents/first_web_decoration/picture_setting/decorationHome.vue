@@ -198,13 +198,15 @@ export default {
     Commodity: () => import('./decorationModules/commodityComponents/commodity'), // 商品
     CommoditySearch: () => import('./decorationModules/commodityComponents/commoditySearch'), // 商品搜索
     // 图文组件库
-    PictureNavigation: () => import('./decorationModules/graphicAndTextComponents/pictureNavigation') // 图片导航
+    PictureNavigation: () => import('./decorationModules/graphicAndTextComponents/pictureNavigation'), // 图片导航
+    // 轮播组件库
+    CarouselPicture: () => import('./decorationModules/graphicAndTextComponents/CarouselPicture')// 轮播图
   },
   data () {
     return {
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'zb', 'zb', 'PictureNavigation'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'zb', 'CarouselPicture', 'PictureNavigation'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -369,14 +371,14 @@ export default {
       isDragging: false,
       nowShowLeftModules: [],
       showModulesList: [],
-      insertModulesId: -1,
+      insertModulesId: -1, // 左侧模块将要插入位置
       drag_flag: false,
       oldIndex: -1,
       newIndex: -1,
       oldElement: null,
       zbFlag: false,
       topAreaFlag: false,
-      nowRightShowIndex: null,
+      nowRightShowIndex: null, // 现在右侧显示的模块的id
       nowRightShowMoudlesIndex: null,
       modulesData: [], // 模块数据
       middleHereFlag: false,
@@ -563,6 +565,10 @@ export default {
               break
             case '图片导航':
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 12)
+              break
+            case '轮播图':
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 11)
+              break
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }
