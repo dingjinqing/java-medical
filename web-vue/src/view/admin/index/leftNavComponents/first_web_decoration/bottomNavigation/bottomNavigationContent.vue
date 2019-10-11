@@ -72,7 +72,9 @@
             </div>
           </div>
         </div>
-
+          <div class="cententLRight_content_container">
+              <el-button v-if='contentList.length<5' @click="addNav">{{$t('bottomNavigation.addMenu')}}</el-button>
+          </div>
       </div>
       <!--保存-->
       <div class="footer">
@@ -268,6 +270,17 @@ export default {
         console.log(res)
       })
     },
+    // 添加一项
+    addNav () {
+      let newNav = {
+        'text': '首页',
+        'btn': 0,
+        'normal': this.$imageHost + '/image/admin/btn_add.png',
+        'hover': this.$imageHost + '/image/admin/btn_add.png',
+        'page': 'pages/index/index'
+      }
+      this.contentList.push(newNav)
+    },
     // 删除某项
     handleDel (index) {
       this.contentList.splice(index, 1)
@@ -385,6 +398,7 @@ export default {
   background: #f8f8f8;
   padding: 15px 12px 22px;
   border-radius: 3px;
+  margin-bottom: 100px;
 }
 .cententLleft_bottom ul {
   background-color: #fff;

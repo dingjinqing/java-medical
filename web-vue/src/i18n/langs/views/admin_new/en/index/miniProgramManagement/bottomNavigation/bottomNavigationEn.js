@@ -9,5 +9,6 @@ export const en = {
   changeIcons: 'Change icons',
   clickStatus: 'Click Status',
   unclickedStatus: 'Unclicked status',
-  addConnections: 'add connections'
+  addConnections: 'add connections',
+  addMenu: 'add menu'
 }
