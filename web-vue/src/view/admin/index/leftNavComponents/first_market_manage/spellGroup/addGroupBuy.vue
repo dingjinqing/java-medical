@@ -357,6 +357,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
+        :chooseGoodsBack ="[form.goodsId]"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"

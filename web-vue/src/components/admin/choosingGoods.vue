@@ -479,6 +479,12 @@ export default {
     },
     /* 确定 */
     handleChoiseGooddialog () {
+      if (this.checkedNumMax && this.checkedNumMax > 0) {
+        if (this.checkedIdList.length > this.checkedNumMax) {
+          this.$message.warning('最多选择' + this.checkedNumMax + '件商品')
+          return
+        }
+      }
       // 关闭对话框
       this.choiseGooddialogVisible = false
       // 单选id
@@ -499,8 +505,8 @@ export default {
           if (this.loadProduct) {
             _goodsId = item.prdId
           }
-          this.goodsIdsArr.push(_goodsId)
-          this.urlLists.push({
+          goodsIdsArr.push(_goodsId)
+          urlLists.push({
             goodsImg: item.goodsImg,
             goodsId: _goodsId
           })

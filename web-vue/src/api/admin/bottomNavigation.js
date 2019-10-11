@@ -3,7 +3,7 @@ import service from '@/util/request.js'
 // 底部导航查询
 export function bottomGetRequest () {
   return service({
-    url: '/api/admin/bottom/get',
+    url: '/api/admin/user/center/config/get',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export function bottomGetRequest () {
 // 底部导航修改
 export function bottomUpdateRequest (data) {
   return service({
-    url: '/api/admin/bottom/update',
+    url: '/api/admin/user/center/config/update',
     method: 'post',
     data: data
   })
