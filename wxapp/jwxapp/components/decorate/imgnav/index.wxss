@@ -1,0 +1,33 @@
+.imgnav-container {
+  width: 100%;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20rpx;
+}
+
+.imgnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background: #fff;
+  padding: 20rpx 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.imgnav-container image {
+  width: 100rpx;
+  height: 100rpx;
+  display: block;
+  margin: 0 auto;
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+.imgnav-item text {
+  font-size: 28rpx;
+}

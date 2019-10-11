@@ -2,6 +2,7 @@
   "components": true,
   "usingComponents": {
     "v-search": "../search/index",
-    "v-card": "../card/index"
+    "v-card": "../card/index",
+    "v-imgnav": "../imgnav/index"
   }
 }
