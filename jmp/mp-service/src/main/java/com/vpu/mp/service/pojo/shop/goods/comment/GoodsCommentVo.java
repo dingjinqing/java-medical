@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.goods.comment;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -22,5 +23,9 @@ public class GoodsCommentVo {
     private String username;
     private String mobile;
     private Byte anonymousflag;
-    private String lotteryAward;
+    private String name;
+    private Integer awardType;
+    private Integer score;
+    private BigDecimal account;
+   
 }
