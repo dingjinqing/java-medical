@@ -77,7 +77,6 @@
               :data="this.goodsRow"
               :hidden="this.goodsRow.length == 0?true:false"
               border
-              class="actGoodsTable"
               header-row-class-name="tableClss"
             >
               <el-table-column
@@ -85,6 +84,7 @@
                 :label="$t('addBargainAct.goodsName')"
                 align="center"
                 class="tableHeaderHeight"
+                width="300"
               >
                 <template slot-scope="scope">
                   <img
@@ -100,11 +100,13 @@
                 :label="$t('addBargainAct.goodsOriginalStock')"
                 align="center"
                 class="tableHeaderHeight"
+                width="100"
               ></el-table-column>
               <el-table-column
                 :label="$t('addBargainAct.bargainStock')"
                 align="center"
                 class="tableHeaderHeight"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-input-number
@@ -121,6 +123,7 @@
                 :label="$t('addBargainAct.goodsOriginalPrice')"
                 align="center"
                 class="tableHeaderHeight"
+                width="100"
               ></el-table-column>
               <el-table-column
                 v-if="param.bargainType == 0"
@@ -157,7 +160,7 @@
                       :max="scope.row.shopPrice"
                     >
                     </el-input-number>
-                    {{$t('marketCommon.to')}}
+                    <span style="margin: 3px 6px;">{{$t('marketCommon.to')}}</span>
                     <el-input-number
                       :disabled="isEditFlag"
                       v-model="param.expectationPrice"
@@ -166,7 +169,9 @@
                       :max="scope.row.shopPrice"
                     >
                     </el-input-number>
-                    ({{$t('addBargainAct.default0')}}){{$t('addBargainAct.sttlementAmountTip')}}
+                    <div style="margin: 4px 6px">({{$t('addBargainAct.default0')}})
+                      <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
+                    </div>
                   </div>
                 </template>
               </el-table-column>
@@ -780,8 +785,8 @@ export default {
 }
 /deep/ .tableClss th {
   background-color: #f5f5f5;
-  height: 20px !important;
-  border: none;
+  height: 20px;
+  line-height: 0;
 }
 .goodsName_img {
   width: 28px;

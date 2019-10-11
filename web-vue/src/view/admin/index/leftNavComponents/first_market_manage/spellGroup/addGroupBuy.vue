@@ -586,9 +586,10 @@ export default {
       console.log(data)
       console.log(this.rewardCouponList)
       if (this.rewardCouponList.length >= 5) {
-        return
+
+      } else {
+        this.rewardCouponList = data
       }
-      this.rewardCouponList = data
     },
     // 删除鼓励奖优惠券图片
     deleteCouponImg (index) {
@@ -774,18 +775,12 @@ export default {
   margin: 10px 0 !important;
 }
 .tableHeader th {
-  /* background: green;
   border: none;
+  line-height: 0 !important;
   height: 36px !important;
   font-weight: bold;
-  color: red !important;
-  padding: 8px 10px; */
-  background: red;
+  padding: 8px 10px;
   font-weight: bold;
-}
-.el-table__header {
-  height: 35px !important;
-  background: red !important;
 }
 .settings {
   margin-right: 30px;

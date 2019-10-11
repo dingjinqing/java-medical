@@ -32,7 +32,6 @@
       v-if="tableListView"
     >
       <el-table
-        class="version-manage-table"
         header-row-class-name="tableClss"
         :data="tableData"
         v-loading="loading"
