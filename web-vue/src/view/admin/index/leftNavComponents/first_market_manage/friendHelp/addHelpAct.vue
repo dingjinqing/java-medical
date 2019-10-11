@@ -74,18 +74,22 @@
             <el-col v-if="form.rewardType==0 || form.rewardType==1">
               <el-button
                 size="small"
-                type="primary"
                 @click="showChoosingGoods"
               >+ {{$t('promoteList.chooseGoods')}}</el-button>
             </el-col>
             <el-col v-if="form.rewardType==2">
-              <el-button
-                size="small"
-                type="primary"
+              <div
+                class="addInfo"
                 @click="isEditFlag?'':handleToCallDialog(1)"
-              >+ {{$t('promoteList.chooseCoupons')}}</el-button>
+              >
+                <el-image
+                  fit="scale-down"
+                  :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                  style="width: 78px;height:78px;cursor:pointer"
+                ></el-image>
+                <p>{{$t('addBargainAct.addCoupon')}}</p>
+              </div>
             </el-col>
-            <div></div>
           </el-form-item>
           <el-form-item
             :label="$t('promoteList.rewardSet')"
@@ -101,20 +105,20 @@
                 prop="goodsName"
                 :label="$t('promoteList.goodsInfo')"
                 align="center"
-              >
+              ><template></template>
               </el-table-column>
               <el-table-column
                 prop="shopPrice"
                 :label="$t('promoteList.goodsPrice')"
                 align="center"
-              >
+              ><template></template>
               </el-table-column>
 
               <el-table-column
                 prop="goodsNumber"
                 :label="$t('promoteList.goodsStore')"
                 align="center"
-              >
+              ><template></template>
               </el-table-column>
 
               <el-table-column
@@ -145,7 +149,7 @@
               v-if="form.rewardType==2"
               :data="coupon_info"
               border
-              style="width: 230px;"
+              style="width: 300px;"
             >
               <el-table-column
                 :label="$t('promoteList.couponInfo')"
@@ -371,27 +375,39 @@
             >{{$t('promoteList.point')}}</el-radio>
             <div
               v-if="form.failedSendType==1"
-              style="width: 80px;height:80px;border:1px solid #000"
               @click="isEditFlag?'':handleToCallDialog(2)"
             >
 
               <!--占位-->
-              <div v-if="!coupon_duplicate.length">
-                请添加优惠券
+              <div
+                v-if="!coupon_duplicate.length"
+                class="addInfo"
+              >
+                <el-image
+                  fit="scale-down"
+                  :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                  style="width: 78px;height:78px;cursor:pointer"
+                ></el-image>
+                <p>{{$t('addBargainAct.addCoupon')}}</p>
               </div>
               <div
+                class="addInfo"
                 v-else
-                class="coupon_info"
               >
-                <span class="coupon_name">{{coupon_duplicate[0].actName}}</span>
-                <div
-                  v-if="coupon_duplicate[0].actCode == 'voucher'"
-                  style="color:red"
-                >￥<span>{{coupon_duplicate[0].denomination}}元</span></div>
-                <div v-else><span>{{coupon_duplicate[0].denomination}}</span>折</div>
-                <div class="coupon_rule">{{coupon_duplicate[0].useConsumeRestrict > 0? `满${coupon_duplicate[0].leastConsume}元可用`  : `不限制`}}</div>
-                <div class="coupon_center_number">剩余{{coupon_duplicate[0].surplus}}张</div>
+                <div class="couponImgWrapper">
+                  <div class="coupon_list_top">
+                    <span>￥</span>
+                    <span class="number">{{coupon_duplicate[0].denomination}}</span>
+                  </div>
+                  <div class="coupon_center_limit">{{coupon_duplicate[0].useConsumeRestrict | formatLeastConsume(coupon_duplicate[0].leastConsume)}}</div>
+                  <div class="coupon_center_number">剩余{{coupon_duplicate[0].surplus}}张</div>
+                  <div
+                    class="coupon_list_bottom"
+                    style="font-size:12px"
+                  >领取</div>
+                </div>
               </div>
+
             </div>
 
             <div v-if="
@@ -423,8 +439,31 @@
                   >
                     {{$t('promoteList.defaultStyle')}}
                   </el-radio>
-                  <span>{{$t('promoteList.sharePreview')}}</span>
-                  <span>{{$t('promoteList.posterPreview')}}</span>
+                  <!-- <span>{{$t('promoteList.sharePreview')}}</span>
+                  <span>{{$t('promoteList.posterPreview')}}</span> -->
+                  <el-popover
+                    placement="right-start"
+                    width="220"
+                    trigger="hover"
+                  >
+                    <el-image :src="srcList.src1"></el-image>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                      style="margin: 0 20 0 0px"
+                    >{{$t('marketCommon.viewExample')}}</el-button>
+                  </el-popover>
+                  <el-popover
+                    placement="right-start"
+                    width="220"
+                    trigger="hover"
+                  >
+                    <el-image :src="srcList.src2"></el-image>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >{{$t('marketCommon.downloadPoster')}}</el-button>
+                  </el-popover>
                 </div>
                 <div>
                   <el-radio
@@ -432,9 +471,12 @@
                     label="1"
                   >
                     {{$t('promoteList.customStyle')}}
-                    <div v-if="form.activityShareType == 1">
+                    <div
+                      v-if="form.activityShareType == 1"
+                      style="margin-left: 29px"
+                    >
                       <div style="margin: 15px 0">
-                        <span>{{$t('promoteList.words')}}</span>
+                        <span style="margin-right: 25px">{{$t('promoteList.words')}}</span>
                         <el-input
                           size="small"
                           style="width:200px"
@@ -534,6 +576,15 @@ export default {
     choosingGoods,
     ImageDalog,
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
+  },
+  filters: {
+    formatLeastConsume (useConsumeRestrict, leastConsume) {
+      if (useConsumeRestrict === 0) {
+        return `不限制`
+      } else {
+        return `满${leastConsume}元可用`
+      }
+    }
   },
   data () {
     return {
@@ -677,11 +728,14 @@ export default {
       },
       srcList: {
         src: `${this.$imageHost}/image/admin/add_img.png`,
+        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
         imageUrl: ``
       },
       showCouponDialog: false,
       couponIdList: [],
-      showImageDialog: false
+      showImageDialog: false,
+      imgHost: `${this.$imageHost}`
     }
   },
   created () {
@@ -1038,5 +1092,59 @@ export default {
 }
 .ImgWrap:hover .moveIcon {
   display: block;
+}
+.addInfo {
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  height: 101px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  line-height: normal;
+  img {
+    margin-top: 10px;
+  }
+  p {
+    line-height: normal;
+    margin-top: -20px;
+    color: #999;
+  }
+  .couponImgWrapper {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fbb;
+    border-radius: 10px;
+    .coupon_list_top {
+      margin-top: 10px;
+      color: #f60;
+      :nth-of-type(2) {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+    .coupon_center_limit {
+      height: 20px;
+      color: #f60;
+      font-size: 12px !important;
+    }
+    .coupon_center_number {
+      height: 20px;
+      color: #fbb;
+    }
+    .coupon_list_bottom {
+      height: 24px;
+      line-height: 30px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      color: #fff;
+      background: #f66;
+      background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+      background-repeat: repeat-x;
+    }
+  }
 }
 </style>
