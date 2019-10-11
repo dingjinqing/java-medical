@@ -303,11 +303,11 @@ export default {
       console.log(second)
       if (second === 0) {
         // this.ulDataList[first].img = res
-        this.contentList[first].normal = res
+        this.contentList[first].normal = res.imgUrl
         console.log(this.contentList)
       } else {
         // this.ulDataList[first].imgActive = res
-        this.contentList[first].hover = res
+        this.contentList[first].hover = res.imgUrl
       }
       this.$forceUpdate()
     },
