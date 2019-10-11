@@ -14,11 +14,9 @@ import lombok.NoArgsConstructor;
 public class UserCenterContentConfig {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "icon_name")
     private String iconName;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show")
     private Integer isShow;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -28,7 +26,6 @@ public class UserCenterContentConfig {
     private String link;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "link_name")
     private String linkName;
 
 

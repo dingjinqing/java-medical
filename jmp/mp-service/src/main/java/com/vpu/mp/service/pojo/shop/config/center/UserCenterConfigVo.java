@@ -29,44 +29,35 @@ public class UserCenterConfigVo {
      *
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "module_name")
     private String moduleName;
     /**
      *页面风格
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "page_style")
     private String pageStyle;
     /**
      *
      * 个人信息背景色配置
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show")
     private Integer isShow;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "bg_type")
     private String bgType;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "bg_img")
     private String bgImg;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "module_style")
     private String moduleStyle;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show_collect")
     private Integer isShowCollect;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show_buy_history")
     private Integer isShowBuyHistory;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show_footprint")
     private Integer isShowFootprint;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UserCenterContentConfig> content;

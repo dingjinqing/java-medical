@@ -31,44 +31,37 @@ public class UserCenterConfigParam {
      */
     @NotBlank
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "module_name")
     private String moduleName;
     /**
      *页面风格
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "page_style")
     private String pageStyle;
     /**
      *
      * 个人信息背景色配置
+     * 展示 1显示 0隐藏
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show")
     private Integer isShow;
-
+    // 同步店铺配色 1同步 0 不同步
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "bg_type")
     private String bgType;
-
+    // 背景图片
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "bg_img")
     private String bgImg;
-
+    // 标题
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
-
+    // 模块样式
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "module_style")
     private String moduleStyle;
+    // 我的收藏
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show_collect")
     private Integer isShowCollect;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show_buy_history")
     private Integer isShowBuyHistory;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty(value = "is_show_footprint")
     private Integer isShowFootprint;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UserCenterContentConfig> content;
