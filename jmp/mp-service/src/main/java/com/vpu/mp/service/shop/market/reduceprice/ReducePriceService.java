@@ -20,6 +20,8 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,9 @@ import static org.jooq.impl.DSL.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: 王兵兵
@@ -189,6 +193,90 @@ public class ReducePriceService extends ShopBaseService {
             }
         }
         return res;
+    }
+
+    /**
+     * 根据商品ID和当前时间获取限时降价的商品价格
+     * @param goodsId 商品ID
+     * @param date 当前时间
+     * @return 在活动有效期内返回价格否则返回null
+     */
+    public BigDecimal getShowPriceByGoodsId(Integer goodsId,Timestamp date){
+        Integer reducePriceId = db().select(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID)
+            .from(REDUCE_PRICE_GOODS)
+            .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
+            .where(REDUCE_PRICE_GOODS.GOODS_ID.eq(goodsId))
+            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
+            .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(REDUCE_PRICE.START_TIME.lessThan(date))
+            .and(REDUCE_PRICE.END_TIME.greaterThan(date))
+            .fetchOne(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID);
+        if( reducePriceId == null ){
+            return null;
+        }
+        Optional<ReducePriceRecord> reducePriceRecordOptional =
+            db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(reducePriceId)).fetchOptional();
+        if( !reducePriceRecordOptional.isPresent() ){
+            return null;
+        }
+        ReducePriceRecord reducePriceRecord = reducePriceRecordOptional.get();
+
+        Optional<ReducePriceProductRecord> priceProductRecordOptional =
+            getReducePriceProductRecordByGoodsId(reducePriceId,goodsId);
+        if( !priceProductRecordOptional.isPresent() ){
+            return null;
+        }
+        ReducePriceProductRecord reducePriceProductRecord = priceProductRecordOptional.get();
+        BigDecimal price = reducePriceProductRecord.getPrdPrice();
+        if (!isReturnPrice(reducePriceRecord)) {
+            return null;
+        } else {
+            return price;
+        }
+    }
+
+    /**
+     * 判断当前活动是否还有效
+     * @param reducePriceRecord 限时减价活动
+     * @return 有效：true
+     */
+    private boolean isReturnPrice(ReducePriceRecord reducePriceRecord ){
+        LocalTime startLocalTime;
+        LocalTime endLocalTime;
+        LocalTime nowLocalTime = LocalTime.now();
+        List<Integer> dayArray = new ArrayList<>(7);
+        if(StringUtils.isNotBlank(reducePriceRecord.getPointTime())){
+            String[] pointTime = reducePriceRecord.getPointTime().split("@");
+            String[] startArray = pointTime[0].split(":");
+            String[] endArray = pointTime[1].split(":");
+            startLocalTime = LocalTime.of(Integer.parseInt(startArray[0]),Integer.parseInt(startArray[1]));
+            endLocalTime = LocalTime.of(Integer.parseInt(endArray[0]),Integer.parseInt(endArray[1]));
+            if( nowLocalTime.isAfter(endLocalTime) || nowLocalTime.isBefore(startLocalTime) ){
+                return false;
+            }
+        }
+        if( StringUtils.isNotBlank(reducePriceRecord.getExtendTime()) ){
+            dayArray = Arrays.stream(reducePriceRecord.getExtendTime().split("@"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        }
+        if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_DAY.equals(reducePriceRecord.getPeriodAction()) ){
+            return true;
+        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_WEEK.equals(reducePriceRecord.getPeriodAction()) ){
+            Integer dayOfWeek = DateUtil.getLocalDate().getDayOfWeek().getValue();
+            return dayArray.contains(dayOfWeek);
+        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_MONTH.equals(reducePriceRecord.getPeriodAction()) ){
+            Integer dayOfMonth = DateUtil.getLocalDate().getDayOfMonth();
+            return dayArray.contains(dayOfMonth);
+        }
+        return false;
+    }
+
+    private Optional<ReducePriceProductRecord> getReducePriceProductRecordByGoodsId(Integer reducePriceId,Integer goodsId){
+        return db().selectFrom(REDUCE_PRICE_PRODUCT)
+            .where(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(reducePriceId))
+            .and(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(goodsId))
+            .fetchOptional();
     }
 
 }
