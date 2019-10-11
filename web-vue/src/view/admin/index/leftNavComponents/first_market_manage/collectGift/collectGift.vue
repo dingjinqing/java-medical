@@ -182,6 +182,8 @@ import wrapper from '@/components/admin/wrapper/wrapper'
 import ImageDalog from '@/components/admin/imageDalog'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import { collectGiftStatus, collectGiftSelect, collectGiftUpdate } from '@/api/admin/marketManage/collectGift.js'
+import { getCouponSelectComponentData } from '@/api/admin/marketManage/couponGive.js'
+
 export default {
   components: {
     wrapper,
@@ -195,13 +197,10 @@ export default {
       if (value === '1') {
         if (this.srcList.src === `${this.$imageHost}/image/admin/add_img.png`) {
           callback(new Error('请选择自定义图标'))
-        } else {
-          callback()
-        }
+        } else { callback() }
       } else { callback() }
     }
     var validateReward = (rule, value, callback) => {
-      console.log('优惠券id：', this.couponId)
       if (this.integral === false && this.coupon === false) {
         callback(new Error('请至少选择一种奖励方式'))
       } else if (this.integral === true && this.score === '' && this.coupon === false) {
@@ -257,7 +256,9 @@ export default {
       imgHost: `${this.$imageHost}`,
       checkedData: [],
       integral: false,
-      coupon: false
+      coupon: false,
+      // 优惠券回显相关
+      data: ''
     }
   },
   created () {
@@ -268,6 +269,7 @@ export default {
     this.langDefault()
   },
   methods: {
+
     tabSwitch () {
       collectGiftStatus().then(res => {
         if (res.error === 0) {
@@ -292,15 +294,57 @@ export default {
           }
           if (res.content.coupon_ids !== null) {
             this.coupon = true
+            this.couponId = res.content.coupon_ids
+            this.couponData = res.content.coupon_ids.split(',')
           }
+          // let data = this.data
+          let param = {
+            'actName': ''
+          }
+          getCouponSelectComponentData(param).then((res) => {
+            if (res.error === 0) {
+              this.dialogData = res.content
+              this.dialogData.map((item, index) => {
+                this.$set(item, 'ischeck', false)
+              })
+              this.dialogData.forEach((item, index) => {
+                item.ischeck = false
+                this.couponData.forEach((itemC, indexC) => {
+                  if (item.id === Number(itemC)) {
+                    item.ischeck = true
+                  }
+                })
+              })
+              let arr = []
+              this.dialogData.forEach((item, index) => {
+                if (item.ischeck) arr.push(item)
+              })
+              this.formatCoupon(arr)
+              this.couponData = arr
+            }
+          })
         }
       })
     },
+    formatCoupon (data) {
+      let couponArr = []
+      let couponData = {
+        immediatelyGrantAmount: 0,
+        timingEvery: 0,
+        timingAmount: 0,
+        timingTime: '1',
+        timingUnit: '0'
+      }
+      data.map(item => {
+        couponArr.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
+      })
+      return couponArr
+    },
     submit () {
       this.scoreTemp = this.score
-      // if (this.form.logo === '0') {
-      //   this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
-      // }
+      if (this.form.logo === '0') {
+        this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
+      }
       if (this.integral === false) {
         this.scoreTemp = null
       }
@@ -318,9 +362,7 @@ export default {
       }
       console.log('入参：', submitParam)
       this.$refs['form'].validate((valid) => {
-        console.log('***************')
         if (valid) {
-          console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
           collectGiftUpdate(submitParam).then(res => {
             if (res.error === 0) {
               alert('保存成功！')
