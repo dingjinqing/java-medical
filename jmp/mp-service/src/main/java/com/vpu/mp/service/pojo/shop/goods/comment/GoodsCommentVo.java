@@ -27,5 +27,6 @@ public class GoodsCommentVo {
     private Integer awardType;
     private Integer score;
     private BigDecimal account;
+    private String bogusUsername;
    
 }

@@ -44,6 +44,7 @@ public class GoodsCommentService extends ShopBaseService {
                 COMMENT_GOODS_ANSWER.CONTENT,
                 COMMENT_GOODS.CREATE_TIME,
                 COMMENT_GOODS.ANONYMOUSFLAG,
+                COMMENT_GOODS.BOGUS_USERNAME,
                 GOODS.GOODS_NAME,
                 GOODS.GOODS_IMG,
                 USER.USERNAME,
@@ -259,9 +260,9 @@ public class GoodsCommentService extends ShopBaseService {
 		
 		 int result = db()
 	                .insertInto(COMMENT_GOODS,COMMENT_GOODS.GOODS_ID,COMMENT_GOODS.BOGUS_USERNAME,COMMENT_GOODS.BOGUS_USER_AVATAR,
-	                		COMMENT_GOODS.CREATE_TIME, COMMENT_GOODS.COMMSTAR,COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.ANONYMOUSFLAG)
+	                		COMMENT_GOODS.CREATE_TIME, COMMENT_GOODS.COMMSTAR,COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.COMM_IMG,COMMENT_GOODS.ANONYMOUSFLAG)
 	                .values(goodsCommentAddComm.getGoodsId(),goodsCommentAddComm.getBogusUsername(),goodsCommentAddComm.getBogusUserAvatar(),
-	                		goodsCommentAddComm.getCreateTime(),goodsCommentAddComm.getCommstar(),goodsCommentAddComm.getCommNote(),goodsCommentAddComm.getAnonymousFlag())
+	                		goodsCommentAddComm.getCreateTime(),goodsCommentAddComm.getCommstar(),goodsCommentAddComm.getCommNote(),goodsCommentAddComm.getCommImg(),goodsCommentAddComm.getAnonymousFlag())
 	                .execute();
 	    
 		 return result;

@@ -18,5 +18,6 @@ public class GoodsCommentAddCommParam {
 	private Byte commstar;
     private String commNote;
     private Byte anonymousFlag;
+    private String commImg;
     
 }
