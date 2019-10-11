@@ -45,7 +45,9 @@
           </vue-scroll>
         </div>
         <div class="decMiddle">
-          <div class="decTop"></div>
+          <div class="decTop">
+            <span>{{pageSetData.page_name}}</span>
+          </div>
           <vue-scroll
             :ops="ops"
             style="height:530px"
@@ -963,6 +965,14 @@ export default {
           height: 64px;
           background: url(../../../../../../assets/adminImg/page_name.png)
             no-repeat;
+          display: flex;
+          justify-content: center;
+          align-items: flex-end;
+          span {
+            font-size: 16px;
+            color: #000;
+            font-weight: 800;
+          }
         }
         .decContent {
           height: 530px;
