@@ -1,7 +1,10 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.store.store.AppletStoreInfo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -23,8 +26,8 @@ public class WxAppStoreController extends WxAppBaseController{
     /**
      * 门店信息
      */
-    @GetMapping("/info/{storeId}")
-    public JsonResult storeInfo(@PathVariable Integer storeId) {
-        return this.success(shop().store.getStore(storeId));
+    @GetMapping("/info")
+    public JsonResult storeInfo(@RequestBody @Validated({AppletStoreInfo.class}) StoreBasicVo param) {
+        return this.success(shop().store.getStore(param.getStoreId()));
     }
 }
