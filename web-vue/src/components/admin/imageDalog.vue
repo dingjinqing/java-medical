@@ -628,9 +628,10 @@ ul {
 }
 .bottom {
   display: flex;
+  padding-top: 23px;
+  justify-content: flex-end;
 }
 .totle {
-  margin-top: 23px;
   display: flex;
   align-items: center;
 }
