@@ -81,7 +81,7 @@
         <el-table-column :label="$t('evaluation.evaluationTable.productInformation')">
           <template slot-scope="scope">
             <div class="orderSn">
-              <span v-if="scope.row.bogus_username">商家添加评价</span>
+              <span v-if="scope.row.bogusUsername">商家添加评价</span>
               <span v-else>{{$t('evaluation.orderSn')}}：<span>{{scope.row.orderSn}}</span></span>
             </div>
             <div class="goods_info">
@@ -101,8 +101,8 @@
         >
           <template slot-scope="scope">
             <div class="user_info">
-              <p class="user_name">{{$t('evaluation.userName')}}：<span>{{scope.row.bogus_username ? scope.row.bogus_username : scope.row.username }}</span></p>
-              <p v-if="!scope.row.bogus_username">{{$t('evaluation.mobile')}}：{{scope.row.mobile}}</p>
+              <p class="user_name">{{$t('evaluation.userName')}}：<span>{{scope.row.bogusUsername ? scope.row.bogusUsername : scope.row.username }}</span></p>
+              <p v-if="!scope.row.bogusUsername">{{$t('evaluation.mobile')}}：{{scope.row.mobile}}</p>
             </div>
           </template>
         </el-table-column>
@@ -227,7 +227,9 @@ export default {
       }
       getCommentList(obj).then(res => {
         this.pageParams = res.content.page
-        this.dataList = res.content.dataList
+        this.dataList = res.content.dataList.sort((a, b) => {
+          return (b.id - a.id)
+        })
       })
     },
     delEvaluation (id) {
