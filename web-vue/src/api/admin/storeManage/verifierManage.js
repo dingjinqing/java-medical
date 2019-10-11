@@ -15,3 +15,12 @@ export function getAllVerifierList (data) {
     data: data
   })
 }
+
+// 添加核销员
+export function addVerifier (data) {
+  return service({
+    url: '/api/admin/store/verifier/add',
+    method: 'post',
+    data: data
+  })
+}

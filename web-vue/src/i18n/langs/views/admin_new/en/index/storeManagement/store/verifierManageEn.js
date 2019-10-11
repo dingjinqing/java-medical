@@ -17,5 +17,8 @@ export const en = {
   cancel: 'cancel',
   search: 'search',
   checkOrder: 'checkOrder',
-  delete: 'delete'
+  delete: 'delete',
+  addVerifierSuccess: 'Successfully added the salesman',
+  addVerifierFail: 'Adding a salesperson failed',
+  NoDataYet: 'No relevant data yet'
 }

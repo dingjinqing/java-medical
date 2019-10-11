@@ -31,10 +31,10 @@
               <el-button size="small">{{$t('verifierManage.export')}}</el-button>
             </li>
             <div class="list-verifier-filters-right">
-              <addVerifier
+              <addVerifierDialog
                 :storeId='queryParams.storeId'
                 @select-change="selectVerifierChangeHandle"
-              ></addVerifier>
+              ></addVerifierDialog>
             </div>
           </ul>
         </div>
@@ -59,7 +59,14 @@
               :label="$t('verifierManage.nickname')"
               prop="username"
               align="center"
-            ></el-table-column>
+            >
+              <template slot-scope="{row}">
+                <router-link
+                  class="iconSpan"
+                  :to="{path: '/admin/home/main/membershipInformation', query: {userId: row.userId}}"
+                >{{row.username}}</router-link>
+              </template>
+            </el-table-column>
             <el-table-column
               :label="$t('verifierManage.phoneNumber')"
               prop="mobile"
@@ -81,7 +88,7 @@
                   :content="$t('verifierManage.checkOrder')"
                   placement="top"
                 >
-                  <router-link :to="{path:'', query:{}}">{{$t('verifierManage.checkOrder')}}</router-link>
+                  <span class="iconSpan">{{$t('verifierManage.checkOrder')}}</span>
                 </el-tooltip>
                 <el-tooltip
                   :content="$t('verifierManage.delete')"
@@ -98,7 +105,7 @@
               <div class="noData">
                 <img :src="noImg">
               </div>
-              <span>暂无相关数据</span>
+              <span>{{$t('verifierManage.NoDataYet')}}</span>
             </div>
           </el-table>
           <div class="table-page">
@@ -114,11 +121,11 @@
 </template>
 
 <script>
-import { getVerifierList } from '@/api/admin/storeManage/verifierManage'
+import { getVerifierList, addVerifier } from '@/api/admin/storeManage/verifierManage'
 import pagination from '@/components/admin/pagination/pagination'
-import addVerifier from '@/components/admin/addVerifierDialog'
+import addVerifierDialog from '@/components/admin/addVerifierDialog'
 export default {
-  components: { pagination, addVerifier },
+  components: { pagination, addVerifierDialog },
   data () {
     return {
       storeName: '',
@@ -143,6 +150,7 @@ export default {
     this.storeName = this.$route.query.name
   },
   mounted () {
+    console.log(this.$route, 111)
     this.initDataList()
   },
   methods: {
@@ -157,6 +165,26 @@ export default {
     },
     selectVerifierChangeHandle (datas) {
       console.log(datas)
+      const userIds = datas.map((item, i) => item.userId)
+      this.addVerifierHandle(userIds)
+    },
+    addVerifierHandle (userIds) {
+      let params = {
+        storeId: this.queryParams.storeId,
+        userIds: userIds
+      }
+      addVerifier(params).then(res => {
+        if (res.error === 0) {
+          console.log(res)
+          this.$message.success(this.$t('verifierManage.addVerifierSuccess'))
+          this.initDataList()
+        } else {
+          this.$message.success(this.$t('verifierManage.addVerifierFail'))
+        }
+      }).catch(err => {
+        this.$message.success(this.$t('verifierManage.addVerifierFail'))
+        throw err
+      })
     },
     initDataList () {
       let params = Object.assign(this.queryParams, this.pageParams)
@@ -229,6 +257,7 @@ export default {
 }
 .iconSpan {
   color: #5a8bff;
+  text-decoration: none;
   cursor: pointer !important;
 }
 .noData {

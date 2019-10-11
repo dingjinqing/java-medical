@@ -18,5 +18,8 @@ export const cn = {
   cancel: '取消',
   search: '搜索',
   checkOrder: '查看订单',
-  delete: '删除'
+  delete: '删除',
+  addVerifierSuccess: '添加核销员成功',
+  addVerifierFail: '添加核销员失败',
+  NoDataYet: '暂无相关数据'
 }
