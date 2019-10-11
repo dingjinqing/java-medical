@@ -56,7 +56,7 @@ public class ReturnMethodService extends ShopBaseService{
 	public boolean refundMethods(String methodName , OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		try {
 			//RETURN_METHOD_PREFIX + methodName获取该优先级退款的具体方法
-			Method method = getClass().getMethod(FieldsUtil.underLineToCamel(RETURN_METHOD_PREFIX + methodName), OrderInfoVo.class,ReturnOrderRecord.class,BigDecimal.class);
+			Method method = getClass().getMethod(FieldsUtil.underLineToCamel(RETURN_METHOD_PREFIX + methodName), OrderInfoVo.class,Integer.class,BigDecimal.class);
 			method.invoke(this, order,retId,money);
 		} catch (InvocationTargetException e) {
 			//反射捕获自定义异常
@@ -69,8 +69,8 @@ public class ReturnMethodService extends ShopBaseService{
 			}
 		} catch (Exception e) {
 			logger().error("退款统一入口调用异常retId:"+retId+"。异常信息："+e.getMessage());
-			new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR,e.getMessage());
-		} 
+			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR,e.getMessage());
+		}
 		return true;
 	}
 	/**
