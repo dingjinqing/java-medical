@@ -167,11 +167,19 @@
         </el-table-column>
       </el-table>
     </div>
+    <pagination
+      :page-params.sync="pageParams"
+      @pagination="initDataList"
+    />
   </div>
 </template>
 
 <script>
+import { getCommentList } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
       searchParams: {
@@ -196,6 +204,10 @@ export default {
         { id: 3, value: 'dddd' },
         { id: 4, value: 'cccc' }
       ],
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
       dataList: [
         {
           'id': 3,
@@ -260,9 +272,20 @@ export default {
       loading: false
     }
   },
+  mounted () {
+    this.initDataList()
+  },
   methods: {
     initDataList () {
-
+      let obj = {
+        orderSn: null,
+        commstar: null,
+        goodsName: null,
+        mobile: null
+      }
+      getCommentList(obj).then(res => {
+        this.pageParams = res.content.page
+      })
     }
   }
 }

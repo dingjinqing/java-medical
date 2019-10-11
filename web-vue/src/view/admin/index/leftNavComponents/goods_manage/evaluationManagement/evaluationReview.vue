@@ -18,15 +18,35 @@
       </div>
     </div>
     <slot name="evaluationRecord"></slot>
+    <pagination
+      :page-params.sync="pageParams"
+      @pagination="initDataList"
+    />
   </div>
 </template>
 
 <script>
+import { getCommentCheckList } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
       reviewStatus: 0,
-      hideEvaluation: 0
+      hideEvaluation: 0,
+      pageParams: {}
+    }
+  },
+  mounted () {
+    this.initDataList()
+  },
+  methods: {
+    initDataList () {
+      let obj = {}
+      getCommentCheckList(obj).then(res => {
+        console.log(res)
+      })
     }
   }
 }
