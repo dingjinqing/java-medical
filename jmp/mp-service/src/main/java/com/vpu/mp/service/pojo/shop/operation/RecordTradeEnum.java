@@ -6,6 +6,9 @@ package com.vpu.mp.service.pojo.shop.operation;
 */
 public enum RecordTradeEnum {
 	
+	/** 默认的用户 */
+	DEFAULT_ADMIN(0),
+	 
 	/** 交易状态-已入账 */
 	TRADE_STATUS_ENTRY_ACCOUNT(0),
 	/** 交易状态-已到账 */

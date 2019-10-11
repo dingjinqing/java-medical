@@ -208,6 +208,7 @@ public class MemberService extends ShopBaseService {
 		
 		/** -构建查询条件 */
 		select = this.buildOptions(select, u, param);
+		select.orderBy(u.USER_ID.desc());
 		PageResult<MemberInfoVo> memberList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MemberInfoVo.class);
 		return memberList;
@@ -529,7 +530,8 @@ public class MemberService extends ShopBaseService {
 		 * 过滤已经是该门店核销员的用户，用于为该门店添加核销员
 		 */
 		if (null != param.getStoreId() && param.getStoreId() > 0) {
-			select.leftJoin(ORDER_VERIFIER).on(USER.USER_ID.eq(ORDER_VERIFIER.USER_ID).and(ORDER_VERIFIER.STORE_ID.ne(param.getStoreId())));
+			select.leftJoin(ORDER_VERIFIER).on(USER.USER_ID.eq(ORDER_VERIFIER.USER_ID))
+					.where(ORDER_VERIFIER.STORE_ID.ne(param.getStoreId()));
 		}
 
 		return select;
@@ -555,6 +557,7 @@ public class MemberService extends ShopBaseService {
 	public PageResult<MemberInfoVo> getSourceActList(MemberPageListParam param, String source, int actId) {
 		User a = USER.as("a");
 		User b = USER.as("b");
+		@SuppressWarnings("unchecked")
 		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) db()
 				.select(a.USER_ID, a.USERNAME.as(USER_NAME), a.MOBILE, a.CREATE_TIME, a.INVITE_ID,
 						b.USERNAME.as(INVITE_USERNAME))
@@ -573,6 +576,7 @@ public class MemberService extends ShopBaseService {
 	 */
 	public Map<Date, Integer> getMarketSourceUserAnalysis(MarketAnalysisParam param) {
 		Map<Date, Integer> map;
+		@SuppressWarnings("unchecked")
 		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) db()
 				.select(date(USER.CREATE_TIME).as("date"), count().as("number")).from(USER)
 				.where(USER.INVITE_ACT_ID.eq(param.getActId()));
@@ -972,6 +976,7 @@ public class MemberService extends ShopBaseService {
 
 	/**
 	 * 处理会员获取会员卡详情
+	 * @param userId
 	 * @param param
 	 * @return
 	 */

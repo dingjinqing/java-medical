@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.jooq.InsertValuesStep3;

@@ -7,6 +7,7 @@ import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -475,6 +477,21 @@ public class CardDaoService extends ShopBaseService {
 		}
 		int res = insert.execute();
 		logger().info("成功执行"+res+"条");
-		
+	}
+	
+	/**
+	 * 根据会员卡类型查询会员卡
+	 * @param type
+	 * @return
+	 */
+	public List<Integer> getCardByType(Byte type) {
+		 return db().select(MEMBER_CARD.ID)
+				 	.from(MEMBER_CARD)
+				 	.where(MEMBER_CARD.CARD_TYPE.eq(type))
+				 	.fetch().into(Integer.class);
+	}
+	
+	public MemberCardRecord getCardInfoById(Integer id) {
+		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(id)).fetchAny();
 	}
 }

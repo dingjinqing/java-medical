@@ -57,8 +57,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -76,7 +74,6 @@ import javax.validation.Valid;
 
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
-import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.tools.StringUtils;
@@ -154,6 +151,7 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired private CardDaoService cardDao;
 	@Autowired private OrderGoodsService orderGoodsDao;
 	@Autowired private ServiceOrderService serviceOrderDao;
+	@Autowired private UserCardService userCardService;
 	Logger logger = logger();
 
 	/**
@@ -814,30 +812,32 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public BaseCardVo getCardById(CardIdParam param) {
-		MemberCardRecord record = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(param.getId())).fetchOne();
+		MemberCardRecord record = cardDao.getCardInfoById(param.getId());
 		/** 会员卡类型 */
-		Byte cardType = record.getCardType();
-		if (NORMAL_TYPE.equals(cardType)) {
-			logger.info("查询出普通会员卡");
-			NormalCardToVo card = record.into(NormalCardToVo.class);
-			/** 执行策略 */
-			card.changeJsonCfg();
-			return card;
-		} else if (LIMIT_NUM_TYPE.equals(cardType)) {
-			logger.info("查询出限次会员卡");
-			/** 执行策略 */
-			LimitNumCardToVo card = record.into(LimitNumCardToVo.class);
-			/** 查询已经被领取的数量 */
-			int hasSend = 0;
-			hasSend = db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(param.getId()));
-			card.setHasSend(hasSend);
-			card.changeJsonCfg();
-			return card;
-		} else if (RANK_TYPE.equals(cardType)) {
-			logger.info("查询出等级会员卡");
-			RankCardToVo card = record.into(RankCardToVo.class);
-			card.changeJsonCfg();
-			return card;
+		if(record != null) {
+			Byte cardType = record.getCardType();
+			if (NORMAL_TYPE.equals(cardType)) {
+				logger.info("查询出普通会员卡");
+				NormalCardToVo card = record.into(NormalCardToVo.class);
+				/** 执行策略 */
+				card.changeJsonCfg();
+				return card;
+			} else if (LIMIT_NUM_TYPE.equals(cardType)) {
+				logger.info("查询出限次会员卡");
+				/** 执行策略 */
+				LimitNumCardToVo card = record.into(LimitNumCardToVo.class);
+				/** 查询已经被领取的数量 */
+				int hasSend = 0;
+				hasSend = db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(param.getId()));
+				card.setHasSend(hasSend);
+				card.changeJsonCfg();
+				return card;
+			} else if (RANK_TYPE.equals(cardType)) {
+				logger.info("查询出等级会员卡");
+				RankCardToVo card = record.into(RankCardToVo.class);
+				card.changeJsonCfg();
+				return card;
+			}
 		}
 		return null;
 	}
@@ -1708,23 +1708,16 @@ public class MemberCardService extends ShopBaseService {
 	 * @param user_id
 	 * @return
 	 */
-	public String getUserGrade(Integer user_id) {
-		
-		Record1<String> result = db().select(MEMBER_CARD.GRADE).from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
-			.where(USER_CARD.FLAG.eq(CARD_USING))
-			.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
-			.and(USER_CARD.USER_ID.eq(user_id))
-			.and((MEMBER_CARD.ACTIVATION.eq(ACTIVE_NO)).or(MEMBER_CARD.ACTIVATION.eq(ACTIVE_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
-			.fetchAny();
-		
-		if(result != null) {
-			return result.get(MEMBER_CARD.GRADE);
-		}else {
-			return LOWEST_GRADE;
-		}
+	public String getUserGrade(Integer userId) {
+		return userCardService.getUserGrade(userId);
+	}
+	
+	/**
+	 * 获取会员卡id列表根据会员卡类型
+	 * @param type {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE }
+	 */
+	public List<Integer> getCardByType(Byte type) {
+		 return cardDao.getCardByType(type);
 	}
 
-	
-	
-	
 }

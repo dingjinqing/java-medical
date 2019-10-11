@@ -67,7 +67,7 @@ public class ScoreService extends ShopBaseService {
 	private MemberService member;	
 	
 	/**
-	 *   创建用户积分表
+	 *   创建用户积分表,增加，消耗用户积分
 	 * @param param 积分变动相关数据
 	 * @param subAccountId 操作员id
 	 * @param userId 用户id
@@ -76,6 +76,11 @@ public class ScoreService extends ShopBaseService {
 	 * @return JsonResultCode
 	 * @throws MpException 
 	 */
+	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
+			Byte tradeFlow) throws MpException{
+		updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow,"");
+	}
+	
 	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
 			Byte tradeFlow,String language) throws MpException {
 
@@ -93,7 +98,7 @@ public class ScoreService extends ShopBaseService {
 		}
 
 		/** 2. 验证积分与数据库保持一致，批量修改时为最小值，即大于等于 */
-		Integer scoreDis = param.getScoreDis();
+		//Integer scoreDis = param.getScoreDis();
 		
 		/** -目前会员存在数据录中的积分 */
 		Integer dbScore = dbUser.getScore();
@@ -272,6 +277,11 @@ public class ScoreService extends ShopBaseService {
 	 */
 	private void addUserScoreRecord(UserScoreRecord record) {
 		db().executeInsert(record);
+//		db().insertInto(USER_SCORE, USER_SCORE.SCORE, USER_SCORE.USER_ID, USER_SCORE.REMARK, USER_SCORE.ADMIN_USER,
+//				USER_SCORE.ORDER_SN, USER_SCORE.FLOW_NO, USER_SCORE.USABLE_SCORE)
+//				.values(record.getScore(), record.getUserId(), record.getRemark(), record.getAdminUser(),
+//						record.getOrderSn(), record.getFlowNo(), record.getUsableScore())
+//				.execute();
 	}
 
 	
@@ -497,7 +507,7 @@ public class ScoreService extends ShopBaseService {
 						logger().info("消耗积分异常："+data.toString());
 					}
 				}
-			}if(data.getIsFromRefund()) {
+			}else if(data.getIsFromRefund()) {
 				 // 退款处理积分
 				record.setStatus(REFUND_SCORE_STATUS);
 				UserScoreRecord scoreRecordByOrderSn = getScoreRecordByOrderSn(data.getUserId(), data.getOrderSn());

@@ -63,6 +63,7 @@ import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
@@ -251,6 +252,11 @@ public class ShopApplication {
 	@Autowired
 	public ScoreCfgService score;
 
+	/**
+	 * 会员用户-持卡服务
+	 */
+	@Autowired
+	public UserCardService userCard;
 	@Autowired
 	public ShopBasicConfigService shopBasicConfig;
 
