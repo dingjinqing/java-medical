@@ -190,7 +190,7 @@ export default {
     ImageDalog,
     addCouponDialog
   },
-
+  inject: ['reload'],
   data () {
     // 自定义校验规则
     var validateLogo = (rule, value, callback) => {
@@ -297,7 +297,6 @@ export default {
             this.couponId = res.content.coupon_ids
             this.couponData = res.content.coupon_ids.split(',')
           }
-          // let data = this.data
           let param = {
             'actName': ''
           }
@@ -365,8 +364,8 @@ export default {
         if (valid) {
           collectGiftUpdate(submitParam).then(res => {
             if (res.error === 0) {
-              alert('保存成功！')
               console.log('保存成功')
+              this.reload()
             } else console.log('保存失败', res)
           })
         } else {

@@ -383,13 +383,14 @@
                 v-else
                 class="coupon_info"
               >
-                <span class="coupon_name">{{coupon_duplicate[0].denomination}}</span>
+                <span class="coupon_name">{{coupon_duplicate[0].actName}}</span>
                 <div
                   v-if="coupon_duplicate[0].actCode == 'voucher'"
                   style="color:red"
-                >￥<span>{{coupon_duplicate[0].denomination}}</span></div>
+                >￥<span>{{coupon_duplicate[0].denomination}}元</span></div>
                 <div v-else><span>{{coupon_duplicate[0].denomination}}</span>折</div>
                 <div class="coupon_rule">{{coupon_duplicate[0].useConsumeRestrict > 0? `满${coupon_duplicate[0].leastConsume}元可用`  : `不限制`}}</div>
+                <div class="coupon_center_number">剩余{{coupon_duplicate[0].surplus}}张</div>
               </div>
             </div>
 

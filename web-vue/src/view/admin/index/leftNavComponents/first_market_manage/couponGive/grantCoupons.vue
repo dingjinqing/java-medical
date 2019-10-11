@@ -522,7 +522,7 @@ export default {
     },
     // 优惠卷回调
     handleToCheck (data) {
-      console.log('ciupon', data)
+      console.log('coupon', data)
       let couponKey = []
       data.map((item) => {
         couponKey.push(item.id)
