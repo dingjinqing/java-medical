@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePrice extends TableImpl<ReducePriceRecord> {
 
-    private static final long serialVersionUID = -59302518;
+    private static final long serialVersionUID = -540140735;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price</code>
@@ -89,9 +89,9 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     public final TableField<ReducePriceRecord, String> POINT_TIME = createField("point_time", org.jooq.impl.SQLDataType.VARCHAR(20), this, "时间段");
 
     /**
-     * The column <code>mini_shop_471752.b2c_reduce_price.extend_time</code>. 每月第几日；每周第几天
+     * The column <code>mini_shop_471752.b2c_reduce_price.extend_time</code>. 每月第几日（单选）；每周第几天（多选，@符隔开）；
      */
-    public final TableField<ReducePriceRecord, Byte> EXTEND_TIME = createField("extend_time", org.jooq.impl.SQLDataType.TINYINT, this, "每月第几日；每周第几天");
+    public final TableField<ReducePriceRecord, String> EXTEND_TIME = createField("extend_time", org.jooq.impl.SQLDataType.VARCHAR(50), this, "每月第几日（单选）；每周第几天（多选，@符隔开）；");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.batch_discount</code>. 批量打几折

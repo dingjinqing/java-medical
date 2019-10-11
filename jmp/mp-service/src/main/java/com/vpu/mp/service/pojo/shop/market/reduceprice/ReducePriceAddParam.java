@@ -44,8 +44,8 @@ public class ReducePriceAddParam {
     /** 时间段字符串 格式：09:00@12:00 */
     private String pointTime;
 
-    /** 每月第几日；每周第几天 */
-    private Byte extendTime;
+    /** 每月第几日（单选）；每周第几天（多选，@符隔开）；*/
+    private String extendTime;
 
     /** 批量打几折 */
     private Byte batchDiscount;

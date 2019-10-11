@@ -915,3 +915,5 @@ create table `b2c_uploaded_video_category` (
   primary key (`video_cat_id`),
   key (`shop_id`)
 );
+
+ALTER TABLE `b2c_reduce_price` CHANGE `extend_time` `extend_time` VARCHAR(50) NULL   COMMENT '每月第几日（单选）；每周第几天（多选，@符隔开）；';
