@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -606,13 +607,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	 * @param returnTypes
 	 */
 	public void checkReturnType(List<RefundVoGoods> refundVoGoods , boolean[] returnTypes) {
-		if(!returnTypes[0] && !returnTypes[1]) {
-			//不满足退款、退货取消校验
-			return;
+		if(returnTypes[0] || returnTypes[1]) {
+			if(refundVoGoods.stream().mapToInt(RefundVoGoods::getReturnNumber).sum() == refundVoGoods.stream().mapToInt(RefundVoGoods::getTotal).sum()) {
+				returnTypes[0] = false;
+				returnTypes[1] = false;
+			}
 		}
-		if(refundVoGoods.stream().mapToInt(RefundVoGoods::getReturnNumber) == refundVoGoods.stream().mapToInt(RefundVoGoods::getTotal)) {
-			returnTypes[0] = false;
-			returnTypes[1] = false;
-		}
+		
 	}
 }
