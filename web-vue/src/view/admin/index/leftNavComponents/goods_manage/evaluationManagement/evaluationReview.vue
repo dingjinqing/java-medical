@@ -2,7 +2,10 @@
   <div class="evaluationReviewContent">
     <div class="condition clearfix">
       <div class="fl">
-        <el-radio-group v-model="reviewStatus">
+        <el-radio-group
+          v-model="reviewStatus"
+          @change="changeReviewStatus"
+        >
           <el-radio :label="0">不用审核</el-radio>
           <el-radio :label="1">先发后审</el-radio>
           <el-radio :label="2">先审后发</el-radio>
@@ -12,6 +15,7 @@
         <el-switch
           v-model="hideEvaluation"
           active-color="#f7931e"
+          @change="changeHideEvaluation"
         ></el-switch>
         <span>{{hideEvaluation ? '已开启':'已关闭'}}</span>
         <span class="tips">设置前端是否隐藏未填写心得的评价</span>
@@ -26,7 +30,7 @@
 </template>
 
 <script>
-import { getCommentCheckList } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { getCommentCheckList, CommentCheckConfig, CommentSwitchConfig } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -46,6 +50,20 @@ export default {
       let obj = {}
       getCommentCheckList(obj).then(res => {
         console.log(res)
+      })
+    },
+    changeReviewStatus (val) {
+      CommentCheckConfig({ v: val }).then(res => {
+        if (res.error === 0) {
+          this.$message.success('修改成功')
+        }
+      })
+    },
+    changeHideEvaluation (val) {
+      CommentSwitchConfig({ v: val ? 1 : 0 }).then(res => {
+        if (res.error === 0) {
+          this.$message.success('修改成功')
+        }
       })
     }
   }

@@ -1,21 +1,21 @@
 <template>
   <div
-    class="brandManagementContent"
+    class="EvaluationContent"
     :class="{goodsEvaluationPage:activeName === 'fourth'}"
   >
-    <div class="brandManagementContent_main">
+    <div class="EvaluationContent_main">
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="评价记录"
+          :label="$t('evaluation.evaluationTabs.evaluationRecord')"
           name="first"
         >
           <evaluationRecord v-if="activeName === 'first'" />
         </el-tab-pane>
         <el-tab-pane
-          label="评价审核"
+          :label="$t('evaluation.evaluationTabs.evaluationReview')"
           name="second"
         >
           <evaluationReview v-if="activeName === 'second'">
@@ -25,7 +25,7 @@
           </evaluationReview>
         </el-tab-pane>
         <el-tab-pane
-          label="商品列表"
+          :label="$t('evaluation.evaluationTabs.productList')"
           name="third"
         >
           <evaluationGoodsList
@@ -34,11 +34,14 @@
           />
         </el-tab-pane>
         <el-tab-pane
-          label="添加评价"
+          :label="$t('evaluation.evaluationTabs.addEvaluation')"
           name="fourth"
           v-if="activeName === 'fourth'"
         >
-          <evaluationGoods :goods-info="goodsInfo" />
+          <evaluationGoods
+            :goods-info="goodsInfo"
+            :target.sync="activeName"
+          />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -58,6 +61,15 @@ export default {
       goodsInfo: null
     }
   },
+  // watch: {
+  //   lang () {
+  //     this.langDefault()
+  //   }
+  // },
+  mounted () {
+    // 初始化国际语言
+    this.langDefault()
+  },
   methods: {
     // tap切换
     handleClick (tab, event) {
@@ -71,13 +83,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.brandManagementContent {
+.EvaluationContent {
   padding: 10px;
   min-width: 100%;
   font-size: 14px;
   position: relative;
 }
-.brandManagementContent_main {
+.EvaluationContent_main {
   position: relative;
   background-color: #fff;
   /* height: 100%; */

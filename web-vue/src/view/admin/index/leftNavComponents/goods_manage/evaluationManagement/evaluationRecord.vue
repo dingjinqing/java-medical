@@ -2,28 +2,28 @@
   <div class="evaluationRecordContent">
     <div class="table_box">
       <div class="filters">
-        <div class="filters_item"><span>订单编号</span>
+        <div class="filters_item"><span>{{$t('evaluation.orderSn')}}</span>
           <el-input
             v-model="searchParams.orderSn"
             placeholder="输入订单编号"
             size="small"
           ></el-input>
         </div>
-        <div class="filters_item"><span>商品名称</span>
+        <div class="filters_item"><span>{{$t('evaluation.goodsName')}}</span>
           <el-input
             v-model="searchParams.goodsName"
             placeholder="输入商品名称"
             size="small"
           ></el-input>
         </div>
-        <div class="filters_item"><span>会员手机号</span>
+        <div class="filters_item"><span>{{$t('evaluation.mobile')}}</span>
           <el-input
             v-model="searchParams.mobile"
             placeholder="输入手机号"
             size="small"
           ></el-input>
         </div>
-        <div class="filters_item"><span>评价星级</span>
+        <div class="filters_item"><span>{{$t('evaluation.evaluationGrade')}}</span>
           <el-select
             v-model="searchParams.commstar"
             size="small"
@@ -37,7 +37,7 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="filters_item"><span>评价奖励</span>
+        <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward')}}</span>
           <el-select
             v-model="searchParams.chooseReward"
             size="small"
@@ -78,11 +78,15 @@
           width="55"
         >
         </el-table-column>
-        <el-table-column label="商品信息">
+        <el-table-column :label="$t('evaluation.evaluationTable.productInformation')">
           <template slot-scope="scope">
+            <div class="orderSn">
+              <span v-if="scope.row.bogus_username">商家添加评价</span>
+              <span v-else>{{$t('evaluation.orderSn')}}：<span>{{scope.row.orderSn}}</span></span>
+            </div>
             <div class="goods_info">
               <img
-                :src="$imageHost+scope.row.goodsImg"
+                :src="$imageHost+'/'+scope.row.goodsImg"
                 alt=""
               >
               <div class="right_info">
@@ -92,77 +96,77 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="用户信息"
+          :label="$t('evaluation.evaluationTable.userInfo')"
           width="170"
         >
           <template slot-scope="scope">
             <div class="user_info">
-              <p class="user_name">用户名：<span>{{scope.row.username}}</span></p>
-              <p>手机号：{{scope.row.mobile}}</p>
+              <p class="user_name">{{$t('evaluation.userName')}}：<span>{{scope.row.bogus_username ? scope.row.bogus_username : scope.row.username }}</span></p>
+              <p v-if="!scope.row.bogus_username">{{$t('evaluation.mobile')}}：{{scope.row.mobile}}</p>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-          label="评价内容"
+          :label="$t('evaluation.evaluationTable.evaluationContent')"
           width="200"
         >
           <template slot-scope="scope">
             <div class="evaluation-info">
-              <div class="evaluation-info_item"><span class="evaluation-info_title">评分：</span><span><i
+              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.grade')}}：</span><span><i
                     class="el-icon-star-on"
                     v-for="index in scope.row.commstar"
                     :key="index"
                   ></i></span></div>
-              <div class="evaluation-info_item"><span class="evaluation-info_title">评价：</span><span>{{scope.row.commNote}}</span></div>
+              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote}}</span></div>
               <div class="evaluation-info_item"><span></span></div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="评论回复">
+        <el-table-column :label="$t('evaluation.evaluationTable.evaluationReply')">
           <template slot-scope="scope">
             <div class="evaluation_response">
-              <span v-if="scope.row.content">回复：{{scope.row.content}}</span>
+              <span v-if="scope.row.content">{{$t('evaluation.reply')}}：{{scope.row.content}}</span>
               <el-button
                 type="primary"
                 v-if="!scope.row.content"
                 size="mini"
-              >编写回复</el-button>
+              >{{$t('evaluation.writeReply')}}</el-button>
               <el-button
                 type="default"
                 v-else
                 size="mini"
-              >删除回复</el-button>
+              >{{$t('evaluation.deleteReply')}}</el-button>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-          label="评价时间"
+          :label="$t('evaluation.evaluationTable.evaluationTime')"
           prop="createTime"
           width="100"
         ></el-table-column>
         <el-table-column
-          label="匿名评价"
+          :label="$t('evaluation.evaluationTable.anonymousEvaluation')"
           width="80"
         >
           <template slot-scope="scope">
-            <span>{{scope.row.anonymousflag ? '是' : '否'}}</span>
+            <span>{{scope.row.anonymousflag ? $t('evaluation.yes') : $t('evaluation.no')}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="评价奖励">
+        <el-table-column :label="$t('evaluation.evaluationTable.evaluationReward')">
           <template slot-scope="scope">
-            <span>{{scope.row.lotteryAward ? scope.row.lotteryAward : '无'}}</span>
+            <span>{{scope.row.lotteryAward ? scope.row.lotteryAward : $t('evaluation.null')}}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
-          width="120"
+          :label="$t('evaluation.evaluationTable.operating')"
+          width="150"
         >
           <template slot-scope="scope">
             <el-button
               type="default"
-              :value="scope.row.id"
               size="mini"
-            >删除评价</el-button>
+              @click="delEvaluation(scope.row.id)"
+            >{{$t('evaluation.deleteEvaluation')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -175,7 +179,7 @@
 </template>
 
 <script>
-import { getCommentList } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { getCommentList, goodsCommentDelete } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -183,14 +187,14 @@ export default {
   data () {
     return {
       searchParams: {
-        commstar: -1,
+        commstar: 0,
         chooseReward: -1,
         orderSn: null,
         goodsName: null,
         mobile: null
       },
       starLevel: [
-        { key: -1, value: '全部' },
+        { key: 0, value: '全部' },
         { key: 1, value: '一星' },
         { key: 2, value: '二星' },
         { key: 3, value: '三星' },
@@ -205,69 +209,8 @@ export default {
         { id: 4, value: 'cccc' }
       ],
       pageParams: {
-        currentPage: 1,
-        pageRows: 20
       },
       dataList: [
-        {
-          'id': 3,
-          'orderSn': 'P201903281652376611',
-          'commstar': 4,
-          'commNote': '味道很好闻！',
-          'content': '',
-          'createTime': '2019-07-08 15:11:07',
-          'goodsName': '化妆品化妆品化妆品化妆品化妆品',
-          'goodsImg': '/image/admin/head_icon.png',
-          'username': '张三',
-          'mobile': '13502085563',
-          'anonymousflag': 1,
-          'lotteryAward': '神秘奖品',
-          'flag': 1
-        },
-        {
-          'id': 4,
-          'orderSn': 'P201903281652376611',
-          'commstar': 4,
-          'commNote': '味道很好闻！',
-          'content': 'test agin',
-          'createTime': '2019-07-08 15:11:07',
-          'goodsName': '化妆品化妆品化妆品化妆品化妆品',
-          'goodsImg': '/image/admin/head_icon.png',
-          'username': '张三',
-          'mobile': '13502085563',
-          'anonymousflag': 1,
-          'flag': 1
-        },
-        {
-          'id': 5,
-          'orderSn': 'P201903281652376611',
-          'commstar': 4,
-          'commNote': '味道很好闻！',
-          'content': 'test agin',
-          'createTime': '2019-07-08 15:11:07',
-          'goodsName': '化妆品化妆品化妆品化妆品化妆品化妆品化妆品',
-          'goodsImg': '/image/admin/head_icon.png',
-          'username': '张三',
-          'mobile': '13502085563',
-          'anonymousflag': 1,
-          'lotteryAward': '神秘奖品',
-          'flag': 2
-        },
-        {
-          'id': 6,
-          'orderSn': 'P201903281652376611',
-          'commstar': 4,
-          'commNote': '味道很好闻！',
-          'content': 'test agintest agintest agintest agintest agintest agin',
-          'createTime': '2019-07-08 15:11:07',
-          'goodsName': '化妆品',
-          'goodsImg': '/image/admin/head_icon.png',
-          'username': '张三',
-          'mobile': '13502085563',
-          'anonymousflag': 1,
-          'lotteryAward': '神秘奖品',
-          'flag': 0
-        }
       ],
       loading: false
     }
@@ -278,13 +221,20 @@ export default {
   methods: {
     initDataList () {
       let obj = {
-        orderSn: null,
-        commstar: null,
-        goodsName: null,
-        mobile: null
+        ...this.searchParams,
+        page: { ...this.pageParams },
+        chooseReward: this.searchParams.chooseReward === -1 ? null : this.searchParams.chooseReward
       }
       getCommentList(obj).then(res => {
         this.pageParams = res.content.page
+        this.dataList = res.content.dataList
+      })
+    },
+    delEvaluation (id) {
+      goodsCommentDelete({ id: id }).then(res => {
+        if (res.error === 0) {
+          this.dataList = this.dataList.filter(item => item.id !== id)
+        }
       })
     }
   }
@@ -293,7 +243,7 @@ export default {
 
 <style lang="scss" scoped>
 .mini_select {
-  width: 80px;
+  width: 80px !important;
 }
 .goods_info {
   display: flex;
@@ -346,7 +296,7 @@ export default {
       flex: 1;
       &.evaluation-info_title {
         flex: 0 1 auto;
-        width: 42px;
+        width: auto;
       }
       > .el-icon-star-on {
         color: red;
@@ -361,6 +311,12 @@ export default {
   align-items: center;
   > .el-button {
     width: 90px;
+  }
+}
+.orderSn {
+  text-align: left;
+  span {
+    display: inline-block;
   }
 }
 </style>

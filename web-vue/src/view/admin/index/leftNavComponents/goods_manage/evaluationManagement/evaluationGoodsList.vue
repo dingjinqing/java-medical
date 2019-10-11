@@ -2,7 +2,7 @@
   <div class="table_box">
     <div class="filters">
       <div class="filters_item">
-        <span>商品名称</span>
+        <span>{{$t('evaluation.goodsName')}}</span>
         <el-input
           v-model="searchParams.goodsName"
           placeholder="搜索商品"
@@ -10,7 +10,7 @@
         ></el-input>
       </div>
       <div class="filters_item">
-        <span>商品名称</span>
+        <span>{{$t('allGoods.allGoodsHeaderData.category')}}</span>
         <el-select
           v-model="searchParams.sortName"
           size="small"
@@ -119,12 +119,20 @@
         </template>
       </el-table-column>
     </el-table>
+    <pagination
+      :page-params.sync="pageParams"
+      @pagination="initDataList"
+    />
   </div>
 </template>
 
 <script>
 import { getAllGoodsInitValue } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { CommentGoodsList } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
       searchParams: {
@@ -133,9 +141,11 @@ export default {
       },
       goodsCatOptions: [],
       loading: false,
+      pageParams: {
+      },
       dataList: [
         {
-          'goodsId': 1,
+          'goodsId': 29,
           'goodsImg': '/image/admin/head_icon.png',
           'goodsName': '风扇',
           'goodsSn': 'G101010577',
@@ -178,10 +188,20 @@ export default {
     this.initFilterData()
     // 初始化国际语言
     this.langDefault()
+    this.initDataList()
   },
   methods: {
     initDataList () {
-
+      let obj = {
+        ...this.searchParams,
+        page: { ...this.pageParams }
+      }
+      CommentGoodsList(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+        }
+      })
     },
     /* 初始化form表单下拉框数据 */
     initFilterData () {

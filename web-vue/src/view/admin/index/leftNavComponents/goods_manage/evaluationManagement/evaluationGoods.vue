@@ -125,6 +125,7 @@
           v-model="sendParams.createTime"
           type="datetime"
           placeholder="选择日期时间"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
       </el-form-item>
@@ -152,7 +153,7 @@
           style="width:300px;"
         ></el-input>
       </el-form-item>
-      <el-form-item label="晒单">
+      <!-- <el-form-item label="晒单">
         <div class="imgWrap">
           <template v-for="(item,index) in sendParams.commImg">
             <div
@@ -187,7 +188,7 @@
           <span class="tips">最多9张，建议尺寸：800*800像素</span>
 
         </div>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="是否匿名">
         <el-checkbox
           label="是"
@@ -212,6 +213,7 @@
 </template>
 
 <script>
+import { godosAddComment } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   components: {
     imageDialog: () => import('@/components/admin/imageDalog')
@@ -226,13 +228,13 @@ export default {
         createTime: null,
         commstar: 5,
         commNote: null,
-        anonymousFlag: 0,
-        commImg: []
+        anonymousFlag: false
+        // commImg: []
       },
       triggerSource: null,
       rules: {
         bogusUsername: { required: true, message: '请输入用户名', trigger: 'blur' },
-        createTime: { type: 'date', required: true, message: '请选择评价日期', trigger: 'change' },
+        createTime: { required: true, message: '请选择评价日期', trigger: 'change' },
         commNote: { required: true, message: '请输入心得', trigger: 'blur' },
         commstar: { required: true, message: '请选择评分', trigger: 'change' },
         bogusUserAvatar: { required: true, message: '请选择头像', trigger: 'change' }
@@ -270,6 +272,22 @@ export default {
     Submit () {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
+          let obj = {
+            ...this.sendParams,
+            anonymousFlag: this.sendParams.anonymousFlag ? '1' : '0'
+          }
+          godosAddComment(obj).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: '添加成功',
+                duration: '2000',
+                onClose: () => {
+                  this.$emit('update:target', 'first')
+                }
+              })
+            }
+          })
         } else {
           return false
         }
