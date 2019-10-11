@@ -26,7 +26,7 @@ public class WxAppStoreController extends WxAppBaseController{
     /**
      * 门店信息
      */
-    @GetMapping("/info")
+    @PostMapping("/info")
     public JsonResult storeInfo(@RequestBody @Validated({AppletStoreInfo.class}) StoreBasicVo param) {
         return this.success(shop().store.getStore(param.getStoreId()));
     }
