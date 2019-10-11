@@ -231,6 +231,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			vo.getReturnType()[OrderConstant.RT_ONLY_SHIPPING_FEE] = true;
 			//设置
 			vo.setReturnShippingFee(currentOrder.getShippingFee().subtract(returnShipingFee));
+		}else {
+			vo.setReturnShippingFee(BigDecimal.ZERO);
 		}
 		//手动退款校验,已退金额<sum(已退R商品数量*折后单价)
 		if((isMp != OrderConstant.IS_MP_Y)) {
