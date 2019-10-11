@@ -35,7 +35,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
