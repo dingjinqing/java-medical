@@ -3,12 +3,16 @@ package com.vpu.mp.service.shop.order.action.base;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 
 /**
  * 	订单操作判断
@@ -195,4 +199,38 @@ public class OrderOperationJudgment {
 		}
 		return false;
 	}
+	
+	/**
+	 * 订单是否可以核销
+	 * @param order
+	 * @return
+	 */
+	public static boolean isVerify(OrderListInfoVo order) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getDeliverType() == OrderConstant.DELIVER_TYPE_SELF) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static void operationSet(OrderListInfoVo order , Integer isReturnCount , List<OrderGoodsVo> canBeShippedList) {
+		//设置所有订单是否可以关闭
+		if(OrderOperationJudgment.mpIsClose(order)) {
+			order.setCanClose(Boolean.TRUE);
+		}
+		//设置所有订单是否可以完成
+		if(OrderOperationJudgment.mpIsFinish(order , isReturnCount)) {
+			order.setCanFinish(Boolean.TRUE);
+		}
+		//待发货状态判断是否可发货
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
+			if(CollectionUtils.isNotEmpty(canBeShippedList)) {
+				order.setCanDeliver(Boolean.TRUE);
+			}
+		}
+		//判断核销
+		if(OrderOperationJudgment.isVerify(order)) {
+			order.setCanVerify(Boolean.TRUE);
+		}
+	}
+	
 }

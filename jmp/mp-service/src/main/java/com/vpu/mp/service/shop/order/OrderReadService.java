@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,23 +164,8 @@ public class OrderReadService extends ShopBaseService {
 		//设置订单操作
 		for (List<OrderListInfoVo> orderList: allOrder.values()) {
 			for(OrderListInfoVo order : orderList) {
-				//设置所有订单是否可以关闭
-				if(OrderOperationJudgment.mpIsClose(order)) {
-					order.setCanClose(Boolean.TRUE);
-				}
-				//设置所有订单是否可以完成
-				if(OrderOperationJudgment.mpIsFinish(order , returningCount.get(order.getOrderId()))) {
-					order.setCanFinish(Boolean.TRUE);
-				}
-				//待发货状态判断是否可发货
-				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
-					if(CollectionUtils.isNotEmpty(ship.canBeShipped(order.getOrderSn()))) {
-						order.setCanDeliver(Boolean.TRUE);
-					}
-					
-				}
+				OrderOperationJudgment.operationSet(order,returningCount.get(order.getOrderId()),ship.canBeShipped(order.getOrderSn()));
 			}
-			
 		}
 		pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");
