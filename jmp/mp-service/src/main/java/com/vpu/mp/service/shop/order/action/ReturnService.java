@@ -321,9 +321,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				oneGoods.setReturnMoney(manualReturnMoney.get(oneGoods.getRecId()) == null ? BigDecimal.ZERO : manualReturnMoney.get(oneGoods.getRecId()));
 			}
 		}
+		checkReturnType(goods.get(currentOrder.getOrderSn()) , vo.getReturnType());
 		vo.setRefundGoods(goods.get(currentOrder.getOrderSn()));
 		vo.setReturnAmountMap(canReturn);
-		logger.info("获取可发货信息完成");
+		logger.info("获取可退货信息完成");
 		return vo;
 	}
 	
@@ -489,7 +490,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		//TODO 拆单逻辑特殊处理
 		
 		//部分发货退款完成,检查是否需要设置状态为已发货
-		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPartShipFlag() == OrderConstant.PART_SHIP) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPartShipFlag() == OrderConstant.PART_SHIP && canReturnGoodsNumber) {
 			//TODO 目前发货只支持按商品行发货，若支持数量发货需要修改
 			if(!orderGoods.isCanDeliverOrder(order.getOrderSn())) {
 				orderInfo.setOrderstatus(order.getOrderSn(),OrderConstant.ORDER_SHIPPED);
@@ -597,5 +598,19 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		ReturnOrderRecord rOrder = returnOrder.checkAndCreateOrder(param, order, check);
 		return rOrder;
 	}
-	
+	/**
+	 * 根据实际退款数量确定是否支持退款类型（退款、退货）
+	 * @param refundVoGoods
+	 * @param returnTypes
+	 */
+	public void checkReturnType(List<RefundVoGoods> refundVoGoods , boolean[] returnTypes) {
+		if(!returnTypes[0] && !returnTypes[1]) {
+			//不满足退款、退货取消校验
+			return;
+		}
+		if(refundVoGoods.stream().mapToInt(RefundVoGoods::getReturnNumber) == refundVoGoods.stream().mapToInt(RefundVoGoods::getTotal)) {
+			returnTypes[0] = false;
+			returnTypes[1] = false;
+		}
+	}
 }
