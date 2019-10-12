@@ -26,6 +26,7 @@ import static org.jooq.impl.DSL.sum;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1030,4 +1031,17 @@ public class OrderInfoService extends ShopBaseService {
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
     }
 
+    /**
+     * 获得用户购买商品数
+     * @param userId
+     * @return
+     */
+    public Integer getUserBuyGoodsNum(Integer userId) {
+		Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now().minusMonths(3L));
+		return db().selectCount().from(ORDER_GOODS).leftJoin(ORDER_INFO)
+				.on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+				.where(ORDER_INFO.USER_ID.eq(userId).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))
+						.and(ORDER_INFO.CREATE_TIME.gt(timestamp)))
+				.fetchOne().into(Integer.class);
+	}
 }
