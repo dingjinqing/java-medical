@@ -497,7 +497,7 @@ export default {
       this.$emit('result', this.checkedIdList)
       this.$emit('resultGoodsDatas', this.checkedRowList)
       // 把选中的id集合和url集合回传
-      this.$emit('res',  this.checkedIdList, this.checkedUrlList)
+      this.$emit('res', this.checkedIdList, this.checkedUrlList)
     },
     /* 翻页方法 */
     paginationChange () {
