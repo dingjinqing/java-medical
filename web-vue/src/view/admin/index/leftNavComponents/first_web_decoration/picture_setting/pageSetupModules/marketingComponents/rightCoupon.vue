@@ -23,7 +23,7 @@
                   class="coupon_list_top"
                   style="color: rgb(255, 102, 102);"
                 >
-                  {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span>
+                  {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'':'折'}}</i></span>
                 </div>
                 <div class="coupon_list_center">
                   <div
@@ -110,6 +110,10 @@ export default {
   methods: {
     // 点击添加优惠卷按钮
     handleToCallCouponDialog () {
+      this.couponBack = []
+      this.data.coupon_arr.forEach((item, index) => {
+        this.couponBack.push(item.coupon_id)
+      })
       this.tuneUpCoupon = !this.tuneUpCoupon
     },
     // 选择优惠卷弹窗数据后回调函数
@@ -128,11 +132,12 @@ export default {
       //     }
       //   ]
       // }
+      this.data.coupon_arr = []
       res.forEach((item, index) => {
         let useConsumeRestrict = ''
         // 判断优惠卷是否已被选过
         let isExistence = this.data.coupon_arr.filter((itemC, indexC) => {
-          return itemC.coupon_id === item.coupon_id
+          return itemC.coupon_id === item.id
         })
 
         if (item.useConsumeRestrict === 0) {
@@ -151,9 +156,11 @@ export default {
           'score_number': item.scoreNumber // 需要积分数
 
         }
-        if (!isExistence.length) {
+        console.log(isExistence.length)
+        if (isExistence.length === 0) {
           this.data.coupon_arr.push(obj)
         }
+        console.log(this.data.coupon_arr)
       })
       // let obj = {
       //   actCode: 'discount',
@@ -181,7 +188,7 @@ export default {
     },
     // 点击优惠卷右上角删除icon
     handleToDelCoupon (index) {
-      this.nowShowCouponList.splice(index, 1)
+      this.data.coupon_arr.splice(index, 1)
     }
   }
 }

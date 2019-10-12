@@ -8,37 +8,67 @@
       class="showModule"
       :class="activeBorder?'activeBorder':''"
     >
-      <div class="coupon_module">
+      <div
+        v-if="data.coupon_arr.length>1"
+        class="coupon_module"
+      >
         <div
-          v-for="(item,index) in 3"
+          v-for="(item,index) in data.coupon_arr"
           :key="index"
           class="coupon_list"
-          style="border-color: rgba(255, 102, 102, 0.4);"
+          :style="'border-color: rgba(255, 102, 102, 0.4);'+(data.coupon_arr.length===2&&index===0?'margin-right:2%;':'')+(data.coupon_arr.length>=3&&index===1?'margin:0 2%;':'')+(data.coupon_arr.length===2?'width:50%;':'')+(data.coupon_arr.length>=3?'width:33%;':'')+(index>2?'display:none':'')"
         >
           <div
             class="coupon_list_top"
             style="color: rgb(255, 102, 102);"
           >
-            ¥<span>××</span>
+            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span>
           </div>
           <div class="coupon_list_center">
             <div
               class="coupon_center_limit"
               style="color: rgb(255, 102, 102);"
-            >满××使用</div>
+            >{{item.consume_text}}</div>
             <div
               class="coupon_center_number"
               style="color: rgba(255, 102, 102, 0.4);"
-            >剩余<span>××</span>张</div>
+            >{{item.receive_text}}</div>
           </div>
           <div
             class="coupon_list_bottom new_back"
             style="background-color: rgb(255, 102, 102);"
           >
-            领取
+            {{item.use_score==='0'?'领取':item.score_number+'积分 兑换'}}
           </div>
         </div>
+
       </div>
+      <!--单个优惠卷布局模块-->
+      <div
+        class="coupon_module"
+        v-else
+      >
+        <div class="singleContainer">
+          <div class="singleLeft">
+            <div>
+              {{data.coupon_arr[0].act_code==='discount'?'':'¥'}}<span style="font-size:20px">{{data.coupon_arr[0].denomination}}<i style="font-size:14px">{{data.coupon_arr[0].act_code==='discount'?'折':''}}</i></span>
+
+            </div>
+          </div>
+          <div class="singleMiddle">
+            <div>{{data.coupon_arr[0].consume_text}}</div>
+            <div>{{data.coupon_arr[0].receive_text}}</div>
+          </div>
+          <div
+            class="singleLeftRight"
+            :style="'background:#f66 url('+$imageHost+'/image/admin/coupon_border_y.png) repeat-y left'"
+          >
+            {{data.coupon_arr[0].use_score==='0'?'领取':data.coupon_arr[0].score_number+'积分 兑换'}}
+          </div>
+        </div>
+
+      </div>
+      <!--end-->
       <div class="item_module_title">
         <span>优惠卷</span>
       </div>
@@ -84,7 +114,43 @@ export default {
   data () {
     return {
       activeBorder: null,
-      activeSetHere: false
+      activeSetHere: false,
+      // 模块私有数据
+      defaultData: {
+        'coupon_arr': [ // 默认占位数据
+          {
+            'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
+            'denomination': 'xx', // 面额
+            'consume_text': '满xx使用', // 使用门槛
+            'receive_text': '剩余xx张', // 卡卷剩余数
+            'coupon_id': '', // 优惠卷id
+            'use_score': '0', // 是否可以积分兑换
+            'score_number': 'xx' // 需要积分数
+          },
+          {
+            'act_code': 'voucher',
+            'denomination': 'xx',
+            'consume_text': '满xx使用',
+            'receive_text': '剩余xx张',
+            'coupon_id': '',
+            'use_score': '0',
+            'score_number': 'xx'
+          },
+          {
+            'act_code': 'voucher',
+            'denomination': 'xx',
+            'consume_text': '满xx使用',
+            'receive_text': '剩余xx张',
+            'coupon_id': '',
+            'use_score': '0',
+            'score_number': 'xx'
+          }
+        ]
+      },
+      // 保存数据
+      data: {
+
+      }
     }
   },
   watch: {
@@ -116,16 +182,22 @@ export default {
     backData: {
       handler (newData) {
         console.log(newData)
+        if (newData.coupon_arr.length) {
+          this.data = newData
+        } else {
+          this.data = this.defaultData
+        }
       },
-      immediate: true
+      immediate: true,
+      deep: true
     }
   },
   mounted () {
     // 初始化数据
-    this.defaultData()
+    this.handleDefaultData()
   },
   methods: {
-    defaultData () {
+    handleDefaultData () {
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
         console.log(this.flag, res)
@@ -173,13 +245,15 @@ export default {
   display: flex;
   justify-content: space-between;
   .coupon_list {
-    width: 32%;
+    height: 100%;
     border: 1px solid #fbb;
     -webkit-border-radius: 110px;
     -moz-border-radius: 10px;
     border-radius: 10px;
     text-align: center;
     overflow: hidden;
+    position: relative;
+    bottom: -1px;
     .coupon_list_top {
       margin-top: 10px;
       color: #f66;
@@ -205,6 +279,44 @@ export default {
       height: 24px;
       line-height: 30px;
       color: #fff;
+    }
+  }
+  .singleContainer {
+    border: 1px solid #fbb;
+    height: 100px;
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    .singleLeft {
+      width: 30%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #f66;
+    }
+    .singleMiddle {
+      width: 40%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      div:nth-of-type(1) {
+        color: #f66;
+      }
+      div:nth-of-type(2) {
+        color: #fbb;
+      }
+    }
+    .singleLeftRight {
+      width: 30%;
+      background: #f66 url(/image/admin/coupon_border_y.png) repeat-y left;
+      background-size: 8px;
+      color: #fff;
+      height: 100px;
+      line-height: 100px;
+      text-align: center;
+      font-size: 12px;
     }
   }
 }

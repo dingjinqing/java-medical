@@ -39,7 +39,7 @@
               :src="$imageHost +'/image/admin/shop_beautify/checked_card.png'"
             >
             <div class="coupon_list_top">
-              ￥<span>{{item.denomination}}</span>
+              {{item.actCode==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span>
             </div>
             <div class="coupon_list_center">
               <div class="coupon_center_limit">{{item.useConsumeRestrict > 0 ?`满${item.leastConsume}使用`:'不限制'}}</div>
