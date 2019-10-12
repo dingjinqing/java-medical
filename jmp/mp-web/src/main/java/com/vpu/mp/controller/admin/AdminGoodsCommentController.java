@@ -70,9 +70,22 @@ public class AdminGoodsCommentController extends AdminBaseController {
 		return success();
 	}
 
+	/**
+	 * 删除回复
+	 *
+	 * @param goodsCommentId
+	 * @return
+	 */
+	@PostMapping("/delAnswer")
+	public JsonResult delAnswer(@RequestBody GoodsCommentIdParam goodsCommentId) {
+
+		shop().goods.goodsComment.delAnswer(goodsCommentId);
+
+		return success();
+	}
 
 	/**
-	 * 删除
+	 * 删除评论
 	 *
 	 * @param goodsCommentId
 	 * @return
@@ -153,7 +166,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	
 	
 	/**
-	 * 添加评论分页查询
+	 * 手动添加评论
 	 *
 	 * @param goodsCommentAddComm
 	 * @return

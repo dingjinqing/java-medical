@@ -186,7 +186,18 @@ public class GoodsCommentService extends ShopBaseService {
 	        return result;
 	}
 
-
+	 /**
+     * 删除评价回复
+     *
+     * @param goodsCommentId
+     * @return 
+     */
+	public void delAnswer(GoodsCommentIdParam goodsCommentId) {
+		db().update(COMMENT_GOODS_ANSWER).set(COMMENT_GOODS_ANSWER.DEL_FLAG, (byte) 1)
+		.where(COMMENT_GOODS_ANSWER.COMMENT_ID.eq(goodsCommentId.getId()))
+		.and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq((byte)0))
+        .execute();
+	}
   
     /**
      * 修改评价审核状态
@@ -251,7 +262,7 @@ public class GoodsCommentService extends ShopBaseService {
     }
     
     /**
-     * 评价回复
+     * 商家手动添加评价
      *
      * @param goodsCommentAddComm
      * @return 数据库受影响行数
