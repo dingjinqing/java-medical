@@ -440,7 +440,16 @@ public class UserService extends ShopBaseService {
 	public List<Map<String, Object>> parseMyService(UserRecord user, List<Map<String, Object>> data) {
 		for (Map<String, Object> iconItem : data) {
 			if (iconItem.get("icon_name").equals("distribution")) {
+				// $default = '{"status":0,"judge_status":0,"rank_status":0,"protect_date":-1}';
+				
 				DistributionParam rebate = config.distributionCfg.getDistributionCfg();
+				if(rebate==null) {
+					rebate = new DistributionParam();
+					rebate.setStatus((byte)0);
+					rebate.setJudgeStatus((byte)0);
+					rebate.setRankStatus((byte)0);
+					rebate.setProtectDate((byte)-1);					
+				}
 				iconItem.put("is_distributor", user.getIsDistributor());
 				iconItem.put("judge_status", rebate.getJudgeStatus());
 				iconItem.put("is_rebate", rebate.getStatus());
@@ -502,12 +511,13 @@ public class UserService extends ShopBaseService {
 	 */
 	public List<Map<String, Object>> parseAccountMoney(UserRecord record,List<Map<String, Object>> data) {
 		logger().info("我的资产");
+		logger().info("UserRecord"+record);
 		for (Map<String, Object> iconItem : data) {
 			if(iconItem.get("icon_name").equals("account")) {
-				iconItem.put("num", record.getAccount());
+				iconItem.put("num", record.getAccount()==null?0:record.getAccount());
 			}
 			if(iconItem.get("icon_name").equals("score")) {
-				iconItem.put("num", record.getScore());
+				iconItem.put("num", record.getScore()==null?0:record.getScore());
 			}
 			if(iconItem.get("icon_name").equals("coupon")) {
 				iconItem.put("num", coupon.getCanUseCouponNum(record.getUserId()));
@@ -531,12 +541,11 @@ public class UserService extends ShopBaseService {
 	 */
 	public Map<String, Object> parseCenterHeader(Integer userId, Map data) {
 		// checkSignInScore
-		Map<String, Object> map = new HashMap<String, Object>();
 		CheckSignVo checkData = userCard.scoreService.checkSignInScore(userId);
-		map.put("sign_score", checkData);
+		data.put("sign_score", checkData);
 		// TODO 暂时不写
 		// $data['qrcode'] = $shop->image->qrcode->getQrcodeInfo(1, $userId);
-		map.put("qrcode", "");
+		data.put("qrcode", "");
 		logger().info("用户等级判断");
 		// 用户等级判断
 		String userGrade = userCard.getUserGrade(userId);
@@ -560,8 +569,8 @@ public class UserService extends ShopBaseService {
 			 * logger().error("userGrade不为0时报错"); e.printStackTrace(); }
 			 */
 		}
-		logger().info("用户等级判断返回"+map);
-		return map;
+		logger().info("用户等级判断返回"+data);
+		return data;
 	}
 
 	/**
