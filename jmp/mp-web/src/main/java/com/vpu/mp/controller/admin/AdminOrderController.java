@@ -22,6 +22,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 
@@ -157,7 +158,29 @@ public class AdminOrderController extends AdminBaseController {
 	 * 订单关闭
 	 */
 	@PostMapping("/close")
-	public JsonResult close(@RequestBody @Valid RefundParam param) {
+	public JsonResult close(@RequestBody @Valid OrderOperateQueryParam param) {
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
+		param.setAdminInfo(adminAuth.user());
+		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
+		return code == null ? success() : fail(code);
+	}
+	
+	/**
+	 * 订单核销
+	 */
+	@PostMapping("/verify")
+	public JsonResult verify(@RequestBody @Valid verifyParam param) {
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
+		param.setAdminInfo(adminAuth.user());
+		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
+		return code == null ? success() : fail(code);
+	}
+	
+	/**
+	 * 订单完成
+	 */
+	@PostMapping("/finish")
+	public JsonResult finish(@RequestBody @Valid OrderOperateQueryParam param) {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
