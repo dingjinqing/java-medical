@@ -154,7 +154,6 @@
             </div>
           </div>
           <el-form
-            :model="shareRules"
             ref="shareRules"
             label-position="right"
           >
@@ -350,10 +349,14 @@
       </div>
     </div>
     <!--添加商品弹窗-->
-    <choosingGoods @resultGoodsIds="choosingGoodsResult" />
+    <choosingGoods
+      @resultGoodsIds="choosingGoodsResult"
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+    />
     <!--添加优惠卷弹窗-->
     <addCouponDialog
       :singleElection="true"
+      :tuneUpCoupon="tuneUpCoupon"
       @handleToCheck="handleToCheck"
     />
   </div>
@@ -439,6 +442,8 @@ export default {
       }
     }
     return {
+      tuneUpCoupon: false,
+      tuneUpChooseGoods: false,
       swiperOption: {
         autoplay: {
           delay: 3000, // 自动切换的时间间隔，单位ms
@@ -547,11 +552,12 @@ export default {
     // 选择优惠券弹窗
     handleToCallDialog (index) {
       this.index = index
-      let obj = {
-        couponDialogFlag: !this.couponDialogFlag,
-        couponList: this.couponList
-      }
-      this.$http.$emit('V-AddCoupon', obj, 'choiseOne')
+      // let obj = {
+      //   couponDialogFlag: !this.couponDialogFlag,
+      //   couponList: this.couponList
+      // }
+      // this.$http.$emit('V-AddCoupon', obj, 'choiseOne')
+      this.tuneUpCoupon = !this.tuneUpCoupon
     },
     // 优惠卷回调
     handleToCheck (data) {
@@ -568,8 +574,8 @@ export default {
     },
     // 选择商品弹窗
     showChoosingGoods () {
-      this.transmitEditGoodsId(this.param.goodsIds)
-      this.$http.$emit('choosingGoodsFlag', true)
+      // this.transmitEditGoodsId(this.param.goodsIds)
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     //  获取商品ids
     choosingGoodsResult (ids) {
