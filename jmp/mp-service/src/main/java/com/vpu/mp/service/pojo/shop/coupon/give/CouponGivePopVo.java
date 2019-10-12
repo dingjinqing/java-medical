@@ -48,5 +48,7 @@ public class CouponGivePopVo {
     private Integer useScore;
     /** 需要积分数*/
     private Integer scoreNumber;
+    /** 是否限制库存：0限制，1不限制*/
+    private Integer limitSurplusFlag;
 	
 }
