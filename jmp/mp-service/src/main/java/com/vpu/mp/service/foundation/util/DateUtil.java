@@ -185,4 +185,18 @@ public final class DateUtil {
 		return Timestamp.valueOf(dateFormat(format));
 	}
 	
+	/**
+	 * 时间戳是否为今日
+	 * @param timestamp
+	 * @return
+	 */
+	public static Boolean TimestampIsNowDay(Timestamp timestamp) {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_FORMAT_SIMPLE);
+		LocalDateTime localDateTime=timestamp.toLocalDateTime();
+		String formate1 = df.format(localDateTime);
+		LocalDateTime localDateTime2=LocalDateTime.now();
+		String formate2 = df.format(localDateTime2);
+		return formate1.equals(formate2);
+	}
+	
 }
