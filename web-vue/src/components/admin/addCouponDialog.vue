@@ -4,6 +4,7 @@
       title="选择优惠卷"
       :visible.sync="dialogVisible"
       width="35%"
+      :modal-append-to-body='false'
     >
       <div class="couponDialogDIiv">
         <div class="couponTop">
@@ -46,7 +47,7 @@
               <div
                 class="coupon_list_bottom"
                 :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
-              >领取 </div>
+              >{{item.useScore===0?'领取':item.scoreNumber+'积分 兑换'}} </div>
               <div class="coupon_name">{{item.actName}}</div>
             </div>
           </div>
@@ -104,12 +105,6 @@ export default {
       if (this.singleElection) {
         this.isSingleElection = this.singleElection
       }
-
-      // this.$http.$on('V-AddCoupon', data => {
-      //   this.data = data
-      //   this.initCouponList(data)
-      //   this.dialogVisible = true
-      // })
     },
     initCouponList (data) {
       this.loading = true
@@ -158,6 +153,10 @@ export default {
       }
       if (arr.length > 10 && this.origin === 'couponPackage') {
         this.$message.error('最多只能选择10种优惠卷哦~')
+        return
+      }
+      if (arr.length > 6 && this.origin === 'decCouponPackage') {
+        this.$message.error('最多只能选择6种优惠卷哦~')
         return
       }
       this.$emit('handleToCheck', arr)

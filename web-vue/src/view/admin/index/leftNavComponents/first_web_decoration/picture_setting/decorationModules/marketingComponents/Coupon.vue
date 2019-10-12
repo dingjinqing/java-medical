@@ -3,7 +3,7 @@
     class="membershipCard modules"
     @mouseover="mouseOver"
   >
-    <!--会员卷模块-->
+    <!--优惠卷模块-->
     <div
       class="showModule"
       :class="activeBorder?'activeBorder':''"
@@ -63,6 +63,7 @@
         >
       </div>
     </div>
+    <!--end-->
     <!--放这里-->
     <div
       class="setHere activeSetHere"
