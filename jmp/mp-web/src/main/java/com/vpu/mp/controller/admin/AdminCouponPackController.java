@@ -104,7 +104,7 @@ public class AdminCouponPackController extends AdminBaseController {
         Workbook workbook =shop().couponPack.exportCouponPackOrderList(param,getLang());
         response.setContentType("application/octet-stream;charset=UTF-8");
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.COUPON_PACK_ORDER_FILENAME,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
-        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+        response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("UTF-8"),"ISO-8859-1") + ".xls");
         workbook.write(response.getOutputStream());
     }
 
