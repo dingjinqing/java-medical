@@ -7,10 +7,13 @@
       width="70%"
       :modal-append-to-body="false"
     >
-        <div class="tips" v-if="showTips">
-            <i class="el-icon-warning-outline"></i>
-            <span>规则说明：同一个商品若同时参加多个营销活动在商品列表中优先显示规则为 秒杀 > 定金膨胀 > 砍价 > 多人拼团 > 首单特惠 > 限时降价</span>
-        </div>
+      <div
+        class="tips"
+        v-if="showTips"
+      >
+        <i class="el-icon-warning-outline"></i>
+        <span>规则说明：同一个商品若同时参加多个营销活动在商品列表中优先显示规则为 秒杀 > 定金膨胀 > 砍价 > 多人拼团 > 首单特惠 > 限时降价</span>
+      </div>
       <div class="choiseDialog">
         <div>
           <ul>
@@ -113,24 +116,23 @@
             </li>
           </ul>
           <div class="middleBbtnDiv">
-              <div>
-                  <el-button
-
-                          @click="selectGoodsData"
-                          type="primary"
-                          size="small"
-                          style="margin-right:10px"
-                  >筛选</el-button>
-                  <el-button
-                          @click="resetFilterData"
-                          type="info"
-                          plain
-                          size="small"
-                  >重置筛选条件</el-button>
-              </div>
-              <div style="padding: 10px;">
-                  <span>已经选择{{checkedIdList.length}}件商品</span>
-              </div>
+            <div>
+              <el-button
+                @click="selectGoodsData"
+                type="primary"
+                size="small"
+                style="margin-right:10px"
+              >筛选</el-button>
+              <el-button
+                @click="resetFilterData"
+                type="info"
+                plain
+                size="small"
+              >重置筛选条件</el-button>
+            </div>
+            <div style="padding: 10px;">
+              <span>已经选择{{checkedIdList.length}}件商品</span>
+            </div>
           </div>
         </div>
         <!--选择商品弹窗表格-->
@@ -138,8 +140,11 @@
           <table width='100%'>
             <thead>
               <tr>
-                <td v-if="!singleElection" >
-                  <el-checkbox v-model="checkPageAllFlag" @change="checkedPageRow(checkPageAllFlag)" ></el-checkbox><i class="tdTopText">全选本页</i>
+                <td v-if="!singleElection">
+                  <el-checkbox
+                    v-model="checkPageAllFlag"
+                    @change="checkedPageRow(checkPageAllFlag)"
+                  ></el-checkbox><i class="tdTopText">全选本页</i>
                 </td>
 
                 <td>商品信息</td>
@@ -160,8 +165,8 @@
                 @click.prevent="handleRowClick(index,item,$event)"
               >
                 <td v-if="!singleElection">
-                  <div class="tdCenter" >
-                    <el-checkbox v-model="item.ischecked" ></el-checkbox>
+                  <div class="tdCenter">
+                    <el-checkbox v-model="item.ischecked"></el-checkbox>
                   </div>
 
                 </td>
@@ -170,9 +175,7 @@
                   :class="loadProduct?'tdCenter':''"
                   v-if="!loadProduct"
                 >
-                  <img
-                    :src="item.prdImg || item.goodsImg"
-                  >
+                  <img :src="item.prdImg || item.goodsImg">
                   <span>{{item.goodsName}}</span>
                   <!-- 规格描述 -->
                   <span v-if="!!item.prdDesc">{{item.prdDesc}}</span>
@@ -208,14 +211,21 @@
           </table>
 
           <div class="tablefooter">
-              <div style="display: block;float: left;margin-left: 15px;" v-if="!singleElection">
-                  <el-checkbox v-model="checkAllFlag" @change="checkedAllRow(checkAllFlag)" ></el-checkbox><i class="tdTopText">选择全部</i>
-              </div>
-              <div style="display: block;float: right">
-                  <pagination
-                          :page-params.sync="pageParams"
-                          @pagination="paginationChange"/>
-              </div>
+            <div
+              style="display: block;float: left;margin-left: 15px;"
+              v-if="!singleElection"
+            >
+              <el-checkbox
+                v-model="checkAllFlag"
+                @change="checkedAllRow(checkAllFlag)"
+              ></el-checkbox><i class="tdTopText">选择全部</i>
+            </div>
+            <div style="display: block;float: right">
+              <pagination
+                :page-params.sync="pageParams"
+                @pagination="paginationChange"
+              />
+            </div>
           </div>
 
         </div>
@@ -606,7 +616,7 @@ export default {
 <style scoped>
 .middleBbtnDiv {
   padding: 10px 30px;
-    display: flex;
+  display: flex;
 }
 .table_container {
   padding: 10px 30px;
@@ -620,14 +630,14 @@ export default {
   background: #eee;
 }
 .tips {
-    margin-top: 10px;
-    margin-left: 20px;
+  margin-top: 10px;
+  margin-left: 20px;
 }
 .tips span {
-    display: inline-block;
-    margin-left: 5px;
-    color: #888;
-    font-size: 14px;
+  display: inline-block;
+  margin-left: 5px;
+  color: #888;
+  font-size: 14px;
 }
 ul {
   padding-left: 30px;

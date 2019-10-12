@@ -263,6 +263,13 @@
         @dialog-cancel="closeDialog"
       />
       <!-- 选择商品弹窗 -->
+
+      <!-- <choosingGoods
+        @resultGoodsDatas="choosingGoodsResult"
+        :tuneUpChooseGoods='isShowChoosingGoodsDialog'
+        :checkedNumMax=3
+        :chooseGoodsBack='this.params.goodsIdList'
+      /> -->
       <choosingGoods
         @res="getRes"
         :tuneUpChooseGoods="tuneUpChooseGoods"
@@ -284,7 +291,7 @@
 </template>>
 
 <script>
-// import { mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 // 选择商品弹窗
 import choosingGoods from '@/components/admin/choosingGoods'
 
@@ -344,6 +351,7 @@ export default {
       } else { callback() }
     }
     return {
+      goodsNum: '',
       // 优惠卷弹窗
       couponDialogFlag: false,
       couponData: [],
@@ -383,7 +391,7 @@ export default {
         userKey: null,
         onClickNoPay: false,
         onClickGoods: false,
-        // 商品列表idList
+        goodsIdList: [],
         onClickCard: false,
         cardIdsList: [],
         onClickTag: false,
@@ -425,7 +433,7 @@ export default {
           { validator: validateCrowd, trigger: 'change' }
         ]
       },
-
+      isShowChoosingGoodsDialog: false,
       pageLink: ``,
       time: {},
 
@@ -511,6 +519,7 @@ export default {
     this.langDefault()
   },
   methods: {
+    ...mapActions(['transmitEditGoodsId']),
     // 选择优惠券弹窗
     handleToCallDialog () {
       let obj = {
@@ -572,7 +581,7 @@ export default {
           'card_box': Number(this.params.onClickCard),
           'tag_box': Number(this.params.onClickTag),
           'goods_box': Number(this.params.onClickGoods),
-          'goods_ids': '',
+          'goods_ids': this.params.goodsIdList.toString(),
           'member_box': Number(this.params.onClickUser),
           'coupon_ids': this.couponId
         },
@@ -645,6 +654,36 @@ export default {
       this.formData.content = res.content
       this.templateId = res.id
     },
+    // // 初始化商品弹窗
+    // showChoosingGoods () {
+    //   console.log('初始化商品弹窗', this.params.goodsIdList.toString())
+    //   let goodsIdArr = []
+    //   if (this.params.goodsIdList.toString() !== null) {
+    //     goodsIdArr = this.params.goodsIdList
+    //   }
+    //   this.transmitEditGoodsId(goodsIdArr)
+    //   this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
+    // },
+    // // 接收商品弹窗放回数据
+    // choosingGoodsResult (row) {
+    //   console.log('接收商品弹窗放回数据', row)
+    //   let goodsIdArr = []
+    //   row.forEach((item, index) => {
+    //     console.log('商品id：', item.goodsId)
+    //     goodsIdArr.push(item.goodsId)
+    //     if (this.imgsList.indexOf(item) === -1) {
+    //       this.imgsList.push(item)
+    //     }
+    //     this.imgsList.forEach((item1, index1) => {
+    //       if (row.indexOf(item1) === -1) {
+    //         this.imgsList.splice(index1, 1)
+    //       }
+    //     })
+    //   })
+    //   console.log('图片数组：', this.imgsList)
+    //   this.params.goodsIdList = goodsIdArr
+    //   this.goodsNum = row.length
+    // },
     // 选择商品
     handleChooseGoods () {
       if (this.params.onClickGoods === false) {
@@ -654,10 +693,11 @@ export default {
     },
     getRes (ids, urls) {
       if (ids.length > 3) {
-        this.$message.warning(`${this.$t('couponGive.chooseUp')}`)
+        this.$message.warning('最多选择3个商品')
       } else {
         this.params.goodsIdList = ids
         this.imgsList = urls
+        console.log('数据库存储：', this.params.goodsIdList.toString())
         // 发送获取人数
         this.fetchUserList(this.params)
       }

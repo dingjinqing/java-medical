@@ -237,11 +237,11 @@ export default {
   },
   filters: {
     sendAction: function (value) {
-      if (value === '0') return `立即发放`
+      if (value === 0) return `立即发放`
       else return `定时发放`
     },
     sendStatus: function (value) {
-      if (value === '0') return '未发放'
+      if (value === 0) return '未发放'
       else return '已发放'
     },
     leastConsume: function (value) {
