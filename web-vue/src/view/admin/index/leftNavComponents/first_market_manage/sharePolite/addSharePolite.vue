@@ -154,7 +154,6 @@
             </div>
           </div>
           <el-form
-            :rules="rewardValidation"
             :model="shareRules"
             ref="shareRules"
             label-position="right"
@@ -260,7 +259,7 @@
                     style="margin:0 5px;"
                   >{{$t('adSharePolite.manageLabel')}}</el-link>
                   <el-row>
-                    <el-col offset="4">
+                    <el-col :offset="4">
                       {{$t('adSharePolite.couponStock')}}
                       <el-input
                         size="mini"
