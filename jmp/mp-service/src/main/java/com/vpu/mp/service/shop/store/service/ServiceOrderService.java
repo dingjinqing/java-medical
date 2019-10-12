@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.store.service;
 
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
+import static com.vpu.mp.db.shop.tables.Store.STORE;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -291,5 +292,20 @@ public class ServiceOrderService extends ShopBaseService{
         String language = "";
         /** 余额核销的门店服务订单，交易类型认为是余额支付 */
         saas.getShopApp(getShopId()).member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow,language);
+    }
+
+    
+    /**
+     * 获取用户最新的预约服务
+     * @param userId
+     * @return
+     */
+    public Record getUserLastOrderInfo(Integer userId) {
+		return db().select(SERVICE_ORDER.asterisk(), STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE,
+				STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG, STORE.STORE_NAME, STORE.LATITUDE,
+				STORE.LONGITUDE, STORE.ADDRESS, STORE.DISTRICT_CODE).from(SERVICE_ORDER).leftJoin(STORE_SERVICE)
+				.on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).leftJoin(STORE)
+				.on(SERVICE_ORDER.STORE_ID.eq(STORE.STORE_ID)).where(SERVICE_ORDER.USER_ID.eq(userId))
+				.and(SERVICE_ORDER.DEL_FLAG.eq((byte) 0)).orderBy(SERVICE_ORDER.ORDER_ID.desc()).fetch().get(0);
     }
 }
