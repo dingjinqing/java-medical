@@ -1,15 +1,16 @@
 package com.vpu.mp.controller.wxapp;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -39,6 +40,20 @@ public class WxAppAccountController extends WxAppBaseController {
 		}
 		return fail();
 	}
-
+	
+	/**
+	 * 新版个人中心
+	 */
+	@PostMapping("/api/wxapp/account/usercenter")
+	public JsonResult getNewUserAccoountInfo(@RequestBody WxAppCommonParam param) {
+		logger().info("新版个人中心");
+		Integer shopId = wxAppAuth.shopId();
+		ShopApplication shopApp = saas.getShopApp(shopId);
+		List<Map<String, Object>> moduleData = shopApp.user.parseCenterModule(param.getUserId());
+		UserAccoountInfoVo vo=new UserAccoountInfoVo();
+		vo.setModuleData(moduleData);
+		vo.setOtherData(new String[0]);
+		return success(vo);
+	}
 	
 }
