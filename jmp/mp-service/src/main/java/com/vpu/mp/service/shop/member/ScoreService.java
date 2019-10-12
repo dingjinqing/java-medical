@@ -637,6 +637,7 @@ public class ScoreService extends ShopBaseService {
 			vo.setSignData(null);
 			vo.setSignRule(new String[0]);
 		}
+		logger().info("进入检查签到送积分结束");
 		return vo;
 	}
 	

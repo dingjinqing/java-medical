@@ -395,23 +395,29 @@ public class UserService extends ShopBaseService {
 		
 		for(Map<String, Object> module:moduleData) {
 			if (module.get("module_name").equals("center_header")) {
+				logger().info("进入center_header");
 				module=parseCenterHeader(userId, module);
 			}
 			if (module.get("module_name").equals("account_money")) {
+				logger().info("进入account_money");
 				module.put("content", parseAccountMoney(userByUserId, (List<Map<String, Object>>)module.get("content")));
 			}
 			if (module.get("module_name").equals("order")) {
+				logger().info("进入order");
 				module.put("content", parseMyOrder(userByUserId.getUserId(), (List<Map<String, Object>>)module.get("content")));
 			}
 			if (module.get("module_name").equals("appointment")) {
+				logger().info("进入appointment");
 				module.put("appointment_info", storeService.serviceOrder.getUserLastOrderInfo(userId));
 			}
 			if (module.get("module_name").equals("use_record")) {
+				logger().info("进入use_record");
 				module.put("collect", collection.getUserCollectNumber(userId));
 				module.put("buy_history", orderInfo.getUserBuyGoodsNum(userId));
 				module.put("footprint", footPrintService.getfootPrintNum(userId));
 			}
 			if (module.get("module_name").equals("service")) {
+				logger().info("进入service");
 				module.put("content", parseMyService(userByUserId, (List<Map<String, Object>>)module.get("content")));
 			}
 		}
@@ -488,6 +494,7 @@ public class UserService extends ShopBaseService {
 	 * @return
 	 */
 	public List<Map<String, Object>> parseAccountMoney(UserRecord record,List<Map<String, Object>> data) {
+		logger().info("我的资产");
 		for (Map<String, Object> iconItem : data) {
 			if(iconItem.get("icon_name").equals("account")) {
 				iconItem.put("num", record.getAccount());
@@ -503,6 +510,7 @@ public class UserService extends ShopBaseService {
 				iconItem.put("num", 0);
 			}
 		}
+		logger().info("我的资产结束");
 		return data;
 	}
 	
