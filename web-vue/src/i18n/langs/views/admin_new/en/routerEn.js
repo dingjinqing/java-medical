@@ -343,6 +343,8 @@ export const en = {
   check_order: ['Order management', 'Check order'],
   // 订单管理 买单订单详情
   storeOrderInfo: ['Order management', 'Check order info'],
+  // 订单管理 自提订单
+  self_order: ['Order management', 'Self order'],
   // 订单管理 虚拟订单商品
   memberCardOrder: ['Order management', 'Virtual goods order'],
   // 订单管理 手动退货退款

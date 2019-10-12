@@ -21,25 +21,21 @@
         <span class="tips">设置前端是否隐藏未填写心得的评价</span>
       </div>
     </div>
-    <slot name="evaluationRecord"></slot>
-    <pagination
-      :page-params.sync="pageParams"
-      @pagination="initDataList"
-    />
+    <slot
+      name="evaluationRecord"
+      v-if="viewReload"
+    ></slot>
   </div>
 </template>
 
 <script>
-import { getCommentCheckList, CommentCheckConfig, CommentSwitchConfig } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { CommentCheckConfig, CommentSwitchConfig } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
-  components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
-  },
   data () {
     return {
       reviewStatus: 0,
       hideEvaluation: 0,
-      pageParams: {}
+      viewReload: true
     }
   },
   mounted () {
@@ -47,15 +43,12 @@ export default {
   },
   methods: {
     initDataList () {
-      let obj = {}
-      getCommentCheckList(obj).then(res => {
-        console.log(res)
-      })
     },
     changeReviewStatus (val) {
       CommentCheckConfig({ v: val }).then(res => {
         if (res.error === 0) {
           this.$message.success('修改成功')
+          this.reload()
         }
       })
     },
@@ -64,6 +57,12 @@ export default {
         if (res.error === 0) {
           this.$message.success('修改成功')
         }
+      })
+    },
+    reload () {
+      this.viewReload = false
+      this.$nextTick(function () {
+        this.viewReload = true
       })
     }
   }

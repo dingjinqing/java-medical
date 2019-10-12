@@ -5,7 +5,7 @@
         <span>{{$t('evaluation.goodsName')}}</span>
         <el-input
           v-model="searchParams.goodsName"
-          placeholder="搜索商品"
+          :placeholder="$t('evaluation.searchGoods')"
           size="small"
         ></el-input>
       </div>
@@ -51,7 +51,7 @@
           }"
     >
       <el-table-column
-        label="名称"
+        :label="$t('evaluation.goodsName')"
         width="200"
       >
         <template slot-scope="scope">
@@ -68,41 +68,41 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="商品货号"
+        :label="$t('evaluation.productCode')"
         prop="goodsSn"
       >
       </el-table-column>
       <el-table-column
-        label="商家分类"
+        :label="$t('allGoods.allGoodsHeaderData.category')"
         prop="sortName"
       >
       </el-table-column>
       <el-table-column
-        label="价格"
+        :label="$t('allGoods.allGoodsData.shopPrice')"
         prop="shopPrice"
       >
       </el-table-column>
       <el-table-column
-        label="库存"
+        :label="$t('allGoods.allGoodsData.goodsNumber')"
         prop="goodsNumber"
       >
       </el-table-column>
       <el-table-column
-        label="访客数"
+        :label="$t('evaluation.uv')"
         prop="uv"
       >
       </el-table-column>
       <el-table-column
-        label="浏览量"
+        :label="$t('evaluation.pv')"
         prop="pv"
       >
       </el-table-column>
-      <el-table-column label="实际评价数">
+      <el-table-column :label="$t('evaluation.actualEvaluationNum')">
       </el-table-column>
-      <el-table-column label="添加评价数">
+      <el-table-column :label="$t('evaluation.addEvaluationNum')">
       </el-table-column>
       <el-table-column
-        label="操作"
+        :label="$t('evaluation.evaluationTable.operating')"
         width="120"
       >
         <template slot-scope="scope">
@@ -110,11 +110,11 @@
             <span
               class="item"
               @click="viewEvaluation(scope.row.goodsId)"
-            >查看</span>
+            >{{$t('evaluation.view')}}</span>
             <span
               class="item"
               @click="addEvaluation(scope.row)"
-            >添加评价</span>
+            >{{$t('evaluation.addEvaluation')}}</span>
           </div>
         </template>
       </el-table-column>
@@ -200,6 +200,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.pageParams = res.content.page
+          this.dataList = res.content.dataList
         }
       })
     },

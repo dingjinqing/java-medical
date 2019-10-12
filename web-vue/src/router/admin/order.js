@@ -125,6 +125,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderList'
       )
   },
+  // 自提订单
+  {
+    path: '/admin/home/main/orders/self',
+    name: 'shop_setting',
+    meta: {
+      crumbTitle: 'router.self_order',
+      meta: 'first_trade_manage',
+      category: 'shop_setting'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderList'
+      )
+  },
   // 拼团退款失败
   {
     path: '/admin/home/main/orders/pinGroup/fail',

@@ -233,6 +233,8 @@ export const cn = {
   check_order: ['订单管理', '买单订单'],
   // 订单管理 买单订单详情
   storeOrderInfo: ['订单管理', '买单订单详情'],
+  // 订单管理 自提订单
+  self_order: ['订单管理', '自提订单'],
   // 订单管理 虚拟订单商品
   memberCardOrder: ['订单管理', '虚拟订单商品'],
   // 订单管理 手动退货退款

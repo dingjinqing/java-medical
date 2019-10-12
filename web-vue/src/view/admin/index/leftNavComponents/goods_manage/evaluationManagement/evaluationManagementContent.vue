@@ -20,7 +20,7 @@
         >
           <evaluationReview v-if="activeName === 'second'">
             <template v-slot:evaluationRecord>
-              <evaluationRecord />
+              <evaluationRecord target="Record" />
             </template>
           </evaluationReview>
         </el-tab-pane>

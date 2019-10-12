@@ -14,7 +14,7 @@
           }"
     >
       <el-table-column
-        label="名称"
+        :label="$t('evaluation.goodsName')"
         width="200"
       >
         <template slot-scope="scope">
@@ -31,38 +31,38 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="商品货号"
+        :label="$t('evaluation.productCode')"
         prop="goodsSn"
       >
       </el-table-column>
       <el-table-column
-        label="商家分类"
+        :label="$t('allGoods.allGoodsHeaderData.category')"
         prop="sortName"
       >
       </el-table-column>
       <el-table-column
-        label="价格"
+        :label="$t('allGoods.allGoodsData.shopPrice')"
         prop="shopPrice"
       >
       </el-table-column>
       <el-table-column
-        label="库存"
+        :label="$t('allGoods.allGoodsData.goodsNumber')"
         prop="goodsNumber"
       >
       </el-table-column>
       <el-table-column
-        label="访客数"
+        :label="$t('evaluation.uv')"
         prop="uv"
       >
       </el-table-column>
       <el-table-column
-        label="浏览量"
+        :label="$t('evaluation.pv')"
         prop="pv"
       >
       </el-table-column>
-      <el-table-column label="实际评价数">
+      <el-table-column :label="$t('evaluation.actualEvaluationNum')">
       </el-table-column>
-      <el-table-column label="添加评价数">
+      <el-table-column :label="$t('evaluation.addEvaluationNum')">
       </el-table-column>
     </el-table>
     <el-form
@@ -73,7 +73,7 @@
       size="small"
     >
       <el-form-item
-        label="用户名"
+        :label="$t('evaluation.userName')"
         prop="bogusUsername"
       >
         <el-input
@@ -82,7 +82,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item
-        label="头像"
+        :label="$t('evaluation.avatar')"
         prop="bogusUserAvatar"
       >
         <div class="imgWrap">
@@ -118,19 +118,18 @@
         </div>
       </el-form-item>
       <el-form-item
-        label="评价日期"
+        :label="$t('evaluation.evaluationTime')"
         prop="createTime"
       >
         <el-date-picker
           v-model="sendParams.createTime"
           type="datetime"
-          placeholder="选择日期时间"
           value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
       </el-form-item>
       <el-form-item
-        label="评分"
+        :label="$t('evaluation.grade')"
         prop="commstar"
       >
         <div class="commstar">
@@ -142,7 +141,7 @@
 
       </el-form-item>
       <el-form-item
-        label="心得"
+        :label="$t('evaluation.experience')"
         prop="commNote"
       >
         <el-input
@@ -189,9 +188,9 @@
 
         </div>
       </el-form-item> -->
-      <el-form-item label="是否匿名">
+      <el-form-item :label="$t('evaluation.anonymous')">
         <el-checkbox
-          label="是"
+          :label="$t('evaluation.yes')"
           v-model="sendParams.anonymousFlag"
         ></el-checkbox>
         <span class="tips">勾选时将不显示用户头像</span>
@@ -213,7 +212,7 @@
 </template>
 
 <script>
-import { godosAddComment } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { goodsAddComment } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   components: {
     imageDialog: () => import('@/components/admin/imageDalog')
@@ -246,14 +245,17 @@ export default {
     console.log(this.goodsInfo)
   },
   methods: {
+    // 调起添加用户头像
     addUserAvatar () {
       this.showImageDialog = !this.showImageDialog
       this.triggerSource = 'Avatar'
     },
+    // 调起添加评价图片
     addCommImg () {
       this.showImageDialog = !this.showImageDialog
       this.triggerSource = 'CommImg'
     },
+    // 删除图片
     delImg (target, index) {
       if (target === 'Avatar') {
         this.sendParams.bogusUserAvatar = null
@@ -261,6 +263,7 @@ export default {
         this.sendParams.commImg.splice(index, 1)
       }
     },
+    // 获取图片
     getImgData (data) {
       console.log(data)
       if (this.triggerSource === 'Avatar') {
@@ -269,6 +272,7 @@ export default {
         this.sendParams.commImg.push(data.imgPath)
       }
     },
+    // 添加商品评价
     Submit () {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -276,7 +280,7 @@ export default {
             ...this.sendParams,
             anonymousFlag: this.sendParams.anonymousFlag ? '1' : '0'
           }
-          godosAddComment(obj).then(res => {
+          goodsAddComment(obj).then(res => {
             console.log(res)
             if (res.error === 0) {
               this.$message.success({

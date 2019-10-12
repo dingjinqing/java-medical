@@ -5,23 +5,41 @@
         <div class="filters_item"><span>{{$t('evaluation.orderSn')}}</span>
           <el-input
             v-model="searchParams.orderSn"
-            placeholder="输入订单编号"
+            :placeholder="$t('evaluation.input',[$t('evaluation.orderSn')])"
             size="small"
           ></el-input>
         </div>
         <div class="filters_item"><span>{{$t('evaluation.goodsName')}}</span>
           <el-input
             v-model="searchParams.goodsName"
-            placeholder="输入商品名称"
+            :placeholder="$t('evaluation.input',[$t('evaluation.goodsName')])"
             size="small"
           ></el-input>
         </div>
         <div class="filters_item"><span>{{$t('evaluation.mobile')}}</span>
           <el-input
             v-model="searchParams.mobile"
-            placeholder="输入手机号"
+            :placeholder="$t('evaluation.input',[$t('evaluation.mobile')])"
             size="small"
           ></el-input>
+        </div>
+        <div
+          class="filters_item"
+          v-if="target === 'Record'"
+        >
+          <span>{{$t('evaluation.auditState')}}</span>
+          <el-select
+            v-model="searchParams.flag"
+            size="small"
+            class="mini_select"
+          >
+            <el-option
+              v-for="item in auditFlag"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
         </div>
         <div class="filters_item"><span>{{$t('evaluation.evaluationGrade')}}</span>
           <el-select
@@ -39,7 +57,7 @@
         </div>
         <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward')}}</span>
           <el-select
-            v-model="searchParams.chooseReward"
+            v-model="searchParams.awardActivityId"
             size="small"
             class="mini_select"
           >
@@ -81,7 +99,7 @@
         <el-table-column :label="$t('evaluation.evaluationTable.productInformation')">
           <template slot-scope="scope">
             <div class="orderSn">
-              <span v-if="scope.row.bogusUsername">商家添加评价</span>
+              <span v-if="scope.row.bogusUsername">{{$t('evaluation.merchantAddComment')}}</span>
               <span v-else>{{$t('evaluation.orderSn')}}：<span>{{scope.row.orderSn}}</span></span>
             </div>
             <div class="goods_info">
@@ -130,11 +148,13 @@
                 type="primary"
                 v-if="!scope.row.content"
                 size="mini"
+                @click="writeReply(scope.row.id)"
               >{{$t('evaluation.writeReply')}}</el-button>
               <el-button
                 type="default"
                 v-else
                 size="mini"
+                @click="deleteReply(scope.row.id)"
               >{{$t('evaluation.deleteReply')}}</el-button>
             </div>
           </template>
@@ -158,15 +178,41 @@
           </template>
         </el-table-column>
         <el-table-column
+          :label="$t('evaluation.auditState')"
+          v-if="target === 'Record'"
+        >
+          <template slot-scope="scope">
+            <div>{{scope.flag | auditStatus}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
           :label="$t('evaluation.evaluationTable.operating')"
           width="150"
         >
           <template slot-scope="scope">
-            <el-button
-              type="default"
-              size="mini"
-              @click="delEvaluation(scope.row.id)"
-            >{{$t('evaluation.deleteEvaluation')}}</el-button>
+            <div class="operating">
+              <p>
+                <el-button
+                  type="default"
+                  size="mini"
+                  @click="delEvaluation(scope.row.id)"
+                >{{$t('evaluation.deleteEvaluation')}}</el-button>
+              </p>
+              <p v-if="target === 'Record'">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="evaluationPass(scope.row.id)"
+                >{{$t('evaluation.pass')}}</el-button>
+              </p>
+              <p v-if="target === 'Record'">
+                <el-button
+                  type="default"
+                  size="mini"
+                  @click="evaluationRefuse(scope.row.id)"
+                >{{$t('evaluation.refuse')}}</el-button>
+              </p>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -175,23 +221,52 @@
       :page-params.sync="pageParams"
       @pagination="initDataList"
     />
+    <el-dialog
+      :title="$t('evaluation.reply')"
+      :visible.sync="showReply"
+      custom-class="custom"
+      width="40%"
+    >
+      <el-input
+        type="textarea"
+        v-model="replyContent"
+        resize="none"
+        rows="10"
+      ></el-input>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="showReply = false">{{$t('evaluation.cancel')}}</el-button>
+        <el-button
+          type="primary"
+          @click="confirmReply"
+        >{{$t('evaluation.confirm')}}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getCommentList, goodsCommentDelete } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { getCommentCheckList, getCommentList, goodsCommentDelete, CommentPass, CommentRefuse, CommentAnswer, delAnswer } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
+  },
+  props: {
+    target: {
+      type: String
+    }
   },
   data () {
     return {
       searchParams: {
         commstar: 0,
-        chooseReward: -1,
+        awardActivityId: -1,
         orderSn: null,
         goodsName: null,
-        mobile: null
+        mobile: null,
+        flag: -1
       },
       starLevel: [
         { key: 0, value: '全部' },
@@ -208,36 +283,136 @@ export default {
         { id: 3, value: 'dddd' },
         { id: 4, value: 'cccc' }
       ],
+      auditFlag: [
+        { key: -1, value: '全部' },
+        { key: 0, value: '待审核' },
+        { key: 1, value: '已通过' },
+        { key: 2, value: '未通过' }
+      ],
       pageParams: {
       },
       dataList: [
       ],
-      loading: false
+      loading: false,
+      showReply: false,
+      replyContent: null,
+      replyId: null
     }
   },
   mounted () {
     this.initDataList()
   },
   methods: {
+    // 初始化列表 评价列表 待评价列表
     initDataList () {
       let obj = {
         ...this.searchParams,
         page: { ...this.pageParams },
-        chooseReward: this.searchParams.chooseReward === -1 ? null : this.searchParams.chooseReward
+        awardActivityId: this.searchParams.awardActivityId === -1 ? null : this.searchParams.awardActivityId
       }
-      getCommentList(obj).then(res => {
-        this.pageParams = res.content.page
-        this.dataList = res.content.dataList.sort((a, b) => {
-          return (b.id - a.id)
+      if (this.target === 'Record') {
+        getCommentCheckList(obj).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.pageParams = res.content.page
+            this.dataList = res.content.dataList.sort((a, b) => {
+              return (b.id - a.id)
+            })
+          }
         })
-      })
+      } else {
+        getCommentList(obj).then(res => {
+          delete obj.flag
+          console.log(res)
+          if (res.error === 0) {
+            this.pageParams = res.content.page
+            this.dataList = res.content.dataList.sort((a, b) => {
+              return (b.id - a.id)
+            })
+          }
+        })
+      }
     },
+    // 删除评价
     delEvaluation (id) {
       goodsCommentDelete({ id: id }).then(res => {
         if (res.error === 0) {
           this.dataList = this.dataList.filter(item => item.id !== id)
+          this.$message.success({
+            message: '删除成功',
+            duration: '2000'
+          })
         }
       })
+    },
+    // 通过审核
+    evaluationPass (id) {
+      console.log(id)
+      CommentPass({ id: id }).then(res => {
+        if (res.error === 0) {
+          let targetData = this.dataList.find(item => id === item.id)
+          targetData.flag = 1
+        }
+      })
+    },
+    // 拒绝审核
+    evaluationRefuse (id) {
+      console.log(id)
+      CommentRefuse({ id: id }).then(res => {
+        if (res.error === 0) {
+          let targetData = this.dataList.find(item => id === item.id)
+          targetData.flag = 2
+        }
+      })
+    },
+    // 调起添加回复弹框
+    writeReply (id) {
+      this.showReply = true
+      this.replyContent = null
+      this.replyId = id
+    },
+    // 添加回复
+    confirmReply () {
+      let obj = {
+        commentId: this.replyId,
+        content: this.replyContent
+      }
+      CommentAnswer(obj).then(res => {
+        if (res.error === 0) {
+          this.$message.success({
+            message: '回复成功',
+            duration: '2000'
+          })
+          this.showReply = false
+          let targetData = this.dataList.find(item => item.id === this.replyId)
+          targetData.content = this.replyContent
+        }
+      })
+    },
+    // 删除回复
+    deleteReply (id) {
+      delAnswer({ id: id }).then(res => {
+        if (res.error === 0) {
+          this.$message.success({
+            message: '删除成功',
+            duration: '2000'
+          })
+          let targetData = this.dataList.find(item => item.id === id)
+          targetData.content = null
+        }
+      })
+    }
+  },
+  filters: {
+    auditStatus (flag) {
+      switch (flag) {
+        case 1:
+          return `通过`
+        case 2:
+          return `未通过`
+        default:
+          return `待审核`
+      }
     }
   }
 }
@@ -301,7 +476,7 @@ export default {
         width: auto;
       }
       > .el-icon-star-on {
-        color: red;
+        color: #ff6666;
         font-size: 20px;
       }
     }
@@ -313,6 +488,11 @@ export default {
   align-items: center;
   > .el-button {
     width: 90px;
+  }
+}
+.operating {
+  > p + p {
+    margin-top: 5px;
   }
 }
 .orderSn {

@@ -73,9 +73,17 @@ export function CommentGoodsList (data) {
   })
 }
 // 商品添加评论
-export function godosAddComment (data) {
+export function goodsAddComment (data) {
   return service({
     url: `/api/admin/goods/comment/addcomm`,
+    method: 'post',
+    data: data
+  })
+}
+// 删除评论回复
+export function delAnswer (data) {
+  return service({
+    url: `/api/admin/goods/comment/delAnswer`,
     method: 'post',
     data: data
   })
