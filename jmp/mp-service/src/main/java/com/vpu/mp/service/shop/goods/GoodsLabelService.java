@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
@@ -110,7 +111,7 @@ public class GoodsLabelService extends ShopBaseService {
 		goodsLabelVo.setSortIdList(goodsLabel.getSortId());
 
 		goodsLabelVo.setSortList(sortService.getList(goodsLabel.getSortId()));
-		goodsLabelVo.setCatList(saas().sysCate.getList(goodsLabel.getCatId()));
+		goodsLabelVo.setCatList(SysCatServiceHelper.getSysCateVoByCatIds(goodsLabel.getCatId()));
 		return goodsLabelVo;
 	}
 	

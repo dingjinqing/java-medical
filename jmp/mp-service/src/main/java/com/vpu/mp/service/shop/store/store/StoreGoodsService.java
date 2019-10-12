@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
@@ -91,7 +92,7 @@ public class StoreGoodsService extends ShopBaseService{
 		select.where(STORE_GOODS.STORE_ID.eq(param.getStoreId())).orderBy(STORE_GOODS.CREATE_TIME);
         PageResult<StoreGoodsListQueryVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreGoodsListQueryVo.class);
         // 处理平台分类信息
-        List<SysCatevo> sysCate = saas.sysCate.getSysCate();
+        List<SysCatevo> sysCate = SysCatServiceHelper.getAllSysCateVoByCat();
         Map<Integer, String> sysCateMap = sysCate.stream().collect(Collectors.toMap(SysCatevo::getCatId, SysCatevo::getCatName));
         pageResult.dataList.forEach(vo -> {
             vo.setCatName(sysCateMap.get(vo.getCatId()));
