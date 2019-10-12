@@ -258,7 +258,8 @@ public class AdminStoreController extends AdminBaseController{
             storeName = record.into(String.class);
         }
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.STORE_VERIFIER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL,storeName);
-        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+        logger().info("store verifier filename:" + fileName);
+        response.setHeader("Content-Disposition", "attachment;filename=" + "汉字" + ".xls");
         workbook.write(response.getOutputStream());
     }
 
