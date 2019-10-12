@@ -397,30 +397,37 @@ public class UserService extends ShopBaseService {
 			if (module.get("module_name").equals("center_header")) {
 				logger().info("进入center_header");
 				module=parseCenterHeader(userId, module);
+				logger().info("完成center_header");
 			}
 			if (module.get("module_name").equals("account_money")) {
 				logger().info("进入account_money");
 				module.put("content", parseAccountMoney(userByUserId, (List<Map<String, Object>>)module.get("content")));
+				logger().info("完成account_money");
 			}
 			if (module.get("module_name").equals("order")) {
 				logger().info("进入order");
 				module.put("content", parseMyOrder(userByUserId.getUserId(), (List<Map<String, Object>>)module.get("content")));
+				logger().info("完成order");
 			}
 			if (module.get("module_name").equals("appointment")) {
 				logger().info("进入appointment");
 				module.put("appointment_info", storeService.serviceOrder.getUserLastOrderInfo(userId));
+				logger().info("完成appointment");
 			}
 			if (module.get("module_name").equals("use_record")) {
 				logger().info("进入use_record");
 				module.put("collect", collection.getUserCollectNumber(userId));
 				module.put("buy_history", orderInfo.getUserBuyGoodsNum(userId));
 				module.put("footprint", footPrintService.getfootPrintNum(userId));
+				logger().info("完成use_record");
 			}
 			if (module.get("module_name").equals("service")) {
 				logger().info("进入service");
 				module.put("content", parseMyService(userByUserId, (List<Map<String, Object>>)module.get("content")));
+				logger().info("完成service");
 			}
 		}
+		logger().info("parseCenterModule出");
 		return moduleData;
 	}
 	
