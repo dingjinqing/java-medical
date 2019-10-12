@@ -258,6 +258,7 @@
 import {
   getProductIdsListAll,
   getGoodsIdsListAll,
+  getGoodsListByIds,
   allGoodsQueryRequest,
   getGoodsProductList
 } from '@/api/admin/brandManagement.js'
@@ -352,6 +353,13 @@ export default {
       console.log('tuneUpChooseGoods')
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
+      getGoodsListByIds({goodsIds: this.chooseGoodsBack}).then(res => {
+        console.log('getGoodslistByIds', res)
+        this.clearCheckedRow()
+        res.content.forEach(item => {
+          this.addCheckedRow(item)
+        })
+      })
     }
   },
   mounted () {

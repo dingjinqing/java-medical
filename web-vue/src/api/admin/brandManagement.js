@@ -79,7 +79,16 @@ export function allGoodsQueryRequest (data) {
     data: data
   })
 }
-// 商品分页查询
+
+// 根据ids 查询商品
+export function getGoodsListByIds (data) {
+  return service({
+    url: '/api/admin/goods/info/list',
+    method: 'post',
+    data: data
+  })
+}
+// 全部商品id
 export function getGoodsIdsListAll (data) {
   return service({
     url: '/api/admin/goods/listAllIds',
@@ -87,7 +96,7 @@ export function getGoodsIdsListAll (data) {
     data: data
   })
 }
-// 全部商品规格查询
+// 商品规格查询
 export const getGoodsProductList = data => {
   return service({
     url: '/api/admin/goods/product/list',
@@ -95,7 +104,7 @@ export const getGoodsProductList = data => {
     data
   })
 }
-// 全部商品规格查询
+// 全部商品规格id
 export const getProductIdsListAll = data => {
   return service({
     url: '/api/admin/goods/product/listAllIds',

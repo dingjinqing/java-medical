@@ -671,23 +671,17 @@ export default {
     // 接收商品弹窗放回数据
     choosingGoodsResult (row) {
       console.log('接收商品弹窗返回数据', row)
+      this.imgsList = []
       row.forEach((item, index) => {
         console.log('接收商品弹窗返回id', item)
         console.log('这轮之前', this.imgsList)
         console.log('*********************')
-        if (this.imgsList.indexOf(item) === -1) {
-          this.imgsList.push(item)
-          console.log('数组中加入', item.goodsId)
-        }
+        this.imgsList.push(item)
+        console.log('数组中加入', item.goodsId)
         console.log('这轮过后', this.imgsList)
       })
-      this.imgsList.forEach((item1, index1) => {
-        if (row.indexOf(item1) === -1) {
-          this.imgsList.splice(index1, 1)
-        }
-      })
+      this.params.goodsIdList = []
       this.imgsList.forEach((item, index) => {
-        this.params.goodsIdList = []
         this.params.goodsIdList.push(item.goodsId)
       })
       console.log('点击确定后的数据：', this.imgsList)
