@@ -237,7 +237,7 @@ public class JsonResultMessage {
 	public static final String STORE_POS_SHOP_ID_EXIST = "store.pos.shop.id.exist";
 
 	/**
-	 * 售后管理
+	 * 门店技师管理
 	 */
 	public static final String STORE_STORE_ID_NULL = "store.store.id.null";
 	public static final String STORE_TECHNICIAN_NAME_NULL = "store.technician.name.null";
@@ -252,6 +252,15 @@ public class JsonResultMessage {
 	public static final String SERVICE_ORDER_VERIFY_REASON_IS_NULL = "store.service.order.verify.reason.is.null";
 	public static final String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE = "store.service.order.verify.insufficient.balance";
 	public static final String SERVICE_ORDER_CANCEL_REASON_IS_NULL = "store.service.order.verify.cancel_reason.is.null";
+
+    /**
+     * 门店核销员列表导出列
+     */
+    public static final String STORE_VERIFIER_LIST_FILENAME = "store.verifier.list.file_name";
+    public static final String STORE_VERIFIER_LIST_USER_ID = "store.verifier.list.user_id";
+    public static final String STORE_VERIFIER_LIST_USERNAME = "store.verifier.list.username";
+    public static final String STORE_VERIFIER_LIST_MOBILE = "store.verifier.list.mobile";
+    public static final String STORE_VERIFIER_LIST_VERIFIER_ORDERS = "store.verifier.list.verify_orders";
 
 	/**
 	 * 基础配置

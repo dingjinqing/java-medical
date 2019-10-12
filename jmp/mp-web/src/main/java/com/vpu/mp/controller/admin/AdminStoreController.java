@@ -1,10 +1,17 @@
 package com.vpu.mp.controller.admin;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.verifier.VerifierSimpleParam;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +55,9 @@ import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 */
 @RestController
 public class AdminStoreController extends AdminBaseController{
+
+    private static final String LANGUAGE_TYPE_EXCEL= "excel";
+
     /**
      * 门店分组-列表
      * @return
@@ -233,16 +243,43 @@ public class AdminStoreController extends AdminBaseController{
     }
 
     /**
+     * 核销员列表导出
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/verifier/export")
+    public void exportStoreVerifierList(@RequestBody @Valid VerifierListQueryParam verifierListQueryParam, HttpServletResponse response) throws IOException {
+        Workbook workbook =shop().store.storeVerifier.exportStoreVerifierList(verifierListQueryParam,getLang());
+        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+
+        //门店名称
+        String storeName = "";
+        Record record = shop().store.getStoreName(verifierListQueryParam.getStoreId());
+        if(record != null) {
+            storeName = record.into(String.class);
+        }
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.STORE_VERIFIER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL,storeName) + DateUtil.getLocalDateTime().toString();
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+        workbook.write(response.getOutputStream());
+    }
+
+    /**
      * 添加核销员
      * @return
      */
     @PostMapping(value = "/api/admin/store/verifier/add")
     public JsonResult addStoreVerifier(@RequestBody(required = false) @Valid VerifierAddParam param) {
-    	if(shop().store.storeVerifier.addVerifiers(param)) {
-    		return success();
-    	}else {
-    		return fail();
-    	}
+    	shop().store.storeVerifier.addVerifiers(param);
+    	return success();
+    }
+
+    /**
+     * 删除核销员
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/verifier/del")
+    public JsonResult delStoreVerifier(@RequestBody @Valid VerifierSimpleParam verifier) {
+        shop().store.storeVerifier.delStoreVerifier(verifier);
+        return success();
     }
 
     @GetMapping("/api/admin/store/goods/updateFromShop/{storeId}")

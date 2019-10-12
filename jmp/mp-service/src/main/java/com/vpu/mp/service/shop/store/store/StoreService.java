@@ -171,7 +171,7 @@ public class StoreService extends ShopBaseService {
 
     /**
 	 * 删除门店
-	 * @param StorePojo
+	 * @param storeId
 	 * @return
 	 */
 	public Boolean delStore(Integer storeId) {
@@ -180,7 +180,7 @@ public class StoreService extends ShopBaseService {
 
     /**
 	 * 取单个门店信息
-	 * @param Integer
+	 * @param storeId
 	 * @return StorePojo
 	 */
 	public StorePojo getStore(Integer storeId) {
@@ -189,7 +189,7 @@ public class StoreService extends ShopBaseService {
 
     /**
 	 * 检查门店编码是否可用,返回true表示可用
-	 * @param Integer
+	 * @param posShopId
 	 * @return Boolean
 	 */
 	public Boolean checkStoreCoding(Integer posShopId) {
@@ -304,7 +304,7 @@ public class StoreService extends ShopBaseService {
 
     /**
 	 * 获取门店名称
-	 * @param member
+	 * @param sourceId
 	 * @return
 	 */
 	public Record1<String> getStoreName(Integer sourceId) {
