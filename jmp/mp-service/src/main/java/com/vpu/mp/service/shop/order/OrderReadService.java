@@ -228,11 +228,15 @@ public class OrderReadService extends ShopBaseService {
 				rOrder.setOrderReturnGoodsVo(refundGoodsByOrderSn.get(rOrder.getRetId()));
 			});
 		});
+		//查询订单订单是否存在退款中订单
+		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(orderIds.toArray(new Integer[orderIds.size()]), OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		//构造order
 		for (OrderInfoVo vo : orders) {
 			vo.setShippingList(shippingByOrderSn.get(vo.getOrderSn()));
 			vo.setRefundList(refundByOrderSn.get(vo.getOrderSn()));
 			vo.setGoods(goods.get(vo.getOrderId()));
+			//设置订单操作
+			OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
 		}
 		//设置订单支付方式（无子单）
 		orderInfo.setPayCodeList(mainOrder,prizesSns);
