@@ -275,7 +275,6 @@
           <template v-for="item in tabsOrderStatus">
             <el-tab-pane
               :label="item.label"
-              :name="item.value"
               :key="item.value"
               v-if="item.value === '4'"
             >
@@ -285,7 +284,6 @@
             </el-tab-pane>
             <el-tab-pane
               :label="item.label"
-              :name="item.value"
               :key="item.value"
               v-else-if="item.value === '8'"
             >
@@ -307,7 +305,7 @@
           <thead>
             <tr>
               <th width="300px">{{$t('order.goods')}}</th>
-              <th width="10%">{{$t('order.goodsSn')}}</th>
+              <th width="10%">{{$t('order.goodsSnAndProductSn')}}</th>
               <th width="10%">{{$t('order.goodsPrice')}}</th>
               <th width="10%">{{$t('order.goodsNumber')}}</th>
               <th width="10%">{{$t('order.consignee')}}</th>
@@ -322,9 +320,11 @@
             </tr>
           </tbody>
           <template v-for="(orderItem,orderIndex) in orderList">
+            <!-- $set(orderItem,'goodsTypeArray',orderItem.goodsType.split(',')) 为该对象设置新属性 -->
             <tbody
               :key="orderItem.orderSn"
               class="hasborder"
+              :value="setGoodsTypeArray(orderItem)"
             >
               <tr class="order-tb-head">
                 <td colspan="8">
@@ -366,12 +366,12 @@
                       <el-tooltip
                         class="item"
                         effect="light"
-                        :content="goodsTypeFilter(orderItem.goodsType.split(','))"
+                        :content="goodsTypeFilter(orderItem.goodsTypeArray)"
                         placement="top-start"
                       >
                         <span>{{$t('order.goodsTypeText')}}：
                           <span
-                            v-for="(goodsType,index) in orderItem.goodsType.split(',')"
+                            v-for="(goodsType,index) in orderItem.goodsTypeArray"
                             :key="index"
                           >
                             <template v-if="index != 0">,</template>
@@ -388,6 +388,42 @@
                       <span @click="addNodes(orderItem.orderSn)">{{$t('order.remark')}}</span>
                       <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
                       <span>{{$t('order.comment')}}</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr
+                v-if="orderItem.goodsTypeArray.indexOf('10') != -1 "
+                class="order-tb-head"
+              >
+                <td colspan="8">
+                  <div class="tb-head_box">
+                    <div class="left">
+                      <el-tooltip
+                        class="item"
+                        effect="light"
+                        :content="$t('order.deposit')+'：' + currencyPool[orderItem.currency][lang][1] +(orderItem.moneyPaid + orderItem.memberCardBalance + orderItem.scoreDiscount + orderItem.useAccount).toFixed(2)"
+                        placement="top-start"
+                      >
+                        <span>{{$t('order.deposit')+'：' + currencyPool[orderItem.currency][lang][1] +(orderItem.moneyPaid + orderItem.memberCardBalance + orderItem.scoreDiscount + orderItem.useAccount).toFixed(2)}}</span>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="orderItem.bkOrderMoney != 0"
+                        class="item"
+                        effect="light"
+                        :content="$t('order.tail')+'：' + currencyPool[orderItem.currency][lang][1] + (orderItem.bkOrderMoney).toFixed(2)"
+                        placement="top-start"
+                      >
+                        <span>{{$t('order.tail')+'：' + currencyPool[orderItem.currency][lang][1] + (orderItem.bkOrderMoney).toFixed(2)}}</span>
+                      </el-tooltip>
+                      <el-tooltip
+                        class="item"
+                        effect="light"
+                        :content="orderItem.deliverType == 1 ? ($t('order.collectGoodsTime') + '：' + orderItem.pickupTime) : ($t('order.shippingTimeText') + '：' + orderItem.bkShippingTime)"
+                        placement="top-start"
+                      >
+                        <span>{{orderItem.deliverType == 1 ? ($t('order.collectGoodsTime') + '：' + orderItem.pickupTime) : ($t('order.shippingTimeText') + '：' + orderItem.bkShippingTime)}}</span>
+                      </el-tooltip>
                     </div>
                   </div>
                 </td>
@@ -409,8 +445,19 @@
                       </div>
                     </div>
                   </td>
-                  <td>{{goodsItem.goodsSn}}</td>
-                  <td>{{goodsItem.goodsPrice.toFixed(2)}}</td>
+                  <td>{{goodsItem.goodsSn}}
+                    <template v-if="goodsItem.productSn != '' && goodsItem.productSn != null">
+                      /{{goodsItem.productSn}}
+                    </template>
+                  </td>
+                  <td>
+                    <template v-if="orderItem.goodsTypeArray.indexOf('4') != -1 ">
+                      {{goodsItem.marketPrice.toFixed(2)}}
+                    </template>
+                    <template v-else>
+                      {{goodsItem.goodsPrice.toFixed(2)}}
+                    </template>
+                  </td>
                   <td>{{goodsItem.goodsNumber}}</td>
                   <td
                     v-if="goodsIndex === 0"
@@ -423,36 +470,137 @@
                     v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
+
                     {{orderItem.createTime}}
                   </td>
                   <td
                     v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
-                    {{orderStatusMap.get(orderItem.orderStatus)}}
-                    <br />
-                    <el-button
-                      type="primary"
-                      size="small"
-                      v-if="[3,12].indexOf(orderItem.orderStatus) !== -1"
-                      @click="deliver(orderItem)"
-                    >{{$t('order.delivery')}}</el-button>
+                    <template v-if="orderItem.goodsTypeArray.indexOf('17') != -1 && orderItem.orderSn == orderItem.mainOrderSn && [8,10,13].indexOf(orderItem.orderStatus)">
+                      {{$t('order.waitReceive')}}
+                    </template>
+                    <template v-else>
+                      <template v-if="orderItem.orderStatus != 3 && orderItem.partShipFlag != 5">
+                        <template v-if="orderItem.orderStatus == 0 && orderItem.goodsTypeArray.indexOf('10') != -1">
+                          <template v-if="orderItem.bkOrderPaid == 0">
+                            {{$t('order.waitDeposit')}}
+                          </template>
+                          <template v-else>
+                            {{$t('order.waitTail')}}
+                          </template>
+                        </template>
+                        <template v-else>
+                          {{orderStatusMap.get(orderItem.orderStatus)}}
+                        </template>
+                      </template>
+                      <template v-else>
+                        <template v-if="orderItem.deliverType == 1 && orderItem.orderStatus == 3">
+                          {{$t('order.waitverify')}}
+                        </template>
+                        <template v-else-if="orderItem.deliverType == 0 && orderItem.orderStatus == 3 && searchParams.pinStatus.length == 0">
+                          {{$t('order.waitShip')}}
+                        </template>
+                        <template v-else-if="orderItem.deliverType == 1 && orderItem.orderStatus == 5">
+                          {{$t('order.takeByself')}}
+                        </template>
+                        <template v-else-if="orderItem.deliverType == 0 && orderItem.orderStatus == 5">
+                          {{$t('order.received')}}
+                        </template>
+                      </template>
+                      <template v-if="orderItem.orderStatus == 3 && orderItem.partShipFlag == 1">
+                        <br />
+                        ({{$t('order.partShip')}})
+                      </template>
+                      <template v-if="orderItem.orderStatus == 3 && orderItem.deliverType != 1 && orderItem.canDeliver == true && searchParams.pinStatus.length == 0">
+                        <!-- 非自提且待发货自提 -->
+                        <br />
+                        <el-button
+                          type="primary"
+                          size="small"
+                          @click="deliver(orderItem)"
+                        >{{$t('order.delivery')}}</el-button>
+                        <template v-if="orderItem.canVerify == true">
+                          <!-- 核销 -->
+                          <br />
+                          <el-button
+                            type="primary"
+                            size="small"
+                            @click="verify(orderItem)"
+                          >{{$t('order.verify')}}</el-button>
+                        </template>
+                      </template>
+                    </template>
+                    <template v-if="orderItem.refundStatus > 0">
+                      <br />
+                      <template v-if="[1,2,4].indexOf(orderItem.refundStatus) != -1">
+                        <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                      </template>
+                      <template v-else>
+                        <el-button type="text">{{$t('order.retrunView')}}</el-button>
+                      </template>
+                    </template>
+                    <template v-if="orderItem.canClose == true">
+                      <!-- 关闭 -->
+                      <br />
+                      <el-button
+                        type="primary"
+                        size="small"
+                        @click="close(orderItem)"
+                      >{{$t('order.close')}}</el-button>
+                    </template>
+                    <template v-if="orderItem.canFinish == true">
+                      <!-- 完成 -->
+                      <br />
+                      <el-button
+                        type="primary"
+                        size="small"
+                        @click="finish(orderItem)"
+                      >{{$t('order.finish')}}</el-button>
+                    </template>
                   </td>
                   <td
                     v-if="goodsIndex === 0"
                     :rowspan="orderItem.goods.length"
                   >
-                    <span>
-                      {{orderItem.moneyPaid.toFixed(2)}}
-                    </span>
-                    <span>
-                      ({{
-                        $t('order.includeExpress')
-                      }}
-                      {{orderItem.shippingFee.toFixed(2)}}
-                      )
-                    </span>
-
+                    <template v-if="orderItem.goodsTypeArray.indexOf('17') != -1">
+                      <span>
+                        {{currencyPool[orderItem.currency][lang][1]}}
+                        TODO需加sub goods price 字段
+                      </span>
+                      <br />
+                      <span>
+                        ({{
+                        $t('order.freeShipping')
+                      }})
+                      </span>
+                    </template>
+                    <template v-else>
+                      <template v-if="orderItem.goodsTypeArray.indexOf('4') == -1">
+                        <span>
+                          {{currencyPool[orderItem.currency][lang][1] +
+                             (orderItem.bkOrderPaid > 1 ? (orderItem.moneyPaid + orderItem.bkOrderMoney) : orderItem.moneyPaid).toFixed(2)
+                          }}
+                        </span>
+                        <br />
+                        <span v-if="orderItem.deliverType != 1">
+                          ({{
+                             currencyPool[orderItem.currency][lang][1] + $t('order.includeExpress') + '：' + orderItem.shippingFee.toFixed(2)
+                          }})
+                        </span>
+                      </template>
+                      <template v-else>
+                        <span>
+                          {{currencyPool[orderItem.currency][lang][1] + orderItem.moneyPaid.toFixed(2) + ' + ' + (orderItem.scoreDiscount * 100) + $t('order.score')}}
+                        </span>
+                        <br />
+                        <span>
+                          ({{
+                           $t('order.freeShipping')
+                         }})
+                        </span>
+                      </template>
+                    </template>
                   </td>
                 </tr>
               </template>
@@ -460,7 +608,7 @@
                 <template v-for="(childGoods,childGoodsIndex) in childOrder.goods">
                   <tr
                     class="order-tb-body"
-                    :key="childGoodsIndex"
+                    :key="orderItem.orderId + '' + childGoods.recId"
                   >
                     <td>
                       <div class="goods_info">
@@ -494,30 +642,89 @@
                       v-if="childGoodsIndex === 0"
                       :rowspan="childOrder.goods.length"
                     >
-                      {{orderStatusMap.get(childOrder.orderStatus)}}
-                      <br />
-                      <el-button
-                        type="primary"
-                        size="small"
-                        v-if="[3,12].indexOf(childOrder.orderStatus) !== -1"
-                        @click="deliver(childOrder)"
-                      >{{$t('order.delivery')}}</el-button>
+                      <template>
+                        <template v-if="childOrder.orderStatus != 3 && childOrder.partShipFlag != 5">
+                          {{orderStatusMap.get(childOrder.orderStatus)}}
+                        </template>
+                        <template v-else>
+                          <template v-if="childOrder.deliverType == 1 && childOrder.orderStatus == 3">
+                            {{$t('order.waitverify')}}
+                          </template>
+                          <template v-else-if="childOrder.deliverType == 0 && childOrder.orderStatus == 3 && searchParams.pinStatus.length == 0">
+                            {{$t('order.waitShip')}}
+                          </template>
+                          <template v-else-if="childOrder.deliverType == 1 && childOrder.orderStatus == 5">
+                            {{$t('order.takeByself')}}
+                          </template>
+                          <template v-else-if="childOrder.deliverType == 0 && childOrder.orderStatus == 5">
+                            {{$t('order.received')}}
+                          </template>
+                        </template>
+                        <template v-if="childOrder.orderStatus == 3 && childOrder.partShipFlag == 1">
+                          <br />
+                          ({{$t('order.partShip')}})
+                        </template>
+                        <template v-if="childOrder.orderStatus == 3 && childOrder.deliverType != 1 && childOrder.canDeliver == true && searchParams.pinStatus.length == 0">
+                          <!-- 非自提且待发货自提 -->
+                          <br />
+                          <el-button
+                            type="primary"
+                            size="small"
+                            @click="deliver(childOrder)"
+                          >{{$t('order.delivery')}}</el-button>
+                        </template>
+                        <template v-if="childOrder.canVerify == true">
+                          <!-- 核销 -->
+                          <br />
+                          <el-button
+                            type="primary"
+                            size="small"
+                            @click="verify(childOrder)"
+                          >{{$t('order.verify')}}</el-button>
+                        </template>
+                      </template>
+                      <template v-if="childOrder.refundStatus > 0">
+                        <br />
+                        <template v-if="[1,2,4].indexOf(childOrder.refundStatus) != -1">
+                          <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                        </template>
+                        <template v-else>
+                          <el-button type="text">{{$t('order.retrunView')}}</el-button>
+                        </template>
+                      </template>
+                      <template v-if="childOrder.canClose == true">
+                        <!-- 关闭 -->
+                        <br />
+                        <el-button
+                          type="primary"
+                          size="small"
+                          @click="close(childOrder)"
+                        >{{$t('order.close')}}</el-button>
+                      </template>
+                      <template v-if="childOrder.canFinish == true">
+                        <!-- 完成 -->
+                        <br />
+                        <el-button
+                          type="primary"
+                          size="small"
+                          @click="finish(childOrder)"
+                        >{{$t('order.finish')}}</el-button>
+                      </template>
                     </td>
                     <td
                       v-if="childGoodsIndex === 0"
                       :rowspan="childOrder.goods.length"
                     >
                       <span>
-                        {{childOrder.moneyPaid.toFixed(2)}}
+                        {{currencyPool[orderItem.currency][lang][1]}}
+                        TODO需加sub goods price 字段
                       </span>
+                      <br />
                       <span>
                         ({{
-                        $t('order.includeExpress')
-                      }}
-                        {{childOrder.shippingFee.toFixed(2)}}
-                        )
+                        $t('order.freeShipping')
+                      }})
                       </span>
-
                     </td>
                   </tr>
                 </template>
@@ -713,9 +920,18 @@ export default {
       })
       return goodsTypeStr
     },
+    setGoodsTypeArray (orderItem) {
+      orderItem.goodsTypeArray = orderItem.goodsType.split(',')
+    },
     deliver (orderInfo) {
       this.showDelivery = true
       this.orderItemInfo = orderInfo
+    },
+    close (orderInfo) {
+      alert('关闭，缺少调用')
+    },
+    finish (orderInfo) {
+      alert('完成，缺少调用')
     },
     toggleStar (orderSn, starFlag) {
       let obj = {

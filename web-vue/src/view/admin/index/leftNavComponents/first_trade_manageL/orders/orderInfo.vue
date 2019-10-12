@@ -176,7 +176,7 @@
           </thead>
           <tbody>
             <template v-for="item in showReturnList">
-              <template v-if="item.orderReturnGoodsVo == null">
+              <template v-if="item.orderReturnGoodsVo != null">
                 <tr
                   v-for="(returnGoods , index) in item.orderReturnGoodsVo"
                   :key="returnGoods.recId"

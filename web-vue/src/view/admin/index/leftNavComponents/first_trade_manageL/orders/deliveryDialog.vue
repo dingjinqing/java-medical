@@ -148,7 +148,6 @@ export default {
         orderId: this.orderData.orderId,
         orderSn: this.orderData.orderSn,
         action: 0,
-        isMp: false,
         shippingNo: this.shippingNo,
         shippingId: this.shippingId,
         shipGoods: []
