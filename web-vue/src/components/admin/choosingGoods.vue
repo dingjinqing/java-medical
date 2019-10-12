@@ -329,6 +329,7 @@ export default {
       checkedIdList: [],
       checkedRow: {},
       checkedRowList: [],
+      checkedUrlList: [],
       tbodyFlag: true
     }
   },
@@ -495,25 +496,8 @@ export default {
       this.$emit('resultGoodsIds', this.checkedIdList)
       this.$emit('result', this.checkedIdList)
       this.$emit('resultGoodsDatas', this.checkedRowList)
-
-      let goodsIdsArr = []
-      let urlLists = []
-      // 选中行的商品或规格信息结合
-      this.tableData.forEach(item => {
-        if (item.ischecked) {
-          let _goodsId = item.goodsId
-          if (this.loadProduct) {
-            _goodsId = item.prdId
-          }
-          goodsIdsArr.push(_goodsId)
-          urlLists.push({
-            goodsImg: item.goodsImg,
-            goodsId: _goodsId
-          })
-        }
-      })
       // 把选中的id集合和url集合回传
-      this.$emit('res', goodsIdsArr, urlLists)
+      this.$emit('res',  this.checkedIdList, this.checkedUrlList)
     },
     /* 翻页方法 */
     paginationChange () {
@@ -553,6 +537,10 @@ export default {
       this.checkedRow = row
       this.checkedIdList.push(this.getRowId(row))
       this.checkedRowList.push(row)
+      this.checkedUrlList.push({
+        goodsImg: row.goodsImg,
+        goodsId: this.getRowId(row)
+      })
       if (!this.singleElection) {
         let flag = this.tableData.filter((item, index) => {
           return item.ischecked === false
@@ -574,6 +562,9 @@ export default {
       this.checkedIdList.splice(this.checkedIdList.lastIndexOf(this.getRowId(row)), 1)
       this.checkedRowList = this.checkedRowList.filter(item => {
         return this.getRowId(item) !== this.getRowId(row)
+      })
+      this.checkedUrlList = this.checkedUrlList.filter(item => {
+        return item.goodsId !== this.getRowId(row)
       })
     },
     clearCheckedRow () {
