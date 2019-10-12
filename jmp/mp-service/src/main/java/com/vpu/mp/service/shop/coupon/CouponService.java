@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
@@ -281,4 +284,19 @@ public class CouponService extends ShopBaseService{
 				.fetchOne().into(AvailCouponDetailVo.class);
 		return detail;
 	}
+	
+	
+	/**
+	 * 获得可使用的优惠券数
+	 * @param userId
+	 * @return
+	 */
+	public Integer getCanUseCouponNum(Integer userId) {
+		 Result<Record1<Integer>> record = db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
+				.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)
+						.and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.fetch();
+		return record.get(0).into(Integer.class);
+	}
+	
 }
