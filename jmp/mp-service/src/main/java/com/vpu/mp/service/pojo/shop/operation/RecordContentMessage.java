@@ -25,6 +25,8 @@ public class RecordContentMessage {
     public static final String ORDER_RETURN = "order.return";
     /**关闭*/
     public static final String ORDER_CLOSE = "order.close";
+    /**核销*/
+    public static final String ORDER_VERIFY = "order.verify";
 
     
     /**

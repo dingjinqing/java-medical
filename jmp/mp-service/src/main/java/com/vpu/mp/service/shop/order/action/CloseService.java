@@ -94,7 +94,7 @@ public class CloseService extends ShopBaseService implements IorderOperate {
 	public void returnOrder(OrderInfoVo order) throws MpException {
 		if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
 			//积分
-			refundUseAccount(order, order.getScoreDiscount());
+			refundScoreDiscount(order, order.getScoreDiscount());
 		}
 		if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
 			refundUseAccount(order, order.getUseAccount());

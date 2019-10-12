@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -530,6 +529,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		//更新商品数组
 		ArrayList<GoodsRecord> updateNormalGoods = new ArrayList<GoodsRecord>(normalGoods.size());
 		for (ReturnOrderGoodsRecord rGoods : returnGoods) {
+			if(rGoods.getGoodsNumber() == 0 ) {
+				continue;
+			}
 			if(OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()) {
 				//待发货
 				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {

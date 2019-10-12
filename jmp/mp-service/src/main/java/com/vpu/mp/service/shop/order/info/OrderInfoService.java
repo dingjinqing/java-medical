@@ -517,6 +517,16 @@ public class OrderInfoService extends ShopBaseService {
 			order.setOrderStatus(OrderConstant.ORDER_CLOSED);
 			order.setClosedTime(DateUtil.getSqlTimestamp());
 			break;
+		//核销
+		case OrderConstant.ORDER_RECEIVED:
+			order.setOrderStatus(OrderConstant.ORDER_RECEIVED);
+			order.setConfirmTime(DateUtil.getSqlTimestamp());
+			break;
+		//完成
+		case OrderConstant.ORDER_FINISHED:
+			order.setOrderStatus(OrderConstant.ORDER_FINISHED);
+			order.setFinishedTime(DateUtil.getSqlTimestamp());
+			break;
 		default:
 			break;
 		}

@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.ship;
 
 import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
@@ -78,8 +80,17 @@ public class ShipInfoService extends ShopBaseService {
 		record.set(PART_ORDER_GOODS_SHIP.PRODUCT_ID,orderGoodsVo.getProductId());
 		record.set(PART_ORDER_GOODS_SHIP.SEND_NUMBER,sendNumber.shortValue());
 		record.set(PART_ORDER_GOODS_SHIP.GOODS_ATTR,orderGoodsVo.getGoodsAttr());
-		record.set(PART_ORDER_GOODS_SHIP.SHIPPING_NO,param.getShippingNo());
-		record.set(PART_ORDER_GOODS_SHIP.SHIPPING_ID,param.getShippingId());
+		if (param != null) {
+			//核销时不设置
+			record.set(PART_ORDER_GOODS_SHIP.SHIPPING_NO,param.getShippingNo());
+			record.set(PART_ORDER_GOODS_SHIP.SHIPPING_ID,param.getShippingId());
+		}else {
+			//核销设置时间
+			Timestamp temp = DateUtil.getSqlTimestamp();
+			record.setShippingTime(temp);
+			record.setConfirmTime(temp);
+		}
+		
 		shipInfoList.add(record);
 	}
 }

@@ -3,8 +3,10 @@ package com.vpu.mp.service.pojo.shop.order.write.operate;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.order.action.CancelService;
 import com.vpu.mp.service.shop.order.action.CloseService;
+import com.vpu.mp.service.shop.order.action.FinishService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
+import com.vpu.mp.service.shop.order.action.VerifyService;
 
 /**
  * 订单状态操作标识service枚举类;此类中的clz只是为了方便查找业务的对于service；
@@ -20,6 +22,10 @@ public enum OrderServiceCode {
 	//2:取消
 	CANCEL(CancelService.class),
 	//3:关闭
-	CLOSE(CloseService.class);
+	CLOSE(CloseService.class),
+	//4:核销（强制核销）
+	VERIFY(VerifyService.class),
+	//5:完成
+	FINISH(FinishService.class);
 	private OrderServiceCode(Class<? extends ShopBaseService> clz){}
 }

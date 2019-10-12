@@ -21,6 +21,7 @@ public enum   RecordContentTemplate {
 	ORDER_FINISH(3004,RecordContentMessage.ORDER_FINISH),
 	ORDER_RETURN(3005,RecordContentMessage.ORDER_RETURN),
 	ORDER_CLOSE(3006,RecordContentMessage.ORDER_CLOSE),
+	ORDER_VERIFY(3006,RecordContentMessage.ORDER_VERIFY),
 
     
     /** 会员-会员卡 */

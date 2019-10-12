@@ -75,4 +75,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**搭配立减优惠*/
 	private BigDecimal dapeiReduceAmount;
 	private String sellerRemark;
+	@JsonIgnore
+	private String verifyCode;
 }
