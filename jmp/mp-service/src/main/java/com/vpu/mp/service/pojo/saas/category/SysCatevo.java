@@ -6,12 +6,12 @@ import java.sql.Timestamp;
 
 @Data
 public class SysCatevo {
-	public Integer catId;
-	public String catName;
-	public Integer parentId;
-	public Short level;
-	public Integer hasChild;
-	public Integer first;
+    private Integer catId;
+    private String catName;
+    private Integer parentId;
+    private Short level;
+    private Integer hasChild;
+    private Integer first;
 	private Timestamp createTime;
 	private Timestamp updateTime;
     /**
