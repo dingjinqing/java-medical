@@ -524,7 +524,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			products = goodsSpecProduct.selectSpecByProIds(proIds);
 		}
 		//更新规格数组
-		ArrayList<GoodsSpecProductRecord> updateProducts = new ArrayList<GoodsSpecProductRecord>(products.size());
+		ArrayList<GoodsSpecProductRecord> updateProducts = new ArrayList<GoodsSpecProductRecord>();
 		//查询商品
 		Map<Integer, GoodsRecord> normalGoods = goods.getGoodsByIds(goodsIds);
 		//更新商品数组
