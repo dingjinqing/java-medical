@@ -45,7 +45,7 @@ public class RebateGoodsService extends ShopBaseService{
 		//获取商品对应分类名称
 		for(RebateGoodsVo listInfo : pageList.dataList) {
 			SysCatevo catInfo = saas.sysCate.getOneCateInfo(listInfo.getCatId());
-			listInfo.setCatName(catInfo.catName);
+			listInfo.setCatName(catInfo.getCatName());
 		}
 		return pageList;
 	}
