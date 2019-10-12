@@ -58,7 +58,8 @@ public class GoodsCommentService extends ShopBaseService {
                 .leftJoin(USER).on(USER.USER_ID.eq(COMMENT_GOODS.USER_ID))
                 .leftJoin(COMMENT_AWARD).on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
                 .leftJoin(COMMENT_GOODS_ANSWER).on(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID))
-                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         this.buildOptions(select, param);
 
         select.orderBy( COMMENT_GOODS.CREATE_TIME.desc());
@@ -116,7 +117,8 @@ public class GoodsCommentService extends ShopBaseService {
         		.where(COMMENT_GOODS.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
         		.and(COMMENT_GOODS.USER_ID.eq(USER.USER_ID))
         		.and(COMMENT_GOODS.ORDER_SN.eq(LOTTERY_RECORD.ORDER_SN))
-        		.and(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID));
+        		.and(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID)
+        		.and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)));
 
         SelectConditionStep<?> select = this.buildCheckOptions(selectFrom, param);
 
