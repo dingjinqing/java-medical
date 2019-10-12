@@ -13,17 +13,17 @@ import lombok.Data;
 @Data
 public class VerifierExportVo {
     @ExcelColumn(columnName = JsonResultMessage.STORE_VERIFIER_LIST_USER_ID,columnIndex = 0)
-    public Integer userId;
+    private Integer userId;
 
     @ExcelColumn(columnName = JsonResultMessage.STORE_VERIFIER_LIST_USERNAME,columnIndex = 1)
-    public String username;
+    private String username;
 
     @ExcelColumn(columnName = JsonResultMessage.STORE_VERIFIER_LIST_MOBILE,columnIndex = 2)
-    public String mobile;
+    private String mobile;
 
     /**
      * 核销订单数
      */
     @ExcelColumn(columnName = JsonResultMessage.STORE_VERIFIER_LIST_VERIFIER_ORDERS,columnIndex = 3)
-    public Integer verifyOrders;
+    private Integer verifyOrders;
 }
