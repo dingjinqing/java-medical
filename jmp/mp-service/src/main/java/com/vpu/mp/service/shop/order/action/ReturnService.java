@@ -514,10 +514,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	 */
 	public void updateStockAndSales(Result<ReturnOrderGoodsRecord> returnGoods , OrderInfoVo order , List<String> goodsType) {
 		//TODO 对接pos erp未完成
-		if(OrderConstant.DELIVER_TYPE_SELF == order.getDeliverType()) {
-			//自提订单不修改库存 销量
-			return;
-		}
+		
 		List<Integer> goodsIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getGoodsId).collect(Collectors.toList());
 		List<Integer> proIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getProductId).collect(Collectors.toList());
 		//查询规格
@@ -533,28 +530,36 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		//更新商品数组
 		ArrayList<GoodsRecord> updateNormalGoods = new ArrayList<GoodsRecord>(normalGoods.size());
 		for (ReturnOrderGoodsRecord rGoods : returnGoods) {
-			//待发货
-			if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
-				//待发货+规格库存
-				GoodsSpecProductRecord product = products.get(rGoods.getProductId());
-				product.setPrdNumber(product.getPrdNumber() + rGoods.getGoodsNumber());
-				//规格库存加入更新数组
-				updateProducts.add(product);
-				//待发货+商品库存
-				GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
-				goods.setGoodsNumber(goods.getGoodsNumber() + rGoods.getGoodsNumber());
+			if(OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()) {
+				//待发货
+				if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
+					//待发货+规格库存
+					GoodsSpecProductRecord product = products.get(rGoods.getProductId());
+					product.setPrdNumber(product.getPrdNumber() + rGoods.getGoodsNumber());
+					//规格库存加入更新数组
+					updateProducts.add(product);
+					//待发货+商品库存
+					GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
+					goods.setGoodsNumber(goods.getGoodsNumber() + rGoods.getGoodsNumber());
 			}
 			//销量修改
 			GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
-			goods.setGoodsSaleNum(goods.getGoodsSaleNum() + rGoods.getGoodsNumber());
+			goods.setGoodsSaleNum(goods.getGoodsSaleNum() - rGoods.getGoodsNumber());
 			updateNormalGoods.add(goods);
+			}
+			
 			//订单类型为拼团 且存在拼团id
 			if(goodsType.contains(Byte.toString(OrderConstant.GOODS_TYPE_PIN_GROUP)) && order.getActivityId() != null) {
 				//TODO 拼团修改库存和销量
 			}
 		}
-		db().batchUpdate(updateProducts);
-		db().batchUpdate(updateNormalGoods);
+		if(updateProducts.size() > 0) {
+			db().batchUpdate(updateProducts);
+		}
+		if(updateNormalGoods.size() > 0) {
+			db().batchUpdate(updateNormalGoods);
+		}
+		
 	}
 	
 	/**
