@@ -522,22 +522,26 @@ public class UserService extends ShopBaseService {
 		// TODO 暂时不写
 		// $data['qrcode'] = $shop->image->qrcode->getQrcodeInfo(1, $userId);
 		map.put("qrcode", "");
+		logger().info("用户等级判断");
 		// 用户等级判断
 		String userGrade = userCard.getUserGrade(userId);
+		logger().info("用户等级"+userGrade);
 		Integer[] integers = new Integer[1];
 		integers[0] = userId;
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			// TODO 等updateGrade写完
+			logger().info("进入用户等级为0");
 			try {
-				userCard.updateGrade(integers, null, (byte) 1);
-			} catch (MpException e) {
+				//userCard.updateGrade(integers, null, (byte) 1);
+			} catch (Exception e) {
 				logger().error("userGrade为0时报错");
 				e.printStackTrace();
 			}
 		} else {
 			// TODO 等updateGrade写完
+			logger().info("进入用户等级为其他");
 			try {
-				userCard.updateGrade(integers, null, (byte) 0);
+				//userCard.updateGrade(integers, null, (byte) 0);
 				// 上面方法返回值is_get
 				int isGet = 0;
 				if (isGet > 0) {
@@ -545,7 +549,7 @@ public class UserService extends ShopBaseService {
 				} else {
 					map.put("get_grade", isGet);
 				}
-			} catch (MpException e) {
+			} catch (Exception e) {
 				logger().error("userGrade不为0时报错");
 				e.printStackTrace();
 			}
