@@ -69,7 +69,7 @@
                     <div
                       v-show="this.imgsList.length<3"
                       class="imageWraper"
-                      @click="handleChooseGoods"
+                      @click="showChoosingGoods"
                     >
                       <el-image :src="urls.url3"></el-image>
                     </div>
@@ -264,17 +264,18 @@
       />
       <!-- 选择商品弹窗 -->
 
-      <!-- <choosingGoods
+      <choosingGoods
         @resultGoodsDatas="choosingGoodsResult"
         :tuneUpChooseGoods='isShowChoosingGoodsDialog'
         :checkedNumMax=3
         :chooseGoodsBack='this.params.goodsIdList'
-      /> -->
-      <choosingGoods
+      />
+      <!-- <choosingGoods
         @res="getRes"
         :tuneUpChooseGoods="tuneUpChooseGoods"
-        :chooseGoodsBack="params.goodsIdList"
-      />
+        :checkedNumMax=3
+        :chooseGoodsBack='this.params.goodsIdList'
+      /> -->
       <!-- 获取人群弹窗 -->
       <getUserDialog
         @dialog-cancel="closeDialog"
@@ -654,61 +655,78 @@ export default {
       this.formData.content = res.content
       this.templateId = res.id
     },
-    // // 初始化商品弹窗
-    // showChoosingGoods () {
-    //   console.log('初始化商品弹窗', this.params.goodsIdList.toString())
-    //   let goodsIdArr = []
-    //   if (this.params.goodsIdList.toString() !== null) {
-    //     goodsIdArr = this.params.goodsIdList
-    //   }
-    //   this.transmitEditGoodsId(goodsIdArr)
-    //   this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
-    // },
-    // // 接收商品弹窗放回数据
-    // choosingGoodsResult (row) {
-    //   console.log('接收商品弹窗放回数据', row)
-    //   let goodsIdArr = []
-    //   row.forEach((item, index) => {
-    //     console.log('商品id：', item.goodsId)
-    //     goodsIdArr.push(item.goodsId)
-    //     if (this.imgsList.indexOf(item) === -1) {
-    //       this.imgsList.push(item)
-    //     }
-    //     this.imgsList.forEach((item1, index1) => {
-    //       if (row.indexOf(item1) === -1) {
-    //         this.imgsList.splice(index1, 1)
-    //       }
-    //     })
-    //   })
-    //   console.log('图片数组：', this.imgsList)
-    //   this.params.goodsIdList = goodsIdArr
-    //   this.goodsNum = row.length
-    // },
-    // 选择商品
-    handleChooseGoods () {
+    // 初始化商品弹窗
+    showChoosingGoods () {
       if (this.params.onClickGoods === false) {
         return
       }
-      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-    },
-    getRes (ids, urls) {
-      if (ids.length > 3) {
-        this.$message.warning('最多选择3个商品')
-      } else {
-        this.params.goodsIdList = ids
-        this.imgsList = urls
-        console.log('数据库存储：', this.params.goodsIdList.toString())
-        // 发送获取人数
-        this.fetchUserList(this.params)
+      console.log('初始化商品弹窗', this.params.goodsIdList.toString())
+      let goodsIdArr = []
+      if (this.params.goodsIdList.toString() !== null) {
+        goodsIdArr = this.params.goodsIdList
       }
+      this.transmitEditGoodsId(goodsIdArr)
+      this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
+    // 接收商品弹窗放回数据
+    choosingGoodsResult (row) {
+      console.log('接收商品弹窗返回数据', row)
+      row.forEach((item, index) => {
+        console.log('接收商品弹窗返回id', item)
+        console.log('这轮之前', this.imgsList)
+        console.log('*********************')
+        if (this.imgsList.indexOf(item) === -1) {
+          this.imgsList.push(item)
+          console.log('数组中加入', item.goodsId)
+        }
+        console.log('这轮过后', this.imgsList)
+      })
+      this.imgsList.forEach((item1, index1) => {
+        if (row.indexOf(item1) === -1) {
+          this.imgsList.splice(index1, 1)
+        }
+      })
+      this.imgsList.forEach((item, index) => {
+        this.params.goodsIdList = []
+        this.params.goodsIdList.push(item.goodsId)
+      })
+      console.log('点击确定后的数据：', this.imgsList)
+      console.log('点击确定后的id：', this.params.goodsIdList)
+      this.goodsNum = row.length
+      // 发送获取人数
+      this.fetchUserList(this.params)
+    },
+    // 选择商品
+    // handleChooseGoods () {
+    //   if (this.params.onClickGoods === false) {
+    //     return
+    //   }
+    //   this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    // },
+    // getRes (ids, urls) {
+    //   if (ids.length > 3) {
+    //     this.$message.warning('最多选择3个商品')
+    //   } else {
+    //     this.params.goodsIdList = ids
+    //     this.imgsList = urls
+    //     console.log('数据库存储：', this.params.goodsIdList.toString())
+    //     // 发送获取人数
+    //     this.fetchUserList(this.params)
+    //   }
+    // },
     // 删除图片
     handleDelImg (id) {
       if (this.params.onClickGoods === false) {
         return
       }
-      this.imgsList = this.imgsList.filter(item => item.goodsId !== id)
-      this.params.goodsIdList = this.goodsIdList.filter(item => item !== id)
+      this.imgsList = this.imgsList.filter((item) => item.goodsId !== id)
+      console.log('现在的数据：', this.imgsList)
+      this.params.goodsIdList = []
+      this.imgsList.forEach((item, index) => {
+        this.params.goodsIdList.push(item.goodsId)
+      })
+      console.log('现在的id：', this.params.goodsIdList)
+      // this.params.goodsIdList = this.goodsIdList.filter((item) => item !== id)
       this.fetchUserList(this.params)
     },
     // 获取选中的path
@@ -806,7 +824,7 @@ export default {
         if (val !== `${this.$t('couponGive.choose')}` && val !== `${this.$t('couponGive.timeLoginRecord')}`) {
           const res = this.customRuleInfoOptions.find(item => item.value === val)
           this.optionsList.push(res)
-          this.customRuleInfoOptions = this.customRuleInfoOptions.filter(item => item.value !== res.value)
+          this.customRuleInfoOptions = this.customRuleInfoOptions.filter((item) => item.value !== res.value)
           this.customRuleInfoVal = `${this.$t('couponGive.choose')}`
         }
       }
@@ -876,7 +894,7 @@ export default {
           }
         }
         console.log(this.params.customRuleInfo)
-        this.optionsList = this.optionsList.filter(item => item.key !== val.key)
+        this.optionsList = this.optionsList.filter((item) => item.key !== val.key)
         this.customRuleInfoOptions.unshift(val)
         this.fetchUserList(this.params)
       }
