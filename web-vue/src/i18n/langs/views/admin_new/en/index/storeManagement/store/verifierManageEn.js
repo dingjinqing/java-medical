@@ -20,5 +20,7 @@ export const en = {
   delete: 'delete',
   addVerifierSuccess: 'Successfully added the salesman',
   addVerifierFail: 'Adding a salesperson failed',
+  delVerifierSuccess: 'Successfully delete the salesman',
+  delVerifierFail: 'delete a salesperson failed',
   NoDataYet: 'No relevant data yet'
 }

@@ -28,7 +28,10 @@
                 type="primary"
                 @click="searchHandle"
               >{{$t('verifierManage.filter')}}</el-button>
-              <el-button size="small">{{$t('verifierManage.export')}}</el-button>
+              <el-button
+                size="small"
+                @click="exportHandle"
+              >{{$t('verifierManage.export')}}</el-button>
             </li>
             <div class="list-verifier-filters-right">
               <addVerifierDialog
@@ -121,7 +124,8 @@
 </template>
 
 <script>
-import { getVerifierList, addVerifier } from '@/api/admin/storeManage/verifierManage'
+import { download } from '@/util/excelUtil.js'
+import { getVerifierList, addVerifier, delVerifier, exportStoreVerifierList } from '@/api/admin/storeManage/verifierManage'
 import pagination from '@/components/admin/pagination/pagination'
 import addVerifierDialog from '@/components/admin/addVerifierDialog'
 export default {
@@ -161,7 +165,28 @@ export default {
       console.log(arguments)
     },
     deleteHandle (row) {
-      console.log(row)
+      let params = {}
+      params.storeId = this.queryParams.storeId
+      params.userId = row.userId
+      delVerifier(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('verifierManage.delVerifierSuccess'))
+          this.initDataList()
+        } else {
+          this.$message.error(this.$t('verifierManage.delVerifierFail'))
+        }
+      }).catch(err => {
+        this.$message.error(this.$t('verifierManage.delVerifierFail'))
+        throw err
+      })
+    },
+    exportHandle () {
+      let params = Object.assign(this.queryParams, this.pageParams)
+      exportStoreVerifierList(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, fileName)
+      })
     },
     selectVerifierChangeHandle (datas) {
       console.log(datas)
@@ -179,10 +204,10 @@ export default {
           this.$message.success(this.$t('verifierManage.addVerifierSuccess'))
           this.initDataList()
         } else {
-          this.$message.success(this.$t('verifierManage.addVerifierFail'))
+          this.$message.error(this.$t('verifierManage.addVerifierFail'))
         }
       }).catch(err => {
-        this.$message.success(this.$t('verifierManage.addVerifierFail'))
+        this.$message.error(this.$t('verifierManage.addVerifierFail'))
         throw err
       })
     },
@@ -191,9 +216,17 @@ export default {
       getVerifierList(params).then(res => {
         if (res.error === 0) {
           this.pageParams = res.content.page
-          this.tableData = res.content.dataList
+          this.handleData(res.content.dataList)
         }
       })
+    },
+    handleData (data) {
+      data.map((item, index) => {
+        if (item.verifyOrders === null) {
+          item.verifyOrders = 0
+        }
+      })
+      this.tableData = data
     }
   }
 }

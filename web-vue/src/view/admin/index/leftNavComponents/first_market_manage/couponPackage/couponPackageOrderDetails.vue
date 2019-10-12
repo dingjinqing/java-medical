@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import { download } from '@/util/excelUtil.js'
 import { getCouponPackOrderPageList, exportCouponPackOrderList } from '@/api/admin/marketManage/couponPackage.js'
 export default {
   components: {
@@ -142,7 +143,9 @@ export default {
       this.pageParams.startTime = this.effectiveDate[0] ? this.effectiveDate[0] : null
       this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : null
       exportCouponPackOrderList(this.pageParams).then((res) => {
-        this.download(res)
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, fileName)
         this.loading = false
       })
     },
@@ -173,20 +176,6 @@ export default {
       }
 
       return payStr
-    },
-    // 下载文件
-    download (data) {
-      if (!data) {
-        return
-      }
-      let url = window.URL.createObjectURL(new Blob([data]))
-      let link = document.createElement('a')
-      link.style.display = 'none'
-      link.href = url
-      link.setAttribute('download', 'excel.xlsx')
-
-      document.body.appendChild(link)
-      link.click()
     }
   },
   watch: {

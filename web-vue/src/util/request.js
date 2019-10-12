@@ -59,8 +59,7 @@ service.interceptors.response.use(
     // console.log(flag, res)
     console.log(vm)
     console.log(res)
-    console.log(res.headers['content - disposition'])
-    localStorage.setItem('V-content-disposition', res.headers['content - disposition'])
+    localStorage.setItem('V-content-disposition', res.headers['content-disposition'])
     if (res) {
       switch (res.status) {
         // 成功

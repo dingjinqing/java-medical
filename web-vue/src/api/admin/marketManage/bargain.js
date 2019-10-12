@@ -110,7 +110,8 @@ export function exportBargainUserList (data) {
   return service({
     url: '/api/admin/market/bargain/user/list/export',
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }
 

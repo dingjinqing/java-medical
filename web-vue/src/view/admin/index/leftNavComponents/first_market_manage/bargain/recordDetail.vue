@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import { download } from '@/util/excelUtil.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination'
 import { getBargainUserPageList, exportBargainUserList } from '@/api/admin/marketManage/bargain.js'
@@ -139,6 +140,9 @@ export default {
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       exportBargainUserList(this.requestParams).then((res) => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, fileName)
       })
     },
     // 表格数据处理

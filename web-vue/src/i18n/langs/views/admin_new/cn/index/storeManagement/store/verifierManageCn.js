@@ -21,5 +21,7 @@ export const cn = {
   delete: '删除',
   addVerifierSuccess: '添加核销员成功',
   addVerifierFail: '添加核销员失败',
+  delVerifierSuccess: '删除核销员成功',
+  delVerifierFail: '删除核销员失败',
   NoDataYet: '暂无相关数据'
 }
