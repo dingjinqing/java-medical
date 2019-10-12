@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -267,7 +268,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@GetMapping(value = "/admin/decorate/cate/list")
 	public JsonResult sysCate() {
-		List<SysCatevo> parentList = saas.sysCate.getSysCate();
+		List<SysCatevo> parentList = SysCatServiceHelper.getAllSysCateVoByCat();
 		return this.success(parentList);
 	}
 	
