@@ -69,7 +69,7 @@ public class StoreVerifierService extends ShopBaseService{
 	public void addVerifiers(VerifierAddParam param) {
         this.transaction(()->{
             for(int userId : param.getUserIds()){
-                OrderVerifierRecord record = new OrderVerifierRecord();
+                OrderVerifierRecord record = db().newRecord(ORDER_VERIFIER);
                 record.setStoreId(param.getStoreId());
                 record.setUserId(userId);
                 record.setDelFlag(DelFlag.NORMAL_VALUE);
