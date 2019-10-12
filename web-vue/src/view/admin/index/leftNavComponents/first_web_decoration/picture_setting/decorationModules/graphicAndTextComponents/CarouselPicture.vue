@@ -13,17 +13,19 @@
         class="carousel_module"
         :style="`background-image: url(${$imageHost}/image/admin/shop_beautify/decorate_model.png)`"
       >
-        <img
-          class="scroll_image"
-          src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191010/5b0fbbdaN2db001c6.jpg"
-          alt=""
-        >
-        <div class="contain_circle">
-          <div
-            class="small_circle"
-            v-for="item in 6"
-            :key="item"
-          ></div>
+        <div v-if="imgLen">
+          <img
+            class="scroll_image"
+            :src="data.img_items[imgLen-1].img_url"
+            alt=""
+          >
+          <div class="contain_circle">
+            <div
+              class="small_circle"
+              v-for="(item, index) in data.img_items"
+              :key="index"
+            ></div>
+          </div>
         </div>
       </div>
       <!--模块编辑区结束-->
@@ -51,6 +53,13 @@
         >
       </div>
     </div>
+    <!--放这里-->
+    <div
+      class="setHere activeSetHere"
+      :class="activeSetHere?'middleModulesActive':''"
+    >
+      放这里
+    </div>
   </div>
 </template>
 
@@ -65,7 +74,10 @@ export default {
   data () {
     return {
       activeBorder: false, // 展示虚线
-      activeSetHere: false
+      activeSetHere: false,
+      // 模块私有
+      data: {}, // 接受右侧配置信息
+      imgLen: 0 // 上传的图片数量
     }
   },
   mounted () {
@@ -102,6 +114,7 @@ export default {
       handler (newData) {
         if (newData) {
           this.data = newData
+          this.imgLen = this.data.img_items.length
         }
       },
       immediate: true,

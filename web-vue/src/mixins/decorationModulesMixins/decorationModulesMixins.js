@@ -89,7 +89,7 @@ export default {
           obj = {
             'module_name': 'm_scroll_image', // 模块名称
             'img_items': [], // 轮播图片列表
-            'is_preview': 0 // 是否在小程序中可以预览原图
+            'is_preview': '0' // 是否在小程序中可以预览原图
           }
           break
         case 12: // 图片导航模块
