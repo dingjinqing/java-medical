@@ -39,6 +39,8 @@ import java.util.Map.Entry;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record3;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetMoreStep;
@@ -59,6 +61,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
+import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
@@ -1041,6 +1044,31 @@ public class OrderInfoService extends ShopBaseService {
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
     }
 
+    @SuppressWarnings("deprecation")
+	public UserCenterNumBean getUserCenterNum(Integer userId,Integer orderSort,Integer[] orderStatus,Integer[] refundStatus) {
+    	SelectConditionStep<Record3<BigDecimal, Integer, Timestamp>> select = db().select(sum(ORDER_INFO.ORDER_AMOUNT).as("orderAmount"),count().as("count"),ORDER_INFO.CREATE_TIME).from(ORDER_INFO)
+    		.where(ORDER_INFO.USER_ID.eq(userId))
+    		.and(ORDER_INFO.DEL_FLAG.equals(0));
+    	
+    	
+    	List<Byte> orderStatusList = new ArrayList<>(Arrays.asList(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED));
+    	
+    	if(orderStatus.length>0) {
+    		if(orderSort == 4 && refundStatus.length>0) {
+    			select.and(ORDER_INFO.ORDER_STATUS.notIn(orderStatusList));
+    			select.and(ORDER_INFO.REFUND_STATUS.in(Arrays.asList(refundStatus)));
+    		}else {
+    			select.and(ORDER_INFO.ORDER_STATUS.in(Arrays.asList(orderStatus)));
+    			select.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS));
+    		}
+    	}
+    	
+    	select.orderBy(ORDER_INFO.CREATE_TIME.desc());
+    	
+    	 return select.fetchAnyInto(UserCenterNumBean.class);
+    }
+    
+    
     /**
      * 获得用户购买商品数
      * @param userId

@@ -50,6 +50,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
+import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 
@@ -65,7 +66,8 @@ public class ScoreService extends ShopBaseService {
 	
 	@Autowired
 	private TradesRecordService tradesRecord;
-	
+	@Autowired
+	private ScoreDaoService scoreDao;
 	
 	@Autowired
 	public ScoreCfgService score;
@@ -573,6 +575,14 @@ public class ScoreService extends ShopBaseService {
 		}
 		logger().info("获取积分过期时间"+expireTime);
 		return expireTime;
+	}
+	
+	/**
+	 * 获取用户累积获得积分 | 原php方法 getUserGet
+	 * @param id
+	 */
+	public Integer getUserTotalScore(Integer id) {
+		return scoreDao.getUserTotalScore(id);
 	}
 	
 	/**

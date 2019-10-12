@@ -14,6 +14,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
@@ -21,6 +22,8 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.SEND_SCORE_BY_CREATE_CARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,11 +74,12 @@ public class UserCardService extends ShopBaseService{
 	 * @throws MpException 
 	 */
 	public void updateGrade(Integer[] userId,Integer cardId,Byte type) throws MpException {
+		if(userId == null || userId.length<=0) {
+			return;
+		}
+		// 后台用户列表发卡（不需判断条件）
 		if(cardId != null) {
-			if(userId == null) {
-				return;
-			}
-			
+		
 			for(Integer id: userId) {
 				String grade = getUserGrade(id);
 				// 有过等级卡
@@ -113,6 +117,12 @@ public class UserCardService extends ShopBaseService{
 				}
 			}
 			
+		}else {
+			for(Integer id: userId) {
+				//获取用户累积获得积分和累积消费总额
+				Integer userTotalScore = scoreService.getUserTotalScore(id);
+				
+			}
 		}
 	}
 	
@@ -141,5 +151,23 @@ public class UserCardService extends ShopBaseService{
 			
 		}
 		
+	}
+	
+	/**
+	 * 计算用户卡使用的时间
+	 * @return
+	 */
+	public List<Integer> useInDate() {
+		LocalDate now = DateUtil.getLocalDate();
+
+		DayOfWeek dayOfWeek = now.getDayOfWeek();
+		List<Integer> inData = new ArrayList<>(Arrays.asList(new Integer[] { 0, 1 }));
+
+		if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+			inData.clear();
+			inData.addAll(Arrays.asList(new Integer[] { 0, 2 }));
+		}
+		
+		return inData;
 	}
 }

@@ -79,11 +79,13 @@ import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
+import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.saas.area.AreaSelectService;
@@ -141,6 +143,56 @@ public class MemberService extends ShopBaseService {
 	public MemberDaoService memberDao;
 	@Autowired
 	public AreaSelectService area;
+	@Autowired
+	public UserCardService userCardService;
+	/**
+	 * 导出会员
+	 */
+	public void exportUser(MemberPageListParam param) {
+		
+		List<UserRecord> userList = getExportUserList(param);
+		List<MemberRecordExportVo> resList = new ArrayList<>();
+		
+		for(UserRecord user: userList) {
+			MemberRecordExportVo vo = new MemberRecordExportVo();
+			FieldsUtil.assignNotNull(user, vo);
+			
+			UserCenterNumBean userCenterOrder = order.getUserCenterNum(user.getUserId(), 0, new Integer[] {6,8,10}, new Integer[] {});
+			UserCenterNumBean userCenterReturnOrder = order.getUserCenterNum(user.getUserId(), 4, new Integer[] {7,9}, new Integer[] {5});
+		
+			
+		
+		}
+		
+		
+	
+		
+		
+		
+	}
+	
+	
+	
+	public List<UserRecord> getExportUserList(MemberPageListParam param) {
+		
+		/** 获取会员列表的基本信息 */
+		User u = USER.as("u");
+		SelectJoinStep<Record> from = db().select(u.asterisk()).from(u);
+		
+		/** 动态构建连表 */
+		buildOptionsForTable(param, u, from);
+		
+		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) from;
+		
+		/** -构建查询条件 */
+		select = this.buildOptions(select, u, param);
+		select.orderBy(u.USER_ID.desc());
+		PageResult<UserRecord> memberList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				UserRecord.class);
+		return memberList.dataList;
+	}
+	
+	
 	/**
 	 * 会员列表分页查询
 	 * 
@@ -152,21 +204,13 @@ public class MemberService extends ShopBaseService {
 		/** 获取会员列表的基本信息 */
 		PageResult<MemberInfoVo> memberList = getMemberList(param);
 
-		LocalDate now = DateUtil.getLocalDate();
-
-		DayOfWeek dayOfWeek = now.getDayOfWeek();
-		List<Integer> inData = new ArrayList<>(Arrays.asList(new Integer[] { 0, 1 }));
-
-		if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-			inData.clear();
-			inData.addAll(Arrays.asList(new Integer[] { 0, 2 }));
-		}
-
+		List<Integer> inDate = userCardService.useInDate();
+		
 		for (MemberInfoVo member : memberList.dataList) {
 			Integer userId = member.getUserId();
 
 			/** 只需要一张会员卡的信息即可 */
-			Record recordInfo = memberDao.getOneMemberCard(inData, userId);
+			Record recordInfo = memberDao.getOneMemberCard(inDate, userId);
 
 				if(recordInfo != null) {
 					String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
@@ -201,6 +245,7 @@ public class MemberService extends ShopBaseService {
 		SelectJoinStep<?> from = this.db().selectDistinct(u.USER_ID,
 				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME,u.DEL_FLAG,USER_DETAIL.REAL_NAME)
 				.from(u.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(u.USER_ID)));
+				
 		
 		/** 动态构建连表 */
 		buildOptionsForTable(param, u, from);

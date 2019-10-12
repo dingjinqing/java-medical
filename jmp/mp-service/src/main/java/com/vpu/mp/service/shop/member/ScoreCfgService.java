@@ -26,6 +26,7 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
  * @author 黄壮壮 2019-07-15 14:13
  */
 @Service
+
 public class ScoreCfgService extends BaseShopConfigService {
 
 	final public static String ZERO = "0";
@@ -157,8 +158,10 @@ public class ScoreCfgService extends BaseShopConfigService {
 		}else {
 			//从数据库中获取json值
 			UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
-			userScore.setEnable(enable);
-			value = Util.toJson(userScore);
+			if(userScore != null){
+				userScore.setEnable(enable);
+				value = Util.toJson(userScore);
+			}
 		}
 		deleteRecord(SIGN_IN_SCORE);
 		this.setJsonObject(SIGN_IN_SCORE,status,value);
@@ -296,5 +299,4 @@ public class ScoreCfgService extends BaseShopConfigService {
 		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny();
 	}
 	
-
 }

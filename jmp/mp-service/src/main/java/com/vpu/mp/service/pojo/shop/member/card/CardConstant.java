@@ -64,6 +64,7 @@ public class CardConstant {
 	public static final String PART_SHOP = "1";
 	public static final String PROHIBITED = "-1";
 
+	
 	/**
 	 * 领取类型 直接领取，需要领取码
 	 */
@@ -112,7 +113,9 @@ public class CardConstant {
 	public static final Byte RELATED_STORE_CATEGORY_TYPE = 2;
 	/** 3：关联平台分类  */
 	public static final Byte RELATED_PLATFORM_CATEGORY_TYPE = 3;
-	
+	/** 可否在门店使用  0可以 1不可以 */
+	public static final Byte AVAILABLE_IN_STORE = 0;
+	public static final Byte UNAVAILABLE_IN_STORE = 1;
 	
 	/** 余额为 0 */
 	public static final BigDecimal ZERO = new BigDecimal(0);
