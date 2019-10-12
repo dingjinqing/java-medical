@@ -539,29 +539,21 @@ public class UserService extends ShopBaseService {
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			// TODO 等updateGrade写完
 			logger().info("进入用户等级为0");
-			try {
-				//userCard.updateGrade(integers, null, (byte) 1);
-			} catch (Exception e) {
-				logger().error("userGrade为0时报错");
-				e.printStackTrace();
-			}
+			/*
+			 * try { userCard.updateGrade(integers, null, (byte) 1); } catch (Exception e) {
+			 * logger().error("userGrade为0时报错"); e.printStackTrace(); }
+			 */
 		} else {
 			// TODO 等updateGrade写完
 			logger().info("进入用户等级为其他");
-			try {
-				//userCard.updateGrade(integers, null, (byte) 0);
-				// 上面方法返回值is_get
-				int isGet = 0;
-				if (isGet > 0) {
-					map.put("get_grade", 1);
-				} else {
-					map.put("get_grade", isGet);
-				}
-			} catch (Exception e) {
-				logger().error("userGrade不为0时报错");
-				e.printStackTrace();
-			}
+			/*
+			 * try { userCard.updateGrade(integers, null, (byte) 0); // 上面方法返回值is_get int
+			 * isGet = 0; if (isGet > 0) { map.put("get_grade", 1); } else {
+			 * map.put("get_grade", isGet); } } catch (Exception e) {
+			 * logger().error("userGrade不为0时报错"); e.printStackTrace(); }
+			 */
 		}
+		logger().info("用户等级判断返回"+map);
 		return map;
 	}
 
