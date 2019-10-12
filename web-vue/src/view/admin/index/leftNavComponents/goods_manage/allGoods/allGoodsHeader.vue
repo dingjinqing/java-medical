@@ -17,6 +17,7 @@
             suffix-icon="el-icon-search"
             :placeholder="$t('allGoods.allGoodsHeaderData.searchGoods')"
             :style="goodsFilterInputStyle"
+            size="small"
           />
         </el-form-item>
         <el-form-item
@@ -26,6 +27,7 @@
           <el-select
             v-model="goodsFilterFormData.catId"
             :style="goodsFilterInputStyle"
+            size="small"
           >
             <el-option
               :label="$t('allGoods.allGoodsHeaderData.chooseCategory')"
@@ -47,6 +49,7 @@
           <el-select
             v-model="goodsFilterFormData.sortId"
             :style="goodsFilterInputStyle"
+            size="small"
           >
             <el-option
               :label="$t('allGoods.allGoodsHeaderData.chooseSort')"
@@ -68,6 +71,7 @@
           <el-select
             v-model="goodsFilterFormData.labelId"
             :style="goodsFilterInputStyle"
+            size="small"
           >
             <el-option
               :label="$t('allGoods.allGoodsHeaderData.chooseGoodsLabel')"
@@ -87,6 +91,7 @@
             @change="datePickerChange(true)"
             :placeholder="$t('allGoods.allGoodsHeaderData.chooseSaleTime')"
             :style="goodsFilterInputStyle"
+            size="small"
           />
           —
           <el-date-picker
@@ -94,6 +99,7 @@
             @change="datePickerChange(false)"
             :placeholder="$t('allGoods.allGoodsHeaderData.chooseSaleTime')"
             :style="goodsFilterInputStyle"
+            size="small"
           />
         </el-form-item>
         <el-form-item
@@ -103,6 +109,7 @@
           <el-select
             v-model="goodsFilterFormData.brandId"
             :style="goodsFilterInputStyle"
+            size="small"
           >
             <el-option
               :label="$t('allGoods.allGoodsHeaderData.chooseGoodsBrand')"
@@ -123,6 +130,7 @@
           <el-select
             v-model="goodsFilterFormData.source"
             :style="goodsFilterInputStyle"
+            size="small"
           >
             <el-option
               v-for="(item,index) in goodsSourceOptions"
@@ -139,6 +147,7 @@
           <el-select
             v-model="goodsFilterFormData.goodsType"
             :style="goodsFilterInputStyle"
+            size="small"
           >
             <el-option
               v-for="(item,index) in goodsTypeOptions"
@@ -154,6 +163,7 @@
             @change="shopPriceChange(true)"
             :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')"
             :style="goodsFilterInputStyle"
+            size="small"
           />
           —
           <el-input
@@ -161,6 +171,7 @@
             @change="shopPriceChange(false)"
             :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')"
             :style="goodsFilterInputStyle"
+            size="small"
           />
         </el-form-item>
       </el-form>

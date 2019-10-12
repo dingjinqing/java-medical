@@ -1,18 +1,41 @@
 <template>
   <div>
     <div class="headerTab">
-      <div class="tabItem" @click="tabItemClicked('goodsForSale')">{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
+      <div
+        class="tabItem"
+        @click="tabItemClicked('goodsForSale')"
+      >{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
       <div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.saleOut')}}</div>
-      <div class="tabItem" @click="tabItemClicked('goodsForInStock')">{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
+      <div
+        class="tabItem"
+        @click="tabItemClicked('goodsForInStock')"
+      >{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
     </div>
-    <allGoodsHeader ref="goodsHeaderFormCmp" :initSortCatParams="initFilterData"/>
+    <allGoodsHeader
+      ref="goodsHeaderFormCmp"
+      :initSortCatParams="initFilterData"
+    />
     <div class="btnWrap">
-      <el-button type="primary" @click="searchGoodsData">{{$t('allGoods.allGoodsRouterHeader.searchBtn')}}</el-button>
-      <el-button type="primary" @click="resetFormData">{{$t('allGoods.allGoodsRouterHeader.resetBtn')}}</el-button>
-      <el-button type="primary">{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
-      <el-button type="primary">{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="searchGoodsData"
+      >{{$t('allGoods.allGoodsRouterHeader.searchBtn')}}</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="resetFormData"
+      >{{$t('allGoods.allGoodsRouterHeader.resetBtn')}}</el-button>
+      <el-button
+        type="primary"
+        size="small"
+      >{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
+      <el-button
+        type="primary"
+        size="small"
+      >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
     </div>
-    <saleOut ref="saleOutCmp"/>
+    <saleOut ref="saleOutCmp" />
   </div>
 </template>
 
@@ -37,7 +60,7 @@ export default {
   },
   methods: {
     tabItemClicked (routerName) {
-      this.$router.push({name: routerName})
+      this.$router.push({ name: routerName })
     },
     /* 触发商品分页查询 */
     searchGoodsData () {
@@ -60,22 +83,22 @@ export default {
 </script>
 
 <style scoped>
-  .headerTab{
-    border-bottom: 1px solid #EEEEEE;
-    color: #666;
-    display: flex;
-  }
-  .tabItem{
-    min-width: 50px;
-    line-height: 50px;
-    margin:0px 5px;
-    cursor: pointer;
-  }
-  .tabItemActive{
-    border-bottom: 2px solid #5a8bff;
-  }
-  .btnWrap{
-    padding-left: 50px;
-    margin-bottom: 15px;
-  }
+.headerTab {
+  border-bottom: 1px solid #eeeeee;
+  color: #666;
+  display: flex;
+}
+.tabItem {
+  min-width: 50px;
+  line-height: 50px;
+  margin: 0px 5px;
+  cursor: pointer;
+}
+.tabItemActive {
+  border-bottom: 2px solid #5a8bff;
+}
+.btnWrap {
+  padding-left: 50px;
+  margin-bottom: 15px;
+}
 </style>

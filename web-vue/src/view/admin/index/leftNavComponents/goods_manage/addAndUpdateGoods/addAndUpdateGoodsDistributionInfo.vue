@@ -1,10 +1,17 @@
 <template>
   <div>
-    <el-form ref="goodsDistributionInfoForm" :model="goodsDistributionInfo" label-width="120px">
+    <el-form
+      ref="goodsDistributionInfoForm"
+      :model="goodsDistributionInfo"
+      label-width="120px"
+    >
       <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.distributionTitle')">
         <el-checkbox v-model="goodsDistributionInfo.canRebate">{{$t('goodsAddEditInfo.goodsDistribution.distributionTitleTip')}}</el-checkbox>
         <template v-if="goodsDistributionInfo.canRebate">
-          <div v-if="goodsProductInfoData.specInfoSwitch" style="border: 1px solid #ccc;padding: 10px;">
+          <div
+            v-if="goodsProductInfoData.specInfoSwitch"
+            style="border: 1px solid #ccc;padding: 10px;"
+          >
             <table>
               <tr>
                 <th></th>
@@ -19,18 +26,38 @@
               >
                 <td>{{item.prdDescTemp}}</td>
                 <td>{{item.prdPrice}}</td>
-                <td><input type="text" v-model.number="item.advisePrice"/></td>
-                <td><input type="text" v-model.number="item.minPrice"/></td>
-                <td><input type="text" v-model.number="item.maxPrice"/></td>
+                <td><input
+                    type="text"
+                    v-model.number="item.advisePrice"
+                  /></td>
+                <td><input
+                    type="text"
+                    v-model.number="item.minPrice"
+                  /></td>
+                <td><input
+                    type="text"
+                    v-model.number="item.maxPrice"
+                  /></td>
               </tr>
             </table>
             <p style="text-align: right;line-height: 10px;margin-top: 20px;">
               <span style="font-size: 14px;">{{$t('goodsAddEditInfo.goodsDistribution.batchSetting')}}</span>
-              <el-link size="small" :underline="false" @click="setLowestPrice">{{$t('goodsAddEditInfo.goodsDistribution.lowestSetting')}}</el-link>
-              <el-link size="small" :underline="false" @click="setHighestPrice">{{$t('goodsAddEditInfo.goodsDistribution.highestSetting')}}</el-link>
+              <el-link
+                size="small"
+                :underline="false"
+                @click="setLowestPrice"
+              >{{$t('goodsAddEditInfo.goodsDistribution.lowestSetting')}}</el-link>
+              <el-link
+                size="small"
+                :underline="false"
+                @click="setHighestPrice"
+              >{{$t('goodsAddEditInfo.goodsDistribution.highestSetting')}}</el-link>
             </p>
           </div>
-          <div v-else style="border: 1px solid #ccc;padding: 10px;">
+          <div
+            v-else
+            style="border: 1px solid #ccc;padding: 10px;"
+          >
             <table>
               <tr>
                 <th>{{$t('goodsAddEditInfo.goodsDistribution.goodsPrice')}}</th>
@@ -43,9 +70,18 @@
                 :key="index"
               >
                 <td>{{item.prdPrice}}</td>
-                <td><input type="text" v-model.number="item.advisePrice"/></td>
-                <td><input type="text" v-model.number="item.minPrice"/></td>
-                <td><input type="text" v-model.number="item.maxPrice"/></td>
+                <td><input
+                    type="text"
+                    v-model.number="item.advisePrice"
+                  /></td>
+                <td><input
+                    type="text"
+                    v-model.number="item.minPrice"
+                  /></td>
+                <td><input
+                    type="text"
+                    v-model.number="item.maxPrice"
+                  /></td>
               </tr>
             </table>
           </div>
@@ -55,51 +91,122 @@
         <el-switch v-model="goodsDistributionInfo.promotionLanguageSwitch" />
         <span>{{goodsDistributionInfo.promotionLanguageSwitch?$t('goodsAddEditInfo.goodsDistribution.promotionSwitchOn'):$t('goodsAddEditInfo.goodsDistribution.promotionSwitchOff')}}</span>
         <span style="color: #999;margin-left: 10px;">{{$t('goodsAddEditInfo.goodsDistribution.promotionTitleTip')}}</span>
-        <div v-show="goodsDistributionInfo.promotionLanguageSwitch" style="display: flex;align-items: flex-start">
+        <div
+          v-show="goodsDistributionInfo.promotionLanguageSwitch"
+          style="display: flex;align-items: flex-start"
+        >
           <span style="line-height: 20px;">{{$t('goodsAddEditInfo.goodsDistribution.promotionLanguage')}}</span>
-          <el-input ref="promotionLanguageInput" type="textarea" v-model="goodsDistributionInfo.promotionLanguage"  resize="none" :maxlength="200" show-word-limit :rows="8" style="width:400px;"/>
+          <el-input
+            ref="promotionLanguageInput"
+            type="textarea"
+            v-model="goodsDistributionInfo.promotionLanguage"
+            resize="none"
+            :maxlength="200"
+            show-word-limit
+            :rows="8"
+            style="width:400px;"
+          />
         </div>
       </el-form-item>
       <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.shareGoodsAction')">
         <!--默认样式-->
         <div>
-          <el-radio v-model="goodsDistributionInfo.shareAction" :label="1" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsAction')}}</el-radio>
-          <el-popover placement="right-start" trigger="hover">
-            <el-image :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle1.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-            <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgLinkLook')}}</span>
+          <el-radio
+            v-model="goodsDistributionInfo.shareAction"
+            :label="1"
+            style="margin-right: 15px;"
+          >{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsAction')}}</el-radio>
+          <el-popover
+            placement="right-start"
+            trigger="hover"
+          >
+            <el-image
+              :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle1.jpg'"
+              fit="scale-down"
+              style="width:220px;height: 400px;"
+            />
+            <span
+              slot="reference"
+              style="color:#409EFF;cursor:pointer;"
+            >{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgLinkLook')}}</span>
           </el-popover>
-          <el-popover placement="right-start" trigger="hover" style="margin-left: 10px;">
-            <el-image :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-            <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgLinkDownload')}}</span>
+          <el-popover
+            placement="right-start"
+            trigger="hover"
+            style="margin-left: 10px;"
+          >
+            <el-image
+              :src="goodsDistributionInfo.imgHost+'/image/admin/share/goods_info_exapmle.jpg'"
+              fit="scale-down"
+              style="width:220px;height: 400px;"
+            />
+            <span
+              slot="reference"
+              style="color:#409EFF;cursor:pointer;"
+            >{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgLinkDownload')}}</span>
           </el-popover>
         </div>
         <!--自定义样式-->
         <div>
-          <el-radio v-model="goodsDistributionInfo.shareAction" :label="2" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsActionRadio2')}}</el-radio>
+          <el-radio
+            v-model="goodsDistributionInfo.shareAction"
+            :label="2"
+            style="margin-right: 15px;"
+          >{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsActionRadio2')}}</el-radio>
         </div>
         <!--文案-->
         <div>
           <span style="width:70px;display:inline-block;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsDoc')}}</span>
-          <el-input ref="shareDocInput" v-model="goodsDistributionInfo.shareDoc" :disabled="goodsDistributionInfo.shareAction === 1" size="small" :placeholder="$t('goodsAddEditInfo.goodsDistribution.shareGoodsDocTip')" style="width:220px;"/>
+          <el-input
+            ref="shareDocInput"
+            v-model="goodsDistributionInfo.shareDoc"
+            :disabled="goodsDistributionInfo.shareAction === 1"
+            size="small"
+            :placeholder="$t('goodsAddEditInfo.goodsDistribution.shareGoodsDocTip')"
+            style="width:220px;"
+          />
         </div>
         <!--分享图-->
         <div>
           <span style="width:70px;display:inline-block;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImg')}}</span>
-          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="1" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgRadio1')}}</el-radio>
+          <el-radio
+            v-model="goodsDistributionInfo.shareImgAction"
+            :label="1"
+            :disabled="goodsDistributionInfo.shareAction === 1"
+            style="margin-right: 15px;"
+          >{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgRadio1')}}</el-radio>
         </div>
         <div>
           <span style="width:70px;display:inline-block;"></span>
-          <el-radio v-model="goodsDistributionInfo.shareImgAction" :label="2" :disabled="goodsDistributionInfo.shareAction === 1" style="margin-right: 15px;">{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgRadio2')}}</el-radio>
+          <el-radio
+            v-model="goodsDistributionInfo.shareImgAction"
+            :label="2"
+            :disabled="goodsDistributionInfo.shareAction === 1"
+            style="margin-right: 15px;"
+          >{{$t('goodsAddEditInfo.goodsDistribution.shareGoodsImgRadio2')}}</el-radio>
         </div>
         <div>
           <span style="width:70px;display:inline-block;"></span>
-          <el-image v-if="goodsDistributionInfo.shareImgObj === null" @click="addGoodsImg"  fit="scale-down" :src="goodsDistributionInfo.imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
-          <el-image v-else @click="addGoodsImg" fit="cover" :src="goodsDistributionInfo.shareImgObj.imgUrl" style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"/>
+          <el-image
+            v-if="goodsDistributionInfo.shareImgObj === null"
+            @click="addGoodsImg"
+            fit="scale-down"
+            :src="goodsDistributionInfo.imgHost+'/image/admin/add_img.png'"
+            style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"
+          />
+          <el-image
+            v-else
+            @click="addGoodsImg"
+            fit="cover"
+            :src="goodsDistributionInfo.shareImgObj.imgUrl"
+            style="width: 78px; height: 78px;cursor: pointer;border: 1px solid #ccc;"
+          />
         </div>
       </el-form-item>
     </el-form>
     <!--解决图片弹框非单例的问题-->
-    <ImageDalog :tuneUp="selfImgDialogShow"
+    <ImageDalog
+      :tuneUp="selfImgDialogShow"
       pageIndex='pictureSpace'
       @handleSelectImg='imgDialogSelectedCallback'
     />
@@ -201,7 +308,7 @@ export default {
     },
     /* 添加图片点击回调事件 */
     imgDialogSelectedCallback (imgObj) {
-      this.goodsDistributionInfo.shareImgObj = {imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl}
+      this.goodsDistributionInfo.shareImgObj = { imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl }
     },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
@@ -217,7 +324,7 @@ export default {
       this.goodsDistributionInfo.shareDoc = goodsData.goodsSharePostConfig.shareDoc
       this.goodsDistributionInfo.shareImgAction = goodsData.goodsSharePostConfig.shareImgAction
       if (this.goodsDistributionInfo.shareAction === 2 && this.goodsDistributionInfo.shareImgAction === 2) {
-        this.goodsDistributionInfo.shareImgObj = {imgPath: goodsData.goodsSharePostConfig.shareImgPath, imgUrl: goodsData.goodsSharePostConfig.shareImgUrl}
+        this.goodsDistributionInfo.shareImgObj = { imgPath: goodsData.goodsSharePostConfig.shareImgPath, imgUrl: goodsData.goodsSharePostConfig.shareImgUrl }
       }
       // 初始化规格数据
       this._watchGoodsProductInfoDataGoodsSpecProducts(goodsData.goodsSpecProducts)
@@ -237,14 +344,14 @@ export default {
       // 分销推广语长度超长
       if (this.goodsDistributionInfo.promotionLanguageSwitch && !isStrBlank(this.goodsDistributionInfo.promotionLanguage) &&
         this.goodsDistributionInfo.promotionLanguage.length > 200) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionLanguageTooLong'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.goodsDistribution.promotionLanguageTooLong'), type: 'warning' })
         this.$refs.promotionLanguageInput.focus()
         return false
       }
 
       if (this.goodsDistributionInfo.shareAction === 2 && !isStrBlank(this.goodsDistributionInfo.shareDoc) &&
         this.goodsDistributionInfo.shareDoc.length > 15) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.goodsDistribution.promotionDocTooLong'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.goodsDistribution.promotionDocTooLong'), type: 'warning' })
         this.$refs.shareDocInput.focus()
         return false
       }
