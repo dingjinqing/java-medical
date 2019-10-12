@@ -44,5 +44,9 @@ public class CouponGivePopVo {
     private String recommendCatId;
     /** 指定商家分类可用的商家分类ID串，为空时为全部商品商家分类可用 */
     private String recommendSortId;
+    /** 是否可以积分兑换*/
+    private Integer useScore;
+    /** 需要积分数*/
+    private Integer scoreNumber;
 	
 }
