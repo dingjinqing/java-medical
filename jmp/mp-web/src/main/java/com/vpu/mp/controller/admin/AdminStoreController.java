@@ -249,7 +249,7 @@ public class AdminStoreController extends AdminBaseController{
     @PostMapping(value = "/api/admin/store/verifier/export")
     public void exportStoreVerifierList(@RequestBody @Valid VerifierListQueryParam verifierListQueryParam, HttpServletResponse response) throws IOException {
         Workbook workbook =shop().store.storeVerifier.exportStoreVerifierList(verifierListQueryParam,getLang());
-        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        response.setContentType("application/octet-stream;charset=UTF-8");
 
         //门店名称
         String storeName = "";
@@ -257,7 +257,7 @@ public class AdminStoreController extends AdminBaseController{
         if(record != null) {
             storeName = record.into(String.class);
         }
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.STORE_VERIFIER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL,storeName) + DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.STORE_VERIFIER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL,storeName);
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
         workbook.write(response.getOutputStream());
     }
