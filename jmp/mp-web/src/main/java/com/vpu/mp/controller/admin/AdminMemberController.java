@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +72,24 @@ public class AdminMemberController extends AdminBaseController{
 		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param,language);
 		return this.success(pageResult);
 	}
+	
+	/**
+	 * 会员列表导出
+	 * @param param
+	 */
+	@PostMapping("/list/export")
+	public void exportUser(@RequestBody MemberPageListParam param,HttpServletResponse response) {
+		logger().info("正在进行会员导出");
+		this.shop().member.exportUser(param);
+		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+		// TODO file name
+		String fileName = "filename";
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+		return ;
+	}
+	
+	
+	
 	
 	/**
 	 * 会员卡-弹窗
