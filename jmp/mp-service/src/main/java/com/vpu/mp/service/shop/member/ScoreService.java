@@ -14,6 +14,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTE
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.jooq.Record7;
+import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
@@ -41,11 +43,14 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
+import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 
 import jodd.util.StringUtil;
@@ -61,10 +66,14 @@ public class ScoreService extends ShopBaseService {
 	@Autowired
 	private TradesRecordService tradesRecord;
 	
+	
+	@Autowired
+	public ScoreCfgService score;
+	
 	/** -积分有效的状态 */
 	final Byte[] AVAILABLE_STATUS = new Byte[] { NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS };
 	@Autowired
-	private MemberService member;	
+	public MemberService member;	
 	
 	/**
 	 *   创建用户积分表,增加，消耗用户积分
@@ -565,5 +574,126 @@ public class ScoreService extends ShopBaseService {
 		logger().info("获取积分过期时间"+expireTime);
 		return expireTime;
 	}
+	
+	/**
+	 * 检查签到送积分
+	 * @param userId
+	 * @return
+	 */
+	public CheckSignVo checkSignInScore(Integer userId) {
+		logger().info("进入检查签到送积分");
+		UserScoreSetValue signInScore = score.getScoreValueThird("sign_in_score");
+		int days = 0;
+		int scoreValue = 0;
+		int isSignIn = 0;
+		int day = 0;
+		int isOpenSign=0;
+		SignData signData = new SignData();
+		if (signInScore != null) {
+			if (!StringUtils.isEmpty(signInScore.getScore())) {
+				for (String value : signInScore.getScore()) {
+					days++;
+					scoreValue += Integer.parseInt(value);
+				}
+			}
+			String receiveScore = null;
+			if (signInScore.getEnable().equals("1")) {
+				 isOpenSign = 1;
+				if (checkUserIsSign(userId)) {
+					// 未签到
+					logger().info("未签到");
+					isSignIn = 0;
+					// 判断当前是第几天领取
+					day = checkDayByUserSignIn(userId, false);
+					// 今天领取多少积分
+					String[] score2 = signInScore.getScore();
+					receiveScore=getReceiveScore(score2, day, 1);
+				} else {
+					// 已签到
+					logger().info("已签到");
+					isSignIn = 1;
+					day = checkDayByUserSignIn(userId, true) - 1;
+					UserScoreRecord scoreInDay = getScoreInDay(userId, "sign_score");
+					receiveScore = String.valueOf(scoreInDay.getScore());
+				}
+				signData.setIsSignIn(isSignIn);
+				signData.setDay(day);
+				signData.setReceiveScore(receiveScore);
+				signData.setTomoroowReceive(getReceiveScore(signInScore.getScore(), day, 0));
+				signData.setMaxSignDay(days);
+				signData.setScoreValue(scoreValue);
+
+			} else {
+				 isOpenSign = 0;
+			}
+		}
+		CheckSignVo vo=new CheckSignVo();
+		vo.setIsOpenSign(isOpenSign);
+		vo.setSignData(signData);
+		vo.setSignRule(signInScore.getScore().length<=0?new String[0]:signInScore.getScore());
+		return vo;
+	}
+	
+	private String getReceiveScore(String[] score2, Integer day,Integer option) {
+		String receiveScore = null;
+		if (score2.length <= 0) {
+			receiveScore = "0";
+		} else {
+			if (day < 1 || day >= score2.length) {
+				receiveScore = score2[score2.length - 1];
+			} else {
+				receiveScore = score2[day - option];
+			}
+		}
+		return receiveScore;
+	}
+	
+	/**
+	 * 检查用户是否已经签到  true: 未签到
+	 * @param userId
+	 * @return
+	 */
+	public boolean checkUserIsSign(Integer userId) {
+		UserScoreRecord record = db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
+				.and(USER_SCORE.DESC.eq("sign_score")).orderBy(USER_SCORE.ID.desc()).fetchAny();
+		if(record!=null) {
+			if(DateUtil.TimestampIsNowDay(record.getCreateTime())) {
+				 return false;
+			}
+		}
+		 return true;
+	}
+	
+	/**
+	 * 判断用户是第几天签到
+	 * @param userId
+	 * @param signOk
+	 * @return
+	 */
+	public int checkDayByUserSignIn(Integer userId, Boolean signOk) {
+		Result<UserScoreRecord> list = db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
+				.and(USER_SCORE.DESC.eq("sign_score")).orderBy(USER_SCORE.ID.desc()).fetch();
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDateTime localDateTime=LocalDateTime.now();
+		int day=1;
+		String date=signOk?df.format(localDateTime):df.format(localDateTime.minusDays(1L));
+		int flag=0;
+		for(UserScoreRecord record:list) {
+			if(flag==1) {
+				break;
+			}
+			if(date.equals(df.format(record.getCreateTime().toLocalDateTime()))) {
+				++day;
+			}else {
+				flag=1;
+			}
+			date=df.format(localDateTime.minusDays(1L));
+		}
+		return day;
+	}
+	
+	
+	
+	
 	
 }

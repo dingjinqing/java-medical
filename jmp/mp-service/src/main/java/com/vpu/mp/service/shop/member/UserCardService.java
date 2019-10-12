@@ -38,9 +38,13 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TY
 */
 @Service
 public class UserCardService extends ShopBaseService{
-	@Autowired private UserCardDaoService userCardDao;
-	@Autowired private ScoreService scoreService;
-	@Autowired private MemberCardService memberCardService;
+	@Autowired
+	public UserCardDaoService userCardDao;
+	@Autowired
+	public ScoreService scoreService;
+	@Autowired
+	public MemberCardService memberCardService;
+	
 	public static final String DEFAULT_ADMIN = "1";
 	// TODO 待国际化
 	public static final String OPTIONINFO = "开卡赠送";

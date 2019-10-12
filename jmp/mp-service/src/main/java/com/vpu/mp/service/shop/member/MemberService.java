@@ -53,6 +53,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -984,5 +985,18 @@ public class MemberService extends ShopBaseService {
 		Result<Record> allUserCardDetail = memberDao.getAllUserCardDetailSql(param);
 		return allUserCardDetail.into(UserCardDetailVo.class);
 		
+	}
+	
+	/**
+	 * 获得用户手机号
+	 * @param userId
+	 * @return
+	 */
+	public UserImportDetailRecord getUserByMobile(String mobile) {
+		
+		return db().selectFrom(USER_IMPORT_DETAIL)
+				.where(USER_IMPORT_DETAIL.MOBILE.eq(mobile)
+						.and(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))))
+				.orderBy(USER_IMPORT_DETAIL.ID.desc()).fetchAny();
 	}
 }

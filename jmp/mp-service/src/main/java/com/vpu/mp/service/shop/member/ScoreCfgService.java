@@ -26,7 +26,6 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
  * @author 黄壮壮 2019-07-15 14:13
  */
 @Service
-
 public class ScoreCfgService extends BaseShopConfigService {
 
 	final public static String ZERO = "0";
@@ -157,8 +156,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 			value = Util.toJson(new UserScoreSetValue(enable,signScore));
 		}else {
 			//从数据库中获取json值
-			String json = getValue("sign_in_score");
-			UserScoreSetValue userScore = Util.parseJson(json,UserScoreSetValue.class);
+			UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
 			userScore.setEnable(enable);
 			value = Util.toJson(userScore);
 		}
@@ -171,17 +169,16 @@ public class ScoreCfgService extends BaseShopConfigService {
 	 * @param scoreName
 	 * @return
 	 */
-	private String getValue(String scoreName) {
-		Result<Record1<String>>  record = this.db()
-						.select(USER_SCORE_SET.SET_VAL3)
-						.from(USER_SCORE_SET)
+	public UserScoreSetValue getScoreValueThird(String scoreName) {
+		UserScoreSetRecord  record = this.db()
+						.selectFrom(USER_SCORE_SET)
 						.where(USER_SCORE_SET.SCORE_NAME.eq(scoreName))
-						.fetch();
-		
-		if(record.get(0) == null) {
-			return null;
+						.fetchAny();
+		UserScoreSetValue userScore=null;
+		if(record!=null) {
+			userScore = Util.parseJson(record.getSetVal3(),UserScoreSetValue.class);
 		}
-		return (String) record.get(0).get(0);
+		return userScore;
 	}
 	/**
 	 * 插入到数据库
@@ -299,4 +296,5 @@ public class ScoreCfgService extends BaseShopConfigService {
 		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny();
 	}
 	
+
 }
