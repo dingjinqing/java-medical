@@ -182,6 +182,16 @@ export default {
                 return false
               }
             })
+            break
+          case 'm_scroll_image': // 轮播图相关校验
+            console.log(item)
+            if (item.img_items.length <= 0) {
+              this.$message.error({
+                message: '请添加轮播图片',
+                showClose: true
+              })
+              return false
+            }
         }
       })
       return true
