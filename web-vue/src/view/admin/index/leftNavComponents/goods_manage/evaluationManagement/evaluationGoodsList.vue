@@ -200,7 +200,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.pageParams = res.content.page
-          this.dataList = res.content.dataList
+          // this.dataList = res.content.dataList
         }
       })
     },

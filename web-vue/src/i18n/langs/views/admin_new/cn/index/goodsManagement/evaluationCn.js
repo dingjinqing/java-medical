@@ -47,5 +47,6 @@ export const cn = {
   avatar: '头像',
   evaluationTime: '评价时间',
   experience: '心得',
-  anonymous: '是否匿名'
+  anonymous: '是否匿名',
+  select: '选择{0}'
 }

@@ -829,13 +829,13 @@ export default {
       tabsOrderStatus: [
         { value: null, label: '全部' },
         { value: '1', label: '待付款' },
-        { value: '4', label: '待发货/待核销' },
-        { value: '5', label: '已发货' },
-        { value: '6', label: '已收货/已核销' },
-        { value: '7', label: '已完成' },
-        { value: '8', label: '退货退款中' },
-        { value: '3', label: '已关闭' },
-        { value: '16', label: '追星订单' }
+        { value: '2', label: '待发货/待核销' },
+        { value: '3', label: '已发货' },
+        { value: '4', label: '已收货/已核销' },
+        { value: '5', label: '已完成' },
+        { value: '6', label: '退货退款中' },
+        { value: '7', label: '已关闭' },
+        { value: '8', label: '追星订单' }
       ],
       orderList: [
       ],

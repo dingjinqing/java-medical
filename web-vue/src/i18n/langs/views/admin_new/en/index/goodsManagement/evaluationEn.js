@@ -47,5 +47,6 @@ export const en = {
   avatar: 'Avatar',
   evaluationTime: 'Evaluation time',
   experience: 'Experience',
-  anonymous: 'anonymous'
+  anonymous: 'anonymous',
+  select: 'select{0}'
 }

@@ -305,6 +305,7 @@ export default {
   methods: {
     // 初始化列表 评价列表 待评价列表
     initDataList () {
+      this.loading = true
       let obj = {
         ...this.searchParams,
         page: { ...this.pageParams },
@@ -318,6 +319,7 @@ export default {
             this.dataList = res.content.dataList.sort((a, b) => {
               return (b.id - a.id)
             })
+            this.loading = false
           }
         })
       } else {
@@ -329,6 +331,7 @@ export default {
             this.dataList = res.content.dataList.sort((a, b) => {
               return (b.id - a.id)
             })
+            this.loading = false
           }
         })
       }

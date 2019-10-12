@@ -152,7 +152,7 @@
           style="width:300px;"
         ></el-input>
       </el-form-item>
-      <!-- <el-form-item label="晒单">
+      <el-form-item label="晒单">
         <div class="imgWrap">
           <template v-for="(item,index) in sendParams.commImg">
             <div
@@ -187,7 +187,7 @@
           <span class="tips">最多9张，建议尺寸：800*800像素</span>
 
         </div>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item :label="$t('evaluation.anonymous')">
         <el-checkbox
           :label="$t('evaluation.yes')"
@@ -227,17 +227,10 @@ export default {
         createTime: null,
         commstar: 5,
         commNote: null,
-        anonymousFlag: false
-        // commImg: []
+        anonymousFlag: false,
+        commImg: []
       },
       triggerSource: null,
-      rules: {
-        bogusUsername: { required: true, message: '请输入用户名', trigger: 'blur' },
-        createTime: { required: true, message: '请选择评价日期', trigger: 'change' },
-        commNote: { required: true, message: '请输入心得', trigger: 'blur' },
-        commstar: { required: true, message: '请选择评分', trigger: 'change' },
-        bogusUserAvatar: { required: true, message: '请选择头像', trigger: 'change' }
-      },
       showImageDialog: false
     }
   },
@@ -278,7 +271,8 @@ export default {
         if (valid) {
           let obj = {
             ...this.sendParams,
-            anonymousFlag: this.sendParams.anonymousFlag ? '1' : '0'
+            anonymousFlag: this.sendParams.anonymousFlag ? '1' : '0',
+            commImg: this.sendParams.commImg.length ? this.sendParams.commImg.join(',') : ''
           }
           goodsAddComment(obj).then(res => {
             console.log(res)
@@ -296,6 +290,17 @@ export default {
           return false
         }
       })
+    }
+  },
+  computed: {
+    rules () {
+      return {
+        bogusUsername: { required: true, message: this.$t('evaluation.input', [this.$t('evaluation.userName')]), trigger: 'blur' },
+        createTime: { required: true, message: this.$t('evaluation.select', [this.$t('evaluation.evaluationTime')]), trigger: 'change' },
+        commNote: { required: true, message: this.$t('evaluation.input', [this.$t('evaluation.experience')]), trigger: 'blur' },
+        commstar: { required: true, message: this.$t('evaluation.select', [this.$t('evaluation.grade')]), trigger: 'change' },
+        bogusUserAvatar: { required: true, message: this.$t('evaluation.select', [this.$t('evaluation.avatar')]), trigger: 'change' }
+      }
     }
   },
   props: {
