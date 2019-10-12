@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -258,7 +259,7 @@ public class AdminStoreController extends AdminBaseController{
             storeName = record.into(String.class);
         }
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.STORE_VERIFIER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL,storeName);
-        response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("GBK"),"ISO-8859-1") + ".xls");
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xls");
         workbook.write(response.getOutputStream());
     }
 
