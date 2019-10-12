@@ -611,6 +611,10 @@
                     :key="orderItem.orderId + '' + childGoods.recId"
                   >
                     <td>
+                      <p
+                        style="text-align:left; margin-bottom:6px;"
+                        v-if="childGoodsIndex == 0"
+                      >{{$t('order.childOrderSn') + '：' + childOrder.orderSn}}</p>
                       <div class="goods_info">
                         <img
                           :src="$imageHost+childGoods.goodsImg"
@@ -759,7 +763,7 @@
 <script>
 
 import {
-  list, star
+  list, star, close, finish, verify
 } from '@/api/admin/orderManage/order.js'
 
 export default {
@@ -927,25 +931,49 @@ export default {
       this.showDelivery = true
       this.orderItemInfo = orderInfo
     },
+    verify (orderInfo) {
+      let obj = {
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        isCheck: false,
+        // TODO
+        verifyCode: '',
+        action: 4
+      }
+      verify(obj).then(res => {
+      })
+    },
     close (orderInfo) {
-      alert('关闭，缺少调用')
+      let obj = {
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        action: 3
+      }
+      close(obj).then(res => {
+      })
     },
     finish (orderInfo) {
-      alert('完成，缺少调用')
-    },
-    toggleStar (orderSn, starFlag) {
       let obj = {
-        orderSn: [orderSn],
-        type: 0,
-        starFlag: starFlag === 1 ? 0 : 1
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        action: 5
       }
-      star(obj).then(res => {
-        if (res.error === 0) {
-          this.$message.success(starFlag === 1 ? '取消标星成功' : '标星成功')
-          this.search()
-        }
+      finish(obj).then(res => {
       })
     }
+  },
+  toggleStar (orderSn, starFlag) {
+    let obj = {
+      orderSn: [orderSn],
+      type: 0,
+      starFlag: starFlag === 1 ? 0 : 1
+    }
+    star(obj).then(res => {
+      if (res.error === 0) {
+        this.$message.success(starFlag === 1 ? '取消标星成功' : '标星成功')
+        this.search()
+      }
+    })
   }
 }
 </script>

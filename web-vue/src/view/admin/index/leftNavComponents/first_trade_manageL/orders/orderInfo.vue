@@ -5,23 +5,6 @@
         <span>{{$t('order.orderSn')}}：{{searchParam.orderSn}}</span>
         <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</span>
       </div>
-      <!-- <div class="since-info-path">
-        <el-steps
-          :active="2"
-          align-center
-        >
-          <el-step
-            title="买家已下单"
-            description="2019-09-05 10:16:06"
-          ></el-step>
-          <el-step
-            title="买家已付款"
-            description="2019-09-05 10:16:06"
-          ></el-step>
-          <el-step title="卖家已发货"></el-step>
-          <el-step title="订单完成"></el-step>
-        </el-steps>
-      </div> -->
       <div class="since-info-detail">
         <div class="order_info">
           <div class="title">{{$t('order.orderInfo')}}</div>
@@ -188,32 +171,43 @@
                     <td
                       v-if="index === 0"
                       :rowspan="item.orderReturnGoodsVo.length"
-                    >{{item.returnType}}</td>
+                    >{{returnTypeMap.get(item.returnType)}}</td>
                     <td
                       v-if="index === 0"
                       :rowspan="item.orderReturnGoodsVo.length"
-                    >{{item.refundStatus}}</td>
+                    >
+                      {{
+                      returnStatusToShowMapping[item.refundStatus + ''] == null ?
+                      returnStatusToShowMapping[item.refundStatus + '-' + item.returnType] :
+                      returnStatusToShowMapping[item.refundStatus + '']
+                    }}
+                    </td>
                     <td
                       v-if="index === 0"
                       :rowspan="item.orderReturnGoodsVo.length"
                     >{{(item.money + item.shippingFee).toFixed(2)}}
-                      审?批
+                      <br />
+                      <el-link
+                        type="primary"
+                        :underline="false"
+                      >{{[1,2,4].indexOf(item.refundStatus) == -1 ? $t('order.returnInfo') : $t('order.approval')}}</el-link>
+
                     </td>
                     <td
                       v-if="index === 0"
                       :rowspan="item.orderReturnGoodsVo.length"
                     >
                       <template v-if="item.returnType == 1">
-                        {{order.applyTime}}
+                        {{item.applyTime}}
                       </template>
                       <template v-else>
-                        {{order.shippingOrRefundTime}}
+                        {{item.shippingOrRefundTime}}
                       </template>
                     </td>
                     <td
                       v-if="index === 0"
                       :rowspan="item.orderReturnGoodsVo.length"
-                    >{{order.refundSuccessTime}}
+                    >{{item.refundSuccessTime}}
                     </td>
                   </template>
                 </tr>
@@ -223,20 +217,28 @@
                   <td>{{$t('order.nullValue')}}</td>
                   <td>{{$t('order.nullValue')}}</td>
                   <td>{{$t('order.nullValue')}}</td>
-                  <td>{{item.returnType}}</td>
-                  <td>{{item.refundStatus}}</td>
-                  <td>{{item.shippingFee.toFixed(2)}}
-                    审?批
+                  <td>{{returnTypeMap.get(item.returnType)}}</td>
+                  <td>
+                    {{
+                      returnStatusToShowMapping[item.refundStatus + ''] == null ?
+                      returnStatusToShowMapping[item.refundStatus + '-' + item.returnType] :
+                      returnStatusToShowMapping[item.refundStatus + '']
+                    }}
                   </td>
                   <td>
-                    <template v-if="item.returnType == 1">
-                      {{order.applyTime}}
-                    </template>
-                    <template v-else>
-                      {{order.shippingOrRefundTime}}
+                    {{item.shippingFee.toFixed(2)}}
+                    <br />
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                    >{{$t('order.returnInfo')}}</el-link>
+                  </td>
+                  <td>
+                    <template>
+                      {{item.shippingOrRefundTime}}
                     </template>
                   </td>
-                  <td>{{order.refundSuccessTime}}
+                  <td>{{item.refundSuccessTime}}
                   </td>
                 </tr>
               </template>
@@ -344,7 +346,91 @@
                 <td
                   v-if="index == 0"
                   :rowspan="oneOrder.goods.length"
-                >{{orderStatusMap.get(oneOrder.orderStatus)}}</td>
+                >
+
+                  <template v-if="goodsTypeArray.indexOf('17') != -1 && oneOrder.orderSn == oneOrder.mainOrderSn && [8,10,13].indexOf(oneOrder.orderStatus)">
+                    {{$t('order.waitReceive')}}
+                  </template>
+                  <template v-else>
+                    <template v-if="oneOrder.orderStatus != 3 && oneOrder.partShipFlag != 5">
+                      <template v-if="oneOrder.orderStatus == 0 && goodsTypeArray.indexOf('10') != -1">
+                        <template v-if="order.bkOrderPaid == 0">
+                          {{$t('order.waitDeposit')}}
+                        </template>
+                        <template v-else>
+                          {{$t('order.waitTail')}}
+                        </template>
+                      </template>
+                      <template v-else>
+                        {{orderStatusMap.get(order.orderStatus)}}
+                      </template>
+                    </template>
+                    <template v-else>
+                      <template v-if="oneOrder.deliverType == 1 && oneOrder.orderStatus == 3">
+                        {{$t('order.waitverify')}}
+                      </template>
+                      <template v-else-if="oneOrder.deliverType == 0 && oneOrder.orderStatus == 3">
+                        {{$t('order.waitShip')}}
+                      </template>
+                      <template v-else-if="oneOrder.deliverType == 1 && oneOrder.orderStatus == 5">
+                        {{$t('order.takeByself')}}
+                      </template>
+                      <template v-else-if="oneOrder.deliverType == 0 && oneOrder.orderStatus == 5">
+                        {{$t('order.received')}}
+                      </template>
+                    </template>
+                    <template v-if="oneOrder.orderStatus == 3 && oneOrder.partShipFlag == 1">
+                      <br />
+                      ({{$t('order.partShip')}})
+                    </template>
+                    <template v-if="oneOrder.orderStatus == 3 && oneOrder.deliverType != 1 && oneOrder.canDeliver == true">
+                      <!-- 非自提且待发货自提 -->
+                      <br />
+                      <el-button
+                        type="primary"
+                        size="small"
+                        @click="deliver(oneOrder)"
+                      >{{$t('order.delivery')}}</el-button>
+                      <template v-if="oneOrder.canVerify == true">
+                        <!-- 核销 -->
+                        <br />
+                        <el-button
+                          type="primary"
+                          size="small"
+                          @click="verify(oneOrder)"
+                        >{{$t('order.verify')}}</el-button>
+                      </template>
+                    </template>
+                  </template>
+                  <template v-if="oneOrder.refundStatus > 0">
+                    <br />
+                    <template v-if="[1,2,4].indexOf(oneOrder.refundStatus) != -1">
+                      <el-button type="text">{{$t('order.applyRetrunView')}}</el-button>
+                    </template>
+                    <template v-else>
+                      <el-button type="text">{{$t('order.retrunView')}}</el-button>
+                    </template>
+                  </template>
+                  <template v-if="oneOrder.canClose == true">
+                    <!-- 关闭 -->
+                    <br />
+                    <el-button
+                      type="primary"
+                      size="small"
+                      @click="close(oneOrder)"
+                    >{{$t('order.close')}}</el-button>
+                  </template>
+                  <template v-if="oneOrder.canFinish == true">
+                    <!-- 完成 -->
+                    <br />
+                    <el-button
+                      type="primary"
+                      size="small"
+                      @click="finish(oneOrder)"
+                    >{{$t('order.finish')}}</el-button>
+                  </template>
+
+                </td>
                 <td
                   v-if="index == 0"
                   :rowspan="oneOrder.goods.length"
@@ -380,9 +466,10 @@
               >
                 <p>
                   {{$t('order.goodsAmount')}}：
+                  <!-- 订单金额、优惠金额、支付明细 -->
                   <span class="text-amount">
                     {{
-                      goodsTypeArray.indexOf($t('goodsTypeList')[5][0]) !== -1 ?
+                      goodsTypeArray.indexOf('4') == -1 ?
                         (currencyPool[order.currency][lang][1] + order.orderAmount.toFixed(2)) :
                         (currencyPool[order.currency][lang][1] + (order.orderAmount - order.scoreDiscount).toFixed(2) + '+' + order.scoreDiscount * monetToScore + $t('order.score'))
                     }}
@@ -560,17 +647,23 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <deliveryDialog
+      v-if="showDelivery"
+      :show.sync="showDelivery"
+      :orderData="orderItemInfo"
+      @handlerResetData="search"
+    />
   </div>
 </template>
 
 <script>
 import {
-  info
+  info, close, finish, verify
 } from '@/api/admin/orderManage/order'
 export default {
   components: {
-    nodesDialog: () => import('./addNotes')
-    // orderStatuSteps: () => import('./orderStatuSteps')
+    nodesDialog: () => import('./addNotes'),
+    deliveryDialog: () => import('./deliveryDialog')
   },
   data () {
     return {
@@ -614,9 +707,13 @@ export default {
         '12': ['createTime', 'payTime', 'pinEndTime', 'shippingTime', 'finishedTime'],
         '13': ['createTime', 'payTime', 'giftGiving', 'giveCompletion']
       },
+      returnTypeMap: null,
+      returnStatusToShowMapping: null,
       monetToScore: 100,
       goodsTypeArray: [],
-      notesOrderSn: ''
+      notesOrderSn: '',
+      // 控制发货
+      showDelivery: false
     }
   },
   created () {
@@ -652,10 +749,22 @@ export default {
       })
     },
     arrayToMap () {
+      this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
       this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
+      this.returnStatusToShowMapping = {
+        '1': this.$t('order.returnStatusMapping_1'),
+        '2': this.$t('order.returnStatusList')[3][1],
+        '3': this.$t('order.returnStatusList')[2][1],
+        '4-0': this.$t('order.returnStatusMapping_4_0'),
+        '4-1': this.$t('order.returnStatusList')[4][1],
+        '6-0': this.$t('order.returnStatusList')[6][1],
+        '6-1': this.$t('order.returnStatusList')[5][1],
+        '7': this.$t('order.returnStatusList')[7][1],
+        '5': this.$t('order.returnStatusList')[8][1]
+      }
     },
     addNodes () {
       this.showNodes = true
@@ -686,6 +795,40 @@ export default {
     },
     toogleShow () {
       this.showStatus = !this.showStatus
+    },
+    deliver (orderInfo) {
+      this.showDelivery = true
+      this.orderItemInfo = orderInfo
+    },
+    verify (orderInfo) {
+      let obj = {
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        isCheck: false,
+        // TODO
+        verifyCode: '',
+        action: 4
+      }
+      verify(obj).then(res => {
+      })
+    },
+    close (orderInfo) {
+      let obj = {
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        action: 3
+      }
+      close(obj).then(res => {
+      })
+    },
+    finish (orderInfo) {
+      let obj = {
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        action: 5
+      }
+      finish(obj).then(res => {
+      })
     }
   },
   computed: {
@@ -758,6 +901,7 @@ export default {
       if (this.order.childOrders != null) {
         this.order.childOrders.forEach(childOrder => {
           if (childOrder != null) {
+            childOrder.payCodeList = this.order.payCodeList
             orderList = orderList.concat(childOrder)
           }
         })

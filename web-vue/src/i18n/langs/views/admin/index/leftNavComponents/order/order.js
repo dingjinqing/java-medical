@@ -246,6 +246,7 @@ export const cn = {
   verify: '核销',
   returned: '已退金额',
   returnMostAmount: '最多可退金额',
+  approval: '审批',
   recordTypeObj: {
     0: '商家',
     1: '买家',

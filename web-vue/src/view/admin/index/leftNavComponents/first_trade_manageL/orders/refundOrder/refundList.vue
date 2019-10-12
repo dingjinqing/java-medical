@@ -122,7 +122,7 @@
                       <span>
                         {{
                           $t('order.applyTime') + '：'+
-                          (orderItem.returnType == 0 ?
+                          (orderItem.returnType != 1 ?
                           orderItem. shippingOrRefundTime:
                           orderItem.applyTime)
                         }}
@@ -133,55 +133,93 @@
                   </div>
                 </td>
               </tr>
-              <template v-for="(goodsItem,index) in orderItem.goods">
+              <template v-if="orderItem.goods != null">
+                <template v-for="(goodsItem,index) in orderItem.goods">
+                  <tr
+                    class="order-tb-body"
+                    :key="index"
+                  >
+                    <td>
+                      <div class="goods_info">
+                        <img
+                          :src="$imageHost+goodsItem.goodsImg"
+                          alt=""
+                        >
+                        <div class="right_info">
+                          <div class="goods_name">{{goodsItem.goodsName}}</div>
+                          <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      {{goodsItem.goodsNumber}}
+                    </td>
+                    <td>
+                      {{goodsItem.goodsPrice.toFixed(2)}}
+                    </td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="orderItem.goods.length"
+                    >
+                      {{returnTypeMap.get(orderItem.returnType)}}
+                    </td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="orderItem.goods.length"
+                    >
+                      {{$t('order.reasonTypeList')[orderItem.reasonType]}}
+                    </td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="orderItem.goods.length"
+                    >
+                      {{
+                      returnStatusToShowMapping[orderItem.refundStatus + ''] == null ?
+                      returnStatusToShowMapping[orderItem.refundStatus + '-' + orderItem.returnType] :
+                      returnStatusToShowMapping[orderItem.refundStatus + '']
+                    }}
+                    </td>
+                    <td
+                      v-if="index === 0"
+                      :rowspan="orderItem.goods.length"
+                    >
+                      <el-button
+                        :type="orderItem.refundStatus === 1 ? 'primary' : 'default'"
+                        size="small"
+                        @click="checkDetail(orderItem.returnOrderSn)"
+                      >{{orderItem.refundStatus === 1 ? '处理退款':'查看详情'}}</el-button>
+                    </td>
+                  </tr>
+                </template>
+              </template>
+              <template v-else>
                 <tr
                   class="order-tb-body"
                   :key="index"
                 >
                   <td>
-                    <div class="goods_info">
-                      <img
-                        :src="$imageHost+goodsItem.goodsImg"
-                        alt=""
-                      >
-                      <div class="right_info">
-                        <div class="goods_name">{{goodsItem.goodsName}}</div>
-                        <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
-                      </div>
-                    </div>
+                    {{$t('order.nullValue')}}
                   </td>
                   <td>
-                    {{goodsItem.goodsNumber}}
+                    {{$t('order.nullValue')}}
                   </td>
                   <td>
-                    {{goodsItem.goodsPrice.toFixed(2)}}
+                    {{$t('order.nullValue')}}
                   </td>
-                  <td
-                    v-if="index === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
+                  <td>
                     {{returnTypeMap.get(orderItem.returnType)}}
                   </td>
-                  <td
-                    v-if="index === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
+                  <td>
                     {{$t('order.reasonTypeList')[orderItem.reasonType]}}
                   </td>
-                  <td
-                    v-if="index === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
+                  <td>
                     {{
                       returnStatusToShowMapping[orderItem.refundStatus + ''] == null ?
                       returnStatusToShowMapping[orderItem.refundStatus + '-' + orderItem.returnType] :
                       returnStatusToShowMapping[orderItem.refundStatus + '']
                     }}
                   </td>
-                  <td
-                    v-if="index === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
+                  <td>
                     <el-button
                       :type="orderItem.refundStatus === 1 ? 'primary' : 'default'"
                       size="small"

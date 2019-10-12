@@ -96,3 +96,27 @@ export function handleReturnInfo (data) {
     data: data
   })
 }
+// 关闭操作
+export function close (data) {
+  return service({
+    url: '/api/admin/order/close',
+    method: 'post',
+    data: data
+  })
+}
+// 完成情操作
+export function finish (data) {
+  return service({
+    url: '/api/admin/order/finish',
+    method: 'post',
+    data: data
+  })
+}
+// 核销操作
+export function verify (data) {
+  return service({
+    url: '/api/admin/order/verify',
+    method: 'post',
+    data: data
+  })
+}
