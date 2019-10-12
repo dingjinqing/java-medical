@@ -630,10 +630,11 @@ public class ScoreService extends ShopBaseService {
 		logger().info("signInScore是空的");
 		CheckSignVo vo=new CheckSignVo();
 		vo.setIsOpenSign(isOpenSign);
-		vo.setSignData(signData);
 		if(signInScore!=null) {
+			vo.setSignData(signData);
 			vo.setSignRule(signInScore.getScore().length<=0?new String[0]:signInScore.getScore());			
 		}else {
+			vo.setSignData(null);
 			vo.setSignRule(new String[0]);
 		}
 		return vo;
