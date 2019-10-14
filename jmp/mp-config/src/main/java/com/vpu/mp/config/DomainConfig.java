@@ -29,7 +29,7 @@ public class DomainConfig {
 	 * @return
 	 */
 	public String imageUrl(String relativePath) {
-		return this.imageUrl(relativePath, null);
+		return this.imageUrl(pathJudge(relativePath), null);
 	}
 
 	/**
@@ -72,5 +72,17 @@ public class DomainConfig {
 	 */
 	public String getWxMaPayNotifyUrl(Integer shopId) {
 		return mainUrl("/wechat/notify/ma/payment/"+shopId);
+	}
+	
+	/**
+	 * 判断路径开始是否为/，并做是否删除
+	 * @param relativePath
+	 * @return
+	 */
+	private String pathJudge(String relativePath) {
+		if(relativePath.charAt(0)=='/') {
+			relativePath=relativePath.replaceFirst("/", "");
+		}
+		return relativePath;
 	}
 }
