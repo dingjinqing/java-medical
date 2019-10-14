@@ -53,7 +53,7 @@ public class QrCodeService extends ShopBaseService {
         String typeUrl = StringUtils.isBlank(paramStr) ? typeEnum.getUrl() : typeEnum.getUrl() + "?" + paramStr;
         String paramId = Util.md5(typeUrl);
 
-        return getMpQrCode(typeUrl,typeEnum.getType(),paramId);
+        return getMpQrCode(typeEnum.getUrl(),typeEnum.getType(),paramStr,paramId);
     }
 
     /**
@@ -63,7 +63,7 @@ public class QrCodeService extends ShopBaseService {
      * @param paramId 记录的唯一值，由typeUrl加密后产生
      * @return 小程序码图片url，null表示无法获取相应二维码
      */
-    private String getMpQrCode(String typeUrl, Short type, String paramId) {
+    private String getMpQrCode(String typeUrl, Short type, String paramStr,String paramId) {
     	logger().info("获取小程序码typeUrl"+typeUrl);
         String relativePath = db().select(CODE.QRCODE_IMG).from(CODE)
             .where(CODE.PARAM_ID.eq(paramId)).and(CODE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
@@ -101,7 +101,7 @@ public class QrCodeService extends ShopBaseService {
 
         try {
             byte[] qrcodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId)
-                .getQrcodeService().createWxaCodeUnlimitBytes(null,typeUrl, qrcodWidth,true,null,true);
+                .getQrcodeService().createWxaCodeUnlimitBytes(paramStr,typeUrl, qrcodWidth,true,null,true);
 
             relativePath = format("upload/%s/qrcode/%s/T%sP%s_%s.jpg", type, getShopId(), type, paramId,
                 new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
