@@ -21,3 +21,21 @@ export function setFirstPage (data) {
     data: data
   })
 }
+
+// 获取分类数据
+export function getPageCate (data) {
+  return service({
+    url: '/api/admin/decorate/cate/page',
+    method: 'post',
+    data: data
+  })
+}
+
+// 页面设置分类
+export function setPageCate (data) {
+  return service({
+    url: '/api/admin/decorate/cate/set',
+    method: 'post',
+    data: data
+  })
+}

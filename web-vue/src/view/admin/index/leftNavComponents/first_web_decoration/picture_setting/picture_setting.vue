@@ -55,10 +55,10 @@
               size="small"
             >
               <el-option
-                v-for="item in $t('pictureSetting.pageClassification')"
+                v-for="item in pageSetoptions"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :label="item.name"
+                :value="item.id"
               >
               </el-option>
             </el-select>
@@ -120,9 +120,9 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.pageClass}}</span>
+              <span>{{scope.row.name}}</span>
               <span
-                @click="handleSet()"
+                @click="getPageCate(scope.row.pageId)"
                 style="color:#5A8BFF;cursor:pointer"
               >设置</span>
             </template>
@@ -186,18 +186,10 @@
             style="color:#5a8bff;cursor:pointer"
           >批量设置分类</span>
         </div>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="pageParams.currentPage"
-          :page-size="pageParams.pageRows"
-          layout="total, prev, pager, next, jumper"
-          :total="pageParams.totalRows"
-        >
-        </el-pagination>
-        <!-- <pagination
+        <pagination
           :page-params.sync="pageParams"
           @pagination="list"
-        /> -->
+        />
       </div>
 
     </div>
@@ -217,8 +209,8 @@
             <el-option
               v-for="item in pageSetoptions"
               :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :label="item.name"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -230,7 +222,7 @@
           <el-button @click="pageSetdialogVisible = false">取 消</el-button>
           <el-button
             type="primary"
-            @click="pageSetdialogVisible = false"
+            @click="savePageCate()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -279,28 +271,21 @@
   </div>
 </template>
 <script>
-import { pageList, setFirstPage } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate } from '@/api/admin/decoration/pageSet.js'
+import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { SelectTemplateDialog: () => import('./selectTemplateDialog') },
+  components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
   data () {
     return {
       iconUrl: this.$imageHost + '/image/admin/system_icon.png',
       pageNameInput: '',
+      currentPage: null,
       restaurants: [],
       statePage: '',
       selectValue: null,
       selectOptions: [],
       pageSetvalue: '',
-      pageSetoptions: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
+      pageSetoptions: [],
       tableData: [],
       allChecked: false,
       allCheckedFlag: false,
@@ -310,12 +295,12 @@ export default {
       pathInput: '',
       flag: true,
       tuneUpMiniPage: false,
-      pageParams: {
-        currentPage: 1,
-        pageRows: 20,
-        totalRows: null
-      },
-      param: {}
+      pageParams: {},
+      param: {},
+      setPageCateParam: {
+        'pageId': '',
+        'id': ''
+      }
 
     }
   },
@@ -418,6 +403,7 @@ export default {
     handleSetFirstPage (pageId) {
       this.param.pageId = pageId
       setFirstPage(this.param).then((res) => {
+        console.log(res)
         if (res.error === 0) {
           this.$message.success({
             type: 'success',
@@ -469,9 +455,29 @@ export default {
     handleToNewPage () {
       this.tuneUpMiniPage = true
     },
-    // 表格设置点击
-    handleSet () {
+    // 获取页面分类
+    getPageCate (pageId) {
+      this.setPageCateParam.pageId = pageId
+      getPageCate().then(res => {
+        if (res.error === 0) {
+          this.pageSetoptions = res.content
+        }
+      })
       this.pageSetdialogVisible = true
+    },
+    // 装修页面设置页面分类
+    savePageCate () {
+      this.setPageCateParam.id = this.pageSetvalue
+      setPageCate(this.setPageCateParam).then(res => {
+        if (res.error === 0) {
+          this.$message.success({
+            type: 'success',
+            message: '设置成功'
+          })
+          this.pageSetdialogVisible = false
+          this.list()
+        }
+      })
     }
   }
 }
