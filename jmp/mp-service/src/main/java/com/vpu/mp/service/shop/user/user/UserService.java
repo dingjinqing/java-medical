@@ -33,9 +33,11 @@ import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
+import com.vpu.mp.service.saas.shop.ShopImageManageService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -72,6 +74,9 @@ public class UserService extends ShopBaseService {
 	
 	@Autowired
 	private ConfigService config;
+	
+	@Autowired
+	public ShopImageManageService image;
 	
 	private int userActiveEnter[] = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
 			1038, 1042, 1014, 1043, 1045, 1046, 1052, 1053, 1056, 1057, 1058, 1064, 1067, 1068, 1071, 1072, 1073, 1074,
@@ -439,6 +444,7 @@ public class UserService extends ShopBaseService {
 	 */
 	public List<Map<String, Object>> parseMyService(UserRecord user, List<Map<String, Object>> data) {
 		for (Map<String, Object> iconItem : data) {
+			iconItem.put("icon", image.imageUrl(String.valueOf(iconItem.get("icon"))));
 			if (iconItem.get("icon_name").equals("distribution")) {
 				// $default = '{"status":0,"judge_status":0,"rank_status":0,"protect_date":-1}';
 				
@@ -483,6 +489,7 @@ public class UserService extends ShopBaseService {
 	public List<Map<String, Object>> parseMyOrder(Integer userId,List<Map<String, Object>> data) {
 		//TODO 等王帅写$orderStatusNum = $shop->order->getUserOrderTypeNumber($userId,false);
 		for (Map<String, Object> iconItem : data) {
+			iconItem.put("icon", image.imageUrl(String.valueOf(iconItem.get("icon"))));
 			if(iconItem.get("icon_name").equals("wait_pay")) {
 				iconItem.put("num", 1);
 			}
@@ -496,7 +503,7 @@ public class UserService extends ShopBaseService {
 				iconItem.put("num", 4);
 			}
 			if(iconItem.get("icon_name").equals("refund")) {
-				iconItem.put("num", 6);
+				iconItem.put("num", 5);
 			}
 		}
 		return data;
@@ -539,7 +546,7 @@ public class UserService extends ShopBaseService {
 	 * @param data
 	 * @return
 	 */
-	public Map<String, Object> parseCenterHeader(Integer userId, Map data) {
+	public Map<String, Object> parseCenterHeader(Integer userId, Map<String, Object> data) {
 		// checkSignInScore
 		CheckSignVo checkData = userCard.scoreService.checkSignInScore(userId);
 		data.put("sign_score", checkData);
