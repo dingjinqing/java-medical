@@ -245,6 +245,16 @@ export const cn = {
   storeGoodsList: ['门店管理', '商品管理'],
   // 门店管理 核销员管理
   verifierManage: ['门店管理', '门店列表', '核销员管理'],
+  // 门店管理 门店管理
+  storeManage: ['门店管理', '门店列表', '门店管理'],
+  // 门店管理 预约管理
+  storeAppointmentManage: ['门店管理', '门店列表', '预约管理'],
+  // 门店管理 服务管理
+  storeServiceManage: ['门店管理', '门店列表', '服务管理'],
+  // 门店管理 技师管理
+  storeTechnicianManage: ['门店管理', '门店列表', '技师管理'],
+  // 门店管理 评价管理
+  storeEvaluationManage: ['门店管理', '门店列表', '评价管理'],
   // 门店管理 分组管理
   store_group_list: ['门店管理', '分组管理'],
   // 门店管理 新增门店

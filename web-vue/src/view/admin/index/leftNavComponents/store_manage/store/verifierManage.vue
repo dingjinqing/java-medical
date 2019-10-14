@@ -1,5 +1,6 @@
 <template>
   <div class="receiveDetail">
+    <!-- 核销员管理 -->
     <div class="receiveDetailMain">
       <div class="order-container">
         <div class="order-info">

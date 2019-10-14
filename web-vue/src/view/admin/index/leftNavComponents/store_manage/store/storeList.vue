@@ -171,7 +171,7 @@
                   :content="$t('storeList.storeManage')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.storeId)">{{$t('storeList.storeManage')}}</a>
+                  <a @click="edit('storeManage', scope.row.storeId, scope.row)">{{$t('storeList.storeManage')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -333,6 +333,14 @@ export default {
         case 'verifierManage':
           this.$router.push({
             path: '/admin/home/main/store/verification/list',
+            query: {
+              id: id
+            }
+          })
+          break
+        case 'storeManage':
+          this.$router.push({
+            path: '/admin/home/main/store/storemanage',
             query: {
               id: id
             }

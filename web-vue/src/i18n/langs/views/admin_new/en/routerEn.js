@@ -356,6 +356,16 @@ export const en = {
   storeGoodsList: ['Store management', 'Commodity management'],
   // 门店管理 核销员管理
   verifierManage: ['Store management', 'Store list', 'verifier management'],
+  // 门店管理 门店管理
+  storeManage: ['Store management', 'Store list', 'Store management'],
+  // 门店管理 预约管理
+  storeAppointmentManage: ['Store management', 'Store List', 'Appointment management'],
+  // 门店管理 服务管理
+  storeServiceManage: ['Store management', 'Store List', 'Service management'],
+  // 门店管理 技师管理
+  storeTechnicianManage: ['Store management', 'Store List', 'Technician management'],
+  // 门店管理 评价管理
+  storeEvaluationManage: ['Store management', 'Store List', 'Evaluation management'],
   // 门店管理 分组管理
   store_group_list: ['Store management', 'Store groups list'],
   // 门店管理 新增门店
