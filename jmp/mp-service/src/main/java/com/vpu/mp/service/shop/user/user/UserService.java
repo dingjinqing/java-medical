@@ -31,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
@@ -39,6 +40,7 @@ import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -78,6 +80,9 @@ public class UserService extends ShopBaseService {
 	
 	@Autowired
 	public ShopImageManageService image;
+	
+	@Autowired
+	public QrCodeService qrCode;
 	
 	private int userActiveEnter[] = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
 			1038, 1042, 1014, 1043, 1045, 1046, 1052, 1053, 1056, 1057, 1058, 1064, 1067, 1068, 1071, 1072, 1073, 1074,
@@ -299,7 +304,7 @@ public class UserService extends ShopBaseService {
 				} else {
 					map.put("invite_source", "scanqrcode");
 					// TODO php上有问题 app/Service/Shop/User/User/User.php
-					map.put("invite_act_id", "1");
+					map.put("invite_act_id","0");
 				}
 			}
 			if (!StringUtils.isEmpty(pathQuery.getQuery().get("shareAward"))) {
@@ -534,7 +539,6 @@ public class UserService extends ShopBaseService {
 				iconItem.put("num", coupon.getCanUseCouponNum(record.getUserId()));
 			}
 			if(iconItem.get("icon_name").equals("card")) {
-				//TODO 等壮壮提供getValidCardList
 				List<ValidUserCardBean> cardList = userCard.userCardDao.getValidCardList(record.getUserId(), (byte)-1, 0);
 				iconItem.put("num", cardList!=null?cardList.size():0);
 			}
@@ -555,9 +559,7 @@ public class UserService extends ShopBaseService {
 		// checkSignInScore
 		CheckSignVo checkData = userCard.scoreService.checkSignInScore(userId);
 		data.put("sign_score", checkData);
-		// TODO 暂时不写
-		// $data['qrcode'] = $shop->image->qrcode->getQrcodeInfo(1, $userId);
-		data.put("qrcode", "");
+		data.put("qrcode", qrCode.getMpQrCode(QrCodeTypeEnum.PAGE_BOTTOM,String.valueOf(userId)));
 		logger().info("用户等级判断");
 		// 用户等级判断
 		String userGrade = userCard.getUserGrade(userId);
