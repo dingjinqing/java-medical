@@ -61,6 +61,8 @@ public class ConfigService extends ShopBaseService {
 	public CollectGiftConfigService collectGiftConfigService;
     @Autowired
     public MessageConfigService messageConfigService;
+    @Autowired
+    public OrderExportConfigService orderExportCfg;
 	/**
 	 * 得到店铺配置
 	 * 

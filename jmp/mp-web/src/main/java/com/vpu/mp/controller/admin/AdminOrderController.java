@@ -26,6 +26,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 
+import java.util.List;
+
 /**
  * 	订单模块
  * 
@@ -186,4 +188,22 @@ public class AdminOrderController extends AdminBaseController {
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
+
+    /**
+     * 获取当前表格导出列表头
+     */
+    @PostMapping("/export/columns")
+    public JsonResult getExportColumns() {
+        List<String> columns = shop().config.orderExportCfg.getOrderExportList();
+        return success(columns);
+    }
+
+    /**
+     * 设置表格导出列表头
+     */
+    @PostMapping("/export/columns/set")
+    public JsonResult setExportColumns(@RequestBody List<String> columns) {
+        shop().config.orderExportCfg.setOrderExportList(columns);
+        return success();
+    }
 }
