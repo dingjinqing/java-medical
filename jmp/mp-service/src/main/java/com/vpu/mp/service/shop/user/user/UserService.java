@@ -559,7 +559,7 @@ public class UserService extends ShopBaseService {
 		// checkSignInScore
 		CheckSignVo checkData = userCard.scoreService.checkSignInScore(userId);
 		data.put("sign_score", checkData);
-		data.put("qrcode", qrCode.getMpQrCode(QrCodeTypeEnum.PAGE_BOTTOM,String.valueOf(userId)));
+		data.put("qrcode", qrCode.getMpQrCode(QrCodeTypeEnum.PAGE_BOTTOM,"invite_id="+userId));
 		logger().info("用户等级判断");
 		// 用户等级判断
 		String userGrade = userCard.getUserGrade(userId);
