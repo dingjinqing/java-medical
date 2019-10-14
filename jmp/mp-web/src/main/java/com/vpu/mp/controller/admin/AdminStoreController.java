@@ -1,42 +1,23 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
-import com.vpu.mp.service.pojo.shop.store.verifier.VerifierSimpleParam;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAddParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAdminMessageParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderChargeParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderCountingDataVo;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.*;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
@@ -46,7 +27,19 @@ import com.vpu.mp.service.pojo.shop.store.validated.StoreCodingCheckValidatedGro
 import com.vpu.mp.service.pojo.shop.store.validated.StoreUpdateValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.verifier.VerifierSimpleParam;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * 门店管理
@@ -243,15 +236,26 @@ public class AdminStoreController extends AdminBaseController{
     	return success(shop().store.storeVerifier.getPageList(verifierListQueryParam));
     }
 
+    @GetMapping("/api/admin/store/verifier/testdownload")
+    public void testDownload(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        String fileName = "李晓冰";
+        // 读取文件
+        response.setContentType("application/octet-stream;charset=UTF-8");
+//        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+
+        fileName = URLEncoder.encode(fileName + ".txt", "UTF-8");
+        response.setHeader("myheader",URLEncoder.encode("李晓冰.txt","UTF-8"));
+
+        response.setHeader("Content-disposition", "attachment; filename="+fileName);// 指定下载的文件名
+        response.getOutputStream().write("计算的积分积".getBytes());
+    }
     /**
      * 核销员列表导出
      * @return
      */
     @PostMapping(value = "/api/admin/store/verifier/export")
-    public void exportStoreVerifierList(@RequestBody @Valid VerifierListQueryParam verifierListQueryParam, HttpServletResponse response) throws IOException {
+    public void exportStoreVerifierList(@RequestBody @Valid VerifierListQueryParam verifierListQueryParam,HttpServletResponse response, HttpServletRequest request) throws IOException {
         Workbook workbook =shop().store.storeVerifier.exportStoreVerifierList(verifierListQueryParam,getLang());
-        response.setContentType("application/octet-stream;charset=UTF-8");
-
         //门店名称
         String storeName = "";
         Record record = shop().store.getStoreName(verifierListQueryParam.getStoreId());
@@ -259,8 +263,8 @@ public class AdminStoreController extends AdminBaseController{
             storeName = record.into(String.class);
         }
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.STORE_VERIFIER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL,storeName);
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "ISO8859-1") + ".xls");
-        workbook.write(response.getOutputStream());
+
+        export2Excel(workbook,fileName,response);
     }
 
     /**

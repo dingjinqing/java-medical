@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.LANGUAGE_TYPE_EXCEL;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.validation.annotation.Validated;
@@ -117,9 +118,9 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      * @param param 筛选条件
      */
     @PostMapping("/api/admin/market/increasepurchase/exportorderlist")
-    public void exportOrderList(@RequestBody RedemptionOrderParam param, HttpServletResponse response) {
+    public void exportOrderList(@RequestBody RedemptionOrderParam param, HttpServletResponse response, HttpServletRequest request) {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_ORDER_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
-        export2Excel(shop().increaseService.exportOrderList(param),response,fileName);
+        export2Excel(shop().increaseService.exportOrderList(param),fileName,response);
     }
     /**
      * 换购明细导出
@@ -127,9 +128,9 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      * @param param 筛选条件
      */
     @PostMapping("/api/admin/market/increasepurchase/exportorderdetail")
-    public void exportOrderDetail(@RequestBody RedemptionDetailParam param, HttpServletResponse response) {
+    public void exportOrderDetail(@RequestBody RedemptionDetailParam param, HttpServletResponse response,HttpServletRequest request) {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_DETAIL_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
-        export2Excel(shop().increaseService.exportOrderDetail(param),response,fileName);
+        export2Excel(shop().increaseService.exportOrderDetail(param),fileName,response);
     }
 
     /**
