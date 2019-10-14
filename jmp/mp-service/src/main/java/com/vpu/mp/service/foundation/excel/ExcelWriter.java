@@ -67,6 +67,15 @@ public class ExcelWriter extends AbstractExcelDisposer {
     public <T> void writeModelList(List<T> dataArray, Class<T> clazz,List<String> neededColumns) {
         ExcelSheetBean sheetBean = initSheet(clazz,neededColumns);
 
+        // 导出动态excle列的时候处理多余的excel空白列
+        if (neededColumns != null) {
+            HashMap<String, ExcelColumnBean> columnMap = sheetBean.columnMap;
+            for (Map.Entry<String, ExcelColumnBean> entry : columnMap.entrySet()) {
+                Integer index = neededColumns.indexOf(entry.getKey());
+                entry.getValue().columnIndex = index;
+            }
+        }
+
         Sheet sheet = createTargetSheet(sheetBean);
 
         createExcelTemplate(clazz, sheetBean, sheet);
