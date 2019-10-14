@@ -64,7 +64,10 @@ public class QrCodeService extends ShopBaseService {
      * @return 小程序码图片url，null表示无法获取相应二维码
      */
     private String getMpQrCode(String typeUrl, Short type, String paramStr,String paramId) {
-    	logger().info("获取小程序码typeUrl"+typeUrl);
+    	logger().debug("-------获取小程序码typeUrl"+typeUrl);
+        logger().debug("-------获取小程序码typeUrl"+typeUrl);
+        logger().debug("-------获取小程序码typeUrl"+typeUrl);
+        logger().debug("-------获取小程序码typeUrl"+typeUrl);
         String relativePath = db().select(CODE.QRCODE_IMG).from(CODE)
             .where(CODE.PARAM_ID.eq(paramId)).and(CODE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .fetchAny(CODE.QRCODE_IMG);
