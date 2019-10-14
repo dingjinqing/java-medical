@@ -124,7 +124,6 @@
 </template>
 
 <script>
-import service from '@/util/request.js'
 import { download } from '@/util/excelUtil.js'
 import { getVerifierList, addVerifier, delVerifier, exportStoreVerifierList } from '@/api/admin/storeManage/verifierManage'
 import pagination from '@/components/admin/pagination/pagination'
