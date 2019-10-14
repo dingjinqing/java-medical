@@ -5,8 +5,9 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -14,9 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 * @Date: 2019年8月8日
 * @Description:
 */
-@Getter
-@Setter
+@Data
 @Slf4j
+@ToString
+@NoArgsConstructor
 public class MemberCard {
 	private Integer id;
 	private String cardName;
@@ -43,24 +45,23 @@ public class MemberCard {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String chargeMoney;
 	
-	
-	public MemberCard(Integer id) {
-		super();
-		this.id = id;
-	}
-	
-	
+
 	/**
 	 * 设置开关及是否过期
 	 */
 	public void changeJsonCfg() {
 		log.info("正在执行changeJsonCfg.");
 		/** 会员折扣开关， 0表示关闭，1表示开启 */
-		powerCount = (byte) (discount == null ? 0 : 1);
+		this.powerCount = (byte) (this.discount == null ? 0 : 1);
 		/** 积分获取开关， 0表示关闭，1表示开启 */
-		powerScore = (byte) (buyScore == null ? 0 : 1);
+		this.powerScore = (byte) (this.buyScore == null ? 0 : 1);
 		/** 卡充值开关 0关闭；1开启 */
-		powerCard = (byte) (chargeMoney == null ? 0 : 1);
+		this.powerCard = (byte) (this.chargeMoney == null ? 0 : 1);
 	}
-	
+
+
+	public MemberCard(Integer id) {
+		super();
+		this.id = id;
+	}
 }
