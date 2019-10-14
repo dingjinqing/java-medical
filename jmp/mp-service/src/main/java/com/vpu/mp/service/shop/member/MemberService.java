@@ -29,14 +29,13 @@ import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
@@ -57,6 +56,9 @@ import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -94,6 +96,7 @@ import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import jodd.util.StringUtil;
 
 /**
@@ -145,30 +148,33 @@ public class MemberService extends ShopBaseService {
 	public AreaSelectService area;
 	@Autowired
 	public UserCardService userCardService;
+	@Autowired
+	public UserCardDaoService userCardDao;
 	/**
 	 * 导出会员
 	 */
-	public void exportUser(MemberPageListParam param) {
-		
+	public Workbook exportUser(MemberPageListParam param,String lang) {
+
 		List<UserRecord> userList = getExportUserList(param);
 		List<MemberRecordExportVo> resList = new ArrayList<>();
 		
 		for(UserRecord user: userList) {
 			MemberRecordExportVo vo = new MemberRecordExportVo();
 			FieldsUtil.assignNotNull(user, vo);
-			
+			//TODO
 			UserCenterNumBean userCenterOrder = order.getUserCenterNum(user.getUserId(), 0, new Integer[] {6,8,10}, new Integer[] {});
 			UserCenterNumBean userCenterReturnOrder = order.getUserCenterNum(user.getUserId(), 4, new Integer[] {7,9}, new Integer[] {5});
-		
 			
-		
+			// 邀请人姓名
+			vo.setInviteUserName(userCardDao.getUserName(user.getInviteId()));
+			
+			resList.add(vo);
 		}
+		 Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+	     ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
 		
-		
-	
-		
-		
-		
+	     excelWriter.writeModelList(resList,MemberRecordExportVo.class);
+	     return workbook;
 	}
 	
 	

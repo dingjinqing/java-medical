@@ -17,7 +17,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -493,5 +494,16 @@ public class CardDaoService extends ShopBaseService {
 	
 	public MemberCardRecord getCardInfoById(Integer id) {
 		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(id)).fetchAny();
+	}
+	
+	/**
+	 * 获取所有正在使用的等级会员卡
+	 * @return
+	 */
+	public List<MemberCardRecord> getAllUsingGradeCard() {
+		 return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
+			.and(MEMBER_CARD.FLAG.eq(MEMBER_CARD_USING))
+			.orderBy(MEMBER_CARD.GRADE.asc())
+			.fetchInto(MemberCardRecord.class);
 	}
 }

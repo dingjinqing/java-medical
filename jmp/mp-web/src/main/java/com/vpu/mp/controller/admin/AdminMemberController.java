@@ -1,11 +1,13 @@
 package com.vpu.mp.controller.admin;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,16 +78,17 @@ public class AdminMemberController extends AdminBaseController{
 	/**
 	 * 会员列表导出
 	 * @param param
+	 * @throws IOException 
 	 */
 	@PostMapping("/list/export")
-	public void exportUser(@RequestBody MemberPageListParam param,HttpServletResponse response) {
+	public void exportUser(@RequestBody MemberPageListParam param,HttpServletResponse response) throws IOException {
 		logger().info("正在进行会员导出");
-		this.shop().member.exportUser(param);
+		Workbook workBook = this.shop().member.exportUser(param,getLang());
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
 		// TODO file name
 		String fileName = "filename";
 		response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
-		return ;
+		workBook.write(response.getOutputStream());
 	}
 	
 	

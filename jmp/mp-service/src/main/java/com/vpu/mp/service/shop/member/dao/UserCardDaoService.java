@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.member.dao;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.util.List;
 
@@ -35,7 +36,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UNAVAILABLE_IN_STORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
+
 /**
 * @author 黄壮壮
 * @Date: 2019年10月10日
@@ -232,5 +234,24 @@ public class UserCardDaoService extends ShopBaseService{
 				MEMBER_CARD.DATE_TYPE,MEMBER_CARD.STORE_LIST,MEMBER_CARD.ACTIVATION,MEMBER_CARD.GRADE)
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)));
 	}
+	
+	/**
+	 * 获取用户持有会员卡的等级
+	 */
+	public String getUserCardGrade(Integer userId) {
+		return db().select(MEMBER_CARD.GRADE).from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+			.where(USER_CARD.USER_ID.eq(userId))
+			.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
+			.and(USER_CARD.FLAG.eq(MEMBER_CARD_USING))
+			.fetchAnyInto(String.class);
+	}
 
+	/**
+	 * 根据id获取用户名
+	 * @param id
+	 * @return
+	 */
+	public String getUserName(Integer id) {
+		return db().select(USER.USERNAME).from(USER).where(USER.USER_ID.eq(id)).fetchAnyInto(String.class);
+	}
 }

@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record1;
 import org.jooq.Record3;
@@ -14,14 +13,21 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
+import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.shop.distribution.DistributorLevelService;
+import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.SEND_SCORE_BY_CREATE_CARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,10 +50,13 @@ public class UserCardService extends ShopBaseService{
 	@Autowired
 	public UserCardDaoService userCardDao;
 	@Autowired
+	public CardDaoService cardDao;
+	@Autowired
 	public ScoreService scoreService;
 	@Autowired
 	public MemberCardService memberCardService;
-	
+	@Autowired
+	public DistributorLevelService distributorLevelService;
 	public static final String DEFAULT_ADMIN = "1";
 	// TODO 待国际化
 	public static final String OPTIONINFO = "开卡赠送";
@@ -73,9 +82,9 @@ public class UserCardService extends ShopBaseService{
 	 * @param type  是否领取 1领取 0只是检测
 	 * @throws MpException 
 	 */
-	public void updateGrade(Integer[] userId,Integer cardId,Byte type) throws MpException {
+	public int updateGrade(Integer[] userId,Integer cardId,Byte type) throws MpException {
 		if(userId == null || userId.length<=0) {
-			return;
+			return 1;
 		}
 		// 后台用户列表发卡（不需判断条件）
 		if(cardId != null) {
@@ -121,9 +130,53 @@ public class UserCardService extends ShopBaseService{
 			for(Integer id: userId) {
 				//获取用户累积获得积分和累积消费总额
 				Integer userTotalScore = scoreService.getUserTotalScore(id);
+				BigDecimal amount = distributorLevelService.getTotalSpend(id).getTotal();
+				// 获取等级卡列表等循环判断符合的等级
+				List<MemberCardRecord> gradeCard = cardDao.getAllUsingGradeCard();
+				if(gradeCard.size()==0) {
+					return -1;
+				}
+				///获取该用户的会员卡等级 
+				String grade = userCardDao.getUserCardGrade(id);
+				if(!StringUtils.isBlank(grade) && type == 1 ) {
+					List<MemberCard> list = new ArrayList<>();
+					list.add(new MemberCard(gradeCard.get(0).getId()));
+					addUserCard(id,list);
+					grade = userCardDao.getUserCardGrade(id);
+				}
 				
+				for(MemberCardRecord card: gradeCard) {
+		
+					GradeConditionJson gradeCondition = Util.parseJson(card.getGradeCondition(), GradeConditionJson.class);
+					if((!StringUtils.isBlank(grade) && !StringUtils.isBlank(card.getGrade()))
+							|| (StringUtils.isBlank(grade))) {
+						
+						if(BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO)<1) {
+							gradeCondition.setGradeScore(new BigDecimal(userTotalScore+1000));
+						}
+						
+						if(BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(),BigDecimal.ZERO)<1) {
+							gradeCondition.setGradeMoney(amount.add(new BigDecimal(1000)));
+						}
+						
+						if(gradeCondition.getGradeScore().intValue() <= userTotalScore || 
+								BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(),amount)<=0) {
+							
+							Integer cid = card.getId();
+							
+							if(!StringUtils.isBlank(grade) && (type == 1 || type == 2)) {
+								
+							}
+							
+						}
+						
+						
+					}
+				}
 			}
 		}
+		
+		return 1;
 	}
 	
 	
@@ -154,7 +207,7 @@ public class UserCardService extends ShopBaseService{
 	}
 	
 	/**
-	 * 计算用户卡使用的时间
+	 * 计算用户卡使用的时间段
 	 * @return
 	 */
 	public List<Integer> useInDate() {
@@ -170,4 +223,5 @@ public class UserCardService extends ShopBaseService{
 		
 		return inData;
 	}
+
 }
