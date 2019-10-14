@@ -1,6 +1,7 @@
 package com.vpu.mp.service.foundation.excel;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +36,9 @@ public abstract class AbstractExcelDisposer {
         this.language = StringUtils.isBlank(language) ?AbstractExcelDisposer.DEFAULT_LANGUAGE: language;
     }
 
+    protected ExcelSheetBean initSheet(Class<?> clazz){
+       return initSheet(clazz,null);
+    }
     /**
      *  初始化ExcelSheetBean，映射model类和excel
      * @param clazz
@@ -43,7 +47,7 @@ public abstract class AbstractExcelDisposer {
      * @throws IllegalExcelHeaderException
      * @throws IllegalExcelDataException
      */
-    protected ExcelSheetBean initSheet(Class<?> clazz){
+    protected ExcelSheetBean initSheet(Class<?> clazz, List<String> neededColumns){
         if (!clazz.isAnnotationPresent(ExcelSheet.class)) {
             throw new NotExcelModelException();
         }
@@ -62,6 +66,9 @@ public abstract class AbstractExcelDisposer {
 
         for (Field field : fields) {
             if (field.isAnnotationPresent(ExcelIgnore.class)) {
+                continue;
+            }
+            if (neededColumns != null && !neededColumns.contains(field.getName())) {
                 continue;
             }
 

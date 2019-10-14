@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -53,9 +52,11 @@ public class ExcelWriter extends AbstractExcelDisposer {
         this.workbook = workbook;
     }
 
+    public <T> void writeModelList(List<T> dataArray, Class<T> clazz) {
+        writeModelList(dataArray,clazz,null);
+    }
     /**
      * 将数据写入到excel中
-     *
      * @param dataArray
      * @param clazz
      * @param <T>
@@ -63,10 +64,10 @@ public class ExcelWriter extends AbstractExcelDisposer {
      * @throws IllegalSheetPositionException
      * @throws IllegalExcelDataException
      */
-    public <T> void writeModelList(List<T> dataArray, Class<T> clazz) {
-        ExcelSheetBean sheetBean = initSheet(clazz);
+    public <T> void writeModelList(List<T> dataArray, Class<T> clazz,List<String> neededColumns) {
+        ExcelSheetBean sheetBean = initSheet(clazz,neededColumns);
 
-        Sheet sheet = creatTargetSheet(sheetBean);
+        Sheet sheet = createTargetSheet(sheetBean);
 
         createExcelTemplate(clazz, sheetBean, sheet);
 
@@ -160,12 +161,12 @@ public class ExcelWriter extends AbstractExcelDisposer {
     public void createExcelTemplate(Class<?> clazz) {
         ExcelSheetBean sheetBean = initSheet(clazz);
 
-        Sheet sheet = creatTargetSheet(sheetBean);
+        Sheet sheet = createTargetSheet(sheetBean);
 
         createExcelTemplate(clazz, sheetBean, sheet);
     }
 
-    private Sheet creatTargetSheet(ExcelSheetBean sheetBean) {
+    private Sheet createTargetSheet(ExcelSheetBean sheetBean) {
         int sheetPosition = sheetBean.sheetNum;
         if (sheetPosition < 0) {
             sheetPosition = 0;
@@ -198,7 +199,7 @@ public class ExcelWriter extends AbstractExcelDisposer {
 		Class<?> innerClazz = cList.getInnerClazz();
 		ExcelSheetBean sheetBean = initSheet(clazz);
 		ExcelSheetBean initSheet = initSheet(innerClazz);
-		Sheet sheet = creatTargetSheet(sheetBean);
+		Sheet sheet = createTargetSheet(sheetBean);
 		createExcelTemplate(clazz, sheetBean, sheet);
 		Map<Integer, CellStyle> styleMap = new HashMap<>(sheetBean.columnMap.size());
 		Map<Integer, CellType> typeMap = new HashMap<>(sheetBean.columnMap.size());
