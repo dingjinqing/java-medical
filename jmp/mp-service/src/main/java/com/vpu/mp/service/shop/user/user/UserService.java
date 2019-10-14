@@ -29,6 +29,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
@@ -534,7 +535,8 @@ public class UserService extends ShopBaseService {
 			}
 			if(iconItem.get("icon_name").equals("card")) {
 				//TODO 等壮壮提供getValidCardList
-				iconItem.put("num", 0);
+				List<ValidUserCardBean> cardList = userCard.userCardDao.getValidCardList(record.getUserId(), (byte)-1, 0);
+				iconItem.put("num", cardList.size());
 			}
 		}
 		logger().info("我的资产结束");
