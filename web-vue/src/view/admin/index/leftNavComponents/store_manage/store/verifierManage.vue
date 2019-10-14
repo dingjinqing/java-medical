@@ -124,6 +124,7 @@
 </template>
 
 <script>
+import service from '@/util/request.js'
 import { download } from '@/util/excelUtil.js'
 import { getVerifierList, addVerifier, delVerifier, exportStoreVerifierList } from '@/api/admin/storeManage/verifierManage'
 import pagination from '@/components/admin/pagination/pagination'
@@ -158,6 +159,7 @@ export default {
     this.initDataList()
   },
   methods: {
+
     searchHandle () {
       this.initDataList()
     },
@@ -183,9 +185,10 @@ export default {
     exportHandle () {
       let params = Object.assign(this.queryParams, this.pageParams)
       exportStoreVerifierList(params).then(res => {
+        console.log(res)
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
-        download(res, fileName)
+        download(res, decodeURIComponent(fileName))
       })
     },
     selectVerifierChangeHandle (datas) {

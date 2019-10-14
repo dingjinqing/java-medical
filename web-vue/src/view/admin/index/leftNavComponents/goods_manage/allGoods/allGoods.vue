@@ -8,7 +8,7 @@
   </div>
 </template>
 <script>
-// TODO: 全部商品批量处理接口未调用调试，先做主体功能和小程序相关接口，后期返回过来添加
+// TODO: 全部商品批量处理和导出接口未调用调试，先做主体功能和小程序相关接口，后期返回过来添加，
 export default {
   name: 'allGoods'
 }

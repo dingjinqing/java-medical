@@ -11,4 +11,7 @@ export function download (data, fileName) {
 
   document.body.appendChild(link)
   link.click()
+  document.body.removeChild(link)
+  // 释放掉blob资源
+  window.URL.revokeObjectURL(url)
 }
