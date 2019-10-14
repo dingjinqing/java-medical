@@ -88,7 +88,8 @@
             :data="form.product"
             border
             style="width: 100%"
-            empty-text=''
+            empty-text='暂无数据'
+            :span-method="arraySpanMethod"
           >
             <el-table-column
               align="center"
@@ -351,13 +352,14 @@
 
           <!-- 引入活动分享模块 -->
           <actShare :shareConfig="form.share" />
+          <!-- <couponStyles /> -->
         </div>
 
       </el-form>
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack ="[form.goodsId]"
+        :chooseGoodsBack="[form.goodsId]"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -393,6 +395,7 @@ import actShare from '@/components/admin/marketActivityShareSetting'
 import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { format } from '@/util/date'
+// import couponStyles from './couponStyle_s'
 
 export default {
   components: {
@@ -673,6 +676,15 @@ export default {
         this.form.share = data.share
         this.form.product = data.productList
         console.log(this.form)
+      }
+    },
+    arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex % 2 === 0) {
+        if (columnIndex === 0) {
+          return [1, 2]
+        } else if (columnIndex === 1) {
+          return [0, 0]
+        }
       }
     }
   }
