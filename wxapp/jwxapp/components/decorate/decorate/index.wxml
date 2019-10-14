@@ -6,5 +6,7 @@
        <v-card wx:elif="{{module.component_name == 'v-card'}}" module="{{module}}" bind:get_card_success="onGetCardSuccess"/>
        <!--图片导航模块-->
         <v-imgnav wx:elif="{{module.component_name == 'v-imgnav'}}" module="{{module}}" />
+       <!--优惠卷模块-->
+       <v-coupon wx:elif="{{module.component_name == 'v-coupon'}}" module="{{module}}" />
     </block>
 </view>
