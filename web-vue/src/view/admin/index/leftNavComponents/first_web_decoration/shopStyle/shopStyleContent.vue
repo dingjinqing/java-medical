@@ -170,6 +170,14 @@ export default {
   watch: {
     lang () {
       this.colorDataList = this.$t('shopStyle.topTitleList')
+    },
+    btnRight_background (newData) {
+      console.log(newData)
+      if (newData) {
+        let color = newData.split(':')[1]
+        console.log(color)
+        localStorage.setItem('V-backgroundColor', color)
+      }
     }
   },
   mounted () {

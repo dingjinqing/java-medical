@@ -16,27 +16,29 @@
           v-for="(item,index) in data.coupon_arr"
           :key="index"
           class="coupon_list"
-          :style="'border-color: rgba(255, 102, 102, 0.4);'+(data.coupon_arr.length===2&&index===0?'margin-right:2%;':'')+(data.coupon_arr.length>=3&&index===1?'margin:0 2%;':'')+(data.coupon_arr.length===2?'width:50%;':'')+(data.coupon_arr.length>=3?'width:33%;':'')+(index>2?'display:none':'')"
+          :style="'border-color:'+backgroundColor+';'+(data.coupon_arr.length===2&&index===0?'margin-right:2%;':'')+(data.coupon_arr.length>=3&&index===1?'margin:0 2%;':'')+(data.coupon_arr.length===2?'width:50%;':'')+(data.coupon_arr.length>=3?'width:33%;':'')+(index>2?'display:none':'')"
         >
           <div
             class="coupon_list_top"
-            style="color: rgb(255, 102, 102);"
+            :style="'color:'+backgroundColor+';'"
           >
             {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span>
           </div>
           <div class="coupon_list_center">
             <div
               class="coupon_center_limit"
-              style="color: rgb(255, 102, 102);"
+              :style="'color:'+backgroundColor+';'"
             >{{item.consume_text}}</div>
             <div
               class="coupon_center_number"
-              style="color: rgba(255, 102, 102, 0.4);"
-            >{{item.receive_text}}</div>
+              :style="'color:'+backgroundColorTransparent+';'"
+            >
+              <div>{{item.limitSurplusFlag===1?'库存不限制':item.receive_text}}</div>
+            </div>
           </div>
           <div
             class="coupon_list_bottom new_back"
-            style="background-color: rgb(255, 102, 102);"
+            :style="'border-color:'+backgroundColor+';background-color:'+backgroundColor"
           >
             {{item.use_score==='0'?'领取':item.score_number+'积分 兑换'}}
           </div>
@@ -48,20 +50,26 @@
         class="coupon_module"
         v-else
       >
-        <div class="singleContainer">
-          <div class="singleLeft">
+        <div
+          class="singleContainer"
+          :style="'border-color:'+backgroundColor"
+        >
+          <div
+            class="singleLeft"
+            :style="'color:'+backgroundColor"
+          >
             <div>
               {{data.coupon_arr[0].act_code==='discount'?'':'¥'}}<span style="font-size:20px">{{data.coupon_arr[0].denomination}}<i style="font-size:14px">{{data.coupon_arr[0].act_code==='discount'?'折':''}}</i></span>
 
             </div>
           </div>
           <div class="singleMiddle">
-            <div>{{data.coupon_arr[0].consume_text}}</div>
-            <div>{{data.coupon_arr[0].receive_text}}</div>
+            <div :style="'color:'+backgroundColor">{{data.coupon_arr[0].consume_text}}</div>
+            <div :style="'color:'+backgroundColorTransparent">{{data.coupon_arr[0].limitSurplusFlag===1?'库存不限制':data.coupon_arr[0].receive_text}}</div>
           </div>
           <div
             class="singleLeftRight"
-            :style="'background:#f66 url('+$imageHost+'/image/admin/coupon_border_y.png) repeat-y left'"
+            :style="'background:'+backgroundColor+' url('+$imageHost+'/image/admin/coupon_border_y.png) repeat-y left;'"
           >
             {{data.coupon_arr[0].use_score==='0'?'领取':data.coupon_arr[0].score_number+'积分 兑换'}}
           </div>
@@ -116,6 +124,8 @@ export default {
       activeBorder: null,
       activeSetHere: false,
       // 模块私有数据
+      backgroundColor: '',
+      backgroundColorTransparent: '',
       defaultData: {
         'coupon_arr': [ // 默认占位数据
           {
@@ -125,7 +135,8 @@ export default {
             'receive_text': '剩余xx张', // 卡卷剩余数
             'coupon_id': '', // 优惠卷id
             'use_score': '0', // 是否可以积分兑换
-            'score_number': 'xx' // 需要积分数
+            'score_number': 'xx', // 需要积分数
+            'limitSurplusFlag': 0
           },
           {
             'act_code': 'voucher',
@@ -134,7 +145,8 @@ export default {
             'receive_text': '剩余xx张',
             'coupon_id': '',
             'use_score': '0',
-            'score_number': 'xx'
+            'score_number': 'xx',
+            'limitSurplusFlag': 0
           },
           {
             'act_code': 'voucher',
@@ -143,13 +155,25 @@ export default {
             'receive_text': '剩余xx张',
             'coupon_id': '',
             'use_score': '0',
-            'score_number': 'xx'
+            'score_number': 'xx',
+            'limitSurplusFlag': 0
           }
         ]
       },
       // 保存数据
       data: {
-
+        coupon_arr: [
+          {
+            'act_code': 'voucher',
+            'denomination': 'xx',
+            'consume_text': '满xx使用',
+            'receive_text': '剩余xx张',
+            'coupon_id': '',
+            'use_score': '0',
+            'score_number': 'xx',
+            'limitSurplusFlag': ''
+          }
+        ]
       }
     }
   },
@@ -183,18 +207,20 @@ export default {
       handler (newData) {
         console.log(newData)
         if (newData.coupon_arr.length) {
+          console.log(1)
           this.data = newData
         } else {
+          console.log(0)
           this.data = this.defaultData
         }
       },
-      immediate: true,
       deep: true
     }
   },
   mounted () {
     // 初始化数据
     this.handleDefaultData()
+    console.log(this.backgroundColor)
   },
   methods: {
     handleDefaultData () {
@@ -208,6 +234,10 @@ export default {
         }
         console.log(this.flag, res)
       })
+      console.log(localStorage.getItem('V-backgroundColor'))
+      this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
+      this.backgroundColorTransparent = this.backgroundColor.split(')')[0] + ',0.4)'
+      console.log(this.backgroundColor, this.backgroundColorTransparent)
     },
     // 移上、移下、删除统一处理事件
     handleToClickIcon (flag) {
@@ -301,12 +331,6 @@ export default {
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      div:nth-of-type(1) {
-        color: #f66;
-      }
-      div:nth-of-type(2) {
-        color: #fbb;
-      }
     }
     .singleLeftRight {
       width: 30%;

@@ -12,7 +12,7 @@
                 v-for="(item,index) in data.coupon_arr"
                 :key="index"
                 class="coupon_list"
-                style="border-color: rgba(255, 102, 102, 0.4);"
+                :style="'border-color:'+backgroundColorTransparent"
               >
                 <img
                   class="couponDel"
@@ -21,25 +21,25 @@
                 >
                 <div
                   class="coupon_list_top"
-                  style="color: rgb(255, 102, 102);"
+                  :style="'color:'+backgroundColor"
                 >
                   {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'':'折'}}</i></span>
                 </div>
                 <div class="coupon_list_center">
                   <div
                     class="coupon_center_limit"
-                    style="color: rgb(255, 102, 102);"
+                    :style="'color:'+backgroundColor"
                   >
                     {{item.consume_text}}
                   </div>
                   <div
                     class="coupon_center_number"
-                    style="color: rgba(255, 102, 102, 0.4);margin-top:3px"
+                    :style="'color:'+backgroundColorTransparent+';margin-top:3px'"
                   >剩余{{item.receive_text}}张</div>
                 </div>
                 <div
                   class="coupon_list_bottom new_back"
-                  style="background-color: rgb(255, 102, 102);"
+                  :style="'background-color:'+backgroundColor"
                 >
                   {{item.use_score===0?'领取':item.score_number+'积分 兑换'}}
                 </div>
@@ -81,6 +81,8 @@ export default {
       couponBack: [], // 回显数据
       tuneUpCoupon: false,
       nowShowCouponList: [],
+      backgroundColor: '',
+      backgroundColorTransparent: '',
       data: {
 
       }
@@ -106,6 +108,9 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+
   },
   methods: {
     // 点击添加优惠卷按钮
@@ -150,13 +155,13 @@ export default {
           'act_code': item.actCode, // 是否是打折卷  discount：打折卷   voucher不是打折卷
           'denomination': item.denomination, // 面额
           'consume_text': useConsumeRestrict, // 使用门槛
-          'receive_text': item.surplus, // 卡卷剩余数
+          'receive_text': `剩余${item.surplus}张`, // 卡卷剩余数
           'coupon_id': item.id, // 优惠卷id
           'use_score': item.useScore, // 是否可以积分兑换
-          'score_number': item.scoreNumber // 需要积分数
-
+          'score_number': item.scoreNumber, // 需要积分数
+          'limitSurplusFlag': item.limitSurplusFlag
         }
-        console.log(isExistence.length)
+        console.log(obj)
         if (isExistence.length === 0) {
           this.data.coupon_arr.push(obj)
         }
@@ -183,6 +188,8 @@ export default {
       //   useScore:'',   是否可以积分兑换
       //   scoreNumber:''  需要积分数
       // }
+      this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
+      this.backgroundColorTransparent = this.backgroundColor.split(')')[0] + ',0.4)'
       console.log(res)
       this.nowShowCouponList = res
     },
