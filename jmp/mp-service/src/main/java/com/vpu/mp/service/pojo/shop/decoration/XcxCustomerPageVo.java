@@ -7,13 +7,18 @@ package com.vpu.mp.service.pojo.shop.decoration;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import com.vpu.mp.service.foundation.util.Page;
+
+import lombok.Data;
 
 
+@Data
 public class XcxCustomerPageVo implements Serializable {
 
     private static final long serialVersionUID = -623202346;
 
-	public static final Integer page = 0;
+    public static int currentPage = Page.DEFAULT_CURRENT_PAGE;
+    public static int pageRows = Page.DEFAULT_PAGE_ROWS;
 
     private Integer   pageId;
     private Integer   shopId;
@@ -28,94 +33,6 @@ public class XcxCustomerPageVo implements Serializable {
     private Timestamp updateTime;
     private Integer   catId;
     private String    name;
-    
-    
-    
-    
-	public Integer getPageId() {
-		return pageId;
-	}
-	public void setPageId(Integer pageId) {
-		this.pageId = pageId;
-	}
-	public Integer getShopId() {
-		return shopId;
-	}
-	public void setShopId(Integer shopId) {
-		this.shopId = shopId;
-	}
-	public String getPageName() {
-		return pageName;
-	}
-	public void setPageName(String pageName) {
-		this.pageName = pageName;
-	}
-	public Byte getPageType() {
-		return pageType;
-	}
-	public void setPageType(Byte pageType) {
-		this.pageType = pageType;
-	}
-	public Byte getPageEnabled() {
-		return pageEnabled;
-	}
-	public void setPageEnabled(Byte pageEnabled) {
-		this.pageEnabled = pageEnabled;
-	}
-	public Byte getPageTplType() {
-		return pageTplType;
-	}
-	public void setPageTplType(Byte pageTplType) {
-		this.pageTplType = pageTplType;
-	}
-	public String getPageContent() {
-		return pageContent;
-	}
-	public void setPageContent(String pageContent) {
-		this.pageContent = pageContent;
-	}
-	public String getPagePublishContent() {
-		return pagePublishContent;
-	}
-	public void setPagePublishContent(String pagePublishContent) {
-		this.pagePublishContent = pagePublishContent;
-	}
-	public Byte getPageState() {
-		return pageState;
-	}
-	public void setPageState(Byte pageState) {
-		this.pageState = pageState;
-	}
-	public Timestamp getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(Timestamp createTime) {
-		this.createTime = createTime;
-	}
-	public Timestamp getUpdateTime() {
-		return updateTime;
-	}
-	public void setUpdateTime(Timestamp updateTime) {
-		this.updateTime = updateTime;
-	}
-	public Integer getCatId() {
-		return catId;
-	}
-	public void setCatId(Integer catId) {
-		this.catId = catId;
-	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	public static Integer getPage() {
-		return page;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 
 
    

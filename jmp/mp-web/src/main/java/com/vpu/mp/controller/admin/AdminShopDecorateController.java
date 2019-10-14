@@ -29,6 +29,10 @@ import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
 @RestController
 @RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
+//	@Override
+//    protected ShopApplication shop() {
+//        return saas.getShopApp(471752);
+//    }
 	/**
 	 * 装修页面列表
 	 * 
@@ -127,7 +131,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	@PostMapping(value = "/admin/decorate/copy")
 	public JsonResult copyDecoration(@RequestBody XcxCustomerPageVo param) {
 		Boolean res = shop().mpDecoration.copyDecoration(param.getPageId());
-		return success();
+		return success(res);
 	}
 
 	/**
