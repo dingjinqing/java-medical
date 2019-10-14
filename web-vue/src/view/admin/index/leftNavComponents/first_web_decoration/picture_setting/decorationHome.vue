@@ -407,7 +407,7 @@ export default {
       }
     },
     nowRightShowIndex (newData) {
-      console.log(newData, this.activeName, this.showModulesList)
+      console.log(newData, this.activeName, this.nowRightModulesData)
       this.handleToModuleHight()
     },
     activeName (newData) {
@@ -746,6 +746,7 @@ export default {
     dragTopOut () {
       this.topAreaFlag = false
     },
+    // 模块点击
     handleToClickModule (index) {
       console.log(index)
       this.$http.$emit('modulesClick', index)

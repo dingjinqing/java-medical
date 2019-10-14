@@ -93,8 +93,10 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        if (this.modulesData.coupon_arr[0].coupon_id === -1) {
-          this.modulesData.coupon_arr = []
+        if (this.modulesData.coupon_arr.length) {
+          if (this.modulesData.coupon_arr[0].coupon_id === -1) {
+            this.modulesData.coupon_arr = []
+          }
         }
         this.data = this.modulesData
       },
