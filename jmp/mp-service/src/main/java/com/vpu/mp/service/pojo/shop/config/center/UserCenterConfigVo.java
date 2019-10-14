@@ -40,7 +40,7 @@ public class UserCenterConfigVo {
      * 个人信息背景色配置
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer isShow;
+    private Boolean isShow;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String bgType;

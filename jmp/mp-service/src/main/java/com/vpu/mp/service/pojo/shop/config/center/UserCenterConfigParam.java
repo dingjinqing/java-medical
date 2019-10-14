@@ -40,10 +40,10 @@ public class UserCenterConfigParam {
     /**
      *
      * 个人信息背景色配置
-     * 展示 1显示 0隐藏
+     * 展示 true显示 false隐藏
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer isShow;
+    private Boolean isShow;
     // 同步店铺配色 1同步 0 不同步
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String bgType;

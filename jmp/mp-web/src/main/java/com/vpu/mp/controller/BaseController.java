@@ -65,10 +65,9 @@ public class BaseController {
 
     public JsonResult fail(List<Object> args) {
         JsonResultCode resultCode = (JsonResultCode) args.get(0);
-        List<Object> arr = Arrays.asList(args);
-        arr.remove(0);
-        return fail(resultCode, arr.toArray());
-    }
+		args.remove(0);
+		return fail(resultCode,args.toArray());
+	}
 
     public JsonResult fail() {
         return result(JsonResultCode.CODE_FAIL, null);
