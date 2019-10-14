@@ -74,7 +74,7 @@
   <block wx:if="{{m.coupon_arr.length == 3}}">
     <view class="coupon_scorll coupon_scorll3">
       <block wx:for="{{m.coupon_arr}}" wx:key="index" wx:for-item="item">
-        <block wx:if="{{item.status == 1}}">
+        <block>
           <view class="coupon_list coupon_list3 coupon_list_pink" style='margin-bottom:{{m.margin_bot}}rpx;border-color:{{comColor}}'>
             <view class="coupon_list_top" wx:if="{{item.act_code=='discount'}}" style='color:{{comColor}}'>
               <text>{{item.denomination}}</text>折
@@ -85,11 +85,11 @@
             </view>
             <view class="coupon_list_center">
               <view class="coupon_center_limit" style='color:{{comColor}}'>{{item.consume_text}}</view>
-              <view class="coupon_center_number" style='color:{{borColor}}'>剩余
-                <text>{{item.surplus}}</text>张</view>
+              <view class="coupon_center_number" style='color:{{borColor}}'>
+                <text>{{item.limitSurplusFlag===0?item.receive_text:'库存无限制'}}</text></view>
             </view>
             <view class="coupon_list_bottom">
-              <form report-submit='true' class="get_coupon" wx:if="{{item.status == 1}}" bindsubmit="bindGetCoupon" data-idx="{{m.idx}}" data-vali="{{item.validation_code}}" data-exclusive="{{item.is_exclusive}}" data-code="{{item.alias_code}}" data-key="{{index}}" data-use_score="{{item.use_score}}">
+              <form report-submit='true' class="get_coupon"  bindsubmit="bindGetCoupon" data-idx="{{m.idx}}" data-vali="{{item.validation_code}}" data-exclusive="{{item.is_exclusive}}" data-code="{{item.alias_code}}" data-key="{{index}}" data-use_score="{{item.use_score}}">
                 <button form-type='submit' plain="false" style='background: {{comColor}} url("{{m.imageUrl}}/image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;' disabled='{{item.disableds}}'>{{item.is_exclusive == 1 ? '会员领取' : item.use_score == 1 ? item.score_number + '积分 兑换' : '领取'}}</button>
               </form>
             </view>

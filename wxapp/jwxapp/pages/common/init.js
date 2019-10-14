@@ -175,6 +175,7 @@ var init = {
   },
 
   _getColors() {
+    console.log(this.bottom)
     if (!this.bottom) {
       this.bottom = this._converBottom(util.getCache("bottom"));
       if (!this.bottom) return {};
