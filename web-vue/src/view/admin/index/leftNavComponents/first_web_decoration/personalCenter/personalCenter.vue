@@ -11,16 +11,21 @@
       <div class="cententLeft">
         <div class="_title"></div>
         <div class="left_info">
-          <div class="left_info_head">
+          <div
+            class="left_info_head"
+            v-for="(item, index) in rightData"
+            :key="index"
+            v-if="index==1"
+          >
             <div
               class="left_info_headBg"
-              v-if="this.userInfoColor=='1'"
+              v-if="item.bgType=='1'"
               style="background: -webkit-linear-gradient(left,rgb(80, 160, 160),rgb(64, 128, 128));"
             ></div>
             <div
               class="left_info_headBg"
-              v-if="this.userInfoColor=='2'"
-              :style="{'backgroundImage': this.customizeImg.length==0 ? '' : 'url(' + this.customizeImg[0].imgUrl + ')'}"
+              v-if="item.bgType!='1'"
+              :style="{'backgroundImage': item.bgImg=='' ? '#eee' : 'url(' + item.bgImg + ')'}"
             ></div>
             <img
               class="center_set"
@@ -41,130 +46,23 @@
               <span>{{ $t('personalCenter.integralTip') }}</span>
             </div>
           </div>
-          <div>
-            <!-- v-for="(item, index) in leftList" :key="index" -->
+          <!-- 左侧结构 -->
+          <div
+            v-for="(item, index) in leftData"
+            :key="index"
+          >
             <div
-              class="my_order indoor_area_raidus"
-              v-if="this.orderFormInfo.switch == true"
-              :class="this.styleChoose=='1'? 'widthActive' : ''"
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.moduleName=='accountMoney' && item.isShow"
             >
               <div class="orderTitle">
-                <div
-                  class="titleLeft"
-                  v-if="this.orderFormInfo.moduleTitle!=''"
-                >{{ orderFormInfo.moduleTitle }}</div>
-                <div
-                  class="titleRight"
-                  v-if="this.orderFormInfo.moduleStyle=='1'"
-                >
-                  <span>查看全部订单 </span>
-                  <img
-                    src="@/assets/image/admin/right_into.png"
-                    alt=""
-                  >
-                </div>
-              </div>
-              <div class="orderContent">
-                <div class="each_item">
-                  <div class="item_img">
-                    <img
-                      src="@/assets/image/admin/uc_order_icon1.png"
-                      alt=""
-                    >
-                  </div>
-                  <div class="item_word">待付款</div>
-                </div>
-                <div class="each_item">
-                  <div class="item_img">
-                    <img
-                      src="@/assets/image/admin/uc_order_icon2.png"
-                      alt=""
-                    >
-                  </div>
-                  <div class="item_word">待发货</div>
-                </div>
-                <div class="each_item">
-                  <div class="item_img">
-                    <img
-                      src="@/assets/image/admin/uc_order_icon3.png"
-                      alt=""
-                    >
-                  </div>
-                  <div class="item_word">待收货</div>
-                </div>
-                <div
-                  class="each_item"
-                  v-if="this.orderFormInfo.moduleStyle=='1'"
-                >
-                  <div class="item_img">
-                    <img
-                      src="@/assets/image/admin/uc_order_icon4.png"
-                      alt=""
-                    >
-                  </div>
-                  <div class="item_word">评价</div>
-                </div>
-                <div class="each_item">
-                  <div class="item_img">
-                    <img
-                      src="@/assets/image/admin/uc_order_icon5.png"
-                      alt=""
-                    >
-                  </div>
-                  <div class="item_word">退款中</div>
-                </div>
-                <div
-                  class="each_item_special"
-                  v-if="this.orderFormInfo.moduleStyle=='0'"
-                >
-                  <img
-                    src="@/assets/image/admin/icon_jiantou.png"
-                    alt=""
-                  >
-
-                  <div class="each_item">
-                    <div class="item_img">
-                      <img
-                        src="@/assets/image/admin/uc_order_icon6.png"
-                        alt=""
-                      >
-                    </div>
-                    <div class="item_word">全部订单</div>
-                  </div>
-
-                </div>
-
-              </div>
-              <div class="orderOperation">
-                <img
-                  class="up_img"
-                  src="@/assets/image/admin/add_up_use.png"
-                  alt=""
-                  @click="upClickHandler(0)"
-                >
-                <img
-                  class="down_img"
-                  src="@/assets/image/admin/add_down.png"
-                  alt=""
-                  @click="downClickHandler(0)"
-                >
-              </div>
-            </div>
-            <div
-              class="my_account indoor_area_raidus"
-              v-if="this.propertyFormInfo.switch == true"
-              :class="this.styleChoose=='1'? 'widthActive' : ''"
-            >
-              <div class="orderTitle">
-                <div
-                  class="titleLeft"
-                  v-if="this.propertyFormInfo.title!=''"
-                >{{ propertyFormInfo.title }}</div>
+                <div class="titleLeft">{{ item.title }}</div>
               </div>
               <div class="orderContent">
                 <div
                   class="each_item"
-                  v-if="this.propertyFormInfo.balance=='1'"
+                  v-if="item.isShowAccount=='1'"
                 >
                   <div class="item_num">
                     <span>1000.99</span>
@@ -173,7 +71,7 @@
                 </div>
                 <div
                   class="each_item"
-                  v-if="this.propertyFormInfo.points=='1'"
+                  v-if="item.isShowScore=='1'"
                 >
                   <div class="item_num">
                     <span>1000</span>
@@ -182,7 +80,7 @@
                 </div>
                 <div
                   class="each_item"
-                  v-if="this.propertyFormInfo.preferenceTicket=='1'"
+                  v-if="item.isShowCoupon=='1'"
                 >
                   <div class="item_num">
                     <span>122</span>张
@@ -191,7 +89,7 @@
                 </div>
                 <div
                   class="each_item"
-                  v-if="this.propertyFormInfo.preferenceCard=='1'"
+                  v-if="item.isShowCard=='1'"
                 >
                   <div class="item_num">
                     <span>90</span>张
@@ -204,37 +102,171 @@
                   class="up_img"
                   src="@/assets/image/admin/add_up_use.png"
                   alt=""
-                  @click="upClickHandler(1)"
+                  @click="upClickHandler(leftData, index)"
                 >
                 <img
                   class="down_img"
                   src="@/assets/image/admin/add_down.png"
                   alt=""
-                  @click="downClickHandler(1)"
+                  @click="downClickHandler(leftData, index)"
                 >
               </div>
             </div>
             <div
-              class="use_history indoor_area_raidus"
-              v-if="this.shopUseFormInfo.switch == true"
-              :class="this.styleChoose=='1'? 'widthActive' : ''"
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.moduleName=='order' && item.isShow"
             >
               <div class="orderTitle">
+                <div class="titleLeft">{{ item.title }}</div>
                 <div
-                  class="titleLeft"
-                  v-if="this.shopUseFormInfo.shopUseTitle!=''"
-                >{{ shopUseFormInfo.shopUseTitle }}</div>
+                  class="titleRight"
+                  v-if="isShowOrder=='1'"
+                >
+                  <span>查看全部订单 </span>
+                  <img
+                    src="@/assets/image/admin/right_into.png"
+                    alt=""
+                  >
+                </div>
               </div>
               <div class="orderContent">
-                <div class="each_item">
+                <div
+                  class="each_item"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName=='waitPay'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">待付款</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName=='waitDeliver'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">待发货</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName=='waitReceive'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">待收货</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName=='waitComment' && isShowOrder=='1'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">评价</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName=='refund'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">退款中</div>
+                </div>
+                <div
+                  class="each_item_special"
+                  v-if="isShowOrder!='1'"
+                >
+                  <img
+                    src="@/assets/image/admin/icon_jiantou.png"
+                    alt=""
+                  >
+
+                  <div
+                    class="each_item"
+                    v-if="isShowOrder!='1'"
+                  >
+                    <div class="item_img">
+                      <img
+                        src="@/assets/image/admin/uc_order_icon6.png"
+                        alt=""
+                      >
+                    </div>
+                    <div class="item_word">全部订单</div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="orderOperation">
+                <img
+                  class="up_img"
+                  src="@/assets/image/admin/add_up_use.png"
+                  alt=""
+                  @click="upClickHandler(leftData, index)"
+                >
+                <img
+                  class="down_img"
+                  src="@/assets/image/admin/add_down.png"
+                  alt=""
+                  @click="downClickHandler(leftData, index)"
+                >
+              </div>
+            </div>
+            <div
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.moduleName=='useRecord' && item.isShow"
+            >
+              <div class="orderTitle">
+                <div class="titleLeft">{{ item.title }}</div>
+              </div>
+              <div class="orderContent">
+                <div
+                  class="each_item"
+                  v-if="item.isShowCollect=='1'"
+                >
                   <div class="item_his">100</div>
                   <div class="item_word">我的收藏</div>
                 </div>
-                <div class="each_item">
+                <div
+                  class="each_item"
+                  v-if="item.isShowBuyHistory=='1'"
+                >
                   <div class="item_his">100</div>
                   <div class="item_word">历史购买</div>
                 </div>
-                <div class="each_item">
+                <div
+                  class="each_item"
+                  v-if="item.isShowFootprint=='1'"
+                >
                   <div class="item_his">100</div>
                   <div class="item_word">我的足迹</div>
                 </div>
@@ -244,26 +276,23 @@
                   class="up_img"
                   src="@/assets/image/admin/add_up_use.png"
                   alt=""
-                  @click="upClickHandler(2)"
+                  @click="upClickHandler(leftData, index)"
                 >
                 <img
                   class="down_img"
                   src="@/assets/image/admin/add_down.png"
                   alt=""
-                  @click="downClickHandler(2)"
+                  @click="downClickHandler(leftData, index)"
                 >
               </div>
             </div>
             <div
-              class="my_appointment indoor_area_raidus"
-              v-if="this.appointmentFormInfo.switch == true"
-              :class="this.styleChoose=='1'? 'widthActive' : ''"
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.moduleName=='appointment' && item.isShow"
             >
               <div class="orderTitle">
-                <div
-                  class="titleLeft"
-                  v-if="this.appointmentFormInfo.appointmentTitle!=''"
-                >{{ appointmentFormInfo.appointmentTitle }}</div>
+                <div class="titleLeft">{{ item.title }}</div>
                 <div class="titleRight">
                   <span>查看全部预约 </span>
                   <img
@@ -293,39 +322,35 @@
                   class="up_img"
                   src="@/assets/image/admin/add_up_use.png"
                   alt=""
-                  @click="upClickHandler(3)"
+                  @click="upClickHandler(leftData, index)"
                 >
                 <img
                   class="down_img"
                   src="@/assets/image/admin/add_down.png"
                   alt=""
-                  @click="downClickHandler(3)"
+                  @click="downClickHandler(leftData, index)"
                 >
               </div>
             </div>
             <div
-              class="my_service indoor_area_raidus"
-              v-if="this.serveShowFormInfo.switch == true"
-              :class="this.styleChoose=='1'? 'widthActive' : ''"
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.moduleName=='service' && item.isShow"
             >
               <div class="orderTitle">
-                <div
-                  class="titleLeft"
-                  v-if="this.serveShowFormInfo.serveShowTitle!=''"
-                >{{ serveShowFormInfo.serveShowTitle }}</div>
+                <div class="titleLeft">{{ item.title }}</div>
               </div>
-              <div
-                class="serveContent clearfix"
-                style="flex-wrap: wrap"
-              >
+              <div class="orderContent">
                 <div
                   class="each_serve"
-                  style="display: flex;"
-                  v-if="this.serveShowFormInfo.retailCenter=='1'"
+                  style="flex:30%;"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='distribution' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/icon_dis.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -334,11 +359,13 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.myDiscount=='1'"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='bargain' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/BpUFvnYjTCWYSJvB.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -347,11 +374,13 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.myPrize=='1'"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='award' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/I6eh09rewaciTaji.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -360,11 +389,13 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.myAppraise=='1'"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='commentList' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/icon_comment.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -373,11 +404,13 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.shopList=='1'"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='storeList' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/icon_store.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -386,11 +419,13 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.activation=='1'"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='userActivate' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/icon_member.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -399,11 +434,13 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.cancellation=='1'"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='orderVerify' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/icon_scan.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -412,11 +449,13 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.giftRecord=='1'"
+                  v-for="val in item.content"
+                  :key="val.iconName"
+                  v-if="val.iconName==='presentList' && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/crop_mgsjwtZBwX9XkCts.jpeg"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
@@ -425,29 +464,32 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-if="this.serveShowFormInfo.retailCenter=='1'"
+                  v-for="(val, index) in item.content"
+                  :key="val.iconName"
+                  v-if="index>7 && val.isShow=='1'"
                 >
                   <div class="serve_img">
                     <img
-                      src="@/assets/image/admin/icon_ownset.png"
+                      :src="val.icon"
                       alt=""
                     >
                   </div>
-                  <div class="serve_word">代理专区</div>
+                  <div class="serve_word">{{ val.title }}</div>
                 </div>
+
               </div>
               <div class="orderOperation">
                 <img
                   class="up_img"
                   src="@/assets/image/admin/add_up_use.png"
                   alt=""
-                  @click="upClickHandler(4)"
+                  @click="upClickHandler(leftData, index)"
                 >
                 <img
                   class="down_img"
                   src="@/assets/image/admin/add_down.png"
                   alt=""
-                  @click="downClickHandler(4)"
+                  @click="downClickHandler(leftData, index)"
                 >
               </div>
             </div>
@@ -456,45 +498,53 @@
         </div>
       </div>
       <div class="cententRight">
-        <div class="cententRight_title">
+        <div
+          class="cententRight_title"
+          v-for="(item, index) in rightData"
+          :key="index"
+          v-if="index===0"
+        >
           {{ $t('personalCenter.layoutStyle') }}：
-          <el-radio-group v-model="styleChoose">
+          <el-radio-group
+            v-model="item.pageStyle"
+            @change="changepageStyle"
+          >
             <el-radio label="1">{{ $t('personalCenter.flatStyle') }}</el-radio>
             <el-radio label="2">{{ $t('personalCenter.cardStyle') }}</el-radio>
           </el-radio-group>
         </div>
+        <!-- 右侧结构 -->
         <div class="cententRight_container">
-          <el-collapse
-            v-model="activeNames"
-            @change="changeHandler"
-          >
+          <el-collapse v-model="activeNames">
             <el-collapse-item
               title="个人信息背景色配置"
               name="1"
               style="margin-bottom: 20px;"
+              v-for="(item, index) in rightData"
+              :key="index"
+              v-if="index===1"
             >
-              <el-radio-group v-model="userInfoColor">
+              <el-radio-group v-model="item.bgType">
                 <el-radio
                   label="1"
                   style="display: block;margin-bottom: 20px;"
                 >同步店铺配色</el-radio>
-                <el-radio label="2">自定义图片</el-radio>
+                <el-radio label="0">自定义图片</el-radio>
                 <div
                   class="customizeImgWrap"
-                  @click="changeCustomizeImg"
-                  v-for="(item,index) in customizeImg"
-                  :key="index"
+                  v-if="item.bgImg!=''"
+                  @click="changeImgHandler(item.moduleName, '')"
                 >
                   <el-image
                     fit="cover"
-                    :src="item.imgUrl"
+                    :src="item.bgImg"
                     style="width: 100%; height: 100%"
                   ></el-image>
                 </div>
                 <div
                   class="customizeImgWrap"
-                  @click="changeCustomizeImg"
-                  v-if="this.customizeImg.length==0"
+                  v-if="item.bgImg==''"
+                  @click="changeImgHandler(item.moduleName, '')"
                 >
                   <el-image
                     fit="scale-down"
@@ -507,117 +557,116 @@
             <el-collapse-item
               title="账户资产信息展示项配置"
               name="2"
+              v-for="(item, index) in rightData"
+              :key="index"
+              v-if="index===2"
             >
-              <el-form
-                :model="propertyFormInfo"
-                label-width="100px"
-              >
+              <el-form label-width="100px">
                 <el-form-item label="资产：">
                   <el-switch
-                    v-model="propertyFormInfo.switch"
+                    v-model="item.isShow"
+                    @change="changeSwitch(item.moduleName, item.isShow)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   ></el-switch>
                   <span>开关开启，则展示账户资产信息</span>
                 </el-form-item>
-                <el-form-item
-                  label="标题："
-                  prop="title"
-                >
+                <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
-                    v-model="propertyFormInfo.title"
+                    @blur="changeTitle(item.moduleName, item.title)"
+                    v-model="item.title"
                   ></el-input>
                   <span>用户资产模块标题，不填写则不显示</span>
                 </el-form-item>
-                <el-form-item
-                  label="我的余额："
-                  prop="balance"
-                >
-                  <el-radio-group v-model="propertyFormInfo.balance">
+                <el-form-item label="我的余额：">
+                  <el-radio-group
+                    v-model="item.isShowAccount"
+                    @change="changeItem(item.moduleName, 'isShowAccount', item.isShowAccount)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                <el-form-item
-                  label="我的积分："
-                  prop="points"
-                >
-                  <el-radio-group v-model="propertyFormInfo.points">
+                <el-form-item label="我的积分：">
+                  <el-radio-group
+                    v-model="item.isShowScore"
+                    @change="changeItem(item.moduleName, 'isShowScore', item.isShowScore)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                <el-form-item
-                  label="优惠券："
-                  prop="preferenceTicket"
-                >
-                  <el-radio-group v-model="propertyFormInfo.preferenceTicket">
+                <el-form-item label="优惠券：">
+                  <el-radio-group
+                    v-model="item.isShowCoupon"
+                    @change="changeItem(item.moduleName, 'isShowCoupon', item.isShowCoupon)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                <el-form-item
-                  label="优惠卡："
-                  prop="preferenceCard"
-                >
-                  <el-radio-group v-model="propertyFormInfo.preferenceCard">
+                <el-form-item label="优惠卡：">
+                  <el-radio-group
+                    v-model="item.isShowCard"
+                    @change="changeItem(item.moduleName, 'isShowCard', item.isShowCard)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                 </el-form-item>
-
               </el-form>
             </el-collapse-item>
             <el-collapse-item
               title="订单信息展示项配置"
               name="3"
+              v-for="(item, index) in rightData"
+              :key="index"
+              v-if="index===3"
             >
-              <el-form
-                :model="orderFormInfo"
-                label-width="100px"
-              >
+              <el-form label-width="100px">
                 <el-form-item label="订单：">
                   <el-switch
-                    v-model="orderFormInfo.switch"
+                    v-model="item.isShow"
+                    @change="changeSwitch(item.moduleName, item.isShow)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   ></el-switch>
                   <span>开关开启，则展示订单信息</span>
                 </el-form-item>
-                <el-form-item
-                  label="标题："
-                  prop="title"
-                >
+                <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
-                    v-model="orderFormInfo.moduleTitle"
+                    @blur="changeTitle(item.moduleName, item.title)"
+                    v-model="item.title"
                   ></el-input>
                   <span>订单模块标题，不填写则不显示</span>
                 </el-form-item>
-                <el-form-item
-                  label="模块样式："
-                  prop="style"
-                >
-                  <el-radio-group v-model="orderFormInfo.moduleStyle">
+                <el-form-item label="模块样式：">
+                  <el-radio-group
+                    v-model="item.moduleStyle"
+                    @change="changeModuleStyle"
+                  >
                     <el-radio label="1">样式1</el-radio>
                     <el-radio label="0">样式2</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                <el-form-item
-                  label="待付款订单："
-                  prop="payOrder"
-                >
-                  <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative">
-                    <div class="imgContainter">
+                <el-form-item label="待付款订单：">
+                  <div
+                    style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
+                    v-for="(val, index) in item.content"
+                    :key="val.iconName"
+                    v-if="index==0"
+                  >
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -625,20 +674,22 @@
                     </div>
                   </div>
                 </el-form-item>
-                <el-form-item
-                  label="待发货订单："
-                  prop="sendOrder"
-                >
-                  <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                <el-form-item label="待发货订单：">
+                  <div
+                    style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
+                    v-for="(val, index) in item.content"
+                    :key="val.iconName"
+                    v-if="index==1"
+                  >
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -646,20 +697,22 @@
                     </div>
                   </div>
                 </el-form-item>
-                <el-form-item
-                  label="待收货订单："
-                  prop="receiveOrder"
-                >
-                  <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                <el-form-item label="待收款订单：">
+                  <div
+                    style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
+                    v-for="(val, index) in item.content"
+                    :key="val.iconName"
+                    v-if="index==2"
+                  >
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -667,20 +720,22 @@
                     </div>
                   </div>
                 </el-form-item>
-                <el-form-item
-                  label="评价订单："
-                  prop="appraiseOrder"
-                >
-                  <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                <el-form-item label="评价订单：">
+                  <div
+                    style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
+                    v-for="(val, index) in item.content"
+                    :key="val.iconName"
+                    v-if="index==3"
+                  >
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -688,20 +743,22 @@
                     </div>
                   </div>
                 </el-form-item>
-                <el-form-item
-                  label="退款中订单："
-                  prop="refundingOrder"
-                >
-                  <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                <el-form-item label="退款中订单：">
+                  <div
+                    style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
+                    v-for="(val, index) in item.content"
+                    :key="val.iconName"
+                    v-if="index==4"
+                  >
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -709,32 +766,32 @@
                     </div>
                   </div>
                 </el-form-item>
+
               </el-form>
 
             </el-collapse-item>
             <el-collapse-item
               title="预约信息展示项配置"
               name="4"
+              v-for="(item, index) in rightData"
+              :key="index"
+              v-if="index===4"
             >
-              <el-form
-                :model="appointmentFormInfo"
-                label-width="100px"
-              >
+              <el-form label-width="100px">
                 <el-form-item label="预约：">
                   <el-switch
-                    v-model="appointmentFormInfo.switch"
+                    v-model="item.isShow"
+                    @change="changeSwitch(item.moduleName, item.isShow)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   ></el-switch>
                   <span>开关开启，则展示预约信息</span>
                 </el-form-item>
-                <el-form-item
-                  label="标题："
-                  prop="title"
-                >
+                <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
-                    v-model="appointmentFormInfo.appointmentTitle"
+                    @blur="changeTitle(item.moduleName, item.title)"
+                    v-model="item.title"
                   ></el-input>
                   <span>预约模块标题，不填写则不显示</span>
                 </el-form-item>
@@ -744,107 +801,109 @@
             <el-collapse-item
               title="店铺使用相关数据展示项配置"
               name="5"
+              v-for="(item, index) in rightData"
+              :key="index"
+              v-if="index===5"
             >
-              <el-form
-                :model="shopUseFormInfo"
-                label-width="100px"
-              >
+              <el-form label-width="100px">
                 <el-form-item label="店铺使用：">
                   <el-switch
-                    v-model="shopUseFormInfo.switch"
+                    v-model="item.isShow"
+                    @change="changeSwitch(item.moduleName, item.isShow)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   ></el-switch>
                   <span>开关开启，则展示店铺使用信息</span>
                 </el-form-item>
-                <el-form-item
-                  label="标题："
-                  prop="title"
-                >
+                <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
-                    v-model="shopUseFormInfo.shopUseTitle"
+                    @blur="changeTitle(item.moduleName, item.title)"
+                    v-model="item.title"
                   ></el-input>
                   <span>店铺使用模块标题，不填写则不显示</span>
                 </el-form-item>
-                <el-form-item
-                  label="我的收藏："
-                  prop="collect"
-                >
-                  <el-radio-group v-model="shopUseFormInfo.collect">
+                <el-form-item label="我的收藏：">
+                  <el-radio-group
+                    v-model="item.isShowCollect"
+                    @change="changeItem(item.moduleName, 'isShowCollect', item.isShowCollect)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <span>用户收藏的商品</span>
                 </el-form-item>
-                <el-form-item
-                  label="历史购买："
-                  prop="histroy"
-                >
-                  <el-radio-group v-model="shopUseFormInfo.histroy">
+                <el-form-item label="历史购买：">
+                  <el-radio-group
+                    v-model="item.isShowBuyHistory"
+                    @change="changeItem(item.moduleName, 'isShowBuyHistory', item.isShowBuyHistory)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
-                  <span>用户收藏的商品</span>
+                  <span>用户购买过的商品</span>
                 </el-form-item>
-                <el-form-item
-                  label="我的足迹："
-                  prop="footprint"
-                >
-                  <el-radio-group v-model="shopUseFormInfo.footprint">
+                <el-form-item label="我的足迹：">
+                  <el-radio-group
+                    v-model="item.isShowFootprint"
+                    @change="changeItem(item.moduleName, 'isShowFootprint', item.isShowFootprint)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
-                  <span>用户收藏的商品</span>
+                  <span>用户浏览过的商品</span>
                 </el-form-item>
-
               </el-form>
 
             </el-collapse-item>
             <el-collapse-item
               title="服务展示项配置"
               name="6"
+              v-for="(item, index) in rightData"
+              :key="index"
+              v-if="index===6"
             >
-              <el-form
-                :model="serveShowFormInfo"
-                label-width="100px"
-              >
+              <el-form label-width="100px">
                 <el-form-item label="服务：">
                   <el-switch
-                    v-model="serveShowFormInfo.switch"
+                    v-model="item.isShow"
+                    @change="changeSwitch(item.moduleName, item.isShow)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   ></el-switch>
                   <span>开关开启，则展示店铺服务信息</span>
                 </el-form-item>
-                <el-form-item
-                  label="标题："
-                  prop="title"
-                >
+                <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
-                    v-model="serveShowFormInfo.serveShowTitle"
+                    @blur="changeTitle(item.moduleName, item.title)"
+                    v-model="item.title"
                   ></el-input>
                   <span>开关开启，则展示店铺服务信息</span>
                 </el-form-item>
                 <el-form-item
                   label="分销中心："
-                  prop="retailCenter"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==0"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.retailCenter">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, index, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -854,22 +913,27 @@
                 </el-form-item>
                 <el-form-item
                   label="我的砍价："
-                  prop="myDiscount"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==1"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.myDiscount">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -879,22 +943,27 @@
                 </el-form-item>
                 <el-form-item
                   label="我的奖品："
-                  prop="myPrize"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==2"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.myPrize">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -902,27 +971,30 @@
                     </div>
                   </div>
                 </el-form-item>
+
                 <el-form-item
                   label="我的评价："
-                  prop="myAppraise"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==3"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.myAppraise">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                     <div
                       class="imgContainter"
-                      @click="updateImgIcon"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
                     >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -932,22 +1004,27 @@
                 </el-form-item>
                 <el-form-item
                   label="门店列表："
-                  prop="shopList"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==4"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.shopList">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -957,22 +1034,27 @@
                 </el-form-item>
                 <el-form-item
                   label="会员激活："
-                  prop="activation"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==5"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.activation">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -982,22 +1064,27 @@
                 </el-form-item>
                 <el-form-item
                   label="扫码核销："
-                  prop="cancellation"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==6"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.cancellation">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -1007,22 +1094,27 @@
                 </el-form-item>
                 <el-form-item
                   label="礼物记录："
-                  prop="giftRecord"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key==7"
                 >
-                  <el-radio-group v-model="serveShowFormInfo.giftRecord">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
@@ -1030,50 +1122,55 @@
                     </div>
                   </div>
                 </el-form-item>
-                <!-- 自定义模板 -->
+
                 <el-form-item
                   label="自定义模板："
-                  prop="customTemplate"
+                  v-for="(val, key) in item.content"
+                  :key="val.iconName"
+                  v-if="key>7"
                 >
-                  <el-radio-group v-model="templateFormInfo.customTemplate">
+                  <el-radio-group
+                    v-model="val.isShow"
+                    @change="changeServeItem(item.moduleName, key, val.isShow)"
+                  >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
                   </el-radio-group>
                   <el-button
                     type="text"
                     style="margin-left: 10px;"
-                    @click="delTemplate"
+                    @click="delTemplate(item.content, key)"
                   >删除模板</el-button>
                   <div style="margin: 10px 0;">
                     标题：&nbsp;&nbsp;<el-input
-                      placeholder="帮助中心"
+                      v-model="val.title"
+                      @blur="changeTemplateTitle(item.moduleName, key, val.title)"
                       style="width: 120px;"
-                      v-model="templateFormInfo.templateTitle"
                     ></el-input>
                   </div>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
-                    <div class="imgContainter">
+                    <div
+                      class="imgContainter"
+                      @click="changeImgHandler(item.moduleName, val.iconName)"
+                    >
                       <el-image
                         fit="scale-down"
-                        :src="imgHost+'/image/admin/add_img.png'"
+                        :src="val.icon"
                       />
-                      <div
-                        class="selectIcon"
-                        @click="updateImgIcon"
-                      >更换图标</div>
+                      <div class="selectIcon">更换图标</div>
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
                     </div>
                     <div>跳转到的页面：<el-button
                         type="text"
-                        @click="selectLink"
+                        @click="selectLink(key)"
                       >选择链接</el-button>
                     </div>
                     <div
-                      v-if="this.pageLink"
                       style="margin-left: 20px;"
-                    >{{ this.pageLink }}</div>
+                      v-if="val.link!=''"
+                    >{{ val.link }} {{ val.linkName }}</div>
                   </div>
                 </el-form-item>
                 <div style="text-align: center;">
@@ -1106,210 +1203,519 @@
     />
     <!-- 选择链接弹窗 -->
     <selectLinks
-      @selectLinkPath="getPath"
+      @selectLinkPath="getLinkPath"
       :tuneUpSelectLink="tuneUpSelectLink"
     />
   </div>
 </template>
 <script>
-// import { mapGetters } from 'vuex'
 /* 组件导入 */
+// import { mapGetters } from 'vuex'
 import ImageDalog from '@/components/admin/imageDalog'
 import SelectLinks from '@/components/admin/selectLinks'
-// import { bottomGetRequest, bottomUpdateRequest } from '@/api/admin/bottomNavigation'
+import { personalGetRequest } from '@/api/admin/personalCenter'
 export default {
   components: { SelectLinks, ImageDalog },
   data () {
     return {
       activeNames: ['1', '2', '3', '4', '5', '6'],
-      styleChoose: '2',
-      userInfoColor: '1',
-      //   左侧数据
-      leftList: [{
-        switch: true,
-        listTitle: {
-          titleLeft: '',
-          titleRight: ''
-        },
-        listContent: {
-          item_img: '',
-          item_num: '',
-          item_his: '',
-          item_word: ''
-        }
-      }, {
-        switch: true,
-        listTitle: {
-          titleLeft: '',
-          titleRight: ''
-        },
-        listContent: {
-          item_img: '',
-          item_num: '',
-          item_his: '',
-          item_word: ''
-        }
-      }, {
-        switch: true,
-        listTitle: {
-          titleLeft: '',
-          titleRight: ''
-        },
-        listContent: {
-          item_img: '',
-          item_num: '',
-          item_his: '',
-          item_word: ''
-        }
-      }, {
-        switch: true,
-        listTitle: {
-          titleLeft: '',
-          titleRight: ''
-        },
-        listContent: {
-          item_img: '',
-          item_num: '',
-          item_his: '',
-          item_word: ''
-        }
-      }, {
-        switch: true,
-        listTitle: {
-          titleLeft: '',
-          titleRight: ''
-        },
-        listContent: {
-          item_img: '',
-          item_num: '',
-          item_his: '',
-          item_word: ''
-        }
-      }],
-      customizeImg: [],
-      //   资产
-      propertyFormInfo: {
-        switch: true,
-        title: '我的资产',
-        balance: '1',
-        points: '1',
-        preferenceTicket: '1',
-        preferenceCard: '1'
-      },
-      //   订单
-      orderFormInfo: {
-        switch: true,
-        moduleTitle: '我的订单',
-        moduleStyle: '1',
-        payOrder: '',
-        sendOrder: '',
-        receiveOrder: '',
-        appraiseOrder: '',
-        refundingOrder: ''
-      },
-      //   预约
-      appointmentFormInfo: {
-        switch: true,
-        appointmentTitle: '我的预约'
-      },
-      //   店铺使用
-      shopUseFormInfo: {
-        switch: true,
-        shopUseTitle: '使用记录',
-        collect: '1',
-        histroy: '1',
-        footprint: '1'
-      },
-      //   服务展示
-      serveShowFormInfo: {
-        switch: true,
-        serveShowTitle: '我的服务',
-        retailCenter: '1',
-        myDiscount: '1',
-        myPrize: '1',
-        shopList: '1',
-        activation: '1',
-        myAppraise: '1',
-        cancellation: '1',
-        giftRecord: '1'
-      },
-      //   自定义模板
-      templateFormInfo: {
-        customTemplate: '1',
-        templateTitle: ''
-      },
-      selfImgDialogShow: false,
-      tuneUpSelectLink: false,
-      pageLink: '',
-      imgHost: `${this.$imageHost}`
-    }
-  },
-  computed: {
-    // ...mapGetters(['afferentPath']),
-    // afferentPath_ () {
-    //   return this.afferentPath
-    // }
-  },
-  watch: {
+      styleChoose: '2', // 页面布局样式
+      imgHost: `${this.$imageHost}`,
+      selfImgDialogShow: false, // 图片dialog
+      moduleTitle: '',
+      moduleName: '',
+      tuneUpSelectLink: false, // 链接dialog
+      linkIndex: -1, // 链接
+      isShowOrder: '1', // 模块样式
+      isShowCustomize: '1', // 自定义模板内容
+      customValue: 1, // 自定义模板个数
+      templateTitle: '', // 自定义模板标题
 
+      leftData: [{
+        moduleName: 'global',
+        pageStyle: '2'
+      }, {
+        moduleName: 'centerHeader',
+        bgType: '1',
+        bgImg: ''
+      }, {
+        moduleName: 'accountMoney',
+        isShow: true,
+        title: '我的资产',
+        isShowAccount: '1',
+        isShowScore: '1',
+        isShowCoupon: '1',
+        isShowCard: '1'
+      }, {
+        moduleName: 'order',
+        isShow: true,
+        title: '我的订单',
+        moduleStyle: '1',
+        content: [
+          {
+            iconName: 'waitPay',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon1.png',
+            isShow: '1'
+          },
+          {
+            iconName: 'waitDeliver',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon2.png',
+            isShow: '1'
+          },
+          {
+            iconName: 'waitReceive',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon3.png',
+            isShow: '1'
+          },
+          {
+            iconName: 'waitComment',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon4.png',
+            isShow: '0'
+          },
+          {
+            iconName: 'refund',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon5.png',
+            isShow: '1'
+          }
+        ]
+      }, {
+        moduleName: 'appointment',
+        isShow: true,
+        title: '我的预约'
+      }, {
+        moduleName: 'useRecord',
+        isShow: true,
+        title: '使用记录',
+        isShowCollect: '1',
+        isShowBuyHistory: '1',
+        isShowFootprint: '1'
+      }, {
+        moduleName: 'service',
+        title: '我的服务',
+        isShow: true,
+        content: [
+          {
+            isShow: '1',
+            iconName: 'distribution',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_dis.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'bargain',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconBargain.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'award',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_award.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'commentList',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconComment.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'storeList',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconStore.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'userActivate',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconMember.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'orderVerify',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconScan.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'presentList',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_pre.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'customIcon',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_ownset.png',
+            title: '帮助中心',
+            link: 'pages/distribution/distribution',
+            linkName: 'u5206u9500u8fd4u5229u4e2du5fc3'
+          }
+        ]
+      }],
+
+      rightData: [{
+        moduleName: 'global',
+        pageStyle: '2'
+      }, {
+        moduleName: 'centerHeader',
+        // isShow: '1',
+        bgType: '1',
+        bgImg: ''
+        // bgImg: 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20190516/cropTEbKCZJdNhfXp7iP.jpeg'
+      }, {
+        moduleName: 'accountMoney',
+        isShow: true,
+        title: '我的资产',
+        isShowAccount: '1',
+        isShowScore: '1',
+        isShowCoupon: '1',
+        isShowCard: '1'
+        // content: [
+        //   {
+        //     iconName: 'account',
+        //     isShow: '1'
+        //   },
+        //   {
+        //     iconName: 'score',
+        //     isShow: '1'
+        //   },
+        //   {
+        //     iconName: 'coupon',
+        //     isShow: '1'
+        //   },
+        //   {
+        //     iconName: 'card',
+        //     isShow: '1'
+        //   }
+        // ]
+      }, {
+        moduleName: 'order',
+        isShow: true,
+        title: '我的订单',
+        moduleStyle: '1',
+        content: [
+          {
+            iconName: 'waitPay',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon1.png',
+            isShow: '1'
+          },
+          {
+            iconName: 'waitDeliver',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon2.png',
+            isShow: '1'
+          },
+          {
+            iconName: 'waitReceive',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon3.png',
+            isShow: '1'
+          },
+          {
+            iconName: 'waitComment',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon4.png',
+            isShow: '0'
+          },
+          {
+            iconName: 'refund',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/uc_orderIcon5.png',
+            isShow: '1'
+          }
+        ]
+      }, {
+        moduleName: 'appointment',
+        isShow: true,
+        title: '我的预约'
+      }, {
+        moduleName: 'useRecord',
+        isShow: true,
+        title: '使用记录',
+        isShowCollect: '1',
+        isShowBuyHistory: '1',
+        isShowFootprint: '1'
+      }, {
+        moduleName: 'service',
+        title: '我的服务',
+        isShow: true,
+        content: [
+          {
+            isShow: '1',
+            iconName: 'distribution',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_dis.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'bargain',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconBargain.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'award',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_award.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'commentList',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconComment.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'storeList',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconStore.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'userActivate',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconMember.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'orderVerify',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/iconScan.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'presentList',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_pre.png',
+            link: '',
+            linkName: ''
+          },
+          {
+            isShow: '1',
+            iconName: 'customIcon',
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_ownset.png',
+            title: '帮助中心',
+            link: 'pages/distribution/distribution',
+            linkName: 'u5206u9500u8fd4u5229u4e2du5fc3'
+          }
+        ]
+      }]
+    }
   },
   mounted () {
     // 初始化语言
     this.langDefault()
   },
+  created () {
+    // 初始化查询
+    this.getPersonal()
+  },
   methods: {
+    // 获取个人中心数据
+    getPersonal () {
+      personalGetRequest().then((res) => {
+        if (res.error === 0) {
+          console.log(res.content)
+        }
+      })
+    },
+
     // 保存
     saveClickHandler () {
 
     },
-    changeHandler (val) {
-      console.log(val)
+
+    // 切换布局样式
+    changepageStyle (val) {
+      this.styleChoose = val
+    },
+    // 切换模块样式
+    changeModuleStyle (val) {
+      this.isShowOrder = val
+    },
+
+    // 切换模块显示隐藏
+    changeSwitch (name, value) {
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === name) {
+          this.leftData[i].isShow = value
+        }
+      }
+    },
+
+    // 切换标题数据响应
+    changeTitle (name, value) {
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === name) {
+          this.leftData[i].title = value
+        }
+      }
+    },
+
+    changeTemplateTitle (name, index, value) {
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === name) {
+          for (let j = 0; j < this.leftData[i].content.length; j++) {
+            this.leftData[i].content[index].title = value
+          }
+        }
+      }
+    },
+
+    // 切换列表项显示隐藏
+    changeItem (name, type, value) {
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === name) {
+          for (let key in this.leftData[i]) {
+            if (key === type) {
+              let data = this.leftData[i]
+              data[key] = value
+            }
+          }
+        }
+      }
+    },
+
+    changeServeItem (name, index, value) {
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === name) {
+          for (let j = 0; j < this.leftData[i].content.length; j++) {
+            if (j === index) {
+              this.leftData[i].content[index].isShow = value
+            }
+          }
+        }
+      }
+    },
+
+    // 左侧模块排序
+    swapItems (arr, index1, index2) {
+      arr[index1] = arr.splice(index2, 1, arr[index1])[0]
+      return arr
     },
     // 左侧模块上移
-    upClickHandler (index) {
-      if (index === 0) {
+    upClickHandler (arr, index) {
+      if (index === 2) {
         this.$message.warning('当前模块不能移动')
       } else {
-
+        this.swapItems(arr, index, index - 1)
       }
     },
     // 左侧模块下移
-    downClickHandler (index) {
-      if (index === 4) {
+    downClickHandler (arr, index) {
+      if (index === this.leftData.length - 1) {
         this.$message.warning('当前模块不能移动')
       } else {
-
+        this.swapItems(arr, index, index + 1)
       }
     },
-    // 自定义图片背景
-    changeCustomizeImg () {
+    // 切换图片
+    changeImgHandler (title, name) {
+      this.moduleTitle = title
+      this.moduleName = name
       this.selfImgDialogShow = !this.selfImgDialogShow
-      this.$nextTick(() => this.$http.$emit('dtVisible'))
     },
+
     // 商品图片点击回调函数
     imgDialogSelectedCallback (imgObj) {
-      this.customizeImg = []
-      this.customizeImg.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
+      // 右侧显示
+      for (let i = 0; i < this.rightData.length; i++) {
+        if (this.moduleTitle === 'centerHeader') {
+          this.rightData[i].bgImg = imgObj.imgUrl
+        } else {
+          if (this.rightData[i].moduleName === this.moduleTitle) {
+            for (let j = 0; j < this.rightData[i].content.length; j++) {
+              if (this.rightData[i].content[j].iconName === this.moduleName) {
+                this.rightData[i].content[j].icon = imgObj.imgUrl
+              }
+            }
+          }
+        }
+      }
+      // 左侧显示
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === this.moduleTitle) {
+          for (let j = 0; j < this.leftData[i].content.length; j++) {
+            if (this.leftData[i].content[j].iconName === this.moduleName) {
+              this.leftData[i].content[j].icon = imgObj.imgUrl
+            }
+          }
+        }
+      }
     },
-    //  修改订单图标
-    updateImgIcon () {
-      this.selfImgDialogShow = !this.selfImgDialogShow
-      this.$nextTick(() => this.$http.$emit('dtVisible'))
-    },
+
     //  自定义模板跳转链接
-    selectLink () {
+    selectLink (index) {
+      this.linkIndex = index
       this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
     // 获取选中的path
-    getPath (res) {
-      this.pageLink = res
+    getLinkPath (res) {
+      for (let i = 0; i < this.rightData.length; i++) {
+        if (this.rightData[i].moduleName === 'service') {
+          for (let j = 0; j < this.rightData[i].content.length; j++) {
+            if (j === this.linkIndex) {
+              this.rightData[i].content[this.linkIndex].link = res
+            }
+          }
+        }
+      }
     },
     // 删除自定义模板
-    delTemplate () {
-
+    delTemplate (arr, index) {
+      // 删除右侧
+      for (let i = 0; i < this.rightData.length; i++) {
+        if (this.rightData[i].moduleName === 'service') {
+          this.rightData[i].content.splice(index, 1)
+        }
+      }
+      // 删除左侧
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === 'service') {
+          this.leftData[i].content.splice(index, 1)
+        }
+      }
     },
     // 添加自定义模板
-    addTemplate () { }
+    addTemplate () {
+      // 右侧添加
+      for (let i = 0; i < this.rightData.length; i++) {
+        if (this.rightData[i].moduleName === 'service') {
+          this.rightData[i].content.push({
+            isShow: '1',
+            iconName: 'customIcon' + this.customValue,
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_ownset.png',
+            title: '我的服务',
+            link: '',
+            linkName: ''
+          })
+        }
+      }
+      // 左侧添加
+      for (let i = 0; i < this.leftData.length; i++) {
+        if (this.leftData[i].moduleName === 'service') {
+          this.leftData[i].content.push({
+            isShow: '1',
+            iconName: 'customIcon' + this.customValue,
+            icon: 'http://mpdevimg2.weipubao.cn/image/admin/ucConfig/icon_ownset.png',
+            title: '我的服务',
+            link: '',
+            linkName: ''
+          })
+        }
+      }
+      this.customValue++
+    }
   }
 }
 </script>
@@ -1477,6 +1883,7 @@ export default {
 }
 
 .orderContent {
+  text-align: center;
   padding: 15px 0;
   padding-bottom: 0;
   display: flex;
@@ -1492,7 +1899,6 @@ export default {
 
 .each_item {
   flex: 1;
-  display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
@@ -1539,15 +1945,20 @@ export default {
   font-weight: bold;
 }
 
+.each_item .item_app {
+  width: 100%;
+  display: flex;
+}
+
 .each_item .orderContent .app_img {
-  margin-left: 10px;
+  /* margin-left: 10px;
   border: 1px solid #ccc;
   width: 40px;
   height: 40px;
   overflow: hidden;
   flex: 0.2;
   margin-right: 10px;
-  text-align: left;
+  text-align: left; */
 }
 
 .app_img img {
@@ -1560,12 +1971,12 @@ export default {
   width: 98px;
   margin-bottom: 20px;
   float: left;
-  flex: 30%;
+  flex: 30% !important;
 
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  /* display: flex; */
+  display: flex;
 }
 
 .serve_img {
@@ -1583,8 +1994,8 @@ export default {
 }
 
 .app_info {
+  text-align: left;
   flex: 1.5;
-  display: flex;
   flex-direction: column;
   justify-content: space-around;
   height: 40px;
@@ -1596,6 +2007,7 @@ export default {
 }
 
 .app_info p:last-child {
+  margin-top: 10px;
   font-size: 12px;
   color: #999;
 }
