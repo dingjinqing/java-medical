@@ -4,6 +4,7 @@
     "pages/index/index",
     "pages/coupon/coupon",
     "pages/getCoupon/getCoupon",
+    "pages/usercenter/usercenter",
     "components/decorate/card/index"
   ],
   "window": {
