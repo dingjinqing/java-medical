@@ -236,19 +236,6 @@ public class AdminStoreController extends AdminBaseController{
     	return success(shop().store.storeVerifier.getPageList(verifierListQueryParam));
     }
 
-    @GetMapping("/api/admin/store/verifier/testdownload")
-    public void testDownload(HttpServletRequest request,HttpServletResponse response) throws IOException {
-        String fileName = "李晓冰";
-        // 读取文件
-        response.setContentType("application/octet-stream;charset=UTF-8");
-//        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
-
-        fileName = URLEncoder.encode(fileName + ".txt", "UTF-8");
-        response.setHeader("myheader",URLEncoder.encode("李晓冰.txt","UTF-8"));
-
-        response.setHeader("Content-disposition", "attachment; filename="+fileName);// 指定下载的文件名
-        response.getOutputStream().write("计算的积分积".getBytes());
-    }
     /**
      * 核销员列表导出
      * @return
