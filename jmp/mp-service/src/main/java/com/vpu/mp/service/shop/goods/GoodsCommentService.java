@@ -271,9 +271,9 @@ public class GoodsCommentService extends ShopBaseService {
 	public int addComment(GoodsCommentAddCommParam goodsCommentAddComm) {
 		
 		 int result = db()
-	                .insertInto(COMMENT_GOODS,COMMENT_GOODS.GOODS_ID,COMMENT_GOODS.BOGUS_USERNAME,COMMENT_GOODS.BOGUS_USER_AVATAR,
+	                .insertInto(COMMENT_GOODS,COMMENT_GOODS.SHOP_ID,COMMENT_GOODS.GOODS_ID,COMMENT_GOODS.BOGUS_USERNAME,COMMENT_GOODS.BOGUS_USER_AVATAR,
 	                		COMMENT_GOODS.CREATE_TIME, COMMENT_GOODS.COMMSTAR,COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.COMM_IMG,COMMENT_GOODS.ANONYMOUSFLAG)
-	                .values(goodsCommentAddComm.getGoodsId(),goodsCommentAddComm.getBogusUsername(),goodsCommentAddComm.getBogusUserAvatar(),
+	                .values(getShopId(),goodsCommentAddComm.getGoodsId(),goodsCommentAddComm.getBogusUsername(),goodsCommentAddComm.getBogusUserAvatar(),
 	                		goodsCommentAddComm.getCreateTime(),goodsCommentAddComm.getCommstar(),goodsCommentAddComm.getCommNote(),goodsCommentAddComm.getCommImg(),goodsCommentAddComm.getAnonymousFlag())
 	                .execute();
 	    
