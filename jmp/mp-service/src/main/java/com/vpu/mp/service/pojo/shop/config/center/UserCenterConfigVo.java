@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -28,48 +29,51 @@ public class UserCenterConfigVo {
      *      service:服务展示项配置
      *
      */
+    @NotBlank
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "module_name")
     private String moduleName;
     /**
      *页面风格
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "page_style")
     private String pageStyle;
     /**
      *
      * 个人信息背景色配置
+     * 展示 true显示 false隐藏
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean isShow;
+    @JsonProperty(value = "is_show")
+    private String isShow;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "bg_type")
     private String bgType;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "bg_img")
     private String bgImg;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String moduleStyle;
-    //  1显示 0 不显示
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowAccount;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowScore;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowCoupon;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowCard;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "module_style")
+    private String moduleStyle;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "is_show_collect")
     private String isShowCollect;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "is_show_buy_history")
     private String isShowBuyHistory;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "is_show_footprint")
     private String isShowFootprint;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UserCenterContentConfig> content;
+
 
 
 

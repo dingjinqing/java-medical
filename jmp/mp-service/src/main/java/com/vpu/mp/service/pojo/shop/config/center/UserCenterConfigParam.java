@@ -31,11 +31,13 @@ public class UserCenterConfigParam {
      */
     @NotBlank
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "module_name")
     private String moduleName;
     /**
      *页面风格
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "page_style")
     private String pageStyle;
     /**
      *
@@ -43,36 +45,31 @@ public class UserCenterConfigParam {
      * 展示 true显示 false隐藏
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean isShow;
-    // 同步店铺配色 1同步 0 不同步
+    @JsonProperty(value = "is_show")
+    private String isShow;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "bg_type")
     private String bgType;
-    // 背景图片
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "bg_img")
     private String bgImg;
-    // 标题
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
-    // 模块样式
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "module_style")
     private String moduleStyle;
-    //  1显示 0 不显示
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowAccount;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowScore;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowCoupon;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String isShowCard;
-
-
-    // 我的收藏
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "is_show_collect")
     private String isShowCollect;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "is_show_buy_history")
     private String isShowBuyHistory;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(value = "is_show_footprint")
     private String isShowFootprint;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UserCenterContentConfig> content;
