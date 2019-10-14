@@ -29,7 +29,7 @@ public class DomainConfig {
 	 * @return
 	 */
 	public String imageUrl(String relativePath) {
-		return this.imageUrl(relativePath, null);
+		return this.imageUrl(pathJudge(relativePath), null);
 	}
 
 	/**
