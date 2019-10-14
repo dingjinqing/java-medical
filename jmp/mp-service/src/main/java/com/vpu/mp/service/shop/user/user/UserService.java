@@ -595,6 +595,8 @@ public class UserService extends ShopBaseService {
 		List<Map<String, Object>> parseJson = new ArrayList<Map<String, Object>>();
 		if (record == null || StringUtils.isEmpty(record.getV())) {
 			data = Util.loadResource(userCenterJson);
+		}else {
+			data=record.getV();
 		}
 		VersionConfig mergeVersion = saas.shop.version.mergeVersion(getShopId());
 		if (mergeVersion.getMainConfig().getSub4().size() > 0) {
@@ -603,6 +605,7 @@ public class UserService extends ShopBaseService {
 			iconNames.add("distribution");
 			iconNames.add("bargain");
 			parseJson = Util.parseJson(data, List.class);
+			logger().info("读取配置完,size"+parseJson.size());
 			for (Map<String, Object> module : parseJson) {
 				if (module.get("module_name").equals("service")) {
 					List<Map<String, Object>> object = (List<Map<String, Object>>) module.get("content");
