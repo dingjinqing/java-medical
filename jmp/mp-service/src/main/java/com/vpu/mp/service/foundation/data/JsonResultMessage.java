@@ -64,7 +64,7 @@ public class JsonResultMessage {
 	public static final String MSG_VIDEO_CATEGORY_VIDEOCATPARENTID_NOT_NULL = "video.category.videoCatParentId.notNull";
 	public static final String MSG_VIDEO_CATEGORY_VIDEOCATNAME_NOT_NULL = "video.category.videoCatName.notNull";
 	public static final String MSG_VIDEO_UPLOAD_GT_10M = "video.upload.gt10m";
-	
+
 	/**
 	 * 商品
 	 */
@@ -235,6 +235,7 @@ public class JsonResultMessage {
 	 */
 	public static final String STORE_GROUP_NAME_EXIST = "store.group.name.exist";
 	public static final String STORE_POS_SHOP_ID_EXIST = "store.pos.shop.id.exist";
+    public static final String CODE_DATA_NOT_EXIST = "data.not.exist";
 
 	/**
 	 * 门店技师管理
@@ -417,8 +418,8 @@ public class JsonResultMessage {
     public static final String REDEMPTION_DETAIL_MAIN_GOODS_TOTAL_MONEY = "market.increase.purchase.redemption.detail.main_goods_total_money";
     public static final String REDEMPTION_DETAIL_REDEMPTION_NUM = "market.increase.purchase.redemption.detail.redemption_num";
     public static final String REDEMPTION_DETAIL_REDEMPTION_TOTAL_MONEY = "market.increase.purchase.redemption.detail.redemption_total_money";
-    
-    
+
+
     /**
      * WxAppCode
      */

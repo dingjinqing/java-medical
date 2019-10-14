@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -432,12 +431,10 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/service/update")
-    public JsonResult updateStoreService(@RequestBody(required = true) @Valid StoreServiceParam storeService) {
-       if(shop().store.storeService.updateStoreService(storeService)) {
-    	   return success();
-       }else {
-    	   return fail();
-       }
+    public JsonResult updateStoreService(@RequestBody(required = true) @Validated StoreServiceParam storeService) {
+//        public JsonResult updateStoreService(@RequestBody(required = true) @Validated({Update.class}) StoreServiceParam storeService) {
+        shop().store.storeService.updateStoreService(storeService);
+        return success();
     }
 
 

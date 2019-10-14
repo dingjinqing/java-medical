@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.store.service;
 
-import javax.validation.constraints.NotNull;
-
 import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
+
+import javax.validation.constraints.PositiveOrZero;
 
 /**
  * @author 王兵兵
@@ -17,16 +16,16 @@ public class StoreServiceListQueryParam {
 	 *  服务名称
 	 */
 	private String serviceName;
-	
+
 	/**
 	 *  服务分类
 	 */
 	private Integer catId;
-	
-	@NotNull
+
+    @PositiveOrZero
 	private Integer storeId;
-	
-	/**
+
+    /**
      * 	分页信息
      */
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;

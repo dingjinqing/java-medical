@@ -1322,19 +1322,18 @@ create table `b2c_give_voucher`
     primary key (`id`)
 );
 
-
--- -- 店铺服务分类
+-- -- 门店服务分类
 -- drop table if exists `b2c_store_service_category`;
 create table `b2c_store_service_category`
 (
     `cat_id`      int(11)     not null auto_increment,
-    `cat_name`    varchar(90) not null default '',
-    `store_id`    int(11)     not null,
-    `create_time` timestamp            default current_timestamp,
+    `cat_name`    varchar(90) not null comment '分类名称',
+    `store_id`    int(11)     not null comment '门店id',
+    `create_time` timestamp            default current_timestamp comment '创建时间',
     `update_time` timestamp            default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`cat_id`),
     unique key `cat_name` (`cat_name`, `store_id`)
-);
+)COMMENT='门店服务分类表';
 
 -- -- 门店服务信息
 -- drop table if exists `b2c_store_service`;

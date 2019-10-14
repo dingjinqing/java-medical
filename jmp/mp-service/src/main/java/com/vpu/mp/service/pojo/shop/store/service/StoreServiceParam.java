@@ -1,10 +1,10 @@
 package com.vpu.mp.service.pojo.shop.store.service;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * @author 王兵兵
@@ -13,7 +13,8 @@ import lombok.Data;
  */
 @Data
 public class StoreServiceParam {
-	private Integer    id;
+    //    @PositiveOrZero(groups = Update.class)
+    private Integer    id;
     private Integer    storeId;
     private String     serviceName;
     private String     serviceSn;
