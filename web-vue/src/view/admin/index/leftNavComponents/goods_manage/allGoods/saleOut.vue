@@ -118,7 +118,7 @@
           :src="qrCodeData.imgFullUrl"
           style="width: 250px; height: 230px;"
         />
-        <el-input v-model="qrCodeData.imgFullUrl" disabled />
+        <el-input v-model="qrCodeData.pageUrl" disabled />
         <span>{{$t('allGoods.allGoodsData.copy')}}</span>
       </div>
     </el-dialog>
@@ -166,6 +166,7 @@ export default {
       },
       qrCodeData: {
         imgFullUrl: null,
+        pageUrl: null,
         isShow: false
       },
       goodsLabelData: {
@@ -301,8 +302,9 @@ export default {
       this.$router.push({name: 'goods_update', params: {goodsId: row.goodsId}})
     },
     shareIconClick (row) {
-      getGoodsQrCode(row.gooodsId).then(res => {
+      getGoodsQrCode(row.goodsId).then(res => {
         this.qrCodeData.imgFullUrl = res.content.imgFullUrl
+        this.qrCodeData.pageUrl = res.content.pageUrl
         this.qrCodeData.isShow = true
       })
     },
