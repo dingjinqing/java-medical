@@ -17,8 +17,8 @@ public class XcxCustomerPageVo implements Serializable {
 
     private static final long serialVersionUID = -623202346;
 
-    public static int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    public static int pageRows = Page.DEFAULT_PAGE_ROWS;
+    private Integer currentPage;
+    private Integer pageRows;
 
     private Integer   pageId;
     private Integer   shopId;

@@ -40,7 +40,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/list")
-	public JsonResult list(XcxCustomerPageVo param) {
+	public JsonResult list(@RequestBody XcxCustomerPageVo param) {
 		PageResult<XcxCustomerPageVo> list = shop().mpDecoration.getPageList(param);
 		return success(list);
 	}

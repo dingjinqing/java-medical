@@ -80,7 +80,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 						.on(XCX_CUSTOMER_PAGE.CAT_ID.eq(PAGE_CLASSIFICATION.ID)));
 		select = buildOptions(select, param);
 		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
-		return this.getPageResult(select, XcxCustomerPageVo.currentPage,XcxCustomerPageVo.pageRows, XcxCustomerPageVo.class);
+		return this.getPageResult(select, param.getCurrentPage(),param.getPageRows(), XcxCustomerPageVo.class);
 	}
 
 	/**
