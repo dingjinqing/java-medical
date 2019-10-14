@@ -1327,7 +1327,8 @@ public class GoodsService extends ShopBaseService {
         String paramName = "goods_id=";
         String urlParam = paramName + goodsId;
         logger().debug("获取商品小程序展示页面 service进入");
-        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, urlParam);
+//        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, urlParam);
+        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.INDEX, urlParam);
         GoodsQrCodeVo goodsQrCodeVo = new GoodsQrCodeVo();
         goodsQrCodeVo.setImgFullUrl(mpQrCode);
         goodsQrCodeVo.setPageUrl(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(urlParam));
