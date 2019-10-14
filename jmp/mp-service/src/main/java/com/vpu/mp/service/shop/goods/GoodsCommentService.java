@@ -37,11 +37,10 @@ public class GoodsCommentService extends ShopBaseService {
      */
     public PageResult<GoodsCommentVo> getPageList(GoodsCommentPageListParam param) {
 
-        SelectConditionStep<? extends Record> select = db().select(COMMENT_GOODS.ID,
+        SelectConditionStep<? extends Record> select = (SelectConditionStep<? extends Record>) db().select(COMMENT_GOODS.ID,
                 COMMENT_GOODS.ORDER_SN,
                 COMMENT_GOODS.COMMSTAR,
                 COMMENT_GOODS.COMM_NOTE,
-                COMMENT_GOODS_ANSWER.CONTENT,
                 COMMENT_GOODS.CREATE_TIME,
                 COMMENT_GOODS.ANONYMOUSFLAG,
                 COMMENT_GOODS.BOGUS_USERNAME,
@@ -56,16 +55,18 @@ public class GoodsCommentService extends ShopBaseService {
                 .from(COMMENT_GOODS)
                 .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(COMMENT_GOODS.GOODS_ID))
                 .leftJoin(USER).on(USER.USER_ID.eq(COMMENT_GOODS.USER_ID))
-                .leftJoin(COMMENT_AWARD).on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
-                .leftJoin(COMMENT_GOODS_ANSWER).on(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID))
-                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+                .leftJoin(COMMENT_AWARD).on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID));
         this.buildOptions(select, param);
-
         select.orderBy( COMMENT_GOODS.CREATE_TIME.desc());
 
         PageResult<GoodsCommentVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentVo.class);
-
+        for (GoodsCommentVo vo: pageResult.dataList) {
+            String content = db().select(COMMENT_GOODS_ANSWER.CONTENT).from(COMMENT_GOODS_ANSWER)
+                .where(COMMENT_GOODS_ANSWER.COMMENT_ID.eq(vo.getId()))
+                .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq((byte)GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE))
+                .fetchOptionalInto(String.class).orElse(null);
+            vo.setContent(content);
+        }
         return pageResult;
     }
 
@@ -74,11 +75,9 @@ public class GoodsCommentService extends ShopBaseService {
      *
      * @param select
      * @param param
-     * @return
      */
     private SelectConditionStep<?> buildOptions(SelectConditionStep<? extends Record> select, GoodsCommentPageListParam param) {
-        SelectConditionStep<?> scs = select
-                .and(COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
+        SelectConditionStep<?> scs = select.and(COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
 
         if (!StringUtils.isBlank(param.getOrderSn())) {
             scs = scs.and(COMMENT_GOODS.ORDER_SN.like(this.likeValue(param.getOrderSn())));
@@ -166,7 +165,7 @@ public class GoodsCommentService extends ShopBaseService {
     /**
      * 假删除指定评价
      *
-     * @param goodsComment
+     * @param goodsCommentId
      * @return 数据库受影响行数
      */
     public int delete(GoodsCommentIdParam goodsCommentId) {
@@ -204,7 +203,7 @@ public class GoodsCommentService extends ShopBaseService {
     /**
      * 修改评价审核状态
      *
-     * @param goodsComment
+     * @param goodsCommentId
      * @return
      */
     public int passflag(GoodsCommentIdParam goodsCommentId) {
@@ -222,7 +221,7 @@ public class GoodsCommentService extends ShopBaseService {
     /**
      * 分页查询添加评论列表
      *
-     * @param goodsCommentAdd
+     * @param param
      * @return
      */
     public PageResult<GoodsCommentAddListVo> getAddList(GoodsCommentPageListParam param) {
