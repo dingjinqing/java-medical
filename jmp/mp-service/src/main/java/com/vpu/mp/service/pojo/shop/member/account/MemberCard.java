@@ -43,9 +43,12 @@ public class MemberCard {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String chargeMoney;
 	
-	public MemberCard(Integer cardId) {
-		id = cardId;
+	
+	public MemberCard(Integer id) {
+		super();
+		this.id = id;
 	}
+	
 	
 	/**
 	 * 设置开关及是否过期
