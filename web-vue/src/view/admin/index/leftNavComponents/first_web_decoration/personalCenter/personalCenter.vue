@@ -108,7 +108,7 @@
               <div class="orderOperation">
                 <img
                   class="up_img"
-                  :src="imgHost + '/image/admin/personal/add_up_use.png'"
+                  :src="imgHost + '/image/admin/add_up_use.png'"
                   alt=""
                   @click="upClickHandler(leftData, index)"
                 >
