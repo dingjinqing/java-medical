@@ -536,7 +536,7 @@ public class UserService extends ShopBaseService {
 			if(iconItem.get("icon_name").equals("card")) {
 				//TODO 等壮壮提供getValidCardList
 				List<ValidUserCardBean> cardList = userCard.userCardDao.getValidCardList(record.getUserId(), (byte)-1, 0);
-				iconItem.put("num", cardList.size());
+				iconItem.put("num", cardList!=null?cardList.size():0);
 			}
 		}
 		logger().info("我的资产结束");
