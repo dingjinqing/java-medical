@@ -153,8 +153,6 @@ public class UserCardDaoService extends ShopBaseService{
 			 return getAllValidCardList(userId);	
 		}
 		
-		List<Integer> inDate = userCardService.useInDate();
-		
 		if(type == 1) {
 			// 线下处理
 			
