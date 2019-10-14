@@ -56,13 +56,24 @@ public class UserCenterConfigParam {
     // 模块样式
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String moduleStyle;
+    //  1显示 0 不显示
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String isShowAccount;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String isShowScore;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String isShowCoupon;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String isShowCard;
+
+
     // 我的收藏
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer isShowCollect;
+    private String isShowCollect;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer isShowBuyHistory;
+    private String isShowBuyHistory;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer isShowFootprint;
+    private String isShowFootprint;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UserCenterContentConfig> content;
 

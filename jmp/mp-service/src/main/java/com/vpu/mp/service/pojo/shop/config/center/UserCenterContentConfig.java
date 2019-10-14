@@ -17,7 +17,7 @@ public class UserCenterContentConfig {
     private String iconName;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer isShow;
+    private String isShow;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String icon;
