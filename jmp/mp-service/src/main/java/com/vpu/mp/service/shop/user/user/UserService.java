@@ -397,6 +397,9 @@ public class UserService extends ShopBaseService {
 	public List<Map<String, Object>> parseCenterModule(Integer userId) {
 		List<Map<String, Object>> moduleData = getCenterModule();
 		UserRecord userByUserId = getUserByUserId(userId);
+		if(userByUserId==null) {
+			return null;
+		}
 		
 		for(Map<String, Object> module:moduleData) {
 			if (module.get("module_name").equals("center_header")) {
@@ -612,6 +615,7 @@ public class UserService extends ShopBaseService {
 				}
 			}
 		}
+		logger().info("getCenterModule运行完");
 		return parseJson;
 	}
 	
