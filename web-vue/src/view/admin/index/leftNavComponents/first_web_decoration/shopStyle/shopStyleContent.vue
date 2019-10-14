@@ -349,10 +349,12 @@ export default {
       }
       console.log(obj)
       shopStyleModifyRequest(obj).then((res) => {
+        console.log(res)
         if (res.error === 0) {
-          this.$message({
+          this.$message.success({
             message: '保存成功',
-            type: 'success'
+            type: 'success',
+            showClose: true
           })
         }
         console.log(res)
