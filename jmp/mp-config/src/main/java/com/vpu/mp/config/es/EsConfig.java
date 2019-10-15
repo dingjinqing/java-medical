@@ -17,6 +17,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,6 +32,7 @@ import java.io.IOException;
 */
 @Slf4j
 @Configuration
+@ConditionalOnProperty(prefix="es",name = "open", havingValue = "on")
 public class EsConfig implements FactoryBean<RestHighLevelClient>, InitializingBean, DisposableBean {
 
     @Value("${spring.elasticsearch.host}")
