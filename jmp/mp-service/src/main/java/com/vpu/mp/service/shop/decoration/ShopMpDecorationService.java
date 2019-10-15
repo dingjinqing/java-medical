@@ -279,7 +279,8 @@ public class ShopMpDecorationService extends ShopBaseService {
 	 */
 	public int delXcxPage(PageClassificationVo param) {
 		int result = db()
-				.delete(XCX_CUSTOMER_PAGE)
+				.update(XCX_CUSTOMER_PAGE)
+				.set(XCX_CUSTOMER_PAGE.PAGE_ENABLED,(byte) 0)
 				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()))
 				.execute();
 		return result;
