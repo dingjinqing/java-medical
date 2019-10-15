@@ -290,7 +290,7 @@
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate, batchSet } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -321,7 +321,8 @@ export default {
       cateId: '',
       setPageCateParam: {},
       pageIds: '',
-      isBatch: 0
+      isBatch: 0,
+      delPageId: ''
 
     }
   },
@@ -430,13 +431,22 @@ export default {
         }
       })
     },
-    // // 删除 二次确认
-    // del (pageId) {
-    //   alert(pageId)
-    //   this.dialogVisible = true
-    // },
+    // 删除 二次确认
+    del (pageId) {
+      this.delPageId = pageId
+      this.dialogVisible = true
+    },
 
-    // del
+    delConfirm () {
+      this.param.pageId = this.delPageId
+      delPage(this.param).then(res => {
+        if (res.error === 0) {
+          this.dialogVisible = false
+          this.$message.success('删除成功')
+          this.list()
+        }
+      })
+    },
     // 下载图片
     downs () {
       //  var alink = document.createElement('a')
