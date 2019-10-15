@@ -58,3 +58,12 @@ export function delPage (data) {
     data: data
   })
 }
+
+// 复制页面
+export function pageCopy (data) {
+  return service({
+    url: '/api/admin/decorate/page/copy',
+    method: 'post',
+    data: data
+  })
+}

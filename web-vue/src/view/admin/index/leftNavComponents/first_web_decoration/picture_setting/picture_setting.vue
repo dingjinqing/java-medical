@@ -141,7 +141,7 @@
                 >
                   <span
                     class="el-icon-edit-outline iconSpn"
-                    @click="handleOperation(scope.row,0)"
+                    @click="edit(scope.row.pageId)"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -160,7 +160,7 @@
                 >
                   <span
                     class="fa fa-copy iconSpn"
-                    @click="handleOperation(scope.row,2)"
+                    @click="copy(scope.row.pageId)"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -273,7 +273,6 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="30%"
-      :before-close="handleClose"
     >
       <span>是否继续删除该装修页面</span>
       <span
@@ -290,7 +289,7 @@
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -443,6 +442,17 @@ export default {
         if (res.error === 0) {
           this.dialogVisible = false
           this.$message.success('删除成功')
+          this.list()
+        }
+      })
+    },
+
+    // 复制页面
+    copy (pageId) {
+      this.param.pageId = pageId
+      pageCopy(this.param).then(res => {
+        if (res.error === 0) {
+          this.$message.success('复制成功')
           this.list()
         }
       })
