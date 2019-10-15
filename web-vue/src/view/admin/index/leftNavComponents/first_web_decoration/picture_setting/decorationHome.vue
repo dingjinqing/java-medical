@@ -419,6 +419,7 @@ export default {
     this.$http.$emit('modulesClick', this.nowRightShowIndex)
   },
   mounted () {
+    console.log(this.$route)
     // 初始化数据
     this.$nextTick(() => {
       this.init_drag_event()

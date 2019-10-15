@@ -533,6 +533,10 @@ export default {
           }
         })
       }
+    },
+    // 编辑点击
+    edit (res) {
+      console.log(res)
     }
   }
 }
