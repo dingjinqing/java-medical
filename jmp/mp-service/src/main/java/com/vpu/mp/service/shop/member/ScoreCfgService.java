@@ -86,7 +86,8 @@ public class ScoreCfgService extends BaseShopConfigService {
 			this.set(SCORE_PERIOD, param.getScorePeriod());
 
 		} else {
-			return -1;
+			//return -1;
+			System.out.println("debug");
 		}
 
 		// 积分支付限制
@@ -100,7 +101,8 @@ public class ScoreCfgService extends BaseShopConfigService {
 			this.set(SCORE_PAY_LIMIT, scorePayLimit);
 			this.set(SCORE_PAY_NUM, param.getScorePayNum());
 		} else {
-			return -1;
+			//return -1;
+			System.out.println("debug");
 		}
 		
 		
