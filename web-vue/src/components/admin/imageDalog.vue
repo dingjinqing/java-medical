@@ -210,7 +210,7 @@ import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } fr
 import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree, Cropper, draggable },
-  props: ['pageIndex', 'tuneUp', 'isDraggable'],
+  props: ['pageIndex', 'tuneUp', 'isDraggable', 'imageSize'],
   data () {
     return {
       dialogTableVisible: false,
@@ -286,6 +286,20 @@ export default {
       })
       this.backArr = []
       this.dialogTableVisible = true
+    },
+    imageSize: {
+      handler (newData) {
+        console.log(newData)
+        if (newData) {
+          this.sizeW = newData[0]
+          this.sizeH = newData[1]
+        }
+      },
+      immediate: true
+
+    },
+    checked (newData) {
+      this.queryImgs()
     }
   },
   mounted () {
@@ -358,42 +372,21 @@ export default {
     handleSearch () {
       this.queryImgs(1)
     },
-    // 处理尺寸数据函数
-    handleToSizeData (Newwidth, Newheight) {
-      this.sizeW = Newwidth
-      this.sizeH = Newheight
-      if (this.checked === true) {
-        this.width = Newwidth
-        this.height = Newheight
-      } else {
-        this.width = ''
-        this.height = ''
-      }
-    },
-    // 处理不同模块调用弹窗图片规格尺寸问题
-    handleToImgSize () {
-      switch (this.pageIndex) {
-        case 'pictureSpace':
-          this.handleToSizeData(80, 80)
-          break
-        case 'imageDalog':
-          this.handleToSizeData(52, 52)
-          break
-        case 'userCardAdd':
-          this.handleToSizeData(540, 300)
-      }
-      return {
-        width: this.width,
-        height: this.height
-      }
-    },
     // 图片分组查询
     queryImgs (currentPage3) {
       console.log(this.firstNodeId)
       console.log(this.value)
       console.log(this.checked)
+      let width, height
+      // let { width, height } = this.handleToImgSize()
+      if (this.checked === true) {
+        width = this.sizeW
+        height = this.sizeH
+      } else {
+        width = ''
+        height = ''
+      }
 
-      let { width, height } = this.handleToImgSize()
       console.log(this.pageIndex)
       switch (this.pageIndex) {
         case 'pictureSpace':
@@ -487,7 +480,15 @@ export default {
     },
     // 图片选中
     handleChecked (index) {
+      if (this.img_list[index].imgWidth !== this.sizeW || this.img_list[index].imgHeight) {
+        this.$message.error({
+          message: '图片宽高不符合要求',
+          showClose: true
+        })
+        return
+      }
       this.img_list[index].checked = !this.img_list[index].checked
+      console.log(this.img_list[index])
       if (this.isDraggable) {
         console.log(this.img_list[index])
         let data = JSON.parse(JSON.stringify(this.img_list[index]))
