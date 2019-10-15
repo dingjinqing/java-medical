@@ -315,6 +315,8 @@ public class JsonResultMessage {
 
 	public static final String MSG_MEMBER_CARD_RIGHTS_EMPTY = "member.card.rights.empty";
 	public static final String MSG_MEMBER_CARD_ID_EMPTY = "member.card.id.empty";
+	public static final String MSG_CARD_ACTIVATE_SUCCESS = "card.activate.success";
+	public static final String CARD_ACTIVATE_FAIL = "card.activate.fail";
 	/**
 	 * 概览
 	 */
