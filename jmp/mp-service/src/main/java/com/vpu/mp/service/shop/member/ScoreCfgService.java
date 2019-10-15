@@ -3,8 +3,12 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Record1;
 import org.jooq.Record2;
@@ -102,7 +106,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 		
 		/** 购物送积分 */
 		/** 积分开关 */
-		String shoppingScore = (BUTTON_ON.equals(param.getShoppingScore()))?"1":"0";
+		String shoppingScore = (BUTTON_ON.equals(param.getShoppingScore()))?ONE:ZERO;
 		this.set(SHOPPING_SCORE, shoppingScore);
 		
 		/** 购物送积分的类型 0 购物多少送多少 1 购买每多少送多少 */
@@ -275,6 +279,15 @@ public class ScoreCfgService extends BaseShopConfigService {
 			vo.getBuyEach().add((String) record.get(0));
 			vo.getBuyEachScore().add((String)record.get(1));
 		}
+		
+		// 处理签到积分
+		UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
+		if(!StringUtils.isBlank(userScore.getEnable()) && ONE.equals(userScore.getEnable())) {
+			vo.setSignInScore(BUTTON_ON);
+		}
+		
+		
+		vo.setSignScore(userScore.getScore());
 		return vo;
 	}
 

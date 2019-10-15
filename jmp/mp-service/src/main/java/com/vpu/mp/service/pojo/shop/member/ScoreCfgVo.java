@@ -57,17 +57,15 @@ public class ScoreCfgVo {
 	
 	@JsonAlias("score_pay_num")
 	public String scorePayNum;
-
+	
 	public ArrayList<String> buy = new ArrayList<>();
 	public ArrayList<String> buyScore = new ArrayList<>();
 	public ArrayList<String> buyEach = new ArrayList<>();
 	public ArrayList<String> buyEachScore = new ArrayList<>();
+	
+	// 签到积分开关
+	public String signInScore;
+	// 签到积分数据 如第一天签到送多少积分
+	public String[] signScore;
 
-	public static String[] paramList = { "score_limit", "score_protect", "score_day", "score_month", "score_year",
-			"score_type", "score_login", "store_score", "shopping_score", "login_score", "score_limit_number",
-			"score_period", "score_pay_limit", "score_pay_num" };
-
-	public static String[] getFields() {
-		return paramList;
-	}
 }

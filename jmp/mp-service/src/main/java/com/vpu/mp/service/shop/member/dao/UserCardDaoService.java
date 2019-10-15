@@ -152,14 +152,10 @@ public class UserCardDaoService extends ShopBaseService{
 			// 所有可用卡
 			 return getAllValidCardList(userId);	
 		}
-		
 		if(type == 1) {
 			// 线下处理
-			
-			return getOfflineValidCardList(userId, cardType);
-							
+			return getOfflineValidCardList(userId, cardType);	
 		}
-		
 		// 线上
 		return getOnlineValidCardList(userId, cardType);
 	}

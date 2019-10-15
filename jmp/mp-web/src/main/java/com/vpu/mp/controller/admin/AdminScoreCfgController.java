@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +19,18 @@ import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 @RequestMapping(value="/api/admin/user/score")
 public class AdminScoreCfgController extends AdminBaseController {
 
-	@GetMapping(value="/get")
+	@PostMapping(value="/get")
 	public JsonResult getScoreConfig() {
 		
 		ScoreCfgVo vo = shop().score.getShopScoreCfg();
 		return this.success(vo);
 	}
+	
+	/**
+	 * 更新积分配置
+	 * @param param
+	 * @return
+	 */
 	@PostMapping(value="/update")
 	public JsonResult userScoreConfig(@RequestBody ShopCfgParam param) {
 		
