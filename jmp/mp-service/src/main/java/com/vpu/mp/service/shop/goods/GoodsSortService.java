@@ -4,19 +4,10 @@ import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,6 +76,51 @@ public class GoodsSortService extends ShopBaseService {
         /* 处理图片路径 */
         sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg()));
         return sort;
+    }
+    /**
+     *  查询分类详细信息
+     * @param ids
+     * @return
+     */
+    public Map<Integer,Sort> getSort(List<Integer> ids) {
+        List<Sort> sorts = db().selectFrom(SORT).where(SORT.SORT_ID.in(ids)).fetchInto(Sort.class);
+
+        /* 处理图片路径 */
+        sorts.forEach(sort -> sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg())));
+
+        return sorts.stream().collect(Collectors.toMap(Sort::getSortId,x->x));
+    }
+
+    public Map<Integer,Sort> getParentSortsByChildId(List<Integer> ids){
+        com.vpu.mp.db.shop.tables.Sort s1 = SORT.as("s1");
+        com.vpu.mp.db.shop.tables.Sort s2 = SORT.as("s2");
+        com.vpu.mp.db.shop.tables.Sort s3 = SORT.as("s3");
+        Result<Record3<Integer,Integer,Integer>> idResult = db().select(s1.SORT_ID,s2.SORT_ID,s3.SORT_ID)
+            .from(s1)
+            .leftJoin(s2).on(s1.SORT_ID.eq(s2.PARENT_ID))
+            .leftJoin(s3).on(s2.SORT_ID.eq(s3.PARENT_ID))
+            .where(s1.SORT_ID.in(ids))
+            .fetch();
+        if( idResult.isNotEmpty() ){
+
+            return getSort(getIdListByRecord3(idResult));
+        }
+        return new HashMap<Integer,Sort>();
+    }
+    private List<Integer> getIdListByRecord3(Result<Record3<Integer,Integer,Integer>> idResult){
+        List<Integer> result = new ArrayList<>(idResult.size()*3);
+        idResult.forEach(x->{
+            if( null != x.value1() ){
+                result.add(x.value1());
+            }
+            if( null != x.value2() ){
+                result.add(x.value2());
+            }
+            if( null != x.value3() ){
+                result.add(x.value3());
+            }
+        });
+        return result;
     }
 
     /**

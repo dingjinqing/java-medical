@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -489,5 +490,15 @@ public class PreSaleService extends ShopBaseService {
     public String sharePreSale(Integer presaleId) {
         Integer goodsId = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOne(TABLE.GOODS_ID);
         return format(SHARE_PAGE_PATH, goodsId, presaleId);
+    }
+
+    public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){
+        return db().select(TABLE.ID,SUB_TABLE.PRESALE_PRICE).from(TABLE)
+            .leftJoin(SUB_TABLE).on(SUB_TABLE.PRESALE_ID.eq(TABLE.ID))
+            .where(SUB_TABLE.GOODS_ID.eq(goodsId))
+            .and(TABLE.START_TIME.lessThan(date))
+            .and(TABLE.END_TIME.greaterThan(date))
+            .and(TABLE.STATUS.eq((byte)1))
+            .fetchOptional();
     }
 }

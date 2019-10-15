@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
@@ -211,5 +213,22 @@ public class SeckillService extends ShopBaseService {
             .and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId))
             .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
             .fetchOne(SEC_KILL_DEFINE.SK_ID);
+    }
+    /**
+     * 根据商品id获取秒杀活动id
+     * @param goodsIds 商品id
+     * @param date 当前时间
+     * @return 秒杀活动id
+     */
+    public Map<Integer,List<SecKillDefineRecord>> getSecKillIdByGoodsIds(List<Integer> goodsIds, Timestamp date){
+        return db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.GOODS_ID)
+            .from(SEC_KILL_DEFINE)
+            .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
+            .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
+            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
+            .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
+            .fetchInto(SecKillDefineRecord.class)
+            .stream()
+            .collect(Collectors.groupingBy(SecKillDefineRecord::getGoodsId));
     }
 }

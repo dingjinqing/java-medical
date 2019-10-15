@@ -24,14 +24,17 @@ import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.Record;
+import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -311,15 +314,39 @@ public class GroupBuyService extends ShopBaseService {
      * @param date 当前时间
      * @return List<GroupBuyProductDefineRecord>
      */
-    public List<GroupBuyProductDefineRecord> getGroupBuyProductByGoodsId(Integer goodsId,Timestamp date){
-        return db().selectFrom(GROUP_BUY_DEFINE)
+    public List<Record2<Integer,BigDecimal>> getGroupBuyProductByGoodsId(Integer goodsId, Timestamp date){
+        return db().select(GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+            .from(GROUP_BUY_PRODUCT_DEFINE)
+            .leftJoin(GROUP_BUY_DEFINE)
+            .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
             .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
             .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
             .and(GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId))
             .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))
             .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
-            .fetchInto(GroupBuyProductDefineRecord.class);
+            .fetch();
+    }
+    /**
+     * 根据goodsIds获取拼团定义
+     * @param goodsIds 商品id
+     * @param date 当前时间
+     * @return List<GroupBuyProductDefineRecord>
+     */
+    public Map<Integer,List<Record2<Integer,BigDecimal>>> getGroupBuyProductByGoodsIds(List<Integer> goodsIds, Timestamp date){
+        return db().select(GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+            .from(GROUP_BUY_PRODUCT_DEFINE)
+            .leftJoin(GROUP_BUY_DEFINE)
+            .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
+            .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+            .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
+            .and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
+            .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))
+            .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
+            .fetch()
+            .stream()
+            .collect(Collectors.groupingBy(x->x.get(GROUP_BUY_DEFINE.GOODS_ID)));
     }
 
     private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {

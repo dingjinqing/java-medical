@@ -28,7 +28,7 @@ public class SysCatServiceHelper  implements ApplicationListener<ContextRefreshe
     }
 
     public static List<SysCatevo> getAllSysCateVoByCat(){
-        return allMap.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(allMap.values());
     }
     public static List<SysCatevo> getSysCateVoByCatIds(List<Integer> catId){
 

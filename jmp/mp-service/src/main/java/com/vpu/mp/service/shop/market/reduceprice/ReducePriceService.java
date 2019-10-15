@@ -210,6 +210,7 @@ public class ReducePriceService extends ShopBaseService {
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
+            .orderBy(REDUCE_PRICE.CREATE_TIME.asc())
             .fetchOne(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID);
         if( reducePriceId == null ){
             return null;

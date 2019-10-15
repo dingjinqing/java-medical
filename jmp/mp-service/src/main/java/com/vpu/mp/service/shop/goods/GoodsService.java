@@ -1287,6 +1287,17 @@ public class GoodsService extends ShopBaseService {
             .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class);
     }
     /**
+     * 批量获取商品规格会员价
+     *
+     * @param goodsIds
+     * @return
+     */
+    public Map<Integer,List<GoodsGradePrd>> selectGoodsGradePrdByGoodsIds(List<Integer> goodsIds) {
+        return db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.in(goodsIds))
+            .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class)
+            .stream().collect(Collectors.groupingBy(GoodsGradePrd::getGoodsId));
+    }
+    /**
      * 获取商品专享会员卡
      *
      * @param goodsId 商品id
@@ -1359,5 +1370,13 @@ public class GoodsService extends ShopBaseService {
         } else {
             return videoOrSnapShop ? upYunConfig.videoUrl(relativePath) : upYunConfig.imageUrl(relativePath);
         }
+    }
+
+    /**
+     * 通过商品id查询商品
+     */
+    public Optional<GoodsRecord> getGoodsById(Integer goodsId) {
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
+            fetchOptional();
     }
 }

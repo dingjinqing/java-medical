@@ -6,7 +6,9 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -288,6 +290,23 @@ public class BargainService extends ShopBaseService  {
             .and(BARGAIN.START_TIME.lessThan(date))
             .and(BARGAIN.END_TIME.greaterThan(date))
             .fetchOneInto(BARGAIN);
+    }
+    /**
+     * 根据商品id获取砍价信息
+     * @param goodsIds 商品id
+     * @param date 当前时间
+     * @return BargainRecord
+     */
+    public Map<Integer,List<BargainRecord>> getBargainRecordByGoodsIds(List<Integer> goodsIds, Timestamp date){
+        return db().select(BARGAIN.ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
+            .from(BARGAIN)
+            .where(BARGAIN.STATUS.eq(STATUS_DISABLED))
+            .and(BARGAIN.GOODS_ID.in(goodsIds))
+            .and(BARGAIN.START_TIME.lessThan(date))
+            .and(BARGAIN.END_TIME.greaterThan(date))
+            .fetchInto(BARGAIN)
+            .stream()
+            .collect(Collectors.groupingBy(BargainRecord::getGoodsId));
     }
     /**
      * 获取小程序码

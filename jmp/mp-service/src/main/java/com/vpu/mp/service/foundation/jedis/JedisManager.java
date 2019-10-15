@@ -8,6 +8,7 @@ import redis.clients.jedis.JedisPool;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -146,6 +147,12 @@ public class JedisManager {
 			}
 		}
 	}
+	public void addToHash(String key, Map<String,String> data,Integer timeOut){
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.hmset(key,data);
+            jedis.expire(key,timeOut);
+        }
+    }
 
     /**
      * redis加锁

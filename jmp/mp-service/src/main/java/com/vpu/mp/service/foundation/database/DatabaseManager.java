@@ -111,7 +111,7 @@ public class DatabaseManager {
 	 */
 	public Integer getCurrentShopId() {
 		MpDefaultDslContext db = shopDsl.get();
-		assert (db != null);
+		assert (db != null):"DB NULL";
 		return db.getShopId();
 	}
 
