@@ -1,4 +1,5 @@
 var nav = require("../base/nav.js")
+var i18n = require("../i18n/i18n.js")
 var pages = require("../init/pages.js")
 var helper = require("../base/helper.js")
 module.exports = {
@@ -110,4 +111,13 @@ module.exports = {
     var args = helper.toArray(arguments, 1);
     pages.notify(this, "*", eventName, ...args);
   },
+  $t(code, valueObj = {}) {
+    return i18n.trans(code,valueObj);
+  },
+  getLocale(){
+    return i18n.getLocale();
+  },
+  getLocalePack() {
+    return i18n.getLocalePack(i18n.getLocale());
+  }
 }

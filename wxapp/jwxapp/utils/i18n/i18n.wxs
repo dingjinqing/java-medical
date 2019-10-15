@@ -1,0 +1,61 @@
+var localePack = {};
+
+var init = function (pack) {
+  localePack = pack || {};
+  return "";
+};
+
+var trans = function (pack, code, params) {
+  //console.log("trans ", pack, code, params);
+  params = params || {};
+  var val = pack || {};
+  if (typeof pack === 'string') {
+    params = code || {};
+    code = pack;
+    val = localePack || {};
+  }
+  var i = 0;
+  var last = 0;
+  while (i < code.length) {
+    var c = code.charAt(i);
+    var isLastC = i == code.length - 1;
+    var isSegC = c == '.' || c == '[' || c == ']';
+    if (isSegC || isLastC) {
+      var key = code.substring(last, isSegC ? i : i + 1);
+      if (c == ']') key = parseInt(key);
+      val = val[key];
+      if (val == undefined) return val;
+      last = i + 1;
+    }
+    i++;
+  }
+  if (typeof val == 'string') {
+    var result = "";
+    i = 0;
+    last = 0;
+    var inBrackets = false;
+    while (i < val.length) {
+      var c = val.charAt(i);
+      if (c == '{') {
+        last = i + 1;
+        inBrackets = true;
+      } else if (inBrackets && c == '}') {
+        var key = val.substring(last, i).trim();
+        var value = params[key] || "";
+        result += value;
+        inBrackets = false;
+      } else if (!inBrackets) {
+        result += c;
+      }
+      i++;
+    }
+    val = result;
+
+  }
+  return val;
+};
+
+module.exports = {
+  init: init,
+  "$t": trans
+};

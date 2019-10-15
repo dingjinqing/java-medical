@@ -13,7 +13,7 @@ function _getHeader() {
 function api(path, cb, data, content_type, shadow) {
   if (shadow) {
     wx.showLoading({
-      title: i18n.trans("info.loading"),
+      title: i18n.trans("common.info.loading"),
       mask: true,
     })
   }
@@ -26,31 +26,26 @@ function api(path, cb, data, content_type, shadow) {
     method: "POST",
     header: _getHeader(),
     dataType: "json",
-    success: function(res) {
+    success: function (res) {
       console.log(_getHeader());
       if (path == "/api/wxapp/login" && res.data.error == 0) {
         console.log(123)
         _cacheToken(res.data.content.token);
       }
-      if (res.data.language) {
-        i18n.cacheLang(res.data.language);
-      }
       if (shadow) wx.hideLoading();
       console.log("api result " + path + ":", res.data);
-      if(cb) cb(res.data);
+      if (cb) cb(res.data);
     },
-    fail: function(res) {
+    fail: function (res) {
       console.log("api fail:" + JSON.stringify(res));
       if (shadow) wx.hideLoading();
       wx.showModal({
-        title: i18n.trans("info.title"),
-        content: i18n.trans("info.loading.failed"),
+        title: i18n.trans("common.info.title"),
+        content: i18n.trans("common.info.loadingFailed"),
       })
     }
   })
 }
-
-
 
 function uploadFile(url, tempFilePaths, data, backfun, fail, complete) {
   if (typeof data === "undefined" || data === null) data = {};
@@ -65,7 +60,7 @@ function uploadFile(url, tempFilePaths, data, backfun, fail, complete) {
     filePath: tempFilePaths,
     name: 'file',
     formData: data,
-    success: function(res) {
+    success: function (res) {
       backfun(res);
     },
     fail: function (res) { if (fail) fail(res) },
@@ -79,19 +74,19 @@ function uploadImage(count, backfun, data) {
     count: count, // 默认9
     sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
     sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-    success: function(res) {
+    success: function (res) {
       // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
       var tempFilePaths = res.tempFilePaths
       if (res) {
         data = data || {};
         data.img_cat_id = -1;
-        wx.showLoading({ title: i18n.trans("info.uploading") })
-        uploadFile(url, tempFilePaths[0], data, function(e) {
+        wx.showLoading({ title: i18n.trans("common.info.uploading") })
+        uploadFile(url, tempFilePaths[0], data, function (e) {
           wx.hideLoading();
           backfun(e);
         }, function () {
           wx.hideLoading();
-          wx.showToast({ title: i18n.trans("info.upload.failed"), image: '/images/fail.png', duration: 2000 })
+          wx.showToast({ title: i18n.trans("common.info.uploadFailed"), image: '/images/fail.png', duration: 2000 })
         });
       }
     }
@@ -107,10 +102,10 @@ function uploadVideo(backfun, data, sourceType) {
       // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
       if (res) {
         if (res.size > parseInt(10 * 1024 * 1024)) {
-          wx.showToast({title: '视频大于10M',image: '/images/fail.png',duration: 2000});
+          wx.showToast({ title: i18n.trans("common.video.sizeGt10M"), image: '/images/fail.png', duration: 2000 });
           return false;
         } else if (res.duration > parseInt(180)) {
-          wx.showToast({ title: '视频超过3分钟', image: '/images/fail.png', duration: 2000 });
+          wx.showToast({ title: i18n.trans("common.video.durationGt3Minites"), image: '/images/fail.png', duration: 2000 });
           return false;
         }
         data = data || {};
@@ -121,9 +116,9 @@ function uploadVideo(backfun, data, sourceType) {
           let res_data = JSON.parse(e.data)
           res_data.video = res;
           backfun(res_data);
-        },function(){
-          wx.hideLoading(); 
-          wx.showToast({ title: i18n.trans("info.upload.failed"), image: '/images/fail.png', duration: 2000 })
+        }, function () {
+          wx.hideLoading();
+          wx.showToast({ title: i18n.trans("common.info.uploadFailed"), image: '/images/fail.png', duration: 2000 })
         });
       }
     }
@@ -165,6 +160,6 @@ function _getToken() {
 module.exports = {
   api,
   uploadFile,
-  uploadImage, 
+  uploadImage,
   uploadVideo
 };

@@ -8,6 +8,23 @@ function page_event() {
     var m = v[0];
     (function (m) {
       e[m] = function () {
+        if (m == 'onLoad') {
+          pages.addObj(this);
+          this.setData({
+            locale: this.getLocale(),
+            localePack: this.getLocalePack()
+          })
+        } else if (m == 'onUnload') {
+          this.clearTimers();
+          pages.removeObj(this);
+        } else if (m == 'onShow') {
+          if (this.data.locale != this.getLocale()){
+            this.setData({
+              locale: this.getLocale(),
+              localePack: this.getLocalePack()
+            })
+          }
+        }
         this.$emit(m, ...arguments)
       };
     }(m));
@@ -16,13 +33,6 @@ function page_event() {
 }
 
 module.exports = {
-  onLoad(e) {
-    pages.addObj(this);
-  },
-  onUnload() {
-    this.clearTimers();
-    pages.removeObj(this);
-  },
   ...page_event(),
   ...common
 }

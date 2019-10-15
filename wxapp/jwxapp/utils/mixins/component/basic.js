@@ -22,6 +22,9 @@ module.exports = {
   externalClasses: ['custom-class'],
   attached(e) {
     pages.addObj(this);
+    this.setData({
+      localePack: this.getLocalePack()
+    })
     var _this = this;
     settings.PageSettings.lifecycle.forEach(v => {
       if (helper.isFunc(_this[v[0]])) {

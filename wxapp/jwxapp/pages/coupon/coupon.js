@@ -6,7 +6,7 @@ let util = require("../../utils/util.js")
 let config = require("../../utils/config.js")
 var app = getApp();
 // pages/test/test.js
-Page({
+global.wxPage({
 
   /**
    * 页面的初始数据

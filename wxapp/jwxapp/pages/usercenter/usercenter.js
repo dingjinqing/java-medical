@@ -13,7 +13,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    user_name: app.globalData.input_array.mobile,
+    user_name: "", //app.globalData.input_array.mobile,
     wx_user_avatar: '',
     user_mobile: '',
     user_avatar: '',

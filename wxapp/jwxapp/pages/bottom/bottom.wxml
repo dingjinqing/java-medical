@@ -1,16 +1,16 @@
-
 <block wx:if="{{status > 0}}">
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="../common/header.wxml"/>
   <view class='mp_no'>
     <image wx:if="{{imageUrl}}" src='{{imageUrl}}/image/admin/icon_mp/no_use.png' mode='widthFix'></image>
-    <view wx:if="{{status == 2}}">该店铺已禁用</view>
-    <view wx:if="{{status == 0}}">该店铺已过期</view>
-    <view wx:if="{{status == 3}}">该店铺已停业</view>
-    <view wx:if="{{status == 4}}">您已被禁止登录</view>
+    <view wx:if="{{status == 2}}">{{i18n.$t(localePack,"pages.bottom.shopDisabled")}}</view>
+    <view wx:if="{{status == 0}}">{{i18n.$t(localePack,"pages.bottom.shopExpired")}}</view>
+    <view wx:if="{{status == 3}}">{{i18n.$t(localePack,"pages.bottom.shopClosed")}}</view>
+    <view wx:if="{{status == 4}}">{{i18n.$t(localePack,"pages.bottom.disableLogin")}}</view>
     <view class='contact_kefu'>
       <button open-type="contact"></button>
       <image wx:if="{{imageUrl}}" src='{{imageUrl}}/image/wxapp/icon_kefu.png' mode="widthFix"></image>
-      联系商家
+      {{i18n.$t(localePack,"pages.bottom.contactMerchant")}}
     </view>
   </view>
 </block>

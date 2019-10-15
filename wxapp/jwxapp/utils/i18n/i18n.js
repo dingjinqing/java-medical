@@ -1,43 +1,119 @@
 
-var info = require("./info.js")
 var cache = require("../base/cache.js")
+var zhCnLocalePack = require("./zh_CN.js")
 
 var i18n = {
-  zh_CN: {
-    ...info.zh_CN,
-  },
-  en_US: {
-    ...info.en_US,
-  }
+  zh_CN: zhCnLocalePack
 };
 
-function _defaultLang() {
-  return "zh_CN";
+function defaultLocale() {
+  return "zh_CN"
 }
 
-function cacheLang(lang) {
-  cache.setCache("V-LANG", lang);
+function setLocale(locale) {
+  cache.setCache("V-Locale", locale);
 }
 
-function lang() {
-  var lang = cache.getCache("V-LANG") || _defaultLang();
-  if (i18n[lang] == undefined) {
-    lang = _defaultLang();
+function getLocale() {
+  var locale = cache.getCache("V-Locale") || defaultLocale();
+  return locale;
+}
+
+function setLocalePack(locale, localePack) {
+  var cacheKey = "V-Locale-PACK-" + locale;
+  i18n[locale] = localePack;
+  cache.setCache(cacheKey, localePack)
+}
+
+function getLocalePack(locale) {
+  if (!i18n[locale]) {
+    var cacheKey = "V-Locale-PACK-" + locale;
+    var localePack = cache.getCache(cacheKey)
+    if (localePack) {
+      i18n[locale] = localePack;
+    }
   }
-  return lang;
+  return i18n[locale] || i18n[defaultLocale()]
 }
 
-function trans(code) {
-  return transLang(lang(), code);
+/**
+ * 当前语言转换
+ */
+function trans(code, params = {}) {
+  var locale = getLocale();
+  var result = transLocale(locale, code, params);
+  if (result == undefined && locale != 'zh_CN') {
+    result = transLocale('zh_CN', code, params);
+  }
+  return result;
 }
 
-function transLang(lang, code) {
-  return i18n[lang][code] || i18n[_defaultLang()][code];
+
+/**
+ * 例子： cn = {
+ * common: [{
+ * title:{
+ *  info:'hello {value}'
+ * }
+ * }]
+ * }
+ * 
+ * transLocale("zh_CN","common.title[0].info",{value:"hello"})
+ * 
+ * @param {string} locale
+ * @param {string} code 例子 common.title[0].info
+ * @param {object} params
+ */
+function transLocale(locale, code, params = {}) {
+  var val = getLocalePack(locale);
+  if (!val) return undefined;
+  params = params || {};
+  var i = 0;
+  var last = 0;
+  while (i < code.length) {
+    var c = code.charAt(i);
+    var isLastC = i == code.length - 1;
+    var isSegC = c == '.' || c == '[' || c == ']';
+    if (isSegC || isLastC) {
+      var key = code.substring(last, isSegC ? i : i + 1);
+      if (c == ']') key = parseInt(key);
+      val = val[key];
+      if (val == undefined) return val;
+      last = i + 1;
+    }
+    i++;
+  }
+  if (typeof val == 'string') {
+    var result = "";
+    i = 0;
+    last = 0;
+    var inBrackets = false;
+    while (i < val.length) {
+      var c = val.charAt(i);
+      if (c == '{') {
+        last = i + 1;
+        inBrackets = true;
+      } else if (inBrackets && c == '}') {
+        var key = val.substring(last, i).trim();
+        var value = params[key] || "";
+        result += value;
+        inBrackets = false;
+      } else if (!inBrackets) {
+        result += c;
+      }
+      i++;
+    }
+    val = result;
+
+  }
+  return val;
 }
 
 module.exports = {
-  lang: lang,
-  trans: trans,
-  transLang: transLang,
-  cacheLang: cacheLang
+  defaultLocale,
+  setLocale,
+  getLocale,
+  setLocalePack,
+  getLocalePack,
+  trans,
 };

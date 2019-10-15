@@ -1,4 +1,3 @@
-<!--components/custom-navigation/index.wxml-->
 <view css="flex_top" style="margin-top:{{height + 8}}px">
   <view class='nav-wrap' style='height: {{height + 8}}px;background-color:{{bgColor ? bgColor : "#fff"}};'>
     <view class='nav-title' style='line-height: {{height*2 - 32}}px;color:{{bgColor ? "#fff" : "#000"}}'>{{page_name ? page_name : page_title}}</view>

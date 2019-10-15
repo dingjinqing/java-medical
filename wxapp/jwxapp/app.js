@@ -2,6 +2,7 @@ var util = require('./utils/util.js');
 var pageMixins = require("./pages/common/mixins.js");
 var initGlobalMixin = require("./utils/mixins/initGlobalMixin.js")
 var i18n = require("./utils/i18n/i18n.js")
+var locale = require("./utils/base/locale.js")
 
 initGlobalMixin(pageMixins, []);
 
@@ -14,11 +15,12 @@ global.wxApp({
     shopId: util.getShopId()
   },
   onLaunch: function(options) {
+    locale.loadLocalePack();
     updateManager.onCheckForUpdate(function(res) {})
     updateManager.onUpdateReady(function() {
       wx.showModal({
-        title: i18n.trans("info.update.tip"),
-        content: i18n.trans("info.new.version.restart.app"),
+        title: i18n.trans("common.info.updateTip"),
+        content: i18n.trans("common.info.newVersionReadyWhetherRestartApp"),
         success: function(res) {
           if (res.confirm) {
             updateManager.applyUpdate()
