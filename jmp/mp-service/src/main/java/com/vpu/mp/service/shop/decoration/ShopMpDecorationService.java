@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -33,6 +34,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.decoration.BatchSetPageCateParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
@@ -297,6 +299,25 @@ public class ShopMpDecorationService extends ShopBaseService {
 				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()))
 				.execute();
 		return result;
+	}
+	
+	/**
+	 * 批量设置页面分类（事务处理）
+	 * @param param
+	 * @return
+	 */
+	public boolean batchSetPageCate(BatchSetPageCateParam param) {
+		List<String> pageIds = Arrays.asList(param.getPageIds().split(","));
+		this.transaction(() -> {
+			for (String pageId : pageIds) {
+				int setPageId = Integer.parseInt(pageId);
+				db().update(XCX_CUSTOMER_PAGE)
+						.set(XCX_CUSTOMER_PAGE.CAT_ID, param.getId())
+						.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(setPageId))
+						.execute();
+			}
+		});
+		return true;
 	}
 
 	/**

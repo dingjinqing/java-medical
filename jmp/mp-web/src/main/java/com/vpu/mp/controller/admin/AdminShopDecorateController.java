@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
+import com.vpu.mp.service.pojo.shop.decoration.BatchSetPageCateParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
@@ -98,13 +99,23 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/cate/set")
 	public JsonResult setPageCate(@RequestBody PageClassificationVo param) {
-		System.out.println(param);
 		int res = shop().mpDecoration.setPageCate(param);
 		if(res > 0) {
 			return this.success();
 		}else {
 			return this.fail();
 		}
+	}
+	
+	/**
+	 * 批量设置页面分类
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/cate/batchSet")
+	public JsonResult batchSetPageCate(@RequestBody BatchSetPageCateParam param) {
+		boolean res = shop().mpDecoration.batchSetPageCate(param);
+		return this.success(res);
 	}
 
 	/**
