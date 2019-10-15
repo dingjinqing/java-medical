@@ -124,6 +124,7 @@ public class OrderInfoService extends ShopBaseService {
 		//存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
+        mainOrder.orderBy(ORDER_INFO.ORDER_ID);
 		//得到订单号
 		return getPageResult(mainOrder,param.getCurrentPage(),param.getPageRows(),String.class);
 	}
@@ -135,7 +136,6 @@ public class OrderInfoService extends ShopBaseService {
 	  * @return
 	  */
 	 public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
-		select.orderBy(ORDER_INFO.ORDER_ID);
 		//输入商品名称需要join order_goods表
 		if(!StringUtils.isBlank(param.goodsName) || !StringUtils.isBlank(param.productSn)){
 			select.innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
@@ -1039,6 +1039,7 @@ public class OrderInfoService extends ShopBaseService {
 
         buildOptions(select, orderParam);
         select.where(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        select.orderBy(ORDER_INFO.ORDER_ID);
 
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
     }
