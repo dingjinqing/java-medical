@@ -1,33 +1,25 @@
 package com.vpu.mp.service.shop.order.info;
 
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-
 import java.util.Map;
 
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.ImmutableMap;
-import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 
 /**
  * mp端订单业务
  * @author 王帅
  * return 不可变map,key为all,waitPay,waitDelivery,shipped,finished,returning
- *        
+ *        value默认为0
+ * 
  */
 @Service
-public class MpOrderInfoService extends ShopBaseService{
-	
-	@Autowired
-	private OrderInfoService baseService;
-	
+public class MpOrderInfoService extends OrderInfoService{
 	/**
 	 * 个人中心订单状态数量展示
 	 * @param userId
@@ -36,33 +28,33 @@ public class MpOrderInfoService extends ShopBaseService{
 	 */
 	public Map<String,Integer> getOrderStatusNum(Integer userId , boolean isContainSubOrder) {
 		//基础状态数量
-		Map<Byte, Integer> countMap = db().select(DSL.count() , baseService.TABLE.ORDER_STATUS).
-		from(baseService.TABLE).
+		Map<Byte, Integer> countMap = db().select(DSL.count() , TABLE.ORDER_STATUS).
+		from(TABLE).
 		where(setIsContainSubOrder(
-				baseService.TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
-				and(baseService.TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)).
-				and(baseService.TABLE.USER_ID.eq(userId))
+				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
+				and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)).
+				and(TABLE.USER_ID.eq(userId))
 				, isContainSubOrder)).
-		groupBy(baseService.TABLE.ORDER_STATUS).
+		groupBy(TABLE.ORDER_STATUS).
 		fetch().
-		intoMap(baseService.TABLE.ORDER_STATUS , DSL.count());
+		intoMap(TABLE.ORDER_STATUS , DSL.count());
 		//退款退货中
 		Integer returning = db().select(DSL.count()).
-		from(baseService.TABLE).
+		from(TABLE).
 		where(setIsContainSubOrder(
-				baseService.TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
-				and(baseService.TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH)).
-				and(baseService.TABLE.USER_ID.eq(userId))
+				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
+				and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH)).
+				and(TABLE.USER_ID.eq(userId))
 				,isContainSubOrder)).
 		fetchOneInto(Integer.class);
 		//退款退货完成
 		Integer returnFinish = db().select(DSL.count()).
-		from(baseService.TABLE).
+		from(TABLE).
 		where(setIsContainSubOrder(
-				baseService.TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
-				and(baseService.TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING , OrderConstant.REFUND_STATUS_FINISH , OrderConstant.REFUND_STATUS_REFUSE)).
-				and(baseService.TABLE.USER_ID.eq(userId)).
-				and(baseService.TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED , OrderConstant.ORDER_RETURN_FINISHED , OrderConstant.ORDER_REFUND_FINISHED))
+				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
+				and(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING , OrderConstant.REFUND_STATUS_FINISH , OrderConstant.REFUND_STATUS_REFUSE)).
+				and(TABLE.USER_ID.eq(userId)).
+				and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED , OrderConstant.ORDER_RETURN_FINISHED , OrderConstant.ORDER_REFUND_FINISHED))
 				,isContainSubOrder)).
 		fetchOneInto(Integer.class);
 		//初始化不可变map
@@ -104,7 +96,7 @@ public class MpOrderInfoService extends ShopBaseService{
 	 * @return
 	 */
 	private Condition setIsContainSubOrder(Condition condition , boolean isContainSubOrder) {
-		return isContainSubOrder ? condition : condition.and(baseService.TABLE.MAIN_ORDER_SN.eq(StringUtils.EMPTY).or(baseService.TABLE.MAIN_ORDER_SN.eq(baseService.TABLE.ORDER_SN)));
+		return isContainSubOrder ? condition : condition.and(TABLE.MAIN_ORDER_SN.eq(StringUtils.EMPTY).or(TABLE.MAIN_ORDER_SN.eq(TABLE.ORDER_SN)));
 		
 	}
 }
