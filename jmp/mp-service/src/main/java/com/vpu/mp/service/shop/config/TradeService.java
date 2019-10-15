@@ -1,13 +1,19 @@
 package com.vpu.mp.service.shop.config;
 
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.DELIVERY_ID;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.DELIVERY_NAME;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.DOCUMENT;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.STATUS_CODE;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.UPDATE_TIME;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.db.shop.tables.Payment;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.pojo.shop.config.trade.*;
+import com.vpu.mp.service.shop.logistics.LogisticsService;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -21,27 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vpu.mp.db.shop.tables.Payment;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.pojo.shop.config.trade.BindAccountParam;
-import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
-import com.vpu.mp.service.pojo.shop.config.trade.LogisticsAccountInfo;
-import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
-import com.vpu.mp.service.shop.logistics.LogisticsService;
-
-import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * The type Trade service.
@@ -99,7 +87,7 @@ public class TradeService extends BaseShopConfigService {
      */
     final public static String K_EXTEND_RECEIVE_GOODS = "extend_receive_goods";
     /**
-     * 用户对单笔订单可申请一次延长收货时间，申请后可延长3天
+     * 用户对单笔订单可申请一次延长收货时间，申请后可延长3天,默认延长3天,上限为30天
      */
     final public static String K_EXTEND_RECEIVE_DAYS = "extend_receive_days";
     /**
@@ -355,7 +343,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the extend receive days
      */
     public Integer getExtendReceiveDays() {
-        return this.get(K_EXTEND_RECEIVE_DAYS, Integer.class, 0);
+        return this.get(K_EXTEND_RECEIVE_DAYS, Integer.class, 3);
     }
 
     /**
@@ -365,7 +353,8 @@ public class TradeService extends BaseShopConfigService {
      * @return the extend receive days
      */
     public int setExtendReceiveDays(Integer extendReceiveDays) {
-        assert (extendReceiveDays >= 0);
+        assert (extendReceiveDays > 0);
+        extendReceiveDays = extendReceiveDays > 30 ? 30 : extendReceiveDays;
         return this.set(K_EXTEND_RECEIVE_DAYS, extendReceiveDays, Integer.class);
     }
 

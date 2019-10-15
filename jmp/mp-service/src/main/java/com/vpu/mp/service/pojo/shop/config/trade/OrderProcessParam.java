@@ -42,7 +42,7 @@ public class OrderProcessParam {
     @JsonProperty(value = "extend_receive_goods")
     public Byte extendReceiveGoods;
     /**
-     * The Extend receive days.用户对单笔订单可申请一次延长收货时间，申请后可延长3天
+     * The Extend receive days.用户对单笔订单可申请一次延长收货时间，申请后可延长3天,默认延长3天,上限为30天
      */
     @JsonProperty(value = "extend_receive_days")
     public Integer extendReceiveDays;
