@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserCenterContentConfig {
 
+    private String title;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(value = "icon_name")
     private String iconName;
