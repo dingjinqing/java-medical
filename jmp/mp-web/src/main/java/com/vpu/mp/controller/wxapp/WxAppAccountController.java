@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import com.vpu.mp.service.shop.ShopApplication;
@@ -62,4 +64,20 @@ public class WxAppAccountController extends WxAppBaseController {
 		return success(vo);
 	}
 	
+	
+	/**
+	 * 账号设置
+	 * @return
+	 */
+	@PostMapping("/api/wxapp/account/setting")
+	public JsonResult accountSetting(@RequestBody UserAccountSetParam param) {
+		Integer shopId = wxAppAuth.shopId();
+		ShopApplication shopApp = saas.getShopApp(shopId);
+		JsonResultCode code = shopApp.user.accountSetting(param, wxAppAuth.user());
+		if(code!=JsonResultCode.CODE_SUCCESS) {
+			return success(code);
+		}
+		return fail(code);
+		
+	}
 }
