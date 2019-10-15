@@ -46,6 +46,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
@@ -78,6 +79,7 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
  * @param <V>
  *
  */
+@Primary
 @Service
 public class OrderInfoService extends ShopBaseService {
 
