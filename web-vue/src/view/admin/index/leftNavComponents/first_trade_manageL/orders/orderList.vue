@@ -264,6 +264,7 @@
           <el-button
             type="default"
             size="small"
+            @click="showExportColumnSelect = true"
           >{{$t('order.export')}}</el-button>
         </div>
       </div>
@@ -748,15 +749,27 @@
         />
       </div>
     </div>
+    <!-- 添加备注弹窗 -->
     <nodesDialog
       :show.sync="showNodes"
       :orderSn="notesOrderSn"
     />
+    <!-- 发货弹窗 -->
     <deliveryDialog
       v-if="showDelivery"
       :show.sync="showDelivery"
       :orderData="orderItemInfo"
       @handlerResetData="search"
+    />
+    <!-- 订单导出选择列弹窗 -->
+    <orderExportColumnSelectDialog
+      :show.sync="showExportColumnSelect"
+      @exportColumnSelectConfirm="handleExportColumnSelect"
+    />
+    <!-- 订单导出确认弹窗 -->
+    <orderExportConfirmDialog
+      :show.sync="showExportConfirm"
+      :param="this.searchParams"
     />
   </div>
 </template>
@@ -771,7 +784,9 @@ export default {
     pagination: () => import('@/components/admin/pagination/pagination'),
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'),
     nodesDialog: () => import('./addNotes'),
-    deliveryDialog: () => import('./deliveryDialog')
+    deliveryDialog: () => import('./deliveryDialog'),
+    orderExportColumnSelectDialog: () => import('./orderExportColumnSelect.vue'),
+    orderExportConfirmDialog: () => import('./orderExportConfirmDialog.vue')
   },
   data () {
     return {
@@ -842,7 +857,9 @@ export default {
       showNodes: false,
       showDelivery: false,
       orderItemInfo: {},
-      notesOrderSn: null
+      notesOrderSn: null,
+      showExportColumnSelect: false,
+      showExportConfirm: false
     }
   },
   inject: ['adminReload'],
@@ -960,20 +977,23 @@ export default {
       }
       finish(obj).then(res => {
       })
-    }
-  },
-  toggleStar (orderSn, starFlag) {
-    let obj = {
-      orderSn: [orderSn],
-      type: 0,
-      starFlag: starFlag === 1 ? 0 : 1
-    }
-    star(obj).then(res => {
-      if (res.error === 0) {
-        this.$message.success(starFlag === 1 ? '取消标星成功' : '标星成功')
-        this.search()
+    },
+    toggleStar (orderSn, starFlag) {
+      let obj = {
+        orderSn: [orderSn],
+        type: 0,
+        starFlag: starFlag === 1 ? 0 : 1
       }
-    })
+      star(obj).then(res => {
+        if (res.error === 0) {
+          this.$message.success(starFlag === 1 ? '取消标星成功' : '标星成功')
+          this.search()
+        }
+      })
+    },
+    handleExportColumnSelect () {
+      this.showExportConfirm = true
+    }
   }
 }
 </script>
