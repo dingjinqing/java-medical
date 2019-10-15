@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.Setting;
@@ -49,8 +50,8 @@ public class ConfigService extends ShopBaseService {
 	public BargainConfigService bargainCfg;
 	@Autowired
 	public GoodsBrandConfigService goodsBrandConfigService;
-    @Autowired
-    public GoodsRecommendSortConfigService recommendSortConfigService;
+	@Autowired
+	public GoodsRecommendSortConfigService recommendSortConfigService;
 	@Autowired
 	public DeliverTemplateConfigService deliverTemplateConfigService;
 	@Autowired
@@ -59,8 +60,9 @@ public class ConfigService extends ShopBaseService {
 	public InsteadPayConfig insteadPayConfig;
 	@Autowired
 	public CollectGiftConfigService collectGiftConfigService;
-    @Autowired
-    public MessageConfigService messageConfigService;
+	@Autowired
+	public MessageConfigService messageConfigService;
+
     @Autowired
     public OrderExportConfigService orderExportCfg;
 	/**
@@ -112,5 +114,15 @@ public class ConfigService extends ShopBaseService {
 				return new String[] {};
 			}
 		}
+	}
+
+	/**
+	 * 得到语言包
+	 * 
+	 * @return
+	 */
+	public String getLocalePack() {
+		String language = "en_US";
+		return Util.loadResource("static/i18n/wxapp/" + language + ".json");
 	}
 }

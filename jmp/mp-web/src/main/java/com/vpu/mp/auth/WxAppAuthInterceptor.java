@@ -24,7 +24,7 @@ import com.vpu.mp.service.saas.SaasApplication;
 public class WxAppAuthInterceptor extends HandlerInterceptorAdapter {
 
 	private static final String URL_LOGIN = "/api/wxapp/login";
-
+	private static final String LOCALE_GET = "/api/wxapp/locale/get";
 	@Autowired
 	protected WxAppAuth wxAppAuth;
 
@@ -34,7 +34,7 @@ public class WxAppAuthInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * 账号登录例外URL
 	 */
-	protected String[] accountLoginExcept = { URL_LOGIN };
+	protected String[] accountLoginExcept = { URL_LOGIN ,LOCALE_GET};
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

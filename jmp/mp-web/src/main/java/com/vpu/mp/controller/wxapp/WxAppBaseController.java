@@ -24,7 +24,7 @@ public class WxAppBaseController  extends BaseController {
 	@Override
 	protected String getLang() {
 		// TODO:待实现
-		return null;
+		return "en_US";
 	}
 	
 	/**
