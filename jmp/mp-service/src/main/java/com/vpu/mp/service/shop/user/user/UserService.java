@@ -696,7 +696,7 @@ public class UserService extends ShopBaseService {
 	//账号设置
 	public JsonResultCode accountSetting( UserAccountSetParam param,WxAppSessionUser user) {
 		UserRecord userInfo = getUserByUserId(user.getUserId());
-		UserDetailRecord userDetailRecord=USER_DETAIL.newRecord();
+		UserDetailRecord userDetailRecord=db().newRecord(USER_DETAIL);
 		userDetailRecord.setUserId(userInfo.getUserId());
 		userDetailRecord.setBirthdayYear(param.getBirthdayYear());
 		userDetailRecord.setBirthdayMonth(param.getBirthdayMonth());
