@@ -42,7 +42,7 @@ public class StoreServiceService extends ShopBaseService{
 	 */
 	public PageResult<StoreServiceCategoryListQueryVo> getCatePageList(StoreServiceCategoryListQueryParam param) {
         SelectWhereStep<? extends Record> select =
-		db().select(STORE_SERVICE_CATEGORY.CAT_NAME,STORE_SERVICE_CATEGORY.CREATE_TIME).from(STORE_SERVICE_CATEGORY);
+            db().select(STORE_SERVICE_CATEGORY.CAT_ID, STORE_SERVICE_CATEGORY.CAT_NAME, STORE_SERVICE_CATEGORY.CREATE_TIME).from(STORE_SERVICE_CATEGORY);
 		select = this.buildCateOptions(select, param);
 		select.where(STORE_SERVICE_CATEGORY.STORE_ID.eq(param.getStoreId())).orderBy(STORE_SERVICE_CATEGORY.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreServiceCategoryListQueryVo.class);
