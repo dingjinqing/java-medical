@@ -49,6 +49,7 @@ public class WxAppAccountController extends WxAppBaseController {
 		logger().info("新版个人中心");
 		Integer shopId = wxAppAuth.shopId();
 		ShopApplication shopApp = saas.getShopApp(shopId);
+		logger().info("接受"+wxAppAuth.user().toString());
 		List<Map<String, Object>> moduleData = shopApp.user.parseCenterModule(wxAppAuth.user().getUserId());
 		if(moduleData==null) {
 			logger().info("用户不存在");
