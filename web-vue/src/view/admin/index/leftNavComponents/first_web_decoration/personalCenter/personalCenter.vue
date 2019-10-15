@@ -54,7 +54,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='account_money' && item.is_show=='1'"
+              v-if="item.module_name=='account_money' && item.is_show==1"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -123,7 +123,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='order' && item.is_show=='1'"
+              v-if="item.module_name=='order' && item.is_show==1"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -251,7 +251,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='useRecord' && item.is_show=='1'"
+              v-if="item.module_name=='useRecord' && item.is_show==1"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -297,7 +297,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='appointment' && item.is_show=='1'"
+              v-if="item.module_name=='appointment' && item.is_show==1"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -343,12 +343,12 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='service' && item.is_show=='1'"
+              v-if="item.module_name=='service' && item.is_show==1"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
               </div>
-              <div class="orderContent">
+              <div class="serveContent">
                 <div
                   class="each_serve"
                   style="display: flex;"
@@ -573,8 +573,8 @@
                 <el-form-item label="资产：">
                   <el-switch
                     v-model="item.is_show"
-                    active-value="1"
-                    inactive-value="0"
+                    :active-value="1"
+                    :inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -650,8 +650,8 @@
                 <el-form-item label="订单：">
                   <el-switch
                     v-model="item.is_show"
-                    active-value="1"
-                    inactive-value="0"
+                    :active-value="1"
+                    :inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -805,8 +805,8 @@
                 <el-form-item label="预约：">
                   <el-switch
                     v-model="item.is_show"
-                    active-value="1"
-                    inactive-value="0"
+                    :active-value="1"
+                    :inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -835,8 +835,8 @@
                 <el-form-item label="店铺使用：">
                   <el-switch
                     v-model="item.is_show"
-                    active-value="1"
-                    inactive-value="0"
+                    :active-value="1"
+                    :inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -895,8 +895,8 @@
                 <el-form-item label="服务：">
                   <el-switch
                     v-model="item.is_show"
-                    active-value="1"
-                    inactive-value="0"
+                    :active-value="1"
+                    :inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -1266,12 +1266,12 @@ export default {
         page_style: '2'
       }, {
         module_name: 'center_header',
-        is_show: '1',
+        is_show: 1,
         bg_type: '1',
         bg_img: ''
       }, {
         module_name: 'account_money',
-        is_show: '1',
+        is_show: 1,
         title: '我的资产',
         content: [
           {
@@ -1293,7 +1293,7 @@ export default {
         ]
       }, {
         module_name: 'order',
-        is_show: '1',
+        is_show: 1,
         title: '我的订单',
         module_style: '1',
         content: [
@@ -1315,7 +1315,7 @@ export default {
           {
             icon_name: 'wait_comment',
             icon: '/image/admin/ucConfig/uc_orderIcon4.png',
-            is_show: '0'
+            is_show: '1'
           },
           {
             icon_name: 'refund',
@@ -1325,19 +1325,22 @@ export default {
         ]
       }, {
         module_name: 'appointment',
-        is_show: '1',
+        is_show: 1,
         title: '我的预约'
       }, {
-        module_name: 'useRecord',
-        is_show: '1',
+        module_name: 'use_record',
+        is_show: 1,
         title: '使用记录',
         is_show_collect: '1',
         is_show_buy_history: '1',
-        is_show_footprint: '1'
+        is_show_footprint: '1',
+        buy_history: 0,
+        collect: 0,
+        footprint: 0
       }, {
         module_name: 'service',
         title: '我的服务',
-        is_show: '1',
+        is_show: 1,
         content: [
           {
             is_show: '1',
@@ -1399,7 +1402,7 @@ export default {
             is_show: '1',
             icon_name: 'custom_icon',
             icon: '/image/admin/ucConfig/icon_ownset.png',
-            title: '',
+            title: '我的服务',
             link: '',
             link_name: ''
           }
@@ -1411,12 +1414,12 @@ export default {
         page_style: '2'
       }, {
         module_name: 'center_header',
-        is_show: '1',
+        is_show: 1,
         bg_type: '1',
         bg_img: ''
       }, {
         module_name: 'account_money',
-        is_show: '1',
+        is_show: 1,
         title: '我的资产',
         content: [
           {
@@ -1438,7 +1441,7 @@ export default {
         ]
       }, {
         module_name: 'order',
-        is_show: '1',
+        is_show: 1,
         title: '我的订单',
         module_style: '1',
         content: [
@@ -1460,7 +1463,7 @@ export default {
           {
             icon_name: 'wait_comment',
             icon: '/image/admin/ucConfig/uc_orderIcon4.png',
-            is_show: '0'
+            is_show: '1'
           },
           {
             icon_name: 'refund',
@@ -1470,19 +1473,22 @@ export default {
         ]
       }, {
         module_name: 'appointment',
-        is_show: '1',
+        is_show: 1,
         title: '我的预约'
       }, {
-        module_name: 'useRecord',
-        is_show: '1',
+        module_name: 'use_record',
+        is_show: 1,
         title: '使用记录',
         is_show_collect: '1',
         is_show_buy_history: '1',
-        is_show_footprint: '1'
+        is_show_footprint: '1',
+        buy_history: 0,
+        collect: 0,
+        footprint: 0
       }, {
         module_name: 'service',
         title: '我的服务',
-        is_show: '1',
+        is_show: 1,
         content: [
           {
             is_show: '1',
@@ -1544,7 +1550,7 @@ export default {
             is_show: '1',
             icon_name: 'custom_icon',
             icon: '/image/admin/ucConfig/icon_ownset.png',
-            title: '',
+            title: '我的服务',
             link: '',
             link_name: ''
           }
@@ -1740,10 +1746,10 @@ export default {
       for (let i = 0; i < this.rightData.length; i++) {
         if (this.rightData[i].module_name === 'service') {
           this.rightData[i].content.push({
-            is_show: '1',
+            is_show: 1,
             icon_name: 'custom_icon' + this.customValue,
-            icon: '',
-            title: '',
+            icon: '/image/admin/ucConfig/icon_ownset.png',
+            title: '我的服务',
             link: '',
             link_name: ''
           })
@@ -1752,10 +1758,10 @@ export default {
       for (let i = 0; i < this.leftData.length; i++) {
         if (this.leftData[i].module_name === 'service') {
           this.leftData[i].content.push({
-            is_show: '1',
+            is_show: 1,
             icon_name: 'custom_icon' + this.customValue,
-            icon: '',
-            title: '',
+            icon: '/image/admin/ucConfig/icon_ownset.png',
+            title: '我的服务',
             link: '',
             link_name: ''
           })
