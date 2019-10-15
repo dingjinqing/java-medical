@@ -20,7 +20,7 @@ export const cn = {
 
   applicationextend: '申请延长收货配置',
   openapplicationextend: '开关开启，用户可在前端申请延长收货时间',
-  applicatoinextenddays: '用户对单笔订单可申请一次延长收货时间，申请后可延长',
+  applicatoinextenddays: '用户对单笔订单可申请一次延长收货时间(默认3天,上限为30天)，申请后可延长',
   days: '天',
 
   invoiceshow: '发票展示设置',
