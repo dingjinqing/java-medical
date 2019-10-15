@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.config;
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,6 +31,21 @@ public class BaseShopConfigService extends ShopBaseService {
 	protected String get(String key) {
 		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny(SHOP_CFG.V);
 	}
+	
+	/**
+	 * 判断key是否存在 
+	 * true:存在
+	 * false:不存在
+	 * @param key
+	 * @return
+	 */
+	protected Boolean isHaveKey(String key) {
+		Record record = db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny();
+		if(record==null) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * 设置配置key对应value
@@ -38,8 +55,7 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	protected int set(String key, String value) {
-		String val = get(key);
-		if (val == null) {
+		if (!isHaveKey(key)) {
 			return db().insertInto(SHOP_CFG, SHOP_CFG.K, SHOP_CFG.V).values(key, value).execute();
 		} else {
 			return db().update(SHOP_CFG).set(SHOP_CFG.V, value).where(SHOP_CFG.K.eq(key)).execute();
@@ -55,8 +71,7 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	protected int set(DSLContext db, String key, String value) {
-		String val = get(key);
-		if (val == null) {
+		if (!isHaveKey(key)) {
 			return db.insertInto(SHOP_CFG, SHOP_CFG.K, SHOP_CFG.V).values(key, value).execute();
 		} else {
 			return db.update(SHOP_CFG).set(SHOP_CFG.V, value).where(SHOP_CFG.K.eq(key)).execute();
