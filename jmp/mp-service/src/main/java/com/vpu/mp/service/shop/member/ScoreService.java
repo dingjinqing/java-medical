@@ -526,7 +526,11 @@ public class ScoreService extends ShopBaseService {
 			}
 			//TODO  UserScore.php $crmResult = shop($this->getShopId())->serviceRequest->crmApi->init();
 			
-			record.insert();
+			logger().info("开始插入");
+			int insert = record.insert();
+			if(insert<=0) {
+				logger().info("插入失败");
+			}
 			//TODO    shop($this->getShopId())->serviceRequest->crmApi->syncUserScore($data['user_id'], $data);
 		} catch (Exception e) {
 			logger().error("addUserScore error, message:");
