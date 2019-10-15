@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.user.user;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,19 +13,26 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
+import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.OrderVerifierRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -33,8 +41,10 @@ import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
 import com.vpu.mp.service.saas.shop.ShopImageManageService;
 import com.vpu.mp.service.shop.config.ConfigService;
@@ -681,5 +691,99 @@ public class UserService extends ShopBaseService {
 		}
 		return false;
 	}
+	
+	
+	//账号设置
+	public JsonResultCode accountSetting( UserAccountSetParam param,WxAppSessionUser user) {
+		UserRecord userInfo = getUserByUserId(user.getUserId());
+		UserDetailRecord userDetailRecord=USER_DETAIL.newRecord();
+		userDetailRecord.setUserId(userInfo.getUserId());
+		userDetailRecord.setBirthdayYear(param.getBirthdayYear());
+		userDetailRecord.setBirthdayMonth(param.getBirthdayMonth());
+		userDetailRecord.setBirthdayDay(param.getBirthdayDay());
+		userDetailRecord.setRealName(param.getRealName());
+		userDetailRecord.setSex(param.getSex());
+		if (param.getIsSetting() == 1 || param.getIsSetting() == 2) {
+			String provinceName = param.getProvinceCode();
+			String cityName = param.getCityCode();
+			String districtName = param.getDistrictCode();
+			if (StringUtils.isNotEmpty(provinceName) && StringUtils.isNotEmpty(cityName) && StringUtils.isNotEmpty(districtName)) {
+				Integer provinceId=100000;
+				//省
+				DictProvinceRecord provinceRecord = saas.region.province.getProvinceName(provinceName);
+				if (provinceRecord != null) {
+					provinceId = provinceRecord.getProvinceId();
+					if (provinceId < 100000) {
+						DictProvinceRecord provinceName2 = saas.region.province.getProvinceName(provinceName.substring(0, 2));
+						if (provinceName2 != null) {
+							provinceId = provinceName2.getProvinceId();
+							provinceId = provinceId < 100000 ? 100000 : provinceId;
+						}
+					}
+				}
+				//市
+				Integer cityId=110000;
+				DictCityRecord cityRecord = saas.region.city.getCityId(cityName, provinceId);
+				if(cityRecord!=null) {
+					cityId=cityRecord.getCityId();
+				}else {
+					  //没有市时新加
+					cityId = saas.region.city.addNewCity(provinceId, cityName);
+				}
+				
+				//地区
+				Integer districtId=110100;
+				DictDistrictRecord districtRecord = saas.region.district.getDistrictName(districtName, cityId);
+				if(districtRecord!=null) {
+					districtId=districtRecord.getDistrictId();
+				}else {
+					districtId = saas.region.district.addNewDistrict(cityId, districtName);
+				}				
+				userDetailRecord.setProvinceCode(provinceId);
+				userDetailRecord.setCityCode(cityId);
+				userDetailRecord.setDistrictCode(districtId);
+			}
+
+		}
+		if(userInfo!=null) {
+			if (param.getIsSetting() == 1) {
+				userDetail.updateRow(userDetailRecord);
+				return JsonResultCode.CODE_SUCCESS;
+			}
+			if (param.getIsSetting() == 2) {
+				//激活卡标志
+				userDetail.updateRow(userDetailRecord);
+				UserCardRecord newRecord = USER_CARD.newRecord();
+				newRecord.setActivationTime(DateUtil.getSqlTimestamp());
+				int ret = userCard.updateUserCardByNo(param.getCardNo(),newRecord);
+				if(ret>0) {
+					//return $this->response(0, '', '激活成功');
+					return JsonResultCode.CODE_CARD_ACTIVATE_SUCCESS;
+				}else {
+					// return $this->response(1, '', '激活失败 ');
+					return JsonResultCode.CODE_CARD_ACTIVATE_FAIL;
+				}
+			}else {
+				//暂时不返回
+				/*
+				 * UserDetailRecord uRecord = getUserDetail(user.getUserId()); if (uRecord !=
+				 * null) { Integer provinceId = uRecord.getProvinceCode() != null ?
+				 * uRecord.getProvinceCode() : 100000; Integer cityId = uRecord.getCityCode() !=
+				 * null ? uRecord.getCityCode() : 110000; Integer districtId =
+				 * uRecord.getDistrictCode() != null ? uRecord.getDistrictCode() : 110100;
+				 * 
+				 * String provinceCode =
+				 * saas.region.province.getProvinceName(provinceId).getName(); String cityCode =
+				 * saas.region.city.getCityName(cityId).getName(); String district_code =
+				 * saas.region.district.getDistrictName(districtId).getName(); }
+				 */
+				return JsonResultCode.CODE_SUCCESS;
+			}
+		}
+		return JsonResultCode.CODE_FAIL;
+		
+	}
+	
+	
 
 }
