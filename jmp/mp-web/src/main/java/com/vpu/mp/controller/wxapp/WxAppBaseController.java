@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vpu.mp.auth.WxAppAuth;
 import com.vpu.mp.controller.BaseController;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
@@ -23,8 +24,11 @@ public class WxAppBaseController  extends BaseController {
 	 */
 	@Override
 	protected String getLang() {
-		// TODO:待实现
-		return "zh_CN";
+		ShopRecord record = saas.shop.getShopById(shopId());
+		if(record==null) {
+			throw new IllegalArgumentException("Invalid shopId");
+		}
+		return record.getShopLanguage();
 	}
 	
 	/**

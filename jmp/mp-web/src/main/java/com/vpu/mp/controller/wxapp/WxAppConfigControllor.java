@@ -33,7 +33,7 @@ public class WxAppConfigControllor extends WxAppBaseController {
 	
 	@PostMapping("/api/wxapp/locale/get")
 	public JsonResult getLocalePack(@RequestBody WxAppCommonParam param) {
-		return success(this.shop().config.getLocalePack());
+		return success(this.shop().config.getLocalePack(getLang()));
 	}
 	
 	
