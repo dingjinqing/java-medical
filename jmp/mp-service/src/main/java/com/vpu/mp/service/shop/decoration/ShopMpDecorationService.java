@@ -258,6 +258,15 @@ public class ShopMpDecorationService extends ShopBaseService {
 		});
 		return true;
 	}
+	
+	/**
+	 * 编辑-获取装修页面数据
+	 * @param param
+	 * @return
+	 */
+	public XcxCustomerPageRecord editPage (setIndexParam param) {
+		return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()));
+	}
 
 	/**
 	 * 获取页面分类信息

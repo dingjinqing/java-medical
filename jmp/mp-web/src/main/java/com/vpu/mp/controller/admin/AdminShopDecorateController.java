@@ -82,6 +82,17 @@ public class AdminShopDecorateController extends AdminBaseController {
 	}
 	
 	/**
+	 * 编辑-获取页面数据
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/page/edit")
+	public JsonResult editPage(@RequestBody setIndexParam param) {
+		XcxCustomerPageRecord info = shop().mpDecoration.editPage(param);
+		return this.success(info.intoMap());
+	}
+	
+	/**
 	 * 页面分类信息
 	 * @return
 	 */
@@ -150,7 +161,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/save")
+	@PostMapping(value = "/admin/decorate/page/save")
 	public JsonResult saveDecoration(@RequestBody XcxCustomerPageVo param) {
 		boolean res = shop().mpDecoration.saveDecoration(param);
 		if(res) {
