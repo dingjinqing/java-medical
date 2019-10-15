@@ -53,7 +53,6 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/page/add")
 	public JsonResult addPage(@RequestBody XcxCustomerPageVo param) {
-		System.out.println(param);
 		boolean res = shop().mpDecoration.addPage(param);
 		return this.success(res);
 	}
@@ -139,7 +138,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/copy")
+	@PostMapping(value = "/admin/decorate/page/copy")
 	public JsonResult copyDecoration(@RequestBody XcxCustomerPageVo param) {
 		Boolean res = shop().mpDecoration.copyDecoration(param.getPageId());
 		return success(res);
@@ -153,8 +152,6 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/save")
 	public JsonResult saveDecoration(@RequestBody XcxCustomerPageVo param) {
-		System.out.println(111);
-		System.out.println(param.getPageId());
 		boolean res = shop().mpDecoration.saveDecoration(param);
 		if(res) {
 			return this.success();
