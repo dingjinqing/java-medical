@@ -1,39 +1,46 @@
 package com.vpu.mp.service.shop.store.store;
 
-import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
+import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Store.STORE;
+import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * @author 王兵兵
@@ -79,6 +86,12 @@ public class StoreService extends ShopBaseService {
 	@Autowired public ServiceCommentService serviceComment;
 
     /**
+     * The Goods spec product service.商品规格
+     */
+    @Autowired
+    public GoodsSpecProductService goodsSpecProductService;
+
+    /**
 	 * 门店列表分页查询
 	 * @param param
 	 * @return StorePageListVo
@@ -96,15 +109,66 @@ public class StoreService extends ShopBaseService {
 	}
 
     /**
-     * 门店列表查询-不分页
+     * 门店列表查询-小程序端
      * @param param
      * @return StorePageListVo
      */
-    public List<StorePageListVo> getList(StoreListQueryParam param) {
-        SelectWhereStep<? extends Record> select = db().selectFrom(STORE);
+    public List<StorePageListVo> getList(StoreListParam param) {
+        if (BYTE_ZERO.equals(param.getType())) {
+            if (param.getGoodsId() != null) {
+                // 根据商品id获取商品规格id列表
+                List<GoodsSpec> list = goodsSpecProductService.selectSpecByGoodsId(param.getGoodsId());
+                Set<Integer> prdIds = list.stream().map(GoodsSpec::getSpecId).collect(Collectors.toSet());
+                try {
+                    StoreListParam.Location location = MAPPER.readValue(param.getLocation(), StoreListParam.Location.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                // 缺少商品参数 商品规格
+                throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
+            }
+        }
+        /*SelectWhereStep<? extends Record> select = db().selectFrom(STORE);
         select = this.buildOptions(select, param);
         select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
-        return select.fetchInto(StorePageListVo.class);
+        return select.fetchInto(StorePageListVo.class);*/
+        return null;
+    }
+
+    /**
+     * The entry point of application.获得可购买的门店列表
+     */
+    public void getCanBuyStoreList(Set<Integer> prdIds, Byte deliverType, StoreListParam.Location location, Byte isFromStore) {
+        SelectConditionStep<Record1<Integer>> conditionStep = db().select(STORE.STORE_ID).from(STORE_GOODS)
+            .leftJoin(STORE).on(STORE_GOODS.STORE_ID.eq(STORE.STORE_ID))
+            .where(STORE_GOODS.PRD_ID.in(prdIds))
+            .and(STORE_GOODS.IS_ON_SALE.eq(BYTE_ONE))
+            .and(STORE.BUSINESS_STATE.eq(BYTE_ONE))
+            .and(STORE.DEL_FLAG.eq(BYTE_ZERO));
+        if (deliverType.equals(BYTE_ONE)) {
+            conditionStep.and(STORE.AUTO_PICK.eq(SHORT_ONE));
+        }
+        if (deliverType.equals(CONDITION_TWO)) {
+            // TODO 同城配送 新增字段
+//            conditionStep.and(STORE.city.eq(SHORT_ONE));
+        }
+        List<Integer> storeIds = conditionStep.groupBy(STORE.STORE_ID)
+            .having(DSL.count(STORE.STORE_ID).eq(prdIds.size()))
+            .fetchInto(Integer.class);
+        List<StorePojo> storeLists = db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StorePojo.class);
+        if (deliverType.equals(CONDITION_TWO)) {
+            // 支持同城配送门店列表
+
+        }
+    }
+
+    /**
+     * The entry point of application.获得同城配送可用的门店列表
+     */
+    public void cityServiceCanUseStoreList(List<StorePojo> storeLists, StoreListParam.Location location, Byte isFromStore) {
+
     }
 
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, StoreListQueryParam param) {
