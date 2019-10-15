@@ -101,7 +101,14 @@
           <span style="margin-bottom:10px">商品模块</span>
           <div class="commodityMain">
             <div class="commodityContent">
-
+              <span>显示内容：</span>
+              <div class="contentRight">
+                <div class="contentRightTop">
+                  <el-checkbox v-model="commodityModule.name">商品名称</el-checkbox>
+                  <el-checkbox v-model="commodityModule.price">商品名称</el-checkbox>
+                  <el-checkbox v-model="commodityModule.label">商品名称</el-checkbox>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -140,6 +147,11 @@ export default {
       iconImgUrl: '', // 图标icon url
       tuneUpSelectLink: false, // 调起选择链接弹窗
       tuneUp: false, // 调起选择图片弹窗
+      commodityModule: {
+        name: false, // 商品名称
+        price: false, // 商品价格
+        label: false // 商品标签
+      },
       listTypeData: [ // 列表样式数据
         {
           typeName: '单列',
@@ -241,7 +253,7 @@ export default {
             justify-content: flex-start;
             span {
               display: inline-block;
-              width: 143px;
+              width: 100px;
               height: 32px;
               line-height: 32px;
             }
@@ -362,6 +374,11 @@ export default {
           padding: 8px 10px 0;
           border: 1px solid #e5e5e5;
           margin: 10px 0;
+          .commodityContent {
+            display: flex;
+            span {
+            }
+          }
         }
       }
     }

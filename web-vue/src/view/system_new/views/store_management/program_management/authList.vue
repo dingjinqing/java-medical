@@ -125,7 +125,7 @@
         prop="appId"
         label="appid"
         align="center"
-        width="200"
+        width="170"
       >
       </el-table-column>
       <el-table-column
@@ -180,7 +180,6 @@
       </el-table-column>
       <el-table-column
         align="center"
-        width="150"
         :label="$t('programVersion.SupportWechatPayment')"
       >
         <template slot-scope="scope">
@@ -198,12 +197,14 @@
         prop="lastAuthTime"
         align="center"
         :label="$t('programVersion.authorizationTime')"
+        width="160"
       >
       </el-table-column>
       <el-table-column
         prop="bindTemplateId"
         align="center"
         :label="$t('programVersion.bindingTemplateID')"
+        width="90"
       >
       </el-table-column>
       <el-table-column
@@ -221,7 +222,6 @@
       <el-table-column
         prop="status2"
         align="center"
-        min-width="100"
         :label="$t('programVersion.publiStatus')"
       >
         <template slot-scope="scope">
@@ -250,7 +250,7 @@
         prop="operation"
         align="center"
         :label="$t('programVersion.operation')"
-        width="200"
+        width="110"
       >
         <template slot-scope="scope">
           <div class='lastDiv'>

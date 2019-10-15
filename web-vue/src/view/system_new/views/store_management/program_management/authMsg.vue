@@ -26,7 +26,10 @@
               </el-button>
             </div>
             <div class="item-content">
-              <table class="item-table">
+              <table
+                class="item-table"
+                width="100%"
+              >
                 <tbody>
                   <tr>
                     <td>{{$t('programVersion.ShopID')}}</td>
@@ -315,7 +318,10 @@
               </el-button>
             </div>
             <div class="item-content">
-              <table class="item-table">
+              <table
+                class="item-table"
+                width="100%"
+              >
                 <tbody>
                   <tr>
                     <td>{{$t('programVersion.SettingServerDomainName')}}</td>
@@ -406,8 +412,8 @@
                   </tr>
                   <tr>
                     <td>{{$t('programVersion.OptionalCategory')}}</td>
-                    <td>
-                      {{this.dataList.category}}
+                    <td style="max-width: 28em">
+                      <span class="warp">{{this.dataList.category}} </span>
                       <el-button
                         size="small"
                         type="primary"
@@ -419,8 +425,9 @@
                   </tr>
                   <tr>
                     <td>{{$t('programVersion.PageConfiguration')}}</td>
-                    <td>
-                      {{this.dataList.pageCfg}}
+                    <td style="max-width: 28em">
+                      <span class="warp">{{this.dataList.pageCfg}}</span>
+
                       <el-button
                         size="small"
                         type="primary"
@@ -927,13 +934,19 @@ export default {
           height: 50px;
         }
         td.elippse {
-          max-width: 31em;
+          max-width: 28em;
           word-break: keep-all;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
         }
-
+        .warp {
+          max-width: 27em;
+          word-wrap: break-word;
+          display: inline-block;
+          overflow: hidden;
+          overflow-wrap: break-word;
+        }
         .tag-item {
           margin-top: 5px;
           margin-right: 5px;
