@@ -142,6 +142,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 		
 		//签到送积分
 		String signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
+		
 		this.set(SIGN_IN_SCORE, signInScore);
 		setSignScore(signInScore,param.getSignScore());
 	
