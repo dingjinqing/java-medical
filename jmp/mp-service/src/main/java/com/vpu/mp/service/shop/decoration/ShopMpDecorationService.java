@@ -372,7 +372,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 		page.setPageName(source.getPageName() + "+copy");
 		page.setPageContent(source.getPageContent());
 		page.setShopId(source.getShopId());
-		page.setPageType(source.getPageType());
+		page.setPageType((byte) 0);
 		page.setPageEnabled(source.getPageEnabled());
 		page.setPageTplType(source.getPageTplType());
 		page.setPageContent(source.getPageContent());
