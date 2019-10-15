@@ -118,7 +118,39 @@ const routes = [
           meta: 'store_manage',
           category: 'store_list'
         },
-        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/technicianManage')
+        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/technicianManage'),
+        children: [
+          {
+            path: 'list',
+            name: 'store_storemanage_technician_list',
+            meta: {
+              crumbTitle: 'router.storeServiceManage',
+              meta: 'store_manage',
+              category: 'store_list'
+            },
+            component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/technicianManage/technicianList')
+          },
+          {
+            path: 'classify',
+            name: 'store_storemanage_technician_classify',
+            meta: {
+              crumbTitle: 'router.storeServiceManage',
+              meta: 'store_manage',
+              category: 'store_list'
+            },
+            component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/technicianManage/technicianClassify')
+          },
+          {
+            path: 'add',
+            name: 'store_storemanage_technician_add',
+            meta: {
+              crumbTitle: 'router.storeServiceManage',
+              meta: 'store_manage',
+              category: 'store_list'
+            },
+            component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/technicianManage/technicianAdd')
+          }
+        ]
       },
       // 门店列表 门店管理 评价管理
       {

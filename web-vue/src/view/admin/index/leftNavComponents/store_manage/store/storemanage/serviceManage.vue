@@ -1,7 +1,11 @@
 <template>
   <!-- 服务管理 -->
   <div class="service_manage_page">
-    <el-tabs v-model="activeName">
+    <el-tabs
+      v-model="activeName"
+      class="service_manage_tabs"
+      @tab-click="tabClickHandle"
+    >
       <el-tab-pane
         label="服务列表"
         name="first"
@@ -26,13 +30,8 @@
 export default {
   data () {
     return {
-      activeName: 'first',
-      serviceCat: null,
-      serviceCats: [
-        { id: 1, name: '添加' }
-      ],
-      tableData: [],
-      form: {}
+      id: null,
+      activeName: 'first'
     }
   },
   watch: {
@@ -40,47 +39,56 @@ export default {
       immediate: true,
       handler (newName) {
         console.log(newName)
-        switch (newName) {
-          case 'first':
-            this.$router.replace({
-              name: 'store_storemanage_service_list',
-              query: {
-                id: this.id
-              }
-            })
-            break
-          case 'second':
-            this.$router.replace({
-              name: 'store_storemanage_service_classify',
-              query: {
-                id: this.id
-              }
-            })
-            break
-          case 'third':
-            this.$router.replace({
-              name: 'store_storemanage_service_add',
-              query: {
-                id: this.id
-              }
-            })
-            break
-        }
       }
     }
   },
+  created () {
+    this.id = this.$route.query.id
+    this.initStatus()
+  },
   mounted () {
-    this.initDataList()
   },
   methods: {
-    searchHandle () {
-
+    tabClickHandle (tab) {
+      let tabName = tab.name
+      console.log(222, this.$route)
+      switch (tabName) {
+        case 'first':
+          this.$router.push({
+            name: 'store_storemanage_service_list',
+            query: {
+              id: this.id
+            }
+          })
+          break
+        case 'second':
+          this.$router.push({
+            name: 'store_storemanage_service_classify',
+            query: {
+              id: this.id
+            }
+          })
+          break
+        case 'third':
+          this.$router.push({
+            name: 'store_storemanage_service_add',
+            query: {
+              id: this.id
+            }
+          })
+          break
+      }
     },
-    edit () {
-
-    },
-    initDataList () {
-
+    initStatus () {
+      let route = this.$route
+      let name = route.name
+      if (name === 'store_storemanage_service_list') {
+        this.activeName = 'first'
+      } else if (name === 'store_storemanage_service_classify') {
+        this.activeName = 'second'
+      } else if (name === 'store_storemanage_service_add') {
+        this.activeName = 'third'
+      }
     }
   }
 }
@@ -88,13 +96,8 @@ export default {
 
 <style lang="scss" scoped>
 .service_manage_page {
-  .sevice_list {
-    .list-info {
-    }
-  }
-  .service_class_info {
-    display: flex;
-    justify-content: space-between;
+  .service_manage_tabs {
+    margin: 0 25px;
   }
 }
 </style>

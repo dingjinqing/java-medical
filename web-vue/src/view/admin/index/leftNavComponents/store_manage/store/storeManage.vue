@@ -6,7 +6,9 @@
         <div class="order-top">
           <el-tabs
             type="border-card"
+            class="store_manage_tabs"
             v-model="activeName"
+            @tab-click="tabClickHandle"
           >
             <el-tab-pane
               label="预约管理"
@@ -40,66 +42,75 @@
 
 <script>
 export default {
-  props: {
-    id: Number
-  },
   data () {
     return {
+      id: null,
       activeName: 'first'
     }
   },
+  created () {
+    this.id = this.$route.query.id
+    this.initStatus()
+  },
   mounted () {
-    let route = this.$route
-    let path = route.path
-    if (path.indexOf('reserve') > -1) {
-      this.activeName = 'first'
-    } else if (path.indexOf('service') > -1) {
-      this.activeName = 'second'
-    } else if (path.indexOf('technician') > -1) {
-      this.activeName = 'third'
-    } else if (path.indexOf('comment') > -1) {
-      this.activeName = 'fourth'
-    }
   },
   watch: {
     activeName: {
       immediate: true,
       handler: function (newName) {
         console.log(newName)
-        switch (newName) {
-          case 'first':
-            this.$router.replace({
-              name: 'store_storemanage_reserve',
-              query: {
-                id: this.id
-              }
-            })
-            break
-          case 'second':
-            this.$router.replace({
-              name: 'store_storemanage_service',
-              query: {
-                id: this.id
-              }
-            })
-            break
-          case 'third':
-            this.$router.replace({
-              name: 'store_storemanage_technician',
-              query: {
-                id: this.id
-              }
-            })
-            break
-          case 'fourth':
-            this.$router.replace({
-              name: 'store_storemanage_comment',
-              query: {
-                id: this.id
-              }
-            })
-            break
-        }
+      }
+    }
+  },
+  methods: {
+    tabClickHandle (tab) {
+      const name = tab.name
+      switch (name) {
+        case 'first':
+          this.$router.push({
+            name: 'store_storemanage_reserve',
+            query: {
+              id: this.id
+            }
+          })
+          break
+        case 'second':
+          this.$router.push({
+            name: 'store_storemanage_service_list',
+            query: {
+              id: this.id
+            }
+          })
+          break
+        case 'third':
+          this.$router.push({
+            name: 'store_storemanage_technician_list',
+            query: {
+              id: this.id
+            }
+          })
+          break
+        case 'fourth':
+          this.$router.push({
+            name: 'store_storemanage_comment',
+            query: {
+              id: this.id
+            }
+          })
+          break
+      }
+    },
+    initStatus () {
+      let route = this.$route
+      let path = route.path
+      if (path.indexOf('reserve') > -1) {
+        this.activeName = 'first'
+      } else if (path.indexOf('service') > -1) {
+        this.activeName = 'second'
+      } else if (path.indexOf('technician') > -1) {
+        this.activeName = 'third'
+      } else if (path.indexOf('comment') > -1) {
+        this.activeName = 'fourth'
       }
     }
   }
@@ -111,7 +122,10 @@ export default {
   padding: 10px;
   .order-top {
     background: #fff;
-    padding: 15px 18px;
+    padding: 15px 0;
+    .store_manage_tabs {
+      margin: 0 25px;
+    }
     .el-tabs--border-card {
       box-shadow: none;
       height: 40px;
