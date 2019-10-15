@@ -13,7 +13,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    user_name: "", //app.globalData.input_array.mobile,
+    user_name: app.globalData.input_array.mobile,
     wx_user_avatar: '',
     user_mobile: '',
     user_avatar: '',
@@ -25,7 +25,6 @@ global.wxPage({
     is_block: 0,
     page_style: 1
   },
-
   /**
    * 生命周期函数--监听页面加载
    */
@@ -48,7 +47,6 @@ global.wxPage({
   usercenterRequest: function (that) {
     util.api('/api/wxapp/account/usercenter', function (res) {
       if (res.error == 0) {
-        console.log("个人中心的",res)
         var user_center_all = res.content.module_data;
         page_style = user_center_all[0].page_style;
         if (user_center_all[0].module_name == "global") {
@@ -85,6 +83,94 @@ global.wxPage({
       }
     }, {})
   },
+  click_to_detail: function (e) {
+    var service_id = e.currentTarget.dataset.service_id;
+    util.navigateTo({
+      url: '/pages/appointment/appointment?service_id=' + service_id
+    })
+  },
+  to_where: function (e) {
+    util.navigateTo({
+      url: "/pages/distributionspread/distributionspread",
+    })
+    // var judge_statuss = e.currentTarget.dataset.judge_status;
+    // var is_distributors = e.currentTarget.dataset.is_distributor;
+    // if (is_distributors == 0 && judge_statuss == 1) {
+    //   util.navigateTo({
+    //     url: "/pages/distributionspread/distributionspread",
+    //   })
+    // } else {
+    //   var names = e.currentTarget.dataset.names;
+    //   util.navigateTo({
+    //     url: '/pages/distribution/distribution?names=' + names,
+    //   })
+    // }
+  },
+  toSign: function (e) {
+    is_sign = 1;
+    this.setData({
+      is_sign: is_sign
+    })
+  },
+  closeSign: function (e) {
+    is_sign = 0;
+    this.setData({
+      is_sign: is_sign
+    })
+  },
+  closeGrade: function (e) {
+    is_grade = 0;
+    util.setCache('refuse_grade', 1);
+    this.setData({
+      is_grade: is_grade
+    })
+  },
+  GetCrade: function (e) {
+    var that = this;
+    var form_id = e.detail.formId;
+    var open_id = util.getCache("openid");
+    util.api('/api/card/getcard', function (res) {
+      if (res.content >= 0) {
+        is_grade = 0;
+        user_center[0].get_grade = 0
+        that.setData({
+          is_grade: is_grade,
+          user_center: user_center
+        })
+        util.toast_success('领取成功', function () {
+          setTimeout(function () {
+            util.jumpLink(`/pages/usercardinfo/usercardinfo?card_no=${res.content}`, 'navigateTo')
+          }, 2000);
+        });
+      } else if (res.content == -1) {
+        util.toast_fail('此卡已存在');
+      } else {
+        util.toast_fail('领取失败');
+      }
+    }, { card_info: '', type: 1, form_id: form_id, open_id: open_id });
+  },
+  lookRule: function (e) {
+    var sign_rule = e.currentTarget.dataset.rule;
+    util.jumpToWeb('/wxapp/sign/help', '&sign_rule=' + JSON.stringify(sign_rule))
+  },
+  signScore: function (e) {
+    var score = user_center[0].sign_score.sign_data.receive_score;
+    var that = this;
+    var form_id = e.detail.formId;
+    var open_id = util.getCache("openid");
+    util.api('api/wxapp/score/signAdd', function (res) {
+      if (res.error == 0) {
+        util.toast_success('签到成功');
+        is_sign = 0;
+        that.setData({
+          is_sign: is_sign
+        })
+        that.usercenterRequest(that);
+      } else {
+        util.toast_fail('签到失败');
+      }
+    }, { score: score, form_id: form_id, open_id: open_id })
+  },
   /**
    * 生命周期函数--监听页面显示
    */
@@ -117,7 +203,59 @@ global.wxPage({
       url: '/pages/integral/integral?num=' + num
     })
   },
+  to_collect: function () {
+    util.navigateTo({
+      url: '/pages/collect/collect'
+    })
+  },
+  allOrder: function () {
+    util.navigateTo({
+      url: '/pages/orderlist/orderlist'
+    })
+  },
+  allReserve: function () {
+    util.navigateTo({
+      url: '/pages/appointlist/appointlist'
+    })
+  },
+  bindOrderNav: function (e) {
+    var datas = JSON.stringify(e.currentTarget.dataset);
+    if (e.currentTarget.dataset.type == 'FINISHED') {
+      util.jumpLink('/pages/comment/comment')
+    } else {
+      util.navigateTo({ url: '/pages/orderlist/orderlist?datas=' + datas })
+    }
 
+  },
+  to_codeverification: function () {
+    if (!util.getCache('mobile')) {
+      var that = this;
+      util.showModal('提示', '请授权手机号', function () {
+        util.checkSession(function () {
+          that.setData({
+            is_block: 1
+          })
+        });
+      });
+      return false;
+    }
+    util.navigateTo({
+      url: '/pages/codeverification/codeverification',
+    })
+  },
+  to_search: function (e) {
+    var types = e.currentTarget.dataset.types;
+    var action;
+    if (types == 'history') {
+      action = 1;
+    } else {
+      action = 2;
+    }
+    util.jumpLink("/pages1/foothistory/foothistory?action=" + action);
+  },
+  to_present: function () {
+    util.jumpLink("/pages1/presentlist/presentlist")
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */
@@ -136,7 +274,15 @@ global.wxPage({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    // 显示导航栏loading
+    wx.showNavigationBarLoading();
+    // 调用接口加载数据
+    var that = this;
+    that.usercenterRequest(that);
+    // 隐藏导航栏loading
+    wx.hideNavigationBarLoading();
+    // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
+    wx.stopPullDownRefresh();
   },
 
   /**
@@ -145,11 +291,4 @@ global.wxPage({
   onReachBottom: function () {
 
   },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
 })

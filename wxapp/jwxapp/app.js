@@ -10,6 +10,7 @@ const updateManager = wx.getUpdateManager();
 
 global.wxApp({
   globalData: {
+    input_array: {},
     baseUrl: util.getUrl(""),
     imageUrl: util.getImageUrl(""),
     shopId: util.getShopId()

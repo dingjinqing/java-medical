@@ -1,4 +1,4 @@
-// pages/index/index.js
+// pages1/distributionorder/distributionorder.js
 Page({
 
   /**

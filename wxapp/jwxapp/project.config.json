@@ -23,7 +23,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "2.8.3",
 	"appid": "wxbb38922409fdaa24",
-	"projectname": "miniprogram-1",
+	"projectname": "jwxapp",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},

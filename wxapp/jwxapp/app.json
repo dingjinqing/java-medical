@@ -1,10 +1,13 @@
 {
   "pages": [
-    "pages/bottom/bottom",
-    "pages/index/index",
-    "pages/coupon/coupon",
-    "pages/getCoupon/getCoupon",
     "pages/usercenter/usercenter",
+    "pages/userinfo/userinfo",
+    "pages/memberinfo/memberinfo",
+    "pages/store/store",
+    "pages/bottom/bottom",
+    "pages/coupon/coupon",
+    "pages/index/index",
+    "pages/getCoupon/getCoupon",
     "components/decorate/card/index"
   ],
   "window": {
@@ -22,5 +25,15 @@
   "usingComponents": {
     "v-navigation": "/components/custom-navigation/index"
   },
+  "subpackages": [
+    {
+      "root": "pages1",
+      "pages": [
+        "distribution/distribution",
+        "distributionorder/distributionorder",
+        "distributionspread/distributionspread"
+      ]
+    }
+  ],
   "sitemapLocation": "sitemap.json"
 }
