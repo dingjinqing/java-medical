@@ -1,7 +1,12 @@
 package com.vpu.mp.controller.admin;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.order.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,10 +16,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
@@ -36,6 +37,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/order")
 public class AdminOrderController extends AdminBaseController {
+
+    private static final String LANGUAGE_TYPE_EXCEL = "excel";
+
 	/**
 	 * 	订单综合查询（不包括买单订单、虚拟商品订单）
 	 * 
@@ -192,7 +196,7 @@ public class AdminOrderController extends AdminBaseController {
     /**
      * 获取当前表格导出列表头
      */
-    @PostMapping("/export/columns")
+    @PostMapping("/export/columns/get")
     public JsonResult getExportColumns() {
         List<String> columns = shop().config.orderExportCfg.getOrderExportList();
         return success(columns);
@@ -205,5 +209,24 @@ public class AdminOrderController extends AdminBaseController {
     public JsonResult setExportColumns(@RequestBody List<String> columns) {
         shop().config.orderExportCfg.setOrderExportList(columns);
         return success();
+    }
+
+    /**
+     * 取将要导出的列数
+     */
+    @PostMapping("/export/rows")
+    public JsonResult getExportTotalRows(@RequestBody @Valid OrderExportQueryParam param) {
+        return success(shop().readOrder.getExportOrderListSize(param));
+    }
+
+    /**
+     * 订单导出
+     */
+    @PostMapping("/export")
+    public void orderExport(@RequestBody @Valid OrderExportQueryParam param, HttpServletResponse response) {
+        List<String> columns = shop().config.orderExportCfg.getOrderExportList();
+        Workbook workbook =shop().readOrder.exportOrderList(param,columns,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL);
+        export2Excel(workbook,fileName,response);
     }
 }

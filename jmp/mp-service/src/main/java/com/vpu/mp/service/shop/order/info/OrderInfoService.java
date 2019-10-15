@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.vpu.mp.service.pojo.shop.order.*;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -63,10 +64,6 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
@@ -1084,4 +1081,31 @@ public class OrderInfoService extends ShopBaseService {
 						.and(ORDER_INFO.CREATE_TIME.gt(timestamp)))
 				.fetchOne().into(Integer.class);
 	}
+
+    /**
+     * 订单导出数据的条数
+     * @param param
+     * @return
+     */
+    public int getExportOrderListSize(OrderExportQueryParam param) {
+        SelectJoinStep<? extends Record> select = db().selectCount().from(ORDER_INFO).innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        select.where(ORDER_INFO.ORDER_SN.notEqual(ORDER_INFO.MAIN_ORDER_SN));
+        buildOptions(select, param);
+        return select.fetchOne().into(Integer.class);
+    }
+
+    /**
+     * 订单导出的原始数据
+     * @param param
+     * @return
+     */
+    public List<OrderExportVo> getExportOrderList(OrderExportQueryParam param) {
+        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.asterisk(),ORDER_GOODS.REC_ID,ORDER_GOODS.GOODS_ID,ORDER_GOODS.GOODS_SN,ORDER_GOODS.PRODUCT_ID,ORDER_GOODS.PRODUCT_SN,ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_NUMBER,ORDER_GOODS.MARKET_PRICE,ORDER_GOODS.GOODS_PRICE,ORDER_GOODS.DISCOUNTED_GOODS_PRICE,ORDER_GOODS.GOODS_ATTR,ORDER_GOODS.SEND_NUMBER,ORDER_GOODS.RETURN_NUMBER,USER.USERNAME.as("user_name"),USER.MOBILE.as("user_mobile"),USER.SOURCE,USER.INVITE_SOURCE,USER.INVITE_ACT_ID).from(ORDER_INFO).innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        select.where(ORDER_INFO.ORDER_SN.notEqual(ORDER_INFO.MAIN_ORDER_SN));
+        buildOptions(select, param);
+        select.orderBy(ORDER_INFO.ORDER_ID.desc());
+
+        List<OrderExportVo> list = select.limit(param.getExportRowStart(),param.getExportRowEnd() - param.getExportRowStart() + 1).fetchInto(OrderExportVo.class);
+        return list;
+    }
 }

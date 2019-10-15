@@ -375,6 +375,71 @@ public class JsonResultMessage {
 	public static final String REFUND_SCORE_LARGER_THAN_SCORE_PAID = "order.refund.score_larger_than_paid";
     public static final String REFUND_REQUEST_PARAMETER_ERROR = "order.virtual.order.refund.param.error";
 
+    /**
+     * 订单列表导出列
+     */
+    public static final String ORDER_EXPORT_FILE_NAME = "order.export.file_name";
+    public static final String ORDER_EXPORT_COLUMN_ORDER_SN = "order.export.column.order_sn";
+    public static final String ORDER_EXPORT_COLUMN_ORDER_STATUS_NAME = "order.export.column.order_status_name";
+    public static final String ORDER_EXPORT_COLUMN_PAY_NAMES = "order.export.column.pay_names";
+    public static final String ORDER_EXPORT_COLUMN_ADD_TIME = "order.export.column.add_time";
+    public static final String ORDER_EXPORT_COLUMN_PAY_TIME = "order.export.column.pay_time";
+    public static final String ORDER_EXPORT_COLUMN_CLOSE_TIME = "order.export.column.close_time";
+    public static final String ORDER_EXPORT_COLUMN_CANCELLED_TIME = "order.export.column.cancelled_time";
+    public static final String ORDER_EXPORT_COLUMN_FINISHED_TIME = "order.export.column.finished_time";
+    public static final String ORDER_EXPORT_COLUMN_IS_COD = "order.export.column.is_cod";
+    public static final String ORDER_EXPORT_COLUMN_CONSIGNEE = "order.export.column.consignee";
+    public static final String ORDER_EXPORT_COLUMN_MOBILE = "order.export.column.mobile";
+    public static final String ORDER_EXPORT_COLUMN_COMPLETE_ADDRESS = "order.export.column.complete_address";
+    public static final String ORDER_EXPORT_COLUMN_PROVINCE_NAME = "order.export.column.province_name";
+    public static final String ORDER_EXPORT_COLUMN_CITY_NAME = "order.export.column.city_name";
+    public static final String ORDER_EXPORT_COLUMN_DISTRICT_NAME = "order.export.column.district_name";
+    public static final String ORDER_EXPORT_COLUMN_ZIPCODE = "order.export.column.zipcode";
+    public static final String ORDER_EXPORT_COLUMN_USER_NAME = "order.export.column.user_name";
+    public static final String ORDER_EXPORT_COLUMN_USER_MOBILE = "order.export.column.user_mobile";
+    public static final String ORDER_EXPORT_COLUMN_IS_NEW = "order.export.column.is_new";
+    public static final String ORDER_EXPORT_COLUMN_USER_SOURCE = "order.export.column.user_source";
+    public static final String ORDER_EXPORT_COLUMN_USER_TAG = "order.export.column.user_tag";
+    public static final String ORDER_EXPORT_COLUMN_ADD_MESSAGE = "order.export.column.add_message";
+    public static final String ORDER_EXPORT_COLUMN_SHIPPING_TIME = "order.export.column.shipping_time";
+    public static final String ORDER_EXPORT_COLUMN_SHIPPING_NAME = "order.export.column.shipping_name";
+    public static final String ORDER_EXPORT_COLUMN_SHIPPING_NO = "order.export.column.shipping_no";
+    public static final String ORDER_EXPORT_COLUMN_DELIVER_TYPE_NAME = "order.export.column.deliver_type_name";
+    public static final String ORDER_EXPORT_COLUMN_CONFIRM_TIME = "order.export.column.confirm_time";
+    public static final String ORDER_EXPORT_COLUMN_STORE_ID = "order.export.column.store_id";
+    public static final String ORDER_EXPORT_COLUMN_STORE_NAME = "order.export.column.store_name";
+    public static final String ORDER_EXPORT_COLUMN_GOODS_NAME = "order.export.column.goods_name";
+    public static final String ORDER_EXPORT_COLUMN_PRODUCT_SN = "order.export.column.product_sn";
+    public static final String ORDER_EXPORT_COLUMN_GOODS_NUMBER = "order.export.column.goods_number";
+    public static final String ORDER_EXPORT_COLUMN_DISCOUNTED_GOODS_PRICE = "order.export.column.discounted_goods_price";
+    public static final String ORDER_EXPORT_COLUMN_GOODS_ATTR = "order.export.column.goods_attr";
+    public static final String ORDER_EXPORT_COLUMN_GOODS_PRICE = "order.export.column.goods_price";
+    public static final String ORDER_EXPORT_COLUMN_MARKET_PRICE = "order.export.column.market_price";
+    public static final String ORDER_EXPORT_COLUMN_GOODS_SN = "order.export.column.goods_sn";
+    public static final String ORDER_EXPORT_COLUMN_GOODS_ID = "order.export.column.goods_id";
+    public static final String ORDER_EXPORT_COLUMN_SEND_NUMBER = "order.export.column.send_number";
+    public static final String ORDER_EXPORT_COLUMN_RETURN_NUMBER = "order.export.column.return_number";
+    public static final String ORDER_EXPORT_COLUMN_SOURCE = "order.export.column.source";
+    public static final String ORDER_EXPORT_COLUMN_PRD_COST_PRICE = "order.export.column.prd_cost_price";
+    public static final String ORDER_EXPORT_COLUMN_PRD_WEIGHT = "order.export.column.prd_weight";
+    public static final String ORDER_EXPORT_COLUMN_ORDER_AMOUNT = "order.export.column.order_amount";
+    public static final String ORDER_EXPORT_COLUMN_DISCOUNT = "order.export.column.discount";
+    public static final String ORDER_EXPORT_COLUMN_SHIPPING_FEE = "order.export.column.shipping_fee";
+    public static final String ORDER_EXPORT_COLUMN_SCORE_DISCOUNT = "order.export.column.score_discount";
+    public static final String ORDER_EXPORT_COLUMN_USE_ACCOUNT = "order.export.column.use_account";
+    public static final String ORDER_EXPORT_COLUMN_MONEY_PAID = "order.export.column.money_paid";
+    public static final String ORDER_EXPORT_COLUMN_MEMBER_CARD_BALANCE = "order.export.column.member_card_balance";
+    public static final String ORDER_EXPORT_COLUMN_MEMBER_CARD_REDUCE = "order.export.column.member_card_reduce";
+    public static final String ORDER_EXPORT_COLUMN_PROMOTION_REDUCE = "order.export.column.promotion_reduce";
+    public static final String ORDER_EXPORT_COLUMN_RETURN_TIME = "order.export.column.return_time";
+    public static final String ORDER_EXPORT_COLUMN_RETURN_FINISH_TIME = "order.export.column.return_finish_time";
+    public static final String ORDER_EXPORT_COLUMN_RETURN_ORDER_MONEY = "order.export.column.return_order_money";
+    public static final String ORDER_EXPORT_COLUMN_RETURN_SHIPPING_FEE = "order.export.column.return_shipping_fee";
+    public static final String ORDER_EXPORT_COLUMN_SELLER_REMARK = "order.export.column.seller_remark";
+    public static final String ORDER_EXPORT_COLUMN_ORDER_REAL_NAME = "order.export.column.order_real_name";
+    public static final String ORDER_EXPORT_COLUMN_ORDER_CID = "order.export.column.order_cid";
+    public static final String ORDER_EXPORT_COLUMN_CUSTOM = "order.export.column.custom";
+
 	/**
 	 * 虚拟订单
 	 */

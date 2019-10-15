@@ -16,6 +16,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.pojo.shop.order.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +37,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -462,6 +463,34 @@ public class OrderReadService extends ShopBaseService {
         }
 
         return res;
+    }
+
+    /**
+     * 订单导出数据的条数
+     * @param param
+     * @return
+     */
+    public int getExportOrderListSize(OrderExportQueryParam param) {
+        return orderInfo.getExportOrderListSize(param);
+    }
+
+    /**
+     *	 订单列表导出
+     * @param param
+     * @param lang
+     * @return workbook
+     */
+    public Workbook exportOrderList(OrderExportQueryParam param,List<String> columns, String lang) {
+        List<OrderExportVo> orderList = orderInfo.getExportOrderList(param);
+
+        //处理需要处理的列
+        for(OrderExportVo order : orderList){
+            //TODO
+        }
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(orderList, OrderExportVo.class,columns);
+        return workbook;
     }
 
 }
