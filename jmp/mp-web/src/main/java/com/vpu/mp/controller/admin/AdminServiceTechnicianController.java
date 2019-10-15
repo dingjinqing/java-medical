@@ -1,25 +1,14 @@
 package com.vpu.mp.controller.admin;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroup;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroupParam;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPageListParam;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianParam;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPojo;
-import com.vpu.mp.service.pojo.shop.store.technician.TechnicianGroupPageListParam;
+import com.vpu.mp.service.pojo.shop.store.technician.*;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 黄荣刚
@@ -66,7 +55,7 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
-	
+
 	/**
 	 * 修改售后
 	 * @param param
@@ -83,7 +72,7 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
-	
+
 	/**
 	 * 删除售后
 	 * @param id
@@ -97,26 +86,26 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		}
 		return fail(JsonResultCode.CODE_FAIL);
 	}
-	
-	/*
-	 * 
+
+    /*
+     *
 	   * 以下为售后分组功能接口
-	 * 
-	 * 
+     *
+     *
 	 */
-	
-	/**
+
+    /**
 	 * 分页查询售后分组列表
 	 * @param param 包含门店ID、分页信息
-	 * @return 
+     * @return
 	 */
 	@PostMapping("/services/technician/group/list")
 	public JsonResult getTechnicianGroupList(@RequestBody @Valid TechnicianGroupPageListParam param) {
 		PageResult<ServiceTechnicianGroup> result = shop().store.serviceTechnician.groupService.getPageList(param);
 		return success(result);
 	}
-	
-	@PostMapping("/services/technician/group/add")
+
+    @PostMapping("/services/technician/group/add")
 	public JsonResult addTechnicianGroup(@RequestBody @Valid ServiceTechnicianGroupParam param) {
 		int result = shop().store.serviceTechnician.groupService.insert(param);
 		if(result>0) {
@@ -124,8 +113,8 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		}
 		return fail(JsonResultCode.CODE_FAIL);
 	}
-	
-	@PostMapping("/services/technician/group/delete/{groupId}")
+
+    @PostMapping("/services/technician/group/delete/{groupId}")
 	public JsonResult deleteTechnicianGroup(@PathVariable Integer  groupId) {
 		int result = shop().store.serviceTechnician.groupService.delete(groupId);
 		if(result>0) {
@@ -133,8 +122,8 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		}
 		return fail(JsonResultCode.CODE_FAIL);
 	}
-	
-	@PostMapping("/services/technician/group/update")
+
+    @PostMapping("/services/technician/group/update")
 	public JsonResult updateTechnicianGroup(@RequestBody @Valid ServiceTechnicianGroupParam param) {
 		if(param.getGroupId() == null) {
 			return fail(JsonResultCode.CODE_FAIL);

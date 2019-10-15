@@ -7,10 +7,14 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.*;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +22,7 @@ import java.util.Random;
 
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * @author 王兵兵
@@ -152,7 +157,6 @@ public class StoreServiceService extends ShopBaseService{
     /**
 	 * 新增门店服务分类
 	 * @param
-	 * @return
 	 */
 	public Boolean addStoreServiceCategory(StoreServiceCategoryParam storeServiceCategory) {
 		StoreServiceCategoryRecord record = new StoreServiceCategoryRecord();
@@ -162,8 +166,7 @@ public class StoreServiceService extends ShopBaseService{
 
     /**
 	 * 更新门店服务分类
-	 * @param
-	 * @return
+     * @param storeServiceCategory
 	 */
 	public Boolean updateStoreServiceCategory(StoreServiceCategoryParam storeServiceCategory) {
 		StoreServiceCategoryRecord record = new StoreServiceCategoryRecord();
@@ -173,13 +176,12 @@ public class StoreServiceService extends ShopBaseService{
 
     /**
 	 * 删除门店服务分类
-	 * @param
-	 * @return
+     * @param catId 门店服务分类ID
 	 */
 	public Boolean delStoreServiceCategory(Integer catId) {
 		this.transaction(()->{
 			db().deleteFrom(STORE_SERVICE_CATEGORY).where(STORE_SERVICE_CATEGORY.CAT_ID.eq(catId)).execute();
-			db().update(STORE_SERVICE).set(STORE_SERVICE.CAT_ID,0).where(STORE_SERVICE.CAT_ID.eq(catId)).execute();
+            db().update(STORE_SERVICE).set(STORE_SERVICE.CAT_ID, INTEGER_ZERO).where(STORE_SERVICE.CAT_ID.eq(catId)).execute();
 		});
 		return true;
 	}
@@ -214,29 +216,42 @@ public class StoreServiceService extends ShopBaseService{
 
 	/**
 	 * 删除门店服务
-	 * @param
-	 * @return
+     * @param id 服务id
 	 */
-	public Boolean delStoreService(Integer id) {
-		return db().update(STORE_SERVICE).set(STORE_SERVICE.DEL_FLAG,DelFlag.DISABLE.getCode()).where(STORE_SERVICE.ID.eq(id)).execute() > 0 ? true : false;
+    public void delStoreService(Integer id) {
+        if (db().fetchExists(STORE_SERVICE, STORE_SERVICE.ID.eq(id))) {
+            db().update(STORE_SERVICE).set(STORE_SERVICE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(STORE_SERVICE.ID.eq(id)).execute();
+        } else {
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
+        }
 	}
 
     /**
-	 * 批量上架门店服务
-	 * @param serviceIds
-	 * @return
-	 */
-	public Boolean batchOnStoreService(Integer[] serviceIds) {
-		return db().update(STORE_SERVICE).set(STORE_SERVICE.SERVICE_SHELF,(byte)1).where(STORE_SERVICE.ID.in(serviceIds)).execute() > 0 ? true : false;
-	}
+     * 批量上/下架门店服务
+     * @param serviceIds 服务id集合
+     * @param serviceShelf 上下架状态值:1:上架，0:下架
+     */
+    public void batchOnOrOFFStoreService(Integer[] serviceIds, Byte serviceShelf) {
+        db().update(STORE_SERVICE).set(STORE_SERVICE.SERVICE_SHELF, serviceShelf).where(STORE_SERVICE.ID.in(serviceIds)).execute();
+    }
+
+    @Autowired
+    QrCodeService qrCodeService;
+    private static final String PARAM = "service_id=";
 
     /**
-	 * 批量下架门店服务
-	 * @param serviceIds
-	 * @return
-	 */
-	public Boolean batchOffStoreService(Integer[] serviceIds) {
-		return db().update(STORE_SERVICE).set(STORE_SERVICE.SERVICE_SHELF,(byte)0).where(STORE_SERVICE.ID.in(serviceIds)).execute() > 0 ? true : false;
-	}
+     * Share store service share qr code vo.分享门店服务
+     *
+     * @param serviceId the service id
+     * @return the share qr code vo
+     */
+    public ShareQrCodeVo shareStoreService(Integer serviceId) {
+        String pathParam = PARAM + serviceId;
+        String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.SERVICE_APPOINTMENT, pathParam);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        return vo;
+    }
 
 }

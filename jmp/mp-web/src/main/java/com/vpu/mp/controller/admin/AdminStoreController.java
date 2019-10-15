@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
@@ -389,33 +390,24 @@ public class AdminStoreController extends AdminBaseController{
 
     /**
      * 批量上架门店服务
-     * @return
      */
     @PostMapping(value = "/api/admin/store/service/batch/on")
-    public JsonResult batchOnStoreService(@RequestBody(required = true) @Valid Integer[] serviceIds) {
-    	if(shop().store.storeService.batchOnStoreService(serviceIds)) {
-     	   return success();
-        }else {
-     	   return fail();
-        }
+    public JsonResult batchOnStoreService(@RequestBody @Valid @Size(min = 0, max = Integer.MAX_VALUE - 1) int[] serviceIds) {
+//    	shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ONE);
+        return success();
     }
 
     /**
      * 批量下架门店服务
-     * @return
      */
     @PostMapping(value = "/api/admin/store/service/batch/off")
-    public JsonResult batchOffStoreService(@RequestBody(required = true) @Valid Integer[] serviceIds) {
-    	if(shop().store.storeService.batchOffStoreService(serviceIds)) {
-     	   return success();
-        }else {
-     	   return fail();
-        }
+    public JsonResult batchOffStoreService(@RequestBody @Validated @Size(min = 2, max = Integer.MAX_VALUE - 1) int[] serviceIds) {
+//    	shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ZERO);
+        return success();
     }
 
     /**
      * 门店服务-添加
-     * @return
      */
     @PostMapping(value = "/api/admin/store/service/add")
     public JsonResult addStoreService(@RequestBody(required = true) @Valid StoreServiceParam storeService) {
@@ -428,7 +420,6 @@ public class AdminStoreController extends AdminBaseController{
 
     /**
      * 门店服务-修改
-     * @return
      */
     @PostMapping(value = "/api/admin/store/service/update")
     public JsonResult updateStoreService(@RequestBody(required = true) @Validated StoreServiceParam storeService) {
@@ -440,20 +431,16 @@ public class AdminStoreController extends AdminBaseController{
 
     /**
      * 门店服务-删除
-     * @return
      */
     @PostMapping(value = "/api/admin/store/service/del")
-    public JsonResult delStoreService(@RequestBody(required = true) @Valid StoreServiceParam storeService) {
-       if(shop().store.storeService.delStoreService(storeService.getId())) {
-    	   return success();
-       }else {
-    	   return fail();
-       }
+    //        public JsonResult updateStoreService(@RequestBody(required = true) @Validated({Delete.class}) StoreServiceParam storeService) {
+    public JsonResult delStoreService(@RequestBody(required = true) @Validated StoreServiceParam storeService) {
+        shop().store.storeService.delStoreService(storeService.getId());
+        return success();
     }
 
     /**
      * 获取门店服务预约分页列表
-     * @return
      */
     @PostMapping(value = "/api/admin/store/service/reserve/list")
     public JsonResult getServiceOrderList(@RequestBody(required = true) @Valid ServiceOrderListQueryParam param) {
@@ -624,5 +611,15 @@ public class AdminStoreController extends AdminBaseController{
     public JsonResult getAllStore() {
     	List<StoreBasicVo> allStore = shop().store.getAllStore();
     	return success(allStore);
+    }
+
+    /**
+     * 分享门店服务
+     *
+     * @param serviceId 门店服务id
+     */
+    @GetMapping(value = "/api/admin/store/service/share/{serviceId}")
+    public JsonResult shareStoreService(@PathVariable Integer serviceId) {
+        return success(shop().store.storeService.shareStoreService(serviceId));
     }
 }

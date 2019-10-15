@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  */
 @Data
 public class StoreServiceParam {
-    //    @PositiveOrZero(groups = Update.class)
+    //        @NotBlank(groups = {Update.class, Delete.class})
     private Integer    id;
     private Integer    storeId;
     private String     serviceName;

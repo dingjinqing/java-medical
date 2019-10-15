@@ -1,31 +1,24 @@
 package com.vpu.mp.service.shop.store.postsale;
 
-import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN;
-import static com.vpu.mp.db.shop.Tables.STORE_SERVICE;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroup;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPageListParam;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianParam;
-import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPojo;
-import com.vpu.mp.service.pojo.shop.store.technician.TechnicianService;
+import com.vpu.mp.service.pojo.shop.store.technician.*;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
-
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN;
+import static com.vpu.mp.db.shop.Tables.STORE_SERVICE;
 
 /**
  * @author 黄荣刚
@@ -35,13 +28,13 @@ import org.springframework.stereotype.Service;
 @Service
 
 public class ServiceTechnicianService extends ShopBaseService {
-	
+
 	public final static Byte SERVICE_TYPE_ALL=0;
 	public final static Byte SERVICE_TYPE_PART=1;
 
 	@Autowired public ServiceTechnicianGroupService groupService;
 	@Autowired public TechnicianScheduleService scheduleService;
-	
+
 	/**
 	 * 根据ID查数据库一条记录
 	 * @param id
@@ -103,14 +96,14 @@ public class ServiceTechnicianService extends ShopBaseService {
 		if(SERVICE_TYPE_PART.equals(technicianParam.getServiceType())) {
 			serviceList = Util.toJson(technicianParam.getServiceList());
 		}
-		int result = db().insertInto(SERVICE_TECHNICIAN, 
+        int result = db().insertInto(SERVICE_TECHNICIAN,
 				SERVICE_TECHNICIAN.STORE_ID, SERVICE_TECHNICIAN.TECHNICIAN_NAME,
-				SERVICE_TECHNICIAN.TECHNICIAN_MOBILE, SERVICE_TECHNICIAN.BG_IMG_PATH, 
-				SERVICE_TECHNICIAN.TECHNICIAN_INTRODUCE, SERVICE_TECHNICIAN.GROUP_ID, 
-				SERVICE_TECHNICIAN.SERVICE_TYPE, SERVICE_TECHNICIAN.SERVICE_LIST, 
+            SERVICE_TECHNICIAN.TECHNICIAN_MOBILE, SERVICE_TECHNICIAN.BG_IMG_PATH,
+            SERVICE_TECHNICIAN.TECHNICIAN_INTRODUCE, SERVICE_TECHNICIAN.GROUP_ID,
+            SERVICE_TECHNICIAN.SERVICE_TYPE, SERVICE_TECHNICIAN.SERVICE_LIST,
 				SERVICE_TECHNICIAN.REMARKS).values(technicianParam.getStoreId(), technicianParam.getTechnicianName(),
 						technicianParam.getTechnicianMobile(), technicianParam.getBgImgPath(),
-						technicianParam.getTechnicianIntroduce(), technicianParam.getGroupId(), 
+            technicianParam.getTechnicianIntroduce(), technicianParam.getGroupId(),
 						technicianParam.getServiceType(), serviceList,
 						technicianParam.getRemarks()).execute();
 		return result;
@@ -156,11 +149,11 @@ public class ServiceTechnicianService extends ShopBaseService {
 				.execute();
 		return result;
 	}
-	
-	/**
+
+    /**
 	 * @param selectFrom
 	 * @param param
-	 * @return 
+     * @return
 	 */
 	private SelectConditionStep<?> buildOptions(SelectWhereStep<?> selectFrom, ServiceTechnicianPageListParam param) {
 		SelectConditionStep<?> where = selectFrom.where(SERVICE_TECHNICIAN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
@@ -178,7 +171,7 @@ public class ServiceTechnicianService extends ShopBaseService {
 	}
 
 	/**
-	 * @param technicianRecord
+     * @param record
 	 * @return
 	 */
 	private ServiceTechnicianPojo convert2ServiceTechnicianPojo(ServiceTechnicianRecord record) {
@@ -194,15 +187,15 @@ public class ServiceTechnicianService extends ShopBaseService {
 				record.getUpdateTime());
 		ServiceTechnicianGroup group = groupService.select(record.getGroupId());
 		pojo.setSeviceGroup(group);
-		
-		if(SERVICE_TYPE_PART.equals(record.getServiceType())) {
+
+        if(SERVICE_TYPE_PART.equals(record.getServiceType())) {
 			List<Integer> serviceId = Util.parseJson(record.getServiceList(), new TypeReference<List<Integer>>() {});
 			pojo.setServiceList(selectServiceListByIdList(serviceId));
 		}else {
 			pojo.setServiceList(selectAllServiceByStoreId(record.getStoreId()));
 		}
-		
-		return pojo;
+
+        return pojo;
 	}
 
 	/**
@@ -230,5 +223,5 @@ public class ServiceTechnicianService extends ShopBaseService {
 				.fetchInto(TechnicianService.class);
 		return list;
 	}
-	
+
 }
