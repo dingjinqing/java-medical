@@ -153,7 +153,7 @@ public class AppletsJumpService extends ShopBaseService {
 			for (String appId : jumpList) {
 				MpJumpUsableRecord fetchAny = db().selectFrom(MP_JUMP_USABLE).where(MP_JUMP_USABLE.APP_ID.eq(appId))
 						.fetchAny();
-				MpJumpUsableRecord record = MP_JUMP_USABLE.newRecord();
+				MpJumpUsableRecord record = db().newRecord(MP_JUMP_USABLE);
 				record.setAppId(appId);
 				record.setTemplateId(templateId);
 				if (fetchAny == null) {
