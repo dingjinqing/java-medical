@@ -502,7 +502,7 @@ public class ScoreService extends ShopBaseService {
 			if (StringUtils.isEmpty(data.getRemark())) {
 				data.setRemark("管理员操作");
 			}
-			UserScoreRecord record = USER_SCORE.newRecord();
+			UserScoreRecord record =db().newRecord(USER_SCORE);
 			FieldsUtil.assignNotNull(data, record);
 			record.setAdminUser(adminUser);
 			record.setFlowNo(generateFlowNo());
