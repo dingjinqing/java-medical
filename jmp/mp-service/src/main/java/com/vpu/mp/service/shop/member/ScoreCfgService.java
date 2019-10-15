@@ -171,6 +171,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 			}
 		}
 		deleteRecord(SIGN_IN_SCORE);
+		this.set(SIGN_IN_SCORE, value);
 		this.setJsonObject(SIGN_IN_SCORE,status,value);
 	}
 
