@@ -34,14 +34,14 @@
           <div>
             <el-radio
               v-model="limitRadio"
-              label="1"
+              label="0"
             >不限制</el-radio>
             <el-radio
               v-model="limitRadio"
-              label="2"
+              label="1"
             >自定义</el-radio>
             <div
-              v-if="limitRadio==='2'"
+              v-if="limitRadio==='1'"
               style="margin-top:10px"
             >
               <span>每单支付的积分数量少于
@@ -89,6 +89,66 @@
         </el-switch>
         <span style="display:inline-block;margin:0 20px">{{shopValue?'已开启':'已关闭'}}</span>
         <span style="color:#999">开关开启，则订单完成后会给用户按照积分获取规则赠送积分，关闭则不赠送</span>
+        <div v-if="shopValue">
+          <div
+            v-for="(item,index) in shopFullArr"
+            :key="index"
+          >
+            <div class="noneIntegralDiv">
+              <span v-if="index===0">
+                <el-radio
+                  v-model="scoreType"
+                  label="0"
+                >{{ $t('memberCard.shopFull') }}&nbsp;&nbsp;</el-radio>
+              </span>
+              <span v-else>
+                <span
+                  v-for="i in 5"
+                  :key=i
+                >
+                  &nbsp;&nbsp;&nbsp;
+                </span>
+              </span>
+              <el-input
+                size="small"
+                v-model="item.left"
+              ></el-input>&nbsp;&nbsp; {{ $t('memberCard.send') }} &nbsp;&nbsp;
+              <el-input
+                size="small"
+                v-model="item.right"
+              >
+              </el-input>&nbsp;&nbsp;{{ $t('memberCard.score') }}&nbsp;&nbsp;<img
+                v-if="index === 0"
+                style="cursor:pointer"
+                :src="$imageHost +'/image/admin/sign_jia.png' "
+                @click="handleToAddIntegral()"
+              >
+
+              <img
+                v-else
+                style="cursor:pointer"
+                :src="$imageHost +'/image/admin/sign_del.png' "
+                @click="handleToDelIntegral(index)"
+              >
+            </div>
+          </div>
+          <div class="shoppingFullBottom">
+            <el-radio
+              v-model="scoreType"
+              label="1"
+            >{{ $t('memberCard.shopEachFull') }}</el-radio>
+            <el-input
+              size="small"
+              v-model="buyEach"
+            ></el-input>&nbsp;&nbsp;{{ $t('memberCard.send') }}&nbsp;&nbsp;
+            <el-input
+              size="small"
+              v-model="scoreEach"
+            ></el-input>&nbsp;&nbsp;{{ $t('memberCard.score') }}
+
+          </div>
+        </div>
+
       </div>
       <div class="intContent">
         <span class="intTitle">门店买单送积分</span>
@@ -142,23 +202,23 @@
           style="margin-right:15px"
         >签到送积分</span>
         <el-switch
-          v-model="signInValue"
+          v-model="signInvalue"
           active-color="#13ce66"
           inactive-color="#ff4949"
         >
         </el-switch>
         <div class="signHiddenDiv">
-          <span style="display:inline-block;margin:0 20px">{{signInValue?'已开启':'已关闭'}}</span>
+          <span style="display:inline-block;margin:0 20px">{{signInvalue?'已开启':'已关闭'}}</span>
           <span style="color:#999;margin-right:10px;display:inline-block">开关开启，则系统开启签到14天</span><i
             @click="handleToCheckMember()"
             style="cursor:pointer;color:#5a8bff"
           >查看签到会员</i>
           <div
-            v-if="true"
+            v-if="signInvalue"
             class="hiddenLoginDiv"
           >
             <div
-              v-for="(item,index) in signData"
+              v-for="(item,index) in signInput.length"
               :key="index"
               style="margin-bottom:5px"
             >
@@ -193,6 +253,7 @@
   </div>
 </template>
 <script>
+import { userScoreConfigUpdate, getScoreConfigRequest } from '@/api/admin/memberManage/scoreManage/scoreCfg.js'
 export default {
   components: {
     IntegralRule: () => import('./integralRule'),
@@ -207,17 +268,121 @@ export default {
       shopValue: true,
       doorValue: true,
       loginValue: true,
-      signInValue: true,
+      signInvalue: true,
+      scoreType: '0',
       loginIntegralNum: '',
       signData: 1,
       signInput: [
         {
           input: ''
         }
-      ]
+      ],
+      shopFullArr: [
+        {
+          left: 100,
+          right: 100
+        }
+      ],
+      buyEach: null,
+      scoreEach: null
     }
   },
+  created () {
+    this.LoadDefaultData()
+  },
   methods: {
+    // 加载默认数据
+    LoadDefaultData () {
+      getScoreConfigRequest().then(res => {
+        if (res.error === 0) {
+          // success
+
+          console.log(res.content)
+          let data = {
+            radio: res.content.scoreLimit,
+            yearValue: res.content.scoreYear,
+            mounthValue: res.content.scoreMonth,
+            dayValue: res.content.scoreDay,
+            integralNum: res.content.scoreLimitNumber,
+            integralDateValue: res.content.scorePeriod
+          }
+          console.log(data)
+
+          this.limitRadio = res.content.scorePayLimit
+          this.limitIntegralNum = res.content.scorePayNum
+          this.shopValue = res.content.shoppingScore === '1'
+          console.log(this.shopValue)
+          this.doorValue = res.content.storeScore === '1'
+          this.loginValue = res.content.loginScore === '1'
+          this.loginIntegralNum = res.content.scoreLogin
+          this.signInvalue = res.content.signInScore === 'on'
+          this.signInput = []
+
+          for (let i in res.content.signScore) {
+            this.signInput.push({
+              input: res.content.signScore[i]
+            })
+          }
+
+          for (let i in res.content.buy) {
+            this.shopFullArr.push({
+              left: res.content.buy[i],
+              right: res.content.buyScore[i]
+            })
+          }
+          this.buyEach = res.content.buyEach[0]
+          this.scoreEach = res.content.buyEachScore[0]
+        }
+      })
+    },
+    // 2- 保存
+    saveScoreCfg (data) {
+      console.log('正在准备保存积分配置数据')
+      let obj = {
+        'scoreLimit': data.radio,
+        'scoreYear': data.yearValue,
+        'scoreMonth': data.mounthValue,
+        'scoreDay': data.dayValue,
+        'scoreLimitNumber': data.integralNum,
+        'scorePeriod': data.integralDateValue,
+        'scorePayLimit': this.limitRadio,
+        'scorePayNum': this.limitIntegralNum,
+        'shoppingScore': this.shopValue ? 'on' : '',
+        'storeScore': this.doorValue ? 'on' : '',
+        'loginScore': this.loginValue ? 'on' : '',
+        'scoreLogin': this.loginIntegralNum,
+        'signInScore': this.signInvalue ? 'on' : '',
+        'scoreType': this.scoreType,
+        'signScore': this.signInput.map(item => Number(item.input)),
+        'buy': this.shopFullArr.map(item => Number(item.left)),
+        'score': this.shopFullArr.map(item => Number(item.right)),
+        'buyEach': [Number(this.buyEach)],
+        'scoreEach': [Number(this.scoreEach)]
+      }
+      console.log('你需要得数据', obj)
+      this.userScoreConfigUpdate(obj)
+    },
+    // 1- 更新数据
+    userScoreConfigUpdate (data) {
+      userScoreConfigUpdate(data).then(res => {
+        if (res.error === 0) {
+          // success
+          this.LoadDefaultData()
+          this.$message.success(this.$t('memberCard.scoreSaveSuccess'))
+        }
+      })
+    },
+    // 3- 添加购物满
+    handleToAddIntegral () {
+      this.shopFullArr.push({
+        left: null,
+        right: null
+      })
+    },
+    // 4- 删除购物满
+    handleToDelIntegral (index) {
+      this.shopFullArr.splice(index, 1)
+    },
     handleClick (tab, event) {
       console.log(tab, event)
     },
@@ -247,6 +412,7 @@ export default {
     },
     // 积分规则第一部分子组件传递数据
     toNoticeSend (data, flag) {
+      console.log('父组件获取数据，准备提交')
       console.log(data, flag)
       let newData = {}
       switch (flag) {
@@ -256,6 +422,7 @@ export default {
           let obj = {}
           newData = Object.assign(data, obj)
           console.log(newData)
+          this.saveScoreCfg(newData)
           break
         // 前端展示保存
         case 1:
@@ -267,6 +434,26 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.shoppingFullBottom,
+.noneIntegralDiv {
+  margin-top: 20px;
+  padding-left: 54px;
+  display: flex;
+  align-items: center;
+
+  /deep/ .el-input {
+    width: 8%;
+    .el-input__inner {
+      width: 100%;
+    }
+  }
+}
+.shoppingFullBottom .el-input {
+  width: 8%;
+  .el-input__inner {
+    width: 100%;
+  }
+}
 .integralManagement {
   padding: 10px;
   padding-bottom: 68px;

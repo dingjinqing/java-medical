@@ -140,7 +140,7 @@ export const cn = {
   scoreBuy: '积分购买',
   unitM: '分',
   receiveCodeSetting: '领取码领取',
-  batchone: '批次1',
+  batchOne: '批次1',
   batchName: '批次名称',
   cardPassAndNo: '卡号+密码领取',
   isActiveted: '是否需要激活：',
@@ -159,5 +159,7 @@ export const cn = {
   chargeRule: '卡充值规则',
   memberDiscountD: '会员折扣(积分)',
   memberAd: '会员权益(折扣)',
-  detailSend: '购物满100送100积分'
+  detailSend: '购物满100送100积分',
+  codeArr: ['领取码', '增加批次', '废除批次', '生成/导入记录'],
+  scoreSaveSuccess: '积分配置成功'
 }

@@ -1403,6 +1403,7 @@ export default {
       this.clearnSetMemberCardData()
       // api请求数据所有会员卡
       getAllMemberCardByClassRequest().then(res => {
+        console.log(res)
         if (res.error === 0) {
           console.log(res.content)
           // 普通会员卡下拉数据

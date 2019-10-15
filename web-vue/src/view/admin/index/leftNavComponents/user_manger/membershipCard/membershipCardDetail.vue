@@ -141,7 +141,7 @@
               <!--点击指定商品后显示模块-->
               <div
                 class="noneBlock"
-                v-if="ruleForm.allGoods==='2'"
+                v-if="ruleForm.allGoods==='0'"
               >
                 <div
                   class="noneBlockList"
@@ -640,7 +640,7 @@
                         :key="indexH"
                       >
                         <div>
-                          <span>{{ $t('memberCard.batchone') }}</span>
+                          <span>{{ $t('memberCard.batchOne') }}</span>
                           <span>{{ $t('memberCard.batchName') }}</span>
                           <el-input
                             v-model="ruleFormBottom.pcNameinput"
@@ -728,6 +728,10 @@
     />
     <!--选择商品弹窗-->
     <ChoosingGoods />
+    <ChoosingGoods
+      @resultGoodsIds='getGoodsIdFromChoosingGoods'
+      :tuneUpChooseGoods='controlChoosingGoodsDialog'
+    />
     <!--选择商家分类弹窗-->
     <AddingBusClassDialog />
 
@@ -951,14 +955,15 @@ export default {
       clickArr: [],
       treeType: null,
       AtreeType: null,
-      codeArr: ['领取码', '增加批次', '废除批次', '生成/导入记录'],
+      codeArr: [],
       codeAddDivArr: ['null'],
       codeAddDivArrBottom: ['null'],
       chioseSureData: [],
       userDialogFlag: null,
       addBrandDialogDataFlag1: '', // 指定商品-添加品牌弹窗选中数据
       addBrandDialogDataFlag2: '', // 会员专享-添加品牌弹窗选中数据
-      choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据
+      choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据,
+      controlChoosingGoodsDialog: 1,
       choosingGoodsDateFlag2: '', // 会员专享-选择商品选中数据
       tuneUp: false,
       couponBack: ''
@@ -993,7 +998,8 @@ export default {
   },
   watch: {
     lang () {
-
+      this.codeArr = this.$t('memberCard.codeArr')
+      console.log(this.codeArr)
     },
     'ruleForm.dateRadio' (newData) {
       this.$refs['ruleForm'].validate((valid) => {
@@ -1087,6 +1093,7 @@ export default {
   mounted () {
     // 初始化接受数据
     this.dataDefalut()
+    this.langDefault()
     if (this.cardId) {
       // 单张会员卡信息
       this.getCardDetailInfoById(this.cardId)
@@ -1357,6 +1364,13 @@ export default {
         name: urlCard
       })
     },
+    // 11- 获取会员权益选择商品弹窗的商品id
+    getGoodsIdFromChoosingGoods (data) {
+      console.log(data)
+      // 添加商品id
+      this.choosingGoodsDateFlag1 = data
+      this.noneBlockDiscArr[0].num = data.length
+    },
     dataDefalut () {
       this.$http.$on('result', res => {
         if (this.userDialogFlag === '1') {
@@ -1405,6 +1419,7 @@ export default {
         console.log(res)
       })
       this.$http.$on('addBrandDialogSure', res => {
+        console.log('接收结果', res)
         if (this.userDialogFlag === '1') {
           this.noneBlockDiscArr[3].num = res.length
           this.addBrandDialogDataFlag1 = res
@@ -1488,18 +1503,20 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index, this.choosingGoodsDateFlag1)
+          // this.$http.$emit('choosingGoodsFlag', index, this.choosingGoodsDateFlag1)
+          // 商品弹窗显示
+          this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           break
         case 1:
           this.AtreeType = 1
           this.$http.$emit('addingBusClassDialog', arr)
-
           break
         case 2:
           this.AtreeType = 2
           this.$http.$emit('addingBusClassDialog', arr, this.AtreeType)
           break
         case 3:
+          console.log('detail', index, this.addBrandDialogDataFlag1)
           this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag1)
       }
     },

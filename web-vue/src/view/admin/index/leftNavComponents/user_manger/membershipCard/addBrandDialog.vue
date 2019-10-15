@@ -211,8 +211,6 @@ export default {
   methods: {
     defalutData () {
       this.$http.$on('CallAddBrand', (res, flag) => {
-        console.log(res, flag)
-
         this.tableData.forEach(item => {
           item.ischeck = false
         })

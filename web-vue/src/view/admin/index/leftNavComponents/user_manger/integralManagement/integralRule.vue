@@ -13,13 +13,13 @@
         <div>
           <el-radio
             v-model="radio"
-            label="1"
+            label="0"
           >永久有效</el-radio>
         </div>
         <div>
           <el-radio
             v-model="radio"
-            label="2"
+            label="1"
           >从获得开始至</el-radio>
           <div>
             <el-select
@@ -76,7 +76,7 @@
         <div class="integralNumDiv">
           <el-radio
             v-model="radio"
-            label="3"
+            label="2"
           >从获得积分当天起</el-radio>
           <el-input-number
             size="small"
@@ -120,7 +120,7 @@
 export default {
   data () {
     return {
-      radio: '2',
+      radio: '0',
       yearValue: '4',
       yearOptions: [{
         value: '0',
@@ -296,21 +296,23 @@ export default {
   },
   watch: {
     mounthValue (newData) {
+      console.log('299')
       if (newData === '0') {
         this.dayValue = ''
       }
     },
     '$store.state.util.integralDataNotice' (newData) {
+      console.log('正在监控积分通用规则')
       let obj = {
         radio: this.radio
       }
       switch (this.radio) {
-        case '2':
+        case '1':
           obj.yearValue = this.yearValue
           obj.mounthValue = this.mounthValue
           obj.dayValue = this.dayValue
           break
-        case '3':
+        case '2':
           obj.integralNum = this.integralNum
           obj.integralDateValue = this.integralDateValue
       }

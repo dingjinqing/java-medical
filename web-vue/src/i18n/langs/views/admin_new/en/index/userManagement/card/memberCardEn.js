@@ -141,7 +141,7 @@ export const en = {
   scoreBuy: 'SCORE',
   unitM: 'M',
   receiveCodeSetting: 'RECEIVE-CODE',
-  batchone: 'BATCH-1',
+  batchOne: 'BATCH-1',
   batchName: 'BATCH-NAME',
   cardPassAndNo: 'CardNo+Pass',
   isActiveted: 'IS ACTIVATION：',
@@ -161,5 +161,7 @@ export const en = {
   chargeRule: 'CHARGE-RULE',
   memberDiscountD: 'MEMBER(DISCOUNT)',
   memberAd: 'POWER(DISCOUNT)',
-  detailSend: 'EACH 100 SEND 100'
+  detailSend: 'EACH 100 SEND 100',
+  codeArr: ['CODE', 'ADD-BATCH', 'DEL-BATCH', 'GENERATE/IMPORT-RECORD'],
+  scoreSaveSuccess: 'SCORE CONFIG SUCCESS'
 }
