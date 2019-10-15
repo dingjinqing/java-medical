@@ -14,7 +14,6 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTE
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,8 +49,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
-import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
+import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 
 import jodd.util.StringUtil;
@@ -542,7 +541,7 @@ public class ScoreService extends ShopBaseService {
 		if(data.getScore()<0) {
 			tradeFlow=0;
 		}
-		tradesRecord.addRecord(new BigDecimal(Math.abs(data.getScore())), data.getOrderSn(), data.getUserId(), (byte)1, tradeType, tradeFlow, tradeFlow);
+		tradesRecord.addRecord(new BigDecimal(Math.abs(data.getScore())), data.getOrderSn()==null?"":data.getOrderSn(), data.getUserId(), (byte)1, tradeType, tradeFlow, tradeFlow);
 		String userGrade = member.card.getUserGrade(data.getUserId());
 		if(!userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			//TODO 等黄壮壮提供  updateGrade			
