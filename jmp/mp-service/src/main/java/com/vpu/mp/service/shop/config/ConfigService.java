@@ -121,8 +121,7 @@ public class ConfigService extends ShopBaseService {
 	 * 
 	 * @return
 	 */
-	public String getLocalePack() {
-		String language = "en_US";
+	public String getLocalePack(String language ) {
 		return Util.loadResource("static/i18n/wxapp/" + language + ".json");
 	}
 }
