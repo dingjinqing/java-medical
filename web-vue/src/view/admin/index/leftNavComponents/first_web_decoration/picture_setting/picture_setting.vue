@@ -149,7 +149,7 @@
                   placement="top"
                 >
                   <span
-                    @click="handleOperation(scope.row,1)"
+                    @click="del(scope.row.pageId)"
                     class="el-icon-delete iconSpn"
                     v-if="!scope.row.isFirstPage"
                   ></span>
@@ -182,7 +182,7 @@
         <div class="footer_left">
           <el-checkbox v-model="allChecked">全选</el-checkbox>
           <span
-            @click="handleBatchSet()"
+            @click="batchSetPageCate()"
             style="color:#5a8bff;cursor:pointer"
           >批量设置分类</span>
         </div>
@@ -268,10 +268,29 @@
     </div>
     <!--新建微页面弹窗-->
     <SelectTemplateDialog :tuneUpMiniPage.sync="tuneUpMiniPage" />
+    <!-- 删除二次提示弹窗 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <span>是否继续删除该装修页面</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="delConfirm()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -291,16 +310,18 @@ export default {
       allCheckedFlag: false,
       pageSetdialogVisible: false,
       dialogVisibleShare: false,
+      dialogVisible: false,
       shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
       pathInput: '',
       flag: true,
       tuneUpMiniPage: false,
       pageParams: {},
       param: {},
-      setPageCateParam: {
-        'pageId': '',
-        'id': ''
-      }
+      pageId: '',
+      cateId: '',
+      setPageCateParam: {},
+      pageIds: '',
+      isBatch: 0
 
     }
   },
@@ -367,20 +388,16 @@ export default {
     },
     // 页面列表
     list () {
-      console.log(this.currentPage)
-      let obj = {
-        currentPage: this.pageParams.currentPage,
-        pageRows: this.pageParams.pageRows
-      }
-      console.log(obj)
-      pageList(obj).then((res) => {
+      console.log(this.pageParams)
+      pageList(this.pageParams).then((res) => {
         if (res.error === 0) {
           console.log(res.content.dataList)
+
           res.content.dataList.forEach(item => {
             item.ischeck = false
           })
           this.tableData = res.content.dataList
-          this.pageParams.totalRows = res.content.page.totalRows
+          this.pageParams = res.content.page
           console.log(this.pageParams)
         }
       })
@@ -413,21 +430,13 @@ export default {
         }
       })
     },
-    // 删除
-    handleOperation (data, flag) {
-      switch (flag) {
-        case 0:
-          break
-        case 1:
-          break
-        case 2:
-          break
-        case 3:
-          this.dialogVisibleShare = true
-          break
-      }
-      console.log(data)
-    },
+    // // 删除 二次确认
+    // del (pageId) {
+    //   alert(pageId)
+    //   this.dialogVisible = true
+    // },
+
+    // del
     // 下载图片
     downs () {
       //  var alink = document.createElement('a')
@@ -441,13 +450,21 @@ export default {
       document.execCommand('Copy') // 执行浏览器复制命令
     },
     // 批量设置分类
-    handleBatchSet () {
-      let arr = this.tableData.filter((item, index) => {
+    batchSetPageCate () {
+      this.isBatch = 1
+      let newarr = []
+      this.tableData.filter((item, index) => {
+        if (item.ischeck === true) {
+          newarr.push(item.pageId)
+        }
         return item.ischeck === true
       })
-      if (arr.length === 0) {
-        this.$message('请选择页面')
+      this.pageIds = newarr.join(',')
+
+      if (this.pageIds.length === 0) {
+        this.$message.error('请选择页面')
       } else {
+        this.getPageCate()
         this.pageSetdialogVisible = true
       }
     },
@@ -457,8 +474,9 @@ export default {
     },
     // 获取页面分类
     getPageCate (pageId) {
-      this.setPageCateParam.pageId = pageId
+      this.pageId = pageId
       getPageCate().then(res => {
+        console.log(res)
         if (res.error === 0) {
           this.pageSetoptions = res.content
         }
@@ -467,17 +485,34 @@ export default {
     },
     // 装修页面设置页面分类
     savePageCate () {
-      this.setPageCateParam.id = this.pageSetvalue
-      setPageCate(this.setPageCateParam).then(res => {
-        if (res.error === 0) {
-          this.$message.success({
-            type: 'success',
-            message: '设置成功'
-          })
-          this.pageSetdialogVisible = false
-          this.list()
-        }
-      })
+      if (this.isBatch === 0) {
+        this.setPageCateParam.pageId = this.pageId
+        this.setPageCateParam.id = this.pageSetvalue
+        setPageCate(this.setPageCateParam).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              type: 'success',
+              message: '设置成功'
+            })
+            this.pageSetdialogVisible = false
+            this.list()
+          }
+        })
+      } else { // 批量设置
+        this.setPageCateParam.pageIds = this.pageIds
+        this.setPageCateParam.id = this.pageSetvalue
+        batchSet(this.setPageCateParam).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              type: 'success',
+              message: '设置成功'
+            })
+            this.pageSetdialogVisible = false
+            this.list()
+            this.pageIds = ''
+          }
+        })
+      }
     }
   }
 }

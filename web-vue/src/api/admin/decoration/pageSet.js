@@ -1,5 +1,6 @@
 /**
  * 小程序管理-页面装修
+ * 2019-09-27
  * user：常乐
  */
 import service from '@/util/request.js'
@@ -35,6 +36,24 @@ export function getPageCate (data) {
 export function setPageCate (data) {
   return service({
     url: '/api/admin/decorate/cate/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 批量设置页面分类
+export function batchSet (data) {
+  return service({
+    url: '/api/admin/decorate/cate/batchSet',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除装修页面
+export function delPage (data) {
+  return service({
+    url: '/api/admin/decorate/page/del',
     method: 'post',
     data: data
   })
