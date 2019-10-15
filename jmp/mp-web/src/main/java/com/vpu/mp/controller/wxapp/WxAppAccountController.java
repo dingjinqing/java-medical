@@ -45,11 +45,11 @@ public class WxAppAccountController extends WxAppBaseController {
 	 * 新版个人中心
 	 */
 	@PostMapping("/api/wxapp/account/usercenter")
-	public JsonResult getNewUserAccoountInfo(@RequestBody WxAppCommonParam param) {
+	public JsonResult getNewUserAccoountInfo() {
 		logger().info("新版个人中心");
 		Integer shopId = wxAppAuth.shopId();
 		ShopApplication shopApp = saas.getShopApp(shopId);
-		List<Map<String, Object>> moduleData = shopApp.user.parseCenterModule(param.getUserId());
+		List<Map<String, Object>> moduleData = shopApp.user.parseCenterModule(wxAppAuth.user().getUserId());
 		if(moduleData==null) {
 			logger().info("用户不存在");
 			return fail();
