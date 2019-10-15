@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 
@@ -11,6 +12,7 @@ import lombok.Data;
  *
  */
 @Data
+@ToString
 public class WxAppSessionUser {
 	/**
 	 * 是否开启地理位置授权
