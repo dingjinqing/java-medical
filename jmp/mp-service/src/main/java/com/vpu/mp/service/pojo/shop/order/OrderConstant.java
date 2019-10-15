@@ -385,5 +385,12 @@ public class OrderConstant {
 	public static final byte STORE_STATUS_PAY = 1;
 	/**退款*/
 	public static final byte STORE_STATUS_RETURN = 2;
-
+	
+	/**order status code */
+	public static final String All = "all";
+	public static final String WAIT_PAY = "waitPay";
+	public static final String WAIT_DELIVERY = "waitDelivery";
+	public static final String SHIPPED = "shipped";
+	public static final String FINISHED = "finished";
+	public static final String RETURNING = "returning";
 }
