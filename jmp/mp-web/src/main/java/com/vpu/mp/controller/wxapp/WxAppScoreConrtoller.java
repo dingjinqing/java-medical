@@ -1,0 +1,75 @@
+package com.vpu.mp.controller.wxapp;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
+import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
+import com.vpu.mp.service.pojo.wxapp.score.UserScoreInfoVo;
+import com.vpu.mp.service.pojo.wxapp.score.UserScoreListVo;
+import com.vpu.mp.service.shop.ShopApplication;
+
+/**
+ * 微信积分的
+ * 
+ * @author zhaojianqiang
+ *
+ *         2019年10月16日 下午2:38:23
+ */
+@RestController
+public class WxAppScoreConrtoller extends  WxAppBaseController {
+	
+	/**
+	 * 获取用户积分信息
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/score/info")
+	public JsonResult getUserScoreInfo() {
+		logger().info("获取用户积分信息");
+		Integer shopId = wxAppAuth.shopId();
+		ShopApplication shopApp = saas.getShopApp(shopId);
+		Integer userId = wxAppAuth.user().getUserId();
+		UserScoreInfoVo vo=new UserScoreInfoVo();
+		UserRecord usRecord = shopApp.user.getUserByUserId(userId);
+		vo.setScoreNum(usRecord.getScore());
+		CheckSignVo sCheckSignVo = shopApp.userCard.scoreService.checkSignInScore(userId);
+		vo.setSignScore(sCheckSignVo);
+		ShopCfgRecord scoreNumRecord = shopApp.score.getScoreNum("score_page_id");
+		if(scoreNumRecord!=null) {
+			if(scoreNumRecord.getV()!=null) {	
+				vo.setPageId(scoreNumRecord.getV());
+			}else {
+				vo.setPageId("0");
+			}
+		}
+		return success(vo);
+	}
+	
+	
+	/**
+	 * 获取用户积分数据
+	 * @returns
+	 */
+	@PostMapping(value = "/api/wxapp/score/list")
+	public JsonResult getUserScoreList() {
+		logger().info("获取用户积分数据");
+		UserScoreListVo vo=new UserScoreListVo();
+		ScorePageListParam param=new ScorePageListParam();
+		param.setUserId(wxAppAuth.user().getUserId());
+		param.setType("wxapp");
+		List<ScorePageListVo> dataList = shop().userCard.scoreService.getPageListOfScoreDetails(param).getDataList();
+		ExpireVo expire= shop().userCard.scoreService.getUserScoreCfg(param.getUserId());
+		vo.setDataList(dataList);
+		vo.setExpire(expire);
+		return success();
+	}
+
+}
