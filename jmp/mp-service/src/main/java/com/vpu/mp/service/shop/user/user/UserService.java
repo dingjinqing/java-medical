@@ -814,9 +814,12 @@ public class UserService extends ShopBaseService {
 			Integer districtId = userInfo.getDistrictCode() != null ? userInfo.getDistrictCode() : 110100;
 			
 			vo.setUserInfo(userInfo);
-			vo.setProvinceCode(saas.region.province.getProvinceName(provinceId).getName());
-			vo.setCityCode(saas.region.city.getCityName(cityId).getName());
-			vo.setDistrictCode(saas.region.district.getDistrictName(districtId).getName());	
+			DictProvinceRecord provinceName = saas.region.province.getProvinceName(provinceId);
+			vo.setProvinceCode(provinceName!=null?provinceName.getName():null);
+			DictCityRecord cityName = saas.region.city.getCityName(cityId);
+			vo.setCityCode(cityName!=null?cityName.getName():null);
+			DictDistrictRecord districtName = saas.region.district.getDistrictName(districtId);
+			vo.setDistrictCode(districtName!=null?districtName.getName():null);	
 		}
 		return vo;
 	}
