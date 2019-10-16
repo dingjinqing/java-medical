@@ -12,13 +12,10 @@ import lombok.Data;
 @Data
 public class UserAccountSetVo {
 
-	@JsonProperty(value = "province_code")
 	private String provinceCode;
 	
-	@JsonProperty(value = "city_code")
 	private String cityCode;
 	
-	@JsonProperty(value = "district_code")
 	private String districtCode;
 	
 	private UserInfo userInfo;
