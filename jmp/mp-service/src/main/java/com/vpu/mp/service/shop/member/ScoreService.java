@@ -491,7 +491,7 @@ public class ScoreService extends ShopBaseService {
 				.selectFrom(
 						USER_SCORE)
 				.where(USER_SCORE.USER_ID.eq(userId).and(
-						USER_SCORE.DESC.eq(desc).and((dateFormat(USER_SCORE.CREATE_TIME, DateUtil.DATE_FORMAT_SIMPLE))
+						USER_SCORE.DESC.eq(desc).and((dateFormat(USER_SCORE.CREATE_TIME, DateUtil.DATE_MYSQL_SIMPLE))
 								.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))))
 				.fetchAny();
 	}
