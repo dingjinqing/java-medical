@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.score;
 
-import java.util.List;
-
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 
 import lombok.Data;
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class UserScoreListVo {
-	private List<ScorePageListVo> dataList;
+	private PageResult<ScorePageListVo> dataList;
 	private ExpireVo expire;
 
 }
