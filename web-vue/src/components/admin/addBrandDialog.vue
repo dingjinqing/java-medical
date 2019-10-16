@@ -3,8 +3,9 @@
     <div class="addBrandDialogMain">
       <el-dialog
         title="添加商品品牌"
-        :visible.sync="dialogVisible"
+        :visible.sync="callAddBrand"
         width="40%"
+        :modal-append-to-body='false'
       >
         <div class="dialogTop">
           <div class="topList">
@@ -123,6 +124,16 @@
 </template>
 <script>
 export default {
+  props: {
+    callAddBrand: { // 弹窗调起
+      type: Boolean,
+      default: () => false
+    },
+    brandBackData: { // 回显数据
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       currentPage: 1,
@@ -202,6 +213,11 @@ export default {
             item.ischeck = false
           })
       }
+    },
+    callAddBrand (newData) {
+      if (!newData) {
+        this.$emit('update:callAddBrand', false)
+      }
     }
   },
   mounted () {
@@ -210,20 +226,15 @@ export default {
   },
   methods: {
     defalutData () {
-      this.$http.$on('CallAddBrand', (res, flag) => {
-        this.tableData.forEach(item => {
-          item.ischeck = false
-        })
-        if (flag) {
-          this.tableData.forEach(item => {
-            flag.forEach(itemC => {
-              if (item.pageName === itemC.pageName) {
-                item.ischeck = true
-              }
-            })
+      this.tableData.forEach(item => {
+        item.ischeck = false
+        if (this.brandBackData.length > 0) {
+          this.brandBackData.forEach(itemC => {
+            if (item.pageName === itemC.pageName) {
+              item.ischeck = true
+            }
           })
         }
-        this.dialogVisible = true
       })
     },
     // render事件
@@ -256,8 +267,8 @@ export default {
           arr.push(item)
         }
       })
-      this.$http.$emit('addBrandDialogSure', arr)
-      this.dialogVisible = false
+      this.$emit('handleToGetBackData', arr)
+      this.$emit('update:callAddBrand', false)
     }
   }
 }

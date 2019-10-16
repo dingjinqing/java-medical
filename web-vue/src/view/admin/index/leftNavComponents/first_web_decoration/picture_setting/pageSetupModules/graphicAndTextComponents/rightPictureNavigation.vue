@@ -138,7 +138,7 @@
       :tuneUp='tuneUp'
       pageIndex='pictureSpace'
       :isDraggable='isDraggable'
-      :imageSize='imageSize'
+      :imageSize='[140, 140]'
       @handleSelectImg='handleToGetImgUrl'
     />
     <!--选择链接弹窗-->
@@ -163,7 +163,6 @@ export default {
   },
   data () {
     return {
-      imageSize: [52, 52],
       tuneUpSelectLink: false,
       tuneUp: false,
       guidList: ['导航一', '导航二', '导航三'],

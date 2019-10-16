@@ -756,7 +756,7 @@ export default {
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
     ChioseStoreDialog: () => import('./chioseStoreDialog'),
     ReceivingCodeDialog: () => import('./receivingCodeDialog'),
-    AddBrandDialog: () => import('./addBrandDialog')
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog')
   },
   data () {
     var validiscount = (rule, value, callback) => {

@@ -42,36 +42,36 @@ export default {
           break
         case 8: // 商品模块
           obj = {
-            'module_name': 'm_goods',
-            'title': '',
-            'title_link': '',
-            'recommend_type': '0',
-            'goods_items': [
+            'module_name': 'm_goods', // 模块名称
+            'title': '', // 标题
+            'title_link': '', // 标题链接
+            'recommend_type': '0', // 模块推荐 0自动推荐  1手动推荐
+            'goods_items': [ // 商品列表数据
 
             ],
             'col_type': '4', // 4  1  2  3  0
             'goods_display': '0',
-            'goods_num': '4',
-            'min_price': '',
-            'max_price': '',
-            'keywords': '',
-            'sort_type': '1',
+            'goods_num': '4', // 模块推荐-商品数量
+            'min_price': '', // 模块推荐-商品价格最低价格
+            'max_price': '', // 模块推荐-商品价格最高价格
+            'keywords': '', // 模块推荐-关键词
+            'sort_type': '1', // 模块推荐-排序规则
             'img_url': '',
-            'goods_module_title': '0',
-            'img_title_url': '',
-            'hide_name': 0,
-            'hide_price': 0,
-            'hide_label': 0,
-            'cart_btn': 1,
-            'other_message': 0,
-            'if_radius': '0',
-            'goods_module_style': '0',
-            'goods_area': 'all',
+            'goods_module_title': '0', // 模块标题类型  0不设置  1文字标题 2图片标题
+            'img_title_url': '', // 标题图片
+            'hide_name': 0, // 商品名称
+            'hide_price': 0, // 商品价格
+            'hide_label': 0, // 商品标签
+            'cart_btn': 1, // 购买按钮
+            'other_message': 0, // 其它信息
+            'if_radius': '0', // 模块角度 0直角  1圆角
+            'goods_module_style': '0', // 0白底无边框  1边框投影 2白底有边框
+            'goods_area': 'all', // 模块推荐-商品范围
             'goods_area_data': '',
-            'goods_type': '0',
-            'show_market': '1',
-            'goods_module_bg': '0',
-            'goods_bg_color': '#f5f5f5'
+            'goods_type': '0', // 活动商品 0请选择 ..
+            'show_market': '1', // 其他信息选中 隐藏radion字段  1市场价 2销量 3评价数
+            'goods_module_bg': '0', // 背景颜色 0与页面一致  1自定义
+            'goods_bg_color': '#f5f5f5' // 背景自定义颜色
           }
           break
         case 9: // 商品搜索模块

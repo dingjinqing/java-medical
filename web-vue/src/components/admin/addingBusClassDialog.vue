@@ -5,6 +5,7 @@
         title="添加商家分类"
         :visible.sync="dialogVisible"
         width="30%"
+        :modal-append-to-body='false'
       >
         <div
           class="dialogMain"
@@ -145,7 +146,7 @@ export default {
       this.flag = flag
       // 弹窗数据获取
       initGrandgetRequest().then((res) => {
-        console.log(res.content)
+        console.log(res)
 
         if (res.error === 0) {
           let data = ''

@@ -250,7 +250,11 @@
             v-model="commodityModule.RecommendationRadio"
             label="2"
           >手动推荐</el-radio>
-          <div class="moduleRecMain">
+          <!--自动推荐选中显示模块-->
+          <div
+            class="moduleRecMain"
+            v-if="commodityModule.RecommendationRadio === '1'"
+          >
             <div class="manual">
               <div class="goodsNum">
                 <span>商品数量：</span>
@@ -306,6 +310,20 @@
                   </el-option>
                 </el-select>
               </div>
+              <!--选中商品范围后显示的对应隐藏弹窗按钮-->
+              <div
+                style="margin-left:100px"
+                v-if="commodityModule.commodityScope!=='0'"
+              >
+                <!--商家分类-->
+                <div
+                  class="rangeHiddenBtn"
+                  @click="handleToClickRangeBtn(Number(commodityModule.commodityScope))"
+                >
+                  {{rangeList[Number(commodityModule.commodityScope)]}}
+                </div>
+              </div>
+              <!--end-->
               <div class="goodsPrice price commodityScope">
                 <span>活动商品：</span>
                 <el-select
@@ -321,6 +339,74 @@
                   >
                   </el-option>
                 </el-select>
+              </div>
+              <div class="goodsPrice price commodityScope">
+                <span>排序规则：</span>
+                <el-select
+                  v-model="commodityModule.sortRule"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in commodityModule.sortRuleOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+          </div>
+          <!--手动推荐选中显示模块-->
+          <div
+            class="moduleRecMain"
+            v-if="commodityModule.RecommendationRadio === '2'"
+          >
+            <div class="manual">
+              <div class="goodsNum choiseGoodeDiv">
+                <span>商品列表：</span>
+                <div>
+                  <el-button
+                    size="small"
+                    @click="handleToAddGoods()"
+                  >添加商品</el-button>
+                  <div :style="goodsList.length>=3?'height:250px;width:112%;overflow-y: auto;margin-top:10px':''">
+                    <div
+                      v-for="(item,index) in goodsList"
+                      :key="index"
+                    >
+                      <div class="goodsList">
+                        <span>
+                          <img :src="item.goodsImg">
+                        </span>
+                        <span>
+                          {{item.goodsName}}
+                        </span>
+                      </div>
+                      <div class="operation">
+                        <a
+                          href="javascript:void(0)"
+                          title="向上"
+                          class="up_arrow"
+                          @click="handleToClickOpera(index,0)"
+                        >↑</a>
+                        <a
+                          href="javascript:void(0)"
+                          title="向上"
+                          class="up_arrow"
+                          @click="handleToClickOpera(index,1)"
+                        >↓</a>
+                        <a
+                          href="javascript:void(0)"
+                          title="向上"
+                          class="up_arrow"
+                          @click="handleToClickOpera(index,2)"
+                        >X</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -339,13 +425,28 @@
       :tuneUp='tuneUp'
       @handleSelectImg='handleSelectImg'
     />
+    <!--选择商品弹窗-->
+    <ChoosingGoods
+      @resultGoodsDatas='handleToGetGoods'
+      :tuneUpChooseGoods='tuneUpChooseGoods'
+    />
+    <!--添加商家分类弹窗-->
+    <AddingBusClassDialog />
+    <!--添加商品品牌弹窗-->
+    <AddBrandDialog
+      @handleToGetBackData='handleToGetBackData'
+      :callAddBrand.sync='callAddBrand'
+    />
   </div>
 </template>
 <script>
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'), // 图片弹窗组件
-    SelectLinks: () => import('@/components/admin/selectLinks')
+    SelectLinks: () => import('@/components/admin/selectLinks'), // 选择链接弹窗
+    ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
+    AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'), // 添加商家分类弹窗
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog') // 添加商品品牌弹窗
   },
   props: {
     modulesData: Object,
@@ -353,6 +454,9 @@ export default {
   },
   data () {
     return {
+      callAddBrand: false, // 调起选择商品品牌弹窗
+      chooseGoodsBack: [], // 选择商品回显
+      tuneUpChooseGoods: false, // 选择商品弹窗
       titleRadio: '1', // 模块标题radio
       titleInput: '', // 标题输入框
       titleLinkInput: '', // 标题链接输入框
@@ -373,8 +477,8 @@ export default {
         hiddenRadio: '1', // 选中购买按钮隐藏模块里radio
         otherInfoFlag: false, // 其它信息选中
         RecommendationRadio: '1', // 模块推荐  自动推荐  手动推荐
-        goodsNum: '',
-        goodsOptions: [{
+        goodsNum: '4', // 商品数量
+        goodsOptions: [{ // 商品数量options
           value: '1',
           label: '1'
         }, {
@@ -441,20 +545,26 @@ export default {
         priceLeft: '', // 模块推荐商品价格左输入框
         proceRight: '', // 模块推荐商品价格右输入框
         keyWords: '', // 模块推荐关键词输入框
-        commodityScope: '', // 商品范围选中值
+        commodityScope: '0', // 商品范围选中值
         commodityScopeOptions: [{ // 商品范围下拉框数据
-          value: 'null',
+          value: '0',
           label: '请选择'
         }, {
           value: '1',
-          label: 'test1'
+          label: '商家分类'
         }, {
           value: '2',
-          label: 'test2'
+          label: '平台分类'
+        }, {
+          value: '3',
+          label: '商品品牌'
+        }, {
+          value: '4',
+          label: '商品标签'
         }],
-        activeCommodities: '', // 商品范围选中值
-        activeCommoditiesOptions: [{ // 商品范围下拉框数据
-          value: 'null',
+        activeCommodities: '0', // 活动商品选中值
+        activeCommoditiesOptions: [{ // 活动商品下拉框数据
+          value: '0',
           label: '请选择'
         }, {
           value: '1',
@@ -462,6 +572,17 @@ export default {
         }, {
           value: '2',
           label: '砍价'
+        }],
+        sortRule: '0', // 排序规则选中值
+        sortRuleOptions: [{ // 排序规则下拉框数据
+          value: '0',
+          label: '按商品上架时间倒叙排序'
+        }, {
+          value: '1',
+          label: '按商品销量倒序排列'
+        }, {
+          value: '2',
+          label: '按商品价格正序排列(由低到高)'
         }]
       },
       defaultColorright: '#f5f5f5', // 背景颜色自定义默认颜色
@@ -486,7 +607,10 @@ export default {
           typeName: '大图',
           isChecked: false
         }
-      ]
+      ],
+      goodsList: [ // 手动推荐显示模块商品列表数据
+      ],
+      rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签']
     }
   },
   watch: {
@@ -563,6 +687,71 @@ export default {
     // 关键词下方列表选中
     handleSelect (item) {
       console.log(item)
+    },
+    // 模块推荐商品列表icon点击统一处理
+    handleToClickOpera (index, flag) {
+      let arr = JSON.parse(JSON.stringify(this.goodsList))
+      let pre, next, temp
+      if ((index - 1) < 0) {
+        pre = -1
+      } else {
+        pre = arr[(index - 1)]
+      }
+      if ((index + 1) > (arr.length - 1)) {
+        next = -1
+      } else {
+        next = arr[(index + 1)]
+      }
+      temp = arr[index]
+      switch (flag) {
+        case 0:
+          if (pre === -1) return
+          arr[index] = pre
+          arr[(index - 1)] = temp
+          break
+        case 1:
+          if (next === -1) return
+          arr[index] = next
+          arr[(index + 1)] = temp
+          break
+        case 2:
+          arr.splice(index, 1)
+          break
+      }
+      this.goodsList = arr
+    },
+    //  添加商品点击
+    handleToAddGoods () {
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    // 选中商品信息回传
+    handleToGetGoods (res) {
+      console.log(res)
+      res.forEach((item, index) => {
+        let obj = {
+          goodsName: item.goodsName,
+          goodsImg: item.goodsImg,
+          goodsId: item.goodsId
+        }
+        this.goodsList.push(obj)
+      })
+    },
+    // 商品范围选中后显示添加按钮点击统一处理
+    handleToClickRangeBtn (index) {
+      switch (index) {
+        case 1:
+          break
+        case 2:
+          break
+        case 3:
+          this.callAddBrand = true
+          break
+        case 4:
+      }
+    },
+    // 选择商品品牌回传数据
+    handleToGetBackData (data) {
+      console.log(data)
     }
     // this.$emit('handleToBackData', obj) 数据回传调用
   }
@@ -899,6 +1088,67 @@ export default {
             .commodityScope {
               /deep/ .el-input {
                 width: 132px;
+              }
+            }
+            .choiseGoodeDiv {
+              display: flex;
+              span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+              .goodsList {
+                padding-top: 10px;
+                display: flex;
+                span {
+                  display: inline-block;
+                  overflow-wrap: break-word;
+                  &:nth-of-type(1) {
+                    width: 50px;
+                    margin-right: 5px;
+                  }
+                  &:nth-of-type(2) {
+                    width: 220px;
+                    justify-content: space-between;
+                    text-align: justify;
+                  }
+                }
+                img {
+                  display: inline-block;
+                  width: 50px;
+                  height: 50px;
+                }
+              }
+              a {
+                text-decoration: none;
+              }
+              .operation {
+                margin-top: 15px;
+                .up_arrow {
+                  text-align: center;
+                  cursor: pointer;
+                  border: 1px solid transparent;
+                  border-radius: 2px;
+                  padding: 3px 12px;
+                  border-color: #ccc;
+                  color: #333;
+                }
+              }
+            }
+            .rangeHiddenBtn {
+              width: 110px;
+              height: 30px;
+              line-height: 30px;
+              text-align: center;
+              color: #5a8bff;
+              border: 1px solid #ccc;
+              background: #fff;
+              cursor: pointer;
+              margin-top: 17px;
+              margin-bottom: 10px;
+              &:hover {
+                color: #333;
+                text-decoration: underline;
               }
             }
           }
