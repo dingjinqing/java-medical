@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
+import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import com.vpu.mp.service.shop.ShopApplication;
@@ -74,6 +75,10 @@ public class WxAppAccountController extends WxAppBaseController {
 		Integer shopId = wxAppAuth.shopId();
 		ShopApplication shopApp = saas.getShopApp(shopId);
 		JsonResultCode code = shopApp.user.accountSetting(param, wxAppAuth.user());
+		UserAccountSetVo data = shopApp.user.accountSetting(wxAppAuth.user().getUserId(), param.getIsSetting());
+		if(data!=null) {
+			return success(data);
+		}
 		if(code!=JsonResultCode.CODE_SUCCESS) {
 			return success(code);
 		}
