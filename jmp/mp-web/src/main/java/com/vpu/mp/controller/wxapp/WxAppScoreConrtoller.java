@@ -75,8 +75,14 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		return success();
 	}
 	
+	/**
+	 * 签到
+	 * @param param
+	 * @return
+	 */
 	@PostMapping(value = "/api/wxapp/score/signAdd")
 	public JsonResult signInScore( @RequestBody SignInScoreParam param) {
+		logger().info("进入签到");
 		Integer userId = wxAppAuth.user().getUserId();
 		CheckSignVo signData = shop().userCard.scoreService.checkSignInScore(userId);
 		if(signData.getIsOpenSign()==0) {
