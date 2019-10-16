@@ -502,6 +502,9 @@ public class JsonResultMessage {
 	public static final String ERR_CODE_OPERATION_FAILED = "invalid.media.type";
 	public static final String ERR_CODE_LOGIN_FAILED = "login.failed";
 	public static final String ERR_CODE_PAY_FAILED = "pay.failed";
+	public static final String ERR_CODE_CODE_SING = "code.code.sign";
+	public static final String ERR_CODE_HAVE_SING = "code.have.sign";
+	public static final String ERR_CODE_CODE_SING_ERRO = "coed.sign.erro";
 
 
 
