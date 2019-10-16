@@ -44,12 +44,15 @@
 export default {
   data () {
     return {
-      id: null,
+      id: null, // 门店id
+      businessHours: null, // 营业时间
       activeName: 'first'
     }
   },
   created () {
+    console.log('$route.....', this.$route)
     this.id = this.$route.query.id
+    this.businessHours = this.$route.query.businessHours
     this.initStatus()
   },
   mounted () {
@@ -78,7 +81,8 @@ export default {
           this.$router.push({
             name: 'store_storemanage_service_list',
             query: {
-              id: this.id
+              id: this.id,
+              businessHours: this.businessHours
             }
           })
           break

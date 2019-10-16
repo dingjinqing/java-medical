@@ -342,7 +342,8 @@ export default {
           this.$router.push({
             path: '/admin/home/main/store/storemanage',
             query: {
-              id: id
+              id: id,
+              businessHours: row.businessHours
             }
           })
       }

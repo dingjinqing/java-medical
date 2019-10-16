@@ -31,6 +31,7 @@ export default {
   data () {
     return {
       id: null,
+      businessHours: null,
       activeName: 'first'
     }
   },
@@ -44,6 +45,7 @@ export default {
   },
   created () {
     this.id = this.$route.query.id
+    this.businessHours = this.$route.query.businessHours
     this.initStatus()
   },
   mounted () {
@@ -73,7 +75,8 @@ export default {
           this.$router.push({
             name: 'store_storemanage_service_add',
             query: {
-              id: this.id
+              id: this.id,
+              businessHours: this.businessHours
             }
           })
           break

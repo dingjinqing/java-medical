@@ -172,7 +172,7 @@
                   format: 'HH:mm'
                 }"
               ></el-time-picker>
-              <p class="tips">时间段应在门店营业时间内(营业时间：09:00-22:00)，前端用户所选择的服务时段将按照该时段进行拆分</p>
+              <p class="tips">时间段应在门店营业时间内(营业时间：{{ businessHours }})，前端用户所选择的服务时段将按照该时段进行拆分</p>
             </el-form-item>
             <el-form-item
               label="服务时长："
@@ -224,6 +224,7 @@
         :tuneUp="imgDialogShow"
         :isDraggable='isDraggable'
         pageIndex='pictureSpace'
+        :imageSize="imageSize"
         @handleSelectImg='imgDialogSelectedCallback'
       />
       <div class="footer">
@@ -249,7 +250,9 @@ export default {
   data () {
     return {
       storeId: '',
+      businessHours: '', // 营业时间
       serviceCats: [], // 服务分类下拉
+      imageSize: [800, 800], // 图片宽高
       imgLists: [], // 服务主图列表
       imgDialogShow: false, // 添加图片组件
       isDraggable: true, // 是否支持多选
@@ -299,13 +302,37 @@ export default {
       }
     }
   },
+  computed: {
+    businessStartTime: function () {
+      if (this.businessHours) {
+        const time = this.businessHours.split(' ')[0]
+        console.log(time)
+        return time
+      } else {
+        return ''
+      }
+    },
+    businessEndTime: function () {
+      if (this.businessStartTime) {
+        const time = this.businessStartTime.split(' ')
+        console.log(time)
+        return time
+      } else {
+        return ''
+      }
+    }
+  },
   created () {
-    this.storeId = this.$route.query.id
-    this.form.storeId = this.storeId
     this.initStatus()
   },
   methods: {
     initStatus () {
+      this.storeId = this.$route.query.id
+      this.form.storeId = this.storeId
+      this.businessHours = this.$route.query.businessHours
+      this.initServiceCats()
+    },
+    initServiceCats () {
       let params = {
         storeId: this.storeId
       }
