@@ -322,6 +322,7 @@
                 >
                   {{rangeList[Number(commodityModule.commodityScope)]}}
                 </div>
+                <div v-if="rangeCheckData.length>0">已选择{{rangeHiddenRightText}}：{{rangeCheckData.length}}{{rangeHiddenRightText}}</div>
               </div>
               <!--end-->
               <div class="goodsPrice price commodityScope">
@@ -454,6 +455,8 @@ export default {
   },
   data () {
     return {
+      rangeCheckData: [],
+      rangeHiddenRightText: '', // 选择商品范围后右侧出现的文本
       callAddBrand: false, // 调起选择商品品牌弹窗
       chooseGoodsBack: [], // 选择商品回显
       tuneUpChooseGoods: false, // 选择商品弹窗
@@ -740,18 +743,24 @@ export default {
     handleToClickRangeBtn (index) {
       switch (index) {
         case 1:
+          this.rangeHiddenRightText = '分类'
           break
         case 2:
+          this.rangeHiddenRightText = '分类'
           break
         case 3:
           this.callAddBrand = true
+          this.rangeHiddenRightText = '品牌'
           break
         case 4:
+          this.rangeHiddenRightText = '标签'
       }
     },
     // 选择商品品牌回传数据
     handleToGetBackData (data) {
       console.log(data)
+      let newData = this.rangeCheckData.concat(data)
+      this.rangeCheckData = newData
     }
     // this.$emit('handleToBackData', obj) 数据回传调用
   }

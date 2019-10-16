@@ -48,7 +48,7 @@ export default {
     return {
       // 初始化配置
       init: {
-        language_url: '../../../../static/tinymce/tinymce_languages/langs/zh_CN.js',
+        language_url: '../../../static/tinymce/tinymce_languages/langs/zh_CN.js',
         language: 'zh_CN',
         height: 450,
         skin_url: '../../../../static/tinymce/skins/ui/oxide',

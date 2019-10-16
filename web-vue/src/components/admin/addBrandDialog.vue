@@ -111,7 +111,7 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="$emit('update:callAddBrand', false)">取 消</el-button>
           <el-button
             type="primary"
             @click="handleToSure()"
