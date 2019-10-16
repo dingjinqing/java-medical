@@ -4,12 +4,6 @@
  */
 import service from '@/util/request.js'
 
-//  模板消息查询
-// export const templateQueryApi = () =>
-//   service({
-//     url: `/api/admin/config/message/template/query`,
-//     method: 'get'
-//   })
 // 模板消息更新
 export const templateUpdateApi = data =>
   service({
@@ -18,6 +12,7 @@ export const templateUpdateApi = data =>
     data
   })
 
+// 模板消息查询
 export function templateQueryApi () {
   return service({
     url: '/api/admin/config/message/template/query',
