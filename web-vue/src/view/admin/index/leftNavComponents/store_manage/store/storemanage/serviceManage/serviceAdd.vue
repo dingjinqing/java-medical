@@ -10,7 +10,7 @@
           <el-step title="2.编辑服务详情"></el-step>
         </el-steps>
         <div
-          v-if="this.activeStep === 1"
+          v-show="this.activeStep === 1"
           class="step_1"
         >
           <el-form
@@ -255,7 +255,7 @@
           </el-form>
         </div>
         <div
-          v-else-if="this.activeStep === 2"
+          v-show="this.activeStep === 2"
           class="step_2"
         >
           <div class="service_detail_wrap">
@@ -272,9 +272,7 @@
               <div>
                 <TinymceEditor
                   v-model="form.content"
-                  :disabled="false"
                   @input="editorInputHandle"
-                  @onClick="onClick"
                   ref="tinymceEditor"
                 ></TinymceEditor>
               </div>
@@ -301,14 +299,14 @@
           size="small"
           class="footer-btn"
           @click="nextStepHandle"
-        >下一步</el-button>
+        >{{this.activeStep === 1?'下一步':'上一步'}}</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getAllServiceCats, addService } from '@/api/admin/storeManage/storemanage/serviceManage'
+import { getAllServiceCats, addService, editService, updateService } from '@/api/admin/storeManage/storemanage/serviceManage'
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
@@ -316,7 +314,7 @@ export default {
   },
   data () {
     return {
-      activeStep: 2, // 步骤条
+      activeStep: 1, // 步骤条
       storeId: '',
       businessHours: '', // 营业时间
       serviceCats: [], // 服务分类下拉
@@ -327,6 +325,7 @@ export default {
       serviceHour: '', // 服务时长-时
       serviceMinute: '', // 服务时长-分
       form: {
+        id: '', // 编辑时传
         storeId: '',
         serviceName: '',
         servicePrice: 0,
@@ -372,11 +371,9 @@ export default {
   },
   created () {
     this.initStatus()
+    this.initDetail()
   },
   methods: {
-    onClick (e, editor) {
-      console.log(e, editor)
-    },
     initStatus () {
       this.storeId = this.$route.query.id
       this.form.storeId = Number(this.storeId)
@@ -390,6 +387,41 @@ export default {
       }
       // 初始化服务分类
       this.initServiceCats()
+    },
+    initDetail () {
+      if (this.$route.query.serviceId) {
+        const serviceId = this.$route.query.serviceId
+        this.form.id = serviceId
+        let query = {
+          serviceId: serviceId
+        }
+        editService(query).then(res => {
+          console.log('res...', res)
+          // this.form = Object.assign({}, res.content)
+          const content = res.content
+          for (const key in content) {
+            if (this.form.hasOwnProperty(key)) {
+              if (key === 'startDate' || key === 'endDate') {
+                if (content[key].indexOf(':') < 0) {
+                  this.form[key] = content[key] + ' 00:00:00'
+                }
+              } else {
+                this.form[key] = content[key]
+              }
+            }
+          }
+          // 初始化图片列表
+          let serviceImg = JSON.parse(this.form.serviceImg)
+          this.imgLists = serviceImg.map(function (item, index) {
+            return {
+              imgUrl: item
+            }
+          })
+          // 初始化服务时长
+          this.serviceHour = Math.ceil(Number(this.form.serviceDuration) / 60)
+          this.serviceMinute = Math.ceil(Number(this.form.serviceDuration) % 60)
+        })
+      }
     },
     initServiceCats () {
       let params = {
@@ -437,11 +469,19 @@ export default {
       this.$refs.serviceForm.validate((valid) => {
         if (valid) {
           let params = Object.assign({}, this.form)
-          addService(params).then(res => {
-            if (res.error === 0) {
-              this.$message.success('保存成功')
-            }
-          })
+          if (!params.id) {
+            addService(params).then(res => {
+              if (res.error === 0) {
+                this.$message.success('保存成功')
+              }
+            })
+          } else {
+            updateService(params).then(res => {
+              if (res.error === 0) {
+                this.$message.success('更新成功')
+              }
+            })
+          }
         } else {
           console.log('error submit!!')
           return false
@@ -453,17 +493,17 @@ export default {
       this.$set(this.form, 'serviceDuration', Number(this.serviceHour * 60 + this.serviceMinute))
       this.$refs.serviceForm.validate((valid) => {
         if (valid) {
-          if (this.activeStep < 3) {
-            this.activeStep++
+          if (this.activeStep === 1) {
+            this.activeStep = 2
+          } else {
+            this.activeStep = 1
           }
         }
       })
     },
     // 富文本编辑器输入
     editorInputHandle (val) {
-      this.$nextTick(function () {
-        this.$refs.tinymceEditor.innerHTML = val
-      })
+      this.$refs.editorpreview.innerHTML = val
     }
   }
 }

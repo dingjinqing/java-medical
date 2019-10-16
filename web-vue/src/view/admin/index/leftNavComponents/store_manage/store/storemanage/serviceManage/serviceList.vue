@@ -132,7 +132,7 @@
                 <el-tooltip content="删除">
                   <span
                     class="iconSpan"
-                    @click="edit()"
+                    @click="edit('delete', row)"
                   >删除</span>
                 </el-tooltip>
               </div>
@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import { getAllServiceCats, getServiceList } from '@/api/admin/storeManage/storemanage/serviceManage'
+import { getAllServiceCats, getServiceList, deleteService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -195,13 +195,26 @@ export default {
       this.initDataList()
     },
     edit (operate, row) {
+      let that = this
       switch (operate) {
         case 'edit':
           this.$router.push({
-            path: '/admin/home/main/store/storemanage/service/add',
+            name: 'store_storemanage_service_add',
             query: {
-              id: this.id,
-              businessHours: this.$route.query.businessHours
+              id: that.storeId,
+              serviceId: row.id,
+              businessHours: that.$route.query.businessHours
+            }
+          })
+          break
+        case 'delete':
+          let params = {
+            id: row.id
+          }
+          deleteService(params).then(res => {
+            if (res.error === 0) {
+              this.$message.success('删除成功')
+              this.initDataList()
             }
           })
           break
@@ -223,7 +236,7 @@ export default {
         if (res.error === 0) {
           console.log(res.content)
           this.pageParams = res.content.page
-          this.tableData = res.content.dataList
+          this.tableData = [...res.content.dataList]
         }
       })
     }

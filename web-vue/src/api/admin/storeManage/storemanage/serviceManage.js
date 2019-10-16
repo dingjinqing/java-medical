@@ -36,6 +36,30 @@ export function addService (data) {
   })
 }
 
+// 编辑服务
+export function editService (data) {
+  return service({
+    url: '/api/admin/store/service/get/' + data.serviceId,
+    method: 'get'
+  })
+}
+// 更新服务
+export function updateService (data) {
+  return service({
+    url: '/api/admin/store/service/update',
+    method: 'post',
+    data: data
+  })
+}
+// 删除服务
+export function deleteService (data) {
+  return service({
+    url: '/api/admin/store/service/del',
+    method: 'post',
+    data: data
+  })
+}
+
 // 获取服务分类列表
 export function getServiceCatsList (data) {
   return service({
