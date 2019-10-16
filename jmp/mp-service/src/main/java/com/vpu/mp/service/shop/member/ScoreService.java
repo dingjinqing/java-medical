@@ -14,6 +14,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTE
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.jooq.Record1;
 import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
@@ -50,6 +52,7 @@ import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
+import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 
@@ -456,6 +459,13 @@ public class ScoreService extends ShopBaseService {
 			select.where(USER_SCORE.CREATE_TIME.le(param.getEndTime()));
 		}
 		
+		/**类型 */
+		if(param.getType().equals("wxapp")) {
+			if(param.getUserId()!=null) {
+				select.where(USER.USER_ID.eq(param.getUserId()));
+			}
+		}
+		
 	}
 
 	
@@ -712,8 +722,57 @@ public class ScoreService extends ShopBaseService {
 		return day;
 	}
 	
+	//获取即将过期积分
+	public int getExpireScore(Integer userId,Timestamp time) {
+		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
+		int execute = 0;
+		if (time != null) {
+			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
+					.where(USER_SCORE.EXPIRE_TIME.gt(DateUtil.getLocalDateTime()).and(USER_SCORE.EXPIRE_TIME.le(time))
+							.and(USER_SCORE.STATUS.in(list)).and(USER_SCORE.USER_ID.eq(userId)))
+					.execute();
+		} else {
+			LocalDateTime localDateTime = LocalDateTime.now().plusYears(1L);
+			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
+					.where(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), Timestamp.valueOf(localDateTime))
+							.and(USER_SCORE.STATUS.in(list)).and(USER_SCORE.USER_ID.eq(userId)))
+					.execute();
+		}
+		return execute;
+	}
 	
-	
-	
+	/**
+	 * 获取用户积分数据
+	 * @param userId
+	 * @return 
+	 */
+	public ExpireVo getUserScoreCfg(Integer userId) {
+		ShopCfgRecord scoreLimitRecord = score.getScoreNum("score_limit");
+		ExpireVo vo=new ExpireVo();
+		if (scoreLimitRecord != null) {
+			if (scoreLimitRecord.getV().equals("1")) {
+				int scoreYear = Integer.parseInt(score.getScoreNum("score_year").getV());
+				int year = LocalDateTime.now().getYear();
+				year=year+scoreYear;
+				String month = score.getScoreNum("score_month").getV();
+				String day = score.getScoreNum("score_day").getV();
+				if(Integer.parseInt(month)<10) {
+					month="0"+month;
+				}
+				if(Integer.parseInt(day)<10) {
+					day="0"+day;
+				}
+				vo.setTime(String.valueOf(year)+"-"+month+"-"+day+" 23:59:59");
+				vo.setScore(getExpireScore(userId,  Timestamp.valueOf(vo.getTime())));
+			}
+			if (scoreLimitRecord.getV().equals("0")) {
+				DateTimeFormatter df = DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SIMPLE);
+				LocalDateTime localDateTime=LocalDateTime.now();
+				vo.setTime(df.format(localDateTime));
+				vo.setScore(-1);
+			}
+		}
+		return vo;
+	}
 	
 }

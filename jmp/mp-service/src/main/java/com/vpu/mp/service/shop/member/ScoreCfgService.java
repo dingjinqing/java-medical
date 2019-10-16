@@ -3,14 +3,11 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.InsertValuesStep3;
-import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
@@ -22,6 +19,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
+import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 
 /**
@@ -315,5 +313,6 @@ public class ScoreCfgService extends BaseShopConfigService {
 	public ShopCfgRecord getScoreNum(String k) {
 		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny();
 	}
+	
 	
 }
