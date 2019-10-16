@@ -77,6 +77,8 @@ public class GoodsService extends ShopBaseService {
     protected UpYunConfig upYunConfig;
     @Autowired
     protected ShopMpDecorationService shopMpDecorationService;
+    @Autowired
+    public GoodsPriceService goodsPrice;
 
     /**
      * 全部商品页面各个下拉框的数据初始化
@@ -1378,5 +1380,12 @@ public class GoodsService extends ShopBaseService {
     public Optional<GoodsRecord> getGoodsById(Integer goodsId) {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
             fetchOptional();
+    }
+
+    /**
+     * 通过商品id查询商品重量
+     */
+    public BigDecimal getGoodsWeightById(Integer goodsId) {
+        return db().select(GOODS.GOODS_WEIGHT).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(BigDecimal.class);
     }
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 商品获取展示价格通用service
@@ -131,6 +132,19 @@ public class GoodsPriceService extends ShopBaseService {
         }
         return null;
     }
+
+    /**
+     * 取商品规格成本价
+     * @param prdId
+     * @return
+     */
+    public BigDecimal getCostPrice(Integer prdId){
+        if(prdId == null || prdId <= 0){
+            return BigDecimal.ZERO;
+        }
+        return db().select(GOODS_SPEC_PRODUCT.PRD_COST_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(BigDecimal.class);
+    }
+
     private void outPutLog(Timestamp now,Integer goodsId,Byte goodsType){
         log.error("{}商品【{}】是{}类型但没找到相关活动",now,goodsId,goodsType);
     }

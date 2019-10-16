@@ -487,35 +487,74 @@ public class OrderReadService extends ShopBaseService {
      */
     public Workbook exportOrderList(OrderExportQueryParam param,List<String> columns, String lang) {
         List<OrderExportVo> orderList = orderInfo.getExportOrderList(param);
-
         //翻译需要处理的列
-        boolean isNewFlag = false,customFlag = false,payNamesFlag = false,prdCostPriceFlag = false,prdWeightFlag = false;
-        for(String column : columns){
-            if(column.equals(OrderExportVo.IS_NEW)){
-                isNewFlag = true;
-            }
-            if(column.equals(OrderExportVo.CUSTOM)){
-                customFlag = true;
-            }
-            if(column.equals(OrderExportVo.PAY_NAMES)){
-                payNamesFlag = true;
-            }
-            if(column.equals(OrderExportVo.PRD_COST_PRICE)){
-                prdCostPriceFlag = true;
-            }
-            if(column.equals(OrderExportVo.PRD_WEIGHT)){
-                prdWeightFlag = true;
-            }
-        }
         for(OrderExportVo order : orderList){
-            if(isNewFlag){
+            if(columns.contains(OrderExportVo.IS_NEW)){
+                //是否新用户
                 if(orderInfo.getUserOrderNumber(order.getUserId(),null,order.getCreateTime()) > 0){
                     order.setIsNew(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_REGULAR_USER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }else {
                     order.setIsNew(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_NEW_USER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
             }
-            //todo
+            if(columns.contains(OrderExportVo.PAY_NAMES)){
+                //支付方式
+                StringBuffer payNames = new StringBuffer();
+                if(order.getIsCod() > 0){
+                    //货到付款
+                    if(payNames.capacity() == 0){
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_COD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }else{
+                        payNames.append(",");
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_COD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }
+                }
+                if(order.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0){
+                    //微信支付
+                    if(payNames.capacity() == 0){
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_WXPAY ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }else{
+                        payNames.append(",");
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_WXPAY ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }
+                }
+                if(order.getUseAccount().compareTo(BigDecimal.ZERO) > 0){
+                    //余额支付
+                    if(payNames.capacity() == 0){
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_BALANCE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }else{
+                        payNames.append(",");
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_BALANCE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }
+                }
+                if(order.getScoreDiscount().compareTo(BigDecimal.ZERO) > 0){
+                    //积分支付
+                    if(payNames.capacity() == 0){
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_SCORE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }else{
+                        payNames.append(",");
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_SCORE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }
+                }
+                if(order.getMemberCardReduce().compareTo(BigDecimal.ZERO) > 0){
+                    //会员卡支付
+                    if(payNames.capacity() == 0){
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_MEMBER_CARD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }else{
+                        payNames.append(",");
+                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_MEMBER_CARD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    }
+                }
+            }
+            if(columns.contains(OrderExportVo.PRD_COST_PRICE)){
+                //成本价
+                order.setPrdCostPrice(saas.getShopApp(getShopId()).goods.goodsPrice.getCostPrice(order.getProductId()));
+            }
+            if(columns.contains(OrderExportVo.PRD_WEIGHT)){
+                //规格重量（暂时取商品重量）
+                order.setPrdWeight(saas.getShopApp(getShopId()).goods.getGoodsWeightById(order.getGoodsId()));
+            }
+            //TODO
         }
 
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);

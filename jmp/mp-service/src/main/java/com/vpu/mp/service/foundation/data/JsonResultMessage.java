@@ -444,6 +444,11 @@ public class JsonResultMessage {
      */
     public static final String ORDER_EXPORT_NEW_USER = "order.export.new_user";
     public static final String ORDER_EXPORT_REGULAR_USER = "order.export.regular_user";
+    public static final String ORDER_EXPORT_PAY_TYPE_WXPAY = "pay.wxpay";
+    public static final String ORDER_EXPORT_PAY_TYPE_SCORE = "pay.score";
+    public static final String ORDER_EXPORT_PAY_TYPE_BALANCE = "pay.balance";
+    public static final String ORDER_EXPORT_PAY_TYPE_COD = "pay.cod";
+    public static final String ORDER_EXPORT_PAY_TYPE_MEMBER_CARD = "pay.member_card";
 
 
 	/**

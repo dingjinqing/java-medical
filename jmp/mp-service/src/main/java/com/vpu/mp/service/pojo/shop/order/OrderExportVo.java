@@ -35,7 +35,7 @@ public class OrderExportVo {
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_FINISHED_TIME,columnIndex = 7)
     private Timestamp finishedTime;  //订单完成时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_IS_COD,columnIndex = 8)
-    private String isCod;  //是否货到付款
+    private Byte isCod;  //是否货到付款
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CONSIGNEE,columnIndex = 9)
     private String consignee;  //收货人姓名
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_MOBILE,columnIndex = 10)
@@ -103,7 +103,7 @@ public class OrderExportVo {
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PRD_COST_PRICE,columnIndex = 41)
     private BigDecimal prdCostPrice;  //成本价
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PRD_WEIGHT,columnIndex = 42)
-    private String prdWeight;  //SKU重量
+    private BigDecimal prdWeight;  //SKU重量
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_ORDER_AMOUNT,columnIndex = 43)
     private BigDecimal orderAmount;  //订单总金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_DISCOUNT,columnIndex = 44)
@@ -141,6 +141,8 @@ public class OrderExportVo {
 
     @ExcelIgnore
     private Integer userId;
+    @ExcelIgnore
+    private Integer productId;
 
     //列名常量
     public static final String ORDER_SN = "orderSn";
