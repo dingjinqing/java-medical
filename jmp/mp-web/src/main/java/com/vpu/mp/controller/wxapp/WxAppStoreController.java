@@ -3,9 +3,12 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.store.store.AppletStoreInfo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author 王兵兵
@@ -19,7 +22,7 @@ public class WxAppStoreController extends WxAppBaseController{
      * 门店列表
      */
     @PostMapping("/list")
-    public JsonResult storeList(@RequestBody StoreListQueryParam param) {
+    public JsonResult storeList(@RequestBody StoreListParam param) {
         return success(shop().store.getList(param));
     }
 
