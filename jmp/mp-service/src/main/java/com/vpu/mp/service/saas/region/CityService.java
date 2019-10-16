@@ -28,7 +28,7 @@ public class CityService extends MainBaseService {
 	}
 
 	public DictCityRecord getCityName(Integer cityId) {
-		return db().selectFrom(DICT_CITY).where(DICT_CITY.CITY_ID.eq(cityId)).fetchSingle();
+		return db().selectFrom(DICT_CITY).where(DICT_CITY.CITY_ID.eq(cityId)).fetchAny();
 	}
 
 	public DictCityRecord getCityId(String cityName, Integer provinceId) {
