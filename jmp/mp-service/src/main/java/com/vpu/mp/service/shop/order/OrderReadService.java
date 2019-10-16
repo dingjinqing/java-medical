@@ -22,6 +22,7 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
@@ -75,6 +76,8 @@ public class OrderReadService extends ShopBaseService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private OrderInfoService orderInfo;
+    @Autowired
+    private AdminMarketOrderInfoService marketOrderInfo;
 	@Autowired
 	private OrderGoodsService orderGoods;
 	@Autowired
@@ -418,7 +421,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	 public Map<Date,Integer> getMarketOrderAnalysis(MarketAnalysisParam param){
-		 return orderInfo.getMarketOrderAnalysis(param);
+		 return marketOrderInfo.getMarketOrderAnalysis(param);
 	 }
 
 
@@ -432,7 +435,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActiveDiscountMoney> getActiveDiscountMoney(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
-		return orderInfo.getActiveDiscountMoney(goodType, activityId, startTime, endTime);
+		return marketOrderInfo.getActiveDiscountMoney(goodType, activityId, startTime, endTime);
 	}
 
 	/**
@@ -446,7 +449,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public ActiveOrderList getActiveOrderList(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
-		return orderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
+		return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
 	}
 
 	 /**
@@ -457,7 +460,7 @@ public class OrderReadService extends ShopBaseService {
      * @return
      */
     public PageResult<MarketOrderListVo> getMarketOrderList(MarketOrderListParam param, byte goodsType) {
-        PageResult<MarketOrderListVo> res = orderInfo.getMarketOrderList(param,goodsType);
+        PageResult<MarketOrderListVo> res = marketOrderInfo.getMarketOrderList(param,goodsType);
 
         /** 填充商品行 */
         for(MarketOrderListVo order : res.dataList){

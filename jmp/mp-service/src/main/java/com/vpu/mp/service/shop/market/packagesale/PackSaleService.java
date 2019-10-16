@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 @Service
 public class PackSaleService extends ShopBaseService {
 	
-	@Autowired public OrderInfoService orderInfo;
+	@Autowired public AdminMarketOrderInfoService orderInfo;
 	@Autowired public QrCodeService qrCodeService;
 	@Autowired public GoodsService goodsService;
 	@Autowired public OrderReadService orderReadService;

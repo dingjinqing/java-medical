@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.givegift;
 
+import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
@@ -24,7 +25,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 public class GiveGiftCartService extends ShopBaseService {
 
     @Autowired
-    private OrderInfoService orderInfo;
+    private AdminMarketOrderInfoService orderInfo;
     @Autowired
     private OrderGoodsService orderGoods;
     @Autowired
