@@ -60,12 +60,12 @@
             <template slot-scope="{ row }">
               <div>
                 <el-image
-                  class="service_list_img"
-                  :src="row.serviceImg"
-                  :fit="fit"
+                  style="width: 60px; height: 60px;"
+                  :src="row.serviceImg|formatImgUrl"
+                  fit="cover"
                 ></el-image>
-                <p>{{row.serviceName}}</p>
               </div>
+              <p>{{row.serviceName}}</p>
             </template>
           </el-table-column>
           <el-table-column
@@ -101,28 +101,35 @@
           <el-table-column
             label="操作"
             prop="operate"
+            align="center"
           >
             <template slot-scope="{ row }">
-              <div>
-                <el-tooltip>
+              <div style="word-break:keep-all; font-size:13px;">
+                <el-tooltip content="编辑">
+                  <span
+                    class="iconSpan"
+                    @click="edit('edit', row)"
+                  >编辑</span>
+                </el-tooltip>
+                <el-tooltip content="下架">
                   <span
                     class="iconSpan"
                     @click="edit(row.id)"
-                  >编辑</span>
+                  >下架</span>
                 </el-tooltip>
-                <el-tooltip>
+                <el-tooltip content="分享">
                   <span
                     class="iconSpan"
                     @click="edit()"
                   >分享</span>
                 </el-tooltip>
-                <el-tooltip>
+                <el-tooltip content="查看评价">
                   <span
                     class="iconSpan"
                     @click="edit()"
                   >查看评价</span>
                 </el-tooltip>
-                <el-tooltip>
+                <el-tooltip content="删除">
                   <span
                     class="iconSpan"
                     @click="edit()"
@@ -158,11 +165,7 @@ export default {
         serviceName: ''
       },
       tableData: [],
-      pageParams: {
-        storeId: '',
-        catId: '',
-        serviceName: ''
-      }
+      pageParams: {}
     }
   },
   created () {
@@ -178,6 +181,10 @@ export default {
       } else if (val === 1) {
         return '有技师'
       }
+    },
+    formatImgUrl (serviceImg) {
+      const imgs = JSON.parse(serviceImg)
+      return imgs[0]
     }
   },
   methods: {
@@ -187,8 +194,18 @@ export default {
     categroyChangeHandle () {
       this.initDataList()
     },
-    edit () {
-
+    edit (operate, row) {
+      switch (operate) {
+        case 'edit':
+          this.$router.push({
+            path: '/admin/home/main/store/storemanage/service/add',
+            query: {
+              id: this.id,
+              businessHours: this.$route.query.businessHours
+            }
+          })
+          break
+      }
     },
     initServiceSelect () {
       let params = {
@@ -224,11 +241,6 @@ export default {
   }
   .list_info {
     padding-bottom: 10px;
-    .service_list_img {
-      display: inline-block;
-      width: 60px;
-      height: 60px;
-    }
   }
 }
 </style>

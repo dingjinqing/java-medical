@@ -27,6 +27,15 @@ export function getServiceList (data) {
   })
 }
 
+// 添加服务
+export function addService (data) {
+  return service({
+    url: '/api/admin/store/service/add',
+    method: 'post',
+    data: data
+  })
+}
+
 // 获取服务分类列表
 export function getServiceCatsList (data) {
   return service({

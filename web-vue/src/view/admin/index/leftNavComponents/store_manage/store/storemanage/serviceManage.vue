@@ -59,7 +59,8 @@ export default {
           this.$router.push({
             name: 'store_storemanage_service_list',
             query: {
-              id: this.id
+              id: this.id,
+              businessHours: this.businessHours
             }
           })
           break

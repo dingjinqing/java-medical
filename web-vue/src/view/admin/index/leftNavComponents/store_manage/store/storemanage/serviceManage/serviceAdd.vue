@@ -3,15 +3,18 @@
     <div class="service_add_page">
       <div class="service_add_content">
         <el-steps
-          :active="1"
+          :active="activeStep"
           simple
         >
           <el-step title="1.编辑基本信息"></el-step>
           <el-step title="2.编辑服务详情"></el-step>
         </el-steps>
-        <div class="step_1">
+        <div
+          v-if="this.activeStep === 1"
+          class="step_1"
+        >
           <el-form
-            ref="form"
+            ref="serviceForm"
             :model="form"
             :rules="rules"
             label-width="180px"
@@ -84,7 +87,10 @@
                 <el-radio :label="0">下架</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="服务主图：">
+            <el-form-item
+              label="服务主图："
+              prop="serviceImg"
+            >
               <div style="display: flex;align-items: center;flex-wrap: wrap;">
                 <div
                   v-for="(item,index) in imgLists"
@@ -130,53 +136,93 @@
               prop="serviceType"
             >
               <el-radio-group v-model="form.serviceType">
-                <el-radio :label="0">服务+时间</el-radio>
-                <el-radio :label="1">服务+时间+技师</el-radio>
+                <div class="radio_div">
+                  <el-radio :label="0">服务+时间</el-radio>
+                </div>
+                <div class="radio_div">
+                  <el-radio :label="1">服务+时间+技师</el-radio>
+                </div>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="可服务日期：">
-              <el-date-picker
-                v-model="form.startDate"
-                type="date"
-                size="small"
-                placeholder="选择日期"
-                value-format="yyyy-MM-dd"
-              ></el-date-picker>
+            <el-form-item
+              label="可服务日期："
+              required
+            >
+              <el-form-item
+                style="display:inline-block;"
+                inline-message
+                prop="startDate"
+              >
+                <el-date-picker
+                  v-model="form.startDate"
+                  type="date"
+                  size="small"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                ></el-date-picker>
+              </el-form-item>
               <span>至</span>
-              <el-date-picker
-                v-model="form.endDate"
-                type="date"
-                size="small"
-                placeholder="选择日期"
-                value-format="yyyy-MM-dd"
-              ></el-date-picker>
-              <p class="tips">前端用户预约所选择的服务日期按照该限制显示</p>
+              <el-form-item
+                style="display:inline-block;"
+                inline-message
+                prop="endDate"
+              >
+                <el-date-picker
+                  v-model="form.endDate"
+                  type="date"
+                  size="small"
+                  placeholder="选择日期"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                ></el-date-picker>
+              </el-form-item>
+              <p
+                class="tips"
+                style="margin-top:10px;"
+              >前端用户预约所选择的服务日期按照该限制显示</p>
             </el-form-item>
-            <el-form-item label="服务时段：">
-              <el-time-picker
-                size="small"
-                v-model="form.startPeriod"
-                value-format="HH:mm"
-                :picker-options="{
+            <el-form-item
+              label="服务时段："
+              required
+            >
+              <el-form-item
+                style="display:inline-block;"
+                prop="startPeriod"
+              >
+                <el-time-picker
+                  size="small"
+                  arrow-control
+                  v-model="form.startPeriod"
+                  value-format="HH:mm"
+                  :picker-options="{
                   selectableRange: '00:00:00 - 23:59:59',
                   format:'HH:mm'
                 }"
-              ></el-time-picker>
+                ></el-time-picker>
+              </el-form-item>
               <span>至</span>
-              <el-time-picker
-                size="small"
-                v-model="form.endPeriod"
-                value-format="HH:mm"
-                :picker-options="{
+              <el-form-item
+                style="display:inline-block;"
+                prop="endPeriod"
+              >
+                <el-time-picker
+                  size="small"
+                  arrow-control
+                  v-model="form.endPeriod"
+                  value-format="HH:mm"
+                  :picker-options="{
                   selectableRange: '00:00:00 - 23:59:59',
                   format: 'HH:mm'
                 }"
-              ></el-time-picker>
-              <p class="tips">时间段应在门店营业时间内(营业时间：{{ businessHours }})，前端用户所选择的服务时段将按照该时段进行拆分</p>
+                ></el-time-picker>
+              </el-form-item>
+              <p
+                class="tips"
+                style="margin-top:10px;"
+              >时间段应在门店营业时间内(营业时间：{{ businessHours }})，前端用户所选择的服务时段将按照该时段进行拆分</p>
             </el-form-item>
             <el-form-item
               label="服务时长："
-              prop="serviceDuration"
+              required
             >
               <el-input-number
                 v-model="serviceHour"
@@ -194,29 +240,46 @@
               ></el-input-number>
               <span>分钟</span>
             </el-form-item>
-            <el-form-item label="同时段可服务人数">
+            <el-form-item
+              :label="form.serviceType===0?'同时段可服务人数':'同时段内技师可服务人数'"
+              required
+            >
               <el-input-number
                 v-model="form.servicesNumber"
                 controls-position="right"
                 size="small"
                 :min="0"
               ></el-input-number>
-              <p class="tips">该服务在同一时段内可预约的最多人数</p>
-            </el-form-item>
-            <el-form-item label="同时段内技师可服务人数">
-              <el-input-number
-                v-model="form.servicesNumber"
-                controls-position="right"
-                size="small"
-                :min="0"
-              ></el-input-number>
-              <p class="tips">该服务在同一时间段内每个技师可以被预约的次数</p>
+              <p class="tips">{{form.serviceType===0?'该服务在同一时段内可预约的最多人数':'该服务在同一时间段内每个技师可以被预约的次数'}}</p>
             </el-form-item>
           </el-form>
         </div>
-        <div class="step_2">
-          <div class="service_detail_preview"></div>
-          <div class="service_detail_edit"></div>
+        <div
+          v-else-if="this.activeStep === 2"
+          class="step_2"
+        >
+          <div class="service_detail_wrap">
+            <div class="service_detail_preview">
+              <header class="preview_header">服务详情效果预览</header>
+              <div class="preview_content">
+                <div
+                  ref="editorpreview"
+                  class="preview_show"
+                ></div>
+              </div>
+            </div>
+            <div class="service_detail_edit">
+              <div>
+                <TinymceEditor
+                  v-model="form.content"
+                  :disabled="false"
+                  @input="editorInputHandle"
+                  @onClick="onClick"
+                  ref="tinymceEditor"
+                ></TinymceEditor>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <!-- 选择图片组件 -->
@@ -232,10 +295,12 @@
           size="small"
           type="primary"
           class="footer-btn"
+          @click="saveServiceHandle"
         >保存</el-button>
         <el-button
           size="small"
           class="footer-btn"
+          @click="nextStepHandle"
         >下一步</el-button>
       </div>
     </div>
@@ -243,12 +308,15 @@
 </template>
 
 <script>
-import { getAllServiceCats } from '@/api/admin/storeManage/storemanage/serviceManage'
-import ImageDalog from '@/components/admin/imageDalog'
+import { getAllServiceCats, addService } from '@/api/admin/storeManage/storemanage/serviceManage'
 export default {
-  components: { ImageDalog },
+  components: {
+    ImageDalog: () => import('@/components/admin/imageDalog'),
+    TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
+  },
   data () {
     return {
+      activeStep: 2, // 步骤条
       storeId: '',
       businessHours: '', // 营业时间
       serviceCats: [], // 服务分类下拉
@@ -261,10 +329,10 @@ export default {
       form: {
         storeId: '',
         serviceName: '',
-        servicePrice: '',
+        servicePrice: 0,
         catId: '',
         serviceShelf: 1,
-        serviceImg: [],
+        serviceImg: '',
         serviceType: 0,
         startDate: '',
         endDate: '',
@@ -302,34 +370,25 @@ export default {
       }
     }
   },
-  computed: {
-    businessStartTime: function () {
-      if (this.businessHours) {
-        const time = this.businessHours.split(' ')[0]
-        console.log(time)
-        return time
-      } else {
-        return ''
-      }
-    },
-    businessEndTime: function () {
-      if (this.businessStartTime) {
-        const time = this.businessStartTime.split(' ')
-        console.log(time)
-        return time
-      } else {
-        return ''
-      }
-    }
-  },
   created () {
     this.initStatus()
   },
   methods: {
+    onClick (e, editor) {
+      console.log(e, editor)
+    },
     initStatus () {
       this.storeId = this.$route.query.id
-      this.form.storeId = this.storeId
-      this.businessHours = this.$route.query.businessHours
+      this.form.storeId = Number(this.storeId)
+      // 显示营业时间
+      if (this.$route.query.businessHours) {
+        this.businessHours = this.$route.query.businessHours
+        const startTime = this.businessHours.split(' ')[0]
+        const endTime = this.businessHours.split(' ')[2]
+        this.$set(this.form, 'startPeriod', startTime)
+        this.$set(this.form, 'endPeriod', endTime)
+      }
+      // 初始化服务分类
       this.initServiceCats()
     },
     initServiceCats () {
@@ -348,15 +407,21 @@ export default {
     },
     /* 商品图片点击回调函数 */
     imgDialogSelectedCallback (imgObj) {
-      console.log(imgObj)
       if (this.imgLists.length >= 5) {
         return
       }
-      this.imgLists.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
+      if (this.imgLists.length + imgObj.length >= 5) {
+        return
+      }
+      this.imgLists.push(...imgObj)
+      let imgs = this.imgLists.map(item => item.imgUrl)
+      this.form.serviceImg = JSON.stringify(imgs)
     },
+    /* 删除商品图片 */
     deleteGoodsImg (index) {
       this.imgLists.splice(index, 1)
     },
+    /* 移动商品图片 -1:左移 1:右移 */
     moveGoodsImgIndex (index, direction) {
       let tempArr = this.imgLists.splice(index, 1)
       let arrLength = this.imgLists.length
@@ -365,6 +430,40 @@ export default {
       index = targetIndex < 0 ? arrLength : targetIndex > arrLength ? 0 : targetIndex
 
       this.imgLists.splice(index, 0, tempArr[0])
+    },
+    // 保存
+    saveServiceHandle () {
+      this.$set(this.form, 'serviceDuration', Number(this.serviceHour * 60 + this.serviceMinute))
+      this.$refs.serviceForm.validate((valid) => {
+        if (valid) {
+          let params = Object.assign({}, this.form)
+          addService(params).then(res => {
+            if (res.error === 0) {
+              this.$message.success('保存成功')
+            }
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    // 下一步
+    nextStepHandle () {
+      this.$set(this.form, 'serviceDuration', Number(this.serviceHour * 60 + this.serviceMinute))
+      this.$refs.serviceForm.validate((valid) => {
+        if (valid) {
+          if (this.activeStep < 3) {
+            this.activeStep++
+          }
+        }
+      })
+    },
+    // 富文本编辑器输入
+    editorInputHandle (val) {
+      this.$nextTick(function () {
+        this.$refs.tinymceEditor.innerHTML = val
+      })
     }
   }
 }
@@ -393,13 +492,104 @@ export default {
         width: 80px;
         height: 80px;
         border: 1px solid #ccc;
+        background: #f7f7f7;
         margin: 5px 5px;
         position: relative;
+        .deleteIcon {
+          width: 17px;
+          height: 17px;
+          color: #fff;
+          background: #ccc;
+          border: 1px solid #ccc;
+          border-radius: 50%;
+          line-height: 17px;
+          text-align: center;
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          cursor: pointer;
+          opacity: 0.8;
+        }
+        .moveIcon {
+          width: 17px;
+          height: 17px;
+          display: none;
+          color: #fff;
+          background: #ccc;
+          border: 1px solid #ccc;
+          line-height: 17px;
+          text-align: center;
+          position: absolute;
+          bottom: 0px;
+          cursor: pointer;
+          opacity: 0.8;
+        }
+        &:hover .moveIcon {
+          display: block;
+        }
+      }
+      .radio_div {
+        line-height: 30px;
+        margin-top: 11px;
+      }
+    }
+    .step_2 {
+      .service_detail_wrap {
+        display: flex;
+        justify-content: center;
+        padding: 25px 0 35px;
+        text-align: center;
+        margin: 0 auto;
+        .service_detail_preview {
+          width: 325px;
+          min-height: 400px;
+          border: 1px solid #dad8d9;
+          .preview_header {
+            line-height: 55px;
+            background: #dad8d9;
+          }
+          .preview_content {
+            height: 455px;
+            background: #eee;
+            padding: 10px 10px 15px;
+            .preview_show {
+              border: 1px dashed #ccc;
+              width: 100%;
+              height: 100%;
+              background: #fff;
+              text-align: left;
+              ol {
+                list-style-type: decimal;
+              }
+              li {
+                list-style-type: disc;
+              }
+              table {
+                border: 1px solid #ccc;
+                th,
+                tr {
+                  border: 1px solid #ccc;
+                }
+              }
+            }
+          }
+        }
+        .service_detail_edit {
+          width: 684px;
+          border: 1px solid #e5e5e5;
+          background: #f8f8f8;
+          padding: 22px 15px;
+          -webkit-border-radius: 5px;
+          -moz-border-radius: 5px;
+          border-radius: 5px;
+          margin-left: 30px;
+        }
       }
     }
   }
   .footer {
     position: fixed;
+    z-index: 100;
     bottom: 0;
     display: flex;
     justify-content: center;
