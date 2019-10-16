@@ -188,8 +188,6 @@ public class StoreServiceService extends ShopBaseService{
 
     /**
 	 * 新增门店服务
-	 * @param
-	 * @return
 	 */
 	public Boolean addStoreService(StoreServiceParam storeService) {
 		storeService.setServiceSn(this.createServiceSn());
@@ -199,9 +197,14 @@ public class StoreServiceService extends ShopBaseService{
 	}
 
     /**
+     * 根据id查询门店服务详情
+     */
+    public StoreServiceParam getStoreService(Integer serviceId) {
+        return db().selectFrom(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOneInto(StoreServiceParam.class);
+    }
+
+    /**
 	 * 更新门店服务
-	 * @param
-	 * @return
 	 */
     public void updateStoreService(StoreServiceParam storeService) {
         if (db().fetchExists(STORE_SERVICE, STORE_SERVICE.ID.eq(storeService.getId()))) {
