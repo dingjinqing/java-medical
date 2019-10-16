@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.shop.assess.AssessService;
+import com.vpu.mp.service.shop.collection.CollectService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -69,7 +70,6 @@ import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
-import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
@@ -435,4 +435,9 @@ public class ShopApplication {
      */
 	@Autowired
 	public MpOfficialAccountUserByShop officialAccountUser;
+	/**
+	 * 商品收藏
+	 */
+	@Autowired
+	public CollectService collect;
 }
