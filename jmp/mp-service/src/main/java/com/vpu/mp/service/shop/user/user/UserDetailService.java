@@ -13,8 +13,8 @@ public class UserDetailService extends ShopBaseService {
 		return db().fetchAny(USER_DETAIL,USER_DETAIL.USER_ID.eq(userId));
 	}
 	
-	public void updateRow(UserDetailRecord userDetailRecord) {
-		userDetailRecord.update();
+	public int updateRow(UserDetailRecord userDetailRecord) {
+		return db().update(USER_DETAIL).set(userDetailRecord).where(USER_DETAIL.USER_ID.eq(userDetailRecord.getUserId())).execute();
 		//TODO 更新主库的
 	}
 }
