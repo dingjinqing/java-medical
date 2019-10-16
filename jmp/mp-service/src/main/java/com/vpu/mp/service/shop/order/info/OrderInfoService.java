@@ -1109,4 +1109,28 @@ public class OrderInfoService extends ShopBaseService {
         List<OrderExportVo> list = select.limit(param.getExportRowStart(),param.getExportRowEnd() - param.getExportRowStart() + 1).fetchInto(OrderExportVo.class);
         return list;
     }
+
+    /**
+     * 某用户指定时间段内订单数(开区间)
+     * @return
+     */
+    public int getUserOrderNumber(Integer userId,Timestamp startTime,Timestamp endTime) {
+        if(userId == null || userId <= 0){
+            return 0;
+        }
+        if(startTime == null && endTime != null){
+            return db().selectCount().from(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.CREATE_TIME.lt(endTime)).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(Integer.class);
+        }
+        if(startTime != null && endTime == null){
+            return db().selectCount().from(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.CREATE_TIME.gt(startTime)).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(Integer.class);
+        }
+        if(startTime != null && endTime != null){
+            return db().selectCount().from(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.CREATE_TIME.gt(startTime)).and(TABLE.CREATE_TIME.lt(endTime)).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(Integer.class);
+        }
+        if(startTime == null && endTime == null){
+            return db().selectCount().from(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(Integer.class);
+        }
+
+        return 0;
+    }
 }

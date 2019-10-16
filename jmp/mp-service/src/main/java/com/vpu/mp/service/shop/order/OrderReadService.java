@@ -16,9 +16,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.order.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.tools.StringUtils;
@@ -483,10 +485,36 @@ public class OrderReadService extends ShopBaseService {
     public Workbook exportOrderList(OrderExportQueryParam param,List<String> columns, String lang) {
         List<OrderExportVo> orderList = orderInfo.getExportOrderList(param);
 
-        //处理需要处理的列
-        for(OrderExportVo order : orderList){
-            //TODO
+        //翻译需要处理的列
+        boolean isNewFlag = false,customFlag = false,payNamesFlag = false,prdCostPriceFlag = false,prdWeightFlag = false;
+        for(String column : columns){
+            if(column.equals(OrderExportVo.IS_NEW)){
+                isNewFlag = true;
+            }
+            if(column.equals(OrderExportVo.CUSTOM)){
+                customFlag = true;
+            }
+            if(column.equals(OrderExportVo.PAY_NAMES)){
+                payNamesFlag = true;
+            }
+            if(column.equals(OrderExportVo.PRD_COST_PRICE)){
+                prdCostPriceFlag = true;
+            }
+            if(column.equals(OrderExportVo.PRD_WEIGHT)){
+                prdWeightFlag = true;
+            }
         }
+        for(OrderExportVo order : orderList){
+            if(isNewFlag){
+                if(orderInfo.getUserOrderNumber(order.getUserId(),null,order.getCreateTime()) > 0){
+                    order.setIsNew(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_REGULAR_USER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                }else {
+                    order.setIsNew(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_NEW_USER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                }
+            }
+            //todo
+        }
+
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(orderList, OrderExportVo.class,columns);

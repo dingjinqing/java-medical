@@ -382,7 +382,7 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_COLUMN_ORDER_SN = "order.export.column.order_sn";
     public static final String ORDER_EXPORT_COLUMN_ORDER_STATUS_NAME = "order.export.column.order_status_name";
     public static final String ORDER_EXPORT_COLUMN_PAY_NAMES = "order.export.column.pay_names";
-    public static final String ORDER_EXPORT_COLUMN_ADD_TIME = "order.export.column.add_time";
+    public static final String ORDER_EXPORT_COLUMN_CREATE_TIME = "order.export.column.create_time";
     public static final String ORDER_EXPORT_COLUMN_PAY_TIME = "order.export.column.pay_time";
     public static final String ORDER_EXPORT_COLUMN_CLOSE_TIME = "order.export.column.close_time";
     public static final String ORDER_EXPORT_COLUMN_CANCELLED_TIME = "order.export.column.cancelled_time";
@@ -439,6 +439,12 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_COLUMN_ORDER_REAL_NAME = "order.export.column.order_real_name";
     public static final String ORDER_EXPORT_COLUMN_ORDER_CID = "order.export.column.order_cid";
     public static final String ORDER_EXPORT_COLUMN_CUSTOM = "order.export.column.custom";
+    /**
+     * 订单列表导出内容
+     */
+    public static final String ORDER_EXPORT_NEW_USER = "order.export.new_user";
+    public static final String ORDER_EXPORT_REGULAR_USER = "order.export.regular_user";
+
 
 	/**
 	 * 虚拟订单

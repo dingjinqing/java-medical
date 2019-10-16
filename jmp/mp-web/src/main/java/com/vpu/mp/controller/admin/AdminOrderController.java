@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.order.*;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -226,7 +228,7 @@ public class AdminOrderController extends AdminBaseController {
     public void orderExport(@RequestBody @Valid OrderExportQueryParam param, HttpServletResponse response) {
         List<String> columns = shop().config.orderExportCfg.getOrderExportList();
         Workbook workbook =shop().readOrder.exportOrderList(param,columns,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
     }
 }

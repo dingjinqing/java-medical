@@ -2,8 +2,12 @@ package com.vpu.mp.service.pojo.shop.order;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author: 王兵兵
@@ -20,16 +24,16 @@ public class OrderExportVo {
     private String orderStatusName;  //订单状态
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PAY_NAMES,columnIndex = 2)
     private String payNames;  //支付方式
-    @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_ADD_TIME,columnIndex = 3)
-    private String addTime;  //订单提交时间
+    @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CREATE_TIME,columnIndex = 3)
+    private Timestamp createTime;  //订单提交时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PAY_TIME,columnIndex = 4)
-    private String payTime;  //支付时间
+    private Timestamp payTime;  //支付时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CLOSE_TIME,columnIndex = 5)
-    private String closedTime;  //订单关闭时间
+    private Timestamp closedTime;  //订单关闭时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CANCELLED_TIME,columnIndex = 6)
-    private String cancelledTime;  //订单取消时间
+    private Timestamp cancelledTime;  //订单取消时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_FINISHED_TIME,columnIndex = 7)
-    private String finishedTime;  //订单完成时间
+    private Timestamp finishedTime;  //订单完成时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_IS_COD,columnIndex = 8)
     private String isCod;  //是否货到付款
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CONSIGNEE,columnIndex = 9)
@@ -59,7 +63,7 @@ public class OrderExportVo {
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_ADD_MESSAGE,columnIndex = 21)
     private String addMessage;  //下单人留言
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SHIPPING_TIME,columnIndex = 22)
-    private String shippingTime;  //发货时间
+    private Timestamp shippingTime;  //发货时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SHIPPING_NAME,columnIndex = 23)
     private String shippingName;  //货运名称
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SHIPPING_NO,columnIndex = 24)
@@ -67,9 +71,9 @@ public class OrderExportVo {
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_DELIVER_TYPE_NAME,columnIndex = 25)
     private String deliverTypeName;  //配送类型
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CONFIRM_TIME,columnIndex = 26)
-    private String confirmTime;  //确认收货时间
+    private Timestamp confirmTime;  //确认收货时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_STORE_ID,columnIndex = 27)
-    private String storeId;  //门店ID
+    private Integer storeId;  //门店ID
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_STORE_NAME,columnIndex = 28)
     private String storeName;  //门店名称
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_GOODS_NAME,columnIndex = 29)
@@ -77,55 +81,55 @@ public class OrderExportVo {
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PRODUCT_SN,columnIndex = 30)
     private String productSn;  //商家编码
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_GOODS_NUMBER,columnIndex = 31)
-    private String goodsNumber;  //商品数量
+    private Integer goodsNumber;  //商品数量
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_DISCOUNTED_GOODS_PRICE,columnIndex = 32)
-    private String discountedGoodsPrice;  //实际售价
+    private BigDecimal discountedGoodsPrice;  //实际售价
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_GOODS_ATTR,columnIndex = 33)
     private String goodsAttr;  //SKU属性
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_GOODS_PRICE,columnIndex = 34)
-    private String goodsPrice;  //商品售价
+    private BigDecimal goodsPrice;  //商品售价
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_MARKET_PRICE,columnIndex = 35)
-    private String marketPrice;  //商品市场价
+    private BigDecimal marketPrice;  //商品市场价
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_GOODS_SN,columnIndex = 36)
     private String goodsSn;  //商品货号
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_GOODS_ID,columnIndex = 37)
-    private String goodsId;  //商品ID
+    private Integer goodsId;  //商品ID
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SEND_NUMBER,columnIndex = 38)
-    private String sendNumber;  //已发货数量
+    private Integer sendNumber;  //已发货数量
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_RETURN_NUMBER,columnIndex = 39)
-    private String returnNumber;  //退货数量
+    private Integer returnNumber;  //退货数量
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SOURCE,columnIndex = 40)
     private String source;  //商品来源
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PRD_COST_PRICE,columnIndex = 41)
-    private String prdCostPrice;  //成本价
+    private BigDecimal prdCostPrice;  //成本价
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PRD_WEIGHT,columnIndex = 42)
     private String prdWeight;  //SKU重量
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_ORDER_AMOUNT,columnIndex = 43)
-    private String orderAmount;  //订单总金额
+    private BigDecimal orderAmount;  //订单总金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_DISCOUNT,columnIndex = 44)
-    private String discount;  //优惠券优惠金额
+    private BigDecimal discount;  //优惠券优惠金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SHIPPING_FEE,columnIndex = 45)
-    private String shippingFee;  //邮费
+    private BigDecimal shippingFee;  //邮费
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SCORE_DISCOUNT,columnIndex = 46)
-    private String scoreDiscount;  //积分抵扣金额
+    private BigDecimal scoreDiscount;  //积分抵扣金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_USE_ACCOUNT,columnIndex = 47)
-    private String useAccount;  //使用账户余额
+    private BigDecimal useAccount;  //使用账户余额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_MONEY_PAID,columnIndex = 48)
-    private String moneyPaid;  //微信支付金额
+    private BigDecimal moneyPaid;  //微信支付金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_MEMBER_CARD_BALANCE,columnIndex = 49)
-    private String memberCardBalance;  //使用会员卡余额
+    private BigDecimal memberCardBalance;  //使用会员卡余额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_MEMBER_CARD_REDUCE,columnIndex = 50)
-    private String memberCardReduce;  //会员卡抵扣金额
+    private BigDecimal memberCardReduce;  //会员卡抵扣金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_PROMOTION_REDUCE,columnIndex = 51)
-    private String promotionReduce;  //满折满减优惠金额
+    private BigDecimal promotionReduce;  //满折满减优惠金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_RETURN_TIME,columnIndex = 52)
-    private String returnTime;  //申请退货时间
+    private Timestamp returnTime;  //申请退货时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_RETURN_FINISH_TIME,columnIndex = 53)
-    private String returnFinishTime;  //退货完成时间
+    private Timestamp returnFinishTime;  //退货完成时间
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_RETURN_ORDER_MONEY,columnIndex = 54)
-    private String returnOrderMoney;  //退款金额
+    private BigDecimal returnOrderMoney;  //退款金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_RETURN_SHIPPING_FEE,columnIndex = 55)
-    private String returnShippingFee;  //退运费金额
+    private BigDecimal returnShippingFee;  //退运费金额
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_SELLER_REMARK,columnIndex = 56)
     private String sellerRemark;  //卖家备注
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_ORDER_REAL_NAME,columnIndex = 57)
@@ -134,5 +138,71 @@ public class OrderExportVo {
     private String orderCid;  //身份证号
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CUSTOM,columnIndex = 59)
     private String custom;  //自定义下单必填信息
+
+    @ExcelIgnore
+    private Integer userId;
+
+    //列名常量
+    public static final String ORDER_SN = "orderSn";
+    public static final String ORDER_STATUS_NAME = "orderStatusName";
+    public static final String PAY_NAMES = "payNames";
+    public static final String CREATE_TIME = "createTime";
+    public static final String PAY_TIME = "payTime";
+    public static final String CLOSED_TIME = "closedTime";
+    public static final String CANCELLED_TIME = "cancelledTime";
+    public static final String FINISHED_TIME = "finishedTime";
+    public static final String IS_COD = "isCod";
+    public static final String CONSIGNEE = "consignee";
+    public static final String MOBILE = "mobile";
+    public static final String COMPLETE_ADDRESS = "completeAddress";
+    public static final String PROVINCE_NAME = "provinceName";
+    public static final String CITY_NAME = "cityName";
+    public static final String DISTRICT_NAME = "districtName";
+    public static final String ZIPCODE = "zipcode";
+    public static final String USER_NAME = "userName";
+    public static final String USER_MOBILE = "userMobile";
+    public static final String IS_NEW = "isNew";
+    public static final String USER_SOURCE = "userSource";
+    public static final String USER_TAG = "userTag";
+    public static final String ADD_MESSAGE = "addMessage";
+    public static final String SHIPPING_TIME = "shippingTime";
+    public static final String SHIPPING_NAME = "shippingName";
+    public static final String SHIPPING_NO = "shippingNo";
+    public static final String DELIVER_TYPE_NAME = "deliverTypeName";
+    public static final String CONFIRM_TIME = "confirmTime";
+    public static final String STORE_NAME = "storeName";
+    public static final String GOODS_NAME = "goodsName";
+    public static final String PRODUCT_SN = "productSn";
+    public static final String GOODS_NUMBER = "goodsNumber";
+    public static final String DISCOUNT_GOODS_PRICE = "discountedGoodsPrice";
+    public static final String GOODS_ATTR = "goodsAttr";
+    public static final String GOODS_PRICE = "goodsPrice";
+    public static final String MARKET_PRICE = "marketPrice";
+    public static final String GOODS_SN = "goodsSn";
+    public static final String GOODS_ID = "goodsId";
+    public static final String SEND_NUMBER = "sendNumber";
+    public static final String RETURN_NUMBER = "returnNumber";
+    public static final String SOURCE = "source";
+    public static final String PRD_COST_PRICE = "prdCostPrice";
+    public static final String PRD_WEIGHT = "prdWeight";
+    public static final String ORDER_AMOUNT = "orderAmount";
+    public static final String DISCOUNT = "discount";
+    public static final String SHIPPING_FEE = "shippingFee";
+    public static final String SCORE_DISCOUNT = "scoreDiscount";
+    public static final String USE_ACCOUNT = "useAccount";
+    public static final String MONEY_PAID = "moneyPaid";
+    public static final String MEMBER_CARD_BALANCE = "memberCardBalance";
+    public static final String MEMBER_CARD_REDUCE = "memberCardReduce";
+    public static final String PROMOTION_REDUCE = "promotionReduce";
+    public static final String RETURN_TIME = "returnTime";
+    public static final String RETURN_FINISH_TIME = "returnFinishTime";
+    public static final String RETURN_ORDER_MONEY = "returnOrderMoney";
+    public static final String RETURN_SHIPPING_FEE = "returnShippingFee";
+    public static final String SELLER_REMARK = "sellerRemark";
+    public static final String ORDER_REAL_NAME = "orderRealName";
+    public static final String ORDER_CID = "orderCid";
+    public static final String CUSTOM = "custom";
+
+    public static final String LANGUAGE_TYPE_EXCEL = "excel";
 
 }
