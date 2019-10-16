@@ -72,7 +72,7 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		ExpireVo expire= shop().userCard.scoreService.getUserScoreCfg(param.getUserId());
 		vo.setDataList(dataList);
 		vo.setExpire(expire);
-		return success();
+		return success(vo);
 	}
 	
 	/**
@@ -109,6 +109,7 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		vo.setRemark("连续签到"+signData.getSignData().getDay()+"天，获得"+param.getScore()+"积分");
 		shop().userCard.scoreService.addUserScore(vo, "0", (byte) 6, (byte) 1);
 		CheckSignVo checkSignInScore = shop().userCard.scoreService.checkSignInScore(userId);
+		logger().info("签到完成");
 		return success(checkSignInScore);
 	}
 
