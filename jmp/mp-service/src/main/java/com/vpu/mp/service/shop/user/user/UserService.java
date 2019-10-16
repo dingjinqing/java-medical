@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.UserDetail;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.OrderVerifierRecord;
@@ -42,6 +45,8 @@ import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
+import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -692,10 +697,32 @@ public class UserService extends ShopBaseService {
 		return false;
 	}
 	
+	/**
+	 * 用户详细信息
+	 * @param userId
+	 * @return 
+	 */
+	public UserInfo getUserInfo(Integer userId) {
+		User a = USER.as("a");
+		UserDetail b = USER_DETAIL.as("b");
+		User c = USER.as("c");
+		return  db().select(a.USER_ID, a.USERNAME,a.INVITE_ID, a.USER_CID, a.MOBILE, a.USER_CODE, a.WX_OPENID, a.CREATE_TIME,a.WECHAT, 
+				a.FANLI_GRADE, a.USER_GRADE, a.ACCOUNT, a.DISCOUNT, a.WX_UNION_ID, a.DEVICE,a.UNIT_PRICE,a.IS_DISTRIBUTOR,
+				a.INVITE_GROUP,a.DISTRIBUTOR_LEVEL,a.INVITE_TIME,a.DISCOUNT_GRADE, a.DEL_FLAG, a.DEL_TIME, a.GROWTH, a.SCORE,
+				b.SEX, b.BIRTHDAY_YEAR, b.BIRTHDAY_MONTH, b.BIRTHDAY_DAY, b.REAL_NAME, b.PROVINCE_CODE,b.CITY_CODE, b.DISTRICT_CODE, b.ADDRESS, b.MARITAL_STATUS, 
+				b.MONTHLY_INCOME, b.CID,b.EDUCATION, b.INDUSTRY_INFO, b.BIG_IMAGE, b.BANK_USER_NAME, b.SHOP_BANK,b.BANK_NO, b.USER_AVATAR, c.USERNAME.as("invite_name")).from(a)
+		.leftJoin(b).on(a.USER_ID.eq(b.USER_ID)).leftJoin(c).on(a.INVITE_ID.eq(c.USER_ID)).where(a.USER_ID.eq(userId)).fetchAny().into(UserInfo.class);
+	}
 	
-	//账号设置
+	
+	/**
+	 * 账号设置
+	 * @param param
+	 * @param user
+	 * @return
+	 */
 	public JsonResultCode accountSetting( UserAccountSetParam param,WxAppSessionUser user) {
-		UserRecord userInfo = getUserByUserId(user.getUserId());
+		UserInfo userInfo = getUserInfo(user.getUserId());
 		UserDetailRecord userDetailRecord=db().newRecord(USER_DETAIL);
 		userDetailRecord.setUserId(userInfo.getUserId());
 		userDetailRecord.setBirthdayYear(param.getBirthdayYear());
@@ -763,25 +790,34 @@ public class UserService extends ShopBaseService {
 					// return $this->response(1, '', '激活失败 ');
 					return JsonResultCode.CODE_CARD_ACTIVATE_FAIL;
 				}
-			}else {
-				//暂时不返回
-				/*
-				 * UserDetailRecord uRecord = getUserDetail(user.getUserId()); if (uRecord !=
-				 * null) { Integer provinceId = uRecord.getProvinceCode() != null ?
-				 * uRecord.getProvinceCode() : 100000; Integer cityId = uRecord.getCityCode() !=
-				 * null ? uRecord.getCityCode() : 110000; Integer districtId =
-				 * uRecord.getDistrictCode() != null ? uRecord.getDistrictCode() : 110100;
-				 * 
-				 * String provinceCode =
-				 * saas.region.province.getProvinceName(provinceId).getName(); String cityCode =
-				 * saas.region.city.getCityName(cityId).getName(); String district_code =
-				 * saas.region.district.getDistrictName(districtId).getName(); }
-				 */
-				return JsonResultCode.CODE_SUCCESS;
 			}
 		}
 		return JsonResultCode.CODE_FAIL;
 		
+	}
+	
+	/**
+	 * 查询用户详细信息，原来在accountSetting中
+	 * @param userId
+	 * @return
+	 */
+	public UserAccountSetVo accountSetting(Integer userId,Byte isSetting) {
+		if(isSetting==1||isSetting==2) {
+			return null;
+		}
+		UserInfo userInfo = getUserInfo(userId);
+		UserAccountSetVo vo=new UserAccountSetVo();
+		if(userInfo!=null) {
+			Integer provinceId = userInfo.getProvinceCode() != null ? userInfo.getProvinceCode() : 100000;
+			Integer cityId = userInfo.getCityCode() != null ? userInfo.getCityCode() : 110000;
+			Integer districtId = userInfo.getDistrictCode() != null ? userInfo.getDistrictCode() : 110100;
+			
+			vo.setUserInfo(userInfo);
+			vo.setProvinceCode(saas.region.province.getProvinceName(provinceId).getName());
+			vo.setCityCode(saas.region.city.getCityName(cityId).getName());
+			vo.setDistrictCode(saas.region.district.getDistrictName(districtId).getName());	
+		}
+		return vo;
 	}
 	
 	
