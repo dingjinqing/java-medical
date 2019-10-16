@@ -268,8 +268,59 @@
                   </el-option>
                 </el-select>
               </div>
-              <div>
+              <div class="goodsPrice price">
                 <span>商品价格：</span>
+                <el-input
+                  v-model="commodityModule.priceLeft"
+                  size="small"
+                ></el-input>
+                <i style="display:inline-block;margin:0 5px">到</i>
+                <el-input
+                  v-model="commodityModule.proceRight"
+                  size="small"
+                ></el-input>
+              </div>
+              <div class="goodsPrice price keyWors">
+                <span>关键词：</span>
+                <el-autocomplete
+                  class="inline-input"
+                  v-model="commodityModule.keyWords"
+                  :fetch-suggestions="querySearch"
+                  @select="handleSelect"
+                  size='small'
+                ></el-autocomplete>
+              </div>
+              <div class="goodsPrice price commodityScope">
+                <span>商品范围：</span>
+                <el-select
+                  v-model="commodityModule.commodityScope"
+                  placeholder="请选择"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in commodityModule.commodityScopeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="goodsPrice price commodityScope">
+                <span>活动商品：</span>
+                <el-select
+                  v-model="commodityModule.activeCommodities"
+                  placeholder="请选择"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in commodityModule.activeCommoditiesOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
               </div>
             </div>
           </div>
@@ -386,6 +437,31 @@ export default {
         }, {
           value: '20',
           label: '20'
+        }],
+        priceLeft: '', // 模块推荐商品价格左输入框
+        proceRight: '', // 模块推荐商品价格右输入框
+        keyWords: '', // 模块推荐关键词输入框
+        commodityScope: '', // 商品范围选中值
+        commodityScopeOptions: [{ // 商品范围下拉框数据
+          value: 'null',
+          label: '请选择'
+        }, {
+          value: '1',
+          label: 'test1'
+        }, {
+          value: '2',
+          label: 'test2'
+        }],
+        activeCommodities: '', // 商品范围选中值
+        activeCommoditiesOptions: [{ // 商品范围下拉框数据
+          value: 'null',
+          label: '请选择'
+        }, {
+          value: '1',
+          label: '会员专享'
+        }, {
+          value: '2',
+          label: '砍价'
         }]
       },
       defaultColorright: '#f5f5f5', // 背景颜色自定义默认颜色
@@ -432,6 +508,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.restaurants = this.loadAll()
+  },
   methods: {
     // 点击列表样式
     handleToClickType (index) {
@@ -457,6 +536,33 @@ export default {
     // 商品模块颜色自定义重置点击
     handleToReset () {
       this.commodityModule.bgColor = this.defaultColorright
+    },
+    // 关键词带建议输入框相关
+    querySearch (queryString, cb) {
+      var restaurants = this.restaurants
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
+      // 调用 callback 返回建议列表的数据
+      cb(results)
+    },
+    // 关键词带建议输入框相关
+    createFilter (queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+      }
+    },
+    // 关键词带建议输入框相关
+    loadAll () {
+      return [
+        { 'value': 'test1' },
+        { 'value': 'test2' },
+        { 'value': 'test3' },
+        { 'value': 'test4' },
+        { 'value': 'test5' }
+      ]
+    },
+    // 关键词下方列表选中
+    handleSelect (item) {
+      console.log(item)
     }
     // this.$emit('handleToBackData', obj) 数据回传调用
   }
@@ -758,11 +864,41 @@ export default {
           border: 1px solid #e5e5e5;
           margin: 10px 0;
           .manual {
-            .goodsNum {
+            padding-top: 20px;
+            .goodsNum,
+            .goodsPrice {
+              margin-bottom: 10px;
               span {
                 display: inline-block;
                 width: 97px;
                 text-align: right;
+              }
+            }
+            .price {
+              display: flex;
+              /deep/ .el-input {
+                width: 88px;
+              }
+              span {
+                height: 32px;
+                line-height: 32px;
+                display: inline-block;
+                margin-right: 3px;
+              }
+              i {
+                display: inline-block;
+                height: 32px;
+                line-height: 32px;
+              }
+            }
+            .keyWors {
+              /deep/ .el-input {
+                width: 200px;
+              }
+            }
+            .commodityScope {
+              /deep/ .el-input {
+                width: 132px;
               }
             }
           }

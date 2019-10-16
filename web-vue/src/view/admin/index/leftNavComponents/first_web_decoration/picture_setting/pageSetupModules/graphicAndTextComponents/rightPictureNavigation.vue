@@ -163,7 +163,7 @@ export default {
   },
   data () {
     return {
-      imageSize: [140, 140],
+      imageSize: [52, 52],
       tuneUpSelectLink: false,
       tuneUp: false,
       guidList: ['导航一', '导航二', '导航三'],

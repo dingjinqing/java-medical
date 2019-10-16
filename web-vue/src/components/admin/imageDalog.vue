@@ -480,7 +480,7 @@ export default {
     },
     // 图片选中
     handleChecked (index) {
-      if (this.img_list[index].imgWidth !== this.sizeW || this.img_list[index].imgHeight) {
+      if (this.img_list[index].imgWidth !== this.sizeW || this.img_list[index].imgHeight !== this.sizeH) {
         this.$message.error({
           message: '图片宽高不符合要求',
           showClose: true
