@@ -19,6 +19,7 @@ import com.vpu.mp.service.shop.distribution.DistributorGroupService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
+import com.vpu.mp.service.shop.distribution.MpDistributionService;
 import com.vpu.mp.service.shop.distribution.PromotionLanguageService;
 import com.vpu.mp.service.shop.distribution.RebateGoodsService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
@@ -210,6 +211,11 @@ public class ShopApplication {
      */
     @Autowired
 	public DistributorWithdrawService withdraw;
+    /**
+     * mp分销service
+     */
+    @Autowired
+    public MpDistributionService  mpDistribution;
 	@Autowired
 	public MemberCardOrderService memberCardOrder;
 	@Autowired

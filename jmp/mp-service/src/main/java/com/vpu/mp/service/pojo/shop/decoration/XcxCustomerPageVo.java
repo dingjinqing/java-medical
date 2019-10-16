@@ -33,6 +33,10 @@ public class XcxCustomerPageVo implements Serializable {
     private Timestamp updateTime;
     private Integer   catId;
     private String    name;
+	public Object intoMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
    
