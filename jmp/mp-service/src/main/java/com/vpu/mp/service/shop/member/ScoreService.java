@@ -639,9 +639,10 @@ public class ScoreService extends ShopBaseService {
 					UserScoreRecord scoreInDay = getScoreInDay(userId, "sign_score");
 					if(scoreInDay==null) {
 						logger().error("已签到时表中为空，请检查日志");
-						scoreInDay.setScore(0);
+						receiveScore="0";
+					}else {
+						receiveScore = String.valueOf(scoreInDay.getScore());						
 					}
-					receiveScore = String.valueOf(scoreInDay.getScore());
 				}
 				signData.setIsSignIn(isSignIn);
 				signData.setDay(day);
