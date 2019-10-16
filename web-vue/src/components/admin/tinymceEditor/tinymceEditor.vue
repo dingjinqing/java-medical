@@ -48,10 +48,10 @@ export default {
     return {
       // 初始化配置
       init: {
-        language_url: '../../../static/tinymce/tinymce_languages/langs/zh_CN.js',
+        language_url: 'http://localhost:8080/static/tinymce/tinymce_languages/langs/zh_CN.js',
         language: 'zh_CN',
         height: 450,
-        skin_url: '../../../../static/tinymce/skins/ui/oxide',
+        skin_url: 'http://localhost:8080/static/tinymce/skins/ui/oxide',
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,
@@ -66,8 +66,12 @@ export default {
       myValue: this.value
     }
   },
+  created () {
+  },
   mounted () {
+    console.log(window.tinymce)
     tinymce.init({})
+    this.$forceUpdate()
   },
   methods: {
     // 添加相关的事件，可用的事件参照文档=> https://github.com/tinymce/tinymce-vue => All available events
