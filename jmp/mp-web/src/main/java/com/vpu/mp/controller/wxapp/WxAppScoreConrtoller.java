@@ -3,16 +3,19 @@ package com.vpu.mp.controller.wxapp;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
+import com.vpu.mp.service.pojo.wxapp.score.SignInScoreParam;
 import com.vpu.mp.service.pojo.wxapp.score.UserScoreInfoVo;
 import com.vpu.mp.service.pojo.wxapp.score.UserScoreListVo;
 import com.vpu.mp.service.shop.ShopApplication;
@@ -70,6 +73,37 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		vo.setDataList(dataList);
 		vo.setExpire(expire);
 		return success();
+	}
+	
+	@PostMapping(value = "/api/wxapp/score/signAdd")
+	public JsonResult signInScore( @RequestBody SignInScoreParam param) {
+		Integer userId = wxAppAuth.user().getUserId();
+		CheckSignVo signData = shop().userCard.scoreService.checkSignInScore(userId);
+		if(signData.getIsOpenSign()==0) {
+			//商家已关闭签到
+			logger().info("商家已关闭签到");
+			return fail(JsonResultCode.ERR_CODE_CODE_SING);
+		}
+		if(signData.getSignData().getIsSignIn()==1) {
+			//您今天已完成签到
+			logger().info("您今天已完成签到");
+			return fail(JsonResultCode.ERR_CODE_HAVE_SING);
+		}
+		if(!signData.getSignData().getReceiveScore().equals(String.valueOf(param.getScore()))) {
+			//签到积分有误
+			logger().info("签到积分有误");
+			return fail(JsonResultCode.ERR_CODE_CODE_SING_ERRO);
+		}
+		UserScoreVo vo=new UserScoreVo();
+		vo.setUserId(userId);
+		vo.setScore(param.getScore());
+		vo.setStatus((byte)0);
+		vo.setShopId(shopId());
+		vo.setDesc("sign_score");
+		vo.setRemark("连续签到"+signData.getSignData().getDay()+"天，获得"+param.getScore()+"积分");
+		shop().userCard.scoreService.addUserScore(vo, "0", (byte) 6, (byte) 1);
+		CheckSignVo checkSignInScore = shop().userCard.scoreService.checkSignInScore(userId);
+		return success(checkSignInScore);
 	}
 
 }
