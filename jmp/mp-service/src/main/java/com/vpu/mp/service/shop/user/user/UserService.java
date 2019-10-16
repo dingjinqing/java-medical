@@ -806,8 +806,9 @@ public class UserService extends ShopBaseService {
 			return null;
 		}
 		UserInfo userInfo = getUserInfo(userId);
-		UserAccountSetVo vo=new UserAccountSetVo();
+		UserAccountSetVo vo=null;
 		if(userInfo!=null) {
+			vo=new UserAccountSetVo();
 			Integer provinceId = userInfo.getProvinceCode() != null ? userInfo.getProvinceCode() : 100000;
 			Integer cityId = userInfo.getCityCode() != null ? userInfo.getCityCode() : 110000;
 			Integer districtId = userInfo.getDistrictCode() != null ? userInfo.getDistrictCode() : 110100;
