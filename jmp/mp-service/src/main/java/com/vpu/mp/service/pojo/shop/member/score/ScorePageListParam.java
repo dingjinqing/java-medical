@@ -29,4 +29,7 @@ public class ScorePageListParam {
 	private Timestamp startTime;
 	/** 结束时间 */
 	private Timestamp endTime;
+	/**类型 */
+	private String type;
+	
 }
