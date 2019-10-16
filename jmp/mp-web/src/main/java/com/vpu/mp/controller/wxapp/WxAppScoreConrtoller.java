@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
@@ -68,7 +69,7 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		ScorePageListParam param=new ScorePageListParam();
 		param.setUserId(wxAppAuth.user().getUserId());
 		param.setType("wxapp");
-		List<ScorePageListVo> dataList = shop().userCard.scoreService.getPageListOfScoreDetails(param).getDataList();
+		PageResult<ScorePageListVo> dataList = shop().userCard.scoreService.getPageListOfScoreDetails(param);
 		ExpireVo expire= shop().userCard.scoreService.getUserScoreCfg(param.getUserId());
 		vo.setDataList(dataList);
 		vo.setExpire(expire);
