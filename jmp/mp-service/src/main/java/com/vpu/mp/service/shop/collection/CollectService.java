@@ -3,18 +3,16 @@ package com.vpu.mp.service.shop.collection;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.USER_COLLECTION;
 
-import java.math.BigDecimal;
-
 import org.jooq.Record;
-import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
-import org.jooq.SelectSelectStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListParam;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListVo;
+import com.vpu.mp.service.shop.image.ImageService;
 
 /**
  * 商品收藏service
@@ -23,6 +21,8 @@ import com.vpu.mp.service.pojo.wxapp.collection.CollectListVo;
  */
 @Service
 public class CollectService extends ShopBaseService{
+	@Autowired
+    ImageService imageService;
 	/**
 	 * 商品收藏列表
 	 * @param param
@@ -35,10 +35,16 @@ public class CollectService extends ShopBaseService{
 				.from(USER_COLLECTION
 				.leftJoin(GOODS).on(USER_COLLECTION.GOODS_ID.eq(GOODS.GOODS_ID)))
 				.where(USER_COLLECTION.USER_ID.eq(userId).and(GOODS.DEL_FLAG.eq((byte)0)));
-		PageResult<CollectListVo> list = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CollectListVo.class);
+		PageResult<CollectListVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CollectListVo.class);
 		
 		//TODO:判断是否为拼团商品
 		
-		return list;
+		//处理图片路径为全路径
+		for(CollectListVo list : lists.dataList) {
+			if(!org.apache.commons.lang3.StringUtils.isBlank(list.getGoodsImg())) {
+				list.setGoodsImg(imageService.imageUrl(list.getGoodsImg()));
+			}
+		}
+		return lists;
 	}
 }
