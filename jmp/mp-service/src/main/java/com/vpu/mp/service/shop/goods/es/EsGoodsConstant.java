@@ -8,6 +8,9 @@ package com.vpu.mp.service.shop.goods.es;
 */
 public class EsGoodsConstant {
 
+    public static final String INDEX_NAME = "es_goods";
+
+
     public static class EsGoodsShowPriceReducePeriodAction{
         public static final Byte EVERY_DAY = 1;
 

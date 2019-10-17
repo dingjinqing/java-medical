@@ -164,7 +164,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         assemblyBrandAndSale(esGoods);
 
 
-        createEsGoodsIndex(EsDataInitService.ES_GOODS,esGoods);
+        createEsGoodsIndex(EsGoodsConstant.INDEX_NAME,esGoods);
     }
     private void assemblyBrandAndSale(EsGoods esGoods){
         Integer brandId = esGoods.getBrandId();
@@ -393,7 +393,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     private void batchCommitEsGoodsIndex(List<EsGoods> list){
         BulkRequest requests = new BulkRequest();
         for( EsGoods goods: list ){
-            requests.add(esManager.assemblyRequest(EsDataInitService.ES_GOODS,goods));
+            requests.add(esManager.assemblyRequest(EsGoodsConstant.INDEX_NAME,goods));
         }
         try {
             esManager.batchCreateDocuments(requests);
