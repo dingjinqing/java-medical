@@ -69,9 +69,9 @@ public class WxAppScoreConrtoller extends  WxAppBaseController {
 		ScorePageListParam param=new ScorePageListParam();
 		param.setUserId(wxAppAuth.user().getUserId());
 		param.setType("wxapp");
-		PageResult<ScorePageListVo> dataList = shop().userCard.scoreService.getPageListOfScoreDetails(param);
+		PageResult<ScorePageListVo> list = shop().userCard.scoreService.getPageListOfScoreDetails(param);
 		ExpireVo expire= shop().userCard.scoreService.getUserScoreCfg(param.getUserId());
-		vo.setDataList(dataList);
+		vo.setList(list);
 		vo.setExpire(expire);
 		return success(vo);
 	}
