@@ -18,7 +18,8 @@
     "pages/orderinfo/orderinfo",
     "pages/cart/cart",
     "pages/cardlist/cardlist",
-    "pages/cardinfo/cardinfo"
+    "pages/cardinfo/cardinfo",
+    "pages/cardrecord/cardrecord"
   ],
   "window": {
     "backgroundTextStyle": "dark",

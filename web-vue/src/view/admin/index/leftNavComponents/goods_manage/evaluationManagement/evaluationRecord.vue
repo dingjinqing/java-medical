@@ -323,8 +323,8 @@ export default {
           }
         })
       } else {
+        delete obj.flag
         getCommentList(obj).then(res => {
-          delete obj.flag
           console.log(res)
           if (res.error === 0) {
             this.pageParams = res.content.page

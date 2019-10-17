@@ -76,7 +76,7 @@ module.exports = {
     "storeinfo": "门店信息",
     "cardinfo": "会员卡",
     "cardlist": "会员卡",
-    "usercardrecord": "使用记录",
+    "cardrecord": "使用记录",
     "usercardup": "升降级记录",
     "usercenter": "个人中心",
     "userinfo": "编辑",

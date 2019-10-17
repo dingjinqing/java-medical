@@ -1,49 +1,20 @@
-// pages/cart/cart.js
+// pages/cardinfo/cardinfo.js
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-    list: [
-      { title: "大衣大衣大衣" },
-      { title: "大衣大衣大衣" }
-    ]
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
-  },
-  // 增加商品数量
-  goodsNumPlus(){
 
   },
-  // 减少商品数量
-  goodsNumMinus(){
 
-  },
-  //触摸开始
-  handleTouchChange(e){
-    this.moveX = e.detail.x
-  },
-  handleTouchEnd(e){
-    let idx = e.currentTarget.dataset.index
-    console.log(this.moveX)
-    let target = 'list['+idx+'].x'
-    if (this.moveX <= -20) {
-      this.setData({
-        [target]: -100
-      });
-    } else {
-      this.setData({
-        [target]: 0
-      });
-    }
-  },
-  //触摸结束
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

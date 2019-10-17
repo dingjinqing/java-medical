@@ -5,7 +5,7 @@
     <view class="card_list_item" style="background:url('{{imageUrl}}image/admin/fighting_group_draw1.jpg') no-repeat top left / 100% 100%">
       <view class="card_type">等级卡</view>
       <view class="card_item_info">
-          <image mode="widthFix" class="shop_img" src="{{imageUrl}}image/wxapp/no_change_icon.png"></image>
+        <image mode="widthFix" class="shop_img" src="{{imageUrl}}image/wxapp/no_change_icon.png"></image>
         <view class="info_item">
           <view class="item_row card_name">猜猜这是谁建的会员阿卡</view>
           <view class="item_row">折扣：8.8折</view>

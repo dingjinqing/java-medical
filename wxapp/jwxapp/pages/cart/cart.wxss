@@ -2,10 +2,12 @@
 .flex_goods {
   display: flex;
   align-items: center;
+  background-color: #fff;
 }
 .flex_goods .goods_item {
   display: flex;
   flex: 1;
+  height: 186rpx;
 }
 .flex_goods .checkbox_box {
   margin-right: 20rpx;
@@ -120,4 +122,30 @@
 .flex_footer .footer_right .footer_btn{
   line-height: 100rpx;
   padding: 0 60rpx;
+}
+movable-area{
+  width: 610rpx;
+  height: 100%;
+  z-index: 2;
+}
+movable-view{
+  width: 710rpx;
+  height: 100%;
+}
+.goods_content{
+  position: relative;
+  height: 186rpx;
+}
+.goods_del{
+  position: absolute;
+  width: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  height: 100%;
+  background-color: #ff6666;
+  right: 0;
+  top: 0;
+  z-index: 1;
 }
