@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.store.store;
 
-import java.sql.Timestamp;
-
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreAddValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.validated.StoreCodingCheckValidatedGroup;
@@ -10,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 
 /**
  * @author 王兵兵
@@ -18,7 +17,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @NoArgsConstructor
-public class StorePojo {
+public class StorePojo implements Comparable<StorePojo> {
     @NotNull(groups = {StoreUpdateValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
 	private Integer   storeId;
     @NotNull(groups = {StoreAddValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
@@ -56,4 +55,22 @@ public class StorePojo {
     private Timestamp updateTime;
     private Short     autoPick;
     private Byte      delFlag;
+    /**
+     * The Scan buy.是否支持扫码购.1是,0否
+     */
+    public Byte scanBuy;
+
+    /**
+     * The Distance.门店距离 单位KM
+     */
+    public Double distance;
+
+    @Override
+    public int compareTo(StorePojo storePojo) {
+        if (this.distance >= storePojo.distance) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
 }

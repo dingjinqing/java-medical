@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.store.store;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -7,14 +8,16 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.store.Location;
 import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
+import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
@@ -22,6 +25,7 @@ import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -29,10 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Store.STORE;
@@ -47,6 +50,7 @@ import static org.apache.commons.lang3.math.NumberUtils.*;
  *
  * 2019年7月4日
  */
+@Slf4j
 @Service
 public class StoreService extends ShopBaseService {
 
@@ -92,6 +96,12 @@ public class StoreService extends ShopBaseService {
     public GoodsSpecProductService goodsSpecProductService;
 
     /**
+     * The Store config service.门店配置
+     */
+    @Autowired
+    public StoreConfigService storeConfigService;
+
+    /**
 	 * 门店列表分页查询
 	 * @param param
 	 * @return StorePageListVo
@@ -110,37 +120,119 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 门店列表查询-小程序端
-     * @param param
+     * @param param 查询入参
      * @return StorePageListVo
      */
-    public List<StorePageListVo> getList(StoreListParam param) {
+    public List<StorePojo> getList(StoreListParam param) {
+        List<StorePojo> storeList;
+        Location location;
+        try {
+            location = MAPPER.readValue(param.getLocation(), Location.class);
+            log.debug("地理位置信息为:[param:{},location:{}]", param.getLocation(), location.toString());
+        } catch (IOException e) {
+            log.error("反序列化地理位置信息[{}]失败", param.getLocation());
+            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
+        }
         if (BYTE_ZERO.equals(param.getType())) {
+            SelectConditionStep<Record11<Integer, String, String, String, String, String, String, String, String, Byte, Byte>> conditionStep = db()
+                .select(STORE.STORE_ID, STORE.STORE_NAME, STORE.STORE_IMGS, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.LATITUDE, STORE.LONGITUDE, STORE.BUSINESS_STATE, STORE.DEL_FLAG)
+                .from(STORE).where(STORE.DEL_FLAG.eq(BYTE_ZERO));
+            if (!param.getScanStores().equals(BYTE_ZERO)) {
+                conditionStep.and(STORE.POS_SHOP_ID.greaterThan(INTEGER_ZERO));
+            }
+            storeList = conditionStep.fetchInto(StorePojo.class);
+        }
+        /*else if (cardId){
+            // TODO 会员卡详情也跳转过来的
+        }*/
+        else {
             if (param.getGoodsId() != null) {
                 // 根据商品id获取商品规格id列表
-                List<GoodsSpec> list = goodsSpecProductService.selectSpecByGoodsId(param.getGoodsId());
-                Set<Integer> prdIds = list.stream().map(GoodsSpec::getSpecId).collect(Collectors.toSet());
-                try {
-                    StoreListParam.Location location = MAPPER.readValue(param.getLocation(), StoreListParam.Location.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                List<GoodsSpecProduct> list = goodsSpecProductService.selectByGoodsId(param.getGoodsId());
+                Set<Integer> prdIds = list.stream().map(GoodsSpecProduct::getPrdId).collect(Collectors.toSet());
+                log.debug("商品[{}]对应的sku为:{}", param.getGoodsId(), prdIds.toString());
+                // 获得该商品可购买的门店列表
+                storeList = getCanBuyStoreList(prdIds, param.getType(), location, BYTE_ONE);
+                log.debug("可购买的门店列表:{}", storeList.stream().map(StorePojo::getStoreId).collect(Collectors.toSet()));
             } else {
                 // 缺少商品参数 商品规格
                 throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
             }
         }
-        /*SelectWhereStep<? extends Record> select = db().selectFrom(STORE);
-        select = this.buildOptions(select, param);
-        select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
-        return select.fetchInto(StorePageListVo.class);*/
-        return null;
+        // 查询开启“扫码购”功能的门店ID列表配置，逗号分隔
+        List<String> storeScanIds = Arrays.asList(storeConfigService.getStoreScanIds().split(","));
+        log.debug("开启“扫码购”功能的门店ID列表配置项:{}", storeScanIds.toString());
+        // 筛掉不支持扫码购的门店或者添加是否支持扫码购的标示位
+        if (param.getScanStores().equals(BYTE_ONE)) {
+            storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId().toString())).collect(Collectors.toList());
+        } else {
+            storeList.forEach(s -> {
+                s.setScanBuy(storeScanIds.contains(s.getStoreId().toString()) ? BYTE_ONE : BYTE_ZERO);
+            });
+        }
+        // 设置图片和距离
+        double lat1 = location.getLatitude();
+        double lon1 = location.getLatitude();
+        storeList.forEach(s -> {
+            if (s.getStoreImgs() != null) {
+                // 设置门店主图中的第一张为门店列表展示图
+                JsonNode imgList;
+                try {
+                    imgList = MAPPER.readTree(s.getStoreImgs());
+                } catch (IOException e) {
+                    log.error("反序列化门店图片信息[{}]失败", s.getStoreImgs());
+                    throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
+                }
+                Iterator<JsonNode> iterator = imgList.elements();
+                if (iterator.hasNext()) {
+                    s.setStoreImgs(iterator.next().asText());
+                } else {
+                    s.setStoreImgs(null);
+                }
+            }
+            double distance = getDistance(lat1, lon1, Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
+            log.debug("门店 {} 距离用户位置 {} km", s.getStoreName(), distance);
+            s.setDistance(distance);
+        });
+        // 结果按照距离 从小到大排序
+        Collections.sort(storeList);
+        return storeList;
+    }
+
+    /**
+     * Gets distance.计算门店距离,单位km(两个经纬度之间的距离)目前使用的是 Haversine method 计算方法
+     *
+     * @param lat1 the lat 1
+     * @param lon1 the lon 1
+     * @param lat2 the lat 2
+     * @param lon2 the lon 2
+     * @return the distance
+     */
+    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
+        double radLat1 = rad(lat1);
+        double radLat2 = rad(lat2);
+        double a = radLat1 - radLat2;
+        double b = rad(lon1) - rad(lon2);
+        double s = 2 * Math.asin(Math.sqrt(Math.abs(Math.pow(Math.sin(a / 2), 2) +
+            Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2))));
+        double EARTH_RADIUS = 6371.393;
+        s = s * EARTH_RADIUS;
+//        s = Math.round(s * 1000);
+        return new BigDecimal(s).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    private double rad(double d) {
+        return d * Math.PI / 180.0;
     }
 
     /**
      * The entry point of application.获得可购买的门店列表
+     * @param prdIds 商品规格id列表
+     * @param deliverType 配送类型,1:自提,2:同城配送
+     * @param location 用户位置
+     * @param isFromStore todo 未知
      */
-    public void getCanBuyStoreList(Set<Integer> prdIds, Byte deliverType, StoreListParam.Location location, Byte isFromStore) {
+    public List<StorePojo> getCanBuyStoreList(Set<Integer> prdIds, Byte deliverType, Location location, Byte isFromStore) {
         SelectConditionStep<Record1<Integer>> conditionStep = db().select(STORE.STORE_ID).from(STORE_GOODS)
             .leftJoin(STORE).on(STORE_GOODS.STORE_ID.eq(STORE.STORE_ID))
             .where(STORE_GOODS.PRD_ID.in(prdIds))
@@ -159,15 +251,16 @@ public class StoreService extends ShopBaseService {
             .fetchInto(Integer.class);
         List<StorePojo> storeLists = db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StorePojo.class);
         if (deliverType.equals(CONDITION_TWO)) {
-            // 支持同城配送门店列表
-
+            // TODO 查询支持同城配送的门店列表
+            cityServiceCanUseStoreList(storeLists, location, isFromStore);
         }
+        return storeLists;
     }
 
     /**
      * The entry point of application.获得同城配送可用的门店列表
      */
-    public void cityServiceCanUseStoreList(List<StorePojo> storeLists, StoreListParam.Location location, Byte isFromStore) {
+    public void cityServiceCanUseStoreList(List<StorePojo> storeLists, Location location, Byte isFromStore) {
 
     }
 

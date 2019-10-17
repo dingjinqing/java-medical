@@ -25,7 +25,7 @@ public class StoreListParam {
      */
     public Byte type = 0;
     /**
-     * The Scan stores.筛选支持扫码购的门店
+     * The Scan stores.筛选支持扫码购的门店;1:是,0:否
      */
     @JsonProperty("scan_stores")
     @JsonAlias({"scan_stores", "scanStores"})
@@ -37,14 +37,4 @@ public class StoreListParam {
     @JsonAlias({"goods_id", "goodsId"})
     public Integer goodsId;
 
-    @Data
-    public class Location {
-        public String latitude;
-        public String longitude;
-        public String speed;
-        public String accuracy;
-        public String verticalAccuracy;
-        public String horizontalAccuracy;
-        public String errMsg;
-    }
 }
