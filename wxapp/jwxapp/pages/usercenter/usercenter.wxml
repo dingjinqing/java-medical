@@ -48,7 +48,7 @@
                 <view class='account_num' style='color:{{comColor}}'><text>{{item1.num}}</text></view>
                 <view class='account_word'>我的积分</view>
               </view>
-              <view class='ac_item' bindtap="bindJumpLink" data-url="/pages/couponlist/couponlist" wx:if='{{item1.icon_name == "coupon" && item1.is_show == 1}}'>
+              <view class='ac_item' bindtap="bindJumpLink" data-url="/pages/coupon/coupon" wx:if='{{item1.icon_name == "coupon" && item1.is_show == 1}}'>
                 <view class='account_num' style='color:{{comColor}}'><text>{{item1.num}}</text>张</view>
                 <view class='account_word'>优惠券</view>
               </view>
