@@ -672,7 +672,7 @@
                     @change="changeModuleStyle"
                   >
                     <el-radio label="1">样式1</el-radio>
-                    <el-radio label="0">样式2</el-radio>
+                    <el-radio label="2">样式2</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="待付款订单：">
@@ -1299,27 +1299,27 @@ export default {
         content: [
           {
             icon_name: 'wait_pay',
-            icon: '/image/admin/ucConfig/uc_orderIcon1.png',
+            icon: '/image/admin/uc_config/uc_order_icon1.png',
             is_show: '1'
           },
           {
             icon_name: 'wait_deliver',
-            icon: '/image/admin/ucConfig/uc_orderIcon2.png',
+            icon: '/image/admin/uc_config/uc_order_icon2.png',
             is_show: '1'
           },
           {
             icon_name: 'wait_receive',
-            icon: '/image/admin/ucConfig/uc_orderIcon3.png',
+            icon: '/image/admin/uc_config/uc_order_icon3.png',
             is_show: '1'
           },
           {
             icon_name: 'wait_comment',
-            icon: '/image/admin/ucConfig/uc_orderIcon4.png',
+            icon: '/image/admin/uc_config/uc_order_icon4.png',
             is_show: '1'
           },
           {
             icon_name: 'refund',
-            icon: '/image/admin/ucConfig/uc_orderIcon5.png',
+            icon: '/image/admin/uc_config/uc_order_icon5.png',
             is_show: '1'
           }
         ]
@@ -1333,10 +1333,7 @@ export default {
         title: '使用记录',
         is_show_collect: '1',
         is_show_buy_history: '1',
-        is_show_footprint: '1',
-        buy_history: 0,
-        collect: 0,
-        footprint: 0
+        is_show_footprint: '1'
       }, {
         module_name: 'service',
         title: '我的服务',
@@ -1345,64 +1342,64 @@ export default {
           {
             is_show: '1',
             icon_name: 'distribution',
-            icon: '/image/admin/ucConfig/icon_dis.png',
+            icon: '/image/admin/uc_config/icon_dis.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'bargain',
-            icon: '/image/admin/ucConfig/iconBargain.png',
+            icon: '/image/admin/uc_config/icon_bargain.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'award',
-            icon: '/image/admin/ucConfig/icon_award.png',
+            icon: '/image/admin/uc_config/icon_award.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'comment_list',
-            icon: '/image/admin/ucConfig/iconComment.png',
+            icon: '/image/admin/uc_config/icon_comment.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'store_list',
-            icon: '/image/admin/ucConfig/iconStore.png',
+            icon: '/image/admin/uc_config/icon_store.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'user_activate',
-            icon: '/image/admin/ucConfig/iconMember.png',
+            icon: '/image/admin/uc_config/icon_member.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'order_verify',
-            icon: '/image/admin/ucConfig/iconScan.png',
+            icon: '/image/admin/uc_config/icon_scan.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'present_list',
-            icon: '/image/admin/ucConfig/icon_pre.png',
+            icon: '/image/admin/uc_config/icon_pre.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'custom_icon',
-            icon: '/image/admin/ucConfig/icon_ownset.png',
-            title: '我的服务',
+            icon: '/image/admin/uc_config/icon_ownset.png',
+            title: '帮助中心',
             link: '',
             link_name: ''
           }
@@ -1447,27 +1444,27 @@ export default {
         content: [
           {
             icon_name: 'wait_pay',
-            icon: '/image/admin/ucConfig/uc_orderIcon1.png',
+            icon: '/image/admin/uc_config/uc_order_icon1.png',
             is_show: '1'
           },
           {
             icon_name: 'wait_deliver',
-            icon: '/image/admin/ucConfig/uc_orderIcon2.png',
+            icon: '/image/admin/uc_config/uc_order_icon2.png',
             is_show: '1'
           },
           {
             icon_name: 'wait_receive',
-            icon: '/image/admin/ucConfig/uc_orderIcon3.png',
+            icon: '/image/admin/uc_config/uc_order_icon3.png',
             is_show: '1'
           },
           {
             icon_name: 'wait_comment',
-            icon: '/image/admin/ucConfig/uc_orderIcon4.png',
+            icon: '/image/admin/uc_config/uc_order_icon4.png',
             is_show: '1'
           },
           {
             icon_name: 'refund',
-            icon: '/image/admin/ucConfig/uc_orderIcon5.png',
+            icon: '/image/admin/uc_config/uc_order_icon5.png',
             is_show: '1'
           }
         ]
@@ -1481,10 +1478,7 @@ export default {
         title: '使用记录',
         is_show_collect: '1',
         is_show_buy_history: '1',
-        is_show_footprint: '1',
-        buy_history: 0,
-        collect: 0,
-        footprint: 0
+        is_show_footprint: '1'
       }, {
         module_name: 'service',
         title: '我的服务',
@@ -1493,64 +1487,64 @@ export default {
           {
             is_show: '1',
             icon_name: 'distribution',
-            icon: '/image/admin/ucConfig/icon_dis.png',
+            icon: '/image/admin/uc_config/icon_dis.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'bargain',
-            icon: '/image/admin/ucConfig/iconBargain.png',
+            icon: '/image/admin/uc_config/icon_bargain.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'award',
-            icon: '/image/admin/ucConfig/icon_award.png',
+            icon: '/image/admin/uc_config/icon_award.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'comment_list',
-            icon: '/image/admin/ucConfig/iconComment.png',
+            icon: '/image/admin/uc_config/icon_comment.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'store_list',
-            icon: '/image/admin/ucConfig/iconStore.png',
+            icon: '/image/admin/uc_config/icon_store.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'user_activate',
-            icon: '/image/admin/ucConfig/iconMember.png',
+            icon: '/image/admin/uc_config/icon_member.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'order_verify',
-            icon: '/image/admin/ucConfig/iconScan.png',
+            icon: '/image/admin/uc_config/icon_scan.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'present_list',
-            icon: '/image/admin/ucConfig/icon_pre.png',
+            icon: '/image/admin/uc_config/icon_pre.png',
             link: '',
             link_name: ''
           },
           {
             is_show: '1',
             icon_name: 'custom_icon',
-            icon: '/image/admin/ucConfig/icon_ownset.png',
-            title: '我的服务',
+            icon: '/image/admin/uc_config/icon_ownset.png',
+            title: '帮助中心',
             link: '',
             link_name: ''
           }
@@ -1746,9 +1740,9 @@ export default {
       for (let i = 0; i < this.rightData.length; i++) {
         if (this.rightData[i].module_name === 'service') {
           this.rightData[i].content.push({
-            is_show: 1,
+            is_show: '1',
             icon_name: 'custom_icon' + this.customValue,
-            icon: '/image/admin/ucConfig/icon_ownset.png',
+            icon: '/image/admin/uc_config/icon_ownset.png',
             title: '我的服务',
             link: '',
             link_name: ''
@@ -1758,9 +1752,9 @@ export default {
       for (let i = 0; i < this.leftData.length; i++) {
         if (this.leftData[i].module_name === 'service') {
           this.leftData[i].content.push({
-            is_show: 1,
+            is_show: '1',
             icon_name: 'custom_icon' + this.customValue,
-            icon: '/image/admin/ucConfig/icon_ownset.png',
+            icon: '/image/admin/uc_config/icon_ownset.png',
             title: '我的服务',
             link: '',
             link_name: ''
