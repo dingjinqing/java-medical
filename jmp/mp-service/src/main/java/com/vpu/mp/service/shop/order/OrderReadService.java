@@ -554,6 +554,11 @@ public class OrderReadService extends ShopBaseService {
                 //规格重量（暂时取商品重量）
                 order.setPrdWeight(saas.getShopApp(getShopId()).goods.getGoodsWeightById(order.getGoodsId()));
             }
+            if(columns.contains(OrderExportVo.ORDER_STATUS_NAME)){
+                //订单状态
+                order.setOrderStatusName(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
+            }
+
             //TODO
         }
 

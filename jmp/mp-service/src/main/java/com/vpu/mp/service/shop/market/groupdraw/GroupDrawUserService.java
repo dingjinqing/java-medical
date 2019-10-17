@@ -125,7 +125,6 @@ public class GroupDrawUserService extends ShopBaseService {
      */
     private void updateOrderGroupedStatus(List<String> orderSns) {
         db().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, OrderConstant.ORDER_PIN_SUCCESSS)
-            .set(ORDER_INFO.ORDER_STATUS_NAME, new OrderConstant().getOrderStatus(ORDER_PIN_SUCCESSS))
             .where(ORDER_INFO.ORDER_SN.in(orderSns)).execute();
     }
 
@@ -250,7 +249,6 @@ public class GroupDrawUserService extends ShopBaseService {
      */
     private void updateOrderWaitDelivery(List<String> orderSns) {
         db().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, ORDER_WAIT_DELIVERY)
-            .set(ORDER_INFO.ORDER_STATUS_NAME, new OrderConstant().getOrderStatus(ORDER_WAIT_DELIVERY))
             .where(ORDER_INFO.ORDER_SN.in(orderSns))
             .execute();
     }

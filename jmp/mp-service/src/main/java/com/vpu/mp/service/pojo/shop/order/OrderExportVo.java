@@ -143,6 +143,8 @@ public class OrderExportVo {
     private Integer userId;
     @ExcelIgnore
     private Integer productId;
+    @ExcelIgnore
+    private Byte orderStatus;
 
     //列名常量
     public static final String ORDER_SN = "orderSn";

@@ -145,8 +145,6 @@ public class JsonResultMessage {
      * 营销-优惠券礼包订单excel导出
      */
     public static final String COUPON_PACK_ORDER_FILENAME = "coupon.pack.order.filename";
-    public static final String ORDER_STATUS_WAIT_PAY= "status.wait_pay";
-    public static final String ORDER_STATUS_FINISHED = "status.finished";
     public static final String COUPON_PACK_ORDER_ORDER_SN = "coupon.pack.order.order_sn";
     public static final String COUPON_PACK_ORDER_MONEY_PAID = "coupon.pack.order.money_paid";
     public static final String COUPON_PACK_ORDER_USE_ACCOUNT = "coupon.pack.order.use_account";
@@ -376,6 +374,25 @@ public class JsonResultMessage {
 	public static final String REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID = "order.refund.account_larger_than_paid";
 	public static final String REFUND_SCORE_LARGER_THAN_SCORE_PAID = "order.refund.score_larger_than_paid";
     public static final String REFUND_REQUEST_PARAMETER_ERROR = "order.virtual.order.refund.param.error";
+
+    /**
+     * 订单状态
+     */
+    public static final String ORDER_STATUS_UNKNOWN = "order.status.unknown";
+    public static final String ORDER_STATUS_WAIT_PAY = "order.status.wait_pay";
+    public static final String ORDER_STATUS_CANCELLED = "order.status.cancelled";
+    public static final String ORDER_STATUS_CLOSED = "order.status.closed";
+    public static final String ORDER_STATUS_WAIT_DELIVERY = "order.status.delivery";
+    public static final String ORDER_STATUS_SHIPPED = "order.status.shipped";
+    public static final String ORDER_STATUS_RECEIVED = "order.status.received";
+    public static final String ORDER_STATUS_FINISHED = "order.status.finished";
+    public static final String ORDER_STATUS_RETURNING = "order.status.returning";
+    public static final String ORDER_STATUS_RETURN_FINISHED = "order.status.return_finished";
+    public static final String ORDER_STATUS_REFUNDING = "order.status.refunding";
+    public static final String ORDER_STATUS_REFUND_FINISHED = "order.status.refund_finished";
+    public static final String ORDER_STATUS_PIN_PAYED_GROUPING = "order.status.pin_payed_grouping";
+    public static final String ORDER_STATUS_PIN_SUCCESS = "order.status.pin_success";
+    public static final String ORDER_STATUS_GIVE_GIFT_FINISHED = "order.status.give_gift_finished";
 
     /**
      * 订单列表导出列

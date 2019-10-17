@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.Util;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +15,9 @@ import java.util.List;
  *
  */
 public class OrderConstant {
+    /** 语言包放在excel相关properties里 */
+    private final static String LANGUAGE_TYPE_EXCEL = "excel";
+
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;
@@ -264,39 +270,23 @@ public class OrderConstant {
 	public final static byte SEARCH_PAY_WAY_EVENT_PRIZE = 5;
 	/**微信支付*/
 	public final static byte SEARCH_PAY_WAY_WXPAY = 6;
-	/***/
-	private String[] orderStatus = {
-			// ORDER_WAIT_PAY
-			"待付款",
-			// ORDER_CANCELLED
-			"订单取消",
-			// ORDER_CLOSED
-			"订单关闭",
-			// ORDER_WAIT_DELIVERY
-			"待发货/待核销",
-			// ORDER_SHIPPED
-			"已发货",
-			// ORDER_RECEIVED
-			"已收货/已自提",
-			// ORDER_FINISHED
-			"订单完成",
-			// ORDER_RETURNING
-			"退货中",
-			// ORDER_RETURN_FINISHED
-			"退货完成",
-			// ORDER_REFUNDING
-			"退款中",
-			// ORDER_REFUND_FINISHED
-			"退款完成",
-			// ORDER_PIN_PAYED_GROUPING
-			"拼团中",
-			// ORDER_PIN_SUCCESSS
-			"拼团成功",
-			// ORDER_PIN_SUCCESSS
-			"已成团",
-			// ORDER_GIVE_GIFT_FINISHED
-			"送礼已完成"
-	};
+
+    private static String[] orderStatus = {
+        JsonResultMessage.ORDER_STATUS_WAIT_PAY,
+        JsonResultMessage.ORDER_STATUS_CANCELLED,
+        JsonResultMessage.ORDER_STATUS_CLOSED,
+        JsonResultMessage.ORDER_STATUS_WAIT_DELIVERY,
+        JsonResultMessage.ORDER_STATUS_SHIPPED,
+        JsonResultMessage.ORDER_STATUS_RECEIVED,
+        JsonResultMessage.ORDER_STATUS_FINISHED,
+        JsonResultMessage.ORDER_STATUS_RETURNING,
+        JsonResultMessage.ORDER_STATUS_RETURN_FINISHED,
+        JsonResultMessage.ORDER_STATUS_REFUNDING,
+        JsonResultMessage.ORDER_STATUS_REFUND_FINISHED,
+        JsonResultMessage.ORDER_STATUS_PIN_PAYED_GROUPING,
+        JsonResultMessage.ORDER_STATUS_PIN_SUCCESS,
+        JsonResultMessage.ORDER_STATUS_GIVE_GIFT_FINISHED
+    };
 
 	private String[] goodsType = {
 			// GOODS_TYPE_GENERAL
@@ -346,8 +336,8 @@ public class OrderConstant {
     /** 好友代付 **/
     public static final byte PAY_WAY_FRIEND_PAYMENT = 2;
 
-	public String getOrderStatus(byte orderStatusCode) {
-		return orderStatus[orderStatusCode];
+	public static String getOrderStatusName(byte orderStatusCode,String lang) {
+        return Util.translateMessage(lang, orderStatus[orderStatusCode] ,JsonResultMessage.ORDER_STATUS_UNKNOWN,LANGUAGE_TYPE_EXCEL);
 	}
 
 	public String getGoodsType(byte goodsTypeCode) {
