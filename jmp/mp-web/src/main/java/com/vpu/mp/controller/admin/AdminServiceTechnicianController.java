@@ -105,6 +105,14 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		return success(result);
 	}
 
+    /**
+     * 技师分组下拉接口
+     */
+    @GetMapping("/services/technician/group/all/{storeId}")
+    public JsonResult getTechnicianGroupAllList(@PathVariable Integer storeId) {
+        return success(shop().store.serviceTechnician.groupService.getGroupAllList(storeId));
+    }
+
     @PostMapping("/services/technician/group/add")
 	public JsonResult addTechnicianGroup(@RequestBody @Valid ServiceTechnicianGroupParam param) {
 		int result = shop().store.serviceTechnician.groupService.insert(param);

@@ -1,15 +1,16 @@
 package com.vpu.mp.service.shop.store.postsale;
 
-import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_GROUP;
-
-import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroup;
 import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroupParam;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianGroupPageListParam;
+import org.jooq.SelectConditionStep;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_GROUP;
 
 
 /**
@@ -30,7 +31,7 @@ public class ServiceTechnicianGroupService extends ShopBaseService {
 		.from(SERVICE_TECHNICIAN_GROUP).where(SERVICE_TECHNICIAN_GROUP.GROUP_ID.eq(id))
 		.fetchOneInto(ServiceTechnicianGroup.class);
 	}
-	
+
 	/**
 	   * 分页查询售后分组信息
 	 * @param param
@@ -42,6 +43,19 @@ public class ServiceTechnicianGroupService extends ShopBaseService {
 		PageResult<ServiceTechnicianGroup> pageResult = getPageResult(selectFrom, ServiceTechnicianGroup.class);
 		return pageResult;
 	}
+
+
+    /**
+     * Gets group all list.技师分组下拉框
+     *
+     * @param storeId the store id
+     * @return the group all list
+     */
+    public List<ServiceTechnicianGroup> getGroupAllList(Integer storeId) {
+        return db().select(SERVICE_TECHNICIAN_GROUP.GROUP_ID, SERVICE_TECHNICIAN_GROUP.STORE_ID, SERVICE_TECHNICIAN_GROUP.GROUP_NAME)
+            .from(SERVICE_TECHNICIAN_GROUP).where(SERVICE_TECHNICIAN_GROUP.STORE_ID.eq(storeId))
+            .fetchInto(ServiceTechnicianGroup.class);
+    }
 
 	public int insert(ServiceTechnicianGroupParam param) {
 		int result = db().insertInto(SERVICE_TECHNICIAN_GROUP, SERVICE_TECHNICIAN_GROUP.STORE_ID, SERVICE_TECHNICIAN_GROUP.GROUP_NAME)
