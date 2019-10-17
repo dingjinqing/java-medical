@@ -232,6 +232,3 @@ page{
 .time_canuse .time_square:first-of-type{
   margin-left: 0
 }
-.cou_area{
-  margin-top: 100rpx;
-}
