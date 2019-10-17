@@ -54,15 +54,15 @@
               <div class="bgIcon">
 
                 <img
-                  v-if="!iconImgUrl"
+                  v-if="data.goods_module_title==='1'?!iconImgUrl:!titleImgUrl"
                   :src="$imageHost+'/image/admin/add_img_bg.png'"
                   class="bgImgDiv"
-                  @click="tuneUp = !tuneUp"
+                  @click="handleToAddModulesImg()"
                 />
                 <img
                   v-else
                   style="width:100%;height:40px"
-                  :src="iconImgUrl"
+                  :src="data.goods_module_title==='1'?iconImgUrl:titleImgUrl"
                   @click="tuneUp = !tuneUp"
                 >
               </div>
@@ -429,6 +429,7 @@
     <ImageDalog
       pageIndex='pictureSpace'
       :tuneUp='tuneUp'
+      :imageSize='imageSize'
       @handleSelectImg='handleSelectImg'
     />
     <!--选择商品弹窗-->
@@ -466,6 +467,7 @@ export default {
   },
   data () {
     return {
+      imageSize: [], // 模块标题图标点击宽高限制
       callAddProductLabel: false, // 添加商品标签弹窗调起
       rangeCheckData: [], // 选择商品范围后当前范围显示的数据数组
       rangeHiddenRightText: '', // 选择商品范围后右侧出现的文本
@@ -477,6 +479,7 @@ export default {
       titleLinkInput: '', // 标题链接输入框
       positionChecked: false, // 标题位置复选按钮
       iconImgUrl: '', // 图标icon url
+      titleImgUrl: '', // 标题图片
       tuneUpSelectLink: false, // 调起选择链接弹窗
       tuneUp: false, // 调起选择图片弹窗
       commodityModule: {
@@ -683,8 +686,13 @@ export default {
       this.listTypeData[index].isChecked = true
     },
     // 模块标题图标点击
-    handleToAddImg () {
-
+    handleToAddModulesImg () {
+      if (this.data.goods_module_title === '1') {
+        this.imageSize = [25, 25]
+      } else {
+        this.imageSize = []
+      }
+      this.tuneUp = !this.tuneUp
     },
     // 选择链接选中回传
     handleToSelectLinkPath (path) {
@@ -694,7 +702,11 @@ export default {
     // 选择图片选中回传
     handleSelectImg (res) {
       console.log(res)
-      this.iconImgUrl = res.imgUrl
+      if (this.data.goods_module_title === '1') {
+        this.iconImgUrl = res.imgUrl
+      } else {
+        this.titleImgUrl = res.imgUrl
+      }
     },
     // 商品模块颜色自定义重置点击
     handleToReset () {

@@ -42,10 +42,10 @@ export default {
           break
         case 8: // 商品模块
           obj = {
-            'module_name': 'm_goods', // 模块名称 y
+            'module_name': 'm_goods', // 模块名称
             'title': '', // 标题  y
             'title_link': '', // 标题链接 y
-            'tit_center': '0',
+            'tit_center': '0', // 标题位置 0 不选中标题居中  1选中标题居中
             'recommend_type': '0', // 模块推荐 0自动推荐  1手动推荐
             'goods_items': [ // 商品列表数据
 
@@ -57,8 +57,8 @@ export default {
             'max_price': '', // 模块推荐-商品价格最高价格
             'keywords': '', // 模块推荐-关键词
             'sort_type': '1', // 模块推荐-排序规则
-            'img_url': '',
-            'goods_module_title': '0', // 模块标题类型  0不设置  1文字标题 2图片标题
+            'img_url': '', // 图标
+            'goods_module_title': '0', // 模块标题类型  0不设置  1文字标题 2图片标题  y
             'img_title_url': '', // 标题图片
             'hide_name': 0, // 商品名称
             'hide_price': 0, // 商品价格

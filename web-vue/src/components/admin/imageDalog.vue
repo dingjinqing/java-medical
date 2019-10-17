@@ -302,6 +302,7 @@ export default {
         item.checked = false
       })
       this.backArr = []
+      this.queryImgs()
       this.dialogTableVisible = true
     },
     imageSize: {
