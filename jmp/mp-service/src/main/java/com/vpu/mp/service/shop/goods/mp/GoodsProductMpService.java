@@ -1,9 +1,8 @@
 package com.vpu.mp.service.shop.goods.mp;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.goods.mp.GoodsProductT;
-import com.vpu.mp.service.pojo.shop.goods.goods.mp.GoodsT;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsProductT;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

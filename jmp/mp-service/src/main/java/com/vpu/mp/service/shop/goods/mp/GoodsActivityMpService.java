@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.goods.mp;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.GoodsTypeConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.goods.mp.GoodsT;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponTagVo;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;

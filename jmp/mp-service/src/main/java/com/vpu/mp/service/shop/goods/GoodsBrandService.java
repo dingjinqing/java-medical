@@ -227,20 +227,7 @@ public class GoodsBrandService extends ShopBaseService {
             return false;
         }
     }
-    /**
-     * 根据brandId列出所有品牌
-     *
-     * @return
-     */
-    public List<GoodsBrandVo> listGoodsBrandNameByIds(List<Integer> ids) {
-        List<GoodsBrandVo> goodsBrandNames = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME)
-            .from(GOODS_BRAND)
-            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(GOODS_BRAND.ID.in(ids))
-            .fetch().into(GoodsBrandVo.class);
 
-        return goodsBrandNames;
-    }
     /**
      * 列出所有品牌
      *
@@ -395,5 +382,12 @@ public class GoodsBrandService extends ShopBaseService {
             .fetchOne().into(Integer.class);
 
         return count > 0;
+    }
+
+    /**
+     * 查询所有有效的品牌，按照名称拼音进行组织
+     */
+    public void getAllBrandGroupByPinYinName(){
+
     }
 }

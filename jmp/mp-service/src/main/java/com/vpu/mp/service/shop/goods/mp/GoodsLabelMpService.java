@@ -2,8 +2,8 @@ package com.vpu.mp.service.shop.goods.mp;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.goods.goods.mp.GoodsLabelMpVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.mp.GoodsT;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import org.jooq.Condition;
 import org.springframework.stereotype.Service;
