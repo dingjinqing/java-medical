@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.shipping;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import java.util.List;
@@ -26,12 +27,14 @@ public class ShippingInfoVo extends BaseShippingInfoVo{
 	@AllArgsConstructor
 	public static class Goods{
 		/**id,方便修改物流单号*/
-		private Integer recId;
+		private Integer orderGoodsId;
 		private String goodsName;
 		/**属性（规格）*/
 		private String goodsAttr;
 		/**发货数量*/
 		private String sendNumber;
+		private String goodsImg;
+		private BigDecimal goodsPrice;
 	}
 	/*
 	 * 以下属性不参与pojo->json
@@ -47,6 +50,8 @@ public class ShippingInfoVo extends BaseShippingInfoVo{
 	/**发货数量*/
 	@JsonIgnore
 	private String sendNumber;
+	@JsonIgnore
+	private Integer orderGoodsId;
 	@Override
 	public boolean equals(Object obj) {
 		return ((ShippingInfoVo)obj).getBatchNo().equals(batchNo) ? true : false;
