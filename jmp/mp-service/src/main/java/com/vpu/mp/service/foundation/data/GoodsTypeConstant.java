@@ -6,14 +6,15 @@ package com.vpu.mp.service.foundation.data;
  * 商品活动对应码
  */
 public class GoodsTypeConstant {
-    /** 普通商品订单 返利 */
+    /** 普通商品 */
     public final static byte GOODS_TYPE_GENERAL = 0;
-    /** 拼团商品订单 */
+    /** 拼团商品 */
     public final static byte GOODS_TYPE_PIN_GROUP = 1;
     /** 返利商品 */
     public final static byte GOODS_TYPE_REBATE = 2;
     /** 砍价商品 */
     public final static byte GOODS_TYPE_BARGAIN = 3;
+
     /** 积分兑换商品 */
     public final static byte GOODS_TYPE_INTEGRAL = 4;
     /** 秒杀商品 */
@@ -48,4 +49,9 @@ public class GoodsTypeConstant {
     public final static byte GOODS_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */
     public final static byte GOODS_TYPE_SWEEP_CODE_BUY = 100;
+
+    /** 商品存在优惠券信息*/
+    public final static byte GOODS_TYPE_HAS_COUPON = 120;
+    /** 商品存在满减活动 */
+    public final static byte GOODS_TYEP_HAS_FULL_REDUCTION = 121;
 }

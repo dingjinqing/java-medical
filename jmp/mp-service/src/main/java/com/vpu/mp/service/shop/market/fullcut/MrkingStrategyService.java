@@ -3,9 +3,11 @@ package com.vpu.mp.service.shop.market.fullcut;
 import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
 import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
 
+import com.vpu.mp.db.shop.tables.MrkingStrategy;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyConditionRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -16,7 +18,9 @@ import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
+import java.rmi.dgc.DGC;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -142,5 +146,31 @@ public class MrkingStrategyService extends ShopBaseService {
             set(MRKING_STRATEGY.DEL_FLAG,DelFlag.DISABLE.getCode()).
             where(MRKING_STRATEGY.ID.eq(id)).
             execute();
+    }
+
+    /**
+     * 判断商品是否参与满减活动了
+     * @param goodsId
+     */
+    public boolean getGoodsAct(Integer goodsId,Integer catId,Integer sortId){
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+
+        MrkingStrategyRecord mrkingStrategyRecord =null;
+
+        mrkingStrategyRecord = db().selectFrom(MRKING_STRATEGY)
+            .where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(MRKING_STRATEGY.START_TIME.le(now)).and(MRKING_STRATEGY.END_TIME.gt(now)))
+            .and(
+                DslPlus.findInSet(goodsId, MRKING_STRATEGY.RECOMMEND_GOODS_ID)
+                    .or(DslPlus.findInSet(catId, MRKING_STRATEGY.RECOMMEND_CAT_ID))
+                    .or(DslPlus.findInSet(sortId, MRKING_STRATEGY.RECOMMEND_SORT_ID))
+            ).fetchAny();
+
+        if (mrkingStrategyRecord == null) {
+            mrkingStrategyRecord = db().selectFrom(MRKING_STRATEGY)
+                .where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(MRKING_STRATEGY.START_TIME.le(now)).and(MRKING_STRATEGY.END_TIME.gt(now)))
+                .and(MRKING_STRATEGY.RECOMMEND_GOODS_ID.isNull()).and(MRKING_STRATEGY.RECOMMEND_CAT_ID.isNull()).and(MRKING_STRATEGY.RECOMMEND_SORT_ID.isNull())
+                .fetchAny();
+        }
+        return mrkingStrategyRecord !=null;
     }
 }

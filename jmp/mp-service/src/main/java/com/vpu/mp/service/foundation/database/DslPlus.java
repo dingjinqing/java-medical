@@ -73,6 +73,15 @@ public class DslPlus {
         return DSL.condition("FIND_IN_SET({0}, {1})", DSL.inline(format),field);
     }
     /**
+     *  FIND_IN_SET 函数
+     * @param format
+     * @param field
+     * @return
+     */
+    public static Condition findInSet(Integer format, Field<?> field) {
+        return DSL.condition("FIND_IN_SET({0}, {1})", DSL.inline(format),field);
+    }
+    /**
      * mysql 聚合函数
      * group_concat({0} order by {1}   separator '{2}')
      *

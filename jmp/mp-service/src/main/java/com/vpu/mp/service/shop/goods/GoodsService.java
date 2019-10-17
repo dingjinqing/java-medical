@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -65,6 +66,8 @@ public class GoodsService extends ShopBaseService {
     public GoodsDeliverTemplateService goodsDeliver;
     @Autowired
     public ChooseLinkService chooseLink;
+    @Autowired
+    public GoodsMpService goodsMpService;
     @Autowired
     protected MemberCardService memberCardService;
     @Autowired

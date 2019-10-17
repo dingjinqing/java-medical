@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -277,18 +278,20 @@ public class BargainService extends ShopBaseService  {
     }
 
     /**
-     * 根据商品id获取砍价信息
+     * 根据商品id获取处于可使用状态的砍价记录信息
      * @param goodsId 商品id
-     * @param date 当前时间
      * @return BargainRecord
      */
-    public BargainRecord getBargainRecordByGoodsId(Integer goodsId,Timestamp date){
+    public BargainRecord getBargainRecordByGoodsId(Integer goodsId,Timestamp timestamp){
+        if (timestamp == null) {
+            timestamp = Timestamp.valueOf(LocalDateTime.now());
+        }
 	    return db().select(BARGAIN.ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
             .from(BARGAIN)
-            .where(BARGAIN.STATUS.eq(STATUS_DISABLED))
+            .where(BARGAIN.STATUS.eq(STATUS_NORMAL))
             .and(BARGAIN.GOODS_ID.eq(goodsId))
-            .and(BARGAIN.START_TIME.lessThan(date))
-            .and(BARGAIN.END_TIME.greaterThan(date))
+            .and(BARGAIN.START_TIME.lt(timestamp))
+            .and(BARGAIN.END_TIME.gt(timestamp))
             .fetchOneInto(BARGAIN);
     }
     /**

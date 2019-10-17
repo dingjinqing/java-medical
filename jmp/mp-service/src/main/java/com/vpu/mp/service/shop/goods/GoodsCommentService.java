@@ -2,9 +2,12 @@ package com.vpu.mp.service.shop.goods;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -279,4 +282,24 @@ public class GoodsCommentService extends ShopBaseService {
 	    
 		 return result;
 	}
+
+    /**
+     * 统计商品评价数量
+     * @param goodsIds 待统计商品id集合
+     * @param config 评价配置： 0不审，1先发后审，2先审后发
+     * @return
+     */
+    public Map<Integer, Integer> statisticGoodsComment(List<Integer> goodsIds, Byte config) {
+        Map<Integer,Integer> results=null;
+        if (config == 2) {
+            results = db().select(COMMENT_GOODS.GOODS_ID, DSL.count(COMMENT_GOODS.ID).as("num")).from(COMMENT_GOODS)
+                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(COMMENT_GOODS.GOODS_ID.in(goodsIds))
+                .groupBy(COMMENT_GOODS.GOODS_ID).fetchMap(COMMENT_GOODS.GOODS_ID, DSL.field("num",Integer.class));
+        } else {
+            results = db().select(COMMENT_GOODS.GOODS_ID, DSL.count(COMMENT_GOODS.ID).as("num")).from(COMMENT_GOODS)
+                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(COMMENT_GOODS.GOODS_ID.in(goodsIds)).and(COMMENT_GOODS.FLAG.eq((byte) 1))
+                .groupBy(COMMENT_GOODS.GOODS_ID).fetchMap(COMMENT_GOODS.GOODS_ID, DSL.field("num",Integer.class));
+        }
+        return results;
+    }
 }
