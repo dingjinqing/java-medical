@@ -727,22 +727,31 @@ public class ScoreService extends ShopBaseService {
 		return day;
 	}
 	
-	//获取即将过期积分
+	/**
+	 * 获取即将过期积分
+	 * @param userId
+	 * @param time
+	 * @return
+	 */
 	public int getExpireScore(Integer userId,Timestamp time) {
+		logger().info("获取即将过期积分");
 		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
 		int execute = 0;
 		if (time != null) {
+			logger().info("time是空");
 			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
 					.where(USER_SCORE.EXPIRE_TIME.gt(DateUtil.getLocalDateTime()).and(USER_SCORE.EXPIRE_TIME.le(time))
 							.and(USER_SCORE.STATUS.in(list)).and(USER_SCORE.USER_ID.eq(userId)))
 					.execute();
 		} else {
+			logger().info("time不空");
 			LocalDateTime localDateTime = LocalDateTime.now().plusYears(1L);
 			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
 					.where(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), Timestamp.valueOf(localDateTime))
 							.and(USER_SCORE.STATUS.in(list)).and(USER_SCORE.USER_ID.eq(userId)))
 					.execute();
 		}
+		logger().info("结果"+execute);
 		return execute;
 	}
 	
