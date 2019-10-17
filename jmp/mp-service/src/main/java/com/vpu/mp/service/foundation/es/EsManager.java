@@ -11,6 +11,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.jooq.False;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,7 +31,7 @@ import java.util.Objects;
 @ConditionalOnProperty(prefix="es",name = "open", havingValue = "on")
 public class EsManager {
 
-    @Autowired
+    @Autowired(required = false)
     @Qualifier("esConfig")
     private RestHighLevelClient restHighLevelClient;
 
