@@ -216,8 +216,30 @@ export default {
         case 1:
           this.option.autoCropHeight = this.cropperTopInput_two
           break
+        case 2:
+
+          if (this.cropperTopInput_one && !this.cropperTopInput_two) {
+            this.cropperTopInput_two = this.cropperTopInput_one / this.cropperTopInput_three
+          } else if (!this.cropperTopInput_one && this.cropperTopInput_two) {
+            this.cropperTopInput_one = this.cropperTopInput_two * this.cropperTopInput_three
+          } else if (!this.cropperTopInput_one && !this.cropperTopInput_two) {
+            this.cropperTopInput_one = 80 * this.cropperTopInput_three
+            this.cropperTopInput_two = 80
+          } else {
+            this.cropperTopInput_two = this.cropperTopInput_one / this.cropperTopInput_three
+          }
+
+          let W = this.cropperTopInput_one
+          let H = this.cropperTopInput_two
+          this.option.autoCropWidth = W
+          this.option.autoCropHeight = H
+          console.log(W, H)
+          this.option.fixedNumber[0] = W
+          this.option.fixedNumber[1] = H
       }
-      this.cropperTopInput_three = this.cropperTopInput_one / this.cropperTopInput_two
+      if (this.cropperTopInput_one && this.cropperTopInput_two) {
+        this.cropperTopInput_three = this.cropperTopInput_one / this.cropperTopInput_two
+      }
       console.log(index, this.option.autoCropWidt, this.option.autoCropHeight)
     },
     // 裁剪图片保存
