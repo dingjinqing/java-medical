@@ -9,7 +9,7 @@
       </div>
       <el-divider></el-divider>
       <div class="title">
-        公众号消息已选24条, 小程序消息已选25条
+        公众号消息已{{openMpNum}}选条, 小程序消息已选{{openMaNum}}条
       </div>
       <!-- 交易物流提醒|营销信息提醒 -->
       <div class="main">
@@ -46,7 +46,7 @@
                   align="center"
                 >
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.check"></el-checkbox>
+                    <el-checkbox v-model="scope.row.openMp"></el-checkbox>
                     <span>发送公众号消息</span>
                     <el-popover
                       placement="top-right"
@@ -67,14 +67,14 @@
                   align="center"
                 >
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.checked"></el-checkbox>
+                    <el-checkbox v-model="scope.row.openMa"></el-checkbox>
                     <span>发送小程序消息</span>
                     <el-popover
                       placement="top-right"
                       width="200"
                       trigger="hover"
                     >
-                      <el-image :src="srcList.src1"></el-image>
+                      <el-image :src="scope.row.xcxSrc"></el-image>
                       <el-button
                         slot="reference"
                         type="text"
@@ -113,7 +113,7 @@
                   align="center"
                 >
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.check"></el-checkbox>
+                    <el-checkbox v-model="scope.row.openMp"></el-checkbox>
                     <span>发送公众号消息</span>
                     <el-popover
                       placement="top-right"
@@ -134,14 +134,14 @@
                   align="center"
                 >
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.checked"></el-checkbox>
+                    <el-checkbox v-model="scope.row.openMa"></el-checkbox>
                     <span>发送小程序消息</span>
                     <el-popover
                       placement="top-right"
                       width="200"
                       trigger="hover"
                     >
-                      <el-image :src="srcList.src1"></el-image>
+                      <el-image :src="scope.row.xcxSrc"></el-image>
                       <el-button
                         slot="reference"
                         type="text"
@@ -166,7 +166,8 @@
   </div>
 </template>
 <script>
-import { templateQueryApi } from '@/api/admin/basicConfiguration/templateMessage'
+import { templateQueryApi, templateUpdateApi } from '@/api/admin/basicConfiguration/templateMessage'
+
 export default {
   name: `templateMessage`,
   props: {
@@ -177,10 +178,8 @@ export default {
   },
   data () {
     return {
-      srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`
-      },
-      activeNames: ['1'],
+      list: [],
+      activeNames: ['1', '2'],
       /**
        * 交易物流提醒
        */
@@ -191,9 +190,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/qx_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/qx_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/qx_xcx.jpg`
         },
         {
           templateMessage: `预约成功提醒`,
@@ -201,9 +199,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/cg_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/cg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/cg_xcx.jpg`
         },
         {
           templateMessage: `预约到期提醒`,
@@ -211,9 +208,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/yydq_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/yydq_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/yydq_xcx.jpg`
         },
         {
           templateMessage: `账户余额变动提醒`,
@@ -221,9 +217,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/zhye_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/zhye_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/zhye_xcx.jpg`
         },
         {
           templateMessage: `订单发货提醒`,
@@ -231,9 +226,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/ddfh_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ddfh_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddfh_xcx.jpg`
         },
         {
           templateMessage: `订单未支付通知`,
@@ -241,9 +235,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/ddwzf_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ddwzf_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddwzf_xcx.jpg`
         },
         {
           templateMessage: `订单支付成功通知`,
@@ -251,9 +244,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/ddzfcg_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ddzfcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddzfcg_xcx.jpg`
         },
         {
           templateMessage: `确认收货通知`,
@@ -261,9 +253,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/qrsh_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/qrsh_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/qrsh_xcx.jpg`
         },
         {
           templateMessage: `退款失败通知`,
@@ -271,9 +262,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/tksb_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/tksb_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/tksb_xcx.jpg`
         },
         {
           templateMessage: `退款状态通知`,
@@ -281,9 +271,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/tktz_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/tktz_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/tktz_xcx.jpg`
         },
         {
           templateMessage: `门店自提到期提醒`,
@@ -291,9 +280,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/mdzt_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/mdzt_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/mdzt_xcx.jpg`
         },
         {
           templateMessage: `取货成功通知`,
@@ -301,9 +289,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/qhcg_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/qhcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/qhcg_xcx.jpg`
         }
       ],
       /**
@@ -316,9 +303,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/viptx_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/viptx_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/viptx_xcx.jpg`
         },
         {
           templateMessage: `会员卡领取成功通知`,
@@ -326,9 +312,8 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/vipcg_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/vipcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/vipcg_xcx.jpg`
         },
         {
           templateMessage: `限次卡扣减通知`,
@@ -336,18 +321,17 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/xckj_gzh.jpg`
-        }, {
+          src: `${this.$imageHost}/image/admin/template_message/xckj_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/xckj_xcx.jpg`
+        },
+        {
           templateMessage: `卡券到期提醒`,
           sendingCondition: `会员卡/优惠券过期前一天发送`,
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/kqdq_gzh_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/kqdq_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqdq_xcx.jpg`
         },
         {
           templateMessage: `卡券领取成功通知`,
@@ -355,27 +339,26 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/kqcg_gzh.jpg`
-        }, {
+          src: `${this.$imageHost}/image/admin/template_message/kqcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqcg_xcx.jpg`
+        },
+        {
           templateMessage: `拼团失败通知`,
           sendingCondition: `拼团时间截止后如未拼团成功则立即发送`,
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/ptsb_gzh.jpg`
-        }, {
+          src: `${this.$imageHost}/image/admin/template_message/ptsb_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptsb_xcx.jpg`
+        },
+        {
           templateMessage: `拼团成功通知`,
           sendingCondition: `拼团成功时立即发送`,
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/ptcg_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ptcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcg_xcx.jpg`
         },
         {
           templateMessage: `自定义消息模板推送`,
@@ -383,18 +366,17 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/ywcl_gzh.jpg`
-        }, {
+          src: `${this.$imageHost}/image/admin/template_message/ywcl_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ywcl_xcx.jpg`
+        },
+        {
           templateMessage: `砍价成功提醒`,
           sendingCondition: `砍价成功时立即发送`,
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/kjcg_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/kjcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjcg_xcx.jpg`
         },
         {
           templateMessage: `砍价进度通知`,
@@ -402,36 +384,32 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/kjjd_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/kjjd_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjjd_xcx.jpg`
         }, {
           templateMessage: `审核通过提醒`,
           sendingCondition: `审核通过提醒`,
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/official_audit_success.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/official_audit_success.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_success.jpg`
         }, {
           templateMessage: `审核不通过提醒`,
           sendingCondition: `审核不通过提醒`,
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/official_audit_fail.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/official_audit_fail.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_fail.jpg`
         }, {
           templateMessage: `分销员等级升级提醒`,
           sendingCondition: `分销员等级升级提醒`,
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/fxdj_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/fxdj_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/fxdj_xcx.jpg`
         },
         {
           templateMessage: `拼团抽奖结果通知`,
@@ -439,15 +417,19 @@ export default {
           publicNumberMessage: `发送公众号消息`,
           appletMessage: `发送小程序消息`,
           preview: '预览',
-          check: '',
-          checked: '',
-          src: `${this.$imageHost}/image/admin/template_message/ptcj_gzh.jpg`
+          src: `${this.$imageHost}/image/admin/template_message/ptcj_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcj_xcx.jpg`
         }
       ]
     }
   },
   computed: {
-
+    openMpNum () {
+      return this.tableData.filter(item => item.openMp === true).length + this.tableData1.filter(item => item.openMp === true).length
+    },
+    openMaNum () {
+      return this.tableData.filter(item => item.openMa === true).length + this.tableData1.filter(item => item.openMa === true).length
+    }
   },
   created () {
     this.fetchData()
@@ -467,15 +449,46 @@ export default {
     fetchData () {
       templateQueryApi().then(res => {
         console.log(res)
+        console.log(res.content)
+        // 合并定义的数据和返回的数据
+        let list = [...res.content]
+        console.log(list)
+        let list1 = [...res.content]
+        console.log(list1)
+        let resultData = list.splice(0, 12).map((item, index) => {
+          return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
+        })
+        this.tableData = resultData
+        console.log(this.tableData)
+
+        // let resultData1 = list1.splice(0, 14)
+        // console.log(resultData1)
+        // console.log(this.tableData1)
+
+        console.log(list1)
+        let resultData1 = list1.splice(0, 14).map((item, index) => {
+          return { ...item, ...this.tableData1[index], openMp: !!item.openMp, openMa: !!item.openMa }
+        })
+        this.tableData1 = resultData1
+        console.log(this.tableData1)
       }).catch(err => console.log(err))
     },
     // 当前激活面板改变时触发
     handleChange (val) {
       console.log(val)
     },
-    // 保存
+    // 保存-更新数据
     handleSave () {
-
+      let configs = [
+        {
+          'id': 2001,
+          'openMp': 0,
+          'openMa': 1
+        }
+      ]
+      templateUpdateApi(configs).then(res => {
+        console.log(res)
+      }).catch(err => console.log(err))
     }
   }
 }
