@@ -103,9 +103,10 @@ import com.vpu.mp.service.shop.video.VideoService;
  */
 @Service
 public class ShopApplication {
-
 	@Autowired
 	public GoodsService goods;
+	@Autowired
+	public GoodsMpService goodsMpService;
 	@Autowired
 	public ImageService image;
 	@Autowired
