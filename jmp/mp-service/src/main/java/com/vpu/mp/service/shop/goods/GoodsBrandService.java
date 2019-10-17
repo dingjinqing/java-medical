@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -233,7 +234,19 @@ public class GoodsBrandService extends ShopBaseService {
             return false;
         }
     }
-
+    /**
+     * 根据brandId列出所有品牌
+     *
+     * @return
+     */
+    public Map<Integer,GoodsBrandVo>  listGoodsBrandNameByIds(List<Integer> ids) {
+        return db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME)
+            .from(GOODS_BRAND)
+            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(GOODS_BRAND.ID.in(ids))
+            .fetch().into(GoodsBrandVo.class)
+            .stream().collect(Collectors.toMap(GoodsBrandVo::getId,x->x));
+    }
     /**
      * 列出所有品牌
      *
