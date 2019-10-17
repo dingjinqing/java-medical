@@ -917,3 +917,7 @@ create table `b2c_uploaded_video_category` (
 );
 
 ALTER TABLE `b2c_reduce_price` CHANGE `extend_time` `extend_time` VARCHAR(50) NULL   COMMENT '每月第几日（单选）；每周第几天（多选，@符隔开）；';
+
+--常乐 商品收藏表
+ALTER TABLE b2c_user_collection add column `username` varchar(32) NOT NULL DEFAULT '' COMMENT '用户名';
+ALTER TABLE b2c_user_collection add column `collect_price` decimal(10, 2) NOT NULL DEFAULT '0.00' COMMENT '收藏时商品价格';

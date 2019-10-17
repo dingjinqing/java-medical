@@ -1045,5 +1045,4 @@ public class Tables {
      * The table <code>mini_shop674625.b2c_message_template_config</code>.
      */
     public static final MessageTemplateConfig MESSAGE_TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG;
-
 }

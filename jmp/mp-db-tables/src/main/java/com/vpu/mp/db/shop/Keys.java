@@ -4,6 +4,12 @@
 package com.vpu.mp.db.shop;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.Internal;
+
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.db.shop.tables.TradesRecord;
@@ -16,11 +22,6 @@ import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PayRewardRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.Internal;
-
-import javax.annotation.Generated;
 
 
 /**
@@ -204,7 +205,6 @@ public class Keys {
     public static final Identity<UserAccountRecord, Integer> IDENTITY_USER_ACCOUNT = Identities0.IDENTITY_USER_ACCOUNT;
     public static final Identity<UserAddressRecord, Integer> IDENTITY_USER_ADDRESS = Identities0.IDENTITY_USER_ADDRESS;
     public static final Identity<UserCartRecordRecord, Integer> IDENTITY_USER_CART_RECORD = Identities0.IDENTITY_USER_CART_RECORD;
-    public static final Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Identities0.IDENTITY_USER_COLLECTION;
     public static final Identity<UserDetailRecord, Integer> IDENTITY_USER_DETAIL = Identities0.IDENTITY_USER_DETAIL;
     public static final Identity<UserExplainRecord, Short> IDENTITY_USER_EXPLAIN = Identities0.IDENTITY_USER_EXPLAIN;
     public static final Identity<UserGoodsRecordRecord, Long> IDENTITY_USER_GOODS_RECORD = Identities0.IDENTITY_USER_GOODS_RECORD;
@@ -243,6 +243,7 @@ public class Keys {
     public static final Identity<ShareAwardReceiveRecord, Integer> IDENTITY_SHARE_AWARD_RECEIVE = Identities0.IDENTITY_SHARE_AWARD_RECEIVE;
     public static final Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Identities0.IDENTITY_ATTEND_SHARE_USER;
     public static final Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Identities0.IDENTITY_MP_OFFICIAL_ACCOUNT_USER;
+    public static final Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Identities0.IDENTITY_USER_COLLECTION;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -434,7 +435,6 @@ public class Keys {
     public static final UniqueKey<UserAddressRecord> KEY_B2C_USER_ADDRESS_PRIMARY = UniqueKeys0.KEY_B2C_USER_ADDRESS_PRIMARY;
     public static final UniqueKey<UserCardRecord> KEY_B2C_USER_CARD_CARD_NO = UniqueKeys0.KEY_B2C_USER_CARD_CARD_NO;
     public static final UniqueKey<UserCartRecordRecord> KEY_B2C_USER_CART_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_USER_CART_RECORD_PRIMARY;
-    public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_PRIMARY;
     public static final UniqueKey<UserDetailRecord> KEY_B2C_USER_DETAIL_PRIMARY = UniqueKeys0.KEY_B2C_USER_DETAIL_PRIMARY;
     public static final UniqueKey<UserDetailRecord> KEY_B2C_USER_DETAIL_USER_ID = UniqueKeys0.KEY_B2C_USER_DETAIL_USER_ID;
     public static final UniqueKey<UserExplainRecord> KEY_B2C_USER_EXPLAIN_PRIMARY = UniqueKeys0.KEY_B2C_USER_EXPLAIN_PRIMARY;
@@ -481,6 +481,7 @@ public class Keys {
     public static final UniqueKey<MessageTemplateConfigRecord> KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY = UniqueKeys0.KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY;
     public static final UniqueKey<UploadedVideoCategoryRecord> KEY_B2C_UPLOADED_VIDEO_CATEGORY_PRIMARY =  UniqueKeys0.KEY_B2C_UPLOADED_VIDEO_CATEGORY_PRIMARY;
     public static final Identity<UploadedVideoCategoryRecord, Integer> IDENTITY_UPLOADED_VIDEO_CATEGORY = Identities0.IDENTITY_UPLOADED_VIDEO_CATEGORY;
+    public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_PRIMARY;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -656,7 +657,6 @@ public class Keys {
         public static Identity<UserAccountRecord, Integer> IDENTITY_USER_ACCOUNT = Internal.createIdentity(UserAccount.USER_ACCOUNT, UserAccount.USER_ACCOUNT.ID);
         public static Identity<UserAddressRecord, Integer> IDENTITY_USER_ADDRESS = Internal.createIdentity(UserAddress.USER_ADDRESS, UserAddress.USER_ADDRESS.ADDRESS_ID);
         public static Identity<UserCartRecordRecord, Integer> IDENTITY_USER_CART_RECORD = Internal.createIdentity(UserCartRecord.USER_CART_RECORD, UserCartRecord.USER_CART_RECORD.ID);
-        public static Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Internal.createIdentity(UserCollection.USER_COLLECTION, UserCollection.USER_COLLECTION.ID);
         public static Identity<UserDetailRecord, Integer> IDENTITY_USER_DETAIL = Internal.createIdentity(UserDetail.USER_DETAIL, UserDetail.USER_DETAIL.ID);
         public static Identity<UserExplainRecord, Short> IDENTITY_USER_EXPLAIN = Internal.createIdentity(UserExplain.USER_EXPLAIN, UserExplain.USER_EXPLAIN.ID);
         public static Identity<UserGoodsRecordRecord, Long> IDENTITY_USER_GOODS_RECORD = Internal.createIdentity(UserGoodsRecord.USER_GOODS_RECORD, UserGoodsRecord.USER_GOODS_RECORD.ID);
@@ -697,7 +697,7 @@ public class Keys {
         public static Identity<ShareAwardReceiveRecord, Integer> IDENTITY_SHARE_AWARD_RECEIVE = Internal.createIdentity(ShareAwardReceive.SHARE_AWARD_RECEIVE, ShareAwardReceive.SHARE_AWARD_RECEIVE.ID);
         public static Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Internal.createIdentity(AttendShareUser.ATTEND_SHARE_USER, AttendShareUser.ATTEND_SHARE_USER.ID);
         public static Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Internal.createIdentity(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID);
-
+        public static final Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Identities0.IDENTITY_USER_COLLECTION;
     }
 
     private static class UniqueKeys0 {
@@ -888,7 +888,6 @@ public class Keys {
         public static final UniqueKey<UserAddressRecord> KEY_B2C_USER_ADDRESS_PRIMARY = Internal.createUniqueKey(UserAddress.USER_ADDRESS, "KEY_b2c_user_address_PRIMARY", UserAddress.USER_ADDRESS.ADDRESS_ID);
         public static final UniqueKey<UserCardRecord> KEY_B2C_USER_CARD_CARD_NO = Internal.createUniqueKey(UserCard.USER_CARD, "KEY_b2c_user_card_card_no", UserCard.USER_CARD.CARD_NO);
         public static final UniqueKey<UserCartRecordRecord> KEY_B2C_USER_CART_RECORD_PRIMARY = Internal.createUniqueKey(UserCartRecord.USER_CART_RECORD, "KEY_b2c_user_cart_record_PRIMARY", UserCartRecord.USER_CART_RECORD.ID);
-        public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = Internal.createUniqueKey(UserCollection.USER_COLLECTION, "KEY_b2c_user_collection_PRIMARY", UserCollection.USER_COLLECTION.ID);
         public static final UniqueKey<UserDetailRecord> KEY_B2C_USER_DETAIL_PRIMARY = Internal.createUniqueKey(UserDetail.USER_DETAIL, "KEY_b2c_user_detail_PRIMARY", UserDetail.USER_DETAIL.ID);
         public static final UniqueKey<UserDetailRecord> KEY_B2C_USER_DETAIL_USER_ID = Internal.createUniqueKey(UserDetail.USER_DETAIL, "KEY_b2c_user_detail_user_id", UserDetail.USER_DETAIL.USER_ID);
         public static final UniqueKey<UserExplainRecord> KEY_B2C_USER_EXPLAIN_PRIMARY = Internal.createUniqueKey(UserExplain.USER_EXPLAIN, "KEY_b2c_user_explain_PRIMARY", UserExplain.USER_EXPLAIN.ID);
@@ -935,5 +934,6 @@ public class Keys {
         public static final UniqueKey<AttendShareUserRecord> KEY_B2C_ATTEND_SHARE_USER_PRIMARY = Internal.createUniqueKey(AttendShareUser.ATTEND_SHARE_USER, "KEY_b2c_attend_share_user_PRIMARY", AttendShareUser.ATTEND_SHARE_USER.ID);
         public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY = Internal.createUniqueKey(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, "KEY_b2c_mp_official_account_user_PRIMARY", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID);
         public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = Internal.createUniqueKey(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, "KEY_b2c_mp_official_account_user_openid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.OPENID, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.APP_ID);
+        public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = Internal.createUniqueKey(UserCollection.USER_COLLECTION, "KEY_b2c_user_collection_PRIMARY", UserCollection.USER_COLLECTION.ID);
     }
 }

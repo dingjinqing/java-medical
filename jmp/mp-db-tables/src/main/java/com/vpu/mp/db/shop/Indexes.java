@@ -6,7 +6,6 @@ package com.vpu.mp.db.shop;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.tables.records.ShareAwardRecord;
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
@@ -380,8 +379,6 @@ public class Indexes {
     public static final Index USER_CART_RECORD_GOODS_CREATE_TIME = Indexes0.USER_CART_RECORD_GOODS_CREATE_TIME;
     public static final Index USER_CART_RECORD_PRIMARY = Indexes0.USER_CART_RECORD_PRIMARY;
     public static final Index USER_CART_RECORD_USER_CREATE_TIME = Indexes0.USER_CART_RECORD_USER_CREATE_TIME;
-    public static final Index USER_COLLECTION_PRIMARY = Indexes0.USER_COLLECTION_PRIMARY;
-    public static final Index USER_COLLECTION_SHOP_ID = Indexes0.USER_COLLECTION_SHOP_ID;
     public static final Index USER_DETAIL_PRIMARY = Indexes0.USER_DETAIL_PRIMARY;
     public static final Index USER_DETAIL_USER_ID = Indexes0.USER_DETAIL_USER_ID;
     public static final Index USER_EXPLAIN_PRIMARY = Indexes0.USER_EXPLAIN_PRIMARY;
@@ -465,7 +462,9 @@ public class Indexes {
     public static final Index MP_OFFICIAL_ACCOUNT_USER_SYS_ID = Indexes0.MP_OFFICIAL_ACCOUNT_USER_SYS_ID;
     public static final Index MP_OFFICIAL_ACCOUNT_USER_UNIONID = Indexes0.MP_OFFICIAL_ACCOUNT_USER_UNIONID;
     public static final Index MESSAGE_TEMPLATE_CONFIG_PRIMARY = Indexes0.MESSAGE_TEMPLATE_CONFIG_PRIMARY;
-
+    public static final Index USER_COLLECTION_PRIMARY = Indexes0.USER_COLLECTION_PRIMARY;
+    public static final Index USER_COLLECTION_SHOP_ID = Indexes0.USER_COLLECTION_SHOP_ID;
+    public static final Index USER_COLLECTION_GOODS_ID = Indexes0.USER_COLLECTION_GOODS_ID;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -814,8 +813,6 @@ public class Indexes {
         public static Index USER_CART_RECORD_GOODS_CREATE_TIME = Internal.createIndex("goods_create_time", UserCartRecord.USER_CART_RECORD, new OrderField[] { UserCartRecord.USER_CART_RECORD.GOODS_ID, UserCartRecord.USER_CART_RECORD.CREATE_TIME }, false);
         public static Index USER_CART_RECORD_PRIMARY = Internal.createIndex("PRIMARY", UserCartRecord.USER_CART_RECORD, new OrderField[] { UserCartRecord.USER_CART_RECORD.ID }, true);
         public static Index USER_CART_RECORD_USER_CREATE_TIME = Internal.createIndex("user_create_time", UserCartRecord.USER_CART_RECORD, new OrderField[] { UserCartRecord.USER_CART_RECORD.USER_ID, UserCartRecord.USER_CART_RECORD.CREATE_TIME }, false);
-        public static Index USER_COLLECTION_PRIMARY = Internal.createIndex("PRIMARY", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.ID }, true);
-        public static Index USER_COLLECTION_SHOP_ID = Internal.createIndex("shop_id", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.SHOP_ID }, false);
         public static Index USER_DETAIL_PRIMARY = Internal.createIndex("PRIMARY", UserDetail.USER_DETAIL, new OrderField[] { UserDetail.USER_DETAIL.ID }, true);
         public static Index USER_DETAIL_USER_ID = Internal.createIndex("user_id", UserDetail.USER_DETAIL, new OrderField[] { UserDetail.USER_DETAIL.USER_ID }, true);
         public static Index USER_EXPLAIN_PRIMARY = Internal.createIndex("PRIMARY", UserExplain.USER_EXPLAIN, new OrderField[] { UserExplain.USER_EXPLAIN.ID }, true);
@@ -906,5 +903,8 @@ public class Indexes {
         public static Index MP_OFFICIAL_ACCOUNT_USER_SYS_ID = Internal.createIndex("sys_id", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.SYS_ID }, false);
         public static Index MP_OFFICIAL_ACCOUNT_USER_UNIONID = Internal.createIndex("unionid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.UNIONID }, false);
         public static Index MESSAGE_TEMPLATE_CONFIG_PRIMARY = Internal.createIndex("PRIMARY", MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG, new OrderField[] { MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG.ID }, true);
+        public static Index USER_COLLECTION_PRIMARY = Internal.createIndex("PRIMARY", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.ID }, true);
+        public static Index USER_COLLECTION_SHOP_ID = Internal.createIndex("shop_id", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.SHOP_ID }, false);
+        public static Index USER_COLLECTION_GOODS_ID = Internal.createIndex("goods_id", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.GOODS_ID }, false);
     }
 }

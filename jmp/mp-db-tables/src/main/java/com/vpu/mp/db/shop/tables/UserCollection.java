@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.UserCollectionRecord;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCollection extends TableImpl<UserCollectionRecord> {
 
-    private static final long serialVersionUID = -1815709696;
+    private static final long serialVersionUID = 1354396376;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_collection</code>
@@ -68,6 +69,11 @@ public class UserCollection extends TableImpl<UserCollectionRecord> {
     public final TableField<UserCollectionRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>mini_shop_471752.b2c_user_collection.username</code>.
+     */
+    public final TableField<UserCollectionRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
      * The column <code>mini_shop_471752.b2c_user_collection.goods_id</code>.
      */
     public final TableField<UserCollectionRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
@@ -76,6 +82,11 @@ public class UserCollection extends TableImpl<UserCollectionRecord> {
      * The column <code>mini_shop_471752.b2c_user_collection.shop_id</code>. 店铺id
      */
     public final TableField<UserCollectionRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_collection.collect_price</code>. 收藏时价格
+     */
+    public final TableField<UserCollectionRecord, BigDecimal> COLLECT_PRICE = createField("collect_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "收藏时价格");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_collection.create_time</code>.
@@ -133,7 +144,7 @@ public class UserCollection extends TableImpl<UserCollectionRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USER_COLLECTION_PRIMARY, Indexes.USER_COLLECTION_SHOP_ID);
+        return Arrays.<Index>asList(Indexes.USER_COLLECTION_GOODS_ID, Indexes.USER_COLLECTION_PRIMARY, Indexes.USER_COLLECTION_SHOP_ID);
     }
 
     /**

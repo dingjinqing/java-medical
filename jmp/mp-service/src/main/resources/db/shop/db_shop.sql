@@ -879,12 +879,15 @@ create table `b2c_user_collection`
 (
     `id`          int(11) not null auto_increment,
     `user_id`     int(11) not null,
+    `username`    varchar(32) not null default '',
     `goods_id`    int(11) not null,
     `shop_id`     int(11) not null default 0 comment '店铺id',
+    `collect_price` decimal(10, 2) not null default '0.00' comment '收藏时价格',
     `create_time` timestamp        default current_timestamp,
     `update_time` timestamp        default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    key (`shop_id`)
+    key (`shop_id`),
+    key (`goods_id`)
 );
 
 -- -- 退回订单表
