@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_GROUP;
+import static org.apache.commons.lang3.math.NumberUtils.SHORT_ZERO;
 
 
 /**
@@ -39,7 +40,7 @@ public class ServiceTechnicianGroupService extends ShopBaseService {
 	 */
 	public PageResult<ServiceTechnicianGroup> getPageList(TechnicianGroupPageListParam param){
 		SelectConditionStep<?> selectFrom = db().select(SERVICE_TECHNICIAN_GROUP.GROUP_ID, SERVICE_TECHNICIAN_GROUP.GROUP_NAME, SERVICE_TECHNICIAN_GROUP.STORE_ID, SERVICE_TECHNICIAN_GROUP.CREATE_TIME)
-							.from(SERVICE_TECHNICIAN_GROUP).where(SERVICE_TECHNICIAN_GROUP.STORE_ID.eq(param.getStoreId()));
+            .from(SERVICE_TECHNICIAN_GROUP).where(SERVICE_TECHNICIAN_GROUP.STORE_ID.eq(param.getStoreId())).and(SERVICE_TECHNICIAN_GROUP.DEL_FLAG.eq(SHORT_ZERO));
 		PageResult<ServiceTechnicianGroup> pageResult = getPageResult(selectFrom, ServiceTechnicianGroup.class);
 		return pageResult;
 	}
@@ -73,13 +74,13 @@ public class ServiceTechnicianGroupService extends ShopBaseService {
 				.execute();
 		return result;
 	}
-	public int delete(Integer groupId) {
-		int result = db().update(SERVICE_TECHNICIAN_GROUP)
+
+    public void delete(Integer groupId) {
+        db().update(SERVICE_TECHNICIAN_GROUP)
 				.set(SERVICE_TECHNICIAN_GROUP.DEL_FLAG, DISABLE)
 				.where(SERVICE_TECHNICIAN_GROUP.GROUP_ID.eq(groupId))
 				.and(SERVICE_TECHNICIAN_GROUP.DEL_FLAG.eq(NORMAL))
 				.execute();
-		return result;
 	}
 
 

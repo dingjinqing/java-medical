@@ -124,11 +124,8 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 
     @PostMapping("/services/technician/group/delete/{groupId}")
 	public JsonResult deleteTechnicianGroup(@PathVariable Integer  groupId) {
-		int result = shop().store.serviceTechnician.groupService.delete(groupId);
-		if(result>0) {
-			return success(JsonResultCode.CODE_SUCCESS);
-		}
-		return fail(JsonResultCode.CODE_FAIL);
+        shop().store.serviceTechnician.groupService.delete(groupId);
+        return success();
 	}
 
     @PostMapping("/services/technician/group/update")
