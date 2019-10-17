@@ -318,7 +318,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$store.getter.picSpaceCropperFlag, 111)
     // 初始化语言
     this.langDefault()
   },
