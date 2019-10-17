@@ -96,6 +96,7 @@
     <ImageDalog
       pageIndex='pictureSpace'
       :tuneUp="tuneUp"
+      :imageSize=[80,80]
       @handleSelectImg='handleSelectImg'
     />
     <!--修改icon弹窗-->

@@ -104,6 +104,12 @@ import { mapGetters } from 'vuex'
 import { imgsCropperRequest } from '@/api/admin/tree.js'
 import { picSpaceimgsCropperRequest } from '@/api/admin/pictureSpace.js'
 export default {
+  props: {
+    imageSize: {
+      type: Array,
+      default: () => [52, 52]
+    }
+  },
   components: {
     vueCropper
   },
@@ -157,6 +163,14 @@ export default {
       this.imgID = obj.imgid
       this.cropperFlagP = obj.index
       this.option.img = obj.url
+    },
+    imageSize: {
+      handler (newData) {
+        console.log(newData)
+        this.cropperTopInput_one = newData[0]
+        this.cropperTopInput_two = newData[1]
+      },
+      immediate: true
     }
   },
   methods: {

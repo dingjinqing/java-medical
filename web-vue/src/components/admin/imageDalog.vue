@@ -7,7 +7,7 @@
         width="825px"
         :append-to-body='true'
       >
-        <Cropper />
+        <Cropper :imageSize='imageSize' />
         <div class="dialog_top">
           <el-upload
             class="upload-demo"

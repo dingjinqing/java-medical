@@ -129,6 +129,7 @@
     <ImageDalog
       pageIndex='imageDalog'
       :tuneUp="tuneUp"
+      :imageSize=[52,52]
       @handleSelectImg='handleSelectImg'
     />
   </div>
