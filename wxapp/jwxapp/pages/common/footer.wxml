@@ -22,7 +22,7 @@
             <button open-type="{{item.open_type}}" bindgetuserinfo="onGetUserInfo" data-bind_mobile="{{item.bind_mobile}}" data-open_type="{{item.open_type}}" catchtap="onClickBottomNavigator" data-link="{{ item.page }}" data-idx='{{ bot_idx }}' plain='false' class="bottom_nav"
               hover-class='none'>
               <view data-link="{{ item.page }}" data-idx='{{ bot_idx }}' hover-class='none'>
-                <image src="{{imageUrl}}{{bot_idx == idx ? item.hover : item.normal }}" mode="widthFix"></image>
+                <image src="{{bot_idx == idx ? item.hover : item.normal }}" mode="widthFix"></image>
                 <text style='font-size:22rpx;color:{{bot_idx == idx?comColor:"#666"}}'>{{ item.text }}</text>
               </view>
             </button>

@@ -34,7 +34,8 @@
       "pages": [
         "distribution/distribution",
         "distributionorder/distributionorder",
-        "distributionspread/distributionspread"
+        "distributionspread/distributionspread",
+        "integral/integral"
       ]
     }
   ],

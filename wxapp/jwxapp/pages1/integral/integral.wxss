@@ -1,0 +1,419 @@
+/* pages1/integral/integral.wxss */
+@import "/css/iconfont.wxss";
+
+page {
+  background: #f5f5f5;
+}
+
+.container {
+  width: 100%;
+  padding-bottom: 40rpx;
+  background: #f5f5f5;
+  overflow-y: hidden;
+}
+
+.title {
+  width: 100%;
+  height: 80rpx;
+  text-align: center;
+  font-size: 18px;
+  line-height: 80rpx;
+  color: #333;
+}
+
+.middle {
+  width: 100%;
+  background: #fff;
+  height: 300rpx;
+  position: relative;
+}
+
+.score_top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 240rpx;
+}
+
+.score_des {
+  position: absolute;
+  width: 150rpx;
+  height: 60rpx;
+  top: 32rpx;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 24rpx;
+  line-height: 60rpx;
+  right: 0;
+  border-radius: 30rpx 0rpx 0 30rpx;
+  z-index: 9999;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.detail {
+  float: right;
+  color: #f66;
+}
+
+.score_all {
+  color: #f66;
+  font-size: 48rpx;
+  margin-top: 10rpx;
+}
+
+.total, .score_add {
+  color: #fefefe;
+}
+
+.total>text {
+  font-size: 60rpx;
+  font-weight: 600;
+  padding: 0 5rpx;
+}
+
+.score_add>text {
+  font-size: 30rpx;
+  font-weight: 600;
+  padding: 0 5rpx;
+}
+
+.score_add {
+  min-width: 220rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  font-size: 24rpx;
+  border-radius: 30rpx;
+  margin: 10rpx 0;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 0 20rpx;
+}
+
+.score_time {
+  color: #fefefe;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+
+.lists {
+  width: 100%;
+  background: #fff;
+}
+
+.list_top {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  color: #333;
+  border-bottom: 2rpx solid #eee;
+  font-size: 30rpx;
+  text-align: center;
+}
+
+.list_top text {
+  display: inline-block;
+  width: 222rpx;
+  padding: 0 10rpx;
+  text-align: center;
+}
+
+.list_bottom {
+  width: 100%;
+  background: #fff;
+  overflow-y: scroll;
+  padding-left: 40rpx;
+}
+
+.list_bottom .tr {
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  color: #000;
+  font-size: 26rpx;
+  padding: 28rpx 40rpx 28rpx 0;
+}
+
+.list_bottom .tr .mingxi_b {
+  color: #999;
+  font-size: 24rpx;
+  margin-top: 20rpx;
+}
+
+.time_b {
+  float: left;
+}
+
+.get_b {
+  float: right;
+}
+
+.loading {
+  padding: 10rpx;
+  text-align: center;
+}
+
+.loading:before {
+  display: inline-block;
+  margin-right: 5rpx;
+  vertical-align: middle;
+  content: '';
+  width: 40rpx;
+  height: 40rpx;
+  background-size: contain;
+  animation: rotate 1s linear infinite;
+}
+
+.loading.complete:before {
+  display: none;
+}
+
+.load_style {
+  font-size: 24rpx;
+  color: #666;
+  width: 100%;
+  padding: 15rpx 0;
+  text-align: center;
+}
+
+.modal_sign {
+  text-align: center;
+  position: fixed;
+  z-index: 99999;
+  box-sizing: border-box;
+  width: 660rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal_sign, .modal_sign view, .modal_sign text {
+  box-sizing: border-box;
+}
+
+.modal_sign>view {
+  background: #fff;
+  border-radius: 10rpx;
+  padding: 10rpx 10rpx 20rpx;
+  position: relative;
+}
+
+.modal_sign_head {
+  height: 80rpx;
+  line-height: 80rpx;
+  color: #333;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.look_rule {
+  width: 34rpx;
+  position: absolute;
+  right: 26rpx;
+  top: 36rpx;
+  height: 34rpx;
+}
+
+.tosign {
+  width: 73%;
+  background: #f66;
+  color: white;
+  text-align: center;
+  height: 60rpx;
+  line-height: 60rpx;
+  margin: 0 auto;
+  border-radius: 4rpx;
+  font-size: 26rpx;
+  margin-bottom: 10rpx;
+  padding: 0;
+  border: none;
+}
+
+.tosign::after {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.signed {
+  background: #ffefef;
+  color: #ffacac;
+  border: 1px solid #fcd5d8;
+}
+
+.close {
+  position: absolute;
+  width: 54rpx;
+  bottom: -100rpx;
+  left: 45%;
+  z-index: 99999;
+  opacity: 1;
+}
+
+.close image {
+  width: 54rpx;
+  height: 54rpx;
+  position: relative;
+  z-index: 999999;
+}
+
+.pre-jifen-num {
+  width: 154rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 26rpx;
+  margin: 0 auto;
+  text-align: center;
+  color: #f66;
+  position: relative;
+  top: 72rpx;
+  left: 30rpx;
+}
+
+.pre-jifen-num text {
+  font-size: 34rpx;
+}
+
+.tip {
+  text-align: center;
+  font-size: 24rpx;
+  padding: 10rpx;
+  color: #f66;
+  margin: 0 auto;
+}
+
+.tip text {
+  font-family: PingFang-SC-Bold;
+  font-size: 26rpx;
+  font-weight: normal;
+  letter-spacing: 0rpx;
+  color: #f66;
+}
+
+.tip_one {
+  font-size: 26rpx;
+  line-height: 36rpx;
+  color: #333;
+  margin: 0 auto;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.tip_two {
+  color: #999;
+}
+
+.zhezhao {
+  width: 750rpx;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+}
+
+.sub-setting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.score_circle {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  border: solid 2rpx rgba(255, 102, 102, 0.2);
+  margin-bottom: 12rpx;
+}
+
+.score_image {
+  width: 72rpx;
+  height: 72rpx;
+  position: relative;
+  top: -2rpx;
+  animation: mymove 2s 1;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+.middle_line {
+  width: 16rpx;
+  height: 2rpx;
+  background: #ffe0e0;
+  position: absolute;
+  left: -14rpx;
+  top: 30rpx;
+}
+
+.score_image_correct {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.score_day {
+  font-size: 20rpx;
+  color: #666;
+  text-align: center;
+}
+
+.today {
+  color: #f66;
+}
+
+.score_item {
+  text-align: center;
+  margin: 0 8rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 72rpx;
+  height: 100rpx;
+  margin-bottom: 20rpx;
+  position: relative;
+}
+
+.customize-container {
+  margin: 20rpx 0;
+}
+
+.lists view, .lists text {
+  box-sizing: border-box;
+}
+
+.score_bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #fefefe;
+  border-top: 2rpx dashed rgba(255, 255, 255, 0.5);
+  position: absolute;
+  bottom: 0;
+  height: 60rpx;
+}
+
+
+@keyframes mymove {
+  0% {
+    transform: scale(1); /*开始为原始大小*/
+  }
+
+  25% {
+    transform: scale(0.8); /*放大1.1倍*/
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(0.8);
+  }
+}
