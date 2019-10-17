@@ -42,6 +42,9 @@ import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+
 /**
  * 门店管理
  * @author: 卢光耀
@@ -393,8 +396,8 @@ public class AdminStoreController extends AdminBaseController{
      * 批量上架门店服务
      */
     @PostMapping(value = "/api/admin/store/service/batch/on")
-    public JsonResult batchOnStoreService(@RequestBody @Valid @Size(min = 0, max = Integer.MAX_VALUE - 1) int[] serviceIds) {
-//    	shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ONE);
+    public JsonResult batchOnStoreService(@RequestBody @Valid @Size(min = 1, max = Integer.MAX_VALUE - 1) Integer[] serviceIds) {
+        shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ONE);
         return success();
     }
 
@@ -402,8 +405,8 @@ public class AdminStoreController extends AdminBaseController{
      * 批量下架门店服务
      */
     @PostMapping(value = "/api/admin/store/service/batch/off")
-    public JsonResult batchOffStoreService(@RequestBody @Validated @Size(min = 2, max = Integer.MAX_VALUE - 1) int[] serviceIds) {
-//    	shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ZERO);
+    public JsonResult batchOffStoreService(@RequestBody @Validated @Size(min = 1, max = Integer.MAX_VALUE - 1) Integer[] serviceIds) {
+        shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ZERO);
         return success();
     }
 
