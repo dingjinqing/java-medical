@@ -18,6 +18,7 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,6 +35,7 @@ import static com.vpu.mp.db.shop.tables.Cart.CART;
  * @author 孔德成
  * @date 2019/10/14 16:39
  */
+@Service
 public class CartService extends ShopBaseService {
 
     @Autowired
