@@ -1682,7 +1682,7 @@ export default {
       if (name !== '') {
         this.imageSize = [50, 50]
       } else {
-        this.imageSize = [750, 300]
+        this.imageSize = [750, 750]
       }
     },
 
