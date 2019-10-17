@@ -1,0 +1,96 @@
+<view class="body">
+  <include src="../common/header.wxml" />
+  <view class="main-container">
+    <view class="order-status" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <image mode="widthFix" src="{{imageUrl}}image/wxapp/status_success.png"></image>
+      <text>订单完成</text>
+    </view>
+    <view class="shipping_info">
+      <navigator>
+        <view class="logistics" style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
+          <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
+          <view class="shipping_info_content">
+            <view>
+              <text>快递单号：</text>
+              <text>17600236996</text>
+            </view>
+            <view>
+              <text>快递公司：</text>
+              <text>申通快递</text>
+            </view>
+          </view>
+        </view>
+      </navigator>
+      <view class="address_info">
+        <image mode="widthFix" src="{{imageUrl}}image/wxapp/address.png"></image>
+        <view class="shipping_info_content">
+          <view>
+            <text>收货人：</text>
+            <text>刘洋  17600236996</text>
+          </view>
+          <view>
+            <text>地址：</text>
+            <text>北京市北京市海淀区牡丹园花园路13号天博中润216室</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="order_top">
+      <text>配送方式：快递</text>
+    </view>
+    <view class="goods_item">
+      <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
+      <view class="goods_info">
+        <view class="goods_name">
+          小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
+        </view>
+        <view class="goods_spec">颜色：红色</view>
+        <view class="goods_price_num">
+          <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
+          <view class="goods_num">x2</view>
+        </view>
+      </view>
+    </view>
+    <view class="goods_item">
+      <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
+      <view class="goods_info">
+        <view class="goods_name">
+          小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
+        </view>
+        <view class="goods_spec">颜色：红色</view>
+        <view class="goods_price_num">
+          <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
+          <view class="goods_num">x2</view>
+        </view>
+      </view>
+    </view>
+    <view class="pay_info">
+      <view class="pay_item">
+        <text>合计</text>
+        <text>￥726.00</text>
+      </view>
+      <view class="pay_item">
+        <text>使用余额</text>
+        <text>￥300.00</text>
+      </view>
+      <view class="pay_item">
+        <text>促销活动</text>
+        <text>￥14.00</text>
+      </view>
+      <view class="line-item"></view>
+      <view class="total_money">
+        实付款
+        <text style="color:{{comColor}}">￥6.00</text>
+      </view>
+    </view>
+    <view class="order_info">
+      <view class="title">订单信息</view>
+      <view class="order_item">订单编号：xxxxxxxxxxx</view>
+      <view class="order_item">下单时间：xxxxxxxxx</view>
+    </view>
+    <view class="fixed_footer">
+      <view class="footer_item">再次购买</view>
+      <view class="footer_item">查看评价</view>
+    </view>
+  </view>
+</view>

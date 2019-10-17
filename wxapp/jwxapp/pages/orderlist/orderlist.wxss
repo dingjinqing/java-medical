@@ -1,0 +1,165 @@
+.top_pixed{
+  position: fixed;
+  z-index: 1;
+  background: #eee;
+}
+.top_search{
+  display: flex;
+  padding: 10rpx 30rpx;
+  width: 750rpx;
+  box-sizing: border-box;
+  align-items: center;
+}
+.top_search .search{
+  flex: 1;
+  background-color: #fff;
+  border-radius: 10rpx;
+  padding-left: 20rpx;
+  display: flex;
+  align-items: center;
+}
+.top_search .search input{
+  flex: 1;
+  line-height: 80rpx;
+  height: 80rpx;
+}
+.top_search .search .cls_search{
+  padding: 0 24rpx;
+}
+.top_search .search image{
+  width: 30rpx;
+}
+.top_search .btn_search{
+  padding: 0 10rpx;
+}
+.top_pixed .top_nav{
+  width: 750rpx;
+  background-color: #fff;
+  display: flex;
+  white-space: nowrap;
+  height: 80rpx;
+}
+.top_nav view{
+  border-bottom:4rpx solid transparent;
+  padding: 0 40rpx;
+  color: #7f7d7a;
+  line-height: 80rpx;
+}
+.order_list{
+  display: flex;
+  flex-direction: column;
+  padding-top: 190rpx;
+}
+.order_item{
+  color: #333;
+}
+.order_item + .order_item{
+  margin-top: 20rpx;
+}
+.order_sn_status,.goods_item,.pay_info{
+  display: flex;
+  font-size: 26rpx;
+  padding: 10rpx 14rpx;
+  background-color: #fff;
+}
+.goods_item{
+  background-color: #fafafa;
+  padding: 14rpx 14rpx;
+}
+.order_mark{
+  width: auto;
+}
+.order_sn{
+  flex: 1;
+}
+.order_status{
+  width: auto;
+  text-align: right;
+}
+.goods_item > image{
+  width: 150rpx;
+}
+.goods_item > .goods_info{
+  flex: 1;
+  margin-left: 6rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.goods_info > .goods_name{
+  color: #353535;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.goods_info > .goods_spec{
+  color: #888;
+  font-size: 24rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.goods_info > .goods_price_num{
+  display: flex;
+  justify-content: space-between;
+}
+.order_pay_info{
+  border-bottom: 2rpx solid #eee;
+}
+.pay_info .pay_type{
+  flex: 1
+}
+.pay_info .pay_money{
+  width:auto;
+}
+.pay_type > text,.pay_money > text,.presale_info .money > text,.delivery_type > text{
+  color: #000;
+  font-weight: bold;
+}
+.order_button_box{
+  display: flex;
+  flex-direction: row-reverse;
+  background-color: #fff;
+  height: 60rpx;
+  align-items: center;
+  padding: 0 14rpx;
+}
+.order_button_box > view{
+  line-height: 30rpx;
+  height: 30rpx;
+  padding: 6rpx;
+  border: 1px solid #ccc;
+  color: #333;
+  margin-left: 10rpx;
+}
+.presale_info{
+  display: flex;
+  flex-direction: column;
+  padding: 0 14rpx;
+  background-color: #fff;
+}
+.presale_info .time{
+  color: #999;
+  padding: 10rpx 0;
+}
+.partial_delivery_top{
+  flex: 1;
+}
+.partial_delivery_bottom{
+  width: auto;
+}
+.partial_delivery_bottom > .delivery_type{
+  flex: 1;
+}
+/* 部分发货状态下订单头部样式 */
+.order_sn_status.partial_delivery{
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80rpx;
+}
+.order_sn_status.partial_delivery > .partial_delivery_bottom{
+  display: flex;
+  flex: 1;
+}

@@ -8,7 +8,10 @@
     "pages/coupon/coupon",
     "pages/index/index",
     "pages/getCoupon/getCoupon",
-    "components/decorate/card/index"
+    "pages/item/item",
+    "pages/orderlist/orderlist",
+    "pages/orderinfo/orderinfo",
+    "pages/cart/cart"
   ],
   "window": {
     "backgroundTextStyle": "dark",

@@ -1,0 +1,150 @@
+.order-status{
+  height: 200rpx;
+  font-size: 30rpx;
+  color: #fff;
+ text-align: center;
+  line-height: 140rpx;
+}
+.order-status > image{
+  width: 32rpx;
+  vertical-align: middle;
+  margin-right: 10rpx;
+}
+.shipping_info{
+  display: flex;
+  flex-direction: column;
+  border-radius: 10rpx;
+  width: 720rpx;
+  margin: 0 auto;
+  background-color: #fff;
+  margin-top: -60rpx;
+  overflow: hidden;
+  color: #333;
+}
+.shipping_info .logistics{
+  border-bottom: 2rpx solid #eee;
+}
+.logistics,.address_info{
+  display: flex;
+  padding: 16rpx;
+}
+.logistics > image:first-of-type,.address_info > image:first-of-type{
+  width: 32rpx;
+}
+.shipping_info_content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -16rpx;
+  padding-left: 16rpx;
+}
+.shipping_info_content > view{
+  margin-bottom: 16rpx;
+  display: flex;
+}
+.shipping_info_content > view >text:first-of-type{
+  width: auto;
+}
+.shipping_info_content > view >text:last-of-type{
+  flex: 1;
+}
+.order_top{
+  padding: 16rpx;
+  background-color: #fff;
+  color: #333;
+  margin-top: 16rpx;
+}
+
+.goods_item{
+  display: flex;
+  font-size: 26rpx;
+  padding: 14rpx 14rpx;
+  background-color: #fafafa;
+}
+.goods_item > image{
+  width: 150rpx;
+}
+.goods_item > .goods_info{
+  flex: 1;
+  margin-left: 6rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.goods_info > .goods_name{
+  color: #353535;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.goods_info > .goods_spec{
+  color: #888;
+  font-size: 24rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.goods_info > .goods_price_num{
+  display: flex;
+  justify-content: space-between;
+}
+.pay_info{
+  display: flex;
+  flex-direction: column;
+  padding: 16rpx 16rpx 0;
+  background-color: #fff;
+  margin-top: 16rpx;
+}
+.pay_info .pay_item{
+  margin-bottom: 10rpx;
+  color: #888;
+  display: flex;
+}
+.pay_info .pay_item > text:first-of-type{
+  flex: 1;
+}
+.pay_info .total_money{
+  text-align: right;
+  color: #333;
+  padding:10rpx;
+}
+.line-item{
+  height: 2rpx;
+  background-color: #eee;
+}
+.fixed_footer{
+  width: 100%;
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  box-sizing: border-box;
+  height: 100rpx;
+  flex-direction: row-reverse;
+  align-items: center;
+  background-color: #fff;
+  padding: 16rpx;
+}
+.footer_item{
+  height: 60rpx;
+  line-height: 60rpx;
+  padding: 0 10rpx;
+  border: 2rpx solid #eee;
+  margin-left: 10rpx;
+}
+.order_info{
+  margin-top: 16rpx;
+  background-color: #fff;
+  padding: 0 16rpx;
+  overflow: hidden;
+}
+.order_info .title{
+  color: #333;
+  line-height: 60rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.order_item{
+  line-height: 46rpx;
+  color: #888;
+}

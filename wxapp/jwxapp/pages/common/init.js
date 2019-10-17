@@ -180,7 +180,7 @@ var init = {
       this.bottom = this._converBottom(util.getCache("bottom"));
       if (!this.bottom) return {};
     }
-    var mainColor = this.bottom.setting.shop_style[0];
+    var mainColor = this.bottom.setting.shop_style[1];
     if (this.bottom.setting.shop_style == "" || !this.bottom.setting.shop_style) {
       this.bottom.setting.shop_style[0] = "#ff6666";
       this.bottom.setting.shop_style[1] = "#fee6e6";
@@ -188,7 +188,7 @@ var init = {
     util.setCache("main_colors", this.bottom.setting.shop_style[0]);
     util.setCache("help_colors", this.bottom.setting.shop_style[1]);
     var colors = {
-      commonColor: this.bottom.setting.shop_style[1], //辅色,
+      commonColor: this.bottom.setting.shop_style[0], //辅色,
       comColor: mainColor, // 主色
       somColor: util.colorRgb(mainColor, 0.2), //标签背景渐变色,
       linColor: util.colorRgb(mainColor, 0.8), //活动，下载海报按钮背景渐变色

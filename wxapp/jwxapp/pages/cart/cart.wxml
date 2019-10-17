@@ -1,0 +1,122 @@
+<view class="body">
+    <include src="../common/header.wxml" />
+    <view class="main-container">
+        <view class="list_box">
+            <view class="cart-goods_item">
+                <view class="flex_goods">
+                    <view class="checkbox_box">
+                        <text class="iconfont icondanxuan" style="color:{{comColor}}"></text>
+                    </view>
+                    <view class="goods_item">
+                        <view class="goods_img">
+                            <image src="{{imageUrl}}image/wxapp/no_change_icon.png" mode="widthFix"/>
+                            <view class="invalid">
+                                无效商品
+                            </view>
+                        </view>
+                        <view class="goods_info">
+                            <view>
+                                <view class="goods_name">
+                                    大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣
+                                </view>
+                                <view class="goods_spec">
+                                    56465465464
+                                </view>
+                            </view>
+                            <view class="goods_price">
+                                <view class="price" style="color:{{comColor}}">￥500.00</view>
+                                <view class="num_cfg">
+                                  <view class="num_minus" bindtap="goodsNumMinus">-</view>
+                                  <input type="number" value="1"></input>
+                                  <view class="num_plus" bindtap="goodsNumPlus">+</view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="cart-goods_item">
+                <view class="flex_goods">
+                    <view class="checkbox_box">
+                        <text class="iconfont icondanxuan" style="color:{{comColor}}"></text>
+                    </view>
+                    <view class="goods_item">
+                        <view class="goods_img">
+                            <image src="{{imageUrl}}image/wxapp/no_change_icon.png" mode="widthFix"/>
+                            <view class="invalid">
+                                无效商品
+                            </view>
+                        </view>
+                        <view class="goods_info">
+                            <view>
+                                <view class="goods_name">
+                                    大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣
+                                </view>
+                                <view class="goods_spec">
+                                    56465465464
+                                </view>
+                            </view>
+                            <view class="goods_price">
+                                <view class="price" style="color:{{comColor}}">￥500.00</view>
+                                <view class="num_cfg">
+                                  <view class="num_minus" bindtap="goodsNumMinus">-</view>
+                                  <input type="number" value="1"></input>
+                                  <view class="num_plus" bindtap="goodsNumPlus">+</view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="cart-goods_item">
+                <view class="flex_goods">
+                    <view class="checkbox_box">
+                        <text class="iconfont icondanxuan" style="color:{{comColor}}"></text>
+                    </view>
+                    <view class="goods_item">
+                        <view class="goods_img">
+                            <image src="{{imageUrl}}image/wxapp/no_change_icon.png" mode="widthFix"/>
+                            <view class="invalid">
+                                无效商品
+                            </view>
+                        </view>
+                        <view class="goods_info">
+                            <view>
+                                <view class="goods_name">
+                                    大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣大衣
+                                </view>
+                                <view class="goods_spec">
+                                    56465465464
+                                </view>
+                            </view>
+                            <view class="goods_price">
+                                <view class="price" style="color:{{comColor}}">￥500.00</view>
+                                <view class="num_cfg">
+                                  <view class="num_minus" bindtap="goodsNumMinus">-</view>
+                                  <input type="number" value="1"></input>
+                                  <view class="num_plus" bindtap="goodsNumPlus">+</view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="flex_footer">
+            <view class="footer_left">
+                <text class="iconfont icondanxuan" style="color:{{comColor}}"></text>
+                <text>全选</text>
+            </view>
+            <view class="footer_center">  
+                <text>合计</text>
+                 <text class="total_price" style="color:{{comColor}}">￥500.00</text>
+            </view>
+            <view class="footer_right" >
+                <view class="footer_btn" style="color:#fff;background-color:{{comColor}};">
+                    去结算
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
