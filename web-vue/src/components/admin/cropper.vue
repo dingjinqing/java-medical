@@ -62,9 +62,11 @@
                 :autoCropWidth="option.autoCropWidth"
                 :autoCropHeight="option.autoCropHeight"
                 :enlarge="option.enlarge"
+                :canScale='option.canScale'
                 :fixed='true'
                 @realTime="realTime"
                 @cropMoving='cropMoving'
+                @imgMoving='imgMoving'
               ></vueCropper>
             </div>
             <div
@@ -136,7 +138,8 @@ export default {
         infoTrue: true, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
         autoCropWidth: 80,
         autoCropHeight: 80,
-        enlarge: 1
+        enlarge: 1,
+        canMove: false
       },
       previews: {},
       cropperTopInput_one: 52,
@@ -278,10 +281,19 @@ export default {
 
       this.dialogVisible = false
     },
-    cropMoving (data) {
+    // 图片移动
+    imgMoving (data) {
       console.log(data)
-      this.cropMovingX = data.axis.x1
-      this.cropMovingY = data.axis.y1
+    },
+    // 裁剪框移动
+    cropMoving (data) {
+      console.log(this.$refs.cropper.goAutoCrop)
+      console.log(data)
+      let left = data.axis.x1 - this.$refs.cropper.getImgAxis().x1
+      let top = data.axis.y1 - this.$refs.cropper.getImgAxis().y1
+      console.log(Math.floor(left), '-', Math.floor(top))
+      this.cropMovingX = Math.floor(left)
+      this.cropMovingY = Math.floor(top)
     }
   }
 }

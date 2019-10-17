@@ -638,6 +638,11 @@ export default {
     sortIndex: {
       handler (newData) {
         if (this.modulesData) {
+          if (this.modulesData.tit_center === '0') {
+            this.modulesData.tit_center = false
+          } else {
+            this.modulesData.tit_center = true
+          }
           this.data = this.modulesData
         }
         console.log(newData, this.modulesData)
@@ -653,6 +658,17 @@ export default {
       if (newData) {
         this.commodityModule.buyBtn = false
       }
+    },
+    // 监控该模块右边数据操作
+    data: {
+      handler (newData) {
+        if (this.modulesData.tit_center === false) {
+          this.modulesData.tit_center = '0'
+        } else {
+          this.modulesData.tit_center = '1'
+        }
+      },
+      deep: true
     }
   },
   mounted () {
