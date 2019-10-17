@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.wxapp.collection.CancleCollectParam;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListParam;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListVo;
 
@@ -25,5 +26,16 @@ public class WxAppCollectController extends WxAppBaseController{
 
 		PageResult<CollectListVo> list = shop().collect.collectList(param,userId);
 		return this.success(list);
+	}
+	
+	/**
+	 * 取消收藏
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/collect/cancle")
+	public JsonResult cancleCollect(@RequestBody CancleCollectParam param) {
+		int res = shop().collect.cancalCollect(param);
+		return this.success(res);
 	}
 }

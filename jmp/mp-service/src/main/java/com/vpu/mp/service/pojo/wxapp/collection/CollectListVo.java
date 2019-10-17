@@ -13,6 +13,10 @@ import lombok.Data;
 @Data
 public class CollectListVo {
 	/**
+	 * id
+	 */
+	private Integer id;
+	/**
 	 * 用户ID
 	 */
 	private Integer userId;

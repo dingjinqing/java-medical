@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.wxapp.collection.CancleCollectParam;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListParam;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListVo;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -30,7 +31,7 @@ public class CollectService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<CollectListVo> collectList(CollectListParam param , Integer userId) {
-		 SelectConditionStep<? extends Record> sql = db().select(USER_COLLECTION.USER_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+		 SelectConditionStep<? extends Record> sql = db().select(USER_COLLECTION.ID,USER_COLLECTION.USER_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
 				 GOODS.SHOP_PRICE,GOODS.GOODS_TYPE,USER_COLLECTION.COLLECT_PRICE,USER_COLLECTION.USERNAME,USER_COLLECTION.CREATE_TIME)
 				.from(USER_COLLECTION
 				.leftJoin(GOODS).on(USER_COLLECTION.GOODS_ID.eq(GOODS.GOODS_ID)))
@@ -46,5 +47,16 @@ public class CollectService extends ShopBaseService{
 			}
 		}
 		return lists;
+	}
+	
+	/**
+	 * 取消收藏
+	 * @param param
+	 * @return
+	 */
+	public int cancalCollect(CancleCollectParam param) {
+		System.out.println(1234);
+		int res = db().delete(USER_COLLECTION).where(USER_COLLECTION.ID.eq(param.getId())).execute();
+		return res;
 	}
 }
