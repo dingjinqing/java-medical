@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class UserScoreListVo {
-	private PageResult<ScorePageListVo> dataList;
+	private PageResult<ScorePageListVo> list;
 	private ExpireVo expire;
 
 }
