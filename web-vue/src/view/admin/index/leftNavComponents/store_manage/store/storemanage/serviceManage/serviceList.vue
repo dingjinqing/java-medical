@@ -35,6 +35,7 @@
         <el-button
           type="primary"
           size="small"
+          @click="searchHandle"
         >查询</el-button>
       </div>
       <div class="list_table">
@@ -48,6 +49,7 @@
             'background-color':'#f5f5f5',
             'border':'none'
           }"
+          @selection-change="selectChangeHandle"
         >
           <el-table-column
             type="selection"
@@ -83,20 +85,18 @@
           <el-table-column
             label="添加时间"
             prop="createTime"
+            width="180"
           ></el-table-column>
           <el-table-column
             label="服务模式"
-            prop="name"
+            prop="serviceType"
+            :formatter="formatType"
           ></el-table-column>
           <el-table-column
             label="状态"
-            prop="serviceType"
+            prop="serviceShelf"
+            :formatter="formatShelf"
           >
-            <template slot-scope="row">
-              <div>
-                {{row.serviceType|formatType}}
-              </div>
-            </template>
           </el-table-column>
           <el-table-column
             label="操作"
@@ -111,11 +111,23 @@
                     @click="edit('edit', row)"
                   >编辑</span>
                 </el-tooltip>
-                <el-tooltip content="下架">
+                <el-tooltip
+                  v-if="row.serviceShelf === 1"
+                  content="下架"
+                >
                   <span
                     class="iconSpan"
-                    @click="edit(row.id)"
+                    @click="edit('off', row)"
                   >下架</span>
+                </el-tooltip>
+                <el-tooltip
+                  v-if="row.serviceShelf === 0"
+                  content="上架"
+                >
+                  <span
+                    class="iconSpan"
+                    @click="edit('on', row)"
+                  >上架</span>
                 </el-tooltip>
                 <el-tooltip content="分享">
                   <span
@@ -140,10 +152,22 @@
           </el-table-column>
         </el-table>
         <div class="table-page">
-          <pagination
-            :page-params.sync="pageParams"
-            @pagination="initDataList"
-          ></pagination>
+          <div>
+            <el-button
+              size="small"
+              @click="shelfHandle"
+            >上架</el-button>
+            <el-button
+              size="small"
+              @click="obtainedHandle"
+            >下架</el-button>
+          </div>
+          <div>
+            <pagination
+              :page-params.sync="pageParams"
+              @pagination="initDataList"
+            ></pagination>
+          </div>
         </div>
       </div>
     </div>
@@ -151,7 +175,7 @@
 </template>
 
 <script>
-import { getAllServiceCats, getServiceList, deleteService } from '@/api/admin/storeManage/storemanage/serviceManage'
+import { getAllServiceCats, getServiceList, deleteService, onService, offService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -165,7 +189,8 @@ export default {
         serviceName: ''
       },
       tableData: [],
-      pageParams: {}
+      pageParams: {},
+      selects: []
     }
   },
   created () {
@@ -175,19 +200,30 @@ export default {
     this.initDataList()
   },
   filters: {
-    formatType (val) {
-      if (val === 0) {
-        return '无技师'
-      } else if (val === 1) {
-        return '有技师'
-      }
-    },
     formatImgUrl (serviceImg) {
       const imgs = JSON.parse(serviceImg)
       return imgs[0]
     }
   },
   methods: {
+    formatType (row) {
+      if (row.serviceType === 0) {
+        return '无技师'
+      } else if (row.serviceType === 1) {
+        return '有技师'
+      } else {
+        return ''
+      }
+    },
+    formatShelf (row) {
+      if (row.serviceShelf === 0) {
+        return '下架'
+      } else if (row.serviceShelf === 1) {
+        return '上架'
+      } else {
+        return ''
+      }
+    },
     searchHandle () {
       this.initDataList()
     },
@@ -218,7 +254,54 @@ export default {
             }
           })
           break
+        case 'off':
+          if (row.serviceShelf === 1) {
+            let params = []
+            params[0] = row.id
+            offService(params).then(res => {
+              if (res.error === 0) {
+                this.$message.success('下架成功')
+                this.initDataList()
+              }
+            })
+          }
+          break
+        case 'on':
+          if (row.serviceShelf === 0) {
+            let params = []
+            params[0] = row.id
+            onService(params).then(res => {
+              if (res.error === 0) {
+                this.$message.success('上架成功')
+                this.initDataList()
+              }
+            })
+          }
+          break
       }
+    },
+    selectChangeHandle (selects) {
+      this.selects = selects
+    },
+    // 上架
+    shelfHandle () {
+      let params = this.selects.map(item => item.id)
+      onService(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success('上架成功')
+          this.initDataList()
+        }
+      })
+    },
+    // 下架
+    obtainedHandle () {
+      let params = this.selects.map(item => item.id)
+      offService(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success('下架成功')
+          this.initDataList()
+        }
+      })
     },
     initServiceSelect () {
       let params = {
@@ -254,6 +337,11 @@ export default {
   }
   .list_info {
     padding-bottom: 10px;
+  }
+  .table-page {
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
   }
 }
 </style>

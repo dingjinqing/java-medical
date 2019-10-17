@@ -258,5 +258,7 @@ export const cn = {
   // 门店管理 分组管理
   store_group_list: ['门店管理', '分组管理'],
   // 门店管理 新增门店
-  add_store: ['门店管理', '新增门店']
+  add_store: ['门店管理', '新增门店'],
+  // 门店管理 技师管理 排班配置
+  schedule_setting: ['技师管理', '排班配置']
 }

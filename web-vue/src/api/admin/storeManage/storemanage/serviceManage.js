@@ -21,7 +21,7 @@ export function getAllService (data) {
 // 获取服务列表
 export function getServiceList (data) {
   return service({
-    url: '/api/admin/store/service/list',
+    url: '/api/admin/store/service/all',
     method: 'post',
     data: data
   })
@@ -59,7 +59,22 @@ export function deleteService (data) {
     data: data
   })
 }
-
+// 上架服务
+export function onService (data) {
+  return service({
+    url: '/api/admin/store/service/batch/on',
+    method: 'post',
+    data: data
+  })
+}
+// 下架服务
+export function offService (data) {
+  return service({
+    url: '/api/admin/store/service/batch/off',
+    method: 'post',
+    data: data
+  })
+}
 // 获取服务分类列表
 export function getServiceCatsList (data) {
   return service({

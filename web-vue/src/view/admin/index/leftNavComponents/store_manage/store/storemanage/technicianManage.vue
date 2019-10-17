@@ -30,6 +30,7 @@
 export default {
   data () {
     return {
+      id: '',
       activeName: 'first'
     }
   },
@@ -42,6 +43,7 @@ export default {
     }
   },
   mounted () {
+    this.id = this.$route.query.id
     this.initStatus()
   },
   methods: {

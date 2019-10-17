@@ -165,6 +165,17 @@ const routes = [
       }
     ]
   },
+  // 门店列表 技师管理 排班配置
+  {
+    path: '/admin/home/main/store/storemanage/schedule/list',
+    name: 'schedule_setting',
+    meta: {
+      crumbTitle: 'router.schedule_setting',
+      meta: 'store_manage',
+      category: 'store_list'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/schedulingManage')
+  },
   //   门店分组列表
   {
     path: '/admin/home/main/store/group/list',
