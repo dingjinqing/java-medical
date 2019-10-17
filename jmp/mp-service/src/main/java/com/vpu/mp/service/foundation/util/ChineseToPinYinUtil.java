@@ -6,6 +6,8 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+import org.checkerframework.common.reflection.qual.GetClass;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author 李晓冰
@@ -37,8 +39,9 @@ public class ChineseToPinYinUtil {
             if (chineseChar[i] > 128) {
                 try {
                     pinName.append(PinyinHelper.toHanyuPinyinStringArray(chineseChar[i], format)[0].charAt(0));
-                } catch (BadHanyuPinyinOutputFormatCombination badHanyuPinyinOutputFormatCombination) {
-                    badHanyuPinyinOutputFormatCombination.printStackTrace();
+                } catch (BadHanyuPinyinOutputFormatCombination message) {
+                    LoggerFactory.getLogger(ChineseToPinYinUtil.class).warn("中文转拼音错误："+message.getMessage());
+                    pinName.append("#");
                 }
             } else {
                 pinName.append(chineseChar[i]);
@@ -57,8 +60,9 @@ public class ChineseToPinYinUtil {
             if (Character.toString(chineseChar[i]).matches("[\\u4E00-\\u9FA5]")) {
                 try {
                    pinName.append( PinyinHelper.toHanyuPinyinStringArray(chineseChar[i],format)[0]);
-                } catch (BadHanyuPinyinOutputFormatCombination badHanyuPinyinOutputFormatCombination) {
-                    badHanyuPinyinOutputFormatCombination.printStackTrace();
+                } catch (BadHanyuPinyinOutputFormatCombination message) {
+                    LoggerFactory.getLogger(ChineseToPinYinUtil.class).warn("中文转拼音错误："+message.getMessage());
+                    pinName.append("#");
                 }
             } else {
                 pinName.append(chineseChar[i]);

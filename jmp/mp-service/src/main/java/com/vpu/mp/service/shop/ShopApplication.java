@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -104,6 +105,8 @@ public class ShopApplication {
 
 	@Autowired
 	public GoodsService goods;
+    @Autowired
+    public GoodsMpService goodsMpService;
 	@Autowired
 	public ImageService image;
 	@Autowired

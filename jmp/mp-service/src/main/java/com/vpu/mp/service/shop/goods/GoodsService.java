@@ -67,8 +67,6 @@ public class GoodsService extends ShopBaseService {
     @Autowired
     public ChooseLinkService chooseLink;
     @Autowired
-    public GoodsMpService goodsMpService;
-    @Autowired
     protected MemberCardService memberCardService;
     @Autowired
     protected GoodsSpecProductService goodsSpecProductService;

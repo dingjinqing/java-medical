@@ -14,7 +14,6 @@ import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.Setting;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo.ShowPoster;
-import com.vpu.mp.service.shop.goods.GoodsBrandConfigService;
 
 /**
  * 

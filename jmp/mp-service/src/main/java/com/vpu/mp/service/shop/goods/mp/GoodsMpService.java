@@ -48,6 +48,8 @@ public class GoodsMpService extends ShopBaseService {
     GoodsProductMpService goodsProductMpService;
     @Autowired
     GoodsActivityMpService goodsActivityMpService;
+    @Autowired
+    GoodsBrandSortMpService goodsBrandSortMpService;
 
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据
