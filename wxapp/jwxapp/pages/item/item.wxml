@@ -130,6 +130,7 @@
       <text>立即购买</text>
     </view>
   </view>
+  <include src="../common/footer.wxml" />
   <!-- 优惠券选择弹窗 -->
   <v-popup-coupon show="{{show_recommend_coupons}}" coupon_list="{{goodsInfo.recommend_coupons}}" />
 </view>

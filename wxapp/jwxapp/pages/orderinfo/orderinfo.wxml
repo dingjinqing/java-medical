@@ -93,4 +93,5 @@
       <view class="footer_item">查看评价</view>
     </view>
   </view>
+  <include src="../common/footer.wxml" />
 </view>

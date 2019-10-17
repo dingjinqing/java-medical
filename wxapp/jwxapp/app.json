@@ -11,7 +11,9 @@
     "pages/item/item",
     "pages/orderlist/orderlist",
     "pages/orderinfo/orderinfo",
-    "pages/cart/cart"
+    "pages/cart/cart",
+    "pages/cardlist/cardlist",
+    "pages/cardinfo/cardinfo"
   ],
   "window": {
     "backgroundTextStyle": "dark",

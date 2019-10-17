@@ -1,7 +1,4 @@
 @import "../../css/iconfont.wxss";
-.main-container{
-  padding-bottom: 140rpx;
-}
 .swiper {
   height: 100vw;
   width: 100%;
