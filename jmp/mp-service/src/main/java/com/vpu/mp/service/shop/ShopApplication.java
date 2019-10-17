@@ -1,5 +1,8 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.distribution.*;
+import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
+import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.distribution.*;
 import com.vpu.mp.service.shop.distribution.BrokerageStatisticalService;
 import com.vpu.mp.service.shop.distribution.DistributorCheckService;
 import com.vpu.mp.service.shop.distribution.DistributorGroupService;
@@ -70,6 +74,7 @@ import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
@@ -91,18 +96,18 @@ import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
-import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.shop.version.VersionService;
 import com.vpu.mp.service.shop.video.VideoService;
 
 /**
- *
+ * 
  * @author 新国
  *
  */
 @Service
 public class ShopApplication {
+
 	@Autowired
 	public GoodsService goods;
 	@Autowired
@@ -449,4 +454,7 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public CartService cart;
+
+    @Autowired
+    public EsGoodsCreateService esGoodsService;
 }

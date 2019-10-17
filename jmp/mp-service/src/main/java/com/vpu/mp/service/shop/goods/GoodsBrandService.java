@@ -7,6 +7,8 @@ import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -226,6 +228,19 @@ public class GoodsBrandService extends ShopBaseService {
         } else {
             return false;
         }
+    }
+    /**
+     * 根据brandId列出所有品牌
+     *
+     * @return
+     */
+    public Map<Integer,GoodsBrandVo>  listGoodsBrandNameByIds(List<Integer> ids) {
+        return db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME)
+            .from(GOODS_BRAND)
+            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(GOODS_BRAND.ID.in(ids))
+            .fetch().into(GoodsBrandVo.class)
+            .stream().collect(Collectors.toMap(GoodsBrandVo::getId,x->x));
     }
 
     /**

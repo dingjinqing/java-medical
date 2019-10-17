@@ -151,6 +151,16 @@ public class GoodsSpecProductService extends ShopBaseService {
 
         return goodsSpecProducts;
     }
+    /**
+     * 根据商品id查找对应sku
+     * @param goodsIds
+     * @return
+     */
+    public Map<Integer,Result<GoodsSpecProductRecord>> selectByGoodsIds(List<Integer> goodsIds) {
+        return db().selectFrom(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+            .fetchGroups(GOODS_SPEC_PRODUCT.GOODS_ID);
+    }
 
     /**
      * 根据商品id查询对应的规格属性名值对象

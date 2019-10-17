@@ -102,7 +102,6 @@ public class GoodsSortService extends ShopBaseService {
             .where(s1.SORT_ID.in(ids))
             .fetch();
         if( idResult.isNotEmpty() ){
-
             return getSort(getIdListByRecord3(idResult));
         }
         return new HashMap<Integer,Sort>();
