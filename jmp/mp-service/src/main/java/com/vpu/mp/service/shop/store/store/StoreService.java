@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -19,6 +20,7 @@ import com.vpu.mp.service.pojo.wxapp.store.Location;
 import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
 import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
@@ -102,6 +104,12 @@ public class StoreService extends ShopBaseService {
     public StoreConfigService storeConfigService;
 
     /**
+     * The Member card service.会员卡
+     */
+    @Autowired
+    public MemberCardService memberCardService;
+
+    /**
 	 * 门店列表分页查询
 	 * @param param
 	 * @return StorePageListVo
@@ -118,6 +126,7 @@ public class StoreService extends ShopBaseService {
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListVo.class);
 	}
 
+    private static final Condition delCondition = STORE.DEL_FLAG.eq(BYTE_ZERO);
     /**
      * 门店列表查询-小程序端
      * @param param 查询入参
@@ -126,6 +135,7 @@ public class StoreService extends ShopBaseService {
     public List<StorePojo> getList(StoreListParam param) {
         List<StorePojo> storeList;
         Location location;
+
         try {
             location = MAPPER.readValue(param.getLocation(), Location.class);
             log.debug("地理位置信息为:[param:{},location:{}]", param.getLocation(), location.toString());
@@ -133,19 +143,29 @@ public class StoreService extends ShopBaseService {
             log.error("反序列化地理位置信息[{}]失败", param.getLocation());
             throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
+
         if (BYTE_ZERO.equals(param.getType())) {
-            SelectConditionStep<Record11<Integer, String, String, String, String, String, String, String, String, Byte, Byte>> conditionStep = db()
-                .select(STORE.STORE_ID, STORE.STORE_NAME, STORE.STORE_IMGS, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.LATITUDE, STORE.LONGITUDE, STORE.BUSINESS_STATE, STORE.DEL_FLAG)
-                .from(STORE).where(STORE.DEL_FLAG.eq(BYTE_ZERO));
-            if (!param.getScanStores().equals(BYTE_ZERO)) {
-                conditionStep.and(STORE.POS_SHOP_ID.greaterThan(INTEGER_ZERO));
+            storeList = getStoreByCustomCondition(new HashMap<String, Byte>(2) {{
+                put("scan_stores", param.getScanStores());
+            }}, null);
+        } else if (param.getCardId() != null) {
+            // 会员卡详情也跳转过来的
+            MemberCardPojo memberCardPojo = memberCardService.getMemberCardInfoById(param.getCardId());
+            if (memberCardPojo.getStoreUseSwitch().equals(BYTE_ONE)) {
+                return new ArrayList<>(0);
+            } else {
+                // 会员卡支持门店列表,为空支持所有 todo 库中默认值有问题
+                String[] supportStoreList = memberCardPojo.getStoreList().split(",");
+                if (supportStoreList.length != 0) {
+                    storeList = db().selectFrom(STORE).where(STORE.STORE_ID.in(Arrays.asList(supportStoreList))).and(delCondition).fetchInto(StorePojo.class);
+                } else {
+                    storeList = getStoreByCustomCondition(new HashMap<String, Byte>(2) {{
+                        put("scan_stores", param.getScanStores());
+                    }}, null);
+                }
             }
-            storeList = conditionStep.fetchInto(StorePojo.class);
-        }
-        /*else if (cardId){
-            // TODO 会员卡详情也跳转过来的
-        }*/
-        else {
+        } else {
+//            商品详情页自提/同城配送过来
             if (param.getGoodsId() != null) {
                 // 根据商品id获取商品规格id列表
                 List<GoodsSpecProduct> list = goodsSpecProductService.selectByGoodsId(param.getGoodsId());
@@ -197,6 +217,26 @@ public class StoreService extends ShopBaseService {
         // 结果按照距离 从小到大排序
         Collections.sort(storeList);
         return storeList;
+    }
+
+    /**
+     * Gets store by custom condition.
+     *
+     * @param condition the condition 自定义任意条件
+     * @param fields    the fields 自定义结果字段集
+     */
+    public List<StorePojo> getStoreByCustomCondition(Map<String, ?> condition, List<TableField<StoreRecord, ?>> fields) {
+        if (condition.get("scan_stores") != null) {
+            Byte scanStore = (Byte) condition.get("scan_stores");
+            SelectConditionStep<StoreRecord> conditionStep = db()
+                .selectFrom(STORE).where(delCondition);
+            if (!BYTE_ZERO.equals(scanStore)) {
+                conditionStep.and(STORE.POS_SHOP_ID.greaterThan(INTEGER_ZERO));
+            }
+            return conditionStep.fetchInto(StorePojo.class);
+        } else {
+            return null;
+        }
     }
 
     /**
