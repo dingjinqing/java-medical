@@ -459,6 +459,9 @@ public class UserService extends ShopBaseService {
 				module.put("content", parseMyService(userByUserId, (List<Map<String, Object>>)module.get("content")));
 				logger().info("完成service");
 			}
+			if(StringUtils.isNotEmpty(String.valueOf(module.get("bg_img")))) {
+				module.put("bg_img", image.imageUrl(String.valueOf(module.get("bg_img"))));
+			}
 		}
 		logger().info("parseCenterModule出");
 		return moduleData;
