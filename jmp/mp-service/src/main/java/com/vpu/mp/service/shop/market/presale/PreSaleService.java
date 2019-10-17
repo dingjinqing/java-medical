@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -500,5 +501,15 @@ public class PreSaleService extends ShopBaseService {
             .and(TABLE.END_TIME.greaterThan(date))
             .and(TABLE.STATUS.eq((byte)1))
             .fetchOptional();
+    }
+    public Map<Integer,BigDecimal> getPresaleProductRecordByGoodsIds(List<Integer> goodsIds, Timestamp date){
+         db().select(TABLE.ID,SUB_TABLE.PRESALE_PRICE).from(TABLE)
+            .leftJoin(SUB_TABLE).on(SUB_TABLE.PRESALE_ID.eq(TABLE.ID))
+            .where(SUB_TABLE.GOODS_ID.in(goodsIds))
+            .and(TABLE.START_TIME.lessThan(date))
+            .and(TABLE.END_TIME.greaterThan(date))
+            .and(TABLE.STATUS.eq((byte)1))
+            .fetchOptional();
+        return null;
     }
 }

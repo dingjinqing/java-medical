@@ -4,7 +4,6 @@ import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.goods.es.EsGoods;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
@@ -19,12 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 import static com.vpu.mp.db.shop.Tables.*;
 
 /**
@@ -66,17 +63,16 @@ public class GoodsPriceService extends ShopBaseService {
         return null;
     }
     public Map<Integer, BigDecimal> getShowPriceByIdAndType(Map<Integer,Byte> goodsIdMap){
-        Map<Byte,List<Integer>> goodsTypeMap = new HashMap<>();
-        goodsIdMap.entrySet().forEach(x->{
-            Byte type = x.getValue();
+        Map<Byte,List<Integer>> goodsTypeMap = new HashMap<>(goodsIdMap.size());
+        goodsIdMap.forEach((key, type) -> {
             List<Integer> list;
-            if( goodsTypeMap.containsKey(type) ){
+            if (goodsTypeMap.containsKey(type)) {
                 list = goodsTypeMap.get(type);
-            }else{
+            } else {
                 list = new ArrayList<>();
             }
-            list.add(x.getKey());
-            goodsTypeMap.put(type,list);
+            list.add(key);
+            goodsTypeMap.put(type, list);
         });
         return null;
     }
@@ -116,21 +112,30 @@ public class GoodsPriceService extends ShopBaseService {
                     }
                 }
             }
-//            if( goodsType.equals(OrderConstant.GOODS_TYPE_SECKILL) ){
-//                Map secId =seckillService.getSecKillIdByGoodsIds(goodsIds,now);
-//                if( secId != null ){
-//                    List<SecKillProductVo> resultList = seckillService.getSecKillProductVo(secId);
-//                    showPrice = resultList.stream()
-//                        .map(SecKillProductVo::getSecKillPrice)
-//                        .sorted(BigDecimal::compareTo)
-//                        .collect(Collectors.toList())
-//                        .get(0);
-//                }else{
-//                    outPutLog(now,goodsId,goodsType);
-//                }
-//            }
+            if( goodsType.equals(OrderConstant.GOODS_TYPE_SECKILL) ){
+                Map<Integer,BigDecimal> resultMap = seckillService.getSecKillProductVo(goodsIds,now);
+                if( resultMap.isEmpty() ) {
+                    break;
+                }
+                price.putAll(resultMap);
+            }
+            if( goodsType.equals(OrderConstant.GOODS_TYPE_REDUCE_PRICE) ){
+                Map<Integer,BigDecimal> resultPrice = reducePriceService.getShowPriceByGoodsIds(goodsIds,now);
+                if( resultPrice.isEmpty() ) {
+                    break;
+                }
+                price.putAll(resultPrice);
+            }
+            if( goodsType.equals(OrderConstant.GOODS_TYPE_PRE_SALE) ){
+                Map<Integer,BigDecimal> resultPrice =
+                    preSaleService.getPresaleProductRecordByGoodsIds(goodsIds,now);
+                if( resultPrice.isEmpty() ) {
+                    break;
+                }
+                price.putAll(resultPrice);
+            }
         }
-        return null;
+        return price;
     }
 
     /**
@@ -147,5 +152,15 @@ public class GoodsPriceService extends ShopBaseService {
 
     private void outPutLog(Timestamp now,Integer goodsId,Byte goodsType){
         log.error("{}商品【{}】是{}类型但没找到相关活动",now,goodsId,goodsType);
+    }
+    private void outPutLog(Timestamp now,String goodsId,Byte goodsType){
+        log.error("{}商品【{}】是{}类型但没找到相关活动",now,goodsId,goodsType);
+    }
+    private boolean checkMapData(Map<Object,Object> map,String goodsIds,Timestamp now,Byte goodsType){
+        boolean result = map.isEmpty();
+        if(result ){
+            outPutLog(now, goodsIds,goodsType);
+        }
+        return result;
     }
 }

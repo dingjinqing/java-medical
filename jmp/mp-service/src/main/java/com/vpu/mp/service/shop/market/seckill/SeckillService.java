@@ -25,6 +25,7 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -161,6 +162,16 @@ public class SeckillService extends ShopBaseService {
             from(SEC_KILL_PRODUCT_DEFINE).innerJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).
             where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetch().into(SecKillProductVo.class);
     }
+    public Map<Integer, BigDecimal> getSecKillProductVo(List<Integer> goodsIds, Timestamp date){
+        return  db().select(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.SK_ID)
+            .from(SEC_KILL_PRODUCT_DEFINE)
+            .leftJoin(SEC_KILL_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
+            .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
+            .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
+            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
+            .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
+            .fetchMap(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
+    }
 
     /**
      * 活动新增用户
@@ -220,15 +231,13 @@ public class SeckillService extends ShopBaseService {
      * @param date 当前时间
      * @return 秒杀活动id
      */
-    public Map<Integer,List<SecKillDefineRecord>> getSecKillIdByGoodsIds(List<Integer> goodsIds, Timestamp date){
+    public Map<Integer,Integer> getSecKillIdByGoodsIds(List<Integer> goodsIds, Timestamp date){
         return db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.GOODS_ID)
             .from(SEC_KILL_DEFINE)
             .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
             .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
             .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
             .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
-            .fetchInto(SecKillDefineRecord.class)
-            .stream()
-            .collect(Collectors.groupingBy(SecKillDefineRecord::getGoodsId));
+            .fetchMap(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID);
     }
 }

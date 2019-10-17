@@ -22,8 +22,8 @@ import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import static org.jooq.impl.DSL.*;
@@ -32,6 +32,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.Comparator;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -194,7 +196,48 @@ public class ReducePriceService extends ShopBaseService {
         }
         return res;
     }
+    public Map<Integer,BigDecimal> getShowPriceByGoodsIds(List<Integer> goodsIds,Timestamp date){
+        Map<Integer, Result<Record5<Integer,Byte,String,String,Integer>>> recordMap = db().select(
+            REDUCE_PRICE.ID,
+            REDUCE_PRICE.PERIOD_ACTION,
+            REDUCE_PRICE.EXTEND_TIME,
+            REDUCE_PRICE.POINT_TIME,
+            REDUCE_PRICE_GOODS.GOODS_ID)
+            .from(REDUCE_PRICE_GOODS)
+            .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
+            .where(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
+            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
+            .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(REDUCE_PRICE.START_TIME.lessThan(date))
+            .and(REDUCE_PRICE.END_TIME.greaterThan(date))
+            .orderBy(REDUCE_PRICE.CREATE_TIME.asc())
+            .fetch()
+            .intoGroups(REDUCE_PRICE_GOODS.GOODS_ID);
+        Map<Integer,Integer> goodsIdAndReducePriceIdMap = recordMap.entrySet()
+            .stream()
+            .filter(x->isReturnPrice(x.getValue().get(0)))
+            .collect(Collectors.toMap(Map.Entry::getKey, x->x.getValue().get(0).get(REDUCE_PRICE.ID)));
+        Condition condition = DSL.trueCondition();
+        goodsIdAndReducePriceIdMap.forEach(
+            (key, value) ->
+                condition.or(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(key).and(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(value)))
+        );
+        Map<Integer,BigDecimal> resultPriceMap = new HashMap<>(goodsIdAndReducePriceIdMap.size());
+        Map<Integer,Result<Record2<Integer,BigDecimal>>> beatPrice = db()
+            .select(REDUCE_PRICE_PRODUCT.GOODS_ID,REDUCE_PRICE_PRODUCT.PRD_PRICE)
+            .from(REDUCE_PRICE_PRODUCT)
+            .where(condition)
+            .fetchGroups(REDUCE_PRICE_PRODUCT.GOODS_ID);
+        beatPrice.forEach((k,v)->{
+            if( v.size() > 1){
+                resultPriceMap.put(k,v.sortAsc(REDUCE_PRICE_PRODUCT.PRD_PRICE).get(0).get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
+            }else{
+                resultPriceMap.put(k,v.get(0).get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
+            }
+        });
+        return resultPriceMap;
 
+    }
     /**
      * 根据商品ID和当前时间获取限时降价的商品价格
      * @param goodsId 商品ID
@@ -202,7 +245,7 @@ public class ReducePriceService extends ShopBaseService {
      * @return 在活动有效期内返回价格否则返回null
      */
     public BigDecimal getShowPriceByGoodsId(Integer goodsId,Timestamp date){
-        Integer reducePriceId = db().select(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID)
+        Integer reducePriceId = db().select(REDUCE_PRICE.ID)
             .from(REDUCE_PRICE_GOODS)
             .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
             .where(REDUCE_PRICE_GOODS.GOODS_ID.eq(goodsId))
@@ -242,12 +285,20 @@ public class ReducePriceService extends ShopBaseService {
      * @return 有效：true
      */
     private boolean isReturnPrice(ReducePriceRecord reducePriceRecord ){
+        return isReturnPriceDetail(reducePriceRecord.getPointTime(),reducePriceRecord.getExtendTime(),reducePriceRecord.getPeriodAction());
+    }
+    private boolean isReturnPrice(Record5<Integer,Byte,String,String,Integer> reducePriceRecord ){
+        return isReturnPriceDetail(reducePriceRecord.get(REDUCE_PRICE.POINT_TIME)
+            ,reducePriceRecord.get(REDUCE_PRICE.EXTEND_TIME)
+            ,reducePriceRecord.get(REDUCE_PRICE.PERIOD_ACTION));
+    }
+    private boolean isReturnPriceDetail(String pointTimeStr,String extendTime, Byte PeriodAction ){
         LocalTime startLocalTime;
         LocalTime endLocalTime;
         LocalTime nowLocalTime = LocalTime.now();
         List<Integer> dayArray = new ArrayList<>(7);
-        if(StringUtils.isNotBlank(reducePriceRecord.getPointTime())){
-            String[] pointTime = reducePriceRecord.getPointTime().split("@");
+        if(StringUtils.isNotBlank(pointTimeStr)){
+            String[] pointTime = extendTime.split("@");
             String[] startArray = pointTime[0].split(":");
             String[] endArray = pointTime[1].split(":");
             startLocalTime = LocalTime.of(Integer.parseInt(startArray[0]),Integer.parseInt(startArray[1]));
@@ -256,17 +307,17 @@ public class ReducePriceService extends ShopBaseService {
                 return false;
             }
         }
-        if( StringUtils.isNotBlank(reducePriceRecord.getExtendTime()) ){
-            dayArray = Arrays.stream(reducePriceRecord.getExtendTime().split("@"))
+        if( StringUtils.isNotBlank(extendTime) ){
+            dayArray = Arrays.stream(extendTime.split("@"))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         }
-        if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_DAY.equals(reducePriceRecord.getPeriodAction()) ){
+        if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_DAY.equals(PeriodAction) ){
             return true;
-        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_WEEK.equals(reducePriceRecord.getPeriodAction()) ){
+        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_WEEK.equals(PeriodAction) ){
             Integer dayOfWeek = DateUtil.getLocalDate().getDayOfWeek().getValue();
             return dayArray.contains(dayOfWeek);
-        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_MONTH.equals(reducePriceRecord.getPeriodAction()) ){
+        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_MONTH.equals(PeriodAction) ){
             Integer dayOfMonth = DateUtil.getLocalDate().getDayOfMonth();
             return dayArray.contains(dayOfMonth);
         }
@@ -277,7 +328,18 @@ public class ReducePriceService extends ShopBaseService {
         return db().selectFrom(REDUCE_PRICE_PRODUCT)
             .where(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(reducePriceId))
             .and(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(goodsId))
+            .orderBy(REDUCE_PRICE_PRODUCT.PRD_PRICE.asc())
             .fetchOptional();
+    }
+    private Optional<ReducePriceProductRecord> getReducePriceProductRecordByGoodsIds(List<Integer> reducePriceId,Integer goodsId){
+        return db().selectFrom(REDUCE_PRICE_PRODUCT)
+            .where(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.in(reducePriceId))
+            .and(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(goodsId))
+            .fetchOptional();
+    }
+    private <T> Collector<T,?,List<T>> toSortedList(Comparator<? super T> c) {
+        return Collectors.collectingAndThen(
+            Collectors.toCollection(ArrayList::new), l->{ l.sort(c); return l; } );
     }
 
 }
