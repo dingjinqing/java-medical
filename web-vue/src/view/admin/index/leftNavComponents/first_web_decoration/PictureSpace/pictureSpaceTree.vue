@@ -226,7 +226,7 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <Cropper />
+    <Cropper :allowToInput='true' />
   </div>
 </template>
 <script>

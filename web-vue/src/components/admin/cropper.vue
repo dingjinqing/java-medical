@@ -17,7 +17,7 @@
                 v-model="cropperTopInput_one"
                 size="mini"
                 @blur="handleBlur(0)"
-                :disabled="true"
+                :disabled="disabled"
               ></el-input>
             </div>
             <div class="topDiv">
@@ -26,7 +26,7 @@
                 v-model="cropperTopInput_two"
                 size="mini"
                 @blur="handleBlur(1)"
-                :disabled="true"
+                :disabled="disabled"
               ></el-input>
             </div>
             <div class="topDiv">
@@ -35,7 +35,7 @@
                 v-model="cropperTopInput_three"
                 size="mini"
                 @blur="handleBlur(2)"
-                :disabled="true"
+                :disabled="disabled"
               ></el-input>
             </div>
           </div>
@@ -105,9 +105,13 @@ import { imgsCropperRequest } from '@/api/admin/tree.js'
 import { picSpaceimgsCropperRequest } from '@/api/admin/pictureSpace.js'
 export default {
   props: {
-    imageSize: {
+    imageSize: { // 有上层传来的图片限制尺寸
       type: Array,
       default: () => [52, 52]
+    },
+    allowToInput: { // 图片空间裁剪用户可以自定义输入
+      type: Boolean,
+      default: () => false
     }
   },
   components: {
@@ -143,7 +147,8 @@ export default {
       imgPath: '',
       imgCatId: '',
       imgID: '',
-      cropperFlagP: ''
+      cropperFlagP: '',
+      disabled: true // 用户是否可以自定义输入
     }
   },
   computed: {
@@ -167,10 +172,19 @@ export default {
     imageSize: {
       handler (newData) {
         console.log(newData)
-        this.cropperTopInput_one = newData[0]
-        this.cropperTopInput_two = newData[1]
+        if (newData) {
+          this.cropperTopInput_one = newData[0]
+          this.cropperTopInput_two = newData[1]
+        }
       },
       immediate: true
+    }
+  },
+  mounted () {
+    if (this.allowToInput) {
+      this.disabled = false
+      this.cropperTopInput_one = ''
+      this.cropperTopInput_two = ''
     }
   },
   methods: {
