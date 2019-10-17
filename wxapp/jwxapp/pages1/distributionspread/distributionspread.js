@@ -207,16 +207,6 @@ function dis_request(that) {
   }
 
 
-
-  util.api('/api/wxapp/distribution/group/list', function (res) {
-    
-  }, {});
-
-
-
-
-
-
   // util.api('/api/wxapp/distributor/document', function (res) {
   //   dis_content = res.content;
   //   is_bind_mobile = res.content.is_bind_mobile;

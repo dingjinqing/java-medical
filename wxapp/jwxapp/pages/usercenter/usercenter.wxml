@@ -11,7 +11,7 @@
         <image src='{{imageUrl}}image/wxapp/sign_icon.png' mode='widthFix' />
         <block wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==0}}">
           今日可领{{user_center[0].sign_score.sign_data.receive_score}}积分 <text>签到</text>
-        </block> 
+        </block>
         <block wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==1}}">
           今日已领{{user_center[0].sign_score.sign_data.receive_score}}积分 <text>已连续签到{{user_center[0].sign_score.sign_data.day}}天</text>
         </block>
@@ -27,13 +27,13 @@
     <view  style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'  wx:if='{{user_center[0].bg_type == 0 || user_center[0].bg_type == undefined ||  !user_center[0].bg_type}}' class="top_bg"></view>
   </view>
   <!-- 领取会员卡 -->
-  <!-- <view class='fenlei card_rece clearfix' wx:if="{{is_grade==0 && user_center[0].get_grade==1}}">
+  <view class='fenlei card_rece clearfix' wx:if="{{is_grade==0 && user_center[0].get_grade==1}}">
     <image src="{{imageUrl}}image/wxapp/grade_icon.png" mode="widthFix" />
     您有一张等级会员卡可领取
     <form report-submit='true' bindsubmit='GetCrade'>
         <button form-type='submit' class='btn_card'>立即领取</button>
     </form>
-  </view> -->
+  </view>
   <block wx:for='{{user_center}}' wx:key='key'>
       <!-- 我的资产 -->
       <view class='my_account each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "account_money" && item.is_show == 1}}'>
@@ -88,7 +88,7 @@
                   </view>
                   <view class='account_word'>待收货</view>
               </view>
-              <view class='ac_item' bindtap="bindOrderNav" data-type="FINISHED" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_comment" && item2.is_show == 1}}'>
+              <view class='ac_item' bindtap="bindOrderNav" data-type="FINISHED" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_comment" && item2.is_show == 1 && item.module_style == 1 }}'>
                   <view class='order_img'>
                     <image src="{{item2.icon}}" ></image>
                     <!-- <view class='order_num'  wx:if='{{item2.num != ""}}'  style='color:{{comColor}};border-color:{{comColor}}'>{{item2.num}}</view> -->

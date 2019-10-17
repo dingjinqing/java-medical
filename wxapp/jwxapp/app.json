@@ -2,7 +2,10 @@
   "pages": [
     "pages/usercenter/usercenter",
     "pages/userinfo/userinfo",
+    "pages/webview/webview",
     "pages/memberinfo/memberinfo",
+    "pages/newsearch/newsearch",
+    "pages/searchs/search",
     "pages/store/store",
     "pages/bottom/bottom",
     "pages/coupon/coupon",
@@ -36,10 +39,10 @@
     {
       "root": "pages1",
       "pages": [
+        "integral/integral",
         "distribution/distribution",
         "distributionorder/distributionorder",
-        "distributionspread/distributionspread",
-        "integral/integral"
+        "distributionspread/distributionspread"
       ]
     }
   ],

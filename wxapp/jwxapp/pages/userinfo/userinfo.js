@@ -71,6 +71,10 @@ global.wxPage({
     util.api('/api/wxapp/account/setting', function (res) {
       if (res.error == 0) {
         user_info = res.content;
+        // 头像
+        user_info.user_avatar = res.content.userInfo.userAvatar
+        // 用户名
+        user_info.username = res.content.userInfo.username;
         //性别
         if (user_info.userInfo.sex != null) {
           if (user_info.userInfo.sex == "f") {
