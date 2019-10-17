@@ -28,7 +28,6 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-@ConditionalOnProperty(prefix="es",name = "open", havingValue = "on")
 public class EsManager {
 
     @Autowired(required = false)
