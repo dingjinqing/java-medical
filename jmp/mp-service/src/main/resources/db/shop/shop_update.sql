@@ -921,3 +921,5 @@ ALTER TABLE `b2c_reduce_price` CHANGE `extend_time` `extend_time` VARCHAR(50) NU
 --常乐 商品收藏表
 ALTER TABLE b2c_user_collection add column `username` varchar(32) NOT NULL DEFAULT '' COMMENT '用户名';
 ALTER TABLE b2c_user_collection add column `collect_price` decimal(10, 2) NOT NULL DEFAULT '0.00' COMMENT '收藏时商品价格';
+
+alter table `b2c_part_order_goods_ship` add index `product_id` (`product_id`);

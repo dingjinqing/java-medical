@@ -17,18 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ShippingInfoVo {
-	private String orderSn;
-	/**物流单号*/
-	private String shippingNo;
-	/**快递公司id*/
-	private Byte shippingId;
-	/**物流名称*/
-	private String shippingName;
-	/**发货时间*/
-	private Timestamp shippingTime;
-	/**确认收货时间*/
-	private Timestamp confirmTime;
+public class ShippingInfoVo extends BaseShippingInfoVo{
 	/**商品信息*/
 	private List<Goods> goods;
 	/**批次号：相同为同一批*/

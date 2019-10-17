@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.refund.goods;
 
 import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,9 +13,11 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
+import static org.jooq.impl.DSL.*;
 
 import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -305,6 +308,27 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 			}
 		}
 	}
+
+    /**
+     * 查询单商品行的部分退款信息
+     * @param recId order_goods主键
+     */
+    public OrderConciseRefundInfoVo getOrderGoodsReturnInfo(Integer recId){
+        Record record = (Record) db().select(RETURN_ORDER.RETURN_TYPE,RETURN_ORDER.APPLY_TIME,RETURN_ORDER.SHIPPING_OR_REFUND_TIME,RETURN_ORDER.REFUND_SUCCESS_TIME).from(RETURN_ORDER_GOODS.leftJoin(RETURN_ORDER).on(RETURN_ORDER.RET_ID.eq(RETURN_ORDER_GOODS.RET_ID))).where(RETURN_ORDER_GOODS.REC_ID.eq(recId)).fetchOne();
+        if(record != null){
+            return record.into(OrderConciseRefundInfoVo.class);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 查询单商品行的退款金额（包括申请中的和已已退款的）
+     * @param recId order_goods主键
+     */
+    public BigDecimal getReturnGoodsMoney(Integer recId){
+        return db().select(sum(RETURN_ORDER_GOODS.RETURN_MONEY)).from(RETURN_ORDER_GOODS).where(RETURN_ORDER_GOODS.REC_ID.eq(recId).and(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING).or(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_COMPLETE)))).fetchOne().into(BigDecimal.class);
+    }
 }
 
 

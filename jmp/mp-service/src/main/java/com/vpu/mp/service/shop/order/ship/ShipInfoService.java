@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
+import org.jooq.Record;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
@@ -93,4 +95,17 @@ public class ShipInfoService extends ShopBaseService {
 		
 		shipInfoList.add(record);
 	}
+
+    /**
+     * 	通过order_sn和product_id查单条订单行的发货信息
+     * @return  BaseShippingInfoVo
+     */
+    public BaseShippingInfoVo getOrderGoodsShipping(String orderSn,Integer productId) {
+        Record record = (Record) db().select(PART_ORDER_GOODS_SHIP.ORDER_SN,PART_ORDER_GOODS_SHIP.SHIPPING_ID,PART_ORDER_GOODS_SHIP.SHIPPING_NAME,PART_ORDER_GOODS_SHIP.SHIPPING_NO,PART_ORDER_GOODS_SHIP.SHIPPING_TIME,PART_ORDER_GOODS_SHIP.CONFIRM_TIME).from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(orderSn).and(PART_ORDER_GOODS_SHIP.PRODUCT_ID.eq(productId)));
+        if(record != null){
+            return record.into(BaseShippingInfoVo.class);
+        }else {
+            return null;
+        }
+    }
 }

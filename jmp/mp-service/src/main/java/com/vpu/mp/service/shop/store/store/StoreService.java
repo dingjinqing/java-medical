@@ -504,8 +504,12 @@ public class StoreService extends ShopBaseService {
 	 * @param sourceId
 	 * @return
 	 */
-	public Record1<String> getStoreName(Integer sourceId) {
-		return db().select(STORE.STORE_NAME).from(STORE)
+	public String getStoreName(Integer sourceId) {
+        Record1<String> record =  db().select(STORE.STORE_NAME).from(STORE)
 				.where(STORE.STORE_ID.eq(sourceId)).fetchAny();
+        if(record != null) {
+            return record.into(String.class);
+        }
+        return "";
 	}
 }

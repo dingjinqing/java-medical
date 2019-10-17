@@ -4,25 +4,25 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.db.shop.tables.OrderMust;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
 import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
+import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
+import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
+import com.vpu.mp.service.shop.order.must.OrderMustService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
@@ -66,6 +66,8 @@ import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.user.user.UserService;
 
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.*;
+
 /**
  * 	订单模块普通查询service
  * @author 常乐 2019年6月27日;王帅 2019/7/10
@@ -98,10 +100,12 @@ public class OrderReadService extends ShopBaseService {
 	private ShopReturnConfigService shopReturnConfig;
 	@Autowired
 	private ShipService ship;
+    @Autowired
+    private OrderMustService orderMust;
 	
 	/**
 	 * 订单查询
-	 * @param OrderPageListQueryParam
+	 * @param param
 	 * @return PageResult
 	 */
 	public PageResult<? extends OrderListInfoVo> getPageList(OrderPageListQueryParam param) {
@@ -181,7 +185,7 @@ public class OrderReadService extends ShopBaseService {
 	 
 	/**
 	 * 订单详情
-	 * @param mainOrderSn
+	 * @param orderSn
 	 * @return
 	 */
 	public OrderInfoVo get(String orderSn) {
@@ -301,7 +305,7 @@ public class OrderReadService extends ShopBaseService {
 		vo.setOrderInfo(order.into(OrderInfoVo.class));
 		//set can return shipping fee
 		//获取已退运费
-		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(rOrder.getOrderSn());
+		BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(rOrder.getOrderSn());
 		//退运费校验
 		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo() , returnShipingFee)){
 			vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
@@ -379,7 +383,6 @@ public class OrderReadService extends ShopBaseService {
 	/**
 	 * 	金额计算
 	 * @param vo
-	 * @param rOrder
 	 */
 	public void setCalculateMoney (ReturnOrderInfoVo vo) {
 		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
@@ -408,7 +411,7 @@ public class OrderReadService extends ShopBaseService {
 	 
 	/**
 	 * 买单订单详情
-	 * @param param
+	 * @param orderSn
 	 * @return
 	 */
 	 public StoreOrderInfoVo getStoreOrder(String orderSn) {
@@ -487,7 +490,8 @@ public class OrderReadService extends ShopBaseService {
      */
     public Workbook exportOrderList(OrderExportQueryParam param,List<String> columns, String lang) {
         List<OrderExportVo> orderList = orderInfo.getExportOrderList(param);
-        //翻译需要处理的列
+
+        //循环处理需要处理的列
         for(OrderExportVo order : orderList){
             if(columns.contains(OrderExportVo.IS_NEW)){
                 //是否新用户
@@ -557,6 +561,68 @@ public class OrderReadService extends ShopBaseService {
             if(columns.contains(OrderExportVo.ORDER_STATUS_NAME)){
                 //订单状态
                 order.setOrderStatusName(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
+            }
+            if(order.getPartShipFlag() == OrderConstant.PART_SHIP){
+                //部分发货
+                BaseShippingInfoVo shipping = shipInfo.getOrderGoodsShipping(order.getOrderSn(),order.getProductId());
+                if(shipping != null){
+                    if(shipping.getConfirmTime() != null){
+                        order.setOrderStatusName(OrderConstant.getOrderStatusName(OrderConstant.ORDER_RECEIVED,lang));
+                    }else{
+                        order.setOrderStatusName(OrderConstant.getOrderStatusName(OrderConstant.ORDER_WAIT_DELIVERY,lang));
+                    }
+                    order.setShippingTime(shipping.getShippingTime());
+                    order.setShippingName(shipping.getShippingName());
+                    order.setShippingNo(shipping.getShippingNo());
+                }else{
+                    order.setShippingTime(null);
+                    order.setShippingName("");
+                    order.setShippingNo("");
+                }
+            }
+            if(columns.contains(OrderExportVo.RETURN_SHIPPING_FEE)){
+                //退运费
+                order.setReturnShippingFee(returnOrder.getReturnShippingFee(order.getOrderSn()));
+            }
+            if(columns.contains(OrderExportVo.RETURN_TIME) || columns.contains(OrderExportVo.RETURN_FINISH_TIME) || columns.contains(OrderExportVo.RETURN_ORDER_MONEY)){
+                //退款信息
+                OrderConciseRefundInfoVo returnInfo = returnOrderGoods.getOrderGoodsReturnInfo(order.getRecId());
+                if(returnInfo != null){
+                    order.setReturnTime(returnInfo.getReturnType() == OrderConstant.RETURN_TYPE_MONEY ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());
+                    order.setReturnFinishTime(returnInfo.getRefundSuccessTime());
+                    order.setReturnOrderMoney(returnOrderGoods.getReturnGoodsMoney(order.getRecId()));
+                }
+            }
+            if(columns.contains(OrderExportVo.IS_COD)){
+                //是否货到付款
+                order.setIsCodString(order.getIsCod() == OrderConstant.IS_COD_YES ? Util.translateMessage(lang, JsonResultMessage.YES ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.NO ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+            }
+            if(columns.contains(OrderExportVo.SOURCE)){
+                //商品来源
+                GoodsRecord goods= saas.getShopApp(getShopId()).goods.getGoodsById(order.getGoodsId()).get();
+                order.setSource(goods.getSource() > 0 ? Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_GOODS_SOURCE_SELF_OPERATED ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_GOODS_SOURCE_PLATFORM ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+            }
+            if(columns.contains(OrderExportVo.CUSTOM)){
+                //下单必填信息
+                OrderMustVo orderMustVo = orderMust.getOrderMustByOrderSn(order.getOrderSn());
+                orderMustVo.setLang(lang);
+                order.setCustom(orderMustVo.toString());
+            }
+            if(columns.contains(OrderExportVo.USER_SOURCE)){
+                //下单用户来源
+                if(order.getUserSource() == BACK_STAGE.getCode()){
+                    order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_ADMIN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                }
+                if(order.getUserSource() == NOT_ACQUIRED.getCode() && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                    order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_UNKNOWN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                }
+                if(order.getUserSource() > BACK_STAGE.getCode()){
+                    order.setUserSourceString(saas.getShopApp(getShopId()).store.getStoreName(order.getUserSource()));
+                }
+                if(order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                    String channelName = saas.getShopApp(getShopId()).channelService.selectChannelName(order.getInviteActId());
+                    order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_CHANNEL ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL,channelName));
+                }
             }
 
             //TODO

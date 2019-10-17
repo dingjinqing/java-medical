@@ -311,10 +311,7 @@ public class MemberService extends ShopBaseService {
 		} else {
 			/** 门店名称 */
 			if(member.getSource() != null) {
-				 Record record = store.getStoreName(new Integer(member.getSource()));
-				 if(record != null) {
-					 sourceName = record.into(String.class);
-				 }
+                sourceName = store.getStoreName(new Integer(member.getSource()));
 			}
 		}
 		return sourceName;

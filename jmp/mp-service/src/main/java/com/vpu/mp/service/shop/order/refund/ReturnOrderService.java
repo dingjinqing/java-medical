@@ -143,7 +143,7 @@ public class ReturnOrderService extends ShopBaseService{
 	 * @param orderSn 订单号
 	 * @return 存在退运费成功则返回金额，否则为0
 	 */
-	public BigDecimal getReturnShipingFee(String orderSn) {
+	public BigDecimal getReturnShippingFee(String orderSn) {
 		Record1<BigDecimal> fetchOne = db().select(DSL.sum(TABLE.SHIPPING_FEE)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))).fetchOne();
 		return fetchOne.value1() == null ? BigDecimal.ZERO : fetchOne.value1();
 	}

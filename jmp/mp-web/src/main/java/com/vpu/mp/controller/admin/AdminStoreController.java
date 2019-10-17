@@ -248,11 +248,7 @@ public class AdminStoreController extends AdminBaseController{
     public void exportStoreVerifierList(@RequestBody @Valid VerifierListQueryParam verifierListQueryParam,HttpServletResponse response, HttpServletRequest request) throws IOException {
         Workbook workbook =shop().store.storeVerifier.exportStoreVerifierList(verifierListQueryParam,getLang());
         //门店名称
-        String storeName = "";
-        Record record = shop().store.getStoreName(verifierListQueryParam.getStoreId());
-        if(record != null) {
-            storeName = record.into(String.class);
-        }
+        String storeName = shop().store.getStoreName(verifierListQueryParam.getStoreId());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.STORE_VERIFIER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL,storeName);
 
         export2Excel(workbook,fileName,response);

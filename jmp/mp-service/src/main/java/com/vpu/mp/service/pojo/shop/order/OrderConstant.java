@@ -383,4 +383,22 @@ public class OrderConstant {
 	public static final String SHIPPED = "shipped";
 	public static final String FINISHED = "finished";
 	public static final String RETURNING = "returning";
+
+    /**
+     * 退款类型
+     */
+    /**只退款*/
+    public static final Byte RETURN_TYPE_MONEY = 0;
+    /**退货又退款*/
+    public static final Byte RETURN_TYPE_BOTH = 1;
+
+    /**
+     * 是否货到付款订单
+     */
+    /**否*/
+    public static final Byte IS_COD_NO = 0;
+    /**是*/
+    public static final Byte IS_COD_YES = 1;
+
+
 }

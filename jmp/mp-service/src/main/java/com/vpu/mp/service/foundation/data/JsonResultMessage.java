@@ -468,6 +468,20 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_PAY_TYPE_BALANCE = "pay.balance";
     public static final String ORDER_EXPORT_PAY_TYPE_COD = "pay.cod";
     public static final String ORDER_EXPORT_PAY_TYPE_MEMBER_CARD = "pay.member_card";
+    public static final String YES = "yes";
+    public static final String NO = "no";
+    public static final String ORDER_EXPORT_GOODS_SOURCE_PLATFORM = "order.export.goods.source.platform";
+    public static final String ORDER_EXPORT_GOODS_SOURCE_SELF_OPERATED = "order.export.goods.source.self_operated";
+    public static final String ORDER_EXPORT_USER_SOURCE_ADMIN = "order.export.user.source.admin";
+    public static final String ORDER_EXPORT_USER_SOURCE_UNKNOWN = "order.export.user.source.unknown";
+    public static final String ORDER_EXPORT_USER_SOURCE_CHANNEL = "order.export.user.source.channel";
+    /**
+     * 下单必填信息的title
+     */
+    public static final String ORDER_MUST_ORDER_REAL_NAME = "order.must.order_real_name";
+    public static final String ORDER_MUST_ORDER_CID = "order.must.order_cid";
+    public static final String ORDER_MUST_CONSIGNEE_REAL_NAME = "order.must.consignee_real_name";
+    public static final String ORDER_MUST_CONSIGNEE_CID = "order.must.consignee_cid";
 
 
 	/**

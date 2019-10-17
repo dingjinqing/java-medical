@@ -225,7 +225,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			vo.getReturnType()[OrderConstant.RT_GOODS] = true;
 		}
 		//获取已退运费
-		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(currentOrder.getOrderSn());
+		BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(currentOrder.getOrderSn());
 		//退运费校验
 		if(OrderOperationJudgment.adminIsReturnShipingFee(currentOrder , returnShipingFee)){
 			vo.getReturnType()[OrderConstant.RT_ONLY_SHIPPING_FEE] = true;
@@ -344,7 +344,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_NOT_ZERO);
 		}
 		// 获取已退运费
-		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(param.getOrderSn());
+		BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(param.getOrderSn());
 		if (!OrderOperationJudgment.adminIsReturnShipingFee(order, returnShipingFee.add(param.getShippingFee()))) {
 			logger.error("订单sn:{}，该订单运费已经退完或超额",param.getOrderSn());
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS);
@@ -590,7 +590,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		}
 		// 退运费判断
 		if (BigDecimalUtil.compareTo(param.getShippingFee(), null) > 0 ) {
-			BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(param.getOrderSn());
+			BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(param.getOrderSn());
 			if(!OrderOperationJudgment.adminIsReturnShipingFee(order, returnShipingFee.add(param.getShippingFee()))) {
 				logger.error("订单sn:{}，该订单运费已经退完或超额",param.getOrderSn());
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS);

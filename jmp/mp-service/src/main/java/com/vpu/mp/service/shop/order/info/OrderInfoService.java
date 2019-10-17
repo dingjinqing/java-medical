@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.order.info;
 
-import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
@@ -21,7 +20,6 @@ import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_ST
 import static org.jooq.impl.DSL.*;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +32,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
+import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -842,7 +842,7 @@ public class OrderInfoService extends ShopBaseService {
      * @return
      */
     public List<OrderExportVo> getExportOrderList(OrderExportQueryParam param) {
-        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.asterisk(),ORDER_GOODS.REC_ID,ORDER_GOODS.GOODS_ID,ORDER_GOODS.GOODS_SN,ORDER_GOODS.PRODUCT_ID,ORDER_GOODS.PRODUCT_SN,ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_NUMBER,ORDER_GOODS.MARKET_PRICE,ORDER_GOODS.GOODS_PRICE,ORDER_GOODS.DISCOUNTED_GOODS_PRICE,ORDER_GOODS.GOODS_ATTR,ORDER_GOODS.SEND_NUMBER,ORDER_GOODS.RETURN_NUMBER,USER.USERNAME.as("user_name"),USER.MOBILE.as("user_mobile"),USER.SOURCE,USER.INVITE_SOURCE,USER.INVITE_ACT_ID).from(ORDER_INFO).innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.asterisk(),ORDER_GOODS.REC_ID,ORDER_GOODS.GOODS_ID,ORDER_GOODS.GOODS_SN,ORDER_GOODS.PRODUCT_ID,ORDER_GOODS.PRODUCT_SN,ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_NUMBER,ORDER_GOODS.MARKET_PRICE,ORDER_GOODS.GOODS_PRICE,ORDER_GOODS.DISCOUNTED_GOODS_PRICE,ORDER_GOODS.GOODS_ATTR,ORDER_GOODS.SEND_NUMBER,ORDER_GOODS.RETURN_NUMBER,USER.USERNAME.as("user_name"),USER.MOBILE.as("user_mobile"),USER.SOURCE.as("user_source"),USER.INVITE_SOURCE,USER.INVITE_ACT_ID).from(ORDER_INFO).innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         select.where(ORDER_INFO.ORDER_SN.notEqual(ORDER_INFO.MAIN_ORDER_SN));
         buildOptions(select, param);
         select.orderBy(ORDER_INFO.ORDER_ID.desc());

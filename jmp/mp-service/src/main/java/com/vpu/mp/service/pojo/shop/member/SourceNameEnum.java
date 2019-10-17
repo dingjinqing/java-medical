@@ -16,15 +16,15 @@ public enum SourceNameEnum {
 
 	
 	/** 数字代号 */
-	private Byte code;
+	private Integer code;
 	/**来源名称*/
 	private String name;
 	private SourceNameEnum(int code,String name) {
-		this.code = (byte)code;
+		this.code = code;
 		this.name = name;
 	} 
 	
-	public Byte getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	
