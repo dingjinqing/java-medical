@@ -12,16 +12,21 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.*;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
+import org.jooq.Record9;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
 
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
@@ -81,12 +86,12 @@ public class StoreServiceService extends ShopBaseService{
 	 * @return StorePageListVo
 	 */
 	public PageResult<StoreServiceListQueryVo> getServicePageList(StoreServiceListQueryParam param) {
-        SelectWhereStep<? extends Record> select =
+        SelectConditionStep<Record9<Integer, String, String, BigDecimal, String, Integer, Byte, Byte, Timestamp>> select =
 		db().select(STORE_SERVICE.ID,STORE_SERVICE.SERVICE_NAME,STORE_SERVICE.SERVICE_IMG,STORE_SERVICE.SERVICE_PRICE,STORE_SERVICE_CATEGORY.CAT_NAME,STORE_SERVICE.SALE_NUM,STORE_SERVICE.SERVICE_TYPE,STORE_SERVICE.SERVICE_SHELF,STORE_SERVICE.CREATE_TIME).
 		from(STORE_SERVICE).
-		leftJoin(STORE_SERVICE_CATEGORY).on(STORE_SERVICE_CATEGORY.CAT_ID.eq(STORE_SERVICE.CAT_ID));
+            leftJoin(STORE_SERVICE_CATEGORY).on(STORE_SERVICE_CATEGORY.CAT_ID.eq(STORE_SERVICE.CAT_ID)).where(STORE_SERVICE.DEL_FLAG.eq(BYTE_ZERO));
 		select = this.buildServiceOptions(select, param);
-		select.where(STORE_SERVICE.STORE_ID.eq(param.getStoreId())).orderBy(STORE_SERVICE.CREATE_TIME.desc());
+        select.and(STORE_SERVICE.STORE_ID.eq(param.getStoreId())).orderBy(STORE_SERVICE.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreServiceListQueryVo.class);
 	}
 
@@ -97,16 +102,16 @@ public class StoreServiceService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public SelectWhereStep<? extends Record> buildServiceOptions(SelectWhereStep<? extends  Record> select, StoreServiceListQueryParam param) {
+    public SelectConditionStep<Record9<Integer, String, String, BigDecimal, String, Integer, Byte, Byte, Timestamp>> buildServiceOptions(SelectConditionStep<Record9<Integer, String, String, BigDecimal, String, Integer, Byte, Byte, Timestamp>> select, StoreServiceListQueryParam param) {
 		if (param == null) {
 			return select;
 		}
 
         if(param.getCatId() != null && param.getCatId() > 0) {
-			select.where(STORE_SERVICE.CAT_ID.eq(param.getCatId()));
+            select.and(STORE_SERVICE.CAT_ID.eq(param.getCatId()));
 		}
 		if (!StringUtils.isEmpty(param.getServiceName())) {
-			select.where(STORE_SERVICE.SERVICE_NAME.contains(param.getServiceName()));
+            select.and(STORE_SERVICE.SERVICE_NAME.contains(param.getServiceName()));
 		}
 		return select;
 	}
