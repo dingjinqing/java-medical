@@ -25,7 +25,7 @@
             <div
               class="left_info_headBg"
               v-if="item.bg_type!='1'"
-              :style="{'backgroundImage': item.bg_img=='' ? '#eee' : 'url(' + item.bg_img + ')'}"
+              :style="{'backgroundImage': item.bg_img=='' ? '#eee' : 'url(' + bgImage + ')'}"
             ></div>
             <img
               class="center_set"
@@ -46,6 +46,7 @@
               <span>{{ $t('personalCenter.integralTip') }}</span>
             </div>
           </div>
+
           <!-- 左侧结构 -->
           <div
             v-for="(item, index) in leftData"
@@ -54,7 +55,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='account_money' && item.is_show==1"
+              v-if="item.module_name=='account_money' && item.is_show=='1'"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -123,7 +124,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='order' && item.is_show==1"
+              v-if="item.module_name=='order' && item.is_show=='1'"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -251,7 +252,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='useRecord' && item.is_show==1"
+              v-if="item.module_name=='useRecord' && item.is_show=='1'"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -297,7 +298,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='appointment' && item.is_show==1"
+              v-if="item.module_name=='appointment' && item.is_show=='1'"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -343,7 +344,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='service' && item.is_show==1"
+              v-if="item.module_name=='service' && item.is_show=='1'"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>
@@ -521,6 +522,7 @@
             <el-radio label="2">{{ $t('personalCenter.cardStyle') }}</el-radio>
           </el-radio-group>
         </div>
+
         <!-- 右侧结构 -->
         <div class="cententRight_container">
           <el-collapse v-model="activeNames">
@@ -573,8 +575,8 @@
                 <el-form-item label="资产：">
                   <el-switch
                     v-model="item.is_show"
-                    :active-value="1"
-                    :inactive-value="0"
+                    active-value="1"
+                    inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -650,8 +652,8 @@
                 <el-form-item label="订单：">
                   <el-switch
                     v-model="item.is_show"
-                    :active-value="1"
-                    :inactive-value="0"
+                    active-value="1"
+                    inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -805,8 +807,8 @@
                 <el-form-item label="预约：">
                   <el-switch
                     v-model="item.is_show"
-                    :active-value="1"
-                    :inactive-value="0"
+                    active-value="1"
+                    inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -835,8 +837,8 @@
                 <el-form-item label="店铺使用：">
                   <el-switch
                     v-model="item.is_show"
-                    :active-value="1"
-                    :inactive-value="0"
+                    active-value="1"
+                    inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -895,8 +897,8 @@
                 <el-form-item label="服务：">
                   <el-switch
                     v-model="item.is_show"
-                    :active-value="1"
-                    :inactive-value="0"
+                    active-value="1"
+                    inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
@@ -1229,6 +1231,8 @@
     <ImageDalog
       :tuneUp="selfImgDialogShow"
       pageIndex='pictureSpace'
+      :imageSize="imageSize"
+      :isDraggable='isDraggable'
       @handleSelectImg='imgDialogSelectedCallback'
     />
     <!-- 选择链接弹窗 -->
@@ -1251,6 +1255,7 @@ export default {
       activeNames: ['1', '2', '3', '4', '5', '6'],
       styleChoose: '2', // 页面布局样式
       imgHost: `${this.$imageHost}`,
+      bgImage: '',
       selfImgDialogShow: false, // 图片dialog
       moduleTitle: '',
       module_name: '',
@@ -1260,13 +1265,15 @@ export default {
       isShowCustomize: '1', // 自定义模板内容
       customValue: 1, // 自定义模板个数
       templateTitle: '', // 自定义模板标题
+      imageSize: [], // 图片大小
+      isDraggable: false, // 是否支持多选
 
       leftData: [{
         module_name: 'global',
         page_style: '2'
       }, {
         module_name: 'center_header',
-        is_show: 1,
+        is_show: '1',
         bg_type: '1',
         bg_img: ''
       }, {
@@ -1293,7 +1300,7 @@ export default {
         ]
       }, {
         module_name: 'order',
-        is_show: 1,
+        is_show: '1',
         title: '我的订单',
         module_style: '1',
         content: [
@@ -1325,11 +1332,11 @@ export default {
         ]
       }, {
         module_name: 'appointment',
-        is_show: 1,
+        is_show: '1',
         title: '我的预约'
       }, {
         module_name: 'use_record',
-        is_show: 1,
+        is_show: '1',
         title: '使用记录',
         is_show_collect: '1',
         is_show_buy_history: '1',
@@ -1337,7 +1344,7 @@ export default {
       }, {
         module_name: 'service',
         title: '我的服务',
-        is_show: 1,
+        is_show: '1',
         content: [
           {
             is_show: '1',
@@ -1411,12 +1418,12 @@ export default {
         page_style: '2'
       }, {
         module_name: 'center_header',
-        is_show: 1,
+        is_show: '1',
         bg_type: '1',
         bg_img: ''
       }, {
         module_name: 'account_money',
-        is_show: 1,
+        is_show: '1',
         title: '我的资产',
         content: [
           {
@@ -1438,7 +1445,7 @@ export default {
         ]
       }, {
         module_name: 'order',
-        is_show: 1,
+        is_show: '1',
         title: '我的订单',
         module_style: '1',
         content: [
@@ -1470,11 +1477,11 @@ export default {
         ]
       }, {
         module_name: 'appointment',
-        is_show: 1,
+        is_show: '1',
         title: '我的预约'
       }, {
         module_name: 'use_record',
-        is_show: 1,
+        is_show: '1',
         title: '使用记录',
         is_show_collect: '1',
         is_show_buy_history: '1',
@@ -1482,7 +1489,7 @@ export default {
       }, {
         module_name: 'service',
         title: '我的服务',
-        is_show: 1,
+        is_show: '1',
         content: [
           {
             is_show: '1',
@@ -1565,8 +1572,8 @@ export default {
     getPersonal () {
       personalGetRequest().then((res) => {
         if (res.error === 0) {
-          // this.rightData = res.content
-          // this.leftData = res.content
+          this.rightData = res.content
+          this.leftData = res.content
         }
       })
     },
@@ -1672,6 +1679,11 @@ export default {
       this.moduleTitle = title
       this.module_name = name
       this.selfImgDialogShow = !this.selfImgDialogShow
+      if (name !== '') {
+        this.imageSize = [50, 50]
+      } else {
+        this.imageSize = [750, 300]
+      }
     },
 
     // 商品图片点击回调函数
@@ -1679,12 +1691,15 @@ export default {
       // 右侧显示
       for (let i = 0; i < this.rightData.length; i++) {
         if (this.moduleTitle === 'center_header') {
-          this.rightData[i].bg_img = imgObj.imgUrl
+          // this.rightData[i].bg_img = imgObj.imgUrl
+          this.rightData[i].bg_img = '/' + imgObj.imgPath
+          this.bgImage = this.imgHost + this.rightData[i].bg_img
         } else {
           if (this.rightData[i].module_name === this.moduleTitle) {
             for (let j = 0; j < this.rightData[i].content.length; j++) {
               if (this.rightData[i].content[j].icon_name === this.module_name) {
-                this.rightData[i].content[j].icon = imgObj.imgPath
+                this.rightData[i].content[j].icon = '/' + imgObj.imgPath
+                return
               }
             }
           }
@@ -1696,6 +1711,7 @@ export default {
           for (let j = 0; j < this.leftData[i].content.length; j++) {
             if (this.leftData[i].content[j].icon_name === this.module_name) {
               this.leftData[i].content[j].icon = imgObj.imgPath
+              return
             }
           }
         }
