@@ -129,7 +129,7 @@ export default {
         fixedBox: false, // 固定截图框大小 不允许改变
         fixed: true, // 是否开启截图框宽高固定比例
         fixedNumber: [1, 1], // 截图框的宽高比例
-        full: true, // 是否输出原图比例的截图
+        full: false, // 是否输出原图比例的截图
         canMoveBox: true, // 截图框能否拖动
         original: false, // 上传图片按照原始比例渲染
         centerBox: true, // 截图框是否被限制在图片里面
@@ -141,7 +141,7 @@ export default {
       previews: {},
       cropperTopInput_one: 52,
       cropperTopInput_two: 52,
-      cropperTopInput_three: '1',
+      cropperTopInput_three: 1,
       cropMovingX: '',
       cropMovingY: '',
       imgPath: '',
@@ -178,6 +178,20 @@ export default {
         }
       },
       immediate: true
+    },
+    cropperTopInput_one (newData) {
+      if (newData === '') {
+        this.option.fixedNumber[0] = 1
+      } else {
+        this.option.fixedNumber[0] = newData
+      }
+    },
+    cropperTopInput_two (newData) {
+      if (newData === '') {
+        this.option.fixedNumber[1] = 1
+      } else {
+        this.option.fixedNumber[1] = newData
+      }
     }
   },
   mounted () {
@@ -210,6 +224,7 @@ export default {
     handleSave () {
       // console.log(this.imgPath, this.cropperTopInput_one, this.cropperTopInput_two, this.cropMovingX, this.cropMovingY, this.previews.img.width, this.previews.img.height, 98, this.imgCatId, this.imgID)
       // console.log(this.previews)
+
       let obj = {
         remoteImgPath: this.imgPath,
         cropWidth: this.cropperTopInput_one,
