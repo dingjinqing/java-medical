@@ -15,7 +15,7 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     is_block: 0,
     is_authorize: 0,
-    has_apply: false
+    has_apply: false,
   },
 
   /**
@@ -205,6 +205,18 @@ function dis_request(that) {
       dis_desc: util.filterRichText(dis_content.documents.document)
     });
   }
+
+
+
+  util.api('/api/wxapp/distribution/group/list', function (res) {
+    
+  }, {});
+
+
+
+
+
+
   // util.api('/api/wxapp/distributor/document', function (res) {
   //   dis_content = res.content;
   //   is_bind_mobile = res.content.is_bind_mobile;

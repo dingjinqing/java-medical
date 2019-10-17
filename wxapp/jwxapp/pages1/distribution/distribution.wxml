@@ -1,4 +1,3 @@
-<!--pages1/distribution/distribution.wxml-->
 <include src="/pages/common/header.wxml" />
 
 <view class='main-container'>

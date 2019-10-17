@@ -3,7 +3,10 @@ var app = new getApp();
 var util = require('../../utils/util.js');
 var imageUrl = app.globalData.imageUrl;
 var mobile;
-var user_info = {};
+var user_info = {
+  username: '',
+  user_avatar: ''
+};
 var dates;
 var region = ['', '', ''];
 var real_name = '';
@@ -68,35 +71,36 @@ global.wxPage({
     util.api('/api/wxapp/account/setting', function (res) {
       if (res.error == 0) {
         user_info = res.content;
-        //生日
-        if (user_info.birthday_day != null && user_info.birthday_day != 0) {
-          if (parseInt(user_info.birthday_month) < 10) {
-            user_info.birthday_month = '0' + user_info.birthday_month;
-          }
-          if (parseInt(user_info.birthday_day) < 10) {
-            user_info.birthday_day = '0' + user_info.birthday_day;
-          }
-          dates = user_info.birthday_year + '-' + user_info.birthday_month + '-' + user_info.birthday_day;
-          that.setData({
-            date: dates
-          })
-        }
         //性别
-        if (user_info.sex != null) {
-          if (user_info.sex == "f") {
+        if (user_info.userInfo.sex != null) {
+          if (user_info.userInfo.sex == "f") {
             sex_index = 2;
           } else {
             sex_index = 1;
           }
         }
-        //所在地
-        if (user_info.city_code != null) {
-          region[0] = user_info.province_code;
-          region[1] = user_info.city_code;
-          region[2] = user_info.district_code;
+        //生日
+        if (user_info.userInfo.birthdayDay != null && user_info.userInfo.birthdayDay != 0) {
+          if (parseInt(user_info.userInfo.birthdayMonth) < 10) {
+            user_info.userInfo.birthdayMonth = '0' + user_info.userInfo.birthdayMonth;
+          }
+          if (parseInt(user_info.userInfo.birthdayDay) < 10) {
+            user_info.userInfo.birthdayDay = '0' + user_info.userInfo.birthdayDay;
+          }
+          dates = user_info.userInfo.birthdayYear + '-' + user_info.userInfo.birthdayMonth + '-' + user_info.userInfo.birthdayDay;
+          that.setData({
+            date: dates
+          })
         }
-        if (user_info.real_name != null) {
-          real_name = user_info.real_name;
+        // 真实姓名
+        if (user_info.userInfo.realName != null) {
+          real_name = user_info.userInfo.realName;
+        }
+        //所在地
+        if (user_info.cityCode != null) {
+          region[0] = user_info.provinceCode;
+          region[1] = user_info.cityCode;
+          region[2] = user_info.districtCode;
         }
         that.setData({
           user_info: user_info,
@@ -118,25 +122,26 @@ global.wxPage({
   },
   bind_submit: function (e) {
     user_info = {};
-    user_info.is_setting = 1;
-    user_info.mobile = mobile;
-    user_info.user_id = util.getCache('user_id');
-    user_info.open_id = util.getCache("openid");
-    user_info.form_id = e.detail.formId;
+    // user_info.is_setting = 1;
+    user_info.isSetting = 1;
+    // user_info.mobile = mobile;
+    // user_info.user_id = util.getCache('user_id');
+    // user_info.open_id = util.getCache("openid");
+    // user_info.form_id = e.detail.formId;
     //生日
     var date_arr = dates.split('-');
-    user_info.birthday_year = date_arr[0];
-    user_info.birthday_month = date_arr[1];
-    user_info.birthday_day = date_arr[2];
+    user_info.birthdayYear = date_arr[0];
+    user_info.birthdayMonth = date_arr[1];
+    user_info.birthdayDay = date_arr[2];
     //名字
-    if (user_info.real_name == "null") {
-      user_info.real_name = '';
+    if (user_info.realName == "null") {
+      user_info.realName = '';
     }
-    user_info.real_name = real_name;
+    user_info.realName = real_name;
     //所在地
-    user_info.province_code = region[0];
-    user_info.city_code = region[1];
-    user_info.district_code = region[2];
+    user_info.provinceCode = region[0];
+    user_info.cityCode = region[1];
+    user_info.districtCode = region[2];
     //性别
     if (sex_index == 1) {
       user_info.sex = 'm';
@@ -149,20 +154,20 @@ global.wxPage({
         util.toast_fail('请填写完整信息');
         return;
       }
-      if (user_info.birthday_year == "选择您的生日") {
+      if (user_info.birthdayYear == "选择您的生日") {
         util.toast_fail('请填写完整信息');
         return;
       }
-      if (user_info.real_name == "") {
+      if (user_info.realName == "") {
         util.toast_fail('请填写完整信息');
         return;
       }
-      if (user_info.city_code == "") {
+      if (user_info.cityCode == "") {
         util.toast_fail('请填写完整信息');
         return;
       }
-      user_info.card_no = card_no;
-      user_info.is_setting = 2;
+      user_info.cardNo = card_no;
+      user_info.isSetting = 2;
     }
     util.api('/api/wxapp/account/setting', function (res) {
       if (res.error == 0) {

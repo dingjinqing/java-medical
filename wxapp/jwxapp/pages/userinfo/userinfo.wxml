@@ -1,4 +1,4 @@
-<!--pages/userinfo/userinfo.wxml-->
+  <!--pages/userinfo/userinfo.wxml-->
 <include src="../common/header.wxml"/>
 <view class='main-container'>
   <block wx:if="{{user_block == 1}}">
@@ -41,10 +41,19 @@
           </picker>  
         </view>
       </view>
-      <view>
+      <!-- <view>
         <text class='main_txt'>真实姓名</text>
         <block wx:if="{{ user_info.real_name != null && user_info.real_name != 'null' }}">
           <input class='main_ipt' value='{{ user_info.real_name }}' bindblur='realName'  />
+        </block>
+        <block wx:else>
+          <input placeholder='输入您的真实姓名' placeholder-style='#ccc' class='main_ipt' bindblur='realName'  />
+        </block>
+      </view> -->
+      <view>
+        <text class='main_txt'>真实姓名</text>
+        <block wx:if="{{ user_info.userInfo.realName != null && user_info.userInfo.realName != 'null' }}">
+          <input class='main_ipt' value='{{ user_info.userInfo.realName }}' bindblur='realName'  />
         </block>
         <block wx:else>
           <input placeholder='输入您的真实姓名' placeholder-style='#ccc' class='main_ipt' bindblur='realName'  />
