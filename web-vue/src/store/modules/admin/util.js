@@ -27,7 +27,7 @@ const crumbs = {
     },
     TOCHANGE_AUTOREFRESHPICSPACE: (state, params) => {
       state.picSpaceCropperFlag = params
-      console.log(state.activeFresh)
+      console.log(state.picSpaceCropperFlag)
     },
     TOCHANGE_NOTICEINTEGRALDATA: (state, params) => {
       state.integralDataNotice = params

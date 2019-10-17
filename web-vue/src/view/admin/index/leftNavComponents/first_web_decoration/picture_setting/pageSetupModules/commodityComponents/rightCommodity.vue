@@ -300,6 +300,7 @@
                   v-model="commodityModule.commodityScope"
                   placeholder="请选择"
                   size="small"
+                  @change='handleToSelectRange()'
                 >
                   <el-option
                     v-for="item in commodityModule.commodityScopeOptions"
@@ -312,6 +313,7 @@
               </div>
               <!--选中商品范围后显示的对应隐藏弹窗按钮-->
               <div
+                class="hiddenRangeCheck"
                 style="margin-left:100px"
                 v-if="commodityModule.commodityScope!=='0'"
               >
@@ -322,7 +324,10 @@
                 >
                   {{rangeList[Number(commodityModule.commodityScope)]}}
                 </div>
-                <div v-if="rangeCheckData.length>0">已选择{{rangeHiddenRightText}}：{{rangeCheckData.length}}{{rangeHiddenRightText}}</div>
+                <div
+                  style="height:30px;line-height:30px;margin-left:5px"
+                  v-if="rangeCheckData.length>0"
+                >已选择{{rangeHiddenRightText}}：{{rangeCheckData.length}}个{{rangeHiddenRightText}}</div>
               </div>
               <!--end-->
               <div class="goodsPrice price commodityScope">
@@ -438,6 +443,11 @@
       @handleToGetBackData='handleToGetBackData'
       :callAddBrand.sync='callAddBrand'
     />
+    <!--添加商品标签弹窗-->
+    <AddProductLabel
+      @handleToGetBackData='handleToGetBackData'
+      :callAddProductLabel.sync='callAddProductLabel'
+    />
   </div>
 </template>
 <script>
@@ -447,7 +457,8 @@ export default {
     SelectLinks: () => import('@/components/admin/selectLinks'), // 选择链接弹窗
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'), // 添加商家分类弹窗
-    AddBrandDialog: () => import('@/components/admin/addBrandDialog') // 添加商品品牌弹窗
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog'), // 添加商品品牌弹窗
+    AddProductLabel: () => import('@/components/admin/addProductLabel') // 添加商品标签弹窗
   },
   props: {
     modulesData: Object,
@@ -455,7 +466,8 @@ export default {
   },
   data () {
     return {
-      rangeCheckData: [],
+      callAddProductLabel: false, // 添加商品标签弹窗调起
+      rangeCheckData: [], // 选择商品范围后当前范围显示的数据数组
       rangeHiddenRightText: '', // 选择商品范围后右侧出现的文本
       callAddBrand: false, // 调起选择商品品牌弹窗
       chooseGoodsBack: [], // 选择商品回显
@@ -613,7 +625,8 @@ export default {
       ],
       goodsList: [ // 手动推荐显示模块商品列表数据
       ],
-      rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签']
+      rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签'], // 商品范围选中后按钮文本列表
+      rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }]
     }
   },
   watch: {
@@ -741,7 +754,23 @@ export default {
     },
     // 商品范围选中后显示添加按钮点击统一处理
     handleToClickRangeBtn (index) {
+      console.log(index)
       switch (index) {
+        case 1:
+          break
+        case 2:
+          break
+        case 3:
+          this.callAddBrand = true
+          break
+        case 4:
+          this.callAddProductLabel = true
+      }
+    },
+    // 商品范围下拉框选中值变化事件
+    handleToSelectRange () {
+      this.rangeCheckData = this.rangeData[Number(this.commodityModule.commodityScope)]
+      switch (Number(this.commodityModule.commodityScope)) {
         case 1:
           this.rangeHiddenRightText = '分类'
           break
@@ -749,18 +778,17 @@ export default {
           this.rangeHiddenRightText = '分类'
           break
         case 3:
-          this.callAddBrand = true
           this.rangeHiddenRightText = '品牌'
           break
         case 4:
           this.rangeHiddenRightText = '标签'
       }
     },
-    // 选择商品品牌回传数据
+    // 商品范围弹窗选中回传事件
     handleToGetBackData (data) {
       console.log(data)
-      let newData = this.rangeCheckData.concat(data)
-      this.rangeCheckData = newData
+      let arr = this.rangeData[Number(this.commodityModule.commodityScope)] = data
+      this.rangeCheckData = arr
     }
     // this.$emit('handleToBackData', obj) 数据回传调用
   }
@@ -1052,6 +1080,9 @@ export default {
         }
       }
       .moduleRecommendation {
+        .hiddenRangeCheck {
+          display: flex;
+        }
         margin-top: 10px;
         /deep/ .el-radio {
           margin-right: 5px;
@@ -1153,7 +1184,7 @@ export default {
               border: 1px solid #ccc;
               background: #fff;
               cursor: pointer;
-              margin-top: 17px;
+              // margin-top: 17px;
               margin-bottom: 10px;
               &:hover {
                 color: #333;

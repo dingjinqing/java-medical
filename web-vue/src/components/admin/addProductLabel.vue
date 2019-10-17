@@ -2,20 +2,12 @@
   <div class="addBrandDialog">
     <div class="addBrandDialogMain">
       <el-dialog
-        title="添加商品品牌"
-        :visible.sync="callAddBrand"
+        title="添加商品标签"
+        :visible.sync="callAddProductLabel"
         width="40%"
         :modal-append-to-body='false'
       >
         <div class="dialogTop">
-          <div class="topList">
-            <span>品牌名称:</span>
-            <el-input
-              v-model="input"
-              placeholder="请输入内容"
-              size="small"
-            ></el-input>
-          </div>
           <div class="topList">
             <span>品牌分类:</span>
             <el-select
@@ -35,25 +27,7 @@
           <el-button
             size="small"
             type="primary"
-          >主要按钮</el-button>
-        </div>
-        <div class="dialogMiddle">
-          <div class="topList">
-            <span>品牌来源:</span>
-            <el-select
-              v-model="fromValue"
-              placeholder="请选择品牌来源"
-              size="small"
-            >
-              <el-option
-                v-for="item in fromOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
+          >查询</el-button>
         </div>
         <div class="footer">
           <el-table
@@ -75,24 +49,10 @@
             </el-table-column>
             <el-table-column
               prop="pageName"
-              label="品牌名称"
+              label="标签名称"
               align="center"
             >
             </el-table-column>
-            <el-table-column
-              prop="pageClass"
-              label="品牌分类"
-              align="center"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="creatTime"
-              label="创建时间"
-              align="center"
-            >
-
-            </el-table-column>
-
           </el-table>
           <div class="pagination">
             <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
@@ -110,7 +70,7 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="$emit('update:callAddBrand', false)">取 消</el-button>
+          <el-button @click="$emit('update:callAddProductLabel', false)">取 消</el-button>
           <el-button
             type="primary"
             @click="handleToSure()"
@@ -124,7 +84,7 @@
 <script>
 export default {
   props: {
-    callAddBrand: { // 弹窗调起
+    callAddProductLabel: { // 弹窗调起
       type: Boolean,
       default: () => false
     },
@@ -138,21 +98,8 @@ export default {
       currentPage: 1,
       totle: 1,
       pageCount: 1,
-      dialogVisible: false,
-      input: '',
       classValue: '',
       classOptions: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
-      fromValue: '',
-      fromOptions: [{
         value: '选项1',
         label: '黄金糕'
       }, {
@@ -213,9 +160,9 @@ export default {
           })
       }
     },
-    callAddBrand (newData) {
+    callAddProductLabel (newData) {
       if (!newData) {
-        this.$emit('update:callAddBrand', false)
+        this.$emit('update:callAddProductLabel', false)
       }
     }
   },
@@ -263,7 +210,7 @@ export default {
         }
       })
       this.$emit('handleToGetBackData', arr)
-      this.$emit('update:callAddBrand', false)
+      this.$emit('update:callAddProductLabel', false)
     }
   }
 }
@@ -276,10 +223,11 @@ export default {
   }
   .dialogTop {
     display: flex;
-    justify-content: space-between;
+    margin-bottom: 10px;
     .topList {
       display: flex;
       align-items: center;
+      margin-right: 5px;
       span {
         white-space: nowrap;
         display: inline-block;

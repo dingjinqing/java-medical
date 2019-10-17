@@ -307,6 +307,7 @@ export default {
       this.queryImgs()
     },
     picSpaceCropperFlag_ (obj) {
+      console.log(1111)
       this.queryImgs()
     },
     lang (newData) {
@@ -317,7 +318,7 @@ export default {
     }
   },
   mounted () {
-    // console.log(this.clickNode)
+    console.log(this.$store.getter.picSpaceCropperFlag, 111)
     // 初始化语言
     this.langDefault()
   },
@@ -363,6 +364,7 @@ export default {
     },
     // 图片分组查询
     queryImgs () {
+      console.log('123123')
       // console.log(this.firstNodeId)
       let obj = {
         'page': 1,

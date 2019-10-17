@@ -300,10 +300,13 @@ export default {
     },
     checked (newData) {
       this.queryImgs()
+    },
+    '$store.getters.picSpaceCropperFlag' () {
+      this.queryImgs()
     }
   },
   mounted () {
-    console.log(this.options)
+    console.log(this.$store.getters.picSpaceCropperFlag, 'ssdsdsd')
     this.value = this.options[0].value
     // 初始化语言
     this.langDefault()
