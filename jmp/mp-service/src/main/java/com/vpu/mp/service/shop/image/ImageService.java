@@ -220,7 +220,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
         image.setImgSize(param.getSize());
         image.setImgUrl(uploadPath.getImageUrl());
         image.setImgWidth(param.getCropWidth());
-        image.setImgHeight(param.getCropWidth());
+        image.setImgHeight(param.getCropHeight());
         image.setImgCatId(param.getImgCatId());
         image.insert();
         return image;
