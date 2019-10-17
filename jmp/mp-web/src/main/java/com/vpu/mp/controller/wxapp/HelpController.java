@@ -1,7 +1,10 @@
 package com.vpu.mp.controller.wxapp;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +13,7 @@ import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.Util;
 /**
  * 
  * @author zhaojianqiang
@@ -35,7 +39,10 @@ public class HelpController extends BaseController {
 		ShopCfgRecord scoreNum = saas.getShopApp(shop_id).userCard.scoreService.score.getScoreNum("score_document");
 		if(scoreNum!=null) {
 			log.info("设置查询积分说明");
-			return success(scoreNum.getV());
+			String v = scoreNum.getV();
+			Map parseJson = Util.parseJson(v, Map.class);
+			Object object = parseJson.get("document");
+			return success(object);
 		}
 		log.info("未设置查询积分说明");
 		return fail();
