@@ -60,7 +60,10 @@
                   size="mini"
                   @click="handleSearch()"
                 >{{$t('imgageDalog.search')}}</el-button>
-                <el-checkbox v-model="checked">{{this.sizeW}}px x {{this.sizeH}}px</el-checkbox>
+                <el-checkbox
+                  v-if="imageSize.length"
+                  v-model="checked"
+                >{{this.sizeW}}px x {{this.sizeH}}px</el-checkbox>
               </div>
               <div class="right_content">
                 <ul>
@@ -210,7 +213,21 @@ import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } fr
 import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree, Cropper, draggable },
-  props: ['pageIndex', 'tuneUp', 'isDraggable', 'imageSize'],
+  props: {
+    pageIndex: String, // 数据库选择
+    tuneUp: { // 调起弹窗
+      type: Boolean,
+      default: () => false
+    },
+    isDraggable: { // 开启多选
+      type: Boolean,
+      default: () => false
+    },
+    imageSize: { // 限制图片宽高
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       dialogTableVisible: false,
@@ -290,7 +307,7 @@ export default {
     imageSize: {
       handler (newData) {
         console.log(newData)
-        if (newData) {
+        if (newData.length) {
           this.sizeW = newData[0]
           this.sizeH = newData[1]
         }
@@ -483,13 +500,16 @@ export default {
     },
     // 图片选中
     handleChecked (index) {
-      if (this.img_list[index].imgWidth !== this.sizeW || this.img_list[index].imgHeight !== this.sizeH) {
-        this.$message.error({
-          message: '图片宽高不符合要求',
-          showClose: true
-        })
-        return
+      if (this.sizeW && this.sizeH) {
+        if (this.img_list[index].imgWidth !== this.sizeW || this.img_list[index].imgHeight !== this.sizeH) {
+          this.$message.error({
+            message: '图片宽高不符合要求',
+            showClose: true
+          })
+          return
+        }
       }
+
       this.img_list[index].checked = !this.img_list[index].checked
       console.log(this.img_list[index])
       if (this.isDraggable) {

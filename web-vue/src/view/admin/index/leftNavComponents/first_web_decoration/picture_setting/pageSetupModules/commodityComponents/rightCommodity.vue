@@ -7,29 +7,29 @@
           <span>模块标题:</span>
           <div>
             <el-radio
-              v-model="titleRadio"
-              label="1"
+              v-model="data.goods_module_title"
+              label="0"
             >不设置</el-radio>
             <el-radio
-              v-model="titleRadio"
-              label="2"
+              v-model="data.goods_module_title"
+              label="1"
             >文字标题</el-radio>
             <el-radio
-              v-model="titleRadio"
-              label="3"
+              v-model="data.goods_module_title"
+              label="2"
             >图片标题</el-radio>
           </div>
         </div>
         <!--模块标题隐藏模块-->
         <div
           class="titleHidden"
-          v-if="titleRadio==='2' || titleRadio==='3'"
+          v-if="data.goods_module_title==='1' || data.goods_module_title==='2'"
         >
           <div class="titleHiddenMain">
             <div class="topTitle">
               <span>标题：</span>
               <el-input
-                v-model="titleInput"
+                v-model="data.title"
                 size="small"
               ></el-input>
               <span>最多10个字</span>
@@ -37,7 +37,7 @@
             <div class="topLink">
               <span>标题链接：</span>
               <el-input
-                v-model="titleLinkInput"
+                v-model="data.title_link"
                 size="small"
               ></el-input>
               <el-button
@@ -50,7 +50,7 @@
               <el-checkbox v-model="positionChecked">标题居中</el-checkbox>
             </div>
             <div class="bgImg">
-              <span>{{titleRadio==='2'?'图标':titleRadio==='3'?'标题图片':''}}：</span>
+              <span>{{data.goods_module_title==='1'?'图标':data.goods_module_title==='2'?'标题图片':''}}：</span>
               <div class="bgIcon">
 
                 <img
@@ -626,13 +626,20 @@ export default {
       goodsList: [ // 手动推荐显示模块商品列表数据
       ],
       rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签'], // 商品范围选中后按钮文本列表
-      rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }]
+      rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }], // 商品范围四类弹框选中数据池
+      // 模块保存数据
+      data: {
+
+      }
     }
   },
   watch: {
     // 中间模块当前高亮index
     sortIndex: {
       handler (newData) {
+        if (this.modulesData) {
+          this.data = this.modulesData
+        }
         console.log(newData, this.modulesData)
       },
       immediate: true
@@ -665,7 +672,7 @@ export default {
     },
     // 选择链接选中回传
     handleToSelectLinkPath (path) {
-      this.titleLinkInput = path
+      this.data.title_link = path
       console.log(path)
     },
     // 选择图片选中回传
