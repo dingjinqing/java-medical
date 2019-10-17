@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.collection;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import lombok.Data;
 
@@ -26,6 +27,22 @@ public class CollectListVo {
 	/**
 	 * 商品图片
 	 */
-	private String goodsImg;
+	private String goodsImg;	
+	/**
+	 * 商品类型
+	 */
+	private Integer goodsType;
+	/**
+	 * 用户名
+	 */
+	private String username;
+	/**
+	 * 收藏时商品价格
+	 */
+	private BigDecimal collectPrice;
+	/**
+	 * 收藏时间
+	 */
+	private Timestamp createTime;
 	
 }

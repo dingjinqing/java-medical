@@ -30,10 +30,11 @@ public class CollectService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<CollectListVo> collectList(CollectListParam param , Integer userId) {
-		 SelectConditionStep<? extends Record> sql = db().select(USER_COLLECTION.USER_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE)
+		 SelectConditionStep<? extends Record> sql = db().select(USER_COLLECTION.USER_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+				 GOODS.SHOP_PRICE,GOODS.GOODS_TYPE,USER_COLLECTION.COLLECT_PRICE,USER_COLLECTION.USERNAME,USER_COLLECTION.CREATE_TIME)
 				.from(USER_COLLECTION
 				.leftJoin(GOODS).on(USER_COLLECTION.GOODS_ID.eq(GOODS.GOODS_ID)))
-				.where(USER_COLLECTION.USER_ID.eq(userId));
+				.where(USER_COLLECTION.USER_ID.eq(userId).and(GOODS.DEL_FLAG.eq((byte)0)));
 		PageResult<CollectListVo> list = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), CollectListVo.class);
 		
 		//TODO:判断是否为拼团商品
