@@ -492,6 +492,15 @@ public class PreSaleService extends ShopBaseService {
         Integer goodsId = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOne(TABLE.GOODS_ID);
         return format(SHARE_PAGE_PATH, goodsId, presaleId);
     }
+    
+    /**
+     * 查询活动有效时间区间
+     * @param id
+     * @return Record2<START_TIME, END_TIME>
+     */
+    public Record2<Timestamp, Timestamp> getTimeInterval(Integer id) {
+    	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).fetchOne();
+    }
 
     public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){
         return db().select(TABLE.ID,SUB_TABLE.PRESALE_PRICE).from(TABLE)

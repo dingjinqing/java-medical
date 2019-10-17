@@ -250,7 +250,7 @@ public class OrderConstant {
 	/**买家取消订单*/
 	public final static byte SIMPLE_OPERATE_CANCEL = 1;
 	/**
-	 * 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
+	 * 定金尾款支付状态，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付
 	 */
 	public final static byte BK_PAID_N = 0;
 	public final static byte BK_PAID_Y = 1;
@@ -377,12 +377,12 @@ public class OrderConstant {
 	public static final byte STORE_STATUS_RETURN = 2;
 	
 	/**order status code */
-	public static final String All = "all";
-	public static final String WAIT_PAY = "waitPay";
-	public static final String WAIT_DELIVERY = "waitDelivery";
-	public static final String SHIPPED = "shipped";
-	public static final String FINISHED = "finished";
-	public static final String RETURNING = "returning";
+	public static final byte All = 0;
+	public static final byte WAIT_PAY = 1;
+	public static final byte WAIT_DELIVERY = 2;
+	public static final byte SHIPPED = 3;
+	public static final byte FINISHED = 4;
+	public static final byte RETURNING = 5;
 
     /**
      * 退款类型

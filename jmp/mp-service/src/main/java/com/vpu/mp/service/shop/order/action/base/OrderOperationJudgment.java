@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
 
 /**
  * 	订单操作判断
@@ -142,10 +143,11 @@ public class OrderOperationJudgment {
 	public static boolean mpIsCancel(OrderListInfoVo order) {
 		if(//1待付款  且  无补款或补款未支付
 			(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAID_N)
-			//2待发货  且 余额支付  且 系统金额为0
-			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_BALANCE_PAY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0
-			//3待发货  且  货到付款
-			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_COD) {
+			//2待发货  且 余额支付  且 系统金额为0(。。。不可以取消)
+			//|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_BALANCE_PAY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0
+			//3待发货  且  货到付款(。。。不可以取消)
+			//|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_COD
+			) {
 			return true;
 		}
 		return false;
@@ -233,4 +235,25 @@ public class OrderOperationJudgment {
 		}
 	}
 	
+	/**
+	 * 延长收货
+	 * @param order
+	 * @param extendReceiveDays
+	 * @return
+	 */
+	public static Boolean isExtendReceive(OrderListMpVo order , int extendReceiveDays) {
+		if(extendReceiveDays >0 && order.getOrderStatus() == OrderConstant.ORDER_SHIPPED) {
+			//自动收货时间
+			Instant autoReceive = order.getShippingTime().toInstant().plusSeconds(Duration.ofDays(order.getReturnDaysCfg()).getSeconds());
+			//可延迟2天收货
+			if(Instant.now().plusSeconds(Duration.ofDays(2).getSeconds()).isAfter(autoReceive)) {
+				return Boolean.TRUE;
+			}
+		}
+		return Boolean.FALSE;
+	}
+	
+	public static void operationSet(OrderListMpVo order) {
+		
+	}
 }

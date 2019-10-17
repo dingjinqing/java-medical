@@ -134,7 +134,7 @@ public class ShopApplication {
 	@Autowired
 	public OrderWriteService writeOrder;
 	/**
-	 * 订单状态查询、操作(目前支持发货、退货)
+	 * 订单状态查询、操作(目前支持发货、退货等)
 	 */
 	@Autowired
 	public OrderOperateFactory orderActionFactory;

@@ -1,21 +1,30 @@
 package com.vpu.mp.service.shop.order.info;
 
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+
 import java.util.Map;
 
 import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.ImmutableMap;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListParam;
 
 /**
  * mp端订单业务
- * @author 王帅
- * return 不可变map,key为all,waitPay,waitDelivery,shipped,finished,returning
- *        value默认为0
+ * 
+ * @author 王帅 return
+ *         不可变map,key为all,waitPay,waitDelivery,shipped,finished,returning
+ *         value默认为0
  * 
  */
 @Service
@@ -26,7 +35,7 @@ public class MpOrderInfoService extends OrderInfoService{
 	 * @param isContainSubOrder
 	 * @return
 	 */
-	public Map<String,Integer> getOrderStatusNum(Integer userId , boolean isContainSubOrder) {
+	public Map<Byte,Integer> getOrderStatusNum(Integer userId , boolean isContainSubOrder) {
 		//基础状态数量
 		Map<Byte, Integer> countMap = db().select(DSL.count() , TABLE.ORDER_STATUS).
 		from(TABLE).
@@ -58,7 +67,7 @@ public class MpOrderInfoService extends OrderInfoService{
 				,isContainSubOrder)).
 		fetchOneInto(Integer.class);
 		//初始化不可变map
-		Map<String,Integer> result = ImmutableMap.<String,Integer>builder()
+		Map<Byte,Integer> result = ImmutableMap.<Byte,Integer>builder()
 				.put(OrderConstant.All,
 						countMap.values().stream().reduce(0, Integer::sum) + (returning == null ? Integer.valueOf(0) : returning) + (returnFinish == null ? Integer.valueOf(0) : returnFinish))
 				.put(OrderConstant.WAIT_PAY,
@@ -76,7 +85,7 @@ public class MpOrderInfoService extends OrderInfoService{
 	}
 	
 	/**
-	 * map value type is Integer,default is 0
+	 * Map value type is Integer,set default value 0
 	 * @param countMap
 	 * @param status
 	 * @return
@@ -98,5 +107,54 @@ public class MpOrderInfoService extends OrderInfoService{
 	private Condition setIsContainSubOrder(Condition condition , boolean isContainSubOrder) {
 		return isContainSubOrder ? condition : condition.and(TABLE.MAIN_ORDER_SN.eq(StringUtils.EMPTY).or(TABLE.MAIN_ORDER_SN.eq(TABLE.ORDER_SN)));
 		
+	}
+	
+	/**
+	 * mp端订列表查询
+	 * @param param
+	 * @return
+	 */
+	public PageResult<OrderListMpVo> getPageList(OrderListParam param){
+		SelectJoinStep<Record> select = db().select(TABLE.asterisk()).from(TABLE);
+		PageResult<OrderListMpVo> pageResult = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderListMpVo.class);
+		return pageResult;
+		
+	}
+	
+	/**
+	 * 构造查询条件
+	 */
+	public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderListParam param, boolean isContainSubOrder) {
+		setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder);
+		if(!StringUtils.isBlank(param.getSearch())) {
+			select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).
+			where(TABLE.ORDER_SN.like(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.like(param.getSearch())));
+		}
+		select.orderBy(TABLE.ORDER_ID.desc());
+		switch (param.getType()) {
+		case OrderConstant.All:
+			break;
+		case OrderConstant.WAIT_PAY:
+			select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
+			break;
+		case OrderConstant.WAIT_DELIVERY:
+			select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
+			break;
+		case OrderConstant.SHIPPED:
+			select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
+			break;
+		case OrderConstant.FINISHED:
+			select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
+			break;
+		case OrderConstant.RETURNING:
+			//TODO 退款订单状态需要修改 
+			select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED).
+				and(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING , OrderConstant.REFUND_STATUS_FINISH , OrderConstant.REFUND_STATUS_REFUSE)));
+			break;
+		default:
+			break;
+		}
+		return select;
+
 	}
 }

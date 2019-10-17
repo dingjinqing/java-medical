@@ -27,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.mp.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 
 /**
@@ -47,7 +48,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return  Result<?>
 	 */
 	public Result<?> getByOrderIds(Integer... arrayToSearch) {
-		Result<?> goods = db().select(TABLE.ORDER_ID,TABLE.REC_ID,TABLE.ORDER_SN,TABLE.GOODS_ID,TABLE.GOODS_NAME,TABLE.GOODS_SN,TABLE.GOODS_NUMBER,TABLE.GOODS_PRICE,TABLE.MARKET_PRICE,TABLE.GOODS_ATTR,TABLE.PRODUCT_SN,TABLE.PRODUCT_ID,TABLE.GOODS_IMG,TABLE.MAIN_REC_ID).from(TABLE)
+		Result<?> goods = db().select(TABLE.ORDER_ID,TABLE.REC_ID,TABLE.ORDER_SN,TABLE.GOODS_ID,TABLE.GOODS_NAME,TABLE.GOODS_SN,TABLE.GOODS_NUMBER,TABLE.GOODS_PRICE,TABLE.MARKET_PRICE,TABLE.GOODS_ATTR,TABLE.PRODUCT_SN,TABLE.PRODUCT_ID,TABLE.GOODS_IMG,TABLE.MAIN_REC_ID,TABLE.STRA_ID,TABLE.PER_DISCOUNT,TABLE.GOODS_SCORE,TABLE.GIFT_ID).from(TABLE)
 			.where(TABLE.ORDER_ID.in(arrayToSearch))
 			.orderBy(TABLE.ORDER_ID.desc())
 			.fetch();
@@ -62,7 +63,15 @@ public class OrderGoodsService extends ShopBaseService{
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
-
+	
+	/**
+	 * 单个订单商品
+	 * @param orderId
+	 * @return map<recId,obj>
+	 */
+	public Map<Integer, OrderGoodsMpVo> getKeyMapByIds(Integer orderId) {
+		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetchMap(TABLE.REC_ID, OrderGoodsMpVo.class);
+	}
 	/**
 	 * 	通过订单sn[]查询其下商品
 	 * @param orderSns
@@ -200,4 +209,7 @@ public class OrderGoodsService extends ShopBaseService{
 				.from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
 		return record6s;
 	}
+	
+	
+
 }

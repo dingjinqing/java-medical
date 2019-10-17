@@ -54,8 +54,8 @@ import static org.apache.commons.lang3.math.NumberUtils.*;
  */
 @Slf4j
 @Service
-public class StoreService extends ShopBaseService {
 
+public class StoreService extends ShopBaseService {
 	/**
 	 * 核销员
 	 */

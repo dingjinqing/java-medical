@@ -58,12 +58,12 @@ public class ShipInfoService extends ShopBaseService {
 				int indexOf = voList.indexOf(next);
 				//该批次号不是第一次出现的位置,将该记录信息合并到第一次出现的位置并删除
 				if(voList.get(indexOf).getGoods() != null) {
-					voList.get(indexOf).getGoods().add(new Goods(next.getRecId(), next.getGoodsName(), next.getGoodsAttr(), next.getSendNumber()));
+					voList.get(indexOf).getGoods().add(new Goods(next.getRecId(), next.getGoodsName(), next.getGoodsAttr(), next.getSendNumber() ,null, null));
 					iterator.remove();		
 				}else {
 					//第一次出现的位置,初始化goodlist,并将该记录的商品行信息转移到Goods上
 					ArrayList<Goods> firstGoodsList = new ArrayList<Goods>();
-					firstGoodsList.add(new Goods(next.getRecId(), next.getGoodsName(), next.getGoodsAttr(), next.getSendNumber()));
+					firstGoodsList.add(new Goods(next.getRecId(), next.getGoodsName(), next.getGoodsAttr(), next.getSendNumber(), null, null));
 					voList.get(indexOf).setGoods(firstGoodsList);
 				}		
 			}

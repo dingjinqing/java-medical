@@ -91,6 +91,22 @@ public class OrderInfoService extends ShopBaseService {
 		T order = db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
 		return order;
 	}
+	
+	/**
+	 * @param <T> <? extends OrderListVo>
+	 * @param orderSn 订单号
+	 * @param clz
+	 * @return oneOrder
+	 */
+	public <T> List<T> getByOrderSn(String orderSn , Class<T> clz){
+		return db().select(TABLE.asterisk(), USER.USERNAME).
+				from(TABLE).
+				leftJoin(USER).on(TABLE.USER_ID.eq(USER.USER_ID)).
+				where(TABLE.ORDER_SN.eq(orderSn).or(TABLE.MAIN_ORDER_SN.eq(orderSn))).
+				orderBy(TABLE.ORDER_ID.desc()).
+				fetchInto(clz);
+
+	}
 
 	public OrderInfoRecord getOrderByOrderSn(String orderSn) {
 		return db().fetchAny(TABLE,TABLE.ORDER_SN.eq(orderSn));
@@ -249,7 +265,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public <T> List<T> getOrdersByCondition(Condition where, Class<T> clz) {
-		return db().select(TABLE.asterisk(),USER.USERNAME,USER.MOBILE.as("userMobile")).from(TABLE).innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID)).where(where).fetchInto(clz);
+		return db().select(TABLE.asterisk(),USER.USERNAME,USER.MOBILE.as("userMobile")).from(TABLE).innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID)).where(where).orderBy(TABLE.ORDER_ID.asc()).fetchInto(clz);
 	}
 
 	/**
