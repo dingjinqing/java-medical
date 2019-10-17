@@ -1,5 +1,6 @@
-<!--pages/index/index.wxml-->
-<include src="../common/header.wxml"/>
-<text>pages/index/index.wxml</text>
-
-<include src="../common/footer.wxml" />
+<include src="../common/header.wxml" />
+<!-- 装修 -->
+<view class='main-container' style='{{color}};padding-bottom:80rpx;'>
+    <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
+    <include src="../common/footer.wxml" />
+</view>
