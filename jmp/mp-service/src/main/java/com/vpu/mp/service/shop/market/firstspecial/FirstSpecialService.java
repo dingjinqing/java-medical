@@ -44,6 +44,15 @@ public class FirstSpecialService extends ShopBaseService {
      * 停用状态
      */
     public static final byte STATUS_DISABLED = 0;
+    /**
+     *  永久有效
+     */
+    public static final byte FOREVER_YES =1;
+    /**
+     *  非永久有效
+     */
+    public static final byte FOREVER_NO =0;
+
 
     /**
      * 新建首单特惠活动
@@ -180,6 +189,20 @@ public class FirstSpecialService extends ShopBaseService {
      */
     public PageResult<MarketOrderListVo> getFirstSpecialOrderList(MarketOrderListParam param) {
         return saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param,OrderConstant.GOODS_TYPE_FIRST_SPECIAL);
+    }
+
+    /**
+     *  获取正在活动的首单特惠商品规格
+     * @return
+     */
+    public List<Integer> getOnGoingPrdIds(){
+        Timestamp nowDate =new Timestamp(System.currentTimeMillis());
+        return db().select(FIRST_SPECIAL_PRODUCT.PRODUCT_ID).from(FIRST_SPECIAL_PRODUCT).leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.ge(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
+                .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL))
+                .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
+                        .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(nowDate)).and(FIRST_SPECIAL.END_TIME.gt(nowDate))))
+                .groupBy(FIRST_SPECIAL_PRODUCT.PRODUCT_ID).fetch().getValues(FIRST_SPECIAL_PRODUCT.PRODUCT_ID);
+
     }
 
     private int getFirstSpecialActGoodsAmount(int id){

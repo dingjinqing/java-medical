@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
+import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
@@ -17,10 +18,10 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
+import static org.jooq.impl.DSL.*;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,14 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.vpu.mp.service.pojo.shop.order.*;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record3;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetMoreStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
@@ -793,10 +787,10 @@ public class OrderInfoService extends ShopBaseService {
     	SelectConditionStep<Record3<BigDecimal, Integer, Timestamp>> select = db().select(sum(ORDER_INFO.ORDER_AMOUNT).as("orderAmount"),count().as("count"),ORDER_INFO.CREATE_TIME).from(ORDER_INFO)
     		.where(ORDER_INFO.USER_ID.eq(userId))
     		.and(ORDER_INFO.DEL_FLAG.equals(0));
-    	
-    	
+
+
     	List<Byte> orderStatusList = new ArrayList<>(Arrays.asList(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED));
-    	
+
     	if(orderStatus.length>0) {
     		if(orderSort == 4 && refundStatus.length>0) {
     			select.and(ORDER_INFO.ORDER_STATUS.notIn(orderStatusList));
@@ -806,13 +800,16 @@ public class OrderInfoService extends ShopBaseService {
     			select.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS));
     		}
     	}
-    	
+
     	select.orderBy(ORDER_INFO.CREATE_TIME.desc());
-    	
+
     	 return select.fetchAnyInto(UserCenterNumBean.class);
     }
-    
-    
+
+    public void query(List<Field> fields,List<Condition> conditions){
+		db().select(fields).from(TABLE).where(conditions).fetch();
+	}
+
     /**
      * 获得用户购买商品数
      * @param userId
@@ -853,6 +850,27 @@ public class OrderInfoService extends ShopBaseService {
         List<OrderExportVo> list = select.limit(param.getExportRowStart() - 1,param.getExportRowEnd() - param.getExportRowStart() + 1).fetchInto(OrderExportVo.class);
         return list;
     }
+
+	/**
+	 * 是否是新下单用户
+	 * @param userId 用户id
+	 * @param waitPay
+	 * @return
+	 */
+	public Boolean isNewUser(Integer userId,Boolean waitPay ){
+		SelectConditionStep<Record1<Integer>> selectConditionStep = db().selectCount().from(TABLE).where(TABLE.IS_COD.eq((byte) 0).or(TABLE.IS_COD.eq((byte) 1).and(TABLE.SHIPPING_TIME.isNotNull())))
+				.and(TABLE.USER_ID.eq(userId));
+		if (waitPay){
+			selectConditionStep.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));
+		}else{
+			selectConditionStep.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY));
+		}
+		return  selectConditionStep.fetchOne().component1()>0;
+	}
+
+	public boolean isNewUser(Integer userId){
+		return  isNewUser(userId,true);
+	}
 
     /**
      * 某用户指定时间段内订单数(开区间)

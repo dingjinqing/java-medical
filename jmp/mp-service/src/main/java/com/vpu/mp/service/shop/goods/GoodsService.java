@@ -1332,6 +1332,16 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     *  通过商品id 和指定列查询商品
+     * @param goodsIds ids
+     * @param fields 列
+     * @return
+     */
+    public Result<Record> getGoodsByIdsAndFields(List<Integer> goodsIds, SelectFieldOrAsterisk... fields){
+        return db().select(fields).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetch();
+    }
+
+    /**
      * 获取商品小程序展示页面
      *
      * @param goodsId 商品id
@@ -1388,5 +1398,14 @@ public class GoodsService extends ShopBaseService {
      */
     public BigDecimal getGoodsWeightById(Integer goodsId) {
         return db().select(GOODS.GOODS_WEIGHT).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(BigDecimal.class);
+    }
+
+    /**
+     *  根据规格ID查寻商品信息
+     * @param productId
+     * @return
+     */
+    public Record getGoodsByProductId(Integer productId){
+        return  db().select().from(GOODS).leftJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOne();
     }
 }

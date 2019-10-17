@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +97,7 @@ import com.vpu.mp.service.shop.version.VersionService;
 import com.vpu.mp.service.shop.video.VideoService;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -105,8 +106,6 @@ public class ShopApplication {
 
 	@Autowired
 	public GoodsService goods;
-    @Autowired
-    public GoodsMpService goodsMpService;
 	@Autowired
 	public ImageService image;
 	@Autowired
@@ -324,7 +323,7 @@ public class ShopApplication {
 
 	@Autowired
 	public UserService user;
-	
+
 	@Autowired
 	public UserLoginRecordService userLoginRecordService;
 
@@ -443,4 +442,10 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public CollectService collect;
+
+	/**
+	 * 购物车
+	 */
+	@Autowired
+	public CartService cart;
 }

@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.I18N;
 import com.vpu.mp.service.foundation.util.VoTranslator;
+import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
 import com.vpu.mp.service.saas.SaasApplication;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
@@ -61,6 +62,9 @@ public class BaseController {
 
     public JsonResult fail(JsonResultCode resultCode, Object... args) {
         return result(resultCode, null, args);
+    }
+    public JsonResult fail(ResultMessage message){
+        return result(message.getJsonResultCode(),null,message.getMessages());
     }
 
     public JsonResult fail(List<Object> args) {

@@ -1,16 +1,13 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
+import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +15,8 @@ import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author 李晓冰
@@ -290,6 +289,55 @@ public class GoodsSpecProductService extends ShopBaseService {
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
             .fetch();
         return recordResult;
+    }
+
+    /**
+     *  获取门店商品信息
+     * @param productIds
+     * @param storeId
+     * @return
+     */
+    public Result<? extends Record> getStoreProductAll(List<Integer> productIds, Integer storeId){
+        Result<Record4<BigDecimal, Integer, Integer, Integer>> products = db().select(GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_ID)
+                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(productIds)).fetch();
+        if (storeId!=null&&storeId>0){
+            Result<Record3<BigDecimal, Integer, Integer>> storeGoods = db().select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).from(STORE_GOODS)
+                    .where(STORE_GOODS.IS_ON_SALE.eq((byte) 1)).and(STORE_GOODS.IS_SYNC.eq((byte) 1))
+                    .and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(productIds)).fetch();
+            List<Integer> storeGoodsProIds =storeGoods.getValues(STORE_GOODS.PRD_ID);
+            Map<Integer, BigDecimal> storeGoodsPrices =storeGoods.intoMap(STORE_GOODS.PRD_ID,STORE_GOODS.PRODUCT_PRICE);
+            Map<Integer, Integer> storeGoodsNumbers =storeGoods.intoMap(STORE_GOODS.PRD_ID,STORE_GOODS.PRODUCT_NUMBER);
+            products.stream().forEach(pro->{
+                if (storeGoods.getValues(STORE_GOODS.PRD_ID).contains(pro.get(GOODS_SPEC_PRODUCT.PRD_ID))) {
+                    pro.set(GOODS_SPEC_PRODUCT.PRD_PRICE,storeGoodsPrices.get(STORE_GOODS.PRD_ID));
+                    pro.set(GOODS_SPEC_PRODUCT.PRD_NUMBER,storeGoodsNumbers.get(STORE_GOODS.PRD_ID));
+                }
+            });
+        }
+        return  products;
+    }
+
+    /**
+     *  根据门店获取商品信息
+     * @param productId
+     * @param storeId
+     * @return
+     */
+    public GoodsSpecProductRecord getStoreProductByProductIdAndStoreId(Integer productId, Integer storeId){
+        GoodsSpecProductRecord goodsSpecproduct = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOne();
+        if (goodsSpecproduct!=null&&storeId>0){
+            // 如果有门店,门店价格和数量替换商品价格数量
+            StoreGoodsRecord storeGoods = db().selectFrom(STORE_GOODS)
+                    .where(STORE_GOODS.PRD_ID.eq(productId))
+                    .and(STORE_GOODS.IS_ON_SALE.eq((byte) 1))
+                    .and(STORE_GOODS.IS_SYNC.eq((byte) 1))
+                    .and(STORE_GOODS.STORE_ID.eq(storeId)).fetchOne();
+            if (storeGoods!=null) {
+                goodsSpecproduct.setPrdPrice(storeGoods.getProductPrice());
+                goodsSpecproduct.setPrdNumber(storeGoods.getProductNumber());
+            }
+        }
+        return goodsSpecproduct;
     }
 
 }
