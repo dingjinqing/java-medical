@@ -19,13 +19,13 @@
           >
             <div
               class="left_info_headBg"
-              v-if="item.bg_type=='1'"
+              v-if="item.bg_type=='0'"
               style="background: -webkit-linear-gradient(left,rgb(80, 160, 160),rgb(64, 128, 128));"
             ></div>
             <div
               class="left_info_headBg"
-              v-if="item.bg_type!='1'"
-              :style="{'backgroundImage': item.bg_img=='' ? '#eee' : 'url(' + bgImage + ')'}"
+              v-if="item.bg_type!='0'"
+              :style="{'backgroundImage': bgImg=='' ? '#eee' : 'url(' + bgImage + ')', 'backgroundSize': 'cover'}"
             ></div>
             <img
               class="center_set"
@@ -536,24 +536,24 @@
             >
               <el-radio-group v-model="item.bg_type">
                 <el-radio
-                  label="1"
+                  label="0"
                   style="display: block;margin-bottom: 20px;"
                 >同步店铺配色</el-radio>
-                <el-radio label="0">自定义图片</el-radio>
+                <el-radio label="1">自定义图片</el-radio>
                 <div
                   class="customizeImgWrap"
-                  v-if="item.bg_img!=''"
+                  v-if="bgImg!=''"
                   @click="changeImgHandler(item.module_name, '')"
                 >
                   <el-image
                     fit="cover"
-                    :src="imgHost + item.bg_img"
+                    :src="imgHost + bgImg"
                     style="width: 100%; height: 100%"
                   ></el-image>
                 </div>
                 <div
                   class="customizeImgWrap"
-                  v-if="item.bg_img==''"
+                  v-if="bgImg==''"
                   @click="changeImgHandler(item.module_name, '')"
                 >
                   <el-image
@@ -1228,9 +1228,10 @@
       </div>
     </div>
     <!--图片dialog-->
+    <!-- pageIndex='pictureSpace' -->
     <ImageDalog
       :tuneUp="selfImgDialogShow"
-      pageIndex='pictureSpace'
+      pageIndex="pictureSpace"
       :imageSize="imageSize"
       :isDraggable='isDraggable'
       @handleSelectImg='imgDialogSelectedCallback'
@@ -1255,7 +1256,8 @@ export default {
       activeNames: ['1', '2', '3', '4', '5', '6'],
       styleChoose: '2', // 页面布局样式
       imgHost: `${this.$imageHost}`,
-      bgImage: '',
+      bgImg: '', // 自定义背景图
+      bgImage: '', // 自定义背景图完整路径
       selfImgDialogShow: false, // 图片dialog
       moduleTitle: '',
       module_name: '',
@@ -1274,7 +1276,7 @@ export default {
       }, {
         module_name: 'center_header',
         is_show: '1',
-        bg_type: '1',
+        bg_type: '0',
         bg_img: ''
       }, {
         module_name: 'account_money',
@@ -1419,7 +1421,7 @@ export default {
       }, {
         module_name: 'center_header',
         is_show: '1',
-        bg_type: '1',
+        bg_type: '0',
         bg_img: ''
       }, {
         module_name: 'account_money',
@@ -1574,12 +1576,19 @@ export default {
         if (res.error === 0) {
           this.rightData = res.content
           this.leftData = res.content
+          this.bgImg = this.rightData[1].bg_img
+          this.bgImage = this.imgHost + this.bgImg
         }
       })
     },
 
     // 保存
     saveClickHandler () {
+      if (this.rightData[1].bg_Type === '0') {
+        this.rightData[1].bg_img = ''
+      } else {
+        this.rightData[1].bg_img = this.bgImg
+      }
       let obj = this.rightData
       personalSaveRequest(obj).then((res) => {
         if (res.error === 0) {
@@ -1682,7 +1691,7 @@ export default {
       if (name !== '') {
         this.imageSize = [50, 50]
       } else {
-        this.imageSize = [750, 750]
+        this.imageSize = [750, 300]
       }
     },
 
@@ -1691,9 +1700,9 @@ export default {
       // 右侧显示
       for (let i = 0; i < this.rightData.length; i++) {
         if (this.moduleTitle === 'center_header') {
-          // this.rightData[i].bg_img = imgObj.imgUrl
-          this.rightData[i].bg_img = '/' + imgObj.imgPath
-          this.bgImage = this.imgHost + this.rightData[i].bg_img
+          // this.rightData[i].bg_img = '/' + imgObj.imgPath
+          this.bgImg = '/' + imgObj.imgPath
+          this.bgImage = this.imgHost + this.bgImg
         } else {
           if (this.rightData[i].module_name === this.moduleTitle) {
             for (let j = 0; j < this.rightData[i].content.length; j++) {
