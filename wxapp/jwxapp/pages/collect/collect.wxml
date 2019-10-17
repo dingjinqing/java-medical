@@ -1,0 +1,49 @@
+<include src="../common/header.wxml"/>
+<view class="main-container">  
+  <view class="fenge"></view>
+  <view class="table ">
+    <block wx:if="{{collectData_no}}" >
+        <view class="no_collect">
+          <view class="icon_no" style='background:url("{{imageUrl}}image/wxapp/coll-no.png") no-repeat;background-position:center center;background-size: 200rpx 200rpx; '></view>
+          <view class="no_tips">暂无收藏</view>
+          <view class="click_to_index" bindtap="go_index" style='background:{{comColor}}'>随便逛逛</view>
+        </view>
+    </block>
+    <!--收藏列表-->
+    <block wx:else>
+      <view class="tr item_coll collection_lists" wx:for="{{data}}" wx:key="index" wx:for-index='keys' wx:for-item='content'>
+        <block wx:if='{{content.goodsType == 0 || content.goodsType == null}}'>
+          <view class="item_lefts" bindtap="goodsItem" data-goods_id="{{content.goodsId}}">
+            <image class="goods_img"  bindload="imageLoad" src="{{content.goodsImg}}"></image>
+          </view>
+          <view class="item_rights">
+            <view class=" goodnames">{{content.goodsName}}</view>
+            <view class="">{{content.createTime}}</view>
+            <view class='ng_goods_jiang' style='color:{{comColor}}' wx:if='{{content.lessMoney}}'>比加入时降了{{content.lessMoney}}元</view>
+            <view class="item_price">
+              <text><text class="goosprice" style='color:{{comColor}}'>￥{{content.shopPrice}}</text></text>
+              <text class=" cancel-col" bindtap="cancelCollect" data-id="{{content.id}}" >取消收藏</text>
+            </view>
+          </view>
+        </block>
+        <block wx:if='{{content.goods_type == 1}}'>
+          <view class="item_lefts" bindtap="goodspinItem" data-goods_id="{{content.goods_id}}" data-group_id='{{content.pin_group_goods[content.goods_id].pin_activity_id}}'>
+            <image class="goods_img"  bindload="imageLoad" src="{{content.goods_img}}"></image>
+          </view>
+          <view class="item_rights">
+            <view class=" goodnames">{{content.goods_name}}</view>
+            <view class="">{{content.in_time}}</view>
+            <view class="item_price">
+              <text class='pin_tip' style='color:{{comColor}};border-color:{{comColor}}'>拼团</text>
+              <text><text class="goosprice" style='color:{{comColor}}'>￥{{content.pin_group_goods[content.goods_id].pin_group_price}}</text></text>
+              <text class='org_price'>￥{{content.pin_group_goods[content.goods_id].original_price}}</text>
+              <text class=" cancel-col" bindtap="cancelCollect" data-goods_id="{{content.goods_id}}" >取消收藏</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </block>
+  </view>
+</view>
+<include src="../common/footer.wxml"/>
+

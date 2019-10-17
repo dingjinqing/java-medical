@@ -48,12 +48,26 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 2,
 			"list": [
 				{
 					"id": 0,
 					"name": "首页",
 					"pathName": "pages/index/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 1,
+					"name": "pages/collect/collect",
+					"pathName": "pages/usercenter/usercenter",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "collectList",
+					"pathName": "pages/collect/collect",
 					"query": "",
 					"scene": null
 				}

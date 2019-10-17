@@ -8,6 +8,8 @@
     "pages/coupon/coupon",
     "pages/index/index",
     "pages/getCoupon/getCoupon",
+    "components/decorate/card/index",
+    "pages/collect/collect",
     "pages/item/item",
     "pages/orderlist/orderlist",
     "pages/orderinfo/orderinfo",
