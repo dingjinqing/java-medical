@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.goods.mp;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
@@ -33,6 +33,10 @@ import static com.vpu.mp.db.shop.Tables.GOODS;
  */
 @Service
 public class GoodsMpService extends ShopBaseService {
+
+    @Autowired
+    public GoodsBrandSortMpService goodsBrandSortMp;
+
     @Autowired
     ImageService imageService;
     @Autowired
@@ -48,8 +52,6 @@ public class GoodsMpService extends ShopBaseService {
     GoodsProductMpService goodsProductMpService;
     @Autowired
     GoodsActivityMpService goodsActivityMpService;
-    @Autowired
-    GoodsBrandSortMpService goodsBrandSortMpService;
 
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据

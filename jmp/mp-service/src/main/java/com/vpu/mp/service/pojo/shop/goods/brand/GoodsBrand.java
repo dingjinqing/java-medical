@@ -16,6 +16,7 @@ public class GoodsBrand {
     private String brandName;
     private String eName;
     private String logo;
+    private String logoUrl;
     private Byte first;
     private Timestamp createTime;
     private String desc;

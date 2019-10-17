@@ -23,7 +23,7 @@ public class WxAppGoodsController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/goods/list")
     public JsonResult getGoodsList(@RequestBody GoodsListMpParam goodsListMpParam) {
-        List<GoodsListMpVo> goodsList = shop().goodsMpService.getGoodsList(goodsListMpParam);
+        List<GoodsListMpVo> goodsList = shop().goodsMp.getGoodsList(goodsListMpParam);
         return success(goodsList);
     }
 }

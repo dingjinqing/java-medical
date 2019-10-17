@@ -111,7 +111,7 @@ public class ShopApplication {
 	@Autowired
 	public GoodsService goods;
 	@Autowired
-	public GoodsMpService goodsMpService;
+	public GoodsMpService goodsMp;
 	@Autowired
 	public ImageService image;
 	@Autowired

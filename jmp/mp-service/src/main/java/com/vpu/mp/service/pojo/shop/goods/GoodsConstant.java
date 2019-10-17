@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.goods.goods;
+package com.vpu.mp.service.pojo.shop.goods;
 
 /**
  * @author 李晓冰
@@ -20,4 +20,14 @@ public class GoodsConstant {
      * 可在商品列表展示的标签
      */
     public static final Byte GOODS_LIST = 1;
+
+    /**
+     * 是推荐品牌
+     */
+    public static final Byte RECOMMEND_BRAND = 1;
+
+    /**
+     * 未关联品牌分类时的分类id
+     */
+    public static final Integer NO_CLASSIFY_ID = 0;
 }

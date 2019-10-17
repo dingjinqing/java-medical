@@ -8,6 +8,18 @@ import lombok.Data;
  */
 @Data
 public class GoodsBrandConfig {
+    /**
+     * 展示全部品牌
+     */
+    public static String SHOW_ALL_BRAND = "1";
+    /**
+     * 按品牌展示推荐品牌
+     */
+    public static String SHOW_RECOMMEND_LIST = "2";
+    /**
+     * 按分类展示推荐品牌
+     */
+    public static String SHOW_RECOMMEND_CLASSIFY = "3";
 
     private String showAllBrand;
 

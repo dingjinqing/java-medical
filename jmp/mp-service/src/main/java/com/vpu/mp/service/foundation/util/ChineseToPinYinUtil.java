@@ -6,7 +6,6 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import org.checkerframework.common.reflection.qual.GetClass;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -25,34 +24,37 @@ public class ChineseToPinYinUtil {
     }
 
     /**
-     * 获取字符串中各个中文的拼音首字母字符串，如果内含英文则不转换该字符
+     * 获取中文名对应的拼音名的首字母
      * @param chinese 待转换字符串
      * @return 转换后的中文拼音首字母字符串
      */
-    public static String getAlphabet(String chinese) {
+    public static String getStartAlphabet(String chinese) {
+        String otherCharacter = "#";
         if (chinese == null ||chinese.length()==0) {
-            return "";
+            return otherCharacter;
         }
         StringBuilder pinName = new StringBuilder();
         char[] chineseChar = chinese.toCharArray();
-        for (int i = 0; i < chineseChar.length; i++) {
-            if (chineseChar[i] > 128) {
-                try {
-                    pinName.append(PinyinHelper.toHanyuPinyinStringArray(chineseChar[i], format)[0].charAt(0));
-                } catch (BadHanyuPinyinOutputFormatCombination message) {
-                    LoggerFactory.getLogger(ChineseToPinYinUtil.class).warn("中文转拼音错误："+message.getMessage());
-                    pinName.append("#");
-                }
-            } else {
-                pinName.append(chineseChar[i]);
+
+        char startChar = chineseChar[0];
+        if (Character.toString(startChar).matches("[\\u4E00-\\u9FA5]")){
+            try {
+                pinName.append(PinyinHelper.toHanyuPinyinStringArray(startChar, format)[0].charAt(0));
+            } catch (BadHanyuPinyinOutputFormatCombination message) {
+                LoggerFactory.getLogger(ChineseToPinYinUtil.class).warn("中文转拼音错误："+message.getMessage());
+                pinName.append(otherCharacter);
             }
+        }else{
+            pinName.append(startChar);
         }
+
         return pinName.toString();
     }
 
     public static String getPinYin(String chinese) {
+        String otherCharacter = "#";
         if (chinese == null ||chinese.length()==0) {
-            return "";
+            return otherCharacter;
         }
         StringBuilder pinName = new StringBuilder();
         char[] chineseChar = chinese.toCharArray();
@@ -62,7 +64,7 @@ public class ChineseToPinYinUtil {
                    pinName.append( PinyinHelper.toHanyuPinyinStringArray(chineseChar[i],format)[0]);
                 } catch (BadHanyuPinyinOutputFormatCombination message) {
                     LoggerFactory.getLogger(ChineseToPinYinUtil.class).warn("中文转拼音错误："+message.getMessage());
-                    pinName.append("#");
+                    pinName.append(otherCharacter);
                 }
             } else {
                 pinName.append(chineseChar[i]);
