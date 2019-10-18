@@ -425,10 +425,12 @@ export default {
   },
   computed: {
     openMpNum () {
-      return this.tableData.filter(item => item.openMp === true).length + this.tableData1.filter(item => item.openMp === true).length
+      let openMpNum = this.tableData.filter(item => item.openMp === true).length + this.tableData1.filter(item => item.openMp === true).length
+      return openMpNum
     },
     openMaNum () {
-      return this.tableData.filter(item => item.openMa === true).length + this.tableData1.filter(item => item.openMa === true).length
+      let openMaNum = this.tableData.filter(item => item.openMa === true).length + this.tableData1.filter(item => item.openMa === true).length
+      return openMaNum
     }
   },
   created () {
@@ -455,17 +457,28 @@ export default {
         console.log(list)
         let list1 = [...res.content]
         console.log(list1)
+
+        // let resultData = list.splice(0, 12)
+        // console.log(resultData)
+
+        // let q = resultData.map((item, index) => {
+        //   return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
+        // })
+        // console.log(q)
+
         let resultData = list.splice(0, 12).map((item, index) => {
           return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
         this.tableData = resultData
         console.log(this.tableData)
-
-        // let resultData1 = list1.splice(0, 14)
-        // console.log(resultData1)
-        // console.log(this.tableData1)
+        console.log(list)
 
         console.log(list1)
+        // let resultData1 = list1.splice(0, 14)
+        // console.log(resultData1)
+        // // console.log(this.tableData1)
+
+        // console.log(list1)
         let resultData1 = list1.splice(0, 14).map((item, index) => {
           return { ...item, ...this.tableData1[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
@@ -477,16 +490,42 @@ export default {
     handleChange (val) {
       console.log(val)
     },
+
     // 保存-更新数据
     handleSave () {
-      let configs = [
-        {
-          'id': 2001,
-          'openMp': 0,
-          'openMa': 1
-        }
-      ]
-      templateUpdateApi(configs).then(res => {
+      let paramsConfigs = {
+        list: [
+          // {
+          //   'id': 2001,
+          //   'openMp': 0,
+          //   'openMa': 1
+          // }
+        ]
+      }
+      let { list } = paramsConfigs
+      console.log(list)
+
+      let temp = this.tableData.concat(this.tableData1).map(item => {
+        return { ...item, openMp: Number(item.openMp), openMa: Number(item.openMa) }
+      })
+      console.log(temp)
+
+      let configs = list.concat(temp)
+      // console.log(configs)
+
+      let lists = { configs }
+      console.log(configs)
+
+      // // let params = Object.assign(paramsConfigs, [...temps])
+      // console.log(temps)
+      if (this.openMaNum > 25) {
+        alert('小程序消息不能超过25条!')
+      }
+      if (this.openMpNum > 25) {
+        // this.$message('这是一条消息提示')
+        alert('公众号消息不能超过25条！')
+      }
+      templateUpdateApi(JSON.stringify(lists)).then(res => {
         console.log(res)
       }).catch(err => console.log(err))
     }
