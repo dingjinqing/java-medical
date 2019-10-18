@@ -21,6 +21,8 @@ import org.springframework.util.DigestUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
+
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -532,4 +534,19 @@ public class Util {
 		String date = dtf.format(localDate);
 		return date;
     }
+    
+    /**
+     * 读取文件
+     * @param path
+     * @return
+     */
+	public static File loadFile(String path) {
+		try {
+			ClassPathResource resource = new ClassPathResource(path);
+			return  resource.getFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

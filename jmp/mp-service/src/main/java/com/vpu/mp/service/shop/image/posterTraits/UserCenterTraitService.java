@@ -11,6 +11,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tools.ant.taskdefs.LoadFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import com.vpu.mp.db.shop.tables.records.PictorialRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.UserCenterTraitVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
@@ -53,10 +55,10 @@ public class UserCenterTraitService extends ShopBaseService {
 		// 读取背景图片
 		BufferedImage backgroundImage = null;
 		try {
-			ClassPathResource resource = new ClassPathResource("image/wxapp/user_background.png");
-			backgroundImage = ImageIO.read(resource.getFile());
+			File loadFile = Util.loadFile("image/wxapp/user_background.png");
+			backgroundImage = ImageIO.read(loadFile);
 		} catch (IOException e) {
-			vo.setMsg("获取二维码失败");
+			vo.setMsg("获取背景图二维码失败");
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);
 			return vo;
@@ -78,7 +80,7 @@ public class UserCenterTraitService extends ShopBaseService {
 		try {
 			qrCodeImage = ImageIO.read(new URL(mpQrCode));
 		} catch (Exception e) {
-			vo.setMsg("小程序获取二维码失败");
+			vo.setMsg("小程序读取二维码失败");
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);
 			return vo;
