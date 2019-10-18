@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.elasticsearch.search.aggregations.bucket.terms.InternalTerms;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,7 +21,7 @@ public class GoodsListMpParam {
     private Integer recommendType;
 
     @JsonProperty("goods_items")
-    private Integer[] goodsItems;
+    private List<Integer> goodsItems;
     /**
      * 关键词,匹配商品名称
      */
@@ -78,4 +79,9 @@ public class GoodsListMpParam {
      */
     @JsonProperty("goods_num")
     private Integer goodsNum;
+
+    /**
+     * 是否展示售罄商品 1展示 0否
+     */
+    private Byte soldOutGoodsShow;
 }

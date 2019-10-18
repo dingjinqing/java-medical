@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.Util;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +18,6 @@ public class WxAppGoodsBrandSortController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/sort/init")
     public JsonResult goodsSortPageInit(){
-        return success(shop().goodsMp.goodsBrandSortMp.goodsSortPageInit());
+       return success(shop().goodsMp.goodsBrandSortMp.goodsSortPageInit());
     }
 }

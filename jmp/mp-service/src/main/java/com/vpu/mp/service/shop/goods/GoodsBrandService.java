@@ -8,15 +8,14 @@ import com.vpu.mp.service.foundation.util.ChineseToPinYinUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.brand.*;
-import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpWithClassifyVo;
-import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandT;
+import com.vpu.mp.service.pojo.wxapp.goods.brand.*;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.ls.LSInput;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -406,34 +405,49 @@ public class GoodsBrandService extends ShopBaseService {
      * 查询所有有效的品牌，按照名称拼音进行组织
      * @return 相同开头名称的处于同一个list集合中。
      */
-    public Map<String,List<GoodsBrandMpVo>> getAllBrandGroupByPinYinName(){
+    public List<GoodsBrandMpPinYinVo> getAllBrandGroupByPinYinNameMp(){
         List<GoodsBrandMpVo> pinYinVos = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO)
             .from(GOODS_BRAND)
             .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME)
             .fetchInto(GoodsBrandMpVo.class);
 
-        TreeMap<String,List<GoodsBrandMpVo>> resultMap = new TreeMap<>();
+        // 处理拼音
+        TreeMap<String,List<GoodsBrandMpVo>> treeMap = new TreeMap<>();
         for (GoodsBrandMpVo pinYinVo : pinYinVos) {
             String c = ChineseToPinYinUtil.getStartAlphabet(pinYinVo.getBrandName());
-            pinYinVo.setPinYinStart(c);
             pinYinVo.setLogo(getImgFullUrlUtil(pinYinVo.getLogo()));
 
-            List<GoodsBrandMpVo> list = resultMap.get(c);
+            List<GoodsBrandMpVo> list = treeMap.get(c);
             if (list == null) {
                 list = new ArrayList<>();
-                resultMap.put(c,list);
+                treeMap.put(c,list);
             }
             list.add(pinYinVo);
         }
 
-        return resultMap;
+        // 处理为返回值
+        LinkedList<GoodsBrandMpPinYinVo> retList = new LinkedList<>();
+        treeMap.forEach((c,goodsBrandsList)->{
+            GoodsBrandMpPinYinVo vo =new GoodsBrandMpPinYinVo();
+            vo.setCharacter(c);
+            vo.setGoodsBrands(goodsBrandsList);
+            retList.add(vo);
+        });
+
+        // 处理#符合的问题
+        if (retList.peek() != null&&ChineseToPinYinUtil.OHTER_CHARACTER.equals(retList.peek().getCharacter())) {
+            GoodsBrandMpPinYinVo t = retList.removeFirst();
+            retList.addLast(t);
+        }
+
+        return retList;
     }
 
     /**
      * 获取所有推荐品牌（前端按照品牌列表显示）
      * @return 推荐品牌集合
      */
-    public List<GoodsBrandMpVo> getAllRecommendBrand(){
+    public List<GoodsBrandMpVo> getAllRecommendBrandMp(){
         List<GoodsBrandMpVo> goodsBrandMpVos = db().selectFrom(GOODS_BRAND).where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GOODS_BRAND.IS_RECOMMEND.eq(GoodsConstant.RECOMMEND_BRAND)).orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME.desc())
             .fetchInto(GoodsBrandMpVo.class);
@@ -443,33 +457,46 @@ public class GoodsBrandService extends ShopBaseService {
     }
 
     /**
-     * 获取所有推荐品牌（前端按照品牌分类显示）
+     * 获取所有推荐品牌（前端按照品牌分类显示）,
+     * @return {@link GoodsBrandClassifyNameMpVo} 的list,每一个元素是分类名称和该分类下所有品牌
      */
-    public List<List<GoodsBrandMpWithClassifyVo>> getAllRecommendBrandGroupByClassify(){
-        // 获取品牌和其所关联的品牌分类id的对应map
-        Map<Integer, List<GoodsBrandMpWithClassifyVo>> goodsBrandMap =
-            db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO,GOODS_BRAND.CLASSIFY_ID,BRAND_CLASSIFY.CLASSIFY_NAME)
-            .from(GOODS_BRAND).leftJoin(BRAND_CLASSIFY).on(GOODS_BRAND.CLASSIFY_ID.eq(BRAND_CLASSIFY.CLASSIFY_ID))
+    public  List<GoodsBrandClassifyNameMpVo> getAllRecommendBrandGroupByClassifyMp(){
+        // 先获取所有有效推荐品牌（按照first和createTime排序）和其所属分类id对应的map
+        Map<Integer, List<GoodsBrandMpVo>> goodsBrandMap =
+            db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO,GOODS_BRAND.CLASSIFY_ID)
+            .from(GOODS_BRAND)
             .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS_BRAND.IS_RECOMMEND.eq(GoodsConstant.RECOMMEND_BRAND))
             .orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME.desc())
-            .fetchGroups(GOODS_BRAND.CLASSIFY_ID, GoodsBrandMpWithClassifyVo.class);
+            .fetchGroups(GOODS_BRAND.CLASSIFY_ID, GoodsBrandMpVo.class);
 
         // 获取品牌分类
-        List<GoodsBrandT> brandClassify = db().selectFrom(BRAND_CLASSIFY).where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .orderBy(BRAND_CLASSIFY.FIRST.desc(), BRAND_CLASSIFY.CREATE_TIME.desc()).fetchInto(GoodsBrandT.class);
+        List<BrandClassifyRecord> brandClassify = db().selectFrom(BRAND_CLASSIFY).where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .orderBy(BRAND_CLASSIFY.FIRST.desc(), BRAND_CLASSIFY.CREATE_TIME.desc()).fetchInto(BrandClassifyRecord.class);
 
-        List<List<GoodsBrandMpWithClassifyVo>> returnVo = new ArrayList<>();
-
-        for (GoodsBrandT goodsBrandT : brandClassify) {
-            Integer classifyId = goodsBrandT.getClassifyId();
+        List<GoodsBrandClassifyNameMpVo> retList = new ArrayList<>();
+        // 根据分类获取其分类下的所有品牌，并转换为结果数据
+        for (BrandClassifyRecord record : brandClassify) {
+            Integer classifyId = record.getClassifyId();
             if (goodsBrandMap.get(classifyId) != null) {
-                returnVo.add(goodsBrandMap.get(classifyId));
+                GoodsBrandClassifyNameMpVo vo =new GoodsBrandClassifyNameMpVo();
+                vo.setClassifyName(record.getClassifyName());
+                // 处理图片地址
+                List<GoodsBrandMpVo> goodsBrandMpVos = goodsBrandMap.get(classifyId);
+                goodsBrandMpVos.forEach(brand-> brand.setLogo(getImgFullUrlUtil(brand.getLogo())));
+                vo.setGoodsBrands(goodsBrandMpVos);
+
+                retList.add(vo);
             }
         }
         if (goodsBrandMap.get(GoodsConstant.NO_CLASSIFY_ID) != null) {
-            returnVo.add(goodsBrandMap.get(GoodsConstant.NO_CLASSIFY_ID));
+            GoodsBrandClassifyNameMpVo vo =new GoodsBrandClassifyNameMpVo();
+            List<GoodsBrandMpVo> goodsBrandMpVos = goodsBrandMap.get(GoodsConstant.NO_CLASSIFY_ID);
+            goodsBrandMpVos.forEach(brand-> brand.setLogo(getImgFullUrlUtil(brand.getLogo())));
+            vo.setGoodsBrands(goodsBrandMpVos);
+
+            retList.add(vo);
         }
-        return returnVo;
+        return retList;
     }
 
     /**

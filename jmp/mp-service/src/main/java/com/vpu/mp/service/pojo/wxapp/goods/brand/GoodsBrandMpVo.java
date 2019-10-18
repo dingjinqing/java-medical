@@ -10,8 +10,6 @@ import lombok.Data;
 public class GoodsBrandMpVo {
     private Integer id;
     private String brandName;
-    /**拼音开头的字符*/
-    private String pinYinStart;
     private String eName;
     private String logo;
 }

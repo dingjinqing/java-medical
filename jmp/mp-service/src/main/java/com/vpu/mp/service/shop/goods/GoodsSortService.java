@@ -1,23 +1,28 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.Sort.SORT;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.vpu.mp.db.shop.tables.records.SortRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
+import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
+import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.SortRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.shop.image.ImageService;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.PAY_REWARD;
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 /**
  * @author 李晓冰
@@ -519,6 +524,53 @@ public class GoodsSortService extends ShopBaseService {
         Set set = new HashSet(list);
 
         return new ArrayList<>(set);
+    }
+
+
+    /**
+     * 获取所有有效分类作为父分类，并查询这些有效分类的子分类，将子分类按照父分类进行组织
+     * @param param 查询父分类需要的条件
+     * @return 按照父分类进行组织的结果集合
+     */
+    public List<GoodsSortParentMpVo> getSortGroupByParentMp(SortGroupByParentParam param){
+
+        Condition sortParentCondition = buildSortGroupByParentCondition(param);
+
+        List<GoodsSortParentMpVo> sortParent = db().selectFrom(SORT).where(sortParentCondition)
+            .orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc())
+            .fetchInto(GoodsSortParentMpVo.class);
+
+        List<Integer> parentIds = sortParent.stream().mapToInt(GoodsSortParentMpVo::getSortId).boxed().collect(Collectors.toList());
+
+        Map<Integer, List<GoodsSortMpVo>> sortMap = db().selectFrom(SORT).where(SORT.PARENT_ID.in(parentIds))
+            .orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc())
+            .fetchGroups(SORT.PARENT_ID, GoodsSortMpVo.class);
+
+        for (GoodsSortParentMpVo goodsRecommendSortMpVo : sortParent) {
+            goodsRecommendSortMpVo.setImgLink(getImgFullUrlUtil(goodsRecommendSortMpVo.getImgLink()));
+            List<GoodsSortMpVo> goodsSortMpVos = sortMap.get(goodsRecommendSortMpVo.getSortId());
+            if (goodsSortMpVos == null) {
+                goodsRecommendSortMpVo.setGoodsSorts(new ArrayList<>());
+            } else {
+                goodsRecommendSortMpVo.setGoodsSorts(goodsSortMpVos);
+                goodsSortMpVos.forEach(sort-> sort.setSortImg(getImgFullUrlUtil(sort.getSortImg())));
+            }
+        }
+        return sortParent;
+    }
+
+    public Condition buildSortGroupByParentCondition(SortGroupByParentParam param) {
+        Condition condition = DSL.noCondition();
+        if (param.getIsRecommend() != null) {
+            condition = condition.and(SORT.TYPE.eq(param.getIsRecommend()));
+        }
+        if (param.getParentIds() != null) {
+            condition = condition.and(SORT.PARENT_ID.in(param.getParentIds()));
+        }
+        if (param.getSortIds() != null) {
+            condition = condition.and(SORT.SORT_ID.in(param.getSortIds()));
+        }
+        return condition;
     }
 
     /**

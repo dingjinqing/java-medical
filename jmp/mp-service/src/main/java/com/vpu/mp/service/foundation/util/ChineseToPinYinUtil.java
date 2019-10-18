@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class ChineseToPinYinUtil {
 
     private static final HanyuPinyinOutputFormat format;
+    public static final String OHTER_CHARACTER = "#";
 
     static {
         format = new HanyuPinyinOutputFormat();
@@ -29,9 +30,9 @@ public class ChineseToPinYinUtil {
      * @return 转换后的中文拼音首字母字符串
      */
     public static String getStartAlphabet(String chinese) {
-        String otherCharacter = "#";
+
         if (chinese == null ||chinese.length()==0) {
-            return otherCharacter;
+            return OHTER_CHARACTER;
         }
         StringBuilder pinName = new StringBuilder();
         char[] chineseChar = chinese.toCharArray();
@@ -42,19 +43,20 @@ public class ChineseToPinYinUtil {
                 pinName.append(PinyinHelper.toHanyuPinyinStringArray(startChar, format)[0].charAt(0));
             } catch (BadHanyuPinyinOutputFormatCombination message) {
                 LoggerFactory.getLogger(ChineseToPinYinUtil.class).warn("中文转拼音错误："+message.getMessage());
-                pinName.append(otherCharacter);
+                pinName.append(OHTER_CHARACTER);
             }
-        }else{
-            pinName.append(startChar);
+        } else if (('a' <= startChar && startChar <= 'z') || ('A' <= startChar && startChar <= 'Z')) {
+            pinName.append(Character.toUpperCase(startChar));
+        } else {
+            pinName.append(OHTER_CHARACTER);
         }
 
         return pinName.toString();
     }
 
     public static String getPinYin(String chinese) {
-        String otherCharacter = "#";
         if (chinese == null ||chinese.length()==0) {
-            return otherCharacter;
+            return OHTER_CHARACTER;
         }
         StringBuilder pinName = new StringBuilder();
         char[] chineseChar = chinese.toCharArray();
@@ -64,7 +66,7 @@ public class ChineseToPinYinUtil {
                    pinName.append( PinyinHelper.toHanyuPinyinStringArray(chineseChar[i],format)[0]);
                 } catch (BadHanyuPinyinOutputFormatCombination message) {
                     LoggerFactory.getLogger(ChineseToPinYinUtil.class).warn("中文转拼音错误："+message.getMessage());
-                    pinName.append(otherCharacter);
+                    pinName.append(OHTER_CHARACTER);
                 }
             } else {
                 pinName.append(chineseChar[i]);

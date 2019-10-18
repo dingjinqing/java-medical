@@ -60,13 +60,15 @@ public class GoodsMpService extends ShopBaseService {
      * @return 对应的商品集合信息
      */
     public List<GoodsListMpVo> getGoodsList(GoodsListMpParam param) {
-
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (soldOutGoods == 1) {
+            param.setSoldOutGoodsShow(soldOutGoods);
+        }
         List<GoodsT> goodsTList;
-
         // 手动推荐展示
         if (0 != param.getRecommendType()) {
             // TODO: 手动推荐商品逻辑
-            if (param.getGoodsItems() == null || param.getGoodsItems().length == 0) {
+            if (param.getGoodsItems() == null || param.getGoodsItems().size() == 0) {
                 return new ArrayList<>();
             }
             goodsTList=getPointGoodsList(param);
@@ -82,16 +84,31 @@ public class GoodsMpService extends ShopBaseService {
     }
 
     /**
+     *  根据指定的商品id值获取处理好信息的商品结果集合（商家分类展示一级分类关联的商品时使用到）
+     * @param goodsIds 指定的商品结果结合
+     * @return
+     */
+    public List<GoodsListMpVo> getGoodsList(List<Integer> goodsIds) {
+        GoodsListMpParam param = new GoodsListMpParam();
+        param.setGoodsItems(goodsIds);
+        return getGoodsList(param);
+    }
+    /**
      * 获取指定商品模式下的商品信息
      * @param param 自动推荐过滤条件
      * @return 商品结果集合
      */
     private List<GoodsT> getPointGoodsList(GoodsListMpParam param) {
-        Integer[] goodsIds = param.getGoodsItems();
+        List<Integer> goodsIds = param.getGoodsItems();
+
+        Condition condition = GOODS.GOODS_ID.in(goodsIds);
+        if (param.getSoldOutGoodsShow() == GoodsConstant.SOLD_OUT_GOODS_SHOW) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
 
         List<GoodsT> goodsTList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
             GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID)
-            .from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchInto(GoodsT.class);
+            .from(GOODS).where(condition).fetchInto(GoodsT.class);
         return goodsTList;
     }
 
@@ -135,6 +152,10 @@ public class GoodsMpService extends ShopBaseService {
 
         if (!StringUtils.isBlank(param.getKeywords())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeywords())));
+        }
+        // 是否展示售罄商品
+        if (param.getSoldOutGoodsShow() == GoodsConstant.SOLD_OUT_GOODS_SHOW) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
 
         if (param.getMinPrice() != null) {

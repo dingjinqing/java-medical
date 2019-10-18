@@ -45,6 +45,11 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * 销量展示开关
 	 */
 	final public static String K_SALES_NUMBER = "sales_number";
+
+    /**
+     * 开关开启，前端装修商品模块、店铺商品页、推荐商品列表、活动商品列表会展示已售罄商品
+     */
+	final public static String SOLD_OUT_GOODS = "sold_out_goods";
 	
 	/**
 	 * 下单填写真实姓名开关
@@ -229,7 +234,24 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 		assert(value ==(byte)0 || value == (byte)1);
 		return this.set(K_SALES_NUMBER, value,Byte.class);
 	}
-	
+
+    /**
+     * 获取售罄商品展示设置
+     * @return
+     */
+	public Byte getSoldOutGoods(){
+	    return this.get(SOLD_OUT_GOODS,Byte.class,(byte)0);
+    }
+
+    /**
+     * 设置售罄商品展示设置
+     * @return
+     */
+    public int setSoldOutGoods(Byte value){
+        assert(value ==(byte)0 || value == (byte)1);
+        return this.set(SOLD_OUT_GOODS, value,Byte.class);
+    }
+
 	/**
 	 * 下单填写真实姓名开关
 	 * @return
