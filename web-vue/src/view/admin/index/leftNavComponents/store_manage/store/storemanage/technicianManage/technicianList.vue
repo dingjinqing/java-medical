@@ -161,6 +161,15 @@ export default {
     edit (operate, row) {
       switch (operate) {
         case 'scheduling':
+          this.$router.push({
+            name: 'schedule_setting',
+            query: {
+              id: this.queryParams.storeId,
+              businessHours: this.$route.query.businessHours,
+              technicianId: row.id,
+              technicianName: row.technicianName
+            }
+          })
           break
         case 'edit':
           this.$router.push({
