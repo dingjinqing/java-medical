@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,9 +25,7 @@ public class HelpController extends BaseController {
 	
 	private Logger log=LoggerFactory.getLogger(this.getClass());
 	
-	
-	
-	@GetMapping(value = "/wxapp/score/scoreDocument")
+	@GetMapping("/api/wxapp/score/scoreDocument")
 	public JsonResult scoreDocument(@RequestParam Integer shop_id, @RequestParam Integer user_id) {
 		log.info("查询积分说明");
 		ShopRecord sRecord = saas.shop.getShopById(shop_id);
