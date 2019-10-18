@@ -3,19 +3,23 @@ package com.vpu.mp.service.shop.coupon;
 import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.vpu.mp.service.foundation.database.DslPlus;
-import org.jooq.*;
-import org.jooq.impl.DSL;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.lambda.SQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -28,7 +32,6 @@ import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
 
@@ -261,31 +264,37 @@ public class CouponService extends ShopBaseService {
      * @param param
      * @return
      */
-    public AvailCouponListVo getCouponByUser(AvailCouponParam param) {
+    public PageResult<AvailCouponVo> getCouponByUser(AvailCouponParam param) {
         //某用户全部优惠券
-        List<AvailCouponVo> res = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
+    	SelectJoinStep<? extends Record> select = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
             CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME).from(CUSTOMER_AVAIL_COUPONS
-            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
-            .where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()))
-            .fetch().into(AvailCouponVo.class);
-        AvailCouponListVo couponList = new AvailCouponListVo();
-        //整理数据为未使用、已使用、已过期3个状态list
-        for (AvailCouponVo coupon : res) {
-            if (coupon.isUsed == 0) {
-                couponList.unused.add(coupon);
-            }
-            if (coupon.isUsed == 1) {
-                couponList.used.add(coupon);
-            }
-            if (coupon.isUsed == 2) {
-                couponList.expired.add(coupon);
-            }
-            //各状态优惠券数量
-            couponList.setUnusedNum(couponList.unused.size());
-            couponList.setUsedNum(couponList.used.size());
-            couponList.setExpiredNum(couponList.expired.size());
-        }
-        return couponList;
+            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
+    	
+    	//根据优惠券使用状态、过期状态条件筛选
+    	MpBuildOptions(select, param);
+    	SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
+    	PageResult<AvailCouponVo> list = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
+        return list;
+    }
+    
+    /**
+     * 用户优惠券状态筛选条件
+     * @param select
+     * @param param
+     */
+    public void MpBuildOptions(SelectJoinStep<? extends Record> select, AvailCouponParam param) {
+    	Byte isUsed = param.getNav();
+    	  Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+    	if(isUsed == 0 || isUsed == 1) {  //未使用、已使用状态
+    		select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) isUsed).and(MRKING_VOUCHER.END_TIME.ge(now)));
+    	}else {  //已过期状态
+    		//根据开始时间、结束时间判断
+            Condition dateCondition = MRKING_VOUCHER.END_TIME.le(now);
+           //根据有效天数判断
+            Condition limitTimeCondition = MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0));
+            Condition timeCondition = dateCondition.or(limitTimeCondition);
+            select.where(timeCondition);
+    	}
     }
 
     /**

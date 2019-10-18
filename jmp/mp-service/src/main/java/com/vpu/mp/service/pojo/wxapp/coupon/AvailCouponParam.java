@@ -10,13 +10,20 @@ import lombok.Data;
 @Data
 public class AvailCouponParam {
 	/**
-	 * 分页id
+	 * 状态值：0未使用；1已使用；2已过期
 	 */
-	public Integer pageId;
+	private byte nav;
+	/**
+	 * 当前页
+	 */
+	private Integer currentPage;
+	/**
+	 * 每页显示条数
+	 */
+	private Integer pageRows;
 	
 	/**
 	 * 当前用户ID
-	 * 暂时指定1
 	 */
-	public Integer userId=1;
+	private Integer userId;
 }
