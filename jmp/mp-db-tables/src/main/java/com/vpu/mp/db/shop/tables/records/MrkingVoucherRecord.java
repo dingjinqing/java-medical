@@ -28,594 +28,608 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucherRecord extends UpdatableRecordImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = 1323963504;
+    private static final long serialVersionUID = 1766990227;
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.id</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.id</code>.
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.id</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.id</code>.
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.act_code</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.act_code</code>.
      */
     public void setActCode(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.act_code</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.act_code</code>.
      */
     public String getActCode() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.act_name</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.act_name</code>.
      */
     public void setActName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.act_name</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.act_name</code>.
      */
     public String getActName() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.denomination</code>. 面额
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.start_time</code>.
      */
-    public void setDenomination(BigDecimal value) {
+    public void setStartTime(Timestamp value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.denomination</code>. 面额
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.start_time</code>.
      */
-    public BigDecimal getDenomination() {
-        return (BigDecimal) get(3);
+    public Timestamp getStartTime() {
+        return (Timestamp) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.total_amount</code>. 发行量
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.end_time</code>.
      */
-    public void setTotalAmount(Integer value) {
+    public void setEndTime(Timestamp value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.total_amount</code>. 发行量
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.end_time</code>.
      */
-    public Integer getTotalAmount() {
-        return (Integer) get(4);
+    public Timestamp getEndTime() {
+        return (Timestamp) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.type</code>. 优惠券类型，0普通优惠券；1分裂优惠券
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.denomination</code>. 面额
      */
-    public void setType(Byte value) {
+    public void setDenomination(BigDecimal value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.type</code>. 优惠券类型，0普通优惠券；1分裂优惠券
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.denomination</code>. 面额
      */
-    public Byte getType() {
-        return (Byte) get(5);
+    public BigDecimal getDenomination() {
+        return (BigDecimal) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.surplus</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.total_amount</code>. 发行量
      */
-    public void setSurplus(Integer value) {
+    public void setTotalAmount(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.surplus</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.total_amount</code>. 发行量
      */
-    public Integer getSurplus() {
+    public Integer getTotalAmount() {
         return (Integer) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.use_consume_restrict</code>. 使用限制
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.type</code>. 优惠卷类型，0普通优惠券；1分裂优惠券
      */
-    public void setUseConsumeRestrict(Byte value) {
+    public void setType(Byte value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.use_consume_restrict</code>. 使用限制
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.type</code>. 优惠卷类型，0普通优惠券；1分裂优惠券
      */
-    public Byte getUseConsumeRestrict() {
+    public Byte getType() {
         return (Byte) get(7);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.least_consume</code>. 满多少可用
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.surplus</code>.
      */
-    public void setLeastConsume(BigDecimal value) {
+    public void setSurplus(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.least_consume</code>. 满多少可用
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.surplus</code>.
      */
-    public BigDecimal getLeastConsume() {
-        return (BigDecimal) get(8);
+    public Integer getSurplus() {
+        return (Integer) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.use_explain</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.use_consume_restrict</code>. 使用限制
      */
-    public void setUseExplain(String value) {
+    public void setUseConsumeRestrict(Byte value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.use_explain</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.use_consume_restrict</code>. 使用限制
      */
-    public String getUseExplain() {
-        return (String) get(9);
+    public Byte getUseConsumeRestrict() {
+        return (Byte) get(9);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.enabled</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.least_consume</code>. 满多少可用
      */
-    public void setEnabled(Byte value) {
+    public void setLeastConsume(BigDecimal value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.enabled</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.least_consume</code>. 满多少可用
      */
-    public Byte getEnabled() {
-        return (Byte) get(10);
+    public BigDecimal getLeastConsume() {
+        return (BigDecimal) get(10);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.receive_per_person</code>. 每人限领张数
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.use_explain</code>.
      */
-    public void setReceivePerPerson(Short value) {
+    public void setUseExplain(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.receive_per_person</code>. 每人限领张数
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.use_explain</code>.
      */
-    public Short getReceivePerPerson() {
-        return (Short) get(11);
+    public String getUseExplain() {
+        return (String) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.suit_goods</code>. 0:全店通用,1:指定店铺
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.enabled</code>.
      */
-    public void setSuitGoods(Byte value) {
+    public void setEnabled(Byte value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.suit_goods</code>. 0:全店通用,1:指定店铺
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.enabled</code>.
      */
-    public Byte getSuitGoods() {
+    public Byte getEnabled() {
         return (Byte) get(12);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.together_used</code>. 是否与其他优惠券同时使用
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.receive_per_person</code>. 每人限领张数
      */
-    public void setTogetherUsed(Byte value) {
+    public void setReceivePerPerson(Short value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.together_used</code>. 是否与其他优惠券同时使用
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.receive_per_person</code>. 每人限领张数
      */
-    public Byte getTogetherUsed() {
-        return (Byte) get(13);
+    public Short getReceivePerPerson() {
+        return (Short) get(13);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.permit_share</code>. 是否允许分享优惠券链接
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.suit_goods</code>. 0:全店通用,1:指定店铺
      */
-    public void setPermitShare(Byte value) {
+    public void setSuitGoods(Byte value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.permit_share</code>. 是否允许分享优惠券链接
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.suit_goods</code>. 0:全店通用,1:指定店铺
      */
-    public Byte getPermitShare() {
+    public Byte getSuitGoods() {
         return (Byte) get(14);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.remind_owner</code>. 是否到期前提醒用户
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.together_used</code>. 是否与其他优惠券同时使用
      */
-    public void setRemindOwner(Byte value) {
+    public void setTogetherUsed(Byte value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.remind_owner</code>. 是否到期前提醒用户
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.together_used</code>. 是否与其他优惠券同时使用
      */
-    public Byte getRemindOwner() {
+    public Byte getTogetherUsed() {
         return (Byte) get(15);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.giveout_amount</code>. 发放优惠券数量
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.permit_share</code>. 是否允许分享优惠券链接
      */
-    public void setGiveoutAmount(Short value) {
+    public void setPermitShare(Byte value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.giveout_amount</code>. 发放优惠券数量
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.permit_share</code>. 是否允许分享优惠券链接
      */
-    public Short getGiveoutAmount() {
-        return (Short) get(16);
+    public Byte getPermitShare() {
+        return (Byte) get(16);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.giveout_person</code>. 发放优惠券人数
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.remind_owner</code>. 是否到期前提醒用户
      */
-    public void setGiveoutPerson(Short value) {
+    public void setRemindOwner(Byte value) {
         set(17, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.giveout_person</code>. 发放优惠券人数
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.remind_owner</code>. 是否到期前提醒用户
      */
-    public Short getGiveoutPerson() {
-        return (Short) get(17);
+    public Byte getRemindOwner() {
+        return (Byte) get(17);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.receive_amount</code>. 领取优惠券数量
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.giveout_amount</code>. 发放优惠券数量
      */
-    public void setReceiveAmount(Short value) {
+    public void setGiveoutAmount(Short value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.receive_amount</code>. 领取优惠券数量
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.giveout_amount</code>. 发放优惠券数量
      */
-    public Short getReceiveAmount() {
+    public Short getGiveoutAmount() {
         return (Short) get(18);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.receive_person</code>. 领取优惠券人数
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.giveout_person</code>. 发放优惠券人数
      */
-    public void setReceivePerson(Short value) {
+    public void setGiveoutPerson(Short value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.receive_person</code>. 领取优惠券人数
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.giveout_person</code>. 发放优惠券人数
      */
-    public Short getReceivePerson() {
+    public Short getGiveoutPerson() {
         return (Short) get(19);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.used_amount</code>. 已使用优惠券数量
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.receive_amount</code>. 领取优惠券数量
      */
-    public void setUsedAmount(Short value) {
+    public void setReceiveAmount(Short value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.used_amount</code>. 已使用优惠券数量
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.receive_amount</code>. 领取优惠券数量
      */
-    public Short getUsedAmount() {
+    public Short getReceiveAmount() {
         return (Short) get(20);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.alias_code</code>. 唯一活动代码
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.receive_person</code>. 领取优惠券人数
      */
-    public void setAliasCode(String value) {
+    public void setReceivePerson(Short value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.alias_code</code>. 唯一活动代码
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.receive_person</code>. 领取优惠券人数
      */
-    public String getAliasCode() {
-        return (String) get(21);
+    public Short getReceivePerson() {
+        return (Short) get(21);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.validation_code</code>. 领取码
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.used_amount</code>. 已使用优惠券数量
      */
-    public void setValidationCode(String value) {
+    public void setUsedAmount(Short value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.validation_code</code>. 领取码
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.used_amount</code>. 已使用优惠券数量
      */
-    public String getValidationCode() {
-        return (String) get(22);
+    public Short getUsedAmount() {
+        return (Short) get(22);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_goods_id</code>. 指定商品可用
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.alias_code</code>. 唯一活动代码
      */
-    public void setRecommendGoodsId(String value) {
+    public void setAliasCode(String value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_goods_id</code>. 指定商品可用
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.alias_code</code>. 唯一活动代码
      */
-    public String getRecommendGoodsId() {
+    public String getAliasCode() {
         return (String) get(23);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_cat_id</code>. 指定平台可用
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.validation_code</code>. 领取码
      */
-    public void setRecommendCatId(String value) {
+    public void setValidationCode(String value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_cat_id</code>. 指定平台可用
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.validation_code</code>. 领取码
      */
-    public String getRecommendCatId() {
+    public String getValidationCode() {
         return (String) get(24);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_sort_id</code>. 指定商家分类可用
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_goods_id</code>. 指定商品可用
      */
-    public void setRecommendSortId(String value) {
+    public void setRecommendGoodsId(String value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_sort_id</code>. 指定商家分类可用
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_goods_id</code>. 指定商品可用
      */
-    public String getRecommendSortId() {
+    public String getRecommendGoodsId() {
         return (String) get(25);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.validity</code>. 优惠券有效天数
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_cat_id</code>. 指定平台可用
      */
-    public void setValidity(Integer value) {
+    public void setRecommendCatId(String value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.validity</code>. 优惠券有效天数
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_cat_id</code>. 指定平台可用
      */
-    public Integer getValidity() {
-        return (Integer) get(26);
+    public String getRecommendCatId() {
+        return (String) get(26);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.del_flag</code>. 1为删除状态
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_sort_id</code>. 指定商家分类可用
      */
-    public void setDelFlag(Byte value) {
+    public void setRecommendSortId(String value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.del_flag</code>. 1为删除状态
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_sort_id</code>. 指定商家分类可用
      */
-    public Byte getDelFlag() {
-        return (Byte) get(27);
+    public String getRecommendSortId() {
+        return (String) get(27);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.action</code>. 1:系統创建 2：来自crm
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.validity</code>. 优惠券有效天数
      */
-    public void setAction(Byte value) {
+    public void setValidity(Integer value) {
         set(28, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.action</code>. 1:系統创建 2：来自crm
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.validity</code>. 优惠券有效天数
      */
-    public Byte getAction() {
-        return (Byte) get(28);
+    public Integer getValidity() {
+        return (Integer) get(28);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.identity_id</code>. 关联外部优惠券规则唯一码
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.del_flag</code>. 1为删除状态
      */
-    public void setIdentityId(String value) {
+    public void setDelFlag(Byte value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.identity_id</code>. 关联外部优惠券规则唯一码
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.del_flag</code>. 1为删除状态
      */
-    public String getIdentityId() {
-        return (String) get(29);
+    public Byte getDelFlag() {
+        return (Byte) get(29);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_product_id</code>. 关联商品规格
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.action</code>. 1:系統创建 2：来自crm
      */
-    public void setRecommendProductId(String value) {
+    public void setAction(Byte value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.recommend_product_id</code>. 关联商品规格
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.action</code>. 1:系統创建 2：来自crm
      */
-    public String getRecommendProductId() {
-        return (String) get(30);
+    public Byte getAction() {
+        return (Byte) get(30);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.use_score</code>. 是否可以积分兑换
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.identity_id</code>. 关联外部优惠券规则唯一码
      */
-    public void setUseScore(Byte value) {
+    public void setIdentityId(String value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.use_score</code>. 是否可以积分兑换
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.identity_id</code>. 关联外部优惠券规则唯一码
      */
-    public Byte getUseScore() {
-        return (Byte) get(31);
+    public String getIdentityId() {
+        return (String) get(31);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.score_number</code>. 需要积分数
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_product_id</code>. 关联商品规格
      */
-    public void setScoreNumber(Integer value) {
+    public void setRecommendProductId(String value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.score_number</code>. 需要积分数
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.recommend_product_id</code>. 关联商品规格
      */
-    public Integer getScoreNumber() {
-        return (Integer) get(32);
+    public String getRecommendProductId() {
+        return (String) get(32);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.card_id</code>. 专属会员卡
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.use_score</code>. 是否可以积分兑换
      */
-    public void setCardId(String value) {
+    public void setUseScore(Byte value) {
         set(33, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.card_id</code>. 专属会员卡
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.use_score</code>. 是否可以积分兑换
      */
-    public String getCardId() {
-        return (String) get(33);
+    public Byte getUseScore() {
+        return (Byte) get(33);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.create_time</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.score_number</code>. 需要积分数
      */
-    public void setCreateTime(Timestamp value) {
+    public void setScoreNumber(Integer value) {
         set(34, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.create_time</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.score_number</code>. 需要积分数
      */
-    public Timestamp getCreateTime() {
-        return (Timestamp) get(34);
+    public Integer getScoreNumber() {
+        return (Integer) get(34);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.update_time</code>. 最后修改时间
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.card_id</code>. 专属会员卡
      */
-    public void setUpdateTime(Timestamp value) {
+    public void setCardId(String value) {
         set(35, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.update_time</code>. 最后修改时间
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.card_id</code>. 专属会员卡
      */
-    public Timestamp getUpdateTime() {
-        return (Timestamp) get(35);
+    public String getCardId() {
+        return (String) get(35);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.start_time</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.create_time</code>.
      */
-    public void setStartTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(36, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.start_time</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.create_time</code>.
      */
-    public Timestamp getStartTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(36);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.end_time</code>.
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.update_time</code>. 最后修改时间
      */
-    public void setEndTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(37, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.end_time</code>.
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.update_time</code>. 最后修改时间
      */
-    public Timestamp getEndTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(37);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.validity_type</code>. 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.validity_type</code>. 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效
      */
     public void setValidityType(Byte value) {
         set(38, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.validity_type</code>. 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.validity_type</code>. 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效
      */
     public Byte getValidityType() {
         return (Byte) get(38);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数
      */
     public void setValidityHour(Integer value) {
         set(39, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数
      */
     public Integer getValidityHour() {
         return (Integer) get(39);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.validity_minute</code>. 优惠券有效分钟数
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.validity_minute</code>. 优惠券有效分钟数
      */
     public void setValidityMinute(Integer value) {
         set(40, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.validity_minute</code>. 优惠券有效分钟数
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.validity_minute</code>. 优惠券有效分钟数
      */
     public Integer getValidityMinute() {
         return (Integer) get(40);
     }
 
     /**
-     * Setter for <code>mini_shop_4783002.b2c_mrking_voucher.limit_surplus_flag</code>. 是否限制库存：0限制，1不限制
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.expiration_date</code>. validity_type为1时的过期时间
      */
-    public void setLimitSurplusFlag(Byte value) {
+    public void setExpirationDate(Timestamp value) {
         set(41, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4783002.b2c_mrking_voucher.limit_surplus_flag</code>. 是否限制库存：0限制，1不限制
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.expiration_date</code>. validity_type为1时的过期时间
+     */
+    public Timestamp getExpirationDate() {
+        return (Timestamp) get(41);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_471752.b2c_mrking_voucher.limit_surplus_flag</code>. 是否限制库存：0限制，1不限制
+     */
+    public void setLimitSurplusFlag(Byte value) {
+        set(42, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_471752.b2c_mrking_voucher.limit_surplus_flag</code>. 是否限制库存：0限制，1不限制
      */
     public Byte getLimitSurplusFlag() {
-        return (Byte) get(41);
+        return (Byte) get(42);
     }
 
     // -------------------------------------------------------------------------
@@ -644,50 +658,51 @@ public class MrkingVoucherRecord extends UpdatableRecordImpl<MrkingVoucherRecord
     /**
      * Create a detached, initialised MrkingVoucherRecord
      */
-    public MrkingVoucherRecord(Integer id, String actCode, String actName, BigDecimal denomination, Integer totalAmount, Byte type, Integer surplus, Byte useConsumeRestrict, BigDecimal leastConsume, String useExplain, Byte enabled, Short receivePerPerson, Byte suitGoods, Byte togetherUsed, Byte permitShare, Byte remindOwner, Short giveoutAmount, Short giveoutPerson, Short receiveAmount, Short receivePerson, Short usedAmount, String aliasCode, String validationCode, String recommendGoodsId, String recommendCatId, String recommendSortId, Integer validity, Byte delFlag, Byte action, String identityId, String recommendProductId, Byte useScore, Integer scoreNumber, String cardId, Timestamp createTime, Timestamp updateTime, Timestamp startTime, Timestamp endTime, Byte validityType, Integer validityHour, Integer validityMinute, Byte limitSurplusFlag) {
+    public MrkingVoucherRecord(Integer id, String actCode, String actName, Timestamp startTime, Timestamp endTime, BigDecimal denomination, Integer totalAmount, Byte type, Integer surplus, Byte useConsumeRestrict, BigDecimal leastConsume, String useExplain, Byte enabled, Short receivePerPerson, Byte suitGoods, Byte togetherUsed, Byte permitShare, Byte remindOwner, Short giveoutAmount, Short giveoutPerson, Short receiveAmount, Short receivePerson, Short usedAmount, String aliasCode, String validationCode, String recommendGoodsId, String recommendCatId, String recommendSortId, Integer validity, Byte delFlag, Byte action, String identityId, String recommendProductId, Byte useScore, Integer scoreNumber, String cardId, Timestamp createTime, Timestamp updateTime, Byte validityType, Integer validityHour, Integer validityMinute, Timestamp expirationDate, Byte limitSurplusFlag) {
         super(MrkingVoucher.MRKING_VOUCHER);
 
         set(0, id);
         set(1, actCode);
         set(2, actName);
-        set(3, denomination);
-        set(4, totalAmount);
-        set(5, type);
-        set(6, surplus);
-        set(7, useConsumeRestrict);
-        set(8, leastConsume);
-        set(9, useExplain);
-        set(10, enabled);
-        set(11, receivePerPerson);
-        set(12, suitGoods);
-        set(13, togetherUsed);
-        set(14, permitShare);
-        set(15, remindOwner);
-        set(16, giveoutAmount);
-        set(17, giveoutPerson);
-        set(18, receiveAmount);
-        set(19, receivePerson);
-        set(20, usedAmount);
-        set(21, aliasCode);
-        set(22, validationCode);
-        set(23, recommendGoodsId);
-        set(24, recommendCatId);
-        set(25, recommendSortId);
-        set(26, validity);
-        set(27, delFlag);
-        set(28, action);
-        set(29, identityId);
-        set(30, recommendProductId);
-        set(31, useScore);
-        set(32, scoreNumber);
-        set(33, cardId);
-        set(34, createTime);
-        set(35, updateTime);
-        set(36, startTime);
-        set(37, endTime);
+        set(3, startTime);
+        set(4, endTime);
+        set(5, denomination);
+        set(6, totalAmount);
+        set(7, type);
+        set(8, surplus);
+        set(9, useConsumeRestrict);
+        set(10, leastConsume);
+        set(11, useExplain);
+        set(12, enabled);
+        set(13, receivePerPerson);
+        set(14, suitGoods);
+        set(15, togetherUsed);
+        set(16, permitShare);
+        set(17, remindOwner);
+        set(18, giveoutAmount);
+        set(19, giveoutPerson);
+        set(20, receiveAmount);
+        set(21, receivePerson);
+        set(22, usedAmount);
+        set(23, aliasCode);
+        set(24, validationCode);
+        set(25, recommendGoodsId);
+        set(26, recommendCatId);
+        set(27, recommendSortId);
+        set(28, validity);
+        set(29, delFlag);
+        set(30, action);
+        set(31, identityId);
+        set(32, recommendProductId);
+        set(33, useScore);
+        set(34, scoreNumber);
+        set(35, cardId);
+        set(36, createTime);
+        set(37, updateTime);
         set(38, validityType);
         set(39, validityHour);
         set(40, validityMinute);
-        set(41, limitSurplusFlag);
+        set(41, expirationDate);
+        set(42, limitSurplusFlag);
     }
 }

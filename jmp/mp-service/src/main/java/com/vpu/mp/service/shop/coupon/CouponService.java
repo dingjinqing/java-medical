@@ -5,6 +5,8 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -63,6 +65,14 @@ public class CouponService extends ShopBaseService {
         MrkingVoucherRecord record = new MrkingVoucherRecord();
         record.setSurplus(couponInfo.getTotalAmount());
         record.setAliasCode(this.generateAliasCode());
+        if(couponInfo.getValidity( ) > 0) {
+			Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+			Calendar cal = Calendar.getInstance();   
+			cal.setTime(now);   
+			cal.add(Calendar.HOUR,(couponInfo.getValidity() * 24 + couponInfo.getValidityHour()));
+			cal.add(Calendar.MINUTE, couponInfo.getValidityMinute());
+			Date date = cal.getTime(); 
+        }
         this.assign(couponInfo, record);
         return db().executeInsert(record) > 0 ? true : false;
     }
@@ -289,7 +299,7 @@ public class CouponService extends ShopBaseService {
     		select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) isUsed).and(MRKING_VOUCHER.END_TIME.ge(now)));
     	}else {  //已过期状态
     		//根据开始时间、结束时间判断
-            Condition dateCondition = MRKING_VOUCHER.END_TIME.le(now);
+            Condition dateCondition = MRKING_VOUCHER.END_TIME.le(now).and(MRKING_VOUCHER.VALIDITY_TYPE.eq((byte) 0));
            //根据有效天数判断
             Condition limitTimeCondition = MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0));
             Condition timeCondition = dateCondition.or(limitTimeCondition);
