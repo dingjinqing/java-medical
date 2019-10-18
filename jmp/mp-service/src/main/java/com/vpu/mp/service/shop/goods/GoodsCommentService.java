@@ -513,11 +513,11 @@ public class GoodsCommentService extends ShopBaseService {
    *
    * @return 所有可用活动和其触发条件
    */
-  public List<TriggerConditonVo> getAllActivities() {
+  public List<TriggerConditionVo> getAllActivities() {
     // 得到系统当前时间作为筛选依据
     Timestamp nowTime = new Timestamp(System.currentTimeMillis());
     // 筛选评价有礼活动类型
-    List<TriggerConditonVo> triggerConditonVos =
+    List<TriggerConditionVo> triggerConditionVos =
         db().select(
                 COMMENT_AWARD.ID,
                 COMMENT_AWARD.GOODS_TYPE,
@@ -536,21 +536,21 @@ public class GoodsCommentService extends ShopBaseService {
                             .START_TIME
                             .lessOrEqual(nowTime)
                             .and(COMMENT_AWARD.END_TIME.greaterOrEqual(nowTime))))
-            .fetchInto(TriggerConditonVo.class);
-    return triggerConditonVos;
+            .fetchInto(TriggerConditionVo.class);
+    return triggerConditionVos;
   }
 
   /**
    * 得到当前商品所满足触发条件的所有活动的id集合
    *
    * @param goodsId 当前商品id
-   * @param triggerConditonVos 触发条件信息
+   * @param triggerConditionVos 触发条件信息
    * @return 当前商品所满足触发条件的所有活动的id集合
    */
-  public Set<Integer> getAllActIds(Integer goodsId, List<TriggerConditonVo> triggerConditonVos) {
+  public Set<Integer> getAllActIds(Integer goodsId, List<TriggerConditionVo> triggerConditionVos) {
     // 声明一个集合来存放满足条件的活动id
     Set<Integer> actIds = new HashSet<>();
-    for (TriggerConditonVo vo : triggerConditonVos) {
+    for (TriggerConditionVo vo : triggerConditionVos) {
       // 触发条件：全部商品
       if (vo.getGoodsType().equals(NumberUtils.INTEGER_ONE)) {
         actIds.add(vo.getId());
@@ -603,15 +603,15 @@ public class GoodsCommentService extends ShopBaseService {
    * @param commentListVo 待添加评价有礼的商品行
    */
   public void selectCommentAward(List<CommentListVo> commentListVo) {
+    // 得到当前所有可用活动和其触发条件的信息
+    List<TriggerConditionVo> triggerConditionVos = getAllActivities();
     // 判断每个商品行对应的评价有礼活动奖励
     for (CommentListVo forGoodsId : commentListVo) {
-      // 得到当前所有可用活动和其触发条件的信息
-      List<TriggerConditonVo> triggerConditonVos = getAllActivities();
-      if (triggerConditonVos == null || triggerConditonVos.isEmpty()) {
+      if (triggerConditionVos == null || triggerConditionVos.isEmpty()) {
         return;
       } else {
         // 得到当前商品所满足触发条件的所有活动的id集合
-        Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), triggerConditonVos);
+        Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), triggerConditionVos);
 
         if (actIds == null || actIds.isEmpty()) {
           return;
