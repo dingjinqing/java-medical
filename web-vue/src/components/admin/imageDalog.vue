@@ -302,6 +302,7 @@ export default {
         item.checked = false
       })
       this.backArr = []
+      this.checked = false
       this.queryImgs()
       this.dialogTableVisible = true
     },
@@ -313,7 +314,8 @@ export default {
           this.sizeH = newData[1]
         }
       },
-      immediate: true
+      immediate: true,
+      deep: true
 
     },
     checked (newData) {

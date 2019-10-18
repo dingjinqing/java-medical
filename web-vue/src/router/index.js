@@ -27,6 +27,11 @@ const baseRoutes = [
     path: '/system/login',
     name: 'systemLogin',
     component: () => import('@/components/system/login')
+  },
+  {
+    path: '/wxapp/score/scoreDocument',
+    name: 'scoreterms',
+    component: () => import('@/view/admin/layout/scoreterms') // 小程序内使用静态页面
   }
 ]
 const routes = baseRoutes.concat(
