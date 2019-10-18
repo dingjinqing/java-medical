@@ -737,6 +737,7 @@ create table `b2c_mrking_voucher`
     `card_id`              text comment '专属会员卡',
     `create_time`          timestamp               default current_timestamp,
     `update_time`          timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
+     `limit_surplus_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否限制库存：0限制，1不限制',
     primary key (`id`),
     unique key `alias_code` (`alias_code`),
     key `act_name` (`act_name`)

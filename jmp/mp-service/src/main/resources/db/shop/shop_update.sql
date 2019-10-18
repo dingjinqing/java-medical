@@ -923,3 +923,7 @@ ALTER TABLE b2c_user_collection add column `username` varchar(32) NOT NULL DEFAU
 ALTER TABLE b2c_user_collection add column `collect_price` decimal(10, 2) NOT NULL DEFAULT '0.00' COMMENT '收藏时商品价格';
 
 alter table `b2c_part_order_goods_ship` add index `product_id` (`product_id`);
+
+-- 梁晨 2019-10-18 添加优惠券字段
+
+alter table `b2c_mrking_voucher` add column `limit_surplus_flag`  tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否限制库存：0限制，1不限制';
