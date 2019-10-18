@@ -49,10 +49,11 @@ public class UserCenterTraitService extends ShopBaseService {
 			vo.setStatus(PSTATUS_ONE);
 			return vo;
 		}
+		logger().info("读取背景图");
 		// 读取背景图片
 		BufferedImage backgroundImage = null;
 		try {
-			ClassPathResource resource = new ClassPathResource("/image/wxapp/user_background.png");
+			ClassPathResource resource = new ClassPathResource("image/wxapp/user_background.png");
 			backgroundImage = ImageIO.read(resource.getFile());
 		} catch (IOException e) {
 			vo.setMsg("获取二维码失败");
@@ -63,6 +64,7 @@ public class UserCenterTraitService extends ShopBaseService {
 		// 重新设置大小
 		backgroundImage = ImageUtil.resizeImage(600, 800, backgroundImage);
 
+		logger().info("获取微信二维码");
 		// 获取微信二维码地址
 		String mpQrCode = user.qrCode.getMpQrCode(QrCodeTypeEnum.INVITE, "invite_id=" + userId);
 		if (StringUtils.isEmpty(mpQrCode)) {
@@ -81,7 +83,7 @@ public class UserCenterTraitService extends ShopBaseService {
 			logger().error(e.getMessage(), e);
 			return vo;
 		}
-
+		logger().info("获取微信头像");
 		// 微信头像
 		BufferedImage avatarImage = null;
 		try {
