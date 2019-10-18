@@ -34,7 +34,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 public class UserCenterTraitService extends ShopBaseService {
 	@Autowired
 	private UserService user;
-
+	@Autowired
 	public PictorialService pService;
 
 	private final static byte PSTATUS_ZERO = 0;
