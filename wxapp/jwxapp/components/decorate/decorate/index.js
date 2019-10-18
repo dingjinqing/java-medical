@@ -36,6 +36,8 @@ global.wxComponent({
         module['component_name'] = componentName
         module['margin_bot'] = pageInfo.page_cfg.show_margin == 1 ? 0 : pageInfo.page_cfg.margin_val;
         module['main_setting'] = page_content.main_setting;
+
+        module['imageUrl'] = 'http://jmpdevimg.weipubao.cn'
         pageData.push(module);
       }
 
