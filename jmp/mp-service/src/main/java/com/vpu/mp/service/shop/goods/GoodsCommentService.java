@@ -509,6 +509,95 @@ public class GoodsCommentService extends ShopBaseService {
   }
 
   /**
+   * 得到当前所有可用活动和其触发条件的信息
+   *
+   * @return 所有可用活动和其触发条件
+   */
+  public List<TriggerConditonVo> getAllActivities() {
+    // 得到系统当前时间作为筛选依据
+    Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+    // 筛选评价有礼活动类型
+    List<TriggerConditonVo> triggerConditonVos =
+        db().select(
+                COMMENT_AWARD.ID,
+                COMMENT_AWARD.GOODS_TYPE,
+                COMMENT_AWARD.GOODS_IDS,
+                COMMENT_AWARD.COMMENT_NUM)
+            .from(COMMENT_AWARD)
+            .where(COMMENT_AWARD.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .and(COMMENT_AWARD.STATUS.eq(NumberUtils.BYTE_ONE))
+            .and(COMMENT_AWARD.AWARD_NUM.greaterThan(COMMENT_AWARD.SEND_NUM))
+            .and(
+                COMMENT_AWARD
+                    .IS_FOREVER
+                    .eq(NumberUtils.BYTE_ONE)
+                    .or(
+                        COMMENT_AWARD
+                            .START_TIME
+                            .lessOrEqual(nowTime)
+                            .and(COMMENT_AWARD.END_TIME.greaterOrEqual(nowTime))))
+            .fetchInto(TriggerConditonVo.class);
+    return triggerConditonVos;
+  }
+
+  /**
+   * 得到当前商品所满足触发条件的所有活动的id集合
+   *
+   * @param goodsId 当前商品id
+   * @param triggerConditonVos 触发条件信息
+   * @return 当前商品所满足触发条件的所有活动的id集合
+   */
+  public Set<Integer> getAllActIds(Integer goodsId, List<TriggerConditonVo> triggerConditonVos) {
+    // 声明一个集合来存放满足条件的活动id
+    Set<Integer> actIds = new HashSet<>();
+    for (TriggerConditonVo vo : triggerConditonVos) {
+      // 触发条件：全部商品
+      if (vo.getGoodsType().equals(NumberUtils.INTEGER_ONE)) {
+        actIds.add(vo.getId());
+      } // 触发条件：指定商品
+      else if (vo.getGoodsType().equals(NumberUtils.INTEGER_TWO)) {
+        String[] arr = vo.getGoodsIds().split(",");
+        if (Arrays.asList(arr).contains(goodsId.toString())) {
+          actIds.add(vo.getId());
+        }
+      } // 触发条件：评论数小于一定值
+      else {
+        Integer commNum =
+            db().select(DSL.count(COMMENT_GOODS.ID))
+                .from(COMMENT_GOODS)
+                .where(COMMENT_GOODS.GOODS_ID.eq(goodsId))
+                .and(COMMENT_GOODS.FLAG.eq(NumberUtils.BYTE_ONE))
+                .and(COMMENT_GOODS.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+                .fetchOptionalInto(Integer.class)
+                .orElse(0);
+        if (commNum < vo.getCommentNum()) {
+          actIds.add(vo.getId());
+        }
+      }
+    }
+    return actIds;
+  }
+
+  /**
+   * 根据优先级确定当前商品参加哪个评价有礼活动
+   *
+   * @param actIds 有所符合条件的活动id集合
+   * @return 最终参与的活动的id
+   */
+  public Integer getTheActId(Set<Integer> actIds) {
+    // 遍历筛选出来的评价有礼活动id，查找当前商品的活动奖励
+    Integer actId =
+        db().select(COMMENT_AWARD.ID)
+            .from(COMMENT_AWARD)
+            .where(COMMENT_AWARD.ID.in(actIds))
+            .orderBy(COMMENT_AWARD.LEVE.desc())
+            .limit(NumberUtils.INTEGER_ONE)
+            .fetchOptionalInto(Integer.class)
+            .orElseThrow(() -> new RuntimeException("未找到对应活动id"));
+    return actId;
+  }
+
+  /**
    * 为商品添加评价有礼相关信息
    *
    * @param commentListVo 待添加评价有礼的商品行
@@ -516,72 +605,21 @@ public class GoodsCommentService extends ShopBaseService {
   public void selectCommentAward(List<CommentListVo> commentListVo) {
     // 判断每个商品行对应的评价有礼活动奖励
     for (CommentListVo forGoodsId : commentListVo) {
-      // 得到系统当前时间作为筛选依据
-      Timestamp nowTime = new Timestamp(System.currentTimeMillis());
-      // 筛选评价有礼活动类型
-      List<TriggerConditonVo> triggerConditonVos =
-          db().select(
-                  COMMENT_AWARD.ID,
-                  COMMENT_AWARD.GOODS_TYPE,
-                  COMMENT_AWARD.GOODS_IDS,
-                  COMMENT_AWARD.COMMENT_NUM)
-              .from(COMMENT_AWARD)
-              .where(COMMENT_AWARD.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
-              .and(COMMENT_AWARD.STATUS.eq(NumberUtils.BYTE_ONE))
-              .and(COMMENT_AWARD.AWARD_NUM.greaterThan(COMMENT_AWARD.SEND_NUM))
-              .and(
-                  COMMENT_AWARD
-                      .IS_FOREVER
-                      .eq(NumberUtils.BYTE_ONE)
-                      .or(
-                          COMMENT_AWARD
-                              .START_TIME
-                              .lessOrEqual(nowTime)
-                              .and(COMMENT_AWARD.END_TIME.greaterOrEqual(nowTime))))
-              .fetchInto(TriggerConditonVo.class);
+      // 得到当前所有可用活动和其触发条件的信息
+      List<TriggerConditonVo> triggerConditonVos = getAllActivities();
       if (triggerConditonVos == null || triggerConditonVos.isEmpty()) {
         return;
       } else {
-        // 声明一个集合来存放满足条件的活动id
-        Set<Integer> actIds = new HashSet<>();
-        for (TriggerConditonVo vo : triggerConditonVos) {
-          // 触发条件：全部商品
-          if (vo.getGoodsType().equals(NumberUtils.INTEGER_ONE)) {
-            actIds.add(vo.getId());
-          } // 触发条件：指定商品
-          else if (vo.getGoodsType().equals(NumberUtils.INTEGER_TWO)) {
-            String[] arr = vo.getGoodsIds().split(",");
-            if (Arrays.asList(arr).contains(forGoodsId.getGoodsId())) {
-              actIds.add(vo.getId());
-            }
-          } // 触发条件：评论数小于一定值
-          else {
-            Integer commNum =
-                db().select(DSL.count(COMMENT_GOODS.ID))
-                    .from(COMMENT_GOODS)
-                    .where(COMMENT_GOODS.GOODS_ID.eq(forGoodsId.getGoodsId()))
-                    .and(COMMENT_GOODS.FLAG.eq(NumberUtils.BYTE_ONE))
-                    .and(COMMENT_GOODS.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
-                    .fetchOptionalInto(Integer.class)
-                    .orElse(0);
-            if (commNum < vo.getCommentNum()) {
-              actIds.add(vo.getId());
-            }
-          }
-        }
+        // 得到当前商品所满足触发条件的所有活动的id集合
+        Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), triggerConditonVos);
+
         if (actIds == null || actIds.isEmpty()) {
           return;
         } else {
-          // 遍历筛选出来的评价有礼活动id，查找当前商品的活动奖励
-          Integer actId =
-              db().select(COMMENT_AWARD.ID)
-                  .from(COMMENT_AWARD)
-                  .where(COMMENT_AWARD.ID.in(actIds))
-                  .orderBy(COMMENT_AWARD.LEVE.desc())
-                  .limit(NumberUtils.INTEGER_ONE)
-                  .fetchOptionalInto(Integer.class)
-                  .orElseThrow(() -> new RuntimeException("未找到对应活动id"));
+          // 根据优先级确定当前商品参加哪个评价有礼活动
+          Integer actId = getTheActId(actIds);
           forGoodsId.setId(actId);
+          // 查询活动奖励
           AwardContentVo awardContentVos =
               db().select(
                       COMMENT_AWARD.AWARD_TYPE,
@@ -680,24 +718,34 @@ public class GoodsCommentService extends ShopBaseService {
         .where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()))
         .execute();
   }
-  
+
   /**
    * 统计商品评价数量
+   *
    * @param goodsIds 待统计商品id集合
    * @param config 评价配置： 0不审，1先发后审，2先审后发
    * @return
    */
   public Map<Integer, Integer> statisticGoodsComment(List<Integer> goodsIds, Byte config) {
-      Map<Integer,Integer> results=null;
-      if (config == 2) {
-          results = db().select(COMMENT_GOODS.GOODS_ID, DSL.count(COMMENT_GOODS.ID).as("num")).from(COMMENT_GOODS)
-              .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(COMMENT_GOODS.GOODS_ID.in(goodsIds))
-              .groupBy(COMMENT_GOODS.GOODS_ID).fetchMap(COMMENT_GOODS.GOODS_ID, DSL.field("num",Integer.class));
-      } else {
-          results = db().select(COMMENT_GOODS.GOODS_ID, DSL.count(COMMENT_GOODS.ID).as("num")).from(COMMENT_GOODS)
-              .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(COMMENT_GOODS.GOODS_ID.in(goodsIds)).and(COMMENT_GOODS.FLAG.eq((byte) 1))
-              .groupBy(COMMENT_GOODS.GOODS_ID).fetchMap(COMMENT_GOODS.GOODS_ID, DSL.field("num",Integer.class));
-      }
-      return results;
+    Map<Integer, Integer> results = null;
+    if (config == 2) {
+      results =
+          db().select(COMMENT_GOODS.GOODS_ID, DSL.count(COMMENT_GOODS.ID).as("num"))
+              .from(COMMENT_GOODS)
+              .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+              .and(COMMENT_GOODS.GOODS_ID.in(goodsIds))
+              .groupBy(COMMENT_GOODS.GOODS_ID)
+              .fetchMap(COMMENT_GOODS.GOODS_ID, DSL.field("num", Integer.class));
+    } else {
+      results =
+          db().select(COMMENT_GOODS.GOODS_ID, DSL.count(COMMENT_GOODS.ID).as("num"))
+              .from(COMMENT_GOODS)
+              .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+              .and(COMMENT_GOODS.GOODS_ID.in(goodsIds))
+              .and(COMMENT_GOODS.FLAG.eq((byte) 1))
+              .groupBy(COMMENT_GOODS.GOODS_ID)
+              .fetchMap(COMMENT_GOODS.GOODS_ID, DSL.field("num", Integer.class));
+    }
+    return results;
   }
 }
