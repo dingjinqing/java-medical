@@ -4,16 +4,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tools.ant.taskdefs.LoadFile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
@@ -28,6 +26,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 
 /**
  * 生成分享图片
+ * 
  * @author zhaojianqiang
  *
  *         2019年10月17日 下午5:09:19
@@ -54,44 +53,23 @@ public class UserCenterTraitService extends ShopBaseService {
 		logger().info("读取背景图");
 		// 读取背景图片
 		BufferedImage backgroundImage = null;
+		InputStream loadFile = null;
 		try {
-			
-			ClassPathResource resource = new ClassPathResource("image/wxapp/user_background.png");
-			logger().info("地址："+resource.getURL());
-			logger().info("读："+resource.getInputStream()==null?"空":"不空");
-			logger().info(resource.getFile()==null?"空":"不空");
-			
-			ClassPathResource resource2 = new ClassPathResource("user_background.png");
-			logger().info("地址2："+resource2.getURL());
-			logger().info("读2："+resource2.getInputStream()==null?"空":"不空");
-			logger().info(resource2.getFile()==null?"空":"不空");
-			
-			ClassPathResource resource3 = new ClassPathResource("admin.versionNew.json");
-			logger().info("地址3："+resource3.getURL());
-			logger().info("读3："+resource3.getInputStream()==null?"空":"不空");
-			logger().info(resource3.getFile()==null?"空":"不空");
-			
-			
-			File loadFile = Util.loadFile("image/wxapp/user_background.png");
-			
-			if(loadFile==null) {
-				vo.setMsg("读取背景图失败");
-				vo.setStatus(PSTATUS_ZERO);
-				logger().info("读取背景图失败1");
-
-				loadFile = Util.loadFile("user_background.png");
-				if(loadFile==null) {
-					logger().info("读取背景图失败2");
-					return vo;
-				}
-			}
-			
+			loadFile = Util.loadFile("image/wxapp/user_background.png");
 			backgroundImage = ImageIO.read(loadFile);
 		} catch (IOException e) {
 			vo.setMsg("获取背景图失败");
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);
 			return vo;
+		} finally {
+			if (loadFile != null) {
+				try {
+					loadFile.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		// 重新设置大小
 		backgroundImage = ImageUtil.resizeImage(600, 800, backgroundImage);
@@ -132,7 +110,8 @@ public class UserCenterTraitService extends ShopBaseService {
 		avatarImage = ImageUtil.makeRound(avatarImage, 110);
 
 		// 添加字体
-		ImageUtil.addFont(backgroundImage, userInfo.getUsername(), new Font(null, Font.BOLD, 30), 180, 100, Color.BLACK);
+		ImageUtil.addFont(backgroundImage, userInfo.getUsername(), new Font(null, Font.BOLD, 30), 180, 100,
+				Color.BLACK);
 
 		String titel1 = "分享给你一个好店铺";
 		ImageUtil.addFont(backgroundImage, titel1, new Font(null, Font.BOLD, 22), 180, 145, Color.GRAY);
@@ -145,13 +124,14 @@ public class UserCenterTraitService extends ShopBaseService {
 
 		// 合并二维码图片
 		ImageUtil.addTwoImage(backgroundImage, qrCodeImage, 100, 260);
-		
-		String saveFileName="pictorial_"+userId+"_"+DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE)+".png";
-		logger().info("userId: "+userId+"  保存文件名"+saveFileName);
-		//文件地址
-		String imgDir="upload/"+getShopId()+"/pictorial/userqrcode/";
-		String filePath=imgDir+saveFileName;
-		logger().info("userId: "+userId+"  保存相对路径"+filePath);
+
+		String saveFileName = "pictorial_" + userId + "_" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE)
+				+ ".png";
+		logger().info("userId: " + userId + "  保存文件名" + saveFileName);
+		// 文件地址
+		String imgDir = "upload/" + getShopId() + "/pictorial/userqrcode/";
+		String filePath = imgDir + saveFileName;
+		logger().info("userId: " + userId + "  保存相对路径" + filePath);
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(backgroundImage, "png", os);
@@ -161,7 +141,7 @@ public class UserCenterTraitService extends ShopBaseService {
 			logger().error(e.getMessage(), e);
 			return vo;
 		}
-		
+
 		byte[] byteArray = os.toByteArray();
 		boolean upload = false;
 		try {
@@ -172,7 +152,7 @@ public class UserCenterTraitService extends ShopBaseService {
 			logger().error(e.getMessage(), e);
 			return vo;
 		}
-		if(upload==false) {
+		if (upload == false) {
 			vo.setMsg("图片上传服务器失败");
 			vo.setStatus(PSTATUS_ZERO);
 			return vo;
