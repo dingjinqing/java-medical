@@ -58,7 +58,20 @@ public class UserCenterTraitService extends ShopBaseService {
 			
 			ClassPathResource resource = new ClassPathResource("image/wxapp/user_background.png");
 			logger().info("地址："+resource.getURL());
-			logger().info("读：",resource);
+			logger().info("读："+resource.getFile());
+			logger().info(resource.getFile()==null?"空":"不空");
+			
+			ClassPathResource resource2 = new ClassPathResource("user_background.png");
+			logger().info("地址2："+resource2.getURL());
+			logger().info("读2："+resource2.getFile());
+			logger().info(resource2.getFile()==null?"空":"不空");
+			
+			ClassPathResource resource3 = new ClassPathResource("admin.versionNew.json");
+			logger().info("地址3："+resource3.getURL());
+			logger().info("读3："+resource3.getFile());
+			logger().info(resource3.getFile()==null?"空":"不空");
+			
+			
 			File loadFile = Util.loadFile("image/wxapp/user_background.png");
 			
 			if(loadFile==null) {
