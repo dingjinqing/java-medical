@@ -97,11 +97,11 @@ public class ShipInfoService extends ShopBaseService {
 	}
 
     /**
-     * 	通过order_sn和product_id查单条订单行的发货信息
+     * 	通过order_sn和rec_id查单条订单行的发货信息
      * @return  BaseShippingInfoVo
      */
-    public BaseShippingInfoVo getOrderGoodsShipping(String orderSn,Integer productId) {
-        Record record = (Record) db().select(PART_ORDER_GOODS_SHIP.ORDER_SN,PART_ORDER_GOODS_SHIP.SHIPPING_ID,PART_ORDER_GOODS_SHIP.SHIPPING_NAME,PART_ORDER_GOODS_SHIP.SHIPPING_NO,PART_ORDER_GOODS_SHIP.SHIPPING_TIME,PART_ORDER_GOODS_SHIP.CONFIRM_TIME).from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(orderSn).and(PART_ORDER_GOODS_SHIP.PRODUCT_ID.eq(productId))).fetchOne();
+    public BaseShippingInfoVo getOrderGoodsShipping(String orderSn,Integer recId) {
+        Record record = (Record) db().select(PART_ORDER_GOODS_SHIP.ORDER_SN,PART_ORDER_GOODS_SHIP.SHIPPING_ID,PART_ORDER_GOODS_SHIP.SHIPPING_NAME,PART_ORDER_GOODS_SHIP.SHIPPING_NO,PART_ORDER_GOODS_SHIP.SHIPPING_TIME,PART_ORDER_GOODS_SHIP.CONFIRM_TIME).from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(orderSn).and(PART_ORDER_GOODS_SHIP.ORDER_GOODS_ID.eq(recId))).fetchOne();
         if(record != null){
             return record.into(BaseShippingInfoVo.class);
         }else {

@@ -851,7 +851,7 @@ public class OrderReadService extends ShopBaseService {
             }
             if(order.getPartShipFlag() == OrderConstant.PART_SHIP){
                 //部分发货
-                BaseShippingInfoVo shipping = shipInfo.getOrderGoodsShipping(order.getOrderSn(),order.getProductId());
+                BaseShippingInfoVo shipping = shipInfo.getOrderGoodsShipping(order.getOrderSn(),order.getRecId());
                 if(shipping != null){
                     if(shipping.getConfirmTime() != null){
                         order.setOrderStatusName(OrderConstant.getOrderStatusName(OrderConstant.ORDER_RECEIVED,lang));
