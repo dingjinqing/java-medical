@@ -55,7 +55,12 @@ public class UserCenterTraitService extends ShopBaseService {
 		// 读取背景图片
 		BufferedImage backgroundImage = null;
 		try {
+			
+			ClassPathResource resource = new ClassPathResource("image/wxapp/user_background.png");
+			System.out.println("地址："+resource.getURL());
+			logger().info("读：",resource);
 			File loadFile = Util.loadFile("image/wxapp/user_background.png");
+			
 			if(loadFile==null) {
 				vo.setMsg("读取背景图失败");
 				vo.setStatus(PSTATUS_ZERO);
