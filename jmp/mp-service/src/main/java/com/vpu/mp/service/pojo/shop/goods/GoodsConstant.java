@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 /**
  * @author 李晓冰
  * @date 2019年10月14日
