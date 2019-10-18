@@ -1,42 +1,28 @@
 package com.vpu.mp.service.shop.coupon;
 
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.lambda.SQL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
+import org.jooq.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 
 /**
  * 优惠券管理
@@ -65,14 +51,6 @@ public class CouponService extends ShopBaseService {
         MrkingVoucherRecord record = new MrkingVoucherRecord();
         record.setSurplus(couponInfo.getTotalAmount());
         record.setAliasCode(this.generateAliasCode());
-        if(couponInfo.getValidity( ) > 0) {
-			Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-			Calendar cal = Calendar.getInstance();   
-			cal.setTime(now);   
-			cal.add(Calendar.HOUR,(couponInfo.getValidity() * 24 + couponInfo.getValidityHour()));
-			cal.add(Calendar.MINUTE, couponInfo.getValidityMinute());
-			Date date = cal.getTime(); 
-        }
         this.assign(couponInfo, record);
         return db().executeInsert(record) > 0 ? true : false;
     }
