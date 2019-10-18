@@ -1,27 +1,11 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
-import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
-import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.db.shop.Tables.USER;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.comment.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.comment.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
@@ -32,22 +16,11 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.comment.AddCommentParam;
-import com.vpu.mp.service.pojo.wxapp.comment.AwardContentVo;
-import com.vpu.mp.service.pojo.wxapp.comment.CommentListParam;
-import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
-import com.vpu.mp.service.pojo.wxapp.comment.TriggerConditionVo;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.*;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 商品评价
@@ -773,6 +746,106 @@ public class GoodsCommentService extends ShopBaseService {
         .set(ORDER_INFO.COMMENT_FLAG, NumberUtils.BYTE_ONE)
         .where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()))
         .execute();
+    // 添加评价关联评价有礼-发放礼物
+    if (null != param.getId()) {
+      // 活动奖励1：赠送积分
+      if (param.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
+        // 给当前用户赠送积分
+        giveScoreByAct(param.getUserId(), Integer.valueOf(param.getAward()));
+      }
+      // 活动奖励2：赠送优惠券
+      else if (param.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
+      }
+      // 活动奖励3：赠送用户余额
+      else if (param.getAwardType().equals(THERE)) {
+        // 给当前用户赠送余额
+        giveAccountByAct(param.getUserId(), new BigDecimal(param.getAward()));
+      }
+      // 活动奖励4：赠送抽奖机会
+      else if (param.getAwardType().equals(FOUR)) {
+      }
+      // 活动奖励5：自定义奖励
+      else if (param.getAwardType().equals(FIVE)) {
+      }
+    }
+  }
+
+  /**
+   * 给当前用户赠送积分
+   *
+   * @param paramUserId 用户id
+   * @param paramScore 赠送的积分值
+   */
+  public void giveScoreByAct(Integer paramUserId, Integer paramScore) {
+    // 得到表中的用户id 没有则赋值为空
+    Integer userId =
+        db().select(USER_SCORE.USER_ID)
+            .from(USER_SCORE)
+            .where(USER_SCORE.USER_ID.eq(paramUserId))
+            .fetchOptionalInto(Integer.class)
+            .orElse(null);
+    // 如果没有当前用户信息，添加一条新的记录
+    if (userId.equals(null)) {
+      db().insertInto(USER_SCORE, USER_SCORE.USER_ID, USER_SCORE.SCORE)
+          .values(paramUserId, paramScore)
+          .execute();
+    }
+    // 如果有当前信用信息，修改对应用户信息
+    else {
+      // 得到用户原始积分
+      Integer oldScore =
+          db().select(USER_SCORE.SCORE)
+              .from(USER_SCORE)
+              .where(USER_SCORE.USER_ID.eq(paramUserId))
+              .fetchOptionalInto(Integer.class)
+              .orElse(NumberUtils.INTEGER_ZERO);
+      // 计算用户总积分
+      Integer newScore = oldScore + paramScore;
+      // 更新积分表为总积分
+      db().update(USER_SCORE)
+          .set(USER_SCORE.SCORE, newScore)
+          .where(USER_SCORE.USER_ID.eq(paramUserId))
+          .execute();
+    }
+  }
+
+  /**
+   * 给当前用户赠送余额
+   *
+   * @param paramUserId 用户id
+   * @param paramAccount 赠送的余额值
+   */
+  public void giveAccountByAct(Integer paramUserId, BigDecimal paramAccount) {
+    // 得到表中的用户id 没有则赋值为空
+    Integer userId =
+        db().select(USER_ACCOUNT.USER_ID)
+            .from(USER_ACCOUNT)
+            .where(USER_ACCOUNT.USER_ID.eq(paramUserId))
+            .fetchOptionalInto(Integer.class)
+            .orElse(null);
+    // 如果没有当前用户信息，添加一条新的记录
+    if (userId == null) {
+      db().insertInto(USER_ACCOUNT, USER_ACCOUNT.USER_ID, USER_ACCOUNT.AMOUNT)
+          .values(paramUserId, paramAccount)
+          .execute();
+    }
+    // 如果有当前信用信息，修改对应用户信息
+    else {
+      // 得到用户原始余额
+      BigDecimal oldAccount =
+          db().select(USER_ACCOUNT.AMOUNT)
+              .from(USER_ACCOUNT)
+              .where(USER_ACCOUNT.USER_ID.eq(paramUserId))
+              .fetchOptionalInto(BigDecimal.class)
+              .orElse(BigDecimal.valueOf(NumberUtils.DOUBLE_ZERO));
+      // 计算用户总余额
+      BigDecimal newAccount = oldAccount.add(paramAccount);
+      // 更新积分表为总余额
+      db().update(USER_ACCOUNT)
+          .set(USER_ACCOUNT.AMOUNT, newAccount)
+          .where(USER_ACCOUNT.USER_ID.eq(paramUserId))
+          .execute();
+    }
   }
 
   /**
@@ -804,26 +877,27 @@ public class GoodsCommentService extends ShopBaseService {
     }
     return results;
   }
-  
-  	/**
-  	 * 判断订单是否参与评价有礼活动
-  	 * @param goodsList
-  	 * @return
-  	 */
-	public boolean orderIsCommentAward(List<CommentListVo> goodsList) {
-		// 得到当前所有可用活动和其触发条件的信息
-		List<TriggerConditionVo> allActivities = getAllActivities();
-		if (CollectionUtils.isEmpty(allActivities)) {
-			return false;
-		}
-		// 判断每个商品行对应的评价有礼活动奖励
-		for (CommentListVo forGoodsId : goodsList) {
-			// 得到当前商品所满足触发条件的所有活动的id集合
-			Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), allActivities);
-			if(actIds != null && !actIds.isEmpty()) {
-				return true;
-			}
-		}
-		return false;
-	}
+
+  /**
+   * 判断订单是否参与评价有礼活动
+   *
+   * @param goodsList
+   * @return
+   */
+  public boolean orderIsCommentAward(List<CommentListVo> goodsList) {
+    // 得到当前所有可用活动和其触发条件的信息
+    List<TriggerConditionVo> allActivities = getAllActivities();
+    if (CollectionUtils.isEmpty(allActivities)) {
+      return false;
+    }
+    // 判断每个商品行对应的评价有礼活动奖励
+    for (CommentListVo forGoodsId : goodsList) {
+      // 得到当前商品所满足触发条件的所有活动的id集合
+      Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), allActivities);
+      if (actIds != null && !actIds.isEmpty()) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
