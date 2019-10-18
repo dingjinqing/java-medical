@@ -1774,18 +1774,18 @@ export default {
           })
         }
       }
-      for (let i = 0; i < this.leftData.length; i++) {
-        if (this.leftData[i].module_name === 'service') {
-          this.leftData[i].content.push({
-            is_show: '1',
-            icon_name: 'custom_icon' + this.customValue,
-            icon: '/image/admin/uc_config/icon_ownset.png',
-            title: '我的服务',
-            link: '',
-            link_name: ''
-          })
-        }
-      }
+      // for (let i = 0; i < this.leftData.length; i++) {
+      //   if (this.leftData[i].module_name === 'service') {
+      //     this.leftData[i].content.push({
+      //       is_show: '1',
+      //       icon_name: 'custom_icon' + this.customValue,
+      //       icon: '/image/admin/uc_config/icon_ownset.png',
+      //       title: '我的服务',
+      //       link: '',
+      //       link_name: ''
+      //     })
+      //   }
+      // }
       this.customValue++
     }
   }
