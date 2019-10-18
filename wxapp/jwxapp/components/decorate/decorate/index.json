@@ -1,5 +1,5 @@
 {
-  "components": true,
+  "component": true,
   "usingComponents": {
     "v-search": "../search/index",
     "v-card": "../card/index",
