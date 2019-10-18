@@ -57,13 +57,20 @@ public class UserCenterTraitService extends ShopBaseService {
 		try {
 			File loadFile = Util.loadFile("image/wxapp/user_background.png");
 			if(loadFile==null) {
-				vo.setMsg("读取背景图二维码失败");
+				vo.setMsg("读取背景图失败");
 				vo.setStatus(PSTATUS_ZERO);
+				logger().info("读取背景图失败1");
 				return vo;
+			}else {
+				loadFile = Util.loadFile("static/image/wxapp/user_background.png");
+				if(loadFile==null) {
+					logger().info("读取背景图失败2");
+				}
 			}
+			
 			backgroundImage = ImageIO.read(loadFile);
 		} catch (IOException e) {
-			vo.setMsg("获取背景图二维码失败");
+			vo.setMsg("获取背景图失败");
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);
 			return vo;
