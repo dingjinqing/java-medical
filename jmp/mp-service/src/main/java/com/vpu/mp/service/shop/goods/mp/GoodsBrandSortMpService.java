@@ -43,6 +43,13 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         GoodsBrandConfig goodsBrandConfig = configService.goodsBrandConfigService.getGoodsBrandConfig();
         GoodsRecommendSortConfig recommendSortConfig = configService.recommendSortConfigService.getRecommendSortConfig();
         logger().debug("进入sortPageInit!---------------");
+        logger().debug("进入sortPageInit!---------------");
+        logger().debug("进入sortPageInit!---------------");
+        logger().debug("进入sortPageInit!---------------");
+        logger().debug("进入sortPageInit!---------------");
+        logger().debug("进入sortPageInit!---------------");
+        logger().debug("进入sortPageInit!---------------");
+        logger().debug("进入sortPageInit!---------------");
         List<GoodsSortMenuVo> menuVo= new ArrayList<>();
         // 全部品牌
         logger().debug("全部品牌尝试进入!---------------");
