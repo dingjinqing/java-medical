@@ -802,7 +802,7 @@ public class OrderReadService extends ShopBaseService {
                 order.setReturnShippingFee(returnOrder.getReturnShippingFee(order.getOrderSn()));
             }
             if(columns.contains(OrderExportVo.RETURN_TIME) || columns.contains(OrderExportVo.RETURN_FINISH_TIME) || columns.contains(OrderExportVo.RETURN_ORDER_MONEY)){
-                //退款信息
+                //退货退款信息
                 OrderConciseRefundInfoVo returnInfo = returnOrderGoods.getOrderGoodsReturnInfo(order.getRecId());
                 if(returnInfo != null){
                     order.setReturnTime(returnInfo.getReturnType() == OrderConstant.RETURN_TYPE_MONEY ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());

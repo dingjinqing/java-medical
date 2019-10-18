@@ -310,11 +310,11 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 	}
 
     /**
-     * 查询单商品行的部分退款信息
+     * 查询单商品行的部分退款信息(按申请时间取最新的一条)
      * @param recId order_goods主键
      */
     public OrderConciseRefundInfoVo getOrderGoodsReturnInfo(Integer recId){
-        Record record = (Record) db().select(RETURN_ORDER.RETURN_TYPE,RETURN_ORDER.APPLY_TIME,RETURN_ORDER.SHIPPING_OR_REFUND_TIME,RETURN_ORDER.REFUND_SUCCESS_TIME).from(RETURN_ORDER_GOODS.leftJoin(RETURN_ORDER).on(RETURN_ORDER.RET_ID.eq(RETURN_ORDER_GOODS.RET_ID))).where(RETURN_ORDER_GOODS.REC_ID.eq(recId)).fetchOne();
+        Record record = (Record) db().select(RETURN_ORDER.RETURN_TYPE,RETURN_ORDER.APPLY_TIME,RETURN_ORDER.SHIPPING_OR_REFUND_TIME,RETURN_ORDER.REFUND_SUCCESS_TIME).from(RETURN_ORDER_GOODS.leftJoin(RETURN_ORDER).on(RETURN_ORDER.RET_ID.eq(RETURN_ORDER_GOODS.RET_ID))).where(RETURN_ORDER_GOODS.REC_ID.eq(recId)).orderBy(RETURN_ORDER.APPLY_TIME.desc()).limit(1).fetchOne();
         if(record != null){
             return record.into(OrderConciseRefundInfoVo.class);
         }else{
