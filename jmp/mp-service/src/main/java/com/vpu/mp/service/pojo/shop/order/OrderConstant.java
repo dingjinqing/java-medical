@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderConstant {
     /** 语言包放在excel相关properties里 */
     private final static String LANGUAGE_TYPE_EXCEL = "excel";
-
+    
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;
@@ -399,6 +399,8 @@ public class OrderConstant {
     public static final Byte IS_COD_NO = 0;
     /**是*/
     public static final Byte IS_COD_YES = 1;
+    
+    public static final Byte yes = 1;
 
-
+    public static final Byte no = 0;
 }

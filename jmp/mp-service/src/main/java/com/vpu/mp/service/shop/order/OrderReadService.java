@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.order;
 
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.yes;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.no;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -74,8 +76,10 @@ import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.ShipService;
@@ -100,11 +104,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
  * @author 常乐 2019年6月27日;王帅 2019/7/10
  */
 @Service
-public class OrderReadService extends ShopBaseService {
-	
-	final byte yes = NumberUtils.BYTE_ONE;
-	final byte no = NumberUtils.BYTE_ZERO;
-	
+public class OrderReadService extends ShopBaseService {	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -144,7 +144,8 @@ public class OrderReadService extends ShopBaseService {
 	private InvoiceService invoice;
     @Autowired
     private OrderMustService orderMust;
-
+    @Autowired
+    private GoodsCommentService goodsComment;
 	/**
 	 * 订单查询
 	 * @param param
@@ -474,7 +475,7 @@ public class OrderReadService extends ShopBaseService {
 		//商品
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		for(OrderListMpVo order : result.dataList) {
-			order.setCanExtendReceive(OrderOperationJudgment.isExtendReceive(order, extendReceiveDays));
+			order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, extendReceiveDays) ? yes : no);
 			//TODO 活动奖品判断
 			Byte isLotteryGift = (byte)1;
 			if(isLotteryGift != 0) {
@@ -522,26 +523,40 @@ public class OrderReadService extends ShopBaseService {
 		}
 		OrderListMpVo order = orders.get(0);
 		List<String> orderType = Arrays.asList(orderTypeToArray(order.getGoodsType()));
+		//商品
+		Map<Integer, OrderGoodsMpVo> goods = orderGoods.getKeyMapByIds(order.getOrderId());
+		List<OrderGoodsMpVo> goodsList = new ArrayList<OrderGoodsMpVo>(goods.values());
 		//TODO 奖品订单标识
 		order.setIsLotteryGift(flag ? yes : no);
-		//TODO 评价有礼 与 商品评价
-		order.setIsCommentAward(flag ? yes : no);
+		/**按钮-start*/
+		//1.延长收货
+		order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? yes : no);
+		//2.确认收货(order_status==4可以判断)
+		//3.好友代付（order_pay_way == 2）
+		//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
+			setPayOperation(order);
+		}
+		//5.(退货中心-退款 退货) 6. 取消 7删除
+		OrderOperationJudgment.operationSet(order);
+		//87.再次购买
+		order.setIsShowAgainBuy(order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY && order.getIsLotteryGift() == no ? yes : no);
+		//98.提醒发货(待发货 and 非 送礼)
+		order.setIsRemindShip(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1 ? yes : no);
+		//10.评价（查看评价、评价有礼/商品评价）
+		order.setIsShowCommentType(getCommentType(order));
+		//TODO 幸运大抽奖 分享优惠卷。。。。
+		/**按钮-end*/
 		//是否退过款
 		order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? yes : no);
-		//提醒发货(待发货 and 非 送礼)
-		order.setIsRemindShip(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1 ? yes : no);
 		//门店信息
 		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getOrderId()) : null);
 		//发票
 		order.setInvoiceInfo(order.getInvoiceId() > 0 ? invoice.get(order.getInvoiceId()) : null);
-		//商品
-		Map<Integer, OrderGoodsMpVo> goods = orderGoods.getKeyMapByIds(order.getOrderId());
 		//set goods
-		order.setGoods(new ArrayList<OrderGoodsMpVo>(goods.values()));
+		order.setGoods(goodsList);
 		//当前订单配送信息
 		order.setShippingInfo(getMpOrderShippingInfo(order.getOrderSn(), goods));
-		//延长收货
-		order.setCanExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()));
 		//核销员信息
 		if(order.getVerifierId() > 0) {
 			UserRecord userInfo = user.getUserByUserId(order.getVerifierId());
@@ -562,10 +577,6 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//拼团抽奖
 		
-		//待支付状态处理
-		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
-			setPayOperation(order);
-		}
 		//优惠卷
 		
 		
@@ -580,7 +591,7 @@ public class OrderReadService extends ShopBaseService {
 	private void setPayOperation(OrderListMpVo order) {
 		long currenTmilliseconds  = Instant.now().toEpochMilli();
 		if(order.getBkOrderPaid() == OrderConstant.BK_PAID_Y) {
-			//预售、订单
+			//预售、定金订单
 			Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
 			if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
 				order.setPayOperationTime(timeInterval.value2().getTime() - currenTmilliseconds);
@@ -592,6 +603,7 @@ public class OrderReadService extends ShopBaseService {
 			//普通订单待支付取消时间
 			order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
 		}
+		order.setIsShowPay(order.getPayOperationTime() > 0 ? yes : no);
 	}
 	
 	/**
@@ -615,6 +627,11 @@ public class OrderReadService extends ShopBaseService {
 		}
 		return result;
 	}
+	
+	/**
+	 * 延长收货
+	 * @return
+	 */
 	public int getExtendReceiveDays() {
 		Byte switchFlag = trade.getExtendReceiveGoods();
 		if(switchFlag == 0) {
@@ -624,6 +641,11 @@ public class OrderReadService extends ShopBaseService {
 		return days.intValue();
 	}
 	
+	/**
+	 * 子订单
+	 * @param subOrder
+	 * @return
+	 */
 	public List<OrderListMpVo> getSubOrder(List<OrderListMpVo> subOrder) {
 		List<Integer> ids = subOrder.stream().map(OrderListMpVo::getOrderId).collect(Collectors.toList());
 		Map<Integer, List<OrderGoodsMpVo>> subOrderGoods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
@@ -634,6 +656,28 @@ public class OrderReadService extends ShopBaseService {
 	
 	public String[] orderTypeToArray(String orderType) {
 		return orderType.split(",");
+	}
+	
+	/**
+	 * 小程序展示评价相关
+	 * @param order
+	 * @return 0不展示 1查看评价 2评价有礼 3商品评价
+	 */
+	public Byte getCommentType(OrderListMpVo order){
+		if(order.getOrderStatus() != OrderConstant.ORDER_RECEIVED &&  order.getOrderStatus() != OrderConstant.ORDER_FINISHED) {
+			return no;
+		}
+		if(order.getCommentFlag() > 0) {
+			return yes;
+		}
+		List<OrderGoodsMpVo> goods = order.getGoods();
+		List<CommentListVo> converGoods = new ArrayList<CommentListVo>();
+		goods.forEach(x->converGoods.add(CommentListVo.builder().goodsId(x.getGoodsId()).build()));
+		//TODO 
+		if(goodsComment.orderIsCommentAward(converGoods)) {
+			return 2;
+		}
+		return 3;
 	}
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据

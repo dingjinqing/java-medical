@@ -50,7 +50,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private Integer fanliType;
 	@JsonIgnore
 	private Integer cardId;
-	/**订单付款方式，0全款 1定金 2补款*/
 	@JsonIgnore
 	private Byte orderPayWay;
 	/**（券）折扣金额*/

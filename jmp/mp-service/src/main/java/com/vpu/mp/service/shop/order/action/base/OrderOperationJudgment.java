@@ -1,10 +1,15 @@
 package com.vpu.mp.service.shop.order.action.base;
 
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.no;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.yes;
+
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -15,12 +20,14 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 	订单操作判断
  * @author 王帅
  *
  */
-
+@Slf4j
 public class OrderOperationJudgment {
 	/**
 	 * 	订单是否可退款
@@ -214,6 +221,23 @@ public class OrderOperationJudgment {
 		return false;
 	}
 	
+	/**
+	 * mp端订单删除
+	 * @param order
+	 * @return
+	 */
+	public static boolean isDelete(OrderListMpVo order) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_CANCELLED || order.getOrderStatus() == OrderConstant.ORDER_CLOSED) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * admin设置操作
+	 * @param order
+	 * @param isReturnCount
+	 * @param canBeShippedList
+	 */
 	public static void operationSet(OrderListInfoVo order , Integer isReturnCount , List<OrderGoodsVo> canBeShippedList) {
 		//设置所有订单是否可以关闭
 		if(OrderOperationJudgment.mpIsClose(order)) {
@@ -253,7 +277,21 @@ public class OrderOperationJudgment {
 		return Boolean.FALSE;
 	}
 	
-	public static void operationSet(OrderListMpVo order) {
-		
+	public static void operationSet(OrderListMpVo source) {
+		OrderListInfoVo target = new OrderListInfoVo();
+		try {
+			PropertyUtils.copyProperties(target , source);
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			log.error(OrderOperationJudgment.class.getName()+"调用operationSet时PropertyUtils.copyProperties异常");
+			return;
+		}
+		//退款
+		source.setIsReturnMoney(isReturnMoney(target, OrderConstant.IS_MP_Y) ? yes : no);
+		//退货
+		source.setIsReturnMoney(mpIsReturnGoods(target) ? yes : no);;
+		//取消
+		source.setIsCancel(mpIsCancel(target) ? yes : no);
+		//删除
+		source.setIsDelete(isDelete(source) ? yes : no);
 	}
 }

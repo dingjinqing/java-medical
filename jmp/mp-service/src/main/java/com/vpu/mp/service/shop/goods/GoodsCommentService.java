@@ -1,11 +1,28 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.comment.*;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.comment.*;
+import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
+import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
+import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
+import static com.vpu.mp.db.shop.Tables.SORT;
+import static com.vpu.mp.db.shop.Tables.USER;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
 import org.jooq.Record10;
@@ -15,11 +32,22 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.*;
-
-import static com.vpu.mp.db.shop.Tables.*;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.comment.AddCommentParam;
+import com.vpu.mp.service.pojo.wxapp.comment.AwardContentVo;
+import com.vpu.mp.service.pojo.wxapp.comment.CommentListParam;
+import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
+import com.vpu.mp.service.pojo.wxapp.comment.TriggerConditionVo;
 
 /**
  * 商品评价
@@ -776,4 +804,26 @@ public class GoodsCommentService extends ShopBaseService {
     }
     return results;
   }
+  
+  	/**
+  	 * 判断订单是否参与评价有礼活动
+  	 * @param goodsList
+  	 * @return
+  	 */
+	public boolean orderIsCommentAward(List<CommentListVo> goodsList) {
+		// 得到当前所有可用活动和其触发条件的信息
+		List<TriggerConditionVo> allActivities = getAllActivities();
+		if (CollectionUtils.isEmpty(allActivities)) {
+			return false;
+		}
+		// 判断每个商品行对应的评价有礼活动奖励
+		for (CommentListVo forGoodsId : goodsList) {
+			// 得到当前商品所满足触发条件的所有活动的id集合
+			Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), allActivities);
+			if(actIds != null && !actIds.isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

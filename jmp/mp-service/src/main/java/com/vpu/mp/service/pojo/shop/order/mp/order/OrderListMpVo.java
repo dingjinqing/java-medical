@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.mp.order;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Setter
 public class OrderListMpVo{
 	
-	private Boolean canExtendReceive;
+	private Byte isExtendReceive;
 	/**是否奖品订单*/
 	private Byte isLotteryGift;
 	private List<OrderGoodsMpVo> goods;
@@ -36,9 +37,10 @@ public class OrderListMpVo{
 	private Byte isCommentAward;
 	/**是否提醒发货*/
 	private Byte isRemindShip;
+	/**支付按钮是否显示*/
+	private Byte isShowPay;
 	/**配送信息*/
 	private List<ShippingInfoVo> shippingInfo;
-	
 	/**子单信息*/
 	private List<OrderListMpVo> subOrder;
 	/**发票信息*/
@@ -49,6 +51,18 @@ public class OrderListMpVo{
 	private Long payOperationTime;
 	/**昵称*/
 	private String username;
+	/**退款*/
+	private Byte isReturnMoney;
+	/**退货*/
+	private Byte isReturnGoods;
+	/**取消*/
+	private Byte isCancel;
+	/**删除*/
+	private Byte isDelete;
+	/**再次购买*/
+	private Byte isShowAgainBuy;
+	/**评价显示*/
+	private Byte isShowCommentType;
 	/***/
 	private Integer orderId;
 	private String orderSn;
@@ -69,6 +83,25 @@ public class OrderListMpVo{
 	private Integer verifierId;
 	private Byte bkOrderPaid;
 	private Timestamp expireTime;
+	private Byte orderPayWay;
+	@JsonIgnore
+	private Byte commentFlag;
+	@JsonIgnore
+	private Byte returnTypeCfg;
+	/** 主支付方式 */
+	private String payCode;
+	/** 支付金额 */
+	private BigDecimal moneyPaid;
+	private BigDecimal scoreDiscount;
+	/**用户消费余额*/
+	/**918*/
+	private BigDecimal useAccount;
+	/**会员卡消费金额*/
+	/**918*/
+	private BigDecimal memberCardBalance;
+	/**TODO 数据库没字段子单金额*/
+	@JsonIgnore
+	private BigDecimal subGoodsPrice;
 	public void setVerifierInfo(String verifierName, String verifierMobile){
 		
 	}
