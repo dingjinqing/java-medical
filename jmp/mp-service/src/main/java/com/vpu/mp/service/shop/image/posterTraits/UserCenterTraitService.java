@@ -61,7 +61,7 @@ public class UserCenterTraitService extends ShopBaseService {
 				vo.setStatus(PSTATUS_ZERO);
 				logger().info("读取背景图失败1");
 
-				loadFile = Util.loadFile("static/image/wxapp/user_background.png");
+				loadFile = Util.loadFile("user_background.png");
 				if(loadFile==null) {
 					logger().info("读取背景图失败2");
 					return vo;
