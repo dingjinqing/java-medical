@@ -42,17 +42,8 @@ public class GoodsBrandSortMpService extends ShopBaseService{
     public List<GoodsSortMenuVo> goodsSortPageInit() {
         GoodsBrandConfig goodsBrandConfig = configService.goodsBrandConfigService.getGoodsBrandConfig();
         GoodsRecommendSortConfig recommendSortConfig = configService.recommendSortConfigService.getRecommendSortConfig();
-        logger().debug("进入sortPageInit!---------------");
-        logger().debug("进入sortPageInit!---------------");
-        logger().debug("进入sortPageInit!---------------");
-        logger().debug("进入sortPageInit!---------------");
-        logger().debug("进入sortPageInit!---------------");
-        logger().debug("进入sortPageInit!---------------");
-        logger().debug("进入sortPageInit!---------------");
-        logger().debug("进入sortPageInit!---------------");
         List<GoodsSortMenuVo> menuVo= new ArrayList<>();
         // 全部品牌
-        logger().debug("全部品牌尝试进入!---------------");
         if (GoodsBrandConfig.SHOW_ALL_BRAND.equals(goodsBrandConfig.getShowAllBrand())) {
             GoodsSortMenuVo item = new GoodsSortMenuVo();
             item.setMenuType(GoodsConstant.ALL_BRAND_TYPE);
@@ -61,7 +52,6 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             menuVo.add(item);
         }
         // 推荐品牌
-        logger().debug("推荐品牌尝试进入!---------------");
         if (GoodsBrandConfig.SHOW_RECOMMEND_LIST.equals(goodsBrandConfig.getShowRcommendBrandType())||GoodsBrandConfig.SHOW_RECOMMEND_CLASSIFY.equals(goodsBrandConfig.getShowRcommendBrandType())) {
             GoodsSortMenuVo item =new GoodsSortMenuVo();
             item.setMenuType(GoodsConstant.RECOMMEND_BRAND_TYPE);
@@ -74,17 +64,14 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         }
 
         // 推荐分类设置
-        logger().debug("推荐分类尝试进入!---------------");
         if (GoodsRecommendSortConfig.SHOW_RECOMMEND_SORT.equals(recommendSortConfig.getRecommendSortStatus())) {
             GoodsSortMenuVo item =new GoodsSortMenuVo();
-            logger().debug("推荐分类进入!---------------");
             item.setMenuType(GoodsConstant.RECOMMEND_SORT_TYPE);
             if (menuVo.size()==0) {
                 GoodsSortMenuContentVo recommendSortContent = getRecommendSortContent(recommendSortConfig);
                 item.setMenuContent(recommendSortContent);
             }
             menuVo.add(item);
-            logger().debug("推荐分类样式内容!---------------");
             logger().debug(Util.toJson(menuVo));
         }
 

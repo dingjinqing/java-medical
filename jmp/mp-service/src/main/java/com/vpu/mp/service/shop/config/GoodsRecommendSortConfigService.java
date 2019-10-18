@@ -28,8 +28,8 @@ public class GoodsRecommendSortConfigService extends BaseShopConfigService {
      * @return
      */
     public GoodsRecommendSortConfig getRecommendSortConfig() {
-        String v = get(K_RECOMMEND_SORT);
-        GoodsRecommendSortConfig recommendSortConfig  = Util.parseJson(v, GoodsRecommendSortConfig.class);
+
+        GoodsRecommendSortConfig recommendSortConfig  = get(K_RECOMMEND_SORT,GoodsRecommendSortConfig.class,new GoodsRecommendSortConfig());
         recommendSortConfig.setRecommendSortImg(getImgFullUrlUtil(recommendSortConfig.getRecommendSortImgPath()));
         return recommendSortConfig;
     }

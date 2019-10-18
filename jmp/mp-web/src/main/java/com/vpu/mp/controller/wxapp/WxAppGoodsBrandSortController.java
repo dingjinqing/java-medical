@@ -21,18 +21,7 @@ public class WxAppGoodsBrandSortController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/sort/init")
     public JsonResult goodsSortPageInit(){
-        logger().debug("进入/api/wxapp/sort/init");
-        logger().debug("进入/api/wxapp/sort/init");
-        logger().debug("进入/api/wxapp/sort/init");
-        logger().debug("进入/api/wxapp/sort/init");
-        logger().debug("进入/api/wxapp/sort/init");
-        logger().debug(shop().goodsMp.toString());
         List<GoodsSortMenuVo> goodsSortMenuVos = shop().goodsMp.goodsBrandSortMp.goodsSortPageInit();
-        logger().debug(Util.toJson(goodsSortMenuVos));
-        logger().debug("返回/api/wxapp/sort/init");
-        logger().debug("返回/api/wxapp/sort/init");
-        logger().debug("返回/api/wxapp/sort/init");
-        logger().debug("返回/api/wxapp/sort/init");
         return success(goodsSortMenuVos);
     }
 }
