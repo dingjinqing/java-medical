@@ -45,7 +45,7 @@ public class MpWxMaOpenCommitExtInfo {
 	  
 
 	  @SerializedName("ext")
-	  private Map<String, Object> extMap;
+	  private Map<String, Object> ext;
 
 	  @SerializedName("extPages")
 	  private Map<String, WxMaOpenPage> extPages;
@@ -54,13 +54,13 @@ public class MpWxMaOpenCommitExtInfo {
 	   * 页面路径列表(和app.json结构一致)
 	   */
 	  @SerializedName("pages")
-	  private List<String> pageList;
+	  private List<String> pages;
 
 	  /**
 	   * 分包结构配置
 	   */
 	  @SerializedName("subpackages")
-	  private List<WxMaOpenSubpackage> subpackageList;
+	  private List<WxMaOpenSubpackage> subpackages;
 
 	  @SerializedName("window")
 	  private WxMaOpenWindow window;
@@ -78,11 +78,11 @@ public class MpWxMaOpenCommitExtInfo {
 	   * @param value
 	   */
 	  public void addExt(String key, String value) {
-	    if (extMap == null) {
-	      extMap = new HashMap<>(0);
+	    if (ext == null) {
+	    	ext = new HashMap<>(0);
 	    }
 	    if (StringUtils.isNoneBlank(key, value)) {
-	      extMap.put(key, value);
+	    	ext.put(key, value);
 	    }
 	  }
 
@@ -107,11 +107,11 @@ public class MpWxMaOpenCommitExtInfo {
 	   * @param pagePath
 	   */
 	  public void addPage(String pagePath) {
-	    if (pageList == null) {
-	      pageList = new ArrayList<>();
+	    if (pages == null) {
+	    	pages = new ArrayList<>();
 	    }
 	    if (StringUtils.isNotBlank(pagePath)) {
-	      pageList.add(pagePath);
+	    	pages.add(pagePath);
 	    }
 	  }
 
