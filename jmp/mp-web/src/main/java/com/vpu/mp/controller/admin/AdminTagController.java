@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.member.DeleteTagParam;
-import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
-import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
-import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
+import com.vpu.mp.service.pojo.shop.member.tag.DeleteTagParam;
+import com.vpu.mp.service.pojo.shop.member.tag.TagInfoParam;
+import com.vpu.mp.service.pojo.shop.member.tag.TagPageListParam;
+import com.vpu.mp.service.pojo.shop.member.tag.UpdateTagParam;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 
 /**

@@ -14,7 +14,6 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTE
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.jooq.Record1;
 import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
@@ -44,8 +42,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
-import com.vpu.mp.service.pojo.shop.member.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;

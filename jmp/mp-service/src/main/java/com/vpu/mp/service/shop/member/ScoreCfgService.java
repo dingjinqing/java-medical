@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,10 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
-import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
-import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 
 /**

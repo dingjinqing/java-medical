@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -674,12 +675,15 @@ public class MemberService extends ShopBaseService {
 	
 	/**
 	 * 查询会员所持有标签列表
-	 * @param param
+	 * @param userId
 	 * @return
 	 */
-	public List<TagVo> getTagForMember(MemberParam param) {
+	public List<TagVo> getTagForMember(Integer userId) {
+	    if(userId == null || userId <= 0){
+	        return Collections.emptyList();
+        }
 		 return db().select(TAG.TAG_NAME,TAG.TAG_ID).from(USER_TAG.innerJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID)))
-			.where(USER_TAG.USER_ID.eq(param.getUserId()))
+			.where(USER_TAG.USER_ID.eq(userId))
 			.fetch()
 			.into(TagVo.class);
 	}

@@ -145,7 +145,7 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/tag/get")
 	public JsonResult getTagForMember(@RequestBody MemberParam param) {
 		logger().info("正在该会员的标签");
-		List<TagVo> tagList = shop().member.getTagForMember(param);
+		List<TagVo> tagList = shop().member.getTagForMember(param.getUserId());
 		return success(tagList);
 	}
 	

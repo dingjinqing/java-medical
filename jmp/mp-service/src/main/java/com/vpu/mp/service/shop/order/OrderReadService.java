@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -821,8 +822,10 @@ public class OrderReadService extends ShopBaseService {
             if(columns.contains(OrderExportVo.CUSTOM)){
                 //下单必填信息
                 OrderMustVo orderMustVo = orderMust.getOrderMustByOrderSn(order.getOrderSn());
-                orderMustVo.setLang(lang);
-                order.setCustom(orderMustVo.toString());
+                if(orderMustVo != null){
+                    orderMustVo.setLang(lang);
+                    order.setCustom(orderMustVo.toString());
+                }
             }
             if(columns.contains(OrderExportVo.USER_SOURCE)){
                 //下单用户来源
@@ -839,6 +842,14 @@ public class OrderReadService extends ShopBaseService {
                     String channelName = saas.getShopApp(getShopId()).channelService.selectChannelName(order.getInviteActId());
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_CHANNEL ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL,channelName));
                 }
+            }
+            if(columns.contains(OrderExportVo.USER_TAG)){
+                List<TagVo> tagList = saas.getShopApp(getShopId()).member.getTagForMember(order.getUserId());
+                StringBuffer tags = new StringBuffer();
+                for(TagVo tag : tagList){
+                    tags.append(tag.getTagName()).append(";");
+                }
+                order.setUserTag(tags.toString());
             }
 
             //TODO

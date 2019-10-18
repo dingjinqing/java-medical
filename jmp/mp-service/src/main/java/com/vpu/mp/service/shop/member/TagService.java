@@ -19,9 +19,9 @@ import com.vpu.mp.db.shop.tables.Tag;
 import com.vpu.mp.db.shop.tables.UserTag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
-import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
-import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
+import com.vpu.mp.service.pojo.shop.member.tag.TagInfoVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagPageListParam;
+import com.vpu.mp.service.pojo.shop.member.tag.UpdateTagParam;
 import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 
