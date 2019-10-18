@@ -1,5 +1,5 @@
 // pages/cardinfo/cardinfo.js
-global.wxPage({
+Page({
 
   /**
    * 页面的初始数据

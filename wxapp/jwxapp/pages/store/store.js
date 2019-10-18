@@ -5,135 +5,8 @@ var app = getApp()
 var imageUrl = app.globalData.imageUrl;
 var mobile = util.getCache('mobile');
 var left_height;
-// var sort_info = [];
-var sort_info = {
-  del_market: 2,
-  show_all_brand: 1,
-  show_rcommend_brand: 0,
-  recomment_sort: {
-    recomment_img_link: "",
-    recomment_sort_img: "",
-    recomment_sort_status: "1"
-  },
-  show_cart: {
-    cart_type: "0",
-    show_cart: 0
-  },
-  menu: [{
-    img_link: "",
-    sort_id: -3,
-    sort_name: "全部品牌"
-  }, {
-      img_link: "",
-      sort_id: -1,
-      sort_name: "推荐分类"
-  }, {
-      create_time: "2019-08-06 17:12:12",
-      first: 7,
-      has_child: 1,
-      img_link: "test/test001",
-      is_third: 0,
-      keywords: "223",
-      level: 1,
-      parent_id: 0,
-      sort_desc: "",
-      sort_id: 223,
-      sort_img: "http://mpdevimg2.weipubao.cn/upload/0/image/20190726/crop_FCm0xyVYimX2dT9X.png",
-      sort_name: "鞋子",
-      type: 0
-  }, {
-      create_time: "2019-07-26 18:20:24",
-      first: 1,
-      has_child: 1,
-      img_link: "",
-      is_third: 0,
-      keywords: "",
-      level: 1,
-      parent_id: 0,
-      sort_desc: "",
-      sort_id: 210,
-      sort_img: "http://mpdevimg2.weipubao.cn/upload/0/image/20190726/crop_KlSCyopcS0G9xyHR.jpeg",
-      sort_name: "服装",
-      type: 0
-  }, {
-      create_time: "2019-07-26 18:22:08",
-      first: 1,
-      has_child: 1,
-      img_link: "",
-      is_third: 0,
-      keywords: "",
-      level: 1,
-      parent_id: 0,
-      sort_desc: "",
-      sort_id: 213,
-      sort_img: "http://mpdevimg2.weipubao.cn/upload/0/image/20190726/crop_GrUfey853q5ew4xx.jpeg",
-      sort_name: "箱包",
-      type: 0
-  }],
-  sort_content: {
-    content: {
-      A: [{
-        add_time: "2019-04-11 09:36:10",
-        brand_name: "阿迪达斯",
-        classify_id: 1,
-        desc: "",
-        e_name: "",
-        first: 10,
-        id: 26,
-        initials: "A",
-        is_delete: 0,
-        is_recommend: 1,
-        is_third: 0,
-        logo: "http://mpdevimg2.weipubao.cn/upload/4748160/image/20190411/crop_bgxFsoQDCYlTwhJ2.jpeg",
-        update_time: "2019-04-12 09:26:22"
-      }, {
-          add_time: "2019-08-29 13:48:17",
-          brand_name: "爱马仕",
-          classify_id: 0,
-          desc: null,
-          e_name: "",
-          first: 0,
-          id: 42,
-          initials: "A",
-          is_delete: 0,
-          is_recommend: 0,
-          is_third: 1,
-          logo: null,
-          update_time: null
-      }],
-      D: [{
-        add_time: "2019-08-16 09:29:13",
-        brand_name: "第三方品牌",
-        classify_id: 0,
-        desc: null,
-        e_name: "",
-        first: 2,
-        id: 40,
-        initials: "D",
-        is_delete: 0,
-        is_recommend: 0,
-        is_third: 1,
-        logo: "http://mpdevimg2.weipubao.cn/upload/0/image/20190814/crop_RK35wnkYqYqPx03n.jpeg",
-        update_time: "2019-08-16 09:29:13"
-      }],
-      G: [{
-        add_time: "2019-08-29 11:01:26",
-        brand_name: "古驰",
-        classify_id: 0,
-        desc: null,
-        e_name: "",
-        first: 0,
-        id: 41,
-        initials: "G",
-        is_delete: 0,
-        is_recommend: 0,
-        is_third: 1,
-        logo: null,
-        update_time: null
-      }]
-    }
-  }
-};
+var sort_info = [];
+var sort_menu = []; // 左侧数据
 var is_reco;
 var page_id;
 var content;
@@ -160,7 +33,7 @@ global.wxPage({
   data: {
     imageUrl: app.globalData.imageUrl,
     is_reco: 0,// 推荐分类
-    is_brand: 0,// 全部品牌
+    is_brand: 0,// 推荐品牌
     page: 1,
     isSingleGoods: 0,
   },
@@ -203,45 +76,19 @@ global.wxPage({
     });
 
 
-    // 模拟数据
-    sort_id = sort_info.menu[0].sort_id;
-    if (sort_info.menu != 0) {
-      sort_info.menu[0].colors = that.data.comColor;
-      sort_info.menu[0].borderright = "6rpx solid " + that.data.comColor;
-      sort_info.menu[0].backgr = "#ffffff";
-      if (sort_info.sort_content.goods != '' && sort_info.sort_content.goods != null) {
-        isSingleGoods = 1;
-        last_page = sort_info.sort_content.last_page;
-      } else {
-        isSingleGoods = 0;
-      }
-      if (sort_info.sort_content.goods) {
-        goodsArry = goodsArry.concat(sort_info.sort_content.goods);
-      }
-      if (sort_info.menu[0].sort_id == -1) {
-        that.setData({
-          is_reco: 1
-        })
-      } else if (sort_info.menu[0].sort_id == -2 || sort_info.menu[0].sort_id == -3) {
-        that.setData({
-          is_brand: 1
-        })
-        if (sort_info.menu[0].sort_id == -2) {
-          that.setData({
-            all_brand: 0
-          })
-        } else {
-          that.setData({
-            all_brand: 1
-          })
-        }
-      }
-      that.setData({
-        sort_info: sort_info,
-        goodsArry: goodsArry,
-        isSingleGoods: isSingleGoods,
-      });
-    }
+    util.api('/api/wxapp/sort/init', function (res) {
+      if (res.error == 0) {
+        sort_menu = res.content;
+        for (var i = 0; i < sort_menu.length; i++) {
+          if (sort_menu[i].menuContent.length > 0) {
+            sort_info.content = sort_menu[i].menuContent;
+            sort_menu[i].colors = that.data.comColor;
+            sort_menu[i].borderright = "6rpx solid " + that.data.comColor;
+            sort_menu[i].backgr = "#ffffff";
+          }
+        }     
+      }   
+    });
 
     // util.api('/api/wxapp/sort/show', function (res) {
     //   sort_info = res.content;
@@ -285,6 +132,7 @@ global.wxPage({
 
     //   });
     // });
+    
     
   },
   changeSort: function(e) {

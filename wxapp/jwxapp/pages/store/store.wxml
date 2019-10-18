@@ -7,10 +7,15 @@
       <text>搜索商品</text>
     </view>
   </view>
-  <view class='sort_content clearfix' style='height:{{left_height}}px;overflow:hidden' wx:if='{{sort_info.menu != 0}}'>
-    <view class='left_item' style='height:{{left_height}}px;overflow-y:auto;overflow-x:hidden'>
+  <view class='sort_content clearfix' style='height:{{left_height}}px;overflow:hidden' wx:if='{{sort_menu != 0}}'>
+    <!-- <view class='left_item' style='height:{{left_height}}px;overflow-y:auto;overflow-x:hidden'>
       <view class='each_item' bindtap='changeSort' data-selected="{{index}}" data-sort_id="{{item.sort_id}}" wx:for="{{sort_info.menu}}" wx:key="key" style='color:{{item.colors}};border-left:{{item.borderright}};background:{{item.backgr}}'>
         {{item.sort_name}}
+      </view>
+    </view> -->
+    <view class='left_item' style='height:{{left_height}}px;overflow-y:auto;overflow-x:hidden'>
+      <view class='each_item' bindtap='changeSort' data-selected="{{index}}" data-sort_id="{{item.menuType}}" wx:for="{{sort_menu}}" wx:key="key" style='color:{{item.colors}};border-left:{{item.borderright}};background:{{item.backgr}}'>
+        {{item.menuName}}
       </view>
     </view>
     <scroll-view class='right_item' wx:if="{{is_reco == 0 && is_brand == 0}}" style='height:{{right_height}}px;overflow-y:auto;overflow-x:hidden' scroll-y bindscrolltolower='lower'>
@@ -232,7 +237,7 @@
   </view>
 
   <!--无分类  -->
-  <view class='no_state' wx:if='{{sort_info.menu == 0}}'>
+  <view class='no_state' wx:if='{{sort_menu == 0}}'>
     <image src='{{imageUrl}}image/wxapp/no_sort.png' mode='widthFix'></image>
     <view>暂无分类</view>
   </view>

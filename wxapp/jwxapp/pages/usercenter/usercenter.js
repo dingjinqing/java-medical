@@ -184,6 +184,7 @@ global.wxPage({
         user_name: user_name
       })
     }
+    that.usercenterRequest(that);
   },
   to_account: function (e) {
     var num = e.currentTarget.dataset.num;
