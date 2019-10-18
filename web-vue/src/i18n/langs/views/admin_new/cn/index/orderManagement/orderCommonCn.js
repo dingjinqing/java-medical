@@ -8,6 +8,9 @@ export const cn = {
   exportData: '导出数据',
   exportTable: '导出表格',
   all: '全部',
+  ok: '确定',
+  cancel: '取消',
+  tip: '提示',
 
   order: '订单',
   orderSn: '订单号',

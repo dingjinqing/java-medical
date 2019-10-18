@@ -8,6 +8,9 @@ export const en = {
   exportData: 'export data',
   exportTable: 'export table',
   all: 'all',
+  ok: 'ok',
+  cancel: 'cancel',
+  tip: 'prompt',
 
   order: 'order',
   orderSn: 'order sn',

@@ -79,6 +79,8 @@ import { cn as couponGive } from './views/admin_new/cn/index/marketManagement/co
 import { cn as orderCommon } from './views/admin_new/cn/index/orderManagement/orderCommonCn'
 // 订单列表
 import { cn as order } from './views/admin/index/leftNavComponents/order/order'
+// 订单搜索
+import { cn as orderSearch } from './views/admin_new/cn/index/orderManagement/orderListSearchCn'
 // 虚拟商品订单-会员卡订单
 import { cn as memberCardOrder } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/memberCardOrderCn'
 // 虚拟商品订单-优惠券包订单
@@ -569,6 +571,7 @@ const cn = {
   // 订单
   order,
   orderCommon, // 订单通用
+  orderSearch, // 订单搜索部分
   memberCardOrder, // 虚拟商品订单-会员卡订单
   couponPackageOrder, // 虚拟商品订单- 优惠券包订单
   refundDialog, // 虚拟商品订单- 手动退款弹窗

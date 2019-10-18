@@ -75,6 +75,8 @@ import { en as couponGive } from './views/admin_new/en/index/marketManagement/co
 import { en as order } from './views/admin/index/leftNavComponents/order/order'
 // 订单通用
 import { en as orderCommon } from './views/admin_new/en/index/orderManagement/orderCommonEn'
+// 订单搜索
+import { en as orderSearch } from './views/admin_new/en/index/orderManagement/orderListSearchEn'
 // 虚拟商品订单-会员卡订单
 import { en as memberCardOrder } from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/memberCardOrderEn'
 // 虚拟商品订单-优惠券包订单
@@ -598,6 +600,7 @@ const en = {
   // 订单
   order,
   orderCommon, // 订单通用
+  orderSearch, // 订单搜索部分
   memberCardOrder, // 虚拟商品订单-会员卡订单
   couponPackageOrder, // 虚拟商品订单- 优惠券包订单
   refundDialog, // 虚拟商品订单-手动退款弹窗

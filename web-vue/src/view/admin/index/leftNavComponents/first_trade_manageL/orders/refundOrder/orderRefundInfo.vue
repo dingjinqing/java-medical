@@ -245,7 +245,7 @@
                     ></el-input-number>
                     {{
                          getCurrencyPool_0 + '，' +
-                         $t('order.shippingFee')
+                         $t('order.returnShippingFee')
                       }}：
                     <el-input-number
                       v-model="canReturnShippingFee"

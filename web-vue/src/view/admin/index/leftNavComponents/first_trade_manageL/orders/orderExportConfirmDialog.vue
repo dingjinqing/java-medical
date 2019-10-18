@@ -1,30 +1,57 @@
 <template>
   <el-dialog
-    title="提示"
+    :title="$t('orderCommon.tip')"
     :visible.sync="showNodes"
     custom-class="custom"
     width="30%"
+    v-loading="loading"
   >
-    <span>筛选出数据条数：{{totalRows}}</span>
+    <span>{{$t('order.orderExportConfirmTip_1')}}{{totalRows}}{{$t('order.orderExportConfirmTip_2')}}</span>
+    <div>
+      {{$t('order.filterCondition')}}
+    </div>
+    <div
+      v-for="(item,key,index) in param"
+      :key="index"
+    >
+      <div v-if="ok(key,item)">
+        <div v-if="key === 'orderStatus'">
+          {{$t('orderSearch.'+key)}}:
+          <span
+            v-for="status in item"
+            :key="status"
+          >
+            {{orderStatusMap.get(status)}}
+          </span>
+        </div>
+        <div v-else>{{$t('orderSearch.'+key)}}:{{item}}</div>
+
+      </div>
+    </div>
+    <div>{{$t('order.orderExportLimitTip')}}</div>
     <el-input
       v-model="param.exportRowStart"
       placeholder=""
+      size="small"
+      width="30%"
     ></el-input>
-    至
+    {{$t('orderCommon.to')}}
     <el-input
       v-model="param.exportRowEnd"
       placeholder=""
+      size="small"
+      width="30%"
     ></el-input>
 
     <span
       slot="footer"
       class="dialog-footer"
     >
-      <el-button @click="showNodes = false">取 消</el-button>
+      <el-button @click="showNodes = false">{{$t('orderCommon.cancel')}}</el-button>
       <el-button
         type="primary"
         @click="confirm"
-      >确 定</el-button>
+      >{{$t('orderCommon.ok')}}</el-button>
     </span>
   </el-dialog>
 </template>
@@ -36,7 +63,9 @@ export default {
   data () {
     return {
       totalRows: 0,
-      showNodes: false
+      showNodes: false,
+      loading: false,
+      orderStatusMap: new Map(this.$t('order.orderStatusList'))
     }
   },
   props: {
@@ -59,11 +88,24 @@ export default {
       this.$emit('update:show', false)
     },
     confirm () {
+      this.loading = true
       orderExport(this.param).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
+        this.loading = false
         download(res, decodeURIComponent(fileName))
       })
+    },
+    ok (key, item) {
+      if (Array.isArray(item)) {
+        if (item.length !== 0) return true
+      } else {
+        if (key === 'currentPage' || key === 'pageRows' || key === 'exportRowStart' || key === 'exportRowEnd' || key === 'orderStatus2') {
+          return false
+        }
+        if (item) return true
+      }
+      return false
     }
   },
   watch: {

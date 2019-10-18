@@ -805,7 +805,6 @@ export default {
       moreFilters: false,
       pageParams: {},
       searchParams: {
-        searchType: 0,
         pinStatus: [],
         goodsName: '',
         orderSn: '',
@@ -825,12 +824,9 @@ export default {
         specCode: '',
         finishedTimeStart: null,
         finishedTimeEnd: null,
-        countryCode: null,
         provinceCode: null,
         cityCode: null,
         districtCode: null,
-        currentPage: null,
-        pageRows: null,
         orderStatus2: null
       },
       orderTime: null,
@@ -907,6 +903,7 @@ export default {
       this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus.split(',') : []
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
+      this.searchType = 0
       list(this.searchParams).then(res => {
         console.log(res)
         this.pageParams = res.content.page

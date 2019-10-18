@@ -165,7 +165,7 @@
               >
               </el-input-number>{{currency[0]}}，</span>
             <span>
-              {{$t('order.shippingFee')}}：
+              {{$t('order.returnShippingFee')}}：
               <el-input-number
                 v-model="params.shippingFee"
                 :precision="2"
