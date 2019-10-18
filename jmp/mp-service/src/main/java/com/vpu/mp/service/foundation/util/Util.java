@@ -24,6 +24,7 @@ import javax.servlet.http.Part;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.InetAddress;
@@ -540,10 +541,10 @@ public class Util {
      * @param path
      * @return
      */
-	public static File loadFile(String path) {
+	public static InputStream loadFile(String path) {
 		try {
 			ClassPathResource resource = new ClassPathResource(path);
-			return  resource.getFile();
+			return  resource.getInputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
