@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.image.UserCenterTraitVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
@@ -36,4 +37,14 @@ public class WxAppLoginController extends WxAppBaseController {
 	}
 
 	
+	/**
+	 * 获取分享二维码
+	 * @return
+	 */
+	@PostMapping("/api/wxapp/user/qrcode")
+	public UserCenterTraitVo getUserQrCode() {
+		logger().info("进入分享二维码");
+		Integer userId = wxAppAuth.user().getUserId();
+		return shop().ucTraitService.getUserCenter(userId);
+	}
 }
