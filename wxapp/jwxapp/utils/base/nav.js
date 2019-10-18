@@ -170,6 +170,9 @@ var nav = {
       }
       param = paramStr;
     }
+    if (typeof param == 'undefined'){
+      param='';
+    }
     var url = this.getUrl(path) + "?shop_id=" + config.shop_id + "&user_id=" + cache.getCache('user_id') + param;
     this.navigateTo({
       url: '/pages/webview/webview?url=' + encodeURIComponent(url),
