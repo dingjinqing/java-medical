@@ -21,7 +21,7 @@ public class StoreListParam {
     @NotBlank
     public String location;
     /**
-     * The Type.type为0时,获得可购买的门店列表 todo 门店列表类型{所有门店,可购买该商品门店列表,同城服务门店列表,扫码购门店列表}
+     * The Type.type为0时,获得可购买的门店列表 todo 门店列表入口{所有门店,可购买该商品门店列表,同城服务门店列表,扫码购门店列表,会员卡页面进入的门店列表}
      */
     public Byte type = 0;
     /**

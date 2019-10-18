@@ -8,6 +8,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
@@ -30,7 +32,6 @@ import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierSimpleParam;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -430,8 +431,7 @@ public class AdminStoreController extends AdminBaseController{
      * 门店服务-修改
      */
     @PostMapping(value = "/api/admin/store/service/update")
-    public JsonResult updateStoreService(@RequestBody(required = true) @Validated StoreServiceParam storeService) {
-//        public JsonResult updateStoreService(@RequestBody(required = true) @Validated({Update.class}) StoreServiceParam storeService) {
+    public JsonResult updateStoreService(@RequestBody(required = true) @Validated({UpdateGroup.class}) StoreServiceParam storeService) {
         shop().store.storeService.updateStoreService(storeService);
         return success();
     }
@@ -441,8 +441,7 @@ public class AdminStoreController extends AdminBaseController{
      * 门店服务-删除
      */
     @PostMapping(value = "/api/admin/store/service/del")
-    //        public JsonResult updateStoreService(@RequestBody(required = true) @Validated({Delete.class}) StoreServiceParam storeService) {
-    public JsonResult delStoreService(@RequestBody(required = true) @Validated StoreServiceParam storeService) {
+    public JsonResult delStoreService(@RequestBody(required = true) @Validated({DeleteGroup.class}) StoreServiceParam storeService) {
         shop().store.storeService.delStoreService(storeService.getId());
         return success();
     }

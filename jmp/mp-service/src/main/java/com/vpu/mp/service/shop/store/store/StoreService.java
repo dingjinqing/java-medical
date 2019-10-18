@@ -7,16 +7,22 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.Location;
+import com.vpu.mp.service.pojo.wxapp.store.StoreInfoParam;
+import com.vpu.mp.service.pojo.wxapp.store.StoreInfoVo;
 import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
 import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -36,10 +42,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.main.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
@@ -258,7 +266,7 @@ public class StoreService extends ShopBaseService {
         double EARTH_RADIUS = 6371.393;
         s = s * EARTH_RADIUS;
 //        s = Math.round(s * 1000);
-        return new BigDecimal(s).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return new BigDecimal(s).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     private double rad(double d) {
@@ -270,7 +278,7 @@ public class StoreService extends ShopBaseService {
      * @param prdIds 商品规格id列表
      * @param deliverType 配送类型,1:自提,2:同城配送
      * @param location 用户位置
-     * @param isFromStore todo 未知
+     * @param isFromStore todo 同城服务参数
      */
     public List<StorePojo> getCanBuyStoreList(Set<Integer> prdIds, Byte deliverType, Location location, Byte isFromStore) {
         SelectConditionStep<Record1<Integer>> conditionStep = db().select(STORE.STORE_ID).from(STORE_GOODS)
@@ -298,10 +306,45 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
-     * The entry point of application.获得同城配送可用的门店列表
+     * The entry point of application.todo 获得同城配送可用的门店列表
      */
     public void cityServiceCanUseStoreList(List<StorePojo> storeLists, Location location, Byte isFromStore) {
 
+    }
+
+    /**
+     * Gets wxapp store detail.门店信息详情-小程序
+     *
+     * @param param the param
+     * @return the wxapp store detail
+     */
+    public StoreInfoVo getWxappStoreDetail(StoreInfoParam param) {
+        int storeId = param.getStoreId();
+        long userId = param.getUserId();
+        if (userId != 0) {
+            int source = db().select(USER.SOURCE).from(USER).where(USER.USER_ID.eq(userId)).fetchOneInto(Integer.class);
+            if (source == -1) {
+                db().update(USER).set(USER.SOURCE, storeId).execute();
+            }
+        }
+        StorePojo storePojo = getStore(storeId);
+        Objects.requireNonNull(storePojo, "店铺不存在");
+        StoreInfoVo storeInfoVo = new StoreInfoVo();
+        FieldsUtil.assignNotNull(storePojo, storeInfoVo);
+
+        // 获取服务列表,按服务分类归纳
+        Map<StoreServiceCategoryListQueryVo, List<StoreServiceListQueryVo>> serviceCat = new HashMap<StoreServiceCategoryListQueryVo, List<StoreServiceListQueryVo>>() {{
+            storeService.getAllStoreServiceCategory(new StoreServiceCategoryListQueryParam() {{
+                setStoreId(storeId);
+            }}).forEach(e -> put(e, storeService.getStoreServiceByCatId(storeId, e.getCatId())));
+        }};
+        storeInfoVo.setServiceCat(serviceCat);
+        storeInfoVo.setAllService(storeService.getAllStoreServiceByStoreId(storeId));
+        // todo 扫码购
+//        List<String> storeScanIds = Arrays.asList(storeConfigService.getStoreScanIds().split(","));
+        // todo 获取购物车商品数
+        // todo 获取待核销扫码购订单
+        return storeInfoVo;
     }
 
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, StoreListQueryParam param) {

@@ -95,7 +95,6 @@ public class StoreServiceService extends ShopBaseService{
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreServiceListQueryVo.class);
 	}
 
-
     /**
 	 * 门店服务的条件查询
 	 * @param select
@@ -116,9 +115,15 @@ public class StoreServiceService extends ShopBaseService{
 		return select;
 	}
 
+    /**
+     * Get all store service by store id list.获取门店所有服务
+     *
+     * @param storeId the store id
+     * @return the list
+     */
     public List<StoreServiceListQueryVo> getAllStoreServiceByStoreId(Integer storeId){
-		return db().select(STORE_SERVICE.ID,STORE_SERVICE.SERVICE_NAME).from(STORE_SERVICE).where(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(StoreServiceListQueryVo.class);
-	}
+        return db().select(STORE_SERVICE.ID,STORE_SERVICE.SERVICE_NAME).from(STORE_SERVICE).where(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(StoreServiceListQueryVo.class);
+    }
 
 
     /**
@@ -262,4 +267,14 @@ public class StoreServiceService extends ShopBaseService{
         return vo;
     }
 
+    /**
+     * Gets store service by cat id.根据服务分类id获取服务
+     *
+     * @param storeId the store id
+     * @param catId   the cat id
+     */
+    public List<StoreServiceListQueryVo> getStoreServiceByCatId(Integer storeId, Integer catId) {
+        return db().selectFrom(STORE_SERVICE).where(STORE_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
+            .and(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.CAT_ID.eq(catId)).fetchInto(StoreServiceListQueryVo.class);
+    }
 }
