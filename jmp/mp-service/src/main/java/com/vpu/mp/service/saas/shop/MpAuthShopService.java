@@ -459,6 +459,8 @@ public class MpAuthShopService extends MainBaseService {
 		JsonParser parser = new JsonParser();
 		JsonElement je = parser.parse(params.toString());
 		String response = maService.post(WxOpenMaService.API_CODE_COMMIT, gson.toJson(je));
+		logger().info("发送的信息");
+		logger().info(gson.toJson(je));
 		WxOpenResult result = WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
 		logger().info("https://api.weixin.qq.com/wxa/commit返回信息");
 		logger().info(result.toString());
