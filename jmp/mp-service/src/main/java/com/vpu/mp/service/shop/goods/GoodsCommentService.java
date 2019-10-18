@@ -451,7 +451,8 @@ public class GoodsCommentService extends ShopBaseService {
                     ORDER_GOODS.GOODS_NAME,
                     ORDER_GOODS.GOODS_IMG,
                     ORDER_GOODS.ORDER_SN,
-                    ORDER_INFO.CREATE_TIME)
+                    ORDER_INFO.CREATE_TIME,
+                    ORDER_GOODS.COMMENT_FLAG)
                 .from(ORDER_GOODS)
                 .leftJoin(ORDER_INFO)
                 .on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
@@ -477,7 +478,8 @@ public class GoodsCommentService extends ShopBaseService {
                     COMMENT_GOODS.COMMSTAR,
                     COMMENT_GOODS.COMM_NOTE,
                     COMMENT_GOODS.COMM_IMG,
-                    COMMENT_GOODS_ANSWER.CONTENT)
+                    COMMENT_GOODS_ANSWER.CONTENT,
+                    ORDER_GOODS.COMMENT_FLAG)
                 .from(ORDER_GOODS)
                 .leftJoin(ORDER_INFO)
                 .on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
@@ -605,19 +607,36 @@ public class GoodsCommentService extends ShopBaseService {
   public void selectCommentAward(List<CommentListVo> commentListVo) {
     // 得到当前所有可用活动和其触发条件的信息
     List<TriggerConditionVo> triggerConditionVos = getAllActivities();
-    // 判断每个商品行对应的评价有礼活动奖励
-    for (CommentListVo forGoodsId : commentListVo) {
-      if (triggerConditionVos == null || triggerConditionVos.isEmpty()) {
-        return;
-      } else {
+    if (triggerConditionVos == null || triggerConditionVos.isEmpty()) {
+      return;
+    } else {
+      // 判断每个商品行对应的评价有礼活动奖励
+      for (CommentListVo forGoodsId : commentListVo) {
         // 得到当前商品所满足触发条件的所有活动的id集合
         Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), triggerConditionVos);
 
         if (actIds == null || actIds.isEmpty()) {
-          return;
+          continue;
         } else {
-          // 根据优先级确定当前商品参加哪个评价有礼活动
-          Integer actId = getTheActId(actIds);
+          Integer actId;
+          // 如果是待评价的商品
+          if (forGoodsId.getCommentFlag().equals(NumberUtils.BYTE_ZERO)) {
+            // 根据优先级确定当前商品参加哪个评价有礼活动
+            actId = getTheActId(actIds);
+          }
+          // 如果是已评价的商品
+          else {
+            actId =
+                db().select(COMMENT_GOODS.COMMENT_AWARD_ID)
+                    .from(COMMENT_GOODS)
+                    .where(COMMENT_GOODS.GOODS_ID.eq(forGoodsId.getGoodsId()))
+                    .and(COMMENT_GOODS.ORDER_SN.eq(forGoodsId.getOrderSn()))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(NumberUtils.INTEGER_ZERO);
+            if (actId.equals(NumberUtils.INTEGER_ZERO)) {
+              return;
+            }
+          }
           forGoodsId.setId(actId);
           // 查询活动奖励
           AwardContentVo awardContentVos =
@@ -632,9 +651,12 @@ public class GoodsCommentService extends ShopBaseService {
                   .where(COMMENT_AWARD.ID.eq(actId))
                   .fetchOneInto(AwardContentVo.class);
           forGoodsId.setAwardType(awardContentVos.getAwardType());
+          // 活动奖励1：赠送积分
           if (awardContentVos.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
             forGoodsId.setAward(awardContentVos.getScore().toString());
-          } else if (awardContentVos.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
+          }
+          // 活动奖励2：赠送优惠券
+          else if (awardContentVos.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
             String couponName =
                 db().select(MRKING_VOUCHER.ACT_NAME)
                     .from(MRKING_VOUCHER)
@@ -643,11 +665,17 @@ public class GoodsCommentService extends ShopBaseService {
                     .orElse("评价有礼优惠券");
             forGoodsId.setAward(
                 "id:" + awardContentVos.getActivityId() + "," + "name:" + couponName);
-          } else if (awardContentVos.getAwardType().equals(THERE)) {
+          }
+          // 活动奖励3：赠送用户余额
+          else if (awardContentVos.getAwardType().equals(THERE)) {
             forGoodsId.setAward(awardContentVos.getAccount().toString());
-          } else if (awardContentVos.getAwardType().equals(FOUR)) {
+          }
+          // 活动奖励4：赠送抽奖机会
+          else if (awardContentVos.getAwardType().equals(FOUR)) {
             forGoodsId.setAward(awardContentVos.getActivityId().toString());
-          } else if (awardContentVos.getAwardType().equals(FIVE)) {
+          }
+          // 活动奖励5：自定义奖励
+          else if (awardContentVos.getAwardType().equals(FIVE)) {
             forGoodsId.setAward(
                 "path:"
                     + awardContentVos.getAwardPath()

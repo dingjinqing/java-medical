@@ -35,4 +35,6 @@ public class CommentListVo {
   private Integer awardType;
   /** 评价有礼奖励内容 */
   private String award;
+  /** 是否已评价标识 0：待评价 1：已评价 */
+  private Byte commentFlag;
 }
