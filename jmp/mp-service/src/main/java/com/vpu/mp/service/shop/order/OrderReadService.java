@@ -475,13 +475,32 @@ public class OrderReadService extends ShopBaseService {
 		//商品
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		for(OrderListMpVo order : result.dataList) {
-			order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, extendReceiveDays) ? yes : no);
+			//订单类型
+			List<String> orderType = Arrays.asList(orderTypeToArray(order.getGoodsType()));
+			/**按钮start*/
+			//1.延长收货--------------------------
+			order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? yes : no);
+			//2.确认收货(order_status==4可以判断)
+			//3.好友代付（order_pay_way == 2）
+			//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
+			if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
+				setPayOperation(order);
+			}
+			//5.(退货中心-退款 退货) 6. 取消 7删除
+			OrderOperationJudgment.operationSet(order);
+			//8.再次购买
+			order.setIsShowAgainBuy(order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY && order.getIsLotteryGift() == no ? yes : no);
+			//9.提醒发货(待发货 and 非 送礼)
+			order.setIsRemindShip(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1 ? yes : no);
+			//10.评价（查看评价、评价有礼/商品评价）
+			order.setIsShowCommentType(getCommentType(order));
+			//TODO 幸运大抽奖 分享优惠卷。。。。
+			/**按钮-end*/
 			//TODO 活动奖品判断
 			Byte isLotteryGift = (byte)1;
-			if(isLotteryGift != 0) {
-			//pay_name = '活动奖品';
-			}
+			if(isLotteryGift != 0) {}
 			order.setIsLotteryGift(isLotteryGift);
+			//设置商品
 			order.setGoods(goods.get(order.getOrderId()));
 			for (OrderGoodsMpVo temp : order.getGoods()) {
 				if(StringUtils.isBlank(temp.getGoodsImg())) {
@@ -496,24 +515,27 @@ public class OrderReadService extends ShopBaseService {
 			if(true) {
 				order.setGroupBuyInfo(groupBuyList.getByOrder(order.getOrderSn()));
 			}
-			
+			//补款设置时间
 			if(order.getBkOrderPaid() == OrderConstant.BK_PAID_Y) {
-				//有效时间区间
-				Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
-				order.setPreSaleTimeInterval(new Timestamp[] {timeInterval.value1(),timeInterval.value2()});
-				long currenTmilliseconds  = Instant.now().toEpochMilli();
-				if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
-					order.setIsPayEndPayment(NumberUtils.BYTE_ONE);
-				}else {
-					order.setIsPayEndPayment(NumberUtils.BYTE_ZERO);
-				}
+				setBkPayOperation(order);
 			}
 			//是否退过款
 			order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? yes : no);
-			//TODO 评价有礼 与 商品评价
-			order.setIsCommentAward(true ? yes : no);
 		}
 		return result;
+	}
+
+	
+	private void setBkPayOperation(OrderListMpVo order) {
+		//有效时间区间
+		Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
+		order.setPreSaleTimeInterval(new Timestamp[] {timeInterval.value1(),timeInterval.value2()});
+		long currenTmilliseconds  = Instant.now().toEpochMilli();
+		if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
+			order.setIsPayEndPayment(NumberUtils.BYTE_ONE);
+		}else {
+			order.setIsPayEndPayment(NumberUtils.BYTE_ZERO);
+		}
 	}
 	public OrderListMpVo mpGet(OrderParam param) throws MpException {
 		boolean flag = false;
@@ -665,18 +687,22 @@ public class OrderReadService extends ShopBaseService {
 	 */
 	public Byte getCommentType(OrderListMpVo order){
 		if(order.getOrderStatus() != OrderConstant.ORDER_RECEIVED &&  order.getOrderStatus() != OrderConstant.ORDER_FINISHED) {
+			//0不展示
 			return no;
 		}
 		if(order.getCommentFlag() > 0) {
-			return yes;
+			//1查看评价
+			return 1;
 		}
 		List<OrderGoodsMpVo> goods = order.getGoods();
 		List<CommentListVo> converGoods = new ArrayList<CommentListVo>();
+		//转化类型
 		goods.forEach(x->converGoods.add(CommentListVo.builder().goodsId(x.getGoodsId()).build()));
-		//TODO 
 		if(goodsComment.orderIsCommentAward(converGoods)) {
+			//2评价有礼
 			return 2;
 		}
+		//3商品评价
 		return 3;
 	}
 	/**
