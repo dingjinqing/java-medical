@@ -32,6 +32,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 .scoreterms {
-  padding: 15px 10px;
+  padding: 0 10px 20px;
+}
+</style>
+<style >
+.headline {
+  font-weight: bold;
+  margin: 20px 0;
 }
 </style>

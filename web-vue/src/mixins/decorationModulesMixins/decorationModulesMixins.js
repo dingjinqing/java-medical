@@ -45,7 +45,7 @@ export default {
             'module_name': 'm_goods', // 模块名称
             'title': '', // 标题  y
             'title_link': '', // 标题链接 y
-            'tit_center': '0', // 标题位置 0 不选中标题居中  1选中标题居中
+            'tit_center': '1', // 标题位置 0 不选中标题居中  1选中标题居中
             'recommend_type': '0', // 模块推荐 0自动推荐  1手动推荐
             'goods_items': [ // 商品列表数据
 

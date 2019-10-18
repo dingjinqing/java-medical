@@ -47,7 +47,7 @@
             </div>
             <div class="topPosition">
               <span>标题位置：</span>
-              <el-checkbox v-model="positionChecked">标题居中</el-checkbox>
+              <el-checkbox v-model="data.tit_center">标题居中</el-checkbox>
             </div>
             <div class="bgImg">
               <span>{{data.goods_module_title==='1'?'图标':data.goods_module_title==='2'?'标题图片':''}}：</span>
@@ -63,7 +63,7 @@
                   v-else
                   style="width:100%;height:40px"
                   :src="data.goods_module_title==='1'?iconImgUrl:titleImgUrl"
-                  @click="tuneUp = !tuneUp"
+                  @click="handleToAddModulesImg()"
                 >
               </div>
             </div>
@@ -647,8 +647,9 @@ export default {
             this.modulesData.tit_center = true
           }
           this.data = this.modulesData
+          this.$forceUpdate()
         }
-        console.log(newData, this.modulesData)
+        console.log(newData, this.modulesData, this.data)
       },
       immediate: true
     },
@@ -687,11 +688,13 @@ export default {
     },
     // 模块标题图标点击
     handleToAddModulesImg () {
+      console.log(this.data.goods_module_title)
       if (this.data.goods_module_title === '1') {
         this.imageSize = [25, 25]
       } else {
         this.imageSize = []
       }
+      console.log(this.imageSize, 111111)
       this.tuneUp = !this.tuneUp
     },
     // 选择链接选中回传

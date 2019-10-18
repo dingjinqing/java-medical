@@ -312,6 +312,9 @@ export default {
         if (newData.length) {
           this.sizeW = newData[0]
           this.sizeH = newData[1]
+        } else {
+          this.sizeW = ''
+          this.sizeH = ''
         }
       },
       immediate: true,
