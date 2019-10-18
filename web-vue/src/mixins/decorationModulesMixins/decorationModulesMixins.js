@@ -45,34 +45,35 @@ export default {
             'module_name': 'm_goods', // 模块名称
             'title': '', // 标题  y
             'title_link': '', // 标题链接 y
-            'tit_center': '1', // 标题位置 0 不选中标题居中  1选中标题居中
-            'recommend_type': '0', // 模块推荐 0自动推荐  1手动推荐
+            'tit_center': '0', // 标题位置 0 不选中标题居中  1选中标题居中 y
+            'recommend_type': '0', // 模块推荐 0自动推荐  1手动推荐 y
             'goods_items': [ // 商品列表数据
 
             ],
             'col_type': '4', // 4  1  2  3  0
             'goods_display': '0',
-            'goods_num': '4', // 模块推荐-商品数量
-            'min_price': '', // 模块推荐-商品价格最低价格
-            'max_price': '', // 模块推荐-商品价格最高价格
-            'keywords': '', // 模块推荐-关键词
+            'goods_num': '4', // 模块推荐-商品数量  y
+            'min_price': '', // 模块推荐-商品价格最低价格  y
+            'max_price': '', // 模块推荐-商品价格最高价格 y
+            'keywords': '', // 模块推荐-关键词 y
             'sort_type': '1', // 模块推荐-排序规则
-            'img_url': '', // 图标
+            'img_url': '', // 图标 y
             'goods_module_title': '0', // 模块标题类型  0不设置  1文字标题 2图片标题  y
-            'img_title_url': '', // 标题图片
-            'hide_name': 0, // 商品名称
-            'hide_price': 0, // 商品价格
-            'hide_label': 0, // 商品标签
-            'cart_btn': 1, // 购买按钮
-            'other_message': 0, // 其它信息
-            'if_radius': '0', // 模块角度 0直角  1圆角
-            'goods_module_style': '0', // 0白底无边框  1边框投影 2白底有边框
-            'goods_area': 'all', // 模块推荐-商品范围
-            'goods_area_data': '',
+            'img_title_url': '', // 标题图片 y
+            'hide_name': '0', // 商品名称 y
+            'hide_price': '0', // 商品价格 y
+            'hide_label': '0', // 商品标签 y
+            'cart_btn': '0', // 购买按钮 y
+            'cart_btn_choose': '0', // 购买按钮radio y
+            'other_message': '0', // 其它信息 y
+            'if_radius': '0', // 模块角度 0直角  1圆角 y
+            'goods_module_style': '0', // 0白底无边框  1边框投影 2白底有边框 y
+            'goods_area': 'sort', // 模块推荐-商品范围  //all 没选  sort：商家分类 cat:平台分类  brand:品牌分类  label:标签分类
+            'goods_area_data': '', // 商品范围选中后弹窗选中的数据  //多个数据也是字符串，非数组
             'goods_type': '0', // 活动商品 0请选择 ..
-            'show_market': '1', // 其他信息选中 隐藏radion字段  1市场价 2销量 3评价数
-            'goods_module_bg': '0', // 背景颜色 0与页面一致  1自定义
-            'goods_bg_color': '#f5f5f5' // 背景自定义颜色
+            'show_market': '1', // 其他信息选中 隐藏radio字段  1市场价 2销量 3评价数 y
+            'goods_module_bg': '0', // 背景颜色 0与页面一致  1自定义 y
+            'goods_bg_color': '#f5f5f5' // 背景自定义颜色 y
           }
           break
         case 9: // 商品搜索模块

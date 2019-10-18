@@ -54,7 +54,7 @@
               <div class="bgIcon">
 
                 <img
-                  v-if="data.goods_module_title==='1'?!iconImgUrl:!titleImgUrl"
+                  v-if="data.goods_module_title==='1'?!data.img_url:!data.img_title_url"
                   :src="$imageHost+'/image/admin/add_img_bg.png'"
                   class="bgImgDiv"
                   @click="handleToAddModulesImg()"
@@ -104,22 +104,22 @@
               <span>显示内容：</span>
               <div class="contentRight">
                 <div class="contentRightTop">
-                  <el-checkbox v-model="commodityModule.name">商品名称</el-checkbox>
-                  <el-checkbox v-model="commodityModule.price">商品价格</el-checkbox>
-                  <el-checkbox v-model="commodityModule.label">商品标签</el-checkbox>
+                  <el-checkbox v-model="data.hide_name">商品名称</el-checkbox>
+                  <el-checkbox v-model="data.hide_price">商品价格</el-checkbox>
+                  <el-checkbox v-model="data.hide_label">商品标签</el-checkbox>
                 </div>
                 <div class="contentDiv">
-                  <el-checkbox v-model="commodityModule.buyBtn">购买按钮</el-checkbox>
+                  <el-checkbox v-model="data.cart_btn">购买按钮</el-checkbox>
                   <span style="color:#999;white-space:nowrap">显示购买按钮时将不显示其他信息</span>
                 </div>
                 <!--选中购买按钮隐藏模块-->
                 <div
                   class="buyBtnHidden"
-                  v-if="commodityModule.buyBtn"
+                  v-if="data.cart_btn"
                 >
                   <el-radio
-                    v-model="commodityModule.hiddenRadio"
-                    label="1"
+                    v-model="data.cart_btn_choose"
+                    label="0"
                   >
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
@@ -127,15 +127,15 @@
                     ></i>
                   </el-radio>
                   <el-radio
-                    v-model="commodityModule.hiddenRadio"
-                    label="2"
+                    v-model="data.cart_btn_choose"
+                    label="1"
                   ><i
                       class="iconfont icongouwuche1 icon_font_size new_class"
                       style="color: rgb(177, 78, 105);"
                     ></i></el-radio>
                   <el-radio
-                    v-model="commodityModule.hiddenRadio"
-                    label="3"
+                    v-model="data.cart_btn_choose"
+                    label="2"
                   >
                     <i
                       class="right_buy new_back"
@@ -145,8 +145,8 @@
                     </i>
                   </el-radio>
                   <el-radio
-                    v-model="commodityModule.hiddenRadio"
-                    label="4"
+                    v-model="data.cart_btn_choose"
+                    label="3"
                   >
                     <i
                       class="cart_buy"
@@ -156,23 +156,23 @@
                 </div>
                 <!--end-->
                 <div class="contentDiv">
-                  <el-checkbox v-model="commodityModule.otherInfoFlag">其他信息</el-checkbox>
+                  <el-checkbox v-model="data.other_message">其他信息</el-checkbox>
                   <span style="color:#999;white-space:nowrap">后台数据仅为参考请以实际显示为准</span>
                 </div>
                 <div
                   class="contentDiv"
-                  v-if="commodityModule.otherInfoFlag"
+                  v-if="data.other_message"
                 >
                   <el-radio
-                    v-model="commodityModule.contentRadio"
+                    v-model="data.show_market"
                     label="1"
                   >市场价</el-radio>
                   <el-radio
-                    v-model="commodityModule.contentRadio"
+                    v-model="data.show_market"
                     label="2"
                   >销量</el-radio>
                   <el-radio
-                    v-model="commodityModule.contentRadio"
+                    v-model="data.show_market"
                     label="3"
                   >评价数</el-radio>
                 </div>
@@ -182,12 +182,12 @@
               <span>模块角度：</span>
               <div class="angleDiv">
                 <el-radio
-                  v-model="commodityModule.angleRadio"
-                  label="1"
+                  v-model="data.if_radius"
+                  label="0"
                 >直角</el-radio>
                 <el-radio
-                  v-model="commodityModule.angleRadio"
-                  label="2"
+                  v-model="data.if_radius"
+                  label="1"
                 >圆角</el-radio>
               </div>
             </div>
@@ -195,16 +195,16 @@
               <span>模块样式：</span>
               <div class="angleDiv">
                 <el-radio
-                  v-model="commodityModule.styleRadio"
-                  label="1"
+                  v-model="data.goods_module_style"
+                  label="0"
                 >白底无边框</el-radio>
                 <el-radio
-                  v-model="commodityModule.styleRadio"
-                  label="2"
+                  v-model="data.goods_module_style"
+                  label="1"
                 >边框投影</el-radio>
                 <el-radio
-                  v-model="commodityModule.styleRadio"
-                  label="3"
+                  v-model="data.goods_module_style"
+                  label="2"
                 >白底有边框</el-radio>
               </div>
             </div>
@@ -212,17 +212,17 @@
               <span>背景颜色：</span>
               <div class="bgColorDiv">
                 <el-radio
-                  v-model="commodityModule.bgColorRadio"
-                  label="1"
+                  v-model="data.goods_module_bg"
+                  label="0"
                 >与页面背景一致</el-radio>
                 <div class="customBgColor">
                   <el-radio
-                    v-model="commodityModule.bgColorRadio"
-                    label="2"
+                    v-model="data.goods_module_bg"
+                    label="1"
                   >自定义</el-radio>
                   <span class="colorSelect">
                     <colorPicker
-                      v-model="commodityModule.bgColor"
+                      v-model="data.goods_bg_color"
                       :defaultColor="defaultColorright"
                       style="width:60px;height:30px;"
                     />
@@ -243,23 +243,23 @@
         <div class="moduleRecommendation">
           <span style="margin-bottom:10px">模块推荐：</span>
           <el-radio
-            v-model="commodityModule.RecommendationRadio"
-            label="1"
+            v-model="data.recommend_type"
+            label="0"
           >自动推荐</el-radio>
           <el-radio
-            v-model="commodityModule.RecommendationRadio"
-            label="2"
+            v-model="data.recommend_type"
+            label="1"
           >手动推荐</el-radio>
           <!--自动推荐选中显示模块-->
           <div
             class="moduleRecMain"
-            v-if="commodityModule.RecommendationRadio === '1'"
+            v-if="data.recommend_type === '0'"
           >
             <div class="manual">
               <div class="goodsNum">
                 <span>商品数量：</span>
                 <el-select
-                  v-model="commodityModule.goodsNum"
+                  v-model="data.goods_num"
                   placeholder="请选择"
                   size="small"
                 >
@@ -275,12 +275,12 @@
               <div class="goodsPrice price">
                 <span>商品价格：</span>
                 <el-input
-                  v-model="commodityModule.priceLeft"
+                  v-model="data.min_price"
                   size="small"
                 ></el-input>
                 <i style="display:inline-block;margin:0 5px">到</i>
                 <el-input
-                  v-model="commodityModule.proceRight"
+                  v-model="data.max_price"
                   size="small"
                 ></el-input>
               </div>
@@ -288,7 +288,7 @@
                 <span>关键词：</span>
                 <el-autocomplete
                   class="inline-input"
-                  v-model="commodityModule.keyWords"
+                  v-model="data.keywords"
                   :fetch-suggestions="querySearch"
                   @select="handleSelect"
                   size='small'
@@ -297,7 +297,7 @@
               <div class="goodsPrice price commodityScope">
                 <span>商品范围：</span>
                 <el-select
-                  v-model="commodityModule.commodityScope"
+                  v-model="data.goods_area"
                   placeholder="请选择"
                   size="small"
                   @change='handleToSelectRange()'
@@ -315,14 +315,14 @@
               <div
                 class="hiddenRangeCheck"
                 style="margin-left:100px"
-                v-if="commodityModule.commodityScope!=='0'"
+                v-if="data.goods_area!=='0'"
               >
                 <!--商家分类-->
                 <div
                   class="rangeHiddenBtn"
-                  @click="handleToClickRangeBtn(Number(commodityModule.commodityScope))"
+                  @click="handleToClickRangeBtn(Number(data.goods_area))"
                 >
-                  {{rangeList[Number(commodityModule.commodityScope)]}}
+                  {{rangeList[Number(data.goods_area)]}}
                 </div>
                 <div
                   style="height:30px;line-height:30px;margin-left:5px"
@@ -366,7 +366,7 @@
           <!--手动推荐选中显示模块-->
           <div
             class="moduleRecMain"
-            v-if="commodityModule.RecommendationRadio === '2'"
+            v-if="data.recommend_type === '1'"
           >
             <div class="manual">
               <div class="goodsNum choiseGoodeDiv">
@@ -630,9 +630,9 @@ export default {
       ],
       rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签'], // 商品范围选中后按钮文本列表
       rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }], // 商品范围四类弹框选中数据池
+      needToSwitchData: ['tit_center', 'hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message'], // 需要转换的checkbox数据
       // 模块保存数据
       data: {
-
       }
     }
   },
@@ -641,13 +641,21 @@ export default {
     sortIndex: {
       handler (newData) {
         if (this.modulesData) {
-          if (this.modulesData.tit_center === '0') {
-            this.modulesData.tit_center = false
-          } else {
-            this.modulesData.tit_center = true
-          }
-          this.data = this.modulesData
-          this.$forceUpdate()
+          // 需要转换的checkbox字段数组集合
+          let getModulesData = JSON.parse(JSON.stringify(this.modulesData))
+          this.needToSwitchData.forEach(itemC => {
+            let m = this.handleToTurnModulesData(this.modulesData[itemC]) // 将数据种checkbox的值由stying数字转为Boolean
+            getModulesData[itemC] = m
+          })
+          console.log(getModulesData)
+          // 转换商品范围字段数据
+          let d = this.handleToTransformationRangeData(this.modulesData.goods_area)
+          getModulesData.goods_area = d
+          // 赋值
+          Object.keys(this.modulesData).forEach((item, index) => { // 将数据赋值给当前页面数据池
+            this.$set(this.data, item, getModulesData[item])
+          })
+          console.log(this.data)
         }
         console.log(newData, this.modulesData, this.data)
       },
@@ -666,19 +674,80 @@ export default {
     // 监控该模块右边数据操作
     data: {
       handler (newData) {
-        if (this.modulesData.tit_center === false) {
-          this.modulesData.tit_center = '0'
-        } else {
-          this.modulesData.tit_center = '1'
-        }
+        // 转换选择商品范围字段数据
+        let d = this.handleToTransformationRangeData(1, this.data.goods_area)
+        console.log(d)
+        let callBackData = JSON.parse(JSON.stringify(newData))
+        callBackData.goods_area = d
+        // 将数据种checkbox的值由stying数字转为Boolean
+        this.needToSwitchData.forEach(itemC => {
+          let m = this.handleToTurnModulesData(this.modulesData[itemC])
+          callBackData[itemC] = m
+        })
+        console.log(callBackData)
       },
       deep: true
     }
   },
   mounted () {
+    console.log(this.data.tit_center)
     this.restaurants = this.loadAll()
   },
   methods: {
+    // 中间模块数据传来checkbox数据转化函数
+    handleToTurnModulesData (params) { // flag 数据类型  数据key 数据值
+      let d = ''
+      switch (params) {
+        case '0':
+          d = false
+          break
+        case '1':
+          d = true
+          break
+        case true:
+          d = '0'
+          break
+        case false:
+          d = '1'
+      }
+      return d
+    },
+    // 转换商品范围字段
+    handleToTransformationRangeData (params) {
+      let d = ''
+      switch (params) {
+        case 'all':
+          d = '0'
+          break
+        case 'sort':
+          d = '1'
+          break
+        case 'cat':
+          d = '2'
+          break
+        case 'brand':
+          d = '3'
+          break
+        case 'label':
+          d = '4'
+          break
+        case '0':
+          d = 'all'
+          break
+        case '1':
+          d = 'sort'
+          break
+        case '2':
+          d = 'cat'
+          break
+        case '3':
+          d = 'brand'
+          break
+        case '4':
+          d = 'label'
+      }
+      return d
+    },
     // 点击列表样式
     handleToClickType (index) {
       this.listTypeData.forEach(item => {
@@ -706,9 +775,9 @@ export default {
     handleSelectImg (res) {
       console.log(res)
       if (this.data.goods_module_title === '1') {
-        this.iconImgUrl = res.imgUrl
+        this.data.img_url = res.imgUrl
       } else {
-        this.titleImgUrl = res.imgUrl
+        this.data.img_title_url = res.imgUrl
       }
     },
     // 商品模块颜色自定义重置点击
@@ -807,8 +876,10 @@ export default {
     },
     // 商品范围下拉框选中值变化事件
     handleToSelectRange () {
-      this.rangeCheckData = this.rangeData[Number(this.commodityModule.commodityScope)]
-      switch (Number(this.commodityModule.commodityScope)) {
+      console.log(this.data.goods_area)
+      this.rangeCheckData = this.rangeData[Number(this.data.goods_area)]
+      console.log(this.rangeCheckData)
+      switch (Number(this.data.goods_area)) {
         case 1:
           this.rangeHiddenRightText = '分类'
           break
@@ -821,11 +892,12 @@ export default {
         case 4:
           this.rangeHiddenRightText = '标签'
       }
+      console.log(111)
     },
     // 商品范围弹窗选中回传事件
     handleToGetBackData (data) {
       console.log(data)
-      let arr = this.rangeData[Number(this.commodityModule.commodityScope)] = data
+      let arr = this.rangeData[Number(this.data.goods_area)] = data
       this.rangeCheckData = arr
     }
     // this.$emit('handleToBackData', obj) 数据回传调用

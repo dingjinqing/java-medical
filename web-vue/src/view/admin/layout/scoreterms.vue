@@ -36,7 +36,7 @@ export default {
 }
 </style>
 <style >
-.headline {
+.scoreterms .headline {
   font-weight: bold;
   margin: 20px 0;
 }

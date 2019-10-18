@@ -29,9 +29,9 @@ const baseRoutes = [
     component: () => import('@/components/system/login')
   },
   {
-    path: '/wxapp/score/scoreDocument',
+    path: '/wxapp/score/scoreDocument', // 小程序内积分点击跳转静态页面
     name: 'scoreterms',
-    component: () => import('@/view/admin/layout/scoreterms') // 小程序内使用静态页面
+    component: () => import('@/view/admin/layout/scoreterms')
   }
 ]
 const routes = baseRoutes.concat(
