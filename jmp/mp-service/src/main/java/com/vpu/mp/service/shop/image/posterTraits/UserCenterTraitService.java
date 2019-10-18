@@ -56,6 +56,11 @@ public class UserCenterTraitService extends ShopBaseService {
 		BufferedImage backgroundImage = null;
 		try {
 			File loadFile = Util.loadFile("image/wxapp/user_background.png");
+			if(loadFile==null) {
+				vo.setMsg("读取背景图二维码失败");
+				vo.setStatus(PSTATUS_ZERO);
+				return vo;
+			}
 			backgroundImage = ImageIO.read(loadFile);
 		} catch (IOException e) {
 			vo.setMsg("获取背景图二维码失败");
@@ -65,6 +70,7 @@ public class UserCenterTraitService extends ShopBaseService {
 		}
 		// 重新设置大小
 		backgroundImage = ImageUtil.resizeImage(600, 800, backgroundImage);
+		logger().info("重新设置大小完成");
 
 		logger().info("获取微信二维码");
 		// 获取微信二维码地址
