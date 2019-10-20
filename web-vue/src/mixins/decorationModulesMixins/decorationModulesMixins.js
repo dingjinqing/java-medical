@@ -50,7 +50,7 @@ export default {
             'goods_items': [ // 商品列表数据
 
             ],
-            'col_type': '4', // 4  1  2  3  0
+            'col_type': '4', // 4  1  2  3  0  y
             'goods_display': '0',
             'goods_num': '4', // 模块推荐-商品数量  y
             'min_price': '', // 模块推荐-商品价格最低价格  y

@@ -607,7 +607,7 @@ export default {
       listTypeData: [ // 列表样式数据
         {
           typeName: '单列',
-          isChecked: true
+          isChecked: false
         },
         {
           typeName: '双列',
@@ -648,6 +648,8 @@ export default {
             getModulesData[itemC] = m
           })
           console.log(getModulesData)
+          // 转换列表样式
+          this.handleToChangeStyle(0, getModulesData)
           // 转换商品范围字段数据
           let d = this.handleToTransformationRangeData(this.modulesData.goods_area)
           getModulesData.goods_area = d
@@ -684,6 +686,11 @@ export default {
           let m = this.handleToTurnModulesData(this.modulesData[itemC])
           callBackData[itemC] = m
         })
+        // 转换样式列表字段
+        let styleParams = this.handleToChangeStyle(1)
+        callBackData.col_type = styleParams
+        this.$emit('handleToBackData', callBackData)
+        console.log(styleParams)
         console.log(callBackData)
       },
       deep: true
@@ -694,6 +701,54 @@ export default {
     this.restaurants = this.loadAll()
   },
   methods: {
+    // 转换列表样式字段数据
+    handleToChangeStyle (flag, data) {
+      if (flag === 0) {
+        switch (data.col_type) {
+          case '4':
+            this.listTypeData[0].isChecked = true
+            break
+          case '1':
+            this.listTypeData[1].isChecked = true
+            break
+          case '2':
+            this.listTypeData[2].isChecked = true
+            break
+          case '3':
+            this.listTypeData[3].isChecked = true
+            break
+          case '0':
+            this.listTypeData[4].isChecked = true
+        }
+        console.log(this.listTypeData)
+      } else {
+        let indexFlag = ''
+        let save = ''
+        this.listTypeData.forEach((item, index) => {
+          if (item.isChecked) {
+            indexFlag = index
+          }
+        })
+        switch (indexFlag) {
+          case '0':
+            save = '4'
+            break
+          case '1':
+            save = '1'
+            break
+          case '2':
+            save = '2'
+            break
+          case '3':
+            save = '3'
+            break
+          case '4':
+            save = '0'
+            break
+        }
+        return save
+      }
+    },
     // 中间模块数据传来checkbox数据转化函数
     handleToTurnModulesData (params) { // flag 数据类型  数据key 数据值
       let d = ''

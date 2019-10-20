@@ -11,6 +11,14 @@
       <!--模块编辑区-->
       <div class="commodity">
         <div>
+          <!--隐藏模块  文字标题选中显示-->
+          <div
+            style="height:55px;line-height:55px;pading-left:10px"
+            v-if="data.goods_module_title==='1'&&(data.title || data.img_url)"
+          >
+            {{data.title}}
+          </div>
+          <!--end-->
           <ul>
             <li
               v-for="(item,index) in goodsDataList"
@@ -127,7 +135,9 @@ export default {
           labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
           isNewGoods: true
         }
-      ]
+      ],
+      // 显示数据
+      data: {}
 
     }
   },
@@ -162,7 +172,7 @@ export default {
     backData: {
       handler (newData) {
         if (newData) {
-
+          this.data = newData
         }
         console.log(newData)
       },
