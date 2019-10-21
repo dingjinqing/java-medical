@@ -35,13 +35,16 @@
           </div>
 
           <!--end-->
-          <ul :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''">
+          <ul :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''+data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:''">
             <li
               v-for="(item,index) in goodsDataList"
               :key="index"
-              :style="data.col_type==='2'?'width:33%;':data.col_type==='0'?'width:100%':data.col_type==='4'?'width:100%':''"
+              :style="data.col_type==='2'?'width:33%;':data.col_type==='0'?'width:100%':data.col_type==='4'?'width:100%;':''"
             >
-              <div :style="data.if_radius==='1'?'border-radius:8px;':''+data.goods_module_style==='0'?'':data.goods_module_style==='1'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':'border: 1px solid #eee !important;'">
+              <div
+                class="listClass"
+                :style="data.if_radius==='1'?'border-radius:8px;':''+data.goods_module_style==='0'?'':data.goods_module_style==='1'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':'border: 1px solid #eee !important;'"
+              >
                 <div
                   class="containter"
                   :style="(data.col_type==='1' || data.col_type==='2')?'display:block;height:auto':(data.col_type==='3' || data.col_type==='0')?'display: flex;flex-direction: column;height:auto':''"
@@ -214,6 +217,7 @@ export default {
           isNewGoods: '3'
         }
       ],
+      bgColor: '',
       // 显示数据
       data: {}
 
@@ -264,6 +268,8 @@ export default {
   },
   methods: {
     defaultData () {
+      this.bgColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
+      console.log(this.bgColor)
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
         console.log(this.flag, res)
@@ -323,6 +329,9 @@ export default {
     li {
       width: 50%;
       padding: 10px 10px;
+      .listClass {
+        background: #fff;
+      }
       .containter {
         display: flex;
         height: 145px;

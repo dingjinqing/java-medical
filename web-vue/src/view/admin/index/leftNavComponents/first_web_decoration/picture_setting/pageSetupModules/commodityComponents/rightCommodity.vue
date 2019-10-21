@@ -251,6 +251,7 @@
                     <colorPicker
                       v-model="data.goods_bg_color"
                       :defaultColor="defaultColorright"
+                      :disabled="data.goods_module_bg==='0'?true:false"
                       style="width:60px;height:30px;"
                     />
                   </span>
