@@ -357,14 +357,14 @@ public class CouponService extends ShopBaseService {
      * @param isHasStock
      * @return
      */
-    public List<ConponAllVo> getCouponAll(Boolean isHasStock) {
+    public List<CouponAllVo> getCouponAll(Boolean isHasStock) {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
-        List<ConponAllVo> conponAllVos = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
+        List<CouponAllVo> couponAllVos = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
                 .from(MRKING_VOUCHER).where(MRKING_VOUCHER.TYPE.eq((byte) 0)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
                         .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.lt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.lt(0))))
-                .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte) 1).or(MRKING_VOUCHER.SURPLUS.gt(0))).fetchInto(ConponAllVo.class);
-        return conponAllVos;
+                .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte) 1).or(MRKING_VOUCHER.SURPLUS.gt(0))).fetchInto(CouponAllVo.class);
+        return couponAllVos;
 
     }
 }

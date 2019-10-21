@@ -6,7 +6,7 @@ package com.vpu.mp.service.pojo.shop.coupon;
  * @author 孔德成
  * @date 2019/10/21 11:45
  */
-public class ConponAllVo {
+public class CouponAllVo {
 
     private Integer id;
     private String actName;
