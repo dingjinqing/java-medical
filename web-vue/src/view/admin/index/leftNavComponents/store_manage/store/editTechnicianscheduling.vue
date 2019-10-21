@@ -59,7 +59,8 @@ import { getAllShift } from '@/api/admin/storeManage/schedulingManage'
 export default {
   props: {
     storeId: [Number, String],
-    datas: Object
+    datas: Object,
+    beginTime: Date
   },
   data () {
     return {
@@ -92,20 +93,33 @@ export default {
   },
   created () {
     this.initSelectData()
+    this.initSelectsDate()
+  },
+  watch: {
+    editSchedulingVisible: function (newVal) {
+      if (newVal) {
+        this.initSelectData()
+      }
+    }
   },
   methods: {
     clickHandle () {
       this.editSchedulingVisible = !this.editSchedulingVisible
     },
     initSelectData () {
+      console.log('init...')
       let params = {
         storeId: this.storeId
       }
       getAllShift(params).then(res => {
         if (res.error === 0) {
-          console.log('content', res.content)
-          this.schedulingSelectDatas = res.content
+          this.schedulingSelectDatas = [...res.content]
         }
+      })
+    },
+    initSelectsDate () {
+      this.schedulingDatas = this.schedulingDatas.map((item, index) => {
+        item.startDate = this.beginTime
       })
     },
     submitHandle () { }
@@ -128,8 +142,6 @@ export default {
   .edit_list_li {
     margin-top: 15px;
     margin-right: 6px;
-    .edit_list_label {
-    }
   }
 }
 </style>

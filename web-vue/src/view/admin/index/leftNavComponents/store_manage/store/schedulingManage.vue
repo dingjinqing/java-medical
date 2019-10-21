@@ -124,6 +124,7 @@
                 <editTechnicianscheduling
                   :storeId="storeId"
                   :datas="row"
+                  :beginTime="queryParams.beginTime"
                 ></editTechnicianscheduling>
               </div>
             </template>
