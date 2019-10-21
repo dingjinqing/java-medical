@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
@@ -21,6 +22,7 @@ import me.chanjar.weixin.open.bean.ma.WxMaOpenWindow;
  * @author lixinguo
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class MpWxMaOpenCommitExtInfo {
 	/**
