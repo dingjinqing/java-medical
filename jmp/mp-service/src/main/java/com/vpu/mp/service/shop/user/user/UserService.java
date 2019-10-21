@@ -378,7 +378,7 @@ public class UserService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public boolean updateUser(WxAppAccountParam param) {
+	public boolean updateUser(WxAppAccountParam param,String tokenPrefix) {
 		Integer userId = param.getUserId();
 		String username = param.getUsername();
 		String userAvatar = param.getUserAvatar();
@@ -409,6 +409,15 @@ public class UserService extends ShopBaseService {
 		} else {
 			logger().error("wxDecryptData error:" + userInfo.toString());
 			return false;
+		}
+		String token = tokenPrefix + Util.md5(shopId + "_" +userId);
+		String json = jedis.get(token);
+		WxAppSessionUser parseJson = Util.parseJson(json, WxAppSessionUser.class);
+		if((!parseJson.getUserAvatar().equals(userAvatar))||(!parseJson.getUsername().equals(username))) {
+			logger().info("redis更新用户名和头像地址");
+			parseJson.setUserAvatar(userAvatar);
+			parseJson.setUsername(username);
+			jedis.set(token, Util.toJson(parseJson));			
 		}
 		return true;
 	}
