@@ -14,27 +14,14 @@
 		<dependency>
 			<groupId>com.vpu.mp</groupId>
 			<artifactId>mp-service</artifactId>
-    </dependency>
-        <dependency>
-            <groupId>io.github.anand1st</groupId>
-            <artifactId>sshd-shell-spring-boot-starter</artifactId>
-            <version>4.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.crsh/crsh.shell.telnet -->
-        <dependency>
-            <groupId>org.crsh</groupId>
-            <artifactId>crsh.shell.telnet</artifactId>
-            <version>1.2.11</version>
-        </dependency>
+		</dependency>
+		<dependency>
+			<groupId>com.github.fonimus</groupId>
+			<artifactId>ssh-shell-spring-boot-starter</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+	</dependencies>
 
-    </dependencies>
-    <repositories>
-        <repository>
-            <id>spring-milestone</id>
-            <name>Spring Repository</name>
-            <url>https://repo.spring.io/milestone</url>
-        </repository>
-    </repositories>
 	<build>
 		<plugins>
 			<plugin>

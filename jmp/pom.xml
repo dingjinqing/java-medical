@@ -29,7 +29,6 @@
 		<module>mp-background</module>
 		<module>mp-service</module>
 		<module>mp-web</module>
-		<module>mp-command</module>
 	</modules>
 
 	<parent>

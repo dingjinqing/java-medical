@@ -12,7 +12,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
  * @author lixinguo
  *
  */
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
+@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class,
+		HibernateJpaAutoConfiguration.class })
 public class ScheduleApplication {
 	public static void main(String[] args) {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
