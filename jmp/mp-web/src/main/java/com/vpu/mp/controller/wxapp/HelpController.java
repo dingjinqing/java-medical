@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.controller.BaseController;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 /**
  * 
  * @author zhaojianqiang
@@ -20,19 +19,21 @@ import com.vpu.mp.service.foundation.util.Util;
  * 2019年10月17日 上午11:27:00
  */
 @RestController
-public class HelpController extends BaseController {
+public class HelpController extends HelpBaseController {
 	
 	
 	private Logger log=LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * 服务条款
+	 * @param shop_id
+	 * @param user_id
+	 * @return
+	 */
 	@GetMapping("/api/wxapp/score/scoreDocument")
 	public JsonResult scoreDocument(@RequestParam Integer shop_id, @RequestParam Integer user_id) {
 		log.info("查询积分说明");
-		ShopRecord sRecord = saas.shop.getShopById(shop_id);
-		if(sRecord==null) {
-			log.info("店铺不存在");
-			return fail();
-		}
+		checkId();
 		ShopCfgRecord scoreNum = saas.getShopApp(shop_id).userCard.scoreService.score.getScoreNum("score_document");
 		if(scoreNum!=null) {
 			log.info("设置查询积分说明");
@@ -45,4 +46,19 @@ public class HelpController extends BaseController {
 		return fail();
 	}
 
+	
+	/**
+	 * 签到帮助页
+	 * @param shop_id
+	 * @param user_id
+	 * @param sign_rule
+	 * @return
+	 */
+	@GetMapping("/api/wxapp/sign/help")
+	public JsonResult getSignHelp(@RequestParam Integer shop_id, @RequestParam Integer user_id) {
+		log.info("进入签到帮助页");
+		checkId();
+		CheckSignVo sCheckSignVo = saas.getShopApp(shop_id).userCard.scoreService.checkSignInScore(user_id);
+		return success(sCheckSignVo.getSignRule());
+	}
 }
