@@ -940,3 +940,6 @@ ADD COLUMN `extend_receive_action` tinyint(1) DEFAULT 0 COMMENT '延长收货操
 ADD COLUMN `extend_receive_time` timestamp(0) NULL DEFAULT NULL COMMENT '收货延长时间' ,
 ADD COLUMN `tk_order_type` tinyint(2) DEFAULT 0 COMMENT '淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单' ,
 ADD COLUMN `pay_award_id` int(9) DEFAULT NULL COMMENT '支付有礼id' ;
+
+-- 黄壮壮  member_card 会员卡表添加商品品牌字段
+ALTER TABLE b2c_member_card ADD COLUMN discount_brand_id varchar(299) DEFAULT NULL COMMENT '商品品牌id';

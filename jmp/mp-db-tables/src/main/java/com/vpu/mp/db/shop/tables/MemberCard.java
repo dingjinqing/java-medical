@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 1565957221;
+    private static final long serialVersionUID = -998676850;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_member_card</code>
@@ -292,6 +292,11 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
      * The column <code>jmini_shop_444801.b2c_member_card.limit</code>. 领取限制
      */
     public final TableField<MemberCardRecord, Integer> LIMIT = createField("limit", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "领取限制");
+
+    /**
+     * The column <code>jmini_shop_444801.b2c_member_card.discount_brand_id</code>. 商品品牌id
+     */
+    public final TableField<MemberCardRecord, String> DISCOUNT_BRAND_ID = createField("discount_brand_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "商品品牌id");
 
     /**
      * Create a <code>jmini_shop_444801.b2c_member_card</code> table reference

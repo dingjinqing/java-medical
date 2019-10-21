@@ -44,6 +44,8 @@ public class CardParam {
 	private Integer[] shopCategoryIds;
 	/** 添加的平台分类Id */
 	private Integer[] platformCategoryIds;
+	/** 添加商品品牌id */
+	private Integer[] discountBrandId;
 
 	
 	/** 专享商品 */

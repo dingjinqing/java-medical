@@ -486,7 +486,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardRecord
 	 */
 	private void updateDiscountPartGoods(CardParam card, MemberCardRecord cardRecord) {
-		logger().info("更新折扣指定商品信息： 商品，商家，平台");
+		logger().info("更新折扣指定商品信息： 商品，商家，平台,品牌");
 		/** 添加商品 */
 		if (card.getGoodsId() != null) {
 			String discountGoodsIds = Util.listToString(Arrays.asList(card.getGoodsId()));
@@ -506,6 +506,13 @@ public class MemberCardService extends ShopBaseService {
 			String discountCatId = Util.listToString(Arrays.asList(card.getPlatformCategoryIds()));
 			logger().info("折扣平台分类id " + discountCatId);
 			cardRecord.setDiscountCatId(discountCatId);
+		}
+		
+		/** 商品品牌 */
+		if(card.getDiscountBrandId() != null) {
+			String brandId = Util.listToString(Arrays.asList(card.getDiscountBrandId()));
+			logger().info("折扣品牌id "+brandId);
+			cardRecord.setDiscountBrandId(brandId);
 		}
 	}
 

@@ -43,8 +43,10 @@ public class NormalCardToVo extends NormalCardVo {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String discountCatId;
 	private String[] platformCategoryIds;
-	/** TODO指定商品时的 : 品牌分类id */
-	
+	/** 指定商品时的 : 品牌分类id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountBrandId;
+	private String[] brandId;
 	/**
 	 * 积分具体详情
 	 */
@@ -101,18 +103,19 @@ public class NormalCardToVo extends NormalCardVo {
 		/** 积分指定商品 处理 */
 		/** 商品id */
 		if(discountGoodsId != null) {
-			discountGoodsId.replaceAll("\\s+","");
-			goodsId = discountGoodsId.split(",");
+			goodsId = discountGoodsId.replaceAll("\\s+","").split(",");
 		}
 		/** 商家分类id */
 		if(discountSortId != null) {
-			discountSortId.replaceAll("\\s+","");
-			shopCategoryIds = discountSortId.split(",");
+			shopCategoryIds = discountSortId.replaceAll("\\s+","").split(",");
 		}
 		/**平台分类id */
 		if(discountCatId != null) {
-			discountCatId.replaceAll("\\s+","");
-			platformCategoryIds = discountCatId.split(",");
+			platformCategoryIds = discountCatId.replaceAll("\\s+","").split(",");
+		}
+		/** 品牌分类id */
+		if(discountBrandId != null) {
+			brandId = discountBrandId.replaceAll("\\s+","").split(",");
 		}
 		
 		

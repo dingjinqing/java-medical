@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 142526363;
+    private static final long serialVersionUID = -1328206303;
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_member_card.id</code>.
@@ -688,6 +688,20 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         return (Integer) get(46);
     }
 
+    /**
+     * Setter for <code>jmini_shop_444801.b2c_member_card.discount_brand_id</code>. 商品品牌id
+     */
+    public void setDiscountBrandId(String value) {
+        set(47, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_444801.b2c_member_card.discount_brand_id</code>. 商品品牌id
+     */
+    public String getDiscountBrandId() {
+        return (String) get(47);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -714,7 +728,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     /**
      * Create a detached, initialised MemberCardRecord
      */
-    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit) {
+    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId) {
         super(MemberCard.MEMBER_CARD);
 
         set(0, id);
@@ -764,5 +778,6 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         set(44, exchangCount);
         set(45, stock);
         set(46, limit);
+        set(47, discountBrandId);
     }
 }
