@@ -68,7 +68,6 @@ public class WxAppOrderController extends WxAppBaseController{
 	@PostMapping("/list")
 	public JsonResult list(@RequestBody @Valid OrderListParam param) {
 		param.setWxUserInfo(wxAppAuth.user());
-		logger().error(wxAppAuth.user().toString());
 		PageResult<OrderListMpVo> result = shop().readOrder.getPageList(param);
 		return success(result);
 	}

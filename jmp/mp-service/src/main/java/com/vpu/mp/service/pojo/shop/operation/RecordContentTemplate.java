@@ -21,8 +21,10 @@ public enum   RecordContentTemplate {
 	ORDER_FINISH(3004,RecordContentMessage.ORDER_FINISH),
 	ORDER_RETURN(3005,RecordContentMessage.ORDER_RETURN),
 	ORDER_CLOSE(3006,RecordContentMessage.ORDER_CLOSE),
-	ORDER_VERIFY(3006,RecordContentMessage.ORDER_VERIFY),
-
+	ORDER_VERIFY(3007,RecordContentMessage.ORDER_VERIFY),
+	ORDER_RECEIVE(3008,RecordContentMessage.ORDER_RECEIVE),
+	ORDER_REMIND(3009,RecordContentMessage.ORDER_REMIND),
+	ORDER_EXTEND_RECEIVE(3010,RecordContentMessage.ORDER_EXTEND_RECEIVE),
     
     /** 会员-会员卡 */
 	MEMBER_CARD_SEND(4001,RecordContentMessage.MSG_MEMBER_CARD_SEND),

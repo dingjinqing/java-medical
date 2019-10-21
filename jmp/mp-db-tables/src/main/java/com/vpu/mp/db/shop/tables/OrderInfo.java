@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo extends TableImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = -924296652;
+    private static final long serialVersionUID = 1202495635;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_order_info</code>
@@ -677,6 +677,71 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
      * The column <code>mini_shop_6797286.b2c_order_info.currency</code>. 币种
      */
     public final TableField<OrderInfoRecord, String> CURRENCY = createField("currency", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("CNY", org.jooq.impl.SQLDataType.VARCHAR)), this, "币种");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.free_ship</code>. 运费抵扣
+     */
+    public final TableField<OrderInfoRecord, BigDecimal> FREE_SHIP = createField("free_ship", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "运费抵扣");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.free_detail</code>. 运费抵扣规则
+     */
+    public final TableField<OrderInfoRecord, String> FREE_DETAIL = createField("free_detail", org.jooq.impl.SQLDataType.CLOB, this, "运费抵扣规则");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.sub_goods_price</code>. 子单金额
+     */
+    public final TableField<OrderInfoRecord, BigDecimal> SUB_GOODS_PRICE = createField("sub_goods_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "子单金额");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.is_refund_coupon</code>. 是否退优惠券
+     */
+    public final TableField<OrderInfoRecord, Byte> IS_REFUND_COUPON = createField("is_refund_coupon", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否退优惠券");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.is_finish_refund</code>. 子订单是否已处理退款
+     */
+    public final TableField<OrderInfoRecord, Byte> IS_FINISH_REFUND = createField("is_finish_refund", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "子订单是否已处理退款");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.is_view_comment</code>. 是否已查看评价
+     */
+    public final TableField<OrderInfoRecord, Byte> IS_VIEW_COMMENT = createField("is_view_comment", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已查看评价");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.pos_order_action</code>. 1:扫码购 2：仅自提
+     */
+    public final TableField<OrderInfoRecord, Byte> POS_ORDER_ACTION = createField("pos_order_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "1:扫码购 2：仅自提");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.order_remind</code>. 发货提醒次数
+     */
+    public final TableField<OrderInfoRecord, Byte> ORDER_REMIND = createField("order_remind", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "发货提醒次数");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.order_remind_time</code>. 发货提醒时间
+     */
+    public final TableField<OrderInfoRecord, Timestamp> ORDER_REMIND_TIME = createField("order_remind_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发货提醒时间");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.extend_receive_action</code>. 延长收货操作人：1:商家 2:用户
+     */
+    public final TableField<OrderInfoRecord, Byte> EXTEND_RECEIVE_ACTION = createField("extend_receive_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "延长收货操作人：1:商家 2:用户");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.extend_receive_time</code>. 收货延长时间
+     */
+    public final TableField<OrderInfoRecord, Timestamp> EXTEND_RECEIVE_TIME = createField("extend_receive_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "收货延长时间");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.tk_order_type</code>. 淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单
+     */
+    public final TableField<OrderInfoRecord, Byte> TK_ORDER_TYPE = createField("tk_order_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_info.pay_award_id</code>. 支付有礼id
+     */
+    public final TableField<OrderInfoRecord, Integer> PAY_AWARD_ID = createField("pay_award_id", org.jooq.impl.SQLDataType.INTEGER, this, "支付有礼id");
 
     /**
      * Create a <code>mini_shop_6797286.b2c_order_info</code> table reference

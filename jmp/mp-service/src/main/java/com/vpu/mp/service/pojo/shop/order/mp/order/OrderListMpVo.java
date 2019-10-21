@@ -63,6 +63,7 @@ public class OrderListMpVo{
 	private Byte isShowAgainBuy;
 	/**评价显示*/
 	private Byte isShowCommentType;
+	private List<String> orderType;
 	/***/
 	private Integer orderId;
 	private String orderSn;
@@ -94,15 +95,23 @@ public class OrderListMpVo{
 	private BigDecimal moneyPaid;
 	private BigDecimal scoreDiscount;
 	/**用户消费余额*/
-	/**918*/
 	private BigDecimal useAccount;
 	/**会员卡消费金额*/
-	/**918*/
 	private BigDecimal memberCardBalance;
-	/**TODO 数据库没字段子单金额*/
 	@JsonIgnore
 	private BigDecimal subGoodsPrice;
+	@JsonIgnore
+	private Timestamp orderRemindTime;
+	@JsonIgnore
+	private Byte orderRemind;
+	@JsonIgnore
+	/**延长收货操作人：1:商家 2:用户',*/
+	private Byte extendReceiveAction;
+	@JsonIgnore
+	private Timestamp extendReceiveTime;
+	
 	public void setVerifierInfo(String verifierName, String verifierMobile){
-		
+		this.verifierName = verifierName;
+		this.verifierMobile = verifierMobile;
 	}
 }

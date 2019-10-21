@@ -466,36 +466,19 @@ public class OrderReadService extends ShopBaseService {
 	 * @param param
 	 */
 	public PageResult<OrderListMpVo> getPageList(OrderListParam param) {
+		logger.info("mp订单列表查询"+param.toString());
 		PageResult<OrderListMpVo> result = mpOrderInfo.getPageList(param);
 		if(CollectionUtils.isEmpty(result.dataList)) {
 		 return result;
 		}
-		int extendReceiveDays = getExtendReceiveDays();
 		List<Integer> ids = result.dataList.stream().map(OrderListMpVo::getOrderId).collect(Collectors.toList());
 		//商品
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		for(OrderListMpVo order : result.dataList) {
 			//订单类型
-			List<String> orderType = Arrays.asList(orderTypeToArray(order.getGoodsType()));
-			/**按钮start*/
-			//1.延长收货--------------------------
-			order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? yes : no);
-			//2.确认收货(order_status==4可以判断)
-			//3.好友代付（order_pay_way == 2）
-			//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
-			if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
-				setPayOperation(order);
-			}
-			//5.(退货中心-退款 退货) 6. 取消 7删除
-			OrderOperationJudgment.operationSet(order);
-			//8.再次购买
-			order.setIsShowAgainBuy(order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY && order.getIsLotteryGift() == no ? yes : no);
-			//9.提醒发货(待发货 and 非 送礼)
-			order.setIsRemindShip(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1 ? yes : no);
-			//10.评价（查看评价、评价有礼/商品评价）
-			order.setIsShowCommentType(getCommentType(order));
-			//TODO 幸运大抽奖 分享优惠卷。。。。
-			/**按钮-end*/
+			order.setOrderType(Arrays.asList(orderTypeToArray(order.getGoodsType())));
+			//订单操作设置
+			setMpOrderOperation(order);
 			//TODO 活动奖品判断
 			Byte isLotteryGift = (byte)1;
 			if(isLotteryGift != 0) {}
@@ -550,25 +533,8 @@ public class OrderReadService extends ShopBaseService {
 		List<OrderGoodsMpVo> goodsList = new ArrayList<OrderGoodsMpVo>(goods.values());
 		//TODO 奖品订单标识
 		order.setIsLotteryGift(flag ? yes : no);
-		/**按钮-start*/
-		//1.延长收货
-		order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? yes : no);
-		//2.确认收货(order_status==4可以判断)
-		//3.好友代付（order_pay_way == 2）
-		//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
-		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
-			setPayOperation(order);
-		}
-		//5.(退货中心-退款 退货) 6. 取消 7删除
-		OrderOperationJudgment.operationSet(order);
-		//87.再次购买
-		order.setIsShowAgainBuy(order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY && order.getIsLotteryGift() == no ? yes : no);
-		//98.提醒发货(待发货 and 非 送礼)
-		order.setIsRemindShip(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1 ? yes : no);
-		//10.评价（查看评价、评价有礼/商品评价）
-		order.setIsShowCommentType(getCommentType(order));
-		//TODO 幸运大抽奖 分享优惠卷。。。。
-		/**按钮-end*/
+		//订单操作设置
+		setMpOrderOperation(order);
 		//是否退过款
 		order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? yes : no);
 		//门店信息
@@ -604,6 +570,31 @@ public class OrderReadService extends ShopBaseService {
 		
 		return order;
 		
+	}
+
+	/**
+	 * mp订单操作设置
+	 * @param order
+	 */
+	private void setMpOrderOperation(OrderListMpVo order) {
+		//1.延长收货
+		order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? yes : no);
+		//2.确认收货(order_status==4可以判断)
+		//3.好友代付（order_pay_way == 2）
+		//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
+			setPayOperation(order);
+		}
+		//5.(退货中心-退款 退货) 6. 取消 7删除
+		OrderOperationJudgment.operationSet(order);
+		//8.再次购买
+		order.setIsShowAgainBuy(OrderOperationJudgment.isShowAgainBuy(order) ? yes : no);
+		//9.提醒发货
+		order.setIsRemindShip(OrderOperationJudgment.isShowRemindShip(order) ? yes : no);
+		//10.评价（查看评价、评价有礼/商品评价）
+		order.setIsShowCommentType(getCommentType(order));
+		//TODO 幸运大抽奖 分享优惠卷。。。。
+		/**按钮-end*/
 	}
 
 	/**
@@ -705,6 +696,7 @@ public class OrderReadService extends ShopBaseService {
 		//3商品评价
 		return 3;
 	}
+	
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据
 	 * @param param

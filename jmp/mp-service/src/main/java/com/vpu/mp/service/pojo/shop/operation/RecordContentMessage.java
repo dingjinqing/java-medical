@@ -27,7 +27,12 @@ public class RecordContentMessage {
     public static final String ORDER_CLOSE = "order.close";
     /**核销*/
     public static final String ORDER_VERIFY = "order.verify";
-
+    /**收货*/
+    public static final String ORDER_RECEIVE = "order.receive";
+    /**提醒*/
+    public static final String ORDER_REMIND = "order.remind";
+    /**延长收货*/
+    public static final String ORDER_EXTEND_RECEIVE = "order.extend.receive";
     
     /**
      * 	会员

@@ -51,6 +51,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
 
 /**
  * Table:order_info
@@ -518,7 +519,7 @@ public class OrderInfoService extends ShopBaseService {
 			order.setOrderStatus(OrderConstant.ORDER_CLOSED);
 			order.setClosedTime(DateUtil.getSqlTimestamp());
 			break;
-		//核销
+		//核销\收货
 		case OrderConstant.ORDER_RECEIVED:
 			order.setOrderStatus(OrderConstant.ORDER_RECEIVED);
 			order.setConfirmTime(DateUtil.getSqlTimestamp());
@@ -565,6 +566,17 @@ public class OrderInfoService extends ShopBaseService {
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_WXPAY);
 		}
 		order.setPayCodeList(payCodes);
+	}
+	
+	/**
+	 * 提醒发货
+	 * @param order
+	 */
+	public void remind(OrderListMpVo order) {
+		db().update(TABLE).
+		set(TABLE.ORDER_REMIND, (byte) (order.getOrderRemind() + 1)).
+		set(TABLE.ORDER_REMIND_TIME, DateUtil.getSqlTimestamp()).
+		where(TABLE.ORDER_ID.eq(order.getOrderId()));
 	}
 
 	/**

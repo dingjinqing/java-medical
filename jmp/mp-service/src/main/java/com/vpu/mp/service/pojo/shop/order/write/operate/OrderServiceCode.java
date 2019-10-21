@@ -7,6 +7,10 @@ import com.vpu.mp.service.shop.order.action.FinishService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
 import com.vpu.mp.service.shop.order.action.VerifyService;
+import com.vpu.mp.service.shop.order.action.ReceiveService;
+import com.vpu.mp.service.shop.order.action.ExtendReceiveService;
+import com.vpu.mp.service.shop.order.action.RemindService;
+
 
 /**
  * 订单状态操作标识service枚举类;此类中的clz只是为了方便查找业务的对于service；
@@ -26,6 +30,12 @@ public enum OrderServiceCode {
 	//4:核销（强制核销）
 	VERIFY(VerifyService.class),
 	//5:完成
-	FINISH(FinishService.class);
+	FINISH(FinishService.class),
+	//6:收货
+	RECEIVE(ReceiveService.class),
+	//7:延长收货
+	EXTEND_RECEIVE(ExtendReceiveService.class),
+	//8:提醒发货
+	REMIND(RemindService.class);
 	private OrderServiceCode(Class<? extends ShopBaseService> clz){}
 }

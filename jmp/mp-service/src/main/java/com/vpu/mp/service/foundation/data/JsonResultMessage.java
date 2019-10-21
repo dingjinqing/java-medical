@@ -367,6 +367,10 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_VERIFY_OPERATION_NOT_SUPPORTED = "order_verify_operation_not_supported";
 	public static final String MSG_ORDER_VERIFY_CODE_ERROR = "order_verify_code_error";
 	public static final String MSG_ORDER_FINISH_OPERATION_NOT_SUPPORTED = "order_finish_operation_not_supported";
+	public static final String MSG_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED = "order_receive_operation_not_supported";
+	public static final String MSG_ORDER_REMIND_OPERATION_NOT_SUPPORTED = "order_remind_operation_not_supported";
+	public static final String MSG_ORDER_REMIND_OPERATION_LIMIT ="order_remind_operation_limit";
+	public static final String MSG_ORDER_REMIND_OPERATION_LIMIT_TODAY = "order_remind_operation_limit_today";
 	public static final String MSG_ORDER_VERIFY_IFCHECK_NOT_NULL = "order_verify_ifcheck_not_null";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";

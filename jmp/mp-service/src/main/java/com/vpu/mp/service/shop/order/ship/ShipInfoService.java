@@ -95,9 +95,13 @@ public class ShipInfoService extends ShopBaseService {
 		
 		shipInfoList.add(record);
 	}
+	
+	public void receive(String orderSn) {
+		db().update(TABLE).set(TABLE.CONFIRM_TIME, DateUtil.getSqlTimestamp()).where(TABLE.ORDER_SN.eq(orderSn));
+	}
 
     /**
-     * 	通过order_sn和rec_id查单条订单行的发货信息
+     * 	通过order_sn和product_id查单条订单行的发货信息
      * @return  BaseShippingInfoVo
      */
     public BaseShippingInfoVo getOrderGoodsShipping(String orderSn,Integer recId) {

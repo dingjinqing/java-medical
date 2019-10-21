@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,33 +14,37 @@ import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
-import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
-import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
+import com.vpu.mp.service.shop.order.ship.ShipInfoService;
+
+/**
+ * 	收货
+ * @author 王帅
+ *
+ */
 
 @Component
-public class FinishService extends ShopBaseService implements IorderOperate {
+public class ReceiveService extends ShopBaseService implements IorderOperate{
+	
 	@Autowired
 	private OrderInfoService orderInfo;
 	
 	@Autowired
-	public OrderGoodsService orderGoods;
-	
-	@Autowired
-	OrderActionService orderAction;
+	private ShipInfoService ship;
 	
 	@Autowired
 	public RecordAdminActionService record;
 	
 	@Autowired
-	public ReturnOrderService returnOrder;
+	private OrderActionService orderAction;
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
-		return OrderServiceCode.FINISH;
+		return OrderServiceCode.RECEIVE;
 	}
 
 	@Override
@@ -49,36 +52,32 @@ public class FinishService extends ShopBaseService implements IorderOperate {
 		return null;
 	}
 
+	/**
+	 * 	订单收货目前支持已发货状态下商品全部收货（不支持部分收货）
+	 */
 	@Override
 	public JsonResultCode execute(Object obj) {
 		if(!(obj instanceof OrderOperateQueryParam)) {
 			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
 		}
 		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
-		
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
-		
-		//查询订单订单是否存在退款中订单
-		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(new Integer[] {order.getOrderId()}, OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
-		
-		if (!OrderOperationJudgment.mpIsFinish(order , returningCount.get(order.getOrderId()))) {
-			return JsonResultCode.CODE_ORDER_FINISH_OPERATION_NOT_SUPPORTED;
+		if(order == null) {
+			return JsonResultCode.CODE_ORDER_NOT_EXIST;
 		}
-
+		if(!OrderOperationJudgment.isReceive(order)) {
+			return JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED;
+		}
 		
 		transaction(()->{
-			//TODO 分销订单添加返利记录
-			
-			//TODO 返利金额
-			
-			orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_FINISHED);
-			
-			//TODO else
+			ship.receive(order.getOrderSn());
+			orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_RECEIVED);
 		});
-		//action操作
-		orderAction.addRecord(order, param, OrderConstant.ORDER_RECEIVED, "完成订单");
-		//TODO 操作记录 b2c_record_admin_action  需要测试记录
-		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_FINISH.code }), new String[] {param.getOrderSn()});
+		//TODO 发送通知
+		//订单状态记录
+		orderAction.addRecord(order, param, order.getOrderStatus() , "订单收货");
+		//操作记录
+		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RECEIVE.code }), new String[] {param.getOrderSn()});
 		return null;
 	}
 

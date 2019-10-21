@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.shop.order.mp.base.BaseParam;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 微信小程序获取订单列表
@@ -12,6 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class OrderListParam extends BaseParam{
 	public Integer currentPage;
 	public Integer pageRows;

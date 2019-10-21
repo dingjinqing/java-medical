@@ -232,6 +232,19 @@ public class OrderOperationJudgment {
 		}
 		return false;
 	}
+	
+	/**
+	 * mp端订单收货
+	 * @param order
+	 * @return
+	 */
+	public static boolean isReceive(OrderListInfoVo order) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_SHIPPED) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * admin设置操作
 	 * @param order
@@ -260,7 +273,7 @@ public class OrderOperationJudgment {
 	}
 	
 	/**
-	 * 延长收货
+	 * 延长收货（状态或者配置）
 	 * @param order
 	 * @param extendReceiveDays
 	 * @return
@@ -269,12 +282,37 @@ public class OrderOperationJudgment {
 		if(extendReceiveDays >0 && order.getOrderStatus() == OrderConstant.ORDER_SHIPPED) {
 			//自动收货时间
 			Instant autoReceive = order.getShippingTime().toInstant().plusSeconds(Duration.ofDays(order.getReturnDaysCfg()).getSeconds());
-			//可延迟2天收货
+			//用户在订单自动确认收货前2天可对该笔订单申请延长收货时间，申请后可延长 extendReceiveDays天，每笔订单可申请一次
 			if(Instant.now().plusSeconds(Duration.ofDays(2).getSeconds()).isAfter(autoReceive)) {
 				return Boolean.TRUE;
 			}
 		}
 		return Boolean.FALSE;
+	}
+	
+	/**
+	 * 订单是否显示提醒发货按钮(待发货 and 非 送礼)
+	 * 每日只能提醒一次与提醒次数不超过三次不在此逻辑判断
+	 * @param order
+	 * @return
+	 */
+	public static boolean isShowRemindShip(OrderListMpVo order) {
+		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getOrderType().indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 是否展示再次购买
+	 * @param order
+	 * @return
+	 */
+	public static boolean isShowAgainBuy(OrderListMpVo order) {
+		if(order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY && order.getIsLotteryGift() == 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	public static void operationSet(OrderListMpVo source) {

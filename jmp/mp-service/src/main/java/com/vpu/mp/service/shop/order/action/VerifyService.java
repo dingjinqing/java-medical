@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 
+@Component
 public class VerifyService extends ShopBaseService implements IorderOperate {
 	
 	@Autowired
