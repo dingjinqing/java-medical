@@ -144,6 +144,7 @@ public class TaskJobMainService extends MainBaseService {
                     .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
                     .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
                     .fetch();
+                List<Integer> jobIds = result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList());
                 result.forEach(r->{
                     TaskJobsConstant.TaskJobEnum job =
                         TaskJobsConstant.TaskJobEnum.getTaskJobEnumByExecutionType(r.get(TASK_JOB_MAIN.EXECUTION_TYPE));
@@ -152,10 +153,14 @@ public class TaskJobMainService extends MainBaseService {
                             setTaskJobId(r.get(TASK_JOB_CONTENT.CONTENT),r.get(TASK_JOB_MAIN.CLASS_NAME),r.get(TASK_JOB_MAIN.ID)) ,r.get(TASK_JOB_MAIN.CLASS_NAME));
                     }
                 });
-                db().update(TASK_JOB_MAIN)
-                    .set(TASK_JOB_MAIN.STATUS,TaskJobsConstant.STATUS_EXECUTING)
-                    .where(TASK_JOB_MAIN.ID.in(result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList())))
-                    .execute();
+
+                if( !jobIds.isEmpty() ){
+                    db().update(TASK_JOB_MAIN)
+                        .set(TASK_JOB_MAIN.STATUS,TaskJobsConstant.STATUS_EXECUTING)
+                        .where(TASK_JOB_MAIN.ID.in(jobIds))
+                        .execute();
+                }
+
             });
             jedisManager.releaseLock(JedisKeyConstant.TASK_JOB_LOCK,uuid);
         }
