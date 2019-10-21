@@ -104,9 +104,6 @@ import { cn as storeGoodsList } from './views/admin_new/cn/index/storeManagement
 // 门店列表-核销员管理
 import { cn as verifierManage } from './views/admin_new/cn/index/storeManagement/store/verifierManageCn'
 
-// 支付配置
-import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/payConfigurationCn'
-
 // admin>公共组件
 // 选择时间
 import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePicker/dateTimePickerCn'
@@ -114,16 +111,20 @@ import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePi
 // 快递公司
 import { cn as expressList } from './views/admin/index/leftNavComponents/order/expressList'
 
-// 支付配置
-import { cn as tradeConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/tradeProcessConfigCn'
-
-// 退换货配置
-import { cn as returnconfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/returnGoodsConfigurationCn'
-
 // 加价购-列表展示页
 import { cn as purchase } from './views/admin_new/cn/index/marketManagement/increasePurchase/purchaseCn'
 
 import { cn as vTree } from './views/admin_new/cn/components/vTree/vTreeCn'
+
+// 基础配置
+// 支付配置
+import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/payConfigurationCn'
+// 交易配置
+import { cn as tradeConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/tradeProcessConfigCn'
+// 退换货配置
+import { cn as returnconfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/returnGoodsConfigurationCn'
+// 模板消息
+import { cn as templateMessage } from './views/admin_new/cn/index/basicSettings/templateMessage/templateMessageCn'
 
 const cn = {
   messages: {
@@ -596,7 +597,6 @@ const cn = {
   messagePush, // 营销管理/消息推送
   dateTimePicker, // 选择时间
   giveGift, // 我要送礼
-  payConfiguration, // 支付配置
   couponGive, // 定向发券
   ...zhLocale,
   expressList,
@@ -609,11 +609,16 @@ const cn = {
   storeList, // 门店列表
   storeGoodsList, // 门店列表-商品管理
   verifierManage, // 门店列表-核销员管理
-  tradeConfiguration, // 交易流程配置
-  returnconfiguration, // 退换货配置
   purchase, // 加价购
   videoSpace,
-  vTree
+  vTree,
+
+  // 基础配置
+  payConfiguration, // 支付配置
+  tradeConfiguration, // 交易流程配置
+  returnconfiguration, // 退换货配置
+  templateMessage
+
 }
 
 export default cn

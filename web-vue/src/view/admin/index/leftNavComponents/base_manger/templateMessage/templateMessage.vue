@@ -2,14 +2,14 @@
   <div class="templateMessage">
     <el-card>
       <div class="header">
-        <span> 微信消息模板</span>
+        <span>{{$t('templateMessage.title')}}</span>
         <span>
-          因微信平台限制，公众号消息最多可发送25类，小程序消息最多可发送25类，请谨慎选择
+          {{$t('templateMessage.tips')}}
         </span>
       </div>
       <el-divider></el-divider>
       <div class="title">
-        公众号消息已{{openMpNum}}选条, 小程序消息已选{{openMaNum}}条
+        {{$t('templateMessage.openMpNum')}}{{openMpNum}}{{$t('templateMessage.tiao')}}, {{$t('templateMessage.openMaNum')}}{{openMaNum}}{{$t('templateMessage.tiao')}}
       </div>
       <!-- 交易物流提醒|营销信息提醒 -->
       <div class="main">
@@ -19,7 +19,7 @@
         >
           <el-collapse-item
             style="color:red"
-            title="交易物流提醒"
+            :title="$t('templateMessage.tradingRemind')"
             name="1"
           >
             <div>
@@ -30,26 +30,26 @@
               >
                 <el-table-column
                   prop="templateMessage"
-                  label="模板消息"
+                  :label="$t('templateMessage.templateMessage')"
                   align="center"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="sendingCondition"
-                  label="发送条件"
+                  :label="$t('templateMessage.sendConditions')"
                   align="center"
                 >
                 </el-table-column>
                 <el-table-column
                   prop=""
-                  label="公众号消息"
+                  :label="$t('templateMessage.openMpContent')"
                   align="center"
                 >
                   <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.openMp"></el-checkbox>
-                    <span>发送公众号消息</span>
+                    <span>{{$t('templateMessage.sendMessagePublice')}}</span>
                     <el-popover
-                      placement="top-right"
+                      placement="right"
                       width="200"
                       trigger="hover"
                     >
@@ -63,14 +63,14 @@
                 </el-table-column>
                 <el-table-column
                   prop="appletMessage"
-                  label="小程序消息"
+                  :label="$t('templateMessage.openMaMessage')"
                   align="center"
                 >
                   <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.openMa"></el-checkbox>
-                    <span>发送小程序消息</span>
+                    <span>{{$t('templateMessage.sendMessageApplets')}}</span>
                     <el-popover
-                      placement="top-right"
+                      placement="right"
                       width="200"
                       trigger="hover"
                     >
@@ -86,7 +86,7 @@
             </div>
           </el-collapse-item>
           <el-collapse-item
-            title="营销信息提醒"
+            :title="$t('templateMessage.marketInformationRemind')"
             name="2"
           >
             <div>
@@ -97,26 +97,26 @@
               >
                 <el-table-column
                   prop="templateMessage"
-                  label="模板消息"
+                  :label="$t('templateMessage.templateMessage')"
                   align="center"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="sendingCondition"
-                  label="发送条件"
+                  :label="$t('templateMessage.sendConditions')"
                   align="center"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="publicNumberMessage"
-                  label="公众号消息"
+                  :label="$t('templateMessage.openMpContent')"
                   align="center"
                 >
                   <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.openMp"></el-checkbox>
-                    <span>发送公众号消息</span>
+                    <span>{{$t('templateMessage.sendMessagePublice')}}</span>
                     <el-popover
-                      placement="top-right"
+                      placement="right"
                       width="200"
                       trigger="hover"
                     >
@@ -130,14 +130,14 @@
                 </el-table-column>
                 <el-table-column
                   prop="appletMessage"
-                  label="小程序消息"
+                  :label="$t('templateMessage.openMaMessage')"
                   align="center"
                 >
                   <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.openMa"></el-checkbox>
-                    <span>发送小程序消息</span>
+                    <span>{{$t('templateMessage.sendMessageApplets')}}</span>
                     <el-popover
-                      placement="top-right"
+                      placement="right"
                       width="200"
                       trigger="hover"
                     >
@@ -160,7 +160,7 @@
           @click="handleSave()"
           size="small"
           type="primary"
-        >保存</el-button>
+        >{{$t('templateMessage.save')}}</el-button>
       </div>
     </el-card>
   </div>
@@ -183,244 +183,11 @@ export default {
       /**
        * 交易物流提醒
        */
-      tableData: [
-        {
-          templateMessage: `预约取消通知`,
-          sendingCondition: `预约订单取消时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/qx_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/qx_xcx.jpg`
-        },
-        {
-          templateMessage: `预约成功提醒`,
-          sendingCondition: `服务预约成功时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/cg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/cg_xcx.jpg`
-        },
-        {
-          templateMessage: `预约到期提醒`,
-          sendingCondition: `距预约服务开始前1小时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/yydq_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/yydq_xcx.jpg`
-        },
-        {
-          templateMessage: `账户余额变动提醒`,
-          sendingCondition: `账户余额发生变动时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/zhye_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/zhye_xcx.jpg`
-        },
-        {
-          templateMessage: `订单发货提醒`,
-          sendingCondition: `订单发货时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/ddfh_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddfh_xcx.jpg`
-        },
-        {
-          templateMessage: `订单未支付通知`,
-          sendingCondition: `下单后未支付时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/ddwzf_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddwzf_xcx.jpg`
-        },
-        {
-          templateMessage: `订单支付成功通知`,
-          sendingCondition: `订单支付成功时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/ddzfcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddzfcg_xcx.jpg`
-        },
-        {
-          templateMessage: `确认收货通知`,
-          sendingCondition: `确认收货时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/qrsh_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/qrsh_xcx.jpg`
-        },
-        {
-          templateMessage: `退款失败通知`,
-          sendingCondition: `退款失败时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/tksb_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/tksb_xcx.jpg`
-        },
-        {
-          templateMessage: `退款状态通知`,
-          sendingCondition: `退款时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/tktz_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/tktz_xcx.jpg`
-        },
-        {
-          templateMessage: `门店自提到期提醒`,
-          sendingCondition: `门店自提时间到期前半小时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/mdzt_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/mdzt_xcx.jpg`
-        },
-        {
-          templateMessage: `取货成功通知`,
-          sendingCondition: `取货完成时发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/qhcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/qhcg_xcx.jpg`
-        }
-      ],
+      tableData: [],
       /**
        * 营销信息提醒
        */
-      tableData1: [
-        {
-          templateMessage: `会员卡余额变动提醒`,
-          sendingCondition: `会员卡余额发生变动时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/viptx_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/viptx_xcx.jpg`
-        },
-        {
-          templateMessage: `会员卡领取成功通知`,
-          sendingCondition: `会员卡领取成功通知`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/vipcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/vipcg_xcx.jpg`
-        },
-        {
-          templateMessage: `限次卡扣减通知`,
-          sendingCondition: `限次卡扣减使用次数后立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/xckj_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/xckj_xcx.jpg`
-        },
-        {
-          templateMessage: `卡券到期提醒`,
-          sendingCondition: `会员卡/优惠券过期前一天发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/kqdq_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqdq_xcx.jpg`
-        },
-        {
-          templateMessage: `卡券领取成功通知`,
-          sendingCondition: `领取优惠券后立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/kqcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqcg_xcx.jpg`
-        },
-        {
-          templateMessage: `拼团失败通知`,
-          sendingCondition: `拼团时间截止后如未拼团成功则立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/ptsb_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptsb_xcx.jpg`
-        },
-        {
-          templateMessage: `拼团成功通知`,
-          sendingCondition: `拼团成功时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/ptcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcg_xcx.jpg`
-        },
-        {
-          templateMessage: `自定义消息模板推送`,
-          sendingCondition: `自定义消息模板到发送时间时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/ywcl_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ywcl_xcx.jpg`
-        },
-        {
-          templateMessage: `砍价成功提醒`,
-          sendingCondition: `砍价成功时立即发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/kjcg_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjcg_xcx.jpg`
-        },
-        {
-          templateMessage: `砍价进度通知`,
-          sendingCondition: `砍价结束前3小时如未砍价成功则发送`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/kjjd_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjjd_xcx.jpg`
-        }, {
-          templateMessage: `审核通过提醒`,
-          sendingCondition: `审核通过提醒`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/official_audit_success.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_success.jpg`
-        }, {
-          templateMessage: `审核不通过提醒`,
-          sendingCondition: `审核不通过提醒`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/official_audit_fail.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_fail.jpg`
-        }, {
-          templateMessage: `分销员等级升级提醒`,
-          sendingCondition: `分销员等级升级提醒`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/fxdj_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/fxdj_xcx.jpg`
-        },
-        {
-          templateMessage: `拼团抽奖结果通知`,
-          sendingCondition: `拼团抽奖结果通知`,
-          publicNumberMessage: `发送公众号消息`,
-          appletMessage: `发送小程序消息`,
-          preview: '预览',
-          src: `${this.$imageHost}/image/admin/template_message/ptcj_gzh.jpg`,
-          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcj_xcx.jpg`
-        }
-      ]
+      tableData1: []
     }
   },
   computed: {
@@ -435,12 +202,249 @@ export default {
   },
   created () {
     this.fetchData()
+    this.handleSave()
   },
   mounted () {
-
+    this.langDefault()
   },
   watch: {
-
+    lang () {
+      this.tableData = [
+        {
+          templateMessage: this.$t('templateMessage.cancellationNotice'),
+          sendingCondition: this.$t('templateMessage.sendOnCanellationNotice'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/qx_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/qx_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.appointSuccessRemind'),
+          sendingCondition: this.$t('templateMessage.sendOnAppointSuccessRemind'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/cg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/cg_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.appointExpiredRemind'),
+          sendingCondition: this.$t('templateMessage.sendOnAppointExpiredRemind'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/yydq_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/yydq_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.accountChangeRemind'),
+          sendingCondition: this.$t('templateMessage.sendOnAccountChangeRemind'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/zhye_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/zhye_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.orderDeliveryRemind'),
+          sendingCondition: this.$t('templateMessage.sendOnOrderDeliveryRemind'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/ddfh_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddfh_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.oredrNoPayNotice'),
+          sendingCondition: this.$t('templateMessage.sendOnOredrNoPayNotice'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublice'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/ddwzf_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddwzf_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.orderPaySuccessNotice'),
+          sendingCondition: this.$t('templateMessage.sendOnOrderPaySuccessNotice'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/ddzfcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ddzfcg_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.confirmReceiveGoods'),
+          sendingCondition: this.$t('templateMessage.sendOnConfirmReceiveGoods'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/qrsh_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/qrsh_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.refundFailed'),
+          sendingCondition: this.$t('templateMessage.sendOnRefundFailed'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/tksb_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/tksb_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.refundState'),
+          sendingCondition: this.$t('templateMessage.sendOnRefundState'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/tktz_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/tktz_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.storeRemind'),
+          sendingCondition: this.$t('templateMessage.sendOnStoreRemind'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/mdzt_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/mdzt_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.pickUpGoodsSucess'),
+          sendingCondition: this.$t('templateMessage.sendOnPickUpGoodsSucess'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/qhcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/qhcg_xcx.jpg`
+        }
+      ]
+      this.tableData1 = [
+        {
+          templateMessage: this.$t('templateMessage.vipAccountChange'),
+          sendingCondition: this.$t('templateMessage.sendOnVipAccountChange'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/viptx_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/viptx_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.vipReceiveSucess'),
+          sendingCondition: this.$t('templateMessage.sendOnVipReceiveSucess'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/vipcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/vipcg_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.cardTimesReduce'),
+          sendingCondition: this.$t('templateMessage.sendOnCardTimesReduce'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/xckj_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/xckj_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.couponExpiration'),
+          sendingCondition: this.$t('templateMessage.sendOnCouponExpiration'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/kqdq_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqdq_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.couponReceiveSucess'),
+          sendingCondition: this.$t('templateMessage.sendOnCouponReceiveSucess'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/kqcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kqcg_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.spellGroupFail'),
+          sendingCondition: this.$t('templateMessage.sendOnSpellGroupFail'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/ptsb_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptsb_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.spellGroupSucess'),
+          sendingCondition: this.$t('templateMessage.sendOnSpellGroupSucess'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/ptcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcg_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.customMessage'),
+          sendingCondition: this.$t('templateMessage.sendOnCustomMessage'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/ywcl_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ywcl_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.bargainSucess'),
+          sendingCondition: this.$t('templateMessage.sendOnBargainSucess'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/kjcg_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjcg_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.bargainProcess'),
+          sendingCondition: this.$t('templateMessage.sendOnBargainProcess'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/kjjd_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/kjjd_xcx.jpg`
+        }, {
+          templateMessage: this.$t('templateMessage.checkPass'),
+          sendingCondition: this.$t('templateMessage.sendOnCheckPass'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/official_audit_success.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_success.jpg`
+        }, {
+          templateMessage: this.$t('templateMessage.checkFail'),
+          sendingCondition: this.$t('templateMessage.sendOnCheckFail'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/official_audit_fail.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/mp_audit_fail.jpg`
+        }, {
+          templateMessage: this.$t('templateMessage.vipLevelUpgrade'),
+          sendingCondition: this.$t('templateMessage.sendOnVipLevelUpgrade'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/fxdj_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/fxdj_xcx.jpg`
+        },
+        {
+          templateMessage: this.$t('templateMessage.spellGroupResults'),
+          sendingCondition: this.$t('templateMessage.sendOnSpellGroupResults'),
+          publicNumberMessage: this.$t('templateMessage.sendMessagePublic'),
+          appletMessage: this.$t('templateMessage.sendMessageApplets'),
+          preview: this.$t('templateMessage.preview'),
+          src: `${this.$imageHost}/image/admin/template_message/ptcj_gzh.jpg`,
+          xcxSrc: `${this.$imageHost}/image/admin/template_message/ptcj_xcx.jpg`
+        }
+      ]
+    }
   },
   methods: {
     // 模板消息查询数据初始化
@@ -511,10 +515,10 @@ export default {
       console.log(temp)
 
       let configs = list.concat(temp)
-      // console.log(configs)
+      console.log(configs)
 
       let lists = { configs }
-      console.log(configs)
+      console.log(lists)
 
       // // let params = Object.assign(paramsConfigs, [...temps])
       // console.log(temps)

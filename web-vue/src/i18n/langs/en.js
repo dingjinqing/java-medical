@@ -103,16 +103,9 @@ import { en as verifierManage } from './views/admin_new/en/index/storeManagement
 // 选择时间
 import { en as dateTimePicker } from './views/admin_new/en/components/dateTimePicker/dateTimePickerEn'
 
-// 支付配置
-import { en as payConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/payConfigurationEn'
 // 通用组件 日期时间选择
 // 快递公司
 import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
-// 支付配置
-import { en as tradeConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/tradeProcessConfigEn'
-
-// 退换货配置
-import { en as returnconfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/returnGoodsConfigurationEn'
 
 // 加价购-列表展示页
 import { en as purchase } from './views/admin_new/en/index/marketManagement/increasePurchase/purchaseEn'
@@ -123,6 +116,16 @@ import {
 } from './views/admin_new/en/index/videoSpace/videoSpaceEn'
 
 import { en as vTree } from './views/admin_new/en/components/vTree/vTreeEn'
+
+// 基础配置
+// 支付配置
+import { en as payConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/payConfigurationEn'
+// 交易配置
+import { en as tradeConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/tradeProcessConfigEn'
+// 退换货配置
+import { en as returnconfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/returnGoodsConfigurationEn'
+// 模板消息
+import { en as templateMessage } from './views/admin_new/en/index/basicSettings/templateMessage/templateMessageEn'
 
 const en = {
   messages: {
@@ -623,7 +626,6 @@ const en = {
   reducePriceList, // 限时降价活动列表
   distribution, // 分销
   messagePush, // 营销管理/消息推送
-  payConfiguration, // 支付配置
   giveGift, // 我要送礼
   couponGive, // 定向发券
   ...enLocale,
@@ -639,10 +641,14 @@ const en = {
   storeList, // 门店列表
   storeGoodsList, // 门店列表-商品管理
   verifierManage, // 门店列表-核销员管理
-  tradeConfiguration, // 交易流程配置
-  returnconfiguration, // 退换货配置
   purchase, // 加价购
   videoSpace,
-  vTree
+  vTree,
+
+  // 基础配置
+  tradeConfiguration, // 交易流程配置
+  returnconfiguration, // 退换货配置
+  payConfiguration, // 支付配置
+  templateMessage
 }
 export default en
