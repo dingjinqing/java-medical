@@ -53,5 +53,5 @@ public class GoodsTypeConstant {
     /** 商品存在优惠券信息*/
     public final static byte GOODS_TYPE_HAS_COUPON = 120;
     /** 商品存在满减活动 */
-    public final static byte GOODS_TYEP_HAS_FULL_REDUCTION = 121;
+    public final static byte GOODS_TYPE_HAS_FULL_REDUCTION = 121;
 }

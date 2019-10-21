@@ -45,7 +45,7 @@ public class GoodsActivityMpService extends ShopBaseService {
         }
 
         if (hasAct) {
-            listTags.add(GoodsTypeConstant.GOODS_TYEP_HAS_FULL_REDUCTION);
+            listTags.add(GoodsTypeConstant.GOODS_TYPE_HAS_FULL_REDUCTION);
         }
         if (listTags.size() > 2) {
             listTags = listTags.subList(0,2);
