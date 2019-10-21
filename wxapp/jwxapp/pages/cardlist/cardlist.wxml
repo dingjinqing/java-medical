@@ -1,82 +1,29 @@
-<!--pages/cardlist/cardlist.wxml-->
 <view class="body">
   <include src="../common/header.wxml" />
   <view class="main-container">
-    <view class="card_list_item" style="background:url('{{imageUrl}}image/admin/fighting_group_draw1.jpg') no-repeat top left / 100% 100%">
-      <view class="card_type">等级卡</view>
-      <view class="card_item_info">
-        <image mode="widthFix" class="shop_img" src="{{imageUrl}}image/wxapp/no_change_icon.png"></image>
-        <view class="info_item">
-          <view class="item_row card_name">猜猜这是谁建的会员阿卡</view>
-          <view class="item_row">折扣：8.8折</view>
-          <view class="item_row">满100送100积分</view>
-          <view class="item_row">卡号：47481603903118118</view>
-          <view class="item_row">剩余可兑换商品数量：100</view>
-          <view class="item_row">剩余可使用服务次数：10000</view>
-        </view>
-        
-      </view>
-      <view class="card_status">
-        <image mode="widthFix" src="{{imageUrl}}image/wxapp/card_out_time.png"></image>
-      </view>
-      <view class="card_exp">123456</view>
-    </view>
-    <view class="card_list_item">
-      <view class="card_type">等级卡</view>
-      <view class="card_item_info">
+    <view class="card_item_container" wx:if="{{!item.show}}" wx:for="{{list}}" wx:key="index" data-index="{{index}}" style="transform:translateX(-{{item.x}}px);transition:all .1s ease-out;" bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd">
+      <view class="card_list_item" style="background:url('{{imageUrl}}image/admin/fighting_group_draw1.jpg') no-repeat top left / 100% 100%">
+        <view class="card_type">等级卡</view>
+        <view class="card_item_info">
           <image mode="widthFix" class="shop_img" src="{{imageUrl}}image/wxapp/no_change_icon.png"></image>
-        <view class="info_item">
-          <view class="item_row card_name">猜猜这是谁建的会员阿卡</view>
-          <view class="item_row">折扣：8.8折</view>
-          <view class="item_row">满100送100积分</view>
-          <view class="item_row">卡号：47481603903118118</view>
-          <view class="item_row">剩余可兑换商品数量：100</view>
-          <view class="item_row">剩余可使用服务次数：10000</view>
+          <view class="info_item">
+            <view class="item_row card_name">猜猜这是谁建的会员阿卡</view>
+            <view class="item_row">折扣：8.8折</view>
+            <view class="item_row">满100送100积分</view>
+            <view class="item_row">卡号：47481603903118118</view>
+            <view class="item_row">剩余可兑换商品数量：100</view>
+            <view class="item_row">剩余可使用服务次数：10000</view>
+          </view>
+          
         </view>
-        
-      </view>
-      <view class="card_status">
-        <image mode="widthFix" src="{{imageUrl}}image/wxapp/card_stop.png"></image>
-      </view>
-      <view class="card_exp">123456</view>
-    </view>
-    <view class="card_list_item" style="background:url('{{imageUrl}}image/admin/fighting_group_draw1.jpg') no-repeat top left / 100% 100%">
-      <view class="card_type">等级卡</view>
-      <view class="card_item_info">
-          <image mode="widthFix" class="shop_img" src="{{imageUrl}}image/wxapp/no_change_icon.png"></image>
-        <view class="info_item">
-          <view class="item_row card_name">猜猜这是谁建的会员阿卡</view>
-          <view class="item_row">折扣：8.8折</view>
-          <view class="item_row">满100送100积分</view>
-          <view class="item_row">卡号：47481603903118118</view>
-          <view class="item_row">剩余可兑换商品数量：100</view>
-          <view class="item_row">剩余可使用服务次数：10000</view>
+        <view class="card_status">
+          <image mode="widthFix" src="{{imageUrl}}image/wxapp/card_out_time.png"></image>
         </view>
-        
+        <view class="card_exp">123456</view>
       </view>
-      <view class="card_status">
-        <image mode="widthFix" src="{{imageUrl}}image/wxapp/card_out_time.png"></image>
+      <view class="card_del">
+        删除
       </view>
-      <view class="card_exp">123456</view>
-    </view>
-    <view class="card_list_item">
-      <view class="card_type">等级卡</view>
-      <view class="card_item_info">
-          <image mode="widthFix" class="shop_img" src="{{imageUrl}}image/wxapp/no_change_icon.png"></image>
-        <view class="info_item">
-          <view class="item_row card_name">猜猜这是谁建的会员阿卡</view>
-          <view class="item_row">折扣：8.8折</view>
-          <view class="item_row">满100送100积分</view>
-          <view class="item_row">卡号：47481603903118118</view>
-          <view class="item_row">剩余可兑换商品数量：100</view>
-          <view class="item_row">剩余可使用服务次数：10000</view>
-        </view>
-        
-      </view>
-      <view class="card_status">
-        <image mode="widthFix" src="{{imageUrl}}image/wxapp/card_stop.png"></image>
-      </view>
-      <view class="card_exp">123456</view>
     </view>
   </view>
   <include src="../common/footer.wxml" />

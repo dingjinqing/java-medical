@@ -124,14 +124,12 @@
   display: flex;
   flex-direction: row-reverse;
   background-color: #fff;
-  height: 60rpx;
+  height: 90rpx;
   align-items: center;
   padding: 0 14rpx;
 }
 .order_button_box > view{
-  line-height: 30rpx;
-  height: 30rpx;
-  padding: 6rpx;
+  padding: 12rpx;
   border: 1px solid #ccc;
   color: #333;
   margin-left: 10rpx;

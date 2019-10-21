@@ -4,22 +4,21 @@
     <view class="top_pixed" style="top:{{margin_top_nav + 8}}px;">
       <view class="top_search">
         <view class="search">
-          <input type="text" placeholder="请输入订单号或商品名称"></input>
-          <view class="cls_search">
+          <input type="text" bindinput="handleSearchInput" bindconfirm="handleSearch" value="{{searchInput}}" placeholder="请输入订单号或商品名称"></input>
+          <view class="cls_search" bindtap="clearSearchInput">
             <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix'></image>
           </view>
         </view>
-        <view class="btn_search">搜索</view>
+        <view class="btn_search" bindtap="handleSearch">搜索</view>
       </view>
-      <scroll-view class="top_nav" enable-flex scroll-x>
-        <view style="{{true ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
+      <scroll-view class="top_nav" scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
+        <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
           全部订单
         </view>
-        <view style="{{}}">待付款</view>
-        <view style="{{}}">待发货</view>
-        <view style="{{}}">待收货</view>
-        <view style="{{}}">待评价</view>
-        <view style="{{}}">退款中</view>
+        <view id="WAIT_PAY" bindtap="handleChangeNav"  style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">待付款</view>
+        <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">待发货</view>
+        <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">待收货</view>
+        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">退款中</view>
       </scroll-view>
     </view>
     <view class="order_list">
@@ -109,7 +108,7 @@
           </view>
         </view>
         <view class="order_button_box">
-          <view>查看评价</view>
+          <view bindtap="handleOperate">查看评价</view>
           <view>查看详情</view>
           <view>再次购买</view>
         </view>

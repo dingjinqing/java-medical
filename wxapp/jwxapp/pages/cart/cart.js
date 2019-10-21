@@ -25,10 +25,11 @@ global.wxPage({
   goodsNumMinus(){
 
   },
-  //触摸开始
+  //触摸改变
   handleTouchChange(e){
     this.moveX = e.detail.x
   },
+  //触摸结束
   handleTouchEnd(e){
     let idx = e.currentTarget.dataset.index
     console.log(this.moveX)
@@ -43,7 +44,7 @@ global.wxPage({
       });
     }
   },
-  //触摸结束
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

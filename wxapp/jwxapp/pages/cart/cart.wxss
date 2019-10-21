@@ -135,6 +135,7 @@ movable-view{
 .goods_content{
   position: relative;
   height: 186rpx;
+  width: 710rpx;
 }
 .goods_del{
   position: absolute;

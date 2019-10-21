@@ -5,16 +5,208 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-
+    list:[
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'},
+      {title:'猜猜这是谁建的会员卡'}
+    ]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    
   },
-
+  handleTouchStart (e) {
+    this.startX = e.touches[0].clientX;
+    let idx = e.currentTarget.dataset.index;
+    let target = `list[${idx}].startRight`
+    this.setData({
+      [target]: this.data.list[idx].x ? this.data.list[idx].x : 0
+    })
+  },
+  handleTouchMove (e) {
+    var touch = e.touches[0];
+    let idx = e.currentTarget.dataset.index;
+    let target = `list[${idx}].x`
+    let endX = touch.clientX;
+    let right = 0;
+    if ((endX - this.startX) < 0) {
+      let startRight = this.data.list[idx].startRight;
+      var change = this.startX - endX;
+          startRight += change;
+          if (startRight > 60) startRight = 60;
+          right = startRight
+    } else {
+      var startRight = this.data.list[idx].startRight;
+      var change = this.startX - endX;
+          startRight += change;
+          if (startRight < 0) startRight = 0;
+          right  = startRight;
+    }
+    this.setData({
+      [target]: right
+    })
+  },
+  handleTouchEnd(e){
+    let idx = e.currentTarget.dataset.index;
+    let target = `list[${idx}].x`
+    let right = 0;
+    this.data.list[idx].x  > 60 / 2 ? right = 60 : right = 0
+    this.setData({
+      [target]: right
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

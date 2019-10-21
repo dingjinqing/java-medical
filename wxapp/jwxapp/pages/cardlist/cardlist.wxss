@@ -1,10 +1,26 @@
 .main-container{
   overflow: hidden;
 }
+.card_item_container{
+  margin-top: 20rpx;
+  position: relative;
+}
+.card_del{
+  position: absolute;
+  right: -120rpx;
+  top: 0;
+  display: flex;
+  height: 100%;
+  width: 120rpx;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff6666;
+  color: #fff;
+}
 .card_list_item{
   box-sizing: border-box;
   width: 720rpx;
-  margin: 20rpx auto 0;
+  margin: 0 15rpx;
   overflow: hidden;
   border-radius: 16rpx;
   background-color: skyblue;
@@ -62,4 +78,7 @@
   width: 100%;
   font-size: 24rpx;
   text-align: center;
+}
+.card_item_containe{
+  transition: left .3s ease-in;
 }
