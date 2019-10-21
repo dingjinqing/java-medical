@@ -10,7 +10,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
@@ -49,7 +49,7 @@ public class RemindService extends ShopBaseService implements IorderOperate{
 			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
 		}
 		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
-		OrderListMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderListMpVo.class);
+		OrderInfoMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoMpVo.class);
 		if(order == null) {
 			return JsonResultCode.CODE_ORDER_NOT_EXIST;
 		}

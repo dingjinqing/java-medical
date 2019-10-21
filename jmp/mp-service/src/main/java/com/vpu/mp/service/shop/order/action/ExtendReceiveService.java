@@ -10,7 +10,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
@@ -18,7 +18,6 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 
 /**
@@ -40,9 +39,6 @@ public class ExtendReceiveService extends ShopBaseService implements IorderOpera
 	public RecordAdminActionService record;
 	
 	@Autowired
-	private OrderActionService orderAction;
-	
-	@Autowired
 	private OrderReadService orderRead;
 	
 	@Override
@@ -62,7 +58,7 @@ public class ExtendReceiveService extends ShopBaseService implements IorderOpera
 			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
 		}
 		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
-		OrderListMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderListMpVo.class);
+		OrderInfoMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoMpVo.class);
 		if(order == null) {
 			return JsonResultCode.CODE_ORDER_NOT_EXIST;
 		}

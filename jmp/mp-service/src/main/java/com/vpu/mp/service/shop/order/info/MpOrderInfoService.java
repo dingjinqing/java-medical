@@ -116,6 +116,7 @@ public class MpOrderInfoService extends OrderInfoService{
 	 */
 	public PageResult<OrderListMpVo> getPageList(OrderListParam param){
 		SelectJoinStep<Record> select = db().select(TABLE.asterisk()).from(TABLE);
+		buildOptions(select, param, false);
 		PageResult<OrderListMpVo> pageResult = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderListMpVo.class);
 		return pageResult;
 		

@@ -22,7 +22,4 @@ public class GroupOrderVo {
 	private Byte status;
 	private Timestamp startTime;
 	private Timestamp endTime;
-	private Timestamp createTime;
-	private Timestamp updateTime;
-
 }

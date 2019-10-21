@@ -17,7 +17,8 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -31,10 +32,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.vpu.mp.service.pojo.shop.order.*;
-import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
-import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record3;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
@@ -50,8 +56,14 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
+import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderInfoMpVo;
 
 /**
  * Table:order_info
@@ -572,7 +584,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * 提醒发货
 	 * @param order
 	 */
-	public void remind(OrderListMpVo order) {
+	public void remind(OrderInfoMpVo order) {
 		db().update(TABLE).
 		set(TABLE.ORDER_REMIND, (byte) (order.getOrderRemind() + 1)).
 		set(TABLE.ORDER_REMIND_TIME, DateUtil.getSqlTimestamp()).

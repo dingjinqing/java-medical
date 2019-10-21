@@ -2,11 +2,14 @@ package com.vpu.mp.service.pojo.shop.order.mp.goods;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Data
 public class OrderGoodsMpVo {
 	private Integer recId;
+	@JsonIgnore
 	private Integer mainRecId;
 	private Integer orderId;
 	private String orderSn;
