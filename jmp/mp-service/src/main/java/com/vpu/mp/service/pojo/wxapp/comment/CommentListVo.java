@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.comment;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
@@ -11,12 +11,13 @@ import java.sql.Timestamp;
  * @author liangchen 2019.10.15
  */
 @Data
+@NoArgsConstructor
 public class CommentListVo {
-	
+
   public CommentListVo(Integer goodsId) {
-	this.goodsId = goodsId;
+    this.goodsId = goodsId;
   }
-  
+
   /** 商品id */
   private Integer goodsId;
   /** 商品名称 */
