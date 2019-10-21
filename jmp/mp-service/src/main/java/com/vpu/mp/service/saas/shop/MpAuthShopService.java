@@ -42,6 +42,7 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -439,11 +440,14 @@ public class MpAuthShopService extends MainBaseService {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		MpWxMaOpenCommitExtInfo extInfo = new MpWxMaOpenCommitExtInfo();
 
+		ShopRecord sRecord = saas.shop.getShopById(mp.getShopId());
 		extInfo.setExtAppid(appId);
 		extInfo.addExt("main_host", domainConfig.getMainDomain());
 		extInfo.addExt("image_host", domainConfig.getImageDomain());
 		extInfo.addExt("shop_id", mp.getShopId().toString());
 		extInfo.addExt("version", templateId.toString());
+		extInfo.addExt("currency", sRecord.getCurrency());
+		extInfo.addExt("shopLanguage", sRecord.getShopLanguage());
 
 		AppletsJumpService appletsJumpService = saas.getShopApp(mp.getShopId()).appletsJump;
 		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList());
