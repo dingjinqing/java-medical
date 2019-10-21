@@ -16,3 +16,11 @@ export function scoreDocumentRequest (data) {
     method: 'get'
   })
 }
+
+// 小程序签到帮助页接口
+export function signruleRequest (data) {
+  return service({
+    url: `/api/wxapp/sign/help?shop_id=${data.shop_id}&user_id=${data.user_id}`,
+    method: 'get'
+  })
+}

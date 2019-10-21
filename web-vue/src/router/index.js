@@ -2,37 +2,45 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Cookies from 'js-cookie'
 import store from '../store' // 引入vuex实例对象
-import { judgeJurisdictionRequest } from '@/api/admin/util.js'
+import {
+  judgeJurisdictionRequest
+} from '@/api/admin/util.js'
 // 引入其他路由文件
 import indexRoutes from '@/router/index/index'
 import adminRoutes from '@/router/admin/index'
 import systemRouters from '@/router/system/index'
-import { loadLanguageAsync } from '@/i18n/i18n.js'
+import {
+  loadLanguageAsync
+} from '@/i18n/i18n.js'
 Vue.use(Router)
 
-const baseRoutes = [
-  {
-    path: '/',
-    component: () => import('@/view/index/home'),
-    meta: {
-      defaultTurn: true
-    }
-  },
-  {
-    path: '/index/login',
-    name: 'indexLogin',
-    component: () => import('@/components/index/login')
-  },
-  {
-    path: '/system/login',
-    name: 'systemLogin',
-    component: () => import('@/components/system/login')
-  },
-  {
-    path: '/wxapp/score/scoreDocument', // 小程序内积分点击跳转静态页面
-    name: 'scoreterms',
-    component: () => import('@/view/admin/layout/scoreterms')
+const baseRoutes = [{
+  path: '/',
+  component: () => import('@/view/index/home'),
+  meta: {
+    defaultTurn: true
   }
+},
+{
+  path: '/index/login',
+  name: 'indexLogin',
+  component: () => import('@/components/index/login')
+},
+{
+  path: '/system/login',
+  name: 'systemLogin',
+  component: () => import('@/components/system/login')
+},
+{
+  path: '/wxapp/score/scoreDocument', // 小程序内积分点击跳转静态页面
+  name: 'scoreterms',
+  component: () => import('@/view/admin/layout/scoreterms')
+},
+{
+  path: '/wxapp/sign/help', // 小程序内积分点击跳转静态页面
+  name: 'signrule',
+  component: () => import('@/view/admin/layout/signrule')
+}
 ]
 const routes = baseRoutes.concat(
   baseRoutes,
@@ -55,17 +63,23 @@ router.beforeEach((to, from, next) => {
     console.log(to)
     if (token) {
       console.log('我需要判断权限')
-      judgeJurisdictionRequest({ 'V-EnName': to.name }).then(() => next())
+      judgeJurisdictionRequest({
+        'V-EnName': to.name
+      }).then(() => next())
     } else {
       // 如果没有登录你访问的不是login就让你强制跳转到login页面
       if (to.path !== '/index/login') {
-        next({ path: '/index/login' })
+        next({
+          path: '/index/login'
+        })
       }
     }
   } else {
     if (to.meta.meta) {
       // console.log('我需要判断权限')
-      judgeJurisdictionRequest({ 'V-EnName': to.name }).then(res => {
+      judgeJurisdictionRequest({
+        'V-EnName': to.name
+      }).then(res => {
         console.log(res)
       })
     }
