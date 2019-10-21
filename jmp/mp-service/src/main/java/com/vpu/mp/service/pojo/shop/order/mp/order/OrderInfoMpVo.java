@@ -42,8 +42,6 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	private Integer invoiceId;
 	private Integer verifierId;
 	private Byte orderPayWay;
-	@JsonIgnore
-	private Byte returnTypeCfg;
 	/** 主支付方式 */
 	private String payCode;
 	/** 支付金额 */
@@ -64,7 +62,6 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	private Byte extendReceiveAction;
 	@JsonIgnore
 	private Timestamp extendReceiveTime;
-	private Byte partShipFlag;
 	public void setVerifierInfo(String verifierName, String verifierMobile){
 		this.verifierName = verifierName;
 		this.verifierMobile = verifierMobile;
