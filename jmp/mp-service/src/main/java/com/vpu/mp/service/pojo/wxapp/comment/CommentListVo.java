@@ -44,4 +44,12 @@ public class CommentListVo {
   private String award;
   /** 是否已评价标识 0：待评价 1：已评价 */
   private Byte commentFlag;
+  /** 评价类型 1评价即送 2 自定义 */
+  private Byte commentType;
+  /** 评价字数条件 */
+  private Integer commentWords;
+  /** 晒图 */
+  private Byte hasPicNum;
+  /** 五星好评 */
+  private Byte hasFiveStars;
 }

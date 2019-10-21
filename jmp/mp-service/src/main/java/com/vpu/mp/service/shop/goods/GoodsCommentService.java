@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
+import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
@@ -639,7 +640,7 @@ public class GoodsCommentService extends ShopBaseService {
             }
           }
           forGoodsId.setId(actId);
-          // 查询活动奖励
+          // 查询活动奖励和获得奖励所需要的评价条件
           AwardContentVo awardContentVos =
               db().select(
                       COMMENT_AWARD.AWARD_TYPE,
@@ -647,10 +648,20 @@ public class GoodsCommentService extends ShopBaseService {
                       COMMENT_AWARD.ACTIVITY_ID,
                       COMMENT_AWARD.ACCOUNT,
                       COMMENT_AWARD.AWARD_PATH,
-                      COMMENT_AWARD.AWARD_IMG)
+                      COMMENT_AWARD.AWARD_IMG,
+                      COMMENT_AWARD.COMMENT_TYPE,
+                      COMMENT_AWARD.COMMENT_WORDS,
+                      COMMENT_AWARD.HAS_PIC_NUM,
+                      COMMENT_AWARD.HAS_FIVE_STARS)
                   .from(COMMENT_AWARD)
                   .where(COMMENT_AWARD.ID.eq(actId))
                   .fetchOneInto(AwardContentVo.class);
+          // 设置获得奖励所需要的评价条件
+          forGoodsId.setCommentType(awardContentVos.getCommentType());
+          forGoodsId.setCommentWords(awardContentVos.getCommentWords());
+          forGoodsId.setHasPicNum(awardContentVos.getHasPicNum());
+          forGoodsId.setHasFiveStars(awardContentVos.getHasFiveStars());
+          // 设置活动奖励
           forGoodsId.setAwardType(awardContentVos.getAwardType());
           // 活动奖励1：赠送积分
           if (awardContentVos.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
@@ -748,6 +759,32 @@ public class GoodsCommentService extends ShopBaseService {
         .execute();
     // 添加评价关联评价有礼-发放礼物
     if (null != param.getId()) {
+      // 判断是否满足当前活动需要的评价条件
+      AwardConditionVo awardCondition =
+          db().select(
+                  COMMENT_AWARD.COMMENT_TYPE,
+                  COMMENT_AWARD.COMMENT_WORDS,
+                  COMMENT_AWARD.HAS_PIC_NUM,
+                  COMMENT_AWARD.HAS_FIVE_STARS)
+              .from(COMMENT_AWARD)
+              .where(COMMENT_AWARD.ID.eq(param.getId()))
+              .fetchOneInto(AwardConditionVo.class);
+      if (awardCondition.getCommentType().equals(NumberUtils.INTEGER_TWO)) {
+        // 心得超过规定字数
+        if (param.getCommNote().length() < awardCondition.getCommentWords()) {
+          return;
+        }
+        // 晒图评论
+        else if (awardCondition.getHasPicNum().equals(NumberUtils.BYTE_ONE)
+            && StringUtils.isBlank(param.getCommImg())) {
+          return;
+        }
+        // 五星好评
+        else if (awardCondition.getHasFiveStars().equals(NumberUtils.BYTE_ONE)
+            && param.getCommstar() != FIVE) {
+          return;
+        }
+      }
       // 活动奖励1：赠送积分
       if (param.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
         // 给当前用户赠送积分
@@ -755,6 +792,8 @@ public class GoodsCommentService extends ShopBaseService {
       }
       // 活动奖励2：赠送优惠券
       else if (param.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
+        // 给当前用户赠送优惠券
+        giveCouponByAct(param);
       }
       // 活动奖励3：赠送用户余额
       else if (param.getAwardType().equals(THERE)) {
@@ -763,9 +802,11 @@ public class GoodsCommentService extends ShopBaseService {
       }
       // 活动奖励4：赠送抽奖机会
       else if (param.getAwardType().equals(FOUR)) {
+        // 前端展示内容为：获得一次抽奖机会，可以选择进入抽奖页面
       }
       // 活动奖励5：自定义奖励
       else if (param.getAwardType().equals(FIVE)) {
+        // 前端展示内容：查看神秘奖励，可以选择进入path链接
       }
     }
   }
@@ -805,6 +846,72 @@ public class GoodsCommentService extends ShopBaseService {
       db().update(USER_SCORE)
           .set(USER_SCORE.SCORE, newScore)
           .where(USER_SCORE.USER_ID.eq(paramUserId))
+          .execute();
+    }
+  }
+
+  /**
+   * 给当前用户赠送优惠券
+   *
+   * @param param 会员信息、活动信息、优惠券信息
+   */
+  public void giveCouponByAct(AddCommentParam param) {
+    // 判断删除状态和库存
+    Integer surplus =
+        db().select(MRKING_VOUCHER.SURPLUS)
+            .from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
+            .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .fetchOptionalInto(Integer.class)
+            .orElse(NumberUtils.INTEGER_ZERO);
+    // 如果库存为0，返回信息库存不足
+    if (surplus.equals(NumberUtils.INTEGER_ZERO)) {
+      logger().info("所选优惠券库存不足");
+    }
+    // 库存足够，发券
+    else {
+      // 获取优惠券详情
+      CouponDetailsVo couponDetails =
+          db().select(MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION)
+              .from(MRKING_VOUCHER)
+              .where(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+              .and(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
+              .fetchOneInto(CouponDetailsVo.class);
+      // 获取优惠券类型
+      Byte type;
+      // 减价
+      if (couponDetails.getActCode().equals("voucher")) {
+        type = 0;
+      }
+      // 打折
+      else {
+        type = 1;
+      }
+      // 为用户发券，入库
+      db().insertInto(
+              CUSTOMER_AVAIL_COUPONS,
+              CUSTOMER_AVAIL_COUPONS.COUPON_SN,
+              CUSTOMER_AVAIL_COUPONS.USER_ID,
+              CUSTOMER_AVAIL_COUPONS.ACT_ID,
+              CUSTOMER_AVAIL_COUPONS.TYPE,
+              CUSTOMER_AVAIL_COUPONS.AMOUNT,
+              CUSTOMER_AVAIL_COUPONS.ACT_DESC,
+              CUSTOMER_AVAIL_COUPONS.ACCESS_ID)
+          .values(
+              CouponGiveService.getCouponSn(),
+              param.getUserId(),
+              Integer.valueOf(param.getAward()),
+              type,
+              couponDetails.getDenomination(),
+              couponDetails.getActName(),
+              param.getId())
+          .execute();
+      // 发券成功后，优惠券库存减少
+      Integer newSurplus = surplus - 1;
+      db().update(MRKING_VOUCHER)
+          .set(MRKING_VOUCHER.SURPLUS, newSurplus)
+          .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
+          .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
           .execute();
     }
   }
