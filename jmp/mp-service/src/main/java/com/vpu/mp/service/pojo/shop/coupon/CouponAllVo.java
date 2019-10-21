@@ -1,11 +1,14 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
+import lombok.Data;
+
 /**
  * 全部优惠卷 vo
  *
  * @author 孔德成
  * @date 2019/10/21 11:45
  */
+@Data
 public class CouponAllVo {
 
     private Integer id;
