@@ -5,7 +5,7 @@
 }
 .top_search{
   display: flex;
-  padding: 10rpx 30rpx;
+  padding: 10rpx 15rpx 10rpx 30rpx;
   width: 750rpx;
   box-sizing: border-box;
   align-items: center;
@@ -31,7 +31,7 @@
   height: 30rpx;
 }
 .top_search .btn_search{
-  padding: 0 10rpx;
+  padding: 0 10rpx 0 20rpx;
 }
 .top_pixed .top_nav{
   width: 750rpx;
@@ -162,4 +162,10 @@
 .order_sn_status.partial_delivery > .partial_delivery_bottom{
   display: flex;
   flex: 1;
+}
+/* 隐藏滚动条 */
+::-webkit-scrollbar{
+width: 0;
+height: 0;
+color: transparent;
 }

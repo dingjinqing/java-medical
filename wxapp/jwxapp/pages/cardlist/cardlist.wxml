@@ -21,7 +21,7 @@
         </view>
         <view class="card_exp">123456</view>
       </view>
-      <view class="card_del">
+      <view class="card_del" data-card_no="">
         删除
       </view>
     </view>

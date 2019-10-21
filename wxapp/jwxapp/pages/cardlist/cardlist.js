@@ -1,4 +1,4 @@
-// pages/cardlist/cardlist.js
+let util = require('../../utils/util.js');
 global.wxPage({
 
   /**
@@ -6,142 +6,6 @@ global.wxPage({
    */
   data: {
     list:[
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
-      {title:'猜猜这是谁建的会员卡'},
       {title:'猜猜这是谁建的会员卡'},
       {title:'猜猜这是谁建的会员卡'},
       {title:'猜猜这是谁建的会员卡'},
@@ -167,6 +31,7 @@ global.wxPage({
   onLoad: function (options) {
     
   },
+  // 触摸开始
   handleTouchStart (e) {
     this.startX = e.touches[0].clientX;
     let idx = e.currentTarget.dataset.index;
@@ -175,6 +40,7 @@ global.wxPage({
       [target]: this.data.list[idx].x ? this.data.list[idx].x : 0
     })
   },
+  // 触摸移动
   handleTouchMove (e) {
     var touch = e.touches[0];
     let idx = e.currentTarget.dataset.index;
@@ -198,6 +64,7 @@ global.wxPage({
       [target]: right
     })
   },
+  // 触摸结束
   handleTouchEnd(e){
     let idx = e.currentTarget.dataset.index;
     let target = `list[${idx}].x`
@@ -206,6 +73,18 @@ global.wxPage({
     this.setData({
       [target]: right
     })
+  },
+  // 删除会员卡
+  delCard(e){
+    let card_no = e.currentTarget.dataset.card_no;
+    util.showModal('', '您确定要删除该会员卡？', function () {
+      var animate = '';
+      util.api('/api/wxapp/card/del', function (res) {
+        if (res.error === 0) {
+          
+        }
+      }, { card_no: card_no })
+    }, true, '取消', '确定')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

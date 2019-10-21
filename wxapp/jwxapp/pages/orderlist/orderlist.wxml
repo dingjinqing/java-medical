@@ -11,7 +11,7 @@
         </view>
         <view class="btn_search" bindtap="handleSearch">搜索</view>
       </view>
-      <scroll-view class="top_nav" scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
+      <scroll-view class="top_nav"  scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
         <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
           全部订单
         </view>
@@ -22,275 +22,62 @@
       </scroll-view>
     </view>
     <view class="order_list">
-      <view class="order_item">
-        <view class="order_sn_status partial_delivery">
-          <view class="partial_delivery_top">
-            <view class="order_mark"></view>
-            <view class="order_sn">订单编号：P201907041657163529</view>
-          </view>
-          <view class="partial_delivery_bottom">
-            <view class="delivery_type">
-              支付类型：
-              <text>部分发货</text>
+    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="{{pageIndex}}" wx:for-index="pageIndex">
+      <block wx:for="{{pageItem}}" wx:key="{{item.orderSn}}" >
+        <view class="order_item">
+          <view class="order_sn_status {{item.partShipFlag === 1 ? 'partial_delivery' : ''}}">
+            <view class="partial_delivery_top">
+              <view class="order_mark"></view>
+              <view class="order_sn">订单编号：{{item.orderSn}}</view>
             </view>
-            <view class="order_status" style="color:{{comColor}}">订单完成</view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
+            <view class="partial_delivery_bottom">
+              <view class="delivery_type" wx:if="{{item.partShipFlag === 1}}">
+                发货类型：
+                <text>部分发货</text>
+              </view>
+              <view class="order_status" style="color:{{comColor}}">订单完成</view>
             </view>
           </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
+          <view wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="{{goodsItem.recId}}" class="goods_item">
+            <image mode="widthFix" src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
+            <view class="goods_info">
+              <view class="goods_name">
+                {{goodsItem.goodsName}}
+              </view>
+              <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
+              <view class="goods_price_num">
+                <view class="goods_price" style="color:{{comColor}}">￥<text>{{goodsItem.goodsPrice}}</text></view>
+                <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
+              </view>
             </view>
           </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
+          <view class="order_pay_info">
+            <view class="pay_info">
+              <view class="pay_type">
+                支付类型：
+                <text>微信支付</text>
+              </view>
+              <view class="pay_money">
+                实付款：
+                <text>￥{{item.moneyPaid}}</text>
+              </view>
             </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
+            <view class="presale_info" wx:if="{{item.bkOrderPaid === 1}}">
+              <view class="money">
+                待付尾款：
+                <text>￥100.00</text>
+              </view>
+              <view class="time">尾款支付时间：2019-04-03 10:23 - 2019-04-04 10:23</view>
             </view>
+          </view>
+          <view class="order_button_box">
+            <view bindtap="handleOperate">查看评价</view>
+            <view>查看详情</view>
+            <view>再次购买</view>
           </view>
         </view>
-        <view class="order_pay_info">
-          <view class="pay_info">
-            <view class="pay_type">
-              支付类型：
-              <text>微信支付</text>
-            </view>
-            <view class="pay_money">
-              实付款：
-              <text>￥71.60</text>
-            </view>
-          </view>
-          <view class="presale_info">
-            <view class="money">
-              代付尾款：
-              <text>￥100.00</text>
-            </view>
-            <view class="time">尾款支付时间：2019-04-03 10:23 - 2019-04-04 10:23</view>
-          </view>
-        </view>
-        <view class="order_button_box">
-          <view bindtap="handleOperate">查看评价</view>
-          <view>查看详情</view>
-          <view>再次购买</view>
-        </view>
-      </view>
-      <view class="order_item">
-        <view class="order_sn_status partial_delivery">
-          <view class="partial_delivery_top">
-            <view class="order_mark"></view>
-            <view class="order_sn">订单编号：P201907041657163529</view>
-          </view>
-          <view class="partial_delivery_bottom">
-            <view class="delivery_type">
-              支付类型：
-              <text>部分发货</text>
-            </view>
-            <view class="order_status" style="color:{{comColor}}">订单完成</view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="order_pay_info">
-          <view class="pay_info">
-            <view class="pay_type">
-              支付类型：
-              <text>微信支付</text>
-            </view>
-            <view class="pay_money">
-              实付款：
-              <text>￥71.60</text>
-            </view>
-          </view>
-          <view class="presale_info">
-            <view class="money">
-              代付尾款：
-              <text>￥100.00</text>
-            </view>
-            <view class="time">尾款支付时间：2019-04-03 10:23 - 2019-04-04 10:23</view>
-          </view>
-        </view>
-        <view class="order_button_box">
-          <view>查看评价</view>
-          <view>查看详情</view>
-          <view>再次购买</view>
-        </view>
-      </view>
-      <view class="order_item">
-        <view class="order_sn_status">
-          <view class="partial_delivery_top">
-            <view class="order_mark"></view>
-            <view class="order_sn">订单编号：P201907041657163529</view>
-          </view>
-          <view class="partial_delivery_bottom">
-            <view class="order_status" style="color:{{comColor}}">订单完成</view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="goods_item">
-          <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-          <view class="goods_info">
-            <view class="goods_name">
-              小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-            </view>
-            <view class="goods_spec">颜色：红色</view>
-            <view class="goods_price_num">
-              <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-              <view class="goods_num">x2</view>
-            </view>
-          </view>
-        </view>
-        <view class="order_pay_info">
-          <view class="pay_info">
-            <view class="pay_type">
-              支付类型：
-              <text>微信支付</text>
-            </view>
-            <view class="pay_money">
-              实付款：
-              <text>￥71.60</text>
-            </view>
-          </view>
-          <view class="presale_info">
-            <view class="money">
-              代付尾款：
-              <text>￥100.00</text>
-            </view>
-            <view class="time">尾款支付时间：2019-04-03 10:23 - 2019-04-04 10:23</view>
-          </view>
-        </view>
-        <view class="order_button_box">
-          <view>查看评价</view>
-          <view>查看详情</view>
-          <view>再次购买</view>
-        </view>
-      </view>
+      </block>
+    </block>
     </view>
   </view>
   <include src="../common/footer.wxml" />

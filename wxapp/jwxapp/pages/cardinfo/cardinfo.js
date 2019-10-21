@@ -1,5 +1,5 @@
-// pages/cardinfo/cardinfo.js
-Page({
+let util = require('../../utils/util.js');
+global.wxPage({
 
   /**
    * 页面的初始数据

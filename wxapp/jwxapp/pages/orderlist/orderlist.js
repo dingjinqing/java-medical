@@ -6,19 +6,32 @@ global.wxPage({
   data: {
     searchInput: null,
     scrollIntoId : 'ALL',
-    currentPage:1
+    currentPage:1,
+    pageParams:null,
+    dataList:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-    this.requestList(this.data.currentPage);
+    this.requestList();
   },
-  requestList(currentPage) {
-    util.api('/api/wxapp/order/list', function() {}, {
-      currentPage: currentPage,
-      pageRows: 20
+  requestList() {
+    let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    console.log(parseInt(currentPage) - 1)
+    util.api('/api/wxapp/order/list', (res) => {
+      if(res.error === 0){
+        let dataList = this.formatData(res.content.dataList);
+        this.setData({
+          pageParams: res.content.page,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
+        })
+      }
+    }, {
+        currentPage: currentPage,
+      pageRows: 20,
+      type:0
     });
   },
   // 获取搜索栏input值
@@ -27,13 +40,29 @@ global.wxPage({
       searchInput: e.detail.value
     });
   },
+  formatData(order){
+    let formatOrderItem = order.map(item=>{
+      const filterArr = ['isShowPay', 'isLotteryGift', 'isReturn', 'isPayEndPayment', 'isExtendReceive', 'isShowAgainBuy', 'isRemindShip', 'isShowCommentType', 'payOperationTime','isDelete']
+      let d =  this.filterObj(item, filterArr);
+      for(let k in d ){
+        if(!(d[k] > 0)){
+          delete d[k]
+        }
+      }
+      console.log(d)
+      item.operate = d
+    })
+    return formatOrderItem
+  },
   // 清空搜索栏
   clearSearchInput(){
     this.setData({
       searchInput:null
     })
   },
-  handleSearch() {},
+  handleSearch() {
+    this.searchInput()
+  },
   // 切换导航
   handleChangeNav(e){
     this.setData({
@@ -112,6 +141,17 @@ global.wxPage({
   },
   // 好友代付
   // 退货中心
+  filterObj(obj, arr) {
+    if(typeof (obj) !== "object" || !Array.isArray(arr)) {
+      throw new Error("参数格式不正确")
+    }
+    const result = {}
+    Object.keys(obj).filter((key) => arr.includes(key)).forEach((key) => {
+      result[key] = obj[key]
+    })
+    return result
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -141,8 +181,11 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function() {
-    let currentPage = this.data.currentPage + 1;
-    this.requestList(currentPage)
+    if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage) return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    })
+    this.requestList()
   },
 
   /**
