@@ -154,7 +154,8 @@ public class TaskJobMainService extends MainBaseService {
                 });
                 db().update(TASK_JOB_MAIN)
                     .set(TASK_JOB_MAIN.STATUS,TaskJobsConstant.STATUS_EXECUTING)
-                    .where(TASK_JOB_MAIN.ID.in(result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList())));
+                    .where(TASK_JOB_MAIN.ID.in(result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList())))
+                    .execute();
             });
             jedisManager.releaseLock(JedisKeyConstant.TASK_JOB_LOCK,uuid);
         }
