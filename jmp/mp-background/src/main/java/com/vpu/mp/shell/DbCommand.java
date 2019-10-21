@@ -51,7 +51,7 @@ public class DbCommand {
 	public void test() {
 		for(int i=0;i<1000;i++) {
 			String info = this.helper.progress(i, 1000);
-			System.out.println(info);
+			this.log(info);
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
