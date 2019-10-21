@@ -688,7 +688,7 @@ public class OrderReadService extends ShopBaseService {
 		List<OrderGoodsMpVo> goods = order.getGoods();
 		List<CommentListVo> converGoods = new ArrayList<CommentListVo>();
 		//转化类型
-		goods.forEach(x->converGoods.add(CommentListVo.builder().goodsId(x.getGoodsId()).build()));
+		goods.forEach(x->converGoods.add(new CommentListVo(x.getGoodsId())));
 		if(goodsComment.orderIsCommentAward(converGoods)) {
 			//2评价有礼
 			return 2;

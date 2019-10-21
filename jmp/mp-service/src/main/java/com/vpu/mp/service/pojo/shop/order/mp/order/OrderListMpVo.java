@@ -109,7 +109,7 @@ public class OrderListMpVo{
 	private Byte extendReceiveAction;
 	@JsonIgnore
 	private Timestamp extendReceiveTime;
-	
+	private Byte partShipFlag;
 	public void setVerifierInfo(String verifierName, String verifierMobile){
 		this.verifierName = verifierName;
 		this.verifierMobile = verifierMobile;
