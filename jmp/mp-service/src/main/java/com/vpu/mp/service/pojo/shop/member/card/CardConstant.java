@@ -113,6 +113,8 @@ public class CardConstant {
 	public static final Byte RELATED_STORE_CATEGORY_TYPE = 2;
 	/** 3：关联平台分类  */
 	public static final Byte RELATED_PLATFORM_CATEGORY_TYPE = 3;
+	/** 4， 关联品牌分类 */
+	public static final Byte RELATED_BRAND_CATEGORY_TYPE = 4;
 	/** 可否在门店使用  0可以 1不可以 */
 	public static final Byte AVAILABLE_IN_STORE = 0;
 	public static final Byte UNAVAILABLE_IN_STORE = 1;

@@ -43,6 +43,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_PLATFORM_CATEGORY_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STORE_CATEGORY_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_BRAND_CATEGORY_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ZERO;
@@ -325,7 +326,10 @@ public class MemberCardService extends ShopBaseService {
 				if(card.getOwnPlatFormCategoryIds() != null) {
 					batchUpdatePlatformCategory(card.getOwnPlatFormCategoryIds(), cardList);
 				}
-				
+				/** 专享商品-品牌分类 */
+				if(card.getOwnBrandId() != null) {
+					batchUpdateBrandId(card.getOwnBrandId(),cardList);
+				}
 				
 				flag = true;
 			}
@@ -408,6 +412,10 @@ public class MemberCardService extends ShopBaseService {
 		batchUpdateGoods(platformIdList,cardIdList,RELATED_PLATFORM_CATEGORY_TYPE);
 	}
 	
+	
+	public void batchUpdateBrandId(List<Integer> brandIdList,List<Integer> cardIdList) {
+		batchUpdateGoods(brandIdList,cardIdList,RELATED_BRAND_CATEGORY_TYPE);
+	}
 	
 	
 	/**

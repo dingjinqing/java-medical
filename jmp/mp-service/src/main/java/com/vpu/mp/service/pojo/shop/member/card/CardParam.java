@@ -55,7 +55,8 @@ public class CardParam {
 	private List<Integer> ownStoreCategoryIds;
 	/** 平台分类id  */
 	private List<Integer> ownPlatFormCategoryIds;
-	
+	/** 商品分类id */
+	private List<Integer> ownBrandId;
 	
 	/** 
 	/**
