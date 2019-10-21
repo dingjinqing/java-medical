@@ -477,12 +477,12 @@ public class OrderReadService extends ShopBaseService {
 		for(OrderListMpVo order : result.dataList) {
 			//订单类型
 			order.setOrderType(Arrays.asList(orderTypeToArray(order.getGoodsType())));
-			//订单操作设置
-			setMpOrderOperation(order);
 			//TODO 活动奖品判断
 			Byte isLotteryGift = (byte)1;
 			if(isLotteryGift != 0) {}
 			order.setIsLotteryGift(isLotteryGift);
+			//订单操作设置
+			setMpOrderOperation(order);
 			//设置商品
 			order.setGoods(goods.get(order.getOrderId()));
 			for (OrderGoodsMpVo temp : order.getGoods()) {
