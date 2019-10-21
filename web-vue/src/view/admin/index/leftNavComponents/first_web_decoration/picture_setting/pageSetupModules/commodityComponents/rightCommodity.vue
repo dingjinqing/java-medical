@@ -62,9 +62,13 @@
                 <img
                   v-else
                   style="width:100%;height:40px"
-                  :src="data.goods_module_title==='1'?iconImgUrl:titleImgUrl"
+                  :src="data.goods_module_title==='1'?data.img_url:data.img_title_url"
                   @click="handleToAddModulesImg()"
                 >
+                <i
+                  v-if="(data.img_url&&data.goods_module_title==='1')||(data.img_title_url&&data.goods_module_title==='2')"
+                  @click="handleToDelIcon()"
+                ></i>
               </div>
             </div>
           </div>
@@ -100,6 +104,26 @@
         <div class="commodityModule">
           <span style="margin-bottom:10px">商品模块</span>
           <div class="commodityMain">
+            <div
+              class="commodityAngle"
+              v-if="this.listTypeData[4].isChecked"
+            >
+              <span>大图展示：</span>
+              <div class="angleDiv">
+                <el-radio
+                  v-model="data.goods_display"
+                  label="0"
+                >平铺</el-radio>
+                <el-radio
+                  v-model="data.goods_display"
+                  label="1"
+                >居中</el-radio>
+                <el-radio
+                  v-model="data.goods_display"
+                  label="2"
+                >全图</el-radio>
+              </div>
+            </div>
             <div class="commodityContent">
               <span>显示内容：</span>
               <div class="contentRight">
@@ -155,7 +179,10 @@
                   </el-radio>
                 </div>
                 <!--end-->
-                <div class="contentDiv">
+                <div
+                  class="contentDiv"
+                  v-if="!this.listTypeData[2].isChecked"
+                >
                   <el-checkbox v-model="data.other_message">其他信息</el-checkbox>
                   <span style="color:#999;white-space:nowrap">后台数据仅为参考请以实际显示为准</span>
                 </div>
@@ -630,7 +657,7 @@ export default {
       ],
       rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签'], // 商品范围选中后按钮文本列表
       rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }], // 商品范围四类弹框选中数据池
-      needToSwitchData: ['tit_center', 'hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message'], // 需要转换的checkbox数据
+      needToSwitchData: ['hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message'], // 需要转换的checkbox数据
       // 模块保存数据
       data: {
       }
@@ -663,14 +690,15 @@ export default {
       },
       immediate: true
     },
-    'commodityModule.buyBtn' (newData) {
+    'data.cart_btn' (newData) {
       if (newData) {
-        this.commodityModule.otherInfoFlag = false
+        this.data.other_message = false
       }
     },
-    'commodityModule.otherInfoFlag' (newData) {
+    'data.other_message' (newData) {
+      console.log(newData)
       if (newData) {
-        this.commodityModule.buyBtn = false
+        this.data.cart_btn = false
       }
     },
     // 监控该模块右边数据操作
@@ -682,16 +710,18 @@ export default {
         let callBackData = JSON.parse(JSON.stringify(newData))
         callBackData.goods_area = d
         // 将数据种checkbox的值由stying数字转为Boolean
+        console.log(callBackData, this.modulesData)
         this.needToSwitchData.forEach(itemC => {
-          let m = this.handleToTurnModulesData(this.modulesData[itemC])
+          let m = this.handleToTurnModulesData(callBackData[itemC])
           callBackData[itemC] = m
         })
         // 转换样式列表字段
         let styleParams = this.handleToChangeStyle(1)
         callBackData.col_type = styleParams
+
+        console.log(callBackData)
         this.$emit('handleToBackData', callBackData)
         console.log(styleParams)
-        console.log(callBackData)
       },
       deep: true
     }
@@ -729,7 +759,8 @@ export default {
             indexFlag = index
           }
         })
-        switch (indexFlag) {
+        console.log(indexFlag)
+        switch (indexFlag.toString()) {
           case '0':
             save = '4'
             break
@@ -751,6 +782,7 @@ export default {
     },
     // 中间模块数据传来checkbox数据转化函数
     handleToTurnModulesData (params) { // flag 数据类型  数据key 数据值
+      console.log(params)
       let d = ''
       switch (params) {
         case '0':
@@ -760,11 +792,12 @@ export default {
           d = true
           break
         case true:
-          d = '0'
+          d = '1'
           break
         case false:
-          d = '1'
+          d = '0'
       }
+      console.log(d)
       return d
     },
     // 转换商品范围字段
@@ -803,12 +836,21 @@ export default {
       }
       return d
     },
+    // 模块标题 图标和标题图片点击删除icon事件
+    handleToDelIcon () {
+      if (this.data.goods_module_title === '1') {
+        this.data.img_url = ''
+      } else if (this.data.goods_module_title === '2') {
+        this.data.img_title_url = ''
+      }
+    },
     // 点击列表样式
     handleToClickType (index) {
       this.listTypeData.forEach(item => {
         item.isChecked = false
       })
       this.listTypeData[index].isChecked = true
+      this.data.col_type = index.toString()
     },
     // 模块标题图标点击
     handleToAddModulesImg () {
@@ -1032,6 +1074,7 @@ export default {
               }
             }
             .bgIcon {
+              position: relative;
               width: 70px;
               height: 70px;
               display: flex !important;
@@ -1043,6 +1086,17 @@ export default {
                 width: 47px;
                 height: 44px;
 
+                cursor: pointer;
+              }
+              i {
+                display: inline-block;
+                width: 15px;
+                height: 15px;
+                position: absolute;
+                right: -7px;
+                top: -8px;
+                background: url("../../../../../../../../assets/adminImg/icon_delete.png")
+                  no-repeat;
                 cursor: pointer;
               }
             }

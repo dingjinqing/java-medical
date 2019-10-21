@@ -12,44 +12,122 @@
       <div class="commodity">
         <div>
           <!--隐藏模块  文字标题选中显示-->
-          <div
-            style="height:55px;line-height:55px;pading-left:10px"
-            v-if="data.goods_module_title==='1'&&(data.title || data.img_url)"
-          >
-            {{data.title}}
+          <div>
+            <div
+              class="hiddenTitle"
+              :style="data.tit_center?'justify-content:center':''"
+              v-if="data.goods_module_title!=='0'&&(data.title || data.img_url || data.img_title_url)"
+            >
+              <img
+                v-if="data.goods_module_title==='1'&&data.img_url"
+                style="height:30px;margin-right:15px"
+                :src="data.img_url"
+              >
+              {{data.title}}
+
+            </div>
+            <div v-if="data.goods_module_title==='2'&&data.img_title_url">
+              <img
+                class="img_title"
+                :src="data.img_title_url"
+              >
+            </div>
           </div>
+
           <!--end-->
-          <ul>
+          <ul :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''">
             <li
               v-for="(item,index) in goodsDataList"
               :key="index"
+              :style="data.col_type==='2'?'width:33%;':data.col_type==='0'?'width:100%':data.col_type==='4'?'width:100%':''"
             >
-              <div class="containter">
-                <div class="commodityTop">
-                  <div class="label">
+              <div :style="data.if_radius==='1'?'border-radius:8px;':''+data.goods_module_style==='0'?'':data.goods_module_style==='1'?'box-shadow: 0 0 10px 3px #ddd;border: 1px solid transparent !important;':'border: 1px solid #eee !important;'">
+                <div
+                  class="containter"
+                  :style="(data.col_type==='1' || data.col_type==='2')?'display:block;height:auto':(data.col_type==='3' || data.col_type==='0')?'display: flex;flex-direction: column;height:auto':''"
+                >
+                  <div
+                    class="commodityTop"
+                    :style="data.col_type==='2'?'height:auto':data.col_type==='0'?'max-height:150px;height:auto;overflow:hidden':''"
+                  >
+                    <div class="label">
+                      <!--左上角图形-->
+                      <!--限时降价图形-->
+                      <div
+                        class="labelStyle1"
+                        v-if="item.isNewGoods==='0'&&data.hide_label==='1'"
+                      >
+                        <span style="display: inline;">限时降价</span>
+                      </div>
+                      <div
+                        class="labelStyle2"
+                        v-if="item.isNewGoods==='1'&&data.hide_label==='1'"
+                        style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
+                      >
+                        <span style="display: inline;">新品首发</span>
+                      </div>
+                      <div
+                        class="label newGoods"
+                        v-if="item.isNewGoods==='2'&&data.hide_label==='1'"
+                      >
+                        <span>新品</span>
+                      </div>
+                      <div
+                        class="labelStyle3"
+                        v-if="item.isNewGoods==='3'&&data.hide_label==='1'"
+                        style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
+                      >
+                        <span style="display: inline-block;">新品首发</span>
+                      </div>
+                    </div>
                     <img
-                      v-if="!item.isNewGoods"
-                      :src="item.labelUrl"
+                      :style="data.col_type==='2'?'width:100%;height:auto':data.col_type==='0'?'width:100%;height:auto;max-height:none':''"
+                      :src="item.imgUrl"
                     >
+                  </div>
+                  <div
+                    class="commodityBottom"
+                    :style="data.col_type!=='4'?'padding-top:0':''"
+                  >
+                    <div class="bottomHead">
+                      <div v-if="data.hide_name==='1'">{{item.goodsName}}</div>
+                      <div :style="data.col_type!=='4'?'margin-top:5px':''">
+                        <span>领券减￥100</span>
+                      </div>
+                    </div>
                     <div
-                      class="label newGoods"
-                      v-else
+                      class="bottomFooter"
+                      :style="data.col_type!=='4' ?'display:flex;flex-direction: row;height:auto':''"
                     >
-                      <span>新品</span>
+                      <span v-if="data.hide_price === '1'">￥{{item.price}}</span>
+                      <span
+                        style="text-decoration: line-through;color: #c0c0c0"
+                        v-if="data.col_type!=='2'&&data.other_message==='1'"
+                      >￥0.00</span>
+                      <!--购买按钮-->
+                      <i
+                        class="iconfont icontianjia icon_font_size new_class"
+                        style="color: rgb(177, 78, 105);"
+                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'"
+                      ></i>
+                      <i
+                        class="iconfont icongouwuche1 icon_font_size new_class"
+                        style="color: rgb(177, 78, 105);"
+                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'"
+                      ></i>
+                      <i
+                        class="right_buy new_back"
+                        style="background-color: rgb(177, 78, 105);"
+                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'"
+                      >
+                        马上抢
+                      </i>
+                      <i
+                        class="cart_buy"
+                        style="color: rgb(177, 78, 105); border-color: rgb(177, 78, 105);"
+                        v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'"
+                      >购买</i>
                     </div>
-                  </div>
-                  <img :src="item.imgUrl">
-                </div>
-                <div class="commodityBottom">
-                  <div class="bottomHead">
-                    <div>{{item.goodsName}}</div>
-                    <div>
-                      <span>领券减￥100</span>
-                    </div>
-                  </div>
-                  <div class="bottomFooter">
-                    <span>￥{{item.price}}</span>
-                    <span>￥0.00</span>
                   </div>
                 </div>
               </div>
@@ -112,28 +190,28 @@ export default {
           imgUrl: this.$imageHost + '/image/admin/0a2kFnVCg46fdTNw.jpeg',
           price: 112,
           labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
-          isNewGoods: false
+          isNewGoods: '0'
         },
         {
           goodsName: '商品修改测试2',
           imgUrl: this.$imageHost + '/image/admin/0a2kFnVCg46fdTNw.jpeg',
           price: 544,
           labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
-          isNewGoods: false
+          isNewGoods: '1'
         },
         {
           goodsName: '商品修改测试3',
           imgUrl: this.$imageHost + '/image/admin/crop_wlEjGAPFNMXl1EVr.jpeg',
           price: 323,
           labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
-          isNewGoods: true
+          isNewGoods: '2'
         },
         {
           goodsName: '商品修改测试4',
           imgUrl: this.$imageHost + '/image/admin/crop_wlEjGAPFNMXl1EVr.jpeg',
           price: 334,
           labelUrl: this.$imageHost + '/image/admin/crop_2Slxp6DbLukZ1EJl.png',
-          isNewGoods: true
+          isNewGoods: '3'
         }
       ],
       // 显示数据
@@ -176,7 +254,8 @@ export default {
         }
         console.log(newData)
       },
-      immediate: true
+      immediate: true,
+      deep: true
     }
   },
   mounted () {
@@ -225,14 +304,25 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/style/admin/decorationModules.scss";
-
+@import "@/assets/aliIcon/iconfont.scss";
 .commodity {
+  .hiddenTitle {
+    height: 55px;
+    line-height: 55px;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .img_title {
+    display: inline-block;
+    height: 374px;
+    width: 100%;
+  }
   ul {
-    // display: flex;
-    // flex-wrap: wrap;
     li {
       width: 50%;
-      padding: 8px 10px;
+      padding: 10px 10px;
       .containter {
         display: flex;
         height: 145px;
@@ -245,6 +335,70 @@ export default {
             left: 0px;
             img {
               width: 60px;
+            }
+            .labelStyle1 {
+              position: absolute;
+              left: 0px;
+              top: 0px;
+              width: 41.74px;
+              height: 42.16px;
+              background: url("../../../../../../../../assets/adminImg/label-three.png")
+                no-repeat;
+              background-size: 100% 100%;
+              text-align: center;
+              font-size: 12px;
+              color: white;
+              padding-left: 6px;
+              padding-right: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              line-height: 15px;
+              padding-bottom: 5px;
+              overflow: hidden;
+              word-break: break-all;
+            }
+            .labelStyle2 {
+              position: absolute;
+              left: 0px;
+              top: 2px;
+              text-align: center;
+              width: 50px;
+              height: 50px;
+              display: flex;
+              line-height: 15px;
+              align-items: center;
+              justify-content: center;
+              border: 3px solid rgba(255, 255, 255, 0.2);
+              border-radius: 60px;
+              font-size: 12px;
+              color: white;
+              overflow: hidden;
+              word-break: break-all;
+              padding-left: 9px;
+              padding-right: 8px;
+              span {
+                word-break: break-all;
+                text-align: center;
+              }
+            }
+            .labelStyle3 {
+              position: absolute;
+              left: 0px;
+              top: 0px;
+              height: 28px;
+              font-size: 12px;
+              color: white;
+              border-bottom-right-radius: 14px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              line-height: 15px;
+              padding-left: 5px;
+              padding-right: 5px;
+              span {
+                white-space: nowrap;
+              }
             }
           }
           .newGoods {
@@ -274,6 +428,7 @@ export default {
           // height: 72px;
           padding: 10px 10px 0 0;
           height: 100%;
+          width: 100%;
           .bottomHead {
             // height: 35px;
             white-space: normal;
@@ -286,6 +441,7 @@ export default {
               font-size: 12px;
               margin-top: 5px;
               margin-top: 50px;
+
               span {
                 padding: 1px 4px;
                 border-radius: 2px;
@@ -299,16 +455,54 @@ export default {
             justify-content: space-between;
             flex-direction: column;
             height: 40px;
+            position: relative;
+            width: 100%;
+            min-height: 23px;
             span {
               margin: 0 2px 0px 0;
               min-height: 17px;
               &:nth-of-type(1) {
                 color: rgb(64, 128, 128);
               }
-              &:nth-of-type(2) {
-                color: #c0c0c0;
-                text-decoration: line-through;
-              }
+            }
+            .new_class {
+              position: relative;
+              top: 2px;
+              font-size: 23px !important;
+            }
+            .icon_font_size {
+              position: absolute;
+              top: -3px;
+              right: 5px;
+            }
+            .right_buy {
+              width: 70px;
+              height: 30px;
+              text-align: center;
+              line-height: 30px;
+              background: rebeccapurple;
+              color: white;
+              font-size: 12px;
+              border-radius: 15px;
+              display: inline-block;
+              position: absolute;
+              top: -3px;
+              right: 5px;
+            }
+            .cart_buy {
+              width: 55px;
+              height: 30px;
+              text-align: center;
+              line-height: 30px;
+              border: 1px solid rebeccapurple;
+              color: rebeccapurple;
+              font-size: 12px;
+              border-radius: 15px;
+              background: white;
+              display: inline-block;
+              position: absolute;
+              top: -3px;
+              right: 5px;
             }
           }
         }

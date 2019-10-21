@@ -45,13 +45,13 @@ export default {
             'module_name': 'm_goods', // 模块名称
             'title': '', // 标题  y
             'title_link': '', // 标题链接 y
-            'tit_center': '0', // 标题位置 0 不选中标题居中  1选中标题居中 y
+            'tit_center': false, // 标题位置 false不选中标题居中  true选中标题居中 y
             'recommend_type': '0', // 模块推荐 0自动推荐  1手动推荐 y
             'goods_items': [ // 商品列表数据
 
             ],
             'col_type': '4', // 4  1  2  3  0  y
-            'goods_display': '0',
+            'goods_display': '0', // 大图展示显示模块radio值
             'goods_num': '4', // 模块推荐-商品数量  y
             'min_price': '', // 模块推荐-商品价格最低价格  y
             'max_price': '', // 模块推荐-商品价格最高价格 y
@@ -60,10 +60,10 @@ export default {
             'img_url': '', // 图标 y
             'goods_module_title': '0', // 模块标题类型  0不设置  1文字标题 2图片标题  y
             'img_title_url': '', // 标题图片 y
-            'hide_name': '0', // 商品名称 y
+            'hide_name': '1', // 商品名称 y
             'hide_price': '0', // 商品价格 y
             'hide_label': '0', // 商品标签 y
-            'cart_btn': '0', // 购买按钮 y
+            'cart_btn': '1', // 购买按钮 y
             'cart_btn_choose': '0', // 购买按钮radio y
             'other_message': '0', // 其它信息 y
             'if_radius': '0', // 模块角度 0直角  1圆角 y
