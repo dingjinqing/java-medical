@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.vpu.mp.service.pojo.shop.coupon.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 
 /**
@@ -40,7 +37,7 @@ public class AdminCouponController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 优惠券分页列表
 	 * @param parma
@@ -51,7 +48,17 @@ public class AdminCouponController extends AdminBaseController{
 		PageResult<CouponListVo> couponList = shop().coupon.getCouponList(param);
 		return this.success(couponList);
 	}
-	
+
+	/**
+	 *获得所有可发放优惠券
+	 * @return
+	 */
+	@PostMapping("/admin/coupon/all")
+	public JsonResult getCouponAll (@RequestBody CouponAllParam param){
+		List<ConponAllVo> couponAll = shop().coupon.getCouponAll(param.getIsHasStock());
+		return success(couponAll);
+	}
+
 	/**
 	 * 单条优惠券信息
 	 * @param couponId
@@ -62,7 +69,7 @@ public class AdminCouponController extends AdminBaseController{
 		List<CouponParam> couponInfo = shop().coupon.getOneCouponInfo(couponId);
 		return this.success(couponInfo);
 	}
-	
+
 	/**
 	 * 保存编辑信息
 	 * @param param
@@ -73,7 +80,7 @@ public class AdminCouponController extends AdminBaseController{
 		Boolean result = shop().coupon.saveCouponInfo(param);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 停用优惠券
 	 * @param couponId
@@ -89,7 +96,7 @@ public class AdminCouponController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 删除优惠券（假删除）
 	 * @param couponId
@@ -104,7 +111,7 @@ public class AdminCouponController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 优惠券领取明细
 	 * @param param

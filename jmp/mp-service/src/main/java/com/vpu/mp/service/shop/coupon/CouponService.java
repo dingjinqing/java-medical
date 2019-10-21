@@ -257,14 +257,14 @@ public class CouponService extends ShopBaseService {
     	SelectJoinStep<? extends Record> select = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
             CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME).from(CUSTOMER_AVAIL_COUPONS
             .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
-    	
+
     	//根据优惠券使用状态、过期状态条件筛选
     	MpBuildOptions(select, param);
     	SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
     	PageResult<AvailCouponVo> list = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         return list;
     }
-    
+
     /**
      * 用户优惠券状态筛选条件
      * @param select
@@ -352,4 +352,19 @@ public class CouponService extends ShopBaseService {
         return mrkingVoucherRecord;
     }
 
+    /**
+     * 获取所有可用给的优惠卷
+     * @param isHasStock
+     * @return
+     */
+    public List<ConponAllVo> getCouponAll(Boolean isHasStock) {
+        Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+        List<ConponAllVo> conponAllVos = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
+                .from(MRKING_VOUCHER).where(MRKING_VOUCHER.TYPE.eq((byte) 0)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
+                        .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.lt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.lt(0))))
+                .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte) 1).or(MRKING_VOUCHER.SURPLUS.gt(0))).fetchInto(ConponAllVo.class);
+        return conponAllVos;
+
+    }
 }
