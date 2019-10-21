@@ -11,8 +11,12 @@ import java.sql.Timestamp;
  * @author liangchen 2019.10.15
  */
 @Data
-@Builder
 public class CommentListVo {
+	
+  public CommentListVo(Integer goodsId) {
+	this.goodsId = goodsId;
+  }
+  
   /** 商品id */
   private Integer goodsId;
   /** 商品名称 */
