@@ -306,20 +306,14 @@ export default {
       this.queryImgs()
       this.dialogTableVisible = true
     },
-    imageSize: {
-      handler (newData) {
-        console.log(newData)
-        if (newData.length) {
-          this.sizeW = newData[0]
-          this.sizeH = newData[1]
-        } else {
-          this.sizeW = ''
-          this.sizeH = ''
-        }
-      },
-      immediate: true,
-      deep: true
-
+    imageSize (newData) {
+      if (newData.length) {
+        this.sizeW = newData[0]
+        this.sizeH = newData[1]
+      } else {
+        this.sizeW = ''
+        this.sizeH = ''
+      }
     },
     checked (newData) {
       this.queryImgs()

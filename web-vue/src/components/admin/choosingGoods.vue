@@ -345,15 +345,14 @@ export default {
     }
   },
   watch: {
-    chooseGoodsBack () {
-      console.log('chooseGoodsBack')
+    chooseGoodsBack (newData) {
       this.checkedIdList = this.chooseGoodsBack
     },
     tuneUpChooseGoods () {
       console.log('tuneUpChooseGoods')
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
-      getGoodsListByIds({goodsIds: this.chooseGoodsBack}).then(res => {
+      getGoodsListByIds({ goodsIds: this.chooseGoodsBack }).then(res => {
         console.log('getGoodslistByIds', res)
         this.clearCheckedRow()
         res.content.forEach(item => {
