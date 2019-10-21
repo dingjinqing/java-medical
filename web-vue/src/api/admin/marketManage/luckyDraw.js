@@ -7,6 +7,14 @@ export function getLotteryList (data) {
     data: data
   })
 }
+// 幸运大抽奖
+export function getLottery (data) {
+  return service({
+    url: '/api/admin/market/lottery/get',
+    method: 'post',
+    data: data
+  })
+}
 // 新增抽奖活动
 export function addLottery (data) {
   return service({

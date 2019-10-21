@@ -12,15 +12,46 @@
                                 <div class="loArea">
                                     <div class="picBox">
                                         <ul class="picWrapper">
-                                            <li class="picItems">1</li>
-                                            <li class="picItems">2</li>
-                                            <li class="picItems">3</li>
-                                            <li class="picItems">4</li>
-                                            <li class="picItems">5</li>
-                                            <li class="picItems">6</li>
-                                            <li class="picItems">7</li>
-                                            <li class="picItems">8</li>
-                                            <li class="picItems">9</li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[3].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost+requestParam.noAwardImage" alt="">
+                                                <div>{{requestParam.noAwardIcon}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[2].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[0].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[0].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[1].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[3].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[2].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[3].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage " alt="">
+                                                <div>{{requestParam.prizeList[1].iconImgs}}</div>
+                                            </li>
+                                            <li class="picItems">
+                                                <img src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/1.png" alt="">
+                                                <div>四等奖</div>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="winningTips">
@@ -156,11 +187,11 @@
                             </el-form-item>
 
                             <el-form-item label="付费抽奖：">
-                                <el-radio-group v-model="requestParam.canUserScore">
+                                <el-radio-group v-model="requestParam.canUseScore">
                                     <el-radio :label="1">允许</el-radio>
                                     <el-radio :label="2">不允许</el-radio>
                                 </el-radio-group>
-                                <div v-if="requestParam.canUserScore===1">
+                                <div v-if="requestParam.canUseScore===1">
                                     <span style="color: #999;">用户无法通过分享获取抽奖机会时可通过消耗积分获得抽奖机会</span>
                                     <div>
                                         每次抽奖消耗积分：
@@ -178,7 +209,7 @@
                                                 size="small"
                                                 placeholder="为空表示不限制"
                                                 style="width:125px"
-                                                v-model="requestParam.scoreChance"
+                                                v-model="requestParam.scoreChances"
                                         ></el-input>
                                         次抽奖机会
                                     </div>
@@ -203,7 +234,7 @@
                                         </div>
                                         <div class="rightContent">
                                             <div class="operate">
-                                                <span>修改</span>
+                                                <span @click="showLotteryDialog(1)">修改</span>
                                                 <span class="operateBtn fixstyle" @click="changeImgHandler(1)">上传未中奖图表</span>
                                                 <span class="operateBtn">清空</span>
                                             </div>
@@ -241,7 +272,7 @@
                                     v-for="(item,index) in requestParam.prizeList"
                                     :key="index"
                                     :label="item.iconImgs"
-                                    :name="item.name"
+                                    :name="item.lotteryGrade"
                             >
                                 {{item}}
                                 <el-form label="100px">
@@ -289,21 +320,54 @@
                                                         style="width: 120px"
                                                 >
                                                     <el-option
-                                                            v-for="itema in options"
-                                                            :key="itema.value"
-                                                            :value="itema.value"
-                                                            :label="itema.label"
+                                                            v-for="itema in couponlist"
+                                                            :key="itema.id"
+                                                            :value="itema.id"
+                                                            :label="itema.actName"
                                                     ></el-option>
                                                 </el-select>
-                                                <span>刷新</span>
+                                                <span style="margin-right: 10px;color: #5a8bff;" @click="refreshCouponList()">刷新</span>
                                                 |
-                                                <span>新建</span>
+                                                <span style="margin-left: 10px;color: #5a8bff;" @click="createCouponList()">新建</span>
                                                 <p style="color: #999;">优惠券可用库存{{1}}份数</p>
                                             </div>
                                             <div v-if="item.lotteryType===4">
                                                 <div>
                                                     <span>赠送赠品：</span>
-                                                    <span style="border: 1px solid #ccc; cursor:pointer"> + 选择商品</span>
+                                                    <span style="border: 1px solid #ccc; cursor:pointer"
+                                                    @click="showGoodsDialog()"> + 选择商品</span>
+                                                </div>
+                                                <div v-if="requestParam.prizeList[tabSwitch-1].goodsShow">
+                                                    <table class="goods_modal" style="display: block;">
+                                                        <thead>
+                                                            <tr style="background: #F8F8F8;">
+                                                                <th>商品名称</th>
+                                                                <th>价格</th>
+                                                                <th>库存</th>
+                                                                <th>操作</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="tbody">
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="goods_img"><img
+                                                                            :src="requestParam.prizeList[tabSwitch-1].goodsImage">
+                                                                    </div>
+                                                                    <div class="goods_info clearfix" num="50"
+                                                                         prd_id="5410">
+                                                                        <div class="goods_name">{{requestParam.prizeList[tabSwitch-1].goodsName}}</div>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{currency[1]}}{{requestParam.prizeList[tabSwitch-1].goodsPrice}}</td>
+                                                                <td>{{requestParam.prizeList[tabSwitch-1].goodsNumber}}</td>
+                                                                <td>
+                                                                    <a href="##" item="5410" class="change_goods_del">
+                                                                        删除
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                                 <div>
                                                     赠品有效期：
@@ -350,14 +414,14 @@
                                 <div class="upIcons">
                                     <div class="leftContent">
                                         <img
-                                                src=""
+                                                :src="this.$imageHost + this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage "
                                                 alt=""
                                         >
                                     </div>
                                     <div class="rightContent">
                                         <div class="operate">
-                                            <span>修改</span>
-                                            <span class="operateBtn fixstyle">上传未中奖图表</span>
+                                            <span @click="showLotteryDialog(2)">修改</span>
+                                            <span class="operateBtn fixstyle" @click="changeImgHandler(2)">上传未中奖图表</span>
                                             <span
                                                     class="operateBtn"
                                                     @click="handleClear()"
@@ -373,7 +437,7 @@
                                             size="small"
                                             placeholder="最多可填写4个字"
                                             style="width: 180px"
-                                            v-model="requestParam.prizeList[tabSwitch].iconImgs"
+                                            v-model="requestParam.prizeList[tabSwitch-1].iconImgs"
                                     ></el-input>
                                 </div>
                             </section>
@@ -394,7 +458,7 @@
             <!--添加商品弹窗-->
             <choosingGoods
                     @resultGoodsRow="choosingGoodsResult"
-                    :chooseGoodsBack="[requestParam.prizeList[tabSwitch].iconImgs.prdId]"
+                    :chooseGoodsBack="[requestParam.prizeList[tabSwitch-1].prdId]"
                     :tuneUpChooseGoods="isShowChoosingGoodsDialog"
                     :singleElection="true"
                     :showTips="true"
@@ -404,10 +468,15 @@
             <ImageDalog
                     :tuneUp="selfImgDialogShow"
                     pageIndex="pictureSpace"
-                    :imageSize="[80, 80]"
+                    :imageSize="imageSize"
                     :isDraggable='false'
                     @handleSelectImg='imgDialogSelectedCallback'
             />
+            <lotteryImageDialog
+                    :tuneUp="lotteryImgDialogShow"
+                    @handleSelectImg='imgDialogSelectedCallback'
+            />
+
         </el-card>
     </div>
 </template>
@@ -415,12 +484,27 @@
 <script>
 import choosingGoods from '@/components/admin/choosingGoods'
 import ImageDalog from '@/components/admin/imageDalog'
-import {addLottery} from '@/api/admin/marketManage/luckyDraw'
+import lotteryImageDialog from '@/components/admin/lotteryImageDialog'
+import {addLottery, editLottery, getLottery} from '@/api/admin/marketManage/luckyDraw'
+import {getCouponAll} from '@/api/admin/marketManage/couponList'
+
 export default {
   name: `luckyDrawAdd`,
+  // 是否是设置
+  props: {
+    id: {
+      type: Number,
+      default: () => 122
+    }, // 数据库选择
+    isEdite: { // 调起弹窗
+      type: Boolean,
+      default: () => true
+    }
+  },
   components: {
     choosingGoods,
-    ImageDalog
+    ImageDalog,
+    lotteryImageDialog
   },
   data () {
     return {
@@ -432,16 +516,17 @@ export default {
         freeChances: 0,
         canShare: 0,
         shareChances: 0,
-        canUserScore: 0,
+        canUseScore: 0,
         scorePerChance: 0,
-        scoreChance: 0,
-        noAwardScore: '',
-        noAwardIcon: '',
+        scoreChances: 0,
+        noAwardScore: 0,
+        noAwardIcon: '谢谢参与',
+        noAwardImage: '/image/admin/icon_lottery/thank.png',
         prizeList: [
-          {iconImgs: '一等奖', name: '0'},
-          {iconImgs: '二等奖', name: '1'},
-          {iconImgs: '三等奖', name: '2'},
-          {iconImgs: '四等奖', name: '3'}
+          {iconImgs: '一等奖', lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png'},
+          {iconImgs: '二等奖', lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png'},
+          {iconImgs: '三等奖', lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png'},
+          {iconImgs: '四等奖', lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png'}
         ]
       },
       times: 1,
@@ -449,24 +534,22 @@ export default {
       isShowChoosingGoodsDialog: false,
       // 图片弹窗
       selfImgDialogShow: false,
+      lotteryImgDialogShow: false,
       // 提交状态
       submitStatus: false,
-      // 是否是设置
-      isEdite: false,
+      // 图片弹窗标识
       imgDialogIndex: 0,
-      options: [
-        {value: 1, label: '前端'},
-        {value: 2, label: '后端'},
-        {value: 3, label: '产品经理'}
-      ],
-      tabSwitch: '1',
-      tabInfo: [
-        {title: '一等奖', name: '1'},
-        {title: '二等奖', name: '2'},
-        {title: '三等奖', name: '3'},
-        {title: '四等奖', name: '4'}
-      ]
+      imageSize: [80, 80],
+      // 优惠劵列表
+      couponlist: [],
+      tabSwitch: '1'
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+    this.refreshCouponList()
+    this.isEditeShowData()
   },
   watch: {
 
@@ -477,7 +560,7 @@ export default {
       this.submitStatus = true
       console.log('this.requestParam', this.requestParam)
       if (this.isEdite) {
-        addLottery(this.requestParam).then(res => {
+        editLottery(this.requestParam).then(res => {
           console.log('update', res)
           if (res.error === 0) {
             this.$message.success(res.message)
@@ -513,11 +596,22 @@ export default {
     // 放回商品信息
     choosingGoodsResult (res) {
       console.log(res)
+      this.requestParam.prizeList[this.tabSwitch - 1].prdId = res.prdId
+      this.requestParam.prizeList[this.tabSwitch - 1].goodsShow = true
+      this.requestParam.prizeList[this.tabSwitch - 1].goodsName = res.goodsName
+      this.requestParam.prizeList[this.tabSwitch - 1].goodsImage = res.goodsImg
+      this.requestParam.prizeList[this.tabSwitch - 1].goodsPrice = res.prdPrice
+      this.requestParam.prizeList[this.tabSwitch - 1].goodsNumber = res.prdNumber
+      this.$forceUpdate()
     },
     // 显示图片弹窗
     changeImgHandler (index) {
       this.imgDialogIndex = index
       this.selfImgDialogShow = !this.selfImgDialogShow
+    },
+    showLotteryDialog (index) {
+      this.imgDialogIndex = index
+      this.lotteryImgDialogShow = !this.lotteryImgDialogShow
     },
     // 图片弹窗回调函数
     imgDialogSelectedCallback (image) {
@@ -525,7 +619,8 @@ export default {
       if (this.imgDialogIndex === 1) {
         this.requestParam.noAwardImage = '/' + image.imgPath
       } else if (this.imgDialogIndex === 2) {
-        this.requestParam.iconImgsImage = this.$imageHost + image.imgPath
+        // 上传的是中奖的图标
+        this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage = '/' + image.imgPath
       }
       // 更新
       this.$forceUpdate()
@@ -533,16 +628,41 @@ export default {
     // 中奖率
     prizeRateChange (prizeRate) {
       let den = 100
-      let i = String(prizeRate).length - String(prizeRate).indexOf('.')
+      let i = String(prizeRate).indexOf('.')
+      if (i > 0) {
+        i = String(prizeRate).length - i
+      }
       while (--i > 0) {
         console.log('changePriae', prizeRate, String(prizeRate).indexOf('.'))
         prizeRate = prizeRate * 10
         den = den * 10
       }
-      this.requestParam.prizeList[this.tabSwitch].chanceDenominator = den
-      this.requestParam.prizeList[this.tabSwitch].chanceNumerator = Math.round(prizeRate.valueOf())
+      this.requestParam.prizeList[this.tabSwitch - 1].chanceDenominator = den
+      this.requestParam.prizeList[this.tabSwitch - 1].chanceNumerator = Math.round(prizeRate.valueOf())
       // 更新
       this.$forceUpdate()
+    },
+    // 获取优惠价列表
+    refreshCouponList () {
+      getCouponAll({}).then(res => {
+        console.log('getCouponlist', res)
+        this.couponlist = res.content
+      })
+    },
+    // 新建优惠卷(跳转)
+    createCouponList () {
+      this.$router.push({ path: '/admin/home/main/addyCoupon', query: { } })
+    },
+    // 设置数据回显
+    isEditeShowData () {
+      console.log('isEditeShowData', this.isEdite)
+      if (this.isEdite) {
+        getLottery({id: this.id}).then(res => {
+          console.log('数据回显', res)
+          this.requestParam = res.content
+          this.$forceUpdate()
+        })
+      }
     }
   }
 }
@@ -802,6 +922,60 @@ export default {
 
                     .tabs {
                         margin-top: 10px;
+                        .goods_img {
+                            float: left;
+                            margin: 0 5px 0 0 !important;
+                            width: 40px;
+                            height: 40px;
+                            border: 1px solid #ddd;
+                        }
+                        .goods_name {
+                            width: 135px;
+                            height: 40px;
+                            float: left;
+                            line-height: 20px !important;
+                            margin-left: 0px !important;
+                            margin-bottom: 0px !important;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                        }
+                        .goods_info {
+                            margin: 0 auto !important;
+                            width: 180px;
+                        }
+                        .goods_img img {
+                            width: 100%;
+                            height: 100%;
+                        }
+                        .goods_modal {
+                            display: block;
+                            border: none;
+                            margin-top: 10px;
+                            margin-bottom: 0;
+                            margin-left: 80px;
+                        }
+                        .coupon_set a {
+                            color: #5a8bff;
+                            border: none;
+                            padding: 0 5px;
+                            background: none;
+                            margin-left: 0;
+                        }
+                        .goods_modal th {
+                            padding: 10px 0;
+                            border: 1px solid #eee;
+                        }
+                        .goods_table td, .goods_modal td, .cat_modal td, .sort_table td {
+                            border: 1px solid #ddd;
+                            background: #fff;
+                            padding: 8px 10px;
+                        }
+                        .td {
+                            padding: 8px 10px;
+                        }
                     }
 
                     .levelBoxSetting {

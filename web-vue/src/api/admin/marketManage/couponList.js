@@ -9,6 +9,14 @@ export function couponList (data) {
   })
 }
 
+// 获取所有优惠卷列表
+export function getCouponAll (data) {
+  return service({
+    url: '/api/admin/coupon/all',
+    method: 'post',
+    data: data
+  })
+}
 // 停用
 export function pauseCoupon (data) {
   return service({
