@@ -505,6 +505,7 @@ public class MemberCardService extends ShopBaseService {
 		if (card.getPlatformCategoryIds() != null) {
 			String discountCatId = Util.listToString(Arrays.asList(card.getPlatformCategoryIds()));
 			logger().info("折扣平台分类id " + discountCatId);
+			cardRecord.setDiscountCatId(discountCatId);
 		}
 	}
 
