@@ -4,6 +4,10 @@
 package com.vpu.mp.db.main.tables;
 
 
+import com.vpu.mp.db.main.Indexes;
+import com.vpu.mp.db.main.Keys;
+import com.vpu.mp.db.main.MiniMain;
+import com.vpu.mp.db.main.tables.records.TaskJobContentRecord;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -11,10 +15,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.main.Indexes;
-import com.vpu.mp.db.main.Keys;
-import com.vpu.mp.db.main.MiniMain;
-import com.vpu.mp.db.main.tables.records.TaskJobContentRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TaskJobContent extends TableImpl<TaskJobContentRecord> {
 
-    private static final long serialVersionUID = -1818721420;
+    private static final long serialVersionUID = 811661836;
 
     /**
      * The reference instance of <code>mini_main.b2c_task_job_content</code>
@@ -58,29 +58,29 @@ public class TaskJobContent extends TableImpl<TaskJobContentRecord> {
     }
 
     /**
-     * The column <code>mini_main.b2c_task_job_content.ID</code>.
+     * The column <code>mini_main.b2c_task_job_content.id</code>.
      */
-    public final TableField<TaskJobContentRecord, Integer> ID = createField("ID", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<TaskJobContentRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_main.b2c_task_job_content.CONTENT</code>. 消息内容
+     * The column <code>mini_main.b2c_task_job_content.content</code>. 消息内容
      */
-    public final TableField<TaskJobContentRecord, String> CONTENT = createField("CONTENT", org.jooq.impl.SQLDataType.CLOB, this, "消息内容");
+    public final TableField<TaskJobContentRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "消息内容");
 
     /**
-     * The column <code>mini_main.b2c_task_job_content.CREATE_TIME</code>.
+     * The column <code>mini_main.b2c_task_job_content.create_time</code>.
      */
-    public final TableField<TaskJobContentRecord, Timestamp> CREATE_TIME = createField("CREATE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TaskJobContentRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_main.b2c_task_job_content.UPDATE_TIME</code>. 最后修改时间
+     * The column <code>mini_main.b2c_task_job_content.update_time</code>. 最后修改时间
      */
-    public final TableField<TaskJobContentRecord, Timestamp> UPDATE_TIME = createField("UPDATE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<TaskJobContentRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * The column <code>mini_main.b2c_task_job_content.DEL_FLAG</code>. 删除标识：0未删除，1已删除
+     * The column <code>mini_main.b2c_task_job_content.del_flag</code>. 删除标识：0未删除，1已删除
      */
-    public final TableField<TaskJobContentRecord, Byte> DEL_FLAG = createField("DEL_FLAG", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识：0未删除，1已删除");
+    public final TableField<TaskJobContentRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识：0未删除，1已删除");
 
     /**
      * Create a <code>mini_main.b2c_task_job_content</code> table reference
