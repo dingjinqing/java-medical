@@ -31,6 +31,19 @@ public class NormalCardToVo extends NormalCardVo {
 
 	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
+	/** 指定商品时的： 商品id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountGoodsId;
+	private String[] goodsId;
+	/** 指定商品时的： 商家分类id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountSortId;
+	private String[] shopCategoryIds;
+	/** 指定商品时的: 平台分类id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountCatId;
+	private String[] platformCategoryIds;
+	/** TODO指定商品时的 : 品牌分类id */
 	
 	/**
 	 * 积分具体详情
@@ -84,6 +97,24 @@ public class NormalCardToVo extends NormalCardVo {
 	public void changeJsonCfg() {
 		log.info("执行NormalCardToVo的处理策略");
 		super.changeJsonCfg();
+		
+		/** 积分指定商品 处理 */
+		/** 商品id */
+		if(discountGoodsId != null) {
+			discountGoodsId.replaceAll("\\s+","");
+			goodsId = discountGoodsId.split(",");
+		}
+		/** 商家分类id */
+		if(discountSortId != null) {
+			discountSortId.replaceAll("\\s+","");
+			shopCategoryIds = discountSortId.split(",");
+		}
+		/**平台分类id */
+		if(discountCatId != null) {
+			discountCatId.replaceAll("\\s+","");
+			platformCategoryIds = discountCatId.split(",");
+		}
+		
 		
 		/** 购物送积分策略json对象 */
 		String buyScore = this.getBuyScore();

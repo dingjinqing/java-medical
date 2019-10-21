@@ -304,12 +304,11 @@ public class MemberCardService extends ShopBaseService {
 				cardRecord.setDiscountIsAll(DISCOUNT_PART_GOODS);
 				/** 处理需要折扣的部分商品,平台,商家 */
 				updateDiscountPartGoods(card, cardRecord);
-
 			}
 
 			/** 2. 会员专享商品 */
 			if (BUTTON_ON.equals(card.getPowerPayOwnGood())) {
-				// TODO 处理允许会员专享的商品，商家，分类，平台等
+				//处理允许会员专享的商品，商家，分类，平台等
 				List<Integer> cardList =  new ArrayList<>();
 				cardList.add(card.getId());
 				/** 专享商品-商品id */
