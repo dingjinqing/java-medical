@@ -30,6 +30,10 @@ var zh_CN = {
       "shopClosed": "该店铺已停业",
       "disableLogin": "您已被禁止登录",
       "contactMerchant": "联系商家",
+    },
+    "usercenter":{
+      "qrcTitle":"今日已领",
+      "qrcTitleB": "积分"
     }
   },
   "page1": {

@@ -177,6 +177,7 @@ var nav = {
     this.navigateTo({
       url: '/pages/webview/webview?url=' + encodeURIComponent(url),
     })
+    console.log(url)
   }
 }
 module.exports = nav;

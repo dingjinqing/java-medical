@@ -1,5 +1,6 @@
 
 var cache = require("../base/cache.js")
+var config = require('../config.js');
 var zhCnLocalePack = require("./zh_CN.js")
 
 var i18n = {
@@ -7,7 +8,7 @@ var i18n = {
 };
 
 function defaultLocale() {
-  return "zh_CN"
+  return config.shopLanguage;
 }
 
 function setLocale(locale) {

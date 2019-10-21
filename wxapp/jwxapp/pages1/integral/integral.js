@@ -101,7 +101,7 @@ global.wxPage({
 
   lookRule: function (e) {
     var sign_rule = e.currentTarget.dataset.rule;
-    util.jumpToWeb('/wxapp/sign/help', '&sign_rule=' + JSON.stringify(sign_rule))
+    util.jumpToWeb('/wxapp/sign/help')
   },
 
   userRequest: function (e) {
