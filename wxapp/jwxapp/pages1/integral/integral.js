@@ -127,8 +127,8 @@ global.wxPage({
     util.api('/api/wxapp/score/list', function (res) {
       var listL = res.content.list;
       var expire = res.content.expire;
-      if (listL.data.length > 0) {
-        list = listL.data;
+      if (listL.dataList.length > 0) {
+        list = listL.dataList;
         for (var i = 0; i < list.length; i++) {
           list[i].score = parseInt(list[i].score);
         }

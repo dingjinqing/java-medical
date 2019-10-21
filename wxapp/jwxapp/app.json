@@ -19,7 +19,8 @@
     "pages/cart/cart",
     "pages/cardlist/cardlist",
     "pages/cardinfo/cardinfo",
-    "pages/cardrecord/cardrecord"
+    "pages/cardrecord/cardrecord",
+    "pages/userqrcode/userqrcode"
   ],
   "window": {
     "backgroundTextStyle": "dark",
