@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuContentVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
@@ -39,6 +40,10 @@ public class GoodsBrandSortMpService extends ShopBaseService{
     @Autowired
     GoodsBrandService goodsBrandService;
 
+    /**
+     * 商品分类页面初始接口
+     * @return
+     */
     public List<GoodsSortMenuVo> goodsSortPageInit() {
         GoodsBrandConfig goodsBrandConfig = configService.goodsBrandConfigService.getGoodsBrandConfig();
         GoodsRecommendSortConfig recommendSortConfig = configService.recommendSortConfigService.getRecommendSortConfig();
@@ -100,6 +105,28 @@ public class GoodsBrandSortMpService extends ShopBaseService{
     }
 
     /**
+     * 根据{@link GoodsSortMenuParam#menuType}分别获取推荐分类
+     * @param param
+     * @return
+     */
+    public GoodsSortMenuContentVo getGoodsSortMenuContent(GoodsSortMenuParam param) {
+        Byte menuType = param.getMenuType();
+        if (GoodsConstant.ALL_BRAND_TYPE.equals(menuType)) {
+            return getAllBrandContent();
+        }
+        if (GoodsConstant.RECOMMEND_BRAND_TYPE.equals(menuType)) {
+            return getRecommendBrandContent();
+        }
+        if (GoodsConstant.RECOMMEND_SORT_TYPE.equals(menuType)) {
+            return getRecommendSortContent();
+        }
+        if (GoodsConstant.NORMAL_SORT_TYPE.equals(menuType)) {
+            return getNormalSortContent(param.getMenuId());
+        }
+
+        return new GoodsSortMenuContentVo();
+    }
+    /**
      * 获取所有品牌返回内容
      * @return
      */
@@ -111,6 +138,14 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         return content;
     }
 
+    /**
+     * 获取推荐品牌
+     * @return
+     */
+    private GoodsSortMenuContentVo getRecommendBrandContent(){
+        GoodsBrandConfig goodsBrandConfig = configService.goodsBrandConfigService.getGoodsBrandConfig();
+        return  getRecommendBrandContent(goodsBrandConfig);
+    }
     /**
      * 获取推荐品牌
      * @param goodsBrandConfig
@@ -130,6 +165,14 @@ public class GoodsBrandSortMpService extends ShopBaseService{
 
     /**
      * 获取推荐分类
+     * @return
+     */
+    private GoodsSortMenuContentVo getRecommendSortContent(){
+        GoodsRecommendSortConfig recommendSortConfig = configService.recommendSortConfigService.getRecommendSortConfig();
+        return getRecommendSortContent(recommendSortConfig);
+    }
+    /**
+     * 获取推荐分类
      * @param recommendSortConfig
      * @return
      */
@@ -147,6 +190,15 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         return content;
     }
 
+    /**
+     * 获取普通分类下的集合内容,其返回值可能是普通二级分类,也可能是商品信息
+     * @param sortId
+     * @return
+     */
+    private GoodsSortMenuContentVo getNormalSortContent(Integer sortId) {
+        Sort sort = goodsSortService.getSort(sortId);
+        return getNormalSortContent(sort);
+    }
     /**
      * 获取普通分类下的集合内容,其返回值可能是普通二级分类,也可能是商品信息
      * @param sort

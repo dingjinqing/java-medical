@@ -46,7 +46,7 @@ public class GoodsConstant {
     /**
      * 小程序-商品分类页面-目录项类型码
      * 1全部品牌，2推荐品牌，3推荐品牌列表展示，4推荐品牌按分类展示，
-     *      * 5推荐分类，6普通分类，7商品内容
+     * 5推荐分类，6普通分类，7商品内容
      */
 
     public static final Byte ALL_BRAND_TYPE  = 1;
