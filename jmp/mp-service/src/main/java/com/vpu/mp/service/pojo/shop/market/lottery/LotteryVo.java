@@ -28,6 +28,7 @@ public class LotteryVo {
     private String    noAwardIcon;
     private Byte      status;
     private Byte      delFlag;
+
     private List<LotteryPrizeVo> prizeList;
 
 }

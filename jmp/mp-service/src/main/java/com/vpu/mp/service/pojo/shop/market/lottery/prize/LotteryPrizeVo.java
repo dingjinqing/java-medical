@@ -24,11 +24,11 @@ public class LotteryPrizeVo {
     /**
      * 中奖类型
      */
-    private Byte    presentType;
+    private Byte    lotteryType;
     /**
      * 奖品份数
      */
-    private Integer presentNumber;
+    private Integer lotteryNumber;
     /**
      * 中奖次数
      */
@@ -52,7 +52,7 @@ public class LotteryPrizeVo {
     /**
      * 奖品信息
      */
-    private String  presentDetail;
+    private String  lotteryDetail;
     /**
      * 中奖图片
      */
