@@ -925,4 +925,18 @@ ALTER TABLE b2c_user_collection add column `collect_price` decimal(10, 2) NOT NU
 alter table `b2c_part_order_goods_ship` add index `product_id` (`product_id`);
 
 ALTER TABLE b2c_mrking_voucher add column `expiration_date` timestamp default 0 comment 'validity_type为1时的过期时间';
-
+--王帅增加订单字段
+ALTER TABLE `b2c_order_info` 
+ADD COLUMN `free_ship` decimal(10, 2) DEFAULT 0.00 COMMENT '运费抵扣' ,
+ADD COLUMN `free_detail` text  COMMENT '运费抵扣规则',
+ADD COLUMN `sub_goods_price` decimal(10, 2) DEFAULT 0.00 COMMENT '子单金额' ,
+ADD COLUMN `is_refund_coupon` tinyint(1) DEFAULT 0 COMMENT '是否退优惠券',
+ADD COLUMN `is_finish_refund` tinyint(1) DEFAULT 0 COMMENT '子订单是否已处理退款',
+ADD COLUMN `is_view_comment` tinyint(1) DEFAULT 1 COMMENT '是否已查看评价',
+ADD COLUMN `pos_order_action` tinyint(1) DEFAULT 1 COMMENT '1:扫码购 2：仅自提' ,
+ADD COLUMN `order_remind` tinyint(1) DEFAULT 0 COMMENT '发货提醒次数',
+ADD COLUMN `order_remind_time` timestamp(0) NULL DEFAULT NULL COMMENT '发货提醒时间',
+ADD COLUMN `extend_receive_action` tinyint(1) DEFAULT 0 COMMENT '延长收货操作人：1:商家 2:用户' ,
+ADD COLUMN `extend_receive_time` timestamp(0) NULL DEFAULT NULL COMMENT '收货延长时间' ,
+ADD COLUMN `tk_order_type` tinyint(2) DEFAULT 0 COMMENT '淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单' ,
+ADD COLUMN `pay_award_id` int(9) DEFAULT NULL COMMENT '支付有礼id' ;
