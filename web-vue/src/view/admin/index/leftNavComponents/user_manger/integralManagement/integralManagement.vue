@@ -9,7 +9,10 @@
           label="积分规则设置"
           name="first"
         >
-          <IntegralRule @toNoticeSend="toNoticeSend" />
+          <IntegralRule
+            @toNoticeSend="toNoticeSend"
+            :message="ruleData"
+          />
         </el-tab-pane>
         <el-tab-pane
           label="前端展示设置"
@@ -284,7 +287,8 @@ export default {
         }
       ],
       buyEach: null,
-      scoreEach: null
+      scoreEach: null,
+      ruleData: null
     }
   },
   created () {
@@ -307,6 +311,7 @@ export default {
             integralDateValue: res.content.scorePeriod
           }
           console.log(data)
+          this.ruleData = data
 
           this.limitRadio = res.content.scorePayLimit
           this.limitIntegralNum = res.content.scorePayNum
@@ -323,13 +328,23 @@ export default {
               input: res.content.signScore[i]
             })
           }
-
+          if (res.content.buy.length > 0) {
+            this.shopFullArr = []
+          } else {
+            this.shopFullArr = [
+              {
+                left: 100,
+                right: 100
+              }
+            ]
+          }
           for (let i in res.content.buy) {
             this.shopFullArr.push({
               left: res.content.buy[i],
               right: res.content.buyScore[i]
             })
           }
+          console.log(this.shopFullArr)
           this.buyEach = res.content.buyEach[0]
           this.scoreEach = res.content.buyEachScore[0]
         }

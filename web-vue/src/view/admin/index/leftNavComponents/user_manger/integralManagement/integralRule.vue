@@ -12,18 +12,18 @@
       <div class="radioDiv">
         <div>
           <el-radio
-            v-model="radio"
+            v-model="message.radio"
             label="0"
           >永久有效</el-radio>
         </div>
         <div>
           <el-radio
-            v-model="radio"
+            v-model="message.radio"
             label="1"
           >从获得开始至</el-radio>
           <div>
             <el-select
-              v-model="yearValue"
+              v-model="message.yearValue"
               placeholder="请选择"
               size="small"
             >
@@ -38,7 +38,7 @@
           </div>
           <div>
             <el-select
-              v-model="mounthValue"
+              v-model="message.mounthValue"
               placeholder="请选择"
               size="small"
             >
@@ -54,7 +54,7 @@
           </div>
           <div>
             <el-select
-              v-model="dayValue"
+              v-model="message.dayValue"
               placeholder="请选择"
               size="small"
               :disabled="mounthValue==='0'"
@@ -75,19 +75,19 @@
         </div>
         <div class="integralNumDiv">
           <el-radio
-            v-model="radio"
+            v-model="message.radio"
             label="2"
           >从获得积分当天起</el-radio>
           <el-input-number
             size="small"
-            v-model="integralNum"
+            v-model="message.integralNum"
             controls-position="right"
             :min="1"
             :max="100"
           ></el-input-number>
           <div>
             <el-select
-              v-model="integralDateValue"
+              v-model="message.integralDateValue"
               placeholder="请选择"
               size="small"
             >
@@ -118,24 +118,25 @@
 </template>
 <script>
 export default {
+  props: ['message'],
   data () {
     return {
       radio: '0',
       yearValue: '4',
       yearOptions: [{
-        value: '0',
+        value: '1',
         label: '一年后'
       }, {
-        value: '1',
+        value: '2',
         label: '两年后'
       }, {
-        value: '2',
+        value: '3',
         label: '三年后'
       }, {
-        value: '3',
+        value: '4',
         label: '四年后'
       }, {
-        value: '4',
+        value: '5',
         label: '五年后'
       }],
       mounthValue: '4',
@@ -282,14 +283,14 @@ export default {
       integralNum: '',
       integralDateValue: '2',
       integralDateOptions: [{
-        value: '0',
+        value: '1',
         label: '日'
       }, {
-        value: '1',
+        value: '7',
         label: '周'
       },
       {
-        value: '2',
+        value: '30',
         label: '月'
       }]
     }
@@ -301,20 +302,23 @@ export default {
         this.dayValue = ''
       }
     },
+    message () {
+      console.log('数据传递成功')
+    },
     '$store.state.util.integralDataNotice' (newData) {
       console.log('正在监控积分通用规则')
       let obj = {
-        radio: this.radio
+        radio: this.message.radio
       }
-      switch (this.radio) {
+      switch (this.message.radio) {
         case '1':
-          obj.yearValue = this.yearValue
-          obj.mounthValue = this.mounthValue
-          obj.dayValue = this.dayValue
+          obj.yearValue = this.message.yearValue
+          obj.mounthValue = this.message.mounthValue
+          obj.dayValue = this.message.dayValue
           break
         case '2':
-          obj.integralNum = this.integralNum
-          obj.integralDateValue = this.integralDateValue
+          obj.integralNum = this.message.integralNum
+          obj.integralDateValue = this.message.integralDateValue
       }
       console.log(obj)
       this.$emit('toNoticeSend', obj, 0)
