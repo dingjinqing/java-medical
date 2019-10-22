@@ -144,8 +144,11 @@ export default {
         })
       }
     },
-    // 初始化数据
+    // 初始化班次选择
     initData (datas) {
+      this.schedulingDatas.forEach((item, index) => {
+        this.$set(item, 'scheduleId', '')
+      })
       for (const key in datas) {
         if (datas.hasOwnProperty(key)) {
           const data = datas[key]
