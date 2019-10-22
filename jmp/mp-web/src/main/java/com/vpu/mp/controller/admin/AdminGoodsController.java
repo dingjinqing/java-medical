@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,21 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsBatchOperateParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsColumnCheckExistParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsIdParams;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsQrCodeVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * @author 李晓冰
@@ -516,6 +514,22 @@ public class AdminGoodsController extends AdminBaseController {
                 }
             }
         }
+        return success();
+    }
+
+    /**
+     * 取将要导出的列数
+     */
+    @PostMapping("/api/admin/goods/export/rows")
+    public JsonResult getExportTotalRows(@RequestBody @Valid GoodsExportParam param) {
+        return success(shop().goods.getExportGoodsListSize(param));
+    }
+
+    @PostMapping("/api/admin/goods/export")
+    public JsonResult export(@RequestBody @Valid GoodsExportParam param, HttpServletResponse response) {
+        Workbook workbook =shop().goods.exportGoodsList(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME ,"excel","excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
         return success();
     }
 

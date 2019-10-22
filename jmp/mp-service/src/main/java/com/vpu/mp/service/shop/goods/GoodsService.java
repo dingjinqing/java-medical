@@ -3,6 +3,9 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -22,6 +25,7 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
@@ -202,19 +206,20 @@ public class GoodsService extends ShopBaseService {
 
         return goodsPageListVos;
     }
+
     /**
-     * 商品（规格）分页查询，每条记录包含了商品部分信息和必要的规格信息
+     * 商品（规格）查询或导出的通用SelectConditionStep，每条记录包含了商品部分信息和必要的规格信息
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
-     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      */
-    public PageResult<GoodsPageListVo> getProductPageList(GoodsPageListParam goodsPageListParam) {
+    private SelectConditionStep<?> createProductSelect(GoodsPageListParam goodsPageListParam){
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
-            GOODS.SOURCE, GOODS.GOODS_TYPE,GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME,
+            GOODS.SOURCE, GOODS.GOODS_TYPE,GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS.GOODS_AD,GOODS.IS_ON_SALE,GOODS.LIMIT_BUY_NUM,GOODS.GOODS_WEIGHT,GOODS.UNIT,
+            GOODS_BRAND.BRAND_NAME,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE,
-            GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN,
+            GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_COST_PRICE,GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
@@ -222,6 +227,16 @@ public class GoodsService extends ShopBaseService {
 
         // 拼接排序
         selectFrom = this.buildOrderFields(selectFrom, goodsPageListParam);
+
+        return selectFrom;
+    }
+    /**
+     * 商品（规格）分页查询，每条记录包含了商品部分信息和必要的规格信息
+     * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
+     */
+    public PageResult<GoodsPageListVo> getProductPageList(GoodsPageListParam goodsPageListParam) {
+        SelectConditionStep<?> selectFrom = this.createProductSelect(goodsPageListParam);
 
         PageResult<GoodsPageListVo> pageResult = this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
             goodsPageListParam.getPageRows(), GoodsPageListVo.class);
@@ -1407,5 +1422,44 @@ public class GoodsService extends ShopBaseService {
      */
     public Record getGoodsByProductId(Integer productId){
         return  db().select().from(GOODS).leftJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOne();
+    }
+
+    /**
+     * 商品导出数据的条数
+     * @param param
+     * @return
+     */
+    public int getExportGoodsListSize(GoodsExportParam param) {
+        // 拼接过滤条件
+        Condition condition = this.buildOptions(param);
+
+        SelectConditionStep<?> selectFrom = db().selectCount()
+            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .where(condition);
+
+        return selectFrom.fetchOne().into(Integer.class);
+    }
+
+    /**
+     * 商品列表导出（规格为主）
+     *
+     * @param param
+     * @param lang
+     * @return workbook
+     */
+    public Workbook exportGoodsList(GoodsExportParam param, String lang) {
+        SelectConditionStep<?> selectFrom = this.createProductSelect(param);
+        List<GoodsExportVo> list = selectFrom.limit(param.getExportRowStart() - 1,param.getExportRowEnd() - param.getExportRowStart() + 1).fetchInto(GoodsExportVo.class);
+
+        //循环处理需要处理的列
+        for(GoodsExportVo goods : list){
+            //TODO
+        }
+
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(list, GoodsExportVo.class);
+        return workbook;
     }
 }

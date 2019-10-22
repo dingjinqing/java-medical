@@ -110,6 +110,31 @@ public class JsonResultMessage {
 	public static final String GOODS_RECOMMEND_NOT_EXIST = "goods.recommend.id.notexist";
 
     /**
+     * 商品导出
+     */
+    public static final String GOODS_EXPORT_FILE_NAME = "goods.export.file_name";
+    public static final String GOODS_EXPORT_COLUMN_CREATE_TIME = "goods.export.column.create_time";
+    public static final String GOODS_EXPORT_COLUMN_CAT_NAME = "goods.export.column.cat_name";
+    public static final String GOODS_EXPORT_COLUMN_SORT_NAME_PARENT = "goods.export.column.sort_name_parent";
+    public static final String GOODS_EXPORT_COLUMN_SORT_NAME_CHILD = "goods.export.column.sort_name_child";
+    public static final String GOODS_EXPORT_COLUMN_BRAND_NAME = "goods.export.column.brand_name";
+    public static final String GOODS_EXPORT_COLUMN_GOODS_SN = "goods.export.column.goods_sn";
+    public static final String GOODS_EXPORT_COLUMN_GOODS_NAME = "goods.export.column.goods_name";
+    public static final String GOODS_EXPORT_COLUMN_PRD_DESC = "goods.export.column.prd_desc";
+    public static final String GOODS_EXPORT_COLUMN_GOODS_AD = "goods.export.column.goods_ad";
+    public static final String GOODS_EXPORT_COLUMN_PRD_SN = "goods.export.column.prd_sn";
+    public static final String GOODS_EXPORT_COLUMN_PRD_NUMBER = "goods.export.column.prd_number";
+    public static final String GOODS_EXPORT_COLUMN_PRD_COST_PRICE = "goods.export.column.prd_cost_price";
+    public static final String GOODS_EXPORT_COLUMN_MARKET_PRICE = "goods.export.column.market_price";
+    public static final String GOODS_EXPORT_COLUMN_SHOP_PRICE = "goods.export.column.shop_price";
+    public static final String GOODS_EXPORT_COLUMN_IS_ON_SALE = "goods.export.column.is_on_sale";
+    public static final String GOODS_EXPORT_COLUMN_LIMIT_BUY_NUMBER = "goods.export.column.limit_buy_number";
+    public static final String GOODS_EXPORT_COLUMN_GOODS_WEIGHT = "goods.export.column.goods_weight";
+    public static final String GOODS_EXPORT_COLUMN_UNIT = "goods.export.column.unit";
+    public static final String GOODS_EXPORT_COLUMN_GOODS_IMG = "goods.export.column.goods_img";
+
+
+    /**
      * 营销
      */
     public static final String DISTRIBUTOR_GROUP_NAME_EXIST = "distributor.group.name.exist";
