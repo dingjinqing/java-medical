@@ -71,3 +71,9 @@ ALTER TABLE `mini_main`.`b2c_shop` CHANGE COLUMN `shopLanguage` `shop_language` 
 -- 修改b2c_category主键字段
 ALTER TABLE b2c_category CHANGE COLUMN `cat_id` `cat_id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE b2c_category CHANGE COLUMN `parent_id` `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父ID';
+
+--修改b2c_user字段与店铺库一致
+ALTER TABLE b2c_user
+CHANGE COLUMN `is_delete` `del_flag` TINYINT(1) NOT NULL DEFAULT '0' ,
+CHANGE COLUMN `delete_time` `del_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间' ;
+
