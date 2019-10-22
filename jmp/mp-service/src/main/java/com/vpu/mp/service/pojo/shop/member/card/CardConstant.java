@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * 
  * @author 黄壮壮
- * @Date: 2019年8月6日
+ * @Date: 2019年8月6日R
  * @Description: 会员卡用到的常量定义
  */
 public class CardConstant {

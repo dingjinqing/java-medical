@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
@@ -51,8 +52,18 @@ public class MemberDaoService extends ShopBaseService {
 	 * 获取会员用户的详细信息
 	 * 
 	 * @param userId
-	 * @param user
-	 * @param inviteName
+	 * @return
+	 */
+	public UserRecord getUserInfo(Integer userId) {
+		Record member = this.getMemberInfo(userId);
+		if(member != null) {
+			member.into(UserRecord.class);
+		}
+		return null;
+	}
+	/**
+	 * 获取会员用户的详细信息
+	 * @param userId
 	 * @return
 	 */
 	public Record getMemberInfo(
@@ -394,5 +405,7 @@ public class MemberDaoService extends ShopBaseService {
 			select.where(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
 		}
 	}
+	
+	
 	
 }

@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 
 /**
@@ -21,7 +24,6 @@ public class AdminScoreCfgController extends AdminBaseController {
 
 	@PostMapping(value="/get")
 	public JsonResult getScoreConfig() {
-		
 		ScoreCfgVo vo = shop().score.getShopScoreCfg();
 		return this.success(vo);
 	}
@@ -35,10 +37,32 @@ public class AdminScoreCfgController extends AdminBaseController {
 	public JsonResult userScoreConfig(@RequestBody ShopCfgParam param) {
 		
 		//判断积分有效期类型
-		int r = this.shop().score.setShopCfg(param);
+		int r = shop().score.setShopCfg(param);
 		if(r == -1) {
 			return this.fail();
 		}
 		return this.success();
 	}
+	
+	/**
+	 * 前端积分说明保存
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value="/copywriting/save")
+	public JsonResult saveScoreDocument(@RequestBody ScoreFrontParam param) {
+		shop().score.saveScoreDocument(param);
+		return success();
+	}
+	
+	/**
+	 * 前端积分说明获取
+	 */
+	@PostMapping(value="/copywriting")
+	public JsonResult scoreCopywriting() {
+		ScoreFrontVo vo = shop().score.scoreCopywriting();
+		return i18nSuccess(vo);
+	}
+	
+	
 }

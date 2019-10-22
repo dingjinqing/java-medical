@@ -71,6 +71,8 @@ public class ScoreService extends ShopBaseService {
 	
 	@Autowired
 	public ScoreCfgService score;
+	@Autowired
+	public UserCardService userCardService;
 	
 	/** -积分有效的状态 */
 	final Byte[] AVAILABLE_STATUS = new Byte[] { NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS };
@@ -90,6 +92,11 @@ public class ScoreService extends ShopBaseService {
 	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
 			Byte tradeFlow) throws MpException{
 		updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow,"");
+	}
+	
+	public void updateMemberScore(ScoreParam param, Integer adminUser,Byte tradeType,
+			Byte tradeFlow) throws MpException{
+		updateMemberScore(param,adminUser,adminUser,tradeType,tradeFlow,"");
 	}
 	
 	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
@@ -552,7 +559,12 @@ public class ScoreService extends ShopBaseService {
 		tradesRecord.addRecord(new BigDecimal(Math.abs(data.getScore())), data.getOrderSn()==null?"":data.getOrderSn(), data.getUserId(), (byte)1, tradeType, tradeFlow, tradeFlow);
 		String userGrade = member.card.getUserGrade(data.getUserId());
 		if(!userGrade.equals(CardConstant.LOWEST_GRADE)) {
-			//TODO 等黄壮壮提供  updateGrade			
+			//TODO 等黄壮壮提供  updateGrade		
+			try {
+				userCardService.updateGrade(new Integer[]{1},null, (byte)1);
+			} catch (MpException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

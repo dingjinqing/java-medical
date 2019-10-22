@@ -25,6 +25,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.shop.member.UserCardService;
 
@@ -131,10 +132,10 @@ public class UserCardDaoService extends ShopBaseService{
 	 * @param userId
 	 * @param card
 	 */
-	public UserCardRecord getUsableUserCard(Integer userId, MemberCard card) {
+	public UserCardRecord getUsableUserCard(Integer userId, UserCardParam card) {
 		SelectConditionStep<UserCardRecord> sql = db().selectFrom(USER_CARD)
 			.where(USER_CARD.CARD_ID.eq(userId))
-			.and(USER_CARD.CARD_ID.eq(card.getId()))
+			.and(USER_CARD.CARD_ID.eq(card.getCardId()))
 			.and(USER_CARD.FLAG.eq(CARD_USING));
 		if(StringUtils.isBlank(card.getCardName())) {
 			sql.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())));
@@ -238,7 +239,7 @@ public class UserCardDaoService extends ShopBaseService{
 		return db().select(MEMBER_CARD.GRADE).from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
-			.and(USER_CARD.FLAG.eq(MEMBER_CARD_USING))
+			.and(USER_CARD.FLAG.eq(CARD_USING))
 			.fetchAnyInto(String.class);
 	}
 
@@ -255,4 +256,48 @@ public class UserCardDaoService extends ShopBaseService{
 	public int updateUserCardByNo(String cardNo,UserCardRecord record) {
 		return  db().update(USER_CARD).set(record).where(USER_CARD.CARD_NO.eq(cardNo)).execute();
 	}
+	
+	/**
+	 * 获取用户持有的等级会员卡信息
+	 * @param userId
+	 * @return
+	 */
+	public UserCardParam getUserRankCardDetailInfo(Integer userId) {
+		return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
+			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+			.where(USER_CARD.USER_ID.eq(userId))
+			.and(USER_CARD.FLAG.eq(CARD_USING))
+			.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
+			.fetchAnyInto(UserCardParam.class);
+	}
+	
+	public void updateUserCardByCardIdAndNo(Integer cardId,String cardNo) {
+		db().update(USER_CARD)
+			.set(USER_CARD.CARD_ID, cardId)
+			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
+			.set(USER_CARD.FLAG,CARD_USING)
+			.where(USER_CARD.CARD_NO.eq(cardNo))
+			.execute();
+	}
+	
+	public int countCardByCardId(Integer cardId){
+		return db().selectCount().from(USER_CARD).where(USER_CARD.CARD_ID.eq(cardId)).execute();
+	}
+	
+	/**
+	 * 升级卡
+	 * @param cardInfo
+	 * @param userId
+	 */
+	public void updateUserRankCard(MemberCardRecord cardInfo,Integer userId) {
+		db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+			.set(USER_CARD.CARD_ID,cardInfo.getId())
+			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
+			.set(USER_CARD.FLAG,CARD_USING)
+			.where(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
+			.and(USER_CARD.USER_ID.eq(userId))
+			.and(USER_CARD.FLAG.eq(CARD_USING))
+			.execute();
+	}
+	
 }

@@ -492,6 +492,11 @@ public class CardDaoService extends ShopBaseService {
 				 	.fetch().into(Integer.class);
 	}
 	
+	/**
+	 * 获取会员卡信息 php代码 > getCardInfo
+	 * @param id
+	 * @return
+	 */
 	public MemberCardRecord getCardInfoById(Integer id) {
 		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(id)).fetchAny();
 	}

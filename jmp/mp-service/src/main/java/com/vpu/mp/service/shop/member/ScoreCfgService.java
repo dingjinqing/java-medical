@@ -14,8 +14,11 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
@@ -57,7 +60,10 @@ public class ScoreCfgService extends BaseShopConfigService {
 	final public static String LOGIN_SCORE = "login_score";
 	final public static String SCORE_LOGIN = "score_login";
 	final public static String SIGN_IN_SCORE = "sign_in_score";
-	
+	// 积分说明
+	final public static String SCORE_DOCUMENT = "score_document";
+	// 积分国际化信息
+	final public static String SCORE_CFG_TITLE="member.score.cfg.title";
 
 	public int setShopCfg(ShopCfgParam param) {
 
@@ -310,6 +316,37 @@ public class ScoreCfgService extends BaseShopConfigService {
 	 */
 	public ShopCfgRecord getScoreNum(String k) {
 		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny();
+	}
+
+	/**
+	 * 保存文档
+	 * @param param
+	 */
+	public void saveScoreDocument(ScoreFrontParam param) {
+		param.setUpdateTime(DateUtil.getLocalDateTime());
+		String value = Util.toJson(param);
+		logger().info(value);
+		this.set(SCORE_DOCUMENT, value);
+	}
+
+	/**
+	 * 获取文档
+	 * @return
+	 */
+	public ScoreFrontVo scoreCopywriting() {
+		String value = db().select(SHOP_CFG.V).from(SHOP_CFG)
+							.where(SHOP_CFG.K.eq(SCORE_DOCUMENT))
+							.fetchAnyInto(String.class);
+		
+		ScoreFrontVo vo = new ScoreFrontVo();
+		vo.setTitle(SCORE_CFG_TITLE);
+		if(value != null) {
+			ScoreFrontParam param = Util.parseJson(value, ScoreFrontParam.class);
+			vo.setDocument(param.getDocument());
+			return vo;
+		}else {
+			return null;
+		}
 	}
 	
 	
