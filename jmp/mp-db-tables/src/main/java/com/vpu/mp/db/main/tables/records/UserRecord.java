@@ -60,18 +60,18 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_main.b2c_user.user_id</code>.
-     */
-    public void setUserId(Long value) {
-        set(2, value);
-    }
+    * Setter for <code>mini_main.b2c_user.user_id</code>.
+    */
+   public void setUserId(Integer value) {
+       set(2, value);
+   }
 
-    /**
-     * Getter for <code>mini_main.b2c_user.user_id</code>.
-     */
-    public Long getUserId() {
-        return (Long) get(2);
-    }
+   /**
+    * Getter for <code>mini_main.b2c_user.user_id</code>.
+    */
+   public Integer getUserId() {
+       return (Integer) get(2);
+   }
 
     /**
      * Setter for <code>mini_main.b2c_user.username</code>. 用户名
@@ -519,7 +519,7 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     /**
      * Create a detached, initialised UserRecord
      */
-    public UserRecord(Long id, Integer shopId, Long userId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, Integer invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte delFlag, Timestamp delTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Timestamp updateTime, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId) {
+    public UserRecord(Long id, Integer shopId, Integer userId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, Integer invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte delFlag, Timestamp delTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Timestamp updateTime, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId) {
         super(User.USER);
 
         set(0, id);

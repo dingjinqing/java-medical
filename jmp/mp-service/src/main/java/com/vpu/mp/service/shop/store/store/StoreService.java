@@ -320,7 +320,7 @@ public class StoreService extends ShopBaseService {
      */
     public StoreInfoVo getWxappStoreDetail(StoreInfoParam param) {
         int storeId = param.getStoreId();
-        long userId = param.getUserId();
+        Integer userId = param.getUserId();
         if (userId != 0) {
             int source = db().select(USER.SOURCE).from(USER).where(USER.USER_ID.eq(userId)).fetchOneInto(Integer.class);
             if (source == -1) {

@@ -14,5 +14,5 @@ public class StoreInfoParam {
     @PositiveOrZero
     @JsonAlias({"store_id", "storeId"})
     public Integer storeId;
-    public Long userId;
+    public Integer userId;
 }

@@ -72,7 +72,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_main.b2c_user.user_id</code>.
      */
-    public final TableField<UserRecord, Long> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UserRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>mini_main.b2c_user.username</code>. 用户名
