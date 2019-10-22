@@ -76,7 +76,6 @@ export default {
       this.param.exportRowEnd = 5000
       getExportTotalRows(this.param).then(res => {
         if (res.error === 0) {
-          console.log(res.content)
           this.totalRows = res.content
           if (this.totalRows < 5000) {
             this.param.exportRowEnd = this.totalRows

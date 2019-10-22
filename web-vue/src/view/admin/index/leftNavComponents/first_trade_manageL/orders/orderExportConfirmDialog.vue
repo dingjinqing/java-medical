@@ -80,7 +80,6 @@ export default {
       this.param.exportRowEnd = 5000
       getExportTotalRows(this.param).then(res => {
         if (res.error === 0) {
-          console.log(res.content)
           this.totalRows = res.content
           if (this.totalRows < 5000) {
             this.param.exportRowEnd = this.totalRows
@@ -99,6 +98,8 @@ export default {
         fileName = fileName.split(';')[1].split('=')[1]
         this.loading = false
         download(res, decodeURIComponent(fileName))
+      }).catch(() => {
+        this.loading = false
       })
     },
     ok (key, item) {

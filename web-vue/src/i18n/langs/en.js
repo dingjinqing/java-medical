@@ -72,7 +72,7 @@ import { en as distribution } from './views/admin_new/en/index/marketManagement/
 import { en as couponGive } from './views/admin_new/en/index/marketManagement/couponGive/couponGiveEn'
 
 // 订单
-import { en as order } from './views/admin/index/leftNavComponents/order/order'
+import { en as order } from './views/admin_new/en/index/orderManagement/orderListEn'
 // 订单通用
 import { en as orderCommon } from './views/admin_new/en/index/orderManagement/orderCommonEn'
 // 订单搜索

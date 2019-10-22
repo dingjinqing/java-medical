@@ -78,7 +78,7 @@ import { cn as couponGive } from './views/admin_new/cn/index/marketManagement/co
 // 订单通用
 import { cn as orderCommon } from './views/admin_new/cn/index/orderManagement/orderCommonCn'
 // 订单列表
-import { cn as order } from './views/admin/index/leftNavComponents/order/order'
+import { cn as order } from './views/admin_new/cn/index/orderManagement/orderListCn'
 // 订单搜索
 import { cn as orderSearch } from './views/admin_new/cn/index/orderManagement/orderListSearchCn'
 // 虚拟商品订单-会员卡订单

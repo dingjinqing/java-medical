@@ -76,7 +76,7 @@ export function getExportTotalRows (data) {
   })
 }
 
-// 所选条件过滤出的数据条数
+// 商品导出
 export function goodsExport (data) {
   return service({
     url: `/api/admin/goods/export`,
