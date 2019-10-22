@@ -20,5 +20,8 @@ export const cn = {
   haveTechnician: '有技师',
   successDelete: '删除成功',
   underSuccess: '下架成功',
-  successShelf: '上架成功'
+  successShelf: '上架成功',
+  sweepTips: '扫一扫，分享给好友吧~',
+  downloadQrCode: '下载二维码',
+  copy: '复制'
 }

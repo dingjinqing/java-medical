@@ -132,7 +132,7 @@
                 <el-tooltip :content="$t('serviceList.share')">
                   <span
                     class="iconSpan"
-                    @click="edit()"
+                    @click="edit('share', row)"
                   >{{$t('serviceList.share')}}</span>
                 </el-tooltip>
                 <el-tooltip :content="$t('serviceList.view')">
@@ -141,7 +141,7 @@
                     @click="edit()"
                   >{{$t('serviceList.view')}}</span>
                 </el-tooltip>
-                <el-tooltip content="$t('serviceList.delete')">
+                <el-tooltip :content="$t('serviceList.delete')">
                   <span
                     class="iconSpan"
                     @click="edit('delete', row)"
@@ -170,12 +170,46 @@
           </div>
         </div>
       </div>
+      <!-- 分享 -->
+      <el-dialog
+        width="320px"
+        :visible.sync="shareDialogVisible"
+        center
+        :title="$t('serviceList.sweepTips')"
+      >
+        <div class="share_content">
+          <div class="share_img_wrap">
+            <el-image
+              :src="shareImageUrl"
+              style="width: 160px; height: 160px;"
+            ></el-image>
+          </div>
+          <div>
+            <a
+              :href="shareImageUrl"
+              download
+              class="down_imgs"
+            >{{$t('serviceList.downloadQrCode')}}</a>
+          </div>
+        </div>
+        <div class="share_footer">
+          <el-input
+            ref="shareInput"
+            size="small"
+            v-model="shareUrl"
+          ></el-input>
+          <el-button
+            type="text"
+            @click="selectSharePath"
+          >{{$t('serviceList.copy')}}</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { getAllServiceCats, getServiceList, deleteService, onService, offService } from '@/api/admin/storeManage/storemanage/serviceManage'
+import { getAllServiceCats, getServiceList, deleteService, onService, offService, shareService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -190,7 +224,10 @@ export default {
       },
       tableData: [],
       pageParams: {},
-      selects: []
+      selects: [],
+      shareDialogVisible: false,
+      shareImageUrl: '',
+      shareUrl: ''
     }
   },
   created () {
@@ -279,6 +316,19 @@ export default {
             })
           }
           break
+        case 'share':
+          let data = {
+            serviceId: row.id
+          }
+          shareService(data).then(res => {
+            if (res.error === 0) {
+              console.log('share...', res.content)
+              that.shareImageUrl = res.content.imageUrl
+              that.shareUrl = res.content.pagePath
+              that.shareDialogVisible = !that.shareDialogVisible
+            }
+          })
+          break
       }
     },
     selectChangeHandle (selects) {
@@ -323,6 +373,10 @@ export default {
           this.tableData = [...res.content.dataList]
         }
       })
+    },
+    selectSharePath () {
+      console.log(this.$refs.shareInput)
+      this.$refs.shareInput.select()
     }
   }
 }
@@ -343,6 +397,26 @@ export default {
     display: flex;
     justify-content: space-between;
     overflow: hidden;
+  }
+  .share_content {
+    margin: 0 auto;
+    text-align: center;
+    .down_imgs {
+      color: #999;
+      font-size: 14px;
+      display: inline-block;
+      height: 40px;
+      line-height: 40px;
+      width: 100%;
+      text-align: center;
+      margin-left: 0;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+  }
+  .share_footer {
+    display: flex;
+    align-items: center;
   }
 }
 </style>

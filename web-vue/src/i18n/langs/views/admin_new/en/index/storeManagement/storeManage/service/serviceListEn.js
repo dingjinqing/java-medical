@@ -20,5 +20,8 @@ export const en = {
   haveTechnician: 'Having a technician',
   successDelete: 'successfully deleted',
   underSuccess: 'Under success',
-  successShelf: 'Successful on the shelf'
+  successShelf: 'Successful on the shelf',
+  sweepTips: 'Sweep, share it with your friends~',
+  downloadQrCode: 'Download QR code',
+  copy: 'copy'
 }

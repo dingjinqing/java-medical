@@ -75,6 +75,14 @@ export function offService (data) {
     data: data
   })
 }
+// 分享服务
+export function shareService (data) {
+  return service({
+    url: '/api/admin/store/service/share/' + data.serviceId,
+    method: 'get'
+  })
+}
+
 // 获取服务分类列表
 export function getServiceCatsList (data) {
   return service({
