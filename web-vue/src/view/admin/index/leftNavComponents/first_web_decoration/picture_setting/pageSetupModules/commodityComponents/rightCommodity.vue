@@ -667,6 +667,7 @@ export default {
       rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }], // 商品范围四类弹框选中数据池
       needToSwitchData: ['hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message'], // 需要转换的checkbox数据
       goodsListData: [],
+      isClickGoodsUpOrDownIcon: false, // 是否点击了模块推荐里商品列表的上下icon按钮
       // 模块保存数据
       data: {
       }
@@ -781,6 +782,7 @@ export default {
       }
       queryDataList(obj).then((res) => {
         if (res.error === 0) {
+          console.log(res.content)
           this.goodsListData = res.content
           initData.goodsListData = res.content
           console.log(initData)
@@ -801,6 +803,8 @@ export default {
       let goodsItemFlag = false // 商品列表字段单独判断是否更改
       if (newData.goods_items.length !== oldData.goods_items.length) {
         goodsItemFlag = true
+      } else if (this.isClickGoodsUpOrDownIcon) {
+        goodsItemFlag = true
       }
       let goodsAreaData = false // 商品范围弹窗选中判断是否更改
       if (newData.goods_area_data.length !== oldData.goods_area_data.length) {
@@ -810,6 +814,7 @@ export default {
       // 两种情况下综合判断
       let returnFlag = !!((flag.length || goodsItemFlag || goodsAreaData))
       console.log(returnFlag)
+      this.isClickGoodsUpOrDownIcon = false
       return returnFlag
     },
     // 转换列表样式字段数据
@@ -984,11 +989,13 @@ export default {
           if (pre === -1) return
           arr[index] = pre
           arr[(index - 1)] = temp
+          this.isClickGoodsUpOrDownIcon = true
           break
         case 1:
           if (next === -1) return
           arr[index] = next
           arr[(index + 1)] = temp
+          this.isClickGoodsUpOrDownIcon = true
           break
         case 2:
           arr.splice(index, 1)

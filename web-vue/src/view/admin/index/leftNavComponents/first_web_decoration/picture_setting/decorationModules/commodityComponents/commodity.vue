@@ -62,7 +62,7 @@
                 >
                   <div
                     class="commodityTop"
-                    :style="data.col_type==='2'?'height:auto':data.col_type==='0'?'max-height:150px;height:auto;overflow:hidden':''"
+                    :style="data.col_type==='2'?'height:auto':data.col_type==='0'?'max-height:163px;height:auto;overflow:hidden':data.col_type==='4'?'margin-right:5px;max-height:145px':''"
                   >
                     <div class="label">
                       <!--左上角图形-->
@@ -95,7 +95,7 @@
                       </div>
                     </div>
                     <img
-                      :style="data.col_type==='2'?'width:100%;height:auto':data.col_type==='0'?'width:100%;height:auto;max-height:none':''"
+                      :style="data.col_type==='2'?'width:100%;height:auto':data.col_type==='0'?'width:100%;height:auto;':data.col_type==='4'?'width:145px;height:145px;max-height:145px':data.col_type==='1'?'width:163px;height:163px;max-height:163px':data.col_type==='3'?'width:128px':''"
                       :src="item.goodsImg"
                     >
                   </div>
@@ -105,7 +105,7 @@
                   >
                     <div class="bottomHead">
                       <div v-if="data.hide_name==='1'">{{item.goodsName}}</div>
-                      <div :style="data.col_type!=='4'?'margin-top:5px':''">
+                      <div :style="data.col_type!=='4'?'margin-top:10px':''">
                         <span>领券减￥100</span>
                       </div>
                     </div>
