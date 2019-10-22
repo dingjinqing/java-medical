@@ -17,3 +17,12 @@ export function saveDecorationPage (data) {
     data: data
   })
 }
+
+// 商品列表模块接口
+export function queryDataList (data) {
+  return service({
+    url: '/api/admin/goods/mp/list',
+    method: 'post',
+    data: data
+  })
+}

@@ -314,13 +314,10 @@
               </div>
               <div class="goodsPrice price keyWors">
                 <span>关键词：</span>
-                <el-autocomplete
-                  class="inline-input"
+                <el-input
+                  size="small"
                   v-model="data.keywords"
-                  :fetch-suggestions="querySearch"
-                  @select="handleSelect"
-                  size='small'
-                ></el-autocomplete>
+                ></el-input>
               </div>
               <div class="goodsPrice price commodityScope">
                 <span>商品范围：</span>
@@ -361,7 +358,7 @@
               <div class="goodsPrice price commodityScope">
                 <span>活动商品：</span>
                 <el-select
-                  v-model="commodityModule.activeCommodities"
+                  v-model="data.goods_type"
                   placeholder="请选择"
                   size="small"
                 >
@@ -377,7 +374,7 @@
               <div class="goodsPrice price commodityScope">
                 <span>排序规则：</span>
                 <el-select
-                  v-model="commodityModule.sortRule"
+                  v-model="data.sort_type"
                   size="small"
                 >
                   <el-option
@@ -406,7 +403,7 @@
                   >添加商品</el-button>
                   <div :style="goodsList.length>=3?'height:250px;width:112%;overflow-y: auto;margin-top:10px':''">
                     <div
-                      v-for="(item,index) in goodsList"
+                      v-for="(item,index) in data.goods_items"
                       :key="index"
                     >
                       <div class="goodsList">
@@ -480,6 +477,7 @@
   </div>
 </template>
 <script>
+import { queryDataList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'), // 图片弹窗组件
@@ -618,6 +616,15 @@ export default {
         }, {
           value: '2',
           label: '砍价'
+        }, {
+          value: '3',
+          label: '拼团'
+        }, {
+          value: '4',
+          label: '秒杀'
+        }, {
+          value: '5',
+          label: '限时降价'
         }],
         sortRule: '0', // 排序规则选中值
         sortRuleOptions: [{ // 排序规则下拉框数据
@@ -669,6 +676,7 @@ export default {
     sortIndex: {
       handler (newData) {
         if (this.modulesData) {
+          console.log(this.modulesData)
           // 需要转换的checkbox字段数组集合
           let getModulesData = JSON.parse(JSON.stringify(this.modulesData))
           this.needToSwitchData.forEach(itemC => {
@@ -685,6 +693,9 @@ export default {
           Object.keys(this.modulesData).forEach((item, index) => { // 将数据赋值给当前页面数据池
             this.$set(this.data, item, getModulesData[item])
           })
+
+          // 初始化调取模块推荐调取接口
+          this.handleToGetModulesGoods(this.modulesData)
           console.log(this.data)
         }
         console.log(newData, this.modulesData, this.data)
@@ -703,8 +714,10 @@ export default {
       }
     },
     // 监控该模块右边数据操作
-    data: {
-      handler (newData) {
+    copyData: {
+      handler (newData, oldData) {
+        // 判断是否是模块推荐中的数据改变
+        let judgeChangeFlag = this.handleToJudgeDataChange(newData, oldData)
         // 转换选择商品范围字段数据
         let d = this.handleToTransformationRangeData(1, this.data.goods_area)
         console.log(d)
@@ -721,17 +734,62 @@ export default {
         callBackData.col_type = styleParams
 
         console.log(callBackData)
-        this.$emit('handleToBackData', callBackData)
+        // 若模块推荐中数据改变处理函数
+        if (judgeChangeFlag) {
+          this.handleToGetModulesGoods(callBackData)
+        } else {
+          this.$emit('handleToBackData', callBackData)
+        }
+
         console.log(styleParams)
       },
       deep: true
     }
   },
+  computed: {
+    copyData () {
+      return JSON.parse(JSON.stringify(this.data))
+    }
+  },
   mounted () {
     console.log(this.data.tit_center)
-    this.restaurants = this.loadAll()
   },
   methods: {
+    // 调取模块推荐中商品数据
+    handleToGetModulesGoods (initData) {
+      // 初始化接口传递参数
+      let obj = {
+        'goods_num': initData.goods_num, // 商品数量
+        'min_price': initData.min_price, // 商品最低价格
+        'max_price': initData.max_price, // 商品最高价格
+        'keywords': initData.keywords, // 关键词
+        'goods_area': initData.goods_area, // 商品范围
+        'goods_area_data': initData.goods_area_data, // 商品范围选定后弹窗选定的数据
+        'sort_type': initData.sort_type, // 排序规则
+        'goods_items': initData.goods_items // 商品列表数据
+      }
+      queryDataList(obj).then((res) => {
+        console.log(res)
+      })
+      console.log(obj)
+      // 调取接口 获取商品数据赋值给回传对象中回传
+    },
+    // 判断是否是模块推荐中的数据改变
+    handleToJudgeDataChange (newData, oldData) {
+      console.log(newData, oldData)
+      let arr = ['goods_num', 'min_price', 'max_price', 'keywords', 'goods_area', 'goods_area_data', 'sort_type'] // 需要判断的模块推荐中数据字段数据池
+      let flag = arr.filter((item, index) => {
+        return newData[item] !== oldData[item]
+      })
+      let goodsItemFlag = false // 商品列表字段为引用类型单独判断是否更改
+      if (newData.goods_items.length !== oldData.goods_items.length) {
+        goodsItemFlag = true
+      }
+      console.log(flag, goodsItemFlag)
+      // 两种情况下综合判断
+      let returnFlag = !!((flag.length || goodsItemFlag))
+      return returnFlag
+    },
     // 转换列表样式字段数据
     handleToChangeStyle (flag, data) {
       if (flag === 0) {
@@ -882,36 +940,9 @@ export default {
     handleToReset () {
       this.commodityModule.bgColor = this.defaultColorright
     },
-    // 关键词带建议输入框相关
-    querySearch (queryString, cb) {
-      var restaurants = this.restaurants
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    // 关键词带建议输入框相关
-    createFilter (queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
-      }
-    },
-    // 关键词带建议输入框相关
-    loadAll () {
-      return [
-        { 'value': 'test1' },
-        { 'value': 'test2' },
-        { 'value': 'test3' },
-        { 'value': 'test4' },
-        { 'value': 'test5' }
-      ]
-    },
-    // 关键词下方列表选中
-    handleSelect (item) {
-      console.log(item)
-    },
     // 模块推荐商品列表icon点击统一处理
     handleToClickOpera (index, flag) {
-      let arr = JSON.parse(JSON.stringify(this.goodsList))
+      let arr = JSON.parse(JSON.stringify(this.data.goods_items))
       let pre, next, temp
       if ((index - 1) < 0) {
         pre = -1
@@ -939,7 +970,7 @@ export default {
           arr.splice(index, 1)
           break
       }
-      this.goodsList = arr
+      this.data.goods_items = arr
     },
     //  添加商品点击
     handleToAddGoods () {
@@ -954,7 +985,7 @@ export default {
           goodsImg: item.goodsImg,
           goodsId: item.goodsId
         }
-        this.goodsList.push(obj)
+        this.data.goods_items.push(obj)
       })
     },
     // 商品范围选中后显示添加按钮点击统一处理
