@@ -1,3 +1,4 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="../common/header.wxml" />
   <view class="main-container" wx:if="{{orderInfo}}">
@@ -77,7 +78,7 @@
     </view>
     <view class="fixed_footer">
       <block wx:for="{{orderInfo.operate}}" wx:key="*this" wx:for-item="operateItem" wx:for-index="operateKey">
-        <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">{{operateList[operateKey]}}</view>
+        <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">{{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}</view>
       </block>
     </view>
   </view>

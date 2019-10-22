@@ -1,4 +1,5 @@
 var navigation = require("./components/navigation.js")
+var order = require("./pages/order.js")
 var zh_CN = {
   "common": {
     "info": {
@@ -34,7 +35,8 @@ var zh_CN = {
     "usercenter":{
       "qrcTitle":"今日已领",
       "qrcTitleB": "积分"
-    }
+    },
+    "order": order
   },
   "page1": {
 
