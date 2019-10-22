@@ -22,8 +22,7 @@ public class WxMainUserService extends MainBaseService {
 	 */
 	public void syncMainUser(UserRecord sendRecord, Integer shopId, Integer userId) {
 		logger().info("User同步开始到主库,shopId:"+shopId+" userId:"+userId);
-		UserRecord record = USER.newRecord();
-		record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
+		UserRecord record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
 		if (record != null) {
 			// 更新
 			sendRecord.setId(record.getId());
@@ -35,6 +34,7 @@ public class WxMainUserService extends MainBaseService {
 			// 插入
 			//sendRecord.setShopId(shopId);
 			logger().info("同步插入user"+sendRecord);
+			logger().info("测试值是否存在"+sendRecord.getUserId());
 			int executeInsert = sendRecord.insert();
 			logger().info("插入User，结果" + executeInsert);
 		}
@@ -49,8 +49,7 @@ public class WxMainUserService extends MainBaseService {
 	 */
 	public void syncMainUserDetail(UserDetailRecord sendRecord, Integer shopId, Integer userId) {
 		logger().info("UserDetail同步开始到主库,shopId:"+shopId+" userId:"+userId);
-		UserDetailRecord record = USER_DETAIL.newRecord();
-		record = db().selectFrom(USER_DETAIL).where(USER_DETAIL.SHOP_ID.eq(shopId).and(USER_DETAIL.USER_ID.eq(userId)))
+		UserDetailRecord record = db().selectFrom(USER_DETAIL).where(USER_DETAIL.SHOP_ID.eq(shopId).and(USER_DETAIL.USER_ID.eq(userId)))
 				.fetchAny();
 		if (record != null) {
 			// 更新
@@ -60,9 +59,11 @@ public class WxMainUserService extends MainBaseService {
 			//int executeUpdate = db().executeUpdate(sendRecord);
 			logger().info("更新UserDetail，结果" + executeUpdate);
 		} else {
+			record=db().newRecord(USER_DETAIL);
 			// 插入
 			//sendRecord.setShopId(shopId);
 			logger().info("同步插入UserDetail"+sendRecord);
+			logger().info("测试值是否存在"+sendRecord.getUserId());
 			int executeInsert = sendRecord.insert();
 			logger().info("插入UserDetail，结果" + executeInsert);
 		}
