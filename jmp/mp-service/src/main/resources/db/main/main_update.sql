@@ -84,6 +84,5 @@ CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
 
 --更新字段长度，使主库和店铺库保持一致
 ALTER TABLE `b2c_user` 
-CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
 CHANGE COLUMN `shop_id` `shop_id` INT(11) NOT NULL DEFAULT '0' ,
 CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;

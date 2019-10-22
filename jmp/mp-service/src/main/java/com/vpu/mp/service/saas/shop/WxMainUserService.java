@@ -26,12 +26,12 @@ public class WxMainUserService extends MainBaseService {
 			// 更新
 			sendRecord.setId(record.getId());
 			int executeUpdate = db().executeUpdate(sendRecord);
-			logger().info("更新UserDetail，结果" + executeUpdate);
+			logger().info("更新User，结果" + executeUpdate);
 		} else {
 			// 插入
 			sendRecord.setShopId(shopId);
 			int executeInsert = db().executeInsert(sendRecord);
-			logger().info("插入UserDetail，结果" + executeInsert);
+			logger().info("插入User，结果" + executeInsert);
 		}
 
 	}

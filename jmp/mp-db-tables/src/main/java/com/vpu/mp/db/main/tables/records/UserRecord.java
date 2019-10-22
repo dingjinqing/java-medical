@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecord extends UpdatableRecordImpl<UserRecord> {
 
-    private static final long serialVersionUID = -761320846;
+    private static final long serialVersionUID = 504698766;
 
     /**
      * Setter for <code>mini_main.b2c_user.id</code>.
@@ -60,18 +60,18 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-    * Setter for <code>mini_main.b2c_user.user_id</code>.
-    */
-   public void setUserId(Integer value) {
-       set(2, value);
-   }
+     * Setter for <code>mini_main.b2c_user.user_id</code>.
+     */
+    public void setUserId(Integer value) {
+        set(2, value);
+    }
 
-   /**
-    * Getter for <code>mini_main.b2c_user.user_id</code>.
-    */
-   public Integer getUserId() {
-       return (Integer) get(2);
-   }
+    /**
+     * Getter for <code>mini_main.b2c_user.user_id</code>.
+     */
+    public Integer getUserId() {
+        return (Integer) get(2);
+    }
 
     /**
      * Setter for <code>mini_main.b2c_user.username</code>. 用户名

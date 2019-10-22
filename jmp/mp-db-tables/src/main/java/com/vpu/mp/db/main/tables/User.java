@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -564275900;
+    private static final long serialVersionUID = 1235039911;
 
     /**
      * The reference instance of <code>mini_main.b2c_user</code>
@@ -160,12 +160,12 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, Integer> DISCOUNT_GRADE = createField("discount_grade", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会员折扣等级");
 
     /**
-     * The column <code>mini_main.b2c_user.is_delete</code>.
+     * The column <code>mini_main.b2c_user.del_flag</code>.
      */
     public final TableField<UserRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_main.b2c_user.delete_time</code>. 删除时间
+     * The column <code>mini_main.b2c_user.del_time</code>. 删除时间
      */
     public final TableField<UserRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
@@ -192,7 +192,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_main.b2c_user.invite_expiry_date</code>. 邀请失效时间
      */
-    public final TableField<UserRecord, Date> INVITE_EXPIRY_DATE = createField("invite_expiry_date", org.jooq.impl.SQLDataType.DATE.defaultValue(org.jooq.impl.DSL.inline("0000-00-00", org.jooq.impl.SQLDataType.DATE)), this, "邀请失效时间");
+    public final TableField<UserRecord, Date> INVITE_EXPIRY_DATE = createField("invite_expiry_date", org.jooq.impl.SQLDataType.DATE, this, "邀请失效时间");
 
     /**
      * The column <code>mini_main.b2c_user.wx_union_id</code>. 小程序union_id
