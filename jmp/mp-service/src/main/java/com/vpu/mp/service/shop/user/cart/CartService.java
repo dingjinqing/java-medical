@@ -17,6 +17,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
 
 
@@ -205,5 +205,19 @@ public class CartService extends ShopBaseService {
                     .and(CART.STORE_ID.eq(storeId)).and(CART.PRODUCT_ID.eq(productId)).execute();
         }
         return resultMessage;
+    }
+
+
+    /**
+     * 根据用户和店铺回去购物车商品数量
+     *  @param user
+     * @param storeId
+     * @return
+     */
+    public int getUserCartGoodsNumber(Integer user, Integer storeId){
+        BigDecimal goodsNum = db().select(DSL.sum(CART.GOODS_NUMBER)).from(CART).leftJoin(STORE_GOODS).on(CART.PRODUCT_ID.eq(STORE_GOODS.PRD_ID))
+                .where(STORE_GOODS.IS_ON_SALE.eq((byte) 1)).and(STORE_GOODS.STORE_ID.eq(storeId))
+                .and(CART.STORE_ID.eq(storeId)).and(CART.USER_ID.eq(user)).fetchOne().component1();
+        return goodsNum.intValue();
     }
 }
