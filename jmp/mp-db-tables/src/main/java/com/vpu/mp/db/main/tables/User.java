@@ -162,12 +162,12 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_main.b2c_user.is_delete</code>.
      */
-    public final TableField<UserRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<UserRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_main.b2c_user.delete_time</code>. 删除时间
      */
-    public final TableField<UserRecord, Timestamp> DELETE_TIME = createField("delete_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<UserRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_main.b2c_user.growth</code>. 成长值

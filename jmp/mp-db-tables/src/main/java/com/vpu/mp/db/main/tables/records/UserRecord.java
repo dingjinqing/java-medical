@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecord extends UpdatableRecordImpl<UserRecord> {
 
-    private static final long serialVersionUID = 321271648;
+    private static final long serialVersionUID = -761320846;
 
     /**
      * Setter for <code>mini_main.b2c_user.id</code>.
@@ -312,30 +312,30 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_main.b2c_user.is_delete</code>.
+     * Setter for <code>mini_main.b2c_user.del_flag</code>.
      */
-    public void setIsDelete(Byte value) {
+    public void setDelFlag(Byte value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_user.is_delete</code>.
+     * Getter for <code>mini_main.b2c_user.del_flag</code>.
      */
-    public Byte getIsDelete() {
+    public Byte getDelFlag() {
         return (Byte) get(20);
     }
 
     /**
-     * Setter for <code>mini_main.b2c_user.delete_time</code>. 删除时间
+     * Setter for <code>mini_main.b2c_user.del_time</code>. 删除时间
      */
-    public void setDeleteTime(Timestamp value) {
+    public void setDelTime(Timestamp value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_user.delete_time</code>. 删除时间
+     * Getter for <code>mini_main.b2c_user.del_time</code>. 删除时间
      */
-    public Timestamp getDeleteTime() {
+    public Timestamp getDelTime() {
         return (Timestamp) get(21);
     }
 
@@ -519,7 +519,7 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     /**
      * Create a detached, initialised UserRecord
      */
-    public UserRecord(Long id, Integer shopId, Long userId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, Integer invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte isDelete, Timestamp deleteTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Timestamp updateTime, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId) {
+    public UserRecord(Long id, Integer shopId, Long userId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, Integer invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte delFlag, Timestamp delTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Timestamp updateTime, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId) {
         super(User.USER);
 
         set(0, id);
@@ -542,8 +542,8 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
         set(17, account);
         set(18, discount);
         set(19, discountGrade);
-        set(20, isDelete);
-        set(21, deleteTime);
+        set(20, delFlag);
+        set(21, delTime);
         set(22, growth);
         set(23, score);
         set(24, source);

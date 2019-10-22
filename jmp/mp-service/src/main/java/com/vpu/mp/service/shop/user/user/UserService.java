@@ -2,8 +2,8 @@ package com.vpu.mp.service.shop.user.user;
 
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +12,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +30,6 @@ import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -49,8 +46,8 @@ import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.shop.ShopImageManageService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -115,6 +112,9 @@ public class UserService extends ShopBaseService {
 	private String SESSION_SIGN_KEY = "weipubao!@#miniprogram";
 
 	final protected String userCenterJson = "user.center.json";
+	
+	public static final Byte SYCUPDATE= 1;
+	public static final Byte SYCINSERT= 0;
 
 	@Autowired
 	protected JedisManager jedis;
@@ -162,6 +162,7 @@ public class UserService extends ShopBaseService {
 			if (!result.getUnionid().equals(record.getWxUnionId())) {
 				record.setWxUnionId(result.getUnionid());
 				int update = record.update();
+				syncMainUser(record, SYCUPDATE);
 				logger().info("更新unionid" + update);
 				// TODO syncUserToCrm
 			}
@@ -170,6 +171,7 @@ public class UserService extends ShopBaseService {
 				&& (!loginUser.getSystemVersion().equals(record.getDevice()))) {
 			record.setDevice(loginUser.getSystemVersion());
 			int update = record.update();
+			syncMainUser(record, SYCUPDATE);
 			logger().info("更新Device" + update);
 		}
 		String sessionKey = getSessionKey(shopId, record.getUserId());
@@ -195,6 +197,8 @@ public class UserService extends ShopBaseService {
 			if (StringUtils.isNotEmpty(userName)
 					&& (ret.getWxOpenid().equals(ret.getUsername()) || (!ret.getUsername().equals(userName)))) {
 				db().update(USER).set(USER.USERNAME, userName).where(USER.WX_OPENID.eq(openid)).execute();
+				ret.setWxOpenid(openid);
+				syncMainUser(ret, SYCUPDATE);
 			}
 			if (StringUtils.isNotBlank(avatar)) {
 				UserDetailRecord userDetail = this.getUserDetail(ret.getUserId());
@@ -204,6 +208,9 @@ public class UserService extends ShopBaseService {
 						db().update(USER_DETAIL).set(USER_DETAIL.USERNAME, userName)
 								.set(USER_DETAIL.USER_AVATAR, avatar).where(USER_DETAIL.USER_ID.eq(ret.getUserId()))
 								.execute();
+						userDetail.setUserAvatar(avatar);
+						userDetail.setUsername(userName);
+						syncMainUserDetail(userDetail, SYCUPDATE);
 					}
 				}
 			}
@@ -231,6 +238,7 @@ public class UserService extends ShopBaseService {
 			user.setWxUnionId(unionId);
 			int insert = user.insert();
 			logger().info("插入user结果 " + insert);
+			syncMainUser(user, SYCINSERT);
 			// avatar==null?"/image/admin/head_icon.png":avatar
 			if (insert < 0) {
 				return null;
@@ -241,6 +249,7 @@ public class UserService extends ShopBaseService {
 				user.setUsername(name);
 				user.update();
 				logger().info("更新用户名为" + name);
+				syncMainUser(user, SYCUPDATE);
 			}
 			UserDetailRecord uDetailRecord = db().newRecord(USER_DETAIL);
 			uDetailRecord.setUserId(userId);
@@ -383,19 +392,26 @@ public class UserService extends ShopBaseService {
 		String username = param.getUsername();
 		String userAvatar = param.getUserAvatar();
 		UserRecord record = getUserByUserId(userId);
+		UserDetailRecord userDetailRecord = getUserDetail(userId);
 		// 更新昵称
 		if (StringUtils.isNotEmpty(username)
 				&& (StringUtils.isEmpty(record.getUsername()) || (!username.equals(record.getUsername())))) {
 			db().update(USER).set(USER.USERNAME, username).where(USER.USER_ID.eq(param.getUserId())).execute();
 			db().update(USER_DETAIL).set(USER_DETAIL.USERNAME, username)
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
+			record.setUsername(username);
+			syncMainUser(record, SYCUPDATE);
+			userDetailRecord.setUsername(username);
+			syncMainUserDetail(userDetailRecord, SYCUPDATE);
+			
 		}
 		// 更新头像
-		UserDetailRecord userDetailRecord = getUserDetail(userId);
 		if (StringUtils.isNotEmpty(userAvatar) && (StringUtils.isEmpty(userDetailRecord.getUserAvatar())
 				|| (!userAvatar.equals(userDetailRecord.getUserAvatar())))) {
 			db().update(USER_DETAIL).set(USER_DETAIL.USER_AVATAR, userAvatar)
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
+			userDetailRecord.setUserAvatar(userAvatar);
+			syncMainUserDetail(userDetailRecord, SYCUPDATE);
 		}
 		Integer shopId = this.getShopId();
 		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
@@ -404,6 +420,8 @@ public class UserService extends ShopBaseService {
 		if (userInfo != null) {
 			if (!userInfo.getUnionId().equals(record.getWxUnionId())) {
 				db().update(USER).set(USER.WX_UNION_ID, userInfo.getUnionId()).where(USER.USER_ID.eq(userId)).execute();
+				record.setWxUnionId(userInfo.getUnionId());
+				syncMainUser(record, SYCUPDATE);
 				// TODO $crmResult = shop($shopId)->serviceRequest->crmApi->init();
 			}
 		} else {
@@ -600,19 +618,22 @@ public class UserService extends ShopBaseService {
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			// TODO 等updateGrade写完
 			logger().info("进入用户等级为0");
+			
 			/*
 			 * try { userCard.updateGrade(integers, null, (byte) 1); } catch (Exception e) {
 			 * logger().error("userGrade为0时报错"); e.printStackTrace(); }
 			 */
+			 
 		} else {
-			// TODO 等updateGrade写完
 			logger().info("进入用户等级为其他");
+
 			/*
 			 * try { userCard.updateGrade(integers, null, (byte) 0); // 上面方法返回值is_get int
-			 * isGet = 0; if (isGet > 0) { map.put("get_grade", 1); } else {
-			 * map.put("get_grade", isGet); } } catch (Exception e) {
+			 * isGet = 0; if (isGet > 0) { data.put("get_grade", 1); } else {
+			 * data.put("get_grade", isGet); } } catch (Exception e) {
 			 * logger().error("userGrade不为0时报错"); e.printStackTrace(); }
 			 */
+			 
 		}
 		logger().info("用户等级判断返回"+data);
 		return data;
@@ -787,11 +808,13 @@ public class UserService extends ShopBaseService {
 		if(userInfo!=null) {
 			if (param.getIsSetting() == 1) {
 				userDetail.updateRow(userDetailRecord);
+				syncMainUserDetail(userDetailRecord, SYCUPDATE);
 				return JsonResultCode.CODE_SUCCESS;
 			}
 			if (param.getIsSetting() == 2) {
 				//激活卡标志
 				userDetail.updateRow(userDetailRecord);
+				syncMainUserDetail(userDetailRecord, SYCUPDATE);
 				UserCardRecord newRecord = USER_CARD.newRecord();
 				newRecord.setActivationTime(DateUtil.getSqlTimestamp());
 				int ret = userCard.updateUserCardByNo(param.getCardNo(),newRecord);
@@ -833,6 +856,44 @@ public class UserService extends ShopBaseService {
 		return vo;
 	}
 	
+	/**
+	 * 店铺库的user同步到主库
+	 * @param shopRecord
+	 */
+	public void syncMainUser(UserRecord shopRecord,Byte type) {
+		com.vpu.mp.db.main.tables.records.UserRecord userMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserRecord.class);
+		userMain.setShopId(getShopId());
+		if(type==1) {
+			//更新
+			int update = userMain.update();
+			logger().info("User表同步到主库，更新"+update);
+		}
+		if(type==0) {
+			//插入
+			int insert = userMain.insert();
+			logger().info("User表同步到主库，插入"+insert);
+		}
+	}
 	
+	
+	/**
+	 * 店铺库的userdetail同步到主库
+	 * @param shopRecord
+	 * @param type
+	 */
+	public void syncMainUserDetail(UserDetailRecord shopRecord,Byte type) {
+		com.vpu.mp.db.main.tables.records.UserDetailRecord userDetailMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserDetailRecord.class);
+		userDetailMain.setShopId(getShopId());
+		if(type==1) {
+			//更新
+			int update = userDetailMain.update();
+			logger().info("UserDetail表同步到主库，更新"+update);
+		}
+		if(type==0) {
+			//插入
+			int insert = userDetailMain.insert();
+			logger().info("UserDetail表同步到主库，插入"+insert);
+		}
+	}
 
 }
