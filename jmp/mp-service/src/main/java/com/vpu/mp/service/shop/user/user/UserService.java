@@ -866,8 +866,10 @@ public class UserService extends ShopBaseService {
 	 * @param shopRecord
 	 */
 	public void syncMainUser(UserRecord shopRecord,Byte type) {
+		logger().info("传入的"+shopRecord);
 		com.vpu.mp.db.main.tables.records.UserRecord userMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserRecord.class);
 		userMain.setShopId(getShopId());
+		logger().info("赋值的"+userMain);
 		saas().wxUserService.syncMainUser(userMain, type);
 	}
 	
@@ -878,8 +880,10 @@ public class UserService extends ShopBaseService {
 	 * @param type
 	 */
 	public void syncMainUserDetail(UserDetailRecord shopRecord,Byte type) {
+		logger().info("传入的"+shopRecord);
 		com.vpu.mp.db.main.tables.records.UserDetailRecord userDetailMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserDetailRecord.class);
 		userDetailMain.setShopId(getShopId());
+		logger().info("传入的"+userDetailMain);
 		saas().wxUserService.syncMainUserDetail(userDetailMain, type);
 	}
 
