@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecord extends UpdatableRecordImpl<UserRecord> {
 
-    private static final long serialVersionUID = 504698766;
+    private static final long serialVersionUID = 1728185618;
 
     /**
      * Setter for <code>mini_main.b2c_user.id</code>.
@@ -88,14 +88,14 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_main.b2c_user.user_pwd</code>. 密码
+     * Setter for <code>mini_main.b2c_user.user_pwd</code>.
      */
     public void setUserPwd(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_user.user_pwd</code>. 密码
+     * Getter for <code>mini_main.b2c_user.user_pwd</code>.
      */
     public String getUserPwd() {
         return (String) get(4);

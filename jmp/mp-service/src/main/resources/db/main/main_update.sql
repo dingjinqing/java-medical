@@ -86,3 +86,4 @@ CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
 ALTER TABLE `b2c_user` 
 CHANGE COLUMN `shop_id` `shop_id` INT(11) NOT NULL DEFAULT '0' ,
 CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
+CHANGE COLUMN `user_pwd` `user_pwd` varchar(60) not null default '';

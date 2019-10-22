@@ -452,7 +452,7 @@ create table `b2c_user`
     `shop_id`            int(11)         not null default '0',
     `user_id`            int(11)     not null,
     `username`           varchar(100)   not null comment '用户名',
-    `user_pwd`           varchar(60)    not null comment '密码',
+    `user_pwd`           varchar(60)    not null default '' comment '密码',
     `user_cid`           varchar(64)    not null default '',
     `mobile`             varchar(100)            default null comment '电话',
     `user_code`          varchar(100)            default null comment '会员卡号',

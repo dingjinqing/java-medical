@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = 1235039911;
+    private static final long serialVersionUID = -639286650;
 
     /**
      * The reference instance of <code>mini_main.b2c_user</code>
@@ -80,9 +80,9 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "用户名");
 
     /**
-     * The column <code>mini_main.b2c_user.user_pwd</code>. 密码
+     * The column <code>mini_main.b2c_user.user_pwd</code>.
      */
-    public final TableField<UserRecord, String> USER_PWD = createField("user_pwd", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false), this, "密码");
+    public final TableField<UserRecord, String> USER_PWD = createField("user_pwd", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_user.user_cid</code>.
