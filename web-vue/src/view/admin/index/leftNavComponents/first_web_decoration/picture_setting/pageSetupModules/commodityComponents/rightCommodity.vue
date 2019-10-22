@@ -694,7 +694,7 @@ export default {
             this.$set(this.data, item, getModulesData[item])
           })
 
-          // 初始化调取模块推荐调取接口
+          // 初始化调取模块推荐接口
           this.handleToGetModulesGoods(this.modulesData)
           console.log(this.data)
         }
@@ -757,18 +757,32 @@ export default {
   methods: {
     // 调取模块推荐中商品数据
     handleToGetModulesGoods (initData) {
+      console.log(initData)
+      let goodsId = []
+      if (initData.goods_items.length) {
+        initData.goods_items.forEach(item => {
+          goodsId.push(item.goodsId)
+        })
+      }
       // 初始化接口传递参数
       let obj = {
-        'goods_num': initData.goods_num, // 商品数量
+        'recommend_type': initData.recommend_type, // 商品显示方式 0自动推荐 1手动推荐
+        'goods_num': Number(initData.goods_num), // 商品数量
         'min_price': initData.min_price, // 商品最低价格
         'max_price': initData.max_price, // 商品最高价格
         'keywords': initData.keywords, // 关键词
         'goods_area': initData.goods_area, // 商品范围
         'goods_area_data': initData.goods_area_data, // 商品范围选定后弹窗选定的数据
-        'sort_type': initData.sort_type, // 排序规则
-        'goods_items': initData.goods_items // 商品列表数据
+        'goods_type': Number(initData.goods_type), // 活动类型
+        'sort_type': Number(initData.sort_type), // 排序规则
+        'goods_items': goodsId // 商品列表数据
       }
       queryDataList(obj).then((res) => {
+        if (res.error === 0) {
+          initData.goodsListData = res.content
+          console.log(initData)
+          this.$emit('handleToBackData', initData)
+        }
         console.log(res)
       })
       console.log(obj)
@@ -1026,6 +1040,8 @@ export default {
     // 商品范围弹窗选中回传事件
     handleToGetBackData (data) {
       console.log(data)
+      this.data.goods_area_data = data
+      console.log(this.data.goods_area_data)
       let arr = this.rangeData[Number(this.data.goods_area)] = data
       this.rangeCheckData = arr
     }

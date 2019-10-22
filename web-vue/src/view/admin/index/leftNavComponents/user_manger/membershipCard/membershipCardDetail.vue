@@ -963,7 +963,7 @@ export default {
       addBrandDialogDataFlag1: '', // 指定商品-添加品牌弹窗选中数据
       addBrandDialogDataFlag2: '', // 会员专享-添加品牌弹窗选中数据
       choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据,
-      controlChoosingGoodsDialog: 1,
+      controlChoosingGoodsDialog: false,
       choosingGoodsDateFlag2: '', // 会员专享-选择商品选中数据
       tuneUp: false,
       couponBack: ''

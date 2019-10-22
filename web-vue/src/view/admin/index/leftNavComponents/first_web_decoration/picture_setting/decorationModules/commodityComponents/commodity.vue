@@ -35,9 +35,20 @@
           </div>
 
           <!--end-->
-          <ul :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''+data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:''">
+          <!--无商品占位-->
+          <div
+            v-if="!goodsFlag"
+            style="height:200px;line-height:200px;text-align:center"
+          >
+            没有数据
+          </div>
+          <!--有商品-->
+          <ul
+            v-else
+            :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''+data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:''"
+          >
             <li
-              v-for="(item,index) in goodsDataList"
+              v-for="(item,index) in data.goodsListData"
               :key="index"
               :style="data.col_type==='2'?'width:33%;':data.col_type==='0'?'width:100%':data.col_type==='4'?'width:100%;':''"
             >
@@ -58,26 +69,26 @@
                       <!--限时降价图形-->
                       <div
                         class="labelStyle1"
-                        v-if="item.isNewGoods==='0'&&data.hide_label==='1'"
+                        v-if="item.listPattern.label==='1'&&data.hide_label==='1'"
                       >
                         <span style="display: inline;">限时降价</span>
                       </div>
                       <div
                         class="labelStyle2"
-                        v-if="item.isNewGoods==='1'&&data.hide_label==='1'"
+                        v-if="item.listPattern.label==='2'&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
                         <span style="display: inline;">新品首发</span>
                       </div>
                       <div
                         class="label newGoods"
-                        v-if="item.isNewGoods==='2'&&data.hide_label==='1'"
+                        v-if="item.listPattern.label==='3'&&data.hide_label==='1'"
                       >
                         <span>新品</span>
                       </div>
                       <div
                         class="labelStyle3"
-                        v-if="item.isNewGoods==='3'&&data.hide_label==='1'"
+                        v-if="item.listPattern.label==='4'&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
                         <span style="display: inline-block;">新品首发</span>
@@ -85,7 +96,7 @@
                     </div>
                     <img
                       :style="data.col_type==='2'?'width:100%;height:auto':data.col_type==='0'?'width:100%;height:auto;max-height:none':''"
-                      :src="item.imgUrl"
+                      :src="item.goodsImg"
                     >
                   </div>
                   <div
@@ -102,11 +113,11 @@
                       class="bottomFooter"
                       :style="data.col_type!=='4' ?'display:flex;flex-direction: row;height:auto':''"
                     >
-                      <span v-if="data.hide_price === '1'">￥{{item.price}}</span>
+                      <span v-if="data.hide_price === '1'">￥{{item.realPrice}}</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.col_type!=='2'&&data.other_message==='1'"
-                      >￥0.00</span>
+                      >{{item.linePrice}}</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
@@ -217,9 +228,12 @@ export default {
           isNewGoods: '3'
         }
       ],
+      goodsListData: [],
       bgColor: '',
       // 显示数据
-      data: {}
+      data: {
+        goodsListData: []
+      }
 
     }
   },
@@ -255,6 +269,11 @@ export default {
       handler (newData) {
         if (newData) {
           this.data = newData
+          if (newData.goodsListData.length > 0) {
+            this.goodsFlag = true
+          } else {
+            this.goodsFlag = false
+          }
         }
         console.log(newData)
       },

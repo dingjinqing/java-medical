@@ -172,6 +172,7 @@ export default {
         0: { children: [] }
       }
       let handleData = ''
+      console.log(obj)
       if (obj.flag === 2) {
         handleData = this.handletoPlatform(goodsSorts, buckets)
       } else {
@@ -226,7 +227,7 @@ export default {
           selfNode = buckets[item.catId]
         } else {
           selfNode.catId = item.catId
-          selfNode.sortName = item.sortName
+          selfNode.catName = item.catName
           selfNode.parentId = item.parentId
           selfNode.level = item.level
           selfNode.hasChild = item.hasChild

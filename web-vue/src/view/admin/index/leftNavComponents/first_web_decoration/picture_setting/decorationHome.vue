@@ -197,16 +197,16 @@ export default {
     // 商品组件库
     Commodity: () => import('./decorationModules/commodityComponents/commodity'), // 商品
     CommoditySearch: () => import('./decorationModules/commodityComponents/commoditySearch'), // 商品搜索
+    CommodityGrouping: () => import('./decorationModules/commodityComponents/commodityGrouping'), // 商品分组
     // 图文组件库
     PictureNavigation: () => import('./decorationModules/graphicAndTextComponents/pictureNavigation'), // 图片导航
-    // 轮播组件库
     CarouselPicture: () => import('./decorationModules/graphicAndTextComponents/CarouselPicture')// 轮播图
   },
   data () {
     return {
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'zb', 'CarouselPicture', 'PictureNavigation'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -570,6 +570,8 @@ export default {
             case '轮播图':
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 11)
               break
+            case '商品分组':
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 10)
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }

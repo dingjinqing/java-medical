@@ -55,6 +55,7 @@ export default {
   mounted () {
     this.$http.$on('addingBusClassDialog', res => {
       this.dialogVisible = true
+      console.log(111)
       // 初始化数据
       this.defaultData()
     })
@@ -79,7 +80,7 @@ export default {
       })
       // this.clickArrBus.push(res)
       this.trueArr = newArr
-      console.log(this.clickArrBus)
+      console.log(this.trueArr)
     })
   },
   methods: {

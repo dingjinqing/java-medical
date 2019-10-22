@@ -69,7 +69,7 @@ export default {
             'if_radius': '0', // 模块角度 0直角  1圆角 y
             'goods_module_style': '0', // 0白底无边框  1边框投影 2白底有边框 y
             'goods_area': 'sort', // 模块推荐-商品范围  //all 没选  sort：商家分类 cat:平台分类  brand:品牌分类  label:标签分类 y
-            'goods_area_data': '', // 商品范围选中后弹窗选中的数据  //多个数据也是字符串，非数组  y
+            'goods_area_data': [], // 商品范围选中后弹窗选中的数据  //多个数据也是字符串，非数组  y
             'goods_type': '0', // 活动商品 0请选择 .. y
             'show_market': '1', // 其他信息选中 隐藏radio字段  1市场价 2销量 3评价数 y
             'goods_module_bg': '0', // 背景颜色 0与页面一致  1自定义 y
@@ -85,6 +85,28 @@ export default {
             'back_color': '#fff', // 背景颜色
             'search_sort': '0', // 商家分类是否显示
             'sort_bg_color': '#666666' // 图标颜色
+          }
+          break
+        case 10: // 商品分组模块
+          obj = {
+            'cur_idx': 102,
+            'module_name': 'm_goods_group',
+            'sort_group_arr': [
+            ],
+            'menu_style': '0',
+            'position_style': '0',
+            'shop_style': '1',
+            'if_radius': '0',
+            'sort_length': 1,
+            'module_style': '1',
+            'group_display': '1',
+            'show_market': '1',
+            'goods_module_bg': '0',
+            'goods_bg_color': '#f5f5f5',
+            'show_name': 0,
+            'show_price': 0,
+            'cart_btn': 1,
+            'other_message': 0
           }
           break
         case 11: // 轮播图模块
