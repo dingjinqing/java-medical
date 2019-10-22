@@ -501,15 +501,11 @@ public class CouponGiveService extends ShopBaseService {
         String startTimeString = simpleDateFormat.format(System.currentTimeMillis());
         startTime = Timestamp.valueOf(startTimeString);
         // 计算结束时间
-        long days = couponDetails.getValidity() * 1000 * 60 * 60 * 24;
-        long hours = couponDetails.getValidityHour() * 1000 * 60 * 60;
-        long minutes = couponDetails.getValidityMinute() * 1000 * 60;
+        long days = couponDetails.getValidity().longValue() * 1000 * 60 * 60 * 24;
+        long hours = couponDetails.getValidityHour().longValue() * 1000 * 60 * 60;
+        long minutes = couponDetails.getValidityMinute().longValue() * 1000 * 60;
         // 当前时间加上天、时、分得到结束时间
         long endTimeLong = System.currentTimeMillis() + days + hours + minutes;
-        logger().info("天", couponDetails.getValidity(), days);
-        logger().info("时", couponDetails.getValidityHour(), hours);
-        logger().info("分", couponDetails.getValidityMinute(), minutes);
-        logger().info("结束日期", endTimeLong);
         String endTimeString = simpleDateFormat.format(endTimeLong);
         endTime = Timestamp.valueOf(endTimeString);
       }
