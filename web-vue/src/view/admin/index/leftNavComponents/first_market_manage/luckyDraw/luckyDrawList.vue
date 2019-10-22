@@ -23,7 +23,7 @@
     </div>
     <!-- 添加抽奖活动的路由出口 -->
     <div v-if="isShowAddFlag">
-      <component v-bind:is="currentComponent"></component>
+      <component v-bind:is="currentComponent" :id="lotteryId" :isEdite="isEdite"></component>
     </div>
     <div
       v-if="!isShowAddFlag"
@@ -179,7 +179,9 @@ export default {
        */
       isShowAddFlag: false,
       // 动态组件
-      currentComponent: null
+      currentComponent: null,
+      lotteryId: null,
+      isEdite: false
     }
   },
   watch: {
@@ -191,11 +193,12 @@ export default {
   created () {
 
   },
-  mounted () {
+  mounted: function () {
     // 初始化国际化
     this.langDefault()
     // 初始化页面数据
     this.initPageData()
+    this.closeTabAddGroup()
     if (this.tabSwitch === `6`) {
       console.log(1111111111)
     } else {
@@ -230,8 +233,9 @@ export default {
       this.initPageData()
     },
     handleTabClick (tab) {
-      this.initPageData()
-      this.closeTabAddGroup()
+      if (this.closeTabAddGroup()) {
+        this.initPageData()
+      }
     },
     // 添加抽奖活动
     addActivity () {
@@ -247,8 +251,12 @@ export default {
       // 跳转到路由添加抽奖界面
       this.currentComponent = luckyDrawAdd
     },
+    // 编辑
     editActivity (id) {
       console.log('editActivity', 'lottery', id)
+      this.lotteryId = id
+      this.isEdite = true
+      this.addActivity()
     },
     changeStatus (id) {
       console.log('changeStatus', id)
@@ -308,10 +316,10 @@ export default {
     closeTabAddGroup () {
       // 新增标签
       if (this.tabSwitch === '6') {
-        return
+        return false
       }
       // 不是新增
-      if (this.tabInfo.length > 5) {
+      for (;this.tabInfo.length > 5;) {
         this.currentComponent = luckyDrawAdd
 
         this.isShowAddFlag = false
@@ -320,7 +328,7 @@ export default {
           name: '6'
         })
       }
-      return this.tabInfo
+      return true
     }
   }
 }

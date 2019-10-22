@@ -274,7 +274,6 @@
                                     :label="item.iconImgs"
                                     :name="item.lotteryGrade"
                             >
-                                {{item}}
                                 <el-form label="100px">
                                     <el-form-item label="中奖概率：">
                                         <el-input
@@ -493,12 +492,11 @@ export default {
   // 是否是设置
   props: {
     id: {
-      type: Number,
-      default: () => 122
+      type: Number
     }, // 数据库选择
     isEdite: { // 调起弹窗
       type: Boolean,
-      default: () => true
+      default: () => false
     }
   },
   components: {
@@ -658,8 +656,12 @@ export default {
       console.log('isEditeShowData', this.isEdite)
       if (this.isEdite) {
         getLottery({id: this.id}).then(res => {
-          console.log('数据回显', res)
+          res.content.prizeList.map((item, index) => {
+            item.lotteryGrade = item.lotteryGrade.toString()
+            item.chance = 100 * item.chanceNumerator / item.chanceDenominator
+          })
           this.requestParam = res.content
+          console.log('数据回显', res, this.requestParam)
           this.$forceUpdate()
         })
       }
