@@ -870,13 +870,15 @@ public class UserService extends ShopBaseService {
 		userMain.setShopId(getShopId());
 		if(type==1) {
 			//更新
-			int update = userMain.update();
-			logger().info("User表同步到主库，更新"+update);
+			/*
+			 * int update = userMain.update(); logger().info("User表同步到主库，更新"+update);
+			 */
 		}
 		if(type==0) {
 			//插入
-			int insert = userMain.insert();
-			logger().info("User表同步到主库，插入"+insert);
+			/*
+			 * int insert = userMain.insert(); logger().info("User表同步到主库，插入"+insert);
+			 */
 		}
 	}
 	
@@ -890,7 +892,7 @@ public class UserService extends ShopBaseService {
 		com.vpu.mp.db.main.tables.records.UserDetailRecord userDetailMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserDetailRecord.class);
 		userDetailMain.setShopId(getShopId());
 		if(type==1) {
-			//更新  TODO.先本地写，一会上传
+			//更新
 			/*
 			 * int update = userDetailMain.update();
 			 * logger().info("UserDetail表同步到主库，更新"+update);
