@@ -256,6 +256,8 @@ public class UserService extends ShopBaseService {
 			uDetailRecord.setUsername(user.getUsername());
 			uDetailRecord.setUserAvatar(avatar == null ? "/image/admin/head_icon.png" : avatar);
 			uDetailRecord.insert();
+			logger().info("开始同步Detail");
+			syncMainUserDetail(uDetailRecord, SYCINSERT);
 
 			String path = pathQuery.getPath();
 			Map<String, String> query = pathQuery.getQuery();
@@ -399,10 +401,13 @@ public class UserService extends ShopBaseService {
 			db().update(USER).set(USER.USERNAME, username).where(USER.USER_ID.eq(param.getUserId())).execute();
 			db().update(USER_DETAIL).set(USER_DETAIL.USERNAME, username)
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
+			logger().info("更新昵称");
 			record.setUsername(username);
 			syncMainUser(record, SYCUPDATE);
-			userDetailRecord.setUsername(username);
-			syncMainUserDetail(userDetailRecord, SYCUPDATE);
+			if(userDetailRecord!=null) {
+				userDetailRecord.setUsername(username);
+				syncMainUserDetail(userDetailRecord, SYCUPDATE);
+			}
 			
 		}
 		// 更新头像
