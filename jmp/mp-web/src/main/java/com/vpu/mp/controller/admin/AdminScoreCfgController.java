@@ -64,5 +64,15 @@ public class AdminScoreCfgController extends AdminBaseController {
 		return i18nSuccess(vo);
 	}
 	
+	/**
+	 * 积分前端页展示模板id
+	 * @param scorePageId
+	 * @return
+	 */
+	@PostMapping(value="/add")
+	public JsonResult addScore(@RequestBody ShopCfgParam param) {
+		shop().score.addScoreCfgForDecoration(param);
+		return success();
+	}
 	
 }
