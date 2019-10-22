@@ -9,11 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
+import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
@@ -22,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 
 /**
  * 积分配置Service
@@ -32,6 +35,8 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
 
 public class ScoreCfgService extends BaseShopConfigService {
 
+	@Autowired
+	public ShopMpDecorationService mpDecoration;
 	final public static String ZERO = "0";
 	final public static String ONE = "1";
 	final public static String TWO = "2";
@@ -60,6 +65,8 @@ public class ScoreCfgService extends BaseShopConfigService {
 	final public static String LOGIN_SCORE = "login_score";
 	final public static String SCORE_LOGIN = "score_login";
 	final public static String SIGN_IN_SCORE = "sign_in_score";
+	// 模板页面id
+	final public static String SCORE_PAGE_ID = "score_page_id";
 	// 积分说明
 	final public static String SCORE_DOCUMENT = "score_document";
 	// 积分国际化信息
@@ -294,6 +301,14 @@ public class ScoreCfgService extends BaseShopConfigService {
 		
 		
 		vo.setSignScore(userScore.getScore());
+		
+		// 模板名称
+		if(!StringUtils.isBlank(vo.getScorePageId())) {
+			XcxCustomerPageRecord xcxCustomerPage = mpDecoration.getPageById(Integer.parseInt(vo.getScorePageId()));
+			if(xcxCustomerPage != null) {
+				vo.setPageName(xcxCustomerPage.getPageName());
+			}
+		}
 		return vo;
 	}
 
@@ -347,6 +362,15 @@ public class ScoreCfgService extends BaseShopConfigService {
 		}else {
 			return null;
 		}
+	}
+	
+	/**
+	 * 积分模板页添加 addScore 
+	 * @param scorePageId
+	 */
+	public void addScoreCfgForDecoration(ShopCfgParam param) {
+		// 通过前端调用多个接口api而不是将数据全部塞满
+		this.set(SCORE_PAGE_ID, ""+param.getScorePageId());
 	}
 	
 	

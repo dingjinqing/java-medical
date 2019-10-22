@@ -58,6 +58,12 @@ public class ScoreCfgVo {
 	@JsonAlias("score_pay_num")
 	public String scorePayNum;
 	
+	@JsonAlias("score_page_id")
+	public String scorePageId;
+	
+	// 模板页面名称
+	public String pageName;
+	
 	public ArrayList<String> buy = new ArrayList<>();
 	public ArrayList<String> buyScore = new ArrayList<>();
 	public ArrayList<String> buyEach = new ArrayList<>();

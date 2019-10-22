@@ -99,4 +99,9 @@ public class ShopCfgParam {
 	 */
 	private String[] signScore;
 	
+	/**
+	 * 模板页面id
+	 */
+	private Integer scorePageId;
+	
 }
