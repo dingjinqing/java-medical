@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import jodd.util.StringUtil;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectLimitStep;
@@ -26,8 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -66,6 +67,9 @@ public class CouponGiveService extends ShopBaseService {
   public static final String ACT_CODE_VOUCHER = "voucher";
 
   public static final String ACT_CODE_DISCOUNT = "discount";
+
+  /** 活动类型 定向发券 值为9 */
+  private static final byte GET_SOURCE = 9;
 
   /**
    * 优惠券发放情况分页列表
@@ -460,76 +464,80 @@ public class CouponGiveService extends ShopBaseService {
     List<Integer> failList = new ArrayList<>();
     /* 插入user-coupon关联表 */
     for (String couponId : param.getCouponArray()) {
-
-      String actCode =
-          db().select(MRKING_VOUCHER.ACT_CODE)
+      // 得当当前优惠券信息
+      CouponDetailsVo couponDetails =
+          db().select(
+                  MRKING_VOUCHER.ACT_CODE,
+                  MRKING_VOUCHER.ACT_NAME,
+                  MRKING_VOUCHER.DENOMINATION,
+                  MRKING_VOUCHER.VALIDITY_TYPE,
+                  MRKING_VOUCHER.START_TIME,
+                  MRKING_VOUCHER.END_TIME,
+                  MRKING_VOUCHER.VALIDITY,
+                  MRKING_VOUCHER.VALIDITY_HOUR,
+                  MRKING_VOUCHER.VALIDITY_MINUTE)
               .from(MRKING_VOUCHER)
               .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
-              .fetchOptionalInto(String.class)
-              .get();
-      String couponName =
-          db().select(MRKING_VOUCHER.ACT_NAME)
-              .from(MRKING_VOUCHER)
-              .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
-              .fetchOptionalInto(String.class)
-              .orElse(null);
-      BigDecimal denomination =
-          db().select(MRKING_VOUCHER.DENOMINATION)
-              .from(MRKING_VOUCHER)
-              .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
-              .fetchOptionalInto(BigDecimal.class)
-              .orElse(null);
-      if (actCode.equals(VOUCHER)) {
-        for (Integer userId : param.getUserIds()) {
-          Integer rows =
-              db().insertInto(
-                      CUSTOMER_AVAIL_COUPONS,
-                      CUSTOMER_AVAIL_COUPONS.TYPE,
-                      CUSTOMER_AVAIL_COUPONS.GET_SOURCE,
-                      CUSTOMER_AVAIL_COUPONS.ACT_ID,
-                      CUSTOMER_AVAIL_COUPONS.USER_ID,
-                      CUSTOMER_AVAIL_COUPONS.ACT_DESC,
-                      CUSTOMER_AVAIL_COUPONS.AMOUNT,
-                      CUSTOMER_AVAIL_COUPONS.COUPON_SN,
-                      CUSTOMER_AVAIL_COUPONS.ACCESS_ID)
-                  .values(
-                      (byte) 0,
-                      (byte) 9,
-                      Integer.valueOf(couponId),
-                      userId,
-                      couponName,
-                      denomination,
-                      getCouponSn(),
-                      param.getActId())
-                  .execute();
-          failList.add(rows);
-        }
+              .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+              .fetchOneInto(CouponDetailsVo.class);
+      // 判断优惠券类型 减价or打折
+      byte type = 0;
+      if (VOUCHER.equalsIgnoreCase(couponDetails.getActCode())) {
+        type = 0;
+      } else if (DISCOUNT.equalsIgnoreCase(couponDetails.getActCode())) {
+        type = 1;
       }
-      if (actCode.equals(DISCOUNT)) {
-        for (Integer userId : param.getUserIds()) {
-          Integer rows =
-              db().insertInto(
-                      CUSTOMER_AVAIL_COUPONS,
-                      CUSTOMER_AVAIL_COUPONS.TYPE,
-                      CUSTOMER_AVAIL_COUPONS.GET_SOURCE,
-                      CUSTOMER_AVAIL_COUPONS.ACT_ID,
-                      CUSTOMER_AVAIL_COUPONS.USER_ID,
-                      CUSTOMER_AVAIL_COUPONS.ACT_DESC,
-                      CUSTOMER_AVAIL_COUPONS.AMOUNT,
-                      CUSTOMER_AVAIL_COUPONS.COUPON_SN,
-                      CUSTOMER_AVAIL_COUPONS.ACCESS_ID)
-                  .values(
-                      (byte) 1,
-                      (byte) 9,
-                      Integer.valueOf(couponId),
-                      userId,
-                      couponName,
-                      denomination,
-                      getCouponSn(),
-                      param.getActId())
-                  .execute();
-          failList.add(rows);
-        }
+      // 定义开始时间和结束时间作为最后的参数
+      Timestamp startTime;
+      Timestamp endTime;
+      // 判断发送类型，得到发送时间
+      if (couponDetails.getValidityType().equals(NumberUtils.BYTE_ZERO)) {
+        startTime = couponDetails.getStartTime();
+        endTime = couponDetails.getEndTime();
+      } else {
+        // 设置日期格式
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+        // 得到系统当前时间作为开始时间
+        String startTimeString = simpleDateFormat.format(System.currentTimeMillis());
+        startTime = Timestamp.valueOf(startTimeString);
+        // 计算结束时间
+        long days = couponDetails.getValidity() * 1000 * 60 * 60 * 24;
+        long hours = couponDetails.getValidityHour() * 1000 * 60 * 60;
+        long minutes = couponDetails.getValidityMinute() * 1000 * 60;
+        // 当前时间加上天、时、分得到结束时间
+        long endTimeLong = System.currentTimeMillis() + days + hours + minutes;
+        String endTimeString = simpleDateFormat.format(endTimeLong);
+        endTime = Timestamp.valueOf(endTimeString);
+      }
+      // 发券入库
+      for (Integer userId : param.getUserIds()) {
+        Integer rows =
+            db().insertInto(
+                    CUSTOMER_AVAIL_COUPONS,
+                    CUSTOMER_AVAIL_COUPONS.TYPE,
+                    CUSTOMER_AVAIL_COUPONS.GET_SOURCE,
+                    CUSTOMER_AVAIL_COUPONS.ACT_ID,
+                    CUSTOMER_AVAIL_COUPONS.USER_ID,
+                    CUSTOMER_AVAIL_COUPONS.ACT_DESC,
+                    CUSTOMER_AVAIL_COUPONS.AMOUNT,
+                    CUSTOMER_AVAIL_COUPONS.COUPON_SN,
+                    CUSTOMER_AVAIL_COUPONS.ACCESS_ID,
+                    CUSTOMER_AVAIL_COUPONS.START_TIME,
+                    CUSTOMER_AVAIL_COUPONS.END_TIME)
+                .values(
+                    type,
+                    GET_SOURCE,
+                    Integer.valueOf(couponId),
+                    userId,
+                    couponDetails.getActName(),
+                    couponDetails.getDenomination(),
+                    getCouponSn(),
+                    param.getActId(),
+                    startTime,
+                    endTime)
+                .execute();
+        // 得到失败条数
+        failList.add(rows);
       }
     }
     return failList;
