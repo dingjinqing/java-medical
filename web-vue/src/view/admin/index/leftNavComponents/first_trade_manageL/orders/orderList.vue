@@ -939,7 +939,7 @@ export default {
       return goodsTypeStr
     },
     setGoodsTypeArray (orderItem) {
-      orderItem.goodsTypeArray = orderItem.goodsType.split(',')
+      orderItem.goodsTypeArray = orderItem.goodsType.substring(1, orderItem.goodsType.length - 1).split('_')
     },
     deliver (orderInfo) {
       this.showDelivery = true
