@@ -314,15 +314,12 @@ public class StoreWxService extends ShopBaseService {
      */
     public StorePayOrderVo storePayOrder(StoreInfoParam param) {
         int storeId = param.getStoreId();
-        long userId = param.getUserId();
+        int userId = param.getUserId();
         StorePayOrderVo payOrderVo = new StorePayOrderVo();
         if (userId != 0) {
             UserRecord userRecord = db().select(USER.SOURCE, USER.SCORE, USER.ACCOUNT)
-                .from(USER).where(USER.USER_ID.eq((int) userId))
-                .fetchOptionalInto(USER).orElseThrow(() -> {
-                    log.error("用戶数据[userId: {}]查询不存在", userId);
-                    throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
-                });
+                .from(USER).where(USER.USER_ID.eq(userId))
+                .fetchOneInto(USER);
             payOrderVo.setSource(userRecord.getSource());
             payOrderVo.setScore(userRecord.getScore());
             payOrderVo.setAccount(userRecord.getAccount());
@@ -333,7 +330,7 @@ public class StoreWxService extends ShopBaseService {
         // 获取发票开关配置
         payOrderVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         // 获取有效用户会员卡列表
-        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList((int) userId, BYTE_ZERO, INTEGER_ZERO)
+        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, INTEGER_ZERO)
             .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Arrays.asList(c.getStoreList().split(",")).contains(String.valueOf(storeId)))
             .collect(Collectors.toList());
         log.debug("有效用户会员卡列表:{}", cardList);
@@ -349,5 +346,9 @@ public class StoreWxService extends ShopBaseService {
         // 门店买单开关配置
         payOrderVo.setStoreBuy(storeConfigService.getStoreBuy());
         return payOrderVo;
+    }
+
+    public void storePay() {
+
     }
 }
