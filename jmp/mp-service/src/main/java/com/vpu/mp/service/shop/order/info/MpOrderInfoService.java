@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.collect.ImmutableMap;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
@@ -115,7 +116,7 @@ public class MpOrderInfoService extends OrderInfoService{
 	 * @return
 	 */
 	public PageResult<OrderListMpVo> getPageList(OrderListParam param){
-		SelectJoinStep<Record> select = db().select(TABLE.asterisk()).from(TABLE);
+		SelectJoinStep<Record> select = db().selectDistinct(TABLE.asterisk()).from(TABLE);
 		buildOptions(select, param, false);
 		PageResult<OrderListMpVo> pageResult = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderListMpVo.class);
 		return pageResult;
