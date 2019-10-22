@@ -19,7 +19,7 @@
           <span class="inputTip">{{$t('goodsRecommendSorts.goodsSortHeadImgTip')}}</span>
           <span style="font-size: 14px;color: #666;">{{$t('goodsRecommendSorts.goodsSortHeadImgLink')}}：</span>
           <el-input v-model="recommendSortCfg.recommendImgLink" size="small" style="width: 280px;"/>
-          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">{{$t('goodsRecommendSorts.addHeadSortImgLink')}}</el-button>
+          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">{{$t('goodsRecommendSorts.addHeadImgLink')}}</el-button>
         </el-form-item>
       </el-form>
       <el-button @click="addGoodsRecommendSort" type="primary" style="margin-bottom: 10px;">{{$t('goodsRecommendSorts.addRecommendSort')}}</el-button>

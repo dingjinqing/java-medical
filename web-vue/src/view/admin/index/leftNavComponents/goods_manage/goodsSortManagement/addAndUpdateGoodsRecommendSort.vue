@@ -68,7 +68,7 @@
                <div class="formItemVal">
                  <el-input v-model="item.imgLink" size="small" style="width: 250px;"/>
                  <el-button @click="chooseImgLink(item)" size="small" style="margin-left: 5px;color: #666666;">
-                   {{$t('goodsRecommendSorts.addHeadSortImgLink')}}
+                   {{$t('goodsRecommendSorts.addHeadImgLink')}}
                  </el-button>
                </div>
              </div>
@@ -187,23 +187,24 @@ export default {
     _validateFormData () {
       if (isStrBlank(this.recommendSort.sortName)) {
         this.$message.warning({message: this.$t('goodsRecommendSorts.sortNameNotNull')})
-        return
+        return false
       }
       if (typeof this.recommendSort.first !== 'number') {
         this.$message.warning({message: this.$t('goodsRecommendSorts.pleaseInputRightPriority')})
-        return
+        return false
       }
       for (let i = 0; i < this.recommendSortChildren.length; i++) {
         let sort = this.recommendSortChildren[i]
         if (isStrBlank(sort.sortName)) {
           this.$message.warning({message: this.$t('goodsRecommendSorts.sortNameNotNull')})
-          return
+          return false
         }
         if (sort.sortImgObj.imgPath === undefined) {
           this.$message.warning({message: this.$t('goodsRecommendSorts.pleaseInputSortImg')})
-          return
+          return false
         }
       }
+      return true
     },
     /* 获取表单数据 */
     _getFormData () {

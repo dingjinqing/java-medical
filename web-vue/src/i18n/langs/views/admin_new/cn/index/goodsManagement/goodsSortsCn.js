@@ -23,7 +23,7 @@ export const cn = {
   goodsSortHeadImg: '分类头图',
   goodsSortHeadImgTip: '显示在分类页顶部，不填写则不显示，建议尺寸510*200',
   goodsSortHeadImgLink: '头图链接',
-  addImgLink: '添加链接',
+  addHeadImgLink: '添加链接',
   sortNameNotNull: '分类名称不可为空',
   chooseFirstLevel: '请选择一级分类',
   chooseSortIcon: '请选择分类图标',

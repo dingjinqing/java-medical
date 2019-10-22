@@ -23,7 +23,7 @@ export const en = {
   goodsSortHeadImg: 'Sort Head Img',
   goodsSortHeadImgTip: 'Displayed at the top of the category page, not displayed without filling, recommended size 510*200',
   goodsSortHeadImgLink: 'Sort Head Img Link',
-  addImgLink: 'Add Img Link',
+  addHeadImgLink: 'Add Img Link',
   sortNameNotNull: 'Sort name can\'t be null',
   chooseFirstLevel: 'Choose first level',
   chooseSortIcon: 'Choose sort icon',
