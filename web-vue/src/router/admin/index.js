@@ -275,6 +275,19 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_decoration/personalCenter/personalCenter'
               )
           },
+          // 搜索配置
+          {
+            path: '/admin/home/main/searchConfig',
+            name: 'search_config',
+            meta: {
+              crumbTitle: 'router.searchConfig',
+              meta: 'first_web_decoration'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/searchConfig/searchConfig'
+              )
+          },
           // 商品管理系列
           // 商品管理/全部商品
           {

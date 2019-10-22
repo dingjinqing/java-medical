@@ -14,6 +14,8 @@ export const cn = {
   bottomNavigation: ['小程序管理', '底部导航'],
   // 小程序管理 个人中心
   personalCenter: ['小程序管理', '个人中心'],
+  // 小程序管理 搜索配置
+  searchConfig: ['小程序管理', '搜索配置'],
   // 商品管理 出售中商品
   goodsForSale: ['商品管理', '出售中商品'],
   // 商品管理 已售磬商品

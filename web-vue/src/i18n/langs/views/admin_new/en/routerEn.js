@@ -83,6 +83,8 @@ export const en = {
   picture_setting: ['Small Program Management', 'Custom Page Decoration'],
   // 小程序管理 个人中心
   personalCenter: ['Small Program Management', 'Personal Center'],
+  // 小程序管理 搜索配置
+  searchConfig: ['Small Program Management', 'Search Config'],
   // 营销管理
   market_manage: ['Marketing management'],
   // 营销管理 多人拼团

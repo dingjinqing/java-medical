@@ -448,10 +448,6 @@ export default {
   },
   methods: {
     // 模板消息查询数据初始化
-    // async fetchData () {
-    //   const response = await templateQueryApi()
-    //   console.log(response)
-    // },
     fetchData () {
       templateQueryApi().then(res => {
         console.log(res)
@@ -459,6 +455,7 @@ export default {
         // 合并定义的数据和返回的数据
         let list = [...res.content]
         console.log(list)
+        console.log([...res.content])
         let list1 = [...res.content]
         console.log(list1)
 
@@ -470,7 +467,7 @@ export default {
         // })
         // console.log(q)
 
-        let resultData = list.splice(0, 12).map((item, index) => {
+        let resultData = list.slice(0, 12).map((item, index) => {
           return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
         this.tableData = resultData
@@ -483,7 +480,7 @@ export default {
         // // console.log(this.tableData1)
 
         // console.log(list1)
-        let resultData1 = list1.splice(0, 14).map((item, index) => {
+        let resultData1 = list.splice(12).map((item, index) => {
           return { ...item, ...this.tableData1[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
         this.tableData1 = resultData1
