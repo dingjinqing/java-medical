@@ -26,13 +26,15 @@ public class WxMainUserService extends MainBaseService {
 			// 更新
 			sendRecord.setId(record.getId());
 			logger().info("同步更新user"+sendRecord);
-			int executeUpdate = db().executeUpdate(sendRecord);
+			int executeUpdate = sendRecord.update();
+			//int executeUpdate = db().executeUpdate(sendRecord);
 			logger().info("更新User，结果" + executeUpdate);
 		} else {
 			// 插入
 			sendRecord.setShopId(shopId);
 			logger().info("同步插入user"+sendRecord);
-			int executeInsert = db().executeInsert(sendRecord);
+			int executeInsert = sendRecord.insert();
+			//int executeInsert = db().executeInsert(sendRecord);
 			logger().info("插入User，结果" + executeInsert);
 		}
 
@@ -53,13 +55,15 @@ public class WxMainUserService extends MainBaseService {
 			// 更新
 			sendRecord.setId(record.getId());
 			logger().info("同步更新user"+sendRecord);
-			int executeUpdate = db().executeUpdate(sendRecord);
+			int executeUpdate = sendRecord.update();
+			//int executeUpdate = db().executeUpdate(sendRecord);
 			logger().info("更新UserDetail，结果" + executeUpdate);
 		} else {
 			// 插入
 			sendRecord.setShopId(shopId);
 			logger().info("同步插入user"+sendRecord);
-			int executeInsert = db().executeInsert(sendRecord);
+			int executeInsert = sendRecord.insert();
+			//int executeInsert = db().executeInsert(sendRecord);
 			logger().info("插入UserDetail，结果" + executeInsert);
 		}
 	}
