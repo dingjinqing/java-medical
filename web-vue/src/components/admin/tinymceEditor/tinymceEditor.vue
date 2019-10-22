@@ -48,10 +48,10 @@ export default {
     return {
       // 初始化配置
       init: {
-        language_url: 'http://localhost:8080/static/tinymce/tinymce_languages/langs/zh_CN.js',
+        language_url: `http://${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`,
         language: 'zh_CN',
         height: 450,
-        skin_url: 'http://localhost:8080/static/tinymce/skins/ui/oxide',
+        skin_url: `http://${window.location.host}/static/tinymce/skins/ui/oxide`,
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,
@@ -69,7 +69,9 @@ export default {
   created () {
   },
   mounted () {
-    console.log(window.tinymce)
+    // this.init.language_url = `${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`
+    // this.init.skin_url = `${window.location.host}/static/tinymce/skins/ui/oxide`
+    console.log(window.location.host)
     tinymce.init({})
     this.$forceUpdate()
   },
