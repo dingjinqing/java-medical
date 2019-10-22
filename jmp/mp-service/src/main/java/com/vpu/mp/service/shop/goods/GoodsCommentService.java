@@ -826,7 +826,7 @@ public class GoodsCommentService extends ShopBaseService {
             .fetchOptionalInto(Integer.class)
             .orElse(null);
     // 如果没有当前用户信息，添加一条新的记录
-    if (userId.equals(null)) {
+    if (userId == null) {
       db().insertInto(USER_SCORE, USER_SCORE.USER_ID, USER_SCORE.SCORE)
           .values(paramUserId, paramScore)
           .execute();
@@ -878,9 +878,10 @@ public class GoodsCommentService extends ShopBaseService {
               .and(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
               .fetchOneInto(CouponDetailsVo.class);
       // 获取优惠券类型
-      Byte type;
+      byte type;
+      String voucher = "voucher";
       // 减价
-      if (couponDetails.getActCode().equals("voucher")) {
+      if (voucher.equals(couponDetails.getActCode())) {
         type = 0;
       }
       // 打折
