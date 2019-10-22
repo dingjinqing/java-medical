@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryVo;
@@ -21,6 +22,7 @@ import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
@@ -90,6 +92,12 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public UserCardDaoService userCardDaoService;
+
+    /**
+     * The Invoice service.发票
+     */
+    @Autowired
+    public InvoiceService invoiceService;
 
     private static final Condition delCondition = STORE.DEL_FLAG.eq(BYTE_ZERO);
 
@@ -348,7 +356,21 @@ public class StoreWxService extends ShopBaseService {
         return payOrderVo;
     }
 
-    public void storePay() {
-
+    /**
+     * Store pay.门店买单支付
+     *
+     * @param param the param 门店订单信息
+     * @return the string 订单编号
+     */
+    public String storePay(StoreInfoParam param) {
+        int userId = param.getUserId();
+        // 用户信息
+        UserRecord userRecord = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchOneInto(USER);
+        // 发票信息
+        InvoiceVo invoiceVo = invoiceService.get(1);
+        // 门店订单信息
+        String orderInfo = param.getOrderInfo();
+        // todo 创建门店订单 StoreOrderService
+        return "";
     }
 }
