@@ -449,8 +449,8 @@ create table `b2c_system_cfg`
 create table `b2c_user`
 (
     `id`                 bigint(20)     not null auto_increment,
-    `shop_id`            int(8)         not null default '0',
-    `user_id`            bigint(20)     not null,
+    `shop_id`            int(11)         not null default '0',
+    `user_id`            int(11)     not null,
     `username`           varchar(100)   not null comment '用户名',
     `user_pwd`           varchar(60)    not null comment '密码',
     `user_cid`           varchar(64)    not null default '',
@@ -491,7 +491,7 @@ create table `b2c_user`
 create table `b2c_user_detail`
 (
     `id`              int(11)     not null auto_increment,
-    `user_id`         int(8)      not null,
+    `user_id`         int(11)      not null,
     `shop_id`         int(11)     not null default 0 comment '店铺ID',
     `username`        varchar(100)         default null comment '昵称',
     `sex`             char(5)              default null comment '性别：女f,男m',
