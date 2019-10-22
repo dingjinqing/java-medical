@@ -11,12 +11,12 @@
           <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
           <view class="shipping_info_content">
             <view>
-              <text>快递单号：</text>
-              <text>17600236996</text>
+              <text selectable>快递单号：</text>
+              <text selectable>17600236996</text>
             </view>
             <view>
-              <text>快递公司：</text>
-              <text>申通快递</text>
+              <text selectable>快递公司：</text>
+              <text selectable>申通快递</text>
             </view>
           </view>
         </view>
@@ -25,18 +25,18 @@
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/address.png"></image>
         <view class="shipping_info_content">
           <view>
-            <text>收货人：</text>
-            <text>刘洋  17600236996</text>
+            <text selectable>收货人：</text>
+            <text selectable>刘洋  17600236996</text>
           </view>
           <view>
-            <text>地址：</text>
-            <text>北京市北京市海淀区牡丹园花园路13号天博中润216室</text>
+            <text selectable>地址：</text>
+            <text selectable>北京市北京市海淀区牡丹园花园路13号天博中润216室</text>
           </view>
         </view>
       </view>
     </view>
     <view class="order_top">
-      <text>配送方式：{{orderInfo.deliverTypeName}}</text>
+      <text selectable>配送方式：{{orderInfo.deliverTypeName}}</text>
     </view>
     <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
       <image mode="widthFix" src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
