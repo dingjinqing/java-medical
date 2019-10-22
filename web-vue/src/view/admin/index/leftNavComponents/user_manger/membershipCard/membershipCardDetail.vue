@@ -920,7 +920,7 @@ export default {
           num: ''
         },
         {
-          name: '添加商品分类',
+          name: '添加商家分类',
           num: ''
         },
         {
@@ -961,8 +961,14 @@ export default {
       chioseSureData: [],
       userDialogFlag: null,
       addBrandDialogDataFlag1: '', // 指定商品-添加品牌弹窗选中数据
+      shopCategoryIds: null, // 指定商品-商家分类
+      platformCategoryIds: null, // 指定商品-平台分类
       addBrandDialogDataFlag2: '', // 会员专享-添加品牌弹窗选中数据
       choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据,
+      ownGoodsId: null, // 会员专享商品: 添加的商品Id
+      ownStoreCategoryIds: null, // 会员专享商品:添加的商家分类Id
+      ownPlatFormCategoryIds: null, // 会员专享商品:平台分类id
+      ownBrandId: null, // 会员专享商品:品牌分类id
       controlChoosingGoodsDialog: false,
       choosingGoodsDateFlag2: '', // 会员专享-选择商品选中数据
       tuneUp: false,
@@ -1123,9 +1129,14 @@ export default {
         'disCount': this.ruleForm.discountInput,
         'discountIsAll': this.ruleForm.allGoods,
         'powerPayOwnGood': this.ruleForm.vipFlag ? 'on' : '',
-        'goodsId': [],
-        'shopCategoryIds': [],
-        'platformCategoryIds': [],
+        'goodsId': this.choosingGoodsDateFlag1,
+        'shopCategoryIds': this.shopCategoryIds,
+        'platformCategoryIds': this.platformCategoryIds,
+        'discountBrandId': this.chioseSureData,
+        'ownGoodsId': this.ownGoodsId,
+        'ownStoreCategoryIds': this.ownStoreCategoryIds,
+        'ownPlatFormCategoryIds': this.ownPlatFormCategoryIds,
+        'ownBrandId': this.ownBrandId,
         'powerScore': this.ruleForm.intGet ? 1 : 0,
         'score': this.ruleForm.IntegralInput,
         'scoreJson': {
@@ -1243,9 +1254,28 @@ export default {
       this.ruleForm.discountInput = data.disCount
       this.ruleForm.allGoods = String(data.discountIsAll)
       this.ruleForm.vipFlag = data.powerPayOwnGood === 'on'
+      // 指定商品 - 商品id
+      if (data.goodsId.length > 0) {
+        this.choosingGoodsDateFlag1 = data.goodsId
+        this.noneBlockDiscArr[0].num = data.goodsId.length
+      }
+      // 指定商品 - 商家id
+      if (data.shopCategoryIds.length > 0) {
+        this.shopCategoryIds = data.shopCategoryIds
+        this.noneBlockDiscArr[1].num = data.shopCategoryIds.length
+      }
+      // 指定商品 - 平台id
+      if (data.platformCategoryIds.length > 0) {
+        this.platformCategoryIds = data.platformCategoryIds
+        this.noneBlockDiscArr[2].num = data.platformCategoryIds.length
+      }
 
+      // 指定商品 - 品牌id
+      if (data.brandId.length > 0) {
+        this.chioseSureData = data.brandId
+        this.noneBlockDiscArr[3].num = data.brandId.length
+      }
       /** 待处理
-        'goodsId': [],
         'shopCategoryIds': [],
         'platformCategoryIds': [],
         'storeList': [],
@@ -1294,6 +1324,8 @@ export default {
       console.log(this.goodsMoney, this.getScores)
 
       if (this.ruleForm.shoppingFull === '0') {
+        this.goodsMoney = []
+        this.getScores = []
         this.goodsMoney.push(this.ruleForm.shopingInputLeft)
         this.getScores.push(this.ruleForm.shopingInputReft)
         for (let item of this.ruleForm.addIntegralArr) {
@@ -1368,9 +1400,15 @@ export default {
     getGoodsIdFromChoosingGoods (data) {
       console.log(data)
       // 添加商品id
-      this.choosingGoodsDateFlag1 = data
-      this.noneBlockDiscArr[0].num = data.length
+      if (this.userDialogFlag === '1') {
+        this.choosingGoodsDateFlag1 = data
+        this.noneBlockDiscArr[0].num = data.length
+      } else {
+        this.ownGoodsId = data
+        this.noneBlockVipArr[0].num = data.length
+      }
     },
+    // 12- 接收四个弹窗的信息
     dataDefalut () {
       this.$http.$on('result', res => {
         if (this.userDialogFlag === '1') {
@@ -1382,26 +1420,40 @@ export default {
         }
         console.log(res)
       })
+      // 品牌分类
       this.$http.$on('chioseSureData', res => {
         console.log(res)
-        this.chioseSureData = res
+        if (this.userDialogFlag === '1') {
+          this.chioseSureData = res.map(({ id }) => id)
+          this.noneBlockDiscArr[3].num = res.length
+        } else {
+          this.ownBrandId = res.map(({ id }) => id)
+          this.noneBlockVipArr[3].num = res.length
+        }
       })
+      // 商家,平台分类
       this.$http.$on('BusClassTrueArr', res => {
         console.log(res)
         console.log(this.AtreeType)
         switch (this.userDialogFlag) {
           case '1':
             if (this.AtreeType === 1) {
+              // 商家分类
+              this.shopCategoryIds = res
               this.noneBlockDiscArr[1].num = res.length
             } else {
+              // 平台分类
+              this.platformCategoryIds = res
               this.noneBlockDiscArr[2].num = res.length
             }
 
             break
           case '2':
             if (this.AtreeType === 1) {
+              this.ownStoreCategoryIds = res
               this.noneBlockVipArr[1].num = res.length
             } else {
+              this.ownPlatFormCategoryIds = res
               this.noneBlockVipArr[2].num = res.length
             }
         }
@@ -1499,47 +1551,49 @@ export default {
     hanldeToAddGoodS (index) {
       console.log('指定商品')
       this.userDialogFlag = '1'
-      let arr = ['21']
+      // let arr = ['21']
       console.log(index)
       switch (index) {
         case 0:
-          // this.$http.$emit('choosingGoodsFlag', index, this.choosingGoodsDateFlag1)
           // 商品弹窗显示
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           break
         case 1:
           this.AtreeType = 1
-          this.$http.$emit('addingBusClassDialog', arr)
+          console.log('商家分类')
+          this.$http.$emit('addingBusClassDialog', this.shopCategoryIds)
           break
         case 2:
           this.AtreeType = 2
-          this.$http.$emit('addingBusClassDialog', arr, this.AtreeType)
+          console.log('平台分类')
+          this.$http.$emit('addingBusClassDialog', this.platformCategoryIds, this.AtreeType)
           break
         case 3:
           console.log('detail', index, this.addBrandDialogDataFlag1)
-          this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag1)
+          this.$http.$emit('CallAddBrand', this.chioseSureData, this.addBrandDialogDataFlag1)
       }
     },
     // 点击会员专享商品出现的添加类弹窗汇总
     hanldeToAddGoodSUser (index) {
       console.log('会员专享')
       this.userDialogFlag = '2'
-      let arr = ['21', '25']
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index, this.choosingGoodsDateFlag2)
+          // 商品弹窗显示
+          this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           break
         case 1:
           this.AtreeType = 1
-          this.$http.$emit('addingBusClassDialog', arr)
+          this.$http.$emit('addingBusClassDialog', this.ownStoreCategoryIds, this.AtreeType)
           break
         case 2:
           this.AtreeType = 2
-          this.$http.$emit('addingBusClassDialog', arr, this.AtreeType)
+          this.$http.$emit('addingBusClassDialog', this.ownPlatFormCategoryIds, this.AtreeType)
           break
         case 3:
-          this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag2)
+          this.$http.$emit('CallAddBrand', this.ownBrandId, this.addBrandDialogDataFlag1)
+        // this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag2)
       }
       console.log(index)
     },

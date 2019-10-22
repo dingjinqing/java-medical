@@ -139,6 +139,7 @@ export default {
       }
       console.log(this.$refs.cardTree.getCheckedKeys())
       this.$http.$emit('BusClassTrueArr', arr)
+      this.$emit('BusClassTrueArr', arr)
       this.dialogVisible = false
     },
     defaultData (backData, flag) {

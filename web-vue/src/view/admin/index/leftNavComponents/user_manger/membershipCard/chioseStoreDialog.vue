@@ -105,6 +105,7 @@ export default {
       tableData: [
         {
           ischeck: false,
+          id: 1,
           storeName: '牡丹园店1',
           adress: '天博中润1',
           presenter: '孙腾飞1',
@@ -116,6 +117,7 @@ export default {
         },
         {
           ischeck: false,
+          id: 2,
           storeName: '牡丹园店2',
           adress: '天博中润2',
           presenter: '孙腾飞2',
@@ -127,6 +129,7 @@ export default {
         },
         {
           ischeck: false,
+          id: 3,
           storeName: '牡丹园店3',
           adress: '天博中润3',
           presenter: '孙腾飞3',
@@ -138,6 +141,7 @@ export default {
         },
         {
           ischeck: false,
+          id: 4,
           storeName: '牡丹园店4',
           adress: '天博中润4',
           presenter: '孙腾飞4',
@@ -173,6 +177,9 @@ export default {
   methods: {
     defalutData () {
       this.$http.$on('CallChioseStore', res => {
+        this.dialogVisible = true
+      })
+      this.$http.$on('CallAddBrand', res => {
         this.dialogVisible = true
       })
     },
