@@ -1457,13 +1457,16 @@ public class GoodsService extends ShopBaseService {
         //循环处理需要处理的列
         for(GoodsExportVo goods : list){
             goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
+
             Sort sort = saas.getShopApp(getShopId()).goods.goodsSort.getSort(goods.getSortId());
-            if(sort.getParentId() == Sort.NO_PARENT_CODE){
-                //parent_id 是0，表示该分类是一级节点
-                goods.setSortNameParent(sort.getSortName());
-            }else{
-                goods.setSortNameChild(sort.getSortName());
-                goods.setSortNameParent(saas.getShopApp(getShopId()).goods.goodsSort.getSort(sort.getParentId()).getSortName());
+            if(sort != null){
+                if(sort.getParentId() == Sort.NO_PARENT_CODE){
+                    //parent_id 是0，表示该分类是一级节点
+                    goods.setSortNameParent(sort.getSortName());
+                }else{
+                    goods.setSortNameChild(sort.getSortName());
+                    goods.setSortNameParent(saas.getShopApp(getShopId()).goods.goodsSort.getSort(sort.getParentId()).getSortName());
+                }
             }
         }
 
