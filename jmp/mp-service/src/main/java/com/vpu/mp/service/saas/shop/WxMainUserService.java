@@ -6,6 +6,7 @@ import static com.vpu.mp.db.main.tables.UserDetail.USER_DETAIL;
 import com.vpu.mp.db.main.tables.records.UserDetailRecord;
 import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 
 @Service
 public class WxMainUserService extends MainBaseService {
@@ -32,9 +33,10 @@ public class WxMainUserService extends MainBaseService {
 		} else {
 			// 插入
 			sendRecord.setShopId(shopId);
-			sendRecord.setId(record.getId());
 			logger().info("同步插入user"+sendRecord);
-			int executeInsert = sendRecord.insert();
+			FieldsUtil.assignNotNull(sendRecord, record);
+			logger().info("同步插入user赋值后"+record);
+			int executeInsert = record.insert();
 			//int executeInsert = db().executeInsert(sendRecord);
 			logger().info("插入User，结果" + executeInsert);
 		}
@@ -62,9 +64,10 @@ public class WxMainUserService extends MainBaseService {
 		} else {
 			// 插入
 			sendRecord.setShopId(shopId);
-			logger().info("同步插入user"+sendRecord);
-			sendRecord.setId(record.getId());
-			int executeInsert = sendRecord.insert();
+			logger().info("同步插入UserDetail"+sendRecord);
+			FieldsUtil.assignNotNull(sendRecord, record);
+			logger().info("同步插入UserDetail赋值后"+record);
+			int executeInsert = record.insert();
 			//int executeInsert = db().executeInsert(sendRecord);
 			logger().info("插入UserDetail，结果" + executeInsert);
 		}
