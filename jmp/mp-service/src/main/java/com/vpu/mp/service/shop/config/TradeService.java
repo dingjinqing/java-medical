@@ -761,7 +761,7 @@ public class TradeService extends BaseShopConfigService {
      * @param args      参数决定得到的是set方法还是get方法
      * @return 置取方法名称
      */
-    private static String getMethodName(String fieldName, String args) {
+    public static String getMethodName(String fieldName, String args) {
         StringBuilder stringBuilder = new StringBuilder(args);
         char[] temp = fieldName.toCharArray();
         temp[0] -= 32;

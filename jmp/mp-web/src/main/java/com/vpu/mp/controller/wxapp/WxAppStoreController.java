@@ -21,7 +21,7 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/list")
     public JsonResult storeList(@RequestBody StoreListParam param) {
-        return success(shop().store.getList(param));
+        return success(shop().store.wxService.getList(param));
     }
 
     /**
@@ -29,6 +29,14 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/info")
     public JsonResult storeInfo(@RequestBody StoreInfoParam param) {
-        return this.success(shop().store.getWxappStoreDetail(param));
+        return this.success(shop().store.wxService.getWxappStoreDetail(param));
+    }
+
+    /**
+     * 门店买单
+     */
+    @PostMapping("/payOrder")
+    public JsonResult storePayOrder(@RequestBody StoreInfoParam param) {
+        return this.success(shop().store.wxService.storePayOrder(param));
     }
 }
