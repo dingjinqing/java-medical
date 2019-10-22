@@ -10,7 +10,7 @@
             label-width="180px"
           >
             <el-form-item
-              label="技师名称："
+              :label="$t('technicianAdd.technicianName')+'：'"
               prop="technicianName"
             >
               <el-input
@@ -20,7 +20,7 @@
               ></el-input>
             </el-form-item>
             <el-form-item
-              label="手机号码："
+              :label="$t('technicianAdd.cellphone')+'：'"
               prop="technicianMobile"
             >
               <el-input
@@ -31,7 +31,7 @@
               ></el-input>
             </el-form-item>
             <el-form-item
-              label="头像："
+              :label="$t('technicianAdd.avatar')+'：'"
               prop="bgImgPath"
             >
               <div
@@ -47,7 +47,7 @@
                     fit="contain"
                     :src="$imageHost + '/image/admin/tech_moren.png'"
                   ></el-image>
-                  <p>更改</p>
+                  <p>{{$t('technicianAdd.change')}}</p>
                 </div>
                 <div
                   v-else
@@ -62,24 +62,24 @@
               </div>
             </el-form-item>
             <el-form-item
-              label="介绍："
+              :label="$t('technicianAdd.intro')+'：'"
               class="big_input"
               prop="technicianIntroduce"
             >
               <el-input
                 size="small"
                 class="big_input"
-                placeholder="请用一句话介绍技师"
+                :placeholder="$t('technicianAdd.introTips')"
                 v-model="form.technicianIntroduce"
               ></el-input>
             </el-form-item>
-            <el-form-item label="所属分组：">
+            <el-form-item :label="$t('technicianAdd.ownedGroup')+'：'">
               <el-select
                 v-model="form.groupId"
                 size="small"
               >
                 <el-option
-                  label="请选择所属分组"
+                  :label="$t('technicianAdd.ownedGroupTips')+'：'"
                   :value="null"
                 ></el-option>
                 <el-option
@@ -90,10 +90,10 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="服务项目：">
+            <el-form-item :label="$t('technicianAdd.serviceName')+'：'">
               <el-radio-group v-model="form.serviceType">
-                <el-radio :label="0">全部项目</el-radio>
-                <el-radio :label="1">部分项目</el-radio>
+                <el-radio :label="0">{{$t('technicianAdd.allProjects')}}</el-radio>
+                <el-radio :label="1">{{$t('technicianAdd.partOfProjects')}}</el-radio>
               </el-radio-group>
               <div
                 v-show="form.serviceType === 1"
@@ -113,21 +113,21 @@
                     align="center"
                   ></el-table-column>
                   <el-table-column
-                    label="服务项目"
+                    :label="$t('technicianAdd.serviceName')"
                     prop="serviceName"
                   ></el-table-column>
                 </el-table>
               </div>
             </el-form-item>
             <el-form-item
-              label="备注："
+              :label="$t('technicianAdd.remarks')"
               prop="remarks"
             >
               <el-input
                 class="big_input"
                 v-model="form.remarks"
                 type="textarea"
-                placeholder="备注不能超过200字"
+                :placeholder="$t('technicianAdd.remarksTips')"
                 :maxlength="200"
               ></el-input>
             </el-form-item>
@@ -149,11 +149,11 @@
           type="primary"
           class="footer-btn"
           @click="saveTechnicianInfo"
-        >保存</el-button>
+        >{{$t('technicianAdd.save')}}</el-button>
         <el-button
           size="small"
           class="footer-btn"
-        >取消</el-button>
+        >{{$t('technicianAdd.cancel')}}</el-button>
       </div>
     </div>
   </div>
@@ -184,10 +184,10 @@ export default {
       },
       rules: {
         technicianName: [
-          { required: true, message: '请输入技师名称', trigger: 'blur' }
+          { required: true, message: this.$t('technicianAdd.nameValid'), trigger: 'blur' }
         ],
         technicianMobile: [
-          { required: true, message: '请输入技师的电话号码', trigger: 'blur' }
+          { required: true, message: this.$t('technicianAdd.phoneValid'), trigger: 'blur' }
         ]
       }
     }
@@ -262,14 +262,14 @@ export default {
           if (!this.$route.query.technicianId) {
             addTechnicianApi(params).then(res => {
               if (res.error === 0) {
-                this.$message.success('保存成功')
+                this.$message.success(this.$t('technicianAdd.successSave'))
               }
             })
           } else {
             params.id = this.$route.query.technicianId
             updateTechnicianApi(params).then(res => {
               if (res.error === 0) {
-                this.$message.success('更新成功')
+                this.$message.success(this.$t('technicianAdd.updated'))
               }
             })
           }

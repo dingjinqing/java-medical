@@ -6,7 +6,7 @@
           :businessHours="businessHours"
           :storeId="storeId"
         ></addSheduling>
-        <span class="tips">门店营业时间为：每天 {{businessHours}}</span>
+        <span class="tips">{{$t('schedulingManage.businessHoursTip')}} {{businessHours}}</span>
       </div>
       <div class="order_content">
         <div class="week_picker_wrap">
@@ -19,7 +19,7 @@
           <span
             class="reload_week"
             @click="resetWeek"
-          >本周</span>
+          >{{$t('schedulingManage.thisWeek')}}</span>
         </div>
         <el-table
           ref="schedulingTable"
@@ -33,12 +33,12 @@
           }"
         >
           <el-table-column
-            label="技师"
+            :label="$t('schedulingManage.technician')"
             prop="technicianName"
           >
           </el-table-column>
           <el-table-column
-            label="周一"
+            :label="$t('schedulingManage.Monday')"
             prop="monday"
           >
             <template slot-scope="{row}">
@@ -49,7 +49,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="周二"
+            :label="$t('schedulingManage.Tuesday')"
             prop="tuesday"
           >
             <template slot-scope="{row}">
@@ -60,7 +60,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="周三"
+            :label="$t('schedulingManage.Wednesday')"
             prop="wednesday"
           >
             <template slot-scope="{row}">
@@ -71,7 +71,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="周四"
+            :label="$t('schedulingManage.Thursday')"
             prop="thursday"
           >
             <template slot-scope="{row}">
@@ -82,7 +82,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="周五"
+            :label="$t('schedulingManage.Friday')"
             prop="friday"
           >
             <template slot-scope="{row}">
@@ -93,7 +93,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="周六"
+            :label="$t('schedulingManage.Saturday')"
             prop="saturday"
           >
             <template slot-scope="{row}">
@@ -104,7 +104,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="周日"
+            :label="$t('schedulingManage.Sunday')"
             prop="sunday"
           >
             <template slot-scope="{row}">
@@ -115,7 +115,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('schedulingManage.operate')"
             prop="operate"
             align="center"
           >
@@ -158,25 +158,25 @@ export default {
       tableData: [{
         technicianName: '',
         monday: {
-          scheduleName: '无排班'
+          scheduleName: this.$t('schedulingManage.noShift')
         },
         tuesday: {
-          scheduleName: '无排班'
+          scheduleName: this.$t('schedulingManage.noShift')
         },
         wednesday: {
-          scheduleName: '无排班'
+          scheduleName: this.$t('schedulingManage.noShift')
         },
         thursday: {
-          scheduleName: '无排班'
+          scheduleName: this.$t('schedulingManage.noShift')
         },
         friday: {
-          scheduleName: '无排班'
+          scheduleName: this.$t('schedulingManage.noShift')
         },
         saturday: {
-          scheduleName: '无排班'
+          scheduleName: this.$t('schedulingManage.noShift')
         },
         sunday: {
-          scheduleName: '无排班'
+          scheduleName: this.$t('schedulingManage.noShift')
         }
       }]
     }
@@ -237,7 +237,7 @@ export default {
       for (const key in data) {
         if (data.hasOwnProperty(key) && key !== 'technicianName') {
           this.$set(data, key, {
-            scheduleName: '无排班'
+            scheduleName: this.$t('schedulingManage.noShift')
           })
         }
       }

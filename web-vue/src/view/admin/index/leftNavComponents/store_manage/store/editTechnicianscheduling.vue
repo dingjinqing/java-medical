@@ -4,12 +4,12 @@
       type="text"
       class="iconSpan"
       @click="clickHandle"
-    >编辑</el-button>
+    >{{$t('schedulingManage.edit')}}</el-button>
 
     <!-- 编辑排班 -->
     <el-dialog
       :visible.sync="editSchedulingVisible"
-      title="添加技师排班"
+      :title="$t('schedulingManage.addTechnicianSchedule')"
       :close-on-click-modal="false"
       width="720"
     >
@@ -44,11 +44,11 @@
           type="primary"
           size="small"
           @click="submitHandle"
-        >确定</el-button>
+        >{{$t('schedulingManage.determine')}}</el-button>
         <el-button
           size="small"
           @click="editSchedulingVisible = false"
-        >取消</el-button>
+        >{{$t('schedulingManage.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -70,31 +70,31 @@ export default {
       editSchedulingVisible: false,
       schedulingDatas: [
         {
-          label: '周一',
+          label: this.$t('schedulingManage.Monday'),
           scheduleId: ''
         },
         {
-          label: '周二',
+          label: this.$t('schedulingManage.Tuesday'),
           scheduleId: ''
         },
         {
-          label: '周三',
+          label: this.$t('schedulingManage.Wednesday'),
           scheduleId: ''
         },
         {
-          label: '周四',
+          label: this.$t('schedulingManage.Thursday'),
           scheduleId: ''
         },
         {
-          label: '周五',
+          label: this.$t('schedulingManage.Friday'),
           scheduleId: ''
         },
         {
-          label: '周六',
+          label: this.$t('schedulingManage.Saturday'),
           scheduleId: ''
         },
         {
-          label: '周日',
+          label: this.$t('schedulingManage.Sunday'),
           scheduleId: ''
         }
       ],
@@ -193,7 +193,7 @@ export default {
       })
       saveScheduleAPI(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('更新成功')
+          this.$message.success(this.$t('schedulingManage.updated'))
           this.$emit('change')
           this.editSchedulingVisible = false
         }
@@ -218,6 +218,9 @@ export default {
   .edit_list_li {
     margin-top: 15px;
     margin-right: 6px;
+    .edit_list_label {
+      width: 100px;
+    }
   }
 }
 </style>

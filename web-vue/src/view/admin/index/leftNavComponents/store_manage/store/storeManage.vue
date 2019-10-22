@@ -11,22 +11,22 @@
             @tab-click="tabClickHandle"
           >
             <el-tab-pane
-              label="预约管理"
+              :label="$t('storeManage.appointmentManagement')"
               name="first"
             >
             </el-tab-pane>
             <el-tab-pane
-              label="服务管理"
+              :label="$t('storeManage.serviceManagement')"
               name="second"
             >
             </el-tab-pane>
             <el-tab-pane
-              label="技师管理"
+              :label="$t('storeManage.technicianManagement')"
               name="third"
             >
             </el-tab-pane>
             <el-tab-pane
-              label="评价管理"
+              :label="$t('storeManage.evaluationManagement')"
               name="fourth"
             >
             </el-tab-pane>
@@ -56,14 +56,6 @@ export default {
     this.initStatus()
   },
   mounted () {
-  },
-  watch: {
-    activeName: {
-      immediate: true,
-      handler: function (newName) {
-        console.log(newName)
-      }
-    }
   },
   methods: {
     tabClickHandle (tab) {

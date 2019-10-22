@@ -6,8 +6,8 @@
           :active="activeStep"
           simple
         >
-          <el-step title="1.编辑基本信息"></el-step>
-          <el-step title="2.编辑服务详情"></el-step>
+          <el-step :title="'1.' + $t('serviceAdd.edit1Tip')"></el-step>
+          <el-step :title="'2.' + $t('serviceAdd.edit2Tip')"></el-step>
         </el-steps>
         <div
           v-show="this.activeStep === 1"
@@ -20,7 +20,7 @@
             label-width="180px"
           >
             <el-form-item
-              label="服务名称："
+              :label="$t('serviceAdd.serviceName')+ '：'"
               prop="serviceName"
             >
               <el-input
@@ -30,7 +30,7 @@
               ></el-input>
             </el-form-item>
             <el-form-item
-              label="服务价格："
+              :label="$t('serviceAdd.serviceFee')+ '：'"
               prop="servicePrice"
             >
               <el-input
@@ -38,10 +38,10 @@
                 class="middle_input"
                 v-model="form.servicePrice"
               ></el-input>
-              <span class="tips">服务详情页显示的服务价，仅显示。不填则不显示服务价格</span>
+              <span class="tips">{{$t('serviceAdd.priceTips')}}</span>
             </el-form-item>
             <el-form-item
-              label="预约订金："
+              :label="$t('serviceAdd.applyDeposit')+ '：'"
               prop="serviceSubsist"
             >
               <el-input
@@ -49,10 +49,10 @@
                 class="middle_input"
                 v-model="form.serviceSubsist"
               ></el-input>
-              <span class="tips">线上支付价格，服务详情页显示为订金字样</span>
+              <span class="tips">{{$t('serviceAdd.subsistTips')}}</span>
             </el-form-item>
             <el-form-item
-              label="收费说明："
+              :label="$t('serviceAdd.chargeInstruction')+ '：'"
               prop="chargeResolve"
             >
               <el-input
@@ -60,10 +60,10 @@
                 class="big_input"
                 v-model="form.chargeResolve"
               ></el-input>
-              <span class="tips">服务详情页的收费说明内容</span>
+              <span class="tips">{{$t('serviceAdd.chargeTips')}}</span>
             </el-form-item>
             <el-form-item
-              label="服务分类："
+              :label="$t('serviceAdd.serviceClass')+ '：'"
               prop="catId"
             >
               <el-select
@@ -79,16 +79,16 @@
               </el-select>
             </el-form-item>
             <el-form-item
-              label="上下架："
+              :label="$t('serviceAdd.underTheShelf')+ '：'"
               prop="serviceShelf"
             >
               <el-radio-group v-model="form.serviceShelf">
-                <el-radio :label="1">上架</el-radio>
-                <el-radio :label="0">下架</el-radio>
+                <el-radio :label="1">{{$t('serviceAdd.shelf')}}</el-radio>
+                <el-radio :label="0">{{$t('serviceAdd.unShelf')}}</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item
-              label="服务主图："
+              :label="$t('serviceAdd.serviceMap')+ '：'"
               prop="serviceImg"
             >
               <div style="display: flex;align-items: center;flex-wrap: wrap;">
@@ -129,23 +129,23 @@
                   />
                 </div>
               </div>
-              <p class="tip">建议尺寸：800*800像素</p>
+              <p class="tip">{{$t('serviceAdd.recommendSize')}}</p>
             </el-form-item>
             <el-form-item
-              label="服务模式："
+              :label="$t('serviceAdd.serviceMode')+ '：'"
               prop="serviceType"
             >
               <el-radio-group v-model="form.serviceType">
                 <div class="radio_div">
-                  <el-radio :label="0">服务+时间</el-radio>
+                  <el-radio :label="0">{{$t('serviceAdd.serviceMode1')}}</el-radio>
                 </div>
                 <div class="radio_div">
-                  <el-radio :label="1">服务+时间+技师</el-radio>
+                  <el-radio :label="1">{{$t('serviceAdd.serviceMode2')}}</el-radio>
                 </div>
               </el-radio-group>
             </el-form-item>
             <el-form-item
-              label="可服务日期："
+              :label="$t('serviceAdd.serviceableDate')+ '：'"
               required
             >
               <el-form-item
@@ -157,11 +157,11 @@
                   v-model="form.startDate"
                   type="date"
                   size="small"
-                  placeholder="选择日期"
+                  :placeholder="$t('serviceAdd.selectDate')"
                   value-format="yyyy-MM-dd HH:mm:ss"
                 ></el-date-picker>
               </el-form-item>
-              <span>至</span>
+              <span>{{$t('serviceAdd.to')}}</span>
               <el-form-item
                 style="display:inline-block;"
                 inline-message
@@ -171,17 +171,17 @@
                   v-model="form.endDate"
                   type="date"
                   size="small"
-                  placeholder="选择日期"
+                  :placeholder="$t('serviceAdd.selectDate')"
                   value-format="yyyy-MM-dd HH:mm:ss"
                 ></el-date-picker>
               </el-form-item>
               <p
                 class="tips"
                 style="margin-top:10px;"
-              >前端用户预约所选择的服务日期按照该限制显示</p>
+              >{{$t('serviceAdd.dateTips')}}</p>
             </el-form-item>
             <el-form-item
-              label="服务时段："
+              :label="$t('serviceAdd.serviceHours')+ '：'"
               required
             >
               <el-form-item
@@ -199,7 +199,7 @@
                 }"
                 ></el-time-picker>
               </el-form-item>
-              <span>至</span>
+              <span>{{$t('serviceAdd.to')}}</span>
               <el-form-item
                 style="display:inline-block;"
                 prop="endPeriod"
@@ -218,10 +218,10 @@
               <p
                 class="tips"
                 style="margin-top:10px;"
-              >时间段应在门店营业时间内(营业时间：{{ businessHours }})，前端用户所选择的服务时段将按照该时段进行拆分</p>
+              >{{$t('serviceAdd.endPeriodTips')}}：{{ businessHours }})，{{$t('serviceAdd.endPeriodTips2')}}</p>
             </el-form-item>
             <el-form-item
-              label="服务时长："
+              :label="$t('serviceAdd.serviceDuration')+ '：'"
               required
             >
               <el-input-number
@@ -230,7 +230,7 @@
                 size="small"
                 :min="0"
               ></el-input-number>
-              <span>小时</span>
+              <span>{{$t('serviceAdd.hour')}}</span>
               <el-input-number
                 v-model="serviceMinute"
                 controls-position="right"
@@ -238,10 +238,10 @@
                 :min="0"
                 :max="60"
               ></el-input-number>
-              <span>分钟</span>
+              <span>{{$t('serviceAdd.minute')}}</span>
             </el-form-item>
             <el-form-item
-              :label="form.serviceType===0?'同时段可服务人数':'同时段内技师可服务人数'"
+              :label="form.serviceType===0?$t('serviceAdd.serviceType1'):$t('serviceAdd.serviceType2')"
               required
             >
               <el-input-number
@@ -250,7 +250,7 @@
                 size="small"
                 :min="0"
               ></el-input-number>
-              <p class="tips">{{form.serviceType===0?'该服务在同一时段内可预约的最多人数':'该服务在同一时间段内每个技师可以被预约的次数'}}</p>
+              <p class="tips">{{form.serviceType===0?$t('serviceAdd.servicesNumber1'):$t('serviceAdd.servicesNumber2')}}</p>
             </el-form-item>
           </el-form>
         </div>
@@ -260,7 +260,7 @@
         >
           <div class="service_detail_wrap">
             <div class="service_detail_preview">
-              <header class="preview_header">服务详情效果预览</header>
+              <header class="preview_header">{{$t('serviceAdd.servicePrev')}}</header>
               <div class="preview_content">
                 <div
                   ref="editorpreview"
@@ -294,12 +294,12 @@
           type="primary"
           class="footer-btn"
           @click="saveServiceHandle"
-        >保存</el-button>
+        >{{$t('serviceAdd.save')}}</el-button>
         <el-button
           size="small"
           class="footer-btn"
           @click="nextStepHandle"
-        >{{this.activeStep === 1?'下一步':'上一步'}}</el-button>
+        >{{this.activeStep === 1?$t('serviceAdd.next'):$t('serviceAdd.prev')}}</el-button>
       </div>
     </div>
   </div>
@@ -343,28 +343,28 @@ export default {
       },
       rules: {
         serviceName: [
-          { required: true, message: '服务名不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('serviceAdd.serviceNameValid'), trigger: 'blur' }
         ],
         catId: [
-          { required: true, message: '必须选择服务分类', trigger: 'change' }
+          { required: true, message: this.$t('serviceAdd.serviceClassValid'), trigger: 'change' }
         ],
         serviceImg: [
-          { required: true, message: '服务主图不能为空' }
+          { required: true, message: this.$t('serviceAdd.serviceMapValid') }
         ],
         serviceType: [
-          { required: true, message: '必须选择服务模式', trigger: 'change' }
+          { required: true, message: this.$t('serviceAdd.serviceModeValid'), trigger: 'change' }
         ],
         startDate: [
-          { required: true, message: '可服务开始时间未填写', trigger: 'blur' }
+          { required: true, message: this.$t('serviceAdd.serviceStartTimeValid'), trigger: 'blur' }
         ],
         endDate: [
-          { required: true, message: '可服务结束时间未填写', trigger: 'blur' }
+          { required: true, message: this.$t('serviceAdd.serviceEndTimeValid'), trigger: 'blur' }
         ],
         startPeriod: [
-          { required: true, message: '服务时段不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('serviceAdd.servicePeriodValid'), trigger: 'blur' }
         ],
         endPeriod: [
-          { required: true, message: '服务时段不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('serviceAdd.servicePeriodValid'), trigger: 'blur' }
         ]
       }
     }
@@ -472,13 +472,13 @@ export default {
           if (!params.id) {
             addService(params).then(res => {
               if (res.error === 0) {
-                this.$message.success('保存成功')
+                this.$message.success(this.$t('serviceAdd.successTip'))
               }
             })
           } else {
             updateService(params).then(res => {
               if (res.error === 0) {
-                this.$message.success('更新成功')
+                this.$message.success(this.$t('serviceAdd.updateTip'))
               }
             })
           }

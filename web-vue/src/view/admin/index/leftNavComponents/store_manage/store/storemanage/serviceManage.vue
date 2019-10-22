@@ -7,17 +7,17 @@
       @tab-click="tabClickHandle"
     >
       <el-tab-pane
-        label="服务列表"
+        :label="$t('serviceManage.serviceList')"
         name="first"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="分类管理"
+        :label="$t('serviceManage.classificationManagement')"
         name="second"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="添加服务"
+        :label="$t('serviceManage.addService')"
         name="third"
       >
       </el-tab-pane>
@@ -53,7 +53,6 @@ export default {
   methods: {
     tabClickHandle (tab) {
       let tabName = tab.name
-      console.log(222, this.$route)
       switch (tabName) {
         case 'first':
           this.$router.push({

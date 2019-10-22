@@ -103,6 +103,24 @@ import { cn as storeList } from './views/admin_new/cn/index/storeManagement/stor
 import { cn as storeGoodsList } from './views/admin_new/cn/index/storeManagement/store/storeGoodsListCn'
 // 门店列表-核销员管理
 import { cn as verifierManage } from './views/admin_new/cn/index/storeManagement/store/verifierManageCn'
+// 门店列表-门店管理
+import { cn as storeManage } from './views/admin_new/cn/index/storeManagement/storeManage/storeManageCn'
+// 门店列表-服务管理
+import { cn as serviceManage } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceManageCn'
+// 门店列表-服务列表
+import { cn as serviceList } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceListCn'
+// 门店列表-服务分类
+import { cn as serviceClassify } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceClassifyCn'
+// 门店列表-技师管理
+import { cn as technicianManage } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianManageCn'
+// 门店列表-技师列表
+import { cn as technicianList } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianListCn'
+// 门店列表-技师列表
+import { cn as technicianAdd } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianAddCn'
+// 门店列表-技师分类
+import { cn as technicianClassify } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianClassifyCn'
+// 门店列表-排班管理
+import { cn as schedulingManage } from './views/admin_new/cn/index/storeManagement/storeManage/technician/schedulingManageCn'
 
 // admin>公共组件
 // 选择时间
@@ -609,6 +627,15 @@ const cn = {
   storeList, // 门店列表
   storeGoodsList, // 门店列表-商品管理
   verifierManage, // 门店列表-核销员管理
+  storeManage, // 门店列表-门店管理
+  serviceManage, // 门店列表-服务管理
+  serviceList, // 门店列表-服务列表
+  serviceClassify, // 门店列表-服务分类
+  technicianManage, // 门店列表-技师管理
+  technicianList, // 门店列表-技师列表
+  technicianClassify, // 门店列表-技师分类
+  technicianAdd, // 门店列表-技师添加
+  schedulingManage, // 门店列表-排班管理
   purchase, // 加价购
   videoSpace,
   vTree,

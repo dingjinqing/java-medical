@@ -3,11 +3,11 @@
     <div class="technician_list_page">
       <div class="list_info">
         <label>
-          技师姓名：
+          {{$t('technicianList.technicianName')}}：
           <el-input
             size="small"
             class="filter_input"
-            placeholder="技师名称"
+            :placeholder="$t('technicianList.technicianName')"
             v-model="queryParams.technicianName"
           ></el-input>
         </label>
@@ -18,7 +18,7 @@
           @change="initDataList"
         >
           <el-option
-            label="请选择技师分组"
+            :label="$t('technicianList.selectTip')"
             :value="null"
           ></el-option>
           <el-option
@@ -30,7 +30,7 @@
         </el-select>
         <el-input
           type="tel"
-          placeholder="技师电话"
+          :placeholder="$t('technicianList.technicianPhone')"
           style="width: 188px;"
           size="small"
           v-model="queryParams.technicianMobile"
@@ -40,7 +40,7 @@
           type="primary"
           size="small"
           @click="initDataList"
-        >查询</el-button>
+        >{{$t('technicianList.inquire')}}</el-button>
       </div>
       <div class="list_table">
         <el-table
@@ -55,12 +55,12 @@
           }"
         >
           <el-table-column
-            label="技师名称"
+            :label="$t('technicianList.technicianName')"
             prop="technicianName"
           >
           </el-table-column>
           <el-table-column
-            label="技师分组"
+            :label="$t('technicianList.technicianGroup')"
             prop="seviceGroup"
           >
             <template slot-scope="{row}">
@@ -68,40 +68,40 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="联系电话"
+            :label="$t('technicianList.contactNum')"
             prop="technicianMobile"
           ></el-table-column>
           <el-table-column
-            label="服务项目"
+            :label="$t('technicianList.serviceItems')"
             prop="serviceList"
             :formatter="formatServiceList"
           ></el-table-column>
           <el-table-column
-            label="添加时间"
+            :label="$t('technicianList.addTime')"
             prop="createTime"
           ></el-table-column>
           <el-table-column
-            label="介绍"
+            :label="$t('technicianList.introduction')"
             prop="technicianIntroduce"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('technicianList.operate')"
             prop="operate"
             align="center"
           >
             <template slot-scope="{ row }">
               <div>
-                <el-tooltip content="排班管理">
+                <el-tooltip :content="$t('technicianList.shiftManagement')">
                   <span
                     class="iconSpan"
                     @click="edit('scheduling', row)"
-                  >排班管理</span>
+                  >{{$t('technicianList.shiftManagement')}}</span>
                 </el-tooltip>
-                <el-tooltip content="编辑">
+                <el-tooltip :content="$t('technicianList.edit')">
                   <span
                     class="iconSpan"
                     @click="edit('edit', row)"
-                  >编辑</span>
+                  >{{$t('technicianList.edit')}}</span>
                 </el-tooltip>
               </div>
             </template>
@@ -125,9 +125,7 @@ export default {
   components: { pagination },
   data () {
     return {
-      technicianCats: [
-        { id: 1, name: '添加' }
-      ],
+      technicianCats: [],
       queryParams: {
         storeId: '',
         technicianName: '',

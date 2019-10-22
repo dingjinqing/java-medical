@@ -5,7 +5,7 @@
         <div>
           <el-input
             v-model="catName"
-            placeholder="请输入分类名称"
+            :placeholder="$t('serviceClassify.enterCategoryTips')"
             style="width: 188px;"
             size="small"
           ></el-input>
@@ -13,17 +13,17 @@
             type="primary"
             size="small"
             @click="addCatHandle"
-          >保存</el-button>
+          >{{$t('serviceClassify.save')}}</el-button>
         </div>
         <div>
           <el-button
             type="primary"
             size="small"
             @click="initDataList"
-          >查询</el-button>
+          >{{$t('serviceClassify.inquire')}}</el-button>
           <el-input
             v-model="queryParams.catName"
-            placeholder="请输入分类查询"
+            :placeholder="$t('serviceClassify.queryPl')"
             style="width: 188px;"
             suffix-icon="el-icon-search"
             size="small"
@@ -43,7 +43,7 @@
               }"
         >
           <el-table-column
-            label="分类名"
+            :label="$t('serviceClassify.categoryName')"
             prop="catName"
           >
             <template slot-scope="{ row , $index}">
@@ -59,27 +59,27 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="创建时间"
+            :label="$t('serviceClassify.createTime')"
             prop="createTime"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('serviceClassify.operate')"
             prop="operate"
             align="center"
           >
             <template slot-scope="{ row, $index }">
               <div>
-                <el-tooltip content="编辑">
+                <el-tooltip :content="$t('serviceClassify.edit')">
                   <span
                     class="iconSpan"
                     @click="edit('edit', row, $index)"
-                  >编辑</span>
+                  >{{$t('serviceClassify.edit')}}</span>
                 </el-tooltip>
-                <el-tooltip content="删除">
+                <el-tooltip :content="$t('serviceClassify.delete')">
                   <span
                     class="iconSpan"
                     @click="edit('delete', row, $index)"
-                  >删除</span>
+                  >{{$t('serviceClassify.delete')}}</span>
                 </el-tooltip>
               </div>
             </template>
@@ -129,7 +129,7 @@ export default {
       }
       addServiceCat(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('添加服务分类成功')
+          this.$message.success(this.$t('serviceClassify.successAddToast'))
           this.initDataList()
         }
       })
@@ -159,7 +159,7 @@ export default {
           }
           deleteServiceCat(params).then(res => {
             if (res.error === 0) {
-              this.$message.success('删除成功')
+              this.$message.success(this.$t('serviceClassify.successDeleteToast'))
               this.initDataList()
             }
           })
@@ -176,10 +176,10 @@ export default {
       }
       updateServiceCat(params).then(res => {
         if (res.error === 0) {
-          _this.$message.success('更新成功')
+          _this.$message.success(this.$t('serviceClassify.updateCompleted'))
           _this.initDataList()
         } else {
-          _this.$message.error('更新失败')
+          _this.$message.error(this.$t('serviceClassify.updateFaild'))
           _this.$set(_this.tableData[index], 'catName', _this.oldCatName)
         }
       }).catch(err => {

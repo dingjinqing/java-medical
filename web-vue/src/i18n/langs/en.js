@@ -98,6 +98,23 @@ import { en as storeList } from './views/admin_new/en/index/storeManagement/stor
 import { en as storeGoodsList } from './views/admin_new/en/index/storeManagement/store/storeGoodsListEn'
 // 门店列表-核销员管理
 import { en as verifierManage } from './views/admin_new/en/index/storeManagement/store/verifierManageEn'
+// 门店列表-门店管理
+import { en as storeManage } from './views/admin_new/en/index/storeManagement/storeManage/storeManageEn'
+// 门店列表-门店管理-服务管理
+import { en as serviceManage } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceManageEn'
+import { en as serviceList } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceListEn'
+import { en as serviceAdd } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceAddEn'
+import { en as serviceClassify } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceClassifyEn'
+// 门店列表-技师管理
+import { en as technicianManage } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianManageEn'
+// 门店列表-技师列表
+import { en as technicianList } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianListEn'
+// 门店列表-技师添加
+import { en as technicianClassify } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianClassifyEn'
+// 门店列表-技师添加
+import { en as technicianAdd } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianAddEn'
+// 门店列表-排班管理
+import { en as schedulingManage } from './views/admin_new/en/index/storeManagement/storeManage/technician/schedulingManageEn'
 
 // admin>公共组件
 // 选择时间
@@ -641,6 +658,16 @@ const en = {
   storeList, // 门店列表
   storeGoodsList, // 门店列表-商品管理
   verifierManage, // 门店列表-核销员管理
+  storeManage, // 门店列表-门店管理
+  serviceManage, // 门店列表-服务管理
+  serviceList, // 门店列表-服务列表
+  serviceClassify, // 门店列表-服务分类
+  serviceAdd, // 门店列表-服务添加
+  technicianManage, // 门店列表-技师管理
+  technicianList, // 门店列表-技师列表
+  technicianClassify, // 门店列表-技师分类
+  technicianAdd, // 门店列表-技师添加
+  schedulingManage, // 门店列表-排班管理
   purchase, // 加价购
   videoSpace,
   vTree,

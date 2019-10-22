@@ -7,17 +7,17 @@
       @tab-click="tabClickHandle"
     >
       <el-tab-pane
-        label="技师列表"
+        :label="$t('technicianManage.technicianList')"
         name="first"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="技师分组"
+        :label="$t('technicianManage.technicianClass')"
         name="second"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="添加技师"
+        :label="$t('technicianManage.addTechnician')"
         name="third"
       >
       </el-tab-pane>
@@ -32,14 +32,6 @@ export default {
     return {
       id: '',
       activeName: 'first'
-    }
-  },
-  watch: {
-    activeName: {
-      immediate: true,
-      handler (newName) {
-        console.log(newName)
-      }
     }
   },
   mounted () {
@@ -80,7 +72,6 @@ export default {
     },
     initStatus () {
       let route = this.$route
-      console.log(222, route)
       let name = route.name
       if (name === 'store_storemanage_technician_list') {
         this.activeName = 'first'

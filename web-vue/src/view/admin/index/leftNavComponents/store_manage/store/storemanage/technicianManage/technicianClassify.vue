@@ -4,7 +4,7 @@
       <div class="list-info technician_class_info">
         <div>
           <el-input
-            placeholder="请输入分类名称"
+            :placeholder="$t('technicianClassify.categoryNameTip')"
             style="width: 188px;"
             size="small"
             v-model="newTechnicianGroupName"
@@ -13,7 +13,7 @@
             type="primary"
             size="small"
             @click="addTechnicianGroupHandle"
-          >保存</el-button>
+          >{{$t('technicianClassify.save')}}</el-button>
         </div>
       </div>
       <div class="list-table">
@@ -29,7 +29,7 @@
               }"
         >
           <el-table-column
-            label="分组名称"
+            :label="$t('technicianClassify.groupName')"
             prop="groupName"
           >
             <template slot-scope="{row}">
@@ -44,27 +44,27 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="创建时间"
+            :label="$t('technicianClassify.createTime')"
             prop="createTime"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('technicianClassify.operate')"
             prop="operate"
             align="center"
           >
             <template slot-scope="{ row }">
               <div>
-                <el-tooltip content="编辑">
+                <el-tooltip :content="$t('technicianClassify.edit')">
                   <span
                     class="iconSpan"
                     @click="edit('edit', row)"
-                  >编辑</span>
+                  >{{$t('technicianClassify.edit')}}</span>
                 </el-tooltip>
-                <el-tooltip content="删除">
+                <el-tooltip :content="$t('technicianClassify.delete')">
                   <span
                     class="iconSpan"
                     @click="edit('delete', row)"
-                  >删除</span>
+                  >{{$t('technicianClassify.delete')}}</span>
                 </el-tooltip>
               </div>
             </template>
@@ -110,7 +110,7 @@ export default {
       }
       addTechnicianGroup(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('成功添加技师分组')
+          this.$message.success(this.$t('technicianClassify.successAdd'))
           this.initDataList()
         }
       })
@@ -129,7 +129,7 @@ export default {
           }
           deleteTechnicianGroup(params).then(res => {
             if (res.error === 0) {
-              this.$message.success('删除分组成功')
+              this.$message.success(this.$t('technicianClassify.successDelete'))
               this.initDataList()
             }
           })
@@ -145,10 +145,10 @@ export default {
       }
       updateTechnicianGroup(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('更新分组成功')
+          this.$message.success(this.$t('technicianClassify.successUpdate'))
           this.initDataList()
         } else {
-          this.$message.error('更新分组失败')
+          this.$message.error(this.$t('technicianClassify.failUpdate'))
           this.initDataList()
         }
       })

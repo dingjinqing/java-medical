@@ -5,27 +5,27 @@
       plain
       size="small"
       @click="clickHandle"
-    >设置班次</el-button>
+    >{{$t('schedulingManage.setShifts')}}</el-button>
     <!-- 设置班次 -->
     <el-dialog
-      title="设置班次"
+      :title="$t('schedulingManage.setShifts')"
       :visible.sync="setShiftVisible"
       :close-on-click-modal="false"
       width="735"
     >
       <div class="add_sheduling_model">
-        <p class="tips">店铺营业时间为：每天 {{businessHours}}</p>
+        <p class="tips">{{$t('schedulingManage.businessHoursTip')}} {{businessHours}}</p>
         <div class="model_top">
           <el-input
             class="add_sheduling_input"
             size="small"
             v-model="scheduleName"
-            placeholder="请输入班次名称"
+            :placeholder="$t('schedulingManage.shiftTips')"
           ></el-input>
           <el-time-select
             class="add_sheduling_input"
             size="small"
-            placeholder="请选择开始时间"
+            :placeholder="$t('schedulingManage.startTimeTips')"
             v-model="begcreateTime"
             :picker-options="{
                 start: businessStartTime,
@@ -36,7 +36,7 @@
           <el-time-select
             class="add_sheduling_input"
             size="small"
-            placeholder="请选择结束时间"
+            :placeholder="$t('schedulingManage.endTimeTips')"
             v-model="endTime"
             :picker-options="{
                 start: businessStartTime,
@@ -50,7 +50,7 @@
             type="primary"
             style="margin-left:10px;"
             @click="addShedulingHandle"
-          >添加</el-button>
+          >{{$t('schedulingManage.add')}}</el-button>
         </div>
         <div class="model_content">
           <ul>
@@ -67,7 +67,7 @@
               <el-time-select
                 class="add_sheduling_input"
                 size="small"
-                placeholder="请选择开始时间"
+                :placeholder="$t('schedulingManage.startTimeTips')"
                 v-model="item.begcreateTime"
                 :picker-options="{
                 start: businessStartTime,
@@ -78,7 +78,7 @@
               <el-time-select
                 class="add_sheduling_input"
                 size="small"
-                placeholder="请选择结束时间"
+                :placeholder="$t('schedulingManage.endTimeTips')"
                 v-model="item.endTime"
                 :picker-options="{
                 start: businessStartTime,
@@ -93,12 +93,12 @@
                 size="small"
                 plain
                 @click="updateSchedule(item)"
-              >保存</el-button>
+              >{{$t('schedulingManage.save')}}</el-button>
               <el-button
                 size="small"
                 plain
                 @click="deleteSchedule(item)"
-              >删除</el-button>
+              >{{$t('schedulingManage.delete')}}</el-button>
             </li>
           </ul>
         </div>
@@ -169,7 +169,7 @@ export default {
       }
       addSchedule(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('添加成功')
+          this.$message.success(this.$t('schedulingManage.added'))
           this.scheduleDatas.push(res.content)
           this.initData()
         }
@@ -177,16 +177,16 @@ export default {
     },
     validateAddDatas () {
       if (!this.storeId) {
-        this.$message.error('门店ID丢失')
+        this.$message.error(this.$t('schedulingManage.idMissing'))
         return false
       } else if (!this.scheduleName) {
-        this.$message.warning('请输入班次名称')
+        this.$message.warning(this.$t('schedulingManage.shiftTips'))
         return false
       } else if (!this.begcreateTime) {
-        this.$message.warning('请选择开始时间')
+        this.$message.warning(this.$t('schedulingManage.startTimeTips'))
         return false
       } else if (!this.endTime) {
-        this.$message.warning('请选择结束时间')
+        this.$message.warning(this.$t('schedulingManage.endTimeTips'))
         return false
       }
       return true
@@ -195,7 +195,7 @@ export default {
       let params = item
       updateScheduleAPI(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('更新成功')
+          this.$message.success(this.$t('schedulingManage.updated'))
           this.initData()
         }
       })
@@ -206,7 +206,7 @@ export default {
       }
       deleteScheduleAPI(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('删除成功')
+          this.$message.success(this.$t('schedulingManage.deleted'))
           this.initData()
         }
       })

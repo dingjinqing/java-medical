@@ -21,7 +21,7 @@ export function getAllService (data) {
 // 获取服务列表
 export function getServiceList (data) {
   return service({
-    url: '/api/admin/store/service/all',
+    url: '/api/admin/store/service/list',
     method: 'post',
     data: data
   })

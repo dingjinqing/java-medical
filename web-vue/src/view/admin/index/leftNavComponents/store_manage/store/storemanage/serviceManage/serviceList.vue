@@ -9,7 +9,7 @@
           @change="categroyChangeHandle"
         >
           <el-option
-            label="请选择服务分类"
+            :label="$t('serviceList.selectServicePl')"
             :value="null"
           ></el-option>
           <el-option
@@ -21,7 +21,7 @@
         </el-select>
         <el-input
           v-model="queryParams.serviceName"
-          placeholder="搜索服务"
+          :placeholder="$t('serviceList.searchPl')"
           style="width: 188px;"
           size="small"
         >
@@ -36,7 +36,7 @@
           type="primary"
           size="small"
           @click="searchHandle"
-        >查询</el-button>
+        >{{$t('serviceList.inquire')}}</el-button>
       </div>
       <div class="list_table">
         <el-table
@@ -56,7 +56,7 @@
             align="center"
           ></el-table-column>
           <el-table-column
-            label="服务名称"
+            :label="$t('serviceList.serviceName')"
             prop="serviceName"
           >
             <template slot-scope="{ row }">
@@ -71,81 +71,81 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="价格"
+            :label="$t('serviceList.price')"
             prop="servicePrice"
           ></el-table-column>
           <el-table-column
-            label="服务分类"
+            :label="$t('serviceList.serviceClass')"
             prop="catName"
           ></el-table-column>
           <el-table-column
-            label="销量"
+            :label="$t('serviceList.sales')"
             prop="saleNum"
           ></el-table-column>
           <el-table-column
-            label="添加时间"
+            :label="$t('serviceList.addTime')"
             prop="createTime"
             width="180"
           ></el-table-column>
           <el-table-column
-            label="服务模式"
+            :label="$t('serviceList.serviceMode')"
             prop="serviceType"
             :formatter="formatType"
           ></el-table-column>
           <el-table-column
-            label="状态"
+            :label="$t('serviceList.status')"
             prop="serviceShelf"
             :formatter="formatShelf"
           >
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('serviceList.operate')"
             prop="operate"
             align="center"
           >
             <template slot-scope="{ row }">
               <div style="word-break:keep-all; font-size:13px;">
-                <el-tooltip content="编辑">
+                <el-tooltip :content="$t('serviceList.edit')">
                   <span
                     class="iconSpan"
                     @click="edit('edit', row)"
-                  >编辑</span>
+                  >{{$t('serviceList.edit')}}</span>
                 </el-tooltip>
                 <el-tooltip
                   v-if="row.serviceShelf === 1"
-                  content="下架"
+                  :content="$t('serviceList.unShelf')"
                 >
                   <span
                     class="iconSpan"
                     @click="edit('off', row)"
-                  >下架</span>
+                  >{{$t('serviceList.unShelf')}}</span>
                 </el-tooltip>
                 <el-tooltip
                   v-if="row.serviceShelf === 0"
-                  content="上架"
+                  :content="$t('serviceList.shelf')"
                 >
                   <span
                     class="iconSpan"
                     @click="edit('on', row)"
-                  >上架</span>
+                  >{{$t('serviceList.shelf')}}</span>
                 </el-tooltip>
-                <el-tooltip content="分享">
+                <el-tooltip :content="$t('serviceList.share')">
                   <span
                     class="iconSpan"
                     @click="edit()"
-                  >分享</span>
+                  >{{$t('serviceList.share')}}</span>
                 </el-tooltip>
-                <el-tooltip content="查看评价">
+                <el-tooltip :content="$t('serviceList.view')">
                   <span
                     class="iconSpan"
                     @click="edit()"
-                  >查看评价</span>
+                  >{{$t('serviceList.view')}}</span>
                 </el-tooltip>
-                <el-tooltip content="删除">
+                <el-tooltip content="$t('serviceList.delete')">
                   <span
                     class="iconSpan"
                     @click="edit('delete', row)"
-                  >删除</span>
+                  >{{$t('serviceList.delete')}}</span>
                 </el-tooltip>
               </div>
             </template>
@@ -156,11 +156,11 @@
             <el-button
               size="small"
               @click="shelfHandle"
-            >上架</el-button>
+            >{{$t('serviceList.shelf')}}</el-button>
             <el-button
               size="small"
               @click="obtainedHandle"
-            >下架</el-button>
+            >{{$t('serviceList.unShelf')}}</el-button>
           </div>
           <div>
             <pagination
@@ -208,18 +208,18 @@ export default {
   methods: {
     formatType (row) {
       if (row.serviceType === 0) {
-        return '无技师'
+        return this.$t('serviceList.noTechnician')
       } else if (row.serviceType === 1) {
-        return '有技师'
+        return this.$t('serviceList.haveTechnician')
       } else {
         return ''
       }
     },
     formatShelf (row) {
       if (row.serviceShelf === 0) {
-        return '下架'
+        return this.$t('serviceList.unShelf')
       } else if (row.serviceShelf === 1) {
-        return '上架'
+        return this.$t('serviceList.shelf')
       } else {
         return ''
       }
@@ -249,7 +249,7 @@ export default {
           }
           deleteService(params).then(res => {
             if (res.error === 0) {
-              this.$message.success('删除成功')
+              this.$message.success(this.$t('serviceList.successDelete'))
               this.initDataList()
             }
           })
@@ -260,7 +260,7 @@ export default {
             params[0] = row.id
             offService(params).then(res => {
               if (res.error === 0) {
-                this.$message.success('下架成功')
+                this.$message.success(this.$t('serviceList.underSuccess'))
                 this.initDataList()
               }
             })
@@ -272,7 +272,7 @@ export default {
             params[0] = row.id
             onService(params).then(res => {
               if (res.error === 0) {
-                this.$message.success('上架成功')
+                this.$message.success(this.$t('serviceList.successShelf'))
                 this.initDataList()
               }
             })
@@ -288,7 +288,7 @@ export default {
       let params = this.selects.map(item => item.id)
       onService(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('上架成功')
+          this.$message.success(this.$t('serviceList.successShelf'))
           this.initDataList()
         }
       })
@@ -298,7 +298,7 @@ export default {
       let params = this.selects.map(item => item.id)
       offService(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('下架成功')
+          this.$message.success(this.$t('serviceList.underSuccess'))
           this.initDataList()
         }
       })
