@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     GoodsCommentService goodsCommentService;
     @Autowired
-    GoodsPriceService goodsActivityPriceService;
+    GoodsPriceService goodsPriceService;
 
     @Autowired
     GoodsLabelMpService goodsLabelMpService;
@@ -67,7 +68,7 @@ public class GoodsMpService extends ShopBaseService {
         List<GoodsT> goodsTList;
         // 手动推荐展示
         if (0 != param.getRecommendType()) {
-            // TODO: 手动推荐商品逻辑
+            // 手动推荐商品逻辑
             if (param.getGoodsItems() == null || param.getGoodsItems().size() == 0) {
                 return new ArrayList<>();
             }
@@ -106,7 +107,7 @@ public class GoodsMpService extends ShopBaseService {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
 
-        List<GoodsT> goodsTList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+        List<GoodsT> goodsTList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,GOODS.GOODS_TYPE,
             GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID)
             .from(GOODS).where(condition).fetchInto(GoodsT.class);
         return goodsTList;
@@ -121,7 +122,7 @@ public class GoodsMpService extends ShopBaseService {
         // 处理过滤条件
         Condition condition = buildConditionForAutoGoodsList(param);
 
-        SelectConditionStep<?> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+        SelectConditionStep<?> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,GOODS.GOODS_TYPE,
             GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID)
             .from(GOODS).where(condition);
 
@@ -148,7 +149,7 @@ public class GoodsMpService extends ShopBaseService {
     private Condition buildConditionForAutoGoodsList(GoodsListMpParam param) {
         // 获取在售商品且商品数量大于0
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
-        condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE)).and(GOODS.GOODS_NUMBER.gt(0));
+        condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
         if (!StringUtils.isBlank(param.getKeywords())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeywords())));
@@ -185,10 +186,12 @@ public class GoodsMpService extends ShopBaseService {
             }
         }
         // 商品活动过滤
-        if (param.getGoodsType() == GoodsListMpParam.GOODS_TYPE_IS_CARD_EXCLUSIVE) {
+        if (GoodsListMpParam.GOODS_TYPE_IS_CARD_EXCLUSIVE.equals(param.getGoodsType()) ) {
             condition = condition.and(GOODS.IS_CARD_EXCLUSIVE.eq(GoodsConstant.CARD_EXCLUSIVE));
         } else {
-            condition = condition.and(GOODS.GOODS_TYPE.eq(param.getGoodsType()));
+            if (param.getGoodsType() != null) {
+                condition = condition.and(GOODS.GOODS_TYPE.eq(param.getGoodsType()));
+            }
         }
 
         return condition;
@@ -196,7 +199,6 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 处理获取的自动推荐商品
-     *
      * @param goodsTList
      */
     private void disposeGoodsList(List<GoodsT> goodsTList) {
@@ -234,7 +236,8 @@ public class GoodsMpService extends ShopBaseService {
         Map<Integer, Byte> goodsTypeMap = targetGoodsT.stream().collect(Collectors.toMap(GoodsT::getGoodsId, GoodsT::getGoodsType));
 
         // 获取商品对应活动的最终价格
-        Map<Integer, BigDecimal> goodsActivityPriceMap = goodsActivityPriceService.getShowPriceByIdAndType(goodsTypeMap);
+//        Map<Integer, BigDecimal> goodsActivityPriceMap = goodsPriceService.getShowPriceByIdAndType(goodsTypeMap);
+        Map<Integer, BigDecimal> goodsActivityPriceMap = new HashMap<>();
 
         final String priceFormat = "%.2f";
 

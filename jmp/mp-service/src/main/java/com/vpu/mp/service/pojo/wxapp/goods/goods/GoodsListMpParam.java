@@ -61,7 +61,7 @@ public class GoodsListMpParam {
     /**
      *  商品活动类型默认0，1拼团，2 会员专享，3砍价，5秒杀，6限时降价
      */
-    public static final byte GOODS_TYPE_IS_CARD_EXCLUSIVE = 2 ;
+    public static final Byte GOODS_TYPE_IS_CARD_EXCLUSIVE = 2 ;
     @JsonProperty("goods_type")
     private Byte goodsType;
 

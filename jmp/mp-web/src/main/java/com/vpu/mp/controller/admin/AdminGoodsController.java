@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -533,4 +535,16 @@ public class AdminGoodsController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 小程序装修商品列表模块数据接口
+     * @param goodsListMpParam
+     */
+    @PostMapping("/api/admin/goods/mp/list")
+    public JsonResult getGoodsList(@RequestBody GoodsListMpParam goodsListMpParam) {
+        if (goodsListMpParam.getRecommendType() == null || goodsListMpParam.getGoodsNum() == null) {
+            return fail();
+        }
+        List<GoodsListMpVo> goodsList = shop().goodsMp.getGoodsList(goodsListMpParam);
+        return success(goodsList);
+    }
 }

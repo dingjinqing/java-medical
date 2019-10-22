@@ -6,8 +6,10 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import org.jooq.Condition;
+import org.jooq.Record4;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.rtf.RTFEditorKit;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
@@ -44,15 +46,17 @@ public class GoodsLabelMpService extends ShopBaseService {
         Condition sortCondition = GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()).and(GOODS_LABEL_COUPLE.GTA_ID.eq(goodsT.getSortId()));
         Condition allCondition = GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
 
-        GoodsLabelMpVo labelMpVo = db().select(GOODS_LABEL.ID, GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN, GOODS_LABEL_COUPLE.GTA_ID)
+        Record4<Integer, String, Short, Integer> record = db().select(GOODS_LABEL.ID, GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN, GOODS_LABEL_COUPLE.GTA_ID)
             .from(GOODS_LABEL_COUPLE).innerJoin(GOODS_LABEL).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
             .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.GOODS_LIST)).and(GOODS_LABEL.DEL_FLAG.eq(1))
             .and(goodsCondition.or(catCondition).or(sortCondition).or(allCondition))
-            .orderBy(GOODS_LABEL_COUPLE.TYPE.asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc()).fetchAny().into(GoodsLabelMpVo.class);
+            .orderBy(GOODS_LABEL_COUPLE.TYPE.asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc()).fetchAny();
 
-        if (labelMpVo != null) {
-            labelMpVo.setLabelLen(labelMpVo.getName().length());
+        if (record == null) {
+            return null;
         }
+        GoodsLabelMpVo labelMpVo = record.into(GoodsLabelMpVo.class);
+        labelMpVo.setLabelLen(labelMpVo.getName().length());
         return labelMpVo;
     }
 

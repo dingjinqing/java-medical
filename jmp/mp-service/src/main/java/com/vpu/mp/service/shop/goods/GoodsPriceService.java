@@ -74,7 +74,7 @@ public class GoodsPriceService extends ShopBaseService {
             list.add(key);
             goodsTypeMap.put(type, list);
         });
-        return null;
+        return getShowPriceByIds(goodsTypeMap);
     }
     private Map<Integer,BigDecimal> getShowPriceByIds(Map<Byte,List<Integer>> param){
         Map<Integer,BigDecimal> price = new HashMap<>(param.size());

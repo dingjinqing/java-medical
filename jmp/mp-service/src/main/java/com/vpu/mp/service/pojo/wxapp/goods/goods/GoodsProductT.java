@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  */
 @Data
 public class GoodsProductT {
-    private Iterable prdId;
+    private Integer prdId;
     private String prdDesc;
     private BigDecimal prdPrice;
 }
