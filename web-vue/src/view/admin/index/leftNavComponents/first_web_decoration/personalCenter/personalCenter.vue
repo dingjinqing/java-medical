@@ -63,8 +63,8 @@
               <div class="orderContent">
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='account' && val.is_show=='1'"
                 >
                   <div class="item_num">
@@ -74,8 +74,8 @@
                 </div>
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='score' && val.is_show=='1'"
                 >
                   <div class="item_num">
@@ -85,8 +85,8 @@
                 </div>
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='coupon' && val.is_show=='1'"
                 >
                   <div class="item_num">
@@ -96,8 +96,8 @@
                 </div>
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='card' && val.is_show=='1'"
                 >
                   <div class="item_num">
@@ -142,8 +142,8 @@
               <div class="orderContent">
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='wait_pay'"
                 >
                   <div class="item_img">
@@ -156,8 +156,8 @@
                 </div>
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='wait_deliver'"
                 >
                   <div class="item_img">
@@ -170,8 +170,8 @@
                 </div>
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='wait_receive'"
                 >
                   <div class="item_img">
@@ -184,8 +184,8 @@
                 </div>
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='wait_comment' && isShowOrder=='1'"
                 >
                   <div class="item_img">
@@ -198,8 +198,8 @@
                 </div>
                 <div
                   class="each_item"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name=='refund'"
                 >
                   <div class="item_img">
@@ -353,8 +353,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='distribution' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -368,8 +368,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='bargain' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -383,8 +383,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='award' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -398,8 +398,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='comment_list' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -413,8 +413,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='store_list' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -428,8 +428,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='user_activate' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -443,8 +443,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='order_verify' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -458,8 +458,8 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="val in item.content"
-                  :key="val.icon_name"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='present_list' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -473,9 +473,9 @@
                 <div
                   class="each_serve"
                   style="display: flex;"
-                  v-for="(val, index) in item.content"
-                  :key="val.icon_name"
-                  v-if="index>7 && val.is_show=='1'"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="key>7 && val.is_show=='1'"
                 >
                   <div class="serve_img">
                     <img
@@ -593,8 +593,8 @@
                 </el-form-item>
                 <el-form-item label="我的余额：">
                   <el-radio-group
-                    v-for="val in item.content"
-                    :key="val.icon_name"
+                    v-for="(val,key) in item.content"
+                    :key="key"
                     v-if="val.icon_name=='account'"
                     v-model="val.is_show"
                     @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
@@ -605,8 +605,8 @@
                 </el-form-item>
                 <el-form-item label="我的积分：">
                   <el-radio-group
-                    v-for="val in item.content"
-                    :key="val.icon_name"
+                    v-for="(val,key) in item.content"
+                    :key="key"
                     v-if="val.icon_name=='score'"
                     v-model="val.is_show"
                     @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
@@ -617,8 +617,8 @@
                 </el-form-item>
                 <el-form-item label="优惠券：">
                   <el-radio-group
-                    v-for="val in item.content"
-                    :key="val.icon_name"
+                    v-for="(val,key) in item.content"
+                    :key="key"
                     v-if="val.icon_name=='coupon'"
                     v-model="val.is_show"
                     @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
@@ -629,8 +629,8 @@
                 </el-form-item>
                 <el-form-item label="优惠卡：">
                   <el-radio-group
-                    v-for="val in item.content"
-                    :key="val.icon_name"
+                    v-for="(val,key) in item.content"
+                    :key="key"
                     v-if="val.icon_name=='card'"
                     v-model="val.is_show"
                     @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
@@ -680,9 +680,9 @@
                 <el-form-item label="待付款订单：">
                   <div
                     style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
-                    v-for="(val, index) in item.content"
-                    :key="val.icon_name"
-                    v-if="index==0"
+                    v-for="(val, key) in item.content"
+                    :key="key"
+                    v-if="key==0"
                   >
                     <div
                       class="imgContainter"
@@ -703,9 +703,9 @@
                 <el-form-item label="待发货订单：">
                   <div
                     style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
-                    v-for="(val, index) in item.content"
-                    :key="val.icon_name"
-                    v-if="index==1"
+                    v-for="(val, key) in item.content"
+                    :key="key"
+                    v-if="key==1"
                   >
                     <div
                       class="imgContainter"
@@ -726,9 +726,9 @@
                 <el-form-item label="待收款订单：">
                   <div
                     style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
-                    v-for="(val, index) in item.content"
-                    :key="val.icon_name"
-                    v-if="index==2"
+                    v-for="(val, key) in item.content"
+                    :key="key"
+                    v-if="key==2"
                   >
                     <div
                       class="imgContainter"
@@ -749,9 +749,9 @@
                 <el-form-item label="评价订单：">
                   <div
                     style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
-                    v-for="(val, index) in item.content"
-                    :key="val.icon_name"
-                    v-if="index==3"
+                    v-for="(val, key) in item.content"
+                    :key="key"
+                    v-if="key==3"
                   >
                     <div
                       class="imgContainter"
@@ -772,9 +772,9 @@
                 <el-form-item label="退款中订单：">
                   <div
                     style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
-                    v-for="(val, index) in item.content"
-                    :key="val.icon_name"
-                    v-if="index==4"
+                    v-for="(val, key) in item.content"
+                    :key="key"
+                    v-if="key==4"
                   >
                     <div
                       class="imgContainter"
@@ -916,7 +916,7 @@
                 <el-form-item
                   label="分销中心："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==0"
                 >
                   <el-radio-group
@@ -946,7 +946,7 @@
                 <el-form-item
                   label="我的砍价："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==1"
                 >
                   <el-radio-group
@@ -976,7 +976,7 @@
                 <el-form-item
                   label="我的奖品："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==2"
                 >
                   <el-radio-group
@@ -1007,7 +1007,7 @@
                 <el-form-item
                   label="我的评价："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==3"
                 >
                   <el-radio-group
@@ -1037,7 +1037,7 @@
                 <el-form-item
                   label="门店列表："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==4"
                 >
                   <el-radio-group
@@ -1067,7 +1067,7 @@
                 <el-form-item
                   label="会员激活："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==5"
                 >
                   <el-radio-group
@@ -1097,7 +1097,7 @@
                 <el-form-item
                   label="扫码核销："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==6"
                 >
                   <el-radio-group
@@ -1127,7 +1127,7 @@
                 <el-form-item
                   label="礼物记录："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key==7"
                 >
                   <el-radio-group
@@ -1158,7 +1158,7 @@
                 <el-form-item
                   label="自定义模板："
                   v-for="(val, key) in item.content"
-                  :key="val.icon_name"
+                  :key="key"
                   v-if="key>7"
                 >
                   <el-radio-group

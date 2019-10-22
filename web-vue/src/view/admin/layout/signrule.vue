@@ -56,6 +56,7 @@ export default {
 }
 .main-container {
   padding: 0.2rem;
+  line-height: 2;
 }
 .main-container p {
   margin-bottom: 0.2rem;
@@ -63,10 +64,13 @@ export default {
 .title {
   padding: 0.2rem;
   color: #000;
+  font-size: 0.75rem; /* 12/16 */
 }
 .content {
   color: #888;
   padding-left: 0.27rem;
+  text-indent: 2em;
+  font-size: 0.75rem; /* 12/16 */
 }
 .common-footer .footer-text {
   background: #fff;
@@ -77,5 +81,7 @@ export default {
 }
 .lishow {
   padding: 0.2rem;
+  text-indent: 3em;
+  font-size: 0.75rem; /* 12/16 */
 }
 </style>
