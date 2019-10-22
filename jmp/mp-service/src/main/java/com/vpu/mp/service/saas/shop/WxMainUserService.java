@@ -3,6 +3,11 @@ package com.vpu.mp.service.saas.shop;
 import static com.vpu.mp.db.main.tables.User.USER;
 import static com.vpu.mp.db.main.tables.UserDetail.USER_DETAIL;
 
+import java.sql.ResultSet;
+
+import org.jooq.Field;
+import org.jooq.Row;
+import org.jooq.Table;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.UserDetailRecord;
@@ -26,17 +31,15 @@ public class WxMainUserService extends MainBaseService {
 		UserRecord record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
 		if (record != null) {
 			// 更新
-			logger().info("同步更新user"+sendRecord);
 			int executeUpdate = sendRecord.update();
 			logger().info("更新User，结果" + executeUpdate);
 		} else {
 			// 插入
 			sendRecord.setShopId(shopId);
-			record=db().newRecord(USER);
-			FieldsUtil.assignNotNull(sendRecord, record);
-			logger().info("同步插入user"+record);
-			logger().info("测试值是否存在"+record.getUserId());
-			int executeInsert = record.insert();
+			UserRecord into = sendRecord.into(USER);
+			//copy重新set值，不set插入时候不插入。疑似jooq的bug
+			UserRecord copy = into.copy();
+			int executeInsert = copy.insert();
 			logger().info("插入User，结果" + executeInsert);
 		}
 
@@ -54,18 +57,14 @@ public class WxMainUserService extends MainBaseService {
 				.fetchAny();
 		if (record != null) {
 			// 更新
-			logger().info("同步更新user"+sendRecord);
 			int executeUpdate = sendRecord.update();
-			//int executeUpdate = db().executeUpdate(sendRecord);
 			logger().info("更新UserDetail，结果" + executeUpdate);
 		} else {
 			// 插入
 			sendRecord.setShopId(shopId);
-			record=db().newRecord(USER_DETAIL);
-			FieldsUtil.assignNotNull(sendRecord, record);
-			logger().info("同步插入UserDetail"+record);
-			logger().info("测试值是否存在"+record.getUserId());
-			int executeInsert = record.insert();
+			UserDetailRecord into = sendRecord.into(USER_DETAIL);
+			UserDetailRecord copy = into.copy();
+			int executeInsert = copy.insert();
 			logger().info("插入UserDetail，结果" + executeInsert);
 		}
 	}
