@@ -109,6 +109,7 @@ export default {
   created () {
     this.storeId = this.$route.query.id
     this.queryParams.storeId = this.storeId
+    this.langDefault()
     this.initDataList()
   },
   directives: {

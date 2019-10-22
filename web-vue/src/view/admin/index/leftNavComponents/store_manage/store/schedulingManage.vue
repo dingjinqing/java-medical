@@ -186,6 +186,7 @@ export default {
     this.businessHours = this.$route.query.businessHours
     this.technicianId = this.$route.query.technicianId
     this.technicianName = this.$route.query.technicianName
+    this.langDefault()
     this.$set(this.tableData[0], 'technicianName', this.technicianName)
   },
   methods: {

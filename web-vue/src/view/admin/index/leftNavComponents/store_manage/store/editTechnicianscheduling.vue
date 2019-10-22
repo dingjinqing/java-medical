@@ -102,6 +102,7 @@ export default {
     }
   },
   created () {
+    this.langDefault()
     this.initSelectData()
     this.initSelectsDate()
     if (this.datas) {

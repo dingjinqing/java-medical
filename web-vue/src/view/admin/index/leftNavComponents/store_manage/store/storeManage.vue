@@ -50,12 +50,10 @@ export default {
     }
   },
   created () {
-    console.log('$route.....', this.$route)
     this.id = this.$route.query.id
     this.businessHours = this.$route.query.businessHours
+    this.langDefault()
     this.initStatus()
-  },
-  mounted () {
   },
   methods: {
     tabClickHandle (tab) {

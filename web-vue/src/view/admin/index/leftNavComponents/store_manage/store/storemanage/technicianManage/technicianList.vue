@@ -138,6 +138,7 @@ export default {
   },
   created () {
     this.queryParams.storeId = this.$route.query.id
+    this.langDefault()
     this.initGroupData()
     this.initDataList()
   },

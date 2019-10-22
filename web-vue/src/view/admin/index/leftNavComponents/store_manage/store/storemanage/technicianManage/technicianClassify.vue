@@ -91,6 +91,7 @@ export default {
   created () {
     this.queryParams.storeId = this.$route.query.id
     this.initDataList()
+    this.langDefault()
   },
   methods: {
     initDataList () {

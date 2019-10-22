@@ -258,6 +258,7 @@ export default {
   created () {
     this.queryParams.storeId = this.$route.query.id
     this.storeName = this.$route.query.name
+    this.langDefault()
   },
   mounted () {
     this.langDefault()

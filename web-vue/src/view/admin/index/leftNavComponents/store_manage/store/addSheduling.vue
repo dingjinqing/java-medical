@@ -142,6 +142,7 @@ export default {
   created () {
     this.begcreateTime = this.businessStartTime
     this.endTime = this.businessEndTime
+    this.langDefault()
     this.initData()
   },
   methods: {

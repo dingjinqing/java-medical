@@ -370,6 +370,7 @@ export default {
     }
   },
   created () {
+    this.langDefault()
     this.initStatus()
     this.initDetail()
   },

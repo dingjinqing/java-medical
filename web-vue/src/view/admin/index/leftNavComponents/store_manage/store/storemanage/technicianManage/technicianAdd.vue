@@ -194,6 +194,7 @@ export default {
   },
   created () {
     this.form.storeId = Number(this.$route.query.id)
+    this.langDefault()
     this.initGroupData()
     this.initServiceData()
     if (this.$route.query.technicianId) {
