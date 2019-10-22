@@ -867,7 +867,7 @@ public class UserService extends ShopBaseService {
 	 */
 	public void syncMainUser(UserRecord shopRecord) {
 		com.vpu.mp.db.main.tables.records.UserRecord userMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserRecord.class);
-		saas().wxUserService.syncMainUser(userMain,getShopId(),shopRecord.getUserId());
+		saas().wxUserService.syncMainUser(shopRecord,getShopId(),shopRecord.getUserId());
 	}
 	
 	
@@ -878,7 +878,7 @@ public class UserService extends ShopBaseService {
 	 */
 	public void syncMainUserDetail(UserDetailRecord shopRecord) {
 		com.vpu.mp.db.main.tables.records.UserDetailRecord userDetailMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserDetailRecord.class);
-		saas().wxUserService.syncMainUserDetail(userDetailMain,getShopId(),shopRecord.getUserId());
+		saas().wxUserService.syncMainUserDetail(shopRecord,getShopId(),shopRecord.getUserId());
 	}
 
 }
