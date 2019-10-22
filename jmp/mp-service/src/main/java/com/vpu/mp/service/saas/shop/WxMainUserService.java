@@ -6,6 +6,7 @@ import static com.vpu.mp.db.main.tables.UserDetail.USER_DETAIL;
 import java.sql.ResultSet;
 
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Row;
 import org.jooq.Table;
 import org.springframework.stereotype.Service;
@@ -39,10 +40,8 @@ public class WxMainUserService extends MainBaseService {
 			UserRecord into = sendRecord.into(USER);
 			//copy重新set值，不set插入时候不插入。疑似jooq的bug
 			UserRecord copy = into.copy();
-			if(copy.getUserPwd()==null) {
-				copy.setUserPwd("");
-			}
-			int executeInsert = db().executeInsert(copy);
+			UserRecord original = copy.original();
+			int executeInsert = db().executeInsert(original);
 			logger().info("插入User，结果" + executeInsert);
 		}
 
@@ -67,9 +66,11 @@ public class WxMainUserService extends MainBaseService {
 			sendRecord.setShopId(shopId);
 			UserDetailRecord into = sendRecord.into(USER_DETAIL);
 			UserDetailRecord copy = into.copy();
-			int executeInsert = db().executeInsert(copy);
+			UserDetailRecord original = copy.original();
+			int executeInsert = db().executeInsert(original);
 			logger().info("插入UserDetail，结果" + executeInsert);
 		}
 	}
+	
 
 }
