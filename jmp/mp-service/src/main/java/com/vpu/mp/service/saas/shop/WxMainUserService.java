@@ -19,7 +19,7 @@ public class WxMainUserService extends MainBaseService {
 	 * @param type
 	 */
 	public void syncMainUser(UserRecord sendRecord, Integer shopId, Integer userId) {
-		logger().info("User同步开始到主库");
+		logger().info("User同步开始到主库,shopId"+shopId+" userId"+userId);
 		UserRecord record = USER.newRecord();
 		record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
 		if (record != null) {
@@ -43,7 +43,7 @@ public class WxMainUserService extends MainBaseService {
 	 * @param type
 	 */
 	public void syncMainUserDetail(UserDetailRecord sendRecord, Integer shopId, Integer userId) {
-		logger().info("UserDetail开始同步到主库");
+		logger().info("UserDetail同步开始到主库,shopId"+shopId+" userId"+userId);
 		UserDetailRecord record = USER_DETAIL.newRecord();
 		record = db().selectFrom(USER_DETAIL).where(USER_DETAIL.SHOP_ID.eq(shopId).and(USER_DETAIL.USER_ID.eq(userId)))
 				.fetchAny();
