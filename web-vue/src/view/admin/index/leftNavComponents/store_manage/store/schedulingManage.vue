@@ -190,6 +190,8 @@ export default {
   },
   methods: {
     initDataList () {
+      // 先初始化表格数据
+      this.initTableData()
       let params = Object.assign({
         storeId: Number(this.storeId),
         technicianId: Number(this.technicianId)
@@ -202,7 +204,6 @@ export default {
               let workDate = new Date(item.workDate)
               let startDate = new Date(this.queryParams.beginTime)
               let oneDayTime = 24 * 60 * 60 * 1000
-              debugger
               switch (Math.floor((workDate - startDate) / oneDayTime)) {
                 case -1:
                   this.$set(this.tableData[0], 'monday', item)
@@ -230,6 +231,16 @@ export default {
           }
         }
       })
+    },
+    initTableData () {
+      let data = this.tableData[0]
+      for (const key in data) {
+        if (data.hasOwnProperty(key) && key !== 'technicianName') {
+          this.$set(data, key, {
+            scheduleName: '无排班'
+          })
+        }
+      }
     },
     // 初始化时也会调用
     weekChangeHandle () {
