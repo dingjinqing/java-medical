@@ -24,6 +24,7 @@ import com.vpu.mp.service.saas.region.CityService;
 import com.vpu.mp.service.saas.region.RegionService;
 import com.vpu.mp.service.saas.shop.MpDeployHistoryService;
 import com.vpu.mp.service.saas.shop.ShopService;
+import com.vpu.mp.service.saas.shop.WxMainUserService;
 import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 
@@ -82,6 +83,9 @@ public class SaasApplication {
 	
 	@Autowired
 	public MessageTemplateService messageTemplateService;
+	
+	@Autowired
+	public WxMainUserService wxUserService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);

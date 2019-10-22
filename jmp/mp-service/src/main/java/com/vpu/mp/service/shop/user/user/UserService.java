@@ -868,43 +868,19 @@ public class UserService extends ShopBaseService {
 	public void syncMainUser(UserRecord shopRecord,Byte type) {
 		com.vpu.mp.db.main.tables.records.UserRecord userMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserRecord.class);
 		userMain.setShopId(getShopId());
-		if(type==1) {
-			//更新
-			/*
-			 * int update = userMain.update(); logger().info("User表同步到主库，更新"+update);
-			 */
-		}
-		if(type==0) {
-			//插入
-			/*
-			 * int insert = userMain.insert(); logger().info("User表同步到主库，插入"+insert);
-			 */
-		}
+		saas().wxUserService.syncMainUser(userMain, type);
 	}
 	
 	
 	/**
 	 * 店铺库的userdetail同步到主库
-	 * @param shopRecord
+	 * @param shopRecords
 	 * @param type
 	 */
 	public void syncMainUserDetail(UserDetailRecord shopRecord,Byte type) {
 		com.vpu.mp.db.main.tables.records.UserDetailRecord userDetailMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserDetailRecord.class);
 		userDetailMain.setShopId(getShopId());
-		if(type==1) {
-			//更新
-			/*
-			 * int update = userDetailMain.update();
-			 * logger().info("UserDetail表同步到主库，更新"+update);
-			 */
-		}
-		if(type==0) {
-			//插入
-			/*
-			 * int insert = userDetailMain.insert();
-			 * logger().info("UserDetail表同步到主库，插入"+insert);
-			 */
-		}
+		saas().wxUserService.syncMainUserDetail(userDetailMain, type);
 	}
 
 }
