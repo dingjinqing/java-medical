@@ -54,8 +54,8 @@
           >
             <template slot-scope="{row}">
               <div>
-                <p class="iconSpan">{{row.monday.scheduleName}}</p>
-                <p v-if="row.monday.begcreateTime">{{row.monday.begcreateTime}} - {{row.monday.endTime}}</p>
+                <p class="iconSpan">{{row.tuesday.scheduleName}}</p>
+                <p v-if="row.tuesday.begcreateTime">{{row.tuesday.begcreateTime}} - {{row.tuesday.endTime}}</p>
               </div>
             </template>
           </el-table-column>
@@ -65,8 +65,8 @@
           >
             <template slot-scope="{row}">
               <div>
-                <p class="iconSpan">{{row.monday.scheduleName}}</p>
-                <p v-if="row.monday.begcreateTime">{{row.monday.begcreateTime}} - {{row.monday.endTime}}</p>
+                <p class="iconSpan">{{row.wednesday.scheduleName}}</p>
+                <p v-if="row.wednesday.begcreateTime">{{row.wednesday.begcreateTime}} - {{row.wednesday.endTime}}</p>
               </div>
             </template>
           </el-table-column>
@@ -76,8 +76,8 @@
           >
             <template slot-scope="{row}">
               <div>
-                <p class="iconSpan">{{row.monday.scheduleName}}</p>
-                <p v-if="row.monday.begcreateTime">{{row.monday.begcreateTime}} - {{row.monday.endTime}}</p>
+                <p class="iconSpan">{{row.thursday.scheduleName}}</p>
+                <p v-if="row.thursday.begcreateTime">{{row.thursday.begcreateTime}} - {{row.thursday.endTime}}</p>
               </div>
             </template>
           </el-table-column>
@@ -87,8 +87,8 @@
           >
             <template slot-scope="{row}">
               <div>
-                <p class="iconSpan">{{row.monday.scheduleName}}</p>
-                <p v-if="row.monday.begcreateTime">{{row.monday.begcreateTime}} - {{row.monday.endTime}}</p>
+                <p class="iconSpan">{{row.friday.scheduleName}}</p>
+                <p v-if="row.friday.begcreateTime">{{row.friday.begcreateTime}} - {{row.friday.endTime}}</p>
               </div>
             </template>
           </el-table-column>
@@ -98,8 +98,8 @@
           >
             <template slot-scope="{row}">
               <div>
-                <p class="iconSpan">{{row.monday.scheduleName}}</p>
-                <p v-if="row.monday.begcreateTime">{{row.monday.begcreateTime}} - {{row.monday.endTime}}</p>
+                <p class="iconSpan">{{row.saturday.scheduleName}}</p>
+                <p v-if="row.saturday.begcreateTime">{{row.saturday.begcreateTime}} - {{row.saturday.endTime}}</p>
               </div>
             </template>
           </el-table-column>
@@ -109,8 +109,8 @@
           >
             <template slot-scope="{row}">
               <div>
-                <p class="iconSpan">{{row.monday.scheduleName}}</p>
-                <p v-if="row.monday.begcreateTime">{{row.monday.begcreateTime}} - {{row.monday.endTime}}</p>
+                <p class="iconSpan">{{row.sunday.scheduleName}}</p>
+                <p v-if="row.sunday.begcreateTime">{{row.sunday.begcreateTime}} - {{row.sunday.endTime}}</p>
               </div>
             </template>
           </el-table-column>
@@ -119,12 +119,14 @@
             prop="operate"
             align="center"
           >
-            <template slot-scope="{row}">
+            <template>
               <div>
                 <editTechnicianscheduling
                   :storeId="storeId"
-                  :datas="row"
+                  :technicianId="technicianId"
                   :beginTime="queryParams.beginTime"
+                  :datas="tableData[0]"
+                  @change="initDataList"
                 ></editTechnicianscheduling>
               </div>
             </template>
@@ -194,35 +196,34 @@ export default {
       }, this.queryParams)
       getScheduleList(params).then(res => {
         if (res.error === 0) {
-          console.log(res.content)
-          // this.tableData = [...res.content]
           if (res.content.length > 0) {
             res.content.forEach(item => {
-              // 遍历返回值：workDate - queryParams.startTime
+              // 遍历返回值：workDate - queryParams.beginTime
               let workDate = new Date(item.workDate)
-              let startDate = new Date(this.queryParams.startTime)
+              let startDate = new Date(this.queryParams.beginTime)
               let oneDayTime = 24 * 60 * 60 * 1000
+              debugger
               switch (Math.floor((workDate - startDate) / oneDayTime)) {
                 case -1:
-                  this.tableData.monday = Object.assign({}, item)
+                  this.$set(this.tableData[0], 'monday', item)
                   break
                 case 0:
-                  this.tableData.tuesday = Object.assign({}, item)
+                  this.$set(this.tableData[0], 'tuesday', item)
                   break
                 case 1:
-                  this.tableData.wednesday = Object.assign({}, item)
+                  this.$set(this.tableData[0], 'wednesday', item)
                   break
                 case 2:
-                  this.tableData.thursday = Object.assign({}, item)
+                  this.$set(this.tableData[0], 'thursday', item)
                   break
                 case 3:
-                  this.tableData.friday = Object.assign({}, item)
+                  this.$set(this.tableData[0], 'friday', item)
                   break
                 case 4:
-                  this.tableData.saturday = Object.assign({}, item)
+                  this.$set(this.tableData[0], 'saturday', item)
                   break
                 case 5:
-                  this.tableData.sunday = Object.assign({}, item)
+                  this.$set(this.tableData[0], 'sunday', item)
                   break
               }
             })
@@ -236,13 +237,6 @@ export default {
     },
     resetWeek () {
       this.$refs.weekPicker.initDate()
-    },
-    addShedulingHandle () {
-
-    },
-    // 编辑 班次
-    setScheduling (row) {
-      console.log(row)
     }
   }
 }

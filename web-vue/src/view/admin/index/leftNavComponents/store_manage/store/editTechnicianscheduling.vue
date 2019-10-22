@@ -55,37 +55,47 @@
 </template>
 
 <script>
-import { getAllShift } from '@/api/admin/storeManage/schedulingManage'
+import { getAllShift, saveScheduleAPI } from '@/api/admin/storeManage/schedulingManage'
+import '@/util/date.js'
+
 export default {
   props: {
     storeId: [Number, String],
-    datas: Object,
-    beginTime: Date
+    technicianId: [Number, String],
+    beginTime: [String, Date],
+    datas: Object
   },
   data () {
     return {
       editSchedulingVisible: false,
       schedulingDatas: [
         {
-          label: '周一'
+          label: '周一',
+          scheduleId: ''
         },
         {
-          label: '周二'
+          label: '周二',
+          scheduleId: ''
         },
         {
-          label: '周三'
+          label: '周三',
+          scheduleId: ''
         },
         {
-          label: '周四'
+          label: '周四',
+          scheduleId: ''
         },
         {
-          label: '周五'
+          label: '周五',
+          scheduleId: ''
         },
         {
-          label: '周六'
+          label: '周六',
+          scheduleId: ''
         },
         {
-          label: '周日'
+          label: '周日',
+          scheduleId: ''
         }
       ],
       schedulingSelectDatas: []
@@ -94,11 +104,18 @@ export default {
   created () {
     this.initSelectData()
     this.initSelectsDate()
+    if (this.datas) {
+      this.initData(this.datas)
+    }
   },
   watch: {
     editSchedulingVisible: function (newVal) {
       if (newVal) {
         this.initSelectData()
+        this.initSelectsDate()
+        if (this.datas) {
+          this.initData(this.datas)
+        }
       }
     }
   },
@@ -106,8 +123,8 @@ export default {
     clickHandle () {
       this.editSchedulingVisible = !this.editSchedulingVisible
     },
+    // 初始化班次下拉
     initSelectData () {
-      console.log('init...')
       let params = {
         storeId: this.storeId
       }
@@ -117,12 +134,68 @@ export default {
         }
       })
     },
+    // 初始化时间
     initSelectsDate () {
-      this.schedulingDatas = this.schedulingDatas.map((item, index) => {
-        item.startDate = this.beginTime
-      })
+      let oneDay = 24 * 60 * 60 * 1000
+      if (this.beginTime) {
+        this.schedulingDatas = this.schedulingDatas.map((item, index) => {
+          item.startDate = new Date(this.beginTime.getTime() + oneDay * index).format('yyyy-MM-dd')
+          return item
+        })
+      }
     },
-    submitHandle () { }
+    // 初始化数据
+    initData (datas) {
+      for (const key in datas) {
+        if (datas.hasOwnProperty(key)) {
+          const data = datas[key]
+          if (data.scheduleId) {
+            switch (key) {
+              case 'monday':
+                this.schedulingDatas[0].scheduleId = data.scheduleId
+                break
+              case 'tuesday':
+                this.schedulingDatas[1].scheduleId = data.scheduleId
+                break
+              case 'wednesday':
+                this.schedulingDatas[2].scheduleId = data.scheduleId
+                break
+              case 'thursday':
+                this.schedulingDatas[3].scheduleId = data.scheduleId
+                break
+              case 'friday':
+                this.schedulingDatas[4].scheduleId = data.scheduleId
+                break
+              case 'saturday':
+                this.schedulingDatas[5].scheduleId = data.scheduleId
+                break
+              case 'sunday':
+                this.schedulingDatas[6].scheduleId = data.scheduleId
+                break
+            }
+          }
+        }
+      }
+    },
+    submitHandle () {
+      let params = {
+        storeId: Number(this.storeId),
+        technicianId: Number(this.technicianId),
+        scheduleMap: {}
+      }
+      this.schedulingDatas.forEach((item, index) => {
+        if (item.scheduleId) {
+          params.scheduleMap[item.startDate] = item.scheduleId
+        }
+      })
+      saveScheduleAPI(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success('更新成功')
+          this.$emit('change')
+          this.editSchedulingVisible = false
+        }
+      })
+    }
   }
 }
 </script>

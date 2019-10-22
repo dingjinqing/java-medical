@@ -43,3 +43,12 @@ export function getScheduleList (data) {
     data: data
   })
 }
+
+// 设置技师班次
+export function saveScheduleAPI (data) {
+  return service({
+    url: '/api/admin/store/services/technician/schedule/save',
+    method: 'post',
+    data: data
+  })
+}
