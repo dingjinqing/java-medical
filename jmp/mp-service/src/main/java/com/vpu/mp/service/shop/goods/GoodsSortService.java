@@ -74,10 +74,11 @@ public class GoodsSortService extends ShopBaseService {
      * @return
      */
     public Sort getSort(Integer sortId) {
-        Sort sort= db().selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny().into(Sort.class);
-        if (sort == null) {
+        Record record = db().selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
+        if (record == null) {
             return null;
         }
+        Sort sort= record.into(Sort.class);
         /* 处理图片路径 */
         sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg()));
         return sort;
