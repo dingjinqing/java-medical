@@ -20,7 +20,7 @@ public class AdminShopCfgController  extends AdminBaseController {
 	 * 查询 搜索配置
 	 * @return
 	 */
-	@GetMapping("/api/get/searchcfg")
+	@GetMapping("/api/admin/get/searchcfg")
 	public JsonResult getSearchCfg() {
 		return success(shop().config.searchCfg.getSearchConfig());
 	}
@@ -29,7 +29,7 @@ public class AdminShopCfgController  extends AdminBaseController {
 	 * @param jsonParam
 	 * @return
 	 */
-	@PostMapping("/api/update/searchcfg")
+	@PostMapping("/api/admin/update/searchcfg")
 	public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
 		shop().config.searchCfg.setSearchConfig(config);
 		return success();
