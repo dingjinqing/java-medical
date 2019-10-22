@@ -1,4 +1,5 @@
 var util = require('../../utils/util.js');
+var orderEvent = require('../common/order.js');
 global.wxPage({
   /**
    * 页面的初始数据
@@ -8,13 +9,35 @@ global.wxPage({
     scrollIntoId : 'ALL',
     currentPage:1,
     pageParams:null,
-    dataList:[]
+    navType:{
+      'ALL':0,
+      'WAIT_PAY':1,
+      'WAIT_DELIVERY':2,
+      'SHIPPED':3,
+      'RETURNING':4
+    },
+    dataList:[],
+    operateList:{
+      isShowPay:'立即支付',
+      isCancel:'取消订单',
+      isDelete:'删除订单',
+      isExtendReceive:'延长收货',
+      isRemindShip:'提醒发货',
+      isShowAgainBuy:'再次购买',
+      isPayEndPayment:'去付尾款',
+      'isShowCommentType-1': '查看评价',
+      'isShowCommentType-2': '评价有礼',
+      'isShowCommentType-3': '商品评价'
+    }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
+    this.setData({
+      scrollIntoId: options.scrollIntoId ? options.scrollIntoId : 'ALL'
+    })
     this.requestList();
   },
   requestList() {
@@ -30,8 +53,9 @@ global.wxPage({
       }
     }, {
         currentPage: currentPage,
-      pageRows: 20,
-      type:0
+        pageRows: 2,
+        type: this.data.navType[this.data.scrollIntoId],
+        search: this.data.searchInput
     });
   },
   // 获取搜索栏input值
@@ -42,16 +66,11 @@ global.wxPage({
   },
   formatData(order){
     let formatOrderItem = order.map(item=>{
-      const filterArr = ['isShowPay', 'isLotteryGift', 'isReturn', 'isPayEndPayment', 'isExtendReceive', 'isShowAgainBuy', 'isRemindShip', 'isShowCommentType', 'payOperationTime','isDelete']
-      let d =  this.filterObj(item, filterArr);
-      for(let k in d ){
-        if(!(d[k] > 0)){
-          delete d[k]
-        }
-      }
-      console.log(d)
-      item.operate = d
+      const filterArr = ['isShowPay', 'isPayEndPayment', 'isExtendReceive', 'isShowAgainBuy', 'isRemindShip', 'isShowCommentType', 'isDelete','isCancel']
+      item.operate = orderEvent.filterObj(item, filterArr);
+      return item
     })
+    console.log(formatOrderItem)
     return formatOrderItem
   },
   // 清空搜索栏
@@ -61,102 +80,31 @@ global.wxPage({
     })
   },
   handleSearch() {
-    this.searchInput()
+    this.setData({
+      currentPage: 1,
+      dataList: [],
+      scrollIntoId:'ALL'
+    })
+    this.requestList()
   },
   // 切换导航
   handleChangeNav(e){
     this.setData({
-      scrollIntoId:e.currentTarget.id
+      scrollIntoId:e.currentTarget.id,
+      currentPage:1,
+      dataList:[]
     })
+    this.requestList()
   },
-  // 订单列表下按钮事件集合
+  // 订单下按钮事件集合
   handleOperate(e) {
-    let optionList = {
-      0: (() => {
-        return this.TODO;
-      })(),
-      1: (() => {
-        return this.TODO;
-      })()
-    };
-    // optionList[e.currentTarget.dataset.index](e.currentTarget.dataset.order_sn);
+    orderEvent.handleBtnEvent(e)
   },
-  // 查看详情
-  viewInfo(orderSn) {
-    util.jumpLink(`/page/order_info/order_info?order_sn=${orderSn}`, 'navigateTo')
-  },
-  // 查看评价
-  viewComment(orderSn) {
-    util.jumpLink(`/pages/comment/comment?order_sn=${orderSn}`, 'navigateTo')
-  },
-  // 再次购买
-  addCart(orderSn) {
-    util.api(
-      '/api/wxapp/order/Repurchase',
-      (res) => {
-        if (res.error == 0) {
-          util.toast_success('已加入购物车');
-        } else {
-          util.showModal('提示', res.message);
-        }
-      },
-      {
-        order_sn: orderSn
-      }
-    );
-  },
-  // 删除订单
-  delOrder(orderSn) {
-    util.showModal(
-      '提示',
-      '是否删除该订单',
-      (res) => {
-        util.api(
-          '/api/wxapp/order/del',
-          function (res) {
-            if (res.error == 0) {
-            }
-          },
-          { order_sn: orderSn }
-        );
-      },
-      true
-    );
-  },
-  // 提醒发货
-  remindOrder(orderSn) {
-    util.api(
-      '/api/wxapp/order/remind',
-      (res) => {
-        if (res.error == 0) {
-          util.toast_success('提醒成功');
-        } else {
-          util.toast_fail(res.message);
-        }
-      },
-      {
-        order_sn: orderSn
-      }
-    );
-  },
-  // 好友代付
-  // 退货中心
-  filterObj(obj, arr) {
-    if(typeof (obj) !== "object" || !Array.isArray(arr)) {
-      throw new Error("参数格式不正确")
-    }
-    const result = {}
-    Object.keys(obj).filter((key) => arr.includes(key)).forEach((key) => {
-      result[key] = obj[key]
-    })
-    return result
-  },
-
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function() {},
-  
+
   /**
    * 生命周期函数--监听页面显示
    */

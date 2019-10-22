@@ -1,3 +1,6 @@
+.common-footer .footer-text{
+  padding-bottom: 120rpx !important;
+}
 .order-status{
   height: 200rpx;
   font-size: 30rpx;

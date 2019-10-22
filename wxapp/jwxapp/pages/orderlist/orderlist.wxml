@@ -28,7 +28,7 @@
           <view class="order_sn_status {{item.partShipFlag === 1 ? 'partial_delivery' : ''}}">
             <view class="partial_delivery_top">
               <view class="order_mark"></view>
-              <view class="order_sn">订单编号：{{item.orderSn}}</view>
+              <view class="order_sn">订单编号：<text selectable>{{item.orderSn}}</text></view>
             </view>
             <view class="partial_delivery_bottom">
               <view class="delivery_type" wx:if="{{item.partShipFlag === 1}}">
@@ -71,9 +71,10 @@
             </view>
           </view>
           <view class="order_button_box">
-            <view bindtap="handleOperate">查看评价</view>
-            <view>查看详情</view>
-            <view>再次购买</view>
+            <block wx:for="{{item.operate}}" wx:for-item="operateItem" wx:key="*this" wx:for-index="operateKey">
+              <view wx:if="{{operateItem > 0}}" bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{item.orderSn}}">{{operateList[operateKey]}}</view>
+            </block>
+            <view bindtap="handleOperate" data-operate_info="orderInfo" data-order_sn="{{item.orderSn}}">查看详情</view>
           </view>
         </view>
       </block>

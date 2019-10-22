@@ -1,9 +1,9 @@
 <view class="body">
   <include src="../common/header.wxml" />
-  <view class="main-container">
+  <view class="main-container" wx:if="{{orderInfo}}">
     <view class="order-status" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
       <image mode="widthFix" src="{{imageUrl}}image/wxapp/status_success.png"></image>
-      <text>订单完成</text>
+      <text>{{orderInfo.orderStatusName}}</text>
     </view>
     <view class="shipping_info">
       <navigator>
@@ -36,31 +36,18 @@
       </view>
     </view>
     <view class="order_top">
-      <text>配送方式：快递</text>
+      <text>配送方式：{{orderInfo.deliverTypeName}}</text>
     </view>
-    <view class="goods_item">
-      <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
+    <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
+      <image mode="widthFix" src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
       <view class="goods_info">
         <view class="goods_name">
-          小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
+          {{goodsItem.goodsName}}
         </view>
-        <view class="goods_spec">颜色：红色</view>
+        <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
         <view class="goods_price_num">
-          <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-          <view class="goods_num">x2</view>
-        </view>
-      </view>
-    </view>
-    <view class="goods_item">
-      <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-      <view class="goods_info">
-        <view class="goods_name">
-          小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇小风扇
-        </view>
-        <view class="goods_spec">颜色：红色</view>
-        <view class="goods_price_num">
-          <view class="goods_price" style="color:{{comColor}}">￥100.00</view>
-          <view class="goods_num">x2</view>
+          <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.goodsPrice}}</view>
+          <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
         </view>
       </view>
     </view>
@@ -85,12 +72,13 @@
     </view>
     <view class="order_info">
       <view class="title">订单信息</view>
-      <view class="order_item">订单编号：xxxxxxxxxxx</view>
-      <view class="order_item">下单时间：xxxxxxxxx</view>
+      <view class="order_item">订单编号：{{orderInfo.orderSn}}</view>
+      <view class="order_item">下单时间：{{orderInfo.createTime}}</view>
     </view>
     <view class="fixed_footer">
-      <view class="footer_item">再次购买</view>
-      <view class="footer_item">查看评价</view>
+      <block wx:for="{{orderInfo.operate}}" wx:key="*this" wx:for-item="operateItem" wx:for-index="operateKey">
+        <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">{{operateList[operateKey]}}</view>
+      </block>
     </view>
   </view>
   <include src="../common/footer.wxml" />
