@@ -39,6 +39,9 @@ public class WxMainUserService extends MainBaseService {
 			UserRecord into = sendRecord.into(USER);
 			//copy重新set值，不set插入时候不插入。疑似jooq的bug
 			UserRecord copy = into.copy();
+			if(copy.getUserPwd()==null) {
+				copy.setUserPwd("");
+			}
 			int executeInsert = db().executeInsert(copy);
 			logger().info("插入User，结果" + executeInsert);
 		}
