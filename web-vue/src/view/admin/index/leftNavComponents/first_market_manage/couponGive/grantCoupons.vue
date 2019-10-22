@@ -777,26 +777,26 @@ export default {
     },
     // 加购人群发生变化的时候
     handleOnClickNoPayChange (val) {
-      this.params.onClickNoPay = !this.params.onClickNoPay
+      // this.params.onClickNoPay = !this.params.onClickNoPay
       // 获取发送人群的数量
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 指定购买商品人群发生变化的时候
     handleOnClickGoodsChange (val) {
-      this.params.onClickGoods = !this.params.onClickGoods
+      // this.params.onClickGoods = !this.params.onClickGoods
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 选择指定的会员状态发生变化的时候
     handleOnClickUserChange (val) {
-      this.params.onClickUser = !this.params.onClickUser
+      // this.params.onClickUser = !this.params.onClickUser
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 当自定义发生变化的时候
     handleOnClickCustomRuleChange (val) {
-      this.params.onClickCustomRule = !this.params.onClickCustomRule
+      // this.params.onClickCustomRule = !this.params.onClickCustomRule
       this.fetchUserList(this.params)
     },
     loginStartAndLoginEnd (val) {
