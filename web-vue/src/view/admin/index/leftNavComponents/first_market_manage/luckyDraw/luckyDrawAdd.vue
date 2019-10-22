@@ -5,7 +5,7 @@
                 <div class="mainContentLeft">
                     <section class="drawContent">
                         <div class="top">
-                            <div>幸运大转盘</div>
+                            <div>{{$t('luckyDraw.luckyWhee')}}</div>
                         </div>
                         <div class="drawArea">
                             <div class="loTop">
@@ -13,7 +13,8 @@
                                     <div class="picBox">
                                         <ul class="picWrapper">
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[3].iconImgs}}</div>
                                             </li>
                                             <li class="picItems">
@@ -21,36 +22,39 @@
                                                 <div>{{requestParam.noAwardIcon}}</div>
                                             </li>
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[2].iconImgs}}</div>
                                             </li>
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[0].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[0].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[0].iconImgs}}</div>
                                             </li>
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[1].iconImgs}}</div>
                                             </li>
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[3].iconImgs}}</div>
                                             </li>
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[2].iconImgs}}</div>
                                             </li>
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[3].iconImgs}}</div>
                                             </li>
                                             <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage " alt="">
+                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
+                                                     alt="">
                                                 <div>{{requestParam.prizeList[1].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/1.png" alt="">
-                                                <div>四等奖</div>
                                             </li>
                                         </ul>
                                     </div>
@@ -59,13 +63,14 @@
                                                 src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_words.png"
                                                 alt=""
                                         >
-                                        张三获得
-                                        <span>一等奖50积分</span>
+                                        张三{{$t('luckyDraw.get')}}
+                                        <span>{{requestParam.prizeList[0].iconImgs}}{{$t('luckyDraw.publicityInfo')}}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="immediatelyDraw">
-                                <div class="drawText">立即抽奖</div>
+                                <div class="drawText">{{$t('luckyDraw.immediatelyDraw')}}</div>
                             </div>
                             <div class="actRule">
                                 <div class="ruleInfo">
@@ -73,16 +78,16 @@
                                             src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_l.png"
                                             alt=""
                                     >
-                                    <span>活动规则</span>
+                                    <span>{{$t('luckyDraw.activityRules')}}</span>
                                     <img
                                             src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_r.png"
                                             alt=""
                                     >
                                 </div>
                                 <div class="ruleContent">
-                                    <div class="timeRange">活动有效期：</div>
-                                    <div>至：</div>
-                                    <div>活动说明：</div>
+                                    <div class="timeRange">{{$t('luckyDraw.activityValidity')}}：</div>
+                                    <div>{{$t('luckyDraw.to')}}：</div>
+                                    <div>{{$t('luckyDraw.activityDescription')}}：</div>
                                 </div>
                             </div>
                         </div>
@@ -92,24 +97,24 @@
                 <div class="mainContentRight">
                     <!-- 活动信息 -->
                     <div class="boxWrapper">
-                        <div class="textDesc">活动信息</div>
-                        <el-form label-width="100px"  ref="form">
-                            <el-form-item label="活动名称：">
+                        <div class="textDesc">{{$t('luckyDraw.activityInformation')}}</div>
+                        <el-form label-width="100px" ref="form">
+                            <el-form-item :label="$t('luckyDraw.activityName')">
                                 <el-input
                                         size="small"
                                         v-model="requestParam.lotteryName"
-                                        placeholder="最多支持10个字"
+                                        :placeholder="$t('luckyDraw.supportUpTo10Words')"
                                         style="width: 180px;"
                                 ></el-input>
                             </el-form-item>
 
-                            <el-form-item label="活动有效期：">
+                            <el-form-item :label="$t('luckyDraw.activityValidity')">
                                 <div>
-                                    <span>生效时间：</span>
+                                    <span>{{$t('luckyDraw.effectiveTime')}}：</span>
                                     <el-date-picker
                                             v-model="requestParam.startTime"
                                             type="datetime"
-                                            placeholder="选择日期时间"
+                                            :placeholder="$t('luckyDraw.selectDateTime')"
                                             size="small"
                                             style="width: 180px"
                                             value-format="yyyy-MM-dd HH:mm:ss"
@@ -117,11 +122,11 @@
                                     </el-date-picker>
                                 </div>
                                 <div>
-                                    <span>过期时间：</span>
+                                    <span>{{$t('luckyDraw.expirationTime')}}：</span>
                                     <el-date-picker
                                             v-model="requestParam.endTime"
                                             type="datetime"
-                                            placeholder="选择日期时间"
+                                            :placeholder="$t('luckyDraw.selectDateTime')"
                                             size="small"
                                             style="width: 180px"
                                             value-format="yyyy-MM-dd HH:mm:ss"
@@ -130,12 +135,12 @@
                                 </div>
                             </el-form-item>
 
-                            <el-form-item label="活动说明：">
+                            <el-form-item :label="$t('luckyDraw.activityName')">
                                 <el-input
                                         v-model="requestParam.lotteryExplain"
                                         type="textarea"
                                         :rows="4"
-                                        placeholder="请输入内容"
+                                        :placeholder="$t('luckyDraw.pleaseEnterContent')"
                                         style="width: 300px;height: 100px;"
                                 ></el-input>
                             </el-form-item>
@@ -144,86 +149,86 @@
 
                     <!-- 规则设置 -->
                     <div class="boxWrapper">
-                        <div class="textDesc">规则设置</div>
+                        <div class="textDesc">{{$t('luckyDraw.rulesSetting')}}</div>
                         <el-form label-width="125px">
-<!--                            <el-form-item-->
-<!--                                    label="活动规则："-->
-<!--                                    prop=""-->
-<!--                            >-->
-<!--                                <el-radio-group v-model="times">-->
-<!--                                    <el-radio :label="1">每人N次</el-radio>-->
-<!--                                    <el-radio :label="2">每人每天N次</el-radio>-->
-<!--                                </el-radio-group>-->
-<!--                            </el-form-item>-->
+                            <!--                            <el-form-item-->
+                            <!--                                    label="活动规则："-->
+                            <!--                                    prop=""-->
+                            <!--                            >-->
+                            <!--                                <el-radio-group v-model="times">-->
+                            <!--                                    <el-radio :label="1">每人N次</el-radio>-->
+                            <!--                                    <el-radio :label="2">每人每天N次</el-radio>-->
+                            <!--                                </el-radio-group>-->
+                            <!--                            </el-form-item>-->
 
-                            <el-form-item label="免费抽奖：">
+                            <el-form-item :label="$t('luckyDraw.freePrizeDraw')">
                                 <el-input
                                         size="small"
-                                        placeholder="为空表示不限制"
+                                        :placeholder="$t('luckyDraw.nullUnrestricted')"
                                         style="width:125px"
                                         v-model="requestParam.freeChances"
                                 ></el-input>
-                                <span style="color:#999;">用户可免费抽奖几次</span>
+                                <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span>
                             </el-form-item>
 
-                            <el-form-item label="分享抽奖：">
+                            <el-form-item :label="$t('luckyDraw.shareTheLuckyDraw')">
                                 <el-radio-group v-model="requestParam.canShare">
-                                    <el-radio :label="1">允许</el-radio>
-                                    <el-radio :label="2">不允许</el-radio>
+                                    <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
+                                    <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
                                 </el-radio-group>
                                 <div v-if="requestParam.canShare === 1">
-                                    <span style="color: #999">用户无免费抽奖机会时可通过分享给好友获得抽奖机会</span>
+                                    <span style="color: #999">{{$t('luckyDraw.shareTheLuckyDrawTips')}}</span>
                                     <div>
-                                        分享最多获得
+                                        {{$t('luckyDraw.shareTheLuckyDrawTips1')}}
                                         <el-input
                                                 size="small"
-                                                placeholder="为空表示不限制"
+                                                :placeholder="$t('luckyDraw.nullUnrestricted')"
                                                 style="width:125px"
                                                 v-model="requestParam.shareChances"
                                         ></el-input>
-                                        次抽奖机会
+                                        {{$t('luckyDraw.shareTheLuckyDrawTips2')}}
                                     </div>
                                 </div>
                             </el-form-item>
 
-                            <el-form-item label="付费抽奖：">
+                            <el-form-item :label="$t('luckyDraw.payLuckyDraw')">
                                 <el-radio-group v-model="requestParam.canUseScore">
-                                    <el-radio :label="1">允许</el-radio>
-                                    <el-radio :label="2">不允许</el-radio>
+                                    <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
+                                    <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
                                 </el-radio-group>
                                 <div v-if="requestParam.canUseScore===1">
-                                    <span style="color: #999;">用户无法通过分享获取抽奖机会时可通过消耗积分获得抽奖机会</span>
+                                    <span style="color: #999;">{{$t('luckyDraw.payLuckyDrawTips1')}}</span>
                                     <div>
-                                        每次抽奖消耗积分：
+                                        {{$t('luckyDraw.payLuckyDrawTips2')}}：
                                         <el-input
                                                 size="small"
                                                 placeholder="为空表示不消耗积分"
                                                 style="width:125px"
                                                 v-model="requestParam.scorePerChance"
                                         ></el-input>
-                                        <span style="color:#999">用户每次参与需要消耗积分数</span>
+                                        <span style="color:#999">{{$t('luckyDraw.payLuckyDrawTips3')}}</span>
                                     </div>
                                     <div>
-                                        付费最多获取
+                                        {{$t('luckyDraw.payLuckyDrawTips4')}}
                                         <el-input
                                                 size="small"
-                                                placeholder="为空表示不限制"
+                                                :placeholder="$t('luckyDraw.nullUnrestricted')"
                                                 style="width:125px"
                                                 v-model="requestParam.scoreChances"
                                         ></el-input>
-                                        次抽奖机会
+                                        {{$t('luckyDraw.payLuckyDrawTips5')}}
                                     </div>
                                 </div>
                             </el-form-item>
 
-                            <el-form-item label="未中奖赠送积分：">
+                            <el-form-item :label="$t('luckyDraw.noWinningBonusPoints')">
                                 <el-input
                                         size="small"
-                                        placeholder="为空表示不赠送积分"
+                                        :placeholder="$t('luckyDraw.nullIsNoPoints')"
                                         style="width: 185px"
                                         v-model="requestParam.noAwardScore"
                                 ></el-input>
-                                <span style="color: #999">仅送给未中奖用户</span>
+                                <span style="color: #999">{{$t('luckyDraw.noWinningBonusPoints')}}</span>
                                 <section class="upInfo">
                                     <div class="upIcons">
                                         <div class="leftContent">
@@ -234,18 +239,21 @@
                                         </div>
                                         <div class="rightContent">
                                             <div class="operate">
-                                                <span @click="showLotteryDialog(1)">修改</span>
-                                                <span class="operateBtn fixstyle" @click="changeImgHandler(1)">上传未中奖图表</span>
-                                                <span class="operateBtn">清空</span>
+                                                <span @click="showLotteryDialog(1)">{{$t('luckyDraw.modification')}}
+                                                </span>
+                                                <span class="operateBtn fixstyle" @click="changeImgHandler(1)">
+                                                    {{$t('luckyDraw.uploadChartForNoWinning')}}
+                                                </span>
+                                                <span class="operateBtn">{{$t('luckyDraw.empty')}}</span>
                                             </div>
-                                            <p>仅支持jpg/png/尺寸80*80 不超过1M</p>
+                                            <p>{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
                                         </div>
                                     </div>
                                     <div class="iconDesc">
-                                        <span>icon描述：</span>
+                                        <span>{{$t('luckyDraw.iconDescribe')}}：</span>
                                         <el-input
                                                 size="small"
-                                                placeholder="最多可填写4个字"
+                                                :placeholder="$t('luckyDraw.iconDescribeTips')"
                                                 style="width: 180px"
                                                 v-model="requestParam.noAwardIcon"
                                         ></el-input>
@@ -257,10 +265,9 @@
 
                     <!-- 抽奖设置 -->
                     <div class="boxWrapper">
-                        <div class="textDesc">抽奖设置</div>
-                        <p class="drawSetting">不同等级分别设置不同的奖项、每个奖项的份数和中奖概率，四个等级中奖概率之和小于等于100%。</p>
-                        <p class="drawSetting">
-                            例如：一等奖1份，中奖概率为2%；二等奖2份，中奖概率为3%；三等奖3份，中奖概率为4%；四等奖4份，中奖概率为5%。则用户A抽奖时，中奖概率为（2%+3%+4%+5%）=14%。</p>
+                        <div class="textDesc">{{$t('luckyDraw.lotteryIsSet')}}</div>
+                        <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips1')}}</p>
+                        <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips2')}}</p>
                         <!-- 一等奖~四等奖 tab切换 -->
                         <el-tabs
                                 type="border-card"
@@ -275,7 +282,7 @@
                                     :name="item.lotteryGrade"
                             >
                                 <el-form label="100px">
-                                    <el-form-item label="中奖概率：">
+                                    <el-form-item :label="$t('luckyDraw.prizeRate')">
                                         <el-input
                                                 size="small"
                                                 style="width:120px"
@@ -284,39 +291,40 @@
                                         ></el-input>&nbsp;&nbsp;%
                                     </el-form-item>
 
-                                    <el-form-item label="选择奖品：">
+                                    <el-form-item :label="$t('luckyDraw.selectPrize')">
                                         <el-radio-group v-model="item.lotteryType">
-                                            <el-radio :label="1">积分</el-radio>
-                                            <el-radio :label="2">用户余额</el-radio>
-                                            <el-radio :label="3">优惠券</el-radio>
-                                            <el-radio :label="4">赠品</el-radio>
-                                            <el-radio :label="5">自定义</el-radio>
+                                            <el-radio :label="1">{{$t('luckyDraw.prizeType')[0][1]}}</el-radio>
+                                            <el-radio :label="2">{{$t('luckyDraw.prizeType')[1][1]}}</el-radio>
+                                            <el-radio :label="3">{{$t('luckyDraw.prizeType')[2][1]}}</el-radio>
+                                            <el-radio :label="4">{{$t('luckyDraw.prizeType')[3][1]}}</el-radio>
+                                            <el-radio :label="5">{{$t('luckyDraw.prizeType')[4][1]}}</el-radio>
                                         </el-radio-group>
                                         <section style="margin-left: 81px;">
                                             <div v-if="item.lotteryType===1">
-                                                <span>赠送积分：</span>
+                                                <span>{{$t('luckyDraw.presentExp')}}：</span>
                                                 <el-input
                                                         size="small"
-                                                        placeholder="请填写积分数"
+                                                        :placeholder="$t('luckyDraw.presentExpTips')"
                                                         style="width: 120px"
                                                         v-model="item.integralScore"
                                                 ></el-input>
                                             </div>
                                             <div v-if="item.lotteryType===2">
-                                                <span>赠送余额：</span>
+                                                <span>{{$t('luckyDraw.giveTheBalance')}}：</span>
                                                 <el-input
                                                         size="small"
-                                                        placeholder="请填写余额数"
+                                                        :placeholder="$t('luckyDraw.giveTheBalanceTips')"
                                                         style="width: 120px"
                                                         v-model="item.integralScore"
                                                 ></el-input>
                                             </div>
                                             <div v-if="item.lotteryType===3">
-                                                <span>优惠券：</span>
+                                                <span>{{$t('luckyDraw.coupons')}}：</span>
                                                 <el-select
                                                         v-model="item.couponId"
                                                         size="small"
                                                         style="width: 120px"
+                                                        @change="couponChange"
                                                 >
                                                     <el-option
                                                             v-for="itema in couponlist"
@@ -325,25 +333,31 @@
                                                             :label="itema.actName"
                                                     ></el-option>
                                                 </el-select>
-                                                <span style="margin-right: 10px;color: #5a8bff;" @click="refreshCouponList()">刷新</span>
+                                                <span style="margin-right: 10px;color: #5a8bff;"
+                                                      @click="refreshCouponList()">{{$t('luckyDraw.refreshs')}}
+                                                </span>
                                                 |
-                                                <span style="margin-left: 10px;color: #5a8bff;" @click="createCouponList()">新建</span>
-                                                <p style="color: #999;">优惠券可用库存{{1}}份数</p>
+                                                <span style="margin-left: 10px;color: #5a8bff;"
+                                                      @click="createCouponList()">{{$t('luckyDraw.make')}}
+                                                </span>
+                                                <p style="color: #999;">
+                                                    {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
                                             </div>
                                             <div v-if="item.lotteryType===4">
                                                 <div>
-                                                    <span>赠送赠品：</span>
+                                                    <span>{{$t('luckyDraw.givinggifts')}}：</span>
                                                     <span style="border: 1px solid #ccc; cursor:pointer"
-                                                    @click="showGoodsDialog()"> + 选择商品</span>
+                                                          @click="showGoodsDialog()"> + {{$t('luckyDraw.selectGoods')}}
+                                                    </span>
                                                 </div>
                                                 <div v-if="requestParam.prizeList[tabSwitch-1].goodsShow">
                                                     <table class="goods_modal" style="display: block;">
                                                         <thead>
                                                             <tr style="background: #F8F8F8;">
-                                                                <th>商品名称</th>
-                                                                <th>价格</th>
-                                                                <th>库存</th>
-                                                                <th>操作</th>
+                                                                <th>{{$t('luckyDraw.goodsName')}}</th>
+                                                                <th>{{$t('luckyDraw.goodsPrice')}}</th>
+                                                                <th>{{$t('luckyDraw.goodsNum')}}</th>
+                                                                <th>{{$t('luckyDraw.goodsOptions')}}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="tbody">
@@ -354,14 +368,20 @@
                                                                     </div>
                                                                     <div class="goods_info clearfix" num="50"
                                                                          prd_id="5410">
-                                                                        <div class="goods_name">{{requestParam.prizeList[tabSwitch-1].goodsName}}</div>
+                                                                        <div class="goods_name">
+                                                                            {{requestParam.prizeList[tabSwitch-1].goodsName}}
+                                                                        </div>
                                                                     </div>
                                                                 </td>
-                                                                <td>{{currency[1]}}{{requestParam.prizeList[tabSwitch-1].goodsPrice}}</td>
-                                                                <td>{{requestParam.prizeList[tabSwitch-1].goodsNumber}}</td>
+                                                                <td>
+                                                                    {{currency[1]}}{{requestParam.prizeList[tabSwitch-1].goodsPrice}}
+                                                                </td>
+                                                                <td>
+                                                                    {{requestParam.prizeList[tabSwitch-1].goodsNumber}}
+                                                                </td>
                                                                 <td>
                                                                     <a href="##" item="5410" class="change_goods_del">
-                                                                        删除
+                                                                        {{$t('luckyDraw.goodsRemove')}}
                                                                     </a>
                                                                 </td>
                                                             </tr>
@@ -369,35 +389,38 @@
                                                     </table>
                                                 </div>
                                                 <div>
-                                                    赠品有效期：
+                                                    {{$t('luckyDraw.giftValidity')}}：
                                                     <el-input
                                                             size="small"
                                                             style="width:100px"
                                                             v-model="item.prdKeepDays"
                                                     ></el-input>
-                                                    天
-                                                    <p style="margin-left:80px;color:#999;">中奖用户需在有效期内领取，过期后将无法领取</p>
+                                                    {{$t('luckyDraw.giftValidityTips1')}}
+                                                    <p style="margin-left:80px;color:#999;">
+                                                        {{$t('luckyDraw.giftValidityTips2')}}</p>
                                                 </div>
                                             </div>
                                             <div v-if="item.lotteryType===5">
-                                                <span>自定义：</span>
+                                                <span>{{$t('luckyDraw.custom')}}：</span>
                                                 <el-input
                                                         size="small"
-                                                        placeholder="请填写自定义文字"
+                                                        :placeholder="$t('luckyDraw.customTips')"
                                                         style="width: 150px"
                                                         v-model="item.lotteryDetail"
                                                 ></el-input>
                                             </div>
                                             <div>
-                                                <span>奖品份数：</span>
+                                                <span>{{$t('luckyDraw.prizeNumber')}}：</span>
                                                 <el-input
                                                         size="small"
-                                                        placeholder="请填写积分数"
+                                                        :placeholder="$t('luckyDraw.prizeNumberTips1')"
                                                         style="width: 120px"
                                                         v-model="item.lotteryNumber"
-                                                ></el-input>&nbsp;份
-                                                <div class="numberTips">奖品份数限制中奖人数，中奖人数达到奖品份数，则后续抽奖用户不再中奖</div>
-                                                <div class="numberTips bottomTips">份数为空则不设此奖项，即该奖项中奖概率为0</div>
+                                                ></el-input>&nbsp;{{$t('luckyDraw.prizeNumberTips2')}}
+                                                <div class="numberTips">{{$t('luckyDraw.prizeNumberTips3')}}</div>
+                                                <div class="numberTips bottomTips">
+                                                    {{$t('luckyDraw.prizeNumberTips4')}}
+                                                </div>
                                             </div>
 
                                         </section>
@@ -419,22 +442,24 @@
                                     </div>
                                     <div class="rightContent">
                                         <div class="operate">
-                                            <span @click="showLotteryDialog(2)">修改</span>
-                                            <span class="operateBtn fixstyle" @click="changeImgHandler(2)">上传未中奖图表</span>
+                                            <span @click="showLotteryDialog(2)">{{$t('luckyDraw.modification')}}</span>
+                                            <span class="operateBtn fixstyle" @click="changeImgHandler(2)">
+                                                {{$t('luckyDraw.uploadChartForWinning')}}
+                                            </span>
                                             <span
                                                     class="operateBtn"
                                                     @click="handleClear()"
-                                            >清空
+                                            >{{$t('luckyDraw.empty')}}
                                             </span>
                                         </div>
-                                        <p style="margin-top:10px;">仅支持jpg/png/尺寸80*80 不超过1M</p>
+                                        <p style="margin-top:10px;">{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
                                     </div>
                                 </div>
                                 <div class="iconDesc">
-                                    <span>icon描述：</span>
+                                    <span>{{$t('luckyDraw.iconDescribe')}}：</span>
                                     <el-input
                                             size="small"
-                                            placeholder="最多可填写4个字"
+                                            :placeholder="$t('luckyDraw.iconDescribeTips')"
                                             style="width: 180px"
                                             v-model="requestParam.prizeList[tabSwitch-1].iconImgs"
                                     ></el-input>
@@ -451,7 +476,7 @@
                         size="small"
                         type="primary"
                         @click="submitData"
-                >保存
+                >{{$t('luckyDraw.save')}}
                 </el-button>
             </div>
             <!--添加商品弹窗-->
@@ -518,13 +543,13 @@ export default {
         scorePerChance: 0,
         scoreChances: 0,
         noAwardScore: 0,
-        noAwardIcon: '谢谢参与',
+        noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
         prizeList: [
-          {iconImgs: '一等奖', lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png'},
-          {iconImgs: '二等奖', lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png'},
-          {iconImgs: '三等奖', lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png'},
-          {iconImgs: '四等奖', lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png'}
+          {iconImgs: this.$t('luckyDraw.firstPrize'), lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png'},
+          {iconImgs: this.$t('luckyDraw.secondPrize'), lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png'},
+          {iconImgs: this.$t('luckyDraw.thirdPrize'), lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png'},
+          {iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png'}
         ]
       },
       times: 1,
@@ -540,6 +565,7 @@ export default {
       imageSize: [80, 80],
       // 优惠劵列表
       couponlist: [],
+      couponNumber: 5,
       tabSwitch: '1'
     }
   },
@@ -549,9 +575,7 @@ export default {
     this.refreshCouponList()
     this.isEditeShowData()
   },
-  watch: {
-
-  },
+  watch: {},
   methods: {
     // 保存
     submitData () {
@@ -649,7 +673,7 @@ export default {
     },
     // 新建优惠卷(跳转)
     createCouponList () {
-      this.$router.push({ path: '/admin/home/main/addyCoupon', query: { } })
+      this.$router.push({path: '/admin/home/main/addyCoupon', query: {}})
     },
     // 设置数据回显
     isEditeShowData () {
@@ -665,6 +689,17 @@ export default {
           this.$forceUpdate()
         })
       }
+    },
+    couponChange (id) {
+      console.log('couponitem', id)
+      if (!id) {
+        this.couponNumber = 0
+      } else {
+        this.couponNumber = this.couponlist.filter(item => {
+          return item.id === id
+        })[0].surplus
+      }
+      console.log('this.couponNumber', this.couponNumber)
     }
   }
 }
@@ -924,6 +959,7 @@ export default {
 
                     .tabs {
                         margin-top: 10px;
+
                         .goods_img {
                             float: left;
                             margin: 0 5px 0 0 !important;
@@ -931,6 +967,7 @@ export default {
                             height: 40px;
                             border: 1px solid #ddd;
                         }
+
                         .goods_name {
                             width: 135px;
                             height: 40px;
@@ -944,14 +981,17 @@ export default {
                             -webkit-line-clamp: 2;
                             -webkit-box-orient: vertical;
                         }
+
                         .goods_info {
                             margin: 0 auto !important;
                             width: 180px;
                         }
+
                         .goods_img img {
                             width: 100%;
                             height: 100%;
                         }
+
                         .goods_modal {
                             display: block;
                             border: none;
@@ -959,6 +999,7 @@ export default {
                             margin-bottom: 0;
                             margin-left: 80px;
                         }
+
                         .coupon_set a {
                             color: #5a8bff;
                             border: none;
@@ -966,15 +1007,18 @@ export default {
                             background: none;
                             margin-left: 0;
                         }
+
                         .goods_modal th {
                             padding: 10px 0;
                             border: 1px solid #eee;
                         }
+
                         .goods_table td, .goods_modal td, .cat_modal td, .sort_table td {
                             border: 1px solid #ddd;
                             background: #fff;
                             padding: 8px 10px;
                         }
+
                         .td {
                             padding: 8px 10px;
                         }
