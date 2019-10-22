@@ -218,8 +218,7 @@ public class GoodsMpService extends ShopBaseService {
             goodsActivityMpService.disposeGoodsActivityTags(goodsT);
 
             goodsT.setLabel(labelMpVo);
-            goodsT.setCommentNumStr(Integer.toString(goodsCommentMap.get(goodsT.getGoodsId())));
-            goodsT.setCommentLen(goodsT.getCommentNumStr().length());
+            goodsT.setCommentNum(goodsCommentMap.get(goodsT.getGoodsId())==null?0:goodsCommentMap.get(goodsT.getGoodsId()));
             goodsT.setGoodsImg(getImgFullUrlUtil(goodsT.getGoodsImg()));
         }
     }
@@ -258,9 +257,6 @@ public class GoodsMpService extends ShopBaseService {
             } else {
                 target.setLinePriceStr(String.format(priceFormat, target.getMarketPrice()));
             }
-
-            target.setRealPriceLen(target.getRealPriceStr().length());
-            target.setLinePriceLen(target.getLinePriceStr().length());
         }
     }
 
@@ -288,11 +284,8 @@ public class GoodsMpService extends ShopBaseService {
             vo.setLabel(t.getLabel());
             vo.setShopPrice(t.getShopPrice());
             vo.setLinePrice(t.getLinePriceStr());
-            vo.setLinePriceLen(t.getLinePriceLen());
             vo.setRealPrice(t.getRealPriceStr());
             vo.setMarketPrice(t.getMarketPrice());
-            vo.setCommentLen(t.getCommentLen());
-            vo.setCommentNum(t.getCommentNumStr());
             goodsListMpVos.add(vo);
         }
         return goodsListMpVos;

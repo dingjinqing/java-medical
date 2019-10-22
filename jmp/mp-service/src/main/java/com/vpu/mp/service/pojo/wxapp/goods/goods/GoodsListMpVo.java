@@ -33,10 +33,7 @@ public class GoodsListMpVo {
 
     private BigDecimal shopPrice;
     private String linePrice;
-    private Integer linePriceLen;
     private String realPrice;
-    private Integer realPriceLen;
     private BigDecimal marketPrice;
-    private Integer commentLen;
     private String commentNum;
 }

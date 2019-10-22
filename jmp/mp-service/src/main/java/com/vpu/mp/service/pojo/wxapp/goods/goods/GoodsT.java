@@ -39,14 +39,10 @@ public class GoodsT {
     private BigDecimal maxPrice;
     private BigDecimal minPrice;
     private String linePriceStr;
-    private Integer linePriceLen;
     private String realPriceStr;
-    private Integer realPriceLen;
     private Integer goodsSaleNum;
     private Integer baseSale;
-    private Integer saleLen;
-    private String commentNumStr;
-    private Integer commentLen;
+    private Integer commentNum;
     /**
      * 商品关联最近的标签
      */

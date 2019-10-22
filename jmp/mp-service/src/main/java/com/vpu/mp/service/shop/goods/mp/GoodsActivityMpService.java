@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.goods.mp;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.data.GoodsTypeConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponTagVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,17 +41,17 @@ public class GoodsActivityMpService extends ShopBaseService {
         boolean hasAct =mrkingStrategyService.getGoodsAct(goodsT.getGoodsId(),goodsT.getCatId(),goodsT.getSortId());
 
         if (couponTagVo != null) {
-            listTags.add(GoodsTypeConstant.GOODS_TYPE_HAS_COUPON);
+            listTags.add(GoodsConstant.GOODS_TYPE_HAS_COUPON);
         }
 
         if (hasAct) {
-            listTags.add(GoodsTypeConstant.GOODS_TYPE_HAS_FULL_REDUCTION);
+            listTags.add(GoodsConstant.GOODS_TYPE_HAS_FULL_REDUCTION);
         }
         if (listTags.size() > 2) {
             listTags = listTags.subList(0,2);
         }
         goodsT.setGoodsTags(listTags);
-        if (listTags.contains(GoodsTypeConstant.GOODS_TYPE_HAS_COUPON)) {
+        if (listTags.contains(GoodsConstant.GOODS_TYPE_HAS_COUPON)) {
             goodsT.setCouponTagVo(couponTagVo);
         }
     }
@@ -79,10 +79,10 @@ public class GoodsActivityMpService extends ShopBaseService {
     }
 
     public boolean isIn135610Activity(Byte goodsType){
-       return goodsType == GoodsTypeConstant.GOODS_TYPE_PIN_GROUP ||
-              goodsType == GoodsTypeConstant.GOODS_TYPE_BARGAIN ||
-              goodsType == GoodsTypeConstant.GOODS_TYPE_SECKILL ||
-              goodsType == GoodsTypeConstant.GOODS_TYPE_REDUCE_PRICE ||
-             goodsType == GoodsTypeConstant.GOODS_TYPE_PRE_SALE;
+       return goodsType == GoodsConstant.GOODS_TYPE_PIN_GROUP ||
+              goodsType == GoodsConstant.GOODS_TYPE_BARGAIN ||
+              goodsType == GoodsConstant.GOODS_TYPE_SECKILL ||
+              goodsType == GoodsConstant.GOODS_TYPE_REDUCE_PRICE ||
+             goodsType == GoodsConstant.GOODS_TYPE_PRE_SALE;
     }
 }
