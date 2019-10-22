@@ -14,10 +14,12 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
@@ -218,7 +220,7 @@ public class GoodsService extends ShopBaseService {
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE,GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS.GOODS_AD,GOODS.IS_ON_SALE,GOODS.LIMIT_BUY_NUM,GOODS.GOODS_WEIGHT,GOODS.UNIT,
             GOODS_BRAND.BRAND_NAME,
-            GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE,
+            GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.CREATE_TIME,
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_COST_PRICE,GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
@@ -1454,7 +1456,15 @@ public class GoodsService extends ShopBaseService {
 
         //循环处理需要处理的列
         for(GoodsExportVo goods : list){
-            //TODO
+            goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
+            Sort sort = saas.getShopApp(getShopId()).goods.goodsSort.getSort(goods.getSortId());
+            if(sort.getParentId() == Sort.NO_PARENT_CODE){
+                //parent_id 是0，表示该分类是一级节点
+                goods.setSortNameParent(sort.getSortName());
+            }else{
+                goods.setSortNameChild(sort.getSortName());
+                goods.setSortNameParent(saas.getShopApp(getShopId()).goods.goodsSort.getSort(sort.getParentId()).getSortName());
+            }
         }
 
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);

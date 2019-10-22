@@ -16,6 +16,8 @@ public class Sort {
     public static final Byte NORMAL_TYPE_CODE=0;
     public static final Byte HAS_CHILD_CODE=1;
     public static final Byte HAS_NO_CHILD_CODE=0;
+    /** parent_id 是0，表示该分类是一级节点 **/
+    public static final Integer NO_PARENT_CODE=0;
 
     private Integer sortId;
     private String sortName;
