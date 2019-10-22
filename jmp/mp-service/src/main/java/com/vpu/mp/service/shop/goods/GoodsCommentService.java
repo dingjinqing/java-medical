@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -872,7 +873,16 @@ public class GoodsCommentService extends ShopBaseService {
     else {
       // 获取优惠券详情
       CouponDetailsVo couponDetails =
-          db().select(MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION)
+          db().select(
+                  MRKING_VOUCHER.ACT_NAME,
+                  MRKING_VOUCHER.ACT_CODE,
+                  MRKING_VOUCHER.DENOMINATION,
+                  MRKING_VOUCHER.START_TIME,
+                  MRKING_VOUCHER.END_TIME,
+                  MRKING_VOUCHER.VALIDITY_TYPE,
+                  MRKING_VOUCHER.VALIDITY,
+                  MRKING_VOUCHER.VALIDITY_HOUR,
+                  MRKING_VOUCHER.VALIDITY_MINUTE)
               .from(MRKING_VOUCHER)
               .where(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
               .and(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
@@ -888,6 +898,28 @@ public class GoodsCommentService extends ShopBaseService {
       else {
         type = 1;
       }
+      // 定义开始时间和结束时间作为最后的参数
+      Timestamp couponStartTime;
+      Timestamp couponEndTime;
+      // 判断发送类型，得到发送时间
+      if (couponDetails.getValidityType().equals(NumberUtils.BYTE_ZERO)) {
+        couponStartTime = couponDetails.getStartTime();
+        couponEndTime = couponDetails.getEndTime();
+      } else {
+        // 设置日期格式
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // 得到系统当前时间作为开始时间
+        String startTimeString = simpleDateFormat.format(System.currentTimeMillis());
+        couponStartTime = Timestamp.valueOf(startTimeString);
+        // 计算结束时间
+        long days = couponDetails.getValidity().longValue() * 1000 * 60 * 60 * 24;
+        long hours = couponDetails.getValidityHour().longValue() * 1000 * 60 * 60;
+        long minutes = couponDetails.getValidityMinute().longValue() * 1000 * 60;
+        // 当前时间加上天、时、分得到结束时间
+        long endTimeLong = System.currentTimeMillis() + days + hours + minutes;
+        String endTimeString = simpleDateFormat.format(endTimeLong);
+        couponEndTime = Timestamp.valueOf(endTimeString);
+      }
       // 为用户发券，入库
       db().insertInto(
               CUSTOMER_AVAIL_COUPONS,
@@ -897,7 +929,9 @@ public class GoodsCommentService extends ShopBaseService {
               CUSTOMER_AVAIL_COUPONS.TYPE,
               CUSTOMER_AVAIL_COUPONS.AMOUNT,
               CUSTOMER_AVAIL_COUPONS.ACT_DESC,
-              CUSTOMER_AVAIL_COUPONS.ACCESS_ID)
+              CUSTOMER_AVAIL_COUPONS.ACCESS_ID,
+              CUSTOMER_AVAIL_COUPONS.START_TIME,
+              CUSTOMER_AVAIL_COUPONS.END_TIME)
           .values(
               CouponGiveService.getCouponSn(),
               param.getUserId(),
@@ -905,7 +939,9 @@ public class GoodsCommentService extends ShopBaseService {
               type,
               couponDetails.getDenomination(),
               couponDetails.getActName(),
-              param.getId())
+              param.getId(),
+              couponStartTime,
+              couponEndTime)
           .execute();
       // 发券成功后，优惠券库存减少
       Integer newSurplus = surplus - 1;

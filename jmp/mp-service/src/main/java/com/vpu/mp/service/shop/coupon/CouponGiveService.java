@@ -473,6 +473,7 @@ public class CouponGiveService extends ShopBaseService {
                   MRKING_VOUCHER.VALIDITY_TYPE,
                   MRKING_VOUCHER.START_TIME,
                   MRKING_VOUCHER.END_TIME,
+                  MRKING_VOUCHER.VALIDITY_TYPE,
                   MRKING_VOUCHER.VALIDITY,
                   MRKING_VOUCHER.VALIDITY_HOUR,
                   MRKING_VOUCHER.VALIDITY_MINUTE)
@@ -496,7 +497,7 @@ public class CouponGiveService extends ShopBaseService {
         endTime = couponDetails.getEndTime();
       } else {
         // 设置日期格式
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         // 得到系统当前时间作为开始时间
         String startTimeString = simpleDateFormat.format(System.currentTimeMillis());
         startTime = Timestamp.valueOf(startTimeString);
