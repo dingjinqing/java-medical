@@ -27,7 +27,7 @@ public class GoodsActivityMpService extends ShopBaseService {
 
     /**
      * 根据商品所处于的活动获取其能够展示的标签值,
-     * 需要展示的标签有：1拼团 3砍价 5秒杀 6限时降价 10预售 100优惠券 101满减
+     * 需要展示的标签有：1拼团 3砍价 5秒杀 6限时降价 10预售 120优惠券 121满减
      * @return
      */
     public void disposeGoodsActivityTags(GoodsT goodsT) {

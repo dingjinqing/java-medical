@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods.mp;
 
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
@@ -37,7 +38,7 @@ public class GoodsLabelMpService extends ShopBaseService {
     /**
      *  获取商品最紧密的标签
      * @param goodsT {@link GoodsT}
-     * @return 标签对象
+     * @return 标签对象或null
      */
     public GoodsLabelMpVo getGoodsClosestLabel(GoodsT goodsT) {
 
@@ -48,7 +49,7 @@ public class GoodsLabelMpService extends ShopBaseService {
 
         Record4<Integer, String, Short, Integer> record = db().select(GOODS_LABEL.ID, GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN, GOODS_LABEL_COUPLE.GTA_ID)
             .from(GOODS_LABEL_COUPLE).innerJoin(GOODS_LABEL).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
-            .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.GOODS_LIST)).and(GOODS_LABEL.DEL_FLAG.eq(1))
+            .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.GOODS_LIST)).and(GOODS_LABEL.DEL_FLAG.eq(0))
             .and(goodsCondition.or(catCondition).or(sortCondition).or(allCondition))
             .orderBy(GOODS_LABEL_COUPLE.TYPE.asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc()).fetchAny();
 
@@ -56,7 +57,6 @@ public class GoodsLabelMpService extends ShopBaseService {
             return null;
         }
         GoodsLabelMpVo labelMpVo = record.into(GoodsLabelMpVo.class);
-        labelMpVo.setLabelLen(labelMpVo.getName().length());
         return labelMpVo;
     }
 

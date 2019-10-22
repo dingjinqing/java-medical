@@ -212,13 +212,13 @@ public class GoodsMpService extends ShopBaseService {
         Map<Integer, Integer> goodsCommentMap = goodsCommentService.statisticGoodsComment(goodsIds, commentConfig);
 
         for (GoodsT goodsT : goodsTList) {
-            // 获取和商品关联最紧密的标签信息
+            // 获取和商品关联最紧密的标签信息,
             GoodsLabelMpVo labelMpVo = goodsLabelMpService.getGoodsClosestLabel(goodsT);
             // 商品活动标签名处理
             goodsActivityMpService.disposeGoodsActivityTags(goodsT);
 
             goodsT.setLabel(labelMpVo);
-            goodsT.setCommentNum(goodsCommentMap.get(goodsT.getGoodsId())==null?0:goodsCommentMap.get(goodsT.getGoodsId()));
+            goodsT.setCommentNum(goodsCommentMap.get(goodsT.getGoodsId()) == null ? 0:goodsCommentMap.get(goodsT.getGoodsId()));
             goodsT.setGoodsImg(getImgFullUrlUtil(goodsT.getGoodsImg()));
         }
     }
@@ -275,7 +275,6 @@ public class GoodsMpService extends ShopBaseService {
             vo.setGoodsImg(t.getGoodsImg());
             vo.setGoodsNumber(t.getGoodsNumber());
             vo.setGoodsSaleNum(Integer.toString(t.getGoodsSaleNum() + t.getBaseSale()));
-            vo.setSaleLen(vo.getGoodsSaleNum().length());
             vo.setIsOnSale(t.getIsOnSale());
             vo.setDefaultPrd(t.getDefaultPrd());
             vo.setGoodsTags(t.getGoodsTags());

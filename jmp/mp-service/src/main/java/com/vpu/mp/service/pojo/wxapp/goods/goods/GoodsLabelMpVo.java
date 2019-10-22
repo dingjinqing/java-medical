@@ -9,8 +9,7 @@ import lombok.Data;
  */
 @Data
 public class GoodsLabelMpVo {
-    private Integer labelLen;
     private String name;
-    private Integer listPattern;
+    private Byte listPattern;
     private Byte gtaId;
 }

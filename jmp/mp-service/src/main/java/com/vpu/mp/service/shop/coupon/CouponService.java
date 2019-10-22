@@ -316,14 +316,16 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-     * 获取商品可获取的最紧密的优惠券
+     * 获取商品可展示的最紧密的优惠券
      * 现根据商品act_code类型排序voucher是减金额，discount打折，目前逻辑是先金额，金额减的多的靠前，然后再是打折
      * @param goodsId
      */
     public MrkingVoucherRecord getGoodsCouponFirst(Integer goodsId, Integer catId, Integer sortId, Byte suit) {
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         // 时间限时条件拼接
-        Condition dateCondition = MRKING_VOUCHER.START_TIME.le(now).and(MRKING_VOUCHER.END_TIME.ge(now));
+        // 第一种指定开始结束时间优惠券
+        Condition dateCondition = MRKING_VOUCHER.END_TIME.ge(now);
+        // 第二种从领取日指定可使用时间
         Condition limitTimeCondition = MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0));
         Condition timeCondition = dateCondition.or(limitTimeCondition);
 

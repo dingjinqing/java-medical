@@ -20,7 +20,6 @@ public class GoodsListMpVo {
     private Integer goodsNumber;
 
     private String goodsSaleNum;
-    private Integer saleLen;
     private Byte isOnSale;
     private Byte defaultPrd;
 
