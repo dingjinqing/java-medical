@@ -45,14 +45,14 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
      * @param endTime
      * @return
      */
-    public ActiveOrderList getActiveOrderList(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
+    public ActiveOrderList getActiveOrderList(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
         //查询该活动下过单的用户——所有用户
         List<Integer> userIdList = db().select(ORDER_INFO.USER_ID)
             .from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
             .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
             .and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
-            .and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {goodType})))
             .groupBy(ORDER_INFO.USER_ID)
             .orderBy(ORDER_INFO.CREATE_TIME.asc())
             .fetch(ORDER_INFO.USER_ID);
@@ -103,7 +103,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             where(ORDER_INFO.ACTIVITY_ID.eq(param.getActId())).
             and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
             and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
-            and(sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_BARGAIN+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")")).
+            and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_BARGAIN}))).
             groupBy(date(ORDER_INFO.CREATE_TIME)).fetch().intoMap(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number"));
         return map;
     }
@@ -118,7 +118,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
      * @param endTime
      * @return
      */
-    public List<ActiveDiscountMoney> getActiveDiscountMoney(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
+    public List<ActiveDiscountMoney> getActiveDiscountMoney(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
         List<ActiveDiscountMoney> record = db().select(
             DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME),
             DSL.sum(ORDER_GOODS.MARKET_PRICE.minus(ORDER_GOODS.GOODS_PRICE).multiply(
@@ -129,7 +129,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .from(ORDER_INFO)
             .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-            .and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {goodType})))
             .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
             .and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
             .and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
@@ -147,7 +147,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public Integer getPackageSaleGoodsNum(Integer activityId) {
         Integer goodsNum = db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-            .and(DSL.sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_PACKAGE_SALE+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")"))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
             .fetchOneInto(Integer.class);
         return goodsNum;
     }
@@ -159,7 +159,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public Integer getPackageSaleUserNum(Integer activityId) {
         Integer userNum = db().select(DSL.countDistinct(ORDER_INFO.USER_ID)).from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-            .and(DSL.sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_PACKAGE_SALE+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")"))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
             .fetchOneInto(Integer.class);
         return userNum;
     }
@@ -171,7 +171,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public Integer getPackageSaleOrderNum(Integer activityId) {
         Integer goodsNum = db().select(DSL.count()).from(ORDER_INFO)
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-            .and(DSL.sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_PACKAGE_SALE+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")"))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
             .fetchOneInto(Integer.class);
         return goodsNum;
     }
@@ -188,7 +188,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(activityId))
             .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(TABLE.ORDER_STATUS.gt((byte) 2))
-            .and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT,TABLE.GOODS_TYPE))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_GIVE_GIFT})))
             .and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN))
             .fetchOne().component1();
     }
@@ -217,7 +217,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         select.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()))
             .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-            .and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT, TABLE.GOODS_TYPE))
+            .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_GIVE_GIFT})))
             .and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN));
 
         if (!StringUtils.isBlank(param.getGoodsName())){
@@ -259,7 +259,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         orderParam.setCurrentPage(param.getCurrentPage());
         orderParam.setPageRows(param.getPageRows());
         orderParam.setActivityId(param.getActivityId());
-        orderParam.setGoodsType(goodsType);
+        orderParam.setGoodsType(new Byte[] {goodsType});
         orderParam.setGoodsName(param.getGoodsName());
         orderParam.setOrderSn(param.getOrderSn());
         orderParam.setOrderStatus(param.getOrderStatus());

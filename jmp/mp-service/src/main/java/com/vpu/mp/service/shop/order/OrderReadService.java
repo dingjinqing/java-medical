@@ -717,7 +717,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @param endTime
 	 * @return
 	 */
-	public List<ActiveDiscountMoney> getActiveDiscountMoney(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
+	public List<ActiveDiscountMoney> getActiveDiscountMoney(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
 		return marketOrderInfo.getActiveDiscountMoney(goodType, activityId, startTime, endTime);
 	}
 
@@ -731,7 +731,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @param endTime
 	 * @return
 	 */
-	public ActiveOrderList getActiveOrderList(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
+	public ActiveOrderList getActiveOrderList(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
 		return marketOrderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
 	}
 

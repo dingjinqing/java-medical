@@ -9,6 +9,8 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
 import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
@@ -85,7 +87,8 @@ public class PreSaleService extends ShopBaseService {
             )
                 .from(TABLE)
                 .leftJoin(ORDER)
-                .on(ORDER.GOODS_TYPE.eq(String.valueOf(GOODS_TYPE_PRE_SALE)).and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
+                .on(ORDER.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {GOODS_TYPE_PRE_SALE}))
+                .and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
                 .where(TABLE.DEL_FLAG.eq(NOT_DELETED));
         buildOptions(query, param);

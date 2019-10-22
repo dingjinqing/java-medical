@@ -42,7 +42,7 @@ public class PackSaleDetailParam {
 		orderParam.setUserName(userName);
 		orderParam.setMobile(mobile);
 		orderParam.setOrderSn(orderSn);
-		orderParam.setGoodsType(OrderConstant.GOODS_TYPE_PACKAGE_SALE);
+		orderParam.setGoodsType(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE});
 		orderParam.setCurrentPage(currentPage);
 		orderParam.setPageRows(pageRows);
 		return orderParam;

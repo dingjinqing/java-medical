@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
@@ -33,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jooq.Condition;
-import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record3;
@@ -41,7 +39,6 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetMoreStep;
-import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -94,6 +91,8 @@ public class OrderInfoService extends ShopBaseService {
 
 	public final String[] PAY_SUBDIVISION = {PS_BK_ORDER_MONEY,PS_MEMBER_CARD_BALANCE,PS_USE_ACCOUNT,PS_SCORE_DISCOUNT,PS_MONEY_PAID};
 
+	/**like通配符*/
+	public final static char LIKE = '%';
 	/**
 	 * @param <T> <? extends OrderListVo>
 	 * @param orderId 订单id
@@ -164,8 +163,8 @@ public class OrderInfoService extends ShopBaseService {
 		if(param.orderStatus != null && param.orderStatus.length != 0){
 			 select.where(ORDER_INFO.ORDER_STATUS.in(param.orderStatus));
 		}
-		if(param.goodsType != null) {
-			select.where(DSL.sql("FIND_IN_SET("+param.goodsType+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")"));
+		if(param.goodsType != null && param.goodsType.length != 0) {
+			select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(param.getGoodsType())));
 		}
 		if(param.deliverType != null){
 			select.where(ORDER_INFO.DELIVER_TYPE.eq(param.deliverType));
@@ -240,8 +239,7 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_EVENT_PRIZE:
-				select.innerJoin(LOTTERY_RECORD).on(ORDER_INFO.ORDER_SN.eq(LOTTERY_RECORD.ORDER_SN));
-				//TODO 缺少字段.where(LOTTERY_RECORD.source)
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_LOTTERY_PRESENT, OrderConstant.GOODS_TYPE_PROMOTE_ORDER, OrderConstant.GOODS_TYPE_ASSESS_ORDER, OrderConstant.GOODS_TYPE_PAY_AWARD})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_WXPAY:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_WX_PAY));
@@ -254,6 +252,24 @@ public class OrderInfoService extends ShopBaseService {
 		activeBuildOptions(select, param);
 		return select;
 	 }
+	/**
+	 * 订单goodsType查询构造
+	 * @param goodsType
+	 */
+	public static String getGoodsTypeToSearch(Byte[] goodsType) {
+		StringBuilder sbr = new StringBuilder();
+		for (Byte one : goodsType) {
+			//Prefix 
+			sbr.append("_");
+			//查找条件
+			sbr.append(one);
+			//suffix
+			sbr.append("_");
+			//与条件
+			sbr.append("|");
+		}
+		return sbr.deleteCharAt(sbr.length() - 1).toString();
+	}
 
 	/**
 	 *	 构造营销订查询条件
@@ -845,10 +861,6 @@ public class OrderInfoService extends ShopBaseService {
 
     	 return select.fetchAnyInto(UserCenterNumBean.class);
     }
-
-    public void query(List<Field> fields,List<Condition> conditions){
-		db().select(fields).from(TABLE).where(conditions).fetch();
-	}
 
     /**
      * 获得用户购买商品数

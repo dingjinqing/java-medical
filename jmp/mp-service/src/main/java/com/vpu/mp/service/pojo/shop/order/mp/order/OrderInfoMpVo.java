@@ -20,9 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderInfoMpVo extends OrderListMpVo{
-	
-	/**是否评价有礼*/
-	private Byte isCommentAward;
+
 	/**配送信息*/
 	private List<ShippingInfoVo> shippingInfo;
 	/**子单信息*/
@@ -35,6 +33,7 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	private String username;
 	
 	/***/
+	@JsonIgnore
 	private String mainOrderSn;
 	private Timestamp createTime;
 	private Integer storeId;

@@ -18,7 +18,7 @@ public class OrderPageListQueryParam {
 	public String orderSn;
 	public Byte[] orderStatus;
 	/** 订单类型 */
-	public Byte goodsType;
+	public Byte[] goodsType;
 	/** 收货人姓名 */
 	public String consignee;
 	public String mobile;

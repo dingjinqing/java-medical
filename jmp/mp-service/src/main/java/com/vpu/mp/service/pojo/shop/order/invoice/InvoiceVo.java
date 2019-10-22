@@ -21,5 +21,5 @@ public class InvoiceVo {
 	private String companyaddress;
 	private String bankname;
 	private String bankaccount;
-	private Timestamp addTime;
+	private Timestamp createTime;
 }

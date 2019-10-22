@@ -51,7 +51,7 @@ public class PackSaleOrderPageParam {
     	orderParam.setGoodsName(goodsName);
     	orderParam.setOrderSn(orderSn);
     	orderParam.setOrderStatus(orderStatus);
-    	orderParam.setGoodsType(OrderConstant.GOODS_TYPE_PACKAGE_SALE);
+    	orderParam.setGoodsType(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE});
     	orderParam.setConsignee(consignee);
     	orderParam.setMobile(mobile);
     	orderParam.setProvinceCode(provinceCode);

@@ -89,6 +89,8 @@ public class OrderConstant {
 	public final static byte GOODS_TYPE_GIVE_GIFT = 17;
 	/** 首单特惠 */
 	public final static byte GOODS_TYPE_FIRST_SPECIAL = 18;
+	/** 支付有礼 */
+	public final static byte GOODS_TYPE_PAY_AWARD = 19;
 	/** 代付订单 */
 	public final static byte GOODS_TYPE_PAY_FOR_ANOTHER = 99;
 	/** 扫码购订单 */

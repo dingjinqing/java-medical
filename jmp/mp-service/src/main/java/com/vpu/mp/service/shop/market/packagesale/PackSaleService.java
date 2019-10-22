@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -41,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 
 /**
@@ -301,7 +300,7 @@ public class PackSaleService extends ShopBaseService {
 		SelectConditionStep<?> step = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.CREATE_TIME,ORDER_INFO.MONEY_PAID,ORDER_INFO.ACTIVITY_ID,USER.USER_ID,USER.USERNAME,USER.MOBILE)
 				.from(ORDER_INFO)
 				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID))
-				.where(DslPlus.findInSet(""+OrderConstant.GOODS_TYPE_PACKAGE_SALE, ORDER_INFO.GOODS_TYPE))
+				.where(ORDER_INFO.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_PACKAGE_SALE})))
 				.and(ORDER_INFO.ACTIVITY_ID.eq(param.getActivityId()))
 				.and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
 		step = buildDetailOptions(step,param);
