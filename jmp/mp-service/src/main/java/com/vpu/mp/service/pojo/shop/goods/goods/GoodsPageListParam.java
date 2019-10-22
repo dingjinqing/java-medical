@@ -63,7 +63,7 @@ public class GoodsPageListParam {
     private BigDecimal lowShopPrice;
     private BigDecimal highShopPrice;
     /**
-     * 查询类型分类：1商品分页列表信息，2规格分页列表信息，3商品分页信息（每一条商品数据附带了对应的所有规格数据）
+     * 查询类型分类：1商品分页列表信息，2规格分页列表信息，3商品分页信息（每一条商品数据附带了对应的所有规格数据）,默认为1
      */
     private Integer selectType;
     /**

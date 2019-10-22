@@ -199,10 +199,10 @@ public class GoodsSortService extends ShopBaseService {
         List<Sort> resultSort = new ArrayList<>(tempData.size());
         resultSort.addAll(tempData);
 
+        List<Integer> tempIds = new ArrayList<>(tempData.size());
         // 迭代查询所有的祖先数据，并将祖先数据的商品或规格数全部设置为0
         while (tempData.size() > 0) {
             List<Integer> tempParentIds = new ArrayList<>(tempData.size());
-            List<Integer> tempIds = new ArrayList<>(tempData.size());
 
             tempData.forEach(sort -> {
                 tempParentIds.add(sort.getParentId());

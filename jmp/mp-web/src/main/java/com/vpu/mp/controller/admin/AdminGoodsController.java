@@ -48,6 +48,9 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/page/init")
     public JsonResult getPageInitValue(@RequestBody GoodsPageListParam param) {
+        if (param.getSelectType() == null) {
+            param.setSelectType(GoodsPageListParam.GOODS_LIST);
+        }
         GoodsInitialVo goodsInitialVo = shop().goods.pageInitValue(param);
         return success(goodsInitialVo);
     }

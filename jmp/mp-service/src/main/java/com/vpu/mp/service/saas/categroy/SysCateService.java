@@ -45,10 +45,9 @@ public class SysCateService extends MainBaseService {
         resultCat.addAll(tempData);
         // 设置数据的商品数量并放置到catIdMap中，为后期计算商品数量准备
         Map<Integer,SysCatevo> catIdMap=new HashMap<>(resultCat.size());
-
+        List<Integer> tempIds = new ArrayList<>(tempData.size());
         while (tempData.size() > 0) {
             List<Integer> tempParentIds = new ArrayList<>(tempData.size());
-            List<Integer> tempIds = new ArrayList<>(tempData.size());
             tempData.forEach(sysCatevo -> {
                 tempParentIds.add(sysCatevo.getParentId());
                 tempIds.add(sysCatevo.getCatId());
