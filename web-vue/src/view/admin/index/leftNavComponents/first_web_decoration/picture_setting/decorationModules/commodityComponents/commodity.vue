@@ -44,7 +44,7 @@
           </div>
           <!--有商品-->
           <ul
-            v-else
+            v-if="goodsFlag"
             :style="(data.col_type==='1' || data.col_type==='2')?'display: flex;flex-wrap: wrap;':data.col_type==='3'?'display: flex;flex-wrap: nowrap;':''+data.goods_module_bg==='1'?`background:${data.goods_bg_color}`:''"
           >
             <li
@@ -69,26 +69,26 @@
                       <!--限时降价图形-->
                       <div
                         class="labelStyle1"
-                        v-if="item.listPattern.label==='1'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)==='1'&&data.hide_label==='1'"
                       >
                         <span style="display: inline;">限时降价</span>
                       </div>
                       <div
                         class="labelStyle2"
-                        v-if="item.listPattern.label==='2'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)==='2'&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
                         <span style="display: inline;">新品首发</span>
                       </div>
                       <div
                         class="label newGoods"
-                        v-if="item.listPattern.label==='3'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)==='3'&&data.hide_label==='1'"
                       >
                         <span>新品</span>
                       </div>
                       <div
                         class="labelStyle3"
-                        v-if="item.listPattern.label==='4'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)==='4'&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
                         <span style="display: inline-block;">新品首发</span>
@@ -228,7 +228,7 @@ export default {
           isNewGoods: '3'
         }
       ],
-      goodsListData: [],
+      goodsFlag: false,
       bgColor: '',
       // 显示数据
       data: {
@@ -269,13 +269,14 @@ export default {
       handler (newData) {
         if (newData) {
           this.data = newData
-          if (newData.goodsListData.length > 0) {
+          console.log(newData.goodsListData)
+          if (newData.goodsListData.length) {
             this.goodsFlag = true
           } else {
             this.goodsFlag = false
           }
         }
-        console.log(newData)
+        console.log(newData, this.goodsFlag)
       },
       immediate: true,
       deep: true

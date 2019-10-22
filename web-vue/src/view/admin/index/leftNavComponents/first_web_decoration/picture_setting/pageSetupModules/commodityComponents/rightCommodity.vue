@@ -666,6 +666,7 @@ export default {
       rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签'], // 商品范围选中后按钮文本列表
       rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }], // 商品范围四类弹框选中数据池
       needToSwitchData: ['hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message'], // 需要转换的checkbox数据
+      goodsListData: [],
       // 模块保存数据
       data: {
       }
@@ -719,7 +720,7 @@ export default {
         // 判断是否是模块推荐中的数据改变
         let judgeChangeFlag = this.handleToJudgeDataChange(newData, oldData)
         // 转换选择商品范围字段数据
-        let d = this.handleToTransformationRangeData(1, this.data.goods_area)
+        let d = this.handleToTransformationRangeData(1, newData.goods_area)
         console.log(d)
         let callBackData = JSON.parse(JSON.stringify(newData))
         callBackData.goods_area = d
@@ -738,6 +739,7 @@ export default {
         if (judgeChangeFlag) {
           this.handleToGetModulesGoods(callBackData)
         } else {
+          callBackData.goodsListData = this.goodsListData
           this.$emit('handleToBackData', callBackData)
         }
 
@@ -779,6 +781,7 @@ export default {
       }
       queryDataList(obj).then((res) => {
         if (res.error === 0) {
+          this.goodsListData = res.content
           initData.goodsListData = res.content
           console.log(initData)
           this.$emit('handleToBackData', initData)
@@ -791,17 +794,22 @@ export default {
     // 判断是否是模块推荐中的数据改变
     handleToJudgeDataChange (newData, oldData) {
       console.log(newData, oldData)
-      let arr = ['goods_num', 'min_price', 'max_price', 'keywords', 'goods_area', 'goods_area_data', 'sort_type'] // 需要判断的模块推荐中数据字段数据池
+      let arr = ['recommend_type', 'goods_num', 'min_price', 'max_price', 'keywords', 'goods_area', 'sort_type'] // 需要判断的模块推荐中数据字段数据池
       let flag = arr.filter((item, index) => {
         return newData[item] !== oldData[item]
       })
-      let goodsItemFlag = false // 商品列表字段为引用类型单独判断是否更改
+      let goodsItemFlag = false // 商品列表字段单独判断是否更改
       if (newData.goods_items.length !== oldData.goods_items.length) {
         goodsItemFlag = true
       }
+      let goodsAreaData = false // 商品范围弹窗选中判断是否更改
+      if (newData.goods_area_data.length !== oldData.goods_area_data.length) {
+        goodsAreaData = true
+      }
       console.log(flag, goodsItemFlag)
       // 两种情况下综合判断
-      let returnFlag = !!((flag.length || goodsItemFlag))
+      let returnFlag = !!((flag.length || goodsItemFlag || goodsAreaData))
+      console.log(returnFlag)
       return returnFlag
     },
     // 转换列表样式字段数据
@@ -875,6 +883,7 @@ export default {
     },
     // 转换商品范围字段
     handleToTransformationRangeData (params) {
+      console.log(params)
       let d = ''
       switch (params) {
         case 'all':
@@ -892,21 +901,22 @@ export default {
         case 'label':
           d = '4'
           break
-        case '0':
+        case 0:
           d = 'all'
           break
-        case '1':
+        case 1:
           d = 'sort'
           break
-        case '2':
+        case 2:
           d = 'cat'
           break
-        case '3':
+        case 3:
           d = 'brand'
           break
-        case '4':
+        case 4:
           d = 'label'
       }
+      console.log(d)
       return d
     },
     // 模块标题 图标和标题图片点击删除icon事件
