@@ -29,6 +29,7 @@
       <el-button
         type="primary"
         size="small"
+        @click="exportGoodsData"
       >{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
       <el-button
         type="primary"
@@ -70,6 +71,16 @@ export default {
         ...this.initFilterData
       }
       this.$refs.saleOutCmp.fetchGoodsData(params)
+    },
+    /* 触发商品导出弹窗 */
+    exportGoodsData () {
+      let formFilterData = this.$refs.goodsHeaderFormCmp.getFormData()
+      let formFilterDataString = this.$refs.goodsHeaderFormCmp.getFormDataString()
+      let params = {
+        ...formFilterData,
+        ...this.initFilterData
+      }
+      this.$refs.saleOutCmp.showExportDialog(params, formFilterDataString)
     },
     /* 重置过滤数据 */
     resetFormData () {

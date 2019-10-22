@@ -1,5 +1,5 @@
 <template>
-  <!-- 头部组件 -->
+  <!-- 头部搜索输入框组件 -->
   <div class="allGoodsHeader">
     <div class="allGoodsFilter">
       <el-form
@@ -234,6 +234,26 @@ export default {
           value: 10
         }
       ]
+      console.log(this.goodsBrandOptions)
+      console.log(this.goodsLabelOptions)
+    }
+  },
+  computed: {
+    // 查询过滤对象的字符串格式化
+    goodsFilterFormDataString () {
+      return {
+        goodsName: this.goodsFilterFormData.goodsName,
+        catName: this.getCatNameById(this.goodsFilterFormData.catId),
+        sortName: this.getSortNameById(this.goodsFilterFormData.sortId),
+        labelName: this.getLabelNameById(this.goodsFilterFormData.labelId),
+        brandName: this.getBrandNameById(this.goodsFilterFormData.brandId),
+        sourceName: this.getSourceNameById(this.goodsFilterFormData.source),
+        typeName: this.getTypeNameById(this.goodsFilterFormData.goodsType),
+        saleTimeStart: format(this.goodsFilterFormData.saleTimeStart),
+        saleTimeEnd: format(this.goodsFilterFormData.saleTimeEnd),
+        lowShopPrice: this.goodsFilterFormData.lowShopPrice,
+        highShopPrice: this.goodsFilterFormData.highShopPrice
+      }
     }
   },
   data () {
@@ -358,7 +378,7 @@ export default {
         this.goodsFilterFormData.highShopPrice = null
       }
     },
-    /* 获取数据 */
+    /* 获取过滤条件数据 */
     getFormData () {
       let retData = {
         ...this.goodsFilterFormData
@@ -368,6 +388,10 @@ export default {
 
       return retData
     },
+    /* 获取过滤条件格式化字符串 */
+    getFormDataString () {
+      return this.goodsFilterFormDataString
+    },
     /* 清空过滤条件 */
     resetFormData () {
       this.$refs['goodsFilterForm'].resetFields()
@@ -375,6 +399,61 @@ export default {
       this.goodsFilterFormData.highShopPrice = null
       this.goodsFilterFormData.saleTimeStart = null
       this.goodsFilterFormData.saleTimeEnd = null
+    },
+
+    getCatNameById (catId) {
+      let catName = null
+      this.goodsCatOptions.forEach((item, index) => {
+        if (item.catId === catId) {
+          catName = item.catName
+        }
+      })
+      return catName
+    },
+    getSortNameById (sortId) {
+      let sortName = null
+      this.goodsSortOptions.forEach((item, index) => {
+        if (item.sortId === sortId) {
+          sortName = item.sortName
+        }
+      })
+      return sortName
+    },
+    getLabelNameById (labelId) {
+      let labelName = null
+      this.goodsLabelOptions.forEach((item, index) => {
+        if (item.id === labelId) {
+          labelName = item.name
+        }
+      })
+      return labelName
+    },
+    getBrandNameById (brandId) {
+      let brandName = null
+      this.goodsBrandOptions.forEach((item, index) => {
+        if (item.id === brandId) {
+          brandName = item.brandName
+        }
+      })
+      return brandName
+    },
+    getSourceNameById (sourceId) {
+      let sourceName = null
+      this.goodsSourceOptions.forEach((item, index) => {
+        if (item.value === sourceId && item.value !== null) {
+          sourceName = item.label
+        }
+      })
+      return sourceName
+    },
+    getTypeNameById (typeId) {
+      let typeName = null
+      this.goodsTypeOptions.forEach((item, index) => {
+        if (item.value === typeId && item.value !== null) {
+          typeName = item.label
+        }
+      })
+      return typeName
     }
   },
   mounted () {

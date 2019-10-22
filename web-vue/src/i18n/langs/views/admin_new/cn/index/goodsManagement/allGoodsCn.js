@@ -64,6 +64,20 @@ export const cn = {
     shopPriceRequired: '请输入正确价格',
     goodsNumberRequired: '请输入正确商品数量',
     setSuccess: '设置成功',
-    goodsType: ['多人拼团', '分销', '砍价', '积分商品', '秒杀商品']
+    goodsType: ['多人拼团', '分销', '砍价', '积分商品', '秒杀商品'],
+    no: '无'
+  },
+  allGoodsHeaderInputLabel: {
+    goodsName: '商品名称',
+    catName: '平台分类',
+    sortName: '商家分类',
+    labelName: '商品标签',
+    saleTimeStart: '上架起始时间',
+    saleTimeEnd: '上架结束时间',
+    brandName: '商品品牌',
+    sourceName: '商品来源',
+    typeName: '活动类型',
+    lowShopPrice: '商品价格下限',
+    highShopPrice: '商品价格上限'
   }
 }

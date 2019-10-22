@@ -63,6 +63,25 @@ export function getAllGoodsInitValue (data) {
   return service({
     url: `/api/admin/goods/page/init`,
     method: 'post',
-    data
+    data: data
+  })
+}
+
+// 所选条件过滤出的数据条数
+export function getExportTotalRows (data) {
+  return service({
+    url: `/api/admin/goods/export/rows`,
+    method: 'post',
+    data: data
+  })
+}
+
+// 所选条件过滤出的数据条数
+export function goodsExport (data) {
+  return service({
+    url: `/api/admin/goods/export`,
+    method: 'post',
+    data: data,
+    responseType: 'blob'
   })
 }

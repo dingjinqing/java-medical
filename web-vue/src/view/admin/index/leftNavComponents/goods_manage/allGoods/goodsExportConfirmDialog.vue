@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="$t('orderCommon.tip')"
+    :title="$t('allGoods.allGoodsData.tip')"
     :visible.sync="showNodes"
     custom-class="custom"
     width="30%"
@@ -10,23 +10,18 @@
     <div>
       {{$t('order.filterCondition')}}
     </div>
-    <div
-      v-for="(item,key,index) in param"
-      :key="index"
-    >
-      <div v-if="ok(key,item)">
-        <div v-if="key === 'orderStatus'">
-          {{$t('orderSearch.'+key)}}:
-          <span
-            v-for="status in item"
-            :key="status"
-          >
-            {{orderStatusMap.get(status)}}
-          </span>
+    <div v-if="Object.keys(paramString).length!=0">
+      <div
+        v-for="(item,key,index) in paramString"
+        :key="index"
+      >
+        <div v-if="ok(key,item)">
+          <div>{{$t('allGoods.allGoodsHeaderInputLabel.'+key)}}:{{item}}</div>
         </div>
-        <div v-else>{{$t('orderSearch.'+key)}}:{{item}}</div>
-
       </div>
+    </div>
+    <div v-else>
+      {{$t('allGoods.allGoodsData.no')}}
     </div>
     <div v-if="totalRows > 0">
       <div>{{$t('order.orderExportLimitTip')}}</div>
@@ -60,7 +55,7 @@
 
 <script>
 import { download } from '@/util/excelUtil.js'
-import { orderExport, getExportTotalRows } from '@/api/admin/orderManage/order.js'
+import { goodsExport, getExportTotalRows } from '@/api/admin/goodsManage/allGoods/allGoods.js'
 export default {
   data () {
     return {
@@ -72,7 +67,8 @@ export default {
   },
   props: {
     show: Boolean,
-    param: Object
+    param: Object,
+    paramString: Object // 用于展示已选择条件
   },
   methods: {
     initData () {
@@ -88,13 +84,19 @@ export default {
         }
       }).catch(() => {
       })
+
+      Object.keys(this.paramString).forEach((item, index) => {
+        if (!this.paramString[item]) {
+          delete this.paramString[item]
+        }
+      })
     },
     closeDialog () {
       this.$emit('update:show', false)
     },
     confirm () {
       this.loading = true
-      orderExport(this.param).then(res => {
+      goodsExport(this.param).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
         this.loading = false
@@ -105,7 +107,7 @@ export default {
       if (Array.isArray(item)) {
         if (item.length !== 0) return true
       } else {
-        if (key === 'currentPage' || key === 'pageRows' || key === 'exportRowStart' || key === 'exportRowEnd' || key === 'orderStatus2') {
+        if (key === 'currentPage' || key === 'pageRows' || key === 'exportRowStart' || key === 'exportRowEnd') {
           return false
         }
         if (item) return true

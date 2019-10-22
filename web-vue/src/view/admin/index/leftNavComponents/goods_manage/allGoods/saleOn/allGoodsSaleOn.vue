@@ -29,6 +29,7 @@
       <el-button
         type="primary"
         size="small"
+        @click="exportGoodsData"
       >{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
       <el-button
         type="primary"
@@ -46,7 +47,7 @@ import allGoodsHeader from '../allGoodsHeader'
 import saleOnAndInStockContent from '../saleOnAndInStockContent'
 
 export default {
-  name: 'allGoodsSaleOff',
+  name: 'allGoodsSaleOn',
   components: {
     allGoodsHeader,
     saleOnAndInStockContent
@@ -74,12 +75,23 @@ export default {
       }
       this.$refs.saleOnAndInStockContentCmp.fetchGoodsData(params)
     },
+    /* 触发商品导出弹窗 */
+    exportGoodsData () {
+      let formFilterData = this.$refs.allGoodsHeaderCmp.getFormData()
+      let formFilterDataString = this.$refs.allGoodsHeaderCmp.getFormDataString()
+      let params = {
+        ...formFilterData,
+        ...this.initFilterData
+      }
+      this.$refs.saleOnAndInStockContentCmp.showExportDialog(params, formFilterDataString)
+    },
     /* 重置过滤数据 */
     resetFormData () {
       this.$refs.allGoodsHeaderCmp.resetFormData()
     }
   },
   mounted () {
+    this.langDefault()
     this.searchGoodsData()
   }
 }

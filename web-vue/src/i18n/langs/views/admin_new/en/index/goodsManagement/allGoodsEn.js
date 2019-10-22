@@ -64,6 +64,18 @@ export const en = {
     shopPriceRequired: 'Please input the right shop price',
     goodsNumberRequired: 'Please input the right number',
     setSuccess: 'Set success',
-    goodsType: ['Buy Group', 'Distribution', 'Bargin', 'Integral', 'SecKill']
+    goodsType: ['Buy Group', 'Distribution', 'Bargin', 'Integral', 'SecKill'],
+    no: 'no'
+  },
+  allGoodsHeaderInputLabel: {
+    goodsName: 'goods name',
+    catName: 'platform classification',
+    sortName: 'shop classification',
+    labelName: 'goods label',
+    saleTime: 'added time',
+    brandName: 'brand',
+    sourceName: 'goods source',
+    typeName: 'activity type',
+    shopPrice: 'price'
   }
 }
