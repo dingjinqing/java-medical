@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,7 @@ public class WxAppCartController extends WxAppBaseController {
 
 
     @PostMapping("/list")
-    public JsonResult getCartList(WxAppCartListParam param) {
+    public JsonResult getCartList(@RequestBody  WxAppCartListParam param) {
         WxAppCartListVo cartList = shop().cart.getCartList(param);
         return success(cartList);
     }
@@ -33,7 +34,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/addGoods")
-    public JsonResult addGoodsToCart(WxAppAddGoodsToCartParam param){
+    public JsonResult addGoodsToCart(@RequestBody WxAppAddGoodsToCartParam param){
         // 检查库存数量
         Integer productNumber = shop().cart.getCartProductNumber(param.getUserId(), param.getPrdId())+param.getGoodsNumber();
         // 检查商品合法性
@@ -52,7 +53,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/delete")
-    public JsonResult deleteCartById(WxAppRemoveCartProductParam param){
+    public JsonResult deleteCartById(@RequestBody WxAppRemoveCartProductParam param){
 
         shop().cart.removeCartProductById(param.getUserId(),param.getRecId());
         return success();
@@ -64,7 +65,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/changeGoodsNumber")
-    public JsonResult changeGoodsNumber(WxAppChangeNumberParam param){
+    public JsonResult changeGoodsNumber(@RequestBody WxAppChangeNumberParam param){
         ResultMessage resultMessage = shop().cart.changeGoodsNumber(param.getUserId(), 0, param.getProductId(), param.getGoodsNumber());
         if (resultMessage.getFlag()){
             return fail(resultMessage);
