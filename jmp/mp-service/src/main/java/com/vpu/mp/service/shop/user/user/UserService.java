@@ -868,9 +868,8 @@ public class UserService extends ShopBaseService {
 	 * @param shopRecord
 	 */
 	public void syncMainUser(UserRecord shopRecord) {
-		com.vpu.mp.db.main.tables.records.UserRecord userMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserRecord.class);
 		UserMainVo info = shopRecord.into(UserMainVo.class);
-		saas().wxUserService.syncMainUser(shopRecord,getShopId(),shopRecord.getUserId(),info);
+		saas().wxUserService.syncMainUser(getShopId(),shopRecord.getUserId(),info);
 	}
 	
 	
@@ -880,15 +879,8 @@ public class UserService extends ShopBaseService {
 	 * @param type
 	 */
 	public void syncMainUserDetail(UserDetailRecord shopRecord) {
-		com.vpu.mp.db.main.tables.records.UserDetailRecord userDetailMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserDetailRecord.class);
 		UserDetailMainVo info = shopRecord.into(UserDetailMainVo.class);
-		saas().wxUserService.syncMainUserDetail(shopRecord,getShopId(),shopRecord.getUserId(),info);
-	}
-	
-	public void test() {
-		UserRecord fetchAny = db().selectFrom(USER).where(USER.USER_ID.eq(128)).fetchAny();
-		UserInfo info = fetchAny.into(UserInfo.class);
-		syncMainUser(fetchAny);
+		saas().wxUserService.syncMainUserDetail(getShopId(),shopRecord.getUserId(),info);
 	}
 
 }
