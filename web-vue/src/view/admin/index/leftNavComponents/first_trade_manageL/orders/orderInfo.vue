@@ -744,7 +744,7 @@ export default {
       this.searchParam.orderSn = orderSn
       info(this.searchParam).then(res => {
         this.order = res.content
-        this.goodsTypeArray = this.order.goodsType.substring(1, this.order.goodsType.length - 1).split('_')
+        this.goodsTypeArray = this.order.goodsType.substring(1, this.order.goodsType.length - 1).split('][')
       }).catch(() => {
       })
     },
