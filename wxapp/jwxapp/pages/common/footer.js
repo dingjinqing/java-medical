@@ -39,7 +39,7 @@ var footer = {
         username: user_name,
         user_avatar: user_avatar,
         encrypted_data: e.detail.encryptedData,
-        iv: e.detail.ivx
+        iv: e.detail.iv
       });
       return util.jumpLink(link, 'reLaunch');
     } else {

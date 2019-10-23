@@ -248,7 +248,8 @@ global.wxPage({
         });
         util.api('/api/wxapp/account/updateUser', function (res) {
         }, {
-
+            iv: e.detail.iv,
+            encrypted_data:e.detail.encryptedData,
             username: user_name,
             user_avatar: user_avatar
           });
@@ -269,7 +270,8 @@ global.wxPage({
             });
             util.api('/api/wxapp/account/updateUser', function (res) {
             }, {
-
+                encrypted_data: e.detail.encryptedData,
+                iv: e.detail.iv,
                 username: user_name,
                 user_avatar: user_avatar
               });
