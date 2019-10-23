@@ -712,7 +712,6 @@ public class OrderReadService extends ShopBaseService {
 		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), false);
 	}
 	
-	
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据
 	 * @param param

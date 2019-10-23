@@ -60,6 +60,7 @@ import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.mp.order.OrderInfoMpVo;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
 
 /**
  * Table:order_info
@@ -618,6 +619,17 @@ public class OrderInfoService extends ShopBaseService {
 		where(TABLE.ORDER_ID.eq(order.getOrderId()));
 	}
 
+	/**
+	 * 删除
+	 * @param order
+	 */
+	public void delete(OrderListMpVo order) {
+		db().update(TABLE).
+		set(TABLE.DEL_FLAG, DelFlag.DISABLE.getCode()).
+		set(TABLE.DEL_TIME, DateUtil.getSqlTimestamp()).
+		where(TABLE.ORDER_ID.eq(order.getOrderId()));
+	}
+	
 	/**
 	 * 根据用户id获取累计消费金额
 	 */

@@ -10,7 +10,7 @@ import com.vpu.mp.service.shop.order.action.VerifyService;
 import com.vpu.mp.service.shop.order.action.ReceiveService;
 import com.vpu.mp.service.shop.order.action.ExtendReceiveService;
 import com.vpu.mp.service.shop.order.action.RemindService;
-
+import com.vpu.mp.service.shop.order.action.DeleteService;
 
 /**
  * 订单状态操作标识service枚举类;此类中的clz只是为了方便查找业务的对于service；
@@ -36,6 +36,8 @@ public enum OrderServiceCode {
 	//7:延长收货
 	EXTEND_RECEIVE(ExtendReceiveService.class),
 	//8:提醒发货
-	REMIND(RemindService.class);
+	REMIND(RemindService.class),
+	//9:删除订单
+	DELETE(DeleteService.class);
 	private OrderServiceCode(Class<? extends ShopBaseService> clz){}
 }

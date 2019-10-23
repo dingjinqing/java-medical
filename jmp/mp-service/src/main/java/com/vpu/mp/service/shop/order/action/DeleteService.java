@@ -1,0 +1,64 @@
+package com.vpu.mp.service.shop.order.action;
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+
+/**
+ * 删除订单
+ * @author 王帅
+ *
+ */
+public class DeleteService  extends ShopBaseService implements IorderOperate {
+
+	@Autowired
+	private OrderInfoService orderInfo;
+	
+	@Autowired
+	public RecordAdminActionService record;
+	
+	@Override
+	public OrderServiceCode getServiceCode() {
+		return OrderServiceCode.DELETE;
+	}
+
+	@Override
+	public Object query(OrderOperateQueryParam param) throws MpException {
+		return null;
+	}
+
+	/**
+	 * 	订单收货目前支持已发货状态下商品全部收货（不支持部分收货）
+	 */
+	@Override
+	public JsonResultCode execute(Object obj) {
+		if(!(obj instanceof OrderOperateQueryParam)) {
+			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
+		}
+		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
+		OrderListMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderListMpVo.class);
+		if(order == null) {
+			return JsonResultCode.CODE_ORDER_NOT_EXIST;
+		}
+		if(!OrderOperationJudgment.isDelete(order)) {
+			return JsonResultCode.CODE_ORDER_DELETE_OPERATION_NOT_SUPPORTED;
+		}		
+		orderInfo.delete(order);
+		//操作记录
+		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_DELETE.code }), new String[] {param.getOrderSn()});
+		return null;
+	}
+
+}

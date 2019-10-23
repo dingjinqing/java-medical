@@ -404,6 +404,7 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_EXTEND_RECEIVE_TIME_NOT_LT_AUTOTIME ="order_extend_receive_time_not_lt_autotime";
 	public static final String MSG_ORDER_EXTEND_RECEIVE_NOW_AUTOTIME_INTERVAL_GT_TWO_DAYS ="order_extend_receive_now_autotime_interval_gt_two_days";
 	public static final String MSG_ORDER_EXTEND_RECEIVE_ADMIN_SET_MORE_TIME ="order_extend_receive_admin_set_more_time";
+	public static final String MSG_ORDER_DELETE_OPERATION_NOT_SUPPORTED = "order_delete_operation_not_supported";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";

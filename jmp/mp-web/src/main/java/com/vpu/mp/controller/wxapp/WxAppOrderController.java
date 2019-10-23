@@ -52,9 +52,9 @@ public class WxAppOrderController extends WxAppBaseController{
 	}
 	
 	/**
-	 * 订单取消
+	 * 延长收货、确认收货、取消订单、提醒发货、删除订单
 	 */
-	@PostMapping("/cancel")
+	@PostMapping("/operation")
 	public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user().getWxUser());

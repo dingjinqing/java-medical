@@ -25,6 +25,7 @@ public enum   RecordContentTemplate {
 	ORDER_RECEIVE(3008,RecordContentMessage.ORDER_RECEIVE),
 	ORDER_REMIND(3009,RecordContentMessage.ORDER_REMIND),
 	ORDER_EXTEND_RECEIVE(3010,RecordContentMessage.ORDER_EXTEND_RECEIVE),
+	ORDER_DELETE(3011,RecordContentMessage.ORDER_DELETE),
     
     /** 会员-会员卡 */
 	MEMBER_CARD_SEND(4001,RecordContentMessage.MSG_MEMBER_CARD_SEND),

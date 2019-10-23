@@ -33,6 +33,8 @@ public class RecordContentMessage {
     public static final String ORDER_REMIND = "order.remind";
     /**延长收货*/
     public static final String ORDER_EXTEND_RECEIVE = "order.extend.receive";
+    /**删除*/
+    public static final String ORDER_DELETE = "order.delete";
     
     /**
      * 	会员
