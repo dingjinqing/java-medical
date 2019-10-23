@@ -86,4 +86,7 @@ CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
 ALTER TABLE `b2c_user` 
 CHANGE COLUMN `shop_id` `shop_id` INT(11) NOT NULL DEFAULT '0' ,
 CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
-CHANGE COLUMN `user_pwd` `user_pwd` varchar(60) not null default '';
+CHANGE COLUMN `user_pwd` `user_pwd` varchar(60) not null default '' comment '密码';
+CHANGE COLUMN `wechat` `wechat`   varchar(100) not null default '' comment '微信';
+CHANGE COLUMN `invite_expiry_date` `invite_expiry_date` date  default null comment '邀请失效时间';
+CHANGE COLUMN `invite_source` `invite_source`  varchar(32)   default null comment '邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖';
