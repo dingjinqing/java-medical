@@ -674,7 +674,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public String[] orderTypeToArray(String orderType) {
-		return orderType.substring(1, orderType.length() - 1 ).split("_");
+		return orderType.substring(1, orderType.length() - 1 ).split("][");
 	}
 	
 	/**
