@@ -7,6 +7,9 @@ var mobile = util.getCache('mobile');
 var left_height;
 var sort_info = [];
 var sort_menu = []; // 左侧数据
+var sort_content = []; // 右侧数据
+var menuType; // 菜单类型
+var menuId; // 菜单id
 var is_reco;
 var page_id;
 var content;
@@ -34,8 +37,9 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     is_reco: 0,// 推荐分类
     is_brand: 0,// 推荐品牌
+    all_brand: 0,// 全部品牌
     page: 1,
-    isSingleGoods: 0,
+    isSingleGoods: 0,// 商品分类
   },
 
   /**
@@ -80,13 +84,105 @@ global.wxPage({
       if (res.error == 0) {
         sort_menu = res.content;
         for (var i = 0; i < sort_menu.length; i++) {
-          if (sort_menu[i].menuContent.length > 0) {
-            sort_info.content = sort_menu[i].menuContent;
-            sort_menu[i].colors = that.data.comColor;
-            sort_menu[i].borderright = "6rpx solid " + that.data.comColor;
-            sort_menu[i].backgr = "#ffffff";
+          if (!sort_menu[0].menuContent || sort_menu[0].menuContent != null || sort_menu[0].menuContent != '') {
+            sort_content = sort_menu[0].menuContent;
+            sort_menu[0].colors = that.data.comColor;
+            sort_menu[0].borderright = "6rpx solid " + that.data.comColor;
+            sort_menu[0].backgr = "#ffffff";
           }
-        }     
+          if (sort_menu[i].menuType == 1) {
+            sort_menu[i].menuName = that.$t('pages.store.leftMenuA');
+          }
+          if (sort_menu[i].menuType == 2) {
+            sort_menu[i].menuName = that.$t('pages.store.leftMenuB');
+          }
+          if (sort_menu[i].menuType == 5) {
+            sort_menu[i].menuName = that.$t('pages.store.leftMenuC');
+          }
+        } 
+        if (sort_content.menuContentType == 1 || sort_content.menuContentType == 4) {
+          // 全部品牌
+          that.setData({
+            is_brand: 1
+          })
+          that.setData({
+            all_brand: 1
+          })
+
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 3) {
+          // 推荐品牌
+          that.setData({
+            is_brand: 1
+          })
+          that.setData({
+            all_brand: 0
+          })
+
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 5) {
+          // 推荐分类
+          that.setData({
+            is_reco: 1
+          })
+
+          that.setData({
+            is_brand: 0
+          })
+          that.setData({
+            all_brand: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 6) {
+          // 其他分类
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            is_brand: 0
+          })
+          that.setData({
+            all_brand: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 7) {
+          // 商品分类
+          that.setData({
+            isSingleGoods: 1
+          })
+
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            is_brand: 0
+          })
+          that.setData({
+            all_brand: 0
+          })
+        }
+
+        
+        that.setData({
+          sort_menu: sort_menu,
+          sort_content: sort_content,
+        });
+
+
       }   
     });
 
@@ -135,8 +231,109 @@ global.wxPage({
     
     
   },
-  changeSort: function(e) {
-    
+  changeSort: function (e) {
+    menuType = e.currentTarget.dataset.type;
+    menuId = e.currentTarget.dataset.id;
+    indexs = e.currentTarget.dataset.selected;
+    var that = this;
+    for (var i = 0; i < sort_menu.length; i++) {
+      sort_menu[i].colors = "#333333";
+      sort_menu[i].borderright = "6rpx solid #f6f6f6";
+      sort_menu[i].backgr = "#f5f5f5";
+    }
+    sort_menu[indexs].colors = that.data.comColor;
+    sort_menu[indexs].borderright = "6rpx solid " + that.data.comColor;
+    sort_menu[indexs].backgr = "#ffffff";
+
+    util.api('/api/wxapp/sort/get/content', function (res) {
+      if (res.error ==0) {
+        sort_content = res.content;
+        if (sort_content.menuContentType == 1 || sort_content.menuContentType == 4) {
+          // 全部品牌
+          that.setData({
+            is_brand: 1
+          })
+          that.setData({
+            all_brand: 1
+          })
+
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 3) {
+          // 推荐品牌
+          that.setData({
+            is_brand: 1
+          })
+          that.setData({
+            all_brand: 0
+          })
+
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 5) {
+          // 推荐分类
+          that.setData({
+            is_reco: 1
+          })
+
+          that.setData({
+            is_brand: 0
+          })
+          that.setData({
+            all_brand: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 6) {
+          // 其他分类
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            is_brand: 0
+          })
+          that.setData({
+            all_brand: 0
+          })
+          that.setData({
+            isSingleGoods: 0
+          })
+        } else if (sort_content.menuContentType == 7) {
+          // 商品分类
+          that.setData({
+            isSingleGoods: 1
+          })
+
+          that.setData({
+            is_reco: 0
+          })
+          that.setData({
+            is_brand: 0
+          })
+          that.setData({
+            all_brand: 0
+          })
+        }
+
+        that.setData({
+          sort_menu: sort_menu,
+          sort_content: sort_content,
+        });
+
+      }
+    }, {
+      menuType: menuType,
+      menuId: menuId
+    })
   },
   // changeSort: function (e) {
   //   sort_id = e.currentTarget.dataset.sort_id;

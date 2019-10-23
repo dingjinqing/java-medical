@@ -1,10 +1,11 @@
 <!--pages/store/store.wxml-->
 <include src="../common/header.wxml" />
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='all'>
   <view class='input_waimian' bindtap='to_search'>
     <view class='search_input' wx:if='{{sort_info.menu != 0}}'>
       <icon class="search-img" size="13" type="search"></icon>
-      <text>搜索商品</text>
+      <text>{{i18n.$t(localePack,"pages.store.searchGoods")}}</text>
     </view>
   </view>
   <view class='sort_content clearfix' style='height:{{left_height}}px;overflow:hidden' wx:if='{{sort_menu != 0}}'>
@@ -14,18 +15,18 @@
       </view>
     </view> -->
     <view class='left_item' style='height:{{left_height}}px;overflow-y:auto;overflow-x:hidden'>
-      <view class='each_item' bindtap='changeSort' data-selected="{{index}}" data-sort_id="{{item.menuType}}" wx:for="{{sort_menu}}" wx:key="key" style='color:{{item.colors}};border-left:{{item.borderright}};background:{{item.backgr}}'>
+      <view class='each_item' bindtap='changeSort' data-selected="{{index}}" data-type="{{item.menuType}}" data-id="{{item.menuId}}" wx:for="{{sort_menu}}" wx:key="key" style='color:{{item.colors}};border-left:{{item.borderright}};background:{{item.backgr}}'>
         {{item.menuName}}
       </view>
     </view>
     <scroll-view class='right_item' wx:if="{{is_reco == 0 && is_brand == 0}}" style='height:{{right_height}}px;overflow-y:auto;overflow-x:hidden' scroll-y bindscrolltolower='lower'>
       <view class='main-category'>
         <block wx:if="{{isSingleGoods == 0}}">
-          <image src='{{sort_info.sort_content.sort_img}}' bindtap='go_tiaozhuan' data-link="{{sort_info.sort_content.img_link}}" class='sort_tit_img' wx:if='{{sort_info.sort_content.sort_img!="" && sort_info.sort_content.sort_img!=null && sort_info.sort_content.sort_img!="0"}}'></image>
+          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link="{{sort_content.menuImgLink}}" class='sort_tit_img' wx:if='{{sort_content.menuImg!="" && sort_content.menuImg!=null && sort_content.menuImg!="0"}}'></image>
           <view class='sor_item clearfix'>
-            <view class='each_sort' bindtap='go_search' data-sort_names="{{item.sort_name}}" data-sord_ids="{{item.sort_id}}" wx:for="{{sort_info.sort_content.content}}" wx:key="key">
-              <image src='{{item.sort_img}}' class='sort_img'></image>
-              <view class='sort_name two_row'>{{item.sort_name}}</view>
+            <view class='each_sort' bindtap='go_search' data-sort_names="{{item.sortName}}" data-sord_ids="{{item.sortId}}" wx:for="{{sort_content.contentList}}" wx:key="key">
+              <image src='{{item.sortImg}}' class='sort_img'></image>
+              <view class='sort_name two_row'>{{item.sortName}}</view>
             </view>
           </view>
         </block>
@@ -222,24 +223,27 @@
     <view class='right_item right_itme_area' wx:if="{{is_reco == 1 && is_brand == 0 }}" style='height:{{right_height}}px;overflow-y:auto;overflow-x:hidden'>
       <view class='main-category'>
         <view>
-          <image src='{{sort_info.recomment_sort.recomment_sort_img}}' bindtap='go_tiaozhuan' data-link='{{sort_info.recomment_sort.recomment_img_link}}' class='sort_tit_img' wx:if="{{sort_info.recomment_sort.recomment_sort_img!='' && sort_info.recomment_sort.recomment_sort_img!=null&&sort_info.recomment_sort.recomment_sort_img!='0'}}"></image>
-          <view class='sor_item clearfix' wx:for="{{sort_info.sort_content.content}}" wx:key="key">
-            <view class='each_title' data-link='{{item.img_link}}' bindtap='go_where'>{{item.sort_name}}</view>
-            <view class='each_sort' bindtap='go_where' data-link="{{iem.img_link}}" wx:for="{{item.child}}" wx:key='key' wx:for-item="iem">
-              <image src='{{iem.sort_img}}' class='sort_img'></image>
-              <view class='sort_name two_row'>{{iem.sort_name}}</view>
+          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link='{{sort_content.menuImgLink}}' class='sort_tit_img' wx:if="{{sort_content.menuImg!='' && sort_content.menuImg!=null&&sort_content.menuImg!='0'}}"></image>
+          <view class='sor_item clearfix' wx:for="{{sort_content.contentList}}" wx:key="key">
+            <view class='each_title' data-link='{{}}' bindtap='go_where'>{{item.sortName}}</view>
+            <view class='each_sort' bindtap='go_where' data-link="{{iem.imgLink}}" wx:for="{{item.goodsSorts}}" wx:key='key' wx:for-item="iem">
+              <image src='{{iem.sortImg}}' class='sort_img'></image>
+              <view class='sort_name two_row'>{{iem.sortName}}</view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    <v-brand is_search="0" right_height="{{right_height}}" brand_info="{{sort_info.sort_content.content}}" show_rcommend_brand="{{sort_info.show_rcommend_brand}}" is_brand="{{is_brand}}" all_brand="{{all_brand}}" />
+    <!-- <v-brand is_search="0" right_height="{{right_height}}" brand_info="{{sort_info.sort_content.content}}" show_rcommend_brand="{{sort_info.show_rcommend_brand}}" is_brand="{{is_brand}}" all_brand="{{all_brand}}" /> -->
+    <v-brand is_search="0" right_height="{{right_height}}" brand_info="{{sort_content.contentList}}" show_rcommend_brand="2" is_brand="{{is_brand}}" all_brand="{{all_brand}}" />
+
+
   </view>
 
   <!--无分类  -->
   <view class='no_state' wx:if='{{sort_menu == 0}}'>
     <image src='{{imageUrl}}image/wxapp/no_sort.png' mode='widthFix'></image>
-    <view>暂无分类</view>
+    <view>{{i18n.$t(localePack,"pages.store.noClassification")}}</view>
   </view>
 </view>
 
