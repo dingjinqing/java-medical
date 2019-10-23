@@ -74,8 +74,8 @@ ALTER TABLE b2c_category CHANGE COLUMN `parent_id` `parent_id` int(11) NOT NULL 
 
 --修改b2c_user字段与店铺库一致
 ALTER TABLE b2c_user
-CHANGE COLUMN `is_delete` `del_flag` TINYINT(1) NOT NULL DEFAULT '0' ,
-CHANGE COLUMN `delete_time` `del_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间' ;
+CHANGE COLUMN `del_flag` `del_flag` TINYINT(1) NOT NULL DEFAULT '0' ,
+CHANGE COLUMN `del_time` `del_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间' ;
 
 
 --更新字段长度，使主库和店铺库保持一致
