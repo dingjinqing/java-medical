@@ -77,7 +77,7 @@ public class BargainAddParam {
 	/**
 	 * 任意金额结算模式的结算金额底价 
 	 */
-	private Double floorPrice;
+	private BigDecimal floorPrice;
 	
 	/**
 	 * 活动商品库存 
