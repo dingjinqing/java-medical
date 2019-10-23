@@ -57,7 +57,6 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	@JsonIgnore
 	private Byte orderRemind;
 	@JsonIgnore
-	/**延长收货操作人：1:商家 2:用户',*/
 	private Byte extendReceiveAction;
 	@JsonIgnore
 	private Timestamp extendReceiveTime;

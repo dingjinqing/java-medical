@@ -668,8 +668,13 @@ public class OrderReadService extends ShopBaseService {
 		
 	}
 	
+	/**
+	 * 转化订单类型
+	 * @param orderType
+	 * @return
+	 */
 	public String[] orderTypeToArray(String orderType) {
-		return orderType.split(",");
+		return orderType.substring(1, orderType.length() - 1 ).split("_");
 	}
 	
 	/**
@@ -697,6 +702,16 @@ public class OrderReadService extends ShopBaseService {
 		//3商品评价
 		return 3;
 	}
+	
+	/**
+	 * 统计订单各个状态的数量
+	 * @param param
+	 * @return
+	 */
+	public Map<Byte, Integer> statistic(OrderListParam param) {
+		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), false);
+	}
+	
 	
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据

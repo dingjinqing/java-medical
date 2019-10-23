@@ -397,6 +397,13 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_REMIND_OPERATION_LIMIT ="order_remind_operation_limit";
 	public static final String MSG_ORDER_REMIND_OPERATION_LIMIT_TODAY = "order_remind_operation_limit_today";
 	public static final String MSG_ORDER_VERIFY_IFCHECK_NOT_NULL = "order_verify_ifcheck_not_null";
+	public static final String MSG_ORDER_EXTEND_RECEIVE_TIME_NOT_NULL = "order_extend_receive_time_not_null";
+	public static final String MSG_ORDER_EXTEND_RECEIVE_ONLY_ONE ="order_extend_receive_only_one";
+	public static final String MSG_ORDER_EXTEND_RECEIVE_NO_SHIPPED = "order_extend_receive_no_shipped";
+	public static final String MSG_ORDER_EXTEND_RECEIVE_NOT_SUPPORTED ="order_extend_receive_not_supported";
+	public static final String MSG_ORDER_EXTEND_RECEIVE_TIME_NOT_LT_AUTOTIME ="order_extend_receive_time_not_lt_autotime";
+	public static final String MSG_ORDER_EXTEND_RECEIVE_NOW_AUTOTIME_INTERVAL_GT_TWO_DAYS ="order_extend_receive_now_autotime_interval_gt_two_days";
+	public static final String MSG_ORDER_EXTEND_RECEIVE_ADMIN_SET_MORE_TIME ="order_extend_receive_admin_set_more_time";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";

@@ -402,7 +402,8 @@ public class OrderConstant {
     /**是*/
     public static final Byte IS_COD_YES = 1;
     
+    /**yes*/
     public static final Byte yes = 1;
-
+    /**no*/
     public static final Byte no = 0;
 }

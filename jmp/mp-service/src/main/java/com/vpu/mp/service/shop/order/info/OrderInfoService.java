@@ -47,7 +47,6 @@ import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -233,7 +232,7 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(TABLE.SCORE_DISCOUNT.greaterThan(BigDecimal.ZERO));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_SCORE_EXCHANGE:
-				select.where(DslPlus.findInSet(OrderConstant.GOODS_TYPE_INTEGRAL, ORDER_INFO.GOODS_TYPE));
+				select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {OrderConstant.GOODS_TYPE_INTEGRAL})));
 				break;
 			case OrderConstant.SEARCH_PAY_WAY_COD:
 				select.where(TABLE.PAY_CODE.eq(OrderConstant.PAY_CODE_COD));
@@ -252,6 +251,7 @@ public class OrderInfoService extends ShopBaseService {
 		activeBuildOptions(select, param);
 		return select;
 	 }
+	 
 	/**
 	 * 订单goodsType查询构造
 	 * @param goodsType
@@ -604,6 +604,17 @@ public class OrderInfoService extends ShopBaseService {
 		db().update(TABLE).
 		set(TABLE.ORDER_REMIND, (byte) (order.getOrderRemind() + 1)).
 		set(TABLE.ORDER_REMIND_TIME, DateUtil.getSqlTimestamp()).
+		where(TABLE.ORDER_ID.eq(order.getOrderId()));
+	}
+	
+	/**
+	 * 延长发货
+	 * @param order
+	 */
+	public void extendReceive(OrderInfoMpVo order) {
+		db().update(TABLE).
+		set(TABLE.EXTEND_RECEIVE_ACTION, order.getExtendReceiveAction()).
+		set(TABLE.EXTEND_RECEIVE_TIME, order.getExtendReceiveTime()).
 		where(TABLE.ORDER_ID.eq(order.getOrderId()));
 	}
 

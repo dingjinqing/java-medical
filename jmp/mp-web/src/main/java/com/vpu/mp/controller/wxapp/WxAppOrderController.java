@@ -83,4 +83,13 @@ public class WxAppOrderController extends WxAppBaseController{
 			return fail(e.getErrorCode());
 		}
 	}
+	
+	/**
+	 * 统计数量
+	 */
+	@PostMapping("/statistic")
+	public JsonResult statistic(@RequestBody @Valid OrderListParam param) {
+		param.setWxUserInfo(wxAppAuth.user());
+		return success(shop().readOrder.statistic(param));
+	}
 }
