@@ -135,7 +135,7 @@ global.wxPage({
         }
       }
       that.setData({
-        list: that.data.list.concat(list),
+        list: list,
         expire: expire
       })
     }, {
