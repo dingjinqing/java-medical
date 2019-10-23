@@ -164,7 +164,8 @@ export default {
 .commodityGrouping {
   padding: 5px 0px;
   .commodityGroupingMain {
-    // overflow: hidden;
+    max-width: 379px;
+    overflow: hidden;
     height: 44px;
     line-height: 44px;
     // border: 1px solid #eeeeee;

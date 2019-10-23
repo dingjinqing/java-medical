@@ -113,11 +113,11 @@
                       class="bottomFooter"
                       :style="data.col_type!=='4' ?'display:flex;flex-direction: row;height:auto':''"
                     >
-                      <span v-if="data.hide_price === '1'">￥{{item.realPrice}}</span>
+                      <span v-if="data.hide_price === '1'">￥{{Number(item.realPrice).toFixed(2)}}</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.col_type!=='2'&&data.other_message==='1'"
-                      >{{item.linePrice}}</span>
+                      >{{Number(item.linePrice).toFixed(2)}}</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"

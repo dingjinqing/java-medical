@@ -52,7 +52,7 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="$emit('update:dialogVisible', false)">取 消</el-button>
           <el-button
             type="primary"
             @click="handleSure()"
@@ -66,9 +66,15 @@
 <script>
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
 export default {
+  props: {
+    dialogVisible: { // 弹窗调起flag
+      type: Boolean,
+      default: () => false
+    },
+    classFlag: Number
+  },
   data () {
     return {
-      dialogVisible: false,
       newArr: [],
       check: false,
       imgUrl: [
@@ -92,6 +98,21 @@ export default {
       sortId: '',
       flag: null,
       loading: true
+    }
+  },
+  watch: {
+    dialogVisible (newData) {
+      console.log(newData)
+      if (newData) {
+        this.dialogVisible = true
+        this.loading = true
+        this.newArr = []
+        this.defaultArr = []
+        // 初始化数据
+        this.defaultData(this.backDataArr, this.classFlag)
+      } else {
+        this.$emit('update:dialogVisible', false)
+      }
     }
   },
   mounted () {
@@ -138,9 +159,8 @@ export default {
         arr = this.$refs.sortTree.getCheckedKeys()
       }
       console.log(this.$refs.cardTree.getCheckedKeys())
-      this.$http.$emit('BusClassTrueArr', arr)
       this.$emit('BusClassTrueArr', arr)
-      this.dialogVisible = false
+      this.$emit('update:dialogVisible', false)
     },
     defaultData (backData, flag) {
       console.log(flag)

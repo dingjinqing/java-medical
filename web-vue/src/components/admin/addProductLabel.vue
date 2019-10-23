@@ -9,7 +9,7 @@
       >
         <div class="dialogTop">
           <div class="topList">
-            <span>品牌分类:</span>
+            <span>标签名称:</span>
             <el-select
               v-model="classValue"
               placeholder="请选择"
