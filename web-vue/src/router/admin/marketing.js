@@ -1027,6 +1027,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/collectGift/collectGift'
       )
+  },
+  // 秒杀
+  {
+    path: '/admin/home/main/seckill',
+    name: 'seckill',
+    meta: {
+      crumbTitle: 'router.seckill',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckill'
+      )
   }
 ]
 export default routes

@@ -330,6 +330,8 @@ export const en = {
   ],
   // 营销管理 收藏有礼
   collectGift: ['Marketing management', 'Collect Gift'],
+  // 营销管理 秒杀
+  seckill: ['Marketing management', 'Seckill'],
 
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],

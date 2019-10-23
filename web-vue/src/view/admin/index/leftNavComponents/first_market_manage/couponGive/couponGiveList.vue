@@ -1,131 +1,109 @@
 <template>
   <div class="content">
     <!-- 筛选条件 -->
-    <wrapper>
-      <div class="main">
-        <div
-          class="leftarea"
-          style="display:flex"
+    <div class="main">
+      <div
+        class="leftarea"
+        style="margin-left: 30px;"
+      >
+        {{$t('couponGive.actName')}}
+        <el-input
+          v-model="actName"
+          placeholder="请输入发券活动名称"
+          clearable
+          style="width: 300px;margin: 0 10px;"
         >
-          <span style="width: 180px;height:30px;line-height: 30px">{{$t('couponGive.actName')}}</span>
-          <el-input
-            size="small"
-            v-model="actName"
-          ></el-input>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleSelect"
-            style="margin-left:10px"
-          >{{$t('couponGive.select')}}
-          </el-button>
-          <el-button
-            type="primary"
-            size="small"
-            class="barginBtn"
-            @click="addAct"
-          >{{$t('couponGive.giveCoupon')}}
-          </el-button>
-        </div>
+        </el-input>
+        <el-button
+          type="primary"
+          @click="handleSelect"
+        >{{$t('couponGive.select')}}</el-button>
       </div>
+      <div style="position: absolute;right: 20px;">
+        <el-button
+          type="primary"
+          @click="addAct"
+        >{{$t('couponGive.giveCoupon')}}</el-button>
+      </div>
+    </div>
 
-      <!-- 表格数据 -->
-
-      <div class="table_list">
-        <section>
-          <table
-            border
-            style="width: 100%"
+    <!-- 表格数据 -->
+    <div class="tableContent">
+      <table
+        border
+        style="width: 100%"
+      >
+        <thead>
+          <tr>
+            <th style="width:10%">{{$t('couponGive.actName')}}</th>
+            <th style="width:10%">{{$t('couponGive.creationTime')}}</th>
+            <th style="width:17%">{{$t('couponGive.actCrowd')}}</th>
+            <th style="width:7%">{{$t('couponGive.grantType')}}</th>
+            <th style="width:7%">{{$t('couponGive.grantState')}}</th>
+            <th>
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:7%">{{$t('couponGive.couponName')}}</th>
+                    <th style="width:7%">{{$t('couponGive.usingCondition')}}</th>
+                    <th style="width:7%">{{$t('couponGive.couponValue')}}</th>
+                    <th style="width:9%">{{$t('couponGive.couponValidityPeriod')}}</th>
+                    <th style="width:4%">{{$t('couponGive.operate')}}</th>
+                  </tr>
+                </thead>
+              </table>
+            </th>
+          </tr>
+        </thead>
+        <tbody v-if="this.tableData.length>0">
+          <tr
+            v-for="(item,index) in tableData"
+            :key="index"
           >
-            <thead>
-              <tr class="tableHeader">
-                <th style="width:10%">{{$t('couponGive.actName')}}</th>
-                <th style="width:10%">{{$t('couponGive.creationTime')}}</th>
-                <th style="width:17%">{{$t('couponGive.actCrowd')}}</th>
-                <th style="width:7%">{{$t('couponGive.grantType')}}</th>
-                <th style="width:7%">{{$t('couponGive.grantState')}}</th>
-                <th>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th style="width:7%">{{$t('couponGive.couponName')}}</th>
-                        <th style="width:7%">{{$t('couponGive.usingCondition')}}</th>
-                        <th style="width:7%">{{$t('couponGive.couponValue')}}</th>
-                        <th style="width:9%">{{$t('couponGive.couponValidityPeriod')}}</th>
-                        <th style="width:4%">{{$t('couponGive.operate')}}</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr
-                v-for="(item,index) in tableData"
-                :key="index"
-                class="tableBody"
+            <td>{{item.actName}}</td>
+            <td>{{item.createTime}}</td>
+            <td><span v-html="item.people.join(`<br/>`)"></span></td>
+            <td>{{item.sendAction | sendAction}}</td>
+            <td>{{item.sendStatus | sendStatus}}</td>
+            <!-- 6 ~ 10 -->
+            <td style="padding: 0;">
+              <table
+                class="nestTable"
+                border
               >
-                <!-- 1 -->
-                <td>{{item.actName}}</td>
-                <!-- 2 -->
-                <td>{{item.createTime}}</td>
-                <!-- 3 -->
-                <td><span v-html="item.people.join(`<br/>`)"></span></td>
-                <!-- 4 -->
-                <td>{{item.sendAction | sendAction}}</td>
-                <!-- 5 -->
-                <td>{{item.sendStatus | sendStatus}}</td>
-                <!-- 6 ~ 10 -->
-                <td class="rightContent">
-                  <table>
-                    <tbody>
-                      <tr
-                        v-for="(it,i) in item.couponGiveListConditionVo"
-                        :key="i"
-                        style="border: 1px solid yellow"
-                      >
-                        <td
-                          style="width:7%"
-                          class="listContent"
-                        >{{it.couponName}}</td>
-                        <td
-                          style="width:7%"
-                          class="listContent"
-                        >{{it.leastConsume | leastConsume}}</td>
-                        <td
-                          style="width:7%"
-                          class="listContent"
-                        >{{it.denomination | denomination}}</td>
-                        <td
-                          style="width:9%"
-                          class="listContent"
-                        ><span v-html="it.time"></span></td>
-                        <td
-                          style="width:4%"
-                          class="listContent"
-                        >
-                          <el-button
-                            @click="receiveDetails(item.id,it.couponId)"
-                            type="text"
-                          >{{$t('couponGive.grantDetail')}}</el-button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-            </tbody>
+                <tbody style="border-style: hidden;">
+                  <tr
+                    v-for="(it,i) in item.couponGiveListConditionVo"
+                    :key="i"
+                  >
+                    <td style="width:7%;">{{it.couponName}}</td>
+                    <td style="width:9%;">{{it.leastConsume | leastConsume}}</td>
+                    <td style="width:7%;">{{it.denomination | denomination}}</td>
+                    <td style="width:9%;"><span v-html="it.time"></span></td>
+                    <td style="width:4%;">
+                      <el-button
+                        @click="receiveDetails(item.id,it.couponId)"
+                        type="text"
+                      >{{$t('couponGive.grantDetail')}}</el-button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div
+        class="tips"
+        v-if="this.tableData.length==0"
+      >暂无数据</div>
+      <!-- 分页组件 -->
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="handleSelect"
+      />
+    </div>
 
-          </table>
-        </section>
-        <!-- 分页组件 -->
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="handleSelect"
-        />
-      </div>
-    </wrapper>
   </div>
 
 </template>
@@ -254,43 +232,63 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style scoped>
 .content {
   min-width: 100%;
   font-size: 14px;
+  padding: 10px;
+}
+
+.main {
+  position: relative;
+  height: 70px;
+  line-height: 70px;
+  background-color: #fff;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.tableContent {
+  background: #fff;
+  padding: 8px 12px;
+}
+
+.tableContent thead {
+  height: 35px;
+  line-height: 35px;
+  background: #f5f5f5;
+}
+
+.tableContent tbody {
+  text-align: center;
+  margin: 0 auto;
+}
+
+table {
   height: 100%;
-  .main {
-    position: relative;
-    background-color: #fff;
-    display: flex;
-  }
-  .table_list {
-    position: relative;
-    margin-top: 10px;
-    background-color: #fff;
-    padding: 0 0 10px 0;
-    .tableHeader {
-      border: none;
-      background: #eee;
-      text-align: center;
-    }
-    .tableBody {
-      td {
-        text-align: center;
-        vertical-align: middle;
-        border: 1px solid #ddd;
-      }
-      .rightContent {
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-        border: 1px solid #ddd;
-        .listContent {
-          border: 1px solid #ddd;
-          height: 100% !important;
-        }
-      }
-    }
-  }
+}
+
+tr {
+  height: 100%;
+}
+
+td {
+  border: 1px solid #efedee;
+  border-collapse: collapse;
+  vertical-align: middle;
+  padding: 10px 0;
+  height: 100%;
+}
+
+td span {
+  line-height: 1.5;
+}
+
+.tips {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  border: 1px solid #efedee;
+  border-top: none;
 }
 </style>

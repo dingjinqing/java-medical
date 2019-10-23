@@ -696,7 +696,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon1.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -719,7 +722,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon2.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -742,7 +748,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon3.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -765,7 +774,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon4.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -788,7 +800,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon5.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -939,7 +954,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_dis.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -969,7 +987,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_bargain.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -999,7 +1020,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_award.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -1030,7 +1054,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_comment.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -1060,7 +1087,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_store.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -1090,7 +1120,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_member.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -1120,7 +1153,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_scan.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -1150,7 +1186,10 @@
                     </div>
                     <div style="margin-left: 10px;">
                       <p style="color: #999;">建议尺寸：50px*50px</p>
-                      <el-button type="text">重置图标</el-button>
+                      <el-button
+                        type="text"
+                        @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_pre.png')"
+                      >重置图标</el-button>
                     </div>
                   </div>
                 </el-form-item>
@@ -1692,6 +1731,27 @@ export default {
         this.imageSize = [50, 50]
       } else {
         this.imageSize = [750, 300]
+      }
+    },
+    // 重置图标
+    resetIconHandler (title, name, value) {
+      for (var i = 0; i < this.rightData.length; i++) {
+        if (this.rightData[i].module_name === title) {
+          for (var j = 0; j < this.rightData[i].content.length; j++) {
+            if (this.rightData[i].content[j].icon_name === name) {
+              this.rightData[i].content[j].icon = value
+            }
+          }
+        }
+      }
+      for (var m = 0; m < this.leftData.length; m++) {
+        if (this.leftData[m].module_name === title) {
+          for (var n = 0; n < this.leftData[m].content.length; j++) {
+            if (this.leftData[m].content[n].icon_name === name) {
+              this.leftData[m].content[n].icon = value
+            }
+          }
+        }
       }
     },
 

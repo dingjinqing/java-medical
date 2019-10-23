@@ -1,294 +1,294 @@
 <template>
-  <wrapper>
-    <div class="mainContent">
-      <div class="mainContentMiddle">
-        <div class="mainContentRight">
-          <div class="mainContentRightForm">
-            <el-form
-              label-width="150px"
-              labelPosition='right'
-              :rules="rules"
-              :model="params"
-              size="small"
-              ref="params"
+  <!-- <wrapper> -->
+  <div class="mainContent">
+    <div class="mainContentMiddle">
+      <div class="mainContentRight">
+        <div class="mainContentRightForm">
+          <el-form
+            label-width="150px"
+            labelPosition='right'
+            :rules="rules"
+            :model="params"
+            size="small"
+            ref="params"
+          >
+            <!-- 活动名称 -->
+            <el-form-item
+              :label="$t('couponGive.actName')"
+              prop="actName"
             >
-              <!-- 活动名称 -->
-              <el-form-item
-                :label="$t('couponGive.actName')"
-                prop="actName"
-              >
-                <el-input
-                  size="small"
-                  :placeholder="$t('couponGive.actNamePlaceholder')"
-                  v-model="params.actName"
-                  style="width: 220px"
-                ></el-input>
-              </el-form-item>
-              <!-- 参与活动人群 -->
-              <el-form-item
-                :label="$t('couponGive.participants')"
-                prop="crowd"
-              >
-                <div>
-                  <span style="color:#999;fontSize:12px">{{$t('couponGive.peopleTip')}}</span>
-                </div>
-                <div>
-                  <el-checkbox
-                    :label="$t('couponGive.addCartPeople')"
-                    @change="handleOnClickNoPayChange"
-                    v-model="params.onClickNoPay"
-                  ></el-checkbox>
-                  <span style="color:#999;fontSize:12px;margin-left:-15px">{{$t('couponGive.addCartTip')}}</span>
-                </div>
-                <div>
-                  <el-checkbox
-                    :label="$t('couponGive.buyGoodsPeople')"
-                    @change="handleOnClickGoodsChange"
-                    v-model="params.onClickGoods"
-                  ></el-checkbox>
-                  <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
-                </div>
-                <div class="chooseGoods">
-                  <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
-                  <ul class="imgList">
-                    <li
-                      v-for="(item) in imgsList"
-                      :key="item.goodsId"
-                    >
-                      <el-image
-                        style="width: 80px; height: 80px"
-                        :src="item.goodsImg"
-                      ></el-image>
-                      <el-image
-                        class="delImg"
-                        :src="urls.url4"
-                        @click="handleDelImg(item.goodsId)"
-                      >
-                      </el-image>
-                    </li>
-                    <div
-                      v-show="this.imgsList.length<3"
-                      class="imageWraper"
-                      @click="showChoosingGoods"
-                    >
-                      <el-image :src="urls.url3"></el-image>
-                    </div>
-                  </ul>
-
-                </div>
-                <!-- 属于 -->
-                <!-- 持有 -->
-                <div style="margin:10px 0">
-                  <chooseSelect @chooseSelectVal="getChooseSelectVal" />
-                </div>
-                <div style="margin:10px 0">
-                  <el-checkbox
-                    :label="$t('couponGive.chooseMember')"
-                    @change="handleOnClickUserChange"
-                    v-model="params.onClickUser"
-                  ></el-checkbox>
-                  <span style="margin-left:-15px">
-                    <el-button
-                      @click="handleAddMember"
-                      type="text"
-                    >+ {{$t('couponGive.addMember')}}</el-button>
-                  </span>
-                  <span>{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
-                </div>
-                <div>
-                  <el-checkbox
-                    :label="$t('couponGive.custom')"
-                    @change="handleOnClickCustomRuleChange"
-                    v-model="params.onClickCustomRule"
-                  ></el-checkbox>
-                  <el-select
-                    v-model="customRuleInfoVal"
-                    :disabled="!params.onClickCustomRule"
-                    :placeholder="$t('couponGive.choose')"
-                    size="small"
-                    @change="customRuleInfoValChange"
-                  >
-                    <el-option
-                      :label="$t('couponGive.choose')"
-                      :value="$t('couponGive.choose')"
-                    ></el-option>
-                    <el-option
-                      v-for="item in customRuleInfoOptions"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.value"
-                    >
-                    </el-option>
-                  </el-select>
-                  <!-- 自定义集合 -->
-                  <div style="margin:10px 0;">
-                    <ul class="ulList">
-                      <li
-                        v-for="(item) in optionsList"
-                        :key="item.key"
-                      >
-                        <span>{{item.label}}：</span>
-                        <span>
-                          <el-input
-                            @blur="handleIpt(item)"
-                            @focus="handleIpt(item)"
-                            :disabled="!params.onClickCustomRule"
-                            style="width:120px"
-                            size="small"
-                            v-model="item.ipt"
-                          > </el-input>
-                          <div>{{ item.label | filterA  }}</div>
-                        </span>
-                        <div class="img_span">
-                          <el-image
-                            :src="urls.url4"
-                            class="img"
-                            @click="handleDelCustomize(item)"
-                          ></el-image>
-                        </div>
-                      </li>
-                      <li v-show="showTime">
-                        <span>{{$t('couponGive.timeLoginRecord')}}</span>
-                        <div class="img_span">
-                          <el-image
-                            :src="urls.url4"
-                            class="img"
-                            @click="handleDelCustomize(6)"
-                          ></el-image>
-                        </div>
-                        <span>
-                          <dateTimePicker
-                            :showPicker=1
-                            @time="loginStartAndLoginEnd"
-                          />
-                        </span>
-
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </el-form-item>
-              <!-- 选择优惠券 -->
-              <el-form-item
-                :label="$t('couponGive.chooseCoupons')"
-                prop="coupon"
-              >
-                <div class="gray">{{$t('couponGive.couponTip')}}</div>
-
-                <div class="middleContainer">
-                  <div>
-                    <div
-                      v-for="(item,index) in couponData"
-                      :key="index"
-                      class="addInfo"
-                      style="margin-right: 5px;"
-                    >
-                      <section
-                        class="couponImgWrapper"
-                        style="line-height:normal"
-                      >
-                        <div class="coupon_list_top">
-                          <span>￥</span>
-                          <span class="number">{{item.denomination}}</span>
-                        </div>
-                        <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                        <div class="coupon_center_number">剩余{{item.surplus}}张</div>
-                        <div
-                          class="coupon_list_bottom"
-                          style="font-size:12px"
-                        >领取</div>
-                      </section>
-                      <span
-                        @click="deleteCouponImg(index)"
-                        class="deleteIcon"
-                      >×</span>
-                    </div>
-                  </div>
-                  <div
-                    class="addInfo"
-                    @click="handleToCallDialog1()"
-                    v-if="couponData.length < 5"
+              <el-input
+                size="small"
+                :placeholder="$t('couponGive.actNamePlaceholder')"
+                v-model="params.actName"
+                style="width: 220px"
+              ></el-input>
+            </el-form-item>
+            <!-- 参与活动人群 -->
+            <el-form-item
+              :label="$t('couponGive.participants')"
+              prop="crowd"
+            >
+              <div>
+                <span style="color:#999;fontSize:12px">{{$t('couponGive.peopleTip')}}</span>
+              </div>
+              <div>
+                <el-checkbox
+                  :label="$t('couponGive.addCartPeople')"
+                  @change="handleOnClickNoPayChange"
+                  v-model="params.onClickNoPay"
+                ></el-checkbox>
+                <span style="color:#999;fontSize:12px;margin-left:-15px">{{$t('couponGive.addCartTip')}}</span>
+              </div>
+              <div>
+                <el-checkbox
+                  :label="$t('couponGive.buyGoodsPeople')"
+                  @change="handleOnClickGoodsChange"
+                  v-model="params.onClickGoods"
+                ></el-checkbox>
+                <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
+              </div>
+              <!-- <div class="chooseGoods">
+                <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
+                <ul class="imgList">
+                  <li
+                    v-for="(item) in imgsList"
+                    :key="item.goodsId"
                   >
                     <el-image
-                      fit="scale-down"
-                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                      style="width: 78px;height:78px;cursor:pointer"
+                      style="width: 80px; height: 80px"
+                      :src="item.goodsImg"
                     ></el-image>
+                    <el-image
+                      class="delImg"
+                      :src="urls.url4"
+                      @click="handleDelImg(item.goodsId)"
+                    >
+                    </el-image>
+                  </li>
+                  <div
+                    v-show="this.imgsList.length<3"
+                    class="imageWraper"
+                    @click="showChoosingGoods"
+                  >
+                    <el-image :src="urls.url3"></el-image>
+                  </div>
+                </ul>
+
+              </div> -->
+              <!-- 属于 -->
+              <!-- 持有 -->
+              <div style="margin:10px 0">
+                <chooseSelect @chooseSelectVal="getChooseSelectVal" />
+              </div>
+              <div style="margin:10px 0">
+                <el-checkbox
+                  :label="$t('couponGive.chooseMember')"
+                  @change="handleOnClickUserChange"
+                  v-model="params.onClickUser"
+                ></el-checkbox>
+                <span style="margin-left:-15px">
+                  <el-button
+                    @click="handleAddMember"
+                    type="text"
+                  >+ {{$t('couponGive.addMember')}}</el-button>
+                </span>
+                <span>{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
+              </div>
+              <div>
+                <el-checkbox
+                  :label="$t('couponGive.custom')"
+                  @change="handleOnClickCustomRuleChange"
+                  v-model="params.onClickCustomRule"
+                ></el-checkbox>
+                <el-select
+                  v-model="customRuleInfoVal"
+                  :disabled="!params.onClickCustomRule"
+                  :placeholder="$t('couponGive.choose')"
+                  size="small"
+                  @change="customRuleInfoValChange"
+                >
+                  <el-option
+                    :label="$t('couponGive.choose')"
+                    :value="$t('couponGive.choose')"
+                  ></el-option>
+                  <el-option
+                    v-for="item in customRuleInfoOptions"
+                    :key="item.key"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+                <!-- 自定义集合 -->
+                <div style="margin:10px 0;">
+                  <ul class="ulList">
+                    <li
+                      v-for="(item) in optionsList"
+                      :key="item.key"
+                    >
+                      <span>{{item.label}}：</span>
+                      <span>
+                        <el-input
+                          @blur="handleIpt(item)"
+                          @focus="handleIpt(item)"
+                          :disabled="!params.onClickCustomRule"
+                          style="width:120px"
+                          size="small"
+                          v-model="item.ipt"
+                        > </el-input>
+                        <div>{{ item.label | filterA  }}</div>
+                      </span>
+                      <div class="img_span">
+                        <el-image
+                          :src="urls.url4"
+                          class="img"
+                          @click="handleDelCustomize(item)"
+                        ></el-image>
+                      </div>
+                    </li>
+                    <li v-show="showTime">
+                      <span>{{$t('couponGive.timeLoginRecord')}}</span>
+                      <div class="img_span">
+                        <el-image
+                          :src="urls.url4"
+                          class="img"
+                          @click="handleDelCustomize(6)"
+                        ></el-image>
+                      </div>
+                      <span>
+                        <dateTimePicker
+                          :showPicker=1
+                          @time="loginStartAndLoginEnd"
+                        />
+                      </span>
+
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </el-form-item>
+            <!-- 选择优惠券 -->
+            <el-form-item
+              :label="$t('couponGive.chooseCoupons')"
+              prop="coupon"
+            >
+              <div class="gray">{{$t('couponGive.couponTip')}}</div>
+
+              <div class="middleContainer">
+                <div>
+                  <div
+                    v-for="(item,index) in couponData"
+                    :key="index"
+                    class="addInfo"
+                    style="margin-right: 5px;"
+                  >
+                    <section
+                      class="couponImgWrapper"
+                      style="line-height:normal"
+                    >
+                      <div class="coupon_list_top">
+                        <span>￥</span>
+                        <span class="number">{{item.denomination}}</span>
+                      </div>
+                      <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_list_bottom"
+                        style="font-size:12px"
+                      >领取</div>
+                    </section>
+                    <span
+                      @click="deleteCouponImg(index)"
+                      class="deleteIcon"
+                    >×</span>
                   </div>
                 </div>
-              </el-form-item>
-
-              <!-- 发送时间 -->
-              <el-form-item
-                :label="$t('couponGive.grantTime')"
-                prop="startTime"
-              >
-                <el-radio
-                  label="0"
-                  v-model="params.sendAction"
-                >{{$t('couponGive.immediatelyGrant')}}</el-radio>
-                <br>
-                <el-radio
-                  label="1"
-                  v-model="params.sendAction"
-                >{{$t('couponGive.regularlyGrant')}}</el-radio>
-                <el-date-picker
-                  type="datetime"
-                  class="morelength"
-                  size="small"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  v-model="params.startTime"
+                <div
+                  class="addInfo"
+                  @click="handleToCallDialog1()"
+                  v-if="couponData.length < 5"
                 >
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item>
-                <span>预计发放用户数:{{this.userNumber}}人</span>
-              </el-form-item>
-            </el-form>
-          </div>
+                  <el-image
+                    fit="scale-down"
+                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    style="width: 78px;height:78px;cursor:pointer"
+                  ></el-image>
+                </div>
+              </div>
+            </el-form-item>
+
+            <!-- 发送时间 -->
+            <el-form-item
+              :label="$t('couponGive.grantTime')"
+              prop="startTime"
+            >
+              <el-radio
+                label="0"
+                v-model="params.sendAction"
+              >{{$t('couponGive.immediatelyGrant')}}</el-radio>
+              <br>
+              <el-radio
+                label="1"
+                v-model="params.sendAction"
+              >{{$t('couponGive.regularlyGrant')}}</el-radio>
+              <el-date-picker
+                type="datetime"
+                class="morelength"
+                size="small"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                v-model="params.startTime"
+              >
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <span>预计发放用户数:{{this.userNumber}}人</span>
+            </el-form-item>
+          </el-form>
         </div>
       </div>
-      <div class="footer">
-        <el-button
-          type="primary"
-          size="small"
-          @click="addAct"
-        >{{$t('couponGive.confirmGrant')}}</el-button>
-      </div>
-      <!-- 添加会员的弹窗 -->
-      <memberListDialog
-        v-if="dialogOff"
-        @userIdList="getUserIdList"
-        :memberListDialog="dialogOff"
-        @dialog-cancel="closeDialog"
-      />
-      <!-- 选择商品弹窗 -->
+    </div>
+    <div class="footer">
+      <el-button
+        type="primary"
+        size="small"
+        @click="addAct"
+      >{{$t('couponGive.confirmGrant')}}</el-button>
+    </div>
+    <!-- 添加会员的弹窗 -->
+    <memberListDialog
+      v-if="dialogOff"
+      @userIdList="getUserIdList"
+      :memberListDialog="dialogOff"
+      @dialog-cancel="closeDialog"
+    />
+    <!-- 选择商品弹窗 -->
 
-      <choosingGoods
-        @resultGoodsDatas="choosingGoodsResult"
-        :tuneUpChooseGoods='isShowChoosingGoodsDialog'
-        :checkedNumMax=3
-        :chooseGoodsBack='this.params.goodsIdList'
-      />
-      <!-- <choosingGoods
+    <choosingGoods
+      @resultGoodsDatas="choosingGoodsResult"
+      :tuneUpChooseGoods='isShowChoosingGoodsDialog'
+      :checkedNumMax=3
+      :chooseGoodsBack='this.params.goodsIdList'
+    />
+    <!-- <choosingGoods
         @res="getRes"
         :tuneUpChooseGoods="tuneUpChooseGoods"
         :checkedNumMax=3
         :chooseGoodsBack='this.params.goodsIdList'
       /> -->
-      <!-- 获取人群弹窗 -->
-      <getUserDialog
-        @dialog-cancel="closeDialog"
-        :dialogVisible="dialogVisible"
-      />
-      <!--添加优惠卷弹窗-->
-      <addCouponDialog
-        @checkReturnFormat="handleToCheck"
-        :tuneUpCoupon="showCouponDialog"
-        :couponBack="couponIdList"
-      />
-    </div>
-  </wrapper>
+    <!-- 获取人群弹窗 -->
+    <getUserDialog
+      @dialog-cancel="closeDialog"
+      :dialogVisible="dialogVisible"
+    />
+    <!--添加优惠卷弹窗-->
+    <addCouponDialog
+      @checkReturnFormat="handleToCheck"
+      :tuneUpCoupon="showCouponDialog"
+      :couponBack="couponIdList"
+    />
+  </div>
+  <!-- </wrapper> -->
 </template>>
 
 <script>
@@ -425,13 +425,13 @@ export default {
           { required: true, message: `${this.$t('couponGive.actNameTip')}`, trigger: 'blur' }
         ],
         startTime: [
-          { validator: validateTime, trigger: 'change' }
+          { required: true, validator: validateTime, trigger: 'change' }
         ],
         coupon: [
-          { validator: validateCoupon, trigger: 'change' }
+          { required: true, validator: validateCoupon, trigger: 'change' }
         ],
         crowd: [
-          { validator: validateCrowd, trigger: 'change' }
+          { required: true, validator: validateCrowd, trigger: 'change' }
         ]
       },
       isShowChoosingGoodsDialog: false,
@@ -1091,22 +1091,25 @@ export default {
 }
 .footer {
   padding: 10px 0px 10px 0px;
-  text-align: center;
+  // text-align: center;
   background: #f8f8f8;
   margin-top: 10px;
   position: fixed;
   bottom: 0;
   z-index: 1;
   width: 100%;
+  padding-left: 43%;
 }
 .mainContent {
+  width: 100%;
   .mainContentMiddle {
+    padding: 15px;
+    background: #e6e9f0;
     .mainContentRight {
       margin-bottom: 100px;
       min-width: 520px;
       min-height: 1010px;
       background-color: white;
-      margin-left: 20px;
       padding-top: 15px;
       .mainContentRightForm {
         .mainContentRightFormText {

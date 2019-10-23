@@ -11,6 +11,7 @@
         <el-input
           size="medium"
           v-model="actName"
+          clearable
           placeholder="请输入优惠券名称"
           class='search_content'
         >
@@ -165,10 +166,13 @@ export default {
     // 优惠券列表
     handleClick () {
       this.pageParams.nav = this.nav
-      this.pageParams.actName = this.actName
+      if (this.actName !== '') {
+        this.pageParams.actName = this.actName
+      }
       couponList(this.pageParams).then((res) => {
         console.log(res)
         if (res.error === 0) {
+          console.log(res.content)
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
         }
@@ -350,7 +354,7 @@ export default {
   }
 }
 .search_content {
-  width: 150px;
+  width: 220px;
 }
 .opt {
   text-align: left;

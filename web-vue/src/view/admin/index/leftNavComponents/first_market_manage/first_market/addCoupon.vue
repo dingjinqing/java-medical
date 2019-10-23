@@ -63,7 +63,7 @@
                 <span v-else>订单满<span>{{param.leastConsume?param.leastConsume:'0'}}</span>元可用</span>
                 <span
                   class="part"
-                  v-if="param.suitGoods === '1'"
+                  v-if="param.suitGoods === 1"
                 >部分商品可用</span>
               </div>
             </div>
@@ -72,7 +72,14 @@
                 class="code"
                 v-if="param.validationCode != ''"
               >请输入领取码</div>
-              <div class="use">立即使用</div>
+              <div
+                class="use"
+                v-if="this.param.type==0"
+              >立即使用</div>
+              <div
+                class="use"
+                v-if="this.param.type==1"
+              >立即分享</div>
               <div>
                 <span class="sub_title">使用说明</span>
                 <div
@@ -83,6 +90,33 @@
             </div>
           </div>
           <div class="content_right">
+            <div class="coupon_info">
+              <div class="coupon_info_title">优惠券类型</div>
+              <ul>
+                <li class="content_right_li clearfix">
+                  <div class="content_left_title">
+                    <em>*</em>优惠券类型：
+                  </div>
+                  <div>
+                    <el-radio
+                      v-model="param.type"
+                      :label=0
+                    >普通优惠券</el-radio>
+                    <el-radio
+                      v-model="param.type"
+                      :label=1
+                    >分裂优惠券 <el-tooltip
+                        effect="dark"
+                        content="买家领取到优惠券之后分享给好友, 自己和好友都可以获得一张优惠券"
+                        placement="top"
+                      >
+                        <i class="el-icon-warning-outline"></i>
+                      </el-tooltip>
+                    </el-radio>
+                  </div>
+                </li>
+              </ul>
+            </div>
             <div class="coupon_info">
               <div class="coupon_info_title">优惠券基础信息</div>
               <ul>
@@ -99,6 +133,90 @@
                       v-model="param.actName"
                       maxlength="10"
                     ></el-input>
+                  </div>
+                </li>
+                <li class="content_right_li clearfix">
+                  <div class="content_left_title">
+                    <em>*</em>有效期：
+                  </div>
+                  <div>
+                    <p>
+                      <el-radio
+                        v-model="param.availablePeriod"
+                        :label=0
+                      >固定日期</el-radio>
+                    </p>
+                    <p style="margin:15px 0;">
+                      <el-date-picker
+                        :disabled="param.availablePeriod===0?false:true"
+                        v-model="param.couponDate"
+                        type="datetimerange"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        format="yyyy-MM-dd HH:mm:ss"
+                        range-separator="-"
+                        start-placeholder="生效时间"
+                        end-placeholder="过期时间"
+                        size="small"
+                      >
+                      </el-date-picker>
+                    </p>
+                    <p>
+                      <el-radio
+                        v-model="param.availablePeriod"
+                        :label=1
+                        style="margin-right: 25px;"
+                      >领券开始</el-radio>
+                      <span>
+                        <el-input
+                          :disabled="param.availablePeriod===1?false:true"
+                          v-model="param.validity"
+                          placeholder=""
+                          size="small"
+                          class="small_input"
+                        ></el-input> 天 <el-input
+                          :disabled="param.availablePeriod===1?false:true"
+                          v-model="param.validityHour"
+                          placeholder=""
+                          size="small"
+                          class="small_input"
+                        ></el-input> 小时 <el-input
+                          :disabled="param.availablePeriod===1?false:true"
+                          v-model="param.validityMinute"
+                          placeholder=""
+                          size="small"
+                          class="small_input"
+                        ></el-input> 分钟内有效
+                      </span>
+                    </p>
+                  </div>
+                </li>
+                <li class="content_right_li clearfix">
+                  <div class="content_left_title">
+                    <em>*</em>初始库存：
+                  </div>
+                  <div>
+                    <div>
+                      <el-radio
+                        v-model="param.amount"
+                        :label=0
+                      >库存数量</el-radio>
+                      <span>
+                        <el-input
+                          :disabled="param.amount===0?false:true"
+                          v-model="param.remainAmount"
+                          size="small"
+                          class="small_input"
+                        ></el-input>张
+                        <span style="color: #999;">优惠券可发放的总数量</span>
+                      </span>
+                    </div>
+                    <div>
+                      <el-radio
+                        v-model="param.amount"
+                        :label=1
+                      >不限制库存</el-radio>
+                    </div>
+
                   </div>
                 </li>
                 <li class="content_right_li clearfix">
@@ -133,7 +251,7 @@
 
                   </div>
                 </li>
-                <li class="content_right_li clearfix">
+                <!-- <li class="content_right_li clearfix">
                   <div class="content_left_title">
                     <em>*</em>使用门槛：
                   </div>
@@ -157,21 +275,21 @@
                       </el-radio>
                     </p>
                   </div>
-                </li>
+                </li> -->
                 <li class="content_right_li clearfix">
                   <div class="content_left_title">
                     <em>*</em>是否需要兑换：
                   </div>
                   <div>
                     <el-radio
-                      v-model="param.useScore"
+                      v-model="param.isRandom"
                       :label=0
                     >不需要</el-radio>
                     <el-radio
-                      v-model="param.useScore"
+                      v-model="param.isRandom"
                       :label=1
                     >需要兑换</el-radio>
-                    <p v-if="param.useScore == 1">
+                    <p v-if="param.isRandom== 1">
                       <el-input
                         v-model="param.scoreNumber"
                         class="small_input"
@@ -237,9 +355,9 @@
                     </div>
                   </div>
                 </li>
-                <li class="content_right_li clearfix">
+                <!-- <li class="content_right_li clearfix">
                   <div class="content_left_title">
-                    <em>*</em>会员专享：
+                    <em>*</em>有效期：
                   </div>
                   <div>
                     <p>
@@ -286,7 +404,7 @@
                         ></el-input> 分钟内有效 </el-radio>
                     </p>
                   </div>
-                </li>
+                </li> -->
                 <li class="content_right_li clearfix">
                   <div class="content_left_title">
                     <em>*</em>发放总量：
@@ -315,42 +433,6 @@
                 </li>
                 <li class="content_right_li clearfix">
                   <div class="content_left_title">
-                    <em>*</em>可使用商品：
-                  </div>
-                  <div>
-                    <p>
-                      <el-radio
-                        v-model="param.suitGoods"
-                        label='0'
-                      >全部商品</el-radio>
-                    </p>
-                    <p>
-                      <el-radio
-                        v-model="param.suitGoods"
-                        label='1'
-                      >指定商品</el-radio>
-                    </p>
-                    <div v-if="param.suitGoods === '1'">
-                      <div
-                        class="noneBlockList"
-                        v-for="(item,index) in noneBlockDiscArr"
-                        :key="index"
-                        @click="hanldeToAddGoodS(index)"
-                      >
-                        <div class="noneBlockLeft">
-                          <img :src="$imageHost+'/image/admin/icon_jia.png'">
-                          {{item.name}}
-                        </div>
-                        <div
-                          v-if="item.num"
-                          class="noneBlockRight"
-                        >已选择{{index === 0 ? '商品':'分类'}}：{{item.num}}个{{index === 0 ? '商品':'分类'}}</div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
                     是否隐藏：
                   </div>
                   <div style="display:flex">
@@ -367,6 +449,67 @@
                     <span style="flex:1;padding-left:15px;color:red;">
                       隐藏则不显示在前端商品详情页。否则显示到前端商品详情页可以供用户领取。
                     </span>
+                  </div>
+                </li>
+                <li class="content_right_li clearfix">
+                  <div class="content_left_title">
+                    <em>*</em>使用门槛：
+                  </div>
+                  <div>
+                    <p>
+                      <el-radio
+                        v-model="param.useConsumeRestrict"
+                        :label=0
+                      >不限制</el-radio>
+                    </p>
+                    <p>
+                      <el-radio
+                        v-model="param.useConsumeRestrict"
+                        :label=1
+                      >满<el-input
+                          size="small"
+                          v-model="param.leastConsume"
+                          class="small_input"
+                        ></el-input>
+                        元可用
+                      </el-radio>
+                    </p>
+                  </div>
+                </li>
+                <li class="content_right_li clearfix">
+                  <div class="content_left_title">
+                    <em>*</em>可使用商品：
+                  </div>
+                  <div>
+                    <p>
+                      <el-radio
+                        v-model="param.suitGoods"
+                        :label='0'
+                      >全部商品</el-radio>
+                    </p>
+                    <p>
+                      <el-radio
+                        v-model="param.suitGoods"
+                        :label='1'
+                      >指定商品</el-radio>
+                    </p>
+                    <div v-if="param.suitGoods === 1">
+                      <div
+                        class="noneBlockList"
+                        v-for="(item,index) in noneBlockDiscArr"
+                        :key="index"
+                        @click="hanldeToAddGoodS(index)"
+                      >
+                        <div class="noneBlockLeft">
+                          <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                          {{item.name}}
+                        </div>
+                        <div
+                          v-if="item.num"
+                          class="noneBlockRight"
+                        >已选择{{index === 0 ? '商品':'分类'}}：{{item.num}}个{{index === 0 ? '商品':'分类'}}</div>
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li class="content_right_li clearfix">
@@ -416,25 +559,30 @@ export default {
     return {
       couponInfo: {},
       param: {
+        type: 0, // 优惠券类型
         actName: '',
-        actCode: '',
+        aliasCode: '',
         preferentialType: 0,
         useConsumeRestrict: 0,
-        useScore: 0,
+        isRandom: 0,
         receivePerPerson: 0,
         cardId: [],
-        availablePeriod: 0,
-        couponDate: '',
+        availablePeriod: 0, // 有效期
+        couponDate: '', // 总时间
+        startTime: '', // 生效时间
+        endTime: '', // 到期时间
+        amount: 1, // 初始库存
+        remainAmount: 10, // 库存数量张
         validity: '',
         validityHour: '',
         validityMinute: '',
         totalAmount: '',
         validationCode: '',
-        recommendGoodsId: null,
-        recommendCatId: null,
-        recommendSortId: null,
+        recommendGoodsId: '',
+        recommendCatId: '',
+        recommendSortId: '',
         isHide: 0,
-        suitGoods: '0',
+        suitGoods: 0,
         useExplain: '',
         denomination: null,
         denomination2: null,
@@ -478,8 +626,9 @@ export default {
   mounted () {
     this.dataDefalut()
     this.couponId = this.$route.query.id
-
-    this.getOneInfo()
+    if (this.couponId) {
+      this.getOneInfo()
+    }
   },
   methods: {
     handleClick () {
@@ -510,7 +659,7 @@ export default {
             this.param.startTime, this.param.startTime
           ]
         }
-        if (this.param.actCode === 'discount') {
+        if (this.param.aliasCode === 'discount') {
           this.param.preferentialType = 0
         } else {
           this.param.preferentialType = 1
@@ -543,15 +692,36 @@ export default {
     // 保存优惠券
     saveCoupon () {
       if (this.param.preferentialType === 0) {
-        this.param.actCode = 'voucher'
+        this.param.aliasCode = 'voucher'
       } else {
-        this.param.actCode = 'discount'
+        this.param.aliasCode = 'discount'
         this.param.denomination = this.param.denomination2
       }
-      this.param.cardId = this.param.cardId.join()
+      this.param.aliasCode = this.param.aliasCode
+      // this.param.cardId = this.param.cardId.join()
       this.param.startTime = this.param.couponDate[0]
       this.param.endTime = this.param.couponDate[1]
-      saveCoupon(this.param).then(res => {
+
+      let paramsData = {}
+      paramsData.actName = this.param.actName
+      paramsData.startTime = this.param.startTime
+      paramsData.endTime = this.param.endTime
+      paramsData.denomination = this.param.denomination
+      paramsData.totalAmount = this.param.totalAmount
+      paramsData.type = this.param.type
+      paramsData.remainAmount = this.param.remainAmount
+      paramsData.suitGoods = this.param.suitGoods
+      paramsData.aliasCode = this.param.aliasCode
+      paramsData.useConsumeRestrict = this.param.useConsumeRestrict
+      paramsData.isRandom = this.param.isRandom
+      paramsData.userScore = this.param.scoreNumber
+      paramsData.receivePerPerson = this.param.receivePerPerson
+      paramsData.useExplain = this.param.useExplain
+      paramsData.recommendGoodsId = this.param.recommendGoodsId
+      paramsData.recommendCatId = this.param.recommendCatId
+      paramsData.recommendSortId = this.param.recommendSortId
+
+      saveCoupon(paramsData).then(res => {
         if (res.error === 0) {
           this.$message({
             message: '添加成功',

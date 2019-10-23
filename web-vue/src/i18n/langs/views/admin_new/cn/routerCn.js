@@ -220,6 +220,8 @@ export const cn = {
   couponGive_grant_coupons: ['营销管理', '定向发券', '发放优惠券'],
   // 营销管理 收藏有礼
   collectGift: ['营销管理', '收藏有礼'],
+  // 营销管理 秒杀
+  seckill: ['营销管理', '秒杀'],
 
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
