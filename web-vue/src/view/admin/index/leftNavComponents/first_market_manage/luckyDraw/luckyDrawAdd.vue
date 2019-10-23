@@ -1,508 +1,508 @@
 <template>
-    <div class="luckyDrawAdd">
-        <el-card>
-            <div class="mainContent">
-                <div class="mainContentLeft">
-                    <section class="drawContent">
-                        <div class="top">
-                            <div>{{$t('luckyDraw.luckyWhee')}}</div>
-                        </div>
-                        <div class="drawArea">
-                            <div class="loTop">
-                                <div class="loArea">
-                                    <div class="picBox">
-                                        <ul class="picWrapper">
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[3].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost+requestParam.noAwardImage" alt="">
-                                                <div>{{requestParam.noAwardIcon}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[2].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[0].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[0].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[1].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[3].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[2].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[3].iconImgs}}</div>
-                                            </li>
-                                            <li class="picItems">
-                                                <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
-                                                     alt="">
-                                                <div>{{requestParam.prizeList[1].iconImgs}}</div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="winningTips">
-                                        <img
-                                                src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_words.png"
-                                                alt=""
-                                        >
-                                        张三{{$t('luckyDraw.get')}}
-                                        <span>{{requestParam.prizeList[0].iconImgs}}{{$t('luckyDraw.publicityInfo')}}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="immediatelyDraw">
-                                <div class="drawText">{{$t('luckyDraw.immediatelyDraw')}}</div>
-                            </div>
-                            <div class="actRule">
-                                <div class="ruleInfo">
-                                    <img
-                                            src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_l.png"
-                                            alt=""
-                                    >
-                                    <span>{{$t('luckyDraw.activityRules')}}</span>
-                                    <img
-                                            src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_r.png"
-                                            alt=""
-                                    >
-                                </div>
-                                <div class="ruleContent">
-                                    <div class="timeRange">{{$t('luckyDraw.activityValidity')}}：</div>
-                                    <div>{{$t('luckyDraw.to')}}：</div>
-                                    <div>{{$t('luckyDraw.activityDescription')}}：</div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
+  <div class="luckyDrawAdd">
+    <el-card>
+      <div class="mainContent">
+          <div class="mainContentLeft">
+              <section class="drawContent">
+                  <div class="top">
+                      <div>{{$t('luckyDraw.luckyWhee')}}</div>
+                  </div>
+                  <div class="drawArea">
+                      <div class="loTop">
+                          <div class="loArea">
+                              <div class="picBox">
+                                  <ul class="picWrapper">
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[3].iconImgs}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost+requestParam.noAwardImage" alt="">
+                                          <div>{{requestParam.noAwardIcon}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[2].iconImgs}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[0].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[0].iconImgs}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[1].iconImgs}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[3].iconImgs}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[2].iconImgs}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[3].iconImgs}}</div>
+                                      </li>
+                                      <li class="picItems">
+                                          <img :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
+                                                alt="">
+                                          <div>{{requestParam.prizeList[1].iconImgs}}</div>
+                                      </li>
+                                  </ul>
+                              </div>
+                              <div class="winningTips">
+                                  <img
+                                          src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_words.png"
+                                          alt=""
+                                  >
+                                  张三{{$t('luckyDraw.get')}}
+                                  <span>{{requestParam.prizeList[0].iconImgs}}{{$t('luckyDraw.publicityInfo')}}
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="immediatelyDraw">
+                          <div class="drawText">{{$t('luckyDraw.immediatelyDraw')}}</div>
+                      </div>
+                      <div class="actRule">
+                          <div class="ruleInfo">
+                              <img
+                                      src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_l.png"
+                                      alt=""
+                              >
+                              <span>{{$t('luckyDraw.activityRules')}}</span>
+                              <img
+                                      src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_r.png"
+                                      alt=""
+                              >
+                          </div>
+                          <div class="ruleContent">
+                              <div class="timeRange">{{$t('luckyDraw.activityValidity')}}：</div>
+                              <div>{{$t('luckyDraw.to')}}：</div>
+                              <div>{{$t('luckyDraw.activityDescription')}}：</div>
+                          </div>
+                      </div>
+                  </div>
+              </section>
+          </div>
 
-                <div class="mainContentRight">
-                    <!-- 活动信息 -->
-                    <div class="boxWrapper">
-                        <div class="textDesc">{{$t('luckyDraw.activityInformation')}}</div>
-                        <el-form label-width="100px" ref="form">
-                            <el-form-item :label="$t('luckyDraw.activityName')">
-                                <el-input
-                                        size="small"
-                                        v-model="requestParam.lotteryName"
-                                        :placeholder="$t('luckyDraw.supportUpTo10Words')"
-                                        style="width: 180px;"
-                                ></el-input>
-                            </el-form-item>
+          <div class="mainContentRight">
+              <!-- 活动信息 -->
+              <div class="boxWrapper">
+                  <div class="textDesc">{{$t('luckyDraw.activityInformation')}}</div>
+                  <el-form label-width="100px" ref="form">
+                      <el-form-item :label="$t('luckyDraw.activityName')">
+                          <el-input
+                                  size="small"
+                                  v-model="requestParam.lotteryName"
+                                  :placeholder="$t('luckyDraw.supportUpTo10Words')"
+                                  style="width: 180px;"
+                          ></el-input>
+                      </el-form-item>
 
-                            <el-form-item :label="$t('luckyDraw.activityValidity')">
-                                <div>
-                                    <span>{{$t('luckyDraw.effectiveTime')}}：</span>
-                                    <el-date-picker
-                                            v-model="requestParam.startTime"
-                                            type="datetime"
-                                            :placeholder="$t('luckyDraw.selectDateTime')"
-                                            size="small"
-                                            style="width: 180px"
-                                            value-format="yyyy-MM-dd HH:mm:ss"
-                                    >
-                                    </el-date-picker>
-                                </div>
-                                <div>
-                                    <span>{{$t('luckyDraw.expirationTime')}}：</span>
-                                    <el-date-picker
-                                            v-model="requestParam.endTime"
-                                            type="datetime"
-                                            :placeholder="$t('luckyDraw.selectDateTime')"
-                                            size="small"
-                                            style="width: 180px"
-                                            value-format="yyyy-MM-dd HH:mm:ss"
-                                    >
-                                    </el-date-picker>
-                                </div>
-                            </el-form-item>
+                      <el-form-item :label="$t('luckyDraw.activityValidity')">
+                          <div>
+                              <span>{{$t('luckyDraw.effectiveTime')}}：</span>
+                              <el-date-picker
+                                      v-model="requestParam.startTime"
+                                      type="datetime"
+                                      :placeholder="$t('luckyDraw.selectDateTime')"
+                                      size="small"
+                                      style="width: 180px"
+                                      value-format="yyyy-MM-dd HH:mm:ss"
+                              >
+                              </el-date-picker>
+                          </div>
+                          <div>
+                              <span>{{$t('luckyDraw.expirationTime')}}：</span>
+                              <el-date-picker
+                                      v-model="requestParam.endTime"
+                                      type="datetime"
+                                      :placeholder="$t('luckyDraw.selectDateTime')"
+                                      size="small"
+                                      style="width: 180px"
+                                      value-format="yyyy-MM-dd HH:mm:ss"
+                              >
+                              </el-date-picker>
+                          </div>
+                      </el-form-item>
 
-                            <el-form-item :label="$t('luckyDraw.activityName')">
-                                <el-input
-                                        v-model="requestParam.lotteryExplain"
-                                        type="textarea"
-                                        :rows="4"
-                                        :placeholder="$t('luckyDraw.pleaseEnterContent')"
-                                        style="width: 300px;height: 100px;"
-                                ></el-input>
-                            </el-form-item>
-                        </el-form>
-                    </div>
+                      <el-form-item :label="$t('luckyDraw.activityName')">
+                          <el-input
+                                  v-model="requestParam.lotteryExplain"
+                                  type="textarea"
+                                  :rows="4"
+                                  :placeholder="$t('luckyDraw.pleaseEnterContent')"
+                                  style="width: 300px;height: 100px;"
+                          ></el-input>
+                      </el-form-item>
+                  </el-form>
+              </div>
 
-                    <!-- 规则设置 -->
-                    <div class="boxWrapper">
-                        <div class="textDesc">{{$t('luckyDraw.rulesSetting')}}</div>
-                        <el-form label-width="125px">
-                            <!--                            <el-form-item-->
-                            <!--                                    label="活动规则："-->
-                            <!--                                    prop=""-->
-                            <!--                            >-->
-                            <!--                                <el-radio-group v-model="times">-->
-                            <!--                                    <el-radio :label="1">每人N次</el-radio>-->
-                            <!--                                    <el-radio :label="2">每人每天N次</el-radio>-->
-                            <!--                                </el-radio-group>-->
-                            <!--                            </el-form-item>-->
+              <!-- 规则设置 -->
+              <div class="boxWrapper">
+                  <div class="textDesc">{{$t('luckyDraw.rulesSetting')}}</div>
+                  <el-form label-width="125px">
+                      <!--                            <el-form-item-->
+                      <!--                                    label="活动规则："-->
+                      <!--                                    prop=""-->
+                      <!--                            >-->
+                      <!--                                <el-radio-group v-model="times">-->
+                      <!--                                    <el-radio :label="1">每人N次</el-radio>-->
+                      <!--                                    <el-radio :label="2">每人每天N次</el-radio>-->
+                      <!--                                </el-radio-group>-->
+                      <!--                            </el-form-item>-->
 
-                            <el-form-item :label="$t('luckyDraw.freePrizeDraw')">
-                                <el-input
-                                        size="small"
-                                        :placeholder="$t('luckyDraw.nullUnrestricted')"
-                                        style="width:125px"
-                                        v-model="requestParam.freeChances"
-                                ></el-input>
-                                <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span>
-                            </el-form-item>
+                      <el-form-item :label="$t('luckyDraw.freePrizeDraw')">
+                          <el-input
+                                  size="small"
+                                  :placeholder="$t('luckyDraw.nullUnrestricted')"
+                                  style="width:125px"
+                                  v-model="requestParam.freeChances"
+                          ></el-input>
+                          <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span>
+                      </el-form-item>
 
-                            <el-form-item :label="$t('luckyDraw.shareTheLuckyDraw')">
-                                <el-radio-group v-model="requestParam.canShare">
-                                    <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
-                                    <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
-                                </el-radio-group>
-                                <div v-if="requestParam.canShare === 1">
-                                    <span style="color: #999">{{$t('luckyDraw.shareTheLuckyDrawTips')}}</span>
-                                    <div>
-                                        {{$t('luckyDraw.shareTheLuckyDrawTips1')}}
-                                        <el-input
-                                                size="small"
-                                                :placeholder="$t('luckyDraw.nullUnrestricted')"
-                                                style="width:125px"
-                                                v-model="requestParam.shareChances"
-                                        ></el-input>
-                                        {{$t('luckyDraw.shareTheLuckyDrawTips2')}}
-                                    </div>
-                                </div>
-                            </el-form-item>
+                      <el-form-item :label="$t('luckyDraw.shareTheLuckyDraw')">
+                          <el-radio-group v-model="requestParam.canShare">
+                              <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
+                              <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
+                          </el-radio-group>
+                          <div v-if="requestParam.canShare === 1">
+                              <span style="color: #999">{{$t('luckyDraw.shareTheLuckyDrawTips')}}</span>
+                              <div>
+                                  {{$t('luckyDraw.shareTheLuckyDrawTips1')}}
+                                  <el-input
+                                          size="small"
+                                          :placeholder="$t('luckyDraw.nullUnrestricted')"
+                                          style="width:125px"
+                                          v-model="requestParam.shareChances"
+                                  ></el-input>
+                                  {{$t('luckyDraw.shareTheLuckyDrawTips2')}}
+                              </div>
+                          </div>
+                      </el-form-item>
 
-                            <el-form-item :label="$t('luckyDraw.payLuckyDraw')">
-                                <el-radio-group v-model="requestParam.canUseScore">
-                                    <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
-                                    <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
-                                </el-radio-group>
-                                <div v-if="requestParam.canUseScore===1">
-                                    <span style="color: #999;">{{$t('luckyDraw.payLuckyDrawTips1')}}</span>
-                                    <div>
-                                        {{$t('luckyDraw.payLuckyDrawTips2')}}：
-                                        <el-input
-                                                size="small"
-                                                placeholder="为空表示不消耗积分"
-                                                style="width:125px"
-                                                v-model="requestParam.scorePerChance"
-                                        ></el-input>
-                                        <span style="color:#999">{{$t('luckyDraw.payLuckyDrawTips3')}}</span>
-                                    </div>
-                                    <div>
-                                        {{$t('luckyDraw.payLuckyDrawTips4')}}
-                                        <el-input
-                                                size="small"
-                                                :placeholder="$t('luckyDraw.nullUnrestricted')"
-                                                style="width:125px"
-                                                v-model="requestParam.scoreChances"
-                                        ></el-input>
-                                        {{$t('luckyDraw.payLuckyDrawTips5')}}
-                                    </div>
-                                </div>
-                            </el-form-item>
+                      <el-form-item :label="$t('luckyDraw.payLuckyDraw')">
+                          <el-radio-group v-model="requestParam.canUseScore">
+                              <el-radio :label="1">{{$t('luckyDraw.allow')}}</el-radio>
+                              <el-radio :label="2">{{$t('luckyDraw.notAllow')}}</el-radio>
+                          </el-radio-group>
+                          <div v-if="requestParam.canUseScore===1">
+                              <span style="color: #999;">{{$t('luckyDraw.payLuckyDrawTips1')}}</span>
+                              <div>
+                                  {{$t('luckyDraw.payLuckyDrawTips2')}}：
+                                  <el-input
+                                          size="small"
+                                          placeholder="为空表示不消耗积分"
+                                          style="width:125px"
+                                          v-model="requestParam.scorePerChance"
+                                  ></el-input>
+                                  <span style="color:#999">{{$t('luckyDraw.payLuckyDrawTips3')}}</span>
+                              </div>
+                              <div>
+                                  {{$t('luckyDraw.payLuckyDrawTips4')}}
+                                  <el-input
+                                          size="small"
+                                          :placeholder="$t('luckyDraw.nullUnrestricted')"
+                                          style="width:125px"
+                                          v-model="requestParam.scoreChances"
+                                  ></el-input>
+                                  {{$t('luckyDraw.payLuckyDrawTips5')}}
+                              </div>
+                          </div>
+                      </el-form-item>
 
-                            <el-form-item :label="$t('luckyDraw.noWinningBonusPoints')">
-                                <el-input
-                                        size="small"
-                                        :placeholder="$t('luckyDraw.nullIsNoPoints')"
-                                        style="width: 185px"
-                                        v-model="requestParam.noAwardScore"
-                                ></el-input>
-                                <span style="color: #999">{{$t('luckyDraw.noWinningBonusPoints')}}</span>
-                                <section class="upInfo">
-                                    <div class="upIcons">
-                                        <div class="leftContent">
-                                            <img
-                                                    :src="this.$imageHost + this.requestParam.noAwardImage"
-                                                    alt=""
-                                            >
-                                        </div>
-                                        <div class="rightContent">
-                                            <div class="operate">
-                                                <span @click="showLotteryDialog(1)">{{$t('luckyDraw.modification')}}
-                                                </span>
-                                                <span class="operateBtn fixstyle" @click="changeImgHandler(1)">
-                                                    {{$t('luckyDraw.uploadChartForNoWinning')}}
-                                                </span>
-                                                <span class="operateBtn">{{$t('luckyDraw.empty')}}</span>
-                                            </div>
-                                            <p>{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="iconDesc">
-                                        <span>{{$t('luckyDraw.iconDescribe')}}：</span>
-                                        <el-input
-                                                size="small"
-                                                :placeholder="$t('luckyDraw.iconDescribeTips')"
-                                                style="width: 180px"
-                                                v-model="requestParam.noAwardIcon"
-                                        ></el-input>
-                                    </div>
-                                </section>
-                            </el-form-item>
-                        </el-form>
-                    </div>
+                      <el-form-item :label="$t('luckyDraw.noWinningBonusPoints')">
+                          <el-input
+                                  size="small"
+                                  :placeholder="$t('luckyDraw.nullIsNoPoints')"
+                                  style="width: 185px"
+                                  v-model="requestParam.noAwardScore"
+                          ></el-input>
+                          <span style="color: #999">{{$t('luckyDraw.noWinningBonusPoints')}}</span>
+                          <section class="upInfo">
+                              <div class="upIcons">
+                                  <div class="leftContent">
+                                      <img
+                                              :src="this.$imageHost + this.requestParam.noAwardImage"
+                                              alt=""
+                                      >
+                                  </div>
+                                  <div class="rightContent">
+                                      <div class="operate">
+                                          <span @click="showLotteryDialog(1)">{{$t('luckyDraw.modification')}}
+                                          </span>
+                                          <span class="operateBtn fixstyle" @click="changeImgHandler(1)">
+                                              {{$t('luckyDraw.uploadChartForNoWinning')}}
+                                          </span>
+                                          <span class="operateBtn">{{$t('luckyDraw.empty')}}</span>
+                                      </div>
+                                      <p>{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
+                                  </div>
+                              </div>
+                              <div class="iconDesc">
+                                  <span>{{$t('luckyDraw.iconDescribe')}}：</span>
+                                  <el-input
+                                          size="small"
+                                          :placeholder="$t('luckyDraw.iconDescribeTips')"
+                                          style="width: 180px"
+                                          v-model="requestParam.noAwardIcon"
+                                  ></el-input>
+                              </div>
+                          </section>
+                      </el-form-item>
+                  </el-form>
+              </div>
 
-                    <!-- 抽奖设置 -->
-                    <div class="boxWrapper">
-                        <div class="textDesc">{{$t('luckyDraw.lotteryIsSet')}}</div>
-                        <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips1')}}</p>
-                        <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips2')}}</p>
-                        <!-- 一等奖~四等奖 tab切换 -->
-                        <el-tabs
-                                type="border-card"
-                                class="tabs"
-                                v-model="tabSwitch"
-                                @tab-click="handleTabClick"
-                        >
-                            <el-tab-pane
-                                    v-for="(item,index) in requestParam.prizeList"
-                                    :key="index"
-                                    :label="item.iconImgs"
-                                    :name="item.lotteryGrade"
-                            >
-                                <el-form label="100px">
-                                    <el-form-item :label="$t('luckyDraw.prizeRate')">
-                                        <el-input
-                                                size="small"
-                                                style="width:120px"
-                                                v-model="item.chance"
-                                                @change="prizeRateChange(item.chance)"
-                                        ></el-input>&nbsp;&nbsp;%
-                                    </el-form-item>
+              <!-- 抽奖设置 -->
+              <div class="boxWrapper">
+                  <div class="textDesc">{{$t('luckyDraw.lotteryIsSet')}}</div>
+                  <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips1')}}</p>
+                  <p class="drawSetting">{{$t('luckyDraw.lotteryIsSetTips2')}}</p>
+                  <!-- 一等奖~四等奖 tab切换 -->
+                  <el-tabs
+                          type="border-card"
+                          class="tabs"
+                          v-model="tabSwitch"
+                          @tab-click="handleTabClick"
+                  >
+                      <el-tab-pane
+                              v-for="(item,index) in requestParam.prizeList"
+                              :key="index"
+                              :label="item.iconImgs"
+                              :name="item.lotteryGrade"
+                      >
+                          <el-form label="100px">
+                              <el-form-item :label="$t('luckyDraw.prizeRate')">
+                                  <el-input
+                                          size="small"
+                                          style="width:120px"
+                                          v-model="item.chance"
+                                          @change="prizeRateChange(item.chance)"
+                                  ></el-input>&nbsp;&nbsp;%
+                              </el-form-item>
 
-                                    <el-form-item :label="$t('luckyDraw.selectPrize')">
-                                        <el-radio-group v-model="item.lotteryType">
-                                            <el-radio :label="1">{{$t('luckyDraw.prizeType')[0][1]}}</el-radio>
-                                            <el-radio :label="2">{{$t('luckyDraw.prizeType')[1][1]}}</el-radio>
-                                            <el-radio :label="3">{{$t('luckyDraw.prizeType')[2][1]}}</el-radio>
-                                            <el-radio :label="4">{{$t('luckyDraw.prizeType')[3][1]}}</el-radio>
-                                            <el-radio :label="5">{{$t('luckyDraw.prizeType')[4][1]}}</el-radio>
-                                        </el-radio-group>
-                                        <section style="margin-left: 81px;">
-                                            <div v-if="item.lotteryType===1">
-                                                <span>{{$t('luckyDraw.presentExp')}}：</span>
-                                                <el-input
-                                                        size="small"
-                                                        :placeholder="$t('luckyDraw.presentExpTips')"
-                                                        style="width: 120px"
-                                                        v-model="item.integralScore"
-                                                ></el-input>
-                                            </div>
-                                            <div v-if="item.lotteryType===2">
-                                                <span>{{$t('luckyDraw.giveTheBalance')}}：</span>
-                                                <el-input
-                                                        size="small"
-                                                        :placeholder="$t('luckyDraw.giveTheBalanceTips')"
-                                                        style="width: 120px"
-                                                        v-model="item.integralScore"
-                                                ></el-input>
-                                            </div>
-                                            <div v-if="item.lotteryType===3">
-                                                <span>{{$t('luckyDraw.coupons')}}：</span>
-                                                <el-select
-                                                        v-model="item.couponId"
-                                                        size="small"
-                                                        style="width: 120px"
-                                                        @change="couponChange"
-                                                >
-                                                    <el-option
-                                                            v-for="itema in couponlist"
-                                                            :key="itema.id"
-                                                            :value="itema.id"
-                                                            :label="itema.actName"
-                                                    ></el-option>
-                                                </el-select>
-                                                <span style="margin-right: 10px;color: #5a8bff;"
-                                                      @click="refreshCouponList()">{{$t('luckyDraw.refreshs')}}
-                                                </span>
-                                                |
-                                                <span style="margin-left: 10px;color: #5a8bff;"
-                                                      @click="createCouponList()">{{$t('luckyDraw.make')}}
-                                                </span>
-                                                <p style="color: #999;">
-                                                    {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
-                                            </div>
-                                            <div v-if="item.lotteryType===4">
-                                                <div>
-                                                    <span>{{$t('luckyDraw.givinggifts')}}：</span>
-                                                    <span style="border: 1px solid #ccc; cursor:pointer"
-                                                          @click="showGoodsDialog()"> + {{$t('luckyDraw.selectGoods')}}
-                                                    </span>
-                                                </div>
-                                                <div v-if="requestParam.prizeList[tabSwitch-1].goodsShow">
-                                                    <table class="goods_modal" style="display: block;">
-                                                        <thead>
-                                                            <tr style="background: #F8F8F8;">
-                                                                <th>{{$t('luckyDraw.goodsName')}}</th>
-                                                                <th>{{$t('luckyDraw.goodsPrice')}}</th>
-                                                                <th>{{$t('luckyDraw.goodsNum')}}</th>
-                                                                <th>{{$t('luckyDraw.goodsOptions')}}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="tbody">
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="goods_img"><img
-                                                                            :src="requestParam.prizeList[tabSwitch-1].goodsImage">
-                                                                    </div>
-                                                                    <div class="goods_info clearfix" num="50"
-                                                                         prd_id="5410">
-                                                                        <div class="goods_name">
-                                                                            {{requestParam.prizeList[tabSwitch-1].goodsName}}
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    {{currency[1]}}{{requestParam.prizeList[tabSwitch-1].goodsPrice}}
-                                                                </td>
-                                                                <td>
-                                                                    {{requestParam.prizeList[tabSwitch-1].goodsNumber}}
-                                                                </td>
-                                                                <td>
-                                                                    <a href="##" item="5410" class="change_goods_del">
-                                                                        {{$t('luckyDraw.goodsRemove')}}
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div>
-                                                    {{$t('luckyDraw.giftValidity')}}：
-                                                    <el-input
-                                                            size="small"
-                                                            style="width:100px"
-                                                            v-model="item.prdKeepDays"
-                                                    ></el-input>
-                                                    {{$t('luckyDraw.giftValidityTips1')}}
-                                                    <p style="margin-left:80px;color:#999;">
-                                                        {{$t('luckyDraw.giftValidityTips2')}}</p>
-                                                </div>
-                                            </div>
-                                            <div v-if="item.lotteryType===5">
-                                                <span>{{$t('luckyDraw.custom')}}：</span>
-                                                <el-input
-                                                        size="small"
-                                                        :placeholder="$t('luckyDraw.customTips')"
-                                                        style="width: 150px"
-                                                        v-model="item.lotteryDetail"
-                                                ></el-input>
-                                            </div>
-                                            <div>
-                                                <span>{{$t('luckyDraw.prizeNumber')}}：</span>
-                                                <el-input
-                                                        size="small"
-                                                        :placeholder="$t('luckyDraw.prizeNumberTips1')"
-                                                        style="width: 120px"
-                                                        v-model="item.lotteryNumber"
-                                                ></el-input>&nbsp;{{$t('luckyDraw.prizeNumberTips2')}}
-                                                <div class="numberTips">{{$t('luckyDraw.prizeNumberTips3')}}</div>
-                                                <div class="numberTips bottomTips">
-                                                    {{$t('luckyDraw.prizeNumberTips4')}}
-                                                </div>
-                                            </div>
+                              <el-form-item :label="$t('luckyDraw.selectPrize')">
+                                  <el-radio-group v-model="item.lotteryType">
+                                      <el-radio :label="1">{{$t('luckyDraw.prizeType')[0][1]}}</el-radio>
+                                      <el-radio :label="2">{{$t('luckyDraw.prizeType')[1][1]}}</el-radio>
+                                      <el-radio :label="3">{{$t('luckyDraw.prizeType')[2][1]}}</el-radio>
+                                      <el-radio :label="4">{{$t('luckyDraw.prizeType')[3][1]}}</el-radio>
+                                      <el-radio :label="5">{{$t('luckyDraw.prizeType')[4][1]}}</el-radio>
+                                  </el-radio-group>
+                                  <section style="margin-left: 81px;">
+                                      <div v-if="item.lotteryType===1">
+                                          <span>{{$t('luckyDraw.presentExp')}}：</span>
+                                          <el-input
+                                                  size="small"
+                                                  :placeholder="$t('luckyDraw.presentExpTips')"
+                                                  style="width: 120px"
+                                                  v-model="item.integralScore"
+                                          ></el-input>
+                                      </div>
+                                      <div v-if="item.lotteryType===2">
+                                          <span>{{$t('luckyDraw.giveTheBalance')}}：</span>
+                                          <el-input
+                                                  size="small"
+                                                  :placeholder="$t('luckyDraw.giveTheBalanceTips')"
+                                                  style="width: 120px"
+                                                  v-model="item.integralScore"
+                                          ></el-input>
+                                      </div>
+                                      <div v-if="item.lotteryType===3">
+                                          <span>{{$t('luckyDraw.coupons')}}：</span>
+                                          <el-select
+                                                  v-model="item.couponId"
+                                                  size="small"
+                                                  style="width: 120px"
+                                                  @change="couponChange"
+                                          >
+                                              <el-option
+                                                      v-for="itema in couponlist"
+                                                      :key="itema.id"
+                                                      :value="itema.id"
+                                                      :label="itema.actName"
+                                              ></el-option>
+                                          </el-select>
+                                          <span style="margin-right: 10px;color: #5a8bff;"
+                                                @click="refreshCouponList()">{{$t('luckyDraw.refreshs')}}
+                                          </span>
+                                          |
+                                          <span style="margin-left: 10px;color: #5a8bff;"
+                                                @click="createCouponList()">{{$t('luckyDraw.make')}}
+                                          </span>
+                                          <p style="color: #999;">
+                                              {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
+                                      </div>
+                                      <div v-if="item.lotteryType===4">
+                                          <div>
+                                              <span>{{$t('luckyDraw.givinggifts')}}：</span>
+                                              <span style="border: 1px solid #ccc; cursor:pointer"
+                                                    @click="showGoodsDialog()"> + {{$t('luckyDraw.selectGoods')}}
+                                              </span>
+                                          </div>
+                                          <div v-if="requestParam.prizeList[tabSwitch-1].goodsShow">
+                                              <table class="goods_modal" style="display: block;">
+                                                  <thead>
+                                                      <tr style="background: #F8F8F8;">
+                                                          <th>{{$t('luckyDraw.goodsName')}}</th>
+                                                          <th>{{$t('luckyDraw.goodsPrice')}}</th>
+                                                          <th>{{$t('luckyDraw.goodsNum')}}</th>
+                                                          <th>{{$t('luckyDraw.goodsOptions')}}</th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody class="tbody">
+                                                      <tr>
+                                                          <td>
+                                                              <div class="goods_img"><img
+                                                                      :src="requestParam.prizeList[tabSwitch-1].goodsImage">
+                                                              </div>
+                                                              <div class="goods_info clearfix" num="50"
+                                                                    prd_id="5410">
+                                                                  <div class="goods_name">
+                                                                      {{requestParam.prizeList[tabSwitch-1].goodsName}}
+                                                                  </div>
+                                                              </div>
+                                                          </td>
+                                                          <td>
+                                                              {{currency[1]}}{{requestParam.prizeList[tabSwitch-1].goodsPrice}}
+                                                          </td>
+                                                          <td>
+                                                              {{requestParam.prizeList[tabSwitch-1].goodsNumber}}
+                                                          </td>
+                                                          <td>
+                                                              <a href="##" item="5410" class="change_goods_del">
+                                                                  {{$t('luckyDraw.goodsRemove')}}
+                                                              </a>
+                                                          </td>
+                                                      </tr>
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                          <div>
+                                              {{$t('luckyDraw.giftValidity')}}：
+                                              <el-input
+                                                      size="small"
+                                                      style="width:100px"
+                                                      v-model="item.prdKeepDays"
+                                              ></el-input>
+                                              {{$t('luckyDraw.giftValidityTips1')}}
+                                              <p style="margin-left:80px;color:#999;">
+                                                  {{$t('luckyDraw.giftValidityTips2')}}</p>
+                                          </div>
+                                      </div>
+                                      <div v-if="item.lotteryType===5">
+                                          <span>{{$t('luckyDraw.custom')}}：</span>
+                                          <el-input
+                                                  size="small"
+                                                  :placeholder="$t('luckyDraw.customTips')"
+                                                  style="width: 150px"
+                                                  v-model="item.lotteryDetail"
+                                          ></el-input>
+                                      </div>
+                                      <div>
+                                          <span>{{$t('luckyDraw.prizeNumber')}}：</span>
+                                          <el-input
+                                                  size="small"
+                                                  :placeholder="$t('luckyDraw.prizeNumberTips1')"
+                                                  style="width: 120px"
+                                                  v-model="item.lotteryNumber"
+                                          ></el-input>&nbsp;{{$t('luckyDraw.prizeNumberTips2')}}
+                                          <div class="numberTips">{{$t('luckyDraw.prizeNumberTips3')}}</div>
+                                          <div class="numberTips bottomTips">
+                                              {{$t('luckyDraw.prizeNumberTips4')}}
+                                          </div>
+                                      </div>
 
-                                        </section>
+                                  </section>
 
-                                    </el-form-item>
-                                </el-form>
-                            </el-tab-pane>
-                        </el-tabs>
+                              </el-form-item>
+                          </el-form>
+                      </el-tab-pane>
+                  </el-tabs>
 
-                        <!-- 一等奖~四等奖 icon图表及其文字设置 -->
-                        <div class="levelBoxSetting">
-                            <section class="upInfo levelUpInfo">
-                                <div class="upIcons">
-                                    <div class="leftContent">
-                                        <img
-                                                :src="this.$imageHost + this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage "
-                                                alt=""
-                                        >
-                                    </div>
-                                    <div class="rightContent">
-                                        <div class="operate">
-                                            <span @click="showLotteryDialog(2)">{{$t('luckyDraw.modification')}}</span>
-                                            <span class="operateBtn fixstyle" @click="changeImgHandler(2)">
-                                                {{$t('luckyDraw.uploadChartForWinning')}}
-                                            </span>
-                                            <span
-                                                    class="operateBtn"
-                                                    @click="handleClear()"
-                                            >{{$t('luckyDraw.empty')}}
-                                            </span>
-                                        </div>
-                                        <p style="margin-top:10px;">{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
-                                    </div>
-                                </div>
-                                <div class="iconDesc">
-                                    <span>{{$t('luckyDraw.iconDescribe')}}：</span>
-                                    <el-input
-                                            size="small"
-                                            :placeholder="$t('luckyDraw.iconDescribeTips')"
-                                            style="width: 180px"
-                                            v-model="requestParam.prizeList[tabSwitch-1].iconImgs"
-                                    ></el-input>
-                                </div>
-                            </section>
-                        </div>
+                  <!-- 一等奖~四等奖 icon图表及其文字设置 -->
+                  <div class="levelBoxSetting">
+                      <section class="upInfo levelUpInfo">
+                          <div class="upIcons">
+                              <div class="leftContent">
+                                  <img
+                                          :src="this.$imageHost + this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage "
+                                          alt=""
+                                  >
+                              </div>
+                              <div class="rightContent">
+                                  <div class="operate">
+                                      <span @click="showLotteryDialog(2)">{{$t('luckyDraw.modification')}}</span>
+                                      <span class="operateBtn fixstyle" @click="changeImgHandler(2)">
+                                          {{$t('luckyDraw.uploadChartForWinning')}}
+                                      </span>
+                                      <span
+                                              class="operateBtn"
+                                              @click="handleClear()"
+                                      >{{$t('luckyDraw.empty')}}
+                                      </span>
+                                  </div>
+                                  <p style="margin-top:10px;">{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
+                              </div>
+                          </div>
+                          <div class="iconDesc">
+                              <span>{{$t('luckyDraw.iconDescribe')}}：</span>
+                              <el-input
+                                      size="small"
+                                      :placeholder="$t('luckyDraw.iconDescribeTips')"
+                                      style="width: 180px"
+                                      v-model="requestParam.prizeList[tabSwitch-1].iconImgs"
+                              ></el-input>
+                          </div>
+                      </section>
+                  </div>
 
-                    </div>
-                </div>
-            </div>
+              </div>
+          </div>
+      </div>
 
-            <div class="save">
-                <el-button
-                        size="small"
-                        type="primary"
-                        @click="submitData"
-                >{{$t('luckyDraw.save')}}
-                </el-button>
-            </div>
-            <!--添加商品弹窗-->
-            <choosingGoods
-                    @resultGoodsRow="choosingGoodsResult"
-                    :chooseGoodsBack="[requestParam.prizeList[tabSwitch-1].prdId]"
-                    :tuneUpChooseGoods="isShowChoosingGoodsDialog"
-                    :singleElection="true"
-                    :showTips="true"
-                    :loadProduct="true"
-            />
-            <!--图片dialog-->
-            <ImageDalog
-                    :tuneUp="selfImgDialogShow"
-                    pageIndex="pictureSpace"
-                    :imageSize="imageSize"
-                    :isDraggable='false'
-                    @handleSelectImg='imgDialogSelectedCallback'
-            />
-            <lotteryImageDialog
-                    :tuneUp="lotteryImgDialogShow"
-                    @handleSelectImg='imgDialogSelectedCallback'
-            />
+        <div class="save">
+            <el-button
+                    size="small"
+                    type="primary"
+                    @click="submitData"
+            >{{$t('luckyDraw.save')}}
+            </el-button>
+        </div>
+        <!--添加商品弹窗-->
+        <choosingGoods
+                @resultGoodsRow="choosingGoodsResult"
+                :chooseGoodsBack="[requestParam.prizeList[tabSwitch-1].prdId]"
+                :tuneUpChooseGoods="isShowChoosingGoodsDialog"
+                :singleElection="true"
+                :showTips="true"
+                :loadProduct="true"
+        />
+        <!--图片dialog-->
+        <ImageDalog
+                :tuneUp="selfImgDialogShow"
+                pageIndex="pictureSpace"
+                :imageSize="imageSize"
+                :isDraggable='false'
+                @handleSelectImg='imgDialogSelectedCallback'
+        />
+        <lotteryImageDialog
+                :tuneUp="lotteryImgDialogShow"
+                @handleSelectImg='imgDialogSelectedCallback'
+        />
 
-        </el-card>
-    </div>
+    </el-card>
+  </div>
 </template>
 
 <script>

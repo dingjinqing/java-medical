@@ -1,6 +1,7 @@
 <template>
   <div class="searchConfig">
     <div class="searchConfig_main">
+
       <!-- 左侧内容区域 -->
       <div class="leftContent">
         <!-- 商品搜索图片部分 -->
@@ -13,7 +14,10 @@
 
         <section class="searchContent">
           <!-- 搜索历史 -->
-          <div class="searchHistory">
+          <div
+            class="searchHistory"
+            v-if="isOpenHistory === true"
+          >
             <div class="searchTitle">搜索历史</div>
             <div class="searchItem clearfix">
               <div>热水壶保温壶</div>
@@ -24,14 +28,22 @@
             </div>
           </div>
           <!-- 热门搜索 -->
-          <div class="searchHistory hotSsearch">
+          <div
+            class="searchHistory hotSsearch"
+            v-if="isOpenHotWords === true"
+          >
             <div class="searchTitle">热门搜索</div>
             <div class="searchItem clearfix">
-              <div>热水壶保温壶</div>
-              <div>瓜子花生八宝粥</div>
-              <div>啤酒饮料矿泉水</div>
-              <div>春季时尚汇女装</div>
-              <div>2019年新款女装红色丽人春季精选</div>
+              <!-- <div>111</div>
+              <div>222</div>
+              <div>444</div>
+              <div>555</div>
+              <div>666</div> -->
+              <!-- <div>{{this.hotWordsList[index]}}</div> -->
+              <div
+                v-for="(item,index) in hotWordsList"
+                :key="index"
+              >{{item.length > 0 ? item : '' }}</div>
             </div>
           </div>
         </section>
@@ -52,13 +64,14 @@
         <section class="infoArea">
           <div class="infoTitle">默认搜索</div>
           <div class="infoContent">
-            <el-radio-group v-model="setting">
+            <el-radio-group v-model="titleAction">
               <div class="noSetting">
-                <el-radio label="1">不设置<span>(前端显示"请输入商品关键字")</span></el-radio>
-                <el-radio label="2">全部商品</el-radio>
+                <el-radio :label="0">不设置<span>(前端显示"请输入商品关键字")</span></el-radio>
+                <el-radio :label="1">全部商品</el-radio>
               </div>
               <div class="custom">
-                <el-radio>自定义<el-input
+                <el-radio :label="2">自定义<el-input
+                    v-model="titleCustom"
                     size="small"
                     style="width:180px;margin-left:12px"
                   ></el-input>
@@ -73,12 +86,12 @@
           <div class="infoTitle">默认历史</div>
           <div class="infoContent">
             <el-switch
-              v-model="history"
+              v-model="isOpenHistory"
               active-color="#13ce66"
               inactive-color="#ff4949"
             >
-              {{this.hotWord === true ? '已开启' : '已关闭'}}
             </el-switch>
+            <span :style="{'margin-left': '20px', 'color': '#606266'}">{{this.isOpenHistory === true ? '已开启' : '已关闭'}}</span>
             <span class="ifUse">启用后，可方便用户搜索</span>
           </div>
         </section>
@@ -88,37 +101,36 @@
           <div class="infoTitle">搜索热词</div>
           <div class="infoContent">
             <el-switch
-              v-model="hotWord"
+              v-model="isOpenHotWords"
               active-color="#13ce66"
               inactive-color="#ff4949"
             >
-              <span>{{hotWord === true ? '已开启' : '已关闭'}}</span>
             </el-switch>
+            <span :style="{'margin-left': '20px', 'color': '#606266'}">{{this.isOpenHotWords === true ? '已开启' : '已关闭'}}</span>
             <span class="ifUse">启用后，引导用户购买热搜商品 最多可添加十条</span>
             <!-- 添加热词按钮 -->
             <el-button
               type="primary"
               size="small"
               class="btn"
-              @click="handleBtn"
+              @click="handleBtn()"
             >+&nbsp;添加热词</el-button>
-            <div>
-              <span>热词1： </span>
-              <el-input
-                size="small"
-                style="width: 180px"
-              ></el-input>
-            </div>
             <div
-              v-for="item in hotWordList"
-              :key="item.title"
+              v-for="(item, index) in hotWordsList"
+              :key="index"
+              :style="{'margin-top': '10px'}"
             >
-              <span>{{item.title}}：</span>
+              <span :style="{'margin-right': '10px'}">热词{{index+1}}：</span>
               <el-input
+                v-model="hotWordsList[index]"
                 size="small"
                 style="width: 180px"
               ></el-input>
-              <span @click="handleDelete()">删除</span>
+              <span
+                v-if="index > 0"
+                @click="handleDelete(index)"
+                style="color:#5a8bff;margin-left:15px;cursor:pointer"
+              >删除</span>
             </div>
 
           </div>
@@ -145,7 +157,7 @@
 </template>
 
 <script>
-import { querySearchConfig } from '@/api/admin/smallProgramManagement/searchConfig/searchConfig'
+import { querySearchConfig, modifySearchConfig } from '@/api/admin/smallProgramManagement/searchConfig/searchConfig'
 
 export default {
   created () {
@@ -156,32 +168,61 @@ export default {
   },
   data () {
     return {
-      setting: '1',
-      history: true,
-      hotWord: true,
-      hotWordList: [
-        { title: '热词2' },
-        { title: '热词3' },
-        { title: '热词4' },
-        { title: '热词5' },
-        { title: '热词6' }
-      ]
+      titleAction: 1,
+      isOpenHistory: true,
+      isOpenHotWords: true,
+      titleCustom: '',
+      hotWords: [''],
+      hotWordsList: [''],
+      itemList: []
     }
   },
   methods: {
     fetchData () {
       querySearchConfig().then(res => {
         console.log(res)
+        let content = { ...res.content }
+        this.titleAction = content.title_action
+        this.titleCustom = content.title_custom
+        this.isOpenHistory = Boolean(content.is_open_history)
+        this.isOpenHotWords = Boolean(content.is_open_hot_words)
+        this.hotWordsList = content.hot_words
+        // console.log(this.titleAction, this.title_custom, this.is_open_history, this.is_open_hot_words, this.hot_words)
       })
     },
+    // 添加热词事件
     handleBtn () {
-      console.log(1111)
+      let obj = ''
+      this.hotWordsList.push(obj)
+      console.log(this.hotWordsList)
     },
-    handleDelete () {
-
+    // 删除热词
+    handleDelete (index) {
+      console.log(this.hotWordsList)
+      this.hotWordsList.splice(index, 1)
+      console.log(index)
     },
+    // 保存按钮 -> 提交数据
     submitData () {
-      console.log(222)
+      let params = {
+        title_action: this.titleAction,
+        title_custom: this.titleCustom,
+        is_open_history: Number(this.isOpenHistory),
+        is_open_hot_words: Number(this.isOpenHotWords),
+        hot_words: this.hotWordsList
+      }
+      modifySearchConfig(JSON.stringify(params)).then(res => {
+        console.log(res)
+
+        for (let item of this.hotWordsList) {
+          this.itemList.push(item)
+          // if (this.itemList.length > 10) {
+          //   alert('最多只能添加10条')
+          // }
+        }
+        console.log(this.itemList)
+        console.log(this.itemList.length)
+      }).catch(err => console.log(err))
     }
   }
 }
