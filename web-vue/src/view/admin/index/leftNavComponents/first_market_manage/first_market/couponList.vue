@@ -213,16 +213,14 @@ export default {
       }).then(() => {
         pauseCoupon(id).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: '删除成功!'
             })
-            this.couponList()
+            this.handleClick()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
+        this.$message.info({
           message: '已取消删除'
         })
       })
@@ -245,16 +243,14 @@ export default {
       }).then(() => {
         deleteCoupon(id).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: '删除成功!'
             })
             this.handleClick()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
+        this.$message.info({
           message: '已取消删除'
         })
       })

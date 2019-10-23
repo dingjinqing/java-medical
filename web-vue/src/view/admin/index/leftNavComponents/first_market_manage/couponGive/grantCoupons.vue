@@ -1,5 +1,4 @@
 <template>
-  <!-- <wrapper> -->
   <div class="mainContent">
     <div class="mainContentMiddle">
       <div class="mainContentRight">
@@ -81,6 +80,7 @@
               <div style="margin:10px 0">
                 <chooseSelect @chooseSelectVal="getChooseSelectVal" />
               </div>
+              <!-- 选择指定会员 -->
               <div style="margin:10px 0">
                 <el-checkbox
                   :label="$t('couponGive.chooseMember')"
@@ -95,6 +95,7 @@
                 </span>
                 <span>{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
               </div>
+              <!-- 自定义 -->
               <div>
                 <el-checkbox
                   :label="$t('couponGive.custom')"
@@ -288,7 +289,6 @@
       :couponBack="couponIdList"
     />
   </div>
-  <!-- </wrapper> -->
 </template>>
 
 <script>
@@ -564,14 +564,14 @@ export default {
     },
     // 发放优惠券
     addAct () {
-      console.log('params:', this.params)
-      console.log('couponId:', this.couponId)
-      console.log('onClickNoPay:', Number(this.params.onClickNoPay))
-      console.log('onClickGoods:', Number(this.params.onClickGoods))
-      console.log('onClickCard:', Number(this.params.onClickCard))
-      console.log('onClickTag:', Number(this.params.onClickTag))
-      console.log('onClickUser:', Number(this.params.onClickUser))
-      console.log('onClickCustomRule:', Number(this.params.onClickCustomRule))
+      // console.log('params:', this.params)
+      // console.log('couponId:', this.couponId)
+      // console.log('onClickNoPay:', Number(this.params.onClickNoPay))
+      // console.log('onClickGoods:', Number(this.params.onClickGoods))
+      // console.log('onClickCard:', Number(this.params.onClickCard))
+      // console.log('onClickTag:', Number(this.params.onClickTag))
+      // console.log('onClickUser:', Number(this.params.onClickUser))
+      // console.log('onClickCustomRule:', Number(this.params.onClickCustomRule))
       let param = {
         'actName': this.params.actName,
         'couponGiveGrantInfoParams': {
@@ -618,7 +618,9 @@ export default {
       })
     },
     handleChooseData (data) {
-      this.$message({ message: `${this.$t('couponGive.hasBeenChosen')}${data.length}${this.$t('couponGive.data')}`, type: 'success' })
+      this.$message.success({
+        message: `${this.$t('couponGive.hasBeenChosen')}${data.length}${this.$t('couponGive.data')}`
+      })
       this.checkedData = data
     },
     // 关闭会员弹窗

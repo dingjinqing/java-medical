@@ -152,14 +152,14 @@ export default {
      * 勾选指定会员卡人群发生变化的时候
      */
     handleOnClickCardChange (val) {
-      this.onClickCard = !this.onClickCard
+      // this.onClickCard = !this.onClickCard
       this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     },
     /**
      * 勾选指定标签人群变化的时候
      */
     handleOnClickTagChange (val) {
-      this.onClickTag = !this.onClickTag
+      // this.onClickTag = !this.onClickTag
       this.$emit('chooseSelectVal', { tagIdList: this.tagIdLists, onClickTag: this.onClickTag, onClickCard: this.onClickCard, cardIdsList: this.cardIdsLists })
     },
     // 初始化获取数据
