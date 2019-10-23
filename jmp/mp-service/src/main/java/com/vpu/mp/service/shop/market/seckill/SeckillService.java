@@ -240,4 +240,12 @@ public class SeckillService extends ShopBaseService {
             .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
             .fetchMap(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID);
     }
+
+    /**
+     *
+     * @param goodsId
+     * @param nowDate
+     */
+    public void isOnGoingSecKill(Integer goodsId, Timestamp nowDate) {
+    }
 }

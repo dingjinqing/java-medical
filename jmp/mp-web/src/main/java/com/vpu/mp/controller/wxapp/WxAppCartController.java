@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +23,8 @@ public class WxAppCartController extends WxAppBaseController {
 
     @PostMapping("/list")
     public JsonResult getCartList(WxAppCartListParam param) {
-        shop().cart.getCartList(param);
-
-        return super.fail();
+        WxAppCartListVo cartList = shop().cart.getCartList(param);
+        return success(cartList);
     }
 
     /**
@@ -34,9 +34,10 @@ public class WxAppCartController extends WxAppBaseController {
      */
     @PostMapping("/addGoods")
     public JsonResult addGoodsToCart(WxAppAddGoodsToCartParam param){
-        Short productNumber = shop().cart.getCartProductNumber(param.getUserId(), param.getPrdId());
         // 检查库存数量
-        ResultMessage resultMessage = shop().cart.checkProductNumber(param.getProductId(), param.getGoodsNumber()+productNumber, 0);
+        Integer productNumber = shop().cart.getCartProductNumber(param.getUserId(), param.getPrdId())+param.getGoodsNumber();
+        // 检查商品合法性
+        ResultMessage resultMessage = shop().cart.checkProductNumber(param.getProductId(),productNumber);
         if (resultMessage.getFlag()){
             return fail(resultMessage);
         }

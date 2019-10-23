@@ -334,7 +334,8 @@ public class GoodsSpecProductService extends ShopBaseService {
      * @return
      */
     public GoodsSpecProductRecord getStoreProductByProductIdAndStoreId(Integer productId, Integer storeId){
-        GoodsSpecProductRecord goodsSpecproduct = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOne();
+        GoodsSpecProductRecord goodsSpecproduct = db().select(GOODS_SPEC_PRODUCT.DEL_FLAG,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.GOODS_ID)
+                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(GoodsSpecProductRecord.class);
         if (goodsSpecproduct!=null&&storeId>0){
             // 如果有门店,门店价格和数量替换商品价格数量
             StoreGoodsRecord storeGoods = db().selectFrom(STORE_GOODS)

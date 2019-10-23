@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.market.presale;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -17,6 +18,7 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.validation.groups.Default;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -495,7 +497,7 @@ public class PreSaleService extends ShopBaseService {
         Integer goodsId = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOne(TABLE.GOODS_ID);
         return format(SHARE_PAGE_PATH, goodsId, presaleId);
     }
-    
+
     /**
      * 查询活动有效时间区间
      * @param id
@@ -503,6 +505,23 @@ public class PreSaleService extends ShopBaseService {
      */
     public Record2<Timestamp, Timestamp> getTimeInterval(Integer id) {
     	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).fetchOne();
+    }
+
+    /**
+     * 判断是否支持原价
+     * @param goodsId 商品ID
+     */
+    public Boolean getPreGoodsBuyType(Integer goodsId) {
+        Timestamp nowDate =new Timestamp(System.currentTimeMillis());
+        Record1<Byte> buyType = db().select(TABLE.BUY_TYPE).from(TABLE)
+                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(TABLE.STATUS.eq(NOT_STARTED)).and(TABLE.GOODS_ID.eq(goodsId))
+                .and((
+                        (TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME.lt(nowDate)).and(TABLE.PRE_END_TIME.gt(nowDate)))
+                                .or(TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME_2.lt(nowDate)).and(TABLE.PRE_END_TIME_2.gt(nowDate)))
+                ).or(
+                        TABLE.PRE_PAY_STEP.eq((byte) 1).and(TABLE.PRE_START_TIME.lt(nowDate).and(TABLE.PRE_END_TIME.gt(nowDate)))
+                )).fetchOne();
+        return buyType!=null&&buyType.component1().equals(1);
     }
 
     public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){

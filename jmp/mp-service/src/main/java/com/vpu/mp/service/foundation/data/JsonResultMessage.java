@@ -581,6 +581,13 @@ public class JsonResultMessage {
 	public static final String ERR_CODE_HAVE_SING = "code.have.sign";
 	public static final String ERR_CODE_CODE_SING_ERRO = "coed.sign.erro";
 
+	/**
+	 *  小程序购物车
+	 */
+	public static final String CART_GOODS_NO_LONGER_VALID ="cart.goods.no.longer.valid";
+	public static final String CART_THERE_IS_STILL_INVENTORY ="cart.there.is.still.inventory";
+	public static final String CART_MINIMUM_PURCHASE ="cart.minimum.purchase";
+	public static final String CART_MAXIMUM_PURCHASE ="cart.maximum.purchase";
 
 
 
