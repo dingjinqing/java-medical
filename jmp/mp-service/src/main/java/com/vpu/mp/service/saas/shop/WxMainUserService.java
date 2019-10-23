@@ -30,6 +30,7 @@ public class WxMainUserService extends MainBaseService {
 			// 更新
 			logger().info("更新");
 			info.setId(record.getId());
+			info.setShopId(shopId);
 			UserRecord newRecord = db().newRecord(USER, info);
 			int executeUpdate = newRecord.update();
 			logger().info("更新User，结果" + executeUpdate);
@@ -58,6 +59,7 @@ public class WxMainUserService extends MainBaseService {
 			// 更新
 			logger().info("更新");
 			info.setId(record.getId());
+			info.setShopId(shopId);
 			UserDetailRecord newRecord = db().newRecord(USER_DETAIL, info);
 			int executeUpdate = newRecord.update();
 			logger().info("更新UserDetail，结果" + executeUpdate);
