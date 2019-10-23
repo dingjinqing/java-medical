@@ -3,18 +3,14 @@ package com.vpu.mp.service.saas.shop;
 import static com.vpu.mp.db.main.tables.User.USER;
 import static com.vpu.mp.db.main.tables.UserDetail.USER_DETAIL;
 
-import java.sql.ResultSet;
-
-import org.jooq.Field;
-import org.jooq.Record1;
-import org.jooq.Row;
-import org.jooq.Table;
+import org.jooq.SortField;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.UserDetailRecord;
 import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.pojo.wxapp.account.UserDetailMainVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserMainVo;
 
 @Service
 public class WxMainUserService extends MainBaseService {
@@ -27,7 +23,7 @@ public class WxMainUserService extends MainBaseService {
 	 * @param sendRecord
 	 * @param type
 	 */
-	public void syncMainUser(com.vpu.mp.db.shop.tables.records.UserRecord sendRecord, Integer shopId, Integer userId) {
+	public void syncMainUser(com.vpu.mp.db.shop.tables.records.UserRecord sendRecord, Integer shopId, Integer userId,UserMainVo info) {
 		logger().info("User同步开始到主库,shopId:"+shopId+" userId:"+userId);
 		UserRecord record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
 		if (record != null) {
@@ -36,13 +32,10 @@ public class WxMainUserService extends MainBaseService {
 			logger().info("更新User，结果" + executeUpdate);
 		} else {
 			// 插入
-			sendRecord.setShopId(shopId);
-			UserRecord into = sendRecord.into(USER);
-			//copy重新set值，不set插入时候不插入。疑似jooq的bug
-			UserRecord copy = into.copy();
-			UserRecord original = copy.original();
-			int executeInsert = db().executeInsert(original);
-			logger().info("插入User，结果" + executeInsert);
+			info.setShopId(shopId);
+			UserRecord newRecord = db().newRecord(USER, info);
+			int insert = newRecord.insert();
+			logger().info("插入User，结果" + insert);
 		}
 
 	}
@@ -53,7 +46,7 @@ public class WxMainUserService extends MainBaseService {
 	 * @param sendRecord
 	 * @param type
 	 */
-	public void syncMainUserDetail(com.vpu.mp.db.shop.tables.records.UserDetailRecord sendRecord, Integer shopId, Integer userId) {
+	public void syncMainUserDetail(com.vpu.mp.db.shop.tables.records.UserDetailRecord sendRecord, Integer shopId, Integer userId,UserDetailMainVo info) {
 		logger().info("UserDetail同步开始到主库,shopId:"+shopId+" userId:"+userId);
 		UserDetailRecord record = db().selectFrom(USER_DETAIL).where(USER_DETAIL.SHOP_ID.eq(shopId).and(USER_DETAIL.USER_ID.eq(userId)))
 				.fetchAny();
@@ -63,12 +56,10 @@ public class WxMainUserService extends MainBaseService {
 			logger().info("更新UserDetail，结果" + executeUpdate);
 		} else {
 			// 插入
-			sendRecord.setShopId(shopId);
-			UserDetailRecord into = sendRecord.into(USER_DETAIL);
-			UserDetailRecord copy = into.copy();
-			UserDetailRecord original = copy.original();
-			int executeInsert = db().executeInsert(original);
-			logger().info("插入UserDetail，结果" + executeInsert);
+			info.setShopId(shopId);
+			UserDetailRecord newRecord = db().newRecord(USER_DETAIL, info);
+			int insert = newRecord.insert();
+			logger().info("插入UserDetail，结果" + insert);
 		}
 	}
 	

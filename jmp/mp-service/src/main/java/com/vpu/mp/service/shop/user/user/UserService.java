@@ -43,7 +43,9 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserDetailMainVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.account.UserMainVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
@@ -867,7 +869,8 @@ public class UserService extends ShopBaseService {
 	 */
 	public void syncMainUser(UserRecord shopRecord) {
 		com.vpu.mp.db.main.tables.records.UserRecord userMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserRecord.class);
-		saas().wxUserService.syncMainUser(shopRecord,getShopId(),shopRecord.getUserId());
+		UserMainVo info = shopRecord.into(UserMainVo.class);
+		saas().wxUserService.syncMainUser(shopRecord,getShopId(),shopRecord.getUserId(),info);
 	}
 	
 	
@@ -878,7 +881,14 @@ public class UserService extends ShopBaseService {
 	 */
 	public void syncMainUserDetail(UserDetailRecord shopRecord) {
 		com.vpu.mp.db.main.tables.records.UserDetailRecord userDetailMain=shopRecord.into(com.vpu.mp.db.main.tables.records.UserDetailRecord.class);
-		saas().wxUserService.syncMainUserDetail(shopRecord,getShopId(),shopRecord.getUserId());
+		UserDetailMainVo info = shopRecord.into(UserDetailMainVo.class);
+		saas().wxUserService.syncMainUserDetail(shopRecord,getShopId(),shopRecord.getUserId(),info);
+	}
+	
+	public void test() {
+		UserRecord fetchAny = db().selectFrom(USER).where(USER.USER_ID.eq(128)).fetchAny();
+		UserInfo info = fetchAny.into(UserInfo.class);
+		syncMainUser(fetchAny);
 	}
 
 }
