@@ -470,7 +470,6 @@ public class CouponGiveService extends ShopBaseService {
                   MRKING_VOUCHER.ACT_CODE,
                   MRKING_VOUCHER.ACT_NAME,
                   MRKING_VOUCHER.DENOMINATION,
-                  MRKING_VOUCHER.VALIDITY_TYPE,
                   MRKING_VOUCHER.START_TIME,
                   MRKING_VOUCHER.END_TIME,
                   MRKING_VOUCHER.VALIDITY_TYPE,
@@ -488,28 +487,8 @@ public class CouponGiveService extends ShopBaseService {
       } else if (DISCOUNT.equalsIgnoreCase(couponDetails.getActCode())) {
         type = 1;
       }
-      // 定义开始时间和结束时间作为最后的参数
-      Timestamp startTime;
-      Timestamp endTime;
-      // 判断发送类型，得到发送时间
-      if (couponDetails.getValidityType().equals(NumberUtils.BYTE_ZERO)) {
-        startTime = couponDetails.getStartTime();
-        endTime = couponDetails.getEndTime();
-      } else {
-        // 设置日期格式
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // 得到系统当前时间作为开始时间
-        String startTimeString = simpleDateFormat.format(System.currentTimeMillis());
-        startTime = Timestamp.valueOf(startTimeString);
-        // 计算结束时间
-        long days = couponDetails.getValidity().longValue() * 1000 * 60 * 60 * 24;
-        long hours = couponDetails.getValidityHour().longValue() * 1000 * 60 * 60;
-        long minutes = couponDetails.getValidityMinute().longValue() * 1000 * 60;
-        // 当前时间加上天、时、分得到结束时间
-        long endTimeLong = System.currentTimeMillis() + days + hours + minutes;
-        String endTimeString = simpleDateFormat.format(endTimeLong);
-        endTime = Timestamp.valueOf(endTimeString);
-      }
+      // 得到开始时间和结束时间
+      Map<String, Timestamp> timeMap = getCouponTime(couponDetails);
       // 发券入库
       for (Integer userId : param.getUserIds()) {
         Integer rows =
@@ -534,14 +513,46 @@ public class CouponGiveService extends ShopBaseService {
                     couponDetails.getDenomination(),
                     getCouponSn(),
                     param.getActId(),
-                    startTime,
-                    endTime)
+                    timeMap.get("startTime"),
+                    timeMap.get("endTime"))
                 .execute();
         // 得到失败条数
         failList.add(rows);
       }
     }
     return failList;
+  }
+
+  public Map<String, Timestamp> getCouponTime(CouponDetailsVo couponDetails) {
+
+    // 定义开始时间和结束时间作为最后的参数
+    Timestamp startTime;
+    Timestamp endTime;
+    // 判断发送类型，得到发送时间
+    if (couponDetails.getValidityType().equals(NumberUtils.BYTE_ZERO)) {
+      startTime = couponDetails.getStartTime();
+      endTime = couponDetails.getEndTime();
+    } else {
+      // 设置日期格式
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      // 得到系统当前时间作为开始时间
+      String startTimeString = simpleDateFormat.format(System.currentTimeMillis());
+      startTime = Timestamp.valueOf(startTimeString);
+      // 计算结束时间
+      long days = couponDetails.getValidity().longValue() * 1000 * 60 * 60 * 24;
+      long hours = couponDetails.getValidityHour().longValue() * 1000 * 60 * 60;
+      long minutes = couponDetails.getValidityMinute().longValue() * 1000 * 60;
+      // 当前时间加上天、时、分得到结束时间
+      long endTimeLong = System.currentTimeMillis() + days + hours + minutes;
+      String endTimeString = simpleDateFormat.format(endTimeLong);
+      endTime = Timestamp.valueOf(endTimeString);
+    }
+    return new HashMap<String, Timestamp>(4) {
+      {
+        put("startTime", startTime);
+        put("endTime", endTime);
+      }
+    };
   }
 
   /** 生成优惠券编号 */

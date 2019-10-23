@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponDetailsVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
@@ -15,11 +16,11 @@ import org.jooq.Record13;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -32,9 +33,12 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Service
 public class GoodsCommentService extends ShopBaseService {
-  public static final int THERE = 3;
+  @Autowired private CouponGiveService couponGiveService;
+
+  public static final int THREE = 3;
   public static final int FOUR = 4;
   public static final int FIVE = 5;
+  public static final byte GET_SOURCE = 3;
 
   /**
    * 分页获取评价信息
@@ -680,7 +684,7 @@ public class GoodsCommentService extends ShopBaseService {
                 "id:" + awardContentVos.getActivityId() + "," + "name:" + couponName);
           }
           // 活动奖励3：赠送用户余额
-          else if (awardContentVos.getAwardType().equals(THERE)) {
+          else if (awardContentVos.getAwardType().equals(THREE)) {
             forGoodsId.setAward(awardContentVos.getAccount().toString());
           }
           // 活动奖励4：赠送抽奖机会
@@ -797,7 +801,7 @@ public class GoodsCommentService extends ShopBaseService {
         giveCouponByAct(param);
       }
       // 活动奖励3：赠送用户余额
-      else if (param.getAwardType().equals(THERE)) {
+      else if (param.getAwardType().equals(THREE)) {
         // 给当前用户赠送余额
         giveAccountByAct(param.getUserId(), new BigDecimal(param.getAward()));
       }
@@ -898,28 +902,8 @@ public class GoodsCommentService extends ShopBaseService {
       else {
         type = 1;
       }
-      // 定义开始时间和结束时间作为最后的参数
-      Timestamp couponStartTime;
-      Timestamp couponEndTime;
-      // 判断发送类型，得到发送时间
-      if (couponDetails.getValidityType().equals(NumberUtils.BYTE_ZERO)) {
-        couponStartTime = couponDetails.getStartTime();
-        couponEndTime = couponDetails.getEndTime();
-      } else {
-        // 设置日期格式
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // 得到系统当前时间作为开始时间
-        String startTimeString = simpleDateFormat.format(System.currentTimeMillis());
-        couponStartTime = Timestamp.valueOf(startTimeString);
-        // 计算结束时间
-        long days = couponDetails.getValidity().longValue() * 1000 * 60 * 60 * 24;
-        long hours = couponDetails.getValidityHour().longValue() * 1000 * 60 * 60;
-        long minutes = couponDetails.getValidityMinute().longValue() * 1000 * 60;
-        // 当前时间加上天、时、分得到结束时间
-        long endTimeLong = System.currentTimeMillis() + days + hours + minutes;
-        String endTimeString = simpleDateFormat.format(endTimeLong);
-        couponEndTime = Timestamp.valueOf(endTimeString);
-      }
+      // 得到开始时间和结束时间
+      Map<String, Timestamp> timeMap = couponGiveService.getCouponTime(couponDetails);
       // 为用户发券，入库
       db().insertInto(
               CUSTOMER_AVAIL_COUPONS,
@@ -930,6 +914,7 @@ public class GoodsCommentService extends ShopBaseService {
               CUSTOMER_AVAIL_COUPONS.AMOUNT,
               CUSTOMER_AVAIL_COUPONS.ACT_DESC,
               CUSTOMER_AVAIL_COUPONS.ACCESS_ID,
+              CUSTOMER_AVAIL_COUPONS.GET_SOURCE,
               CUSTOMER_AVAIL_COUPONS.START_TIME,
               CUSTOMER_AVAIL_COUPONS.END_TIME)
           .values(
@@ -940,8 +925,9 @@ public class GoodsCommentService extends ShopBaseService {
               couponDetails.getDenomination(),
               couponDetails.getActName(),
               param.getId(),
-              couponStartTime,
-              couponEndTime)
+              GET_SOURCE,
+              timeMap.get("startTime"),
+              timeMap.get("endTime"))
           .execute();
       // 发券成功后，优惠券库存减少
       Integer newSurplus = surplus - 1;
