@@ -291,7 +291,7 @@
                     >需要兑换</el-radio>
                     <p v-if="param.isRandom== 1">
                       <el-input
-                        v-model="param.scoreNumber"
+                        v-model="param.userScore"
                         class="small_input"
                         size="small"
                       ></el-input>
@@ -560,11 +560,11 @@ export default {
       couponInfo: {},
       param: {
         type: 0, // 优惠券类型
-        actName: '',
-        aliasCode: '',
+        actName: '', // 优惠券名
+        aliasCode: '', // 唯一活动代码
         preferentialType: 0,
-        useConsumeRestrict: 0,
-        isRandom: 0,
+        useConsumeRestrict: 0, // 使用限制
+        isRandom: 0, // 是否需要积分
         receivePerPerson: 0,
         cardId: [],
         availablePeriod: 0, // 有效期
@@ -572,22 +572,22 @@ export default {
         startTime: '', // 生效时间
         endTime: '', // 到期时间
         amount: 1, // 初始库存
-        remainAmount: 10, // 库存数量张
+        remainAmount: null, // 发行量
         validity: '',
         validityHour: '',
         validityMinute: '',
-        totalAmount: '',
+        totalAmount: null,
         validationCode: '',
-        recommendGoodsId: '',
-        recommendCatId: '',
-        recommendSortId: '',
+        recommendGoodsId: '', // 指定商品
+        recommendCatId: '', // 指定平台分类
+        recommendSortId: '', // 指定商家分类
         isHide: 0,
-        suitGoods: 0,
+        suitGoods: 0, // 适用商品
         useExplain: '',
-        denomination: null,
+        denomination: null, // 面额
         denomination2: null,
         leastConsume: null,
-        scoreNumber: null,
+        userScore: null, // 积分数
         AtreeType: null,
         isExclusive: false
       },
@@ -714,7 +714,7 @@ export default {
       paramsData.aliasCode = this.param.aliasCode
       paramsData.useConsumeRestrict = this.param.useConsumeRestrict
       paramsData.isRandom = this.param.isRandom
-      paramsData.userScore = this.param.scoreNumber
+      paramsData.userScore = this.param.userScore
       paramsData.receivePerPerson = this.param.receivePerPerson
       paramsData.useExplain = this.param.useExplain
       paramsData.recommendGoodsId = this.param.recommendGoodsId

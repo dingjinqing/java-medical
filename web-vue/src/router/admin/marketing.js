@@ -205,7 +205,8 @@ const routes = [
   },
   // 多人拼团  拼团退款失败订单
   {
-    path: '/admin/home/main/spellGroup/refundFailureOrder/:pintStatus/:activityId',
+    path:
+      '/admin/home/main/spellGroup/refundFailureOrder/:pintStatus/:activityId',
     name: ' pin_group_refundFailureOrder',
     meta: {
       crumbTitle: 'router.pin_group_refundFailureOrder',
@@ -1026,19 +1027,6 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/collectGift/collectGift'
-      )
-  },
-  // 秒杀
-  {
-    path: '/admin/home/main/seckill',
-    name: 'seckill',
-    meta: {
-      crumbTitle: 'router.seckill',
-      meta: 'first_market_manage'
-    },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckill'
       )
   }
 ]
