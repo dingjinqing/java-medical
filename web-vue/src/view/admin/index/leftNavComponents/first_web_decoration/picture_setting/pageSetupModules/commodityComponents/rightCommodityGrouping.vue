@@ -15,25 +15,25 @@
             :key="index"
           >
             <div>
-              <span>商家分类：</span>
-              <span style="display:inline-block;width:100px">服装</span>
+              <span>{{item.type}}：</span>
+              <span style="display:inline-block;width:100px">{{item.typeName}}</span>
               <span style="padding-left: 20px;color: #5A8BFF;cursor: pointer;">修改</span>
             </div>
             <div class="nameContainer">
               <span>自定义分组名称：</span>
               <el-input
-                v-model="linkageData.input"
+                v-model="item.customName"
                 size="small"
               ></el-input>
             </div>
             <div>
               <span>展示商品数量：</span>
               <el-radio
-                v-model="linkageData.radio"
+                v-model="item.radio"
                 label="1"
-              >全部16件</el-radio>
+              >全部{{item.goodsNum}}件</el-radio>
               <el-radio
-                v-model="linkageData.radio"
+                v-model="item.radio"
                 label="2"
               >指定商品</el-radio>
             </div>
@@ -334,13 +334,22 @@ export default {
             type: '商家分类',
             typeName: '彩妆',
             customName: '彩妆',
-            goodsNum: 1
+            goodsNum: 1,
+            radio: '1'
           },
           {
             type: '商家标签',
             typeName: '围巾',
             customName: '围巾',
-            goodsNum: 1
+            goodsNum: 2,
+            radio: '1'
+          },
+          {
+            type: '商家品牌',
+            typeName: '阿迪达斯',
+            customName: '阿迪达斯',
+            goodsNum: 3,
+            radio: '1'
           }
         ],
         input: '',
