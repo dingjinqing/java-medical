@@ -68,19 +68,19 @@ public class CartService extends ShopBaseService {
     @Autowired
     private FirstSpecialConfigService firstSpecialConfigService;
 
-    public WxAppCartListVo getCartList(WxAppCartListParam param) {
+    public WxAppCartListVo getCartList(Integer userId) {
         WxAppCartListVo cartListVo;
         // 查询购物车记录
         Result<? extends Record> records = db().select(CART.REC_ID, CART.USER_ID, CART.GOODS_ID, CART.GOODS_NAME,
-                CART.PRODUCT_ID, CART.IS_CHECKED, CART.GOODS_SPECS, CART.GOODS_PRICE, CART.ACTION, CART.IDENTITY_ID,
+                CART.PRODUCT_ID, CART.IS_CHECKED, CART.GOODS_SPECS, CART.GOODS_PRICE,CART.GOODS_PRICE.as(WxAppCartGoods.CART_GOODS_PRICE), CART.ACTION, CART.IDENTITY_ID,
                 CART.EXTEND_ID, CART.GOODS_NUMBER, GOODS.GOODS_IMG, GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.GOODS_TYPE,
-                GOODS.DEL_FLAG.as(WxAppCartGoods.IS_DELETE), GOODS.IS_ON_SALE, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.DEL_FLAG, GOODS_SPEC_PRODUCT.PRD_IMG)
+                GOODS.DEL_FLAG.as(WxAppCartGoods.IS_DELETE), GOODS.IS_ON_SALE,GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.DEL_FLAG, GOODS_SPEC_PRODUCT.PRD_IMG)
                 .from(CART)
                 .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
                 .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
-                .where(CART.USER_ID.eq(param.getUserId())).orderBy(CART.CREATE_TIME.asc()).fetch();
+                .where(CART.USER_ID.eq(userId)).orderBy(CART.CREATE_TIME.asc()).fetch();
         // 数据校验计算
-        cartListVo = cartProductToGroup(records,param.getUserId(),param.getStoreId());
+        cartListVo = cartProductToGroup(records,userId);
 
 
         return cartListVo;
@@ -95,7 +95,7 @@ public class CartService extends ShopBaseService {
      * @param storeId  门店id
      * @return
      */
-    private WxAppCartListVo cartProductToGroup(Result<? extends  Record> records, Integer userId, Integer storeId){
+    private WxAppCartListVo cartProductToGroup(Result<? extends  Record> records, Integer userId){
         WxAppCartListVo cartListVo =new WxAppCartListVo();
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         Timestamp nowDate =new Timestamp(System.currentTimeMillis());

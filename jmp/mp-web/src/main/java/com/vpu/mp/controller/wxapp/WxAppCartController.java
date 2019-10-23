@@ -7,6 +7,8 @@ import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,9 @@ public class WxAppCartController extends WxAppBaseController {
 
     @PostMapping("/list")
     public JsonResult getCartList(@RequestBody  WxAppCartListParam param) {
-        WxAppCartListVo cartList = shop().cart.getCartList(param);
+        WxAppSessionUser user = wxAppAuth.user();
+        if (user!=null) param.setUserId(user.getUserId());// todo 测试
+        WxAppCartListVo cartList = shop().cart.getCartList(param.getUserId());
         return success(cartList);
     }
 

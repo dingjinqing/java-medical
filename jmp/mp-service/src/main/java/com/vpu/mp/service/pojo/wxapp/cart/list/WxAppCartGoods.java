@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 public class WxAppCartGoods {
 
     public static String IS_DELETE ="isDelete";
+    public static String CART_GOODS_PRICE ="cart_goods_price";
     // 购物车;列表id
     private Integer recId;
     // 商品id
@@ -54,6 +55,10 @@ public class WxAppCartGoods {
      * 图片
      */
     private String prdImg;
+    /**
+     * 规格价格
+     */
+    private BigDecimal PrdPrice;
     /**
      * 删除标识
      */
