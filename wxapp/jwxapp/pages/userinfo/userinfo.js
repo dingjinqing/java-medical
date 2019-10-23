@@ -134,9 +134,18 @@ global.wxPage({
     // user_info.form_id = e.detail.formId;
     //生日
     var date_arr = dates.split('-');
-    user_info.birthdayYear = date_arr[0];
-    user_info.birthdayMonth = date_arr[1];
-    user_info.birthdayDay = date_arr[2];
+    debugger
+    if (date_arr.length == 1) {
+      user_info.birthdayYear = 0;
+      user_info.birthdayMonth = 0;
+      user_info.birthdayDay = 0;
+    } else {
+      user_info.birthdayYear = date_arr[0];
+      user_info.birthdayMonth = date_arr[1];
+      user_info.birthdayDay = date_arr[2];
+    }
+    console.log(user_info.birthdayMonth)
+    console.log(user_info.birthdayDay)
     //名字
     if (user_info.realName == "null") {
       user_info.realName = '';
