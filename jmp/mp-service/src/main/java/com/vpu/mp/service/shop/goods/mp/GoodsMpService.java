@@ -3,11 +3,11 @@ package com.vpu.mp.service.shop.goods.mp;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.GoodsPriceService;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -107,10 +106,14 @@ public class GoodsMpService extends ShopBaseService {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
 
-        List<GoodsT> goodsTList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,GOODS.GOODS_TYPE,
+        Map<Integer, GoodsT> goodsMap = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE, GOODS.GOODS_TYPE,
             GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID)
-            .from(GOODS).where(condition).fetchInto(GoodsT.class);
-        return goodsTList;
+            .from(GOODS).where(condition).fetchMap(GOODS.GOODS_ID, GoodsT.class);
+
+        List<GoodsT> returnList =new ArrayList<>();
+        goodsIds.forEach(goodsId->returnList.add(goodsMap.get(goodsId)));
+
+        return returnList;
     }
 
     /**
@@ -225,7 +228,6 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 处理商品最终价格
-     *
      * @return
      */
     private void disposeDecorateGoodsPrice(List<Integer> goodsId, List<GoodsT> targetGoodsT) {
@@ -235,8 +237,8 @@ public class GoodsMpService extends ShopBaseService {
         Map<Integer, Byte> goodsTypeMap = targetGoodsT.stream().collect(Collectors.toMap(GoodsT::getGoodsId, GoodsT::getGoodsType));
 
         // 获取商品对应活动的最终价格
-//        Map<Integer, BigDecimal> goodsActivityPriceMap = goodsPriceService.getShowPriceByIdAndType(goodsTypeMap);
-        Map<Integer, BigDecimal> goodsActivityPriceMap = new HashMap<>();
+        Map<Integer, BigDecimal> goodsActivityPriceMap = goodsPriceService.getShowPriceByIdAndType(goodsTypeMap);
+//        Map<Integer, BigDecimal> goodsActivityPriceMap = new HashMap<>();
 
         final String priceFormat = "%.2f";
 
