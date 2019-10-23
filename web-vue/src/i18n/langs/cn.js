@@ -93,6 +93,8 @@ import { cn as refundDialog } from './views/admin_new/cn/index/orderManagement/v
 import { cn as membershipIntroduction } from './views/admin_new/cn/index/userManagement/member/membershipIntroductionCn'
 // 会员管理-会员卡
 import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card/memberCardCn'
+// 会员管理-积分配置
+import { cn as scoreCfg } from './views/admin_new/cn/index/userManagement/score/scoreCfgCn'
 
 // 门店
 // 门店通用
@@ -621,7 +623,8 @@ const cn = {
 
   // 会员管理
   memberCard, // 会员管理-会员卡
-
+  // 积分配置
+  scoreCfg,
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表
@@ -645,7 +648,6 @@ const cn = {
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
   templateMessage
-
 }
 
 export default cn

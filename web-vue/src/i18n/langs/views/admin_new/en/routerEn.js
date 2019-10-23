@@ -69,6 +69,10 @@ export const en = {
   ],
   // 会员管理 会员导入
   membershipIntroduction: ['Membership management', 'Membership List'],
+  // 会员管理 积分管理
+  integralManagement: ['Member management', 'Score management'],
+  // 积分管理 积分说明
+  integralDescription: ['Score management', 'Description'],
   // 基础配置 小程序授权
   program_auth: ['Base management', 'Mini Program auth'],
   // 基础配置 小程序授权成功页面

@@ -163,5 +163,6 @@ export const en = {
   memberAd: 'POWER(DISCOUNT)',
   detailSend: 'EACH 100 SEND 100',
   codeArr: ['CODE', 'ADD-BATCH', 'DEL-BATCH', 'GENERATE/IMPORT-RECORD'],
-  scoreSaveSuccess: 'SCORE CONFIG SUCCESS'
+  scoreSaveSuccess: 'SCORE CONFIG SUCCESS',
+  saveSuccess: 'SUCCESS'
 }

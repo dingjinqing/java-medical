@@ -89,6 +89,9 @@ import { en as refundDialog } from './views/admin_new/en/index/orderManagement/v
 import { en as membershipIntroduction } from './views/admin_new/en/index/userManagement/member/membershipIntroductionEn'
 // 会员管理-会员卡
 import { en as memberCard } from './views/admin_new/en/index/userManagement/card/memberCardEn'
+// 会员管理-积分配置
+import { en as scoreCfg } from './views/admin_new/en/index/userManagement/score/scoreCfgEn'
+
 // 门店
 // 门店通用
 import { en as storeCommon } from './views/admin_new/en/index/storeManagement/storeCommonEn'
@@ -128,9 +131,7 @@ import { en as expressList } from './views/admin/index/leftNavComponents/order/e
 import { en as purchase } from './views/admin_new/en/index/marketManagement/increasePurchase/purchaseEn'
 
 // 视频空间
-import {
-  en as videoSpace
-} from './views/admin_new/en/index/videoSpace/videoSpaceEn'
+import { en as videoSpace } from './views/admin_new/en/index/videoSpace/videoSpaceEn'
 
 import { en as vTree } from './views/admin_new/en/components/vTree/vTreeEn'
 
@@ -652,7 +653,7 @@ const en = {
 
   // 会员管理
   memberCard, // 会员管理-会员卡
-
+  scoreCfg, // 会员管理-积分配置
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表

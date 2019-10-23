@@ -3,25 +3,28 @@
     <div class="frontEndDisplayMain">
       <div class="frontEndTop">
         <img :src="$imageHost+'/image/admin/notice_img.png'">
-        <span>请在此设置小程序前端"我的积分"页面展示内容</span>
+        <span>{{$t('scoreCfg.frontEndDesc')}}</span>
       </div>
       <div class="content">
         <div class="left">
           <img :src="$imageHost+'/image/admin/score_qd.png'">
-          <div class="show_area">
-            已选择模板:<span>test</span>
+          <div
+            class="show_area"
+            @click="handleToDirectDecorate"
+          >
+            {{$t('scoreCfg.alreadyTemplate')}}:<span>{{templateName}}</span>
           </div>
           <div class="show_area hidden">
             <div>
-              <h1>自定义内容区域</h1>
-              <p>可在右侧选择商品页模板</p>
-              <p>未添加内容时,不显示此模块内容</p>
+              <h1>{{$t('scoreCfg.infoOne')}}</h1>
+              <p>{{$t('scoreCfg.infoTwo')}}</p>
+              <p>{{$t('scoreCfg.infoThree')}}</p>
             </div>
 
           </div>
-          <div class="score_get">积分收支明细</div>
+          <div class="score_get">{{$t('scoreCfg.getAndPayDetail')}}</div>
           <div class="score_set bottom">
-            <div class="score_setDiv">连续签到2天，获得1积分</div>
+            <div class="score_setDiv">{{$t('scoreCfg.signGetScoreEx')}}</div>
             <div class="score_setDiv">2019-04-29 12:00:00</div>
             <div class="score_setDiv">+1</div>
           </div>
@@ -29,22 +32,22 @@
         <div class="right">
           <div class="right_div">
             <div class="r_top">
-              <span>积分说明</span>
-              <span>用于前端展示，向用户说明店铺积分相关规则</span>
+              <span>{{$t('scoreCfg.scoreIntro')}}</span>
+              <span>{{$t('scoreCfg.scoreIntroDesc')}}</span>
             </div>
             <div class="r_bottom">
               <el-button
                 type="primary"
                 size="small"
                 @click="handleToRightBtn(0)"
-              >编写积分说明</el-button>
+              >{{$t('scoreCfg.editScore')}}</el-button>
             </div>
 
           </div>
           <div class="right_div">
             <div class="r_top">
-              <span>自定义内容</span>
-              <span>用于向用户推荐积分相关活动商品</span>
+              <span>{{$t('scoreCfg.defineBySelf')}}</span>
+              <span>{{$t('scoreCfg.show')}}</span>
             </div>
             <div class="r_bottom">
               <div
@@ -63,16 +66,16 @@
                   plain
                   size="small"
                   @click="handleToRightBtn(1)"
-                >选择模板</el-button>
+                >{{$t('scoreCfg.chooseTemplate')}}</el-button>
               </div>
               <span
                 @click="handleToRightBtn(2)"
                 class="common"
-              >刷新</span>
+              >{{$t('scoreCfg.refresh')}}</span>
               <span
                 @click="handleToRightBtn(3)"
                 class="common"
-              >添加模板</span>
+              >{{$t('scoreCfg.addTemplate')}}</span>
             </div>
 
           </div>
@@ -84,18 +87,21 @@
   </div>
 </template>
 <script>
+import { scorePageIdUpdate, getScoreConfigRequest } from '@/api/admin/memberManage/scoreManage/scoreCfg.js'
 export default {
   components: {
     SelectTemplateDialog: () => import('./selectTemplateDialog')
   },
   data () {
     return {
-      templateList: 'test'
+      templateList: null, // 模板id
+      templateName: null // 模板名称
     }
   },
   watch: {
     watch: {
       '$store.state.util.integralDataNotice' (newData) {
+        alert('iiiiii')
         let obj = {
           templateList: this.templateList
         }
@@ -104,7 +110,38 @@ export default {
       }
     }
   },
+  created () {
+    this.loadDefaultData()
+  },
+  mounted () {
+    this.$http.$on('frontEndDisplaySaveSignal', res => {
+      console.log('保存前端')
+      this.updateScorePageId()
+    })
+  },
   methods: {
+    // 1 - 加载默认的数据
+    loadDefaultData () {
+      getScoreConfigRequest().then(res => {
+        if (res.error === 0) {
+          this.templateName = res.content.pageName
+          this.templateList = res.content.scorePageId
+        }
+      })
+    },
+    // 2 - 保存数据
+    updateScorePageId () {
+      let obj = {
+        'scorePageId': this.templateList
+      }
+      console.log(obj)
+      scorePageIdUpdate(obj).then(res => {
+        if (res.error === 0) {
+          // success
+          this.$message.success(this.$t('memberCard.auditOption'))
+        }
+      })
+    },
     // 右侧按钮点击汇总
     handleToRightBtn (flag) {
       switch (flag) {
@@ -131,6 +168,12 @@ export default {
     handleToSendData (res) {
       console.log(res)
       this.templateList = res.userID
+    },
+    handleToDirectDecorate () {
+      // TODO 等小程序管理->页面装修->自定义页面装修完成
+      console.log('页面跳转')
+      this.$route.push({
+      })
     }
   }
 }

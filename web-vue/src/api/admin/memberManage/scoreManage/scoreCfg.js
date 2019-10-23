@@ -17,3 +17,30 @@ export function getScoreConfigRequest () {
     data: null
   })
 }
+
+// 积分说明获取
+export function scoreCopywritingRequest () {
+  return service({
+    url: '/api/admin/user/score/copywriting',
+    method: 'post',
+    data: null
+  })
+}
+
+// 积分说明保存
+export function saveScoreDocumentUpdate (data) {
+  return service({
+    url: '/api/admin/user/score/copywriting/save',
+    method: 'post',
+    data
+  })
+}
+
+// 积分前端页展示模板id
+export function scorePageIdUpdate (data) {
+  return service({
+    url: '/api/admin/user/score/add',
+    method: 'post',
+    data
+  })
+}

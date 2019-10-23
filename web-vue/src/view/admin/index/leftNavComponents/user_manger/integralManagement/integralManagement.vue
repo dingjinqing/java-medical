@@ -6,7 +6,7 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="积分规则设置"
+          :label="$t('scoreCfg.scoreRuleSetting')"
           name="first"
         >
           <IntegralRule
@@ -15,7 +15,7 @@
           />
         </el-tab-pane>
         <el-tab-pane
-          label="前端展示设置"
+          :label="$t('scoreCfg.frontEndSetting')"
           name="second"
         >
           <FrontEndDisplay />
@@ -29,69 +29,69 @@
     >
       <div class="title">
         <span></span>
-        积分使用规则
+        {{$t('scoreCfg.scoreRule')}}
       </div>
       <div class="intLimit">
         <div class="intLimitTop">
-          <span>积分支付限制</span>
+          <span>{{$t('scoreCfg.scorePayLimit')}}</span>
           <div>
             <el-radio
               v-model="limitRadio"
               label="0"
-            >不限制</el-radio>
+            >{{$t('scoreCfg.unlimit')}}</el-radio>
             <el-radio
               v-model="limitRadio"
               label="1"
-            >自定义</el-radio>
+            >{{$t('scoreCfg.defineSelf')}}</el-radio>
             <div
               v-if="limitRadio==='1'"
               style="margin-top:10px"
             >
-              <span>每单支付的积分数量少于
+              <span>{{$t('scoreCfg.scorePayDesOne')}}
                 <el-input-number
                   size="small"
                   v-model="limitIntegralNum"
                   controls-position="right"
                   :min="1"
                   :max="100000"
-                ></el-input-number>积分，不可使用积分支付
-                <span style="margit-left:20px;color:#999">请填写大于100积分且为100积分的整数倍的数值</span>
+                ></el-input-number>{{$t('scoreCfg.scorePayDesTwo')}}
+                <span style="margit-left:20px;color:#999">{{$t('scoreCfg.print')}}</span>
               </span>
             </div>
           </div>
         </div>
         <div class="intLimitTop intLimitFooter">
-          <span>积分抵扣比例</span>
+          <span>{{$t('scoreCfg.scoreScale')}}</span>
           <div>
-            <span>用户可使用积分抵扣订单折后金额的
+            <span>{{$t('scoreCfg.scoreScaleDesOne')}}
               <el-input-number
                 size="small"
                 v-model="limitIntegralNum"
                 controls-position="right"
                 :min="1"
                 :max="100000"
-              ></el-input-number>%，不可使用积分支付
-              <span style="margit-left:20px;color:#999">不填默认积分折扣订单折后金额的50%</span>
+              ></el-input-number>{{$t('scoreCfg.scoreScaleDesTwo')}}
+              <span style="margit-left:20px;color:#999">{{$t('scoreCfg.prineTwo')}}</span>
             </span>
           </div>
         </div>
       </div>
       <div class="title">
         <span></span>
-        积分获取规则
-        <i style="color:#999">和会员卡获取积分相互排斥，以会员卡优先</i>
+        {{$t('scoreCfg.scoreGetRule')}}
+        <i style="color:#999">{{$t('scoreCfg.scoreGetDescOne')}}</i>
       </div>
       <!--积分获取规则下方代码块-->
       <div class="intContent">
-        <span class="intTitle">购物送积分</span>
+        <span class="intTitle">{{$t('scoreCfg.buySend')}}</span>
         <el-switch
           v-model="shopValue"
           active-color="#13ce66"
           inactive-color="#ff4949"
         >
         </el-switch>
-        <span style="display:inline-block;margin:0 20px">{{shopValue?'已开启':'已关闭'}}</span>
-        <span style="color:#999">开关开启，则订单完成后会给用户按照积分获取规则赠送积分，关闭则不赠送</span>
+        <span style="display:inline-block;margin:0 20px">{{shopValue?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+        <span style="color:#999">{{$t('scoreCfg.scoreGetDescTwo')}}</span>
         <div v-if="shopValue">
           <div
             v-for="(item,index) in shopFullArr"
@@ -154,22 +154,22 @@
 
       </div>
       <div class="intContent">
-        <span class="intTitle">门店买单送积分</span>
+        <span class="intTitle">{{$t('scoreCfg.storeSend')}}</span>
         <el-switch
           v-model="doorValue"
           active-color="#13ce66"
           inactive-color="#ff4949"
         >
         </el-switch>
-        <span style="display:inline-block;margin:0 20px">{{doorValue?'已开启':'已关闭'}}</span>
-        <span style="color:#999">开关开启，则会在用户门店买单后按照购物送积分规则给用户赠送积分，关闭则不赠送</span>
+        <span style="display:inline-block;margin:0 20px">{{doorValue? $t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+        <span style="color:#999">{{$t('scoreCfg.storeSendDescOne')}}</span>
       </div>
       <div class="intContent">
         <div class="loginDiv">
           <span
             class="intTitle"
             style="margin-right:15px"
-          >登陆送积分</span>
+          >{{$t('scoreCfg.loginSendScore')}}</span>
           <el-switch
             v-model="loginValue"
             active-color="#13ce66"
@@ -177,13 +177,13 @@
           >
           </el-switch>
           <div>
-            <span style="display:inline-block;margin:0 20px">{{loginValue?'已开启':'已关闭'}}</span>
-            <span style="color:#999">开关开启，则登陆后会给用户按照积分获取规则赠送积分，关闭则不赠送</span>
+            <span style="display:inline-block;margin:0 20px">{{loginValue?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="color:#999">{{$t('scoreCfg.loginDescOne')}}</span>
             <div
               v-if="loginValue"
               class="hiddenLoginDiv"
             >
-              <span>登陆送</span>
+              <span>{{$t('scoreCfg.loginSend')}}</span>
               <div>
                 <el-input-number
                   size="small"
@@ -191,8 +191,8 @@
                   controls-position="right"
                   :min="1"
                   :max="100000"
-                ></el-input-number>积分
-                <span style="color:#f66">每日仅首次登陆赠送积分</span>
+                ></el-input-number>{{$t('scoreCfg.score')}}
+                <span style="color:#f66">{{$t('scoreCfg.loginDescTwo')}}</span>
               </div>
 
             </div>
@@ -203,7 +203,7 @@
         <span
           class="intTitle"
           style="margin-right:15px"
-        >签到送积分</span>
+        >{{$t('scoreCfg.signSendScore')}}</span>
         <el-switch
           v-model="signInvalue"
           active-color="#13ce66"
@@ -211,11 +211,11 @@
         >
         </el-switch>
         <div class="signHiddenDiv">
-          <span style="display:inline-block;margin:0 20px">{{signInvalue?'已开启':'已关闭'}}</span>
-          <span style="color:#999;margin-right:10px;display:inline-block">开关开启，则系统开启签到14天</span><i
+          <span style="display:inline-block;margin:0 20px">{{signInvalue?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+          <span style="color:#999;margin-right:10px;display:inline-block">{{$t('scoreCfg.signDescOne')}}</span><i
             @click="handleToCheckMember()"
             style="cursor:pointer;color:#5a8bff"
-          >查看签到会员</i>
+          >{{$t('scoreCfg.view')}}</i>
           <div
             v-if="signInvalue"
             class="hiddenLoginDiv"
@@ -225,12 +225,12 @@
               :key="index"
               style="margin-bottom:5px"
             >
-              <span>连续签到{{item}}天，送</span>
+              <span>{{$t('scoreCfg.continueSign')}}{{item}}{{$t('scoreCfg.daySend')}}</span>
               <el-input
                 v-model="signInput[index].input"
                 size="small"
               ></el-input>
-              <span>积分</span>
+              <span>{{$t('scoreCfg.score')}}</span>
               <span
                 @click="handleToAdd()"
                 v-if="index===0"
@@ -293,6 +293,9 @@ export default {
   },
   created () {
     this.LoadDefaultData()
+  },
+  mounted () {
+    this.langDefault()
   },
   methods: {
     // 加载默认数据

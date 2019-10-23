@@ -177,6 +177,7 @@ export default {
     },
     // 弹窗确认事件
     handleToSure () {
+      console.log(this.selectData)
       this.$emit('handleToSendData', this.selectData)
       this.dialogVisible = false
     }

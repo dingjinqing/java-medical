@@ -1,30 +1,30 @@
 <template>
   <div class="integralRule">
     <div class="top">
-      请在此设置店铺积分管理相关规则：
+      {{$t('scoreCfg.prompt')}}
     </div>
     <div class="title">
       <span></span>
-      积分通用规则
+      {{$t('scoreCfg.scoreNormalRule')}}
     </div>
     <div class="content">
-      <span>积分有效期</span>
+      <span>{{$t('scoreCfg.scoreEffective')}}</span>
       <div class="radioDiv">
         <div>
           <el-radio
             v-model="message.radio"
             label="0"
-          >永久有效</el-radio>
+          >{{$t('scoreCfg.forever')}}</el-radio>
         </div>
         <div>
           <el-radio
             v-model="message.radio"
             label="1"
-          >从获得开始至</el-radio>
+          >{{$t('scoreCfg.fromTime')}}</el-radio>
           <div>
             <el-select
               v-model="message.yearValue"
-              placeholder="请选择"
+              :placeholder="$t('scoreCfg.choose')"
               size="small"
             >
               <el-option
@@ -39,7 +39,7 @@
           <div>
             <el-select
               v-model="message.mounthValue"
-              placeholder="请选择"
+              :placeholder="$t('scoreCfg.choose')"
               size="small"
             >
               <el-option
@@ -50,12 +50,12 @@
               >
               </el-option>
             </el-select>
-            月
+            {{$t('scoreCfg.month')}}
           </div>
           <div>
             <el-select
               v-model="message.dayValue"
-              placeholder="请选择"
+              :placeholder="$t('scoreCfg.choose')"
               size="small"
               :disabled="mounthValue==='0'"
             >
@@ -67,17 +67,17 @@
               >
               </el-option>
             </el-select>
-            日
+            {{$t('scoreCfg.day')}}
           </div>
         </div>
         <div style="color:#FF0000">
-          例如，设置未"明年的01月01日",即是指用户今年获得的积分将在明年1月1日24:00:00失效
+          {{$t('scoreCfg.exampleTime')}}
         </div>
         <div class="integralNumDiv">
           <el-radio
             v-model="message.radio"
             label="2"
-          >从获得积分当天起</el-radio>
+          >{{$t('scoreCfg.fromGetScore')}}</el-radio>
           <el-input-number
             size="small"
             v-model="message.integralNum"
@@ -88,7 +88,7 @@
           <div>
             <el-select
               v-model="message.integralDateValue"
-              placeholder="请选择"
+              :placeholder="$t('scoreCfg.choose')"
               size="small"
             >
               <el-option
@@ -100,7 +100,7 @@
               </el-option>
 
             </el-select>
-            内有效
+            {{$t('scoreCfg.innerEffective')}}
           </div>
         </div>
       </div>
@@ -109,9 +109,9 @@
       class="content"
       style="margin-top:0"
     >
-      <span>积分润换比</span>
+      <span>{{$t('scoreCfg.exchange')}}</span>
       <div class="radioDiv">
-        100积分=1元RMB
+        {{$t('scoreCfg.formula')}}
       </div>
     </div>
   </div>
@@ -123,22 +123,7 @@ export default {
     return {
       radio: '0',
       yearValue: '4',
-      yearOptions: [{
-        value: '1',
-        label: '一年后'
-      }, {
-        value: '2',
-        label: '两年后'
-      }, {
-        value: '3',
-        label: '三年后'
-      }, {
-        value: '4',
-        label: '四年后'
-      }, {
-        value: '5',
-        label: '五年后'
-      }],
+      yearOptions: null,
       mounthValue: '4',
       mounthOptions: [
         {
@@ -296,6 +281,23 @@ export default {
     }
   },
   watch: {
+    lang () {
+      this.integralDateOptions = [{
+        value: '1',
+        label: this.$t('scoreCfg.day')
+      }, {
+        value: '7',
+        label: this.$t('scoreCfg.week')
+      },
+      {
+        value: '30',
+        label: this.$t('scoreCfg.month')
+      }]
+
+      this.dayOptions[0].label = this.$t('scoreCfg.choose')
+      this.mounthOptions[0].label = this.$t('scoreCfg.choose')
+      this.yearOptions = this.$t('scoreCfg.yearOptions')
+    },
     mounthValue (newData) {
       console.log('299')
       if (newData === '0') {
@@ -323,6 +325,9 @@ export default {
       console.log(obj)
       this.$emit('toNoticeSend', obj, 0)
     }
+  },
+  mounted () {
+    this.langDefault()
   },
   methods: {
 

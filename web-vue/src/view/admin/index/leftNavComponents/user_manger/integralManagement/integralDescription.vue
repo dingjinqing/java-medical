@@ -8,18 +8,18 @@
           <div class="leftContent">
             <div
               class="show_pass"
-              v-html="templateData"
+              v-html="example"
             >
             </div>
           </div>
         </div>
         <div class="rightDiv">
           <div class="rightTop">
-            <span>页面内容：</span>
+            <span>{{$t("scoreCfg.pageContent")}}：</span>
             <span
               @click="handleToUseTemplate()"
               style="color:#5a8bff;cursor:pointer"
-            >使用模板文案</span>
+            >{{$t("scoreCfg.useTemplate")}}</span>
           </div>
           <div class="rightContent">
             <div>
@@ -44,6 +44,7 @@
   </div>
 </template>
 <script>
+import { saveScoreDocumentUpdate, scoreCopywritingRequest } from '@/api/admin/memberManage/scoreManage/scoreCfg.js'
 export default {
   components: {
     SaveComponent: () => import('./saveComponent'),
@@ -51,24 +52,57 @@ export default {
   },
   data () {
     return {
+      example: null, // 展示示例
       editMsg: '',
       disabled: false,
-      templateData: "<p style='margin:0;font-size:14px;font-weight: bold;line-height:20px'><strong>积分是什么</strong></p><p style='margin:0;font-size:14px;line-height:20px'>积分是微铺宝电商运营小程序商城（以下简称“商城”）回馈给广大会员的服务，会员在商城通过购物消费、签到及活动参与将获得相应的积分奖励。在不同情况下，积分可用于购物时抵扣订单支付金额、参与商城活动等，100积分抵扣1元人民币。积分收支规则以商城实际运营情况为准</p><p style='margin:0;font-size:14px;font-weight: bold;line-height:20px'>如何获取积分</p><p style='margin:0;font-size:14px;line-height:20px'>1.会员在商城成功消费，当订单状态为“已完成”后赠送的积分到账且可以正常使用。购买商品可获得的积分数量，具体请以订单完成后实际到账数量为准。</p><p style='margin:0;font-size:14px;line-height:20px'>2.会员在商城开通会员卡，可获得相应数量的积分。</p><p style='margin:0;font-size:14px;line-height:20px'>3.会员在商城参与活动，可获得相应数量的积分。</p><p style='margin:0;font-size:14px;line-height:20px'>4.会员在商城签到可领取签到积分奖励。</p><p style='margin:0;font-size:14px;line-height:20px'>5.会员具体可获得的积分数量以最终实际获得为准。</p><p style='margin:0;font-size:14px;font-weight: bold;line-height:20px'><strong>注意</strong></p><p style='margin:0;font-size:14px;line-height:20px'>A.订单发生部分退款，则实际赠送的积分数量会扣减退货商品对应的积分；</p><p style='margin:0;font-size:14px;line-height:20px'>B.购买会员卡不赠送积分。</p><p style='margin:0;font-size:14px;font-weight: bold;line-height:20px'><strong>如何使用积分</strong></p><p style='margin:0;font-size:14px;line-height:20px'>1.购物抵现金，在商城购物时，积分可抵现金支付，可抵扣金额显示请以订单结算页面显示可用数目为准。</p><p style='margin:0;font-size:14px;line-height:20px'>2.使用积分兑换商品、优惠券及会员卡，在商城“积分兑换”模块中，可选择兑换的商品、优惠券或会员卡，以相应数量的积分进行兑换，兑换所需积分数量请以最终结算页面提示信息为准。</p><p style='margin:0;font-size:14px;line-height:20px'>3.参与活动消耗积分。</p><p style='margin:0;font-size:14px;font-weight: bold'><strong>注意</strong>：</p><p style='margin:0;font-size:14px;line-height:20px'>A.商城不同阶段运营策略不同，结算时会出现积分抵扣不能使用的情况；</p><p style='margin:0;font-size:14px;line-height:20px'>B.积分无法抵扣运费金额；</p><p style='margin:0;font-size:14px;line-height:20px'>C.如果会员以不正当方式（包括但不限于利用系统漏洞作弊、规避商城管理规则等）获取积分，商城有权取消会员以不正当方式获得、使用的积分。情节严重的，商城有权冻结会员账户资金、禁止会员登录、终止服务。</p><p style='margin:0;font-size:14px;line-height:20px;font-weight:700'><strong>积分有效期</strong></p><p style='margin:0;font-size:14px;line-height:20px'>在商城中获得的积分存在有效期限，具体有效期限由商家设置。</p><p style='margin:0;font-size:14px;font-weight: bold;line-height:20px'><strong>服务声明</strong></p><p style='margin:0;font-size:14px;line-height:20px'>商城可根据不同时段的运营策略修改积分领取及使用等规则，使用积分时请以商城相关页面实际结果为准。此《积分说明》最终解释权归微铺宝电商运营小程序商城所有。</p>"
+      templateData: null
     }
   },
+  created () {
+    this.loadDefaultData()
+  },
   watch: {
+
     '$store.state.util.integralDataNotice' (newData) {
       let obj = {
         editMsg: this.editMsg
       }
       console.log(obj)
       // 编写节分说明
+    },
+    lang () {
+      this.templateData = this.$t('scoreCfg.templateData')
     }
   },
+  mounted () {
+    this.langDefault()
+    this.$http.$on('saveIntegralDescription', res => {
+      console.log('save score description')
+
+      saveScoreDocumentUpdate({ document: this.editMsg }).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('memberCard.saveSuccess'))
+        }
+      })
+    })
+  },
   methods: {
+    // 加载默认数据
+    loadDefaultData () {
+      this.example = this.templateData
+      scoreCopywritingRequest().then(res => {
+        if (res.error === 0) {
+          this.editMsg = res.content.document
+          if (this.editMsg) {
+            this.example = this.editMsg
+          }
+        }
+      })
+    },
     // 鼠标单击的事件
     onClick (e, editor) {
       console.log(e, editor)
+      this.example = this.editMsg
     },
     // 清空内容
     clear () {
