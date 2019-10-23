@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecord extends UpdatableRecordImpl<UserRecord> {
 
-    private static final long serialVersionUID = 1728185618;
+    private static final long serialVersionUID = 1583940842;
 
     /**
      * Setter for <code>mini_main.b2c_user.id</code>.
@@ -88,14 +88,14 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_main.b2c_user.user_pwd</code>.
+     * Setter for <code>mini_main.b2c_user.user_pwd</code>. 密码
      */
     public void setUserPwd(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_user.user_pwd</code>.
+     * Getter for <code>mini_main.b2c_user.user_pwd</code>. 密码
      */
     public String getUserPwd() {
         return (String) get(4);
@@ -242,14 +242,14 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_main.b2c_user.invite_source</code>. 邀请来源
+     * Setter for <code>mini_main.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
      */
     public void setInviteSource(String value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_user.invite_source</code>. 邀请来源
+     * Getter for <code>mini_main.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
      */
     public String getInviteSource() {
         return (String) get(15);

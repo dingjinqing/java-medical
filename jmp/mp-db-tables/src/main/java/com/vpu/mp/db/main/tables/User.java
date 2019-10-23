@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -639286650;
+    private static final long serialVersionUID = 652344315;
 
     /**
      * The reference instance of <code>mini_main.b2c_user</code>
@@ -80,9 +80,9 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "用户名");
 
     /**
-     * The column <code>mini_main.b2c_user.user_pwd</code>.
+     * The column <code>mini_main.b2c_user.user_pwd</code>. 密码
      */
-    public final TableField<UserRecord, String> USER_PWD = createField("user_pwd", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserRecord, String> USER_PWD = createField("user_pwd", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "密码");
 
     /**
      * The column <code>mini_main.b2c_user.user_cid</code>.
@@ -117,7 +117,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_main.b2c_user.wechat</code>. 微信
      */
-    public final TableField<UserRecord, String> WECHAT = createField("wechat", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "微信");
+    public final TableField<UserRecord, String> WECHAT = createField("wechat", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "微信");
 
     /**
      * The column <code>mini_main.b2c_user.fanli_grade</code>. 返利会员级别
@@ -135,9 +135,9 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, Integer> INVITE = createField("invite", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_main.b2c_user.invite_source</code>. 邀请来源
+     * The column <code>mini_main.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
      */
-    public final TableField<UserRecord, String> INVITE_SOURCE = createField("invite_source", org.jooq.impl.SQLDataType.VARCHAR(32), this, "邀请来源");
+    public final TableField<UserRecord, String> INVITE_SOURCE = createField("invite_source", org.jooq.impl.SQLDataType.VARCHAR(32), this, "邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖");
 
     /**
      * The column <code>mini_main.b2c_user.invitation_code</code>. 邀请码

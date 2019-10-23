@@ -748,13 +748,13 @@ public class ScoreService extends ShopBaseService {
 		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
 		int execute = 0;
 		if (time != null) {
-			logger().info("time是空");
+			logger().info("time不是空");
 			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
 					.where(USER_SCORE.EXPIRE_TIME.gt(DateUtil.getLocalDateTime()).and(USER_SCORE.EXPIRE_TIME.le(time))
 							.and(USER_SCORE.STATUS.in(list)).and(USER_SCORE.USER_ID.eq(userId)))
 					.execute();
 		} else {
-			logger().info("time不空");
+			logger().info("time空");
 			LocalDateTime localDateTime = LocalDateTime.now().plusYears(1L);
 			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
 					.where(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), Timestamp.valueOf(localDateTime))
