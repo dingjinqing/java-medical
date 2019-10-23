@@ -35,7 +35,7 @@ import com.vpu.mp.service.shop.order.record.OrderActionService;
  *
  */
 @Component
-public class CloseService extends ShopBaseService implements IorderOperate {
+public class CloseService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam,OrderOperateQueryParam> {
 	
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -54,17 +54,15 @@ public class CloseService extends ShopBaseService implements IorderOperate {
 		return OrderServiceCode.CLOSE;
 	}
 
-	@Override
+    @Override
 	public Object query(OrderOperateQueryParam param) throws MpException {
 		return null;
 	}
 
-	@Override
-	public JsonResultCode execute(Object obj) {
-		if(!(obj instanceof OrderOperateQueryParam)) {
-			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
-		}
-		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
+
+
+    @Override
+	public JsonResultCode execute(OrderOperateQueryParam param) {
 		
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {

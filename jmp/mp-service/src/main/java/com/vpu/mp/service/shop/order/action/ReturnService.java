@@ -60,7 +60,7 @@ import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
  *
  */
 @Service
-public class ReturnService extends ShopBaseService implements IorderOperate {
+public class ReturnService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, RefundParam> {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -99,11 +99,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	 * @throws MpException 
 	 */
 	@Override
-	public JsonResultCode execute(Object obj) {
-		if(!(obj instanceof RefundParam)) {
-			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
-		}
-		RefundParam param = (RefundParam)obj;	
+	public JsonResultCode execute(RefundParam param) {
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {

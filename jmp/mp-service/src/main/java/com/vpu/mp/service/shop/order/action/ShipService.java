@@ -47,7 +47,7 @@ import com.vpu.mp.service.shop.order.ship.ShipInfoService;
  *
  */
 @Component
-public class ShipService extends ShopBaseService implements IorderOperate {
+public class ShipService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, ShipParam> {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -66,8 +66,7 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 	}
 
 	@Override
-	public JsonResultCode execute(Object obj) {
-		ShipParam param = (ShipParam)obj;
+	public JsonResultCode execute(ShipParam param) {
 		logger.info("发货参数为:"+param.toString());
 		//是否存在可发货数>当前发货数的标识
 		boolean flag = false;

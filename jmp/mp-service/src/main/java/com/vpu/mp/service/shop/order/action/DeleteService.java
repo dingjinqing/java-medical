@@ -21,7 +21,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
  * @author 王帅
  *
  */
-public class DeleteService  extends ShopBaseService implements IorderOperate {
+public class DeleteService  extends ShopBaseService implements IorderOperate <OrderOperateQueryParam,OrderOperateQueryParam>{
 
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -43,11 +43,8 @@ public class DeleteService  extends ShopBaseService implements IorderOperate {
 	 * 	订单收货目前支持已发货状态下商品全部收货（不支持部分收货）
 	 */
 	@Override
-	public JsonResultCode execute(Object obj) {
-		if(!(obj instanceof OrderOperateQueryParam)) {
-			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
-		}
-		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
+	public JsonResultCode execute(OrderOperateQueryParam param) {
+
 		OrderListMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderListMpVo.class);
 		if(order == null) {
 			return JsonResultCode.CODE_ORDER_NOT_EXIST;

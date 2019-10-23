@@ -23,7 +23,7 @@ import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 
 @Component
-public class FinishService extends ShopBaseService implements IorderOperate {
+public class FinishService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam,OrderOperateQueryParam> {
 	@Autowired
 	private OrderInfoService orderInfo;
 	
@@ -50,12 +50,8 @@ public class FinishService extends ShopBaseService implements IorderOperate {
 	}
 
 	@Override
-	public JsonResultCode execute(Object obj) {
-		if(!(obj instanceof OrderOperateQueryParam)) {
-			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
-		}
-		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
-		
+	public JsonResultCode execute(OrderOperateQueryParam param) {
+
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		
 		//查询订单订单是否存在退款中订单

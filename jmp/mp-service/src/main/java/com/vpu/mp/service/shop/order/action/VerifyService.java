@@ -29,7 +29,7 @@ import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 
 @Component
-public class VerifyService extends ShopBaseService implements IorderOperate {
+public class VerifyService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, verifyParam> {
 	
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -57,11 +57,7 @@ public class VerifyService extends ShopBaseService implements IorderOperate {
 	}
 
 	@Override
-	public JsonResultCode execute(Object obj) {
-		if(!(obj instanceof verifyParam)) {
-			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
-		}
-		verifyParam param = (verifyParam)obj;
+	public JsonResultCode execute(verifyParam param) {
 		
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		

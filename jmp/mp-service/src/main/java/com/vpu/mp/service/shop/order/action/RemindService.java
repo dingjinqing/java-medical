@@ -25,7 +25,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
  */
 
 @Component
-public class RemindService extends ShopBaseService implements IorderOperate{
+public class RemindService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, OrderOperateQueryParam>{
 	
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -44,11 +44,7 @@ public class RemindService extends ShopBaseService implements IorderOperate{
 	}
 
 	@Override
-	public JsonResultCode execute(Object obj) {
-		if(!(obj instanceof OrderOperateQueryParam)) {
-			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
-		}
-		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
+	public JsonResultCode execute(OrderOperateQueryParam param) {
 		OrderInfoMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoMpVo.class);
 		if(order == null) {
 			return JsonResultCode.CODE_ORDER_NOT_EXIST;

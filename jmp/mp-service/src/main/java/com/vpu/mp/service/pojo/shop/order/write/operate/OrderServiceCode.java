@@ -1,16 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.shop.order.action.CancelService;
-import com.vpu.mp.service.shop.order.action.CloseService;
-import com.vpu.mp.service.shop.order.action.FinishService;
-import com.vpu.mp.service.shop.order.action.ReturnService;
-import com.vpu.mp.service.shop.order.action.ShipService;
-import com.vpu.mp.service.shop.order.action.VerifyService;
-import com.vpu.mp.service.shop.order.action.ReceiveService;
-import com.vpu.mp.service.shop.order.action.ExtendReceiveService;
-import com.vpu.mp.service.shop.order.action.RemindService;
-import com.vpu.mp.service.shop.order.action.DeleteService;
+import com.vpu.mp.service.shop.order.action.*;
 
 /**
  * 订单状态操作标识service枚举类;此类中的clz只是为了方便查找业务的对于service；
@@ -38,6 +29,8 @@ public enum OrderServiceCode {
 	//8:提醒发货
 	REMIND(RemindService.class),
 	//9:删除订单
-	DELETE(DeleteService.class);
+	DELETE(DeleteService.class),
+    //10:下单
+    CREATE(CreateService.class);
 	private OrderServiceCode(Class<? extends ShopBaseService> clz){}
 }

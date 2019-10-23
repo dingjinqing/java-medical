@@ -11,5 +11,5 @@ public interface IOrderBase {
 	 * 	返回该实现类对于的处理类
 	 * @return
 	 */
-	public OrderServiceCode getServiceCode();
+	OrderServiceCode getServiceCode();
 }

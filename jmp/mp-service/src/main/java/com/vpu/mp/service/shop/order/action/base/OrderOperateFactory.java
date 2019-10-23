@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.action.base;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -43,7 +44,7 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	 * @return 执行结果
 	 * @throws MpException 
 	 */
-	public JsonResultCode orderOperate(IOrderBase info) {
+	public JsonResultCode orderOperate(AbstractOrderOperateQueryParam info) {
 		return getService(info.getServiceCode()).execute(info);
 	}
 	
@@ -54,7 +55,7 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	 * @return 执行结果
 	 * @throws MpException 
 	 */
-	public Object orderQuery(OrderOperateQueryParam param) throws MpException {
+	public Object orderQuery(AbstractOrderOperateQueryParam param) throws MpException {
 		return getService(param.getServiceCode()).query(param);
 	}
 

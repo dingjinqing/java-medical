@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 
+import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
  */
 
 @Component
-public class ExtendReceiveService extends ShopBaseService implements IorderOperate{
+public class ExtendReceiveService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, OrderOperateQueryParam>{
 	
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -58,17 +59,13 @@ public class ExtendReceiveService extends ShopBaseService implements IorderOpera
 	}
 	
 	@Override
-	public JsonResultCode execute(Object obj) {
-		logger().info("订单延长收货时间开始,参数为:{}",obj.toString());
+	public JsonResultCode execute(OrderOperateQueryParam param) {
+		logger().info("订单延长收货时间开始,参数为:{}",param.toString());
 		//TODO 延长收货
-		if(!(obj instanceof OrderOperateQueryParam)) {
-			return JsonResultCode.CODE_ORDER_OPERATE_NO_INSTANCEOF;
-		}
-		OrderOperateQueryParam param = (OrderOperateQueryParam)obj;
 		//后台输入延长时间
 		Timestamp extendTime = null;
 		if(param.getIsMp() == OrderConstant.IS_MP_ADMIN) {
-			extendTime = ((ExtendReceiveParam)obj).getExtendTime();
+			extendTime = ((ExtendReceiveParam)param).getExtendTime();
 		}
 		OrderInfoMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoMpVo.class);
 		if(order == null) {
