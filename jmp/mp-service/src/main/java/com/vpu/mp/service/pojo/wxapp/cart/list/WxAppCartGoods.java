@@ -10,6 +10,8 @@ import java.math.BigDecimal;
  */
 @Data
 public class WxAppCartGoods {
+
+    public static String IS_DELETE ="isDelete";
     // 购物车;列表id
     private Integer recId;
     // 商品id
