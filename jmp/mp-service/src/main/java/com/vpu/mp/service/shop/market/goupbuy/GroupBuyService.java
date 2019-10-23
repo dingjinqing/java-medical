@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
@@ -23,18 +24,16 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GroupBuyActivityVo;
 import com.vpu.mp.service.shop.order.OrderReadService;
-import org.jooq.Record;
-import org.jooq.Record2;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -86,12 +85,14 @@ public class GroupBuyService extends ShopBaseService {
 
     /**
      * 根据id 获取活动record
+     *
      * @param id
      * @return
      */
-    public GroupBuyDefineRecord getGroupBuyRecord(Integer id){
-       return  db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne();
+    public GroupBuyDefineRecord getGroupBuyRecord(Integer id) {
+        return db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne();
     }
+
     /**
      * 删除
      *
@@ -99,9 +100,9 @@ public class GroupBuyService extends ShopBaseService {
      */
     public int deleteGroupBuy(Integer id) {
         return db().update(GROUP_BUY_DEFINE)
-                .set(GROUP_BUY_DEFINE.DEL_FLAG, DelFlag.DISABLE.getCode())
-                .where(GROUP_BUY_DEFINE.ID.eq(id))
-                .execute();
+            .set(GROUP_BUY_DEFINE.DEL_FLAG, DelFlag.DISABLE.getCode())
+            .where(GROUP_BUY_DEFINE.ID.eq(id))
+            .execute();
     }
 
     /**
@@ -144,16 +145,16 @@ public class GroupBuyService extends ShopBaseService {
         Byte status = db().select(GROUP_BUY_DEFINE.STATUS).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne().component1();
         if (status != null && status == STOP_STATUS) {
             return db().update(GROUP_BUY_DEFINE)
-                    .set(GROUP_BUY_DEFINE.STATUS, USE_STATUS)
-                    .where(GROUP_BUY_DEFINE.ID.eq(id))
-                    .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS))
-                    .execute();
+                .set(GROUP_BUY_DEFINE.STATUS, USE_STATUS)
+                .where(GROUP_BUY_DEFINE.ID.eq(id))
+                .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS))
+                .execute();
         } else if (status != null && status == USE_STATUS) {
             return db().update(GROUP_BUY_DEFINE)
-                    .set(GROUP_BUY_DEFINE.STATUS, STOP_STATUS)
-                    .where(GROUP_BUY_DEFINE.ID.eq(id))
-                    .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
-                    .execute();
+                .set(GROUP_BUY_DEFINE.STATUS, STOP_STATUS)
+                .where(GROUP_BUY_DEFINE.ID.eq(id))
+                .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+                .execute();
         }
         return 0;
     }
@@ -167,8 +168,8 @@ public class GroupBuyService extends ShopBaseService {
      */
     public GroupBuyDetailVo detailGroupBuy(Integer id) {
         Record record = db().select().from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)
-                .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+            .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
         ).fetchOne();
         if (record == null) {
             return null;
@@ -176,20 +177,20 @@ public class GroupBuyService extends ShopBaseService {
         GroupBuyDetailVo groupBuy = record.into(GroupBuyDetailVo.class);
         //产品规格信息
         List<GroupBuyProductVo> buyProductVos = db()
-                .select(GROUP_BUY_PRODUCT_DEFINE.ID,
-                        GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID,
-                        GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID,
-                        GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,
-                        GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE,
-                        GROUP_BUY_PRODUCT_DEFINE.SALE_NUM,
-                        GROUP_BUY_PRODUCT_DEFINE.STOCK,
-                        GOODS_SPEC_PRODUCT.PRD_DESC,
-                        GOODS_SPEC_PRODUCT.PRD_PRICE,
-                        GOODS_SPEC_PRODUCT.PRD_NUMBER
-                )
-                .from(GROUP_BUY_PRODUCT_DEFINE)
-                .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID))
-                .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(id)).fetch().into(GroupBuyProductVo.class);
+            .select(GROUP_BUY_PRODUCT_DEFINE.ID,
+                GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID,
+                GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID,
+                GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,
+                GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE,
+                GROUP_BUY_PRODUCT_DEFINE.SALE_NUM,
+                GROUP_BUY_PRODUCT_DEFINE.STOCK,
+                GOODS_SPEC_PRODUCT.PRD_DESC,
+                GOODS_SPEC_PRODUCT.PRD_PRICE,
+                GOODS_SPEC_PRODUCT.PRD_NUMBER
+            )
+            .from(GROUP_BUY_PRODUCT_DEFINE)
+            .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID))
+            .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(id)).fetch().into(GroupBuyProductVo.class);
         //优惠卷信息
         List<Integer> ids = Util.splitValueToList(groupBuy.getRewardCouponId());
         List<CouponView> couponViews = couponService.getCouponViewByIds(ids);
@@ -206,13 +207,13 @@ public class GroupBuyService extends ShopBaseService {
      * @param param GroupBuyParam
      * @return 0
      */
-    public Boolean validGroupGoods(Integer id,Integer goodsId,Timestamp startTime,Timestamp endTime) {
+    public Boolean validGroupGoods(Integer id, Integer goodsId, Timestamp startTime, Timestamp endTime) {
         return db().fetchCount(GROUP_BUY_DEFINE, GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId)
-                        .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                        .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
-                        .and(GROUP_BUY_DEFINE.ID.notEqual(id))
-                        .and(GROUP_BUY_DEFINE.START_TIME.lt(startTime))
-                        .and(GROUP_BUY_DEFINE.END_TIME.gt(endTime))) == 0;
+            .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+            .and(GROUP_BUY_DEFINE.ID.notEqual(id))
+            .and(GROUP_BUY_DEFINE.START_TIME.lt(startTime))
+            .and(GROUP_BUY_DEFINE.END_TIME.gt(endTime))) == 0;
 
     }
 
@@ -287,7 +288,7 @@ public class GroupBuyService extends ShopBaseService {
                 analysisVo.getGoodsPriceList().add(goodsPrice);
                 analysisVo.getMarketPriceList().add(marketPric);
                 analysisVo.getRatioList().add(totalPrice.compareTo(BigDecimal.ZERO) > 0 ?
-                        marketPric.subtract(goodsPrice).divide(totalPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
+                    marketPric.subtract(goodsPrice).divide(totalPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
             }
             //新用户数
             OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), startDate);
@@ -311,12 +312,13 @@ public class GroupBuyService extends ShopBaseService {
 
     /**
      * 根据goodsId获取拼团定义
+     *
      * @param goodsId 商品id
-     * @param date 当前时间
+     * @param date    当前时间
      * @return List<GroupBuyProductDefineRecord>
      */
-    public List<Record2<Integer,BigDecimal>> getGroupBuyProductByGoodsId(Integer goodsId, Timestamp date){
-        return db().select(GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+    public List<Record2<Integer, BigDecimal>> getGroupBuyProductByGoodsId(Integer goodsId, Timestamp date) {
+        return db().select(GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .from(GROUP_BUY_PRODUCT_DEFINE)
             .leftJoin(GROUP_BUY_DEFINE)
             .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
@@ -328,14 +330,16 @@ public class GroupBuyService extends ShopBaseService {
             .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
             .fetch();
     }
+
     /**
      * 根据goodsIds获取拼团定义
+     *
      * @param goodsIds 商品id
-     * @param date 当前时间
+     * @param date     当前时间
      * @return List<GroupBuyProductDefineRecord>
      */
-    public Map<Integer,List<Record2<Integer,BigDecimal>>> getGroupBuyProductByGoodsIds(List<Integer> goodsIds, Timestamp date){
-        return db().select(GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+    public Map<Integer, List<Record2<Integer, BigDecimal>>> getGroupBuyProductByGoodsIds(List<Integer> goodsIds, Timestamp date) {
+        return db().select(GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .from(GROUP_BUY_PRODUCT_DEFINE)
             .leftJoin(GROUP_BUY_DEFINE)
             .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
@@ -347,7 +351,69 @@ public class GroupBuyService extends ShopBaseService {
             .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
             .fetch()
             .stream()
-            .collect(Collectors.groupingBy(x->x.get(GROUP_BUY_DEFINE.GOODS_ID)));
+            .collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_DEFINE.GOODS_ID)));
+    }
+
+    /**
+     * 获取集合内商品所参与的拼团信息
+     * @param goodsIds 待查询商品id集合
+     * @param date 限制时间
+     * @return key:商品id value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GroupBuyActivityVo}
+     * @author 李晓冰
+     */
+    public Map<Integer, GroupBuyActivityVo>  getGoodsGroupByInfo(List<Integer> goodsIds, Timestamp date) {
+        if (date == null) {
+            date = DateUtil.getLocalDateTime();
+        }
+        // 获取有效拼团规格信息
+        Map<Integer, List<Record5<Integer, Integer, Timestamp, Timestamp, BigDecimal>>> groupsInfos = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+            .from(GROUP_BUY_DEFINE).innerJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
+            .where(GROUP_BUY_DEFINE.START_TIME.lt(date)).and(GROUP_BUY_DEFINE.END_TIME.gt(date)).and(GROUP_BUY_DEFINE.STOCK.gt((short) 0))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_DEFINE.GOODS_ID)));
+
+        if (groupsInfos == null) {
+            return null;
+        }
+        Set<Integer> validGoodsIds = groupsInfos.keySet();
+
+        // 获取有效商品规格信息
+        Map<Integer, List<Record2<Integer, BigDecimal>>> prdsInfos = db().select(GOODS_SPEC_PRODUCT.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(validGoodsIds))
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_SPEC_PRODUCT.GOODS_ID)));
+
+        Map<Integer, GroupBuyActivityVo> returnMap = new HashMap<>(validGoodsIds.size());
+
+        validGoodsIds.forEach(goodsId->{
+            List<Record2<Integer, BigDecimal>> prdsInfo = prdsInfos.get(goodsId);
+            //可能存在拼团商品存在但是该商品已经不存在（商品列表里调用此方法应该不存在这种情况，防止其他地方直接调用）
+            if (prdsInfo == null||prdsInfo.size()==0) {
+                outPutLog(goodsId);
+                return;
+            }
+            List<Record5<Integer, Integer, Timestamp, Timestamp, BigDecimal>> groupsInfo = groupsInfos.get(goodsId);
+            // 从小到大正序排序
+            prdsInfo.sort(Comparator.comparing(x -> x.get(GOODS_SPEC_PRODUCT.PRD_PRICE)));
+            groupsInfo.sort(Comparator.comparing(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)));
+            // 获取规格中的最大值
+            Record2<Integer, BigDecimal> prd = prdsInfo.get(prdsInfo.size()-1);
+            // 获取拼团规格中的最小值
+            Record5<Integer, Integer, Timestamp, Timestamp, BigDecimal> group = groupsInfo.get(0);
+
+            GroupBuyActivityVo vo =new GroupBuyActivityVo();
+            vo.setActivityId(group.get(GROUP_BUY_DEFINE.ID));
+            vo.setOriginalPrice(prd.get(GOODS_SPEC_PRODUCT.PRD_PRICE));
+            vo.setActivityPrice(group.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
+            vo.setStartTime(group.get(GROUP_BUY_DEFINE.START_TIME));
+            vo.setEndTime(group.get(GROUP_BUY_DEFINE.END_TIME));
+
+            returnMap.put(goodsId,vo);
+        });
+
+        return returnMap;
+    }
+
+    private void outPutLog( Integer goodsId) {
+        logger().error("拼团相关联的{}号商品不存在",goodsId);
     }
 
     private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {

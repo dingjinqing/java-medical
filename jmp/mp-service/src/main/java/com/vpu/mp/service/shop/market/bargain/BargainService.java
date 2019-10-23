@@ -3,15 +3,20 @@ package com.vpu.mp.service.shop.market.bargain;
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.db.shop.tables.Bargain;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.BargainActivityVo;
+import org.bouncycastle.util.Times;
 import org.jooq.Record;
+import org.jooq.Record5;
+import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -301,15 +306,50 @@ public class BargainService extends ShopBaseService  {
      * @return BargainRecord
      */
     public Map<Integer,List<BargainRecord>> getBargainRecordByGoodsIds(List<Integer> goodsIds, Timestamp date){
-        return db().select(BARGAIN.ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
+        return db().select(BARGAIN.ID,BARGAIN.GOODS_ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
             .from(BARGAIN)
-            .where(BARGAIN.STATUS.eq(STATUS_DISABLED))
+            .where(BARGAIN.STATUS.eq(STATUS_NORMAL))
+            .and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(BARGAIN.GOODS_ID.in(goodsIds))
             .and(BARGAIN.START_TIME.lessThan(date))
             .and(BARGAIN.END_TIME.greaterThan(date))
             .fetchInto(BARGAIN)
             .stream()
             .collect(Collectors.groupingBy(BargainRecord::getGoodsId));
+    }
+
+    /**
+     * 获取集合内商品的砍价信息
+     * @param goodsIds 商品id集合
+     * @param date 限制时间
+     * @return key: 商品id，value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.BargainActivityVo}
+     */
+    public Map<Integer,BargainActivityVo> getGoodsBargainInfo(List<Integer> goodsIds, Timestamp date){
+        if (date == null) {
+            date = DateUtil.getLocalDateTime();
+        }
+
+        List<BargainRecord> bargainRecords = db().select(BARGAIN.ID, BARGAIN.GOODS_ID, BARGAIN.BARGAIN_TYPE, BARGAIN.FLOOR_PRICE, BARGAIN.EXPECTATION_PRICE,BARGAIN.START_TIME,BARGAIN.END_TIME)
+            .from(BARGAIN)
+            .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(BARGAIN.STATUS.eq(STATUS_NORMAL))
+            .and(BARGAIN.GOODS_ID.in(goodsIds))
+            .and(BARGAIN.START_TIME.lt(date))
+            .and(BARGAIN.END_TIME.gt(date))
+            .fetchInto(BARGAIN)
+            .stream().collect(Collectors.toList());
+
+        Map<Integer,BargainActivityVo> returnMap = new HashMap<>(bargainRecords.size());
+        bargainRecords.forEach(bargainRecord->{
+            BargainActivityVo vo = new BargainActivityVo();
+            vo.setActivityId(bargainRecord.getId());
+            vo.setStartTime(bargainRecord.getStartTime());
+            vo.setEndTime(bargainRecord.getEndTime());
+            vo.setActivityPrice(BARGAIN_TYPE_FIXED == bargainRecord.getBargainType()?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
+            returnMap.put(bargainRecord.getGoodsId(),vo);
+        });
+
+        return returnMap;
     }
     /**
      * 获取小程序码

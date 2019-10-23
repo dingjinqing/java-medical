@@ -18,15 +18,21 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.Record5;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -162,20 +168,61 @@ public class SeckillService extends ShopBaseService {
             from(SEC_KILL_PRODUCT_DEFINE).innerJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).
             where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetch().into(SecKillProductVo.class);
     }
+
+    /**
+     * 获取商品集合内的秒杀价格
+     * @param goodsIds 商品id集合
+     * @param date 限制时间
+     * @return key:商品id，value:活动价格
+     */
     public Map<Integer, BigDecimal> getSecKillProductVo(List<Integer> goodsIds, Timestamp date){
-        return  db().select(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.SK_ID)
-            .from(SEC_KILL_PRODUCT_DEFINE)
-            .leftJoin(SEC_KILL_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
-            .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
-            .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
-            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
+        return db().select(SEC_KILL_DEFINE.GOODS_ID, DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE).as(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE))
+            .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
+            .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
-            .fetchMap(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
+            .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
+            .groupBy(SEC_KILL_DEFINE.GOODS_ID)
+            .fetchMap(SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
+    }
+
+    /**
+     * 获取商品集合内的秒杀活动信息
+     * @param goodsIds 商品id集合
+     * @param date 限制时间
+     * @return key:商品id，value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo}
+     */
+    public Map<Integer, SecKillActivityVo> getGoodsSecKillGoodsInfo(List<Integer> goodsIds, Timestamp date){
+        if (date == null) {
+            date = DateUtil.getLocalDateTime();
+        }
+
+        Map<Integer, List<Record5<Integer,Integer,Timestamp, Timestamp, BigDecimal>>> secKillInfos = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_DEFINE.START_TIME, SEC_KILL_DEFINE.END_TIME, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
+            .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
+            .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
+            .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(SEC_KILL_DEFINE.GOODS_ID)));
+
+        Map<Integer, SecKillActivityVo> returnMap = new HashMap<>();
+
+        secKillInfos.forEach((goodsId,secKillPrds)->{
+            secKillPrds.sort(Comparator.comparing(x->x.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)));
+            Record5<Integer,Integer,Timestamp, Timestamp, BigDecimal> secKillPrd = secKillPrds.get(0);
+            SecKillActivityVo vo = new SecKillActivityVo();
+            vo.setActivityId(secKillPrd.get(SEC_KILL_DEFINE.SK_ID));
+            vo.setActivityPrice(secKillPrd.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE));
+            vo.setStartTime(secKillPrd.get(SEC_KILL_DEFINE.START_TIME));
+            vo.setEndTime(secKillPrd.get(SEC_KILL_DEFINE.END_TIME));
+            returnMap.put(goodsId,vo);
+        });
+
+        return returnMap;
     }
 
     /**
      * 活动新增用户
-     *
      * @param param
      */
     public PageResult<MemberInfoVo> getSeckillSourceUserList(MarketSourceUserListParam param) {

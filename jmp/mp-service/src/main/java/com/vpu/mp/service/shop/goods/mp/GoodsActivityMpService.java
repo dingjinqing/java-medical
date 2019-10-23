@@ -79,7 +79,7 @@ public class GoodsActivityMpService extends ShopBaseService {
     }
 
     public boolean isIn135610Activity(Byte goodsType){
-       return goodsType == GoodsConstant.GOODS_TYPE_PIN_GROUP ||
+       return goodsType == GoodsConstant.GOODS_TYPE_GROUP_BUY ||
               goodsType == GoodsConstant.GOODS_TYPE_BARGAIN ||
               goodsType == GoodsConstant.GOODS_TYPE_SECKILL ||
               goodsType == GoodsConstant.GOODS_TYPE_REDUCE_PRICE ||

@@ -10,7 +10,7 @@ public class GoodsConstant {
     /** 普通商品 */
     public final static byte GOODS_TYPE_GENERAL = 0;
     /** 拼团商品 */
-    public final static byte GOODS_TYPE_PIN_GROUP = 1;
+    public final static byte GOODS_TYPE_GROUP_BUY = 1;
     /** 返利商品 */
     public final static byte GOODS_TYPE_REBATE = 2;
     /** 砍价商品 */
