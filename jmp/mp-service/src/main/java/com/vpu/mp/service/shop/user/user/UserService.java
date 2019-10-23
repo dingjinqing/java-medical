@@ -422,7 +422,9 @@ public class UserService extends ShopBaseService {
 		}
 		Integer shopId = this.getShopId();
 		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
-		WxMaUserInfo userInfo = maService.getUserService().getUserInfo(getSessionKey(shopId, userId),
+		String sessionKey = jedis.get(getSessionKey(shopId, userId));
+		logger().info("获取sessionKey"+StringUtils.isEmpty(sessionKey));
+		WxMaUserInfo userInfo = maService.getUserService().getUserInfo(sessionKey,
 				param.getEncryptedData(), param.getIv());
 		if (userInfo != null) {
 			if (!userInfo.getUnionId().equals(record.getWxUnionId())) {
