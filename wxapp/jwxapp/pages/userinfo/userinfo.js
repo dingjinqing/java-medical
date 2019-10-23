@@ -134,7 +134,6 @@ global.wxPage({
     // user_info.form_id = e.detail.formId;
     //生日
     var date_arr = dates.split('-');
-    debugger
     if (date_arr.length == 1) {
       user_info.birthdayYear = 0;
       user_info.birthdayMonth = 0;
