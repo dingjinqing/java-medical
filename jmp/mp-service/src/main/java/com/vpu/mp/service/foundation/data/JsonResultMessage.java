@@ -261,6 +261,11 @@ public class JsonResultMessage {
     public static final String CODE_DATA_NOT_EXIST = "data.not.exist";
     public static final String CODE_JACKSON_DESERIALIZATION_FAILED = "jackson.deserialization.failed";
     public static final String CODE_JACKSON_SERIALIZATION_FAILED = "jackson.serialization.failed";
+    public static final String CODE_STORE_ALREADY_DEL = "store.already.delete";
+    public static final String CODE_USER_CARD_BALANCE_INSUFFICIENT = "user.card.balance.insufficient";
+    public static final String CODE_SCORE_INSUFFICIENT = "score.insufficient";
+    public static final String CODE_BALANCE_INSUFFICIENT = "balance.insufficient";
+    public static final String CODE_AMOUNT_PAYABLE_CALCULATION_FAILED = "amount.payable.calculation.failed";
 
 	/**
 	 * 门店技师管理

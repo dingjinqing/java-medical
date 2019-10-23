@@ -1,8 +1,9 @@
 package com.vpu.mp.service.foundation.util;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * 	扩展BigDecimal
@@ -28,11 +29,11 @@ public class BigDecimalUtil {
 	 * @return int[result] = {-1,0,1}
 	 */
 	static public int compareTo(BigDecimal left , BigDecimal right) {
-		left = left == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : left;
-		right = right == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
 		return left.compareTo(right);
 	}
-	
+
 	/**
 	 * 加法,如为null默认取0
 	 * @param left
@@ -40,11 +41,11 @@ public class BigDecimalUtil {
 	 * @return result left+right
 	 */
 	static public BigDecimal add(BigDecimal left , BigDecimal right) {
-		left = left == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : left;
-		right = right == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
 		return left.add(right);
 	}
-	
+
 	/**
 	 * 减法,如为null默认取0
 	 * @param left
@@ -52,11 +53,11 @@ public class BigDecimalUtil {
 	 * @return result left-+right
 	 */
 	static public BigDecimal subtrac(BigDecimal left , BigDecimal right) {
-		left = left == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : left;
-		right = right == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
 		return left.subtract(right);
 	}
-	
+
 	/**
 	 * BigDecimal乘法：精度保留小数点后两位，采取四舍五入
 	 * @param left	null->zero
@@ -64,26 +65,26 @@ public class BigDecimalUtil {
 	 * @return
 	 */
 	static public BigDecimal multiply(BigDecimal left , BigDecimal right) {
-		left = left == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : left;
-		right = right == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : right;
-		return left.multiply(right).setScale(2 , BigDecimal.ROUND_HALF_UP);
-	}
-	
+        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
+        return left.multiply(right).setScale(2, RoundingMode.HALF_UP);
+    }
+
 	/**
 	 * BigDecimal除法：精度保留小数点后两位，采取四舍五入
 	 * @param left=null->zero
-	 * @param right=null throw Exception 
+     * @param right=null throw Exception
 	 * @return
 	 */
 	static public BigDecimal divide(BigDecimal left , BigDecimal right) throws ArithmeticException{
-		left = left == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : left;
+        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
 		if(right == null || compareTo(right, null) < 1) {
 			throw new ArithmeticException("Division by zero");
 		}
-		right = right.setScale(2 , BigDecimal.ROUND_HALF_UP);
-		return left.divide(right,2 , BigDecimal.ROUND_HALF_UP).setScale(2 , BigDecimal.ROUND_HALF_UP);
-	}
-	
+        right = right.setScale(2, RoundingMode.HALF_UP);
+        return left.divide(right, 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+    }
+
 	/**
 	 * 	支持按照bigDecimals数组顺序进行加减运算，精度保留小数点后两位
 	 * @param bigDecimals BigDecimalPlus类属性为value（值）与operator（该值与其后一位的运算符）
@@ -94,14 +95,14 @@ public class BigDecimalUtil {
 			throw new IllegalArgumentException("method param Illegal,The parameter length should be greater than or equal to two.");
 		}
 		BigDecimalPlus left = bigDecimals[0];
-		
-		for (int i = 1 , n = bigDecimals.length ; i < n ; i++) {
+
+        for (int i = 1 , n = bigDecimals.length ; i < n ; i++) {
 			left.toOperator(bigDecimals[i]);
 		}
 		return left.getValue();
 	}
-	
-	/**
+
+    /**
 	 * 	支持按照bigDecimals数组顺序进行乘除运算，精度保留小数点后两位，采取四舍五入
 	 * @param bigDecimals BigDecimalPlus类属性为value（值）与operator（该值与其后一位的运算符）
 	 * @return
@@ -111,14 +112,14 @@ public class BigDecimalUtil {
 			throw new IllegalArgumentException("method param Illegal,The parameter length should be greater than or equal to two.");
 		}
 		BigDecimalPlus left = bigDecimals[0];
-		
-		for (int i = 1 , n = bigDecimals.length ; i < n ; i++) {
+
+        for (int i = 1 , n = bigDecimals.length ; i < n ; i++) {
 			left.toOperator(bigDecimals[i]);
 		}
 		return left.getValue();
 	}
-	
-	/**
+
+    /**
 	 * 	四则运算增强（目前仅支持乘除法）
 	 * @author 王帅
 	 *
@@ -174,5 +175,5 @@ public class BigDecimalUtil {
 			System.out.println(addOrSubtrac);
 		}
 	}
-	
+
 }

@@ -3,14 +3,18 @@ package com.vpu.mp.service.shop.store.store;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
@@ -20,10 +24,15 @@ import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
+import com.vpu.mp.service.shop.order.store.StoreOrderService;
+import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
+import com.vpu.mp.service.wechat.WxPayment;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
 import org.jooq.Record1;
@@ -31,12 +40,15 @@ import org.jooq.SelectConditionStep;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,8 +56,11 @@ import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
+import static java.math.BigDecimal.ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
@@ -98,6 +113,30 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public InvoiceService invoiceService;
+
+    /**
+     * The Store order service.门店订单
+     */
+    @Autowired
+    public StoreOrderService storeOrderService;
+
+    /**
+     * The Mp payment service.
+     */
+    @Autowired
+    public MpPaymentService mpPaymentService;
+
+    /**
+     * The Account service.余额管理
+     */
+    @Autowired
+    public AccountService accountService;
+
+    /**
+     * The Score service.积分服务
+     */
+    @Autowired
+    public ScoreService scoreService;
 
     private static final Condition delCondition = STORE.DEL_FLAG.eq(BYTE_ZERO);
 
@@ -369,8 +408,95 @@ public class StoreWxService extends ShopBaseService {
         // 发票信息
         InvoiceVo invoiceVo = invoiceService.get(1);
         // 门店订单信息
-        String orderInfo = param.getOrderInfo();
-        // todo 创建门店订单 StoreOrderService
+        StorePayOrderInfo orderInfo = null;
+        try {
+            orderInfo = MAPPER.readValue(param.getOrderInfo(), StorePayOrderInfo.class);
+            Assert.assertNotNull(orderInfo);
+        } catch (IOException e) {
+            log.error("门店订单信息");
+            e.printStackTrace();
+        }
+        // 创建门店订单
+        StoreOrderRecord storeOrderRecord = storeOrderService.createStoreOrder(userRecord, invoiceVo, orderInfo);
+        if (storeOrderRecord == null) {
+            // todo 创建门店订单失败
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
+        }
+
+        if (storeOrderRecord.getMoneyPaid().compareTo(ZERO) > 0) {
+            String openId = orderInfo.getOpenid();
+            switch (param.getAppletRequestSource()) {
+                case CONDITION_ZERO:
+                    defaultPay(storeOrderRecord, orderInfo.getOpenid());
+                    break;
+                case CONDITION_ONE:
+                    aliMiniPay(userRecord);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            // 会员余额变动
+            if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
+                AccountParam accountParam = new AccountParam();
+                accountParam.setUserId(userId);
+                accountParam.setAccount(userRecord.getAccount());
+                accountParam.setOrderSn(storeOrderRecord.getOrderSn());
+                accountParam.setAmount(storeOrderRecord.getUseAccount());
+                accountParam.setPayment("balance");
+                accountParam.setIsPaid(BYTE_ONE);
+                accountParam.setRemark(storeOrderRecord.getOrderSn());
+                try {
+                    accountService.addUserAccount(accountParam, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+                } catch (MpException e) {
+                    e.printStackTrace();
+                }
+            }
+            // 创建用户积分记录
+            if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
+                UserScoreVo vo = new UserScoreVo();
+                vo.setScoreDis(userRecord.getScore());
+                vo.setUserId(userId);
+                vo.setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
+                vo.setOrderSn(storeOrderRecord.getOrderSn());
+                vo.setShopId(getShopId());
+                vo.setRemark(storeOrderRecord.getOrderSn());
+                scoreService.addUserScore(vo, "0", BYTE_ONE, BYTE_ZERO);
+            }
+            if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
+                // TODO 增加会员卡消费记录
+            }
+            // 跟新门店订单支付状态
+            storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
+                setPayTime(Timestamp.valueOf(LocalDateTime.now()));
+                setOrderStatus(BYTE_ONE);
+                setOrderStatusName("已支付");
+            }});
+            // todo 支付完成送积分
+        }
         return "";
+    }
+
+    /**
+     * Default pay.微信小程序请求支付
+     */
+    public String defaultPay(StoreOrderRecord storeOrderInfo, String openId) {
+        BigDecimal amount = storeOrderInfo.getMoneyPaid().multiply(HUNDRED);
+        WxPayment wxPayment = mpPaymentService.getMpPay();
+        // 获取微信支付id
+        String prepayId = mpPaymentService.getPrepayId("门店买单", storeOrderInfo.getOrderSn(), openId, amount);
+        // 更新门店订单中微信支付id
+        storeOrderService.updatePrepayIdByOrderSn(storeOrderInfo.getOrderSn(), prepayId);
+//    todo    $payConfig = $payment->jssdk->bridgeConfig($prepayId, false);
+        return storeOrderInfo.getOrderSn();
+    }
+
+    /**
+     * Ali mini pay.支付宝小程序请求支付
+     *
+     * @param userInfo the user info
+     */
+    public void aliMiniPay(UserRecord userInfo) {
+
     }
 }

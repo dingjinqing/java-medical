@@ -1,11 +1,5 @@
 package com.vpu.mp.service.shop.payment;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.github.binarywang.wxpay.bean.entpay.EntPayRequest;
 import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
@@ -21,10 +15,19 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.wechat.WxPayment;
 import com.vpu.mp.support.PemToPkcs12;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 
 @Service
 public class MpPaymentService extends ShopBaseService {
@@ -34,10 +37,10 @@ public class MpPaymentService extends ShopBaseService {
 
 	@Autowired
 	public PaymentService pay;
-	
+
 	/**
 	 * 得到店铺小程序支付实例
-	 * 
+     *
 	 * @return
 	 */
 	public WxPayment getMpPay() {
@@ -50,7 +53,7 @@ public class MpPaymentService extends ShopBaseService {
 
 	/**
 	 * 得到当前店铺小程序授权信息
-	 * 
+     *
 	 * @return
 	 */
 	public MpAuthShopRecord getMpAuthShop() {
@@ -59,7 +62,7 @@ public class MpPaymentService extends ShopBaseService {
 
 	/**
 	 * 小程序支付配置
-	 * 
+     *
 	 * @param mp
 	 * @return
 	 */
@@ -80,7 +83,7 @@ public class MpPaymentService extends ShopBaseService {
 
 	/**
 	 * 统一下单
-	 * 
+     *
 	 * @param clientIp  客户IP
 	 * @param goodsName 商品名称
 	 * @param orderSn   订单号
@@ -111,7 +114,7 @@ public class MpPaymentService extends ShopBaseService {
 
 	/**
 	 * 通过微信订单号退款
-	 * 
+     *
 	 * @param transactionId 微信订单号
 	 * @param outRefundNo   退款单号
 	 * @param refundFee     退款金额，单位分
@@ -126,7 +129,7 @@ public class MpPaymentService extends ShopBaseService {
 
 	/**
 	 * 通过订单号进行退款
-	 * 
+     *
 	 * @param outTradeNo  商家订单号
 	 * @param outRefundNo 退款单号
 	 * @param refundFee   退款金额，单位分
@@ -141,7 +144,7 @@ public class MpPaymentService extends ShopBaseService {
 
 	/**
 	 * 退款
-	 * 
+     *
 	 * @param outTradeNo    商家订单号
 	 * @param transactionId 微信订单号
 	 * @param outRefundNo   退款单号
@@ -189,7 +192,7 @@ public class MpPaymentService extends ShopBaseService {
 				.build();
 		return wxPayment.getEntPayService().entPay(wxEntPayRequest);
 	}
-	
+
 	/**
 	 * 微信小程序支付回调
 	 * @param orderResult
@@ -205,13 +208,39 @@ public class MpPaymentService extends ShopBaseService {
 				.totalFee(BaseWxPayResult.fenToYuan(orderResult.getTotalFee()))
 				.buyerId(orderResult.getOpenid())
 				.sellerId(orderResult.getMchId())
-				.gmtCreate(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))		
-				.notifyTime(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))	
-				.gmtCloseTime(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))	
+            .gmtCreate(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))
+            .notifyTime(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))
+            .gmtCloseTime(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))
 				.created(Timestamp.valueOf(LocalDateTime.now()))
 				.remark2(orderResult.toString())
 				.build();
 		pay.unionPayNotify(param);
 	}
 
+    /**
+     * Gets prepay id.获取微信支付id
+     */
+    public String getPrepayId(String goodsName, String orderSn, String openId, BigDecimal amount) {
+        // 过滤字符串中的表情,微信接口不支持表情
+        goodsName = Util.filterEmoji(goodsName, "");
+        MpAuthShopRecord mpAuthShopRecord = getMpAuthShop();
+//        根据不同的子商户模式,执行不同的支付方法
+        switch (mpAuthShopRecord.getIsSubMerchant()) {
+            case CONDITION_ZERO:
+                // todo 非子商户
+                return null;
+            case CONDITION_ONE:
+                // todo 微信子商户支付
+                return null;
+            case CONDITION_TWO:
+                // todo 通联小程序支付
+                return null;
+            case CONDITION_THREE:
+                // todo 微信国际支付方式
+                return null;
+        }
+        WxPayment wxPayment = getMpPay();
+        // ...
+        return null;
+    }
 }
