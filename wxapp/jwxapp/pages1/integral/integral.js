@@ -6,10 +6,11 @@ var is_sign = 0;
 var list = [];
 var user_center;
 var page_id;
-//var decorate = require("../../pages/common/decorate.js")
+var decorate = require("../../pages/common/decorate.js")
 //var spec_mixin = require("../../pages/goodscommon/spec.js")
 global.wxPage({
   //mixins: [decorate, spec_mixin],
+  mixins: [decorate],
   /**
    * 页面的初始数据
    */

@@ -24,7 +24,7 @@
           </view>
         </block>
       </view>
-      <block wx:if="{{expire.score >= 0}}">
+      <block wx:if="{{expire.score > 0}}">
         <view class="score_bottom">{{expire.time}} 将过期{{expire.score}}积分
         </view>
       </block>
