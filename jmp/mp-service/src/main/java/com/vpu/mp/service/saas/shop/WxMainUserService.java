@@ -28,12 +28,14 @@ public class WxMainUserService extends MainBaseService {
 		UserRecord record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
 		if (record != null) {
 			// 更新
+			logger().info("更新");
 			info.setId(record.getId());
 			UserRecord newRecord = db().newRecord(USER, info);
 			int executeUpdate = newRecord.update();
 			logger().info("更新User，结果" + executeUpdate);
 		} else {
 			// 插入
+			logger().info("插入");
 			info.setShopId(shopId);
 			UserRecord newRecord = db().newRecord(USER, info);
 			int insert = newRecord.insert();
@@ -54,12 +56,14 @@ public class WxMainUserService extends MainBaseService {
 				.fetchAny();
 		if (record != null) {
 			// 更新
+			logger().info("更新");
 			info.setId(record.getId());
 			UserDetailRecord newRecord = db().newRecord(USER_DETAIL, info);
 			int executeUpdate = newRecord.update();
 			logger().info("更新UserDetail，结果" + executeUpdate);
 		} else {
 			// 插入
+			logger().info("插入");
 			info.setShopId(shopId);
 			UserDetailRecord newRecord = db().newRecord(USER_DETAIL, info);
 			int insert = newRecord.insert();
