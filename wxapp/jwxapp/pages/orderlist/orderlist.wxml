@@ -12,7 +12,7 @@
         </view>
         <view class="btn_search" bindtap="handleSearch">搜索</view>
       </view>
-      <scroll-view class="top_nav"  scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
+      <scroll-view class="top_nav" wx:if="{{navStatusNum}}" scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
         <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
           {{i18n.$t(localePack,"pages.order.navType.ALL")}}({{navStatusNum[0]}})
         </view>

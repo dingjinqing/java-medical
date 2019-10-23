@@ -6,7 +6,7 @@ global.wxPage({
    */
   data: {
     searchInput: null,
-    scrollIntoId : 'ALL',
+    scrollIntoId : null,
     currentPage:1,
     pageParams:null,
     navType:{
@@ -23,8 +23,9 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
+    let scrollIntoId = options && options.datas && JSON.parse(options.datas) && JSON.parse(options.datas).type
     this.setData({
-      scrollIntoId: options.scrollIntoId ? options.scrollIntoId : 'ALL'
+      scrollIntoId: scrollIntoId ? scrollIntoId : 'ALL'
     })
     this.requestList();
   },
