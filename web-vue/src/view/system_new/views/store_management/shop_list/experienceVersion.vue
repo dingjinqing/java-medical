@@ -231,6 +231,23 @@
             </div>
           </template>
         </el-table-column>
+
+        <el-table-column
+          prop="currencyType"
+          align="center"
+          :label="$t('shopList.table.currency')"
+          :formatter="currencyFormatter"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="shopLanguage"
+          align="center"
+          :label="$t('shopList.table.language')"
+          :formatter="shopLanguageFormatter"
+        >
+        </el-table-column>
+
         <el-table-column
           prop="isAuthOk"
           align="center"
@@ -667,7 +684,9 @@ export default {
         label: '旗舰版'
       }
       ],
-      tableHeight: document.documentElement.clientHeight - 370
+      tableHeight: document.documentElement.clientHeight - 370,
+      languageType: this.$t('shopList.language_type'),
+      currencyType: this.$t('shopList.currency_type')
     }
   },
   props: ['shopType'],
@@ -1047,6 +1066,22 @@ export default {
         'flag': 5
       }
       this.$emit('sendShopId', params)
+    },
+    currencyFormatter (row, rol) {
+      for (var i = 0; i < this.currencyType.length; i++) {
+        if (this.currencyType[i].value === row.currency) {
+          row.currencyTypeTrane = this.currencyType[i].label
+        }
+      }
+      return row.currencyTypeTrane
+    },
+    shopLanguageFormatter (row, rol) {
+      for (var i = 0; i < this.languageType.length; i++) {
+        if (this.languageType[i].value === row.shopLanguage) {
+          row.shopLanguageTrane = this.languageType[i].label
+        }
+      }
+      return row.shopLanguageTrane
     }
   }
 }

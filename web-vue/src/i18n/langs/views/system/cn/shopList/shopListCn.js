@@ -51,6 +51,8 @@ export const cn = {
     createTime: '创建时间',
     endTime: '到期时间(店铺状态)',
     isDisabled: '是否禁用',
+    currency: '币种',
+    language: '语言',
     permission: '小程序授权',
     account: '所属账号',
     money: '续费总金额',
