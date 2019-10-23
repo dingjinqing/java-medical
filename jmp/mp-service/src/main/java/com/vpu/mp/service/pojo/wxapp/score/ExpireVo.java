@@ -10,5 +10,5 @@ import lombok.Data;
 @Data
 public class ExpireVo {
 	private String time;
-	private Integer score;
+	private Integer score=0;
 }
