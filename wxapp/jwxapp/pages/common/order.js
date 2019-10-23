@@ -2,6 +2,10 @@ var util = require('../../utils/util.js');
 var order = {
   // 好友代付
   // 退货中心
+  toReturnCenter(orderSn,isReturn){
+    if (!isReturn) util.jumpLink('','navigateTo')
+    if (isReturn) util.jumpLink('', 'navigateTo')
+  },
   // 查看详情
   viewInfo(orderSn) {
     util.jumpLink(`/pages/orderinfo/orderinfo?order_sn=${orderSn}`, 'navigateTo')
@@ -11,7 +15,8 @@ var order = {
     util.jumpLink(`/pages/comment/comment?order_sn=${orderSn}`, 'navigateTo')
   },
   // 再次购买
-  addCart(orderSn) {
+  addCart(orderSn,orderId) {
+    console.log(orderSn, orderId)
     util.api(
       '/api/wxapp/order/Repurchase',
       (res) => {
@@ -22,32 +27,38 @@ var order = {
         }
       },
       {
-        order_sn: orderSn
+        orderId: orderId,
+        orderSn: orderSn,
+        action:2
       }
     );
   },
   // 删除订单
-  delOrder(orderSn) {
+  delOrder(orderSn, orderId) {
     util.showModal(
       '提示',
       '是否删除该订单',
       (res) => {
         util.api(
-          '/api/wxapp/order/del',
+          '/api/wxapp/order/operation',
           function (res) {
             if (res.error == 0) {
             }
           },
-          { order_sn: orderSn }
+          { 
+            orderId: orderId,
+            orderSn: orderSn,
+            action: 9
+           }
         );
       },
       true
     );
   },
   // 提醒发货
-  remindOrder(orderSn) {
+  remindOrder(orderSn, orderId) {
     util.api(
-      '/api/wxapp/order/remind',
+      '/api/wxapp/order/operation',
       (res) => {
         if (res.error == 0) {
           util.toast_success('提醒成功');
@@ -56,18 +67,24 @@ var order = {
         }
       },
       {
-        order_sn: orderSn
+        orderId: orderId,
+        orderSn: orderSn,
+        action: 8
       }
     );
   },
   // 取消订单
-  cancelOrder(orderSn) {
+  cancelOrder(orderSn, orderId) {
     util.showModal('提示', '是否取消该订单', function (res) {
-      util.api('/api/wxapp/order/cancel', function (res) {
+      util.api('/api/wxapp/order/operation', function (res) {
         if (res.error == 0) {
           util.navigateTo({ url: '/pages/orderlist/orderlist' })
         }
-      }, { order_sn: orderSn });
+      }, { 
+          orderId: orderId,
+          orderSn: orderSn,
+          action: 2
+       });
     }, true);
   },
   filterObj(obj, arr) {
@@ -110,13 +127,20 @@ var order = {
       })(),
       isPayEndPayment: (() => {
         return this.viewComment;
+      })(),
+      returnCenter:(() => {
+        return this.toReturnCenter;
       })()
     };
     let operate_info = e.currentTarget.dataset.operate_info
     if (operate_info.indexOf('-') != -1) {
       operate_info = operate_info.substring(0, operate_info.indexOf('-'))
     }
-    optionList[operate_info](e.currentTarget.dataset.order_sn);
+    if (operate_info === 'returnCenter'){
+      optionList[operate_info](e.currentTarget.dataset.order_sn, e.currentTarget.dataset.is_return);
+    } else {
+      optionList[operate_info](e.currentTarget.dataset.order_sn, e.currentTarget.dataset.order_id);
+    }
   }
 }
 

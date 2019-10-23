@@ -5,7 +5,7 @@
     <view class="top_pixed" style="top:{{margin_top_nav + 8}}px;">
       <view class="top_search">
         <view class="search">
-          <input type="text" bindinput="handleSearchInput" bindconfirm="handleSearch" value="{{searchInput}}" placeholder="请输入订单号或商品名称"></input>
+          <input type="text" bindblur="getSearchInput" bindconfirm="handleSearch" value="{{searchInput}}" placeholder="请输入订单号或商品名称"></input>
           <view class="cls_search" bindtap="clearSearchInput">
             <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix'></image>
           </view>
@@ -14,12 +14,12 @@
       </view>
       <scroll-view class="top_nav"  scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
         <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
-          {{i18n.$t(localePack,"pages.order.navType.ALL")}}
+          {{i18n.$t(localePack,"pages.order.navType.ALL")}}({{navStatusNum[0]}})
         </view>
-        <view id="WAIT_PAY" bindtap="handleChangeNav"  style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_PAY")}}</view>
-        <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_DELIVERY")}}</view>
-        <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.SHIPPED")}}</view>
-        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.RETURNING")}}</view>
+        <view id="WAIT_PAY" bindtap="handleChangeNav"  style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_PAY")}}({{navStatusNum[1]}})</view>
+        <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_DELIVERY")}}({{navStatusNum[2]}})</view>
+        <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.SHIPPED")}}({{navStatusNum[3]}})</view>
+        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.RETURNING")}}({{navStatusNum[5]}})</view>
       </scroll-view>
     </view>
     <view class="order_list">
@@ -73,9 +73,10 @@
           </view>
           <view class="order_button_box">
             <block wx:for="{{item.operate}}" wx:for-item="operateItem" wx:key="*this" wx:for-index="operateKey">
-              <view wx:if="{{operateItem > 0}}" bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{item.orderSn}}">{{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}</view>
+              <view wx:if="{{operateItem > 0}}" bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">{{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}</view>
             </block>
-            <view bindtap="handleOperate" data-operate_info="orderInfo" data-order_sn="{{item.orderSn}}">{{i18n.$t(localePack,"pages.order.operateList.orderInfo")}}</view>
+            <view bindtap="handleOperate" wx:if="{{item.isReturnMoney || item.isReturnGoods}}" data-is_return="{{item.isReturn}}" data-operate_info="returnCenter" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">{{i18n.$t(localePack,"pages.order.operateList.returnCenter")}}</view>
+            <view bindtap="handleOperate" data-operate_info="orderInfo" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">{{i18n.$t(localePack,"pages.order.operateList.orderInfo")}}</view>
           </view>
         </view>
       </block>

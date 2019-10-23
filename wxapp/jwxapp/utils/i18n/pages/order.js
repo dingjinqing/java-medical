@@ -12,6 +12,16 @@ module.exports = {
   "payMoney":"实付款",
   "presaleInfo":"待付尾款",
   "presaleTime":"尾款支付时间",
+  "trackingNumber":"快递单号",
+  "courierCompany":"快递公司",
+  "address":"地址",
+  "receiver":"收货人",
+  "deliveryMethod":"配送方式",
+  "total":"合计",
+  "useBalance":"使用余额",
+  "promotions":"促销活动",
+  "actualPayment":"实际付款",
+  "orderTime":"下单时间",
   "operateList": {
     "isShowPay": "立即支付",
     "isCancel": "取消订单",
@@ -23,6 +33,7 @@ module.exports = {
     "isShowCommentType-1": "查看评价",
     "isShowCommentType-2": "评价有礼",
     "isShowCommentType-3": "商品评价",
-    "orderInfo":"查看详情"
+    "orderInfo":"查看详情",
+    "returnCenter":"退货中心"
   }
 }

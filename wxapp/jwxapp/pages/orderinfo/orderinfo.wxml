@@ -2,7 +2,8 @@
 <view class="body">
   <include src="../common/header.wxml" />
   <view class="main-container" wx:if="{{orderInfo}}">
-    <view class="order-status" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+    <view class="order-status_bg" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
+    <view class="order-status">
       <image mode="widthFix" src="{{imageUrl}}image/wxapp/status_success.png"></image>
       <text>{{orderInfo.orderStatusName}}</text>
     </view>
@@ -12,11 +13,11 @@
           <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
           <view class="shipping_info_content">
             <view>
-              <text selectable>快递单号：</text>
+              <text selectable>{{i18n.$t(localePack,"pages.order.trackingNumber")}}：</text>
               <text selectable>17600236996</text>
             </view>
             <view>
-              <text selectable>快递公司：</text>
+              <text selectable>{{i18n.$t(localePack,"pages.order.courierCompany")}}：</text>
               <text selectable>申通快递</text>
             </view>
           </view>
@@ -26,18 +27,64 @@
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/address.png"></image>
         <view class="shipping_info_content">
           <view>
-            <text selectable>收货人：</text>
+            <text selectable>{{i18n.$t(localePack,"pages.order.receiver")}}：</text>
             <text selectable>刘洋  17600236996</text>
           </view>
           <view>
-            <text selectable>地址：</text>
+            <text selectable>{{i18n.$t(localePack,"pages.order.address")}}：</text>
             <text selectable>北京市北京市海淀区牡丹园花园路13号天博中润216室</text>
           </view>
         </view>
       </view>
     </view>
     <view class="order_top">
-      <text selectable>配送方式：{{orderInfo.deliverTypeName}}</text>
+      <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{orderInfo.deliverTypeName}}</text>
+    </view>
+    <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
+      <image mode="widthFix" src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
+      <view class="goods_info">
+        <view class="goods_name">
+          {{goodsItem.goodsName}}
+        </view>
+        <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
+        <view class="goods_price_num">
+          <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.goodsPrice}}</view>
+          <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="shipping_info">
+      <navigator>
+        <view class="logistics" style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
+          <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
+          <view class="shipping_info_content">
+            <view>
+              <text selectable>{{i18n.$t(localePack,"pages.order.trackingNumber")}}：</text>
+              <text selectable>17600236996</text>
+            </view>
+            <view>
+              <text selectable>{{i18n.$t(localePack,"pages.order.courierCompany")}}：</text>
+              <text selectable>申通快递</text>
+            </view>
+          </view>
+        </view>
+      </navigator>
+      <view class="address_info">
+        <image mode="widthFix" src="{{imageUrl}}image/wxapp/address.png"></image>
+        <view class="shipping_info_content">
+          <view>
+            <text selectable>{{i18n.$t(localePack,"pages.order.receiver")}}：</text>
+            <text selectable>刘洋  17600236996</text>
+          </view>
+          <view>
+            <text selectable>{{i18n.$t(localePack,"pages.order.address")}}：</text>
+            <text selectable>北京市北京市海淀区牡丹园花园路13号天博中润216室</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="order_top">
+      <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{orderInfo.deliverTypeName}}</text>
     </view>
     <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
       <image mode="widthFix" src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
@@ -54,32 +101,33 @@
     </view>
     <view class="pay_info">
       <view class="pay_item">
-        <text>合计</text>
+        <text>{{i18n.$t(localePack,"pages.order.total")}}</text>
         <text>￥726.00</text>
       </view>
       <view class="pay_item">
-        <text>使用余额</text>
+        <text>{{i18n.$t(localePack,"pages.order.useBalance")}}</text>
         <text>￥300.00</text>
       </view>
       <view class="pay_item">
-        <text>促销活动</text>
+        <text>{{i18n.$t(localePack,"pages.order.promotions")}}</text>
         <text>￥14.00</text>
       </view>
       <view class="line-item"></view>
       <view class="total_money">
-        实付款
+        {{i18n.$t(localePack,"pages.order.actualPayment")}}
         <text style="color:{{comColor}}">￥6.00</text>
       </view>
     </view>
     <view class="order_info">
-      <view class="title">订单信息</view>
-      <view class="order_item">订单编号：{{orderInfo.orderSn}}</view>
-      <view class="order_item">下单时间：{{orderInfo.createTime}}</view>
+      <view class="title">{{i18n.$t(localePack,"pages.order.orderSn")}}</view>
+      <view class="order_item">{{i18n.$t(localePack,"pages.order.orderSn")}}：{{orderInfo.orderSn}}</view>
+      <view class="order_item">{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</view>
     </view>
     <view class="fixed_footer">
       <block wx:for="{{orderInfo.operate}}" wx:key="*this" wx:for-item="operateItem" wx:for-index="operateKey">
-        <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">{{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}</view>
+        <view bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_id="{{orderInfo.orderId}}" data-order_sn="{{orderInfo.orderSn}}" class="footer_item" wx:if="{{operateItem > 0}}">{{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}</view>
       </block>
+      <view bindtap="handleOperate" wx:if="{{orderInfo.isReturnMoney || orderInfo.isReturnGoods}}" data-is_return="{{orderInfo.isReturn}}" data-operate_info="returnCenter" data-order_id="{{orderInfo.orderId}}" data-order_sn="{{orderInfo.orderSn}}">{{i18n.$t(localePack,"pages.order.operateList.returnCenter")}}</view>
     </view>
   </view>
   <include src="../common/footer.wxml" />

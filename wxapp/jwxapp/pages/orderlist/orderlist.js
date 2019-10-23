@@ -31,6 +31,11 @@ global.wxPage({
   requestList() {
     let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
     console.log(parseInt(currentPage) - 1)
+    util.api('/api/wxapp/order/statistic',(res)=>{
+      this.setData({
+        navStatusNum:res.content
+      })
+    })
     util.api('/api/wxapp/order/list', (res) => {
       if(res.error === 0){
         let dataList = this.formatData(res.content.dataList);
@@ -44,12 +49,6 @@ global.wxPage({
         pageRows: 2,
         type: this.data.navType[this.data.scrollIntoId],
         search: this.data.searchInput
-    });
-  },
-  // 获取搜索栏input值
-  handleSearchInput(e) {
-    this.setData({
-      searchInput: e.detail.value
     });
   },
   formatData(order){
@@ -67,11 +66,17 @@ global.wxPage({
       searchInput:null
     })
   },
-  handleSearch() {
+  getSearchInput(e){
     this.setData({
-      currentPage: 1,
+      searchInput: e.detail.value
+    })
+  },
+  handleSearch(e) {
+    this.setData({
+      pageParams: null,
       dataList: [],
-      scrollIntoId:'ALL'
+      scrollIntoId:'ALL',
+      searchInput: e.detail.value ? e.detail.value : this.data.searchInput
     })
     this.requestList()
   },
@@ -79,7 +84,7 @@ global.wxPage({
   handleChangeNav(e){
     this.setData({
       scrollIntoId:e.currentTarget.id,
-      currentPage:1,
+      pageParams: null,
       dataList:[]
     })
     this.requestList()
