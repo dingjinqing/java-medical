@@ -70,6 +70,8 @@ import { en as messagePush } from './views/admin_new/en/index/marketManagement/m
 import { en as distribution } from './views/admin_new/en/index/marketManagement/distribution/distributionEn'
 // 定向发券
 import { en as couponGive } from './views/admin_new/en/index/marketManagement/couponGive/couponGiveEn'
+// 秒杀
+import { en as seckill } from './views/admin_new/en/index/marketManagement/seckill/seckillEn'
 
 // 订单
 import { en as order } from './views/admin_new/en/index/orderManagement/orderListEn'
@@ -646,6 +648,7 @@ const en = {
   messagePush, // 营销管理/消息推送
   giveGift, // 我要送礼
   couponGive, // 定向发券
+  seckill, // 秒杀
   ...enLocale,
   expressList,
 

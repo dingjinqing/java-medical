@@ -283,6 +283,8 @@ export const en = {
   presale_order_detail: ['Marketing Management', 'View Pre Sale Order Detail'],
   // 营销管理 定金膨胀活动明细
   presale_detail: ['Marketing Management', 'View Pre Sale Detail'],
+  // 营销管理 秒杀
+  seckill: ['Marketing Management', 'Seckill'],
   // 营销管理 加价购
   increase_purchase: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 换购订单

@@ -244,7 +244,10 @@
       </div>
       <div class="box1">
         <!-- 秒杀 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="seckill"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/ms.png'"
               alt=""
@@ -571,6 +574,12 @@ export default {
     preSale () {
       this.$router.push({
         name: 'presale_view'
+      })
+    },
+    // 秒杀
+    seckill () {
+      this.$router.push({
+        name: 'seckill_view'
       })
     },
     // 加价购活动点击

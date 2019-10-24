@@ -73,6 +73,8 @@ import { cn as messagePush } from './views/admin_new/cn/index/marketManagement/m
 import { cn as distribution } from './views/admin_new/cn/index/marketManagement/distribution/distributionCn'
 // 定向发券
 import { cn as couponGive } from './views/admin_new/cn/index/marketManagement/couponGive/couponGiveCn'
+// 秒杀
+import { cn as seckill } from './views/admin_new/cn/index/marketManagement/seckill/seckillCn'
 
 // 订单
 // 订单通用
@@ -618,6 +620,7 @@ const cn = {
   dateTimePicker, // 选择时间
   giveGift, // 我要送礼
   couponGive, // 定向发券
+  seckill, // 秒杀
   ...zhLocale,
   expressList,
 

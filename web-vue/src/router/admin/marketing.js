@@ -808,6 +808,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleDetail'
       )
   },
+  // 秒杀
+  {
+    path: '/admin/home/main/seckill',
+    name: 'seckill_view',
+    meta: {
+      crumbTitle: 'router.seckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckill'
+      )
+  },
   // 加价购活动
   {
     path: '/api/admin/market/addPriceBuy/list',
