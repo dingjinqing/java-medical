@@ -1,0 +1,478 @@
+/* pages/comment/comment.wxss */
+@import "/css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+}
+view{
+  box-sizing: border-box;
+}
+.user_login::after{
+  display: block;
+  content: "";
+  clear: both;
+}
+.user_login{
+    padding: 10px 10px;
+    height: 70rpx;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+.user_regorlogin{
+  float: left;
+  margin-left: 30rpx
+}
+.user_login_hint{
+  float: right;
+  margin-top: 6rpx;
+  margin-right: 4rpx;
+}
+
+.btn_usercenter {
+    width: 164rpx;
+    height: 64rpx;
+    border: 1px solid #ccc;
+    border-radius: 8rpx;
+    text-align: center;
+    color: #666;
+    line-height: 62rpx;
+    font-size: 12px;
+    font-weight: normal;
+}
+.hint_1{
+   color: #999;
+   font-size: 11px;
+}
+.container{
+  width: 100%;
+  height:100%;
+  overflow-x: hidden;
+  min-height:940rpx;
+}
+.navbar{
+  flex: none;
+  display: flex;
+  background: #fff;
+  margin-bottom:20rpx;
+}
+.item{
+  position: relative;
+  flex: 1;
+  text-align: center;
+  line-height: 80rpx;
+  color: #999;
+  font-size: 14px;
+}
+.item_active{
+  color: #FF0000;
+  border-bottom: 2px solid #ff6666;
+}
+.comment_main{
+  width: 100%;
+}
+.cm_empty{
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+
+}
+.cme_image{
+  width: 294rpx;
+  padding-top: 30%;
+  margin: 0 auto;
+  margin-bottom: 10px
+}
+.cme_image image{
+  width: 100%;
+  height: 294rpx;
+}
+.btn_guang{
+  margin-top: 40rpx
+}
+.btn_guang text{
+  padding: 12rpx 60rpx;
+  background: #f66;
+  color: #fff;
+  border-radius: 100rpx;
+}
+/*有订单  */
+.mocomm_list{
+  width: 100%;
+  clear: both;
+}
+.comment_list{
+  margin-bottom: 10px;
+}
+.commm_goods{
+  width: 100%;
+  background: #fff;
+  padding: 25rpx 20rpx;
+}
+.commm_goods>view{
+    float: left;
+}
+.commm_goods .left{
+  width:20%;
+}
+.shai_view{
+  border: 1px solid #eee;
+  position: relative;
+  width: 140rpx;
+  height: 140rpx;
+}
+.shaidan{
+  display: flex;
+}
+.shaidan .shai_view .shai_close{
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 26rpx;
+  height: 26rpx;
+}
+.shaidan image{
+    width: 136rpx;
+    height: 136rpx;
+}
+.commm_goods .left image{
+  width: 120rpx;
+  height: 120rpx;
+	border:1px solid #ccc;
+}
+.commm_goods .middle{
+  width:80%;
+  height: 120rpx;
+  position: relative;
+  font-size: 24rpx;
+}
+.commm_goods .middle .goods_name{
+  position: absolute;
+  top: 0;
+  color: #333;
+  width: 100%;
+  text-overflow:ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 26rpx;
+}
+.commm_goods .middle .goods_time{
+  position: absolute;
+  bottom: 0;
+  color: #999;
+  display:inline-block;
+width:100%;
+}
+.commm_goods .right{
+  display:inline-block;
+  float: right;
+}
+.comm_square{
+  margin-bottom:10rpx;
+  background: #fff;
+  padding: 0px;
+  border-top:1px solid #eee;
+}
+.pingfen,.biaoqian,.xinde,.shaidan,.huifu{
+  width: 100%;
+  padding: 16rpx 10rpx;
+  overflow: hidden;
+}
+.pingfen view{
+  float: left;
+}
+.biaoqian view{
+  float: left;
+}
+.ping_left,.biao_left,.xin_left,.shai_left,.huifu_left{
+  width:140rpx;
+}
+.ping_left text{
+  color: #f66;
+  margin-right: 10rpx;
+}
+.biao_left text{
+   color: #f66;
+  margin-right: 10rpx;
+}
+.xin_left text{
+  color: #f66;
+  margin-right: 10rpx;
+}
+.shai_left text{
+  color: #f66;
+  margin-right: 10rpx;
+}
+.huifu_left text{
+  color: #f66;
+  margin-right: 10rpx;
+}
+.biao_right{
+  width: 132rpx;
+  height: 40rpx;
+  border: 1px solid #ccc;
+  text-align: center;
+  line-height: 40rpx;
+  color: #999;
+  border-radius: 5rpx;
+}
+.xinde .xin_left{
+  float: left;
+}
+.xinde textarea{
+  float: left;
+  width: 550rpx;
+  height: 200rpx;
+  border-radius: 5rpx;
+  margin-bottom: 10px;
+  background-color: #f4f4f4;
+  padding:5px;
+  font-size: 24rpx;
+}
+.xinde .xin_bottom{
+  text-align: right;
+  color: #999;
+}
+.huifu .huifu_left{
+  float: left;
+}
+.huifu textarea{
+  float: left;
+  width: 520rpx;
+  height: 200rpx;
+  border-radius: 5rpx;
+  margin-bottom: 10px;
+  background-color: #f4f4f4;
+  padding:5px;
+  font-size: 24rpx;
+}
+.shaidan .shai_right{
+  width:145rpx ;
+  height: 145rpx;
+  text-align: center;
+}
+.shai_right image{
+  width: 140rpx;
+}
+.shai_num{
+  margin-top: 110rpx;
+  color: #999;
+}
+.square_end{
+  padding: 16rpx 10rpx;
+  border-top:1px solid #eee;
+  overflow: auto;
+  text-align: center;
+  display: flex;
+}
+checkbox .wx-checkbox-input{
+   border-radius: 50%;
+   width: 30rpx;
+   height: 30rpx;
+   position: relative;
+   top: -1px;
+}
+checkbox .wx-checkbox-input.wx-checkbox-input-checked{
+   border: 1px solid #f66;
+   background: red;
+}
+checkbox .wx-checkbox-input.wx-checkbox-input-checked::before{
+   border-radius: 50%;
+   width: 30rpx;
+   height: 30rpx;
+   line-height: 30rpx;
+   text-align: center;
+   font-size:30rpx;
+   color:#fff;
+   background: transparent;
+   transform:translate(-50%, -50%) scale(1);
+   -webkit-transform:translate(-50%, -50%) scale(1);
+}
+.xinde_value{
+  float: left;
+  width: 80%;
+}
+.huifu_value{
+  float: left;
+  width: 80%;
+}
+.square_end .s_left{
+  border:2rpx solid #f66;
+  background: #f66;
+  color: #fff;
+  text-align:center;
+  font-size:24rpx;
+  padding:0;
+  width: 150rpx;
+  height: 55rpx;
+  line-height: 55rpx;
+  display: inline-block;
+  border-radius: 8rpx;
+}
+.square_end .niming{
+  color: #666;
+  padding: 10rpx 0rpx;
+  margin-right: 10rpx;
+}
+.star{
+  width:45rpx;
+  height: 45rpx;
+  /* margin-top: 6rpx;   */
+  margin-right: 3px;
+}
+.stars image{
+  width: 200rpx;
+  margin-top: 6rpx;
+  border-radius: 0;
+}
+.no_star{
+  width:40rpx;
+  height: 40rpx;
+  margin-top: 4rpx;
+  margin-right: 3px;
+}
+.goods_tags{
+  border: 1px solid #ccc;
+  padding: 0 10rpx;
+  margin-right: 20rpx;
+  margin-bottom: 10rpx;
+  border-radius:2px;
+}
+.goods_tags_check{
+  border: 1px solid #f66;
+  padding: 0 10rpx;
+  margin-right: 10rpx;
+  margin-bottom: 10rpx;
+  border-radius:2px;
+}
+
+/*已评价页面  */
+.ed_right .look{
+    width: 110rpx;
+    height: 50rpx;
+    padding: 0 10rpx 0 20rpx;
+    border: 1px solid #f66;
+    color: #f66;
+     text-align: center;
+    line-height: 50rpx;
+    font-size: 12px;
+    border-radius: 30rpx;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    margin-left: 3rpx;
+}
+.ed_right .jifen{
+  color: #999;
+  font-size: 12px;
+}
+.commed{
+  border: 1px solid #ccc;
+  padding: 0 10rpx;
+  margin-right: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.shai_img {
+  margin-right: 10rpx;
+}
+.ping_zi{
+  float:left;
+  height:44rpx;
+  line-height:44rpx;
+  margin-top:2rpx;
+  margin-left:15rpx;
+  color: #666;
+  font-size: 26rpx;
+}
+.comment_gift{
+  padding: 20rpx 0 0 20rpx;
+  background-color: #fff;
+  color: #333;
+  font-size: 24rpx;
+}
+.comment_gift > image{
+  width: 39rpx;
+  height: 35rpx;
+  vertical-align:sub;
+  margin-right: 16rpx;
+  float: left;
+}
+.comment_gift > text{
+  overflow: hidden;
+  display:block;
+}
+.comment_gift_info{
+    display: flex;
+    align-items: center;
+    padding-right: 20rpx;
+}
+.gift_content{
+  flex: 1;
+}
+.comment_gift_info > image{
+  width: 130rpx;
+  height: 130rpx;
+}
+.gift_info_button{
+  padding:8rpx 28rpx;
+  border: 2rpx solid #ff6666;
+  border-radius: 26rpx;
+  line-height: unset;
+  font-size: 26rpx;
+  background: #fff;
+  color: #f66;
+}
+.gift_info_button::after{
+  border: none;
+  border-radius: 0
+}
+.gift_content{
+  display: flex;
+  flex-direction:column;
+}
+.gift_content > text:nth-child(1){
+  font-weight: 600;
+  color: #333;
+}
+.gift_content > text:nth-child(2){
+  color: #666;
+}
+.shai_content{
+  display:flex;
+  width: 456rpx;
+  flex-wrap:wrap;
+}
+.shai_content > view{
+  margin-right: 16rpx;
+}
+.shai_content > view:nth-child(3n){
+  margin-right: 0;
+}
+.shai_content > view:nth-child(n+4){
+  margin-top: 16rpx;
+}
+.shai_content > image{
+  margin-right: 16rpx;
+}
+.shai_content > image:nth-child(3n){
+  margin-right: 0;
+}
+.shai_content > image:nth-child(n+4){
+  margin-top: 16rpx;
+}
+.no_such_comment{
+  margin-top: 300rpx;
+}
+.no_such_comment image{
+  width: 200rpx;
+  height: 200rpx;
+  margin: 0 auto;
+  display: block
+}
+.no_such_comment view{
+  color: #b8b8b8;
+  text-align: center;
+  font-size: 26rpx;
+  margin-top: 20rpx;
+}

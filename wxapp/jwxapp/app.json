@@ -45,7 +45,8 @@
         "integral/integral",
         "distribution/distribution",
         "distributionorder/distributionorder",
-        "distributionspread/distributionspread"
+        "distributionspread/distributionspread",
+        "comment/comment"
       ]
     }
   ],

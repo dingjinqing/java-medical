@@ -1,0 +1,124 @@
+<!--pages/comment/comment.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='main-container'>
+  <view class="container">
+    <!--评价分类  -->
+    <view class="order-type">
+      <view class="navbar">
+        <block wx:for="{{navbar}}" wx:for-item="item" wx:key="*this">
+          <text data-idx="{{index}}" class="item {{currentTab==index ? 'item_active' : ''}}" style='border-color:{{currentTab==index ?comColor:""}};color:{{currentTab==index ?comColor:""}}' bindtap="navbarTap">{{item}}</text>
+        </block>
+      </view>
+    </view>
+    <!--待评价页面详情  -->
+    <view class="comment_main">
+      <view class="mocomm_list" wx:for="{{order_completed}}" wx:key="goodsId" wx:if="{{order_completed != ''}}">
+        <view class="comment_list">
+          <view class="comment_gift clearfix" wx:if="{{item.commentFlag === 0 && item.id}}">
+            <image src='{{imageUrl}}image/wxapp/comment_gift_tips.png'></image>
+            <!-- 评价类型为评价即送 -->
+            <text wx:if="{{item.commentType===1}}">评价后有机会获得</text>
+            <!-- 评价类型为自定义 -->
+            <text wx:else>评价<text>{{item.commentType}}</text>,后有机会获得</text>
+            <!-- 积分 -->
+            <text wx:if="{{item.awardType === 1}}">{{item.award}}积分</text>
+            <!-- 优惠券 -->
+            <text wx:elif="{{item.awardType === 2}}">优惠券：{{item.award}}</text>
+            <!-- 余额 -->
+            <text wx:elif="{{item.awardType === 3}}">{{item.award}}元</text>
+            <!-- 幸运大抽奖 -->
+            <text wx:elif="{{item.awardType === 4}}">{{item.award}}</text>
+            <!-- 自定义奖励 -->
+            <text wx:elif="{{item.awardType === 5}}">{{item.award}}</text>
+          </view>
+          <view class="commm_goods clearfix">
+            <view class="left">
+              <image src="{{imageUrl + item.goodsImg}}"></image>
+            </view>
+            <view class="middle">
+              <view class="goods_name">{{item.goodsName}}</view>
+              <view class="goods_time clearfix">{{item.createTime}}
+                <!-- 发表评价 -->
+                <block>
+                  <view class="right" bindtap="show_com_info" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}">
+                    <text wx:if="{{item.commentFlag == 1}}">查看评价</text>
+                    <text wx:else>发表评价</text>
+                    <image src="{{ item.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
+                  </view>
+                </block>
+              </view>
+            </view>
+          </view>
+          <block wx:if="{{item.show}}">
+            <form report-submit='true' bindsubmit='good_commtag' style='float:right'>
+              <view class="comm_square">
+                <view class="pingfen">
+                  <view class="ping_left">
+                    <text>*</text>评分:</view>
+                  <block wx:for="{{item.star}}" wx:key="index" wx:for-index="id" wx:for-item="data">
+                    <block wx:if="{{data.show}}">
+                      <text class='iconfont iconshoucang star' bindtap="choose_star" data-index="{{index}}" data-star="{{item.star}}" data-index="{{index}}" data-id="{{id}}" data-enen='{{info.commstar}}' style='color:{{comColor}};font-size:40rpx;float:left'></text>
+                    </block>
+                    <block wx:elif="{{!data.show && item.commentFlag === 0}}">
+                      <view class="no_star" bindtap="choose_star" data-id="{{id}}" data-index="{{index}}" data-star="{{item.star}}" data-index="{{index}}"  data-enen='{{info.commstar}}' style='background:url("{{imageUrl}}image/wxapp/collect_no.png") no-repeat;background-size:cover'></view>
+                    </block>
+                  </block>
+                  <view class='ping_zi'>
+                    <block wx:if='{{info.commstar == 1}}'>非常差</block>
+                    <block wx:if='{{info.commstar == 2}}'>差</block>
+                    <block wx:if='{{info.commstar == 3}}'>一般</block>
+                    <block wx:if='{{info.commstar == 4}}'>好</block>
+                    <block wx:if='{{info.commstar == 5}}'>非常好</block>
+                  </view>
+                </view>
+                <view class="xinde">
+                  <view class="xin_left">
+                    <text style='color:#fff;'>*</text>心得:</view>
+                  <textarea name="commNote" bindinput='comm_note' placeholder="商品是否给力？快分享你的购物心得吧" wx:if="{{!show_act_custom}}" style="float:left" />
+                  <view style="clear:both"></view>
+                </view>
+                <view class="shaidan">
+                  <view class="shai_left">
+                    <text style='color:#fff;'>*</text>晒单:</view>
+                  <view class="shai_content">
+                    <block wx:if="{{image}}">
+                      <block wx:for="{{info.comm_img}}" wx:key="index" wx:for-item="imgitem">
+                        <view class='shai_view'>
+                          <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
+                          <image src="{{imgitem}}" data-idx="{{index}}"></image>
+                        </view>
+                      </block>
+                    </block>
+                    <block wx:if="{{info.comm_img.length < 9}}">
+                      <view class="shai_right" bindtap="upImage">
+                        <image src='{{imageUrl}}/image/wxapp/add.png' mode='widthFix' />
+                      </view>
+                    </block>
+                  </view>
+                  <text class="shai_num">{{info.comm_img.length}}/9</text>
+                </view>
+                <view class="square_end">
+                  <view style='margin-left:140rpx; width:570rpx; display:flex; juestify-content:space-between; align-items: center;'>
+                    <view class="niming">
+                      <radio color='{{comColor}}' name="anonymousflag" value="{{info.anonymousflag}}" checked="{{flag}}" style="transform:scale(0.7)" bindtap="flag" />
+                      <text>匿名评价</text>
+                    </view>
+                    <view style="flex:1;text-align:right;">
+                      <button class='s_left' form-type='submit' data-item="{{item}}" style='background:{{comColor}};border-color:{{comColor}}'>评价并继续</button>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </form>
+          </block>
+        </view>
+      </view>
+      <view wx:if='{{order_completed == ""}}' class="no_such_comment">
+        <image src="{{imageUrl}}image/wxapp/order-no.png"></image>
+        <view>暂无此类评价</view>
+      </view>
+    </view>
+  </view>
+</view>
+<v-pay-reword-custom show="{{show_act_custom}}" bind:resetShow="resetShow" custom_info="{{custom}}" />
+<include src="/pages/common/footer.wxml" />

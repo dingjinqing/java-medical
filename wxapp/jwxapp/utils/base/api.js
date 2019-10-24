@@ -1,5 +1,6 @@
 var config = require('../config.js');
 var cache = require('./cache.js');
+var md5 = require('./md5.js');
 var nav = require('./nav.js');
 var i18n = require("../i18n/i18n.js")
 
@@ -148,6 +149,25 @@ function _filterData(data) {
   return ret;
 }
 
+const key = "fads28832fds$%k(%";
+
+function _sign(data) {
+  data = data || {};
+  data['timestamp'] = new Date().getTime();
+  var keys = [];
+  for (var i in data) {
+    keys.push(i);
+  }
+  keys.sort(function (a, b) {
+    return a.toString() > b.toString() ? 1 : (a.toString() == b.toString() ? 0 : -1);
+  });
+  var str = "";
+  for (var i in keys) {
+    str = str + data[keys[i]];
+  }
+  data['sign'] = md5(str + key);
+  return data;
+}
 
 function _cacheToken(token) {
   cache.setCache('token' + config.shop_id, token);

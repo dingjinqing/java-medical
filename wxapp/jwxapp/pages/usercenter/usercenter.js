@@ -221,6 +221,7 @@ global.wxPage({
   },
   bindOrderNav: function (e) {
     var datas = JSON.stringify(e.currentTarget.dataset);
+    console.log(datas)
     if (e.currentTarget.dataset.type == 'FINISHED') {
       util.jumpLink('/pages/comment/comment')
     } else {
