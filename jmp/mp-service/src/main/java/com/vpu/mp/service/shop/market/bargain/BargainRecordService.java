@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
 import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordListQueryParam;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordListQueryVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
@@ -190,4 +193,37 @@ public class BargainRecordService extends ShopBaseService {
 				groupBy(date(BARGAIN_USER_LIST.CREATE_TIME)).fetch().intoMap(date(BARGAIN_USER_LIST.CREATE_TIME).as("date"),count().as("number"));
 		return map;
 	}
+
+    /**
+     * 小程序端-个人中心-我的砍价列表
+     *
+     *
+     */
+    public PageResult<BargainRecordListQueryVo> getRecordPageList(Integer userId,BargainRecordListQueryParam param){
+        SelectWhereStep<? extends Record> select = db().select(
+            BARGAIN_RECORD.ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
+            BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE
+        ).
+            from(BARGAIN_RECORD).
+            leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
+            leftJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID)).
+            leftJoin(ORDER_INFO).on(BARGAIN_RECORD.ORDER_SN.eq(ORDER_INFO.ORDER_SN));
+
+        select.where(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        select.orderBy(BARGAIN_RECORD.CREATE_TIME.desc());
+        PageResult<BargainRecordListQueryVo> list = getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainRecordListQueryVo.class);
+
+        for(BargainRecordListQueryVo bargainRecord : list.dataList){
+            if(bargainRecord.getGoodsNumber() < bargainRecord.getStock()){
+                bargainRecord.setStock(bargainRecord.getGoodsNumber());
+            }
+            if(bargainRecord.getBargainType() == BargainService.BARGAIN_TYPE_RANDOM){
+                BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney());
+                if(remainMoney.compareTo(bargainRecord.getExpectationPrice()) < 0){
+                    bargainRecord.setExpectationPrice(remainMoney);
+                }
+            }
+        }
+        return list;
+    }
 }
