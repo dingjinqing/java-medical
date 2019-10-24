@@ -164,7 +164,7 @@ public class UserService extends ShopBaseService {
 			if (!result.getUnionid().equals(record.getWxUnionId())) {
 				record.setWxUnionId(result.getUnionid());
 				int update = record.update();
-				syncMainUser(record);
+				//syncMainUser(record);
 				logger().info("更新unionid" + update);
 				// TODO syncUserToCrm
 			}
@@ -173,7 +173,7 @@ public class UserService extends ShopBaseService {
 				&& (!loginUser.getSystemVersion().equals(record.getDevice()))) {
 			record.setDevice(loginUser.getSystemVersion());
 			int update = record.update();
-			syncMainUser(record);
+			//syncMainUser(record);
 			logger().info("更新Device" + update);
 		}
 		String sessionKey = getSessionKey(shopId, record.getUserId());
@@ -200,7 +200,7 @@ public class UserService extends ShopBaseService {
 					&& (ret.getWxOpenid().equals(ret.getUsername()) || (!ret.getUsername().equals(userName)))) {
 				db().update(USER).set(USER.USERNAME, userName).where(USER.WX_OPENID.eq(openid)).execute();
 				ret.setWxOpenid(openid);
-				syncMainUser(ret);
+				//syncMainUser(ret);
 			}
 			if (StringUtils.isNotBlank(avatar)) {
 				UserDetailRecord userDetail = this.getUserDetail(ret.getUserId());
@@ -212,7 +212,7 @@ public class UserService extends ShopBaseService {
 								.execute();
 						userDetail.setUserAvatar(avatar);
 						userDetail.setUsername(userName);
-						syncMainUserDetail(userDetail);
+						//syncMainUserDetail(userDetail);
 					}
 				}
 			}
@@ -240,7 +240,7 @@ public class UserService extends ShopBaseService {
 			user.setWxUnionId(unionId);
 			int insert = user.insert();
 			logger().info("插入user结果 " + insert);
-			syncMainUser(user);
+			//syncMainUser(user);
 			// avatar==null?"/image/admin/head_icon.png":avatar
 			if (insert < 0) {
 				return null;
@@ -251,7 +251,7 @@ public class UserService extends ShopBaseService {
 				user.setUsername(name);
 				user.update();
 				logger().info("更新用户名为" + name);
-				syncMainUser(user);
+				//syncMainUser(user);
 			}
 			UserDetailRecord uDetailRecord = db().newRecord(USER_DETAIL);
 			uDetailRecord.setUserId(userId);
@@ -259,7 +259,7 @@ public class UserService extends ShopBaseService {
 			uDetailRecord.setUserAvatar(avatar == null ? "/image/admin/head_icon.png" : avatar);
 			uDetailRecord.insert();
 			logger().info("开始同步Detail");
-			syncMainUserDetail(uDetailRecord);
+			//syncMainUserDetail(uDetailRecord);
 
 			String path = pathQuery.getPath();
 			Map<String, String> query = pathQuery.getQuery();
@@ -405,10 +405,10 @@ public class UserService extends ShopBaseService {
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
 			logger().info("更新昵称");
 			record.setUsername(username);
-			syncMainUser(record);
+			//syncMainUser(record);
 			if(userDetailRecord!=null) {
 				userDetailRecord.setUsername(username);
-				syncMainUserDetail(userDetailRecord);
+				//syncMainUserDetail(userDetailRecord);
 			}
 			
 		}
@@ -418,7 +418,7 @@ public class UserService extends ShopBaseService {
 			db().update(USER_DETAIL).set(USER_DETAIL.USER_AVATAR, userAvatar)
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
 			userDetailRecord.setUserAvatar(userAvatar);
-			syncMainUserDetail(userDetailRecord);
+			//syncMainUserDetail(userDetailRecord);
 		}
 		Integer shopId = this.getShopId();
 		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
@@ -430,7 +430,7 @@ public class UserService extends ShopBaseService {
 			if (!userInfo.getUnionId().equals(record.getWxUnionId())) {
 				db().update(USER).set(USER.WX_UNION_ID, userInfo.getUnionId()).where(USER.USER_ID.eq(userId)).execute();
 				record.setWxUnionId(userInfo.getUnionId());
-				syncMainUser(record);
+				//syncMainUser(record);
 				// TODO $crmResult = shop($shopId)->serviceRequest->crmApi->init();
 			}
 		} else {
@@ -817,13 +817,13 @@ public class UserService extends ShopBaseService {
 		if(userInfo!=null) {
 			if (param.getIsSetting() == 1) {
 				userDetail.updateRow(userDetailRecord);
-				syncMainUserDetail(userDetailRecord);
+				//syncMainUserDetail(userDetailRecord);
 				return JsonResultCode.CODE_SUCCESS;
 			}
 			if (param.getIsSetting() == 2) {
 				//激活卡标志
 				userDetail.updateRow(userDetailRecord);
-				syncMainUserDetail(userDetailRecord);
+				//syncMainUserDetail(userDetailRecord);
 				UserCardRecord newRecord = USER_CARD.newRecord();
 				newRecord.setActivationTime(DateUtil.getSqlTimestamp());
 				int ret = userCard.updateUserCardByNo(param.getCardNo(),newRecord);
@@ -873,8 +873,7 @@ public class UserService extends ShopBaseService {
 	 * @param shopRecord
 	 */
 	public void syncMainUser(UserRecord shopRecord) {
-		UserMainVo info = shopRecord.into(UserMainVo.class);
-		saas().wxUserService.syncMainUser(getShopId(),shopRecord.getUserId(),info);
+		saas().wxUserService.syncMainUser(getShopId(),shopRecord.getUserId(),shopRecord);
 	}
 	
 	
@@ -884,8 +883,7 @@ public class UserService extends ShopBaseService {
 	 * @param type
 	 */
 	public void syncMainUserDetail(UserDetailRecord shopRecord) {
-		UserDetailMainVo info = shopRecord.into(UserDetailMainVo.class);
-		saas().wxUserService.syncMainUserDetail(getShopId(),shopRecord.getUserId(),info);
+		saas().wxUserService.syncMainUserDetail(getShopId(),shopRecord.getUserId(),shopRecord);
 	}
 
 }
