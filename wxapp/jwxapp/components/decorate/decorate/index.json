@@ -4,6 +4,7 @@
     "v-search": "../search/index",
     "v-card": "../card/index",
     "v-imgnav": "../imgnav/index",
-    "v-coupon": "../coupon/index"
+    "v-coupon": "../coupon/index",
+    "v-product": "../product/index"
   }
 }
