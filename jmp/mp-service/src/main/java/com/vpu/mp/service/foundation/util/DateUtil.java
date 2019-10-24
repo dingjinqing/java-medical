@@ -2,10 +2,7 @@ package com.vpu.mp.service.foundation.util;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -56,6 +53,9 @@ public final class DateUtil {
 		return  LocalDateTime.ofInstant(instant, zone);
 	}
 
+    public static Timestamp convertToTimestamp(LocalDate date, LocalTime time) {
+       return Timestamp.valueOf(LocalDateTime.of(date, time));
+    }
 	/**
 	 * 转为LocalDate类型
 	 * @param format 日期格式

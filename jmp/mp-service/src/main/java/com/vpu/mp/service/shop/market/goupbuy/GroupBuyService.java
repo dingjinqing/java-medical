@@ -362,9 +362,6 @@ public class GroupBuyService extends ShopBaseService {
      * @author 李晓冰
      */
     public Map<Integer, GroupBuyActivityVo>  getGoodsGroupByInfo(List<Integer> goodsIds, Timestamp date) {
-        if (date == null) {
-            date = DateUtil.getLocalDateTime();
-        }
         // 获取有效拼团规格信息
         Map<Integer, List<Record5<Integer, Integer, Timestamp, Timestamp, BigDecimal>>> groupsInfos = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .from(GROUP_BUY_DEFINE).innerJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))

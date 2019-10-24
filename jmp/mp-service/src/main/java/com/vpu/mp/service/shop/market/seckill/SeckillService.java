@@ -192,11 +192,7 @@ public class SeckillService extends ShopBaseService {
      * @param date 限制时间
      * @return key:商品id，value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo}
      */
-    public Map<Integer, SecKillActivityVo> getGoodsSecKillGoodsInfo(List<Integer> goodsIds, Timestamp date){
-        if (date == null) {
-            date = DateUtil.getLocalDateTime();
-        }
-
+    public Map<Integer, SecKillActivityVo> getGoodsSecKillInfo(List<Integer> goodsIds, Timestamp date){
         Map<Integer, List<Record5<Integer,Integer,Timestamp, Timestamp, BigDecimal>>> secKillInfos = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_DEFINE.START_TIME, SEC_KILL_DEFINE.END_TIME, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
             .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))

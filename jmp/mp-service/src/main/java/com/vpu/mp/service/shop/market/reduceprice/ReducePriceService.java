@@ -1,12 +1,5 @@
 package com.vpu.mp.service.shop.market.reduceprice;
 
-import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
-import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
-import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-
 import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
@@ -20,21 +13,30 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.ReducePriceActivityVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
-import static org.jooq.impl.DSL.*;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.Comparator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
+import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
+import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
+import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author: 王兵兵
@@ -50,6 +52,11 @@ public class ReducePriceService extends ShopBaseService {
      * 停用状态
      */
     public static final byte STATUS_DISABLED = 0;
+
+    public static final Byte PERIOD_ACTION_EVERY_DAY = 1;
+    public static final Byte PERIOD_ACTION_EVERY_MONTH = 2;
+    public static final Byte PERIOD_ACTION_EVERY_WEEK = 3;
+
 
     /**
      * 新建限时降价活动
@@ -215,7 +222,7 @@ public class ReducePriceService extends ShopBaseService {
             .intoGroups(REDUCE_PRICE_GOODS.GOODS_ID);
         Map<Integer,Integer> goodsIdAndReducePriceIdMap = recordMap.entrySet()
             .stream()
-            .filter(x->isReturnPrice(x.getValue().get(0)))
+            .filter(x-> isActivityGoingOn(x.getValue().get(0)))
             .collect(Collectors.toMap(Map.Entry::getKey, x->x.getValue().get(0).get(REDUCE_PRICE.ID)));
         Condition condition = DSL.trueCondition();
         goodsIdAndReducePriceIdMap.forEach(
@@ -272,10 +279,104 @@ public class ReducePriceService extends ShopBaseService {
         }
         ReducePriceProductRecord reducePriceProductRecord = priceProductRecordOptional.get();
         BigDecimal price = reducePriceProductRecord.getPrdPrice();
-        if (!isReturnPrice(reducePriceRecord)) {
+        if (!isActivityGoingOn(reducePriceRecord)) {
             return null;
         } else {
             return price;
+        }
+    }
+
+    public  Map<Integer,ReducePriceActivityVo> getGoodsReducePriceInfo(List<Integer> goodsIds,Timestamp date){
+
+        Map<Integer, List<Record8<Integer, Integer, BigDecimal, Timestamp, Timestamp, Byte, String, String>>> reducePricesInfos = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_PRODUCT.GOODS_ID, REDUCE_PRICE_PRODUCT.PRD_PRICE, REDUCE_PRICE.START_TIME, REDUCE_PRICE.END_TIME,
+            REDUCE_PRICE.PERIOD_ACTION, REDUCE_PRICE.EXTEND_TIME, REDUCE_PRICE.POINT_TIME)
+            .from(REDUCE_PRICE).innerJoin(REDUCE_PRICE_PRODUCT).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID))
+            .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
+            .and(REDUCE_PRICE_PRODUCT.GOODS_ID.in(goodsIds))
+            .and(REDUCE_PRICE.END_TIME.gt(date))
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_PRODUCT.GOODS_ID)));
+
+        Map<Integer,ReducePriceActivityVo> returnMap = new HashMap<>();
+
+        reducePricesInfos.entrySet().forEach(entry->{
+            Integer goodsId = entry.getKey();
+            List<Record8<Integer, Integer, BigDecimal, Timestamp, Timestamp, Byte, String, String>> reducePriceInfos = entry.getValue();
+            reducePriceInfos.sort(Comparator.comparing(x->x.get(REDUCE_PRICE_PRODUCT.PRD_PRICE)));
+            Record8<Integer, Integer, BigDecimal, Timestamp, Timestamp, Byte, String, String> reducePrice = reducePriceInfos.get(0);
+
+            Byte periodAction = reducePrice.get(REDUCE_PRICE.PERIOD_ACTION);
+            LocalTime startLocalTime = null;
+            LocalTime endLocalTime = null;
+            List<Integer> dayArr = null;
+
+            LocalTime nowTime = LocalTime.now();
+            LocalDate nowDate = LocalDate.now();
+            // 拼接开始time和结束time
+            if (StringUtils.isNotBlank(reducePrice.get(REDUCE_PRICE.POINT_TIME))) {
+                String[] pointTimeArr = reducePrice.get(REDUCE_PRICE.POINT_TIME).split("@");
+                String[] startTimeArr = pointTimeArr[0].split(":");
+                String[] endTimeArr = pointTimeArr[1].split(":");
+                startLocalTime = LocalTime.of(Integer.parseInt(startTimeArr[0]),Integer.parseInt(startTimeArr[1]));
+                endLocalTime = LocalTime.of(Integer.parseInt(endTimeArr[0]),Integer.parseInt(endTimeArr[1]));
+            }
+            // 拼接日期
+            if (StringUtils.isNotBlank(reducePrice.get(REDUCE_PRICE.EXTEND_TIME))) {
+                dayArr = Arrays.stream(reducePrice.get(REDUCE_PRICE.EXTEND_TIME).split("@")).map(Integer::valueOf).sorted().collect(Collectors.toList());
+            }
+
+            ReducePriceActivityVo vo =new ReducePriceActivityVo();
+            if (isActivityGoingOn(reducePrice, date)) {
+
+            } else {
+
+            }
+            returnMap.put(goodsId,vo);
+        });
+        return returnMap;
+    }
+
+    /**
+     * 获取活动下一次的开始时间
+     * ps 调用此方法的活动都处于有效未进行阶段
+     * @param extendTime 指定的日
+     * @param startLocalTime 活动的在指定日的开始时刻
+     * @param endLocalTime 活动在指定日的结束时刻
+     * @param periodAction 活动的时间类型
+     * @param startDate 活动设定的开始时间
+     * @param endDate 互动设定的结束时间
+     * @return 下次活动的开始时间
+     */
+    private Timestamp getNextActivityStartDate(List<Integer> extendTime, LocalTime startLocalTime, LocalTime endLocalTime, Byte periodAction, Timestamp startDate, Timestamp endDate){
+        Timestamp nextStartDate =null;
+        LocalDate nowDate = LocalDate.now();
+        LocalTime nowTime = LocalTime.now();
+        // 下次开始活动时刻
+        LocalDate targetDate = null;
+
+        // 按照每天指定时间段内开始活动
+        if (PERIOD_ACTION_EVERY_DAY.equals(periodAction)) {
+            // 当前时刻如果小于活动开始时刻则表明今天的活动尚未开启，否则活动已经结束需等待第二天开始
+            int offsetDay = nowTime.isBefore(startLocalTime)? 0 : 1;
+            targetDate = nowDate.plusDays(offsetDay);
+        } else if (PERIOD_ACTION_EVERY_MONTH.equals(periodAction)) {
+            //当前日小于目标日或日相同但是当前时刻小于目标时刻则本月活动为开始，否则本月活动已结束
+
+        } else if (PERIOD_ACTION_EVERY_WEEK.equals(periodAction)) {
+
+        } else{
+
+        }
+
+            return nextStartDate;
+    }
+
+    private boolean isActivityGoingOn(Record8<Integer, Integer, BigDecimal, Timestamp, Timestamp, Byte, String, String> reducePriceRecord,Timestamp date){
+        Timestamp startDate = reducePriceRecord.get(REDUCE_PRICE.START_TIME);
+        if (startDate.compareTo(date) > 0) {
+            return false;
+        } else {
+            return isActivityGoingOn(reducePriceRecord.get(REDUCE_PRICE.POINT_TIME),reducePriceRecord.get(REDUCE_PRICE.EXTEND_TIME),reducePriceRecord.get(REDUCE_PRICE.PERIOD_ACTION));
         }
     }
 
@@ -284,15 +385,24 @@ public class ReducePriceService extends ShopBaseService {
      * @param reducePriceRecord 限时减价活动
      * @return 有效：true
      */
-    private boolean isReturnPrice(ReducePriceRecord reducePriceRecord ){
-        return isReturnPriceDetail(reducePriceRecord.getPointTime(),reducePriceRecord.getExtendTime(),reducePriceRecord.getPeriodAction());
+    private boolean isActivityGoingOn(ReducePriceRecord reducePriceRecord ){
+        return isActivityGoingOn(reducePriceRecord.getPointTime(),reducePriceRecord.getExtendTime(),reducePriceRecord.getPeriodAction());
     }
-    private boolean isReturnPrice(Record5<Integer,Byte,String,String,Integer> reducePriceRecord ){
-        return isReturnPriceDetail(reducePriceRecord.get(REDUCE_PRICE.POINT_TIME)
+
+    private boolean isActivityGoingOn(Record5<Integer,Byte,String,String,Integer> reducePriceRecord ){
+        return isActivityGoingOn(reducePriceRecord.get(REDUCE_PRICE.POINT_TIME)
             ,reducePriceRecord.get(REDUCE_PRICE.EXTEND_TIME)
             ,reducePriceRecord.get(REDUCE_PRICE.PERIOD_ACTION));
     }
-    private boolean isReturnPriceDetail(String pointTimeStr,String extendTime, Byte PeriodAction ){
+
+    /**
+     * 判断处于开始和结束时间之间的活动是否处于正在进行中
+     * @param pointTimeStr 指定的开始结束时间点
+     * @param extendTime 指定的日期
+     * @param periodAction 周期类型
+     * @return true正在进行中，false 未进行中
+     */
+    private boolean isActivityGoingOn(String pointTimeStr, String extendTime, Byte periodAction ){
         LocalTime startLocalTime;
         LocalTime endLocalTime;
         LocalTime nowLocalTime = LocalTime.now();
@@ -312,12 +422,12 @@ public class ReducePriceService extends ShopBaseService {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         }
-        if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_DAY.equals(PeriodAction) ){
+        if ( PERIOD_ACTION_EVERY_DAY.equals(periodAction)|| periodAction == null){
             return true;
-        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_WEEK.equals(PeriodAction) ){
+        }else if ( PERIOD_ACTION_EVERY_WEEK.equals(periodAction) ){
             Integer dayOfWeek = DateUtil.getLocalDate().getDayOfWeek().getValue();
             return dayArray.contains(dayOfWeek);
-        }else if ( EsGoodsConstant.EsGoodsShowPriceReducePeriodAction.EVERY_MONTH.equals(PeriodAction) ){
+        }else if ( PERIOD_ACTION_EVERY_MONTH.equals(periodAction) ){
             Integer dayOfMonth = DateUtil.getLocalDate().getDayOfMonth();
             return dayArray.contains(dayOfMonth);
         }

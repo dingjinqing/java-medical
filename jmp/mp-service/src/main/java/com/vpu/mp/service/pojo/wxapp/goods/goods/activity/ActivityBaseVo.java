@@ -21,6 +21,6 @@ public class ActivityBaseVo {
     private Timestamp endTime;
     /**参与活动的商品的原始价格*/
     private BigDecimal originalPrice;
-    /**参与活动的商品的原始价格*/
+    /**参与活动的商品的活动价格*/
     private BigDecimal activityPrice;
 }

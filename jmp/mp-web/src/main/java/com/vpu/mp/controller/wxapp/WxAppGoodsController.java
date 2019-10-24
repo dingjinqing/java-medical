@@ -24,7 +24,7 @@ public class WxAppGoodsController extends WxAppBaseController{
     public JsonResult test(@RequestBody GoodsIdParams params){
         Map<Integer, GroupBuyActivityVo> goodsGroupByInfo = shop().groupBuy.getGoodsGroupByInfo(params.getGoodsIds(), null);
         Map<Integer, BargainActivityVo> goodsBargainInfo = shop().bargain.getGoodsBargainInfo(params.getGoodsIds(), null);
-        Map<Integer, SecKillActivityVo> goodsSecKillGoodsInfo = shop().seckill.getGoodsSecKillGoodsInfo(params.getGoodsIds(), null);
+        Map<Integer, SecKillActivityVo> goodsSecKillGoodsInfo = shop().seckill.getGoodsSecKillInfo(params.getGoodsIds(), null);
         return success(goodsSecKillGoodsInfo);
     }
 }

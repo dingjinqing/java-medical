@@ -325,10 +325,6 @@ public class BargainService extends ShopBaseService  {
      * @return key: 商品id，value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.BargainActivityVo}
      */
     public Map<Integer,BargainActivityVo> getGoodsBargainInfo(List<Integer> goodsIds, Timestamp date){
-        if (date == null) {
-            date = DateUtil.getLocalDateTime();
-        }
-
         List<BargainRecord> bargainRecords = db().select(BARGAIN.ID, BARGAIN.GOODS_ID, BARGAIN.BARGAIN_TYPE, BARGAIN.FLOOR_PRICE, BARGAIN.EXPECTATION_PRICE,BARGAIN.START_TIME,BARGAIN.END_TIME)
             .from(BARGAIN)
             .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
