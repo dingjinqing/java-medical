@@ -1,7 +1,7 @@
 /**
  * 我要送礼
  *
- * @author 看得出
+ * @author 孔德成
  */
 import service from '@/util/request.js'
 
