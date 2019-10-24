@@ -1,0 +1,76 @@
+.nav_list{
+  display: flex;
+  height: 84rpx;
+  align-items: stretch;
+  background-color: #fff;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  margin-bottom: 20rpx;
+}
+.nav_list_item{
+  flex: 1;
+  text-align: center;
+  line-height: 80rpx;
+  border-bottom: 4rpx solid transparent;
+}
+.goods_item{
+  padding: 16rpx;
+  background-color: #fff;
+  display: flex;
+  font-size: 26rpx;
+}
+.goods_item+.goods_item{
+  border-top: 2rpx solid #eee;
+}
+.goods_item>image{
+  width: 170rpx;
+  height: 170rpx;
+  margin-right: 20rpx;
+}
+.goods_item>.item_right{
+  flex: 1;
+}
+.item_right{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+.item_right > .goods_name{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.over_time{
+  display: flex;
+  align-items: center;
+}
+.over_time > .time{
+  padding: 10rpx 6rpx;
+  background-color: skyblue;
+}
+.over_time > .goods_num{
+  flex: 1;
+  text-align: right;
+  color: #999;
+}
+.goods_price{
+  display: flex;
+  align-items: center;
+}
+.goods_price > .current_price{
+  font-size: 32rpx;
+}
+.goods_price > .original_price{
+  font-size: 24rpx;
+  color: #999;
+  flex: 1;
+  padding-left: 14rpx;
+}
+.goods_price > .Settlement_btn{
+  font-size: 28rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 38rpx;
+  color: #fff;
+}

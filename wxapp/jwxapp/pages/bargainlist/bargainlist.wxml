@@ -1,0 +1,89 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<view class="body">
+  <include src="../common/header.wxml" />
+  <view class="main-container">
+    <view class="nav_list" style="top:{{margin_top_nav + 8}}px">
+        <view class="nav_list_item" style="border-bottom-color:{{comColor}};">砍价中</view>
+        <view class="nav_list_item">砍价成功</view>
+        <view class="nav_list_item">砍价失败</view>
+    </view>
+    <view class="goods_list" style="margin-top:{{margin_top_nav + 59}}px">
+      <view class="goods_item">
+        <image src="{{imageUrl}}/image/wxapp/search_clear.png"></image>
+        <view class="item_right">
+          <text class="goods_name">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</text>
+          <view class="over_time">
+            <text class="time" style="background:{{somColor}};color:{{comColor}}">2019-10-25结束</text>
+            <text class="goods_num">仅剩205件</text>
+          </view>
+          <view class="goods_price">
+            <text class="current_price" style="color:{{comColor}};">￥14700.00</text>
+            <text class="original_price">￥24800.00</text>
+            <text class="Settlement_btn" style="background:{{comColor}}">去结算</text>            
+          </view>
+        </view>
+      </view>
+      <view class="goods_item">
+        <image src="{{imageUrl}}/image/wxapp/search_clear.png"></image>
+        <view class="item_right">
+          <text class="goods_name">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</text>
+          <view class="over_time">
+            <text class="time" style="background:{{somColor}};color:{{comColor}}">2019-10-25结束</text>
+            <text class="goods_num">仅剩205件</text>
+          </view>
+          <view class="goods_price">
+            <text class="current_price" style="color:{{comColor}};">￥14700.00</text>
+            <text class="original_price">￥24800.00</text>
+            <text class="Settlement_btn" style="background:{{comColor}}">去结算</text>            
+          </view>
+        </view>
+      </view>
+      <view class="goods_item">
+        <image src="{{imageUrl}}/image/wxapp/search_clear.png"></image>
+        <view class="item_right">
+          <text class="goods_name">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</text>
+          <view class="over_time">
+            <text class="time" style="background:{{somColor}};color:{{comColor}}">2019-10-25结束</text>
+            <text class="goods_num">仅剩205件</text>
+          </view>
+          <view class="goods_price">
+            <text class="current_price" style="color:{{comColor}};">￥14700.00</text>
+            <text class="original_price">￥24800.00</text>
+            <text class="Settlement_btn" style="background:{{comColor}}">去结算</text>            
+          </view>
+        </view>
+      </view>
+      <view class="goods_item">
+        <image src="{{imageUrl}}/image/wxapp/search_clear.png"></image>
+        <view class="item_right">
+          <text class="goods_name">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</text>
+          <view class="over_time">
+            <text class="time" style="background:{{somColor}};color:{{comColor}}">2019-10-25结束</text>
+            <text class="goods_num">仅剩205件</text>
+          </view>
+          <view class="goods_price">
+            <text class="current_price" style="color:{{comColor}};">￥14700.00</text>
+            <text class="original_price">￥24800.00</text>
+            <text class="Settlement_btn" style="background:{{comColor}}">去结算</text>            
+          </view>
+        </view>
+      </view>
+      <view class="goods_item">
+        <image src="{{imageUrl}}/image/wxapp/search_clear.png"></image>
+        <view class="item_right">
+          <text class="goods_name">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</text>
+          <view class="over_time">
+            <text class="time" style="background:{{somColor}};color:{{comColor}}">2019-10-25结束</text>
+            <text class="goods_num">仅剩205件</text>
+          </view>
+          <view class="goods_price">
+            <text class="current_price" style="color:{{comColor}};">￥14700.00</text>
+            <text class="original_price">￥24800.00</text>
+            <text class="Settlement_btn" style="background:{{comColor}}">去结算</text>            
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <include src="../common/footer.wxml" />
+</view>

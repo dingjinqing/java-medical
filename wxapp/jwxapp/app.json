@@ -20,7 +20,9 @@
     "pages/cardlist/cardlist",
     "pages/cardinfo/cardinfo",
     "pages/cardrecord/cardrecord",
-    "pages/userqrcode/userqrcode"
+    "pages/userqrcode/userqrcode",
+    "pages/bargainlist/bargainlist",
+    "pages/lotterygift/lotterygift"
   ],
   "window": {
     "backgroundTextStyle": "dark",

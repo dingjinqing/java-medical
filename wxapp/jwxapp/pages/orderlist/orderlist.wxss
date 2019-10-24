@@ -38,7 +38,7 @@
   background-color: #fff;
   display: flex;
   white-space: nowrap;
-  height: 80rpx;
+  height: 84rpx;
 }
 .top_nav view{
   border-bottom:4rpx solid transparent;

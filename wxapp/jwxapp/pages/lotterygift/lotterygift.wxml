@@ -1,0 +1,40 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<view class="body">
+  <include src="../common/header.wxml" />
+  <view class="main-container">
+    <view class="nav_list" style="top:{{margin_top_nav + 8}}px">
+        <view class="nav_list_item" style="border-bottom-color:{{comColor}};color:{{comColor}}">未领取</view>
+        <view class="nav_list_item">已领取</view>
+        <view class="nav_list_item">已过期</view>
+    </view>
+    <view class="goods_list" style="margin-top:{{margin_top_nav + 59}}px">
+      <view class="list_item">
+        <view class="gift_top">
+            <text class="order_sn" selectable>订单编号：45665445641121321</text>
+            <text class="gift_status" style="color:{{comColor}}">已领取</text>
+        </view>
+        <view class="goods_item">
+          <image src="{{imageUrl}}/image/wxapp/search_clear.png"></image>
+          <view class="item_right">
+            <text class="goods_name" selectable>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</text>
+            <text class="goods_spec" selectable>褐色</text>
+            <view class="goods_price">
+              <text class="current_price" style="color:{{comColor}};" selectable>￥14700.00</text>
+              <text class="goods_num">x1</text>
+            </view>
+            <image src="{{imageUrl}}/image/wxapp/out_time.png" mode="widthFix" class="expired"></image>
+          </view>
+        </view>
+        <view class="gift_info">
+          <text class="gift_source" selectable>奖品来源：<text class="bold_text">测评</text></text>
+          <text class="pay_money" selectable>实付款：<text class="bold_text">￥100.00</text></text>
+        </view>
+        <view class="gift_buttom">
+          <text selectable class="btn_item" style="color:{{comColor}};border-color:{{comColor}}">查看详情</text>
+          <text selectable class="btn_item" style="color:#fff;border-color:{{comColor}};background-color:{{comColor}}">立即领取</text>
+        </view>
+      </view>    
+    </view>
+  </view>
+  <include src="../common/footer.wxml" />
+</view>

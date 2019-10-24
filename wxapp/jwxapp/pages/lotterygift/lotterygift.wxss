@@ -1,0 +1,94 @@
+.nav_list{
+  display: flex;
+  height: 84rpx;
+  align-items: stretch;
+  background-color: #fff;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  margin-bottom: 20rpx;
+}
+.nav_list_item{
+  flex: 1;
+  text-align: center;
+  line-height: 80rpx;
+  border-bottom: 4rpx solid transparent;
+}
+.gift_top,.gift_info{
+  background-color: #fff;
+  padding: 16rpx;
+  display: flex;
+}
+.gift_top > .gift_status,.gift_info > .pay_money{
+  text-align: right;
+  flex: 1;
+}
+.goods_item{
+  padding: 16rpx;
+  background-color: #fafafa;
+  display: flex;
+  font-size: 26rpx;
+}
+
+.goods_item>image{
+  width: 170rpx;
+  height: 170rpx;
+  margin-right: 20rpx;
+}
+.goods_item>.item_right{
+  flex: 1;
+  position: relative;
+}
+.item_right{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+.item_right > .goods_name{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.item_right > .goods_spec{
+  color: #999;
+}
+.item_right > .expired{
+  width: 150rpx;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.goods_price{
+  display: flex;
+  align-items: center;
+}
+.goods_price > .current_price{
+  font-size: 32rpx;
+}
+.goods_price > .goods_num{
+  flex: 1;
+  text-align: right;
+  color: #999;
+}
+.gift_info{
+  border-top: 2rpx solid #eee;
+}
+.gift_buttom{
+  padding: 16rpx;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row-reverse;
+  border-top: 2rpx solid #eee;
+}
+.gift_buttom > .btn_item{
+  padding: 4rpx 10rpx;
+  border:2rpx solid;
+  border-radius: 4rpx;
+}
+.list_item + .list_item{
+  margin-top: 20rpx;
+}
+.bold_text{
+  font-weight: 600;
+}
