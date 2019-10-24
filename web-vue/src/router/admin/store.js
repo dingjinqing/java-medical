@@ -201,6 +201,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/store_manage/store/addStoreGroup'
       )
+  },
+  //   门店服务配置
+  {
+    path: '/admin/home/main/store/serviceConfig',
+    name: 'store_service_config',
+    meta: {
+      crumbTitle: 'router.store_service_config',
+      meta: 'store_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/store_manage/store/serviceConfig'
+      )
   }
 ]
 

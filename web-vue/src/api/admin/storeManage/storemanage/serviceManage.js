@@ -118,3 +118,20 @@ export function deleteServiceCat (data) {
     data: data
   })
 }
+
+// 获取门店服务配置
+export function getServiceConfig () {
+  return service({
+    url: '/api/admin/store/config/get',
+    method: 'get'
+  })
+}
+
+// 更新门店服务配置
+export function updateServiceConfig (data) {
+  return service({
+    url: '/api/admin/store/config/update',
+    method: 'post',
+    data: data
+  })
+}

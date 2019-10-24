@@ -393,5 +393,7 @@ export const en = {
   // 门店管理 新增门店
   add_store: ['Store management', 'Add Store'],
   // 门店管理 技师管理 排班配置
-  schedule_setting: ['Technician management', 'Shift configuration']
+  schedule_setting: ['Technician management', 'Shift configuration'],
+  // 门店管理 门店服务配置
+  store_service_config: ['Store management', 'Store Service Configuration']
 }
