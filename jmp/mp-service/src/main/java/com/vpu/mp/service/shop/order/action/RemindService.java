@@ -56,7 +56,7 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 			//限制三次
 			return JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT;
 		}
-		if(DateUtil.TimestampIsNowDay(order.getOrderRemindTime())) {
+		if(order.getOrderRemindTime() != null && DateUtil.TimestampIsNowDay(order.getOrderRemindTime())) {
 			//限制一天一次
 			return JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT_TODAY;
 		}

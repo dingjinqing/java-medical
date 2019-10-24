@@ -480,10 +480,10 @@ public class OrderReadService extends ShopBaseService {
 			order.setOrderType(Arrays.asList(orderTypeToArray(order.getGoodsType())));
 			//奖品订单判断
 			order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? yes :no);
-			//订单操作设置
-			setMpOrderOperation(order);
 			//设置商品
 			order.setGoods(goods.get(order.getOrderId()));
+			//订单操作设置（商品订单类型需要提前计算好）
+			setMpOrderOperation(order);
 			for (OrderGoodsMpVo temp : order.getGoods()) {
 				if(StringUtils.isBlank(temp.getGoodsImg())) {
 					//默认图片
@@ -534,7 +534,11 @@ public class OrderReadService extends ShopBaseService {
 		List<String> orderType = Arrays.asList(orderTypeToArray(order.getGoodsType()));
 		//商品
 		Map<Integer, OrderGoodsMpVo> goods = orderGoods.getKeyMapByIds(order.getOrderId());
+		//set orderType
+		order.setOrderType(orderType);
 		List<OrderGoodsMpVo> goodsList = new ArrayList<OrderGoodsMpVo>(goods.values());
+		//set goods
+		order.setGoods(goodsList);
 		//奖品订单判断
 		order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? yes :no);
 		//订单操作设置
@@ -545,8 +549,7 @@ public class OrderReadService extends ShopBaseService {
 		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getOrderId()) : null);
 		//发票
 		order.setInvoiceInfo(order.getInvoiceId() > 0 ? invoice.get(order.getInvoiceId()) : null);
-		//set goods
-		order.setGoods(goodsList);
+		
 		//当前订单配送信息
 		order.setShippingInfo(getMpOrderShippingInfo(order.getOrderSn(), goods));
 		//核销员信息

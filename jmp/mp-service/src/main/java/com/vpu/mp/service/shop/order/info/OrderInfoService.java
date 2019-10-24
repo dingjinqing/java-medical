@@ -115,7 +115,7 @@ public class OrderInfoService extends ShopBaseService {
 				from(TABLE).
 				leftJoin(USER).on(TABLE.USER_ID.eq(USER.USER_ID)).
 				where(TABLE.ORDER_SN.eq(orderSn).or(TABLE.MAIN_ORDER_SN.eq(orderSn))).
-				orderBy(TABLE.ORDER_ID.desc()).
+				orderBy(TABLE.ORDER_ID.asc()).
 				fetchInto(clz);
 
 	}
