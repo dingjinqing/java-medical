@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import jodd.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -40,6 +41,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  * @date 2019年7月29日
  */
 @Service
+@Slf4j
 public class CouponGiveService extends ShopBaseService {
 
   @Autowired private CouponHoldService couponHold;
@@ -47,26 +49,6 @@ public class CouponGiveService extends ShopBaseService {
   @Autowired private RabbitmqSendService rabbitmqSendService;
 
   private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
-
-  /** 是否有最低消费使用限制，0不限制，1有限制 */
-  public static final byte USE_CONSUME_RESTRICT_EFFECTIVE = 1;
-
-  public static final byte USE_CONSUME_RESTRICT_INVALID = 0;
-
-  /** 优惠券类型，0普通优惠券；1分裂优惠券 */
-  public static final byte COUPON_TYPE_NORMAL = 0;
-
-  public static final byte COUPON_TYPE_SPLIT = 1;
-
-  /** 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效 */
-  public static final byte VALIDITY_TYPE_FIXED = 0;
-
-  public static final byte VALIDITY_TYPE_FLEXIBLE = 1;
-
-  /** 普通优惠券类型，voucher指定金额券，discount折扣券 */
-  public static final String ACT_CODE_VOUCHER = "voucher";
-
-  public static final String ACT_CODE_DISCOUNT = "discount";
 
   /** 活动类型 定向发券 值为9 */
   private static final byte GET_SOURCE = 9;
@@ -183,7 +165,7 @@ public class CouponGiveService extends ShopBaseService {
     couponParam.setCurrentPage(param.getCurrentPage());
     couponParam.setPageRows(param.getPageRows());
     couponParam.setAccessId(param.getAccessId());
-    couponParam.setGetSource((byte) 9);
+    couponParam.setGetSource(GET_SOURCE);
     return couponHold.getCouponHoldList(couponParam);
   }
 
@@ -214,7 +196,8 @@ public class CouponGiveService extends ShopBaseService {
               GIVE_VOUCHER.MAX_AVE_PRICE,
               GIVE_VOUCHER.MIN_AVE_PRICE,
               GIVE_VOUCHER.SEND_ACTION,
-              GIVE_VOUCHER.START_TIME)
+              GIVE_VOUCHER.START_TIME,
+              GIVE_VOUCHER.ACT_ID)
           .values(
               param.getActName(),
               condition,
@@ -228,7 +211,8 @@ public class CouponGiveService extends ShopBaseService {
               param.getMaxAvePrice(),
               param.getMinAvePrice(),
               param.getSendAction(),
-              param.getStartTime())
+              param.getStartTime(),
+              NumberUtils.INTEGER_ZERO)
           .execute();
       int actId =
           db().select(GIVE_VOUCHER.ID)
@@ -237,6 +221,7 @@ public class CouponGiveService extends ShopBaseService {
               .limit(1)
               .fetchOptionalInto(Integer.class)
               .orElse(0);
+      //      log.debug("活动id:{}",actId);
       Set<Integer> userIds = new HashSet<Integer>();
       /* 将发券活动写入用户-优惠券对应表 */
 
@@ -256,7 +241,7 @@ public class CouponGiveService extends ShopBaseService {
 
       /* 购买指定商品人群 */
       if (param.getCouponGiveGrantInfoParams().getGoodsBox().equals(1)) {
-        String goodsIds = param.getCouponGiveGrantInfoParams().getGoodsIds().toString();
+        String goodsIds = param.getCouponGiveGrantInfoParams().getGoodsIds();
         String[] goodArray = goodsIds.split(",");
 
         for (String goodId : goodArray) {
@@ -520,9 +505,20 @@ public class CouponGiveService extends ShopBaseService {
         failList.add(rows);
       }
     }
+    // 一次发券活动完成后，将发放状态修改为已发放
+    db().update(GIVE_VOUCHER)
+        .set(GIVE_VOUCHER.SEND_STATUS, NumberUtils.BYTE_ONE)
+        .where(GIVE_VOUCHER.ID.eq(param.getActId()))
+        .execute();
     return failList;
   }
 
+  /**
+   * 得到优惠券有效期
+   *
+   * @param couponDetails 优惠券信息
+   * @return 优惠券有效期
+   */
   public Map<String, Timestamp> getCouponTime(CouponDetailsVo couponDetails) {
 
     // 定义开始时间和结束时间作为最后的参数
@@ -591,7 +587,7 @@ public class CouponGiveService extends ShopBaseService {
                 MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
             .from(MRKING_VOUCHER);
     select
-        .where(MRKING_VOUCHER.TYPE.eq(COUPON_TYPE_NORMAL))
+        .where(MRKING_VOUCHER.TYPE.eq(NumberUtils.BYTE_ZERO))
         .and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
     if (StringUtil.isNotEmpty(param.getActName())) {
       select.where(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
