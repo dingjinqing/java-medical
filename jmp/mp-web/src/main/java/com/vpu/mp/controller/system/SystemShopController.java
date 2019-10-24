@@ -132,6 +132,11 @@ public class SystemShopController extends SystemBaseController {
 		return success(shopRenewVoResult);
 	}
 
+	/**
+	 * 店铺列表
+	 * @param param
+	 * @return
+	 */
 	@PostMapping(value = "/system/shop/list")
 	public JsonResult shopList(@RequestBody ShopListQueryParam param) {
 		return success(saas.shop.getPageList(param));
