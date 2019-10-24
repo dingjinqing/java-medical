@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import com.google.common.collect.ImmutableSet;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.Util;
 
@@ -386,24 +387,31 @@ public class OrderConstant {
 	public static final byte FINISHED = 4;
 	public static final byte RETURNING = 5;
 
-    /**
-     * 退款类型
-     */
-    /**只退款*/
-    public static final Byte RETURN_TYPE_MONEY = 0;
-    /**退货又退款*/
-    public static final Byte RETURN_TYPE_BOTH = 1;
+	/**
+	 * 退款类型
+	 */
+	/** 只退款 */
+	public static final Byte RETURN_TYPE_MONEY = 0;
+	/** 退货又退款 */
+	public static final Byte RETURN_TYPE_BOTH = 1;
 
-    /**
-     * 是否货到付款订单
-     */
-    /**否*/
-    public static final Byte IS_COD_NO = 0;
-    /**是*/
-    public static final Byte IS_COD_YES = 1;
-    
-    /**yes*/
-    public static final Byte yes = 1;
-    /**no*/
-    public static final Byte no = 0;
+	/**
+	 * 是否货到付款订单
+	 */
+	/** 否 */
+	public static final Byte IS_COD_NO = 0;
+	/** 是 */
+	public static final Byte IS_COD_YES = 1;
+
+	/** yes */
+	public static final Byte yes = 1;
+	/** no */
+	public static final Byte no = 0;
+	/**奖品订单类型*/
+	public static final ImmutableSet<Byte> AWARD_ORDER = ImmutableSet.<Byte>builder()
+			.add(GOODS_TYPE_LOTTERY_PRESENT)
+			.add(GOODS_TYPE_PROMOTE_ORDER)
+			.add(GOODS_TYPE_PAY_AWARD)
+			.add(GOODS_TYPE_ASSESS_ORDER)
+			.build();
 }

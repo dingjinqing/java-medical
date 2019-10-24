@@ -59,8 +59,8 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderInfoMpVo;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 
 /**
  * Table:order_info

@@ -61,10 +61,6 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.mp.goods.OrderGoodsMpVo;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderInfoMpVo;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListParam;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
@@ -78,6 +74,10 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
@@ -478,10 +478,8 @@ public class OrderReadService extends ShopBaseService {
 		for(OrderListMpVo order : result.dataList) {
 			//订单类型
 			order.setOrderType(Arrays.asList(orderTypeToArray(order.getGoodsType())));
-			//TODO 活动奖品判断
-			Byte isLotteryGift = (byte)1;
-			if(isLotteryGift != 0) {}
-			order.setIsLotteryGift(isLotteryGift);
+			//奖品订单判断
+			order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? yes :no);
 			//订单操作设置
 			setMpOrderOperation(order);
 			//设置商品
@@ -491,9 +489,8 @@ public class OrderReadService extends ShopBaseService {
 					//默认图片
 					temp.setGoodsImg("image/default.jpg");
 				}
-				if(isLotteryGift != 0) {
-					temp.setIsGift(isLotteryGift.intValue());
-				}
+				temp.setIsGift(order.getIsLotteryGift().intValue());
+
 			}
 			//拼团
 			if(true) {
@@ -521,8 +518,14 @@ public class OrderReadService extends ShopBaseService {
 			order.setIsPayEndPayment(NumberUtils.BYTE_ZERO);
 		}
 	}
+	
+	/**
+	 * mp订单详情
+	 * @param param
+	 * @return
+	 * @throws MpException
+	 */
 	public OrderInfoMpVo mpGet(OrderParam param) throws MpException {
-		boolean flag = false;
 		List<OrderInfoMpVo> orders = orderInfo.getByOrderSn(param.getOrderSn() , OrderInfoMpVo.class);
 		if(CollectionUtils.isEmpty(orders)) {
 			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
@@ -532,8 +535,8 @@ public class OrderReadService extends ShopBaseService {
 		//商品
 		Map<Integer, OrderGoodsMpVo> goods = orderGoods.getKeyMapByIds(order.getOrderId());
 		List<OrderGoodsMpVo> goodsList = new ArrayList<OrderGoodsMpVo>(goods.values());
-		//TODO 奖品订单标识
-		order.setIsLotteryGift(flag ? yes : no);
+		//奖品订单判断
+		order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? yes :no);
 		//订单操作设置
 		setMpOrderOperation(order);
 		//是否退过款
@@ -596,6 +599,19 @@ public class OrderReadService extends ShopBaseService {
 		order.setIsShowCommentType(getCommentType(order));
 		//TODO 幸运大抽奖 分享优惠卷。。。。
 		/**按钮-end*/
+	}
+	
+	/**
+	 * 奖品订单
+	 * @param order
+	 */
+	private boolean isAwardOrder(List<String> orderType) {
+		for (String type : orderType) {
+			if(OrderConstant.AWARD_ORDER.contains(Byte.valueOf(type))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -673,7 +689,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @param orderType
 	 * @return
 	 */
-	public String[] orderTypeToArray(String orderType) {
+	public static String[] orderTypeToArray(String orderType) {
 		return orderType.substring(1, orderType.length() - 1 ).split("\\]\\[");
 	}
 	

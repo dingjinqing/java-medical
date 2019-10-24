@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 
 /**
@@ -23,13 +22,16 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 @Component
 public class OrderOperateFactory implements ApplicationContextAware {
 
-	private static Map<OrderServiceCode, IorderOperate> orderOperateMap;
+	private static Map<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam>> orderOperateMap;
 
+	
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		// 获取实现IorderOperate接口并加入ioc管理的实例
 		Map<String, IorderOperate> map = applicationContext.getBeansOfType(IorderOperate.class);
-		orderOperateMap = new HashMap<OrderServiceCode, IorderOperate>();
+		orderOperateMap = new HashMap<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam, AbstractOrderOperateQueryParam>>();
 		map.forEach((key, value) -> {
 			//防止实现IorderOperate接口的类的ServiceCode重复
 			assert(orderOperateMap.get(value.getServiceCode()) == null);
@@ -65,7 +67,7 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	 * @param OrderServiceCode
 	 * @return IorderOperate的实现类
 	 */
-	public IorderOperate getService(OrderServiceCode code) {
+	public IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam> getService(OrderServiceCode code) {
 		return orderOperateMap.get(code);
 	}
 }

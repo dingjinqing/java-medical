@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.order.action.base;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 /**
  * 
  * @author 王帅

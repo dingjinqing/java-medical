@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -18,7 +19,8 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.mp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
+import com.vpu.mp.service.shop.order.OrderReadService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -297,6 +299,9 @@ public class OrderOperationJudgment {
 	 * @return
 	 */
 	public static boolean isShowRemindShip(OrderListMpVo order) {
+		if(CollectionUtils.isEmpty(order.getOrderType())) {
+			order.setOrderType(Arrays.asList(OrderReadService.orderTypeToArray(order.getGoodsType())));
+		}
 		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getOrderType().indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1) {
 			return true;
 		}
