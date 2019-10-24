@@ -182,7 +182,7 @@ public class ShopChildAccountService extends MainBaseService {
 		SelectConditionStep<Record8<Integer, String, String, Integer, String, Integer, String, Byte>> select = db()
 				.select(a.ACCOUNT_ID, b.ACCOUNT_NAME, b.MOBILE, c.ROLE_ID, c.ROLE_NAME, a.REC_ID,
 						b.OFFICIAL_OPEN_ID, b.IS_BIND)
-				.from(a).join(c).on(a.ACCOUNT_ID.eq(c.ROLE_ID)).join(b).on(a.ACCOUNT_ID.eq(b.ACCOUNT_ID))
+				.from(a).join(c).on(a.ROLE_ID.eq(c.ROLE_ID)).join(b).on(a.ACCOUNT_ID.eq(b.ACCOUNT_ID))
 				.where(a.SHOP_ID.eq(shopId));
 		select.orderBy(a.ACCOUNT_ID.desc());
 		return this.getPageResult(select, sAddListParam.getCurrentPage(),sAddListParam.getPageRows(), ShopRoleAddListVo.class);
