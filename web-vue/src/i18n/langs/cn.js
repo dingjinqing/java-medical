@@ -1,26 +1,38 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+
+// system 店铺管理系列国际化
+// 小程序版本
 import { cn as programVersion } from './views/system/cn/smallProgramVersion/programVersionCn'
-// system 店铺管理-店铺账户列表
+// 店铺账户列表
 import { cn as shopAccountList } from './views/system/cn/shopAccountList/shopAccountListCn'
-// system 店铺管理-店铺列表
+// 店铺列表
 import { cn as shopList } from './views/system/cn/shopList/shopListCn'
-// system 店铺管理-发布列表
+// 发布列表
 import { cn as publishList } from './views/system/cn/publishList/publishListCn'
+// 版本列表
 import { cn as versionList } from './views/system/cn/smallProgramVersion/versionListCn'
 
 import { cn as router } from './views/admin_new/cn/routerCn'
-import { cn as marketManage } from './views/admin_new/cn/index/marketManagement/marketManageCn'
 // import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
 import { cn as adminPageFramework } from './views/admin_new/cn/adminPageFrameworkCn'
 
 import { cn as videoSpace } from './views/admin_new/cn/index/videoSpace/videoSpaceCn'
 
-// 概览
+// 概览系列国际化
+// 概览 -> 概览
 import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
-// 页面装修
+
+// 小程序管理系列国际化
+// 小程序管理 -> 页面装修
 import { cn as pictureSetting } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/pictureSettingCn'
+// 底部导航配置
+import { cn as bottomNavigation } from './views/admin_new/cn/index/miniProgramManagement/bottomNavigation/bottomNavigationCn'
+// 个人中心配置
+import { cn as personalCenter } from './views/admin_new/cn/index/miniProgramManagement/personalCenter/personalCenterCn'
+// 搜索配置
+import { cn as searchConfig } from './views/admin_new/cn/index/miniProgramManagement/searchConfig/searchConfigCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -35,6 +47,7 @@ import { cn as evaluation } from './views/admin_new/cn/index/goodsManagement/eva
 // 营销管理系列国际化
 // 营销管理通用词汇
 import { cn as marketCommon } from './views/admin_new/cn/index/marketManagement/marketCommonCn'
+import { cn as marketManage } from './views/admin_new/cn/index/marketManagement/marketManageCn'
 // 多人拼团
 import { cn as groupBuy } from './views/admin_new/cn/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
@@ -57,10 +70,6 @@ import { cn as promoteList } from './views/admin_new/cn/index/marketManagement/f
 import { cn as luckyDraw } from './views/admin_new/cn/index/marketManagement/luckyDraw/luckyDraw'
 // 小程序装修
 import { cn as pageDecoration } from './views/admin_new/cn/components/pageDecoration/pageDecorationCn'
-// 底部导航配置
-import { cn as bottomNavigation } from './views/admin_new/cn/index/miniProgramManagement/bottomNavigation/bottomNavigationCn'
-// 个人中心配置
-import { cn as personalCenter } from './views/admin_new/cn/index/miniProgramManagement/personalCenter/personalCenterCn'
 // 分享有礼-添加
 import { cn as adSharePolite } from './views/admin_new/cn/index/marketManagement/sharePolite/adSharePolite'
 // 限时降价列表
@@ -76,7 +85,7 @@ import { cn as couponGive } from './views/admin_new/cn/index/marketManagement/co
 // 秒杀
 import { cn as seckill } from './views/admin_new/cn/index/marketManagement/seckill/seckillCn'
 
-// 订单
+// 订单管理系列模块化
 // 订单通用
 import { cn as orderCommon } from './views/admin_new/cn/index/orderManagement/orderCommonCn'
 // 订单列表
@@ -90,7 +99,7 @@ import { cn as couponPackageOrder } from './views/admin_new/cn/index/orderManage
 // 虚拟商品订单-手动退款弹窗
 import { cn as refundDialog } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/refundDialogCn'
 
-// 会员管理
+// 会员管理系列国际化
 // 会员列表
 import { cn as membershipIntroduction } from './views/admin_new/cn/index/userManagement/member/membershipIntroductionCn'
 // 会员管理-会员卡
@@ -98,7 +107,7 @@ import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card
 // 会员管理-积分配置
 import { cn as scoreCfg } from './views/admin_new/cn/index/userManagement/score/scoreCfgCn'
 
-// 门店
+// 门店管理模块化
 // 门店通用
 import { cn as storeCommon } from './views/admin_new/cn/index/storeManagement/storeCommonCn'
 // 门店列表
@@ -138,7 +147,7 @@ import { cn as purchase } from './views/admin_new/cn/index/marketManagement/incr
 
 import { cn as vTree } from './views/admin_new/cn/components/vTree/vTreeCn'
 
-// 基础配置
+// 基础配置系列模块化
 // 支付配置
 import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/payConfigurationCn'
 // 交易配置
@@ -578,9 +587,10 @@ const cn = {
 
   // 小程序管理
   pictureSetting,
-  pageDecoration,
-  bottomNavigation,
+  pageDecoration, // 页面装修
+  bottomNavigation, // 底部导航
   personalCenter,
+  searchConfig, // 搜索配置
 
   // 商品
   allGoods, // 商品管理/全部商品
@@ -650,7 +660,7 @@ const cn = {
   payConfiguration, // 支付配置
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
-  templateMessage
+  templateMessage // 运费模板
 }
 
 export default cn

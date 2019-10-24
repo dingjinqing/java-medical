@@ -1,18 +1,23 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
+
+// system 店铺管理系列国际化
+// 小程序版本
 import { en as programVersion } from './views/system/en/smallProgramVersion/programVersionEn'
-// system 店铺管理-店铺账户列表
+// 店铺账户列表
 import { en as shopAccountList } from './views/system/en/shopAccountList/shopAccountListEn'
-// system 店铺管理-店铺列表
+// 店铺列表
 import { en as shopList } from './views/system/en/shopList/shopListEn'
-// system 店铺管理-发布列表
+// 发布列表
 import { en as publishList } from './views/system/en/publishList/publishListEn'
+// 版本列表
 import { en as versionList } from './views/system/en/smallProgramVersion/versionListEn'
+
 import { en as router } from './views/admin_new/en/routerEn'
-import { en as marketManage } from './views/admin_new/en/index/marketManagement/marketManageEn'
 // import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
 import { en as adminPageFramework } from './views/admin_new/en/adminPageFrameworkEn'
+
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { en as allGoods } from './views/admin_new/en/index/goodsManagement/allGoodsEn'
@@ -22,10 +27,11 @@ import { en as addAndUpdateGoodsLabel } from './views/admin_new/en/index/goodsMa
 import { en as goodsSorts } from './views/admin_new/en/index/goodsManagement/goodsSortsEn'
 import { en as goodsRecommendSorts } from './views/admin_new/en/index/goodsManagement/goodsRecommendSortsEn'
 import { en as evaluation } from './views/admin_new/en/index/goodsManagement/evaluationEn'
-// 概览
+
+// 概览系列国际化
 import { en as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
 
-// 小程序管理
+// 小程序管理系列国际化
 // 页面装修
 import { en as pictureSetting } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/pictureSettingEn'
 // 小程序装修
@@ -34,10 +40,13 @@ import { en as pageDecoration } from './views/admin_new/en/components/pageDecora
 import { en as bottomNavigation } from './views/admin_new/en/index/miniProgramManagement/bottomNavigation/bottomNavigationEn'
 // 底部导航配置
 import { en as personalCenter } from './views/admin_new/en/index/miniProgramManagement/personalCenter/personalCenterEn'
+// 搜索配置
+import { en as searchConfig } from './views/admin_new/en/index/miniProgramManagement/searchConfig/searchConfigEn'
 
-// 营销管理
+// 营销管理系列模块化
 // 营销管理通用词汇
 import { en as marketCommon } from './views/admin_new/en/index/marketManagement/marketCommonEn'
+import { en as marketManage } from './views/admin_new/en/index/marketManagement/marketManageEn'
 // 多人拼团
 import { en as groupBuy } from './views/admin_new/en/index/marketManagement/spellGroup/groupBuy'
 // 营销活动状态 tabs
@@ -73,7 +82,7 @@ import { en as couponGive } from './views/admin_new/en/index/marketManagement/co
 // 秒杀
 import { en as seckill } from './views/admin_new/en/index/marketManagement/seckill/seckillEn'
 
-// 订单
+// 订单管理系列模块化
 import { en as order } from './views/admin_new/en/index/orderManagement/orderListEn'
 // 订单通用
 import { en as orderCommon } from './views/admin_new/en/index/orderManagement/orderCommonEn'
@@ -86,7 +95,7 @@ import { en as couponPackageOrder } from './views/admin_new/en/index/orderManage
 // 虚拟商品订单-手动退款弹窗
 import { en as refundDialog } from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/refundDialogEn'
 
-// 会员管理
+// 会员管理系列模块化
 // 会员列表
 import { en as membershipIntroduction } from './views/admin_new/en/index/userManagement/member/membershipIntroductionEn'
 // 会员管理-会员卡
@@ -94,7 +103,7 @@ import { en as memberCard } from './views/admin_new/en/index/userManagement/card
 // 会员管理-积分配置
 import { en as scoreCfg } from './views/admin_new/en/index/userManagement/score/scoreCfgEn'
 
-// 门店
+// 门店管理模块国际化
 // 门店通用
 import { en as storeCommon } from './views/admin_new/en/index/storeManagement/storeCommonEn'
 // 门店列表
@@ -137,7 +146,7 @@ import { en as videoSpace } from './views/admin_new/en/index/videoSpace/videoSpa
 
 import { en as vTree } from './views/admin_new/en/components/vTree/vTreeEn'
 
-// 基础配置
+// 基础配置模块模块化
 // 支付配置
 import { en as payConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/payConfigurationEn'
 // 交易配置
@@ -608,9 +617,10 @@ const en = {
 
   // 小程序管理
   pictureSetting,
-  pageDecoration,
-  bottomNavigation,
-  personalCenter,
+  pageDecoration, // 页面装修
+  bottomNavigation, // 底部导航
+  personalCenter, // 个人中心
+  searchConfig, // 搜索配置
 
   // 商品
   allGoods, // 商品管理/全部商品
@@ -657,6 +667,7 @@ const en = {
   // 会员管理
   memberCard, // 会员管理-会员卡
   scoreCfg, // 会员管理-积分配置
+
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表
@@ -680,6 +691,6 @@ const en = {
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
   payConfiguration, // 支付配置
-  templateMessage
+  templateMessage // 运费模板
 }
 export default en
