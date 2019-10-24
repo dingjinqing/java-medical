@@ -605,7 +605,7 @@ public class OrderInfoService extends ShopBaseService {
 		db().update(TABLE).
 		set(TABLE.ORDER_REMIND, (byte) (order.getOrderRemind() + 1)).
 		set(TABLE.ORDER_REMIND_TIME, DateUtil.getSqlTimestamp()).
-		where(TABLE.ORDER_ID.eq(order.getOrderId()));
+		where(TABLE.ORDER_ID.eq(order.getOrderId())).execute();
 	}
 	
 	/**
