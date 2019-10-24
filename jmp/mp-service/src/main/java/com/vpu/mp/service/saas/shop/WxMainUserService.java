@@ -3,9 +3,12 @@ package com.vpu.mp.service.saas.shop;
 import static com.vpu.mp.db.main.tables.User.USER;
 import static com.vpu.mp.db.main.tables.UserDetail.USER_DETAIL;
 
+import java.util.Map;
+
 import org.jooq.SortField;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.UserDetail;
 import com.vpu.mp.db.main.tables.records.UserDetailRecord;
 import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -23,7 +26,8 @@ public class WxMainUserService extends MainBaseService {
 	 * @param sendRecord
 	 * @param type
 	 */
-	public void syncMainUser(Integer shopId, Integer userId,UserMainVo info) {
+	public void syncMainUser(Integer shopId, Integer userId,com.vpu.mp.db.shop.tables.records.UserRecord infoRecord) {
+		UserMainVo info = infoRecord.into(UserMainVo.class);
 		logger().info("User同步开始到主库,shopId:"+shopId+" userId:"+userId);
 		UserRecord record = db().selectFrom(USER).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).fetchAny();
 		if (record != null) {
@@ -51,7 +55,8 @@ public class WxMainUserService extends MainBaseService {
 	 * @param sendRecord
 	 * @param type
 	 */
-	public void syncMainUserDetail(Integer shopId, Integer userId,UserDetailMainVo info) {
+	public void syncMainUserDetail(Integer shopId, Integer userId,com.vpu.mp.db.shop.tables.records.UserDetailRecord infoRecord) {
+		UserDetailMainVo info=infoRecord.into(UserDetailMainVo.class);
 		logger().info("UserDetail同步开始到主库,shopId:"+shopId+" userId:"+userId);
 		UserDetailRecord record = db().selectFrom(USER_DETAIL).where(USER_DETAIL.SHOP_ID.eq(shopId).and(USER_DETAIL.USER_ID.eq(userId)))
 				.fetchAny();
@@ -73,5 +78,23 @@ public class WxMainUserService extends MainBaseService {
 		}
 	}
 	
-
+	/**
+	 * Map类型更新User
+	 * @param map
+	 * @param shopId
+	 * @param userId
+	 */
+	public void updateMainUser(Map map,Integer shopId, Integer userId) {
+		db().update(USER).set(map).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).execute();
+	}
+	
+	/**
+	 * Map类型更新UserDeatil
+	 * @param map
+	 * @param shopId
+	 * @param userId
+	 */
+	public void updateMainUserDetail(Map map,Integer shopId, Integer userId) {
+		db().update(USER).set(map).where(USER.SHOP_ID.eq(shopId).and(USER.USER_ID.eq(userId))).execute();
+	}
 }
