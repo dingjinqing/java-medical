@@ -343,10 +343,13 @@ global.wxPage({
             item.show = true;
             item.src = src_up;
           }
-          item.star = that.data.star
+          item.star = JSON.parse(JSON.stringify(that.data.star))
+          console.log(JSON.stringify(item.star))
           if (item.commstar && item.commstar < 6) {
             for (var i = 4; i > 0; i--) {
-              item.star[i].show = false
+              if (i >= item.commstar) {
+                item.star[i].show = false
+              }
             }
           }
           console.log(item.star)
