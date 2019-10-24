@@ -60,6 +60,7 @@
               <div
                 class="drag_area"
                 :class="zbFlag?'zwHeight':''"
+                style="height:100%"
               >
                 <!--放这里-->
                 <div
@@ -392,7 +393,8 @@ export default {
         fallbackTolerance: '1'
       },
       pageSetData: {},
-      cur_idx: 100
+      cur_idx: 100,
+      MoveWhiteFlag: false // 是否移入的是底部空白部分
     }
   },
   watch: {
@@ -488,9 +490,12 @@ export default {
         stop: function () {
           // let last = this_.showModulesList
           // setTimeout(() => {
+          console.log('qqqqqqqq')
+          if (this_.MoveWhiteFlag) return
           this_.$nextTick(() => {
             let hightMoudleIndex = this_.insertModulesId + 1
             console.log(hightMoudleIndex)
+
             if (this_.nowRightShowIndex === -1) {
               this_.nowRightShowIndex = 0
             } else {
@@ -547,7 +552,7 @@ export default {
         drop: function (event, ui) {
           // console.log(ui.draggable[0].innerText)
           // console.log(this_.dataId)
-          console.log('test')
+          console.log('test', ui)
           console.log(this_.insertModulesId, '--', this_.showModulesList)
           let insert = this_.insertModulesId + 1
           console.log(insert)
@@ -580,10 +585,16 @@ export default {
     // 左侧模块拖入中间区域后，中间区域数据处理函数
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
+      console.log(insertModulesId, index)
       if (insertModulesId === -1) {
-        showModulesList.push(index)
+        this.MoveWhiteFlag = true
+        this.handleToClickLeftModule(index)
+        // setTimeout(() => {
+        //   this.nowRightShowIndex = this.showModulesList.length - 1
+        // }, 100)
       } else {
-        showModulesList.splice(insert, 0, index)
+        this.MoveWhiteFlag = false
+        this.showModulesList.splice(insert, 0, index)
         if (this.nowRightShowIndex === insert) {
           this.handleToModuleHight()
         }

@@ -387,6 +387,9 @@ export default {
       }
     }
   },
+  mounted () {
+
+  },
   methods: {
     // 背景颜色自定义点击重置
     handleToReset () {
