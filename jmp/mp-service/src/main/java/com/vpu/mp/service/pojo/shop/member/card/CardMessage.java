@@ -17,5 +17,11 @@ public class CardMessage {
 	public static final String SYSTEM_UPGRADE = "member.card.system.upgrade";
 	// 后台管理员操作
 	public static final String ADMIN_OPTION = "member.backend.admin.option";
+	//  - 兑换商品数量
+	public static final String EXCHANGE_GOODS_NUM="member.exchange.goods.num";
+	//  - 门店服务次数
+	public static final String STORE_SERVICE_TIMES="member.store.service.times";
+	// - 会员卡余额
+	public static final String MEMBER_MONEY = "member.money.remaining";
 	
 }

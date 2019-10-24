@@ -4,6 +4,8 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.CARD_UPGRADE;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
 import org.apache.commons.lang3.StringUtils;
 
 import org.jooq.Record1;
@@ -11,9 +13,11 @@ import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
 import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
 import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -24,17 +28,20 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
-
-import jodd.util.StringUtil;
+import com.vpu.mp.service.shop.operation.dao.TradesRecordDaoService;
 
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.SEND_SCORE_BY_CREATE_CARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_STATUS_ARRIVE_ACCOUNT;
-
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_CASH;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.EXCHANGE_SCORE;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_STATUS_ENTRY_ACCOUNT;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
@@ -62,6 +69,9 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEN
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.ADMIN_SEND_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.ADMIN_OPTION;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.EXCHANGE_GOODS_NUM;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.STORE_SERVICE_TIMES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.MEMBER_MONEY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 
 
@@ -84,6 +94,8 @@ public class UserCardService extends ShopBaseService{
 	public MemberDaoService memberDaoService;
 	@Autowired
 	public DistributorLevelService distributorLevelService;
+	@Autowired
+	public TradesRecordDaoService tradesRecord;
 	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String OPTIONINFO = OPEN_CARD_SEND;
@@ -286,7 +298,7 @@ public class UserCardService extends ShopBaseService{
 		
 		for(UserCardParam card: cardList) {
 			//查询是否已有这个会员卡,去掉过期和删除的
-			UserCardRecord rst = userCardDao.getUsableUserCard(userId, card);
+//			UserCardRecord rst = userCardDao.getUsableUserCard(userId, card);
 			MemberCardRecord cardInfo = cardDao.getCardInfoById(card.getCardId());
 			if(NORMAL_TYPE.equals(cardInfo.getCardType())) {
 				int hasSend = userCardDao.countCardByCardId(card.getCardId());
@@ -459,5 +471,107 @@ public class UserCardService extends ShopBaseService{
 	public String getRandomCardId(int cardId){
 		return memberCardService.generateCardNo(cardId);
 	}
+	
+
+	public void cardConsumer(UserCardConsumeBean data) {
+		cardConsumer(data,0,ACCOUNT_DEFAULT.getValue(),TRADE_FLOW_INCOME.getValue(),(byte)0,true);
+	}
+	/**
+	 * 增加会员卡消费记录
+	 * @param data
+	 * @param adminUser
+	 * @param tradeType {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
+	 * @param tradeFlow 
+	 * @param type
+	 * @param isContinue 卡余额时（次数或余额）在休息时间内（23:00-8:00）是否继续发送消息：true继续，false停止
+	 */
+	public int cardConsumer(UserCardConsumeBean data,Integer adminUser,Byte tradeType,Byte tradeFlow,Byte type,Boolean isContinue) {
+		//生成新的充值记录
+        //验证现有积分跟提交的积分是否一致
+		UserCardParam userInfo = userCardDao.getUserCardInfo(data.getCardNo());		
+		if(data.getType() == (byte)1) {
+			if(type == (byte)1) {
+				if(adminUser != null && (userInfo.getExchangCount()-data.getCountDis())!=0) {
+					return -1;
+				}
+			}else {
+				if(adminUser != null && (userInfo.getCount()-data.getCountDis())!=0) {
+					return -1;
+				}
+			}
+		}else {
+			if(adminUser != null && BigDecimalUtil.subtrac(userInfo.getMoney(), data.getMoneyDis()).floatValue()!=0.00) {
+				return -1;
+			}
+		}
+		
+		// serviceOrder
+		
+		data.setCreateTime(DateUtil.getLocalDateTime());
+		if(StringUtils.isBlank(data.getReason())) {
+			data.setReason(ADMIN_OPTION);
+		}
+		
+
+		if(type == (byte)1) {
+			if(data.getType() == (byte)1) {
+				data.setReason(EXCHANGE_GOODS_NUM);
+			}else {
+				data.setReason(STORE_SERVICE_TIMES);
+			}
+		}else {
+			data.setReason(MEMBER_MONEY);
+		}
+		
+		if(data.getType()==(byte)1) {
+			if(type==(byte)1) {
+				if(data.getExchangCount()<0) {
+					// 消费记录
+					userCardDao.insertConsume(data);
+				}else {
+					//充值记录
+					userCardDao.insertIntoCharge(data);
+				}
+			}else {
+				if(data.getCount()<0) {
+					// 消费记录
+					userCardDao.insertConsume(data);
+				}else {
+					//充值记录
+					userCardDao.insertIntoCharge(data);
+				}
+			}
+		}else {
+			if(data.getMoney().intValue()<0) {
+				userCardDao.insertConsume(data);
+			}else {
+				data.setCharge(data.getMoney());
+				userCardDao.insertIntoCharge(data);
+			}
+		}
+		
+        //更新用户卡余额
+        //type=1 次卡 0普通卡
+		int ret=0;
+		if(data.getType() == (byte)1) {
+			if(type == (byte)1) {
+				ret = userCardDao.updateUserCardExchangePlus(data, userInfo);
+				// TODO 模板消息
+			}else {
+				ret = userCardDao.updateUserCardSurplus(data, userInfo);
+				// TODO 模板消息
+			}
+		}else {
+			ret = userCardDao.updateUserCardMoney(data, userInfo);
+			if(tradeType>ACCOUNT_DEFAULT.getValue()) {
+				// 插入交易记录
+				tradesRecord.insertTradesRecord(data, tradeType, tradeFlow);
+			}
+			// TODO 模板消息
+		}		
+		return ret;
+	}
+
+
 	
 }

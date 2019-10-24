@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
@@ -17,15 +19,19 @@ import org.jooq.UpdateConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
 import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
+import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.shop.member.UserCardService;
 
@@ -271,6 +277,18 @@ public class UserCardDaoService extends ShopBaseService{
 			.fetchAnyInto(UserCardParam.class);
 	}
 	
+	/**
+	 * 获取会员卡详情
+	 * @param cardNo
+	 * @return
+	 */
+	public UserCardParam getUserCardInfo(String cardNo) {
+		return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
+			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+			.where(USER_CARD.CARD_NO.eq(cardNo))
+			.fetchAnyInto(UserCardParam.class);
+	}
+	
 	public void updateUserCardByCardIdAndNo(Integer cardId,String cardNo) {
 		db().update(USER_CARD)
 			.set(USER_CARD.CARD_ID, cardId)
@@ -299,5 +317,63 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.FLAG.eq(CARD_USING))
 			.execute();
 	}
+	
+	
+	/**
+	 * 更新卡余额
+	 * @param data
+	 * @param userInfo
+	 */
+	public int updateUserCardMoney(UserCardConsumeBean data, UserCardParam userInfo) {
+		return db().update(USER_CARD)
+			.set(USER_CARD.MONEY,userInfo.getMoney().add(data.getMoney()))
+			.where(USER_CARD.CARD_NO.eq(data.getCardNo()))
+			.execute();
+	}
+	/**
+	 * 更新卡剩余次数
+	 * @param data
+	 * @param userInfo
+	 * @return
+	 */
+	public int updateUserCardSurplus(UserCardConsumeBean data, UserCardParam userInfo) {
+		return db().update(USER_CARD)
+			.set(USER_CARD.SURPLUS,userInfo.getSurplus()+data.getCount())
+			.where(USER_CARD.CARD_NO.eq(data.getCardNo()))
+			.execute();
+	}
+	
+	/**
+	 * 更新卡剩余兑换次数
+	 * @param data
+	 * @param userInfo
+	 * @return 
+	 */
+	public int updateUserCardExchangePlus(UserCardConsumeBean data, UserCardParam userInfo) {
+		return db().update(USER_CARD)
+			.set(USER_CARD.EXCHANG_SURPLUS,userInfo.getExchangSurplus()+data.getExchangCount())
+			.where(USER_CARD.CARD_NO.eq(data.getCardNo()))
+			.execute();
+	}
+	
+	/**
+	 * 消费记录
+	 * @param data
+	 */
+	public void insertIntoCharge(UserCardConsumeBean data) {
+		ChargeMoneyRecord chargeMoney = db().newRecord(CHARGE_MONEY);
+		FieldsUtil.assignNotNull(data, chargeMoney);
+		chargeMoney.insert();
+	}
+	/**
+	 * 充值记录
+	 * @param data
+	 */
+	public void insertConsume(UserCardConsumeBean data) {
+		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER);
+		FieldsUtil.assignNotNull(data, cardConsumer);
+		cardConsumer.insert();
+	}
+	
 	
 }
