@@ -7,7 +7,7 @@
         <!-- 商品搜索图片部分 -->
         <div class="top">
           <img
-            src="http://mpdevimg2.weipubao.cn/image/admin/search_config_left1.png"
+            :src="$imageHost+'/image/admin/search_config_left1.png'"
             alt=""
           >
         </div>
@@ -18,13 +18,13 @@
             class="searchHistory"
             v-if="isOpenHistory === true"
           >
-            <div class="searchTitle">搜索历史</div>
+            <div class="searchTitle">{{$t('searchConfig.searchHistory.title')}}</div>
             <div class="searchItem clearfix">
-              <div>热水壶保温壶</div>
-              <div>瓜子花生八宝粥</div>
-              <div>啤酒饮料矿泉水</div>
-              <div>春季时尚汇女装</div>
-              <div>2019年新款女装红色丽人春季精选</div>
+              <div>{{$t('searchConfig.searchHistory.content1')}}</div>
+              <div>{{$t('searchConfig.searchHistory.content2')}}</div>
+              <div>{{$t('searchConfig.searchHistory.content3')}}</div>
+              <div>{{$t('searchConfig.searchHistory.content4')}}</div>
+              <div>{{$t('searchConfig.searchHistory.content5')}}</div>
             </div>
           </div>
           <!-- 热门搜索 -->
@@ -32,14 +32,8 @@
             class="searchHistory hotSsearch"
             v-if="isOpenHotWords === true"
           >
-            <div class="searchTitle">热门搜索</div>
+            <div class="searchTitle">{{$t('searchConfig.hotSearch.title')}}</div>
             <div class="searchItem clearfix">
-              <!-- <div>111</div>
-              <div>222</div>
-              <div>444</div>
-              <div>555</div>
-              <div>666</div> -->
-              <!-- <div>{{this.hotWordsList[index]}}</div> -->
               <div
                 v-for="(item,index) in hotWordsList"
                 :key="index"
@@ -51,7 +45,7 @@
         <!-- 猜你喜欢 -->
         <div class="like">
           <img
-            src="http://mpdevimg2.weipubao.cn/image/admin/ucconfig_bg.jpg"
+            :src="$imageHost+'/image/admin/ucconfig_bg.jpg'"
             alt=""
           >
         </div>
@@ -62,15 +56,17 @@
 
         <!-- 默认搜索区域 -->
         <section class="infoArea">
-          <div class="infoTitle">默认搜索</div>
+          <div class="infoTitle">{{$t('searchConfig.defaultSearch.title')}}</div>
           <div class="infoContent">
             <el-radio-group v-model="titleAction">
               <div class="noSetting">
-                <el-radio :label="0">不设置<span>(前端显示"请输入商品关键字")</span></el-radio>
-                <el-radio :label="1">全部商品</el-radio>
+                <el-radio :label="0">{{$t('searchConfig.defaultSearch.setting')}}
+                  <span>{{$t('searchConfig.defaultSearch.show')}}</span>
+                </el-radio>
+                <el-radio :label="1">{{$t('searchConfig.defaultSearch.allGoods')}}</el-radio>
               </div>
               <div class="custom">
-                <el-radio :label="2">自定义<el-input
+                <el-radio :label="2">{{$t('searchConfig.defaultSearch.custom')}}<el-input
                     v-model="titleCustom"
                     size="small"
                     style="width:180px;margin-left:12px"
@@ -83,7 +79,7 @@
 
         <!-- 搜索历史 -->
         <section class="infoArea">
-          <div class="infoTitle">默认历史</div>
+          <div class="infoTitle">{{$t('searchConfig.rightSearchHistory.title')}}</div>
           <div class="infoContent">
             <el-switch
               v-model="isOpenHistory"
@@ -91,14 +87,16 @@
               inactive-color="#ff4949"
             >
             </el-switch>
-            <span :style="{'margin-left': '20px', 'color': '#606266'}">{{this.isOpenHistory === true ? '已开启' : '已关闭'}}</span>
-            <span class="ifUse">启用后，可方便用户搜索</span>
+            <span :style="{'margin-left': '20px', 'color': '#606266'}">
+              {{this.isOpenHistory === true ? $t('searchConfig.rightSearchHistory.on') : $t('searchConfig.rightSearchHistory.off')}}
+            </span>
+            <span class="ifUse">{{$t('searchConfig.rightSearchHistory.title')}}</span>
           </div>
         </section>
 
         <!-- 搜索热词 -->
         <section class="infoArea">
-          <div class="infoTitle">搜索热词</div>
+          <div class="infoTitle">{{$t('searchConfig.searchHotWords.title')}}</div>
           <div class="infoContent">
             <el-switch
               v-model="isOpenHotWords"
@@ -106,21 +104,25 @@
               inactive-color="#ff4949"
             >
             </el-switch>
-            <span :style="{'margin-left': '20px', 'color': '#606266'}">{{this.isOpenHotWords === true ? '已开启' : '已关闭'}}</span>
-            <span class="ifUse">启用后，引导用户购买热搜商品 最多可添加十条</span>
+            <span :style="{'margin-left': '20px', 'color': '#606266'}">
+              {{this.isOpenHotWords === true ? $t('searchConfig.searchHotWords.on') : $t('searchConfig.searchHotWords.on')}}
+            </span>
+            <span class="ifUse">{{$t('searchConfig.searchHotWords.tips')}}</span>
             <!-- 添加热词按钮 -->
             <el-button
               type="primary"
               size="small"
               class="btn"
               @click="handleBtn()"
-            >+&nbsp;添加热词</el-button>
+            >+&nbsp;{{$t('searchConfig.searchHotWords.addWords')}}</el-button>
             <div
               v-for="(item, index) in hotWordsList"
               :key="index"
               :style="{'margin-top': '10px'}"
             >
-              <span :style="{'margin-right': '10px'}">热词{{index+1}}：</span>
+              <span :style="{'margin-right': '10px'}">
+                {{$t('searchConfig.searchHotWords.hotWords')}}{{index+1}}：
+              </span>
               <el-input
                 v-model="hotWordsList[index]"
                 size="small"
@@ -130,17 +132,17 @@
                 v-if="index > 0"
                 @click="handleDelete(index)"
                 style="color:#5a8bff;margin-left:15px;cursor:pointer"
-              >删除</span>
+              >{{$t('searchConfig.searchHotWords.delete')}}</span>
             </div>
 
           </div>
         </section>
 
-        <div class="remarks">注：”猜你喜欢“请在”商品管理“-”商品推荐“中配置</div>
+        <div class="remarks">{{$t('searchConfig.remarks')}}</div>
         <div class="recommon">
-          <span>新建商品推荐</span>
+          <span @click="handleNewGoods">{{$t('searchConfig.recommon.newGoods')}}</span>
           |
-          <span>商品管理推荐</span>
+          <span @click="handleGoodsManage">{{$t('searchConfig.recommon.goodsManage')}}</span>
         </div>
       </div>
     </div>
@@ -150,7 +152,7 @@
         size="small"
         type="primary"
         @click="submitData"
-      >保存
+      >{{$t('searchConfig.save')}}
       </el-button>
     </div>
   </div>
@@ -192,15 +194,29 @@ export default {
     },
     // 添加热词事件
     handleBtn () {
-      let obj = ''
-      this.hotWordsList.push(obj)
-      console.log(this.hotWordsList)
+      if (this.hotWordsList.length > 9) {
+        this.$message.warning('最多只能添加十个热词')
+      } else {
+        let obj = ''
+        this.hotWordsList.push(obj)
+        console.log(this.hotWordsList)
+      }
     },
     // 删除热词
     handleDelete (index) {
       console.log(this.hotWordsList)
       this.hotWordsList.splice(index, 1)
       console.log(index)
+    },
+    handleNewGoods () {
+      this.$router.push({
+        path: '/admin/home/main/goodsManage/goodsRecommend'
+      })
+    },
+    handleGoodsManage () {
+      this.$router.push({
+        path: '/admin/home/main/goodsManage/evaluationManagement'
+      })
     },
     // 保存按钮 -> 提交数据
     submitData () {
@@ -317,6 +333,7 @@ export default {
       }
       .recommon {
         color: #5a8bff;
+        cursor: pointer;
       }
     }
   }
@@ -328,10 +345,11 @@ export default {
     position: fixed;
     bottom: 0;
     z-index: 2;
-    width: 88%;
+    right: 20px;
+    left: 160px;
     height: 50px;
     background: #f8f8fa;
-    margin-left: -20px;
+    // margin-left: -20px;
   }
 }
 </style>

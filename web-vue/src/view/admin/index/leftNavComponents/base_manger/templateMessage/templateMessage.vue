@@ -454,39 +454,22 @@ export default {
         console.log(res.content)
         // 合并定义的数据和返回的数据
         let list = [...res.content]
-        console.log(list)
-        console.log([...res.content])
         let list1 = [...res.content]
-        console.log(list1)
-
-        // let resultData = list.splice(0, 12)
-        // console.log(resultData)
-
-        // let q = resultData.map((item, index) => {
-        //   return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
-        // })
-        // console.log(q)
 
         let resultData = list.slice(0, 12).map((item, index) => {
           return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
         this.tableData = resultData
         console.log(this.tableData)
-        console.log(list)
 
-        console.log(list1)
-        // let resultData1 = list1.splice(0, 14)
-        // console.log(resultData1)
-        // // console.log(this.tableData1)
-
-        // console.log(list1)
-        let resultData1 = list.splice(12).map((item, index) => {
+        let resultData1 = list1.splice(12).map((item, index) => {
           return { ...item, ...this.tableData1[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
         this.tableData1 = resultData1
         console.log(this.tableData1)
       }).catch(err => console.log(err))
     },
+
     // 当前激活面板改变时触发
     handleChange (val) {
       console.log(val)
@@ -495,13 +478,7 @@ export default {
     // 保存-更新数据
     handleSave () {
       let paramsConfigs = {
-        list: [
-          // {
-          //   'id': 2001,
-          //   'openMp': 0,
-          //   'openMa': 1
-          // }
-        ]
+        list: []
       }
       let { list } = paramsConfigs
       console.log(list)
@@ -517,14 +494,13 @@ export default {
       let lists = { configs }
       console.log(lists)
 
-      // // let params = Object.assign(paramsConfigs, [...temps])
-      // console.log(temps)
       if (this.openMaNum > 25) {
-        alert('小程序消息不能超过25条!')
+        this.$message.warning('小程序消息不能超过25条!')
+        return
       }
       if (this.openMpNum > 25) {
-        // this.$message('这是一条消息提示')
-        alert('公众号消息不能超过25条！')
+        this.$message.warning('这是一条消息提示')
+        return
       }
       templateUpdateApi(JSON.stringify(lists)).then(res => {
         console.log(res)
