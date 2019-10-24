@@ -10,12 +10,11 @@ import java.math.BigDecimal;
  */
 @Data
 public class WxAppAddGoodsToCartParam {
-    
-    private Integer goodsId;
-    private BigDecimal goodsPrice;
+
+
     private  Integer goodsNumber;
     private Integer prdId;
-    private Integer productId;
+
     private Integer userId;
 
 }

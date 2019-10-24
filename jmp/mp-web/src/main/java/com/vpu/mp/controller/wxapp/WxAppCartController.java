@@ -39,11 +39,13 @@ public class WxAppCartController extends WxAppBaseController {
      */
     @PostMapping("/addGoods")
     public JsonResult addGoodsToCart(@RequestBody WxAppAddGoodsToCartParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        if (user!=null)param.setUserId(user.getUserId());
         // 检查库存数量
         Integer productNumber = shop().cart.getCartProductNumber(param.getUserId(), param.getPrdId())+param.getGoodsNumber();
         // 检查商品合法性
-        ResultMessage resultMessage = shop().cart.checkProductNumber(param.getProductId(),productNumber);
-        if (resultMessage.getFlag()){
+        ResultMessage resultMessage = shop().cart.checkProductNumber(param.getPrdId(),productNumber);
+        if (!resultMessage.getFlag()){
             return fail(resultMessage);
         }
         //添加商品到购物车

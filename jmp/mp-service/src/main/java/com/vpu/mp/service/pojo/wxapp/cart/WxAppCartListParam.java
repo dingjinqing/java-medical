@@ -9,13 +9,6 @@ import lombok.Data;
  */
 @Data
 public class WxAppCartListParam  {
-
-    @JsonProperty(value = "shop_id")
-    Integer shopId;
-
     @JsonProperty(value = "user_id")
     Integer userId;
-
-    @JsonProperty(value = "store_id")
-    Integer storeId;
 }

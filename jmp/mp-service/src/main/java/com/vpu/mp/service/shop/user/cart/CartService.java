@@ -103,32 +103,7 @@ public class CartService extends ShopBaseService {
         BigDecimal add  =new BigDecimal(0);
         Integer goodsNum  =0;
         Integer goodsTypeNum=0;
-//        // 商品id
-//        List<Integer> productIds = records.getValues(CART.PRODUCT_ID);
-//        List<Integer> goodsIds = records.getValues(CART.GOODS_ID).stream().distinct().collect(Collectors.toList());
-//        // todo  用户返利 分销
-//        List<UserRebatePrice> rebatePrices;
-//        List<Integer> rebateProducts;
-//        // 店铺价格 数量
-//        Result<? extends Record> storeProducts= goodsSpecProductService.getStoreProductAll(productIds, storeId);
-//        Map<Integer, Integer> prdGoodsIdMap = storeProducts.intoMap(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.GOODS_ID);
-//        Map<Integer, BigDecimal> prdPriceMap = storeProducts.intoMap(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE);
-//        Map<Integer, Integer> prdNumberMap = storeProducts.intoMap(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_NUMBER);
-//        // 商品类型
-//        Map<Integer, Byte> goodsIdsMap = goodsService.getGoodsByIdsAndFields(goodsIds,GOODS.GOODS_ID,GOODS.GOODS_TYPE).intoMap(GOODS.GOODS_ID,GOODS.GOODS_TYPE);
 
-        // 首单特惠 firstSpecial
-        /**todo 获取用户是否是新用户  */
-        boolean isNewUser = orderInfoService.isNewUser(userId);
-        if (isNewUser){
-            // 活动商品规格
-            List<Integer> fsProductIds = firstSpecialService.getOnGoingPrdIds();
-            // 首单数量限制
-            Integer fsLimit = firstSpecialConfigService.getFirstLimitGoods();
-            records.stream().forEach(r->{
-
-            });
-        }
 
         for (WxAppCartGoods cartGoods: cartGoodsList){
             /***
@@ -157,7 +132,7 @@ public class CartService extends ShopBaseService {
                 // 跟新购物车数据
                 setCartGoodsFail(cartGoods.getRecId());
                 cartGoods.setTip("无效商品");
-                continue;
+//                continue;
             }
             /**
              * 已售罄,专享商品,预售商品,归类至普通商品,不可点击
