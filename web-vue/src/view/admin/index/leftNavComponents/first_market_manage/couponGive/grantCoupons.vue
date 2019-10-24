@@ -47,7 +47,7 @@
                 ></el-checkbox>
                 <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
               </div>
-              <!-- <div class="chooseGoods">
+              <div class="chooseGoods">
                 <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
                 <ul class="imgList">
                   <li
@@ -74,7 +74,7 @@
                   </div>
                 </ul>
 
-              </div> -->
+              </div>
               <!-- 属于 -->
               <!-- 持有 -->
               <div style="margin:10px 0">
@@ -271,12 +271,12 @@
       :checkedNumMax=3
       :chooseGoodsBack='this.params.goodsIdList'
     />
-    <!-- <choosingGoods
-        @res="getRes"
-        :tuneUpChooseGoods="tuneUpChooseGoods"
-        :checkedNumMax=3
-        :chooseGoodsBack='this.params.goodsIdList'
-      /> -->
+    <choosingGoods
+      @res="getRes"
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :checkedNumMax=3
+      :chooseGoodsBack='this.params.goodsIdList'
+    />
     <!-- 获取人群弹窗 -->
     <getUserDialog
       @dialog-cancel="closeDialog"
@@ -564,14 +564,14 @@ export default {
     },
     // 发放优惠券
     addAct () {
-      // console.log('params:', this.params)
-      // console.log('couponId:', this.couponId)
-      // console.log('onClickNoPay:', Number(this.params.onClickNoPay))
-      // console.log('onClickGoods:', Number(this.params.onClickGoods))
-      // console.log('onClickCard:', Number(this.params.onClickCard))
-      // console.log('onClickTag:', Number(this.params.onClickTag))
-      // console.log('onClickUser:', Number(this.params.onClickUser))
-      // console.log('onClickCustomRule:', Number(this.params.onClickCustomRule))
+      console.log('params:', this.params)
+      console.log('couponId:', this.couponId)
+      console.log('onClickNoPay:', Number(this.params.onClickNoPay))
+      console.log('onClickGoods:', Number(this.params.onClickGoods))
+      console.log('onClickCard:', Number(this.params.onClickCard))
+      console.log('onClickTag:', Number(this.params.onClickTag))
+      console.log('onClickUser:', Number(this.params.onClickUser))
+      console.log('onClickCustomRule:', Number(this.params.onClickCustomRule))
       let param = {
         'actName': this.params.actName,
         'couponGiveGrantInfoParams': {
@@ -599,23 +599,34 @@ export default {
         'startTime': this.params.startTime
       }
       console.log('param:', param)
-      this.$refs['params'].validate((valid) => {
-        if (valid) {
-          addActivity(param).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              alert(`${this.$t('couponGive.operationSuccess')}`)
-              this.$router.push({
-                path: `/admin/home/main/couponGive`
-              })
-            }
-          }).catch(() => {
-            this.$message.error(`${this.$t('couponGive.operationFailed')}`)
+      addActivity(param).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          alert(`${this.$t('couponGive.operationSuccess')}`)
+          this.$router.push({
+            path: `/admin/home/main/couponGive`
           })
-        } else {
-          return false
         }
+      }).catch(() => {
+        this.$message.error(`${this.$t('couponGive.operationFailed')}`)
       })
+      // this.$refs['params'].validate((valid) => {
+      //   if (valid) {
+      //     addActivity(param).then(res => {
+      //       console.log(res)
+      //       if (res.error === 0) {
+      //         alert(`${this.$t('couponGive.operationSuccess')}`)
+      //         this.$router.push({
+      //           path: `/admin/home/main/couponGive`
+      //         })
+      //       }
+      //     }).catch(() => {
+      //       this.$message.error(`${this.$t('couponGive.operationFailed')}`)
+      //     })
+      //   } else {
+      //     return false
+      //   }
+      // })
     },
     handleChooseData (data) {
       this.$message.success({

@@ -51,10 +51,10 @@
               <div class="clearfix">
                 <span class="sub_title">有效日期</span>
                 <span class="date">
-                  <span v-if="param.availablePeriod === 0 && param.couponDate === ''">xxxx-xx-xx xx:xx:xx-xxxx-xx-xx xx:xx:xx</span>
-                  <span v-if="param.availablePeriod === 0 && param.couponDate !== ''">{{param.couponDate[0]}} - {{param.couponDate[1]}}</span>
-                  <span v-if="param.availablePeriod === 1">领券日开始{{param.validity}}<span v-if="param.validity === ''">X</span>天{{param.validityHour}}<span v-if="param.validityHour === ''">X</span>小时{{param.validityMinute}}<span v-if="param.validityMinute === ''">X</span>分钟内有效</span>
-                  <!-- <span v-if="param.availablePeriod === '0'">{{coupon_date_datetimerange}}</span> -->
+                  <span v-if="param.validity_type === 0 && param.couponDate === ''">xxxx-xx-xx xx:xx:xx-xxxx-xx-xx xx:xx:xx</span>
+                  <span v-if="param.validity_type === 0 && param.couponDate !== ''">{{param.couponDate[0]}} - {{param.couponDate[1]}}</span>
+                  <span v-if="param.validity_type === 1">领券日开始{{param.validity}}<span v-if="param.validity === ''">X</span>天{{param.validity_hour}}<span v-if="param.validity_hour === ''">X</span>小时{{param.validity_minute}}<span v-if="param.validity_minute === ''">X</span>分钟内有效</span>
+                  <!-- <span v-if="param.validity_type === '0'">{{coupon_date_datetimerange}}</span> -->
                   <!-- <span v-else>{{coupon_date_info}}</span> -->
                 </span>
               </div>
@@ -153,13 +153,13 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="param.availablePeriod"
-                        :label=0
+                        v-model="param.validity_type"
+                        :label='0'
                       >固定日期</el-radio>
                     </p>
                     <p style="margin:15px 0;">
                       <el-date-picker
-                        :disabled="param.availablePeriod===0?false:true"
+                        :disabled="param.validity_type===0?false:true"
                         v-model="param.couponDate"
                         type="datetimerange"
                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -173,29 +173,29 @@
                     </p>
                     <p>
                       <el-radio
-                        v-model="param.availablePeriod"
-                        :label=1
+                        v-model="param.validity_type"
+                        :label='1'
                         style="margin-right: 25px;"
                       >领券开始</el-radio>
                       <span>
                         <el-input
-                          :disabled="param.availablePeriod===1?false:true"
+                          :disabled="param.validity_type===1?false:true"
                           @blur="checkNum"
                           v-model="param.validity"
                           placeholder=""
                           size="small"
                           class="small_input"
                         ></el-input> 天 <el-input
-                          :disabled="param.availablePeriod===1?false:true"
+                          :disabled="param.validity_type===1?false:true"
                           @blur="checkNum"
-                          v-model="param.validityHour"
+                          v-model="param.validity_hour"
                           placeholder=""
                           size="small"
                           class="small_input"
                         ></el-input> 小时 <el-input
-                          :disabled="param.availablePeriod===1?false:true"
+                          :disabled="param.validity_type===1?false:true"
                           @blur="checkNum"
-                          v-model="param.validityMinute"
+                          v-model="param.validity_minute"
                           placeholder=""
                           size="small"
                           class="small_input"
@@ -211,12 +211,12 @@
                   <div>
                     <div>
                       <el-radio
-                        v-model="param.amount"
+                        v-model="param.surplus"
                         :label=0
                       >库存数量</el-radio>
                       <span>
                         <el-input
-                          :disabled="param.amount===0?false:true"
+                          :disabled="param.surplus===0?false:true"
                           @blur="checkNum"
                           v-model.number="param.remainAmount"
                           size="small"
@@ -227,7 +227,7 @@
                     </div>
                     <div>
                       <el-radio
-                        v-model="param.amount"
+                        v-model="param.surplus"
                         :label=1
                       >不限制库存</el-radio>
                     </div>
@@ -383,7 +383,7 @@
                     </p>
                     <div v-if="param.isExclusive">
                       <el-select
-                        v-model="param.cardId"
+                        v-model="param.card_id"
                         placeholder="请选择会员卡"
                         multiple
                         size="small"
@@ -410,12 +410,12 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="param.availablePeriod"
+                        v-model="param.validity_type"
                         :label=0
                       >固定日期</el-radio>
                     </p>
                     <p
-                      v-if='param.availablePeriod===0'
+                      v-if='param.validity_type===0'
                       style="margin:15px 0;"
                     >
                       <el-date-picker
@@ -432,7 +432,7 @@
                     </p>
                     <p>
                       <el-radio
-                        v-model="param.availablePeriod"
+                        v-model="param.validity_type"
                         :label=1
                       >领券开始 <el-input
                           v-model="param.validity"
@@ -440,12 +440,12 @@
                           size="small"
                           class="small_input"
                         ></el-input> 天 <el-input
-                          v-model="param.validityHour"
+                          v-model="param.validity_hour"
                           placeholder=""
                           size="small"
                           class="small_input"
                         ></el-input> 小时 <el-input
-                          v-model="param.validityMinute"
+                          v-model="param.validity_minute"
                           placeholder=""
                           size="small"
                           class="small_input"
@@ -453,7 +453,7 @@
                     </p>
                   </div>
                 </li> -->
-                <li
+                <!-- <li
                   class="content_right_li clearfix"
                   v-if="param.type===0"
                 >
@@ -469,7 +469,7 @@
                       class="small_input"
                     ></el-input>张
                   </div>
-                </li>
+                </li> -->
                 <li
                   class="content_right_li clearfix"
                   v-if="param.type===0"
@@ -647,16 +647,16 @@ export default {
         useConsumeRestrict: 0, // 使用限制
         isRandom: 0, // 是否需要积分
         receivePerPerson: 0,
-        cardId: [],
-        availablePeriod: 0, // 有效期
+        card_id: [],
+        validity_type: 0, // 有效期
         couponDate: '', // 总时间
         startTime: '', // 生效时间
         endTime: '', // 到期时间
-        amount: 0, // 初始库存
+        surplus: 0, // 初始库存
         remainAmount: null, // num发行量
         validity: '',
-        validityHour: '',
-        validityMinute: '',
+        validity_hour: '',
+        validity_minute: '',
         totalAmount: null, // 发放总量
         validationCode: '',
         recommendGoodsId: '', // 指定商品
@@ -710,10 +710,9 @@ export default {
   },
   mounted () {
     this.couponId = this.$route.query.id
+    this.dataDefalut()
     if (this.couponId) {
       this.getOneInfo()
-    } else {
-      this.dataDefalut()
     }
   },
   methods: {
@@ -737,23 +736,44 @@ export default {
     },
     getOneInfo () {
       updateCoupon(this.couponId).then(res => {
-        this.param = res.content[0]
-        console.log(this.param)
-        if (this.param.startTime != null) {
-          this.param.availablePeriod = 0
-          this.param.couponDate = [
-            this.param.startTime, this.param.startTime
-          ]
-        }
-        if (this.param.aliasCode === 'discount') {
-          this.param.preferentialType = 0
-        } else {
-          this.param.preferentialType = 1
-          this.param.denomination2 = this.param.denomination
-          this.param.denomination = null
+        if (res.error === 0) {
+          var data = res.content[0]
+          this.param.type = data.type
+          this.param.actName = data.actName
+          // this.param.actCode = data.actCode
+          this.param.validity_type = data.validationCode
+          if (this.param.validity_type === 0) {
+            this.param.startTime = data.createTime
+            this.param.endTime = data.updateTime
+            this.param.validity = null
+            this.param.validity_hour = null
+            this.param.validity_minute = null
+          } else {
+            this.param.startTime = data.createTime
+            this.param.endTime = data.updateTime
+            this.param.validity = data.validity
+            this.param.validity_hour = data.validityHour
+            this.param.validity_minute = data.validityMinute
+          }
         }
 
-        console.log(this.param)
+        // this.param = res.content[0]
+        // console.log(this.param)
+        // if (this.param.startTime != null) {
+        //   this.param.validity_type = 0
+        //   this.param.couponDate = [
+        //     this.param.startTime, this.param.startTime
+        //   ]
+        // }
+        // if (this.param.aliasCode === 'discount') {
+        //   this.param.preferentialType = 0
+        // } else {
+        //   this.param.preferentialType = 1
+        //   this.param.denomination2 = this.param.denomination
+        //   this.param.denomination = null
+        // }
+
+        // console.log(this.param)
       })
     },
     // 点击指定商品出现的添加类弹窗汇总
@@ -777,10 +797,10 @@ export default {
     },
     // 校验文本框
     checkNum (e) {
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!re.test(e.target.value)) {
-        alert('请输入正整数！')
-      }
+      // var re = /^(0|\+?[1-9][0-9]*)$/
+      // if (!re.test(e.target.value)) {
+      //   alert('请输入正整数！')
+      // }
     },
     // 保存优惠券
     saveCoupon () {
@@ -791,25 +811,30 @@ export default {
         this.param.denomination = this.param.denomination2
       }
       this.param.aliasCode = this.param.aliasCode
-      // this.param.cardId = this.param.cardId.join()
+      this.param.card_id = this.param.card_id.join()
       this.param.startTime = this.param.couponDate[0]
       this.param.endTime = this.param.couponDate[1]
 
       let paramsData = {}
+      paramsData.type = this.param.type
       paramsData.actName = this.param.actName
+      paramsData.validity_type = this.param.validity_type
       paramsData.startTime = this.param.startTime
       paramsData.endTime = this.param.endTime
-      paramsData.denomination = this.param.denomination
-      paramsData.totalAmount = this.param.totalAmount
-      paramsData.type = this.param.type
+      paramsData.validity = this.param.validity
+      paramsData.validity_hour = this.param.validity_hour
+      paramsData.validity_minute = this.param.validity_minute
+      paramsData.surplus = this.param.surplus
       paramsData.remainAmount = this.param.remainAmount
-      paramsData.suitGoods = this.param.suitGoods
-      // paramsData.aliasCode = '123123123'
-      paramsData.useConsumeRestrict = this.param.useConsumeRestrict
+      paramsData.denomination = this.param.denomination
       paramsData.isRandom = this.param.isRandom
       paramsData.userScore = this.param.userScore
       paramsData.receivePerPerson = this.param.receivePerPerson
-      paramsData.useExplain = this.param.useExplain
+      paramsData.card_id = this.param.card_id
+      // paramsData.validation_code = this.param.validation_code
+      paramsData.validation_code = ''
+      paramsData.useConsumeRestrict = this.param.useConsumeRestrict
+      paramsData.suitGoods = this.param.suitGoods
       paramsData.recommendGoodsId = this.param.recommendGoodsId
       paramsData.recommendCatId = this.param.recommendCatId
       paramsData.recommendSortId = this.param.recommendSortId
@@ -831,8 +856,8 @@ export default {
   },
   computed: {
     coupon_date_info () {
-      if (this.param.validity || this.param.validityHour || this.param.validityMinute) {
-        return `领券日开始${this.param.validity ? this.param.validity + '天' : ''}${this.param.validityHour ? this.param.validityHour + '时' : ''}${this.param.validityMinute ? this.param.validityMinute + '分' : ''}内有效`
+      if (this.param.validity || this.param.validity_hour || this.param.validity_minute) {
+        return `领券日开始${this.param.validity ? this.param.validity + '天' : ''}${this.param.validity_hour ? this.param.validity_hour + '时' : ''}${this.param.validity_minute ? this.param.validity_minute + '分' : ''}内有效`
       } else {
         return `领券日开始X天X时X分内有效`
       }
