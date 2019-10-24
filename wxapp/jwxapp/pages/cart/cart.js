@@ -1,21 +1,19 @@
-// pages/cart/cart.js
+let util = require('../../utils/util.js');
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-    list: [
-      { title: "大衣大衣大衣" },
-      { title: "大衣大衣大衣" }
-    ]
+    canBuyGoodsList: null,
+    invalidGoodsList:null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
+    this.requestCartList()
   },
   // 增加商品数量
   goodsNumPlus(){
@@ -24,6 +22,35 @@ global.wxPage({
   // 减少商品数量
   goodsNumMinus(){
 
+  },
+  // 请求购物车列表
+  requestCartList(){
+    util.api('/api/wxapp/cart/list',(res)=>{
+      console.log(res)
+      if(res.error === 0){
+        let canBuyList = this.getCanBuyList(res.content.cartGoodsList)
+        let invalidList = this.getInvalidGoodsList(res.content.cartGoodsList)
+        this.setData({
+          canBuyGoodsList: canBuyList,
+          invalidGoodsList: invalidList
+        })
+        console.log(canBuyList)
+      }
+    })
+  },
+  // 获取可购买商品列表
+  getCanBuyList(listArray){
+    if (!Array.isArray(listArray)) return []
+    return listArray.filter(item => {
+      return item.isOnSale === 1 && item.isDelete === 0 && item.tip !== '无效商品'
+    })
+  },
+  // 获取不可购买商品列表
+  getInvalidGoodsList(listArray){
+    if (!Array.isArray(listArray)) return []
+    return listArray.filter(item => {
+      return item.isOnSale === 0 || item.isDelete === 1 || item.tip !== '无效商品'
+    })
   },
   //触摸改变
   handleTouchChange(e){
