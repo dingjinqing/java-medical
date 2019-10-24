@@ -84,6 +84,8 @@ import { cn as distribution } from './views/admin_new/cn/index/marketManagement/
 import { cn as couponGive } from './views/admin_new/cn/index/marketManagement/couponGive/couponGiveCn'
 // 秒杀
 import { cn as seckill } from './views/admin_new/cn/index/marketManagement/seckill/seckillCn'
+// 秒杀-添加
+import { cn as addSeckill } from './views/admin_new/cn/index/marketManagement/seckill/addSeckillCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -631,6 +633,7 @@ const cn = {
   giveGift, // 我要送礼
   couponGive, // 定向发券
   seckill, // 秒杀
+  addSeckill, // 秒杀-添加
   ...zhLocale,
   expressList,
 

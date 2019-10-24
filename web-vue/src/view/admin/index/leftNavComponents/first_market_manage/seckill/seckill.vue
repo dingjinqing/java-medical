@@ -3,17 +3,22 @@
     <div class="main">
       <statusTab
         v-model="nav"
-        :activityName="activityName"
+        activityName="秒杀"
         :standard="true"
       />
       <div class="wrapper">
         <el-button
           type="primary"
           size="medium"
+          v-if="tableListView"
+          @click="addSeckill"
         >添加秒杀活动</el-button>
       </div>
     </div>
-    <div class="table_list">
+    <div
+      class="table_list"
+      v-if="tableListView"
+    >
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
@@ -84,23 +89,26 @@
         @pagination="handleClick"
       />
     </div>
+    <addSeckill v-if="tableListView===false" />
   </div>
 </template>
 <script>
 // 引入组件
 import statusTab from '@/components/admin/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
+import addSeckill from './seckillAdd.vue'
 import { seckillList } from '@/api/admin/marketManage/seckill.js'
 export default {
 
   components: {
     statusTab,
-    pagination
+    pagination,
+    addSeckill
   },
   data () {
     return {
       nav: 0,
-      activityName: '秒杀',
+      tableListView: true,
       tableData: [],
       pageParams: {}
     }
@@ -113,9 +121,6 @@ export default {
     // 秒杀列表
     handleClick () {
       this.pageParams.nav = this.nav
-      if (this.actName !== '') {
-        this.pageParams.actName = this.actName
-      }
       seckillList(this.pageParams).then((res) => {
         if (res.error === 0) {
           // this.handleData(res.content.dataList)
@@ -123,6 +128,14 @@ export default {
           this.pageParams = res.content.page
         }
       })
+    },
+
+    // 添加秒杀活动
+    addSeckill () {
+      this.tableListView = false
+      // this.$router.push({
+      //   name: 'seckill_add_view'
+      // })
     }
   }
 }

@@ -81,6 +81,8 @@ import { en as distribution } from './views/admin_new/en/index/marketManagement/
 import { en as couponGive } from './views/admin_new/en/index/marketManagement/couponGive/couponGiveEn'
 // 秒杀
 import { en as seckill } from './views/admin_new/en/index/marketManagement/seckill/seckillEn'
+// 秒杀-添加
+import { en as addSeckill } from './views/admin_new/en/index/marketManagement/seckill/addSeckillEn'
 
 // 订单管理系列模块化
 import { en as order } from './views/admin_new/en/index/orderManagement/orderListEn'
@@ -659,6 +661,7 @@ const en = {
   giveGift, // 我要送礼
   couponGive, // 定向发券
   seckill, // 秒杀
+  addSeckill, // 秒杀-添加
   ...enLocale,
   expressList,
 

@@ -285,6 +285,8 @@ export const en = {
   presale_detail: ['Marketing Management', 'View Pre Sale Detail'],
   // 营销管理 秒杀
   seckill: ['Marketing Management', 'Seckill'],
+  // 营销管理 秒杀-添加
+  addSeckill: ['Marketing Management', 'Seckill'],
   // 营销管理 加价购
   increase_purchase: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 换购订单

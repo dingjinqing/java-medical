@@ -194,6 +194,8 @@ export const cn = {
   presale_detail: ['营销管理', '活动明细'],
   // 营销管理 秒杀
   seckill: ['营销管理', '秒杀'],
+  // 营销管理 秒杀-添加
+  addSeckill: ['营销管理', '秒杀'],
   // 营销管理 加价购
   increase_purchase: ['营销管理', '加价购'],
   // 营销管理 加价购 换购订单

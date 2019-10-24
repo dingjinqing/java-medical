@@ -822,6 +822,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckill'
       )
   },
+  // 秒杀-添加
+  {
+    path: '/admin/home/main/seckill/add',
+    name: 'seckill_add_view',
+    meta: {
+      crumbTitle: 'router.addSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckillAdd'
+      )
+  },
   // 加价购活动
   {
     path: '/api/admin/market/addPriceBuy/list',
