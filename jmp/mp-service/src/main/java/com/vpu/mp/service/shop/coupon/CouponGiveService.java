@@ -420,9 +420,8 @@ public class CouponGiveService extends ShopBaseService {
                   .from(USER_LOGIN_RECORD)
                   .where(
                       USER_LOGIN_RECORD.CREATE_TIME.between(
-                          Timestamp.valueOf(
-                              param.getCouponGiveGrantInfoParams().getPointStartTime()),
-                          Timestamp.valueOf(param.getCouponGiveGrantInfoParams().getPointEndTme())))
+                          param.getCouponGiveGrantInfoParams().getPointStartTime(),
+                          param.getCouponGiveGrantInfoParams().getPointEndTme()))
                   .fetch();
           for (Record1<Integer> loginRecordUserId : loginRecordUserIds) {
             userIds.add(loginRecordUserId.value1());
