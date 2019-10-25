@@ -52,6 +52,9 @@ public class CartService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private OrderInfoService orderInfoService;
+    /**
+     * 首单特惠
+     */
     @Autowired
     private FirstSpecialService firstSpecialService;
     /**
@@ -64,7 +67,9 @@ public class CartService extends ShopBaseService {
      */
     @Autowired
     private PreSaleService preSaleService;
-
+    /**
+     * 首单特惠
+     */
     @Autowired
     private FirstSpecialConfigService firstSpecialConfigService;
 
@@ -197,7 +202,7 @@ public class CartService extends ShopBaseService {
     }
 
     /**
-     *
+     * 检查商品
      * @param productId
      * @param goodsNumber
      * @return

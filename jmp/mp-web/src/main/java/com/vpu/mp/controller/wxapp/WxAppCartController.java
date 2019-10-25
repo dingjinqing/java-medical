@@ -37,7 +37,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/addGoods")
+    @PostMapping("/add")
     public JsonResult addGoodsToCart(@RequestBody WxAppAddGoodsToCartParam param){
         WxAppSessionUser user = wxAppAuth.user();
         if (user!=null)param.setUserId(user.getUserId());
@@ -58,9 +58,10 @@ public class WxAppCartController extends WxAppBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/delete")
+    @PostMapping("/remove")
     public JsonResult deleteCartById(@RequestBody WxAppRemoveCartProductParam param){
-
+        WxAppSessionUser user = wxAppAuth.user();
+        if (user!=null)param.setUserId(user.getUserId());
         shop().cart.removeCartProductById(param.getUserId(),param.getRecId());
         return success();
     }
@@ -70,7 +71,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/changeGoodsNumber")
+    @PostMapping("/change")
     public JsonResult changeGoodsNumber(@RequestBody WxAppChangeNumberParam param){
         ResultMessage resultMessage = shop().cart.changeGoodsNumber(param.getUserId(), 0, param.getProductId(), param.getGoodsNumber());
         if (resultMessage.getFlag()){
