@@ -17,7 +17,7 @@ import com.vpu.mp.service.saas.SaasApplication;
  *
  */
 @Component
-
+@EnableScheduling
 @EnableAsync
 
 public class ScheduleTask {
