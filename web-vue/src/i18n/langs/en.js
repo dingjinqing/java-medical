@@ -29,7 +29,7 @@ import { en as goodsRecommendSorts } from './views/admin_new/en/index/goodsManag
 import { en as evaluation } from './views/admin_new/en/index/goodsManagement/evaluationEn'
 
 // 概览系列国际化
-import { en as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
+import { en as overview } from './views/admin_new/en/index/overview/overviewEn'
 
 // 小程序管理系列国际化
 // 页面装修

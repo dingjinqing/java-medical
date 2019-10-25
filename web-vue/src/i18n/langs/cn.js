@@ -22,7 +22,7 @@ import { cn as videoSpace } from './views/admin_new/cn/index/videoSpace/videoSpa
 
 // 概览系列国际化
 // 概览 -> 概览
-import { cn as overview } from './views/admin/index/firstWebManage/firstWebManage/overviewOfMall/overview'
+import { cn as overview } from './views/admin_new/cn/index/overview/overviewCn'
 
 // 小程序管理系列国际化
 // 小程序管理 -> 页面装修
