@@ -9,7 +9,7 @@
         <!-- 多人拼团 -->
         <div
           class="voucher box_style"
-          @click="spellGroup()"
+          @click="to('pin_group')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/drpt.png'"
@@ -23,7 +23,7 @@
         <!-- 砍价 -->
         <div
           class="voucher box_style"
-          @click="bargain()"
+          @click="to('bargain')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/kj.png'"
@@ -37,7 +37,7 @@
         <!-- 分销 -->
         <div
           class="voucher box_style"
-          @click="distribution()"
+          @click="to('distribution_info')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/fx.png'"
@@ -54,7 +54,7 @@
         <!-- 拼团抽奖 -->
         <div
           class="voucher box_style"
-          @click="lotteryDraw()"
+          @click="to('group_draw')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/ptcj.png'"
@@ -68,7 +68,7 @@
         <!-- 组团瓜分积分 -->
         <div
           class="voucher box_style"
-          @click="divideIntegral()"
+          @click="to('pin_integration')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/gfjf.png'"
@@ -82,7 +82,7 @@
         <!-- 幸运大抽奖 -->
         <div
           class="voucher box_style"
-          @click="luckyDraw()"
+          @click="to('lottery_activity')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/xxdcj.png'"
@@ -99,7 +99,7 @@
         <!-- 好友代付 -->
         <div
           class="voucher box_style"
-          @click="friendPay"
+          @click="to('friend_pay')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/instead_pay.png'"
@@ -113,7 +113,7 @@
         <!-- 好友助力 -->
         <div
           class="voucher box_style"
-          @click="friendHelp"
+          @click="to('promote')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/friend_promote_cion.png'"
@@ -127,7 +127,7 @@
         <!-- 我要送礼 -->
         <div
           class="voucher box_style"
-          @click="giveGift"
+          @click="to('giveGift')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/wysl.png'"
@@ -143,7 +143,7 @@
       <div class="box">
         <!-- 分享有礼 -->
         <div
-          @click="sharePolite()"
+          @click="to('share_polite')"
           class="voucher box_style"
         >
           <div class="activity_img"><img
@@ -163,7 +163,7 @@
       <div class="box1">
         <!-- 普通优惠券 -->
         <div
-          @click="coupon()"
+          @click="to('ordinary_coupon')"
           class="voucher box_style"
         >
           <div class="activity_img"><img
@@ -178,7 +178,7 @@
         <!-- 优惠券礼包 -->
         <div
           class="voucher box_style"
-          @click="couponPackage()"
+          @click="to('coupon_package')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/icon_coupon_bag.png'"
@@ -192,7 +192,7 @@
         <!-- 限时降价 -->
         <div
           class="voucher box_style"
-          @click="reduce()"
+          @click="to('reduce')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/xsjj.png'"
@@ -217,7 +217,10 @@
           </div>
         </div>
         <!-- 首单特惠 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('first_special')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/sdth.png'"
               alt=""
@@ -230,7 +233,7 @@
         <!-- 定金膨胀 -->
         <div
           class="voucher box_style"
-          @click="preSale"
+          @click="to('presale_view')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/djpz.png'"
@@ -246,7 +249,7 @@
         <!-- 秒杀 -->
         <div
           class="voucher box_style"
-          @click="seckill"
+          @click="to('seckill_view')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/ms.png'"
@@ -260,7 +263,7 @@
         <!-- 赠品 -->
         <div
           class="voucher box_style"
-          @click="gift()"
+          @click="to('gift_view')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/zp.png'"
@@ -304,7 +307,7 @@
         <!-- 打包一口价 -->
         <div
           class="voucher box_style"
-          @click="packagePrice"
+          @click="to('package_price')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/dbykj.png'"
@@ -318,7 +321,7 @@
         <!-- 加价购 -->
         <div
           class="voucher box_style"
-          @click="purchase()"
+          @click="to('increase_purchase')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/jjg.png'"
@@ -388,7 +391,7 @@
         <!-- 收藏有礼 -->
         <div
           class="voucher box_style"
-          @click="collectGift"
+          @click="to('collectGift')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/scyl.png'"
@@ -426,7 +429,7 @@
         <!-- 定向发券 -->
         <div
           class="voucher box_style"
-          @click="couponGive"
+          @click="to('couponGive')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/dxfq.png'"
@@ -440,7 +443,7 @@
         <!-- 消息推送 -->
         <div
           class="voucher box_style"
-          @click="messagePush"
+          @click="to('business_template_message')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/xxts.png'"
@@ -486,133 +489,10 @@ export default {
     this.langDefault()
   },
   methods: {
-    // 多人拼团点击
-    spellGroup () {
+    // 点击跳转
+    to (routerName) {
       this.$router.push({
-        name: 'pin_group'
-      })
-    },
-    // 砍价点击
-    bargain () {
-      this.$router.push({
-        name: 'bargain'
-      })
-    },
-    // 好友助力点击
-    friendHelp () {
-      this.$router.push({
-        name: 'promote'
-      })
-    },
-    // 拼团抽奖点击
-    lotteryDraw () {
-      this.$router.push({
-        name: 'group_draw'
-      })
-    },
-    // 分销点击
-    distribution () {
-      this.$router.push({
-        name: 'distribution_info'
-      })
-    },
-    // 瓜分积分点击
-    divideIntegral () {
-      this.$router.push({
-        name: 'pin_integration'
-      })
-    },
-    // 普通优惠卷点击
-    coupon () {
-      this.$router.push({
-        name: 'ordinary_coupon'
-      })
-    },
-    // 赠品点击
-    gift () {
-      this.$router.push({
-        name: 'gift_view'
-      })
-    },
-    // 幸运大抽奖点击
-    luckyDraw () {
-      this.$router.push({
-        name: 'lottery_activity'
-      })
-    },
-    // 好友代付点击
-    friendPay () {
-      this.$router.push({
-        name: 'friend_pay'
-      })
-    },
-    // 优惠券礼包
-    couponPackage () {
-      this.$router.push({
-        name: 'coupon_package'
-      })
-    },
-    // 限时降价点击
-    reduce () {
-      this.$router.push({
-        name: 'reduce'
-      })
-    },
-    // 分享有礼活动点击
-    sharePolite () {
-      this.$router.push({
-        name: 'share_polite'
-      })
-    },
-    // 打包一口价
-    packagePrice () {
-      this.$router.push({
-        name: 'package_price'
-      })
-    },
-    // 定金膨胀
-    preSale () {
-      this.$router.push({
-        name: 'presale_view'
-      })
-    },
-    // 秒杀
-    seckill () {
-      this.$router.push({
-        name: 'seckill_view'
-      })
-    },
-    // 加价购活动点击
-    purchase () {
-      this.$router.push({
-        name: 'increase_purchase'
-      })
-    },
-    // 消息推送
-    messagePush () {
-      this.$router.push({
-        name: 'business_template_message'
-      })
-    },
-    // 定向发券
-    couponGive () {
-      this.$router.push({
-        name: 'couponGive'
-      })
-    },
-    // 我要送礼
-    giveGift () {
-      this.$router.push(
-        {
-          name: 'giveGift',
-          params: { tabSwitch: 'inProgress' }
-        }
-      )
-    },
-    // 收藏有礼
-    collectGift () {
-      this.$router.push({
-        name: 'collectGift'
+        name: routerName
       })
     }
   }

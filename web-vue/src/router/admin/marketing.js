@@ -738,6 +738,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceDetail'
       )
   },
+  // 首单特惠
+  {
+    path: '/admin/home/main/firstSpecial/list',
+    name: 'first_special',
+    meta: {
+      crumbTitle: 'router.first_special',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/firstSpecial/firstSpecialList'
+      )
+  },
   // 定金膨胀
   {
     path: '/admin/home/main/presale',

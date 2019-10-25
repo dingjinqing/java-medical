@@ -4,156 +4,171 @@
 * @author 孔德成
 -->
 <template>
-    <div class="content">
-        <div class="main">
-            <el-row>
-                <el-col :span='24'>
-                    <el-tabs
-                            v-model="tabSwitch"
-                            @tab-click="chooseTab">
-                        <el-tab-pane
-                                v-for="(item) in tabInfo"
-                                :key="item.name"
-                                :label="item.title"
-                                :name="item.name">
-                            <el-button
-                                    v-if="tableListView"
-                                    type="primary"
-                                    @click="addActivity">
-                                {{$t('giveGift.addActivity')}}
-                            </el-button>
-                        </el-tab-pane>
-                    </el-tabs>
+  <div class="content">
+    <div class="main">
+      <el-row>
+        <el-col :span='24'>
+          <el-tabs
+            v-model="tabSwitch"
+            @tab-click="chooseTab"
+          >
+            <el-tab-pane
+              v-for="(item) in tabInfo"
+              :key="item.name"
+              :label="item.title"
+              :name="item.name"
+            >
+              <el-button
+                v-if="tableListView"
+                type="primary"
+                @click="addActivity"
+              >
+                {{$t('giveGift.addActivity')}}
+              </el-button>
+            </el-tab-pane>
+          </el-tabs>
 
-                </el-col>
-            </el-row>
-        </div>
-        <div class="table_list"
-             v-if="tableListView">
-            <el-table
-                    class="version-manage-table"
-                    header-row-class-name="tableClss"
-                    :data="tableData"
-                    v-loading="loading"
-                    border
-                    style="width: 100%">
-                <el-table-column
-                        prop="actName"
-                        :label="$t('giveGift.activityName')"
-                        align="center"
-                >
-                </el-table-column>
-
-                <el-table-column
-                        prop="validDate"
-                        :label="$t('giveGift.validDate')"
-                        align="center"
-                >
-                </el-table-column>
-
-                <el-table-column
-                        prop="level"
-                        :label="$t('giveGift.priority')"
-                        align="center"
-                >
-                </el-table-column>
-
-                <el-table-column
-                        prop="sendOrderNumber"
-                        :label="$t('giveGift.givePeopleNum')"
-                        align="center"
-                >
-                </el-table-column>
-
-                <el-table-column
-                        prop="getOrderMunber"
-                        :label="$t('giveGift.receivePoepleNum')"
-                        align="center"
-                >
-                </el-table-column>
-
-                <el-table-column
-                        prop="statusText"
-                        :label="$t('giveGift.activityStatus')"
-                        align="center"
-                >
-                </el-table-column>
-
-                <el-table-column
-                        prop=""
-                        :label="$t('giveGift.option')"
-                        align="center"
-                >
-                    <template slot-scope="scope">
-                        <div class="opt">
-                            <el-tooltip
-                                    :content="$t('giveGift.edit')"
-                                    placement="top"
-                            >
-                                <span
-                                        class="el-icon-edit-outline"
-                                        @click="editActivity(scope.row.id)"
-                                ></span>
-                            </el-tooltip>
-                            <el-tooltip
-                                    :content="$t('giveGift.share')"
-                                    placement="top"
-                            >
-                                <span class="el-icon-share"></span>
-                            </el-tooltip>
-                            <el-tooltip
-                                    :content="$t('giveGift.disable')"
-                                    placement="top"
-                            >
-                                <span
-                                        class="el-icon-circle-close"
-                                        @click="changeStatus(scope.row.id)"
-                                        v-if="scope.row.status==1"
-                                > </span>
-                            </el-tooltip>
-                            <el-tooltip :content="$t('giveGift.enabled')">
-                                <span
-                                        class="el-icon-circle-check"
-                                        @click="changeStatus(scope.row.id)"
-                                        v-if="scope.row.status==0"
-                                > </span>
-                            </el-tooltip>
-                            <el-tooltip
-                                    :content="$t('giveGift.delete')"
-                                    placement="top">
-                                <span
-                                        class="el-icon-delete"
-                                        @click="deleteGiveGiftActivity(scope.row.id)">
-                                </span>
-                            </el-tooltip>
-                            <el-tooltip
-                                    :content="$t('giveGift.giveGiftDetail')"
-                                    placement="top">
-                                <span
-                                        class="el-icon-tickets"
-                                        @click="giveGiftDetail(scope.row.id,scope.row.actName)">
-                                </span>
-                            </el-tooltip>
-                            <el-tooltip
-                                    :content="$t('giveGift.receiveDetail')"
-                                    placement="top">
-                                <span
-                                        class="el-icon-s-unfold"
-                                        @click="receiveDetail(scope.row.id)"
-                                ></span>
-                            </el-tooltip>
-                        </div>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="footer">
-            </div>
-            <pagination
-                    :page-params.sync="pageParams"
-                    @pagination="initDataList"/>
-        </div>
-        <addGiveGift v-if="!tableListView" @submitFormJump="submitFormJump()"></addGiveGift>
+        </el-col>
+      </el-row>
     </div>
+    <div
+      class="table_list"
+      v-if="tableListView"
+    >
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="tableData"
+        v-loading="loading"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="actName"
+          :label="$t('giveGift.activityName')"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="validDate"
+          :label="$t('giveGift.validDate')"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="level"
+          :label="$t('giveGift.priority')"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="sendOrderNumber"
+          :label="$t('giveGift.givePeopleNum')"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="getOrderMunber"
+          :label="$t('giveGift.receivePoepleNum')"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="statusText"
+          :label="$t('giveGift.activityStatus')"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop=""
+          :label="$t('giveGift.option')"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <div class="opt">
+              <el-tooltip
+                :content="$t('giveGift.edit')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-edit-outline"
+                  @click="editActivity(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('giveGift.share')"
+                placement="top"
+              >
+                <span class="el-icon-share"></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('giveGift.disable')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-circle-close"
+                  @click="changeStatus(scope.row.id)"
+                  v-if="scope.row.status==1"
+                > </span>
+              </el-tooltip>
+              <el-tooltip :content="$t('giveGift.enabled')">
+                <span
+                  class="el-icon-circle-check"
+                  @click="changeStatus(scope.row.id)"
+                  v-if="scope.row.status==0"
+                > </span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('giveGift.delete')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-delete"
+                  @click="deleteGiveGiftActivity(scope.row.id)"
+                >
+                </span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('giveGift.giveGiftDetail')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-tickets"
+                  @click="giveGiftDetail(scope.row.id,scope.row.actName)"
+                >
+                </span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('giveGift.receiveDetail')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-s-unfold"
+                  @click="receiveDetail(scope.row.id)"
+                ></span>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="footer">
+      </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
+    </div>
+    <addGiveGift
+      v-if="!tableListView"
+      @submitFormJump="submitFormJump()"
+    ></addGiveGift>
+  </div>
 </template>
 
 <script>
@@ -174,7 +189,7 @@ export default {
   data: function () {
     return {
       tableData: [],
-      pageParams: {id: null},
+      pageParams: { id: null },
       tabInfo: this.$t('giveGift.tabInfo'),
       tabSwitch: this.$route.params.tabSwitch,
       tableListView: true,
@@ -183,7 +198,7 @@ export default {
   },
   mounted () {
     console.log('mounted', this.$route)
-    this.tabSwitch = this.$route.params.tabSwitch
+    this.tabSwitch = 'inProgress'
     // 初始化数据
     this.langDefault()
     this.initDataList()
@@ -257,7 +272,7 @@ export default {
     // 编辑
     editActivity (id) {
       console.log('编辑活动,id= ', id)
-      this.addNewTab('edit', {id: id})
+      this.addNewTab('edit', { id: id })
     },
     // 切换tab
     chooseTab () {
@@ -283,7 +298,7 @@ export default {
         cancelButtonText: this.$t('giveGift.cancel'),
         type: 'warning'
       }).then(() => {
-        changeGiveGift({'id': id}).then(res => {
+        changeGiveGift({ 'id': id }).then(res => {
           console.log('change=>res = ' + res)
           if (res.error === 0) {
             this.$message.success(res.message)
@@ -306,7 +321,7 @@ export default {
         cancelButtonText: this.$t('giveGift.cancel'),
         type: 'warning'
       }).then(() => {
-        deleteGiveGift({'id': id}).then(res => {
+        deleteGiveGift({ 'id': id }).then(res => {
           console.log(res)
           if (res.error === 0) {
             this.$message.success(res.message)
@@ -353,7 +368,7 @@ export default {
         return
       }
       // 该变路由
-      this.$router.push({path: index, query: params})
+      this.$router.push({ path: index, query: params })
       // 添加tab
       this.tabInfo.push({
         title: index === 'add' ? this.$t('giveGift.addActivity') : this.$t('giveGift.editActicity'),
@@ -391,87 +406,87 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .content {
-        padding: 10px;
-        min-width: 100%;
-        font-size: 14px;
-        height: 100%;
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
 
-        .main {
-            position: relative;
-            background-color: #fff;
-            padding: 10px 20px 10px 20px;
-        }
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 20px 10px 20px;
+  }
+}
+
+.p_top_right {
+  display: flex;
+
+  span {
+    white-space: nowrap;
+    height: 32px;
+    line-height: 32px;
+    margin-right: 10px;
+  }
+
+  .topRightDiv {
+    &:nth-of-type(2) {
+      margin: 0 10px 0 30px;
     }
+  }
+}
 
-    .p_top_right {
-        display: flex;
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
 
-        span {
-            white-space: nowrap;
-            height: 32px;
-            line-height: 32px;
-            margin-right: 10px;
-        }
+.table_list {
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+}
 
-        .topRightDiv {
-            &:nth-of-type(2) {
-                margin: 0 10px 0 30px;
-            }
-        }
-    }
+.opt {
+  text-align: left;
+  color: #5a8bff;
 
-    /deep/ .tableClss th {
-        background-color: #f5f5f5;
-        border: none;
-        height: 36px;
-        font-weight: bold;
-        color: #000;
-        padding: 8px 10px;
-    }
+  span {
+    cursor: pointer;
+  }
+}
 
-    .table_list {
-        position: relative;
-        margin-top: 10px;
-        background-color: #fff;
-        padding: 10px 20px 10px 20px;
-    }
+.balanceDialo .el-dialog__body {
+  padding-bottom: 0 !important;
+}
 
-    .opt {
-        text-align: left;
-        color: #5a8bff;
+.balanceDialo .el-dialog__footer {
+  border-top: 1px solid #eee;
+}
 
-        span {
-            cursor: pointer;
-        }
-    }
+.setUpDialog .el-dialog__body {
+  padding-top: 10px !important;
+}
 
-    .balanceDialo .el-dialog__body {
-        padding-bottom: 0 !important;
-    }
+.add_coupon {
+  float: left;
+  margin-left: 65%;
+}
 
-    .balanceDialo .el-dialog__footer {
-        border-top: 1px solid #eee;
-    }
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
 
-    .setUpDialog .el-dialog__body {
-        padding-top: 10px !important;
-    }
-
-    .add_coupon {
-        float: left;
-        margin-left: 65%;
-    }
-
-    .footer {
-        padding: 20px 0 20px 20px;
-        display: flex;
-        justify-content: flex-end;
-
-        span {
-            display: block;
-            height: 32px;
-            line-height: 32px;
-        }
-    }
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
+}
 </style>
