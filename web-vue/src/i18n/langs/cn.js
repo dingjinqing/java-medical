@@ -144,7 +144,7 @@ import { cn as serviceConfig } from './views/admin_new/cn/index/storeManagement/
 import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePicker/dateTimePickerCn'
 
 // 快递公司
-import { cn as expressList } from './views/admin/index/leftNavComponents/order/expressList'
+import { cn as expressList } from './views/admin_new/cn/index/orderManagement/expressListCn'
 
 // 加价购-列表展示页
 import { cn as purchase } from './views/admin_new/cn/index/marketManagement/increasePurchase/purchaseCn'

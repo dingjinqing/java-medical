@@ -140,7 +140,7 @@ import { en as dateTimePicker } from './views/admin_new/en/components/dateTimePi
 
 // 通用组件 日期时间选择
 // 快递公司
-import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
+import { en as expressList } from './views/admin_new/en/index/orderManagement/expressListEn'
 
 // 加价购-列表展示页
 import { en as purchase } from './views/admin_new/en/index/marketManagement/increasePurchase/purchaseEn'

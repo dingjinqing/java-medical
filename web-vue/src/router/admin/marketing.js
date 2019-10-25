@@ -483,7 +483,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/addCoupon'
+        '@/view/admin/index/leftNavComponents/first_market_manage/ordinaryCoupon/addCoupon'
       )
   },
   // 普通优惠券领取明细
@@ -497,7 +497,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/couponReceiveDetails'
+        '@/view/admin/index/leftNavComponents/first_market_manage/ordinaryCoupon/couponReceiveDetails'
       )
   },
   // 拼团抽奖活动
