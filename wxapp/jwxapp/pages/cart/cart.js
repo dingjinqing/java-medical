@@ -6,7 +6,9 @@ global.wxPage({
    */
   data: {
     canBuyGoodsList: null,
-    invalidGoodsList:null
+    invalidGoodsList:null,
+    totalPrice:0,
+    allChecked:false
   },
 
   /**
@@ -34,6 +36,7 @@ global.wxPage({
           canBuyGoodsList: canBuyList,
           invalidGoodsList: invalidList
         })
+        this.getAllCheckedStatus()
         console.log(canBuyList)
       }
     })
@@ -49,9 +52,54 @@ global.wxPage({
   getInvalidGoodsList(listArray){
     if (!Array.isArray(listArray)) return []
     return listArray.filter(item => {
-      return item.isOnSale === 0 || item.isDelete === 1 || item.tip !== '无效商品'
+      return item.isOnSale === 0 || item.isDelete === 1 || item.tip == '无效商品'
     })
   },
+  // 清除无效购物车列表
+  clearCart(){
+    let clearIds = this.data.invalidGoodsList.map(item => {
+      return item.productId
+    })
+  },
+  // 删除购物车商品
+  delCartGoods(e){
+    const recId = e.currentTarget.dataset.rec_id
+    util.api('/api/admin/cart/remove', (res) => {
+      console.log(res)
+      if(res.error === 0){
+        this.setData({
+          canBuyGoodsList: this.data.canBuyGoodsList.filter(item => {
+            return recId !== item.recId;
+          })
+        })
+      }
+    }, { recId: recId })
+  },
+  // 更改选中状态
+  checkedToggle(e){
+    const targetIndex = this.data.canBuyGoodsList.findIndex(item => {return item.recId === e.currentTarget.dataset.rec_id})
+    const target = `canBuyGoodsList[${targetIndex}].isChecked`
+    this.setData({
+      [target]: this.data.canBuyGoodsList[targetIndex].isChecked ? 0 : 1,
+    })
+    this.getAllCheckedStatus()
+  },
+  // 获取是否所有单选框全选
+  getAllCheckedStatus(){
+    this.setData({
+      allChecked: this.data.canBuyGoodsList.every(item => { return item.isChecked === 1 })
+    })
+    this.getCartPrice()
+  },
+  // 更改全选状态
+  changeAllChecked(){
+    this.setData({
+      allChecked: !this.data.allChecked,
+      canBuyGoodsList: this.data.canBuyGoodsList.map(item => { item.isChecked = !this.data.allChecked ? 1 : 0; return item})
+    })
+    this.getCartPrice()
+  },
+  // 
   //触摸改变
   handleTouchChange(e){
     this.moveX = e.detail.x
@@ -59,8 +107,7 @@ global.wxPage({
   //触摸结束
   handleTouchEnd(e){
     let idx = e.currentTarget.dataset.index
-    console.log(this.moveX)
-    let target = 'list['+idx+'].x'
+    let target = 'canBuyGoodsList['+idx+'].x'
     if (this.moveX <= -20) {
       this.setData({
         [target]: -100
@@ -71,7 +118,17 @@ global.wxPage({
       });
     }
   },
-
+  //计算商品价格
+  getCartPrice(){
+    const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
+    let totalPrice = canBuyList.reduce((accumulator, currentValue)=>{
+      return accumulator += currentValue.prdPrice * currentValue.prdNumber
+    },0)
+    let realPrice = totalPrice.toFixed(3)
+    this.setData({
+      totalPrice: realPrice.substring(0, realPrice.length - 1)
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

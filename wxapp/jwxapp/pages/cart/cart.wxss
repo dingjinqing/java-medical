@@ -90,6 +90,19 @@
   background-color: #fff;
   padding: 0 20rpx;
 }
+.list_box+.list_box{
+  margin-top: 20rpx;
+}
+.invalid_title{
+  padding: 16rpx;
+}
+.invalid_title {
+  display: flex;
+}
+.invalid_title > .title_right{
+  flex: 1;
+  text-align: right;
+}
 .list_box > .cart-goods_item:last-of-type {
   border-bottom: none;
 }

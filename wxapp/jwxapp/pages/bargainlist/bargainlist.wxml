@@ -3,9 +3,9 @@
   <include src="../common/header.wxml" />
   <view class="main-container">
     <view class="nav_list" style="top:{{margin_top_nav + 8}}px">
-        <view class="nav_list_item" bindtap="changeNav" data-nav_type="0" style="border-bottom-color:{{ navType === 0 ?  comColor : ''}};">砍价中</view>
-        <view class="nav_list_item" bindtap="changeNav" data-nav_type="1" style="border-bottom-color:{{ navType === 1 ?  comColor : ''}};">砍价成功</view>
-        <view class="nav_list_item" bindtap="changeNav" data-nav_type="2" style="border-bottom-color:{{ navType === 2 ?  comColor : ''}};">砍价失败</view>
+        <view class="nav_list_item" bindtap="changeNav" data-nav_type="0" style="{{navType === 0 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}">砍价中</view>
+        <view class="nav_list_item" bindtap="changeNav" data-nav_type="1" style="{{navType === 1 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}">砍价成功</view>
+        <view class="nav_list_item" bindtap="changeNav" data-nav_type="2" style="{{navType === 2 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}">砍价失败</view>
     </view>
     <view class="goods_list" style="margin-top:{{margin_top_nav + 59}}px">
 
