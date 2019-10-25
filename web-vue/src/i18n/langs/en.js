@@ -83,6 +83,8 @@ import { en as couponGive } from './views/admin_new/en/index/marketManagement/co
 import { en as seckill } from './views/admin_new/en/index/marketManagement/seckill/seckillEn'
 // 秒杀-添加
 import { en as addSeckill } from './views/admin_new/en/index/marketManagement/seckill/addSeckillEn'
+// 微信好物圈
+import { en as wechateGoodsCicle } from './views/admin_new/en/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleEn'
 
 // 订单管理系列模块化
 import { en as order } from './views/admin_new/en/index/orderManagement/orderListEn'
@@ -666,6 +668,7 @@ const en = {
   addSeckill, // 秒杀-添加
   ...enLocale,
   expressList,
+  wechateGoodsCicle, // 微信好物圈
 
   dateTimePicker, // 选择时间
 

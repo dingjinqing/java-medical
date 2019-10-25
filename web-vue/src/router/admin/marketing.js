@@ -1070,6 +1070,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/collectGift/collectGift'
       )
+  },
+  // 微信好物圈
+  {
+    path: 'admin/home/main/wechateGoodsCicle',
+    name: 'wechateGoodsCicle',
+    meta: {
+      crumbTitle: 'router.wechateGoodsCicle',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/wechateGoodsCicle/wechateGoodsCicle'
+      )
   }
 ]
 export default routes

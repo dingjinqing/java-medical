@@ -86,6 +86,8 @@ import { cn as couponGive } from './views/admin_new/cn/index/marketManagement/co
 import { cn as seckill } from './views/admin_new/cn/index/marketManagement/seckill/seckillCn'
 // 秒杀-添加
 import { cn as addSeckill } from './views/admin_new/cn/index/marketManagement/seckill/addSeckillCn'
+// 微信好物圈
+import { cn as wechateGoodsCicle } from './views/admin_new/cn/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -638,6 +640,7 @@ const cn = {
   addSeckill, // 秒杀-添加
   ...zhLocale,
   expressList,
+  wechateGoodsCicle, // 微信好物圈
 
   // 会员管理
   memberCard, // 会员管理-会员卡

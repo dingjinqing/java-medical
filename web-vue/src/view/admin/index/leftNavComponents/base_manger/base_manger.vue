@@ -45,6 +45,10 @@ export default {
   },
   methods: {
     defaultData () {
+      // console.log(this.$route.params.otherTurn, 111)
+      if (this.$route.params.isAuth) {
+        this.activeName = 'third'
+      }
       queryAuthdritionRequest().then(res => {
         if (res.error === 170016) {
           this.flag = false
