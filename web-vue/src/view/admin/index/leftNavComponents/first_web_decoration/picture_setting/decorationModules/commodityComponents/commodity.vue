@@ -104,7 +104,10 @@
                     :style="data.col_type!=='4'?'padding-top:0':''"
                   >
                     <div class="bottomHead">
-                      <div v-if="data.hide_name==='1'">{{item.goodsName}}</div>
+                      <div
+                        class="goodsNameClass"
+                        v-if="data.hide_name==='1'"
+                      >{{item.goodsName}}</div>
                       <div :style="data.col_type!=='4'?'margin-top:10px':''">
                         <span>领券减￥100</span>
                       </div>
@@ -269,7 +272,7 @@ export default {
       handler (newData) {
         if (newData) {
           this.data = newData
-          console.log(newData.goodsListData)
+          console.log(newData)
           if (newData.goodsListData.length) {
             this.goodsFlag = true
           } else {
@@ -357,7 +360,7 @@ export default {
         height: 145px;
         .commodityTop {
           position: relative;
-          height: 145px;
+          // height: 145px;
           .label {
             position: absolute;
             top: 0px;
@@ -463,6 +466,12 @@ export default {
             white-space: normal;
             word-break: break-all;
             margin-bottom: 10px;
+            .goodsNameClass {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              width: 103px;
+            }
             div {
               white-space: nowrap;
             }

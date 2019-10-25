@@ -1010,13 +1010,26 @@ export default {
     // 选中商品信息回传
     handleToGetGoods (res) {
       console.log(res)
+      let resCopy = JSON.parse(JSON.stringify(res))
+      // 过滤
       res.forEach((item, index) => {
-        let obj = {
-          goodsName: item.goodsName,
-          goodsImg: item.goodsImg,
-          goodsId: item.goodsId
+        this.data.goods_items.forEach((itemC, indexC) => {
+          if (item.goodsId === itemC.goodsId) {
+            resCopy.splice(index, 1, -1)
+          }
+        })
+      })
+      console.log(resCopy, this.data.goods_items)
+      // 添加
+      resCopy.forEach((item, index) => {
+        if (item !== -1) {
+          let obj = {
+            goodsName: item.goodsName,
+            goodsImg: item.goodsImg,
+            goodsId: item.goodsId
+          }
+          this.data.goods_items.push(obj)
         }
-        this.data.goods_items.push(obj)
       })
     },
     // 商品范围选中后显示添加按钮点击统一处理
