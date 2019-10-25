@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * @author: 王兵兵
  * @create: 2019-10-24 11:20
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WxAppBargainController extends WxAppBaseController {
     @PostMapping("/api/wxapp/bargain/list")
-    public JsonResult getBargainRecordList(@RequestBody BargainRecordListQueryParam param) {
+    public JsonResult getBargainRecordList(@RequestBody @Valid BargainRecordListQueryParam param) {
         WxAppSessionUser user = wxAppAuth.user();
         return success(shop().bargain.bargainRecord.getRecordPageList(user.getUserId(),param));
     }
