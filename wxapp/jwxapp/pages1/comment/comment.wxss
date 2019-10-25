@@ -403,8 +403,8 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before{
   float: left;
 }
 .comment_gift > text{
-  overflow: hidden;
-  display:block;
+  /* overflow: hidden; */
+  display:inline;
 }
 .comment_gift_info{
     display: flex;
@@ -479,4 +479,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before{
   text-align: center;
   font-size: 26rpx;
   margin-top: 20rpx;
+}
+.fl {
+  float: left;
 }

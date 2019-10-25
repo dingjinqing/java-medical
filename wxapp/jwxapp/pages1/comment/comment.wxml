@@ -20,11 +20,20 @@
             <!-- 评价类型为评价即送 -->
             <text wx:if="{{item.commentType===1}}">{{i18n.$t(localePack,"page1.comment.aChangeAfterEvaluation")}}</text>
             <!-- 评价类型为自定义 -->
-            <text wx:else>{{i18n.$t(localePack,"page1.comment.evaluation")}}<text>{{item.commentType}}</text>,{{i18n.$t(localePack,"page1.comment.afterHaving")}}</text>
+            <text wx:else>
+            <text>{{i18n.$t(localePack,"page1.comment.evaluation")}}</text>
+            <text wx:if="{{item.commentType === 1}}"></text>
+            <text wx:else>
+              <text wx:if="{{item.hasFiveStars}}">"{{i18n.$t(localePack,"page1.comment.fiveStar")}}"</text>
+              <text wx:if="{{item.commentWords}}">"{{i18n.$t(localePack,"page1.comment.over")}}{{item.commentWords}}{{i18n.$t(localePack,"page1.comment.word")}}"</text>
+              <text wx:if="{{item.hasPicNum}}">"{{i18n.$t(localePack,"page1.comment.blueprint")}}"</text>
+            </text>
+            <text>,{{i18n.$t(localePack,"page1.comment.afterHaving")}}</text>
+            </text>
             <!-- 积分 -->
             <text wx:if="{{item.awardType === 1}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.integral")}}</text>
             <!-- 优惠券 -->
-            <text wx:elif="{{item.awardType === 2}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.coupon")}}：{{item.award}}</text>
+            <text wx:elif="{{item.awardType === 2}}">{{i18n.$t(localePack,"page1.comment.coupon")}}：{{item.award.name}}</text>
             <!-- 余额 -->
             <text wx:elif="{{item.awardType === 3}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.yuan")}}</text>
             <!-- 幸运大抽奖 -->

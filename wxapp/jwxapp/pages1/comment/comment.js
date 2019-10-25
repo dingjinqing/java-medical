@@ -257,7 +257,14 @@ global.wxPage({
       awardType: item.awardType, // 有奖活动类型
       award: item.award // 有奖活动内容
     }
-
+    if (item.id) {
+      if (item.awardType === 2) {
+        params.award = item.id
+      } else if (item.awardType === 5) {
+        params.award = JSON.stringify(item.award)
+      }
+    }
+  
     info.open_id = util.getCache('openid');
     if (parseInt(params.commstar) === 0) {
       util.showModal(i18n.trans('common.tip'), i18n.trans('page1.comment.selectRating'));
@@ -386,6 +393,12 @@ global.wxPage({
             }
           }
           item.anonymousflag = 0
+          // 如果有评价有奖，优惠券id:xxx,name:xxx 格式化
+          if (item.id && item.awardType == 2) {
+            // let award = item.award;
+            // console.log('award...', that.stringToObj(award))
+            item.award = that.stringToObj(item.award)
+          }
         })
       }
       that.setData({
@@ -393,6 +406,18 @@ global.wxPage({
       })
       console.log(order_completed)
     }, { userId: userId, commentFlag: comment_flag, orderSn: order_sn, page_no: that.data.page });
+  },
+  // string 转 obj
+  stringToObj (str) {
+    let string = str.trim()
+    let strArr = string.split(',')
+    let result = {}
+    strArr.forEach(function(item, i) {
+      let itemArr = item.split(':')
+      console.log(itemArr)
+      result[itemArr[0]] = itemArr[1]
+    })
+    return result;
   }
 })
 

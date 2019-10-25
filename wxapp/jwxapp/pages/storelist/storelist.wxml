@@ -1,0 +1,54 @@
+<!-- pages/storelist/storelist.wxml -->
+<include src="../common/header.wxml" />
+<view class="main-container">
+  <view class="container">
+    <block wx:if="{{list}}">
+      <view class="top_area">
+        <!-- 同城配送 -->
+        <block wx:if="{{ de_type === 2}}">
+          <image class="top_a_bg" src="{{imageUrl}}image/wxapp/slist_send.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" style="bottom:30rpx;" />
+          <view class="ta_title">同城配送</view>
+          <view class="ta_content">商品下单后可选择发货门店，由商家进行配送，配送费用以实际结算价格为准</view>
+        </block>
+        <!-- 自提 -->
+        <block wx:if="{{ de_type === 1}}">
+          <image class="top_a_bg" src="{{imageUrl}}image/wxapp/slist_get.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" style="width:160rpx;height:150rpx;" />
+          <view class="ta_title" style="margin-top: 20rpx;">门店自提</view>
+          <view class="ta_content">商品下单后可选择门店到店自提</view>
+        </block>
+      </view>
+      <view class="store-nav-list" wx:for="{{list}}" wx:key="key">
+        <view class="list-left">
+          <image class="list-left-img" src='{{item.img}}!small'></image>
+          <image class="list-left-img off-img" wx:if="{{item.business_state == 0}}" src="{{imageUrl}}/image/wxapp/off_state.png"></image>
+        </view>
+      </view>
+      <view class="store-name-info">
+        <view class="sr_top">
+          <view class="sr_name">
+            <text class="scancode" wx:if="{{scan_stores != 1 && item.scan_buy == true}}" style="color:{{comColor}};border-color:{{comColor}}">扫码购</text>
+            <text>{{item.store_name}}</text>
+          </view>
+          <view class="store_distance">距您{{item.dis}} km</view>
+        </view>
+        <view class="sr_can_send_mile" wx:if="{{de_type === 2}}">
+          {{item.distance}} km内可配送，配送费{{item.price}} 元
+        </view>
+        <view class="sr_bottom">
+          <image class="icon-bottom" src="{{imageUrl}}image/wxapp/address.png"></image>
+          <text>{{item.area}}</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="order-goodsno-box">
+        <view class="order-no">
+          <image class="order-no-img" src="{{imageUrl}}image/wxapp/no-store.png" mode='widthFix' />
+        </view>
+        <view class="no-zi" style="margin: 0;margin-bottom: 13px;">还没有门店</view>
+        <view class="add-order" bindtap="onIndex" style='background:{{comColor}}'>随便逛逛</view>
+      </view>
+    </block>
+  </view>
+</view>
+<include src="../common/footer.wxml" />

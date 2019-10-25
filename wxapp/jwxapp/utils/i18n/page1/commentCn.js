@@ -1,7 +1,11 @@
 module.exports = {
   aChangeAfterEvaluation: '评价后有机会获得',
+  fiveStar: '五星好评',
+  blueprint: '晒图',
+  over: '心得超过',
+  word: '个字',
   evaluation: '评价',
-  afterHaving: '后有机会获得',
+  afterHaving: '有机会获得',
   integral: '积分',
   coupon: '优惠券',
   yuan: '元',
