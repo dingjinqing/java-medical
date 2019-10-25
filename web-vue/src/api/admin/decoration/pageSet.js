@@ -67,3 +67,21 @@ export function pageCopy (data) {
     data: data
   })
 }
+
+// 编辑获取页面信息
+export function pageEdit (data) {
+  return service({
+    url: '/api/admin/decorate/page/edit',
+    method: 'post',
+    data: data
+  })
+}
+
+// 编辑保存页面信息
+export function pageEditSave (data) {
+  return service({
+    url: '/api/admin/decorate/page/save',
+    method: 'post',
+    data: data
+  })
+}
