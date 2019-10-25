@@ -4,12 +4,12 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        门店买单
+        {{$t('serviceConfig.storebuy')}}
       </div>
       <div class="settingContent">
         <el-radio-group v-model="param.store_buy">
-          <el-radio :label="0">关闭</el-radio>
-          <el-radio :label="1">启用</el-radio>
+          <el-radio :label="0">{{$t('serviceConfig.inactived')}}</el-radio>
+          <el-radio :label="1">{{$t('serviceConfig.activated')}}</el-radio>
         </el-radio-group>
       </div>
     </section>
@@ -18,13 +18,13 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        服务评论配置
+        {{$t('serviceConfig.servicecommentconfig')}}
       </div>
       <div class="settingContent">
         <el-radio-group v-model="param.service_comment">
-          <el-radio :label="0">不用审核</el-radio>
-          <el-radio :label="1">先发后审</el-radio>
-          <el-radio :label="2">先审后发</el-radio>
+          <el-radio :label="0">{{$t('serviceConfig.config1')}}</el-radio>
+          <el-radio :label="1">{{$t('serviceConfig.config2')}}</el-radio>
+          <el-radio :label="2">{{$t('serviceConfig.config3')}}</el-radio>
         </el-radio-group>
       </div>
     </section>
@@ -33,7 +33,7 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        职称配置
+        {{$t('serviceConfig.titleconfig')}}
       </div>
       <div class="settingContent">
         <el-input
@@ -48,23 +48,23 @@
     <section class="settingWrapper">
       <div class="title">
         <span></span>
-        扫码购
+        {{$t('serviceConfig.qrshop')}}
       </div>
       <div class="settingContent">
         <el-button
           type="info"
           size="mini"
           @click="handleTake()"
-        >请选择门店</el-button>
-        已选择
+        >{{$t('serviceConfig.pleasechoose')}}</el-button>
+        {{$t('serviceConfig.alreadychoose')}}
         <el-input
           size="mini"
           class="inputWidthSmall"
           :disabled="true"
           v-model="param.store_scan_num"
         ></el-input>
-        家
-        <span class="notefont">请选择开启"扫码购"功能的门店</span>
+        {{$t('serviceConfig.home')}}
+        <span class="notefont">{{$t('serviceConfig.choosestore')}}</span>
       </div>
     </section>
     <section class="settingWrapper">
@@ -72,7 +72,7 @@
         <el-button
           type="primary"
           @click="updateConfig"
-        >保 存</el-button>
+        >{{$t('storeCommon.save')}}</el-button>
       </div>
     </section>
 
@@ -174,7 +174,6 @@ export default {
       allCheckFlag: false,
       pageParams: {},
       storeParamList: [],
-      store_scan_ids_array: [],
       param: {
         service_comment: 0,
         store_buy: 0,
@@ -185,15 +184,17 @@ export default {
     }
   },
   methods: {
-    // 选择门店弹窗-首列复选框
+    // 选择门店弹窗-初始化首列复选框
     toggleSelection (rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row)
-        })
-      } else {
-        this.$refs.multipleTable.clearSelection()
-      }
+      this.$nextTick(() => {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row, true)
+          })
+        } else {
+          this.$refs.multipleTable.clearSelection()
+        }
+      })
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
@@ -216,6 +217,7 @@ export default {
       storeList(storPageParam).then(res => {
         console.log(res)
         if (res.error === 0) {
+          let initStoreList = []
           this.pageParams = res.content.page
           this.storeParamList = res.content.dataList
           this.storeParamList.map((item, index) => {
@@ -226,9 +228,16 @@ export default {
             }
             item.autoPick = this.number2boolean(item.autoPick)
             item.businessTime = item.openingTime + '-' + item.closeTime
+            // this.param.store_scan_ids.split(',').indexOf(item.storeId.toString()) > -1
+            if (JSON.parse(this.param.store_scan_ids).indexOf(item.storeId) > -1) {
+              initStoreList.push(this.storeParamList[index])
+            }
           })
+          // 初始化首列复选框的值
+          console.log(initStoreList)
+          this.toggleSelection(initStoreList)
         } else {
-          this.$message.error('获取门店列表失败！')
+          this.$message.error(this.$t('storeCommon.getstorelistfailed'))
         }
       })
     },
@@ -243,13 +252,16 @@ export default {
     // 选择门店弹窗-确认按钮点击
     initDataList () {
       this.showStoreDialog = false
+      let storeScanIdsArray = []
       console.log(this.multipleSelection)
-      // todo 设置回调值
+      // 设置回调值
       this.param.store_scan_num = this.multipleSelection.length
       this.multipleSelection.map((item, index) => {
-        this.store_scan_ids_array.push(item.storeId)
+        storeScanIdsArray.push(item.storeId)
       })
-      console.log(this.store_scan_ids_array)
+      console.log(storeScanIdsArray)
+      this.param.store_scan_ids = JSON.stringify(storeScanIdsArray)
+      console.log(this.param.store_scan_ids)
     },
     initData () {
       getServiceConfig().then(res => {
@@ -259,7 +271,7 @@ export default {
           this.param.store_scan_num = res.content.store_scan_ids.split(',').length
           console.log(this.param.store_scan_num)
         } else {
-          this.$message.error('操作失败，请稍后重试！')
+          this.$message.error(this.$t('storeCommon.operatefailed'))
         }
       })
     },
@@ -283,10 +295,10 @@ export default {
       updateServiceConfig(this.param).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.$message.success('更新成功！')
+          this.$message.success(this.$t('storeCommon.updatesuccess'))
           this.initData()
         } else {
-          this.$message.error('更新失败，请重试！')
+          this.$message.error(this.$t('storeCommon.updatefailed'))
         }
       })
       console.log()

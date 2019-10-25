@@ -131,6 +131,8 @@ import { en as technicianClassify } from './views/admin_new/en/index/storeManage
 import { en as technicianAdd } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianAddEn'
 // 门店列表-排班管理
 import { en as schedulingManage } from './views/admin_new/en/index/storeManagement/storeManage/technician/schedulingManageEn'
+// 门店管理-门店服务配置
+import { en as serviceConfig } from './views/admin_new/en/index/storeManagement/storeService/serviceConfigEn'
 
 // admin>公共组件
 // 选择时间
@@ -694,6 +696,7 @@ const en = {
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
   payConfiguration, // 支付配置
-  templateMessage // 运费模板
+  templateMessage, // 运费模板
+  serviceConfig // 门店服务配置
 }
 export default en

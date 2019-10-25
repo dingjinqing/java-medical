@@ -136,6 +136,8 @@ import { cn as technicianAdd } from './views/admin_new/cn/index/storeManagement/
 import { cn as technicianClassify } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianClassifyCn'
 // 门店列表-排班管理
 import { cn as schedulingManage } from './views/admin_new/cn/index/storeManagement/storeManage/technician/schedulingManageCn'
+// 门店管理-门店服务配置
+import { cn as serviceConfig } from './views/admin_new/cn/index/storeManagement/storeService/serviceConfigCn'
 
 // admin>公共组件
 // 选择时间
@@ -663,7 +665,8 @@ const cn = {
   payConfiguration, // 支付配置
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
-  templateMessage // 运费模板
+  templateMessage, // 运费模板
+  serviceConfig // 门店服务配置
 }
 
 export default cn

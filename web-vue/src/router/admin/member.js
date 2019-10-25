@@ -139,7 +139,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/cardholder'
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/Cardholder'
       )
   },
   // 充值明细

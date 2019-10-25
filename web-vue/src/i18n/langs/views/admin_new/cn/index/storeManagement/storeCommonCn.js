@@ -8,6 +8,11 @@ export const cn = {
   delete: '删除',
   share: '分享',
   operate: '操作',
-  createTime: '创建时间'
+  createTime: '创建时间',
+  save: '保存',
+  getstorelistfailed: '获取门店列表失败！',
+  operatefailed: '操作失败，请稍后重试！',
+  updatesuccess: '更新成功！',
+  updatefailed: '更新失败，请重试！'
 
 }
