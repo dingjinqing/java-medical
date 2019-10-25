@@ -52,7 +52,8 @@ global.wxPage({
       {
         show: true
       }
-    ]
+    ],
+    custom: {}
   },
   navbarTap: function (e) {
     var that = this;
@@ -62,10 +63,6 @@ global.wxPage({
     that.data.page = 1;
     comment_flag = parseInt(e.currentTarget.dataset.idx);
     this.get_comment(that);
-    this.hello()
-  },
-  hello() {
-    console.log('hellll')
   },
   go_index: function () {
     util.navigateTo({
@@ -85,10 +82,14 @@ global.wxPage({
   //选择评分
   choose_star: function (e) {
     var that = this;
-    var id = e.target.dataset.id;
+    var flag = e.currentTarget.dataset.flag;
+    var id = e.target.dataset.id;// 点击的第几个星星
     var star = e.target.dataset.star;
     var index = Number(e.target.dataset.index);
-    console.log(index)
+    var commstar = e.target.dataset.commstar;
+    if (flag == 1) {
+      return false;
+    }
     for (var i = 0; i < star.length; i++) {
       if (i <= id) {
         star[i].show = true;
@@ -96,11 +97,12 @@ global.wxPage({
         star[i].show = false;
       }
     }
-    that.data.info.commstar = parseInt(id) + 1;
+    commstar = parseInt(id) + 1;
     var order_star = 'order_completed[' + index + '].star';
+    var order_commstar = 'order_completed[' + index + '].commstar';
     this.setData({
       [order_star]: star,
-      info: that.data.info
+      [order_commstar]: commstar
     })
   },
   // 上传图片
@@ -120,7 +122,6 @@ global.wxPage({
           for (var i = 0; i < tempFilePaths.length; i++) {
             util.uploadFile(url, tempFilePaths[i], { img_cat_id: -1 }, function (e) {
               var data = JSON.parse(e.data);
-              console.log(data)
               info.comm_img.push(data.content[0].img_url);
               var img_len = parseInt(info.comm_img.length);
               that.setData({
@@ -155,25 +156,26 @@ global.wxPage({
     })
   },
   // 切换匿名
-  flag: function () {
-    var info = this.data.info;
+  flag: function (e) {
+    var anonymousflag = e.detail.value;
+    var index = e.currentTarget.dataset.index;
+    var order_completedFlag = 'order_completed[' + index + '].anonymousflag';
     if (this.data.flag == true) {
-      info.anonymousflag = 0;
+      anonymousflag = 0;
       this.setData({
-        info: info,
+        [order_completedFlag]: anonymousflag,
         flag: false
       })
     } else {
-      info.anonymousflag = 1;
+      anonymousflag = 1;
       this.setData({
-        info: info,
+        [order_completedFlag]: anonymousflag,
         flag: true
       })
     }
   },
   // 展示评价
   show_com_info: function (e) {
-    console.log(e)
     var gid = e.currentTarget.dataset.gid;
     var order = this.data.order_completed.map(function (item, index) {
       if (item.goodsId == gid) {
@@ -238,7 +240,6 @@ global.wxPage({
      * awardType // 评价有礼奖励类型
      * award // 评价有礼奖励内容
      */
-    console.log(e)
     var that = this;
     var info = this.data.info;
     var item = e.detail.target.dataset.item
@@ -248,9 +249,9 @@ global.wxPage({
       userId: userId,
       orderSn: item.orderSn,
       commNote: e.detail.value.commNote,
-      commstar: info.commstar,
+      commstar: item.commstar,
       commImg: info.commImg,
-      anonymousflag: info.anonymousflag,
+      anonymousflag: item.anonymousflag,
       id: item.id, // 有奖活动id
       awardType: item.awardType, // 有奖活动类型
       award: item.award // 有奖活动内容
@@ -274,6 +275,37 @@ global.wxPage({
         that.get_comment(that, 0);
       }
     }, params);
+  },
+  // 查看活动奖励
+  giftInfo(e) {
+    var form_id = e.detail.formId;
+    var open_id = util.getCache('openid');
+    util.api('/api/wxapp/common/saveformid', function (res) { }, {
+      form_id: form_id,
+      open_id: open_id
+    });
+    let data = e.currentTarget.dataset;
+    let commentInfo = this.data.order_completed[data.itemid];
+    if (commentInfo.awardType != 5) {
+      const url = new Map([
+        [1, ['pages/integral/integral']],
+        [2, ['pages/couponlist/couponlist']],
+        [3, ['pages/account/account']],
+        [4, ['pages/lottery/lottery?lottery_id=' + commentInfo.award]]
+      ])
+      let action = url.get(commentInfo.awardType)
+      util.jumpLink(action[0], 'navigateTo')
+    } else {
+      let custom = {}
+      let linkStr = commentInfo.award.match(/(path:)\S*(,)/ig)[0];
+      custom.link = linkStr.substring(5, linkStr.length - 1);
+      let imgSrcStr = commentInfo.award.match(/(img:)S*/ig)[0];
+      custom.img_str = imgSrcStr.substring(4);
+      this.setData({
+        show_act_custom: true,
+        custom: custom
+      })
+    }
   },
   bindPreviewImage(e) {
     let src = e.currentTarget.dataset.src;
@@ -330,6 +362,7 @@ global.wxPage({
     //   }
     // }, { userId: userId, commentFlag: comment_flag, orderSn: order_sn, page_no: that.data.page });
   },
+  // 初始化数据
   get_comment: function (that) {
     util.api('/api/wxapp/comment/list', function (res) {
       var order_completed = [];
@@ -338,13 +371,12 @@ global.wxPage({
         order_completed.forEach(function (item, i) {
           item.show = false;
           item.src = src_down;
-          item.commstar = Number(item.commstar);
-          if (item.commentFlag === 1) {
+          item.commstar = item.commstar ? Number(item.commstar) : 5;
+          if (item.commentFlag === 1 && i == 0) {
             item.show = true;
             item.src = src_up;
           }
           item.star = JSON.parse(JSON.stringify(that.data.star))
-          console.log(JSON.stringify(item.star))
           if (item.commstar && item.commstar < 6) {
             for (var i = 4; i > 0; i--) {
               if (i >= item.commstar) {
@@ -352,7 +384,7 @@ global.wxPage({
               }
             }
           }
-          console.log(item.star)
+          item.anonymousflag = 0
         })
       }
       that.setData({
