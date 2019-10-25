@@ -1,18 +1,59 @@
-// pages/bargainlist/bargainlist.js
+let util = require('../../utils/util.js');
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    pageParams:null,
+    dataList:null,
+    navType:0
   },
 
+
+  requestList() {
+    let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    util.api('/api/wxapp/bargain/list', (res) => {
+      console.log(res)
+      if (res.error === 0) {
+        let dataList = this.formatData(res.content.dataList);
+        this.setData({
+          pageParams: res.content.page,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
+        })
+      }
+    }, {
+        currentPage: currentPage,
+        pageRows: 20,
+        status: this.data.navType
+      });
+  },
+  formatData(dataList){
+    return dataList.map(item=>{
+      item.endTime = item.endTime.substring(0,10)
+      return item
+    })
+  },
+  changeNav(e){
+    let status = parseInt(e.currentTarget.dataset.nav_type)
+    this.setData({
+      navType: status,
+      dataList:null,
+      pageParams:null
+    })
+    this.requestList()
+  },
+  continueBargain(){
+    console.log(321)
+  },
+  checkOut(){
+    console.log(123)
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.requestList()
   },
 
   /**
@@ -54,7 +95,11 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage) return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    })
+    this.requestList()
   },
 
   /**
