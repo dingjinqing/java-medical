@@ -9,7 +9,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/firstMarketManage'
+        '@/view/admin/index/leftNavComponents/first_market_manage/firstMarketManage'
       )
   },
   // 分享有礼活动
@@ -306,7 +306,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinaryCoupon'
+        '@/view/admin/index/leftNavComponents/first_market_manage/ordinaryCoupon/ordinaryCoupon'
       )
   },
   // 优惠券礼包
@@ -582,7 +582,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/friendPay'
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendPay/friendPay'
       )
   },
   // 赠品
