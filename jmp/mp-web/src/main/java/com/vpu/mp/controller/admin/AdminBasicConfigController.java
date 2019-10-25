@@ -193,8 +193,8 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/role/group/list")
-	public JsonResult listRole() {
-		return success(saas.shop.role.getInfo(adminAuth.user().getSysId()));
+	public JsonResult listRole(@RequestBody ShopRoleAddListParam param) {
+		return success(saas.shop.role.getInfo(adminAuth.user().getSysId(),param));
 	}
 
 	/**
