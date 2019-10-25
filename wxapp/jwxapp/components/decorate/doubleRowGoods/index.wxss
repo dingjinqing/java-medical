@@ -1,0 +1,119 @@
+@import "../goodscommon/goodslabel.wxss";
+.two_column {
+    padding: 0 15rpx;
+    margin: 0 auto;
+    padding-top: 20rpx;
+    /* margin-bottom: 16rpx; */
+  }
+  
+  .two_column::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  
+  .two_column .each_module {
+    margin-bottom: 20rpx;
+    background: #fff;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    height: 500rpx;
+  }
+  
+  .two_column .each_module:nth-of-type(odd) {
+    float: left;
+    width: 350rpx;
+  }
+  
+  .two_column .each_module:nth-of-type(even) {
+    float: right;
+    width: 350rpx;
+  }
+  
+  .two_column .each_module .product-image {
+    width: 350rpx;
+    height: 350rpx;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .two_column .each_module .product-image .item_image {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  
+  .two_column .each_module .product-name {
+    width: 330rpx;
+    font-size: 26rpx;
+    margin-bottom: 5rpx;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    padding: 0 10rpx;
+    margin-top: 15rpx;
+  }
+  
+  .two_column .each_module .product-price::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  
+  .two_column .each_module .product-price {
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #f66;
+    padding: 0 10rpx;
+    margin-top: 10rpx;
+    position: absolute;
+    bottom: 10rpx;
+    width: 330rpx;
+  }
+  
+  .two_column .each_module .product-price .sale_price {
+    display: inline-block;
+    font-size: 30rpx;
+    margin-top: 0rpx;
+  }
+  
+  .two_column .each_module .product-price .market_price {
+    float: right;
+    font-weight: normal;
+    margin-top: 5rpx;
+    color: #999;
+    text-decoration: line-through;
+  }
+  
+  .product-name .pin_flag {
+    margin-top: -2rpx;
+    border: 1px solid #f66;
+  padding: 0rpx 10rpx;
+  height: 30rpx;
+  font-size: 24rpx;
+  line-height: 28rpx;
+  border-radius: 6rpx
+  }
+  
+  .two_column .right_buy_btn {
+    width: 110rpx;
+    height: 45rpx;
+    line-height: 45rpx;
+    font-size: 22rpx;
+  }
+  
+  .two_column .cart_buy_btn {
+    width: 90rpx;
+    height: 40rpx;
+    line-height: 40rpx;
+    font-size: 22rpx;
+  }
+  
+  .three_column {
+  padding: 0 12rpx 0 16rpx;
+    margin: 0 auto;
+  }

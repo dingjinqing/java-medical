@@ -21,7 +21,11 @@
     "pages/cardrecord/cardrecord",
     "pages/userqrcode/userqrcode",
     "pages/bargainlist/bargainlist",
-    "pages/lotterygift/lotterygift"
+    "pages/lotterygift/lotterygift",
+    "components/decorate/doubleRowGoods/index",
+    "components/decorate/threeCommodities/index",
+    "components/decorate/multipleCommodities/index",
+    "components/decorate/bigPictureGoods/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",

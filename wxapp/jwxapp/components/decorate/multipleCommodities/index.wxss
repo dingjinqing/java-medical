@@ -1,0 +1,39 @@
+@import "../goodscommon/goodslabel.wxss";
+.mul_column {
+    white-space: nowrap;
+    height: 444rpx;
+    margin-bottom: 20rpx;
+    padding: 0 10rpx;
+  }
+  
+  .mul_column .every_module {
+    width: 280rpx;
+    height: 422rpx;
+    margin-left: 0;
+    margin-right: 15rpx;
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+    margin-top:20rpx;
+    margin-bottom: 20rpx; 
+  }
+  
+  .mul_column .every_module .product-image {
+    width: 280rpx;
+    height: 280rpx;
+    overflow: hidden;
+  }
+  
+  .mul_column .every_module .save_money {
+    top: 227rpx;
+  }
+  
+  .mul_column .every_module .product-name {
+    width: 280rpx;
+    height: 80rpx;
+  }
+  .mul_column .product-price{
+    display: flex;
+    justify-content: space-between;
+  }
+  

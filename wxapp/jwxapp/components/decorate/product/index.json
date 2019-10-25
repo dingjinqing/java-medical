@@ -1,3 +1,10 @@
 {
-  "component": true
+  "component": true,
+  "usingComponents": {
+    "v-singleRowGoods": "../singleRowGoods/index",
+    "v-doubleRowGoods": "../doubleRowGoods/index",
+    "v-threeCommodities": "../threeCommodities/index",
+    "v-multipleCommodities": "../multipleCommodities/index",
+    "v-bigPictureGoods": "../bigPictureGoods/index"
+  }
 }
