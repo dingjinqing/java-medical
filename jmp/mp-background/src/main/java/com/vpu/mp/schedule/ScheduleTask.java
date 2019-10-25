@@ -1,6 +1,7 @@
 package com.vpu.mp.schedule;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,8 +17,9 @@ import com.vpu.mp.service.saas.SaasApplication;
  *
  */
 @Component
-@EnableScheduling
+
 @EnableAsync
+
 public class ScheduleTask {
 
     @Autowired
@@ -35,7 +37,7 @@ public class ScheduleTask {
 	/**
 	 * 每一分钟执行一次
 	 */
-	@Scheduled(cron = "0/5 * * * * ?")
+	@Scheduled(cron = "5 * * * * ?")
 	public void taskSendMessage() {
         saas.taskJobMainService.getAndSendMessage();
     }
