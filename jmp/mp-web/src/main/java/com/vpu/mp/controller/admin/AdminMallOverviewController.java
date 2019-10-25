@@ -62,7 +62,7 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @PostMapping("/api/admin/survey/official/bind")
     public JsonResult bindUnBindOfficial(@RequestBody BindAndUnParam param){
-    	boolean bindUnBindOfficial = saas.overviewService.bindUnBindOfficial(param.getAct(),adminAuth.user(),adminAuth.user().getSubAccountId());
+    	boolean bindUnBindOfficial = saas.overviewService.bindUnBindOfficial(param.getAct(),adminAuth.user(),param.getAccountId());
         return bindUnBindOfficial?success():fail();
     }
 
