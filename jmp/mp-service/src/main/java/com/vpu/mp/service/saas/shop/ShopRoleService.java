@@ -19,11 +19,13 @@ import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.MenuInnerParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleGroupUpdateParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
@@ -77,6 +79,23 @@ public class ShopRoleService extends MainBaseService {
 			list.add(vo);
 		}
 		return list;
+	}
+	
+	public PageResult<ShopRoleVo> getInfo(Integer sysId,ShopRoleAddListParam param) {
+		SelectConditionStep<Record3<Integer, String, Timestamp>> records = db()
+				.select(SHOP_ROLE.ROLE_ID, SHOP_ROLE.ROLE_NAME, SHOP_ROLE.CREATE_TIME).from(SHOP_ROLE)
+				.where(SHOP_ROLE.SYS_ID.eq(sysId));
+		records.orderBy(SHOP_ROLE.CREATE_TIME.desc()).fetch();
+		List<ShopRoleVo> list = new ArrayList<>();
+		for (Record3<Integer, String, Timestamp> record : records) {
+			ShopRoleVo vo = new ShopRoleVo();
+			vo.setRoleId(record.get(SHOP_ROLE.ROLE_ID));
+			vo.setRoleName(record.get(SHOP_ROLE.ROLE_NAME));
+			vo.setCreateTime(record.get(SHOP_ROLE.CREATE_TIME));
+			list.add(vo);
+		}
+		return this.getPageResult(records, param.getCurrentPage(),param.getPageRows(), ShopRoleVo.class);
+		//return list;
 	}
 
 	public ShopRoleRecord getRoleByIdAndSysId(Integer roleId, Integer sysId) {
