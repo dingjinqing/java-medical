@@ -97,7 +97,7 @@
             align="center"
         >
           <template slot-scope="scope">
-            <a style="color: #5A8BFF;" @click="scope.row.popover = true">{{$t('pageClassification.edit')}}</a>
+            <a style="color: #5A8BFF;" @click="handleEdit(scope.row)">{{$t('pageClassification.edit')}}</a>
             -
             <a style="color: #5A8BFF;" @click="removeCatergory(scope.row)">{{$t('pageClassification.remove')}}</a>
             -
@@ -117,8 +117,7 @@
           :title="$t('pageClassification.addCatergory')"
           :visible.sync="dialogVisible"
           width="30%"
-          center
-          :before-close="handleClose">
+          center>
           <el-form label-width="100px">
             <el-form-item :label="$t('pageClassification.catergoryName')">
               <el-input v-model="requestFrom.pageName"
@@ -209,35 +208,31 @@ export default {
       }).catch(err => console.log(err))
     },
     removeCatergory (row) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('pageClassification.cancel'), {
+        confirmButtonText: this.$t('pageClassification.confirm'),
+        cancelButtonText: this.$t('pageClassification.cancel'),
         type: 'warning'
       }).then(() => {
-        deleteCategoryById(this.requestFrom).then(res => {
+        deleteCategoryById({pageId: row.id}).then(res => {
           console.log(res)
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
           this.handleQuery()
         }).catch(err => console.log(err))
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
       })
     },
     jumpCatergory (row) {
 
     },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
+    handleEdit (row) {
+      this.$prompt(this.$t('pageClassification.catergoryNamePlease'), {
+        confirmButtonText: this.$t('pageClassification.confirm'),
+        cancelButtonText: this.$t('pageClassification.cancel')
+      }).then(({ value }) => {
+        row.name = value
+        this.editCatergory(row)
+        this.handleQuery()
+      }).catch(() => {
+      })
     }
   }
 }
