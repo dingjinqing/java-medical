@@ -17,6 +17,6 @@ public class ShopMenuParam {
 	public String enName;
 	public String name;
 	public String linkUrl;
-	public String topIndex;
+	public Integer topIndex;
 	public List<String> includeApi;
 }

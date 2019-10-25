@@ -256,9 +256,24 @@ public class ShopMenuService extends MainBaseService {
 	 * 返回所有权限信息
 	 * @return
 	 */
-	public List<ShopMenuParam> getAuthority() {
+	public List<List<ShopMenuParam>> getAuthority() {
 		String json = Util.loadResource(menuJson);
-		return Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
+		
+		List<ShopMenuParam> list = Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
 		});
+		List<List<ShopMenuParam>> outList=new ArrayList<List<ShopMenuParam>>();
+		for(int i=0;i<=list.get(list.size()-1).getTopIndex()+1;i++) {
+			List<ShopMenuParam> innerList=new ArrayList<ShopMenuParam>();
+			for(ShopMenuParam param:list) {
+				if(i==param.getTopIndex()) {
+					innerList.add(param);
+				}
+			}
+			if(innerList.size()>0) {
+				outList.add(innerList);				
+			}
+		}
+		
+		return outList;
 	}
 }
