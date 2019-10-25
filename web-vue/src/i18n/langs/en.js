@@ -42,6 +42,8 @@ import { en as bottomNavigation } from './views/admin_new/en/index/miniProgramMa
 import { en as personalCenter } from './views/admin_new/en/index/miniProgramManagement/personalCenter/personalCenterEn'
 // 搜索配置
 import { en as searchConfig } from './views/admin_new/en/index/miniProgramManagement/searchConfig/searchConfigEn'
+// 页面分类
+import { en as pageClassification } from './views/admin_new/en/index/miniProgramManagement/pageClassification/pageClassificationEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -627,7 +629,7 @@ const en = {
   bottomNavigation, // 底部导航
   personalCenter, // 个人中心
   searchConfig, // 搜索配置
-
+  pageClassification, // 页面分类
   // 商品
   allGoods, // 商品管理/全部商品
   goodsAddEditInfo,

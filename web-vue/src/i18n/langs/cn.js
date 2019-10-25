@@ -33,6 +33,8 @@ import { cn as bottomNavigation } from './views/admin_new/cn/index/miniProgramMa
 import { cn as personalCenter } from './views/admin_new/cn/index/miniProgramManagement/personalCenter/personalCenterCn'
 // 搜索配置
 import { cn as searchConfig } from './views/admin_new/cn/index/miniProgramManagement/searchConfig/searchConfigCn'
+// 页面分类
+import { cn as pageClassification } from './views/admin_new/cn/index/miniProgramManagement/pageClassification/pageClassificationCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -597,6 +599,7 @@ const cn = {
   bottomNavigation, // 底部导航
   personalCenter,
   searchConfig, // 搜索配置
+  pageClassification, // 页面分类
 
   // 商品
   allGoods, // 商品管理/全部商品

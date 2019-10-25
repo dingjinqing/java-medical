@@ -22,3 +22,19 @@ export function addPageclassification (data) {
     data
   })
 }
+// 跟新
+export function updateCategoryName (data) {
+  return service({
+    url: '/api/admin/applets/pageclassification/updateCategoryName',
+    method: 'post',
+    data
+  })
+}
+// 删除
+export function deleteCategoryById (data) {
+  return service({
+    url: '/api/admin/applets/pageclassification/deleteCategoryById',
+    method: 'post',
+    data
+  })
+}
