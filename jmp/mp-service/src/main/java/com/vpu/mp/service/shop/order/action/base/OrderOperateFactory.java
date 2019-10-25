@@ -24,12 +24,11 @@ public class OrderOperateFactory implements ApplicationContextAware {
 
 	private static Map<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam>> orderOperateMap;
 
-	
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		// 获取实现IorderOperate接口并加入ioc管理的实例
+		@SuppressWarnings("rawtypes")
 		Map<String, IorderOperate> map = applicationContext.getBeansOfType(IorderOperate.class);
 		orderOperateMap = new HashMap<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam, AbstractOrderOperateQueryParam>>();
 		map.forEach((key, value) -> {
