@@ -96,7 +96,11 @@ public class ScoreService extends ShopBaseService {
 	
 	public void updateMemberScore(ScoreParam param, Integer adminUser,Byte tradeType,
 			Byte tradeFlow) throws MpException{
-		updateMemberScore(param,adminUser,adminUser,tradeType,tradeFlow,"");
+		if(param.getUserId() != null) {
+			for(Integer userId: param.getUserId()) {
+				updateMemberScore(param,adminUser,userId,tradeType,tradeFlow,"");
+			}
+		}
 	}
 	
 	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
