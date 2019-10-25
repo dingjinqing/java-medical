@@ -488,5 +488,15 @@ public class AdminBasicConfigController extends AdminBaseController{
 		}
 		return success(sConfig);
 	}
+	
+	/**
+	 * 获取所有默认权限集
+	 * @return
+	 */
+	@RequestMapping("/role/group/getList")
+	public JsonResult getAuthorityList() {
+		return success(saas.shop.menu.getAuthority());
+		
+	}
 
 }
