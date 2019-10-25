@@ -24,6 +24,8 @@ public class UserCardConsumeBean {
 	private Integer countDis;
 	// 卡余额消耗
 	private BigDecimal moneyDis;
+	// 别名： 卡余额消耗 
+	private BigDecimal money;
 	// 创建时间
 	private Timestamp createTime;
 	// 消费原因
@@ -33,8 +35,7 @@ public class UserCardConsumeBean {
 	private String orderSn;
 	// 备注
 	private String message;
-	// 消费的卡余额
-	private BigDecimal money;
+
 	// 消费次数
 	private Short count;
 	// 充值的钱

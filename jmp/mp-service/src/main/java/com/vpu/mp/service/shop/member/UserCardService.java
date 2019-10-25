@@ -122,6 +122,10 @@ public class UserCardService extends ShopBaseService{
 	 * @param type  是否领取 1领取 0只是检测
 	 * @throws MpException 
 	 */
+	public int updateGrade(Integer userId,Integer cardId,Byte type) throws MpException{
+		return updateGrade(new Integer[] {userId},cardId,type);
+	}
+	
 	public int updateGrade(Integer[] userId,Integer cardId,Byte type) throws MpException {
 		if(userId == null || userId.length<=0) {
 			return 1;
@@ -173,26 +177,32 @@ public class UserCardService extends ShopBaseService{
 				//获取用户累积获得积分和累积消费总额
 				Integer userTotalScore = scoreService.getUserTotalScore(id);
 				BigDecimal amount = distributorLevelService.getTotalSpend(id).getTotal();
-				// 获取等级卡列表等循环判断符合的等级
+				// 获取等级卡列表等级升序
 				List<MemberCardRecord> gradeCard = cardDao.getAllUsingGradeCard();
+				// 没有等级卡
 				if(gradeCard.size()==0) {
 					return -1;
 				}
-				///获取该用户的会员卡等级 
+				// 获取该用户的会员卡等级 
 				String grade = userCardDao.getUserCardGrade(id);
-				if(!StringUtils.isBlank(grade) && type == 1 ) {
+				// 判断用户是否拥有等级卡
+				if(StringUtils.isBlank(grade) && type == 1 ) {
+					// 用户第一次领取会员卡，给用户分配一级会员卡
 					List<UserCardParam> list = new ArrayList<>();
 					UserCardParam newCard = new UserCardParam();
 					newCard.setCardId(gradeCard.get(0).getId());
 					list.add(newCard);
+					logger().info("给用户分配等级卡: "+gradeCard.get(0).getCardName()+"等级: "+gradeCard.get(0).getGrade());
 					addUserCard(id,list);
 					grade = userCardDao.getUserCardGrade(id);
 				}
-				
+				logger().info("用户在分配会员卡之前的等级卡： "+grade);
+				// 遍历寻找适合用户的等级卡
 				for(MemberCardRecord card: gradeCard) {
-		
+					// 升级条件
 					GradeConditionJson gradeCondition = Util.parseJson(card.getGradeCondition(), GradeConditionJson.class);
-					if((!StringUtils.isBlank(grade) && !StringUtils.isBlank(card.getGrade()))
+					// 等级卡的等级高于用户卡等级或者用户目前等级为空
+					if((!StringUtils.isBlank(grade) && !StringUtils.isBlank(card.getGrade()) && card.getGrade().compareTo(grade)>0)
 							|| (StringUtils.isBlank(grade))) {
 						
 						if(BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO)<1) {
@@ -202,7 +212,7 @@ public class UserCardService extends ShopBaseService{
 						if(BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(),BigDecimal.ZERO)<1) {
 							gradeCondition.setGradeMoney(amount.add(new BigDecimal(1000)));
 						}
-						
+						// 判断用户的升级条件： 用户获得累计积分到达该等级 或 累计消费总额达到与相关等级会员卡相应限额
 						if(gradeCondition.getGradeScore().intValue() <= userTotalScore || 
 								BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(),amount)<=0) {
 							
@@ -210,12 +220,17 @@ public class UserCardService extends ShopBaseService{
 							
 							if(!StringUtils.isBlank(grade) && (type == 1 || type == 2)) {
 								// 升级
+								// 获取用户升级之前的等级会员卡信息
 								UserCardParam oldCard = userCardDao.getUserRankCardDetailInfo(id);
 								if(oldCard != null) {
+									// 将用户持有的会员卡进行升级（卡号不变，更换会员卡的id）
 									userCardDao.updateUserCardByCardIdAndNo(cardId, oldCard.getCardNo());
-									if(card.getSorce()!=null) {
+									// 判断新升级的卡，是否有积分赠送
+									if(card.getSorce()!=null && card.getSorce()>0) {
+										// 更新用户积分
 										sendScore(id, card);
 									}
+									// 记录等级卡升级记录
 									InsertCardUpGradeRecord(id, card, oldCard,SYSTEM_UP_GRADE);
 								}
 								
@@ -542,7 +557,8 @@ public class UserCardService extends ShopBaseService{
 				}
 			}
 		}else {
-			if(data.getMoney().intValue()<0) {
+			if(data.getMoneyDis().intValue()<0) {
+				data.setMoney(data.getMoneyDis());
 				userCardDao.insertConsume(data);
 			}else {
 				data.setCharge(data.getMoney());
@@ -570,6 +586,15 @@ public class UserCardService extends ShopBaseService{
 			// TODO 模板消息
 		}		
 		return ret;
+	}
+	
+	/**
+	 * 获取用户会员卡列表
+	 * @param userId
+	 * @return 
+	 */
+	public List<UserCardParam> getCardList(Integer userId) {
+		return userCardDao.getCardList(userId);
 	}
 
 

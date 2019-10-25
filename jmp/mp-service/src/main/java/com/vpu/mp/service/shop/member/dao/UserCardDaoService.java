@@ -375,5 +375,22 @@ public class UserCardDaoService extends ShopBaseService{
 		cardConsumer.insert();
 	}
 	
+	/**
+	 * 获取用户会员卡列表
+	 * @param userId
+	 * @return
+	 */
+	public List<UserCardParam> getCardList(Integer userId) {
+		
+		 return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
+				.from(USER_CARD)
+				.leftJoin(MEMBER_CARD)
+				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+				.where(USER_CARD.USER_ID.eq(userId))
+				.and(USER_CARD.FLAG.eq(CARD_USING))
+				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc())
+				.fetchInto(UserCardParam.class);
+	}
+	
 	
 }

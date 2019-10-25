@@ -33,7 +33,7 @@ import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
  */
 @Service
 
-public class ScoreCfgService extends BaseShopConfigService {
+public class ScoreCfgService extends BaseScoreCfgService {
 
 	@Autowired
 	public ShopMpDecorationService mpDecoration;
@@ -48,27 +48,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 	final public static String BUY="buy";
 	final public static String BUY_EACH="buy_each";
 	
-	/**
-	 * key
-	 */
-	final public static String SCORE_LIMIT = "score_limit";
-	final public static String SCORE_DAY = "score_day";
-	final public static String SCORE_MONTH = "score_month";
-	final public static String SCORE_YEAR = "score_year";
-	final public static String SCORE_LIMIT_NUMBER = "score_limit_number";
-	final public static String SCORE_PERIOD = "score_period";
-	final public static String SCORE_PAY_LIMIT = "score_pay_limit";
-	final public static String SCORE_PAY_NUM = "score_pay_num";
-	final public static String SHOPPING_SCORE ="shopping_score";
-	final public static String SCORE_TYPE = "score_type";
-	final public static String STORE_SCORE = "store_score";
-	final public static String LOGIN_SCORE = "login_score";
-	final public static String SCORE_LOGIN = "score_login";
-	final public static String SIGN_IN_SCORE = "sign_in_score";
-	// 模板页面id
-	final public static String SCORE_PAGE_ID = "score_page_id";
-	// 积分说明
-	final public static String SCORE_DOCUMENT = "score_document";
+	
 	// 积分国际化信息
 	final public static String SCORE_CFG_TITLE="member.score.cfg.title";
 
@@ -79,21 +59,19 @@ public class ScoreCfgService extends BaseShopConfigService {
 		String scoreLimit = param.getScoreLimit();
 		if (ZERO.equals(scoreLimit)) {
 			// 永久积分
-			this.set(SCORE_LIMIT, scoreLimit);
+			setScoreLimit(scoreLimit);
 
 		} else if (ONE.equals(scoreLimit)) {
 			// 截止日期
-			this.set(SCORE_LIMIT, scoreLimit);
-			this.set(SCORE_DAY, param.getScoreDay());
-			this.set(SCORE_MONTH, param.getScoreMonth());
-			this.set(SCORE_YEAR, param.getScoreYear());
-
+			setScoreLimit(scoreLimit);
+			setScoreDay(param.getScoreDay());
+			setScoreMonth(param.getScoreMonth());
+			setScoreYear(param.getScoreYear());
 		} else if (TWO.equals(scoreLimit)) {
-
-			this.set(SCORE_LIMIT, scoreLimit);
-			this.set(SCORE_LIMIT_NUMBER, param.getScoreLimitNumber());
-			this.set(SCORE_PERIOD, param.getScorePeriod());
-
+			// 时间度量
+			setScoreLimit(scoreLimit);
+			setScoreLimitNumber(param.getScoreLimitNumber());
+			setScorePeriod(param.getScorePeriod());
 		} else {
 			//return -1;
 			System.out.println("debug");
@@ -104,11 +82,11 @@ public class ScoreCfgService extends BaseShopConfigService {
 		String scorePayLimit = param.getScorePayLimit();
 		if (ZERO.equals(scorePayLimit)) {
 			// 不限制
-			this.set(SCORE_PAY_LIMIT, scorePayLimit);
+			setScorePayLimit(scorePayLimit);
 		} else if (ONE.equals(scorePayLimit)) {
 			// 自定义积分
-			this.set(SCORE_PAY_LIMIT, scorePayLimit);
-			this.set(SCORE_PAY_NUM, param.getScorePayNum());
+			setScorePayLimit(scorePayLimit);
+			setScorePayNum(param.getScorePayNum());
 		} else {
 			//return -1;
 			System.out.println("debug");
@@ -118,11 +96,11 @@ public class ScoreCfgService extends BaseShopConfigService {
 		/** 购物送积分 */
 		/** 积分开关 */
 		String shoppingScore = (BUTTON_ON.equals(param.getShoppingScore()))?ONE:ZERO;
-		this.set(SHOPPING_SCORE, shoppingScore);
+		setShoppingScore(shoppingScore);
 		
 		/** 购物送积分的类型 0 购物多少送多少 1 购买每多少送多少 */
 		String scoreType = param.getScoreType();
-		this.set(SCORE_TYPE, scoreType);
+		setScoreType(scoreType);
 		
 		if(ONE.equals(shoppingScore)) {
 			if(ZERO.equals(scoreType)) {
@@ -138,24 +116,21 @@ public class ScoreCfgService extends BaseShopConfigService {
 		
 		//门店买单返送积分开关 on 1 
 		String storeScore = BUTTON_ON.equals(param.getStoreScore()) ? ONE:ZERO;
-		this.set(STORE_SCORE, storeScore);
+		setStoreScore(storeScore);
 		
 		//登录送给积分
 		String loginScore = BUTTON_ON.equals(param.getLoginScore())? ONE:ZERO;
-		this.set(LOGIN_SCORE,loginScore);
+		setLoginScore(loginScore);
 		if(ONE.equals(loginScore)) {
 			//登录送积分开关on
-			this.set(SCORE_LOGIN, param.getScoreLogin());
+			setScoreLogin(param.getScoreLogin());
 		}
 		
 		
 		//签到送积分
 		String signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
-		
-		this.set(SIGN_IN_SCORE, signInScore);
+		setSignInScore(signInScore);
 		setSignScore(signInScore,param.getSignScore());
-	
-
 		return result;
 	}
 
@@ -173,15 +148,15 @@ public class ScoreCfgService extends BaseShopConfigService {
 			value = Util.toJson(new UserScoreSetValue(enable,signScore));
 		}else {
 			//从数据库中获取json值
-			UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
+			UserScoreSetValue userScore = getScoreValueThird(SIGN_IN_SCORE);
 			if(userScore != null){
 				userScore.setEnable(enable);
 				value = Util.toJson(userScore);
 			}
 		}
 		deleteRecord(SIGN_IN_SCORE);
-		this.set(SIGN_IN_SCORE, value);
-		this.setJsonObject(SIGN_IN_SCORE,status,value);
+		setSignInScore(value);
+		setJsonObject(SIGN_IN_SCORE,status,value);
 	}
 
 	/**
@@ -341,6 +316,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 		param.setUpdateTime(DateUtil.getLocalDateTime());
 		String value = Util.toJson(param);
 		logger().info(value);
+		setScoreDocument(value);
 		this.set(SCORE_DOCUMENT, value);
 	}
 
@@ -370,7 +346,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 	 */
 	public void addScoreCfgForDecoration(ShopCfgParam param) {
 		// 通过前端调用多个接口api而不是将数据全部塞满
-		this.set(SCORE_PAGE_ID, ""+param.getScorePageId());
+		setScorePageId(""+param.getScorePageId());
 	}
 	
 	
