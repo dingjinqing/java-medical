@@ -22,10 +22,7 @@
     "pages/userqrcode/userqrcode",
     "pages/bargainlist/bargainlist",
     "pages/lotterygift/lotterygift",
-    "components/decorate/doubleRowGoods/index",
-    "components/decorate/threeCommodities/index",
-    "components/decorate/multipleCommodities/index",
-    "components/decorate/bigPictureGoods/index"
+    "pages/storelist/storelist"
   ],
   "window": {
     "backgroundTextStyle": "dark",
