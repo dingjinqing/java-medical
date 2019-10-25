@@ -226,6 +226,8 @@ export const cn = {
   collectGift: ['营销管理', '收藏有礼'],
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['营销管理', '微信好物圈'],
+  // 营销管理 支付有礼
+  payreward: ['营销管理', '支付有礼'],
 
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],

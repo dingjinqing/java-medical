@@ -1083,6 +1083,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/wechateGoodsCicle/wechateGoodsCicle'
       )
+  },
+  // 支付有礼
+  {
+    path: 'admin/home/main/payReward',
+    name: 'payreward',
+    meta: {
+      crumbTitle: 'router.payreward',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/payReward/payReward'
+      )
   }
 ]
 export default routes

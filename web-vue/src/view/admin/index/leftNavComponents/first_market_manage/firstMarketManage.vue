@@ -206,7 +206,10 @@
       </div>
       <div class="box1">
         <!-- 支付有礼 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('payreward')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/zfyl.png'"
               alt=""

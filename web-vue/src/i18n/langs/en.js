@@ -87,6 +87,8 @@ import { en as seckill } from './views/admin_new/en/index/marketManagement/secki
 import { en as addSeckill } from './views/admin_new/en/index/marketManagement/seckill/addSeckillEn'
 // 微信好物圈
 import { en as wechateGoodsCicle } from './views/admin_new/en/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleEn'
+// 支付有礼
+import { en as payReward } from './views/admin_new/en/index/marketManagement/payReward/payReward'
 
 // 订单管理系列模块化
 import { en as order } from './views/admin_new/en/index/orderManagement/orderListEn'
@@ -671,6 +673,7 @@ const en = {
   ...enLocale,
   expressList,
   wechateGoodsCicle, // 微信好物圈
+  payReward, // 支付有礼
 
   dateTimePicker, // 选择时间
 

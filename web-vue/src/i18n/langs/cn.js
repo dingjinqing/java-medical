@@ -90,6 +90,8 @@ import { cn as seckill } from './views/admin_new/cn/index/marketManagement/secki
 import { cn as addSeckill } from './views/admin_new/cn/index/marketManagement/seckill/addSeckillCn'
 // 微信好物圈
 import { cn as wechateGoodsCicle } from './views/admin_new/cn/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleCn'
+// 支付有礼
+import { cn as payReward } from './views/admin_new/cn/index/marketManagement/payReward/payReward'
 
 // 订单管理系列模块化
 // 订单通用
@@ -644,6 +646,7 @@ const cn = {
   ...zhLocale,
   expressList,
   wechateGoodsCicle, // 微信好物圈
+  payReward, // 支付有礼
 
   // 会员管理
   memberCard, // 会员管理-会员卡
