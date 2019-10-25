@@ -1,4 +1,5 @@
 // pages/comment/comment.js
+var i18n = require("../../utils/i18n/i18n.js")
 var app = getApp()
 var util = require('../../utils/util.js');
 var s = util.getImageUrl('');
@@ -14,8 +15,8 @@ var userId = util.getCache('user_id')
 global.wxPage({
   data: {
     navbar: [
-      '待评价',
-      '已评价'
+      i18n.trans('page1.comment.comment'),
+      i18n.trans('page1.comment.reviewed')
     ],
     page: 1,
     last_page: 1,
@@ -259,7 +260,7 @@ global.wxPage({
 
     info.open_id = util.getCache('openid');
     if (parseInt(params.commstar) === 0) {
-      util.showModal('提示', '请选择评分');
+      util.showModal(i18n.trans('common.tip'), i18n.trans('page1.comment.selectRating'));
       return false;
     }
     if (info.commImg != '') {

@@ -1,5 +1,6 @@
 var navigation = require("./components/navigation.js")
 var order = require("./pages/order.js")
+var comment = require('./page1/commentCn.js')
 var zh_CN = {
   "common": {
     "info": {
@@ -14,7 +15,8 @@ var zh_CN = {
       "uploading": "上传中",
       "uploadFailed": "上传失败",
       "updateTip": "更新提示",
-      "newVersionReadyWhetherRestartApp": "新版本已经准备好，是否重启应用？"
+      "newVersionReadyWhetherRestartApp": "新版本已经准备好，是否重启应用？",
+      "tip": "提示"
     },
     "video": {
       "sizeGt10M": "视频大于10M",
@@ -76,7 +78,7 @@ var zh_CN = {
     "order": order
   },
   "page1": {
-
+    "comment": comment
   },
   "page2": {
 

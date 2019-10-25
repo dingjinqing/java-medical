@@ -1,4 +1,5 @@
 <!--pages/comment/comment.wxml-->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
   <view class="container">
@@ -17,15 +18,15 @@
           <view class="comment_gift clearfix" wx:if="{{item.commentFlag === 0 && item.id}}">
             <image src='{{imageUrl}}image/wxapp/comment_gift_tips.png'></image>
             <!-- 评价类型为评价即送 -->
-            <text wx:if="{{item.commentType===1}}">评价后有机会获得</text>
+            <text wx:if="{{item.commentType===1}}">{{i18n.$t(localePack,"page1.comment.aChangeAfterEvaluation")}}</text>
             <!-- 评价类型为自定义 -->
-            <text wx:else>评价<text>{{item.commentType}}</text>,后有机会获得</text>
+            <text wx:else>{{i18n.$t(localePack,"page1.comment.evaluation")}}<text>{{item.commentType}}</text>,{{i18n.$t(localePack,"page1.comment.afterHaving")}}</text>
             <!-- 积分 -->
-            <text wx:if="{{item.awardType === 1}}">{{item.award}}积分</text>
+            <text wx:if="{{item.awardType === 1}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.integral")}}</text>
             <!-- 优惠券 -->
-            <text wx:elif="{{item.awardType === 2}}">优惠券：{{item.award}}</text>
+            <text wx:elif="{{item.awardType === 2}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.coupon")}}：{{item.award}}</text>
             <!-- 余额 -->
-            <text wx:elif="{{item.awardType === 3}}">{{item.award}}元</text>
+            <text wx:elif="{{item.awardType === 3}}">{{item.award}}{{i18n.$t(localePack,"page1.comment.yuan")}}</text>
             <!-- 幸运大抽奖 -->
             <text wx:elif="{{item.awardType === 4}}">{{item.award}}</text>
             <!-- 自定义奖励 -->
@@ -41,8 +42,8 @@
                 <!-- 发表评价 -->
                 <block>
                   <view class="right" bindtap="show_com_info" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}">
-                    <text wx:if="{{item.commentFlag == 1}}">查看评价</text>
-                    <text wx:else>发表评价</text>
+                    <text wx:if="{{item.commentFlag == 1}}">{{i18n.$t(localePack,"page1.comment.viewEvaluation")}}</text>
+                    <text wx:else>{{i18n.$t(localePack,"page1.comment.publishEvaluation")}}</text>
                     <image src="{{ item.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
                   </view>
                 </block>
@@ -54,7 +55,7 @@
               <view class="comm_square">
                 <view class="pingfen">
                   <view class="ping_left">
-                    <text wx:if="{{item.commentFlag == 0}}">*</text><text style="display:inline-block;width:10rpx;" wx:else></text>评分:</view>
+                    <text wx:if="{{item.commentFlag == 0}}">*</text><text style="display:inline-block;width:10rpx;" wx:else></text>{{i18n.$t(localePack,"page1.comment.score")}}:</view>
                   <block wx:for="{{item.star}}" wx:key="index" wx:for-index="id" wx:for-item="data">
                     <block wx:if="{{data.show}}">
                       <text class='iconfont iconshoucang star' bindtap="choose_star" data-flag="{{item.commentFlag}}" data-index="{{index}}" data-star="{{item.star}}" data-index="{{index}}" data-id="{{id}}" data-commstar='{{info.commstar}}' style='color:{{comColor}};font-size:40rpx;float:left'></text>
@@ -64,24 +65,24 @@
                     </block>
                   </block>
                   <view class='ping_zi'>
-                    <block wx:if='{{item.commstar == 1}}'>非常差</block>
-                    <block wx:if='{{item.commstar == 2}}'>差</block>
-                    <block wx:if='{{item.commstar == 3}}'>一般</block>
-                    <block wx:if='{{item.commstar == 4}}'>好</block>
-                    <block wx:if='{{item.commstar == 5}}'>非常好</block>
+                    <block wx:if='{{item.commstar == 1}}'>{{i18n.$t(localePack,"page1.comment.veryBad")}}</block>
+                    <block wx:if='{{item.commstar == 2}}'>{{i18n.$t(localePack,"page1.comment.bad")}}</block>
+                    <block wx:if='{{item.commstar == 3}}'>{{i18n.$t(localePack,"page1.comment.general")}}</block>
+                    <block wx:if='{{item.commstar == 4}}'>{{i18n.$t(localePack,"page1.comment.good")}}</block>
+                    <block wx:if='{{item.commstar == 5}}'>{{i18n.$t(localePack,"page1.comment.veryGood")}}</block>
                   </view>
                 </view>
                 <view class="xinde">
                   <view class="xin_left">
-                    <text style='color:#fff;'>*</text>心得:
+                    <text style='color:#fff;'>*</text>{{i18n.$t(localePack,"page1.comment.experience")}}:
                   </view>
-                  <textarea wx:if="{{item.commentFlag == 0 && !show_act_custom}}" name="commNote" bindinput='comm_note' placeholder="商品是否给力？快分享你的购物心得吧" style="float:left" />
-                  <text class="xinde_content" wx:elif="{{item.commentFlag == 1}}">{{item.commNote}}</text>
+                  <textarea wx:if="{{item.commentFlag == 0 && !show_act_custom}}" name="commNote" bindinput='comm_note' placeholder="{{i18n.$t(localePack,'page1.comment.isForce')}}" style="float:left" />
+                  <text class="xinde_content" wx:elif="{{item.commentFlag == 1}}">{{item.commNote?item.commNote: '{{i18n.$t(localePack,"page1.comment.noExperience")}}'}}</text>
                   <view style="clear:both"></view>
                 </view>
                 <view class="shaidan">
                   <view class="shai_left">
-                    <text style='color:#fff;'>*</text>晒单:</view>
+                    <text style='color:#fff;'>*</text>{{i18n.$t(localePack,"page1.comment.sunSingle")}}:</view>
                   <view class="shai_content">
                     <block wx:if="{{image}}">
                       <block wx:for="{{info.comm_img}}" wx:key="index" wx:for-item="imgitem">
@@ -103,10 +104,10 @@
                   <view style='margin-left:140rpx; width:570rpx; display:flex; juestify-content:space-between; align-items: center;'>
                     <view class="niming">
                       <radio color='{{comColor}}' name="anonymousflag" value="{{item.anonymousflag}}" data-index="{{index}}" checked="{{flag}}" style="transform:scale(0.7)" bindtap="flag" />
-                      <text>匿名评价</text>
+                      <text>{{i18n.$t(localePack,"page1.comment.anonymous")}}</text>
                     </view>
                     <view style="flex:1;text-align:right;">
-                      <button class='s_left' form-type='submit' data-item="{{item}}" style='background:{{comColor}};border-color:{{comColor}}'>评价并继续</button>
+                      <button class='s_left' form-type='submit' data-item="{{item}}" style='background:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"page1.comment.evaluate")}}</button>
                     </view>
                   </view>
                 </view>
@@ -115,15 +116,15 @@
             <view class="comment_gift_info" wx:if="{{item.commentFlag === 1 &&item.id}}">
               <image src='{{imageUrl}}/image/admin/assess_custon.png' mode='widthFix'></image>
               <view class="gift_content">
-                <view class="comment_footer_gift_h">评价奖励</view>
+                <view class="comment_footer_gift_h">{{i18n.$t(localePack,"page1.comment.evaluationReward")}}</view>
                 <!-- 多种奖励模式渲染 -->
                 <view>
-                  <text>已获得</text>
-                  <text>{{item.awardType == 1 ? award + '积分' : ( item.awardType == 2 ? '优惠券' : (item.awardType == 3 ? award + '元余额' : (item.awardType == 4 ? '抽奖机会' : '神秘奖励')) )}}</text>
-                  <text>奖励</text>
+                  <text>{{i18n.$t(localePack,"page1.comment.obtained")}}</text>
+                  <text>{{item.awardType == 1 ? award + i18n.$t(localePack,"page1.comment.integral") : ( item.awardType == 2 ? i18n.$t(localePack,"page1.comment.coupon") : (item.awardType == 3 ? award + i18n.$t(localePack,"page1.comment.yuanBalance") : (item.awardType == 4 ? i18n.$t(localePack,"page1.comment.sweepstakes") : i18n.$t(localePack,"page1.comment.mysteryReward"))) )}}</text>
+                  <text>{{i18n.$t(localePack,"page1.comment.reward")}}</text>
                 </view>
                 <form report-submit="true" bindsubmit="giftInfo" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}" data-id="{{item.id}}" data-itemid="{{index}}">
-                  <button class="gift_info_button" formType="submit" style="border-color:{{comColor}};color:{{comColor}}">查看</button>
+                  <button class="gift_info_button" formType="submit" style="border-color:{{comColor}};color:{{comColor}}">{{i18n.$t(localePack,"page1.comment.view")}}</button>
                 </form>
               </view>
             </view>
@@ -132,7 +133,7 @@
       </view>
       <view wx:if='{{order_completed == ""}}' class="no_such_comment">
         <image src="{{imageUrl}}image/wxapp/order-no.png"></image>
-        <view>暂无此类评价</view>
+        <view>{{i18n.$t(localePack,"page1.comment.noSuchEvaluation")}}</view>
       </view>
     </view>
   </view>
