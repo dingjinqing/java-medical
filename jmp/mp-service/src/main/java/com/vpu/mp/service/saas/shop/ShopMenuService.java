@@ -250,4 +250,15 @@ public class ShopMenuService extends MainBaseService {
 		// 此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！
 		return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
 	}
+	
+	
+	/**
+	 * 返回所有权限信息
+	 * @return
+	 */
+	public List<ShopMenuParam> getAuthority() {
+		String json = Util.loadResource(menuJson);
+		return Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
+		});
+	}
 }
