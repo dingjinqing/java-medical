@@ -209,7 +209,7 @@ public class BargainRecordService extends ShopBaseService {
             leftJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID)).
             leftJoin(ORDER_INFO).on(BARGAIN_RECORD.ORDER_SN.eq(ORDER_INFO.ORDER_SN));
 
-        select.where(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        select.where(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.STATUS.eq(param.getStatus())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         select.orderBy(BARGAIN_RECORD.CREATE_TIME.desc());
         PageResult<BargainRecordListQueryVo> list = getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainRecordListQueryVo.class);
 

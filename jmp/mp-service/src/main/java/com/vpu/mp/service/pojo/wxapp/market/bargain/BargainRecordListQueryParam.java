@@ -17,7 +17,7 @@ public class BargainRecordListQueryParam {
      */
     @Max(2)
     @Min(0)
-    private Byte state = (byte)0;
+    private Byte status = (byte)0;
 
     /**
      * 	分页信息
