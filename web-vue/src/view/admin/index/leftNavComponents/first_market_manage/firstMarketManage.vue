@@ -468,7 +468,10 @@
       </div>
       <div class="box3">
         <!-- 微信好物圈 -->
-        <div class="voucher box_style box_bottom">
+        <div
+          class="voucher box_style box_bottom"
+          @click="to('wechateGoodsCicle')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/goods_circle.png'"
               alt=""
