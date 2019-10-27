@@ -1,12 +1,12 @@
 <view class="product-container person_reconmmend" style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}'>
-  <!--单列商品-->
-  <v-singleRowGoods wx:if="{{m.col_type =='4'}}"  module="{{module}}"/>
-  <!--双列商品-->
+  <!-- 单列商品 -->
+  <v-singleRowGoods wx:if="{{m.col_type =='4'}}" module="{{module}}" />
+  <!-- 双列商品 -->
   <v-doubleRowGoods wx:if="{{m.col_type =='1'}}" module="{{module}}" />
-  <!--三列商品-->
+  <!-- 三列商品 -->
   <v-threeCommodities wx:if="{{m.col_type =='2'}}" module="{{module}}" />
-  <!--多列商品-->
-  <v-multipleCommodities  wx:if="{{m.col_type =='3'}}" module="{{module}}" />
-  <!--单列商品-->
-  <v-bigPictureGoods wx:if="{{m.col_type =='0'}}" module="{{module}}"  />
+  <!-- 多列商品 -->
+  <v-multipleCommodities wx:if="{{m.col_type =='3'}}" module="{{module}}" />
+  <!-- 大图商品 -->
+  <v-bigPictureGoods wx:if="{{m.col_type =='0'}}" module="{{module}}" />
 </view>
