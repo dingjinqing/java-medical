@@ -168,7 +168,10 @@ export default {
     // 跳转到装修主页
     handleToDecPage () {
       this.$router.push({
-        name: 'decorationHome'
+        name: 'decorationHome',
+        params: {
+          data: -1
+        }
       })
     }
   }

@@ -181,7 +181,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { saveDecorationPage } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { saveDecorationPage, editSave } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
@@ -394,7 +394,9 @@ export default {
       },
       pageSetData: {},
       cur_idx: 100,
-      MoveWhiteFlag: false // 是否移入的是底部空白部分
+      MoveWhiteFlag: false, // 是否移入的是底部空白部分
+      isEditSave: false, // 页面配置列表点击编辑跳转过来的标识
+      editPageData: null
     }
   },
   watch: {
@@ -422,6 +424,27 @@ export default {
   },
   mounted () {
     console.log(this.$route)
+    if (this.$route.params.data !== -1) { // 判断是否是页面列表配置页面点击编辑跳转而来
+      this.isEditSave = true
+      let content = JSON.parse(this.$route.params.data.page_content)
+      console.log(JSON.parse(this.$route.params.data.page_content))
+      this.pageSetData.page_name = this.$route.params.page_name
+      this.pageSetData.cat_id = this.$route.params.cat_id
+      console.log(content)
+      this.editPageData = content
+      let moduleDataCopy = JSON.parse(JSON.stringify(content))
+      delete moduleDataCopy.page_cfg
+      console.log(moduleDataCopy)
+      let arr = []
+      Object.keys(moduleDataCopy).forEach((item, index) => {
+        arr.push(moduleDataCopy[item])
+      })
+      console.log(arr)
+      this.modulesData = arr
+      this.handleToTurnModulesName(arr)
+    } else {
+      this.isEditSave = false
+    }
     // 初始化数据
     this.$nextTick(() => {
       this.init_drag_event()
@@ -429,6 +452,44 @@ export default {
     this.initLeftModulesShow(this.activeName)
   },
   methods: {
+    // 模块名称转化
+    handleToTurnModulesName (data) {
+      let showModuleArr = []
+      let arr = JSON.parse(JSON.stringify(data))
+      arr.forEach(item => {
+        showModuleArr.push(this.modulesName(item.module_name))
+      })
+      console.log(showModuleArr)
+      this.showModulesList = showModuleArr
+    },
+    // 模块名数据池
+    modulesName (name) {
+      let moduleNameId = null
+      switch (name) {
+        case 'm_card':
+          moduleNameId = 1
+          break
+        case 'm_coupon':
+          moduleNameId = 2
+          break
+        case 'm_goods':
+          moduleNameId = 8
+          break
+        case 'm_goods_search':
+          moduleNameId = 9
+          break
+        case 'm_goods_group':
+          moduleNameId = 10
+          break
+        case 'm_scroll_image':
+          moduleNameId = 11
+          break
+        case 'm_image_guide':
+          moduleNameId = 12
+          break
+      }
+      return moduleNameId
+    },
     // 初始化左侧模块显示
     initLeftModulesShow (activeName) {
       switch (activeName) {
@@ -444,26 +505,31 @@ export default {
     },
     // 初始化页面配置
     handleToSenPageSetData () {
-      let pageSetData = {
-        'is_ok': 1,
-        'cat_id': '',
-        'page_name': '',
-        'bg_types': '0',
-        'has_bottom': '0',
-        'page_bg_color': '#ffffff',
-        'page_bg_image': '',
-        'show_margin': '1',
-        'margin_val': '0',
-        'pictorial': {
-          'is_add': '0',
-          'user_visibility': '0',
-          'share_btn_name': '',
-          'share_desc': '',
-          'share_img_path': '',
-          'name_length': 0
+      console.log(this.editPageData, this.isEditSave)
+      if (this.isEditSave) {
+        this.pageSetData = this.editPageData.page_cfg
+      } else {
+        let pageSetData = {
+          'is_ok': 1,
+          'cat_id': '',
+          'page_name': '',
+          'bg_types': '0',
+          'has_bottom': '0',
+          'page_bg_color': '#ffffff',
+          'page_bg_image': '',
+          'show_margin': '1',
+          'margin_val': '0',
+          'pictorial': {
+            'is_add': '0',
+            'user_visibility': '0',
+            'share_btn_name': '',
+            'share_desc': '',
+            'share_img_path': '',
+            'name_length': 0
+          }
         }
+        this.pageSetData = pageSetData
       }
-      this.pageSetData = pageSetData
     },
     // 页面设置回显
     hanelToPageSet (res) {
@@ -877,28 +943,68 @@ export default {
         catId: this.pageSetData.cat_id
 
       }
+      console.log(this.isEditSave, this.$route.params.data)
+      // cat_id: 0
+      // create_time: "2019-10-15 14:11:31"
+      // page_content: "{"c_101":{"module_name":"m_image_guide","nav_style":"1","font_color":"#92b0e4","bg_color":"#ffffff","nav_group":[{"nav_name":"导航一","nav_link":"pages/item/item","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20190916/PXRfayzzB9CXpPGku8xq.jpg"},{"nav_name":"导航二","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/MlpTXNue8qrqBOlQhKyB.jpeg"},{"nav_name":"导航三","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/27gnGcsuw2NzMnciLF0S.jpg"},{"nav_name":"导航四","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/0/image/20190903/1N2h7RDrraBKUcNkdG0C.jpg"}],"cur_idx":101},"c_102":{"module_name":"m_card","card_id":1,"hidden_card":0,"card_name":"普通卡续费测试1","card_state":"使用中","card_grade":"v1","receive_day":"有效期:永久有效","card_type":"0","legal":"会员折扣9折","exchang_count_legal":"开卡赠送10次兑换商品机会","bg_type":"0","bg_color":"#ecca90","bg_img":"","is_pay":"2","pay_type":"0","pay_fee":"0.00","cur_idx":102,"isChecked":true},"page_cfg":{"is_ok":1,"cat_id":0,"page_name":"方框测试","bg_types":"0","has_bottom":"0","page_bg_color":"#ffffff","page_bg_image":"","show_margin":"1","margin_val":"20","pictorial":{"is_add":"0","user_visibility":"0","share_btn_name":"","share_desc":"","share_img_path":"","name_length":0}}}"
+      // page_enabled: 1
+      // page_id: 34
+      // page_name: "方框测试"
+      // page_publish_content: "{"c_101":{"module_name":"m_image_guide","nav_style":"1","font_color":"#92b0e4","bg_color":"#ffffff","nav_group":[{"nav_name":"导航一","nav_link":"pages/item/item","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20190916/PXRfayzzB9CXpPGku8xq.jpg"},{"nav_name":"导航二","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/MlpTXNue8qrqBOlQhKyB.jpeg"},{"nav_name":"导航三","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/27gnGcsuw2NzMnciLF0S.jpg"},{"nav_name":"导航四","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/0/image/20190903/1N2h7RDrraBKUcNkdG0C.jpg"}],"cur_idx":101},"c_102":{"module_name":"m_card","card_id":1,"hidden_card":0,"card_name":"普通卡续费测试1","card_state":"使用中","card_grade":"v1","receive_day":"有效期:永久有效","card_type":"0","legal":"会员折扣9折","exchang_count_legal":"开卡赠送10次兑换商品机会","bg_type":"0","bg_color":"#ecca90","bg_img":"","is_pay":"2","pay_type":"0","pay_fee":"0.00","cur_idx":102,"isChecked":true},"page_cfg":{"is_ok":1,"cat_id":0,"page_name":"方框测试","bg_types":"0","has_bottom":"0","page_bg_color":"#ffffff","page_bg_image":"","show_margin":"1","margin_val":"20","pictorial":{"is_add":"0","user_visibility":"0","share_btn_name":"","share_desc":"","share_img_path":"","name_length":0}}}"
+      // page_state: 1
+      // page_tpl_type: 0
+      // page_type: 1
+      // shop_id: 245547
+      // update_time: "2019-10-27 19:44:56"
+      let pageState = null
       switch (flag) {
         case 0:
-          params.pageState = 1
+          pageState = 1
           break
         case 1:
-          params.pageState = 0
+          pageState = 0
           break
         case 2:
       }
+      params.pageState = pageState
       console.log(flag)
       if (flag === 0 || flag === 1) {
         console.log(params)
-        saveDecorationPage(params).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            this.$message.success({
-              message: '保存成功',
-              showClose: true,
-              duration: 1000
-            })
+        if (this.isEditSave) { // 编辑保存
+          let editParams = {
+            'pageId': this.$route.params.data.page_id,
+            'shopId': Number(localStorage.getItem('V-ShopId')),
+            'pageName': this.pageSetData.page_name,
+            'pageType': this.$route.params.data.page_type,
+            'pageEnabled': this.$route.params.data.page_enabled,
+            'pageTplType': this.$route.params.data.page_tpl_type,
+            'pageContent': 'json',
+            'pagePublishContent': 'json',
+            'pageState': pageState,
+            'catId': this.pageSetData.cat_id
           }
-        })
+          editSave(editParams).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: '保存成功',
+                showClose: true,
+                duration: 1000
+              })
+            }
+          })
+        } else { // 新建保存
+          saveDecorationPage(params).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: '保存成功',
+                showClose: true,
+                duration: 1000
+              })
+            }
+          })
+        }
       } else {
         this.$message.success({
           message: '预览测试',

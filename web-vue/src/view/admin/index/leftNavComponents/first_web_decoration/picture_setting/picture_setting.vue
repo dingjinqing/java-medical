@@ -539,6 +539,14 @@ export default {
       console.log(res)
       pageEdit({ pageId: res }).then((res) => {
         console.log(res)
+        if (res.error === 0) {
+          this.$router.push({
+            name: 'decorationHome',
+            params: {
+              data: res.content
+            }
+          })
+        }
       })
     }
   }

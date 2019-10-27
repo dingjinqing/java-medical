@@ -26,3 +26,12 @@ export function queryDataList (data) {
     data: data
   })
 }
+
+// 页面编辑保存
+export function editSave (data) {
+  return service({
+    url: '/api/admin/decorate/page/save',
+    method: 'post',
+    data: data
+  })
+}

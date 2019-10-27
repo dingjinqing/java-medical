@@ -129,7 +129,7 @@ const routes = [{
           )
       },
       {
-        path: '/admin/home/main/decorationHome',
+        path: '/admin/home/main/decorationHome/:data',
         name: 'decorationHome',
         meta: {
           crumbTitle: 'router.picture_setting',
