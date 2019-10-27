@@ -4,6 +4,8 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 /**
  * @author 李晓冰
  * @date 2019年10月24日
@@ -20,4 +22,12 @@ public class ReducePriceActivityVo extends ActivityBaseVo{
     @Getter
     @Setter
     private Boolean isActive;
+
+    @Getter
+    @Setter
+    private Timestamp nextActivityStartDate;
+
+    @Getter
+    @Setter
+    private Timestamp currentActivityEndDate;
 }

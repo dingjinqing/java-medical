@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Data;
 public class ReducePriceGoodsProductAddParam {
 
     /** 规格ID */
+    @JsonProperty("prdId")
     private Integer productId;
 
     /** 修改后的规格价 */

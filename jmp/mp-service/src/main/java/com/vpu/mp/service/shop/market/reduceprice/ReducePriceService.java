@@ -9,15 +9,17 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.ReducePriceActivityVo;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -53,11 +55,14 @@ public class ReducePriceService extends ShopBaseService {
      */
     public static final byte STATUS_DISABLED = 0;
 
+    public static final Byte PERIOD_ACTION_NORMAL = 0;
     public static final Byte PERIOD_ACTION_EVERY_DAY = 1;
     public static final Byte PERIOD_ACTION_EVERY_MONTH = 2;
     public static final Byte PERIOD_ACTION_EVERY_WEEK = 3;
 
 
+    @Autowired
+    GoodsService goodsService;
     /**
      * 新建限时降价活动
      *
@@ -76,8 +81,8 @@ public class ReducePriceService extends ShopBaseService {
                 assign(goods,goodsRecord);
                 goodsRecord.setReducePriceId(reducePriceId);
                 goodsRecord.insert();
+                Integer goodsId = goodsRecord.getGoodsId();
                 if(goods.getReducePriceProduct() != null && goods.getReducePriceProduct().length > 0){
-                    Integer goodsId = goodsRecord.getGoodsId();
                     for(ReducePriceGoodsProductAddParam goodsProduct : goods.getReducePriceProduct()){
                         ReducePriceProductRecord productRecord = db().newRecord(REDUCE_PRICE_PRODUCT);
                         assign(goodsProduct,productRecord);
@@ -85,6 +90,15 @@ public class ReducePriceService extends ShopBaseService {
                         productRecord.setGoodsId(goodsId);
                         productRecord.insert();
                     }
+                }else{
+                    List<GoodsProductVo> allProductListByGoodsId = goodsService.getAllProductListByGoodsId(goodsId);
+                    GoodsProductVo defaultPrd = allProductListByGoodsId.get(0);
+                    ReducePriceProductRecord productRecord = db().newRecord(REDUCE_PRICE_PRODUCT);
+                    productRecord.setReducePriceId(reducePriceId);
+                    productRecord.setGoodsId(goodsId);
+                    productRecord.setProductId(defaultPrd.getPrdId());
+                    productRecord.setPrdPrice(goods.getGoodsPrice());
+                    productRecord.insert();
                 }
             }
         });
@@ -327,28 +341,54 @@ public class ReducePriceService extends ShopBaseService {
 
             ReducePriceActivityVo vo =new ReducePriceActivityVo();
             if (isActivityGoingOn(reducePrice, date)) {
-
+                vo.setIsActive(true);
+                Timestamp currentActivityEndDate = getCurrentActivityEndDate(endLocalTime, periodAction, reducePrice.get(REDUCE_PRICE.END_TIME));
+                vo.setCurrentActivityEndDate(currentActivityEndDate);
             } else {
-
+                vo.setIsActive(false);
+                Timestamp nextActivityStartDate = getNextActivityStartDate(dayArr, startLocalTime, periodAction, reducePrice.get(REDUCE_PRICE.START_TIME), reducePrice.get(REDUCE_PRICE.END_TIME));
+                vo.setNextActivityStartDate(nextActivityStartDate);
             }
+            vo.setActivityId(reducePrice.get(REDUCE_PRICE.ID));
+            vo.setActivityPrice(reducePrice.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
+            vo.setStartTime(reducePrice.get(REDUCE_PRICE.START_TIME));
+            vo.setEndTime(reducePrice.get(REDUCE_PRICE.END_TIME));
             returnMap.put(goodsId,vo);
         });
         return returnMap;
     }
 
     /**
+     * 计算当前正在进行的活动的预计结束时间
+     * @param endLocalTime 周期性活动指定的每次活动结束时刻
+     * @param periodAction 活动的时间类型 null 表示活动仅指定了开始结束日期，未指定周期日
+     * @param endDate 活动设定的失效时间
+     * @return 结束的时间
+     */
+    private Timestamp getCurrentActivityEndDate(LocalTime endLocalTime,Byte periodAction,Timestamp endDate) {
+        LocalDate nowDate = LocalDate.now();
+        Timestamp currentActivityEndDate = null;
+        if (PERIOD_ACTION_NORMAL.equals(periodAction)) {
+            currentActivityEndDate = endDate;
+        } else {
+            currentActivityEndDate = DateUtil.convertToTimestamp(nowDate,endLocalTime);
+        }
+        return currentActivityEndDate;
+    }
+
+    /**
      * 获取活动下一次的开始时间
-     * ps 调用此方法的活动都处于有效未进行阶段
+     * ps 调用此方法的活动都处于有效（当前时间早于活动结束时间）未进行阶段
      * @param extendTime 指定的日
      * @param startLocalTime 活动的在指定日的开始时刻
-     * @param endLocalTime 活动在指定日的结束时刻
      * @param periodAction 活动的时间类型
      * @param startDate 活动设定的开始时间
-     * @param endDate 互动设定的结束时间
+     * @param endDate 活动设定的失效时间
      * @return 下次活动的开始时间
      */
-    private Timestamp getNextActivityStartDate(List<Integer> extendTime, LocalTime startLocalTime, LocalTime endLocalTime, Byte periodAction, Timestamp startDate, Timestamp endDate){
+    private Timestamp getNextActivityStartDate(List<Integer> extendTime, LocalTime startLocalTime, Byte periodAction, Timestamp startDate, Timestamp endDate){
         Timestamp nextStartDate =null;
+
         LocalDate nowDate = LocalDate.now();
         LocalTime nowTime = LocalTime.now();
         // 下次开始活动时刻
@@ -358,17 +398,40 @@ public class ReducePriceService extends ShopBaseService {
         if (PERIOD_ACTION_EVERY_DAY.equals(periodAction)) {
             // 当前时刻如果小于活动开始时刻则表明今天的活动尚未开启，否则活动已经结束需等待第二天开始
             int offsetDay = nowTime.isBefore(startLocalTime)? 0 : 1;
-            targetDate = nowDate.plusDays(offsetDay);
+            nowDate = nowDate.plusDays(offsetDay);
+            nextStartDate = DateUtil.convertToTimestamp(nowDate,startLocalTime);
         } else if (PERIOD_ACTION_EVERY_MONTH.equals(periodAction)) {
-            //当前日小于目标日或日相同但是当前时刻小于目标时刻则本月活动为开始，否则本月活动已结束
-
+            //当前日小于目标日或日相同但是当前时刻小于目标时刻则本月活动未开始，否则本月活动已结束
+            if (nowDate.getDayOfMonth() < extendTime.get(0) || (nowDate.getDayOfMonth() == extendTime.get(0) && nowTime.isBefore(startLocalTime))) {
+                nextStartDate = startDate;
+            } else {
+                nowDate = nowDate.plusMonths(1);
+                nextStartDate = DateUtil.convertToTimestamp(nowDate,startLocalTime);
+            }
         } else if (PERIOD_ACTION_EVERY_WEEK.equals(periodAction)) {
+            // 当前时间是一周的第几天
+            int nowDayOfWeek = nowDate.getDayOfWeek().getValue();
+            Optional<Integer> optional = extendTime.stream().filter(x -> x > nowDayOfWeek).findFirst();
+            // 非当天的最近一次活动是一周内的第几天
+            int nextActivityDayOfWeek = optional.isPresent()? optional.get() : extendTime.get(0);
+            // 判断是否是今天有活动但是还没到要执行的时间
+            if (extendTime.contains(nowDayOfWeek)&&nowTime.isBefore(startLocalTime)) {
+                nextActivityDayOfWeek = nowDayOfWeek;
+            }
+            // ((nextActivityDayOfWeek -1)+7 - (nowDayOfWeek -1))%7 计算下次活动时间到今天的相差的天数
+            int offsetDays =(nextActivityDayOfWeek +7 - nowDayOfWeek)%7;
 
+            nowDate = nowDate.plusDays(offsetDays);
+            nextStartDate = DateUtil.convertToTimestamp(nowDate,startLocalTime);
         } else{
-
+            // 仅指定了开始日期和结束日期的时候nextStartDate即为startDate
+            nextStartDate = startDate;
         }
-
-            return nextStartDate;
+        // 已经超过最后截止日期
+        if (nextStartDate.compareTo(endDate) > 0) {
+            nextStartDate = null;
+        }
+        return nextStartDate;
     }
 
     private boolean isActivityGoingOn(Record8<Integer, Integer, BigDecimal, Timestamp, Timestamp, Byte, String, String> reducePriceRecord,Timestamp date){
@@ -408,7 +471,7 @@ public class ReducePriceService extends ShopBaseService {
         LocalTime nowLocalTime = LocalTime.now();
         List<Integer> dayArray = new ArrayList<>(7);
         if(StringUtils.isNotBlank(pointTimeStr)){
-            String[] pointTime = extendTime.split("@");
+            String[] pointTime = pointTimeStr.split("@");
             String[] startArray = pointTime[0].split(":");
             String[] endArray = pointTime[1].split(":");
             startLocalTime = LocalTime.of(Integer.parseInt(startArray[0]),Integer.parseInt(startArray[1]));
@@ -422,7 +485,7 @@ public class ReducePriceService extends ShopBaseService {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         }
-        if ( PERIOD_ACTION_EVERY_DAY.equals(periodAction)|| periodAction == null){
+        if ( PERIOD_ACTION_EVERY_DAY.equals(periodAction)|| PERIOD_ACTION_NORMAL.equals(periodAction)){
             return true;
         }else if ( PERIOD_ACTION_EVERY_WEEK.equals(periodAction) ){
             Integer dayOfWeek = DateUtil.getLocalDate().getDayOfWeek().getValue();
