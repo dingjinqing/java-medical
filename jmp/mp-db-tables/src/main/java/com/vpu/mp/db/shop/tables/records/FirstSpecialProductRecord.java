@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FirstSpecialProductRecord extends UpdatableRecordImpl<FirstSpecialProductRecord> implements Record5<Integer, Integer, Integer, Integer, BigDecimal> {
 
-    private static final long serialVersionUID = 2020827034;
+    private static final long serialVersionUID = -122457216;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_first_special_product.id</code>.
@@ -75,16 +75,16 @@ public class FirstSpecialProductRecord extends UpdatableRecordImpl<FirstSpecialP
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_first_special_product.product_id</code>. 规格ID
+     * Setter for <code>mini_shop_471752.b2c_first_special_product.prd_id</code>. 规格id
      */
-    public void setProductId(Integer value) {
+    public void setPrdId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_first_special_product.product_id</code>. 规格ID
+     * Getter for <code>mini_shop_471752.b2c_first_special_product.prd_id</code>. 规格id
      */
-    public Integer getProductId() {
+    public Integer getPrdId() {
         return (Integer) get(3);
     }
 
@@ -163,7 +163,7 @@ public class FirstSpecialProductRecord extends UpdatableRecordImpl<FirstSpecialP
      */
     @Override
     public Field<Integer> field4() {
-        return FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.PRODUCT_ID;
+        return FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.PRD_ID;
     }
 
     /**
@@ -203,7 +203,7 @@ public class FirstSpecialProductRecord extends UpdatableRecordImpl<FirstSpecialP
      */
     @Override
     public Integer component4() {
-        return getProductId();
+        return getPrdId();
     }
 
     /**
@@ -243,7 +243,7 @@ public class FirstSpecialProductRecord extends UpdatableRecordImpl<FirstSpecialP
      */
     @Override
     public Integer value4() {
-        return getProductId();
+        return getPrdId();
     }
 
     /**
@@ -286,7 +286,7 @@ public class FirstSpecialProductRecord extends UpdatableRecordImpl<FirstSpecialP
      */
     @Override
     public FirstSpecialProductRecord value4(Integer value) {
-        setProductId(value);
+        setPrdId(value);
         return this;
     }
 
@@ -326,13 +326,13 @@ public class FirstSpecialProductRecord extends UpdatableRecordImpl<FirstSpecialP
     /**
      * Create a detached, initialised FirstSpecialProductRecord
      */
-    public FirstSpecialProductRecord(Integer id, Integer firstSpecialId, Integer goodsId, Integer productId, BigDecimal prdPrice) {
+    public FirstSpecialProductRecord(Integer id, Integer firstSpecialId, Integer goodsId, Integer prdId, BigDecimal prdPrice) {
         super(FirstSpecialProduct.FIRST_SPECIAL_PRODUCT);
 
         set(0, id);
         set(1, firstSpecialId);
         set(2, goodsId);
-        set(3, productId);
+        set(3, prdId);
         set(4, prdPrice);
     }
 }

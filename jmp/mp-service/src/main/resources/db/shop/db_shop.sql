@@ -4487,7 +4487,7 @@ CREATE TABLE `b2c_first_special_product`
     `id`               int(11) NOT NULL AUTO_INCREMENT,
     `first_special_id` int(11) NOT NULL COMMENT '限时减价活动ID',
     `goods_id`         int(11) NOT NULL COMMENT '商品ID',
-    `product_id`       int(11) NOT NULL COMMENT '规格ID',
+    `prd_id`       int(11) NOT NULL COMMENT '规格ID',
     `prd_price`        decimal(10, 2) DEFAULT NULL COMMENT '折后价格',
     PRIMARY KEY (`id`)
 );

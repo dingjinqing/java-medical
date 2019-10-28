@@ -949,5 +949,6 @@ ALTER TABLE b2c_member_card ADD COLUMN discount_brand_id varchar(299) DEFAULT NU
 ALTER TABLE `b2c_user_detail` 
 CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
 
---2019-10-28 限时降价相关表的规格ID与规格表保持一致
+--2019-10-28 限时降价、首单特惠相关表的规格ID与规格表保持一致
 ALTER TABLE `b2c_reduce_price_product` CHANGE COLUMN `product_id` `prd_id` int(11) NOT NULL COMMENT '规格id';
+ALTER TABLE `b2c_first_special_product` CHANGE COLUMN `product_id` `prd_id` int(11) NOT NULL COMMENT '规格id';

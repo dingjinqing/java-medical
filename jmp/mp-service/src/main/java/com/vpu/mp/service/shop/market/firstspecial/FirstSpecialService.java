@@ -197,11 +197,11 @@ public class FirstSpecialService extends ShopBaseService {
      */
     public List<Integer> getOnGoingPrdIds(){
         Timestamp nowDate =new Timestamp(System.currentTimeMillis());
-        return db().select(FIRST_SPECIAL_PRODUCT.PRODUCT_ID).from(FIRST_SPECIAL_PRODUCT).leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.ge(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
+        return db().select(FIRST_SPECIAL_PRODUCT.PRD_ID).from(FIRST_SPECIAL_PRODUCT).leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.ge(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
                 .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL))
                 .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
                         .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(nowDate)).and(FIRST_SPECIAL.END_TIME.gt(nowDate))))
-                .groupBy(FIRST_SPECIAL_PRODUCT.PRODUCT_ID).fetch().getValues(FIRST_SPECIAL_PRODUCT.PRODUCT_ID);
+                .groupBy(FIRST_SPECIAL_PRODUCT.PRD_ID).fetch().getValues(FIRST_SPECIAL_PRODUCT.PRD_ID);
 
     }
 
@@ -227,7 +227,7 @@ public class FirstSpecialService extends ShopBaseService {
         if(!res.isEmpty()){
             for(FirstSpecialGoodsVo firstSpecialGoods : res){
                 firstSpecialGoods.setGoodsView(saas().getShopApp(getShopId()).goods.getGoodsView(firstSpecialGoods.getGoodsId()));
-                List<FirstSpecialProductVo> firstSpecialProduct = db().select(FIRST_SPECIAL_PRODUCT.ID,FIRST_SPECIAL_PRODUCT.PRODUCT_ID,FIRST_SPECIAL_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE.as("originalPrice")).from(FIRST_SPECIAL_PRODUCT).innerJoin(GOODS_SPEC_PRODUCT).on(FIRST_SPECIAL_PRODUCT.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(id)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(firstSpecialGoods.getGoodsId())).fetchInto(FirstSpecialProductVo.class);
+                List<FirstSpecialProductVo> firstSpecialProduct = db().select(FIRST_SPECIAL_PRODUCT.ID,FIRST_SPECIAL_PRODUCT.PRD_ID,FIRST_SPECIAL_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE.as("originalPrice")).from(FIRST_SPECIAL_PRODUCT).innerJoin(GOODS_SPEC_PRODUCT).on(FIRST_SPECIAL_PRODUCT.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(id)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(firstSpecialGoods.getGoodsId())).fetchInto(FirstSpecialProductVo.class);
                 firstSpecialGoods.setFirstSpecialProduct(firstSpecialProduct);
             }
         }

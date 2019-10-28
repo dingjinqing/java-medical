@@ -13,8 +13,7 @@ import lombok.Data;
 public class ReducePriceGoodsProductAddParam {
 
     /** 规格ID */
-    @JsonProperty("prdId")
-    private Integer productId;
+    private Integer prdId;
 
     /** 修改后的规格价 */
     private BigDecimal prdPrice;

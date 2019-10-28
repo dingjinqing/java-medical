@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FirstSpecialProduct extends TableImpl<FirstSpecialProductRecord> {
 
-    private static final long serialVersionUID = -2005522620;
+    private static final long serialVersionUID = 1776474763;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_first_special_product</code>
@@ -73,9 +73,9 @@ public class FirstSpecialProduct extends TableImpl<FirstSpecialProductRecord> {
     public final TableField<FirstSpecialProductRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
 
     /**
-     * The column <code>mini_shop_471752.b2c_first_special_product.product_id</code>. 规格ID
+     * The column <code>mini_shop_471752.b2c_first_special_product.prd_id</code>. 规格id
      */
-    public final TableField<FirstSpecialProductRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "规格ID");
+    public final TableField<FirstSpecialProductRecord, Integer> PRD_ID = createField("prd_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "规格id");
 
     /**
      * The column <code>mini_shop_471752.b2c_first_special_product.prd_price</code>. 折后价格

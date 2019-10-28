@@ -20,7 +20,7 @@ public class FirstSpecialGoodsProductParam {
     private Integer id;
 
     /** 规格ID */
-    private Integer productId;
+    private Integer prdId;
 
     /** 修改后的规格价 */
     @NotNull(groups = {FirstSpecialUpdateValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
