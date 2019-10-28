@@ -884,7 +884,7 @@ ALTER TABLE b2c_store_order add column `currency` varchar(10) NOT NULL DEFAULT '
 -- 2019-09-24虚拟商品订单增加币种
 alter table b2c_virtual_order add column `currency` varchar(10) NOT NULL DEFAULT 'CNY' COMMENT '币种';
 -- 王帅买单订单修改英文
-ALTER TABLE `b2c_store_order` 
+ALTER TABLE `b2c_store_order`
 CHANGE COLUMN `member_card_redunce` `member_card_reduce` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '会员卡抵扣金额' ;
 
 --梁晨 用户-优惠券表修改type字段
@@ -926,7 +926,7 @@ alter table `b2c_part_order_goods_ship` add index `product_id` (`product_id`);
 
 ALTER TABLE b2c_mrking_voucher add column `expiration_date` timestamp default 0 comment 'validity_type为1时的过期时间';
 --王帅增加订单字段
-ALTER TABLE `b2c_order_info` 
+ALTER TABLE `b2c_order_info`
 ADD COLUMN `free_ship` decimal(10, 2) DEFAULT 0.00 COMMENT '运费抵扣' ,
 ADD COLUMN `free_detail` text  COMMENT '运费抵扣规则',
 ADD COLUMN `sub_goods_price` decimal(10, 2) DEFAULT 0.00 COMMENT '子单金额' ,
@@ -946,9 +946,58 @@ ALTER TABLE b2c_member_card ADD COLUMN discount_brand_id varchar(299) DEFAULT NU
 
 
 --更新字段长度，使主库和店铺库保持一致
-ALTER TABLE `b2c_user_detail` 
+ALTER TABLE `b2c_user_detail`
 CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
 
 --2019-10-28 限时降价、首单特惠相关表的规格ID与规格表保持一致
 ALTER TABLE `b2c_reduce_price_product` CHANGE COLUMN `product_id` `prd_id` int(11) NOT NULL COMMENT '规格id';
 ALTER TABLE `b2c_first_special_product` CHANGE COLUMN `product_id` `prd_id` int(11) NOT NULL COMMENT '规格id';
+
+-- 图片上传增加 userid
+ALTER TABLE `jmini_shop_245547`.`b2c_uploaded_image`
+MODIFY COLUMN `img_cat_id` int(11) NOT NULL DEFAULT 0 COMMENT '图片分类 默认0 用户上传为-1' AFTER `img_url`,
+ADD COLUMN `user_id` int(11) NOT NULL DEFAULT 0 AFTER `shop_id`;
+
+
+-- 支付有礼活动
+-- drop table if 	exists `b2c_pay_reward`;
+create table `b2c_pay_reward` (
+	`id` int ( 11 ) not null auto_increment,
+	`act_name` varchar ( 120 ) not null default '' comment '活动名称',
+	`start_time` timestamp null default null,
+	`end_time` timestamp null default null,
+	`type` tinyint ( 1 ) default 0 comment '类型，1为分裂 2抽奖 3送券 4跳转自定义链接',
+	`everytime_amount` smallint ( 4 ) null default '0' comment '每一单可以发放优惠券数量',
+	`denomination` decimal ( 10, 2 ) not null default '0' comment '触发条件：支付金额满',
+	`coupon_ids` varchar ( 50 ) null comment '支付送券的优惠券id',
+	`lottery_id` int ( 10 ) not null comment '幸运大抽奖',
+	`recommend_type` tinyint ( 1 ) not null default '1' comment '支付有礼跳转链接 1:全部商品可用 2：指定商品可用',
+	`recommend_goods_id` text comment '指定商品可用',
+	`recommend_cat_id` text comment '指定平台可用',
+	`recommend_sort_id` text comment '指定商家分类可用',
+	`img_url` varchar ( 191 ) not null default '' comment '支付有礼跳转活动图片路径',
+	`link_path` varchar ( 191 ) not null default '' comment '支付有礼跳转活动链接',
+	`status` tinyint ( 2 ) not null default '0' comment '状态：1停用',
+	`is_delete` tinyint ( 1 ) null default '0' comment '1为删除状态',
+	`create_time` timestamp default current_timestamp,
+	`update_time` timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
+primary key ( `id` ));
+
+
+-- 支付有礼记录
+-- drop table  if	exists `b2c_pay_reward_record`;
+create table `b2c_pay_reward_record` (
+	`id` int ( 11 ) not null auto_increment,
+	`pay_reward_id` int ( 11 ) not null comment '支付有礼活动id',
+	`order_sn` varchar ( 20 ) collate utf8mb4_unicode_ci not null default '' comment '订单编号',
+	`user_id` int ( 11 ) not null comment '下单用户id',
+	`type` tinyint ( 1 ) default 0 comment '类型，1为分裂  2抽奖 3送券 4跳转自定义链接',
+	`mrking_voucher_id` varchar ( 500 ) not null comment '发送的活动优惠券，逗号分隔',
+	`is_delete` tinyint ( 1 ) null default '0' comment '1为删除状态',
+	`create_time` timestamp default current_timestamp,
+	`update_time` timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
+primary key ( `id` ));
+
+
+
+

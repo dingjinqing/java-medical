@@ -15,15 +15,17 @@ import com.vpu.mp.service.pojo.shop.market.payreward.record.PayRewardLotteryPara
 import com.vpu.mp.service.shop.coupon.CouponHoldService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.market.lottery.LotteryRecordService;
+import org.jooq.Record7;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.COUPON_ACTIVITY;
-import static com.vpu.mp.db.shop.Tables.PAY_REWARD;
-
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.LOTTERY;
 import static com.vpu.mp.service.pojo.shop.market.payreward.PayRewardParam.TYPE_SPLIT;
 
 /**
@@ -35,7 +37,7 @@ import static com.vpu.mp.service.pojo.shop.market.payreward.PayRewardParam.TYPE_
 @Service
 public class PayRewardService  extends ShopBaseService {
     private static final Byte STOP_STATUS = 1;
-    private static final Byte START_STATUS = 0;
+    private static final Byte USE_STATUS = 0;
 
     @Autowired
     CouponService coupon;
@@ -122,14 +124,34 @@ public class PayRewardService  extends ShopBaseService {
      * @param param
      * @return
      */
-    public List<PayRewardListVo> getPayRewardList(PayRewardListParam param) {
-        return db().select(PAY_REWARD.ID, PAY_REWARD.ACT_NAME, PAY_REWARD.DENOMINATION, PAY_REWARD.START_TIME, PAY_REWARD.END_TIME
+    public PageResult<PayRewardListVo> getPayRewardList(PayRewardListParam param) {
+        SelectConditionStep<Record7<Integer, String, BigDecimal, Timestamp, Timestamp, Byte, Byte>> select = db().select(PAY_REWARD.ID, PAY_REWARD.ACT_NAME, PAY_REWARD.DENOMINATION, PAY_REWARD.START_TIME, PAY_REWARD.END_TIME
                 , PAY_REWARD.TYPE, PAY_REWARD.STATUS)
                 .from(PAY_REWARD)
-                .where(PAY_REWARD.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
-                .and(PAY_REWARD.TYPE.eq(param.getNavType()))
-                .orderBy(PAY_REWARD.CREATE_TIME.desc())
-                .fetchInto(PayRewardListVo.class);
+                .where(PAY_REWARD.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
+        Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+        switch (param.getNavType()) {
+            case 2:
+                select.and(PAY_REWARD.START_TIME.lt(nowTime))
+                        .and(PAY_REWARD.END_TIME.gt(nowTime))
+                        .and(PAY_REWARD.STATUS.eq(USE_STATUS));
+                break;
+            case 3:
+                select.and(PAY_REWARD.STATUS.eq(USE_STATUS))
+                        .and(PAY_REWARD.START_TIME.gt(nowTime));
+                break;
+            case 4:
+                select.and(PAY_REWARD.STATUS.gt(USE_STATUS))
+                        .and(PAY_REWARD.END_TIME.lt(nowTime));
+                break;
+            case 5:
+                select.and(PAY_REWARD.STATUS.eq(STOP_STATUS));
+                break;
+            default:
+        }
+        select.orderBy(PAY_REWARD.CREATE_TIME.desc());
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), PayRewardListVo.class);
+
     }
 
     /**
@@ -140,12 +162,12 @@ public class PayRewardService  extends ShopBaseService {
         PayRewardRecord record  =db().newRecord(PAY_REWARD);
         record.setId(param.getId());
         record.refresh();
-        if (START_STATUS.equals(record.getStatus())){
+        if (USE_STATUS.equals(record.getStatus())){
             record.setStatus(STOP_STATUS);
         }else {
             PayRewardRecord nowPayReward = getNowPayReward();
             if (nowPayReward==null||param.getId().equals(nowPayReward.getId())){
-                record.setStatus(START_STATUS);
+                record.setStatus(USE_STATUS);
             }
         }
         record.update();

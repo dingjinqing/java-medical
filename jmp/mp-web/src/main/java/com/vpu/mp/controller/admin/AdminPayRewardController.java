@@ -82,7 +82,7 @@ public class AdminPayRewardController  extends AdminBaseController{
      */
     @PostMapping("/list")
     public JsonResult getPayRewardList(@RequestBody PayRewardListParam param){
-        List<PayRewardListVo> payRewardList = shop().payReward.getPayRewardList(param);
+        PageResult<PayRewardListVo> payRewardList = shop().payReward.getPayRewardList(param);
         return success(payRewardList);
     }
 
