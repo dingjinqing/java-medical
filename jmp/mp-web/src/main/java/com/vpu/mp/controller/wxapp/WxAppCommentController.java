@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.wxapp.comment.AddCommentParam;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListParam;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
@@ -41,7 +42,11 @@ public class WxAppCommentController extends WxAppBaseController {
    */
   @PostMapping("/add")
   public JsonResult addCommentByUser(@RequestBody AddCommentParam param) {
-    shop().goods.goodsComment.addCommentByUser(param);
+    try {
+      shop().goods.goodsComment.addCommentByUser(param);
+    } catch (MpException e) {
+      return fail(e.getErrorCode());
+    }
     return success();
   }
 }

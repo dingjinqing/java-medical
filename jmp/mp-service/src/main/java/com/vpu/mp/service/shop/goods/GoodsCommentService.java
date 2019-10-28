@@ -1,13 +1,18 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponDetailsVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.member.AccountService;
+import com.vpu.mp.service.shop.member.ScoreService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
@@ -19,6 +24,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -34,7 +40,9 @@ import static com.vpu.mp.db.shop.Tables.*;
 @Service
 public class GoodsCommentService extends ShopBaseService {
   @Autowired private CouponGiveService couponGiveService;
-
+  @Autowired private ScoreService scoreService;
+  @Autowired private AccountService accountService;
+  @Autowired protected HttpServletRequest request;
   public static final int THREE = 3;
   public static final int FOUR = 4;
   public static final int FIVE = 5;
@@ -710,7 +718,7 @@ public class GoodsCommentService extends ShopBaseService {
    *
    * @param param 用户添加评价的入参
    */
-  public void addCommentByUser(AddCommentParam param) {
+  public void addCommentByUser(AddCommentParam param) throws MpException {
     // 先查询当前店铺评价审核配置
     String commConfig =
         db().select(SHOP_CFG.V)
@@ -793,7 +801,21 @@ public class GoodsCommentService extends ShopBaseService {
       // 活动奖励1：赠送积分
       if (param.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
         // 给当前用户赠送积分
-        giveScoreByAct(param.getUserId(), Integer.valueOf(param.getAward()));
+        Integer[] userIdArray = {param.getUserId()};
+        scoreService.updateMemberScore(
+            new ScoreParam() {
+              {
+                setUserId(userIdArray);
+                setScore(Integer.valueOf(param.getAward()));
+                setScoreStatus(NumberUtils.BYTE_ZERO);
+                setDesc("score");
+                setOrderSn(param.getOrderSn());
+                setRemark("评价有礼获得");
+              }
+            },
+            0,
+            (byte) 11,
+            (byte) 0);
       }
       // 活动奖励2：赠送优惠券
       else if (param.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
@@ -803,7 +825,23 @@ public class GoodsCommentService extends ShopBaseService {
       // 活动奖励3：赠送用户余额
       else if (param.getAwardType().equals(THREE)) {
         // 给当前用户赠送余额
-        giveAccountByAct(param.getUserId(), new BigDecimal(param.getAward()));
+        // 获取语言 用于国际化
+        String language =
+            org.springframework.util.StringUtils.isEmpty(request.getHeader("V-Lang"))
+                ? ""
+                : request.getHeader("V-Lang");
+        accountService.addUserAccount(
+            new AccountParam() {
+              {
+                setUserId(param.getUserId());
+                setAmount(BigDecimal.valueOf(Double.parseDouble(param.getAward())));
+                setOrderSn(param.getOrderSn());
+              }
+            },
+            0,
+            (byte) 8,
+            (byte) 1,
+            language);
       }
       // 活动奖励4：赠送抽奖机会
       else if (param.getAwardType().equals(FOUR)) {
@@ -813,45 +851,6 @@ public class GoodsCommentService extends ShopBaseService {
       else if (param.getAwardType().equals(FIVE)) {
         // 前端展示内容：查看神秘奖励，可以选择进入path链接
       }
-    }
-  }
-
-  /**
-   * 给当前用户赠送积分
-   *
-   * @param paramUserId 用户id
-   * @param paramScore 赠送的积分值
-   */
-  public void giveScoreByAct(Integer paramUserId, Integer paramScore) {
-    // 得到表中的用户id 没有则赋值为空
-    Integer userId =
-        db().select(USER_SCORE.USER_ID)
-            .from(USER_SCORE)
-            .where(USER_SCORE.USER_ID.eq(paramUserId))
-            .fetchOptionalInto(Integer.class)
-            .orElse(null);
-    // 如果没有当前用户信息，添加一条新的记录
-    if (userId == null) {
-      db().insertInto(USER_SCORE, USER_SCORE.USER_ID, USER_SCORE.SCORE)
-          .values(paramUserId, paramScore)
-          .execute();
-    }
-    // 如果有当前信用信息，修改对应用户信息
-    else {
-      // 得到用户原始积分
-      Integer oldScore =
-          db().select(USER_SCORE.SCORE)
-              .from(USER_SCORE)
-              .where(USER_SCORE.USER_ID.eq(paramUserId))
-              .fetchOptionalInto(Integer.class)
-              .orElse(NumberUtils.INTEGER_ZERO);
-      // 计算用户总积分
-      Integer newScore = oldScore + paramScore;
-      // 更新积分表为总积分
-      db().update(USER_SCORE)
-          .set(USER_SCORE.SCORE, newScore)
-          .where(USER_SCORE.USER_ID.eq(paramUserId))
-          .execute();
     }
   }
 
@@ -935,45 +934,6 @@ public class GoodsCommentService extends ShopBaseService {
           .set(MRKING_VOUCHER.SURPLUS, newSurplus)
           .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
           .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
-          .execute();
-    }
-  }
-
-  /**
-   * 给当前用户赠送余额
-   *
-   * @param paramUserId 用户id
-   * @param paramAccount 赠送的余额值
-   */
-  public void giveAccountByAct(Integer paramUserId, BigDecimal paramAccount) {
-    // 得到表中的用户id 没有则赋值为空
-    Integer userId =
-        db().select(USER_ACCOUNT.USER_ID)
-            .from(USER_ACCOUNT)
-            .where(USER_ACCOUNT.USER_ID.eq(paramUserId))
-            .fetchOptionalInto(Integer.class)
-            .orElse(null);
-    // 如果没有当前用户信息，添加一条新的记录
-    if (userId == null) {
-      db().insertInto(USER_ACCOUNT, USER_ACCOUNT.USER_ID, USER_ACCOUNT.AMOUNT)
-          .values(paramUserId, paramAccount)
-          .execute();
-    }
-    // 如果有当前信用信息，修改对应用户信息
-    else {
-      // 得到用户原始余额
-      BigDecimal oldAccount =
-          db().select(USER_ACCOUNT.AMOUNT)
-              .from(USER_ACCOUNT)
-              .where(USER_ACCOUNT.USER_ID.eq(paramUserId))
-              .fetchOptionalInto(BigDecimal.class)
-              .orElse(BigDecimal.valueOf(NumberUtils.DOUBLE_ZERO));
-      // 计算用户总余额
-      BigDecimal newAccount = oldAccount.add(paramAccount);
-      // 更新积分表为总余额
-      db().update(USER_ACCOUNT)
-          .set(USER_ACCOUNT.AMOUNT, newAccount)
-          .where(USER_ACCOUNT.USER_ID.eq(paramUserId))
           .execute();
     }
   }
