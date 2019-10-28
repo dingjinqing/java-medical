@@ -21,7 +21,6 @@ import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
-import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -355,12 +354,11 @@ public class StoreWxService extends ShopBaseService {
         FieldsUtil.assignNotNull(storePojo, storeInfoVo);
 
         // 获取服务列表,按服务分类归纳
-        Map<StoreServiceCategoryListQueryVo, List<StoreServiceListQueryVo>> serviceCat = new HashMap<StoreServiceCategoryListQueryVo, List<StoreServiceListQueryVo>>() {{
-            storeService.getAllStoreServiceCategory(new StoreServiceCategoryListQueryParam() {{
-                setStoreId(storeId);
-            }}).forEach(e -> put(e, storeService.getStoreServiceByCatId(storeId, e.getCatId())));
-        }};
-        storeInfoVo.setServiceCat(serviceCat);
+        List<StoreServiceCategoryListQueryVo> catService = storeService.getAllStoreServiceCategory(new StoreServiceCategoryListQueryParam() {{
+            setStoreId(storeId);
+        }});
+        catService.forEach(e -> e.setServiceList(storeService.getStoreServiceByCatId(storeId, e.getCatId())));
+        storeInfoVo.setServiceCat(catService);
         storeInfoVo.setAllService(storeService.getAllStoreServiceByStoreId(storeId));
         // todo 扫码购
 //        List<String> storeScanIds = Arrays.asList(storeConfigService.getStoreScanIds().split(","));
