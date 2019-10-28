@@ -733,7 +733,11 @@
       :tuneUpChooseGoods='controlChoosingGoodsDialog'
     />
     <!--选择商家分类弹窗-->
-    <AddingBusClassDialog />
+    <AddingBusClassDialog
+      :dialogVisible.sync="businessDialogVisible"
+      :classFlag="classFlag"
+      @BusClassTrueArr="BusClassTrueArr()"
+    />
 
     <!--添加品牌弹窗-->
     <AddBrandDialog />
@@ -800,6 +804,8 @@ export default {
       }
     }
     return {
+      classFlag: null, // 区分商家分类和平台分类flag
+      businessDialogVisible: false, // 商家分类和平台分类flag
       cardType: null,
       colorLeft_: '',
       defaultColorleft: '#fff',
@@ -1561,12 +1567,16 @@ export default {
         case 1:
           this.AtreeType = 1
           console.log('商家分类')
-          this.$http.$emit('addingBusClassDialog', this.shopCategoryIds)
+          this.businessDialogVisible = true
+          this.classFlag = 1
+          // this.$http.$emit('addingBusClassDialog', this.shopCategoryIds)
           break
         case 2:
           this.AtreeType = 2
           console.log('平台分类')
-          this.$http.$emit('addingBusClassDialog', this.platformCategoryIds, this.AtreeType)
+          this.businessDialogVisible = true
+          this.classFlag = 2
+          // this.$http.$emit('addingBusClassDialog', this.platformCategoryIds, this.AtreeType)
           break
         case 3:
           console.log('detail', index, this.addBrandDialogDataFlag1)
@@ -1585,11 +1595,15 @@ export default {
           break
         case 1:
           this.AtreeType = 1
-          this.$http.$emit('addingBusClassDialog', this.ownStoreCategoryIds, this.AtreeType)
+          this.businessDialogVisible = true
+          this.classFlag = 1
+          // this.$http.$emit('addingBusClassDialog', this.ownStoreCategoryIds, this.AtreeType)
           break
         case 2:
           this.AtreeType = 2
-          this.$http.$emit('addingBusClassDialog', this.ownPlatFormCategoryIds, this.AtreeType)
+          this.businessDialogVisible = true
+          this.classFlag = 2
+          // this.$http.$emit('addingBusClassDialog', this.ownPlatFormCategoryIds, this.AtreeType)
           break
         case 3:
           this.$http.$emit('CallAddBrand', this.ownBrandId, this.addBrandDialogDataFlag1)
@@ -1647,6 +1661,10 @@ export default {
       console.log(row.$index)
       let { $index } = row
       this.chioseSureData.splice($index, 1)
+    },
+    // 商品分类和平台分类弹窗选中回传数据
+    BusClassTrueArr (data) {
+      // 根据this.AtreeType 的值判断是指定商品里面的弹窗还是会员专享里面的弹窗   backDataArr字段是回显wiki应该有写
     }
   }
 }

@@ -978,8 +978,8 @@ export default {
             'pageType': this.$route.params.data.page_type,
             'pageEnabled': this.$route.params.data.page_enabled,
             'pageTplType': this.$route.params.data.page_tpl_type,
-            'pageContent': 'json',
-            'pagePublishContent': 'json',
+            'pageContent': JSON.stringify(data),
+            'pagePublishContent': JSON.stringify(data),
             'pageState': pageState,
             'catId': this.pageSetData.cat_id
           }

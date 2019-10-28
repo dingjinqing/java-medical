@@ -71,7 +71,8 @@ export default {
       type: Boolean,
       default: () => false
     },
-    classFlag: Number
+    classFlag: Number,
+    backDataArr: Array
   },
   data () {
     return {
@@ -116,15 +117,15 @@ export default {
     }
   },
   mounted () {
-    this.$http.$on('addingBusClassDialog', (res, flag) => {
-      console.log(flag)
-      this.dialogVisible = true
-      this.loading = true
-      this.newArr = []
-      this.defaultArr = []
-      // 初始化数据
-      this.defaultData(res, flag)
-    })
+    // this.$http.$on('addingBusClassDialog', (res, flag) => {
+    //   console.log(flag)
+    //   this.dialogVisible = true
+    //   this.loading = true
+    //   this.newArr = []
+    //   this.defaultArr = []
+    //   // 初始化数据
+    //   this.defaultData(res, flag)
+    // })
     this.$http.$on('clickBusNode', res => {
       console.log(res)
       let newArr = []
@@ -161,6 +162,7 @@ export default {
       console.log(this.$refs.cardTree.getCheckedKeys())
       this.$emit('BusClassTrueArr', arr)
       this.$emit('update:dialogVisible', false)
+      this.dialogVisible = false
     },
     defaultData (backData, flag) {
       console.log(flag)
