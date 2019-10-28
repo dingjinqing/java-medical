@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.market.firstspecial;
 
-import com.sun.deploy.net.proxy.pac.PACFunctionsImpl;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialRecord;
