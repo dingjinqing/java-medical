@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * The type Store list param.
@@ -18,10 +19,14 @@ public class StoreListParam {
      * The Location.用户位置信息json
      * "{"latitude":39.95933,"longitude":116.29845,"speed":-1,"accuracy":65,"verticalAccuracy":65,"horizontalAccuracy":65,"errMsg":"getLocation:ok"}"
      */
-    @NotBlank
-    public String location;
+    @NotNull
+    @Valid
+    public Location location;
     /**
-     * The Type.type为0时,获得可购买的门店列表 todo 门店列表入口{所有门店,可购买该商品门店列表,同城服务门店列表,扫码购门店列表,会员卡页面进入的门店列表}
+     * The Type.
+     * type为0,普通入口
+     * type为1,并且cardId不为空;表示入口为会员卡详情页
+     * type为2 ,并且goodsId不为空表示入口为商品详情页自提/同城配送过来
      */
     public Byte type = 0;
     /**
@@ -43,5 +48,12 @@ public class StoreListParam {
     @JsonProperty("card_id")
     @JsonAlias({"card_id", "cardId"})
     public Integer cardId;
+
+    /**
+     * The Deliver type.0:门店自提,1同城配送
+     */
+    @JsonProperty("deliver_type")
+    @JsonAlias({"deliver_type", "deliverType"})
+    public Byte deliverType;
 
 }

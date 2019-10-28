@@ -1,8 +1,10 @@
 package com.vpu.mp.controller;
 
-import java.io.IOException;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,11 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-
-import me.chanjar.weixin.common.error.WxErrorException;
+import java.io.IOException;
 
 /**
  * controller全局异常捕获处理
@@ -88,6 +86,10 @@ public class ExceptionControllerHandler extends BaseController {
      */
     @ExceptionHandler(BusinessException.class)
     public JsonResult businessException(BusinessException e){
-        return fail(e.getCode());
+        if (e.getCode() != null) {
+            return fail(e.getCode());
+        } else {
+            return fail(e.getErrorMessage());
+        }
     }
 }

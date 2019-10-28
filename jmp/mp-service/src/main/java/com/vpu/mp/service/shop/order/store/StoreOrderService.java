@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -28,7 +29,9 @@ import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -47,6 +50,7 @@ import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_WX_PAY;
 import static java.math.BigDecimal.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * Table:TABLE
@@ -77,9 +81,6 @@ public class StoreOrderService extends ShopBaseService {
 
 	public final StoreOrder TABLE = STORE_ORDER;
     public static final BigDecimal HUNDRED = new BigDecimal(100);
-//    public static final BigDecimal TEN = new BigDecimal(10);
-//    public static final BigDecimal ONE = new BigDecimal(1);
-//    public static final BigDecimal ZERO = new BigDecimal(0);
 
 	/**
 	 * 	买单订单综合查询
@@ -234,7 +235,7 @@ public class StoreOrderService extends ShopBaseService {
     }
 
     /**
-     * Update prepay id by order sn.
+     * Update prepay id by order sn.更新微信支付id
      *
      * @param orderSn  the order sn
      * @param prepayId the prepay id
@@ -246,9 +247,47 @@ public class StoreOrderService extends ShopBaseService {
     /**
      * Update record.门店订单更新
      *
-     * @param orderRecord the order record
+     * @param condition   the condition 更新条件
+     * @param orderRecord the order record 更新内容
      */
     public void updateRecord(Condition condition, StoreOrderRecord orderRecord) {
         db().update(TABLE).set(orderRecord).where(condition).execute();
+    }
+
+    /**
+     * Send score after pay done.支付完成送积分
+     *
+     * @param orderInfo the order info 门店订单信息
+     */
+    public void sendScoreAfterPayDone(StoreOrderRecord orderInfo) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(orderInfo.getMemberCardNo())) {
+            // 获取购物送积分策略json数据,例如: {"offset":0,"goodsMoney":[100,200],"getScores":[1000,2000],"perGoodsMoney":1000,"perGetScores":2000}
+            String cardNo = orderInfo.getMemberCardNo();
+            String buyScoreConfig = db().select(MEMBER_CARD.BUY_SCORE).from(USER_CARD)
+                .leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+                .where(USER_CARD.CARD_NO.eq(cardNo))
+                .fetchOneInto(String.class);
+            ScoreJson scoreJson;
+            try {
+                scoreJson = MAPPER.readValue(buyScoreConfig, ScoreJson.class);
+                Assert.notNull(scoreJson, "购物送积分策略json数据为空");
+            } catch (IOException e) {
+                log.error("购物送积分策略json数据 [{}] 反序列化失败: 原因为; {}", buyScoreConfig, e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
+            } catch (NullPointerException e) {
+                log.error("购物送积分策略json数据 [{}] 为空: 原因为; {}", buyScoreConfig, e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
+            }
+            BigDecimal totalMoney = orderInfo.getMoneyPaid().add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()).setScale(2, RoundingMode.DOWN);
+            //0：购物满多少送多少积分；1：购物每满多少送多少积分
+            if (BYTE_ONE.equals(scoreJson.getOffset())) {
+                if (scoreJson.getPerGetScores().compareTo(ZERO) > 0 && scoreJson.getPerGoodsMoney().compareTo(ZERO) > 0) {
+                    int sendScore = totalMoney.divide(scoreJson.getPerGoodsMoney()).setScale(0, RoundingMode.DOWN).multiply(scoreJson.getPerGetScores()).intValue();
+                    log.debug("支付完成送积分:会员卡[{}],每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
+                }
+            } else if (BYTE_ZERO.equals(scoreJson.getOffset())) {
+
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.store.store;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserRecord;
@@ -12,7 +13,9 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
@@ -24,9 +27,7 @@ import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
-import com.vpu.mp.service.shop.member.AccountService;
-import com.vpu.mp.service.shop.member.MemberCardService;
-import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
@@ -109,6 +110,12 @@ public class StoreWxService extends ShopBaseService {
     public UserCardDaoService userCardDaoService;
 
     /**
+     * The User card service.
+     */
+    @Autowired
+    public UserCardService userCardService;
+
+    /**
      * The Invoice service.发票
      */
     @Autowired
@@ -138,6 +145,14 @@ public class StoreWxService extends ShopBaseService {
     @Autowired
     public ScoreService scoreService;
 
+    /**
+     * The Score cfg service.积分配置
+     */
+    @Autowired
+    public ScoreCfgService scoreCfgService;
+
+    public static final Byte BYTE_TWO = 2;
+
     private static final Condition delCondition = STORE.DEL_FLAG.eq(BYTE_ZERO);
 
     /**
@@ -147,23 +162,16 @@ public class StoreWxService extends ShopBaseService {
      * @return StorePageListVo
      */
     public List<StorePojo> getList(StoreListParam param) {
-        List<StorePojo> storeList;
-        Location location;
+        List<StorePojo> storeList = new ArrayList<>();
+        Location location = param.getLocation();
 
-        try {
-            location = MAPPER.readValue(param.getLocation(), Location.class);
-            log.debug("地理位置信息为:[param:{},location:{}]", param.getLocation(), location.toString());
-        } catch (IOException e) {
-            log.error("反序列化地理位置信息[{}]失败", param.getLocation());
-            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
-        }
-
+        // type为0,普通入口
         if (BYTE_ZERO.equals(param.getType())) {
             storeList = getStoreByCustomCondition(new HashMap<String, Byte>(2) {{
                 put("scan_stores", param.getScanStores());
             }}, null);
-        } else if (param.getCardId() != null) {
-            // 会员卡详情也跳转过来的
+        } else if (BYTE_ONE.equals(param.getType()) && param.getCardId() != null) {
+            // type为1,并且cardId不为空;表示入口为会员卡详情页
             MemberCardPojo memberCardPojo = memberCardService.getMemberCardInfoById(param.getCardId());
             if (memberCardPojo.getStoreUseSwitch().equals(BYTE_ONE)) {
                 return new ArrayList<>(0);
@@ -178,35 +186,41 @@ public class StoreWxService extends ShopBaseService {
                     }}, null);
                 }
             }
-        } else {
-//            商品详情页自提/同城配送过来
+        } else if (BYTE_TWO.equals(param.getType())) {
+//            type为2 ,表示入口为商品详情页自提/同城配送过来
             if (param.getGoodsId() != null) {
                 // 根据商品id获取商品规格id列表
                 List<GoodsSpecProduct> list = goodsSpecProductService.selectByGoodsId(param.getGoodsId());
                 Set<Integer> prdIds = list.stream().map(GoodsSpecProduct::getPrdId).collect(Collectors.toSet());
                 log.debug("商品[{}]对应的sku为:{}", param.getGoodsId(), prdIds.toString());
                 // 获得该商品可购买的门店列表
-                storeList = getCanBuyStoreList(prdIds, param.getType(), location, BYTE_ONE);
+                storeList = getCanBuyStoreList(prdIds, param.getDeliverType(), location, BYTE_ONE);
                 log.debug("可购买的门店列表:{}", storeList.stream().map(StorePojo::getStoreId).collect(Collectors.toSet()));
             } else {
                 // 缺少商品参数 商品规格
-                throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
+                throw new BusinessException("缺少商品参数 商品规格");
             }
         }
         // 查询开启“扫码购”功能的门店ID列表配置，逗号分隔
-        List<String> storeScanIds = Arrays.asList(storeConfigService.getStoreScanIds().split(","));
-        log.debug("开启“扫码购”功能的门店ID列表配置项:{}", storeScanIds.toString());
-        // 筛掉不支持扫码购的门店或者添加是否支持扫码购的标示位
-        if (param.getScanStores().equals(BYTE_ONE)) {
-            storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId().toString())).collect(Collectors.toList());
-        } else {
-            storeList.forEach(s -> {
-                s.setScanBuy(storeScanIds.contains(s.getStoreId().toString()) ? BYTE_ONE : BYTE_ZERO);
+        try {
+            String storeScanValue = storeConfigService.getStoreScanIds();
+            log.debug("cfg配置表中store_scan_ids值为:{}", storeScanValue);
+            List<Integer> storeScanIds = MAPPER.readValue(storeScanValue, new TypeReference<List<Integer>>() {
             });
+            log.debug("开启“扫码购”功能的门店ID列表配置项:{}", storeScanIds.toString());
+            // 筛掉不支持扫码购的门店或者添加是否支持扫码购的标示位
+            if (param.getScanStores().equals(BYTE_ONE)) {
+                storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId())).collect(Collectors.toList());
+            } else {
+                storeList.forEach(s -> {
+                    s.setScanBuy(storeScanIds.contains(s.getStoreId()) ? BYTE_ONE : BYTE_ZERO);
+                });
+            }
+        } catch (IOException e) {
+            log.error("storeScanIds 反序列化异常!");
+            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
         // 设置图片和距离
-        double lat1 = location.getLatitude();
-        double lon1 = location.getLatitude();
         storeList.forEach(s -> {
             if (s.getStoreImgs() != null) {
                 // 设置门店主图中的第一张为门店列表展示图
@@ -224,9 +238,16 @@ public class StoreWxService extends ShopBaseService {
                     s.setStoreImgs(null);
                 }
             }
-            double distance = getDistance(lat1, lon1, Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
-            log.debug("门店 {} 距离用户位置 {} km", s.getStoreName(), distance);
-            s.setDistance(distance);
+            Double lat1 = location.getLatitude();
+            Double lon1 = location.getLatitude();
+            if (lat1 != null && lon1 != null) {
+                double distance = getDistance(lat1, lon1, Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
+                log.debug("门店 {} 距离用户位置 {} km", s.getStoreName(), distance);
+                s.setDistance(distance);
+            } else {
+                // 默认或者异常地理位置信息均为0km
+                s.setDistance(DOUBLE_ZERO);
+            }
         });
         // 结果按照距离 从小到大排序
         Collections.sort(storeList);
@@ -294,10 +315,10 @@ public class StoreWxService extends ShopBaseService {
             .and(STORE_GOODS.IS_ON_SALE.eq(BYTE_ONE))
             .and(STORE.BUSINESS_STATE.eq(BYTE_ONE))
             .and(STORE.DEL_FLAG.eq(BYTE_ZERO));
-        if (deliverType.equals(BYTE_ONE)) {
+        if (deliverType.equals(BYTE_ZERO)) {
             conditionStep.and(STORE.AUTO_PICK.eq(SHORT_ONE));
         }
-        if (deliverType.equals(CONDITION_TWO)) {
+        if (deliverType.equals(BYTE_ONE)) {
             // TODO 同城配送 新增字段
 //            conditionStep.and(STORE.city.eq(SHORT_ONE));
         }
@@ -305,7 +326,7 @@ public class StoreWxService extends ShopBaseService {
             .having(DSL.count(STORE.STORE_ID).eq(prdIds.size()))
             .fetchInto(Integer.class);
         List<StorePojo> storeLists = db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StorePojo.class);
-        if (deliverType.equals(CONDITION_TWO)) {
+        if (deliverType.equals(BYTE_ONE)) {
             // TODO 查询支持同城配送的门店列表
             cityServiceCanUseStoreList(storeLists, location, isFromStore);
         }
@@ -438,33 +459,43 @@ public class StoreWxService extends ShopBaseService {
         } else {
             // 会员余额变动
             if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
-                AccountParam accountParam = new AccountParam();
-                accountParam.setUserId(userId);
-                accountParam.setAccount(userRecord.getAccount());
-                accountParam.setOrderSn(storeOrderRecord.getOrderSn());
-                accountParam.setAmount(storeOrderRecord.getUseAccount());
-                accountParam.setPayment("balance");
-                accountParam.setIsPaid(BYTE_ONE);
-                accountParam.setRemark(storeOrderRecord.getOrderSn());
                 try {
-                    accountService.addUserAccount(accountParam, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+                    accountService.addUserAccount(new AccountParam() {{
+                        setUserId(userId);
+                        setAccount(userRecord.getAccount());
+                        setOrderSn(storeOrderRecord.getOrderSn());
+                        setAmount(storeOrderRecord.getUseAccount());
+                        setPayment("balance");
+                        setIsPaid(BYTE_ONE);
+                        setRemark(storeOrderRecord.getOrderSn());
+                    }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
                 } catch (MpException e) {
                     e.printStackTrace();
                 }
             }
             // 创建用户积分记录
             if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
-                UserScoreVo vo = new UserScoreVo();
-                vo.setScoreDis(userRecord.getScore());
-                vo.setUserId(userId);
-                vo.setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
-                vo.setOrderSn(storeOrderRecord.getOrderSn());
-                vo.setShopId(getShopId());
-                vo.setRemark(storeOrderRecord.getOrderSn());
-                scoreService.addUserScore(vo, "0", BYTE_ONE, BYTE_ZERO);
+                scoreService.addUserScore(new UserScoreVo() {{
+                    setScoreDis(userRecord.getScore());
+                    setUserId(userId);
+                    setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
+                    setOrderSn(storeOrderRecord.getOrderSn());
+                    setShopId(getShopId());
+                    setRemark(storeOrderRecord.getOrderSn());
+                }}, "0", BYTE_ONE, BYTE_ZERO);
             }
+            // 增加会员卡消费记录
             if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
-                // TODO 增加会员卡消费记录
+                UserCardParam userCardParam = userCardDaoService.getUserCardInfo(storeOrderRecord.getMemberCardNo());
+                userCardService.cardConsumer(new UserCardConsumeBean() {{
+                    setMoneyDis(storeOrderRecord.getMemberCardBalance());
+                    setUserId(userId);
+                    setMoney(storeOrderRecord.getMemberCardBalance());
+                    setCardNo(storeOrderRecord.getMemberCardNo());
+                    setCardId(userCardParam.getCardId());
+                    setReason(storeOrderRecord.getOrderSn());
+                    setType(BYTE_ZERO);
+                }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
             }
             // 跟新门店订单支付状态
             storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
@@ -473,6 +504,11 @@ public class StoreWxService extends ShopBaseService {
                 setOrderStatusName("已支付");
             }});
             // todo 支付完成送积分
+            // 门店买单返送积分开关 on 1
+//            scoreCfgService.get(STORE_SCORE);
+            if (true) {
+                storeOrderService.sendScoreAfterPayDone(storeOrderRecord);
+            }
         }
         return "";
     }
