@@ -2,79 +2,11 @@
   <div class="content">
     <div class="main">
       <div class="filters">
-        <div class="filters_item"><span>{{$t('marketCommon.goodsName')}}:</span>
-          <el-input
-            v-model="requestParams.goodsName"
-            :placeholder="$t('marketCommon.goodsName')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.orderSn')}}:</span>
-          <el-input
-            v-model="requestParams.orderSn"
-            :placeholder="$t('marketCommon.orderSn')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.orderStatus')}}:</span>
-          <el-select
-            v-model="requestParams.orderStatus"
-            :placeholder="$t('marketCommon.selectPlaceholder')"
-            size="small"
-            class="default_input"
-          >
-            <el-option
-              v-for="item in $t('order.orderStatusList')"
-              :key="item[0]"
-              :label="item[1]"
-              :value="item[0]"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.consigneeName')}}:</span>
-          <el-input
-            v-model="requestParams.consignee"
-            :placeholder="$t('marketCommon.consigneeName')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.consigneeMobile')}}:</span>
-          <el-input
-            v-model="requestParams.mobile"
-            :placeholder="$t('marketCommon.consigneeMobile')"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.orderTime')}}:</span>
-          <el-date-picker
-            v-model="requestParams.createTimeStart"
-            type="datetime"
-            :placeholder="$t('marketCommon.orderTime')"
-            size="small"
-            class="date_picker"
-          ></el-date-picker>
-        </div>
-        <div class="filters_item"><span>{{$t('marketCommon.shippingAddress')}}:</span>
-          <areaLinkage
-            @areaData="handleAreaData"
-            style="width:365px;"
-          />
-        </div>
-        <div class="filters_item">
-          <el-button
-            @click="initDataList()"
-            type="primary"
-            size="small"
-          >{{$t('marketCommon.filter')}}</el-button>
-          <el-button
-            type="default"
-            size="small"
-          >{{$t('marketCommon.export')}}</el-button>
-        </div>
+        <marketOrderSearchTab
+          :requestParams="requestParams"
+          @filter="initDataList"
+          @export="exportDataList"
+        />
       </div>
       <div class="table_box">
 
@@ -191,10 +123,10 @@
 
 <script>
 import { getReducePriceOrderList } from '@/api/admin/marketManage/reducePrice.js'
+import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination'),
-    areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue')
+    pagination: () => import('@/components/admin/pagination/pagination'), marketOrderSearchTab
   },
   mounted () {
     this.langDefault()
@@ -265,6 +197,9 @@ export default {
       this.provinceCode = data.province
       this.cityCode = data.city
       this.districtCode = data.district
+    },
+    exportDataList () {
+      alert(11)
     }
   }
 }

@@ -1,114 +1,11 @@
 <template>
   <div>
     <wrapper>
-
-      <el-form label-width="100px">
-        <el-row :gutter=24>
-          <el-col :span="6">
-            <el-form-item :label="$t('groupBuy.goodsName')">
-              <el-input
-                v-model="requestParams.goodsName"
-                :placeholder="$t('groupBuy.goodsName')"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('groupBuy.orderSn')">
-              <el-input
-                v-model="requestParams.orderSn"
-                :placeholder="$t('groupBuy.orderSn')"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('groupBuy.orderStatus')">
-              <el-select
-                v-model="requestParams.orderStatus"
-                size="small"
-                class="inputWidth"
-              >
-                <el-option
-                  v-for="(val,key) in orderStatusArr"
-                  :key="key"
-                  :label="val"
-                  :value="val"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter=24>
-          <el-col :span="6">
-            <el-form-item :label="$t('groupBuy.consigneeName')">
-              <el-input
-                v-model="requestParams.consignee"
-                :placeholder="$t('groupBuy.consigneeName')"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('groupBuy.consigneeMobile')">
-              <el-input
-                v-model="requestParams.mobile"
-                :placeholder="$t('groupBuy.consigneeMobile')"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="6"
-            :offset="0"
-          >
-            <el-form-item :label="$t('groupBuy.orderTime')">
-              <el-date-picker
-                v-model="requestParams.createTimeStart"
-                type="datetime"
-                :placeholder="$t('groupBuy.orderTime')"
-                size="small"
-                class="date_picker inputWidth"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter=24>
-          <el-col :span="10">
-            <el-form-item :label="$t('groupBuy.shippingAddress')">
-              <areaLinkage
-                @areaData="handleAreaData"
-                style="width:380px;"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="4"
-            style="margin:4px 0 0 -50px"
-          >
-            <el-button
-              @click="initDataList()"
-              type="primary"
-              size="small"
-            >{{$t('marketCommon.filter')}}
-            </el-button>
-            <el-button
-              type="default"
-              size="small"
-            >{{$t('marketCommon.export')}}
-            </el-button>
-          </el-col>
-
-        </el-row>
-      </el-form>
+      <marketOrderSearchTab
+        :requestParams="requestParams"
+        @filter="initDataList"
+        @export="exportDataList"
+      />
     </wrapper>
     <wrapper>
       <el-table
@@ -182,13 +79,13 @@
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
+import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
 import { groupBuyOrderList } from '@/api/admin/marketManage/spellGroup.js'
 
 export default {
   components: {
     pagination,
-    areaLinkage,
+    marketOrderSearchTab,
     wrapper
   },
   mounted () {
@@ -251,10 +148,8 @@ export default {
         return ''
       }
     },
-    handleAreaData (data) {
-      this.provinceCode = data.province
-      this.cityCode = data.city
-      this.districtCode = data.district
+    exportDataList () {
+      alert(11)
     }
   }
 }
