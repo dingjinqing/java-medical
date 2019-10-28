@@ -347,6 +347,10 @@ export const en = {
   wechateGoodsCicle: ['Marketing management', 'WeChat good circle'],
   // 营销管理 支付有礼
   payreward: ['Marketing management', 'Pay Reward'],
+  // 营销管理 添加支付有礼活动
+  addPayRewardAct: ['Marketing management', 'Pay Reward'],
+  // 营销管理 支付有礼 活动明细
+  activityDetails: ['Marketing management', 'Pay Reward', 'Activity Details'],
 
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],

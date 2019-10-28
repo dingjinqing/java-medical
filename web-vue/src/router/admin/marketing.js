@@ -1110,6 +1110,32 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/payReward/payReward'
       )
+  },
+  // 支付有礼 - 添加支付有礼活动
+  {
+    path: 'admin/home/main/addPayRewardAct',
+    name: 'addPayRewardAct',
+    meta: {
+      crumbTitle: 'router.addPayRewardAct',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/payReward/addPayRewardAct'
+      )
+  },
+  // 支付有礼 - 活动明细页面
+  {
+    path: 'admin/home/main/PayRewardActDetails',
+    name: 'activityDetails',
+    meta: {
+      crumbTitle: 'router.activityDetails',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/payReward/activityDetails'
+      )
   }
 ]
 export default routes

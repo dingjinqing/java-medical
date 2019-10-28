@@ -232,6 +232,10 @@ export const cn = {
   wechateGoodsCicle: ['营销管理', '微信好物圈'],
   // 营销管理 支付有礼
   payreward: ['营销管理', '支付有礼'],
+  // 营销管理 添加支付有礼活动
+  addPayRewardAct: ['营销管理', '支付有礼'],
+  // 营销管理 支付有礼
+  activityDetails: ['营销管理', '支付有礼', '活动明细'],
 
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
