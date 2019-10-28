@@ -5,6 +5,7 @@ import static com.vpu.mp.service.foundation.excel.AbstractExcelDisposer.LANGUAGE
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,6 @@ import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePriorityParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
 
@@ -97,7 +97,7 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      * @return 分页数据
      */
     @PostMapping("/api/admin/market/increasepurchase/getredemptionorderlist")
-    public JsonResult getRedemptionOrderList(@RequestBody @Validated RedemptionOrderParam param) {
+    public JsonResult getRedemptionOrderList(@RequestBody @Validated MarketOrderListParam param) {
         return success(shop().increaseService.getRedemptionOrderList(param));
     }
 
@@ -118,7 +118,7 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      * @param param 筛选条件
      */
     @PostMapping("/api/admin/market/increasepurchase/exportorderlist")
-    public void exportOrderList(@RequestBody RedemptionOrderParam param, HttpServletResponse response, HttpServletRequest request) {
+    public void exportOrderList(@RequestBody MarketOrderListParam param, HttpServletResponse response, HttpServletRequest request) {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.REDEMPTION_ORDER_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
         export2Excel(shop().increaseService.exportOrderList(param),fileName,response);
     }

@@ -136,24 +136,6 @@ public abstract  class AbstractCommonBaseService {
 		return saas;
 	}
 
-	private static final Integer DEFAUTL_PAGE_ROWS = 20;
-    private static final Integer DEFAUTL_START_PAGE = 0;
-    protected <T> List<T> getMultiPage(SelectLimitStep<?> select, Integer startPage, Integer endPage, Integer pageRows, Class<T> clazz){
-	    pageRows = pageRows != null ? pageRows : DEFAUTL_PAGE_ROWS;
-        startPage = startPage != null ? startPage : DEFAUTL_START_PAGE;
-        endPage = endPage != null ? endPage : DEFAUTL_START_PAGE;
-        return select.limit((startPage - 1) * pageRows, pageRows * (endPage - startPage + 1)).fetchInto(clazz);
-    }
-    protected <T> Workbook exportByPage(SelectLimitStep<?> select, Integer startPage, Integer endPage, Integer pageRows, Class<T> clazz){
-        pageRows = pageRows != null ? pageRows : DEFAUTL_PAGE_ROWS;
-        startPage = startPage != null ? startPage : DEFAUTL_START_PAGE;
-        endPage = endPage != null ? endPage : DEFAUTL_START_PAGE;
-        List<T> list = select.limit((startPage - 1) * pageRows, pageRows * (endPage - startPage + 1)).fetchInto(clazz);
-        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
-        ExcelWriter excelWriter = new ExcelWriter(workbook);
-        excelWriter.writeModelList(list, clazz);
-        return workbook;
-    }
     protected <T> Workbook export(List<T> list,Class<T> clazz){
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(workbook);

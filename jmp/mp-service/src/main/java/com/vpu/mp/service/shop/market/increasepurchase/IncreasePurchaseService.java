@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
@@ -65,7 +66,6 @@ import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailVo;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionGoodsInfo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderVo;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePriorityParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
@@ -303,7 +303,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @param param 加价购活动id和筛选条件
      * @return 分页数据
      */
-    public PageResult<RedemptionOrderVo> getRedemptionOrderList(RedemptionOrderParam param) {
+    public PageResult<RedemptionOrderVo> getRedemptionOrderList(MarketOrderListParam param) {
         //默认排序方式---下单时间
         PageResult<RedemptionOrderVo> vo = this.getPageResult(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
 
@@ -320,7 +320,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @param param the param
      * @return the select condition step
      */
-    private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(RedemptionOrderParam param) {
+    private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(MarketOrderListParam param) {
         SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), min(oi.CREATE_TIME).as("createTime"), min(oi.CONSIGNEE).as("consignee"), min(oi.MOBILE).as("mobile"), min(oi.ORDER_STATUS_NAME).as("orderStatusName")).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
@@ -329,14 +329,14 @@ public class IncreasePurchaseService extends ShopBaseService {
         if (StringUtils.isNotBlank(param.getOrderSn())) {
             conditionStep = conditionStep.and(og.ORDER_SN.like(likeValue(param.getOrderSn())));
         }
-        if (StringUtils.isNotBlank(param.getReceiverName())) {
-            conditionStep = conditionStep.and(oi.CONSIGNEE.like(likeValue(param.getReceiverName())));
+        if (StringUtils.isNotBlank(param.getConsignee())) {
+            conditionStep = conditionStep.and(oi.CONSIGNEE.like(likeValue(param.getConsignee())));
         }
-        if (StringUtils.isNotBlank(param.getReceiverPhone())) {
-            conditionStep = conditionStep.and(oi.MOBILE.like(likeValue(param.getReceiverPhone())));
+        if (StringUtils.isNotBlank(param.getMobile())) {
+            conditionStep = conditionStep.and(oi.MOBILE.like(likeValue(param.getMobile())));
         }
-        if (param.getOrderStatus() != null) {
-            conditionStep = conditionStep.and(oi.ORDER_STATUS.eq(param.getOrderStatus()));
+        if(param.orderStatus != null && param.orderStatus.length != 0){
+            conditionStep = conditionStep.and(oi.ORDER_STATUS.in(param.getOrderStatus()));
         }
         if (param.getProvinceCode() != null) {
             conditionStep = conditionStep.and(oi.PROVINCE_CODE.eq(param.getProvinceCode()));
@@ -356,8 +356,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @param param 筛选条件和导出起始页
      * @return Workbook
      */
-    public Workbook exportOrderList(RedemptionOrderParam param) {
-        List<RedemptionOrderVo> list = this.getMultiPage(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionOrderVo.class);
+    public Workbook exportOrderList(MarketOrderListParam param) {
+        List<RedemptionOrderVo> list = buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME).fetchInto(RedemptionOrderVo.class);
         preExportList(list);
         return this.export(list, RedemptionOrderVo.class);
     }
@@ -490,8 +490,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return Workbook
      */
     public Workbook exportOrderDetail(RedemptionDetailParam param) {
-        List<RedemptionDetailVo> list = this.getMultiPage(buildDetailSelectStep(param), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionDetailVo.class);
-        preExportDetail(list);
+        List<RedemptionDetailVo> list = buildDetailSelectStep(param).fetchInto(RedemptionDetailVo.class);
+            preExportDetail(list);
         return this.export(list, RedemptionDetailVo.class);
     }
 
