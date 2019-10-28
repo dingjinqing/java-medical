@@ -23,6 +23,7 @@
     "pages/bargainlist/bargainlist",
     "pages/lotterygift/lotterygift",
     "pages/storelist/storelist",
+    "pages/storeinfo/storeinfo",
     "pages/checkout/checkout"
   ],
   "window": {

@@ -1,9 +1,11 @@
-<!-- pages/storelist/storelist.wxml -->
+<!-- pages/storelist/storelist.wxml
+  同城配送，扫码购未开发
+ -->
 <include src="../common/header.wxml" />
 <view class="main-container">
   <view class="container">
     <block wx:if="{{list}}">
-      <view class="top_area">
+      <view class="top_area" wx:if="{{ !!de_type }}">
         <!-- 同城配送 -->
         <block wx:if="{{ de_type === 2}}">
           <image class="top_a_bg" src="{{imageUrl}}image/wxapp/slist_send.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" style="bottom:30rpx;" />
@@ -17,26 +19,27 @@
           <view class="ta_content">商品下单后可选择门店到店自提</view>
         </block>
       </view>
-      <view class="store-nav-list" wx:for="{{list}}" wx:key="key">
+      <view class="store-nav-list" wx:for="{{list}}" wx:key="storeId" bindtap="jumpUrl" data-id="{{item.storeId}}" data-state="{{item.businessState}}">
         <view class="list-left">
-          <image class="list-left-img" src='{{item.img}}!small'></image>
-          <image class="list-left-img off-img" wx:if="{{item.business_state == 0}}" src="{{imageUrl}}/image/wxapp/off_state.png"></image>
+          <image class="list-left-img" src='{{item.storeImgs}}'></image>
+          <image class="list-left-img off-img" wx:if="{{item.businessState == 0}}" src="{{imageUrl}}/image/wxapp/off_state.png"></image>
         </view>
-      </view>
-      <view class="store-name-info">
-        <view class="sr_top">
-          <view class="sr_name">
-            <text class="scancode" wx:if="{{scan_stores != 1 && item.scan_buy == true}}" style="color:{{comColor}};border-color:{{comColor}}">扫码购</text>
-            <text>{{item.store_name}}</text>
+        <view class="store-name-info">
+          <view class="sr_top">
+            <view class="sr_name">
+              <text class="scancode" wx:if="{{scan_stores != 1 && item.scan_buy == true}}" style="color:{{comColor}};border-color:{{comColor}}">扫码购</text>
+              <text>{{item.storeName}}</text>
+            </view>
+            <view class="store_distance">距您{{item.distance}} km</view>
           </view>
-          <view class="store_distance">距您{{item.dis}} km</view>
-        </view>
-        <view class="sr_can_send_mile" wx:if="{{de_type === 2}}">
-          {{item.distance}} km内可配送，配送费{{item.price}} 元
-        </view>
-        <view class="sr_bottom">
-          <image class="icon-bottom" src="{{imageUrl}}image/wxapp/address.png"></image>
-          <text>{{item.area}}</text>
+          <!-- 同城配送（未开发） -->
+          <view class="sr_can_send_mile" wx:if="{{de_type === 2}}">
+            {{item.distance}} km内可配送，配送费{{item.price}} 元
+          </view>
+          <view class="sr_bottom">
+            <image class="icon-bottom" src="{{imageUrl}}image/wxapp/address.png"></image>
+            <text>{{item.address}}</text>
+          </view>
         </view>
       </view>
     </block>

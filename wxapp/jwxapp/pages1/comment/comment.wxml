@@ -11,7 +11,7 @@
         </block>
       </view>
     </view>
-    <!--待评价页面详情  -->
+    <!--评价页面列表  -->
     <view class="comment_main">
       <view class="mocomm_list" wx:for="{{order_completed}}" wx:key="goodsId" wx:if="{{order_completed != ''}}">
         <view class="comment_list">
@@ -122,6 +122,7 @@
                 </view>
               </view>
             </form>
+            <!-- 获得的奖励 -->
             <view class="comment_gift_info" wx:if="{{item.commentFlag === 1 &&item.id}}">
               <image src='{{imageUrl}}/image/admin/assess_custon.png' mode='widthFix'></image>
               <view class="gift_content">
@@ -132,10 +133,10 @@
                   <text>{{item.awardType == 1 ? award + i18n.$t(localePack,"page1.comment.integral") : ( item.awardType == 2 ? i18n.$t(localePack,"page1.comment.coupon") : (item.awardType == 3 ? award + i18n.$t(localePack,"page1.comment.yuanBalance") : (item.awardType == 4 ? i18n.$t(localePack,"page1.comment.sweepstakes") : i18n.$t(localePack,"page1.comment.mysteryReward"))) )}}</text>
                   <text>{{i18n.$t(localePack,"page1.comment.reward")}}</text>
                 </view>
-                <form report-submit="true" bindsubmit="giftInfo" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}" data-id="{{item.id}}" data-itemid="{{index}}">
-                  <button class="gift_info_button" formType="submit" style="border-color:{{comColor}};color:{{comColor}}">{{i18n.$t(localePack,"page1.comment.view")}}</button>
-                </form>
               </view>
+              <form report-submit="true" bindsubmit="giftInfo" data-gid="{{item.goodsId}}" data-osn="{{item.orderSn}}" data-id="{{item.id}}" data-itemid="{{index}}">
+                <button class="gift_info_button" formType="submit" style="border-color:{{comColor}};color:{{comColor}}">{{i18n.$t(localePack,"page1.comment.view")}}</button>
+              </form>
             </view>
           </block>
         </view>

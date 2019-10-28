@@ -78,6 +78,13 @@ global.wxPage({
     var that = this;
     order_sn = opt.order_sn;
     wx.hideShareMenu(); // 隐藏转发按钮
+    // this.get_comment(that, 0);
+  },
+  /**
+   *  生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    var that = this;
     this.get_comment(that, 0);
   },
   //选择评分
@@ -264,7 +271,7 @@ global.wxPage({
         params.award = JSON.stringify(item.award)
       }
     }
-  
+
     info.open_id = util.getCache('openid');
     if (parseInt(params.commstar) === 0) {
       util.showModal(i18n.trans('common.tip'), i18n.trans('page1.comment.selectRating'));
@@ -408,11 +415,11 @@ global.wxPage({
     }, { userId: userId, commentFlag: comment_flag, orderSn: order_sn, page_no: that.data.page });
   },
   // string 转 obj
-  stringToObj (str) {
+  stringToObj(str) {
     let string = str.trim()
     let strArr = string.split(',')
     let result = {}
-    strArr.forEach(function(item, i) {
+    strArr.forEach(function (item, i) {
       let itemArr = item.split(':')
       console.log(itemArr)
       result[itemArr[0]] = itemArr[1]

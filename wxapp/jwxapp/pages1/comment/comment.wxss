@@ -101,6 +101,7 @@ view{
   clear: both;
 }
 .comment_list{
+  overflow: hidden;
   margin-bottom: 10px;
 }
 .commm_goods{
@@ -169,7 +170,7 @@ width:100%;
   float: right;
 }
 .comm_square{
-  margin-bottom:10rpx;
+  /* margin-bottom:10rpx; */
   background: #fff;
   padding: 0px;
   border-top:1px solid #eee;
@@ -222,7 +223,7 @@ width:100%;
 }
 .xinde textarea{
   float: left;
-  width: 550rpx;
+  width: 568rpx;
   height: 200rpx;
   border-radius: 5rpx;
   margin-bottom: 10px;
@@ -232,7 +233,7 @@ width:100%;
 }
 .xinde_content {
   display: inline-block;
-  width: 570rpx;
+  width: 588rpx;
 }
 .xinde .xin_bottom{
   text-align: right;
@@ -408,8 +409,10 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before{
 }
 .comment_gift_info{
     display: flex;
+    width: 100%;
     align-items: center;
     padding-right: 20rpx;
+    background: #fff;
 }
 .gift_content{
   flex: 1;

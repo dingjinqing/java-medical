@@ -7,34 +7,52 @@ Page({
    * 页面的初始数据
    */
   data: {
-    goods_id: '',
+    type: 0,
+    goods_id: null,
     list: [],
-    de_type: 2,
-    scan_stores: "",
+    de_type: null,
+    scan_stores: null,
+    card_id: null,
     imageUrl: app.globalData.imageUrl,
     pageParams: {}
   },
-
+  // 请求门店列表
   listRequest: function (that) {
-    util.getUserLocation(function () {
+    util.getUserLocation(function (location) {
+      console.log(location)
       util.api('/api/wxapp/store/list', function (res) {
         that.setData({
           list: res.content
         })
       }, {
-        scan_stores: that.data.scan_stores,
-        location: JSON.stringify(location),
-        type: that.data.de_type,
-        goods_id: that.data.goods_id,
-        currentPage: 1
+        location: location,
+        type: that.data.type, // 入口(type为0,普通入口;type为1,并且cardId不为空;表示入口为会员卡详情页;type为2 ,并且goodsId不为空表示入口为商品详情页自提/同城配送过来)
+        scanStores: that.data.scan_stores, // 是否支持扫码购
+        goodsId: that.data.goods_id, // 商品id
+        cardId: that.data.card_id, // 会员卡id
+        deliverType: that.data.de_type// 配送类型
       })
     })
   },
+  // 点击门店跳转
   jumpUrl: function (e) {
     let id = e.currentTarget.dataset.id;
     let state = e.currentTarget.dataset.state;
+    if (state === 1) {
+      if (this.data.scan_stores) {
+        util.navigateTo({
+          url: '/pages/scancode/scancode?store_id=' + id
+        })
+      } else {
+        util.navigateTo({
+          url: '/pages/storeinfo/storeinfo?id=' + id
+        })
+      }
+    } else {
+      util.showModal('提示', '该门店未营业');
+    }
   },
-
+  // 点击随便逛逛
   onIndex: function (e) {
     util.navigateTo({ url: '/pages/index/index' })
   },
@@ -44,9 +62,9 @@ Page({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    let de_type = options.de_type;
-    let scan_stores = options.scan_stores;
-    let goods_id = options.goods_id;
+    let de_type = options.de_type;// 自取还是同城配送
+    let scan_stores = options.scan_stores; // 是否支持扫码购
+    let goods_id = options.goods_id; // 商品id
     this.setData({
       scan_stores: scan_stores ? scan_stores : 0,
       de_type: de_type,
