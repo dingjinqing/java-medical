@@ -3,10 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsIdParams;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.BargainActivityVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GroupBuyActivityVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.ReducePriceActivityVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +27,7 @@ public class WxAppGoodsController extends WxAppBaseController{
         Map<Integer, BargainActivityVo> goodsBargainInfo = shop().bargain.getGoodsBargainInfo(params.getGoodsIds(), now);
         Map<Integer, SecKillActivityVo> goodsSecKillGoodsInfo = shop().seckill.getGoodsSecKillInfo(params.getGoodsIds(), now);
         Map<Integer, ReducePriceActivityVo> goodsReducePriceInfo = shop().reducePrice.getGoodsReducePriceInfo(params.getGoodsIds(), now);
-        return success(goodsReducePriceInfo);
+        Map<Integer, FirstSpecialActivityVo> goodsFirstSpecialInfo = shop().firstSpecial.getGoodsFirstSpecialInfo(params.getGoodsIds(), now);
+        return success(goodsFirstSpecialInfo);
     }
 }

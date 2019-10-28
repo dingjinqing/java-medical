@@ -300,16 +300,37 @@ public class ReducePriceService extends ShopBaseService {
         }
     }
 
+    /**
+     * 获取集合内商品的限时降价信息，如果同一个商品同时参与多个限时降价则取时间最早的一条记录
+     * @param goodsIds 商品id结合
+     * @param date 限制时间
+     * @return key:商品id value:限时降价信息
+     */
     public  Map<Integer,ReducePriceActivityVo> getGoodsReducePriceInfo(List<Integer> goodsIds,Timestamp date){
+
+        Map<Integer, List<Record2<Integer, Integer>>> goodsGroup = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE)
+            .innerJoin(REDUCE_PRICE_GOODS).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
+            .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
+            .and(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
+            .and(REDUCE_PRICE.END_TIME.gt(date))
+            .orderBy(REDUCE_PRICE.CREATE_TIME)
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_GOODS.GOODS_ID)));
+
+        Condition condition = DSL.noCondition();
+        for (Map.Entry<Integer, List<Record2<Integer, Integer>>> entry : goodsGroup.entrySet()) {
+            Integer key = entry.getKey();
+            List<Record2<Integer, Integer>> value = entry.getValue();
+            // 按活动时间排序
+            condition = condition.or(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(key).and(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(value.get(0).get(REDUCE_PRICE.ID))));
+        }
 
         Map<Integer, List<Record8<Integer, Integer, BigDecimal, Timestamp, Timestamp, Byte, String, String>>> reducePricesInfos = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_PRODUCT.GOODS_ID, REDUCE_PRICE_PRODUCT.PRD_PRICE, REDUCE_PRICE.START_TIME, REDUCE_PRICE.END_TIME,
             REDUCE_PRICE.PERIOD_ACTION, REDUCE_PRICE.EXTEND_TIME, REDUCE_PRICE.POINT_TIME)
             .from(REDUCE_PRICE).innerJoin(REDUCE_PRICE_PRODUCT).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID))
-            .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
-            .and(REDUCE_PRICE_PRODUCT.GOODS_ID.in(goodsIds))
-            .and(REDUCE_PRICE.END_TIME.gt(date))
+            .where(condition)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_PRODUCT.GOODS_ID)));
+
 
         Map<Integer,ReducePriceActivityVo> returnMap = new HashMap<>();
 

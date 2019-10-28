@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.firstspecial;
 
+import com.sun.deploy.net.proxy.pac.PACFunctionsImpl;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialRecord;
@@ -13,13 +14,17 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.FirstSpecialActivityVo;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
@@ -234,4 +239,49 @@ public class FirstSpecialService extends ShopBaseService {
         return res;
     }
 
+
+    /**
+     * 获取集合内商品的首单特惠信息，如果同一个商品同时参与多个首单特惠时根据first排序
+     * @param goodsId 商品id集合
+     * @param date 日期
+     * @return key：商品id，value:首单特惠信息
+     */
+    public Map<Integer, FirstSpecialActivityVo> getGoodsFirstSpecialInfo(List<Integer> goodsId, Timestamp date) {
+        Map<Integer, Result<Record2<Integer, Integer>>> firstSpecials = db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL_GOODS.GOODS_ID).from(FIRST_SPECIAL).innerJoin(FIRST_SPECIAL_GOODS).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID))
+            .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL))
+            .and(FIRST_SPECIAL_GOODS.GOODS_ID.in(goodsId))
+            .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
+                .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(date).and(FIRST_SPECIAL.END_TIME.gt(date)))))
+            .orderBy(FIRST_SPECIAL.FIRST.desc())
+            .fetch().intoGroups(FIRST_SPECIAL_GOODS.GOODS_ID);
+
+        Condition condition = DSL.noCondition();
+        for (Map.Entry<Integer,Result<Record2<Integer, Integer>>> entry : firstSpecials.entrySet()) {
+            Record2<Integer, Integer> value = entry.getValue().get(0);
+            condition = condition.or(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(value.get(FIRST_SPECIAL.ID)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(value.get(FIRST_SPECIAL_GOODS.GOODS_ID))));
+        }
+
+        Map<Integer, Result<Record6<Integer, Byte, Timestamp, Timestamp, Integer, BigDecimal>>> firstSpecialPrdInfos = db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL.IS_FOREVER,
+            FIRST_SPECIAL.START_TIME, FIRST_SPECIAL.END_TIME,
+            FIRST_SPECIAL_PRODUCT.GOODS_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE)
+            .from(FIRST_SPECIAL).innerJoin(FIRST_SPECIAL_PRODUCT)
+            .on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
+            .where(condition)
+            .fetch().intoGroups(FIRST_SPECIAL_PRODUCT.GOODS_ID);
+
+        Map<Integer,FirstSpecialActivityVo> returnMap = new HashMap<>();
+
+        firstSpecialPrdInfos.forEach((key,value)->{
+            Record6<Integer, Byte, Timestamp, Timestamp, Integer, BigDecimal> firstSpecialPrd = value.sortAsc(FIRST_SPECIAL_PRODUCT.PRD_PRICE).get(0);
+            FirstSpecialActivityVo vo =new FirstSpecialActivityVo();
+            vo.setIsForever(firstSpecialPrd.get(FIRST_SPECIAL.IS_FOREVER));
+            vo.setActivityId(firstSpecialPrd.get(FIRST_SPECIAL.ID));
+            vo.setActivityPrice(firstSpecialPrd.get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
+            vo.setStartTime(firstSpecialPrd.get(FIRST_SPECIAL.START_TIME));
+            vo.setEndTime(firstSpecialPrd.get(FIRST_SPECIAL.END_TIME));
+            returnMap.put(key,vo);
+        });
+        return returnMap;
+    }
 }
