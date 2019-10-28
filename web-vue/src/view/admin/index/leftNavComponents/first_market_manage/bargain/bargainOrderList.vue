@@ -1,90 +1,11 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="filters">
-        <section style="display: flex;margin-bottom: 10px;width:100%">
-          <div class="filters_item"><span>{{$t('marketCommon.goodsName')}}</span>
-            <el-input
-              v-model="requestParams.goodsName"
-              :placeholder="$t('marketCommon.goodsName')"
-              size="small"
-              class="default_input"
-            ></el-input>
-          </div>
-          <div class="filters_item"><span>{{$t('marketCommon.orderSn')}}</span>
-            <el-input
-              v-model="requestParams.orderSn"
-              :placeholder="$t('marketCommon.orderSn')"
-              size="small"
-              class="default_input"
-            ></el-input>
-          </div>
-          <div class="filters_item"><span>{{$t('marketCommon.orderStatus')}}</span>
-            <el-select
-              v-model="requestParams.selectedOrderStatus"
-              :placeholder="$t('marketCommon.selectPlaceholder')"
-              size="small"
-              class="default_input"
-            >
-              <el-option
-                v-for="item in $t('order.orderStatusList')"
-                :key="item[0]"
-                :label="item[1]"
-                :value="item[0]"
-              ></el-option>
-            </el-select>
-          </div>
-        </section>
-        <section style="display: flex;margin-bottom: 10px;width:100%">
-          <div class="filters_item"><span>{{$t('marketCommon.consigneeName')}}</span>
-            <el-input
-              v-model="requestParams.consignee"
-              :placeholder="$t('marketCommon.consigneeNamePlaceholder')"
-              size="small"
-              class="default_input"
-            ></el-input>
-          </div>
-          <div class="filters_item"><span>{{$t('marketCommon.consigneeMobile')}}</span>
-            <el-input
-              v-model="requestParams.mobile"
-              :placeholder="$t('marketCommon.consigneeMobilePlaceholder')"
-              size="small"
-              class="default_input"
-            ></el-input>
-          </div>
-          <div class="filters_item"><span>{{$t('marketCommon.orderTime')}}</span>
-            <el-date-picker
-              v-model="requestParams.createTimeStart"
-              type="datetime"
-              :placeholder="$t('marketCommon.orderTime')"
-              size="small"
-              class="date_picker"
-            ></el-date-picker>
-          </div>
-        </section>
-        <section style="display: flex;width:100%">
-          <div
-            class="filters_item"
-            style="width: 485px"
-          ><span>{{$t('marketCommon.shippingAddress')}}</span>
-            <areaLinkage
-              @areaData="handleAreaData"
-              style="width:365px;"
-            />
-          </div>
-          <div class="filters_item">
-            <el-button
-              @click="initDataList()"
-              type="primary"
-              size="small"
-            >{{$t('marketCommon.filter')}}</el-button>
-            <el-button
-              type="default"
-              size="small"
-            >{{$t('marketCommon.export')}}</el-button>
-          </div>
-        </section>
-      </div>
+      <marketOrderSearchTab
+        :requestParams="requestParams"
+        @filter="initDataList"
+        @export="exportDataList"
+      />
 
       <div class="table_box">
         <el-table
@@ -187,7 +108,7 @@ import { getBargainOrderList } from '@/api/admin/marketManage/bargain.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
-    areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue')
+    marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue')
   },
   mounted () {
     this.langDefault()
@@ -201,7 +122,14 @@ export default {
     return {
       loading: false,
       pageParams: {},
-      requestParams: {},
+      requestParams: {
+        goodsName: null,
+        orderSn: null,
+        selectedOrderStatus: null,
+        consignee: null,
+        mobile: null,
+        createTimeStart: ''
+      },
       tableData: [],
       orderStatusMap: {},
       actId: null,
@@ -246,10 +174,8 @@ export default {
         return ''
       }
     },
-    handleAreaData (data) {
-      this.provinceCode = data.province
-      this.cityCode = data.city
-      this.districtCode = data.district
+    exportDataList () {
+      alert(11)
     }
   },
   watch: {
@@ -266,26 +192,6 @@ export default {
 <style lang="scss" scoped>
 .main {
   padding: 10px;
-  .filters {
-    display: flex;
-    line-height: 32px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    padding: 20px 0;
-    flex-wrap: wrap;
-    .filters_item {
-      width: 320px;
-      display: flex;
-      margin-left: 15px;
-      margin-bottom: 10px;
-      text-align: right;
-      > span {
-        width: 85px;
-        font-size: 14px;
-        margin-right: 20px;
-      }
-    }
-  }
   .table_box {
     background-color: #fff;
     padding: 15px;

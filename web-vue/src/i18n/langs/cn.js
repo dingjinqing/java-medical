@@ -92,6 +92,8 @@ import { cn as addSeckill } from './views/admin_new/cn/index/marketManagement/se
 import { cn as wechateGoodsCicle } from './views/admin_new/cn/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleCn'
 // 支付有礼
 import { cn as payReward } from './views/admin_new/cn/index/marketManagement/payReward/payReward'
+// 首单特惠
+import { cn as firstSpecial } from './views/admin_new/cn/index/marketManagement/firstSpecial/firstSpecialCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -649,6 +651,7 @@ const cn = {
   expressList,
   wechateGoodsCicle, // 微信好物圈
   payReward, // 支付有礼
+  firstSpecial, // 首单特惠
 
   // 会员管理
   memberCard, // 会员管理-会员卡

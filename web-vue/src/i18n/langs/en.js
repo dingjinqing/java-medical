@@ -89,6 +89,8 @@ import { en as addSeckill } from './views/admin_new/en/index/marketManagement/se
 import { en as wechateGoodsCicle } from './views/admin_new/en/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleEn'
 // 支付有礼
 import { en as payReward } from './views/admin_new/en/index/marketManagement/payReward/payReward'
+// 支付有礼
+import { en as firstSpecial } from './views/admin_new/en/index/marketManagement/firstSpecial/firstSpecialEn'
 
 // 订单管理系列模块化
 import { en as order } from './views/admin_new/en/index/orderManagement/orderListEn'
@@ -676,6 +678,7 @@ const en = {
   expressList,
   wechateGoodsCicle, // 微信好物圈
   payReward, // 支付有礼
+  firstSpecial, // 首单特惠
 
   dateTimePicker, // 选择时间
 

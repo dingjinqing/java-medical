@@ -10,23 +10,23 @@
         <el-button
           type="primary"
           @click="addActivity"
-        >添加首单特惠</el-button>
+        >{{$t('firstSpecial.addFirstSpecial')}}</el-button>
 
         <div class="rightContent">
-          <span>设置用户仅可购买活动商品中的</span>
+          <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip1')}}</span>
           <el-input
             v-model="firstSpecialLimitGoods"
             style="width: 80px"
             size="small"
             type="number"
           ></el-input>
-          <span>件商品</span>
-          <span>填写0表示不限制</span>
+          <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip2')}}</span>
+          <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip3')}}</span>
           <el-button
             @click="setFirstSpecialLimitGoods"
             type="primary"
             size="small"
-          >保存设置</el-button>
+          >{{$t('firstSpecial.save')}}</el-button>
         </div>
       </div>
     </div>
@@ -41,56 +41,56 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('firstSpecial.actName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="first"
-          label="优先级"
+          :label="$t('firstSpecial.first')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="goodsAmount"
-          label="商品数量"
+          :label="$t('firstSpecial.goodsAmount')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="vaildDate"
-          label="有效期"
+          :label="$t('firstSpecial.vaildDate')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="statusName"
-          label="活动状态"
+          :label="$t('firstSpecial.statusName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="orderAmount"
-          label="付款订单数"
+          :label="$t('firstSpecial.orderAmount')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="userAmount"
-          label="付款用户数"
+          :label="$t('firstSpecial.userAmount')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="paymentTotalAmount"
-          label="付款总金额"
+          :label="$t('firstSpecial.paymentTotalAmount')"
           align="center"
         >
         </el-table-column>
@@ -152,7 +152,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="订单明细"
+                :content="$t('firstSpecial.orderDetail')"
                 placement="top"
               >
                 <i
@@ -182,7 +182,7 @@ export default {
   components: { pagination, statusTab },
   data () {
     return {
-      activityName: '首单特惠',
+      activityName: '',
       // 默认显示进行中的活动
       tabIndex: 1,
       currentPage: 1,
@@ -202,7 +202,7 @@ export default {
 
     // data内变量国际化
     lang () {
-      this.activityName = this.$t('bargainList.bargain')
+      this.activityName = this.$t('firstSpecial.firstSpecial')
 
       // 重新渲染表格数据
       let originalData = JSON.parse(JSON.stringify(this.originalData))
