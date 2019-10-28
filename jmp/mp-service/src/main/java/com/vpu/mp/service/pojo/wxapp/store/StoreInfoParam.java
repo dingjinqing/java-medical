@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.store;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
+import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.PositiveOrZero;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
  * @date 10/18/19
  */
 @Data
+@ScriptAssert(lang = "javascript", script = "_this.userId == null || _this.userId >= 0", message = "userId可空,但上传时必须为大于等于0的整数")
 public class StoreInfoParam {
     @PositiveOrZero
     @JsonAlias({"store_id", "storeId"})

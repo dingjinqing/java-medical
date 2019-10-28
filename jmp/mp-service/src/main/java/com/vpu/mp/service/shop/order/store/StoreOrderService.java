@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.order.store;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.StoreOrder;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;

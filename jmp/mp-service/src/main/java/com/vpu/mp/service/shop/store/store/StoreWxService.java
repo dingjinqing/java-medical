@@ -2,9 +2,9 @@ package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -33,13 +33,11 @@ import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
+import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.WxPayment;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Condition;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.TableField;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.junit.Assert;
@@ -55,10 +53,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
+import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
@@ -72,6 +70,11 @@ import static org.apache.commons.lang3.math.NumberUtils.*;
 @Slf4j
 @Service
 public class StoreWxService extends ShopBaseService {
+    /**
+     * The User service.
+     */
+    @Autowired
+    public UserService userService;
     /**
      * 门店
      */
@@ -338,13 +341,13 @@ public class StoreWxService extends ShopBaseService {
      * @return the wxapp store detail
      */
     public StoreInfoVo getWxappStoreDetail(StoreInfoParam param) {
-        int storeId = param.getStoreId();
-        long userId = param.getUserId();
-        if (userId != 0) {
-            int source = db().select(USER.SOURCE).from(USER).where(USER.USER_ID.eq((int) userId)).fetchOneInto(Integer.class);
-            if (source == -1) {
-                db().update(USER).set(USER.SOURCE, storeId).execute();
-            }
+        Integer storeId = param.getStoreId();
+        Integer userId = param.getUserId();
+        if (userId != null) {
+            // 更新用户表 门店来源(-1未录入0后台>0为门店) todo 记录一下用户第一次登录的门店, 可删
+            userService.updateFields(USER.USER_ID.eq(userId).and(USER.SOURCE.eq(-1)), new HashMap<Field<?>, Integer>(1) {{
+                put(USER.SOURCE, storeId);
+            }});
         }
         StorePojo storePojo = store.getStore(storeId);
         Objects.requireNonNull(storePojo, "店铺不存在");
