@@ -78,6 +78,7 @@ export default {
     console.log('beforeCreate.')
   },
   created () {
+    console.log(this.$route.params.tagName)
     console.log('created')
   }
 }

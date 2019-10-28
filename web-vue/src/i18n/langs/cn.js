@@ -114,6 +114,8 @@ import { cn as membershipIntroduction } from './views/admin_new/cn/index/userMan
 import { cn as memberCard } from './views/admin_new/cn/index/userManagement/card/memberCardCn'
 // 会员管理-积分配置
 import { cn as scoreCfg } from './views/admin_new/cn/index/userManagement/score/scoreCfgCn'
+// 会员管理-标签管理
+import { cn as tag } from './views/admin_new/cn/index/userManagement/tag/tagCn'
 
 // 门店管理模块化
 // 门店通用
@@ -652,6 +654,7 @@ const cn = {
   memberCard, // 会员管理-会员卡
   // 积分配置
   scoreCfg,
+  tag, // 会员管理-标签管理
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表

@@ -70,7 +70,9 @@ export const en = {
   // 会员管理 会员导入
   membershipIntroduction: ['Membership management', 'Membership List'],
   // 会员管理 积分管理
-  integralManagement: ['Member management', 'Score management'],
+  integralManagement: ['Member ', 'Score MGR'],
+  // 会员管理 标签管理
+  labelManagement: ['Member', 'Tag MGR'],
   // 积分管理 积分说明
   integralDescription: ['Score management', 'Description'],
   // 基础配置 小程序授权

@@ -164,7 +164,7 @@ export default {
       trList: [],
       clickIindex: null,
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      pageParams: {}
+      pageParams: null
 
     }
   },

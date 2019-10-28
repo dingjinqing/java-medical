@@ -110,6 +110,8 @@ import { en as membershipIntroduction } from './views/admin_new/en/index/userMan
 import { en as memberCard } from './views/admin_new/en/index/userManagement/card/memberCardEn'
 // 会员管理-积分配置
 import { en as scoreCfg } from './views/admin_new/en/index/userManagement/score/scoreCfgEn'
+// 会员管理-积分配置
+import { en as tag } from './views/admin_new/en/index/userManagement/tag/tagEn'
 
 // 门店管理模块国际化
 // 门店通用
@@ -680,7 +682,7 @@ const en = {
   // 会员管理
   memberCard, // 会员管理-会员卡
   scoreCfg, // 会员管理-积分配置
-
+  tag, // 会员管理-标签管理
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表

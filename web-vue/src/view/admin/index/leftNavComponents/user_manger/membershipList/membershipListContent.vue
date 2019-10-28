@@ -1018,6 +1018,8 @@ export default {
     }
   },
   created () {
+    console.log(this.$route.params.tagName)
+    this.labelVal = this.$route.params.tagName
     console.log('会员列表 created ')
     // 初始化会员列表数据
     this.defaultTabelListData()

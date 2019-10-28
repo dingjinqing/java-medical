@@ -6,10 +6,10 @@
           type="primary"
           size="small"
           @click="handleToButton(0)"
-        >新建标签</el-button>
+        >{{$t('tag.createNewTag')}}</el-button>
         <el-input
           v-model="labelInput"
-          placeholder="请输入标签查询"
+          :placeholder="$t('tag.queryPrompt')"
           size="small"
           suffix-icon="el-icon-search"
         ></el-input>
@@ -17,7 +17,7 @@
           type="primary"
           size="small"
           @click="handleToButton(1)"
-        >查询</el-button>
+        >{{$t('tag.query')}}</el-button>
       </div>
       <div class="tableMain">
         <el-table
@@ -28,25 +28,25 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="sickName"
+            prop="tagName"
             align="center"
-            label="标签名"
+            :label="$t('tag.tagName')"
           >
           </el-table-column>
           <el-table-column
-            label="创建时间"
+            :label="$t('tag.createTime')"
             align="center"
-            prop="userID"
+            prop="createTime"
           >
           </el-table-column>
           <el-table-column
-            prop="phoneNum"
-            label="用户数"
+            prop="count"
+            :label="$t('tag.numberOfUser')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('tag.operation')"
             align="center"
           >
             <template slot-scope="scope">
@@ -63,7 +63,7 @@
         </el-table>
         <Pagination
           :page-params.sync="pageParams"
-          @pagination="search"
+          @pagination="pageQuery"
         />
       </div>
     </div>
@@ -74,10 +74,10 @@
       width="30%"
     >
       <div class="labelDialog">
-        <div style="margin-bottom:10px">标签名称</div>
+        <div style="margin-bottom:10px">{{ $t('tag.tagName')}}</div>
         <el-input
           v-model="labelDialogInput"
-          placeholder="请输入内容"
+          :placeholder="$t('tag.inputContent')"
           size="small"
         ></el-input>
       </div>
@@ -85,35 +85,37 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">{{$t('tag.cancel')}}</el-button>
         <el-button
           type="primary"
-          @click="dialogVisible = false"
-        >确 定</el-button>
+          @click="handleTagEditOrCreateOption"
+        >{{$t('tag.ok')}}</el-button>
       </span>
     </el-dialog>
     <!--删除弹窗-->
     <el-dialog
-      title="提醒"
+      :title="$t('tag.remind')"
       :visible.sync="dialogDelVisible"
       width="30%"
     >
-      <span>删除此标签，已有此标签的用户将失去该标签，是否确认删除?</span>
+      <span>{{$t('tag.deletePrompt')}}</span>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogDelVisible = false">取 消</el-button>
+        <el-button @click="dialogDelVisible = false">{{$t('tag.cancel')}}</el-button>
         <el-button
           type="primary"
-          @click="dialogDelVisible = false"
-        >确 定</el-button>
+          @click="handleToDeleteTagDialog"
+        >{{$t('tag.ok')}}</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
+import { appendTag, getAllTagListByName, modifyTagName, deleteTag } from '@/api/admin/memberManage/tagManage/tagManage.js'
 export default {
+
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
   data () {
     return {
@@ -121,77 +123,147 @@ export default {
       dialogTitle: '',
       dialogVisible: false,
       labelInput: '',
-      tableData: [
-        {
-          userID: '51',
-          phoneNum: '18811309193',
-          sickName: '啦啦啦',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '12',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '43',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        }
-      ],
+      tableData: null,
       pageParams: {
-        totalRows: 10,
+        totalRows: null,
         currentPage: 1,
-        pageRows: 10
+        pageRows: 20
       },
-      operation: ['编辑', '删除', '查看用户'],
-      labelDialogInput: ''
+      operation: null,
+      labelDialogInput: '',
+      currentOptionTagId: null,
+      createNewTagDialogOn: false
+    }
+  },
+  created () {
+    this.loadAllTagList()
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
+  watch: {
+    lang () {
+      this.operation = [this.$t('tag.edit'), this.$t('tag.remove'), this.$t('tag.viewUser')]
     }
   },
   methods: {
-    search (data) {
+    loadAllTagList () {
+      let param = {
+        ...this.pageParams,
+        tagName: this.labelInput
+      }
+      console.log(param)
+      this.getAllTagList(param)
+    },
+    getAllTagList (param) {
+      getAllTagListByName(param).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          console.log('success')
+          this.dealPage(res.content.page)
+          this.dealTagListForHtmlShow(res.content.dataList)
+        }
+      })
+    },
+    dealPage (page) {
+      this.pageParams = page
+    },
+    dealTagListForHtmlShow (dataList) {
+      this.tableData = dataList
+      console.log(this.tableData)
+    },
+    pageQuery (data) {
       console.log(data)
+      this.loadAllTagList()
+    },
+    showCreateNewTagDialog () {
+      this.labelDialogInput = ''
+      this.dialogTitle = this.$t('tag.createNewTag')
+      this.dialogVisible = true
+      this.createNewTagDialogOn = true
+    },
+    handleTagEditOrCreateOption () {
+      if (this.createNewTagDialogOn) {
+        this.handleToCreatNewDialog()
+      } else {
+        this.handleToEditDialog()
+      }
+    },
+    handleToCreatNewDialog () {
+      this.dialogVisible = false
+      this.createNewTagDialogOn = false
+      this.handleToCreateNewTag()
+    },
+    handleToCreateNewTag () {
+      appendTag({ tagName: this.labelDialogInput }).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('tag.addTagSuccess'))
+          this.loadAllTagList()
+        }
+      })
+    },
+    handleToEditDialog () {
+      this.dialogVisible = false
+      this.handleModifyTagName()
+    },
+    handleToDeleteTagDialog () {
+      this.dialogDelVisible = false
+      this.handleDeleteTag({ tagId: this.currentOptionTagId })
+    },
+    handleDeleteTag (data) {
+      deleteTag(data).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('tag.removeTagSuccess'))
+          this.loadAllTagList()
+        }
+      })
+    },
+    handleModifyTagName () {
+      let param = {
+        tagId: this.currentOptionTagId,
+        tagName: this.labelDialogInput
+      }
+      modifyTagName(param).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('tag.modifyTagSuccess'))
+          this.loadAllTagList()
+        }
+      })
     },
     // 操作部分点击
     handleToOperation (row, index) {
       console.log(row, index)
+      this.temporarySaveCurrentRowTag(row)
       switch (index) {
         case 0:
-          this.dialogTitle = '编辑标签'
-          this.labelDialogInput = row.sickName
+          this.dialogTitle = this.$t('tag.editTag')
           this.dialogVisible = true
           break
         case 1:
           this.dialogDelVisible = true
-          console.log(row)
           break
         case 2:
           this.$router.push({
-            name: 'user_list'
+            name: 'user_list',
+            params: {
+              ...row
+            }
           })
       }
+    },
+    temporarySaveCurrentRowTag (row) {
+      this.labelDialogInput = row.tagName
+      this.currentOptionTagId = row.tagId
     },
     // 顶部按钮点击
     handleToButton (flag) {
       switch (flag) {
         case 0:
-          this.labelDialogInput = ''
-          this.dialogTitle = '新建标签'
-          this.dialogVisible = true
+          this.showCreateNewTagDialog()
           break
         case 1:
-          break
+          this.loadAllTagList()
       }
     }
   }
