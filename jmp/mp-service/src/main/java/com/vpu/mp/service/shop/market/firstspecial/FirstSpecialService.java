@@ -23,14 +23,13 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
 import static com.vpu.mp.db.shop.tables.FirstSpecialGoods.FIRST_SPECIAL_GOODS;
 import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static org.jooq.impl.DSL.countDistinct;
 import static org.jooq.impl.DSL.sum;
 
