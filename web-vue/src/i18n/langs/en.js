@@ -44,7 +44,10 @@ import { en as personalCenter } from './views/admin_new/en/index/miniProgramMana
 import { en as searchConfig } from './views/admin_new/en/index/miniProgramManagement/searchConfig/searchConfigEn'
 // 页面分类
 import { en as pageClassification } from './views/admin_new/en/index/miniProgramManagement/pageClassification/pageClassificationEn'
-
+// 小程序页面装修home页
+import { en as decorationHome } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationHomeEn'
+// 小程序页面装修页面配置模块国际化
+import { en as pageSetUp } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/pageSetUpEn'
 // 营销管理系列模块化
 // 营销管理通用词汇
 import { en as marketCommon } from './views/admin_new/en/index/marketManagement/marketCommonEn'
@@ -710,6 +713,8 @@ const en = {
   returnconfiguration, // 退换货配置
   payConfiguration, // 支付配置
   templateMessage, // 运费模板
-  serviceConfig // 门店服务配置
+  serviceConfig, // 门店服务配置
+  decorationHome, // 小程序页面装修home页
+  pageSetUp // 小程序页面设置
 }
 export default en

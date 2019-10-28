@@ -35,7 +35,10 @@ import { cn as personalCenter } from './views/admin_new/cn/index/miniProgramMana
 import { cn as searchConfig } from './views/admin_new/cn/index/miniProgramManagement/searchConfig/searchConfigCn'
 // 页面分类
 import { cn as pageClassification } from './views/admin_new/cn/index/miniProgramManagement/pageClassification/pageClassificationCn'
-
+// 小程序页面装修home页国际化
+import { cn as decorationHome } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationHomeCn'
+// 小程序页面装修页面设置模块国际化
+import { cn as pageSetUp } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/pageSetUpCn'
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { cn as allGoods } from './views/admin_new/cn/index/goodsManagement/allGoodsCn'
@@ -170,7 +173,6 @@ import { cn as tradeConfiguration } from './views/admin_new/cn/index/basicSettin
 import { cn as returnconfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/returnGoodsConfigurationCn'
 // 模板消息
 import { cn as templateMessage } from './views/admin_new/cn/index/basicSettings/templateMessage/templateMessageCn'
-
 const cn = {
   messages: {
     lang: '中文',
@@ -681,7 +683,10 @@ const cn = {
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
   templateMessage, // 运费模板
-  serviceConfig // 门店服务配置
+  serviceConfig, // 门店服务配置
+
+  decorationHome, // 页面装修部分
+  pageSetUp // 页面装修页面设置
 }
 
 export default cn
