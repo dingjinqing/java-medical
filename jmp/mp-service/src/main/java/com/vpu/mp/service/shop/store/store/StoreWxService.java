@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
@@ -220,21 +219,15 @@ public class StoreWxService extends ShopBaseService {
         }
         // 设置图片和距离
         storeList.forEach(s -> {
-            if (s.getStoreImgs() != null) {
+            String storeImgs = s.getStoreImgs();
+            log.debug("门店宣传图列表为:{}", storeImgs);
+            List<String> imgs = Util.json2Object(storeImgs, new TypeReference<List<String>>() {
+            }, false);
+            if (CollectionUtils.isNotEmpty(imgs)) {
                 // 设置门店主图中的第一张为门店列表展示图
-                JsonNode imgList;
-                try {
-                    imgList = MAPPER.readTree(s.getStoreImgs());
-                } catch (IOException e) {
-                    log.error("反序列化门店图片信息[{}]失败", s.getStoreImgs());
-                    throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
-                }
-                Iterator<JsonNode> iterator = imgList.elements();
-                if (iterator.hasNext()) {
-                    s.setStoreImgs(iterator.next().asText());
-                } else {
-                    s.setStoreImgs(null);
-                }
+                s.setStoreImgs(imgs.get(INTEGER_ZERO));
+            } else {
+                s.setStoreImgs(null);
             }
             Double lat1 = location.getLatitude();
             Double lon1 = location.getLatitude();
