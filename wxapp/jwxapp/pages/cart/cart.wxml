@@ -29,9 +29,9 @@
                                 <view class="goods_price">
                                     <view class="price" style="color:{{comColor}}">￥500.00</view>
                                     <view class="num_cfg">
-                                      <view class="num_minus" bindtap="goodsNumMinus">-</view>
+                                      <view class="num_minus {{item.prdNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.prdNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="minus">-</view>
                                       <input type="number" value="{{item.prdNumber}}"></input>
-                                      <view class="num_plus" bindtap="goodsNumPlus">+</view>
+                                      <view class="num_plus {{item.prdNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.prdNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>

@@ -596,12 +596,12 @@ const routes = [{
         path: '/admin/home/main/goodsManage/goodsRecommend',
         name: 'recommend',
         meta: {
-          crumbTitle: 'router.evaluationManagement',
+          crumbTitle: 'router.goodsRecommend',
           meta: 'goods_manage'
         },
         component: () =>
           import(
-            '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
+            '@/view/admin/index/leftNavComponents/goods_manage/goodsRecommend/goodsRecommend'
           )
       },
 

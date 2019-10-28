@@ -17,13 +17,17 @@ global.wxPage({
   onLoad: function (options) {
     this.requestCartList()
   },
-  // 增加商品数量
-  goodsNumPlus(){
-
-  },
-  // 减少商品数量
-  goodsNumMinus(){
-
+  // 更改商品数量
+  goodsNumChange(e){
+    const type = e.currentTarget.dataset.type;
+    const recId = e.currentTarget.dataset.rec_id;
+    let idx = this.data.canBuyGoodsList.findIndex(item => {return item.recId === recId})
+    let prdNum = this.data.canBuyGoodsList[idx].prdNumber;
+    let target = `canBuyGoodsList[${idx}].prdNumber`;
+    this.setData({
+      [target]: type === 'add' ? prdNum + 1 : prdNum - 1
+    })
+    this.getCartPrice()
   },
   // 请求购物车列表
   requestCartList(){
@@ -72,6 +76,7 @@ global.wxPage({
             return recId !== item.recId;
           })
         })
+        this.getCartPrice()
       }
     }, { recId: recId })
   },

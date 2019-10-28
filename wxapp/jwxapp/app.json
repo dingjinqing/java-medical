@@ -22,7 +22,8 @@
     "pages/userqrcode/userqrcode",
     "pages/bargainlist/bargainlist",
     "pages/lotterygift/lotterygift",
-    "pages/storelist/storelist"
+    "pages/storelist/storelist",
+    "pages/checkout/checkout"
   ],
   "window": {
     "backgroundTextStyle": "dark",

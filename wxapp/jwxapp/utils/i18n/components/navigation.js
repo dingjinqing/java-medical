@@ -32,7 +32,7 @@ module.exports = {
     "formsuccess": "提交成功",
     "fullprice": "满折满减",
     "getcoupon": "优惠券",
-    "goodsCheckout": "订单结算",
+    "checkout": "订单结算",
     "goodscomment": "评价详情",
     "groupbuyinfo": "拼团详情",
     "groupbuyitem": "拼团商品详情",
