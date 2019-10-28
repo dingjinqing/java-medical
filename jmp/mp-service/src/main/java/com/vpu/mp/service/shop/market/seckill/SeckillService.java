@@ -110,7 +110,7 @@ public class SeckillService extends ShopBaseService {
             }
             record.insert();
             Integer skId = record.getSkId();
-            for(SecKillProductDefine secKillProduct : param.getSecKillProduct()){
+            for(SeckillProductAddParam secKillProduct : param.getSecKillProduct()){
                 SecKillProductDefineRecord productRecord = new SecKillProductDefineRecord();
                 assign(secKillProduct,productRecord);
                 productRecord.setSkId(skId);

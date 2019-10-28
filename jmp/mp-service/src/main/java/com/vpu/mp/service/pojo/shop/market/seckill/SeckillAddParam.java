@@ -45,7 +45,7 @@ public class SeckillAddParam {
     /** 秒杀商品规格价格设置实体*/
     @NotNull
     @Size(min=1)
-    private SecKillProductDefine[] secKillProduct;
+    private SeckillProductAddParam[] secKillProduct;
 
     /** 是否免运费： 1：免运费  0： 原先商品的运费*/
     @NotNull
