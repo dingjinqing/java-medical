@@ -28,7 +28,10 @@
         <div class="left-agency">
           <div class="left-title">
             待办事项
-            <span class="custom_title">自定义</span>
+            <span
+              class="custom_title"
+              @click="customizeHandler"
+            >自定义</span>
             <div class="one_piece">
               <span>🇱 ⁶⁶⁶已关注公众号，可实时接收消息通知</span>
               <a
@@ -73,64 +76,92 @@
         <div class="left-data">
           <div
             class="left-title clearfix"
-            style="margin-bottom: 10px"
+            style="margin-bottom: 30px"
           >
             <span>数据展示</span>
-            <i class="item-image">
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/analysis_tishi.png"
-                alt=""
-                width="14"
-                height="14"
-                style="vertical-align: middle;margin-bottom: 2px;"
+            <el-tooltip
+              effect="dark"
+              placement="right"
+            >
+              <div
+                slot="content"
+                style="line-height: 1.5"
               >
-            </i>
-            <el-select>
-              <el-option>111</el-option>
-              <el-option>222</el-option>
-              <el-option>333</el-option>
-            </el-select>
+                访问人数：统计时间内，店铺所有页面（包括店铺主页、单品页、会员主页等）被访问的去重人数，一个人在统计时间范围内访问多次只记为一个<br />
+                下单笔数：统计时间内，下单成功的订单数，一个订单对应唯一一个订单号<br />
+                下单人数：统计时间内，成功下单的客户数，一人多次下单记为一人（不剔除退款订单）<br />
+                支付订单：统计时间内，成功付款的订单数，一个订单对应唯一一个订单号（拼团在成团时计入付款订单，货到付款在发货时计入付款订单，不剔除退款订单）<br />
+                支付金额(元)：统计时间内，所有付款订单金额之和（包括微信支付、余额、积分、会员卡，拼团在成团时计入付款金额，货到付款在发货时计入付款金额，不剔除退款金额）<br />
+                访问-下单转化率：统计时间内，下单人数/访客数<br />
+                下单-支付转化率：统计时间内，付款人数/下单人数<br />
+                访问-支付转化率：统计时间内，付款人数/访客数<br />
+              </div>
+              <i class="item-image">
+                <img
+                  src="http://mpdevimg2.weipubao.cn/image/admin/analysis_tishi.png"
+                  alt=""
+                  width="14"
+                  height="14"
+                  style="vertical-align: middle;margin-bottom: 2px;"
+                >
+              </i>
+            </el-tooltip>
+            <div style="display:inline-block;float:right;">
+              <el-select
+                v-model="screeningTime"
+                @change="dateChangeHandler"
+                size="mini"
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </div>
+
           </div>
           <div class="left-data-content">
             <div class="left-datas">
               <div class="single-data">
                 <h4>访问人数</h4>
-                <h3>35</h3>
+                <h3>{{ dataContent.userVisitNum }}</h3>
               </div>
               <div class="single-data">
-                <h4>访问人数</h4>
-                <h3>35</h3>
+                <h4>单笔下单</h4>
+                <h3>{{ dataContent.orderNum }}</h3>
               </div>
               <div class="single-data">
-                <h4>访问人数</h4>
-                <h3>35</h3>
+                <h4>下单人数</h4>
+                <h3>{{ dataContent.orderUserNum }}</h3>
               </div>
               <div class="single-data">
-                <h4>访问人数</h4>
-                <h3>35</h3>
+                <h4>支付单数(笔数)</h4>
+                <h3>{{ dataContent.paidOrderNum }}</h3>
               </div>
               <div class="single-data">
-                <h4>访问人数</h4>
-                <h3>35</h3>
+                <h4>支付金额(元)</h4>
+                <h3>{{ dataContent.totalPaidSum }}</h3>
               </div>
               <div class="single-data">
-                <h4>访问人数</h4>
-                <h3>35</h3>
+                <h4>付款人数</h4>
+                <h3>{{ dataContent.paidUserNum }}</h3>
               </div>
             </div>
             <div class="right-datas">
               <div class="data-img clearfix">
                 <div class="fw-app">
-                  <div class="data-title">访问-支付宝转化率</div>
-                  <div class="data-text">11.34%</div>
+                  <div class="data-title">访问-支付转化率</div>
+                  <div class="data-text">{{ dataContent.uv2paid }}%</div>
                 </div>
                 <div class="fw-xd">
-                  <div class="data-title">访问-支付宝转化率</div>
-                  <div class="data-text">11.34%</div>
+                  <div class="data-title">访问-下单转化率</div>
+                  <div class="data-text">{{ dataContent.uv2order }}%</div>
                 </div>
                 <div class="xd-app">
-                  <div class="data-title">访问-支付宝转化率</div>
-                  <div class="data-text">11.34%</div>
+                  <div class="data-title">下单-支付转化率</div>
+                  <div class="data-text">{{ dataContent.order2paid }}%</div>
                 </div>
               </div>
             </div>
@@ -427,15 +458,98 @@
         </div>
       </div>
     </div>
+
+    <!-- 自定义代办事项 -->
+    <el-dialog
+      title="自定义代办事项"
+      :visible.sync="dataDialog"
+      center
+      width="40%"
+    >
+      <p style="color: #999;font-size: 14px;">需选择5个待办事项</p>
+      <el-checkbox-group
+        v-model="checkData"
+        style="margin-top: 20px;width: 100%;"
+      >
+        <el-checkbox
+          v-for="item in checkList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+          style="margin-bottom: 10px;width: 25%;"
+        ></el-checkbox>
+      </el-checkbox-group>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dataDialog = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dataDialog = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 
 </template>
 <script>
-import { getbindUnBindStatus, getOfficialQrCode, checkGoodThingRequest } from '@/api/admin/firstWebManage/shopView/overview.js'
+import { toDoItemRequest, dataRequest } from '@/api/admin/survey.js'
 export default {
   name: 'overview',
   data () {
     return {
+      dataDialog: false, // 自定义事项弹框
+      checkData: [], // 选中自定义事项
+      // 自定义列表
+      checkList: [{
+        value: 1,
+        label: '待发货订单'
+      }, {
+        value: 2,
+        label: '待处理退款退货'
+      }, {
+        value: 3,
+        label: '已售罄商品'
+      }, {
+        value: 4,
+        label: '商品评价待审核'
+      }, {
+        value: 5,
+        label: '待提货订单'
+      }, {
+        value: 6,
+        label: '分销员待审核'
+      }, {
+        value: 7,
+        label: '会员卡激活待审核'
+      }, {
+        value: 8,
+        label: '分销提现待审核'
+      }, {
+        value: 9,
+        label: '服务评价待审核'
+      }],
+      screeningTime: 1, // 数据日期范围
+      // 数据日期列表
+      options: [{
+        value: 1,
+        label: '今日'
+      }, {
+        value: 2,
+        label: '昨日'
+      }, {
+        value: 7,
+        label: '近一周'
+      }, {
+        value: 30,
+        label: '近一个月'
+      }, {
+        value: 90,
+        label: '近三个月'
+      }],
+      // 数据列表信息
+      dataContent: {},
       nickName: null,
       isBind: 0,
       officialOpenId: null,
@@ -447,53 +561,42 @@ export default {
   mounted () {
     // 初始化数据
     this.defaluteData()
-    // 初始化语言
-    this.langDefault()
   },
   methods: {
     defaluteData () {
-      getbindUnBindStatus().then((res) => {
+      this.todoDate()
+      this.showData()
+    },
+
+    // 代办事项
+    todoDate () {
+      toDoItemRequest().then((res) => {
         if (res.error === 0) {
-          this.isBind = res.content.isBind
-          this.nickName = res.content.nickName
-          this.officialOpenId = res.content.officialOpenId
-          if (this.isBind !== 0) {
-            this.act = 'del_bind'
-          } else if (this.officialOpenId !== null) {
-            this.act = 'bind'
-          } else {
-            this.act = null
-          }
-          console.log(res)
+          console.log(res.content)
         }
-        console.log(res)
       })
     },
-    handleSubmit () {
-      if (this.act === null) {
-        getOfficialQrCode().then((res) => {
-          console.log(res)
-          if (res.error === 0) {
-            this.imgsrc = res.content
-            this.centerDialogVisible = true
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-      } else {
-        let data2 = {
-          act: this.act
+
+    // 自定义事项
+    customizeHandler () {
+      this.dataDialog = true
+    },
+
+    // 数据展示
+    showData () {
+      dataRequest({ screeningTime: this.screeningTime }).then((res) => {
+        if (res.error === 0) {
+          this.dataContent = res.content
         }
-        checkGoodThingRequest(data2).then((res) => {
-          console.log(res)
-          if (res.error === 0) {
-          } else {
-            this.$message.error(res.message)
-          }
-          this.defaluteData()
-        })
-      }
+      })
+    },
+
+    // 数据日期切换
+    dateChangeHandler (value) {
+      this.screeningTime = value
+      this.showData()
     }
+
   }
 }
 </script>
@@ -562,6 +665,10 @@ img {
   font-weight: 600;
   margin-bottom: 20px;
   position: relative;
+}
+
+.el-tooltip__popper {
+  max-width: 600px;
 }
 
 .custom_title {

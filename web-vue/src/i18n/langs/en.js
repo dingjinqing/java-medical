@@ -88,6 +88,8 @@ import { en as couponGive } from './views/admin_new/en/index/marketManagement/co
 import { en as seckill } from './views/admin_new/en/index/marketManagement/seckill/seckillEn'
 // 秒杀-添加
 import { en as addSeckill } from './views/admin_new/en/index/marketManagement/seckill/addSeckillEn'
+// 秒杀-秒杀订单
+import { en as orderSeckill } from './views/admin_new/en/index/marketManagement/seckill/orderSeckillEn'
 // 微信好物圈
 import { en as wechateGoodsCicle } from './views/admin_new/en/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleEn'
 // 支付有礼
@@ -153,6 +155,7 @@ import { en as dateTimePicker } from './views/admin_new/en/components/dateTimePi
 
 // 通用组件 日期时间选择
 // 快递公司
+// import { en as expressList } from './views/admin/index/leftNavComponents/order/expressList'
 import { en as expressList } from './views/admin_new/en/index/orderManagement/expressListEn'
 
 // 加价购-列表展示页
@@ -638,6 +641,7 @@ const en = {
   bottomNavigation, // 底部导航
   personalCenter, // 个人中心
   searchConfig, // 搜索配置
+
   pageClassification, // 页面分类
   // 商品
   allGoods, // 商品管理/全部商品
@@ -677,6 +681,7 @@ const en = {
   couponGive, // 定向发券
   seckill, // 秒杀
   addSeckill, // 秒杀-添加
+  orderSeckill, // 秒杀-秒杀订单
   ...enLocale,
   expressList,
   wechateGoodsCicle, // 微信好物圈

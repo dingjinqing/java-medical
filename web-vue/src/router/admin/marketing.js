@@ -864,6 +864,62 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckillAdd'
       )
   },
+  // 秒杀 秒杀订单
+  {
+    path: '/admin/home/main/seckill/orderList',
+    name: 'seckill_order_view',
+    meta: {
+      crumbTitle: 'router.orderSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckillOrderList'
+      )
+  },
+  // 秒杀 用户明细
+  {
+    path: '/admin/home/main/seckill/detailList',
+    name: 'seckill_detail_view',
+    meta: {
+      crumbTitle: 'router.detailSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckillDetailList'
+      )
+  },
+  // 秒杀 秒杀用户
+  {
+    path: '/admin/home/main/seckill/userList',
+    name: 'seckill_user_view',
+    meta: {
+      crumbTitle: 'router.userSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckillUserList'
+      )
+  },
+  // 秒杀 活动效果数据
+  {
+    path: '/admin/home/main/seckill/userList',
+    name: 'seckill_effect_view',
+    meta: {
+      crumbTitle: 'router.resultSeckill',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckillEffect'
+      )
+  },
   // 加价购活动
   {
     path: '/api/admin/market/addPriceBuy/list',

@@ -1,23 +1,30 @@
 <template>
   <div class="content">
     <div class="main">
-      <statusTab
-        v-model="nav"
-        activityName="秒杀"
-        :standard="true"
-      />
+      <el-tabs
+        v-model="tabSwitch"
+        @tab-click="tabClickHandler"
+        :lazy="true"
+      >
+        <el-tab-pane
+          v-for="(item, index) in tabInfo"
+          :key="index"
+          :label="item.title"
+          :name="item.name"
+        ></el-tab-pane>
+      </el-tabs>
       <div class="wrapper">
         <el-button
           type="primary"
           size="medium"
-          v-if="tableListView"
+          v-if="tabSwitch !== '5'"
           @click="addSeckill"
         >添加秒杀活动</el-button>
       </div>
     </div>
     <div
       class="table_list"
-      v-if="tableListView"
+      v-if="tabSwitch !== '5'"
     >
       <el-table
         class="version-manage-table"
@@ -27,40 +34,39 @@
         style="width: 100%"
       >
         <el-table-column
-          prop=""
+          prop="name"
           label="活动名称"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="goodsName"
           label="商品名称"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="validity"
           label="有效期"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="statusText"
           label="活动状态"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="saleNum"
           label="商品交易数量"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="limitAmount"
           label="单用户最大购买数量"
           align="center"
         >
@@ -70,16 +76,108 @@
           label="操作"
           align="center"
           width="200"
+          style="margin: 0 auto;"
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span>编辑</span>
-              <span>分享</span>
-              <span>停用</span>
-              <span>查看秒杀订单</span>
-              <span>获取新用户明细</span>
-              <span>查看秒杀用户</span>
-              <span>活动效果数据</span>
+              <el-tooltip
+                content="编辑"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-edit-outline"
+                  v-if="scope.row.status == 1"
+                  @click="editHandler(scope.row.skId, scope.row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="分享"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-share"
+                  v-if="scope.row.status == 1"
+                  @click="shareHandler(scope.row.skId)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="停用"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-close"
+                  v-if="scope.row.status == 1"
+                  @click="stopHandler(scope.row.skId)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="启用"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-check"
+                  v-if="scope.row.status == 0"
+                  @click="startHandler(scope.row.skId)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="查看秒杀订单"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-tickets"
+                  v-if="scope.row.status == 0"
+                  @click="seckillOrderHanlder(scope.row.skId)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="获取新用户明细"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-user-solid"
+                  v-if="scope.row.status == 0"
+                  @click="seckillDetailHanlder(scope.row.skId)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="查看秒杀用户"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-s-unfold"
+                  v-if="scope.row.status == 0"
+                  @click="seckillUserHanlder(scope.row.skId)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="删除"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-delete"
+                  v-if="scope.row.status == 0"
+                  @click="deleteHandler(scope.row.skId)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="活动效果数据"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-s-data"
+                  @click="seckillEffectHandler(scope.row.skId)"
+                ></span>
+              </el-tooltip>
             </div>
           </template>
         </el-table-column>
@@ -89,7 +187,78 @@
         @pagination="handleClick"
       />
     </div>
-    <addSeckill v-if="tableListView===false" />
+    <addSeckill
+      :editData="editData"
+      :isEdite="isEdite"
+      :editId="editId"
+      @addSeckillSubmit="addSeckillSubmit"
+      v-if="tabSwitch==='5'"
+    />
+
+    <!-- 分享dislog -->
+    <el-dialog
+      title="扫一扫，分享给好友吧~"
+      :visible.sync="shareDialog"
+      width="350px"
+      center
+      :close-on-click-modal="false"
+    >
+      <div style="width: 100%; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
+        <div>
+          <img
+            :src="shareImg"
+            alt=""
+            style="width:160px;height:160px;"
+          >
+        </div>
+        <div style="margin: 20px; 0">
+          <a
+            :href="shareImg"
+            download
+            style="color: #999;text-decoration: none;"
+          >下载二维码</a>
+        </div>
+      </div>
+      <div>
+        <el-input v-model="sharePath">
+          <el-button
+            slot="append"
+            v-clipboard:copy="sharePath"
+            v-clipboard:success="copyHandler"
+          >复制</el-button>
+        </el-input>
+      </div>
+      <!-- <div
+        class="share_content"
+        style="display: block;"
+      >
+        <div class="share_middle">
+          <img
+            src="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/19/T19P243_20191025220318.jpg"
+            alt=""
+            style="width:160px;height:160px"
+          >
+          <a
+            href="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/19/T19P243_20191025220318.jpg"
+            download
+          >下载二维码</a>
+        </div>
+        <div class="share_bottom">
+          <input type="text">
+          <button>复制</button>
+        </div>
+      </div> -->
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="shareDialog = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="shareDialog = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -97,7 +266,7 @@
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 import addSeckill from './seckillAdd.vue'
-import { seckillList } from '@/api/admin/marketManage/seckill.js'
+import { seckillList, deleteSeckillList, shareSeckillList, getSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
 export default {
 
   components: {
@@ -107,10 +276,32 @@ export default {
   },
   data () {
     return {
-      nav: 0,
-      tableListView: true,
-      tableData: [],
-      pageParams: {}
+      tabSwitch: '1',
+      tabInfo: [{
+        title: '全部秒杀活动',
+        name: '0'
+      }, {
+        title: '进行中',
+        name: '1'
+      }, {
+        title: '未开始',
+        name: '2'
+      }, {
+        title: '已过期',
+        name: '3'
+      }, {
+        title: '已停用',
+        name: '4'
+      }],
+      tableData: [], // 表格数据
+      pageParams: {}, // 分页
+      requestParams: {},
+      shareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: '',
+      editData: {}, // 编辑数据
+      editId: '', // 编辑的活动id
+      isEdite: true // 编辑状态
     }
   },
   mounted () {
@@ -120,23 +311,160 @@ export default {
   methods: {
     // 秒杀列表
     handleClick () {
-      this.pageParams.nav = this.nav
-      seckillList(this.pageParams).then((res) => {
+      this.requestParams.state = this.tabSwitch
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      seckillList(this.requestParams).then((res) => {
         if (res.error === 0) {
-          // this.handleData(res.content.dataList)
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
+          this.tableData.map((item, index) => {
+            item.validity = `${item.startTime}` + `至` + `${item.endTime}`
+            item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+          })
         }
       })
     },
 
     // 添加秒杀活动
     addSeckill () {
-      this.tableListView = false
-      // this.$router.push({
-      //   name: 'seckill_add_view'
-      // })
+      this.isEdite = false
+      this.tabInfo.push({
+        title: '添加秒杀活动',
+        name: '5'
+      })
+      this.tabSwitch = '5'
+    },
+
+    // tab栏切换
+    tabClickHandler () {
+      this.requestParams.state = this.tabSwitch
+      if (this.tabSwitch !== '5') {
+        this.tabInfo = this.tabInfo.slice(0, 5)
+      }
+      this.handleClick()
+    },
+
+    // 编辑秒杀活动
+    editHandler (id, row) {
+      console.log(row)
+      this.isEdite = true
+      this.tabInfo.push({
+        title: '编辑秒杀活动',
+        name: '5'
+      })
+      this.tabSwitch = '5'
+      this.editId = id
+      getSeckillList({ skId: id }).then((res) => {
+        if (res.error === 0) {
+          this.editData = res.content
+        }
+      })
+    },
+
+    // 保存
+    addSeckillSubmit () {
+      this.tabInfo = this.tabInfo.slice(0, 5)
+      this.tabSwitch = '1'
+      this.handleClick()
+    },
+
+    // 删除
+    deleteHandler (id) {
+      this.$confirm('此操作将永久删除该, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteSeckillList({ skId: id }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '删除成功!' })
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消删除' })
+      })
+    },
+
+    // 分享
+    shareHandler (id) {
+      this.shareDialog = true
+      shareSeckillList(id).then((res) => {
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+        }
+      })
+    },
+
+    // 复制
+    copyHandler (e) {
+      this.$message.success({ message: '复制成功!' })
+    },
+
+    // 停用
+    stopHandler (id) {
+      this.$confirm('此操作将停用活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateSeckillList({
+          skId: id,
+          status: 0
+        }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '停用成功!' })
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消停用' })
+      })
+    },
+
+    // 启用
+    startHandler (id) {
+      this.$confirm('此操作将启用活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateSeckillList({
+          skId: id,
+          status: 1
+        }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '启用成功!' })
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消删除' })
+      })
+    },
+
+    // 查看秒杀订单
+    seckillOrderHanlder (id) {
+      this.$router.push({ name: 'seckill_order_view', query: { id: id } })
+    },
+
+    // 查看用户明细
+    seckillDetailHanlder (id) {
+      this.$router.push({ name: 'seckill_detail_view', query: { id: id } })
+    },
+
+    // 查看秒杀用户
+    seckillUserHanlder (id) {
+      this.$router.push({ name: 'seckill_user_view', query: { id: id } })
+    },
+
+    // 查看活动数据效果
+    seckillEffectHandler (id) {
+      this.$router.push({ name: 'seckill_effect_view', query: { id: id } })
     }
+
   }
 }
 </script>

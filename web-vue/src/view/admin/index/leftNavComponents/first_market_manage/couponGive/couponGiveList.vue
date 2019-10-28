@@ -121,7 +121,7 @@ export default {
       actName: '',
       tableData: [],
       pageParams: {
-
+        pageRows: 20
       }
     }
   },

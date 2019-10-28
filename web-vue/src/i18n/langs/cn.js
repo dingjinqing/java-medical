@@ -97,6 +97,8 @@ import { cn as wechateGoodsCicle } from './views/admin_new/cn/index/marketManage
 import { cn as payReward } from './views/admin_new/cn/index/marketManagement/payReward/payReward'
 // 首单特惠
 import { cn as firstSpecial } from './views/admin_new/cn/index/marketManagement/firstSpecial/firstSpecialCn'
+// 秒杀-秒杀订单
+import { cn as orderSeckill } from './views/admin_new/cn/index/marketManagement/seckill/orderSeckillCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -157,6 +159,7 @@ import { cn as serviceConfig } from './views/admin_new/cn/index/storeManagement/
 import { cn as dateTimePicker } from './views/admin_new/cn/components/dateTimePicker/dateTimePickerCn'
 
 // 快递公司
+// import { cn as expressList } from './views/admin/index/leftNavComponents/order/expressList'
 import { cn as expressList } from './views/admin_new/cn/index/orderManagement/expressListCn'
 
 // 加价购-列表展示页
@@ -649,6 +652,7 @@ const cn = {
   couponGive, // 定向发券
   seckill, // 秒杀
   addSeckill, // 秒杀-添加
+  orderSeckill, // 秒杀-秒杀订单
   ...zhLocale,
   expressList,
   wechateGoodsCicle, // 微信好物圈

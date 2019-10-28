@@ -1,9 +1,81 @@
 import service from '@/util/request.js'
 
-// 普通优惠券列表
+// 秒杀列表
 export function seckillList (data) {
   return service({
     url: '/api/admin/market/seckill/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 添加秒杀活动
+export function addSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 编辑详情
+export function getSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/get',
+    method: 'post',
+    data: data
+  })
+}
+
+// 更新秒杀活动
+export function updateSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除秒杀活动
+export function deleteSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/del',
+    method: 'post',
+    data: data
+  })
+}
+
+// 分享秒杀活动
+export function shareSeckillList (data) {
+  return service({
+    url: `/api/admin/market/seckill/share?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 查询秒杀订单列表
+export function orderSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/order',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查询用户明细列表
+export function detailSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/source',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查询秒杀用户列表
+export function userSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/detail',
     method: 'post',
     data: data
   })
