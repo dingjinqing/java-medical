@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author liufei
@@ -55,6 +54,6 @@ public class StoreInfoVo {
     /**
      * The Service cat.门店分类服务列表
      */
-    public Map<StoreServiceCategoryListQueryVo, List<StoreServiceListQueryVo>> serviceCat;
+    public List<StoreServiceCategoryListQueryVo> serviceCat;
 
 }

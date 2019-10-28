@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.shop.store.service;
 
-import java.sql.Timestamp;
-
 import lombok.Data;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 王兵兵
@@ -11,13 +12,18 @@ import lombok.Data;
  */
 @Data
 public class StoreServiceCategoryListQueryVo {
-	
+
 	private Integer catId;
-	
-	/**
+
+    /**
 	 *  分类名称
 	 */
 	private String catName;
-	
-	private Timestamp createTime;
+
+    private Timestamp createTime;
+
+    /**
+     * The Service list.某一服务分类下的所有的服务列表
+     */
+    private List<StoreServiceListQueryVo> serviceList;
 }
