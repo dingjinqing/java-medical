@@ -96,7 +96,7 @@ public class ReducePriceService extends ShopBaseService {
                     ReducePriceProductRecord productRecord = db().newRecord(REDUCE_PRICE_PRODUCT);
                     productRecord.setReducePriceId(reducePriceId);
                     productRecord.setGoodsId(goodsId);
-                    productRecord.setProductId(defaultPrd.getPrdId());
+                    productRecord.setPrdId(defaultPrd.getPrdId());
                     productRecord.setPrdPrice(goods.getGoodsPrice());
                     productRecord.insert();
                 }
@@ -211,7 +211,7 @@ public class ReducePriceService extends ShopBaseService {
         if(!res.isEmpty()){
             for(ReducePriceGoodsVo reducePriceGoods : res){
                 reducePriceGoods.setGoodsView(saas().getShopApp(getShopId()).goods.getGoodsView(reducePriceGoods.getGoodsId()));
-                List<ReducePriceProductVo> reducePriceProduct = db().select(REDUCE_PRICE_PRODUCT.ID,REDUCE_PRICE_PRODUCT.PRODUCT_ID,REDUCE_PRICE_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE.as("originalPrice")).from(REDUCE_PRICE_PRODUCT).innerJoin(GOODS_SPEC_PRODUCT).on(REDUCE_PRICE_PRODUCT.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(id)).and(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(reducePriceGoods.getGoodsId())).fetchInto(ReducePriceProductVo.class);
+                List<ReducePriceProductVo> reducePriceProduct = db().select(REDUCE_PRICE_PRODUCT.ID,REDUCE_PRICE_PRODUCT.PRD_ID,REDUCE_PRICE_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE.as("originalPrice")).from(REDUCE_PRICE_PRODUCT).innerJoin(GOODS_SPEC_PRODUCT).on(REDUCE_PRICE_PRODUCT.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(id)).and(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(reducePriceGoods.getGoodsId())).fetchInto(ReducePriceProductVo.class);
                 reducePriceGoods.setReducePriceProduct(reducePriceProduct);
             }
         }

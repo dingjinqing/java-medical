@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePriceProduct extends TableImpl<ReducePriceProductRecord> {
 
-    private static final long serialVersionUID = -1681910035;
+    private static final long serialVersionUID = -1512248008;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price_product</code>
@@ -74,9 +74,9 @@ public class ReducePriceProduct extends TableImpl<ReducePriceProductRecord> {
     public final TableField<ReducePriceProductRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_reduce_price_product.product_id</code>. 规格id
+     * The column <code>mini_shop_471752.b2c_reduce_price_product.prd_id</code>. 规格id
      */
-    public final TableField<ReducePriceProductRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "规格id");
+    public final TableField<ReducePriceProductRecord, Integer> PRD_ID = createField("prd_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "规格id");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price_product.prd_price</code>. 折后价格
@@ -86,12 +86,12 @@ public class ReducePriceProduct extends TableImpl<ReducePriceProductRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price_product.create_time</code>.
      */
-    public final TableField<ReducePriceProductRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReducePriceProductRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price_product.update_time</code>. 最后修改时间
      */
-    public final TableField<ReducePriceProductRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<ReducePriceProductRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_reduce_price_product</code> table reference

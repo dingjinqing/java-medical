@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePriceProductRecord extends UpdatableRecordImpl<ReducePriceProductRecord> implements Record7<Integer, Integer, Integer, Integer, BigDecimal, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 40957014;
+    private static final long serialVersionUID = -1137443222;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_reduce_price_product.id</code>.
@@ -76,16 +76,16 @@ public class ReducePriceProductRecord extends UpdatableRecordImpl<ReducePricePro
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_reduce_price_product.product_id</code>. 规格id
+     * Setter for <code>mini_shop_471752.b2c_reduce_price_product.prd_id</code>. 规格id
      */
-    public void setProductId(Integer value) {
+    public void setPrdId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_reduce_price_product.product_id</code>. 规格id
+     * Getter for <code>mini_shop_471752.b2c_reduce_price_product.prd_id</code>. 规格id
      */
-    public Integer getProductId() {
+    public Integer getPrdId() {
         return (Integer) get(3);
     }
 
@@ -192,7 +192,7 @@ public class ReducePriceProductRecord extends UpdatableRecordImpl<ReducePricePro
      */
     @Override
     public Field<Integer> field4() {
-        return ReducePriceProduct.REDUCE_PRICE_PRODUCT.PRODUCT_ID;
+        return ReducePriceProduct.REDUCE_PRICE_PRODUCT.PRD_ID;
     }
 
     /**
@@ -248,7 +248,7 @@ public class ReducePriceProductRecord extends UpdatableRecordImpl<ReducePricePro
      */
     @Override
     public Integer component4() {
-        return getProductId();
+        return getPrdId();
     }
 
     /**
@@ -304,7 +304,7 @@ public class ReducePriceProductRecord extends UpdatableRecordImpl<ReducePricePro
      */
     @Override
     public Integer value4() {
-        return getProductId();
+        return getPrdId();
     }
 
     /**
@@ -363,7 +363,7 @@ public class ReducePriceProductRecord extends UpdatableRecordImpl<ReducePricePro
      */
     @Override
     public ReducePriceProductRecord value4(Integer value) {
-        setProductId(value);
+        setPrdId(value);
         return this;
     }
 
@@ -423,13 +423,13 @@ public class ReducePriceProductRecord extends UpdatableRecordImpl<ReducePricePro
     /**
      * Create a detached, initialised ReducePriceProductRecord
      */
-    public ReducePriceProductRecord(Integer id, Integer reducePriceId, Integer goodsId, Integer productId, BigDecimal prdPrice, Timestamp createTime, Timestamp updateTime) {
+    public ReducePriceProductRecord(Integer id, Integer reducePriceId, Integer goodsId, Integer prdId, BigDecimal prdPrice, Timestamp createTime, Timestamp updateTime) {
         super(ReducePriceProduct.REDUCE_PRICE_PRODUCT);
 
         set(0, id);
         set(1, reducePriceId);
         set(2, goodsId);
-        set(3, productId);
+        set(3, prdId);
         set(4, prdPrice);
         set(5, createTime);
         set(6, updateTime);

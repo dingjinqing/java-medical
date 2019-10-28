@@ -2981,7 +2981,7 @@ create table `b2c_reduce_price_product`
     `id`              int(11) not null auto_increment,
     `reduce_price_id` int(11) not null comment '限时减价活动id',
     `goods_id`        int(11) not null comment '商品id',
-    `product_id`      int(11) not null comment '规格id',
+    `prd_id`      int(11) not null comment '规格id',
     `prd_price`       decimal(10, 2) default null comment '折后价格',
     `create_time`     timestamp      default current_timestamp,
     `update_time`     timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
