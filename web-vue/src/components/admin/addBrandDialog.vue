@@ -4,10 +4,13 @@
       <el-dialog
         title="添加商品品牌"
         :visible.sync="callAddBrand"
-        width="40%"
+        width="50%"
         :modal-append-to-body='false'
       >
-        <div class="dialogTop">
+        <div
+          class="dialogTop"
+          style="margin-bottom:10px"
+        >
           <div class="topList">
             <span>品牌名称:</span>
             <el-input
@@ -35,9 +38,10 @@
           <el-button
             size="small"
             type="primary"
-          >主要按钮</el-button>
+            @click="handleToQueryData()"
+          >查询</el-button>
         </div>
-        <div class="dialogMiddle">
+        <!-- <div class="dialogMiddle">
           <div class="topList">
             <span>品牌来源:</span>
             <el-select
@@ -54,7 +58,7 @@
               </el-option>
             </el-select>
           </div>
-        </div>
+        </div> -->
         <div class="footer">
           <el-table
             class="version-manage-table"
@@ -74,19 +78,19 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="pageName"
+              prop="brandName"
               label="品牌名称"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              prop="pageClass"
+              prop="classifyName"
               label="品牌分类"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              prop="creatTime"
+              prop="createTime"
               label="创建时间"
               align="center"
             >
@@ -122,6 +126,7 @@
   </div>
 </template>
 <script>
+import { brandAllGetRequest } from '@/api/admin/brandManagement.js'
 export default {
   props: {
     callAddBrand: { // 弹窗调起
@@ -217,6 +222,12 @@ export default {
       if (!newData) {
         this.$emit('update:callAddBrand', false)
       }
+    },
+    input () {
+      this.handleToQueryData()
+    },
+    classValue () {
+      this.handleToQueryData()
     }
   },
   mounted () {
@@ -225,6 +236,7 @@ export default {
   },
   methods: {
     defalutData () {
+      this.handleToQueryData()
       this.tableData.forEach(item => {
         item.ischeck = false
         if (this.brandBackData.length > 0) {
@@ -233,6 +245,24 @@ export default {
               item.ischeck = true
             }
           })
+        }
+      })
+    },
+    // 分页查询
+    handleToQueryData () {
+      let params = {
+        brandName: this.input, // 品牌名称
+        classifyId: this.classValue, // 品牌分类
+        currentPage: this.currentPage, // 当前页码
+        pageRows: 20 // 显示行数
+      }
+      brandAllGetRequest(params).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$set(res.content.dataList, 'ischeck', false)
+          this.totle = res.content.page.totalRows
+          this.pageCount = res.content.page.pageCount
+          this.tableData = res.content.dataList
         }
       })
     },
@@ -252,7 +282,7 @@ export default {
     },
     // 当前页改变
     handleCurrentChange () {
-
+      this.handleToQueryData()
     },
     // 确定事件
     handleToSure () {
@@ -298,6 +328,8 @@ export default {
     }
   }
   .footer {
+    height: 300px;
+    overflow-y: auto;
     /deep/ .tableClss th {
       background-color: #f5f5f5;
       border: none;

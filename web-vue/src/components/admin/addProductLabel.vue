@@ -10,23 +10,15 @@
         <div class="dialogTop">
           <div class="topList">
             <span>标签名称:</span>
-            <el-select
+            <el-input
               v-model="classValue"
-              placeholder="请选择"
               size="small"
-            >
-              <el-option
-                v-for="item in classOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
+            ></el-input>
           </div>
           <el-button
             size="small"
             type="primary"
+            @click="queryLabelData()"
           >查询</el-button>
         </div>
         <div class="footer">
@@ -48,7 +40,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="pageName"
+              prop="name"
               label="标签名称"
               align="center"
             >
@@ -82,6 +74,7 @@
   </div>
 </template>
 <script>
+import { getGoodsLabelList } from '@/api/admin/goodsManage/goodsLabel/goodsLabel.js'
 export default {
   props: {
     callAddProductLabel: { // 弹窗调起
@@ -99,16 +92,7 @@ export default {
       totle: 1,
       pageCount: 1,
       classValue: '',
-      classOptions: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
+
       tableData: [
         {
           ischeck: false,
@@ -172,6 +156,7 @@ export default {
   },
   methods: {
     defalutData () {
+      this.queryLabelData()
       this.tableData.forEach(item => {
         item.ischeck = false
         if (this.brandBackData.length > 0) {
@@ -181,6 +166,22 @@ export default {
             }
           })
         }
+      })
+    },
+    queryLabelData () {
+      let params = {
+        labelName: this.classValue,
+        currentPage: this.currentPage,
+        pageRows: 20
+      }
+      getGoodsLabelList(params).then((res) => {
+        if (res.error === 0) {
+          this.$set(res.content.dataList, 'ischeck', false)
+          this.totle = res.content.page.totalRows
+          this.pageCount = res.content.page.pageCount
+          this.tableData = res.content.dataList
+        }
+        console.log(res)
       })
     },
     changeFun (val) {
@@ -246,6 +247,8 @@ export default {
     }
   }
   .footer {
+    height: 300px;
+    overflow-y: auto;
     /deep/ .tableClss th {
       background-color: #f5f5f5;
       border: none;

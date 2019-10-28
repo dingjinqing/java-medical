@@ -424,7 +424,7 @@ export default {
   },
   mounted () {
     console.log(this.$route)
-    if (this.$route.params.data !== -1) { // 判断是否是页面列表配置页面点击编辑跳转而来
+    if (this.$route.params.data !== '-1') { // 判断是否是页面列表配置页面点击编辑跳转而来
       this.isEditSave = true
       let content = JSON.parse(this.$route.params.data.page_content)
       console.log(JSON.parse(this.$route.params.data.page_content))
