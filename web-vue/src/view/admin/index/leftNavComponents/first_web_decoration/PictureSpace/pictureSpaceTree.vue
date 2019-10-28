@@ -50,6 +50,7 @@
           <Tree
             pageIndex='pictureSpace'
             class="tree"
+            @clickUserPic='clickUserPic'
           />
           <div class="dialog_middle_right_box">
             <div class="right_top">
@@ -274,7 +275,8 @@ export default {
       right_content_hidden: true,
       checkArr: '',
       upImgWidth: '',
-      upImgHeight: ''
+      upImgHeight: '',
+      clickUserPicFlag: 1
 
     }
   },
@@ -586,9 +588,16 @@ export default {
       } else {
         pageIndex = 1
       }
+      let firstNodeId = null
+      if (this.clickUserPicFlag === -1) {
+        firstNodeId = -1
+      } else {
+        firstNodeId = this.firstNodeId
+      }
+      console.log(firstNodeId)
       let obj = {
         'page': pageIndex,
-        'imgCatId': this.firstNodeId,
+        'imgCatId': firstNodeId,
         'keywords': this.imgNameInput,
         'searchNeed': 0,
         'needImgWidth': '',
@@ -630,6 +639,11 @@ export default {
       }
       console.log(1)
       this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
+    },
+    clickUserPic (flag) {
+      console.log(flag)
+      this.clickUserPicFlag = flag
+      this.detailImgsSearch()
     }
   }
 }

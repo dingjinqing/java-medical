@@ -56,6 +56,11 @@
     </div>
     <el-card>
       <div class="ly-tree-container">
+        <div
+          class="userPic"
+          :style="isHoldUserPicColorFlga?'backgroundColor:#f3f3f3':'backgroundColor:#e6e9f0'"
+          @click="handleToClickUserPic()"
+        >用户图片</div>
         <el-tree
           :data="treeData"
           :props="defaultProps"
@@ -106,7 +111,8 @@ export default {
       node: '',
       data: '',
       add_btn: '',
-      del_btn: ''
+      del_btn: '',
+      isHoldUserPicColorFlga: false // 用户图片点击控制背景颜色flag
     }
   },
 
@@ -153,6 +159,8 @@ export default {
 
     // 节点被点击时的状态
     nodeClick (data, node, mynode) {
+      this.$emit('clickUserPic', 1)
+      this.isHoldUserPicColorFlga = false
       console.log('123')
       console.log(data, node, mynode)
       this.allNodes(data)
@@ -436,6 +444,11 @@ export default {
               : getDefaultContent.call(this, h, data, node)
           }
         </span>)
+    },
+    // 用户图片点击事件
+    handleToClickUserPic () {
+      this.isHoldUserPicColorFlga = true
+      this.$emit('clickUserPic', -1)
     }
   }
 }
@@ -585,6 +598,18 @@ export default {
 
   .el-tree .el-tree-node {
     position: relative;
+  }
+}
+.userPic {
+  font-size: 14px;
+  padding-left: 26px;
+  color: #606266;
+  user-select: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+  &:hover {
+    background-color: #f3f3f3 !important;
   }
 }
 </style>
