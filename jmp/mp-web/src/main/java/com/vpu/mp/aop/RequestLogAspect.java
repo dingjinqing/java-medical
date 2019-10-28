@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.vpu.mp.service.foundation.util.DateUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -46,8 +47,10 @@ public class RequestLogAspect {
         String token = request.getHeader("V-Token");
         String ip = RequestUtil.getIp(request);
         String methodName = point.getSignature().getName();
+        String timestamp = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL);
         logAfterStr.append("\n");
         logAfterStr.append("#####################Request#####################").append("\n");
+        logAfterStr.append("Timestamp    :").append(timestamp).append("\n");
         logAfterStr.append("MethodName   :").append(methodName).append("\n");
         logAfterStr.append("UserToken    :").append(token).append("\n");
         logAfterStr.append("RequestIP    :").append(ip).append("\n");
@@ -67,6 +70,7 @@ public class RequestLogAspect {
 
             logResponseStr.append("\n");
             logResponseStr.append("#####################Response#####################").append("\n");
+            logResponseStr.append("Timestamp    :").append(timestamp).append("\n");
             logResponseStr.append("MethodName   :").append(methodName).append("\n");
             logResponseStr.append("UserToken    :").append(token).append("\n");
             logResponseStr.append("RequestIP    :").append(ip).append("\n");
@@ -78,6 +82,7 @@ public class RequestLogAspect {
             StringBuilder logErrorStr = new StringBuilder();
             logErrorStr.append("\n");
             logErrorStr.append("#####################Exception#####################").append("\n");
+            logErrorStr.append("Timestamp    :").append(timestamp).append("\n");
             logErrorStr.append("MethodName   :").append(methodName).append("\n");
             logErrorStr.append("UserToken    :").append(token).append("\n");
             logErrorStr.append("RequestIP    :").append(ip).append("\n");
