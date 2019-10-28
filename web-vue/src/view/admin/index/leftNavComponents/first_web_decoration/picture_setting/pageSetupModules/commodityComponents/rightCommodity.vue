@@ -462,8 +462,12 @@
       @resultGoodsDatas='handleToGetGoods'
       :tuneUpChooseGoods='tuneUpChooseGoods'
     />
-    <!--添加商家分类弹窗-->
-    <AddingBusClassDialog />
+    <!--添加商家分类、平台分类弹窗-->
+    <AddingBusClassDialog
+      :dialogVisible.sync="dialogVisible"
+      :classFlag="classFlag"
+      @BusClassTrueArr="handleToGetBackData"
+    />
     <!--添加商品品牌弹窗-->
     <AddBrandDialog
       @handleToGetBackData='handleToGetBackData'
@@ -493,6 +497,8 @@ export default {
   },
   data () {
     return {
+      classFlag: null, // 区分商家分类和平台分类flag
+      dialogVisible: false, // 商家分类和平台分类弹窗调起flag
       imageSize: [], // 模块标题图标点击宽高限制
       callAddProductLabel: false, // 添加商品标签弹窗调起
       rangeCheckData: [], // 选择商品范围后当前范围显示的数据数组
@@ -1037,8 +1043,12 @@ export default {
       console.log(index)
       switch (index) {
         case 1:
+          this.classFlag = 1
+          this.dialogVisible = true
           break
         case 2:
+          this.classFlag = 2
+          this.dialogVisible = true
           break
         case 3:
           this.callAddBrand = true
@@ -1070,6 +1080,7 @@ export default {
     // 商品范围弹窗选中回传事件
     handleToGetBackData (data) {
       console.log(data)
+      this.handleToSelectRange()
       this.data.goods_area_data = data
       console.log(this.data.goods_area_data)
       let arr = this.rangeData[Number(this.data.goods_area)] = data
