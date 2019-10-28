@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
@@ -39,12 +42,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 
 /**
  *
  * @author 新国
  *
  */
+@Slf4j
 public class Util {
 
 	final protected static String UNDEER_LINE = "_";
@@ -122,6 +127,22 @@ public class Util {
 		}
 		return null;
 	}
+
+    public static <T> T json2Object(String json, TypeReference<T> reference, boolean failOnUnknownProperties) {
+        if (failOnUnknownProperties) {
+            MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        }
+        try {
+            T t = MAPPER.readValue(json, reference);
+            if (failOnUnknownProperties) {
+                MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+            }
+            return t;
+        } catch (IOException e) {
+            log.error("数据 [{}] 反序列化失败", json);
+            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
+        }
+    }
 
 	public static <T> T parseResourceJson(String path, Class<T> valueType) {
 		return parseJson(Util.loadResource(path), valueType);

@@ -47,8 +47,14 @@ public class StoreInfoVo {
      */
     public Double distance;
 
+    /**
+     * The All service.门店所有服列表
+     */
     public List<StoreServiceListQueryVo> allService;
 
+    /**
+     * The Service cat.门店分类服务列表
+     */
     public Map<StoreServiceCategoryListQueryVo, List<StoreServiceListQueryVo>> serviceCat;
 
 }

@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
@@ -35,6 +36,7 @@ import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.wechat.WxPayment;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
@@ -176,10 +178,11 @@ public class StoreWxService extends ShopBaseService {
             if (memberCardPojo.getStoreUseSwitch().equals(BYTE_ONE)) {
                 return new ArrayList<>(0);
             } else {
-                // 会员卡支持门店列表,为空支持所有 todo 库中默认值有问题
-                String[] supportStoreList = memberCardPojo.getStoreList().split(",");
-                if (supportStoreList.length != 0) {
-                    storeList = db().selectFrom(STORE).where(STORE.STORE_ID.in(Arrays.asList(supportStoreList))).and(delCondition).fetchInto(StorePojo.class);
+                // 会员卡支持门店列表,为空支持所有
+                List<Integer> supportStoreList = Util.json2Object(memberCardPojo.getStoreList(), new TypeReference<List<Integer>>() {
+                }, false);
+                if (CollectionUtils.isNotEmpty(supportStoreList)) {
+                    storeList = db().selectFrom(STORE).where(STORE.STORE_ID.in(supportStoreList)).and(delCondition).fetchInto(StorePojo.class);
                 } else {
                     storeList = getStoreByCustomCondition(new HashMap<String, Byte>(2) {{
                         put("scan_stores", param.getScanStores());
@@ -202,23 +205,18 @@ public class StoreWxService extends ShopBaseService {
             }
         }
         // 查询开启“扫码购”功能的门店ID列表配置，逗号分隔
-        try {
-            String storeScanValue = storeConfigService.getStoreScanIds();
-            log.debug("cfg配置表中store_scan_ids值为:{}", storeScanValue);
-            List<Integer> storeScanIds = MAPPER.readValue(storeScanValue, new TypeReference<List<Integer>>() {
+        String storeScanValue = storeConfigService.getStoreScanIds();
+        log.debug("cfg配置表中store_scan_ids值为:{}", storeScanValue);
+        List<Integer> storeScanIds = Util.json2Object(storeScanValue, new TypeReference<List<Integer>>() {
+        }, false);
+        log.debug("开启“扫码购”功能的门店ID列表配置项:{}", storeScanIds.toString());
+        // 筛掉不支持扫码购的门店或者添加是否支持扫码购的标示位
+        if (param.getScanStores().equals(BYTE_ONE)) {
+            storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId())).collect(Collectors.toList());
+        } else {
+            storeList.forEach(s -> {
+                s.setScanBuy(storeScanIds.contains(s.getStoreId()) ? BYTE_ONE : BYTE_ZERO);
             });
-            log.debug("开启“扫码购”功能的门店ID列表配置项:{}", storeScanIds.toString());
-            // 筛掉不支持扫码购的门店或者添加是否支持扫码购的标示位
-            if (param.getScanStores().equals(BYTE_ONE)) {
-                storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId())).collect(Collectors.toList());
-            } else {
-                storeList.forEach(s -> {
-                    s.setScanBuy(storeScanIds.contains(s.getStoreId()) ? BYTE_ONE : BYTE_ZERO);
-                });
-            }
-        } catch (IOException e) {
-            log.error("storeScanIds 反序列化异常!");
-            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
         // 设置图片和距离
         storeList.forEach(s -> {
