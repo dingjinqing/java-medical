@@ -17,4 +17,5 @@ public class ShopPriPassParam {
 	public String prName;
 	public String name;
 	public List<String> includeApi;
+	public Integer topIndex;
 }

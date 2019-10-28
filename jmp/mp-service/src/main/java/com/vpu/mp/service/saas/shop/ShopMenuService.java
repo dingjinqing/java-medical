@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.ShopMenuParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopPriPassParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopVersionParam;
+import com.vpu.mp.service.pojo.shop.auth.shopMenuList;
 
 /**
  * 
@@ -256,7 +257,8 @@ public class ShopMenuService extends MainBaseService {
 	 * 返回所有权限信息
 	 * @return
 	 */
-	public List<List<ShopMenuParam>> getAuthority() {
+	public shopMenuList getAuthority() {
+		logger().info("查询Json");
 		String json = Util.loadResource(menuJson);
 		
 		List<ShopMenuParam> list = Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
@@ -273,7 +275,27 @@ public class ShopMenuService extends MainBaseService {
 				outList.add(innerList);				
 			}
 		}
+		logger().info("查询pwdJson");
+		String pwdJson = Util.loadResource(authorityJson);
+
+		ArrayList<ShopPriPassParam> pwdlist = Util.parseJson(pwdJson, new TypeReference<List<ShopPriPassParam>>() {
+		});
+		List<List<ShopPriPassParam>> outPwdList=new ArrayList<List<ShopPriPassParam>>();
+		for(int i=0;i<=pwdlist.get(pwdlist.size()-1).getTopIndex()+1;i++) {
+			List<ShopPriPassParam> innerList=new ArrayList<ShopPriPassParam>();
+			for(ShopPriPassParam param:pwdlist) {
+				if(i==param.getTopIndex()) {
+					innerList.add(param);
+				}
+			}
+			if(innerList.size()>0) {
+				outPwdList.add(innerList);				
+			}
+		}
+		shopMenuList vo=new shopMenuList();
+		vo.setShopMenuList(outList);
+		vo.setShopPriPassList(outPwdList);
 		
-		return outList;
+		return vo;
 	}
 }
