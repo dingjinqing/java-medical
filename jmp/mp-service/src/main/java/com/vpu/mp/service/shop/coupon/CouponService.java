@@ -336,7 +336,7 @@ public class CouponService extends ShopBaseService {
             recommendCondition = recommendCondition.or(DslPlus.findInSet(catId, MRKING_VOUCHER.RECOMMEND_CAT_ID));
         }
         if (sortId != null) {
-            recommendCondition = recommendCondition.or(DslPlus.findInSet(sortId, MRKING_VOUCHER.RECOMMEND_CAT_ID));
+            recommendCondition = recommendCondition.or(DslPlus.findInSet(sortId, MRKING_VOUCHER.RECOMMEND_SORT_ID));
         }
         recommendCondition = recommendNullCondition.or(recommendCondition);
 
