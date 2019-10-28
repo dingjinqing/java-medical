@@ -213,7 +213,7 @@
 
 <script>
 import { couponPackageList, updateCouponPackage, deleteCouponPackage, getCouponPackShareCode } from '@/api/admin/marketManage/couponPackage.js'
-import statusTab from '@/components/admin/status/statusTab'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 export default {

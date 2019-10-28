@@ -304,7 +304,7 @@
 <script>
 import { addReducePrice, getReducePriceById } from '@/api/admin/marketManage/reducePrice.js'
 import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import actShare from '@/components/admin/marketActivityShareSetting'
+import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),

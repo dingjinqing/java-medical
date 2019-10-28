@@ -226,7 +226,7 @@
 </template>
 <script>
 import { bargainList, updateBargain, deleteBargain, getDailyCutTimes, setDailyCutTimes, getBargainShareCode } from '@/api/admin/marketManage/bargain.js'
-import statusTab from '@/components/admin/status/statusTab'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination, statusTab },

@@ -166,7 +166,7 @@
 <script>
 import { getList, changeActivity, updateDailyLimit } from '@/api/admin/marketManage/sharePolite.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import statusTab from '@/components/admin/status/statusTab'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 import wrapper from '@/components/admin/wrapper/wrapper'
 export default {
   components: {

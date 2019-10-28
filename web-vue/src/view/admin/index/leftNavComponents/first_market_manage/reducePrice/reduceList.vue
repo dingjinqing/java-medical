@@ -153,7 +153,7 @@
 import { reducePriceList, updateReducePrice, deleteReducePrice } from '@/api/admin/marketManage/reducePrice.js'
 export default {
   components: {
-    statusTab: () => import('@/components/admin/status/statusTab'),
+    statusTab: () => import('@/components/admin/marketManage/status/statusTab'),
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {

@@ -424,7 +424,7 @@ import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
-import status from '@/components/admin/status/status'
+import status from '@/components/admin/marketManage/status/status'
 import { format, range } from '@/util/date'
 import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
 

@@ -94,7 +94,7 @@
 </template>
 <script>
 // 引入组件
-import statusTab from '@/components/admin/status/statusTab'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 import addSeckill from './seckillAdd.vue'
 import { seckillList } from '@/api/admin/marketManage/seckill.js'

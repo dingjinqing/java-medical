@@ -752,6 +752,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/firstSpecial/firstSpecialList'
       )
   },
+  // 首单特惠-活动订单明细
+  {
+    path: '/admin/home/main/firstSpecial/orderList',
+    name: 'first_special_order',
+    meta: {
+      crumbTitle: 'router.first_special_order',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/firstSpecial/firstSpecialOrderList'
+      )
+  },
   // 定金膨胀
   {
     path: '/admin/home/main/presale',

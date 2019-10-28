@@ -223,10 +223,10 @@
 </template>
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import statusTab from '@/components/admin/status/statusTab'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 import inputEdit from '@/components/admin/inputEdit'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import { getById, couldEdit, couldStop, couldStart, couldDelete } from '@/components/admin/status/status'
+import { getById, couldEdit, couldStop, couldStart, couldDelete } from '@/components/admin/marketManage/status/status'
 import { giftList, deleteGift, disableGift, enableGift, updateGiftLevel } from '@/api/admin/marketManage/gift'
 
 export default {

@@ -430,7 +430,7 @@
 
 <script>
 import addCoupon from './addCoupon'
-import actShare from '@/components/admin/marketActivityShareSetting'
+import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 import AddCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addBargain, getBargainByIsd, updateBargain } from '@/api/admin/marketManage/bargain.js'

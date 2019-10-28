@@ -272,7 +272,10 @@ export const en = {
     'Package Price',
     'Participation details'
   ],
-
+  // 营销管理 首单特惠
+  first_special: ['Marketing Management', 'First Special Offer'],
+  // 营销管理 首单特惠 首单特惠订单
+  first_special_order: ['Marketing Management', 'First Special Offer', 'First Special Offer Orders'],
   // 营销管理 定金膨胀
   presale: ['Marketing Management', 'Pre Sale'],
   // 营销管理 定金膨胀创建

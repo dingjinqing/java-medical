@@ -185,7 +185,7 @@
 <script>
 // 引入组件
 import choosingGoods from '@/components/admin/choosingGoods'
-import actShare from '@/components/admin/marketActivityShareSetting'
+import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 export default {
 
   components: {

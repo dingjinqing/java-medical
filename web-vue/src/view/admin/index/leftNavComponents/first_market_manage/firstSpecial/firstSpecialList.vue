@@ -13,19 +13,20 @@
         >添加首单特惠</el-button>
 
         <div class="rightContent">
-          <span>{{$t('bargainList.cutTimesSetTip1')}}</span>
+          <span>设置用户仅可购买活动商品中的</span>
           <el-input
-            v-model="dailyCutTimes"
+            v-model="firstSpecialLimitGoods"
             style="width: 80px"
             size="small"
+            type="number"
           ></el-input>
-          <span>{{$t('bargainList.times')}}</span>
-          <span>{{$t('bargainList.cutTimesSetTip2')}}</span>
+          <span>件商品</span>
+          <span>填写0表示不限制</span>
           <el-button
-            @click="updateDailyCutTimes"
+            @click="setFirstSpecialLimitGoods"
             type="primary"
             size="small"
-          >{{$t('bargainList.settingSave')}}</el-button>
+          >保存设置</el-button>
         </div>
       </div>
     </div>
@@ -39,64 +40,57 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="bargainName"
-          :label="$t('bargainList.bargainName')"
+          prop="name"
+          label="活动名称"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="bargainType"
-          :label="$t('bargainList.bargainType')"
+          prop="first"
+          label="优先级"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="goodsAmount"
+          label="商品数量"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="vaildDate"
-          :label="$t('bargainList.vaildDate')"
+          label="有效期"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="statusName"
-          :label="$t('bargainList.statusName')"
+          label="活动状态"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="goodsName"
-          :label="$t('bargainList.goodsName')"
+          prop="orderAmount"
+          label="付款订单数"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="goodsNumber"
-          :label="$t('bargainList.goodsNumber')"
+          prop="userAmount"
+          label="付款用户数"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="stock"
-          :label="$t('bargainList.stock')"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="successNumber"
-          :label="$t('bargainList.successNumber')"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="bargainUserNumber"
-          :label="$t('bargainList.bargainUserNumber')"
+          prop="paymentTotalAmount"
+          label="付款总金额"
           align="center"
         >
         </el-table-column>
@@ -127,7 +121,7 @@
                 v-else
               >
                 <i
-                  @click="delBargain(scope.row.id)"
+                  @click="deleteFirstSpecial(scope.row.id)"
                   class="el-icon-delete"
                 ></i>
               </el-tooltip>
@@ -139,7 +133,7 @@
                 placement="top"
               >
                 <i
-                  @click="puaseBargain(scope.row.id)"
+                  @click="disabledFirstSpecial(scope.row.id)"
                   class="el-icon-remove-outline"
                 ></i>
               </el-tooltip>
@@ -151,63 +145,19 @@
                 placement="top"
               >
                 <i
-                  @click="enableBargain(scope.row.id)"
+                  @click="enableFirstSpecial(scope.row.id)"
                   class="el-icon-check"
                 ></i>
               </el-tooltip>
               <el-tooltip
                 class="item"
                 effect="dark"
-                :content="$t('marketCommon.share')"
-                placement="top"
-              >
-                <i
-                  @click="shareBargain(scope.row.id)"
-                  class="el-icon-share"
-                ></i>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="$t('bargainList.getBargainOrders')"
+                content="订单明细"
                 placement="top"
               >
                 <i
                   class="el-icon-s-order"
                   @click="checkOrderList(scope.row.id)"
-                ></i>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="$t('marketCommon.getSourceUserList')"
-                placement="top"
-              >
-                <i
-                  class="el-icon-user"
-                  @click="getNewUserDetail(scope.row.id)"
-                ></i>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="$t('bargainList.bargainRecordList')"
-                placement="top"
-              >
-                <i
-                  class="el-icon-zoom-in"
-                  @click="bargainingUser(scope.row.id)"
-                ></i>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="$t('marketCommon.activityEffectData')"
-                placement="top"
-              >
-                <i
-                  class="el-icon-s-order"
-                  @click="effectData(scope.row.id,scope.row.startTime,scope.row.endTime)"
                 ></i>
               </el-tooltip>
             </div>
@@ -225,8 +175,8 @@
 
 </template>
 <script>
-import { bargainList, updateBargain, deleteBargain, getDailyCutTimes, setDailyCutTimes, getBargainShareCode } from '@/api/admin/marketManage/bargain.js'
-import statusTab from '@/components/admin/status/statusTab'
+import { firstSpecialList, updateFirstSpecial, delFirstSpecial, getFirstSpecialLimitGoods, setFirstSpecialLimitGoods } from '@/api/admin/marketManage/firstSpecial.js'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination, statusTab },
@@ -239,7 +189,7 @@ export default {
       tableData: [],
       pageParams: {},
       loading: false,
-      dailyCutTimes: 0,
+      firstSpecialLimitGoods: 0,
 
       // 表格原始数据
       originalData: []
@@ -263,10 +213,10 @@ export default {
     this.langDefault()
     // 初始列表化数据
     this.initDataList()
-    // 取单日可帮助砍价的次数
-    getDailyCutTimes().then((res) => {
+    // 取用户仅可购买活动商品中的数量
+    getFirstSpecialLimitGoods().then((res) => {
       if (res.error === 0) {
-        this.dailyCutTimes = res.content
+        this.firstSpecialLimitGoods = res.content
       }
     })
   },
@@ -274,7 +224,7 @@ export default {
     initDataList () {
       this.loading = true
       this.pageParams.state = parseInt(this.tabIndex)
-      bargainList(this.pageParams).then((res) => {
+      firstSpecialList(this.pageParams).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))
@@ -288,15 +238,14 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        item.bargainType = item.bargainType === 0 ? this.$t('bargainList.bargainType0') : this.$t('bargainList.bargainType1')
         item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
         item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
       this.tableData = data
     },
 
-    // 停用砍价
-    puaseBargain (id) {
+    // 停用
+    disabledFirstSpecial (id) {
       let param = {
         'id': id,
         'status': 0
@@ -306,20 +255,17 @@ export default {
         cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
-        updateBargain(param).then((res) => {
+        updateFirstSpecial(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
-            })
+            this.$message.success(this.$t('marketCommon.successfulOperation'))
             this.initDataList()
           }
         })
       })
     },
 
-    // 启用砍价
-    enableBargain (id) {
+    // 启用
+    enableFirstSpecial (id) {
       let param = {
         'id': id,
         'status': 1
@@ -329,20 +275,17 @@ export default {
         cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
-        updateBargain(param).then((res) => {
+        updateFirstSpecial(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
-            })
+            this.$message.success(this.$t('marketCommon.successfulOperation'))
             this.initDataList()
           }
         })
       })
     },
 
-    // 删除砍价
-    delBargain (id) {
+    // 删除
+    deleteFirstSpecial (id) {
       let param = {
         'id': id
       }
@@ -351,93 +294,41 @@ export default {
         cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
-        deleteBargain(param).then((res) => {
+        delFirstSpecial(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
-            })
+            this.$message.success(this.$t('marketCommon.successfulOperation'))
             this.initDataList()
           }
         })
       })
     },
-    // 设置砍价取单日可帮助砍价的次数
-    updateDailyCutTimes () {
-      setDailyCutTimes(this.dailyCutTimes).then((res) => {
+    // 设置用户仅可购买活动商品中的数量
+    setFirstSpecialLimitGoods () {
+      setFirstSpecialLimitGoods(this.firstSpecialLimitGoods).then((res) => {
         if (res.error === 0) {
-          this.$message({
-            type: 'success',
-            message: this.$t('marketCommon.successfulOperation')
-          })
+          this.$message.success(this.$t('marketCommon.successfulOperation'))
         } else {
-          this.$message({
-            type: 'fail',
-            message: this.$t('marketCommon.failOperation')
-          })
+          this.$message.error(this.$t('marketCommon.failureOperation'))
         }
-      })
-    },
-
-    // 取活动分享二维码
-    shareBargain (id) {
-      getBargainShareCode(id).then((res) => {
-        console.log(res)
       })
     },
 
     // 编辑点击事件
     edit (id) {
       this.$router.push({
-        path: '/admin/home/main/bargain/add',
+        path: '/admin/home/main/firstSpecial/add',
         query: {
           id: id
         }
       })
     },
 
-    // 跳转砍价订单页
+    // 跳转首单特惠订单页
     checkOrderList (id) {
       this.$router.push({
-        path: '/admin/home/main/bargain/orderList',
+        path: '/admin/home/main/firstSpecial/orderList',
         query: {
           id: id
-        }
-      })
-    },
-
-    // 跳转到获取新用户明细页面
-    getNewUserDetail (id) {
-      this.$router.push({
-        path: '/admin/home/main/bargain/getNewUserList',
-        query: {
-          id: id
-        }
-      })
-    },
-
-    // 跳转到查看发起砍价用户页面
-    bargainingUser (id) {
-      this.$router.push({
-        path: '/admin/home/main/bargain/bargainingUser',
-        query: {
-          id: id
-        }
-      })
-    },
-
-    // 跳转到活动效果数据页面
-    effectData (id, startTime, endTime) {
-      let d = new Date()
-      if (d < new Date(endTime)) {
-        endTime = this.moment(d).format('YYYY-MM-DD HH:mm:ss')
-      }
-      this.$router.push({
-        path: '/admin/home/main/bargain/effectData',
-        query: {
-          id: id,
-          startTime: startTime,
-          endTime: endTime
         }
       })
     },
@@ -445,7 +336,7 @@ export default {
     // 跳转到添加页
     addActivity () {
       this.$router.push({
-        name: 'bargain_activity'
+        name: 'add_first_special'
       })
     }
   }

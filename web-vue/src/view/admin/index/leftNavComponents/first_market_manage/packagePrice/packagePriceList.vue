@@ -128,8 +128,8 @@
 <script>
 import pagination from '@/components/admin/pagination/pagination'
 import wrapper from '@/components/admin/wrapper/wrapper'
-import statusTab from '@/components/admin/status/statusTab'
-import status from '@/components/admin/status/status'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
+import status from '@/components/admin/marketManage/status/status'
 import { packagePriceList, shareActivity, enableActivity, disableActivity, deleteActivity } from '@/api/admin/marketManage/packagePrice.js'
 import shareDialog from '@/components/admin/shareDialog'
 export default {

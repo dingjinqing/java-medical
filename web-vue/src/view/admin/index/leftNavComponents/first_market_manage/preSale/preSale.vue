@@ -21,18 +21,18 @@
         <el-col
           :span="4"
           :offset="13"
+        >
+          <el-button
+            type="primary"
+            @click="loadData"
+          >筛选</el-button>
+          <el-button
+            type="primary"
+            style="float:right;"
+            @click="gotoAdd"
           >
-            <el-button
-              type="primary"
-              @click="loadData"
-            >筛选</el-button>
-            <el-button
-              type="primary"
-              style="float:right;"
-              @click="gotoAdd"
-            >
-              添加定金膨胀活动
-            </el-button>
+            添加定金膨胀活动
+          </el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -118,8 +118,8 @@
 </template>
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import statusTab from '@/components/admin/status/statusTab'
-import { couldEdit, couldStop, couldStart, couldDelete, getNameById } from '@/components/admin/status/status'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
+import { couldEdit, couldStop, couldStart, couldDelete, getNameById } from '@/components/admin/marketManage/status/status'
 import { getPageList, deletePreSale, disablePreSale, enablePreSale, sharePreSale } from '@/api/admin/marketManage/preSale'
 
 export default {

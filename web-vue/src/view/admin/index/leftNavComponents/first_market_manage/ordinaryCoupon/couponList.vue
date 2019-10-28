@@ -135,7 +135,7 @@
 <script>
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
-import statusTab from '@/components/admin/status/statusTab'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 import { couponList, pauseCoupon, deleteCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {

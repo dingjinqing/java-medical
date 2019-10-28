@@ -259,7 +259,7 @@
 import { getList, changeActivity, updatePriority } from '@/api/admin/marketManage/increasePurchase.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import statusTab from '@/components/admin/status/statusTab'
+import statusTab from '@/components/admin/marketManage/status/statusTab'
 import inputEdit from '@/components/admin/inputEdit'
 export default {
   components: {

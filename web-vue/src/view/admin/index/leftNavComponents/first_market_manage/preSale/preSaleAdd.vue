@@ -224,7 +224,7 @@ import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
-import status from '@/components/admin/status/status'
+import status from '@/components/admin/marketManage/status/status'
 import { format } from '@/util/date'
 import { createPreSale, updatePreSale, getDetail } from '@/api/admin/marketManage/preSale'
 
