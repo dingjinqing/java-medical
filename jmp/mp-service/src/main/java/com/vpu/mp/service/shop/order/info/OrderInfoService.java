@@ -51,6 +51,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -261,11 +262,11 @@ public class OrderInfoService extends ShopBaseService {
 		StringBuilder sbr = new StringBuilder();
 		for (Byte one : goodsType) {
 			//Prefix 
-			sbr.append("_");
+			sbr.append("\\[");
 			//查找条件
 			sbr.append(one);
 			//suffix
-			sbr.append("_");
+			sbr.append("\\]");
 			//与条件
 			sbr.append("|");
 		}
@@ -548,7 +549,7 @@ public class OrderInfoService extends ShopBaseService {
 			order.setOrderStatus(OrderConstant.ORDER_CLOSED);
 			order.setClosedTime(DateUtil.getSqlTimestamp());
 			break;
-		//核销\收货
+		//核销 收货
 		case OrderConstant.ORDER_RECEIVED:
 			order.setOrderStatus(OrderConstant.ORDER_RECEIVED);
 			order.setConfirmTime(DateUtil.getSqlTimestamp());
@@ -616,7 +617,7 @@ public class OrderInfoService extends ShopBaseService {
 		db().update(TABLE).
 		set(TABLE.EXTEND_RECEIVE_ACTION, order.getExtendReceiveAction()).
 		set(TABLE.EXTEND_RECEIVE_TIME, order.getExtendReceiveTime()).
-		where(TABLE.ORDER_ID.eq(order.getOrderId()));
+		where(TABLE.ORDER_ID.eq(order.getOrderId())).execute();
 	}
 
 	/**
@@ -627,9 +628,33 @@ public class OrderInfoService extends ShopBaseService {
 		db().update(TABLE).
 		set(TABLE.DEL_FLAG, DelFlag.DISABLE.getCode()).
 		set(TABLE.DEL_TIME, DateUtil.getSqlTimestamp()).
-		where(TABLE.ORDER_ID.eq(order.getOrderId()));
+		where(TABLE.ORDER_ID.eq(order.getOrderId())).execute();
 	}
 	
+	/**
+	 * 获取上次订单地址
+	 * @param userId
+	 * @return UserAddressVo
+	 */
+	public UserAddressVo getLastOrderAddress(Integer userId) {
+		return db().
+				select(TABLE.CONSIGNEE,
+				TABLE.PROVINCE_NAME,
+				TABLE.PROVINCE_CODE,
+				TABLE.CITY_NAME,
+				TABLE.CITY_CODE,
+				TABLE.DISTRICT_NAME,
+				TABLE.DISTRICT_CODE,
+				TABLE.CONSIGNEE,
+				TABLE.ADDRESS,
+				TABLE.MOBILE,
+				TABLE.ADDRESS_ID).
+				from(TABLE).
+				where(TABLE.USER_ID.eq(userId)).
+				orderBy(TABLE.ORDER_ID.desc()).
+				limit(1).
+				fetchAnyInto(UserAddressVo.class);
+	}
 	/**
 	 * 根据用户id获取累计消费金额
 	 */
