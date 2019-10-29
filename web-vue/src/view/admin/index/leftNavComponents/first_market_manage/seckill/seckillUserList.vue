@@ -144,9 +144,9 @@ export default {
       this.requestParams.pageRows = this.pageParams.pageRows
       userSeckillList(this.requestParams).then((res) => {
         if (res.error === 0) {
-          // this.tableData = res.content.dataList
-          // this.pageParams = res.content.page
-          // this.loading = false
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+          this.loading = false
         }
       })
     }
