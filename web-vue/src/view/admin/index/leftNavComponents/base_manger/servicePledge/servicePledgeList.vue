@@ -287,8 +287,13 @@ export default {
     },
     // 初始化加载页面
     loadData () {
-      this.form = {}
-      this.form.goods = '1'
+      this.form = {
+        name: '',
+        first: '',
+        icon: '',
+        desc: '',
+        goods: '1'
+      }
       this.id = null
       this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
       console.log('进入初始化方法')
