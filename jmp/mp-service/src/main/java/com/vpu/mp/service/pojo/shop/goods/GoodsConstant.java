@@ -56,6 +56,17 @@ public class GoodsConstant {
     /** 商品存在满减活动 */
     public final static byte GOODS_TYPE_HAS_FULL_REDUCTION = 121;
 
+    public final static byte ACTIVITY_SEC_KILL_PRIORITY = 1;
+
+    public final static byte ACTIVITY_PRE_SALE_PRIORITY = 5;
+
+    public final static byte ACTIVITY_BARGAIN_PRIORITY = 10;
+
+    public final static byte ACTIVITY_GROUP_BUY_PRIORITY = 15;
+
+    public final static byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 20;
+
+    public final static byte ACTIVITY_REDUCE_PRIORITY = 25;
 
     /*** 销售状态：在售*/
     public static final Byte ON_SALE = 1;
