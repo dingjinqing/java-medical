@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.store.service;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -26,22 +27,22 @@ public class StoreServiceListQueryVo {
     /**
      * The Service subsist.预约订金
      */
-    public Byte serviceSubsist;
+    public Double serviceSubsist;
     /**
      * The Start date.可服务日期开始时间
      */
-    public Byte startDate;
+    public Date startDate;
     /**
      * The End date.可服务日期结束时间
      */
-    public Byte endDate;
+    public Date endDate;
     /**
      * The Start period.开始服务时段
      */
-    public Byte startPeriod;
+    public String startPeriod;
     /**
      * The End period.结束服务时段
      */
-    public Byte endPeriod;
+    public String endPeriod;
 
 }
