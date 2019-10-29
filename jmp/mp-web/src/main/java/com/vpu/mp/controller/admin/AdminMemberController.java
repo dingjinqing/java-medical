@@ -28,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
@@ -204,10 +205,10 @@ public class AdminMemberController extends AdminBaseController{
 	
 	//----------------------------test------------------------------------
 	
-	@PostMapping(value="/api/card/list/test/{userId}")
-	public JsonResult getUserCard(@PathVariable Integer userId) {
-		logger().info("admin request for card list of person.");
-		List<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(userId);
+	@PostMapping(value="/api/card/list/test")
+	public JsonResult getUserCard(@RequestBody SearchCardParam param) {
+		logger().info("wxapp request for card list of person.");
+		PageResult<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(param);
 		return success(cardList);
 	}
 }

@@ -24,11 +24,13 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -596,10 +598,10 @@ public class UserCardService extends ShopBaseService{
 	 * @param userId
 	 * @return 
 	 */
-	public List<WxAppUserCardVo> getAllCardsOfUser(Integer userId) {
-		List<WxAppUserCardVo> cardList = userCardDao.getCardList(userId);
+	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param) {
+		PageResult<WxAppUserCardVo> cardList = userCardDao.getCardList(param);
 		String avatar = getCardAvatar();
-		for(WxAppUserCardVo card: cardList) {
+		for(WxAppUserCardVo card: cardList.dataList) {
 			dealWithWxUserCard(card,avatar);
 		}
 		return cardList;

@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
 /**
 * @author 黄壮壮
@@ -22,10 +24,10 @@ public class WxAppCardController extends WxAppBaseController {
 	 * 获取用户的会员卡列表
 	 * @return
 	 */
-	@PostMapping(value="/api/card/list/{userId}")
-	public JsonResult getUserCard(@PathVariable Integer userId) {
+	@PostMapping(value="/api/card/list")
+	public JsonResult getUserCard(@RequestBody SearchCardParam param) {
 		logger().info("wxapp request for card list of person.");
-		List<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(userId);
+		PageResult<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(param);
 		return success(cardList);
 	}
 	
