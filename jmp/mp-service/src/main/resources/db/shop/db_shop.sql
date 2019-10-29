@@ -77,6 +77,8 @@ create table `b2c_user_address`
     `best_time`        varchar(120)  not null default '',
     `is_default`       tinyint(1)    not null default '0',
     `last_used_time`   timestamp     null     default null,
+    `lat`              varchar(20)   DEFAULT  NULL COMMENT '纬度' ,
+    `lng`              varchar(20)   DEFAULT  NULL COMMENT '经度' ,
     `create_time`      timestamp              default current_timestamp,
     `update_time`      timestamp              default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`address_id`),

@@ -998,6 +998,8 @@ create table `b2c_pay_reward_record` (
 	`update_time` timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
 primary key ( `id` ));
 
-
-
+--ws 地址增加经纬度
+ALTER TABLE `b2c_user_address` 
+ADD COLUMN `lat` varchar(20)  DEFAULT NULL COMMENT '纬度' ,
+ADD COLUMN `lng` varchar(20)  DEFAULT NULL COMMENT '经度' ;
 
