@@ -14,10 +14,9 @@ import com.vpu.mp.db.shop.tables.Bargain;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.BargainActivityVo;
 import org.bouncycastle.util.Times;
-import org.jooq.Record;
-import org.jooq.Record5;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -106,34 +105,44 @@ public class BargainService extends ShopBaseService  {
 	public PageResult<BargainPageListQueryVo> getPageList(BargainPageListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
 				BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.STATUS,
-				BARGAIN.GOODS_ID,BARGAIN.STOCK,
-				GOODS.GOODS_NAME,GOODS.GOODS_NUMBER
+				BARGAIN.GOODS_ID,BARGAIN.STOCK,BARGAIN.EXPECTATION_PRICE,
+				GOODS.GOODS_NAME,GOODS.GOODS_NUMBER,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.IS_ON_SALE
 				).
 				from(BARGAIN).
 				leftJoin(GOODS).on(BARGAIN.GOODS_ID.eq(GOODS.GOODS_ID));
-		if(param.getState() > 0) {
-			/** 状态过滤*/
-			Timestamp now = DateUtil.getLocalDateTime();
-			switch(param.getState()) {
-			case (byte)1:
-				select.where(BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now));
-				break;
-			case (byte)2:
-				select.where(BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.gt(now));
-				break;
-			case (byte)3:
-				select.where(BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.END_TIME.lt(now));
-				break;
-			case (byte)4:
-				select.where(BARGAIN.STATUS.eq(STATUS_DISABLED));
-			break;
-			default:
-				
-			}
-		}
-		select.where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(BARGAIN.CREATE_TIME.desc());
+        select = buildOptions(select,param);
+		select.orderBy(BARGAIN.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainPageListQueryVo.class);
 	}
+
+    private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select,BargainPageListQueryParam param){
+        select.where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        if(param.getState() != null && param.getState().length > 0) {
+            /** 状态过滤*/
+            Condition stateCondition = DSL.noCondition();
+            Timestamp now = DateUtil.getLocalDateTime();
+            for(byte state : param.getState()){
+                if(state == 1){
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now)));
+                }
+                if(state == 2){
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.gt(now)));
+                }
+                if(state == 3){
+                    stateCondition = stateCondition.or((BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.END_TIME.lt(now)));
+                }
+                if(state == 4){
+                    stateCondition = stateCondition.or(BARGAIN.STATUS.eq(STATUS_DISABLED));
+                }
+            }
+            select.where(stateCondition);
+        }
+        if(!StringUtils.isEmpty(param.getKeywords())){
+            select.where(BARGAIN.BARGAIN_NAME.contains(param.getKeywords()).or(GOODS.GOODS_NAME.contains(param.getKeywords())));
+        }
+
+        return select;
+    }
 	
 	/**
 	 * 新建砍价活动

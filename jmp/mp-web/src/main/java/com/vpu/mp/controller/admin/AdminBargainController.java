@@ -54,6 +54,15 @@ public class AdminBargainController extends AdminBaseController {
 		}
 		return success(res);
 	}
+
+    /**
+     * 砍价活动分页查询列表(装修页弹窗选择)
+     *
+     */
+    @PostMapping(value = "/api/admin/decorate/bargain/list")
+    public JsonResult getBargainPageListDialog(@RequestBody @Valid BargainPageListQueryParam param) {
+        return success(shop().bargain.getPageList(param));
+    }
 	
 	/**
 	 *添加 砍价活动

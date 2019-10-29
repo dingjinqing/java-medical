@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.Data;
@@ -23,6 +24,10 @@ public class BargainPageListQueryVo {
 	 * 砍价类型0定人1任意价
 	 */
 	private Byte bargainType;
+    /**
+     * 砍价底价
+     */
+	private BigDecimal expectationPrice;
 	
 	private Timestamp startTime;
 	private Timestamp endTime;
@@ -31,12 +36,23 @@ public class BargainPageListQueryVo {
 	 * 停用启用的状态：1可用，0停用 
 	 */
 	private Byte status;
-	
+
+	private Integer goodsId;
 	private String goodsName;
 	/**
 	 * 商品库存 
 	 */
 	private Integer goodsNumber;
+    /**
+     * 商品价格
+     */
+	private BigDecimal shopPrice;
+	private String goodsImg;
+    /**
+     * 是否在售，1在售，0下架
+     */
+	private Byte isOnSale;
+
 	/**
 	 * 砍价活动库存 
 	 */
