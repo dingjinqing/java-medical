@@ -57,6 +57,7 @@
           type="datetime"
           :placeholder="$t('marketCommon.orderTime')"
           size="small"
+          value-format="yyyy-MM-dd HH:mm:ss"
           class="date_picker"
         ></el-date-picker>
       </div>

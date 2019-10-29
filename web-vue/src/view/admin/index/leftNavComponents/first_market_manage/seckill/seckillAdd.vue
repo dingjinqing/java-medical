@@ -25,6 +25,7 @@
           prop="goodsId"
         >
           <el-button
+            :disabled="this.isEdite"
             @click="showChoosingGoods"
             class="el-icon-plus"
           >选择商品</el-button>
@@ -46,6 +47,7 @@
           prop="validity"
         >
           <el-date-picker
+            :disabled="this.isEdite"
             v-model="form.validity"
             type="datetimerange"
             range-separator="至"
@@ -60,6 +62,7 @@
           prop="limitAmount"
         >
           <el-input-number
+            :disabled="this.isEdite"
             v-model="form.limitAmount"
             controls-position="right"
             :min="0"
@@ -71,6 +74,7 @@
           prop="limitPaytime"
         >
           <el-input-number
+            :disabled="this.isEdite"
             v-model="form.limitPaytime"
             controls-position="right"
             :min="5"
@@ -102,7 +106,10 @@
               align="center"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.prdPrice"></el-input>
+                <el-input
+                  :disabled="isEdite"
+                  v-model="scope.row.prdPrice"
+                ></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -116,7 +123,10 @@
               align="center"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.prdNumber"></el-input>
+                <el-input
+                  :disabled="isEdite"
+                  v-model="scope.row.prdNumber"
+                ></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -136,6 +146,7 @@
           prop="freeFreight"
         >
           <el-radio
+            :disabled="this.isEdite"
             v-model="form.freeFreight"
             :label="1"
           >免运费</el-radio>
@@ -149,6 +160,7 @@
           prop="initNum"
         >
           <el-input-number
+            :disabled="this.isEdite"
             v-model="form.initNum"
             controls-position="right"
             :min="0"
@@ -244,7 +256,7 @@ import { mapActions } from 'vuex'
 // 引入组件
 import choosingGoods from '@/components/admin/choosingGoods'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
-import { addSeckillList } from '@/api/admin/marketManage/seckill.js'
+import { addSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
 export default {
 
   components: {
@@ -394,20 +406,31 @@ export default {
           this.form.secKillProduct[0].secKillPrice = Number(this.tableContent[0].prdPrice)
           this.form.secKillProduct[0].stock = Number(this.tableContent[0].prdNumber)
           if (this.isEdite) {
-            this.form.secKillProduct[0].productId = 5130
-            // this.form.secKillProduct[0].secKillPrice = 299
-            // this.form.secKillProduct[0].stock = 999
-            this.form.shareConfig.share_img_action = 1
+            this.form.secKillProduct[0].productId = this.form.secKillProduct[0].skproId
+            updateSeckillList({
+              skId: this.editId,
+              status: 1,
+              name: this.form.name,
+              cardId: this.form.cardId,
+              shareConfig: this.form.shareConfig
+            }).then((res) => {
+              if (res.error === 0) {
+                this.$message.success(res.message)
+                this.$emit('addSeckillSubmit')
+              } else {
+                this.$message.warning(res.message)
+              }
+            })
+          } else {
+            addSeckillList(this.form).then(res => {
+              if (res.error === 0) {
+                this.$message.success(res.message)
+                this.$emit('addSeckillSubmit')
+              } else {
+                this.$message.warning(res.message)
+              }
+            })
           }
-          console.log(this.form)
-          addSeckillList(this.form).then(res => {
-            if (res.error === 0) {
-              this.$message.success(res.message)
-              this.$emit('addSeckillSubmit')
-            } else {
-              this.$message.warning(res.message)
-            }
-          })
         } else {
           this.$message.warning('error submit!!')
         }

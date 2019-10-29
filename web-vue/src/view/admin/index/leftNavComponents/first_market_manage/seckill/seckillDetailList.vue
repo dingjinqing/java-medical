@@ -69,6 +69,7 @@
       >
         <el-table-column
           label="活动名称"
+          prop="name"
           align="center"
         ></el-table-column>
         <el-table-column
@@ -135,11 +136,19 @@ export default {
       this.requestParams.pageRows = this.pageParams.pageRows
       detailSeckillList(this.requestParams).then((res) => {
         if (res.error === 0) {
-          // this.tableData = res.content.dataList
-          // this.pageParams = res.content.page
-          // this.loading = false
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+          this.loading = false
         }
       })
+    },
+
+    // 表格数据处理
+    handleData (data) {
+      data.forEach(item => {
+        item.name = this.$route.query.name
+      })
+      this.tableData = data
     }
 
   }

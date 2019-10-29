@@ -83,88 +83,88 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
+                v-if="scope.row.status == 1"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-edit-outline"
-                  v-if="scope.row.status == 1"
                   @click="editHandler(scope.row.skId, scope.row)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="分享"
                 placement="top"
+                v-if="scope.row.status == 1"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-share"
-                  v-if="scope.row.status == 1"
                   @click="shareHandler(scope.row.skId)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="停用"
                 placement="top"
+                v-if="scope.row.status == 1"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-close"
-                  v-if="scope.row.status == 1"
                   @click="stopHandler(scope.row.skId)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="启用"
                 placement="top"
+                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-check"
-                  v-if="scope.row.status == 0"
                   @click="startHandler(scope.row.skId)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="查看秒杀订单"
                 placement="top"
+                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-tickets"
-                  v-if="scope.row.status == 0"
-                  @click="seckillOrderHanlder(scope.row.skId)"
+                  @click="seckillOrderHanlder(scope.row.skId, scope.row.name)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="获取新用户明细"
                 placement="top"
+                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-user-solid"
-                  v-if="scope.row.status == 0"
-                  @click="seckillDetailHanlder(scope.row.skId)"
+                  @click="seckillDetailHanlder(scope.row.skId, scope.row.name)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="查看秒杀用户"
                 placement="top"
+                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-s-unfold"
-                  v-if="scope.row.status == 0"
-                  @click="seckillUserHanlder(scope.row.skId)"
+                  @click="seckillUserHanlder(scope.row.skId, scope.row.name)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="删除"
                 placement="top"
+                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-delete"
-                  v-if="scope.row.status == 0"
                   @click="deleteHandler(scope.row.skId)"
                 ></span>
               </el-tooltip>
@@ -446,18 +446,18 @@ export default {
     },
 
     // 查看秒杀订单
-    seckillOrderHanlder (id) {
-      this.$router.push({ name: 'seckill_order_view', query: { id: id } })
+    seckillOrderHanlder (id, name) {
+      this.$router.push({ name: 'seckill_order_view', query: { id: id, name: name } })
     },
 
     // 查看用户明细
-    seckillDetailHanlder (id) {
-      this.$router.push({ name: 'seckill_detail_view', query: { id: id } })
+    seckillDetailHanlder (id, name) {
+      this.$router.push({ name: 'seckill_detail_view', query: { id: id, name: name } })
     },
 
     // 查看秒杀用户
-    seckillUserHanlder (id) {
-      this.$router.push({ name: 'seckill_user_view', query: { id: id } })
+    seckillUserHanlder (id, name) {
+      this.$router.push({ name: 'seckill_user_view', query: { id: id, name: name } })
     },
 
     // 查看活动数据效果
