@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.vpu.mp.service.foundation.util.Page;
 
 import lombok.Data;
@@ -22,5 +23,6 @@ public class SearchCardParam {
      */
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+    @JsonAlias({"userId", "user_id"})
     private Integer userId;
 }
