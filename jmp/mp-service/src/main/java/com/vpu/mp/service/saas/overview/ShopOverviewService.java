@@ -1,23 +1,6 @@
 package com.vpu.mp.service.saas.overview;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record1;
-import org.jooq.Select;
-import org.jooq.SortField;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.main.tables.Article;
-import com.vpu.mp.db.main.tables.MpAuthShop;
-import com.vpu.mp.db.main.tables.MpOfficialAccount;
-import com.vpu.mp.db.main.tables.Shop;
-import com.vpu.mp.db.main.tables.ShopAccount;
-import com.vpu.mp.db.main.tables.ShopChildAccount;
-import com.vpu.mp.db.main.tables.ShopRenew;
-import com.vpu.mp.db.main.tables.ShopVersion;
+import com.vpu.mp.db.main.tables.*;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
@@ -25,19 +8,21 @@ import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.overview.BindUnBindOfficialParam;
-import com.vpu.mp.service.pojo.shop.overview.BindofficialVo;
-import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementParam;
-import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
-import com.vpu.mp.service.pojo.shop.overview.ShopAssistantParam;
-import com.vpu.mp.service.pojo.shop.overview.ShopAssistantVo;
-import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoParam;
-import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoVo;
+import com.vpu.mp.service.pojo.shop.overview.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record1;
+import org.jooq.Select;
+import org.jooq.SortField;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
- * @Author:liufei
- * @Date:2019/7/15
- * @Description: 概览
+ * author liufei
+ * date 2019/7/15
+ * 概览
  */
 @Service
 public class ShopOverviewService extends MainBaseService {
@@ -105,10 +90,10 @@ public class ShopOverviewService extends MainBaseService {
             return -1;
         }
     }
-    
-    
+
+
     /**
-     * 获取绑定/解绑状态  概览使用 
+     * 获取绑定/解绑状态  概览使用
      * @param param
      * @return
      */
@@ -191,13 +176,14 @@ public class ShopOverviewService extends MainBaseService {
      * @param param
      * @param vo
      */
-    public void shopAssistant(ShopAssistantParam param,ShopAssistantVo vo){
-        shopNav(param,vo);
+    public void shopAssistant(ShopAssistantParam param, ShopAssistantVo vo, Integer shopId, Integer sysId) {
+        shopNav(param, vo, shopId, sysId);
     }
-    public ShopAssistantVo shopNav(ShopAssistantParam param,ShopAssistantVo vo){
+
+    public ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo, Integer shopId, Integer sysId) {
         /** 微信配置（授权和支付） */
         List<MpAuthShop> authShopList = db().selectFrom(MpAuthShop.MP_AUTH_SHOP)
-                .where(MpAuthShop.MP_AUTH_SHOP.SHOP_ID.eq(param.getShopId()))
+            .where(MpAuthShop.MP_AUTH_SHOP.SHOP_ID.eq(shopId))
                 .fetchInto(MpAuthShop.class);
         if(authShopList!=null&&!authShopList.isEmpty()) {
             MpAuthShop authShop = authShopList.get(0);
@@ -219,12 +205,12 @@ public class ShopOverviewService extends MainBaseService {
         }
         /** 子账号配置 */
         int subCount = db().fetchCount(ShopChildAccount.SHOP_CHILD_ACCOUNT,
-                ShopChildAccount.SHOP_CHILD_ACCOUNT.SYS_ID.eq(param.getSysId()));
+            ShopChildAccount.SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId));
         vo.getDataShop().setChildAccountConf(subCount > 0 ? (byte)0 : (byte)-1);
         if(subCount <= 0){vo.totalPendingIncr();}
         /** 公众号 */
         int officialCount = db().fetchCount(MpOfficialAccount.MP_OFFICIAL_ACCOUNT,
-                MpOfficialAccount.MP_OFFICIAL_ACCOUNT.SYS_ID.eq(param.getSysId())
+            MpOfficialAccount.MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId)
                         .and(MpOfficialAccount.MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(param.getIsAuthOk())));
         vo.getDataShop().setOfficialAccountConf(officialCount > 0 ? (byte)0 : (byte)-1);
         if(officialCount <= 0){vo.totalPendingIncr();}

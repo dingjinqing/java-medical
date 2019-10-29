@@ -1,18 +1,20 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.ScriptAssert;
 import org.springframework.stereotype.Component;
 
 /**
- * @Author:liufei
- * @Date:2019/7/17
- * @Description:
+ * author liufei
+ * date 2019/7/17
  */
 @Data
 @Component
+@ScriptAssert(lang = "javascript", script = "_this.isAuthOk == 1 || _this.isAuthOk == 0", message = "isAuthOk的值只能为1或者0")
 public class ShopAssistantParam {
-    private int shopId;
-    private int sysId;
+    /**
+     * 是否授权成功
+     */
     private Byte isAuthOk;
     /** 商品库存偏小参数,默认5 */
     private int storeSizeNum = 5;

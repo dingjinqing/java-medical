@@ -1,7 +1,13 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
+import com.vpu.mp.service.pojo.saas.article.ArticleParam;
+import com.vpu.mp.service.pojo.saas.article.ArticleVo;
+import com.vpu.mp.service.pojo.shop.overview.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -10,26 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
-import com.vpu.mp.service.pojo.saas.article.ArticleParam;
-import com.vpu.mp.service.pojo.saas.article.ArticleVo;
-import com.vpu.mp.service.pojo.shop.overview.BindAndUnParam;
-import com.vpu.mp.service.pojo.shop.overview.BindofficialVo;
-import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
-import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationVo;
-import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementParam;
-import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
-import com.vpu.mp.service.pojo.shop.overview.OverviewParam;
-import com.vpu.mp.service.pojo.shop.overview.OverviewVo;
-import com.vpu.mp.service.pojo.shop.overview.ShopAssistantParam;
-import com.vpu.mp.service.pojo.shop.overview.ShopAssistantVo;
-import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoParam;
-import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoVo;
-import com.vpu.mp.service.pojo.shop.overview.ToDoItemVo;
+import java.util.List;
 
 /**
  * @Author:liufei
@@ -38,10 +25,9 @@ import com.vpu.mp.service.pojo.shop.overview.ToDoItemVo;
  */
 @RestController
 public class AdminMallOverviewController extends AdminBaseController {
-	
-	
-	
-	@Value(value = "${official.appId}")
+
+
+    @Value(value = "${official.appId}")
 	private String bindAppId;
 
     /**
@@ -145,7 +131,10 @@ public class AdminMallOverviewController extends AdminBaseController {
     @PostMapping("/api/admin/malloverview/shopAssistant")
     public JsonResult shopAssistant(@RequestBody @Validated ShopAssistantParam param){
 //        ShopAssistantVo vo = new ShopAssistantVo();
-        saas.overviewService.shopAssistant(param,vo);
+        Integer shopId = shop().mallOverview.getShopId();
+        Integer sysId = shop().mallOverview.getSysId();
+
+        saas.overviewService.shopAssistant(param, vo, shopId, sysId);
         shop().mallOverview.shopAssistant(param,vo);
         return vo!=null ? success(vo) : fail();
     }
