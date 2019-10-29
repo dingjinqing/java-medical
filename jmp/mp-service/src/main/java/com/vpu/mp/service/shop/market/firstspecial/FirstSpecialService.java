@@ -240,6 +240,7 @@ public class FirstSpecialService extends ShopBaseService {
 
     /**
      * 获取集合内商品的首单特惠信息，如果同一个商品同时参与多个首单特惠时根据first排序
+     * 筛选条件中未处理用户是否已经购买过该商品
      * @param goodsId 商品id集合
      * @param date 日期
      * @return key：商品id，value:首单特惠信息

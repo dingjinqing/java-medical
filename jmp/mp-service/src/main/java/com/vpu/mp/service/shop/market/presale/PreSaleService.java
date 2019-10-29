@@ -561,7 +561,12 @@ public class PreSaleService extends ShopBaseService {
             .fetchMap(SUB_TABLE.GOODS_ID,SUB_TABLE.PRESALE_PRICE);
     }
 
-
+    /**
+     *  获取集合内商品的定金膨胀信息
+     * @param goodsIds
+     * @param date
+     * @return
+     */
     public Map<Integer, PreSaleActivityVo> getGoodsPreSaleInfo(List<Integer> goodsIds,Timestamp date) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）

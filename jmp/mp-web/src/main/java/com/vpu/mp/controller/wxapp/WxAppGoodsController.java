@@ -22,7 +22,7 @@ public class WxAppGoodsController extends WxAppBaseController{
     @PostMapping("/api/wxapp/goods/test")
     public JsonResult test(@RequestBody GoodsIdParams params){
         Timestamp now = DateUtil.getLocalDateTime();
-        Map<Integer, GroupBuyActivityVo> goodsGroupByInfo = shop().groupBuy.getGoodsGroupByInfo(params.getGoodsIds(), now);
+//        Map<Integer, GroupBuyActivityVo> goodsGroupByInfo = shop().groupBuy.getGoodsGroupByInfo(params.getGoodsIds(), now);
         Map<Integer, BargainActivityVo> goodsBargainInfo = shop().bargain.getGoodsBargainInfo(params.getGoodsIds(), now);
         Map<Integer, SecKillActivityVo> goodsSecKillGoodsInfo = shop().seckill.getGoodsSecKillInfo(params.getGoodsIds(), now);
         Map<Integer, ReducePriceActivityVo> goodsReducePriceInfo = shop().reducePrice.getGoodsReducePriceInfo(params.getGoodsIds(), now);
