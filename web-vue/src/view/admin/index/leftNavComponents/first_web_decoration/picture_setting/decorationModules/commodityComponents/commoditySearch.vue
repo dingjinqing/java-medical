@@ -130,6 +130,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 初始化数据
     this.defaultData()
   },

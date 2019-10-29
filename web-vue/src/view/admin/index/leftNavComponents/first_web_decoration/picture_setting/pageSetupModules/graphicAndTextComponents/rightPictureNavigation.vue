@@ -162,9 +162,6 @@
   </div>
 </template>
 <script>
-import vcolorpicker from 'vcolorpicker'
-import Vue from 'vue'
-Vue.use(vcolorpicker)
 export default {
   components: {
     ImageDialog: () => import('@/components/admin/imageDalog'),
@@ -265,7 +262,7 @@ export default {
       if (index === 0) {
         this.data.font_color = '#fff'
       } else {
-        this.bg_color = '#fff'
+        this.data.bg_color = '#fff'
       }
     },
     // 导航配置列表右上角icon点击统一处理

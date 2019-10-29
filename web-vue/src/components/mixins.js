@@ -23,7 +23,6 @@ const myMixin = {
         console.log('feifeifei')
         this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
         // 人民币'CNY' 美元USD
-
         this.adaptation()
       })
       this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
