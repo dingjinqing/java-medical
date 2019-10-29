@@ -37,6 +37,12 @@ export const en = {
   evaluationManagement: ['Commodity Management', 'Evaluation Management'],
   // 商品管理 商品推荐
   goodsRecommend: ['Commodity Management', 'goods Recommend'],
+  // 商品管理 商品推荐
+  addGoodsRecommend: [
+    'Commodity Management',
+    'goods Recommend',
+    'Add Goods Recommend'
+  ],
   // 商品管理 商品标签
   goodsLabel: ['Commodity Management', 'Goods Label'],
   // 商品管理 商品标签 新增标签
@@ -277,7 +283,11 @@ export const en = {
   // 营销管理 首单特惠
   first_special: ['Marketing Management', 'First Special Offer'],
   // 营销管理 首单特惠 首单特惠订单
-  first_special_order: ['Marketing Management', 'First Special Offer', 'First Special Offer Orders'],
+  first_special_order: [
+    'Marketing Management',
+    'First Special Offer',
+    'First Special Offer Orders'
+  ],
   // 营销管理 定金膨胀
   presale: ['Marketing Management', 'Pre Sale'],
   // 营销管理 定金膨胀创建

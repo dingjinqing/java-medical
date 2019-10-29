@@ -38,6 +38,8 @@ export const cn = {
   evaluationManagement: ['商品管理', '评价管理'],
   // 商品管理 商品推荐
   goodsRecommend: ['商品管理', '商品推荐'],
+  // 商品管理 商品推荐
+  addGoodsRecommend: ['商品管理', '商品推荐', '添加商品推荐模板'],
   // 商品管理 商品标签
   goodsLabel: ['商品管理', '商品标签'],
   // 商品管理 商品标签 新增标签

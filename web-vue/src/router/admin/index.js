@@ -617,6 +617,19 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/goods_manage/goodsRecommend/goodsRecommend'
               )
           },
+          // 商品管理/商品推荐
+          {
+            path: '/admin/home/main/goodsManage/goodsRecommend/add',
+            name: 'addRecommend',
+            meta: {
+              crumbTitle: 'router.addGoodsRecommend',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsRecommend/addGoodsRecommend'
+              )
+          },
 
           // 商品管理/商品标签
           {

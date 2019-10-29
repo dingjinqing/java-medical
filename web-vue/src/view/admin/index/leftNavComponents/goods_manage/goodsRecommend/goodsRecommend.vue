@@ -16,6 +16,7 @@
       <el-button
         type="primary"
         size="small"
+        @click="addRecommend"
       >新建商品推荐模板</el-button>
     </div>
     <div class="table_box">
@@ -54,7 +55,7 @@
                 >{{usedPage[item]}}</p>
               </div>
               <div class="page_right">
-                <span>设置</span>
+                <span @click="editItem(scope.row)">设置</span>
               </div>
             </div>
           </template>
@@ -67,7 +68,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="operation">
-              <p>编辑</p>
+              <p @click="edit(scope.row.id)">编辑</p>
               <p>启用</p>
               <p>删除</p>
             </div>
@@ -75,14 +76,23 @@
         </el-table-column>
       </el-table>
     </div>
+    <editRecommendDialog
+      :show.sync="showDialog"
+      :editData="editData"
+    />
   </div>
 </template>
 <script>
 export default {
+  components: {
+    editRecommendDialog: () => import('./editRecommendDialog')
+  },
   data () {
     return {
       recommendTitle: null,
       loading: false,
+      showDialog: false,
+      editData: null,
       dataList: null,
       usedPage: {
         cart: '购物车页',
@@ -114,6 +124,18 @@ export default {
         { recommendTitle: '智能推荐', updateTime: '2018-10-23 11:11:11', isStart: true },
         { recommendTitle: '智能推荐', updateTime: '2018-10-23 11:11:11', isStart: true }
       ]
+    },
+    addRecommend () {
+      this.$router.push({
+        name: 'addRecommend'
+      })
+    },
+    edit () {
+
+    },
+    editItem (rowData) {
+      this.editData = rowData
+      this.showDialog = true
     }
   },
   filters: {
