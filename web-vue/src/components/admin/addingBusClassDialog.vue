@@ -154,13 +154,20 @@ export default {
     // 弹窗确认
     handleSure () {
       let arr = ''
+      let detailData = ''
       if (this.flag === 2) {
         arr = this.$refs.cardTree.getCheckedKeys()
       } else {
         arr = this.$refs.sortTree.getCheckedKeys()
       }
-      console.log(this.$refs.cardTree.getCheckedKeys())
-      this.$emit('BusClassTrueArr', arr)
+      if (this.flag === 2) {
+        detailData = this.$refs.cardTree.getCheckedNodes()
+      } else {
+        detailData = this.$refs.sortTree.getCheckedNodes()
+      }
+      console.log(this.$refs.sortTree.getCheckedNodes())
+      this.$emit('BusClassTrueDetailData', detailData) // 返回选中节点详细数据
+      this.$emit('BusClassTrueArr', arr) // 返回选中节点id数据
       this.$emit('update:dialogVisible', false)
       this.dialogVisible = false
     },

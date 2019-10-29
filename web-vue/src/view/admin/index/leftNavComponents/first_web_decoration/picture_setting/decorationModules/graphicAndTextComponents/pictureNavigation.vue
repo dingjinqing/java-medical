@@ -121,6 +121,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langdefault()
     // 初始化数据
     this.defaultData()
   },

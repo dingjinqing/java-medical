@@ -93,6 +93,12 @@ const myMixin = {
 
         // admin页面装修部分适配
         this.leftComClass = 'leftComClass'
+        this.pageClassification = 'pageClassification'
+        this.navigation = 'navigation'
+        this.moduleSpacing = 'moduleSpacing'
+        this.moduleHeight = 'moduleHeight'
+        this.pictorialVisibility = 'pictorialVisibility'
+        this.bgColorClass = 'bgColorClass'
       } else {
         // this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -151,6 +157,12 @@ const myMixin = {
 
         // admin页面装修部分适配
         this.leftComClass = ''
+        this.pageClassification = ''
+        this.navigation = ''
+        this.moduleSpacing = ''
+        this.moduleHeight = 'moduleHeightCn'
+        this.pictorialVisibility = ''
+        this.bgColorClass = ''
       }
     },
     // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用

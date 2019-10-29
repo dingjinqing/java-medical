@@ -1,12 +1,12 @@
 <template>
   <div class="decRightContainer">
     <div class="decRightTop">
-      <div>页面设置</div>
+      <div>{{$t('pageSetUp.pageSetTitle')}}</div>
       <div
         @click="handleToChangeIcon"
         class="topRight"
       >
-        <span>{{topIconFlag?'收起':'展开'}}</span>
+        <span>{{topIconFlag?retract:open}}</span>
         <img :src="topIconFlag?topIconUp:topIconDown">
       </div>
     </div>
@@ -91,7 +91,9 @@ export default {
       showModule: null,
       modulesData: {},
       sortIndex: -1,
-      pageSet: {}
+      pageSet: {},
+      retract: '收起', // 收起文本
+      open: '展开' // 展开文本
     }
   },
   watch: {
@@ -129,7 +131,15 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    lang () {
+      this.retract = this.$t('pageSetUp.retract')
+      this.open = this.$t('pageSetUp.open')
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 点击顶部icon

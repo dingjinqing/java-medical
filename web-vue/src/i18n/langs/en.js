@@ -48,6 +48,8 @@ import { en as pageClassification } from './views/admin_new/en/index/miniProgram
 import { en as decorationHome } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationHomeEn'
 // 小程序页面装修页面配置模块国际化
 import { en as pageSetUp } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/pageSetUpEn'
+// 小程序页面装修图片导航模块国际化
+import { en as pictureNavigation } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationEn'
 // 营销管理系列模块化
 // 营销管理通用词汇
 import { en as marketCommon } from './views/admin_new/en/index/marketManagement/marketCommonEn'
@@ -720,6 +722,7 @@ const en = {
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
   decorationHome, // 小程序页面装修home页
-  pageSetUp // 小程序页面设置
+  pageSetUp, // 小程序页面设置
+  pictureNavigation // 页面装修图片导航模块
 }
 export default en

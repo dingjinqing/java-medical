@@ -2,18 +2,18 @@
   <div class="pageSetupMain">
     <div class="top">
       <div>
-        <span>页面名称：</span>
+        <span>{{$t('pageSetUp.pageName')}}：</span>
         <el-input
           v-model="ruleForm.page_name"
-          placeholder="请输入页面名称"
+          :placeholder="$t('pageSetUp.placeInputPageName')"
           size="small"
         ></el-input>
       </div>
       <div>
-        <span>页面分类：</span>
+        <span :class="pageClassification">{{$t('pageSetUp.pageClassification')}}：</span>
         <el-select
           v-model="ruleForm.cat_id"
-          placeholder="请选择"
+          :placeholder="$t('pageSetUp.pleaseChoose')"
           size="small"
         >
           <el-option
@@ -26,55 +26,58 @@
         </el-select>
       </div>
       <div class="radio">
-        <span>底部导航：</span>
+        <span :class="{pageClassification,navigation}">{{$t('pageSetUp.bottomNavigation')}}：</span>
         <el-radio
           v-model="ruleForm.has_bottom"
           label="1"
-        >添加</el-radio>
+        >{{$t('pageSetUp.addTo')}}</el-radio>
         <el-radio
           v-model="ruleForm.has_bottom"
           label="0"
-        >不添加</el-radio>
+        >{{$t('pageSetUp.notAdd')}}</el-radio>
       </div>
       <div
         class="radio"
         style="align-items: flex-start"
       >
-        <span>模块间距：</span>
+        <span :class="moduleSpacing"><i>{{$t('pageSetUp.moduleSpacing')}}：</i></span>
         <div style="display:block">
           <el-radio
             v-model="ruleForm.show_margin"
             label="1"
-          >添加</el-radio>
+          >{{$t('pageSetUp.addTo')}}</el-radio>
           <el-radio
             v-model="ruleForm.show_margin"
             label="0"
-          >不添加</el-radio>
+          >{{$t('pageSetUp.notAdd')}}</el-radio>
           <div
             class="marginHeight"
             v-if="ruleForm.show_margin==='1'"
           >
-            <span style="width:70px;white-space:nowrap">间距高度：</span>
+            <span
+              :class="moduleHeight"
+              style="white-space:nowrap"
+            >{{$t('pageSetUp.moduleHeight')}}：</span>
             <el-input
               size="small"
               v-model="ruleForm.margin_val"
-            ></el-input>像素
+            ></el-input>{{$t('pageSetUp.pixel')}}
           </div>
         </div>
 
       </div>
       <div class="radio">
-        <span>分享海报：</span>
+        <span>{{$t('pageSetUp.sharePoster')}}：</span>
         <el-radio
           v-model="ruleForm.pictorial.is_add"
           label="1"
-        >添加</el-radio>
+        >{{$t('pageSetUp.addTo')}}</el-radio>
         <el-radio
           v-model="ruleForm.pictorial.is_add"
           label="0"
-        >不添加</el-radio>
+        >{{$t('pageSetUp.notAdd')}}</el-radio>
         <div class="example">
-          <span>查看示例</span>
+          <span>{{$t('pageSetUp.viewExamples')}}</span>
           <div class="examHidden">
             <img :src="$imageHost+'/image/admin/pic_share2.jpg'">
           </div>
@@ -84,6 +87,7 @@
       <div
         v-if="ruleForm.pictorial.is_add==='1'"
         class="radio"
+        :class="pictorialVisibility"
       >
         <el-form
           :model="ruleForm"
@@ -92,20 +96,20 @@
           class="ruleForm"
         >
           <el-form-item
-            label="用户范围："
+            :label="$t('pageSetUp.userScope')"
             prop="pictorial.user_visibility"
           >
             <el-radio
               v-model="ruleForm.pictorial.user_visibility"
               label="1"
-            >所有用户可见</el-radio>
+            >{{$t('pageSetUp.visibleToAllUsers')}}</el-radio>
             <el-radio
               v-model="ruleForm.pictorial.user_visibility"
               label="0"
-            >仅分销员可见</el-radio>
+            >{{$t('pageSetUp.visibleOnlyToDistributors')}}</el-radio>
           </el-form-item>
           <el-form-item
-            label="按钮名称："
+            :label="$t('pageSetUp.buttonName')"
             prop="pictorial.share_btn_name"
           >
             <div class="btnName">
@@ -120,7 +124,7 @@
                   width="400"
                   trigger="hover"
                   :offset='0'
-                  content="最多可填写4个汉字，小程序审核通过前不显示此按钮。因微信官方限制，请避免填写带有”分享“等字样的内容。因文案带有【诱导分享】性质导致的审核延期请自行承担。"
+                  :content="$t('pageSetUp.sharedLanguage')"
                 >
                   <img
                     slot="reference"
@@ -132,7 +136,7 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="分享语："
+            :label="$t('pageSetUp.shareTitle')"
             prop="pictorial.share_desc"
             class="sharedLanguage"
           >
@@ -143,7 +147,7 @@
                   v-model="ruleForm.pictorial.share_desc"
                 ></el-input>
                 <div class="tips">
-                  最多可填写20个汉字
+                  {{$t('pageSetUp.shareTips')}}
                 </div>
               </div>
 
@@ -151,7 +155,7 @@
                 class="example"
                 style="margin-left:5px"
               >
-                <span>查看示例</span>
+                <span>{{$t('pageSetUp.viewExamples')}}</span>
                 <div class="examHidden">
                   <img :src="$imageHost+'/image/admin/pic_share1.jpg'">
                 </div>
@@ -161,7 +165,7 @@
 
           </el-form-item>
           <el-form-item
-            label="分享图："
+            :label="$t('pageSetUp.sharePic')"
             prop="pictorial.share_img_path"
             class="sharedLanguage shareP"
           >
@@ -181,7 +185,7 @@
                   @click="handleToAddImg(true)"
                 >
               </div>
-              <span class="sharePic">建议尺寸:800px*800px</span>
+              <span class="sharePic">{{$t('pageSetUp.recommendedDimensions')}}:800px*800px</span>
             </div>
 
           </el-form-item>
@@ -191,11 +195,14 @@
     </div>
     <div class="bottom">
       <div>
-        <div class="bottomLlist">
+        <div
+          class="bottomLlist"
+          :class="bgColorClass"
+        >
           <el-radio
             v-model="ruleForm.bg_types"
             label="0"
-          >背景颜色：</el-radio>
+          >{{$t('pageSetUp.bgColor')}}：</el-radio>
           <span class="colorSelect">
             <colorPicker
               v-model="ruleForm.page_bg_color"
@@ -207,15 +214,18 @@
             <el-button
               @click="handleToReset()"
               size="small"
-            >重置</el-button>
+            >{{$t('pageSetUp.reset')}}</el-button>
           </div>
         </div>
-        <div class="bottomLlist">
+        <div
+          class="bottomLlist"
+          :class="bgColorClass"
+        >
           <div style="margin-right:5px">
             <el-radio
               v-model="ruleForm.bg_types"
               label="1"
-            >背景图片：</el-radio>
+            >{{$t('pageSetUp.bgPic')}}：</el-radio>
           </div>
 
           <div class="bottomDiv">
@@ -237,7 +247,7 @@
             <el-button
               type="primary"
               size="small"
-            >确定</el-button>
+            >{{$t('pageSetUp.determine')}}</el-button>
           </div>
         </div>
       </div>
@@ -264,6 +274,11 @@ export default {
   },
   data () {
     return {
+      pageClassification: 'pageClassification', // 页面分类英文适配
+      navigation: 'navigation', // 底部导航英文适配
+      moduleHeight: 'moduleHeight', // 模块高度
+      pictorialVisibility: 'pictorialVisibility', // 海报隐藏模块英文适配
+      bgColorClass: 'bgColorClass', // 适配英文类
       tuneUp: false,
       defaultColorright: '#fff',
       cat_id: '',
@@ -352,6 +367,10 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
     // 点击重置
     handleToReset () {
@@ -389,6 +408,25 @@ export default {
       }
       /deep/ .el-radio {
         margin-right: 10px;
+      }
+      .pageClassification {
+        text-align: center;
+      }
+      .navigation {
+        padding-left: 16px;
+      }
+      .moduleSpacing {
+        i {
+          text-align: left !important;
+          display: inline-block;
+          width: 64px;
+        }
+      }
+      .moduleHeight {
+        width: 112px;
+      }
+      .moduleHeightCn {
+        width: 70px;
       }
     }
     .radio {
@@ -499,6 +537,15 @@ export default {
         }
       }
     }
+    // 英语适配css
+    .pictorialVisibility {
+      .ruleForm {
+        // padding-left: 0px;
+        .sharedLanguage {
+          padding-left: 0;
+        }
+      }
+    }
   }
   .bottom {
     padding-left: 10px;
@@ -515,6 +562,7 @@ export default {
           display: flex;
           align-items: center;
         }
+
         div {
           display: block;
         }
@@ -548,6 +596,11 @@ export default {
           }
         }
       }
+      .bgColorClass {
+        /deep/ .el-radio {
+          width: auto;
+        }
+      }
     }
   }
   .bottomDiv {
@@ -567,7 +620,7 @@ export default {
       }
     }
     /deep/ .el-button {
-      width: 70px;
+      // width: 70px;
       margin-top: 10px;
     }
   }

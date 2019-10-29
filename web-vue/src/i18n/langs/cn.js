@@ -39,6 +39,8 @@ import { cn as pageClassification } from './views/admin_new/cn/index/miniProgram
 import { cn as decorationHome } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationHomeCn'
 // 小程序页面装修页面设置模块国际化
 import { cn as pageSetUp } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/pageSetUpCn'
+// 小程序页面装修图片导航模块国际化
+import { cn as pictureNavigation } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationCn'
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { cn as allGoods } from './views/admin_new/cn/index/goodsManagement/allGoodsCn'
@@ -693,7 +695,8 @@ const cn = {
   serviceConfig, // 门店服务配置
 
   decorationHome, // 页面装修部分
-  pageSetUp // 页面装修页面设置
+  pageSetUp, // 页面装修页面设置
+  pictureNavigation // 页面装修图片导航模块
 }
 
 export default cn
