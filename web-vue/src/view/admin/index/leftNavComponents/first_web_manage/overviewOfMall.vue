@@ -32,19 +32,13 @@
     >
       <span>{{$t('overview.imageMessage')}}</span>
 
-      <div class="demo-fit">
-        <div
-          class="block"
-          v-for="fit in fits"
-          :key="fit"
+      <div class="off-area">
+
+        <img
+          :src="this.imgsrc"
+          style="width:100px;padding-top: 23px;"
         >
-          <el-avatar
-            shape="square"
-            :size="100"
-            :fit="fit"
-            :src="this.imgsrc"
-          ></el-avatar>
-        </div>
+
       </div>
 
     </el-dialog>
@@ -94,22 +88,25 @@ export default {
         getOfficialQrCode().then((res) => {
           console.log(res)
           if (res.error === 0) {
-            this.imgsrc = res.res
+            this.imgsrc = res.content
             this.centerDialogVisible = true
           } else {
             this.$message.error(res.message)
           }
         })
       } else {
-        checkGoodThingRequest(this.act).then((res) => {
+        let data2 = {
+          act: this.act
+        }
+        checkGoodThingRequest(data2).then((res) => {
           console.log(res)
           if (res.error === 0) {
           } else {
             this.$message.error(res.message)
           }
+          this.defaluteData()
         })
       }
-      this.defaluteData()
     }
   }
 }
@@ -130,5 +127,12 @@ export default {
   padding: 5px 10px;
   border-radius: 2px;
   margin-left: 10px;
+}
+.off-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
 }
 </style>
