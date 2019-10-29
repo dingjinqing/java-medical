@@ -1,14 +1,14 @@
 package com.vpu.mp.service.pojo.shop.store.service;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import lombok.Data;
-
 /**
- * @author 王兵兵
+ * The type Store service list query vo.
  *
- * 2019年7月15日
+ * @author 王兵兵  2019年7月15日
  */
 @Data
 public class StoreServiceListQueryVo {
@@ -22,5 +22,26 @@ public class StoreServiceListQueryVo {
 	private Byte serviceType;
 	private String technicianTitle;
 	private Byte serviceShelf;
-	
+
+    /**
+     * The Service subsist.预约订金
+     */
+    public Byte serviceSubsist;
+    /**
+     * The Start date.可服务日期开始时间
+     */
+    public Byte startDate;
+    /**
+     * The End date.可服务日期结束时间
+     */
+    public Byte endDate;
+    /**
+     * The Start period.开始服务时段
+     */
+    public Byte startPeriod;
+    /**
+     * The End period.结束服务时段
+     */
+    public Byte endPeriod;
+
 }

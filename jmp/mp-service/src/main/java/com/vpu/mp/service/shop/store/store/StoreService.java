@@ -5,12 +5,15 @@ import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
@@ -305,4 +308,22 @@ public class StoreService extends ShopBaseService {
         }
         return "";
 	}
+
+    @Autowired
+    QrCodeService qrCodeService;
+
+    /**
+     * Share store service share qr code vo.通用分享方法
+     *
+     * @param qrCodeTypeEnum the qr code type enum
+     * @param pathParam      the path param
+     * @return the share qr code vo
+     */
+    public ShareQrCodeVo share(QrCodeTypeEnum qrCodeTypeEnum, String pathParam) {
+        String imageUrl = qrCodeService.getMpQrCode(qrCodeTypeEnum, pathParam);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        return vo;
+    }
 }

@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
@@ -621,12 +622,22 @@ public class AdminStoreController extends AdminBaseController{
     }
 
     /**
-     * 分享门店服务
+     * 门店服务分享
      *
      * @param serviceId 门店服务id
      */
     @GetMapping(value = "/api/admin/store/service/share/{serviceId}")
     public JsonResult shareStoreService(@PathVariable Integer serviceId) {
         return success(shop().store.storeService.shareStoreService(serviceId));
+    }
+
+    /**
+     * 门店分享
+     *
+     * @param id 门店id
+     */
+    @GetMapping(value = "/api/admin/store/share/{id}")
+    public JsonResult shareStore(@PathVariable Integer id) {
+        return success(shop().store.share(QrCodeTypeEnum.SHOP_SHARE, "id=" + id));
     }
 }
