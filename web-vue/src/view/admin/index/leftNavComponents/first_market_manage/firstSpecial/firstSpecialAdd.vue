@@ -171,6 +171,10 @@
             <el-table
               :data="tableData"
               style="width:100%;"
+              :header-cell-style="{
+                'background-color':'#f5f5f5',
+                'border':'none'
+              }"
             >
               <el-table-column type="selection"></el-table-column>
               <el-table-column
@@ -181,11 +185,51 @@
                 label="原价"
                 prop="shopPrice"
               ></el-table-column>
-              <el-table-column label="库存"></el-table-column>
-              <el-table-column label="折扣"></el-table-column>
-              <el-table-column label="减价"></el-table-column>
-              <el-table-column label="首单价"></el-table-column>
-              <el-table-column label="操作"></el-table-column>
+              <el-table-column
+                label="库存"
+                prop="goodsNumber"
+              ></el-table-column>
+              <el-table-column label="折扣">
+                <template slot-scope="{row}">
+                  <el-input
+                    style="width:50px;"
+                    size="small"
+                    v-model="row.discount"
+                  ></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="减价">
+                <template slot-scope="{row}">
+                  <el-input
+                    style="width:50px;"
+                    size="small"
+                    v-model="row.reducePrice"
+                  ></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="首单价">
+                <template slot-scope="{row}">
+                  <el-input
+                    style="width:50px;"
+                    size="small"
+                    v-model="row.goodsPrice"
+                  ></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                align="right"
+              >
+                <template>
+                  <div style="align: right;">
+                    <span
+                      class="iconSpan"
+                      style="font-size:14px;"
+                      @click="deleteGood(row)"
+                    >删除</span>
+                  </div>
+                </template>
+              </el-table-column>
             </el-table>
           </div>
           <el-button type="text">收起更多配置</el-button>
@@ -262,6 +306,9 @@ export default {
       if (datas.length) {
         this.tableData = datas
       }
+    },
+    deleteGood (good) {
+      console.log(good)
     }
   }
 }
@@ -299,6 +346,11 @@ export default {
   }
   .num_input {
     width: 50px;
+  }
+  .iconSpan {
+    font-size: 20px;
+    color: #5a8bff;
+    cursor: pointer !important;
   }
 }
 .first-special-add-page {
