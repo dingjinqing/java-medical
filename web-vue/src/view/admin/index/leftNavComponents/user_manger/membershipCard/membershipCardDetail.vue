@@ -1769,6 +1769,9 @@ export default {
           margin-bottom: 10px;
         }
         .userCardName {
+          /deep/ .el-textarea__inner {
+            width: 65%;
+          }
           padding-left: 100px;
           /deep/ .el-input__inner {
             width: 41%;

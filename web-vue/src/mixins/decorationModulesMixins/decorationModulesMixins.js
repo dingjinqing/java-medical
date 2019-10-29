@@ -121,8 +121,8 @@ export default {
           obj = {
             'module_name': 'm_image_guide', // 模块名称
             'nav_style': '1', // 导航样式  1 为样式一   2 为样式二
-            'font_color': '#92b0e4', // 字体颜色
-            'bg_color': '#ffffff', // 背景颜色
+            'font_color': 'rgba(255, 69, 0, 1)', // 字体颜色
+            'bg_color': 'rgba(255, 255, 255, 1)', // 背景颜色
             'nav_group': [ // 导航列表
               {
                 'nav_name': '导航一', // 导航名称

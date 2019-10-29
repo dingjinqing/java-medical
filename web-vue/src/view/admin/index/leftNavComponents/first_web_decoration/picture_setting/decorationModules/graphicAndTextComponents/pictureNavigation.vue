@@ -29,8 +29,11 @@
         </div>
       </div>
       <!--模块编辑区结束-->
-      <div class="item_module_title">
-        <span>图片导航</span>
+      <div
+        class="item_module_title"
+        :class="hoverTips"
+      >
+        <span>{{$t('pictureNavigation.imageNavigation')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -58,7 +61,7 @@
       class="setHere activeSetHere"
       :class="activeSetHere?'middleModulesActive':''"
     >
-      放这里
+      {{$t('pictureNavigation.putItHere')}}
     </div>
   </div>
 </template>
@@ -75,6 +78,7 @@ export default {
     return {
       activeBorder: false,
       activeSetHere: false,
+      hoverTips: 'hoverTips', // 英文适配hover左上角tips类
       // 模块私有
       data: {
 
@@ -122,7 +126,7 @@ export default {
   },
   mounted () {
     // 初始化语言
-    this.langdefault()
+    this.langDefault()
     // 初始化数据
     this.defaultData()
   },
@@ -195,5 +199,8 @@ export default {
       height: 100%;
     }
   }
+}
+.hoverTips {
+  width: 140px !important;
 }
 </style>

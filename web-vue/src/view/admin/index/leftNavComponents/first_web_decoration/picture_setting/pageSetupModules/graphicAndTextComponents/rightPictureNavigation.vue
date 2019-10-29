@@ -1,70 +1,83 @@
 <template>
   <div class="rightPictureNavigation">
     <div class="rightPictureNavigationMain">
-      <h2>图片导航模块<span>图片建议尺寸：140*140</span></h2>
+      <h2>{{$t('pictureNavigation.pictureNavigationModule')}}<span>{{$t('pictureNavigation.pictureSuggestedSize')}}：140*140</span></h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="mainList">
-          <span>导航样式：</span>
+          <span :style="guideCircleClass?'text-align: center;width:76px':''">{{$t('pictureNavigation.navigationStyle')}}：</span>
           <div
-            class="guide_circle"
-            :style="data.nav_style==='1'?'border: 1px solid #5a8BFF':''"
-            @click="data.nav_style='1'"
+            class="navigationDiv"
+            :style="guideCircleClass?'flex-direction: column':''"
           >
             <div
-              v-for="(item,index) in guidList"
-              :key="index"
-              class="circle"
+              class="guide_circle"
+              :style="data.nav_style==='1'?'border: 1px solid #5a8BFF':''"
+              @click="data.nav_style='1'"
+              :class="guideCircleClass"
             >
-              <div style="border-radius: 50%;"></div>
-              <p>{{item}}</p>
+              <div
+                v-for="(item,index) in $t('pictureNavigation.guidList')"
+                :key="index"
+                class="circle"
+                :style="guideCircleClass?'align-items: center':''"
+              >
+                <div style="border-radius: 50%;"></div>
+                <p :style="guideCircleClass?'text-align: center':''">{{item}}</p>
+              </div>
             </div>
-          </div>
-          <div
-            class="guide_circle"
-            :style="data.nav_style==='2'?'border: 1px solid #5a8BFF':''"
-            @click="data.nav_style='2'"
-          >
             <div
-              v-for="(item,index) in guidList"
-              :key="index"
-              class="circle"
+              class="guide_circle"
+              :style="data.nav_style==='2'?'border: 1px solid #5a8BFF':''"
+              @click="data.nav_style='2'"
+              :class="guideCircleClass"
             >
-              <div></div>
-              <p>{{item}}</p>
+              <div
+                v-for="(item,index) in $t('pictureNavigation.guidList')"
+                :key="index"
+                class="circle"
+                :style="guideCircleClass?'align-items: center':''"
+              >
+                <div></div>
+                <p :style="guideCircleClass?'text-align: center':''">{{item}}</p>
+              </div>
             </div>
           </div>
+
         </div>
         <div class="mainList">
-          <span class="left">字体颜色：</span>
+          <span class="left">{{$t('pictureNavigation.fontColor')}}：</span>
           <span class="colorSelect">
-            <colorPicker
+            <el-color-picker
               v-model="data.font_color"
-              :defaultColor="defaultTypefaceColor"
-              style="width:60px;height:30px;"
-            />
+              show-alpha
+              :predefine="predefineColors"
+            >
+            </el-color-picker>
+
           </span>
           <div style="margin-left:10px;margin-top:-1px">
             <el-button
               @click="handleToReset(0)"
               size="small"
-            >重置</el-button>
+            >{{$t('pictureNavigation.reset')}}</el-button>
           </div>
         </div>
         <div class="mainList">
-          <span class="left">背景颜色：</span>
+          <span class="left">{{$t('pictureNavigation.bgColor')}}：</span>
           <span class="colorSelect">
-            <colorPicker
+            <el-color-picker
               v-model="data.bg_color"
-              :defaultColor="defaultBgColor"
-              style="width:60px;height:30px;"
-            />
+              show-alpha
+              :predefine="predefineColors"
+            >
+            </el-color-picker>
           </span>
           <div style="margin-left:10px;margin-top:-1px">
             <el-button
               @click="handleToReset(1)"
               size="small"
-            >重置</el-button>
+            >{{$t('pictureNavigation.reset')}}</el-button>
           </div>
         </div>
         <div class="bottom">
@@ -85,23 +98,23 @@
             </div>
             <div class="chioseRight">
               <div>
-                <span>文字：</span>
+                <span>{{$t('pictureNavigation.writtenWords')}}：</span>
                 <el-input
                   v-model="item.nav_name"
                   size="small"
                 ></el-input>
               </div>
               <div>
-                <span>链接：</span>
+                <span>{{$t('pictureNavigation.link')}}：</span>
                 <el-input
                   v-model="item.nav_link"
-                  placeholder="文字链接可为空"
+                  :placeholder="$t('pictureNavigation.linkPlaceholder')"
                   size="small"
                 ></el-input>
                 <el-button
                   @click="handleToCallLinkDialog(index)"
                   size="small"
-                >选择链接</el-button>
+                >{{$t('pictureNavigation.selectLink')}}</el-button>
               </div>
             </div>
             <!--右上角icon-->
@@ -128,7 +141,7 @@
           class="addList"
           @click="handleToClickAddList()"
         >
-          添加列表
+          {{$t('pictureNavigation.addList')}}
         </div>
       </div>
       <!--end-->
@@ -163,6 +176,22 @@ export default {
   },
   data () {
     return {
+      predefineColors: [ // 颜色选择器预定义颜色池
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsv(51, 100, 98)',
+        'hsva(120, 40, 94, 0.5)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+        '#c7158577'
+      ],
       tuneUpSelectLink: false,
       tuneUp: false,
       guidList: ['导航一', '导航二', '导航三'],
@@ -195,6 +224,7 @@ export default {
       changeLeft: true,
       changeLeftIndex: null,
       nowPathClick: null, // 当前点击的选择链接按钮所在列表的下标
+      guideCircleClass: 'guideCircleClass', // 图片导航导航样式英文适配
       // 模块保存数据
       data: {
         nav_style: '1',
@@ -220,7 +250,14 @@ export default {
         this.$emit('handleToBackData', newData)
       },
       deep: true
+    },
+    lang () {
+      this.data.nav_group = this.$t('pictureNavigation.navigationList')
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 点击重置
@@ -343,27 +380,36 @@ export default {
           height: 32px;
           line-height: 32px;
         }
-        .guide_circle {
-          width: 170px;
-          height: 90px;
-          background-color: #fff;
-          margin-right: 10px;
-          border-radius: 6px;
+        .navigationDiv {
           display: flex;
-          justify-content: space-around;
-          border: 1px solid #fff;
-          .circle {
+          .guide_circle {
+            width: 170px;
+            height: 90px;
+            background-color: #fff;
+            margin-right: 10px;
+            border-radius: 6px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            div {
-              background: #e9f8fd;
-              width: 36px;
-              height: 36px;
-              margin-bottom: 5px;
+            justify-content: space-around;
+            border: 1px solid #fff;
+            .circle {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              div {
+                background: #e9f8fd;
+                width: 36px;
+                height: 36px;
+                margin-bottom: 5px;
+              }
             }
           }
+          .guideCircleClass {
+            width: auto;
+            justify-content: space-around;
+            margin-bottom: 5px;
+          }
         }
+
         .colorSelect {
           margin-left: 5px;
           background-color: #fff;

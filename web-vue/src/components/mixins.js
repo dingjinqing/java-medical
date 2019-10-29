@@ -99,6 +99,8 @@ const myMixin = {
         this.moduleHeight = 'moduleHeight'
         this.pictorialVisibility = 'pictorialVisibility'
         this.bgColorClass = 'bgColorClass'
+        this.hoverTips = 'hoverTips'
+        this.guideCircleClass = 'guideCircleClass'
       } else {
         // this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -163,6 +165,8 @@ const myMixin = {
         this.moduleHeight = 'moduleHeightCn'
         this.pictorialVisibility = ''
         this.bgColorClass = ''
+        this.hoverTips = ''
+        this.guideCircleClass = ''
       }
     },
     // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用
