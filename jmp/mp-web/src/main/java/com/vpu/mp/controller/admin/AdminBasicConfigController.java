@@ -166,7 +166,8 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/role/group/add")
 	public JsonResult addRole(@RequestBody ShopRoleParam param) {
-		if (!StringUtils.isEmpty(param.getPrivilegePass())) {
+		if (!isAllEmpty(param.getPrivilegePass())) {
+
 			if (StringUtils.isEmpty(param.getLoginPass()) || StringUtils.isEmpty(param.getRolePass())) {
 				// 请输入密码
 				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
@@ -496,7 +497,26 @@ public class AdminBasicConfigController extends AdminBaseController{
 	@RequestMapping("/role/group/getList")
 	public JsonResult getAuthorityList() {
 		return success(saas.shop.menu.getAuthority());
-		
+
+	}
+
+	/**
+	 * 数组元素判空
+	 * @param list
+	 * @return
+	 */
+	private Boolean isAllEmpty(List<?> list) {
+		if (StringUtils.isEmpty(list)) {
+			return true;
+		} else {
+			for (Object object : list) {
+				if (!StringUtils.isEmpty(object)) {
+					return false;
+				}
+			}
+		}
+		return true;
+
 	}
 
 }
