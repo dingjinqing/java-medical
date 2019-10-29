@@ -347,17 +347,9 @@ public enum JsonResultCode {
 	 */
 	private String message;
 
-    /**
-     * message中的通配符参数值
-     */
-	private Object[] objects;
-	public void  setMessageParam(Object... asgs){
-		this.objects = asgs;
-	}
 
 	private JsonResultCode(int code, String message,Object... asgs) {
 		this.code = code;
 		this.message = message;
-		this.objects = asgs;
 	}
 }
