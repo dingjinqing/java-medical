@@ -63,6 +63,9 @@ public class BaseController {
     public JsonResult fail(JsonResultCode resultCode, Object... args) {
         return result(resultCode, null, args);
     }
+    public JsonResult fail(JsonResultCode resultCode) {
+        return result(resultCode, null, resultCode.getObjects());
+    }
     public JsonResult fail(ResultMessage message){
         return result(message.getJsonResultCode(),null,message.getMessages());
     }
