@@ -70,12 +70,6 @@
 		"includeApi": []
 	},
 	{
-		"prName": "batch_score",
-		"name": "修改积分",
-		"topIndex":0,
-		"includeApi": []
-	},
-	{
 		"prName": "batch_delete",
 		"name": "禁止登录",
 		"topIndex":0,
