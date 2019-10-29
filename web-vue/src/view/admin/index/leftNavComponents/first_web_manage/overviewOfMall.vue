@@ -42,34 +42,15 @@
             </div>
           </div>
           <div class="left-order-content">
-            <div class="new_order">
+            <div
+              class="new_order"
+              v-for="(item, index) in checkList"
+              :key="index"
+              v-if="item.isCheck === true"
+            >
               <a href="javascript:void(0);">
-                <div class="order_top">3328</div>
-                <p>待发货订单</p>
-              </a>
-            </div>
-            <div class="new_order">
-              <a href="javascript:void(0);">
-                <div class="order_top">3328</div>
-                <p>待发货订单</p>
-              </a>
-            </div>
-            <div class="new_order">
-              <a href="javascript:void(0);">
-                <div class="order_top">3328</div>
-                <p>待发货订单</p>
-              </a>
-            </div>
-            <div class="new_order">
-              <a href="javascript:void(0);">
-                <div class="order_top">3328</div>
-                <p>待发货订单</p>
-              </a>
-            </div>
-            <div class="new_order">
-              <a href="javascript:void(0);">
-                <div class="order_top">3328</div>
-                <p>待发货订单</p>
+                <div class="order_top">{{ item.num }}</div>
+                <p>{{ item.label }}</p>
               </a>
             </div>
           </div>
@@ -174,6 +155,31 @@
             <a
               href="javascript:void(0);"
               class="single-func"
+              v-for="(item, index) in functionList"
+              :key="index"
+            >
+              <img
+                :src="item.icon"
+                alt=""
+              >
+              <span :style="{'position':(index === 1 || index === 5) ? 'relative':''}">{{ item.title }}
+                <img
+                  v-if="index === 1"
+                  style="position: absolute;left: 40px"
+                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/Hot.png"
+                  alt=""
+                >
+                <img
+                  v-if="index === 5"
+                  style="position: absolute;left: 75px"
+                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/Hot.png"
+                  alt=""
+                >
+              </span>
+            </a>
+            <!-- <a
+              href="javascript:void(0);"
+              class="single-func"
             >
               <img
                 src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
@@ -257,7 +263,7 @@
                 alt=""
               >
               <span>多人拼团</span>
-            </a>
+            </a> -->
           </div>
         </div>
         <div class="left-store">
@@ -290,6 +296,10 @@
                   <li>全部</li>
                   <li>全部</li>
                 </ul>
+                <a
+                  href="javascript:void(0);"
+                  class="view_more"
+                >查看更多</a>
               </div>
               <div class="task_list_content">
                 <div class="task_list">
@@ -319,10 +329,18 @@
             </a>
           </div>
           <div class="one-zx">
-            <div class="single-zx">
+            <div
+              class="single-zx"
+              v-for="(item, index) in noticeList"
+              :key="index"
+              @click="noticeDetail(item.id)"
+            >
               <span class="circle"></span>
-              <a href="javascript:void(0);">V1.29.0版本更新清单</a>
-              <span class="zx-time">09-06</span>
+              <a
+                href="javascript:void(0);"
+                class="zx-text"
+              >{{ item.title }}</a>
+              <span class="zx-time">{{ item.time }}</span>
             </div>
           </div>
         </div>
@@ -356,105 +374,54 @@
           <el-carousel
             height="200px"
             arrow="never"
+            ref="carousel"
+            indicator-position="none"
+            @change="carouselChange"
+            @click="setActiveItem"
           >
-            <el-carousel-item style="height: 100%; width: 100%;">
+            <el-carousel-item
+              style="height: 100%; width: 100%;"
+              v-for="(item, index) in carouselList"
+              :key="index"
+            >
               <img
                 style="height: 100%; width: 100%;"
-                src="http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner1.jpg"
-                alt=""
-              >
-            </el-carousel-item>
-            <el-carousel-item style="height: 100%; width: 100%;">
-              <img
-                style="height: 100%; width: 100%;"
-                src="http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner2.jpg"
-                alt=""
-              >
-            </el-carousel-item>
-            <el-carousel-item style="height: 100%; width: 100%;">
-              <img
-                style="height: 100%; width: 100%;"
-                src="http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner3.jpg"
+                :src="item.img"
                 alt=""
               >
             </el-carousel-item>
           </el-carousel>
+          <div class="rounds">
+            <ul>
+              <li
+                v-for="(item, index) in carouselList"
+                :key="index"
+                :class="indValue === index ? 'active' : '' "
+                @click="indexClickHandler(index)"
+              ></li>
+            </ul>
+          </div>
+
         </div>
         <div class="right-serve">
           <div class="right-title">更多服务</div>
           <div class="two-zx">
             <a
-              href="javascript:void(0);"
               class="single-icon"
+              target="_blank"
+              :href="item.link"
+              v-for="(item, index) in serveList"
+              :key="index"
             >
               <div class="icon-img">
                 <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png"
+                  :src="item.icon"
                   alt=""
                 >
               </div>
-              <div class="icon-name">旺店通ERP</div>
+              <div class="icon-name">{{ item.title }}</div>
             </a>
-            <a
-              href="javascript:void(0);"
-              class="single-icon"
-            >
-              <div class="icon-img">
-                <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png"
-                  alt=""
-                >
-              </div>
-              <div class="icon-name">旺店通ERP</div>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-icon"
-            >
-              <div class="icon-img">
-                <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png"
-                  alt=""
-                >
-              </div>
-              <div class="icon-name">旺店通ERP</div>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-icon"
-            >
-              <div class="icon-img">
-                <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png"
-                  alt=""
-                >
-              </div>
-              <div class="icon-name">旺店通ERP</div>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-icon"
-            >
-              <div class="icon-img">
-                <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png"
-                  alt=""
-                >
-              </div>
-              <div class="icon-name">旺店通ERP</div>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-icon"
-            >
-              <div class="icon-img">
-                <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png"
-                  alt=""
-                >
-              </div>
-              <div class="icon-name">旺店通ERP</div>
-            </a>
+
           </div>
         </div>
       </div>
@@ -464,12 +431,16 @@
     <el-dialog
       title="自定义代办事项"
       :visible.sync="dataDialog"
+      :close-on-click-modal="false"
+      :before-close="closeCheckHandler"
       center
       width="40%"
     >
       <p style="color: #999;font-size: 14px;">需选择5个待办事项</p>
       <el-checkbox-group
         v-model="checkData"
+        @change="changeCheck"
+        :max='5'
         style="margin-top: 20px;width: 100%;"
       >
         <el-checkbox
@@ -480,16 +451,6 @@
           style="margin-bottom: 10px;width: 25%;"
         ></el-checkbox>
       </el-checkbox-group>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dataDialog = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="dataDialog = false"
-        >确 定</el-button>
-      </span>
     </el-dialog>
   </div>
 
@@ -497,7 +458,7 @@
 <script>
 // 引入组件
 import bindAccount from './overviewBindAccount.vue'
-import { toDoItemRequest, dataRequest } from '@/api/admin/survey.js'
+import { toDoItemRequest, dataRequest, shopAssistantRequest, noticeDetailRequest } from '@/api/admin/survey.js'
 export default {
   components: {
     bindAccount
@@ -505,35 +466,51 @@ export default {
   data () {
     return {
       dataDialog: false, // 自定义事项弹框
-      checkData: [], // 选中自定义事项
+      // 选中自定义事项
+      checkData: [
+        '待发货订单',
+        '待处理退款退货',
+        '已售罄商品',
+        '商品评价待审核',
+        '待提货订单'
+      ],
       // 自定义列表
       checkList: [{
         value: 1,
-        label: '待发货订单'
+        label: '待发货订单',
+        isCheck: false
       }, {
         value: 2,
-        label: '待处理退款退货'
+        label: '待处理退款退货',
+        isCheck: false
       }, {
         value: 3,
-        label: '已售罄商品'
+        label: '已售罄商品',
+        isCheck: false
       }, {
         value: 4,
-        label: '商品评价待审核'
+        label: '商品评价待审核',
+        isCheck: false
       }, {
         value: 5,
-        label: '待提货订单'
+        label: '待提货订单',
+        isCheck: false
       }, {
         value: 6,
-        label: '分销员待审核'
+        label: '分销员待审核',
+        isCheck: false
       }, {
         value: 7,
-        label: '会员卡激活待审核'
+        label: '会员卡激活待审核',
+        isCheck: false
       }, {
         value: 8,
-        label: '分销提现待审核'
+        label: '分销提现待审核',
+        isCheck: false
       }, {
         value: 9,
-        label: '服务评价待审核'
+        label: '服务评价待审核',
+        isCheck: false
       }],
       screeningTime: 1, // 数据日期范围
       // 数据日期列表
@@ -555,31 +532,162 @@ export default {
       }],
       // 数据列表信息
       dataContent: {},
-      nickName: null,
-      isBind: 0,
-      officialOpenId: null,
-      act: null,
-      imgsrc: null,
-      centerDialogVisible: false
+      // 功能列表
+      functionList: [{
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png',
+        title: '多人砍价'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/fx.png',
+        title: '分销'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/hyzl.png',
+        title: '好友助力'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/hdyl.png',
+        title: '开屏有礼'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/kj.png',
+        title: '砍价'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/ptcj.png',
+        title: '拼团抽奖'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/yhqlb.png',
+        title: '优惠券礼包'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/zfyl.png',
+        title: '支付有礼'
+      }],
+      // 店铺列表
+      storeList: {},
+      // 公告列表
+      noticeList: [{
+        id: '1',
+        title: 'V1.29.0版本更新清单',
+        time: '09-06'
+      }, {
+        id: '2',
+        title: 'V1.29.0版本更新清单',
+        time: '09-06'
+      }, {
+        id: '3',
+        title: 'V1.29.0版本更新清单',
+        time: '09-06'
+      }, {
+        id: '4',
+        title: 'V1.29.0版本更新清单',
+        time: '09-06'
+      }, {
+        id: '5',
+        title: 'V1.29.0版本更新清单',
+        time: '09-06'
+      }, {
+        id: '6',
+        title: 'V1.29.0版本更新清单',
+        time: '09-06'
+      }, {
+        id: '7',
+        title: 'V1.29.0版本更新清单',
+        time: '09-06'
+      }],
+      // 轮播图数据
+      carouselList: [{
+        id: '1',
+        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner1.jpg'
+      }, {
+        id: '2',
+        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner2.jpg'
+      }, {
+        id: '3',
+        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner3.jpg'
+      }],
+      indValue: '', // 轮播的索引
+      // 服务列表
+      serveList: [{
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png',
+        title: '旺店通ERP',
+        link: 'http://www.wangdian.cn/pc/erpCompany.html'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/pos.png',
+        title: '微铺宝POS',
+        link: 'http://pos.wangdian.cn/'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/ekuai.png',
+        title: 'E快帮ERP',
+        link: 'http://www.ekbyun.com/'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/dashuju.png',
+        title: '大数据',
+        link: 'http://www.wangdian.cn/pc/data.html'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/020.png',
+        title: 'O2O',
+        link: 'http://www.wangdian.cn/pc/o2o.html'
+      }, {
+        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/wms.png',
+        title: '旺店通WMS',
+        link: 'http://www.wangdian.cn/pc/wms.html'
+      }]
     }
   },
   mounted () {
     // 初始化数据
-    this.defaluteData()
+    this.todoDate()
+    this.showData()
+    this.storeData()
   },
   methods: {
-    defaluteData () {
-      this.todoDate()
-      this.showData()
-    },
-
     // 代办事项
     todoDate () {
       toDoItemRequest().then((res) => {
+        let data = res.content
         if (res.error === 0) {
-          console.log(res.content)
+          for (var i = 0; i < this.checkList.length; i++) {
+            if (i === 0) {
+              this.checkList[i].num = data.toBeDelivered
+            } else if (i === 1) {
+              this.checkList[i].num = data.refunds
+            } else if (i === 2) {
+              this.checkList[i].num = data.soldOutGoods
+            } else if (i === 3) {
+              this.checkList[i].num = data.productEvaluationPr
+            } else if (i === 4) {
+              this.checkList[i].num = data.pendingOrder
+            } else if (i === 5) {
+              this.checkList[i].num = data.distributorPr
+            } else if (i === 6) {
+              this.checkList[i].num = data.membershipCardPr
+            } else if (i === 7) {
+              this.checkList[i].num = data.distributionWithdrawalPr
+            } else if (i === 8) {
+              this.checkList[i].num = data.serviceEvaluationPr
+            }
+            this.checkList[i].isCheck = false
+            for (var j = 0; j < this.checkData.length; j++) {
+              if (this.checkList[i].label === this.checkData[j]) {
+                this.checkList[i].isCheck = true
+              }
+            }
+          }
         }
       })
+    },
+
+    // 切换代办事项
+    changeCheck (val) {
+      if (val.length !== 5) {
+        this.$message.warning({ message: '请选择5项待办事项' })
+      }
+    },
+
+    // 关闭弹窗
+    closeCheckHandler (done) {
+      if (this.checkData.length === 5) {
+        done()
+        this.todoDate()
+      } else {
+        this.$message.warning({ message: '请选择5项待办事项' })
+      }
     },
 
     // 自定义事项
@@ -600,6 +708,39 @@ export default {
     dateChangeHandler (value) {
       this.screeningTime = value
       this.showData()
+    },
+
+    // 店铺助手
+    storeData () {
+      shopAssistantRequest({
+        shopId: Number(localStorage.getItem('V-ShopId')),
+        sysId: 1,
+        isAuthOk: 1
+      }).then((res) => {
+        if (res.error === 0) {
+          this.storeList = res.content
+        }
+      })
+    },
+
+    // 公告详情
+    noticeDetail (id) {
+      noticeDetailRequest({ articleId: id }).then((res) => {
+        if (res.error === 0) {
+          console.log(res.content)
+        }
+      })
+    },
+
+    // 切换轮播图
+    carouselChange (index) {
+      this.indValue = index
+    },
+
+    // 索引切换
+    indexClickHandler (index) {
+      this.$refs.carousel.setActiveItem(index)
+      this.indValue = index
     }
 
   }
@@ -963,6 +1104,11 @@ svg:not(:root) {
   float: left;
 }
 
+.view_more {
+  color: #5a8bff;
+  float: right;
+}
+
 .type_ul li {
   float: left;
   width: 70px;
@@ -1011,9 +1157,21 @@ svg:not(:root) {
   border-color: #ff4444;
 }
 
+.task_list_item .tips {
+  font-size: 12px;
+  border: 1px solid #5a8bff;
+  color: #5a8bff;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  padding: 0 4px 0 5px;
+  line-height: 16px;
+}
+
 .task_list_item .task_list_desc {
   flex: 1;
   margin-left: 4px;
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .task_right a:link,
@@ -1187,6 +1345,31 @@ svg:not(:root) {
   height: 200px;
   background-color: #fff;
   margin-bottom: 10px;
+
+  position: relative;
+}
+
+.right-carousel .rounds {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  margin-left: -22px;
+  text-align: center;
+  z-index: 999;
+}
+
+.right-carousel .rounds ul li {
+  float: left;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 7px;
+  border: 1px solid #fff;
+}
+
+.right-carousel .rounds .active {
+  background: #fff;
 }
 
 .right-serve {
