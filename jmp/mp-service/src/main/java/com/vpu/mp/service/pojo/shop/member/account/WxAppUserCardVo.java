@@ -41,8 +41,12 @@ public class WxAppUserCardVo extends UserCardParam {
 		setRenewal(AVAILABLE_RENEWAL);
 	}
 	public void calcUsageTime() {
-		setStartDate(getUserCardCreateTime().toLocalDateTime().toLocalDate());
-		setEndDate(getExpireTime().toLocalDateTime().toLocalDate());
+		if(getUserCardCreateTime()!=null) {
+			setStartDate(getUserCardCreateTime().toLocalDateTime().toLocalDate());
+		}
+		if(getExpireTime()!=null) {
+			setEndDate(getExpireTime().toLocalDateTime().toLocalDate());
+		}
 	}
 	private boolean isExpire() {
 		// means endless time,maximum time
