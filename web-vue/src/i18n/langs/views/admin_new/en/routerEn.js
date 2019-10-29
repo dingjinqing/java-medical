@@ -290,6 +290,8 @@ export const en = {
     'First Special Offer',
     'First Special Offer Orders'
   ],
+  // 营销管理 首单特惠 首单特惠新增
+  first_special_add: ['Marketing Management', 'First Special Offer'],
   // 营销管理 定金膨胀
   presale: ['Marketing Management', 'Pre Sale'],
   // 营销管理 定金膨胀创建

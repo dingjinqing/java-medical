@@ -336,7 +336,7 @@ export default {
     // 跳转到添加页
     addActivity () {
       this.$router.push({
-        name: 'add_first_special'
+        name: 'first_special_add'
       })
     }
   }

@@ -766,6 +766,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/firstSpecial/firstSpecialOrderList'
       )
   },
+  // 首单特惠-新增/编辑
+  {
+    path: '/admin/home/main/firstSpecial/add',
+    name: 'first_special_add',
+    meta: {
+      crumbTitle: 'router.first_special_add',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/firstSpecial/firstSpecialAdd'
+      )
+  },
   // 定金膨胀
   {
     path: '/admin/home/main/presale',
