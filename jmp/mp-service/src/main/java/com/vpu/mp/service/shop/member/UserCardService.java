@@ -27,6 +27,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
@@ -101,6 +102,7 @@ public class UserCardService extends ShopBaseService{
 	public static final String OPTIONINFO = OPEN_CARD_SEND;
 	public static final String DESC = "score_open_card";
 	public static final String SYSTEM_UP_GRADE = SYSTEM_UPGRADE;
+
 	/**
 	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回null
 	 * @param user_id
@@ -589,14 +591,68 @@ public class UserCardService extends ShopBaseService{
 	}
 	
 	/**
-	 * 获取用户会员卡列表
+	 *  通过用户id，获取用户所有的会员卡列表
+	 * php: getUserCard
 	 * @param userId
 	 * @return 
 	 */
-	public List<UserCardParam> getCardList(Integer userId) {
-		return userCardDao.getCardList(userId);
+	public List<WxAppUserCardVo> getAllCardsOfUser(Integer userId) {
+		List<WxAppUserCardVo> cardList = userCardDao.getCardList(userId);
+		String avatar = getCardAvatar();
+		for(WxAppUserCardVo card: cardList) {
+			dealWithWxUserCard(card,avatar);
+		}
+		return cardList;
 	}
+	/**
+	 * 处理返回给微信端的用户卡数据
+	 * @param card
+	 */
+	private void dealWithWxUserCard(WxAppUserCardVo card,String avatar){
+		card.calcCardIsExpired();
+		card.calcRenewal();
+		card.calcUsageTime();
+		card.setAvatar(avatar);
+		card.calcCash();
+	}
+	/**
+	 * 获取用户卡的头像
+	 * @return
+	 */
+	public String getCardAvatar() {
+		return saas().shop.getShopAvatarById(this.getShopId());
+	}
+	
 
-
+	public WxAppUserCardVo getUserCardDetail(UserCardParam param) {
+		WxAppUserCardVo card = (WxAppUserCardVo)userCardDao.getUserCardInfo(param.getCardNo());
+		dealWithUserCardDetailInfo(card);
+		return card;
+	}
+	
+	public void dealWithUserCardDetailInfo(WxAppUserCardVo card) {
+		dealWithUserCardBasicInfo(card);
+		//TODO 升级进度
+		// 门店列表
+		if(card.isStoreAvailable()) {
+		}
+		//当前累计积分 和 累计消费
+		// 开卡送卷
+	}
+	
+	public void dealWithUserCardBasicInfo(WxAppUserCardVo card) {
+		String avatar = getCardAvatar();
+		dealWithWxUserCard(card,avatar);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

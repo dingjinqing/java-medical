@@ -3,6 +3,11 @@ package com.vpu.mp.service.pojo.shop.member.account;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.apache.commons.lang3.StringUtils;
+
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_BUY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SUPPORT_PAY_BY_CASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
 import lombok.Data;
 
 /**
@@ -13,66 +18,90 @@ import lombok.Data;
 @Data
 public class UserCardParam {
 	/** user_card bean */
-	private Integer userId;
-	private Integer cardId;
-	private Byte userCardFlag;
-	private String cardNo;
-	private Timestamp expireTime;
-	private Byte isDefault;
-	private BigDecimal money;
-	private Integer surplus;
-	private Timestamp activationTime;
-	private Integer exchangSurplus;
-	private Timestamp userCardCreateTime;
-	private Timestamp userCardUpdateTime;
+	protected Integer userId;
+	protected Integer cardId;
+	protected Byte userCardFlag;
+	protected String cardNo;
+	protected Timestamp expireTime;
+	protected Byte isDefault;
+	protected BigDecimal money;
+	protected Integer surplus;
+	protected Timestamp activationTime;
+	protected Integer exchangSurplus;
+	protected Timestamp userCardCreateTime;
+	protected Timestamp userCardUpdateTime;
 	
 	/** member_card bean */
-//	private Integer cardId;
-	private String cardName;
-	private Byte cardType;
-	private Byte bgType;
-	private String bgColor;
-	private String bgImg;
-	private BigDecimal discount;
-	private Integer sorce;
-	private String buyScore;
-	private Byte expireType;
-	private Timestamp startTime;
-	private Timestamp endTime;
-	private Integer receiveDay;
-	private Byte dateType;
-	private Byte activation;
-	private String receiveCode;
-	private String desc;
-	private String mobile;
-	private Timestamp createTime;
-	private Timestamp updateTime;
-	private Byte flag;
-	private Integer sendMoney;
-	private String chargeMoney;
-	private Integer useTime;
-	private String storeList;
-	private Integer count;
-	private Byte delFlag;
-	private String grade;
-	private String gradeCondition;
-	private String activationCfg;
-	private Byte examine;
-	private String discountGoodsId;
-	private String discountCatId;
-	private String discountSortId;
-	private Byte discountIsAll;
-	private Byte isPay;
-	private Byte payType;
-	private BigDecimal payFee;
-	private Byte payOwnGood;
-	private Byte receiveAction;
-	private Byte isExchang;
-	private Byte storeUseSwitch;
-	private String exchangGoods;
-	private Byte exchangFreight;
-	private Integer exchangCount;
-	private Integer stock;
-	private Integer limit;
-	private String discountBrandId;
+//	protected Integer cardId;
+	protected String cardName;
+	protected Byte cardType;
+	protected Byte bgType;
+	protected String bgColor;
+	protected String bgImg;
+	protected BigDecimal discount;
+	protected Integer sorce;
+	protected String buyScore;
+	protected Byte expireType;
+	protected Timestamp startTime;
+	protected Timestamp endTime;
+	protected Integer receiveDay;
+	protected Byte dateType;
+	protected Byte activation;
+	protected String receiveCode;
+	protected String desc;
+	protected String mobile;
+	protected Timestamp createTime;
+	protected Timestamp updateTime;
+	protected Byte flag;
+	protected Integer sendMoney;
+	protected String chargeMoney;
+	protected Integer useTime;
+	protected String storeList;
+	protected Integer count;
+	protected Byte delFlag;
+	protected String grade;
+	protected String gradeCondition;
+	protected String activationCfg;
+	protected Byte examine;
+	protected String discountGoodsId;
+	protected String discountCatId;
+	protected String discountSortId;
+	protected Byte discountIsAll;
+	protected Byte isPay;
+	protected Byte payType;
+	protected BigDecimal payFee;
+	protected Integer cash;
+	protected Byte payOwnGood;
+	protected Byte receiveAction;
+	protected Byte isExchang;
+	protected Byte storeUseSwitch;
+	protected String exchangGoods;
+	protected Byte exchangFreight;
+	protected Integer exchangCount;
+	protected Integer stock;
+	protected Integer limit;
+	protected String discountBrandId;
+	
+	/**
+	 * 是否支持需要用现金购买
+	 * @return
+	 */
+	public boolean isPayByCash(){
+		return isPay.equals(NEED_BUY) && payType.equals(SUPPORT_PAY_BY_CASH);
+	}
+	
+	public int intCashValue() {
+		return payFee.intValue();
+	}
+	
+	public void calcCash() {
+		if(isPayByCash()) {
+			setCash(intCashValue());
+		}
+	}
+	
+	public boolean isStoreAvailable() {
+		return !StringUtils.isBlank(storeList) && AVAILABLE_IN_STORE.equals(storeUseSwitch);
+	}
+	
 }
