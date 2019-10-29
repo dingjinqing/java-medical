@@ -174,11 +174,6 @@
 
                 <!-- 图片弹窗 -->
                 <div style="display:flex;align-items:center;flex-wrap:wrap;">
-                  <span
-                    @click="deleteGoodsImg()"
-                    v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
-                    class="deleteIcon"
-                  >×</span>
                   <div
                     @click="addGoodsImg"
                     class="ImgWrap"
@@ -412,12 +407,6 @@ export default {
         }
       })
     },
-    // 删除图片
-    deleteGoodsImg () {
-      this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
-      this.form.icon = null
-      console.log('icon:', this.form.icon)
-    },
     // 活动分享 -- 添加图片点击事件，弹出图片选择组件
     addGoodsImg () {
       this.showImageDialog = !this.showImageDialog
@@ -499,21 +488,6 @@ export default {
     color: #66b1ff;
     cursor: pointer;
   }
-}
-.deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: relative;
-  top: -27px;
-  right: -62px;
-  cursor: pointer;
-  opacity: 0.8;
 }
 .ImgWrap {
   width: 50px;
