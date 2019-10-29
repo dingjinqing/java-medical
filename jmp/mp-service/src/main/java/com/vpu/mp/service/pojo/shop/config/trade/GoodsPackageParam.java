@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.config.trade;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.foundation.util.Util;
 import lombok.Data;
 
 /**
@@ -10,13 +12,23 @@ import lombok.Data;
 @Data
 public class GoodsPackageParam {
     @JsonProperty(value = "add_goods")
-    private String addGoods;
+    @JsonAlias({"add_goods", "addGoods"})
+    private Integer[] addGoods;
     @JsonProperty(value = "add_cate")
-    private String addCate;
+    @JsonAlias({"add_cate", "addCate"})
+    private Integer[] addCate;
     @JsonProperty(value = "add_sort")
-    private String addSort;
+    @JsonAlias({"add_sort", "addSort"})
+    private Integer[] addSort;
     @JsonProperty(value = "add_label")
-    private String addLabel;
+    @JsonAlias({"add_label", "addLabel"})
+    private Integer[] addLabel;
     @JsonProperty(value = "add_brand")
-    private String addBrand;
+    @JsonAlias({"add_brand", "addBrand"})
+    private Integer[] addBrand;
+
+    @Override
+    public String toString() {
+        return Util.toJson(this);
+    }
 }

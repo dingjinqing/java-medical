@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -584,7 +585,8 @@ public class TradeService extends BaseShopConfigService {
      * @return the order requeire goods package
      */
     public GoodsPackageParam getOrderRequireGoodsPackage() {
-        return this.get(K_ORDER_REQUIRE_GOODS_PACKAGE, GoodsPackageParam.class, null);
+        return this.get2Object(K_ORDER_REQUIRE_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
+        }, new GoodsPackageParam());
     }
 
     /**
@@ -810,6 +812,7 @@ public class TradeService extends BaseShopConfigService {
         Object conf = null;
         try {
             conf = method.invoke(service);
+            log.debug("field[{}]字段对应的getXXX方法执行结果为：{}", fieldName, conf);
         } catch (IllegalAccessException | InvocationTargetException e) {
             log.error("field[{}]字段对应的getXXX方法执行失败：{}", fieldName, e.getMessage());
         }

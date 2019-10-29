@@ -1,39 +1,43 @@
 package com.vpu.mp.service.shop.config;
 
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.springframework.stereotype.Service;
+
+import java.lang.reflect.InvocationTargetException;
+
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
 /**
  * @author 王兵兵
  *
  *         2019年6月26日
- * 
+ *
  */
 @Service
-
+@Slf4j
 public class BaseShopConfigService extends ShopBaseService {
 
-	
+
 	/**
 	 * 获取配置key对应value
-	 * 
+     *
 	 * @param  key
 	 * @return
 	 */
 	protected String get(String key) {
 		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny(SHOP_CFG.V);
 	}
-	
+
 	/**
-	 * 判断key是否存在 
+     * 判断key是否存在
 	 * true:存在
 	 * false:不存在
 	 * @param key
@@ -49,7 +53,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 设置配置key对应value
-	 * 
+     *
 	 * @param  key
 	 * @param  value
 	 * @return
@@ -64,7 +68,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 设置配置key对应value
-	 * 
+     *
 	 * @param  key
 	 * @param  value
 	 * @param  db
@@ -80,7 +84,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 设置其他类型数据配置
-	 * 
+     *
 	 * @param  <T>
 	 * @param  key
 	 * @param  value
@@ -88,12 +92,19 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	protected <T> int set(String key, T value, Class<? extends T> toClass) {
-		return this.set(key, value.toString());
-	}
+        try {
+            // 扩招支持自定义toString方法
+            String strValue = toClass.getMethod("toString").invoke(value).toString();
+            return this.set(key, strValue);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            log.error("更新b2c_shop_cfg表中[{}]属性值异常,原因如下:{}", key, e.getMessage());
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
+    }
 
 	/**
 	 * 设置其他类型数据配置
-	 * 
+     *
 	 * @param  db
 	 * @param  <T>
 	 * @param  key
@@ -107,7 +118,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 设置json对象数据配置
-	 * 
+     *
 	 * @param  key
 	 * @param  value
 	 * @return
@@ -118,7 +129,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 设置json对象数据配置
-	 * 
+     *
 	 * @param  key
 	 * @param  value
 	 * @param  db
@@ -130,7 +141,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 获取配置key对应value,未取到时，则返回默认值
-	 * 
+     *
 	 * @param  key
 	 * @param  defaultValue
 	 * @return
@@ -142,7 +153,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 按T类型取配置key对应value
-	 * 
+     *
 	 * @param  <T>
 	 * @param  key
 	 * @param  toClass
@@ -153,9 +164,28 @@ public class BaseShopConfigService extends ShopBaseService {
 		return Util.convert(get(key), toClass, defaultValue);
 	}
 
+    /**
+     * Gets 2 object.按T类型取配置key对应value
+     * 支持直接将json字符串转换为复杂对象
+     *
+     * @param <T>          the type parameter
+     * @param key          the key
+     * @param reference    the reference
+     * @param defaultValue the default value
+     * @return the 2 object
+     */
+    protected <T> T get2Object(String key, TypeReference<T> reference, T defaultValue) {
+        String s = db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchOneInto(String.class);
+        if (StringUtils.isBlank(s)) {
+            return defaultValue;
+        }
+        T t = Util.json2Object(s, reference, false);
+        return t != null ? t : defaultValue;
+    }
+
 	/**
 	 * 按T类型取配置key对应json对象的value
-	 * 
+	 *
 	 * @param  <T>
 	 * @param  key
 	 * @param  toClass
@@ -172,7 +202,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 按T类型取配置key对应json对象的value
-	 * 
+	 *
 	 * @param  <T>
 	 * @param  key
 	 * @param  toClass
@@ -185,7 +215,7 @@ public class BaseShopConfigService extends ShopBaseService {
 
 	/**
 	 * 按T类型取配置key对应json对象的value,如果未取到，则返回默认值
-	 * 
+	 *
 	 * @param  <T>
 	 * @param  key
 	 * @param  toClass
