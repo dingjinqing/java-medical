@@ -89,6 +89,8 @@ export const en = {
   base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
   // 基础配置  交易配置
   pay: ['Basic configuration', 'Pay Configuration'],
+  // 基础配置  店铺权限
+  child_config: ['Basic configuration', 'Shop authority'],
   // 基础配置  模板消息
   templateMessage: ['Basic configuration', 'Template Message'],
   // 小程序管理 自定义页面装修

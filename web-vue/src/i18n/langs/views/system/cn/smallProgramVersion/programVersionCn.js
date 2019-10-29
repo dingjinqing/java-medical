@@ -66,83 +66,78 @@ export const cn = {
   expired: '已过期',
   inUse: '使用中',
   operationAuLishData: ['查看详细', '版本操作日志'],
-  selectIsPay: [
-    {
-      value: '',
-      label: '选择是否授权微信支付'
-    },
-    {
-      value: '0',
-      label: '不支持微信支付'
-    },
-    {
-      value: '1',
-      label: '支持微信支付'
-    }
+  selectIsPay: [{
+    value: '',
+    label: '选择是否授权微信支付'
+  },
+  {
+    value: '0',
+    label: '不支持微信支付'
+  },
+  {
+    value: '1',
+    label: '支持微信支付'
+  }
   ],
-  selectExamineStatus: [
-    {
-      value: '',
-      label: '选择审核状态'
-    },
-    {
-      value: '0',
-      label: '未提交审核'
-    },
-    {
-      value: '1',
-      label: '审核中'
-    },
-    {
-      value: '2',
-      label: '审核通过'
-    },
-    {
-      value: '3',
-      label: '审核未通过'
-    }
+  selectExamineStatus: [{
+    value: '',
+    label: '选择审核状态'
+  },
+  {
+    value: '0',
+    label: '未提交审核'
+  },
+  {
+    value: '1',
+    label: '审核中'
+  },
+  {
+    value: '2',
+    label: '审核通过'
+  },
+  {
+    value: '3',
+    label: '审核未通过'
+  }
   ],
-  selectIsAuthorization: [
-    {
-      value: '',
-      label: '选择是否授权'
-    },
-    {
-      value: '0',
-      label: '未授权'
-    },
-    {
-      value: '1',
-      label: '已授权'
-    }
+  selectIsAuthorization: [{
+    value: '',
+    label: '选择是否授权'
+  },
+  {
+    value: '0',
+    label: '未授权'
+  },
+  {
+    value: '1',
+    label: '已授权'
+  }
   ],
-  selectReleaseStatus: [
-    {
-      value: '',
-      label: '选择发布状态'
-    },
-    {
-      value: '0',
-      label: '未发布'
-    },
-    {
-      value: '1',
-      label: '已发布'
-    }
+  selectReleaseStatus: [{
+    value: '',
+    label: '选择发布状态'
+  },
+  {
+    value: '0',
+    label: '未发布'
+  },
+  {
+    value: '1',
+    label: '已发布'
+  }
   ],
-  selectShopStatus: [
-    {
-      value: '',
-      label: '选择店铺状态'
-    },
-    {
-      value: '1',
-      label: '使用中'
-    },
-    {
-      value: '0',
-      label: '已过期'
-    }
+  selectShopStatus: [{
+    value: '',
+    label: '选择店铺状态'
+  },
+  {
+    value: '1',
+    label: '使用中'
+  },
+  {
+    value: '0',
+    label: '已过期'
+  }
   ],
   selectVersionNumber: '请选择版本号',
   whetherToorNot: '选择是否授权',
@@ -239,7 +234,8 @@ export const cn = {
   {
     value: '3',
     label: '微信国际融合钱包支付'
-  }],
+  }
+  ],
   WechatDirectPayment: '微信直连支付',
   SuccessfulOperation: '操作成功',
   AccountManagementRights: '帐号管理权限（小程序）',
