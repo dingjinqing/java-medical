@@ -141,6 +141,8 @@ import { cn as serviceManage } from './views/admin_new/cn/index/storeManagement/
 import { cn as serviceList } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceListCn'
 // 门店列表-服务分类
 import { cn as serviceClassify } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceClassifyCn'
+// 门店列表-服务添加
+import { cn as serviceAdd } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceAddCn'
 // 门店列表-技师管理
 import { cn as technicianManage } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianManageCn'
 // 门店列表-技师列表
@@ -673,6 +675,7 @@ const cn = {
   serviceManage, // 门店列表-服务管理
   serviceList, // 门店列表-服务列表
   serviceClassify, // 门店列表-服务分类
+  serviceAdd, // 门店列表-服务添加
   technicianManage, // 门店列表-技师管理
   technicianList, // 门店列表-技师列表
   technicianClassify, // 门店列表-技师分类

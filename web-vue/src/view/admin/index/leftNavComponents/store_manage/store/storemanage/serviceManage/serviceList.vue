@@ -43,6 +43,7 @@
           ref="serviceTable"
           :data="tableData"
           class="tableClass"
+          height="280"
           max-height="500"
           border
           :header-cell-style="{
