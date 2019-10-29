@@ -88,6 +88,7 @@ global.wxPage({
       [target]: right
     });
   },
+  // 格式化数据
   formatData(dataList) {
     let newData = dataList.map(item => {
       item.cardTypeName = this.getTypeName(item.cardType);
@@ -97,6 +98,7 @@ global.wxPage({
     });
     return newData;
   },
+  // 获取卡类型
   getTypeName(cardType) {
     switch (cardType) {
       case 0:
@@ -107,6 +109,7 @@ global.wxPage({
         return '等级卡';
     }
   },
+  // 获取会员卡背景
   getCardBg(cardItem) {
     console.log(cardItem);
     switch (cardItem.bgType) {
@@ -116,6 +119,7 @@ global.wxPage({
         return `background:url('${this.data.imageUrl}${cardItem.bgImg}') no-repeat top left / 100% 100%;`;
     }
   },
+  // 获取会员卡停用/删除状态图片
   getCardStopImage(cardItem){
     if(cardItem.cardType === 2 && cardItem.flag === 2){
       return `${this.data.imageUrl}image/wxapp/card_stop.png`
