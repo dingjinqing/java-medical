@@ -254,7 +254,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/role/group/editUpdate")
 	public JsonResult updateRole(@RequestBody ShopRoleGroupUpdateParam upParam) {
-		if (!StringUtils.isEmpty(upParam.getPrivilegePass())) {
+		if (!isAllEmpty(upParam.getPrivilegePass())) {
 			if (StringUtils.isEmpty(upParam.getLoginPass()) || StringUtils.isEmpty(upParam.getRolePass())) {
 				// 请输入密码
 				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
