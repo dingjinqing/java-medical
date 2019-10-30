@@ -206,13 +206,13 @@
 </template>
 
 <script>
-  import {retrunUpdate, returnSelect} from '@/api/admin/basicConfiguration/tradeConfiguration.js'
-  import ChoosingGoods from '@/components/admin/choosingGoods'
-  import ProductLabel from '@/components/admin/addProductLabel'
-  import BrandDialog from '@/components/admin/addBrandDialog'
-  import BusClassDialog from '@/components/admin/addingBusClassDialog'
+import {retrunUpdate, returnSelect} from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import ChoosingGoods from '@/components/admin/choosingGoods'
+import ProductLabel from '@/components/admin/addProductLabel'
+import BrandDialog from '@/components/admin/addBrandDialog'
+import BusClassDialog from '@/components/admin/addingBusClassDialog'
 
-  export default {
+export default {
   components: {
     ChoosingGoods,
     ProductLabel,
