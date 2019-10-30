@@ -264,11 +264,11 @@ public class ServiceOrderService extends ShopBaseService{
         cardConsumpData.setUserId(adminUser);
         /** 国际化语言 */
         String language="";
-        if(memberCard.getCardType() == CardConstant.LIMIT_NUM_TYPE){
+        if(memberCard.getCardType() == CardConstant.MCARD_TP_LIMIT){
             /** 负数为消费次数 */
             cardConsumpData.setCount(-param.getReduce().intValue());
             saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData,adminUser,tradeType,tradeFlow,language);
-        }else if(memberCard.getCardType() == CardConstant.NORMAL_TYPE){
+        }else if(memberCard.getCardType() == CardConstant.MCARD_TP_NORMAL){
             /** 负数为消费金额 */
             cardConsumpData.setMoney(param.getReduce().negate());
             saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData,adminUser,tradeType,tradeFlow,language);

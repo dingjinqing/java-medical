@@ -13,12 +13,12 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -161,7 +161,7 @@ public class CardDaoService extends ShopBaseService {
 		 return db().select(CARD_BATCH.ID,CARD_BATCH.NAME)
 				 	.from(CARD_BATCH)
 				 	.where(CARD_BATCH.CARD_ID.eq(cardId))
-				 	.and(CARD_BATCH.DEL_FLAG.eq(DELETE_NO))
+				 	.and(CARD_BATCH.DEL_FLAG.eq(MCARD_DF_NO))
 				 	.fetch();
 		
 	}
@@ -171,7 +171,7 @@ public class CardDaoService extends ShopBaseService {
 	 */
 	public Integer deleteCardBatchSql(Integer id) {
 		return db().update(CARD_RECEIVE_CODE)
-			.set(CARD_RECEIVE_CODE.DEL_FLAG,DELETE_YES)
+			.set(CARD_RECEIVE_CODE.DEL_FLAG,MCARD_DF_YES)
 			.where(CARD_RECEIVE_CODE.ID.eq(id))
 			.execute();
 	}
@@ -428,7 +428,7 @@ public class CardDaoService extends ShopBaseService {
 		
 		CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE)
 			.where(CARD_RECEIVE_CODE.CODE.eq(code))
-			.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(DELETE_NO))
+			.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO))
 			.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())
 			.fetchAny();
 		
@@ -506,8 +506,8 @@ public class CardDaoService extends ShopBaseService {
 	 * @return
 	 */
 	public List<MemberCardRecord> getAllUsingGradeCard() {
-		 return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
-			.and(MEMBER_CARD.FLAG.eq(MEMBER_CARD_USING))
+		 return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+			.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 			.orderBy(MEMBER_CARD.GRADE.asc())
 			.fetchInto(MemberCardRecord.class);
 	}

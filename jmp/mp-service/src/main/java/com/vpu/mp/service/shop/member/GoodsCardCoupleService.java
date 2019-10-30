@@ -35,8 +35,8 @@ public class GoodsCardCoupleService  extends ShopBaseService {
     public Map<Byte, List<Integer>> getGradeCardCoupleGoodsList(String grade){
         return db().select(GOODS_CARD_COUPLE.GCTA_ID, GOODS_CARD_COUPLE.TYPE).from(GOODS_CARD_COUPLE)
                 .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
-                .where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.RANK_TYPE))
-                .and(MEMBER_CARD.FLAG.eq(CardConstant.MEMBER_CARD_USING))
+                .where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
+                .and(MEMBER_CARD.FLAG.eq(CardConstant.MCARD_FLAG_USING))
                 .and(MEMBER_CARD.GRADE.le(grade))
                 .and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(MEMBER_CARD.PAY_OWN_GOOD.eq(CardConstant.PAY_OWN_GOOD_YES))
@@ -53,12 +53,12 @@ public class GoodsCardCoupleService  extends ShopBaseService {
         return db().select(GOODS_CARD_COUPLE.GCTA_ID, GOODS_CARD_COUPLE.TYPE).from(GOODS_CARD_COUPLE)
                 .leftJoin(USER_CARD).on(GOODS_CARD_COUPLE.CARD_ID.eq(USER_CARD.CARD_ID))
                 .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
-                .where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.NORMAL_TYPE))
+                .where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_NORMAL))
                 .and(USER_CARD.FLAG.eq(CardConstant.CARD_USING))
                 .and(USER_CARD.CARD_ID.eq(userId))
                 .and(USER_CARD.EXPIRE_TIME.isNotNull().or(USER_CARD.EXPIRE_TIME.gt(DateUtil.getLocalDateTime())))
-                .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.ACTIVE_NO)
-                        .or(MEMBER_CARD.ACTIVATION.eq(CardConstant.ACTIVE_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
+                .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO)
+                        .or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
                 .fetch()
                 .intoGroups(GOODS_CARD_COUPLE.TYPE, GOODS_CARD_COUPLE.GCTA_ID);
     }

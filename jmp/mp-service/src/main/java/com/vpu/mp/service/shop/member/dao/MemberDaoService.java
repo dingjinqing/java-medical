@@ -34,9 +34,9 @@ import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static org.jooq.impl.DSL.count;
 
@@ -138,8 +138,8 @@ public class MemberDaoService extends ShopBaseService {
 		.where(USER_CARD.USER_ID.eq(userId)).and(USER_CARD.FLAG.eq(CARD_USING))
 //		.and(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
 		.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
-		.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
-				.or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
+		.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+				.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
 		.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc());
 	}
 	
@@ -154,9 +154,9 @@ public class MemberDaoService extends ShopBaseService {
 		return db().select(USER_CARD.USER_ID)
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.where(USER_CARD.FLAG.eq(CARD_USING))
-			.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
-			.and((MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME).and(MEMBER_CARD.START_TIME.le(localDateTime)))
-		            .or(MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME, FOREVER)))
+			.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER)))
+			.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(localDateTime)))
+		            .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
 			.fetch();
 	}
 	

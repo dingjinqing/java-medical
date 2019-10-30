@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 
 import java.util.Map;
@@ -40,7 +41,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	final public static String ZERO = "0";
 	final public static String ONE = "1";
 	final public static String TWO = "2";
-	final public static String BUTTON_ON="on";
 	
 	/**
 	 * 购物送积分

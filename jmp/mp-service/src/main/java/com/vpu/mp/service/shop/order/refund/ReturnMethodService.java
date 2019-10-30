@@ -102,7 +102,7 @@ public class ReturnMethodService extends ShopBaseService{
 		money(money).
 		reason("订单会员卡余额支付退款").
 		//普通会员卡
-		type(CardConstant.NORMAL_TYPE).
+		type(CardConstant.MCARD_TP_NORMAL).
 		orderSn(order.getOrderSn()).
 		//后台处理时为操作人id为0
 		adminUser(0).

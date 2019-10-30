@@ -2,8 +2,8 @@ package com.vpu.mp.service.pojo.shop.member.card;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CURRENT_DATE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXPIRED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Slf4j
 public class NormalCardVo extends BaseCardVo {
+
 	/**
 	 * 会员有效期类型 0：固定日期；1：自领取多少内有效；2：永久有效
 	 */
@@ -86,10 +87,10 @@ public class NormalCardVo extends BaseCardVo {
 		powerCard = (byte) (chargeMoney == null ? 0 : 1);
 		
 		/** 处理固定时间段，是否过期 */
-		if (FIX_DATETIME.equals(expireType) && endTime != null) {
+		if (MCARD_ET_FIX.equals(expireType) && endTime != null) {
 			log.info("进入到if判断");
 			boolean isExpired = endTime.toLocalDateTime().toLocalDate().isBefore(CURRENT_DATE);
-			flag = isExpired ? EXPIRED : flag;
+			flag = isExpired ? MCARD_EXPIRED : flag;
 		}
 
 	}

@@ -10,11 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_BUY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_BUY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SUPPORT_PAY_BY_CASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NONE_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_NON;
 import lombok.Data;
 
 /**
@@ -96,7 +96,7 @@ public class UserCardParam {
 	 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	public boolean isPayByCash(){
-		return isPay.equals(NEED_BUY) && payType.equals(SUPPORT_PAY_BY_CASH);
+		return isPay.equals(MCARD_ISP_BUY) && payType.equals(SUPPORT_PAY_BY_CASH);
 	}
 	
 	public int intCashValue() {
@@ -114,7 +114,7 @@ public class UserCardParam {
 	}
 	
 	public boolean hasAvailableExchangGoods() {
-		return cardType.equals(LIMIT_NUM_TYPE) && !NONE_GOODS.equals(isExchang);
+		return cardType.equals(MCARD_TP_LIMIT) && !MCARD_ISE_NON.equals(isExchang);
 	}
 	/**
 	 * 获取门店列表id List

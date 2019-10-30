@@ -11,110 +11,131 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @Description: 会员卡用到的常量定义
  */
 public class CardConstant {
-	
-	/** -----------------member_card表常量--------------------------*/
 	/** 普通会员卡 */
-	public static final Byte NORMAL_TYPE = 0;
+	public static final Byte MCARD_TP_NORMAL = 0;
 	/** 限次会员卡 */
-	public static final Byte LIMIT_NUM_TYPE = 1;
+	public static final Byte MCARD_TP_LIMIT = 1;
 	/** 等级会员卡 */
-	public static final Byte RANK_TYPE = 2;
-	/** 需要购买 */
-	public static final Byte NEED_BUY = 1;
-	/** 需要领取码 */
-	public static final Byte PICK_UP_CODE = 2;
+	public static final Byte MCARD_TP_GRADE = 2;
+	
+	/** is_pay 直接购买 */
+	public static final Byte MCARD_ISP_DEFAULT = 0;
+	/** is_pay 需要购买 */
+	public static final Byte MCARD_ISP_BUY = 1;
+	/** is_pay 需要领取码 */
+	public static final Byte MCARD_ISP_CODE = 2;
+	
+	/** 过期类型  */
+	/** expire_type固定日期 */
+	public static final Byte MCARD_ET_FIX = 0;
+	/** expire_type 自领取多少内有效 */
+	public static final Byte MCARD_ET_DURING = 1;
+	/** expire_type 永久有效 */
+	public static final Byte MCARD_ET_FOREVER = 2;
+	
+	/** 背景色类型 */
+	public static final Byte MCARD_BGT_COLOR = 0;
+	/** 背景图片类型 */
+	public static final Byte MCARD_BGT_IMG = 1;
+	
+	/** discount_is_all 全部商品 打折 */
+	public static final Byte MCARD_DIS_ALL = 1;
+	/** discount_is_all 部分商品 打折 */
+	public static final Byte MCARD_DIS_PART = 0;
+	
+	/**
+	 * 门店类型 全部门店，部分门店，不可在门店使用
+	 */
+	// 全部门店
+	public static final String MCARD_STP_ALL= "0";
+	// 部分门店
+	public static final String MCARD_STP_PART = "1";
+	//不可在门店使用
+	public static final String MCARD_STP_BAN = "-1";
+	
+	/**
+	 * receive_action 领取方式 1:领取码 2：卡号+密码
+	 */
+	// 领取方式 1:领取码
+	public static final Byte MCARD_RA_CODE = 1;
+	// 领取方式 2:卡号+密码
+	public static final Byte MCARD_RA_PWD = 2;
+	
+	/**
+	 * 激活： 0：不用激活，1：需要激活
+	 */
+	// 不用激活
+	public static final Byte MCARD_ACT_NO = 0;
+	// 需要激活
+	public static final Byte MCARD_ACT_YES = 1;
+	
+	/** date_type 天数类型 0:日*/
+	public static final Byte MCARD_DT_DAY = 0;
+	/** date_type 天数类型 1:周  */
+	public static final Byte MCARD_DT_WEEK = 1;
+	/** date_type 天数类型2: 月 */
+	public static final Byte MCARD_DT_MONTH = 2;
+	
+	/**
+	 * is_exchang 限次会员卡适用商品 0： 不可兑换商品 ；1 ：部分商品；2：全部商品
+	 */
+	// 不可兑换商品
+	public static final Byte MCARD_ISE_NON = 0;
+	// 部分商品
+	public static final Byte MCARD_ISE_PART = 1;
+	// 全部商品
+	public static final Byte MCARD_ISE_ALL = 2;
+	
+	/** del_flag 删除状态： 0：没有删除 */
+	public static final Byte MCARD_DF_NO = 0;
+	/** del_flag 删除状态： 1：确定删除 */
+	public static final Byte MCARD_DF_YES = 1;
+	
+	/** 会员卡已经过期 */
+	public static final Byte MCARD_EXPIRED = 3;
+	
+	/** member_card表flag 1正常使用，2停止使用 */
+	public static final Byte MCARD_FLAG_USING = 1;
+	public static final Byte MCARD_FLAG_STOP = 2;
+	
+	/** 专享商品:标签关联类型  */
+	/** 1：关联商品  */
+	public static final Byte COUPLE_TP_GOODS = 1;
+	/**  2：关联商家分类  */
+	public static final Byte COUPLE_TP_STORE = 2;
+	/** 3：关联平台分类  */
+	public static final Byte COUPLE_TP_PLAT = 3;
+	/** 4， 关联品牌分类 */
+	public static final Byte COUPLE_TP_BRAND = 4;
+	
+	
 	/** 按钮打开 */
 	public static final String BUTTON_ON = "on";
-	/** expire_type 过期类型 */
-	/** 固定日期 */
-	public static final Byte FIX_DATETIME = 0;
-	/** 自领取多少内有效 */
-	public static final Byte DURING_TIME = 1;
-	/** 永久有效 */
-	public static final Byte FOREVER = 2;
-	/** DURING_TIME的天数类型 0:日，1:周 2: 月 */
-	public static final Byte DAY_DATE_TYPE = 0;
-	public static final Byte WEEK_DATE_TYPE = 1;
-	public static final Byte MONTH_DATE_TYPE = 2;
+	
+
 	
 	/** 天数 */
 	public static final Byte DAY = 1;
 	public static final Byte WEEK = 7;
 	public static final Byte MONTH = 30;
 
-	
-	
-	
-	
-	/** 背景色类型 */
-	public static final Byte BG_COLOR_TYPE = 0;
-	/** 背景图片类型 */
-	public static final Byte BG_IMG_TYPE = 1;
 	/** 勾选 */
 	public static final Byte CHECKED = 1;
-	/** 全部商品 打折 */
-	public static final Byte DISCOUNT_ALL_GOODS = 1;
-	/** 指定商品 打折 */
-	public static final Byte DISCOUNT_PART_GOODS = 0;
-
-	/**
-	 * 门店类型 全部门店，部分门店，不可在门店使用
-	 */
-	public static final String ALL_SHOP = "0";
-	public static final String PART_SHOP = "1";
-	public static final String PROHIBITED = "-1";
-
-	
-	/**
-	 * 领取类型 直接领取，需要领取码
-	 */
-	public static final Byte GET_DIRECTLY = 0;
-	public static final Byte NEED_CODE = 2;
 
 	/** 现金购买 */
 	public static final Byte BUY_BY_CRASH = 0;
 	/** 积分购买 */
 	public static final Byte BUY_BY_SCORE = 1;
 
-	/**
-	 * 是否激活 否，是
-	 */
-	public static final Byte ACTIVE_NO = 0;
-	public static final Byte ACTIVE_YES = 1;
-	public static final boolean ACTIVE_FALSE = false;
-	public static final boolean ACTIVE_TRUE = true;
-	/**
-	 * 限次会员卡适用商品 0： 不可兑换商品 ；1 ：部分商品；2：全部商品
-	 */
-	public static final Byte NONE_GOODS = 0;
-	public static final Byte PART_GOODS = 1;
-	public static final Byte ALL_GOODS = 2;
 
-	/** 没有删除 */
-	public static final Byte DELETE_NO = 0;
-	/** 确定删除 */
-	public static final Byte DELETE_YES = 1;
-	
-	/** 停止使用 */
-	public static final Byte STOP_USING = 2;
-	
-	/** 过期 */
-	public static final Byte EXPIRED = 3;
 	
 	/** jackson */
 	public static final ObjectMapper MAPPER = new ObjectMapper();
 	/** 当前时间 */
 	public static final LocalDate CURRENT_DATE = LocalDate.now();
 	
-	/** 专享商品:标签关联类型  */
-	/** 1：关联商品  */
-	public static final Byte RELATED_GOODS_TYPE = 1;
-	/**  2：关联商家分类  */
-	public static final Byte RELATED_STORE_CATEGORY_TYPE = 2;
-	/** 3：关联平台分类  */
-	public static final Byte RELATED_PLATFORM_CATEGORY_TYPE = 3;
-	/** 4， 关联品牌分类 */
-	public static final Byte RELATED_BRAND_CATEGORY_TYPE = 4;
+
+	
 	/** 可否在门店使用  0可以 1不可以 */
 	public static final Byte AVAILABLE_IN_STORE = 0;
 	public static final Byte UNAVAILABLE_IN_STORE = 1;
@@ -136,9 +157,7 @@ public class CardConstant {
 	/** --------------------------------------------------------*/
 	
 	/** -----------------member_card表常量--------------------------*/
-	/** member_card表flag 1正常使用，2停止使用 */
-	public static final Byte MEMBER_CARD_USING = 1;
-	public static final Byte MEMBER_CARD_DELETE = 2;
+
 	/** 是否专属购买商品 0不是 1是 */
 	public static final Byte PAY_OWN_GOOD_YES=1; 
 	public static final String LOWEST_GRADE = "v1";

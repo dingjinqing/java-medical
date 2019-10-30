@@ -54,16 +54,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_FALSE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH_DATE_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.STORE_PAYMEMBT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SEND_CARD_REASON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
@@ -73,7 +72,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.ADMIN_OPTION;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.STORE_SERVICE_TIMES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.MEMBER_MONEY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
 
 
 /**
@@ -111,8 +110,9 @@ public class UserCardService extends ShopBaseService{
 	public static final String DESC = "score_open_card";
 	public static final String SYSTEM_UP_GRADE = SYSTEM_UPGRADE;
 
-
-
+	public static final boolean ACTIVE_FALSE = false;
+	public static final boolean ACTIVE_TRUE = true;
+	
 	/**
 	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回默认最低等级
 	 * @param user_id
@@ -126,7 +126,7 @@ public class UserCardService extends ShopBaseService{
 		return userGrade;
 	}
 
-	public boolean isHasAvailableGradeCard(Integer userId) {
+	private boolean isHasAvailableGradeCard(Integer userId) {
 		return !StringUtils.isBlank(userCardDao.calcUserGrade(userId));
 	}
 
@@ -148,10 +148,16 @@ public class UserCardService extends ShopBaseService{
 		// 后台用户列表发卡（不需判断条件）
 		if(cardId != null) {
 			for(Integer id: userIdList) {
+				if(isHasAvailableGradeCard(id)) {
+					
+				}else {
+					// addUserCard
+				}
+				
 				String grade = getUserGrade(id);
 				// 有过等级卡
 				if(!StringUtils.isBlank(grade) && grade.equals(LOWEST_GRADE)) {
-					Record3<Integer, String, String> old = userCardDao.fetchOldGradeCard(id);
+					Record3<Integer, String, String> old = null;//userCardDao.getUserGradeCard(id);
 					MemberCardRecord newData = userCardDao.getMemberCardById(id);
 					CardUpgradeRecord cardUpgradeRecord = new CardUpgradeRecord();
 
@@ -321,7 +327,7 @@ public class UserCardService extends ShopBaseService{
 	 */
 	public void addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate) {
 		List<Integer> cardNos = cardList.stream().map(UserCardParam::getCardId).collect(Collectors.toList());
-		List<Integer> timeCardsId = memberCardService.getCardByType(LIMIT_NUM_TYPE);
+		List<Integer> timeCardsId = memberCardService.getCardByType(MCARD_TP_LIMIT);
 
 		userCardDao.updateCardFlag(timeCardsId,cardNos);
 
@@ -329,7 +335,7 @@ public class UserCardService extends ShopBaseService{
 			//查询是否已有这个会员卡,去掉过期和删除的
 //			UserCardRecord rst = userCardDao.getUsableUserCard(userId, card);
 			MemberCardRecord cardInfo = cardDao.getCardInfoById(card.getCardId());
-			if(NORMAL_TYPE.equals(cardInfo.getCardType())) {
+			if(MCARD_TP_NORMAL.equals(cardInfo.getCardType())) {
 				int hasSend = userCardDao.countCardByCardId(card.getCardId());
 				if(StringUtils.isBlank(card.getCardNo()) && (cardInfo.getStock()>0 && hasSend<cardInfo.getStock())) {
 					sendCard(userId,cardInfo,isActivate);
@@ -358,28 +364,28 @@ public class UserCardService extends ShopBaseService{
 		data.setUserCardCreateTime(DateUtil.getLocalDateTime());
 		data.setCardNo(getRandomCardId(cardInfo.getId()));
 		// 获取卡信息
-		if(DELETE_YES.equals(cardInfo.getDelFlag())) {
+		if(MCARD_DF_YES.equals(cardInfo.getDelFlag())) {
 			return -1;
 		}
-		if(DURING_TIME.equals(cardInfo.getExpireType())) {
+		if(MCARD_ET_DURING.equals(cardInfo.getExpireType())) {
 			//'0:固定日期 1：自领取之日起N单位内有效',
             //date_type 0:日，1:周 2: 月
 			LocalDateTime expireTime = null;
 			LocalDateTime now = LocalDateTime.now();
-			if(DAY_DATE_TYPE.equals(cardInfo.getDateType())) {
+			if(MCARD_DT_DAY.equals(cardInfo.getDateType())) {
 				expireTime = now.plusDays(cardInfo.getReceiveDay());
-			}else if(WEEK_DATE_TYPE.equals(cardInfo.getDateType())) {
+			}else if(MCARD_DT_WEEK.equals(cardInfo.getDateType())) {
 				expireTime = now.plusWeeks(cardInfo.getReceiveDay());
-			}else if(MONTH_DATE_TYPE.equals(cardInfo.getDateType())) {
+			}else if(MCARD_DT_MONTH.equals(cardInfo.getDateType())) {
 				expireTime = now.plusMonths(cardInfo.getReceiveDay());
 			}
 			data.setExpireTime(Timestamp.valueOf(expireTime));
-		}else if(FIX_DATETIME.equals(cardInfo.getExpireType())) {
+		}else if(MCARD_ET_FIX.equals(cardInfo.getExpireType())) {
 			//0:固定日期
 			data.setExpireTime(cardInfo.getEndTime());
 		}
 
-		if(LIMIT_NUM_TYPE.equals(cardInfo.getCardType())) {
+		if(MCARD_TP_LIMIT.equals(cardInfo.getCardType())) {
 			data.setSurplus(cardInfo.getCount());
 
 			ChargeMoneyRecord chargeMoney = db().newRecord(CHARGE_MONEY);
@@ -406,7 +412,7 @@ public class UserCardService extends ShopBaseService{
 				chargeMoney.setCardNo(data.getCardNo());
 				chargeMoney.insert();
 			}
-		}else if(NORMAL_TYPE.equals(cardInfo.getCardType()) && cardInfo.getSendMoney() != null) {
+		}else if(MCARD_TP_NORMAL.equals(cardInfo.getCardType()) && cardInfo.getSendMoney() != null) {
 			data.setMoney(new BigDecimal(cardInfo.getSendMoney()));
 			ChargeMoneyRecord chargeMoney = db().newRecord(CHARGE_MONEY);
 			chargeMoney.setUserId(userId);
@@ -420,13 +426,13 @@ public class UserCardService extends ShopBaseService{
 			chargeMoney.insert();
 		}
 		UserCardParam old = userCardDao.getUserRankCardDetailInfo(userId);
-		if(RANK_TYPE.equals(cardInfo.getCardType()) && !StringUtils.isBlank(old.getGrade())) {
+		if(MCARD_TP_GRADE.equals(cardInfo.getCardType()) && !StringUtils.isBlank(old.getGrade())) {
 			// 升级
 			userCardDao.updateUserRankCard(cardInfo,userId);
 			// 记录
 			InsertCardUpGradeRecord(userId,cardInfo,old,ADMIN_OPTION);
 		}else {
-			if(isActivate || (cardInfo.getActivation()!=null && ACTIVE_NO == cardInfo.getActivation())) {
+			if(isActivate || (cardInfo.getActivation()!=null && MCARD_ACT_NO == cardInfo.getActivation())) {
 				data.setActivationTime(DateUtil.getLocalTimeDate());
 			}
 			UserCardRecord userCardRecord = db().newRecord(USER_CARD);
@@ -442,7 +448,7 @@ public class UserCardService extends ShopBaseService{
 
 
 		String content = null;
-		if(LIMIT_NUM_TYPE.equals(cardInfo.getCardType())) {
+		if(MCARD_TP_LIMIT.equals(cardInfo.getCardType())) {
 			content = "限次卡"+cardInfo.getCount()+"次";
 		}else {
 			content = cardInfo.getDiscount().intValue()>0?"打"+cardInfo.getDiscount()+"折": "";
@@ -729,7 +735,7 @@ public class UserCardService extends ShopBaseService{
 				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
 				.leftJoin(GRADE_PRD).on(GRADE_PRD.GRADE.eq(MEMBER_CARD.GRADE))
 				.where(USER_CARD.FLAG.eq(CardConstant.CARD_USING))
-				.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
+				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
 				.and(GRADE_PRD.PRD_ID.in(prdIdList))
 				.fetchInto(UserCardGradePriceBo.class);

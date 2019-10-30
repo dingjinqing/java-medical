@@ -7,45 +7,47 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_COLOR_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_IMG_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_COLOR;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_IMG;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_ALL_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_PART_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.GET_DIRECTLY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_PART;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_PWD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_BUY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NONE_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_PLATFORM_CATEGORY_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STORE_CATEGORY_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_BRAND_CATEGORY_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_BUY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_NON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_PLAT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_STORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BRAND;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ZERO;
 
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
@@ -191,52 +193,52 @@ public class MemberCardService extends ShopBaseService {
 		Byte cardType = card.getCardType();
 
 		/** 判断卡类型 */
-		if (NORMAL_TYPE.equals(cardType) || LIMIT_NUM_TYPE.equals(cardType)) {
+		if (MCARD_TP_NORMAL.equals(cardType) || MCARD_TP_LIMIT.equals(cardType)) {
 
 			/** 会员有效期 */
 			Byte expiredType = card.getExpiredType();
-			if (FIX_DATETIME.equals(expiredType)) {
-				cardRecord.setExpireType(FIX_DATETIME);
+			if (MCARD_ET_FIX.equals(expiredType)) {
+				cardRecord.setExpireType(MCARD_ET_FIX);
 				cardRecord.setStartTime(card.getStartTime());
 				cardRecord.setEndTime(card.getEndTime());
-			} else if (DURING_TIME.equals(expiredType)) {
-				cardRecord.setExpireType(DURING_TIME);
+			} else if (MCARD_ET_DURING.equals(expiredType)) {
+				cardRecord.setExpireType(MCARD_ET_DURING);
 				cardRecord.setReceiveDay(card.getReceiveDay());
 				cardRecord.setDateType(card.getDateType());
-			} else if (FOREVER.equals(expiredType)) {
-				cardRecord.setExpireType(FOREVER);
+			} else if (MCARD_ET_FOREVER.equals(expiredType)) {
+				cardRecord.setExpireType(MCARD_ET_FOREVER);
 			}
 
 			/** 使用门店 */
 			String storeListType = card.getStoreListType();
-			if (ALL_SHOP.equals(storeListType)) {
-				cardRecord.setStoreList(ALL_SHOP);
-			} else if (PART_SHOP.equals(storeListType)) {
+			if (MCARD_STP_ALL.equals(storeListType)) {
+				cardRecord.setStoreList(MCARD_STP_ALL);
+			} else if (MCARD_STP_PART.equals(storeListType)) {
 				if (card.getStoreList() != null) {
 					String storeList = String.join(",", card.getStoreList());
 					cardRecord.setStoreList(storeList);
 				} else {
-					cardRecord.setStoreList(PROHIBITED);
+					cardRecord.setStoreList(MCARD_STP_BAN);
 				}
-			} else if (PROHIBITED.equals(storeListType)) {
-				cardRecord.setStoreList(PROHIBITED);
+			} else if (MCARD_STP_BAN.equals(storeListType)) {
+				cardRecord.setStoreList(MCARD_STP_BAN);
 			}
 
 			/** 领取设置 */
 			/** 购买设置 */
 			Byte isPay = card.getIsPay();
-			if (GET_DIRECTLY.equals(isPay)) {
-				cardRecord.setIsPay(GET_DIRECTLY);
-			} else if (NEED_BUY.equals(isPay)) {
-				cardRecord.setIsPay(NEED_BUY);
+			if (MCARD_ISP_DEFAULT.equals(isPay)) {
+				cardRecord.setIsPay(MCARD_ISP_DEFAULT);
+			} else if (MCARD_ISP_BUY.equals(isPay)) {
+				cardRecord.setIsPay(MCARD_ISP_BUY);
 				if (BUY_BY_CRASH.equals(card.getPayType())) {
 					cardRecord.setPayFee(card.getPayMoney());
 				} else if (BUY_BY_SCORE.equals(card.getPayType())) {
 					cardRecord.setPayFee(card.getPayScore());
 				}
-			} else if (NEED_CODE.equals(isPay)) {
+			} else if (MCARD_ISP_CODE.equals(isPay)) {
 				// todo 领取码
-				cardRecord.setIsPay(NEED_CODE);
+				cardRecord.setIsPay(MCARD_ISP_CODE);
 			}
 		}
 
@@ -244,12 +246,12 @@ public class MemberCardService extends ShopBaseService {
 		setLimitAndRankCard(card, cardRecord);
 
 		/** 处理普通会员卡 */
-		if (NORMAL_TYPE.equals(cardType)) {
+		if (MCARD_TP_NORMAL.equals(cardType)) {
 			dealWithNormalCard(card, cardRecord);
-		} else if (LIMIT_NUM_TYPE.equals(cardType)) {
+		} else if (MCARD_TP_LIMIT.equals(cardType)) {
 			/** 处理限次会员卡 */
 			dealWithLimitNumCard(card, cardRecord);
-		} else if (RANK_TYPE.equals(cardType)) {
+		} else if (MCARD_TP_GRADE.equals(cardType)) {
 			dealWithRankCard(card, cardRecord);
 		}
 
@@ -262,7 +264,7 @@ public class MemberCardService extends ShopBaseService {
 	private void setLimitAndRankCard(CardParam card, MemberCardRecord cardRecord) {
 		Byte cardType = card.getCardType();
 		Byte payOwnGood;
-		if (NORMAL_TYPE.equals(cardType) || RANK_TYPE.equals(cardType)) {
+		if (MCARD_TP_NORMAL.equals(cardType) || MCARD_TP_GRADE.equals(cardType)) {
 			boolean flag = false;
 			/** 是否专属购买商品 0不是 1是 */
 			payOwnGood = (byte) (BUTTON_ON.equals(card.getPowerPayOwnGood()) ? 1 : 0);
@@ -299,10 +301,10 @@ public class MemberCardService extends ShopBaseService {
 				cardRecord.setDiscount(null);
 			}
 			/** 折扣部分商品还是全部商品 */
-			if (DISCOUNT_ALL_GOODS.equals(card.getDiscountIsAll())) {
-				cardRecord.setDiscountIsAll(DISCOUNT_ALL_GOODS);
-			} else if (DISCOUNT_PART_GOODS.equals(card.getDiscountIsAll())) {
-				cardRecord.setDiscountIsAll(DISCOUNT_PART_GOODS);
+			if (MCARD_DIS_ALL.equals(card.getDiscountIsAll())) {
+				cardRecord.setDiscountIsAll(MCARD_DIS_ALL);
+			} else if (MCARD_DIS_PART.equals(card.getDiscountIsAll())) {
+				cardRecord.setDiscountIsAll(MCARD_DIS_PART);
 				/** 处理需要折扣的部分商品,平台,商家 */
 				updateDiscountPartGoods(card, cardRecord);
 			}
@@ -346,7 +348,7 @@ public class MemberCardService extends ShopBaseService {
 				// 准备设置为空
 			}
 
-			if (!flag && RANK_TYPE.equals(cardType)) {
+			if (!flag && MCARD_TP_GRADE.equals(cardType)) {
 				/** 必须选择一项会员权益 针对等级卡 */
 				throw new IllegalArgumentException("必须选择一项会员权益 针对等级卡");
 				// JsonResultCode.CODE_MEMBER_CARD_RIGHTS_EMPTY;
@@ -389,7 +391,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardIdList
 	 */
 	public void batchUpdateGoods(List<Integer> goodsIdList,List<Integer> cardIdList) {
-		batchUpdateGoods(goodsIdList,cardIdList,RELATED_GOODS_TYPE);
+		batchUpdateGoods(goodsIdList,cardIdList,COUPLE_TP_GOODS);
 	}
 	
 
@@ -400,7 +402,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void batchUpdateStoreCategory(List<Integer> storeIdList,List<Integer> cardIdList) {
 		logger().info("更新会员专享商品-商家分类");
-		batchUpdateGoods(storeIdList,cardIdList,RELATED_STORE_CATEGORY_TYPE);
+		batchUpdateGoods(storeIdList,cardIdList,COUPLE_TP_STORE);
 	}
 	
 	/**
@@ -409,12 +411,12 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardIdList
 	 */
 	public void batchUpdatePlatformCategory(List<Integer> platformIdList,List<Integer> cardIdList) {
-		batchUpdateGoods(platformIdList,cardIdList,RELATED_PLATFORM_CATEGORY_TYPE);
+		batchUpdateGoods(platformIdList,cardIdList,COUPLE_TP_PLAT);
 	}
 	
 	
 	public void batchUpdateBrandId(List<Integer> brandIdList,List<Integer> cardIdList) {
-		batchUpdateGoods(brandIdList,cardIdList,RELATED_BRAND_CATEGORY_TYPE);
+		batchUpdateGoods(brandIdList,cardIdList,COUPLE_TP_BRAND);
 	}
 	
 	
@@ -537,7 +539,7 @@ public class MemberCardService extends ShopBaseService {
 		cardRecord.setFlag(card.getFlag());
 
 		/** 有效时间 */
-		cardRecord.setExpireType(FOREVER);
+		cardRecord.setExpireType(MCARD_ET_FOREVER);
 
 		/** 升级条件 */
 		GradeConditionJson conditon = card.getGradeConditionJson();
@@ -559,12 +561,12 @@ public class MemberCardService extends ShopBaseService {
 		cardRecord.setCardName(card.getCardName());
 		/** 背景类型 */
 		Byte bgType = card.getBgType();
-		if (BG_COLOR_TYPE.equals(bgType)) {
+		if (MCARD_BGT_COLOR.equals(bgType)) {
 			/** 背景色 */
-			cardRecord.setBgType(BG_COLOR_TYPE);
+			cardRecord.setBgType(MCARD_BGT_COLOR);
 			cardRecord.setBgColor(card.getBgColor());
-		} else if (BG_IMG_TYPE.equals(bgType)) {
-			cardRecord.setBgType(BG_IMG_TYPE);
+		} else if (MCARD_BGT_IMG.equals(bgType)) {
+			cardRecord.setBgType(MCARD_BGT_IMG);
 			cardRecord.setBgImg(card.getBgImg());
 		}
 
@@ -578,10 +580,10 @@ public class MemberCardService extends ShopBaseService {
 		cardRecord.setCardType(cardType);
 
 		/** 激活设置 */
-		if (ACTIVE_NO.equals(card.getActivation())) {
-			cardRecord.setActivation(ACTIVE_NO);
-		} else if (ACTIVE_YES.equals(card.getActivation())) {
-			cardRecord.setActivation(ACTIVE_YES);
+		if (MCARD_ACT_NO.equals(card.getActivation())) {
+			cardRecord.setActivation(MCARD_ACT_NO);
+		} else if (MCARD_ACT_YES.equals(card.getActivation())) {
+			cardRecord.setActivation(MCARD_ACT_YES);
 			String activationCfg = String.join(",", card.getActivationCfgBox());
 			cardRecord.setActivationCfg(activationCfg);
 			cardRecord.setExamine(card.getExamine());
@@ -599,16 +601,16 @@ public class MemberCardService extends ShopBaseService {
 
 		/** 适用商品 */
 		Byte isExchange = card.getIsExchange();
-		if (NONE_GOODS.equals(isExchange)) {
-			cardRecord.setIsExchang(NONE_GOODS);
-		} else if (PART_GOODS.equals(isExchange) || ALL_GOODS.equals(isExchange)) {
+		if (MCARD_ISE_NON.equals(isExchange)) {
+			cardRecord.setIsExchang(MCARD_ISE_NON);
+		} else if (MCARD_ISE_PART.equals(isExchange) || MCARD_ISE_ALL.equals(isExchange)) {
 			cardRecord.setIsExchang(isExchange);
 			/** 设置允许兑换次数 */
 			cardRecord.setExchangCount(card.getExchangCount());
 			/** 运费策略 */
 			cardRecord.setExchangFreight(card.getExchangFreight());
 
-			if (PART_GOODS.equals(isExchange)) {
+			if (MCARD_ISE_PART.equals(isExchange)) {
 				/** 处理允许的店铺 */
 				String exchangGoods = String.join(",", card.getExchangGoods());
 				cardRecord.setExchangGoods(exchangGoods);
@@ -616,7 +618,7 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		/** 处理使用门店 */
-		if (!PROHIBITED.equals(card.getStoreListType())) {
+		if (!MCARD_STP_BAN.equals(card.getStoreListType())) {
 			/** 处理工作日，工作日 */
 			cardRecord.setUseTime(card.getUseTime());
 			/** 使用次数 */
@@ -698,7 +700,7 @@ public class MemberCardService extends ShopBaseService {
 				.where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
 				.orderBy(MEMBER_CARD.GRADE.desc());
 		 */
-		SelectSeekStep1<MemberCardRecord, String> select = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+		SelectSeekStep1<MemberCardRecord, String> select = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_GRADE)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 		.orderBy(MEMBER_CARD.GRADE.desc());
 		PageResult<RankCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				RankCardVo.class);
@@ -717,7 +719,7 @@ public class MemberCardService extends ShopBaseService {
 		/** 构建select语句 */
 
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.CARD_TYPE.equal(LIMIT_NUM_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_LIMIT)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.ID.desc());
 
 		PageResult<LimitNumCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
@@ -746,7 +748,7 @@ public class MemberCardService extends ShopBaseService {
 		 * 
 		 */
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.CARD_TYPE.equal(NORMAL_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_NORMAL)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.ID.desc());
 
 		PageResult<NormalCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
@@ -770,13 +772,13 @@ public class MemberCardService extends ShopBaseService {
 		Byte cardType = param.getCardType();
 		PageResult<? extends BaseCardVo> result = null;
 		/** 处理普通会员卡 */
-		if (NORMAL_TYPE.equals(cardType)) {
+		if (MCARD_TP_NORMAL.equals(cardType)) {
 			logger.info("正在分页查询普通会员卡");
 			result =  getNormalCardList(param);
-		} else if (LIMIT_NUM_TYPE.equals(cardType)) {
+		} else if (MCARD_TP_LIMIT.equals(cardType)) {
 			logger.info("正在分页查询限次会员卡");
 			result = getLimitCardList(param);
-		} else if (RANK_TYPE.equals(cardType)) {
+		} else if (MCARD_TP_GRADE.equals(cardType)) {
 			logger.info("正在分页查询等级会员卡");
 			result = getRankCardList(param);
 		}
@@ -815,7 +817,7 @@ public class MemberCardService extends ShopBaseService {
 		 * update `b2c_member_card` set `is_delete` = '1' where `id` = '819'
 		 */
 		/** 假删除会员卡 */
-		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, DELETE_YES)
+		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, MCARD_DF_YES)
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
 		logger.info("删除会员卡成功，受影响行： " + result);
 	}
@@ -831,13 +833,13 @@ public class MemberCardService extends ShopBaseService {
 		/** 会员卡类型 */
 		if(record != null) {
 			Byte cardType = record.getCardType();
-			if (NORMAL_TYPE.equals(cardType)) {
+			if (MCARD_TP_NORMAL.equals(cardType)) {
 				logger.info("查询出普通会员卡");
 				NormalCardToVo card = record.into(NormalCardToVo.class);
 				/** 执行策略 */
 				card.changeJsonCfg();
 				return card;
-			} else if (LIMIT_NUM_TYPE.equals(cardType)) {
+			} else if (MCARD_TP_LIMIT.equals(cardType)) {
 				logger.info("查询出限次会员卡");
 				/** 执行策略 */
 				LimitNumCardToVo card = record.into(LimitNumCardToVo.class);
@@ -847,7 +849,7 @@ public class MemberCardService extends ShopBaseService {
 				card.setHasSend(hasSend);
 				card.changeJsonCfg();
 				return card;
-			} else if (RANK_TYPE.equals(cardType)) {
+			} else if (MCARD_TP_GRADE.equals(cardType)) {
 				logger.info("查询出等级会员卡");
 				RankCardToVo card = record.into(RankCardToVo.class);
 				card.changeJsonCfg();
@@ -876,12 +878,12 @@ public class MemberCardService extends ShopBaseService {
 		logger().info("正在获取所有的可用会员卡，按等级排序");
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
 		List<CardBasicVo> cardList = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
-			.where(MEMBER_CARD.FLAG.eq(MEMBER_CARD_USING))
+			.where(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 			.and(
-					(MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME)
+					(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)
 			                .and(MEMBER_CARD.END_TIME.ge(localDateTime))
 					).or(
-							MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME,FOREVER)
+							MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING,MCARD_ET_FOREVER)
 						)
 				)
 			.orderBy(MEMBER_CARD.CARD_TYPE.asc(),MEMBER_CARD.GRADE.asc(),MEMBER_CARD.ID.asc())
@@ -898,16 +900,16 @@ public class MemberCardService extends ShopBaseService {
 	public List<CardBasicVo> getCardExclusive() {
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
 		List<CardBasicVo> cardList = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
-			.where(MEMBER_CARD.FLAG.eq(MEMBER_CARD_USING))
+			.where(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 			.and(
-					(MEMBER_CARD.EXPIRE_TYPE.eq(FIX_DATETIME)
+					(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)
 			                .and(MEMBER_CARD.END_TIME.ge(localDateTime))
 					).or(
-							MEMBER_CARD.EXPIRE_TYPE.in(DURING_TIME,FOREVER)
+							MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING,MCARD_ET_FOREVER)
 						)
 				)
 			.and(MEMBER_CARD.PAY_OWN_GOOD.eq(PAY_OWN_GOOD_YES))
-			.and(MEMBER_CARD.CARD_TYPE.in(NORMAL_TYPE,RANK_TYPE))
+			.and(MEMBER_CARD.CARD_TYPE.in(MCARD_TP_NORMAL,MCARD_TP_GRADE))
 			.orderBy(MEMBER_CARD.GRADE.asc(),MEMBER_CARD.ID.asc())
 			.fetch()
 			.into(CardBasicVo.class);
@@ -936,11 +938,11 @@ public class MemberCardService extends ShopBaseService {
 			/** 执行策略 */
 			cardVo.changeJsonCfg();
 
-			if (NORMAL_TYPE.equals(cardType)) {
+			if (MCARD_TP_NORMAL.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
-			} else if (LIMIT_NUM_TYPE.equals(cardType)) {
+			} else if (MCARD_TP_LIMIT.equals(cardType)) {
 				vo.getLimitNumCard().add(cardVo);
-			} else if (RANK_TYPE.equals(cardType)) {
+			} else if (MCARD_TP_GRADE.equals(cardType)) {
 				vo.getRankCard().add(cardVo);
 			}
 
@@ -956,7 +958,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	private Result<MemberCardRecord> selectAllMemberCard() {
 		logger.info("查询所有会员卡");
-		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO)).fetch();
+		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO)).fetch();
 		return cardRecords;
 	}
 
@@ -997,16 +999,16 @@ public class MemberCardService extends ShopBaseService {
 		/** 过期时间-多少日内 */
 		for (Integer i : map.keySet()) {
 			MemberCardRecord memberCard = map.get(i);
-			if (DURING_TIME.equals(memberCard.getExpireType())) {
+			if (MCARD_ET_DURING.equals(memberCard.getExpireType())) {
 				/** 计算过期时间 */
 				Byte dateType = memberCard.getDateType();
 				/** 领取之日起n */
 				Integer receiveDay = memberCard.getReceiveDay();
-				if (DAY_DATE_TYPE.equals(dateType)) {
+				if (MCARD_DT_DAY.equals(dateType)) {
 					expireTime = now.plusDays(receiveDay);
-				} else if (WEEK_DATE_TYPE.equals(dateType)) {
+				} else if (MCARD_DT_WEEK.equals(dateType)) {
 					expireTime = now.plusDays(WEEK * receiveDay);
-				} else if (MONTH_DATE_TYPE.equals(dateType)) {
+				} else if (MCARD_DT_MONTH.equals(dateType)) {
 					expireTime = now.plusDays(MONTH * receiveDay);
 				}
 				memberCard.setEndTime(Timestamp.valueOf(expireTime));
@@ -1135,7 +1137,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void updateMemberCardSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
-		if(!data.getType().equals(LIMIT_NUM_TYPE)) {
+		if(!data.getType().equals(MCARD_TP_LIMIT)) {
 		    throw new MpException(JsonResultCode.CODE_PARAM_ERROR);
 		}
 		
@@ -1177,7 +1179,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void updateMemberCardExchangeSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
-		if(!data.getType().equals(LIMIT_NUM_TYPE)) {
+		if(!MCARD_TP_LIMIT.equals(data.getType())) {
 			return;
 		}
 		
@@ -1621,11 +1623,11 @@ public class MemberCardService extends ShopBaseService {
 			Integer groupId = cardDao.generateGroupId(batchId);
 			param.setGroupId(groupId);
 			
-			if(param.getReceiveAction()==1) {
+			if(MCARD_RA_CODE.equals(param.getReceiveAction())) {
 				// 获取领取码
 				List<String> codeList = generateRandomCode(param);
 				cardDao.insertIntoCardReceiveCode(param,codeList);
-			}else if(param.getReceiveAction() == 2) {
+			}else if(MCARD_RA_PWD.equals(param.getReceiveAction())) {
 				// 获取卡号
 				List<String> cardNoList = generateRandCardNo(param);
 				// 获取密码
@@ -1638,7 +1640,8 @@ public class MemberCardService extends ShopBaseService {
 		
 	}
 	
-	/**
+
+/**
 	 * 生成随机的领取码
 	 * @param param
 	 * @return

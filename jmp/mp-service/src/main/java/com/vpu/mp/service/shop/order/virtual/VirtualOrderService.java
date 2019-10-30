@@ -91,7 +91,7 @@ public class VirtualOrderService extends ShopBaseService {
     				UserCardData userCardData = UserCardData.newBuilder().userId(payInfo.getUserId())
     						.cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reason("虚拟订单退款").
     				// 普通会员卡
-    				type(CardConstant.NORMAL_TYPE).orderSn(param.getOrderSn()).
+    				type(CardConstant.MCARD_TP_NORMAL).orderSn(param.getOrderSn()).
     				// 后台处理时为操作人id为0
     				adminUser(0).
     				// 用户会员卡余额退款

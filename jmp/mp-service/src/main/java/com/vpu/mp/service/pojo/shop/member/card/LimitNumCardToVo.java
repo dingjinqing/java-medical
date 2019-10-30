@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
 
 import java.math.BigDecimal;
 /**
@@ -95,10 +95,10 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 			storeList = storeList.replaceAll("\\s+", "");
 			storeListArray = storeList.split(",");
 			/** 门店类型 */
-			if (PROHIBITED.equals(storeListArray[0]) || ALL_SHOP.equals(storeListArray[0])) {
+			if (MCARD_STP_BAN.equals(storeListArray[0]) || MCARD_STP_ALL.equals(storeListArray[0])) {
 				storeListType = storeListArray[0];
 			} else {
-				storeListType = PART_SHOP;
+				storeListType = MCARD_STP_PART;
 			}
 		}
 		
