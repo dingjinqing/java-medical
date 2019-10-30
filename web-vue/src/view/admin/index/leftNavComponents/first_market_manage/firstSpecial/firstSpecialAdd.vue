@@ -3,7 +3,7 @@
     <div class="main">
       <div class="nav_list">
         <el-tabs
-          v-model="form.activeName"
+          v-model="activeName"
           @tab-click="handleClick"
         >
           <el-tab-pane
@@ -48,7 +48,7 @@
           <el-form-item label="活动名称：">
             <el-input
               class="form_input"
-              v-model="form.activeName"
+              v-model="form.name"
             ></el-input>
             <p class="form_tip">只作为商家记录使用，用户不会看到这个名称</p>
           </el-form-item>
@@ -60,13 +60,13 @@
               class="fl"
               style="width: 95px;"
             >
-              <el-radio-group v-model="form.datetype">
+              <el-radio-group v-model="form.isForever">
                 <el-radio
-                  label="0"
+                  :label="0"
                   style="line-height:32px;"
                 >固定时间</el-radio>
                 <el-radio
-                  label="1"
+                  :label="1"
                   style="line-height:32px;"
                 >永久有效</el-radio>
               </el-radio-group>
@@ -77,6 +77,7 @@
                 type="datetime"
                 class="form_input"
                 placeholder="选择日期时间"
+                :disabled="form.isForever"
               >
               </el-date-picker>
               至
@@ -85,6 +86,7 @@
                 type="datetime"
                 class="form_input"
                 placeholder="选择日期时间"
+                :disabled="form.isForever"
               >
               </el-date-picker>
             </div>
@@ -109,6 +111,7 @@
                 限制数量
                 <el-input-number
                   v-model="form.limitAmount"
+                  :disabled="form.limit"
                   style="margin-left: 10px;"
                 ></el-input-number>
               </el-radio>
@@ -139,48 +142,90 @@
               >
                 <el-radio-group
                   class="setting_group"
-                  v-model="form.setting"
+                  v-model="discountType"
                 >
                   <el-radio label="0">
                     <span>
-                      批量打<el-input class="num_input"></el-input>折
+                      批量打<el-input
+                        class="num_input"
+                        v-model="form.batchDiscount"
+                        min="0"
+                        max="10"
+                        @focus="inputFocus(0)"
+                      ></el-input>折
                     </span>
                   </el-radio>
                   <el-radio label="1">
                     <span>
-                      批量减价<el-input class="num_input"></el-input>元
+                      批量减价<el-input
+                        class="num_input"
+                        v-model="form.batchReduce"
+                        @focus="inputFocus(1)"
+                      ></el-input>元
                     </span>
                   </el-radio>
                   <el-radio label="2">
                     <span>
-                      批量首单价<el-input class="num_input"></el-input>元
+                      批量首单价<el-input
+                        class="num_input"
+                        v-model="form.batchFinalPrice"
+                        @focus="inputFocus(2)"
+                      ></el-input>元
                     </span>
                   </el-radio>
                 </el-radio-group>
                 <el-button
                   type="primary"
                   style="margin-left:20px;"
+                  @click="volumeDiscountHandle"
                 >确定</el-button>
-                <el-button>取消</el-button>
+                <el-button @click="resetTableData">取消</el-button>
               </el-form-item>
-              <div class="fr">
-                <el-button type="text">批量删除</el-button>
-                <el-button type="text">批量价格取整</el-button>
+              <div
+                class="fr"
+                style="padding-right:10px;"
+              >
+                <el-button
+                  type="text"
+                  @click="deleteSelectGoods"
+                >批量删除</el-button>
+                <el-button
+                  type="text"
+                  @click="roundingPrice"
+                >批量价格取整</el-button>
               </div>
             </div>
             <el-table
+              ref="firstSpecialTable"
               :data="tableData"
               style="width:100%;"
+              border
+              align="center"
               :header-cell-style="{
                 'background-color':'#f5f5f5',
                 'border':'none'
               }"
+              row-key="goodsId"
+              reserve-selection
+              @selection-change="handleSelectionChange"
+              @row-click="toggleRowSelection"
             >
               <el-table-column type="selection"></el-table-column>
               <el-table-column
                 label="商品名称"
                 prop="goodsName"
-              ></el-table-column>
+                width="230"
+              >
+                <template slot-scope="{row}">
+                  <div>
+                    <el-image
+                      :src="row.goodsImg"
+                      style="width:45px;height:45px;"
+                    ></el-image>
+                    <span>{{row.goodsName}}</span>
+                  </div>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="原价"
                 prop="shopPrice"
@@ -194,121 +239,449 @@
                   <el-input
                     style="width:50px;"
                     size="small"
-                    v-model="row.discount"
+                    v-model="row.batchDiscount"
+                    @change="tableBatchDiscountChange(row)"
                   ></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="减价">
                 <template slot-scope="{row}">
                   <el-input
-                    style="width:50px;"
+                    style="width:80px;"
                     size="small"
-                    v-model="row.reducePrice"
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="首单价">
-                <template slot-scope="{row}">
-                  <el-input
-                    style="width:50px;"
-                    size="small"
-                    v-model="row.goodsPrice"
+                    v-model="row.batchReduce"
+                    @change="tableBatchReduceChange(row)"
                   ></el-input>
                 </template>
               </el-table-column>
               <el-table-column
-                label="操作"
-                align="right"
+                label="首单价"
+                width="150"
               >
-                <template>
-                  <div style="align: right;">
+                <template slot-scope="{row}">
+                  <p
+                    v-if="row.tips"
+                    style="color:red;font-size:12px;"
+                  >{{row.tips}}</p>
+                  <el-input
+                    style="width:80px;"
+                    size="small"
+                    v-model="row.batchFinalPrice"
+                    @change="tableBatchFinalPriceChange(row)"
+                  ></el-input>
+                  <el-button
+                    type="text"
+                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0"
+                    @click="getProductInfo(row)"
+                  >{{row.goodsProductParams.length}}个规格降价</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                align="center"
+              >
+                <template slot-scope="{row}">
+                  <div style="align: center;">
                     <span
                       class="iconSpan"
                       style="font-size:14px;"
-                      @click="deleteGood(row)"
+                      @click.stop="deleteGood(row.goodsId)"
                     >删除</span>
                   </div>
                 </template>
               </el-table-column>
             </el-table>
           </div>
-          <el-button type="text">收起更多配置</el-button>
-          <div class="more-setting">
+          <el-button
+            type="text"
+            @click="showmore = !showmore"
+          >
+            <span v-if="showmore">收起更多配置<img :src="$imageHost + '/image/admin/info_up.png'"></span>
+            <span v-else>展开更多配置<img :src="$imageHost + '/image/admin/info_down.png'"></span>
+          </el-button>
+          <div
+            class="more-setting"
+            v-if="showmore"
+          >
             <el-form-item label="活动分享：">
-              <el-radio-group>
-                <el-radio>
-                  默认样式
-                  <!-- <router-link>查看示例</router-link> -->
-                  <a
-                    href="javascript:void(0);"
-                    download
-                  >下载海报</a>
-                </el-radio>
-                <el-radio>
-                  <p></p>
-                  自定义样式
-                </el-radio>
+              <el-radio-group v-model="activeShare">
+                <div>
+                  <el-radio
+                    :label="0"
+                    class="active_radio"
+                  >
+                    默认样式
+                    <router-link to="/">查看示例</router-link>
+                    <a
+                      href="javascript:void(0);"
+                      download
+                    >下载海报</a>
+                  </el-radio>
+                </div>
+                <div>
+                  <el-radio
+                    :label="1"
+                    class="active_radio"
+                  >
+                    自定义样式
+                  </el-radio>
+                </div>
               </el-radio-group>
+              <div class="custom_style">
+                <div>
+                  <label>文案：</label>
+                  <el-input
+                    class="form_input"
+                    size="small"
+                  ></el-input>
+                </div>
+                <div>
+                  <label>分享图：</label>
+                  <div>
+                    <el-radio-group class="share_img_group">
+                      <el-radio class="share_img_radio">活动商品信息图</el-radio>
+                      <el-radio class="share_img_radio">自定义图片</el-radio>
+                    </el-radio-group>
+                    <div class="upload_wrap">
+                      <div
+                        class="upload_img"
+                        @click="uploadImgHandle"
+                      >
+                        <el-image
+                          style="width: 100%; height:100%;"
+                          fit="contain"
+                          :src="activeImg"
+                        ></el-image>
+                      </div>
+                      <p class="tips">建议尺寸800*800</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </el-form-item>
           </div>
         </el-form>
       </div>
     </div>
+    <div class="footer">
+      <el-button
+        @click="isEditFlag?updateSubmit():addSubmit()"
+        class="footer-btn"
+        type="primary"
+        size="small"
+      >保存</el-button>
+    </div>
     <!--商品选择-->
     <choosingGoods
-      @resultGoodsDatas="resultGoodsDatas"
+      @resultGoodsIds="getGoodsIds"
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="goodsIdList"
     />
+    <!-- 图片上传 -->
+    <imageDalog
+      :tuneUp="tuneUp"
+      pageIndex='pictureSpace'
+      :imageSize=[800,800]
+      @handleSelectImg="handleSelectImg"
+    ></imageDalog>
+    <!-- 规格弹窗 -->
+    <productInfo
+      :productDialog.sync="productDialogFlag"
+      :product-info="productInfo"
+      @confrim="getProductdata"
+    ></productInfo>
   </div>
 </template>
 
 <script>
 import choosingGoods from '@/components/admin/choosingGoods'
+import imageDalog from '@/components/admin/imageDalog'
+import productInfo from './productInfo'
+import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { addFirstSpecial } from '@/api/admin/marketManage/firstSpecial.js'
+
 export default {
-  components: { choosingGoods },
+  components: { choosingGoods, imageDalog, productInfo },
   data () {
     return {
+      isEditFlag: false, // 区分新增还是编辑
       form: {
         activeName: '',
         name: '',
-        isForever: 0,
+        isForever: 0, // 是否永久有效
         startTime: '',
         endTime: '',
-        first: '',
-        limit: 0,
-        limitAmount: 1,
+        first: '', // 活动优先级
+        limit: 0, // 限购数量
+        limitAmount: 1, // 限购数量
         limitP: false,
         firstSpecialGoodsParams: [], // 改价的商品数组
-        batchDiscount: 10, // 批量打几折
-        batchReduce: 0, // 批量减多少
+        batchDiscount: '', // 批量打几折
+        batchReduce: '', // 批量减多少
         batchFinalPrice: '', // 批量折后价
         isBatchInteger: false, // 是否批量取整
-        shareConfig: {}, // 分享设置
-        setting: 0 // 批量优惠类型
+        shareConfig: {} // 分享设置
       },
       tuneUpChooseGoods: false,
       goodsIdList: [],
       tableData: [],
-      selectGoods: []
+      selectGoods: [],
+      discountType: '', // 批量折扣方式
+      showmore: false,
+      activeShare: 0,
+      tuneUp: false,
+      activeImg: this.$imageHost + '/image/admin/btn_add.png',
+      productDialogFlag: false,
+      productInfo: {}
     }
   },
   methods: {
+    // 点击tab框
     handleClick () {
 
+    },
+    inputFocus (index) {
+      this.discountType = String(index)
     },
     selectGoodsHandle () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    // 选择商品后，展示商品列表
-    resultGoodsDatas (datas) {
-      console.log(datas)
-      if (datas.length) {
-        this.tableData = datas
+    // 选择商品后，得到商品id
+    getGoodsIds (ids) {
+      let params = {
+        goodsIds: ids
       }
+      getGoodsInfosByGoodIds(params).then(res => {
+        if (res.error === 0) {
+          let datas = res.content
+          datas.forEach(function (item, i) {
+            item.goodsProductParams = item.goodsSpecProducts
+            if (item.goodsProductParams != null && item.goodsProductParams.length > 0) {
+              item.goodsProductParams.forEach(spec => {
+                spec.productId = spec.prdId
+              })
+            }
+          })
+          console.log(datas)
+          this.tableData = datas
+        }
+      })
     },
-    deleteGood (good) {
-      console.log(good)
+    deleteGood (goodsId) {
+      this.$confirm('确定要删除吗？', '提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.tableData = this.tableData.filter(function (item, i) {
+          return item.goodsId !== goodsId
+        })
+      })
+    },
+    handleSelectionChange (rows) {
+      this.selectGoods = rows
+    },
+    toggleRowSelection (row) {
+      this.$refs.firstSpecialTable.toggleRowSelection(row)
+    },
+    // 批量设置折扣
+    volumeDiscountHandle () {
+      // 验证是否选择商品
+      if (this.selectGoods.length === 0) {
+        this.$message.warning('请选择商品后再进行操作')
+        return false
+      }
+      if (this.discountType === '') {
+        this.$message.warning('请选择折扣方式')
+        return false
+      }
+      switch (this.discountType) {
+        case '0':
+          if (this.form.batchDiscount === '' || this.form.batchDiscount < 0 || this.form.batchDiscount > 10) {
+            this.$message.warning('折扣只能输入0-10之间')
+            return false
+          }
+          this.$set(this.form, 'batchReduce', '')
+          this.$set(this.form, 'batchFinalPrice', '')
+          break
+        case '1':
+          if (this.form.batchReduce === '') {
+            this.$message.warning('设置值不可为空')
+            return false
+          }
+          this.$set(this.form, 'batchDiscount', '')
+          this.$set(this.form, 'batchFinalPrice', '')
+          break
+        case '2':
+          if (this.form.batchReduce === '') {
+            this.$message.warning('设置值不可为空')
+            return false
+          }
+          this.$set(this.form, 'batchReduce', '')
+          this.$set(this.form, 'batchDiscount', '')
+          break
+      }
+      // 更改商品列表折后价
+      this.selectGoods.forEach((item, i) => {
+        let price = Number(item.shopPrice)
+        if (price <= 0) {
+          this.$message.error(item.goodsName + '的原价已为0，不能再打折')
+          return false
+        }
+        if (this.discountType === '0') {
+          item.batchDiscount = this.form.batchDiscount
+          item.batchFinalPrice = (item.batchDiscount / 10 * price).toFixed(2)
+          item.batchReduce = price - item.batchFinalPrice
+        } else if (this.discountType === '1') {
+          item.batchReduce = this.form.batchReduce
+          item.batchFinalPrice = Number(price - item.batchReduce)
+          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+        } else if (this.discountType === '2') {
+          item.batchFinalPrice = this.form.batchFinalPrice
+          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+          item.batchReduce = price - item.batchFinalPrice
+        }
+        // 验证计算值安全性
+        console.log(item)
+        if (item.batchFinalPrice < 0) {
+          item.tips = '降价后首单价不得小于0'
+        } else if (item.batchFinalPrice > price) {
+          item.tips = '降价后金额需小于原价'
+        }
+        // 数据回显
+        let index = this.tableData.findIndex((data, i) =>
+          data.goodsId === item.goodsId
+        )
+        this.$set(this.tableData, index, item)
+        this.$set(this.form, 'isBatchInteger', false)
+      })
+    },
+    tableBatchDiscountChange (row) {
+      console.log('BatchDiscountChange')
+      let price = Number(row.shopPrice)
+      let batchDiscount = Number(row.batchDiscount)
+      if (batchDiscount < 0 || batchDiscount > 10) {
+        this.$message.warning('折扣只能输入0-10之间')
+        this.$set(row, 'batchDiscount', '')
+        return false
+      }
+      let batchFinalPrice = (batchDiscount / 10 * price).toFixed(2)
+      let batchReduce = price - batchFinalPrice
+      this.$set(row, 'batchFinalPrice', batchFinalPrice)
+      this.$set(row, 'batchReduce', batchReduce)
+      this.watchbatchFinalPrice(price, batchFinalPrice, row)
+    },
+    tableBatchReduceChange (row) {
+      console.log('BatchReduceChange')
+      let price = Number(row.shopPrice)
+      let batchReduce = Number(row.batchReduce)
+      let batchFinalPrice = price - batchReduce
+      let batchDiscount = (batchFinalPrice / price).toFixed(2)
+      this.$set(row, 'batchFinalPrice', batchFinalPrice)
+      this.$set(row, 'batchDiscount', batchDiscount)
+      this.watchbatchFinalPrice(price, batchFinalPrice, row)
+    },
+    tableBatchFinalPriceChange (row) {
+      console.log('BatchFinalPriceChange')
+      let price = Number(row.shopPrice)
+      let batchFinalPrice = Number(row.batchFinalPrice)
+      let batchReduce = price - batchFinalPrice
+      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
+      this.$set(row, 'batchReduce', batchReduce)
+      this.$set(row, 'batchDiscount', batchDiscount)
+      this.watchbatchFinalPrice(price, batchFinalPrice, row)
+    },
+    watchbatchFinalPrice (price, batchFinalPrice, row) {
+      let tips
+      if (batchFinalPrice < 0) {
+        tips = '降价后首单价不得小于0'
+      } else if (batchFinalPrice > price) {
+        tips = '降价后金额需小于原价'
+      }
+      this.$set(row, 'tips', tips)
+    },
+    // 多个规格
+    getProductInfo (row) {
+      this.productDialogFlag = true
+      this.productInfo = row
+    },
+    // 批量删除
+    deleteSelectGoods () {
+      if (this.selectGoods.length === 0) {
+        this.$message.warning('请选择商品后再进行操作')
+        return false
+      }
+      let selects = this.selectGoods
+      let that = this
+      this.$confirm('确定要删除吗？', '提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function () {
+        that.tableData = that.tableData.filter(function (item, i) {
+          let judgment = selects.find((data, j) => data.goodsId === item.goodsId)
+          if (!judgment) {
+            return item
+          }
+        })
+      })
+    },
+    // 批量价格取整
+    roundingPrice () {
+      let that = this
+      if (that.selectGoods.length === 0) {
+        that.$message.warning('请选择商品后再进行操作')
+        return false
+      }
+      that.$confirm('确认要取整吗?', '提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (that.selectGoods.length > 0) {
+          that.selectGoods.forEach(function (item, i) {
+            let index = that.tableData.findIndex((row, j) => row.goodsId === item.goodsId)
+            let batchFinalPrice = Math.ceil(that.tableData[index].batchFinalPrice)
+            that.$set(that.tableData[index], 'batchFinalPrice', batchFinalPrice)
+            console.log(that.tableData[index])
+          })
+          that.$refs.firstSpecialTable.clearSelection() // 触发表格数据刷新
+          this.$set(this.form, 'isBatchInteger', true)
+        }
+      })
+    },
+    // 取消
+    resetTableData () {
+      this.discountType = ''
+      this.$set(this.form, 'batchReduce', '')
+      this.$set(this.form, 'batchDiscount', '')
+      this.$set(this.form, 'batchFinalPrice', '')
+      this.tableData = this.tableData.map(function (item, i) {
+        item.batchDiscount = ''
+        item.batchReduce = ''
+        item.batchFinalPrice = ''
+        return item
+      })
+    },
+    uploadImgHandle () {
+      this.tuneUp = !this.tuneUp
+    },
+    handleSelectImg (image) {
+      this.activeImg = image.imgUrl
+    },
+    getProductdata (datas) {
+      console.log(datas)
+    },
+    addSubmit () {
+      let params = Object.assign({}, this.form)
+      addFirstSpecial(params).then(res => {
+        if (res.error === 0) {
+
+        }
+      })
+    },
+    updateSubmit () {
+
     }
   }
 }
@@ -352,8 +725,24 @@ export default {
     color: #5a8bff;
     cursor: pointer !important;
   }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    width: calc(100% - 186px);
+    padding: 10px;
+    background: #f8f8fa;
+    border-top: 1px solid #f2f2f2;
+    text-align: center;
+    .footer-btn {
+      width: 105px;
+      margin: 0 10px;
+    }
+  }
 }
 .first-special-add-page {
+  margin-bottom: 50px;
   .first-special-add-content {
     .info-top {
       padding: 10px 15px;
@@ -382,6 +771,30 @@ export default {
           transform: translateY(-50%);
           margin-bottom: 0;
         }
+      }
+    }
+    .active_radio {
+      line-height: 32px;
+    }
+    .upload_img {
+      width: 70px;
+      height: 70px;
+      box-shadow: 0 0 0 #fff;
+    }
+    .custom_style {
+      margin-left: 28px;
+      label {
+        width: 80px;
+        float: left;
+      }
+      .share_img_group {
+        width: 90px;
+      }
+      .share_img_radio {
+        line-height: 32px;
+      }
+      .upload_wrap {
+        margin-left: 78px;
       }
     }
   }
