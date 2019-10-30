@@ -1012,3 +1012,7 @@ MODIFY COLUMN return_number int(11) NOT NULL DEFAULT 0 ;
 alter table b2c_member_card
 MODIFY COLUMN `store_list` varchar(191)   not null default '[]' comment '可用门店列表';
 
+
+-- 更新字段类型
+ALTER TABLE `b2c_goods_card_couple` 
+MODIFY COLUMN `card_id` int(11) NOT NULL COMMENT '会员卡ID' AFTER `id`;

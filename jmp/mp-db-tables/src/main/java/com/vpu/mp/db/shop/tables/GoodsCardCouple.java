@@ -5,8 +5,8 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 
 import java.sql.Timestamp;
@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsCardCouple extends TableImpl<GoodsCardCoupleRecord> {
 
-    private static final long serialVersionUID = 1173169265;
+    private static final long serialVersionUID = 1965776640;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_goods_card_couple</code>
+     * The reference instance of <code>jmini_shop_444801.b2c_goods_card_couple</code>
      */
     public static final GoodsCardCouple GOODS_CARD_COUPLE = new GoodsCardCouple();
 
@@ -58,51 +58,51 @@ public class GoodsCardCouple extends TableImpl<GoodsCardCoupleRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_card_couple.id</code>. 会员卡专属商品关联id
+     * The column <code>jmini_shop_444801.b2c_goods_card_couple.id</code>. 会员卡专属商品关联id
      */
     public final TableField<GoodsCardCoupleRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "会员卡专属商品关联id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_card_couple.card_id</code>. 会员卡id
+     * The column <code>jmini_shop_444801.b2c_goods_card_couple.card_id</code>. 会员卡ID
      */
-    public final TableField<GoodsCardCoupleRecord, String> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "会员卡id");
+    public final TableField<GoodsCardCoupleRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会员卡ID");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_card_couple.gcta_id</code>. 商品或类型id
+     * The column <code>jmini_shop_444801.b2c_goods_card_couple.gcta_id</code>. 商品或类型id
      */
     public final TableField<GoodsCardCoupleRecord, Integer> GCTA_ID = createField("gcta_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品或类型id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_card_couple.type</code>. 标签关联类型： 1：关联商品 2：关联商家分类 3：关联平台分类
+     * The column <code>jmini_shop_444801.b2c_goods_card_couple.type</code>. 标签关联类型： 1：关联商品 2：关联商家分类 3：关联平台分类
      */
     public final TableField<GoodsCardCoupleRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标签关联类型： 1：关联商品 2：关联商家分类 3：关联平台分类");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_card_couple.create_time</code>.
+     * The column <code>jmini_shop_444801.b2c_goods_card_couple.create_time</code>.
      */
     public final TableField<GoodsCardCoupleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_card_couple.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_444801.b2c_goods_card_couple.update_time</code>. 最后修改时间
      */
     public final TableField<GoodsCardCoupleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_goods_card_couple</code> table reference
+     * Create a <code>jmini_shop_444801.b2c_goods_card_couple</code> table reference
      */
     public GoodsCardCouple() {
         this(DSL.name("b2c_goods_card_couple"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_goods_card_couple</code> table reference
+     * Create an aliased <code>jmini_shop_444801.b2c_goods_card_couple</code> table reference
      */
     public GoodsCardCouple(String alias) {
         this(DSL.name(alias), GOODS_CARD_COUPLE);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_goods_card_couple</code> table reference
+     * Create an aliased <code>jmini_shop_444801.b2c_goods_card_couple</code> table reference
      */
     public GoodsCardCouple(Name alias) {
         this(alias, GOODS_CARD_COUPLE);

@@ -17,6 +17,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -540,7 +542,7 @@ public class ScoreService extends ShopBaseService {
 		if(!userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			//TODO 等黄壮壮提供  updateGrade		
 			try {
-				userCardService.updateGrade(new Integer[]{1},null, (byte)1);
+				userCardService.updateGrade(new ArrayList<Integer>(Arrays.asList(1)),null, (byte)1);
 			} catch (MpException e) {
 				e.printStackTrace();
 			}

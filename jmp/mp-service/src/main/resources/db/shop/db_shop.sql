@@ -3485,7 +3485,7 @@ create table `b2c_card_examine`
 create table `b2c_goods_card_couple`
 (
     `id`          int(11)      not null auto_increment comment '会员卡专属商品关联id',
-    `card_id`     varchar(100) not null comment '会员卡id',
+    `card_id` int(11) NOT NULL COMMENT '会员卡ID',
     `gcta_id`     int(11)    default '0' comment '商品或类型id',
     `type`        tinyint(1) default '0' comment '标签关联类型： 1：关联商品 2：关联商家分类 3：关联平台分类',
     `create_time` timestamp  default current_timestamp,

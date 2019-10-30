@@ -56,13 +56,19 @@ import com.vpu.mp.service.shop.member.UserCardService;
 public class UserCardDaoService extends ShopBaseService{
 	@Autowired private  UserCardService userCardService;
 	
-	public Record1<String> getUserGradeRecord(Integer userId) { 
-		return db().select(MEMBER_CARD.GRADE).from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
+	/**
+	 * 计算用户等级
+	 * @param userId
+	 * @return
+	 */
+	public String calcUserGrade(Integer userId) { 
+		return db().select(MEMBER_CARD.GRADE)
+				.from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
 				.where(USER_CARD.FLAG.eq(CARD_USING))
 				.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
 				.and(USER_CARD.USER_ID.eq(userId))
 				.and((MEMBER_CARD.ACTIVATION.eq(ACTIVE_NO)).or(MEMBER_CARD.ACTIVATION.eq(ACTIVE_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
-				.fetchAny(); 
+				.fetchAnyInto(String.class); 
 	}
 	
 	/**

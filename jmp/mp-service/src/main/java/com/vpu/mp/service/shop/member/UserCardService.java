@@ -122,17 +122,20 @@ public class UserCardService extends ShopBaseService{
 	
 	
 	/**
-	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回null
+	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回默认最低等级
 	 * @param user_id
 	 * @return
 	 */
 	public String getUserGrade(Integer userId) {
-		Record1<String> result = userCardDao.getUserGradeRecord(userId);
-		if(result != null) {
-			return result.get(MEMBER_CARD.GRADE);
-		}else {
-			return LOWEST_GRADE;
+		String userGrade = userCardDao.calcUserGrade(userId);
+		if(StringUtils.isBlank(userGrade)) {
+			userGrade = LOWEST_GRADE;
 		}
+		return userGrade;
+	}
+	
+	public boolean isHasAvailableGradeCard(Integer userId) {
+		return !StringUtils.isBlank(userCardDao.calcUserGrade(userId));
 	}
 	
 	/**
@@ -143,17 +146,16 @@ public class UserCardService extends ShopBaseService{
 	 * @throws MpException 
 	 */
 	public int updateGrade(Integer userId,Integer cardId,Byte type) throws MpException{
-		return updateGrade(new Integer[] {userId},cardId,type);
+		return updateGrade(new ArrayList<Integer>(Arrays.asList(userId)),cardId,type);
 	}
 	
-	public int updateGrade(Integer[] userId,Integer cardId,Byte type) throws MpException {
-		if(userId == null || userId.length<=0) {
+	public int updateGrade(List<Integer> userIdList,Integer cardId,Byte type) throws MpException {
+		if(userIdList == null || userIdList.size()<=0) {
 			return 1;
 		}
 		// 后台用户列表发卡（不需判断条件）
 		if(cardId != null) {
-		
-			for(Integer id: userId) {
+			for(Integer id: userIdList) {
 				String grade = getUserGrade(id);
 				// 有过等级卡
 				if(!StringUtils.isBlank(grade) && grade.equals(LOWEST_GRADE)) {
@@ -193,7 +195,7 @@ public class UserCardService extends ShopBaseService{
 			}
 			
 		}else {
-			for(Integer id: userId) {
+			for(Integer id: userIdList) {
 				//获取用户累积获得积分和累积消费总额
 				Integer userTotalScore = scoreService.getAccumulationScore(id);
 				BigDecimal amount = distributorLevelService.getTotalSpend(id).getTotal();
@@ -656,7 +658,7 @@ public class UserCardService extends ShopBaseService{
 		//TODO 开卡送卷
 		return card;
 	}
-	
+
 	public void dealWithUserCardDetailInfo(WxAppUserCardVo card) {
 		logger().info("处理wx 用户会员卡数据详情");
 		dealWithUserCardBasicInfo(card);

@@ -432,13 +432,13 @@ public class MemberCardService extends ShopBaseService {
 			int deleteNum = deleteOwnEnjoyGoods(cardIdList,type);
 			logger().info("成功删除："+deleteNum);
 			
-			InsertValuesStep3<GoodsCardCoupleRecord, String, Integer, Byte> insert = db().
+			InsertValuesStep3<GoodsCardCoupleRecord, Integer, Integer, Byte> insert = db().
 												insertInto(GOODS_CARD_COUPLE)
 												.columns(GOODS_CARD_COUPLE.CARD_ID,GOODS_CARD_COUPLE.GCTA_ID,GOODS_CARD_COUPLE.TYPE);
 			
 			for(Integer cardId: cardIdList) {
 				for(Integer goodsId:  goodsIdList) {
-					insert.values(String.valueOf(cardId), goodsId,type);
+					insert.values(cardId, goodsId,type);
 				}
 			}
 		
