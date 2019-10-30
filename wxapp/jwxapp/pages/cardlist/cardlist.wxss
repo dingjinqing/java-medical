@@ -1,6 +1,5 @@
 .main-container {
   overflow: hidden;
-  height: 1400rpx;
 }
 .card_item_container {
   margin-top: 20rpx;
@@ -27,6 +26,7 @@
   background-color: skyblue;
   padding: 46rpx 0;
   position: relative;
+  min-height: 300rpx;
 }
 .card_type {
   position: absolute;
@@ -82,4 +82,19 @@
 }
 .card_item_containe {
   transition: left 0.3s ease-in;
+}
+.no_card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  top:50%;
+  transform: translate(-50% , -50%);
+  margin: auto;
+}
+.no_card > image{
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 20rpx;
 }

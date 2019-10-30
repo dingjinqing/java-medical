@@ -25,15 +25,14 @@ global.wxPage({
           let dataList = this.formatData(res.content.dataList);
           this.setData({
             pageParams: res.content.page,
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content
-              .dataList
+            ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
           });
         }
         console.log(res);
       },
       {
         currentPage: currentPage,
-        pageRows: 2
+        pageRows: 4
       }
     );
   },
@@ -94,6 +93,9 @@ global.wxPage({
       item.cardTypeName = this.getTypeName(item.cardType);
       item.cardBgStyle = this.getCardBg(item);
       item.cardStopImg = this.getCardStopImage(item);
+      item.cardExpireTime = this.getCardExpireTime(item);
+      item.buyScore = JSON.parse(item.buyScore)
+      item.chargeMoney = JSON.parse(item.chargeMoney)
       return item;
     });
     return newData;
@@ -128,6 +130,13 @@ global.wxPage({
       return `${this.data.imageUrl}image/wxapp/card_out_time.png`
     }
     return ``
+  },
+  // 获取会员卡过期时间
+  getCardExpireTime(cardItem){
+    if (cardItem.cardType === 2) return null
+    if (cardItem.expireType === 2) return `永久有效`
+    if (cardItem.expire === 1) return `此卡已过期，如需继续使用请联系商家`
+    return `${cardItem.startDate} 至 ${cardItem.endDate}`
   },
   // 删除会员卡
   delCard(e) {

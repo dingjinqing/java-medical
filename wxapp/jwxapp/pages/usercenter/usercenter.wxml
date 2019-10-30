@@ -58,7 +58,7 @@
               <text>{{item1.num}}</text>张</view>
             <view class='account_word'>{{i18n.$t(localePack,"components.navigation.title.getcoupon")}}</view>
           </view>
-          <view class='ac_item' bindtap="bindJumpLink" data-url="/pages/usercardlist/usercardlist" wx:if='{{item1.icon_name == "card" && item1.is_show == 1}}'>
+          <view class='ac_item' bindtap="bindJumpLink" data-url="/pages/cardlist/cardlist" wx:if='{{item1.icon_name == "card" && item1.is_show == 1}}'>
             <view class='account_num' style='color:{{comColor}}'>
               <text>{{item1.num}}</text>张</view>
             <view class='account_word'>{{i18n.$t(localePack,"components.navigation.title.usercardinfo")}}</view>

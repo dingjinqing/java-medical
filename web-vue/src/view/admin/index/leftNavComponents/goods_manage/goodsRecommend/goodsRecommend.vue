@@ -4,7 +4,7 @@
       <div class="filter_left">
         <el-input
           v-model="recommendTitle"
-          placeholder="请输入模板名称"
+          :placeholder="$t('recommend.filterPlaceholder')"
           class="default_input"
           size="small"
         ></el-input>
@@ -12,13 +12,13 @@
           type="primary"
           size="small"
           @click="initDataList"
-        >筛选</el-button>
+        >{{$t('recommend.filter')}}</el-button>
       </div>
       <el-button
         type="primary"
         size="small"
         @click="addRecommend"
-      >新建商品推荐模板</el-button>
+      >{{$t('recommend.new')}}</el-button>
     </div>
     <div class="table_box">
       <el-table
@@ -37,13 +37,13 @@
       >
         <el-table-column
           prop="recommendName"
-          label="模板名称"
+          :label="$t('recommend.templateName')"
         ></el-table-column>
         <el-table-column
           prop="updateTime"
-          label="更新时间"
+          :label="$t('recommend.updateTime')"
         ></el-table-column>
-        <el-table-column label="应用页面">
+        <el-table-column :label="$t('recommend.applicationPage')">
           <template slot-scope="scope">
             <div class="used_page">
               <div
@@ -53,25 +53,25 @@
                 <p
                   v-for="(item,index) in scope.row.recommendUsePage"
                   :key="index"
-                >{{usedPage[item]}}</p>
+                >{{$t('recommend.pageList')[item]}}</p>
               </div>
               <div class="page_right">
-                <span @click="editItem(scope.row)">设置</span>
+                <span @click="editItem(scope.row)">{{$t('recommend.setting')}}</span>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="模板状态">
+        <el-table-column :label="$t('recommend.templateStatus')">
           <template slot-scope="scope">
-            {{scope.row.status | statusFilter}}
+            {{scope.row.status === 0 ? $t('recommend.activated') : $t('recommend.terminated')}}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column :label="$t('recommend.operating')">
           <template slot-scope="scope">
             <div class="operation">
-              <p @click="edit(scope.row.id)">编辑</p>
-              <p @click="editStatus(scope.row)">{{scope.row.status === 0 ? '停用' : '启用'}}</p>
-              <p @click="del(scope.row.id)">删除</p>
+              <p @click="edit(scope.row.id)">{{$t('recommend.edit')}}</p>
+              <p @click="editStatus(scope.row)">{{scope.row.status === 0 ? $t('recommend.disable') : $t('recommend.enable')}}</p>
+              <p @click="del(scope.row.id)">{{$t('recommend.delete')}}</p>
             </div>
           </template>
         </el-table-column>
@@ -102,22 +102,12 @@ export default {
       showDialog: false,
       editData: null,
       dataList: null,
-      pageParams: {},
-      usedPage: {
-        cart: '购物车页',
-        orderlist: '订单列表页',
-        bargainitem: '砍价活动页',
-        groupbuyitem: '参团活动页',
-        search: '商品列表页',
-        payment: '支付成功页',
-        order_complete: '订单完成页',
-        new_search: '商品搜索页',
-        item: '商品详情页'
-      }
+      pageParams: {}
     }
   },
   mounted () {
     this.initDataList()
+    this.langDefault()
   },
   methods: {
     initDataList () {
@@ -201,11 +191,6 @@ export default {
           }
         })
       })
-    }
-  },
-  filters: {
-    statusFilter (value) {
-      return value === 0 ? '已启用' : '已停用'
     }
   }
 }

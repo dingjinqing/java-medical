@@ -7,27 +7,30 @@
         <view class="nav_list_item" bindtap="changeNav" data-nav_type="1" style="{{navType === 1 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}">砍价成功</view>
         <view class="nav_list_item" bindtap="changeNav" data-nav_type="2" style="{{navType === 2 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}">砍价失败</view>
     </view>
-    <view class="goods_list" style="margin-top:{{margin_top_nav + 59}}px">
-
-    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="{{pageIndex}}" wx:for-index="pageIndex">
-      <block wx:for="{{pageItem}}" wx:key="{{item.id}}" >
-      <view class="goods_item">
-        <image src="{{imageUrl}}{{item.goodsImg}}"></image>
-        <view class="item_right">
-          <text class="goods_name">{{item.goodsName}}</text>
-          <view class="over_time">
-            <text class="time" style="background:{{somColor}};color:{{comColor}}">{{item.endTime}}结束</text>
-            <text class="goods_num">仅剩{{item.stock}}件</text>
-          </view>
-          <view class="goods_price">
-            <text class="current_price" style="color:{{comColor}};">￥{{item.expectationPrice}}</text>
-            <text class="original_price">￥{{item.floorPrice}}</text>
-            <text class="Settlement_btn" style="background:{{comColor}}" wx:if="{{navType!==2}}" bindtap="{{navType === 1 ? 'checkOut' : (navType === 0 ? 'continueBargain' : '')}}">{{navType === 1 ? '去结算' : (navType === 0 ? '继续砍价' : '')}}</text>            
+    <view wx:if="{{dataList[0].length}}" class="goods_list" style="margin-top:{{margin_top_nav * 2 + 110}}rpx">
+      <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="{{pageIndex}}" wx:for-index="pageIndex">
+        <block wx:for="{{pageItem}}" wx:key="{{item.id}}" >
+        <view class="goods_item">
+          <image src="{{imageUrl}}{{item.goodsImg}}"></image>
+          <view class="item_right">
+            <text class="goods_name">{{item.goodsName}}</text>
+            <view class="over_time">
+              <text class="time" style="background:{{somColor}};color:{{comColor}}">{{item.endTime}}结束</text>
+              <text class="goods_num">仅剩{{item.stock}}件</text>
+            </view>
+            <view class="goods_price">
+              <text class="current_price" style="color:{{comColor}};">￥{{item.expectationPrice}}</text>
+              <text class="original_price">￥{{item.floorPrice}}</text>
+              <text class="Settlement_btn" style="background:{{comColor}}" wx:if="{{navType!==2}}" bindtap="{{navType === 1 ? 'checkOut' : (navType === 0 ? 'continueBargain' : '')}}">{{navType === 1 ? '去结算' : (navType === 0 ? '继续砍价' : '')}}</text>            
+            </view>
           </view>
         </view>
-      </view>
+        </block>
       </block>
-    </block>
+    </view>
+    <view wx:if="{{!dataList[0].length}}" class="no_list">
+      <image src="{{imageUrl}}image/wxapp/no_sort_order.png"></image>
+      <text>暂无数据</text>
     </view>
   </view>
   <include src="../common/footer.wxml" />

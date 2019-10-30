@@ -27,7 +27,7 @@ import { en as addAndUpdateGoodsLabel } from './views/admin_new/en/index/goodsMa
 import { en as goodsSorts } from './views/admin_new/en/index/goodsManagement/goodsSortsEn'
 import { en as goodsRecommendSorts } from './views/admin_new/en/index/goodsManagement/goodsRecommendSortsEn'
 import { en as evaluation } from './views/admin_new/en/index/goodsManagement/evaluationEn'
-
+import { en as recommend } from './views/admin_new/en/index/goodsManagement/recommendEn'
 // 概览系列国际化
 // 商城概览
 import { en as overview } from './views/admin_new/en/index/overview/overviewEn'
@@ -667,6 +667,7 @@ const en = {
   goodsSorts, // 商家分类全部，修改，新增
   goodsRecommendSorts, // 商家推荐分类全部，修改，新增,
   evaluation, // 评价相关
+  recommend, // 商品推荐
   // 订单
   order,
   orderCommon, // 订单通用

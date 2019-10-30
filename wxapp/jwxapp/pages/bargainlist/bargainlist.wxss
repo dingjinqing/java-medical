@@ -74,3 +74,19 @@
   border-radius: 38rpx;
   color: #fff;
 }
+.no_list{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  top:50%;
+  transform: translate(-50% , -50%);
+  margin: auto;
+  color: #666;
+}
+.no_list > image{
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 20rpx;
+}

@@ -59,7 +59,7 @@ import { cn as addAndUpdateGoodsLabel } from './views/admin_new/cn/index/goodsMa
 import { cn as goodsSorts } from './views/admin_new/cn/index/goodsManagement/goodsSortsCn'
 import { cn as goodsRecommendSorts } from './views/admin_new/cn/index/goodsManagement/goodsRecommendSortsCn'
 import { cn as evaluation } from './views/admin_new/cn/index/goodsManagement/evaluationCn'
-
+import { cn as recommend } from './views/admin_new/cn/index/goodsManagement/recommendCn'
 // 营销管理系列国际化
 // 营销管理通用词汇
 import { cn as marketCommon } from './views/admin_new/cn/index/marketManagement/marketCommonCn'
@@ -638,6 +638,7 @@ const cn = {
   goodsSorts, // 商家分类全部，修改，新增
   goodsRecommendSorts, // 商家推荐分类全部，修改，新增
   evaluation, // 评价相关
+  recommend, // 商品推荐
 
   // 订单
   order,
