@@ -13,13 +13,16 @@ import javax.validation.constraints.Min;
  */
 @Data
 public class SeckillPageListQueryParam {
-	
-	/**
-	 *    活动状态过滤 ：0全部，1进行中，2未开始，3已过期，4已停用 
-	 */
-	@Max(4)
-	@Min(0)
-	private Byte state = (byte)1;
+
+    /**
+     *    活动状态过滤 ：1进行中，2未开始，3已过期，4已停用
+     */
+    private Byte[] state;
+
+    /**
+     * 	过滤选项：goodsName或秒杀活动名
+     */
+    private String keywords;
 	
 	/**
      * 	分页信息

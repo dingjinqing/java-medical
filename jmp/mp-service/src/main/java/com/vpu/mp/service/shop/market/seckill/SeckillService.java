@@ -21,11 +21,9 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.Record5;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,31 +68,62 @@ public class SeckillService extends ShopBaseService {
      *
      */
     public PageResult<SeckillPageListQueryVo> getPageList(SeckillPageListQueryParam param) {
-        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,GOODS.GOODS_NAME,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
-            SEC_KILL_DEFINE.STATUS,SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.LIMIT_AMOUNT).
+        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
+            SEC_KILL_DEFINE.STATUS,SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.STOCK,
+            GOODS.GOODS_NAME,GOODS.GOODS_NUMBER,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.IS_ON_SALE).
             from(SEC_KILL_DEFINE).
             leftJoin(GOODS).on(SEC_KILL_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID));
-        if(param.getState() > 0) {
-            /** 状态过滤*/
-            Timestamp now = DateUtil.getLocalDateTime();
-            switch(param.getState()) {
-                case (byte)1:
-                    select.where(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(now)).and(SEC_KILL_DEFINE.END_TIME.gt(now));
-                    break;
-                case (byte)2:
-                    select.where(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.gt(now));
-                    break;
-                case (byte)3:
-                    select.where(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.END_TIME.lt(now));
-                    break;
-                case (byte)4:
-                    select.where(SEC_KILL_DEFINE.STATUS.eq(STATUS_DISABLED));
-                    break;
-                default:
-            }
-        }
-        select.where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(SEC_KILL_DEFINE.CREATE_TIME.desc());
+        select = buildOptions(select,param);
+        select.orderBy(SEC_KILL_DEFINE.CREATE_TIME.desc());
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),SeckillPageListQueryVo.class);
+    }
+    /**
+     * 秒杀活动列表分页查询(装修页弹窗选择)
+     *
+     */
+    public PageResult<SeckillPageListQueryVo> getPageListDialog(SeckillPageListQueryParam param) {
+        PageResult<SeckillPageListQueryVo> res = getPageList(param);
+        for(SeckillPageListQueryVo vo : res.dataList){
+            vo.setSecPrice(getMinProductSecPrice(vo.getSkId()));
+        }
+        return res;
+    }
+
+    private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select,SeckillPageListQueryParam param){
+        select.where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        if(param.getState() != null && param.getState().length > 0) {
+            /** 状态过滤*/
+            Condition stateCondition = DSL.noCondition();
+            Timestamp now = DateUtil.getLocalDateTime();
+            for(byte state : param.getState()){
+                if(state == 1){
+                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(now)).and(SEC_KILL_DEFINE.END_TIME.gt(now)));
+                }
+                if(state == 2){
+                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.gt(now)));
+                }
+                if(state == 3){
+                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.END_TIME.lt(now)));
+                }
+                if(state == 4){
+                    stateCondition = stateCondition.or(SEC_KILL_DEFINE.STATUS.eq(STATUS_DISABLED));
+                }
+            }
+            select.where(stateCondition);
+        }
+        if(!StringUtils.isEmpty(param.getKeywords())){
+            select.where(SEC_KILL_DEFINE.NAME.contains(param.getKeywords()).or(GOODS.GOODS_NAME.contains(param.getKeywords())));
+        }
+
+        return select;
+    }
+
+    /**
+     * 取单个秒杀活动的最小的一个规格秒杀价
+     *
+     */
+    private BigDecimal getMinProductSecPrice(int skId){
+        return db().select(DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchOne().into(BigDecimal.class);
     }
 
     /**

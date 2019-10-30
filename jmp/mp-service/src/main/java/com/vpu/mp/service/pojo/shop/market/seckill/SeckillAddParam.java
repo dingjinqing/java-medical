@@ -32,6 +32,10 @@ public class SeckillAddParam {
     @NotNull
     private Timestamp endTime;
 
+    /** 总库存（各规格秒杀库存之和）*/
+    @NotNull
+    private Integer stock;
+
     /** 每人限购数量*/
     @NotNull
     @Min(0)

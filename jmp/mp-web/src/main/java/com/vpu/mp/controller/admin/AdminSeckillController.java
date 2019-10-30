@@ -35,6 +35,15 @@ public class AdminSeckillController extends AdminBaseController {
     }
 
     /**
+     * 砍价活动分页查询列表(装修页弹窗选择)
+     *
+     */
+    @PostMapping(value = "/api/admin/decorate/seckill/list")
+    public JsonResult getSeckillPageListDialog(@RequestBody @Validated SeckillPageListQueryParam param) {
+        return success(shop().seckill.getPageListDialog(param));
+    }
+
+    /**
      *添加 秒杀活动
      *
      */
