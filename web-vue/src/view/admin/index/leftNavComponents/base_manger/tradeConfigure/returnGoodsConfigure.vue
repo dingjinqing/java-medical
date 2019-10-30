@@ -20,48 +20,25 @@
           class="chooseInfo"
         >{{$t('returnconfiguration.choosecanreturn')}}</div>
 
-        <div class="chooseBtn">
+        <div class="chooseBtn" @click="showChoosingGoods">
           <img :src="src">
-          <span>选择商品</span>
+          <span>{{$t('tradeConfiguration.selectgoods')}}</span>
         </div>
-        <div class="goodsTable">
-          <table style="width: 100%">
-            <thead>
-              <tr>
-                <td>商品名称</td>
-                <td>价格</td>
-                <td>库存</td>
-                <td>操作</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="item in goodsDialog"
-                :key="item.name"
-              >
-                <td>{{item.name}}</td>
-                <td>{{item.price}}</td>
-                <td>{{item.number}}</td>
-                <td>{{item.operate}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="chooseBtn">
+        <div class="chooseBtn" @click="showBusClassDialog(2)">
           <img :src="src">
-          <span>选择平台分类</span>
+          <span>{{$t('tradeConfiguration.selectplant')}}</span>
         </div>
-        <div class="chooseBtn">
+        <div class="chooseBtn" @click="showBusClassDialog(1)">
           <img :src="src">
-          <span>选择商家分类</span>
+          <span>{{$t('tradeConfiguration.selectshop')}}</span>
         </div>
-        <div class="chooseBtn">
+        <div class="chooseBtn" @click="showProductLabel">
           <img :src="src">
-          <span>选择商品标签</span>
+          <span>{{$t('tradeConfiguration.selectlabel')}}</span>
         </div>
-        <div class="chooseBtn">
+        <div class="chooseBtn" @click="showBrandDialog">
           <img :src="src">
-          <span>选择商品品牌</span>
+          <span>{{$t('tradeConfiguration.selectbrand')}}</span>
         </div>
       </div>
 
@@ -199,17 +176,76 @@
       >{{$t('returnconfiguration.save')}}</el-button>
     </div>
 
+    <!--选择商品弹窗-->
+    <ChoosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      @resultGoodsDatas="choosingGoodsResult"
+      :brandBackData="goodsInfo"
+    />
+    <!-- 选择 1商家分类;2平台分类弹窗 -->
+    <BusClassDialog
+      :dialogVisible.sync="tuneUpBusClassDialog"
+      :classFlag="classFlag"
+      @BusClassTrueDetailData="busClassDialogResult"
+      :brandBackData="labelInfo"
+    />
+    <!-- 选择商品标签弹窗 -->
+    <ProductLabel
+      :callAddProductLabel.sync="tuneUpProductLabel"
+      @handleToGetBackData="busProductLabelResult"
+      :brandBackData="labelInfo"
+    />
+    <!-- 选择商品牌弹窗 -->
+    <BrandDialog
+      :callAddBrand.sync="tuneUpBrandDialog"
+      @handleToGetBackData="busBrandDialogResult"
+      :brandBackData="brand"
+    />
+
   </div>
 </template>
 
 <script>
-import { returnSelect, retrunUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
-export default {
+  import {retrunUpdate, returnSelect} from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+  import ChoosingGoods from '@/components/admin/choosingGoods'
+  import ProductLabel from '@/components/admin/addProductLabel'
+  import BrandDialog from '@/components/admin/addBrandDialog'
+  import BusClassDialog from '@/components/admin/addingBusClassDialog'
+
+  export default {
+  components: {
+    ChoosingGoods,
+    ProductLabel,
+    BrandDialog,
+    BusClassDialog
+  },
   created () {
     this.initData()
   },
   data () {
     return {
+      // 商品弹窗回调数据
+      goodsInfo: [],
+      goodsInfoRow: [],
+      // 标签弹窗回调数据
+      labelInfo: [],
+      labelInfoRow: [],
+      // 商品品牌弹窗回调数据
+      brand: [],
+      brandRow: [],
+      // 商家分类弹窗回调数据
+      busClass: [],
+      busClassRow: [],
+      // 平台分类弹窗回调数据
+      platClass: [],
+      platClassRow: [],
+      // 弹窗结果区分标识 1商家分类;2平台分类
+      flag: 0,
+      tuneUpChooseGoods: false,
+      tuneUpBusClassDialog: false,
+      tuneUpBrandDialog: false,
+      tuneUpProductLabel: false,
+      classFlag: 0,
       returnParam: {
         return_change_goods_status: 0,
         is_refund_coupon: 0,
@@ -218,6 +254,13 @@ export default {
         return_address_days: 7,
         return_shopping_days: 7,
         return_pass_days: 7,
+        order_return_goods_package: {
+          add_goods: [],
+          add_cate: [],
+          add_sort: [],
+          add_label: [],
+          add_brand: {}
+        },
         business_address: {
           consignee: '',
           merchant_telephone: '',
@@ -237,11 +280,80 @@ export default {
     }
   },
   methods: {
+    // 选择商品弹窗调起
+    showChoosingGoods () {
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    // 选择商品弹窗回调显示
+    choosingGoodsResult (row) {
+      console.log('选择商品弹窗回调显示:', row)
+      this.goodsInfoRow = row
+      this.goodsInfo = []
+      this.goodsInfoRow.map((item, index) => {
+        this.goodsInfo.push(item.goodsId)
+      })
+    },
+    // 选择商家分类/平台分类弹窗调起
+    showBusClassDialog (classFlag) {
+      this.tuneUpBusClassDialog = !this.tuneUpBusClassDialog
+      this.classFlag = classFlag
+      this.flag = classFlag
+    },
+    // 选择商家分类/平台分类弹窗回调显示
+    busClassDialogResult (row) {
+      console.log('选择商家分类/平台分类弹窗回调显示:', row)
+      if (this.flag === 1) {
+        // 商家分类
+        this.busClassRow = row
+        this.busClass = []
+        this.busClassRow.map((item, index) => {
+          this.busClass.push(item.sortId)
+        })
+      } else {
+        // 平台分类
+        this.platClassRow = row
+        this.platClass = []
+        this.platClassRow.map((item, index) => {
+          this.platClass.push(item.catId)
+        })
+      }
+    },
+    // 选择商品标签弹窗调起
+    showProductLabel () {
+      this.tuneUpProductLabel = !this.tuneUpProductLabel
+    },
+    // 选择商品标签弹窗回调显示
+    busProductLabelResult (row) {
+      console.log('选择商品标签弹窗回调显示:', row)
+      this.labelInfoRow = row
+      this.labelInfo = []
+      this.labelInfoRow.map((item, index) => {
+        this.labelInfo.push(item.id)
+      })
+    },
+    // 选择商品品牌弹窗调起
+    showBrandDialog () {
+      this.tuneUpBrandDialog = !this.tuneUpBrandDialog
+    },
+    // 选择商品品牌弹窗回调显示
+    busBrandDialogResult (row) {
+      console.log('选择商品品牌弹窗回调显示:', row)
+      this.brandRow = row
+      this.brand = []
+      this.brandRow.map((item, index) => {
+        this.brand.push(item.id)
+      })
+    },
     initData () {
       returnSelect().then(res => {
         console.log(res)
         if (res.error === 0) {
           this.returnParam = res.content
+          this.goodsInfo = this.returnParam.order_return_goods_package.add_goods
+          this.labelInfo = this.returnParam.order_return_goods_package.add_label
+          this.brand = this.returnParam.order_return_goods_package.add_brand
+          this.busClass = this.returnParam.order_return_goods_package.add_sort
+          this.platClass = this.returnParam.order_return_goods_package.add_cate
         } else {
           this.$message.error('操作失败，请稍后重试！')
         }
@@ -249,6 +361,12 @@ export default {
     },
     // 更新配置项
     updateConfig () {
+      // 设置那几个弹窗的值
+      this.returnParam.order_return_goods_package.add_goods = this.goodsInfo
+      this.returnParam.order_return_goods_package.add_label = this.labelInfo
+      this.returnParam.order_return_goods_package.add_brand = this.brand
+      this.returnParam.order_return_goods_package.add_sort = this.busClass
+      this.returnParam.order_return_goods_package.add_cate = this.platClass
       console.log(JSON.parse(JSON.stringify(this.returnParam)))
       retrunUpdate(this.returnParam).then(res => {
         console.log(res)
