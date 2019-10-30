@@ -22,6 +22,6 @@ public class OverviewVo {
     private DataDemonstrationVo dataDemonstrationVo;
     @Autowired
     private ToDoItemVo toDoItemVo;
-    @Autowired
-    private ShopAssistantVo shopAssistantVo;
+//    @Autowired
+//    private ShopAssistantVo shopAssistantVo;
 }

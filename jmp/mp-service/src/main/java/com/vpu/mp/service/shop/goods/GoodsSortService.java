@@ -2,12 +2,11 @@ package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.*;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.PAY_REWARD;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 /**
