@@ -999,11 +999,16 @@ create table `b2c_pay_reward_record` (
 primary key ( `id` ));
 
 --ws 地址增加经纬度
-ALTER TABLE `b2c_user_address` 
+ALTER TABLE `b2c_user_address`
 ADD COLUMN `lat` varchar(20)  DEFAULT NULL COMMENT '纬度' ,
 ADD COLUMN `lng` varchar(20)  DEFAULT NULL COMMENT '经度' ;
 --ws 修改类型
-ALTER TABLE b2c_order_goods 
+ALTER TABLE b2c_order_goods
 MODIFY COLUMN goods_number int(11) NOT NULL DEFAULT 1 ,
 MODIFY COLUMN send_number int(11) NOT NULL DEFAULT 0 ,
 MODIFY COLUMN return_number int(11) NOT NULL DEFAULT 0 ;
+
+-- 更新字段默认值
+alter table b2c_member_card
+MODIFY COLUMN `store_list` varchar(191)   not null default '[]' comment '可用门店列表';
+

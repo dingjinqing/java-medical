@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 import org.hibernate.validator.constraints.ScriptAssert;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 /**
@@ -16,6 +17,7 @@ public class StoreInfoParam {
     @PositiveOrZero
     @JsonAlias({"store_id", "storeId"})
     public Integer storeId;
+    @NotNull(groups = {StorePayOrder.class})
     public Integer userId;
 
     // 以下字段为门店买单所需入参

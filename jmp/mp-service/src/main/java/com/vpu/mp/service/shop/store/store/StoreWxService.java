@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -51,7 +50,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -376,33 +374,23 @@ public class StoreWxService extends ShopBaseService {
         int storeId = param.getStoreId();
         int userId = param.getUserId();
         StorePayOrderVo payOrderVo = new StorePayOrderVo();
-        if (userId != 0) {
-            UserRecord userRecord = db().select(USER.SOURCE, USER.SCORE, USER.ACCOUNT)
-                .from(USER).where(USER.USER_ID.eq(userId))
-                .fetchOneInto(USER);
-            payOrderVo.setSource(userRecord.getSource());
-            payOrderVo.setScore(userRecord.getScore());
-            payOrderVo.setAccount(userRecord.getAccount());
-            if (payOrderVo.getSource() == -1) {
-                db().update(USER).set(USER.SOURCE, storeId).execute();
-            }
-        }
+        // 用户积分和余额
+        UserRecord userRecord = userService.getUserByUserId(userId);
+        payOrderVo.setScore(userRecord.getScore());
+        payOrderVo.setAccount(userRecord.getAccount());
         // 获取发票开关配置
         payOrderVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         // 获取有效用户会员卡列表
         List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, INTEGER_ZERO)
-            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Arrays.asList(c.getStoreList().split(",")).contains(String.valueOf(storeId)))
+            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
+            }, false).contains(storeId))
             .collect(Collectors.toList());
         log.debug("有效用户会员卡列表:{}", cardList);
         payOrderVo.setMemberCardList(cardList);
-        // 店铺营业状态和logo
-        ShopRecord shopRecord = db().select(SHOP.BUSINESS_STATE, SHOP.SHOP_AVATAR).from(SHOP).where(SHOP.SHOP_ID.eq(this.getShopId())).fetchOneInto(SHOP);
-        payOrderVo.setShopBusinessState(shopRecord.getBusinessState());
-        payOrderVo.setShopLogo(shopRecord.getShopAvatar());
         // 门店营业状态和删除标示
-        StoreRecord storeRecord = db().select(STORE.BUSINESS_STATE, STORE.DEL_FLAG).from(STORE).where(STORE.STORE_ID.eq(storeId)).fetchOneInto(STORE);
-        payOrderVo.setStoreBusinessState(storeRecord.getBusinessState());
-        payOrderVo.setDelFlag(storeRecord.getDelFlag());
+        StorePojo storePojo = store.getStore(storeId);
+        payOrderVo.setStoreBusinessState(storePojo.getBusinessState());
+        payOrderVo.setDelFlag(storePojo.getDelFlag());
         // 门店买单开关配置
         payOrderVo.setStoreBuy(storeConfigService.getStoreBuy());
         return payOrderVo;
