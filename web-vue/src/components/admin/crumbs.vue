@@ -41,6 +41,7 @@ export default {
   },
   mounted () {
     this.langDefault()
+    console.log(this.$route)
     this.changeText(this.$route.name)
   },
   methods: {
@@ -48,10 +49,12 @@ export default {
     changeText (routeName) {
       // 如果是概况则隐藏面包屑
       console.log(routeName)
-      if (routeName === 'shop_view' || !routeName) {
-        this.isSurvey = false
-      } else {
-        this.isSurvey = true
+      if (routeName) {
+        if (routeName === 'shop_view') {
+          this.isSurvey = false
+        } else {
+          this.isSurvey = true
+        }
       }
       // console.log(this.$t(`${this.$route.meta.crumbTitle}`))
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
