@@ -6,7 +6,7 @@
     >
       <!--店铺子账户管理 -->
       <el-tab-pane
-        label="店铺子账户管理"
+        :label="$t('authRoleList.authlabel1')"
         name="first"
       >
         <childConfig
@@ -16,7 +16,7 @@
       </el-tab-pane>
       <!--权限组管理 -->
       <el-tab-pane
-        label="权限组管理"
+        :label="$t('authRoleList.authlabel2')"
         name="second"
       >
         <authorityConfigure

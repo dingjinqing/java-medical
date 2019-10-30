@@ -5,27 +5,30 @@
         <div class="filters">
           <div class="filters_item">
             <el-form
-              label-width="100px"
+              label-width="auto"
               class="demo-dynamic"
               size="mini"
             >
-              <el-form-item label="权限组名称">
+              <el-form-item
+                display:block
+                :label="$t('authRoleList.firstPageLab1')"
+              >
 
                 <el-input
                   size="mini"
                   style="width:35%"
-                  placeholder="请输入角色名称，如：管理员"
+                  :placeholder="$t('authRoleList.tip2')"
                   prefix-icon="el-icon-search"
                   v-model="roleName"
                 />
               </el-form-item>
-              <el-form-item label="权限组权限">
+              <el-form-item :label="$t('authRoleList.firstPageLab2')">
 
                 <el-checkbox
                   name="checkAll"
                   v-model="checkAllState"
                   @change="checkAll"
-                >全选</el-checkbox>
+                >{{$t('authRoleList.allCheck')}}</el-checkbox>
               </el-form-item>
             </el-form>
           </div>
@@ -41,7 +44,7 @@
           >
             <el-table-column
               align="left"
-              width="200px"
+              min-width="40%"
             >
               <template slot-scope="scope">
                 <el-checkbox-group v-model="checkRowList">
@@ -61,14 +64,14 @@
                   v-for="(subItem,index) in scope.row"
                   :key="index"
                 >
-                  <li style="display: inline-block; width: 122px">
+                  <li :class="specialLi">
                     <el-checkbox-group v-model="privilegeList">
                       <el-checkbox
                         :class="subItem.enName"
                         :label="subItem.enName"
                         :name="subItem.enName"
                         @change="show(scope.row[0].topIndex,subItem.enName)"
-                      >{{subItem.name}}</el-checkbox>
+                      >{{$t('authRoleList.'+subItem.enName)}}</el-checkbox>
                     </el-checkbox-group>
                   </li>
                 </ul>
@@ -120,7 +123,8 @@ export default {
       privilegeList: [],
       checkRowList: [],
       checkAllState: false,
-      checkedCount: null
+      checkedCount: null,
+      specialLi: 'specialLi' // 英文适配
     }
   },
   mounted () {
@@ -204,27 +208,6 @@ export default {
       } else {
         return false
       }
-    },
-    editOption (row) {
-      this.centerDialogVisible = true
-      this.AccountName = row.accountName
-      this.AccountId = row.accountId
-      this.RoleId = row.roleId
-      this.RecId = row.recId
-    },
-    delOption (row) {
-      this.$confirm('确认删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.AccountId = row.accountId
-        this.RoleId = row.roleId
-        this.RecId = row.recId
-        this.del()
-      }).catch(() => {
-        this.$message.info('已取消删除')
-      })
     },
     // 点击右侧后左侧checkbox是否选择
     show (val, val2) {
@@ -337,5 +320,10 @@ export default {
   float: left;
   margin: 0;
   padding: 0;
+  display: block;
+  width: 122px;
+}
+.specialLi {
+  width: 260px !important;
 }
 </style>

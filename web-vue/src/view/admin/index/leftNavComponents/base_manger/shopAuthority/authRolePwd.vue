@@ -13,14 +13,14 @@
               <el-form-item label="功能权限密码">
                 <div class="password_set">
                   <div class="password_tips">
-                    <p>设置功能权限密码后，开启密码开关</p>
-                    <p>此权限组用户在进行对应功能操作时，需要先输入此密码</p>
+                    <p>{{$t('authRoleList.tips1')}}</p>
+                    <p>{{$t('authRoleList.tips2')}}</p>
                   </div>
                   <el-button
                     class="password_button"
                     size="mini"
                     @click="pwdShow=true"
-                  >设置密码</el-button>
+                  >{{$t('authRoleList.tipsButton')}}</el-button>
                 </div>
               </el-form-item>
 
@@ -32,45 +32,48 @@
               v-show="pwdShow"
             >
               <el-form-item
-                label="登录密码"
+                :label="$t('authRoleList.pwd1')"
                 :required='true'
               >
 
                 <el-input
                   size="small"
                   style="width:35%"
-                  placeholder="请输入管理员登录密码"
+                  :placeholder="$t('authRoleList.pwdTips1')"
                   v-model="loginPass"
                   show-password
                 />
               </el-form-item>
 
               <el-form-item
-                label="设置密码"
+                :label="$t('authRoleList.pwd2')"
                 :required='true'
               >
                 <el-input
                   size="small"
                   style="width:35%"
-                  placeholder="请输入功能权限密码"
+                  :placeholder="$t('authRoleList.pwdTips2')"
                   v-model="rolePass"
                   show-password
                 />
-                <span style="color:#999">修改后的新密码将替换原有密码</span>
+                <span style="color:#999">{{$t('authRoleList.tips3')}}</span>
               </el-form-item>
 
             </el-form>
             <el-form
-              label-width="100px"
               class="demo-dynamic3"
               size="mini"
             >
-              <el-form-item label="权限组权限">
+              <el-form-item
+                :label="$t('authRoleList.firstPageLab2')"
+                display:
+                block
+              >
                 <el-checkbox
                   name="checkAll"
                   v-model="checkAllState"
                   @change="checkAll"
-                >全选</el-checkbox>
+                >{{$t('authRoleList.allCheck')}}</el-checkbox>
               </el-form-item>
             </el-form>
           </div>
@@ -98,7 +101,7 @@
                     @change="checkRow()"
                   >{{$t('authRoleList.'+scope.row[0].topIndex)}}</el-checkbox>
                 </el-checkbox-group> -->
-                <span v-if="!isEmpty(scope.row[0])"> {{$t('authRoleList.'+scope.row[0].topIndex)}}</span>
+                <span v-if="!isEmpty(scope.row[0])"> {{$t('authRoleList.pw'+scope.row[0].topIndex)}}</span>
               </template>
             </el-table-column>
             <el-table-column>
@@ -115,11 +118,10 @@
                         :label="subItem.prName"
                         :name="subItem.prName"
                         @change="show(scope.row[0].topIndex,subItem.prName)"
-                      >{{subItem.name}}</el-checkbox>
+                      >{{$t('authRoleList.'+subItem.prName)}}</el-checkbox>
                     </el-checkbox-group>
-
                     <div>
-                      密码
+                      {{$t('authRoleList.passwd')}}
                       <el-switch
                         class="switchName"
                         v-model="subItem.prNameSwitch"
@@ -129,8 +131,8 @@
                         inactive-color="#ddd"
                       >
                       </el-switch>
-                      <span v-if="subItem.prNameSwitch===0">已关闭</span>
-                      <span v-if="subItem.prNameSwitch!==0">已开启</span>
+                      <span v-if="subItem.prNameSwitch===0">{{$t('authRoleList.close')}}</span>
+                      <span v-if="subItem.prNameSwitch!==0">{{$t('authRoleList.open')}}</span>
                     </div>
                   </li>
                 </ul>
@@ -357,30 +359,6 @@ export default {
       }
       this.$emit('faClickChange', params)
       return false
-    },
-    test () {
-      for (let i = 0; i < this.tableData.length; i++) {
-        for (let n = 0; n < this.tableData[i].length; n++) {
-          if (this.tableData[i][n].prNameSwitch !== 0) {
-            this.privilegePwdList.push(this.tableData[i][n].prName)
-          }
-        }
-      }
-      var pList = this.privilegePass.join(',')
-      var pwdList = this.privilegePwdList.join(',')
-      this.finprList = []
-      this.finprList.push(pList)
-      this.finprList.push(pwdList)
-      console.log('join之后')
-      console.log(pList)
-      console.log(pwdList)
-      let param = {
-        'loginPass': this.loginPass,
-        'rolePass': this.rolePass,
-        'privilegePass': this.finprList
-      }
-      console.log(param)
-      // this.$emit('privilegeInfo', param)
     }
   }
 }
@@ -407,6 +385,7 @@ export default {
   float: left;
   color: #999;
   margin-left: 8px;
+  width: 73%;
 }
 .password_set .password_button {
   float: right;

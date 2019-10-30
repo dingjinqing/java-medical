@@ -5,15 +5,18 @@
         <div class="filters">
           <div class="filters_item">
             <el-form
-              label-width="100px"
+              label-width="auto"
               class="demo-dynamic"
               size="mini"
             >
-              <el-form-item label="子账户手机号">
+              <el-form-item
+                display:block
+                :label="$t('authRoleList.mobileList')"
+              >
                 <el-select
                   filterable
                   v-model="AccountId"
-                  placeholder="请选择"
+                  :placeholder="$t('authRoleList.please')"
                 >
                   <el-option
                     v-for="item in mobileList"
@@ -24,11 +27,11 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="权限组">
+              <el-form-item :label="$t('authRoleList.roleIdList')">
                 <el-select
                   filterable
                   v-model="RoleId"
-                  placeholder="请选择"
+                  :placeholder="$t('authRoleList.please')"
                 >
                   <el-option
                     v-for="item in groupRoleList"
@@ -41,14 +44,14 @@
                 <el-link
                   type="primary"
                   @click="toAuthPage()"
-                >添加权限组</el-link>
+                >{{$t('authRoleList.addRoleId')}}</el-link>
               </el-form-item>
               <el-form-item>
                 <el-button
                   type="primary"
                   size="mini"
                   @click="setAndUpdate()"
-                >保存</el-button>
+                >{{$t('authRoleList.save')}}</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -63,32 +66,32 @@
           >
             <el-table-column
               prop="accountName"
-              label="子账号用户名"
+              :label="$t('authRoleList.accountName')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="mobile"
-              label="子账户手机号"
+              :label="$t('authRoleList.mobileList')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="roleName"
-              label="角色名称"
+              :label="$t('authRoleList.roleName')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="isBind"
-              label="第三方公众号"
+              :label="$t('authRoleList.thrid')"
               align="center"
               :formatter="bindFormatter"
             >
             </el-table-column>
             <el-table-column
               prop="officialNickName"
-              label="已绑定用户"
+              :label="$t('authRoleList.officialNickName')"
               align="center"
             >
               <template
@@ -105,33 +108,33 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="操作"
+              :label="$t('authRoleList.option')"
               align="center"
             >
               <template slot-scope="scope">
                 <el-button
                   type="text"
                   @click="editOption(scope.row)"
-                >编辑</el-button>
+                >{{$t('authRoleList.eidt')}}</el-button>
                 <el-button
                   type="text"
                   @click="delOption(scope.row)"
-                >删除</el-button>
+                >{{$t('authRoleList.del')}}</el-button>
                 <el-button
                   v-if="scope.row.officialOpenId!=null&& scope.row.isBind===1"
                   type="text"
                   @click="binfOption(scope.row,'del_bind')"
-                >解绑</el-button>
+                >{{$t('authRoleList.unbind')}}</el-button>
                 <el-button
                   v-if="scope.row.officialOpenId!=null&&scope.row.isBind===0"
                   type="text"
                   @click="binfOption(scope.row,'bind')"
-                >绑定</el-button>
+                >{{$t('authRoleList.bind')}}</el-button>
               </template>
             </el-table-column>
           </el-table>
           <div class="footer">
-            <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
+            <span>{{$t('authRoleList.everyPage')}}{{this.pageRows}}{{$t('authRoleList.record')}}，{{$t('authRoleList.currentPage')}}：{{this.currentPage}}，{{$t('authRoleList.pageCount')}}：{{this.pageCount}}，{{$t('authRoleList.totalRows')}}：{{this.totalRows}}</span>
             <el-pagination
               @current-change="handleCurrentChange"
               :current-page.sync="currentPage"
@@ -142,7 +145,7 @@
             </el-pagination>
           </div>
           <el-dialog
-            title="编辑用户信息"
+            :title="$t('authRoleList.eidtAccountInfo')"
             :visible.sync="centerDialogVisible"
             width="30%"
             center
@@ -153,14 +156,14 @@
                 class="demo-dynamic"
                 size="mini"
               >
-                <el-form-item label="子账户用户名">
+                <el-form-item :label="$t('authRoleList.accountName')">
                   {{AccountName}}
                 </el-form-item>
-                <el-form-item label="担任角色">
+                <el-form-item :label="$t('authRoleList.haveRole')">
                   <el-select
                     filterable
                     v-model="RoleId"
-                    placeholder="请选择"
+                    :placeholder="$t('authRoleList.please')"
                   >
                     <el-option
                       v-for="item in groupRoleList"
@@ -181,12 +184,12 @@
               <el-button
                 @click="centerDialogVisible = false"
                 size="small"
-              >取 消</el-button>
+              >{{$t('authRoleList.cancel')}}</el-button>
               <el-button
                 type="primary"
                 size="small"
                 @click="edit()"
-              >保存</el-button>
+              >{{$t('authRoleList.save')}}</el-button>
             </span>
           </el-dialog>
         </div>
@@ -260,10 +263,10 @@ export default {
     // 保存和更新
     setAndUpdate () {
       if (this.isEmpty(this.AccountId)) {
-        return this.$message.error('请选择子账户手机号')
+        return this.$message.error(this.$t('authRoleList.please1'))
       }
       if (this.isEmpty(this.RoleId)) {
-        return this.$message.error('请选择权限组')
+        return this.$message.error(this.$t('authRoleList.please2'))
       }
       let params = {
         'accountId': this.AccountId,
@@ -273,7 +276,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.search()
-          this.$message.success('添加成功')
+          this.$message.success(res.message)
         } else {
           this.$message.error(res.message)
         }
@@ -283,10 +286,10 @@ export default {
     edit () {
       this.centerDialogVisible = false
       if (this.isEmpty(this.AccountId)) {
-        return this.$message.error('请选择子账户手机号')
+        return this.$message.error(this.$t('authRoleList.please1'))
       }
       if (this.isEmpty(this.RoleId)) {
-        return this.$message.error('请选择角色')
+        return this.$message.error(this.$t('authRoleList.please3'))
       }
       let params = {
         'accountId': this.AccountId,
@@ -297,7 +300,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.search()
-          this.$message.success('添加成功')
+          this.$message.success(res.message)
         } else {
           this.$message.error(res.message)
         }
@@ -314,7 +317,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.search()
-          this.$message.success('删除成功')
+          this.$message.success(res.message)
         } else {
           this.$message.error(res.message)
         }
@@ -330,7 +333,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.search()
-          this.$message.success('解绑成功')
+          this.$message.success(res.message)
         } else {
           this.$message.error(res.message)
         }
@@ -344,10 +347,10 @@ export default {
     bindFormatter (row, column) {
       switch (row.isBind) {
         case 1:
-          row.isBindTran = '已绑定'
+          row.isBindTran = this.$t('authRoleList.isBind')
           break
         case 0:
-          row.isBindTran = '未绑定'
+          row.isBindTran = this.$t('authRoleList.isNoBind')
           break
       }
       return row.isBindTran
@@ -367,9 +370,9 @@ export default {
       this.RecId = row.recId
     },
     delOption (row) {
-      this.$confirm('确认删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('authRoleList.sure1'), this.$t('authRoleList.tip'), {
+        confirmButtonText: this.$t('authRoleList.sure'),
+        cancelButtonText: this.$t('authRoleList.cancel'),
         type: 'warning'
       }).then(() => {
         this.AccountId = row.accountId
@@ -377,20 +380,20 @@ export default {
         this.RecId = row.recId
         this.del()
       }).catch(() => {
-        this.$message.info('已取消删除')
+        this.$message.info(this.$t('authRoleList.canle1'))
       })
     },
     binfOption (row, data) {
-      this.$confirm('确认解绑吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('authRoleList.sure2'), this.$t('authRoleList.tip'), {
+        confirmButtonText: this.$t('authRoleList.sure'),
+        cancelButtonText: this.$t('authRoleList.cancel'),
         type: 'warning'
       }).then(() => {
         this.AccountId = row.accountId
         this.Act = data
         this.bindAndUn()
       }).catch(() => {
-        this.$message.info('已取消')
+        this.$message.info(this.$t('authRoleList.cancel'))
       })
     },
     toAuthPage () {

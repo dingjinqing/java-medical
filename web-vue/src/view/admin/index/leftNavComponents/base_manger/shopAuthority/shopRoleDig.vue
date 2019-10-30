@@ -12,7 +12,7 @@
       >
         <!--页面权限管理 -->
         <el-tab-pane
-          label="页面权限管理"
+          :label="$t('authRoleList.firstPage')"
           name="first"
         >
           <authRoleList
@@ -25,7 +25,7 @@
         </el-tab-pane>
         <!--功能权限管理 -->
         <el-tab-pane
-          label="功能权限管理"
+          :label="$t('authRoleList.secondPage')"
           name="second"
         >
           <authRolePwd
@@ -43,12 +43,12 @@
         <el-button
           size="mini"
           @click="centerDialogVisible=false"
-        >取 消</el-button>
+        >{{$t('authRoleList.cancel')}}</el-button>
         <el-button
           size="mini"
           type="primary"
           @click="haveClick=true"
-        >确 定</el-button>
+        >{{$t('authRoleList.sure')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -180,7 +180,7 @@ export default {
         console.log('添加权限组')
         console.log(res)
         if (res.error === 0) {
-          this.$message.success('成功')
+          this.$message.success(res.message)
           this.centerDialogVisible = false
           this.sendFa()
         } else {
@@ -193,7 +193,7 @@ export default {
         console.log('添加权限组')
         console.log(res)
         if (res.error === 0) {
-          this.$message.success('成功')
+          this.$message.success(res.message)
           this.centerDialogVisible = false
           this.sendFa()
         } else {

@@ -13,7 +13,7 @@
                 type="primary"
                 size="small"
                 @click="clickUp"
-              >添加权限组</el-button>
+              >{{$t('authRoleList.addRoleGroup')}}</el-button>
             </el-form>
           </div>
         </div>
@@ -27,34 +27,34 @@
           >
             <el-table-column
               prop="roleName"
-              label="角色名称"
+              :label="$t('authRoleList.roleName')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="createTime"
-              label="创建时间"
+              :label="$t('authRoleList.createTime')"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              label="操作"
+              :label="$t('authRoleList.option')"
               align="center"
             >
               <template slot-scope="scope">
                 <el-button
                   type="text"
                   @click="editOption(scope.row)"
-                >编辑</el-button>
+                >{{$t('authRoleList.eidt')}}</el-button>
                 <el-button
                   type="text"
                   @click="delOption(scope.row)"
-                >删除</el-button>
+                >{{$t('authRoleList.del')}}</el-button>
               </template>
             </el-table-column>
           </el-table>
           <div class="footer">
-            <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
+            <span>{{$t('authRoleList.everyPage')}}{{this.pageRows}}{{$t('authRoleList.record')}}，{{$t('authRoleList.currentPage')}}：{{this.currentPage}}，{{$t('authRoleList.pageCount')}}：{{this.pageCount}}，{{$t('authRoleList.totalRows')}}：{{this.totalRows}}</span>
             <el-pagination
               @current-change="handleCurrentChange"
               :current-page.sync="currentPage"
@@ -157,14 +157,13 @@ export default {
       this.isEdit = row.roleId
     },
     delOption (row) {
-      this.$confirm('确认删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm(this.$t('authRoleList.sure1'), this.$t('authRoleList.tip'), {
+        confirmButtonText: this.$t('authRoleList.sure'),
+        cancelButtonText: this.$t('authRoleList.cancel')
       }).then(() => {
         this.del(row.roleId)
       }).catch(() => {
-        this.$message.info('已取消删除')
+        this.$message.info(this.$t('authRoleList.canle1'))
       })
     },
     handleCurrentChange () {

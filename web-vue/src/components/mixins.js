@@ -100,6 +100,8 @@ const myMixin = {
         this.bgColorClass = 'bgColorClass'
         this.hoverTips = 'hoverTips'
         this.guideCircleClass = 'guideCircleClass'
+
+        this.specialLi = 'specialLi'
       } else {
         // this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -166,6 +168,8 @@ const myMixin = {
         this.bgColorClass = ''
         this.hoverTips = null
         this.guideCircleClass = ''
+
+        this.specialLi = ''
       }
     },
     // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用
@@ -194,7 +198,10 @@ const myMixin = {
         let selfItem = retObj[item[idName]]
         if (selfItem === undefined) {
           // 未遍历到则初始化自己
-          retObj[item[idName]] = { 'item': item, children: [] }
+          retObj[item[idName]] = {
+            'item': item,
+            children: []
+          }
           selfItem = retObj[item[idName]]
         } else {
           // 已创建过，（因提前遍历了子节点而创建）
@@ -207,7 +214,10 @@ const myMixin = {
           parentItem.children.push(selfItem)
         } else {
           // 没有则创建临时父亲
-          retObj[item.parentId] = { 'item': null, children: [selfItem] }
+          retObj[item.parentId] = {
+            'item': null,
+            children: [selfItem]
+          }
         }
       }
 
