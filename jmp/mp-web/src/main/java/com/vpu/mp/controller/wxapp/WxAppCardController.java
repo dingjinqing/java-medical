@@ -33,7 +33,8 @@ public class WxAppCardController extends WxAppBaseController {
 	
 	@PostMapping(value="/api/card/detail")
 	public JsonResult getUserCardDetail(@RequestBody UserCardParam param) {
-		shop().user.userCard.getUserCardDetail(param);
-		return success();
+		logger().info("WxAppCardController: request for card detail");
+		WxAppUserCardVo userCardDetail = shop().user.userCard.getUserCardDetail(param);
+		return success(userCardDetail);
 	}
 }
