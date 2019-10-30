@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.*;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -373,6 +374,15 @@ public class SeckillService extends ShopBaseService {
             analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
             startDate = Util.getEarlyTimeStamp(startDate, 1);
         }
+        SeckillAnalysisTotalVo total = new SeckillAnalysisTotalVo();
+        total.setTotalPayment(analysisVo.getPaymentAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
+        total.setTotalDiscount(analysisVo.getDiscountAmount().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
+        total.setTotalCostEffectivenessRatio(analysisVo.getCostEffectivenessRatio().stream().reduce(BigDecimal.ZERO,BigDecimal::add));
+        total.setTotalPaidOrderNumber(analysisVo.getPaidOrderNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalPaidGoodsNumber(analysisVo.getPaidGoodsNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalOldUserNumber(analysisVo.getOldUserNumber().stream().mapToInt(Integer::intValue).sum());
+        total.setTotalNewUserNumber(analysisVo.getNewUserNumber().stream().mapToInt(Integer::intValue).sum());
+        analysisVo.setTotal(total);
         return analysisVo;
     }
 

@@ -17,11 +17,11 @@ public class SeckillAnalysisTotalVo {
     /**总费效比  */
     private BigDecimal totalCostEffectivenessRatio;
     /**总付款订单数 */
-    private BigDecimal totalPaidOrderAmount;
+    private Integer totalPaidOrderNumber;
     /**总付款商品件数 */
-    private BigDecimal totalPaidGoodsAmount;
+    private Integer totalPaidGoodsNumber;
     /**老成交用户总数 */
-    private BigDecimal totalOldUserAmount;
+    private Integer totalOldUserNumber;
     /**新成交用户总数 */
-    private BigDecimal totalNewUserAmount;
+    private Integer totalNewUserNumber;
 }
