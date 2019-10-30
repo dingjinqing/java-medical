@@ -54,33 +54,34 @@
 
             <el-form-item label="活动有效期：">
               <div>
-                <el-radio-group v-model="timeRange">
-                  <div style="display: flex">
-                    <el-radio label="1">固定时间</el-radio>
-                    <div style="display: flex">
-                      <el-date-picker
-                        v-model="value"
-                        type="datetime"
-                        placeholder="选择开始时间"
-                        style="width:120px"
-                        size="small"
-                      >
-                      </el-date-picker>
-                      <div>至</div>
-                      <el-date-picker
-                        v-model="value1"
-                        type="datetime"
-                        placeholder="选择结束时间"
-                        style="width:120px"
-                        size="small"
-                      >
-                      </el-date-picker>
-                    </div>
-                  </div>
-                  <div>
-                    <el-radio label="2">永久有效</el-radio>
-                  </div>
-                </el-radio-group>
+                <el-radio
+                  v-model="timeRange"
+                  label="1"
+                  style="margin-right: 20px;"
+                >固定时间</el-radio>
+                <el-date-picker
+                  v-model="value"
+                  type="datetime"
+                  placeholder="选择开始时间"
+                  style="width:130px"
+                  size="small"
+                >
+                </el-date-picker>
+                <span>至</span>
+                <el-date-picker
+                  v-model="value1"
+                  type="datetime"
+                  placeholder="选择结束时间"
+                  style="width:130px"
+                  size="small"
+                >
+                </el-date-picker>
+                <div>
+                  <el-radio
+                    v-model="timeRange"
+                    label="2"
+                  >永久有效</el-radio>
+                </div>
               </div>
             </el-form-item>
 
@@ -138,34 +139,45 @@
 
         <!-- 支付奖励区域 -->
         <section class="container">
-          <div class="title">支付奖励
-            <!-- <div class="name">支付奖励</div>
+          <div class="pay_rewards">
+            <div class="name">支付奖励</div>
             <div>
               <span>最多可添加5次支付的奖励</span>
-              <div>+添加奖励</div>
-            </div> -->
+              <div class="addReward">+添加奖励</div>
+            </div>
           </div>
           <el-form
             label-width="100px"
             label-position="right"
+            v-for="(item,index) in shareRules"
+            :key="index"
           >
-            <!-- <el-form-item :label="第+(index+1)+次支付奖励"></el-form-item> -->
+            <el-form-item :label="第+(index+1)+次支付奖励"></el-form-item>
             <el-form-item label="支付奖励：">
-              <el-radio-group v-model="payReward">
-                <el-radio label="1">无奖品</el-radio>
-                <el-radio label="2">普通优惠券</el-radio>
-                <el-radio label="3">分裂优惠券</el-radio>
-                <el-radio label="4">幸运大抽奖</el-radio>
-                <el-radio label="5">余额</el-radio>
-                <el-radio label="6">奖品</el-radio>
-                <el-radio label="7">积分</el-radio>
-                <el-radio label="8">自定义</el-radio>
+              <el-radio-group
+                v-model="payReward"
+                class="itemOptions"
+              >
+                <div style="margin-top:13px">
+                  <el-radio label="1">无奖品</el-radio>
+                  <el-radio label="2">普通优惠券</el-radio>
+                  <el-radio label="3">分裂优惠券</el-radio>
+                </div>
+                <div style="margin-top:10px">
+                  <el-radio label="4">幸运大抽奖</el-radio>
+                  <el-radio label="5">余额</el-radio>
+                  <el-radio label="6">奖品</el-radio>
+                </div>
+                <div style="margin-top:10px">
+                  <el-radio label="7">积分</el-radio>
+                  <el-radio label="8">自定义</el-radio>
+                </div>
               </el-radio-group>
             </el-form-item>
 
             <el-form-item
               v-if="payReward==='2'"
-              label="普通优惠券"
+              label="普通优惠券："
             >
               <div class="coupon">
                 <img
@@ -179,7 +191,7 @@
 
             <el-form-item
               v-if="payReward==='3'"
-              label="分裂优惠券"
+              label="分裂优惠券："
             >
               <div class="coupon">
                 <img
@@ -193,7 +205,7 @@
 
             <el-form-item
               v-if="payReward==='4'"
-              label="幸运大抽奖"
+              label="幸运大抽奖："
             >
               <el-select
                 size="small"
@@ -225,7 +237,10 @@
               v-if="payReward==='6'"
               label="奖品："
             >
-              <div class="addGoods">+&nbsp;添加奖品</div>
+              <div
+                class="addGoods"
+                @click="addItem"
+              >+&nbsp;添加奖品</div>
             </el-form-item>
             <el-form-item
               v-if="payReward==='6'"
@@ -243,7 +258,7 @@
 
             <el-form-item
               v-if="payReward==='7'"
-              label="积分"
+              label="积分："
             >
               <el-input
                 size="small"
@@ -290,11 +305,8 @@
                 <span>填写0表示不限制</span>
                 <div>发放人数达到奖品份数，后续用户无法再获取支付奖励</div>
               </div>
-
             </el-form-item>
-
           </el-form>
-
         </section>
       </div>
     </div>
@@ -323,9 +335,28 @@ export default {
       }, {
         value: '选项2',
         label: '双皮奶'
-      }]
+      }],
+      shareRules: [{}, {}, {}, {}, {}]
+    }
+  },
+  methods: {
+    addItem () {
+      let obj = {
+        coupon: ''
+      }
+      if (this.shareRules.length < 3) {
+        this.shareRules.push(obj)
+      } else {
+        alert('最多可添加3个规则！')
+      }
+    },
+    deleteItem (index) {
+      console.log(this.shareRules)
+      this.shareRules.splice(index, 1)
+      console.log(index)
     }
   }
+
 }
 
 </script>
@@ -375,6 +406,26 @@ export default {
         /deep/ .el-form-item {
           margin-bottom: 16px;
         }
+
+        .pay_rewards {
+          display: flex;
+          justify-content: space-between;
+          height: 25px;
+          line-height: 25px;
+          // padding: 10px;
+          :nth-of-type(2) {
+            display: flex;
+            .addReward {
+              margin-left: 10px;
+              padding: 0 5px;
+              border: 1px solid #5a8bff;
+              color: #5a8bff;
+              cursor: pointer;
+              border-radius: 4px;
+              margin-right: 10px;
+            }
+          }
+        }
         .triggerCondition {
           .partGoods {
             margin-left: 73px;
@@ -389,6 +440,13 @@ export default {
               cursor: pointer;
               margin: 10px 0;
               margin-bottom: 10px;
+            }
+          }
+        }
+        .itemOptions {
+          div {
+            .el-radio {
+              width: 100px;
             }
           }
         }

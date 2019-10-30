@@ -109,6 +109,45 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
               )
           },
+          // 交易统计
+          {
+            path: '/admin/home/main/tradesStatistics',
+            name: 'trades_summary',
+            meta: {
+              crumbTitle: 'router.trades_summary',
+              meta: 'first_web_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/tradesStatistics/tradesStatistics'
+              )
+          },
+          // 商品统计页面
+          {
+            path: '/admin/home/main/goodsStatistics',
+            name: 'goods_summary',
+            meta: {
+              crumbTitle: 'router.goods_summary',
+              meta: 'first_web_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/goodsStatistics/goodsStatistics'
+              )
+          },
+          // 用户统计页面
+          {
+            path: '/admin/home/main/userStatistics',
+            name: 'user_summary',
+            meta: {
+              crumbTitle: 'router.user_summary',
+              meta: 'first_web_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/userStatistics/userStatistics'
+              )
+          },
           // 小程序管理系列子路由
           // 页面分类
           {

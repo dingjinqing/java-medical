@@ -1,4 +1,5 @@
 export const en = {
+  // 概括系列模块
   // 概况-店铺助手
   taskList: ['Survey', 'Shop Assistant'],
   // 会员管理 会员列表
@@ -7,8 +8,16 @@ export const en = {
     'Membership management',
     'Membership Editorial Information'
   ],
+  // 概况 交易统计
+  trades_summary: ['Overview', 'Trades Statistics'],
+  // 概况 商品统计
+  goods_summary: ['Overview', 'Goods Statistics'],
+  // 概况 用户统计
+  user_summary: ['Overview', 'User Statistics'],
+
   // 会员管理 持卡会员
   Cardholder: ['Membership management'],
+
   // 小程序管理 页面分类
   pageClassification: ['Small Program Management', 'Page classification'],
   // 小程序管理 图片空间

@@ -25,6 +25,10 @@ import { cn as videoSpace } from './views/admin_new/cn/index/videoSpace/videoSpa
 import { cn as overview } from './views/admin_new/cn/index/overview/overviewCn'
 // 商城概况 - 店铺助手
 import { cn as taskList } from './views/admin_new/cn/index/overview/taskListCn'
+// 交易统计
+import {
+  cn as tradesStatistics
+} from './views/admin_new/cn/index/overview/tradesStatistics/tradesStatisticsCn'
 
 // 小程序管理系列国际化
 // 小程序管理 -> 页面装修
@@ -613,7 +617,8 @@ const cn = {
   adminPageFramework, // admin页面框架
 
   // 概览
-  overview,
+  overview, // 商城概览
+  tradesStatistics, // 交易统计
   // 商城概况 - 店铺助手
   taskList,
 

@@ -29,9 +29,14 @@ import { en as goodsRecommendSorts } from './views/admin_new/en/index/goodsManag
 import { en as evaluation } from './views/admin_new/en/index/goodsManagement/evaluationEn'
 
 // 概览系列国际化
+// 商城概览
 import { en as overview } from './views/admin_new/en/index/overview/overviewEn'
 // 概况-店铺助手
 import { en as taskList } from './views/admin_new/en/index/overview/taskListEn'
+// 交易统计
+import {
+  en as tradesStatistics
+} from './views/admin_new/en/index/overview/tradesStatistics/tradesStatisticsEn'
 
 // 小程序管理系列国际化
 // 页面装修
@@ -641,7 +646,8 @@ const en = {
   adminPageFramework, // admin页面框架
 
   // 概览
-  overview,
+  overview, // 商城概览
+  tradesStatistics, // 交易统计
   // 概况-店铺助手
   taskList,
 
