@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -12,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Comparator;
 import org.jooq.Condition;
@@ -237,7 +237,7 @@ public class MallOverviewService extends ShopBaseService {
                 DistributorApply.DISTRIBUTOR_APPLY.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getApplyOver())));
         dataMarket.setExamine(disCount);
         if(disCount > 0){vo.totalPendingIncr();}
-        /**  会员卡激活审核 */
+        // todo 会员卡激活审核 等那边接口写完直接调用
         Map<String,String> memberMap = new HashMap<>(4);
         CardExamineRecord cardExamineRecord = new CardExamineRecord();
         List<CardExamine> cardExamineList = db().select(CardExamine.CARD_EXAMINE.CARD_ID)
@@ -247,8 +247,8 @@ public class MallOverviewService extends ShopBaseService {
                     .and(CardExamine.CARD_EXAMINE.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getExamineOver())))
                     .orderBy(CardExamine.CARD_EXAMINE.CREATE_TIME.asc())
                     .fetchInto(CardExamine.class);
-        if(cardExamineList!=null&&!cardExamineList.isEmpty()){
-            int lastRecordCardId = cardExamineList.get(0).CARD_ID.get(cardExamineRecord);
+        if (CollectionUtils.isNotEmpty(cardExamineList)) {
+            /*int lastRecordCardId = cardExamineList.get(0).CARD_ID.get(cardExamineRecord);
 
             int cardNum = db().fetchCount(CardExamine.CARD_EXAMINE,CardExamine.CARD_EXAMINE.CARD_ID.eq(lastRecordCardId));
             List<MemberCard> memberCards = db().select(MemberCard.MEMBER_CARD.CARD_NAME)
@@ -260,7 +260,7 @@ public class MallOverviewService extends ShopBaseService {
             memberMap.put("card_name",cardName);
             memberMap.put("card_num",String.valueOf(cardNum));
             dataMarket.setMember(memberMap);
-            vo.totalPendingIncr();
+            vo.totalPendingIncr();*/
         }else{
             memberMap.put("card_num","0");
             dataMarket.setMember(memberMap);
