@@ -11,10 +11,10 @@ import java.math.BigDecimal;
  * @author 李晓冰
  * @date 2019年10月29日
  */
-public class ActivityGroupBuyListInfo extends ActivityForListInfo {
-    public ActivityGroupBuyListInfo() {
+public class GroupBuyForListInfo extends ActivityForListInfo {
+    public GroupBuyForListInfo() {
         super();
-        activityType = GoodsConstant.GOODS_TYPE_GROUP_BUY;
+        activityType = GoodsConstant.ACTIVITY_TYPE_GROUP_BUY;
     }
 
     @Getter

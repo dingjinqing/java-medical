@@ -2,7 +2,8 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.wxapp.activity.info.groupbuy.ActivityGroupBuyListInfo;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.activity.info.groupbuy.GroupBuyForListInfo;
 import org.jooq.Record2;
 import org.jooq.Record3;
 
@@ -19,8 +20,6 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 public class GroupBuyProcessorDao extends ShopBaseService {
 
-    private static final byte USE_STATUS = 1;
-
     /**
      * 获取集合内商品所参与的拼团信息
      * @param goodsIds 待查询商品id集合
@@ -28,12 +27,12 @@ public class GroupBuyProcessorDao extends ShopBaseService {
      * @return key:商品id value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GroupBuyActivityVo}
      * @author 李晓冰
      */
-    public Map<Integer, ActivityGroupBuyListInfo> getGoodsGroupByListInfo(List<Integer> goodsIds, Timestamp date) {
+    public Map<Integer, GroupBuyForListInfo> getGoodsGroupBuyListInfo(List<Integer> goodsIds, Timestamp date) {
         // 获取有效拼团规格信息
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> groupsInfos = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .from(GROUP_BUY_DEFINE).innerJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
             .where(GROUP_BUY_DEFINE.START_TIME.lt(date)).and(GROUP_BUY_DEFINE.END_TIME.gt(date)).and(GROUP_BUY_DEFINE.STOCK.gt((short) 0))
-            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(GoodsConstant.USE_STATUS)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_DEFINE.GOODS_ID)));
 
         if (groupsInfos == null) {
@@ -45,7 +44,7 @@ public class GroupBuyProcessorDao extends ShopBaseService {
         Map<Integer, List<Record2<Integer, BigDecimal>>> prdsInfos = db().select(GOODS_SPEC_PRODUCT.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(validGoodsIds))
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_SPEC_PRODUCT.GOODS_ID)));
 
-        Map<Integer, ActivityGroupBuyListInfo> returnMap = new HashMap<>(validGoodsIds.size());
+        Map<Integer, GroupBuyForListInfo> returnMap = new HashMap<>(validGoodsIds.size());
 
         validGoodsIds.forEach(goodsId->{
             List<Record2<Integer, BigDecimal>> prdsInfo = prdsInfos.get(goodsId);
@@ -63,7 +62,7 @@ public class GroupBuyProcessorDao extends ShopBaseService {
             // 获取拼团规格中的最小值
             Record3<Integer, Integer, BigDecimal> group = groupsInfo.get(0);
 
-            ActivityGroupBuyListInfo vo =new ActivityGroupBuyListInfo();
+            GroupBuyForListInfo vo =new GroupBuyForListInfo();
             vo.setActivityId(group.get(GROUP_BUY_DEFINE.ID));
             vo.setOriginalMaxPrice(prd.get(GOODS_SPEC_PRODUCT.PRD_PRICE));
             vo.setActivityPrice(group.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));

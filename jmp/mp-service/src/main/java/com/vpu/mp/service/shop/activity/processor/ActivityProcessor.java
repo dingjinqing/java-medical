@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityBaseInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.AbstractCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityParam;
@@ -16,6 +17,13 @@ import java.util.Map;
  * @date 2019年10月29日
  */
 public interface ActivityProcessor<P extends ActivityParam,C extends AbstractCapsule,V extends ActivityBaseInfo>{
+
+    static boolean isGoodsTypeIn135610(byte goodsType) {
+        return goodsType== GoodsConstant.ACTIVITY_TYPE_GROUP_BUY||goodsType == GoodsConstant.ACTIVITY_TYPE_BARGAIN
+            || goodsType == GoodsConstant.ACTIVITY_TYPE_SEC_KILL || goodsType == GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE
+            || goodsType == GoodsConstant.ACTIVITY_TYPE_PRE_SALE ;
+    }
+
     int getPriority();
 
     default P filterParam(List<C> capsules){

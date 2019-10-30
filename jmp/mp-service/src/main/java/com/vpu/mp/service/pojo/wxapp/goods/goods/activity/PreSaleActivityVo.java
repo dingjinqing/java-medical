@@ -16,7 +16,7 @@ import java.sql.Timestamp;
  */
 public class PreSaleActivityVo extends ActivityBaseVo{
     public PreSaleActivityVo() {
-        activityType = GoodsConstant.GOODS_TYPE_PRE_SALE;
+        activityType = GoodsConstant.ACTIVITY_TYPE_PRE_SALE;
     }
     /**活动最高价*/
     @Getter

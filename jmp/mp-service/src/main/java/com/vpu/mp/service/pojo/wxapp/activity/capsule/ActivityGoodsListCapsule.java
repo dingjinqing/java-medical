@@ -17,7 +17,12 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ActivityGoodsListCapsule extends AbstractCapsule {
     private Byte goodsType;
+    /** 商品展示价格和划线价格 */
     private BigDecimal realPrice;
     private BigDecimal linePrice;
+    /** 平台、商家、品牌分类id */
+    private Integer catId;
+    private Integer sortId;
+    private Integer brandId;
     private List<ActivityForListInfo> activities = new ArrayList<>(2);
 }

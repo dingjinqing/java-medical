@@ -14,4 +14,15 @@ import java.util.List;
 public class ActivityGoodsListMpParam implements ActivityParam {
     private List<Integer> goodsIds;
     private Timestamp date = DateUtil.getLocalDateTime();
+
+    /** 满折满减，优惠券处使用入参*/
+    private List<AllIdsParam> idsParams;
+
+    /** 存放各种过滤id值 */
+    public static class AllIdsParam{
+        public Integer goodsId;
+        public Integer catId;
+        public Integer sortId;
+        public Integer brandId;
+    }
 }

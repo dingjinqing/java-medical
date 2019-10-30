@@ -9,6 +9,6 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
  */
 public class SecKillActivityVo extends ActivityBaseVo{
     public SecKillActivityVo() {
-        activityType = GoodsConstant.GOODS_TYPE_SECKILL;
+        activityType = GoodsConstant.ACTIVITY_TYPE_SEC_KILL;
     }
 }

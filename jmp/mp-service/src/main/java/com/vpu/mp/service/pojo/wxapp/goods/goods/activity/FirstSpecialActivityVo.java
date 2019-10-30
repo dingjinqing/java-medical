@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 public class FirstSpecialActivityVo extends ActivityBaseVo {
     public FirstSpecialActivityVo() {
-        activityType = GoodsConstant.GOODS_TYPE_FIRST_SPECIAL;
+        activityType = GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
     }
 
     /** 1 表示活动不限制开始结束时间，0 限制开始结束时间 */

@@ -1,9 +1,5 @@
 package com.vpu.mp.service.shop.market.fullcut;
 
-import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
-import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
-
-import com.vpu.mp.db.shop.tables.MrkingStrategy;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyConditionRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -18,10 +14,12 @@ import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
-import java.rmi.dgc.DGC;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
+import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
 
 /**
  * @author: 王兵兵
@@ -149,9 +147,10 @@ public class MrkingStrategyService extends ShopBaseService {
     }
 
     /**
-     * 判断商品是否参与满减活动了
+     * 判断商品是否参与满减活动了 活动处理后需删除
      * @param goodsId
      */
+    @Deprecated
     public boolean getGoodsAct(Integer goodsId,Integer catId,Integer sortId){
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 

@@ -6,56 +6,60 @@ package com.vpu.mp.service.pojo.shop.goods;
  * 商品及相关类的通用常量对应类
  */
 public class GoodsConstant {
-    /** 商品活动类型对应码 */
+    /****** 商品活动类型对应码 *****/
     /** 普通商品 */
-    public final static byte GOODS_TYPE_GENERAL = 0;
+    public final static byte ACTIVITY_TYPE_GENERAL = 0;
     /** 拼团商品 */
-    public final static byte GOODS_TYPE_GROUP_BUY = 1;
+    public final static byte ACTIVITY_TYPE_GROUP_BUY = 1;
     /** 返利商品 */
-    public final static byte GOODS_TYPE_REBATE = 2;
+    public final static byte ACTIVITY_TYPE_REBATE = 2;
     /** 砍价商品 */
-    public final static byte GOODS_TYPE_BARGAIN = 3;
+    public final static byte ACTIVITY_TYPE_BARGAIN = 3;
 
     /** 积分兑换商品 */
-    public final static byte GOODS_TYPE_INTEGRAL = 4;
+    public final static byte ACTIVITY_TYPE_INTEGRAL = 4;
     /** 秒杀商品 */
-    public final static byte GOODS_TYPE_SECKILL = 5;
+    public final static byte ACTIVITY_TYPE_SEC_KILL = 5;
     /** 限时降价 返利 */
-    public final static byte GOODS_TYPE_REDUCE_PRICE = 6;
+    public final static byte ACTIVITY_TYPE_REDUCE_PRICE = 6;
     /** 加价购 返利 */
-    public final static byte GOODS_TYPE_PURCHASE_PRICE = 7;
+    public final static byte ACTIVITY_TYPE_PURCHASE_PRICE = 7;
     /** 拼团抽奖 */
-    public final static byte GOODS_TYPE_GROUP_DRAW = 8;
+    public final static byte ACTIVITY_TYPE_GROUP_DRAW = 8;
     /** 一口价 */
-    public final static byte GOODS_TYPE_PACKAGE_SALE = 9;
+    public final static byte ACTIVITY_TYPE_PACKAGE_SALE = 9;
     /** 定金膨胀 */
-    public final static byte GOODS_TYPE_PRE_SALE = 10;
+    public final static byte ACTIVITY_TYPE_PRE_SALE = 10;
     /** 赠品 */
-    public final static byte GOODS_TYPE_GIFT = 11;
+    public final static byte ACTIVITY_TYPE_GIFT = 11;
     /** 幸运大抽奖 */
-    public final static byte GOODS_TYPE_LOTTERY_PRESENT = 12;
+    public final static byte ACTIVITY_TYPE_LOTTERY_PRESENT = 12;
     /** 限次卡兑换 */
-    public final static byte GOODS_TYPE_EXCHANG_ORDER = 13;
+    public final static byte ACTIVITY_TYPE_EXCHANG_ORDER = 13;
     /** 好友助力 */
-    public final static byte GOODS_TYPE_PROMOTE_ORDER = 14;
+    public final static byte ACTIVITY_TYPE_PROMOTE_ORDER = 14;
     /** 满包邮 */
-    public final static byte GOODS_TYPE_FREESHIP_ORDER = 15;
+    public final static byte ACTIVITY_TYPE_FREESHIP_ORDER = 15;
     /** 测评 */
-    public final static byte GOODS_TYPE_ASSESS_ORDER = 16;
+    public final static byte ACTIVITY_TYPE_ASSESS_ORDER = 16;
     /** 送礼 */
-    public final static byte GOODS_TYPE_GIVE_GIFT = 17;
+    public final static byte ACTIVITY_TYPE_GIVE_GIFT = 17;
     /** 首单特惠 */
-    public final static byte GOODS_TYPE_FIRST_SPECIAL = 18;
+    public final static byte ACTIVITY_TYPE_FIRST_SPECIAL = 18;
+    /** 满折满减*/
+    public final static byte ACTIVITY_TYPE_FULL_REDUCTION = 19;
     /** 代付订单 */
-    public final static byte GOODS_TYPE_PAY_FOR_ANOTHER = 99;
+    public final static byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */
-    public final static byte GOODS_TYPE_SWEEP_CODE_BUY = 100;
+    public final static byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
 
     /** 商品存在优惠券信息*/
-    public final static byte GOODS_TYPE_HAS_COUPON = 120;
+    public final static byte ACTIVITY_TYPE_HAS_COUPON = 120;
     /** 商品存在满减活动 */
-    public final static byte GOODS_TYPE_HAS_FULL_REDUCTION = 121;
+    public final static byte ACTIVITY_TYPE_HAS_FULL_REDUCTION = 121;
+    /**************** 结束 *****************/
 
+    /****** 各种活动的处理处理展示优先级 *****/
     public final static byte ACTIVITY_SEC_KILL_PRIORITY = 1;
 
     public final static byte ACTIVITY_PRE_SALE_PRIORITY = 5;
@@ -67,6 +71,16 @@ public class GoodsConstant {
     public final static byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 20;
 
     public final static byte ACTIVITY_REDUCE_PRIORITY = 25;
+    /** 满折满减 */
+    public final static byte ACTIVITY_FULL_REDUCTION_PRIORITY = 30;
+
+    /**************** 结束 *****************/
+
+    /**************** 营销活动启用和停止状态 *****************/
+    public final static byte USE_STATUS = 1;
+    public final static byte STOP_STATUS = 0;
+    /**************** 结束 *****************/
+
 
     /*** 销售状态：在售*/
     public static final Byte ON_SALE = 1;
@@ -96,7 +110,6 @@ public class GoodsConstant {
      * 1全部品牌，2推荐品牌，3推荐品牌列表展示，4推荐品牌按分类展示，
      * 5推荐分类，6普通分类，7商品内容
      */
-
     public static final Byte ALL_BRAND_TYPE  = 1;
     public static final Byte RECOMMEND_BRAND_TYPE  = 2;
     public static final Byte RECOMMEND_BRAND_LIST_TYPE=3;

@@ -41,17 +41,17 @@ public class GoodsActivityMpService extends ShopBaseService {
         boolean hasAct =mrkingStrategyService.getGoodsAct(goodsT.getGoodsId(),goodsT.getCatId(),goodsT.getSortId());
 
         if (couponTagVo != null) {
-            listTags.add(GoodsConstant.GOODS_TYPE_HAS_COUPON);
+            listTags.add(GoodsConstant.ACTIVITY_TYPE_HAS_COUPON);
         }
 
         if (hasAct) {
-            listTags.add(GoodsConstant.GOODS_TYPE_HAS_FULL_REDUCTION);
+            listTags.add(GoodsConstant.ACTIVITY_TYPE_HAS_FULL_REDUCTION);
         }
         if (listTags.size() > 2) {
             listTags = listTags.subList(0,2);
         }
         goodsT.setGoodsTags(listTags);
-        if (listTags.contains(GoodsConstant.GOODS_TYPE_HAS_COUPON)) {
+        if (listTags.contains(GoodsConstant.ACTIVITY_TYPE_HAS_COUPON)) {
             goodsT.setCouponTagVo(couponTagVo);
         }
     }
@@ -79,10 +79,10 @@ public class GoodsActivityMpService extends ShopBaseService {
     }
 
     public boolean isIn135610Activity(Byte goodsType){
-       return goodsType == GoodsConstant.GOODS_TYPE_GROUP_BUY ||
-              goodsType == GoodsConstant.GOODS_TYPE_BARGAIN ||
-              goodsType == GoodsConstant.GOODS_TYPE_SECKILL ||
-              goodsType == GoodsConstant.GOODS_TYPE_REDUCE_PRICE ||
-             goodsType == GoodsConstant.GOODS_TYPE_PRE_SALE;
+       return goodsType == GoodsConstant.ACTIVITY_TYPE_GROUP_BUY ||
+              goodsType == GoodsConstant.ACTIVITY_TYPE_BARGAIN ||
+              goodsType == GoodsConstant.ACTIVITY_TYPE_SEC_KILL ||
+              goodsType == GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE ||
+             goodsType == GoodsConstant.ACTIVITY_TYPE_PRE_SALE;
     }
 }

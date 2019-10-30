@@ -5,13 +5,13 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import com.vpu.mp.service.shop.activity.processor.ActivityProcessor;
-import com.vpu.mp.service.shop.activity.processor.groupbuy.GroupBuyForListProcessor;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +24,6 @@ public class GoodsListMpFactory {
     @Autowired
     List<ActivityGoodsListProcessor> processors;
 
-    @Autowired
-    GroupBuyForListProcessor groupBuyForListProcessor;
 
     @PostConstruct
     public void init(){
@@ -33,6 +31,7 @@ public class GoodsListMpFactory {
             LoggerFactory.getLogger(this.getClass()).error("{}处理器工厂初始化失败", this.getClass());
             processors = new ArrayList<>();
         } else {
+            processors.sort(Comparator.comparing(ActivityProcessor::getPriority));
             LoggerFactory.getLogger(this.getClass()).debug(processors.toString());
         }
     }
@@ -42,7 +41,6 @@ public class GoodsListMpFactory {
             ActivityGoodsListMpParam param = processor.filterParam(capsules);
             Map<Integer, ActivityForListInfo> activityInfo = processor.getActivityInfo(param);
             processor.process(activityInfo,capsules);
-
 //            processor.autoProcess(capsules);
         }
     }

@@ -9,6 +9,6 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
  */
 public class BargainActivityVo extends ActivityBaseVo {
     public BargainActivityVo() {
-        activityType = GoodsConstant.GOODS_TYPE_BARGAIN;
+        activityType = GoodsConstant.ACTIVITY_TYPE_BARGAIN;
     }
 }

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
  */
 public class GroupBuyActivityVo extends ActivityBaseVo{
     public GroupBuyActivityVo() {
-        activityType = GoodsConstant.GOODS_TYPE_GROUP_BUY;
+        activityType = GoodsConstant.ACTIVITY_TYPE_GROUP_BUY;
     }
 
     /**参与活动的商品的原始价格*/

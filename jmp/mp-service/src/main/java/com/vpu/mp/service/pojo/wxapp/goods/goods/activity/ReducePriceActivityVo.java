@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  */
 public class ReducePriceActivityVo extends ActivityBaseVo{
     public ReducePriceActivityVo() {
-        activityType = GoodsConstant.GOODS_TYPE_REDUCE_PRICE;
+        activityType = GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE;
     }
 
     /**
