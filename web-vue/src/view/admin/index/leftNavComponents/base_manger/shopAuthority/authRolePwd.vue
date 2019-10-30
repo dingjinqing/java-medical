@@ -27,7 +27,7 @@
             </el-form>
             <el-form
               label-width="100px"
-              class="demo-dynamic"
+              class="demo-dynamic2"
               size="mini"
               v-show="pwdShow"
             >
@@ -54,12 +54,13 @@
             </el-form>
             <el-form
               label-width="100px"
-              class="demo-dynamic"
+              class="demo-dynamic3"
               size="mini"
             >
               <el-form-item label="权限组权限">
                 <el-checkbox
                   name="checkAll"
+                  v-model="checkAllState"
                   @change="checkAll"
                 >全选</el-checkbox>
               </el-form-item>
@@ -80,14 +81,16 @@
               width="200px"
             >
               <template slot-scope="scope">
-                <el-checkbox-group v-model="checkRowList">
+                <!--分模块全选，以后需要可以打开 -->
+                <!-- <el-checkbox-group v-model="checkRowList">
                   <el-checkbox
                     v-if="!isEmpty(scope.row[0])"
                     v-model="scope.row[0].topIndex"
                     :label="scope.row[0].topIndex"
                     @change="checkRow()"
                   >{{$t('authRoleList.'+scope.row[0].topIndex)}}</el-checkbox>
-                </el-checkbox-group>
+                </el-checkbox-group> -->
+                <span v-if="!isEmpty(scope.row[0])"> {{$t('authRoleList.'+scope.row[0].topIndex)}}</span>
               </template>
             </el-table-column>
             <el-table-column>
@@ -118,7 +121,8 @@
                         inactive-color="#ddd"
                       >
                       </el-switch>
-                      <span>已关闭</span>
+                      <span v-if="subItem.prNameSwitch===0">已关闭</span>
+                      <span v-if="subItem.prNameSwitch!==0">已开启</span>
                     </div>
                   </li>
                 </ul>
@@ -172,7 +176,9 @@ export default {
       RecId: null,
       Act: null,
       privilegePass: [],
-      checkRowList: []
+      checkRowList: [],
+      checkAllState: false,
+      checkedCount: null
     }
   },
   mounted () {
@@ -248,6 +254,8 @@ export default {
       })
     },
     isEmpty (obj) {
+      console.log('empty')
+      console.log(obj)
       if (typeof obj === 'undefined' || obj == null || obj === '') {
         return true
       } else {
@@ -257,12 +265,15 @@ export default {
 
     // 点击右侧后左侧checkbox是否选择
     show (val, val2) {
+      console.log(val)
+      console.log(val2)
       var arr = document.getElementsByName(val2)
       if (arr[0].checked === true) {
         this.checkRowList.push(val)
       } else {
         this.checkRowList.splice(this.checkRowList.indexOf(val), 1)
       }
+      this.checkAllState = this.checkedCount === this.privilegePass.length
       console.log(this.checkRowList)
     },
     checkRow () {
@@ -277,8 +288,9 @@ export default {
       }
     },
     checkAll () {
-      var doc = document.getElementsByName('checkAll')
-      if (doc[0].checked === true) {
+      console.log(this.checkAllState)
+      // var doc = document.getElementsByName('checkAll')
+      if (this.checkAllState) {
         console.log('全选')
         for (let i = 0; i < this.tableData.length; i++) {
           this.checkRowList.push(i)
@@ -286,6 +298,8 @@ export default {
             this.privilegePass.push(this.tableData[i][n].prName)
           }
         }
+        this.checkedCount = this.privilegePass.length
+        this.checkAllState = true
       } else {
         console.log('没有全选')
         this.checkRowList = []
@@ -384,6 +398,7 @@ export default {
 .password_tips {
   float: left;
   color: #999;
+  margin-left: 8px;
 }
 .password_set .password_button {
   float: right;
@@ -395,5 +410,8 @@ export default {
     display: flex;
     justify-content: space-between;
   }
+}
+.demo-dynamic /deep/.el-form-item__content {
+  border: 1px solid #eee;
 }
 </style>

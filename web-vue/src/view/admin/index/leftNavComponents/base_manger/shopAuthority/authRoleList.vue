@@ -235,8 +235,8 @@ export default {
       this.checkAllState = this.checkedCount === this.privilegeList.length
     },
     checkAll () {
-      var doc = document.getElementsByName('checkAll')
-      if (doc[0].checked === true) {
+      // var doc = document.getElementsByName('checkAll')
+      if (this.checkAllState) {
         this.checkedAll()
       } else {
         this.checkRowList = []
