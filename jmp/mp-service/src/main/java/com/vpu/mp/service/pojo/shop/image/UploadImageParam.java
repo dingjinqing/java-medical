@@ -2,13 +2,17 @@ package com.vpu.mp.service.pojo.shop.image;
 
 import lombok.Data;
 
-/**
- * @author 新国
- */
+/** @author 新国 */
 @Data
 public class UploadImageParam {
-    public Integer needImgWidth;
-    public Integer needImgHeight;
-    public Integer imgCatId = 0;
-    public String uploadFileId;
+  /** 图片宽度 */
+  public Integer needImgWidth;
+  /** 图片高度 */
+  public Integer needImgHeight;
+  /** 图片种类 -1：用户上传 */
+  public Integer imgCatId = 0;
+  /** 用户id */
+  public Integer userId;
+
+  public String uploadFileId;
 };
