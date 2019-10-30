@@ -9,7 +9,7 @@
       :class="activeBorder?'activeBorder':''"
     >
       <div
-        v-if="data.coupon_arr.length>1"
+        v-if="!isRightPageChangeFlga"
         class="coupon_module"
       >
         <div
@@ -22,7 +22,7 @@
             class="coupon_list_top"
             :style="'color:'+backgroundColor+';'"
           >
-            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span>
+            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?$t('coupon.fracture'):''}}</i></span>
           </div>
           <div class="coupon_list_center">
             <div
@@ -33,14 +33,14 @@
               class="coupon_center_number"
               :style="'color:'+backgroundColorTransparent+';'"
             >
-              <div>{{item.limitSurplusFlag===1?'库存不限制':item.receive_text}}</div>
+              <div>{{item.limitSurplusFlag===1?$t('coupon.unlimitedInventory'):item.receive_text}}</div>
             </div>
           </div>
           <div
             class="coupon_list_bottom new_back"
             :style="'border-color:'+backgroundColor+';background-color:'+backgroundColor"
           >
-            {{item.use_score==='0'?'领取':item.score_number+'积分 兑换'}}
+            {{item.use_score==='0'?$t('coupon.receive'):item.score_number+$t('coupon.integral')}}
           </div>
         </div>
 
@@ -59,26 +59,26 @@
             :style="'color:'+backgroundColor"
           >
             <div>
-              {{data.coupon_arr[0].act_code==='discount'?'':'¥'}}<span style="font-size:20px">{{data.coupon_arr[0].denomination}}<i style="font-size:14px">{{data.coupon_arr[0].act_code==='discount'?'折':''}}</i></span>
+              {{data.coupon_arr[0].act_code==='discount'?'':'¥'}}<span style="font-size:20px">{{data.coupon_arr[0].denomination}}<i style="font-size:14px">{{data.coupon_arr[0].act_code==='discount'?$t('coupon.fracture'):''}}</i></span>
 
             </div>
           </div>
           <div class="singleMiddle">
             <div :style="'color:'+backgroundColor">{{data.coupon_arr[0].consume_text}}</div>
-            <div :style="'color:'+backgroundColorTransparent">{{data.coupon_arr[0].limitSurplusFlag===1?'库存不限制':data.coupon_arr[0].receive_text}}</div>
+            <div :style="'color:'+backgroundColorTransparent">{{data.coupon_arr[0].limitSurplusFlag===1?$t('coupon.unlimitedInventory'):data.coupon_arr[0].receive_text}}</div>
           </div>
           <div
             class="singleLeftRight"
             :style="'background:'+backgroundColor+' url('+$imageHost+'/image/admin/coupon_border_y.png) repeat-y left;'"
           >
-            {{data.coupon_arr[0].use_score==='0'?'领取':data.coupon_arr[0].score_number+'积分 兑换'}}
+            {{data.coupon_arr[0].use_score==='0'?$t('coupon.receive'):data.coupon_arr[0].score_number+$t('coupon.integral')}}
           </div>
         </div>
 
       </div>
       <!--end-->
       <div class="item_module_title">
-        <span>优惠卷</span>
+        <span>{{$t('coupon.coupon')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -107,7 +107,7 @@
       class="setHere activeSetHere"
       :class="activeSetHere?'middleModulesActive':''"
     >
-      放这里
+      {{$t('commoditySearch.putItHere')}}
     </div>
   </div>
 </template>
@@ -123,43 +123,12 @@ export default {
     return {
       activeBorder: null,
       activeSetHere: false,
+      firstInter: false,
       // 模块私有数据
       backgroundColor: '',
       backgroundColorTransparent: '',
-      defaultData: {
-        'coupon_arr': [ // 默认占位数据
-          {
-            'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
-            'denomination': 'xx', // 面额
-            'consume_text': '满xx使用', // 使用门槛
-            'receive_text': '剩余xx张', // 卡卷剩余数
-            'coupon_id': '', // 优惠卷id
-            'use_score': '0', // 是否可以积分兑换
-            'score_number': 'xx', // 需要积分数
-            'limitSurplusFlag': 0
-          },
-          {
-            'act_code': 'voucher',
-            'denomination': 'xx',
-            'consume_text': '满xx使用',
-            'receive_text': '剩余xx张',
-            'coupon_id': '',
-            'use_score': '0',
-            'score_number': 'xx',
-            'limitSurplusFlag': 0
-          },
-          {
-            'act_code': 'voucher',
-            'denomination': 'xx',
-            'consume_text': '满xx使用',
-            'receive_text': '剩余xx张',
-            'coupon_id': '',
-            'use_score': '0',
-            'score_number': 'xx',
-            'limitSurplusFlag': 0
-          }
-        ]
-      },
+      defaultData: {}, // 占位数据
+      isRightPageChangeFlga: false, // 是否用单个文件布局
       // 保存数据
       data: {
         coupon_arr: [
@@ -206,24 +175,39 @@ export default {
     backData: {
       handler (newData) {
         console.log(newData)
-        if (newData.coupon_arr.length) {
+        this.firstInter = false
+        if (newData.coupon_arr.length > 1) {
           console.log(1)
           this.data = newData
         } else {
           console.log(0)
           this.data = this.defaultData
         }
+        if (newData.coupon_arr.length === 1) {
+          this.isRightPageChangeFlga = true
+        } else {
+          this.isRightPageChangeFlga = false
+        }
       },
       deep: true
+    },
+    lang () {
+      if (!this.firstInter) return
+      let obj = {}
+      obj['coupon_arr'] = this.$t('coupon.coupon_arr')
+      console.log(obj)
+      this.defaultData = obj
+      this.handleDefaultData()
     }
   },
   mounted () {
-    // 初始化数据
-    this.handleDefaultData()
-    console.log(this.backgroundColor)
+    this.firstInter = true
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     handleDefaultData () {
+      this.data = this.defaultData
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
         console.log(this.flag, res)

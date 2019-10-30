@@ -3,7 +3,7 @@
     class="membershipCard modules"
     @mouseover="mouseOver"
   >
-    <!--会员列表模块-->
+    <!--会员卡模块-->
     <div
       class="showModule"
       :class="activeBorder?'activeBorder':''"
@@ -29,12 +29,15 @@
                     >￥0.00元</div> -->
           </div>
           <div class="card_bottom">
-            更多权益领取后查看<span>我要领卡</span>
+            {{$t('membershipCard.moreEquity')}}<span>{{$t('membershipCard.collarCard')}}</span>
           </div>
         </div>
       </div>
-      <div class="item_module_title">
-        <span>会员卡</span>
+      <div
+        :style="hoverTips?'width:140px':''"
+        class="item_module_title"
+      >
+        <span>{{$t('membershipCard.membershipCard')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -62,7 +65,7 @@
       class="setHere activeSetHere"
       :class="activeSetHere?'middleModulesActive':''"
     >
-      放这里
+      {{$t('commoditySearch.putItHere')}}
     </div>
   </div>
 </template>
@@ -118,24 +121,32 @@ export default {
         if (newData) {
           console.log(newData)
           this.carData = newData
-          switch (newData.card_type) {
-            case '0':
-              this.carClass = '普通卡'
-              break
-            case '1':
-              this.carClass = '限次卡'
-              break
-            case '2':
-              this.carClass = '等级卡'
-          }
         }
         console.log(newData)
       },
       immediate: true,
       deep: true
+    },
+    lang () {
+      switch (this.carData.card_type) {
+        case '0':
+          this.carClass = this.$t('membershipCard.ordinaryCard')
+          break
+        case '1':
+          this.carClass = this.$t('membershipCard.limitCard')
+          break
+        case '2':
+          this.carClass = this.$t('membershipCard.gradeCard')
+      }
+      this.carData.card_name = this.$t('membershipCard.cardName')
+      this.carData.card_state = this.$t('membershipCard.cardState')
+      this.carData.receive_day = this.$t('membershipCard.receiveDay')
+      this.carData.legal = this.$t('membershipCard.legal')
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 初始化数据
     this.defaultData()
   },
@@ -200,7 +211,7 @@ export default {
       right: 0;
       background: rgba(0, 0, 0, 0.1);
       width: 60px;
-      height: 20px;
+      // height: 20px;
       text-align: center;
       line-height: 20px;
       border-bottom-left-radius: 8px;

@@ -1,12 +1,12 @@
 <template>
   <div class="rightCoupon">
     <div class="rightCouponMain">
-      <h2>优惠卷模块</h2>
+      <h2>{{$t('coupon.couponModule')}}</h2>
       <!--模块私有-->
       <div class="content">
         <div>
           <div class="couponTop">
-            <span>优惠卷:</span>
+            <span>{{$t('coupon.coupon')}}:</span>
             <div class="couponList">
               <div
                 v-for="(item,index) in data.coupon_arr"
@@ -23,7 +23,7 @@
                   class="coupon_list_top"
                   :style="'color:'+backgroundColor"
                 >
-                  {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'':'折'}}</i></span>
+                  {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'':$t('coupon.fracture')}}</i></span>
                 </div>
                 <div class="coupon_list_center">
                   <div
@@ -34,25 +34,26 @@
                   </div>
                   <div
                     class="coupon_center_number"
-                    :style="'color:'+backgroundColorTransparent+';margin-top:3px'"
-                  >剩余{{item.receive_text}}张</div>
+                    :style="'color:'+backgroundColorTransparent+';margin-top:3px;word-break: break-all'"
+                  >{{item.receive_text}}</div>
                 </div>
                 <div
                   class="coupon_list_bottom new_back"
                   :style="'background-color:'+backgroundColor"
                 >
-                  {{item.use_score===0?'领取':item.score_number+'积分 兑换'}}
+                  {{item.use_score===0?$t('coupon.receive'):item.score_number+$t('coupon.integral')}}
                 </div>
               </div>
             </div>
           </div>
           <div
             class="couponAdd"
+            :style="hoverTips?'margin-left:67px':''"
             @click="handleToCallCouponDialog()"
             v-if="data.coupon_arr.length !== 6"
           >
             <img :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'">
-            <p>添加优惠卷</p>
+            <p>{{$t('coupon.addDiscountVolume')}}</p>
           </div>
         </div>
       </div>
@@ -83,6 +84,11 @@ export default {
       nowShowCouponList: [],
       backgroundColor: '',
       backgroundColorTransparent: '',
+      noThreshold: '', // 无门槛  文字
+      full: '', // 满 文字
+      available: '', // 可用  文字
+      surplus: '', // 剩余  文字
+      zhang: '', // 张 文字
       data: {
 
       }
@@ -109,10 +115,18 @@ export default {
         this.$emit('handleToBackData', newData)
       },
       deep: true
+    },
+    lang () {
+      this.noThreshold = this.$t('coupon.noThreshold')
+      this.full = this.$t('coupon.full')
+      this.available = this.$t('coupon.available')
+      this.surplus = this.$t('coupon.surplus')
+      this.zhang = this.$t('coupon.zhang')
     }
   },
   mounted () {
-
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 点击添加优惠卷按钮
@@ -148,16 +162,16 @@ export default {
         })
 
         if (item.useConsumeRestrict === 0) {
-          useConsumeRestrict = '无门槛'
+          useConsumeRestrict = this.noThreshold
         } else {
-          useConsumeRestrict = `满${item.leastConsume}可用`
+          useConsumeRestrict = `${this.full}${item.leastConsume}${this.available}`
         }
         let obj = {
 
           'act_code': item.actCode, // 是否是打折卷  discount：打折卷   voucher不是打折卷
           'denomination': item.denomination, // 面额
           'consume_text': useConsumeRestrict, // 使用门槛
-          'receive_text': `剩余${item.surplus}张`, // 卡卷剩余数
+          'receive_text': `${this.surplus}${item.surplus}${this.zhang}`, // 卡卷剩余数
           'coupon_id': item.id, // 优惠卷id
           'use_score': item.useScore, // 是否可以积分兑换
           'score_number': item.scoreNumber, // 需要积分数
@@ -246,6 +260,7 @@ export default {
               margin-top: 10px;
               color: #f66;
               font-size: 14px;
+              height: 34px;
               span {
                 font-size: 20px;
                 font-weight: bold;

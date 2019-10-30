@@ -59,6 +59,12 @@ import { en as pageSetUp } from './views/admin_new/en/index/miniProgramManagemen
 import { en as pictureNavigation } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationEn'
 // 小程序页面装修商品搜索模块国际化
 import { en as commoditySearch } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
+// 小程序页面装修会员卡模块国际化
+import { en as membershipCard } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardEn'
+// 小程序页面装修优惠卷模块国际化
+import { en as coupon } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/couponEn'
+// 小程序页面装修商品模块国际化
+import { en as commodity } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commodityEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -740,6 +746,9 @@ const en = {
   pageSetUp, // 小程序页面设置
   pictureNavigation, // 页面装修图片导航模块
   authRoleList, // 店铺权限
-  commoditySearch // 小程序页面装修商品搜索模块
+  commoditySearch, // 小程序页面装修商品搜索模块
+  membershipCard, // 小程序页面装修会员卡模块
+  coupon, // 小程序页面装修优惠卷模块
+  commodity // 小程序页面装修商品模块
 }
 export default en

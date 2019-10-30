@@ -49,6 +49,12 @@ import { cn as pageSetUp } from './views/admin_new/cn/index/miniProgramManagemen
 import { cn as pictureNavigation } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationCn'
 // 小程序页面装修商品搜索模块国际化
 import { cn as commoditySearch } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchCn'
+// 小程序页面装修会员卡
+import { cn as membershipCard } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardCn'
+// 小程序页面装修优惠卷模块国际化
+import { cn as coupon } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/couponCn'
+// 小程序页面装修商品模块国际化
+import { cn as commodity } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commodityCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -712,7 +718,10 @@ const cn = {
   decorationHome, // 页面装修部分
   pageSetUp, // 页面装修页面设置
   pictureNavigation, // 页面装修图片导航模块
-  commoditySearch // 小程序页面装修搜索模块
+  commoditySearch, // 小程序页面装修搜索模块
+  membershipCard, // 小程序页面装修会员卡模块
+  coupon, // 小程序页面装修优惠卷模块
+  commodity //  小程序页面装修商品模块
 }
 
 export default cn

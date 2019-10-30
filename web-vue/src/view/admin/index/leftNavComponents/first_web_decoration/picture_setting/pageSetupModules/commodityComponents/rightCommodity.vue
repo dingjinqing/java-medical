@@ -1,23 +1,23 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>商品模块</h2>
+      <h2>{{$t('commodity.commodityModule')}}</h2>
       <div class="main">
         <div class="title">
-          <span>模块标题:</span>
+          <span>{{$t('commodity.moduleHeader')}}:</span>
           <div>
             <el-radio
               v-model="data.goods_module_title"
               label="0"
-            >不设置</el-radio>
+            >{{$t('commodity.notSetUp')}}</el-radio>
             <el-radio
               v-model="data.goods_module_title"
               label="1"
-            >文字标题</el-radio>
+            >{{$t('commodity.textTitle')}}</el-radio>
             <el-radio
               v-model="data.goods_module_title"
               label="2"
-            >图片标题</el-radio>
+            >{{$t('commodity.pictureTitle')}}</el-radio>
           </div>
         </div>
         <!--模块标题隐藏模块-->
@@ -27,15 +27,15 @@
         >
           <div class="titleHiddenMain">
             <div class="topTitle">
-              <span>标题：</span>
+              <span>{{$t('commodity.title')}}：</span>
               <el-input
                 v-model="data.title"
                 size="small"
               ></el-input>
-              <span>最多10个字</span>
+              <span>{{$t('commodity.upToWords')}}</span>
             </div>
             <div class="topLink">
-              <span>标题链接：</span>
+              <span>{{$t('commodity.titleLink')}}：</span>
               <el-input
                 v-model="data.title_link"
                 size="small"
@@ -43,14 +43,14 @@
               <el-button
                 size="small"
                 @click="tuneUpSelectLink = !tuneUpSelectLink"
-              >选择链接</el-button>
+              >{{$t('commodity.selectLink')}}</el-button>
             </div>
             <div class="topPosition">
-              <span>标题位置：</span>
-              <el-checkbox v-model="data.tit_center">标题居中</el-checkbox>
+              <span>{{$t('commodity.titleLocation')}}：</span>
+              <el-checkbox v-model="data.tit_center">{{$t('commodity.titleCentered')}}</el-checkbox>
             </div>
             <div class="bgImg">
-              <span>{{data.goods_module_title==='1'?'图标':data.goods_module_title==='2'?'标题图片':''}}：</span>
+              <span>{{data.goods_module_title==='1'?$t('commodity.icon'):data.goods_module_title==='2'?$t('commodity.titlePicture'):''}}：</span>
               <div class="bgIcon">
 
                 <img
@@ -76,7 +76,7 @@
         <!--模块标题隐藏模块end-->
         <!--列表样式模块-->
         <div class="listStyle">
-          <div class="title">列表样式</div>
+          <div class="title">{{$t('commodity.listStyle')}}</div>
           <div class="content">
             <div
               class="typeContainer"
@@ -102,39 +102,43 @@
         </div>
         <!--商品模块-->
         <div class="commodityModule">
-          <span style="margin-bottom:10px">商品模块</span>
+          <span style="margin-bottom:10px">{{$t('commodity.commodityModule')}}</span>
           <div class="commodityMain">
             <div
               class="commodityAngle"
               v-if="this.listTypeData[4].isChecked"
             >
-              <span>大图展示：</span>
+              <span>{{$t('commodity.bigPictureDisplay')}}：</span>
               <div class="angleDiv">
                 <el-radio
                   v-model="data.goods_display"
                   label="0"
-                >平铺</el-radio>
+                >{{$t('commodity.tiling')}}</el-radio>
                 <el-radio
                   v-model="data.goods_display"
                   label="1"
-                >居中</el-radio>
+                >{{$t('commodity.centered')}}</el-radio>
                 <el-radio
                   v-model="data.goods_display"
                   label="2"
-                >全图</el-radio>
+                >{{$t('commodity.fullGraph')}}</el-radio>
               </div>
             </div>
             <div class="commodityContent">
-              <span>显示内容：</span>
+              <div class="compatibleContent"><span style="width:80px;text-align:center;margin-right:8px">{{$t('commodity.showContents')}}：</span></div>
+
               <div class="contentRight">
                 <div class="contentRightTop">
-                  <el-checkbox v-model="data.hide_name">商品名称</el-checkbox>
-                  <el-checkbox v-model="data.hide_price">商品价格</el-checkbox>
-                  <el-checkbox v-model="data.hide_label">商品标签</el-checkbox>
+                  <el-checkbox v-model="data.hide_name">{{$t('commodity.tradeName')}}</el-checkbox>
+                  <el-checkbox v-model="data.hide_price">{{$t('commodity.commodityPrice')}}</el-checkbox>
+                  <el-checkbox v-model="data.hide_label">{{$t('commodity.commodityLabel')}}</el-checkbox>
                 </div>
                 <div class="contentDiv">
-                  <el-checkbox v-model="data.cart_btn">购买按钮</el-checkbox>
-                  <span style="color:#999;white-space:nowrap">显示购买按钮时将不显示其他信息</span>
+                  <el-checkbox v-model="data.cart_btn">{{$t('commodity.purchaseButton')}}</el-checkbox>
+                  <span
+                    class="specialTips"
+                    style="color:#999;"
+                  >{{$t('commodity.purchaseTips')}}</span>
                 </div>
                 <!--选中购买按钮隐藏模块-->
                 <div
@@ -165,7 +169,7 @@
                       class="right_buy new_back"
                       style="background-color: rgb(177, 78, 105);"
                     >
-                      马上抢
+                      {{$t('commodity.grabAtOnce')}}
                     </i>
                   </el-radio>
                   <el-radio
@@ -175,7 +179,7 @@
                     <i
                       class="cart_buy"
                       style="color: rgb(177, 78, 105); border-color: rgb(177, 78, 105);"
-                    >购买</i>
+                    >{{$t('commodity.purchase')}}</i>
                   </el-radio>
                 </div>
                 <!--end-->
@@ -183,8 +187,11 @@
                   class="contentDiv"
                   v-if="!this.listTypeData[2].isChecked"
                 >
-                  <el-checkbox v-model="data.other_message">其他信息</el-checkbox>
-                  <span style="color:#999;white-space:nowrap">后台数据仅为参考请以实际显示为准</span>
+                  <el-checkbox v-model="data.other_message">{{$t('commodity.otherInformation')}}</el-checkbox>
+                  <span
+                    class="specialTips"
+                    style="color:#999"
+                  >{{$t('commodity.otherInformationTips')}}</span>
                 </div>
                 <div
                   class="contentDiv"
@@ -193,60 +200,60 @@
                   <el-radio
                     v-model="data.show_market"
                     label="1"
-                  >市场价</el-radio>
+                  >{{$t('commodity.marketValue')}}</el-radio>
                   <el-radio
                     v-model="data.show_market"
                     label="2"
-                  >销量</el-radio>
+                  >{{$t('commodity.salesVolume')}}</el-radio>
                   <el-radio
                     v-model="data.show_market"
                     label="3"
-                  >评价数</el-radio>
+                  >{{$t('commodity.evaluationNumber')}}</el-radio>
                 </div>
               </div>
             </div>
             <div class="commodityAngle">
-              <span>模块角度：</span>
+              <span>{{$t('commodity.moduleAngle')}}：</span>
               <div class="angleDiv">
                 <el-radio
                   v-model="data.if_radius"
                   label="0"
-                >直角</el-radio>
+                >{{$t('commodity.rightAngle')}}</el-radio>
                 <el-radio
                   v-model="data.if_radius"
                   label="1"
-                >圆角</el-radio>
+                >{{$t('commodity.fillet')}}</el-radio>
               </div>
             </div>
             <div class="commodityAngle">
-              <span>模块样式：</span>
+              <span>{{$t('commodity.moduleStyle')}}：</span>
               <div class="angleDiv">
                 <el-radio
                   v-model="data.goods_module_style"
                   label="0"
-                >白底无边框</el-radio>
+                >{{$t('commodity.NoborderonwhiteBackground')}}</el-radio>
                 <el-radio
                   v-model="data.goods_module_style"
                   label="1"
-                >边框投影</el-radio>
+                >{{$t('commodity.frameProjection')}}</el-radio>
                 <el-radio
                   v-model="data.goods_module_style"
                   label="2"
-                >白底有边框</el-radio>
+                >{{$t('commodity.whiteWithBorder')}}</el-radio>
               </div>
             </div>
             <div class="commodityAngle">
-              <span>背景颜色：</span>
+              <span>{{$t('commodity.backgroundColor')}}：</span>
               <div class="bgColorDiv">
                 <el-radio
                   v-model="data.goods_module_bg"
                   label="0"
-                >与页面背景一致</el-radio>
+                >{{$t('commodity.consistentWithPageBackground')}}</el-radio>
                 <div class="customBgColor">
                   <el-radio
                     v-model="data.goods_module_bg"
                     label="1"
-                  >自定义</el-radio>
+                  >{{$t('commodity.custom')}}</el-radio>
                   <span class="colorSelect">
                     <colorPicker
                       v-model="data.goods_bg_color"
@@ -259,7 +266,7 @@
                     <el-button
                       @click="handleToReset()"
                       size="small"
-                    >重置</el-button>
+                    >{{$t('commodity.reset')}}</el-button>
                   </div>
                 </div>
 
@@ -269,15 +276,15 @@
         </div>
         <!--模块推荐-->
         <div class="moduleRecommendation">
-          <span style="margin-bottom:10px">模块推荐：</span>
+          <span style="margin-bottom:10px">{{$t('commodity.moduleRecommendation')}}：</span>
           <el-radio
             v-model="data.recommend_type"
             label="0"
-          >自动推荐</el-radio>
+          >{{$t('commodity.automaticRecommendation')}}</el-radio>
           <el-radio
             v-model="data.recommend_type"
             label="1"
-          >手动推荐</el-radio>
+          >{{$t('commodity.manualRecommendation')}}</el-radio>
           <!--自动推荐选中显示模块-->
           <div
             class="moduleRecMain"
@@ -647,23 +654,23 @@ export default {
       defaultColorright: '#f5f5f5', // 背景颜色自定义默认颜色
       listTypeData: [ // 列表样式数据
         {
-          typeName: '单列',
+          typeName: '',
           isChecked: false
         },
         {
-          typeName: '双列',
+          typeName: '',
           isChecked: false
         },
         {
-          typeName: '三列',
+          typeName: '',
           isChecked: false
         },
         {
-          typeName: '横向滑动',
+          typeName: '',
           isChecked: false
         },
         {
-          typeName: '大图',
+          typeName: '',
           isChecked: false
         }
       ],
@@ -753,6 +760,11 @@ export default {
         console.log(styleParams)
       },
       deep: true
+    },
+    lang () {
+      this.listTypeData.forEach((item, index) => {
+        item.typeName = this.$t('commodity.listTypeData')[index]
+      })
     }
   },
   computed: {
@@ -761,6 +773,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     console.log(this.data.tit_center)
   },
   methods: {
@@ -1269,6 +1283,11 @@ export default {
           .commodityContent {
             display: flex;
             padding-top: 20px;
+            .compatibleContent {
+              width: 97px;
+              display: flex;
+              justify-content: flex-end;
+            }
             span {
               display: inline-block;
               width: 97px;
@@ -1290,6 +1309,12 @@ export default {
                 /deep/ .el-checkbox {
                   margin-right: 22px;
                 }
+                .specialTips {
+                  display: inline-block;
+                  width: 220px;
+                  white-space: pre-wrap;
+                  text-align: justify;
+                }
               }
               .buyBtnHidden {
                 padding-left: 45px;
@@ -1305,7 +1330,8 @@ export default {
                   font-size: 32px !important;
                 }
                 .right_buy {
-                  width: 70px;
+                  // width: 70px;
+                  padding: 0 5px;
                   height: 30px;
                   text-align: center;
                   line-height: 30px;
@@ -1316,7 +1342,8 @@ export default {
                   display: inline-block;
                 }
                 .cart_buy {
-                  width: 55px;
+                  // width: 55px;
+                  padding: 0 5px;
                   height: 30px;
                   text-align: center;
                   line-height: 30px;

@@ -1,25 +1,25 @@
 <template>
   <div class="rightMembershipCard">
     <div class="rightMembershipCardMain">
-      <h2>会员卡模块</h2>
+      <h2>{{$t('membershipCard.membershipCardModule')}}</h2>
 
       <!-- <el-button @click='handleToSelectCuopon()'>会员模块测试</el-button> -->
       <div class="content">
         <div>
-          会员卡：
+          {{$t('membershipCard.membershipCard')}}：
         </div>
         <div class="cardListContainer">
           <div class="cardList">
 
           </div>
-          <div>
+          <div style="overflow: hidden;">
             <div
               class="card_add"
               @click="handlCallCardDialog()"
               v-if="!nowChecked.card_id"
             >
               <img :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'">
-              <p>添加会员卡</p>
+              <p>{{$t('membershipCard.addMembershipCard')}}</p>
             </div>
             <!--选中模块-->
             <div
@@ -49,12 +49,12 @@
               >有效期：永久有效</p> -->
               <p class="receive_day">{{nowChecked.receive_day}}</p>
             </div>
-            <div class="footer">
-              <el-checkbox v-model="checked"></el-checkbox>
-              用户领取后隐藏会员卡
-            </div>
-          </div>
 
+          </div>
+          <div class="footer">
+            <el-checkbox v-model="checked"></el-checkbox>
+            {{$t('membershipCard.collectionConcealment')}}
+          </div>
         </div>
 
       </div>
@@ -448,6 +448,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     this.showCardList = this.ordinaryCardData
   },
   methods: {

@@ -28,15 +28,15 @@ export default {
           obj = {
             'module_name': 'm_coupon', // 模块名称
             'coupon_arr': [ // 选中的优惠卷数组
-              {
-                'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
-                'denomination': '5', // 面额
-                'consume_text': '无门槛', // 使用门槛
-                'receive_text': '剩余93张', // 卡卷剩余数
-                'coupon_id': -1, // 优惠卷id
-                'use_score': '0', // 是否可以积分兑换
-                'score_number': '' // 需要积分数
-              }
+              // {
+              //   'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
+              //   'denomination': '5', // 面额
+              //   'consume_text': '无门槛', // 使用门槛
+              //   'receive_text': '剩余93张', // 卡卷剩余数
+              //   'coupon_id': -1, // 优惠卷id
+              //   'use_score': '0', // 是否可以积分兑换
+              //   'score_number': '' // 需要积分数
+              // }
             ]
           }
           break

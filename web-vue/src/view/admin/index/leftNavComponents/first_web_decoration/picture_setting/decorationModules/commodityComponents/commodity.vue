@@ -40,7 +40,7 @@
             v-if="!goodsFlag"
             style="height:200px;line-height:200px;text-align:center"
           >
-            没有数据
+            {{$t('commodity.noData')}}
           </div>
           <!--有商品-->
           <ul
@@ -71,27 +71,27 @@
                         class="labelStyle1"
                         v-if="(item.label?item.label.listPattern:-1)==='1'&&data.hide_label==='1'"
                       >
-                        <span style="display: inline;">限时降价</span>
+                        <span style="display: inline;">{{$t('commodity.limitedPriceReduction')}}</span>
                       </div>
                       <div
                         class="labelStyle2"
                         v-if="(item.label?item.label.listPattern:-1)==='2'&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
-                        <span style="display: inline;">新品首发</span>
+                        <span style="display: inline;">{{$t('commodity.newProductsStart')}}</span>
                       </div>
                       <div
                         class="label newGoods"
                         v-if="(item.label?item.label.listPattern:-1)==='3'&&data.hide_label==='1'"
                       >
-                        <span>新品</span>
+                        <span>{{$t('commodity.newProducts')}}</span>
                       </div>
                       <div
                         class="labelStyle3"
                         v-if="(item.label?item.label.listPattern:-1)==='4'&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
-                        <span style="display: inline-block;">新品首发</span>
+                        <span style="display: inline-block;">{{$t('commodity.newProductsStart')}}</span>
                       </div>
                     </div>
                     <img
@@ -109,7 +109,7 @@
                         v-if="data.hide_name==='1'"
                       >{{item.goodsName}}</div>
                       <div :style="data.col_type!=='4'?'margin-top:10px':''">
-                        <span>领券减￥100</span>
+                        <span>{{$t('commodity.couponReduction')}}￥100</span>
                       </div>
                     </div>
                     <div
@@ -137,13 +137,13 @@
                         style="background-color: rgb(177, 78, 105);"
                         v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'"
                       >
-                        马上抢
+                        {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
                         style="color: rgb(177, 78, 105); border-color: rgb(177, 78, 105);"
                         v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'"
-                      >购买</i>
+                      >{{$t('commodity.purchase')}}</i>
                     </div>
                   </div>
                 </div>
@@ -155,7 +155,7 @@
       </div>
       <!--模块编辑区结束-->
       <div class="item_module_title">
-        <span>商品</span>
+        <span>{{$t('commodity.commodity')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -183,7 +183,7 @@
       class="setHere activeSetHere"
       :class="activeSetHere?'middleModulesActive':''"
     >
-      放这里
+      {{$t('commoditySearch.putItHere')}}
     </div>
   </div>
 </template>
@@ -286,6 +286,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 初始化数据
     this.defaultData()
   },
