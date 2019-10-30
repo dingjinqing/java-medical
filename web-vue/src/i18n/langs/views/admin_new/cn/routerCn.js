@@ -86,6 +86,8 @@ export const cn = {
   child_config: ['基础配置', '店铺权限'],
   // 基础配置  模板消息
   templateMessage: ['基础配置', '模板消息'],
+  // 基础配置  服务承诺
+  pledge: ['基础配置', '服务承诺'],
   // 小程序管理 自定义页面装修
   picture_setting: ['小程序管理', '自定义页面装修'],
 
