@@ -12,12 +12,12 @@
           <img
             class="shop_defu"
             style="width: 44px;border: 1px solid #fff;"
-            src="http://mpdevimg2.weipubao.cn/upload/0/image/20190710/crop_wTyAKWD7fyizqfv9.jpeg"
+            :src="image + '/upload/0/image/20190710/crop_wTyAKWD7fyizqfv9.jpeg'"
             alt=""
           >
           <img
             class="shop_type"
-            src="http://mpdevimg2.weipubao.cn/image/admin/img_home/type_open.png"
+            :src="image + '/image/admin/img_home/type_open.png'"
             alt=""
           >
         </div>
@@ -45,38 +45,49 @@
           <span class="title_type">旗舰版</span>
         </span>
       </el-tooltip>
-      <div class="title_share">
-        <img
-          src="http://mpdevimg2.weipubao.cn/image/admin/img_home/share_shop.png"
-          alt=""
-        >分享店铺
-        <span
-          class="share_span"
-          style="display: none;"
+
+      <el-tooltip
+        effect="light"
+        placement="bottom-start"
+      >
+        <div
+          slot="content"
+          style="width: 250px;text-align: center;"
         >
-          <img
-            src="http://mpdevimg2.weipubao.cn/image/admin/img_home/img_sj.png"
-            alt=""
-          >
-          <span class="share_span_top">
-            <span>扫一扫，分享给好友吧~</span>
+          <div style="border-bottom: 1px solid #eee;margin-bottom: 10px;">
+            <p style="font-weight: bold; font-size: 14px;height: 30px; line-height:30px;">扫一扫，分享给好友吧~</p>
             <img
-              class="qrcode"
-              src="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/1/T1P0_20191025150038.jpg"
+              style="width: 120px;margin: 10px 0;"
+              :src="image + '/upload/4748160/qrcode/1/T1P0_20191025150038.jpg'"
               alt=""
             >
-            <a
-              href="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/1/T1P0_20191025150038.jpg"
-              download
-              class="down_qrcode"
-            >下载二维码</a>
-          </span>
-          <span class="share_link">
-            <input type="text">
-            <button class="btn_copy">复制</button>
-          </span>
-        </span>
-      </div>
+            <div style="margin-bottom: 10px;">
+              <a
+                :href="image + '/upload/4748160/qrcode/1/T1P0_20191025150038.jpg'"
+                download
+                style="color:#999;"
+              >下载二维码</a>
+            </div>
+          </div>
+          <div>
+            <el-input>
+              <el-button
+                slot="append"
+                v-clipboard:copy="sharePath"
+                v-clipboard:success="copyHandler"
+              >复制</el-button>
+            </el-input>
+          </div>
+
+        </div>
+        <div class="title_share">
+          <img
+            :src="image + '/image/admin/img_home/share_shop.png'"
+            alt=""
+          >分享店铺
+        </div>
+      </el-tooltip>
+
     </div>
 
     <div class="main-container">
@@ -136,7 +147,7 @@
               </div>
               <i class="item-image">
                 <img
-                  src="http://mpdevimg2.weipubao.cn/image/admin/analysis_tishi.png"
+                  :src="image + '/image/admin/analysis_tishi.png'"
                   alt=""
                   width="14"
                   height="14"
@@ -209,117 +220,31 @@
           <div class="left-title">功能推荐</div>
           <div class="function-content">
             <a
-              href="javascript:void(0);"
+              :href="item.link"
+              target="_blank"
               class="single-func"
               v-for="(item, index) in functionList"
               :key="index"
             >
               <img
-                :src="item.icon"
+                :src="image + item.icon"
                 alt=""
               >
               <span :style="{'position':(index === 1 || index === 5) ? 'relative':''}">{{ item.title }}
                 <img
                   v-if="index === 1"
                   style="position: absolute;left: 40px"
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/Hot.png"
+                  :src="image + '/image/admin/new_ov/Hot.png'"
                   alt=""
                 >
                 <img
                   v-if="index === 5"
                   style="position: absolute;left: 75px"
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/Hot.png"
+                  :src="image + '/image/admin/new_ov/Hot.png'"
                   alt=""
                 >
               </span>
             </a>
-            <!-- <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span>多人拼团</span>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span style="position: relative">
-                分销
-                <img
-                  style="position: absolute;left: 40px"
-                  src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/Hot.png"
-                  alt=""
-                >
-              </span>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span>多人拼团</span>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span>多人拼团</span>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span>多人拼团</span>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span>多人拼团</span>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span>多人拼团</span>
-            </a>
-            <a
-              href="javascript:void(0);"
-              class="single-func"
-            >
-              <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png"
-                alt=""
-              >
-              <span>多人拼团</span>
-            </a> -->
           </div>
         </div>
         <div class="left-store">
@@ -353,7 +278,7 @@
                   <li>全部</li>
                 </ul>
                 <a
-                  href="javascript:void(0);"
+                  href="/admin/home/main/overviewOfMall/taskList"
                   class="view_more"
                 >查看更多</a>
               </div>
@@ -375,11 +300,11 @@
           <div class="right-title">
             <span>公告</span>
             <a
-              href="javascript:void(0);"
+              href="/admin/home/main/overviewOfMall/noticeList"
               class="gengduo"
             >更多
               <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/go.png"
+                :src="image + '/image/admin/new_ov/go.png'"
                 alt=""
               >
             </a>
@@ -405,7 +330,7 @@
             <span>营销日历</span>
             <a href="javascript:void(0);">
               <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/new_ov/calendar_icon.png"
+                :src="image + '/image/admin/new_ov/calendar_icon.png'"
                 alt=""
               >
             </a>
@@ -445,7 +370,7 @@
               >
                 <img
                   style="height: 100%; width: 100%;"
-                  :src="item.img"
+                  :src="image + item.img"
                   alt=""
                 >
               </a>
@@ -475,7 +400,7 @@
             >
               <div class="icon-img">
                 <img
-                  :src="item.icon"
+                  :src="image + item.icon"
                   alt=""
                 >
               </div>
@@ -518,13 +443,14 @@
 <script>
 // 引入组件
 import bindAccount from './overviewBindAccount.vue'
-import { toDoItemRequest, dataRequest, shopAssistantRequest, noticeListRequest, noticeDetailRequest } from '@/api/admin/survey.js'
+import { toDoItemRequest, dataRequest, noticeListRequest, noticeDetailRequest } from '@/api/admin/survey.js'
 export default {
   components: {
     bindAccount
   },
   data () {
     return {
+      image: 'http://mpdevimg2.weipubao.cn',
       dataDialog: false, // 自定义事项弹框
       // 选中自定义事项
       checkData: [
@@ -594,29 +520,37 @@ export default {
       dataContent: {},
       // 功能列表
       functionList: [{
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/drpt.png',
-        title: '多人砍价'
+        icon: '/image/admin/new_ov/drpt.png',
+        title: '多人拼团',
+        link: '/admin/home/main/spellGroup'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/fx.png',
-        title: '分销'
+        icon: '/image/admin/new_ov/fx.png',
+        title: '分销',
+        link: '/admin/home/main/distribution'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/hyzl.png',
-        title: '好友助力'
+        icon: '/image/admin/new_ov/hyzl.png',
+        title: '好友助力',
+        link: '/admin/home/main/friendHelp'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/hdyl.png',
-        title: '开屏有礼'
+        icon: '/image/admin/new_ov/hdyl.png',
+        title: '开屏有礼',
+        link: ''
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/kj.png',
-        title: '砍价'
+        icon: '/image/admin/new_ov/kj.png',
+        title: '砍价',
+        link: ''
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/ptcj.png',
-        title: '拼团抽奖'
+        icon: '/image/admin/new_ov/ptcj.png',
+        title: '拼团抽奖',
+        link: '/admin/home/main/lotteryDraw'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/yhqlb.png',
-        title: '优惠券礼包'
+        icon: '/image/admin/new_ov/yhqlb.png',
+        title: '优惠券礼包',
+        link: ''
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/zfyl.png',
-        title: '支付有礼'
+        icon: '/image/admin/new_ov/zfyl.png',
+        title: '支付有礼',
+        link: '/admin/home/main/admin/home/main/payReward'
       }],
       // 店铺列表
       storeList: {},
@@ -625,41 +559,41 @@ export default {
       // 轮播图数据
       carouselList: [{
         id: '1',
-        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner1.jpg',
+        img: '/image/admin/overview_banner/banner1.jpg',
         link: ''
       }, {
         id: '2',
-        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner2.jpg',
+        img: '/image/admin/overview_banner/banner2.jpg',
         link: 'http://www.wangdian.cn/'
       }, {
         id: '3',
-        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner3.jpg',
+        img: '/image/admin/overview_banner/banner3.jpg',
         link: 'http://pos.wangdian.cn/'
       }],
       indValue: '', // 轮播的索引
       // 服务列表
       serveList: [{
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/wangdian.png',
+        icon: '/image/admin/new_ov/wangdian.png',
         title: '旺店通ERP',
         link: 'http://www.wangdian.cn/pc/erpCompany.html'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/pos.png',
+        icon: '/image/admin/new_ov/pos.png',
         title: '微铺宝POS',
         link: 'http://pos.wangdian.cn/'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/ekuai.png',
+        icon: '/image/admin/new_ov/ekuai.png',
         title: 'E快帮ERP',
         link: 'http://www.ekbyun.com/'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/dashuju.png',
+        icon: '/image/admin/new_ov/dashuju.png',
         title: '大数据',
         link: 'http://www.wangdian.cn/pc/data.html'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/020.png',
+        icon: '/image/admin/new_ov/020.png',
         title: 'O2O',
         link: 'http://www.wangdian.cn/pc/o2o.html'
       }, {
-        icon: 'http://mpdevimg2.weipubao.cn/image/admin/new_ov/wms.png',
+        icon: '/image/admin/new_ov/wms.png',
         title: '旺店通WMS',
         link: 'http://www.wangdian.cn/pc/wms.html'
       }]
@@ -748,15 +682,11 @@ export default {
 
     // 店铺助手
     getStoreData () {
-      shopAssistantRequest({
-        shopId: Number(localStorage.getItem('V-ShopId')),
-        sysId: 1,
-        isAuthOk: 1
-      }).then((res) => {
-        if (res.error === 0) {
-          this.storeList = res.content
-        }
-      })
+      // shopAssistantRequest().then((res) => {
+      //   if (res.error === 0) {
+      //     this.storeList = res.content
+      //   }
+      // })
     },
 
     // 公告查询
@@ -809,7 +739,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .title {
   background: #f5f5f5 !important;
   position: relative;
@@ -1040,10 +970,6 @@ export default {
   line-height: 35px;
 }
 
-img {
-  // vertical-align: middle;
-}
-
 .shop_defu {
   border-radius: 100%;
 }
@@ -1055,6 +981,8 @@ img {
 }
 
 .main-container {
+  width: 100%;
+  overflow: hidden;
   padding: 10px;
 }
 

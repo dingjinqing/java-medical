@@ -19,7 +19,7 @@
           size="medium"
           v-if="tabSwitch !== '5'"
           @click="addSeckill"
-        >添加秒杀活动</el-button>
+        >{{$t('seckill.addSeckill')}}</el-button>
       </div>
     </div>
     <div
@@ -35,45 +35,45 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('seckill.activityName')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="goodsName"
-          label="商品名称"
+          :label="$t('seckill.goodsName')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="validity"
-          label="有效期"
+          :label="$t('seckill.validDate')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="statusText"
-          label="活动状态"
+          :label="$t('seckill.activityStatus')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="saleNum"
-          label="商品交易数量"
+          :label="$t('seckill.saleNum')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="limitAmount"
-          label="单用户最大购买数量"
+          :label="$t('seckill.limitAmount')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('seckill.option')"
           align="center"
           width="200"
           style="margin: 0 auto;"
@@ -81,7 +81,7 @@
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="编辑"
+                :content="$t('seckill.edit')"
                 placement="top"
                 v-if="scope.row.status == 1"
               >
@@ -92,7 +92,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="分享"
+                :content="$t('seckill.share')"
                 placement="top"
                 v-if="scope.row.status == 1"
               >
@@ -103,7 +103,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('seckill.stop')"
                 placement="top"
                 v-if="scope.row.status == 1"
               >
@@ -114,7 +114,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="启用"
+                :content="$t('seckill.start')"
                 placement="top"
                 v-if="scope.row.status == 0"
               >
@@ -125,7 +125,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="查看秒杀订单"
+                :content="$t('seckill.order')"
                 placement="top"
                 v-if="scope.row.status == 0"
               >
@@ -136,7 +136,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="获取新用户明细"
+                :content="$t('seckill.detail')"
                 placement="top"
                 v-if="scope.row.status == 0"
               >
@@ -147,7 +147,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="查看秒杀用户"
+                :content="$t('seckill.user')"
                 placement="top"
                 v-if="scope.row.status == 0"
               >
@@ -158,7 +158,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('seckill.delete')"
                 placement="top"
                 v-if="scope.row.status == 0"
               >
@@ -169,7 +169,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="活动效果数据"
+                :content="$t('seckill.effect')"
                 placement="top"
               >
                 <span
@@ -197,7 +197,7 @@
 
     <!-- 分享dislog -->
     <el-dialog
-      title="扫一扫，分享给好友吧~"
+      :title="$t('seckill.shareTitle')"
       :visible.sync="shareDialog"
       width="350px"
       center
@@ -216,7 +216,7 @@
             :href="shareImg"
             download
             style="color: #999;text-decoration: none;"
-          >下载二维码</a>
+          >{{ $t('seckill.downLoad') }}</a>
         </div>
       </div>
       <div>
@@ -225,38 +225,18 @@
             slot="append"
             v-clipboard:copy="sharePath"
             v-clipboard:success="copyHandler"
-          >复制</el-button>
+          >{{ $t('seckill.copy') }}</el-button>
         </el-input>
       </div>
-      <!-- <div
-        class="share_content"
-        style="display: block;"
-      >
-        <div class="share_middle">
-          <img
-            src="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/19/T19P243_20191025220318.jpg"
-            alt=""
-            style="width:160px;height:160px"
-          >
-          <a
-            href="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/19/T19P243_20191025220318.jpg"
-            download
-          >下载二维码</a>
-        </div>
-        <div class="share_bottom">
-          <input type="text">
-          <button>复制</button>
-        </div>
-      </div> -->
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="shareDialog = false">取 消</el-button>
+        <el-button @click="shareDialog = false">{{ $t('seckill.cancel') }}</el-button>
         <el-button
           type="primary"
           @click="shareDialog = false"
-        >确 定</el-button>
+        >{{ $t('seckill.sure') }}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -277,22 +257,7 @@ export default {
   data () {
     return {
       tabSwitch: '1',
-      tabInfo: [{
-        title: '全部秒杀活动',
-        name: '0'
-      }, {
-        title: '进行中',
-        name: '1'
-      }, {
-        title: '未开始',
-        name: '2'
-      }, {
-        title: '已过期',
-        name: '3'
-      }, {
-        title: '已停用',
-        name: '4'
-      }],
+      tabInfo: this.$t('seckill.tabInfo'),
       tableData: [], // 表格数据
       pageParams: {}, // 分页
       requestParams: {},
@@ -304,8 +269,15 @@ export default {
       isEdite: true // 编辑状态
     }
   },
+  watch: {
+    lang () {
+      this.tabInfo = this.$t('seckill.tabInfo')
+      // this.activityTypeText = this.$t('groupBuy.grouponType')
+    }
+  },
   mounted () {
     // 初始化数据
+    this.langDefault()
     this.handleClick()
   },
   methods: {
@@ -332,7 +304,7 @@ export default {
     addSeckill () {
       this.isEdite = false
       this.tabInfo.push({
-        title: '添加秒杀活动',
+        title: this.$t('seckill.addSeckill'),
         name: '5'
       })
       this.tabSwitch = '5'
@@ -352,7 +324,7 @@ export default {
       console.log(row)
       this.isEdite = true
       this.tabInfo.push({
-        title: '编辑秒杀活动',
+        title: this.$t('seckill.editSeckill'),
         name: '5'
       })
       this.tabSwitch = '5'

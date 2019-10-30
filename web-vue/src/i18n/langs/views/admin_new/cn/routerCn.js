@@ -1,4 +1,6 @@
 export const cn = {
+  // 概况-店铺助手
+  taskList: ['概况', '店铺助手'],
   // 会员管理 会员列表
   membershipList: ['会员管理', '会员列表'],
   memberEditorList: ['会员管理', '会员编辑信息'],

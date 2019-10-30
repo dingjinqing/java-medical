@@ -1,4 +1,6 @@
 export const en = {
+  // 概况-店铺助手
+  taskList: ['Survey', 'Shop Assistant'],
   // 会员管理 会员列表
   membershipList: ['Membership management', 'Membership List'],
   memberEditorList: [

@@ -10,7 +10,7 @@
         style="background: #fff;"
       >
         <el-form-item
-          label="活动名称"
+          :label="$t('seckill.activityName')"
           prop="name"
         >
           <el-col :span="8">
@@ -21,14 +21,14 @@
           </el-col>
         </el-form-item>
         <el-form-item
-          label="活动商品"
+          :label="$t('seckill.goodsName')"
           prop="goodsId"
         >
           <el-button
             :disabled="this.isEdite"
             @click="showChoosingGoods"
             class="el-icon-plus"
-          >选择商品</el-button>
+          >{{ $t('seckill.select') }}</el-button>
           <el-col :span="2">
             <el-input
               :disabled="true"
@@ -43,22 +43,22 @@
           </el-col>
         </el-form-item>
         <el-form-item
-          label="有效期"
+          :label="$t('seckill.validDate')"
           prop="validity"
         >
           <el-date-picker
             :disabled="this.isEdite"
             v-model="form.validity"
             type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('seckill.to')"
+            :start-placeholder="$t('seckill.startTime')"
+            :end-placeholder="$t('seckill.endTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item
-          label="限购数量"
+          :label="$t('seckill.limitNum')"
           prop="limitAmount"
         >
           <el-input-number
@@ -67,10 +67,10 @@
             controls-position="right"
             :min="0"
           ></el-input-number>
-          <span style="color: #999; margin-left: 10px;">单个用户对秒杀商品限购的数量，请填写阿拉伯数字，填写0表示不限制</span>
+          <span style="color: #999; margin-left: 10px;">{{ $t('seckill.limitTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="下单后"
+          :label="$t('seckill.orderAfter')"
           prop="limitPaytime"
         >
           <el-input-number
@@ -79,11 +79,11 @@
             controls-position="right"
             :min="5"
           ></el-input-number>
-          <span>分钟内未支付，则释放库存</span>
-          <p style="color: #999;">为确保买家能够顺利完成支付,请设置不小于5分钟的等待时间,因微信支付结果查询占用部分时间，造成订单状态变更不及时,故会存在极小部分订单自动退款给买家</p>
+          <span>{{ $t('seckill.orderTip') }}</span>
+          <p style="color: #999;">{{ $t('seckill.langTip') }}</p>
         </el-form-item>
         <el-form-item
-          label="秒杀价格设置"
+          :label="$t('seckill.seckillPrice')"
           prop="seckillPrices"
         >
           <el-table
@@ -91,17 +91,17 @@
             :data="tableContent"
           >
             <el-table-column
-              label="商品名称/规格"
+              :label="$t('seckill.specifications')"
               prop="goodsName"
               align="center"
             ></el-table-column>
             <el-table-column
-              label="原价(元)"
+              :label="$t('seckill.shopPrice')"
               prop="shopPrice"
               align="center"
             ></el-table-column>
             <el-table-column
-              label="秒杀价(元)"
+              :label="$t('seckill.prdPrice')"
               prop="prdPrice"
               align="center"
             >
@@ -113,12 +113,12 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="原库存"
+              :label="$t('seckill.goodsNumber')"
               prop="goodsNumber"
               align="center"
             ></el-table-column>
             <el-table-column
-              label="秒杀库存"
+              :label="$t('seckill.prdNumber')"
               prop="prdNumber"
               align="center"
             >
@@ -130,33 +130,33 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="已售秒杀数量"
+              :label="$t('seckill.goodsSaleNum')"
               prop="goodsSaleNum"
               align="center"
             ></el-table-column>
             <el-table-column
-              label="剩余秒杀库存"
+              :label="$t('seckill.prdTypeNum')"
               prop="prdTypeNum"
               align="center"
             ></el-table-column>
           </el-table>
         </el-form-item>
         <el-form-item
-          label="运费设置"
+          :label="$t('seckill.freeFreight')"
           prop="freeFreight"
         >
           <el-radio
             :disabled="this.isEdite"
             v-model="form.freeFreight"
             :label="1"
-          >免运费</el-radio>
+          >{{ $t('seckill.freeShipping') }}</el-radio>
           <el-radio
             v-model="form.freeFreight"
             :label="0"
-          >使用原商品运费模板</el-radio>
+          >{{ $t('seckill.template') }}</el-radio>
         </el-form-item>
         <el-form-item
-          label="活动初始销量"
+          :label="$t('seckill.initNum')"
           prop="initNum"
         >
           <el-input-number
@@ -165,7 +165,7 @@
             controls-position="right"
             :min="0"
           ></el-input-number>
-          <span>活动商品初始销量</span>
+          <span>{{ $t('seckill.initTip') }}</span>
         </el-form-item>
 
         <!-- 收起、展开更多配置 -->
@@ -177,13 +177,13 @@
             v-if="arrorFlag"
             style="color:rgb(90, 139, 255);cursor:pointer"
           >
-            展开更多配置&nbsp;<img :src="ArrowArr[0].img_1">
+            {{ $t('seckill.openConfigure') }}&nbsp;<img :src="ArrowArr[0].img_1">
           </div>
           <div
             v-if="!arrorFlag"
             style="color:rgb(90, 139, 255);cursor:pointer"
           >
-            收起更多配置&nbsp;<img :src="ArrowArr[1].img_2">
+            {{ $t('seckill.closeConfigure') }}&nbsp;<img :src="ArrowArr[1].img_2">
           </div>
         </div>
 
@@ -246,7 +246,7 @@
           type="primary"
           :disabled="submitStatus"
           @click="saveClickHandler(form)"
-        >保存</el-button>
+        >{{ $t('seckill.save') }}</el-button>
       </div>
     </wrapper>
   </div>
