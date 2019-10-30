@@ -10,13 +10,19 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.*;
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisDataVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
+import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -28,11 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.*;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -311,6 +316,82 @@ public class SeckillService extends ShopBaseService {
             .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
             .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
             .fetchMap(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID);
+    }
+
+    /**
+     * 秒杀效果分析的echarts图表数据
+     *
+     *
+     */
+    public SeckillAnalysisDataVo getSeckillAnalysisData(SeckillAnalysisParam param){
+        SeckillAnalysisDataVo analysisVo = new SeckillAnalysisDataVo();
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate == null || endDate == null) {
+            startDate = DateUtil.currentMonthFirstDay();
+            endDate = DateUtil.getLocalDateTime();
+        }
+        //获取销售额等金额
+        List<ActiveDiscountMoney> discountMoneyList = saas.getShopApp(getShopId()).readOrder.getActiveDiscountMoney(OrderConstant.GOODS_TYPE_SECKILL, param.getSkId(), startDate, endDate);
+        //获取参与用户信息
+        ActiveOrderList activeOrderUserList = saas.getShopApp(getShopId()).readOrder.getActiveOrderList(OrderConstant.GOODS_TYPE_SECKILL, param.getSkId(), startDate, endDate);
+
+        while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
+            //活动实付金额、付款订单数、付款商品件数
+            ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
+            if (discountMoney == null) {
+                analysisVo.getPaymentAmount().add(BigDecimal.ZERO);
+                analysisVo.getDiscountAmount().add(BigDecimal.ZERO);
+                analysisVo.getCostEffectivenessRatio().add(BigDecimal.ZERO);
+                analysisVo.getPaidOrderNumber().add(0);
+                analysisVo.getPaidGoodsNumber().add(0);
+            } else {
+                BigDecimal goodsPrice = Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO);
+                BigDecimal marketPric = Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO);
+                analysisVo.getPaymentAmount().add(Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO));
+                analysisVo.getDiscountAmount().add(Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO));
+                analysisVo.getCostEffectivenessRatio().add(goodsPrice.compareTo(BigDecimal.ZERO) > 0 ?
+                    marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
+                analysisVo.getPaidOrderNumber().add(discountMoney.getPaidOrderNumber());
+                analysisVo.getPaidGoodsNumber().add(discountMoney.getPaidGoodsNumber());
+            }
+
+            //新用户数
+            OrderActivityUserNum newUser = getUserNum(activeOrderUserList.getNewUserNum(), startDate);
+            if (newUser == null) {
+                analysisVo.getNewUserNumber().add(0);
+            } else {
+                analysisVo.getNewUserNumber().add(newUser.getNum());
+            }
+            //老用户数
+            OrderActivityUserNum oldUser = getUserNum(activeOrderUserList.getOldUserNum(), startDate);
+            if (oldUser == null) {
+                analysisVo.getOldUserNumber().add(0);
+            } else {
+                analysisVo.getOldUserNumber().add(oldUser.getNum());
+            }
+            analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
+            startDate = Util.getEarlyTimeStamp(startDate, 1);
+        }
+        return analysisVo;
+    }
+
+    private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
+        for (ActiveDiscountMoney data : discountMoneyList) {
+            if (data.getCreateTime().equals(timestamp)) {
+                return data;
+            }
+        }
+        return null;
+    }
+
+    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
+        for (OrderActivityUserNum activityUserNum : list) {
+            if (activityUserNum.getDate().equals(timestamp)) {
+                return activityUserNum;
+            }
+        }
+        return null;
     }
 
     /**

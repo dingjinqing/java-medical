@@ -54,7 +54,6 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
             .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {goodType})))
             .groupBy(ORDER_INFO.USER_ID)
-            .orderBy(ORDER_INFO.CREATE_TIME.asc())
             .fetch(ORDER_INFO.USER_ID);
         //查新用户活动前下过订单——老用户
         List<Integer> oldUserIdList= db().select(ORDER_INFO.USER_ID)
@@ -73,7 +72,6 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {goodType})))
             .and(ORDER_INFO.USER_ID.in(oldUserIdList))
             .groupBy(ORDER_INFO.CREATE_TIME)
-            .orderBy(ORDER_INFO.CREATE_TIME.asc())
             .fetchInto(OrderActivityUserNum.class);
         //新用户订单数据
         userIdList.removeAll(oldUserIdList);
@@ -85,7 +83,6 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .and(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[] {goodType})))
             .and(ORDER_INFO.USER_ID.in(userIdList))
             .groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
-            .orderBy(ORDER_INFO.CREATE_TIME.asc())
             .fetchInto(OrderActivityUserNum.class);
         ActiveOrderList activeOrderList=new ActiveOrderList();
         activeOrderList.setNewUserNum(newList);
@@ -119,13 +116,14 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
      * @return
      */
     public List<ActiveDiscountMoney> getActiveDiscountMoney(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
+
+
         List<ActiveDiscountMoney> record = db().select(
-            DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME),
-            DSL.sum(ORDER_GOODS.MARKET_PRICE.minus(ORDER_GOODS.GOODS_PRICE).multiply(
-                ORDER_GOODS.GOODS_NUMBER.minus(ORDER_GOODS.RETURN_NUMBER))).as(ActiveDiscountMoney.MARKET_PRICE),
-            DSL.sum(ORDER_GOODS.GOODS_PRICE).as(ActiveDiscountMoney.GOODS_PRICE),
-            DSL.sum(ORDER_GOODS.DISCOUNTED_GOODS_PRICE).multiply(
-                ORDER_GOODS.GOODS_NUMBER.minus(ORDER_GOODS.RETURN_NUMBER)).as(ActiveDiscountMoney.DISCOUNTEDTOTALPRICE))
+            date(ORDER_INFO.CREATE_TIME),
+            sum(when(ORDER_GOODS.RETURN_NUMBER.eq(0),ORDER_GOODS.DISCOUNTED_TOTAL_PRICE).when(ORDER_GOODS.RETURN_NUMBER.notEqual(0),ORDER_GOODS.DISCOUNTED_GOODS_PRICE.multiply(ORDER_GOODS.GOODS_NUMBER.sub(ORDER_GOODS.RETURN_NUMBER)))).as(ActiveDiscountMoney.PAYMENT_AMOUNT),
+            sum((ORDER_GOODS.MARKET_PRICE.sub(ORDER_GOODS.GOODS_PRICE)).multiply(ORDER_GOODS.GOODS_NUMBER.sub(ORDER_GOODS.RETURN_NUMBER))).as(ActiveDiscountMoney.DISCOUNT_AMOUNT),
+            count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.PAID_ORDER_NUMBER),
+            sum(ORDER_GOODS.GOODS_NUMBER).as(ActiveDiscountMoney.PAID_GOODS_NUMBER))
             .from(ORDER_INFO)
             .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
             .where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
@@ -133,8 +131,8 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
             .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
             .and(ORDER_GOODS.IS_GIFT.eq(OrderConstant.IS_GIFT_N))
             .and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
-            .groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
-            .orderBy(ORDER_INFO.CREATE_TIME)
+            .groupBy(date(ORDER_INFO.CREATE_TIME))
+            .orderBy(date(ORDER_INFO.CREATE_TIME))
             .fetchInto(ActiveDiscountMoney.class);
         return record;
     }

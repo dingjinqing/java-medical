@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -120,5 +121,14 @@ public class AdminSeckillController extends AdminBaseController {
     @GetMapping("/api/admin/market/seckill/share")
     public JsonResult getSeckillShareCode(Integer skId) throws Exception {
         return success(shop().seckill.getMpQrCode(skId));
+    }
+
+    /**
+     * 秒杀效果分析
+     *
+     */
+    @PostMapping("/api/admin/market/seckill/analysis")
+    public JsonResult getRecordAnalysisData(@RequestBody @Validated SeckillAnalysisParam param) {
+        return success(shop().seckill.getSeckillAnalysisData(param));
     }
 }

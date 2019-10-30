@@ -12,31 +12,29 @@ import lombok.Data;
  */
 @Data
 public class ActiveDiscountMoney {
-    public static final String MARKET_PRICE ="marketPrice";
-    public static final String GOODS_PRICE ="goodsPrice";
-    public static final String GOODS_NUMBER ="goodsNumber";
-    public static final String DISCOUNTEDTOTALPRICE ="discountedTotalPrice";
+    public static final String DISCOUNT_AMOUNT ="discountAmount";
+    public static final String PAYMENT_AMOUNT ="paymentAmount";
+    public static final String PAID_ORDER_NUMBER ="paidOrderNumber";
+    public static final String PAID_GOODS_NUMBER ="paidGoodsNumber";
 
     /**
      * 时间 %Y-%m-%d
       */
     private Timestamp createTime;
     /**
-     *  活动优惠金额
+     *  活动优惠总金额
       */
-    private BigDecimal marketPrice;
-    /**
-     *  活动总金额
-     */
-    private BigDecimal goodsPrice;
-    /**
-     *  商品数量
-     */
-    private int goodsNumber;
+    private BigDecimal discountAmount;
     /**
      *  活动实付总金额
      */
-    private BigDecimal discountedTotalPrice;
+    private BigDecimal paymentAmount;
 
-    private String old;
+    /** 付款订单数  */
+    private Integer paidOrderNumber;
+    /**
+     *  商品数量
+     */
+    private Integer paidGoodsNumber;
+
 }

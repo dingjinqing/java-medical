@@ -61,7 +61,7 @@ public class GroupBuyService extends ShopBaseService {
      * 添加拼团活动
      *
      * @param groupBuy
-     * @param flag
+     * @param status
      */
     public void addGroupBuy(GroupBuyParam groupBuy, Boolean status) {
         transaction(() -> {
@@ -204,7 +204,7 @@ public class GroupBuyService extends ShopBaseService {
     /**
      * 校验商品是否有叠加
      *
-     * @param param GroupBuyParam
+     * @param
      * @return 0
      */
     public Boolean validGroupGoods(Integer id, Integer goodsId, Timestamp startTime, Timestamp endTime) {
@@ -282,13 +282,12 @@ public class GroupBuyService extends ShopBaseService {
                 analysisVo.getMarketPriceList().add(BigDecimal.ZERO);
                 analysisVo.getRatioList().add(BigDecimal.ZERO);
             } else {
-                BigDecimal goodsPrice = Optional.ofNullable(discountMoney.getGoodsPrice()).orElse(BigDecimal.ZERO);
-                BigDecimal marketPric = Optional.ofNullable(discountMoney.getMarketPrice()).orElse(BigDecimal.ZERO);
-                BigDecimal totalPrice = Optional.ofNullable(discountMoney.getDiscountedTotalPrice()).orElse(BigDecimal.ZERO);
+                BigDecimal goodsPrice = Optional.ofNullable(discountMoney.getPaymentAmount()).orElse(BigDecimal.ZERO);
+                BigDecimal marketPric = Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO);
                 analysisVo.getGoodsPriceList().add(goodsPrice);
                 analysisVo.getMarketPriceList().add(marketPric);
-                analysisVo.getRatioList().add(totalPrice.compareTo(BigDecimal.ZERO) > 0 ?
-                    marketPric.subtract(goodsPrice).divide(totalPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
+                analysisVo.getRatioList().add(goodsPrice.compareTo(BigDecimal.ZERO) > 0 ?
+                    marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
             }
             //新用户数
             OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), startDate);

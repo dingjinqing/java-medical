@@ -13,11 +13,11 @@ import java.util.List;
  **/
 @Data
 public class BargainAnalysisDataVo {
-    private List<Integer> recordNumber = new ArrayList<Integer>();
-    private List<Integer> userNumber = new ArrayList<Integer>();
-    private List<Integer> orderNumber = new ArrayList<Integer>();
-    private List<Integer> sourceNumber = new ArrayList<Integer>();
-    private List<Date> dateList = new ArrayList<Date>();
+    private List<Integer> recordNumber = new ArrayList<>();
+    private List<Integer> userNumber = new ArrayList<>();
+    private List<Integer> orderNumber = new ArrayList<>();
+    private List<Integer> sourceNumber = new ArrayList<>();
+    private List<Date> dateList = new ArrayList<>();
 
     private BargainAnalysisTotalVo total;
 }
