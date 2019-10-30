@@ -180,14 +180,14 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
-      :brandBackData="goodsInfo"
+      :chooseGoodsBack="goodsInfo"
     />
     <!-- 选择 1商家分类;2平台分类弹窗 -->
     <BusClassDialog
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      :brandBackData="labelInfo"
+      :backDataArr="commInfo"
     />
     <!-- 选择商品标签弹窗 -->
     <ProductLabel
@@ -239,6 +239,8 @@ export default {
       // 平台分类弹窗回调数据
       platClass: [],
       platClassRow: [],
+      // 平台分类/商家分类共享变量
+      commInfo: [],
       // 弹窗结果区分标识 1商家分类;2平台分类
       flag: 0,
       tuneUpChooseGoods: false,

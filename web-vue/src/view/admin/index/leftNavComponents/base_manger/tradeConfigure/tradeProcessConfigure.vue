@@ -419,14 +419,14 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
-      :brandBackData="goodsInfo"
+      :chooseGoodsBack="goodsInfo"
     />
     <!-- 选择 1商家分类;2平台分类弹窗 -->
     <BusClassDialog
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      :brandBackData="labelInfo"
+      :backDataArr="labelInfo"
     />
     <!-- 选择商品标签弹窗 -->
     <ProductLabel
