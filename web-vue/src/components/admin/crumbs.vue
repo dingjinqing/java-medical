@@ -41,14 +41,14 @@ export default {
   },
   mounted () {
     this.langDefault()
-    // this.changeText()
+    this.changeText(this.$route.name)
   },
   methods: {
     // 特例更改数据
     changeText (routeName) {
       // 如果是概况则隐藏面包屑
       console.log(routeName)
-      if (routeName === 'shop_view') {
+      if (routeName === 'shop_view' || !routeName) {
         this.isSurvey = false
       } else {
         this.isSurvey = true
