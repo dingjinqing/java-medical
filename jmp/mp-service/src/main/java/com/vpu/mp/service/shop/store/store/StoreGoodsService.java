@@ -35,8 +35,8 @@ import org.springframework.stereotype.Service;
 
 public class StoreGoodsService extends ShopBaseService{
 
-    private static final Byte ON_SALE = 1;
-    private static final Byte OFF_SALE = 0;
+    public static final Byte ON_SALE = 1;
+    public static final Byte OFF_SALE = 0;
 
 
     /**

@@ -1002,4 +1002,8 @@ primary key ( `id` ));
 ALTER TABLE `b2c_user_address` 
 ADD COLUMN `lat` varchar(20)  DEFAULT NULL COMMENT '纬度' ,
 ADD COLUMN `lng` varchar(20)  DEFAULT NULL COMMENT '经度' ;
-
+--ws 修改类型
+ALTER TABLE b2c_order_goods 
+MODIFY COLUMN goods_number int(11) NOT NULL DEFAULT 1 ,
+MODIFY COLUMN send_number int(11) NOT NULL DEFAULT 0 ,
+MODIFY COLUMN return_number int(11) NOT NULL DEFAULT 0 ;

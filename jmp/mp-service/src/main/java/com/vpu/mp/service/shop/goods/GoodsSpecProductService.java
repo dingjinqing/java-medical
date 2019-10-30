@@ -1,22 +1,32 @@
 package com.vpu.mp.service.shop.goods;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
+import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
-import org.jooq.*;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.Record4;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-
-import static com.vpu.mp.db.shop.Tables.*;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
+import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 
 /**
  * @author 李晓冰
@@ -286,7 +296,36 @@ public class GoodsSpecProductService extends ShopBaseService {
     public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds) {
         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(proIds)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
     }
-
+    
+    /**
+     * 根据规格id查询规格明细
+     *
+     * @return
+     * @throws MpException 
+     */
+    public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds, Integer storeId) throws MpException {
+        //商品规格信息
+    	Map<Integer, GoodsSpecProductRecord> products = selectSpecByProIds(proIds);
+    	//校验数量
+    	if(proIds.size() != products.size()) {
+    		throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
+    	}
+    	//门店商品规格信息
+        Map<Integer, StoreGoodsListQueryVo> storeProducts = db().
+        		select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).
+        		from(STORE_GOODS).
+        		where(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE)).and(STORE_GOODS.IS_SYNC.eq((byte) 1)).and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(proIds)).
+        		fetchMap(STORE_GOODS.PRD_ID, StoreGoodsListQueryVo.class);
+        for (GoodsSpecProductRecord product : products.values()) {
+        	StoreGoodsListQueryVo  storeProduct = storeProducts.get(product.getPrdId());
+        	if(storeProduct != null) {
+        		//同步之后的规格价格、库存
+        		product.setPrdPrice(storeProduct.getProductPrice());
+        		product.setPrdNumber(storeProduct.getProductNumber());
+        	}
+		}
+        return products;
+    }
     /**
      * 根据id
      *
@@ -350,5 +389,4 @@ public class GoodsSpecProductService extends ShopBaseService {
         }
         return goodsSpecproduct;
     }
-
 }

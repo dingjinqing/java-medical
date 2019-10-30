@@ -410,6 +410,12 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_EXTEND_RECEIVE_NOW_AUTOTIME_INTERVAL_GT_TWO_DAYS ="order_extend_receive_now_autotime_interval_gt_two_days";
 	public static final String MSG_ORDER_EXTEND_RECEIVE_ADMIN_SET_MORE_TIME ="order_extend_receive_admin_set_more_time";
 	public static final String MSG_ORDER_DELETE_OPERATION_NOT_SUPPORTED = "order_delete_operation_not_supported";
+	/**下单参数*/
+	public static final String MSG_ORDER_GOODS_NOT_EXIST = "order_goods_not_exist";
+	public static final String MSG_ORDER_GOODS_NO_SALE = "order_goods_no_sale";
+	public static final String MSG_ORDER_GOODS_OUT_OF_STOCK = "order_goods_out_of_stock";
+	public static final String MSG_ORDER_GOODS_NO_ZERO = "order_goods_no_zero"; 
+	
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";

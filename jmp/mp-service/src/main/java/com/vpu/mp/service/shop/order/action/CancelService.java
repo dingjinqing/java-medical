@@ -30,7 +30,6 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
-import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
@@ -51,9 +50,6 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	
 	@Autowired
 	private RecordMemberTradeService recordMemberTrade;
-	
-	@Autowired
-	public RecordAdminActionService record;
 	
 	@Autowired
 	private OrderActionService orderAction;

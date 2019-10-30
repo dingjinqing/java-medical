@@ -1,15 +1,71 @@
 package com.vpu.mp.service.shop.goods;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
+import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
+import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
+import static com.vpu.mp.db.shop.Tables.SORT;
+import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectFieldOrAsterisk;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectSelectStep;
+import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultDSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRebatePriceRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.goods.goods.*;
+import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsBatchOperateParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsColumnCheckExistParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsExportParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsExportVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsQrCodeVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsRebatePrice;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.PrdPriceNumberParam;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
@@ -22,24 +78,9 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
-import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.DefaultDSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
 
 /**
  * 商品
@@ -311,7 +352,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理商品在售（上下架）状态
-     * 出售中和已售罄都可以为上架状态（isOnSale = 1），而仓库中表示下架（isOnSale = 0）
+     * 出售中和已售罄都可以为上架状态（isOnSale = 1），而仓库中表示下架（`Sale = 0）
      * 出售中：isOnSale=1&&goodsNumber!=0,已售罄：isOnSale=1&&goodsNumber==0
      * 仓库中：isOnSale=0
      * @param condition   已有过滤条件
@@ -1474,5 +1515,34 @@ public class GoodsService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(list, GoodsExportVo.class);
         return workbook;
+    }
+    
+    /**
+     * 获取商品goodsType
+     * @param goodsIds
+     * @return
+     * @throws MpException 
+     */
+    public Map<Integer, Byte> getGoodsType(List<Integer> goodsIds) throws MpException {
+        Map<Integer, Byte> goodsTypes = db().select(GOODS.GOODS_TYPE).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchMap(GOODS.GOODS_ID, Byte.class);
+        if(goodsTypes.size() != goodsIds.size()) {
+        	throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
+        }
+        return goodsTypes;
+    }
+    
+    /**
+     * 下单时获取goods
+     * @author 王帅
+     * @param goodsIds
+     * @return
+     * @throws MpException
+     */
+    public Map<Integer, GoodsRecord> getGoodsToOrder(List<Integer> goodsIds) throws MpException {
+    	Map<Integer, GoodsRecord> goods = getGoodsByIds(goodsIds);
+    	if(goods.size() != goodsIds.size()) {
+    		throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
+    	}
+    	return goods;
     }
 }

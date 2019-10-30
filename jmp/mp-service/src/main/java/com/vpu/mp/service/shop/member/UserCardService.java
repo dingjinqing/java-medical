@@ -38,6 +38,8 @@ import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.operation.dao.TradesRecordDaoService;
 
+import jodd.util.StringUtil;
+
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.SEND_SCORE_BY_CREATE_CARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
@@ -646,15 +648,15 @@ public class UserCardService extends ShopBaseService{
 		String avatar = getCardAvatar();
 		dealWithWxUserCard(card,avatar);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * get card type
+	 * @param cardNo
+	 * @return
+	 */
+	public Byte getCardType(String cardNo) {
+		if(StringUtil.isBlank(cardNo)) {
+			return null;
+		}
+		return userCardDao.getCardType(cardNo);
+	}
 }

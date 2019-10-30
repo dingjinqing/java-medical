@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -706920607;
+    private static final long serialVersionUID = -1539039671;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.rec_id</code>.
@@ -173,15 +173,15 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_number</code>.
      */
-    public void setGoodsNumber(Short value) {
+    public void setGoodsNumber(Integer value) {
         set(10, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_number</code>.
      */
-    public Short getGoodsNumber() {
-        return (Short) get(10);
+    public Integer getGoodsNumber() {
+        return (Integer) get(10);
     }
 
     /**
@@ -229,29 +229,29 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.send_number</code>.
      */
-    public void setSendNumber(Short value) {
+    public void setSendNumber(Integer value) {
         set(14, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.send_number</code>.
      */
-    public Short getSendNumber() {
-        return (Short) get(14);
+    public Integer getSendNumber() {
+        return (Integer) get(14);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_goods.return_number</code>. 退货/退款成功数量
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.return_number</code>.
      */
-    public void setReturnNumber(Short value) {
+    public void setReturnNumber(Integer value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_goods.return_number</code>. 退货/退款成功数量
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.return_number</code>.
      */
-    public Short getReturnNumber() {
-        return (Short) get(15);
+    public Integer getReturnNumber() {
+        return (Integer) get(15);
     }
 
     /**
@@ -714,7 +714,7 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Create a detached, initialised OrderGoodsRecord
      */
-    public OrderGoodsRecord(Integer recId, Integer mainRecId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Short goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Short sendNumber, Short returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Byte activityType, Integer activityId, Integer activityRule, Timestamp createTime, Timestamp updateTime) {
+    public OrderGoodsRecord(Integer recId, Integer mainRecId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Integer goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Integer sendNumber, Integer returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Byte activityType, Integer activityId, Integer activityRule, Timestamp createTime, Timestamp updateTime) {
         super(OrderGoods.ORDER_GOODS);
 
         set(0, recId);

@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 
@@ -28,9 +29,9 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 public class WxAppOrderController extends WxAppBaseController{
 	
 	/**
-	 * 	退款、退货查询
+	 * 	退款、退货创建
 	 */
-	@PostMapping("/refund/list")
+	@PostMapping("/refund/query")
 	public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		try {
@@ -46,7 +47,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	@PostMapping("/refund")
 	public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
 		param.setIsMp(OrderConstant.IS_MP_Y);
-		param.setWxUserInfo(wxAppAuth.user().getWxUser());
+		param.setWxUserInfo(wxAppAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
@@ -57,7 +58,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	@PostMapping("/operation")
 	public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
 		param.setIsMp(OrderConstant.IS_MP_Y);
-		param.setWxUserInfo(wxAppAuth.user().getWxUser());
+		param.setWxUserInfo(wxAppAuth.user());
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
@@ -91,5 +92,14 @@ public class WxAppOrderController extends WxAppBaseController{
 	public JsonResult statistic(@RequestBody @Valid OrderListParam param) {
 		param.setWxUserInfo(wxAppAuth.user());
 		return success(shop().readOrder.statistic(param));
+	}
+	
+	/**
+	 * 统计数量
+	 */
+	@PostMapping("/before")
+	public JsonResult before(@RequestBody @Valid OrderBeforeParam param) {
+		param.setWxUserInfo(wxAppAuth.user());
+		return null;
 	}
 }

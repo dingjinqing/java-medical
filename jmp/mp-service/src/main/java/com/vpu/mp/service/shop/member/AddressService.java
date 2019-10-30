@@ -7,6 +7,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
+
+import jodd.util.StringUtil;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月16日
@@ -28,5 +31,13 @@ public class AddressService extends ShopBaseService {
 		
 		addressList.forEach(logger()::info);
 		return addressList;
+	}
+	
+	public UserAddressVo get(Integer addressId, Integer userId){
+		UserAddressVo address = db().select().from(USER_ADDRESS).where(USER_ADDRESS.ADDRESS_ID.eq(addressId).and(USER_ADDRESS.USER_ID.eq(userId))).fetchAnyInto(UserAddressVo.class);
+		if(address != null && (StringUtil.isBlank(address.getLat()) || StringUtil.isBlank(address.getLng()))){
+			//TODO 经纬度
+		}
+		return address;
 	}
 }

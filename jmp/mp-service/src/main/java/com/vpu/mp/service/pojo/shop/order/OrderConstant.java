@@ -404,9 +404,9 @@ public class OrderConstant {
 	public static final Byte IS_COD_YES = 1;
 
 	/** yes */
-	public static final Byte yes = 1;
+	public static final byte yes = 1;
 	/** no */
-	public static final Byte no = 0;
+	public static final byte no = 0;
 	/**奖品订单类型*/
 	public static final ImmutableSet<Byte> AWARD_ORDER = ImmutableSet.<Byte>builder()
 			.add(GOODS_TYPE_LOTTERY_PRESENT)

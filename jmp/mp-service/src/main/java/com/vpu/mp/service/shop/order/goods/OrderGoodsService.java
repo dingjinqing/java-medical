@@ -127,7 +127,7 @@ public class OrderGoodsService extends ShopBaseService{
 				//此次退款退货数量
 				int returnNum = returnGoodsMap.get(goods.getRecId()) == null ? 0 : returnGoodsMap.get(goods.getRecId()).getGoodsNumber();
 				//修改退货退款商品数量
-				goods.setReturnNumber(Integer.valueOf(goods.getReturnNumber().shortValue() + returnNum).shortValue());
+				goods.setReturnNumber(goods.getReturnNumber() + returnNum);
 				break;
 			default:
 				goods.set(TABLE.REFUND_STATUS, returnOrderRecord.getRefundStatus());
@@ -174,7 +174,7 @@ public class OrderGoodsService extends ShopBaseService{
 		if(db().fetchCount(TABLE,
 				TABLE.ORDER_SN.eq(orderSn).
 				and(TABLE.GOODS_NUMBER.gt(TABLE.RETURN_NUMBER)).
-				and(TABLE.SEND_NUMBER.eq(((short)0))
+				and(TABLE.SEND_NUMBER.eq((0))
 				)) > 0 ) {
 			return true;
 		}
@@ -186,7 +186,7 @@ public class OrderGoodsService extends ShopBaseService{
 	}
 
 	public List<OrderGoodsVo> getReturnGoods(String orderSn) {
-		return selectWhere(TABLE.ORDER_SN.eq(orderSn).and(TABLE.RETURN_NUMBER.gt((short)0))).into(OrderGoodsVo.class);
+		return selectWhere(TABLE.ORDER_SN.eq(orderSn).and(TABLE.RETURN_NUMBER.gt(0))).into(OrderGoodsVo.class);
 	}
 
     /**
@@ -204,7 +204,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public Result<? extends Record> getGoodsInfoByOrderSn(String orderSn){
-		Result<Record6<Integer, String, String, String, BigDecimal, Short>> record6s = db()
+		Result<Record6<Integer, String, String, String, BigDecimal, Integer>> record6s = db()
 				.select(TABLE.GOODS_ID, TABLE.GOODS_SN, TABLE.GOODS_NAME, TABLE.GOODS_IMG, TABLE.GOODS_PRICE, TABLE.GOODS_NUMBER)
 				.from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
 		return record6s;

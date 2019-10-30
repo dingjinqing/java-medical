@@ -40,6 +40,7 @@ public class ExtendReceiveService extends ShopBaseService implements IorderOpera
 	
 	@Autowired
 	private OrderReadService orderRead;
+	
 	/**仅仅商家延长收货*/
 	public static byte OPERATION_ONLY_ADMIN = 1;
 	/**买家操作后商家操作*/

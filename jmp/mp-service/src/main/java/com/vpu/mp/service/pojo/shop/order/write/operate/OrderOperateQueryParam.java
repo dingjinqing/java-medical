@@ -4,11 +4,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser.WxUserInfo;
-import com.vpu.mp.service.shop.order.action.base.IOrderBase;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *	 订单操作前置查询，得到可以操作的商品
@@ -16,8 +14,9 @@ import lombok.Data;
  * @author 王帅
  *
  */
-@Data
-public class OrderOperateQueryParam extends  AbstractOrderOperateQueryParam{
+@Getter
+@Setter
+public class OrderOperateQueryParam extends AbstractOrderOperateQueryParam{
 	/**
 	 * TODO 
 	 */

@@ -3,11 +3,20 @@ package com.vpu.mp.service.shop.member.dao;
 import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,9 +25,6 @@ import org.jooq.Record1;
 import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
-import org.jooq.SelectSeekStep3;
-import org.jooq.SelectSelectStep;
-import org.jooq.UpdateConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,30 +34,13 @@ import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.shop.member.UserCardService;
-
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MEMBER_CARD_USING;
 
 /**
 * @author 黄壮壮
@@ -292,7 +281,7 @@ public class UserCardDaoService extends ShopBaseService{
 		return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.where(USER_CARD.CARD_NO.eq(cardNo))
-			.fetchAnyInto(WxAppUserCardVo.class);
+			.fetchAnyInto(UserCardParam.class);
 	}
 	
 	public void updateUserCardByCardIdAndNo(Integer cardId,String cardNo) {
@@ -384,24 +373,29 @@ public class UserCardDaoService extends ShopBaseService{
 	/**
 	 * 获取用户会员卡列表
 	 * @param userId
-	 * @return 
 	 * @return
 	 */
-	public PageResult<WxAppUserCardVo> getCardList(SearchCardParam param) {
+	public List<UserCardParam> getCardList(Integer userId) {
 		
-		 SelectSeekStep3<Record, String, Byte, Timestamp> select = db().select(
-				 	USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("userCardFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
-				 	USER_CARD.IS_DEFAULT,USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.EXCHANG_SURPLUS,
-				 	USER_CARD.CREATE_TIME.as("userCardCreateTime"),USER_CARD.UPDATE_TIME.as("userCardUpdateTime"),
-				 MEMBER_CARD.asterisk())
+		 return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
 				.from(USER_CARD)
 				.leftJoin(MEMBER_CARD)
 				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
-				.where(USER_CARD.USER_ID.eq(param.getUserId()))
+				.where(USER_CARD.USER_ID.eq(userId))
 				.and(USER_CARD.FLAG.eq(CARD_USING))
-				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc());
-		 	return getPageResult(select, param.getCurrentPage(), param.getPageRows(), WxAppUserCardVo.class);		
+				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc())
+				.fetchInto(UserCardParam.class);
 	}
 	
-	
+	/**
+	 * get card type
+	 * @param cardNo
+	 * @return
+	 */
+	public Byte getCardType(String cardNo) {
+		return db().select(MEMBER_CARD.CARD_TYPE)
+			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+			.where(USER_CARD.CARD_NO.eq(cardNo))
+			.fetchAnyInto(Byte.class);
+	}
 }

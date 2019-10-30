@@ -111,7 +111,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			cbsMap.get(recId).setGoodsNumber(cbsMap.get(recId).getGoodsNumber() - sendNumber);
 			//构造参数
 			OrderGoodsRecord orderGoodsVo = goods.get(oneGoods.getRecId());
-			orderGoodsVo.setSendNumber((short) (orderGoodsVo.getSendNumber().intValue() + sendNumber.intValue()));
+			orderGoodsVo.setSendNumber((orderGoodsVo.getSendNumber().intValue() + sendNumber.intValue()));
 			recordList.add(orderGoodsVo);
 			shipInfo.addRecord(shipInfoList, orderGoodsVo, batchNo, param, sendNumber);
 		}
@@ -181,7 +181,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		
 		//TODO Short.valueOf("0")正常商品行
 		List<OrderGoodsVo> orderGoods = db().select(ORDER_GOODS.asterisk()).from(ORDER_GOODS)
-				.where(ORDER_GOODS.ORDER_SN.eq(orderSn).and(ORDER_GOODS.SEND_NUMBER.eq(Short.valueOf("0")))).fetchInto(OrderGoodsVo.class);
+				.where(ORDER_GOODS.ORDER_SN.eq(orderSn).and(ORDER_GOODS.SEND_NUMBER.eq(0))).fetchInto(OrderGoodsVo.class);
 		// 查询退货中信息
 		Map<Integer, List<OrderReturnGoodsVo>> returnOrderGoods = db().select(RETURN_ORDER_GOODS.asterisk()).select()
 				.from(RETURN_ORDER_GOODS)

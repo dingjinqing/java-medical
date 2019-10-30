@@ -19,7 +19,7 @@ public abstract class AbstractOrderOperateQueryParam implements IOrderBase {
     /**区分前后台操作 */
     private Byte isMp;
     private AdminTokenAuthInfo adminInfo;
-    private WxAppSessionUser.WxUserInfo wxUserInfo;
+    private WxAppSessionUser wxUserInfo;
     @Override
     public OrderServiceCode getServiceCode() {
         //enum类型values取得数组利用默认排序顺序获取对应service

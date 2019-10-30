@@ -32,7 +32,7 @@ public class OrderActionService extends ShopBaseService{
 		}
 		
 		if(param.getWxUserInfo() != null){
-			record.setUserOpenid(param.getWxUserInfo().getOpenId());
+			record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
 		}
 		record.setActionNote(desc);
 		record.insert();
