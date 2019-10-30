@@ -1,28 +1,84 @@
 <template>
   <div>
-    <!-- <div class="title">
-      <div class="fl">
-        <img
-          class="shop_defu"
-          style="width: 44px;border: 1px solid #fff;"
-          src="http://mpdevimg2.weipubao.cn/upload/0/image/20190710/crop_wTyAKWD7fyizqfv9.jpeg"
-          alt=""
-        >
-        <img
-          class="shop_type"
-          src="http://mpdevimg2.weipubao.cn/image/admin/img_home/type_open.png"
-          alt=""
-        >
-      </div>
+
+    <div class="title">
+      <el-tooltip
+        class="item"
+        effect="light"
+        content="营业"
+        placement="bottom-start"
+      >
+        <div class="fl">
+          <img
+            class="shop_defu"
+            style="width: 44px;border: 1px solid #fff;"
+            src="http://mpdevimg2.weipubao.cn/upload/0/image/20190710/crop_wTyAKWD7fyizqfv9.jpeg"
+            alt=""
+          >
+          <img
+            class="shop_type"
+            src="http://mpdevimg2.weipubao.cn/image/admin/img_home/type_open.png"
+            alt=""
+          >
+        </div>
+      </el-tooltip>
+
       <span>微铺宝电商运营</span>
-      <span class="">
-        <span>旗舰版</span>
+      <el-tooltip
+        effect="light"
+        placement="bottom-start"
+      >
+        <div slot="content">
+          <div class="system_info_content_top">当前版本为<span class="version_name">旗舰版</span>，有效期至：<span class="expire_time">2020-03-05</span></div>
+          <div class="system_info_content_bottom">
+            <el-button
+              type="primary"
+              size="mini"
+            >我要续费</el-button>
+            <el-button
+              type="primary"
+              size="mini"
+            >版本升级</el-button>
+          </div>
+        </div>
+        <span class="title_type_par">
+          <span class="title_type">旗舰版</span>
+        </span>
+      </el-tooltip>
+      <div class="title_share">
         <img
-          src=""
+          src="http://mpdevimg2.weipubao.cn/image/admin/img_home/share_shop.png"
           alt=""
+        >分享店铺
+        <span
+          class="share_span"
+          style="display: none;"
         >
-      </span>
-    </div> -->
+          <img
+            src="http://mpdevimg2.weipubao.cn/image/admin/img_home/img_sj.png"
+            alt=""
+          >
+          <span class="share_span_top">
+            <span>扫一扫，分享给好友吧~</span>
+            <img
+              class="qrcode"
+              src="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/1/T1P0_20191025150038.jpg"
+              alt=""
+            >
+            <a
+              href="http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/1/T1P0_20191025150038.jpg"
+              download
+              class="down_qrcode"
+            >下载二维码</a>
+          </span>
+          <span class="share_link">
+            <input type="text">
+            <button class="btn_copy">复制</button>
+          </span>
+        </span>
+      </div>
+    </div>
+
     <div class="main-container">
       <div class="over-left">
         <div class="left-agency">
@@ -333,7 +389,7 @@
               class="single-zx"
               v-for="(item, index) in noticeList"
               :key="index"
-              @click="noticeDetail(item.id)"
+              @click="noticeDetail(item.articleId)"
             >
               <span class="circle"></span>
               <a
@@ -377,18 +433,22 @@
             ref="carousel"
             indicator-position="none"
             @change="carouselChange"
-            @click="setActiveItem"
           >
             <el-carousel-item
               style="height: 100%; width: 100%;"
               v-for="(item, index) in carouselList"
               :key="index"
             >
-              <img
-                style="height: 100%; width: 100%;"
-                :src="item.img"
-                alt=""
+              <a
+                :href="item.link"
+                target="_blank"
               >
+                <img
+                  style="height: 100%; width: 100%;"
+                  :src="item.img"
+                  alt=""
+                >
+              </a>
             </el-carousel-item>
           </el-carousel>
           <div class="rounds">
@@ -452,13 +512,13 @@
         ></el-checkbox>
       </el-checkbox-group>
     </el-dialog>
-  </div>
 
+  </div>
 </template>
 <script>
 // 引入组件
 import bindAccount from './overviewBindAccount.vue'
-import { toDoItemRequest, dataRequest, shopAssistantRequest, noticeDetailRequest } from '@/api/admin/survey.js'
+import { toDoItemRequest, dataRequest, shopAssistantRequest, noticeListRequest, noticeDetailRequest } from '@/api/admin/survey.js'
 export default {
   components: {
     bindAccount
@@ -561,45 +621,20 @@ export default {
       // 店铺列表
       storeList: {},
       // 公告列表
-      noticeList: [{
-        id: '1',
-        title: 'V1.29.0版本更新清单',
-        time: '09-06'
-      }, {
-        id: '2',
-        title: 'V1.29.0版本更新清单',
-        time: '09-06'
-      }, {
-        id: '3',
-        title: 'V1.29.0版本更新清单',
-        time: '09-06'
-      }, {
-        id: '4',
-        title: 'V1.29.0版本更新清单',
-        time: '09-06'
-      }, {
-        id: '5',
-        title: 'V1.29.0版本更新清单',
-        time: '09-06'
-      }, {
-        id: '6',
-        title: 'V1.29.0版本更新清单',
-        time: '09-06'
-      }, {
-        id: '7',
-        title: 'V1.29.0版本更新清单',
-        time: '09-06'
-      }],
+      noticeList: [],
       // 轮播图数据
       carouselList: [{
         id: '1',
-        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner1.jpg'
+        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner1.jpg',
+        link: ''
       }, {
         id: '2',
-        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner2.jpg'
+        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner2.jpg',
+        link: 'http://www.wangdian.cn/'
       }, {
         id: '3',
-        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner3.jpg'
+        img: 'http://mpdevimg2.weipubao.cn/image/admin/overview_banner/banner3.jpg',
+        link: 'http://pos.wangdian.cn/'
       }],
       indValue: '', // 轮播的索引
       // 服务列表
@@ -632,34 +667,35 @@ export default {
   },
   mounted () {
     // 初始化数据
-    this.todoDate()
-    this.showData()
-    this.storeData()
+    this.getTodoDate()
+    this.getShowData()
+    this.getStoreData()
+    this.getNoticeList()
   },
   methods: {
     // 代办事项
-    todoDate () {
+    getTodoDate () {
       toDoItemRequest().then((res) => {
         let data = res.content
         if (res.error === 0) {
           for (var i = 0; i < this.checkList.length; i++) {
-            if (i === 0) {
+            if (this.checkList[i].label === '待发货订单') {
               this.checkList[i].num = data.toBeDelivered
-            } else if (i === 1) {
+            } else if (this.checkList[i].label === '待处理退款退货') {
               this.checkList[i].num = data.refunds
-            } else if (i === 2) {
+            } else if (this.checkList[i].label === '已售罄商品') {
               this.checkList[i].num = data.soldOutGoods
-            } else if (i === 3) {
+            } else if (this.checkList[i].label === '商品评价待审核') {
               this.checkList[i].num = data.productEvaluationPr
-            } else if (i === 4) {
+            } else if (this.checkList[i].label === '待提货订单') {
               this.checkList[i].num = data.pendingOrder
-            } else if (i === 5) {
+            } else if (this.checkList[i].label === '分销员待审核') {
               this.checkList[i].num = data.distributorPr
-            } else if (i === 6) {
+            } else if (this.checkList[i].label === '会员卡激活待审核') {
               this.checkList[i].num = data.membershipCardPr
-            } else if (i === 7) {
+            } else if (this.checkList[i].label === '分销提现待审核') {
               this.checkList[i].num = data.distributionWithdrawalPr
-            } else if (i === 8) {
+            } else if (this.checkList[i].label === '服务评价待审核') {
               this.checkList[i].num = data.serviceEvaluationPr
             }
             this.checkList[i].isCheck = false
@@ -684,7 +720,7 @@ export default {
     closeCheckHandler (done) {
       if (this.checkData.length === 5) {
         done()
-        this.todoDate()
+        this.getTodoDate()
       } else {
         this.$message.warning({ message: '请选择5项待办事项' })
       }
@@ -696,7 +732,7 @@ export default {
     },
 
     // 数据展示
-    showData () {
+    getShowData () {
       dataRequest({ screeningTime: this.screeningTime }).then((res) => {
         if (res.error === 0) {
           this.dataContent = res.content
@@ -711,7 +747,7 @@ export default {
     },
 
     // 店铺助手
-    storeData () {
+    getStoreData () {
       shopAssistantRequest({
         shopId: Number(localStorage.getItem('V-ShopId')),
         sysId: 1,
@@ -721,6 +757,33 @@ export default {
           this.storeList = res.content
         }
       })
+    },
+
+    // 公告查询
+    getNoticeList () {
+      let obj = {
+        'categoryId': '',
+        'status': '',
+        'keywords': '',
+        'sortName': '',
+        'page': {
+          'currentPage': '1',
+          'pageRows': '20'
+        }
+      }
+      noticeListRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList.slice(0, 6))
+        }
+      })
+    },
+
+    // 公告时间格式处理
+    handleData (data) {
+      data.forEach(item => {
+        item.time = item.updateTime.substring(5, 10)
+      })
+      this.noticeList = data
     },
 
     // 公告详情
@@ -764,8 +827,217 @@ export default {
 .fl {
   float: left;
   position: relative;
-  margin-top: 5px;
+  margin-top: -1px;
   cursor: pointer;
+}
+
+.shop_type {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.title .fl > span img {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  z-index: 9;
+}
+
+.title .fl > span > span {
+  position: absolute;
+  right: -33px;
+  bottom: -33px;
+  display: inline-block;
+  width: 55px;
+  height: 26px;
+  line-height: 26px;
+  background: #fff;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-size: 12px;
+}
+
+.title > span {
+  color: #333;
+  font-size: 16px;
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.title_type_par {
+  position: relative;
+  height: 35px;
+}
+
+.title .title_type {
+  background: #457bf9;
+  color: #fff;
+  font-size: 14px;
+  width: 60px;
+  height: 23px;
+  line-height: 23px;
+  text-align: center;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.system_shadow {
+  top: 22px;
+
+  position: absolute;
+  left: 19px;
+  z-index: 109;
+  top: 29px;
+  display: none;
+}
+
+.system_info_content {
+  font-size: 12px;
+  top: 34px;
+
+  width: 300px;
+  padding: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 10px #f0f0f0;
+  position: absolute;
+  z-index: 100;
+  display: none;
+}
+
+.system_info_content_top {
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  line-height: 2;
+}
+
+.system_info_content_bottom {
+  text-align: center;
+  margin: 10px 0;
+}
+
+// .system_info_content_top {
+//   padding-bottom: 10px;
+//   border-bottom: 1px solid #eee;
+//   line-height: 20px;
+// }
+
+// .system_info_content_bottom {
+//   text-align: center;
+// }
+
+// .system_info_content_bottom a {
+//   display: inline-block;
+//   margin: 10px auto 0;
+//   width: 70px;
+//   text-align: center;
+//   height: 30px;
+//   line-height: 30px;
+//   background: #5a8bff;
+//   color: #fff;
+//   cursor: pointer;
+//   font-size: 12px;
+// }
+
+// .system_info_content_bottom a:first-child {
+//   margin-right: 20px;
+// }
+
+.title_share {
+  width: 120px;
+
+  float: right;
+  padding-right: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  width: 102px;
+  position: relative;
+}
+
+.title_share .share_span {
+  right: 10px;
+  z-index: 99;
+
+  padding: 15px 12px;
+  border: 1px solid #eee;
+  background: #fff;
+  font-size: 14px;
+  position: absolute;
+  right: 0;
+  top: 50px;
+  width: 285px;
+  text-align: center;
+  display: none;
+}
+
+.share_sj {
+  position: absolute;
+  right: 75px;
+  top: -7px;
+}
+
+.title_share span {
+  display: inline-block;
+}
+
+.share_span .share_span_top {
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  line-height: 0;
+  padding-bottom: 10px;
+}
+
+.share_span .share_span_top > span {
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.share_span .share_span_top img {
+  display: block;
+  margin: 0 auto;
+}
+
+.share_span .share_span_top a {
+  color: #999;
+  font-size: 13px;
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+}
+
+.title_share span {
+  display: inline-block;
+}
+
+.share_link {
+  padding-top: 15px;
+  width: 100%;
+}
+
+.share_link input {
+  background: #f7f7f7;
+  border: 1px solid #f2f2f2;
+  height: 35px;
+  width: 220px;
+  padding-left: 8px;
+  float: left;
+  font-size: 13px;
+  color: #666;
+}
+
+.share_link button {
+  float: right;
+  color: #5a8bff;
+  background: #fff;
+  border: none;
+  height: 35px;
+  line-height: 35px;
 }
 
 img {

@@ -1,5 +1,14 @@
 import service from '@/util/request.js'
 
+// 绑定解绑
+export function bindRequest (data) {
+  return service({
+    url: '/api/admin/survey/official/bind',
+    method: 'post',
+    data: data
+  })
+}
+
 // 待办事项
 export function toDoItemRequest (data) {
   return service({
@@ -27,10 +36,10 @@ export function shopAssistantRequest (data) {
   })
 }
 
-// 绑定解绑
-export function bindRequest (data) {
+// 公告查询
+export function noticeListRequest (data) {
   return service({
-    url: '/api/admin/survey/official/bind',
+    url: '/api/official/article/list',
     method: 'post',
     data: data
   })
@@ -40,15 +49,6 @@ export function bindRequest (data) {
 export function noticeDetailRequest (data) {
   return service({
     url: '/api/official/article/get',
-    method: 'post',
-    data: data
-  })
-}
-
-// 公告查询
-export function noticeListRequest (data) {
-  return service({
-    url: '/api/official/article/list',
     method: 'post',
     data: data
   })
