@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div
+    class="container"
+    v-if="isSurvey"
+  >
     <span>{{titleLeft}}</span>
     <span
       style="color:#666"
@@ -14,7 +17,8 @@ export default {
     return {
       titleLeft: '',
       titleList: '',
-      lang: ''
+      lang: '',
+      isSurvey: true // 若是概况里的商城概览则隐藏面包屑
     }
   },
   watch: {
@@ -24,7 +28,7 @@ export default {
     },
     '$route.name' (newData) {
       console.log(newData)
-      this.changeText()
+      this.changeText(newData)
     },
     '$store.state.crumbs.cardholderData' (newData) {
       localStorage.setItem('V-UserCardCrumb', JSON.stringify(newData))
@@ -41,7 +45,14 @@ export default {
   },
   methods: {
     // 特例更改数据
-    changeText () {
+    changeText (routeName) {
+      // 如果是概况则隐藏面包屑
+      console.log(routeName)
+      if (routeName === 'shop_view') {
+        this.isSurvey = false
+      } else {
+        this.isSurvey = true
+      }
       // console.log(this.$t(`${this.$route.meta.crumbTitle}`))
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
       console.log(data, this.$route)
