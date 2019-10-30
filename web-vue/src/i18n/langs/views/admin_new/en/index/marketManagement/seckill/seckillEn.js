@@ -75,5 +75,7 @@ export const en = {
   downLoad: 'Download QR code',
   copy: 'Copy',
   cancel: 'Cancel',
-  sure: 'Sure'
+  sure: 'Sure',
+  // 活动数据
+  screen: 'Screen'
 }

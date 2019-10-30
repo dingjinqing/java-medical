@@ -75,5 +75,7 @@ export const cn = {
   downLoad: '下载二维码',
   copy: '复制',
   cancel: '取消',
-  sure: '确定'
+  sure: '确定',
+  // 活动数据
+  screen: '筛选'
 }

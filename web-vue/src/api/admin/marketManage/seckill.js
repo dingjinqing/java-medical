@@ -80,3 +80,12 @@ export function userSeckillList (data) {
     data: data
   })
 }
+
+// 查询活动数据
+export function effactSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/analysis',
+    method: 'post',
+    data: data
+  })
+}

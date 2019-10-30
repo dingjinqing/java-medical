@@ -4,22 +4,22 @@
 
       <!-- 日期筛选部分 -->
       <div style="display:flex">
-        <div style="height:32px;line-height:32px">筛选：</div>
+        <div style="height:32px;line-height:32px">{{ $t('seckill.screen') }}：</div>
         <div class="selectTime">
           <el-date-picker
             size="small"
             v-model="starDate"
             type="datetime"
-            placeholder="开始时间"
+            :placeholder="$t('seckill.startTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{ $t('seckill.to') }}</span>
           <el-date-picker
             size="small"
             v-model="endDate"
             type="datetime"
-            placeholder="结束时间"
+            :placeholder="$t('seckill.endTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
@@ -29,7 +29,7 @@
           type="primary"
           size="mini"
           @click="initEcharts"
-        >筛选</el-button>
+        >{{ $t('seckill.screen') }}</el-button>
       </div>
 
       <!-- 表格数据部分 -->
@@ -49,7 +49,7 @@
           <div
             class="num"
             style="color: #5A8BFF"
-          >0</div>
+          >{{ total.totalPayment }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -66,7 +66,7 @@
           <div
             class="num"
             style="color: #fc6181;"
-          >0</div>
+          >{{ total.totalDiscount }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -83,7 +83,7 @@
           <div
             class="num"
             style="color: #fdb64a;"
-          >0%</div>
+          >{{ total.totalCostEffectivenessRatio }}%</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -100,7 +100,7 @@
           <div
             class="num"
             style="color: #3dcf9a;"
-          >0</div>
+          >{{ total.totalNewUserNumber }}</div>
         </div>
         <div class="fromInfo">
           <div style="display:flex">
@@ -117,7 +117,7 @@
           <div
             class="num"
             style="color: #8379f7;"
-          >0</div>
+          >{{ total.totalOldUserNumber }}</div>
         </div>
       </section>
 
@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { groupBuyAnalysis } from '@/api/admin/marketManage/spellGroup.js'
+import { effactSeckillList } from '@/api/admin/marketManage/seckill.js'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import echarts from 'echarts'
 
@@ -138,23 +138,12 @@ export default {
     return {
       starDate: this.moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
       endDate: this.moment().format('YYYY-MM-DD HH:mm:ss'),
-      totalAmountPaid: 0,
-      totalDiscountAmount: 0,
-      costBenefitRatio: 0,
-      numberNewTransactions: 0,
-      oldNumberUsers: 0,
+      total: {}, // 表格
       echartInit: {
         colors: ['#5A8BFF', '#fc6181', '#fdb64a', '#3dcf9a', '#8379f7'],
         legendData: this.$t('groupBuy.legendData')
       },
-      echartData: {
-        dateList: ['2019-09-01', '2019-09-02', '2019-09-03', '2019-09-04', '2019-09-05', '2019-09-06', '2019-09-07', '2019-09-08', '2019-09-09', '2019-09-10'],
-        marketPriceList: [],
-        goodsPriceList: [],
-        ratioList: [],
-        oldUserList: [],
-        newUserList: []
-      },
+      echartData: {},
       option: {},
       myChart: {}
     }
@@ -172,19 +161,22 @@ export default {
   methods: {
     initEcharts () {
       this.myChart = echarts.init(document.getElementById('charts'))
-      let obj = {
-        id: this.$route.query.id,
+      let params = {
+        skId: this.$route.query.id,
         startTime: this.starDate,
         endTime: this.endDate
       }
       this.handleEcharts()
-      groupBuyAnalysis(obj).then(res => {
-        this.handleData(res.content)
-        this.myChart.hideLoading()
-        this.myChart.dispatchAction({
-          type: 'restore'
-        })
-        console.log(res)
+      effactSeckillList(params).then((res) => {
+        if (res.error === 0) {
+          this.total = res.content.total
+          this.echartData = res.content
+          this.handleEcharts()
+          this.myChart.hideLoading()
+          this.myChart.dispatchAction({
+            type: 'restore'
+          })
+        }
       })
     },
     handleEcharts () {
@@ -210,11 +202,11 @@ export default {
         ],
         yAxis: [
           {
-            name: this.$t('groupBuy.number'),
+            name: '数量',
             type: 'value'
           },
           {
-            name: this.$t('groupBuy.costBenefitRatio'),
+            name: '费效比',
             type: 'value'
           }
         ],
@@ -225,7 +217,7 @@ export default {
             color: this.echartInit.colors[0],
             yAxisIndex: 0,
             stack: '总量',
-            data: [120, 132, 101, 134, 90, 230, 210, 220, 240, 220]
+            data: this.echartData.paymentAmount
           },
           {
             name: this.echartInit.legendData[1],
@@ -234,7 +226,7 @@ export default {
 
             type: 'line',
             stack: '总量',
-            data: [220, 182, 191, 234, 290, 330, 310, 300, 320, 323]
+            data: this.echartData.discountAmount
           },
           {
             name: this.echartInit.legendData[2],
@@ -243,7 +235,7 @@ export default {
 
             yAxisIndex: 1,
             stack: '总量',
-            data: [150, 232, 201, 154, 190, 330, 410, 440, 430, 424]
+            data: this.echartData.costEffectivenessRatio
           },
           {
             name: this.echartInit.legendData[3],
@@ -252,7 +244,7 @@ export default {
 
             yAxisIndex: 0,
             stack: '总量',
-            data: [320, 332, 301, 334, 390, 330, 320, 313, 329, 321]
+            data: this.echartData.oldUserNumber
           },
           {
             name: this.echartInit.legendData[4],
@@ -260,7 +252,7 @@ export default {
             color: this.echartInit.colors[4],
             yAxisIndex: 0,
             stack: '总量',
-            data: [820, 932, 901, 934, 1290, 1330, 1320, 1235, 1335, 1285]
+            data: this.echartData.newUserNumber
           }
         ]
       }
@@ -272,9 +264,6 @@ export default {
         maskColor: 'rgba(0, 0, 0, 0.9'
       })
       // window.addEventListener('resize', function () { myChart.resize() })
-    },
-    handleData (data) {
-      this.echartData = data
     },
     updateEcharts () {
       this.echartInit.legendData = this.$t('groupBuy.legendData')
