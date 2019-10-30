@@ -161,7 +161,7 @@ export default {
         item.ischeck = false
         if (this.brandBackData.length > 0) {
           this.brandBackData.forEach(itemC => {
-            if (item.pageName === itemC.pageName) {
+            if (item.id === itemC) {
               item.ischeck = true
             }
           })

@@ -100,6 +100,9 @@ import {
 import {
   en as pictureNavigation
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationEn'
+// 小程序页面装修商品搜索模块国际化
+import { en as commoditySearch } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
+
 // 营销管理系列模块化
 // 营销管理通用词汇
 import {
@@ -830,6 +833,7 @@ const en = {
   decorationHome, // 小程序页面装修home页
   pageSetUp, // 小程序页面设置
   pictureNavigation, // 页面装修图片导航模块
-  authRoleList // 店铺权限
+  authRoleList, // 店铺权限
+  commoditySearch // 小程序页面装修商品搜索模块
 }
 export default en

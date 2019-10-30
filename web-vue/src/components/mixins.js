@@ -164,7 +164,7 @@ const myMixin = {
         this.moduleHeight = 'moduleHeightCn'
         this.pictorialVisibility = ''
         this.bgColorClass = ''
-        this.hoverTips = ''
+        this.hoverTips = null
         this.guideCircleClass = ''
       }
     },

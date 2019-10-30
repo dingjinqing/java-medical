@@ -1,101 +1,104 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>商品搜索模块</h2>
+      <h2>{{$t('commoditySearch.searchTitle')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="container">
-          <span>框体样式：</span>
+          <span>{{$t('commoditySearch.frameStyle')}}：</span>
           <el-radio
             v-model="data.search_style"
             label="0"
-          >方形</el-radio>
+          >{{$t('commoditySearch.square')}}</el-radio>
           <el-radio
             v-model="data.search_style"
             label="1"
-          >圆形</el-radio>
+          >{{$t('commoditySearch.circular')}}</el-radio>
         </div>
         <div class="container">
-          <span>框体高度：</span>
+          <span>{{$t('commoditySearch.frameHeight')}}：</span>
           <el-radio
             v-model="data.search_font"
             label="0"
-          >高</el-radio>
+          >{{$t('commoditySearch.high')}}</el-radio>
           <el-radio
             v-model="data.search_font"
             label="1"
-          >中</el-radio>
+          >{{$t('commoditySearch.in')}}</el-radio>
           <el-radio
             v-model="data.search_font"
             label="2"
-          >低</el-radio>
+          >{{$t('commoditySearch.low')}}</el-radio>
         </div>
         <div class="container color">
-          <span>框体颜色：</span>
+          <span>{{$t('commoditySearch.frameColor')}}：</span>
           <span class="colorSelect">
-            <colorPicker
+            <el-color-picker
               v-model="data.box_color"
-              :defaultColor="defaultColorBorder"
-              style="width:60px;height:30px;"
-            />
+              show-alpha
+              :predefine="predefineColors"
+            >
+            </el-color-picker>
           </span>
           <span style="margin-left:5px">
             <el-button
               plain
               size="small"
               @click="handleToReset(0)"
-            >重置</el-button>
+            >{{$t('commoditySearch.reset')}}</el-button>
           </span>
 
         </div>
         <div class="container color">
-          <span>背景颜色：</span>
+          <span>{{$t('commoditySearch.backgroundColor')}}：</span>
           <span class="colorSelect">
-            <colorPicker
+            <el-color-picker
               v-model="data.back_color"
-              :defaultColor="defaultColorBorderBg"
-              style="width:60px;height:30px;"
-            />
+              show-alpha
+              :predefine="predefineColors"
+            >
+            </el-color-picker>
           </span>
           <span style="margin-left:5px">
             <el-button
               plain
               size="small"
               @click="handleToReset(1)"
-            >重置</el-button>
+            >{{$t('commoditySearch.reset')}}</el-button>
           </span>
 
         </div>
         <div class="container">
-          <span>商家分类：</span>
+          <span>{{$t('commoditySearch.merchantClassification')}}：</span>
           <el-radio
             v-model="data.search_sort"
             label="0"
-          >不显示</el-radio>
+          >{{$t('commoditySearch.noDisplay')}}</el-radio>
           <el-radio
             v-model="data.search_sort"
             label="1"
-          >显示</el-radio>
+          >{{$t('commoditySearch.display')}}</el-radio>
         </div>
 
         <div
           class="container color"
           v-if="data.search_sort==='1'"
         >
-          <span>图标颜色：</span>
+          <span>{{$t('commoditySearch.iconColor')}}：</span>
           <span class="colorSelect">
-            <colorPicker
+            <el-color-picker
               v-model="data.sort_bg_color"
-              :defaultColor="defaultColorBorderIcon"
-              style="width:60px;height:30px;"
-            />
+              show-alpha
+              :predefine="predefineColors"
+            >
+            </el-color-picker>
           </span>
           <span style="margin-left:5px">
             <el-button
               plain
               size="small"
               @click="handleToReset(2)"
-            >重置</el-button>
+            >{{$t('commoditySearch.reset')}}</el-button>
           </span>
 
         </div>
@@ -115,6 +118,22 @@ export default {
   },
   data () {
     return {
+      predefineColors: [ // 颜色选择器预定义颜色池
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsv(51, 100, 98)',
+        'hsva(120, 40, 94, 0.5)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+        '#c7158577'
+      ],
       data: {
         'module_name': 'm_goods_search', // 模块名称
         'search_style': '1', // 框体样式

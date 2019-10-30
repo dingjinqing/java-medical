@@ -19,22 +19,28 @@
             :style="{'border-radius':data.search_style==='1'?'30px':'','height':data.search_font==='1'?'34px':data.search_font==='0'?'40px':'28px','backgroundColor':data.back_color}"
           >
             <span class="el-icon-search"></span>
-            <span>商品搜索：请输入商品关键字</span>
+            <span>{{$t('commoditySearch.placeholderText')}}</span>
           </div>
           <div
             v-if="data.search_sort==='1'"
             class="icon"
             :style="'color:'+data.sort_bg_color"
           >
-            <span class="el-icon-c-scale-to-original"></span>
-            <span>分类</span>
+            <span
+              style="display: flex;justify-content: center;"
+              class="el-icon-c-scale-to-original"
+            ></span>
+            <span>{{$t('commoditySearch.classification')}}</span>
           </div>
         </div>
 
       </div>
       <!--模块编辑区结束-->
-      <div class="item_module_title">
-        <span>商品</span>
+      <div
+        class="item_module_title"
+        :style="hoverTips?'width:140px':''"
+      >
+        <span>{{$t('commoditySearch.commodity')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -62,7 +68,7 @@
       class="setHere activeSetHere"
       :class="activeSetHere?'middleModulesActive':''"
     >
-      放这里
+      {{$t('commoditySearch.putItHere')}}
     </div>
   </div>
 </template>
@@ -187,11 +193,13 @@ export default {
     position: relative;
     .Search {
       flex: 1;
-      line-height: 24px;
+      // line-height: 24px;
       padding: 0 5px;
       margin: 5px 10px;
       border-color: #ccc;
       border: 1px solid transparent;
+      display: flex;
+      align-items: center;
       span {
         color: #b4b4b4;
       }

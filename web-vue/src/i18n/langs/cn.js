@@ -75,6 +75,9 @@ import {
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/pageSetUpCn'
 // 小程序页面装修图片导航模块国际化
 import { cn as pictureNavigation } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationCn'
+// 小程序页面装修商品搜索模块国际化
+import { cn as commoditySearch } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchCn'
+
 // 商品管理系列国际化
 // 商品管理/全部商品
 import {
@@ -832,8 +835,8 @@ const cn = {
   authRoleList, // 店铺权限
   decorationHome, // 页面装修部分
   pageSetUp, // 页面装修页面设置
-  pictureNavigation // 页面装修图片导航模块
-
+  pictureNavigation, // 页面装修图片导航模块
+  commoditySearch // 小程序页面装修搜索模块
 }
 
 export default cn
