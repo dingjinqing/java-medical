@@ -56,7 +56,7 @@ public class MemberBasicInfoVo {
 	
 	/** b2c_user_score */
 	/** 累计积分 */
-	private BigDecimal totalScore;
+	private Integer totalScore;
 	
 	/** 累计消费金额 */
 	private BigDecimal totalConsumpAmount;

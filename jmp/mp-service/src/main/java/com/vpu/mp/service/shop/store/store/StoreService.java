@@ -294,7 +294,16 @@ public class StoreService extends ShopBaseService {
 			.fetch()
 			.into(StoreBasicVo.class);
 	}
-
+	
+	public List<StoreBasicVo> getStoreListByStoreIds(List<Integer> storeId) {
+		logger().info("正在根据门店id数组查询门店基本信息");
+		return db().select(STORE.STORE_ID,STORE.STORE_NAME)
+				.from(STORE)
+				.where(STORE.STORE_ID.in(storeId))
+				.and(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+				.fetchInto(StoreBasicVo.class);
+	}
+	
     /**
 	 * 获取门店名称
 	 * @param sourceId
@@ -326,4 +335,6 @@ public class StoreService extends ShopBaseService {
         vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
         return vo;
     }
+
+
 }

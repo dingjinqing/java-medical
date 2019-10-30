@@ -27,16 +27,22 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.operation.dao.TradesRecordDaoService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 
 import jodd.util.StringUtil;
 
@@ -101,12 +107,20 @@ public class UserCardService extends ShopBaseService{
 	public DistributorLevelService distributorLevelService;
 	@Autowired
 	public TradesRecordDaoService tradesRecord;
+	@Autowired
+	public StoreService storeService;
+	@Autowired
+	public GoodsService goodsService;
+	@Autowired
+	public CardVerifyService cardVerifyService;
 	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String OPTIONINFO = OPEN_CARD_SEND;
 	public static final String DESC = "score_open_card";
 	public static final String SYSTEM_UP_GRADE = SYSTEM_UPGRADE;
-
+	
+	
+	
 	/**
 	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回null
 	 * @param user_id
@@ -181,7 +195,7 @@ public class UserCardService extends ShopBaseService{
 		}else {
 			for(Integer id: userId) {
 				//获取用户累积获得积分和累积消费总额
-				Integer userTotalScore = scoreService.getUserTotalScore(id);
+				Integer userTotalScore = scoreService.getAccumulationScore(id);
 				BigDecimal amount = distributorLevelService.getTotalSpend(id).getTotal();
 				// 获取等级卡列表等级升序
 				List<MemberCardRecord> gradeCard = cardDao.getAllUsingGradeCard();
@@ -631,23 +645,70 @@ public class UserCardService extends ShopBaseService{
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) {
 		WxAppUserCardVo card = (WxAppUserCardVo)userCardDao.getUserCardInfo(param.getCardNo());
 		dealWithUserCardDetailInfo(card);
+		
+		// TODO 累计消费 等王帅的接口 orderSerive.getTotalSpend
+		// card.setCumulativeConsumptionAmounts();
+		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
+		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
+		
+		//TODO 升级进度
+		
+		//TODO 开卡送卷
 		return card;
 	}
 	
 	public void dealWithUserCardDetailInfo(WxAppUserCardVo card) {
+		logger().info("处理wx 用户会员卡数据详情");
 		dealWithUserCardBasicInfo(card);
-		//TODO 升级进度
-		// 门店列表
+		dealWithUserCardAvailableStore(card);
+		dealWithExchangGoods(card);
+
+	}
+	
+	public void dealWithUserCardAvailableStore(WxAppUserCardVo card) {
+		logger().info("正在处理会员卡门店列表信息");
 		if(card.isStoreAvailable()) {
+			List<StoreBasicVo> storeBasicVo = storeService.getStoreListByStoreIds(card.retrieveStoreList());
+			card.setStoreInfoList(storeBasicVo);
 		}
-		//当前累计积分 和 累计消费
-		// 开卡送卷
 	}
 	
 	public void dealWithUserCardBasicInfo(WxAppUserCardVo card) {
 		String avatar = getCardAvatar();
 		dealWithWxUserCard(card,avatar);
 	}
+	
+	/**
+	 * 处理可兑换的商品
+	 */
+	public void dealWithExchangGoods(WxAppUserCardVo card) {
+		
+		if(card.hasAvailableExchangGoods()) {
+			card.setGoodsList(getAvailGoodsForCard(card));
+			// 两位小数
+			if(card.getGoodsList()!=null) {
+				for(GoodsSmallVo good: card.getGoodsList()) {
+					good.setShopPrice(good.getShopPrice().setScale(2));
+				}
+			}
+		}
+	}
+	
+	public List<GoodsSmallVo> getAvailGoodsForCard(WxAppUserCardVo card){
+		logger().info("正在获取可兑换的商品");
+		// 获取兑换的商品id
+		List<Integer> goodsIds = new ArrayList<Integer>();
+		if(!StringUtils.isBlank(card.getExchangGoods())) {
+			goodsIds = card.retrieveExchangGoods();
+		}else {
+			PageResult<GoodsPageListVo> pageList = goodsService.getPageList(new GoodsPageListParam());
+			for(GoodsPageListVo goods: pageList.dataList) {
+				goodsIds.add(goods.getGoodsId());
+			}
+		}
+		return goodsService.getGoodsList(goodsIds,true);
+	}
+
 	/**
 	 * get card type
 	 * @param cardNo
@@ -659,4 +720,6 @@ public class UserCardService extends ShopBaseService{
 		}
 		return userCardDao.getCardType(cardNo);
 	}
+
+	
 }

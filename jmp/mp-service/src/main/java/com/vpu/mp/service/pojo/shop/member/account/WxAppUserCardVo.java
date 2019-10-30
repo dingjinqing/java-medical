@@ -1,8 +1,12 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +31,16 @@ public class WxAppUserCardVo extends UserCardParam {
 	protected LocalDate startDate;
 	protected LocalDate endDate;
 	protected String avatar;
-	
+	// 使用商品列表
+	protected List<GoodsSmallVo> goodsList;
+	// 门店信息
+	protected List<StoreBasicVo> storeInfoList;
+	// 累积积分
+	protected Integer cumulativeScore;
+	// 累积消费金额
+	protected BigDecimal cumulativeConsumptionAmounts;
+	// 审核状态
+	protected Byte cardVerifyStatus;
 	public void calcCardIsExpired(){
 		if(isExpire()) {
 			this.expire = ALREADY_EXPIRED;

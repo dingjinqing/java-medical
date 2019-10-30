@@ -1,11 +1,22 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 
 import static org.jooq.impl.DSL.sum;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 
 /**
 * @author 黄壮壮
@@ -14,23 +25,71 @@ import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 */
 @Service
 public class ScoreDaoService extends ShopBaseService {
-	// 0:未使用 1:已使用 2：已过期 3：已退款
-	private final Byte STATUS_UNUSERD=0;
-	private final Byte STATUS_USING = 1;
-	private final Byte STATUS_USED = 2;
-	private final Byte STATUS_EXPIRED = 3; 
+	/** -积分有效的状态 列表*/
+	final static List<Byte> AVAILABLE_SCORE_STATUS_LIST = new ArrayList<>(Arrays.asList(NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS ));
 	/**
-	 * 获取用户累积获得积分
+	 * 计算用户的所有累积分
 	 * @param id
 	 * @return
 	 */
-	public Integer getUserTotalScore(Integer id) {
-		 return db().select(sum(USER_SCORE.SCORE))
-				 	.from(USER_SCORE)
-				 	.where(USER_SCORE.USER_ID.eq(id))
-				 	.and(USER_SCORE.STATUS.notIn(STATUS_EXPIRED))
-				 	.and(USER_SCORE.SCORE.greaterThan(0))
-				 	.fetchAnyInto(Integer.class);
+	public Integer calculateAccumulationScore(Integer userId) {
+		 Integer accumulationScore = db().select(sum(USER_SCORE.SCORE))
+									 	.from(USER_SCORE)
+									 	.where(USER_SCORE.USER_ID.eq(userId))
+									 	.and(USER_SCORE.STATUS.notIn(REFUND_SCORE_STATUS))
+									 	.and(USER_SCORE.SCORE.greaterThan(0))
+									 	.fetchAnyInto(Integer.class);
+		 logger().info("计算用户累积积分为： "+accumulationScore);
+		 return accumulationScore;
+	}
+	
+	/**
+	 * 计算用户的所有可使用的积分
+	 * @param userId
+	 * @return
+	 */
+	public Integer calculateAvailableScore(Integer userId) {
+	
+		/** 根据用户id,status,有效期 */
+		Integer availableScore = db().select(DSL.sum(USER_SCORE.USABLE_SCORE))
+									.from(USER_SCORE)
+									.where(USER_SCORE.USER_ID.eq(userId))
+									.and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
+									.and(USER_SCORE.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
+									.fetchAnyInto(Integer.class);
+		logger().info("计算所有可用积分为： "+availableScore);
+		return availableScore;
+	} 
+	
+	/**
+	 * 计算从现在到指定时间的可用积分
+	 * @param endTime 指定的时间
+	 * @param userId
+	 * @return
+	 */
+	public Integer calculateWillExpireSoonScore(Timestamp endTime,Integer userId) {
+		Integer willExpireSoonScore = db().select(sum(USER_SCORE.USABLE_SCORE))
+			.from(USER_SCORE)
+			.where(USER_SCORE.USER_ID.eq(userId))
+			.and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
+			.and(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), endTime))
+			.fetchAnyInto(Integer.class);
+		logger().info("计算在指定时间 "+endTime+" 所有可用积分为： "+willExpireSoonScore);
+		return willExpireSoonScore;
+	}
+	
+	/**
+	 * 获取一条用户可用的最早积分记录
+	 * @param userId
+	 * @return
+	 */
+	public UserScoreRecord getTheEarliestUsableUserScoreRecord(Integer userId) {
+		return db().selectFrom(USER_SCORE)
+			.where(USER_SCORE.USER_ID.eq(userId))
+			.and(USER_SCORE.SCORE.greaterThan(0)).and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
+			.and(USER_SCORE.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
+			.orderBy(USER_SCORE.CREATE_TIME)
+			.fetchAny();
 	}
 
 }

@@ -286,7 +286,7 @@ public class UserCardDaoService extends ShopBaseService{
 		return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.where(USER_CARD.CARD_NO.eq(cardNo))
-			.fetchAnyInto(UserCardParam.class);
+			.fetchAnyInto(WxAppUserCardVo.class);
 	}
 	
 	public void updateUserCardByCardIdAndNo(Integer cardId,String cardNo) {
@@ -377,8 +377,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 获取用户会员卡列表
-	 * @param userId
-	 * @return
 	 */
 	public PageResult<WxAppUserCardVo> getCardList(SearchCardParam param) {
 		

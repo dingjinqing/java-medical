@@ -6,19 +6,17 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_SCORE;
-import static org.jooq.impl.DSL.sum;
+
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -26,7 +24,6 @@ import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -74,8 +71,7 @@ public class ScoreService extends ShopBaseService {
 	@Autowired
 	public UserCardService userCardService;
 	
-	/** -积分有效的状态 */
-	final Byte[] AVAILABLE_STATUS = new Byte[] { NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS };
+
 	@Autowired
 	public MemberService member;	
 	
@@ -280,15 +276,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param userId
 	 */
 	private Integer getTotalAvailableScoreById(Integer userId) {
-		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
-		Timestamp localDateTime = DateUtil.getLocalDateTime();
-		/** 根据用户id,status,有效期 */
-		Integer sum = db().select(DSL.sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
-				.where(USER_SCORE.USER_ID.eq(userId)).and(USER_SCORE.STATUS.in(list))
-				.and(USER_SCORE.EXPIRE_TIME.ge(localDateTime).or(USER_SCORE.EXPIRE_TIME.isNull()))
-				.fetchOneInto(Integer.class);
-		logger().info("计算积分为： "+sum);
-		return sum;
+		return scoreDao.calculateAvailableScore(userId);
 	}
 
 	
@@ -369,24 +357,12 @@ public class ScoreService extends ShopBaseService {
 	}
  
 	/**
-	 * 获取最早可用的积分记录
+	 * 获取一条用户可用的最早积分记录
 	 * @param userId 用户id
 	 * @return UserScoreRecord
 	 */
 	private UserScoreRecord getEarlyUsableRecord(Integer userId) {
-		/** -通过score和status来筛选 */
-		Timestamp localDateTime = DateUtil.getLocalDateTime();
-
-		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
-
-		UserScoreRecord userScoreRecord = db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
-				.and(USER_SCORE.SCORE.greaterThan(0)).and(USER_SCORE.STATUS.in(list))
-				.and(USER_SCORE.EXPIRE_TIME.ge(localDateTime).or(USER_SCORE.EXPIRE_TIME.isNull()))
-				.orderBy(USER_SCORE.CREATE_TIME)
-				.limit(1)
-				.fetchOne();
-
-		return userScoreRecord;
+		return scoreDao.getTheEarliestUsableUserScoreRecord(userId);
 	}
 
 	/**
@@ -478,15 +454,14 @@ public class ScoreService extends ShopBaseService {
 	}
 
 	
-	/** 累计积分 */
-	public BigDecimal getTotalScore(Integer userId) {
-		
-		BigDecimal totalScore = db().select(sum(USER_SCORE.SCORE))
-								.from(USER_SCORE)
-								.where(USER_SCORE.USER_ID.eq(userId).and(USER_SCORE.SCORE.greaterThan(0)))
-								.fetchAny()
-								.into(BigDecimal.class);
-		return totalScore;
+	/**
+	 * 累计积分
+	 * @param userId
+	 * @return
+	 */
+	public Integer getAccumulationScore(Integer userId) {
+		logger().info("获取用户的所有累积积分");
+		return scoreDao.calculateAccumulationScore(userId);
 	}
 	
 	/**
@@ -604,13 +579,6 @@ public class ScoreService extends ShopBaseService {
 		return expireTime;
 	}
 	
-	/**
-	 * 获取用户累积获得积分 | 原php方法 getUserGet
-	 * @param id
-	 */
-	public Integer getUserTotalScore(Integer id) {
-		return scoreDao.getUserTotalScore(id);
-	}
 	
 	/**
 	 * 检查签到送积分
@@ -747,26 +715,15 @@ public class ScoreService extends ShopBaseService {
 	 * @param time
 	 * @return
 	 */
-	public int getExpireScore(Integer userId,Timestamp time) {
+	public int getExpireScore(Integer userId,Timestamp endTime) {
 		logger().info("获取即将过期积分");
-		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
-		int execute = 0;
-		if (time != null) {
-			logger().info("time不是空");
-			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
-					.where(USER_SCORE.EXPIRE_TIME.gt(DateUtil.getLocalDateTime()).and(USER_SCORE.EXPIRE_TIME.le(time))
-							.and(USER_SCORE.STATUS.in(list)).and(USER_SCORE.USER_ID.eq(userId)))
-					.execute();
-		} else {
-			logger().info("time空");
-			LocalDateTime localDateTime = LocalDateTime.now().plusYears(1L);
-			execute = db().select(sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
-					.where(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), Timestamp.valueOf(localDateTime))
-							.and(USER_SCORE.STATUS.in(list)).and(USER_SCORE.USER_ID.eq(userId)))
-					.execute();
+
+		if(endTime == null) {		
+			// endTime为空，那么就默设置为一年后
+			LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1L);
+			endTime = Timestamp.valueOf(oneYearLater);
 		}
-		logger().info("结果"+execute);
-		return execute;
+		return scoreDao.calculateWillExpireSoonScore(endTime, userId);
 	}
 	
 	/**

@@ -63,6 +63,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsQrCodeVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsRebatePrice;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.PrdPriceNumberParam;
@@ -1516,6 +1517,27 @@ public class GoodsService extends ShopBaseService {
         excelWriter.writeModelList(list, GoodsExportVo.class);
         return workbook;
     }
+
+    
+    /**
+     * 取指定商品信息
+     * @param idList
+     * @param isCanUse
+     * @return 
+     */
+    public List<GoodsSmallVo> getGoodsList(List<Integer> idList,boolean isCanUse){
+    	SelectConditionStep<? extends Record> sql = db().select(GOODS.GOODS_ID,GOODS.GOODS_SN,GOODS.IS_ON_SALE,GOODS.GOODS_NUMBER,GOODS.DEL_FLAG,GOODS.GOODS_IMG,
+    				GOODS.SHOP_PRICE,GOODS.GOODS_NAME,GOODS.MARKET_PRICE,GOODS.GOODS_TYPE,GOODS.IS_CARD_EXCLUSIVE)
+    		.from(GOODS)
+    		.where(GOODS.GOODS_ID.in(idList));
+    	if(isCanUse) {
+    		sql.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.IS_ON_SALE_DEFAULT))
+    		   .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+    	}
+    	
+    	return sql.fetchInto(GoodsSmallVo.class);
+    }
+
     
     /**
      * 获取商品goodsType
@@ -1545,4 +1567,5 @@ public class GoodsService extends ShopBaseService {
     	}
     	return goods;
     }
+
 }

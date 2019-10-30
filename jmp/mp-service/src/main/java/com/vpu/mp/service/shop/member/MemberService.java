@@ -742,7 +742,7 @@ public class MemberService extends ShopBaseService {
 			}
 		}
 		/** 累计积分 */
-		BigDecimal totalScore = score.getTotalScore(userId);
+		Integer totalScore = score.getAccumulationScore(userId);
 		memberBasicInfoVo.setTotalScore(totalScore);
 
 		/** 订单相关信息 */
