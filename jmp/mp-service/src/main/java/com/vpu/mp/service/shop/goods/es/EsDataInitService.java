@@ -74,12 +74,12 @@ public class EsDataInitService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        try {
-            if( !assertIndex(ES_GOODS) ){
-                createIndex(ES_GOODS);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if( !assertIndex(ES_GOODS) ){
+//                createIndex(ES_GOODS);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }
