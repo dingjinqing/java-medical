@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.market.seckill.analysis;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 

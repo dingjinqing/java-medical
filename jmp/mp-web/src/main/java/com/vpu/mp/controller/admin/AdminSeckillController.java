@@ -128,7 +128,7 @@ public class AdminSeckillController extends AdminBaseController {
      *
      */
     @PostMapping("/api/admin/market/seckill/analysis")
-    public JsonResult getRecordAnalysisData(@RequestBody @Validated SeckillAnalysisParam param) {
+    public JsonResult getSeckillAnalysisData(@RequestBody @Validated SeckillAnalysisParam param) {
         return success(shop().seckill.getSeckillAnalysisData(param));
     }
 }

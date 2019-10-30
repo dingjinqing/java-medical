@@ -928,13 +928,13 @@ public class OrderReadService extends ShopBaseService {
                 if(order.getUserSource() == BACK_STAGE.getCode()){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_ADMIN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
-                if(order.getUserSource() == NOT_ACQUIRED.getCode() && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                if(order.getUserSource() == NOT_ACQUIRED.getCode() && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_UNKNOWN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getUserSource() > BACK_STAGE.getCode()){
                     order.setUserSourceString(saas.getShopApp(getShopId()).store.getStoreName(order.getUserSource()));
                 }
-                if(order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                if(order.getInviteSource() != null && order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
                     String channelName = saas.getShopApp(getShopId()).channelService.selectChannelName(order.getInviteActId());
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_CHANNEL ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL,channelName));
                 }
