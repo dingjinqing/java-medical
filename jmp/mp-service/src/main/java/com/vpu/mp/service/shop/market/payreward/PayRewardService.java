@@ -61,7 +61,6 @@ public class PayRewardService  extends ShopBaseService {
                 CouponActivityRecord couponActivity =db().newRecord(COUPON_ACTIVITY,param.getCoupon());
                 couponActivity.setId(null);
                 couponActivity.insert();
-
                 payReward.setCouponIds(couponActivity.getId().toString());
             }else {
                 return false;
@@ -77,7 +76,8 @@ public class PayRewardService  extends ShopBaseService {
      */
     public PayRewardRecord getNowPayReward(){
         Timestamp nowTime =new Timestamp(System.currentTimeMillis());
-        return db().selectFrom(PAY_REWARD).where(PAY_REWARD.START_TIME.ge(nowTime).and(PAY_REWARD.END_TIME.le(nowTime))).fetchOne();
+        PayRewardRecord record = db().selectFrom(PAY_REWARD).where(PAY_REWARD.START_TIME.ge(nowTime).and(PAY_REWARD.END_TIME.le(nowTime))).fetchOne();
+        return record;
     }
 
     /**
@@ -125,7 +125,8 @@ public class PayRewardService  extends ShopBaseService {
      * @return
      */
     public PageResult<PayRewardListVo> getPayRewardList(PayRewardListParam param) {
-        SelectConditionStep<Record7<Integer, String, BigDecimal, Timestamp, Timestamp, Byte, Byte>> select = db().select(PAY_REWARD.ID, PAY_REWARD.ACT_NAME, PAY_REWARD.DENOMINATION, PAY_REWARD.START_TIME, PAY_REWARD.END_TIME
+        SelectConditionStep<Record7<Integer, String, BigDecimal, Timestamp, Timestamp, Byte, Byte>> select = db()
+                .select(PAY_REWARD.ID, PAY_REWARD.ACT_NAME, PAY_REWARD.DENOMINATION, PAY_REWARD.START_TIME, PAY_REWARD.END_TIME
                 , PAY_REWARD.TYPE, PAY_REWARD.STATUS)
                 .from(PAY_REWARD)
                 .where(PAY_REWARD.IS_DELETE.eq(DelFlag.NORMAL_VALUE));

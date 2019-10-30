@@ -16,6 +16,11 @@ public class PayRewardListVo {
     private String     actName;
     private Timestamp startTime;
     private Timestamp  endTime;
+
     private Byte       type;
+    private Byte      status;
+    /**
+     *  触发条件
+     */
     private BigDecimal denomination;
 }

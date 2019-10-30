@@ -1,23 +1,16 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.CARD_UPGRADE;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import org.apache.commons.lang3.StringUtils;
 
-import org.jooq.Record1;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
 import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
 import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -33,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
@@ -46,21 +40,17 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 
 import jodd.util.StringUtil;
 
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.SEND_SCORE_BY_CREATE_CARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_CASH;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.EXCHANGE_SCORE;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_STATUS_ENTRY_ACCOUNT;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
@@ -113,14 +103,16 @@ public class UserCardService extends ShopBaseService{
 	public GoodsService goodsService;
 	@Autowired
 	public CardVerifyService cardVerifyService;
+	@Autowired
+	private GoodsCardCoupleService  goodsCardCoupleService;
 	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String OPTIONINFO = OPEN_CARD_SEND;
 	public static final String DESC = "score_open_card";
 	public static final String SYSTEM_UP_GRADE = SYSTEM_UPGRADE;
-	
-	
-	
+
+
+
 	/**
 	 * 返回会员等级-按照持有会员等级卡划分，若无持有等级会员卡，则返回默认最低等级
 	 * @param user_id
@@ -133,22 +125,22 @@ public class UserCardService extends ShopBaseService{
 		}
 		return userGrade;
 	}
-	
+
 	public boolean isHasAvailableGradeCard(Integer userId) {
 		return !StringUtils.isBlank(userCardDao.calcUserGrade(userId));
 	}
-	
+
 	/**
 	 * 会员卡升级检测并升级
 	 * @param userId
 	 * @param cardId
 	 * @param type  是否领取 1领取 0只是检测
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	public int updateGrade(Integer userId,Integer cardId,Byte type) throws MpException{
 		return updateGrade(new ArrayList<Integer>(Arrays.asList(userId)),cardId,type);
 	}
-	
+
 	public int updateGrade(List<Integer> userIdList,Integer cardId,Byte type) throws MpException {
 		if(userIdList == null || userIdList.size()<=0) {
 			return 1;
@@ -162,7 +154,7 @@ public class UserCardService extends ShopBaseService{
 					Record3<Integer, String, String> old = userCardDao.fetchOldGradeCard(id);
 					MemberCardRecord newData = userCardDao.getMemberCardById(id);
 					CardUpgradeRecord cardUpgradeRecord = new CardUpgradeRecord();
-					
+
 					cardUpgradeRecord.setUserId(id);
 					cardUpgradeRecord.setOldCardId(old.get(MEMBER_CARD.ID));
 					cardUpgradeRecord.setNewCardId(cardId);
@@ -172,7 +164,7 @@ public class UserCardService extends ShopBaseService{
 					cardUpgradeRecord.setNewCardName(newData.getCardName());
 					cardUpgradeRecord.setGradeCondition(newData.getGradeCondition());
 					cardUpgradeRecord.setOperate("Admin option");
-					
+
 					userCardDao.insertIntoCardUpGrade(cardUpgradeRecord);
 					/** 处理开卡赠送积分 */
 					if(newData.getSorce() != null) {
@@ -193,7 +185,7 @@ public class UserCardService extends ShopBaseService{
 					addUserCard(id,list);
 				}
 			}
-			
+
 		}else {
 			for(Integer id: userIdList) {
 				//获取用户累积获得积分和累积消费总额
@@ -205,7 +197,7 @@ public class UserCardService extends ShopBaseService{
 				if(gradeCard.size()==0) {
 					return -1;
 				}
-				// 获取该用户的会员卡等级 
+				// 获取该用户的会员卡等级
 				String grade = userCardDao.getUserCardGrade(id);
 				// 判断用户是否拥有等级卡
 				if(StringUtils.isBlank(grade) && type == 1 ) {
@@ -226,20 +218,20 @@ public class UserCardService extends ShopBaseService{
 					// 等级卡的等级高于用户卡等级或者用户目前等级为空
 					if((!StringUtils.isBlank(grade) && !StringUtils.isBlank(card.getGrade()) && card.getGrade().compareTo(grade)>0)
 							|| (StringUtils.isBlank(grade))) {
-						
+
 						if(BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO)<1) {
 							gradeCondition.setGradeScore(new BigDecimal(userTotalScore+1000));
 						}
-						
+
 						if(BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(),BigDecimal.ZERO)<1) {
 							gradeCondition.setGradeMoney(amount.add(new BigDecimal(1000)));
 						}
 						// 判断用户的升级条件： 用户获得累计积分到达该等级 或 累计消费总额达到与相关等级会员卡相应限额
-						if(gradeCondition.getGradeScore().intValue() <= userTotalScore || 
+						if(gradeCondition.getGradeScore().intValue() <= userTotalScore ||
 								BigDecimalUtil.compareTo(gradeCondition.getGradeMoney(),amount)<=0) {
-							
+
 							cardId = card.getId();
-							
+
 							if(!StringUtils.isBlank(grade) && (type == 1 || type == 2)) {
 								// 升级
 								// 获取用户升级之前的等级会员卡信息
@@ -255,9 +247,9 @@ public class UserCardService extends ShopBaseService{
 									// 记录等级卡升级记录
 									InsertCardUpGradeRecord(id, card, oldCard,SYSTEM_UP_GRADE);
 								}
-								
+
 							}
-							
+
 						}else {
 							break;
 						}
@@ -267,7 +259,7 @@ public class UserCardService extends ShopBaseService{
 					// 没有可用的会员卡
 					return -5;
 				}
-				
+
 				if(grade == null && (type==1 || type == 2)) {
 					//首次领取
 					List<UserCardParam> list = new ArrayList<UserCardParam>();
@@ -278,7 +270,7 @@ public class UserCardService extends ShopBaseService{
 				}
 			}
 		}
-		
+
 		return 1;
 	}
 
@@ -313,14 +305,14 @@ public class UserCardService extends ShopBaseService{
 		cardUpgrade.setOperate(option);
 		cardUpgrade.insert();
 	}
-	
-	
+
+
 
 	public void addUserCard(Integer userId, List<UserCardParam> cardInfo) {
-		
+
 		addUserCard(userId,cardInfo,ACTIVE_FALSE);
 	}
-	
+
 	/**
 	 * 添加会员卡
 	 * @param id
@@ -330,9 +322,9 @@ public class UserCardService extends ShopBaseService{
 	public void addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate) {
 		List<Integer> cardNos = cardList.stream().map(UserCardParam::getCardId).collect(Collectors.toList());
 		List<Integer> timeCardsId = memberCardService.getCardByType(LIMIT_NUM_TYPE);
-		
+
 		userCardDao.updateCardFlag(timeCardsId,cardNos);
-		
+
 		for(UserCardParam card: cardList) {
 			//查询是否已有这个会员卡,去掉过期和删除的
 //			UserCardRecord rst = userCardDao.getUsableUserCard(userId, card);
@@ -347,11 +339,11 @@ public class UserCardService extends ShopBaseService{
 			}else {
 				return;
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	/**
 	 * 发卡
 	 * @param userId
@@ -386,10 +378,10 @@ public class UserCardService extends ShopBaseService{
 			//0:固定日期
 			data.setExpireTime(cardInfo.getEndTime());
 		}
-		
+
 		if(LIMIT_NUM_TYPE.equals(cardInfo.getCardType())) {
 			data.setSurplus(cardInfo.getCount());
-			
+
 			ChargeMoneyRecord chargeMoney = db().newRecord(CHARGE_MONEY);
 			chargeMoney.setUserId(userId);
 			chargeMoney.setCardId(cardInfo.getId());
@@ -400,7 +392,7 @@ public class UserCardService extends ShopBaseService{
 			chargeMoney.setType(cardInfo.getCardType());
 			chargeMoney.setCardNo(data.getCardNo());
 			chargeMoney.insert();
-			
+
 			if(cardInfo.getIsExchang()!=null) {
 				data.setExchangSurplus(cardInfo.getExchangCount());
 				chargeMoney = db().newRecord(CHARGE_MONEY);
@@ -440,15 +432,15 @@ public class UserCardService extends ShopBaseService{
 			UserCardRecord userCardRecord = db().newRecord(USER_CARD);
 			FieldsUtil.assignNotNull(data, userCardRecord);
 			userCardRecord.insert();
-			
+
 		}
-		
+
 		if(cardInfo.getSorce()!=null) {
 			sendScore(userId,cardInfo);
 		}
-		
-		
-		
+
+
+
 		String content = null;
 		if(LIMIT_NUM_TYPE.equals(cardInfo.getCardType())) {
 			content = "限次卡"+cardInfo.getCount()+"次";
@@ -461,10 +453,10 @@ public class UserCardService extends ShopBaseService{
 		}else {
 			expireTime = data.getExpireTime().toLocalDateTime()+"过期";
 		}
-		
+
 		// TODO 发送模板消息
 		return 1;
-		
+
 	}
 
 
@@ -491,15 +483,15 @@ public class UserCardService extends ShopBaseService{
 			inData.clear();
 			inData.addAll(Arrays.asList(new Integer[] { 0, 2 }));
 		}
-		
+
 		return inData;
 	}
-	
+
 	//编辑会员卡详情
 	public int updateUserCardByNo(String cardNo,UserCardRecord record) {
 		return  userCardDao.updateUserCardByNo(cardNo, record);
 	}
-	
+
 	/**
 	 * Get Random card_no
 	 * @param cardId
@@ -508,7 +500,7 @@ public class UserCardService extends ShopBaseService{
 	public String getRandomCardId(int cardId){
 		return memberCardService.generateCardNo(cardId);
 	}
-	
+
 
 	public void cardConsumer(UserCardConsumeBean data) {
 		cardConsumer(data,0,ACCOUNT_DEFAULT.getValue(),TRADE_FLOW_INCOME.getValue(),(byte)0,true);
@@ -518,14 +510,14 @@ public class UserCardService extends ShopBaseService{
 	 * @param data
 	 * @param adminUser
 	 * @param tradeType {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
-	 * @param tradeFlow 
+	 * @param tradeFlow
 	 * @param type
 	 * @param isContinue 卡余额时（次数或余额）在休息时间内（23:00-8:00）是否继续发送消息：true继续，false停止
 	 */
 	public int cardConsumer(UserCardConsumeBean data,Integer adminUser,Byte tradeType,Byte tradeFlow,Byte type,Boolean isContinue) {
 		//生成新的充值记录
         //验证现有积分跟提交的积分是否一致
-		UserCardParam userInfo = userCardDao.getUserCardInfo(data.getCardNo());		
+		UserCardParam userInfo = userCardDao.getUserCardInfo(data.getCardNo());
 		if(data.getType() == (byte)1) {
 			if(type == (byte)1) {
 				if(adminUser != null && (userInfo.getExchangCount()-data.getCountDis())!=0) {
@@ -541,14 +533,14 @@ public class UserCardService extends ShopBaseService{
 				return -1;
 			}
 		}
-		
+
 		// serviceOrder
-		
+
 		data.setCreateTime(DateUtil.getLocalDateTime());
 		if(StringUtils.isBlank(data.getReason())) {
 			data.setReason(ADMIN_OPTION);
 		}
-		
+
 
 		if(type == (byte)1) {
 			if(data.getType() == (byte)1) {
@@ -559,7 +551,7 @@ public class UserCardService extends ShopBaseService{
 		}else {
 			data.setReason(MEMBER_MONEY);
 		}
-		
+
 		if(data.getType()==(byte)1) {
 			if(type==(byte)1) {
 				if(data.getExchangCount()<0) {
@@ -587,7 +579,7 @@ public class UserCardService extends ShopBaseService{
 				userCardDao.insertIntoCharge(data);
 			}
 		}
-		
+
         //更新用户卡余额
         //type=1 次卡 0普通卡
 		int ret=0;
@@ -606,15 +598,15 @@ public class UserCardService extends ShopBaseService{
 				tradesRecord.insertTradesRecord(data, tradeType, tradeFlow);
 			}
 			// TODO 模板消息
-		}		
+		}
 		return ret;
 	}
-	
+
 	/**
 	 *  通过用户id，获取用户所有的会员卡列表
 	 * php: getUserCard
 	 * @param userId
-	 * @return 
+	 * @return
 	 */
 	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param) {
 		PageResult<WxAppUserCardVo> cardList = userCardDao.getCardList(param);
@@ -642,19 +634,19 @@ public class UserCardService extends ShopBaseService{
 	public String getCardAvatar() {
 		return saas().shop.getShopAvatarById(this.getShopId());
 	}
-	
+
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) {
 		WxAppUserCardVo card = (WxAppUserCardVo)userCardDao.getUserCardInfo(param.getCardNo());
 		dealWithUserCardDetailInfo(card);
-		
+
 		// TODO 累计消费 等王帅的接口 orderSerive.getTotalSpend
 		// card.setCumulativeConsumptionAmounts();
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
-		
+
 		//TODO 升级进度
-		
+
 		//TODO 开卡送卷
 		return card;
 	}
@@ -666,7 +658,7 @@ public class UserCardService extends ShopBaseService{
 		dealWithExchangGoods(card);
 
 	}
-	
+
 	public void dealWithUserCardAvailableStore(WxAppUserCardVo card) {
 		logger().info("正在处理会员卡门店列表信息");
 		if(card.isStoreAvailable()) {
@@ -674,17 +666,17 @@ public class UserCardService extends ShopBaseService{
 			card.setStoreInfoList(storeBasicVo);
 		}
 	}
-	
+
 	public void dealWithUserCardBasicInfo(WxAppUserCardVo card) {
 		String avatar = getCardAvatar();
 		dealWithWxUserCard(card,avatar);
 	}
-	
+
 	/**
 	 * 处理可兑换的商品
 	 */
 	public void dealWithExchangGoods(WxAppUserCardVo card) {
-		
+
 		if(card.hasAvailableExchangGoods()) {
 			card.setGoodsList(getAvailGoodsForCard(card));
 			// 两位小数
@@ -695,7 +687,7 @@ public class UserCardService extends ShopBaseService{
 			}
 		}
 	}
-	
+
 	public List<GoodsSmallVo> getAvailGoodsForCard(WxAppUserCardVo card){
 		logger().info("正在获取可兑换的商品");
 		// 获取兑换的商品id
@@ -723,5 +715,59 @@ public class UserCardService extends ShopBaseService{
 		return userCardDao.getCardType(cardNo);
 	}
 
-	
+
+
+	/**
+	 * 获取商品的等级会员价
+	 *  @param userId    用户
+	 * @param prdIdList        规格ids
+	 * @return
+	 */
+	public List<UserCardGradePriceBo> getUserCartGradePrice(Integer userId, List<Integer> prdIdList){
+	 return	db().select(MEMBER_CARD.CARD_NAME,MEMBER_CARD.GRADE,GRADE_PRD.GOODS_ID,GRADE_PRD.PRD_ID,GRADE_PRD.GRADE_PRICE)
+				.from(USER_CARD)
+				.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+				.leftJoin(GRADE_PRD).on(GRADE_PRD.GRADE.eq(MEMBER_CARD.GRADE))
+				.where(USER_CARD.FLAG.eq(CardConstant.CARD_USING))
+				.and(MEMBER_CARD.CARD_TYPE.eq(RANK_TYPE))
+				.and(USER_CARD.USER_ID.eq(userId))
+				.and(GRADE_PRD.PRD_ID.in(prdIdList))
+				.fetchInto(UserCardGradePriceBo.class);
+	}
+
+    /**
+     *  筛选会员专享商品
+     * @param userId
+     * @param cartGoodsList
+     * @return
+     */
+	public Set<Integer> getUserCardExclusive(Integer userId, List<WxAppCartGoods> cartGoodsList){
+	    Set<Integer> goodsIds =new HashSet<>();
+	    Set<Integer> resGoodsIds =new HashSet<>();
+		// 获取会员等级
+        Map<Byte, List<Integer>> goodsCardCouple = goodsCardCoupleService.getGoodsCardCouple(userId);
+        cartGoodsList.forEach(cartGoods ->{
+            if (!goodsIds.contains(cartGoods.getGoodsId())) {
+                goodsIds.add(cartGoods.getGoodsId());
+                // 商品
+                if (goodsCardCouple.get(CardConstant.GOODS_TYPE).contains(cartGoods.getGoodsId())){
+                    resGoodsIds.add(cartGoods.getGoodsId());
+                    return;
+                }
+                 // 商品分类
+                if (goodsCardCouple.get(CardConstant.STORE_CATEGORY_TYPE).contains(cartGoods.getGoodsId())){
+                    resGoodsIds.add(cartGoods.getGoodsId());
+                    return;
+                }
+                 // 商品商家分类
+                if (goodsCardCouple.get(CardConstant.GOODS_TYPE).contains(cartGoods.getGoodsId())){
+                    resGoodsIds.add(cartGoods.getGoodsId());
+                }
+            }
+        });
+        return goodsIds;
+
+    }
+
+
 }

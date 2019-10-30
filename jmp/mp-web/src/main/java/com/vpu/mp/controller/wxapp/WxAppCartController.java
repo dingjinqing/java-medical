@@ -61,7 +61,9 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/remove")
     public JsonResult deleteCartById(@RequestBody WxAppRemoveCartProductParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        if (user!=null)param.setUserId(user.getUserId());
+        if (user!=null) {
+            param.setUserId(user.getUserId());
+        }
         shop().cart.removeCartProductById(param.getUserId(),param.getRecId());
         return success();
     }
