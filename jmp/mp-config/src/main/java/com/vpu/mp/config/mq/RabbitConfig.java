@@ -55,12 +55,16 @@ public class RabbitConfig {
     public static final String QUEUE_MA_MAP_BIND="bind.mamp.queue";
     /**批量提交小程序 */
     public static final String QUEUE_BATCH_UPLOAD="batch.upload.queue";
+    /** ES的路由 */
+    public static final String QUEUE_ES_GOODS = "es.goods";
     
 
     /** 发送失败队列存储的路由 */
     public static final String EXCHANGE_ERROR = "direct.error";
     /** 营销功能的路由 */
     public static final String EXCHANGE_MARKETING = "direct.marketing";
+    /** ES的路由 */
+    public static final String EXCHANGE_ES = "direct.es";
     /**获取关注公众号的用户信息*/
     public static final String EXCHANGE_MA_MAP_BIND="direct.bind.mamp";
     /**批量提交小程序 */
@@ -80,6 +84,8 @@ public class RabbitConfig {
     public static final String BINDING_MA_MAP_BIND_KEY="bind.mamp.key";
     /** 批量提交小程序*/
     public static final String BINDING_BATCH_UPLOAD_KEY="bind.batch.upload";
+    /** 批量提交小程序*/
+    public static final String BINDING_ES_GOODS_KEY="bind.es.goods";
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -94,6 +100,18 @@ public class RabbitConfig {
     simpleRabbitListenerContainerFactory(ConnectionFactory connectionFactory){
         SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory =
                 new SimpleRabbitListenerContainerFactory();
+        simpleRabbitListenerContainerFactory.setMessageConverter(new Jackson2JsonMessageConverter());
+        simpleRabbitListenerContainerFactory.setConnectionFactory(connectionFactory);
+        simpleRabbitListenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        return simpleRabbitListenerContainerFactory;
+    }
+    @Bean(name="currentSimpleRabbitListenerFactory")
+    public SimpleRabbitListenerContainerFactory
+    currentSimpleRabbitListenerFactory(ConnectionFactory connectionFactory){
+        SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory =
+            new SimpleRabbitListenerContainerFactory();
+        simpleRabbitListenerContainerFactory.setConcurrentConsumers(5);
+        simpleRabbitListenerContainerFactory.setPrefetchCount(5);
         simpleRabbitListenerContainerFactory.setMessageConverter(new Jackson2JsonMessageConverter());
         simpleRabbitListenerContainerFactory.setConnectionFactory(connectionFactory);
         simpleRabbitListenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
@@ -133,7 +151,7 @@ public class RabbitConfig {
         return new Queue(QUEUE_ERROR_DEAL,true,false,false,args);
     }
     /**
-     * @return 发送消息队列
+     * @return 发送模版消息队列
      */
     @Bean
     public Queue sendMessageQueue() {
@@ -146,10 +164,16 @@ public class RabbitConfig {
     public Queue sendCouponWithQueue() {
         return new Queue(QUEUE_COUPON_SEND,true,false,false);
     }
+    /**
+     * @return 发送优惠券队列
+     */
+    @Bean
+    public Queue sendEsGoodsWithQueue() {
+        return new Queue(QUEUE_ES_GOODS,true,false,false);
+    }
     
     /**
-     * 	获取关注公众号的用户信息
-     * @return
+     * @return 获取关注公众号的用户信息
      */
     @Bean
     public Queue sendMpMABindQueue() {
@@ -157,8 +181,7 @@ public class RabbitConfig {
     }
     
     /**
-     * 批量提交小程序和公众号
-     * @return
+     * @return 批量提交小程序和公众号
      */
     @Bean
     public Queue batchUploadQueue() {
@@ -175,7 +198,13 @@ public class RabbitConfig {
     public DirectExchange errorExchange(){
         return new DirectExchange(EXCHANGE_ERROR,true,false);
     }
-    
+    /**
+     * @return es路由
+     */
+    @Bean
+    public DirectExchange esExchange(){
+        return new DirectExchange(EXCHANGE_ES,true,false);
+    }
     /**
      * @return 营销存储路由
      */
@@ -204,6 +233,10 @@ public class RabbitConfig {
     @Bean
     public Binding bindingErrorDeal(){
         return BindingBuilder.bind(errorDealWithQueue()).to(errorExchange()).with(BINDING_EXCHANGE_DEAL_KEY);
+    }
+    @Bean
+    public Binding bindingEs(){
+        return BindingBuilder.bind(sendEsGoodsWithQueue()).to(esExchange()).with(BINDING_ES_GOODS_KEY);
     }
     @Bean
     public Binding bindingCouponSend(){

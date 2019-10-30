@@ -6,8 +6,9 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAndCouple;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -68,6 +69,8 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     private GoodsBrandService goodsBrandService;
     @Autowired
     private GoodsPriceService goodsPriceService;
+    @Autowired
+    private GoodsLabelService goodsLabelService;
 
     public void batchCreateEsGoodsIndex( List<Integer> goodsIds,Integer shopId){
         List<EsGoods> esGoodsList = new ArrayList<>(goodsIds.size());
@@ -94,15 +97,18 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         Map<Integer,List<SysCatevo>> goodsCatInfoMap = getCatInfoByGoodsIds(goodsCatMap);
         Map<Integer,Sort> sortMap =  batchAssemblySortInfo(goodsSortIdSet);
         Map<Integer, GoodsBrandVo> brandMap =  batchAssemblyBrandAndSale(goodsBrandIdSet);
+        Map<Integer,Map<Byte,Object>> goodsLabelFilterMap = new HashMap<>(goodsIds.size());
         for( Integer goodsId: goodsIds ){
             if( !goodsMap.containsKey(goodsId) ){
                 log.error("\n+批量建立索引--->商品【{}】未找到无法建立索引",goodsId);
                 break;
             }
+            Map<Byte,Object> goodsLabelFilter = new HashMap<>();
+            goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),goodsId);
             GoodsRecord goods = goodsMap.get(goodsId);
             EsGoods esGoods = new EsGoods();
-            esGoods.setShopId(shopId);
             BeanUtils.copyProperties(goods,esGoods);
+            esGoods.setShopId(shopId);
             if( validationMap(goodsGradePrdMap,goodsId) ){
                 assemblyVipPriceImp(esGoods,goodsGradePrdMap.get(goodsId));
             }
@@ -112,38 +118,49 @@ public class EsGoodsCreateService extends BaseShopConfigService {
                 esGoods.setShowPrice(esGoods.getShopPrice());
             }
             if( validationMap(goodsProductMap,goodsId) ){
-                esGoods.setGoodsSpecs(goodsProductMap.get(goodsId).stream()
+                esGoods.setPrdSns(goodsProductMap.get(goodsId).stream()
                     .map(GoodsSpecProductRecord::getPrdSn)
                     .collect(Collectors.joining(","))
                 );
             }
             if( validationMap(goodsCatInfoMap,goodsId) ){
                 List<SysCatevo> list = goodsCatInfoMap.get(goodsId);
+                goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.CATTYPE.getCode(),
+                    list.stream().map(SysCatevo::getCatId).collect(Collectors.toList()));
                 batchAssemblyCatInfoImp(esGoods,list);
             }
             if( validationMap(sortMap,esGoods.getSortId()) ){
                 List<Sort> allSort = new ArrayList<>(3);
                 getSort(esGoods.getSortId(),allSort,sortMap);
+                goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),
+                    allSort.stream().map(Sort::getSortId).collect(Collectors.toList()));
                 assemblySortInfoImp(esGoods,allSort);
             }
             if( validationMap(brandMap,esGoods.getBrandId()) ){
                 esGoods.setBrandName(brandMap.get(esGoods.getBrandId()).getBrandName());
             }
+            goodsLabelFilterMap.put(goodsId,goodsLabelFilter);
             esGoodsList.add(esGoods);
         }
+        Map<Integer,List<Integer>> goodsLabelMap = assemblyGoodsLabel(goodsLabelFilterMap,goodsIds,goodsCatInfoMap,sortMap);
+        esGoodsList.forEach(x->{
+            if( validationMap(goodsLabelMap,x.getGoodsId()) ){
+                x.setGoodsLabel(goodsLabelMap.get(x.getGoodsId()));
+            }
+        });
         batchCommitEsGoodsIndex(esGoodsList);
 
     }
     private boolean validationMap(Map<Integer,?> map,Integer goodsId){
-        return !map.isEmpty() && map.containsKey(goodsId);
+        return map!=null && !map.isEmpty() && map.containsKey(goodsId);
     }
     /**
      * 单个goodsId封装EsGoods所需信息
      * @param goodsId 商品id
      */
-    public void createEsGoodsIndex(Integer goodsId){
+    public void createEsGoodsIndex(Integer goodsId,Integer shopId){
         EsGoods esGoods = new EsGoods();
-        esGoods.setShopId(getShopId());
+        esGoods.setShopId(shopId);
         Optional<GoodsRecord> goodsRecordOptional= goodsService.getGoodsById(goodsId);
         if( !goodsRecordOptional.isPresent() ){
             return ;
@@ -252,6 +269,8 @@ public class EsGoodsCreateService extends BaseShopConfigService {
                 esGoods.setFirstCatId(x.getCatId());
             }else if( x.getLevel() == 1 ){
                 esGoods.setSecondCatId(x.getCatId());
+            }else if( x.getLevel() == 2 ){
+                esGoods.setThirdCatId(x.getCatId());
             }
         });
         esGoods.setCatName(categoryName.toString());
@@ -273,7 +292,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         if( list.isEmpty() ){
             return ;
         }
-        esGoods.setGoodsSpecs(list.stream().map(GoodsSpecProduct::getPrdSn).collect(Collectors.joining(",")));
+        esGoods.setPrdSns(list.stream().map(GoodsSpecProduct::getPrdSn).collect(Collectors.joining(",")));
     }
 
     private void batchAssemblyShowPrice(List<EsGoods> goodsList){
@@ -400,5 +419,87 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         } catch (IOException e) {
             log.error("批量建立索引失败");
         }
+    }
+
+    public static void main(String[] args) {
+        Map<Integer,List<Integer>> m = new HashMap<>();
+        List<Integer> l = new ArrayList<>();
+        l.add(1);
+        l.add(2);
+        List<Integer> i = new ArrayList<>();
+        i.add(3);
+        i.add(4);
+        m.put(1,l);
+        m.put(2,i);
+        new ArrayList<>(m.values()).forEach(System.out::println);
+    }
+    private void assemblyGoodsLabelMap(Map<Integer,List<GoodsLabelCoupleRecord>> sortForLabelMap){
+
+    }
+    private Map<Integer,List<Integer>> assemblyGoodsLabel(Map<Integer,Map<Byte,Object>> goodsLabelFilterMap,List<Integer> goodsIds,
+                                    Map<Integer,List<SysCatevo>> categoryMap,Map<Integer,Sort> sortMap){
+        Map<Integer,List<Integer>> resultMap = new HashMap<>();
+        Set<Integer> categoryIdSet = new HashSet<>(categoryMap.size()*3);
+        categoryMap.values()
+            .forEach(x->categoryIdSet.addAll(x.stream().map(SysCatevo::getCatId).collect(Collectors.toList())));
+        List<Integer> categoryIds = new ArrayList<>(categoryIdSet);
+        List<Integer> sortIds = new ArrayList<>(sortMap.keySet());
+        Map<Byte,List<GoodsLabelAndCouple>> typeRecord =
+            goodsLabelService.getGoodsLabelByFilter(goodsIds,sortIds,categoryIds);
+        Map<Integer,List<GoodsLabelAndCouple>> sortForLabelMap = new HashMap<>();
+        Map<Integer,List<GoodsLabelAndCouple>> categoryForLabelMap = new HashMap<>();
+        Map<Integer,List<GoodsLabelAndCouple>> goodsForLabelMap = new HashMap<>();
+        List<GoodsLabelAndCouple> allGoodsForLabelList = new ArrayList<>();
+        typeRecord.forEach((type,records)->{
+            if( type.equals(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()) ){
+                goodsForLabelMap.putAll(records.stream().collect(Collectors.groupingBy(GoodsLabelAndCouple::getGtaId)));
+            }else if( type.equals(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()) ){
+                categoryForLabelMap.putAll(records.stream().collect(Collectors.groupingBy(GoodsLabelAndCouple::getGtaId)));
+            }else if( type.equals(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()) ){
+                sortForLabelMap.putAll(records.stream().collect(Collectors.groupingBy(GoodsLabelAndCouple::getGtaId)));
+            }else if( type.equals(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode()) ){
+                allGoodsForLabelList.addAll(records);
+            }
+        });
+
+        goodsLabelFilterMap.forEach((goodsId,filterMap)->{
+            List<GoodsLabelAndCouple> list= new ArrayList<>();
+            filterMap.forEach((type,ids)->{
+                if( type.equals(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()) ){
+                    Integer id = Integer.parseInt(ids.toString());
+                    if( goodsForLabelMap.containsKey(id) ){
+                        list.addAll(goodsForLabelMap.get(id));
+                    }
+                }else if( type.equals(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()) ){
+                    List catIds = (List)ids;
+                    catIds.forEach(x->{
+                        if( categoryForLabelMap.containsKey(x) ){
+                            list.addAll(categoryForLabelMap.get(x));
+                        }
+                    });
+                }else if( type.equals(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()) ){
+                    List sIds = (List)ids;
+                    sIds.forEach(x->{
+                        if( sortForLabelMap.containsKey(x) ){
+                            list.addAll(sortForLabelMap.get(x));
+                        }
+                    });
+                }
+
+            });
+            list.addAll(allGoodsForLabelList);
+            if( list.size() > 5 ){
+                //优先级降序
+                Comparator<GoodsLabelAndCouple> byLevelDesc = Comparator.comparing(GoodsLabelAndCouple::getLevel).reversed();
+                //创建时间降序
+                Comparator<GoodsLabelAndCouple> byTimeDesc = Comparator.comparing(GoodsLabelAndCouple::getCreateTime).reversed();
+                Comparator<GoodsLabelAndCouple> allComparator = byLevelDesc.thenComparing(byTimeDesc);
+                resultMap.put(goodsId,list.stream().sorted(allComparator).limit(5).map(GoodsLabelAndCouple::getLabelId).collect(Collectors.toList()));
+            }else{
+                resultMap.put(goodsId,list.stream().map(GoodsLabelAndCouple::getLabelId).collect(Collectors.toList()));
+            }
+        });
+        return resultMap;
+
     }
 }

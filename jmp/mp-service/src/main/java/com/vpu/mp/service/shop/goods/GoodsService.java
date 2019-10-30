@@ -42,6 +42,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -50,6 +51,9 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
+import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsBatchOperateParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsColumnCheckExistParam;
@@ -79,9 +83,28 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
+import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultDSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
 
 /**
  * 商品
@@ -128,28 +151,37 @@ public class GoodsService extends ShopBaseService {
     protected ShopMpDecorationService shopMpDecorationService;
     @Autowired
     public GoodsPriceService goodsPrice;
+    @Autowired
+    private EsManager esManager;
+    @Autowired
+    private EsGoodsSearchService esGoodsSearchService;
 
     /**
      * 全部商品页面各个下拉框的数据初始化
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
      */
-    public GoodsInitialVo pageInitValue(GoodsPageListParam goodsPageListParam) {
+    public GoodsInitialVo pageInitValue(GoodsPageListParam goodsPageListParam) throws IOException {
         GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
-
+        if( esManager.esState() ){
+            //条件转换
+            EsSearchParam param = esGoodsSearchService.goodsParamConvertEsGoodsParam(goodsPageListParam);
+            //es查询
+            Aggregations aggregations = esGoodsSearchService.getEsGoodsAggregationsByParam(param);
+            if( null == aggregations ){
+                return goodsInitialVo;
+            }
+            goodsInitialVo.setSysCates(esGoodsSearchService.assemblySysCatFactDataToVo(aggregations));
+            goodsInitialVo.setGoodsSorts(esGoodsSearchService.assemblySortFactDataToVo(aggregations));
+        }else{
+            Condition condition = this.buildOptions(goodsPageListParam);
+            goodsInitialVo.setGoodsSorts(goodsSort.getListBindedGoods(condition,goodsPageListParam.getSelectType()));
+            Map<Integer,Integer> goodsNumberMap = this.getSysCateNumberMap(condition,goodsPageListParam.getSelectType());
+            // 此处商品表里cat字段为int类型而category表里该字段为smallint类型，在这里做转换处理
+            List<Integer> catIds = new ArrayList<>(goodsNumberMap.keySet());
+            goodsInitialVo.setSysCates(saas.sysCate.getList(catIds, goodsNumberMap));
+        }
         goodsInitialVo.setGoodsBrands(goodsBrand.listGoodsBrandName());
-
         goodsInitialVo.setGoodsLabels(goodsLabel.listGoodsLabelName());
-
-        Condition condition = this.buildOptions(goodsPageListParam);
-
-        goodsInitialVo.setGoodsSorts(goodsSort.getListBindedGoods(condition,goodsPageListParam.getSelectType()));
-
-        Map<Integer,Integer> goodsNumberMap = this.getSysCateNumberMap(condition,goodsPageListParam.getSelectType());
-        // 此处商品表里cat字段为int类型而category表里该字段为smallint类型，在这里做转换处理
-        List<Integer> catIds = new ArrayList<>(goodsNumberMap.keySet());
-
-        goodsInitialVo.setSysCates(saas.sysCate.getList(catIds, goodsNumberMap));
-
         return goodsInitialVo;
     }
 
@@ -1485,6 +1517,10 @@ public class GoodsService extends ShopBaseService {
         return selectFrom.fetchOne().into(Integer.class);
     }
 
+    public List<Integer> getAllGoodsId(){
+        return db().select(GOODS.GOODS_ID).from(GOODS).fetch().getValues(GOODS.GOODS_ID);
+    }
+
     /**
      * 商品列表导出（规格为主）
      *
@@ -1518,12 +1554,12 @@ public class GoodsService extends ShopBaseService {
         return workbook;
     }
 
-    
+
     /**
      * 取指定商品信息
      * @param idList
      * @param isCanUse
-     * @return 
+     * @return
      */
     public List<GoodsSmallVo> getGoodsList(List<Integer> idList,boolean isCanUse){
     	SelectConditionStep<? extends Record> sql = db().select(GOODS.GOODS_ID,GOODS.GOODS_SN,GOODS.IS_ON_SALE,GOODS.GOODS_NUMBER,GOODS.DEL_FLAG,GOODS.GOODS_IMG,
@@ -1534,16 +1570,16 @@ public class GoodsService extends ShopBaseService {
     		sql.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.IS_ON_SALE_DEFAULT))
     		   .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
     	}
-    	
+
     	return sql.fetchInto(GoodsSmallVo.class);
     }
 
-    
+
     /**
      * 获取商品goodsType
      * @param goodsIds
      * @return
-     * @throws MpException 
+     * @throws MpException
      */
     public Map<Integer, Byte> getGoodsType(List<Integer> goodsIds) throws MpException {
         Map<Integer, Byte> goodsTypes = db().select(GOODS.GOODS_TYPE).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchMap(GOODS.GOODS_ID, Byte.class);
@@ -1552,7 +1588,7 @@ public class GoodsService extends ShopBaseService {
         }
         return goodsTypes;
     }
-    
+
     /**
      * 下单时获取goods
      * @author 王帅

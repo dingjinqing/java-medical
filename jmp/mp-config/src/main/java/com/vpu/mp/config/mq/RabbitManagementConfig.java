@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 /**
- * rabbit management config
+ * rabbit可视化 management config
  * @author 卢光耀
  * @date 2019-09-18 14:09
  *

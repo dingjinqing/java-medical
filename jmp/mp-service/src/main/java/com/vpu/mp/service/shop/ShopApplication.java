@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -454,7 +456,11 @@ public class ShopApplication {
 	public CartService cart;
 
     @Autowired
-    public EsGoodsCreateService esGoodsService;
+    public EsGoodsCreateService esGoodsCreateService;
+    @Autowired
+    public EsGoodsService esGoodsService;
+    @Autowired
+    public EsGoodsSearchService esGoodsSearchService;
     
     @Autowired
     public UserCenterTraitService  ucTraitService;

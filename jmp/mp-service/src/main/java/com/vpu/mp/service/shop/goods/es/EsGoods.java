@@ -5,6 +5,7 @@ import com.vpu.mp.config.es.annotation.EsFiledTypeConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * ES 商品
@@ -230,10 +231,10 @@ public class EsGoods  {
     private BigDecimal showPrice;
 
     /**
-     * 商品编码（拼接）
+     * 商家编码（拼接）
      */
     @EsFiled(name = "prd_sns",type = EsFiledTypeConstant.TEXT)
-    private String goodsSpecs;
+    private String prdSns;
     /**
      * 平台分类名称（空格拼接）
      */
@@ -244,6 +245,8 @@ public class EsGoods  {
     private Integer firstCatId;
     @EsFiled(name = "second_cat_id",type = EsFiledTypeConstant.INTEGER)
     private Integer secondCatId;
+    @EsFiled(name = "third_cat_id",type = EsFiledTypeConstant.INTEGER)
+    private Integer thirdCatId;
 
     /**
      * 商家分类名称（空格拼接）
@@ -260,4 +263,9 @@ public class EsGoods  {
      */
     @EsFiled(name = "brand_name",type = EsFiledTypeConstant.TEXT)
     private String brandName;
+    /**
+     * 品牌名称
+     */
+    @EsFiled(name = "goods_label",type = EsFiledTypeConstant.INTEGER)
+    private List<Integer> goodsLabel;
 }

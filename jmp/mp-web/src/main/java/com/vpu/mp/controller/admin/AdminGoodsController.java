@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,7 +52,13 @@ public class AdminGoodsController extends AdminBaseController {
         if (param.getSelectType() == null) {
             param.setSelectType(GoodsPageListParam.GOODS_LIST);
         }
-        GoodsInitialVo goodsInitialVo = shop().goods.pageInitValue(param);
+        GoodsInitialVo goodsInitialVo = null;
+        try {
+            goodsInitialVo = shop().goods.pageInitValue(param);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return fail();
+        }
         return success(goodsInitialVo);
     }
 
@@ -453,7 +460,7 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 验证出入的商品规格属性和商品规格键值的正确性，
-     * 验证方式是动态计算{@link GoodsSpecProduct#prdDesc}的值是否和{@link GoodsSpec}计算出来的值一致
+     * 验证方式是动态计算{@link GoodsSpecProduct#}的值是否和{@link GoodsSpec}计算出来的值一致
      * @param goodsSpecProducts 商品规格属性
      * @param goodsSpecs    商品规格键值
      * @return {@link JsonResult#getError()}!=0表示存在错误
