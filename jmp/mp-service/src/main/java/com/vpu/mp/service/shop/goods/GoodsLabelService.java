@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
+import com.vpu.mp.service.pojo.shop.goods.label.*;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import org.jooq.Condition;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
@@ -22,13 +25,6 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelTypeEnum;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 
 /**
  * @author 黄荣刚
@@ -346,6 +342,42 @@ public class GoodsLabelService extends ShopBaseService {
                 .where(GOODS_LABEL.DEL_FLAG.eq((int) DelFlag.NORMAL.getCode()))
                 .fetch().into(GoodsLabel.class);
 
+    }
+
+    public Map<Byte,List<GoodsLabelAndCouple>> getGoodsLabelByFilter(List<Integer> goodsIds, List<Integer> sortIds,
+                                                                     List<Integer> categoryIds){
+        return db()
+            .select(
+                GOODS_LABEL_COUPLE.TYPE,
+                GOODS_LABEL_COUPLE.LABEL_ID,
+                GOODS_LABEL_COUPLE.GTA_ID,
+                GOODS_LABEL.LEVEL,
+                GOODS_LABEL.CREATE_TIME)
+            .from(GOODS_LABEL_COUPLE)
+            .leftJoin(GOODS_LABEL).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
+            .where(assemblyGoodsLabelFilter(goodsIds,sortIds,categoryIds))
+            .and(GOODS_LABEL.DEL_FLAG.eq(NORMAL))
+            .fetchGroups(GOODS_LABEL_COUPLE.TYPE,GoodsLabelAndCouple.class);
+    }
+    private Condition assemblyGoodsLabelFilter(List<Integer> goodsIds,
+                                               List<Integer> sortIds,
+                                               List<Integer> categoryIds){
+        Condition condition = GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+        for(GoodsLabelCoupleTypeEnum e: GoodsLabelCoupleTypeEnum.values()){
+            List<Integer> ids ;
+            if( e.getCode().equals(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()) ){
+                ids = goodsIds;
+            }else if( e.getCode().equals(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()) ){
+                ids = sortIds;
+            }else if( e.getCode().equals(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()) ){
+                ids = categoryIds;
+            }else{
+                break;
+            }
+            condition = condition.or(GOODS_LABEL_COUPLE.TYPE.eq(e.getCode())
+                .and(GOODS_LABEL_COUPLE.GTA_ID.in(ids)));
+        }
+        return condition;
     }
 
 }
