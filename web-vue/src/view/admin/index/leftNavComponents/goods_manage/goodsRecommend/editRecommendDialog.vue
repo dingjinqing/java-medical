@@ -1,11 +1,11 @@
 <template>
   <el-dialog
-    title="填入快递信息发货"
+    title="选择应用位置"
     :visible.sync="showDialog"
     custom-class="custom"
     width="500px"
   >
-    <el-checkbox-group v-model="checkedId">
+    <el-checkbox-group v-model="recommendUsePage">
       <table class="recommend_table">
         <thead>
           <tr>
@@ -15,9 +15,9 @@
         </thead>
         <tbody>
           <template v-for="item in tableData">
-            <tr :key="item.id">
+            <tr :key="item.mark">
               <td width="200">
-                <el-checkbox :label="item.id">{{item.pageName}}</el-checkbox>
+                <el-checkbox :label="item.mark">{{item.pageName}}</el-checkbox>
               </td>
               <td>{{item.tips}}</td>
             </tr>
@@ -32,28 +32,29 @@
       <el-button @click="showDialog = false">取 消</el-button>
       <el-button
         type="primary"
-        @click="showDialog = false"
+        @click="submit()"
       >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+import { updateRecommend } from '@/api/admin/goodsManage/goodsRecommend/goodsRecommend'
 export default {
   data () {
     return {
       showDialog: false,
-      checkedId: [],
+      recommendUsePage: [],
       tableData: [
-        { id: 0, pageName: '购物车页', tips: '展示在购物车页底部，用于商品推荐' },
-        { id: 1, pageName: '订单列表页', tips: '展示在订单列表页底部，用于商品推荐' },
-        { id: 2, pageName: '砍价活动页', tips: '展示在砍价活动页底部，用于商品推荐' },
-        { id: 3, pageName: '参团活动页', tips: '展示在参团活动页底部，用于商品推荐' },
-        { id: 4, pageName: '商品列表页', tips: '展示在商品列表页底部，用于商品推荐' },
-        { id: 5, pageName: '支付成功页', tips: '展示在支付成功页底部，用于商品推荐' },
-        { id: 6, pageName: '订单完成页', tips: '展示在订单完成页底部，用于商品推荐' },
-        { id: 7, pageName: '商品搜索页', tips: '展示在商品搜索页底部，用于商品推荐' },
-        { id: 8, pageName: '商品详情页', tips: '展示在商品详情页底部，用于商品推荐' }
+        { mark: 'cart', pageName: '购物车页', tips: '展示在购物车页底部，用于商品推荐' },
+        { mark: 'orderlist', pageName: '订单列表页', tips: '展示在订单列表页底部，用于商品推荐' },
+        { mark: 'bargainitem', pageName: '砍价活动页', tips: '展示在砍价活动页底部，用于商品推荐' },
+        { mark: 'groupbuyitem', pageName: '参团活动页', tips: '展示在参团活动页底部，用于商品推荐' },
+        { mark: 'search', pageName: '商品列表页', tips: '展示在商品列表页底部，用于商品推荐' },
+        { mark: 'payment', pageName: '支付成功页', tips: '展示在支付成功页底部，用于商品推荐' },
+        { mark: 'order_complete', pageName: '订单完成页', tips: '展示在订单完成页底部，用于商品推荐' },
+        { mark: 'new_search', pageName: '商品搜索页', tips: '展示在商品搜索页底部，用于商品推荐' },
+        { mark: 'item', pageName: '商品详情页', tips: '展示在商品详情页底部，用于商品推荐' }
       ]
     }
   },
@@ -62,6 +63,18 @@ export default {
     editData: Object
   },
   methods: {
+    submit () {
+      let obj = {
+        ...this.editData,
+        recommendUsePage: this.recommendUsePage
+      }
+      updateRecommend(obj).then(res => {
+        if (res.error === 0) {
+          this.$emit('update:show', false)
+          this.$emit('refresh')
+        }
+      })
+    }
   },
   watch: {
     showDialog (val) {
@@ -69,6 +82,7 @@ export default {
     },
     show (val) {
       this.showDialog = val
+      this.recommendUsePage = this.editData.recommendUsePage
     }
   }
 }

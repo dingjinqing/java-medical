@@ -8,10 +8,10 @@
       >
         <el-form-item
           label="活动名称"
-          prop="name"
+          prop="recommendName"
         >
           <el-input
-            v-model="paramsData.name"
+            v-model="paramsData.recommendName"
             size="small"
             class="default_width"
           ></el-input>
@@ -73,10 +73,10 @@
           label="应用页面"
           prop="name"
         >
-          <el-checkbox-group v-model="paramsData.checkList">
+          <el-checkbox-group v-model="paramsData.recommendUsePage">
             <template v-for="item in pageData">
-              <p :key="item.id">
-                <el-checkbox :label="item.id">{{item.pageName}}</el-checkbox> <span class="tips">{{item.tips}}</span>
+              <p :key="item.mark">
+                <el-checkbox :label="item.mark">{{item.pageName}}</el-checkbox> <span class="tips">{{item.tips}}</span>
                 <el-popover
                   placement="right-start"
                   trigger="hover"
@@ -109,35 +109,66 @@
         </el-form-item>
       </el-form>
     </div>
+    <div class="footer">
+      <el-button
+        @click="submit"
+        type="primary"
+        size="small"
+      >保存</el-button>
+    </div>
   </div>
 </template>
 
 <script>
+import { addRecommend } from '@/api/admin/goodsManage/goodsRecommend/goodsRecommend'
 export default {
   data () {
     return {
       paramsData: {
-        name: null,
+        recommendName: null,
         recommendType: 0,
         recommendGoodsNum: 6,
         chooseGoodsType: 0,
         status: 0,
-        checkList: []
+        recommendUsePage: []
       },
       pageData: [
-        { id: 0, pageName: '购物车页', tips: '展示在购物车页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_cart.jpg` },
-        { id: 1, pageName: '订单列表页', tips: '展示在订单列表页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order.jpg` },
-        { id: 2, pageName: '砍价活动页', tips: '展示在砍价活动页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_bargin.jpg` },
-        { id: 3, pageName: '参团活动页', tips: '展示在参团活动页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_group.jpg` },
-        { id: 4, pageName: '商品列表页', tips: '展示在商品列表页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_list.jpg` },
-        { id: 5, pageName: '支付成功页', tips: '展示在支付成功页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_success.jpg` },
-        { id: 6, pageName: '订单完成页', tips: '展示在订单完成页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order_complete.jpg` },
-        { id: 7, pageName: '商品搜索页', tips: '展示在商品搜索页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_search.jpg` },
-        { id: 8, pageName: '商品详情页', tips: '展示在商品详情页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_item.jpg` }
+        { mark: 'cart', pageName: '购物车页', tips: '展示在购物车页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_cart.jpg` },
+        { mark: 'orderlist', pageName: '订单列表页', tips: '展示在订单列表页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order.jpg` },
+        { mark: 'bargainitem', pageName: '砍价活动页', tips: '展示在砍价活动页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_bargin.jpg` },
+        { mark: 'groupbuyitem', pageName: '参团活动页', tips: '展示在参团活动页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_group.jpg` },
+        { mark: 'search', pageName: '商品列表页', tips: '展示在商品列表页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_list.jpg` },
+        { mark: 'payment', pageName: '支付成功页', tips: '展示在支付成功页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_success.jpg` },
+        { mark: 'order_complete', pageName: '订单完成页', tips: '展示在订单完成页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order_complete.jpg` },
+        { mark: 'new_search', pageName: '商品搜索页', tips: '展示在商品搜索页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_search.jpg` },
+        { mark: 'item', pageName: '商品详情页', tips: '展示在商品详情页底部，用于商品推荐', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_item.jpg` }
       ]
     }
+  },
+  methods: {
+    submit () {
+      let obj = {
+        ...this.paramsData,
+        recommendType: this.paramsData.chooseGoodsType
+      }
+      addRecommend(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          if (res.content === 'CODE_SUCCESS') {
+            this.$message.success({
+              message: '商品推荐添加成功！',
+              duration: 2000,
+              onClose: () => {
+                this.$router.push({
+                  name: 'recommend'
+                })
+              }
+            })
+          }
+        }
+      })
+    }
   }
-
 }
 </script>
 
@@ -182,6 +213,17 @@ export default {
   }
   .default_width {
     width: 180px;
+  }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 160px;
+    right: 10px;
+    height: 52px;
+    padding: 10px 0;
+    background-color: #fff;
+    text-align: center;
+    z-index: 3;
   }
 }
 </style>
