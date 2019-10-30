@@ -17,6 +17,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,7 @@ import org.jooq.Record1;
 import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectSeekStep3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +39,10 @@ import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -375,16 +380,20 @@ public class UserCardDaoService extends ShopBaseService{
 	 * @param userId
 	 * @return
 	 */
-	public List<UserCardParam> getCardList(Integer userId) {
+	public PageResult<WxAppUserCardVo> getCardList(SearchCardParam param) {
 		
-		 return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
+		 SelectSeekStep3<Record, String, Byte, Timestamp> select = db().select(
+				 	USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("userCardFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
+				 	USER_CARD.IS_DEFAULT,USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.EXCHANG_SURPLUS,
+				 	USER_CARD.CREATE_TIME.as("userCardCreateTime"),USER_CARD.UPDATE_TIME.as("userCardUpdateTime"),
+				 MEMBER_CARD.asterisk())
 				.from(USER_CARD)
 				.leftJoin(MEMBER_CARD)
 				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
-				.where(USER_CARD.USER_ID.eq(userId))
+				.where(USER_CARD.USER_ID.eq(param.getUserId()))
 				.and(USER_CARD.FLAG.eq(CARD_USING))
-				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc())
-				.fetchInto(UserCardParam.class);
+				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc());
+		 	return getPageResult(select, param.getCurrentPage(), param.getPageRows(), WxAppUserCardVo.class);		
 	}
 	
 	/**
