@@ -50,5 +50,22 @@ export const en = {
   reset: 'Reset',
   moduleRecommendation: 'Module recommendation',
   automaticRecommendation: 'Automatic recommendation',
-  manualRecommendation: 'Manual recommendation'
+  manualRecommendation: 'Manual recommendation',
+  quantityOfCommodities: 'Quantity of commodities',
+  placeChiose: 'Please choose',
+  reach: 'reach',
+  keyWord: 'Key word',
+  commodityScope: 'Commodity scope',
+  haveChosen: 'Have chosen',
+  activeCommodities: 'Active commodities',
+  sortRule: 'Sort rule',
+  listOfCommodities: 'List of commodities',
+  addMerchandise: 'Add merchandise',
+  upward: 'upward',
+  down: 'down',
+  delete: 'delete',
+  commodityScopeOptions: ['Please choose', 'Merchant classification', 'Platform classification', 'Commodity brand', 'Commodity label'],
+  activeCommoditiesOptions: ['Please choose', 'Membership exclusive', 'Bargain', 'Assemble', 'Seckill', 'Limited price reduction'],
+  sortRuleOptions: ['Reverse order by goods time on the shelf', 'In reverse order of sales', 'In positive order of commodity price (from low to high)'],
+  rangeList: [null, '+Add merchant category', '+Add platform category', '+Add brand', '+Add product label']
 }

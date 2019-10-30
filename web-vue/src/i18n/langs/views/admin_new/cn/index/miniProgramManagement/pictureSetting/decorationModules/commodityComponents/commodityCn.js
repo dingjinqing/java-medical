@@ -50,5 +50,22 @@ export const cn = {
   reset: '重置',
   moduleRecommendation: '模块推荐',
   automaticRecommendation: '自动推荐',
-  manualRecommendation: '手动推荐'
+  manualRecommendation: '手动推荐',
+  quantityOfCommodities: '商品数量',
+  placeChiose: '请选择',
+  reach: '到',
+  keyWord: '关键词',
+  commodityScope: '商品范围',
+  haveChosen: '已选择',
+  activeCommodities: '活动商品',
+  sortRule: '排序规则',
+  listOfCommodities: '商品列表',
+  addMerchandise: '添加商品',
+  upward: '向上',
+  down: '向下',
+  delete: '删除',
+  commodityScopeOptions: ['请选择', '商家分类', '平台分类', '商品品牌', '商品标签'],
+  activeCommoditiesOptions: ['请选择', '会员专享', '砍价', '拼团', '秒杀', '限时降价'],
+  sortRuleOptions: ['按商品上架时间倒叙排序', '按商品销量倒序排列', '按商品价格正序排列(由低到高)'],
+  rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签']
 }

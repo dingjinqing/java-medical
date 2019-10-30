@@ -213,7 +213,10 @@
               </div>
             </div>
             <div class="commodityAngle">
-              <span>{{$t('commodity.moduleAngle')}}：</span>
+              <div class="compatibleContent">
+                <span style="width:80px;text-align:center;margin-right:8px">{{$t('commodity.moduleAngle')}}：</span>
+              </div>
+
               <div class="angleDiv">
                 <el-radio
                   v-model="data.if_radius"
@@ -226,7 +229,10 @@
               </div>
             </div>
             <div class="commodityAngle">
-              <span>{{$t('commodity.moduleStyle')}}：</span>
+              <div class="compatibleContent">
+                <span style="width:80px;text-align:center;margin-right:8px">{{$t('commodity.moduleStyle')}}：</span>
+              </div>
+
               <div class="angleDiv">
                 <el-radio
                   v-model="data.goods_module_style"
@@ -243,7 +249,10 @@
               </div>
             </div>
             <div class="commodityAngle">
-              <span>{{$t('commodity.backgroundColor')}}：</span>
+              <div class="compatibleContent">
+                <span style="width:80px;text-align:center;margin-right:8px">{{$t('commodity.backgroundColor')}}：</span>
+              </div>
+
               <div class="bgColorDiv">
                 <el-radio
                   v-model="data.goods_module_bg"
@@ -276,15 +285,20 @@
         </div>
         <!--模块推荐-->
         <div class="moduleRecommendation">
-          <span style="margin-bottom:10px">{{$t('commodity.moduleRecommendation')}}：</span>
-          <el-radio
-            v-model="data.recommend_type"
-            label="0"
-          >{{$t('commodity.automaticRecommendation')}}</el-radio>
-          <el-radio
-            v-model="data.recommend_type"
-            label="1"
-          >{{$t('commodity.manualRecommendation')}}</el-radio>
+          <div class="moduleTitleDiv">
+            <span style="margin-bottom:10px">{{$t('commodity.moduleRecommendation')}}：</span>
+            <div class="moduleTitleClass">
+              <el-radio
+                v-model="data.recommend_type"
+                label="0"
+              >{{$t('commodity.automaticRecommendation')}}</el-radio>
+              <el-radio
+                v-model="data.recommend_type"
+                label="1"
+              >{{$t('commodity.manualRecommendation')}}</el-radio>
+            </div>
+          </div>
+
           <!--自动推荐选中显示模块-->
           <div
             class="moduleRecMain"
@@ -292,10 +306,10 @@
           >
             <div class="manual">
               <div class="goodsNum">
-                <span>商品数量：</span>
+                <span>{{$t('commodity.quantityOfCommodities')}}：</span>
                 <el-select
                   v-model="data.goods_num"
-                  placeholder="请选择"
+                  :placeholder="$t('commodity.placeChiose')"
                   size="small"
                 >
                   <el-option
@@ -308,29 +322,29 @@
                 </el-select>
               </div>
               <div class="goodsPrice price">
-                <span>商品价格：</span>
+                <span>{{$t('commodity.commodityPrice')}}：</span>
                 <el-input
                   v-model="data.min_price"
                   size="small"
                 ></el-input>
-                <i style="display:inline-block;margin:0 5px">到</i>
+                <i style="display:inline-block;margin:0 5px">{{$t('commodity.reach')}}</i>
                 <el-input
                   v-model="data.max_price"
                   size="small"
                 ></el-input>
               </div>
               <div class="goodsPrice price keyWors">
-                <span>关键词：</span>
+                <span>{{$t('commodity.keyWord')}}：</span>
                 <el-input
                   size="small"
                   v-model="data.keywords"
                 ></el-input>
               </div>
               <div class="goodsPrice price commodityScope">
-                <span>商品范围：</span>
+                <span>{{$t('commodity.commodityScope')}}：</span>
                 <el-select
                   v-model="data.goods_area"
-                  placeholder="请选择"
+                  :placeholder="$t('commodity.placeChiose')"
                   size="small"
                   @change='handleToSelectRange()'
                 >
@@ -359,14 +373,14 @@
                 <div
                   style="height:30px;line-height:30px;margin-left:5px"
                   v-if="rangeCheckData.length>0"
-                >已选择{{rangeHiddenRightText}}：{{rangeCheckData.length}}个{{rangeHiddenRightText}}</div>
+                >{{$t('commodity.haveChosen')}}{{rangeHiddenRightText}}：{{rangeCheckData.length}}个{{rangeHiddenRightText}}</div>
               </div>
               <!--end-->
               <div class="goodsPrice price commodityScope">
-                <span>活动商品：</span>
+                <span>{{$t('commodity.activeCommodities')}}：</span>
                 <el-select
                   v-model="data.goods_type"
-                  placeholder="请选择"
+                  :placeholder="$t('commodity.placeChiose')"
                   size="small"
                 >
                   <el-option
@@ -379,7 +393,7 @@
                 </el-select>
               </div>
               <div class="goodsPrice price commodityScope">
-                <span>排序规则：</span>
+                <span>{{$t('commodity.sortRule')}}：</span>
                 <el-select
                   v-model="data.sort_type"
                   size="small"
@@ -402,12 +416,12 @@
           >
             <div class="manual">
               <div class="goodsNum choiseGoodeDiv">
-                <span>商品列表：</span>
+                <span>{{$t('commodity.listOfCommodities')}}：</span>
                 <div>
                   <el-button
                     size="small"
                     @click="handleToAddGoods()"
-                  >添加商品</el-button>
+                  >{{$t('commodity.addMerchandise')}}</el-button>
                   <div :style="goodsList.length>=3?'height:250px;width:112%;overflow-y: auto;margin-top:10px':''">
                     <div
                       v-for="(item,index) in data.goods_items"
@@ -424,19 +438,19 @@
                       <div class="operation">
                         <a
                           href="javascript:void(0)"
-                          title="向上"
+                          :title="$t('commodity.upward')"
                           class="up_arrow"
                           @click="handleToClickOpera(index,0)"
                         >↑</a>
                         <a
                           href="javascript:void(0)"
-                          title="向上"
+                          :title="$t('commodity.down')"
                           class="up_arrow"
                           @click="handleToClickOpera(index,1)"
                         >↓</a>
                         <a
                           href="javascript:void(0)"
-                          title="向上"
+                          :title="$t('commodity.delete')"
                           class="up_arrow"
                           @click="handleToClickOpera(index,2)"
                         >X</a>
@@ -605,50 +619,50 @@ export default {
         commodityScope: '0', // 商品范围选中值
         commodityScopeOptions: [{ // 商品范围下拉框数据
           value: '0',
-          label: '请选择'
+          label: ''
         }, {
           value: '1',
-          label: '商家分类'
+          label: ''
         }, {
           value: '2',
-          label: '平台分类'
+          label: ''
         }, {
           value: '3',
-          label: '商品品牌'
+          label: ''
         }, {
           value: '4',
-          label: '商品标签'
+          label: ''
         }],
         activeCommodities: '0', // 活动商品选中值
         activeCommoditiesOptions: [{ // 活动商品下拉框数据
           value: '0',
-          label: '请选择'
+          label: ''
         }, {
           value: '1',
-          label: '会员专享'
+          label: ''
         }, {
           value: '2',
-          label: '砍价'
+          label: ''
         }, {
           value: '3',
-          label: '拼团'
+          label: ''
         }, {
           value: '4',
-          label: '秒杀'
+          label: ''
         }, {
           value: '5',
-          label: '限时降价'
+          label: ''
         }],
         sortRule: '0', // 排序规则选中值
         sortRuleOptions: [{ // 排序规则下拉框数据
           value: '0',
-          label: '按商品上架时间倒叙排序'
+          label: ''
         }, {
           value: '1',
-          label: '按商品销量倒序排列'
+          label: ''
         }, {
           value: '2',
-          label: '按商品价格正序排列(由低到高)'
+          label: ''
         }]
       },
       defaultColorright: '#f5f5f5', // 背景颜色自定义默认颜色
@@ -765,6 +779,20 @@ export default {
       this.listTypeData.forEach((item, index) => {
         item.typeName = this.$t('commodity.listTypeData')[index]
       })
+      console.log(this.commodityModule.commodityScopeOptions)
+      this.commodityModule.commodityScopeOptions.forEach((item, index) => {
+        item.label = this.$t('commodity.commodityScopeOptions')[index]
+      })
+
+      this.commodityModule.activeCommoditiesOptions.forEach((item, index) => {
+        item.label = this.$t('commodity.activeCommoditiesOptions')[index]
+      })
+
+      this.commodityModule.sortRuleOptions.forEach((item, index) => {
+        item.label = this.$t('commodity.sortRuleOptions')[index]
+      })
+      this.rangeList = this.$t('commodity.rangeList')
+      console.log(this.commodityModule.commodityScopeOptions)
     }
   },
   computed: {
@@ -1415,6 +1443,9 @@ export default {
         }
       }
       .moduleRecommendation {
+        .moduleTitleDiv {
+          display: flex;
+        }
         .hiddenRangeCheck {
           display: flex;
         }
