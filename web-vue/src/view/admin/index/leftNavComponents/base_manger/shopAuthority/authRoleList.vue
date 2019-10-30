@@ -144,10 +144,10 @@ export default {
     },
     search () {
       defRoleListRequest().then((res) => {
-        console.log('res-----------------------------------')
-        console.log(res)
         if (res.error === 0) {
           this.tableData = res.content.shopMenuList
+          console.log(' this.tableData-----------------------------------')
+          console.log(this.tableData)
           if (this.isEdit !== 0) {
             // 编辑前的查询
             console.log('编辑前的查询')
@@ -170,6 +170,28 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.privilegeList = res.content.privilegeList
+          console.log('编辑查询的内容')
+          console.log(this.privilegeList)
+          var maxL = 0
+          for (let n = 0; n < this.tableData.length; n++) {
+            maxL = maxL + this.tableData[n].length
+            for (let m = 0; m < this.tableData[n].length; m++) {
+              for (let i = 0; i < this.privilegeList.length; i++) {
+                if (this.privilegeList[i] === this.tableData[n][m].enName) {
+                  let idex = this.tableData[n][m].topIndex
+                  let a = this.checkRowList.indexOf(idex)
+                  if (a === -1) {
+                    this.checkRowList.push(idex)
+                  }
+                  break
+                }
+              }
+            }
+          }
+          this.checkedCount = maxL
+          console.log('this.checkRowList')
+          console.log(this.checkRowList)
+          this.checkAllState = maxL === this.privilegeList.length
           this.roleName = res.content.roleName
         } else {
           this.$message.error(res.message)
@@ -209,14 +231,34 @@ export default {
       console.log(val, val2)
       var arr = document.getElementsByName(val2)
       console.log(arr[0].checked === true)
+      var a = this.checkRowList.indexOf(val)
       if (arr[0].checked === true) {
-        this.checkRowList.push(val)
-      } else {
-        var a = this.checkRowList.indexOf(val)
         if (a === -1) {
-          console.log('不存在，不删')
-        } else {
-          this.checkRowList.splice(a, 1)
+          this.checkRowList.push(val)
+        }
+      } else {
+        let vlength = this.tableData[val].length
+        // 取消遍历所有子节点，全部不选中时候把checkRowList中字段删掉
+        let num = vlength
+        console.log('开始时候', num)
+        for (let i = 0; i < vlength; i++) {
+          var array = document.getElementsByName(this.tableData[val][i].enName)
+          if (array[0].checked === true) {
+            console.log(this.tableData[val][i].enName, '选中')
+            num++
+          } else {
+            num--
+            console.log(this.tableData[val][i].enName, '取消')
+          }
+        }
+        console.log('总数', num)
+        if (num === 0) {
+          // 全部取消了
+          if (a === -1) {
+            console.log('不存在，不删')
+          } else {
+            this.checkRowList.splice(a, 1)
+          }
         }
       }
       this.checkAllState = this.checkedCount === this.privilegeList.length

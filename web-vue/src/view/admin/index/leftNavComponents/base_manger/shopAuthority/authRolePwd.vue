@@ -31,22 +31,30 @@
               size="mini"
               v-show="pwdShow"
             >
-              <el-form-item label="登录密码">
+              <el-form-item
+                label="登录密码"
+                :required='true'
+              >
 
                 <el-input
                   size="small"
                   style="width:35%"
                   placeholder="请输入管理员登录密码"
                   v-model="loginPass"
+                  show-password
                 />
               </el-form-item>
 
-              <el-form-item label="设置密码">
+              <el-form-item
+                label="设置密码"
+                :required='true'
+              >
                 <el-input
                   size="small"
                   style="width:35%"
                   placeholder="请输入功能权限密码"
                   v-model="rolePass"
+                  show-password
                 />
                 <span style="color:#999">修改后的新密码将替换原有密码</span>
               </el-form-item>
@@ -412,6 +420,9 @@ export default {
   }
 }
 .demo-dynamic /deep/.el-form-item__content {
+  border: 1px solid #eee;
+}
+.demo-dynamic2 {
   border: 1px solid #eee;
 }
 </style>
