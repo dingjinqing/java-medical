@@ -87,45 +87,48 @@
                 align="center"
               >
                 <template slot-scope="scope">
-                  <!-- 开关 -->
-                  <div class="">
-                    <el-switch
-                      v-model="scope.row.state"
-                      active-color="#F7931E"
-                      inactive-color="#ddd"
-                      @change="changeOneSwitch(scope.row)"
-                    >
-                    </el-switch>
-                    <span style="color: rgb(153, 153, 153);">
-                      {{scope.row.state === true ? '已开启' : '已关闭'}}
-                    </span>
-                  </div>
-                  <!-- 图标 -->
-                  <div class="opt">
-                    <!-- 编辑 -->
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="编辑"
-                      placement="top"
-                    >
-                      <i
-                        class="el-icon-edit-outline"
-                        @click="editAct(scope.row)"
-                      ></i>
-                    </el-tooltip>
-                    <!-- 删除 -->
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="删除"
-                      placement="top"
-                    >
-                      <i
-                        class="el-icon-delete"
-                        @click="deleteAct(scope.row.id)"
-                      ></i>
-                    </el-tooltip>
+                  <div style="display: flex">
+                    <!-- 开关 -->
+                    <div class="changeSwitch">
+                      <el-switch
+                        v-model="scope.row.state"
+                        active-color="#F7931E"
+                        inactive-color="#ddd"
+                        @change="changeOneSwitch(scope.row)"
+                      >
+                      </el-switch>
+                      <span style="color: rgb(153, 153, 153);">
+                        {{scope.row.state === true ? '已开启' : '已关闭'}}
+                      </span>
+                    </div>
+                    <!-- 图标 -->
+                    <div class="opt">
+                      <!-- 编辑 -->
+                      <el-tooltip
+                        class="item edit-item"
+                        effect="dark"
+                        content="编辑"
+                        placement="top"
+                      >
+                        <i
+                          class="el-icon-edit-outline"
+                          @click="editAct(scope.row)"
+                        ></i>
+                      </el-tooltip>
+
+                      <!-- 删除 -->
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="删除"
+                        placement="top"
+                      >
+                        <i
+                          class="el-icon-delete"
+                          @click="deleteAct(scope.row.id)"
+                        ></i>
+                      </el-tooltip>
+                    </div>
                   </div>
                 </template>
               </el-table-column>
@@ -170,7 +173,10 @@
                 <span style="padding-left: 15px;color:#999">服务承诺在前端店铺将按优先级从大到小显示</span>
               </el-form-item>
               <!-- 图标 -->
-              <el-form-item label="图标">
+              <el-form-item
+                label="图标"
+                prop="logos"
+              >
 
                 <!-- 图片弹窗 -->
                 <div style="display:flex;align-items:center;flex-wrap:wrap;">
@@ -254,6 +260,8 @@ export default {
         first: '',
         icon: '',
         desc: '',
+        logos: '',
+
         goods: '1'
       },
       // 数据校验
@@ -267,6 +275,9 @@ export default {
         ],
         desc: [
           { required: true, message: '请填写承诺说明', trigger: 'blur' }
+        ],
+        logos: [
+          { required: true, message: '请选择图片', trigger: 'blur' }
         ]
       },
       // 图片弹窗
@@ -485,13 +496,17 @@ export default {
     }
   }
 }
+.changeSwitch {
+  margin-left: 30px;
+}
 .opt {
-  display: flex;
-  justify-content: space-around;
-  > .item {
+  .item {
     font-size: 22px;
     color: #66b1ff;
     cursor: pointer;
+  }
+  .edit-item {
+    margin: 0 10px 0 20px;
   }
 }
 .ImgWrap {
