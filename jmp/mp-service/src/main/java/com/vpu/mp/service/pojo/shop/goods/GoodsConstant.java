@@ -46,17 +46,14 @@ public class GoodsConstant {
     public final static byte ACTIVITY_TYPE_GIVE_GIFT = 17;
     /** 首单特惠 */
     public final static byte ACTIVITY_TYPE_FIRST_SPECIAL = 18;
+    /** 优惠券活动 */
+    public final static byte ACTIVITY_TYPE_COUPON = 19;
     /** 满折满减*/
-    public final static byte ACTIVITY_TYPE_FULL_REDUCTION = 19;
+    public final static byte ACTIVITY_TYPE_FULL_REDUCTION = 20;
     /** 代付订单 */
     public final static byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */
     public final static byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
-
-    /** 商品存在优惠券信息*/
-    public final static byte ACTIVITY_TYPE_HAS_COUPON = 120;
-    /** 商品存在满减活动 */
-    public final static byte ACTIVITY_TYPE_HAS_FULL_REDUCTION = 121;
     /**************** 结束 *****************/
 
     /****** 各种活动的处理处理展示优先级 *****/
@@ -71,8 +68,10 @@ public class GoodsConstant {
     public final static byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 20;
 
     public final static byte ACTIVITY_REDUCE_PRIORITY = 25;
+    /**优惠券*/
+    public final static byte ACTIVITY_COUPON_PRIORITY = 30;
     /** 满折满减 */
-    public final static byte ACTIVITY_FULL_REDUCTION_PRIORITY = 30;
+    public final static byte ACTIVITY_FULL_REDUCTION_PRIORITY = 35;
 
     /**************** 结束 *****************/
 

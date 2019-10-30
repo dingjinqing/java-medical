@@ -41,17 +41,17 @@ public class GoodsActivityMpService extends ShopBaseService {
         boolean hasAct =mrkingStrategyService.getGoodsAct(goodsT.getGoodsId(),goodsT.getCatId(),goodsT.getSortId());
 
         if (couponTagVo != null) {
-            listTags.add(GoodsConstant.ACTIVITY_TYPE_HAS_COUPON);
+            listTags.add(GoodsConstant.ACTIVITY_TYPE_COUPON);
         }
 
         if (hasAct) {
-            listTags.add(GoodsConstant.ACTIVITY_TYPE_HAS_FULL_REDUCTION);
+            listTags.add(GoodsConstant.ACTIVITY_TYPE_FULL_REDUCTION);
         }
         if (listTags.size() > 2) {
             listTags = listTags.subList(0,2);
         }
         goodsT.setGoodsTags(listTags);
-        if (listTags.contains(GoodsConstant.ACTIVITY_TYPE_HAS_COUPON)) {
+        if (listTags.contains(GoodsConstant.ACTIVITY_TYPE_COUPON)) {
             goodsT.setCouponTagVo(couponTagVo);
         }
     }

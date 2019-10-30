@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import com.vpu.mp.service.shop.activity.processor.ActivityProcessor;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Map;
  * @author 李晓冰
  * @date 2019年10月30日
  */
+@Service
 public class FullReductionForListProcessor extends FullReductionProcessorDao implements ActivityGoodsListProcessor<FullReductionForListInfo> {
 
     @Override
@@ -33,6 +35,7 @@ public class FullReductionForListProcessor extends FullReductionProcessorDao imp
 
        List<ActivityGoodsListMpParam.AllIdsParam> idParams = new ArrayList<>();
         for (ActivityGoodsListCapsule capsule : capsules) {
+            // 这几种活动的商品可以不考虑
             if (ActivityProcessor.isGoodsTypeIn135610(capsule.getGoodsType())) {
                 continue;
             }
@@ -68,11 +71,13 @@ public class FullReductionForListProcessor extends FullReductionProcessorDao imp
 
     @Override
     public void process(Map<Integer, FullReductionForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
-        for (ActivityGoodsListCapsule capsule : capsules) {
+       capsules.forEach(capsule->{
            Integer goodsId = capsule.getCapsuleId();
-            if (activityInfos.get(goodsId) != null) {
-                capsule.getActivities().add(activityInfos.get(goodsId));
-            }
-        }
+           FullReductionForListInfo activity = activityInfos.get(goodsId);
+           if (activity == null) {
+               return;
+           }
+           capsule.getActivities().add(activityInfos.get(goodsId));
+       });
     }
 }

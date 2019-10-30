@@ -46,6 +46,6 @@ public class FullReductionProcessorDao extends ShopBaseService {
             .and(MRKING_STRATEGY.END_TIME.gt(date)).and(condition);
 
         int count = db().fetchCount(MRKING_STRATEGY, condition);
-        return count > 0;
+        return count>0;
     }
 }
