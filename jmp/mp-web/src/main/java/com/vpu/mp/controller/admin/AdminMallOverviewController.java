@@ -123,32 +123,24 @@ public class AdminMallOverviewController extends AdminBaseController {
 
     /**
      * 店铺助手
-     * @return
      */
-    @Autowired
-    private ShopAssistantVo vo;
-
     @PostMapping("/api/admin/malloverview/shopAssistant")
     public JsonResult shopAssistant(@RequestBody @Validated ShopAssistantParam param){
-//        ShopAssistantVo vo = new ShopAssistantVo();
+        ShopAssistantVo vo = new ShopAssistantVo();
         Integer shopId = shop().mallOverview.getShopId();
         Integer sysId = shop().mallOverview.getSysId();
-
         saas.overviewService.shopAssistant(param, vo, shopId, sysId);
         shop().mallOverview.shopAssistant(param,vo);
-        return vo!=null ? success(vo) : fail();
+        return success(vo);
     }
-
-    @Autowired
-    private OverviewVo overviewVo;
 
     /**
      * 商城概览页面综合调用接口
      * @param param
-     * @return
      */
     @PostMapping("/api/admin/malloverview/allOverview")
     public JsonResult allOverview(@RequestBody @Validated OverviewParam param){
+        OverviewVo overviewVo = new OverviewVo();
         //基本信息
         overviewVo.setShopBaseInfoVo(saas.overviewService.getShopBaseInfo(param.getShopBaseInfoParam()));
         //公告信息
@@ -158,8 +150,8 @@ public class AdminMallOverviewController extends AdminBaseController {
         //代办事项
         overviewVo.setToDoItemVo(shop().mallOverview.toDoItem());
         //店铺助手
-        shopAssistant(param.getShopAssistantParam());
-        overviewVo.setShopAssistantVo(vo);
+//        shopAssistant(param.getShopAssistantParam());
+//        overviewVo.setShopAssistantVo(vo);
         return success(overviewVo);
     }
 }

@@ -9,23 +9,43 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.overview.*;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
+import com.vpu.mp.service.saas.shop.ShopChildAccountService;
+import com.vpu.mp.service.saas.shop.ShopOfficialAccount;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record1;
 import org.jooq.Select;
 import org.jooq.SortField;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+
 /**
  * author liufei
  * date 2019/7/15
  * 概览
  */
+@Slf4j
 @Service
 public class ShopOverviewService extends MainBaseService {
+    @Autowired
+    public MpAuthShopService mpAuthShopService;
+
+    @Autowired
+    public ShopChildAccountService childAccountService;
+
+    @Autowired
+    public ShopOfficialAccount shopOfficialAccount;
+
     /**
      * 绑定解绑
      * @param param
@@ -181,39 +201,45 @@ public class ShopOverviewService extends MainBaseService {
     }
 
     public ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo, Integer shopId, Integer sysId) {
-        /** 微信配置（授权和支付） */
-        List<MpAuthShop> authShopList = db().selectFrom(MpAuthShop.MP_AUTH_SHOP)
-            .where(MpAuthShop.MP_AUTH_SHOP.SHOP_ID.eq(shopId))
-                .fetchInto(MpAuthShop.class);
-        if(authShopList!=null&&!authShopList.isEmpty()) {
-            MpAuthShop authShop = authShopList.get(0);
-            MpAuthShopRecord authShopRecord = new MpAuthShopRecord();
-
-            boolean condi1 = StringUtils.isNotEmpty(authShop.PAY_CERT_CONTENT.get(authShopRecord));
-            boolean condi2 = StringUtils.isNotEmpty(authShop.PAY_KEY.get(authShopRecord));
-            boolean condi3 = StringUtils.isNotEmpty(authShop.PAY_KEY_CONTENT.get(authShopRecord));
-            boolean condi4 = StringUtils.isNotEmpty(authShop.PAY_MCH_ID.get(authShopRecord));
+        AssiDataShop dataShop = new AssiDataShop();
+        // 微信配置（授权和支付）
+        MpAuthShopRecord authShopRecord = mpAuthShopService.getAuthShopByShopId(shopId);
+        /* 微信配置（授权和支付）,决定了五个完成项
+        2表示：未注册小程序，未配置小程序客服，未授权小程序，未开通微信支付，未配置微信支付
+        1表示：已注册小程序，已配置小程序客服，已授权小程序，未开通微信支付，未配置微信支付
+        0表示：已注册小程序，已配置小程序客服，已授权小程序，已开通微信支付，已配置微信支付
+        */
+        if (authShopRecord != null) {
+            boolean condi1 = StringUtils.isNotBlank(authShopRecord.getPayCertContent());
+            boolean condi2 = StringUtils.isNotBlank(authShopRecord.getPayKey());
+            boolean condi3 = StringUtils.isNotBlank(authShopRecord.getPayKeyContent());
+            boolean condi4 = StringUtils.isNotBlank(authShopRecord.getPayMchId());
 
             if(condi1 && condi2 && condi3 && condi4){
-                vo.getDataShop().setWxPayConfigInfo((byte)0);
-            }else{
-                vo.getDataShop().setWxPayConfigInfo((byte)1);
+                dataShop.setWxPayConfigInfo(BYTE_ZERO);
+            } else {
+                dataShop.setWxPayConfigInfo(BYTE_ONE);
             }
-        }else {
-            vo.getDataShop().setWxPayConfigInfo((byte)2);
+        } else {
+            dataShop.setWxPayConfigInfo(BYTE_TWO);
             vo.totalPendingIncr();
         }
-        /** 子账号配置 */
-        int subCount = db().fetchCount(ShopChildAccount.SHOP_CHILD_ACCOUNT,
-            ShopChildAccount.SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId));
-        vo.getDataShop().setChildAccountConf(subCount > 0 ? (byte)0 : (byte)-1);
-        if(subCount <= 0){vo.totalPendingIncr();}
-        /** 公众号 */
-        int officialCount = db().fetchCount(MpOfficialAccount.MP_OFFICIAL_ACCOUNT,
-            MpOfficialAccount.MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId)
-                        .and(MpOfficialAccount.MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(param.getIsAuthOk())));
-        vo.getDataShop().setOfficialAccountConf(officialCount > 0 ? (byte)0 : (byte)-1);
-        if(officialCount <= 0){vo.totalPendingIncr();}
+        // 子账号设置 0：已完成子账号设置，否未完成
+        if (CollectionUtils.isNotEmpty(childAccountService.getInfoBySysId(sysId))) {
+            dataShop.setChildAccountConf(BYTE_ZERO);
+        } else {
+            dataShop.setChildAccountConf(BYTE_ONE);
+            vo.totalPendingIncr();
+        }
+        // 公众号  0：已授权公众号，否未授权公众号
+        if (CollectionUtils.isNotEmpty(shopOfficialAccount.getOfficialAccountBySysId(sysId, BYTE_ONE))) {
+            dataShop.setOfficialAccountConf(BYTE_ZERO);
+        } else {
+            dataShop.setOfficialAccountConf(BYTE_ONE);
+            vo.totalPendingIncr();
+        }
+        vo.setDataShop(dataShop);
+        log.debug("主库的走完了");
         return vo;
     }
 

@@ -1,44 +1,25 @@
 package com.vpu.mp.service.shop.overview;
 
-import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
-import static java.util.stream.Collectors.toList;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.countDistinct;
-import static org.jooq.impl.DSL.min;
-import static org.jooq.impl.DSL.sum;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.*;
-
-import org.jooq.Condition;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.Record5;
-import org.jooq.Record7;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectHavingStep;
-import org.jooq.SelectLimitStep;
-import org.jooq.TableField;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.DistributionTag;
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.db.shop.tables.OrderInfo;
-import com.vpu.mp.db.shop.tables.Tag;
 import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.UserLoginRecord;
-import com.vpu.mp.db.shop.tables.UserTag;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.DistributionTagRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalCollVo;
-import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalParam;
-import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalVo;
-import com.vpu.mp.service.pojo.shop.overview.transaction.LabelAnalysisParam;
-import com.vpu.mp.service.pojo.shop.overview.transaction.LabelAnalysisVo;
+import com.vpu.mp.service.pojo.shop.overview.transaction.*;
+import org.jooq.*;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Comparator;
+import java.util.*;
+
+import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author liufei
@@ -126,6 +107,11 @@ public class TransactionStatisticsService extends ShopBaseService {
         return optional.orElse(0);
     }
 
+    public static final List<Byte> RECENT_DATE = new ArrayList<Byte>() {{
+        add(Byte.valueOf("1"));
+        add(Byte.valueOf("7"));
+        add(Byte.valueOf("30"));
+    }};
     /**
      * 标签成交分析
      * @param param 入参
@@ -133,8 +119,8 @@ public class TransactionStatisticsService extends ShopBaseService {
     public PageResult<LabelAnalysisVo> labelAnalysis(LabelAnalysisParam param){
         Byte screenTime = param.getScreeningTime();
         if (screenTime > 0){
-            if(!Arrays.asList((byte)1,7,30).contains(screenTime)){
-                param.setScreeningTime((byte)1);
+            if (!RECENT_DATE.contains(screenTime)) {
+                param.setScreeningTime(BYTE_ONE);
             }
             return fixedLabelAnalysis(param);
         }else {

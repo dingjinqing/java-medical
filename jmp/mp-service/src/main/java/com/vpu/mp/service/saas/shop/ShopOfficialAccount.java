@@ -1,23 +1,5 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
-import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectOnConditionStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
@@ -38,7 +20,6 @@ import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetItems;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetResult;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpQrcodeService;
 import me.chanjar.weixin.mp.api.WxMpUserService;
@@ -48,10 +29,27 @@ import me.chanjar.weixin.mp.bean.result.WxMpUserList;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
+import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
 /**
  * 公众号相关
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年8月21日 上午10:07:55
@@ -67,7 +65,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	/**
 	 * 获取数据库公众号列表
-	 * 
+     *
 	 * @param oaListParam
 	 * @return
 	 */
@@ -93,7 +91,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	/**
 	 * 单个公众号的信息
-	 * 
+     *
 	 * @param appId
 	 * @param sysId
 	 * @return
@@ -116,7 +114,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	/**
 	 * 提现配置
-	 * 
+     *
 	 * @param oaParam
 	 * @return
 	 */
@@ -131,18 +129,23 @@ public class ShopOfficialAccount extends MainBaseService {
 				.on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).where((MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId)))
 				.fetchAnyInto(MpOfficeAccountListVo.class);
 	}
-	
+
 	public Record getOfficeAccountByAppIdRecord(String appId) {
 		return db().select(MP_OFFICIAL_ACCOUNT.asterisk()).from(MP_OFFICIAL_ACCOUNT).innerJoin(SHOP_ACCOUNT)
 				.on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).where((MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId))).fetchAny();
 	}
-	
+
 
 	public Result<MpOfficialAccountRecord> getOfficialAccountBySysId(Integer sysId) {
 		Result<MpOfficialAccountRecord> fetch = db().selectFrom(MP_OFFICIAL_ACCOUNT)
 				.where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId)).fetch();
 		return fetch;
 	}
+
+    public Result<MpOfficialAccountRecord> getOfficialAccountBySysId(Integer sysId, Byte isAuthOk) {
+        return db().selectFrom(MP_OFFICIAL_ACCOUNT)
+            .where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId)).and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(isAuthOk)).fetch();
+    }
 
 	public List<MpOfficeAccountVo> findSamePrincipalMiniAndMP(Result<MpOfficialAccountRecord> oaRecords,
 			MpAuthShopRecord miniRecord) {
@@ -165,7 +168,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	/**
 	 * 添加微信公众号授权
-	 * 
+     *
 	 * @return
 	 */
 	public MpOfficialAccountRecord addMpOfficialAccountInfo(Integer sysId,
@@ -216,7 +219,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	/**
 	 * 绑定同一主体公众号和小程序到开放平台账号 ,个人账号不支持绑定
-	 * 
+     *
 	 * @param appId
 	 */
 	public void bindAllSamePrincipalOpenAppId(MpOfficialAccountRecord record) throws WxErrorException {
@@ -289,7 +292,7 @@ public class ShopOfficialAccount extends MainBaseService {
 			logger().debug("公众号 " + appId + "创建二维码,缓存中存在" +string);
 			return string;
 		}
-		
+
 		WxMpQrcodeService qrcodeService = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getQrcodeService();
 		WxMpQrCodeTicket qrCodeCreateTmpTicket = qrcodeService.qrCodeCreateTmpTicket(sceneValue, expireSeconds);
 		// 获取的二维码ticket
@@ -317,10 +320,10 @@ public class ShopOfficialAccount extends MainBaseService {
 		saas.taskJobMainService.dispatchImmediately(param,BindOARabbitParam.class.getName(),shopId,TaskJobEnum.MP_BIND_MA.getExecutionType());
 		//rabbitTemplate.convertAndSend("bind.mamp.template", "bind.mamp.key", param);
 	}
-	
+
 	/**
 	 * 批量获取公众号用户信息
-	 * 
+     *
 	 * @param appId
 	 * @param language
 	 * @param adminTokenAuthInfo
@@ -374,7 +377,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	/**
 	 * 添加或更新用户
-	 * 
+     *
 	 * @param appId
 	 * @param record
 	 * @param unionId
@@ -405,7 +408,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	/**
 	 * 公众号和小程序关系
-	 * 
+     *
 	 * @param appId
 	 * @param userName
 	 * @return
@@ -426,10 +429,10 @@ public class ShopOfficialAccount extends MainBaseService {
 		}
 		return false;
 	}
-	
-	/**
+
+    /**
 	 * 同步公众号用户到从库
-	 * 
+     *
 	 * @param appId
 	 * @param record
 	 * @param unionId

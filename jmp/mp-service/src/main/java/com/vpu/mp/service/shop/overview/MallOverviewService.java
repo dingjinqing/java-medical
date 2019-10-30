@@ -1,56 +1,48 @@
 package com.vpu.mp.service.shop.overview;
 
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
-
-import java.sql.Timestamp;
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Comparator;
-import org.jooq.Condition;
-import org.jooq.Record1;
-import org.jooq.Select;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.CardExamine;
-import com.vpu.mp.db.shop.tables.CommentGoods;
-import com.vpu.mp.db.shop.tables.CommentService;
-import com.vpu.mp.db.shop.tables.DeliverFeeTemplate;
-import com.vpu.mp.db.shop.tables.DistributionWithdraw;
-import com.vpu.mp.db.shop.tables.DistributorApply;
-import com.vpu.mp.db.shop.tables.Goods;
-import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
-import com.vpu.mp.db.shop.tables.MemberCard;
-import com.vpu.mp.db.shop.tables.MrkingVoucher;
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.db.shop.tables.OrderInfo;
-import com.vpu.mp.db.shop.tables.RecommendGoods;
-import com.vpu.mp.db.shop.tables.ReturnOrder;
-import com.vpu.mp.db.shop.tables.ShopCfg;
-import com.vpu.mp.db.shop.tables.Sort;
-import com.vpu.mp.db.shop.tables.UserLoginRecord;
-import com.vpu.mp.db.shop.tables.XcxCustomerPage;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
-import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationVo;
-import com.vpu.mp.service.pojo.shop.overview.ShopAssistantParam;
-import com.vpu.mp.service.pojo.shop.overview.ShopAssistantVo;
-import com.vpu.mp.service.pojo.shop.overview.ToDoItemVo;
+import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
+import com.vpu.mp.service.pojo.shop.overview.*;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Comparator;
+import org.jooq.Condition;
+import org.jooq.Record1;
+import org.jooq.Select;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.*;
+
+import static com.vpu.mp.db.shop.tables.MrkingVoucher.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
 
 /**
- * @Author:liufei
- * @Date:2019/7/15
- * @Description: 商城概览service
+ * author liufei
+ * date 2019/7/15
+ * 商城概览service
  */
 @Service
-
+@Slf4j
 public class MallOverviewService extends ShopBaseService {
+    @Autowired
+    public WxShoppingListConfigService shoppingListConfigService;
+
+    @Autowired
+    public ShopCommonConfigService shopCommonConfigService;
 
     /**
      * 获取数据展示数据，
@@ -138,46 +130,57 @@ public class MallOverviewService extends ShopBaseService {
         return vo;
     }
     public ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo){
-        /**  店铺首页 */
-        List<XcxCustomerPage> xcxCustomerPage = db().selectFrom(XcxCustomerPage.XCX_CUSTOMER_PAGE)
-                .where(XcxCustomerPage.XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte)1))
-                .fetchInto(XcxCustomerPage.class);
-        if(xcxCustomerPage!=null&&!xcxCustomerPage.isEmpty()){
-            XcxCustomerPageRecord record = new XcxCustomerPageRecord();
-            boolean condi1 = StringUtils.isNotEmpty(xcxCustomerPage.get(0).PAGE_CONTENT.get(record));
-            boolean condi2 = StringUtils.isNotEmpty(xcxCustomerPage.get(0).PAGE_PUBLISH_CONTENT.get(record));
-            vo.getDataShop().setHomePageConf(condi1 || condi2 ? (byte)0 : (byte)-1);
-        }else{
-            vo.getDataShop().setHomePageConf((byte)-1);
+        AssiDataShop dataShop = new AssiDataShop();
+        //  店铺首页 0：已完成店铺首页装修，否未装修店铺首页
+        XcxCustomerPageRecord xcxCustomerPage = db().selectFrom(XCX_CUSTOMER_PAGE)
+            .where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq(BYTE_ONE))
+            .and(XCX_CUSTOMER_PAGE.SHOP_ID.eq(getShopId()))
+            .fetchOne();
+        if (xcxCustomerPage != null) {
+            boolean condi1 = StringUtils.isNotBlank(xcxCustomerPage.getPageContent());
+            boolean condi2 = StringUtils.isNotBlank(xcxCustomerPage.getPagePublishContent());
+            dataShop.setHomePageConf(condi1 || condi2 ? BYTE_ZERO : BYTE_ONE);
+        } else {
+            dataShop.setHomePageConf(BYTE_ONE);
             vo.totalPendingIncr();
         }
-        /**  好物圈 */
-        int cfgCount = db().fetchCount(ShopCfg.SHOP_CFG,ShopCfg.SHOP_CFG.K.eq("wx_shopping_list_enbaled"));
-        vo.getDataShop().setShopRecommendConf(cfgCount > 0 ? (byte)0 : (byte)-1);
-        vo.getDataShop().setShopRecommendLink(cfgCount > 0 ? "/admin/config/shop?act=auth" : "/wechat/no/authorization");
-        if(cfgCount <= 0){vo.totalPendingIncr();}
-        /**  客服 */
-        int serviceCount = db().fetchCount(ShopCfg.SHOP_CFG,ShopCfg.SHOP_CFG.K.eq("custom_service")
-                                    .or(ShopCfg.SHOP_CFG.K.eq("return_service")));
-        vo.getDataShop().setCustomServiceConf(serviceCount > 0 ? (byte)0 : (byte)-1);
-        if(serviceCount <= 0){vo.totalPendingIncr();}
+        //  好物圈 0: 已开启好物圈，否未开启
+        WxShoppingListConfig shoppingListConfig = shoppingListConfigService.getShoppingListConfig();
+        if (String.valueOf(BYTE_ZERO).equals(shoppingListConfig.getEnabeldWxShoppingList())) {
+            dataShop.setShopRecommendConf(BYTE_ONE);
+            vo.totalPendingIncr();
+        }else{
+            dataShop.setShopRecommendConf(BYTE_ZERO);
+            dataShop.setShopRecommendLink(shoppingListConfig.getWxShoppingRecommend());
+        }
+        //  客服 0: 已开启客服，否未开启
+        if (shopCommonConfigService.getCustomService().equals(BYTE_ONE) || shopCommonConfigService.getReturnService().equals(BYTE_ONE)) {
+            dataShop.setCustomServiceConf(BYTE_ZERO);
+        } else {
+            dataShop.setCustomServiceConf(BYTE_ONE);
+            vo.totalPendingIncr();
+        }
+        vo.setDataShop(dataShop);
+        log.debug("shop走完了");
         return vo;
     }
 
     public ShopAssistantVo goodsNav(ShopAssistantParam param, ShopAssistantVo vo){
+        AssiDataGoods dataGoods = new AssiDataGoods();
+        ;
         /**  运费模板设置 */
         int deliverCount = db().fetchCount(DeliverFeeTemplate.DELIVER_FEE_TEMPLATE);
-        vo.getDataGoods().setShipTemplateConf(deliverCount > 0 ? (byte)0 : (byte)-1);
+        dataGoods.setShipTemplateConf(deliverCount > 0 ? (byte) 0 : (byte) -1);
         if(deliverCount <= 0){vo.totalPendingIncr();}
         /**  商品添加 */
         int goodsCount = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0));
-        vo.getDataGoods().setGoodsConf(goodsCount > 0 ? (byte)0 : (byte)-1);
+        dataGoods.setGoodsConf(goodsCount > 0 ? (byte) 0 : (byte) -1);
         if(goodsCount <= 0){vo.totalPendingIncr();}
         /**  商品库存偏小 */
         int goodsNum = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0)
                 .and(Goods.GOODS.GOODS_NUMBER
                         .lessThan(param.getStoreSizeNum())));
-        vo.getDataGoods().setGoodsStoreConf(goodsNum);
+        dataGoods.setGoodsStoreConf(goodsNum);
         if(goodsNum > 0){vo.totalPendingIncr();}
         /**  滞销商品 */
         OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
@@ -187,44 +190,52 @@ public class MallOverviewService extends ShopBaseService {
                 .where(oi.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(new Date(),-30)))
                 .and(og.UPDATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(new Date(),-30)));
         int unsalableCount = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0).and(Goods.GOODS.GOODS_ID.notIn(select)));
-        vo.getDataGoods().setGoodsUnsalableConf(unsalableCount);
+        dataGoods.setGoodsUnsalableConf(unsalableCount);
         if(unsalableCount > 0){vo.totalPendingIncr();}
         /**  商品评价审核逾期 */
         int commCount = db().fetchCount(CommentGoods.COMMENT_GOODS,CommentGoods.COMMENT_GOODS.DEL_FLAG.eq((byte)0)
                 .and(CommentGoods.COMMENT_GOODS.FLAG.eq((byte)0))
                 .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getCommentOver()))));
-        vo.getDataGoods().setGoodsComment(commCount);
+        dataGoods.setGoodsComment(commCount);
         if(commCount > 0){vo.totalPendingIncr();}
         /**  推荐商品 */
         int recommCount = db().fetchCount(RecommendGoods.RECOMMEND_GOODS);
-        vo.getDataGoods().setGoodsRecommend(recommCount);
+        dataGoods.setGoodsRecommend(recommCount);
         if(recommCount <= 0){vo.totalPendingIncr();}
         /**  商家分类 */
         int sortCount = db().fetchCount(Sort.SORT);
-        vo.getDataGoods().setShopSort(sortCount);
+        dataGoods.setShopSort(sortCount);
         if(sortCount <= 0){vo.totalPendingIncr();}
+        vo.setDataGoods(dataGoods);
+        log.debug("goods走完了");
         return vo;
     }
 
     public ShopAssistantVo orderNav(ShopAssistantParam param, ShopAssistantVo vo){
+        AssiDataOrder dataOrder = new AssiDataOrder();
+        ;
         /**  发货逾期 */
         int deliverCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.ORDER_STATUS.eq((byte)3)
                 .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getDeliverOver()))));
-        vo.getDataOrder().setDeliver(deliverCount);
+        dataOrder.setDeliver(deliverCount);
         if(deliverCount > 0){vo.totalPendingIncr();}
         /**  退款申请逾期 */
         int refundCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.REFUND_STATUS.in((byte)1,(byte)2,(byte)4)
                 .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getRefundOver()))));
-        vo.getDataOrder().setRefund(refundCount);
+        dataOrder.setRefund(refundCount);
         if(refundCount > 0){vo.totalPendingIncr();}
+        vo.setDataOrder(dataOrder);
+        log.debug("order走完了");
         return vo;
     }
 
     public ShopAssistantVo marketNav(ShopAssistantParam param, ShopAssistantVo vo){
+        AssiDataMarket dataMarket = new AssiDataMarket();
+        ;
         /**  分销审核超时 */
         int disCount = db().fetchCount(DistributorApply.DISTRIBUTOR_APPLY,
                 DistributorApply.DISTRIBUTOR_APPLY.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getApplyOver())));
-        vo.getDataMarket().setExamine(disCount);
+        dataMarket.setExamine(disCount);
         if(disCount > 0){vo.totalPendingIncr();}
         /**  会员卡激活审核 */
         Map<String,String> memberMap = new HashMap<>(4);
@@ -248,27 +259,27 @@ public class MallOverviewService extends ShopBaseService {
             memberMap.put("card_id",String.valueOf(lastRecordCardId));
             memberMap.put("card_name",cardName);
             memberMap.put("card_num",String.valueOf(cardNum));
-            vo.getDataMarket().setMember(memberMap);
+            dataMarket.setMember(memberMap);
             vo.totalPendingIncr();
         }else{
             memberMap.put("card_num","0");
-            vo.getDataMarket().setMember(memberMap);
+            dataMarket.setMember(memberMap);
         }
         /**  优惠券 */
         MrkingVoucherRecord voucherRecord = new MrkingVoucherRecord();
-        Map<Integer,String> voucher = new HashMap<>(8);
-        List<MrkingVoucher> voucherList = db().select(MrkingVoucher.MRKING_VOUCHER.ID,MrkingVoucher.MRKING_VOUCHER.ACT_NAME)
-                .from(MrkingVoucher.MRKING_VOUCHER)
-                .where(MrkingVoucher.MRKING_VOUCHER.SURPLUS.lessOrEqual(param.getCouponSizeNum()))
-                .and(MrkingVoucher.MRKING_VOUCHER.ENABLED.eq((byte)1))
-                .and(MrkingVoucher.MRKING_VOUCHER.DEL_FLAG.eq((byte)0))
-                .and(MrkingVoucher.MRKING_VOUCHER.CREATE_TIME.add(MrkingVoucher.MRKING_VOUCHER.VALIDATION_CODE).greaterThan(new Timestamp(System.currentTimeMillis())))
-                .orderBy(MrkingVoucher.MRKING_VOUCHER.SURPLUS,MrkingVoucher.MRKING_VOUCHER.CREATE_TIME)
+        Map<Integer, String> voucher = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME)
+            .from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.SURPLUS.lessOrEqual(param.getCouponSizeNum()))
+            .and(MRKING_VOUCHER.ENABLED.eq((byte) 1))
+            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
+            .and(MRKING_VOUCHER.CREATE_TIME.add(MRKING_VOUCHER.VALIDATION_CODE).greaterThan(new Timestamp(System.currentTimeMillis())))
+            .orderBy(MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.CREATE_TIME)
                 .limit(5)
-                .fetchInto(MrkingVoucher.class);
-        voucherList.forEach(e -> voucher.put(e.ID.get(voucherRecord),e.ACT_NAME.get(voucherRecord)));
-        vo.getDataMarket().setVoucher(voucher);
+            .fetchMap(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME);
+        dataMarket.setVoucher(voucher);
         if(!voucher.isEmpty()){vo.totalPendingIncr();}
+        vo.setDataMarket(dataMarket);
+        log.debug("market走完了");
         return vo;
     }
 }
