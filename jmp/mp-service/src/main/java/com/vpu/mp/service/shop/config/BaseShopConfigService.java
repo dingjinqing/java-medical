@@ -1,8 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.InvocationTargetException;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
@@ -92,14 +88,7 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	protected <T> int set(String key, T value, Class<? extends T> toClass) {
-        try {
-            // 扩招支持自定义toString方法
-            String strValue = toClass.getMethod("toString").invoke(value).toString();
-            return this.set(key, strValue);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            log.error("更新b2c_shop_cfg表中[{}]属性值异常,原因如下:{}", key, e.getMessage());
-            throw new BusinessException(JsonResultCode.CODE_FAIL);
-        }
+        return this.set(key, value.toString());
     }
 
 	/**
@@ -174,7 +163,7 @@ public class BaseShopConfigService extends ShopBaseService {
      * @param defaultValue the default value
      * @return the 2 object
      */
-    protected <T> T get2Object(String key, TypeReference<T> reference, T defaultValue) {
+    protected <T> T getJsonObject(String key, TypeReference<T> reference, T defaultValue) {
         String s = db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchOneInto(String.class);
         if (StringUtils.isBlank(s)) {
             return defaultValue;

@@ -14,9 +14,13 @@ public class GoodsPackageParam {
     @JsonProperty(value = "add_goods")
     @JsonAlias({"add_goods", "addGoods"})
     private Integer[] addGoods;
+    /**
+     * 平台分类
+     */
     @JsonProperty(value = "add_cate")
     @JsonAlias({"add_cate", "addCate"})
     private Integer[] addCate;
+    /** 商家分类 */
     @JsonProperty(value = "add_sort")
     @JsonAlias({"add_sort", "addSort"})
     private Integer[] addSort;

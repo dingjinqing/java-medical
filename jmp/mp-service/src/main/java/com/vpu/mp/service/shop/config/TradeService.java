@@ -585,7 +585,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the order requeire goods package
      */
     public GoodsPackageParam getOrderRequireGoodsPackage() {
-        return this.get2Object(K_ORDER_REQUIRE_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
+        return this.getJsonObject(K_ORDER_REQUIRE_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
         }, new GoodsPackageParam());
     }
 
@@ -597,7 +597,7 @@ public class TradeService extends BaseShopConfigService {
      */
     public int setOrderRequireGoodsPackage(GoodsPackageParam orderRequireGoodsPackage) {
         assert (orderRequireGoodsPackage != null);
-        return this.set(K_ORDER_REQUIRE_GOODS_PACKAGE, orderRequireGoodsPackage, GoodsPackageParam.class);
+        return this.setJsonObject(K_ORDER_REQUIRE_GOODS_PACKAGE, orderRequireGoodsPackage);
     }
 
     /**
