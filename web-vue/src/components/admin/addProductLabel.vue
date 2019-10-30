@@ -93,40 +93,8 @@ export default {
       pageCount: 1,
       classValue: '',
 
-      tableData: [
-        {
-          ischeck: false,
-          pageName: '尾浦巴普电商运营',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: true,
-          pageClass: '测试页面'
-
-        },
-        {
-          ischeck: false,
-          pageName: '测试页面',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
-
-        },
-        {
-          ischeck: false,
-          pageName: '帅飞',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
-
-        },
-        {
-          ischeck: false,
-          pageName: '帅飞啊',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
-
-        }
-      ]
+      tableData: [],
+      backFlag: false
     }
   },
   watch: {
@@ -148,6 +116,22 @@ export default {
       if (!newData) {
         this.$emit('update:callAddProductLabel', false)
       }
+    },
+    backFlag (newData) {
+      if (newData) {
+        console.log(this.tableData)
+        this.tableData.forEach(item => {
+          item.ischeck = false
+          if (this.brandBackData.length > 0) {
+            this.brandBackData.forEach(itemC => {
+              if (item.id === itemC) {
+                item.ischeck = true
+              }
+            })
+          }
+        })
+        console.log(this.tableData)
+      }
     }
   },
   mounted () {
@@ -157,16 +141,6 @@ export default {
   methods: {
     defalutData () {
       this.queryLabelData()
-      this.tableData.forEach(item => {
-        item.ischeck = false
-        if (this.brandBackData.length > 0) {
-          this.brandBackData.forEach(itemC => {
-            if (item.id === itemC) {
-              item.ischeck = true
-            }
-          })
-        }
-      })
     },
     queryLabelData () {
       let params = {
@@ -176,10 +150,13 @@ export default {
       }
       getGoodsLabelList(params).then((res) => {
         if (res.error === 0) {
-          this.$set(res.content.dataList, 'ischeck', false)
+          res.content.dataList.forEach((item, index) => {
+            this.$set(item, 'ischeck', false)
+          })
           this.totle = res.content.page.totalRows
           this.pageCount = res.content.page.pageCount
           this.tableData = res.content.dataList
+          this.backFlag = true
         }
         console.log(res)
       })
