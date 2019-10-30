@@ -273,7 +273,7 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.pageParams.state = parseInt(this.tabIndex)
+      this.pageParams.state = [parseInt(this.tabIndex)]
       bargainList(this.pageParams).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content.dataList
@@ -281,6 +281,9 @@ export default {
           this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
+        } else {
+          this.loading = false
+          this.$message.error(res.message)
         }
       })
     },
@@ -308,10 +311,7 @@ export default {
       }).then(() => {
         updateBargain(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
-            })
+            this.$message.success(this.$t('marketCommon.successfulOperation'))
             this.initDataList()
           }
         })
@@ -331,10 +331,7 @@ export default {
       }).then(() => {
         updateBargain(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
-            })
+            this.$message.success(this.$t('marketCommon.successfulOperation'))
             this.initDataList()
           }
         })
@@ -353,10 +350,7 @@ export default {
       }).then(() => {
         deleteBargain(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
-            })
+            this.$message.success(this.$t('marketCommon.successfulOperation'))
             this.initDataList()
           }
         })
@@ -366,15 +360,9 @@ export default {
     updateDailyCutTimes () {
       setDailyCutTimes(this.dailyCutTimes).then((res) => {
         if (res.error === 0) {
-          this.$message({
-            type: 'success',
-            message: this.$t('marketCommon.successfulOperation')
-          })
+          this.$message.success(this.$t('marketCommon.successfulOperation'))
         } else {
-          this.$message({
-            type: 'fail',
-            message: this.$t('marketCommon.failOperation')
-          })
+          this.$message.error(this.$t('marketCommon.failOperation'))
         }
       })
     },

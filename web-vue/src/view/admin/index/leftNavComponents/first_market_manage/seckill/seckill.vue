@@ -311,7 +311,7 @@ export default {
   methods: {
     // 秒杀列表
     handleClick () {
-      this.requestParams.state = this.tabSwitch
+      this.requestParams.state = [this.tabSwitch]
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       seckillList(this.requestParams).then((res) => {
@@ -322,6 +322,8 @@ export default {
             item.validity = `${item.startTime}` + `至` + `${item.endTime}`
             item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
           })
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
