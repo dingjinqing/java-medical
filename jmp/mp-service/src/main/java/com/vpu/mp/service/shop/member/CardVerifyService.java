@@ -15,6 +15,8 @@ import com.vpu.mp.service.shop.member.dao.CardVerifyDaoService;
 */
 @Service
 public class CardVerifyService extends ShopBaseService {
+	/** 审核状态： 拒绝 */
+	private final static Byte VSTAT_REFUSED = 3;
 	@Autowired
 	public CardVerifyDaoService verifyDao;
 	/**
@@ -27,6 +29,6 @@ public class CardVerifyService extends ShopBaseService {
 			return null;
 		}
 		CardVerifyResultVo cardVerifyDaoService = verifyDao.getCardVerifyResult(cardNo);
-		return cardVerifyDaoService.getStatus();
+		return cardVerifyDaoService != null?cardVerifyDaoService.getStatus():VSTAT_REFUSED;
 	}
 }

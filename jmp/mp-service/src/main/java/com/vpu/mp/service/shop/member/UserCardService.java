@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
+import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -642,8 +643,11 @@ public class UserCardService extends ShopBaseService{
 	}
 
 
-	public WxAppUserCardVo getUserCardDetail(UserCardParam param) {
+	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException{
 		WxAppUserCardVo card = (WxAppUserCardVo)userCardDao.getUserCardInfo(param.getCardNo());
+		if(card == null) {
+			throw new UserCardNullException();
+		}
 		dealWithUserCardDetailInfo(card);
 
 		// TODO 累计消费 等王帅的接口 orderSerive.getTotalSpend
