@@ -459,12 +459,13 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import imageDalog from '@/components/admin/imageDalog'
 import productInfo from './productInfo'
 import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { addFirstSpecial } from '@/api/admin/marketManage/firstSpecial.js'
+import { addFirstSpecial, getFirstSpecialById, updateFirstSpecial } from '@/api/admin/marketManage/firstSpecial.js'
 
 export default {
   components: { choosingGoods, imageDalog, productInfo },
   data () {
     return {
+      id: '',
       isEditFlag: false, // 区分新增还是编辑
       activeName: '5', // 高亮tab
       form: {
@@ -505,10 +506,52 @@ export default {
       }
     }
   },
+  created () {
+    if (this.$route.query.id) {
+      this.isEditFlag = true
+      this.initEditData()
+    }
+  },
   methods: {
+    // 编辑进来的时候
+    initEditData () {
+      let _this = this
+      _this.id = _this.$route.query.id
+      let params = {
+        id: _this.id
+      }
+      getFirstSpecialById(params).then(res => {
+        if (res.error === 0) {
+          let datas = res.content
+          console.log('datas ', datas)
+          for (const key in datas) {
+            if (_this.form.hasOwnProperty(key)) {
+              _this.form[key] = datas[key]
+            }
+          }
+          _this.tableData = datas.firstSpecialGoods.map(function (item, i) {
+            item.firstSpecialProduct.forEach(function (d) {
+              console.log(d)
+            })
+            let rowData = Object.assign({
+              goodsId: item.goodsId,
+              batchDiscount: item.discount,
+              batchReduce: item.reducePrice,
+              batchFinalPrice: item.goodsPrice,
+              goodsProductParams: item.firstSpecialProduct,
+              unit: item.goods
+            }, item.goodsView)
+            return rowData
+          })
+          if (datas.limitAmount > 0) {
+            _this.limit = 1
+          }
+          _this.form.shareConfig = Object.assign({}, datas.shopShareConfig)
+        }
+      })
+    },
     // 点击tab框
     handleClick (tab) {
-      console.log(tab)
       this.$nextTick(() => {
         if (tab.index !== '5') {
           this.$router.push({
@@ -546,6 +589,7 @@ export default {
             item.goodsProductParams = item.goodsSpecProducts
             if (item.goodsProductParams != null && item.goodsProductParams.length > 0) {
               item.goodsProductParams.forEach(spec => {
+                debugger
                 spec.productId = spec.prdId
                 spec.originalPrice = spec.prdPrice
               })
@@ -619,15 +663,15 @@ export default {
         }
         if (this.discountType === '0') {
           item.batchDiscount = this.form.batchDiscount
-          item.batchFinalPrice = (item.batchDiscount / 10 * price).toFixed(2)
+          item.batchFinalPrice = (item.batchDiscount / 10 * price).toFixed(3)
           item.batchReduce = price - item.batchFinalPrice
         } else if (this.discountType === '1') {
           item.batchReduce = this.form.batchReduce
           item.batchFinalPrice = Number(price - item.batchReduce)
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+          item.batchDiscount = (item.batchFinalPrice / price).toFixed(3) * 10
         } else if (this.discountType === '2') {
           item.batchFinalPrice = this.form.batchFinalPrice
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+          item.batchDiscount = (item.batchFinalPrice / price).toFixed(3) * 10
           item.batchReduce = price - item.batchFinalPrice
         }
         // 验证计算值安全性
@@ -663,7 +707,7 @@ export default {
         this.$set(row, 'batchDiscount', '')
         return false
       }
-      let batchFinalPrice = (batchDiscount / 10 * price).toFixed(2)
+      let batchFinalPrice = (batchDiscount / 10 * price).toFixed(3)
       let batchReduce = price - batchFinalPrice
       this.$set(row, 'batchFinalPrice', batchFinalPrice)
       this.$set(row, 'batchReduce', batchReduce)
@@ -674,7 +718,7 @@ export default {
       let price = Number(row.shopPrice)
       let batchReduce = Number(row.batchReduce)
       let batchFinalPrice = price - batchReduce
-      let batchDiscount = (batchFinalPrice / price).toFixed(2)
+      let batchDiscount = (batchFinalPrice / price).toFixed(3)
       this.$set(row, 'batchFinalPrice', batchFinalPrice)
       if (!Number.isFinite(batchDiscount)) {
         batchDiscount = 0
@@ -687,7 +731,7 @@ export default {
       let price = Number(row.shopPrice)
       let batchFinalPrice = Number(row.batchFinalPrice)
       let batchReduce = price - batchFinalPrice
-      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
+      let batchDiscount = (batchFinalPrice / price).toFixed(3) * 10
       this.$set(row, 'batchReduce', batchReduce)
       if (!Number.isFinite(batchDiscount)) {
         batchDiscount = 0
@@ -707,7 +751,7 @@ export default {
         row.goodsProductParams.map(item2 => {
           item2.productId = item2.prdId
           let originalPrice = item2.originalPrice
-          let prdPrice = (originalPrice * (parseFloat(row.batchDiscount / 10))).toFixed(2)
+          let prdPrice = (originalPrice * (parseFloat(row.batchDiscount / 10))).toFixed(3)
           item2.prdPrice = prdPrice
           this.$set(item2, 'prdPrice', prdPrice)
         })
@@ -836,13 +880,20 @@ export default {
       })
     },
     addSubmit () {
+      let _this = this
       let params = this.paramsAssign()
       console.log(params)
       // 传参校验
       this.paramsValid(params, function (params) {
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {
-            console.log(res)
+            _this.$message.success('保存成功')
+            _this.$router.push({
+              path: '/admin/home/main/firstSpecial/list',
+              query: {
+                tabIndex: 0
+              }
+            })
           } else {
             console.error(res.message)
           }
@@ -850,7 +901,26 @@ export default {
       })
     },
     updateSubmit () {
-
+      let _this = this
+      let params = this.paramsAssign()
+      params.id = this.id
+      console.log(params)
+      // 传参校验
+      _this.paramsValid(params, function (params) {
+        updateFirstSpecial(params).then(res => {
+          if (res.error === 0) {
+            _this.$message.success('更新成功')
+            _this.$router.push({
+              path: '/admin/home/main/firstSpecial/list',
+              query: {
+                tabIndex: 0
+              }
+            })
+          } else {
+            console.error(res.message)
+          }
+        })
+      })
     }
   }
 }
