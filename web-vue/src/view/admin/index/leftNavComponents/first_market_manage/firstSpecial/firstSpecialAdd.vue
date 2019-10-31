@@ -913,12 +913,12 @@ export default {
           if (res.error === 0) {
             _this.$message.success('更新成功')
             _this.$nextTick(() => {
-              // _this.$router.push({
-              //   path: '/admin/home/main/firstSpecial/list',
-              //   query: {
-              //     tabIndex: '0'
-              //   }
-              // })
+              _this.$router.push({
+                path: '/admin/home/main/firstSpecial/list',
+                query: {
+                  tabIndex: '0'
+                }
+              })
             })
           } else {
             console.error(res.message)
