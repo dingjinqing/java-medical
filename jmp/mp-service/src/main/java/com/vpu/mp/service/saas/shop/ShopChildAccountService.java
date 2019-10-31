@@ -10,11 +10,13 @@ import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Record8;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectLimitStep;
+import org.jooq.SelectSeekStep1;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +25,17 @@ import com.vpu.mp.db.main.tables.ShopChildRole;
 import com.vpu.mp.db.main.tables.ShopRole;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountPojo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.ShopSubAccountAddParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopChildUserListVo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopChildUserShopInfoVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
@@ -219,5 +225,103 @@ public class ShopChildAccountService extends MainBaseService {
 	public int updateRowBind(Integer subAccountId,byte bind) {
 		return db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.IS_BIND, bind)
 				.where(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(subAccountId)).execute();
+	}
+	
+	/**
+	 * 主账号管理子账号按页查询列表
+	 * @param sysId
+	 * @param currentPage
+	 * @param pageRows
+	 * @return
+	 */
+	public PageResult<ShopChildUserListVo> getAccountUserList(Integer sysId,Integer currentPage,Integer pageRows) {
+		SelectSeekStep1<ShopChildAccountRecord, Integer> select = db().selectFrom(SHOP_CHILD_ACCOUNT)
+				.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId)).orderBy(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.desc());
+		PageResult<ShopChildUserListVo> pageResult = this.getPageResult(select, currentPage, pageRows,
+				ShopChildUserListVo.class);
+		for (ShopChildUserListVo vo : pageResult.dataList) {
+			Result<Record4<Integer, Integer, String, Integer>> fetch = db()
+					.select(SHOP_CHILD_ROLE.REC_ID, SHOP_ROLE.ROLE_ID, SHOP_ROLE.ROLE_NAME, SHOP_CHILD_ROLE.SHOP_ID)
+					.from(SHOP_CHILD_ROLE, SHOP_ROLE)
+					.where(SHOP_CHILD_ROLE.SYS_ID.eq(sysId).and(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(vo.getAccountId()))
+							.and(SHOP_CHILD_ROLE.ROLE_ID.eq(SHOP_ROLE.ROLE_ID)))
+					.orderBy(SHOP_CHILD_ROLE.REC_ID.desc()).fetch();
+			if(fetch.size()>0) {
+				List<ShopChildUserShopInfoVo> list=new ArrayList<ShopChildUserShopInfoVo>();
+				for(Record4<Integer, Integer, String, Integer> record:fetch) {
+					ShopChildUserShopInfoVo inner = record.into(ShopChildUserShopInfoVo.class);
+					String shopName = db().select(SHOP.SHOP_NAME).from(SHOP).where(SHOP.SHOP_ID.eq(record.get(SHOP_CHILD_ROLE.SHOP_ID))).fetchAny().into(String.class);
+					inner.setShopName(shopName);
+					list.add(inner);
+				}
+				vo.setShopInfo(list);
+			}
+			
+		}
+		return pageResult;
+	}
+	
+	/**
+	 * 添加子账户
+	 * @param sysId
+	 * @param param
+	 * @return
+	 */
+	public JsonResultCode addSubAccount(Integer sysId,ShopSubAccountAddParam param) {
+		ShopChildAccountRecord recordfetchAny = db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(param.getAccountName()))).fetchAny();
+		if(recordfetchAny!=null) {
+			//用户名重复
+			return JsonResultCode.CODE_MOBILE_SAME;
+		}
+		ShopChildAccountRecord rAccountRecord = db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.MOBILE.eq(param.getMobile()))).fetchAny();
+		if(rAccountRecord!=null) {
+			//手机号重复
+			return JsonResultCode.CODE_ACCOUNT_SAME;
+		}
+		param.setAccountPwd(Util.md5(param.getAccountPwd()));
+		ShopChildAccountRecord record=db().newRecord(SHOP_CHILD_ACCOUNT,param);
+		record.setSysId(sysId);
+		int insert = record.insert();
+		if(insert>0) {
+			//成功
+			return null;
+		}
+		return JsonResultCode.CODE_FAIL;
+	}
+	
+	/**
+	 * 删除子账户
+	 * @param sysId
+	 * @param accountId
+	 * @return
+	 */
+	public int delSubAccount(Integer sysId,Integer accountId){
+		return db().deleteFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId))).execute();
+	}
+	
+	/**
+	 * 更新
+	 * @param sysId
+	 * @param accountId
+	 * @param accountName
+	 * @param passwd
+	 * @return
+	 */
+	public int editSubAccount(Integer sysId, Integer accountId, String accountName, String passwd,String mobile) {
+		int execute = 0;
+		if (passwd != null) {
+			execute = db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME, accountName)
+					.set(SHOP_CHILD_ACCOUNT.MOBILE, mobile).set(SHOP_CHILD_ACCOUNT.ACCOUNT_PWD, Util.md5(passwd))
+					.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId)))
+					.execute();
+		} else {
+			execute = db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME, accountName)
+					.set(SHOP_CHILD_ACCOUNT.MOBILE, mobile)
+					.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId)))
+					.execute();
+		}
+
+		return execute;
+
 	}
 }
