@@ -4,17 +4,16 @@
 package com.vpu.mp.db.shop;
 
 
-import javax.annotation.Generated;
-
+import com.vpu.mp.db.shop.tables.*;
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
 
-import com.vpu.mp.db.shop.tables.*;
+import javax.annotation.Generated;
 
 
 /**
- * A class modelling indexes of tables of the <code>mini_shop_471752</code> 
+ * A class modelling indexes of tables of the <code>mini_shop_471752</code>
  * schema.
  */
 @Generated(
@@ -110,6 +109,7 @@ public class Indexes {
     public static final Index DISTRIBUTION_ORDER_REF_DATE = Indexes0.DISTRIBUTION_ORDER_REF_DATE;
     public static final Index DISTRIBUTION_STRATEGY_PRIMARY = Indexes0.DISTRIBUTION_STRATEGY_PRIMARY;
     public static final Index DISTRIBUTION_TAG_DATE_TYPE = Indexes0.DISTRIBUTION_TAG_DATE_TYPE;
+    public static final Index DISTRIBUTION_TAG_PRIMARY = Indexes0.DISTRIBUTION_TAG_PRIMARY;
     public static final Index DISTRIBUTION_WITHDRAW_ORDER_SN = Indexes0.DISTRIBUTION_WITHDRAW_ORDER_SN;
     public static final Index DISTRIBUTION_WITHDRAW_PRIMARY = Indexes0.DISTRIBUTION_WITHDRAW_PRIMARY;
     public static final Index DISTRIBUTOR_APPLY_PRIMARY = Indexes0.DISTRIBUTOR_APPLY_PRIMARY;
@@ -544,6 +544,7 @@ public class Indexes {
         public static Index DISTRIBUTION_ORDER_REF_DATE = Internal.createIndex("ref_date", DistributionOrder.DISTRIBUTION_ORDER, new OrderField[] { DistributionOrder.DISTRIBUTION_ORDER.REF_DATE }, false);
         public static Index DISTRIBUTION_STRATEGY_PRIMARY = Internal.createIndex("PRIMARY", DistributionStrategy.DISTRIBUTION_STRATEGY, new OrderField[] { DistributionStrategy.DISTRIBUTION_STRATEGY.ID }, true);
         public static Index DISTRIBUTION_TAG_DATE_TYPE = Internal.createIndex("date_type", DistributionTag.DISTRIBUTION_TAG, new OrderField[] { DistributionTag.DISTRIBUTION_TAG.REF_DATE, DistributionTag.DISTRIBUTION_TAG.TYPE }, false);
+        public static Index DISTRIBUTION_TAG_PRIMARY = Internal.createIndex("PRIMARY", DistributionTag.DISTRIBUTION_TAG, new OrderField[]{DistributionTag.DISTRIBUTION_TAG.ID}, true);
         public static Index DISTRIBUTION_WITHDRAW_ORDER_SN = Internal.createIndex("order_sn", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ORDER_SN }, true);
         public static Index DISTRIBUTION_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID }, true);
         public static Index DISTRIBUTOR_APPLY_PRIMARY = Internal.createIndex("PRIMARY", DistributorApply.DISTRIBUTOR_APPLY, new OrderField[] { DistributorApply.DISTRIBUTOR_APPLY.ID }, true);

@@ -1014,5 +1014,9 @@ MODIFY COLUMN `store_list` varchar(191)   not null default '[]' comment '可用�
 
 
 -- 更新字段类型
-ALTER TABLE `b2c_goods_card_couple` 
+ALTER TABLE `b2c_goods_card_couple`
 MODIFY COLUMN `card_id` int(11) NOT NULL COMMENT '会员卡ID' AFTER `id`;
+
+-- 统计相关表添加 int 主键
+alter table b2c_distribution_tag
+    add id int auto_increment primary key first;

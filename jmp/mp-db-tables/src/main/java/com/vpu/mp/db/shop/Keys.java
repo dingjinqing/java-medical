@@ -4,16 +4,9 @@
 package com.vpu.mp.db.shop;
 
 
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.Internal;
-
-import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.db.shop.tables.TradesRecord;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
@@ -22,6 +15,12 @@ import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PayRewardRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
+import com.vpu.mp.db.shop.tables.records.*;
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.Internal;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -90,6 +89,7 @@ public class Keys {
     public static final Identity<DeliverFeeTemplateRecord, Integer> IDENTITY_DELIVER_FEE_TEMPLATE = Identities0.IDENTITY_DELIVER_FEE_TEMPLATE;
     public static final Identity<DistributionStrategyRecord, Integer> IDENTITY_DISTRIBUTION_STRATEGY = Identities0.IDENTITY_DISTRIBUTION_STRATEGY;
     public static final Identity<DistributionWithdrawRecord, Integer> IDENTITY_DISTRIBUTION_WITHDRAW = Identities0.IDENTITY_DISTRIBUTION_WITHDRAW;
+    public static final Identity<DistributionTagRecord, Integer> IDENTITY_DISTRIBUTION_TAG = Identities0.IDENTITY_DISTRIBUTION_TAG;
     public static final Identity<DistributorApplyRecord, Integer> IDENTITY_DISTRIBUTOR_APPLY = Identities0.IDENTITY_DISTRIBUTOR_APPLY;
     public static final Identity<DistributorGroupRecord, Integer> IDENTITY_DISTRIBUTOR_GROUP = Identities0.IDENTITY_DISTRIBUTOR_GROUP;
     public static final Identity<DistributorLevelRecord, Integer> IDENTITY_DISTRIBUTOR_LEVEL = Identities0.IDENTITY_DISTRIBUTOR_LEVEL;
@@ -298,6 +298,7 @@ public class Keys {
     public static final UniqueKey<DistributionStrategyRecord> KEY_B2C_DISTRIBUTION_STRATEGY_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTION_STRATEGY_PRIMARY;
     public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTION_WITHDRAW_PRIMARY;
     public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_ORDER_SN = UniqueKeys0.KEY_B2C_DISTRIBUTION_WITHDRAW_ORDER_SN;
+    public static final UniqueKey<DistributionTagRecord> KEY_B2C_DISTRIBUTION_TAG_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTION_TAG_PRIMARY;
     public static final UniqueKey<DistributorApplyRecord> KEY_B2C_DISTRIBUTOR_APPLY_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTOR_APPLY_PRIMARY;
     public static final UniqueKey<DistributorGroupRecord> KEY_B2C_DISTRIBUTOR_GROUP_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTOR_GROUP_PRIMARY;
     public static final UniqueKey<DistributorLevelRecord> KEY_B2C_DISTRIBUTOR_LEVEL_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTOR_LEVEL_PRIMARY;
@@ -540,6 +541,7 @@ public class Keys {
         public static Identity<DeliverFeeTemplateRecord, Integer> IDENTITY_DELIVER_FEE_TEMPLATE = Internal.createIdentity(DeliverFeeTemplate.DELIVER_FEE_TEMPLATE, DeliverFeeTemplate.DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID);
         public static Identity<DistributionStrategyRecord, Integer> IDENTITY_DISTRIBUTION_STRATEGY = Internal.createIdentity(DistributionStrategy.DISTRIBUTION_STRATEGY, DistributionStrategy.DISTRIBUTION_STRATEGY.ID);
         public static Identity<DistributionWithdrawRecord, Integer> IDENTITY_DISTRIBUTION_WITHDRAW = Internal.createIdentity(DistributionWithdraw.DISTRIBUTION_WITHDRAW, DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID);
+        public static Identity<DistributionTagRecord, Integer> IDENTITY_DISTRIBUTION_TAG = Internal.createIdentity(DistributionTag.DISTRIBUTION_TAG, DistributionTag.DISTRIBUTION_TAG.ID);
         public static Identity<DistributorApplyRecord, Integer> IDENTITY_DISTRIBUTOR_APPLY = Internal.createIdentity(DistributorApply.DISTRIBUTOR_APPLY, DistributorApply.DISTRIBUTOR_APPLY.ID);
         public static Identity<DistributorGroupRecord, Integer> IDENTITY_DISTRIBUTOR_GROUP = Internal.createIdentity(DistributorGroup.DISTRIBUTOR_GROUP, DistributorGroup.DISTRIBUTOR_GROUP.ID);
         public static Identity<DistributorLevelRecord, Integer> IDENTITY_DISTRIBUTOR_LEVEL = Internal.createIdentity(DistributorLevel.DISTRIBUTOR_LEVEL, DistributorLevel.DISTRIBUTOR_LEVEL.ID);
@@ -747,6 +749,7 @@ public class Keys {
         public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_COUPON_SN = Internal.createUniqueKey(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, "KEY_b2c_customer_avail_coupons_coupon_sn", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.COUPON_SN);
         public static final UniqueKey<DecorateLinkRecord> KEY_B2C_DECORATE_LINK_PRIMARY = Internal.createUniqueKey(DecorateLink.DECORATE_LINK, "KEY_b2c_decorate_link_PRIMARY", DecorateLink.DECORATE_LINK.ID);
         public static final UniqueKey<DeliverFeeTemplateRecord> KEY_B2C_DELIVER_FEE_TEMPLATE_PRIMARY = Internal.createUniqueKey(DeliverFeeTemplate.DELIVER_FEE_TEMPLATE, "KEY_b2c_deliver_fee_template_PRIMARY", DeliverFeeTemplate.DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID);
+        public static final UniqueKey<DistributionTagRecord> KEY_B2C_DISTRIBUTION_TAG_PRIMARY = Internal.createUniqueKey(DistributionTag.DISTRIBUTION_TAG, "KEY_b2c_distribution_tag_PRIMARY", DistributionTag.DISTRIBUTION_TAG.ID);
         public static final UniqueKey<DistributionStrategyRecord> KEY_B2C_DISTRIBUTION_STRATEGY_PRIMARY = Internal.createUniqueKey(DistributionStrategy.DISTRIBUTION_STRATEGY, "KEY_b2c_distribution_strategy_PRIMARY", DistributionStrategy.DISTRIBUTION_STRATEGY.ID);
         public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_PRIMARY = Internal.createUniqueKey(DistributionWithdraw.DISTRIBUTION_WITHDRAW, "KEY_b2c_distribution_withdraw_PRIMARY", DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID);
         public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_ORDER_SN = Internal.createUniqueKey(DistributionWithdraw.DISTRIBUTION_WITHDRAW, "KEY_b2c_distribution_withdraw_order_sn", DistributionWithdraw.DISTRIBUTION_WITHDRAW.ORDER_SN);

@@ -2763,6 +2763,7 @@ create table `b2c_user_summary_trend`
 -- drop table if exists `b2c_distribution_tag`;
 create table `b2c_distribution_tag`
 (
+    `id`                   int(11)         not null auto_increment,
     `ref_date`         date           default null comment '日期',
     `type`             tinyint(2)     default null comment '1,7,30',
     `tag`              varchar(50)    default null comment '标签',
@@ -2774,6 +2775,7 @@ create table `b2c_distribution_tag`
     `has_user_num`     int null       default 0 comment '用户数',
     `create_time`      timestamp      default current_timestamp,
     `update_time`      timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`),
     key `date_type` (`ref_date`, `type`) using btree
 );
 

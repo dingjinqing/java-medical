@@ -5,27 +5,19 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.DistributionTagRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -41,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionTag extends TableImpl<DistributionTagRecord> {
 
-    private static final long serialVersionUID = 2011570198;
+    private static final long serialVersionUID = -478048536;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_tag</code>
@@ -55,6 +47,11 @@ public class DistributionTag extends TableImpl<DistributionTagRecord> {
     public Class<DistributionTagRecord> getRecordType() {
         return DistributionTagRecord.class;
     }
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_tag.id</code>.
+     */
+    public final TableField<DistributionTagRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.ref_date</code>. 日期
@@ -157,7 +154,31 @@ public class DistributionTag extends TableImpl<DistributionTagRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DISTRIBUTION_TAG_DATE_TYPE);
+        return Arrays.<Index>asList(Indexes.DISTRIBUTION_TAG_DATE_TYPE, Indexes.DISTRIBUTION_TAG_PRIMARY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<DistributionTagRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_DISTRIBUTION_TAG;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<DistributionTagRecord> getPrimaryKey() {
+        return Keys.KEY_B2C_DISTRIBUTION_TAG_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<DistributionTagRecord>> getKeys() {
+        return Arrays.<UniqueKey<DistributionTagRecord>>asList(Keys.KEY_B2C_DISTRIBUTION_TAG_PRIMARY);
     }
 
     /**
