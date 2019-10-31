@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -173,14 +174,13 @@ public class ShopOverviewService extends MainBaseService {
 
     /**
      * 获取指定数量的公告title
-     * @param param
      */
     public List<FixedAnnouncementVo> getFixedAnnouncement(FixedAnnouncementParam param){
-        SortField<Timestamp> orderBy = "asc".equals(param.getOrderBy()) ? Article.ARTICLE.CREATE_TIME.asc() : Article.ARTICLE.CREATE_TIME.desc();
-        List<FixedAnnouncementVo> listVo = db().select(Article.ARTICLE.TITLE,Article.ARTICLE.CREATE_TIME)
-                .from(Article.ARTICLE)
-                .where(Article.ARTICLE.STATUS.eq((byte)1))
-                .and(Article.ARTICLE.CATEGORY_ID.eq(param.getCategoryId()))
+        SortField<Timestamp> orderBy = "asc".equals(param.getOrderBy()) ? ARTICLE.CREATE_TIME.asc() : ARTICLE.CREATE_TIME.desc();
+        List<FixedAnnouncementVo> listVo = db().select(ARTICLE.ARTICLE_ID, ARTICLE.TITLE, ARTICLE.CREATE_TIME)
+            .from(ARTICLE)
+            .where(ARTICLE.STATUS.eq(BYTE_ONE))
+            .and(ARTICLE.CATEGORY_ID.eq(param.getCategoryId()))
                 .orderBy(orderBy)
                 .limit(param.getFixedNum())
                 .fetchInto(FixedAnnouncementVo.class);

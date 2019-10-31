@@ -4,9 +4,8 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 /**
- * @Author:liufei
- * @Date:2019/7/16
- * @Description:
+ * author liufei
+ * date 2019/7/16
  */
 @Data
 @Component

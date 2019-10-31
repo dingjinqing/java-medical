@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 
 /**
- * @Author:liufei
- * @Date:2019/7/16
- * @Description:
+ * author liufei
+ * date 2019/7/16
  */
 @Data
 @Component
 public class FixedAnnouncementVo {
+    private Integer id;
     private String title;
     private String formatTime;
     private Timestamp createTime;
