@@ -36,11 +36,11 @@
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">活动实付总金额(元)</div>
+            <div class="titless">{{ this.$t('seckill.payment') }}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动订单实际付款总金额(包括账户余额、会员卡余额及微信支付，不包含退款部分)"
+              :content="this.$t('seckill.paymentTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -53,11 +53,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">活动优惠总金额(元)</div>
+            <div class="titless">{{ this.$t('seckill.discount') }}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动优惠总金额"
+              :content="this.$t('seckill.discountTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -70,11 +70,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">费效比</div>
+            <div class="titless">{{ this.$t('seckill.costEffect') }}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动优惠总金额/活动实付总金额"
+              :content="this.$t('seckill.costEffectTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -87,11 +87,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">新成交用户数</div>
+            <div class="titless">{{ this.$t('seckill.newUser') }}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="新成交用户数"
+              :content="this.$t('seckill.newUser')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -104,11 +104,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titles">老成交用户数</div>
+            <div class="titles">{{ this.$t('seckill.oldUser') }}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="在店铺有过付款订单，参与该活动的用户数"
+              :content="this.$t('seckill.oldUserTip')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -202,11 +202,11 @@ export default {
         ],
         yAxis: [
           {
-            name: '数量',
+            name: this.$t('seckill.effactNum'),
             type: 'value'
           },
           {
-            name: '费效比',
+            name: this.$t('seckill.costEffect'),
             type: 'value'
           }
         ],

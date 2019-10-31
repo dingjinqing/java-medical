@@ -5,11 +5,11 @@
       <el-form label-width="100px">
         <el-row :gutter=24>
           <el-col :span="5">
-            <el-form-item label="用户手机号">
+            <el-form-item :label="this.$t('seckill.mobile')">
               <el-input
                 size="small"
                 v-model="requestParams.mobile"
-                placeholder="用户手机号"
+                :placeholder="this.$t('seckill.mobile')"
                 maxlength="11"
                 clearable
                 class="inputWidth"
@@ -20,11 +20,11 @@
             :span="5"
             style="margin-left: -20px"
           >
-            <el-form-item label="用户昵称">
+            <el-form-item :label="this.$t('seckill.name')">
               <el-input
                 size="small"
                 v-model="requestParams.username"
-                placeholder="用户昵称"
+                :placeholder="this.$t('seckill.name')"
                 clearable
                 class="inputWidth"
               ></el-input>
@@ -34,14 +34,14 @@
             :span="6"
             style="margin-left: -20px"
           >
-            <el-form-item label="购买数量">
+            <el-form-item :label="this.$t('seckill.goodsNum')">
               <el-input
                 size="small"
                 v-model="requestParams.minGoodsAmount"
                 clearable
                 style="width: 90px;"
               ></el-input>
-              至
+              {{ this.$t('seckill.to') }}
               <el-input
                 size="small"
                 v-model="requestParams.maxGoodsAmount"
@@ -56,7 +56,7 @@
               type="primary"
               @click="initDataList"
               style="margin: 4px 0 0 0"
-            >查询</el-button>
+            >{{ this.$t('seckill.search') }}</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -71,37 +71,37 @@
         style="width: 100%"
       >
         <el-table-column
-          label="商品"
+          :label="this.$t('seckill.goodsName')"
           prop="goodsName"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="用户ID"
+          :label="this.$t('seckill.id')"
           prop="userId"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="用户昵称"
+          :label="this.$t('seckill.name')"
           prop="username"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="手机号码"
+          :label="this.$t('seckill.mobile')"
           prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="订单号"
+          :label="this.$t('seckill.orderSn')"
           prop="orderSn"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="购买时间"
+          :label="this.$t('seckill.createTime')"
           prop="createTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="购买数量"
+          :label="this.$t('seckill.goodsNum')"
           prop="goodsAmount"
           align="center"
         ></el-table-column>

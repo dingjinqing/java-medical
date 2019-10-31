@@ -125,49 +125,49 @@
         style="width: 100%"
       >
         <el-table-column
-          label="活动名称"
+          :label="this.$t('seckill.activityName')"
           prop="name"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="订单号"
+          :label="this.$t('seckill.orderSn')"
           prop="orderSn"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="秒杀商品"
+          :label="this.$t('seckill.goodsName')"
           prop="goodsName"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="单价"
+          :label="this.$t('seckill.goodsPrice')"
           prop="goodsPrice"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="下单时间"
+          :label="this.$t('seckill.createTime')"
           prop="createTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="下单人信息"
+          :label="this.$t('seckill.username')"
           prop="username"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="收货人信息"
+          :label="this.$t('seckill.consignee')"
           prop="consignee"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="支付金额"
+          :label="this.$t('seckill.moneyPaid')"
           prop="moneyPaid"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="订单状态"
+          :label="this.$t('seckill.orderStatusText')"
           prop="orderStatusText"
           align="center"
         >

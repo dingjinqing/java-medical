@@ -28,7 +28,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall'
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/overviewOfMall'
               )
           },
           // 店铺助手
@@ -42,7 +42,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/taskList'
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/taskList'
               )
           },
           // 公告
@@ -56,7 +56,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/noticeList'
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/noticeList'
               )
           },
           // 公告详情
@@ -70,7 +70,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/noticeDetail'
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/noticeDetail'
               )
           },
           {

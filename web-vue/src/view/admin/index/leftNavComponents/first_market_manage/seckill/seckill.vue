@@ -1,9 +1,11 @@
 <template>
   <div class="content">
+
+    <!-- tab -->
     <div class="main">
       <el-tabs
         v-model="tabSwitch"
-        @tab-click="tabClickHandler"
+        @tab-click="initDataList"
         :lazy="true"
       >
         <el-tab-pane
@@ -11,20 +13,30 @@
           :key="index"
           :label="item.title"
           :name="item.name"
-        ></el-tab-pane>
+        >
+          <el-button
+            type="primary"
+            size="medium"
+            v-if="tableListView"
+            @click="addSeckill"
+          >{{$t('seckill.addSeckill')}}</el-button>
+        </el-tab-pane>
       </el-tabs>
-      <div class="wrapper">
-        <el-button
-          type="primary"
-          size="medium"
-          v-if="tabSwitch !== '5'"
-          @click="addSeckill"
-        >{{$t('seckill.addSeckill')}}</el-button>
-      </div>
     </div>
+
+    <!-- 添加 / 编辑 -->
+    <addSeckill
+      :editData="editData"
+      :isEdite="isEdite"
+      :editId="editId"
+      @addSeckillSubmit="addSeckillSubmit"
+      v-if="tableListView===false"
+    />
+
+    <!-- 表格 -->
     <div
       class="table_list"
-      v-if="tabSwitch !== '5'"
+      v-if="tableListView"
     >
       <el-table
         class="version-manage-table"
@@ -184,18 +196,11 @@
       </el-table>
       <pagination
         :page-params.sync="pageParams"
-        @pagination="handleClick"
+        @pagination="initDataList"
       />
     </div>
-    <addSeckill
-      :editData="editData"
-      :isEdite="isEdite"
-      :editId="editId"
-      @addSeckillSubmit="addSeckillSubmit"
-      v-if="tabSwitch==='5'"
-    />
 
-    <!-- 分享dislog -->
+    <!-- 分享 -->
     <el-dialog
       :title="$t('seckill.shareTitle')"
       :visible.sync="shareDialog"
@@ -239,6 +244,7 @@
         >{{ $t('seckill.sure') }}</el-button>
       </span>
     </el-dialog>
+
   </div>
 </template>
 <script>
@@ -256,7 +262,8 @@ export default {
   },
   data () {
     return {
-      tabSwitch: '1',
+      tabSwitch: '2',
+      tableListView: true, // tab显示隐藏
       tabInfo: this.$t('seckill.tabInfo'),
       tableData: [], // 表格数据
       pageParams: {}, // 分页
@@ -272,20 +279,20 @@ export default {
   watch: {
     lang () {
       this.tabInfo = this.$t('seckill.tabInfo')
-      // this.activityTypeText = this.$t('groupBuy.grouponType')
     }
   },
   mounted () {
     // 初始化数据
     this.langDefault()
-    this.handleClick()
+    this.initDataList()
   },
   methods: {
     // 秒杀列表
-    handleClick () {
-      this.requestParams.state = [this.tabSwitch]
+    initDataList () {
+      this.requestParams.type = this.tabSwitch
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
+      this.closeTabAddGroup()
       seckillList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
@@ -300,64 +307,74 @@ export default {
       })
     },
 
-    // 添加秒杀活动
+    // 添加
     addSeckill () {
       this.isEdite = false
-      this.tabInfo.push({
-        title: this.$t('seckill.addSeckill'),
-        name: '5'
-      })
-      this.tabSwitch = '5'
+      this.showTabAddGroup(this.$t('seckill.addSeckill'))
     },
 
-    // tab栏切换
-    tabClickHandler () {
-      this.requestParams.state = this.tabSwitch
-      if (this.tabSwitch !== '5') {
-        this.tabInfo = this.tabInfo.slice(0, 5)
-      }
-      this.handleClick()
-    },
-
-    // 编辑秒杀活动
+    // 编辑
     editHandler (id, row) {
-      console.log(row)
-      this.isEdite = true
-      this.tabInfo.push({
-        title: this.$t('seckill.editSeckill'),
-        name: '5'
-      })
-      this.tabSwitch = '5'
       this.editId = id
+      this.isEdite = true
       getSeckillList({ skId: id }).then((res) => {
         if (res.error === 0) {
           this.editData = res.content
+          this.showTabAddGroup(this.$t('seckill.editSeckill'))
         }
       })
     },
 
+    showTabAddGroup (title) {
+      if (this.tabSwitch === '6' || this.tabInfo.length > 5) {
+        this.closeTabAddGroup()
+      }
+      this.tabInfo.push({
+        title: title,
+        name: '6'
+      })
+      this.tabSwitch = '6'
+      this.tableListView = false
+    },
+
+    closeTabAddGroup () {
+      // 新增标签
+      if (this.tabSwitch === '6') {
+        return
+      }
+      // 不是新增
+      if (this.tabInfo.length > 5) {
+        this.tableListView = true
+        this.tabInfo.pop({
+          title: this.$t('seckill.editSeckill'),
+          name: '6'
+        })
+        console.log('closeTabAddGroup', this.tabInfo)
+      }
+      return this.tabInfo
+    },
+
     // 保存
     addSeckillSubmit () {
-      this.tabInfo = this.tabInfo.slice(0, 5)
-      this.tabSwitch = '1'
-      this.handleClick()
+      this.tabSwitch = '2'
+      this.initDataList()
     },
 
     // 删除
     deleteHandler (id) {
-      this.$confirm('此操作将永久删除该, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('seckill.deleteTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
         deleteSeckillList({ skId: id }).then((res) => {
           if (res.error === 0) {
-            this.$message.success({ message: '删除成功!' })
-            this.handleClick()
+            this.$message.success({ message: this.$t('seckill.deleteSuccess') })
+            this.initDataList()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消删除' })
+        this.$message.info({ message: this.$t('seckill.deleteFail') })
       })
     },
 
@@ -374,14 +391,14 @@ export default {
 
     // 复制
     copyHandler (e) {
-      this.$message.success({ message: '复制成功!' })
+      this.$message.success({ message: this.$t('seckill.copySuccess') })
     },
 
     // 停用
     stopHandler (id) {
-      this.$confirm('此操作将停用活动, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('seckill.stopTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
         updateSeckillList({
@@ -389,20 +406,20 @@ export default {
           status: 0
         }).then((res) => {
           if (res.error === 0) {
-            this.$message.success({ message: '停用成功!' })
-            this.handleClick()
+            this.$message.success({ message: this.$t('seckill.stopSuccess') })
+            this.initDataList()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消停用' })
+        this.$message.info({ message: this.$t('seckill.stopFail') })
       })
     },
 
     // 启用
     startHandler (id) {
-      this.$confirm('此操作将启用活动, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('seckill.startTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
         updateSeckillList({
@@ -410,12 +427,12 @@ export default {
           status: 1
         }).then((res) => {
           if (res.error === 0) {
-            this.$message.success({ message: '启用成功!' })
-            this.handleClick()
+            this.$message.success({ message: this.$t('seckill.startSuccess') })
+            this.initDataList()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消删除' })
+        this.$message.info({ message: this.$t('seckill.startFail') })
       })
     },
 

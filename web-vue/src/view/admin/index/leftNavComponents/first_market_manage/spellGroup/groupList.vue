@@ -367,11 +367,9 @@ export default {
       if (this.tabInfo.length > 5) {
         this.tableListView = true
         this.tabInfo.pop({
-          title: this.$t('groupBuy.editActivity'),
-          name: '6',
-          content: 'edit tab content'
+          title: this.$t('seckill.editSeckill'),
+          name: '6'
         })
-        console.log('closeTabAddGroup', this.tabInfo)
       }
       return this.tabInfo
     },

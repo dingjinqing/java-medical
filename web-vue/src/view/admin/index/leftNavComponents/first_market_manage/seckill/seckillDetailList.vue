@@ -5,11 +5,11 @@
       <el-form label-width="100px">
         <el-row :gutter=24>
           <el-col :span="5">
-            <el-form-item label="手机号">
+            <el-form-item :label="this.$t('seckill.mobile')">
               <el-input
                 size="small"
                 v-model="requestParams.mobile"
-                placeholder="手机号"
+                :placeholder="this.$t('seckill.mobile')"
                 maxlength="11"
                 clearable
                 class="inputWidth"
@@ -20,11 +20,11 @@
             :span="5"
             style="margin-left: -20px"
           >
-            <el-form-item label="用户昵称">
+            <el-form-item :label="this.$t('seckill.name')">
               <el-input
                 size="small"
                 v-model="requestParams.username"
-                placeholder="用户昵称"
+                :placeholder="this.$t('seckill.name')"
                 clearable
                 class="inputWidth"
               ></el-input>
@@ -34,11 +34,11 @@
             :span="4"
             style="margin-left: -20px"
           >
-            <el-form-item label="邀请人">
+            <el-form-item :label="this.$t('seckill.inviter')">
               <el-input
                 size="small"
                 v-model="requestParams.inviteUserName"
-                placeholder="邀请人"
+                :placeholder="this.$t('seckill.inviter')"
                 clearable
                 class="inputWidth"
               ></el-input>
@@ -68,32 +68,32 @@
         style="width: 100%"
       >
         <el-table-column
-          label="活动名称"
+          :label="this.$t('seckill.activityName')"
           prop="name"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="新用户ID"
+          :label="this.$t('seckill.id')"
           prop="userId"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="新用户昵称"
+          :label="this.$t('seckill.name')"
           prop="userName"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="新用户手机号"
+          :label="this.$t('seckill.mobile')"
           prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="注册时间"
+          :label="this.$t('seckill.createTime')"
           prop="createTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="邀请人"
+          :label="this.$t('seckill.inviter')"
           prop="inviteUserName"
           align="center"
         ></el-table-column>

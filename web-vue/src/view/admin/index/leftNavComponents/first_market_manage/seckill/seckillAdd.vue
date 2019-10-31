@@ -1,13 +1,14 @@
 <template>
-  <div style="margin-bottom: 100px;">
-    <wrapper>
+  <div class="container">
+
+    <!-- 表单 -->
+    <div>
       <el-form
         ref="form"
         :model="form"
         :rules="fromRules"
         label-width="120px"
         :label-position="'right'"
-        style="background: #fff;"
       >
         <el-form-item
           :label="$t('seckill.activityName')"
@@ -156,12 +157,12 @@
           >{{ $t('seckill.template') }}</el-radio>
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.initNum')"
-          prop="initNum"
+          :label="$t('seckill.stock')"
+          prop="stock"
         >
           <el-input-number
             :disabled="this.isEdite"
-            v-model="form.initNum"
+            v-model="form.stock"
             controls-position="right"
             :min="0"
           ></el-input-number>
@@ -187,49 +188,46 @@
           </div>
         </div>
 
-        <div
+        <!-- 会员专享 -->
+        <el-form-item
+          :label="this.$t('seckill.cardTitle')"
           v-if="!arrorFlag"
-          style="padding-bottom: 30px"
         >
-          <!-- 会员专享 -->
-          <el-form-item
-            label="会员专享"
-            label-width="100px"
-          >
-            <el-checkbox
-              label="用户持有会员卡才可以参与活动"
-              v-model="showMember"
-            ></el-checkbox>
-            <div v-if="showMember">
-              <el-select
-                placeholder="请选择会员卡"
-                v-model="form.cardId"
-                size="small"
-                @change="selectChange"
-              >
-                <el-option
-                  v-for="item in card_list"
-                  :key="item.id"
-                  :label="item.card_name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-              <span>
-                <a style="color: #409eff;margin: 0 5px;">刷新</a><span> | </span>
-                <a style="color: #409eff;margin: 0 5px;">新建会员卡</a><span> | </span>
-                <a style="color: #409eff;margin: 0 5px;">管理会员卡</a>
-              </span>
-            </div>
-          </el-form-item>
+          <el-checkbox
+            :label="this.$t('seckill.cardSelect')"
+            v-model="showMember"
+          ></el-checkbox>
+          <div v-if="showMember">
+            <el-select
+              :placeholder="this.$t('seckill.cardTip')"
+              v-model="form.cardId"
+              size="small"
+              @change="selectChange"
+            >
+              <el-option
+                v-for="item in card_list"
+                :key="item.id"
+                :label="item.card_name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+            <span>
+              <a style="color: #409eff;margin: 0 5px;">{{ this.$t('seckill.cardRefresh') }}</a><span> | </span>
+              <a style="color: #409eff;margin: 0 5px;">{{ this.$t('seckill.cardNew') }}</a><span> | </span>
+              <a style="color: #409eff;margin: 0 5px;">{{ this.$t('seckill.cardManage') }}</a>
+            </span>
+          </div>
+        </el-form-item>
 
-          <!-- 引入活动分享模块 -->
-          <actShare :shareConfig="form.shareConfig" />
-        </div>
+        <!-- 活动分享 -->
+        <actShare
+          :shareConfig="form.shareConfig"
+          v-if="!arrorFlag"
+        />
 
       </el-form>
 
       <!--添加商品弹窗-->
-      <!-- :chooseGoodsBack="[form.goodsId]" -->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
         :chooseGoodsBack="[form.goodsId]"
@@ -237,18 +235,18 @@
         :singleElection="true"
         :showTips="true"
       />
-    </wrapper>
+    </div>
 
-    <wrapper>
-      <div class="footer">
-        <el-button
-          size="small"
-          type="primary"
-          :disabled="submitStatus"
-          @click="saveClickHandler(form)"
-        >{{ $t('seckill.save') }}</el-button>
-      </div>
-    </wrapper>
+    <!-- 底部 -->
+    <div class="footer">
+      <el-button
+        size="small"
+        type="primary"
+        :disabled="submitStatus"
+        @click="saveClickHandler(form)"
+      >{{ $t('seckill.save') }}</el-button>
+    </div>
+
   </div>
 </template>
 <script>
@@ -300,7 +298,7 @@ export default {
           stock: '' // 秒杀库存
         }], // 秒杀价格表格数据
         freeFreight: 0, // 运费设置
-        initNum: 0, // 活动初始数量
+        stock: 0, // 活动初始数量
         cardId: '', // 会员卡id
         shareConfig: {
           share_action: 1,
@@ -318,7 +316,7 @@ export default {
         limitPaytime: [{ required: true, message: '请填写支付时间', trigger: 'blur' }],
         freeFreight: [{ required: true, message: '请填写运费设置', trigger: 'change' }],
         // seckillPrices: [{ required: true }],
-        initNum: [{ required: true, message: '请填写活动初始数量', trigger: 'blur' }]
+        stock: [{ required: true, message: '请填写活动初始数量', trigger: 'blur' }]
       },
       tableContent: [{
         goodsName: '',
@@ -333,13 +331,14 @@ export default {
     }
   },
   mounted () {
-
+    // 初始化
+    this.editSeckillInit()
   },
-  watch: {
-    editData (val) {
-      this.editSeckillInit(val)
-    }
-  },
+  // watch: {
+  //   editData (val) {
+  //     this.editSeckillInit(val)
+  //   }
+  // },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     // 选择商品弹窗
@@ -355,7 +354,7 @@ export default {
       this.goodsRow = row
       this.form.goodsId = row.goodsId
       this.tableContent.push(row)
-      this.form.secKillProduct[0].productId = row.prdId
+      this.form.secKillProduct[0].productId = row.catId
     },
 
     // 展开更多配置
@@ -364,35 +363,30 @@ export default {
     },
 
     // 编辑初始化
-    editSeckillInit (val) {
+    editSeckillInit () {
       if (this.isEdite) {
+        let val = this.editData
         this.goodsRow.ischecked = true
-        this.goodsRow.goodsName = val.goods.goodsName
         this.form.name = val.name
+        this.goodsRow.goodsName = val.goods.goodsName
         this.form.goodsId = val.goods.goodsId
         this.form.startTime = val.startTime
         this.form.endTime = val.endTime
         this.form.validity = [val.startTime, val.endTime]
         this.form.limitAmount = val.limitAmount
         this.form.limitPaytime = val.limitPaytime
-        this.form.secKillProduct = val.secKillProduct
+        this.form.secKillProduct = val.secKillProduct // 秒杀初始数量
+        this.form.freeFreight = val.freeFreight
+        this.form.stock = 10 // 秒杀初始数量
         this.tableContent[0].goodsName = val.goods.goodsName
         this.tableContent[0].shopPrice = val.goods.shopPrice
-        this.tableContent[0].goodsNumber = val.goods.goodsNumber
-        this.tableContent[0].prdPrice = val.secKillProduct[0].secKillPrice
-        this.tableContent[0].prdNumber = val.secKillProduct[0].stock
-        this.tableContent[0].goodsSaleNum = val.secKillProduct[0].prdNumber
-        this.tableContent[0].prdTypeNum = val.secKillProduct[0].totalStock
-        this.form.freeFreight = val.freeFreight
-        this.form.initNum = 10
-        // this.form.cardId = val.cardId
+        // this.tableContent[0].goodsNumber = val.goods.goodsNumber
+        // this.tableContent[0].prdPrice = val.secKillProduct[0].secKillPrice
+        // this.tableContent[0].prdNumber = val.secKillProduct[0].stock
+        // this.tableContent[0].goodsSaleNum = val.secKillProduct[0].prdNumber
+        // this.tableContent[0].prdTypeNum = val.secKillProduct[0].totalStock
+        // this.form.cardId = val.cardId // 会员卡
         this.form.shareConfig = val.shopShareConfig
-        if (val.memberCard.length === 0) {
-          this.showMember = false
-          this.form.cardId = ''
-        } else {
-          this.showMember = true
-        }
       }
     },
 
@@ -446,8 +440,11 @@ export default {
 }
 </script>
 <style scoped>
-.wrapper {
-  margin: 10px 0 !important;
+.container {
+  margin-top: 10px;
+  padding: 10px;
+  margin-bottom: 100px;
+  background: #fff;
 }
 .footer {
   position: absolute;

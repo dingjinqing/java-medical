@@ -39,7 +39,7 @@ export function shopAssistantRequest (data) {
 // 公告查询
 export function noticeListRequest (data) {
   return service({
-    url: '/api/official/article/list',
+    url: '/api/admin/malloverview/getAnnouncementList',
     method: 'post',
     data: data
   })
