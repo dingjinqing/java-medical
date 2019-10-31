@@ -87,12 +87,32 @@
             >
               <div class="type">
                 <div class="typeTop">
-                  <span class="odd_left"></span>
-                  <div class="odd_right">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                  <span
+                    class="odd_left"
+                    v-if="index===0"
+                  ></span>
+                  <div
+                    class="odd_right"
+                    :style="(index===1||index===2 || index===3)?'display:flex;width:100%;':index===4?'display:flex;width:100%;flex-direction: column':''"
+                  >
+                    <span :style="index===1?'width:45%;height:20px;margin-right:5px':index===2?'width:30%;height:20px;':index===3?'width:30%;height:40px;':index===4?'width:100%;height:20px;':''"></span>
+                    <span :style="index===1?'width:45%;height:20px;margin-top:0':index===2?'width:30%;height:20px;margin:0 5px':index===3?'width:30%;height:40px;margin:0 5px;':index===4?'width:100%;height:20px;':''"></span>
+                    <span
+                      v-if="index!==4"
+                      :style="index===1?'width:45%;height:20px;margin-right:5px':index===2?'width:30%;height:20px;margin-top:0':index===3?'width:30%;height:40px;margin-top:0':''"
+                    ></span>
+                    <span
+                      v-if="(index!==3 && index!==4)"
+                      :style="index===1?'width:45%;height:20px;margin-top:8px':index===2?'width:30%;height:20px;':''"
+                    ></span>
+                    <span
+                      v-if="index===2"
+                      :style="index===2?'width:30%;height:20px;margin:0 5px':''"
+                    ></span>
+                    <span
+                      v-if="index===2"
+                      :style="index===2?'width:30%;height:20px':''"
+                    ></span>
                   </div>
                 </div>
                 <p>{{item.typeName}}</p>
@@ -1247,7 +1267,7 @@ export default {
           border: 1px solid #e5e5e5;
           cursor: pointer;
           .typeContainer {
-            padding: 8px 10px;
+            padding: 8px 5px;
             width: 30%;
             margin-right: 3%;
             height: 96px;
@@ -1272,6 +1292,8 @@ export default {
                 .odd_right {
                   height: 50px;
                   width: 44%;
+                  flex-wrap: wrap;
+                  justify-content: center;
                   span {
                     display: block;
                     &:nth-of-type(1) {

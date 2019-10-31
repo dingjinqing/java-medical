@@ -272,6 +272,7 @@ export default {
   },
   data () {
     return {
+      moduleSpacing: 'moduleSpacing', // 英文适配
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
         '#ff8c00',

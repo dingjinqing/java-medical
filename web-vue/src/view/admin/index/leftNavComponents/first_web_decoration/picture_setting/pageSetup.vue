@@ -44,7 +44,8 @@ export default {
     RightCommodityGrouping: () => import('./pageSetupModules/commodityComponents/rightCommodityGrouping'), // 右侧页面商品分组配置页面
     // 图文组件库
     RightPictureNavigation: () => import('./pageSetupModules/graphicAndTextComponents/rightPictureNavigation'), // 右侧图片导航配置页面
-    RightCarouselPicture: () => import('./pageSetupModules/graphicAndTextComponents/rightCarouselPicture') // 右侧轮播图配置页面
+    RightCarouselPicture: () => import('./pageSetupModules/graphicAndTextComponents/rightCarouselPicture'), // 右侧轮播图配置页面
+    RiPictureAds: () => import('./pageSetupModules/graphicAndTextComponents/riPictureAds')
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -86,6 +87,10 @@ export default {
         {
           id: 10,
           name: 'RightCommodityGrouping'
+        },
+        {
+          id: 13,
+          name: 'RiPictureAds'
         }
       ],
       showModule: null,

@@ -146,6 +146,26 @@ export default {
               }
             ]
           }
+          break
+        case 13: // 图片广告模块
+          obj = {
+            'module_name': 'm_image_adver', // 模块名称
+            'image_type': '0', // 选择模板类型
+            'is_preview': '0', // 预览原图radio
+            'image_space': '', // 图片间隙
+            'module_title': '', // 模块标题
+            'image_list': [ // 底部图片列表
+              // { // 图片路径
+              //   'image': 'http://mpdevimg2.weipubao.cn/upload/0/image/20191024/crop_WyZbpaHeYoNcF8d6.jpeg',
+              //   'width': '560', // 图片宽度
+              //   'height': '700', // 图片高度
+              //   'title': '1', // 文本
+              //   'link': '', //   链接
+              //   'can_show': '0', //  显示设置raido
+              //   'whetherToExpand': '0'  //  是否展开flag
+              // }
+            ]
+          }
       }
       return obj
     },
@@ -213,6 +233,16 @@ export default {
             if (item.img_items.length <= 0) {
               this.$message.error({
                 message: '请添加轮播图片',
+                showClose: true
+              })
+              return false
+            }
+            break
+          case 'm_image_adver':
+            console.log(item.image_list)
+            if (!item.image_list.length) {
+              this.$message.error({
+                message: '请添加图片广告',
                 showClose: true
               })
               return false

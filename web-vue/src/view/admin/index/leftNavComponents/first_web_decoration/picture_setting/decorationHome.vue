@@ -203,14 +203,15 @@ export default {
     CommodityGrouping: () => import('./decorationModules/commodityComponents/commodityGrouping'), // 商品分组
     // 图文组件库
     PictureNavigation: () => import('./decorationModules/graphicAndTextComponents/pictureNavigation'), // 图片导航
-    CarouselPicture: () => import('./decorationModules/graphicAndTextComponents/CarouselPicture')// 轮播图
+    CarouselPicture: () => import('./decorationModules/graphicAndTextComponents/CarouselPicture'), // 轮播图
+    PictureAds: () => import('./decorationModules/graphicAndTextComponents/pictureAds') //  图片广告
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -353,6 +354,9 @@ export default {
           break
         case 'm_image_guide':
           moduleNameId = 12
+          break
+        case 'm_image_adver':
+          moduleNameId = 13
           break
       }
       return moduleNameId
@@ -514,6 +518,9 @@ export default {
               break
             case 10:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 10)
+              break
+            case 13:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 13)
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }

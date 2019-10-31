@@ -4,7 +4,7 @@
       <div class="nav_list">
         <el-tabs
           v-model="activeName"
-          @tab-click="handleClick"
+          @tab-click="handleClick()"
         >
           <el-tab-pane
             label="全部首单特惠活动"
@@ -509,13 +509,15 @@ export default {
     // 点击tab框
     handleClick (tab) {
       console.log(tab)
-      if (tab.index !== '5') {
-        this.$router.push({
-          path: '/admin/home/main/firstSpecial/list',
-          query: {
-            tabIndex: tab.index
-          }
-        })
+      if (tab) {
+        if (tab.index !== '5') {
+          this.$router.push({
+            path: '/admin/home/main/firstSpecial/list',
+            query: {
+              tabIndex: tab.index
+            }
+          })
+        }
       }
     },
     limitChange (val) {
