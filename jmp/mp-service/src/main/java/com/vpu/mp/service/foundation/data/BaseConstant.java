@@ -7,15 +7,18 @@ package com.vpu.mp.service.foundation.data;
  */
 public  class  BaseConstant {
 
-    /**  活动启用禁用*/
+    //******************** 营销活动活动*******************/
+
     /**
-     * 启用
+     * 活动启用
      */
-    private static final Byte ACTIVITY_STATUS_NORMAL = 1;
+    public static final Byte ACTIVITY_STATUS_NORMAL = 1;
     /**
-     * 禁用
+     * 活动禁用
      */
-    private static final Byte ACTIVITY_STATUS_DISABLE = 0;
+    public static final Byte ACTIVITY_STATUS_DISABLE = 0;
+
+
     /** 商品活动类型对应码 */
     /** 普通商品 */
     public final static byte GOODS_TYPE_GENERAL = 0;

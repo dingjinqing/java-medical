@@ -3641,46 +3641,47 @@ create table `b2c_sub_order_info`
     primary key (`id`)
 );
 
--- 支付有礼活动
--- drop table if 	exists `b2c_pay_reward`;
-create table `b2c_pay_reward`
+--  支付有礼 2019年10月28日 17:04:30
+drop table if exists `b2c_pay_reward`;
+create table `b2c_pay_award`
 (
-    `id`                 int(11)        not null auto_increment,
-    `act_name`           varchar(120)   not null default '' comment '活动名称',
-    `start_time`         timestamp      null     default null,
-    `end_time`           timestamp      null     default null,
-    `type`               tinyint(1)              default 0 comment '类型，1为分裂 2抽奖 3送券 4跳转自定义链接',
-    `everytime_amount`   smallint(4)    null     default '0' comment '每一单可以发放优惠券数量',
-    `denomination`       decimal(10, 2) not null default '0' comment '触发条件：支付金额满',
-    `coupon_ids`         varchar(50)    null comment '支付送券的优惠券id',
-    `lottery_id`         int(10)        not null comment '幸运大抽奖',
-    `recommend_type`     tinyint(1)     not null default '1' comment '支付有礼跳转链接 1:全部商品可用 2：指定商品可用',
-    `recommend_goods_id` text comment '指定商品可用',
-    `recommend_cat_id`   text comment '指定平台可用',
-    `recommend_sort_id`  text comment '指定商家分类可用',
-    `img_url`            varchar(191)   not null default '' comment '支付有礼跳转活动图片路径',
-    `link_path`          varchar(191)   not null default '' comment '支付有礼跳转活动链接',
-    `status`             tinyint(2)     not null default '0' comment '状态：1停用',
-    `is_delete`          tinyint(1)     null     default '0' comment '1为删除状态',
-    `create_time`        timestamp               default current_timestamp,
-    `update_time`        timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
+    `id`              int(9)    not null auto_increment,
+    `activity_names`  varchar(50)    default null comment '活动名称',
+    `time_type`       tinyint(1)     default '0' comment '时间类型0固时1永久',
+    `start_time`      timestamp null default null comment '开始',
+    `end_time`        timestamp null default null comment '结束',
+    `act_first`       mediumint(5)   default '0' comment '优先级',
+    `goods_area_type` mediumint(5)   default '0' comment '商品范围类型 0全部商品 1 部分商品',
+    `goods_ids`       text comment '商品id',
+    `goods_cat_ids`   text comment '商品平台分类',
+    `goods_sort_ids`  text comment '商品商家分类',
+    `min_pay_money`   decimal(10, 2) default '0.00' comment '最小金额',
+    `limit_times`     int(9)         default '0' comment '每个用户可参加次数',
+    `award_list`      text comment '奖品列表json',
+    `status`          tinyint(1)     default '1' comment '状态0停用',
+    `del_flag`        tinyint(1)     default '0' comment '1删除',
+    `create_time`     timestamp      default current_timestamp comment '创建时间',
+    `update_time`     timestamp      default current_timestamp on update current_timestamp comment '跟新时间',
     primary key (`id`)
 );
 
 
 -- 支付有礼记录
--- drop table  if	exists `b2c_pay_reward_record`;
-create table `b2c_pay_reward_record`
+drop table if exists `b2c_pay_reward_record`;
+create table `b2c_pay_award_record`
 (
-    `id`                int(11)      not null auto_increment,
-    `pay_reward_id`     int(11)      not null comment '支付有礼活动id',
-    `order_sn`          varchar(20)  not null default '' comment '订单编号',
-    `user_id`           int(11)      not null comment '下单用户id',
-    `type`              tinyint(1)            default 0 comment '类型，1为分裂  2抽奖 3送券 4跳转自定义链接',
-    `mrking_voucher_id` varchar(500) not null comment '发送的活动优惠券，逗号分隔',
-    `is_delete`         tinyint(1)   null     default '0' comment '1为删除状态',
-    `create_time`       timestamp             default current_timestamp,
-    `update_time`       timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
+    `id`          int(9) not null auto_increment,
+    `user_id`     int(9)       default null comment '用户id',
+    `award_id`    int(9)       default null comment '支付有礼活动id',
+    `order_sn`    varchar(50)  default null comment '订单号',
+    `gift_type`   tinyint(4)   default null comment '礼物类型 0 无奖品 1普通优惠卷  2分裂优惠卷 3幸运大抽奖 4 余额 5 商品 6积分 7 自定义',
+    `award_times` int(11)      default null comment '',
+    `award_data`  varchar(599) default null comment '',
+    `send_data`   varchar(599) default null comment '',
+    `status`      tinyint(1)   default null comment '',
+    `keep_days`   mediumint(5) default null,
+    `create_time` timestamp    default current_timestamp,
+    `update_time` timestamp    default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
 );
 

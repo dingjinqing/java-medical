@@ -55,14 +55,14 @@ public class MiniShop_471752 extends SchemaImpl {
 
 
     /**
-     * The table <code>mini_shop_4748160.b2c_pay_reward</code>.
+     * The table <code>mini_shop_4748160.b2c_pay_award</code>.
      */
-    public final PayReward PAY_REWARD = com.vpu.mp.db.shop.tables.PayReward.PAY_REWARD;
+    public final PayAward PAY_AWARD = com.vpu.mp.db.shop.tables.PayAward.PAY_AWARD;
 
     /**
-     * The table <code>mini_shop_4748160.b2c_pay_reward_record</code>.
+     * The table <code>mini_shop_4748160.b2c_pay_award_record</code>.
      */
-    public final PayRewardRecord PAY_REWARD_RECORD = com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD;
+    public final PayAwardRecord PAY_AWARD_RECORD = com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD;
 
     public final LotteryPrize LOTTERY_PRIZE = LotteryPrize.LOTTERY_PRIZE;
 

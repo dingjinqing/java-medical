@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsService;
+import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,6 @@ import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
-import com.vpu.mp.service.shop.market.payreward.PayRewardService;
 import com.vpu.mp.service.shop.market.presale.PreSaleOrderService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
@@ -101,7 +101,7 @@ import com.vpu.mp.service.shop.version.VersionService;
 import com.vpu.mp.service.shop.video.VideoService;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -351,7 +351,7 @@ public class ShopApplication {
 	 * 支付有礼
 	 */
 	@Autowired
-	public PayRewardService payReward;
+	public PayAwardService payAward;
 
 	/**
 	 * 我要送礼
@@ -461,7 +461,7 @@ public class ShopApplication {
     public EsGoodsService esGoodsService;
     @Autowired
     public EsGoodsSearchService esGoodsSearchService;
-    
+
     @Autowired
     public UserCenterTraitService  ucTraitService;
 }

@@ -13,7 +13,7 @@ import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-import com.vpu.mp.db.shop.tables.records.PayRewardRecord;
+import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.*;
 import org.jooq.Identity;
@@ -45,8 +45,6 @@ public class Keys {
     public static final Identity<GiveGiftActivityRecord, Integer> IDENTITY_GIVE_GIFT_ACTIVITY = Identities0.IDENTITY_GIVE_GIFT_ACTIVITY;
     public static final Identity<GiveGiftCartRecord, Integer> IDENTITY_GIVE_GIFT_CART = Identities0.IDENTITY_GIVE_GIFT_CART;
     public static final Identity<GiveGiftReceiveRecord, Integer> IDENTITY_GIVE_GIFT_RECEIVE = Identities0.IDENTITY_GIVE_GIFT_RECEIVE;
-    public static final Identity<PayRewardRecord, Integer> IDENTITY_PAY_REWARD = Identities0.IDENTITY_PAY_REWARD;
-    public static final Identity<PayRewardRecordRecord, Integer> IDENTITY_PAY_REWARD_RECORD = Identities0.IDENTITY_PAY_REWARD_RECORD;
     public static final Identity<LotteryPrizeRecord, Integer> IDENTITY_LOTTERY_PRIZE = Identities0.IDENTITY_LOTTERY_PRIZE;
     public static final Identity<FreeShippingRecord, Integer> IDENTITY_FREE_SHIPPING = Identities0.IDENTITY_FREE_SHIPPING;
     public static final Identity<FreeShippingRuleRecord, Integer> IDENTITY_FREE_SHIPPING_RULE = Identities0.IDENTITY_FREE_SHIPPING_RULE;
@@ -244,16 +242,19 @@ public class Keys {
     public static final Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Identities0.IDENTITY_ATTEND_SHARE_USER;
     public static final Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Identities0.IDENTITY_MP_OFFICIAL_ACCOUNT_USER;
     public static final Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Identities0.IDENTITY_USER_COLLECTION;
+    public static final Identity<PayAwardRecord, Integer> IDENTITY_PAY_AWARD = Identities0.IDENTITY_PAY_AWARD;
+    public static final Identity<PayAwardRecordRecord, Integer> IDENTITY_PAY_AWARD_RECORD = Identities0.IDENTITY_PAY_AWARD_RECORD;
+
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIMARY;
+    public static final UniqueKey<PayAwardRecordRecord> KEY_B2C_PAY_AWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_RECORD_PRIMARY;
     public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_GOODS_PRIMARY;
     public static final UniqueKey<CommentAwardRecord> KEY_B2C_COMMENT_AWARD_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_AWARD_PRIMARY;
     public static final UniqueKey<GiveGiftActivityRecord> KEY_B2C_GIVE_GIFT_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_ACTIVITY_PRIMARY;
     public static final UniqueKey<GiveGiftCartRecord> KEY_B2C_GIVE_GIFT_CART_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_CART_PRIMARY;
     public static final UniqueKey<GiveGiftReceiveRecord> KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY;
-    public static final UniqueKey<PayRewardRecord> KEY_B2C_PAY_REWARD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_REWARD_PRIMARY;
-    public static final UniqueKey<PayRewardRecordRecord> KEY_B2C_PAY_REWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_REWARD_RECORD_PRIMARY;
     public static final UniqueKey<LotteryPrizeRecord> KEY_B2C_LOTTERY_PRIZE_PRIMARY = UniqueKeys0.KEY_B2C_LOTTERY_PRIZE_PRIMARY;
     public static final UniqueKey<FreeShippingRecord> KEY_B2C_FREE_SHIPPING_PRIMARY = UniqueKeys0.KEY_B2C_FREE_SHIPPING_PRIMARY;
     public static final UniqueKey<FreeShippingRuleRecord> KEY_B2C_FREE_SHIPPING_RULE_PRIMARY = UniqueKeys0.KEY_B2C_FREE_SHIPPING_RULE_PRIMARY;
@@ -494,6 +495,8 @@ public class Keys {
 
     private static class Identities0 {
 
+        public static Identity<PayAwardRecord, Integer> IDENTITY_PAY_AWARD = Internal.createIdentity(PayAward.PAY_AWARD, PayAward.PAY_AWARD.ID);
+        public static Identity<PayAwardRecordRecord, Integer> IDENTITY_PAY_AWARD_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD, com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD.ID);
         public static Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Internal.createIdentity(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.ID);
         public static Identity<CommentAwardRecord, Integer> IDENTITY_COMMENT_AWARD = Internal.createIdentity(CommentAward.COMMENT_AWARD, CommentAward.COMMENT_AWARD.ID);
         public static Identity<GiveGiftActivityRecord, Integer> IDENTITY_GIVE_GIFT_ACTIVITY = Internal.createIdentity(GiveGiftActivity.GIVE_GIFT_ACTIVITY, GiveGiftActivity.GIVE_GIFT_ACTIVITY.ID);
@@ -689,8 +692,6 @@ public class Keys {
         public static Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Internal.createIdentity(OrderGoodsRebate.ORDER_GOODS_REBATE, OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
         public static Identity<PromotionLanguageRecord, Integer> IDENTITY_PROMOTION_LANGUAGE = Internal.createIdentity(PromotionLanguage.PROMOTION_LANGUAGE, PromotionLanguage.PROMOTION_LANGUAGE.ID);
         public static Identity<UserPromotionLanguageRecord, Integer> IDENTITY_USER_PROMOTION_LANGUAGE = Internal.createIdentity(UserPromotionLanguage.USER_PROMOTION_LANGUAGE, UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID);
-        public static Identity<PayRewardRecord, Integer> IDENTITY_PAY_REWARD = Internal.createIdentity(PayReward.PAY_REWARD, PayReward.PAY_REWARD.ID);
-        public static Identity<PayRewardRecordRecord, Integer> IDENTITY_PAY_REWARD_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD, com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD.ID);
         public static Identity<FirstSpecialRecord, Integer> IDENTITY_FIRST_SPECIAL = Internal.createIdentity(FirstSpecial.FIRST_SPECIAL, FirstSpecial.FIRST_SPECIAL.ID);
         public static Identity<FirstSpecialGoodsRecord, Integer> IDENTITY_FIRST_SPECIAL_GOODS = Internal.createIdentity(FirstSpecialGoods.FIRST_SPECIAL_GOODS, FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID);
         public static Identity<FirstSpecialProductRecord, Integer> IDENTITY_FIRST_SPECIAL_PRODUCT = Internal.createIdentity(FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID);
@@ -703,6 +704,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = Internal.createUniqueKey(PayAward.PAY_AWARD, "KEY_b2c_pay_award_PRIMARY", PayAward.PAY_AWARD.ID);
+        public static final UniqueKey<PayAwardRecordRecord> KEY_B2C_PAY_AWARD_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD, "KEY_b2c_pay_award_record_PRIMARY", com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD.ID);
         public static final UniqueKey<MessageTemplateConfigRecord> KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY = Internal.createUniqueKey(MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG, "KEY_b2c_message_template_config_PRIMARY", MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG.ID);
         public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = Internal.createUniqueKey(CommentGoods.COMMENT_GOODS, "KEY_b2c_comment_goods_PRIMARY", CommentGoods.COMMENT_GOODS.ID);
         public static final UniqueKey<CommentAwardRecord> KEY_B2C_COMMENT_AWARD_PRIMARY = Internal.createUniqueKey(CommentAward.COMMENT_AWARD, "KEY_b2c_comment_award_PRIMARY", CommentAward.COMMENT_AWARD.ID);
@@ -926,8 +929,6 @@ public class Keys {
         public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = Internal.createUniqueKey(OrderGoodsRebate.ORDER_GOODS_REBATE, "KEY_b2c_order_goods_rebate_PRIMARY", OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
         public static final UniqueKey<PromotionLanguageRecord> KEY_B2C_PROMOTION_LANGUAGE_PRIMARY = Internal.createUniqueKey(PromotionLanguage.PROMOTION_LANGUAGE, "KEY_b2c_promotion_language_PRIMARY", PromotionLanguage.PROMOTION_LANGUAGE.ID);
         public static final UniqueKey<UserPromotionLanguageRecord> KEY_B2C_USER_PROMOTION_LANGUAGE_PRIMARY = Internal.createUniqueKey(UserPromotionLanguage.USER_PROMOTION_LANGUAGE, "KEY_b2c_user_promotion_language_PRIMARY", UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID);
-        public static final UniqueKey<PayRewardRecord> KEY_B2C_PAY_REWARD_PRIMARY = Internal.createUniqueKey(PayReward.PAY_REWARD, "KEY_b2c_pay_reward_PRIMARY", PayReward.PAY_REWARD.ID);
-        public static final UniqueKey<PayRewardRecordRecord> KEY_B2C_PAY_REWARD_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD, "KEY_b2c_pay_reward_record_PRIMARY", com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD.ID);
         public static final UniqueKey<FirstSpecialRecord> KEY_B2C_FIRST_SPECIAL_PRIMARY = Internal.createUniqueKey(FirstSpecial.FIRST_SPECIAL, "KEY_b2c_first_special_PRIMARY", FirstSpecial.FIRST_SPECIAL.ID);
         public static final UniqueKey<FirstSpecialGoodsRecord> KEY_B2C_FIRST_SPECIAL_GOODS_PRIMARY = Internal.createUniqueKey(FirstSpecialGoods.FIRST_SPECIAL_GOODS, "KEY_b2c_first_special_goods_PRIMARY", FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID);
         public static final UniqueKey<FirstSpecialProductRecord> KEY_B2C_FIRST_SPECIAL_PRODUCT_PRIMARY = Internal.createUniqueKey(FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, "KEY_b2c_first_special_product_PRIMARY", FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID);

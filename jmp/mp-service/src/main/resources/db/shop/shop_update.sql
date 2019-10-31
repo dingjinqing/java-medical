@@ -1020,3 +1020,47 @@ MODIFY COLUMN `card_id` int(11) NOT NULL COMMENT '会员卡ID' AFTER `id`;
 -- 统计相关表添加 int 主键
 alter table b2c_distribution_tag
     add id int auto_increment primary key first;
+
+--  支付有礼 2019年10月28日 17:04:30
+drop table if exists `b2c_pay_reward`;
+create table `b2c_pay_award`
+(
+    `id`              int(9)    not null auto_increment,
+    `activity_names`  varchar(50)    default null comment '活动名称',
+    `time_type`       tinyint(1)     default '0' comment '时间类型0固时1永久',
+    `start_time`      timestamp null default null comment '开始',
+    `end_time`        timestamp null default null comment '结束',
+    `act_first`       mediumint(5)   default '0' comment '优先级',
+    `goods_area_type` mediumint(5)   default '0' comment '商品范围类型 0全部商品 1 部分商品',
+    `goods_ids`       text comment '商品id',
+    `goods_cat_ids`   text comment '商品平台分类',
+    `goods_sort_ids`  text comment '商品商家分类',
+    `min_pay_money`   decimal(10, 2) default '0.00' comment '最小金额',
+    `limit_times`     int(9)         default '0' comment '每个用户可参加次数',
+    `award_list`      text comment '奖品列表json',
+    `status`          tinyint(1)     default '0' comment '状态1停用',
+    `del_flag`        tinyint(1)     default '0' comment '1删除',
+    `create_time`     timestamp      default current_timestamp comment '创建时间',
+    `update_time`     timestamp      default current_timestamp on update current_timestamp comment '跟新时间',
+    primary key (`id`)
+);
+
+
+-- 支付有礼记录
+drop table if exists `b2c_pay_reward_record`;
+create table `b2c_pay_award_record`
+(
+    `id`          int(9) not null auto_increment,
+    `user_id`     int(9)       default null comment '用户id',
+    `award_id`    int(9)       default null comment '支付有礼活动id',
+    `order_sn`    varchar(50)  default null comment '订单号',
+    `gift_type`   tinyint(4)   default null comment '礼物类型 0 无奖品 1普通优惠卷  2分裂优惠卷 3幸运大抽奖 4 余额 5 商品 6积分 7 自定义',
+    `award_times` int(11)      default null comment '',
+    `award_data`  varchar(599) default null comment '',
+    `send_data`   varchar(599) default null comment '',
+    `status`      tinyint(1)   default null comment '',
+    `keep_days`   mediumint(5) default null,
+    `create_time` timestamp    default current_timestamp,
+    `update_time` timestamp    default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+);

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.payreward;
+package com.vpu.mp.service.pojo.shop.market.payaward;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.Min;
  * @date 2019/8/12 18:38
  */
 @Data
-public class PayRewardListParam {
+public class PayAwardListParam {
 
     /**
      * 活动状态过滤 ：1全部，2进行中，3未开始，4已过期，5已停用

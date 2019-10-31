@@ -32,8 +32,8 @@ public class Indexes {
     public static final Index COMMENT_GOODS_PRIMARY = Indexes0.COMMENT_GOODS_PRIMARY;
     public static final Index COMMENT_GOODS_SHOP_ID = Indexes0.COMMENT_GOODS_SHOP_ID;
     public static final Index COMMENT_AWARD_PRIMARY = Indexes0.COMMENT_AWARD_PRIMARY;
-    public static final Index PAY_REWARD_PRIMARY = Indexes0.PAY_REWARD_PRIMARY;
-    public static final Index PAY_REWARD_RECORD_PRIMARY = Indexes0.PAY_REWARD_RECORD_PRIMARY;
+    public static final Index PAY_AWARD_PRIMARY = Indexes0.PAY_AWARD_PRIMARY;
+    public static final Index PAY_AWARD_RECORD_PRIMARY = Indexes0.PAY_AWARD_RECORD_PRIMARY;
     public static final Index LOTTERY_PRIZE_PRIMARY = Indexes0.LOTTERY_PRIZE_PRIMARY;
     public static final Index LOTTERY_PRIZE_USER_LOTTERY = Indexes0.LOTTERY_PRIZE_USER_LOTTERY;
     public static final Index FREE_SHIPPING_PRIMARY = Indexes0.FREE_SHIPPING_PRIMARY;
@@ -870,8 +870,8 @@ public class Indexes {
         public static Index ORDER_GOODS_REBATE_REC_ID = Internal.createIndex("rec_id", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.REC_ID }, false);
         public static Index LOTTERY_PRIZE_PRIMARY = Internal.createIndex("PRIMARY", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.ID }, true);
         public static Index LOTTERY_PRIZE_USER_LOTTERY = Internal.createIndex("user_lottery", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.LOTTERY_ID }, false);
-        public static Index PAY_REWARD_PRIMARY = Internal.createIndex("PRIMARY", PayReward.PAY_REWARD, new OrderField[] { PayReward.PAY_REWARD.ID }, true);
-        public static Index PAY_REWARD_RECORD_PRIMARY = Internal.createIndex("PRIMARY", PayRewardRecord.PAY_REWARD_RECORD, new OrderField[] { PayRewardRecord.PAY_REWARD_RECORD.ID }, true);
+        public static Index PAY_AWARD_PRIMARY = Internal.createIndex("PRIMARY", PayAward.PAY_AWARD, new OrderField[] { PayAward.PAY_AWARD.ID }, true);
+        public static Index PAY_AWARD_RECORD_PRIMARY = Internal.createIndex("PRIMARY", PayAwardRecord.PAY_AWARD_RECORD, new OrderField[] { PayAwardRecord.PAY_AWARD_RECORD.ID }, true);
         public static Index PROMOTION_LANGUAGE_PRIMARY = Internal.createIndex("PRIMARY", PromotionLanguage.PROMOTION_LANGUAGE, new OrderField[] { PromotionLanguage.PROMOTION_LANGUAGE.ID }, true);
         public static Index USER_PROMOTION_LANGUAGE_PRIMARY = Internal.createIndex("PRIMARY", UserPromotionLanguage.USER_PROMOTION_LANGUAGE, new OrderField[] { UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID }, true);
         public static Index USER_PROMOTION_LANGUAGE_USER_ID = Internal.createIndex("user_id", UserPromotionLanguage.USER_PROMOTION_LANGUAGE, new OrderField[] { UserPromotionLanguage.USER_PROMOTION_LANGUAGE.USER_ID }, false);

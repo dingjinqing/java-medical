@@ -76,8 +76,8 @@ public class GoodsConstant {
     /**************** 结束 *****************/
 
     /**************** 营销活动启用和停止状态 *****************/
-    public final static byte USE_STATUS = 1;
-    public final static byte STOP_STATUS = 0;
+    public final static Byte USE_STATUS = 1;
+    public final static Byte STOP_STATUS = 0;
     /**************** 结束 *****************/
 
 
