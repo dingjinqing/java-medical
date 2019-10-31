@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import org.jooq.Record11;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,9 @@ import com.vpu.mp.service.pojo.shop.auth.ShopManagePwdParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectResp;
+import com.vpu.mp.service.pojo.shop.auth.ShopSubAccountAddParam;
+import com.vpu.mp.service.pojo.shop.auth.ShopSubAccountEditParam;
+import com.vpu.mp.service.pojo.shop.auth.ShopSubAccountParam;
 
 /**
  * 
@@ -150,5 +155,60 @@ public class AdminRoleController extends AdminBaseController {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
+	}
+	
+	/**
+	 * 查询子账户
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/account/user/list")
+	public JsonResult subUserList(@RequestBody ShopSubAccountParam param) {
+		return success(saas.overviewService.childAccountService.getAccountUserList(adminAuth.user().sysId,
+				param.getCurrentPage(), param.getPageRows()));
+
+	}
+	/**
+	 * 添加子账户
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/account/user/add")
+	public JsonResult subUserAdd(@RequestBody @Valid ShopSubAccountAddParam param) {
+		JsonResultCode addSubAccount = saas.overviewService.childAccountService.addSubAccount(adminAuth.user().sysId, param);
+		if(addSubAccount!=null) {
+			return fail(addSubAccount);
+		}
+		return success();
+	}
+	
+	/**
+	 * 删除子账户
+	 * @param param
+	 * @return
+	 */
+	@GetMapping(value = "/admin/account/user/del/{accountId}")
+	public JsonResult subUserDel(@PathVariable Integer accountId) {
+		int account = saas.overviewService.childAccountService.delSubAccount(adminAuth.user().sysId, accountId);
+		if(account>0) {
+			return success();
+		}
+		return fail();
+	}
+	
+	
+	/**
+	 * 编辑子账户
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/account/user/edit")
+	public JsonResult subUserEdit(@RequestBody @Valid ShopSubAccountEditParam param) {
+
+		int account = saas.overviewService.childAccountService.editSubAccount(adminAuth.user().sysId, param.getAccountId(), param.getAccountName(), param.getAccountPwd(),param.getMobile());
+		if(account>0) {
+			return success();
+		}
+		return fail();
 	}
 }
