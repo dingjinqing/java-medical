@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 
 /**
 * @author 黄壮壮
@@ -31,10 +33,16 @@ public class WxAppCardController extends WxAppBaseController {
 		return success(cardList);
 	}
 	
+	
 	@PostMapping(value="/api/card/detail")
 	public JsonResult getUserCardDetail(@RequestBody UserCardParam param) {
 		logger().info("WxAppCardController: request for card detail");
-		WxAppUserCardVo userCardDetail = shop().user.userCard.getUserCardDetail(param);
+		WxAppUserCardVo userCardDetail;
+		try {
+			userCardDetail = shop().user.userCard.getUserCardDetail(param);
+		} catch (UserCardNullException e) {
+			return fail(e.getErrorCode());
+		}
 		return success(userCardDetail);
 	}
 }
