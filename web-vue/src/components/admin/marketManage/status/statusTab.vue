@@ -42,6 +42,15 @@ export default {
     event: 'update'
   },
   props: ['activityName', 'standard'],
+  watch: {
+    '$attrs.status' (newVal) {
+      if (newVal || newVal === 0) {
+        const { standard } = this
+        let _status = newVal
+        this.tabName = ((standard ? getByIdStandard(_status) : getById(_status)) || this.labels[0]).name
+      }
+    }
+  },
   methods: {
     tabClick () {
       const { standard } = this

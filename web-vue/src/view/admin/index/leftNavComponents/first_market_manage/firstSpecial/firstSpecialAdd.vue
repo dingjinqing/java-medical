@@ -84,6 +84,8 @@
                 class="form_input"
                 placeholder="选择日期时间"
                 :disabled="!!form.isForever"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
               至
@@ -93,6 +95,8 @@
                 class="form_input"
                 placeholder="选择日期时间"
                 :disabled="!!form.isForever"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
             </div>
@@ -503,8 +507,16 @@ export default {
   },
   methods: {
     // 点击tab框
-    handleClick () {
-
+    handleClick (tab) {
+      console.log(tab)
+      if (tab.index !== '5') {
+        this.$router.push({
+          path: '/admin/home/main/firstSpecial/list',
+          query: {
+            tabIndex: tab.index
+          }
+        })
+      }
     },
     limitChange (val) {
       if (val === 0) {
@@ -637,7 +649,7 @@ export default {
           data.goodsId === item.goodsId
         )
         this.$set(this.tableData, index, item)
-        this.$set(this.form, 'isBatchInteger', false)
+        this.$set(this.form, 'isBatchInteger', 0)
       })
     },
     tableBatchDiscountChange (row) {
@@ -829,6 +841,8 @@ export default {
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {
             console.log(res)
+          } else {
+            console.error(res.message)
           }
         })
       })
@@ -852,7 +866,7 @@ export default {
     padding: 10px 20px 10px 20px;
   }
   .form_input {
-    width: 165px;
+    width: 185px;
   }
   .form_tip {
     display: inline-block;

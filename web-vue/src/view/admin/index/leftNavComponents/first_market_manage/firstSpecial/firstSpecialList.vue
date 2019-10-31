@@ -210,6 +210,9 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.query.tabIndex) {
+      this.tabIndex = Number(this.$route.query.tabIndex)
+    }
     this.langDefault()
     // 初始列表化数据
     this.initDataList()
