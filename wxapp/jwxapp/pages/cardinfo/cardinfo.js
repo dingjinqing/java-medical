@@ -17,8 +17,48 @@ global.wxPage({
   },
   requestCardInfo(cardNo){
     util.api('/api/card/detail',res => {
-      console.log(res)
-    }, { cardNo: cardNo})
+      let cardInfo = res.content
+      cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
+      cardInfo.cardBgStyle = this.getCardBg(cardInfo);
+      cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
+      cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
+      cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
+      this.setData({
+        cardInfo:res.content
+      })
+    }, { cardNo: cardNo })
+  },
+  // 获取会员卡过期时间
+  getCardExpireTime(cardItem) {
+    if (cardItem.cardType === 2) return null
+    if (cardItem.expireType === 2) return `永久有效`
+    if (cardItem.expire === 1) return `此卡已过期，如需继续使用请联系商家`
+    return `${cardItem.startDate} 至 ${cardItem.endDate}`
+  },
+  // 获取会员卡背景
+  getCardBg(cardItem) {
+    console.log(cardItem);
+    switch (cardItem.bgType) {
+      case 0:
+        return `background-color:${cardItem.bgColor};`;
+      case 1:
+        return `background:url('${this.data.imageUrl}${cardItem.bgImg}') no-repeat top left / 100% 100%;`;
+    }
+  },
+  // 获取卡类型
+  getTypeName(cardType) {
+    switch (cardType) {
+      case 0:
+        return '普通卡';
+      case 1:
+        return '限次卡';
+      case 2:
+        return '等级卡';
+    }
+  },
+  // 获取会员卡领取状态
+  getCardStatus(cardItem){
+
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

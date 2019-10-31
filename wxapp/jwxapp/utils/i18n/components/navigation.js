@@ -110,6 +110,6 @@ module.exports = {
     "presentcheckout": "订单结算",
     "presentlist": "礼物记录",
     "presentchoose": "礼物商品",
-    "foothistory": "我的足迹"
+    "history": "我的足迹"
   }
 }

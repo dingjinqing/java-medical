@@ -49,7 +49,8 @@
         "distribution/distribution",
         "distributionorder/distributionorder",
         "distributionspread/distributionspread",
-        "comment/comment"
+        "comment/comment",
+        "history/history"
       ]
     }
   ],

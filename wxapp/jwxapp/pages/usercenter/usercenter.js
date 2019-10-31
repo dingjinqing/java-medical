@@ -253,7 +253,7 @@ global.wxPage({
     } else {
       action = 2;
     }
-    util.jumpLink("/pages1/foothistory/foothistory?action=" + action);
+    util.jumpLink("/pages1/history/history?action=" + action);
   },
   to_present: function () {
     util.jumpLink("/pages1/presentlist/presentlist")

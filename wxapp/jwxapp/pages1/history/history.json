@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "v-doubleColumnGoods": "/components/item/doubleColumnGoods/index"
+  }
+}

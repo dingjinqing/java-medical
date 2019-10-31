@@ -89,16 +89,16 @@ global.wxPage({
   },
   // 格式化数据
   formatData(dataList) {
-    let newData = dataList.map(item => {
+    let newDataList = JSON.parse(JSON.stringify(dataList))
+    newDataList.map(item => {
       item.cardTypeName = this.getTypeName(item.cardType);
       item.cardBgStyle = this.getCardBg(item);
       item.cardStopImg = this.getCardStopImage(item);
       item.cardExpireTime = this.getCardExpireTime(item);
       item.buyScore = JSON.parse(item.buyScore)
       item.chargeMoney = JSON.parse(item.chargeMoney)
-      return item;
     });
-    return newData;
+    return newDataList;
   },
   // 获取卡类型
   getTypeName(cardType) {

@@ -103,6 +103,7 @@
 .card_item_content .content_item{
   line-height: 70rpx;
   border-radius: 10rpx;
+  color: #888;
 }
 .flex_footer{
   position: fixed;

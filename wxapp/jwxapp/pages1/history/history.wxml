@@ -1,0 +1,38 @@
+<view class="body">
+  <include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="filter" style="top:{{margin_top_nav + 8}}px">
+      <view class="input_box">
+        <view>
+        <icon size="13" type="search" role="img"></icon>
+        </view>
+        <input placeholder="请输入搜索关键字"></input>
+      </view>
+    </view>
+    <view class="content" style="margin-top:{{margin_top_nav * 2 + 116}}rpx">
+     <text class="date">2019-10-17</text>
+     <view class="goods_content">
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+      <v-doubleColumnGoods />
+     </view>
+    </view>
+  </view>
+  <include src="/pages/common/footer.wxml"/>
+</view>
