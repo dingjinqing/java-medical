@@ -6,6 +6,7 @@
     <AccountSettings v-if="flag0" />
     <ServiceAuthList v-if="flag3" />
     <ServiceAuthListDetail v-if="flag6" />
+    <serviceSubUserList v-if="flag1" />
   </div>
 </template>
 <script>
@@ -22,7 +23,8 @@ export default {
     Contact: () => import('./contact'),
     AccountSettings: () => import('./accountSettings'),
     ServiceAuthList: () => import('./serviceAuthList'),
-    ServiceAuthListDetail: () => import('./serviceAuthListDetail')
+    ServiceAuthListDetail: () => import('./serviceAuthListDetail'),
+    serviceSubUserList: () => import('./serviceSubUserList')
   },
 
   data () {
@@ -74,7 +76,10 @@ export default {
             break
           case '1': this.flag1 = true
             break
-          case '2': this.flag2 = true
+          case '2':
+            this.$router.push({
+              name: 'child_config'
+            })
             break
           case '3': this.flag3 = true
             break

@@ -169,13 +169,21 @@ export default {
     },
     // 用户选项点击
     handle_user_list (index) {
-      console.log(index)
+      console.log('外面点击', index)
       switch (index) {
         case 0:
           this.$router.push({
             path: '/admin/home/shopMain',
             query: {
               change_components: '0'
+            }
+          })
+          break
+        case 1:
+          this.$router.push({
+            path: '/admin/home/shopMain',
+            query: {
+              change_components: '1'
             }
           })
           break
@@ -214,7 +222,7 @@ export default {
           })
           break
       }
-      console.log(1111)
+      console.log('外面的header')
       this.$http.$emit('changeHeaderComponents')
     },
     // 鼠标划入
