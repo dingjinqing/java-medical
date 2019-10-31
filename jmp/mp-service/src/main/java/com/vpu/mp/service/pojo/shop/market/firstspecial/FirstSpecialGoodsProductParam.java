@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 public class FirstSpecialGoodsProductParam {
 
     /** b2c_first_special_product主键 */
-    @NotNull(groups = {FirstSpecialUpdateValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private Integer id;
 
     /** 规格ID */

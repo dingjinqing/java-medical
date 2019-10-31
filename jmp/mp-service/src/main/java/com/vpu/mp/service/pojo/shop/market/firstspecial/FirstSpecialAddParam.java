@@ -22,11 +22,9 @@ public class FirstSpecialAddParam {
     private String name;
 
     /** 活动开始时间 */
-    @NotNull
     private Timestamp startTime;
 
     /** 活动结束时间 */
-    @NotNull
     private Timestamp endTime;
 
     /** 是否永久有效 */
