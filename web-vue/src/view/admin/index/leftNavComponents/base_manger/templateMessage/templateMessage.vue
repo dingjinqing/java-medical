@@ -499,7 +499,7 @@ export default {
         return
       }
       if (this.openMpNum > 25) {
-        this.$message.warning('这是一条消息提示')
+        this.$message.warning('公众号消息不能超过25条!')
         return
       }
       templateUpdateApi(JSON.stringify(lists)).then(res => {
