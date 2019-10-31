@@ -46,9 +46,13 @@ import { cn as decorationHome } from './views/admin_new/cn/index/miniProgramMana
 // 小程序页面装修页面设置模块国际化
 import { cn as pageSetUp } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/pageSetUpCn'
 // 小程序页面装修图片导航模块国际化
-import { cn as pictureNavigation } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationCn'
+import {
+  cn as pictureNavigation
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationCn'
 // 小程序页面装修商品搜索模块国际化
-import { cn as commoditySearch } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchCn'
+import {
+  cn as commoditySearch
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchCn'
 // 小程序页面装修会员卡
 import { cn as membershipCard } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardCn'
 // 小程序页面装修优惠卷模块国际化
@@ -187,6 +191,10 @@ import { cn as purchase } from './views/admin_new/cn/index/marketManagement/incr
 import { cn as vTree } from './views/admin_new/cn/components/vTree/vTreeCn'
 
 // 基础配置系列模块化
+// 服务承诺
+import {
+  cn as pledge
+} from './views/admin_new/cn/index/basicSettings/servicePledge/pledgeCn'
 // 支付配置
 import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/payConfigurationCn'
 // 交易配置
@@ -709,6 +717,7 @@ const cn = {
   vTree,
 
   // 基础配置
+  pledge, // 服务承诺
   payConfiguration, // 支付配置
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置

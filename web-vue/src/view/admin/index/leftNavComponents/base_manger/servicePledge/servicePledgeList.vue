@@ -8,17 +8,17 @@
       >
         <!-- 标签页1 -->
         <el-tab-pane
-          label="服务承诺列表"
+          :label="$t('pledge.pledgeList')"
           name="first"
         >
           <!-- 文字及开关 -->
           <div class="top">
             <!-- 左边文字 -->
             <div class="left">
-              <div class="top1">服务承诺</div>
-              <div style="margin-bottom: 10px">1.“服务承诺”是店铺对用户承诺能做到的服务和服务质量。是重视消费者利益，保证自己的产品质量、售后服务</div>
-              <div style="padding-left: 15px">不发布虚假信息，无欺诈消费者的行为。</div>
-              <div style="margin-top: 10px;margin-bottom: 10px">2.服务承诺开启后，用户即可在手机端商品详情中看到，请您如实履行。</div>
+              <div class="top1">{{$t('pledge.pledge')}}</div>
+              <div style="margin-bottom: 10px">1.{{$t('pledge.tipInfoOne')}}</div>
+              <div style="padding-left: 15px">{{$t('pledge.tipInfoTwo')}}</div>
+              <div style="margin-top: 10px;margin-bottom: 10px">2.{{$t('pledge.tipInfoThree')}}</div>
             </div>
             <!-- 右边开关 -->
             <div class="right">
@@ -29,7 +29,7 @@
                 @change="changeTotalSwitch"
               >
               </el-switch>
-              <span style="color: rgb(153, 153, 153);">{{this.switchValue === true ? '已开启' : '已关闭'}}</span>
+              <span style="color: rgb(153, 153, 153);">{{this.switchValue === true ? $t('pledge.on') : $t('pledge.off')}}</span>
             </div>
           </div>
           <!-- 按钮 -->
@@ -37,8 +37,8 @@
             <el-button
               type="primary"
               @click="changeTabValue"
-            >+添加服务承诺</el-button>
-            <span class="mid-text">最多可以添加20条</span>
+            >+{{$t('pledge.addButton')}}</el-button>
+            <span class="mid-text">{{$t('pledge.addTip')}}</span>
           </div>
           <!-- 列表信息 -->
           <div class="bot">
@@ -51,12 +51,12 @@
             >
               <el-table-column
                 prop="pledgeName"
-                label="服务名称"
+                :label="$t('pledge.name')"
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="pledgeLogo"
-                label="图标"
+                :label="$t('pledge.icon')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -69,21 +69,21 @@
               </el-table-column>
               <el-table-column
                 prop="pledgeContent"
-                label="承诺说明"
+                :label="$t('pledge.explanation')"
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop=""
-                label="使用商品"
+                :label="$t('pledge.goods')"
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop=""
-                label="优先级"
+                :label="$t('pledge.priority')"
                 align="center"
               ></el-table-column>
               <el-table-column
-                label="操作"
+                :label="$t('pledge.option')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -98,7 +98,7 @@
                       >
                       </el-switch>
                       <span style="color: rgb(153, 153, 153);">
-                        {{scope.row.state === true ? '已开启' : '已关闭'}}
+                        {{scope.row.state === true ? $t('pledge.on') : $t('pledge.off')}}
                       </span>
                     </div>
                     <!-- 图标 -->
@@ -107,7 +107,7 @@
                       <el-tooltip
                         class="item edit-item"
                         effect="dark"
-                        content="编辑"
+                        :content="$t('pledge.edit')"
                         placement="top"
                       >
                         <i
@@ -120,7 +120,7 @@
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        content="删除"
+                        :content="$t('pledge.delete')"
                         placement="top"
                       >
                         <i
@@ -137,7 +137,7 @@
         </el-tab-pane>
         <!-- 标签页2 -->
         <el-tab-pane
-          label="添加服务承诺"
+          :label="$t('pledge.addButton')"
           name="second"
           v-if="this.tabValue==='second'"
         >
@@ -151,30 +151,30 @@
             >
               <!-- 服务名称 -->
               <el-form-item
-                label="服务名称"
+                :label="$t('pledge.name')"
                 prop="name"
               >
                 <el-input
                   style="width:200px"
                   size="small"
                   v-model="form.name"
-                  placeholder="请填写服务名称"
+                  :placeholder="$t('pledge.nameCheck')"
                 ></el-input>
-                <span style="padding-left: 15px;color:#999">最多填写5个字</span>
+                <span style="padding-left: 15px;color:#999">{{$t('pledge.nameTip')}}</span>
               </el-form-item>
               <!-- 优先级 -->
-              <el-form-item label="优先级">
+              <el-form-item :label="$t('pledge.priority')">
                 <el-input
                   style="width:200px"
                   size="small"
                   v-model="form.first"
-                  placeholder="请输入优先级"
+                  :placeholder="$t('pledge.priorityCheck')"
                 ></el-input>
-                <span style="padding-left: 15px;color:#999">服务承诺在前端店铺将按优先级从大到小显示</span>
+                <span style="padding-left: 15px;color:#999">{{$t('pledge.priorityTip')}}</span>
               </el-form-item>
               <!-- 图标 -->
               <el-form-item
-                label="图标"
+                :label="$t('pledge.icon')"
                 prop="logos"
               >
 
@@ -190,13 +190,13 @@
                       fit="scale-down"
                     ></el-image>
                   </div>
-                  <span style="padding-left: 15px;color:#999">尺寸：30*30像素</span>
+                  <span style="padding-left: 15px;color:#999">{{$t('pledge.iconTip')}}</span>
                 </div>
 
               </el-form-item>
               <!-- 承诺说明 -->
               <el-form-item
-                label="承诺说明"
+                :label="$t('pledge.explanation')"
                 prop="desc"
               >
                 <el-input
@@ -206,18 +206,18 @@
                   type="textarea"
                   v-model="form.desc"
                 ></el-input>
-                <span style="padding-left: 15px;color:#999">最多300字</span>
+                <span style="padding-left: 15px;color:#999">{{$t('pledge.explanationTip')}}</span>
               </el-form-item>
               <!-- 选择商品 -->
-              <el-form-item label="选择商品">
+              <el-form-item :label="$t('pledge.chooseGoods')">
                 <el-radio
                   v-model="form.goods"
                   label=1
-                >全部商品</el-radio>
+                >{{$t('pledge.allGoods')}}</el-radio>
                 <el-radio
                   v-model="form.goods"
                   label=2
-                >指定商品</el-radio>
+                >{{$t('pledge.someGoods')}}</el-radio>
               </el-form-item>
             </el-form>
           </div>
@@ -227,7 +227,7 @@
               type="primary"
               size="small"
               @click="addAct('form')"
-            >保存</el-button>
+            >{{$t('pledge.save')}}</el-button>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -267,17 +267,18 @@ export default {
       // 数据校验
       rules: {
         name: [
-          { required: true, message: '请填写服务名称', trigger: 'blur' },
-          { max: 5, message: '最多填写5个字', trigger: 'blur' }
+          { required: true, message: this.$t('pledge.nameCheck'), trigger: 'blur' },
+          { max: 5, message: this.$t('pledge.nameTip'), trigger: 'blur' }
         ],
         icon: [
-          { required: true, message: '请选择图标', trigger: 'blur' }
+          { required: true, message: this.$t('pledge.iconCheck'), trigger: 'blur' }
         ],
         desc: [
-          { required: true, message: '请填写承诺说明', trigger: 'blur' }
+          { required: true, message: this.$t('pledge.explanationCheck'), trigger: 'blur' },
+          { max: 300, message: this.$t('pledge.explanationTip'), trigger: 'blur' }
         ],
         logos: [
-          { required: true, message: '请选择图片', trigger: 'blur' }
+          { required: true, message: this.$t('pledge.iconCheck'), trigger: 'blur' }
         ]
       },
       // 图片弹窗
@@ -307,7 +308,6 @@ export default {
       }
       this.id = null
       this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
-      console.log('进入初始化方法')
       pledgeList().then(res => {
         console.log('listRes:', res)
         if (res.error === 0) {
@@ -319,7 +319,7 @@ export default {
           this.switchValue = Boolean(res.content.state)
         }
       }).catch(() => {
-        this.$message.error('操作失败')
+        this.$message.error(this.$t('pledge.fail'))
       })
     },
     // 添加服务承诺
@@ -342,23 +342,23 @@ export default {
             editPledge(editParam).then(res => {
               console.log('editRes:', res)
               if (res.error === 0) {
-                alert('操作成功')
+                alert(this.$t('pledge.success'))
                 this.tabValue = 'first'
                 this.loadData()
               }
             }).catch(() => {
-              this.$message.error('操作失败')
+              this.$message.error(this.$t('pledge.fail'))
             })
           } else {
             addPledge(addParam).then(res => {
               console.log('addRes:', res)
               if (res.error === 0) {
-                alert('操作成功')
+                alert(this.$t('pledge.success'))
                 this.tabValue = 'first'
                 this.loadData()
               }
             }).catch(() => {
-              this.$message.error('操作失败')
+              this.$message.error(this.$t('pledge.fail'))
             })
           }
           // 校验没通过后...
@@ -370,9 +370,9 @@ export default {
     },
     // 删除服务承诺
     deleteAct (id) {
-      this.$confirm('确认要删除吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('pledge.isDelete'), this.$t('pledge.tip'), {
+        confirmButtonText: this.$t('pledge.yes'),
+        cancelButtonText: this.$t('pledge.no'),
         type: 'warning'
       }).then(() => {
         let delParam = {
@@ -380,7 +380,7 @@ export default {
         }
         delPledge(delParam).then(res => {
           if (res.error === 0) {
-            this.$message.success('删除成功!')
+            this.$message.success(this.$t('pledge.success'))
             this.loadData()
           }
         })
@@ -405,7 +405,7 @@ export default {
       console.log('this.switchValue:', this.switchValue)
       totalSwitch(Number(this.switchValue).toString()).then(res => {
         if (res.error === 0) {
-          this.$message.success('操作成功!')
+          this.$message.success(this.$t('pledge.success'))
           this.loadData()
         }
       })
@@ -419,7 +419,7 @@ export default {
       }
       oneSwitch(switchParam).then(res => {
         if (res.error === 0) {
-          this.$message.success('操作成功!')
+          this.$message.success(this.$t('pledge.success'))
         }
       })
     },
@@ -447,16 +447,12 @@ export default {
     .top {
       background-color: #f2f2f2;
       height: 120px;
-      width: 100%;
       padding: 10px;
       font-family: "微软雅黑";
       font-size: 14px;
-      flex: 1.5;
-      flex-grow: 1.5;
-      flex-shrink: 1;
-      flex-basis: 0%;
+      display: flex;
+      justify-content: space-between;
       .left {
-        float: left;
         .top1 {
           font-size: 20px;
           margin-bottom: 10px;
@@ -464,8 +460,7 @@ export default {
         }
       }
       .right {
-        float: right;
-        right: 0;
+        width: 110px;
       }
     }
     .mid {

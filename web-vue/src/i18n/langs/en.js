@@ -58,7 +58,9 @@ import { en as pageSetUp } from './views/admin_new/en/index/miniProgramManagemen
 // 小程序页面装修图片导航模块国际化
 import { en as pictureNavigation } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationEn'
 // 小程序页面装修商品搜索模块国际化
-import { en as commoditySearch } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
+import {
+  en as commoditySearch
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
 // 小程序页面装修会员卡模块国际化
 import { en as membershipCard } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardEn'
 // 小程序页面装修优惠卷模块国际化
@@ -185,6 +187,10 @@ import { en as videoSpace } from './views/admin_new/en/index/videoSpace/videoSpa
 import { en as vTree } from './views/admin_new/en/components/vTree/vTreeEn'
 
 // 基础配置模块模块化
+// 服务承诺
+import {
+  en as pledge
+} from './views/admin_new/en/index/basicSettings/servicePledge/pledgeEn'
 // 支付配置
 import { en as payConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/payConfigurationEn'
 // 交易配置
@@ -737,6 +743,7 @@ const en = {
   vTree,
 
   // 基础配置
+  pledge, // 服务承诺
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置
   payConfiguration, // 支付配置
