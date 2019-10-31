@@ -195,7 +195,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/role/group/list")
 	public JsonResult listRole(@RequestBody ShopRoleAddListParam param) {
-		return success(saas.shop.role.getInfo(adminAuth.user().getSysId(),param));
+		return success(saas.shop.role.getInfo(adminAuth.user().getSysId(),adminAuth.user().loginShopId,param));
 	}
 
 	/**
@@ -347,7 +347,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 		// 子账户手机号
 		List<ShopChildAccountVo> mobileList = saas.shop.subAccount.getInfoBySysId(adminAuth.user().getSysId());
 		// 权限组
-		List<ShopRoleVo> groupRoleList = saas.shop.role.getInfo(adminAuth.user().getSysId());
+		List<ShopRoleVo> groupRoleList = saas.shop.role.getInfo(adminAuth.user().getSysId(),adminAuth.user().loginShopId);
 		// 下面显示的子账户对应的列表
 		//List<ShopRoleAddListVo> totalList = saas.shop.subAccount.queryRoleAndAccount(adminAuth.user().getSysId());
 		PageResult<ShopRoleAddListVo> accountRolePageList = saas.shop.subAccount.getAccountRolePageList(adminAuth.user().loginShopId, sAddListParam);
