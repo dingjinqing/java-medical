@@ -25,10 +25,19 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
+    private Byte activityType;
 	private Integer addressId;
 	private List<Goods> goods;
+    private Byte deliverType;
 	private Integer storeId;
+    /**
+     * 0:默认选第一张；null：不选；其他：卡号
+     */
 	private String memberCardNo;
+    /**
+     * 0:默认选第一张；null：不选；其他：卡号
+     */
+    private String couponSn;
 	@JsonIgnore
 	/**方便查找*/
 	private Map<Integer, Goods> goodsMap;
@@ -48,6 +57,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private Integer goodsNumber;
 		@NotNull
 		private Integer productId;
+		/**促销折扣均摊到每件商品的折扣*/
+		private BigDecimal perDiscount;
+        /**营销活动类型*/
+        private Integer goodsPriceAction;
 		/**以下为后台产生逻辑值initGoods*/
 		private Integer straId;
 		private Integer purchasePriceId;

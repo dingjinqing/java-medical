@@ -10,6 +10,10 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record3;
@@ -55,11 +59,11 @@ public class OrderGoodsService extends ShopBaseService{
 		return goods;
 	}
 
-	/**
-	 * 	通过订单id[]查询其下商品
-	 * @param arrayToSearch
-	 * @return  Result<?>
-	 */
+    /**
+     * 通过订单id[]查询其下商品
+     * @param orderId id
+     * @return
+     */
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
@@ -107,10 +111,12 @@ public class OrderGoodsService extends ShopBaseService{
 		return new HashMap<Integer,Integer>(0);
 	}
 
-	/**
-	 * 	退款完成后，更新状态及退款退货数量
-	 * @param returnOrder
-	 */
+    /**
+     * 退款完成后，更新状态及退款退货数量
+     * @param orderSn
+     * @param returnGoods
+     * @param returnOrderRecord
+     */
 	public void updateInReturn(String orderSn , List<ReturnOrderGoodsRecord> returnGoods , ReturnOrderRecord returnOrderRecord) {
 		//退款商品recIds
 		List<Integer> recIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getRecId).collect(Collectors.toList());
@@ -209,7 +215,60 @@ public class OrderGoodsService extends ShopBaseService{
 				.from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
 		return record6s;
 	}
-	
+
+    /**
+     * 初始化数据
+     * @param goods 输入参数
+     * @param goodsRecord 商品record
+     */
+    public OrderGoodsBo initOrderGoods(OrderBeforeParam.Goods goods, GoodsRecord goodsRecord) {
+        logger().info("initOrderGoods初始化数据开始");
+        OrderGoodsBo bo = OrderGoodsBo.builder().
+            goodsId(goods.getGoodsId()).
+            goodsName(goodsRecord.getGoodsName()).
+            goodsSn(goodsRecord.getGoodsSn()).
+            productId(goods.getProductId()).
+            productSn(goods.getProductInfo().getPrdSn()).
+            goodsNumber(goods.getGoodsNumber()).
+            marketPrice(goodsRecord.getMarketPrice()).
+            goodsPrice(goods.getGoodsPrice()).
+            goodsAttr(goods.getProductInfo().getPrdDesc()).
+            //TODO 需要考虑
+            goodsAttrId("").
+            goodsImg(goodsRecord.getGoodsImg()).
+            straId(goods.getStraId()).
+            perDiscount(goods.getPerDiscount()).
+            //TODO 需要考虑 是否赠品
+            isGift(0).
+            //TODO 需要考虑 赠品的关联商品
+            rGoods("").
+            //TODO 需要考虑 商品积分
+            goodsScore(0).
+            //TODO 需要考虑 商品成长值
+            goodsGrowth(0).
+            goodsType(goods.getGoodsType()).
+            discountedGoodsPrice(goods.getProductPrice()).
+            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductPrice(), BigDecimal.valueOf(goods.getGoodsNumber()))).
+            costPrice(goods.getProductInfo().getPrdCostPrice()).
+            //TODO 逐级计算折扣
+            discountDetail("").
+            deliverTemplateId(goodsRecord.getDeliverTemplateId()).
+            goodsWeight(goodsRecord.getGoodsWeight()).
+            //TODO 后续处理
+            userCoupon(null).
+            catId(goodsRecord.getCatId()).
+            sortId(goodsRecord.getSortId()).
+            goodsPriceAction(goods.getGoodsPriceAction()).
+            purchasePriceId(null).
+            purchasePriceRuleId(null).
+            reducePriceId(null).
+            firstSpecialId(null).
+            isCardExclusive(goodsRecord.getIsCardExclusive()).
+            promoteInfo(null).
+            build();
+        logger().info("initOrderGoods初始化数据结束，参数为：",bo.toString());
+        return bo;
+    }
 	
 
 }

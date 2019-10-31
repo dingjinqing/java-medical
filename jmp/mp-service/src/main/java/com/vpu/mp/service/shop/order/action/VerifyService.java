@@ -28,6 +28,9 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 
+/**
+ * @author 王帅
+ */
 @Component
 public class VerifyService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, verifyParam> {
 	

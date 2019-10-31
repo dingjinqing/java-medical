@@ -22,6 +22,9 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 
+/**
+ * @author 王帅 
+ */
 @Component
 public class FinishService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam,OrderOperateQueryParam> {
 	@Autowired

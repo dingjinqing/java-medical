@@ -141,6 +141,8 @@ public class OrderConstant {
 	public final static byte DELIVER_TYPE_COURIER = 0;
 	/**自提*/
 	public final static byte DELIVER_TYPE_SELF = 1;
+    /**同城配送*/
+    public final static byte CITY_EXPRESS_SERVICE =2;
 
 	/**
 	 *	 是否部分发货

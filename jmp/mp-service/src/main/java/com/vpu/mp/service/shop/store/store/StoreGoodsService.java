@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;

@@ -606,7 +606,7 @@ public class OrderReadService extends ShopBaseService {
 	
 	/**
 	 * 奖品订单
-	 * @param order
+	 * @param orderType
 	 */
 	private boolean isAwardOrder(List<String> orderType) {
 		for (String type : orderType) {
@@ -901,14 +901,14 @@ public class OrderReadService extends ShopBaseService {
                 //退货退款信息
                 OrderConciseRefundInfoVo returnInfo = returnOrderGoods.getOrderGoodsReturnInfo(order.getRecId());
                 if(returnInfo != null){
-                    order.setReturnTime(returnInfo.getReturnType() == OrderConstant.RETURN_TYPE_MONEY ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());
+                    order.setReturnTime(OrderConstant.RETURN_TYPE_MONEY.equals(returnInfo.getReturnType()) ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());
                     order.setReturnFinishTime(returnInfo.getRefundSuccessTime());
                     order.setReturnOrderMoney(returnOrderGoods.getReturnGoodsMoney(order.getRecId()));
                 }
             }
             if(columns.contains(OrderExportVo.IS_COD)){
                 //是否货到付款
-                order.setIsCodString(order.getIsCod() == OrderConstant.IS_COD_YES ? Util.translateMessage(lang, JsonResultMessage.YES ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.NO ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                order.setIsCodString(OrderConstant.IS_COD_YES.equals(order.getIsCod()) ? Util.translateMessage(lang, JsonResultMessage.YES ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.NO ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
             }
             if(columns.contains(OrderExportVo.SOURCE)){
                 //商品来源
