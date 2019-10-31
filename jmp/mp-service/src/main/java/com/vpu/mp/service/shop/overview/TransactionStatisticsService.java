@@ -174,14 +174,12 @@ public class TransactionStatisticsService extends ShopBaseService {
      * 自定义时间实时查询数据
      */
     private PageResult<LabelAnalysisVo> customerLabelAnalysis(LabelAnalysisParam param){
-        Timestamp startTime = Util.getEarlyTimeStamp(new Date(),-1);
-        Timestamp endTime = Util.getEarlyTimeStamp(new Date(),0);
-        if (param.getEndTime() != null){
-            endTime = new Timestamp(param.getEndTime().getTime());
+        if (param.getStartTime() == null || param.getEndTime() == null) {
+            param.setScreeningTime(BYTE_ONE);
+            return fixedLabelAnalysis(param);
         }
-        if (param.getStartTime() != null){
-            startTime = new Timestamp(param.getStartTime().getTime());
-        }
+        Timestamp startTime = param.getStartTime();
+        Timestamp endTime = param.getEndTime();
         /* 先查用户数，放入分页集合中，然后循环设置其他数据 */
         SelectHavingStep<Record3<Integer, String, Integer>> limitStep = db().select(min(ut.TAG_ID).as("tagId"),min(t.TAG_NAME).as("tagName"),count(ut.USER_ID).as("userNum"))
                 .from(ut).leftJoin(t).on(ut.TAG_ID.eq(t.TAG_ID))
@@ -218,7 +216,7 @@ public class TransactionStatisticsService extends ShopBaseService {
                 vo.setPaidMoney(record4.value2());
                 vo.setPaidUserNum(record4.value3());
                 vo.setPaidNum(record4.value4());
-                vo.setPaidGoodsNum(record4.value5().intValue());
+                vo.setPaidGoodsNum(record4.value5() != null ? record4.value5().intValue() : 0);
             }
             if (temp1.containsKey(vo.getTagId())){
                 Record2<Integer,Integer> record1 = temp1.get(vo.getTagId());
