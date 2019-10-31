@@ -3,7 +3,7 @@
   <view class="main-container" wx:if="{{dataList}}">
     <block wx:if="{{dataList[0].length}}" wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="{{pageIndex}}" wx:for-index="pageIndex">
       <block wx:for="{{pageItem}}" wx:key="{{item.cardNo}}" wx:for-index="itemIndex">
-        <view class="card_item_container" data-data_idx="{{pageIndex}}" data-item_idx="{{itemIndex}}" style="transform:translateX(-{{item.x}}px);transition:all .1s ease-out;" bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd">
+        <view class="card_item_container" data-data_idx="{{pageIndex}}" data-item_idx="{{itemIndex}}" bindtap="checkDetail" style="transform:translateX(-{{item.x}}px);transition:all .1s ease-out;" bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd">
           <view class="card_list_item" style="{{item.cardBgStyle}}">
             <view class="card_type">{{item.cardTypeName}}</view>
             <view class="card_item_info">

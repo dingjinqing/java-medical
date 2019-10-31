@@ -12,9 +12,14 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    let cardNo = options.card_no ? options.card_no : null
+    this.requestCardInfo(cardNo)
   },
-
+  requestCardInfo(cardNo){
+    util.api('/api/card/detail',res => {
+      console.log(res)
+    }, { cardNo: cardNo})
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

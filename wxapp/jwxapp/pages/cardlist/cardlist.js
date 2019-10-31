@@ -160,6 +160,12 @@ global.wxPage({
       '确定'
     );
   },
+  // 查看会员卡详情
+  checkDetail(e){
+    console.log(111)
+    let card_no = this.data.dataList[e.currentTarget.dataset.data_idx][e.currentTarget.dataset.item_idx].cardNo
+    util.jumpLink(`pages/cardinfo/cardinfo?card_no=${card_no}`,'navigateTo')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
