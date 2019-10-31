@@ -41,11 +41,16 @@
           </ol>
         </div>
         <el-form
+          :model="form"
           ref="firstSpecialAddForm"
           label-width="115px"
           size="small"
+          :rules="rules"
         >
-          <el-form-item label="活动名称：">
+          <el-form-item
+            label="活动名称："
+            prop="name"
+          >
             <el-input
               class="form_input"
               v-model="form.name"
@@ -55,6 +60,7 @@
           <el-form-item
             class="clearfix"
             label="有效期："
+            prop="isForever"
           >
             <div
               class="fl"
@@ -77,7 +83,7 @@
                 type="datetime"
                 class="form_input"
                 placeholder="选择日期时间"
-                :disabled="form.isForever"
+                :disabled="!!form.isForever"
               >
               </el-date-picker>
               至
@@ -86,20 +92,27 @@
                 type="datetime"
                 class="form_input"
                 placeholder="选择日期时间"
-                :disabled="form.isForever"
+                :disabled="!!form.isForever"
               >
               </el-date-picker>
             </div>
           </el-form-item>
-          <el-form-item label="活动优先级：">
+          <el-form-item
+            label="活动优先级："
+            prop="first"
+          >
             <el-input-number v-model="form.first"></el-input-number>
             <p class="form_tip">用于区分不同首单特惠活动的优先级，请填写正整数，数值越大优先级越高</p>
           </el-form-item>
           <el-form-item
             label="限购数量："
             style="width:95px;"
+            required
           >
-            <el-radio-group v-model="form.limit">
+            <el-radio-group
+              v-model="limit"
+              @change="limitChange"
+            >
               <el-radio
                 :label="0"
                 style="line-height:32px;"
@@ -111,14 +124,16 @@
                 限制数量
                 <el-input-number
                   v-model="form.limitAmount"
-                  :disabled="form.limit"
+                  :disabled="!limit"
                   style="margin-left: 10px;"
                 ></el-input-number>
               </el-radio>
             </el-radio-group>
             <el-checkbox
-              v-model="form.limitP"
+              v-model="form.limitFlag"
               style="margin-left: 30px;"
+              :true-label="1"
+              :false-label="0"
             >超出限购数量后，买家不可继续添加购买该商品</el-checkbox>
           </el-form-item>
           <el-form-item
@@ -273,7 +288,7 @@
                     type="text"
                     v-if="row.goodsProductParams && row.goodsProductParams.length > 0"
                     @click="getProductInfo(row)"
-                  >{{row.goodsProductParams.length}}个规格降价</el-button>
+                  >{{row.goodsProductParams?row.goodsProductParams.length:0}}个规格降价</el-button>
                 </template>
               </el-table-column>
               <el-table-column
@@ -303,44 +318,86 @@
             class="more-setting"
             v-if="showmore"
           >
-            <el-form-item label="活动分享：">
-              <el-radio-group v-model="activeShare">
+            <el-form-item
+              label="活动分享："
+              required
+            >
+              <el-radio-group v-model="form.shareConfig.share_action">
                 <div>
                   <el-radio
-                    :label="0"
+                    :label="1"
                     class="active_radio"
                   >
-                    默认样式
-                    <router-link to="/">查看示例</router-link>
-                    <a
-                      href="javascript:void(0);"
-                      download
-                    >下载海报</a>
+                    <el-tooltip
+                      style="margin-left:40px;"
+                      placement="right"
+                      effect="light"
+                    >
+                      <div
+                        slot="content"
+                        class="active_tool"
+                      >
+                        <el-image
+                          style="width:240px;"
+                          :src="$imageHost +'/image/admin/share/first_share1.jpg'"
+                        ></el-image>
+                      </div>
+                      <span>默认样式</span>
+                    </el-tooltip>
+                    <el-tooltip
+                      style="margin-left:40px;"
+                      placement="right"
+                      effect="light"
+                    >
+                      <div
+                        slot="content"
+                        class="active_tool"
+                      >
+                        <el-image
+                          style="width:240px;"
+                          :src="$imageHost +'/image/admin/share/first_share2.jpg'"
+                        ></el-image>
+                      </div>
+                      <span>下载海报</span>
+                    </el-tooltip>
                   </el-radio>
                 </div>
                 <div>
                   <el-radio
-                    :label="1"
+                    :label="2"
                     class="active_radio"
                   >
                     自定义样式
                   </el-radio>
                 </div>
               </el-radio-group>
-              <div class="custom_style">
+              <div
+                class="custom_style"
+                v-show="form.shareConfig.share_action === 2"
+              >
                 <div>
                   <label>文案：</label>
                   <el-input
                     class="form_input"
                     size="small"
+                    v-model="form.shareConfig.share_doc"
                   ></el-input>
                 </div>
                 <div>
                   <label>分享图：</label>
                   <div>
-                    <el-radio-group class="share_img_group">
-                      <el-radio class="share_img_radio">活动商品信息图</el-radio>
-                      <el-radio class="share_img_radio">自定义图片</el-radio>
+                    <el-radio-group
+                      class="share_img_group"
+                      v-model="form.shareConfig.share_img_action"
+                    >
+                      <el-radio
+                        class="share_img_radio"
+                        :label="1"
+                      >活动商品信息图</el-radio>
+                      <el-radio
+                        class="share_img_radio"
+                        :label="2"
+                      >自定义图片</el-radio>
                     </el-radio-group>
                     <div class="upload_wrap">
                       <div
@@ -350,7 +407,7 @@
                         <el-image
                           style="width: 100%; height:100%;"
                           fit="contain"
-                          :src="activeImg"
+                          :src="form.shareConfig.share_img"
                         ></el-image>
                       </div>
                       <p class="tips">建议尺寸800*800</p>
@@ -405,23 +462,28 @@ export default {
   data () {
     return {
       isEditFlag: false, // 区分新增还是编辑
+      activeName: '5', // 高亮tab
       form: {
-        activeName: '',
         name: '',
         isForever: 0, // 是否永久有效
         startTime: '',
         endTime: '',
         first: '', // 活动优先级
-        limit: 0, // 限购数量
-        limitAmount: 1, // 限购数量
-        limitP: false,
+        limitAmount: 0, // 限购数量
+        limitFlag: 0, // 超限购买设置标记，1禁止超限购买，0超限全部恢复原价
         firstSpecialGoodsParams: [], // 改价的商品数组
         batchDiscount: '', // 批量打几折
         batchReduce: '', // 批量减多少
         batchFinalPrice: '', // 批量折后价
-        isBatchInteger: false, // 是否批量取整
-        shareConfig: {} // 分享设置
+        isBatchInteger: 0, // 是否批量取整
+        shareConfig: {
+          share_action: 1,
+          share_doc: '',
+          share_img_action: 1,
+          share_img: this.$imageHost + '/image/admin/btn_add.png'
+        } // 分享设置
       },
+      limit: 0,
       tuneUpChooseGoods: false,
       goodsIdList: [],
       tableData: [],
@@ -430,15 +492,26 @@ export default {
       showmore: false,
       activeShare: 0,
       tuneUp: false,
-      activeImg: this.$imageHost + '/image/admin/btn_add.png',
       productDialogFlag: false,
-      productInfo: {}
+      productInfo: {},
+      rules: {
+        name: { required: true, message: '请填写活动名称', trigger: 'blur' },
+        isForever: { required: true, message: '请选择有效期' },
+        first: { required: true, message: '请填写活动优先级' }
+      }
     }
   },
   methods: {
     // 点击tab框
     handleClick () {
 
+    },
+    limitChange (val) {
+      if (val === 0) {
+        this.$set(this.form, 'limitAmount', 0)
+      } else {
+        this.$set(this.form, 'limitAmount', 1)
+      }
     },
     inputFocus (index) {
       this.discountType = String(index)
@@ -448,6 +521,7 @@ export default {
     },
     // 选择商品后，得到商品id
     getGoodsIds (ids) {
+      this.goodsIdList = ids
       let params = {
         goodsIds: ids
       }
@@ -459,6 +533,7 @@ export default {
             if (item.goodsProductParams != null && item.goodsProductParams.length > 0) {
               item.goodsProductParams.forEach(spec => {
                 spec.productId = spec.prdId
+                spec.originalPrice = spec.prdPrice
               })
             }
           })
@@ -548,6 +623,15 @@ export default {
         } else if (item.batchFinalPrice > price) {
           item.tips = '降价后金额需小于原价'
         }
+        if (item.goodsProductParams && item.goodsProductParams.length) {
+          item.goodsProductParams.map(item2 => {
+            item2.productId = item2.prdId
+            // item2.originalPrice = item2.prdPrice
+            let originalPrice = item2.originalPrice
+            let prdPrice = (originalPrice * (parseFloat(item.batchDiscount / 10))).toFixed(2)
+            item2.prdPrice = prdPrice
+          })
+        }
         // 数据回显
         let index = this.tableData.findIndex((data, i) =>
           data.goodsId === item.goodsId
@@ -578,6 +662,9 @@ export default {
       let batchFinalPrice = price - batchReduce
       let batchDiscount = (batchFinalPrice / price).toFixed(2)
       this.$set(row, 'batchFinalPrice', batchFinalPrice)
+      if (!Number.isFinite(batchDiscount)) {
+        batchDiscount = 0
+      }
       this.$set(row, 'batchDiscount', batchDiscount)
       this.watchbatchFinalPrice(price, batchFinalPrice, row)
     },
@@ -588,6 +675,9 @@ export default {
       let batchReduce = price - batchFinalPrice
       let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
       this.$set(row, 'batchReduce', batchReduce)
+      if (!Number.isFinite(batchDiscount)) {
+        batchDiscount = 0
+      }
       this.$set(row, 'batchDiscount', batchDiscount)
       this.watchbatchFinalPrice(price, batchFinalPrice, row)
     },
@@ -599,11 +689,22 @@ export default {
         tips = '降价后金额需小于原价'
       }
       this.$set(row, 'tips', tips)
+      if (row.goodsProductParams && row.goodsProductParams.length) {
+        row.goodsProductParams.map(item2 => {
+          item2.productId = item2.prdId
+          let originalPrice = item2.originalPrice
+          let prdPrice = (originalPrice * (parseFloat(row.batchDiscount / 10))).toFixed(2)
+          item2.prdPrice = prdPrice
+          this.$set(item2, 'prdPrice', prdPrice)
+        })
+      }
     },
     // 多个规格
     getProductInfo (row) {
       this.productDialogFlag = true
+      row.reducePriceProduct = row.goodsProductParams
       this.productInfo = row
+      console.log(productInfo)
     },
     // 批量删除
     deleteSelectGoods () {
@@ -646,7 +747,7 @@ export default {
             console.log(that.tableData[index])
           })
           that.$refs.firstSpecialTable.clearSelection() // 触发表格数据刷新
-          this.$set(this.form, 'isBatchInteger', true)
+          this.$set(this.form, 'isBatchInteger', 1)
         }
       })
     },
@@ -667,17 +768,69 @@ export default {
       this.tuneUp = !this.tuneUp
     },
     handleSelectImg (image) {
-      this.activeImg = image.imgUrl
+      this.$set(this.form.shareConfig, 'share_img', image.imgUrl)
     },
     getProductdata (datas) {
       console.log(datas)
     },
-    addSubmit () {
-      let params = Object.assign({}, this.form)
-      addFirstSpecial(params).then(res => {
-        if (res.error === 0) {
-
+    paramsAssign () {
+      this.form.firstSpecialGoodsParams = this.tableData.map((item, i) => {
+        return {
+          goodsId: item.goodsId,
+          goodsName: item.goodsName,
+          discount: item.batchDiscount,
+          reducePrice: item.batchReduce,
+          goodsPrice: item.batchFinalPrice,
+          goodsProductParams: item.goodsProductParams,
+          tips: item.tips
         }
+      })
+      return Object.assign({}, this.form)
+    },
+    paramsValid (params, suFn) {
+      this.$refs.firstSpecialAddForm.validate((valid) => {
+        if (valid) {
+          if (params.isForever === 0 && (params.startTime === '' || params.endTime === '')) {
+            this.$message.warning('请填写有效期')
+            return false
+          }
+          let goods = params.firstSpecialGoodsParams
+          if (goods.length === 0) {
+            this.$message.warning('请选择活动商品')
+            return false
+          }
+          let noPriceGoods = goods.find((item, i) => {
+            return !item.goodsPrice
+          })
+          if (noPriceGoods) {
+            this.$message.warning('请设置折扣价')
+            return false
+          }
+          // 验证特惠价是否超过原价
+          let hasTips = goods.find(item => {
+            return item.tips
+          })
+          if (hasTips) {
+            this.$message.warning('商品' + hasTips.goodsName + hasTips.tips)
+            return false
+          }
+          suFn(params)
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    addSubmit () {
+      let params = this.paramsAssign()
+      console.log(params)
+      // 传参校验
+      this.paramsValid(params, function (params) {
+        addFirstSpecial(params).then(res => {
+          if (res.error === 0) {
+            console.log(res)
+          }
+        })
       })
     },
     updateSubmit () {
@@ -796,6 +949,12 @@ export default {
       .upload_wrap {
         margin-left: 78px;
       }
+    }
+    .active_tool {
+      padding: 20px;
+      border-radius: 5px;
+      background: #fff;
+      box-shadow: 1px 1px 10px 5px #eee;
     }
   }
 }
