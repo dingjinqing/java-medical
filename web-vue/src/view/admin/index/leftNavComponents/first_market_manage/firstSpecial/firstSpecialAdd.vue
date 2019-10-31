@@ -534,6 +534,7 @@ export default {
               console.log(d)
             })
             let rowData = Object.assign({
+              id: item.id,
               goodsId: item.goodsId,
               batchDiscount: item.discount,
               batchReduce: item.reducePrice,
@@ -589,7 +590,6 @@ export default {
             item.goodsProductParams = item.goodsSpecProducts
             if (item.goodsProductParams != null && item.goodsProductParams.length > 0) {
               item.goodsProductParams.forEach(spec => {
-                debugger
                 spec.productId = spec.prdId
                 spec.originalPrice = spec.prdPrice
               })
@@ -833,7 +833,7 @@ export default {
     },
     paramsAssign () {
       this.form.firstSpecialGoodsParams = this.tableData.map((item, i) => {
-        return {
+        let param = {
           goodsId: item.goodsId,
           goodsName: item.goodsName,
           discount: item.batchDiscount,
@@ -842,6 +842,10 @@ export default {
           goodsProductParams: item.goodsProductParams,
           tips: item.tips
         }
+        if (item.id) {
+          param.id = item.id
+        }
+        return param
       })
       return Object.assign({}, this.form)
     },
