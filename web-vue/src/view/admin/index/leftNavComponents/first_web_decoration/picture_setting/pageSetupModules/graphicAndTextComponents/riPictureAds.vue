@@ -168,7 +168,7 @@
             + 添加图片
           </div>
           <div style="color: #999;font-size: 13px;">
-            建议宽度750px
+            建议宽度{{moduleSaveData.image_type==='0'?'750':moduleSaveData.image_type==='1'?'375':moduleSaveData.image_type==='2'?'670':moduleSaveData.image_type==='3'?'305':moduleSaveData.image_type==='4'?'142':''}}px
           </div>
         </div>
         <!--添加图片占位end-->

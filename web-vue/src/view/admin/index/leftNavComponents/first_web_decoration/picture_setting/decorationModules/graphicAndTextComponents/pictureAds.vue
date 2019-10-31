@@ -22,12 +22,20 @@
           <p style="font-size:12px;margin-top:5px">建议宽度750像素</p>
         </div>
         <!--图片列表内容-->
-        <div v-else>
+        <div
+          v-else
+          :style="moduleSavedata.image_type==='1'?'display:flex;flex-warp:warp':(moduleSavedata.image_type==='2'||moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')?'display:flex':''"
+        >
           <div
             v-for="(item,index) in moduleSavedata.image_list"
             :key="index"
+            :style="moduleSavedata.image_type==='1'?'display:flex;width:50%;':(moduleSavedata.image_type==='2'&&index===0)?'display:flex;width:70%':(moduleSavedata.image_type==='2'&&index===1)?'display:flex;width:30%':((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===0)?'display:flex;width:40%':((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===1)?'display:flex;width:40%':((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===2)?'display:flex;width:20%':''"
           >
-            <img :src="item.image">
+            <img
+              :style="moduleSavedata.image_type==='0'?'width:385px':'width:100%;height:100%'"
+              :src="item.image"
+              v-if="moduleSavedata.image_type==='2'?!(moduleSavedata.image_type==='2'&&index>1):moduleSavedata.image_type==='3'?!(moduleSavedata.image_type==='3'&&index>2):moduleSavedata.image_type==='4'?!(moduleSavedata.image_type==='4'&&index>2):true"
+            >
           </div>
         </div>
       </div>
@@ -177,6 +185,7 @@ export default {
 @import "@/style/admin/decorationModules.scss";
 
 .pictureAds {
+  width: 385px;
   .seizeASeat {
     background: #e8efff;
     text-align: center;
@@ -187,9 +196,6 @@ export default {
     align-items: center;
     flex-direction: column;
     padding: 50px 0;
-    img {
-      width: 100%;
-    }
   }
 }
 </style>
