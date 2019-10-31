@@ -271,12 +271,12 @@ public class ShopChildAccountService extends MainBaseService {
 		ShopChildAccountRecord recordfetchAny = db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(param.getAccountName()))).fetchAny();
 		if(recordfetchAny!=null) {
 			//用户名重复
-			return JsonResultCode.CODE_MOBILE_SAME;
+			return JsonResultCode.CODE_ACCOUNT_SAME;
 		}
 		ShopChildAccountRecord rAccountRecord = db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.MOBILE.eq(param.getMobile()))).fetchAny();
 		if(rAccountRecord!=null) {
 			//手机号重复
-			return JsonResultCode.CODE_ACCOUNT_SAME;
+			return JsonResultCode.CODE_MOBILE_SAME;
 		}
 		param.setAccountPwd(Util.md5(param.getAccountPwd()));
 		ShopChildAccountRecord record=db().newRecord(SHOP_CHILD_ACCOUNT,param);
