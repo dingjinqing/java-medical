@@ -638,7 +638,7 @@ CREATE TABLE `b2c_order_goods`
     `market_price`           DECIMAL(10, 2) NOT NULL DEFAULT '0.00',
     `goods_price`            DECIMAL(10, 2) NOT NULL DEFAULT '0.00',
     `goods_attr`             text           NOT NULL,
-    `send_number`            INT(11))       NOT NULL DEFAULT '0',
+    `send_number`            INT(11)        NOT NULL DEFAULT '0',
     `return_number`          INT(11)        NOT NULL DEFAULT '0' COMMENT '退货/退款成功数量',
     `is_real`                TINYINT(1)     NOT NULL DEFAULT '0',
     `goods_attr_id`          VARCHAR(191)   NOT NULL DEFAULT '',
@@ -2991,7 +2991,7 @@ create table `b2c_reduce_price_product`
     `create_time`     timestamp      default current_timestamp,
     `update_time`     timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    unique key `reduce_product` (`reduce_price_id`, `goods_id`, `product_id`)
+    unique key `reduce_product` (`reduce_price_id`, `goods_id`, `prd_id`)
 );
 
 --  分销员等级表
