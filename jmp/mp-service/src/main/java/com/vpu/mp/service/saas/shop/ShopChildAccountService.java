@@ -310,14 +310,15 @@ public class ShopChildAccountService extends MainBaseService {
 	public int editSubAccount(Integer sysId, Integer accountId, String accountName, String passwd,String mobile) {
 		int execute = 0;
 		if (passwd != null) {
-			execute = db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME, accountName)
-					.set(SHOP_CHILD_ACCOUNT.MOBILE, mobile).set(SHOP_CHILD_ACCOUNT.ACCOUNT_PWD, Util.md5(passwd))
-					.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId)))
+			execute = db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.MOBILE, mobile)
+					.set(SHOP_CHILD_ACCOUNT.ACCOUNT_PWD, Util.md5(passwd))
+					.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId)
+							.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(accountName))))
 					.execute();
 		} else {
-			execute = db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME, accountName)
-					.set(SHOP_CHILD_ACCOUNT.MOBILE, mobile)
-					.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId)))
+			execute = db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.MOBILE, mobile)
+					.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId)
+							.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(accountName))))
 					.execute();
 		}
 
