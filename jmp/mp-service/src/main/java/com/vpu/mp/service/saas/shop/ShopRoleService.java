@@ -65,10 +65,10 @@ public class ShopRoleService extends MainBaseService {
 		return db().executeInsert(role);
 	}
 
-	public List<ShopRoleVo> getInfo(Integer sysId) {
+	public List<ShopRoleVo> getInfo(Integer sysId,Integer shopId) {
 		SelectConditionStep<Record3<Integer, String, Timestamp>> records = db()
 				.select(SHOP_ROLE.ROLE_ID, SHOP_ROLE.ROLE_NAME, SHOP_ROLE.CREATE_TIME).from(SHOP_ROLE)
-				.where(SHOP_ROLE.SYS_ID.eq(sysId));
+				.where(SHOP_ROLE.SYS_ID.eq(sysId).and(SHOP_ROLE.SHOP_ID.eq(shopId)));
 		records.orderBy(SHOP_ROLE.CREATE_TIME.desc()).fetch();
 		List<ShopRoleVo> list = new ArrayList<>();
 		for (Record3<Integer, String, Timestamp> record : records) {
@@ -81,10 +81,10 @@ public class ShopRoleService extends MainBaseService {
 		return list;
 	}
 	
-	public PageResult<ShopRoleVo> getInfo(Integer sysId,ShopRoleAddListParam param) {
+	public PageResult<ShopRoleVo> getInfo(Integer sysId,Integer shopId,ShopRoleAddListParam param) {
 		SelectConditionStep<Record3<Integer, String, Timestamp>> records = db()
 				.select(SHOP_ROLE.ROLE_ID, SHOP_ROLE.ROLE_NAME, SHOP_ROLE.CREATE_TIME).from(SHOP_ROLE)
-				.where(SHOP_ROLE.SYS_ID.eq(sysId));
+				.where(SHOP_ROLE.SYS_ID.eq(sysId).and(SHOP_ROLE.SHOP_ID.eq(shopId)));
 		records.orderBy(SHOP_ROLE.CREATE_TIME.desc()).fetch();
 		List<ShopRoleVo> list = new ArrayList<>();
 		for (Record3<Integer, String, Timestamp> record : records) {
