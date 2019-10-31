@@ -135,7 +135,7 @@ public class CartService extends ShopBaseService {
         }).collect(Collectors.toList());
         // 会员相关
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(userId, productIdList);
-        Set<Integer> userCardExclusive = userCardService.getUserCardExclusive(userId, cartGoodsList);
+        Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(userId, cartGoodsList);
         for (int i=0 ;i<validCartList.size();i++){
             WxAppCartGoods cartGoods =validCartList.get(i);
             //会员专享

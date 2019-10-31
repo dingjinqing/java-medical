@@ -743,14 +743,14 @@ public class UserCardService extends ShopBaseService{
 
     /**
      *  筛选会员专享商品
-     * @param userId
-     * @param cartGoodsList
-     * @return
+     * @param userId 用户id
+     * @param cartGoodsList 需要筛选的商品
+     * @return 反回会员卡绑定商品
      */
-	public Set<Integer> getUserCardExclusive(Integer userId, List<WxAppCartGoods> cartGoodsList){
+	public Set<Integer> getUserCardExclusiveGoodsIds(Integer userId, List<WxAppCartGoods> cartGoodsList){
 	    Set<Integer> goodsIds =new HashSet<>();
 	    Set<Integer> resGoodsIds =new HashSet<>();
-		// 获取会员等级
+		//
         Map<Byte, List<Integer>> goodsCardCouple = goodsCardCoupleService.getGoodsCardCouple(userId);
         cartGoodsList.forEach(cartGoods ->{
             if (!goodsIds.contains(cartGoods.getGoodsId())) {
