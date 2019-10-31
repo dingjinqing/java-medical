@@ -888,11 +888,13 @@ export default {
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {
             _this.$message.success('保存成功')
-            _this.$router.push({
-              path: '/admin/home/main/firstSpecial/list',
-              query: {
-                tabIndex: 0
-              }
+            _this.$nextTick(function () {
+              _this.$router.push({
+                path: '/admin/home/main/firstSpecial/list',
+                query: {
+                  tabIndex: '0'
+                }
+              })
             })
           } else {
             console.error(res.message)
@@ -910,11 +912,13 @@ export default {
         updateFirstSpecial(params).then(res => {
           if (res.error === 0) {
             _this.$message.success('更新成功')
-            _this.$router.push({
-              path: '/admin/home/main/firstSpecial/list',
-              query: {
-                tabIndex: 0
-              }
+            _this.$nextTick(() => {
+              // _this.$router.push({
+              //   path: '/admin/home/main/firstSpecial/list',
+              //   query: {
+              //     tabIndex: '0'
+              //   }
+              // })
             })
           } else {
             console.error(res.message)
