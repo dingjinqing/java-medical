@@ -184,7 +184,7 @@ export default {
 @import "@/style/admin/decorationModules.scss";
 
 .pictureAds {
-  width: 385px;
+  // width: 385px;
   .seizeASeat {
     background: #e8efff;
     text-align: center;

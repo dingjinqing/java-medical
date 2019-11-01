@@ -848,14 +848,19 @@ export default {
               .time {
                 margin-top: 4px;
                 color: #fff;
+                span {
+                  width: 200px;
+                }
               }
             }
             .card_edit {
               display: flex;
               justify-content: flex-end;
               height: 22px;
-              margin-top: 50px;
               text-align: right;
+              position: absolute;
+              bottom: 11px;
+              right: 14px;
               .item {
                 cursor: pointer;
               }
