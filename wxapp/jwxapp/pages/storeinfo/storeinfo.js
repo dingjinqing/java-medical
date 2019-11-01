@@ -253,17 +253,18 @@ Page({
   },
   // 买单
   toCheckout: function (e) {
-    var store_id = e.currentTarget.dataset.store_id;
+    console.log(e)
+    var storeId = e.currentTarget.dataset.storeid;
     util.navigateTo({
-      url: '/pages1/shopcheckout/shopcheckout?store_id=' + store_id
+      url: '/pages/shopcheckout/shopcheckout?storeId=' + storeId
     })
   },
   // 扫码购
   toScanBuy: function (e) {
-    var store_id = e.currentTarget.dataset.store_id;
+    var storeId = e.currentTarget.dataset.storeid;
     console.log(store_id)
     util.navigateTo({
-      url: '/pages/scancode/scancode?store_id=' + store_id,
+      url: '/pages/scancode/scancode?storeId=' + storeId,
       success: function (res) { },
       fail: function (res) { },
       complete: function (res) { },

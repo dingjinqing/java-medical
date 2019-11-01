@@ -45,14 +45,14 @@
         </view>
       </view>
       <!-- 扫码购 -->
-      <view class="scancode"  bindtap="toScanBuy" wx:if="{{info.scanBuy == true}}" data-store_id="{{info.store_id}}" style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}});border-color:{{somColor}}' >
+      <view class="scancode"  bindtap="toScanBuy" wx:if="{{info.scanBuy == true}}" data-storeid="{{info.store_id}}" style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}});border-color:{{somColor}}' >
         <image src="{{imageUrl}}/image/wxapp/scancode_bigqr.png" />
         <view class='scancode_text'>扫码购</view>
       </view>
       <!-- 在线买单 -->
-      <view class='store_pay'  wx:if="{{info.store_buy==1}}" >
+      <view class='store_pay' wx:if="{{info.storeBuy === 1}}">
         <text>在线买单</text>
-        <view class='to_store_check' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}});box-shadow:0 0 5px {{comColor1}};' data-store_id="{{info.store_id}}" bindtap='toCheckout'>买单</view>
+        <view class='to_store_check' bindtap='toCheckout' data-storeid='{{info.storeId}}' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}});box-shadow:0 0 5px {{comColor1}};' data-store_id="{{info.store_id}}" bindtap='toCheckout'>买单</view>
       </view>
       <!-- 门店服务 -->
       <view class='store-service' wx:if="{{info.service}}">

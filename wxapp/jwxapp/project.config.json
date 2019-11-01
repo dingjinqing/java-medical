@@ -83,8 +83,8 @@
 					"scene": null
 				},
 				{
-					"id": -1,
-					"name": "pages/storelist/storelist",
+					"id": 4,
+					"name": "门店列表",
 					"pathName": "pages/storelist/storelist",
 					"query": "",
 					"scene": null
