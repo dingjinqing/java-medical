@@ -168,6 +168,23 @@ export const en = {
   allCheck: 'Select all',
   sure: 'confirm',
   cancel: 'Cancel',
-  save: 'Save'
+  save: 'Save',
+  // 子账户管理里面
+  addUser: 'Add account',
+  userName: 'username',
+  userMobile: 'Mobile number',
+  addTime: 'Add time',
+  store: 'shop',
+  userMenu: 'permission',
+  eidtUser: 'Edit User Information',
+  pwdTips3: 'Do not enter will not change the password',
+  tips6: 'Username cannot be empty',
+  tips7: 'Please enter a password',
+  tips8: 'The password should be 6-16 non-Chinese',
+  tips9: 'Please enter your password again',
+  tipss10: 'Do not enter passwords twice',
+  tips11: 'The phone number cannot be empty',
+  tips12: 'The phone number is in the wrong format',
+  passwd2: 'confirm password'
 
 }
