@@ -567,6 +567,7 @@ public class PreSaleService extends ShopBaseService {
      * @param date
      * @return
      */
+    @Deprecated
     public Map<Integer, PreSaleActivityVo> getGoodsPreSaleInfo(List<Integer> goodsIds,Timestamp date) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
