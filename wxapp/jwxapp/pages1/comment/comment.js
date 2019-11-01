@@ -21,11 +21,11 @@ global.wxPage({
     page: 1,
     last_page: 1,
     imageUrl: app.globalData.imageUrl,
-    img_len: 0,
-    image: false,//是否显示晒单的图片
+    img_len: 0, // 添加了几张图片
+    imageVisible: false,// 是否显示晒单的图片
     islogin: true,
     currentTab: 0, // 展示的Tab，0位待评价
-    com_flag: false,//是否有订单
+    com_flag: false,// 是否有订单
     root: util.getImageUrl(''),
     no_root: nroot,
     info: {
@@ -78,14 +78,14 @@ global.wxPage({
     var that = this;
     order_sn = opt.order_sn;
     wx.hideShareMenu(); // 隐藏转发按钮
-    // this.get_comment(that, 0);
+    this.get_comment(that, 0);
   },
   /**
    *  生命周期函数--监听页面显示
    */
   onShow: function () {
-    var that = this;
-    this.get_comment(that, 0);
+    // var that = this;
+    // this.get_comment(that, 0);
   },
   //选择评分
   choose_star: function (e) {
@@ -128,16 +128,37 @@ global.wxPage({
         var tempFilePaths = res.tempFilePaths
         if (res) {
           for (var i = 0; i < tempFilePaths.length; i++) {
-            util.uploadFile(url, tempFilePaths[i], { img_cat_id: -1 }, function (e) {
-              var data = JSON.parse(e.data);
-              info.comm_img.push(data.content[0].img_url);
-              var img_len = parseInt(info.comm_img.length);
-              that.setData({
-                info: info,
-                image: true,
-                img_len: img_len
+            (function (i) {
+              wx.getImageInfo({
+                src: tempFilePaths[i],
+                success: function (obj) {
+                  console.log(obj)
+                  var params = {
+                    userId: util.getCache('user_id'),
+                    imgCatId: -1,
+                    needImgWidth: obj.width,
+                    needImgHeight: obj.height
+                  }
+                  util.uploadFile(url, tempFilePaths[i], params, function (e) {
+                    var data = JSON.parse(e.data);
+                    if (data.error === 0) {
+                      info.comm_img.push(data.content.imgUrl);
+                      var img_len = parseInt(info.comm_img.length);
+                      that.setData({
+                        info: info,
+                        imageVisible: true,
+                        img_len: img_len
+                      })
+                    } else {
+                      util.toast_fail(data.message)
+                    }
+                  });
+                },
+                fail: function (err) {
+                  throw err
+                }
               })
-            });
+            })(i)
           }
         }
       }
@@ -234,20 +255,21 @@ global.wxPage({
     console.log('下拉刷新...')
     wx.stopPullDownRefresh();
   },
-  // 评价并继续
+  /**
+   * 评价并继续，发表评价
+   * goodsId // 商品id
+   * userId // 用户id
+   * orderSn // 订单号
+   * commstar// 几星
+   * commNote// 评价心得
+   * commImg // 晒单图片数组转string
+   * anonymousflag // 是否匿名
+   * id // 评价有礼活动id
+   * awardType // 评价有礼奖励类型
+   * award // 评价有礼奖励内容
+   */
   good_commtag: function (e) {
-    /**
-     * goodsId // 商品id
-     * userId // 用户id
-     * orderSn // 订单号
-     * commstar// 几星
-     * commNote// 评价心得
-     * commImg // 晒单图片数组转string
-     * anonymousflag // 是否匿名
-     * id // 评价有礼活动id
-     * awardType // 评价有礼奖励类型
-     * award // 评价有礼奖励内容
-     */
+
     var that = this;
     var info = this.data.info;
     var item = e.detail.target.dataset.item
@@ -258,7 +280,7 @@ global.wxPage({
       orderSn: item.orderSn,
       commNote: e.detail.value.commNote,
       commstar: item.commstar,
-      commImg: info.commImg,
+      commImg: JSON.stringify(info.comm_img),
       anonymousflag: item.anonymousflag,
       id: item.id, // 有奖活动id
       awardType: item.awardType, // 有奖活动类型
@@ -344,41 +366,12 @@ global.wxPage({
   // 页面上拉触底事件的处理函数
   onReachBottom: function () {
     console.log('reachBottom....')
-    // var that = this;
-    // if (that.data.page == that.data.last_page) {
-    //   return;
-    // }
-    // that.data.page = that.data.page + 1;
-    // util.api('/api/wxapp/comment/list', function (e) {
-    //   var order_completed = [];
-    //   if (e.content && e.content.length > 0) {
-    //     order_completed = e.content;
-    //     for (var i = 0; i < order_completed.length; i++) {
-    //       for (var j = 0; j < order_completed[i].goods.length; j++) {
-    //         order_completed[i].goods[j].show = false;
-    //         order_completed[i].goods[j].show_info = false;
-    //         order_completed[i].goods[j].src = src_down;
-    //         if (order_completed[i].comment[j]) {
-    //           order_completed[i].comment[j].commstar = parseInt(order_completed[i].comment[j].commstar);
-    //           if (parseInt(order_completed[i].comment[j].anonymousflag) == 0) {
-    //             order_completed[i].comment[j].anonymousflag = false;
-    //           } else {
-    //             order_completed[i].comment[j].anonymousflag = true;
-    //           }
-    //           if (order_completed[i].comment[j].comm_img != "" ** order_completed[i].comment[j].comm_img != null) {
-    //             order_completed[i].comment[j].comm_img = JSON.parse(order_completed[i].comment[j].comm_img);
-    //           }
-    //         }
-    //       }
-    //     }
-    //     that.setData({
-    //       order_completed: that.data.order_completed.concat(order_completed),
-    //     })
-    //   }
-    // }, { userId: userId, commentFlag: comment_flag, orderSn: order_sn, page_no: that.data.page });
   },
   // 初始化数据
-  get_comment: function (that) {
+  get_comment: function (that, i) {
+    if (i || i === 0) {
+      comment_flag = i
+    }
     util.api('/api/wxapp/comment/list', function (res) {
       var order_completed = [];
       if (res.content && res.content.length > 0) {
@@ -405,6 +398,13 @@ global.wxPage({
             // let award = item.award;
             // console.log('award...', that.stringToObj(award))
             item.award = that.stringToObj(item.award)
+          }
+          if (item.commentFlag) {
+            if (item.commImg) {
+              var imgs = JSON.parse(item.commImg)
+              console.log('imgs:', imgs)
+              item.comm_img = imgs
+            }
           }
         })
       }

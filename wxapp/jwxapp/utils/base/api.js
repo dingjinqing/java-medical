@@ -55,6 +55,7 @@ function uploadFile(url, tempFilePaths, data, backfun, fail, complete) {
   var token = _getToken()
   if (token) data.token = token;
   data = _sign(data);
+  console.log(data)
   wx.uploadFile({
     url: url, //仅为示例，非真实的接口地址
     header: _getHeader(),

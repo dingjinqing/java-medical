@@ -16,7 +16,7 @@
       <!-- 门店名称 -->
       <view class="store-name">
         <view class="store-name-top">
-          <view>{{info.storeName}}></view>
+          <view>{{info.storeName}}</view>
           <text class="iconfont icondianhua" style="color:{{comColor}};font-size=40rpx;float:right;" bindtap="phoneCall"></text>
         </view>
         <view class="nowappoint" bindtap="changeStore">切换门店</view>
@@ -75,20 +75,20 @@
         </view>
       </view>
       <!--门店预约  -->
-      <view class='store-appointment' wx:if="{{info.serviceCat != null}}">
+      <view class='store-appointment' wx:if="{{info.serviceCat}}">
         <view class="title">
           <text class="title-text">门店预约</text>    
         </view>
         <view class="store-nav nav">
         <scroll-view class="scroll-view_H" scroll-x  scroll-left="{{scroll_left}}">
-          <block wx:for="{{info.serviceCat}}" wx:key="catId">
+          <block wx:for="{{info.serviceCat}}" wx:key="catId" wx:for-index="index">
             <view class="tabs-item {{currentTabsIndex == index?'selected':''}}" style='color:{{currentTabsIndex == index?comColor:""}};border-color:{{currentTabsIndex == index?comColor:""}}' bindtap="onTabsItemTap" data-index='{{index}}'>
               {{item.catName}}
             </view>
           </block>    
         </scroll-view> 
         </view>
-        <block wx:for="{{info.serviceCat}}" wx:key="{{index}}">
+        <block wx:for="{{info.serviceCat}}" wx:key="catName">
           <view hidden='{{currentTabsIndex != index}}'>
             <block wx:for="{{item.serviceList}}" wx:key="id" wx:for-item="serv">       
               <view class="store-nav-list" wx:if="{{serv.serviceShelf == 1}}" bindtap='nowappoint' data-id="{{serv.id}}">
@@ -97,9 +97,7 @@
                 </view>
                 <view class="list-right">
                   <view class="list-center">{{serv.serviceName}}</view>
-                  <!-- 
-                  <view class="list-time">{{serv.start_date}} 至 {{serv.end_date}} {{serv.start_period}}-{{serv.end_period}}</view>
-                  -->
+                  <view class="list-time">{{serv.startDate}} 至 {{serv.endDate}} {{serv.startPeriod}}-{{serv.endPeriod}}</view>
                   <view class="list-rt-top">
                     <view class='leftlisyt'>
                       <block wx:if="{{serv.service_subsist>0}}">

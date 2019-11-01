@@ -49,6 +49,9 @@
         "distribution/distribution",
         "distributionorder/distributionorder",
         "distributionspread/distributionspread",
+        "shopcheckout/shopcheckout",
+        "appointment/appointment",
+        "scancode/scancode",
         "comment/comment",
         "history/history"
       ]

@@ -14,7 +14,7 @@ Page({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    currentTabIndex: 0,
+    currentTabsIndex: 0,
     mobile: '',
     dis: 0,
     content: '' // 门店介绍
@@ -89,12 +89,6 @@ Page({
     util.navigateTo({
       url: '/pages/storelist/storelist'
     })
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
   },
   storeRequest: function (that) {
     util.api('/api/wxapp/store/info', function (res) {
@@ -245,16 +239,26 @@ Page({
         serviceList: info.allService
       }
       info.serviceCat.unshift(allServiceCat)
+      info.serviceCat.forEach(function (item, i) {
+        item.serviceList.forEach(function (item, i) {
+          if (item.serviceImg) {
+            var imgSrc = item.serviceImg.split('"')
+            console.log(imgSrc)
+            item.serviceImg = imgSrc[1]
+          }
+        })
+      })
     }
     return info
   },
+  // 买单
   toCheckout: function (e) {
     var store_id = e.currentTarget.dataset.store_id;
     util.navigateTo({
-      url: '/pages/shopcheckout/shopcheckout?store_id=' + store_id
+      url: '/pages1/shopcheckout/shopcheckout?store_id=' + store_id
     })
   },
-
+  // 扫码购
   toScanBuy: function (e) {
     var store_id = e.currentTarget.dataset.store_id;
     console.log(store_id)
@@ -274,19 +278,6 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  },
-
-  /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
@@ -299,13 +290,6 @@ Page({
     wx.hideNavigationBarLoading();
     // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
     wx.stopPullDownRefresh();
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
   },
 
   /**
