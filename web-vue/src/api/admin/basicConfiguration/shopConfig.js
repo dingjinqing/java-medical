@@ -1,5 +1,13 @@
 import service from '@/util/request.js'
 
+// 获取店铺基础信息
+export function getBaseInfo () {
+  return service({
+    url: '/api/admin/config/shop/getBaseInfo',
+    method: 'get'
+  })
+}
+
 //  我已有小程序，一键授权
 export function grantAuthorizationRequest () {
   return service({

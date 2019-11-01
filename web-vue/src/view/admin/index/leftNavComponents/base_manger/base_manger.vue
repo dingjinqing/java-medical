@@ -8,11 +8,15 @@
         <el-tab-pane
           :label="$t('ShopConfiguration.ShopBasicInformation')"
           name="first"
-        >店铺基础信息</el-tab-pane>
+        >
+          <storeBasicInfo></storeBasicInfo>
+        </el-tab-pane>
         <el-tab-pane
           :label="$t('ShopConfiguration.GeneralStoreSettings')"
           name="second"
-        >店铺通用设置</el-tab-pane>
+        >
+          <storeCommonSettings></storeCommonSettings>
+        </el-tab-pane>
         <el-tab-pane
           :label="$t('ShopConfiguration.SmallProgramAuthorization')"
           name="third"
@@ -28,6 +32,8 @@
 import { queryAuthdritionRequest } from '@/api/admin/basicConfiguration/shopConfig'
 export default {
   components: {
+    storeBasicInfo: () => import('@/view/admin/index/leftNavComponents/base_manger/store_basic_information'),
+    storeCommonSettings: () => import('@/view/admin/index/leftNavComponents/base_manger/store_common_settings'),
     programAuthDetails: () => import('@/view/admin/index/leftNavComponents/base_manger/program_auth_details'),
     programAuth: () => import('@/view/admin/index/leftNavComponents/base_manger/program_auth')
   },
