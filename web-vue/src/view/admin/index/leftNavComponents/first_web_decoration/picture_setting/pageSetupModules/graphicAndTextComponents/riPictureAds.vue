@@ -74,7 +74,10 @@
           v-if="moduleSaveData.image_type==='4'"
         >
           <div class="title pictureGapTitle">模块标题：</div>
-          <div class="content module_title">
+          <div
+            class="content module_title"
+            style="margin-bottom:10px"
+          >
             <el-input
               size="small"
               v-model="moduleSaveData.module_title"
@@ -100,6 +103,7 @@
                   <el-input
                     size="small"
                     v-model="item.title"
+                    :maxlength='6'
                   ></el-input>
                   <div style="font-size:12px;color:#999;margin-top:3px">限制六字，为空则不展示图片标题</div>
                 </div>
