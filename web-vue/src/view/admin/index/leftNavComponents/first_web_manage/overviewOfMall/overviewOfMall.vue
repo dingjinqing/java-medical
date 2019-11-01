@@ -3,33 +3,43 @@
 
     <div class="title">
       <el-tooltip
-        class="item"
+        :content="this.shopInfo.businessStateNes"
+        placement="bottom"
         effect="light"
-        :content="this.$t('overview.userTip')"
-        placement="bottom-start"
       >
         <div class="fl">
+
           <img
             class="shop_defu"
-            style="width: 44px;border: 1px solid #fff;"
-            :src="image + '/upload/0/image/20190710/crop_wTyAKWD7fyizqfv9.jpeg'"
-            alt=""
+            :src="this.shopInfo.shopAvatar===null?this.avatarImage:this.shopInfo.shopAvatar"
           >
           <img
+            v-if="this.shopInfo.businessState===1&&this.shopInfo.expireTimeStatus==='0'"
             class="shop_type"
             :src="image + '/image/admin/img_home/type_open.png'"
-            alt=""
+          >
+          <img
+            v-if="this.shopInfo.businessState===0"
+            class="shop_type"
+            :src="image + '/image/admin/img_home/type_none.png'"
+          >
+          <img
+            v-if="this.shopInfo.expireTimeStatus==='1'"
+            class="shop_type"
+            :src="image + '/image/admin/img_home/type_over.png'"
           >
         </div>
       </el-tooltip>
-
-      <span>{{ this.$t('overview.title') }}</span>
+      <span>{{ this.shopInfo.shopName }}</span>
       <el-tooltip
         effect="light"
         placement="bottom-start"
       >
         <div slot="content">
-          <div class="system_info_content_top">{{ this.$t('overview.editionTip1') }}<span class="version_name">{{ this.$t('overview.edition') }}</span>，{{ this.$t('overview.editionTip2') }}：<span class="expire_time">2020-03-05</span></div>
+          <div class="system_info_content_top">{{ this.$t('overview.editionTip1') }}<span class="version_name">{{ this.shopInfo.shopTypeNes }}</span>，{{ this.$t('overview.editionTip2') }}：<span
+              class="expire_time"
+              v-if="this.shopInfo.expireTime!==null"
+            >{{moment(this.shopInfo.expireTime).format('YYYY-MM-DD')}}</span></div>
           <div class="system_info_content_bottom">
             <el-button
               type="primary"
@@ -460,7 +470,7 @@
 <script>
 // 引入组件
 import bindAccount from './overviewBindAccount.vue'
-import { toDoItemRequest, dataRequest, noticeListRequest, noticeDetailRequest } from '@/api/admin/survey.js'
+import { toDoItemRequest, dataRequest, noticeListRequest, noticeDetailRequest, shopInfoRequest } from '@/api/admin/survey.js'
 export default {
   components: {
     bindAccount
@@ -502,11 +512,14 @@ export default {
       }],
       indValue: '', // 轮播的索引
       // 服务列表
-      serveList: this.$t('overview.serveList')
+      serveList: this.$t('overview.serveList'),
+      shopInfo: {},
+      avatarImage: this.$imageHost + '/image/admin/ad_img.png'
     }
   },
   mounted () {
     // 初始化数据
+    this.getShopInfo()
     this.langDefault()
     this.getTodoDate()
     this.getShowData()
@@ -655,6 +668,42 @@ export default {
     indexClickHandler (index) {
       this.$refs.carousel.setActiveItem(index)
       this.indValue = index
+    },
+    getShopInfo () {
+      shopInfoRequest().then((res) => {
+        if (res.error === 0) {
+          console.log('店铺信息')
+          console.log(res.content)
+          this.shopInfo = res.content
+          switch (this.shopInfo.shopType) {
+            case 'v1':
+              this.shopInfo.shopTypeNes = '体验版'
+              break
+            case 'v2':
+              this.shopInfo.shopTypeNes = '基础版'
+              break
+            case 'v3':
+              this.shopInfo.shopTypeNes = '高级版'
+              break
+            case 'v4':
+              this.shopInfo.shopTypeNes = '旗舰版'
+              break
+          }
+          switch (this.shopInfo.businessState) {
+            case 0:
+              this.shopInfo.businessStateNes = '未营业'
+              break
+            case 1:
+              this.shopInfo.businessStateNes = '营业'
+              break
+          }
+          if (this.shopInfo.expireTimeStatus === '1') {
+            this.shopInfo.businessStateNes = '已过期'
+          }
+        } else {
+          console.log(res.message)
+        }
+      })
     }
 
   }
@@ -680,12 +729,6 @@ export default {
   position: relative;
   margin-top: -1px;
   cursor: pointer;
-}
-
-.shop_type {
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 
 .title .fl > span img {
@@ -893,6 +936,8 @@ export default {
 
 .shop_defu {
   border-radius: 100%;
+  width: 44px;
+  border: 1px solid #fff;
 }
 
 .shop_type {

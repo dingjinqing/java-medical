@@ -53,3 +53,11 @@ export function noticeDetailRequest (data) {
     data: data
   })
 }
+
+// 店铺信息
+export function shopInfoRequest () {
+  return service({
+    url: '/api/admin/account/shop/oneInfo',
+    method: 'get'
+  })
+}
