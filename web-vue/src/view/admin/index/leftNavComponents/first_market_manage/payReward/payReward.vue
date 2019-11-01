@@ -27,7 +27,7 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="id"
+          prop="activityNames"
           label="活动名称"
           align="center"
         >
@@ -41,28 +41,28 @@
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="timeType"
           label="活动有效期"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="awardContentList"
           label="活动奖励"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="level"
+          prop="actFirst"
           label="优先级"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="status"
           label="活动状态"
           align="center"
         >
@@ -110,11 +110,9 @@ export default {
       tableData: [],
       pageParams: {},
       param: {
-        // status: 0,
-        navType: 2,
-        // 分页
-        currentPage: 1,
-        pageRows: 20
+        'navType': 1,
+        'currentPage': 1,
+        'pageRows': 20
       }
     }
   },

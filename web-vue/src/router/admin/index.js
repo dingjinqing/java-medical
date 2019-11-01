@@ -109,7 +109,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
               )
           },
-          // 交易统计
+          // 概况 - 交易统计
           {
             path: '/admin/home/main/tradesStatistics',
             name: 'trades_summary',
@@ -122,7 +122,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_manage/tradesStatistics/tradesStatistics'
               )
           },
-          // 商品统计页面
+          // 概况 - 商品统计页面
           {
             path: '/admin/home/main/goodsStatistics',
             name: 'goods_summary',
@@ -135,7 +135,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_manage/goodsStatistics/goodsStatistics'
               )
           },
-          // 用户统计页面
+          // 概况 - 用户统计页面
           {
             path: '/admin/home/main/userStatistics',
             name: 'user_summary',

@@ -16,55 +16,59 @@
         >
         </el-date-picker>
         <div class='wrapperCharts'>
-          <div
-            class="map"
-            id="charts"
-            ref="myEchart"
-          ></div>
-          <div class="table_lists">
-            <el-table
-              header-row-class-name="areaTable"
-              :default-sort="{prop: 'province', order: 'ascending'}"
-              border
-              style="width: 50%"
-            >
-              <el-table-column
-                prop="province"
-                label="Top省份"
-                sortable
-                align="center"
-              ></el-table-column>
-              <el-table-column
-                prop="totalDealMoney"
-                label="付款金额"
-                sortable
-                align="center"
-              ></el-table-column>
-              <el-table-column
-                prop="orderUserNum"
-                label="付款人数"
-                sortable
-                align="center"
-              ></el-table-column>
-              <el-table-column
-                prop="uv"
-                label="访客数"
-                sortable
-                align="center"
-              ></el-table-column>
-              <el-table-column
-                prop="uv2paid"
-                label="访问-付款转化率"
-                sortable
-                align="center"
-              ></el-table-column>
-              <el-table-column
-                prop="orderNum"
-                label="订单数"
-                sortable
-                align="center"
-              ></el-table-column>
-            </el-table>
+          <div class="mapArea">
+            <div
+              class="map"
+              id="charts"
+              ref="myEchart"
+            ></div>
+          </div>
+          <div class="tableWrapper">
+            <div class="table_lists">
+              <el-table
+                header-row-class-name="areaTable"
+                :default-sort="{prop: 'province', order: 'ascending'}"
+                :data="areaData"
+                border
+              >
+                <el-table-column
+                  prop="province"
+                  label="Top省份"
+                  sortable
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="totalDealMoney"
+                  label="付款金额"
+                  sortable
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="orderUserNum"
+                  label="付款人数"
+                  sortable
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="uv"
+                  label="访客数"
+                  sortable
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="uv2paid"
+                  label="访问-付款转化率"
+                  sortable
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="orderNum"
+                  label="订单数"
+                  sortable
+                  align="center"
+                ></el-table-column>
+              </el-table>
+            </div>
           </div>
         </div>
 
@@ -203,12 +207,15 @@ export default {
       value2: '',
       chart: null,
       areaParams: {
-        'screeningTime': '2019-07',
+        'screeningTime': '2019-08',
         'orderByField': 'total_deal_money',
         'orderByType': 'asc',
         'limitNum': 5
       },
       myChart: {},
+      areaData: [],
+      maxTradeMoney: '',
+      minTradeMoney: '',
 
       // 标签成分分析
       custom: true,
@@ -244,7 +251,7 @@ export default {
     }
   },
   methods: {
-    // // 地域分布 - 选择月份
+    // 地域分布 - 选择月份
     selectMonthHandler (val) {
       this.areaParams.screeningTime = val
       console.log(val)
@@ -290,6 +297,12 @@ export default {
       // 交易地域分布
       tradeAreaApi(this.areaParams).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          this.areaData = res.content.vos
+          console.log(this.areaData)
+          this.maxTradeMoney = res.content.maxTotalDealMoney
+          this.minTradeMoney = res.content.minTotalDealMoney
+        }
       }).catch(err => console.log(err))
 
       // 标签成交分析接口
@@ -305,37 +318,46 @@ export default {
     },
 
     chinaConfigure () {
-      console.log(this.userJson)
       let myChart = echarts.init(this.$refs.myEchart) // 这里是为了获得容器所在位置
       window.onresize = myChart.resize
       myChart.setOption({ // 进行相关配置
         tooltip: {}, // 鼠标移到图里面的浮动提示框
         dataRange: {
-          show: false,
-          min: 0,
-          max: 1000,
-          text: ['High', 'Low'],
+          show: true,
+          orient: 'horizontal',
+          x: 'center',
+          bottom: '10px',
+          itemGap: '20px',
+          itemHeight: '300px',
+          // min: this.minTradeMoney,
+          // max: this.maxTradeMoney,
+          min: 1111,
+          max: 1112,
+          text: ['北京', '新疆'],
+          // splitNumber: '10',
           realtime: true,
           calculable: true,
-          color: ['orangered', 'yellow', 'lightskyblue']
+          color: ['orangered', 'lightskyblue']
         },
         geo: { // 这个是重点配置区
           map: 'china', // 表示中国地图
-          roam: true,
+          roam: false, // 地图是否可以进行缩放
           label: {
             normal: {
-              show: true, // 是否显示对应地名
+              show: false, // 是否显示对应地名
               textStyle: {
                 color: 'rgba(0,0,0,0.4)'
               }
             }
           },
-          itemStyle: {
+          itemStyle: { // 地图外观定制，其中normal表示正常显示的样式，emphasis表示鼠标悬浮下样式
             normal: {
-              borderColor: 'rgba(0, 0, 0, 0.2)'
+              borderColor: 'rgba(51, 51, 51)',
+              backgroundColor: 'rgba(50,50,50,0.7)',
+              borderRadius: '4px'
             },
             emphasis: {
-              areaColor: null,
+              areaColor: null, // 图标选择区域颜色
               shadowOffsetX: 0,
               shadowOffsetY: 0,
               shadowBlur: 20,
@@ -344,7 +366,7 @@ export default {
             }
           }
         },
-        series: [{
+        series: [{ // 整体配置 其中type很关键 表示该例是地图，data:图表所用数据
           type: 'scatter',
           coordinateSystem: 'geo' // 对应上方配置
         },
@@ -352,27 +374,8 @@ export default {
           name: '启动次数', // 浮动框的标题
           type: 'map',
           geoIndex: 0,
-          data: [{
-            'name': '北京',
-            'value': 599
-          }, {
-            'name': '上海',
-            'value': 142
-          }, {
-            'name': '黑龙江',
-            'value': 44
-          }, {
-            'name': '深圳',
-            'value': 92
-          }, {
-            'name': '湖北',
-            'value': 810
-          }, {
-            'name': '四川',
-            'value': 453
-          }]
-        }
-        ]
+          data: []
+        }]
       })
     }
   }
@@ -414,25 +417,35 @@ export default {
         display: flex;
         justify-content: space-between;
         width: 100%;
-        // height: 500px;
-        border: 1px solid #000;
-        #charts {
+        height: 500px;
+        // border: 1px solid #000;
+        .mapArea {
           width: 45%;
-          height: 500px;
-          position: relative;
+          #charts {
+            height: 500px;
+            width: 100%;
+            position: relative;
+            // border: 10px solid #f40;
+          }
         }
-        /deep/ .areaTable th {
-          background-color: #f5f5f5;
-          border: none;
-          height: 36px;
-          color: #000;
-          font-size: 14px;
-        }
-        .table_lists {
-          // position: relative;
+        .tableWrapper {
           width: 50%;
-          background-color: #fff;
-          padding: 10px 0 10px;
+          margin-left: 2%;
+          margin-right: 2%;
+          margin-top: 50px;
+          height: 500px;
+          /deep/ .areaTable th {
+            background-color: #f5f5f5;
+            border: none;
+            height: 36px;
+            color: #000;
+            font-size: 14px;
+          }
+          .table_lists {
+            position: relative;
+            background-color: #fff;
+            padding: 10px 0 10px;
+          }
         }
       }
 
@@ -442,13 +455,6 @@ export default {
         height: 36px;
         color: #000;
         padding: 8px 10px;
-        font-size: 14px;
-      }
-      /deep/ .areaTable th {
-        background-color: #f5f5f5;
-        border: none;
-        height: 36px;
-        color: #000;
         font-size: 14px;
       }
       .table_list {
