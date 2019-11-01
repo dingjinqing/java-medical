@@ -15,7 +15,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssiDataMarket {
+public class AssiDataMarket implements PendingRule<AssiDataMarket> {
     /** 分销审核超时 0: 分销员审核进度良好 否有examine个分销员申请超过3天未处理 */
     public int examine;
     /**
@@ -26,9 +26,15 @@ public class AssiDataMarket {
      */
     public Map<String,String> member;
     /**
-     * 优惠券
+     * 优惠券库存偏小
      * K---id:优惠券id
      * V---actName:优惠券名称
      */
     public Map<Integer,String> voucher;
+
+    @Override
+    public AssiDataMarket ruleHandler() {
+        handler1(examine);
+        return this;
+    }
 }

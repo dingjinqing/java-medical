@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class AssiDataShop {
+public class AssiDataShop implements PendingRule<AssiDataShop> {
     /**
      * 微信配置（授权和支付）,决定了五个完成项
      * byte类型使用后两位表示配置信息结果
@@ -37,7 +37,9 @@ public class AssiDataShop {
     public Byte childAccountConf;
     /** 公众号 0：已授权公众号，否未授权公众号 */
     public Byte officialAccountConf;
-    /** 店铺首页 0：已已完成店铺首页装修，否未装修店铺首页 */
+    /**
+     * 店铺首页 0：已完成店铺首页装修，否未装修店铺首页
+     */
     public Byte homePageConf;
     /** 好物圈 0: 已开启好物圈，否未开启 */
     public Byte shopRecommendConf;
@@ -53,6 +55,13 @@ public class AssiDataShop {
         this.shopRecommendConf = builder.shopRecommendConf;
         this.shopRecommendLink = builder.shopRecommendLink;
         this.customServiceConf = builder.customServiceConf;
+    }
+
+    @Override
+    public AssiDataShop ruleHandler() {
+        handler3(wxPayConfigInfo);
+        handler1(childAccountConf, officialAccountConf, homePageConf, shopRecommendConf, customServiceConf);
+        return this;
     }
 
     public static class Builder implements com.vpu.mp.service.pojo.shop.overview.Builder<AssiDataShop> {

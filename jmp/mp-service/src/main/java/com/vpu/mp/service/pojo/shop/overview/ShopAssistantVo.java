@@ -13,16 +13,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShopAssistantVo {
+public class ShopAssistantVo implements PendingRule<ShopAssistantVo> {
     private AssiDataShop dataShop;
     private AssiDataGoods dataGoods;
     private AssiDataOrder dataOrder;
     private AssiDataMarket dataMarket;
     /** 待处理项总数 */
-    private int totalPending;
+    private int totalNum;
 
-    public void totalPendingIncr(){
-        totalPending++;
+    @Override
+    public ShopAssistantVo ruleHandler() {
+        this.totalNum = getTotalPending();
+        resetPending();
+        return this;
     }
-
 }

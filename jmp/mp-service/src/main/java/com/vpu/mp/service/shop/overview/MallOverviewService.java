@@ -152,7 +152,7 @@ public class MallOverviewService extends ShopBaseService {
             .dataGoods(goodsNav(param))
             .dataOrder(orderNav(param))
             .dataMarket(marketNav(param))
-            .build();
+            .build().ruleHandler();
     }
 
     /**
@@ -168,7 +168,7 @@ public class MallOverviewService extends ShopBaseService {
             .setShopRecommendLink(shoppingListConfig.getWxShoppingRecommend())
             //  客服 0: 已开启客服，否未开启
             .setCustomServiceConf(shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE)
-            .build();
+            .build().ruleHandler();
     }
 
     /**
@@ -190,7 +190,7 @@ public class MallOverviewService extends ShopBaseService {
             .goodsRecommend(db().fetchCount(RECOMMEND_GOODS))
             // 商家分类
             .shopSort(db().fetchCount(SORT))
-            .build();
+            .build().ruleHandler();
     }
 
     /**
@@ -202,7 +202,7 @@ public class MallOverviewService extends ShopBaseService {
             .deliver(returnOrderService.overdueDelivery(param.getDeliverOver()))
             //  退款申请逾期
             .refund(returnOrderService.refundOverdue(param.getRefundOver()))
-            .build();
+            .build().ruleHandler();
     }
 
     /**
@@ -216,7 +216,7 @@ public class MallOverviewService extends ShopBaseService {
             .member(null)
             //  优惠券
             .voucher(couponService.getSmallInventoryCoupon(param.getCouponSizeNum()))
-            .build();
+            .build().ruleHandler();
 
         /*Map<String,String> memberMap = new HashMap<>(4);
         CardExamineRecord cardExamineRecord = new CardExamineRecord();

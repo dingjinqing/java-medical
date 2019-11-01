@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssiDataGoods {
+public class AssiDataGoods implements PendingRule<AssiDataGoods> {
     /** 运费模板设置 0: 已设置运费模板，否未设置 */
     public Byte shipTemplateConf;
     /** 商品添加 0: 已添加商品 否未添加 */
@@ -28,4 +28,11 @@ public class AssiDataGoods {
     public int goodsRecommend;
     /** 商家分类 0: 未配置商家分类 否已配置商家分类 */
     public int shopSort;
+
+    @Override
+    public AssiDataGoods ruleHandler() {
+        handler1(shipTemplateConf, goodsConf, goodsStoreConf, goodsUnsalableConf, goodsComment);
+        handler2(goodsRecommend, shopSort);
+        return this;
+    }
 }

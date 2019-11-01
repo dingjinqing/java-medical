@@ -233,21 +233,18 @@ public class ShopOverviewService extends MainBaseService {
             }
         } else {
             dataShop.setWxPayConfigInfo(BYTE_TWO);
-            vo.totalPendingIncr();
         }
         // 子账号设置 0：已完成子账号设置，否未完成
         if (CollectionUtils.isNotEmpty(childAccountService.getInfoBySysId(sysId))) {
             dataShop.setChildAccountConf(BYTE_ZERO);
         } else {
             dataShop.setChildAccountConf(BYTE_ONE);
-            vo.totalPendingIncr();
         }
         // 公众号  0：已授权公众号，否未授权公众号
         if (CollectionUtils.isNotEmpty(shopOfficialAccount.getOfficialAccountBySysId(sysId, BYTE_ONE))) {
             dataShop.setOfficialAccountConf(BYTE_ZERO);
         } else {
             dataShop.setOfficialAccountConf(BYTE_ONE);
-            vo.totalPendingIncr();
         }
         vo.setDataShop(dataShop);
         log.debug("主库的统计数据整完了");
