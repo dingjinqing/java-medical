@@ -1,12 +1,12 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>图片广告</h2>
+      <h2>{{$t('pictureAds.pictureAds')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <!--选择模板-->
         <div class="listStyle">
-          <div class="title">选择模板：</div>
+          <div class="title">{{$t('pictureAds.selectTemplate')}}：</div>
           <div class="content">
             <div
               class="typeContainer"
@@ -37,24 +37,24 @@
         <!--end-->
         <!--预览原图-->
         <div class="listStyle">
-          <div class="title">预览原图：</div>
+          <div class="title">{{$t('pictureAds.previewTheOriginalImage')}}：</div>
           <div class="content">
             <div>
               <el-radio
                 v-model="moduleSaveData.is_preview"
                 label="0"
-              >否</el-radio>
+              >{{$t('pictureAds.no')}}</el-radio>
               <el-radio
                 v-model="moduleSaveData.is_preview"
                 label="1"
-              >是</el-radio>
+              >{{$t('pictureAds.yes')}}</el-radio>
             </div>
-            <div style="color:#999;width:335px;text-align:justify;margin-top:5px;line-height:16px">选择是，则在图片没有添加链接时，前端用户点击可以预览原图，选择否，则未添加图片链接时，不可预览原图</div>
+            <div style="color:#999;width:335px;text-align:justify;margin-top:5px;line-height:16px">{{$t('pictureAds.originalGraphTip')}}</div>
           </div>
         </div>
         <!--图片间隙-->
         <div class="listStyle">
-          <div class="title pictureGapTitle">图片间隙：</div>
+          <div class="title pictureGapTitle">{{$t('pictureAds.pictureGap')}}：</div>
           <div class="content pictureGap">
             <el-slider
               v-model="pictureGapValue"
@@ -73,7 +73,7 @@
           class="listStyle"
           v-if="moduleSaveData.image_type==='4'"
         >
-          <div class="title pictureGapTitle">模块标题：</div>
+          <div class="title pictureGapTitle">{{$t('pictureAds.moduleHeader')}}：</div>
           <div
             class="content module_title"
             style="margin-bottom:10px"
@@ -98,47 +98,54 @@
             >
             <div style="margin-left:10px">
               <div class="textTop">
-                <span>文本：</span>
+                <span>{{$t('pictureAds.text')}}：</span>
                 <div>
                   <el-input
                     size="small"
                     v-model="item.title"
                     :maxlength='6'
                   ></el-input>
-                  <div style="font-size:12px;color:#999;margin-top:3px">限制六字，为空则不展示图片标题</div>
+                  <div style="font-size:12px;color:#999;margin-top:3px">{{$t('pictureAds.textTips')}}</div>
                 </div>
 
               </div>
 
               <div class="linkDiv">
-                <span>链接：</span>
+                <span>{{$t('pictureAds.link')}}：</span>
                 <el-input
                   size="small"
                   v-model="item.link"
                 ></el-input>
-                <el-button size="small">选择链接</el-button>
+                <el-button
+                  @click="handleToCallLinkDialog(index)"
+                  size="small"
+                >{{$t('pictureAds.selectLink')}}</el-button>
               </div>
               <div class="operation">
                 <div
+                  style="height:22px"
                   class="btn"
-                  title='向上'
-                  @click="handleToOperation(0,index)"
+                  :title="$t('pictureAds.upward')"
+                  @click="
+                  handleToOperation(0,index)"
                 >↑</div>
                 <div
                   class="btn"
-                  title='向下'
-                  style="margin:0 5px"
+                  :title="$t('pictureAds.down')"
+                  style="margin:0 5px;height:22px"
                   @click="handleToOperation(1,index)"
                 >↓</div>
                 <div
                   class="btn"
-                  title='移出'
+                  style="height:22px"
+                  :title="$t('pictureAds.moveOut')"
                   @click="handleToOperation(2,index)"
                 >X</div>
                 <div
                   class="image_adver_set"
+                  style="height:auto;white-space: nowrap;"
                   @click="handleToExpand(index)"
-                >{{item.whetherToExpand==='0'?'展开':'收起'}}更多配置</div>
+                >{{item.whetherToExpand==='0'?$t('pictureAds.open'):$t('pictureAds.retract')}}{{$t('pictureAds.moreConfiguration')}}</div>
               </div>
             </div>
           </div>
@@ -148,16 +155,16 @@
             v-if="item.whetherToExpand==='1'"
           >
             <div class="content">
-              <span>显示设置：</span>
+              <span>{{$t('pictureAds.displaySettings')}}：</span>
               <div class="radioContent">
                 <el-radio
                   v-model="item.can_show"
                   label="0"
-                >全部用户可见</el-radio>
+                >{{$t('pictureAds.visibleToAllUsers')}}</el-radio>
                 <el-radio
                   v-model="item.can_show"
                   label="1"
-                >未在店铺内支付用户可见</el-radio>
+                >{{$t('pictureAds.notPaidInUsers')}}</el-radio>
               </div>
             </div>
           </div>
@@ -169,10 +176,10 @@
           @click="handleToCallImgDialog()"
         >
           <div style="color: #5a8bff;font-size: 13px;margin-bottom:5px">
-            + 添加图片
+            + {{$t('pictureAds.addPictures')}}
           </div>
           <div style="color: #999;font-size: 13px;">
-            建议宽度{{moduleSaveData.image_type==='0'?'750':moduleSaveData.image_type==='1'?'375':moduleSaveData.image_type==='2'?'670':moduleSaveData.image_type==='3'?'305':moduleSaveData.image_type==='4'?'142':''}}px
+            {{$t('pictureAds.recommendedWidth')}}{{moduleSaveData.image_type==='0'?'750':moduleSaveData.image_type==='1'?'375':moduleSaveData.image_type==='2'?'670':moduleSaveData.image_type==='3'?'305':moduleSaveData.image_type==='4'?'142':''}}px
           </div>
         </div>
         <!--添加图片占位end-->
@@ -186,12 +193,18 @@
       :isDraggable='isDraggable'
       @handleSelectImg='handleSelectImg'
     />
+    <!--选择链接弹窗-->
+    <SelectLinks
+      :tuneUpSelectLink='tuneUpSelectLink'
+      @selectLinkPath="selectLinkPath"
+    />
   </div>
 </template>
 <script>
 export default {
   components: {
-    ImageDalog: () => import('@/components/admin/imageDalog')
+    ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
+    SelectLinks: () => import('@/components/admin/selectLinks') // 选择链接弹窗
   },
   props: {
     modulesData: Object,
@@ -199,32 +212,12 @@ export default {
   },
   data () {
     return {
+      tuneUpSelectLink: false, // 调起选择链接弹窗flag
       tuneUp: false, //  调起添加图片弹窗flag
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态
       isAddImgOrChangeFlga: false, // true为添加图片  false为更换列表项中的图片
       changeListImgIndex: null,
-      listTypeData: [ // 选择模板列表数据
-        {
-          typeName: '单列图片',
-          isChecked: true
-        },
-        {
-          typeName: '双列图片',
-          isChecked: false
-        },
-        {
-          typeName: '横向滑动(大)',
-          isChecked: false
-        },
-        {
-          typeName: '横向滑动(小)',
-          isChecked: false
-        },
-        {
-          typeName: '横向滑动(导航)',
-          isChecked: false
-        }
-      ],
+      listTypeData: [], // 选择模板列表数据
       pictureGapValue: 0, // 图片间隙slider值
       moduleSaveData: {
         is_preview: '0' //  预览原图radio
@@ -247,7 +240,14 @@ export default {
         this.$emit('handleToBackData', newData)
       },
       deep: true
+    },
+    lang () {
+      this.listTypeData = this.$t('pictureAds.listTypeData')
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 点击列表样式
@@ -351,6 +351,16 @@ export default {
       this.isAddImgOrChangeFlga = false
       this.isDraggable = false
       this.tuneUp = !this.tuneUp
+    },
+    //  调起选择链接弹窗
+    handleToCallLinkDialog (index) {
+      this.changeListImgIndex = index
+      this.tuneUpSelectLink = !this.tuneUpSelectLink
+    },
+    // 选择链接选中链接后回传数据
+    selectLinkPath (path) {
+      console.log(path)
+      this.moduleSaveData.image_list[this.changeListImgIndex].link = path
     }
   }
 }
@@ -391,7 +401,7 @@ export default {
             padding: 8px 5px;
             width: 30%;
             margin-right: 3%;
-            height: 96px;
+            // height: 96px;
             border: 1px solid #e5e5e5;
             margin-bottom: 10px;
             .type {

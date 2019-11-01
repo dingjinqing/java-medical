@@ -58,6 +58,8 @@ import { en as pageSetUp } from './views/admin_new/en/index/miniProgramManagemen
 // 小程序页面装修图片导航模块国际化
 import { en as pictureNavigation } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationEn'
 // 小程序页面装修商品搜索模块国际化
+import { en as pictureAds } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureAdsEn'
+
 import {
   en as commoditySearch
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
@@ -467,12 +469,16 @@ const en = {
     imagePlaceholder: 'Please enter the name of the picture.',
     search: 'search',
     OriginalImg: 'Original graph',
+    tailoring: 'Tailoring',
     delImg: 'delete',
     currentPage: 'Current page',
     totalPage: 'Total Records',
     strip: 'strip',
     cancel: 'cancel',
-    Determine: 'Determine'
+    Determine: 'Determine',
+    displayOriginalGraph: 'Display original graph',
+    cutPictures: 'Cut pictures',
+    deletePictures: 'Delete pictures'
   },
   // admin 浏览图片弹窗 selectoptions数据
   options: [
@@ -759,6 +765,7 @@ const en = {
   commoditySearch, // 小程序页面装修商品搜索模块
   membershipCard, // 小程序页面装修会员卡模块
   coupon, // 小程序页面装修优惠卷模块
-  commodity // 小程序页面装修商品模块
+  commodity, // 小程序页面装修商品模块
+  pictureAds // 小程序页面装修图片广告模块
 }
 export default en

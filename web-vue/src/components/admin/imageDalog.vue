@@ -95,17 +95,17 @@
                           class="old_pic"
                           :href="item.imgUrl"
                           target="_blank"
-                          title="显示原图"
+                          :title="$t('imgageDalog.displayOriginalGraph')"
                         >{{$t('imgageDalog.OriginalImg')}}</a>
                         <a
-                          title="裁剪图片"
+                          :title="$t('imgageDalog.cutPictures')"
                           @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl)"
                         >
-                          裁剪
+                          {{$t('imgageDalog.tailoring')}}
                         </a>
                         <a
                           class="remove_image"
-                          title="删除图片"
+                          :title="$t('imgageDalog.deletePictures')"
                           @click="delImg(item.imgId)"
                         >{{$t('imgageDalog.delImg')}}</a>
                       </p>

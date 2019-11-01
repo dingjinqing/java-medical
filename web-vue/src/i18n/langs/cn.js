@@ -59,6 +59,8 @@ import { cn as membershipCard } from './views/admin_new/cn/index/miniProgramMana
 import { cn as coupon } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/couponCn'
 // 小程序页面装修商品模块国际化
 import { cn as commodity } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commodityCn'
+// 小程序页面装修图片广告模块国际化
+import { cn as pictureAds } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureAdsCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -442,12 +444,16 @@ const cn = {
     imagePlaceholder: '请输入图片名称',
     search: '搜索',
     OriginalImg: '原图',
+    tailoring: '裁剪',
     delImg: '删除',
     currentPage: '当前页面',
     totalPage: '总记录',
     strip: '条',
     cancel: '取消',
-    Determine: '确定'
+    Determine: '确定',
+    displayOriginalGraph: '显示原图',
+    cutPictures: '裁剪图片',
+    deletePictures: '删除图片'
   },
   // admin 浏览图片弹窗 selectoptions数据
   options: [
@@ -733,7 +739,8 @@ const cn = {
   commoditySearch, // 小程序页面装修搜索模块
   membershipCard, // 小程序页面装修会员卡模块
   coupon, // 小程序页面装修优惠卷模块
-  commodity //  小程序页面装修商品模块
+  commodity, //  小程序页面装修商品模块
+  pictureAds //  小程序页面装修图片广告模块
 }
 
 export default cn

@@ -189,7 +189,8 @@ export default {
           this.isRightPageChangeFlga = false
         }
       },
-      deep: true
+      deep: true,
+      immediate: true
     },
     lang () {
       if (!this.firstInter) return

@@ -26,5 +26,11 @@ export const en = {
   bgColor: 'background color',
   reset: 'Reset',
   bgPic: 'Background picture',
-  determine: 'Determine'
+  determine: 'Determine',
+  saveAndPublish: 'Save and publish',
+  saveAsDraft: 'save as draft',
+  previewEffect: 'Preview effect',
+  remind: 'Remind',
+  cancel: 'Cancel',
+  sureToDelete: 'Are you sure you want to delete?'
 }

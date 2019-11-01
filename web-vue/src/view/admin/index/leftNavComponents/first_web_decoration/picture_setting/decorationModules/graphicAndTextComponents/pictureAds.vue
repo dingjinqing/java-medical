@@ -18,8 +18,8 @@
           class="seizeASeat"
           v-if="!moduleSavedata.image_list.length"
         >
-          <p>点击编辑图片广告</p>
-          <p style="font-size:12px;margin-top:5px">建议宽度750像素</p>
+          <p>{{$t('pictureAds.clickEditImageAd')}}</p>
+          <p style="font-size:12px;margin-top:5px">{{$t('pictureAds.recommendedPixels')}}</p>
         </div>
         <!--图片列表内容-->
         <div
@@ -42,11 +42,8 @@
         </div>
       </div>
       <!--模块编辑区结束-->
-      <div
-        class="item_module_title"
-        :style="hoverTips?'width:140px':''"
-      >
-        <span>图片广告</span>
+      <div class="item_module_title">
+        <span>{{$t('pictureAds.pictureAds')}}</span>
       </div>
       <div class="item_operation">
         <img

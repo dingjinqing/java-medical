@@ -82,6 +82,7 @@ export default {
     return {
       activeBorder: false,
       activeSetHere: false,
+      hoverTips: 'hoverTips', // 英文适配
       carClass: '普通卡',
       carData: {
         backgroundColor: '#ecc98f',

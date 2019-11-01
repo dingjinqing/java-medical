@@ -258,6 +258,7 @@ export default {
       data.forEach(item => {
         obj[`c_${item.cur_idx}`] = item
       })
+      console.log(obj)
       obj['page_cfg'] = pageSetData
       return obj
     }

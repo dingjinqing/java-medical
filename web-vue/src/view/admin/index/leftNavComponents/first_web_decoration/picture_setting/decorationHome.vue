@@ -62,7 +62,7 @@
               <div
                 class="drag_area"
                 :class="zbFlag?'zwHeight':''"
-                style="height:100%"
+                style="min-height:530px;"
               >
                 <!--放这里-->
                 <div
@@ -140,24 +140,24 @@
           type="primary"
           size="small"
           @click="handleToFooter(0)"
-        >保存并发布</el-button>
+        >{{$t('pageSetUp.saveAndPublish')}}</el-button>
         <el-button
           size="small"
           @click="handleToFooter(1)"
-        >保存为草稿</el-button>
+        >{{$t('pageSetUp.saveAsDraft')}}</el-button>
         <el-button
           size="small"
           @click="handleToFooter(2)"
-        >预览效果</el-button>
+        >{{$t('pageSetUp.previewEffect')}}</el-button>
       </div>
     </div>
     <!--中间模块是否删除弹窗-->
     <el-dialog
-      title="提醒"
+      :title="$t('pageSetUp.remind')"
       :visible.sync="deleteVisible"
       width="30%"
     >
-      <div style="display:flex;justify-content:center"><span>确认要删除吗？</span></div>
+      <div style="display:flex;justify-content:center"><span>{{$t('pageSetUp.sureToDelete')}}</span></div>
 
       <span
         slot="footer"
@@ -166,12 +166,12 @@
         <el-button
           size="small"
           @click="deleteVisible = false"
-        >取 消</el-button>
+        >{{$t('pageSetUp.cancel')}}</el-button>
         <el-button
           size="small"
           type="primary"
           @click="handleToSureDelete(deleteFlag)"
-        >确 定</el-button>
+        >{{$t('pageSetUp.determine')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -184,6 +184,7 @@ import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
 import { saveDecorationPage, editSave } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { pageEdit } from '@/api/admin/decoration/pageSet.js'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
 require('webpack-jquery-ui/css')
@@ -257,7 +258,11 @@ export default {
       cur_idx: 100,
       MoveWhiteFlag: false, // 是否移入的是底部空白部分
       isEditSave: false, // 页面配置列表点击编辑跳转过来的标识
-      editPageData: null
+      editPageData: null,
+      page_id: null, // 编辑回显page_id
+      page_type: null, // 编辑回显page_type
+      page_enabled: null, // 编辑回显page_enabled
+      page_tpl_type: null //  编辑回显page_tpl_type
     }
   },
   watch: {
@@ -297,24 +302,36 @@ export default {
     // 初始化语言
     this.langDefault()
     console.log(this.$route)
-    if (Number(this.$route.params.data) !== -1) { // 判断是否是页面列表配置页面点击编辑跳转而来
-      this.isEditSave = true
-      let content = JSON.parse(this.$route.params.data.page_content)
-      console.log(JSON.parse(this.$route.params.data.page_content))
-      this.pageSetData.page_name = this.$route.params.page_name
-      this.pageSetData.cat_id = this.$route.params.cat_id
-      console.log(content)
-      this.editPageData = content
-      let moduleDataCopy = JSON.parse(JSON.stringify(content))
-      delete moduleDataCopy.page_cfg
-      console.log(moduleDataCopy)
-      let arr = []
-      Object.keys(moduleDataCopy).forEach((item, index) => {
-        arr.push(moduleDataCopy[item])
+    if (Number(this.$route.query.pageId) !== -1) { // 判断是否是页面列表配置页面点击编辑跳转而来
+      pageEdit({ pageId: this.$route.query.pageId }).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.page_id = res.content.page_id
+          this.page_type = res.content.page_type
+          this.page_enabled = res.content.page_enabled
+          this.page_tpl_type = res.content.page_tpl_type
+
+          this.cur_idx = res.content.last_cur_idx
+          this.isEditSave = true
+          console.log(res.content.page_content)
+          let content = JSON.parse(res.content.page_content)
+          console.log(JSON.parse(res.content.page_content))
+          this.pageSetData.page_name = res.content.page_name
+          this.pageSetData.cat_id = res.content.cat_id
+          console.log(content)
+          this.editPageData = content
+          let moduleDataCopy = JSON.parse(JSON.stringify(content))
+          delete moduleDataCopy.page_cfg
+          console.log(moduleDataCopy)
+          let arr = []
+          Object.keys(moduleDataCopy).forEach((item, index) => {
+            arr.push(moduleDataCopy[item])
+          })
+          console.log(arr)
+          this.modulesData = arr
+          this.handleToTurnModulesName(arr)
+        }
       })
-      console.log(arr)
-      this.modulesData = arr
-      this.handleToTurnModulesName(arr)
     } else {
       this.isEditSave = false
     }
@@ -390,6 +407,7 @@ export default {
           'page_bg_image': '',
           'show_margin': '1',
           'margin_val': '0',
+          'last_cur_idx': this.cur_idx,
           'pictorial': {
             'is_add': '0',
             'user_visibility': '0',
@@ -806,8 +824,9 @@ export default {
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
       if (!judgeFlag) return
+      console.log(saveMosulesData)
       let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
-
+      console.log(data)
       console.log(saveMosulesData, this.modulesData, this.pageSetData)
       console.log(localStorage.getItem('V-ShopId'))
       if (!this.pageSetData.cat_id) {
@@ -822,7 +841,7 @@ export default {
         catId: this.pageSetData.cat_id
 
       }
-      console.log(this.isEditSave, this.$route.params.data)
+      console.log(this.isEditSave)
       // cat_id: 0
       // create_time: "2019-10-15 14:11:31"
       // page_content: "{"c_101":{"module_name":"m_image_guide","nav_style":"1","font_color":"#92b0e4","bg_color":"#ffffff","nav_group":[{"nav_name":"导航一","nav_link":"pages/item/item","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20190916/PXRfayzzB9CXpPGku8xq.jpg"},{"nav_name":"导航二","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/MlpTXNue8qrqBOlQhKyB.jpeg"},{"nav_name":"导航三","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/27gnGcsuw2NzMnciLF0S.jpg"},{"nav_name":"导航四","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/0/image/20190903/1N2h7RDrraBKUcNkdG0C.jpg"}],"cur_idx":101},"c_102":{"module_name":"m_card","card_id":1,"hidden_card":0,"card_name":"普通卡续费测试1","card_state":"使用中","card_grade":"v1","receive_day":"有效期:永久有效","card_type":"0","legal":"会员折扣9折","exchang_count_legal":"开卡赠送10次兑换商品机会","bg_type":"0","bg_color":"#ecca90","bg_img":"","is_pay":"2","pay_type":"0","pay_fee":"0.00","cur_idx":102,"isChecked":true},"page_cfg":{"is_ok":1,"cat_id":0,"page_name":"方框测试","bg_types":"0","has_bottom":"0","page_bg_color":"#ffffff","page_bg_image":"","show_margin":"1","margin_val":"20","pictorial":{"is_add":"0","user_visibility":"0","share_btn_name":"","share_desc":"","share_img_path":"","name_length":0}}}"
@@ -849,14 +868,15 @@ export default {
       console.log(flag)
       if (flag === 0 || flag === 1) {
         console.log(params)
+        console.log(data)
         if (this.isEditSave) { // 编辑保存
           let editParams = {
-            'pageId': this.$route.params.data.page_id,
+            'pageId': this.page_id,
             'shopId': Number(localStorage.getItem('V-ShopId')),
             'pageName': this.pageSetData.page_name,
-            'pageType': this.$route.params.data.page_type,
-            'pageEnabled': this.$route.params.data.page_enabled,
-            'pageTplType': this.$route.params.data.page_tpl_type,
+            'pageType': this.page_type,
+            'pageEnabled': this.page_enabled,
+            'pageTplType': this.page_tpl_type,
             'pageContent': JSON.stringify(data),
             'pagePublishContent': JSON.stringify(data),
             'pageState': pageState,
@@ -996,7 +1016,7 @@ export default {
           }
         }
         .decContent {
-          height: 530px;
+          min-height: 530px;
           background: #fff;
           position: relative;
           // padding-bottom: 30px;

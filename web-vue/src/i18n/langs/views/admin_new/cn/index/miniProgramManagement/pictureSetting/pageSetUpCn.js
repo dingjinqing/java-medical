@@ -26,5 +26,11 @@ export const cn = {
   bgColor: '背景颜色',
   reset: '重置',
   bgPic: '背景图片',
-  determine: '确定'
+  determine: '确定',
+  saveAndPublish: '保存并发布',
+  saveAsDraft: '保存为草稿',
+  previewEffect: '预览效果',
+  remind: '提醒',
+  cancel: '取消',
+  sureToDelete: '确认要删除吗？'
 }

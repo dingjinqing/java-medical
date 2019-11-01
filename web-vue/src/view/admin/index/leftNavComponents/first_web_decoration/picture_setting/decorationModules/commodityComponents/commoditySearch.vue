@@ -85,6 +85,7 @@ export default {
     return {
       activeBorder: false,
       activeSetHere: false,
+      hoverTips: 'hoverTips', // 英文适配
       // 模块私有
       data: {
         search_style: '1',

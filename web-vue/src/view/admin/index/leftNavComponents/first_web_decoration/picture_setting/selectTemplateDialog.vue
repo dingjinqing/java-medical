@@ -168,9 +168,9 @@ export default {
     // 跳转到装修主页
     handleToDecPage () {
       this.$router.push({
-        name: 'decorationHome',
-        params: {
-          data: -1
+        path: '/admin/home/main/decorationHome',
+        query: {
+          pageId: -1
         }
       })
     }

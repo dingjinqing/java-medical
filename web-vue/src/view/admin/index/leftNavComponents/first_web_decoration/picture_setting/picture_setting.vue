@@ -289,7 +289,7 @@
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy, pageEdit } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -537,15 +537,10 @@ export default {
     // 编辑点击
     edit (res) {
       console.log(res)
-      pageEdit({ pageId: res }).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$router.push({
-            name: 'decorationHome',
-            params: {
-              data: res.content
-            }
-          })
+      this.$router.push({
+        path: '/admin/home/main/decorationHome',
+        query: {
+          pageId: res
         }
       })
     }
