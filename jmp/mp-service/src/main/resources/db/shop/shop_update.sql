@@ -887,7 +887,7 @@ alter table b2c_virtual_order add column `currency` varchar(10) NOT NULL DEFAULT
 ALTER TABLE `b2c_store_order`
 CHANGE COLUMN `member_card_redunce` `member_card_reduce` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '会员卡抵扣金额' ;
 
---梁晨 用户-优惠券表修改type字段
+-- 梁晨 用户-优惠券表修改type字段
 ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `type` TINYINT NOT NULL DEFAULT '0' COMMENT '0为减价，1为打折';
 
 --user添加字段
@@ -1064,3 +1064,8 @@ create table `b2c_pay_award_record`
     `update_time` timestamp    default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
 );
+
+-- 梁晨 商品推荐表添加字段
+ALTER TABLE b2c_recommend_goods
+ADD COLUMN `choose_type` TINYINT(2) DEFAULT '0' COMMENT '0普通推荐1智能推荐',
+ADD COLUMN `recommend_number` INT(4) DEFAULT '0' COMMENT '智能推荐商品数';

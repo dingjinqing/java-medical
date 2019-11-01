@@ -2522,22 +2522,24 @@ create table `b2c_distribution_strategy`
 
 -- -- 推荐商品
 -- drop table if exists `b2c_recommend_goods`;
-create table `b2c_recommend_goods`
-(
-    `id`                 int(10)      not null auto_increment comment '编号',
-    `recommend_name`     varchar(120) not null comment '推荐名称',
-    `recommend_type`     tinyint(2)   not null default '0' comment '0.全部商品1.部分商品',
-    `recommend_goods_id` varchar(299) null comment '推荐商品id',
-    `recommend_cat_id`   varchar(299) null comment '推荐分类id',
-    `recommend_use_page` varchar(299) not null default '' comment '推荐使用页面',
-    `status`             tinyint(2)            default 0 null comment '状态1停用',
-    `del_flag`           tinyint(2)            default 0 null comment '1删除',
-    `del_time`           timestamp    null     default null comment '删除时间',
-    `recommend_sort_id`  varchar(299) null comment '推荐商家分类id',
-    `create_time`        timestamp             default current_timestamp,
-    `update_time`        timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`id`)
+CREATE TABLE `b2c_recommend_goods` (
+  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `recommend_name` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '推荐名称',
+  `recommend_type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0.全部商品1.部分商品',
+  `recommend_goods_id` varchar(299) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '推荐商品id',
+  `recommend_cat_id` varchar(299) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '推荐分类id',
+  `recommend_use_page` varchar(299) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '推荐使用页面',
+  `status` tinyint(2) DEFAULT '0' COMMENT '状态1停用',
+  `del_flag` tinyint(2) DEFAULT '0' COMMENT '1删除',
+  `del_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '删除时间',
+  `recommend_sort_id` varchar(299) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '推荐商家分类id',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `choose_type` tinyint(2) DEFAULT '0' COMMENT '0普通推荐1智能推荐',
+  `recommend_number` int(4) DEFAULT '0' COMMENT '智能推荐商品数',
+  PRIMARY KEY (`id`)
 );
+
 
 
 -- --  加价购
