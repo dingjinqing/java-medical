@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
@@ -8,6 +9,7 @@ import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -137,8 +139,12 @@ public class AdminMallOverviewController extends AdminBaseController {
      * @return the share qr code vo
      */
     @PostMapping("/api/admin/malloverview/shareShop")
-    public ShareQrCodeVo shareShop() {
-        return shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, "");
+    public JsonResult shareShop() {
+        ShareQrCodeVo qrCodeVo = shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, "");
+        if (StringUtils.isBlank(qrCodeVo.getImageUrl())) {
+            return fail(JsonResultCode.CODE_APPLET_QR_CODE_GET_FAILED);
+        }
+        return success(shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, ""));
     }
 
     /**

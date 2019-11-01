@@ -220,6 +220,7 @@ public class JsonResultMessage {
 	public static final String PAGE_CLASSIFICAIION_NOT_EXIST = "applets.page.classification.not.exist";
 	public static final String PAGE_CLASSIFICATION_UPDATE_FAILED = "applets.page.classification.update.failed";
 	public static final String PAGE_CLASSIFICATION_DELETE_FAILED = "applets.page.classification.delete.failed";
+    public static final String CODE_APPLET_QR_CODE_GET_FAILED = "applets.qr.code.get.failed";
 
 	public static final String DECORATE_BOTTOM_ISNOTJSON = "applets.bottom.is_not_json";
 	public static final String DECORATE_STYLE_ISNOTJSON = "applets.style.is_not_json";
@@ -347,7 +348,7 @@ public class JsonResultMessage {
 	public static final String MSG_MEMBER_CARD_ID_EMPTY = "member.card.id.empty";
 	public static final String MSG_CARD_ACTIVATE_SUCCESS = "card.activate.success";
 	public static final String CARD_ACTIVATE_FAIL = "card.activate.fail";
-	
+
 	// 用户卡
 	public static final String USER_CARD_NONE = "user.card.none";
 	/**
@@ -417,8 +418,8 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_GOODS_NOT_EXIST = "order_goods_not_exist";
 	public static final String MSG_ORDER_GOODS_NO_SALE = "order_goods_no_sale";
 	public static final String MSG_ORDER_GOODS_OUT_OF_STOCK = "order_goods_out_of_stock";
-	public static final String MSG_ORDER_GOODS_NO_ZERO = "order_goods_no_zero"; 
-	
+    public static final String MSG_ORDER_GOODS_NO_ZERO = "order_goods_no_zero";
+
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
