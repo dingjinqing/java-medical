@@ -126,7 +126,7 @@
           status-icon
           :rules="rules"
           ref="ruleForm"
-          label-width="100px"
+          label-width="auto"
           class="demo-ruleForm"
         >
           <el-form-item
@@ -187,7 +187,7 @@
           status-icon
           :rules="rules2"
           ref="ruleForm2"
-          label-width="100px"
+          label-width="auto"
           class="demo-ruleForm2"
         >
           <el-form-item
