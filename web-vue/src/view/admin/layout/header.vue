@@ -117,7 +117,8 @@ export default {
       langData_en: [
         { lang: 'en', login_active: '', show_lang: 'English' },
         { lang: 'cn', login_active: '', show_lang: 'Chinese' }
-      ]
+      ],
+      isSubLogin: false
     }
   },
   mounted () {
@@ -137,6 +138,9 @@ export default {
           // this.$t('shopData').splice(index, 1)
           data[index] = 'empty'
         }
+        if (this.isSubLogin) {
+          data[1] = 'empty'
+        }
       })
       this.hiddle_menu_list = data
       console.log(this.hiddle_menu_list)
@@ -145,6 +149,12 @@ export default {
   methods: {
     // 初始化登录
     judgeuserinfo () {
+      console.log('去掉')
+      if (localStorage.getItem('V-isSubLogin')) {
+        // 子账户登录
+        this.isSubLogin = true
+      }
+      console.log(this.isSubLogin)
       this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
       this.$http.$on('changeHead', () => {
         this.shopAvatar = localStorage.getItem('V-shopAvatar')

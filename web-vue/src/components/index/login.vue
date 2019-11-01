@@ -209,6 +209,9 @@ export default {
             Cookies.set('V-Index-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             localStorage.setItem('V-loginType', 0)
+            localStorage.setItem('V-isSubLogin', this.isSubLogin)
+            console.log('子账户登录')
+            console.log(this.isSubLogin)
             localStorage.setItem('V-AccountName', res.content.accountName)
             console.log(this.$message)
             this.$message.success({
@@ -233,6 +236,9 @@ export default {
             Cookies.set('V-Index-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             localStorage.setItem('V-AccountName', res.content.accountName)
+            localStorage.setItem('V-isSubLogin', this.isSubLogin)
+            console.log('子账户登录')
+            console.log(this.isSubLogin)
             this.$message.success({
               showClose: true,
               message: res.message,
