@@ -103,11 +103,14 @@ public class JsonResultMessage {
 	public static final String GOODS_SPEC_VAL_REPETITION = "goods.spec.val.repetition";
 	public static final String GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT="goods.spec.attribute.spec.k.v.conflict";
 
-	public static final String GOODS_RECOMMEND_NAME_NOT_NULL = "goods.recommend.name.notNull";
-	public static final String GOODS_RECOMMEND_TYPE_NOT_NULL = "goods.recommend.type.notNull";
-	public static final String GOODS_RECOMMEND_NAME_EXIST = "goods.recommend.name.exist";
-	public static final String GOODS_RECOMMEND_ID_NOT_EXIST = "goods.recommend.id.notexist";
-	public static final String GOODS_RECOMMEND_NOT_EXIST = "goods.recommend.id.notexist";
+  public static final String GOODS_RECOMMEND_NAME_NOT_NULL = "goods.recommend.name.notNull";
+  public static final String GOODS_RECOMMEND_TYPE_NOT_NULL = "goods.recommend.type.notNull";
+  public static final String GOODS_RECOMMEND_NAME_EXIST = "goods.recommend.name.exist";
+  public static final String GOODS_RECOMMEND_ID_NOT_EXIST = "goods.recommend.id.notexist";
+  public static final String GOODS_RECOMMEND_NOT_EXIST = "goods.recommend.id.notexist";
+  public static final String GOODS_RECOMMEND_CHOOSE_TYPE_NOT_NULL =
+      "goods.recommend.choose_type.notNull";
+  public static final String GOODS_RECOMMEND_NUMBER_NOT_NULL = "goods.recommend.number.notNull";
 
     /**
      * 商品导出
