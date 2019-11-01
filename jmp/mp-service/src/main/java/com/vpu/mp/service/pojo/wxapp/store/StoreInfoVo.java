@@ -47,6 +47,11 @@ public class StoreInfoVo {
     public Double distance;
 
     /**
+     * The Store buy.门店买单开关配置
+     */
+    public Byte storeBuy;
+
+    /**
      * The All service.门店所有服列表
      */
     public List<StoreServiceListQueryVo> allService;

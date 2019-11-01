@@ -362,6 +362,8 @@ public class StoreWxService extends ShopBaseService {
 //        List<String> storeScanIds = Arrays.asList(storeConfigService.getStoreScanIds().split(","));
         // todo 获取购物车商品数
         // todo 获取待核销扫码购订单
+        // 门店买单开关配置
+        storeInfoVo.setStoreBuy(storeConfigService.getStoreBuy());
         return storeInfoVo;
     }
 
