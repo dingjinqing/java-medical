@@ -315,12 +315,12 @@ global.wxPage({
   },
   // 查看活动奖励
   giftInfo(e) {
-    var form_id = e.detail.formId;
-    var open_id = util.getCache('openid');
-    util.api('/api/wxapp/common/saveformid', function (res) { }, {
-      form_id: form_id,
-      open_id: open_id
-    });
+    // var form_id = e.detail.formId;
+    // var open_id = util.getCache('openid');
+    // util.api('/api/wxapp/common/saveformid', function (res) { }, {
+    //   form_id: form_id,
+    //   open_id: open_id
+    // });
     let data = e.currentTarget.dataset;
     let commentInfo = this.data.order_completed[data.itemid];
     if (commentInfo.awardType != 5) {
