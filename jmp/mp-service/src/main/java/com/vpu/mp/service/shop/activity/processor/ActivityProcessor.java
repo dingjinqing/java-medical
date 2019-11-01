@@ -24,6 +24,11 @@ public interface ActivityProcessor<P extends ActivityParam,C extends AbstractCap
             || goodsType == GoodsConstant.ACTIVITY_TYPE_PRE_SALE ;
     }
 
+    static boolean isGoodsTypeIn13510(byte goodsType) {
+        return goodsType== GoodsConstant.ACTIVITY_TYPE_GROUP_BUY||goodsType == GoodsConstant.ACTIVITY_TYPE_BARGAIN
+            || goodsType == GoodsConstant.ACTIVITY_TYPE_SEC_KILL || goodsType == GoodsConstant.ACTIVITY_TYPE_PRE_SALE ;
+    }
+
     int getPriority();
 
     default P filterParam(List<C> capsules){

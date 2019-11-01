@@ -58,8 +58,11 @@ public class CouponForListProcessor extends CouponProcessorDao implements Activi
         Timestamp date = activityGoodsListMpParam.getDate();
         Map<Integer, CouponForLsitInfo> returnMap = new HashMap<>();
 
-        for (ActivityGoodsListMpParam.AllIdsParam idsParam : idsParams) {
+        idsParams.forEach(idsParam->{
             Record5<Integer, String, BigDecimal, Byte, BigDecimal> closestInfo = getGoodsCouponClosestInfo(idsParam.goodsId, idsParam.catId, idsParam.sortId, date);
+            if (closestInfo == null) {
+               return;
+            }
             Integer goodsId = idsParam.goodsId;
             CouponForLsitInfo info = new CouponForLsitInfo();
             info.setActivityId(closestInfo.get(MRKING_VOUCHER.ID));
@@ -68,7 +71,7 @@ public class CouponForListProcessor extends CouponProcessorDao implements Activi
             info.setUseConsumeRestrict(closestInfo.get(MRKING_VOUCHER.USE_CONSUME_RESTRICT));
             info.setLeastConsume(closestInfo.get(MRKING_VOUCHER.LEAST_CONSUME));
             returnMap.put(goodsId,info);
-        }
+        });
         return returnMap;
     }
 

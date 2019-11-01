@@ -5,7 +5,6 @@ import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import org.jooq.Condition;
-import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
@@ -15,7 +14,6 @@ import static com.vpu.mp.db.shop.Tables.MRKING_STRATEGY;
  * @author 李晓冰
  * @date 2019年10月30日
  */
-@Service
 public class FullReductionProcessorDao extends ShopBaseService {
 
     /** 全部商品参与活动 */

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.activity.info.strategy;
+package com.vpu.mp.service.pojo.wxapp.activity.info.reduction;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;

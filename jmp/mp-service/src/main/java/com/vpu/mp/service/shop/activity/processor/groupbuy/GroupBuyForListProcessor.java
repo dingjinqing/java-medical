@@ -49,9 +49,9 @@ public class GroupBuyForListProcessor extends GroupBuyProcessorDao implements
             if (activity == null) {
                 return;
             }
-            capsule.setLinePrice(activity.getOriginalMaxPrice());
-            capsule.setRealPrice(activity.getActivityPrice());
+            capsule.setGoodsPrice(activity.getActivityPrice());
             capsule.getActivities().add(activity);
+            capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
         });
     }
 }

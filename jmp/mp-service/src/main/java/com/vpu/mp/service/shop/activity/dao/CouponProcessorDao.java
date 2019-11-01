@@ -6,7 +6,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import org.jooq.Condition;
 import org.jooq.Record5;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -19,7 +18,6 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
  * @author 李晓冰
  * @date 2019年10月30日
  */
-@Service
 public class CouponProcessorDao extends ShopBaseService {
 
     /**普通优惠券*/

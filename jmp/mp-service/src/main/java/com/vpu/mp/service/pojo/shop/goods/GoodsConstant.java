@@ -50,28 +50,37 @@ public class GoodsConstant {
     public final static byte ACTIVITY_TYPE_COUPON = 19;
     /** 满折满减*/
     public final static byte ACTIVITY_TYPE_FULL_REDUCTION = 20;
+    /** 等级会员特殊照顾（不是营销活动）*/
+    public final static byte ACTIVITY_TYPE_MEMBER_GRADE = 21;
+    /** 会员专享型（不是营销活动）*/
+    public final static byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 22;
     /** 代付订单 */
     public final static byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */
     public final static byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
     /**************** 结束 *****************/
 
-    /****** 各种活动的处理处理展示优先级 *****/
+    /****** 商品列表各种活动的处理优先级 *****/
+    /**秒杀*/
     public final static byte ACTIVITY_SEC_KILL_PRIORITY = 1;
-
+    /**预售*/
     public final static byte ACTIVITY_PRE_SALE_PRIORITY = 5;
-
+    /**砍价*/
     public final static byte ACTIVITY_BARGAIN_PRIORITY = 10;
-
+    /**拼团*/
     public final static byte ACTIVITY_GROUP_BUY_PRIORITY = 15;
-
-    public final static byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 20;
-
-    public final static byte ACTIVITY_REDUCE_PRIORITY = 25;
+    /**会员专享处理*/
+    public final static byte ACTIVITY_CARD_EXCLUSIVE_PRIORITY = 20;
+    /**首单特惠*/
+    public final static byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 25;
+    /**等级卡会员价*/
+    public final static byte ACTIVITY_MEMBER_GRADE_PRIORITY = 30;
+    /**限时降价*/
+    public final static byte ACTIVITY_REDUCE_PRIORITY = 35;
     /**优惠券*/
-    public final static byte ACTIVITY_COUPON_PRIORITY = 30;
+    public final static byte ACTIVITY_COUPON_PRIORITY = 40;
     /** 满折满减 */
-    public final static byte ACTIVITY_FULL_REDUCTION_PRIORITY = 35;
+    public final static byte ACTIVITY_FULL_REDUCTION_PRIORITY = 45;
 
     /**************** 结束 *****************/
 

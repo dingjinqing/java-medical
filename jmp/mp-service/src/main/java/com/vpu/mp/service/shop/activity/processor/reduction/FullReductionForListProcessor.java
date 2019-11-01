@@ -1,9 +1,9 @@
-package com.vpu.mp.service.shop.activity.processor.fullreduction;
+package com.vpu.mp.service.shop.activity.processor.reduction;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.strategy.FullReductionForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.reduction.FullReductionForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
