@@ -159,18 +159,22 @@ export default {
     },
     submitInfo () {
       if (this.flag1 && this.flag2) {
+        console.log('编辑')
+        console.log(this.authRoleListData)
         let params = {
           'roleName': this.authRoleListData.roleName,
           'privilegeList': this.authRoleListData.privilegeList,
           'privilegePass': this.authRolePwdListData.privilegePass,
           'loginPass': this.authRolePwdListData.loginPass,
-          'rolePass': this.authRolePwdListData.rolePass
+          'rolePass': this.authRolePwdListData.rolePass,
+          'roleId': this.edit
         }
         if (this.edit === 0) {
           // 添加
           this.add(params)
         } else {
           // 编辑
+
           this.editUpdate(params)
         }
       }

@@ -79,6 +79,7 @@
               </div>
               <div class="account-pawd">
                 <el-input
+                  type="password"
                   v-model="subData.password"
                   :placeholder="$t('login_page.password')"
                 ></el-input>
