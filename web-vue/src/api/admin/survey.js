@@ -1,5 +1,14 @@
 import service from '@/util/request.js'
 
+// 数据总接口
+export function getAllOverview (data) {
+  return service({
+    url: '/api/admin/malloverview/allOverview',
+    method: 'post',
+    data: data
+  })
+}
+
 // 绑定解绑
 export function bindRequest (data) {
   return service({
