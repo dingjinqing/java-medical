@@ -1,11 +1,11 @@
 <template>
   <!-- 店铺基础信息 -->
   <el-container>
-    <el-main>
-      <ul class="program-details">
-        <li class="details-item">
-          <span class="item-label">店铺名称：</span>
-          <div class="item-content">
+    <el-main class="shop_config">
+      <ul class="program_details">
+        <li class="details_item">
+          <span class="item_label">店铺名称：</span>
+          <div class="item_content">
             <span>微辅宝电商运营</span>
             <el-button
               type="text"
@@ -14,38 +14,38 @@
             >更改</el-button>
           </div>
         </li>
-        <li class="details-item">
-          <span class="item-label">店铺状态：</span>
-          <div class="item-content">
+        <li class="details_item">
+          <span class="item_label">店铺状态：</span>
+          <div class="item_content">
             <el-radio-group>
               <el-radio label="1">已营业</el-radio>
               <el-radio label="0">未营业</el-radio>
             </el-radio-group>
           </div>
         </li>
-        <li class="details-item">
-          <span class="item-label">创建时间：</span>
-          <div class="item-content">
+        <li class="details_item">
+          <span class="item_label">创建时间：</span>
+          <div class="item_content">
             <span>2018-04-03 13:32:21</span>
           </div>
         </li>
-        <li class="details-item">
-          <span class="item-label">有效期至：</span>
-          <div class="item-content">
+        <li class="details_item">
+          <span class="item_label">有效期至：</span>
+          <div class="item_content">
             <span>2020-04-03</span>
           </div>
         </li>
-        <li class="details-item">
-          <span class="item-label">后端店铺Logo：</span>
-          <div class="item-content">
+        <li class="details_item">
+          <span class="item_label">后端店铺Logo：</span>
+          <div class="item_content">
             <div class="logo-wrap">
               <el-image></el-image>
             </div>
           </div>
         </li>
-        <li class="details-item">
-          <span class="item-label">前端店铺Logo:</span>
-          <div class="item-content">
+        <li class="details_item">
+          <span class="item_label">前端店铺Logo:</span>
+          <div class="item_content">
             <p>图片格式必须为：png,bmp,jpeg,jpg,gif；不可大于5M；</p>
             <p>建议使用png格式图片，以保持最佳效果；建议图片尺寸为144px*144px</p>
             <el-group>
@@ -101,14 +101,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.details-item {
+.shop_config {
+  padding: 10px 25px;
+  background: #fff;
+  min-height: 750px;
+}
+.details_item {
   display: flex;
   line-height: 32px;
-  .item-label {
+  font-size: 13px;
+  .item_label {
     height: 32px;
     width: 110px;
   }
-  .item-content {
+  .item_content {
     flex: 1;
   }
 }
