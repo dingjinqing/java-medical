@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.list.ReducePriceForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * @author 李晓冰
  * @date 2019年11月01日
  */
+@Service
 public class ReducePriceForListProcessor extends ReducePriceProcessorDao implements ActivityGoodsListProcessor<ReducePriceForListInfo> {
     @Override
     public int getPriority() {
