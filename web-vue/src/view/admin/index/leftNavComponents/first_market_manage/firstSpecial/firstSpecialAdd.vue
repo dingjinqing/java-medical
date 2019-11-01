@@ -891,7 +891,7 @@ export default {
       this.paramsValid(params, function (params) {
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {
-            _this.$message.success(this.$t('firstSpecialAdd.successSaved'))
+            _this.$message.success(_this.$t('firstSpecialAdd.successSaved'))
             _this.$nextTick(function () {
               _this.$router.push({
                 path: '/admin/home/main/firstSpecial/list',
@@ -915,7 +915,7 @@ export default {
       _this.paramsValid(params, function (params) {
         updateFirstSpecial(params).then(res => {
           if (res.error === 0) {
-            _this.$message.success(this.$t('firstSpecialAdd.successUpdated'))
+            _this.$message.success(_this.$t('firstSpecialAdd.successUpdated'))
             _this.$nextTick(() => {
               _this.$router.push({
                 path: '/admin/home/main/firstSpecial/list',
