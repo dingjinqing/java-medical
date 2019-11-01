@@ -179,7 +179,7 @@ export default {
     ...mapActions(['ToTurnMemberShipDetail', 'judgeActiveMeunAll']),
     // 初始化登录
     judgeuserinfo () {
-      if (localStorage.getItem('V-isSubLogin')) {
+      if (localStorage.getItem('V-isSubLogin') === 'true') {
         // 子账户登录
         this.isSubLogin = true
       }
