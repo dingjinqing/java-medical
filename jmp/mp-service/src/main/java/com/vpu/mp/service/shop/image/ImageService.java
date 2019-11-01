@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.image.*;
 import org.apache.commons.io.FileUtils;
 import org.jooq.Record;
@@ -33,307 +34,309 @@ import java.util.List;
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
-/**
- * @author 新国
- */
+/** @author 新国 */
 @Service
 public class ImageService extends ShopBaseService implements ImageDefault {
 
-    @Autowired
-    public ImageCategoryService category;
+  @Autowired public ImageCategoryService category;
 
-    @Autowired
-    protected DomainConfig domainConfig;
+  @Autowired protected DomainConfig domainConfig;
 
-    @Autowired
-    protected UpYunConfig upYunConfig;
+  @Autowired protected UpYunConfig upYunConfig;
 
-    @Autowired
-    protected StorageConfig storageConfig;
+  @Autowired protected StorageConfig storageConfig;
 
-    @Override
-    public String imageUrl(String relativePath) {
-        return domainConfig.imageUrl(relativePath);
+  @Override
+  public String imageUrl(String relativePath) {
+    return domainConfig.imageUrl(relativePath);
+  }
+
+  @Override
+  public String fullPath(String relativePath) {
+    return storageConfig.storagePath(relativePath);
+  }
+
+  @Override
+  public UpYun getUpYunClient() {
+    return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
+  }
+
+  /**
+   * 删除单张图片
+   *
+   * @param imageId
+   * @return
+   */
+  public int removeRow(Integer imageId) {
+    Byte delFlag = 1;
+    return db().update(UPLOADED_IMAGE)
+        .set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
+        .where(UPLOADED_IMAGE.IMG_ID.eq(imageId))
+        .execute();
+  }
+
+  /**
+   * 删除多张图片
+   *
+   * @param imageIds
+   * @return
+   */
+  public int removeRows(List<Integer> imageIds) {
+    Byte delFlag = 1;
+    return db().update(UPLOADED_IMAGE)
+        .set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
+        .where(UPLOADED_IMAGE.IMG_ID.in(imageIds))
+        .execute();
+  }
+
+  /**
+   * 设置图片的分类
+   *
+   * @param imageIds
+   * @param catId
+   * @return
+   */
+  public int setCatId(Integer[] imageIds, Integer catId) {
+    return db().update(UPLOADED_IMAGE)
+        .set(UPLOADED_IMAGE.IMG_CAT_ID, catId)
+        .where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
+        .execute();
+  }
+
+  /**
+   * 图片列表分页
+   *
+   * @param param
+   * @return
+   */
+  public PageResult<UploadImageCatNameVo> getPageList(ImageListQueryParam param) {
+    SelectWhereStep<Record> select =
+        db().select(UPLOADED_IMAGE.asterisk(), UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
+            .from(UPLOADED_IMAGE)
+            .leftJoin(UPLOADED_IMAGE_CATEGORY)
+            .on(
+                UPLOADED_IMAGE.IMG_CAT_ID.eq(
+                    DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
+    select = this.buildOptions(select, param);
+    select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
+    Result<Record> fetch = select.fetch();
+    return this.getPageResult(select, param.page, param.pageRows, UploadImageCatNameVo.class);
+  }
+
+  public List<Integer> convertIntegerArray(List<Integer> array) {
+    return new ArrayList<Integer>(array);
+  }
+
+  /**
+   * 拼接查询条件
+   *
+   * @param select
+   * @param param
+   * @return
+   */
+  public SelectWhereStep<Record> buildOptions(
+      SelectWhereStep<Record> select, ImageListQueryParam param) {
+    if (param == null) {
+      return select;
     }
+    Byte noDel = 0;
+    select
+        .where(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
+        .and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
+        .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
 
-    @Override
-    public String fullPath(String relativePath) {
-        return storageConfig.storagePath(relativePath);
+    if (param.imgCatId != null && param.imgCatId > 0) {
+      List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
+      select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
     }
-
-    @Override
-    public UpYun getUpYunClient() {
-        return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
+    if (!StringUtils.isBlank(param.keywords)) {
+      select.where(UPLOADED_IMAGE.IMG_NAME.like(this.likeValue(param.keywords)));
     }
-
-    /**
-     * 删除单张图片
-     *
-     * @param imageId
-     * @return
-     */
-    public int removeRow(Integer imageId) {
-        Byte delFlag = 1;
-        return db().update(UPLOADED_IMAGE)
-            .set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
-            .where(UPLOADED_IMAGE.IMG_ID.eq(imageId))
-            .execute();
+    if (param.searchNeed != null && param.searchNeed == 1) {
+      if (param.needImgWidth != null && param.needImgWidth > 0) {
+        select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.needImgWidth));
+      }
+      if (param.needImgHeight != null && param.needImgHeight > 0) {
+        select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.needImgHeight));
+      }
     }
-
-    /**
-     * 删除多张图片
-     *
-     * @param imageIds
-     * @return
-     */
-    public int removeRows(List<Integer> imageIds) {
-        Byte delFlag = 1;
-        return db().update(UPLOADED_IMAGE)
-            .set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
-            .where(UPLOADED_IMAGE.IMG_ID.in(imageIds))
-            .execute();
+    SortField<?>[] sortFields = {
+      UPLOADED_IMAGE.CREATE_TIME.desc(),
+      UPLOADED_IMAGE.CREATE_TIME.asc(),
+      UPLOADED_IMAGE.IMG_SIZE.desc(),
+      UPLOADED_IMAGE.IMG_SIZE.asc(),
+      UPLOADED_IMAGE.IMG_NAME.desc(),
+      UPLOADED_IMAGE.IMG_NAME.asc()
+    };
+    if (param.uploadSortId != null
+        && param.uploadSortId >= 0
+        && param.uploadSortId < sortFields.length) {
+      select.orderBy(sortFields[param.uploadSortId]);
+    } else {
+      select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
     }
+    return select;
+  }
 
-    /**
-     * 设置图片的分类
-     *
-     * @param imageIds
-     * @param catId
-     * @return
-     */
-    public int setCatId(Integer[] imageIds, Integer catId) {
-        return db().update(UPLOADED_IMAGE)
-            .set(UPLOADED_IMAGE.IMG_CAT_ID, catId)
-            .where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
-            .execute();
-    }
+  /**
+   * 通过原始URL得到图片信息
+   *
+   * @param imagePathOrUrl
+   * @return
+   */
+  public UploadedImageRecord getImageFromOriginName(String imagePathOrUrl) {
+    return db().selectFrom(UPLOADED_IMAGE)
+        .where(UPLOADED_IMAGE.IMG_ORIG_FNAME.eq(imagePathOrUrl))
+        .fetchAny();
+  }
 
-    /**
-     * 图片列表分页
-     *
-     * @param param
-     * @return
-     */
-    public PageResult<UploadImageCatNameVo> getPageList(ImageListQueryParam param) {
-        SelectWhereStep<Record> select =
-            db().select(UPLOADED_IMAGE.asterisk(), UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
-                .from(UPLOADED_IMAGE)
-                .leftJoin(UPLOADED_IMAGE_CATEGORY)
-                .on(
-                    UPLOADED_IMAGE.IMG_CAT_ID.eq(
-                        DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
-        select = this.buildOptions(select, param);
-        select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-        Result<Record> fetch = select.fetch();
-        return this.getPageResult(select, param.page, param.pageRows, UploadImageCatNameVo.class);
-    }
+  /**
+   * 通过图片相对路径获取图片信息
+   *
+   * @param imagePath
+   * @return
+   */
+  public UploadedImageRecord getImageFromImagePath(String imagePath) {
+    return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_PATH.eq(imagePath)).fetchAny();
+  }
 
-    public List<Integer> convertIntegerArray(List<Integer> array) {
-        return new ArrayList<Integer>(array);
-    }
+  /**
+   * 保存图片到数据库
+   *
+   * @return
+   */
+  public UploadedImageRecord addImageToDb(
+      UploadImageParam param, Part file, UploadPath uploadPath) {
+    UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
+    image.setImgName(baseFilename(file.getSubmittedFileName()));
+    image.setImgPath(uploadPath.relativeFilePath);
+    image.setImgType(file.getContentType());
+    image.setImgOrigFname(file.getSubmittedFileName());
+    image.setImgSize(new Long(file.getSize()).intValue());
+    image.setImgUrl(uploadPath.getImageUrl());
+    image.setImgWidth(param.getNeedImgWidth());
+    image.setImgHeight(param.getNeedImgHeight());
 
-    /**
-     * 拼接查询条件
-     *
-     * @param select
-     * @param param
-     * @return
-     */
-    public SelectWhereStep<Record> buildOptions(
-        SelectWhereStep<Record> select, ImageListQueryParam param) {
-        if (param == null) {
-            return select;
-        }
-        Byte noDel = 0;
-        select
-            .where(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
+    image.setImgCatId(param.getImgCatId());
+    image.setUserId(param.getImgCatId());
+    image.insert();
+    return image;
+  }
+
+  public UploadedImageRecord addImageToDb(CropImageParam param, UploadPath uploadPath) {
+    UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
+    image.setImgName(baseFilename(uploadPath.getFilname()));
+    image.setImgPath(uploadPath.relativeFilePath);
+    image.setImgType(uploadPath.extension);
+    image.setImgOrigFname(param.remoteImgPath);
+    image.setImgSize(param.getSize());
+    image.setImgUrl(uploadPath.getImageUrl());
+    image.setImgWidth(param.getCropWidth());
+    image.setImgHeight(param.getCropHeight());
+    image.setImgCatId(param.getImgCatId());
+    image.insert();
+    return image;
+  }
+
+  /**
+   * 得到图片信息
+   *
+   * @param imageId
+   * @return
+   */
+  public UploadedImageRecord getImageById(Integer imageId) {
+    return db().fetchAny(UPLOADED_IMAGE, UPLOADED_IMAGE.IMG_ID.eq((imageId)));
+  }
+
+  /**
+   * 获取总大小（不包括删除）
+   *
+   * @return
+   */
+  public Integer getAllSize() {
+    Byte noDel = 0;
+    Object imageSize =
+        db().select(DSL.sum(UPLOADED_IMAGE.IMG_SIZE))
+            .from(UPLOADED_IMAGE)
+            .where(UPLOADED_IMAGE.SHOP_ID.eq(this.getShopId()))
             .and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
-            .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
+            .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0))
+            .and(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
+            .fetchAny(0);
+    return Util.getInteger(imageSize);
+  }
 
-        if (param.imgCatId != null && param.imgCatId > 0) {
-            List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
-            select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
-        }
-        if (!StringUtils.isBlank(param.keywords)) {
-            select.where(UPLOADED_IMAGE.IMG_NAME.like(this.likeValue(param.keywords)));
-        }
-        if (param.searchNeed != null && param.searchNeed == 1) {
-            if (param.needImgWidth != null && param.needImgWidth > 0) {
-                select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.needImgWidth));
-            }
-            if (param.needImgHeight != null && param.needImgHeight > 0) {
-                select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.needImgHeight));
-            }
-        }
-        SortField<?>[] sortFields = {
-            UPLOADED_IMAGE.CREATE_TIME.desc(),
-            UPLOADED_IMAGE.CREATE_TIME.asc(),
-            UPLOADED_IMAGE.IMG_SIZE.desc(),
-            UPLOADED_IMAGE.IMG_SIZE.asc(),
-            UPLOADED_IMAGE.IMG_NAME.desc(),
-            UPLOADED_IMAGE.IMG_NAME.asc()
-        };
-        if (param.uploadSortId != null
-            && param.uploadSortId >= 0
-            && param.uploadSortId < sortFields.length) {
-            select.orderBy(sortFields[param.uploadSortId]);
-        } else {
-            select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-        }
-        return select;
-    }
-
-    /**
-     * 通过原始URL得到图片信息
-     *
-     * @param imagePathOrUrl
-     * @return
-     */
-    public UploadedImageRecord getImageFromOriginName(String imagePathOrUrl) {
-        return db().selectFrom(UPLOADED_IMAGE)
-            .where(UPLOADED_IMAGE.IMG_ORIG_FNAME.eq(imagePathOrUrl))
-            .fetchAny();
-    }
-
-    /**
-     * 通过图片相对路径获取图片信息
-     *
-     * @param imagePath
-     * @return
-     */
-    public UploadedImageRecord getImageFromImagePath(String imagePath) {
-        return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_PATH.eq(imagePath)).fetchAny();
-    }
-
-    /**
-     * 保存图片到数据库
-     *
-     * @return
-     */
-    public UploadedImageRecord addImageToDb(
-        UploadImageParam param, Part file, UploadPath uploadPath) {
-        UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
-        image.setImgName(baseFilename(file.getSubmittedFileName()));
-        image.setImgPath(uploadPath.relativeFilePath);
-        image.setImgType(file.getContentType());
-        image.setImgOrigFname(file.getSubmittedFileName());
-        image.setImgSize(new Long(file.getSize()).intValue());
-        image.setImgUrl(uploadPath.getImageUrl());
-        image.setImgWidth(param.getNeedImgWidth());
-        image.setImgHeight(param.getNeedImgHeight());
-
-        image.setImgCatId(param.getImgCatId());
-        image.setUserId(param.getImgCatId());
-        image.insert();
-        return image;
-    }
-
-    public UploadedImageRecord addImageToDb(CropImageParam param, UploadPath uploadPath) {
-        UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
-        image.setImgName(baseFilename(uploadPath.getFilname()));
-        image.setImgPath(uploadPath.relativeFilePath);
-        image.setImgType(uploadPath.extension);
-        image.setImgOrigFname(param.remoteImgPath);
-        image.setImgSize(param.getSize());
-        image.setImgUrl(uploadPath.getImageUrl());
-        image.setImgWidth(param.getCropWidth());
-        image.setImgHeight(param.getCropHeight());
-        image.setImgCatId(param.getImgCatId());
-        image.insert();
-        return image;
-    }
-
-    /**
-     * 得到图片信息
-     *
-     * @param imageId
-     * @return
-     */
-    public UploadedImageRecord getImageById(Integer imageId) {
-        return db().fetchAny(UPLOADED_IMAGE, UPLOADED_IMAGE.IMG_ID.eq((imageId)));
-    }
-
-    /**
-     * 获取总大小（不包括删除）
-     *
-     * @return
-     */
-    public Integer getAllSize() {
-        Byte noDel = 0;
-        Object imageSize =
-            db().select(DSL.sum(UPLOADED_IMAGE.IMG_SIZE))
-                .from(UPLOADED_IMAGE)
-                .where(UPLOADED_IMAGE.SHOP_ID.eq(this.getShopId()))
-                .and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
-                .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0))
-                .and(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
-                .fetchAny(0);
-        return Util.getInteger(imageSize);
-    }
-
-    /**
-     * 添加外链图片到数据库
-     *
-     * @param imageUrl
-     * @return
-     */
-    public UploadedImageRecord addLocalGoodsImage(String imageUrl) {
-        if (getImageFromOriginName(imageUrl) == null) {
-            String extension = this.getImageExension(imageUrl);
-            String filename = randomFilename();
-            UploadPath uploadPath = this.getWritableUploadPath("image", filename, extension, null);
-            File file = new File(uploadPath.fullPath);
-            try {
-                FileUtils.copyURLToFile(new URL(imageUrl), file, 30, 30);
-                deleteFile(uploadPath.getFullPath());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-            UploadedImageRecord record = this.getImageFromImagePath(uploadPath.relativeFilePath);
-            if (record == null) {
-                //                record = this.addImageToDb(uploadPath.relativeFilePath, null, imageUrl,
-                // 0);
-            }
-            return record;
-        }
+  /**
+   * 添加外链图片到数据库
+   *
+   * @param imageUrl
+   * @return
+   */
+  public UploadedImageRecord addLocalGoodsImage(String imageUrl) {
+    if (getImageFromOriginName(imageUrl) == null) {
+      String extension = this.getImageExension(imageUrl);
+      String filename = randomFilename();
+      UploadPath uploadPath = this.getWritableUploadPath("image", filename, extension, null);
+      File file = new File(uploadPath.fullPath);
+      try {
+        FileUtils.copyURLToFile(new URL(imageUrl), file, 30, 30);
+        deleteFile(uploadPath.getFullPath());
+      } catch (Exception e) {
+        e.printStackTrace();
         return null;
+      }
+      UploadedImageRecord record = this.getImageFromImagePath(uploadPath.relativeFilePath);
+      if (record == null) {
+        //                record = this.addImageToDb(uploadPath.relativeFilePath, null, imageUrl,
+        // 0);
+      }
+      return record;
     }
+    return null;
+  }
 
-    /**
-     * 当前店铺Id
-     *
-     * @return
-     */
-    @Override
-    public Integer currentShopId() {
-        return this.getShopId();
-    }
+  /**
+   * 当前店铺Id
+   *
+   * @return
+   */
+  @Override
+  public Integer currentShopId() {
+    return this.getShopId();
+  }
 
-    /**
-     * 校验添加图片参数
-     *
-     * @param param 入参
-     * @param file  文件流
-     * @return jsonResultCode, object
-     */
-    public Object[] validImageParam(UploadImageParam param, Part file) throws IOException {
-        Integer maxSize = 5 * 1024 * 1024;
-        if (file.getSize() > maxSize) {
-            return new JsonResultCode[]{JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M};
-        }
-        if (!validImageType(file.getContentType())) {
-            return new JsonResultCode[]{JsonResultCode.CODE_IMGAE_FORMAT_INVALID};
-        }
-        if (param.needImgWidth != null || param.needImgHeight != null) {
-            BufferedImage bufferImage = ImageIO.read(file.getInputStream());
-            if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
-                return new Object[]{JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH, param.needImgWidth};
-            }
-            if (param.needImgHeight != null && param.needImgHeight != bufferImage.getHeight()) {
-                return new Object[]{JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT, param.needImgHeight};
-            }
-        }
-        return null;
+  /**
+   * 校验添加图片参数
+   *
+   * @param param 入参
+   * @param file 文件流
+   * @return jsonResultCode, object
+   */
+  public ResultMessage validImageParam(UploadImageParam param, Part file) throws IOException {
+    Integer maxSize = 5 * 1024 * 1024;
+    if (file.getSize() > maxSize) {
+      return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M).build();
     }
+    if (!validImageType(file.getContentType())) {
+      return ResultMessage.builder()
+          .jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID)
+          .build();
+    }
+    if (param.needImgWidth != null || param.needImgHeight != null) {
+      BufferedImage bufferImage = ImageIO.read(file.getInputStream());
+      if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
+        return ResultMessage.builder()
+            .jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH)
+            .message(param.needImgWidth)
+            .build();
+      }
+      if (param.needImgHeight != null && param.needImgHeight != bufferImage.getHeight()) {
+        return ResultMessage.builder()
+            .jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT)
+            .message(param.needImgHeight)
+            .build();
+      }
+    }
+    return ResultMessage.builder().flag(true).build();
+  }
 }

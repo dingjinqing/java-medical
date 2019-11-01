@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageVo;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Part;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * 图片
@@ -33,9 +33,9 @@ public class WxAppImageController extends WxAppBaseController {
   @PostMapping("/upload")
   protected JsonResult upload(UploadImageParam param, Part file) throws IOException, Exception {
     // 校验
-    Object[] jsonResultCode = shop().image.validImageParam(param, file);
-    if (jsonResultCode != null) {
-      this.fail(Arrays.asList(jsonResultCode));
+    ResultMessage jsonResultCode = shop().image.validImageParam(param, file);
+    if (!jsonResultCode.getFlag()) {
+      return this.fail(jsonResultCode);
     }
     UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType());
     // 上传又拍云
