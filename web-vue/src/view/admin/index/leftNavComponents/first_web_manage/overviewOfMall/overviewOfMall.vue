@@ -470,7 +470,7 @@
 <script>
 // 引入组件
 import bindAccount from './overviewBindAccount.vue'
-import { toDoItemRequest, dataRequest, noticeListRequest, noticeDetailRequest, shopInfoRequest } from '@/api/admin/survey.js'
+import { getAllOverview, toDoItemRequest, dataRequest, noticeListRequest, noticeDetailRequest, shopInfoRequest } from '@/api/admin/survey.js'
 export default {
   components: {
     bindAccount
@@ -518,11 +518,12 @@ export default {
     }
   },
   mounted () {
-    // 初始化数据
-    this.getShopInfo()
     this.langDefault()
+    // 初始化数据
+    this.getAllOverview()
     this.getTodoDate()
     this.getShowData()
+    this.getShopInfo()
     this.getStoreData()
     this.getNoticeList()
   },
@@ -533,6 +534,7 @@ export default {
       this.options = this.$t('overview.options')
       this.functionList = this.$t('overview.functionList')
       this.serveList = this.$t('overview.serveList')
+      this.getAllOverview()
       this.getTodoDate()
       this.getShowData()
       this.getStoreData()
@@ -540,6 +542,44 @@ export default {
     }
   },
   methods: {
+    // 获取全部数据
+    getAllOverview () {
+      let obj = {
+        // 代办参数
+        fixedAnnouncementParam: {
+          fixedNum: 6,
+          orderBy: 'desc'
+        },
+        // 数据参数
+        dataDemonstrationParam: {
+          screeningTime: this.screeningTime
+        },
+        // 店铺参数
+        shopAssistantParam: {
+          isAuthOk: 1,
+          storeSizeNum: 5,
+          commentOver: 3,
+          deliverOver: 3,
+          refundOver: 3,
+          applyOver: 3,
+          examineOver: 2,
+          couponSizeNum: 10
+        }
+      }
+      getAllOverview(obj).then((res) => {
+        if (res.error === 0) {
+          // 代办
+          for (var i in res.content) {
+            if (res.content[i] === 'toDoItemVo') {
+              alert('代办')
+            }
+          }
+          // 数据
+          this.dataContent = res.content.dataDemonstrationVo
+        }
+      })
+    },
+
     // 复制
     copyHandler (e) {
       this.$message.success({ message: this.$t('seckill.copySuccess') })
@@ -1264,13 +1304,13 @@ svg:not(:root) {
   position: relative;
 
   // border-bottom: 1px solid #e5e5e5;
-  line-height: 39px;
-  height: 40px;
+  // line-height: 39px;
+  // height: 40px;
 }
 
 .task_type a {
   position: absolute;
-  top: 0;
+  bottom: 8px;
   right: 0;
 }
 
