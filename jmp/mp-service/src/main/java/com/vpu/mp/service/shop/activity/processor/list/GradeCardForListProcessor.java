@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import com.vpu.mp.service.shop.activity.processor.ActivityProcessor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Map;
  * @author 李晓冰
  * @date 2019年10月31日
  */
+@Service
 public class GradeCardForListProcessor extends MemberCardProcessorDao implements ActivityGoodsListProcessor<GradeCardForListInfo> {
     @Override
     public int getPriority() {
