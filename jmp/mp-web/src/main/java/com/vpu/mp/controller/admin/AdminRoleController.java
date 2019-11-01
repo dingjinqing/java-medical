@@ -211,4 +211,17 @@ public class AdminRoleController extends AdminBaseController {
 		}
 		return fail();
 	}
+	
+	/**
+	 * 查询单个店铺的信息
+	 * @return
+	 */
+	@GetMapping(value = "/admin/account/shop/oneInfo")
+	public JsonResult shopInfo() {
+		AdminTokenAuthInfo info = adminAuth.user();
+		if (info == null) {
+			return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
+		}
+		return success(saas.shop.getShopInfo(info.getLoginShopId()));
+	}
 }
