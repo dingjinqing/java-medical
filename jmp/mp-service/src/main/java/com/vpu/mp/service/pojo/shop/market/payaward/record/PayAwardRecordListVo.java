@@ -17,7 +17,7 @@ public class PayAwardRecordListVo {
     private String mobile;
     private String orderSn;
     private Integer giftType;
-    private Timestamp creatTime;
+    private Timestamp createTime;
 
 }
 

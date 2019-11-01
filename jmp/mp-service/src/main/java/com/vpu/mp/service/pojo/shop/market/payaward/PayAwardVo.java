@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.coupon.CouponVo;
 import lombok.Data;
 import lombok.Getter;
@@ -59,5 +60,6 @@ public class PayAwardVo {
      * 奖励内容
      */
     private List<PayAwardContentBo> awardContentList;
+    @JsonIgnore
     private String awardList;
 }

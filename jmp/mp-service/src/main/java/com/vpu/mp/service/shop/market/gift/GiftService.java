@@ -182,7 +182,8 @@ public class GiftService extends ShopBaseService {
      * 获取活动赠品
      */
     private List<ProductVo> getGiftProduct(Integer giftId) {
-        return db().select(SUB_TABLE.fields())
+        return db().select(SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
+                PRODUCT.PRD_IMG,PRODUCT.PRD_PRICE,PRODUCT.PRD_DESC,GOODS.GOODS_NAME,GOODS.GOODS_IMG)
             .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
             .select(GOODS.GOODS_NAME, GOODS.GOODS_IMG)
             .from(SUB_TABLE)

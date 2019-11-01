@@ -42,10 +42,10 @@ public class PayAwardRecordService  extends ShopBaseService {
          if (param.getReceiveTimeEnd()!=null){
             where.and(PAY_AWARD_RECORD.CREATE_TIME.le(param.getReceiveTimeEnd()));
         }
-         if (param.getMobile()!=null){
+         if (param.getMobile()!=null&&!param.getMobile().isEmpty()){
             where.and(USER.MOBILE.like(likeValue(param.getMobile())));
         }
-         if (param.getUserName()!=null){
+         if (param.getUserName()!=null&&!param.getUserName().isEmpty()){
             where.and(USER.USERNAME.like(likeValue(param.getUserName())));
         }
          if (param.getAwardType()!=null){
