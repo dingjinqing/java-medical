@@ -1,29 +1,32 @@
 package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.*;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
+import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.distribution.DistributorCheckService;
+import com.vpu.mp.service.shop.goods.GoodsCommentService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Comparator;
 import org.jooq.Condition;
-import org.jooq.Record1;
-import org.jooq.Select;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import static com.vpu.mp.db.shop.tables.MrkingVoucher.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.tables.DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
+import static com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -44,14 +47,35 @@ public class MallOverviewService extends ShopBaseService {
     @Autowired
     public ShopCommonConfigService shopCommonConfigService;
 
+    @Autowired
+    public CouponService couponService;
+
+    @Autowired
+    public DistributorCheckService distributorCheckService;
+
+    @Autowired
+    public ReturnOrderService returnOrderService;
+
+    @Autowired
+    public GoodsCommentService goodsCommentService;
+
+    @Autowired
+    public GoodsService goodsService;
+
+    public static final List<Byte> RECENT_DATE = new ArrayList<Byte>() {{
+        add(Byte.valueOf("1"));
+        add(Byte.valueOf("2"));
+        add(Byte.valueOf("7"));
+        add(Byte.valueOf("30"));
+        add(Byte.valueOf("90"));
+    }};
     /**
      * 获取数据展示数据，
-     * @param param 1：当天数据；7：近一周数据；30：近一个月数据；90：近三个月数据
-     * @return
+     * @param param 1：当天数据；2表示昨天: 7：近一周数据；30：近一个月数据；90：近三个月数据
      */
     public DataDemonstrationVo dataDemonstration(DataDemonstrationParam param){
         byte screenTime = param.getScreeningTime();
-        if(!Arrays.asList((byte)1,7,30,90).contains(screenTime)){
+        if (!RECENT_DATE.contains(screenTime)) {
             screenTime = 1;
         }
         return getDataDemonstration(screenTime);
@@ -118,127 +142,83 @@ public class MallOverviewService extends ShopBaseService {
 
     /**
      * 店铺助手
-     * @param param
-     * @param vo
-     * @return
+     *
+     * @param param the param
+     * @return the shop assistant vo
      */
-    public ShopAssistantVo shopAssistant(ShopAssistantParam param,ShopAssistantVo vo){
-        shopNav(param,vo);
-        goodsNav(param,vo);
-        orderNav(param,vo);
-        marketNav(param,vo);
-        return vo;
+    public ShopAssistantVo shopAssistant(ShopAssistantParam param) {
+        return ShopAssistantVo.builder()
+            .dataShop(shopNav())
+            .dataGoods(goodsNav(param))
+            .dataOrder(orderNav(param))
+            .dataMarket(marketNav(param))
+            .build();
     }
-    public ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo){
-        AssiDataShop dataShop = new AssiDataShop();
-        //  店铺首页 0：已完成店铺首页装修，否未装修店铺首页
-        XcxCustomerPageRecord xcxCustomerPage = db().selectFrom(XCX_CUSTOMER_PAGE)
-            .where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq(BYTE_ONE))
-            .and(XCX_CUSTOMER_PAGE.SHOP_ID.eq(getShopId()))
-            .fetchOne();
-        if (xcxCustomerPage != null) {
-            boolean condi1 = StringUtils.isNotBlank(xcxCustomerPage.getPageContent());
-            boolean condi2 = StringUtils.isNotBlank(xcxCustomerPage.getPagePublishContent());
-            dataShop.setHomePageConf(condi1 || condi2 ? BYTE_ZERO : BYTE_ONE);
-        } else {
-            dataShop.setHomePageConf(BYTE_ONE);
-            vo.totalPendingIncr();
-        }
-        //  好物圈 0: 已开启好物圈，否未开启
+
+    /**
+     * 店铺相关统计信息
+     */
+    private AssiDataShop shopNav() {
         WxShoppingListConfig shoppingListConfig = shoppingListConfigService.getShoppingListConfig();
-        if (String.valueOf(BYTE_ZERO).equals(shoppingListConfig.getEnabeldWxShoppingList())) {
-            dataShop.setShopRecommendConf(BYTE_ONE);
-            vo.totalPendingIncr();
-        }else{
-            dataShop.setShopRecommendConf(BYTE_ZERO);
-            dataShop.setShopRecommendLink(shoppingListConfig.getWxShoppingRecommend());
-        }
-        //  客服 0: 已开启客服，否未开启
-        if (shopCommonConfigService.getCustomService().equals(BYTE_ONE) || shopCommonConfigService.getReturnService().equals(BYTE_ONE)) {
-            dataShop.setCustomServiceConf(BYTE_ZERO);
-        } else {
-            dataShop.setCustomServiceConf(BYTE_ONE);
-            vo.totalPendingIncr();
-        }
-        vo.setDataShop(dataShop);
-        log.debug("shop走完了");
-        return vo;
+        return new AssiDataShop.Builder()
+            //  店铺首页 0：已完成店铺首页装修，否未装修店铺首页
+            .setHomePageConf(shopPageConfig())
+            //  好物圈 0: 已开启好物圈，否未开启
+            .setShopRecommendConf(Byte.valueOf(shoppingListConfig.getEnabeldWxShoppingList()))
+            .setShopRecommendLink(shoppingListConfig.getWxShoppingRecommend())
+            //  客服 0: 已开启客服，否未开启
+            .setCustomServiceConf(shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE)
+            .build();
     }
 
-    public ShopAssistantVo goodsNav(ShopAssistantParam param, ShopAssistantVo vo){
-        AssiDataGoods dataGoods = new AssiDataGoods();
-        ;
-        /**  运费模板设置 */
-        int deliverCount = db().fetchCount(DeliverFeeTemplate.DELIVER_FEE_TEMPLATE);
-        dataGoods.setShipTemplateConf(deliverCount > 0 ? (byte) 0 : (byte) -1);
-        if(deliverCount <= 0){vo.totalPendingIncr();}
-        /**  商品添加 */
-        int goodsCount = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0));
-        dataGoods.setGoodsConf(goodsCount > 0 ? (byte) 0 : (byte) -1);
-        if(goodsCount <= 0){vo.totalPendingIncr();}
-        /**  商品库存偏小 */
-        int goodsNum = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0)
-                .and(Goods.GOODS.GOODS_NUMBER
-                        .lessThan(param.getStoreSizeNum())));
-        dataGoods.setGoodsStoreConf(goodsNum);
-        if(goodsNum > 0){vo.totalPendingIncr();}
-        /**  滞销商品 */
-        OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
-        OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
-        Select<? extends Record1<Integer>> select  = db().select(og.GOODS_ID).from(og).leftJoin(oi)
-                .on(og.ORDER_ID.eq(oi.ORDER_ID))
-                .where(oi.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(new Date(),-30)))
-                .and(og.UPDATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(new Date(),-30)));
-        int unsalableCount = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0).and(Goods.GOODS.GOODS_ID.notIn(select)));
-        dataGoods.setGoodsUnsalableConf(unsalableCount);
-        if(unsalableCount > 0){vo.totalPendingIncr();}
-        /**  商品评价审核逾期 */
-        int commCount = db().fetchCount(CommentGoods.COMMENT_GOODS,CommentGoods.COMMENT_GOODS.DEL_FLAG.eq((byte)0)
-                .and(CommentGoods.COMMENT_GOODS.FLAG.eq((byte)0))
-                .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getCommentOver()))));
-        dataGoods.setGoodsComment(commCount);
-        if(commCount > 0){vo.totalPendingIncr();}
-        /**  推荐商品 */
-        int recommCount = db().fetchCount(RecommendGoods.RECOMMEND_GOODS);
-        dataGoods.setGoodsRecommend(recommCount);
-        if(recommCount <= 0){vo.totalPendingIncr();}
-        /**  商家分类 */
-        int sortCount = db().fetchCount(Sort.SORT);
-        dataGoods.setShopSort(sortCount);
-        if(sortCount <= 0){vo.totalPendingIncr();}
-        vo.setDataGoods(dataGoods);
-        log.debug("goods走完了");
-        return vo;
+    /**
+     * 商品相关统计信息
+     */
+    private AssiDataGoods goodsNav(ShopAssistantParam param) {
+        return AssiDataGoods.builder()
+            // 运费模板设置
+            .shipTemplateConf(db().fetchCount(DELIVER_FEE_TEMPLATE) > 0 ? BYTE_ZERO : BYTE_ONE)
+            // 商品添加
+            .goodsConf(db().fetchCount(Goods.GOODS, Goods.GOODS.DEL_FLAG.eq(BYTE_ZERO)) > 0 ? BYTE_ZERO : BYTE_ONE)
+            // 商品库存偏小
+            .goodsStoreConf(goodsService.smallCommodityInventory(param.getStoreSizeNum()))
+            //  滞销商品
+            .goodsUnsalableConf(goodsService.unsalableGoods())
+            //  商品评价审核逾期
+            .goodsComment(goodsCommentService.reviewOverdue(param.getCommentOver()))
+            //  推荐商品
+            .goodsRecommend(db().fetchCount(RECOMMEND_GOODS))
+            // 商家分类
+            .shopSort(db().fetchCount(SORT))
+            .build();
     }
 
-    public ShopAssistantVo orderNav(ShopAssistantParam param, ShopAssistantVo vo){
-        AssiDataOrder dataOrder = new AssiDataOrder();
-        ;
-        /**  发货逾期 */
-        int deliverCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.ORDER_STATUS.eq((byte)3)
-                .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getDeliverOver()))));
-        dataOrder.setDeliver(deliverCount);
-        if(deliverCount > 0){vo.totalPendingIncr();}
-        /**  退款申请逾期 */
-        int refundCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.REFUND_STATUS.in((byte)1,(byte)2,(byte)4)
-                .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getRefundOver()))));
-        dataOrder.setRefund(refundCount);
-        if(refundCount > 0){vo.totalPendingIncr();}
-        vo.setDataOrder(dataOrder);
-        log.debug("order走完了");
-        return vo;
+    /**
+     * 订单相关统计信息
+     */
+    private AssiDataOrder orderNav(ShopAssistantParam param) {
+        return AssiDataOrder.builder()
+            //  发货逾期
+            .deliver(returnOrderService.overdueDelivery(param.getDeliverOver()))
+            //  退款申请逾期
+            .refund(returnOrderService.refundOverdue(param.getRefundOver()))
+            .build();
     }
 
-    public ShopAssistantVo marketNav(ShopAssistantParam param, ShopAssistantVo vo){
-        AssiDataMarket dataMarket = new AssiDataMarket();
-        ;
-        /**  分销审核超时 */
-        int disCount = db().fetchCount(DistributorApply.DISTRIBUTOR_APPLY,
-                DistributorApply.DISTRIBUTOR_APPLY.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getApplyOver())));
-        dataMarket.setExamine(disCount);
-        if(disCount > 0){vo.totalPendingIncr();}
-        // todo 会员卡激活审核 等那边接口写完直接调用
-        Map<String,String> memberMap = new HashMap<>(4);
+    /**
+     * 营销相关统计信息
+     */
+    private AssiDataMarket marketNav(ShopAssistantParam param) {
+        return AssiDataMarket.builder()
+            //  分销审核超时
+            .examine(distributorCheckService.distributionReviewTimeout(param.getApplyOver()))
+            // todo 会员卡激活审核 等那边接口写完直接调用
+            .member(null)
+            //  优惠券
+            .voucher(couponService.getSmallInventoryCoupon(param.getCouponSizeNum()))
+            .build();
+
+        /*Map<String,String> memberMap = new HashMap<>(4);
         CardExamineRecord cardExamineRecord = new CardExamineRecord();
         List<CardExamine> cardExamineList = db().select(CardExamine.CARD_EXAMINE.CARD_ID)
                     .from(CardExamine.CARD_EXAMINE)
@@ -247,7 +227,7 @@ public class MallOverviewService extends ShopBaseService {
                     .and(CardExamine.CARD_EXAMINE.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getExamineOver())))
                     .orderBy(CardExamine.CARD_EXAMINE.CREATE_TIME.asc())
                     .fetchInto(CardExamine.class);
-        if (CollectionUtils.isNotEmpty(cardExamineList)) {
+        if (CollectionUtils.isNotEmpty(cardExamineList)) {*/
             /*int lastRecordCardId = cardExamineList.get(0).CARD_ID.get(cardExamineRecord);
 
             int cardNum = db().fetchCount(CardExamine.CARD_EXAMINE,CardExamine.CARD_EXAMINE.CARD_ID.eq(lastRecordCardId));
@@ -261,25 +241,18 @@ public class MallOverviewService extends ShopBaseService {
             memberMap.put("card_num",String.valueOf(cardNum));
             dataMarket.setMember(memberMap);
             vo.totalPendingIncr();*/
-        }else{
+        /*}else{
             memberMap.put("card_num","0");
             dataMarket.setMember(memberMap);
-        }
-        /**  优惠券 */
-        MrkingVoucherRecord voucherRecord = new MrkingVoucherRecord();
-        Map<Integer, String> voucher = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME)
-            .from(MRKING_VOUCHER)
-            .where(MRKING_VOUCHER.SURPLUS.lessOrEqual(param.getCouponSizeNum()))
-            .and(MRKING_VOUCHER.ENABLED.eq((byte) 1))
-            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
-            .and(MRKING_VOUCHER.CREATE_TIME.add(MRKING_VOUCHER.VALIDATION_CODE).greaterThan(new Timestamp(System.currentTimeMillis())))
-            .orderBy(MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.CREATE_TIME)
-                .limit(5)
-            .fetchMap(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME);
-        dataMarket.setVoucher(voucher);
-        if(!voucher.isEmpty()){vo.totalPendingIncr();}
-        vo.setDataMarket(dataMarket);
-        log.debug("market走完了");
-        return vo;
+        }*/
+    }
+
+    // 店铺首页 0：已完成店铺首页装修，否未装修店铺首页
+    private Byte shopPageConfig() {
+        String shopPage = db().select(DSL.concat(XCX_CUSTOMER_PAGE.PAGE_CONTENT, XCX_CUSTOMER_PAGE.PAGE_PUBLISH_CONTENT)).from(XCX_CUSTOMER_PAGE)
+            .where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq(BYTE_ONE))
+            .and(XCX_CUSTOMER_PAGE.SHOP_ID.eq(getShopId()))
+            .fetchOneInto(String.class);
+        return StringUtils.isNoneBlank(shopPage) ? BYTE_ZERO : BYTE_ONE;
     }
 }

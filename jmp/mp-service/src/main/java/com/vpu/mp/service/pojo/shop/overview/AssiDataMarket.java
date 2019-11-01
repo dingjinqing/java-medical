@@ -1,17 +1,20 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
 /**
- * @Author:liufei
- * @Date:2019/7/18
- * @Description:
+ * author liufei
+ * date 2019/7/18
  */
 @Data
-@Component
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AssiDataMarket {
     /** 分销审核超时 0: 分销员审核进度良好 否有examine个分销员申请超过3天未处理 */
     public int examine;

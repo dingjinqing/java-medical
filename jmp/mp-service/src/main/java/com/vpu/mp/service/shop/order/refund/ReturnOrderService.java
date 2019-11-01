@@ -1,22 +1,5 @@
 package com.vpu.mp.service.shop.order.refund;
 
-import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.ReturnOrder;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.ExpressMapping;
@@ -37,6 +20,22 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
 
 /**
  * Table:return_order
@@ -45,9 +44,9 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVo
  */
 @Service
 public class ReturnOrderService extends ShopBaseService{
-	
+
 	public final ReturnOrder TABLE = RETURN_ORDER;
-	
+
 	/**
 	 * 	通过订单[]查询其下退货订单信息
 	 * @param arrayToSearch
@@ -60,7 +59,7 @@ public class ReturnOrderService extends ShopBaseService{
 				.fetch();
 		return goods;
 	}
-	
+
 	/**
 	 * 	通过retid查询退货订单信息
 	 * @param arrayToSearch
@@ -69,7 +68,7 @@ public class ReturnOrderService extends ShopBaseService{
 	public ReturnOrderRecord getByRetId(Integer retId) {
 		 return db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId)).fetchOne();
 	}
-	
+
 	/**
 	 * 	通过returnordersn查询退货订单信息
 	 * @param arrayToSearch
@@ -78,7 +77,7 @@ public class ReturnOrderService extends ShopBaseService{
 	public ReturnOrderRecord getByReturnOrderSn(String returnOrderSn) {
 		 return db().selectFrom(TABLE).where(TABLE.RETURN_ORDER_SN.eq(returnOrderSn)).fetchOne();
 	}
-	
+
 	/**
 	 * 	综合查询退订单
 	 * @param param
@@ -86,14 +85,14 @@ public class ReturnOrderService extends ShopBaseService{
 	 */
 	public PageResult<OrderReturnListVo> getPageList(OrderPageListQueryParam param) {
 		SelectJoinStep<Record> select = db().select().from(TABLE);
-		buildOptionsReturn(select,param);	
+        buildOptionsReturn(select, param);
 		PageResult<OrderReturnListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
 		return result;
 	}
-	
+
 	/**
 	 * 构造退货、款查询条件
-	 * 
+     *
 	 * @param select
 	 * @param param
 	 * @return
@@ -111,7 +110,7 @@ public class ReturnOrderService extends ShopBaseService{
 		if (param.getRefundStatus() != null) {
 			switch (param.getRefundStatus()) {
 			case OrderConstant.SEARCH_RETURNSTATUS_14:
-				select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDITING).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING).and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_ONLY_MONEY))));
+                select.where(TABLE.REFUND_STATUS.eq(REFUND_STATUS_AUDITING).or(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING).and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_ONLY_MONEY))));
 				break;
 			case OrderConstant.SEARCH_RETURNSTATUS_41:
 				select.where(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING).and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_GOODS)));
@@ -137,7 +136,7 @@ public class ReturnOrderService extends ShopBaseService{
 		}
 		return select;
 	}
-	
+
 	/**
 	 * 	获取该订单的退成功运费记录（送礼订单无运费）
 	 * @param orderSn 订单号
@@ -147,7 +146,7 @@ public class ReturnOrderService extends ShopBaseService{
 		Record1<BigDecimal> fetchOne = db().select(DSL.sum(TABLE.SHIPPING_FEE)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))).fetchOne();
 		return fetchOne.value1() == null ? BigDecimal.ZERO : fetchOne.value1();
 	}
-	
+
 	/**
 	 * 	获取该订单的退成功商品金额
 	 * @param orderSn 订单号
@@ -184,7 +183,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setShopId(getShopId());
 		returnOrder.setCurrency(order.getCurrency());
 		//除退货外,refund_status为4
-		returnOrder.setRefundStatus(param.getReturnType() == OrderConstant.RT_GOODS ? OrderConstant.REFUND_STATUS_AUDITING : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
+        returnOrder.setRefundStatus(param.getReturnType() == OrderConstant.RT_GOODS ? REFUND_STATUS_AUDITING : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		if(param.getReturnType() == OrderConstant.RT_GOODS) {
 			//退货->申请时间
 			returnOrder.setApplyTime(DateUtil.getSqlTimestamp());
@@ -197,7 +196,7 @@ public class ReturnOrderService extends ShopBaseService{
 		logger().info("新增退款/退货订单:"+returnOrder.toString());
 		return returnOrder;
 	}
-	
+
 	/**
 	 * 生成退款订单号
 	 * @return
@@ -210,7 +209,7 @@ public class ReturnOrderService extends ShopBaseService{
 			}
 		}
 	}
-	
+
 	public void finishReturn(ReturnOrderRecord returnOrder) throws MpException {
 		if(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING != returnOrder.getRefundStatus()) {
 			throw new MpException(JsonResultCode.CODE_ORDER_FINISH_RETURN_STATUS_ERROR);
@@ -266,7 +265,7 @@ public class ReturnOrderService extends ShopBaseService{
 					logger().error("退款时订单sn:{},退款类型为:{},商品id:{}，申请退款金额不满足条件",order.getOrderSn(),param.getReturnType(),paramGoods.getRecId());
 					throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MANUAL_MONEY_ERROR);
 				}
-				
+
 				/**
 				 * 此次退款金额默认值计算（不计运费）
 				 * 规则：已退完：总价-退完成
@@ -289,7 +288,7 @@ public class ReturnOrderService extends ShopBaseService{
 							BigDecimalUtil.subtrac(checkGoods.getDiscountedTotalPrice(),checkGoods.getReturnMoney()));
 				}
 			}else {
-				//申请退货商品数量>可退商品数量 || 退货数量<1 时抛异常 
+                //申请退货商品数量>可退商品数量 || 退货数量<1 时抛异常
 				if(paramGoods.getReturnNumber() < 1 || paramGoods.getReturnNumber() > checkGoods.getReturnable()) {
 					//商品退货数量大于可退数量
 					throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_RETURN_NUMBER_ERROR);
@@ -323,8 +322,8 @@ public class ReturnOrderService extends ShopBaseService{
 		//当前退款金额默认值计算（不计运费）
 		return addRecord(param ,order ,currentMaxReturnMoney);
 	}
-	
-	/**
+
+    /**
 	 * 获取退款订单特定状态
 	 * @param orderIds
 	 * @param status
@@ -337,8 +336,8 @@ public class ReturnOrderService extends ShopBaseService{
 		groupBy(TABLE.ORDER_ID).
 		fetch().intoMap(TABLE.ORDER_ID , DSL.count(TABLE.ORDER_ID).as("count"));
 	}
-	
-	public void responseReturnOperate(RefundParam param , ReturnOrderRecord returnOrder) throws MpException {
+
+    public void responseReturnOperate(RefundParam param , ReturnOrderRecord returnOrder) throws MpException {
 		if(param.getIsMp().equals(OrderConstant.IS_MP_Y)) {
 			/**mp端操作*/
 			switch (param.getReturnOperate()) {
@@ -373,16 +372,16 @@ public class ReturnOrderService extends ShopBaseService{
 			}
 		}
 	}
-	
-	/**
+
+    /**
 	 * 退货提交物流
 	 * @param returnOrder
 	 * @param param
-	 * @throws MpException 
+     * @throws MpException
 	 */
 	public void submitShipping(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
 		//校验
-		if(returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDIT_PASS) {
+        if (returnOrder.getRefundStatus() != REFUND_STATUS_AUDIT_PASS) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
 		returnOrder.setShippingType(param.getShippingType());
@@ -393,12 +392,12 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		returnOrder.update();
 	}
-	
-	/**
+
+    /**
 	 * 撤销退款退货
 	 * @param returnOrder
 	 * @param param
-	 * @throws MpException 
+     * @throws MpException
 	 */
 	public void revokeReturnOrder(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
 		//校验
@@ -409,13 +408,13 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_CLOSE);
 		returnOrder.update();
 		//TODO php系统撤销未实现
-		
-	}
+
+    }
 	/**
 	 * 拒绝退款/退货
 	 * @param returnOrder
 	 * @param param
-	 * @throws MpException 
+     * @throws MpException
 	 */
 	public void refuseReturn(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
 		//校验
@@ -427,36 +426,36 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setRefundRefuseReason(param.getRefundRefuseReason());
 		returnOrder.update();
 	}
-	
-	/**
+
+    /**
 	 * 审核通过（退货申请）
 	 * @param returnOrder
 	 * @param param
-	 * @throws MpException 
+     * @throws MpException
 	 */
 	public void agreeReturn(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
 		//校验
-		if(returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDITING) {
+        if (returnOrder.getRefundStatus() != REFUND_STATUS_AUDITING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
 		returnOrder.setApplyPassTime(DateUtil.getSqlTimestamp());
-		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_AUDIT_PASS);
+        returnOrder.setRefundStatus(REFUND_STATUS_AUDIT_PASS);
 		returnOrder.setConsignee(param.getConsignee());
 		returnOrder.setReturnAddress(param.getReturnAddress());
 		returnOrder.setMerchantTelephone(param.getMerchantTelephone());
 		returnOrder.setZipCode(param.getZipCode());
 		returnOrder.update();
 	}
-	
-	/**
+
+    /**
 	 * 商家拒绝退货申请
 	 * @param returnOrder
 	 * @param param
-	 * @throws MpException 
+     * @throws MpException
 	 */
 	public void refuseReturnGoodsApply(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
 		//校验
-		if(returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_AUDITING) {
+        if (returnOrder.getRefundStatus() != REFUND_STATUS_AUDITING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
 		}
 		returnOrder.setApplyNotPassTime(DateUtil.getSqlTimestamp());
@@ -464,8 +463,8 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setApplyNotPassReason(param.getApplyNotPassReason());
 		returnOrder.update();
 	}
-	
-	/**
+
+    /**
 	 * 	获取该退款订单物流code(快递100对应code)
 	 * @param returnOrder
 	 * @return
@@ -478,6 +477,28 @@ public class ReturnOrderService extends ShopBaseService{
 			return null;
 		}
 	}
+
+    /**
+     * Refund overdue integer.退款申请逾期
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer refundOverdue(Integer nDays) {
+        return db().fetchCount(RETURN_ORDER, RETURN_ORDER.REFUND_STATUS.in(REFUND_STATUS_AUDITING, REFUND_STATUS_AUDIT_PASS, REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
+            .and(RETURN_ORDER.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
+
+    /**
+     * Overdue delivery integer.发货逾期
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer overdueDelivery(Integer nDays) {
+        return db().fetchCount(ORDER_INFO, ORDER_INFO.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+            .and(ORDER_INFO.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
 }
 
 

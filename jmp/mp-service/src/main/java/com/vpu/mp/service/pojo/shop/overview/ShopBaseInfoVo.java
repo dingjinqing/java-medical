@@ -1,19 +1,25 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
- * @Author:liufei
- * @Date:2019/7/16
- * @Description:
+ * author liufei
+ * date 2019/7/16
  */
 @Data
-@Component
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ShopBaseInfoVo {
     private Timestamp expireTime;
-    private String versionName;
-    private Byte bindStatus;
+    private Map<String, String> version;
+    private BindofficialVo bindInfo;
+    private ShareQrCodeVo shareQrCodeVo;
 }

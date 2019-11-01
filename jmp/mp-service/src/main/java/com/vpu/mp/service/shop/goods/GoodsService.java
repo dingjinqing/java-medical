@@ -1,49 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
-import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
-import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep2;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectFieldOrAsterisk;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectSelectStep;
-import org.jooq.impl.DSL;
-import org.jooq.impl.DefaultDSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRebatePriceRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
-import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
@@ -51,26 +12,8 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
-import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsBatchOperateParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsColumnCheckExistParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsExportParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsExportVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsQrCodeVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsRebatePrice;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.PrdPriceNumberParam;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
@@ -83,9 +26,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
-import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -100,11 +41,15 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * 商品
@@ -1604,4 +1549,28 @@ public class GoodsService extends ShopBaseService {
     	return goods;
     }
 
+    /**
+     * Unsalable goods integer.滞销商品数量
+     * 商品一个月内未进行过更新, 并且一个月内没参与任何订单(也就是没人买过)
+     *
+     * @return the integer
+     */
+    public Integer unsalableGoods() {
+        // todo 走ES
+        Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
+        Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
+            .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+            .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
+        return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime)));
+    }
+
+    /**
+     * Small commodity inventory integer.统计商品库存偏小
+     *
+     * @param num the num
+     * @return the integer
+     */
+    public Integer smallCommodityInventory(Integer num) {
+        return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_NUMBER.lessThan(num)));
+    }
 }

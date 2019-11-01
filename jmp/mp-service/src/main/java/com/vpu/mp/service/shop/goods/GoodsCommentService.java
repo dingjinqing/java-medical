@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.db.shop.tables.CommentGoods;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -27,9 +28,11 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * 商品评价
@@ -457,7 +460,7 @@ public class GoodsCommentService extends ShopBaseService {
     // 声明要用到的出参集合
     List<CommentListVo> commentListVo = new ArrayList<>();
     // 待评价商品
-    if (param.getCommentFlag().equals(NumberUtils.BYTE_ZERO)) {
+      if (param.getCommentFlag().equals(BYTE_ZERO)) {
       // 遍历订单查找商品行信息
       for (String orderSnTemp : orderSn) {
         List<CommentListVo> tempCommentList =
@@ -509,7 +512,7 @@ public class GoodsCommentService extends ShopBaseService {
                     COMMENT_GOODS
                         .ID
                         .eq(COMMENT_GOODS_ANSWER.COMMENT_ID)
-                        .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO)))
+                        .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(BYTE_ZERO)))
                 .where(ORDER_GOODS.ORDER_SN.eq(orderSnTemp))
                 .and(ORDER_GOODS.SHOP_ID.eq(getShopId()))
                 .and(ORDER_GOODS.COMMENT_FLAG.eq(param.getCommentFlag()))
@@ -541,7 +544,7 @@ public class GoodsCommentService extends ShopBaseService {
                 COMMENT_AWARD.GOODS_IDS,
                 COMMENT_AWARD.COMMENT_NUM)
             .from(COMMENT_AWARD)
-            .where(COMMENT_AWARD.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .where(COMMENT_AWARD.DEL_FLAG.eq(BYTE_ZERO))
             .and(COMMENT_AWARD.STATUS.eq(NumberUtils.BYTE_ONE))
             .and(COMMENT_AWARD.AWARD_NUM.greaterThan(COMMENT_AWARD.SEND_NUM))
             .and(
@@ -584,7 +587,7 @@ public class GoodsCommentService extends ShopBaseService {
                 .from(COMMENT_GOODS)
                 .where(COMMENT_GOODS.GOODS_ID.eq(goodsId))
                 .and(COMMENT_GOODS.FLAG.eq(NumberUtils.BYTE_ONE))
-                .and(COMMENT_GOODS.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+                .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
                 .fetchOptionalInto(Integer.class)
                 .orElse(0);
         if (commNum < vo.getCommentNum()) {
@@ -629,7 +632,7 @@ public class GoodsCommentService extends ShopBaseService {
       for (CommentListVo forGoodsId : commentListVo) {
         Integer actId;
         // 如果是待评价的商品
-        if (forGoodsId.getCommentFlag().equals(NumberUtils.BYTE_ZERO)) {
+          if (forGoodsId.getCommentFlag().equals(BYTE_ZERO)) {
           // 得到当前商品所满足触发条件的所有活动的id集合
           Set<Integer> actIds = getAllActIds(forGoodsId.getGoodsId(), triggerConditionVos);
           if (actIds == null || actIds.isEmpty()) {
@@ -732,7 +735,7 @@ public class GoodsCommentService extends ShopBaseService {
     if (commCfg.equals(NumberUtils.INTEGER_ZERO)) {
       flag = NumberUtils.BYTE_ONE;
     } else {
-      flag = NumberUtils.BYTE_ZERO;
+        flag = BYTE_ZERO;
     }
     // 为指定商品添加评论
     db().insertInto(
@@ -801,7 +804,7 @@ public class GoodsCommentService extends ShopBaseService {
           .set(COMMENT_GOODS.COMMENT_AWARD_ID, param.getId())
           .where(COMMENT_GOODS.GOODS_ID.eq(param.getGoodsId()))
           .and(COMMENT_GOODS.ORDER_SN.eq(param.getOrderSn()))
-          .and(COMMENT_GOODS.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+          .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
           .execute();
       // 活动奖励1：赠送积分
       if (param.getAwardType().equals(NumberUtils.INTEGER_ONE)) {
@@ -812,7 +815,7 @@ public class GoodsCommentService extends ShopBaseService {
               {
                 setUserId(userIdArray);
                 setScore(Integer.valueOf(param.getAward()));
-                setScoreStatus(NumberUtils.BYTE_ZERO);
+                  setScoreStatus(BYTE_ZERO);
                 setDesc("score");
                 setOrderSn(param.getOrderSn());
                 setRemark("评价有礼获得");
@@ -870,7 +873,7 @@ public class GoodsCommentService extends ShopBaseService {
         db().select(MRKING_VOUCHER.SURPLUS)
             .from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
-            .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .and(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
             .fetchOptionalInto(Integer.class)
             .orElse(NumberUtils.INTEGER_ZERO);
     // 如果库存为0，返回信息库存不足
@@ -892,7 +895,7 @@ public class GoodsCommentService extends ShopBaseService {
                   MRKING_VOUCHER.VALIDITY_HOUR,
                   MRKING_VOUCHER.VALIDITY_MINUTE)
               .from(MRKING_VOUCHER)
-              .where(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+              .where(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
               .and(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
               .fetchOneInto(CouponDetailsVo.class);
       // 获取优惠券类型
@@ -938,7 +941,7 @@ public class GoodsCommentService extends ShopBaseService {
       db().update(MRKING_VOUCHER)
           .set(MRKING_VOUCHER.SURPLUS, newSurplus)
           .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
-          .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+          .and(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
           .execute();
     }
   }
@@ -995,4 +998,16 @@ public class GoodsCommentService extends ShopBaseService {
     }
     return false;
   }
+
+    /**
+     * Review overdue integer.商品评价审核逾期
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer reviewOverdue(Integer nDays) {
+        return db().fetchCount(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO)
+            .and(CommentGoods.COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
+            .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+    }
 }

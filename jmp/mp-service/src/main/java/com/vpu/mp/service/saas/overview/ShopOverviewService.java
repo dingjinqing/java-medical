@@ -1,17 +1,21 @@
 package com.vpu.mp.service.saas.overview;
 
-import com.vpu.mp.db.main.tables.*;
+import com.vpu.mp.db.main.tables.ShopRenew;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.overview.*;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.saas.shop.ShopChildAccountService;
 import com.vpu.mp.service.saas.shop.ShopOfficialAccount;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,8 +28,11 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopVersion.SHOP_VERSION;
 import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -47,10 +54,11 @@ public class ShopOverviewService extends MainBaseService {
     @Autowired
     public ShopOfficialAccount shopOfficialAccount;
 
+    @Autowired
+    QrCodeService qrCodeService;
+
     /**
      * 绑定解绑
-     * @param param
-     * @return
      */
 	public boolean bindUnBindOfficial(String act, AdminTokenAuthInfo user, Integer accountId) {
 		if (StringUtils.isEmpty(act) || user == null) {
@@ -88,35 +96,7 @@ public class ShopOverviewService extends MainBaseService {
 	}
 
     /**
-     * 获取绑定/解绑状态
-     * @param param
-     * @return
-     */
-    public byte getbindUnBindStatus(BindUnBindOfficialParam param){
-        /** 主账户 */
-        if(param.getIsSubAccount() == 0){
-            List<Byte> bindStatus =  db().select(ShopAccount.SHOP_ACCOUNT.IS_BIND)
-                    .from(ShopAccount.SHOP_ACCOUNT)
-                    .where(ShopAccount.SHOP_ACCOUNT.SYS_ID.eq(param.getSysId()))
-                    .fetchInto(Byte.class);
-            return Util.isEmpty(bindStatus) ? bindStatus.get(0) : -1;
-            /** 子账户 */
-        }else if(param.getIsSubAccount() == 1){
-            List<Byte> bindStatus = db().select(ShopChildAccount.SHOP_CHILD_ACCOUNT.IS_BIND)
-                    .from(ShopChildAccount.SHOP_CHILD_ACCOUNT)
-                    .where(ShopChildAccount.SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(param.getAccountId()))
-                    .fetchInto(Byte.class);
-            return Util.isEmpty(bindStatus) ? bindStatus.get(0) : -1;
-        }else {
-            return -1;
-        }
-    }
-
-
-    /**
      * 获取绑定/解绑状态  概览使用
-     * @param param
-     * @return
      */
     public BindofficialVo getbindUnBindStatusUseByOver(AdminTokenAuthInfo user,String bindAppId){
     	BindofficialVo bindofficialVo=new BindofficialVo();
@@ -148,28 +128,60 @@ public class ShopOverviewService extends MainBaseService {
 
     /**
      * 获取店铺基本信息
-     * @param param
-     * @return
      */
-    public ShopBaseInfoVo getShopBaseInfo(ShopBaseInfoParam param){
-        ShopBaseInfoVo shopBaseInfoVo = new ShopBaseInfoVo();
-        /** 店铺到期时间 */
-        List<ShopBaseInfoVo> baseInfoVos = db().select(ShopRenew.SHOP_RENEW.EXPIRE_TIME)
-                .from(ShopRenew.SHOP_RENEW)
-                .where(ShopRenew.SHOP_RENEW.SHOP_ID.eq(param.getShopId()))
-                .fetchInto(ShopBaseInfoVo.class);
-        shopBaseInfoVo.setExpireTime(baseInfoVos!=null&&!baseInfoVos.isEmpty() ? baseInfoVos.get(0).getExpireTime() : null);
-        /** 店铺版本 */
-        Shop shop = Shop.SHOP.as("shop");
-        ShopVersion sv = ShopVersion.SHOP_VERSION.as("sv");
-        Select<Record1<String>> select = db().select(shop.SHOP_TYPE).from(shop).where(shop.SHOP_ID.eq(param.getShopId()));
-        List<ShopBaseInfoVo> infoVos = db().select(sv.VERSION_NAME).from(sv).where(sv.LEVEL.eq(select))
-                .fetchInto(ShopBaseInfoVo.class);
-        shopBaseInfoVo.setVersionName(infoVos!=null&&!infoVos.isEmpty() ? infoVos.get(0).getVersionName() : null);
-        /** 当前绑定解绑状态 */
+    public ShopBaseInfoVo getShopBaseInfo(Integer shopId, String bindAppId, AdminTokenAuthInfo user) {
+        return ShopBaseInfoVo.builder()
+            // 店铺到期时间
+            .expireTime(shopExpireTime(shopId))
+            // 店铺版本
+            .version(shopVersion(shopId))
+            // 当前绑定解绑状态
+            .bindInfo(getbindUnBindStatusUseByOver(user, bindAppId))
+            // 分享二维码信息
+            .shareQrCodeVo(share(QrCodeTypeEnum.PAGE_BOTTOM, ""))
+            .build();
+    }
 
-        shopBaseInfoVo.setBindStatus(getbindUnBindStatus(param.getOfficialParam()));
-        return shopBaseInfoVo;
+    /**
+     * Shop expire time timestamp.店铺到期时间
+     *
+     * @param shopId the shop id
+     * @return the timestamp
+     */
+    public Timestamp shopExpireTime(Integer shopId) {
+        return db().select(ShopRenew.SHOP_RENEW.EXPIRE_TIME)
+            .from(ShopRenew.SHOP_RENEW)
+            .where(ShopRenew.SHOP_RENEW.SHOP_ID.eq(shopId))
+            .fetchOptionalInto(Timestamp.class).orElseThrow(() -> {
+                throw new BusinessException(JsonResultCode.CODE_ACCOUNT_SHOP_EXPRIRE);
+            });
+    }
+
+    /**
+     * Shop version map.店铺版本
+     *
+     * @param shopId the shop id
+     * @return the map<K, V> K=版本级别, V=版本名称
+     */
+    public Map<String, String> shopVersion(Integer shopId) {
+        Select<Record1<String>> select = db().select(SHOP.SHOP_TYPE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId));
+        return db().select(SHOP_VERSION.LEVEL, SHOP_VERSION.VERSION_NAME).from(SHOP_VERSION).where(SHOP_VERSION.LEVEL.eq(select))
+            .fetchMap(SHOP_VERSION.LEVEL, SHOP_VERSION.VERSION_NAME);
+    }
+
+    /**
+     * Share store service share qr code vo.通用分享方法
+     *
+     * @param qrCodeTypeEnum the qr code type enum
+     * @param pathParam      the path param
+     * @return the share qr code vo
+     */
+    public ShareQrCodeVo share(QrCodeTypeEnum qrCodeTypeEnum, String pathParam) {
+        String imageUrl = qrCodeService.getMpQrCode(qrCodeTypeEnum, pathParam);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        return vo;
     }
 
     /**
@@ -239,7 +251,7 @@ public class ShopOverviewService extends MainBaseService {
             vo.totalPendingIncr();
         }
         vo.setDataShop(dataShop);
-        log.debug("主库的走完了");
+        log.debug("主库的统计数据整完了");
         return vo;
     }
 

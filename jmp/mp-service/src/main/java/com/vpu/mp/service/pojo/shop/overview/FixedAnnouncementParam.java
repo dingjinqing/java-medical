@@ -1,14 +1,12 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 /**
  * author liufei
  * date 2019/7/16
  */
 @Data
-@Component
 public class FixedAnnouncementParam {
     /** 公告分类 */
     private int categoryId = 1;

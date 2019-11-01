@@ -1,16 +1,15 @@
 package com.vpu.mp.service.shop.distribution;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 分销员审核service
@@ -28,4 +27,14 @@ public class DistributorCheckService extends ShopBaseService{
 		return select;
 
 	}
+
+    /**
+     * Distribution review timeout integer.分销审核超过N天未处理数量
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer distributionReviewTimeout(Integer nDays) {
+        return db().fetchCount(DISTRIBUTOR_APPLY, DISTRIBUTOR_APPLY.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+    }
 }

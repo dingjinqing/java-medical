@@ -1,27 +1,25 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /**
- * @Author:liufei
- * @Date:2019/7/18
- * @Description: 商城概览综合出参
+ * author liufei
+ * date 2019/7/18
+ * 商城概览综合出参
  */
 @Data
-@Component
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OverviewVo {
-    @Autowired
     private ShopBaseInfoVo shopBaseInfoVo;
-    @Autowired
     private List<FixedAnnouncementVo> announcementVoList;
-    @Autowired
     private DataDemonstrationVo dataDemonstrationVo;
-    @Autowired
     private ToDoItemVo toDoItemVo;
-//    @Autowired
-//    private ShopAssistantVo shopAssistantVo;
+    private ShopAssistantVo shopAssistantVo;
 }

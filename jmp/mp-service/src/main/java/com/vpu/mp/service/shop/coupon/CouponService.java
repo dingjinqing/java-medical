@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.coupon;
 
+import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
@@ -20,9 +21,12 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * 优惠券管理
@@ -369,4 +373,23 @@ public class CouponService extends ShopBaseService {
         return couponAllVos;
 
     }
+
+    /**
+     * Get small inventory coupon map.获取库存偏小的优惠券
+     *
+     * @param num the num
+     * @return the map
+     */
+    public Map<Integer, String> getSmallInventoryCoupon(Integer num) {
+        return db().select(MRKING_VOUCHER.ID, MrkingVoucher.MRKING_VOUCHER.ACT_NAME)
+            .from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.SURPLUS.lessOrEqual(num))
+            .and(MRKING_VOUCHER.ENABLED.eq(BYTE_ONE))
+            .and(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
+            .and(MRKING_VOUCHER.CREATE_TIME.add(MRKING_VOUCHER.VALIDATION_CODE).greaterThan(Timestamp.valueOf(LocalDateTime.now())))
+            .orderBy(MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.CREATE_TIME)
+            .limit(5)
+            .fetchMap(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME);
+    }
+
 }

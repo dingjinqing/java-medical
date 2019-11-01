@@ -5,8 +5,9 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.overview.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,6 @@ public class AdminMallOverviewController extends AdminBaseController {
     /**
      * 获取绑定/解绑状态
      *
-     * @param param
      * @return json result
      */
     @GetMapping("/api/admin/malloverview/getbindUnBindStatus")
@@ -76,21 +76,14 @@ public class AdminMallOverviewController extends AdminBaseController {
     }
 
     /**
-     * The Shop base info vo.
-     */
-    @Autowired
-    public ShopBaseInfoVo shopBaseInfoVo;
-
-    /**
      * 获取店铺基本信息,店铺到期时间，店铺版本名称
      *
-     * @param param the param
      * @return the json result
      */
-    @PostMapping("/api/admin/malloverview/getShopBaseInfo")
-    public JsonResult getShopBaseInfo(@RequestBody @Validated ShopBaseInfoParam param){
-        shopBaseInfoVo = saas.overviewService.getShopBaseInfo(param);
-        return shopBaseInfoVo !=null ? success(shopBaseInfoVo) : fail();
+    @GetMapping("/api/admin/malloverview/getShopBaseInfo")
+    public JsonResult getShopBaseInfo() {
+        ShopBaseInfoVo vo = saas.overviewService.getShopBaseInfo(shop().mallOverview.getShopId(), bindAppId, adminAuth.user());
+        return success(vo);
     }
 
     /**
@@ -127,12 +120,25 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @PostMapping("/api/admin/malloverview/shopAssistant")
     public JsonResult shopAssistant(@RequestBody @Validated ShopAssistantParam param){
-        ShopAssistantVo vo = new ShopAssistantVo();
+        return success(shopAssistantInvoke(param));
+    }
+
+    private ShopAssistantVo shopAssistantInvoke(ShopAssistantParam param) {
+        ShopAssistantVo vo = shop().mallOverview.shopAssistant(param);
         Integer shopId = shop().mallOverview.getShopId();
         Integer sysId = shop().mallOverview.getSysId();
         saas.overviewService.shopAssistant(param, vo, shopId, sysId);
-        shop().mallOverview.shopAssistant(param,vo);
-        return success(vo);
+        return vo;
+    }
+
+    /**
+     * Share shop share qr code vo.店铺分享
+     *
+     * @return the share qr code vo
+     */
+    @PostMapping("/api/admin/malloverview/shareShop")
+    public ShareQrCodeVo shareShop() {
+        return shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, "");
     }
 
     /**
@@ -143,18 +149,17 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @PostMapping("/api/admin/malloverview/allOverview")
     public JsonResult allOverview(@RequestBody @Validated OverviewParam param){
-        OverviewVo overviewVo = new OverviewVo();
-        //基本信息
-        overviewVo.setShopBaseInfoVo(saas.overviewService.getShopBaseInfo(param.getShopBaseInfoParam()));
-        //公告信息
-        overviewVo.setAnnouncementVoList(saas.overviewService.getFixedAnnouncement(param.getFixedAnnouncementParam()));
-        //数据展示
-        overviewVo.setDataDemonstrationVo(shop().mallOverview.dataDemonstration(param.getDataDemonstrationParam()));
-        //代办事项
-        overviewVo.setToDoItemVo(shop().mallOverview.toDoItem());
-        //店铺助手
-//        shopAssistant(param.getShopAssistantParam());
-//        overviewVo.setShopAssistantVo(vo);
-        return success(overviewVo);
+        return success(OverviewVo.builder()
+            //基本信息
+            .shopBaseInfoVo(saas.overviewService.getShopBaseInfo(shop().mallOverview.getShopId(), bindAppId, adminAuth.user()))
+            //公告信息
+            .announcementVoList(saas.overviewService.getFixedAnnouncement(param.getFixedAnnouncementParam()))
+            //数据展示
+            .dataDemonstrationVo(shop().mallOverview.dataDemonstration(param.getDataDemonstrationParam()))
+            //代办事项
+            .toDoItemVo(shop().mallOverview.toDoItem())
+            //店铺助手
+            .shopAssistantVo(shopAssistantInvoke(param.getShopAssistantParam()))
+            .build());
     }
 }

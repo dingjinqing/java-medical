@@ -1,15 +1,18 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
 /**
- * @Author:liufei
- * @Date:2019/7/18
- * @Description:
+ * author liufei
+ * date 2019/7/18
  */
 @Data
-@Component
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AssiDataGoods {
     /** 运费模板设置 0: 已设置运费模板，否未设置 */
     public Byte shipTemplateConf;
