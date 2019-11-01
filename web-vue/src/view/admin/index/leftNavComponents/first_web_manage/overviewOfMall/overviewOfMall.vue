@@ -569,11 +569,11 @@ export default {
       getAllOverview(obj).then((res) => {
         if (res.error === 0) {
           // 代办
-          for (var i in res.content) {
-            if (res.content[i] === 'toDoItemVo') {
-              alert('代办')
-            }
-          }
+          // for (var i in res.content) {
+          //   if (res.content[i] === 'toDoItemVo') {
+          //     alert('代办')
+          //   }
+          // }
           // 数据
           this.dataContent = res.content.dataDemonstrationVo
         }
