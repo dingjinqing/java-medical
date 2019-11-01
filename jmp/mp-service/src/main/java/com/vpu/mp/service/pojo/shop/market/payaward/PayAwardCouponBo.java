@@ -16,9 +16,9 @@ public class PayAwardCouponBo {
      */
     private Integer id;
     /**
-     * voucher
+     *  voucher：减价；discount:打折|
      */
-    private String catCode;
+    private String actCode;
     /**
      * 奖品份数
      */

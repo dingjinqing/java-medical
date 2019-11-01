@@ -15,7 +15,7 @@ import java.util.List;
 public class PayAwardListVo {
 
     private Integer id;
-    private String activityName;
+    private String activityNames;
     /**
      * 有效期类型 0定期1永久
      */
@@ -28,11 +28,11 @@ public class PayAwardListVo {
      */
     private Integer actFirst;
     /**
-     * 奖励类型 0 无奖品 1普通优惠卷  2分裂优惠卷 3幸运大抽奖 4 余额 5 商品 6积分 7 自定义
-     */
-    private List<Byte> awardTypeList;
-    /**
-     * 奖励
+     * 奖励json
      */
     private String awardList;
+    /**
+     * 奖励内容
+     */
+    private  List<PayAwardContentBo>  awardContentList;
 }

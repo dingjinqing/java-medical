@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -57,6 +58,26 @@ public class Util {
 	public static String toJson(Object o) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
+			return mapper.writeValueAsString(o);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 *  对象转json忽略null字段
+	 * @param o
+	 * @return
+	 */
+	public static String toJsonNotNull(Object o) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 			return mapper.writeValueAsString(o);
 		} catch (JsonParseException e) {
 			e.printStackTrace();

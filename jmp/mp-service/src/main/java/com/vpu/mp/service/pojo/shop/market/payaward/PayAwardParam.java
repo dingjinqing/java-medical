@@ -33,7 +33,7 @@ public class PayAwardParam {
     /**
      *  商品范围类型
      */
-    private Integer goodsAreasType;
+    private Integer goodsAreaType;
     /**
      * 商品id
      */
@@ -45,7 +45,7 @@ public class PayAwardParam {
     /**
      * 商品商家分类
      */
-    private String goodsSortId;
+    private String goodsSortIds;
     /**
      * 最少支付金额
      */

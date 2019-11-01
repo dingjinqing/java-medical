@@ -42,7 +42,7 @@ public class PayAwardService extends ShopBaseService {
      */
     public Boolean addPayAward(PayAwardParam param) {
         PayAwardRecord payAward = db().newRecord(PAY_AWARD, param);
-        payAward.setAwardList(Util.toJson(param.getAwardList()));
+        payAward.setAwardList(Util.toJsonNotNull(param.getAwardList()));
         payAward.setId(null);
         return payAward.insert() > 0;
     }
@@ -131,7 +131,14 @@ public class PayAwardService extends ShopBaseService {
             default:
         }
         select.orderBy(PAY_AWARD.ACT_FIRST.desc());
-        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), PayAwardListVo.class);
+        PageResult<PayAwardListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), PayAwardListVo.class);
+        pageResult.getDataList().forEach(payAward->{
+            if (payAward.getAwardList()!=null&&!payAward.getAwardList().isEmpty()){
+                payAward.setAwardContentList(Util.json2Object(payAward.getAwardList(),new TypeReference<List<PayAwardContentBo>>(){},false));
+                payAward.setAwardList(null);
+            }
+        });
+        return pageResult;
     }
 
     /**

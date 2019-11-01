@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -8,6 +11,8 @@ import java.util.List;
  * @author 孔德成
  * @date 2019/10/31 14:29
  */
+@Getter
+@Setter
 public class PayAwardContentBo {
 
     /**
