@@ -588,5 +588,31 @@ public class ShopService extends MainBaseService {
 			return null;
 		}
 	}
+	
+	/**
+	 * 获取单个店铺信息
+	 * @param shopId
+	 * @return
+	 */
+	public ShopSelectInnerResp getShopInfo(Integer shopId) {
+		ShopRecord record = getShopById(shopId);
+		Timestamp expireTime = renew.getShopRenewExpireTime(shopId);
+		String expireStatus = "1";
+		if (expireTime != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(expireTime);
+			cal.set(Calendar.HOUR, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+				expireStatus = "0";
+			}
+		}
+		ShopSelectInnerResp vo = record.into(ShopSelectInnerResp.class);
+		vo.setExpireTime(expireTime);
+		vo.setExpireTimeStatus(expireStatus);
+		vo.setShopAvatar(StringUtils.isEmpty(record.get(SHOP.SHOP_AVATAR))?null:image.imageUrl(record.get(SHOP.SHOP_AVATAR)));
+		return vo;
+	}
 
 }
