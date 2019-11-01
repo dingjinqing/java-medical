@@ -301,11 +301,13 @@ public class ReducePriceService extends ShopBaseService {
     }
 
     /**
+     * 完成详情页后可删除
      * 获取集合内商品的限时降价信息，如果同一个商品同时参与多个限时降价则取时间最早的一条记录
      * @param goodsIds 商品id结合
      * @param date 限制时间
      * @return key:商品id value:限时降价信息
      */
+    @Deprecated
     public  Map<Integer,ReducePriceActivityVo> getGoodsReducePriceInfo(List<Integer> goodsIds,Timestamp date){
 
         Map<Integer, List<Record2<Integer, Integer>>> goodsGroup = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE)
