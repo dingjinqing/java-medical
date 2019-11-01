@@ -55,7 +55,7 @@
       </view>
     </view>
     <!-- 会员权益 余额 -->
-    <view class="card_item_title">
+    <view class="card_item_title" wx:if="{{cardInfo.chargeMoney}}">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/discount.png"></image>
       </view>
@@ -66,11 +66,17 @@
         查看 >
       </view>
     </view>
-    <view class="card_item_content">
+    <view class="card_item_content" wx:if="{{cardInfo.chargeMoney}}">
       <view class="content_item" wx:if="{{cardInfo.sendMoney}}">开卡赠送{{cardInfo.sendMoney}}元</view>
+      <block wx:if="{{cardInfo.chargeMoney && cardInfo.chargeMoney.offsetMoney === 1}}">
+        <view class="content_item">购物每满{{cardInfo.chargeMoney.perMoney}}元赠送{{cardInfo.chargeMoney.perGetMoney}}元</view>
+      </block>
+      <block wx:elif="{{cardInfo.chargeMoney && cardInfo.chargeMoney.offsetMoney === 0}}" >
+        <view class="content_item" wx:for="{{cardInfo.chargeMoney.money}}" wx:for-item="moneyItem" wx:for-index="moneyIndex" wx:key="moneyIndex">购物满{{moneyItem}}元,赠送{{cardInfo.chargeMoney.getMoney[moneyIndex]}}元</view>
+      </block>
     </view>
     <!-- 会员权益 积分 -->
-    <view class="card_item_title">
+    <view class="card_item_title" wx:if="{{cardInfo.buyScore}}">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/score.png"></image>
       </view>
@@ -81,12 +87,18 @@
         查看 >
       </view>
     </view>
-    <view class="card_item_content">
+    <view class="card_item_content" wx:if="{{cardInfo.buyScore}}">
       <view class="content_item" wx:if="{{cardInfo.sorce}}">开卡赠送{{cardInfo.sorce}}积分</view>
+      <block wx:if="{{cardInfo.buyScore && cardInfo.buyScore.offset === 1}}">
+        <view class="content_item">购物每满{{cardInfo.buyScore.perGoodsMoney}}元赠送{{cardInfo.buyScore.perGetScores}}积分</view>
+      </block>
+      <block wx:elif="{{cardInfo.buyScore && cardInfo.buyScore.offset === 0}}" >
+        <view class="content_item" wx:for="{{cardInfo.buyScore.goodsMoney}}" wx:for-item="scoreItem" wx:for-index="scoreIndex" wx:key="scoreIndex">购物满{{scoreItem}}元,赠送{{cardInfo.buyScore.getScores[scoreIndex]}}积分</view>
+      </block>
     </view>
 
 
-    <view class="card_item_title">
+    <view class="card_item_title" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/goods_icon.png"></image>
       </view>
@@ -97,43 +109,94 @@
         查看 >
       </view>
     </view>
-    <view class="card_item_content">
-      <view class="content_item">123456</view>
+    <view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
+      <view class="content_item goods_item">
+        <image class="goods_img" src="{{imageUrl}}image/wxapp/goods_icon.png"></image>
+        <view class="goods_right">
+          <view class="goods_name">天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞</view>
+          <view class="goods_price" style="color:{{comColor}}">￥900.00</view>
+        </view>
+      </view>
     </view>
-    <view class="card_item_title">
+    <view class="card_item_title" wx:if="{{cardInfo.storeUseSwitch >= 0}}">
       <view class="item_title_left">
-        <image mode="widthFix" src="{{imageUrl}}image/wxapp/goods_icon.png"></image>
+        <image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png"></image>
       </view>
       <view class="item_title_content">
-        适用商品
+        使用门店
+      </view>
+      <view class="item_title_right">
+        {{cardInfo.storeUseSwitch === 0 ? '全部门店' : cardInfo.storeList.split(',').length}} >
+      </view>
+    </view>
+    <view class="card_item_title" wx:if="{{cardInfo.cardType === 1 && cardInfo.storeUseSwitch >= 0}}">
+      <view class="item_title_left">
+        <image mode="widthFix" src="{{imageUrl}}image/admin/time_block.png"></image>
+      </view>
+      <view class="item_title_content">
+        允许使用时间
+      </view>
+      <view class="item_title_right">
+        <block wx:if="{{cardInfo.useTime === 0}}">工作日,双休日</block>
+        <block wx:elif="{{cardInfo.useTime === 1}}">工作日</block>
+        <block wx:els--e>双休日</block>
+      </view>
+    </view>
+    <view class="card_item_title" bindtap="phoneCall" wx:if="{{ cardInfo.mobile != null }}">
+      <view class="item_title_left">
+        <image mode="widthFix" src="{{imageUrl}}image/wxapp/card_phone.png"></image>
+      </view>
+      <view class="item_title_content">
+        联系电话
+      </view>
+      <view class="item_title_right">
+        {{cardInfo.mobile}}
+      </view>
+    </view>
+    <view class="card_item_title" wx:if="{{ cardInfo.cardNo && cardInfo.cardType != 2}}">
+      <view class="item_title_left">
+        <image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png"></image>
+      </view>
+      <view class="item_title_content">
+        使用记录
       </view>
       <view class="item_title_right">
         查看 >
       </view>
     </view>
-    <view class="card_item_title">
+    <view class="card_item_title" wx:if="{{ cardInfo.cardNo && cardInfo.cardType === 2}}">
       <view class="item_title_left">
-        <image mode="widthFix" src="{{imageUrl}}image/wxapp/goods_icon.png"></image>
+        <image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png"></image>
       </view>
       <view class="item_title_content">
-        适用商品
+        升降级记录
       </view>
       <view class="item_title_right">
         查看 >
       </view>
     </view>
-    <view class="card_item_title">
+    <view class="card_item_title" wx:if="{{ cardInfo.isPay === 1 && cardInfo.buyTime != null }}">
       <view class="item_title_left">
-        <image mode="widthFix" src="{{imageUrl}}image/wxapp/goods_icon.png"></image>
+        <image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png"></image>
       </view>
       <view class="item_title_content">
-        适用商品
+        支付时间：{{cardInfo.buyTime}}
       </view>
-      <view class="item_title_right">
-        查看 >
+    </view>
+    <view class="card_item_title" wx:if="{{ cardInfo.desc != null || cardInfo.activation === 1 }}">
+      <view class="item_title_left">
+        <image mode="widthFix" src="{{imageUrl}}image/wxapp/article.png"></image>
       </view>
+      <view class="item_title_content">
+        会员卡使用说明
+      </view>
+    </view>
+    <view class="card_item_content" wx:if="{{ cardInfo.desc != null || cardInfo.activation === 1 }}">
+      <view class="content_item" wx:if="{{cardInfo.activation === 1}}">领取后需要填写激活信息进行激活才可使用</view>
+      <view class="description" wx:if="{{ cardInfo.desc != null }}">{{cardInfo.desc}}</view>
     </view>
   </view>
+  
   <view class="flex_footer">
     <view class="footer_btn">设置默认会员卡</view>
   </view>

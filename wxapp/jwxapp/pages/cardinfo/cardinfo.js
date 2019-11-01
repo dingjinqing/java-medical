@@ -60,6 +60,11 @@ global.wxPage({
   getCardStatus(cardItem){
 
   },
+  phoneCall: function (e) {
+    wx.makePhoneCall({
+      phoneNumber: this.data.cardInfo.mobile
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
