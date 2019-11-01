@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.activity.info.coupon;
+package com.vpu.mp.service.pojo.wxapp.activity.info.list;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;

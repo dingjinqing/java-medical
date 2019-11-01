@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.groupbuy.GroupBuyForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.GroupBuyForListInfo;
 import org.jooq.Record3;
 
 import java.math.BigDecimal;

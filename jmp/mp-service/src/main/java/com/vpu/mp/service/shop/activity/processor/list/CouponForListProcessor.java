@@ -1,9 +1,9 @@
-package com.vpu.mp.service.shop.activity.processor.coupon;
+package com.vpu.mp.service.shop.activity.processor.list;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.coupon.CouponForLsitInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.CouponForLsitInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;

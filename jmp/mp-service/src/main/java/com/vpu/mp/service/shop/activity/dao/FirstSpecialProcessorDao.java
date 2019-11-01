@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.firstspecial.FirstSpecialForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.FirstSpecialForListInfo;
 import org.jooq.Condition;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -33,7 +33,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
      * 获取集合内商品的首单特惠信息
      * @param goodsIds 商品id集合
      * @param date 日期
-     * @return key: 商品id，value: {@link com.vpu.mp.service.pojo.wxapp.activity.info.firstspecial.FirstSpecialForListInfo}
+     * @return key: 商品id，value: {@link FirstSpecialForListInfo}
      */
    public  Map<Integer, FirstSpecialForListInfo> getGoodsFirstSpecialForListInfo(List<Integer> goodsIds, Timestamp date){
        Map<Integer, Result<Record2<Integer, Integer>>> firstSpecials = db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL_GOODS.GOODS_ID).from(FIRST_SPECIAL).innerJoin(FIRST_SPECIAL_GOODS).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID))

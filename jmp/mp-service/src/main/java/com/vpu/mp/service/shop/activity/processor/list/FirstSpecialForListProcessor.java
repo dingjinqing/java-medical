@@ -1,9 +1,9 @@
-package com.vpu.mp.service.shop.activity.processor.firstspecial;
+package com.vpu.mp.service.shop.activity.processor.list;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.firstspecial.FirstSpecialForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.FirstSpecialForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;

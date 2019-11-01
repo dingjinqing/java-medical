@@ -1,9 +1,9 @@
-package com.vpu.mp.service.shop.activity.processor.groupbuy;
+package com.vpu.mp.service.shop.activity.processor.list;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.groupbuy.GroupBuyForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.GroupBuyForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;

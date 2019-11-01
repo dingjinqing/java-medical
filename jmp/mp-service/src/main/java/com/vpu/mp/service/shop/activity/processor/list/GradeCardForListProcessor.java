@@ -1,8 +1,8 @@
-package com.vpu.mp.service.shop.activity.processor.grade;
+package com.vpu.mp.service.shop.activity.processor.list;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.grade.GradeCardForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.GradeCardForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
