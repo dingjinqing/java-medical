@@ -104,7 +104,7 @@ public class OrderInfoService extends ShopBaseService {
 		T order = db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
 		return order;
 	}
-	
+
 	/**
 	 * @param <T> <? extends OrderListVo>
 	 * @param orderSn 订单号
@@ -253,7 +253,7 @@ public class OrderInfoService extends ShopBaseService {
 		activeBuildOptions(select, param);
 		return select;
 	 }
-	 
+
 	/**
 	 * 订单goodsType查询构造
 	 * @param goodsType
@@ -261,7 +261,7 @@ public class OrderInfoService extends ShopBaseService {
 	public static String getGoodsTypeToSearch(Byte[] goodsType) {
 		StringBuilder sbr = new StringBuilder();
 		for (Byte one : goodsType) {
-			//Prefix 
+			//Prefix
 			sbr.append("\\[");
 			//查找条件
 			sbr.append(one);
@@ -597,7 +597,7 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		order.setPayCodeList(payCodes);
 	}
-	
+
 	/**
 	 * 提醒发货
 	 * @param order
@@ -608,7 +608,7 @@ public class OrderInfoService extends ShopBaseService {
 		set(TABLE.ORDER_REMIND_TIME, DateUtil.getSqlTimestamp()).
 		where(TABLE.ORDER_ID.eq(order.getOrderId())).execute();
 	}
-	
+
 	/**
 	 * 延长发货
 	 * @param order
@@ -630,7 +630,7 @@ public class OrderInfoService extends ShopBaseService {
 		set(TABLE.DEL_TIME, DateUtil.getSqlTimestamp()).
 		where(TABLE.ORDER_ID.eq(order.getOrderId())).execute();
 	}
-	
+
 	/**
 	 * 获取上次订单地址
 	 * @param userId
@@ -954,8 +954,8 @@ public class OrderInfoService extends ShopBaseService {
 	/**
 	 * 是否是新下单用户
 	 * @param userId 用户id
-	 * @param waitPay
-	 * @return
+	 * @param waitPay 是否统计代付款 (默认true)
+	 * @return  true (没有订单)新用户 false (有订单)不是新用户
 	 */
 	public Boolean isNewUser(Integer userId,Boolean waitPay ){
 		SelectConditionStep<Record1<Integer>> selectConditionStep = db().selectCount().from(TABLE).where(TABLE.IS_COD.eq((byte) 0).or(TABLE.IS_COD.eq((byte) 1).and(TABLE.SHIPPING_TIME.isNotNull())))
@@ -965,7 +965,7 @@ public class OrderInfoService extends ShopBaseService {
 		}else{
 			selectConditionStep.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY));
 		}
-		return  selectConditionStep.fetchOne().component1()>0;
+		return  selectConditionStep.fetchOne().component1()==0;
 	}
 
 	public boolean isNewUser(Integer userId){
