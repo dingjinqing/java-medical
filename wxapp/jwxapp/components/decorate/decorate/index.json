@@ -5,6 +5,7 @@
     "v-card": "../card/index",
     "v-imgnav": "../imgnav/index",
     "v-coupon": "../coupon/index",
-    "v-product": "../product/index"
+    "v-product": "../product/index",
+    "v-advimg": "../advimg/index"
   }
 }
