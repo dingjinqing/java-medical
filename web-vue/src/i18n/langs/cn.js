@@ -118,6 +118,8 @@ import { cn as wechateGoodsCicle } from './views/admin_new/cn/index/marketManage
 import { cn as payReward } from './views/admin_new/cn/index/marketManagement/payReward/payReward'
 // 首单特惠
 import { cn as firstSpecial } from './views/admin_new/cn/index/marketManagement/firstSpecial/firstSpecialCn'
+// 首单特惠新增
+import { cn as firstSpecialAdd } from './views/admin_new/cn/index/marketManagement/firstSpecial/firstSpecialAddCn'
 // 秒杀-秒杀订单
 import { cn as orderSeckill } from './views/admin_new/cn/index/marketManagement/seckill/orderSeckillCn'
 
@@ -691,6 +693,7 @@ const cn = {
   wechateGoodsCicle, // 微信好物圈
   payReward, // 支付有礼
   firstSpecial, // 首单特惠
+  firstSpecialAdd, // 首单特惠新增
 
   // 会员管理
   memberCard, // 会员管理-会员卡

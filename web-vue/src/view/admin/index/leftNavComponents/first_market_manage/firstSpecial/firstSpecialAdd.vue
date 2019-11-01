@@ -7,37 +7,37 @@
           @tab-click="handleClick"
         >
           <el-tab-pane
-            label="全部首单特惠活动"
+            :label="$t('firstSpecialAdd.allActive')"
             name="0"
           ></el-tab-pane>
           <el-tab-pane
-            label="进行中"
+            :label="$t('firstSpecialAdd.processActive')"
             name="1"
           ></el-tab-pane>
           <el-tab-pane
-            label="未开始"
+            :label="$t('firstSpecialAdd.staredActive')"
             name="2"
           ></el-tab-pane>
           <el-tab-pane
-            label="已过期"
+            :label="$t('firstSpecialAdd.expired')"
             name="3"
           ></el-tab-pane>
           <el-tab-pane
-            label="已停用"
+            :label="$t('firstSpecialAdd.terminated')"
             name="4"
           ></el-tab-pane>
           <el-tab-pane
-            label="添加首单特惠活动"
+            :label="$t('firstSpecialAdd.addActive')"
             name="5"
           ></el-tab-pane>
         </el-tabs>
       </div>
       <div class="first-special-add-content">
         <div class="info-top">
-          <h3>说明</h3>
+          <h3>{{$t('firstSpecialAdd.description')}}</h3>
           <ol>
-            <li>1.首单特惠价格仅“未在店铺内支付购买过任何商品”的用户可见，老用户查看首单特惠商品时将显示商品的当前价格。</li>
-            <li>2.首单特惠活动建议与“开屏有礼-自定义”活动配合开展</li>
+            <li>{{$t('firstSpecialAdd.des1')}}</li>
+            <li>{{$t('firstSpecialAdd.des2')}}</li>
           </ol>
         </div>
         <el-form
@@ -48,18 +48,18 @@
           :rules="rules"
         >
           <el-form-item
-            label="活动名称："
+            :label="$t('firstSpecialAdd.eventName')+'：'"
             prop="name"
           >
             <el-input
               class="form_input"
               v-model="form.name"
             ></el-input>
-            <p class="form_tip">只作为商家记录使用，用户不会看到这个名称</p>
+            <p class="form_tip">{{$t('firstSpecialAdd.eventTip')}}</p>
           </el-form-item>
           <el-form-item
             class="clearfix"
-            label="有效期："
+            :label="$t('firstSpecialAdd.validity')"
             prop="isForever"
           >
             <div
@@ -70,11 +70,11 @@
                 <el-radio
                   :label="0"
                   style="line-height:32px;"
-                >固定时间</el-radio>
+                >{{$t('firstSpecialAdd.fixedTime')}}</el-radio>
                 <el-radio
                   :label="1"
                   style="line-height:32px;"
-                >永久有效</el-radio>
+                >{{$t('firstSpecialAdd.permanent')}}</el-radio>
               </el-radio-group>
             </div>
             <div class="fl">
@@ -82,18 +82,18 @@
                 v-model="form.startTime"
                 type="datetime"
                 class="form_input"
-                placeholder="选择日期时间"
+                :placeholder="$t('firstSpecialAdd.chooseTime')"
                 :disabled="!!form.isForever"
                 format="yyyy-MM-dd HH:mm:ss"
                 value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
-              至
+              {{$t('firstSpecialAdd.to')}}
               <el-date-picker
                 v-model="form.endTime"
                 type="datetime"
                 class="form_input"
-                placeholder="选择日期时间"
+                :placeholder="$t('firstSpecialAdd.chooseTime')"
                 :disabled="!!form.isForever"
                 format="yyyy-MM-dd HH:mm:ss"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -102,14 +102,14 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="活动优先级："
+            :label="$t('firstSpecialAdd.priority')+'：'"
             prop="first"
           >
             <el-input-number v-model="form.first"></el-input-number>
-            <p class="form_tip">用于区分不同首单特惠活动的优先级，请填写正整数，数值越大优先级越高</p>
+            <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
           </el-form-item>
           <el-form-item
-            label="限购数量："
+            :label="$t('firstSpecialAdd.restricted')+'：'"
             style="width:95px;"
             required
           >
@@ -120,12 +120,12 @@
               <el-radio
                 :label="0"
                 style="line-height:32px;"
-              >不限制</el-radio>
+              >{{$t('firstSpecialAdd.notlimited')}}</el-radio>
               <el-radio
                 :label="1"
                 style="line-height:32px;"
               >
-                限制数量
+                {{$t('firstSpecialAdd.limitedNum')}}
                 <el-input-number
                   v-model="form.limitAmount"
                   :disabled="!limit"
@@ -138,14 +138,14 @@
               style="margin-left: 30px;"
               :true-label="1"
               :false-label="0"
-            >超出限购数量后，买家不可继续添加购买该商品</el-checkbox>
+            >{{$t('firstSpecialAdd.limitedTip')}}</el-checkbox>
           </el-form-item>
           <el-form-item
-            label="活动商品："
+            :label="$t('firstSpecialAdd.activeGoods')+'：'"
             required
           >
-            <el-button @click="selectGoodsHandle">+选择商品</el-button>
-            <p class="form_tip">最多选择100个商品</p>
+            <el-button @click="selectGoodsHandle">+{{$t('firstSpecialAdd.chooseGoods')}}</el-button>
+            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}}</p>
           </el-form-item>
           <!-- 设置商品首单优惠 -->
           <div
@@ -156,7 +156,7 @@
               <el-form-item
                 class="table_head_setting fl"
                 label-width="115px"
-                label="设置折扣："
+                :label="$t('firstSpecialAdd.setDiscount')+'：'"
                 required
               >
                 <el-radio-group
@@ -165,31 +165,31 @@
                 >
                   <el-radio label="0">
                     <span>
-                      批量打<el-input
+                      {{$t('firstSpecialAdd.batchDiscount')}}<el-input
                         class="num_input"
                         v-model="form.batchDiscount"
                         min="0"
                         max="10"
                         @focus="inputFocus(0)"
-                      ></el-input>折
+                      ></el-input>
                     </span>
                   </el-radio>
                   <el-radio label="1">
                     <span>
-                      批量减价<el-input
+                      {{$t('firstSpecialAdd.batchPrice')}}<el-input
                         class="num_input"
                         v-model="form.batchReduce"
                         @focus="inputFocus(1)"
-                      ></el-input>元
+                      ></el-input>{{$t('firstSpecialAdd.yuan')}}
                     </span>
                   </el-radio>
                   <el-radio label="2">
                     <span>
-                      批量首单价<el-input
+                      {{$t('firstSpecialAdd.batch')}}<el-input
                         class="num_input"
                         v-model="form.batchFinalPrice"
                         @focus="inputFocus(2)"
-                      ></el-input>元
+                      ></el-input>{{$t('firstSpecialAdd.yuan')}}
                     </span>
                   </el-radio>
                 </el-radio-group>
@@ -197,8 +197,8 @@
                   type="primary"
                   style="margin-left:20px;"
                   @click="volumeDiscountHandle"
-                >确定</el-button>
-                <el-button @click="resetTableData">取消</el-button>
+                >{{$t('firstSpecialAdd.determine')}}</el-button>
+                <el-button @click="resetTableData">{{$t('firstSpecialAdd.cancel')}}</el-button>
               </el-form-item>
               <div
                 class="fr"
@@ -207,11 +207,11 @@
                 <el-button
                   type="text"
                   @click="deleteSelectGoods"
-                >批量删除</el-button>
+                >{{$t('firstSpecialAdd.batchDeletion')}}</el-button>
                 <el-button
                   type="text"
                   @click="roundingPrice"
-                >批量价格取整</el-button>
+                >{{$t('firstSpecialAdd.rounding')}}</el-button>
               </div>
             </div>
             <el-table
@@ -231,7 +231,7 @@
             >
               <el-table-column type="selection"></el-table-column>
               <el-table-column
-                label="商品名称"
+                :label="$t('firstSpecialAdd.productName')"
                 prop="goodsName"
                 width="230"
               >
@@ -246,14 +246,14 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="原价"
+                :label="$t('firstSpecialAdd.originalPrice')"
                 prop="shopPrice"
               ></el-table-column>
               <el-table-column
-                label="库存"
+                :label="$t('firstSpecialAdd.inStock')"
                 prop="goodsNumber"
               ></el-table-column>
-              <el-table-column label="折扣">
+              <el-table-column :label="$t('firstSpecialAdd.discount')">
                 <template slot-scope="{row}">
                   <el-input
                     style="width:50px;"
@@ -263,7 +263,7 @@
                   ></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="减价">
+              <el-table-column :label="$t('firstSpecialAdd.priceReduction')">
                 <template slot-scope="{row}">
                   <el-input
                     style="width:80px;"
@@ -274,7 +274,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="首单价"
+                :label="$t('firstSpecialAdd.firstUnitPrice')"
                 width="150"
               >
                 <template slot-scope="{row}">
@@ -292,11 +292,11 @@
                     type="text"
                     v-if="row.goodsProductParams && row.goodsProductParams.length > 0"
                     @click="getProductInfo(row)"
-                  >{{row.goodsProductParams?row.goodsProductParams.length:0}}个规格降价</el-button>
+                  >{{row.goodsProductParams?row.goodsProductParams.length:0}}{{$t('firstSpecialAdd.specialPrice')}}</el-button>
                 </template>
               </el-table-column>
               <el-table-column
-                label="操作"
+                :label="$t('firstSpecialAdd.operate')"
                 align="center"
               >
                 <template slot-scope="{row}">
@@ -305,7 +305,7 @@
                       class="iconSpan"
                       style="font-size:14px;"
                       @click.stop="deleteGood(row.goodsId)"
-                    >删除</span>
+                    >{{$t('firstSpecialAdd.delete')}}</span>
                   </div>
                 </template>
               </el-table-column>
@@ -315,15 +315,15 @@
             type="text"
             @click="showmore = !showmore"
           >
-            <span v-if="showmore">收起更多配置<img :src="$imageHost + '/image/admin/info_up.png'"></span>
-            <span v-else>展开更多配置<img :src="$imageHost + '/image/admin/info_down.png'"></span>
+            <span v-if="showmore">{{$t('firstSpecialAdd.putAway')}}<img :src="$imageHost + '/image/admin/info_up.png'"></span>
+            <span v-else>{{$t('firstSpecialAdd.expand')}}<img :src="$imageHost + '/image/admin/info_down.png'"></span>
           </el-button>
           <div
             class="more-setting"
             v-if="showmore"
           >
             <el-form-item
-              label="活动分享："
+              :label="$t('firstSpecialAdd.sharing')"
               required
             >
               <el-radio-group v-model="form.shareConfig.share_action">
@@ -346,7 +346,7 @@
                           :src="$imageHost +'/image/admin/share/first_share1.jpg'"
                         ></el-image>
                       </div>
-                      <span>默认样式</span>
+                      <span>{{$t('firstSpecialAdd.defaultStyle')}}</span>
                     </el-tooltip>
                     <el-tooltip
                       style="margin-left:40px;"
@@ -362,7 +362,7 @@
                           :src="$imageHost +'/image/admin/share/first_share2.jpg'"
                         ></el-image>
                       </div>
-                      <span>下载海报</span>
+                      <span>{{$t('firstSpecialAdd.downloadPoster')}}</span>
                     </el-tooltip>
                   </el-radio>
                 </div>
@@ -371,7 +371,7 @@
                     :label="2"
                     class="active_radio"
                   >
-                    自定义样式
+                    {{$t('firstSpecialAdd.customStyle')}}
                   </el-radio>
                 </div>
               </el-radio-group>
@@ -380,7 +380,7 @@
                 v-show="form.shareConfig.share_action === 2"
               >
                 <div>
-                  <label>文案：</label>
+                  <label>{{$t('firstSpecialAdd.copywriting')}}：</label>
                   <el-input
                     class="form_input"
                     size="small"
@@ -388,7 +388,7 @@
                   ></el-input>
                 </div>
                 <div>
-                  <label>分享图：</label>
+                  <label>{{$t('firstSpecialAdd.shareMap')}}：</label>
                   <div>
                     <el-radio-group
                       class="share_img_group"
@@ -397,11 +397,11 @@
                       <el-radio
                         class="share_img_radio"
                         :label="1"
-                      >活动商品信息图</el-radio>
+                      >{{$t('firstSpecialAdd.informationMap')}}</el-radio>
                       <el-radio
                         class="share_img_radio"
                         :label="2"
-                      >自定义图片</el-radio>
+                      >{{$t('firstSpecialAdd.customPicture')}}</el-radio>
                     </el-radio-group>
                     <div class="upload_wrap">
                       <div
@@ -414,7 +414,7 @@
                           :src="form.shareConfig.share_img"
                         ></el-image>
                       </div>
-                      <p class="tips">建议尺寸800*800</p>
+                      <p class="tips">{{$t('firstSpecialAdd.size')}}</p>
                     </div>
                   </div>
                 </div>
@@ -430,7 +430,7 @@
         class="footer-btn"
         type="primary"
         size="small"
-      >保存</el-button>
+      >{{$t('firstSpecialAdd.save')}}</el-button>
     </div>
     <!--商品选择-->
     <choosingGoods
@@ -500,9 +500,9 @@ export default {
       productDialogFlag: false,
       productInfo: {},
       rules: {
-        name: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        isForever: { required: true, message: '请选择有效期' },
-        first: { required: true, message: '请填写活动优先级' }
+        name: { required: true, message: this.$t('firstSpecialAdd.validName'), trigger: 'blur' },
+        isForever: { required: true, message: this.$t('firstSpecialAdd.validIsForver') },
+        first: { required: true, message: this.$t('firstSpecialAdd.validFirst') }
       }
     }
   },
@@ -601,9 +601,9 @@ export default {
       })
     },
     deleteGood (goodsId) {
-      this.$confirm('确定要删除吗？', '提醒', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('firstSpecialAdd.validFirst'), this.$t('firstSpecialAdd.remind'), {
+        confirmButtonText: this.$t('firstSpecialAdd.determine'),
+        cancelButtonText: this.$t('firstSpecialAdd.cancel'),
         type: 'warning'
       }).then(() => {
         this.tableData = this.tableData.filter(function (item, i) {
@@ -621,17 +621,17 @@ export default {
     volumeDiscountHandle () {
       // 验证是否选择商品
       if (this.selectGoods.length === 0) {
-        this.$message.warning('请选择商品后再进行操作')
+        this.$message.warning(this.$t('firstSpecialAdd.selectGoodsTip'))
         return false
       }
       if (this.discountType === '') {
-        this.$message.warning('请选择折扣方式')
+        this.$message.warning(this.$t('firstSpecialAdd.discountTip1'))
         return false
       }
       switch (this.discountType) {
         case '0':
           if (this.form.batchDiscount === '' || this.form.batchDiscount < 0 || this.form.batchDiscount > 10) {
-            this.$message.warning('折扣只能输入0-10之间')
+            this.$message.warning(this.$t('firstSpecialAdd.discountTip2'))
             return false
           }
           this.$set(this.form, 'batchReduce', '')
@@ -639,7 +639,7 @@ export default {
           break
         case '1':
           if (this.form.batchReduce === '') {
-            this.$message.warning('设置值不可为空')
+            this.$message.warning(this.$t('firstSpecialAdd.settingTip'))
             return false
           }
           this.$set(this.form, 'batchDiscount', '')
@@ -647,7 +647,7 @@ export default {
           break
         case '2':
           if (this.form.batchReduce === '') {
-            this.$message.warning('设置值不可为空')
+            this.$message.warning(this.$t('firstSpecialAdd.settingTip'))
             return false
           }
           this.$set(this.form, 'batchReduce', '')
@@ -658,7 +658,7 @@ export default {
       this.selectGoods.forEach((item, i) => {
         let price = Number(item.shopPrice)
         if (price <= 0) {
-          this.$message.error(item.goodsName + '的原价已为0，不能再打折')
+          this.$message.error(item.goodsName + this.$t('firstSpecialAdd.priceLimitTip'))
           return false
         }
         if (this.discountType === '0') {
@@ -677,9 +677,9 @@ export default {
         // 验证计算值安全性
         console.log(item)
         if (item.batchFinalPrice < 0) {
-          item.tips = '降价后首单价不得小于0'
+          item.tips = this.$t('firstSpecialAdd.batchFinalPriceTip1')
         } else if (item.batchFinalPrice > price) {
-          item.tips = '降价后金额需小于原价'
+          item.tips = this.$t('firstSpecialAdd.batchFinalPriceTip2')
         }
         if (item.goodsProductParams && item.goodsProductParams.length) {
           item.goodsProductParams.map(item2 => {
@@ -703,7 +703,7 @@ export default {
       let price = Number(row.shopPrice)
       let batchDiscount = Number(row.batchDiscount)
       if (batchDiscount < 0 || batchDiscount > 10) {
-        this.$message.warning('折扣只能输入0-10之间')
+        this.$message.warning(this.$t('firstSpecialAdd.discountTip2'))
         this.$set(row, 'batchDiscount', '')
         return false
       }
@@ -742,9 +742,9 @@ export default {
     watchbatchFinalPrice (price, batchFinalPrice, row) {
       let tips
       if (batchFinalPrice < 0) {
-        tips = '降价后首单价不得小于0'
+        tips = this.$t('firstSpecialAdd.batchFinalPriceTip1')
       } else if (batchFinalPrice > price) {
-        tips = '降价后金额需小于原价'
+        tips = this.$t('firstSpecialAdd.batchFinalPriceTip2')
       }
       this.$set(row, 'tips', tips)
       if (row.goodsProductParams && row.goodsProductParams.length) {
@@ -767,14 +767,14 @@ export default {
     // 批量删除
     deleteSelectGoods () {
       if (this.selectGoods.length === 0) {
-        this.$message.warning('请选择商品后再进行操作')
+        this.$message.warning(this.$t('firstSpecialAdd.selectGoodsTip'))
         return false
       }
       let selects = this.selectGoods
       let that = this
-      this.$confirm('确定要删除吗？', '提醒', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('firstSpecialAdd.tipDelete'), this.$t('firstSpecialAdd.remind'), {
+        confirmButtonText: this.$t('firstSpecialAdd.determine'),
+        cancelButtonText: this.$t('firstSpecialAdd.cancel'),
         type: 'warning'
       }).then(function () {
         that.tableData = that.tableData.filter(function (item, i) {
@@ -789,12 +789,12 @@ export default {
     roundingPrice () {
       let that = this
       if (that.selectGoods.length === 0) {
-        that.$message.warning('请选择商品后再进行操作')
+        that.$message.warning(this.$t('firstSpecialAdd.selectGoodsTip'))
         return false
       }
-      that.$confirm('确认要取整吗?', '提醒', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      that.$confirm(this.$t('firstSpecialAdd.tipDelete'), this.$t('firstSpecialAdd.remind'), {
+        confirmButtonText: this.$t('firstSpecialAdd.determine'),
+        cancelButtonText: this.$t('firstSpecialAdd.cancel'),
         type: 'warning'
       }).then(() => {
         if (that.selectGoods.length > 0) {
@@ -853,19 +853,19 @@ export default {
       this.$refs.firstSpecialAddForm.validate((valid) => {
         if (valid) {
           if (params.isForever === 0 && (params.startTime === '' || params.endTime === '')) {
-            this.$message.warning('请填写有效期')
+            this.$message.warning(this.$t('firstSpecialAdd.validityPeriodTip'))
             return false
           }
           let goods = params.firstSpecialGoodsParams
           if (goods.length === 0) {
-            this.$message.warning('请选择活动商品')
+            this.$message.warning(this.$t('firstSpecialAdd.selectEventTip'))
             return false
           }
           let noPriceGoods = goods.find((item, i) => {
             return !item.goodsPrice
           })
           if (noPriceGoods) {
-            this.$message.warning('请设置折扣价')
+            this.$message.warning(this.$t('firstSpecialAdd.setDiscountTip'))
             return false
           }
           // 验证特惠价是否超过原价
@@ -873,7 +873,7 @@ export default {
             return item.tips
           })
           if (hasTips) {
-            this.$message.warning('商品' + hasTips.goodsName + hasTips.tips)
+            this.$message.warning(this.$t('firstSpecialAdd.commodity') + hasTips.goodsName + hasTips.tips)
             return false
           }
           suFn(params)
@@ -891,7 +891,7 @@ export default {
       this.paramsValid(params, function (params) {
         addFirstSpecial(params).then(res => {
           if (res.error === 0) {
-            _this.$message.success('保存成功')
+            _this.$message.success(this.$t('firstSpecialAdd.successSaved'))
             _this.$nextTick(function () {
               _this.$router.push({
                 path: '/admin/home/main/firstSpecial/list',
@@ -915,7 +915,7 @@ export default {
       _this.paramsValid(params, function (params) {
         updateFirstSpecial(params).then(res => {
           if (res.error === 0) {
-            _this.$message.success('更新成功')
+            _this.$message.success(this.$t('firstSpecialAdd.successUpdated'))
             _this.$nextTick(() => {
               _this.$router.push({
                 path: '/admin/home/main/firstSpecial/list',
