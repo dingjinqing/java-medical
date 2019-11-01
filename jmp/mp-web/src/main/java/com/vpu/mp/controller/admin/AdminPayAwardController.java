@@ -52,8 +52,11 @@ public class AdminPayAwardController  extends AdminBaseController{
      */
     @PostMapping("/update")
     public JsonResult updatePayAward(@RequestBody PayAwardParam param){
-        shop().payAward.updatePayAward(param);
-        return success();
+        Boolean flag = shop().payAward.updatePayAward(param);
+        if (flag) {
+            return success();
+        }
+        return fail();
     }
 
 

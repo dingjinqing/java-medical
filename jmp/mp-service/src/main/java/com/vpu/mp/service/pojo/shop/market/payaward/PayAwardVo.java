@@ -30,7 +30,7 @@ public class PayAwardVo {
     /**
      *  商品范围类型
      */
-    private Integer goodsAreasType;
+    private Integer goodsAreaType;
     /**
      * 商品id
      */
@@ -42,7 +42,7 @@ public class PayAwardVo {
     /**
      * 商品商家分类
      */
-    private String goodsSortId;
+    private String goodsSortIds;
     /**
      * 最少支付金额
      */
@@ -58,5 +58,6 @@ public class PayAwardVo {
     /**
      * 奖励内容
      */
-    private List<PayAwardContentBo> awardList;
+    private List<PayAwardContentBo> awardContentList;
+    private String awardList;
 }

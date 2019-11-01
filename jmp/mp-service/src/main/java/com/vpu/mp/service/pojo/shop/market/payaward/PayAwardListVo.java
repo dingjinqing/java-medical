@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.payaward;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -23,6 +24,14 @@ public class PayAwardListVo {
     private Timestamp startTime;
     private Timestamp endTime;
     private Byte status;
+    /**
+     *  商品范围类型
+     */
+    private Integer goodsAreaType;
+    /**
+     * 最少支付金额
+     */
+    private BigDecimal minPayMoney;
     /**
      * 优先级
      */

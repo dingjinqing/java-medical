@@ -68,7 +68,7 @@ public class PayAwardService extends ShopBaseService {
      * @param id 活动id
      */
     public void deletePayAward(Integer id) {
-        db().update(PAY_AWARD).set(PAY_AWARD.DEL_FLAG, DelFlag.DISABLE_VALUE).where(PAY_AWARD.ID.eq(id));
+        db().update(PAY_AWARD).set(PAY_AWARD.DEL_FLAG, DelFlag.DISABLE_VALUE).where(PAY_AWARD.ID.eq(id)).execute();
     }
 
     /**
@@ -79,8 +79,9 @@ public class PayAwardService extends ShopBaseService {
     public Boolean updatePayAward(PayAwardParam param) {
         if (param.getId() != null) {
             PayAwardRecord payAward = db().newRecord(PAY_AWARD, param);
-            payAward.setAwardList(Util.toJson(param.getAwardList()));
+            payAward.setAwardList(Util.toJsonNotNull(param.getAwardList()));
             payAward.update();
+            return true;
         }
         return false;
     }
@@ -94,7 +95,10 @@ public class PayAwardService extends ShopBaseService {
     public PayAwardVo getPayAwardId(Integer id) {
         PayAwardRecord record = db().selectFrom(PAY_AWARD).where(PAY_AWARD.ID.eq(id)).fetchOne();
         PayAwardVo payAwardVo = record.into(PayAwardVo.class);
-        payAwardVo.setAwardList(Util.json2Object(record.getAwardList(), new TypeReference<List<PayAwardContentBo>>(){},false));
+        if (record.getAwardList()!=null&&!record.getAwardList().isEmpty()){
+            payAwardVo.setAwardContentList(Util.json2Object(record.getAwardList(), new TypeReference<List<PayAwardContentBo>>(){},false));
+            payAwardVo.setAwardList(null);
+        }
         return payAwardVo;
     }
 
@@ -108,7 +112,8 @@ public class PayAwardService extends ShopBaseService {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         SelectConditionStep<? extends Record> select = db()
                 .select(PAY_AWARD.ID, PAY_AWARD.ACTIVITY_NAMES, PAY_AWARD.TIME_TYPE, PAY_AWARD.START_TIME,
-                        PAY_AWARD.END_TIME, PAY_AWARD.ACT_FIRST, PAY_AWARD.STATUS, PAY_AWARD.AWARD_LIST)
+                        PAY_AWARD.END_TIME, PAY_AWARD.ACT_FIRST, PAY_AWARD.STATUS, PAY_AWARD.AWARD_LIST,
+                        PAY_AWARD.GOODS_AREA_TYPE,PAY_AWARD.MIN_PAY_MONEY)
                 .from(PAY_AWARD)
                 .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getNavType()) {
