@@ -19,6 +19,11 @@ public class ActivityGoodsListCapsule extends AbstractCapsule {
     private Byte goodsType;
     private BigDecimal goodsPrice;
     private BigDecimal marketPrice;
+    private BigDecimal prdMaxPrice;
+
+    /**商品最总显示价格和划线价格*/
+    private BigDecimal realPrice;
+    private BigDecimal linePrice;
     /** 平台、商家、品牌分类id */
     private Integer catId;
     private Integer sortId;

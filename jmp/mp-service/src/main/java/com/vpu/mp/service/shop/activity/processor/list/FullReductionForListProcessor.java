@@ -36,7 +36,7 @@ public class FullReductionForListProcessor extends FullReductionProcessorDao imp
        List<ActivityGoodsListMpParam.AllIdsParam> idParams = new ArrayList<>();
         for (ActivityGoodsListCapsule capsule : capsules) {
             // 这几种活动的商品可以不考虑
-            if (ActivityProcessor.isGoodsTypeIn135610(capsule.getGoodsType())) {
+            if (ActivityProcessor.isGoodsTypeIn13510(capsule.getGoodsType())) {
                 continue;
             }
             ActivityGoodsListMpParam.AllIdsParam allIds = new ActivityGoodsListMpParam.AllIdsParam();

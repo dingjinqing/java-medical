@@ -27,7 +27,8 @@ public class ReducePriceForListProcessor extends ReducePriceProcessorDao impleme
 
     @Override
     public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
-        List<Integer> goodsIds = capsules.stream().filter(x -> x.getGoodsType() == GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE)
+        // 处理优惠券和满减活动外，未被其他活动处理
+        List<Integer> goodsIds = capsules.stream().filter(x -> x.getGoodsType() == GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE && x.getProcessedTypes().size() == 0)
             .map(AbstractCapsule::getCapsuleId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setGoodsIds(goodsIds);
