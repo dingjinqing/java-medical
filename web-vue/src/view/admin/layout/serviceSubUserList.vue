@@ -11,7 +11,7 @@
               <el-button
                 @click="open()"
                 type="primary"
-              >添加账户</el-button>
+              >{{$t('authRoleList.addUser')}}</el-button>
             </a>
           </div>
         </div>
@@ -26,25 +26,25 @@
           >
             <el-table-column
               prop="accountName"
-              label="用户名"
+              :label="$t('authRoleList.userName')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="mobile"
-              label="手机号"
+              :label="$t('authRoleList.userMobile')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="createTime"
-              label="添加时间"
+              :label="$t('authRoleList.addTime')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="lastAuthTime"
-              label="店铺"
+              store
               align="center"
             >
               <template
@@ -60,7 +60,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="权限"
+              :label="$t('authRoleList.userMenu')"
               width="150"
               align="center"
             >
@@ -82,7 +82,7 @@
             </el-table-column>
 
             <el-table-column
-              label="操作"
+              :label="$t('authRoleList.option')"
               align="center"
               width="150"
             >
@@ -90,11 +90,11 @@
                 <el-button
                   type="text"
                   @click="editRoleOption(scope.row)"
-                >编辑</el-button>
+                >{{$t('authRoleList.eidt')}}</el-button>
                 <el-button
                   type="text"
                   @click="delRoleOpton(scope.row.accountId)"
-                >删除</el-button>
+                >{{$t('authRoleList.del')}}</el-button>
 
               </template>
             </el-table-column>
@@ -116,7 +116,7 @@
     <!--添加账户弹窗-->
     <div class="pageDialogMy">
       <el-dialog
-        title="添加账户"
+        :title="$t('authRoleList.addUser')"
         :visible.sync="dialogFormVisible"
         v-if="dialogFormVisible"
         width="450px"
@@ -130,19 +130,19 @@
           class="demo-ruleForm"
         >
           <el-form-item
-            label="用户名"
+            :label="$t('authRoleList.userName')"
             prop="accountName"
           >
             <el-input v-model="ruleForm.accountName"></el-input>
           </el-form-item>
           <el-form-item
-            label="手机号"
+            :label="$t('authRoleList.userMobile')"
             prop="mobile"
           >
             <el-input v-model="ruleForm.mobile"></el-input>
           </el-form-item>
           <el-form-item
-            label="密码"
+            :label="$t('authRoleList.passwd')"
             prop="pass"
           >
             <el-input
@@ -152,7 +152,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="确认密码"
+            :label="$t('authRoleList.passwd2')"
             prop="checkPass"
           >
             <el-input
@@ -167,18 +167,18 @@
           slot="footer"
           class="dialog-footer changeMa"
         >
-          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button @click="dialogFormVisible = false">{{$t('authRoleList.cancel')}}</el-button>
           <el-button
             type="primary"
             @click="addRoleBefore('ruleForm')"
-          >确认</el-button>
+          >{{$t('authRoleList.sure')}}</el-button>
         </div>
       </el-dialog>
     </div>
 
     <div class="pageDialogMy">
       <el-dialog
-        title="编辑用户信息"
+        :title="$t('authRoleList.eidtUser')"
         :visible.sync="editFormVisible"
         width="450px"
       >
@@ -191,25 +191,25 @@
           class="demo-ruleForm2"
         >
           <el-form-item
-            label="用户名"
+            :label="$t('authRoleList.userName')"
             prop="accountName"
           >
             <span style="display:block;text-align: left;">{{ruleForm2.accountName}}</span>
           </el-form-item>
           <el-form-item
-            label="手机号"
+            :label="$t('authRoleList.userMobile')"
             prop="mobile"
           >
             <el-input v-model="ruleForm2.mobile"></el-input>
           </el-form-item>
           <el-form-item
-            label="密码"
+            :label="$t('authRoleList.passwd')"
             prop="pass"
           >
             <el-input
               type="password"
               v-model="ruleForm2.pass"
-              placeholder="不输入将不修改密码"
+              :placeholder="$t('authRoleList.pwdTips3')"
             ></el-input>
           </el-form-item>
 
@@ -218,11 +218,11 @@
           slot="footer"
           class="dialog-footer changeMa"
         >
-          <el-button @click="editFormVisible = false">取消</el-button>
+          <el-button @click="editFormVisible = false">{{$t('authRoleList.cancel')}}</el-button>
           <el-button
             type="primary"
             @click="editRoleBefore('ruleForm2')"
-          >确认</el-button>
+          >{{$t('authRoleList.sure')}}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -236,39 +236,39 @@ export default {
   data () {
     var checkAccountName = (rule, value, callback) => {
       if (this.isEmpty(value)) {
-        return callback(new Error('用户名不能为空'))
+        return callback(new Error(this.$t('authRoleList.tips6')))
       } else {
         callback()
       }
     }
     var validatePass = (rule, value, callback) => {
       if (this.isEmpty(value)) {
-        callback(new Error('请输入密码'))
+        callback(new Error(this.$t('authRoleList.tips7')))
       } else {
         if (this.ruleForm.checkPass !== '') {
           this.$refs.ruleForm.validateField('checkPass')
         } if (!(this.passWd.test(value))) {
-          callback(new Error('密码应为6-16位非中文'))
+          callback(new Error(this.$t('authRoleList.tips8')))
         }
         callback()
       }
     }
     var validatePass2 = (rule, value, callback) => {
       if (this.isEmpty(value)) {
-        callback(new Error('请再次输入密码'))
+        callback(new Error(this.$t('authRoleList.tips9')))
       } if (value !== this.ruleForm.pass) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error(this.$t('authRoleList.tips10')))
       } if (!(this.passWd.test(value))) {
-        callback(new Error('密码应为6-16位非中文'))
+        callback(new Error(this.$t('authRoleList.tips8')))
       } else {
         callback()
       }
     }
     var checkMobile = (rule, value, callback) => {
       if (this.isEmpty(value)) {
-        callback(new Error('手机号不能为空'))
+        callback(new Error(this.$t('authRoleList.tips11')))
       } else if (!(this.phonereg.test(value))) {
-        callback(new Error('手机号格式错误'))
+        callback(new Error(this.$t('authRoleList.tips12')))
       } else {
         callback()
       }
@@ -276,16 +276,16 @@ export default {
     var validatePass3 = (rule, value, callback) => {
       if (!this.isEmpty(value)) {
         if (!(this.passWd.test(value))) {
-          callback(new Error('密码应为6-16位非中文'))
+          callback(new Error(this.$t('authRoleList.tips8')))
         }
       }
       callback()
     }
     var checkMobile2 = (rule, value, callback) => {
       if (this.isEmpty(value)) {
-        callback(new Error('手机号不能为空'))
+        callback(new Error(this.$t('authRoleList.tips11')))
       } else if (!(this.phonereg.test(value))) {
-        callback(new Error('手机号格式错误'))
+        callback(new Error(this.$t('authRoleList.tips12')))
       } else {
         console.log('校验')
         callback()

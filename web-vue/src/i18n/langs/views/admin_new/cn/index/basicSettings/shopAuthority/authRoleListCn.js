@@ -172,6 +172,22 @@ export const cn = {
   allCheck: '全选',
   sure: '确认',
   cancel: '取消',
-  save: '保存'
-
+  save: '保存',
+  // 子账户管理里面
+  addUser: '添加账户',
+  userName: '用户名',
+  userMobile: '手机号',
+  addTime: '添加时间',
+  store: '店铺',
+  userMenu: '权限',
+  eidtUser: '编辑用户信息',
+  pwdTips3: '不输入将不修改密码',
+  tips6: '用户名不能为空',
+  tips7: '请输入密码',
+  tips8: '密码应为6-16位非中文',
+  tips9: '请再次输入密码',
+  tipss10: '两次输入密码不一致',
+  tips11: '手机号不能为空',
+  tips12: '手机号格式错误',
+  passwd2: '确认密码'
 }
