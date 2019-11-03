@@ -361,7 +361,7 @@ export default {
   components: {
     ShareCodeDialog: () => import('@/components/admin/shareCodeDialog')
   },
-  data() {
+  data () {
     return {
       currentCardType: 0, // 默认的会员卡为普通会员卡
       activeName: 'first',
@@ -374,14 +374,14 @@ export default {
       new_card_img: this.$imageHost + '/image/admin/add_card.png'
     }
   },
-  created() {
+  created () {
     this.clearCardData()
     // 获取头像数据
     this.avatar = localStorage.getItem('V-shopAvatar')
   },
   watch: {
 
-    lang() {
+    lang () {
       this.detailsOfRights = this.$t('memberCard.detailsOfRights')
       this.cardData.map(card => {
         this.dealWithAllInfo(card)
@@ -396,11 +396,11 @@ export default {
       })
     },
     //  检测会员卡类型变化 加载数据
-    currentCardType() {
+    currentCardType () {
       this.loadAllPageData()
     },
     // 标签页变化
-    activeName() {
+    activeName () {
       switch (this.activeName) {
         case 'first':
           this.currentCardType = 0
@@ -416,7 +416,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     // 初始化语言
     this.langDefault()
     // 初始化tap切换
@@ -436,7 +436,7 @@ export default {
   },
   methods: {
     // 1- 获取页面所有数据
-    loadAllPageData() {
+    loadAllPageData () {
       // 如果数据已经存在该组件中就不再向后端请求数据
       switch (Number(this.currentCardType)) {
         case 0:
@@ -466,7 +466,7 @@ export default {
       this.getBackEndData(obj)
     },
     // 2- 处理会员卡权益
-    dealWithCardBehavior(card) {
+    dealWithCardBehavior (card) {
       let content = ''
       // 会员折扣
       if (card.powerCount === 1) {
@@ -501,7 +501,7 @@ export default {
       card.equity = content
     },
     // 3- 领取条件
-    dealWithReceiveConditions(card) {
+    dealWithReceiveConditions (card) {
       let content = ''
       // 0：直接领取；1：需要购买；2：需要领取码
       if (card.isPay === 0) {
@@ -528,7 +528,7 @@ export default {
       card.conditions = content
     },
     // 4- 处理额外的会员卡功能
-    dealWithMemCardExtralRight(card) {
+    dealWithMemCardExtralRight (card) {
       card.detailsOfRights = []
       // 持卡会员
       card.detailsOfRights.push(this.detailsOfRights[0])
@@ -546,7 +546,7 @@ export default {
       }
     },
     // 5- tap切换 会员卡类型切换
-    handleClick(tab, event) {
+    handleClick (tab, event) {
       // 主要目的是更换路由连接，以及面包屑
       this.currentCardType = tab.index
       switch (tab.index) {
@@ -569,14 +569,14 @@ export default {
       console.log(tab, event)
     },
     // 6- 清空数据
-    clearCardData() {
+    clearCardData () {
       this.cardData = []
       this.cardDataSecond = []
       this.cardDataThird = []
     },
 
     // 7- 请求后台数据
-    getBackEndData(obj) {
+    getBackEndData (obj) {
       getAllMemberCardRequest(obj).then(res => {
         if (res.error === 0) {
           let cardData = {}
@@ -638,19 +638,19 @@ export default {
       })
     },
     // 8- 控制等级会员卡添加按钮
-    changeAddStatus() {
+    changeAddStatus () {
       if (this.cardDataThird.length >= 9) {
         this.addStatus = false
       }
     },
     // 9- 批量处理格式信息
-    dealWithAllInfo(card) {
+    dealWithAllInfo (card) {
       this.dealWithCardBehavior(card)
       this.dealWithReceiveConditions(card)
       this.dealWithMemCardExtralRight(card)
     },
     // 动态改变行间样式
-    getStyle(item, index) {
+    getStyle (item, index) {
       /** 会员卡状态 flag 1:使用中，2:停止使用 ,3：过期 */
       if ([2, 3].includes(item.flag)) {
         // 停止状态灰色
@@ -665,7 +665,7 @@ export default {
       }
     },
     // 跳转到会员卡详情页
-    handleToCardDetail(type) {
+    handleToCardDetail (type) {
       this.$router.push({
         name: 'membershipCardDetail',
         query: {
@@ -674,7 +674,7 @@ export default {
       })
     },
     // tips系列点击
-    handleToTips(flag, item, index, type) {
+    handleToTips (flag, item, index, type) {
       console.log(flag)
       switch (flag) {
         case 0:
@@ -721,7 +721,7 @@ export default {
       }
     },
     // 会员卡底部系列点击
-    handleToCardBottom(item, flag, type) {
+    handleToCardBottom (item, flag, type) {
       console.log(type)
       let obj = {
         item,
