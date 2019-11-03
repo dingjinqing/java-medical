@@ -113,6 +113,7 @@
               :label="$t('memberCard.memberPower')"
               prop="discountInput"
               class="userCardName"
+              v-if="cardType!==1"
             >
               <div class="discountDiv equity">
                 <el-checkbox v-model="ruleForm.discount">{{ $t('memberCard.memberDiscount') }}</el-checkbox>
@@ -126,6 +127,7 @@
             <el-form-item
               label=""
               class="userCardName"
+              v-if="cardType!==1"
             >
               <div class="allGoods">
                 <div style="margin-right:25px">{{ $t('memberCard.memberDiscountGoods') }}</div>
@@ -190,7 +192,7 @@
                 </div>
               </div>
               <!--end-->
-              <div class="discountDiv equity">
+              <div class="discountDiv equity" v-if="cardType!==2">
                 <el-checkbox v-model="ruleForm.intGet">{{ $t('memberCard.getScore') }}&nbsp;&nbsp;&nbsp;&nbsp;</el-checkbox>{{ $t('memberCard.openCardSend') }}
                 <el-input
                   v-model="ruleForm.IntegralInput"
@@ -199,7 +201,10 @@
                 &nbsp;&nbsp;{{ $t('memberCard.score') }}
               </div>
               <!--积分获取下方子模块-->
-              <div class="shoppingFull">
+              <div
+                class="shoppingFull"
+                v-if="cardType!==2"
+              >
                 <div class="shoppingFullTop">
                   <el-radio
                     v-model="ruleForm.shoppingFull"
@@ -222,7 +227,7 @@
                   v-for="(item,index) in ruleForm.addIntegralArr"
                   :key="index"
                 >
-                  <div class="noneIntegralDiv">
+                  <div class="noneIntegralDiv" v-if="cardType!==2">
                     <span>{{ $t('memberCard.shopFull') }}</span>
                     <el-input
                       size="small"
@@ -238,7 +243,7 @@
                     >
                   </div>
                 </div>
-                <div class="shoppingFullBottom">
+                <div class="shoppingFullBottom" v-if="cardType!==2">
                   <el-radio
                     v-model="ruleForm.shoppingFull"
                     label="1"
@@ -255,7 +260,10 @@
                 </div>
               </div>
               <!--卡充值-->
-              <div class="cardRecharge">
+              <div
+                class="cardRecharge"
+                v-if="cardType!==2"
+              >
                 <el-checkbox v-model="ruleForm.cardRechargeFlag">{{ $t('memberCard.powerCard') }}&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('memberCard.openCardSend') }}</el-checkbox>
                 <el-input
                   v-model="ruleForm.cardRechargeInput"
@@ -264,7 +272,10 @@
                 &nbsp;&nbsp;{{ $t('memberCard.yuan') }}
               </div>
               <!--卡充值下方子模块-->
-              <div class="shoppingFull">
+              <div
+                class="shoppingFull"
+                v-if="cardType!==2"
+              >
                 <el-radio
                   v-model="ruleForm.rechargeInput"
                   label="2"
@@ -293,7 +304,7 @@
                   v-for="(item,index) in ruleForm.addrechargeArr"
                   :key="index"
                 >
-                  <div class="noneIntegralDiv">
+                  <div class="noneIntegralDiv" v-if="cardType!==2">
                     <span>{{ $t('memberCard.chargeFull') }}</span>
                     <el-input
                       size="small"
@@ -309,7 +320,7 @@
                     >
                   </div>
                 </block>
-                <div class="shoppingFullBottom">
+                <div class="shoppingFullBottom" v-if="cardType!==2">
                   <el-radio
                     v-model="ruleForm.rechargeInput"
                     label="1"
@@ -327,7 +338,7 @@
               </div>
               <!--end-->
               <!--开卡送卷-->
-              <div class="sendingPaper">
+              <div class="sendingPaper" v-if="cardType!==2">
                 <el-checkbox v-model="ruleForm.sendingPaperFlag">{{ $t('memberCard.openCardSendVolume') }}&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('memberCard.volumeActiveInfo') }}</el-checkbox>
               </div>
               <!--开卡送卷子模块-->
@@ -394,6 +405,7 @@
               :label="$t('memberCard.memberEffectiveTime')"
               prop="ruleForm.fixedDate"
               class="userCardName useDate"
+              v-if="cardType!==2"
             >
               <div class="dateList">
                 <el-radio
@@ -413,10 +425,14 @@
                 </el-date-picker>
               </div>
             </el-form-item>
-            <div class="dateTips">{{ $t('memberCard.exampleInfo') }}</div>
+            <div
+              class="dateTips"
+              v-if="cardType!==2"
+            >{{ $t('memberCard.exampleInfo') }}</div>
             <el-form-item
               prop="fromDateInput"
               class="userCardName"
+              v-if="cardType!==2"
             >
               <div class="dateList">
                 <el-radio
@@ -443,7 +459,10 @@
                 {{ $t('memberCard.inEffective') }}
               </div>
             </el-form-item>
-            <el-form-item class="userCardName">
+            <el-form-item
+              class="userCardName"
+              v-if="cardType!==2"
+            >
               <div class="dateList">
                 <el-radio
                   v-model="ruleForm.dateRadio"
@@ -451,10 +470,69 @@
                 >{{ $t('memberCard.ForeverEffective') }}</el-radio>
               </div>
             </el-form-item>
+            <!--限次卡出现的使用商品模块-->
+            <el-form-item
+              label="适用商品"
+              prop="useStore"
+              class="userCardName"
+              v-if="cardType===0"
+            >
+              <div class="useStoreDiv">
+                <el-radio
+                  v-model="limitCardRadio"
+                  label="0"
+                >不可兑换商品</el-radio>
+                <el-radio
+                  v-model="limitCardRadio"
+                  label="1"
+                >部分商品</el-radio>
+                <el-radio
+                  v-model="limitCardRadio"
+                  label="2"
+                >全部商品</el-radio>
+              </div>
+              <!--部分商品选中出现的模块-->
+              <div v-if="cardType===1">
+                <div v-if="limitCardRadio !=='0'">
+                  <div class="applyDiv">
+                    <span>允许兑换：</span>
+                    <el-input
+                      v-model="limitCardInput"
+                      size="small"
+                    ></el-input> 次
+                  </div>
+                  <div>
+                    <span>运费策略：</span>
+                    <el-radio
+                      v-model="strategyRadio"
+                      label="1"
+                    >免运费</el-radio>
+                    <el-radio
+                      v-model="radio"
+                      strategyRadio="2"
+                    >使用商品运费策略</el-radio>
+                  </div>
+                  <div class="noneBlockList">
+                    <div
+                      class="noneBlockLeft"
+                      @click="handleToCallGoodsDialog('limit')"
+                    >
+                      <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                      选择商品
+                    </div>
+                    <div class="noneBlockRight">已选择商品：2件</div>
+                    <div style="margin-left: 20px;color: #999;height:30px;line-height:30px">最多可选择20件</div>
+                  </div>
+                </div>
+
+              </div>
+            </el-form-item>
+            <!--限次卡出现的使用商品模块end-->
             <el-form-item
               :label="$t('memberCard.usingStore')"
               prop="useStore"
               class="userCardName"
+              v-if="cardType!==2"
             >
               <div class="useStoreDiv">
                 <el-radio
@@ -759,10 +837,10 @@ export default {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
     ChioseStoreDialog: () => import('./chioseStoreDialog'),
-    ReceivingCodeDialog: () => import('./receivingCodeDialog')
-    // AddBrandDialog: () => import('@/components/admin/addBrandDialog')
+    ReceivingCodeDialog: () => import('./receivingCodeDialog'),
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog')
   },
-  data () {
+  data() {
     var validiscount = (rule, value, callback) => {
       console.log(rule, value, callback)
       let reg = /^\d{0,1}$/
@@ -978,11 +1056,18 @@ export default {
       controlChoosingGoodsDialog: false,
       choosingGoodsDateFlag2: '', // 会员专享-选择商品选中数据
       tuneUp: false,
-      couponBack: ''
+      couponBack: '',
+      // 限次卡出现的隐藏模块调试字段
+      limitCardRadio: '0', // 试用商品radio
+      limitCardInput: '', // 允许兑换input
+      strategyRadio: '0', // 运费策略radio
+      chioseGoodsList: [
+        { goodsId: 1 }
+      ]
     }
   },
   filters: {
-    handleDate (value) {
+    handleDate(value) {
       console.log(value)
       if (value) {
         return `${value[0]}-${value[1]}`
@@ -991,13 +1076,13 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.cardType = this.$route.query.cardType
     this.cardId = this.$route.query.cardId
   },
   computed: {
     // 动态变化背景色或背景图片
-    bgStyleComputed () {
+    bgStyleComputed() {
       let bg = ''
       if (this.ruleForm.bgFlag === '0') {
         bg = `background-color:${this.colorLeft_}`
@@ -1009,11 +1094,11 @@ export default {
     }
   },
   watch: {
-    lang () {
+    lang() {
       this.codeArr = this.$t('memberCard.codeArr')
       console.log(this.codeArr)
     },
-    'ruleForm.dateRadio' (newData) {
+    'ruleForm.dateRadio'(newData) {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           // alert('submit!')
@@ -1024,7 +1109,7 @@ export default {
         }
       })
     },
-    'ruleForm.vipFlag' (newData) {
+    'ruleForm.vipFlag'(newData) {
       if (newData) {
         let obj = {
           backGroundImgUrl: this.$imageHost + '/image/wxapp/card_info_goods.png',
@@ -1036,14 +1121,14 @@ export default {
         this.leftNavData.splice(2, 1)
       }
     },
-    'ruleForm.shoppingFull' (newData) {
+    'ruleForm.shoppingFull'(newData) {
       if (newData === '1') {
         this.leftNavData[1].children = ['购物满100宋100积分']
       } else {
         this.leftNavData[1].children = ['购物每满100宋100积分']
       }
     },
-    'ruleForm.rechargeInput' (newData) {
+    'ruleForm.rechargeInput'(newData) {
       let fn = (text) => {
         this.leftNavData.forEach(item => {
           if (item.title === '卡充值规则') {
@@ -1063,7 +1148,7 @@ export default {
           fn('充值每满100送100')
       }
     },
-    'ruleForm.useStoreRadio' (newData) {
+    'ruleForm.useStoreRadio'(newData) {
       let fn = (text) => {
         this.leftNavData.forEach(item => {
           if (item.title === '使用门店') {
@@ -1084,7 +1169,7 @@ export default {
           fn('不可在门店使用')
       }
     },
-    chioseSureData (newData) {
+    chioseSureData(newData) {
       console.log(newData)
       let str = ''
       newData.forEach(item => {
@@ -1102,7 +1187,8 @@ export default {
       console.log(str)
     }
   },
-  mounted () {
+  mounted() {
+    console.log(this.$route)
     // 初始化接受数据
     this.dataDefalut()
     this.langDefault()
@@ -1114,7 +1200,7 @@ export default {
   methods: {
 
     // 1- 准备数据
-    prepareCardData () {
+    prepareCardData() {
       this.dealWithDynamicArrayData()
       let obj = {
         'id': this.cardId,
@@ -1184,7 +1270,7 @@ export default {
     },
 
     // 2- 创建会员卡接口
-    createMemberCard (data) {
+    createMemberCard(data) {
       createMemberCardRequest(data).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -1195,7 +1281,7 @@ export default {
       })
     },
     // 3- 点击保存
-    handleToSave (formName) {
+    handleToSave(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.prepareCardData()
@@ -1209,7 +1295,7 @@ export default {
     },
 
     // 4- 清空数据
-    clearInputData () {
+    clearInputData() {
       this.colorLeft_ = ''
       this.ruleForm.textarea = ''
       this.ruleForm.phoneNuminput = ''
@@ -1220,7 +1306,7 @@ export default {
       this.ruleFormBottom.checkList = []
     },
     // 5- 根据会员卡类型获取相应url
-    getCardPageUrl () {
+    getCardPageUrl() {
       console.log(this.cardType, typeof this.cardType)
       switch (Number(this.cardType)) {
         case 0:
@@ -1234,7 +1320,7 @@ export default {
       }
     },
     // 6- 获取单张会员卡详细信息
-    getCardDetailInfoById (id) {
+    getCardDetailInfoById(id) {
       let obj = {
         id
       }
@@ -1250,7 +1336,7 @@ export default {
     },
 
     // 7- 绑定数据
-    bindBackAndFrontEndData (data) {
+    bindBackAndFrontEndData(data) {
       this.ruleForm.name = data.cardName
       this.ruleForm.bgFlag = String(data.bgType)
       console.log('Hello World', this.ruleForm.bgFlag)
@@ -1325,7 +1411,7 @@ export default {
       this.dealWithDataFromBackEnd()
     },
     // 8- 处理动态数据
-    dealWithDynamicArrayData () {
+    dealWithDynamicArrayData() {
       // 积分
       console.log(this.goodsMoney, this.getScores)
 
@@ -1351,7 +1437,7 @@ export default {
       }
     },
     // 8-1 处理从后端获取的数据
-    dealWithDataFromBackEnd () {
+    dealWithDataFromBackEnd() {
       // 积分
       if (this.goodsMoney.length > 0 && this.getScores.length > 0) {
         this.ruleForm.shopingInputLeft = this.goodsMoney.splice(0, 1)[0]
@@ -1383,7 +1469,7 @@ export default {
       }
     },
     // 9- 更新会员卡信息
-    updateCardInfo (data) {
+    updateCardInfo(data) {
       updateCardRequest(data).then(res => {
         if (res.error === 0) {
           // success
@@ -1392,7 +1478,7 @@ export default {
       })
     },
     // 10- 操作成功后的提示，清除数据，路由跳转
-    successOptions () {
+    successOptions() {
       this.$message.success(this.$t('memberCard.cardCreatedSuccess'))
       this.clearInputData()
       let urlCard = this.getCardPageUrl()
@@ -1403,7 +1489,7 @@ export default {
       })
     },
     // 11- 获取会员权益选择商品弹窗的商品id
-    getGoodsIdFromChoosingGoods (data) {
+    getGoodsIdFromChoosingGoods(data) {
       console.log(data)
       // 添加商品id
       if (this.userDialogFlag === '1') {
@@ -1415,7 +1501,7 @@ export default {
       }
     },
     // 12- 接收四个弹窗的信息
-    dataDefalut () {
+    dataDefalut() {
       this.$http.$on('result', res => {
         if (this.userDialogFlag === '1') {
           this.choosingGoodsDateFlag1 = res
@@ -1489,27 +1575,27 @@ export default {
       })
     },
     // 动态添加样式
-    getStyle (item) {
+    getStyle(item) {
       console.log(item)
       return 'backgroundImage:url(' + item.backGroundImgUrl + ')'
     },
 
     // 颜色选择器选中
-    headleChangeColorLeft () {
+    headleChangeColorLeft() {
       console.log(this.colorLeft_)
     },
     // 添加图片
-    handleToAddImg () {
+    handleToAddImg() {
       this.tuneUp = !this.tuneUp
       this.$http.$emit('dtVisible')
     },
     // 图片选中
-    handleSelectImg (res) {
+    handleSelectImg(res) {
       this.baImgUrl = res
       console.log(res)
     },
     // 增加购物满积分模块
-    handleToAddIntegral () {
+    handleToAddIntegral() {
       // addIntegralArr
       let obj = {
         leftInput: '',
@@ -1519,13 +1605,13 @@ export default {
       console.log(this.ruleForm.addIntegralArr)
     },
     // 删除购物满积分模块
-    handleToDelIntegral (index) {
+    handleToDelIntegral(index) {
       console.log(this.ruleForm.addIntegralArr)
       this.ruleForm.addIntegralArr.splice(index, 1)
       console.log(index)
     },
     // 增加充值满模块
-    handleToAddRecharge () {
+    handleToAddRecharge() {
       let obj = {
         leftInput: '',
         rightInput: ''
@@ -1533,11 +1619,11 @@ export default {
       this.ruleForm.addrechargeArr.push(obj)
     },
     // 删除充值满模块
-    handleToDelRecharge (index) {
+    handleToDelRecharge(index) {
       this.ruleForm.addrechargeArr.splice(index, 1)
     },
     // 调起添加优惠卷弹窗
-    handleToCallDialog () {
+    handleToCallDialog() {
       let arr = [41, 40]
       this.tuneUpCoupon = !this.tuneUpCoupon
 
@@ -1545,16 +1631,16 @@ export default {
       // this.$http.$emit('V-AddCoupon', obj)
     },
     // 添加优惠卷弹窗回传
-    handleToCheck (data) {
+    handleToCheck(data) {
       console.log(data)
       this.couponList = data
     },
     // 删除优惠卷项
-    handlToDelCouList (index) {
+    handlToDelCouList(index) {
       this.couponList.splice(index, 1)
     },
     // 点击指定商品出现的添加类弹窗汇总
-    hanldeToAddGoodS (index) {
+    hanldeToAddGoodS(index) {
       console.log('指定商品')
       this.userDialogFlag = '1'
       // let arr = ['21']
@@ -1584,7 +1670,7 @@ export default {
       }
     },
     // 点击会员专享商品出现的添加类弹窗汇总
-    hanldeToAddGoodSUser (index) {
+    hanldeToAddGoodSUser(index) {
       console.log('会员专享')
       this.userDialogFlag = '2'
       console.log(index)
@@ -1612,11 +1698,11 @@ export default {
       console.log(index)
     },
     // 调起添加门店弹窗
-    handleToCallChioseStore () {
+    handleToCallChioseStore() {
       this.$http.$emit('CallChioseStore')
     },
     // 调起领取码弹窗
-    handleCallCodeDialog (index, indexH) {
+    handleCallCodeDialog(index, indexH) {
       switch (index) {
         case 0:
 
@@ -1637,7 +1723,7 @@ export default {
       }
     },
     // 卡号类点击统一处理
-    handleCallCodeDialogBottom (index, indexH) {
+    handleCallCodeDialogBottom(index, indexH) {
       switch (index) {
         case 0:
           this.$http.$emit('CallCodeDialog')
@@ -1657,15 +1743,20 @@ export default {
       }
     },
     // 部分门店表格列表删除点击
-    handleToStoreRowDel (row) {
+    handleToStoreRowDel(row) {
       console.log(row.$index)
       let { $index } = row
       this.chioseSureData.splice($index, 1)
     },
     // 商品分类和平台分类弹窗选中回传数据
-    BusClassTrueArr (data) {
+    BusClassTrueArr(data) {
       // 根据this.AtreeType 的值判断是指定商品里面的弹窗还是会员专享里面的弹窗   backDataArr字段是回显wiki应该有写
+    },
+    // 限次会员卡中显示的适用商品里面的选择商品调起事件
+    handleToCallGoodsDialog(flag) {
+
     }
+
   }
 }
 </script>
@@ -2012,6 +2103,40 @@ export default {
               }
             }
           }
+          .applyDiv {
+            display: flex;
+            span {
+              white-space: nowrap;
+            }
+            /deep/ .el-input {
+              width: 100px;
+              .el-input__inner {
+                width: 100%;
+              }
+            }
+          }
+          .noneBlockList {
+            margin-bottom: 10px;
+            display: flex;
+            .noneBlockLeft {
+              line-height: 30px;
+              height: 30px;
+              width: 95px;
+              text-align: left;
+              color: #5a8bff;
+              border: 1px solid #ccc;
+              background: #fff;
+              cursor: pointer;
+              padding-left: 5px;
+              margin-right: 20px;
+            }
+            .noneBlockRight {
+              color: #5a8bff;
+              cursor: pointer;
+              height: 30px;
+              line-height: 30px;
+            }
+          }
         }
         .first {
           /deep/ .el-form-item__label {
@@ -2039,7 +2164,7 @@ export default {
         }
         .phoneNum {
           /deep/ .el-input__inner {
-            width: 24%;
+            width: 70%;
           }
         }
       }
