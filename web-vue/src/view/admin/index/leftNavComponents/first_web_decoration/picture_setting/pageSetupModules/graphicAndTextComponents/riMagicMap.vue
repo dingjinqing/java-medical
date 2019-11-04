@@ -199,22 +199,159 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:152px;width:152px;line-height:152px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+                :style="'height:77px;width:77px;line-height:77px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
               >宽度{{item.styleData[0].size}}像素</div>
               <div
                 @click="handleToClickLayout(index,1)"
-                :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+                :style="'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
               >宽度{{item.styleData[1].size}}像素</div>
               <div
                 @click="handleToClickLayout(index,2)"
-                :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
+                :style="'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
               >宽度{{item.styleData[2].size}}像素</div>
               <div
                 @click="handleToClickLayout(index,3)"
-                :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
+                :style="'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
               >宽度{{item.styleData[3].size}}像素</div>
             </div>
 
+            <div
+              class="layoutDiv layoutSecond"
+              style="display:flex;flex-wrap:wrap"
+              v-if='nowTemplateClickIndex===3'
+            >
+              <div
+                @click="handleToClickLayout(index,0)"
+                :style="'height:152px;width:152px;line-height:152px;margin-bottom:-1px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+              >
+                <p style="height:12px">宽度{{item.styleData[0].size}}像素</p>
+                <p style="height:12px;margin-top:5px">或同等比例</p>
+              </div>
+              <div
+                @click="handleToClickLayout(index,1)"
+                :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;margin-bottom:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+              >
+                <p style="height:12px">宽度{{item.styleData[1].size}}像素</p>
+                <p style="height:12px;margin-top:5px">或同等比例</p>
+              </div>
+              <div
+                @click="handleToClickLayout(index,2)"
+                :style="'height:152px;width:152px;line-height:152px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc':'')"
+              >
+                <p style="height:12px">宽度{{item.styleData[2].size}}像素</p>
+                <p style="height:12px;margin-top:5px">或同等比例</p>
+              </div>
+              <div
+                @click="handleToClickLayout(index,3)"
+                :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
+              >
+                <p style="height:12px">宽度{{item.styleData[3].size}}像素</p>
+                <p style="height:12px;margin-top:5px">或同等比例</p>
+              </div>
+            </div>
+
+            <div
+              class="layoutDiv layoutSecond"
+              style="display:flex;flex-wrap:wrap;"
+              v-if='nowTemplateClickIndex===4'
+            >
+              <div
+                @click="handleToClickLayout(index,0)"
+                :style="'height:302px;width:152px;line-height:302px;display:flex;flex-direction: column;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+              >
+                <p style="height:12px">宽度{{item.styleData[0].size}}像素</p>
+                <p style="height:12px;margin-top:5px">或同等比例</p>
+              </div>
+              <div style="border:none;">
+                <div
+                  @click="handleToClickLayout(index,1)"
+                  :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+                >
+                  <p style="height:12px">宽度{{item.styleData[1].size}}像素</p>
+                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                </div>
+                <div
+                  @click="handleToClickLayout(index,2)"
+                  :style="'height:152px;width:152px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc':'')"
+                >
+                  <p style="height:12px">宽度{{item.styleData[2].size}}像素</p>
+                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                </div>
+              </div>
+
+            </div>
+
+            <div
+              class="layoutDiv layoutSecond"
+              style=""
+              v-if='nowTemplateClickIndex===5'
+            >
+              <div
+                @click="handleToClickLayout(index,0)"
+                :style="'height:152px;width:302px;line-height:152px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+              >
+                <p style="height:12px">宽度{{item.styleData[0].size}}像素</p>
+                <p style="height:12px;margin-top:5px">或同等比例</p>
+              </div>
+              <div style="border:none;display:flex;background:#fff">
+                <div
+                  @click="handleToClickLayout(index,1)"
+                  :style="'height:152px;width:152px;line-height:152px;margin-top:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc;':'')"
+                >
+                  <p style="height:12px">宽度{{item.styleData[1].size}}像素</p>
+                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                </div>
+                <div
+                  @click="handleToClickLayout(index,2)"
+                  :style="'height:152px;width:152px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc':'')"
+                >
+                  <p style="height:12px">宽度{{item.styleData[2].size}}像素</p>
+                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                </div>
+              </div>
+
+            </div>
+
+            <div
+              class="layoutDiv layoutSecond"
+              style="display:flex;"
+              v-if='nowTemplateClickIndex===6'
+            >
+              <div
+                @click="handleToClickLayout(index,0)"
+                :style="'height:302px;width:152px;line-height:302px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+              >
+                <p style="height:12px">宽度{{item.styleData[0].size}}像素</p>
+                <p style="height:12px;margin-top:5px">或同等比例</p>
+              </div>
+              <div style="border:none;background:#fff">
+                <div
+                  @click="handleToClickLayout(index,1)"
+                  :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+                >
+                  <p style="height:12px">宽度{{item.styleData[1].size}}像素</p>
+                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                </div>
+                <div style="display:flex;border:none">
+                  <div
+                    @click="handleToClickLayout(index,2)"
+                    :style="'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc;':'')"
+                  >
+                    <p style="height:12px">宽度{{item.styleData[2].size}}像素</p>
+                    <p style="height:12px;margin-top:5px">或同等比例</p>
+                  </div>
+                  <div
+                    @click="handleToClickLayout(index,3)"
+                    :style="'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')"
+                  >
+                    <p style="height:12px">宽度{{item.styleData[3].size}}像素</p>
+                    <p style="height:12px;margin-top:5px">或同等比例</p>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
@@ -326,7 +463,7 @@ export default {
             },
             {
               size: '188',
-              isChecked: true
+              isChecked: false
             },
             {
               size: '188',
@@ -346,10 +483,62 @@ export default {
             },
             {
               size: '375',
-              isChecked: true
+              isChecked: false
             },
             {
               size: '375',
+              isChecked: true
+            }
+          ]
+        },
+        {
+          styleData: [
+            {
+              size: '375X750',
+              isChecked: false
+            },
+            {
+              size: '375',
+              isChecked: false
+            },
+            {
+              size: '375',
+              isChecked: true
+            }
+          ]
+        },
+        {
+          styleData: [
+            {
+              size: '750X375',
+              isChecked: false
+            },
+            {
+              size: '375',
+              isChecked: false
+            },
+            {
+              size: '375',
+              isChecked: true
+            }
+          ]
+        },
+        {
+          styleData: [
+            {
+              size: '375X750',
+              isChecked: false
+            },
+            {
+              size: '375X375',
+              isChecked: false
+            },
+            {
+              size: '188X375',
+              isChecked: false
+            },
+            {
+              size: '188X375',
               isChecked: true
             }
           ]
@@ -416,7 +605,7 @@ export default {
     .main {
       .selectTemplate {
         display: flex;
-        margin: 10px 0;
+        // margin: 10px 0;
         span {
           width: 26%;
           display: inline-block;
@@ -570,11 +759,12 @@ export default {
               border: 1px solid #cedbff;
               cursor: pointer;
             }
+            p {
+              font-size: 12px;
+            }
           }
           span {
             width: 35%;
-          }
-          .layoutSecond {
           }
         }
       }
