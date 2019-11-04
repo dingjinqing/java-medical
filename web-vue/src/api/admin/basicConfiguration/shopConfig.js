@@ -3,7 +3,7 @@ import service from '@/util/request.js'
 // 获取店铺基础信息
 export function getBaseInfo () {
   return service({
-    url: '/api/admin/config/shop/getBaseInfo',
+    url: '/api/admin/config/shop/base/get',
     method: 'get'
   })
 }
