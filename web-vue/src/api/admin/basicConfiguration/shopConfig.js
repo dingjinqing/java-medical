@@ -8,6 +8,15 @@ export function getBaseInfo () {
   })
 }
 
+// 保存店铺基础信息
+export function updateBasicInfoApi (data) {
+  return service({
+    url: '/api/admin/config/shop/base/update',
+    data: data,
+    method: 'post'
+  })
+}
+
 //  我已有小程序，一键授权
 export function grantAuthorizationRequest () {
   return service({

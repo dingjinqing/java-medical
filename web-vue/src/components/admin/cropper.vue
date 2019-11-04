@@ -267,6 +267,7 @@ export default {
         imgsCropperRequest(obj).then((res) => {
           console.log(res)
           if (res.error === 0) {
+            debugger
             this.$store.commit('TOCHANGE_AUTOREFRESH', this.imgID)
           }
         })
@@ -274,6 +275,7 @@ export default {
         picSpaceimgsCropperRequest(obj).then((res) => {
           console.log(res)
           if (res.error === 0) {
+            debugger
             this.$store.commit('TOCHANGE_AUTOREFRESHPICSPACE', this.imgID)
           }
         })
