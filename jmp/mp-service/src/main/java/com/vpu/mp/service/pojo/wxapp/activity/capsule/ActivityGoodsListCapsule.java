@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
 import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,10 +21,11 @@ public class ActivityGoodsListCapsule extends AbstractCapsule {
     private BigDecimal goodsPrice;
     private BigDecimal marketPrice;
     private BigDecimal prdMaxPrice;
-
     /**商品最总显示价格和划线价格*/
     private BigDecimal realPrice;
     private BigDecimal linePrice;
+    /**关系最紧密的标签信息*/
+    GoodsLabelForListInfo goodsLabel;
     /** 平台、商家、品牌分类id */
     private Integer catId;
     private Integer sortId;
