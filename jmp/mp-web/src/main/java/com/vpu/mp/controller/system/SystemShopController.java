@@ -271,4 +271,13 @@ public class SystemShopController extends SystemBaseController {
 		}
 		return fail();
 	}
+	
+	/**
+	 * system版本权限
+	 * @return
+	 */
+	@RequestMapping("/system/version/getList")
+	public JsonResult getVersion() {
+		return success(saas.shop.menu.getVersion());
+	}
 }
