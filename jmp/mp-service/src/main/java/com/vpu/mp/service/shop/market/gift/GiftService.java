@@ -322,6 +322,11 @@ public class GiftService extends ShopBaseService {
     /**
      * 赠品活动列表
      */
+    /**
+     *
+     * @param param GiftListParam
+     * @return GiftListVo
+     */
     public PageResult<GiftListVo> getPageList(GiftListParam param) {
         SelectConditionStep<?> query = getPageListQuery();
         buildOptions(query, param);

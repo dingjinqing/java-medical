@@ -67,7 +67,7 @@ public class AdminImageController extends AdminBaseController {
       throws IOException, Exception {
     // 校验
     ResultMessage jsonResultCode = shop().image.validImageParam(param, file);
-    if (jsonResultCode.getFlag()) {
+    if (!jsonResultCode.getFlag()) {
       return this.fail(jsonResultCode);
     }
     UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType());

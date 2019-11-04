@@ -1,8 +1,12 @@
 package com.vpu.mp.service.shop.order.goods;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +15,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Record6;
-import org.jooq.Result;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsHistoryBo;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +72,7 @@ public class OrderGoodsService extends ShopBaseService{
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
-	
+
 	/**
 	 * 单个订单商品
 	 * @param orderId
@@ -269,6 +274,31 @@ public class OrderGoodsService extends ShopBaseService{
         logger().info("initOrderGoods初始化数据结束，参数为：",bo.toString());
         return bo;
     }
-	
 
+
+	/**
+	 *  购买商品记录(三个月内)
+	 * @param userId  用户ID
+	 * @param keyWord 关键字
+	 * @param currentPages 当前页
+	 * @param pageRows 每页行数
+	 * @return OrderGoodsHistoryBo
+	 * @author kdc
+	 */
+    public PageResult<OrderGoodsHistoryBo> buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
+		Timestamp timestamp = DateUtil.geTimeStampPlus(-3, ChronoUnit.MONTHS);
+		SelectConditionStep<? extends Record> select = db().select(TABLE.GOODS_ID)
+				.from(TABLE)
+				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
+				.leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(TABLE.ORDER_SN))
+				.where(ORDER_INFO.USER_ID.eq(userId))
+				.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+				.and(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
+				.and(ORDER_INFO.CREATE_TIME.gt(timestamp));
+		if (!StringUtils.isBlank(keyWord)){
+			select.and(GOODS.GOODS_NAME.like(likeValue(keyWord)));
+		}
+		select.orderBy(ORDER_GOODS.CREATE_TIME.desc());
+		return  getPageResult(select,currentPages,pageRows, OrderGoodsHistoryBo.class);
+	}
 }

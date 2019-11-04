@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -26,7 +27,7 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
 
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
-	
+
 	public static final String DATE_MYSQL_SIMPLE="%Y-%m-%d";
 
 	private static final Integer MILLI_SECOND = 1000;
@@ -101,6 +102,15 @@ public final class DateUtil {
 	public static Timestamp getLocalDateTime() {
 		return Timestamp.valueOf(dateFormat(DATE_FORMAT_FULL));
 	}
+
+	/**
+	 * 获取本地时间
+	 * @param format
+	 * @return
+	 */
+	public static Timestamp getLocalDateTime(String format) {
+		return Timestamp.valueOf(dateFormat(format));
+	}
     /**
      * 获取延后（秒）的时间
      */
@@ -170,23 +180,24 @@ public final class DateUtil {
             .mapToObj(startDate::plusDays)
             .collect(Collectors.toList());
     }
-	
-	
+
+
 	/**
 	 * 获取本地的时间
+	 * @return yyyy-MM-dd
 	 */
 	public static Timestamp getLocalTimeDate() {
 		return Timestamp.valueOf(dateFormat(DATE_FORMAT_SIMPLE));
 	}
 
-	
+
 	/**
 	 * 获取本地的时间
 	 */
 	public static Timestamp getLocalTimeDateBySelf(String format) {
 		return Timestamp.valueOf(dateFormat(format));
 	}
-	
+
 	/**
 	 * 时间戳是否为今日
 	 * @param timestamp
@@ -200,5 +211,14 @@ public final class DateUtil {
 		String formate2 = df.format(localDateTime2);
 		return formate1.equals(formate2);
 	}
-	
+
+	/**
+	 * 获取{i}年后的时间时间
+	 * @param addNum 该单位添加到结果的数量，可能是负数
+	 * @param unit  使用ChronoUnit类 单位  SECONDS秒 ,MINUTES分钟, HOURS小时, DAYS天, WEEKS星期, MONTHS月, YEARS年
+	 * @return
+	 */
+	public static Timestamp geTimeStampPlus(int addNum, ChronoUnit unit) {
+		return  Timestamp.valueOf(LocalDateTime.now().plus(addNum,unit));
+	}
 }
