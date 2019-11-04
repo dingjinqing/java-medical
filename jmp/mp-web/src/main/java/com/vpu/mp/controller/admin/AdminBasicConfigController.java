@@ -295,14 +295,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@GetMapping(value = "/shop/base/get")
 	public JsonResult getShopBaseInfo() {
-		ShopBaseConfig shopBaseCfgInfo = new ShopBaseConfig();
-		ShopPojo shop = saas.shop.getShopBaseInfoById(this.shopId());
-		shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(this.shopId()));
-		shopBaseCfgInfo.setShopName(shop.getShopName());
-		shopBaseCfgInfo.setShopAvatar(shop.getShopAvatar());
-		shopBaseCfgInfo.setCreated(shop.getCreated());
-		shopBaseCfgInfo.setBusinessState(shop.getBusinessState());
-		return this.success(shopBaseCfgInfo);
+		return this.success(saas.shop.getShopBaseInfoById(this.shopId()));
 	}
 	
 	/**
@@ -310,14 +303,9 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/shop/base/update")
-	public JsonResult updateShopBaseInfo(@RequestBody @Valid ShopPojo shop) {
-		shop.setShopId(this.shopId());
-		Integer res = saas.shop.updateShopBaseInfo(shop);
-		if(res > 0) {
-			return this.success();
-		}else {
-			return this.fail();
-		}
+	public JsonResult updateShopBaseInfo(@RequestBody @Valid ShopBaseConfig shop) {
+		saas.shop.updateShopBaseInfo(shop,shopId());
+		return this.success();
 	}
 	
 	/**

@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import jodd.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 /**
@@ -48,7 +49,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     /**
      * 开关开启，前端装修商品模块、店铺商品页、推荐商品列表、活动商品列表会展示已售罄商品
      */
-	final public static String SOLD_OUT_GOODS = "sold_out_goods";
+	final public static String K_SOLD_OUT_GOODS = "sold_out_goods";
 
     /**
 	 * 下单填写真实姓名开关
@@ -128,6 +129,25 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * 地理位置授权
 	 */
 	final public static String K_GEO_LOCATION = "geographic_location";
+
+    /**
+     *小程序端"店铺商品页"默认排序规则，四选一
+     * add_time 按照商品上新时间倒序排列
+     * goods_sale_num 按照商品销量倒序排列
+     * comment_num 按照商品评价数量倒序排列
+     * pv 按照商品访问次数倒序排列，7天内访问次数最多的商品将排在商品列表最上方
+     */
+    final public static String K_GOODS_SORT = "goods_sort";
+
+    /**
+     * 开关开启，会在商品详情页滚动展示最近的5条购买记录
+     */
+    final public static String K_GOODS_RECORD = "goods_record";
+
+    /**
+     * 商品默认平台分类id
+     */
+    final public static String K_DEFAULT_SORT = "default_sort";
 
 
     /**
@@ -243,7 +263,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @return
      */
 	public Byte getSoldOutGoods(){
-	    return this.get(SOLD_OUT_GOODS,Byte.class,(byte)0);
+	    return this.get(K_SOLD_OUT_GOODS,Byte.class,(byte)0);
     }
 
     /**
@@ -252,7 +272,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
     public int setSoldOutGoods(Byte value){
         assert(value ==(byte)0 || value == (byte)1);
-        return this.set(SOLD_OUT_GOODS, value,Byte.class);
+        return this.set(K_SOLD_OUT_GOODS, value,Byte.class);
     }
 
 	/**
@@ -541,6 +561,61 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 		return this.set(K_GEO_LOCATION, value,Byte.class);
 	}
 
+    /**
+     * 小程序端"店铺商品页"默认排序规则
+     * @return
+     */
+    public String getGoodsSort() {
+        return this.get(K_GOODS_SORT, String.class, "add_time");
+    }
+
+    /**
+     *小程序端"店铺商品页"默认排序规则，四选一
+     * add_time 按照商品上新时间倒序排列(默认)
+     * goods_sale_num 按照商品销量倒序排列
+     * comment_num 按照商品评价数量倒序排列
+     * pv 按照商品访问次数倒序排列，7天内访问次数最多的商品将排在商品列表最上方
+     */
+    public int setGoodsSort(String value) {
+        assert(StringUtil.isNotEmpty(value));
+        return this.set(K_GOODS_SORT, value,String.class);
+    }
+
+    /**
+     * 开关开启，会在商品详情页滚动展示最近的5条购买记录
+     * @return
+     */
+    public Byte getGoodsRecord() {
+        return this.get(K_GOODS_RECORD, Byte.class, (byte)1);
+    }
+
+    /**
+     * 开关开启，会在商品详情页滚动展示最近的5条购买记录
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setGoodsRecord(Byte value) {
+        assert(value ==(byte)0 || value == (byte)1);
+        return this.set(K_GOODS_RECORD, value,Byte.class);
+    }
+
+    /**
+     * 商品默认平台分类id
+     * @return
+     */
+    public Integer getDefaultSort() {
+        return this.get(K_DEFAULT_SORT, Integer.class, 0);
+    }
+
+    /**
+     * 商品默认平台分类id
+     * @return
+     */
+    public int setDefaultSort(Integer value) {
+        assert(value > 0);
+        return this.set(K_DEFAULT_SORT, value,Integer.class);
+    }
+
 
     /**
 	 * 取通用配置
@@ -548,26 +623,18 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	public ShopCommonCfgInfo getShopCommonCfg() {
 		ShopCommonCfgInfo commonCfg = new ShopCommonCfgInfo();
 		this.transaction(() ->{
-			commonCfg.setShowLogo(this.getShowLogo());
-			commonCfg.setLogoLink(this.getLogoLink());
-			commonCfg.setCancelTime(this.getCancelTime());
-			commonCfg.setInvoice(this.getInvoice());
-			commonCfg.setBindMobile(this.getBindMobile());
-			commonCfg.setSalesNumber(this.getSalesNumber());
-			commonCfg.setOrderRealName(this.getOrderRealName());
-			commonCfg.setOrderCid(this.getOrderCid());
-			commonCfg.setConsigneeRealName(this.getConsigneeRealName());
-			commonCfg.setConsigneeCid(this.getConsigneeCid());
-			commonCfg.setCustom(this.getCustom());
-			commonCfg.setCustomTitle(this.getCustomTitle());
-			commonCfg.setDelMarket(this.getDelMarket());
-			commonCfg.setCustomService(this.getCustomService());
-			commonCfg.setShowCart(this.getShowCart());
-			commonCfg.setServiceName(this.getServiceName());
-			commonCfg.setServiceChoose(this.getServiceChose());
-			commonCfg.setServiceTerms(this.getServiceTerms());
-			commonCfg.setShareConfig(this.getShareConfig());
-			commonCfg.setShopStyle(this.getShopStyle());
+            commonCfg.setSalesNumber(this.getSalesNumber());
+            commonCfg.setShowCart(this.getShowCart());
+            commonCfg.setDelMarket(this.getDelMarket());
+            commonCfg.setSoldOutGoods(this.getSoldOutGoods());
+            commonCfg.setGoodsSort(this.getGoodsSort());
+            commonCfg.setGoodsRecord(this.getGoodsRecord());
+            commonCfg.setCustomService(this.getCustomService());
+            commonCfg.setReturnService(this.getReturnService());
+            commonCfg.setDefaultSort(this.getDefaultSort());
+            commonCfg.setShareConfig(this.getShareConfig());
+            commonCfg.setBindMobile(this.getBindMobile());
+            commonCfg.setGeographicLocation(this.getGeoLocation());
 		});
 
         return commonCfg;
@@ -579,26 +646,18 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
 	public Boolean updateShopCommonInfo(ShopCommonCfgInfo commonCfg) {
 		this.transaction(()->{
-			this.setShowLogo(commonCfg.getShowLogo());
-			this.setLogoLink(commonCfg.getLogoLink());
-			this.setCancelTime(commonCfg.getCancelTime());
-			this.setInvoice(commonCfg.getInvoice());
-			this.setBindMobile(commonCfg.getBindMobile());
-			this.setSalesNumber(commonCfg.getSalesNumber());
-			this.setOrderRealName(commonCfg.getOrderRealName());
-			this.setOrderCid(commonCfg.getOrderCid());
-			this.setConsigneeRealName(commonCfg.getConsigneeRealName());
-			this.setConsigneeCid(commonCfg.getConsigneeCid());
-			this.setCustom(commonCfg.getCustom());
-			this.setCustomTitle(commonCfg.getCustomTitle());
-			this.setDelMarket(commonCfg.getDelMarket());
-			this.setCustomService(commonCfg.getCustomService());
+		    this.setSalesNumber(commonCfg.getSalesNumber());
 			this.setShowCart(commonCfg.getShowCart());
-			this.setServiceName(commonCfg.getServiceName());
-			this.setServiceChoose(commonCfg.getServiceChoose());
-			this.setServiceTerms(commonCfg.getServiceTerms());
+			this.setDelMarket(commonCfg.getDelMarket());
+			this.setSoldOutGoods(commonCfg.getSoldOutGoods());
+			this.setGoodsSort(commonCfg.getGoodsSort());
+			this.setGoodsRecord(commonCfg.getGoodsRecord());
+			this.setCustomService(commonCfg.getCustomService());
+			this.setReturnService(commonCfg.getReturnService());
+			this.setDefaultSort(commonCfg.getDefaultSort());
 			this.setShareConfig(commonCfg.getShareConfig());
-			this.setShopStyle(commonCfg.getShopStyle());
+			this.setBindMobile(commonCfg.getBindMobile());
+			this.setGeoLocation(commonCfg.getGeographicLocation());
 		});
 		return true;
 	}

@@ -13,9 +13,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ShopBaseConfig {
-	public Timestamp expireTime = null;
-	public String shopName = "";
-	public String shopAvatar = "";
-	public Timestamp created = null;
-	public Byte businessState = 0;
+    /** 过期时间 */
+	private Timestamp expireTime = null;
+    private String shopName = "";
+    private String shopAvatar = "";
+    private Timestamp created = null;
+    /** 营业状态：0未营业，1正在营业 */
+    private Byte businessState = 0;
+    /** 是否显示小程序端店铺logo */
+    private Byte showLogo = 0;
+    /** 小程序端店铺logo */
+    private String logo = "";
+    /** 小程序端店铺logo点击跳转链接 */
+    private String logoLink = "";
 }

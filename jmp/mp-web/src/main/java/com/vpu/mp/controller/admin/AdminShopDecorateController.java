@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -219,4 +220,23 @@ public class AdminShopDecorateController extends AdminBaseController {
 		shop().config.bottomCfg.setBottomNavigatorConfig(bottomNavConfg);
 		return success();
 	}
+
+    /**
+     * 查询 搜索配置
+     * @return
+     */
+    @GetMapping("/api/admin/get/searchcfg")
+    public JsonResult getSearchCfg() {
+        return success(shop().config.searchCfg.getSearchConfig());
+    }
+    /**
+     * 修改搜索配置
+     * @param
+     * @return
+     */
+    @PostMapping("/api/admin/update/searchcfg")
+    public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
+        shop().config.searchCfg.setSearchConfig(config);
+        return success();
+    }
 }

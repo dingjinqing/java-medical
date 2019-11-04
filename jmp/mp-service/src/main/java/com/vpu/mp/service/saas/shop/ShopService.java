@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import org.jooq.DatePart;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -344,14 +345,40 @@ public class ShopService extends MainBaseService {
 		return select.orderBy(SHOP.CREATED.asc()).fetch();
 	}
 
-	public ShopPojo getShopBaseInfoById(Integer shopId) {
-		return db().select(SHOP.SHOP_AVATAR, SHOP.SHOP_NAME, SHOP.BUSINESS_STATE, SHOP.CREATED, SHOP.BUSINESS_STATE)
-				.from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
+    /**
+     * 店铺基础配置-店铺基础信息get
+     *
+     */
+	public ShopBaseConfig getShopBaseInfoById(Integer shopId) {
+        ShopPojo shop = db().select(SHOP.SHOP_AVATAR, SHOP.SHOP_NAME, SHOP.BUSINESS_STATE, SHOP.CREATED, SHOP.BUSINESS_STATE,SHOP.LOGO)
+            .from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
+        ShopBaseConfig shopBaseCfgInfo = new ShopBaseConfig();
+        shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(shopId));
+        shopBaseCfgInfo.setShopName(shop.getShopName());
+        shopBaseCfgInfo.setShopAvatar(shop.getShopAvatar());
+        shopBaseCfgInfo.setCreated(shop.getCreated());
+        shopBaseCfgInfo.setBusinessState(shop.getBusinessState());
+        shopBaseCfgInfo.setLogo(shop.getLogo());
+        shopBaseCfgInfo.setShowLogo(saas.getShopApp(shopId).config.shopCommonConfigService.getShowLogo());
+        shopBaseCfgInfo.setLogoLink(saas.getShopApp(shopId).config.shopCommonConfigService.getLogoLink());
+        return shopBaseCfgInfo;
 	}
 
-	public Integer updateShopBaseInfo(ShopPojo shop) {
-		return db().update(SHOP).set(SHOP.SHOP_NAME, shop.getShopName()).set(SHOP.SHOP_AVATAR, shop.getShopAvatar())
-				.set(SHOP.BUSINESS_STATE, shop.getBusinessState()).where(SHOP.SHOP_ID.eq(shop.getShopId())).execute();
+    /**
+     * 店铺基础配置-店铺基础信息更新
+     *
+     */
+	public void updateShopBaseInfo(ShopBaseConfig shop,int shopId) {
+        shop.setCreated(null);
+        shop.setExpireTime(null);
+	    ShopRecord record = new ShopRecord();
+	    assign(shop,record);
+        record.setShopId(shopId);
+        this.transaction(() -> {
+            db().executeUpdate(record);
+            saas.getShopApp(shopId).config.shopCommonConfigService.setShowLogo(shop.getShowLogo());
+            saas.getShopApp(shopId).config.shopCommonConfigService.setLogoLink(shop.getLogoLink());
+        });
 	}
 	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info,
 			List<Record11<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, String>> shopList) {

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author 王兵兵
  *
@@ -14,122 +16,92 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShopCommonCfgInfo {
 	/**
-	 *是否显示前端店铺logo
-	 */
-	@JsonProperty(value = "show_logo")
-	public Byte showLogo;
-	
-	/**
-	 *logo点击跳转链接
-	 */
-	@JsonProperty(value = "logo_link")
-	public String logoLink;
-	
-	/**
-	 *待付款订单取消时间（分钟）
-	 */
-	@JsonProperty(value = "cancel_time")
-	public Integer cancelTime;
-	
-	/**
-	 *是否开启发票功能：0关闭，1开启
-	 */
-	@JsonProperty(value = "invoice")
-	public Byte invoice;
-	
-	/**
-	 *是否强制用户绑定手机号
-	 */
-	@JsonProperty(value = "bind_mobile")
-	public Byte bindMobile;
-	
-	/**
 	 *销量展示开关
 	 */
+	@NotNull
 	@JsonProperty(value = "sales_number")
 	public Byte salesNumber;
-	
-	/**
-	 *下单填写真实姓名开关
-	 */
-	@JsonProperty(value = "order_real_name")
-	public Byte orderRealName;
-	
-	/**
-	 *下单填写身份证号开关
-	 */
-	@JsonProperty(value = "order_cid")
-	public Byte orderCid;
-	
-	/**
-	 *下单填写收货人真实姓名开关
-	 */
-	@JsonProperty(value = "consignee_real_name")
-	public Byte consigneeRealName;
-	
-	/**
-	 *下单填写收货人身份证号开关
-	 */
-	@JsonProperty(value = "consignee_cid")
-	public Byte consigneeCid;
-	
-	/**
-	 *下单填写自定义信息开关
-	 */
-	@JsonProperty(value = "custom")
-	public Byte custom;
-	
-	/**
-	 *下单填写自定义信息标题
-	 */
-	@JsonProperty(value = "custom_title")
-	public String customTitle;
-	
+
+    /**
+     * 商品搜索页以及推荐商品列表中会显示购买按钮
+     */
+    @NotNull
+    @JsonProperty(value = "show_cart")
+    public ShowCartConfig showCart;
+
 	/**
 	 *是否显示划线价开关
 	 */
+    @NotNull
 	@JsonProperty(value = "del_market")
 	public Byte delMarket;
+
+    /**
+     *是否显示售罄商品
+     */
+    @NotNull
+    @JsonProperty(value = "sold_out_goods")
+    public Byte soldOutGoods;
+
+    /**
+     *小程序端"店铺商品页"默认排序规则，四选一
+     * add_time 按照商品上新时间倒序排列
+     * goods_sale_num 按照商品销量倒序排列
+     * comment_num 按照商品评价数量倒序排列
+     * pv 按照商品访问次数倒序排列，7天内访问次数最多的商品将排在商品列表最上方
+     */
+    @NotNull
+    @JsonProperty(value = "goods_sort")
+    public String goodsSort;
+
+    /**
+     *是否显示购买记录
+     */
+    @NotNull
+    @JsonProperty(value = "goods_record")
+    public Byte goodsRecord;
 	
 	/**
-	 *客服入口开关
+	 *客服入口开关-商品详情页是否展示
 	 */
+    @NotNull
 	@JsonProperty(value = "custom_service")
 	public Byte customService;
-	
-	/**
-	 * 商品搜索页以及推荐商品列表中会显示购买按钮
-	 */
-	@JsonProperty(value = "show_cart")
-	public ShowCartConfig showCart;
-	
-	/**
-	 *服务条款名称
-	 */
-	@JsonProperty(value = "service_name")
-	public String serviceName;
-	
-	/**
-	 *首次下单是否默认勾选服务条款
-	 */
-	@JsonProperty(value = "service_choose")
-	public Byte serviceChoose;
-	
-	/**
-	 *服务条款开关
-	 */
-	@JsonProperty(value = "service_terms")
-	public Byte serviceTerms;
+
+    /**
+     *客服入口开关-退/换货中心是否展示
+     */
+    @NotNull
+    @JsonProperty(value = "return_service")
+    public Byte returnService;
+
+    /**
+     *商品默认平台分类id
+     */
+    @NotNull
+    @JsonProperty(value = "default_sort")
+    public Integer defaultSort;
 	
 	/**
 	 *店铺分享配置
 	 */
+    @NotNull
 	@JsonProperty(value = "share_config")
 	public ShopShareConfig shareConfig;
-	
-	/**
-	 *店铺风格
-	 */
-	@JsonProperty(value = "shop_style")
-	public ShopStyleConfig shopStyle;
+
+    /**
+     *是否强制用户在购买、预约以及申请成为分销员时绑定手机号
+     */
+    @NotNull
+    @JsonProperty(value = "bind_mobile")
+    public Byte bindMobile;
+
+    /**
+     *开关开启，用户进入小程序时会弹出地理位置授权申请。
+     * 用户在小程序中触发需要授权地理位置的操作时，默认会调起授权提示，不受此开关控制
+     */
+    @NotNull
+    @JsonProperty(value = "geographic_location")
+    public Byte geographicLocation;
+
 }
