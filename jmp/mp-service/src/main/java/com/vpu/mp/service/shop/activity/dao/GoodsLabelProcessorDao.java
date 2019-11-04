@@ -62,10 +62,10 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
             });
         });
 
-        goodsLabelsMap.putIfAbsent(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),new HashMap<>());
-        goodsLabelsMap.putIfAbsent(GoodsLabelCoupleTypeEnum.CATTYPE.getCode(),new HashMap<>());
-        goodsLabelsMap.putIfAbsent(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),new HashMap<>());
-        goodsLabelsMap.putIfAbsent(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode(),new HashMap<>());
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),new HashMap<>());
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.CATTYPE.getCode(),new HashMap<>());
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),new HashMap<>());
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode(),new HashMap<>());
 
         return returnMap;
     }

@@ -51,7 +51,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
            condition = condition.or(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(value.get(FIRST_SPECIAL.ID)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(value.get(FIRST_SPECIAL_GOODS.GOODS_ID))));
        }
 
-       Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL_PRODUCT.GOODS_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE)
+       Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = db().select(FIRST_SPECIAL_PRODUCT.ID, FIRST_SPECIAL_PRODUCT.GOODS_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE)
            .from(FIRST_SPECIAL_PRODUCT)
            .where(condition)
            .fetch().intoGroups(FIRST_SPECIAL_PRODUCT.GOODS_ID);

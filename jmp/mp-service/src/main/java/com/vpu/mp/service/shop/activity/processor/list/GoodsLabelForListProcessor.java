@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor.list;
 
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
@@ -64,7 +65,7 @@ public class GoodsLabelForListProcessor extends GoodsLabelProcessorDao implement
             } else if (sortIdMap.get(allIdsParam.sortId) != null) {
                 returnMap.put(goodsId, sortIdMap.get(allIdsParam.sortId));
             } else if (allGoodsMap.size() > 0) {
-                returnMap.put(goodsId, allGoodsMap.get(null));
+                returnMap.put(goodsId, allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
             } else {
                 return;
             }

@@ -31,5 +31,5 @@ public abstract class AbstractProcessorFactory<P extends ActivityProcessor,T ext
         }
     }
 
-    public abstract void doProcess(List<T> capsules);
+    public abstract void doProcess(List<T> capsules,Integer userId);
 }

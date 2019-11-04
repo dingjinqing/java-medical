@@ -52,6 +52,7 @@ public class FirstSpecialForListProcessor extends FirstSpecialProcessorDao imple
             }
             goodsIds.add(capsule.getCapsuleId());
         });
+        param.setGoodsIds(goodsIds);
         return param;
     }
 

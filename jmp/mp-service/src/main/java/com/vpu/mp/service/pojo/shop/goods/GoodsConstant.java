@@ -98,6 +98,7 @@ public class GoodsConstant {
 
     /*** 可在商品列表展示的标签*/
     public static final Byte GOODS_LIST = 1;
+    public static final Integer LABEL_GTA_DEFAULT_VALUE = 0;
 
     /*** 是推荐品牌,普通品牌，推荐分类，普通分类码*/
     public static final Byte RECOMMEND_BRAND = 1;

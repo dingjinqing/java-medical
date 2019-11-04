@@ -30,8 +30,7 @@ public class ActivityGoodsListCapsule extends AbstractCapsule {
     private Integer catId;
     private Integer sortId;
     private Integer brandId;
-    /**是否会员专享商品*/
-    private boolean isCardExclusive;
+
     /** 商品拥有的营销信息，由各个processor添加 */
     private List<ActivityForListInfo> activities = new ArrayList<>(2);
 }

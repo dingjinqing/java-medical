@@ -4,10 +4,13 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
+import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
+import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.GoodsPriceService;
@@ -52,6 +55,24 @@ public class GoodsMpService extends ShopBaseService {
     GoodsProductMpService goodsProductMpService;
     @Autowired
     GoodsActivityMpService goodsActivityMpService;
+
+    @Autowired
+    ProcessorFactoryBuilder processorFactoryBuilder;
+
+    public List<ActivityGoodsListCapsule> test(){
+        GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);
+        List<ActivityGoodsListCapsule> capsules = new ArrayList<>();
+        ActivityGoodsListCapsule c = new ActivityGoodsListCapsule();
+        c.setCapsuleId(1);
+        c.setCatId(2);
+        c.setSortId(28);
+        c.setGoodsType((byte) 0);
+        capsules.add(c);
+
+        processorFactory.doProcess(capsules,123);
+
+        return capsules;
+    }
 
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据

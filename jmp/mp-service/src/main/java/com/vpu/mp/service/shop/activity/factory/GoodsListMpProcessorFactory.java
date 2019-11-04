@@ -16,9 +16,9 @@ import java.util.Map;
 @Service
 public class GoodsListMpProcessorFactory extends AbstractProcessorFactory<ActivityGoodsListProcessor, ActivityGoodsListCapsule> {
     @Override
-    public void doProcess(List<ActivityGoodsListCapsule> capsules) {
+    public void doProcess(List<ActivityGoodsListCapsule> capsules,Integer userId) {
         for (ActivityGoodsListProcessor<ActivityForListInfo> processor : processors) {
-            ActivityGoodsListMpParam param = processor.filterParam(capsules);
+            ActivityGoodsListMpParam param = processor.filterParam(capsules,userId);
             Map<Integer, ActivityForListInfo> activityInfo = processor.getActivityInfo(param);
             processor.process(activityInfo, capsules);
         }
