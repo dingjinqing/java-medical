@@ -127,7 +127,7 @@ public class PayAwardService extends ShopBaseService {
                         .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
             case 3:
-                select.and(PAY_AWARD.STATUS.gt(ACTIVITY_STATUS_NORMAL))
+                select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                         .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
             case 4:
