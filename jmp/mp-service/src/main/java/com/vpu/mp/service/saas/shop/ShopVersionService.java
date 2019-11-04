@@ -355,6 +355,7 @@ public class ShopVersionService extends MainBaseService {
 		vo.setUpdateTime(record.getUpdateTime());
 		vo.setDesc(record.getDesc());
 		vo.setFlag(record.getFlag());
+		vo.setLevel(record.getLevel());
 		return vo;
 	}
 
