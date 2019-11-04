@@ -26,12 +26,14 @@ import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
+import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 /**
@@ -210,5 +212,17 @@ public class AdminMemberController extends AdminBaseController{
 		logger().info("wxapp request for card list of person.");
 		PageResult<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(param);
 		return success(cardList);
+	}
+	
+	@PostMapping(value="/api/card/test/detail")
+	public JsonResult getUserCardDetail(@RequestBody UserCardParam param) {
+		logger().info("WxAppCardController: request for card detail");
+		WxAppUserCardVo userCardDetail;
+		try {
+			userCardDetail = shop().user.userCard.getUserCardDetail(param);
+		} catch (UserCardNullException e) {
+			return fail(e.getErrorCode());
+		}
+		return success(userCardDetail);
 	}
 }

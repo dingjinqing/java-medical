@@ -123,7 +123,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping("/card/get")
 	public JsonResult getCardById(@RequestBody @Valid CardIdParam param) {
 		logger.info("获取会员卡的详细信息");
-		BaseCardVo card = shop().member.card.getCardById(param);
+		BaseCardVo card = shop().member.card.getCardDetailById(param);
 		return success(card);
 	}	
 	
