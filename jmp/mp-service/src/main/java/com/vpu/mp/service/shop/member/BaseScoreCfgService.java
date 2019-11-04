@@ -8,9 +8,13 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
 * @Description: 积分配置
 */
 public class BaseScoreCfgService extends BaseShopConfigService {
-	/**
-	 * key
-	 */
+	
+	// 积分有效期  0: 永久积分
+	final public static String SCORE_LT_FOREVER = "0";
+	// 积分有效期  1: 从获得开始至 年-月-日
+	final public static String SCORE_LT_YMD = "1";
+	// 2: 从获得积分当天起-内有效
+	final public static String SCORE_LT_NOW = "2";
 	// 积分有效期  0: 永久积分; 1: 从获得开始至 年-月-日; 2: 从获得积分当天起-内有效
 	final public static String SCORE_LIMIT = "score_limit";
 	// 积分有效期-从获得开始至 ：日
@@ -57,108 +61,108 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	}
 	
 	public void setScoreDay(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_DAY, value);
 	}
 	public String getScoreDay(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_DAY);
 	}
 	
 	public void setScoreMonth(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_MONTH, value);
 	}
 	public String getScoreMonth(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_MONTH);
 	}
 	
 	public void setScoreYear(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_YEAR, value);
 	}
-	public String getgetScoreYear(){
-		return get(SCORE_LIMIT);
+	public String getScoreYear(){
+		return get(SCORE_YEAR);
 	}
 	
 	public void setScoreLimitNumber(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_LIMIT_NUMBER, value);
 	}
 	public String getScoreLimitNumber(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_LIMIT_NUMBER);
 	}
 	
 	public void setScorePeriod(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_PERIOD, value);
 	}
 	public String getScorePeriod(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_PERIOD);
 	}
 	
 	public void setScorePayLimit(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_PAY_LIMIT, value);
 	}
 	public String getScorePayLimit(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_PAY_LIMIT);
 	}
 
 	public void setScorePayNum(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_PAY_NUM, value);
 	}
 	public String getScorePayNum(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_PAY_NUM);
 	}
 	
 	public void setShoppingScore(String value){
-		set(SCORE_LIMIT, value);
+		set(SHOPPING_SCORE, value);
 	}
 	public String getShoppingScore(){
-		return get(SCORE_LIMIT);
+		return get(SHOPPING_SCORE);
 	}
 	
 	public void setScoreType(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_TYPE, value);
 	}
 	public String getScoreType(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_TYPE);
 	}
 	
 	public void setStoreScore(String value){
-		set(SCORE_LIMIT, value);
+		set(STORE_SCORE, value);
 	}
 	public String getStoreScore(){
-		return get(SCORE_LIMIT);
+		return get(STORE_SCORE);
 	}
 	
 	public void setLoginScore(String value){
-		set(SCORE_LIMIT, value);
+		set(LOGIN_SCORE, value);
 	}
 	public String getLoginScore(){
-		return get(SCORE_LIMIT);
+		return get(LOGIN_SCORE);
 	}
 	
 	public void setScoreLogin(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_LOGIN, value);
 	}
 	public String getScoreLogin(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_LOGIN);
 	}
 	
 	public void setSignInScore(String value){
-		set(SCORE_LIMIT, value);
+		set(SIGN_IN_SCORE, value);
 	}
 	public String getSignInScore(){
-		return get(SCORE_LIMIT);
+		return get(SIGN_IN_SCORE);
 	}
 	
 	public void setScorePageId(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_PAGE_ID, value);
 	}
 	public String getScorePageId(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_PAGE_ID);
 	}
 	
 	public void setScoreDocument(String value){
-		set(SCORE_LIMIT, value);
+		set(SCORE_DOCUMENT, value);
 	}
 	public String getScoreDocument(){
-		return get(SCORE_LIMIT);
+		return get(SCORE_DOCUMENT);
 	}
 	
 }
