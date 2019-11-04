@@ -138,7 +138,7 @@ public class AdminMallOverviewController extends AdminBaseController {
      *
      * @return the share qr code vo
      */
-    @PostMapping("/api/admin/malloverview/shareShop")
+    @GetMapping("/api/admin/malloverview/shareShop")
     public JsonResult shareShop() {
         ShareQrCodeVo qrCodeVo = shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, "");
         if (StringUtils.isBlank(qrCodeVo.getImageUrl())) {
