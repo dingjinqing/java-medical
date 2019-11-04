@@ -195,7 +195,8 @@ export default {
     draggable,
     // 营销组件库
     MembershipCard: () => import('./decorationModules/marketingComponents/membershipCard'), // 会员卡
-    Coupon: () => import('./decorationModules/marketingComponents/Coupon'), // 优惠卷
+    Coupon: () => import('./decorationModules/marketingComponents/Coupon'), // 优惠券
+    Bargain: () => import('./decorationModules/marketingComponents/Bargain'), // 砍价
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 商品组件库
@@ -212,7 +213,7 @@ export default {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'zb', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -356,6 +357,9 @@ export default {
           break
         case 'm_coupon':
           moduleNameId = 2
+          break
+        case 'm_bargain':
+          moduleNameId = 3
           break
         case 'm_goods':
           moduleNameId = 8

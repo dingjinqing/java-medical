@@ -38,6 +38,7 @@ export default {
     // 营销组件库
     RightMembershipCard: () => import('./pageSetupModules/marketingComponents/rightMembershipCard'), // 右侧会员卡配置页面
     RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'), // 右侧优惠卷配置页面
+    RightBargain: () => import('./pageSetupModules/marketingComponents/rightBargain'), // 右侧砍价配置页面
     // 商品组件库
     RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'), // 右侧商品配置页面
     RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch'), // 右侧页面商品搜索配置页面
@@ -67,6 +68,10 @@ export default {
         {
           id: 2,
           name: 'RightCoupon'
+        },
+        {
+          id: 3,
+          name: 'RightBargain'
         },
         {
           id: 8,
