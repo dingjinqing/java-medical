@@ -36,7 +36,7 @@ global.wxPage({
     charge_money: 0,
     card_money: 0,
     discount_block: 0,
-    cardMode: true,
+    cardMode: true
   },
 
   /**
@@ -215,7 +215,10 @@ global.wxPage({
       cardMode: true
     })
   },
-  iptMoney: function (e) {
+  /**
+   * 输入要支付的金额
+   */
+  inputMoney: function (e) {
     ipt_money = e.detail.value;
     if (ipt_money) {//限制只能输入一个点
       var ipt_money_arr = ipt_money.toString().split('.');
@@ -757,9 +760,9 @@ global.wxPage({
       info.total_price = 0;//消费总额
       info.discount_money = 0;//总折扣
       //会员卡
-      card_arr = info.member_card_list;
-      var src_yes = imageUrl + 'image/wxapp/selected.png';
-      var src_no = imageUrl + 'image/wxapp/icon_rectangle.png';
+      card_arr = info.memberCardList;
+      var src_yes = that.data.imageUrl + 'image/wxapp/selected.png';
+      var src_no = that.data.imageUrl + 'image/wxapp/icon_rectangle.png';
       var bg;
       for (var i in card_arr) {
         if (card_arr[i].discount == null) {
@@ -769,10 +772,10 @@ global.wxPage({
         card_arr[i].src_no = src_no;
         card_arr[i].card_src = src_no;
         card_arr[i].bg = bg;
-        card_arr[i].bg_img = imageUrl + card_arr[i].bg_img;
+        card_arr[i].bg_img = that.data.imageUrl + card_arr[i].bg_img;
         card_arr[i].shop_logo = info.shop_logo;
         if (info.shop_logo == null) {//如果店铺头像为空
-          card_arr[i].shop_logo = imageUrl + 'image/wxapp/shop_logo_default.png';
+          card_arr[i].shop_logo = that.data.imageUrl + 'image/wxapp/shop_logo_default.png';
         }
         if (card_arr[i].bg_type == 1) {//会员卡的背景显示
           card_arr[i].bg = "url('" + card_arr[i].bg_img + "') no-repeat";
@@ -818,7 +821,6 @@ global.wxPage({
       invoice_info.invoice_title = '';
       that.setData({
         info: info,
-        card_arr: card_arr,
         invoice_info: invoice_info,
         card_choose: card_choose,
         score_block: score_block,

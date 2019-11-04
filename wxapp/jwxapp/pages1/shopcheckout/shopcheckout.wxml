@@ -6,7 +6,7 @@
       <view class="header">
         <view>
           <text>消费总额</text>
-          <input type="digit" bindinput="iptMoney" placeholder="请询问商家后输入" placeholder-style="#ccc" />
+          <input type="digit" bindinput="inputMoney" placeholder="请询问商家后输入" placeholder-style="#ccc" />
         </view>
       </view>
       <view class="pay">
