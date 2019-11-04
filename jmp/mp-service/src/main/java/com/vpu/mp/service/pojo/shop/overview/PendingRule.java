@@ -1,10 +1,14 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.*;
 
 /**
  * The interface Pending rule.
@@ -15,22 +19,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public interface PendingRule<R> {
     /**
-     * The constant ZERO.
-     */
-    String ZERO = "0";
-    /**
-     * The constant ONE.
-     */
-    String ONE = "1";
-    /**
-     * The constant TWO.
-     */
-    String TWO = "2";
-    /**
      * The constant PENDING_TEMP.
      */
     @JsonIgnore
-    AtomicInteger PENDING_TEMP = new AtomicInteger(0);
+    ThreadLocal<AtomicInteger> PENDING_TEMP = ThreadLocal.withInitial(() -> ATOMIC_INTEGER_ZERO);
 
     /**
      * Rule handler r.
@@ -43,14 +35,14 @@ public interface PendingRule<R> {
      * Increase.
      */
     default void increase() {
-        PENDING_TEMP.incrementAndGet();
+        PENDING_TEMP.get().incrementAndGet();
     }
 
     /**
      * addNum.
      */
     default void addNum(int num) {
-        PENDING_TEMP.addAndGet(num);
+        PENDING_TEMP.get().addAndGet(num);
     }
 
     /**
@@ -59,14 +51,14 @@ public interface PendingRule<R> {
      * @return the int
      */
     default int getTotalPending() {
-        return PENDING_TEMP.get();
+        return PENDING_TEMP.get().get();
     }
 
     /**
      * Reset pending.
      */
     default void resetPending() {
-        PENDING_TEMP.set(0);
+        PENDING_TEMP.set(ATOMIC_INTEGER_ZERO);
     }
 
     /**
@@ -77,7 +69,7 @@ public interface PendingRule<R> {
      */
     default <T> void handler1(T... t) {
         Arrays.stream(t).filter(Objects::nonNull).forEach(e -> {
-            if (!ZERO.equals(e.toString())) {
+            if (!STRING_ZERO.equals(e.toString())) {
                 increase();
             }
         });
@@ -91,7 +83,7 @@ public interface PendingRule<R> {
      */
     default <T> void handler2(T... t) {
         Arrays.stream(t).filter(Objects::nonNull).forEach(e -> {
-            if (!ONE.equals(e.toString())) {
+            if (!STRING_ONE.equals(e.toString())) {
                 increase();
             }
         });
@@ -105,10 +97,24 @@ public interface PendingRule<R> {
      */
     default <T> void handler3(T... t) {
         Arrays.stream(t).filter(Objects::nonNull).forEach(e -> {
-            if (ONE.equals(e.toString())) {
+            if (STRING_ONE.equals(e.toString())) {
                 addNum(2);
-            } else if (TWO.equals(e.toString())) {
+            } else if (STRING_TWO.equals(e.toString())) {
                 addNum(5);
+            }
+        });
+    }
+
+    /**
+     * Handler 4.规则四
+     *
+     * @param <T> the type parameter
+     * @param t   the t
+     */
+    default <T> void handler4(Collection<T>... t) {
+        Arrays.stream(t).forEach(e -> {
+            if (CollectionUtils.isNotEmpty(e)) {
+                addNum(1);
             }
         });
     }
