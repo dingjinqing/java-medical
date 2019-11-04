@@ -5,32 +5,37 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    address:null
+    address:null,
+    balanceStatus:0,
+    scoreStatus:0,
+    showBalanceDialog:0,
+    showScoreDialog:0,
+    couponArray:[
+      1,2,3,4,5
+    ],
+    payType:[0,1,2],
+    choosePayTypeIndex:0,
+    moneyInfo:{
+      totalPrice: 100, //总金额
+      useBalance: 0, //使用余额
+      useScore: 20, //使用积分
+      useConpon: 16.5, //使用优惠券优惠
+      useCardBalance: 15, //使用会员卡余额优惠
+      useCardReduce: 0, //会员卡优惠金额
+      useTotalprice: 0, //应付金额,
+      useShipping: 0 //运费
+    }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
+    this.getPayMoney()
   },
   addAddress(){
     wx.chooseAddress({
       success: (res) => {
-        console.log(res);
-        // var order_goods = JSON.stringify(this.data.goods);
-        // var create_order_data = JSON.parse(JSON.stringify(this.data.create_order));;
-        // util.api('/api/wxapp/address/choose', function (e) {
-        //   // console.log(e);
-        //   create_order_data.address_id = e.content.address_id;
-        //   this.loadPage(create_order_data);
-        // }, {
-        //     address: JSON.stringify(res),
-        //     orderGoods: order_goods,
-        //     post_type: post_type,
-        //     create_order: JSON.stringify(this.data.create_order),
-        //     goods_type: this.data.goods_type
-        //   }, '', true);
         let address = res
         this.setData({
           address: address
@@ -50,6 +55,47 @@ global.wxPage({
           }
         })
       }
+    })
+  },
+  // 余额支付事件
+  balanceTap(){
+    if (this.data.balanceStatus){
+      this.setData({
+        balanceStatus: 0,
+        showBalanceDialog:0
+      })
+    } else {
+      this.setData({
+        showBalanceDialog:1
+      })
+    }
+  },
+  // 积分支付事件
+  scoreTap(){
+    if (this.data.scoreStatus){
+      this.setData({
+        scoreStatus: 0,
+        showScoreDialog:0
+      })
+    } else {
+      this.setData({
+        showScoreDialog:1
+      })
+    }
+  },
+  couponChange(){
+
+  },
+  changePayType(e){
+    this.setData({
+      choosePayTypeIndex:e.currentTarget.dataset.index
+    })
+  },
+  // 获取应付总金额
+  getPayMoney(){
+    let money = this.data.moneyInfo
+    this.setData({
+      'moneyInfo.useTotalprice': money.totalPrice - money.useBalance - money.useScore - money.useConpon - money.useCardBalance - money.useCardReduce - money.useTotalprice - money.useShipping
     })
   },
   /**

@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "v-balance-popup": "/components/popup/balanceDialog/index",
+    "v-score-popup": "/components/popup/scoreDialog/index"
+  }
 }
