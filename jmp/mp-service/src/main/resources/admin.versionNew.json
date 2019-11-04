@@ -3,6 +3,7 @@
 		"vsName": "vsNameList",
 		"name": "所有的版本功能",
 		"enName": "",
+		"topIndex": -1,
 		"includeApi": [
 			"basic_yesterday",
 			"portrait_user",
@@ -62,120 +63,140 @@
 		"vsName": "basic_yesterday",
 		"name": "概况统计",
 		"enName": "shop_view",
+		"topIndex": 0,
 		"includeApi": []
 	},
 	{
 		"vsName": "portrait_user",
 		"name": "用户画像",
 		"enName": "analysis_portrait",
+		"topIndex": 0,
 		"includeApi": []
 	},
 	{
 		"vsName": "second_view",
 		"name": "访问分析",
 		"enName": "analysis_visit",
+		"topIndex": 0,
 		"includeApi": []
 	},
 	{
 		"vsName": "visit_source",
 		"name": "来源分析",
 		"enName": "analysis_visit_source",
+		"topIndex": 0,
 		"includeApi": []
 	},
 	{
 		"vsName": "analysis_visit_source",
 		"name": "交易统计",
 		"enName": "trades_summary",
+		"topIndex": 0,
 		"includeApi": []
 	},
 	{
 		"vsName": "sort",
 		"name": "商家分类",
 		"enName": "sort",
+		"topIndex": 1,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_member_card",
 		"name": "会员卡模块",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_voucher",
 		"name": "优惠券模块",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_bargain",
 		"name": "砍价模块",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_video",
 		"name": "视频模块",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_integral_goods",
 		"name": "积分商品模块",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_seckill_goods",
 		"name": "秒杀模块",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "authorization",
 		"name": "微信公众号授权",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_group_draw",
 		"name": "拼团抽奖",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_pin_integration",
 		"name": "瓜分积分",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "m_nav",
 		"name": "顶部导航模板",
 		"enName": "picture_setting",
+		"topIndex": 2,
 		"includeApi": []
 	},
 	{
 		"vsName": "charge_card",
 		"name": "充值会员卡",
 		"enName": "user_card",
+		"topIndex": 3,
 		"includeApi": []
 	},
 	{
 		"vsName": "count_card",
 		"name": "限次会员卡",
 		"enName": "user_card",
+		"topIndex": 3,
 		"includeApi": []
 	},
 	{
 		"vsName": "grade_card",
 		"name": "等级会员卡",
 		"enName": "user_card",
+		"topIndex": 3,
 		"includeApi": []
 	},
 	{
 		"vsName": "tag",
 		"name": "会员标签",
 		"enName": "user_tag",
+		"topIndex": 3,
 		"includeApi": [
 			"/api/admin/tag/list",
 			"/api/admin/tag/update",
@@ -187,17 +208,20 @@
 		"vsName": "sign_score",
 		"name": "签到送积分",
 		"enName": "score",
+		"topIndex": 3,
 		"includeApi": []
 	},
 	{
 		"vsName": "pay_score",
 		"name": "买单送积分",
 		"enName": "score",
+		"topIndex": 3,
 		"includeApi": []
 	},
 	{
 		"vsName": "full_cut",
 		"name": "满折满减",
+		"topIndex": 4,
 		"enName": "full_cut",
 		"includeApi": []
 	},
@@ -205,156 +229,182 @@
 		"vsName": "pin_group",
 		"name": "拼团",
 		"enName": "pin_group",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "bargain",
 		"name": "砍价",
 		"enName": "kanjia",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "form_decoration",
 		"name": "表单统计",
 		"enName": "form_decoration",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "distribution",
 		"name": "分销",
 		"enName": "distribution_info",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "message_template",
 		"name": "消息推送",
 		"enName": "business_template_message",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "pay_reward",
 		"name": "支付有礼",
 		"enName": "payreward",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "coupon_grant",
 		"name": "定向发券",
 		"enName": "market_act_give",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "activity_reward",
 		"name": "活动有礼",
 		"enName": "market_gifted",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "integral_goods",
 		"name": "积分商品",
 		"enName": "integral_convert",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "reduce_price",
 		"name": "限时降价",
 		"enName": "reduce_price",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "seckill_goods",
 		"name": "秒杀",
 		"enName": "sec_kill",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "lottery",
 		"name": "抽奖",
 		"enName": "lottery_activity",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "purchase_price",
 		"name": "加价购",
 		"enName": "purchase_price",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "group_draw",
 		"name": "拼团抽奖",
 		"enName": "group_draw",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "pin_integration",
 		"name": "组队瓜分积分",
 		"enName": "pin_integration",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "package_sale",
 		"name": "打包一口价",
 		"enName": "package",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "pre_sale",
 		"name": "定金膨胀",
 		"enName": "presale",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "insteadpay",
 		"name": "好友代付",
 		"enName": "insteadpay",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "gift",
 		"name": "赠品策略",
 		"enName": "gift",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "promote",
 		"name": "好友助力",
 		"enName": "promote",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "assess",
 		"name": "测评",
 		"enName": "assess",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "free_ship",
 		"name": "满包邮",
 		"enName": "free_ship",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "coupon_package",
 		"name": "优惠券包",
 		"enName": "coupon_package",
+		"topIndex": 4,
 		"includeApi": []
 	},
 	{
 		"vsName": "store_pay",
 		"name": "门店买单",
 		"enName": "store_service_config",
+		"topIndex": 5,
 		"includeApi": []
 	},
 	{
 		"vsName": "technician",
 		"name": "技师管理",
 		"enName": "store_service_config",
+		"topIndex": 5,
 		"includeApi": []
 	},
 	{
 		"vsName": "service",
 		"name": "服务管理 ",
 		"enName": "store_service_config",
+		"topIndex": 5,
 		"includeApi": []
 	}
 ]
