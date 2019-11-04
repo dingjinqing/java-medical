@@ -298,4 +298,28 @@ public class ShopMenuService extends MainBaseService {
 		
 		return vo;
 	}
+	
+	
+	/**
+	 * 返回system版本权限
+	 * @return 
+	 */
+	public List<List<ShopVersionParam>> getVersion() {
+		String json = Util.loadResource(versionJson);
+		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
+		});
+		List<List<ShopVersionParam>> outList=new ArrayList<List<ShopVersionParam>>();
+		for(int i=0;i<=list.get(list.size()-1).getTopIndex()+1;i++) {
+			List<ShopVersionParam> innerList=new ArrayList<ShopVersionParam>();
+			for(ShopVersionParam param:list) {
+				if(i==param.getTopIndex()) {
+					innerList.add(param);
+				}
+			}
+			if(innerList.size()>0) {
+				outList.add(innerList);				
+			}
+		}
+		return outList;
+	}
 }
