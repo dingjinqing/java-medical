@@ -6,46 +6,46 @@
       <view class="header">
         <view>
           <text>消费总额</text>
-          <input type="digit" bindinput="totalSpendingInput" placeholder="请询问商家后输入" placeholder-style="#ccc" />
+          <input type="digit" bindinput="iptMoney" placeholder="请询问商家后输入" placeholder-style="#ccc" />
         </view>
       </view>
       <view class="pay">
-        <view class="pay_li clearfix">
+        <view class="pay_li clearfix" wx:if="{{info.member_card_list != ''}}" bindtap='cardClick'>
           <text class="score_fl">会员卡</text>
           <view class="coupon fr" style="background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right; backrgound-size: 16rpx;">
-            <text></text>
+            <text>{{card_choose.card_name}}</text>
           </view>
         </view>
-        <view class="pay_li clearfix">
+        <view class="pay_li clearfix" wx:if="{{card_choose.money>0}}">
           <text class="score_fl">会员卡支付</text>
           <view class="score">
-            <input type="digit" placeholder="会员卡有元余额" placeholder-style="#ccc"/>
+            <input type="digit" bindblur='card_discount' placeholder="会员卡有元余额" placeholder-style="#ccc"/>
           </view>
-          <view class="fr"><text>减元</text></view>
+          <view class="fr"><text>减{{charge_money}}元</text></view>
         </view>
-        <view class="pay_li clearfix" wx:if="{{PointPaymentVisible}}">
+        <view class="pay_li clearfix"  wx:if="{{info.score>=100 && score_block == 1}}">
           <text class="score_fl">积分支付</text>
           <view class="score">
             <input type="number" placeholder="最多可使用{{score_enable}}积分" placeholder-style="#ccc" value=""/>
           </view>
-          <view class="fr"><text>减xxx元</text></view>
+          <view class="fr"><text>减{{score_money}}元</text></view>
         </view>
         <view class="pay_li clearfix">
           <text class='score_fl'>余额支付</text>
           <view class='score'>
-            <input type='digit' bindblur='user_account' placeholder="您有xxx元余额" placeholder-style="#ccc" value="" />
+            <input type='digit' bindblur='user_account' placeholder="您有{{info.account}}元余额" placeholder-style="#ccc" value="" />
           </view>
           <view class='fr'>
-            <text>减xxx元</text>
+            <text>减{{account_money}}元</text>
           </view>
         </view>
       </view>
       <view class="pay">
         <view class="pay_li clearfix">
           <text class='score_fl'>发票</text>
-          <view class='fr coupon'  style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
-            <text wx:if="true">请选择发票</text>
-            <text wx:else></text>
+          <view class='fr coupon'  data-in="{{info.invoice_title}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+            <text wx:if="{{invoice_info.invoice_title == ''}}">请选择发票</text>
+            <text wx:else>{{invoice_info.invoice_title}}</text>
           </view>
         </view>
       </view>
@@ -56,17 +56,17 @@
             <input bindblur='textArea' placeholder="如服务员号码，桌号等" placeholder-style="#ccc" />
           </view>
         </view>
-        <view class="pay_li clearfix" wx:if="{{discountVisible}}">
+        <view class="pay_li clearfix" wx:if="{{info.discount_money>0}}">
           <text class='score_fl'>折扣</text>
           <text class='look_detail' bindtap='look_detail'>查看详情</text>
-          <image src="{{imageUrl}}/image/wxapp/detail0.png" wx:if="true" class='to_look' mode='widthFix' bindtap='' />
-          <image src="{{imageUrl}}/image/wxapp/detail1.png" wx:else class='to_look' mode='widthFix' bindtap='' />
+          <image src="{{imageUrl}}/image/wxapp/detail0.png" wx:if="true" class='to_look' mode='widthFix' bindtap='look_detail' />
+          <image src="{{imageUrl}}/image/wxapp/detail1.png" wx:else class='to_look' mode='widthFix'  bindtap='look_detail' />
           <view class='fr'>
-            <text class='account_color' style='color:{{comColor}}'>-￥xxx</text>
+            <text class='account_color' style='color:{{comColor}}'>-￥{{info.discount_money}}</text>
           </view>
         </view>
       </view>
-      <view class="discount_detail">
+      <view class="discount_detail"  wx:if="{{discount_block == 1}}">
         <view>
           <view class='clearfix' wx:if="{{card_money>0}}">
             <text class='fl'>会员卡折扣</text>
@@ -86,12 +86,48 @@
           </view>
         </view>
       </view>
-      <view class="pay">
-        <button class="footer" form-type="submit">
+      <form report-submit='true' bindsubmit='toConfirm'>
+        <button class='footer' form-type='submit'>
           <view style='background:{{comColor}}'>立即支付   <text wx:if="{{info.ipt_money>0}}">￥{{info.total_price}}</text></view>
         </button>
-      </view>
+      </form>
     </form>
   </view>
 </view>
 <include src="/pages/common/footer.wxml"/>
+
+<!--  会员卡弹框  -->
+<action-sheet hidden="{{ cardMode }}">
+  <view class='action_title'>
+    会员卡
+  <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="cardCancel" class='pro_close' />
+  </view>
+  <view style='height:800rpx;overflow-y:scroll;padding-bottom:110rpx;'>
+    <block wx:for="{{ card_arr }}" wx:key="index">
+      <view class="card_list clearfix">
+        <view class="card_choose">
+          <image src="{{ item.card_src }}" mode="widthFix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.card_name }}" data-card_no="{{ item.card_no }}" data-discount="{{ item.discount }}" />
+        </view>
+        <view class='card_info'>
+          <view style='background:{{ item.bg }};background-size:cover;'  class='card_new_de'>
+            <image src="{{ item.shop_logo }}" />
+            <view  class='card_infos'>
+                <view class='car_names' style='font-weight:bold;'>{{ item.card_name }}</view>
+                <view class='car_discount'>折扣：{{item.discount}}折</view>
+                <view class='card_offset' wx:if="{{item.buy_score[0].value == 1}}">
+                  每满{{item.buy_score1.each_money}}送{{item.buy_score1.each_score}}积分
+                </view>
+                <view class='card_offset' wx:if="{{item.buy_score[0].value == 0}}">
+                  <block wx:for="{{item.buy_score1}}" wx:key="key" wx:for-item='key'>
+                      <text>满{{key.money}}送{{key.score}}积分</text>,
+                  </block>
+                </view>
+                <view class='shjjian' wx:if='{{item.expire_time != null}}'>过期时间:{{item.expire_time}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+  <view class='card_sure' bindtap='cardConfirm' style='background:{{comColor}}'>确定</view>
+</action-sheet>
