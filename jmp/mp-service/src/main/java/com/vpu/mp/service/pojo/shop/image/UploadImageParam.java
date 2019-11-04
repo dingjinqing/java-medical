@@ -12,7 +12,7 @@ public class UploadImageParam {
   /** 图片种类 -1：用户上传 */
   public Integer imgCatId = 0;
   /** 用户id */
-  public Integer userId;
+  public Integer userId = 0;
 
   public String uploadFileId;
 };
