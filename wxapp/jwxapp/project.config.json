@@ -97,10 +97,10 @@
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 6,
 					"name": "买单",
 					"pathName": "pages1/shopcheckout/shopcheckout",
-					"query": "store_id=7",
+					"query": "storeId=7",
 					"scene": null
 				},
 				{

@@ -1,0 +1,35 @@
+<!--扫码购：pages1/scancode/scancode.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="main-container">
+    <view class="storename">
+        <view class="storelist" bindtap="goStoreList">
+            <image src="{{imageUrl}}image/wxapp/scancode_address.png" class="scancode_address"/>
+            <text>{{info.store_name}}</text>
+            <image src="{{imageUrl}}image/wxapp/scancode_right.png" class="scancode_right"/>
+        </view>
+        <view class="help_tips" bindtap="goHelp">
+            <text>帮助</text>
+            <image src="{{imageUrl}}image/wxapp/scancode_tips.png" />
+        </view>
+    </view>
+    <view class="scancode_button" bindtap="scangoods" style='background:-webkit-linear-gradient(top,{{linColor}},{{comColor1}});border-color:{{somColor}}'>
+        <image src="{{imageUrl}}image/wxapp/scancode_bigqr.png" />
+        <text>扫商品</text>
+    </view>
+    <view class="scancode_input" bindtap="gomanualcode">
+        手动输入条码
+    </view>
+    <view class="scancode_operate clearfix">
+        <view class="operate_left" bindtap="gocart">
+            <text class='iconfont iconsaomagougouwuche' style='color:{{comColor}};font-size:90rpx;'></text>
+            <view class='cart_num' style='color:{{comColor}};border-color:{{comColor}}'>{{info.store_cart_number}}</view>
+            <text>购物车</text>
+        </view>
+        <view class="operate_right" bindtap="goappearancecode">
+            <text class='iconfont iconerweima' style='color:{{comColor}};font-size:90rpx;'></text>
+            <view class='code_num' style='color:{{comColor}};border-color:{{comColor}}'>{{info.scan_order_number}}</view>
+            <text style="margin-right:10rpx">出场码</text>
+        </view>
+    </view>
+</view>
+

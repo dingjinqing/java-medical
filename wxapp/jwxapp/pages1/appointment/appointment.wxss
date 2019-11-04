@@ -1,0 +1,699 @@
+/* pages1/appointment/appointment.wxss */
+@import "/css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+  padding-bottom: 120rpx;
+}
+
+.appoint-name, .appoint-status,
+.appoint-person, .appoint-service {
+  width: 100%;
+  background: #fff;
+
+  margin-bottom: 20rpx;
+}
+.no_check{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 130rpx;
+}
+.no_check image{
+  width: 70rpx;
+}
+.no_check view{
+  font-size: 14px;
+  color: #f66;
+}
+.no_check button{
+  position: absolute;
+  width: 120rpx;
+  height:100%;
+  opacity:0;
+}
+.tips {
+  color:#353535;
+}
+
+.container {
+  position: relative;
+
+  overflow-x: hidden;
+}
+
+.swiper-top {
+  width: 100%;
+  height: 750rpx;
+  position: relative;
+}
+.swiper {
+  height: 100%;
+  width: 100%;
+}
+.swiper image {
+  height: 100%;
+  width: 100%;
+}
+
+.slide-image {
+  height: 100%;
+}
+
+.swiper-id {
+ width:90rpx;
+  height:46rpx;
+  background:rgba(0,0,0,0.2);
+
+  position:absolute;
+  left:84%;
+  top:80%;
+
+  border-radius:26rpx;
+  text-align:center;
+  font-size:26rpx;
+  color:#fff;
+  line-height:42rpx;
+}
+
+.appoint-name {
+  width: 95%;
+  padding: 2% 30rpx;
+}
+
+.appoint-price {
+  width:76rpx;
+  height:35rpx;
+  line-height: 35rpx;
+  font-size:24rpx;
+  color:#E99130;
+  float:left;
+  border:2rpx solid #F4C99F;
+  border-radius:7rpx;
+  margin: 0rpx 5px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: 15rpx;
+}
+
+.appoint-name-btm {
+  width:100%;
+  height: 65rpx;
+  line-height: 65rpx;
+}
+.appoint-name-btm::-webkit-scrollbar{
+	display:none;
+}
+appoint-name-btm::after{
+  content: "";
+  display: block;
+  clear: both;
+}
+.appoint-money {
+  font-size: 33rpx;
+  float: left;
+  color:#f66;
+  margin-right: 30rpx;
+}
+
+.name-top {
+  color:#353535;
+  margin-bottom: 20rpx;
+}
+
+
+
+.status {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 30rpx 0;
+}
+
+.status image {
+  width: 41rpx;
+  height:41rpx;
+
+  padding:0 3%;
+}
+
+.status-top {
+  border-bottom: 2rpx solid #eee;
+}
+
+.img_arrow {
+  width: 16rpx;
+  float:right;
+}
+.appoint_ss{
+  padding-left:20rpx;
+  background:#fff;
+  margin-bottom: 20rpx;
+}
+.appoint-time,.appoint_tech{
+  width: 100%;
+  padding: 30rpx 20rpx 30rpx 0;
+  box-sizing: border-box;
+  display: flex;
+}
+.appoint_tech{
+  border-top: 1px solid #eee;
+}
+.appin_hr{
+  height: 2rpx;
+  width: 720rpx;
+  margin-left: 30rpx;
+  background: #eee;
+}
+.app_tips{
+  width: 210rpx;
+}
+.app_times{
+  width: 500rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.brn_tight{
+  width: 16rpx;
+  margin-left: 20rpx;
+}
+.app_click{
+  padding-right: 25rpx;
+}
+
+ .appoint-service{
+   font-size: 26rpx;
+}
+
+.appoint-service-name {
+  width: 96%;
+  height: 100rpx;
+
+  border-bottom: 2rpx solid #eee;
+
+  margin-left: 30rpx;
+
+  line-height: 100rpx;
+}
+
+.appoint-service-cont {
+  color: #353535;
+  width: 100%;
+  padding-top: 20rpx;
+  font-size: 24rpx;
+}
+.appoint-service-cont image{
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+
+.footer{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #eee;
+  background: #fff;
+  overflow: hidden
+}
+.footer_1{
+  float: left;
+  width: 40%;
+  color: #888;
+  font-size: 24rpx;
+  display: flex;
+  height: 110rpx;
+}
+.footer_1 image{
+  width: 44rpx;
+}
+.footer_1>view{
+  flex: 1;
+  text-align: center;
+  padding-top: 12rpx;
+  padding-bottom: 12rpx;
+  position: relative;
+  overflow: hidden
+}
+
+.footer_1>view:first-child{
+  border-right: 1px solid #eee;
+}
+
+.footer_3{
+  float: left;
+  width: 60%;
+  color: #fff;
+  font-size: 30rpx;
+  background: #f66;
+  text-align: center;
+  height: 110rpx;
+  line-height: 110rpx;
+}
+
+
+.modal-box {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.5;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 9000;
+}
+
+.modal-container {
+  width:100%;
+
+  overflow:hidden;
+  z-index:9999;
+  position:fixed;
+  bottom:0;
+}
+
+.modal-top {
+  width:100%;
+  height:100rpx;
+  background:#fff;
+
+  border-bottom:2rpx solid #eee;
+
+  text-align: center;
+  line-height: 100rpx;
+}
+
+.modal-top view {
+  font-size: 26rpx;
+  color: #353535;
+}
+
+.modal-top view text {
+  margin-left: 13%;
+}
+
+.modal-top image {
+  width: 50rpx;
+  height: 50rpx;
+
+  float: right;
+  padding: 3%;
+}
+
+.modal-bottom {
+  width: 100%;
+  height: 450rpx;
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.man-btn {
+  width:100%;
+
+  border-bottom: 2rpx solid #eee;
+  padding:2% 0;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.man-btn-row {
+  width:100%;
+
+  display:flex;
+  flex-direction:column;
+}
+
+.icon_sel {
+  width:6%;
+
+  margin:0 3%;
+}
+
+.icon_sel image {
+  width:40rpx;
+  height: 40rpx;
+}
+
+.icon_man {
+  width: 80rpx;
+  height: 80rpx;
+
+  border-radius: 50%;
+  border: 2rpx solid #ccc;
+
+  margin:0% 3% 0 0;
+}
+
+.title {
+  font-size: 26rpx;
+  color: #353535;
+
+  margin-bottom:5%;
+}
+
+.man-content {
+  display:flex;
+  flex-direction:column;
+  font-size:28rpx;
+}
+
+.man-text {
+  color: #888;
+}
+
+/*弹出层预约时间  */
+.modal-time-bottom {
+  width: 100%;
+  height: 605rpx;
+  background: #fff;
+}
+
+.time-left {
+  height:100%;
+  width:40%;
+  border-right:2rpx solid #eee;
+  box-sizing: border-box;
+
+  flex-direction: column;
+
+  float: left;
+  overflow-y: auto;
+}
+
+.time-right {
+  width:60%;
+  height: 100%;
+
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.time-date {
+  height:85rpx;
+
+  line-height:83rpx;
+  font-size: 24rpx;
+  color:#353535;
+  text-align: center;
+  border-bottom: 2rpx solid #eee;
+
+  box-sizing: border-box;
+}
+
+.time-hour {
+  width:90%;
+  height:80rpx;
+  text-align:center;
+  line-height:80rpx;
+  font-size:26rpx;
+  margin: 20rpx;
+}
+.appoint-old-price{
+  float: left;
+  color: #999;
+  font-size: 24rpx;
+}
+.charge_resolve{
+  color: #999;
+  display: flex;
+  align-items: center;
+  padding-top: 20rpx;
+  font-size: 24rpx;
+  width: 100%
+}
+.charge_resolve image{
+  width: 30rpx;
+  margin-right: 10rpx;
+}
+.pro_close{
+  width: 40rpx;
+  position: absolute;
+  right: 30rpx;
+  color: #333;
+  top: 30rpx;
+}
+.pro_title{
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  position: relative;
+  font-size: 26rpx;
+  border-bottom: 1px solid #eee;
+}
+.pro_content{
+  height: 600rpx;
+  overflow-y: scroll;
+}
+.choose_store{
+  padding: 10px 0 10px 2% ;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #353535;
+}
+.card_sure{
+  width: 100%;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  color: #fff;
+  background: #f66;
+  position: fixed;
+  bottom: 0;
+  font-size: 26rpx;
+}
+.pro_content::after{
+  content: "";
+  display: block;
+  clear: both;
+}
+.pro_content .pc_left{
+  float: left;
+  width: 300rpx;
+  border-right: 1px solid #eee;
+  height: 500rpx;
+}
+.pro_content .pc_left .normal{
+  border-bottom: 1px solid #eee;
+  padding: 30rpx 10rpx;
+  font-size: 26rpx;
+  text-align: center;
+  color: #353535;
+}
+.pro_content .pc_left .ischecked{
+  border-left: 1px solid #f66;
+  color: #f66;
+  border-bottom: 1px solid #eee;
+  padding: 30rpx 10rpx;
+  font-size: 26rpx;
+  text-align: center;
+}
+.pro_content .pc_right{
+  float: left;
+  width: 430rpx;
+  height: 500rpx;
+}
+.pro_content .pc_right view view{
+  width: 380rpx;
+  margin-left: 25rpx;
+  background: #f8f8f8;
+  margin-top: 20rpx;
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 26rpx;
+  color: #333;
+}
+.pro_content .pc_right .active{
+  width: 380rpx;
+  margin-left: 25rpx;
+  background: #ffefef;
+  margin-top: 20rpx;
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 26rpx;
+  color: #f66;
+}
+contact-button{
+  position: absolute;
+  width: 100%;
+  height: 80rpx;
+  opacity: 0;
+  top: 12rpx;
+}
+.each_person{
+  width: 720rpx;
+  margin-left: 30rpx;
+  border-bottom:2rpx solid #eee;
+}
+.each_person::after{
+  content: "";
+  clear: both;
+  display: block;
+}
+.pro_content{
+  padding-bottom: 10rpx;
+}
+.choose_btn{
+  float: left;
+  width: 50rpx;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+}
+.choose_btn image{
+  width: 40rpx;
+}
+.choose_info{
+  float: left;
+  font-size: 26rpx;
+  color: #353535;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  width: 600rpx;
+}
+.choose_info::after{
+  content: "";
+  clear: both;
+  display: block;
+}
+.choose_info .pserson_logo{
+  float: left;
+ margin-right: 20rpx;
+ height: 120rpx;
+ display: flex;
+ align-items: center;
+}
+.choose_info .pserson_logo image{
+  float: left;
+  width: 90rpx;
+  height: 90rpx;
+  border-radius:300rpx;
+  background: #f5f5f5;
+}
+.choose_info .person_info::after{
+  content: "";
+  clear: both;
+  display: block;
+}
+.choose_info .person_info{
+  float: left;
+  height: 120rpx;
+  width: 520rpx;
+}
+.choose_info .person_info .person_name{
+  margin-top: 20rpx;
+}
+.choose_info .person_produce{
+  color: #666;
+  margin-top: 10rpx;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.appoint-text {
+  color: #353535;
+  font-size: 28rpx;
+}
+.app_text{
+  font-size: 28rpx;
+  width:340rpx;
+  text-align:right;
+}
+.goods-comment{
+  background: #fff;
+  padding-left: 20rpx;
+  padding-right:20rpx;
+  margin-bottom: 20rpx;
+}
+.goods_comment_title{
+  padding: 20rpx 0;
+  font-size: 26rpx;
+  color: #353535;
+  line-height: 60rpx;
+  border-bottom: 1px solid #eee;
+}
+.goods_comment_title .goods_act_title{
+  float: left;
+}
+.goods_comment_all{
+  float: right;
+}
+.goods_comment_all image{
+  margin-left: 20rpx;
+}
+.click_more{
+  width: 16rpx;
+  float: right;
+  margin-top: 16rpx;
+}
+.comment_list{
+  padding: 20rpx 0;
+  overflow-x: hidden;
+}
+.comment_list_top{
+  font-size: 0;
+  padding: 15rpx 0;
+}
+.comment_list_top image{
+  width: 50rpx;
+  border-radius: 100%;
+  margin-right: 20rpx;
+  float: left;
+}
+.comment_list_top .fr image{
+  width: 200rpx;
+  border-radius: 0;
+}
+.comment_list_top text{
+  display: inline-block;
+  line-height: 50rpx;
+  color: #353535;
+  font-size: 26rpx;
+}
+.comment_list_text{
+  font-size: 24rpx;
+  color: #353535;
+  margin-top: 20rpx;
+}
+.comment_list_spec{
+   font-size: 24rpx;
+   color: #888;
+   margin-top: 20rpx;
+}
+.comment_list_img{
+  margin-top: 30rpx;
+  width:432rpx;
+}
+.comment_list_img view{
+  float: left;
+  margin-right: 20rpx;
+  border: 1px solid #eee;
+  width: 120rpx;
+  height: 120rpx;
+  overflow: hidden;
+}
+.comment_list_img view image{
+  width: 100%;
+  height: 100%;
+}
+.fl{
+  float: left
+}
+.fr{
+  float: right;
+}
