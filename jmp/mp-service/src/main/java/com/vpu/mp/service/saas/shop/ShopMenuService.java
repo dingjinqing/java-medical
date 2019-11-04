@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.ShopMenuParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopPriPassParam;
+import com.vpu.mp.service.pojo.shop.auth.ShopVersionListVo;
 import com.vpu.mp.service.pojo.shop.auth.ShopVersionParam;
 import com.vpu.mp.service.pojo.shop.auth.shopMenuList;
 
@@ -304,11 +305,11 @@ public class ShopMenuService extends MainBaseService {
 	 * 返回system版本权限
 	 * @return 
 	 */
-	public List<List<ShopVersionParam>> getVersion() {
+	public ShopVersionListVo getVersion() {
 		String json = Util.loadResource(versionJson);
 		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
 		});
-		List<List<ShopVersionParam>> outList=new ArrayList<List<ShopVersionParam>>();
+		ShopVersionListVo vo=new ShopVersionListVo();
 		for(int i=0;i<=list.get(list.size()-1).getTopIndex()+1;i++) {
 			List<ShopVersionParam> innerList=new ArrayList<ShopVersionParam>();
 			for(ShopVersionParam param:list) {
@@ -317,9 +318,30 @@ public class ShopMenuService extends MainBaseService {
 				}
 			}
 			if(innerList.size()>0) {
-				outList.add(innerList);				
+				switch (i) {
+				case 0:
+					vo.setSub0(innerList);
+					break;
+				case 1:
+					vo.setSub1(innerList);
+					break;
+				case 2:
+					vo.setSub2(innerList);
+					break;
+				case 3:
+					vo.setSub3(innerList);
+					break;
+				case 4:
+					vo.setSub4(innerList);
+					break;
+				case 5:
+					vo.setSub5(innerList);
+					break;
+				default:
+					break;
+				}			
 			}
 		}
-		return outList;
+		return vo;
 	}
 }
