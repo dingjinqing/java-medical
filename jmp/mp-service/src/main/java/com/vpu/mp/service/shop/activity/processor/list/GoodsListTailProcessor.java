@@ -33,9 +33,9 @@ public class GoodsListTailProcessor implements ActivityGoodsListProcessor<Activi
             capsule.setRealPrice(capsule.getGoodsPrice());
 
             if (capsule.getProcessedTypes().size() == 0) {
-                capsule.setLinePrice(capsule.getPrdMaxPrice());
-            } else {
                 capsule.setLinePrice(capsule.getMarketPrice());
+            } else {
+                capsule.setLinePrice(capsule.getPrdMaxPrice());
             }
         });
     }

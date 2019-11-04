@@ -99,6 +99,11 @@ public class GoodsConstant {
     /*** 可在商品列表展示的标签*/
     public static final Byte GOODS_LIST = 1;
     public static final Integer LABEL_GTA_DEFAULT_VALUE = 0;
+    /***商品评价状态对应码*/
+    public static final Byte NOT_AUDIT = 0;
+    public static final Byte PASS_AUDIT = 1;
+    public static final Byte NOT_PASS_AUDIT = 2;
+
 
     /*** 是推荐品牌,普通品牌，推荐分类，普通分类码*/
     public static final Byte RECOMMEND_BRAND = 1;

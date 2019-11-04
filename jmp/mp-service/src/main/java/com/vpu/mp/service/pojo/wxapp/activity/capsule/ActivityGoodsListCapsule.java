@@ -30,6 +30,10 @@ public class ActivityGoodsListCapsule extends AbstractCapsule {
     private Integer catId;
     private Integer sortId;
     private Integer brandId;
+    /**评价数量*/
+    private Integer commentNum;
+    /**是否是使用默认规格*/
+    private Boolean defaultPrd;
 
     /** 商品拥有的营销信息，由各个processor添加 */
     private List<ActivityForListInfo> activities = new ArrayList<>(2);

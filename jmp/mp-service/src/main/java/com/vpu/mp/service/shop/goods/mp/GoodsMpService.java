@@ -67,6 +67,8 @@ public class GoodsMpService extends ShopBaseService {
         c.setCatId(2);
         c.setSortId(28);
         c.setGoodsType((byte) 0);
+        c.setGoodsPrice(BigDecimal.valueOf(50));
+        c.setMarketPrice(BigDecimal.valueOf(200));
         capsules.add(c);
 
         processorFactory.doProcess(capsules,123);
