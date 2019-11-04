@@ -21,6 +21,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
+import com.vpu.mp.service.pojo.saas.shop.ShopVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionShowParam;
@@ -279,5 +280,15 @@ public class SystemShopController extends SystemBaseController {
 	@RequestMapping("/system/version/getList")
 	public JsonResult getVersion() {
 		return success(saas.shop.menu.getVersion());
+	}
+	
+	/**
+	 * 版本单个的版本的权限
+	 * 
+	 * @return
+	 */
+	@GetMapping("/system/version/getOne/{id}")
+	public JsonResult getVersionOne(@PathVariable Integer id) {
+		return success(saas.shop.version.getOneVersion(id));
 	}
 }
