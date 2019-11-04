@@ -140,11 +140,11 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @GetMapping("/api/admin/malloverview/shareShop")
     public JsonResult shareShop() {
-        ShareQrCodeVo qrCodeVo = shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, "");
+        ShareQrCodeVo qrCodeVo = shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, null);
         if (StringUtils.isBlank(qrCodeVo.getImageUrl())) {
             return fail(JsonResultCode.CODE_APPLET_QR_CODE_GET_FAILED);
         }
-        return success(shop().store.share(QrCodeTypeEnum.PAGE_BOTTOM, ""));
+        return success(qrCodeVo);
     }
 
     /**
