@@ -23,7 +23,7 @@
           <p>2019-09-06 10:10:16</p>
           <el-button
             size="small"
-            @click="detailHandler(item.articleId, item.keyword)"
+            @click="detailHandler(item.articleId)"
           >查看详情</el-button>
         </div>
       </div>
@@ -76,8 +76,8 @@ export default {
     },
 
     // 详情
-    detailHandler (id, keyword) {
-      this.$router.push({ name: 'notice_detail_view', query: { id: id, keyword: keyword } })
+    detailHandler (id) {
+      this.$router.push({ name: 'notice_detail_view', query: { id: id } })
     }
   }
 }

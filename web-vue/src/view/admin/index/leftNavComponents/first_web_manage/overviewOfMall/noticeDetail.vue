@@ -2,7 +2,7 @@
   <div class="containter">
     <div class="title">
       <span>
-        通知中心 / {{ title }}
+        通知中心 / {{ detailData.title }}
         <img
           style="margin-left: 5px;"
           :src="image + '/image/admin/expand.png'"
@@ -37,7 +37,6 @@ export default {
   data () {
     return {
       image: 'http://mpdevimg2.weipubao.cn',
-      title: this.$route.query.keyword,
       id: this.$route.query.id,
       detailData: {}
     }

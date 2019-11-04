@@ -26,9 +26,7 @@ import { cn as overview } from './views/admin_new/cn/index/overview/overviewCn'
 // 商城概况 - 店铺助手
 import { cn as taskList } from './views/admin_new/cn/index/overview/taskListCn'
 // 交易统计
-import {
-  cn as tradesStatistics
-} from './views/admin_new/cn/index/overview/tradesStatistics/tradesStatisticsCn'
+import { cn as tradesStatistics } from './views/admin_new/cn/index/overview/tradesStatistics/tradesStatisticsCn'
 
 // 小程序管理系列国际化
 // 小程序管理 -> 页面装修
@@ -46,13 +44,9 @@ import { cn as decorationHome } from './views/admin_new/cn/index/miniProgramMana
 // 小程序页面装修页面设置模块国际化
 import { cn as pageSetUp } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/pageSetUpCn'
 // 小程序页面装修图片导航模块国际化
-import {
-  cn as pictureNavigation
-} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationCn'
+import { cn as pictureNavigation } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureNavigationCn'
 // 小程序页面装修商品搜索模块国际化
-import {
-  cn as commoditySearch
-} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchCn'
+import { cn as commoditySearch } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchCn'
 // 小程序页面装修会员卡
 import { cn as membershipCard } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardCn'
 // 小程序页面装修优惠卷模块国际化
@@ -114,6 +108,8 @@ import { cn as couponGive } from './views/admin_new/cn/index/marketManagement/co
 import { cn as seckill } from './views/admin_new/cn/index/marketManagement/seckill/seckillCn'
 // 秒杀-添加
 import { cn as addSeckill } from './views/admin_new/cn/index/marketManagement/seckill/addSeckillCn'
+// 赠品
+import { cn as gift } from './views/admin_new/cn/index/marketManagement/gift/giftCn'
 // 微信好物圈
 import { cn as wechateGoodsCicle } from './views/admin_new/cn/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleCn'
 // 支付有礼
@@ -196,9 +192,7 @@ import { cn as vTree } from './views/admin_new/cn/components/vTree/vTreeCn'
 
 // 基础配置系列模块化
 // 服务承诺
-import {
-  cn as pledge
-} from './views/admin_new/cn/index/basicSettings/servicePledge/pledgeCn'
+import { cn as pledge } from './views/admin_new/cn/index/basicSettings/servicePledge/pledgeCn'
 // 支付配置
 import { cn as payConfiguration } from './views/admin_new/cn/index/basicSettings/tradeConfiguration/payConfigurationCn'
 // 交易配置
@@ -694,6 +688,7 @@ const cn = {
   seckill, // 秒杀
   addSeckill, // 秒杀-添加
   orderSeckill, // 秒杀-秒杀订单
+  gift, // 赠品
   ...zhLocale,
   expressList,
   wechateGoodsCicle, // 微信好物圈

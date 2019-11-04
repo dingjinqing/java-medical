@@ -5,7 +5,7 @@ export const en = {
     'Follow the public number, receive notifications in real time',
   bindButtonBind: 'debinding',
   bindButtonBindMessage:
-    'The current account has been following the public number, but is not bound, can not receive message notifications in real time',
+    'Unbound public number can not receive message notification in real time',
   bindButtonDelBind: 'Unbind',
   bindButtonDelBindMessage:
     'has been concerned about the public number, receiving notifications in real time',
@@ -15,7 +15,13 @@ export const en = {
   imageTitle: 'Follow the public number',
 
   // 头部
-  userTip: 'Do business',
+  enUserTip: 'Do business',
+  unUserTip: 'Un business',
+  userExpired: 'Expired',
+  experienceVersion: 'Experience Version',
+  basicEdition: 'Basic Edition',
+  advancedVersion: 'Advanced Version',
+  Ultimate: 'Ultimate',
   title: 'WeiPuBo Electricity supplier operation',
   edition: 'Ultimate',
   editionTip1: 'The current version is',
@@ -23,6 +29,7 @@ export const en = {
   renew: 'Want to renew',
   upgrade: 'Version upgrade',
   shareShop: 'Sharing',
+  shareDefault: 'Failed to get QR code',
   shareTitle: 'Scan, Share with friends~',
   shareDownload: 'Download QR code',
   copy: 'Copy',
@@ -32,21 +39,21 @@ export const en = {
   agencyCustom: 'Custom',
   agencyTip: '5 to do items to be selected',
   checkData: [
-    'Order to be shipped',
-    'Refund return to be processed',
+    'To be shipped',
+    'Pending disposal',
     'Sold out',
-    'Commodity evaluation to be reviewed',
-    'Order to be picked up'
+    'To be audited',
+    'Waiting for delivery'
   ],
   checkList: [
     {
       value: 1,
-      label: 'Order to be shipped',
+      label: 'To be shipped',
       isCheck: false
     },
     {
       value: 2,
-      label: 'Refund return to be processed',
+      label: 'Pending disposal',
       isCheck: false
     },
     {
@@ -56,32 +63,32 @@ export const en = {
     },
     {
       value: 4,
-      label: 'Commodity evaluation to be reviewed',
+      label: 'To be audited',
       isCheck: false
     },
     {
       value: 5,
-      label: 'Order to be picked up',
+      label: 'Waiting for delivery',
       isCheck: false
     },
     {
       value: 6,
-      label: 'Distributor to be reviewed',
+      label: 'Reviewed by distributor',
       isCheck: false
     },
     {
       value: 7,
-      label: 'Membership card activation to be reviewed',
+      label: 'Membership activation',
       isCheck: false
     },
     {
       value: 8,
-      label: 'Distribution withdrawal to be reviewed',
+      label: 'Cash withdrawal',
       isCheck: false
     },
     {
       value: 9,
-      label: 'Service evaluation to be reviewed',
+      label: 'Service evaluation',
       isCheck: false
     }
   ],
@@ -156,7 +163,7 @@ export const en = {
     },
     {
       icon: '/image/admin/new_ov/hdyl.png',
-      title: 'Open screen and courtesy',
+      title: 'Kaiping is polite',
       link: ''
     },
     {
@@ -183,6 +190,94 @@ export const en = {
 
   // 店铺助手
   storeTitle: 'Shop Assistant',
+  storeRefresh: 'Refresh',
+  storeItems: 'items',
+  storePending: 'Pending',
+  storeTabs: [
+    {
+      label: 'All',
+      name: '1'
+    },
+    {
+      label: 'Shop',
+      name: '2'
+    },
+    {
+      label: 'Goods',
+      name: '3'
+    },
+    {
+      label: 'Order',
+      name: '4'
+    },
+    {
+      label: 'Marketing',
+      name: '5'
+    }
+  ],
+  storeMore: 'View more',
+  storeTip: 'Tip',
+  storeGo: 'Go',
+  storeCourse: 'View tutorial',
+  storeTask: 'Task',
+  storeRecommend: 'Recommend',
+  // 待完成
+  unShopTip1: 'Suggestions on improving wechat configuration',
+  unShopTip2: 'It is recommended to complete the sub account setting',
+  unShopTip3: 'Proposal to authorize public number',
+  unShopTip4: 'It is suggested to finish the shop decoration',
+  unShopTip5: 'It is recommended to open the circle',
+  unShopTip6: 'Suggest opening customer service',
+  unStoreTip1: 'Freight template not set',
+  unStoreTip2: 'Item not added',
+  unStoreTip3: 'Low inventory',
+  unStoreTip4: 'Unsalable goods',
+  unStoreTip5: 'Product evaluation has not been reviewed for more than 3 days',
+  unStoreTip6: 'Recommendation not configured',
+  unStoreTip7: 'Merchant classification is not configured',
+  unOrderTip1: 'Order is not delivered for more than 3 days',
+  unOrderTip2:
+    'Order refund application has not been processed for more than 3 days',
+  unMarketTip1:
+    'Distributor application has not been processed for more than 3 days',
+  unMarketTip2:
+    'Membership card activation application has not been processed for more than 2 days',
+  unMarketTip3: 'Coupon',
+  unMarketTip4: 'Soon to be completed',
+  // 已完成
+  tabInfo: [
+    {
+      title: 'To be completed',
+      name: '1'
+    },
+    {
+      title: 'Completed',
+      name: '2'
+    }
+  ],
+  shop: 'Shop',
+  commodity: 'Commodity',
+  order: 'Order',
+  market: 'Market',
+  enShopTip1: 'WeChat configuration has been improved',
+  enShopTip2: 'Sub account setting completed',
+  enShopTip3: 'Authorized public address',
+  enShopTip4: 'Shop decoration completed',
+  enShopTip5: 'The circle has been opened',
+  enShopTip6: 'Customer service enabled',
+  enStoreTip1: 'Freight template set',
+  enStoreTip2: 'Item added',
+  enStoreTip3: 'Abundant commodity inventory',
+  enStoreTip4: 'Good sales',
+  enStoreTip5: 'Good progress of commodity evaluation and audit',
+  enStoreTip6: 'Item configured',
+  enStoreTip7: 'Merchant classification configured',
+  enOrderTip1: 'Good order delivery progress',
+  enOrderTip2: 'Refund processing progress is good',
+  enMarketTip1:
+    'Distributor application has not been processed for more than 3 days',
+  enMarketTip2: 'Membership card activation audit progress is good',
+  enMarketTip3: 'No coupon with small stock (less than the specified value)',
 
   // 公告
   noticeTitle: 'Notice',

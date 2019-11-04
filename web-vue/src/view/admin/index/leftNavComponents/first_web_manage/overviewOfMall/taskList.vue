@@ -13,144 +13,322 @@
           :name="item.name"
         >
         </el-tab-pane>
-        <!-- <el-tab-pane
-          label="待完成"
-          name="1"
-        >
-          11111111111
-        </el-tab-pane>
-        <el-tab-pane
-          label="已完成"
-          name="2"
-        >
-          22222
-        </el-tab-pane> -->
       </el-tabs>
 
-      <div>
-        <p class="type_title">
-          <img
-            :src="image + '/image/admin/task_shop.png'"
-            alt=""
-          >店铺
-        </p>
-        <ul class="type_content">
-          <li
-            style="display: flex;"
-            v-for="(value, key, index) in dataShop"
-            :key="index"
+      <div v-if="tabSwitch === '1'">
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_shop.png'"
+              alt=""
+            >{{ $t('overview.shop') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataShop"
           >
-            <div v-if="key === 'wxPayConfigInfo'">
-              <span class="tips">推荐</span>
-              <span class="task_list_desc">建议开启微信配置</span>
-              <a
-                style="test-align: right;"
-                href="
-              http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=1889&extra=page%3D1%26filter%3Dsortid%26sortid%3D19"
-                target="_blank"
-              >查看教程</a>
+            <div v-if="storeList.dataShop.wxPayConfigInfo === 2">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
             </div>
-            <div v-if="key === 'childAccountConf' && value !== 0">
-              <span class="tips">推荐</span>
-              <span class="task_list_desc">建议完成子账号设置</span>
-              <a
-                href="
-              http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=1889&extra=page%3D1%26filter%3Dsortid%26sortid%3D19"
-                target="_blank"
-              >查看教程</a>
+            <div v-if="storeList.dataShop.childAccountConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
             </div>
-            <div v-if="key === 'officialAccountConf' && value !== 0">
-              <span class="tips">推荐</span>
-              <span class="task_list_desc">建议授权公众号</span>
-              <a
-                href="
-              http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=1889&extra=page%3D1%26filter%3Dsortid%26sortid%3D19"
-                target="_blank"
-              >查看教程</a>
+            <div v-if="storeList.dataShop.officialAccountConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
             </div>
-            <div v-if="key === 'homePageConf' && value !== 0">
-              <span class="tips">推荐</span>
-              <span class="task_list_desc">建议完成店铺首页装修</span>
-              <a
-                href="
-              http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=1889&extra=page%3D1%26filter%3Dsortid%26sortid%3D19"
-                target="_blank"
-              >查看教程</a>
+            <div v-if="storeList.dataShop.homePageConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
             </div>
-            <div v-if="key === 'shopRecommendConf' && value !== 1">
-              <span class="tips">推荐</span>
-              <span class="task_list_desc">建议开启好物圈</span>
-              <a
-                href="
-              http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=1889&extra=page%3D1%26filter%3Dsortid%26sortid%3D19"
-                target="_blank"
-              >查看教程</a>
+            <div v-if="storeList.dataShop.shopRecommendConf !== 1">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
             </div>
-            <div v-if="key === 'customServiceConf' && value !== 0">
-              <span class="tips">推荐</span>
-              <span class="task_list_desc">建议开启客服</span>
-              <a
-                href="
-              http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=1889&extra=page%3D1%26filter%3Dsortid%26sortid%3D19"
-                target="_blank"
-              >查看教程</a>
+            <div v-if="storeList.dataShop.customServiceConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class="task_list_desc">{{ $t('overview.unShopTip6') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_goods.png'"
+              alt=""
+            >{{ $t('overview.commodity') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataGoods"
+          >
+            <div v-if="storeList.dataGoods.shipTemplateConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.unShopTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.unShopTip2') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsStoreConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ storeList.dataGoods.goodsStoreConf }} {{ $t('overview.unShopTip3') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsUnsalableConf !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf }} {{ $t('overview.unShopTip4') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsComment !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unShopTip5') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsRecommend === 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.storeRecommend') }} {{ $t('overview.unShopTip6') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.shopSort === 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.unShopTip7') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_order.png'"
+              alt=""
+            >{{ $t('overview.order') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataOrder"
+          >
+            <div v-if="storeList.dataOrder.deliver !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ storeList.dataOrder.deliver }} {{ $t('overview.unOrderTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataOrder.refund !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ storeList.dataOrder.refund }} {{ $t('overview.unOrderTip2') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_market.png'"
+              alt=""
+            >{{ $t('overview.market') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataMarket"
+          >
+            <div v-if="storeList.dataMarket.examine !== 0">
+              <span class="tips">{{ $t('overview.storeTip') }}</span>
+              <span class=" task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.unMarketTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div
+              v-if="storeList.dataMarket.member !== null"
+              style="border-bottom: none;"
+            >
+              <div
+                v-for="(val, key, index) in storeList.dataMarket.member"
+                :key="index"
+              >
+                <span class="tips">{{ $t('overview.storeTip') }}</span>
+                <span class=" task_list_desc">{{ val }} {{ $t('overview.unMarketTip2') }}</span>
+                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              </div>
+            </div>
+            <div
+              v-if="storeList.dataMarket.voucher !== null"
+              style="border-bottom: none;"
+            >
+              <div
+                v-for="(val, key, index) in storeList.dataMarket.voucher"
+                :key="index"
+              >
+                <span class="tips">{{ $t('overview.storeTip') }}</span>
+                <span class=" task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
+                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <p class="type_title">
-          <img
-            :src="image + '/image/admin/task_goods.png'"
-            alt=""
-          >商品
-        </p>
-        <ul class="type_content">
-          <li
-            style="display: flex;"
-            v-for="(value, key, index) in dataGoods"
-            :key="index"
+
+      <div v-if="tabSwitch === '2'">
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_shop.png'"
+              alt=""
+            >{{ $t('overview.shop') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataShop"
           >
-            <span class="tips">任务</span>
-            <span class=" task_list_desc">{{ value }}-----{{ key }}</span>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <p class="type_title">
-          <img
-            :src="image + '/image/admin/task_order.png'"
-            alt=""
-          >订单
-        </p>
-        <ul class="type_content">
-          <li
-            style="display: flex;"
-            v-for="(value, key, index) in dataOrder"
-            :key="index"
+            <div v-if="storeList.dataShop.wxPayConfigInfo !== 2">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class="task_list_desc">{{ $t('overview.enShopTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+            </div>
+            <div v-if="storeList.dataShop.childAccountConf === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class="task_list_desc">{{ $t('overview.enShopTip2') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+            </div>
+            <div v-if="storeList.dataShop.officialAccountConf === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class="task_list_desc">{{ $t('overview.enShopTip3') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+            </div>
+            <div v-if="storeList.dataShop.homePageConf === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class="task_list_desc">{{ $t('overview.enShopTip4') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+            </div>
+            <div v-if="storeList.dataShop.shopRecommendConf === 1">
+              <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
+              <span class="task_list_desc">{{ $t('overview.enShopTip5') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+            </div>
+            <div v-if="storeList.dataShop.customServiceConf === 0">
+              <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
+              <span class="task_list_desc">{{ $t('overview.enShopTip6') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeCourse') }}</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_goods.png'"
+              alt=""
+            >{{ $t('overview.commodity') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataGoods"
           >
-            <span class="tips">任务</span>
-            <span class=" task_list_desc">{{ value }}-----{{ key }}</span>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <p class="type_title">
-          <img
-            :src="image + '/image/admin/task_market.png'"
-            alt=""
-          >营销
-        </p>
-        <ul class="type_content">
-          <li
-            style="display: flex;"
-            v-for="(value, key, index) in dataMarket"
-            :key="index"
+            <div v-if="storeList.dataGoods.shipTemplateConf === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enStoreTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsConf === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enStoreTip2') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsStoreConf === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enStoreTip3') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsUnsalableConf === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enStoreTip4') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsComment === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enStoreTip5') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.goodsRecommend !== 0">
+              <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.storeRecommend') }} {{ $t('overview.enStoreTip6') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataGoods.shopSort !== 0">
+              <span class="tips_recommend">{{ $t('overview.storeRecommend') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enStoreTip7') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_order.png'"
+              alt=""
+            >{{ $t('overview.order') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataOrder"
           >
-            <span class="tips">任务</span>
-            <span class=" task_list_desc">{{ value }}-----{{ key }}</span>
-          </li>
-        </ul>
+            <div v-if="storeList.dataOrder.deliver === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enOrderTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div v-if="storeList.dataOrder.refund === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ $t('overview.enOrderTip2') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="type_title">
+            <img
+              :src="image + '/image/admin/task_market.png'"
+              alt=""
+            >{{ $t('overview.market') }}
+          </p>
+          <div
+            class="type_content"
+            v-if="storeList.dataMarket"
+          >
+            <div v-if="storeList.dataMarket.examine === 0">
+              <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+              <span class=" task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.enMarketTip1') }}</span>
+              <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+            </div>
+            <div
+              v-if="storeList.dataMarket.member === null"
+              style="border-bottom: none;"
+            >
+              <div>
+                <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+                <span class=" task_list_desc">{{ $t('overview.enMarketTip2') }}</span>
+                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              </div>
+            </div>
+            <div
+              v-if="storeList.dataMarket.voucher === null"
+              style="border-bottom: none;"
+            >
+              <div>
+                <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
+                <span class=" task_list_desc">{{ $t('overview.enMarketTip3') }}</span>
+                <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -166,23 +344,19 @@ export default {
     return {
       image: 'http://mpdevimg2.weipubao.cn',
       tabSwitch: '1',
-      tabInfo: [{
-        title: '待完成',
-        name: '1'
-      }, {
-        title: '已完成',
-        name: '2'
-      }],
-      storeList: [], // 数据
-      dataShop: {}, // 店铺
-      dataGoods: {}, // 商品
-      dataOrder: {}, // 订单
-      dataMarket: {} // 营销
+      tabInfo: this.$t('overview.tabInfo'),
+      storeList: [] // 数据
+    }
+  },
+  watch: {
+    lang () {
+      this.tabInfo = this.$t('overview.tabInfo')
     }
   },
   mounted () {
     // 初始化数据
     this.handleClick()
+    this.langDefault()
   },
   methods: {
     // 店铺助手列表
@@ -200,19 +374,6 @@ export default {
       shopAssistantRequest(obj).then((res) => {
         if (res.error === 0) {
           this.storeList = res.content
-          for (var i in this.storeList) {
-            console.log(i)
-            console.log(this.storeList[i])
-            if (i === 'dataShop') {
-              this.dataShop = this.storeList[i]
-            } else if (i === 'dataGoods') {
-              this.dataGoods = this.storeList[i]
-            } else if (i === 'dataOrder') {
-              this.dataOrder = this.storeList[i]
-            } else if (i === 'dataMarket') {
-              this.dataMarket = this.storeList[i]
-            }
-          }
         }
       })
     },
@@ -252,18 +413,37 @@ export default {
 .type_content {
   padding-left: 20px;
 }
-.type_content li {
-  display: flex;
+.type_content > div {
+  // display: flex;
   align-items: center;
   line-height: 42px;
   border-bottom: 1px solid #e5e5e5;
 }
-.type_content li .task_list_desc {
+
+.type_content > div > div {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.type_content > div .task_list_desc {
   flex: 1;
   margin-left: 4px;
 }
-.type_content li .tips {
+.type_content > div .tips {
   font-size: 12px;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  // border: 1px solid #5a8bff;
+  // color: #5a8bff;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  padding: 0 4px 0 5px;
+  line-height: 16px;
+}
+
+.type_content > div .tips_finish {
+  font-size: 12px;
+  // border: 1px solid #ff4444;
+  // color: #ff4444;
   border: 1px solid #5a8bff;
   color: #5a8bff;
   border-radius: 10px;
@@ -271,9 +451,48 @@ export default {
   padding: 0 4px 0 5px;
   line-height: 16px;
 }
-.type_content li a {
+
+.type_content > div .tips_recommend {
+  font-size: 12px;
+  // border: 1px solid #ff4444;
+  // color: #ff4444;
+  border: 1px solid #fdb64a;
+  color: #fdb64a;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  padding: 0 4px 0 5px;
+  line-height: 16px;
+}
+
+.type_content > div a {
+  float: right;
   margin-left: 15px;
   color: #5a8bff;
   text-decoration: none;
 }
+
+// .type_content li {
+//   display: flex;
+//   align-items: center;
+//   line-height: 42px;
+//   border-bottom: 1px solid #e5e5e5;
+// }
+// .type_content li .task_list_desc {
+//   flex: 1;
+//   margin-left: 4px;
+// }
+// .type_content li .tips {
+//   font-size: 12px;
+//   border: 1px solid #5a8bff;
+//   color: #5a8bff;
+//   border-radius: 10px;
+//   letter-spacing: 1px;
+//   padding: 0 4px 0 5px;
+//   line-height: 16px;
+// }
+// .type_content li a {
+//   margin-left: 15px;
+//   color: #5a8bff;
+//   text-decoration: none;
+// }
 </style>

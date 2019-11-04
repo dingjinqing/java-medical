@@ -1,177 +1,187 @@
-<!--
-* 赠送明细
-*
-* @author 郑保乐
--->
 <template>
-  <div class="giftDetail">
-    <wrapper>
-      <el-row style="margin-bottom:-20px">
-        <el-col :span="4">
-          <el-form>
-            <el-form-item
-              label="手机号"
-              label-width="60px"
-            >
+  <div class="content">
+
+    <div class="main">
+      <el-form label-width="100px">
+        <el-row :gutter=24>
+          <el-col :span="5">
+            <el-form-item label="手机号">
               <el-input
-                v-model="param.mobile"
+                size="small"
+                v-model="requestParams.mobile"
                 placeholder="手机号"
-                size="small"
-                style="width:160px"
+                maxlength="11"
+                clearable
+                class="inputWidth"
               ></el-input>
             </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="4">
-          <el-form>
-            <el-form-item
-              label="用户昵称"
-              label-width="80px"
-            >
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="微信昵称">
               <el-input
                 size="small"
-                v-model="param.username"
+                v-model="requestParams.username"
                 placeholder="微信昵称"
-                style="width:160px"
+                clearable
+                class="inputWidth"
               ></el-input>
             </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
+          </el-col>
+          <el-col :span="9">
             <el-form-item label="赠送时间">
               <el-date-picker
+                type="datetime"
+                placeholder="开始时间"
+                v-model="requestParams.statrTime"
                 size="small"
-                v-model="dateRange"
-                type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
-              </el-date-picker>
+                value-format="yyyy-MM-dd HH:mm:ss"
+                class="date_picker inputWidth"
+              ></el-date-picker>
+              至
+              <el-date-picker
+                type="datetime"
+                placeholder="结束时间"
+                v-model="requestParams.endTime"
+                size="small"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                class="date_picker inputWidth"
+              ></el-date-picker>
             </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col
-          :span="2"
-          :offset="5"
-        >
-          <el-button
-            size="small"
-            type="primary"
-            @click="loadData"
-            style="margin-top:3px"
-          >查询</el-button>
-        </el-col>
-      </el-row>
-    </wrapper>
-    <wrapper>
-      <el-row>
-        <el-table
-          class="version-manage-table"
-          header-row-class-name="tableHeader"
-          :data="tableData"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="orderSn"
-            label="订单号"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="userId"
-            label="用户ID"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="username"
-            label="昵称"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="手机号"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="赠送时间"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="giftAmount"
-            label="赠品件数"
-            align="center"
-          > </el-table-column>
-        </el-table>
-      </el-row>
-      <el-row>
-        <el-col
-          :offset="17"
-          :span="10"
-        >
-          <el-pagination
-            @size-change="loadData"
-            @current-change="loadData"
-            :current-page="param.currentPage"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="page.totalRows"
-          >
-          </el-pagination>
-        </el-col>
-      </el-row>
-    </wrapper>
+          </el-col>
+          <el-col :span="2">
+            <el-button
+              size="small"
+              type="primary"
+              @click="initDataList"
+              style="margin: 4px 0 0 0"
+            >查询</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+
+    <div class="table_list">
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="orderSn"
+          label="订单号"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="userId"
+          label="用户ID"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="username"
+          label="昵称"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="手机号"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="赠送时间"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="giftAmount"
+          label="赠品件数"
+          align="center"
+        ></el-table-column>
+      </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
+    </div>
+
   </div>
 </template>
 <script>
-import wrapper from '@/components/admin/wrapper/wrapper'
+// 引入组件
+import pagination from '@/components/admin/pagination/pagination.vue'
 import { getGiftGiftDetail } from '@/api/admin/marketManage/gift'
-import { format } from '@/util/date'
 export default {
   components: {
-    wrapper
+    pagination
   },
   data () {
     return {
-      dateRange: [],
-      page: {
-        totalRows: 0
-      },
-      param: {
-        giftId: this.$route.params.id,
-        mobile: '',
-        username: '',
-        startTime: '',
-        endTime: '',
-        currentPage: 1,
-        pageRows: 20
-      },
-      tableData: []
-    }
-  },
-  methods: {
-    loadData () {
-      const { dateRange } = this
-      const param = {
-        startTime: format(dateRange[0]),
-        endTime: format(dateRange[1])
-      }
-      this.param = {
-        ...this.param,
-        ...param
-      }
-      getGiftGiftDetail(this.param).then(({ content }) => {
-        const { dataList, page } = content
-        this.tableData = dataList
-        this.page = page
-      })
+      pageParams: {},
+      requestParams: {},
+      tableData: [] // 表格数据
     }
   },
   mounted () {
-    this.loadData()
+    // 初始化数据
+    this.initDataList()
+  },
+  methods: {
+    // 明细列表
+    initDataList () {
+      this.loading = true
+      this.requestParams.giftId = this.$route.params.id
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      getGiftGiftDetail(this.requestParams).then((res) => {
+        if (res.error === 0) {
+          this.dataList = res.content.dataList
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
+    }
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 20px 10px 20px;
+    .wrapper {
+      .el-button {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.table_list {
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 10px 20px 10px 20px;
+}
+.inputWidth {
+  width: 175px;
+}
+.el-form-item {
+  margin-bottom: 1px;
+}
+.el-row {
+  margin-bottom: 14px !important;
+}
 </style>

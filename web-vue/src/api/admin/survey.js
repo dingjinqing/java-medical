@@ -9,6 +9,14 @@ export function getAllOverview (data) {
   })
 }
 
+// 店铺分享
+export function shopShareRequest () {
+  return service({
+    url: '/api/admin/malloverview/shareShop',
+    method: 'get'
+  })
+}
+
 // 绑定解绑
 export function bindRequest (data) {
   return service({

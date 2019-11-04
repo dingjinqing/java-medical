@@ -34,9 +34,7 @@ import { en as overview } from './views/admin_new/en/index/overview/overviewEn'
 // 概况-店铺助手
 import { en as taskList } from './views/admin_new/en/index/overview/taskListEn'
 // 交易统计
-import {
-  en as tradesStatistics
-} from './views/admin_new/en/index/overview/tradesStatistics/tradesStatisticsEn'
+import { en as tradesStatistics } from './views/admin_new/en/index/overview/tradesStatistics/tradesStatisticsEn'
 
 // 小程序管理系列国际化
 // 页面装修
@@ -60,9 +58,7 @@ import { en as pictureNavigation } from './views/admin_new/en/index/miniProgramM
 // 小程序页面装修商品搜索模块国际化
 import { en as pictureAds } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureAdsEn'
 
-import {
-  en as commoditySearch
-} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
+import { en as commoditySearch } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commoditySearchEn'
 // 小程序页面装修会员卡模块国际化
 import { en as membershipCard } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardEn'
 // 小程序页面装修优惠卷模块国际化
@@ -112,6 +108,8 @@ import { en as seckill } from './views/admin_new/en/index/marketManagement/secki
 import { en as addSeckill } from './views/admin_new/en/index/marketManagement/seckill/addSeckillEn'
 // 秒杀-秒杀订单
 import { en as orderSeckill } from './views/admin_new/en/index/marketManagement/seckill/orderSeckillEn'
+// 赠品
+import { en as gift } from './views/admin_new/en/index/marketManagement/gift/giftEn'
 // 微信好物圈
 import { en as wechateGoodsCicle } from './views/admin_new/en/index/marketManagement/wechateGoodsCicle/wechateGoodsCicleEn'
 // 支付有礼
@@ -192,9 +190,7 @@ import { en as vTree } from './views/admin_new/en/components/vTree/vTreeEn'
 
 // 基础配置模块模块化
 // 服务承诺
-import {
-  en as pledge
-} from './views/admin_new/en/index/basicSettings/servicePledge/pledgeEn'
+import { en as pledge } from './views/admin_new/en/index/basicSettings/servicePledge/pledgeEn'
 // 支付配置
 import { en as payConfiguration } from './views/admin_new/en/index/basicSettings/tradeConfiguration/payConfigurationEn'
 // 交易配置
@@ -719,6 +715,7 @@ const en = {
   seckill, // 秒杀
   addSeckill, // 秒杀-添加
   orderSeckill, // 秒杀-秒杀订单
+  gift, // 赠品
   ...enLocale,
   expressList,
   wechateGoodsCicle, // 微信好物圈

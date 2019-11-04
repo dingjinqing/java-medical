@@ -6,6 +6,8 @@
 <template>
   <div>
     <wrapper>
+
+      <!-- step -->
       <el-steps
         :active="step"
         simple
@@ -18,16 +20,17 @@
           :title="`${index+1}. ${item}`"
         ></el-step>
       </el-steps>
+
       <!-- 设置赠品规则 -->
       <div v-if="step===1">
         <el-row style="margin-bottom:20px;">
           <el-col :span="2">
-            <span class="label">基础配置</span>
+            <span class="label">{{ $t('gift.stepsUp') }}</span>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="20">
             <el-form label-width="120px">
               <el-form-item
-                label="活动名称："
+                :label="$t('gift.activityName') + '：'"
                 :rules="[{required: true}]"
               >
                 <el-input
@@ -35,9 +38,10 @@
                   v-model="param.name"
                   class="inputWidth"
                 ></el-input>
+                <span style="color: #999;">{{ $t('gift.nameTip') }}</span>
               </el-form-item>
               <el-form-item
-                label="活动优先级："
+                :label="$t('gift.activityLevel') + '：'"
                 :rules="[{required: true}]"
               >
                 <el-input
@@ -46,71 +50,53 @@
                   v-model="param.level"
                   :disabled="ongoing"
                 ></el-input>
+                <span style="color: #999;">{{ $t('gift.levelTip') }}</span>
               </el-form-item>
               <el-form-item
-                label="活动时间："
+                :label="$t('gift.activityTime') + '：'"
                 :rules="[{required: true}]"
               >
                 <el-date-picker
                   size="small"
                   v-model="dateRange"
                   type="datetimerange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  :range-separator="$t('gift.to')"
+                  :start-placeholder="$t('gift.startTime')"
+                  :end-placeholder="$t('gift.endTime')"
                   :disabled="ongoing"
                 >
                 </el-date-picker>
               </el-form-item>
             </el-form>
           </el-col>
-          <el-col
-            :span="10"
-            class="description"
-          >
-            <el-form label-width="20px">
-              <el-form-item>
-                <template>
-                  只作为商家记录使用，用户不会看到这个名称
-                </template>
-              </el-form-item>
-              <el-form-item>
-                <template>
-                  用于区分不同赠品活动的优先级，请填写正整数，数值越大优先级越高
-                </template>
-              </el-form-item>
-            </el-form>
-          </el-col>
         </el-row>
         <el-row style="margin-bottom:20px">
           <el-col :span="2">
-            <span class="label">赠品策略</span>
+            <span class="label">{{ $t('gift.stepsDown') }}</span>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="20">
             <el-form label-width="120px">
               <el-form-item
-                label="活动商品："
-                style="width: 600px"
+                :label="$t('gift.commodity') + '：'"
                 :rules="[{required: true}]"
               >
-                <template>
-                  <el-radio
-                    v-for="(item, index) in goodsRanges"
-                    :key="index"
-                    v-model="goodsRange"
-                    :label="index"
-                    :disabled="ongoing"
-                  >{{item}}</el-radio>
-                  <el-button
-                    size="small"
-                    v-show="goodsRange===1"
-                    @click="showChoosingGoods"
-                  >{{goodsBtnName}}</el-button>
-                  <span v-show="goodsRange===1">已选：{{goodsIdsLength}}件商品</span>
-                </template>
+                <el-radio
+                  v-for="(item, index) in goodsRanges"
+                  :key="index"
+                  v-model="goodsRange"
+                  :label="index"
+                  :disabled="ongoing"
+                >{{item}}</el-radio>
+                <el-button
+                  size="small"
+                  v-show="goodsRange===1"
+                  @click="showChoosingGoods"
+                >{{goodsBtnName}}</el-button>
+                <!-- <span v-show="goodsRange===1">已选：{{goodsIdsLength}}件商品</span> -->
+                <span v-show="goodsRange===1">已选：{{goodslength}}件商品</span>
               </el-form-item>
               <el-form-item
-                label="赠品条件："
+                :label="$t('gift.giftConditions') + '：'"
                 :rules="[{required: true}]"
               >
                 <el-select
@@ -129,6 +115,7 @@
                   >
                   </el-option>
                 </el-select>
+                <span style="color: #999;">{{ this.$t('gift.conditionsTip') }}</span>
               </el-form-item>
               <div style="background:rgb(245,245,245);margin-bottom:22px;">
                 <el-form-item
@@ -259,15 +246,14 @@
                 </el-form-item>
               </div>
               <el-form-item
-                label="赠品规则说明："
+                :label="$t('gift.ruleDescription') + '：'"
                 :rules="[{required: true}]"
               >
                 <el-input
                   type="textarea"
                   :rows="5"
                   v-model="param.explain"
-                  placeholder="此提示将在小程序前端展示，请根据配置的赠品策略谨慎编写赠品规则说明，最多可填写200字。
-  例：前100名付款用户可获得赠品，送完即止。"
+                  :placeholder="$t('gift.textareaTip')"
                 >
                 </el-input>
                 <el-popover
@@ -280,25 +266,14 @@
                     slot="reference"
                     type="text"
                     style="margin: 0 20 0 0px"
-                  >查看示例</el-button>
+                  >{{ this.$t('gift.forExample') }}</el-button>
                 </el-popover>
-              </el-form-item>
-            </el-form>
-          </el-col>
-          <el-col
-            :span="6"
-            class="description"
-          >
-            <el-form style="margin: 60px 0 0 -270px;">
-              <el-form-item>
-                <template>
-                  以下条件满足其一即可获得赠品，最多可选择 3 类
-                </template>
               </el-form-item>
             </el-form>
           </el-col>
         </el-row>
       </div>
+
       <!-- 设置赠品 -->
       <div v-if="step===2">
         <el-row v-show="!ongoing">
@@ -307,8 +282,8 @@
               size="small"
               type="primary"
               @click="showChoosingGoods"
-            >添加赠品商品</el-button>
-            <span class="remarks">注：请合理设置赠品库存，赠品全部发完活动将提前停止。最多可添加20件赠品</span>
+            >{{ $t('gift.addFreebies') }}</el-button>
+            <span class="remarks">{{ $t('gift.addTip') }}</span>
           </el-col>
         </el-row>
         <el-row>
@@ -322,7 +297,7 @@
             >
               <el-table-column
                 prop="goodsName"
-                label="商品名称"
+                :label="$t('gift.goodsName')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -337,22 +312,22 @@
               </el-table-column>
               <el-table-column
                 prop="prdDesc"
-                label="规格"
+                :label="$t('gift.catName')"
                 align="center"
               > </el-table-column>
               <el-table-column
-                prop="prdPrice"
-                label="商品原价"
+                prop="shopPrice"
+                :label="$t('gift.goodsPrice')"
                 align="center"
               > </el-table-column>
               <el-table-column
-                prop="prdNumber"
-                label="商品库存"
+                prop="goodsNumber"
+                :label="$t('gift.goodsNumber')"
                 align="center"
               > </el-table-column>
               <el-table-column
                 prop="productNumber"
-                label="赠品库存 (当前库存/初始库存)"
+                :label="$t('gift.productNumber')"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -360,32 +335,34 @@
                     v-model="scope.row.productNumber"
                     :disabled="ongoing"
                     :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
-                    @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
+                    @update="checkProductNumber(scope.row.goodsNumber, scope.row.productNumber, scope.row.offerNumber)"
                   >
                     <span slot="before">
-                      {{scope.row.productNumber - scope.row.offerNumber}} /
+                      {{scope.row.productNumber}} /
                     </span>
                   </inputEdit>
                 </template>
+
               </el-table-column>
               <el-table-column
-                label="操作"
+                :label="$t('gift.option')"
                 align="center"
                 v-if="!ongoing"
               >
                 <template slot-scope="scope">
-                  <div
-                    style="cursor:pointer"
+                  <el-button
+                    type="primary"
+                    size="medium"
                     v-show="!ongoing"
                     @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)"
-                  >
-                    删除</div>
+                  >{{ $t('gift.delete') }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
           </el-col>
         </el-row>
       </div>
+
       <div class="footer">
         <el-row>
           <el-col>
@@ -394,28 +371,34 @@
               type="primary"
               @click="lastStep"
               v-show="step > 1"
-            >上一步</el-button>
+            >{{ $t('gift.lastStep') }}</el-button>
             <el-button
               size="small"
               type="primary"
               @click="nextStep"
               v-show="step < steps.length"
-            >下一步</el-button>
+            >{{ $t('gift.nextStep') }}</el-button>
             <el-button
               size="small"
               type="primary"
               @click="addGift"
               v-show="step === steps.length"
-            >保存</el-button>
+            >{{ $t('gift.save') }}</el-button>
           </el-col>
         </el-row>
       </div>
-      <div v-if="1===step">
-        <choosingGoods />
-      </div>
-      <div v-if="2===step">
-        <choosingGoods :loadProduct="true" />
-      </div>
+
+      <!-- step1 -->
+      <choosingGoods
+        :tuneUpChooseGoods="tuneUpGoods"
+        @resultGoodsIds="getIds"
+      />
+      <!-- step2 -->
+      <choosingGoods
+        :tuneUpChooseGoods="tuneUpChooseGoods"
+        :chooseGoodsBack="goodsIdList"
+        @resultGoodsIds="getGoodsIds"
+      />
     </wrapper>
   </div>
 </template>
@@ -424,6 +407,7 @@ import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
+import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import status from '@/components/admin/marketManage/status/status'
 import { format, range } from '@/util/date'
 import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
@@ -438,7 +422,7 @@ export default {
     return {
       id: null,
       step: 1,
-      steps: ['设置活动规则', '设置赠品'],
+      steps: this.$t('gift.steps'),
       // 活动时间范围
       dateRange: [],
       // 支付时间范围
@@ -447,7 +431,7 @@ export default {
       cards: [],
       // 0：全部商品，1：指定商品
       goodsRange: 0,
-      goodsRanges: ['全部商品', '指定商品'],
+      goodsRanges: this.$t('gift.goodsRanges'),
       // 当前页为编辑页
       update: false,
       // 活动状态,
@@ -473,47 +457,9 @@ export default {
         },
         gifts: []
       },
-      userAction: [{
-        id: 1,
-        name: '新用户'
-      }, {
-        id: 2,
-        name: '老用户'
-      }],
+      userAction: this.$t('gift.userAction'),
       // 系统中的全部赠品规则
-      rules: [
-        {
-          label: '满金额赠送',
-          keys: ['fullPrice']
-        },
-        {
-          label: '满件数赠送',
-          keys: ['fullNumber']
-        },
-        {
-          label: '会员标签',
-          keys: ['tagId']
-        },
-        {
-          label: '会员卡',
-          keys: ['cardId']
-        },
-        {
-          label: '付款排名',
-          keys: ['payTop']
-        },
-        {
-          label: '已购买次数',
-          keys: ['minPayNum', 'maxPayNum']
-        },
-        {
-          label: '付款时间',
-          keys: ['payStartTime', 'payEndTime']
-        }, {
-          label: '用户类别',
-          keys: ['userAction']
-        }
-      ],
+      rules: this.$t('gift.rules'),
       // 当前已选规则序号
       selectedRules: [],
       // 赠品表格
@@ -524,13 +470,18 @@ export default {
       tmpGiftGoodsIds: [],
       srcList: {
         src1: `${this.$imageHost}/image/admin/new_preview_image/gift.jpg`
-      }
+      },
+      tuneUpChooseGoods: false, // 商品弹窗
+      tuneUpGoods: false,
+      // 商品弹窗回调数据
+      goodsIdList: [],
+      goodslength: 0
     }
   },
   computed: {
-    goodsIdsLength () {
-      return this.tmpGoodsIds.length
-    },
+    // goodsIdsLength () {
+    //   return this.tmpGoodsIds.length
+    // },
     stepButtonOffset () {
       if (this.step === 2) {
         return 0
@@ -547,6 +498,17 @@ export default {
       return '添加商品'
     }
   },
+  mounted () {
+    this.langDefault()
+    if (this.$route.params.id) {
+      // 编辑回显
+      this.loadData()
+    }
+
+    this.loadTag()
+    this.loadMemberCard()
+    this.listenGoodsResult()
+  },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     nextStep () {
@@ -555,30 +517,49 @@ export default {
         return
       }
       this.step++
-      this.transmitEditGoodsId(this.tmpGiftGoodsIds)
+      // this.transmitEditGoodsId(this.tmpGiftGoodsIds)
     },
     lastStep () {
       this.step--
-      this.transmitEditGoodsId(this.tmpGoodsIds)
+      // this.transmitEditGoodsId(this.tmpGoodsIds)
     },
     // 保存
     addGift () {
-      const then = r => this.gotoGifts()
-      const { param } = this
-      this.formatParam()
+      this.param.gifts = this.tableData
+      this.param.gifts.map((item, index) => {
+        item.productId = item.prdId
+        item.productNumber = Number(item.productNumber)
+      })
+      console.log(this.param.gifts)
       if (!this.validateGiftParam()) {
         return
       }
       if (this.update) {
-        updateGift(param).then(then)
+        // 编辑保存
+        updateGift(this.param).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('gift.editSuccess') })
+            this.$router.replace('/admin/home/main/gift')
+          } else {
+            this.$message.success({ message: this.$t('gift.editDefault') })
+          }
+        })
       } else {
-        addGift(param).then(then)
+        // 添加保存
+        addGift(this.param).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('gift.saveSuccess') })
+            this.$router.replace('/admin/home/main/gift')
+          } else {
+            this.$message.success({ message: this.$t('gift.saveDefault') })
+          }
+        })
       }
     },
     formatParam () {
       this.formatTime()
       this.formatRules()
-      this.formatGoods()
+      // this.formatGoods()
     },
     // 格式化入参时间
     formatTime () {
@@ -606,22 +587,25 @@ export default {
     // 处理活动商品和赠品
     formatGoods () {
       // 活动商品
-      this.param.goodsIds = this.tmpGoodsIds
+      // this.param.goodsIds = this.tmpGoodsIds
       // 赠品
       const gifts = this.tableData
         .map(({ productId, productNumber }) => ({ productId, productNumber }))
       this.param.gifts = gifts
+      console.log(this.param.gifts)
     },
     // 回显数据加载
     loadData () {
-      const { id } = this.$route.params
-      getGiftDetail(id).then(({ content }) => {
-        this.param = content
-        this.loadTime(content)
-        this.loadRules(content)
-        this.loadGoods(content)
-        this.loadGifts(content)
-        this.loadStatus(content)
+      var id = this.$route.params.id
+      getGiftDetail(id).then((res) => {
+        if (res.error === 0) {
+          this.param = res.content
+          this.loadTime(res.content)
+          this.loadRules(res.content)
+          this.loadGoods(res.content)
+          this.loadGifts(res.content.gifts)
+          this.loadStatus(res.content)
+        }
       })
     },
     // 加载赠品规则
@@ -652,8 +636,9 @@ export default {
       } else {
         // 指定商品
         this.goodsRange = 1
-        this.tmpGoodsIds = goodsIds
-        this.transmitEditGoodsId(goodsIds)
+        this.goodslength = goodsIds.length
+        // this.tmpGoodsIds = goodsIds
+        // this.transmitEditGoodsId(goodsIds)
       }
     },
     loadTag () {
@@ -673,7 +658,7 @@ export default {
       this.dateRange.push(startTime)
       this.dateRange.push(endTime)
     },
-    loadGifts ({ gifts }) {
+    loadGifts (gifts) {
       gifts.forEach(row => {
         const { productId, productNumber } = row
         getProductDetail(this.id, productId).then(({ content }) => {
@@ -681,14 +666,12 @@ export default {
             ...row,
             productNumber
           })
+          console.log(this.tableData)
         })
       })
     },
     loadStatus ({ status }) {
       this.status = status
-    },
-    gotoGifts () {
-      this.$router.replace('/admin/home/main/gift')
     },
     // 已选赠品规则中是否包含某个规则序号
     contains (ruleIndex) {
@@ -700,16 +683,55 @@ export default {
     },
     // 选择商品弹窗
     showChoosingGoods () {
-      this.$http.$emit('choosingGoodsFlag', true)
-      switch (this.step) {
-        case 1:
-          this.transmitEditGoodsId(this.tmpGoodsIds)
-          break
-        case 2:
-          this.transmitEditGoodsId(this.tmpGiftGoodsIds)
-          break
+      if (this.step === 1) {
+        this.tuneUpGoods = !this.tuneUpGoods
+      } else {
+        this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       }
+
+      // this.$http.$emit('choosingGoodsFlag', true)
+      // switch (this.step) {
+      //   case 1:
+      //     this.transmitEditGoodsId(this.tmpGoodsIds)
+      //     break
+      //   case 2:
+      //     this.transmitEditGoodsId(this.tmpGiftGoodsIds)
+      //     break
+      // }
     },
+
+    // 选择商品弹窗回调显示
+    getGoodsIds (data) {
+      this.goodsIdList = data
+      var param = {
+        goodsIds: this.goodsIdList
+      }
+
+      getGoodsInfosByGoodIds(param).then(res => {
+        if (res.error === 0) {
+          this.tableData = res.content
+
+          // res.content.forEach(item => {
+          //   item.reducePriceProduct = item.goodsSpecProducts
+          //   item.discount = 10
+          //   item.reducePrice = 0
+          //   item.goodsPrice = item.shopPrice
+          //   if (item.reducePriceProduct != null && item.reducePriceProduct.length > 0) {
+          //     item.reducePriceProduct.forEach(spec => {
+          //       spec.originalPrice = spec.prdPrice
+          //     })
+          //   }
+          // })
+          // this.pageShowGoodsList = res.content
+        }
+      })
+    },
+
+    getIds (data) {
+      this.goodslength = data.length
+      this.param.goodsIds = data
+    },
+
     // 添加一行赠品商品
     addProductRow (productId) {
       getProductDetail(this.id, productId).then(({ content }) => {
@@ -731,7 +753,7 @@ export default {
     // 参数校验
     validateParam () {
       const { param: { name, level, explain }, dateRange, goodsRange, selectedRules } = this
-      const { tmpGoodsIds } = this
+      // const { tmpGoodsIds } = this
       if (!name) {
         this.fail('请输入活动名称')
         return false
@@ -744,7 +766,11 @@ export default {
         this.fail('请选择活动时间')
         return false
       }
-      if (goodsRange === 1 && (!tmpGoodsIds || tmpGoodsIds.length === 0)) {
+      // if (goodsRange === 1 && (!tmpGoodsIds || tmpGoodsIds.length === 0)) {
+      //   this.fail('请选择活动商品')
+      //   return false
+      // }
+      if (goodsRange === 1 && this.goodslength === 0) {
         this.fail('请选择活动商品')
         return false
       }
@@ -778,18 +804,17 @@ export default {
         return false
       }
       this.tableData.forEach(row => {
-        const { prdNumber, productNumber, offerNumber } = row
-        if (!this.checkProductNumber(prdNumber, productNumber, offerNumber)) {
+        const { goodsNumber, productNumber, offerNumber } = row
+        if (!this.checkProductNumber(goodsNumber, productNumber, offerNumber)) {
           result = false
         }
       })
       return result
     },
     fail (message) {
-      this.$message({
+      this.$message.warning({
         showClose: true,
-        message,
-        type: 'warning'
+        message
       })
     },
     handleChoosingGoods (ids) {
@@ -810,6 +835,8 @@ export default {
      * @param offerNumber 已赠送商品数
      */
     checkProductNumber (prdNumber, productNumber, offerNumber) {
+      debugger
+      productNumber = Number(productNumber)
       if (prdNumber < productNumber) {
         this.fail('赠品库存不能大于商品当前库存')
         return false
@@ -834,24 +861,20 @@ export default {
     }
   },
   watch: {
+
     goodsRange (v) {
       if (v === 0) {
         // 选择了”全部商品“
         this.param.goodsIds = []
       }
+    },
+
+    lang () {
+      this.steps = this.$t('gift.steps')
+      this.goodsRanges = this.$t('gift.goodsRanges')
+      this.rules = this.$t('gift.rules')
+      this.userAction = this.$t('gift.userAction')
     }
-  },
-  mounted () {
-    const { id } = this.$route.params
-    this.update = !!id
-    this.id = id || null
-    if (this.update) {
-      // 编辑回显
-      this.loadData()
-    }
-    this.loadTag()
-    this.loadMemberCard()
-    this.listenGoodsResult()
   }
 }
 </script>

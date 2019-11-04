@@ -5,23 +5,23 @@ export const cn = {
   tabInfo: [
     {
       title: '全部秒杀活动',
-      name: '1'
+      name: '0'
     },
     {
       title: '进行中',
-      name: '2'
+      name: '1'
     },
     {
       title: '未开始',
-      name: '3'
+      name: '2'
     },
     {
       title: '已过期',
-      name: '4'
+      name: '3'
     },
     {
       title: '已停用',
-      name: '5'
+      name: '4'
     }
   ],
   // 表格

@@ -11,7 +11,13 @@ export const cn = {
   imageTitle: '关注公众号',
 
   // 头部
-  userTip: '营业',
+  enUserTip: '营业',
+  unUserTip: '未营业',
+  userExpired: '已过期',
+  experienceVersion: '体验版',
+  basicEdition: '基础版',
+  advancedVersion: '高级版',
+  Ultimate: '旗舰版',
   title: '微铺宝电商运营',
   edition: '旗舰版',
   editionTip1: '当前版本为',
@@ -19,6 +25,7 @@ export const cn = {
   renew: '我要续费',
   upgrade: '版本升级',
   shareShop: '分享店铺',
+  shareDefault: '获取二维码失败',
   shareTitle: '扫一扫，分享给好友吧~',
   shareDownload: '下载二维码',
   copy: '复制',
@@ -176,6 +183,90 @@ export const cn = {
 
   // 店铺助手
   storeTitle: '店铺助手',
+  storeRefresh: '刷新',
+  storeItems: '项',
+  storePending: '待处理',
+  storeTabs: [
+    {
+      label: '全部',
+      name: '1'
+    },
+    {
+      label: '店铺',
+      name: '2'
+    },
+    {
+      label: '商品',
+      name: '3'
+    },
+    {
+      label: '订单',
+      name: '4'
+    },
+    {
+      label: '营销',
+      name: '5'
+    }
+  ],
+  storeMore: '查看更多',
+  storeTip: '提醒',
+  storeGo: '前往',
+  storeCourse: '查看教程',
+  storeTask: '任务',
+  storeRecommend: '推荐',
+  // 待完成
+  unShopTip1: '建议完善微信配置',
+  unShopTip2: '建议完成子账号设置',
+  unShopTip3: '建议授权公众号',
+  unShopTip4: '建议完成店铺装修',
+  unShopTip5: '建议开启好物圈',
+  unShopTip6: '建议开启客服',
+  unStoreTip1: '运费模板未设置',
+  unStoreTip2: '商品未添加',
+  unStoreTip3: '个商品库存偏少',
+  unStoreTip4: '个商品滞销',
+  unStoreTip5: '个商品评价超过3天未审核',
+  unStoreTip6: '未配置推荐商品',
+  unStoreTip7: '未配置商家分类',
+  unOrderTip1: '个订单超过3天未发货',
+  unOrderTip2: '个订单退款申请超过3天未处理',
+  unMarketTip1: '个分销员申请超过3天未处理',
+  unMarketTip2: '个会员卡激活申请超过2天未处理',
+  unMarketTip3: '优惠券',
+  unMarketTip4: '即将发完',
+  // 已完成
+  tabInfo: [
+    {
+      title: '待完成',
+      name: '1'
+    },
+    {
+      title: '已完成',
+      name: '2'
+    }
+  ],
+  shop: '店铺',
+  commodity: '商品',
+  order: '订单',
+  market: '营销',
+  enShopTip1: '已完善微信配置',
+  enShopTip2: '已完成子账号设置',
+  enShopTip3: '已授权公众号',
+  enShopTip4: '已完成店铺装修',
+  enShopTip5: '已开启好物圈',
+  enShopTip6: '已开启客服',
+  enStoreTip1: '已设置运费模板',
+  enStoreTip2: '已添加商品',
+  enStoreTip3: '商品库存充裕',
+  enStoreTip4: '商品销售状况良好',
+  enStoreTip5: '商品评价审核进度良好',
+  enStoreTip6: '商品已配置',
+  enStoreTip7: '已配置商家分类',
+  enOrderTip1: '订单发货进度良好',
+  enOrderTip2: '退款处理进度良好',
+  enMarketTip1: '个分销员申请超过3天未处理',
+  enMarketTip2: '会员卡激活审核进度良好',
+  enMarketTip3: '没有库存偏小(小于指定值)的优惠券',
 
   // 公告
   noticeTitle: '公告',

@@ -262,7 +262,7 @@ export default {
   },
   data () {
     return {
-      tabSwitch: '2',
+      tabSwitch: '1',
       tableListView: true, // tab显示隐藏
       tabInfo: this.$t('seckill.tabInfo'),
       tableData: [], // 表格数据
@@ -279,6 +279,7 @@ export default {
   watch: {
     lang () {
       this.tabInfo = this.$t('seckill.tabInfo')
+      this.initDataList()
     }
   },
   mounted () {
@@ -289,7 +290,7 @@ export default {
   methods: {
     // 秒杀列表
     initDataList () {
-      this.requestParams.type = this.tabSwitch
+      this.requestParams.state = [this.tabSwitch]
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       this.closeTabAddGroup()
