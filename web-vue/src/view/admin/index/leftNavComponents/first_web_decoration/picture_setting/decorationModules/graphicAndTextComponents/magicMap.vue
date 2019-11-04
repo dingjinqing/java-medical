@@ -10,40 +10,20 @@
     >
       <!--模块编辑区-->
       <div
-        class="pictureAds"
-        :style="'backgroundColor:'+moduleSavedata.box_color"
+        class="magicMap"
+        :style="'backgroundColor:'+data.box_color"
       >
-        <!--初始占位模块-->
-        <div
-          class="seizeASeat"
-          v-if="!moduleSavedata.image_list.length"
-        >
-          <p>{{$t('pictureAds.clickEditImageAd')}}</p>
-          <p style="font-size:12px;margin-top:5px">{{$t('pictureAds.recommendedPixels')}}</p>
-        </div>
-        <!--图片列表内容-->
-        <div
-          v-else
-          :style="moduleSavedata.image_type==='1'?'display:flex;flex-wrap:wrap':(moduleSavedata.image_type==='2'||moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')?'display:flex':''"
-        >
-          <div
-            class="imageList"
-            v-for="(item,index) in moduleSavedata.image_list"
-            :key="index"
-            :style="(moduleSavedata.image_type==='1'&&(index===0||index===1))?`display:flex;width:50%;margin-top:${moduleSavedata.image_space}px`:moduleSavedata.image_type==='1'?'display:flex;width:50%;':(moduleSavedata.image_type==='2'&&index===0)?`display:flex;width:70%;margin-right:${moduleSavedata.image_space}px`:(moduleSavedata.image_type==='2'&&index===1)?'display:flex;width:30%':((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===0)?'display:flex;width:40%':((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===1)?`display:flex;width:40%;margin:0 ${moduleSavedata.image_space}px`:((moduleSavedata.image_type==='3'||moduleSavedata.image_type==='4')&&index===2)?'display:flex;width:20%':(moduleSavedata.image_type==='0'&&index===0)?`margin:${moduleSavedata.image_space}px 0`:`margin-bottom:${moduleSavedata.image_space}px`"
-          >
-            <img
-              :style="moduleSavedata.image_type==='0'?'width:378px':moduleSavedata.image_type==='4'?'width:100%;height:70px':(moduleSavedata.image_type==='1'&&index%2===0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-right:${moduleSavedata.image_space/2}px`:(moduleSavedata.image_type==='1'&&index%2!==0)?`width:100%;height:100%;padding-bottom:${moduleSavedata.image_space}px;padding-left:${moduleSavedata.image_space/2}px`:'width:100%;height:100%'"
-              :src="item.image"
-              v-if="moduleSavedata.image_type==='2'?!(moduleSavedata.image_type==='2'&&index>1):moduleSavedata.image_type==='3'?!(moduleSavedata.image_type==='3'&&index>2):moduleSavedata.image_type==='4'?!(moduleSavedata.image_type==='4'&&index>2):true"
-            >
-            <p v-if="item.title">{{item.title}}</p>
-          </div>
+        <!--右侧配置无选择占位-->
+        <div class="seizeASeat">
+          点击编辑魔方
         </div>
       </div>
       <!--模块编辑区结束-->
-      <div class="item_module_title">
-        <span>{{$t('pictureAds.pictureAds')}}</span>
+      <div
+        class="item_module_title"
+        :style="hoverTips?'width:140px':''"
+      >
+        <span>魔方多图</span>
       </div>
       <div class="item_operation">
         <img
@@ -90,7 +70,7 @@ export default {
       activeSetHere: false,
       hoverTips: 'hoverTips', // 英文适配
       // 模块私有
-      moduleSavedata: {
+      data: {
 
       }
     }
@@ -126,7 +106,7 @@ export default {
     backData: {
       handler (newData) {
         if (newData) {
-          this.moduleSavedata = newData
+          this.data = newData
         }
         console.log(newData)
       },
@@ -183,35 +163,15 @@ export default {
 <style lang="scss" scoped>
 @import "@/style/admin/decorationModules.scss";
 
-.pictureAds {
-  // width: 385px;
+.magicMap {
   .seizeASeat {
+    height: 125px;
+    width: 100%;
+    line-height: 125px;
     background: #e8efff;
     text-align: center;
     color: #5a8bff;
     font-size: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 50px 0;
-  }
-  .imageList {
-    position: relative;
-    p {
-      display: block;
-      position: absolute;
-      width: 100%;
-      bottom: 0;
-      left: 0;
-      background: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      font-size: 12px;
-      height: 30px;
-      line-height: 30px;
-      text-align: center;
-      z-index: 100;
-    }
   }
 }
 </style>

@@ -206,14 +206,15 @@ export default {
     // 图文组件库
     PictureNavigation: () => import('./decorationModules/graphicAndTextComponents/pictureNavigation'), // 图片导航
     CarouselPicture: () => import('./decorationModules/graphicAndTextComponents/CarouselPicture'), // 轮播图
-    PictureAds: () => import('./decorationModules/graphicAndTextComponents/pictureAds') //  图片广告
+    PictureAds: () => import('./decorationModules/graphicAndTextComponents/pictureAds'), //  图片广告
+    MagicMap: () => import('./decorationModules/graphicAndTextComponents/magicMap') // 魔方多图
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -543,6 +544,9 @@ export default {
               break
             case 13:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 13)
+              break
+            case 14:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 14)
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }

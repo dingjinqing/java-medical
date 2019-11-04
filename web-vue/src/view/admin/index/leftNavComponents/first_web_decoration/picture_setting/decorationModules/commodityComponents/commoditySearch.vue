@@ -76,16 +76,16 @@
 
 export default {
   props: {
-    flag: Number,
-    nowRightShowIndex: Number,
-    middleHereFlag: Boolean,
-    backData: Object
+    flag: Number, // 模块公共
+    nowRightShowIndex: Number, // 模块公共
+    middleHereFlag: Boolean, // 模块公共
+    backData: Object // 模块公共
   },
   data () {
     return {
-      activeBorder: false,
-      activeSetHere: false,
-      hoverTips: 'hoverTips', // 英文适配
+      activeBorder: false, // 模块公共
+      activeSetHere: false, // 模块公共
+      hoverTips: 'hoverTips', // 英文适配  模块公共
       // 模块私有
       data: {
         search_style: '1',
@@ -98,26 +98,26 @@ export default {
     }
   },
   watch: {
-    nowRightShowIndex (newData) {
+    nowRightShowIndex (newData) { // 模块公共
       if (this.flag === newData) {
         this.activeBorder = true
       } else {
         this.activeBorder = false
       }
     },
-    activeSetHere (newData) {
+    activeSetHere (newData) { // 模块公共
       console.log(newData)
       if (newData) {
         this.$emit('middleDragData', this.flag)
       }
     },
-    activeBorder (newData) {
+    activeBorder (newData) { // 模块公共
       console.log(newData, this.index)
       if (newData) {
         this.$http.$emit('nowHightLightModules', this.flag)
       }
     },
-    middleHereFlag (newData) {
+    middleHereFlag (newData) { // 模块公共
       if (newData) {
         this.activeSetHere = true
       } else {
@@ -125,7 +125,7 @@ export default {
       }
     },
     // 右侧模块点击传回中间当前高亮模块的数据
-    backData: {
+    backData: { // 模块公共
       handler (newData) {
         if (newData) {
           this.data = newData
@@ -138,12 +138,12 @@ export default {
   },
   mounted () {
     // 初始化语言
-    this.langDefault()
+    this.langDefault() // 模块公共
     // 初始化数据
-    this.defaultData()
+    this.defaultData() // 模块公共
   },
   methods: {
-    defaultData () {
+    defaultData () { // 模块公共
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
         console.log(this.flag, res)
@@ -156,7 +156,7 @@ export default {
       })
     },
     // 移上、移下、删除统一处理事件
-    handleToClickIcon (flag) {
+    handleToClickIcon (flag) { // 模块公共
       console.log(flag)
       let obj = {
         direction: '',
@@ -176,14 +176,14 @@ export default {
       this.$emit('handleToClickIcon', obj)
     },
     // 模块划过
-    mouseOver () {
+    mouseOver () { // 模块公共
       this.$emit('middleDragData', this.flag)
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-@import "@/style/admin/decorationModules.scss";
+@import "@/style/admin/decorationModules.scss"; // 模块公共
 
 .commoditySearch {
   background: rgb(238, 238, 238);

@@ -103,7 +103,7 @@
 
         </div>
       </div>
-      <!--end-->
+      <!--模块私有end-->
     </div>
   </div>
 </template>
@@ -113,8 +113,8 @@ import Vue from 'vue'
 Vue.use(vcolorpicker)
 export default {
   props: {
-    modulesData: Object,
-    sortIndex: Number
+    modulesData: Object, // 模块公共
+    sortIndex: Number // 模块公共
   },
   data () {
     return {
@@ -150,7 +150,7 @@ export default {
   },
   watch: {
     // 中间模块当前高亮index
-    sortIndex: {
+    sortIndex: { // 模块公共
       handler (newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
@@ -158,7 +158,7 @@ export default {
       immediate: true
     },
     // 监听数据变换
-    data: {
+    data: { // 模块公共
       handler (newData) {
         console.log(newData)
         this.$emit('handleToBackData', newData)
@@ -196,7 +196,7 @@ export default {
       border-bottom: 1px solid #eee;
       padding-bottom: 10px;
     }
-    //模块私有样式
+    //模块私有样式  --------------
     .main {
       margin-top: 20px;
       .container {
