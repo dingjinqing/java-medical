@@ -1,11 +1,17 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
-
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
+import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
+import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Record2;
@@ -13,23 +19,15 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
-import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
-import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontParam;
-import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
-import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
-import com.vpu.mp.service.shop.config.BaseShopConfigService;
-import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 
 /**
  * 积分配置Service
- * 
+ *
  * @author 黄壮壮 2019-07-15 14:13
  */
 @Service
@@ -41,15 +39,15 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	final public static String ZERO = "0";
 	final public static String ONE = "1";
 	final public static String TWO = "2";
-	
+
 	/**
 	 * 购物送积分
 	 */
 	final public static String BUY="buy";
 	final public static String BUY_EACH="buy_each";
-	
-	
-	// 积分国际化信息
+
+
+    // 积分国际化信息
 	final public static String SCORE_CFG_TITLE="member.score.cfg.title";
 
 	public int setShopCfg(ShopCfgParam param) {
@@ -78,7 +76,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		}
 
 		// 积分支付限制
-		
+
 		String scorePayLimit = param.getScorePayLimit();
 		if (ZERO.equals(scorePayLimit)) {
 			// 不限制
@@ -91,33 +89,33 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			//return -1;
 			System.out.println("debug");
 		}
-		
-		
-		/** 购物送积分 */
+
+
+        /** 购物送积分 */
 		/** 积分开关 */
 		String shoppingScore = (BUTTON_ON.equals(param.getShoppingScore()))?ONE:ZERO;
 		setShoppingScore(shoppingScore);
-		
+
 		/** 购物送积分的类型 0 购物多少送多少 1 购买每多少送多少 */
 		String scoreType = param.getScoreType();
 		setScoreType(scoreType);
-		
+
 		if(ONE.equals(shoppingScore)) {
 			if(ZERO.equals(scoreType)) {
 				/** 更新满多少送多少积分 */
 				updateRecord(param,BUY);
 			}
-			
+
 			if(ONE.equals(scoreType)) {
 				/** 更新每满多少送多少积分 */
 				updateRecord(param,BUY_EACH);
 			}
 		}
-		
-		//门店买单返送积分开关 on 1 
+
+        //门店买单返送积分开关 on 1
 		String storeScore = BUTTON_ON.equals(param.getStoreScore()) ? ONE:ZERO;
 		setStoreScore(storeScore);
-		
+
 		//登录送给积分
 		String loginScore = BUTTON_ON.equals(param.getLoginScore())? ONE:ZERO;
 		setLoginScore(loginScore);
@@ -125,9 +123,9 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			//登录送积分开关on
 			setScoreLogin(param.getScoreLogin());
 		}
-		
-		
-		//签到送积分
+
+
+        //签到送积分
 		String signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
 		setSignInScore(signInScore);
 		setSignScore(signInScore,param.getSignScore());
@@ -197,87 +195,85 @@ public class ScoreCfgService extends BaseScoreCfgService {
 					.where(USER_SCORE_SET.SCORE_NAME.eq(name))
 					.execute();
 	}
-	
 
-	
-	
-	/**
+
+    /**
 	 * 更新积分
 	 * @param param
 	 * @return
 	 */
 	public void updateRecord(ShopCfgParam param,String scoreName) {
-		
+
 			// 清空之前的积分
 			deleteRecord(scoreName);
-			
-			//插入新的积分
+
+        //插入新的积分
 			 InsertValuesStep3<UserScoreSetRecord, String, String, String> insert = this.db()
 					 							.insertInto(USER_SCORE_SET,USER_SCORE_SET.SCORE_NAME,USER_SCORE_SET.SET_VAL,USER_SCORE_SET.SET_VAL2);
-			
-			 String[] buy;
+
+        String[] buy;
 			 String[] score;
-			 
-			 if(BUY.equals(scoreName)) {
+
+        if(BUY.equals(scoreName)) {
 				 buy = param.getBuy();
 				 score = param.getScore();
 			 }else {
 				 buy = param.getBuyEach();
 				 score = param.getScoreEach();
 			 }
-			 
-			 int length = buy.length<score.length?buy.length:score.length;
+
+        int length = buy.length<score.length?buy.length:score.length;
 			 for(int i=0;i<length;i++) {
 				 insert = insert.values(scoreName, buy[i], score[i]);
 			 }
 			insert.execute();
-		
-	}
+
+    }
 
 	/**
 	 * 获取积分配置信息
 	 * @return
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
 	 */
 	public ScoreCfgVo getShopScoreCfg() {
 
 		ScoreCfgVo vo = new ScoreCfgVo();
-		
-		// 代码优化
+
+        // 代码优化
 		// 查询配置文件的key-value
 		Map<String, String> intoMap = db().select(SHOP_CFG.K,SHOP_CFG.V).from(SHOP_CFG).fetch().intoMap(SHOP_CFG.K, SHOP_CFG.V);
 		ObjectMapper objectMapper = new ObjectMapper();
 		// 将查询的结果赋值到pojo
 		vo = objectMapper.convertValue(intoMap, ScoreCfgVo.class);
 
-		
-		//查询buy
+
+        //查询buy
 		Result<Record2<String, String>> result = getValFromUserScoreSet(BUY);
 		for(int i=0;i<result.size();i++) {
 			Record2<String, String> record = result.get(i);
 			vo.getBuy().add((String) record.get(0));
 			vo.getBuyScore().add((String)record.get(1));
 		}
-		
-		//查询buyEach
+
+        //查询buyEach
 		Result<Record2<String, String>> resultEach = getValFromUserScoreSet(BUY_EACH);
 		for(int i=0;i<resultEach.size();i++) {
 			Record2<String, String> record = resultEach.get(i);
 			vo.getBuyEach().add((String) record.get(0));
 			vo.getBuyEachScore().add((String)record.get(1));
 		}
-		
-		// 处理签到积分
+
+        // 处理签到积分
 		UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
 		if(!StringUtils.isBlank(userScore.getEnable()) && ONE.equals(userScore.getEnable())) {
 			vo.setSignInScore(BUTTON_ON);
 		}
-		
-		
-		vo.setSignScore(userScore.getScore());
-		
-		// 模板名称
+
+
+        vo.setSignScore(userScore.getScore());
+
+        // 模板名称
 		if(!StringUtils.isBlank(vo.getScorePageId())) {
 			XcxCustomerPageRecord xcxCustomerPage = mpDecoration.getPageById(Integer.parseInt(vo.getScorePageId()));
 			if(xcxCustomerPage != null) {
@@ -291,18 +287,32 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	 * 获取数据
 	 * @return
 	 */
-	private Result<Record2<String, String>> getValFromUserScoreSet(String value) {
+    public Result<Record2<String, String>> getValFromUserScoreSet(String value) {
 		Result<Record2<String, String>> result = db().select(USER_SCORE_SET.SET_VAL,USER_SCORE_SET.SET_VAL2)
 													.from(USER_SCORE_SET)
 													.where(USER_SCORE_SET.SCORE_NAME.eq(value)).fetch();
 		return result;
 	}
-	
-	
+
+    /**
+     * 获取数据
+     *
+     * @return
+     */
+    public Result<Record2<String, String>> getValFromUserScoreSet(String value, String money) {
+        Result<Record2<String, String>> result = db().select(USER_SCORE_SET.SET_VAL, USER_SCORE_SET.SET_VAL2)
+            .from(USER_SCORE_SET)
+            .where(USER_SCORE_SET.SCORE_NAME.eq(value))
+            .and(USER_SCORE_SET.SET_VAL.lessOrEqual(money))
+            .orderBy(USER_SCORE_SET.SET_VAL.desc()).fetch();
+        return result;
+    }
+
+
 	/**
 	 * 查询某种活动对应积分
 	 * @param k
-	 * @return 
+     * @return
 	 */
 	public ShopCfgRecord getScoreNum(String k) {
 		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny();
@@ -328,7 +338,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		String value = db().select(SHOP_CFG.V).from(SHOP_CFG)
 							.where(SHOP_CFG.K.eq(SCORE_DOCUMENT))
 							.fetchAnyInto(String.class);
-		
+
 		ScoreFrontVo vo = new ScoreFrontVo();
 		vo.setTitle(SCORE_CFG_TITLE);
 		if(value != null) {
@@ -337,17 +347,17 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			return vo;
 		}else {
 			return null;
-		}
+        }
 	}
-	
-	/**
-	 * 积分模板页添加 addScore 
+
+    /**
+     * 积分模板页添加 addScore
 	 * @param scorePageId
 	 */
 	public void addScoreCfgForDecoration(ShopCfgParam param) {
 		// 通过前端调用多个接口api而不是将数据全部塞满
 		setScorePageId(""+param.getScorePageId());
 	}
-	
-	
+
+
 }

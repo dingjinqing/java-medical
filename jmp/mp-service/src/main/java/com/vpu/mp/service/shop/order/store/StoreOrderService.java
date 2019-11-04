@@ -8,8 +8,11 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
@@ -19,23 +22,23 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.ScoreCfgService;
+import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.SelectWhereStep;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.util.comparator.Comparators;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static com.vpu.mp.db.shop.tables.Invoice.INVOICE;
@@ -44,19 +47,24 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
+import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_PAY;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY;
+import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY_EACH;
 import static java.math.BigDecimal.*;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * Table:TABLE
  *
  * @author 王帅
- *
  */
 @Slf4j
 @Service
@@ -79,71 +87,85 @@ public class StoreOrderService extends ShopBaseService {
     @Autowired
     public MemberCardService memberCardService;
 
-	public final StoreOrder TABLE = STORE_ORDER;
+    /**
+     * The Score service.积分
+     */
+    @Autowired
+    public ScoreService scoreService;
+
+    /**
+     * The Score cfg service.积分配置
+     */
+    @Autowired
+    public ScoreCfgService scoreCfgService;
+
+    public final StoreOrder TABLE = STORE_ORDER;
     public static final BigDecimal HUNDRED = new BigDecimal(100);
 
-	/**
-	 * 	买单订单综合查询
-	 * @param param
-	 * @return
-	 */
-	public PageResult<StoreOrderListInfoVo> getPageList(StoreOrderPageListQueryParam param){
-		SelectWhereStep<? extends Record> select = db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.ORDER_STATUS,TABLE.STORE_ID,TABLE.PAY_TIME,TABLE.MONEY_PAID,TABLE.PAY_CODE,TABLE.PAY_NAME,USER.USERNAME)
-				.from(TABLE).leftJoin(USER)
-				.on(USER.USER_ID.eq(TABLE.USER_ID));
-		buildOptionsStore(select,param);
-		PageResult<StoreOrderListInfoVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreOrderListInfoVo.class);
-		return result;
-	}
+    /**
+     * 买单订单综合查询
+     *
+     * @param param
+     * @return
+     */
+    public PageResult<StoreOrderListInfoVo> getPageList(StoreOrderPageListQueryParam param) {
+        SelectWhereStep<? extends Record> select = db().select(TABLE.ORDER_ID, TABLE.ORDER_SN, TABLE.ORDER_STATUS, TABLE.STORE_ID, TABLE.PAY_TIME, TABLE.MONEY_PAID, TABLE.PAY_CODE, TABLE.PAY_NAME, USER.USERNAME)
+            .from(TABLE).leftJoin(USER)
+            .on(USER.USER_ID.eq(TABLE.USER_ID));
+        buildOptionsStore(select, param);
+        PageResult<StoreOrderListInfoVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreOrderListInfoVo.class);
+        return result;
+    }
 
-	/**
-	 * 	构造买单订单查询条件
-	 * @param select
-	 * @param param
-	 * @return
-	 */
-	 public SelectWhereStep<?> buildOptionsStore(SelectWhereStep<?> select, StoreOrderPageListQueryParam param) {
-		//自增id排序
-		select.orderBy(TABLE.ORDER_ID);
+    /**
+     * 构造买单订单查询条件
+     *
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectWhereStep<?> buildOptionsStore(SelectWhereStep<?> select, StoreOrderPageListQueryParam param) {
+        //自增id排序
+        select.orderBy(TABLE.ORDER_ID);
 
-		select.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        select.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 
-         select.where(TABLE.ORDER_STATUS.in(OrderConstant.STORE_STATUS_PAY,OrderConstant.STORE_STATUS_RETURN));
+        select.where(TABLE.ORDER_STATUS.in(OrderConstant.STORE_STATUS_PAY, OrderConstant.STORE_STATUS_RETURN));
 
-         if(!StringUtils.isEmpty(param.getOrderSn())) {
-			select.where(TABLE.ORDER_SN.like(param.getOrderSn()));
-		}
-		if(param.getUserName() != null) {
-			select.where(USER.USERNAME.like(likeValue(param.getUserName())));
-		}
-		if(param.getPayTimeStart() != null ) {
-			select.where(TABLE.PAY_TIME.ge(param.getPayTimeStart()));
-		}
-		if(param.getPayTimeEnd() != null ) {
-			select.where(TABLE.PAY_TIME.le(param.getPayTimeEnd()));
-		}
-		if(param.getStoreId() != null ) {
-			select.where(TABLE.STORE_ID.eq(param.getStoreId()));
-		}
-		if(param.getOrderStatus()!= null && param.getOrderStatus().length != 0) {
-			select.where(TABLE.ORDER_STATUS.in(param.getOrderStatus()));
-		}
-         return select;
-     }
+        if (!StringUtils.isEmpty(param.getOrderSn())) {
+            select.where(TABLE.ORDER_SN.like(param.getOrderSn()));
+        }
+        if (param.getUserName() != null) {
+            select.where(USER.USERNAME.like(likeValue(param.getUserName())));
+        }
+        if (param.getPayTimeStart() != null) {
+            select.where(TABLE.PAY_TIME.ge(param.getPayTimeStart()));
+        }
+        if (param.getPayTimeEnd() != null) {
+            select.where(TABLE.PAY_TIME.le(param.getPayTimeEnd()));
+        }
+        if (param.getStoreId() != null) {
+            select.where(TABLE.STORE_ID.eq(param.getStoreId()));
+        }
+        if (param.getOrderStatus() != null && param.getOrderStatus().length != 0) {
+            select.where(TABLE.ORDER_STATUS.in(param.getOrderStatus()));
+        }
+        return select;
+    }
 
-	 public StoreOrderInfoVo get(String orderSn) {
-		 return db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.ORDER_STATUS,TABLE.STORE_ID,TABLE.PAY_TIME,TABLE.MONEY_PAID,TABLE.PAY_CODE,TABLE.PAY_NAME,
-				 TABLE.MEMBER_CARD_BALANCE,TABLE.MEMBER_CARD_REDUCE,TABLE.SCORE_DISCOUNT,TABLE.USE_ACCOUNT,TABLE.ORDER_AMOUNT,TABLE.MONEY_PAID,TABLE.ADD_MESSAGE,TABLE.CURRENCY,
-				 USER.USERNAME,
-				 STORE.STORE_NAME,
-				 INVOICE.TYPE,INVOICE.TITLE,INVOICE.TAXNUMBER.as("taxNumber"),INVOICE.COMPANYADDRESS.as("companyAddress"))
-			.from(TABLE)
-			.leftJoin(USER).on(USER.USER_ID.eq(TABLE.USER_ID))
-			.leftJoin(STORE).on(STORE.STORE_ID.eq(TABLE.STORE_ID))
-			.leftJoin(INVOICE).on(INVOICE.USER_ID.eq(TABLE.USER_ID))
-			.where(TABLE.ORDER_SN.eq(orderSn))
-			.fetchOneInto(StoreOrderInfoVo.class);
-	}
+    public StoreOrderInfoVo get(String orderSn) {
+        return db().select(TABLE.ORDER_ID, TABLE.ORDER_SN, TABLE.ORDER_STATUS, TABLE.STORE_ID, TABLE.PAY_TIME, TABLE.MONEY_PAID, TABLE.PAY_CODE, TABLE.PAY_NAME,
+            TABLE.MEMBER_CARD_BALANCE, TABLE.MEMBER_CARD_REDUCE, TABLE.SCORE_DISCOUNT, TABLE.USE_ACCOUNT, TABLE.ORDER_AMOUNT, TABLE.MONEY_PAID, TABLE.ADD_MESSAGE, TABLE.CURRENCY,
+            USER.USERNAME,
+            STORE.STORE_NAME,
+            INVOICE.TYPE, INVOICE.TITLE, INVOICE.TAXNUMBER.as("taxNumber"), INVOICE.COMPANYADDRESS.as("companyAddress"))
+            .from(TABLE)
+            .leftJoin(USER).on(USER.USER_ID.eq(TABLE.USER_ID))
+            .leftJoin(STORE).on(STORE.STORE_ID.eq(TABLE.STORE_ID))
+            .leftJoin(INVOICE).on(INVOICE.USER_ID.eq(TABLE.USER_ID))
+            .where(TABLE.ORDER_SN.eq(orderSn))
+            .fetchOneInto(StoreOrderInfoVo.class);
+    }
 
     /**
      * Create store order.创建门店买单订单
@@ -260,34 +282,103 @@ public class StoreOrderService extends ShopBaseService {
      * @param orderInfo the order info 门店订单信息
      */
     public void sendScoreAfterPayDone(StoreOrderRecord orderInfo) {
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(orderInfo.getMemberCardNo())) {
-            // 获取购物送积分策略json数据,例如: {"offset":0,"goodsMoney":[100,200],"getScores":[1000,2000],"perGoodsMoney":1000,"perGetScores":2000}
-            String cardNo = orderInfo.getMemberCardNo();
-            String buyScoreConfig = db().select(MEMBER_CARD.BUY_SCORE).from(USER_CARD)
-                .leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
-                .where(USER_CARD.CARD_NO.eq(cardNo))
-                .fetchOneInto(String.class);
-            ScoreJson scoreJson;
-            try {
-                scoreJson = MAPPER.readValue(buyScoreConfig, ScoreJson.class);
-                Assert.notNull(scoreJson, "购物送积分策略json数据为空");
-            } catch (IOException e) {
-                log.error("购物送积分策略json数据 [{}] 反序列化失败: 原因为; {}", buyScoreConfig, e.getMessage());
-                throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
-            } catch (NullPointerException e) {
-                log.error("购物送积分策略json数据 [{}] 为空: 原因为; {}", buyScoreConfig, e.getMessage());
-                throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
+        String cardNo = orderInfo.getMemberCardNo();
+        // 最终赠送积分值,为零不赠送
+        int sendScore = 0;
+        // 会员卡送积分逻辑
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
+            // 获取会员卡购物送积分策略json数据,例如: {"offset":0,"goodsMoney":[100,200],"getScores":[1000,2000],"perGoodsMoney":1000,"perGetScores":2000}
+            String buyScoreConfig = memberCardService.getSendScoreStrategy(cardNo);
+            // 策略为空,不赠送积分
+            if (org.apache.commons.lang3.StringUtils.isBlank(buyScoreConfig)) {
+                giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                return;
             }
+            ScoreJson scoreJson = Util.json2Object(buyScoreConfig, ScoreJson.class, false);
             BigDecimal totalMoney = orderInfo.getMoneyPaid().add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()).setScale(2, RoundingMode.DOWN);
             //0：购物满多少送多少积分；1：购物每满多少送多少积分
             if (BYTE_ONE.equals(scoreJson.getOffset())) {
                 if (scoreJson.getPerGetScores().compareTo(ZERO) > 0 && scoreJson.getPerGoodsMoney().compareTo(ZERO) > 0) {
-                    int sendScore = totalMoney.divide(scoreJson.getPerGoodsMoney()).setScale(0, RoundingMode.DOWN).multiply(scoreJson.getPerGetScores()).intValue();
+                    sendScore = totalMoney.divide(scoreJson.getPerGoodsMoney(), 0, RoundingMode.DOWN).multiply(scoreJson.getPerGetScores()).intValue();
                     log.debug("支付完成送积分:会员卡[{}],每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
                 }
             } else if (BYTE_ZERO.equals(scoreJson.getOffset())) {
-
+                BigDecimal fullMoney = Arrays.stream(scoreJson.getGoodsMoney()).filter(e -> e.compareTo(totalMoney) < 0).max(Comparators.comparable()).orElse(BIGDECIMAL_ZERO);
+                int index = Arrays.asList(scoreJson.getGoodsMoney()).indexOf(fullMoney);
+                sendScore = index < scoreJson.getGetScores().length ? scoreJson.getGetScores()[index].intValue() : NumberUtils.INTEGER_ZERO;
+                log.debug("支付完成送积分:会员卡[{}],满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
             }
+            // 送积分
+            giftScore(orderInfo.getOrderSn(), sendScore, orderInfo.getUserId());
+        } else {
+            // 非会员卡送积分逻辑
+            BigDecimal totalMoney = orderInfo.getMoneyPaid().add(orderInfo.getUseAccount()).setScale(2, RoundingMode.DOWN);
+//            购物送积分类型： 0： 购物满；1：购物每满
+            byte scoreType = Byte.parseByte(scoreCfgService.getScoreType());
+//            购物满
+            if (scoreType == CONDITION_ZERO) {
+                Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY, totalMoney.toString());
+                // 满...金额
+                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                // 送...积分
+                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
+                if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                    return;
+                }
+                sendScore = Integer.parseInt(setVal2);
+                log.debug("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
+            } else if (scoreType == CONDITION_ONE) {
+//                购物每满
+                Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY_EACH);
+                // 每满...金额
+                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                // 送...积分
+                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
+                if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                    return;
+                }
+                sendScore = totalMoney.divide(NumberUtils.createBigDecimal(setVal), 0, RoundingMode.DOWN).multiply(NumberUtils.createBigDecimal(setVal2)).intValue();
+                log.debug("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
+            } else {
+                giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                return;
+            }
+            giftScore(orderInfo.getOrderSn(), sendScore, orderInfo.getUserId());
+        }
+    }
+
+    /**
+     * Gift score.赠送积分
+     *
+     * @param orderSn the order sn订单编号
+     * @param score   the score积分值
+     * @param userId  the user id用户id
+     *                {@value com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant#NO_USE_SCORE_STATUS}
+     */
+    public void giftScore(String orderSn, Integer score, Integer... userId) {
+        if (score <= 0) {
+            return;
+        }
+        try {
+            scoreService.updateMemberScore(
+                new ScoreParam() {
+                    {
+                        setUserId(userId);
+                        setScore(score);
+                        setScoreStatus(NO_USE_SCORE_STATUS);
+                        setDesc("score");
+                        setOrderSn(orderSn);
+                        setRemark("门店支付得积分");
+                    }
+                },
+                INTEGER_ZERO,
+                BYTE_ONE,
+                BYTE_ZERO);
+        } catch (MpException e) {
+            log.error("门店买单支付送积分失败,原因如下:{}", e.getMessage());
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
     }
 }

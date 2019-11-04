@@ -11,6 +11,7 @@ import java.math.RoundingMode;
  *
  */
 public class BigDecimalUtil {
+    public static final BigDecimal BIGDECIMAL_ZERO = new BigDecimal(0);
 	static public enum Operator {
 		//加
 		add,

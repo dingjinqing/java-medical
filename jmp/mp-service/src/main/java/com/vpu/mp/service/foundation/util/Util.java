@@ -150,11 +150,33 @@ public class Util {
 	}
 
     public static <T> T json2Object(String json, TypeReference<T> reference, boolean failOnUnknownProperties) {
+        if (StringUtils.isBlank(json)) {
+            return null;
+        }
         if (failOnUnknownProperties) {
             MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         }
         try {
             T t = MAPPER.readValue(json, reference);
+            if (failOnUnknownProperties) {
+                MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+            }
+            return t;
+        } catch (IOException e) {
+            log.error("数据 [{}] 反序列化失败", json);
+            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
+        }
+    }
+
+    public static <T> T json2Object(String json, Class<T> clazz, boolean failOnUnknownProperties) {
+        if (StringUtils.isBlank(json)) {
+            return null;
+        }
+        if (failOnUnknownProperties) {
+            MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        }
+        try {
+            T t = MAPPER.readValue(json, clazz);
             if (failOnUnknownProperties) {
                 MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
             }

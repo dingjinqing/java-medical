@@ -38,11 +38,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -54,8 +52,8 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static java.math.BigDecimal.ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -411,87 +409,80 @@ public class StoreWxService extends ShopBaseService {
         // 发票信息
         InvoiceVo invoiceVo = invoiceService.get(1);
         // 门店订单信息
-        StorePayOrderInfo orderInfo = null;
-        try {
-            orderInfo = MAPPER.readValue(param.getOrderInfo(), StorePayOrderInfo.class);
-            Assert.assertNotNull(orderInfo);
-        } catch (IOException e) {
-            log.error("门店订单信息");
-            e.printStackTrace();
-        }
-        // 创建门店订单
-        StoreOrderRecord storeOrderRecord = storeOrderService.createStoreOrder(userRecord, invoiceVo, orderInfo);
-        if (storeOrderRecord == null) {
-            // todo 创建门店订单失败
-            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST);
-        }
-
-        if (storeOrderRecord.getMoneyPaid().compareTo(ZERO) > 0) {
-            String openId = orderInfo.getOpenid();
-            switch (param.getAppletRequestSource()) {
-                case CONDITION_ZERO:
-                    defaultPay(storeOrderRecord, orderInfo.getOpenid());
-                    break;
-                case CONDITION_ONE:
-                    aliMiniPay(userRecord);
-                    break;
-                default:
-                    break;
+        StorePayOrderInfo orderInfo = Util.json2Object(param.getOrderInfo(), StorePayOrderInfo.class, false);
+        this.transaction(() -> {
+            // 创建门店订单
+            StoreOrderRecord storeOrderRecord = storeOrderService.createStoreOrder(userRecord, invoiceVo, orderInfo);
+            if (storeOrderRecord == null) {
+                log.error("创建门店订单失败,原因如下");
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
             }
-        } else {
-            // 会员余额变动
-            if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
-                try {
-                    accountService.addUserAccount(new AccountParam() {{
+            if (storeOrderRecord.getMoneyPaid().compareTo(ZERO) > 0) {
+                String openId = orderInfo.getOpenid();
+                switch (param.getAppletRequestSource()) {
+                    case CONDITION_ZERO:
+                        defaultPay(storeOrderRecord, orderInfo.getOpenid());
+                        break;
+                    case CONDITION_ONE:
+                        aliMiniPay(userRecord);
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                // 会员余额变动
+                if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
+                    try {
+                        accountService.addUserAccount(new AccountParam() {{
+                            setUserId(userId);
+                            setAccount(userRecord.getAccount());
+                            setOrderSn(storeOrderRecord.getOrderSn());
+                            setAmount(storeOrderRecord.getUseAccount());
+                            setPayment("balance");
+                            setIsPaid(BYTE_ONE);
+                            setRemark(storeOrderRecord.getOrderSn());
+                        }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+                    } catch (MpException e) {
+                        log.error("会员余额变动失败,原因如下:{}", e.getMessage());
+                        throw new BusinessException(JsonResultCode.CODE_FAIL);
+                    }
+                }
+                // 创建用户积分记录
+                if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
+                    scoreService.addUserScore(new UserScoreVo() {{
+                        setScoreDis(userRecord.getScore());
                         setUserId(userId);
-                        setAccount(userRecord.getAccount());
+                        setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
                         setOrderSn(storeOrderRecord.getOrderSn());
-                        setAmount(storeOrderRecord.getUseAccount());
-                        setPayment("balance");
-                        setIsPaid(BYTE_ONE);
+                        setShopId(getShopId());
                         setRemark(storeOrderRecord.getOrderSn());
-                    }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
-                } catch (MpException e) {
-                    e.printStackTrace();
+                    }}, "0", BYTE_ONE, BYTE_ZERO);
+                }
+                // 增加会员卡消费记录
+                if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
+                    UserCardParam userCardParam = userCardDaoService.getUserCardInfo(storeOrderRecord.getMemberCardNo());
+                    userCardService.cardConsumer(new UserCardConsumeBean() {{
+                        setMoneyDis(storeOrderRecord.getMemberCardBalance());
+                        setUserId(userId);
+                        setMoney(storeOrderRecord.getMemberCardBalance());
+                        setCardNo(storeOrderRecord.getMemberCardNo());
+                        setCardId(userCardParam.getCardId());
+                        setReason(storeOrderRecord.getOrderSn());
+                        setType(BYTE_ZERO);
+                    }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
+                }
+                // 跟新门店订单支付状态
+                storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
+                    setPayTime(Timestamp.valueOf(LocalDateTime.now()));
+                    setOrderStatus(BYTE_ONE);
+                    setOrderStatusName("已支付");
+                }});
+                // 支付完成送积分; 门店买单支付是否返送积分开关 on 1
+                if (STRING_ONE.equals(scoreCfgService.getStoreScore())) {
+                    storeOrderService.sendScoreAfterPayDone(storeOrderRecord);
                 }
             }
-            // 创建用户积分记录
-            if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
-                scoreService.addUserScore(new UserScoreVo() {{
-                    setScoreDis(userRecord.getScore());
-                    setUserId(userId);
-                    setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
-                    setOrderSn(storeOrderRecord.getOrderSn());
-                    setShopId(getShopId());
-                    setRemark(storeOrderRecord.getOrderSn());
-                }}, "0", BYTE_ONE, BYTE_ZERO);
-            }
-            // 增加会员卡消费记录
-            if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
-                UserCardParam userCardParam = userCardDaoService.getUserCardInfo(storeOrderRecord.getMemberCardNo());
-                userCardService.cardConsumer(new UserCardConsumeBean() {{
-                    setMoneyDis(storeOrderRecord.getMemberCardBalance());
-                    setUserId(userId);
-                    setMoney(storeOrderRecord.getMemberCardBalance());
-                    setCardNo(storeOrderRecord.getMemberCardNo());
-                    setCardId(userCardParam.getCardId());
-                    setReason(storeOrderRecord.getOrderSn());
-                    setType(BYTE_ZERO);
-                }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
-            }
-            // 跟新门店订单支付状态
-            storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
-                setPayTime(Timestamp.valueOf(LocalDateTime.now()));
-                setOrderStatus(BYTE_ONE);
-                setOrderStatusName("已支付");
-            }});
-            // todo 支付完成送积分
-            // 门店买单返送积分开关 on 1
-//            scoreCfgService.get(STORE_SCORE);
-            if (true) {
-                storeOrderService.sendScoreAfterPayDone(storeOrderRecord);
-            }
-        }
+        });
         return "";
     }
 
