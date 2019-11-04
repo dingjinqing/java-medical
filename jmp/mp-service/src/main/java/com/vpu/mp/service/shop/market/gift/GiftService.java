@@ -174,7 +174,6 @@ public class GiftService extends ShopBaseService {
         List<ProductVo> productVos = getGiftProduct(giftId);
         productVos.forEach(vo -> vo.setOfferNumber(getGiftOrderedNumber(vo.getProductId(), giftId)));
         giftVo.setGifts(productVos);
-        giftVo.setStatus(getStatusOf(giftVo));
         return giftVo;
     }
 
@@ -328,7 +327,6 @@ public class GiftService extends ShopBaseService {
         buildOptions(query, param);
         query.orderBy(TABLE.CREATE_TIME.desc());
         PageResult<GiftListVo> page = getPageResult(query, param, GiftListVo.class);
-        page.getDataList().forEach(row -> row.setStatus(getStatusOf(row)));
         return page;
     }
 
