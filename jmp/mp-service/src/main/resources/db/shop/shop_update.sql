@@ -1069,3 +1069,6 @@ create table `b2c_pay_award_record`
 ALTER TABLE b2c_recommend_goods
 ADD COLUMN `choose_type` TINYINT(2) DEFAULT '0' COMMENT '0普通推荐1智能推荐',
 ADD COLUMN `recommend_number` INT(4) DEFAULT '0' COMMENT '智能推荐商品数';
+
+-- 梁晨 修改商品评价表字段允许为空
+ALTER TABLE b2c_comment_goods MODIFY COLUMN `comm_note` VARCHAR(255) COMMENT '评论内容';

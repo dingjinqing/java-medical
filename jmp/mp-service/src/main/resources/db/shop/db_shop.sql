@@ -1108,7 +1108,7 @@ create table `b2c_comment_goods`
     `commtag`           varchar(100)          default '' comment '评价标签',
     `goods_id`          int(11)      not null comment '商品id',
     `order_sn`          varchar(20)  not null comment '订单编号',
-    `comm_note`         varchar(255) not null comment '评论内容',
+    `comm_note`         varchar(255)          DEFAULT NULL COMMENT '评论内容',
     `comm_img`          varchar(1000)         default null comment '评论图片',
     `comment_award_id`  int(11)               default null comment '评价有礼活动id',
     `flag`              tinyint(1)            default '0' comment '0:未审批,1:审批通过,2:审批未通过',
@@ -1119,7 +1119,7 @@ create table `b2c_comment_goods`
     `create_time`       timestamp             default current_timestamp,
     `update_time`       timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    index `shop_id` (`shop_id`)
+    KEY `shop_id` (`shop_id`)
 );
 
 
