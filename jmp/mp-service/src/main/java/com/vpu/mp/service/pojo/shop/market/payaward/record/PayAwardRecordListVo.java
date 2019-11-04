@@ -16,6 +16,9 @@ public class PayAwardRecordListVo {
     private String username;
     private String mobile;
     private String orderSn;
+    /**
+     * 礼物类型 0 无奖品 1普通优惠卷  2分裂优惠卷 3幸运大抽奖 4 余额 5 商品 6积分 7 自定义
+     */
     private Integer giftType;
     private Timestamp createTime;
 

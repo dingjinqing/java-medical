@@ -117,20 +117,20 @@ public class PayAwardService extends ShopBaseService {
                 .from(PAY_AWARD)
                 .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getNavType()) {
-            case 2:
+            case 1:
                 select.and(PAY_AWARD.START_TIME.lt(nowTime))
                         .and(PAY_AWARD.END_TIME.gt(nowTime))
                         .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                 break;
-            case 3:
+            case 2:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                         .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
-            case 4:
+            case 3:
                 select.and(PAY_AWARD.STATUS.gt(ACTIVITY_STATUS_NORMAL))
                         .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
-            case 5:
+            case 4:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                 break;
             default:
