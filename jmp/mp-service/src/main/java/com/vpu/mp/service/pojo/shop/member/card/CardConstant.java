@@ -149,12 +149,17 @@ public class CardConstant {
 	/** 是否专属购买商品 0不是 1是*/
 	public static final Byte PAY_OWN_GOOD_ON = 1 ;
 	
-	/** -----------------user_card表常量--------------------------*/
+	
+	
 	/** user_card表 flag 0 正常使用，1已经删除  2 已过期*/
-	public static final Byte CARD_USING = 0;
-	public static final Byte CARD_DELETE = 1;
-	public static final Byte CARD_EXPIRED = 2;
-	/** --------------------------------------------------------*/
+	public static final Byte UCARD_FG_USING = 0;
+	public static final Byte UCARD_FG_STOP = 1;
+	public static final Byte UCARD_FG_EXPIRED = 2;
+	/** user_card 激活 */
+	public static final Boolean UCARD_ACT_NO = false;
+	public static final Boolean UCARD_ACT_TRUE = true;
+	
+
 	
 	/** -----------------member_card表常量--------------------------*/
 

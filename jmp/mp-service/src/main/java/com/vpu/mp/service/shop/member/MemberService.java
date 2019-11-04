@@ -13,7 +13,7 @@ import static com.vpu.mp.db.shop.Tables.CHANNEL;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SCAN_QRCODE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
@@ -51,6 +51,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rabbitmq.http.client.domain.UserInfo;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
@@ -363,7 +364,7 @@ public class MemberService extends ShopBaseService {
 		/** - 会员卡 */
 		if(param.getCardId() != null) {
 			logger().info("测试会员卡查询");
-			select.where(USER_CARD.CARD_ID.eq(param.getCardId())).and(USER_CARD.FLAG.eq(CARD_USING));
+			select.where(USER_CARD.CARD_ID.eq(param.getCardId())).and(USER_CARD.FLAG.eq(UCARD_FG_USING));
 		}
 
 		/** -注册时间 */
@@ -708,6 +709,7 @@ public class MemberService extends ShopBaseService {
 		vo.setTransStatistic(transStatistic);
 		return vo;
 	}
+	
 
 	/**
 	 * 处理会员用户的底本信息
@@ -882,17 +884,16 @@ public class MemberService extends ShopBaseService {
 	/**
 	 * 获取会员用户的信息
 	 * @param userId
-	 * @return
+	 * @return 用户信息，不会为null
 	 */
-	private MemberBasicInfoVo getMemberInfo(Integer userId) {
-		Record record = memberDao.getMemberInfo(userId);
-		if(record != null) {
-			return record.into(MemberBasicInfoVo.class);
-		}else {
-			return null;
-		}
+	public MemberBasicInfoVo getMemberInfo(Integer userId) {
+		MemberBasicInfoVo member= memberDao.getMemberInfo(userId);
+		return member != null ? member: new MemberBasicInfoVo();
 	}
-
+	
+	public Integer getUserScore(Integer userId) {
+		return getMemberInfo(userId).getScore();
+	}
 	/**
 	 * 获取分销信息
 	 * 
@@ -1051,4 +1052,8 @@ public class MemberService extends ShopBaseService {
 						.and(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))))
 				.orderBy(USER_IMPORT_DETAIL.ID.desc()).fetchAny();
 	}
+	
+	
+	
+	
 }

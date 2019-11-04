@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
 
-import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
@@ -10,6 +9,7 @@ import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFU
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_SCORE;
+import static com.vpu.mp.service.shop.member.UserCardService.UPGRADE;
 
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
@@ -53,7 +53,9 @@ import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 
-import jodd.util.StringUtil;
+import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_FOREVER;
+import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_YMD;
+import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_NOW;
 /**
  * 
  * @author 黄壮壮
@@ -73,7 +75,8 @@ public class ScoreService extends ShopBaseService {
 	@Autowired
 	public UserCardService userCardService;
 	
-
+	@Autowired
+	public ScoreCfgService scoreCfgService;
 	@Autowired
 	public MemberService member;	
 	
@@ -311,7 +314,7 @@ public class ScoreService extends ShopBaseService {
 			/** 1 获取最早一条可用记录 */
 			UserScoreRecord userRecord = getEarlyUsableRecord(userId);
 			/** 更新 关联其他属性：例如order_sn */
-			if(!StringUtil.isBlank(orderSn)) {
+			if(!StringUtils.isBlank(orderSn)) {
 				userRecord.setIdentityId(userRecord.getIdentityId()+","+orderSn);
 			}
 			if (userRecord == null) {
@@ -424,7 +427,7 @@ public class ScoreService extends ShopBaseService {
 		/** 会员id-会员昵称，优先id */
 		if(param.getUserId() != null) {
 			select.where(USER_SCORE.USER_ID.eq(param.getUserId()));
-		}else if(!StringUtil.isBlank(param.getUserName())){
+		}else if(!StringUtils.isBlank(param.getUserName())){
 			String likeValue = likeValue(param.getUserName());
 			/** 查询出所有符合昵称的会员id */
 			List<Integer> ids = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.like(likeValue)).fetch().into(Integer.class);
@@ -540,9 +543,9 @@ public class ScoreService extends ShopBaseService {
 		tradesRecord.addRecord(new BigDecimal(Math.abs(data.getScore())), data.getOrderSn()==null?"":data.getOrderSn(), data.getUserId(), (byte)1, tradeType, tradeFlow, tradeFlow);
 		String userGrade = member.card.getUserGrade(data.getUserId());
 		if(!userGrade.equals(CardConstant.LOWEST_GRADE)) {
-			//TODO 等黄壮壮提供  updateGrade		
 			try {
-				userCardService.updateGrade(new ArrayList<Integer>(Arrays.asList(1)),null, (byte)1);
+				// 升级
+				userCardService.updateGrade(data.getUserId(),null, UPGRADE);
 			} catch (MpException e) {
 				e.printStackTrace();
 			}
@@ -556,32 +559,33 @@ public class ScoreService extends ShopBaseService {
 	 */
 	public Timestamp getScoreExpireTime() {
 		Timestamp expireTime = null;
-		ShopCfgRecord scoreLimit = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_limit")).fetchAny();
+		String scoreLimit = scoreCfgService.getScoreLimit();
 		LocalDate date=LocalDate.now();		
-		if (scoreLimit != null) {
-			if (scoreLimit.getV().equals("1")) {
-				//从获取之日起
-				ShopCfgRecord scoreYear = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_year")).fetchAny();
-				ShopCfgRecord scoreMonth = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_month")).fetchAny();
-				ShopCfgRecord scoreDay = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_day")).fetchAny();
-				LocalDateTime localDateTime = LocalDateTime.of(date.getYear()+Integer.parseInt(scoreYear.getV()), Integer.parseInt(scoreMonth.getV()), Integer.parseInt(scoreDay.getV()), 23, 59, 59);
+		
+		if (SCORE_LT_YMD.equals(scoreLimit)) {
+			Integer scoreYear = parseYMD(scoreCfgService.getScoreYear());
+			Integer scoreMonth = parseYMD(scoreCfgService.getScoreMonth());
+			Integer scoreDay = parseYMD(scoreCfgService.getScoreDay());
+			LocalDateTime localDateTime = LocalDateTime.of(date.getYear()+scoreYear,scoreMonth,scoreDay, 23, 59, 59);
+			expireTime = Timestamp.valueOf(localDateTime);
+		}
+		
+		if (SCORE_LT_NOW.equals(scoreLimit)) {
+			String scoreLimitNumber = scoreCfgService.getScoreLimitNumber();
+			String scorePeriod = scoreCfgService.getScorePeriod();
+			if(!StringUtils.isBlank(scoreLimitNumber) && !StringUtils.isBlank(scorePeriod)) {
+				LocalDateTime localDateTime=LocalDateTime.now();
+				localDateTime.plusDays(Integer.parseInt(scoreLimitNumber)+Integer.parseInt(scorePeriod));		
 				expireTime = Timestamp.valueOf(localDateTime);
-			}
-			if (scoreLimit.getV().equals("2")) {
-				ShopCfgRecord scoreLimitNumber = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_limit_number")).fetchAny();
-				ShopCfgRecord scorePeriod = db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq("score_period")).fetchAny();
-				if(scoreLimitNumber!=null&&scorePeriod!=null) {
-					LocalDateTime localDateTime=LocalDateTime.now();
-					localDateTime.plusDays(Integer.parseInt(scoreLimitNumber.getV())+Integer.parseInt(scorePeriod.getV()));		
-					expireTime = Timestamp.valueOf(localDateTime);
-				}
 			}
 		}
 		logger().info("获取积分过期时间"+expireTime);
 		return expireTime;
 	}
 	
-	
+	private Integer parseYMD(String value) {
+		return StringUtils.isBlank(value)?0:Integer.parseInt(value);
+	}
 	/**
 	 * 检查签到送积分
 	 * @param userId
@@ -597,7 +601,7 @@ public class ScoreService extends ShopBaseService {
 		int isOpenSign=0;
 		SignData signData = new SignData();
 		if (signInScore != null) {
-			if (!StringUtils.isEmpty(signInScore.getScore())) {
+			if (signInScore.getScore()!=null) {
 				for (String value : signInScore.getScore()) {
 					days++;
 					scoreValue += Integer.parseInt(value);

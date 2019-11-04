@@ -9,9 +9,9 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_BATCH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_DELETE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUNT_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
@@ -99,9 +99,9 @@ public class CardDaoService extends ShopBaseService {
 		/** - 卡状态 */
 		if(param.getFlag() != null) {
 			/** - 状态为过期 */
-			if(param.getFlag().equals(CARD_EXPIRED)) {
+			if(param.getFlag().equals(UCARD_FG_EXPIRED)) {
 				select.where(USER_CARD.EXPIRE_TIME.le(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()));
-			}else if(param.getFlag().equals(CARD_USING) || param.getFlag().equals(CARD_DELETE)) {
+			}else if(param.getFlag().equals(UCARD_FG_USING) || param.getFlag().equals(UCARD_FG_STOP)) {
 				select.where(USER_CARD.FLAG.eq(param.getFlag()));
 			}
 		}
@@ -485,20 +485,20 @@ public class CardDaoService extends ShopBaseService {
 	 * @param type
 	 * @return
 	 */
-	public List<Integer> getCardByType(Byte type) {
+	public List<Integer> getCardIdByType(Byte type) {
 		 return db().select(MEMBER_CARD.ID)
 				 	.from(MEMBER_CARD)
 				 	.where(MEMBER_CARD.CARD_TYPE.eq(type))
-				 	.fetch().into(Integer.class);
+				 	.fetchInto(Integer.class);
 	}
 	
 	/**
-	 * 获取会员卡信息 php代码 > getCardInfo
-	 * @param id
+	 * 获取会员卡信息
+	 * @param cardId
 	 * @return
 	 */
-	public MemberCardRecord getCardInfoById(Integer id) {
-		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(id)).fetchAny();
+	public MemberCardRecord getCardById(Integer cardId) {
+		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
 	}
 	
 	/**

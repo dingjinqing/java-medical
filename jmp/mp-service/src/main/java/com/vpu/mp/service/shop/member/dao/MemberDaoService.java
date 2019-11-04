@@ -23,17 +23,20 @@ import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep3;
 import org.springframework.stereotype.Service;
 import org.jooq.tools.StringUtils;
+
+import com.rabbitmq.http.client.domain.UserInfo;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
@@ -48,37 +51,24 @@ import static org.jooq.impl.DSL.count;
  */
 @Service
 public class MemberDaoService extends ShopBaseService {
-	/**
-	 * 获取会员用户的详细信息
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public UserRecord getUserInfo(Integer userId) {
-		Record member = this.getMemberInfo(userId);
-		if(member != null) {
-			member.into(UserRecord.class);
-		}
-		return null;
-	}
+	
 	/**
 	 * 获取会员用户的详细信息
 	 * @param userId
 	 * @return
 	 */
-	public Record getMemberInfo(
-			Integer userId) {
+	public MemberBasicInfoVo getMemberInfo(Integer userId) {
 		User a = USER.as("a");
 		User b = USER.as("b");
 		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
 		
-		return db().select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,
+		return db().select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,
 				a.INVITE_ID, a.SOURCE, a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
 				USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
 				USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR, USER_DETAIL.SEX,
 				USER_DETAIL.MARITAL_STATUS, USER_DETAIL.MONTHLY_INCOME, USER_DETAIL.CID)
 				.from(a.leftJoin(USER_DETAIL).on(a.USER_ID.eq(USER_DETAIL.USER_ID)))
-				.where(a.USER_ID.eq(userId)).fetchAny();
+				.where(a.USER_ID.eq(userId)).fetchAnyInto(MemberBasicInfoVo.class);
 	}
 
 	/**
@@ -135,8 +125,7 @@ public class MemberDaoService extends ShopBaseService {
 				MEMBER_CARD.RECEIVE_DAY, MEMBER_CARD.DATE_TYPE, MEMBER_CARD.STORE_LIST,
 				MEMBER_CARD.ACTIVATION)
 		.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-		.where(USER_CARD.USER_ID.eq(userId)).and(USER_CARD.FLAG.eq(CARD_USING))
-//		.and(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()).or(MEMBER_CARD.EXPIRE_TYPE.eq(FOREVER)))
+		.where(USER_CARD.USER_ID.eq(userId)).and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 		.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
 		.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
 				.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
@@ -153,7 +142,7 @@ public class MemberDaoService extends ShopBaseService {
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
 		return db().select(USER_CARD.USER_ID)
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-			.where(USER_CARD.FLAG.eq(CARD_USING))
+			.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
 			.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER)))
 			.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(localDateTime)))
 		            .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))

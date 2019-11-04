@@ -16,7 +16,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_IM
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
@@ -346,6 +346,9 @@ public class MemberCardService extends ShopBaseService {
 				cardRecord.setBuyScore(Util.toJson(scoreJson));
 			} else {
 				// 准备设置为空
+				cardRecord.setSorce(null);
+				cardRecord.setBuyScore(null);
+				
 			}
 
 			if (!flag && MCARD_TP_GRADE.equals(cardType)) {
@@ -651,6 +654,9 @@ public class MemberCardService extends ShopBaseService {
 			cardRecord.setSendMoney(card.getSendMoney());
 			/** 设置开卡策略 */
 			cardRecord.setChargeMoney(Util.toJson(card.getPowerCardJson()));
+		}else {
+			cardRecord.setSendMoney(null);
+			cardRecord.setChargeMoney(null);
 		}
 		if (!flag) {
 			/** 必须选择一项会员权益 */
@@ -821,44 +827,67 @@ public class MemberCardService extends ShopBaseService {
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
 		logger.info("删除会员卡成功，受影响行： " + result);
 	}
-
+	
+	public MemberCardRecord getCardById(Integer cardId) {
+		MemberCardRecord card = cardDao.getCardById(cardId);
+		return card != null ? card : new MemberCardRecord();
+	}
+	
 	/**
 	 * 根据ID获取该会员卡的详细信息
 	 * 
 	 * @param param
 	 * @return
 	 */
-	public BaseCardVo getCardById(CardIdParam param) {
-		MemberCardRecord record = cardDao.getCardInfoById(param.getId());
-		/** 会员卡类型 */
-		if(record != null) {
-			Byte cardType = record.getCardType();
+	public BaseCardVo getCardDetailById(CardIdParam param) {
+		MemberCardRecord card = getCardById(param.getId());
+		if(card != null) {
+			Byte cardType = card.getCardType();
 			if (MCARD_TP_NORMAL.equals(cardType)) {
-				logger.info("查询出普通会员卡");
-				NormalCardToVo card = record.into(NormalCardToVo.class);
-				/** 执行策略 */
-				card.changeJsonCfg();
-				return card;
+				return changeToNormalCardDetail(card);
 			} else if (MCARD_TP_LIMIT.equals(cardType)) {
-				logger.info("查询出限次会员卡");
-				/** 执行策略 */
-				LimitNumCardToVo card = record.into(LimitNumCardToVo.class);
-				/** 查询已经被领取的数量 */
-				int hasSend = 0;
-				hasSend = db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(param.getId()));
-				card.setHasSend(hasSend);
-				card.changeJsonCfg();
-				return card;
+				return changeToLimitCardDetail(card);
 			} else if (MCARD_TP_GRADE.equals(cardType)) {
-				logger.info("查询出等级会员卡");
-				RankCardToVo card = record.into(RankCardToVo.class);
-				card.changeJsonCfg();
-				return card;
+				return changeToGradeCardDetail(card);
 			}
 		}
 		return null;
 	}
+	
+	private NormalCardToVo changeToNormalCardDetail(MemberCardRecord card) {
+		logger.info("正在处理普通会员卡");
+		NormalCardToVo normalCard = card.into(NormalCardToVo.class);
+		normalCard.changeJsonCfg();
+		return normalCard;
+	}
 
+	private LimitNumCardToVo changeToLimitCardDetail(MemberCardRecord card) {
+		logger.info("正在处理出限次会员卡");
+		LimitNumCardToVo limitCard = card.into(LimitNumCardToVo.class);
+		int numOfSendCard = getNumSendCardById(limitCard.getId());
+		limitCard.setHasSend(numOfSendCard);
+		limitCard.changeJsonCfg();
+		return limitCard;
+	}
+	
+	private RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
+		logger.info("正在处理等级会员卡");
+		RankCardToVo gradeCard = card.into(RankCardToVo.class);
+		gradeCard.changeJsonCfg();
+		return gradeCard;
+	}
+	
+	/**
+	 * 获取已经发放的卡的数量
+	 * @param cardId
+	 * @return
+	 */
+	public int getNumSendCardById(Integer cardId) {
+		return userCardService.getNumCardsWithSameId(cardId);
+	}
+	
+	
+	
 	/**
 	 * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
 	 * 
@@ -1416,7 +1445,7 @@ public class MemberCardService extends ShopBaseService {
 		 /** - 如果查询的状态是过期的，设置返回的flag为2过期  */
 		 for(CardHolderVo item: allCardHolder.dataList) {
 			 if(DateUtil.getLocalDateTime().after(item.getExpireTime())) {
-				 item.setFlag(CARD_EXPIRED);
+				 item.setFlag(UCARD_FG_EXPIRED);
 			 }
 		 }
 		 return allCardHolder;
@@ -1734,8 +1763,19 @@ public class MemberCardService extends ShopBaseService {
 	 * 获取会员卡id列表根据会员卡类型
 	 * @param type {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE }
 	 */
-	public List<Integer> getCardByType(Byte type) {
-		 return cardDao.getCardByType(type);
+	public List<Integer> getCardIdByType(Byte type) {
+		 return  cardDao.getCardIdByType(type);
+	}
+	
+	public boolean isNormalCard(Byte cardType) {
+		return MCARD_TP_NORMAL.equals(cardType);
+	}
+	
+	public boolean isLimitCard(Byte cardType) {
+		return MCARD_TP_LIMIT.equals(cardType);
 	}
 
+	public boolean isGradeCard(Byte cardType) {
+		return MCARD_TP_GRADE.equals(cardType);
+	}
 }

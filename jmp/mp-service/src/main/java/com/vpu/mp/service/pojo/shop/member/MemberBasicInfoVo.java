@@ -18,6 +18,7 @@ import lombok.Setter;
 @Setter
 public class MemberBasicInfoVo {
 	/** b2c_user*/
+	private Integer userId;
 	/** 昵称 */
 	private String username;
 	private String wxUnionId;
@@ -25,6 +26,8 @@ public class MemberBasicInfoVo {
 	private Timestamp createTime;
 	/** 手机号 */
 	private String mobile;
+	/** 积分 */
+	private Integer score;
 	/** OpenId */
 	private String wxOpenid;
 	/** 门店来源-1未录入0后台>0为门店 */

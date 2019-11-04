@@ -54,7 +54,7 @@ public class GoodsCardCoupleService  extends ShopBaseService {
                 .leftJoin(USER_CARD).on(GOODS_CARD_COUPLE.CARD_ID.eq(USER_CARD.CARD_ID))
                 .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
                 .where(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_NORMAL))
-                .and(USER_CARD.FLAG.eq(CardConstant.CARD_USING))
+                .and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
                 .and(USER_CARD.CARD_ID.eq(userId))
                 .and(USER_CARD.EXPIRE_TIME.isNotNull().or(USER_CARD.EXPIRE_TIME.gt(DateUtil.getLocalDateTime())))
                 .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO)

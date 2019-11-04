@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.member.score;
 
 import java.sql.Timestamp;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
@@ -12,7 +13,6 @@ import lombok.ToString;
  *         2019年10月10日 上午10:36:26
  */
 @Data
-@ToString
 public class UserScoreVo {
 	private Integer id;
 	private Integer userId;

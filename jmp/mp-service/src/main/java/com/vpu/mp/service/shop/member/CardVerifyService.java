@@ -19,6 +19,7 @@ public class CardVerifyService extends ShopBaseService {
 	private final static Byte VSTAT_REFUSED = 3;
 	@Autowired
 	public CardVerifyDaoService verifyDao;
+	
 	/**
 	 * 根据卡号，获取当前卡的审核状态
 	 * @param cardNo 卡号

@@ -9,7 +9,8 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CARD_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
@@ -54,20 +55,7 @@ import com.vpu.mp.service.shop.member.UserCardService;
 public class UserCardDaoService extends ShopBaseService{
 	@Autowired private  UserCardService userCardService;
 	
-	/**
-	 * 计算用户等级
-	 * @param userId
-	 * @return
-	 */
-	public String calcUserGrade(Integer userId) { 
-		return db().select(MEMBER_CARD.GRADE)
-				.from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
-				.where(USER_CARD.FLAG.eq(CARD_USING))
-				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-				.and(USER_CARD.USER_ID.eq(userId))
-				.and((MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO)).or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
-				.fetchAnyInto(String.class); 
-	}
+	
 	
 	/**
 	 * 获取用户持有的等级卡
@@ -99,7 +87,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 */
 	public void updateUserCard(Integer userId,Integer cardId) {
 		db().update(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
-			.set(USER_CARD.CARD_ID,cardId).set(USER_CARD.FLAG,CARD_USING)
+			.set(USER_CARD.CARD_ID,cardId).set(USER_CARD.FLAG,UCARD_FG_USING)
 			.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 			.and(USER_CARD.USER_ID.eq(userId))
 			.execute();
@@ -130,9 +118,9 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 	
 
-	public void updateCardFlag(List<Integer> cardIdList, List<Integer> cardNoList) {
+	public void updateCardFlag(List<Integer> cardIdList, List<String> cardNoList) {
 		db().update(USER_CARD)
-			.set(USER_CARD.FLAG, MCARD_DF_YES)
+			.set(USER_CARD.FLAG, UCARD_FG_STOP)
 			.where(USER_CARD.CARD_ID.in(cardIdList))
 			.and(USER_CARD.CARD_NO.notIn(cardNoList))
 			.execute();
@@ -147,7 +135,7 @@ public class UserCardDaoService extends ShopBaseService{
 		SelectConditionStep<UserCardRecord> sql = db().selectFrom(USER_CARD)
 			.where(USER_CARD.CARD_ID.eq(userId))
 			.and(USER_CARD.CARD_ID.eq(card.getCardId()))
-			.and(USER_CARD.FLAG.eq(CARD_USING));
+			.and(USER_CARD.FLAG.eq(UCARD_FG_USING));
 		if(StringUtils.isBlank(card.getCardName())) {
 			sql.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())));
 		}
@@ -250,10 +238,25 @@ public class UserCardDaoService extends ShopBaseService{
 		return db().select(MEMBER_CARD.GRADE).from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-			.and(USER_CARD.FLAG.eq(CARD_USING))
+			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 			.fetchAnyInto(String.class);
 	}
 
+	/**
+	 * 计算用户等级
+	 * @param userId
+	 * @return
+	 */
+	public String calcUserGrade(Integer userId) { 
+		return db().select(MEMBER_CARD.GRADE)
+				.from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
+				.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
+				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+				.and(USER_CARD.USER_ID.eq(userId))
+				.and((MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO)).or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
+				.fetchAnyInto(String.class); 
+	}
+	
 	/**
 	 * 根据id获取用户名
 	 * @param id
@@ -268,19 +271,6 @@ public class UserCardDaoService extends ShopBaseService{
 		return  db().update(USER_CARD).set(record).where(USER_CARD.CARD_NO.eq(cardNo)).execute();
 	}
 	
-	/**
-	 * 获取用户持有的等级会员卡信息
-	 * @param userId
-	 * @return
-	 */
-	public UserCardParam getUserRankCardDetailInfo(Integer userId) {
-		return db().select(USER_CARD.asterisk(),MEMBER_CARD.asterisk())
-			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-			.where(USER_CARD.USER_ID.eq(userId))
-			.and(USER_CARD.FLAG.eq(CARD_USING))
-			.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-			.fetchAnyInto(UserCardParam.class);
-	}
 	
 	/**
 	 * 获取会员卡详情
@@ -294,16 +284,7 @@ public class UserCardDaoService extends ShopBaseService{
 			.fetchAnyInto(WxAppUserCardVo.class);
 	}
 	
-	public void updateUserCardByCardIdAndNo(Integer cardId,String cardNo) {
-		db().update(USER_CARD)
-			.set(USER_CARD.CARD_ID, cardId)
-			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
-			.set(USER_CARD.FLAG,CARD_USING)
-			.where(USER_CARD.CARD_NO.eq(cardNo))
-			.execute();
-	}
-	
-	public int countCardByCardId(Integer cardId){
+	public int getHasSend(Integer cardId){
 		return db().selectCount().from(USER_CARD).where(USER_CARD.CARD_ID.eq(cardId)).execute();
 	}
 	
@@ -316,10 +297,10 @@ public class UserCardDaoService extends ShopBaseService{
 		db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.set(USER_CARD.CARD_ID,cardInfo.getId())
 			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
-			.set(USER_CARD.FLAG,CARD_USING)
+			.set(USER_CARD.FLAG,UCARD_FG_USING)
 			.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 			.and(USER_CARD.USER_ID.eq(userId))
-			.and(USER_CARD.FLAG.eq(CARD_USING))
+			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 			.execute();
 	}
 	
@@ -394,7 +375,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.leftJoin(MEMBER_CARD)
 				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
 				.where(USER_CARD.USER_ID.eq(param.getUserId()))
-				.and(USER_CARD.FLAG.eq(CARD_USING))
+				.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc());
 		 	return getPageResult(select, param.getCurrentPage(), param.getPageRows(), WxAppUserCardVo.class);		
 	}
@@ -409,5 +390,24 @@ public class UserCardDaoService extends ShopBaseService{
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
 			.where(USER_CARD.CARD_NO.eq(cardNo))
 			.fetchAnyInto(Byte.class);
+	}
+	
+	public int calcNumCardById(Integer cardId) {
+		return db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(cardId));
+	}
+
+	public int updateUserGradeCardId(Integer userId,Integer cardId) {
+		return  db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+			.set(USER_CARD.CARD_ID,cardId)
+			.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
+			.set(USER_CARD.FLAG,UCARD_FG_USING)
+			.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+			.and(USER_CARD.USER_ID.eq(userId))
+			.execute();
+	}
+
+	public int getNumHasSendUser(Integer userId, Integer cardId) {
+		return db().fetchCount(USER_CARD, USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId)));
 	}
 }
