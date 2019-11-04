@@ -30,7 +30,7 @@ public class GoodsListTailProcessor implements ActivityGoodsListProcessor<Activi
     public void process(Map<Integer, ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             // 被活动处理了的话就是活动价，否则就是商品的规格最低价(新增商品时该字段存的就是最低价)
-            capsule.setRealPrice(capsule.getGoodsPrice());
+            capsule.setRealPrice(capsule.getShopPrice());
 
             if (capsule.getProcessedTypes().size() == 0) {
                 capsule.setLinePrice(capsule.getMarketPrice());

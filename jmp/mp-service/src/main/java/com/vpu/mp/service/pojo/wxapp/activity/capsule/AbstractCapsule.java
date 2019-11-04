@@ -12,9 +12,8 @@ import java.util.Set;
  */
 @Data
 public abstract class AbstractCapsule {
-    private Integer capsuleId;
-    private String capsuleName;
-
+    private Integer goodsId;
+    private String goodsName;
     /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
     private Set<Byte> processedTypes = new HashSet<>();
 }

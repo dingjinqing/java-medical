@@ -8,12 +8,9 @@ import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsT;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
-import com.vpu.mp.service.shop.goods.GoodsCommentService;
-import com.vpu.mp.service.shop.goods.GoodsPriceService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -25,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 
@@ -45,111 +41,108 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     ConfigService configService;
     @Autowired
-    GoodsCommentService goodsCommentService;
-    @Autowired
-    GoodsPriceService goodsPriceService;
-
-    @Autowired
     GoodsLabelMpService goodsLabelMpService;
-    @Autowired
-    GoodsProductMpService goodsProductMpService;
-    @Autowired
-    GoodsActivityMpService goodsActivityMpService;
 
     @Autowired
     ProcessorFactoryBuilder processorFactoryBuilder;
 
-    public List<ActivityGoodsListCapsule> test(){
+    public List<ActivityGoodsListCapsule> test() {
         GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);
         List<ActivityGoodsListCapsule> capsules = new ArrayList<>();
         ActivityGoodsListCapsule c = new ActivityGoodsListCapsule();
-        c.setCapsuleId(1);
+        c.setGoodsId(1);
         c.setCatId(2);
         c.setSortId(28);
         c.setGoodsType((byte) 0);
-        c.setGoodsPrice(BigDecimal.valueOf(50));
+        c.setShopPrice(BigDecimal.valueOf(50));
         c.setMarketPrice(BigDecimal.valueOf(200));
         capsules.add(c);
-
-        processorFactory.doProcess(capsules,123);
-
+        processorFactory.doProcess(capsules, 123);
         return capsules;
     }
 
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据
      *
-     * @param param 装修页面配置的商品获取过滤条件
+     * @param param  装修页面配置的商品获取过滤条件
+     * @param userId
      * @return 对应的商品集合信息
      */
-    public List<GoodsListMpVo> getGoodsList(GoodsListMpParam param) {
+    public List<GoodsListMpVo> getGoodsList(GoodsListMpParam param, Integer userId) {
         Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
         if (soldOutGoods == 1) {
             param.setSoldOutGoodsShow(soldOutGoods);
         }
-        List<GoodsT> goodsTList;
+        List<ActivityGoodsListCapsule> goodsListCapsules;
         // 手动推荐展示
         if (0 != param.getRecommendType()) {
             // 手动推荐商品逻辑
             if (param.getGoodsItems() == null || param.getGoodsItems().size() == 0) {
                 return new ArrayList<>();
             }
-            goodsTList=getPointGoodsList(param);
+            goodsListCapsules = getPointGoodsList(param);
         } else {
             // 自动推荐展示
-            goodsTList = getAutoGoodsList(param);
+            goodsListCapsules = getAutoGoodsList(param);
         }
-        disposeGoodsList(goodsTList);
 
-        List<GoodsListMpVo> goodsListMpVos = convertGoodsTGoodsListMpVo(goodsTList);
+        disposeGoodsList(goodsListCapsules, userId);
+
+        List<GoodsListMpVo> goodsListMpVos = convertGoodsCapsuleTGoodsListMpVo(goodsListCapsules);
 
         return goodsListMpVos;
     }
 
     /**
-     *  根据指定的商品id值获取处理好信息的商品结果集合（商家分类展示一级分类关联的商品时使用到）
+     * 根据指定的商品id值获取处理好信息的商品结果集合（商家分类展示一级分类关联的商品时使用到）
+     *
      * @param goodsIds 指定的商品结果结合
      * @return
      */
-    public List<GoodsListMpVo> getGoodsList(List<Integer> goodsIds) {
+    public List<GoodsListMpVo> getGoodsList(List<Integer> goodsIds, Integer userId) {
         GoodsListMpParam param = new GoodsListMpParam();
         param.setGoodsItems(goodsIds);
-        return getGoodsList(param);
+        return getGoodsList(param, userId);
     }
+
     /**
      * 获取指定商品模式下的商品信息
      * @param param 自动推荐过滤条件
      * @return 商品结果集合
      */
-    private List<GoodsT> getPointGoodsList(GoodsListMpParam param) {
+    private List<ActivityGoodsListCapsule> getPointGoodsList(GoodsListMpParam param) {
         List<Integer> goodsIds = param.getGoodsItems();
 
-        Condition condition = GOODS.GOODS_ID.in(goodsIds);
+        Condition condition = GOODS.GOODS_ID.in(goodsIds).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        // 是否展示已指定但是售罄的商品
         if (param.getSoldOutGoodsShow() == GoodsConstant.SOLD_OUT_GOODS_SHOW) {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
 
-        Map<Integer, GoodsT> goodsMap = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE, GOODS.GOODS_TYPE,
-            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID)
-            .from(GOODS).where(condition).fetchMap(GOODS.GOODS_ID, GoodsT.class);
+        Map<Integer, ActivityGoodsListCapsule> goodsListCapsulesMap = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
+            .from(GOODS).where(condition).fetchMap(GOODS.GOODS_ID, ActivityGoodsListCapsule.class);
 
-        List<GoodsT> returnList =new ArrayList<>();
-        goodsIds.forEach(goodsId->returnList.add(goodsMap.get(goodsId)));
+        List<ActivityGoodsListCapsule> goodsListCapsules = new ArrayList<>();
+        goodsIds.forEach(goodsId-> goodsListCapsules.add(goodsListCapsulesMap.get(goodsIds)));
 
-        return returnList;
+        return goodsListCapsules;
     }
 
     /**
      * 获取自动推荐时的商品信息
+     *
      * @param param 自动推荐过滤条件
      * @return 商品结果集合
      */
-    private List<GoodsT> getAutoGoodsList(GoodsListMpParam param) {
+    private List<ActivityGoodsListCapsule> getAutoGoodsList(GoodsListMpParam param) {
         // 处理过滤条件
         Condition condition = buildConditionForAutoGoodsList(param);
 
-        SelectConditionStep<?> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,GOODS.GOODS_TYPE,
-            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG, GOODS.CREATE_TIME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID)
+        SelectConditionStep<?> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
             .from(GOODS).where(condition);
 
         if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
@@ -161,9 +154,9 @@ public class GoodsMpService extends ShopBaseService {
         }
         // TODO: 排序时逻辑未添加对活动类型为1,3,5的类型的特殊处理，php处理了，但是目前开发未涉及到，不清楚具体业务场景
 
-        List<GoodsT> goodsTList = select.limit(param.getGoodsNum()).fetchInto(GoodsT.class);
+        List<ActivityGoodsListCapsule> goodsListCapsules = select.limit(param.getGoodsNum()).fetchInto(ActivityGoodsListCapsule.class);
 
-        return goodsTList;
+        return goodsListCapsules;
     }
 
     /**
@@ -174,8 +167,7 @@ public class GoodsMpService extends ShopBaseService {
      */
     private Condition buildConditionForAutoGoodsList(GoodsListMpParam param) {
         // 获取在售商品且商品数量大于0
-        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
-        condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
         if (!StringUtils.isBlank(param.getKeywords())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeywords())));
@@ -212,7 +204,7 @@ public class GoodsMpService extends ShopBaseService {
             }
         }
         // 商品活动过滤
-        if (GoodsListMpParam.GOODS_TYPE_IS_CARD_EXCLUSIVE.equals(param.getGoodsType()) ) {
+        if (GoodsListMpParam.GOODS_TYPE_IS_CARD_EXCLUSIVE.equals(param.getGoodsType())) {
             condition = condition.and(GOODS.IS_CARD_EXCLUSIVE.eq(GoodsConstant.CARD_EXCLUSIVE));
         } else {
             if (param.getGoodsType() != null) {
@@ -224,92 +216,45 @@ public class GoodsMpService extends ShopBaseService {
     }
 
     /**
-     * 处理获取的自动推荐商品
-     * @param goodsTList
+     * 处理获取的推荐商品规格，评价，标签，活动tag,最终划线价和商品价格
+     *
+     * @param goodsListCapsules 通过过滤条件获取的商品信息
+     * @param userId            用户id 可为null(在admin页面装修的时候传入的就是null)
      */
-    private void disposeGoodsList(List<GoodsT> goodsTList) {
-        // 获取评价审核信息
-        Byte commentConfig = configService.commentConfigService.geCommentConfig();
-        List<Integer> goodsIds = goodsTList.stream().map(GoodsT::getGoodsId).collect(Collectors.toList());
-        // 处理商品价格信息
-        disposeDecorateGoodsPrice(goodsIds, goodsTList);
-
-        // 获取各个商品评价数量
-        Map<Integer, Integer> goodsCommentMap = goodsCommentService.statisticGoodsComment(goodsIds, commentConfig);
-
-        for (GoodsT goodsT : goodsTList) {
-            // 获取和商品关联最紧密的标签信息,
-            GoodsLabelMpVo labelMpVo = goodsLabelMpService.getGoodsClosestLabel(goodsT);
-            // 商品活动标签名处理
-            goodsActivityMpService.disposeGoodsActivityTags(goodsT);
-
-            goodsT.setLabel(labelMpVo);
-            goodsT.setCommentNum(goodsCommentMap.get(goodsT.getGoodsId()) == null ? 0:goodsCommentMap.get(goodsT.getGoodsId()));
-            goodsT.setGoodsImg(getImgFullUrlUtil(goodsT.getGoodsImg()));
-        }
+    private void disposeGoodsList(List<ActivityGoodsListCapsule> goodsListCapsules, Integer userId) {
+        GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);
+        // 处理规格，评价，标签，活动tag,最终划线价和商品价格
+        processorFactory.doProcess(goodsListCapsules, userId);
     }
 
     /**
-     * 处理商品最终价格
-     * @return
+     * ActivityGoodsListCapsule 转换为 GoodsListMpVo
+     *
+     * @param goodsListCapsules 待转换数据
+     * @return 转换后的数据
      */
-    private void disposeDecorateGoodsPrice(List<Integer> goodsId, List<GoodsT> targetGoodsT) {
-        // 获取商品规格最低最高价
-        Map<Integer, GoodsT> goodsPrdPriceInfo = goodsProductMpService.getGoodsPrdPriceInfo(goodsId);
-
-        Map<Integer, Byte> goodsTypeMap = targetGoodsT.stream().collect(Collectors.toMap(GoodsT::getGoodsId, GoodsT::getGoodsType));
-
-        // 获取商品对应活动的最终价格
-        Map<Integer, BigDecimal> goodsActivityPriceMap = goodsPriceService.getShowPriceByIdAndType(goodsTypeMap);
-//        Map<Integer, BigDecimal> goodsActivityPriceMap = new HashMap<>();
-
-        final String priceFormat = "%.2f";
-
-        for (GoodsT target : targetGoodsT) {
-            GoodsT prdPriceBox = goodsPrdPriceInfo.get(target.getGoodsId());
-            // 该值可能为null，因为可能活动失效了
-            BigDecimal activityPrice = goodsActivityPriceMap.get(target.getGoodsId());
-
-            target.setRealPriceStr(String.format(priceFormat, target.getShopPrice()));
-
-            if (activityPrice != null) {
-                target.setRealPriceStr(String.format(priceFormat, activityPrice));
-            }
-            // 划线价设置
-            Byte goodsType = target.getGoodsType();
-            if (goodsActivityMpService.isIn135610Activity(goodsType)) {
-                target.setLinePriceStr(String.format(priceFormat, prdPriceBox.getMaxPrice()));
-            } else {
-                target.setLinePriceStr(String.format(priceFormat, target.getMarketPrice()));
-            }
-        }
-    }
-
-
-    private List<GoodsListMpVo> convertGoodsTGoodsListMpVo(List<GoodsT> goodsTList) {
+    private List<GoodsListMpVo> convertGoodsCapsuleTGoodsListMpVo(List<ActivityGoodsListCapsule> goodsListCapsules) {
         List<GoodsListMpVo> goodsListMpVos = new ArrayList<>();
-        if (goodsTList == null || goodsTList.size() == 0) {
+        if (goodsListCapsules == null || goodsListCapsules.size() == 0) {
             return goodsListMpVos;
         }
 
-        for (GoodsT t : goodsTList) {
+        for (ActivityGoodsListCapsule t : goodsListCapsules) {
             GoodsListMpVo vo = new GoodsListMpVo();
             vo.setGoodsId(t.getGoodsId());
             vo.setGoodsName(t.getGoodsName());
-            vo.setCreateTime(t.getCreateTime());
-            vo.setGoodsImg(t.getGoodsImg());
+            vo.setGoodsImg(getImgFullUrlUtil(t.getGoodsImg()));
             vo.setGoodsNumber(t.getGoodsNumber());
-            vo.setGoodsSaleNum(Integer.toString(t.getGoodsSaleNum() + t.getBaseSale()));
-            vo.setIsOnSale(t.getIsOnSale());
+            vo.setGoodsSaleNum(t.getGoodsSaleNum() + t.getBaseSale());
+            vo.setCommentNum(t.getCommentNum());
             vo.setDefaultPrd(t.getDefaultPrd());
-            vo.setGoodsTags(t.getGoodsTags());
-            vo.setGoodsType(t.getGoodsType());
-            vo.setDelFlag(t.getDelFlag());
-            vo.setLabel(t.getLabel());
-            vo.setShopPrice(t.getShopPrice());
-            vo.setLinePrice(t.getLinePriceStr());
-            vo.setRealPrice(t.getRealPriceStr());
-            vo.setMarketPrice(t.getMarketPrice());
+            vo.setLinePrice(t.getLinePrice());
+            vo.setRealPrice(t.getRealPrice());
+
+            if (t.getGoodsLabel() != null) {
+                vo.setLabel(new GoodsLabelMpVo(t.getGoodsLabel().getName(),t.getGoodsLabel().getListPattern()));
+            }
+            t.setActivities(vo.getGoodsActivity());
             goodsListMpVos.add(vo);
         }
         return goodsListMpVos;

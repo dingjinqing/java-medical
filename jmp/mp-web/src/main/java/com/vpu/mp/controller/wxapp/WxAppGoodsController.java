@@ -19,6 +19,7 @@ public class WxAppGoodsController extends WxAppBaseController{
 
     @PostMapping("/api/wxapp/goods/test")
     public JsonResult test(@RequestBody GoodsIdParams params){
+        Integer userId = wxAppAuth.user().getUserId();
         List<ActivityGoodsListCapsule> test = shop().goodsMp.test();
         return success(test);
     }

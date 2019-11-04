@@ -26,7 +26,7 @@ public class GoodsCommentForListProcessor extends GoodsCommentProcessorDao imple
     @Override
     public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
-        List<Integer> goodsIds = capsules.stream().map(x -> x.getCapsuleId()).collect(Collectors.toList());
+        List<Integer> goodsIds = capsules.stream().map(x -> x.getGoodsId()).collect(Collectors.toList());
         param.setGoodsIds(goodsIds);
         return param;
     }
@@ -44,7 +44,7 @@ public class GoodsCommentForListProcessor extends GoodsCommentProcessorDao imple
     @Override
     public void process(Map<Integer, GoodsCommentForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             GoodsCommentForListInfo comment = activityInfos.get(goodsId);
             if (comment == null) {
                 return;

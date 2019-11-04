@@ -25,7 +25,7 @@ public class GoodsPrdForListProcessor extends GoodsPrdProcessorDao implements Ac
 
     @Override
     public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
-        List<Integer> goodsIds = capsules.stream().map(AbstractCapsule::getCapsuleId).collect(Collectors.toList());
+        List<Integer> goodsIds = capsules.stream().map(AbstractCapsule::getGoodsId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setGoodsIds(goodsIds);
         return param;
@@ -39,7 +39,7 @@ public class GoodsPrdForListProcessor extends GoodsPrdProcessorDao implements Ac
     @Override
     public void process(Map<Integer, GoodsPrdForListInfo> prdInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId= capsule.getCapsuleId();
+            Integer goodsId= capsule.getGoodsId();
             GoodsPrdForListInfo prdInfo = prdInfos.get(goodsId);
             if (prdInfo == null) {
                 return;

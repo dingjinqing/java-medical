@@ -33,10 +33,10 @@ public class GoodsLabelForListProcessor extends GoodsLabelProcessorDao implement
         List<Integer> catIds = new ArrayList<>();
         List<ActivityGoodsListMpParam.AllIdsParam> idsParams = new ArrayList<>();
         capsules.forEach(capsule->{
-            goodsIds.add(capsule.getCapsuleId());
+            goodsIds.add(capsule.getGoodsId());
             sortIds.add(capsule.getSortId());
             catIds.add(capsule.getCatId());
-            idsParams.add(new ActivityGoodsListMpParam.AllIdsParam(capsule.getCapsuleId(),capsule.getCatId(),capsule.getSortId(),null));
+            idsParams.add(new ActivityGoodsListMpParam.AllIdsParam(capsule.getGoodsId(),capsule.getCatId(),capsule.getSortId(),null));
         });
 
         param.setGoodsIds(goodsIds);
@@ -76,7 +76,7 @@ public class GoodsLabelForListProcessor extends GoodsLabelProcessorDao implement
     @Override
     public void process(Map<Integer, GoodsLabelForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             GoodsLabelForListInfo label = activityInfos.get(goodsId);
             if (label == null) {
                 return;

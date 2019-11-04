@@ -28,7 +28,7 @@ public class SecKillForListProcessor extends SecKillProcessorDao implements Acti
     @Override
     public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
         List<Integer> goodsIds = capsules.stream().filter(x -> x.getGoodsType() == GoodsConstant.ACTIVITY_TYPE_SEC_KILL)
-            .map(AbstractCapsule::getCapsuleId).collect(Collectors.toList());
+            .map(AbstractCapsule::getGoodsId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setDate(DateUtil.getLocalDateTime());
         param.setGoodsIds(goodsIds);
@@ -43,12 +43,12 @@ public class SecKillForListProcessor extends SecKillProcessorDao implements Acti
     @Override
     public void process(Map<Integer, SecKillForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             SecKillForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }
-            capsule.setGoodsPrice(activity.getActivityPrice());
+            capsule.setShopPrice(activity.getActivityPrice());
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_SEC_KILL);
         });

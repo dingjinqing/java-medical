@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -8,8 +9,8 @@ import lombok.Data;
  * 小程序商品模块标签返回实体
  */
 @Data
+@AllArgsConstructor
 public class GoodsLabelMpVo {
     private String name;
-    private Byte listPattern;
-    private Byte gtaId;
+    private Short listPattern;
 }

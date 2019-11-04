@@ -35,7 +35,7 @@ public class GradeCardForListProcessor extends MemberCardProcessorDao implements
                 capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL)) {
                 return;
             }
-            goodsIds.add(capsule.getCapsuleId());
+            goodsIds.add(capsule.getGoodsId());
         });
         param.setGoodsIds(goodsIds);
         return param;
@@ -49,12 +49,12 @@ public class GradeCardForListProcessor extends MemberCardProcessorDao implements
     @Override
     public void process(Map<Integer, GradeCardForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule -> {
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             GradeCardForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }
-            capsule.setGoodsPrice(activity.getActivityPrice());
+            capsule.setShopPrice(activity.getActivityPrice());
             // 如果商品是会员专享的话则价格限时会员价的单是提示信息显示会员专享（ps:filterParam处已经过滤掉了首单特惠）
             if (!capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 capsule.getActivities().add(activity);

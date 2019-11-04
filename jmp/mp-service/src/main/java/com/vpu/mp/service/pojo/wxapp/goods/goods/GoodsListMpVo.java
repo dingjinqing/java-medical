@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -15,24 +15,16 @@ import java.util.List;
 public class GoodsListMpVo {
     private Integer goodsId;
     private String goodsName;
-    private Timestamp createTime;
     private String goodsImg;
     private Integer goodsNumber;
+    private Integer goodsSaleNum;
+    private Integer commentNum;
 
-    private String goodsSaleNum;
-    private Byte isOnSale;
-    private Byte defaultPrd;
+    private Boolean defaultPrd;
 
-    /**1拼团 3砍价 5秒杀 6限时降价 10预售 100优惠券 101满减*/
-    private List<Byte> goodsTags;
-    private Byte goodsType;
-    private Byte delFlag;
-
+    private List<ActivityForListInfo> goodsActivity;
     private GoodsLabelMpVo label;
 
-    private BigDecimal shopPrice;
-    private String linePrice;
-    private String realPrice;
-    private BigDecimal marketPrice;
-    private String commentNum;
+    private BigDecimal linePrice;
+    private BigDecimal realPrice;
 }

@@ -35,11 +35,11 @@ public class ExclusiveForListProcessor extends MemberCardProcessorDao implements
             if (ActivityProcessor.isGoodsTypeIn13510(capsule.getGoodsType())) {
                 return;
             }
-            goodsIds.add(capsule.getCapsuleId());
+            goodsIds.add(capsule.getGoodsId());
             sortIds.add(capsule.getSortId());
             catIds.add(capsule.getCatId());
             brandIds.add(capsule.getBrandId());
-           idsParams.add(new ActivityGoodsListMpParam.AllIdsParam(capsule.getCapsuleId(),capsule.getCatId(),capsule.getSortId(),capsule.getBrandId()));
+           idsParams.add(new ActivityGoodsListMpParam.AllIdsParam(capsule.getGoodsId(),capsule.getCatId(),capsule.getSortId(),capsule.getBrandId()));
         });
 
         param.setGoodsIds(goodsIds);
@@ -83,7 +83,7 @@ public class ExclusiveForListProcessor extends MemberCardProcessorDao implements
     @Override
     public void process(Map<Integer, ExclusiveForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             ExclusiveForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;

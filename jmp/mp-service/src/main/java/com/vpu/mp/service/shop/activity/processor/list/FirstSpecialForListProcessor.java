@@ -32,10 +32,10 @@ public class FirstSpecialForListProcessor extends FirstSpecialProcessorDao imple
 
     @Override
     public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        if (!orderInfoService.isNewUser(userId, true)) {
-            return null;
-        } else {
+        if (userId == null || orderInfoService.isNewUser(userId, true)) {
             return filterParam(capsules);
+        }else {
+            return null;
         }
     }
 
@@ -50,7 +50,7 @@ public class FirstSpecialForListProcessor extends FirstSpecialProcessorDao imple
                 capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 return;
             }
-            goodsIds.add(capsule.getCapsuleId());
+            goodsIds.add(capsule.getGoodsId());
         });
         param.setGoodsIds(goodsIds);
         return param;
@@ -64,12 +64,12 @@ public class FirstSpecialForListProcessor extends FirstSpecialProcessorDao imple
     @Override
     public void process(Map<Integer, FirstSpecialForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             FirstSpecialForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }
-            capsule.setGoodsPrice(activity.getActivityPrice());
+            capsule.setShopPrice(activity.getActivityPrice());
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
         });

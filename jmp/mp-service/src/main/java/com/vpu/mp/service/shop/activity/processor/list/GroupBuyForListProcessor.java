@@ -30,7 +30,7 @@ public class GroupBuyForListProcessor extends GroupBuyProcessorDao implements
     @Override
     public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
         List<Integer> goodsIds = capsules.stream().filter(x -> x.getGoodsType() == GoodsConstant.ACTIVITY_TYPE_GROUP_BUY)
-            .map(AbstractCapsule::getCapsuleId).collect(Collectors.toList());
+            .map(AbstractCapsule::getGoodsId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setGoodsIds(goodsIds);
         param.setDate(DateUtil.getLocalDateTime());
@@ -45,12 +45,12 @@ public class GroupBuyForListProcessor extends GroupBuyProcessorDao implements
     @Override
     public void process(Map<Integer, GroupBuyForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             GroupBuyForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }
-            capsule.setGoodsPrice(activity.getActivityPrice());
+            capsule.setShopPrice(activity.getActivityPrice());
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
         });

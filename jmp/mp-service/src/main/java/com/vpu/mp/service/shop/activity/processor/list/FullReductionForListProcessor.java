@@ -40,7 +40,7 @@ public class FullReductionForListProcessor extends FullReductionProcessorDao imp
                 continue;
             }
             ActivityGoodsListMpParam.AllIdsParam allIds = new ActivityGoodsListMpParam.AllIdsParam();
-            allIds.goodsId = capsule.getCapsuleId();
+            allIds.goodsId = capsule.getGoodsId();
             allIds.catId = capsule.getCatId();
             allIds.sortId = capsule.getSortId();
             allIds.brandId = capsule.getBrandId();
@@ -72,7 +72,7 @@ public class FullReductionForListProcessor extends FullReductionProcessorDao imp
     @Override
     public void process(Map<Integer, FullReductionForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
        capsules.forEach(capsule->{
-           Integer goodsId = capsule.getCapsuleId();
+           Integer goodsId = capsule.getGoodsId();
            FullReductionForListInfo activity = activityInfos.get(goodsId);
            if (activity == null) {
                return;

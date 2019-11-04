@@ -43,7 +43,7 @@ public class CouponForListProcessor extends CouponProcessorDao implements Activi
                 continue;
             }
             ActivityGoodsListMpParam.AllIdsParam allIds = new ActivityGoodsListMpParam.AllIdsParam();
-            allIds.goodsId = capsule.getCapsuleId();
+            allIds.goodsId = capsule.getGoodsId();
             allIds.catId = capsule.getCatId();
             allIds.sortId = capsule.getSortId();
             idParams.add(allIds);
@@ -78,7 +78,7 @@ public class CouponForListProcessor extends CouponProcessorDao implements Activi
     @Override
     public void process(Map<Integer, CouponForLsitInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getCapsuleId();
+            Integer goodsId = capsule.getGoodsId();
             CouponForLsitInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
