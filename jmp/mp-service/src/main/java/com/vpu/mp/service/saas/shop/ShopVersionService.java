@@ -23,6 +23,7 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopVersionPojo;
+import com.vpu.mp.service.pojo.saas.shop.ShopVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
@@ -342,6 +343,19 @@ public class ShopVersionService extends MainBaseService {
 		return result;
 	}
 	
-	
+	public ShopVersionVo getOneVersion(Integer id) {
+		// ShopVersionVo
+		ShopVersionRecord record = db().selectFrom(SHOP_VERSION).where(SHOP_VERSION.ID.eq(id)).fetchAny();
+		VersionConfig versionConfig = getVersionConfig(record.getLevel());
+		ShopVersionVo vo = new ShopVersionVo();
+		vo.setId(record.getId());
+		vo.setVersionName(record.getVersionName());
+		vo.setCreated(record.getCreated());
+		vo.setContent(versionConfig);
+		vo.setUpdateTime(record.getUpdateTime());
+		vo.setDesc(record.getDesc());
+		vo.setFlag(record.getFlag());
+		return vo;
+	}
 
 }
