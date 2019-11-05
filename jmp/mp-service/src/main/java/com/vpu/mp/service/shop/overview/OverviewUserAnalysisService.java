@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop.overview;
 
-import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.overview.useranalysis.*;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.text.ParseException;
@@ -9,27 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisActiveTotalVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisActiveVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisDateParam;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisOrderTotalBeforeVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisOrderTotalVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisOrderVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuyFirstVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuyLastVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuyParam;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuySecondVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuyThirdVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuyVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisTrendAfterVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisTrendBeforeVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisTrendVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisVipBeforeVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisVipVo;
+import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
 
 /**
  * 用户统计模块
@@ -43,46 +27,49 @@ public class OverviewUserAnalysisService extends ShopBaseService {
 	/**
 	 * 查询客户概况及趋势
 	 * 
-	 * @param param
-	 * @return List<OverviewUserAnalysisTrendVo>
+	 * @param param 开始日期和结束日期
+	 * @return 单天数据/总数据/数据变化率
 	 */
-	public List<OverviewUserAnalysisTrendVo> getTrend(OverviewUserAnalysisDateParam param) {
+	public OverviewUserAnalysisTrendTotalVo getTrend(OverviewUserAnalysisDateParam param) {
 
 		try {
-
+            //得到上一个一天/一周/一月
 			String startTimeString;
 			String endTimeString;
 			String lastNum = param.getLastNum();
+			//上一个时间段开始日期
 			startTimeString = "1".equals(lastNum) ? getStartDate(lastNum) : lastNum;
 			startTimeString = "7".equals(lastNum) ? getStartDate(lastNum) : startTimeString;
 			startTimeString = "30".equals(lastNum) ? getStartDate(lastNum) : startTimeString;
-
+            //上一个时间段结束日期
 			endTimeString = "1".equals(lastNum) ? getEndDate(lastNum) : lastNum;
 			endTimeString = "7".equals(lastNum) ? getEndDate(lastNum) : endTimeString;
 			endTimeString = "30".equals(lastNum) ? getEndDate(lastNum) : endTimeString;
-
+            //格式化日期
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			//开始日期转Date型
 			java.util.Date startTime;
 			startTime = sdf.parse(startTimeString);
-
+            //结束日期转Date型
 			java.util.Date endTime;
 			endTime = sdf.parse(endTimeString);
-
-			List<OverviewUserAnalysisTrendBeforeVo> beforeVo = db()
-					.select(DSL.sum(USER_SUMMARY_TREND.LOGIN_DATA).as("loginDataTotoal"),
-							DSL.sum(USER_SUMMARY_TREND.USER_DATA).as("userDataTotoal"),
-							DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserDataTotoal"))
+            //得到上一个时间段的数据
+			OverviewUserAnalysisTrendBeforeVo beforeVo = db()
+					.select(DSL.sum(USER_SUMMARY_TREND.LOGIN_DATA).as("loginDataTotal"),
+							DSL.sum(USER_SUMMARY_TREND.USER_DATA).as("userDataTotal"),
+							DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserDataTotal"))
 					.from(USER_SUMMARY_TREND).where(USER_SUMMARY_TREND.REF_DATE.between(new Date(startTime.getTime()),
 							new Date(endTime.getTime())))
-					.fetchInto(OverviewUserAnalysisTrendBeforeVo.class);
-			List<OverviewUserAnalysisTrendAfterVo> afterVo = db()
-					.select(DSL.sum(USER_SUMMARY_TREND.LOGIN_DATA).as("loginDataTotoal"),
-							DSL.sum(USER_SUMMARY_TREND.USER_DATA).as("userDataTotoal"),
-							DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserDataTotoal"))
+					.fetchOneInto(OverviewUserAnalysisTrendBeforeVo.class);
+            //得到下一个时间段的数据
+			OverviewUserAnalysisTrendAfterVo afterVo = db()
+					.select(DSL.sum(USER_SUMMARY_TREND.LOGIN_DATA).as("loginDataTotal"),
+							DSL.sum(USER_SUMMARY_TREND.USER_DATA).as("userDataTotal"),
+							DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserDataTotal"))
 					.from(USER_SUMMARY_TREND).where(USER_SUMMARY_TREND.REF_DATE
 							.between(new Date(param.getStartTime().getTime()), new Date(param.getEndTime().getTime())))
-					.fetchInto(OverviewUserAnalysisTrendAfterVo.class);
-
+					.fetchOneInto(OverviewUserAnalysisTrendAfterVo.class);
+            //得到每天的数据
 			List<OverviewUserAnalysisTrendVo> overviewUserAnalysisTrendVos = db()
 					.select(USER_SUMMARY_TREND.REF_DATE, USER_SUMMARY_TREND.LOGIN_DATA, USER_SUMMARY_TREND.USER_DATA,
 							USER_SUMMARY_TREND.ORDER_USER_DATA)
@@ -90,51 +77,73 @@ public class OverviewUserAnalysisService extends ShopBaseService {
 					.where(USER_SUMMARY_TREND.REF_DATE.between(new Date(param.getStartTime().getTime()),
 							new Date(param.getEndTime().getTime())))
 					.orderBy(USER_SUMMARY_TREND.REF_DATE.asc()).fetchInto(OverviewUserAnalysisTrendVo.class);
-
-			for (int i = 0; i < overviewUserAnalysisTrendVos.size(); i++) {
-
-				double loginDataRate = (double) (afterVo.get(0).getLoginDataTotoal()
-						- beforeVo.get(0).getLoginDataTotoal()) / (double) (beforeVo.get(0).getLoginDataTotoal());
-				overviewUserAnalysisTrendVos.get(i).setLoginDataRate(loginDataRate);
-
-				double userDataRate = (double) (afterVo.get(0).getUserDataTotoal()
-						- beforeVo.get(0).getUserDataTotoal()) / (double) (beforeVo.get(0).getUserDataTotoal());
-				overviewUserAnalysisTrendVos.get(i).setUserDataRate(userDataRate);
-
-				double orderUserDataRate = (double) (afterVo.get(0).getOrderUserDataTotoal()
-						- beforeVo.get(0).getOrderUserDataTotoal())
-						/ (double) (beforeVo.get(0).getOrderUserDataTotoal());
-				overviewUserAnalysisTrendVos.get(i).setOrderUserDataRate(orderUserDataRate);
-
-				overviewUserAnalysisTrendVos.get(i).setLoginDataTotoal(afterVo.get(0).getLoginDataTotoal());
-				overviewUserAnalysisTrendVos.get(i).setUserDataTotoal(afterVo.get(0).getUserDataTotoal());
-				overviewUserAnalysisTrendVos.get(i).setOrderUserDataTotoal(afterVo.get(0).getOrderUserDataTotoal());
-				
-			}
-			return overviewUserAnalysisTrendVos;
+            //得到变化率
+            double loginDataRate = getChangeRate(beforeVo.getLoginDataTotal(),afterVo.getLoginDataTotal());
+            double userDataRate = getChangeRate(beforeVo.getUserDataTotal(),afterVo.getUserDataTotal());
+            double orderUserDataRate = getChangeRate(beforeVo.getOrderUserDataTotal(),afterVo.getOrderUserDataTotal());
+            //返回出参接收数据
+            return new OverviewUserAnalysisTrendTotalVo(){{
+                setTrendVo(overviewUserAnalysisTrendVos);
+                //设置总数
+                setLoginDataTotal(afterVo.getLoginDataTotal());
+                setUserDataTotal(afterVo.getUserDataTotal());
+                setOrderUserDataTotal(afterVo.getOrderUserDataTotal());
+                //设置变化率
+                setLoginDataRate(loginDataRate);
+                setUserDataRate(userDataRate);
+                setOrderUserDataRate(orderUserDataRate);
+            }};
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
+    /**
+     * 计算数据变化率
+     * @param a 旧数据
+     * @param b 新数据
+     * @return 变化率
+     */
+    public double getChangeRate(Integer a,Integer b){
+	    if (a==null){
+	        //旧数据为空，结果为0
+	        return NumberUtils.DOUBLE_ZERO;
+        }else {
+	        if (b==null){
+	            b=NumberUtils.INTEGER_ZERO;
+            }
+	        //除数为0，令结果为100%
+	        if(a.equals(NumberUtils.INTEGER_ZERO)){
+	            return NumberUtils.DOUBLE_ONE;
+            }else {
+	            //公式计算结果
+                return (double) (b-a)/(double)a;
+            }
+        }
+
+    }
 	/**
-	 * 得到几天前的日期
+	 * 得到几天前一段时间的开始日期
 	 * 
-	 * @param string
-	 *            days
-	 * @return string yyyyMMdd
+	 * @param  days 上一段N天前
+	 * @return  yyyyMMdd
 	 */
 	public String getStartDate(String days) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Calendar c = Calendar.getInstance();
-		c.add(Calendar.DATE, -2 * Integer.valueOf(days));
+		c.add(Calendar.DATE, -2 * Integer.parseInt(days));
 		java.util.Date time = c.getTime();
 		String preDay = sdf.format(time);
 		System.out.println("preDay" + preDay);
 		return preDay;
 	}
-
+    /**
+     * 得到几天前一段时间的结束日期
+     *
+     * @param  days 上一段N天前
+     * @return  yyyyMMdd
+     */
 	public String getEndDate(String days) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Calendar c = Calendar.getInstance();

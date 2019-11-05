@@ -11,8 +11,8 @@ import lombok.Data;
 @Data
 public class OverviewUserAnalysisTrendAfterVo {
 	
-	private Integer loginDataTotoal;
-	private Integer userDataTotoal;
-	private Integer orderUserDataTotoal;
-	
+	private Integer loginDataTotal;
+	private Integer userDataTotal;
+	private Integer orderUserDataTotal;
+
 }

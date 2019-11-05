@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.overview.useranalysis;
 
-import java.util.Date;
-
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 客户概况及趋势
@@ -16,13 +16,5 @@ public class OverviewUserAnalysisTrendVo {
 	private Integer loginData;
 	private Integer userData;
 	private Integer orderUserData;
-	
-	private Integer loginDataTotoal;
-	private Integer userDataTotoal;
-	private Integer orderUserDataTotoal;
-	
-	private Double loginDataRate;
-	private Double userDataRate;
-	private Double orderUserDataRate;
-	
+
 }

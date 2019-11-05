@@ -1,24 +1,17 @@
 package com.vpu.mp.controller.admin;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.overview.useranalysis.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisActiveVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisDateParam;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisOrderVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuyParam;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisRebuyVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisTrendVo;
-import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisVipVo;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户统计控制器
@@ -33,42 +26,53 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	/**
 	 * 客户概况及趋势
 	 * 
-	 * @Param param
-	 * @return
+	 * @Param param 查看最近N天的数据(默认N=1) 1：一天，7：一周，30：一个月
+	 * @return 相关数量及趋势
 	 */
 	@PostMapping("/trend")
 	public JsonResult getTrend(@RequestBody OverviewUserAnalysisDateParam param) {
 		try {
+		    //得到昨天日期(date型)
 			Date yesterday = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24);
+			//默认查询最近一天数据
 			String lastNum = "1";
+			//查询结束日期为到昨天为止
 			Date endTime = yesterday;
-
+            //N天前为开始日期
 			String tempStartTime = param.getLastNum();
-
+            //判断N天前为几天前，最后得到一个String类型的yyyyMMdd格式的日期
 			lastNum = "1".equals(tempStartTime) ? getDate("1") : lastNum;
 			lastNum = "7".equals(tempStartTime) ? getDate("7") : lastNum;
 			lastNum = "30".equals(tempStartTime) ? getDate("30") : lastNum;
-
+            //将String日期转为yyyyMMdd格式的Date型日期
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
 			Date startTime = sdf.parse(lastNum);
-
+            //将设置好的Date型日期放入param，进行db操作
 			param.setStartTime(startTime);
 			param.setEndTime(endTime);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		List<OverviewUserAnalysisTrendVo> overviewUserAnalysisTrendVos = shop().overview.overviewUserAnalysisService.getTrend(param);
+		OverviewUserAnalysisTrendTotalVo result = shop().overview.overviewUserAnalysisService.getTrend(param);
 
-		return success(overviewUserAnalysisTrendVos);
+		return success(result);
 
 	}
 
+    /**
+     * 得到N天前的日期
+     * @param days N天前
+     * @return 对应日期(String型)
+     */
 	public String getDate(String days) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	    //设置日期格式
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Calendar c = Calendar.getInstance();
+		//Calendar.DATE=5 代表对日期操作，减去N，得到N天前
 		c.add(Calendar.DATE, -Integer.valueOf(days));
+		//转换成Date型
 		Date time = c.getTime();
+		//转换为指定时间格式的String型时间
 		String preDay = sdf.format(time);
 		System.out.println("preDay" + preDay);
 		return preDay;
