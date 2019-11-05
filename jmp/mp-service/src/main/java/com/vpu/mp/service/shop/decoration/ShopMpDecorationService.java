@@ -1,24 +1,5 @@
 package com.vpu.mp.service.shop.decoration;
 
-import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
-import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
-
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record5;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -34,20 +15,36 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import com.vpu.mp.service.pojo.shop.decoration.BatchSetPageCateParam;
-import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
-import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
-import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
-import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoods;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
+import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.DistributionConfigService;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record5;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
+import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 /**
  * 
@@ -63,6 +60,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
 	@Autowired
 	protected UserService user;
+
+	@Autowired
+    protected GoodsMpService goodsMpService;
 
 	/**
 	 * 装修页面列表
@@ -125,7 +125,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 	/**
 	 * 添加页面
 	 * 
-	 * @param page
+	 * @param param
 	 * @return
 	 */
 	public boolean addPage(XcxCustomerPageVo param) {
@@ -242,7 +242,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 	/**
 	 * 设置首页(事务处理)
 	 * 
-	 * @param pageId
+	 * @param param
 	 * @return
 	 */
 	public boolean setIndex(setIndexParam param) {
@@ -372,7 +372,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 	/**
 	 * 复制已有页面
 	 * 
-	 * @param copyId
+	 * @param pageId
 	 * @return
 	 */
 	public Boolean copyDecoration(Integer pageId) {
@@ -504,11 +504,31 @@ public class ShopMpDecorationService extends ShopBaseService {
 		return page;
 	}
 
+    /**
+     * 获取指定装修模块数据
+     * @param param 请求模块参数 {@link com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam}
+     * @return 对应模块的数据内容
+     */
+    public Object getPageModuleInfo(WxAppPageModuleParam param) {
+        UserRecord userRecord = user.getUserByUserId(param.getUserId());
+        XcxCustomerPageRecord pageRecord = this.getPageById(param.getPageId());
+        String pageContent = param.getSceneId()!=null&&param.getSceneId()>0?pageRecord.getPageContent():pageRecord.getPagePublishContent();
+        DistributionParam distributionCfg = config.distributionCfg.getDistributionCfg();
+        // 是否是分销员
+        boolean isDistributor = 1 == userRecord.getIsDistributor();
+
+        if (DistributionConfigService.ENABLE_STATUS.equals(distributionCfg.getStatus()) && isDistributor) {
+            pageContent = pageContent.replace("pages/distribution/distribution","pages/distributionspread/distributionspread");
+        }
+        Map<String, Object> map = convertPageContent(pageContent, param.getModuleIndex(), userRecord);
+
+        return map.get(param.getModuleIndex());
+    }
 	/**
 	 * 设置用户收藏有礼信息
 	 * 
 	 * @param collectInfo
-	 * @param userId
+	 * @param shop
 	 */
 	protected void setCollectInfo(ShopCollectInfo collectInfo, ShopRecord shop, UserRecord userRecord) {
 		CollectGiftParam collect = config.collectGiftConfigService.collectGiftConfig();
@@ -588,6 +608,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 			switch (moduleName) {
 			case ModuleConstant.M_GOODS_GROUP:
 				return this.convertGoodsGroup(objectMapper, node, user);
+            case ModuleConstant.M_GOODS:
+                return this.convertGoods(objectMapper,node,user);
+
 			/**
 			 * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
 			 */
@@ -604,15 +627,39 @@ public class ShopMpDecorationService extends ShopBaseService {
 	 * @param node
 	 * @param user
 	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	public ModuleGoodsGroup convertGoodsGroup(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user)
-			throws JsonParseException, JsonMappingException, IOException {
+	public ModuleGoodsGroup convertGoodsGroup(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
 		ModuleGoodsGroup element = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
 		// TODO: 转换实时信息
 		return element;
 	}
+
+    /**
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    public List<GoodsListMpVo> convertGoods(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
+        Integer userId = user.getUserId();
+        GoodsListMpParam param = new GoodsListMpParam();
+        param.setRecommendType(moduleGoods.getRecommendType());
+        param.setGoodsItems(moduleGoods.getGoodsItems());
+        param.setKeywords(moduleGoods.getKeywords());
+        param.setMinPrice(moduleGoods.getMinPrice());
+        param.setMaxPrice(moduleGoods.getMaxPrice());
+        param.setGoodsArea(moduleGoods.getGoodsArea());
+        param.setGoodsType(moduleGoods.getGoodsType());
+        param.setSortType(moduleGoods.getSortType());
+        param.setGoodsNum(moduleGoods.getGoodsNum());
+        // 转换实时信息
+        List<GoodsListMpVo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId);
+
+        return pageIndexGoodsList;
+    }
 
 }

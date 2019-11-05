@@ -2,10 +2,11 @@ package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.elasticsearch.search.aggregations.bucket.terms.InternalTerms;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -18,10 +19,15 @@ public class GoodsListMpParam {
      * 0 自动推荐 1手动推荐
      */
     @JsonProperty("recommend_type")
-    private Integer recommendType;
+    private Byte recommendType;
 
     @JsonProperty("goods_items")
     private List<Integer> goodsItems;
+
+    public void setGoodsItems(String goodsIds) {
+        goodsItems = goodsIds==null? null:
+        Arrays.stream(goodsIds.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+    }
     /**
      * 关键词,匹配商品名称
      */

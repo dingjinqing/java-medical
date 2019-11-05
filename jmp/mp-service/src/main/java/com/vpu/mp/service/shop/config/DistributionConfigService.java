@@ -16,7 +16,7 @@ public class DistributionConfigService extends BaseShopConfigService{
 	 * 分销开关
 	 */
 	final public static String K_FANLI = "fanli";
-	
+	final public static Byte ENABLE_STATUS = 1;
 	
 	/**
 	 * 获取返利配置

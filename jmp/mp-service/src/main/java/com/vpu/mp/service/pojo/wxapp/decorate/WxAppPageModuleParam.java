@@ -17,5 +17,5 @@ public class WxAppPageModuleParam extends WxAppPageParam {
 	 * 页面模块索引
 	 */
 	@JsonProperty(value = "idx")
-	Integer moduleIndex;
+	String moduleIndex;
 }

@@ -1,12 +1,12 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
+import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 
 @RestController
 public class WxAppConfigControllor extends WxAppBaseController {
@@ -30,7 +30,12 @@ public class WxAppConfigControllor extends WxAppBaseController {
 	public JsonResult index(@RequestBody WxAppPageParam param) {
 		return success(this.shop().mpDecoration.getPageInfo(param));
 	}
-	
+
+	@PostMapping("/api/wxapp/page/module")
+    public JsonResult module(@RequestBody WxAppPageModuleParam param) {
+	    return success(this.shop().mpDecoration.getPageModuleInfo(param));
+    }
+
 	@PostMapping("/api/wxapp/locale/get")
 	public JsonResult getLocalePack(@RequestBody WxAppCommonParam param) {
 		return success(this.shop().config.getLocalePack(getLang()));
