@@ -1,9 +1,9 @@
 <template>
   <div class="experience-version">
     <div class="select-menu top">
-      <div class="title">{{$t('versionList.title.versionList')}}</div>
+      <div class="title">版本名称：</div>
       <el-input
-        v-model="mainData.keywords"
+        v-model="versionName"
         size="small"
         class="select-input ml-6"
         clearable
@@ -27,40 +27,46 @@
       height="400"
     >
       <el-table-column
-        prop="userName"
+        prop="id"
         :label="$t('versionList.table.versionID')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="accountName"
+        prop="versionName"
         :label="$t('versionList.table.versionName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="company"
+        prop="level"
         align="center"
         :label="$t('versionList.table.versionLevel')"
       >
       </el-table-column>
       <el-table-column
-        prop="state"
+        prop="created"
         align="center"
         :label="$t('versionList.table.createTime')"
       >
       </el-table-column>
       <el-table-column
-        prop="shopGrade"
+        prop="updateTime"
         align="center"
         :label="$t('versionList.table.updateTime')"
       >
       </el-table-column>
       <el-table-column
-        prop="shopNumber"
         align="center"
         :label="$t('versionList.table.operate')"
       >
+        <template slot-scope="scope">
+          <el-link
+            type="primary"
+            :underline="false"
+            @click="show(scope.row)"
+          >查看</el-link>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -68,7 +74,7 @@
       <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
       <el-pagination
         @current-change="handleCurrentChange"
-        :current-page.sync="currentPage3"
+        :current-page.sync="currentPage"
         layout="prev, pager, next, jumper"
         :page-count="pageCount"
         :small="pagination_b"
@@ -79,38 +85,21 @@
 </template>
 
 <script>
-// import { searchAccountRequest } from '@/api/system/accountList.js'
+import { versionListRequest } from '@/api/system/versionList.js'
 
 export default {
-  name: 'experienceVersion',
+  name: 'versionListContent',
   data () {
     return {
-
-      mainData: {
-        state: '',
-        keywords: '',
-        company: ''
-      },
-      formTable: [{
-        usreName: '',
-        company: '',
-        state: '',
-        shopGrade: '',
-        shopNumber: '',
-        addTime: '',
-        buyTime: '',
-        endTime: '',
-        renewMoney: '',
-        mobile: ''
-      }],
+      formTable: null,
       totalRows: null,
       pageRows: '',
-      currentPage: '',
-      currentPage3: 1,
+      currentPage: 1,
       pageCount: null,
       pagination_b: true,
       value: '',
-      text: ''
+      text: '',
+      versionName: null
     }
   },
   created () {
@@ -124,28 +113,38 @@ export default {
 
     // 接口调用
     search () {
-      // let obj1 = {
-      // }
-      // let parameter = Object.assign(obj1, this.mainData)
-      // searchAccountRequest(parameter).then((res) => {
-      //   // console.log(res)
-      //   const { error, content } = res
-      //   if (error === 0) {
-      //     let formList = content.dataList
-      //     let pageObj = content.page
-      //     this.totalRows = pageObj.totalRows
-      //     this.currentPage = pageObj.currentPage
-      //     this.firstPage = pageObj.firstPage
-      //     this.lastPage = pageObj.lastPage
-      //     this.nextPage = pageObj.nextPage
-      //     this.pageCount = pageObj.pageCount
-      //     this.pageRows = pageObj.pageRows
-
-      //     this.formTable = formList
-      //   }
-      // }).catch(() => {
-      //   this.$message.error('保存失败')
-      // })
+      let obj1 = {
+        'currentPage': this.currentPage,
+        'pageRows': this.pageRows,
+        'versionName': this.versionName
+      }
+      versionListRequest(obj1).then((res) => {
+        if (res.error === 0) {
+          let formList = res.content.dataList
+          let pageObj = res.content.page
+          this.totalRows = pageObj.totalRows
+          this.currentPage = pageObj.currentPage
+          this.firstPage = pageObj.firstPage
+          this.lastPage = pageObj.lastPage
+          this.nextPage = pageObj.nextPage
+          this.pageCount = pageObj.pageCount
+          this.pageRows = pageObj.pageRows
+          this.formTable = formList
+        } else {
+          this.$message.error(res.message)
+        }
+      }).catch(() => {
+        this.$message.error('保存失败')
+      })
+    },
+    show (data) {
+      console.log('查看')
+      let params = {
+        'id': data.id,
+        'showFlagTwo': true,
+        'isEdit': false
+      }
+      this.$emit('showDtail', params)
     }
   }
 }

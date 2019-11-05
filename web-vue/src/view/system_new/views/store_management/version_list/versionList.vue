@@ -3,27 +3,70 @@
     v-model="tabActive"
     type="border-card"
     class="tab"
+    @tab-click="handleClick"
   >
     <el-tab-pane
       name="first"
       label="版本列表"
+      v-if="showFlag"
     >
-      <versionListContent />
+      <versionListContent @showDtail="show" />
+    </el-tab-pane>
+
+    <el-tab-pane
+      name="second"
+      label="版本功能"
+      v-if="showFlagTwo"
+    >
+      <versionListDetail
+        :sendVersionId="versionId"
+        :isEdit="isEdit"
+        :sendShopId="shopId"
+      />
     </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
 import versionListContent from './versionListContent.vue'
+import versionListDetail from './versionListDetail.vue'
 
 export default {
   name: 'pshopList',
   components: {
-    versionListContent
+    versionListContent,
+    versionListDetail
   },
   data () {
     return {
-      tabActive: 'first'
+      showFlag: true,
+      showFlagTwo: false,
+      versionId: null,
+      tabActive: 'first',
+      isEdit: false,
+      shopId: 0
+    }
+  },
+  methods: {
+    handleClick (tab, event) {
+      if (tab.name === 'first') {
+        this.tabActive = 'first'
+        this.showFlag = true
+        this.showFlagTwo = false
+      }
+      if (tab.name === 'second') {
+        this.tabActive = 'second'
+        this.showFlagTwo = true
+        this.showFlag = false
+      }
+    },
+    show (data) {
+      this.showFlagTwo = data.showFlagTwo
+      this.versionId = data.id
+      this.isEdit = data.isEdit
+      console.log('22222222222222222')
+      console.log(this.isEdit)
+      this.tabActive = 'second'
     }
   }
 }

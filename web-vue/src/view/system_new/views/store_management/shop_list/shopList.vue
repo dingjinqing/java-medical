@@ -47,6 +47,19 @@
           @goHome="show"
         />
       </el-tab-pane>
+
+      <el-tab-pane
+        label="版本权限"
+        name="fifth"
+        v-if="isShopVersion"
+      >
+        <versionListDetail
+          :sendVersionId="versionId"
+          :isEdit="isEdit"
+          :sendShopId="shopId"
+        />
+
+      </el-tab-pane>
     </el-tabs>
     <shopRenenwList
       v-if="isShopRenenw"
@@ -61,13 +74,15 @@ import experienceVersion from './experienceVersion.vue'
 import newShop from './newShop'
 import editShop from './editShop'
 import shopRenenwList from './shopRenenwList'
+import versionListDetail from '../version_list/versionListDetail'
 export default {
   name: 'shopList',
   components: {
     experienceVersion,
     newShop,
     editShop,
-    shopRenenwList
+    shopRenenwList,
+    versionListDetail
   },
   data () {
     return {
@@ -79,7 +94,11 @@ export default {
       firstShow: false,
       secondShow: true,
       isShopRenenw: false,
-      sendShowRe: null
+      sendShowRe: null,
+      isEdit: true,
+      versionId: 0,
+      shopId: 0,
+      isShopVersion: false
 
     }
   },
@@ -115,6 +134,11 @@ export default {
           this.$store.commit('UPDATE_BREADCRUMB_TITLE', '店铺续费明细')
           this.isShopRenenw = true
           this.sendShowRe = data
+        }
+        if (data.flag === 6) {
+          this.shopId = data.shopId
+          this.isShopVersion = true
+          this.tabActive = 'fifth'
         }
       }
     },

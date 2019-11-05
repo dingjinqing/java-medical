@@ -1082,6 +1082,14 @@ export default {
         }
       }
       return row.shopLanguageTrane
+    },
+    btnShowVersion (data) {
+      console.log('版本权限')
+      let params = {
+        'shopId': data,
+        'flag': 6
+      }
+      this.$emit('sendShopId', params)
     }
   }
 }
