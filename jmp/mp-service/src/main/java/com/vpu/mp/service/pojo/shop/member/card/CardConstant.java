@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @Description: 会员卡用到的常量定义
  */
 public class CardConstant {
+	/** 所有会员卡类型 */
+	public static final Byte MCARD_TP_ALL = -1;
 	/** 普通会员卡 */
 	public static final Byte MCARD_TP_NORMAL = 0;
 	/** 限次会员卡 */

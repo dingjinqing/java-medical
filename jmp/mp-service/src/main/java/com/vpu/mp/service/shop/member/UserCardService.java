@@ -67,6 +67,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.ADMIN_OPTION;
@@ -74,7 +76,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.EXCHANGE_GOOD
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.STORE_SERVICE_TIMES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.MEMBER_MONEY;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
 
 
 /**
@@ -88,6 +89,7 @@ public class UserCardService extends ShopBaseService {
 	final static Byte UPGRADE = 1;
 	// 检测有卡领取
 	final static Byte CHECK = 0;
+
 	@Autowired
 	public UserCardDaoService userCardDao;
 	@Autowired
@@ -199,7 +201,7 @@ public class UserCardService extends ShopBaseService {
 				if(type==1 || type==2) {
 					// 检测升级
 					cardId = checkAndUpgradeUserCard(userId);
-				}else if(type==0) {
+				}else if(type==CHECK) {
 					// 检测可升级到的卡
 					cardId = checkCardCanUpgrade(userId);
 				}
@@ -220,13 +222,13 @@ public class UserCardService extends ShopBaseService {
 	private Integer checkAndUpgradeUserCard(Integer userId) throws MpException {
 		Integer cardId = null;
 		// 获取等级卡列表等级升序
-		List<MemberCardRecord> gradeCard = getAvailGradeCard();
+		List<MemberCardRecord> gCardList = getAvailGradeCard();
 	
 		String uGrade = userCardDao.getUserCardGrade(userId);
 		// 判断用户是否拥有等级卡 
 		if (StringUtils.isBlank(uGrade)) {
 			// 用户第一次领取会员卡，给用户分配一级会员卡
-			MemberCardRecord gCard = gradeCard.get(0);
+			MemberCardRecord gCard = gCardList.get(0);
 			logger().info("给用户分配等级卡: " + gCard.getCardName() + "等级: " + gCard.getGrade());
 			addUserCard(userId, gCard.getId());
 			uGrade = userCardDao.getUserCardGrade(userId);
@@ -236,7 +238,7 @@ public class UserCardService extends ShopBaseService {
 		Integer userTotalScore = scoreService.getAccumulationScore(userId);
 		BigDecimal amount = distributorLevelService.getTotalSpend(userId).getTotal();
 		
-		for (MemberCardRecord gCard : gradeCard) {
+		for (MemberCardRecord gCard : gCardList) {
 			// 升级条件
 			GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
 			// 等级卡的等级高于用户卡等级或者用户目前等级为空
@@ -256,7 +258,6 @@ public class UserCardService extends ShopBaseService {
 	
 	/**
 	 * 检测可升级到的等级卡
-	 * @throws MemberCardNullException 
 	 */
 	private Integer checkCardCanUpgrade(Integer userId) throws MemberCardNullException {
 		String uGrade = userCardDao.getUserCardGrade(userId);
@@ -333,7 +334,6 @@ public class UserCardService extends ShopBaseService {
 
 
 	public void addUserCard(Integer userId, Integer... cardId) throws MpException {
-		// TODO 
 		List<UserCardParam> cardList = new ArrayList<>();
 		for(Integer id: cardId) {
 			cardList.add(UserCardParamBuilder.create().cardId(id).build());
@@ -534,8 +534,6 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 计算用户卡使用的时间段
-	 * 
-	 * @return
 	 */
 	public List<Integer> useInDate() {
 		LocalDate now = DateUtil.getLocalDate();
@@ -569,12 +567,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 增加会员卡消费记录
-	 * 
-	 * @param data
-	 * @param adminUser
 	 * @param tradeType  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
-	 * @param tradeFlow
-	 * @param type
 	 * @param isContinue 卡余额时（次数或余额）在休息时间内（23:00-8:00）是否继续发送消息：true继续，false停止
 	 */
 	public int cardConsumer(UserCardConsumeBean data, Integer adminUser, Byte tradeType, Byte tradeFlow, Byte type,
@@ -775,9 +768,6 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * get card type
-	 * 
-	 * @param cardNo
-	 * @return
 	 */
 	public Byte getCardType(String cardNo) {
 		if (StringUtil.isBlank(cardNo)) {
@@ -791,16 +781,9 @@ public class UserCardService extends ShopBaseService {
 	 * 
 	 * @param userId    用户
 	 * @param prdIdList 规格ids
-	 * @return
 	 */
 	public List<UserCardGradePriceBo> getUserCartGradePrice(Integer userId, List<Integer> prdIdList) {
-		return db()
-				.select(MEMBER_CARD.CARD_NAME, MEMBER_CARD.GRADE, GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID,
-						GRADE_PRD.GRADE_PRICE)
-				.from(USER_CARD).leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)).leftJoin(GRADE_PRD)
-				.on(GRADE_PRD.GRADE.eq(MEMBER_CARD.GRADE)).where(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
-				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE)).and(USER_CARD.USER_ID.eq(userId))
-				.and(GRADE_PRD.PRD_ID.in(prdIdList)).fetchInto(UserCardGradePriceBo.class);
+		return userCardDao.getUserCartGradePrice(userId,prdIdList);
 	}
 
 	/**
@@ -840,11 +823,10 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 根据id获得具有卡的数量
-	 * 
-	 * @param cardId
-	 * @return
 	 */
 	public int getNumCardsWithSameId(Integer cardId) {
 		return userCardDao.calcNumCardById(cardId);
 	}
+	
+	
 }

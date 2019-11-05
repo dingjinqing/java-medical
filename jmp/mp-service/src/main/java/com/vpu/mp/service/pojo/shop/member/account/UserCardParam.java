@@ -40,6 +40,7 @@ public class UserCardParam {
 	protected Timestamp userCardUpdateTime;
 	
 	/** member_card bean */
+	protected Integer mId;
 	protected String cardName;
 	protected Byte cardType;
 	protected Byte bgType;

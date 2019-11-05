@@ -23,7 +23,6 @@ public class CardVerifyService extends ShopBaseService {
 	/**
 	 * 根据卡号，获取当前卡的审核状态
 	 * @param cardNo 卡号
-	 * @return
 	 */
 	public Byte getCardVerifyStatus(String cardNo){
 		if(StringUtils.isBlank(cardNo)) {
@@ -32,4 +31,9 @@ public class CardVerifyService extends ShopBaseService {
 		CardVerifyResultVo cardVerifyDaoService = verifyDao.getCardVerifyResult(cardNo);
 		return cardVerifyDaoService != null?cardVerifyDaoService.getStatus():VSTAT_REFUSED;
 	}
+	
+	
+	
+	
+	
 }

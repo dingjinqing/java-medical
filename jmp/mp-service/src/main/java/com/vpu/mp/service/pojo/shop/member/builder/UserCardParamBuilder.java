@@ -14,10 +14,10 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 public class UserCardParamBuilder {
 	private UserCardParam userCard;
 	
-	private UserCardParamBuilder(){
+	protected UserCardParamBuilder(){
 		userCard = new UserCardParam();
 	}
-	private UserCardParamBuilder(UserCardParam userCard) {
+	protected UserCardParamBuilder(UserCardParam userCard) {
 		this.userCard = userCard;
 	}
 	
