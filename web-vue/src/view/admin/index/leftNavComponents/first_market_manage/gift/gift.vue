@@ -228,7 +228,7 @@ export default {
     // 修改活动优先级
     updateGiftLevel (id, level) {
       updateGiftLevel({ id, level }).then((res) => {
-        this.$message.success({ message: '修改成功!' })
+        this.$message.success({ message: this.$t('gift.editSuccess') })
       })
     },
 

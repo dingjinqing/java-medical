@@ -92,8 +92,7 @@
                   v-show="goodsRange===1"
                   @click="showChoosingGoods"
                 >{{goodsBtnName}}</el-button>
-                <!-- <span v-show="goodsRange===1">已选：{{goodsIdsLength}}件商品</span> -->
-                <span v-show="goodsRange===1">已选：{{goodslength}}件商品</span>
+                <span v-show="goodsRange===1">{{ $t('gift.selected') }}：{{goodslength}} {{ $t('gift.selectedNUm') }}</span>
               </el-form-item>
               <el-form-item
                 :label="$t('gift.giftConditions') + '：'"
@@ -119,33 +118,33 @@
               </el-form-item>
               <div style="background:rgb(245,245,245);margin-bottom:22px;">
                 <el-form-item
-                  label="满金额赠送："
+                  :label="$t('gift.conditions1')"
                   v-show="contains(0)"
                 >
-                  <span>满</span>
+                  <span>{{ $t('gift.conditionsTip1') }}</span>
                   <el-input
                     size="small"
                     v-model="param.rules.fullPrice"
                     class="input"
                     :disabled="ongoing"
                   ></el-input>
-                  <span>元，送赠品</span>
+                  <span>{{ $t('gift.conditionsTip2') }} {{ $t('gift.conditionsTip3') }}</span>
                 </el-form-item>
                 <el-form-item
-                  label="满数量赠送："
+                  :label="$t('gift.conditions2')"
                   v-show="contains(1)"
                 >
-                  <span>满</span>
+                  <span>{{ $t('gift.conditionsTip1') }}</span>
                   <el-input
                     size="small"
                     v-model="param.rules.fullNumber"
                     class="input"
                     :disabled="ongoing"
                   ></el-input>
-                  <span>件，送赠品</span>
+                  <span>{{ $t('gift.conditionsTip4') }} {{ $t('gift.conditionsTip3') }}</span>
                 </el-form-item>
                 <el-form-item
-                  label="会员标签："
+                  :label="$t('gift.conditions3')"
                   v-show="contains(2)"
                 >
                   <el-select
@@ -164,7 +163,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item
-                  label="会员卡："
+                  :label="$t('gift.conditions4')"
                   v-show="contains(3)"
                 >
                   <el-select
@@ -183,18 +182,18 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item
-                  label="付款排名："
+                  :label="$t('gift.conditions5')"
                   v-show="contains(4)"
                 >
-                  前 <el-input
+                  {{ $t('gift.conditionsTip5') }} <el-input
                     size="small"
                     v-model="param.rules.payTop"
                     class="input"
                     :disabled="ongoing"
-                  ></el-input>名付款用户，送赠品
+                  ></el-input>{{ $t('gift.conditionsTip6') }} {{ $t('gift.conditionsTip3') }}
                 </el-form-item>
                 <el-form-item
-                  label="已购买次数："
+                  :label="$t('gift.conditions6')"
                   v-show="contains(5)"
                 >
                   <el-input
@@ -203,31 +202,31 @@
                     class="input"
                     :disabled="ongoing"
                   ></el-input>
-                  <span style="margin-right: 10px">至</span>
+                  <span style="margin-right: 10px">{{ $t('gift.to') }}</span>
                   <el-input
                     size="small"
                     v-model="param.rules.maxPayNum"
                     class="input"
                     :disabled="ongoing"
-                  ></el-input> 次
+                  ></el-input> {{ $t('gift.conditionsTip7') }}
                 </el-form-item>
                 <el-form-item
-                  label="付款时间："
+                  :label="$t('gift.conditions7')"
                   v-show="contains(6)"
                 >
                   <el-date-picker
                     size="samll"
                     v-model="payDateRange"
                     type="datetimerange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    :range-separator="$t('gift.to')"
+                    :start-placeholder="$t('gift.startTime')"
+                    :end-placeholder="$t('gift.endTime')"
                     :disabled="ongoing"
                   >
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item
-                  label="用户类别："
+                  :label="$t('gift.conditions8')"
                   v-show="contains(7)"
                 >
                   <el-select
@@ -316,12 +315,12 @@
                 align="center"
               > </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('gift.goodsPrice')"
                 align="center"
               > </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('gift.goodsNumber')"
                 align="center"
               > </el-table-column>
@@ -335,7 +334,7 @@
                     v-model="scope.row.productNumber"
                     :disabled="ongoing"
                     :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
-                    @update="checkProductNumber(scope.row.goodsNumber, scope.row.productNumber, scope.row.offerNumber)"
+                    @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
                   >
                     <span slot="before">
                       {{scope.row.productNumber}} /
@@ -388,16 +387,19 @@
         </el-row>
       </div>
 
-      <!-- step1 -->
+      <!-- step1 - 商品弹窗 -->
       <choosingGoods
         :tuneUpChooseGoods="tuneUpGoods"
-        @resultGoodsIds="getIds"
+        @resultGoodsIds="getGoodsIds"
+        :chooseGoodsBack="this.param.goodsIds"
       />
-      <!-- step2 -->
+      <!-- step2 - 规格弹窗-->
       <choosingGoods
         :tuneUpChooseGoods="tuneUpChooseGoods"
-        :chooseGoodsBack="goodsIdList"
-        @resultGoodsIds="getGoodsIds"
+        :loadProduct="true"
+        :chooseGoodsBack="specsIds"
+        @resultGoodsIds="getSpecsIds"
+        @resultGoodsDatas="getSpecsData"
       />
     </wrapper>
   </div>
@@ -407,9 +409,9 @@ import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import status from '@/components/admin/marketManage/status/status'
 import { format, range } from '@/util/date'
+// import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
 
 export default {
@@ -474,14 +476,12 @@ export default {
       tuneUpChooseGoods: false, // 商品弹窗
       tuneUpGoods: false,
       // 商品弹窗回调数据
-      goodsIdList: [],
-      goodslength: 0
+      goodslength: 0, // 商品个数
+      specsIds: [], // 规格id
+      specsList: [] // 规格数据
     }
   },
   computed: {
-    // goodsIdsLength () {
-    //   return this.tmpGoodsIds.length
-    // },
     stepButtonOffset () {
       if (this.step === 2) {
         return 0
@@ -493,21 +493,23 @@ export default {
     },
     goodsBtnName () {
       if (this.ongoing) {
-        return '查看商品'
+        return this.$t('gift.viewCommodity')
       }
-      return '添加商品'
+      return this.$t('gift.addCommodity')
     }
   },
   mounted () {
     this.langDefault()
+    const { id } = this.$route.params
+    this.update = !!id
+    this.id = id || null
     if (this.$route.params.id) {
       // 编辑回显
       this.loadData()
+      this.loadTag()
+      this.loadMemberCard()
+      this.listenGoodsResult()
     }
-
-    this.loadTag()
-    this.loadMemberCard()
-    this.listenGoodsResult()
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
@@ -526,11 +528,6 @@ export default {
     // 保存
     addGift () {
       this.param.gifts = this.tableData
-      this.param.gifts.map((item, index) => {
-        item.productId = item.prdId
-        item.productNumber = Number(item.productNumber)
-      })
-      console.log(this.param.gifts)
       if (!this.validateGiftParam()) {
         return
       }
@@ -546,6 +543,10 @@ export default {
         })
       } else {
         // 添加保存
+        this.param.gifts.map((item, index) => {
+          item.productId = item.prdId
+          item.productNumber = Number(item.productNumber)
+        })
         addGift(this.param).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('gift.saveSuccess') })
@@ -660,12 +661,14 @@ export default {
     },
     loadGifts (gifts) {
       gifts.forEach(row => {
-        const { productId, productNumber } = row
-        getProductDetail(this.id, productId).then(({ content }) => {
+        // const { productId, productNumber } = row
+        const { giftId, productId, productNumber } = row
+        getProductDetail(giftId, productId).then(({ content }) => {
           this.tableData.push({
             ...row,
             productNumber
           })
+          this.specsIds.push(productId)
           console.log(this.tableData)
         })
       })
@@ -681,12 +684,14 @@ export default {
     findRule (key) {
       return this.rules.find(rule => rule.keys.findIndex(k => k === key) !== -1)
     },
+
     // 选择商品弹窗
     showChoosingGoods () {
       if (this.step === 1) {
         this.tuneUpGoods = !this.tuneUpGoods
       } else {
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+        console.log(this.specsIds)
       }
 
       // this.$http.$emit('choosingGoodsFlag', true)
@@ -702,34 +707,20 @@ export default {
 
     // 选择商品弹窗回调显示
     getGoodsIds (data) {
-      this.goodsIdList = data
-      var param = {
-        goodsIds: this.goodsIdList
-      }
-
-      getGoodsInfosByGoodIds(param).then(res => {
-        if (res.error === 0) {
-          this.tableData = res.content
-
-          // res.content.forEach(item => {
-          //   item.reducePriceProduct = item.goodsSpecProducts
-          //   item.discount = 10
-          //   item.reducePrice = 0
-          //   item.goodsPrice = item.shopPrice
-          //   if (item.reducePriceProduct != null && item.reducePriceProduct.length > 0) {
-          //     item.reducePriceProduct.forEach(spec => {
-          //       spec.originalPrice = spec.prdPrice
-          //     })
-          //   }
-          // })
-          // this.pageShowGoodsList = res.content
-        }
-      })
-    },
-
-    getIds (data) {
       this.goodslength = data.length
       this.param.goodsIds = data
+    },
+
+    // 选择规格弹窗回调显示
+    getSpecsIds (ids) {
+      this.specsIds = ids
+    },
+
+    // 规格弹窗数据
+    getSpecsData (data) {
+      // this.specsData = data
+      this.tableData = data
+      console.log(data)
     },
 
     // 添加一行赠品商品
@@ -804,8 +795,8 @@ export default {
         return false
       }
       this.tableData.forEach(row => {
-        const { goodsNumber, productNumber, offerNumber } = row
-        if (!this.checkProductNumber(goodsNumber, productNumber, offerNumber)) {
+        const { prdNumber, productNumber, offerNumber } = row
+        if (!this.checkProductNumber(prdNumber, productNumber, offerNumber)) {
           result = false
         }
       })
@@ -835,7 +826,6 @@ export default {
      * @param offerNumber 已赠送商品数
      */
     checkProductNumber (prdNumber, productNumber, offerNumber) {
-      debugger
       productNumber = Number(productNumber)
       if (prdNumber < productNumber) {
         this.fail('赠品库存不能大于商品当前库存')

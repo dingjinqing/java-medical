@@ -363,6 +363,7 @@ export default {
   },
   mounted () {
     // 初始化数据
+
     console.log('choosingGoods', 'mounted')
     this._initFilterDatas().then(res => {
       // this.selectGoodsData()

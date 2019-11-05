@@ -583,6 +583,7 @@ export default {
       let params = {
         goodsIds: ids
       }
+      console.log(params)
       getGoodsInfosByGoodIds(params).then(res => {
         if (res.error === 0) {
           let datas = res.content
