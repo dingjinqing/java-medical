@@ -150,16 +150,29 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 获取有效用户会员卡列表
-	 * @param userId
 	 * @param cardType -1所有可用卡  卡类型
 	 * @param type 0线上 1线下
 	 */
-	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte cardType,Integer type) {
+	public List<ValidUserCardBean> getValidCardList(Integer userId){
+		return getValidCardList(userId,MCARD_TP_ALL,CARD_ONLINE);
+	}
+	
+	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte cardType,Byte type){
 		if(MCARD_TP_ALL.equals(cardType)) {
+			return getAllValidCardList(userId);
+		}else {
+			return getValidCardList(userId,new Byte[] {cardType},type);
+		}
+	}
+	
+	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte[] cardType,Byte type) {
+		logger().info("获取有效会员卡");
+		assert cardType != null : "card type should not be null";
+		if(cardType.length==1 && MCARD_TP_ALL.equals(cardType[0])) {
 			// 所有可用卡
 			 return getAllValidCardList(userId);	
 		}
-		if(CARD_OFFLINE.equals(cardType)) {
+		if(CARD_OFFLINE.equals(type)) {
 			// 线下处理
 			return getOfflineValidCardList(userId, cardType);	
 		}
@@ -167,23 +180,23 @@ public class UserCardDaoService extends ShopBaseService{
 		return getOnlineValidCardList(userId, cardType);
 	}
 	
-	private List<ValidUserCardBean> getOnlineValidCardList(Integer userId, Byte cardType){
+	private List<ValidUserCardBean> getOnlineValidCardList(Integer userId, Byte[] cardType){
 		return selectValidCardCondition(userId, cardType)
 				.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.GRADE.desc())
 				.fetchInto(ValidUserCardBean.class);
 	}
 	
-	private List<ValidUserCardBean> getOfflineValidCardList(Integer userId, Byte cardType) {
+	private List<ValidUserCardBean> getOfflineValidCardList(Integer userId, Byte[] cardType) {
 		return selectValidCardCondition(userId, cardType)
 							.and(MEMBER_CARD.STORE_USE_SWITCH.eq(AVAILABLE_IN_STORE))
 							.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.GRADE.desc())
 							.fetchInto(ValidUserCardBean.class);
 	}
 
-	private SelectConditionStep<Record> selectValidCardCondition(Integer userId, Byte cardType) {
+	private SelectConditionStep<Record> selectValidCardCondition(Integer userId, Byte[] cardType) {
 		return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
 							.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
-							.and(MEMBER_CARD.CARD_TYPE.eq(cardType))
+							.and(MEMBER_CARD.CARD_TYPE.in(cardType))
 							.and(
 									(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
 									.or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
