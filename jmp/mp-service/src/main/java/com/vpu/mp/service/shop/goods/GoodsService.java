@@ -685,7 +685,7 @@ public class GoodsService extends ShopBaseService {
         if (goods.getIsCardExclusive() == null || goods.getIsCardExclusive() == 0 || goods.getMemberCardIds() == null || goods.getMemberCardIds().size() == 0) {
             return;
         }
-        memberCardService.batchUpdateGoods(Arrays.asList(goods.getGoodsId()), goods.getMemberCardIds(), CardConstant.GOODS_TYPE);
+        memberCardService.batchUpdateGoods(Arrays.asList(goods.getGoodsId()), goods.getMemberCardIds(), CardConstant.COUPLE_TP_GOODS);
     }
 
     /**
@@ -1031,7 +1031,7 @@ public class GoodsService extends ShopBaseService {
             //删除商品规格会员价信息
             deleteGradePrd(goodsIds);
             //删除关联会员专属信息
-            memberCardService.deleteOwnEnjoyGoodsByGcta(goodsIds, CardConstant.GOODS_TYPE);
+            memberCardService.deleteOwnEnjoyGoodsByGcta(goodsIds, CardConstant.COUPLE_TP_GOODS);
             //删除商品规格分销信息
             deleteGoodsRebatePrices(goodsIds);
         });
@@ -1139,7 +1139,7 @@ public class GoodsService extends ShopBaseService {
      */
     private void updateMemberCards(Goods goods) {
         //删除关联会员专属信息
-        memberCardService.deleteOwnEnjoyGoodsByGcta(Arrays.asList(goods.getGoodsId()), CardConstant.GOODS_TYPE);
+        memberCardService.deleteOwnEnjoyGoodsByGcta(Arrays.asList(goods.getGoodsId()), CardConstant.COUPLE_TP_GOODS);
         insertMemberCards(goods);
     }
 
@@ -1343,7 +1343,7 @@ public class GoodsService extends ShopBaseService {
      * @return 会员卡ids
      */
     private List<Integer> selectMemberCard(Integer goodsId) {
-        return memberCardService.selectOwnEnjoyCardByGcta(goodsId, CardConstant.GOODS_TYPE);
+        return memberCardService.selectOwnEnjoyCardByGcta(goodsId, CardConstant.COUPLE_TP_GOODS);
     }
 
     /**

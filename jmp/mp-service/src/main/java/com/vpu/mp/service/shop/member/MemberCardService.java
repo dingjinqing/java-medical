@@ -60,7 +60,7 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired private OrderGoodsService orderGoodsDao;
 	@Autowired private ServiceOrderService serviceOrderDao;
 	@Autowired private UserCardService userCardService;
-	Logger logger = logger();
+	@Autowired private CardVerifyService cardVerifyService;
 
 	/**
 	 * 添加会员卡
@@ -90,7 +90,7 @@ public class MemberCardService extends ShopBaseService {
 	 * 处理会员卡的基本信息
 	 */
 	private MemberCardRecord dealWithCard(CardParam card) {
-		logger.info("正在处理会卡信息");
+		logger().info("正在处理会卡信息");
 		MemberCardRecord cardRecord = new MemberCardRecord();
 		/** 设置会员卡的公共属性 */
 		setCommonCardAttr(card, cardRecord);
@@ -582,31 +582,14 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	private void updateMemberCardById(MemberCardRecord cardRecord, Integer id) {
 		int num = db().executeUpdate(cardRecord, MEMBER_CARD.ID.eq(id));
-		logger.info("成功更新： " + num + " 行数据");
+		logger().info("成功更新： " + num + " 行数据");
 	}
 
 	/**
 	 * 查询等级会员卡,按照等级降序
-     *
-	 * @param param
-	 * @return
 	 */
 	public PageResult<RankCardVo> getRankCardList(SearchCardParam param) {
-		/** 构建sql语句 */
-		//TODO 线上的数据库表memember_card少字段stock,limit
-		/**
-		SelectSeekStep1<Record, String> select = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_COLOR,MEMBER_CARD.BG_IMG,
-				MEMBER_CARD.DISCOUNT,MEMBER_CARD.SORCE,MEMBER_CARD.BUY_SCORE,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME,
-				MEMBER_CARD.RECEIVE_DAY,MEMBER_CARD.DATE_TYPE,MEMBER_CARD.ACTIVATION,MEMBER_CARD.RECEIVE_CODE,MEMBER_CARD.DESC,MEMBER_CARD.MOBILE,
-				MEMBER_CARD.CREATE_TIME,MEMBER_CARD.UPDATE_TIME,MEMBER_CARD.FLAG,MEMBER_CARD.SEND_MONEY,MEMBER_CARD.CHARGE_MONEY,
-				MEMBER_CARD.USE_TIME,MEMBER_CARD.STORE_LIST,MEMBER_CARD.COUNT,MEMBER_CARD.DEL_FLAG,MEMBER_CARD.GRADE,MEMBER_CARD.GRADE_CONDITION,
-				MEMBER_CARD.ACTIVATION_CFG,MEMBER_CARD.EXAMINE,MEMBER_CARD.DISCOUNT_GOODS_ID,MEMBER_CARD.DISCOUNT_CAT_ID,MEMBER_CARD.DISCOUNT_SORT_ID,
-				MEMBER_CARD.DISCOUNT_IS_ALL,MEMBER_CARD.IS_PAY,MEMBER_CARD.PAY_TYPE,MEMBER_CARD.PAY_FEE,MEMBER_CARD.PAY_OWN_GOOD,MEMBER_CARD.RECEIVE_ACTION,
-				MEMBER_CARD.IS_EXCHANG,MEMBER_CARD.STORE_USE_SWITCH,MEMBER_CARD.EXCHANG_GOODS,MEMBER_CARD.EXCHANG_FREIGHT,MEMBER_CARD.EXCHANG_COUNT)
-				.from(MEMBER_CARD)
-				.where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
-				.orderBy(MEMBER_CARD.GRADE.desc());
-		 */
+		logger().info("正在分页查询等级会员卡");
 		SelectSeekStep1<MemberCardRecord, String> select = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_GRADE)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 		.orderBy(MEMBER_CARD.GRADE.desc());
 		PageResult<RankCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
@@ -618,13 +601,11 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 分页查询限次会员卡
-     *
-	 * @param param
-	 * @return
 	 */
 	public PageResult<LimitNumCardVo> getLimitCardList(SearchCardParam param) {
-		/** 构建select语句 */
 
+		logger().info("正在分页查询限次会员卡");
+		
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
 				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_LIMIT)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.ID.desc());
@@ -649,11 +630,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param param
 	 */
 	public PageResult<NormalCardVo> getNormalCardList(SearchCardParam param) {
-		/**
-		 * select card_name from b2c_member_card where card_type=0 and is_delete=0 order
-		 * by id desc;
-         *
-		 */
+		logger().info("正在分页查询普通会员卡");
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
 				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_NORMAL)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.ID.desc());
@@ -678,15 +655,11 @@ public class MemberCardService extends ShopBaseService {
 
 		Byte cardType = param.getCardType();
 		PageResult<? extends BaseCardVo> result = null;
-		/** 处理普通会员卡 */
 		if (MCARD_TP_NORMAL.equals(cardType)) {
-			logger.info("正在分页查询普通会员卡");
 			result =  getNormalCardList(param);
 		} else if (MCARD_TP_LIMIT.equals(cardType)) {
-			logger.info("正在分页查询限次会员卡");
 			result = getLimitCardList(param);
 		} else if (MCARD_TP_GRADE.equals(cardType)) {
-			logger.info("正在分页查询等级会员卡");
 			result = getRankCardList(param);
 		}
 
@@ -711,7 +684,7 @@ public class MemberCardService extends ShopBaseService {
 		/** SQL语句执行 */
 		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.FLAG, param.getFlag())
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
-		logger.info("设置会员卡状态成功，受影响行： " + result);
+		logger().info("设置会员卡状态成功，受影响行： " + result);
 	}
 
 	/**
@@ -726,7 +699,7 @@ public class MemberCardService extends ShopBaseService {
 		/** 假删除会员卡 */
 		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, MCARD_DF_YES)
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
-		logger.info("删除会员卡成功，受影响行： " + result);
+		logger().info("删除会员卡成功，受影响行： " + result);
 	}
 
 	public MemberCardRecord getCardById(Integer cardId) {
@@ -756,14 +729,14 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	private NormalCardToVo changeToNormalCardDetail(MemberCardRecord card) {
-		logger.info("正在处理普通会员卡");
+		logger().info("正在处理普通会员卡");
 		NormalCardToVo normalCard = card.into(NormalCardToVo.class);
 		normalCard.changeJsonCfg();
 		return normalCard;
 	}
 
 	private LimitNumCardToVo changeToLimitCardDetail(MemberCardRecord card) {
-		logger.info("正在处理出限次会员卡");
+		logger().info("正在处理出限次会员卡");
 		LimitNumCardToVo limitCard = card.into(LimitNumCardToVo.class);
 		int numOfSendCard = getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
@@ -772,7 +745,7 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	private RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
-		logger.info("正在处理等级会员卡");
+		logger().info("正在处理等级会员卡");
 		RankCardToVo gradeCard = card.into(RankCardToVo.class);
 		gradeCard.changeJsonCfg();
 		return gradeCard;
@@ -857,7 +830,7 @@ public class MemberCardService extends ShopBaseService {
 		Result<MemberCardRecord> cardRecords = selectAllMemberCard();
 		MemberCardVo vo = new MemberCardVo();
 		/** 分类 普通 | 限次 | 等级 会员卡 */
-		logger.info("正在分类处理");
+		logger().info("正在分类处理");
 		for (MemberCardRecord card : cardRecords) {
 			Byte cardType = card.getCardType();
 			MemberCard cardVo = card.into(MemberCard.class);
@@ -879,11 +852,9 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 查询所有的会员卡
-     *
-	 * @return
 	 */
 	private Result<MemberCardRecord> selectAllMemberCard() {
-		logger.info("查询所有会员卡");
+		logger().info("查询所有会员卡");
 		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO)).fetch();
 		return cardRecords;
 	}
@@ -918,7 +889,7 @@ public class MemberCardService extends ShopBaseService {
 		Map<Integer, MemberCardRecord> map = db().selectFrom(MEMBER_CARD)
 				.where(MEMBER_CARD.ID.in(param.getCardIdList())).fetch().intoMap(MEMBER_CARD.ID, MemberCardRecord.class);
 
-        logger.info("一共查询到: " + map.size() + " 张会员卡");
+		logger().info("一共查询到: " + map.size() + " 张会员卡");
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expireTime = null;
@@ -962,7 +933,7 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		int execute = insert.execute();
-		logger.info("成功添加： " + execute + " 行记录");
+		logger().info("成功添加： " + execute + " 行记录");
 
 		/** add record */
 		// List<String> userNameList =
@@ -1007,7 +978,7 @@ public class MemberCardService extends ShopBaseService {
 			cardNo.setLength(0);
 		}
 
-		logger.info("cardNo: " + cardNo.toString());
+		logger().info("cardNo: " + cardNo.toString());
 		return cardNo.toString();
 	}
 
@@ -1412,7 +1383,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
 
-        PageResult<ActiveAuditVo> results = cardDao.getActivateAuditList(param);
+        PageResult<ActiveAuditVo> results = cardVerifyService.getPageList(param);
         // deal with industry and education
 		for(ActiveAuditVo activeAuditVo: results.dataList) {
 			// education

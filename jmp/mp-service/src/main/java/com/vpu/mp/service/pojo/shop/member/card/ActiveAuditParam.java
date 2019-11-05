@@ -15,7 +15,7 @@ public class ActiveAuditParam {
 	public Integer pageRows;
 	/** -当前页 */
 	public Integer currentPage;
-	// id
+	// 订单id
 	public Integer id;
 	// 会员卡号
 	public String cardNo;

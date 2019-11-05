@@ -270,46 +270,8 @@ public class CardDaoService extends ShopBaseService {
 		}
 	}
 	
-	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
-		SelectJoinStep<?> select = db().select(CARD_EXAMINE.ID,CARD_EXAMINE.REAL_NAME,CARD_EXAMINE.CARD_NO,CARD_EXAMINE.STATUS,CARD_EXAMINE.CREATE_TIME,CARD_EXAMINE.CID,CARD_EXAMINE.EDUCATION,
-				CARD_EXAMINE.INDUSTRY_INFO,USER.MOBILE,USER.USERNAME)
-			.from(CARD_EXAMINE.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID)));
-		buildOptionsForActivateAudit(select,param);
-		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), ActiveAuditVo.class);
-		
-	}
-	/**
-	 * 查询审核多条件构建
-	 * @param select
-	 * @param param
-	 */
-	private void buildOptionsForActivateAudit(SelectJoinStep<?> select, ActiveAuditParam param) {
-		// 会员卡id
-		if(param.getCardId()!=null) {
-			select.where(CARD_EXAMINE.CARD_ID.eq(param.getCardId()));
-		}
-		// 审核状态
-		if(param.getStatus()!=null) {
-			select.where(CARD_EXAMINE.STATUS.eq(param.getStatus()));
-		}
-		// 真实姓名
-		if(!StringUtils.isBlank(param.getRealName())) {
-			String likeValue = likeValue(param.getRealName());
-			select.where(CARD_EXAMINE.REAL_NAME.like(likeValue));
-		}
-		// 手机号
-		if(!StringUtils.isBlank(param.getMobile())) {
-			select.where(USER.MOBILE.eq(param.getMobile()));
-		}
-		// 申请时间 - 开始
-		if(param.getFirstTime() != null) {
-			select.where(CARD_EXAMINE.CREATE_TIME.ge(param.getFirstTime()));
-		}
-		// 申请时间 - 结束
-		if(param.getSecondTime() != null) {
-			select.where(CARD_EXAMINE.CREATE_TIME.le(param.getSecondTime()));
-		}
-	}
+	
+	
 	
 	/**
 	 * 更新审核会员卡表

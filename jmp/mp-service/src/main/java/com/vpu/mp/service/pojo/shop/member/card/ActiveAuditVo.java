@@ -5,12 +5,15 @@ import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.I18N;
 
+
 import lombok.Data;
+
 /**
 * @author 黄壮壮
 * @Date: 2019年9月27日
-* @Description: 激活审核-出参
+* @Description: 卡激活审核-出参
 */
+
 @Data
 public class ActiveAuditVo {
 	// ID
@@ -41,6 +44,5 @@ public class ActiveAuditVo {
 	// 用户昵称
 	private String username;
 	// 申请时间
-	private Timestamp createTime;
-	
+	private Timestamp createTime;	
 }

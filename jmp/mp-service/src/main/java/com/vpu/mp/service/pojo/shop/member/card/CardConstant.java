@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * 
  * @author 黄壮壮
- * @Date: 2019年8月6日R
+ * @Date: 2019年8月6日
  * @Description: 会员卡用到的常量定义
  */
 public class CardConstant {
@@ -173,11 +173,6 @@ public class CardConstant {
 	/** ----------------------------------------------------------*/
 	
 	
-	/** -----------------goods_card_couple表常量--------------------------*/
-	/**标签关联类型type： 1：关联商品 2：关联商家分类 3：关联平台分类 */
-	public static final Byte GOODS_TYPE = 1;
-	public static final Byte STORE_CATEGORY_TYPE=2;
-	public static final Byte PLATFORM_CATEGORY_TYPE=3; 
 	
 	/** ----------------------------------------------------------------*/
 	

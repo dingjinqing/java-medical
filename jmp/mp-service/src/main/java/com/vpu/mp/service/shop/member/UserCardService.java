@@ -60,14 +60,12 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_ALL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
@@ -802,17 +800,17 @@ public class UserCardService extends ShopBaseService {
 			if (!goodsIds.contains(cartGoods.getGoodsId())) {
 				goodsIds.add(cartGoods.getGoodsId());
 				// 商品
-				if (goodsCardCouple.get(CardConstant.GOODS_TYPE).contains(cartGoods.getGoodsId())) {
+				if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoods.getGoodsId())) {
 					resGoodsIds.add(cartGoods.getGoodsId());
 					return;
 				}
 				// 商品分类
-				if (goodsCardCouple.get(CardConstant.STORE_CATEGORY_TYPE).contains(cartGoods.getGoodsId())) {
+				if (goodsCardCouple.get(CardConstant.COUPLE_TP_STORE).contains(cartGoods.getGoodsId())) {
 					resGoodsIds.add(cartGoods.getGoodsId());
 					return;
 				}
 				// 商品商家分类
-				if (goodsCardCouple.get(CardConstant.GOODS_TYPE).contains(cartGoods.getGoodsId())) {
+				if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoods.getGoodsId())) {
 					resGoodsIds.add(cartGoods.getGoodsId());
 				}
 			}
