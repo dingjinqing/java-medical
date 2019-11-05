@@ -30,7 +30,8 @@ public class ShopCommonCfgInfo {
     public ShowCartConfig showCart;
 
 	/**
-	 *是否显示划线价开关
+	 *是否显示划线价（市场价/销量/评论）开关，单选
+     * 取值：0关闭，1显示市场价，2显示销量，3显示评价数
 	 */
     @NotNull
 	@JsonProperty(value = "del_market")

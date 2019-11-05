@@ -82,8 +82,9 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	final public static String K_CUSTOM_TITLE = "custom_title";
 
     /**
-	 * 是否显示划线价开关
-	 */
+     *是否显示划线价（市场价/销量/评论）开关，单选
+     * 取值：0关闭，1显示市场价，2显示销量，3显示评价数
+     */
 	final public static String K_DEL_MARKET = "del_market";
 
     /**
@@ -392,12 +393,11 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	}
 
     /**
-	 * 设置是否显示划线价
-	 * @param value 0 或者 1
-	 * @return
-	 */
+     *是否显示划线价（市场价/销量/评论）开关，单选
+     * 取值：0关闭，1显示市场价，2显示销量，3显示评价数
+     */
 	public int setDelMarket(Byte value) {
-		assert(value ==(byte)0 || value == (byte)1);
+		assert(value ==(byte)0 || value == (byte)1 || value == (byte)2 || value == (byte)3);
 		return this.set(K_DEL_MARKET, value,Byte.class);
 	}
 
