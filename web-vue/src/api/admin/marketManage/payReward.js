@@ -21,3 +21,30 @@ export function addPayRewardAct (data) {
     data: data
   })
 }
+
+// 删除支付有礼活动
+export function delPayRewardAct (data) {
+  return service({
+    url: '/api/admin/market/payaward/delete',
+    method: 'post',
+    data: data
+  })
+}
+
+// 支付有礼活动停用启用
+export function actSwitch (data) {
+  return service({
+    url: '/api/admin/market/payaward/change/status',
+    method: 'post',
+    data: data
+  })
+}
+
+// 支付有礼明细列表
+export function payRewardDetails (data) {
+  return service({
+    url: '/api/admin/market/payaward/record/list',
+    method: 'post',
+    data: data
+  })
+}

@@ -18,14 +18,14 @@
               @change="handleChange"
               style="width:100px;"
               size="small"
-              v-model="value"
+              v-model="formData.templateName"
               placeholder="请选择运费模板"
             >
               <el-option
                 v-for="item in options"
                 :key="item.value "
-                :label="item.label | showTemplate"
-                :value="item.value | showTemplate"
+                :label="item.label | showTemplate "
+                :value="item.value "
               ></el-option>
             </el-select>
           </el-form-item>
@@ -131,7 +131,7 @@ export default {
           value: '1'
         }
       ],
-      value: '统一运费', // 默认统一运费
+      // value: '统一运费', // 默认统一运费
       isShow: true // 用来控制显示隐藏
 
     }
@@ -140,6 +140,7 @@ export default {
   filters: {
     // 根据后台返回的0|1显示统一运费|满额包邮
     showTemplate (val) {
+      console.log(val)
       switch (val) {
         case '0': return '统一运费'
         case '1': return '满额包邮'
@@ -148,6 +149,7 @@ export default {
   },
   created () {
     fetchDeliverTemplateList(this.pageParams).then(res => {
+      console.log(res)
       const { error, content: { config, pageResult: { dataList, page } } } = res
       if (error === 0) {
         console.log(res)
@@ -156,7 +158,12 @@ export default {
         this.formData = JSON.parse(config)
         let resData = formatTemplateData(dataList)
         this.lists = resData
-        console.log(this.lists)
+        console.log(this.formData.templateName)
+        if (this.formData.templateName === 0) {
+          this.formData.templateName = '统一运费'
+        } else {
+          this.formData.templateName = '满额包邮'
+        }
       }
     }).catch(err => console.log(err))
   },
@@ -164,6 +171,7 @@ export default {
   methods: {
     // 选中运费模板的时候
     handleChange (val) {
+      console.log(val)
       switch (val) {
         case '统一运费': this.isShow = true
           break
@@ -173,9 +181,11 @@ export default {
     },
     // 保存配置
     handleSaveConfig () {
-      // console.log(this.formData)
+      console.log(this.formData)
       // 修改默认运费模板配置
       deliverConfig(this.formData).then(res => {
+        console.log(res)
+        // let templateOption = res.content
         const { error } = res
         if (error === 0) {
           this.$message({

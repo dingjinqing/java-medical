@@ -46,6 +46,7 @@
               style="margin-top:15px"
             >
               <el-input
+                v-model="params.activityNames"
                 size="small"
                 style="width: 200px"
                 placeholder="最多支持10个字"
@@ -55,30 +56,32 @@
             <el-form-item label="活动有效期：">
               <div>
                 <el-radio
-                  v-model="timeRange"
+                  v-model="params.timeType"
                   label="1"
                   style="margin-right: 20px;"
                 >固定时间</el-radio>
                 <el-date-picker
-                  v-model="value"
+                  v-model="params.startTime"
                   type="datetime"
                   placeholder="选择开始时间"
                   style="width:130px"
                   size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                 >
                 </el-date-picker>
                 <span>至</span>
                 <el-date-picker
-                  v-model="value1"
+                  v-model="params.endTime"
                   type="datetime"
                   placeholder="选择结束时间"
                   style="width:130px"
                   size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                 >
                 </el-date-picker>
                 <div>
                   <el-radio
-                    v-model="timeRange"
+                    v-model="params.timeType"
                     label="2"
                   >永久有效</el-radio>
                 </div>
@@ -87,6 +90,7 @@
 
             <el-form-item label="优先级：">
               <el-input
+                v-model="params.actFirst"
                 size="small"
                 style="width:200px"
               ></el-input>
@@ -100,23 +104,41 @@
               <span>以下条件为"且"的关系</span>
               <div>
                 <span>商品条件：</span>
-                <el-radio-group v-model="goods">
+                <el-radio-group v-model="params.goodsAreaType">
                   <el-radio label="1">全部商品</el-radio>
                   <el-radio label="2">部分商品</el-radio>
                 </el-radio-group>
-                <div
-                  v-if="goods==='2'"
+                <!-- <div
+                  v-if="params.goodsAreaType==='2'"
                   class="partGoods"
                 >
                   <div>+ 选择商品</div>
                   <div>+ 选择平台分类</div>
                   <div>+ 选择商家分类</div>
+                </div> -->
+                <div class="noneBlock">
+                  <div
+                    class="noneBlockList"
+                    v-for="(item,index) in noneBlockDiscArr"
+                    :key="index"
+                    @click="hanldeToAddGoodS(index)"
+                  >
+                    <div class="noneBlockLeft">
+                      <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                      {{item.name}}
+                    </div>
+                    <div
+                      v-if="item.num"
+                      class="noneBlockRight"
+                    >已选择分类：{{item.num}}个分类</div>
+                  </div>
                 </div>
               </div>
               <div>
                 <span>支付条件：</span>
                 <span>每笔订单满</span>
                 <el-input
+                  v-model="params.minPayMoney"
                   size="small"
                   style="width: 100px"
                 ></el-input>
@@ -128,6 +150,7 @@
               <div style="display: flex">
                 <span>每个用户可参加</span>
                 <el-input
+                  v-model="params.limitTimes"
                   size="small"
                   style="width: 100px"
                 ></el-input>
@@ -152,10 +175,10 @@
             v-for="(item,index) in shareRules"
             :key="index"
           >
-            <el-form-item :label="第+(index+1)+次支付奖励"></el-form-item>
+            <el-form-item></el-form-item>
             <el-form-item label="支付奖励：">
               <el-radio-group
-                v-model="payReward"
+                v-model="params.awardList[0].giftType"
                 class="itemOptions"
               >
                 <div style="margin-top:13px">
@@ -176,7 +199,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward==='2'"
+              v-if="params.awardList[0].giftType==='2'"
               label="普通优惠券："
             >
               <div class="coupon">
@@ -190,7 +213,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward==='3'"
+              v-if="params.awardList[0].giftType==='3'"
               label="分裂优惠券："
             >
               <div class="coupon">
@@ -204,13 +227,13 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward==='4'"
+              v-if="params.awardList[0].giftType==='4'"
               label="幸运大抽奖："
             >
               <el-select
                 size="small"
                 style="width: 120px"
-                v-model="activity"
+                v-model="params.awardList[0].lotteryId"
                 placeholder="请选择抽奖活动"
               >
                 <el-option
@@ -223,10 +246,11 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward==='5'"
+              v-if="params.awardList[0].giftType==='5'"
               label="余额："
             >
               <el-input
+                v-model="params.awardList[0].accountNumber"
                 size="small"
                 style="width:120px"
                 placeholder="请输入余额"
@@ -234,7 +258,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward==='6'"
+              v-if="params.awardList[0].giftType==='6'"
               label="奖品："
             >
               <div
@@ -243,11 +267,12 @@
               >+&nbsp;添加奖品</div>
             </el-form-item>
             <el-form-item
-              v-if="payReward==='6'"
+              v-if="params.awardList[0].giftType==='6'"
               label="赠品有效期："
             >
               <div>
                 <el-input
+                  v-model="params.awardList[0].keepDays"
                   size="small"
                   style="width:100px"
                 ></el-input>
@@ -257,10 +282,11 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward==='7'"
+              v-if="params.awardList[0].giftType==='7'"
               label="积分："
             >
               <el-input
+                v-model="params.awardList[0].scoreNumber"
                 size="small"
                 style="width:120px"
                 placeholder="请输入积分"
@@ -268,7 +294,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward==='8'"
+              v-if="params.awardList[0].giftType==='8'"
               label="活动图片："
             >
               <div style="display: flex">
@@ -280,9 +306,10 @@
                 </div>
                 <div style="margin-top:10px">建议尺寸：560px * 700px</div>
               </div>
+              <!-- 优惠券类型：PayAwardCouponBo -->
             </el-form-item>
             <el-form-item
-              v-if="payReward==='8'"
+              v-if="params.awardList[0].giftType==='8'"
               label="设置链接："
             >
               <el-input
@@ -293,11 +320,12 @@
             </el-form-item>
 
             <el-form-item
-              v-if="payReward !== '1'"
+              v-if="params.awardList[0].giftType !== '1'"
               label="奖品份数："
             >
               <div>
                 <el-input
+                  v-model="params.awardList[0].awardNumber"
                   size="small"
                   style="width:100px"
                 ></el-input>
@@ -309,13 +337,55 @@
           </el-form>
         </section>
       </div>
+
+      <!-- 保存按钮 -->
+      <div class="save">
+        <el-button
+          size="small"
+          type="primary"
+          @click="submitData"
+        >保存
+        </el-button>
+      </div>
     </div>
+
+    <!-- 选择商品弹窗 -->
+    <ChoosingGoods />
+    <ChoosingGoods
+      @resultGoodsIds='getGoodsIdFromChoosingGoods'
+      :tuneUpChooseGoods='controlChoosingGoodsDialog'
+    />
+
+    <!--选择商家分类弹窗-->
+    <AddingBusClassDialog
+      :dialogVisible.sync="businessDialogVisible"
+      :classFlag="classFlag"
+      @BusClassTrueArr="BusClassTrueArr()"
+    />
+
+    <!--添加品牌弹窗-->
+    <AddBrandDialog
+      :callAddBrand.sync='callAddBrand'
+      @handleToGetBackData='handleToGetBrandBackData'
+    />
   </div>
 </template>
 
 <script>
+import { addPayRewardAct } from '@/api/admin/marketManage/payReward.js'
 
 export default {
+  components: {
+    ChoosingGoods: () => import('@/components/admin/choosingGoods'),
+    AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog')
+  },
+  created () {
+    // this.initData()
+  },
+  mounted () {
+    // this.dataDefalut()
+  },
   data () {
     return {
       carouselList: [
@@ -323,12 +393,6 @@ export default {
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift2.jpg' },
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift3.jpg' }
       ],
-      timeRange: '1',
-      value: '',
-      value1: '',
-      goods: '1',
-      payReward: '1',
-      activity: '',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -336,7 +400,74 @@ export default {
         value: '选项2',
         label: '双皮奶'
       }],
-      shareRules: [{}, {}, {}, {}, {}]
+      noneBlockDiscArr: [
+        {
+          name: '添加商品',
+          num: ''
+        },
+        {
+          name: '添加商品分类',
+          num: ''
+        },
+        {
+          name: '添加平台分类',
+          num: ''
+        },
+        {
+          name: '添加品牌',
+          num: ''
+        }
+      ],
+      controlChoosingGoodsDialog: false,
+      userDialogFlag: null,
+      classFlag: null, // 区分商家分类和平台分类flag
+      businessDialogVisible: false, // 商家分类和平台分类flag
+      choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据,
+      ownGoodsId: null, // 会员专享商品: 添加的商品Id
+      GoodsBrandDateFlag1: '',
+      ownBrandId: null,
+      GoodsBrandDateArr: '',
+      callAddBrand: false,
+      shareRules: [{}, {}, {}],
+      params: {
+        activityNames: '',
+        startTime: '',
+        endTime: '',
+        actFirst: '',
+        timeType: '1',
+        goodsAreaType: '1', // 商品范围类型
+        goodsIds: '1003,1002', // 商品id
+        goodsCatIds: '229,230,233,235,329', // 商品平台分类
+        goodsSortIds: '225,226', // 商品商家分类
+        minPayMoney: '', // 最少支付金额
+        limitTimes: '', // 每个用户参与次数
+        lotteryId: '', // 下拉框
+        awardList: [
+          {
+            giftType: '1',
+            productId: 5473,
+            keepDays: 10,
+            accountNumber: 11,
+            scoreNumber: 22,
+            awardNumber: 1,
+            couponList: [
+              {
+                actCode: 'voucher',
+                denomination: 50,
+                id: 470,
+                randomMin: 0,
+                randomMax: 0,
+                couponCenterLimit: '满100使用',
+                couponCenterNumber: '剩余196张'
+              }
+            ],
+            couponIds: [
+              479,
+              476
+            ]
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -354,12 +485,83 @@ export default {
       console.log(this.shareRules)
       this.shareRules.splice(index, 1)
       console.log(index)
+    },
+
+    // 点击会员专享商品出现的添加类弹窗汇总
+    hanldeToAddGoodS (index) {
+      // this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+      console.log('指定商品')
+      this.userDialogFlag = '1'
+      console.log(index)
+      switch (index) {
+        case 0:
+          // 商品弹窗显示
+          this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+          break
+        case 1:
+          // this.AtreeType = 1
+          console.log('商家分类')
+          this.businessDialogVisible = true
+          this.classFlag = 1
+          break
+        case 2:
+          // this.AtreeType = 2
+          console.log('平台分类')
+          this.businessDialogVisible = true
+          this.classFlag = 2
+          break
+        case 3:
+          // 添加品牌弹窗显示
+          this.callAddBrand = !this.callAddBrand
+        //   console.log('detail', index, this.addBrandDialogDataFlag1)
+        //   this.$http.$emit('CallAddBrand', this.chioseSureData, this.addBrandDialogDataFlag1)
+      }
+    },
+
+    // 11- 获取会员权益选择商品弹窗的商品id
+    getGoodsIdFromChoosingGoods (data) {
+      console.log(data)
+      // 添加商品id
+      if (this.userDialogFlag === '1') {
+        this.choosingGoodsDateFlag1 = data
+        this.noneBlockDiscArr[0].num = data.length
+      } else {
+        this.ownGoodsId = data
+        this.noneBlockVipArr[0].num = data.length
+      }
+    },
+    // 添加商品分类弹窗
+
+    // 添加平台分类弹窗
+
+    // 添加商品品牌弹窗
+    handleToGetBrandBackData (data) {
+      console.log(data)
+      if (this.userDialogFlag === '1') {
+        this.GoodsBrandDateFlag1 = data
+        this.noneBlockDiscArr[3].num = data.length
+      } else {
+        this.ownBrandId = data
+        this.noneBlockVipArr[3].num = data.length
+      }
+    },
+
+    // 商品分类和平台分类弹窗选中回传数据
+    BusClassTrueArr (data) {
+      // 根据this.AtreeType 的值判断是指定商品里面的弹窗还是会员专享里面的弹窗   backDataArr字段是回显wiki应该有写
+      console.log(data)
+    },
+
+    submitData () {
+      addPayRewardAct(this.params).then(res => {
+        console.log(res)
+      }).catch(err => console.log(err))
     }
   }
-
 }
 
 </script>
+
 <style lang="scss" scoped>
 .addPayRewardAct {
   padding: 10px;
@@ -410,36 +612,48 @@ export default {
         .pay_rewards {
           display: flex;
           justify-content: space-between;
-          height: 25px;
-          line-height: 25px;
-          // padding: 10px;
+          height: 40px;
+          line-height: 40px;
+          border-bottom: 1px solid red;
           :nth-of-type(2) {
             display: flex;
             .addReward {
               margin-left: 10px;
               padding: 0 5px;
+              height: 25px;
+              line-height: 25px;
               border: 1px solid #5a8bff;
               color: #5a8bff;
               cursor: pointer;
               border-radius: 4px;
               margin-right: 10px;
+              margin-top: 8px;
             }
           }
         }
         .triggerCondition {
-          .partGoods {
-            margin-left: 73px;
-            div {
-              width: 120px;
-              height: 30px;
-              line-height: 30px;
-              text-align: center;
-              color: #5a8bff;
-              border: 1px solid #ccc;
-              background: #fff;
-              cursor: pointer;
-              margin: 10px 0;
+          .noneBlock {
+            .noneBlockList {
               margin-bottom: 10px;
+              display: flex;
+              .noneBlockLeft {
+                line-height: 30px;
+                height: 30px;
+                width: 120px;
+                text-align: left;
+                color: #5a8bff;
+                border: 1px solid #ccc;
+                background: #fff;
+                cursor: pointer;
+                padding-left: 5px;
+                margin-right: 20px;
+              }
+              .noneBlockRight {
+                color: #5a8bff;
+                cursor: pointer;
+                height: 30px;
+                line-height: 30px;
+              }
             }
           }
         }
@@ -492,6 +706,19 @@ export default {
           margin-right: 10px;
         }
       }
+    }
+    .save {
+      border-top: 1px solid #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      bottom: 0;
+      z-index: 2;
+      right: 20px;
+      left: 160px;
+      height: 50px;
+      background: #f8f8fa;
     }
   }
 }

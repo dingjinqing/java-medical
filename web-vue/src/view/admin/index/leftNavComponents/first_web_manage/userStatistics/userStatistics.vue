@@ -118,7 +118,9 @@ export default {
         { value: 1, label: '最新1天' },
         { value: 7, label: '最新7天' },
         { value: 30, label: '最新30天' }
-      ]
+      ],
+      originalData: {},
+      myChart: {}
     }
   },
 
@@ -131,8 +133,62 @@ export default {
     initData () {
       customerTrend({ 'lastNum': '1' }).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          let originalData = JSON.parse(JSON.stringify(this.originalData))
+          this.handleData(originalData)
+        }
       }).catch(err => console.log(err))
+    },
+
+    handleData (data) {
+      // 顶部数据部分
+      this.totalNumbers = data.total
+      // echarts数据渲染
+      this.echartsData.tooltip = { trigger: 'axis' }
+      this.echartsData.legend = { name: [this.$t('bargainList.bargainRecordNumber'), this.$t('bargainList.helpCutPeople'), this.$t('bargainList.actOrderNumber'), this.$t('bargainList.sourceUserNumber')] }
+      this.echartsData.grid = { left: '3%', right: '4%', bottom: '3%', containLabel: true }
+      this.echartsData.xAxis = [
+        {
+          type: 'category',
+          data: data.dateList,
+          boundaryGap: false
+        }
+      ]
+      this.echartsData.yAxis = [
+        {
+          type: 'value'
+        }
+      ]
+      this.echartsData.series = [
+        {
+          name: '111',
+          type: 'line',
+          stack: this.$t('marketCommon.totalAmount'),
+          data: 100
+        },
+        {
+          name: '222',
+          type: 'line',
+          stack: this.$t('marketCommon.totalAmount'),
+          data: 200
+        },
+        {
+          name: '333',
+          type: 'line',
+          stack: this.$t('marketCommon.totalAmount'),
+          data: 300
+        },
+        {
+          name: '444',
+          type: 'line',
+          stack: this.$t('marketCommon.totalAmount'),
+          data: 400
+        }
+      ]
+
+      this.myChart.setOption(this.echartsData)
     }
+
   }
 }
 

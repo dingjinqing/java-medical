@@ -6,6 +6,7 @@
         v-model="param.navType"
         :activityName="activityName"
         :standard="true"
+        @click="searchList()"
       />
 
       <!-- 添加支付有礼活动 -->
@@ -38,6 +39,11 @@
           label="触发条件"
           align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.goodsAreaType === 1? '部分商品':'全部商品'}}
+            <br>
+            满{{scope.row.minPayMoney===null?'0.00':scope.row.minPayMoney+".00"}}元
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -45,6 +51,14 @@
           label="活动有效期"
           align="center"
         >
+          <template slot-scope="scope">
+            <div v-if="scope.row.timeType === 0">
+              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            </div>
+            <div v-else>
+              {{scope.row.timeType = '永久有效'}}
+            </div>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -52,6 +66,14 @@
           label="活动奖励"
           align="center"
         >
+          <template slot-scope="scope">
+            <div
+              v-for="(item, index) in scope.row.awardContentList"
+              :key="index"
+            >
+              {{item.giftType | formatGiftType(item.giftType)}}
+            </div>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -65,6 +87,7 @@
           prop="status"
           label="活动状态"
           align="center"
+          :formatter="actState"
         >
         </el-table-column>
 
@@ -73,12 +96,85 @@
           label="操作"
           align="center"
         >
+          <template slot-scope="scope">
+            <div class="opt">
+              <el-tooltip
+                content="编辑"
+                placement="top"
+              >
+                <span class="el-icon-edit-outline"></span>
+              </el-tooltip>
+              <el-tooltip
+                content="分享"
+                placement="top"
+              >
+                <span class="el-icon-share"></span>
+              </el-tooltip>
+
+              <el-tooltip
+                content="启用"
+                placement="top"
+                v-if="scope.row.status === '已停用'"
+              >
+                <span
+                  class="el-icon-circle-check"
+                  @click="openSwitch(scope.row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="停用"
+                placement="top"
+                v-else
+              >
+                <span
+                  class="el-icon-circle-close"
+                  @click="closeSwitch(scope.row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="活动明细"
+                placement="top"
+              >
+                <span
+                  class="el-icon-tickets"
+                  @click="actDetails(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="获取新用户明细"
+                placement="top"
+              >
+                <span class="el-icon-user-solid"></span>
+              </el-tooltip>
+              <el-tooltip
+                content=""
+                placement="top"
+              >
+                <span class="el-icon-s-unfold"></span>
+              </el-tooltip>
+              <el-tooltip
+                content="删除"
+                placement="top"
+              >
+                <span
+                  class="el-icon-delete"
+                  @click="delPayRewardAct(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="活动效果"
+                placement="top"
+              >
+                <span class="el-icon-s-data"></span>
+              </el-tooltip>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
       <div class="footer">
         <pagination
           :page-params.sync="pageParams"
-          @pagination="seacherList"
+          @pagination="searchList"
         />
       </div>
     </div>
@@ -87,7 +183,7 @@
 </template>
 
 <script>
-import { payRewardList } from '@/api/admin/marketManage/payReward.js'
+import { payRewardList, delPayRewardAct, actSwitch } from '@/api/admin/marketManage/payReward.js'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
@@ -98,11 +194,11 @@ export default {
   },
   watch: {
     'param.navType' (n, o) {
-      this.seacherList()
+      this.searchList()
     }
   },
   created () {
-    this.seacherList()
+    this.searchList()
   },
   data () {
     return {
@@ -113,23 +209,27 @@ export default {
         'navType': 1,
         'currentPage': 1,
         'pageRows': 20
-      }
+      },
+      startTime: '',
+      endTime: ''
     }
   },
 
   methods: {
-    // 添加支付有礼活动
+    // 跳转到添加支付有礼活动
     addActivity () {
       this.$router.push({
         name: 'addPayRewardAct'
         // name: 'activityDetails'
       })
     },
+
     // tab对应分类查询数据
-    seacherList () {
+    searchList () {
       payRewardList(this.param).then((res) => {
         const { error } = res
         if (error === 0) {
+          this.pageParams = res.content.page
           this.handleData(res.content)
           console.log(res.content)
         }
@@ -138,7 +238,112 @@ export default {
     handleData (data) {
       console.log(data)
       this.tableData = data.dataList
-      console.log(this.tableData)
+    },
+
+    // 删除支付有礼活动
+    delPayRewardAct (id) {
+      this.$confirm('确认要删除吗？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delPayRewardAct({ id: id }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '删除成功' })
+            this.searchList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '删除成功' })
+      })
+    },
+
+    // actSwitch () {
+
+    // },
+
+    // 停用
+    closeSwitch (row) {
+      console.log('row', row)
+      this.$confirm('确认要停用吗？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        actSwitch({
+          id: row.id
+        }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '停用成功' })
+            this.searchList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消停用' })
+      })
+    },
+
+    // 启用
+    openSwitch (row) {
+      this.$confirm('确认要启用吗？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        actSwitch({
+          id: row.id
+        }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '启用成功' })
+            this.searchList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消启用' })
+      })
+    },
+
+    // 活动状态文字转化
+    actState (row, col) {
+      switch (row.status) {
+        case 0: row.status = '已停用'
+          break
+        case 1: row.status = '已启用'
+          break
+      }
+      return row.status
+    },
+
+    // 活动明细
+    actDetails (val) {
+      console.log(val)
+      this.$router.push({
+        name: 'activityDetails'
+      })
+    }
+  },
+
+  // 活动奖励数字对应的类型
+  filters: {
+    formatGiftType (giftType) {
+      console.log(giftType)
+      if (giftType === 7) {
+        return '自定义'
+      } else if (giftType === 6) {
+        return '积分'
+      } else if (giftType === 5) {
+        return '商品'
+      } else if (giftType === 4) {
+        return '余额'
+      } else if (giftType === 3) {
+        return '幸运大抽奖'
+      } else if (giftType === 2) {
+        return '分裂优惠券'
+      } else if (giftType === 1) {
+        return '普通优惠券'
+      } else {
+        return '无奖品'
+      }
     }
   }
 
@@ -176,7 +381,15 @@ export default {
     position: relative;
     margin-top: 10px;
     background-color: #fff;
-    padding: 10px 20px 20px;
+    padding: 10px 15px 20px;
+    .opt {
+      text-align: left;
+      color: #5a8bff;
+      span {
+        cursor: pointer;
+        font-size: 22px;
+      }
+    }
   }
 }
 </style>
