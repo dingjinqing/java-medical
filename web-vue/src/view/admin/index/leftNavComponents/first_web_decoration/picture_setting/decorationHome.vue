@@ -527,6 +527,9 @@ export default {
             case 2:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 2)
               break
+            case 3:
+              this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 3)
+              break
             case 8:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 8)
               break
