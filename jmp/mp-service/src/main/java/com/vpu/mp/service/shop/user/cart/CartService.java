@@ -98,9 +98,10 @@ public class CartService extends ShopBaseService {
                 .where(CART.USER_ID.eq(userId)).orderBy(CART.CREATE_TIME.asc()).fetch();
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
+        List<Integer> goodsIdList = records.getValues(GOODS.GOODS_ID).stream().distinct().collect(Collectors.toList());
 
         // 数据校验计算
-        cartListVo = cartProductToGroup(cartGoodsList,productIdList, userId);
+        cartListVo = cartProductToGroup(cartGoodsList,productIdList, goodsIdList,userId);
 
 
         return cartListVo;
@@ -114,10 +115,11 @@ public class CartService extends ShopBaseService {
      *
      * @param cartGoodsList
      * @param productIdList
+     * @param goodsIdList
      * @param userId        用户id
      * @return
      */
-    private WxAppCartListVo cartProductToGroup(List<WxAppCartGoods> cartGoodsList, List<Integer> productIdList, Integer userId) {
+    private WxAppCartListVo cartProductToGroup(List<WxAppCartGoods> cartGoodsList, List<Integer> productIdList, List<Integer> goodsIdList, Integer userId) {
         WxAppCartListVo cartListVo = new WxAppCartListVo();
         List<WxAppCartGoods> invalidCartList;
         List<WxAppCartGoods> validCartList;
@@ -135,7 +137,7 @@ public class CartService extends ShopBaseService {
         }).collect(Collectors.toList());
         // 会员相关
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(userId, productIdList);
-        Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(userId, cartGoodsList);
+        Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(userId, goodsIdList);
         for (int i=0 ;i<validCartList.size();i++){
             WxAppCartGoods cartGoods =validCartList.get(i);
             //会员专享

@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class WxAppFootprintController extends WxAppBaseController {
 
 
+    /**
+     * 订单列表
+     */
     @PostMapping("/list")
     private void getFootprintList(){
         Integer userId = wxAppAuth.user().getUserId();

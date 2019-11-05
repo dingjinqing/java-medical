@@ -203,7 +203,7 @@ public class UserCardService extends ShopBaseService {
 					// 检测可升级到的卡
 					cardId = checkCardCanUpgrade(userId);
 				}
-				
+
 				if (cardId == null) {
 					logger().info("没有可升级的等级会员卡");
 					throw new MemberCardNullException(JsonResultCode.CODE_CARD_GRADE_NONE);
@@ -215,15 +215,15 @@ public class UserCardService extends ShopBaseService {
 		}
 		return null;
 	}
-	
-	
+
+
 	private Integer checkAndUpgradeUserCard(Integer userId) throws MpException {
 		Integer cardId = null;
 		// 获取等级卡列表等级升序
 		List<MemberCardRecord> gCardList = getAvailGradeCard();
-	
+
 		String uGrade = userCardDao.getUserCardGrade(userId);
-		// 判断用户是否拥有等级卡 
+		// 判断用户是否拥有等级卡
 		if (StringUtils.isBlank(uGrade)) {
 			// 用户第一次领取会员卡，给用户分配一级会员卡
 			MemberCardRecord gCard = gCardList.get(0);
@@ -231,11 +231,11 @@ public class UserCardService extends ShopBaseService {
 			addUserCard(userId, gCard.getId());
 			uGrade = userCardDao.getUserCardGrade(userId);
 		}
-		
+
 		// 获取用户累积获得积分和累积消费总额
 		Integer userTotalScore = scoreService.getAccumulationScore(userId);
 		BigDecimal amount = distributorLevelService.getTotalSpend(userId).getTotal();
-		
+
 		for (MemberCardRecord gCard : gCardList) {
 			// 升级条件
 			GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
@@ -253,7 +253,7 @@ public class UserCardService extends ShopBaseService {
 		return cardId;
 	}
 
-	
+
 	/**
 	 * 检测可升级到的等级卡
 	 */
@@ -262,13 +262,13 @@ public class UserCardService extends ShopBaseService {
 		Integer cardId = null;
 		if(!StringUtils.isBlank(uGrade)) {
 			List<MemberCardRecord> gradeCard = getAvailGradeCard();
-			
+
 			Integer userTotalScore = scoreService.getAccumulationScore(userId);
 			BigDecimal amount = distributorLevelService.getTotalSpend(userId).getTotal();
-			
+
 			for (MemberCardRecord gCard : gradeCard) {
 				GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
-				
+
 				if(isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
 					cardId = gCard.getId();
 				} else {
@@ -288,7 +288,7 @@ public class UserCardService extends ShopBaseService {
 		}
 		return gradeCard;
 	}
-	
+
 	private GradeConditionJson getGradeCondition(Integer userTotalScore, BigDecimal amount, MemberCardRecord gCard) {
 		GradeConditionJson gradeCondition = Util.parseJson(gCard.getGradeCondition(),
 				GradeConditionJson.class);
@@ -301,7 +301,7 @@ public class UserCardService extends ShopBaseService {
 		}
 		return gradeCondition;
 	}
-	
+
 	/**
 	 * 是否满足升级条件
 	 */
@@ -344,7 +344,7 @@ public class UserCardService extends ShopBaseService {
 	 * @param isActive 是否直接激活  {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO}
 	 */
 	public void addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate) throws MpException {
-		
+
 		stopUserLimitCard(cardList);
 		for(UserCardParam card: cardList) {
 			MemberCardRecord mCard = cardDao.getCardById(card.getCardId());
@@ -659,7 +659,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 通过用户id，获取用户所有的会员卡列表 php: getUserCard
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
@@ -674,7 +674,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 处理返回给微信端的用户卡数据
-	 * 
+	 *
 	 * @param card
 	 */
 	private void dealWithWxUserCard(WxAppUserCardVo card, String avatar) {
@@ -687,7 +687,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 获取用户卡的头像
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCardAvatar() {
@@ -776,7 +776,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 获取商品的等级会员价
-	 * 
+	 *
 	 * @param userId    用户
 	 * @param prdIdList 规格ids
 	 */
@@ -784,40 +784,42 @@ public class UserCardService extends ShopBaseService {
 		return userCardDao.getUserCartGradePrice(userId,prdIdList);
 	}
 
-	/**
-	 * 筛选会员专享商品
-	 * 
-	 * @param userId        用户id
-	 * @param cartGoodsList 需要筛选的商品
-	 * @return 反回会员卡绑定商品
-	 */
-	public Set<Integer> getUserCardExclusiveGoodsIds(Integer userId, List<WxAppCartGoods> cartGoodsList) {
-		Set<Integer> goodsIds = new HashSet<>();
-		Set<Integer> resGoodsIds = new HashSet<>();
-		//
-		Map<Byte, List<Integer>> goodsCardCouple = goodsCardCoupleService.getGoodsCardCouple(userId);
-		cartGoodsList.forEach(cartGoods -> {
-			if (!goodsIds.contains(cartGoods.getGoodsId())) {
-				goodsIds.add(cartGoods.getGoodsId());
-				// 商品
-				if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoods.getGoodsId())) {
-					resGoodsIds.add(cartGoods.getGoodsId());
-					return;
-				}
-				// 商品分类
-				if (goodsCardCouple.get(CardConstant.COUPLE_TP_STORE).contains(cartGoods.getGoodsId())) {
-					resGoodsIds.add(cartGoods.getGoodsId());
-					return;
-				}
-				// 商品商家分类
-				if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoods.getGoodsId())) {
-					resGoodsIds.add(cartGoods.getGoodsId());
-				}
-			}
-		});
-		return goodsIds;
+    /**
+     * 筛选会员专享商品
+     * @param userId          用户id
+     * @param cartGoodsIdList 需要筛选的商品
+     * @return 反回会员卡绑定商品
+     */
+    public Set<Integer> getUserCardExclusiveGoodsIds(Integer userId, List<Integer> cartGoodsIdList) {
+        cartGoodsIdList = cartGoodsIdList.stream().distinct().collect(Collectors.toList());
+        Set<Integer> goodsIds = new HashSet<>();
+        Set<Integer> resGoodsIds = new HashSet<>();
+        // 获取关联商品
+        Map<Byte, List<Integer>> goodsCardCouple = goodsCardCoupleService.getGoodsCardCouple(userId);
+        cartGoodsIdList.forEach(cartGoodsId -> {
+            // 商品
+            if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoodsId)) {
+                resGoodsIds.add(cartGoodsId);
+                return;
+            }
+            // 商品分类
+            if (goodsCardCouple.get(CardConstant.COUPLE_TP_STORE).contains(cartGoodsId)) {
+                resGoodsIds.add(cartGoodsId);
+                return;
+            }
+            // 商品商家分类
+            if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoodsId)) {
+                resGoodsIds.add(cartGoodsId);
+            }
+            //品牌
+            if (goodsCardCouple.get(CardConstant.COUPLE_TP_BRAND).contains(cartGoodsId)) {
+                resGoodsIds.add(cartGoodsId);
+            }
+        });
+        return resGoodsIds;
 
-	}
+    }
+
 
 	/**
 	 * 根据id获得具有卡的数量
@@ -825,6 +827,6 @@ public class UserCardService extends ShopBaseService {
 	public int getNumCardsWithSameId(Integer cardId) {
 		return userCardDao.calcNumCardById(cardId);
 	}
-	
-	
+
+
 }

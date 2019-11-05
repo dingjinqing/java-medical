@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -71,11 +73,11 @@ public class GoodsCardCoupleService  extends ShopBaseService {
     public Map<Byte, List<Integer>> getGoodsCardCouple(Integer userId){
         // 获取会员等级
         String userCardGrade = userCardDao.getUserCardGrade(userId);
-        // 获取会员专享商品
         Map<Byte, List<Integer>> gradeCoupleGoods =new HashMap<>();
         if (userCardGrade!=null){
             gradeCoupleGoods = getGradeCardCoupleGoodsList(userCardGrade);
         }
+        // 获取普通会员卡
         Map<Byte, List<Integer>> cardCoupleGoods = getGeneralCardCoupleGoodsList(userId);
         gradeCoupleGoods.forEach((key,vaule)->{
             if (cardCoupleGoods.containsKey(key)){

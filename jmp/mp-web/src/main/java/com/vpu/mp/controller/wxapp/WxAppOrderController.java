@@ -2,6 +2,9 @@ package com.vpu.mp.controller.wxapp;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.service.pojo.wxapp.order.OrderGoodsHistoryListParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsHistoryBo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +30,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 @RestController
 @RequestMapping("/api/wxapp/order")
 public class WxAppOrderController extends WxAppBaseController{
-	
+
 	/**
 	 * 	退款、退货创建
 	 */
@@ -40,7 +43,7 @@ public class WxAppOrderController extends WxAppBaseController{
 			return fail(e.getErrorCode());
 		}
 	}
-	
+
 	/**
 	 * 退款退货
 	 */
@@ -51,7 +54,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
-	
+
 	/**
 	 * 延长收货、确认收货、取消订单、提醒发货、删除订单
 	 */
@@ -62,7 +65,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
-	
+
 	/**
 	 * 订单列表
 	 */
@@ -72,7 +75,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		PageResult<OrderListMpVo> result = shop().readOrder.getPageList(param);
 		return success(result);
 	}
-	
+
 	/**
 	 * 订单详情
 	 */
@@ -84,7 +87,7 @@ public class WxAppOrderController extends WxAppBaseController{
 			return fail(e.getErrorCode());
 		}
 	}
-	
+
 	/**
 	 * 统计数量
 	 */
@@ -93,7 +96,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setWxUserInfo(wxAppAuth.user());
 		return success(shop().readOrder.statistic(param));
 	}
-	
+
 	/**
 	 * 统计数量
 	 */
@@ -101,5 +104,9 @@ public class WxAppOrderController extends WxAppBaseController{
 	public JsonResult before(@RequestBody @Valid OrderBeforeParam param) {
 		param.setWxUserInfo(wxAppAuth.user());
 		return null;
+	}
+	@PostMapping("/goods/history")
+	public void getHistotyGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
+
 	}
 }

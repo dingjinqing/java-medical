@@ -204,7 +204,9 @@ public class GiftService extends ShopBaseService {
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
             .where(PRODUCT.PRD_ID.eq(productId))
             .fetchOneInto(ProductVo.class);
-        vo.setOfferNumber(getGiftOrderedNumber(productId, giftId));
+        if (vo!=null){
+            vo.setOfferNumber(getGiftOrderedNumber(productId, giftId));
+        }
         return vo;
     }
 
