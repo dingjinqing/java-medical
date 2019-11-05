@@ -547,7 +547,7 @@ public class AdminGoodsController extends AdminBaseController {
         if (goodsListMpParam.getRecommendType() == null || goodsListMpParam.getGoodsNum() == null) {
             return fail();
         }
-        List<GoodsListMpVo> goodsList = shop().goodsMp.getGoodsList(goodsListMpParam,null);
+        List<GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam,null);
         return success(goodsList);
     }
 }

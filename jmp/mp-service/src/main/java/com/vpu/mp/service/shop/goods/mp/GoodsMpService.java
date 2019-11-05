@@ -13,8 +13,7 @@ import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 
@@ -46,47 +46,35 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     ProcessorFactoryBuilder processorFactoryBuilder;
 
-    public List<ActivityGoodsListCapsule> test() {
-        GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);
-        List<ActivityGoodsListCapsule> capsules = new ArrayList<>();
-        ActivityGoodsListCapsule c = new ActivityGoodsListCapsule();
-        c.setGoodsId(1);
-        c.setCatId(2);
-        c.setSortId(28);
-        c.setGoodsType((byte) 0);
-        c.setShopPrice(BigDecimal.valueOf(50));
-        c.setMarketPrice(BigDecimal.valueOf(200));
-        capsules.add(c);
-        processorFactory.doProcess(capsules, 123);
-        return capsules;
-    }
-
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据
-     *
      * @param param  装修页面配置的商品获取过滤条件
      * @param userId
      * @return 对应的商品集合信息
      */
-    public List<GoodsListMpVo> getGoodsList(GoodsListMpParam param, Integer userId) {
-        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
-        if (soldOutGoods == 1) {
-            param.setSoldOutGoodsShow(soldOutGoods);
+    public List<GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
+        // 手动推荐展示但是未指定商品数据
+        if (0 != param.getRecommendType()&&(param.getGoodsItems() == null || param.getGoodsItems().size() == 0)) {
+            return new ArrayList<>();
         }
-        List<ActivityGoodsListCapsule> goodsListCapsules;
-        // 手动推荐展示
-        if (0 != param.getRecommendType()) {
-            // 手动推荐商品逻辑
-            if (param.getGoodsItems() == null || param.getGoodsItems().size() == 0) {
-                return new ArrayList<>();
-            }
-            goodsListCapsules = getPointGoodsList(param);
-        } else {
-            // 自动推荐展示
-            goodsListCapsules = getAutoGoodsList(param);
-        }
+        Condition condition =buildPageIndexCondition(param);
 
-        disposeGoodsList(goodsListCapsules, userId);
+        List<ActivityGoodsListCapsule> goodsListCapsules;
+        // 自动推荐拼接排序条件
+        if (0 != param.getRecommendType()) {
+            goodsListCapsules = findActivityGoodsListCapsulesDao(condition,null,null,null,param.getGoodsItems());
+        } else {
+            List<SortField<?>> orderFields = new ArrayList<>();
+            if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
+                orderFields.add(GOODS.GOODS_SALE_NUM.desc());
+            } else if (GoodsListMpParam.SHOP_PRICE_SORT.equals(param.getSortType())) {
+                orderFields.add(GOODS.SHOP_PRICE.asc());
+            } else {
+                orderFields.add(GOODS.GOODS_ID.desc());
+            }
+            goodsListCapsules = findActivityGoodsListCapsulesDao(condition,orderFields,null,param.getGoodsNum(),null);
+        }
+        disposeGoodsList(goodsListCapsules,userId);
 
         List<GoodsListMpVo> goodsListMpVos = convertGoodsCapsuleTGoodsListMpVo(goodsListCapsules);
 
@@ -94,87 +82,26 @@ public class GoodsMpService extends ShopBaseService {
     }
 
     /**
-     * 根据指定的商品id值获取处理好信息的商品结果集合（商家分类展示一级分类关联的商品时使用到）
-     *
-     * @param goodsIds 指定的商品结果结合
-     * @return
-     */
-    public List<GoodsListMpVo> getGoodsList(List<Integer> goodsIds, Integer userId) {
-        GoodsListMpParam param = new GoodsListMpParam();
-        param.setGoodsItems(goodsIds);
-        return getGoodsList(param, userId);
-    }
-
-    /**
-     * 获取指定商品模式下的商品信息
-     * @param param 自动推荐过滤条件
-     * @return 商品结果集合
-     */
-    private List<ActivityGoodsListCapsule> getPointGoodsList(GoodsListMpParam param) {
-        List<Integer> goodsIds = param.getGoodsItems();
-
-        Condition condition = GOODS.GOODS_ID.in(goodsIds).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-        // 是否展示已指定但是售罄的商品
-        if (param.getSoldOutGoodsShow() == GoodsConstant.SOLD_OUT_GOODS_SHOW) {
-            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
-        }
-
-        Map<Integer, ActivityGoodsListCapsule> goodsListCapsulesMap = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
-            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
-            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
-            .from(GOODS).where(condition).fetchMap(GOODS.GOODS_ID, ActivityGoodsListCapsule.class);
-
-        List<ActivityGoodsListCapsule> goodsListCapsules = new ArrayList<>();
-        goodsIds.forEach(goodsId-> goodsListCapsules.add(goodsListCapsulesMap.get(goodsIds)));
-
-        return goodsListCapsules;
-    }
-
-    /**
-     * 获取自动推荐时的商品信息
-     *
-     * @param param 自动推荐过滤条件
-     * @return 商品结果集合
-     */
-    private List<ActivityGoodsListCapsule> getAutoGoodsList(GoodsListMpParam param) {
-        // 处理过滤条件
-        Condition condition = buildConditionForAutoGoodsList(param);
-
-        SelectConditionStep<?> select = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
-            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
-            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
-            .from(GOODS).where(condition);
-
-        if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
-            select.orderBy(GOODS.GOODS_SALE_NUM.desc());
-        } else if (GoodsListMpParam.SHOP_PRICE_SORT.equals(param.getSortType())) {
-            select.orderBy(GOODS.SHOP_PRICE);
-        } else {
-            select.orderBy(GOODS.GOODS_ID.desc());
-        }
-        // TODO: 排序时逻辑未添加对活动类型为1,3,5的类型的特殊处理，php处理了，但是目前开发未涉及到，不清楚具体业务场景
-
-        List<ActivityGoodsListCapsule> goodsListCapsules = select.limit(param.getGoodsNum()).fetchInto(ActivityGoodsListCapsule.class);
-
-        return goodsListCapsules;
-    }
-
-    /**
      * 创建自动推荐商品过滤条件
-     *
      * @param param 过滤参数
      * @return 拼接后的条件
      */
-    private Condition buildConditionForAutoGoodsList(GoodsListMpParam param) {
+    private Condition buildPageIndexCondition(GoodsListMpParam param) {
         // 获取在售商品且商品数量大于0
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
+        // 是否展示售罄
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (soldOutGoods == 1) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+        if (0 != param.getRecommendType()) {
+            condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsItems()));
+            return condition;
+        }
+
         if (!StringUtils.isBlank(param.getKeywords())) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeywords())));
-        }
-        // 是否展示售罄商品
-        if (param.getSoldOutGoodsShow() == GoodsConstant.SOLD_OUT_GOODS_SHOW) {
-            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
 
         if (param.getMinPrice() != null) {
@@ -216,8 +143,24 @@ public class GoodsMpService extends ShopBaseService {
     }
 
     /**
+     * 通过商品id集合回去对应的数据信息
+     * @param goodsIds 商品id集合
+     * @param userId 用户id
+     * @return {@link com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam}集合
+     */
+    public List<GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId) {
+        if (goodsIds == null) {
+            return new ArrayList<>();
+        }
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.GOODS_ID.in(goodsIds));
+        List<ActivityGoodsListCapsule> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, null, null, goodsIds);
+        disposeGoodsList(goodsListCapsules,userId);
+        List<GoodsListMpVo> goodsListMpVos = convertGoodsCapsuleTGoodsListMpVo(goodsListCapsules);
+        return goodsListMpVos;
+    }
+
+    /**
      * 处理获取的推荐商品规格，评价，标签，活动tag,最终划线价和商品价格
-     *
      * @param goodsListCapsules 通过过滤条件获取的商品信息
      * @param userId            用户id 可为null(在admin页面装修的时候传入的就是null)
      */
@@ -229,7 +172,6 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * ActivityGoodsListCapsule 转换为 GoodsListMpVo
-     *
      * @param goodsListCapsules 待转换数据
      * @return 转换后的数据
      */
@@ -260,10 +202,8 @@ public class GoodsMpService extends ShopBaseService {
         }
         return goodsListMpVos;
     }
-
     /**
      * 将相对路劲修改为全路径
-     *
      * @param relativePath 相对路径
      * @return null或全路径
      */
@@ -273,5 +213,54 @@ public class GoodsMpService extends ShopBaseService {
         } else {
             return imageService.imageUrl(relativePath);
         }
+    }
+
+    /**
+     * 根据过滤条件获取商品列表中的商品信息，
+     * 返回结果的顺序和goodsIds的顺序一致,若果查询的结果在goodsId中不存在则默认添加至返回列表的末尾
+     * @param condition 过滤条件
+     * @param orderFields 排序结合
+     * @param offset 分页开始位置 如果limit为null则不会进行分页，如果offset为null,则默认为从0开始
+     * @param limit 分页数量为null表示不进行分页
+     * @param goodsIds 指定的商品id顺序
+     * @return {@link com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule}
+     */
+    public List<ActivityGoodsListCapsule>  findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields,Integer offset,Integer limit, List<Integer> goodsIds){
+
+        if (condition != null) {
+            condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
+        }
+
+        if (orderFields == null || orderFields.size() == 0) {
+            orderFields = new ArrayList<>();
+            orderFields.add(GOODS.GOODS_ID.asc());
+        }
+
+        Select<?> select =null;
+
+        SelectSeekStepN<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> record12 =
+            db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
+            .from(GOODS).where(condition).orderBy(orderFields);
+        select = record12;
+
+        // 拼接分页
+        if (limit != null) {
+            offset = offset==null?0:offset;
+            select = record12.limit(offset,limit);
+        }
+
+        List<ActivityGoodsListCapsule> returnList;
+
+        if (goodsIds != null) {
+            Map<Integer, ActivityGoodsListCapsule> map = select.fetchMap(GOODS.GOODS_ID, ActivityGoodsListCapsule.class);
+            returnList = goodsIds.stream().filter(id -> map.get(id) != null).map(id -> map.remove(id)).collect(Collectors.toList());
+            returnList.addAll(map.values());
+        } else {
+            returnList = select.fetchInto(ActivityGoodsListCapsule.class);
+        }
+
+        return returnList;
     }
 }
