@@ -12,21 +12,21 @@
           :key="index"
         >
           <td
-            :style="item.firstIsChecked?'backgroundColor:#eaf0ff':''"
+            :style="(item.firstIsChecked?'backgroundColor:#eaf0ff;':'')+(item.firstIsBorder?'borderColor:#6e86cc':'')"
             @click="handleToClick(index,'first')"
-          ><span>+</span></td>
+          ><span v-if="!item.firstIsBorder">+</span></td>
           <td
-            :style="item.secondIsChecked?'backgroundColor:#eaf0ff':''"
+            :style="(item.secondIsChecked?'backgroundColor:#eaf0ff;':'')+(item.secondIsBorder?'borderColor:#6e86cc':'')"
             @click="handleToClick(index,'second')"
-          ><span>+</span></td>
+          ><span v-if="!item.secondIsBorder">+</span></td>
           <td
-            :style="item.thirdIsChecked?'backgroundColor:#eaf0ff':''"
+            :style="(item.thirdIsChecked?'backgroundColor:#eaf0ff;':'')+(item.thirdIsBorder?'borderColor:#6e86cc':'')"
             @click="handleToClick(index,'third')"
-          ><span>+</span></td>
+          ><span v-if="!item.thirdIsBorder">+</span></td>
           <td
-            :style="item.fourIsChecked?'backgroundColor:#eaf0ff':''"
+            :style="(item.fourIsChecked?'backgroundColor:#eaf0ff;':'')+(item.fourIsBorder?'borderColor:#6e86cc':'')"
             @click="handleToClick(index,'four')"
-          ><span>+</span></td>
+          ><span v-if="!item.fourIsBorder">+</span></td>
         </tr>
       </tbody>
     </table>
@@ -65,6 +65,7 @@ export default {
         obj1[`${item}Col`] = '1'
         obj1[`${item}Dis`] = false
         obj1[`${item}IsChecked`] = false
+        obj1[`${item}IsBorder`] = false
       })
       this.arrFour.forEach((item, index) => {
         let obj = JSON.parse(JSON.stringify(obj1))
@@ -74,7 +75,7 @@ export default {
     },
     // 点击表格单元
     handleToClick (index, item) {
-      this.handleToScreen(index) // 首次筛选判断当前点击是不是首次点击
+      this.handleToScreen() // 首次筛选判断当前点击是不是首次点击
       if (!this.nowCheckedArr.length) {
         this.columnData[index][`${item}IsChecked`] = true
         this.nowCheckedArr.push(`${item}`)
@@ -83,33 +84,34 @@ export default {
         if (this.firstClickIndex === index) { // 判断第二次点击是否点击的还是同行
           this.columnData[index][`${item}IsChecked`] = true
           this.handleToScreen()
-          if (this.nowCheckedArr[0] === this.nowCheckedArr[1]) { // 若是同行则检查选中的项集合是否重复
-            // 处理两次点击同一单元格事件
-            console.log(this.nowCheckedArr)
+          console.log(this.nowCheckedArr)
+          if (this.nowCheckedArr.length === 1) { // 判断第二次点击的是否是同一个单元格
+            // 处理两次点击同行同一单元格事件
+            console.log(item)
+            this.columnData[index][`${item}IsBorder`] = true
+            console.log(this.columnData)
             this.nowCheckedArr = []
+            console.log(this.nowCheckedArr)
           } else {
-            // 处理两次点击不同单元格事件
+            // 处理两次点击同行不同单元格事件
             console.log(this.nowCheckedArr)
           }
         } else { // 若第二次点击的是不同行的单元格
           console.log(this.nowCheckedArr)
         }
       }
-      // this.isOpenLayout = true
-      // this.columnData[index][`${item}IsChecked`] = true
-      // 筛选表格数据选中的项
-      // this.handleToScreen()
       console.log(this.nowCheckedArr)
     },
     // 筛选出当前表格数据项选中的项
-    handleToScreen (index) {
+    handleToScreen () {
+      this.nowCheckedArr = []
       this.columnData.forEach((itemC, indexC) => {
         let isCheckedArr = this.arrFour.filter((itm, ind) => {
           console.log(itemC[`${itm}IsChecked`])
           return itemC[`${itm}IsChecked`]
         })
         console.log(isCheckedArr)
-        this.nowCheckedArr = isCheckedArr
+        this.nowCheckedArr = this.nowCheckedArr.concat(isCheckedArr)
         console.log(this.nowCheckedArr)
       })
     }
