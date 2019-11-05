@@ -1,9 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
 
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
+import org.springframework.stereotype.Service;
 
 @Service
 
@@ -14,7 +13,7 @@ public class DeliverTemplateConfigService extends BaseShopConfigService{
 	 /**
      * 获取默认运费模板配置
      *
-     * @param jsonString
+     * @param
      * @return 
      */
 	
@@ -25,7 +24,7 @@ public class DeliverTemplateConfigService extends BaseShopConfigService{
 	 /**
      * 修改默认运费模板配置
      *
-     * @param jsonString
+     * @param
      * @return 
      */
 	

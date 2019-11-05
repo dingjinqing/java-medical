@@ -1,25 +1,18 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.DELIVER_FEE_TEMPLATE;
-
-import java.util.List;
-
+import com.vpu.mp.db.shop.tables.records.DeliverFeeTemplateRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
+import com.vpu.mp.service.pojo.shop.goods.deliver.*;
 import org.jooq.Record4;
 import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.vpu.mp.db.shop.tables.records.DeliverFeeTemplateRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverBoxVo;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.DELIVER_FEE_TEMPLATE;
 
 
 /**
@@ -36,7 +29,6 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	/**
 	 *	查询所有省、市、区、县
 	 *
-	 * @param 
 	 * @return List<AreaSelectVo>
 	 */
 	public List<AreaProvinceVo> getAllArea() {
@@ -46,155 +38,50 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	/**
 	 * 运费模版列表
 	 * 
-	 * @param param
-	 * @return 
+	 * @param param flag传0:普通运费模板，传1:重量运费模板
+	 * @return 分页信息
 	 */
 	public PageResult<GoodsDeliverTemplateVo> getDeliverTemplateList(GoodsDeliverPageListParam param) {
+        //flag传0:普通运费模板， 传1:重量运费模板
 		SelectSeekStep1<Record4<Integer, String, String, Byte>, Integer> selectFrom =
 				db().select(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID,DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,DELIVER_FEE_TEMPLATE.FLAG)
 				.from(DELIVER_FEE_TEMPLATE)
-				.where(DELIVER_FEE_TEMPLATE.FLAG.eq((byte)0))
+				.where(DELIVER_FEE_TEMPLATE.FLAG.eq(param.getFlag()))
 				.orderBy(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.desc());
 		
 		PageResult<GoodsDeliverTemplateVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsDeliverTemplateVo.class);
-		return pageResult;
-	}
-	
-	/**
-	 * 重量运费模版列表
-	 * 
-	 * @param param
-	 * @return 
-	 */
-	public PageResult<GoodsDeliverTemplateVo> getWeightDeliverTemplateList(GoodsDeliverPageListParam param) {
-		SelectSeekStep1<Record4<Integer, String, String, Byte>, Integer> selectFrom =
-				db().select(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID,DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,DELIVER_FEE_TEMPLATE.FLAG)
-				.from(DELIVER_FEE_TEMPLATE)
-				.where(DELIVER_FEE_TEMPLATE.FLAG.eq((byte)1))
-				.orderBy(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.desc());
-		
-		PageResult<GoodsDeliverTemplateVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsDeliverTemplateVo.class);
-		
 		return pageResult;
 	}
 	
 	/**
      * 添加运费模版
      *
-     * @param param
-     * @return 
+     * @param param 名称 类型标识 详细配置信息
      */
-	public int addDeliverTemplate(GoodsDeliverTemplateParam param) {
-				
-		try {
-			//** 复用ObjectMapper对象 */
-			ObjectMapper objectMapper = new ObjectMapper();
-			//* 外层模版类（不含包邮条件） */
-			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
-			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
-			
-			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
-			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
-			
-			ArrayNode arrayTemplate = objectMapper.createArrayNode();
-			arrayTemplate.add(jsonNodeLimit);
-			arrayTemplate.add(jsonNodeArea);
-			//* 包邮条件 */
-			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
-			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
-			
-			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
-			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
-			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
-			arrayFeeCon.add(jsonNodeFeeCon);
-			
-			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
-			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
-			
-			ArrayNode arrayTotal = objectMapper.createArrayNode();
-			arrayTotal.add(jsonResultTemplate);
-			arrayTotal.add(jsonNodeFee);
-			arrayTotal.add(jsonResultFeeCon);
-			
-			
-			int result = db()
-	                .insertInto(DELIVER_FEE_TEMPLATE, DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.FLAG,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT)
-	                .values(param.getTemplateName(),(byte)0,arrayTotal.toString())
-	                .execute();
-	        return result;
-	        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
-
-	/**
-     * 添加重量运费模版
-     *
-     * @param param
-     * @return 
-     */
-	public int addDeliverWeightTemplate(GoodsDeliverTemplateParam param) {
-				
-		try {
-			//** 复用ObjectMapper对象 */
-			ObjectMapper objectMapper = new ObjectMapper();
-			//* 外层模版类（不含包邮条件） */
-			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
-			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
-			
-			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
-			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
-			
-			ArrayNode arrayTemplate = objectMapper.createArrayNode();
-			arrayTemplate.add(jsonNodeLimit);
-			arrayTemplate.add(jsonNodeArea);
-			//* 包邮条件 */
-			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
-			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
-			
-			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
-			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
-			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
-			arrayFeeCon.add(jsonNodeFeeCon);
-			
-			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
-			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
-			
-			ArrayNode arrayTotal = objectMapper.createArrayNode();
-			arrayTotal.add(jsonResultTemplate);
-			arrayTotal.add(jsonNodeFee);
-			arrayTotal.add(jsonResultFeeCon);
-			
-			
-			int result = db()
-	                .insertInto(DELIVER_FEE_TEMPLATE, DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.FLAG,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT)
-	                .values(param.getTemplateName(),(byte)1,arrayTotal.toString())
-	                .execute();
-	        return result;
-	        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
+	public void addDeliverTemplate(GoodsDeliverTemplateParam param) {
+	    //flag传0:普通运费模板， 传1:重量运费模板
+        db().insertInto(DELIVER_FEE_TEMPLATE,
+            DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,
+            DELIVER_FEE_TEMPLATE.FLAG,
+            DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT)
+            .values(param.getTemplateName(),param.getFlag(),Util.toJsonNotNull(param.getContentParam()))
+            .execute();
 	}
 	
 	 /**
      * 真删除运费模版
      *
-     * @param goodsDeliverIdParam
-     * @return 数据库受影响行数
+     * @param goodsDeliverIdParam 模板id
      */
-    public int deleteDeliverTemplate(GoodsDeliverIdParam goodsDeliverIdParam) {
-        return db().deleteFrom(DELIVER_FEE_TEMPLATE)
+    public void deleteDeliverTemplate(GoodsDeliverIdParam goodsDeliverIdParam) {
+         db().deleteFrom(DELIVER_FEE_TEMPLATE)
         		.where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(goodsDeliverIdParam.getDeliverTemplateId()))
                 .execute();
     }
     /**
 	 * 修改模版前先查询单个模版的信息，将其参数作为修改时的默认值
 	 * 
-	 * @param param
+	 * @param param 模板id
 	 * @return List<GoodsDeliverTemplateVo>
 	 */
 	
@@ -212,107 +99,18 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	/**
      *修改运费模版
      *
-     * @param param
-     * @return 
+     * @param param 模板id 名称 类型 详细配置信息
      */
-	public int updateDeliverTemplate(GoodsDeliverTemplateParam param) {
+	public void updateDeliverTemplate(GoodsDeliverTemplateParam param) {
 				
-		try {
-			//** 复用ObjectMapper对象 */
-			ObjectMapper objectMapper = new ObjectMapper();
-			//* 外层模版类（不含包邮条件） */
-			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
-			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
-			
-			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
-			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
-			
-			ArrayNode arrayTemplate = objectMapper.createArrayNode();
-			arrayTemplate.add(jsonNodeLimit);
-			arrayTemplate.add(jsonNodeArea);
-			//* 包邮条件 */
-			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
-			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
-			
-			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
-			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
-			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
-			arrayFeeCon.add(jsonNodeFeeCon);
-			
-			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
-			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
-			
-			ArrayNode arrayTotal = objectMapper.createArrayNode();
-			arrayTotal.add(jsonResultTemplate);
-			arrayTotal.add(jsonNodeFee);
-			arrayTotal.add(jsonResultFeeCon);
-			
-			int result = db()
-					.update(DELIVER_FEE_TEMPLATE)
+			db().update(DELIVER_FEE_TEMPLATE)
 					.set(DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,param.getTemplateName())
-	                .set(DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,arrayTotal.toString())
+	                .set(DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,Util.toJsonNotNull(param.getContentParam()))
 	                .where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
 	                .execute();
-	                		
-	        return result;
-	        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
+
 	}
-	/**
-     *修改运费模版
-     *
-     * @param param
-     * @return 
-     */
-	public int updateDeliverWeightTemplate(GoodsDeliverTemplateParam param) {
-				
-		try {
-			//** 复用ObjectMapper对象 */
-			ObjectMapper objectMapper = new ObjectMapper();
-			//* 外层模版类（不含包邮条件） */
-			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
-			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
-			
-			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
-			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
-			
-			ArrayNode arrayTemplate = objectMapper.createArrayNode();
-			arrayTemplate.add(jsonNodeLimit);
-			arrayTemplate.add(jsonNodeArea);
-			//* 包邮条件 */
-			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
-			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
-			
-			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
-			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
-			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
-			arrayFeeCon.add(jsonNodeFeeCon);
-			
-			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
-			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
-			
-			ArrayNode arrayTotal = objectMapper.createArrayNode();
-			arrayTotal.add(jsonResultTemplate);
-			arrayTotal.add(jsonNodeFee);
-			arrayTotal.add(jsonResultFeeCon);
-			
-			int result = db()
-					.update(DELIVER_FEE_TEMPLATE)
-					.set(DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,param.getTemplateName())
-	                .set(DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,arrayTotal.toString())
-	                .where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
-	                .execute();
-	                		
-	        return result;
-	        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
+
 	/**
 	 *	运费模板下拉框
 	 *
@@ -328,8 +126,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	/**
 	 *	复制运费模板
 	 *
-	 * @param GoodsDeliverIdParam
-	 * @return
+	 * @param param 模板id
 	 */
 	public void copyTemplate(GoodsDeliverIdParam param) {
 		/** 根据id查模板信息 */

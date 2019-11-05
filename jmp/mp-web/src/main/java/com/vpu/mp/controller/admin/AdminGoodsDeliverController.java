@@ -1,23 +1,13 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverBoxVo;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateListVo;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
+import com.vpu.mp.service.pojo.shop.goods.deliver.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -33,7 +23,6 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	/**
 	 * 返回所有地区代码及名称
 	 * 
-	 * @param
 	 * @return JsonResult
 	 */
 	@GetMapping("/select")
@@ -45,40 +34,29 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	/**
 	 * 运费模版分页查询
 	 *
-	 * @param param
-	 * @return
+	 * @param param 类型标识
+	 * @return 分页信息
 	 */
 
 	@PostMapping("/templatelist")
 	public JsonResult getTemplateList(@RequestBody GoodsDeliverPageListParam param) {
+	    //店铺默认模板配置
 		String config = shop().config.deliverTemplateConfigService.getDefaultDeliverTemplate();
+		//模板信息分页查询
 		PageResult<GoodsDeliverTemplateVo> pageResult = shop().goods.goodsDeliver.getDeliverTemplateList(param);
-		GoodsDeliverTemplateListVo vo = new GoodsDeliverTemplateListVo();
-		vo.setConfig(config);
-		vo.setPageResult(pageResult);
+		//默认配置和其他模板信息一起返回
+		GoodsDeliverTemplateListVo vo = new GoodsDeliverTemplateListVo(){{
+            setConfig(config);
+            setPageResult(pageResult);
+        }};
 		return success(vo);
 
 	}
 
 	/**
-	 * 重量运费模版分页查询
-	 *
-	 * @param param
-	 * @return
-	 */
-	@PostMapping("/weighttemplatelist")
-	public JsonResult getWeightTemplateList(@RequestBody GoodsDeliverPageListParam param) {
-		PageResult<GoodsDeliverTemplateVo> pageResult = shop().goods.goodsDeliver.getWeightDeliverTemplateList(param);
-
-		return success(pageResult);
-	}
-
-	/**
 	 * 添加运费模版
 	 * 
-	 * @param goodsDeliverTemplateParam
-	 * @return
-	 *
+	 * @param goodsDeliverTemplateParam 模板名称 类型 详细信息
 	 */
 	@PostMapping("/addtemplate")
 	public JsonResult addDeliverTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
@@ -89,25 +67,9 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	}
 
 	/**
-	 * 添加重量运费模版
-	 * 
-	 * @param goodsDeliverTemplateParam
-	 * @return
-	 *
-	 */
-	@PostMapping("/addweighttemplate")
-	public JsonResult addDeliverWeightTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
-
-		shop().goods.goodsDeliver.addDeliverWeightTemplate(goodsDeliverTemplateParam);
-
-		return success();
-	}
-
-	/**
 	 * 修改运费模版
 	 * 
-	 * @param goodsDeliverTemplateParam
-	 * @return
+	 * @param goodsDeliverTemplateParam 模板id 模板名称 类型 详细信息
 	 *
 	 */
 	@PostMapping("/updatetemplate")
@@ -118,26 +80,11 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 		return success();
 	}
 
-	/**
-	 * 修改重量运费模版
-	 * 
-	 * @param goodsDeliverTemplateParam
-	 * @return
-	 *
-	 */
-	@PostMapping("/updateweighttemplate")
-	public JsonResult updateDeliverWeightTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
-
-		shop().goods.goodsDeliver.updateDeliverWeightTemplate(goodsDeliverTemplateParam);
-
-		return success();
-	}
 
 	/**
 	 * 真删除指定运费模版
 	 *
-	 * @param goodsCommentId
-	 * @return
+	 * @param goodsDeliverIdParam 模板id
 	 */
 	@PostMapping("/delete")
 	public JsonResult delete(@RequestBody GoodsDeliverIdParam goodsDeliverIdParam) {
@@ -150,7 +97,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	/**
 	 * 修改模版前先查询单个模版的信息，将其参数作为修改时的默认值
 	 *
-	 * @param param
+	 * @param param 模板id
 	 * @return JsonResult
 	 */
 
@@ -164,10 +111,9 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	}
 
 	/**
-	 * 默认运费模板配置
+	 * 修改默认运费模板配置
 	 *
-	 * @param
-	 * @return
+	 * @param  param 标识与配置信息
 	 */
 	@PostMapping("/config")
 	public JsonResult setDefaultDeliverTemplate(@RequestBody DeliverTemplateConfig param) {
@@ -180,8 +126,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	/**
 	 * 运费模板下拉框
 	 *
-	 * @param
-	 * @return
+	 * @return 地区列表
 	 */
 	@GetMapping("/box")
 	public JsonResult getBox() {
@@ -189,10 +134,9 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 		return success(boxVos);
 	}
 	/**
-	 * 默认运费模板配置
+	 * 获取默认运费模板配置
 	 *
-	 * @param
-	 * @return
+	 * @return 默认运费模板信息
 	 */
 	@GetMapping("/getconfig")
 	public JsonResult getDefaultDeliverTemplate() {
@@ -203,8 +147,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	/**
 	 *	复制运费模板
 	 *
-	 * @param 
-	 * @return
+	 * @param param 模板id
 	 */
 	@PostMapping("/copy")
 	public JsonResult copyTemplate(@RequestBody GoodsDeliverIdParam param) {

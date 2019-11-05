@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.deliver;
 
 import com.vpu.mp.service.foundation.util.PageResult;
-
 import lombok.Data;
 /**
  * @author liangchen
@@ -9,9 +8,9 @@ import lombok.Data;
  */
 @Data
 public class GoodsDeliverTemplateListVo {
-	/* 默认运费模板配置 */
+	/** 默认运费模板配置 */
 	private String config;
-	/* 分页信息 */
+	/** 分页信息 */
 	private PageResult<GoodsDeliverTemplateVo> pageResult;
 	
 	

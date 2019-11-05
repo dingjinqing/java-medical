@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.goods.deliver;
-import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 
 /**
@@ -12,17 +12,22 @@ import lombok.Data;
  */
 @Data
 public class GoodsDeliverTemplateAreaParam {
-	@JsonProperty(value = "area_list")
-	private String areaList;
-	@JsonProperty(value = "area_text")
-	private String areaText;
-	@JsonProperty(value = "first_num")
-	private Integer firstNum;
-	@JsonProperty(value = "first_fee")
-	private BigDecimal firstFee;
-	@JsonProperty(value = "continue_num")
-	private Integer continueNum;
-	@JsonProperty(value = "continue_fee")
-	private BigDecimal continueFee;
-	
+    /** 地区编号 */
+    @JsonProperty(value = "area_list")
+    private String 		areaList;
+    /** 地区名称 */
+    @JsonProperty(value = "area_text")
+    private String 		areaText;
+    /** N件/公斤内 */
+    @JsonProperty(value = "first_num")
+    private Integer 	firstNum;
+    /** N元 */
+    @JsonProperty(value = "first_fee")
+    private BigDecimal 	firstFee;
+    /** 每增加N件/公斤 */
+    @JsonProperty(value = "continue_num")
+    private Integer 	continueNum;
+    /** 增加N元 */
+    @JsonProperty(value = "continue_fee")
+    private BigDecimal 	continueFee;
 }
