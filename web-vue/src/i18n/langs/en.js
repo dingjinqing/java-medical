@@ -16,6 +16,10 @@ import { en as versionList } from './views/system/en/smallProgramVersion/version
 import { en as router } from './views/admin_new/en/routerEn'
 // import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
+// 基础信息
+import { en as storeBasicInformation } from './views/admin_new/en/index/basicSettings/basic_manager/store_basic_informationEn'
+// 基础信息-店铺配置
+import { en as storeCommonSettings } from './views/admin_new/en/index/basicSettings/base_manger/store_common_settingsEn'
 import { en as adminPageFramework } from './views/admin_new/en/adminPageFrameworkEn'
 
 // 商品管理系列国际化
@@ -748,7 +752,8 @@ const en = {
   videoSpace,
   vTree,
 
-  // 基础配置
+  storeBasicInformation, // 基础配置
+  storeCommonSettings, // 店铺配置
   pledge, // 服务承诺
   tradeConfiguration, // 交易流程配置
   returnconfiguration, // 退换货配置

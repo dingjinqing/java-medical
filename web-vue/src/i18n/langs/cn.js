@@ -16,6 +16,11 @@ import { cn as versionList } from './views/system/cn/smallProgramVersion/version
 import { cn as router } from './views/admin_new/cn/routerCn'
 // import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
+
+// 基础信息-店铺基础信息
+import { cn as storeBasicInformation } from './views/admin_new/cn/index/basicSettings/base_manger/store_basic_informationCn'
+// 基础信息-店铺配置
+import { cn as storeCommonSettings } from './views/admin_new/cn/index/basicSettings/base_manger/store_common_settingsCn'
 import { cn as adminPageFramework } from './views/admin_new/cn/adminPageFrameworkCn'
 
 import { cn as videoSpace } from './views/admin_new/cn/index/videoSpace/videoSpaceCn'
@@ -720,7 +725,8 @@ const cn = {
   videoSpace,
   vTree,
 
-  // 基础配置
+  storeBasicInformation, // 基础配置
+  storeCommonSettings, // 店铺配置
   pledge, // 服务承诺
   payConfiguration, // 支付配置
   tradeConfiguration, // 交易流程配置

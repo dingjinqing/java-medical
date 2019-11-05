@@ -4,7 +4,7 @@
     <el-main class="shop_config">
       <ul class="program_details">
         <li class="details_item">
-          <span class="item_label">店铺名称：</span>
+          <span class="item_label">{{$t('storeBasicInformation.storeName')}}：</span>
           <div
             class="item_content"
             v-if="!changeNameFlag"
@@ -15,7 +15,7 @@
               class="iconSpan"
               size="small"
               @click="changeNameFlagHandle"
-            >更改</el-button>
+            >{{$t('storeBasicInformation.change')}}</el-button>
           </div>
           <div
             class="item_content"
@@ -30,28 +30,28 @@
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">店铺状态：</span>
+          <span class="item_label">{{$t('storeBasicInformation.storeStatus')}}：</span>
           <div class="item_content">
             <el-radio-group v-model="form.businessState">
-              <el-radio :label="1">已营业</el-radio>
-              <el-radio :label="0">未营业</el-radio>
+              <el-radio :label="1">{{$t('storeBasicInformation.opened')}}</el-radio>
+              <el-radio :label="0">{{$t('storeBasicInformation.notOpen')}}</el-radio>
             </el-radio-group>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">创建时间：</span>
+          <span class="item_label">{{$t('storeBasicInformation.createTime')}}：</span>
           <div class="item_content">
             <span>{{form.created}}</span>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">有效期至：</span>
+          <span class="item_label">{{$t('storeBasicInformation.validUntil')}}：</span>
           <div class="item_content">
             <span>{{form.expireTime}}</span>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">后端店铺Logo：</span>
+          <span class="item_label">{{$t('storeBasicInformation.backendShopLogo')}}：</span>
           <div class="item_content">
             <div
               class="logo_wrap"
@@ -62,18 +62,18 @@
                 fit="contain"
                 style="padding:4px; width:100%; height: 100%;"
               ></el-image>
-              <span class="logo_span">更改</span>
+              <span class="logo_span">{{$t('storeBasicInformation.change')}}</span>
             </div>
-            <p>图片格式必须为：png,bmp,jpeg,jpg,gif；不可大于5M；</p>
-            <p>建议使用png格式图片，以保持最佳效果；建议图片尺寸为144px*144px</p>
+            <p>{{$t('storeBasicInformation.imageFormat')}}：png,bmp,jpeg,jpg,gif；{{$t('storeBasicInformation.cannotGreater')}}5M；</p>
+            <p>{{$t('storeBasicInformation.usePng')}}</p>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">前端店铺Logo:</span>
+          <span class="item_label">{{$t('storeBasicInformation.frontEndShopLogo')}}:</span>
           <div class="item_content">
             <el-radio-group v-model="form.showLogo">
-              <el-radio :label="0">不显示</el-radio>
-              <el-radio :label="1">自定义</el-radio>
+              <el-radio :label="0">{{$t('storeBasicInformation.donotShow')}}</el-radio>
+              <el-radio :label="1">{{$t('storeBasicInformation.customize')}}</el-radio>
             </el-radio-group>
             <div v-if="form.showLogo === 1">
               <div class="applet_logo">
@@ -86,10 +86,10 @@
                     fit="contain"
                     style="padding:4px; width:100%; height: 100%;"
                   ></el-image>
-                  <span class="logo_span">更改</span>
+                  <span class="logo_span">{{$t('storeBasicInformation.change')}}</span>
                 </div>
                 <div class="logo_info">
-                  <p>将于前端页面底部显示</p>
+                  <p>{{$t('storeBasicInformation.showBottom')}}</p>
                   <el-tooltip
                     placement="right"
                     effect="light"
@@ -100,13 +100,13 @@
                         style="width: 200px; height: 355.74px;"
                       ></el-image>
                     </div>
-                    <el-button type="text">查看示例</el-button>
+                    <el-button type="text">{{$t('storeBasicInformation.viewExample')}}</el-button>
                   </el-tooltip>
-                  <p>建议使用png格式图片，图片尺寸300px*80px</p>
+                  <p>{{$t('storeBasicInformation.recommendedPng')}}</p>
                 </div>
               </div>
               <div>
-                <span>链接：</span>
+                <span>{{$t('storeBasicInformation.link')}}：</span>
                 <el-input
                   v-model="form.logoLink"
                   size="small"
@@ -115,7 +115,7 @@
                 <el-button
                   size="small"
                   @click="selectLinkHandle"
-                >选择链接</el-button>
+                >{{$t('storeBasicInformation.selectLink')}}</el-button>
               </div>
             </div>
           </div>
@@ -128,7 +128,7 @@
         class="save_btn"
         size="small"
         @click="saveBasicInfoHandle"
-      >保存</el-button>
+      >{{$t('storeBasicInformation.save')}}</el-button>
     </el-footer>
 
     <!-- 选择后端logo -->
@@ -181,6 +181,7 @@ export default {
     }
   },
   created () {
+    this.langDefault()
     this.initData()
   },
   methods: {
@@ -223,10 +224,11 @@ export default {
     },
     // 保存
     saveBasicInfoHandle () {
+      let that = this
       let params = Object.assign({}, this.form)
       updateBasicInfoApi(params).then(res => {
         if (res.error === 0) {
-          this.$message.success('更新成功')
+          that.$message.success(that.$t('storeBasicInformation.updated'))
         }
       })
     }
