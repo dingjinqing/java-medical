@@ -83,7 +83,7 @@
       </view>
 
       <view class="pay_content">
-        <view class="pay_list_item">
+        <view class="pay_list_item" bindtap="selectCardTap">
           <text class="pay_list_title">会员卡</text>
           <text class="pay_list_content"></text>
           <view class="pay_list_right">
@@ -106,18 +106,18 @@
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>
         </view>
-        <view class="pay_list_item">
+        <view class="pay_list_item" bindtap="balanceTap">
           <text class="pay_list_title">余额支付</text>
           <text class="pay_list_content"></text>
           <view class="pay_list_right">
-            <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}" bindtap="balanceTap"></text>
+            <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
-        <view class="pay_list_item">
+        <view class="pay_list_item" bindtap="scoreTap">
           <text class="pay_list_title">积分支付</text>
           <text class="pay_list_content"></text>
           <view class="pay_list_right">
-            <text class="iconfont {{scoreStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{scoreStatus ? 'color:'+comColor+';' : ''}}" bindtap="scoreTap"></text>
+            <text class="iconfont {{scoreStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{scoreStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
       </view>
@@ -125,32 +125,33 @@
       <view class="checkout_detail">
         <view class="detail_item">
           <text class="detail_title">商品总计</text>
-          <text class="detail_content">-￥1594.51</text>
+          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
         </view>
         <view class="detail_item">
           <text class="detail_title">商品总计</text>
-          <text class="detail_content">-￥1594.51</text>
+          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
         </view>
         <view class="detail_item">
           <text class="detail_title">商品总计</text>
-          <text class="detail_content">-￥1594.51</text>
+          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
         </view>
         <view class="detail_item" wx:if="{{balanceStatus}}">
           <text class="detail_title">余额支付</text>
-          <text class="detail_content">-￥1594.51</text>
+          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
         </view>
         <view class="detail_item" wx:if="{{scoreStatus}}">
           <text class="detail_title">积分抵扣</text>
-          <text class="detail_content">-￥1594.51</text>
+          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
         </view>
       </view>
 
       <view class="checkout_footer">
-        <text class="footer_content">应付余额：{{moneyInfo.useTotalprice}}元</text>
+        <text class="footer_content" style="color:{{comColor}};">应付余额：{{moneyInfo.useTotalprice}}元</text>
         <text class="footer_button" style="background-color:{{comColor}};">提交订单</text>
       </view>
     </view>
   <v-balance-popup show="{{showBalanceDialog}}"/>
   <v-score-popup show="{{showScoreDialog}}"/>
+  <v-select-card show="{{showCardDialog}}"/>
   <include src="../common/footer.wxml" />
 </view>

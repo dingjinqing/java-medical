@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "v-balance-popup": "/components/popup/balanceDialog/index",
-    "v-score-popup": "/components/popup/scoreDialog/index"
+    "v-balance-popup": "/components/popup/payBalanceDialog/index",
+    "v-score-popup": "/components/popup/payScoreDialog/index",
+    "v-select-card": "/components/popup/selectCardDialog/index"
   }
 }

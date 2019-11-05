@@ -8,8 +8,9 @@ global.wxPage({
     address:null,
     balanceStatus:0,
     scoreStatus:0,
-    showBalanceDialog:0,
-    showScoreDialog:0,
+    showBalanceDialog:false,
+    showScoreDialog:false,
+    showCardDialog:false,
     couponArray:[
       1,2,3,4,5
     ],
@@ -62,11 +63,11 @@ global.wxPage({
     if (this.data.balanceStatus){
       this.setData({
         balanceStatus: 0,
-        showBalanceDialog:0
+        showBalanceDialog:false
       })
     } else {
       this.setData({
-        showBalanceDialog:1
+        showBalanceDialog:true
       })
     }
   },
@@ -75,16 +76,22 @@ global.wxPage({
     if (this.data.scoreStatus){
       this.setData({
         scoreStatus: 0,
-        showScoreDialog:0
+        showScoreDialog:false
       })
     } else {
       this.setData({
-        showScoreDialog:1
+        showScoreDialog:true
       })
     }
   },
   couponChange(){
 
+  },
+  // 选择会员卡事件
+  selectCardTap(){
+    this.setData({
+      showCardDialog:true
+    })
   },
   changePayType(e){
     this.setData({

@@ -110,6 +110,7 @@
 .pay_type_item > .iconfont{
   font-size: 40rpx;
   margin-right: 12rpx;
+  color: #888;
 }
 .pay_content{
   margin-top: 20rpx;
@@ -118,7 +119,7 @@
 }
 .pay_content > .pay_list_item{
   display: flex;
-  height: 60rpx;
+  height: 80rpx;
   align-items: center;
   font-size: 26rpx;
 }
@@ -133,6 +134,7 @@
 .pay_list_item > .pay_list_right > .right_arrow{
   width: 15rpx;
   height: 25rpx;
+  vertical-align: middle;
 }
 .pay_list_item > .pay_list_right > .iconfont{
   font-size: 38rpx;
