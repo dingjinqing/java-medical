@@ -73,10 +73,10 @@ public class GoodsConstant {
     public final static byte ACTIVITY_CARD_EXCLUSIVE_PRIORITY = 20;
     /**首单特惠*/
     public final static byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 25;
-    /**等级卡会员价*/
-    public final static byte ACTIVITY_MEMBER_GRADE_PRIORITY = 30;
     /**限时降价*/
-    public final static byte ACTIVITY_REDUCE_PRICE_PRIORITY = 35;
+    public final static byte ACTIVITY_REDUCE_PRICE_PRIORITY = 30;
+    /**等级卡会员价*/
+    public final static byte ACTIVITY_MEMBER_GRADE_PRIORITY = 35;
     /**优惠券*/
     public final static byte ACTIVITY_COUPON_PRIORITY = 40;
     /** 满折满减 */

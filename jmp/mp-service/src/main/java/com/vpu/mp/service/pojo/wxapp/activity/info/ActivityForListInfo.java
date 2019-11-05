@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.activity.info;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,5 +15,6 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class ActivityForListInfo extends ActivityBaseInfo{
     /**活动对应的价格*/
+    @JsonIgnore
     protected BigDecimal activityPrice;
 }
