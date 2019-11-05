@@ -108,10 +108,6 @@ import { en as distribution } from './views/admin_new/en/index/marketManagement/
 import { en as couponGive } from './views/admin_new/en/index/marketManagement/couponGive/couponGiveEn'
 // 秒杀
 import { en as seckill } from './views/admin_new/en/index/marketManagement/seckill/seckillEn'
-// 秒杀-添加
-import { en as addSeckill } from './views/admin_new/en/index/marketManagement/seckill/addSeckillEn'
-// 秒杀-秒杀订单
-import { en as orderSeckill } from './views/admin_new/en/index/marketManagement/seckill/orderSeckillEn'
 // 赠品
 import { en as gift } from './views/admin_new/en/index/marketManagement/gift/giftEn'
 // 微信好物圈
@@ -717,8 +713,6 @@ const en = {
   giveGift, // 我要送礼
   couponGive, // 定向发券
   seckill, // 秒杀
-  addSeckill, // 秒杀-添加
-  orderSeckill, // 秒杀-秒杀订单
   gift, // 赠品
   ...enLocale,
   expressList,
