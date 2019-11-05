@@ -39,6 +39,7 @@ export const en = {
   start: 'enabled',
   detail: 'Detail Gift',
   delete: 'Delete',
+
   // 添加页面
   steps: ['Set activity rules', 'Setting gifts'],
   stepsUp: 'Basic configuration',
@@ -138,5 +139,13 @@ export const en = {
   saveSuccess: 'Save Success',
   saveDefault: 'Save Default',
   editSuccess: 'Edit Success',
-  editDefault: 'Edit Default'
+  editDefault: 'Edit Default',
+
+  // 赠送明细
+  mobile: 'Mobile',
+  username: 'Username',
+  givingTime: 'Giving Time',
+  orderSn: 'Order number',
+  userId: 'User ID',
+  giftAmount: 'Gift Amount'
 }

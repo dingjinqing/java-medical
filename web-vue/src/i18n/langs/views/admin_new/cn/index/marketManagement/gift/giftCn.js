@@ -39,6 +39,7 @@ export const cn = {
   start: '启用',
   detail: '赠送明细',
   delete: '删除',
+
   // 添加页面
   // step1
   steps: ['设置活动规则', '设置赠品'],
@@ -137,5 +138,13 @@ export const cn = {
   saveSuccess: '保存成功',
   saveDefault: '保存失败',
   editSuccess: '修改成功',
-  editDefault: '修改失败'
+  editDefault: '修改失败',
+
+  // 赠送明细
+  mobile: '手机号',
+  username: '昵称',
+  givingTime: '赠送时间',
+  orderSn: '订单号',
+  userId: '用户ID',
+  giftAmount: '赠送件数'
 }

@@ -234,55 +234,55 @@ export default {
 
     // 删除
     deleteGift (id) {
-      this.$confirm('此操作将永久删除该, 是否继续?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('seckill.deleteTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
         deleteGift(id).then((res) => {
           if (res.error === 0) {
             this.initDataList()
-            this.$message.success({ message: '删除成功!' })
+            this.$message.success({ message: this.$t('seckill.deleteSuccess') })
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消删除' })
+        this.$message.info({ message: this.$t('seckill.deleteFail') })
       })
     },
 
     // 停用
     disableGift (id) {
-      this.$confirm('此操作将停用活动, 是否继续?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('seckill.stopTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
         disableGift(id).then((res) => {
           if (res.error === 0) {
             this.initDataList()
-            this.$message.success({ message: '停用成功!' })
+            this.$message.success({ message: this.$t('seckill.stopSuccess') })
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消停用' })
+        this.$message.info({ message: this.$t('seckill.stopFail') })
       })
     },
 
     // 启用
     enableGift (id) {
-      this.$confirm('此操作将启用活动, 是否继续?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('seckill.startTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
         enableGift(id).then((res) => {
           if (res.error === 0) {
             this.initDataList()
-            this.$message.success({ message: '启用成功!' })
+            this.$message.success({ message: this.$t('seckill.startSuccess') })
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消启用' })
+        this.$message.info({ message: this.$t('seckill.startFail') })
       })
     },
 

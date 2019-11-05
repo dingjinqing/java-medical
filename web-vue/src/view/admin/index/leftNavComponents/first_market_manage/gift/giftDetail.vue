@@ -5,11 +5,11 @@
       <el-form label-width="100px">
         <el-row :gutter=24>
           <el-col :span="5">
-            <el-form-item label="手机号">
+            <el-form-item :label="$t('gift.mobile')">
               <el-input
                 size="small"
                 v-model="requestParams.mobile"
-                placeholder="手机号"
+                :placeholder="$t('gift.mobile')"
                 maxlength="11"
                 clearable
                 class="inputWidth"
@@ -17,30 +17,30 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="微信昵称">
+            <el-form-item :label="$t('gift.username')">
               <el-input
                 size="small"
                 v-model="requestParams.username"
-                placeholder="微信昵称"
+                :placeholder="$t('gift.username')"
                 clearable
                 class="inputWidth"
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="9">
-            <el-form-item label="赠送时间">
+          <el-col :span="10">
+            <el-form-item :label="$t('gift.givingTime')">
               <el-date-picker
                 type="datetime"
-                placeholder="开始时间"
+                :placeholder="$t('gift.startTime')"
                 v-model="requestParams.statrTime"
                 size="small"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 class="date_picker inputWidth"
               ></el-date-picker>
-              至
+              {{ $t('gift.to') }}
               <el-date-picker
                 type="datetime"
-                placeholder="结束时间"
+                :placeholder="$t('gift.endTime')"
                 v-model="requestParams.endTime"
                 size="small"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -54,7 +54,7 @@
               type="primary"
               @click="initDataList"
               style="margin: 4px 0 0 0"
-            >查询</el-button>
+            >{{ $t('gift.search') }}</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -70,32 +70,32 @@
       >
         <el-table-column
           prop="orderSn"
-          label="订单号"
+          :label="$t('gift.orderSn')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="userId"
-          label="用户ID"
+          :label="$t('gift.userId')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="username"
-          label="昵称"
+          :label="$t('gift.username')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="mobile"
-          label="手机号"
+          :label="$t('gift.mobile')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="createTime"
-          label="赠送时间"
+          :label="$t('gift.givingTime')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="giftAmount"
-          label="赠品件数"
+          :label="$t('gift.giftAmount')"
           align="center"
         ></el-table-column>
       </el-table>
