@@ -11,10 +11,13 @@ global.wxPage({
     showBalanceDialog:false,
     showScoreDialog:false,
     showCardDialog:false,
+    showStoreDialog:false,
     couponArray:[
       1,2,3,4,5
     ],
     payType:[0,1,2],
+    shippingMethod:[0,1,2],
+    chooseShippingIndex:0,
     choosePayTypeIndex:0,
     moneyInfo:{
       totalPrice: 100, //总金额
@@ -96,6 +99,21 @@ global.wxPage({
   changePayType(e){
     this.setData({
       choosePayTypeIndex:e.currentTarget.dataset.index
+    })
+  },
+  selectShippingMethod(e){
+    this.setData({
+      chooseShippingIndex:e.currentTarget.dataset.index
+    })
+  },
+  selectStore(){
+    if(this.data.chooseShippingIndex === 0) return;
+    let storeDialogData = {};
+    storeDialogData.openType = this.data.chooseShippingIndex;
+    storeDialogData.data = this.data.storeList;
+    this.setData({
+      showStoreDialog: true,
+      storeDialogData: storeDialogData
     })
   },
   // 获取应付总金额

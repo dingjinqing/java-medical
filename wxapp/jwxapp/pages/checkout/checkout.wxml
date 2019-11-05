@@ -7,14 +7,32 @@
           <text>付款时间已截至，订单已被取消，请重新下单</text>
         </block>
       </view>
-      <view class="address_info" style="background:#fff url({{imageUrl}}image/wxapp/address_bottom.png) no-repeat  left bottom / 100%" >
+      <view class="shipping_method_content">
+        <view wx:for="{{shippingMethod}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="*this" class="shipping_method" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{chooseShippingIndex === shipIndex ? comColor : ''}};">{{shipItem}}快递</view>
+      </view>
+      <view class="address_info" bindtap="selectStore" wx:if="{{chooseShippingIndex !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;">
+        <view class="address-user_info">
+          <text class="user_name">王的盛宴</text>
+        </view>
+        <view class="address-address_info">
+          <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          <text class="address">蜂鸟社区</text> 
+          <text class="">距离当前位置0.58km</text>
+          <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
+        </view>
+      </view>
+      <view class="address_info" bindtap="addAddress" style="background:#fff url({{imageUrl}}image/wxapp/address_bottom.png) no-repeat  left bottom / 100%;" >
+        <view class="address-address_info" wx:if="{{!address}}">
+          <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          <text class="address">请新建收货地址</text> 
+        </view>
         <view class="address-user_info" wx:if="{{address}}">
           <text class="user_name">{{address.userName}}</text>
           <text class="user_mobile">{{address.telNumber}}</text>
         </view>
-        <view class="address-address_info" bindtap="addAddress">
+        <view class="address-address_info" wx:if="{{address && chooseShippingIndex !== 1}}">
           <image src="{{imageUrl}}image/wxapp/address.png"></image>
-          <text class="address" wx:if="!address">{{!address ? '请新建收货地址' : address.provinceName+address.cityName+address.countyName+address.detailInfo}}</text> 
+          <text class="address">{{address.provinceName+address.cityName+address.countyName+address.detailInfo}}</text> 
           <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
         </view>
       </view>
@@ -153,5 +171,6 @@
   <v-balance-popup show="{{showBalanceDialog}}"/>
   <v-score-popup show="{{showScoreDialog}}"/>
   <v-select-card show="{{showCardDialog}}"/>
+  <v-select-store show="{{showStoreDialog}}"/>
   <include src="../common/footer.wxml" />
 </view>

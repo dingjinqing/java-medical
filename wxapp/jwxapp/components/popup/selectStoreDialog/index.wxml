@@ -1,0 +1,169 @@
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
+  <view class="dialog_content">
+    <view class="dialog_title">
+       选择自提门店
+      <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap='bindClose'></image>
+    </view>
+    <scroll-view class="dialog_info" scroll-y enable-flex>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="store_item">
+        <view class="radio_box">
+          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
+        </view>
+        <view class="store_info">
+          <view class="store_name">美容护肤</view>
+          <view class="store_address">
+            <text>伊泰大厦5层</text>
+            <text class="distance">距离当前位置1500.55km</text>
+            <image src="{{imageUrl}}image/wxapp/address.png"></image>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+     <view class="dialog_bottom" style="background-color:{{main_setting.comColor}}">
+          确定
+    </view>
+  </view>
+</v-popup>

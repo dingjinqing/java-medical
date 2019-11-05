@@ -21,12 +21,17 @@
   flex-direction: column;
   padding: 20rpx;
 }
+.address_info > view{
+  margin-bottom: 20rpx;
+}
+.address_info > view:last-of-type{
+  margin-bottom: 0;
+}
 .address-user_info,.address-address_info{
   display: flex;
 }
 .address-user_info{
-  margin-bottom: 20rpx;
-  padding-left: 56rpx;
+  padding-left: 54rpx;
 }
 .address-user_info > .user_mobile{
   flex: 1;
@@ -181,4 +186,15 @@
 
 .picker{
   height: 34rpx;
+}
+.shipping_method_content{
+  display: flex;
+  line-height: 80rpx;
+  height: 82rpx;
+  background-color: #fff;
+}
+.shipping_method{
+  flex: 1;
+  text-align: center;
+  border-bottom: 2rpx solid transparent;
 }
