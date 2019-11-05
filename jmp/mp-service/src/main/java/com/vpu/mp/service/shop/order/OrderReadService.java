@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order;
 
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.yes;
@@ -21,12 +22,17 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
 import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +111,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
  * @author 常乐 2019年6月27日;王帅 2019/7/10
  */
 @Service
-public class OrderReadService extends ShopBaseService {	
+public class OrderReadService extends ShopBaseService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -147,6 +153,8 @@ public class OrderReadService extends ShopBaseService {
     private OrderMustService orderMust;
     @Autowired
     private GoodsCommentService goodsComment;
+    @Autowired
+    private GoodsMpService goodsMpService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -187,7 +195,7 @@ public class OrderReadService extends ShopBaseService {
 					//设置订单支付方式（无子单）
 					orderInfo.setPayCodeList(order,prizesSns);
 					mOrder = order;
-					if(size ==1) {		
+					if(size ==1) {
 						break;
 					}
 				}else {
@@ -198,7 +206,7 @@ public class OrderReadService extends ShopBaseService {
 				orderCountMoreZero.add(mOrder.getOrderId());
 			}
 			mOrder.setChildOrders(cList);
-			mainOrderList.add(mOrder);	
+			mainOrderList.add(mOrder);
 		}
 		//需要查询商品的订单
 		Integer[] allOrderSn = goodsList.keySet().toArray(new Integer[0]);
@@ -225,8 +233,8 @@ public class OrderReadService extends ShopBaseService {
 		logger.info("订单综合查询结束");
 		return pageResult;
 	}
-	
-	 
+
+
 	/**
 	 * 订单详情
 	 * @param orderSn
@@ -306,7 +314,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		return mainOrder;
 	}
-	
+
 	/**
 	 * 退货、款订单
 	 * @return
@@ -327,12 +335,12 @@ public class OrderReadService extends ShopBaseService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 	退款订单详情
 	 * @param param
 	 * @return
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	public ReturnOrderInfoVo getReturnOrder(ReturnOrderParam param) throws MpException{
 		ReturnOrderRecord rOrder = returnOrder.getByReturnOrderSn(param.getReturnOrderSn());
@@ -374,7 +382,7 @@ public class OrderReadService extends ShopBaseService {
 		setReturnCfg(vo, rOrder);
 		return vo;
 	}
-	
+
 	/**
 	 * 	设置自动处理时间
 	 * @param vo
@@ -398,7 +406,7 @@ public class OrderReadService extends ShopBaseService {
 			return;
 		}
 		if (rOrder.getReturnType() == OrderConstant.RT_GOODS) {
-			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDITING 
+			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDITING
 					&& shopReturnConfig.getReturnAddressDays() != null
 					) {
 				//商家已发货，买家发起退款退货申请，商家在return_address_days日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收货地址
@@ -406,7 +414,7 @@ public class OrderReadService extends ShopBaseService {
 					.plus(Duration.ofDays(shopReturnConfig.getReturnAddressDays())).toEpochMilli());
 				return;
 			}
-			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING 
+			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING
 					&& shopReturnConfig.getReturnShoppingDays() != null
 					) {
 				//买家已提交物流信息，商家在return_shopping_days日内未处理，系统将默认同意退款退货，并自动退款给买家。
@@ -422,7 +430,7 @@ public class OrderReadService extends ShopBaseService {
 				return;
 			}
 		}
-		
+
 	}
 	/**
 	 * 	金额计算
@@ -444,7 +452,7 @@ public class OrderReadService extends ShopBaseService {
 	}
 	/**
 	 * 	买单订单查询
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -452,7 +460,7 @@ public class OrderReadService extends ShopBaseService {
 		PageResult<StoreOrderListInfoVo> result = storeOrder.getPageList(param);
 		return result;
 	 }
-	 
+
 	/**
 	 * 买单订单详情
 	 * @param orderSn
@@ -461,7 +469,7 @@ public class OrderReadService extends ShopBaseService {
 	 public StoreOrderInfoVo getStoreOrder(String orderSn) {
 		return storeOrder.get(orderSn);
 	}
-	
+
 	/**
 	 * mp端查询订单
 	 * @param param
@@ -506,7 +514,7 @@ public class OrderReadService extends ShopBaseService {
 		return result;
 	}
 
-	
+
 	private void setBkPayOperation(OrderListMpVo order) {
 		//有效时间区间
 		Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
@@ -518,7 +526,7 @@ public class OrderReadService extends ShopBaseService {
 			order.setIsPayEndPayment(NumberUtils.BYTE_ZERO);
 		}
 	}
-	
+
 	/**
 	 * mp订单详情
 	 * @param param
@@ -549,7 +557,7 @@ public class OrderReadService extends ShopBaseService {
 		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getOrderId()) : null);
 		//发票
 		order.setInvoiceInfo(order.getInvoiceId() > 0 ? invoice.get(order.getInvoiceId()) : null);
-		
+
 		//当前订单配送信息
 		order.setShippingInfo(getMpOrderShippingInfo(order.getOrderSn(), goods));
 		//核销员信息
@@ -563,20 +571,20 @@ public class OrderReadService extends ShopBaseService {
 			order.setSubOrder(getSubOrder(orders.subList(1, orders.size())));
 		}
 		//好物圈
-		
+
 		//拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
-			
+
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
-			
+
 		}
 		//拼团抽奖
-		
+
 		//优惠卷
-		
-		
+
+
 		return order;
-		
+
 	}
 
 	/**
@@ -603,7 +611,7 @@ public class OrderReadService extends ShopBaseService {
 		//TODO 幸运大抽奖 分享优惠卷。。。。
 		/**按钮-end*/
 	}
-	
+
 	/**
 	 * 奖品订单
 	 * @param orderType
@@ -638,7 +646,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		order.setIsShowPay(order.getPayOperationTime() > 0 ? yes : no);
 	}
-	
+
 	/**
 	 * 当前订单配送信息
 	 * @param orderSn
@@ -660,7 +668,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 延长收货
 	 * @return
@@ -673,7 +681,7 @@ public class OrderReadService extends ShopBaseService {
 		Integer days = trade.getExtendReceiveDays();
 		return days.intValue();
 	}
-	
+
 	/**
 	 * 子订单
 	 * @param subOrder
@@ -684,9 +692,9 @@ public class OrderReadService extends ShopBaseService {
 		Map<Integer, List<OrderGoodsMpVo>> subOrderGoods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		subOrder.forEach(x->x.setGoods(subOrderGoods.get(x.getOrderId())));
 		return subOrder;
-		
+
 	}
-	
+
 	/**
 	 * 转化订单类型
 	 * @param orderType
@@ -695,7 +703,7 @@ public class OrderReadService extends ShopBaseService {
 	public static String[] orderTypeToArray(String orderType) {
 		return orderType.substring(1, orderType.length() - 1 ).split("\\]\\[");
 	}
-	
+
 	/**
 	 * 小程序展示评价相关
 	 * @param order
@@ -721,7 +729,7 @@ public class OrderReadService extends ShopBaseService {
 		//3商品评价
 		return 3;
 	}
-	
+
 	/**
 	 * 统计订单各个状态的数量
 	 * @param param
@@ -730,7 +738,7 @@ public class OrderReadService extends ShopBaseService {
 	public Map<Byte, Integer> statistic(OrderListParam param) {
 		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), false);
 	}
-	
+
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据
 	 * @param param
@@ -956,5 +964,25 @@ public class OrderReadService extends ShopBaseService {
         excelWriter.writeModelList(orderList, OrderExportVo.class,columns);
         return workbook;
     }
-
+	/**
+	 *  购买商品记录(三个月内)
+	 * @param userId  用户ID
+	 * @param keyWord 关键字
+	 * @param currentPages 当前页
+	 * @param pageRows 每页行数
+	 * @return OrderGoodsHistoryBo
+	 * @author kdc
+	 */
+	public List<OrderGoodsHistoryVo> buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
+		Result<? extends Record> records = orderGoods.buyingHistoryGoodsList(userId, keyWord, currentPages, pageRows);
+		List<Integer> goodsIdList = Arrays.asList(records.intoArray(ORDER_GOODS.GOODS_ID));
+		List<OrderGoodsHistoryVo> orderGoodsHistoryVos =records.into(OrderGoodsHistoryVo.class);
+		List<GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPages, pageRows);
+		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
+		orderGoodsHistoryVos.forEach(orderGoods->{
+			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(orderGoods.getGoodsId());
+			FieldsUtil.assignNotNull(goodsListMpVo, orderGoods);
+		});
+		return orderGoodsHistoryVos;
+	}
 }

@@ -4,12 +4,14 @@ import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.FootprintRecordRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,10 @@ import static com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 
@@ -88,21 +91,26 @@ public class FootPrintService extends ShopBaseService {
 	 * @param pageRows
 	 * @return FootprintListVo
 	 */
-	public PageResult<FootprintListVo> getFootprintPage(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
+	public List<FootprintListVo> getFootprintPage(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
 		Timestamp timestamp = DateUtil.geTimeStampPlus(-3, ChronoUnit.MONTHS);
-		SelectConditionStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME)
-				.from(Tables.FOOTPRINT_RECORD).leftJoin(GOODS).on(GOODS.GOODS_ID.eq(Tables.FOOTPRINT_RECORD.GOODS_ID))
-				.where(Tables.FOOTPRINT_RECORD.USER_ID.eq(userId))
+		SelectConditionStep<? extends Record> select = db().select(GOODS.GOODS_ID,FOOTPRINT_RECORD.CREATE_TIME)
+				.from(FOOTPRINT_RECORD)
+				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(FOOTPRINT_RECORD.GOODS_ID))
+				.where(FOOTPRINT_RECORD.USER_ID.eq(userId))
 				.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-				.and(Tables.FOOTPRINT_RECORD.CREATE_TIME.le(timestamp));
+				.and(FOOTPRINT_RECORD.CREATE_TIME.le(timestamp));
 		if (!StringUtils.isBlank(keyWord)){
 			select.and(GOODS.GOODS_NAME.like(likeValue(keyWord)));
 		}
-		select.orderBy(Tables.FOOTPRINT_RECORD.UPDATE_TIME.desc());
-        List<Integer> goodsIdList = Arrays.asList(select.fetch().intoArray(GOODS.GOODS_ID));
-        goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPages, pageRows);
-
-        PageResult<FootprintListVo> pageResult = getPageResult(select, currentPages, pageRows, FootprintListVo.class);
-		return pageResult;
+		Result<? extends Record> records = select.orderBy(FOOTPRINT_RECORD.UPDATE_TIME.desc()).limit(currentPages - 1, pageRows).fetch();
+		List<Integer> goodsIdList = Arrays.asList(records.intoArray(GOODS.GOODS_ID));
+		List<FootprintListVo> footprintListVos =records.into(FootprintListVo.class);
+        List<GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPages, pageRows);
+		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
+		footprintListVos.forEach(footprintGoods->{
+			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(footprintGoods.getGoodsId());
+			FieldsUtil.assignNotNull(goodsListMpVo, footprintGoods);
+		});
+        return footprintListVos;
 	}
 }

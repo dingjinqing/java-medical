@@ -15,7 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 
 /**
  * 获取订单service
- * 
+ *
  * @author 王帅
  *
  */
@@ -40,21 +40,21 @@ public class OrderOperateFactory implements ApplicationContextAware {
 
 	/**
 	 * 通过传出param取其ServiceCode并调用execute
-	 * 
+	 *
 	 * @param IOrderBase
 	 * @return 执行结果
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	public JsonResultCode orderOperate(AbstractOrderOperateQueryParam info) {
 		return getService(info.getServiceCode()).execute(info);
 	}
-	
+
 	/**
 	 * 通过传出param取其ServiceCode并调用query
-	 * 
+	 *
 	 * @param OrderOperateQueryParam
 	 * @return 执行结果
-	 * @throws MpException 
+	 * @throws MpException
 	 */
 	public Object orderQuery(AbstractOrderOperateQueryParam param) throws MpException {
 		return getService(param.getServiceCode()).query(param);
@@ -62,11 +62,13 @@ public class OrderOperateFactory implements ApplicationContextAware {
 
 	/**
 	 * 根据传入的code获得处理该业务的service
-	 * 
+	 *
 	 * @param OrderServiceCode
 	 * @return IorderOperate的实现类
 	 */
 	public IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam> getService(OrderServiceCode code) {
 		return orderOperateMap.get(code);
 	}
+
+
 }

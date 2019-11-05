@@ -2,9 +2,8 @@ package com.vpu.mp.controller.wxapp;
 
 import javax.validation.Valid;
 
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.service.pojo.wxapp.order.OrderGoodsHistoryListParam;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsHistoryBo;
+import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
+import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +20,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
+
+import java.util.List;
 
 /**
  * 订单
@@ -106,7 +107,8 @@ public class WxAppOrderController extends WxAppBaseController{
 		return null;
 	}
 	@PostMapping("/goods/history")
-	public void getHistotyGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
-
+	public List<OrderGoodsHistoryVo> getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
+		Integer userId = wxAppAuth.user().getUserId();
+		return shop().readOrder.buyingHistoryGoodsList(userId,param.getKeyword(),param.getCurrentPage(),param.getPageRows());
 	}
 }
