@@ -70,11 +70,11 @@ public class UserCardDaoService extends ShopBaseService{
 	 * @return
 	 */
 	public MemberCardRecord getUserGradeCard(Integer userId) {
-		return (MemberCardRecord) db().select(MEMBER_CARD.asterisk())
+		return  db().select(MEMBER_CARD.asterisk())
 				.from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
 				.where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
-				.fetchAny();
+				.fetchAnyInto(MemberCardRecord.class);
 	}
 	
 	/**
