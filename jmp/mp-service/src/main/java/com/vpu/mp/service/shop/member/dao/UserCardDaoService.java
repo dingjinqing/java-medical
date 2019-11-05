@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member.dao;
 
 import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER;
@@ -12,7 +13,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_ALL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
@@ -41,6 +42,8 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
@@ -53,6 +56,8 @@ import com.vpu.mp.service.shop.member.UserCardService;
 */
 @Service
 public class UserCardDaoService extends ShopBaseService{
+	final static Byte CARD_ONLINE = 0;
+	final static Byte CARD_OFFLINE = 1;
 	@Autowired private  UserCardService userCardService;
 	
 	
@@ -150,11 +155,11 @@ public class UserCardDaoService extends ShopBaseService{
 	 * @param type 0线上 1线下
 	 */
 	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte cardType,Integer type) {
-		if(cardType == -1) {
+		if(MCARD_TP_ALL.equals(cardType)) {
 			// 所有可用卡
 			 return getAllValidCardList(userId);	
 		}
-		if(type == 1) {
+		if(CARD_OFFLINE.equals(cardType)) {
 			// 线下处理
 			return getOfflineValidCardList(userId, cardType);	
 		}
@@ -409,5 +414,15 @@ public class UserCardDaoService extends ShopBaseService{
 
 	public int getNumHasSendUser(Integer userId, Integer cardId) {
 		return db().fetchCount(USER_CARD, USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId)));
+	}
+
+	public List<UserCardGradePriceBo> getUserCartGradePrice(Integer userId, List<Integer> prdIdList) {
+		return db().select(MEMBER_CARD.CARD_NAME, MEMBER_CARD.GRADE, GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID,
+						GRADE_PRD.GRADE_PRICE)
+				.from(USER_CARD).leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)).leftJoin(GRADE_PRD)
+				.on(GRADE_PRD.GRADE.eq(MEMBER_CARD.GRADE)).where(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
+				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE)).and(USER_CARD.USER_ID.eq(userId))
+				.and(GRADE_PRD.PRD_ID.in(prdIdList)).fetchInto(UserCardGradePriceBo.class);
+
 	}
 }
