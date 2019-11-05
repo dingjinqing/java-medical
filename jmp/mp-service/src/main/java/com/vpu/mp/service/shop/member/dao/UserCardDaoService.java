@@ -65,9 +65,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 获取用户持有的等级卡
-	 * @param userId
-	 * @return 
-	 * @return
 	 */
 	public MemberCardRecord getUserGradeCard(Integer userId) {
 		return  db().select(MEMBER_CARD.asterisk())
@@ -80,7 +77,6 @@ public class UserCardDaoService extends ShopBaseService{
 	/**
 	 * 获取会员卡
 	 * @param cardId 会员卡Id
-	 * @return
 	 */
 	public MemberCardRecord getMemberCardById(Integer cardId) {
 		  return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
@@ -88,8 +84,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 更新userCard
-	 * @param userId
-	 * @param cardId
 	 */
 	public void updateUserCard(Integer userId,Integer cardId) {
 		db().update(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
@@ -101,7 +95,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 插入会员持卡升级记录
-	 * @param r
 	 */
 	public void insertIntoCardUpGrade(CardUpgradeRecord r) {
 		
@@ -110,7 +103,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 获取店铺的积分限制配置信息
-	 * @return 
 	 */
 	public String getScoreLimit() {
 		String val = "score_limit";
@@ -134,8 +126,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 获取可用的用户卡
-	 * @param userId
-	 * @param card
 	 */
 	public UserCardRecord getUsableUserCard(Integer userId, UserCardParam card) {
 		SelectConditionStep<UserCardRecord> sql = db().selectFrom(USER_CARD)
@@ -219,8 +209,6 @@ public class UserCardDaoService extends ShopBaseService{
 
 	/**
 	 * 获取用户所有的可用卡列表
-	 * @param userId
-	 * @return
 	 */
 	private List<ValidUserCardBean> getAllValidCardList(Integer userId) {
 		
@@ -241,7 +229,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 查询用户有效卡的信息
-	 * @return
 	 */
 	private SelectJoinStep<Record> selectValidCardSQL() {
 		 return db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.DISCOUNT,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_COLOR,
@@ -263,8 +250,6 @@ public class UserCardDaoService extends ShopBaseService{
 
 	/**
 	 * 计算用户等级
-	 * @param userId
-	 * @return
 	 */
 	public String calcUserGrade(Integer userId) { 
 		return db().select(MEMBER_CARD.GRADE)
@@ -278,14 +263,14 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 根据id获取用户名
-	 * @param id
-	 * @return
 	 */
 	public String getUserName(Integer id) {
 		return db().select(USER.USERNAME).from(USER).where(USER.USER_ID.eq(id)).fetchAnyInto(String.class);
 	}
 	
-	//编辑会员卡详情
+	/**
+	 * 更新会员卡详情
+	 */
 	public int updateUserCardByNo(String cardNo,UserCardRecord record) {
 		return  db().update(USER_CARD).set(record).where(USER_CARD.CARD_NO.eq(cardNo)).execute();
 	}
@@ -293,8 +278,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 获取会员卡详情
-	 * @param cardNo
-	 * @return
 	 */
 	public UserCardParam getUserCardInfo(String cardNo) {
 		return wxUserCardSelectSql()
@@ -309,8 +292,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 升级卡
-	 * @param cardInfo
-	 * @param userId
 	 */
 	public void updateUserRankCard(MemberCardRecord cardInfo,Integer userId) {
 		db().update(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
@@ -326,8 +307,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 更新卡余额
-	 * @param data
-	 * @param userInfo
 	 */
 	public int updateUserCardMoney(UserCardConsumeBean data, UserCardParam userInfo) {
 		return db().update(USER_CARD)
@@ -337,9 +316,6 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 	/**
 	 * 更新卡剩余次数
-	 * @param data
-	 * @param userInfo
-	 * @return
 	 */
 	public int updateUserCardSurplus(UserCardConsumeBean data, UserCardParam userInfo) {
 		return db().update(USER_CARD)
@@ -350,9 +326,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 更新卡剩余兑换次数
-	 * @param data
-	 * @param userInfo
-	 * @return 
 	 */
 	public int updateUserCardExchangePlus(UserCardConsumeBean data, UserCardParam userInfo) {
 		return db().update(USER_CARD)
@@ -363,7 +336,6 @@ public class UserCardDaoService extends ShopBaseService{
 	
 	/**
 	 * 消费记录
-	 * @param data
 	 */
 	public void insertIntoCharge(UserCardConsumeBean data) {
 		ChargeMoneyRecord chargeMoney = db().newRecord(CHARGE_MONEY);
@@ -372,7 +344,6 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 	/**
 	 * 充值记录
-	 * @param data
 	 */
 	public void insertConsume(UserCardConsumeBean data) {
 		CardConsumerRecord cardConsumer = db().newRecord(CARD_CONSUMER);
@@ -406,7 +377,6 @@ public class UserCardDaoService extends ShopBaseService{
 	/**
 	 * get card type
 	 * @param cardNo
-	 * @return
 	 */
 	public Byte getCardType(String cardNo) {
 		return db().select(MEMBER_CARD.CARD_TYPE)
