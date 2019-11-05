@@ -1,4 +1,4 @@
-export const cn = {
+export const en = {
   salesDisplaySettings: 'Sales display settings',
   closed: 'closed',
   activated: 'activated',
