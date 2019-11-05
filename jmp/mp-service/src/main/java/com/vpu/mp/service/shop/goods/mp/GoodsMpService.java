@@ -248,6 +248,7 @@ public class GoodsMpService extends ShopBaseService {
             vo.setGoodsSaleNum(t.getGoodsSaleNum() + t.getBaseSale());
             vo.setCommentNum(t.getCommentNum());
             vo.setDefaultPrd(t.getDefaultPrd());
+            vo.setShopPrice(t.getShopPrice());
             vo.setLinePrice(t.getLinePrice());
             vo.setRealPrice(t.getRealPrice());
 

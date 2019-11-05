@@ -48,7 +48,7 @@ public class BargainForListProcessor extends BargainProcessorDao implements Acti
             if (activity == null) {
                 return;
             }
-            capsule.setShopPrice(activity.getActivityPrice());
+            capsule.setRealPrice(activity.getActivityPrice());
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_BARGAIN);
         });

@@ -49,7 +49,7 @@ public class ReducePriceForListProcessor extends ReducePriceProcessorDao impleme
             if (activity == null) {
                 return;
             }
-            capsule.setShopPrice(activity.getActivityPrice());
+            capsule.setRealPrice(activity.getActivityPrice());
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);
         });

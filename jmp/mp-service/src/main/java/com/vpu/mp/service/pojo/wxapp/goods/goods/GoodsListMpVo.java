@@ -25,6 +25,7 @@ public class GoodsListMpVo {
     private List<ActivityForListInfo> goodsActivity;
     private GoodsLabelMpVo label;
 
+    private BigDecimal shopPrice;
     private BigDecimal linePrice;
     private BigDecimal realPrice;
 }

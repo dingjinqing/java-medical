@@ -54,7 +54,7 @@ public class GradeCardForListProcessor extends MemberCardProcessorDao implements
             if (activity == null) {
                 return;
             }
-            capsule.setShopPrice(activity.getActivityPrice());
+            capsule.setRealPrice(activity.getActivityPrice());
             // 如果商品是会员专享的话则价格限时会员价的单是提示信息显示会员专享（ps:filterParam处已经过滤掉了首单特惠）
             if (!capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 capsule.getActivities().add(activity);
