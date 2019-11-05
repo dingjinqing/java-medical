@@ -17,6 +17,23 @@ export function updateBasicInfoApi (data) {
   })
 }
 
+// 店铺通用信息配置
+export function getCommonInfo () {
+  return service({
+    url: '/api/admin/config/shop/common/get',
+    method: 'get'
+  })
+}
+
+// 店铺通用设置修改
+export function updateCommonInfo (data) {
+  return service({
+    url: '/api/admin/config/shop/common/update',
+    data: data,
+    method: 'post'
+  })
+}
+
 //  我已有小程序，一键授权
 export function grantAuthorizationRequest () {
   return service({
