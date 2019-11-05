@@ -171,6 +171,6 @@
   <v-balance-popup show="{{showBalanceDialog}}"/>
   <v-score-popup show="{{showScoreDialog}}"/>
   <v-select-card show="{{showCardDialog}}"/>
-  <v-select-store show="{{showStoreDialog}}"/>
+  <v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bind/>
   <include src="../common/footer.wxml" />
 </view>

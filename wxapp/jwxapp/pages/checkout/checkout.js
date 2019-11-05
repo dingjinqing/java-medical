@@ -37,6 +37,7 @@ global.wxPage({
   onLoad: function (options) {
     this.getPayMoney()
   },
+  // 选择地址
   addAddress(){
     wx.chooseAddress({
       success: (res) => {
@@ -87,6 +88,7 @@ global.wxPage({
       })
     }
   },
+  // 变更优惠券
   couponChange(){
 
   },
@@ -96,16 +98,19 @@ global.wxPage({
       showCardDialog:true
     })
   },
+  // 变更支付类型
   changePayType(e){
     this.setData({
       choosePayTypeIndex:e.currentTarget.dataset.index
     })
   },
+  // 变更配送方式
   selectShippingMethod(e){
     this.setData({
       chooseShippingIndex:e.currentTarget.dataset.index
     })
   },
+  // 选择门店
   selectStore(){
     if(this.data.chooseShippingIndex === 0) return;
     let storeDialogData = {};
