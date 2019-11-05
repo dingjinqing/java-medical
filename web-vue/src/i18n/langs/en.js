@@ -19,7 +19,7 @@ import { en as ShopConfiguration } from './views/ShopConfiguration'
 // 基础信息
 import { en as storeBasicInformation } from './views/admin_new/en/index/basicSettings/basic_manager/store_basic_informationEn'
 // 基础信息-店铺配置
-import { en as storeCommonSettings } from './views/admin_new/en/index/basicSettings/base_manger/store_common_settingsEn'
+import { en as storeCommonSettings } from './views/admin_new/en/index/basicSettings/basic_manager/store_common_settingsEn'
 import { en as adminPageFramework } from './views/admin_new/en/adminPageFrameworkEn'
 
 // 商品管理系列国际化
