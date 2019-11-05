@@ -588,7 +588,7 @@ public class UserService extends ShopBaseService {
 				iconItem.put("num", coupon.getCanUseCouponNum(record.getUserId()));
 			}
 			if(iconItem.get("icon_name").equals("card")) {
-				List<ValidUserCardBean> cardList = userCard.userCardDao.getValidCardList(record.getUserId(), (byte)-1, 0);
+				List<ValidUserCardBean> cardList = userCard.userCardDao.getValidCardList(record.getUserId());
 				iconItem.put("num", cardList!=null?cardList.size():0);
 			}
 		}
