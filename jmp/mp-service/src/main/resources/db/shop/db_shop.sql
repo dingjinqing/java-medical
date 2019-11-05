@@ -1226,7 +1226,7 @@ create table `b2c_member_card`
     `pay_own_good`      tinyint(1)     not null default '0' comment '是否专属购买商品 0不是 1是',
     `receive_action`    tinyint(1)     not null default 0 comment '领取方式 1:领取码 2：卡号+密码',
     `is_exchang`        tinyint(1)     not null default '0' comment '0不可 1部分 2全部',
-    `store_use_switch`  tinyint(1)     not null default '0' comment '可否在门店使用  0可以 1不可以',
+    `store_use_switch`  tinyint(1)     not null default '0' comment '可否在门店使用  1可以 0不可以',
     `exchang_goods`     varchar(299)            default null comment '可兑换商品id',
     `exchang_freight`   tinyint(1)              default null comment '运费策略 0免运费 1使用商品运费策略',
     `exchang_count`     int(11)                 default null comment '允许兑换次数',

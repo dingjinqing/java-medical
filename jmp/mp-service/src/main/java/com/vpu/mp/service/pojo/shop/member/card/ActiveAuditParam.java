@@ -33,5 +33,7 @@ public class ActiveAuditParam {
 	private Timestamp secondTime;
 	// 审核不通过原因
 	private String refuseDesc;
+	// 审核超时
+	private Timestamp examineOver;
 
 }

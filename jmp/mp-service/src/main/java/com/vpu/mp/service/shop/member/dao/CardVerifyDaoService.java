@@ -2,8 +2,10 @@ package com.vpu.mp.service.shop.member.dao;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
@@ -12,6 +14,9 @@ import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.USER;
+
+import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VDF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_CHECKING;
 /**
 * @author 黄壮壮
 * @Date: 2019年10月30日
@@ -19,6 +24,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 */
 @Service
 public class CardVerifyDaoService extends ShopBaseService {
+
 	/**
 	 * 获取卡的审核结果
 	 * @param cardNo
@@ -43,12 +49,16 @@ public class CardVerifyDaoService extends ShopBaseService {
 		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), ActiveAuditVo.class);
 	}
 	
-	
+	public CardExamineRecord getLastRecord(ActiveAuditParam param) {
+		SelectWhereStep<CardExamineRecord> select = db().selectFrom(CARD_EXAMINE);
+		buildOptions(select,param);
+		return select.orderBy(CARD_EXAMINE.CREATE_TIME.asc()).fetchAny();
+	}
 	
 	/**
 	 * 查询审核多条件构建
 	 */
-	private void buildOptions(SelectJoinStep<?> select, ActiveAuditParam param) {
+	private void buildOptions(SelectWhereStep<?> select, ActiveAuditParam param) {
 
 		// 会员卡id
 		if(isNotNull(param.getCardId())) {
@@ -81,6 +91,15 @@ public class CardVerifyDaoService extends ShopBaseService {
 		if(isNotNull(param.getSecondTime())) {
 			select.where(CARD_EXAMINE.CREATE_TIME.le(param.getSecondTime()));
 		}
+		
+		// 审核超时
+		if(isNotNull(param.getExamineOver())) {
+			select.where(CARD_EXAMINE.CREATE_TIME.le(param.getExamineOver()))
+				  .and(CARD_EXAMINE.DEL_FLAG.eq(VDF_NO))
+				  .and(CARD_EXAMINE.STATUS.eq(VSTAT_CHECKING));
+			
+		}
+	
 	}
 	
 	private boolean isNotNull(Object obj) {
@@ -89,6 +108,5 @@ public class CardVerifyDaoService extends ShopBaseService {
         }
         return obj != null;
 	}
-	
 	
 }

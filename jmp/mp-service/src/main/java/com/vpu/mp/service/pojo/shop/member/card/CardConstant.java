@@ -100,18 +100,15 @@ public class CardConstant {
 	public static final Byte MCARD_FLAG_USING = 1;
 	public static final Byte MCARD_FLAG_STOP = 2;
 
-	/** 专享商品:标签关联类型  */
-	/** 1：关联商品  */
+	/** -专享商品:标签关联类型  */
+	// 1：关联商品  
 	public static final Byte COUPLE_TP_GOODS = 1;
-	/**  2：关联商家分类  */
+	//  2：关联商家分类  
 	public static final Byte COUPLE_TP_STORE = 2;
-	/** 3：关联平台分类  */
+	// 3：关联平台分类  
 	public static final Byte COUPLE_TP_PLAT = 3;
-	/** 4， 关联品牌分类 */
+	// 4， 关联品牌分类 
 	public static final Byte COUPLE_TP_BRAND = 4;
-
-
-	/** 按钮打开 */
 	public static final String BUTTON_ON = "on";
 
 
@@ -163,35 +160,30 @@ public class CardConstant {
 
 
 
-	/** -----------------member_card表常量--------------------------*/
+	// member_card
 
 	/** 是否专属购买商品 0不是 1是 */
 	public static final Byte PAY_OWN_GOOD_YES=1;
 	public static final String LOWEST_GRADE = "v1";
 	public static final Byte SUPPORT_PAY_BY_CASH = 1;
 	public static final Byte NOT_SUPPORT_PAY_BY_CASH = 0;
-	/** ----------------------------------------------------------*/
 
 
 
-	/** ----------------------------------------------------------------*/
 
-	/** -----------------card_receive_code表常量--------------------------*/
+	// card_receive_code
 	public static final Integer ALL_BATCH = 0;
-	/** ----------------------------------------------------------------*/
 
-	/** -------------------card_examine表常量---------------------------------------*/
+	// card_examine
 	public static final Byte UNDER_REVIEW = 1;
 	public static final Byte VERIFIED = 2;
 	public static final Byte REFUSED = 3;
 
-	/** --------------------------------------------------------------------------*/
 
-	/** -------------------card_consumer表常量---------------------------------------*/
+	// card_consumer
 	public static final Short SHORT_ZERO = 0;
 	public static final Byte EXCHANG_COUNT_TYPE = 1;
 	public static final Byte COUNT_TYPE = 2;
-	/** --------------------------------------------------------------------------*/
 
 	public static final String NUM_LETTERS = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 }

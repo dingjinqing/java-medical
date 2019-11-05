@@ -40,6 +40,7 @@ public class ValidUserCardBean {
     private Timestamp endTime;
 	private Integer receiveDay;
 	private Byte dateType;
+	private Byte storeUseSwitch;
 	private String storeList;
 	private String grade;
 	
