@@ -108,14 +108,6 @@
                   <el-radio label="1">全部商品</el-radio>
                   <el-radio label="2">部分商品</el-radio>
                 </el-radio-group>
-                <!-- <div
-                  v-if="params.goodsAreaType==='2'"
-                  class="partGoods"
-                >
-                  <div>+ 选择商品</div>
-                  <div>+ 选择平台分类</div>
-                  <div>+ 选择商家分类</div>
-                </div> -->
                 <div class="noneBlock">
                   <div
                     class="noneBlockList"
@@ -166,7 +158,10 @@
             <div class="name">支付奖励</div>
             <div>
               <span>最多可添加5次支付的奖励</span>
-              <div class="addReward">+添加奖励</div>
+              <div
+                class="addReward"
+                @click="addItem()"
+              >+添加奖励</div>
             </div>
           </div>
           <el-form
@@ -174,8 +169,24 @@
             label-position="right"
             v-for="(item,index) in shareRules"
             :key="index"
+            class="order_form"
           >
-            <el-form-item></el-form-item>
+            <el-form-item
+              :label="'第'+(index+1)+'次支付奖励'"
+              class="order"
+              label-width="112px"
+            >
+              <div class="delIcon">
+                <i
+                  v-if="index>0"
+                  class="el-icon-delete "
+                  style="color:#409eff;cursor:pointer"
+                  @click="deleteItem(index)"
+                ></i>
+              </div>
+
+            </el-form-item>
+
             <el-form-item label="支付奖励：">
               <el-radio-group
                 v-model="params.awardList[0].giftType"
@@ -261,10 +272,7 @@
               v-if="params.awardList[0].giftType==='6'"
               label="奖品："
             >
-              <div
-                class="addGoods"
-                @click="addItem"
-              >+&nbsp;添加奖品</div>
+              <div class="addGoods">+&nbsp;添加奖品</div>
             </el-form-item>
             <el-form-item
               v-if="params.awardList[0].giftType==='6'"
@@ -316,7 +324,7 @@
                 size="small"
                 style="width:200px"
               ></el-input>
-              <span>选择链接</span>
+              <div @click="tuneUpSelectLink = !tuneUpSelectLink">选择链接</div>
             </el-form-item>
 
             <el-form-item
@@ -368,7 +376,15 @@
       :callAddBrand.sync='callAddBrand'
       @handleToGetBackData='handleToGetBrandBackData'
     />
+
+    <!-- 选择链接弹窗 -->
+    <SelectLinks
+      :tuneUpSelectLink="tuneUpSelectLink"
+      @selectLinkPath='handleToSelectLinkPath'
+    />
+
   </div>
+
 </template>
 
 <script>
@@ -378,7 +394,8 @@ export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
-    AddBrandDialog: () => import('@/components/admin/addBrandDialog')
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog'),
+    SelectLinks: () => ('@/components/admin/selectLinks')
   },
   created () {
     // this.initData()
@@ -428,7 +445,8 @@ export default {
       ownBrandId: null,
       GoodsBrandDateArr: '',
       callAddBrand: false,
-      shareRules: [{}, {}, {}],
+      shareRules: [{}],
+      tuneUpSelectLink: '',
       params: {
         activityNames: '',
         startTime: '',
@@ -471,16 +489,18 @@ export default {
     }
   },
   methods: {
+    // 添加奖励 - 增加对应的支付奖励次数
     addItem () {
       let obj = {
         coupon: ''
       }
-      if (this.shareRules.length < 3) {
+      if (this.shareRules.length < 5) {
         this.shareRules.push(obj)
       } else {
-        alert('最多可添加3个规则！')
+        alert('最多可添加5个规则！')
       }
     },
+    // 删除奖励
     deleteItem (index) {
       console.log(this.shareRules)
       this.shareRules.splice(index, 1)
@@ -530,9 +550,18 @@ export default {
         this.noneBlockVipArr[0].num = data.length
       }
     },
-    // 添加商品分类弹窗
 
-    // 添加平台分类弹窗
+    // 调起选择商品链接弹窗
+    // chooseSelect (index) {
+    //   this.tuneUpSelectLink = !this.tuneUpSelectLink
+    //   console.log('选择链接')
+    // },
+
+    // 选择链接选中回传
+    handleToSelectLinkPath (path) {
+      // this.data.title_link = path
+      // console.log(path)
+    },
 
     // 添加商品品牌弹窗
     handleToGetBrandBackData (data) {
@@ -596,7 +625,7 @@ export default {
         border: 1px solid #e5e5e5;
         background: #f8f8f8;
         width: 550px;
-        padding-left: 10px;
+        padding: 0 10px;
         border-radius: 4px;
         margin-bottom: 10px;
         .title {
@@ -614,7 +643,7 @@ export default {
           justify-content: space-between;
           height: 40px;
           line-height: 40px;
-          border-bottom: 1px solid red;
+          border-bottom: 1px solid #eee;
           :nth-of-type(2) {
             display: flex;
             .addReward {
@@ -630,6 +659,34 @@ export default {
               margin-top: 8px;
             }
           }
+        }
+        .order_form {
+          .order {
+            position: relative;
+            border-bottom: 1px dashed #ccc;
+            border-top: 1px dashed #ccc;
+
+            font-weight: bold;
+            .delIcon {
+              font-size: 20px;
+              position: relative;
+              .el-icon-delete {
+                position: absolute;
+                right: 20px;
+                margin-top: 10px;
+              }
+            }
+          }
+        }
+
+        // .order_form:first-child {
+        //   border: 1px solid red;
+        // }
+        // .order_form:first-child {
+        //   border-top: none;
+        // }
+        .topOrder {
+          border-top: 1px dashed #eee;
         }
         .triggerCondition {
           .noneBlock {
