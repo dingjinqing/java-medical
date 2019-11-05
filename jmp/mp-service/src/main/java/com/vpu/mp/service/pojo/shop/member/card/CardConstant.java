@@ -54,7 +54,15 @@ public class CardConstant {
 	public static final String MCARD_STP_PART = "1";
 	//不可在门店使用
 	public static final String MCARD_STP_BAN = "-1";
-
+	/** 
+	 * store_use_switch 可否在门店使用  0不可以 1可以
+	 */
+	// 1可以 在门店使用
+	public static final Byte MCARD_SUSE_OK = 1;
+	// 0不可以 在门店使用
+	public static final Byte MCARD_SUSE_NO = 0;
+	
+	
 	/**
 	 * receive_action 领取方式 1:领取码 2：卡号+密码
 	 */

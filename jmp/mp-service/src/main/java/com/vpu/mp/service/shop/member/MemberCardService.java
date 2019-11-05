@@ -118,19 +118,19 @@ public class MemberCardService extends ShopBaseService {
 			String storeListType = card.getStoreListType();
 			if (MCARD_STP_ALL.equals(storeListType)) {
 				 cardRecord.setStoreList(MCARD_STP_ALL);
-				 cardRecord.setStoreUseSwitch((byte)1);
+				 cardRecord.setStoreUseSwitch(MCARD_SUSE_OK);
 			} else if (MCARD_STP_PART.equals(storeListType)) {
 				if (card.getStoreList() != null) {
 					String storeList = String.join(",", card.getStoreList());
 					cardRecord.setStoreList(storeList);
-					 cardRecord.setStoreUseSwitch((byte)1);
+					 cardRecord.setStoreUseSwitch(MCARD_SUSE_OK);
 				} else {
 					cardRecord.setStoreList(MCARD_STP_BAN);
-					cardRecord.setStoreUseSwitch((byte)0);
+					cardRecord.setStoreUseSwitch(MCARD_SUSE_NO);
 				}
 			} else if (MCARD_STP_BAN.equals(storeListType)) {
 				    cardRecord.setStoreList(MCARD_STP_BAN);
-				    cardRecord.setStoreUseSwitch((byte)0);
+				    cardRecord.setStoreUseSwitch(MCARD_SUSE_NO);
 			}
 
 			/** 领取设置 */
