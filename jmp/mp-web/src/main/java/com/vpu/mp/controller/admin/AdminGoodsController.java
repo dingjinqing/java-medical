@@ -544,9 +544,6 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/mp/list")
     public JsonResult getGoodsList(@RequestBody GoodsListMpParam goodsListMpParam) {
-        if (goodsListMpParam.getRecommendType() == null || goodsListMpParam.getGoodsNum() == null) {
-            return fail();
-        }
         List<GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam,null);
         return success(goodsList);
     }
