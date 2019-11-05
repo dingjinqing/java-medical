@@ -124,6 +124,8 @@ public class ShopVersionService extends MainBaseService {
 		// 视频空间大小
 		num1.videoNum = (num1.videoNum == -1 && num2.videoNum == -1) ? -1 : num2.videoNum + num1.videoNumPlus;
 
+		versionConfig.setShopType(shop.getShopType());
+		versionConfig.setVersionName(versionRecord.getVersionName());
 		return versionConfig;
 	}
 

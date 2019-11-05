@@ -16,4 +16,7 @@ public class VersionConfig {
 
 	@JsonProperty(value = "num_config")
 	public VersionNumberConfig numConfig = new VersionNumberConfig();
+	
+	private String shopType;
+	private String versionName;
 }
