@@ -146,14 +146,19 @@ public class GoodsMpService extends ShopBaseService {
      * 通过商品id集合回去对应的数据信息
      * @param goodsIds 商品id集合
      * @param userId 用户id
+     * @param currentPages 当前页
+     * @param pagesRows 查询数据条数
      * @return {@link com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam}集
      */
     public List<GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId,Integer currentPages,Integer pagesRows) {
         if (goodsIds == null) {
             return new ArrayList<>();
         }
+        if (currentPages != null) {
+            currentPages-=1;
+        }
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.GOODS_ID.in(goodsIds));
-        List<ActivityGoodsListCapsule> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, currentPages-1, pagesRows, goodsIds);
+        List<ActivityGoodsListCapsule> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, currentPages, pagesRows, goodsIds);
         disposeGoodsList(goodsListCapsules,userId);
         List<GoodsListMpVo> goodsListMpVos = convertGoodsCapsuleTGoodsListMpVo(goodsListCapsules);
         return goodsListMpVos;
