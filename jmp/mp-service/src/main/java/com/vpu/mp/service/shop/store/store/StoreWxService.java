@@ -381,7 +381,7 @@ public class StoreWxService extends ShopBaseService {
         // 获取发票开关配置
         payOrderVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         // 获取有效用户会员卡列表
-        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, INTEGER_ZERO)
+        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
             .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
             }, false).contains(storeId))
             .collect(Collectors.toList());
