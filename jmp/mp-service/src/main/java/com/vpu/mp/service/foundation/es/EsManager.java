@@ -1,19 +1,23 @@
 package com.vpu.mp.service.foundation.es;
 
-import com.vpu.mp.config.es.annotation.EsFiledSerializer;
+import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
+import com.vpu.mp.service.shop.goods.es.EsGoods;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.core.CountRequest;
+import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +40,7 @@ public class EsManager {
     @Qualifier("esConfig")
     private RestHighLevelClient restHighLevelClient;
 
-    private static final EsFiledSerializer ES_FILED_SERIALIZER = new EsFiledSerializer();
+    public static final EsFiledSerializer ES_FILED_SERIALIZER = new EsFiledSerializer();
 
     /**
      * 通用搜索方法
@@ -45,7 +49,17 @@ public class EsManager {
      * @throws IOException 连接异常
      */
     public SearchResponse searchResponse(SearchRequest searchRequest) throws IOException {
+        log.info("\n本次搜索条件【{}】",searchRequest.source().toString());
         return restHighLevelClient.search(searchRequest,RequestOptions.DEFAULT);
+    }
+    /**
+     * 通用搜索方法
+     * @param countRequest 查询参数
+     * @return 查询响应
+     * @throws IOException 连接异常
+     */
+    public CountResponse getCount(CountRequest countRequest) throws IOException {
+        return restHighLevelClient.count(countRequest,RequestOptions.DEFAULT);
     }
 
     /**
@@ -91,6 +105,11 @@ public class EsManager {
      */
     public IndexRequest assemblyRequest(String indexName,Object object){
         IndexRequest request = new IndexRequest(indexName);
+        //商品索引ID设为shopId+goodsId
+        if( object instanceof EsGoods ){
+            EsGoods goods = (EsGoods)object;
+            request.id(goods.getSortId().toString()+goods.getGoodsId().toString());
+        }
         request.source(Objects.requireNonNull(Util.toJson(object, ES_FILED_SERIALIZER)), XContentType.JSON);
         return request;
     }
@@ -112,7 +131,7 @@ public class EsManager {
     }
 
     /**
-     * 根据索引名称删除索引
+     * 根据索引名称删除索引全部数据
      * @param indexName 索引名称
      */
     public void deleteIndexByName(String indexName){
@@ -122,5 +141,17 @@ public class EsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 根据索引名称和documentID删除索引
+     * @param indexName 索引名称
+     * @param id documentId
+     * @throws IOException 连接错误
+     */
+    private void deleteIndexById(String indexName,String id) throws IOException {
+        DeleteRequest request = new DeleteRequest(indexName,id);
+        restHighLevelClient.delete(request,RequestOptions.DEFAULT);
+
     }
 }

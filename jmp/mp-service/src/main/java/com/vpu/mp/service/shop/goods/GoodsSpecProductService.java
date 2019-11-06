@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record3;
@@ -176,6 +177,7 @@ public class GoodsSpecProductService extends ShopBaseService {
     public Map<Integer,Result<GoodsSpecProductRecord>> selectByGoodsIds(List<Integer> goodsIds) {
         return db().selectFrom(GOODS_SPEC_PRODUCT)
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+            .and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchGroups(GOODS_SPEC_PRODUCT.GOODS_ID);
     }
 
@@ -196,7 +198,7 @@ public class GoodsSpecProductService extends ShopBaseService {
     public void updateAndDeleteForGoodsUpdate(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs, Integer goodsId) {
         DSLContext db = db();
 
-        List<Integer> goodsSpecProductIds = goodsSpecProducts.stream().map(item -> item.getPrdId()).collect(Collectors.toList());
+        List<Integer> goodsSpecProductIds = goodsSpecProducts.stream().map(GoodsSpecProduct::getPrdId).collect(Collectors.toList());
 
         // 删除无效sku
         deleteForGoodsUpdate(goodsSpecProductIds, goodsId);

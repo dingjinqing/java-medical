@@ -1,9 +1,11 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
+import com.vpu.mp.service.pojo.shop.goods.es.Fact;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 李晓冰
@@ -84,6 +86,15 @@ public class GoodsPageListParam {
      * 排序方式
      */
     private String orderDirection;
+
+    /**
+     * 是不是聚合查询
+     */
+    private Boolean isFactQuery = Boolean.FALSE;
+    /**
+     * 需要聚合查询的字段
+     */
+    private List<String> factNameList;
 
     /**
      * 	分页信息

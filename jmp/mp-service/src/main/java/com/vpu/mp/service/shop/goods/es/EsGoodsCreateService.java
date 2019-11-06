@@ -118,10 +118,18 @@ public class EsGoodsCreateService extends BaseShopConfigService {
                 esGoods.setShowPrice(esGoods.getShopPrice());
             }
             if( validationMap(goodsProductMap,goodsId) ){
-                esGoods.setPrdSns(goodsProductMap.get(goodsId).stream()
-                    .map(GoodsSpecProductRecord::getPrdSn)
-                    .collect(Collectors.joining(","))
-                );
+                List<GoodsSpecProductRecord> list = goodsProductMap.get(goodsId);
+                list.sort(Comparator.comparing(GoodsSpecProductRecord::getPrdPrice));
+                List<BigDecimal> specPrdPrices = new LinkedList<>();
+                StringBuilder prdSns = new StringBuilder();
+                list.forEach(x->{
+                    specPrdPrices.add(x.getPrdPrice());
+                    prdSns.append(x.getPrdSn()).append(",");
+                });
+                esGoods.setPrdSns(prdSns.toString());
+                int length = specPrdPrices.size();
+                esGoods.setMaxSpecPrdPrices(specPrdPrices.get(length-1));
+                esGoods.setMinSpecPrdPrices(specPrdPrices.get(0));
             }
             if( validationMap(goodsCatInfoMap,goodsId) ){
                 List<SysCatevo> list = goodsCatInfoMap.get(goodsId);
@@ -292,6 +300,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         if( list.isEmpty() ){
             return ;
         }
+        list.sort(Comparator.comparing(GoodsSpecProduct::getPrdPrice));
         esGoods.setPrdSns(list.stream().map(GoodsSpecProduct::getPrdSn).collect(Collectors.joining(",")));
     }
 

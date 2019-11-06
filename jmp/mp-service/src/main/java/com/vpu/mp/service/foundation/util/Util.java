@@ -109,6 +109,21 @@ public class Util {
         }
         return null;
     }
+    public static <T> T parseJson(String json, Class<T> valueType,AnnotationIntrospector ai) {
+        if(StringUtils.isBlank(json)) {
+            return null;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setAnnotationIntrospector(ai);
+        // 如果json中有新增的字段并且是实体类类中不存在的，不报错
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            return mapper.readValue(json, valueType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 	public static <T> T parseJson(String json, Class<T> valueType) {
 		if(StringUtils.isBlank(json)) {
 			return null;

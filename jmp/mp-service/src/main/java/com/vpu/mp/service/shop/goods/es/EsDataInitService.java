@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.goods.es;
 
-import com.vpu.mp.config.es.annotation.EsFiled;
+import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -36,13 +36,20 @@ public class EsDataInitService implements InitializingBean {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName);
         createIndexRequest.settings(Settings.builder()
             .put("index.number_of_replicas",0)
-            .put("index.number_of_shards",5));
+            .put("index.number_of_shards",5)
+            );
         if (ES_GOODS.equals(indexName)) {
             createIndexRequest.mapping(createGoodsMapping());
         }
+//        createIndexRequest.set
         restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
     }
 
+    /**
+     * EsGoods Mapping init
+     * @return XContentBuilder
+     * @throws IOException
+     */
     private XContentBuilder createGoodsMapping() throws IOException {
         XContentBuilder xContentBuilder = JsonXContent.contentBuilder()
             .startObject()
@@ -51,11 +58,17 @@ public class EsDataInitService implements InitializingBean {
         for( Field field : fieldArray ){
             EsFiled a = field.getAnnotation(EsFiled.class);
             if( a != null ){
-                xContentBuilder.startObject(a.name());
+                xContentBuilder.startObject(a.name().getEsName());
                 xContentBuilder.field("type",a.type());
                 xContentBuilder.field("index",a.index());
                 if(StringUtils.isNotBlank(a.analyzer()) ){
                     xContentBuilder.field("analyzer",a.analyzer());
+                }
+                if(StringUtils.isNotBlank(a.copyTo()) ){
+                    xContentBuilder.field("copy_to",a.copyTo());
+                }
+                if(StringUtils.isNotBlank(a.searchAnalyzer()) ){
+                    xContentBuilder.field("search_analyzer",a.searchAnalyzer());
                 }
                 if( a.type().equals("scaled_float") ){
                     xContentBuilder.field("scaling_factor",a.scaledNumber());

@@ -1,4 +1,4 @@
-package com.vpu.mp.config.es.annotation;
+package com.vpu.mp.service.foundation.es.annotation;
 
 
 /**
