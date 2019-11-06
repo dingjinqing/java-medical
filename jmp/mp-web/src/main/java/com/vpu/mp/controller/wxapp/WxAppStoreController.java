@@ -7,10 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrder;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderVo;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 王兵兵
@@ -47,5 +44,13 @@ public class WxAppStoreController extends WxAppBaseController{
         vo.setShopBusinessState(shopRecord.getBusinessState());
         vo.setShopLogo(shopRecord.getShopAvatar());
         return this.success(vo);
+    }
+
+    /**
+     * 门店服务预约
+     */
+    @GetMapping("/service/reservation/{serviceId}")
+    public JsonResult reservation(@PathVariable Integer serviceId) {
+        return this.success(shop().store.wxService.reservationDetail(serviceId, null));
     }
 }

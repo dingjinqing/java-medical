@@ -272,6 +272,7 @@ public class JsonResultMessage {
     public static final String CODE_SCORE_INSUFFICIENT = "score.insufficient";
     public static final String CODE_BALANCE_INSUFFICIENT = "balance.insufficient";
     public static final String CODE_AMOUNT_PAYABLE_CALCULATION_FAILED = "amount.payable.calculation.failed";
+    public static final String CODE_DB_DATA_ABNORMAL = "db.data.abnormal";
 
 	/**
 	 * 门店技师管理

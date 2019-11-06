@@ -1074,14 +1074,22 @@ ADD COLUMN `recommend_number` INT(4) DEFAULT '0' COMMENT '智能推荐商品数'
 ALTER TABLE b2c_comment_goods MODIFY COLUMN `comm_note` VARCHAR(255) COMMENT '评论内容';
 
 -- 修改会员卡表，可用门店store_list默认值
-ALTER TABLE `b2c_member_card` 
+ALTER TABLE `b2c_member_card`
 MODIFY COLUMN `store_list` varchar(191)  NOT NULL DEFAULT '[]' COMMENT '可用门店' AFTER `use_time`;
 -- 添加会员卡表添加三个与优惠券相关的字段
-ALTER TABLE `b2c_member_card` 
+ALTER TABLE `b2c_member_card`
 ADD COLUMN `send_coupon_switch` tinyint(1) DEFAULT 0 COMMENT '是否开卡送券：0不是，1是' AFTER `discount_brand_id`,
 ADD COLUMN `send_coupon_type` tinyint(1) DEFAULT 0 COMMENT '送惠类型：0优惠券，1优惠券礼包' AFTER `send_coupon_switch`,
 ADD COLUMN `send_coupon_ids` varchar(20) DEFAULT NULL COMMENT '赠送优惠券或礼包id，字符串逗号隔开' AFTER `send_coupon_type`;
 
 --记录表添加账户类型
-ALTER TABLE `b2c_record_admin_action` 
+ALTER TABLE `b2c_record_admin_action`
 ADD COLUMN `account_type` TINYINT(2) NOT NULL DEFAULT 1 COMMENT '账户类型，默认1商家账户';
+
+-- 更新字段默认值,注释
+alter table b2c_service_technician
+MODIFY COLUMN `service_list` varchar(191)   not null default '[]' comment '当type=1是服务项目ID数组';
+-- 更新字段默认值
+alter table b2c_store_service
+MODIFY COLUMN      `tech_services_number` int(11)  default  0  comment '技师单时段服务数量',
+MODIFY COLUMN     `services_number`      int(11)                 default 0 comment '服务数量',

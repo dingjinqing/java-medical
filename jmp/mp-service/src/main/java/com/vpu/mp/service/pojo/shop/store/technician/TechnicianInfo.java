@@ -16,10 +16,11 @@ public class TechnicianInfo {
     private String technicianIntroduce;
     private Long groupId;
     private Byte serviceType;
+    private String serviceList;
     private String remarks;
-    String workDate;
-    Integer scheduleId;
-    String scheduleName;
-    String begcreateTime;
-    String endTime;
+    private String workDate;
+    private Integer scheduleId;
+    private String scheduleName;
+    private String begcreateTime;
+    private String endTime;
 }

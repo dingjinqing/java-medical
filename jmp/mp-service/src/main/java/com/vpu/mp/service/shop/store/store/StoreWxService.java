@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryP
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
@@ -32,6 +33,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
+import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -66,8 +68,10 @@ import static java.math.BigDecimal.ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
+ * The type Store wx service.
+ *
  * @author liufei
- * @date 10/22/19
+ * @date 10 /22/19
  */
 @Slf4j
 @Service
@@ -163,6 +167,15 @@ public class StoreWxService extends ShopBaseService {
     @Autowired
     public ServiceOrderService serviceOrderService;
 
+    /**
+     * The Technician service.门店技师
+     */
+    @Autowired
+    public ServiceTechnicianService technicianService;
+
+    /**
+     * The constant BYTE_TWO.
+     */
     public static final Byte BYTE_TWO = 2;
 
     private static final Condition delCondition = STORE.DEL_FLAG.eq(BYTE_ZERO);
@@ -171,7 +184,7 @@ public class StoreWxService extends ShopBaseService {
      * 门店列表查询-小程序端
      *
      * @param param 查询入参
-     * @return StorePageListVo
+     * @return StorePageListVo list
      */
     public List<StorePojo> getList(StoreListParam param) {
         List<StorePojo> storeList = new ArrayList<>();
@@ -261,6 +274,7 @@ public class StoreWxService extends ShopBaseService {
      *
      * @param condition the condition 自定义任意条件
      * @param fields    the fields 自定义结果字段集
+     * @return the store by custom condition
      */
     public List<StorePojo> getStoreByCustomCondition(Map<String, ?> condition, List<TableField<StoreRecord, ?>> fields) {
         if (condition.get("scan_stores") != null) {
@@ -309,6 +323,7 @@ public class StoreWxService extends ShopBaseService {
      * @param deliverType 配送类型,1:自提,2:同城配送
      * @param location    用户位置
      * @param isFromStore todo 同城服务参数
+     * @return the can buy store list
      */
     public List<StorePojo> getCanBuyStoreList(Set<Integer> prdIds, Byte deliverType, Location location, Byte isFromStore) {
         SelectConditionStep<Record1<Integer>> conditionStep = db().select(STORE.STORE_ID).from(STORE_GOODS)
@@ -337,6 +352,10 @@ public class StoreWxService extends ShopBaseService {
 
     /**
      * The entry point of application.todo 获得同城配送可用的门店列表
+     *
+     * @param storeLists  the store lists
+     * @param location    the location
+     * @param isFromStore the is from store
      */
     public void cityServiceCanUseStoreList(List<StorePojo> storeLists, Location location, Byte isFromStore) {
 
@@ -382,6 +401,7 @@ public class StoreWxService extends ShopBaseService {
      * Store pay order.门店买单-小程序
      *
      * @param param the param
+     * @return the store pay order vo
      */
     public StorePayOrderVo storePayOrder(StoreInfoParam param) {
         int storeId = param.getStoreId();
@@ -501,6 +521,10 @@ public class StoreWxService extends ShopBaseService {
 
     /**
      * Default pay.微信小程序请求支付
+     *
+     * @param storeOrderInfo the store order info
+     * @param openId         the open id
+     * @return the string
      */
     public String defaultPay(StoreOrderRecord storeOrderInfo, String openId) {
         BigDecimal amount = storeOrderInfo.getMoneyPaid().multiply(HUNDRED);
@@ -522,10 +546,19 @@ public class StoreWxService extends ShopBaseService {
 
     }
 
+    /**
+     * The constant HH_MM_FORMATTER.
+     */
     public static final DateTimeFormatter HH_MM_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    // 门店服务预约详情
-    public void reservationDetail(Integer serviceId, Integer userId) {
+    /**
+     * Reservation detail reservation detail vo.门店服务预约详情
+     *
+     * @param serviceId the service id
+     * @param userId    the user id
+     * @return the reservation detail vo
+     */
+    public ReservationDetailVo reservationDetail(Integer serviceId, Integer userId) {
         Integer shopId = getShopId();
         // 门店服务信息
         StoreServiceParam service = storeService.getStoreService(serviceId);
@@ -536,59 +569,128 @@ public class StoreWxService extends ShopBaseService {
 
         // 设置服务起始日期, 不能预约过期的服务, 持续时间最多两个月
         LocalDate now = LocalDate.now();
-//        service.setStartDate(service.getStartDate().toLocalDate().compareTo(now) > 0 ? service.getStartDate() : Date.valueOf(now));
         LocalDate startDate = service.getStartDate().toLocalDate().compareTo(now) > 0 ? service.getStartDate().toLocalDate() : now;
         LocalDate twoMonthsLater = service.getStartDate().toLocalDate().plus(2, ChronoUnit.MONTHS);
-//        service.setEndDate(service.getEndDate().toLocalDate().compareTo(twoMonthsLater) > 0 ? Date.valueOf(twoMonthsLater) : service.getEndDate());
-        LocalDate endDate = service.getEndDate().toLocalDate().compareTo(now) > 0 ? service.getEndDate().toLocalDate() : twoMonthsLater;
+        LocalDate endDate = service.getEndDate().toLocalDate().compareTo(twoMonthsLater) <= 0 ? service.getEndDate().toLocalDate() : twoMonthsLater;
+        log.debug("服务有效预约日期为:{} - {}", startDate, endDate);
 
-
+/*        Assert.dataAbnormal((s)->{
+            String[] str = s.split(":");
+            if (str.length != 2){
+                return false;
+            }else if(str[0].length() != 2 || str[1])
+            return true;
+        }, JsonResultCode.CODE_DB_DATA_ABNORMAL, service.getStartPeriod(), service.getEndPeriod());*/
         // 服务可预约时段, 用服务时长(单位/分钟)切分成当前可预约的分段服务
         LocalTime startPeriod = LocalTime.parse(service.getStartPeriod(), HH_MM_FORMATTER);
         LocalTime endPeriod = LocalTime.parse(service.getEndPeriod(), HH_MM_FORMATTER);
         int serviceDuration = service.getServiceDuration();
+        log.debug("服务可预约时段为:{} - {}; 单次服务时长为: {}", startPeriod, endPeriod, serviceDuration);
 
-
-        ReservationDetailVo detailVo = new ReservationDetailVo();
         List<ReservationInfo> reservationList = new ArrayList<>();
-        for (LocalDate i = startDate; i.isBefore(endDate); i = i.plusDays(1)) {
-            reservationList.add(createReservationInfo(i, startPeriod, endPeriod, serviceDuration, service));
+        for (LocalDate i = startDate; i.isBefore(endDate) || i.equals(endDate); i = i.plusDays(1)) {
+            ReservationInfo reservationInfo = createReservationInfo(i, startPeriod, endPeriod, serviceDuration, service);
+            if (Objects.nonNull(reservationInfo)) {
+                reservationList.add(reservationInfo);
+            }
         }
-        detailVo.setReservationInfoList(reservationList);
+        return ReservationDetailVo.builder()
+            .storeInfo(storePojo)
+            .serviceInfo(service)
+            .reservationInfoList(reservationList)
+            .build();
     }
 
+    /**
+     * Create reservation info reservation info.
+     *
+     * @param date            the date
+     * @param startPeriod     the start period
+     * @param endPeriod       the end period
+     * @param serviceDuration the service duration
+     * @param serviceInfo     the service info
+     * @return the reservation info
+     */
     public ReservationInfo createReservationInfo(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, int serviceDuration, StoreServiceParam serviceInfo) {
-        ReservationInfo reservationInfo = new ReservationInfo();
-        reservationInfo.setReservationDate(date);
         if (date.isEqual(LocalDate.now())) {
             LocalTime localTime = LocalTime.now();
             if (localTime.isAfter(startPeriod)) {
-                startPeriod.plus((((localTime.getMinute() - startPeriod.getMinute()) / serviceDuration + 1) * serviceDuration), ChronoUnit.MINUTES);
+                // 如果可服务日期是当天, 获取当天距离当前时间最近的一次可服务时间段
+                startPeriod = startPeriod.plus((((localTime.toSecondOfDay() / 60 - startPeriod.toSecondOfDay() / 60) / serviceDuration + 1) * serviceDuration), ChronoUnit.MINUTES);
             }
         }
-        List<ReservationInfo.ReservationTime> reservationTimeList = new ArrayList<>();
-        for (LocalTime i = startPeriod; i.isBefore(endPeriod); i.plus(serviceDuration, ChronoUnit.MINUTES)) {
+        List<ReservationTime> reservationTimeList = new ArrayList<>();
+        for (LocalTime i = startPeriod; i.isBefore(endPeriod) && (i.plusMinutes(serviceDuration).isBefore(endPeriod) || i.plusMinutes(serviceDuration).equals(endPeriod)); i = i.plus(serviceDuration, ChronoUnit.MINUTES)) {
             LocalTime start = i;
             LocalTime end = start.plusMinutes(serviceDuration);
-            ReservationInfo.ReservationTime reservationTime = createReservationTime(date, start, end, serviceInfo);
+            ReservationTime reservationTime = createReservationTime(date, start, end, serviceInfo);
             if (reservationTime != null) {
                 reservationTimeList.add(reservationTime);
             }
         }
-        reservationInfo.setReservationTimeList(reservationTimeList);
-        return reservationInfo;
+        return CollectionUtils.isNotEmpty(reservationTimeList) ? ReservationInfo.builder()
+            .reservationTimeList(reservationTimeList)
+            .reservationDate(date)
+            .build() : null;
     }
 
-    public ReservationInfo.ReservationTime createReservationTime(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, StoreServiceParam serviceInfo) {
+    /**
+     * Create reservation time reservation info . reservation time.
+     *
+     * @param date        the date
+     * @param startPeriod the start period
+     * @param endPeriod   the end period
+     * @param serviceInfo the service info
+     * @return the reservation time
+     */
+    public ReservationTime createReservationTime(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, StoreServiceParam serviceInfo) {
+        Integer serviceId = serviceInfo.getId();
+        int serviceNum = Objects.nonNull(serviceInfo.getServicesNumber()) ? serviceInfo.getServicesNumber() : 0;
+        int tecServiceNum = Objects.nonNull(serviceInfo.getTechServicesNumber()) ? serviceInfo.getTechServicesNumber() : 0;
+        List<TechnicianInfo> result = null;
         // 服务类型:0无技师1有技师
         Byte technicianFlag = serviceInfo.getServiceType();
         if (technicianFlag.equals(BYTE_ZERO)) {
-            if (serviceOrderService.checkMaxNumOfReservations(serviceInfo.getId(), date, startPeriod, endPeriod) >= serviceInfo.getServicesNumber()) {
-                return null;
+            // 服务数量为0表示无上限,可以无限接受服务预约
+            if (serviceNum != 0) {
+                if (serviceOrderService.checkMaxNumOfReservations(serviceId, null, date, startPeriod, endPeriod) >= serviceNum) {
+                    return null;
+                }
             }
         } else {
-
+            //
+            List<TechnicianInfo> technicianInfoList = technicianService.getTechnicianList(serviceInfo.getStoreId(), date);
+            result = technicianInfoList.stream().filter((e) -> {
+                // 过滤不支持给定服务的技师
+                Byte serviceType = e.getServiceType();
+                if (BYTE_ZERO.equals(serviceType)) {
+                    return true;
+                }
+                if (BYTE_ONE.equals(serviceType)) {
+                    return Util.json2Object(e.getServiceList(), new TypeReference<List<Integer>>() {
+                    }, false).contains(serviceId);
+                }
+                return false;
+            }).filter((e) -> {
+                // 过滤不在给定服务时间段内的技师
+                LocalTime tempStart = LocalTime.parse(e.getBegcreateTime(), HH_MM_FORMATTER);
+                LocalTime tempEnd = LocalTime.parse(e.getEndTime(), HH_MM_FORMATTER);
+                return (startPeriod.isAfter(tempStart) || startPeriod.equals(tempStart)) && (endPeriod.isBefore(tempEnd) || endPeriod.equals(tempEnd));
+            }).filter((e) -> {
+                // 过滤超过技师单时段服务数量上限的技师
+                if (tecServiceNum == 0) {
+                    return true;
+                }
+                return serviceOrderService.checkMaxNumOfReservations(serviceId, e.getId(), date, startPeriod, endPeriod) < tecServiceNum;
+            }).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(result)) {
+                return null;
+            }
         }
-        return (new ReservationInfo()).new ReservationTime();
+        return ReservationTime.builder()
+            .startTime(startPeriod)
+            .endTime(endPeriod)
+            .technicianFlag(technicianFlag)
+            .technicianPojoList(result).build();
     }
 }

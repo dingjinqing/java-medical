@@ -5,6 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * The type Assert.
@@ -60,6 +61,22 @@ public class Assert {
     public static <E> void notEmpty(Collection<E> collection, JsonResultCode code) {
         if (CollectionUtils.isEmpty(collection)) {
             throw new BusinessException(code);
+        }
+    }
+
+    /**
+     * Data abnormal.数据库字段数据非法/异常
+     *
+     * @param <T>       the type parameter 校验对象数组
+     * @param predicate the predicate 自定义校验规则, 返回true表示校验通过
+     * @param code      the code 校验失败抛出错误
+     * @param t         the t
+     */
+    public static <T> void dataAbnormal(Predicate<T> predicate, JsonResultCode code, T... t) {
+        for (T e : t) {
+            if (!predicate.test(e)) {
+                throw new BusinessException(code, e);
+            }
         }
     }
 }

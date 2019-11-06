@@ -12,7 +12,10 @@ import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.*;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -330,8 +333,7 @@ public class ServiceOrderService extends ShopBaseService{
      * @return the order list info
      */
     public List<ServiceOrderListQueryVo> getOrderListInfo(Integer serviceId, Integer technicianId, LocalDate date, Byte orderStatus) {
-        SelectConditionStep<Record11<Integer, String, Integer, String, String, String, String, String, String, BigDecimal, String>> condition = db().select(SERVICE_ORDER.STORE_ID, SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.USER_ID, SERVICE_ORDER.SUBSCRIBER, STORE_SERVICE.SERVICE_NAME, SERVICE_ORDER.MOBILE, SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.TECHNICIAN_NAME, STORE_SERVICE.SERVICE_SUBSIST, SERVICE_ORDER.ADD_MESSAGE).
-            from(SERVICE_ORDER)
+        SelectConditionStep<ServiceOrderRecord> condition = db().selectFrom(SERVICE_ORDER)
             .where(SERVICE_ORDER.SERVICE_ID.eq(serviceId))
             .and(SERVICE_ORDER.SERVICE_DATE.eq(date.format(DATE_TIME_FORMATTER)))
             .and(SERVICE_ORDER.ORDER_STATUS.eq(orderStatus))
@@ -342,18 +344,23 @@ public class ServiceOrderService extends ShopBaseService{
         return condition.fetchInto(ServiceOrderListQueryVo.class);
     }
 
-    // 判定预约数量是否超过同一时间段内可预约的最多人数(针对不需要技师的预约服务而言)
-    public long checkMaxNumOfReservations(Integer serviceId, LocalDate date, LocalTime startPeriod, LocalTime endPeriod) {
-        List<ServiceOrderListQueryVo> orderListQueryVos = getOrderListInfo(serviceId, null, date, ORDER_STATUS_WAIT_SERVICE);
+    /**
+     * Check max num of reservations long.
+     * 判定预约数量是否超过同一时间段内可预约的最多人数(针对不需要技师的预约服务而言),不用传technicianId
+     * 判定预约数量是否超过同一时间段内技师单时段服务数量(针对需要技师的预约服务而言), 需要传technicianId
+     *
+     * @param serviceId    the service id
+     * @param technicianId the technician id
+     * @param date         the date
+     * @param startPeriod  the start period
+     * @param endPeriod    the end period
+     * @return the long
+     */
+    public long checkMaxNumOfReservations(Integer serviceId, Integer technicianId, LocalDate date, LocalTime startPeriod, LocalTime endPeriod) {
+        List<ServiceOrderListQueryVo> orderListQueryVos = getOrderListInfo(serviceId, technicianId, date, ORDER_STATUS_WAIT_SERVICE);
         return orderListQueryVos.stream().filter((e) -> {
             String[] periodTime = e.getServicePeriod().split(REGEX);
             return LocalTime.parse(periodTime[0], HH_MM_FORMATTER).isBefore(endPeriod) && LocalTime.parse(periodTime[1], HH_MM_FORMATTER).isAfter(startPeriod);
         }).count();
     }
-
-    public static void filterData(ServiceOrderListQueryVo vo) {
-
-    }
-
-    // 判定预约数量是否超过同一时间段内技师单时段服务数量
 }

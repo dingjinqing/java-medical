@@ -226,12 +226,36 @@ public class ServiceTechnicianService extends ShopBaseService {
 		return list;
 	}
 
-    public void getTechnicianList(Integer storeId, LocalDate date) {
-        db().select().from(SERVICE_TECHNICIAN)
+    /**
+     * Gets technician list.获取给定日期可服务技师信息列表
+     *
+     * @param storeId the store id
+     * @param date    the date
+     * @return the technician list
+     */
+    public List<TechnicianInfo> getTechnicianList(Integer storeId, LocalDate date) {
+        return db().select(
+            SERVICE_TECHNICIAN.ID,
+            SERVICE_TECHNICIAN.STORE_ID,
+            SERVICE_TECHNICIAN.TECHNICIAN_NAME,
+            SERVICE_TECHNICIAN.TECHNICIAN_MOBILE,
+            SERVICE_TECHNICIAN.BG_IMG_PATH,
+            SERVICE_TECHNICIAN.TECHNICIAN_INTRODUCE,
+            SERVICE_TECHNICIAN.GROUP_ID,
+            SERVICE_TECHNICIAN.SERVICE_TYPE,
+            SERVICE_TECHNICIAN.SERVICE_LIST,
+            SERVICE_TECHNICIAN.REMARKS,
+            SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE,
+            SERVICE_TECHNICIAN_SCHEDULE.SCHEDULE_ID,
+            SERVICE_SCHEDULE.SCHEDULE_NAME,
+            SERVICE_SCHEDULE.BEGCREATE_TIME,
+            SERVICE_SCHEDULE.END_TIME
+        ).from(SERVICE_TECHNICIAN)
             .leftJoin(SERVICE_TECHNICIAN_SCHEDULE).on(SERVICE_TECHNICIAN.ID.eq(SERVICE_TECHNICIAN_SCHEDULE.TECHNICIAN_ID))
             .leftJoin(SERVICE_SCHEDULE).on(SERVICE_TECHNICIAN_SCHEDULE.SCHEDULE_ID.eq(SERVICE_SCHEDULE.SCHEDULE_ID))
             .where(SERVICE_TECHNICIAN.STORE_ID.eq(storeId))
             .and(SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE.eq(date.format(DATE_TIME_FORMATTER)))
-            .and(SERVICE_TECHNICIAN.DEL_FLAG.eq(BYTE_ZERO));
+            .and(SERVICE_TECHNICIAN.DEL_FLAG.eq(BYTE_ZERO))
+            .fetchInto(TechnicianInfo.class);
     }
 }
