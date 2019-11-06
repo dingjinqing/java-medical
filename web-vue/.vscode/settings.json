@@ -28,6 +28,5 @@
     "wxml": "html"
   },
   "minapp-vscode.disableAutoConfig": true,
-  "window.zoomLevel": 1,
   "files.autoSave": "off"
 }
