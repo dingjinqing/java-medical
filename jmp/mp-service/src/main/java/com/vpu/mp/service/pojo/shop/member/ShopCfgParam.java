@@ -15,27 +15,27 @@ public class ShopCfgParam {
 	 * 1 截至日期
 	 * 2 多少时间范围
 	 */
-	private String scoreLimit;
+	private Byte scoreLimit;
 	
 	/**
 	 * 1
 	 * 截止日期
 	 */
-	private String scoreDay;
-	private String scoreMonth;
-	private String scoreYear;
+	private Integer scoreDay;
+	private Integer scoreMonth;
+	private Integer scoreYear;
 	
 	
 	/**
 	 * 2
 	 * 多少时间范围内
 	 */
-	private String scoreLimitNumber;
+	private Integer scoreLimitNumber;
 	
 	/**
 	 * 多少时间内的单位，日1，周7，月30 
 	 */
-	private String scorePeriod;
+	private Integer scorePeriod;
 	
 
 	/**
@@ -43,14 +43,15 @@ public class ShopCfgParam {
 	 * 0 不限制
 	 * 1 自定义
 	 */
-	private String scorePayLimit;
+	private Byte scorePayLimit;
 	
 	
 	/**
 	 * 自定义积分数额
 	 */
-	private String scorePayNum;
-	
+	private Integer scorePayNum;
+	// 积分抵扣比例
+	private Integer scoreDiscountRatio;
 	
 	/**
 	 * 购物送积分 开关，on
@@ -61,7 +62,7 @@ public class ShopCfgParam {
 	 * 0 购物满多少送积分
 	 * 1 购物每满多少送多少积分
 	 */
-	private String scoreType;
+	private Byte scoreType;
 	
 	/**
 	 * 购物满多少送多少
@@ -88,7 +89,7 @@ public class ShopCfgParam {
 	/**
 	 * 登录送积分，积分额。
 	 */
-	private String scoreLogin;
+	private Integer scoreLogin;
 	
 	/**
 	 * 签到送积分开关 on

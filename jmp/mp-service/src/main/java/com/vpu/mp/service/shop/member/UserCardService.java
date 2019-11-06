@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +65,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
 import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
@@ -491,7 +491,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public boolean isActivateNow(MemberCardRecord card) {
-		return UCARD_ACT_NO.equals(card.getActivation());
+		return MCARD_ACT_NO.equals(card.getActivation());
 	}
 
 	private Timestamp calcCardExpireTime(MemberCardRecord card) {
@@ -794,7 +794,6 @@ public class UserCardService extends ShopBaseService {
      */
     public Set<Integer> getUserCardExclusiveGoodsIds(Integer userId, List<Integer> cartGoodsIdList) {
         cartGoodsIdList = cartGoodsIdList.stream().distinct().collect(Collectors.toList());
-        Set<Integer> goodsIds = new HashSet<>();
         Set<Integer> resGoodsIds = new HashSet<>();
         // 获取关联商品
         Map<Byte, List<Integer>> goodsCardCouple = goodsCardCoupleService.getGoodsCardCouple(userId);

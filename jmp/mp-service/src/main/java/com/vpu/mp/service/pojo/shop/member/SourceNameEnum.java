@@ -19,7 +19,7 @@ public enum SourceNameEnum {
 	private Integer code;
 	/**来源名称*/
 	private String name;
-	private SourceNameEnum(int code,String name) {
+	private SourceNameEnum(Integer code,String name) {
 		this.code = code;
 		this.name = name;
 	} 

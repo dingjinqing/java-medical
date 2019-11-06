@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 /**
  * 
@@ -27,7 +26,7 @@ public class MemberInfoVo {
 	/** 积分 */
 	private Integer score;
 	/** 来源 : -1 未录入 ; 0 后台; >0为门店id */
-	private Byte source;
+	private Integer source;
 	/** 创建时间 */
 	private Timestamp createTime;
 	/** 用户持有的会员卡 */

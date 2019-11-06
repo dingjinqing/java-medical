@@ -8,17 +8,17 @@ import java.util.Arrays;
  * 2019-07-16 11:35
  */
 public class UserScoreSetValue {
-	String enable;
+	Byte enable;
 	String[] score;
 	public UserScoreSetValue() {}
-	public UserScoreSetValue(String enable,String[] score){
+	public UserScoreSetValue(Byte enable,String[] score){
 		this.enable = enable;
 		this.score = score;
 	}
-	public String getEnable() {
+	public Byte getEnable() {
 		return enable;
 	}
-	public void setEnable(String enable) {
+	public void setEnable(Byte enable) {
 		this.enable = enable;
 	}
 	public String[] getScore() {

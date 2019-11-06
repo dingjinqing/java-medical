@@ -314,7 +314,7 @@ public class StoreOrderService extends ShopBaseService {
             // 非会员卡送积分逻辑
             BigDecimal totalMoney = orderInfo.getMoneyPaid().add(orderInfo.getUseAccount()).setScale(2, RoundingMode.DOWN);
 //            购物送积分类型： 0： 购物满；1：购物每满
-            byte scoreType = Byte.parseByte(scoreCfgService.getScoreType());
+            byte scoreType = scoreCfgService.getScoreType();
 //            购物满
             if (scoreType == CONDITION_ZERO) {
                 Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY, totalMoney.toString());

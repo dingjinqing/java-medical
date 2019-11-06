@@ -1,6 +1,11 @@
 package com.vpu.mp.service.shop.member;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
 * @author 黄壮壮
@@ -10,11 +15,13 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
 public class BaseScoreCfgService extends BaseShopConfigService {
 	
 	// 积分有效期  0: 永久积分
-	final public static String SCORE_LT_FOREVER = "0";
+	final public static Byte SCORE_LT_FOREVER = 0;
 	// 积分有效期  1: 从获得开始至 年-月-日
-	final public static String SCORE_LT_YMD = "1";
+	final public static Byte SCORE_LT_YMD = 1;
 	// 2: 从获得积分当天起-内有效
-	final public static String SCORE_LT_NOW = "2";
+	final public static Byte SCORE_LT_NOW = 2;
+	// 积分抵扣比例 默认50%
+	final public static Integer DEFAULT_SCORE_DISCOUNT_RATIO=50;
 	// 积分有效期  0: 永久积分; 1: 从获得开始至 年-月-日; 2: 从获得积分当天起-内有效
 	final public static String SCORE_LIMIT = "score_limit";
 	// 积分有效期-从获得开始至 ：日
@@ -31,6 +38,8 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	final public static String SCORE_PAY_LIMIT = "score_pay_limit";
 	// 每单支付的积分数量少于 score_pay_num 积分，不可使用积分支付
 	final public static String SCORE_PAY_NUM = "score_pay_num";
+	// 积分抵扣比例用户可使用积分抵扣订单折后金额的 百分比 
+	final public static String SCORE_DISCOUNT_RATIO="score_discount_ratio";
 	// 购物送积分开关： 0： 关闭； 1： 开启
 	final public static String SHOPPING_SCORE ="shopping_score";
 	// 购物送积分类型： 0： 购物满；1：购物每满
@@ -52,103 +61,138 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	
 	//-------------------------------------------------------
 	
-	public void setScoreLimit(String value){
-		set(SCORE_LIMIT, value);
+	public void setScoreLimit(Byte value){
+		assert(value==(byte)0 || value==(byte)1 || value == (byte)2):"积分有效期类型错误";
+		set(SCORE_LIMIT, value,Byte.class);
 	}
 	
-	public String getScoreLimit(){
-		return get(SCORE_LIMIT);
+	public Byte getScoreLimit(){
+		return get(SCORE_LIMIT,Byte.class,BYTE_ZERO);
 	}
 	
-	public void setScoreDay(String value){
-		set(SCORE_DAY, value);
+	public void setScoreDay(Integer value){
+		set(SCORE_DAY, value,Integer.class);
 	}
-	public String getScoreDay(){
-		return get(SCORE_DAY);
-	}
-	
-	public void setScoreMonth(String value){
-		set(SCORE_MONTH, value);
-	}
-	public String getScoreMonth(){
-		return get(SCORE_MONTH);
+	public Integer getScoreDay(){
+		return get(SCORE_DAY,Integer.class,1);
 	}
 	
-	public void setScoreYear(String value){
-		set(SCORE_YEAR, value);
+	public void setScoreMonth(Integer value){
+		set(SCORE_MONTH, value,Integer.class);
 	}
-	public String getScoreYear(){
-		return get(SCORE_YEAR);
-	}
-	
-	public void setScoreLimitNumber(String value){
-		set(SCORE_LIMIT_NUMBER, value);
-	}
-	public String getScoreLimitNumber(){
-		return get(SCORE_LIMIT_NUMBER);
+	public Integer getScoreMonth(){
+		return get(SCORE_MONTH,Integer.class,1);
 	}
 	
-	public void setScorePeriod(String value){
-		set(SCORE_PERIOD, value);
+	public void setScoreYear(Integer value){
+		set(SCORE_YEAR, value,Integer.class);
 	}
-	public String getScorePeriod(){
-		return get(SCORE_PERIOD);
+	public Integer getScoreYear(){
+		return get(SCORE_YEAR,Integer.class,1);
 	}
 	
-	public void setScorePayLimit(String value){
-		set(SCORE_PAY_LIMIT, value);
+	public void setScoreLimitNumber(Integer value){
+		set(SCORE_LIMIT_NUMBER, value,Integer.class);
 	}
-	public String getScorePayLimit(){
-		return get(SCORE_PAY_LIMIT);
+	public Integer getScoreLimitNumber(){
+		return get(SCORE_LIMIT_NUMBER,Integer.class,0);
+	}
+	
+	public void setScorePeriod(Integer value){
+		set(SCORE_PERIOD, value,Integer.class);
+	}
+	public Integer getScorePeriod(){
+		return get(SCORE_PERIOD,Integer.class,1);
+	}
+	
+	public void setScorePayLimit(Byte value){
+		assert(value==(byte)0 || value==(byte)1 ):"积分支付限制类型错误";
+		set(SCORE_PAY_LIMIT, value,Byte.class);
+	}
+	
+	public Byte getScorePayLimit(){
+		return get(SCORE_PAY_LIMIT,Byte.class,BYTE_ZERO);
 	}
 
-	public void setScorePayNum(String value){
-		set(SCORE_PAY_NUM, value);
+	public void setScorePayNum(Integer value){
+		set(SCORE_PAY_NUM, value,Integer.class);
 	}
-	public String getScorePayNum(){
-		return get(SCORE_PAY_NUM);
-	}
-	
-	public void setShoppingScore(String value){
-		set(SHOPPING_SCORE, value);
-	}
-	public String getShoppingScore(){
-		return get(SHOPPING_SCORE);
+	public Integer getScorePayNum(){
+		return get(SCORE_PAY_NUM,Integer.class,100);
 	}
 	
-	public void setScoreType(String value){
-		set(SCORE_TYPE, value);
-	}
-	public String getScoreType(){
-		return get(SCORE_TYPE);
-	}
-	
-	public void setStoreScore(String value){
-		set(STORE_SCORE, value);
-	}
-	public String getStoreScore(){
-		return get(STORE_SCORE);
+	public void setScoreDiscountRatio(Integer value) {
+		if(value==null) {
+			// 默认值50
+			set(SCORE_DISCOUNT_RATIO,String.valueOf(DEFAULT_SCORE_DISCOUNT_RATIO));
+		}else {
+			set(SCORE_DISCOUNT_RATIO,value,Integer.class);
+		}
 	}
 	
-	public void setLoginScore(String value){
-		set(LOGIN_SCORE, value);
-	}
-	public String getLoginScore(){
-		return get(LOGIN_SCORE);
+	public Integer getScoreDiscountRatio() {
+		return get(SCORE_DISCOUNT_RATIO,Integer.class,DEFAULT_SCORE_DISCOUNT_RATIO);
 	}
 	
-	public void setScoreLogin(String value){
-		set(SCORE_LOGIN, value);
+	public void setShoppingScore(Byte value){
+		assert(value==(byte)0 || value==(byte)1 ):"购物送积分开关错误";
+		set(SHOPPING_SCORE, value,Byte.class);
 	}
-	public String getScoreLogin(){
-		return get(SCORE_LOGIN);
+	public Byte getShoppingScore(){
+		return get(SHOPPING_SCORE,Byte.class,BYTE_ZERO);
 	}
 	
-	public void setSignInScore(String value){
-		set(SIGN_IN_SCORE, value);
+	public void setScoreType(Byte value){
+		assert(value==(byte)0 || value==(byte)1 ):"购物送积分类型错误";
+		set(SCORE_TYPE, value,Byte.class);
 	}
-	public String getSignInScore(){
-		return get(SIGN_IN_SCORE);
+	
+	public Byte getScoreType(){
+		return get(SCORE_TYPE,Byte.class,BYTE_ZERO);
+	}
+	
+	public void setStoreScore(Byte value){
+		assert(value==(byte)0 || value==(byte)1 ):"门店买单送积分开关类型错误";
+		set(STORE_SCORE, value,Byte.class);
+	}
+	public Byte getStoreScore(){
+		return get(STORE_SCORE,Byte.class,BYTE_ZERO);
+	}
+	
+	public void setLoginScore(Byte value){
+		assert(value==(byte)0 || value==(byte)1 ):"登录送积分开关类型错误";
+		set(LOGIN_SCORE, value,Byte.class);
+	}
+	
+	public Byte getLoginScore(){
+		return get(LOGIN_SCORE,Byte.class,BYTE_ZERO);
+	}
+	
+	public void setScoreLogin(Integer value){
+		set(SCORE_LOGIN, value,Integer.class);
+	}
+	
+	public Integer getScoreLogin(){
+		return get(SCORE_LOGIN,Integer.class,0);
+	}
+	
+	public void setSignInScore(UserScoreSetValue obj){
+		if(obj == null) {
+			obj = new UserScoreSetValue(BYTE_ZERO,new String[0]); 
+		}
+		String json = Util.toJson(obj);
+		set(SIGN_IN_SCORE, json,UserScoreSetValue.class);
+	}
+	
+	public UserScoreSetValue getSignInScore(){
+		UserScoreSetValue obj = null;
+		String value = get(SIGN_IN_SCORE);
+		if(value==null) {
+			obj = new UserScoreSetValue(BYTE_ZERO,new String[0]); 
+		}else {
+			obj = Util.parseJson(value,UserScoreSetValue.class);
+		}
+		return obj;
 	}
 	
 	public void setScorePageId(String value){

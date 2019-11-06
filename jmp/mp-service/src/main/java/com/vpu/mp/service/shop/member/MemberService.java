@@ -51,7 +51,6 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rabbitmq.http.client.domain.UserInfo;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
@@ -290,6 +289,7 @@ public class MemberService extends ShopBaseService {
 	 * @param member
 	 * @return
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	private String getSourceName(String language, MemberInfoVo member) {
 		String sourceName = null;
 		if (NOT_ACQUIRED.getCode().equals(member.getSource())

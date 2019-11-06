@@ -39,8 +39,6 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
@@ -330,7 +328,7 @@ public class CardDaoService extends ShopBaseService {
 		// 次数使用类型
 		if(param.getType() != null) {
 			// 1 兑换商品
-			if(EXCHANG_COUNT_TYPE.equals(param.getType().intValue())) {
+			if(EXCHANG_COUNT_TYPE.equals(param.getType())) {
 				select.and(CARD_CONSUMER.EXCHANG_COUNT.notEqual(SHORT_ZERO));
 			}else if(COUNT_TYPE.equals(param.getType())) {
 				// 2 门店服务

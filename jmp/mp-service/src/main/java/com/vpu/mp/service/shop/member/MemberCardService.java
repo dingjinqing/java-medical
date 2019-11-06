@@ -161,9 +161,8 @@ public class MemberCardService extends ShopBaseService {
 	/**
 	 * 添加会员卡
 	 */
-	public JsonResultCode addMemberCard(CardParam card) {
-		/** 处理会员卡的基本信息 */
-		MemberCardRecord cardRecord = dealWithCard(card);
+	public JsonResultCode createMemberCard(CardParam card) {
+		MemberCardRecord cardRecord = initMembercardRecordByCfgData(card);
 
 		/** 插入数据库 */
 		insertIntoMemberCard(cardRecord);
@@ -174,8 +173,7 @@ public class MemberCardService extends ShopBaseService {
 	 * 更新会员卡
 	 */
 	public void updateMemberCard(CardParam card) {
-		/** 处理会员卡的基本信息 */
-		MemberCardRecord cardRecord = dealWithCard(card);
+		MemberCardRecord cardRecord = initMembercardRecordByCfgData(card);
 
 		// TODO 如果Record的属性值设置为null,会跟新数据库信息为null吗
 		/** 更新数据 */
@@ -183,12 +181,11 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 处理会员卡的基本信息
+	 * 用配置信息初始化MemberCardRecord
 	 */
-	private MemberCardRecord dealWithCard(CardParam card) {
-		logger().info("正在处理会卡信息");
+	private MemberCardRecord initMembercardRecordByCfgData(CardParam card) {
+		logger().info("正在处理会卡配置信息");
 		MemberCardRecord cardRecord = new MemberCardRecord();
-		/** 设置会员卡的公共属性 */
 		setCommonCardAttr(card, cardRecord);
 
 		Byte cardType = card.getCardType();

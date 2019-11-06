@@ -36,9 +36,9 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 	@Autowired
 	public ShopMpDecorationService mpDecoration;
-	final public static String ZERO = "0";
-	final public static String ONE = "1";
-	final public static String TWO = "2";
+	final public static byte ZERO = 0;
+	final public static byte ONE = 1;
+	final public static byte TWO = 2;
 
 	/**
 	 * 购物送积分
@@ -54,80 +54,73 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 		// 设置积分有效规则
 		int result = 1;
-		String scoreLimit = param.getScoreLimit();
-		if (ZERO.equals(scoreLimit)) {
+		Byte scoreLimit = param.getScoreLimit();
+		if (scoreLimit == ZERO) {
 			// 永久积分
 			setScoreLimit(scoreLimit);
 
-		} else if (ONE.equals(scoreLimit)) {
+		} else if ( scoreLimit == ONE) {
 			// 截止日期
 			setScoreLimit(scoreLimit);
 			setScoreDay(param.getScoreDay());
 			setScoreMonth(param.getScoreMonth());
 			setScoreYear(param.getScoreYear());
-		} else if (TWO.equals(scoreLimit)) {
+		} else if (scoreLimit == TWO) {
 			// 时间度量
 			setScoreLimit(scoreLimit);
 			setScoreLimitNumber(param.getScoreLimitNumber());
 			setScorePeriod(param.getScorePeriod());
-		} else {
-			//return -1;
-			System.out.println("debug");
 		}
 
 		// 积分支付限制
-
-		String scorePayLimit = param.getScorePayLimit();
-		if (ZERO.equals(scorePayLimit)) {
+		Byte scorePayLimit = param.getScorePayLimit();
+		if (ZERO == scorePayLimit) {
 			// 不限制
 			setScorePayLimit(scorePayLimit);
-		} else if (ONE.equals(scorePayLimit)) {
+		} else if (ONE == scorePayLimit) {
 			// 自定义积分
 			setScorePayLimit(scorePayLimit);
 			setScorePayNum(param.getScorePayNum());
-		} else {
-			//return -1;
-			System.out.println("debug");
 		}
-
+		
+		setScoreDiscountRatio(param.getScoreDiscountRatio());
 
         /** 购物送积分 */
 		/** 积分开关 */
-		String shoppingScore = (BUTTON_ON.equals(param.getShoppingScore()))?ONE:ZERO;
+		byte shoppingScore = (BUTTON_ON.equals(param.getShoppingScore()))?ONE:ZERO;
 		setShoppingScore(shoppingScore);
 
 		/** 购物送积分的类型 0 购物多少送多少 1 购买每多少送多少 */
-		String scoreType = param.getScoreType();
+		Byte scoreType = param.getScoreType();
 		setScoreType(scoreType);
 
-		if(ONE.equals(shoppingScore)) {
-			if(ZERO.equals(scoreType)) {
+		if(ONE == shoppingScore) {
+			if(ZERO == scoreType ) {
 				/** 更新满多少送多少积分 */
 				updateRecord(param,BUY);
 			}
 
-			if(ONE.equals(scoreType)) {
+			if(ONE == scoreType) {
 				/** 更新每满多少送多少积分 */
 				updateRecord(param,BUY_EACH);
 			}
 		}
 
         //门店买单返送积分开关 on 1
-		String storeScore = BUTTON_ON.equals(param.getStoreScore()) ? ONE:ZERO;
+		byte storeScore = BUTTON_ON.equals(param.getStoreScore()) ? ONE:ZERO;
 		setStoreScore(storeScore);
 
 		//登录送给积分
-		String loginScore = BUTTON_ON.equals(param.getLoginScore())? ONE:ZERO;
+		byte loginScore = BUTTON_ON.equals(param.getLoginScore())? ONE:ZERO;
 		setLoginScore(loginScore);
-		if(ONE.equals(loginScore)) {
+		if(ONE == loginScore ) {
 			//登录送积分开关on
 			setScoreLogin(param.getScoreLogin());
 		}
 
 
         //签到送积分
-		String signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
-		setSignInScore(signInScore);
+		byte signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
 		setSignScore(signInScore,param.getSignScore());
 		return result;
 	}
@@ -137,24 +130,22 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	 * @param enable
 	 * @param signScore
 	 */
-	private void setSignScore(String signInScore,String[] signScore) {
-		String enable = signInScore;
-		Byte status = Byte.parseByte(enable);
+	private void setSignScore(Byte enable,String[] signScore) {
+	
 		String value=null;
-		if(ONE.equals(signInScore)) {
-			//积分开关打开
-			value = Util.toJson(new UserScoreSetValue(enable,signScore));
+		UserScoreSetValue userScore = null;
+		if(ONE == enable) {
+			userScore = new UserScoreSetValue(enable,signScore);
 		}else {
-			//从数据库中获取json值
-			UserScoreSetValue userScore = getScoreValueThird(SIGN_IN_SCORE);
+			userScore = getScoreValueThird(SIGN_IN_SCORE);
 			if(userScore != null){
 				userScore.setEnable(enable);
 				value = Util.toJson(userScore);
 			}
 		}
 		deleteRecord(SIGN_IN_SCORE);
-		setSignInScore(value);
-		setJsonObject(SIGN_IN_SCORE,status,value);
+		setSignInScore(userScore);
+		setJsonObject(SIGN_IN_SCORE,enable,value);
 	}
 
 	/**
@@ -265,8 +256,9 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		}
 
         // 处理签到积分
-		UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
-		if(!StringUtils.isBlank(userScore.getEnable()) && ONE.equals(userScore.getEnable())) {
+		//UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
+		UserScoreSetValue userScore = getSignInScore();
+		if(userScore.getEnable()!=null && ONE == userScore.getEnable()) {
 			vo.setSignInScore(BUTTON_ON);
 		}
 
@@ -296,8 +288,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
     /**
      * 获取数据
-     *
-     * @return
      */
     public Result<Record2<String, String>> getValFromUserScoreSet(String value, String money) {
         Result<Record2<String, String>> result = db().select(USER_SCORE_SET.SET_VAL, USER_SCORE_SET.SET_VAL2)
@@ -311,8 +301,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 	/**
 	 * 查询某种活动对应积分
-	 * @param k
-     * @return
 	 */
 	public ShopCfgRecord getScoreNum(String k) {
 		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny();
@@ -320,7 +308,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 	/**
 	 * 保存文档
-	 * @param param
 	 */
 	public void saveScoreDocument(ScoreFrontParam param) {
 		param.setUpdateTime(DateUtil.getLocalDateTime());
@@ -332,7 +319,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 	/**
 	 * 获取文档
-	 * @return
 	 */
 	public ScoreFrontVo scoreCopywriting() {
 		String value = db().select(SHOP_CFG.V).from(SHOP_CFG)
@@ -352,10 +338,8 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
     /**
      * 积分模板页添加 addScore
-	 * @param scorePageId
 	 */
 	public void addScoreCfgForDecoration(ShopCfgParam param) {
-		// 通过前端调用多个接口api而不是将数据全部塞满
 		setScorePageId(""+param.getScorePageId());
 	}
 

@@ -17,8 +17,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -53,7 +51,6 @@ import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 
-import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_FOREVER;
 import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_YMD;
 import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_NOW;
 /**
@@ -288,15 +285,10 @@ public class ScoreService extends ShopBaseService {
 	
 	/**
 	 * 在user_score中添加积分记录 
-	 * @param userScoreRecord
 	 */
 	private void addUserScoreRecord(UserScoreRecord record) {
 		db().executeInsert(record);
-//		db().insertInto(USER_SCORE, USER_SCORE.SCORE, USER_SCORE.USER_ID, USER_SCORE.REMARK, USER_SCORE.ADMIN_USER,
-//				USER_SCORE.ORDER_SN, USER_SCORE.FLOW_NO, USER_SCORE.USABLE_SCORE)
-//				.values(record.getScore(), record.getUserId(), record.getRemark(), record.getAdminUser(),
-//						record.getOrderSn(), record.getFlowNo(), record.getUsableScore())
-//				.execute();
+
 	}
 
 	
@@ -559,37 +551,38 @@ public class ScoreService extends ShopBaseService {
 	 */
 	public Timestamp getScoreExpireTime() {
 		Timestamp expireTime = null;
-		String scoreLimit = scoreCfgService.getScoreLimit();
+		Byte scoreLimit = scoreCfgService.getScoreLimit();
 		LocalDate date=LocalDate.now();		
 		
 		if (SCORE_LT_YMD.equals(scoreLimit)) {
-			Integer scoreYear = parseYMD(scoreCfgService.getScoreYear());
-			Integer scoreMonth = parseYMD(scoreCfgService.getScoreMonth());
-			Integer scoreDay = parseYMD(scoreCfgService.getScoreDay());
+			Integer scoreYear = scoreCfgService.getScoreYear();
+			Integer scoreMonth = scoreCfgService.getScoreMonth();
+			Integer scoreDay = scoreCfgService.getScoreDay();
 			LocalDateTime localDateTime = LocalDateTime.of(date.getYear()+scoreYear,scoreMonth,scoreDay, 23, 59, 59);
 			expireTime = Timestamp.valueOf(localDateTime);
 		}
 		
 		if (SCORE_LT_NOW.equals(scoreLimit)) {
-			String scoreLimitNumber = scoreCfgService.getScoreLimitNumber();
-			String scorePeriod = scoreCfgService.getScorePeriod();
-			if(!StringUtils.isBlank(scoreLimitNumber) && !StringUtils.isBlank(scorePeriod)) {
-				LocalDateTime localDateTime=LocalDateTime.now();
-				localDateTime.plusDays(Integer.parseInt(scoreLimitNumber)+Integer.parseInt(scorePeriod));		
-				expireTime = Timestamp.valueOf(localDateTime);
+			Integer scoreLimitNumber = scoreCfgService.getScoreLimitNumber();
+			Integer scorePeriod = scoreCfgService.getScorePeriod();
+			
+			LocalDateTime localDateTime=LocalDateTime.now();
+			
+			if(scorePeriod==1) {
+				localDateTime.plusDays(scoreLimitNumber);
+			}else if(scorePeriod==7) {
+				localDateTime.plusWeeks(scoreLimitNumber);
+			}else if(scorePeriod==30) {
+				localDateTime.plusMonths(scoreLimitNumber);
 			}
+			expireTime = Timestamp.valueOf(localDateTime);
 		}
 		logger().info("获取积分过期时间"+expireTime);
 		return expireTime;
 	}
 	
-	private Integer parseYMD(String value) {
-		return StringUtils.isBlank(value)?0:Integer.parseInt(value);
-	}
 	/**
 	 * 检查签到送积分
-	 * @param userId
-	 * @return
 	 */
 	public CheckSignVo checkSignInScore(Integer userId) {
 		logger().info("进入检查签到送积分");
@@ -608,7 +601,7 @@ public class ScoreService extends ShopBaseService {
 				}
 			}
 			String receiveScore = null;
-			if (signInScore.getEnable().equals("1")) {
+			if (signInScore.getEnable()==(byte)1) {
 				 isOpenSign = 1;
 				if (checkUserIsSign(userId)) {
 					// 未签到
