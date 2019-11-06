@@ -1232,6 +1232,10 @@ create table `b2c_member_card`
     `exchang_count`     int(11)                 default null comment '允许兑换次数',
     `stock`             int(11)                 DEFAULT 0 COMMENT '发放总量',
     `limit`             int(11)                 DEFAULT 1 COMMENT '领取限制',
+    `discount_brand_id` varchar(299) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '折扣品牌ID',
+    `send_coupon_switch` tinyint(1) DEFAULT '0' COMMENT '是否开卡送券：0不是，1是',
+  	`send_coupon_type` tinyint(1) DEFAULT '0' COMMENT '送惠类型：0优惠券，1优惠券礼包',
+  	`send_coupon_ids` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '赠送优惠券或礼包id，字符串逗号隔开',
     primary key (`id`)
 );
 

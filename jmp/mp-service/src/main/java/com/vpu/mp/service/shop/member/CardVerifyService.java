@@ -1,12 +1,18 @@
 package com.vpu.mp.service.shop.member;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -22,11 +28,6 @@ import com.vpu.mp.service.shop.user.user.UserDetailService;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_REFUSED;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 /**
 * @author 黄壮壮
 * @Date: 2019年10月30日
@@ -119,9 +120,7 @@ public class CardVerifyService extends ShopBaseService {
 		String birthDay = "birthday";
 		if(keylist.contains(birthDay)) {
 			keylist.removeIf("birthday"::equals);
-			keylist.add("birthday_year");
-			keylist.add("birthday_month");
-			keylist.add("birthday_day");
+			keylist.addAll(Arrays.asList("birthday_year","birthday_month","birthday_day"));
 		}
 	}
 
