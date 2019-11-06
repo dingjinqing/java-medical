@@ -64,7 +64,7 @@
       :title="$t('payConfiguration.wechatpayconf')"
       :visible.sync="showSettingDialog"
       :close-on-click-modal='false'
-      width=40%
+      width=25%
     >
       <ul class="settingContent">
         <li>
@@ -91,14 +91,20 @@
         <li class="specialHeight">
           <span>{{$t('payConfiguration.payCertContent')}}</span>
           <el-input
+            size="small"
             class="textarea"
+            type="textarea"
+            :rows="5"
             v-model="wechatpayconf.payCertContent"
           ></el-input>
         </li>
         <li class="specialHeight">
           <span>{{$t('payConfiguration.payKeyContent')}}</span>
           <el-input
+            size="small"
             class="textarea"
+            type="textarea"
+            :rows="5"
             v-model="wechatpayconf.payKeyContent"
           ></el-input>
         </li>
@@ -390,7 +396,7 @@ export default {
       span {
         vertical-align: middle;
         margin-right: 10px;
-        width: 150px;
+        width: 100px;
       }
       .el-input {
         width: 240px !important;
@@ -401,8 +407,8 @@ export default {
       background: #f3f3f3;
     }
     .specialHeight {
-      height: 115px;
-      line-height: 115px;
+      height: 110px;
+      line-height: 110px;
       .textarea {
         width: 240px;
         // line-height: 100px;
