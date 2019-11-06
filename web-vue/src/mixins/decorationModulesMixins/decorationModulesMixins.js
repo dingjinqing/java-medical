@@ -40,6 +40,16 @@ export default {
             ]
           }
           break
+        case 3: // 砍价
+          obj = {
+            'module_name': 'm_bargain',
+            'list_style': '0',
+            'goods_price': true,
+            'goods_count_down': true,
+            'free_btn': true,
+            'bargain_goods': []
+          }
+          break
         case 8: // 商品模块
           obj = {
             'module_name': 'm_goods', // 模块名称

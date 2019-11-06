@@ -132,3 +132,12 @@ export function getBargainSourceUserList (data) {
     data: data
   })
 }
+
+// 弹窗选择砍价活动
+export function getDialogBargainList (data) {
+  return service({
+    url: '/api/admin/decorate/bargain/list',
+    method: 'post',
+    data: data
+  })
+}
