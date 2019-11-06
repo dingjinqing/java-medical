@@ -287,8 +287,8 @@ public class SystemShopController extends SystemBaseController {
 	 * 
 	 * @return
 	 */
-	@GetMapping("/system/version/getOne/{id}")
-	public JsonResult getVersionOne(@PathVariable Integer id) {
-		return success(saas.shop.version.getOneVersion(id));
+	@GetMapping("/system/version/getOne/{level}")
+	public JsonResult getVersionOne(@PathVariable String level) {
+		return success(saas.shop.version.getOneVersion(level));
 	}
 }
