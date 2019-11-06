@@ -88,6 +88,14 @@ export function getGoodsListByIds (data) {
     data: data
   })
 }
+// 商品规格查询
+export const getProductListByIds = data => {
+  return service({
+    url: '/api/admin/goods/product/info/list',
+    method: 'post',
+    data
+  })
+}
 // 全部商品id
 export function getGoodsIdsListAll (data) {
   return service({

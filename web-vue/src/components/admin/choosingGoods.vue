@@ -173,21 +173,22 @@
                 <td
                   class="isLeft"
                   :class="loadProduct?'tdCenter':''"
-                  v-if="!loadProduct"
                 >
                   <img :src="item.prdImg || item.goodsImg">
                   <span>{{item.goodsName}}</span>
                   <!-- 规格描述 -->
-                  <span v-if="!!item.prdDesc">{{item.prdDesc}}</span>
+                  <span v-if="loadProduct">{{item.prdDesc}}</span>
                 </td>
                 <td class="tb_decorate_a">
                   {{item.goodsSn}}
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.shopPrice}}
+                  <span v-if="!loadProduct">{{item.shopPrice}}</span>
+                  <span v-if="loadProduct">{{item.prdPrice}}</span>
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.goodsNumber}}
+                  <span v-if="!loadProduct">{{item.goodsNumber}}</span>
+                  <span v-if="loadProduct">{{item.prdNumber}}</span>
                 </td>
                 <td class="tb_decorate_a">
                   {{item.catName}}
@@ -259,6 +260,7 @@ import {
   getProductIdsListAll,
   getGoodsIdsListAll,
   getGoodsListByIds,
+  getProductListByIds,
   allGoodsQueryRequest,
   getGoodsProductList
 } from '@/api/admin/brandManagement.js'
@@ -346,19 +348,30 @@ export default {
   },
   watch: {
     chooseGoodsBack (newData) {
+      console.log('chooseGoodsBack')
       this.checkedIdList = this.chooseGoodsBack
     },
     tuneUpChooseGoods () {
-      console.log('tuneUpChooseGoods')
+      console.log('tuneUpChooseGoods', this.chooseGoodsBack)
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
-      getGoodsListByIds({ goodsIds: this.chooseGoodsBack }).then(res => {
-        console.log('getGoodslistByIds', res)
-        this.clearCheckedRow()
-        res.content.forEach(item => {
-          this.addCheckedRow(item)
+      if (this.loadProduct) {
+        getProductListByIds({productId: this.chooseGoodsBack}).then(res => {
+          console.log('getGoodslistByIds', res)
+          this.clearCheckedRow()
+          res.content.forEach(item => {
+            this.addCheckedRow(item)
+          })
         })
-      })
+      } else {
+        getGoodsListByIds({ goodsIds: this.chooseGoodsBack }).then(res => {
+          console.log('getGoodslistByIds', res)
+          this.clearCheckedRow()
+          res.content.forEach(item => {
+            this.addCheckedRow(item)
+          })
+        })
+      }
     }
   },
   mounted () {
