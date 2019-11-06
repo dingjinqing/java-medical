@@ -12,28 +12,36 @@
           :key="index"
         >
           <td
-            :style="(item['0IsChecked']?'backgroundColor:#eaf0ff;':'')+(item['0IsBorder']?'borderColor:#6e86cc':'')+(item['0Dis']?'display:none':'')"
+            :style="((item['0IsChecked']||item['0IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['0IsBorder']?'borderColor:#6e86cc':'')+(item['0Dis']?'display:none':'')"
             @click="handleToClick(index,0)"
             :colspan="item['0Col']"
             :rowspan="item['0Row']"
+            @mouseenter="enter(index,0)"
+            @mouseleave="leave(index,0)"
           ><span v-if="!item['0IsBorder']">+</span></td>
           <td
-            :style="(item['1IsChecked']?'backgroundColor:#eaf0ff;':'')+(item['1IsBorder']?'borderColor:#6e86cc':'')+(item['1Dis']?'display:none':'')"
+            :style="((item['1IsChecked']||item['1IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['1IsBorder']?'borderColor:#6e86cc':'')+(item['1Dis']?'display:none':'')"
             @click="handleToClick(index,1)"
             :colspan="item['1Col']"
             :rowspan="item['1Row']"
+            @mouseenter="enter(index,1)"
+            @mouseleave="leave(index,1)"
           ><span v-if="!item['1IsBorder']">+</span></td>
           <td
-            :style="(item['2IsChecked']?'backgroundColor:#eaf0ff;':'')+(item['2IsBorder']?'borderColor:#6e86cc':'')+(item['2Dis']?'display:none':'')"
+            :style="((item['2IsChecked']||item['2IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['2IsBorder']?'borderColor:#6e86cc':'')+(item['2Dis']?'display:none':'')"
             @click="handleToClick(index,2)"
             :colspan="item['2Col']"
             :rowspan="item['2Row']"
+            @mouseenter="enter(index,2)"
+            @mouseleave="leave(index,2)"
           ><span v-if="!item['2IsBorder']">+</span></td>
           <td
-            :style="(item['3IsChecked']?'backgroundColor:#eaf0ff;':'')+(item['3IsBorder']?'borderColor:#6e86cc':'')+(item['3Dis']?'display:none':'')"
+            :style="((item['3IsChecked']||item['3IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['3IsBorder']?'borderColor:#6e86cc':'')+(item['3Dis']?'display:none':'')"
             @click="handleToClick(index,3)"
             :colspan="item['3Col']"
             :rowspan="item['3Row']"
+            @mouseenter="enter(index,3)"
+            @mouseleave="leave(index,3)"
           ><span v-if="!item['3IsBorder']">+</span></td>
         </tr>
       </tbody>
@@ -43,7 +51,7 @@
 <script>
 export default {
   props: {
-    density: { // 布局类型flag
+    density: { // 控制布局类型flag
       type: Number,
       default: () => 0
     }
@@ -59,7 +67,8 @@ export default {
       lastClickRowIndex: null, //  最后一次选中的项所在的行
       firstClickColindex: null, // 第一次选中的项在的列
       lastClickColindex: null, // 最后一次选中的项所在的列
-      choiseCellNumber: 1 // 已选中的单元格数量
+      choiseCellNumber: 1, // 点击次数标识
+      isOpenSlide: false
     }
   },
   mounted () {
@@ -72,11 +81,12 @@ export default {
       // 4X4
       let obj1 = {}
       this.arrFour.forEach((item, index) => {
-        obj1[`${item}Row`] = '1'
-        obj1[`${item}Col`] = '1'
-        obj1[`${item}Dis`] = false
-        obj1[`${item}IsChecked`] = false
-        obj1[`${item}IsBorder`] = false
+        obj1[`${item}Row`] = '1' // 控制行合并
+        obj1[`${item}Col`] = '1' // 控制列合并
+        obj1[`${item}Dis`] = false // 控制显示隐藏
+        obj1[`${item}IsChecked`] = false // 控制背景色
+        obj1[`${item}IsBorder`] = false // 控制高亮
+        obj1[`${item}IsSlide`] = false // 控制滑动显示背景色
       })
       this.arrFour.forEach((item, index) => {
         let obj = JSON.parse(JSON.stringify(obj1))
@@ -89,11 +99,15 @@ export default {
       this.handleToScreen() // 首次筛选判断当前点击是不是首次点击
       if (this.choiseCellNumber === 1) {
         this.columnData[index][`${item}IsChecked`] = true
+        this.isOpenSlide = true
         this.choiseCellNumber = 2
         this.nowCheckedArr.push(`${item}`)
         this.firstClickRowIndex = index//  记录第一次点击的行
         this.firstClickColindex = item //  记录第一次点击的列
       } else {
+        this.isOpenSlide = false
+        this.lastClickRowIndex = index // 记录最后一次点击的行
+        this.lastClickColindex = item // 记录最后一次点击的列
         if (this.firstClickRowIndex === index) { // 判断第二次点击是否点击的还是同行
           this.columnData[index][`${item}IsChecked`] = true
           this.handleToScreen()
@@ -108,10 +122,12 @@ export default {
           } else {
             console.log(this.nowCheckedArr)
             // 处理两次点击同行不同单元格事件
-            this.handleToSameRowDifferentCell(index, item)
+            let flag = this.handleToSameRowDifferentCell(index, item)
+            if (!flag) return
           }
         } else { // 若第二次点击的是不同行的单元格
-          this.handleToDiffRowDiffCell(index, item)
+          let flag = this.handleToDiffRowDiffCell(index, item)
+          if (!flag) return
         }
         this.choiseCellNumber = 1
       }
@@ -133,7 +149,38 @@ export default {
     },
     // 处理点击同行不同单元格函数
     handleToSameRowDifferentCell (index, item) {
+      // 判断是否有效
+      let firstClickRowIndex = Number(this.firstClickRowIndex)
       let firstClickColindex = Number(this.firstClickColindex)
+      let startRow = null // 起点行
+      let startCol = null // 起点列
+      let lastRow = null // 终点行
+      let lastCol = null // 终点列
+      if (firstClickRowIndex > index) {
+        startRow = index
+        lastRow = firstClickRowIndex
+      } else {
+        startRow = firstClickRowIndex
+        lastRow = index
+      }
+      if (firstClickColindex > item) {
+        startCol = item
+        lastCol = firstClickColindex
+      } else {
+        startCol = firstClickColindex
+        lastCol = item
+      }
+      // 判断区域是否有效
+      let isEffective = this.handleToJudgeIsEffective(startRow, startCol, lastRow, lastCol)
+      if (!isEffective) {
+        this.$message.error({
+          message: '请选择有效的正方形或长方形区域',
+          showClose: true,
+          duration: 1000
+        })
+        return false
+      }
+      // let firstClickColindex = Number(this.firstClickColindex)
       let NumItem = Number(item)
       let startingPoint = null // 起点
       if (firstClickColindex > NumItem) {
@@ -157,6 +204,7 @@ export default {
       // 第二次点击完重置
       this.nowCheckedArr = []
       console.log(this.columnData)
+      return true
     },
     // 处理点击不同行不同单元格函数
     handleToDiffRowDiffCell (index, item) {
@@ -181,7 +229,19 @@ export default {
         startCol = firstClickColindex
         lastCol = item
       }
+      console.log(startRow, startCol, lastRow, lastCol)
+      // 判断区域是否有效
+      let isEffective = this.handleToJudgeIsEffective(startRow, startCol, lastRow, lastCol)
+      if (!isEffective) {
+        this.$message.error({
+          message: '只能选择正方形或长方形区域',
+          showClose: true,
+          duration: 1000
+        })
+        return false
+      }
       this.columnData[startRow][`${startCol}IsBorder`] = true // 起点单元格高亮
+      this.columnData[startRow][`${startCol}IsChecked`] = true // 起始单元格高亮
       let startRowCopy = JSON.parse(JSON.stringify(startRow)) // 起始行原始保存
       let lastRowCopy = JSON.parse(JSON.stringify(lastRow)) // 起始行最后点行原始保存
       let startColCopy = JSON.parse(JSON.stringify(startCol)) // 其实列保存
@@ -189,20 +249,23 @@ export default {
       *循环处理每行合并列
       */
       let mergeRowNum = lastRow - startRow + 1 // 合并行数
-
       let mergeRowi = 0
-
       let colTotal = lastCol - startCol + 1 // 合并列数
       this.columnData[startRow][`${startCol}Col`] = colTotal
-
       console.log(mergeRowi, mergeRowNum, colTotal)
       let timesRowStart = JSON.parse(JSON.stringify(startRow))
+      let coli = null
+      console.log(this.columnData)
       for (mergeRowi; mergeRowi < mergeRowNum; mergeRowi++) { // 行循环
-        let coli = 1
-
+        if (timesRowStart === startRow) {
+          coli = 1
+        } else {
+          coli = 0
+        }
+        console.log(this.columnData)
         let timesColStart = JSON.parse(JSON.stringify(startCol))
         console.log(timesRowStart, colTotal)
-        for (coli; coli <= (colTotal - 1); coli++) { // 将区域包含列全部合并
+        for (coli; coli <= (colTotal - 1); coli++) { // 列循环
           console.log(coli)
           if (timesRowStart === startRow) {
             timesColStart++
@@ -211,39 +274,47 @@ export default {
           } else {
             console.log(timesRowStart, timesColStart, coli, colTotal)
             this.columnData[timesRowStart][`${timesColStart}Dis`] = true
-            if (coli === (colTotal - 1)) { // 若不是第一行，则额外多隐藏一个单元格
-              console.log(timesRowStart, colTotal, timesColStart)
-              let index = timesColStart + 1
-              console.log(timesRowStart, index)
-              this.columnData[timesRowStart][`${index}Dis`] = true
-            }
             timesColStart++
           }
         }
         timesRowStart++
       }
-
+      console.log(this.columnData)
       // 合并行
       console.log(startRowCopy)
       this.columnData[startRowCopy][`${startColCopy}Row`] = (lastRowCopy - startRowCopy + 1) // 合并行数
-      let rowTotal = lastRowCopy - startRowCopy
-      console.log(startRow, startCol, rowTotal, rowTotal)
-      startRow = startRowCopy
-      let rowi = 1
-      for (rowi; rowi <= rowTotal; rowi++) { // 将第一次点的单元格和最后一次点的单元格之间的单元格全部隐藏
-        console.log(rowi)
-        startRow++
-        console.log(startRow)
-        this.columnData[startRow][`${startRow}Dis`] = true
-      }
-
       // 第二次点击完重置
       this.nowCheckedArr = []
+      return true
+    },
+    // 判断第二次点击是否是有效位置
+    handleToJudgeIsEffective (startRow, startCol, lastRow, lastCol) {
+      console.log(this.columnData)
+      let flag = true // 是否有效
+      // 判断是所选区域内是否有已经隐藏的模块
+      for (startRow; startRow <= lastRow; startRow++) { // 循环行
+        for (startCol; startCol <= lastCol; startCol++) { // 列循环
+          if (this.columnData[startRow][`${startCol}Dis`] || this.columnData[startRow][`${startCol}IsBorder`]) {
+            flag = false
+            this.columnData[this.lastClickRowIndex][`${this.lastClickColindex}IsChecked`] = false
+          }
+        }
+      }
+      console.log(flag)
+      return flag
+    },
+    // 鼠标移入
+    enter (row, col) {
+      if (this.isOpenSlide) {
+        this.columnData[row][`${col}IsSlide`] = true
+      }
+    },
+    // 鼠标移出
+    leave (row, col) {
+      if (this.isOpenSlide) {
+        this.columnData[row][`${col}IsSlide`] = false
+      }
     }
-    // 处理点击不同行不同单元格函数合并列
-    // handleToDiffRowDiffCellChildrenEvent(startCol,){
-
-    // }
   }
 }
 </script>
