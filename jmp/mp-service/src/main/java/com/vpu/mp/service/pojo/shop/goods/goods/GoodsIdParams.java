@@ -15,4 +15,8 @@ public class GoodsIdParams {
      * 商品id
      */
     private List<Integer> goodsIds;
+    /**
+     * 规格id
+     */
+    private List<Integer> productId;
 }

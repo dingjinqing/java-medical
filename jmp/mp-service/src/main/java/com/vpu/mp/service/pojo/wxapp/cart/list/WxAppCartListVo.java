@@ -26,26 +26,25 @@ public class WxAppCartListVo {
      * 商品种类
      */
     private Integer goodsTypeNum;
-
-    /**
-     *  普通商品列表
-     */
-    private WxAppGeneralGoodsVo generalGoods;
-
     /**
      * 是否能支付
      */
-    private byte isCanPayment;
-
+    private Byte isCanPayment;
+    /**
+     * 是否全选
+     */
+    private Byte isAllCheck;
     /**
      * 购物车一般商品
      */
     private List<WxAppCartGoods> cartGoodsList;
     /**
+     * 购物车商品(可购买)
+     */
+    private List<CartGoodsInfo> cartGoodsInfos;
+    /**
      * 购物车 - 失效商品
      */
     private List<WxAppCartGoods> invalidCartList;
-
-
 
 }

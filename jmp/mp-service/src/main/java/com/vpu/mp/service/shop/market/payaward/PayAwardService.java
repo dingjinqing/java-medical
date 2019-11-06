@@ -135,7 +135,7 @@ public class PayAwardService extends ShopBaseService {
                 break;
             default:
         }
-        select.orderBy(PAY_AWARD.ACT_FIRST.desc());
+        select.orderBy(PAY_AWARD.ACT_FIRST.desc(),PAY_AWARD.CREATE_TIME.desc());
         PageResult<PayAwardListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), PayAwardListVo.class);
         pageResult.getDataList().forEach(payAward->{
             if (payAward.getAwardList()!=null&&!payAward.getAwardList().isEmpty()){

@@ -118,6 +118,16 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
+     * 通过规格1ds查询规格信息
+     * @param goodsIdParams  guigeids
+     * @return
+     */
+    @PostMapping("/api/admin/goods/product/info/list")
+    public JsonResult getProductsByIds(@RequestBody GoodsIdParams goodsIdParams) {
+        return success(shop().goods.goodsSpecProductService.getProductsByProductIds(goodsIdParams.getProductId()));
+    }
+
+    /**
      * 查询商品所有规则信息
      * @param goodsId 商品ID
      * @return  规则信息

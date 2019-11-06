@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 public class WxAppChangeNumberParam {
 
-    private Integer userId;
     private Integer productId;
     private Integer goodsNumber;
 }

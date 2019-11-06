@@ -15,6 +15,5 @@ public class WxAppAddGoodsToCartParam {
     private  Integer goodsNumber;
     private Integer prdId;
 
-    private Integer userId;
 
 }

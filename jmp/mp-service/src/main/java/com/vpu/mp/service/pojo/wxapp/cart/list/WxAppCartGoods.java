@@ -16,7 +16,7 @@ public class WxAppCartGoods {
 
     //***** 购物车 *************
     /**
-     * 购物车;列表id
+     * 购物车;id
      */
     private Integer recId;
     /**

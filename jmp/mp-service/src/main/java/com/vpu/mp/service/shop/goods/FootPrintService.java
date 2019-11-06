@@ -32,7 +32,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 /**
  * 足迹
  *
- * @author zhaojianqiang
+ * @author zhaojianqiang,kdc
  *
  *         2019年10月12日 下午3:08:53
  */

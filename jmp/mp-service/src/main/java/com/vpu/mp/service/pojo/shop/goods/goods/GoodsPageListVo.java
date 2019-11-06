@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2019年07月09日
  */
 @Data
-public class GoodsPageListVo {
+public class  GoodsPageListVo {
     private Integer goodsId;
     private String goodsName;
     private String goodsImg;

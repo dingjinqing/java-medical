@@ -1,7 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
+import static com.vpu.mp.db.shop.Tables.SORT;
 import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
 
 import java.math.BigDecimal;
@@ -10,11 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -296,12 +303,12 @@ public class GoodsSpecProductService extends ShopBaseService {
     public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds) {
         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(proIds)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
     }
-    
+
     /**
      * 根据规格id查询规格明细
      *
      * @return
-     * @throws MpException 
+     * @throws MpException
      */
     public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds, Integer storeId) throws MpException {
         //商品规格信息
@@ -364,6 +371,25 @@ public class GoodsSpecProductService extends ShopBaseService {
             });
         }
         return  products;
+    }
+
+    /**
+     *  根据规格id集合获取对应的规格信息
+     * @param prdIds
+     * @return GoodsPageListVo
+     */
+    public List<GoodsPageListVo> getProductsByProductIds(List<Integer> prdIds) {
+        List<GoodsPageListVo> goodsPageListVos = db().select(GOODS_SPEC_PRODUCT.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_SN,
+                GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_IMG,
+                GOODS.GOODS_NAME,GOODS.GOODS_IMG,SORT.SORT_NAME,GOODS_BRAND.BRAND_NAME)
+                .from(GOODS_SPEC_PRODUCT).innerJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds))
+                .fetchInto(GoodsPageListVo.class);
+        GoodsPageListParam pageListParam=new GoodsPageListParam();
+        pageListParam.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
+        return goodsPageListVos;
     }
 
     /**

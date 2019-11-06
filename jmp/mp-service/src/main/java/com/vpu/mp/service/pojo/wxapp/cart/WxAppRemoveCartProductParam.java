@@ -11,7 +11,6 @@ import reactor.util.annotation.NonNull;
 @Data
 public class WxAppRemoveCartProductParam {
 
-    private Integer userId;
     @NonNull
     private Integer recId;
 }

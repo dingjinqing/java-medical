@@ -85,7 +85,7 @@ public class GoodsService extends ShopBaseService {
     @Autowired
     protected MemberCardService memberCardService;
     @Autowired
-    protected GoodsSpecProductService goodsSpecProductService;
+    public GoodsSpecProductService goodsSpecProductService;
     @Autowired
     protected QrCodeService qrCodeService;
     @Autowired
