@@ -65,34 +65,34 @@ public class UserService extends ShopBaseService {
 
 	@Autowired
 	public UserCardService userCard;
-
+	
 	@Autowired
 	public CouponService coupon;
-
+	
 	@Autowired
 	public StoreService storeService;
-
+	
 	@Autowired
 	public UserCollectionService collection;
-
+	
 	@Autowired
 	private OrderInfoService orderInfo;
-
+	
 	@Autowired
 	private FootPrintService footPrintService;
-
+	
 	@Autowired
 	private ConfigService config;
-
+	
 	@Autowired
 	public ShopImageManageService image;
-
+	
 	@Autowired
 	public QrCodeService qrCode;
-
+	
 	@Autowired
 	public MpOrderInfoService mpOrderInfoService;
-
+	
 	private int userActiveEnter[] = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
 			1038, 1042, 1014, 1043, 1045, 1046, 1052, 1053, 1056, 1057, 1058, 1064, 1067, 1068, 1071, 1072, 1073, 1074,
 			1078, 1079, 1081, 1082, 1084, 1089, 1090, 1091, 1092, 1095, 1097, 1102, 1039, 1103, 1104, 1129, 1099, 1059,
@@ -105,7 +105,7 @@ public class UserService extends ShopBaseService {
 	private String SESSION_SIGN_KEY = "weipubao!@#miniprogram";
 
 	final protected String userCenterJson = "user.center.json";
-
+	
 	public static final Byte SYCUPDATE= 1;
 	public static final Byte SYCINSERT= 0;
 
@@ -114,7 +114,7 @@ public class UserService extends ShopBaseService {
 
 	/**
 	 * 通过openId获取用户
-     *
+	 * 
 	 * @param openId
 	 * @return
 	 */
@@ -124,7 +124,7 @@ public class UserService extends ShopBaseService {
 
 	/**
 	 * 通过userId获取用户
-     *
+	 * 
 	 * @param userId
 	 * @return
 	 */
@@ -134,7 +134,7 @@ public class UserService extends ShopBaseService {
 
 	/**
 	 * 登陆用户 TODO:简单登陆，以后添加复杂功能。
-     *
+	 * 
 	 * @param loginUser
 	 * @return
 	 * @throws WxErrorException
@@ -378,7 +378,7 @@ public class UserService extends ShopBaseService {
 
 	/**
 	 * 更新用户昵称，头像
-     *
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -401,7 +401,7 @@ public class UserService extends ShopBaseService {
 				userDetailRecord.setUsername(username);
 				//syncMainUserDetail(userDetailRecord);
 			}
-
+			
 		}
 		// 更新头像
 		if (StringUtils.isNotEmpty(userAvatar) && (StringUtils.isEmpty(userDetailRecord.getUserAvatar())
@@ -435,16 +435,16 @@ public class UserService extends ShopBaseService {
 			logger().info("redis更新用户名和头像地址");
 			parseJson.setUserAvatar(userAvatar);
 			parseJson.setUsername(username);
-            jedis.set(token, Util.toJson(parseJson));
+			jedis.set(token, Util.toJson(parseJson));			
 		}
 		return true;
 	}
 
 	/**
 	 * 个人中心数据
-     *
+	 * 
 	 * @param userId
-     * @return
+	 * @return 
 	 */
 	public List<Map<String, Object>> parseCenterModule(Integer userId) {
 		List<Map<String, Object>> moduleData = getCenterModule();
@@ -452,7 +452,7 @@ public class UserService extends ShopBaseService {
 		if(userByUserId==null) {
 			return null;
 		}
-
+		
 		for(Map<String, Object> module:moduleData) {
 			if (module.get("module_name").equals("center_header")) {
 				logger().info("进入center_header");
@@ -493,7 +493,7 @@ public class UserService extends ShopBaseService {
 		logger().info("parseCenterModule出");
 		return moduleData;
 	}
-
+	
 	/**
 	 * 我的服务
 	 * @param userId
@@ -505,14 +505,14 @@ public class UserService extends ShopBaseService {
 			iconItem.put("icon", image.imageUrl(String.valueOf(iconItem.get("icon"))));
 			if (iconItem.get("icon_name").equals("distribution")) {
 				// $default = '{"status":0,"judge_status":0,"rank_status":0,"protect_date":-1}';
-
+				
 				DistributionParam rebate = config.distributionCfg.getDistributionCfg();
 				if(rebate==null) {
 					rebate = new DistributionParam();
 					rebate.setStatus((byte)0);
 					rebate.setJudgeStatus((byte)0);
 					rebate.setRankStatus((byte)0);
-                    rebate.setProtectDate((byte) -1);
+					rebate.setProtectDate((byte)-1);					
 				}
 				iconItem.put("is_distributor", user.getIsDistributor());
 				iconItem.put("judge_status", rebate.getJudgeStatus());
@@ -532,13 +532,13 @@ public class UserService extends ShopBaseService {
 		}
 		return data;
 	}
-
-
-    private Boolean isOne(Object object) {
+	
+	
+	private Boolean isOne(Object object) {
 		return object.equals(1)||object.equals("1");
 	}
-
-    /**
+	
+	/**
 	 * 我的订单
 	 * @param userId
 	 * @param data
@@ -566,9 +566,9 @@ public class UserService extends ShopBaseService {
 		}
 		return data;
 	}
-
-
-    /**
+	
+	
+	/**
 	 * 我的资产
 	 * @param record
 	 * @param data
@@ -595,11 +595,11 @@ public class UserService extends ShopBaseService {
 		logger().info("我的资产结束");
 		return data;
 	}
+	
 
-
-    /**
+	/**
 	 * 个人信息
-     *
+	 * 
 	 * @param userId
 	 * @param data
 	 * @return
@@ -613,35 +613,38 @@ public class UserService extends ShopBaseService {
 		// 用户等级判断
 		String userGrade = userCard.getUserGrade(userId);
 		logger().info("用户等级"+userGrade);
-		Integer[] integers = new Integer[1];
-		integers[0] = userId;
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
-			// TODO 等updateGrade写完
 			logger().info("进入用户等级为0");
-
-            /*
-			 * try { userCard.updateGrade(integers, null, (byte) 1); } catch (Exception e) {
-			 * logger().error("userGrade为0时报错"); e.printStackTrace(); }
-			 */
-
-        } else {
+			try {
+				userCard.updateGrade(userId, null, (byte) 1);
+			} catch (Exception e) {
+				logger().error("userGrade为0时报错");
+				e.printStackTrace();
+			}
+			 
+		} else {
 			logger().info("进入用户等级为其他");
-
-			/*
-			 * try { userCard.updateGrade(integers, null, (byte) 0); // 上面方法返回值is_get int
-			 * isGet = 0; if (isGet > 0) { data.put("get_grade", 1); } else {
-			 * data.put("get_grade", isGet); } } catch (Exception e) {
-			 * logger().error("userGrade不为0时报错"); e.printStackTrace(); }
-			 */
-
-        }
+			try {
+				int isGet = userCard.updateGrade(userId, null, (byte) 0); // 上面方法返回值is_get
+				if (isGet > 0) {
+					data.put("get_grade", 1);
+				} else {
+					data.put("get_grade", isGet);
+				}
+			} catch (Exception e) {
+				logger().error("userGrade不为0时报错");
+				e.printStackTrace();
+			}
+			 
+			 
+		}
 		logger().info("用户等级判断返回"+data);
 		return data;
 	}
 
 	/**
 	 * 获得个人中心配置数据
-     *
+	 * 
 	 * @return
 	 */
 	public List<Map<String, Object>> getCenterModule() {
@@ -677,9 +680,9 @@ public class UserService extends ShopBaseService {
 		logger().info("getCenterModule运行完");
 		return parseJson;
 	}
-
-
-    /**
+	
+	
+	/**
 	 * 是否展示激活公告
 	 * @param userId
 	 * @return
@@ -693,18 +696,18 @@ public class UserService extends ShopBaseService {
 		if(StringUtils.isEmpty(user.getMobile())) {
 			return true;
 		}
-
-        UserImportDetailRecord importUser = userCard.scoreService.member.getUserByMobile(user.getMobile());
+		
+		UserImportDetailRecord importUser = userCard.scoreService.member.getUserByMobile(user.getMobile());
 		if(importUser!=null||importUser.getIsActivate()==1) {
 			return false;
 		}
 		return true;
-
-    }
-
-
-
-
+		
+	}
+	
+	
+	
+	
 	/**
 	 * 检查模块开关是否开启
 	 * @param moduleName
@@ -729,26 +732,26 @@ public class UserService extends ShopBaseService {
 		}
 		return false;
 	}
-
-    /**
+	
+	/**
 	 * 用户详细信息
 	 * @param userId
-     * @return
+	 * @return 
 	 */
 	public UserInfo getUserInfo(Integer userId) {
 		User a = USER.as("a");
 		UserDetail b = USER_DETAIL.as("b");
 		User c = USER.as("c");
-        return db().select(a.USER_ID, a.USERNAME, a.INVITE_ID, a.USER_CID, a.MOBILE, a.USER_CODE, a.WX_OPENID, a.CREATE_TIME, a.WECHAT,
+		return  db().select(a.USER_ID, a.USERNAME,a.INVITE_ID, a.USER_CID, a.MOBILE, a.USER_CODE, a.WX_OPENID, a.CREATE_TIME,a.WECHAT, 
 				a.FANLI_GRADE, a.USER_GRADE, a.ACCOUNT, a.DISCOUNT, a.WX_UNION_ID, a.DEVICE,a.UNIT_PRICE,a.IS_DISTRIBUTOR,
 				a.INVITE_GROUP,a.DISTRIBUTOR_LEVEL,a.INVITE_TIME,a.DISCOUNT_GRADE, a.DEL_FLAG, a.DEL_TIME, a.GROWTH, a.SCORE,
-            b.SEX, b.BIRTHDAY_YEAR, b.BIRTHDAY_MONTH, b.BIRTHDAY_DAY, b.REAL_NAME, b.PROVINCE_CODE, b.CITY_CODE, b.DISTRICT_CODE, b.ADDRESS, b.MARITAL_STATUS,
+				b.SEX, b.BIRTHDAY_YEAR, b.BIRTHDAY_MONTH, b.BIRTHDAY_DAY, b.REAL_NAME, b.PROVINCE_CODE,b.CITY_CODE, b.DISTRICT_CODE, b.ADDRESS, b.MARITAL_STATUS, 
 				b.MONTHLY_INCOME, b.CID,b.EDUCATION, b.INDUSTRY_INFO, b.BIG_IMAGE, b.BANK_USER_NAME, b.SHOP_BANK,b.BANK_NO, b.USER_AVATAR, c.USERNAME.as("invite_name")).from(a)
 		.leftJoin(b).on(a.USER_ID.eq(b.USER_ID)).leftJoin(c).on(a.INVITE_ID.eq(c.USER_ID)).where(a.USER_ID.eq(userId)).fetchAny().into(UserInfo.class);
 	}
-
-
-    /**
+	
+	
+	/**
 	 * 账号设置
 	 * @param param
 	 * @param user
@@ -790,15 +793,15 @@ public class UserService extends ShopBaseService {
 					  //没有市时新加
 					cityId = saas.region.city.addNewCity(provinceId, cityName);
 				}
-
-                //地区
+				
+				//地区
 				Integer districtId=110100;
 				DictDistrictRecord districtRecord = saas.region.district.getDistrictName(districtName, cityId);
 				if(districtRecord!=null) {
 					districtId=districtRecord.getDistrictId();
 				}else {
 					districtId = saas.region.district.addNewDistrict(cityId, districtName);
-                }
+				}				
 				userDetailRecord.setProvinceCode(provinceId);
 				userDetailRecord.setCityCode(cityId);
 				userDetailRecord.setDistrictCode(districtId);
@@ -828,9 +831,9 @@ public class UserService extends ShopBaseService {
 			}
 		}
 		return JsonResultCode.CODE_FAIL;
-
-    }
-
+		
+	}
+	
 	/**
 	 * 查询用户详细信息，原来在accountSetting中
 	 * @param userId
@@ -847,28 +850,28 @@ public class UserService extends ShopBaseService {
 			Integer provinceId = userInfo.getProvinceCode() != null ? userInfo.getProvinceCode() : 100000;
 			Integer cityId = userInfo.getCityCode() != null ? userInfo.getCityCode() : 110000;
 			Integer districtId = userInfo.getDistrictCode() != null ? userInfo.getDistrictCode() : 110100;
-
-            vo.setUserInfo(userInfo);
+			
+			vo.setUserInfo(userInfo);
 			DictProvinceRecord provinceName = saas.region.province.getProvinceName(provinceId);
 			DictCityRecord cityName = saas.region.city.getCityName(cityId);
 			DictDistrictRecord districtName = saas.region.district.getDistrictName(districtId);
 			vo.setProvinceCode(provinceName!=null?provinceName.getName():null);
 			vo.setCityCode(cityName!=null?cityName.getName():null);
-            vo.setDistrictCode(districtName != null ? districtName.getName() : null);
+			vo.setDistrictCode(districtName!=null?districtName.getName():null);	
 		}
 		return vo;
 	}
-
-    /**
+	
+	/**
 	 * 店铺库的user同步到主库
 	 * @param shopRecord
 	 */
 	public void syncMainUser(UserRecord shopRecord) {
 		saas().wxUserService.syncMainUser(getShopId(),shopRecord.getUserId(),shopRecord);
 	}
-
-
-    /**
+	
+	
+	/**
 	 * 店铺库的userdetail同步到主库
 	 * @param shopRecords
 	 * @param type
