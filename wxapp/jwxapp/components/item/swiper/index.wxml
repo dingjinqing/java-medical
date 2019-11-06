@@ -1,0 +1,10 @@
+<swiper class="swiper" autoplay="true" circular="true" indicator-dots='true' indicator-active-color="#fff">
+  <block wx:for="{{goodsImage}}" wx:key="index" wx:for-index="index">
+    <swiper-item>
+      <image src="{{imageUrl}}{{item}}" class="slide-image" mode="aspectFit" bindtap="preview" data-src='{{imageUrl}}{{item}}'></image>
+      <view>
+        {{index+1}}
+      </view>
+    </swiper-item>
+  </block>
+</swiper>

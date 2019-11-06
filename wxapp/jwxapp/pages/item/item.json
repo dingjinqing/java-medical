@@ -1,6 +1,10 @@
 {
   "navigationBarTitleText": "商品详情",
   "usingComponents": {
-    "v-popup-coupon": "/components/item/popup/coupon/index"
+    "v-popup-coupon": "/components/item/popup/coupon/index",
+    "v-goods-swiper": "/components/item/swiper/index",
+    "v-goods-info": "/components/item/goodsInfo/index",
+    "v-comment": "/components/item/comment/index",
+    "v-goods-detail": "/components/item/goodsDetail/index"
   }
 }

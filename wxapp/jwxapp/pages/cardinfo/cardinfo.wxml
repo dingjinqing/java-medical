@@ -139,7 +139,7 @@
       <view class="item_title_right">
         <block wx:if="{{cardInfo.useTime === 0}}">工作日,双休日</block>
         <block wx:elif="{{cardInfo.useTime === 1}}">工作日</block>
-        <block wx:els--e>双休日</block>
+        <block wx:else>双休日</block>
       </view>
     </view>
     <view class="card_item_title" bindtap="phoneCall" wx:if="{{ cardInfo.mobile != null }}">

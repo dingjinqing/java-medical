@@ -7,12 +7,12 @@ global.wxPage({
    */
   data: {
     imgUrls:[
-      '../../images/arrow.png',
-      '../../images/backward.png',
-      '../../images/comment_up.png',
-      '../../images/fail.png',
-      '../../images/map_icon.png',
-      '../../images/reply_up.png'
+      'image/wxapp/close_icon.png',
+      'image/wxapp/close_icon.png',
+      'image/wxapp/close_icon.png',
+      'image/wxapp/close_icon.png',
+      'image/wxapp/close_icon.png',
+      'image/wxapp/close_icon.png'
     ],
     goodsInfo:{}
   },
@@ -35,18 +35,6 @@ global.wxPage({
    */
   onReady: function () {
 
-  },
-  preview(e) {
-    let nowImgUrl = e.target.dataset.src;
-    let imgUrls = this.data.imgUrls
-    let arr = [];
-    for (let i in imgUrls) {
-      arr.push(imgUrls[i]); //属性
-    }
-    wx.previewImage({
-      current: nowImgUrl, // 当前显示图片的http链接
-      urls: arr // 需要预览的图片http链接列表
-    })
   },
 
   /**

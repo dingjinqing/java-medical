@@ -1,0 +1,28 @@
+.flex_outside_box{
+  margin-top: 10px;
+  background: #fff;
+}
+.flex_box{
+  padding: 10px 15px;
+  color: #353535;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.item_left{
+  color: #888;
+  margin-right: 5px;
+  width: auto;
+}
+.goods_detail{
+  padding: 20rpx 0;
+  color: #333;
+  font-size: 24rpx;
+  overflow-x: hidden;
+}
+.item_line{
+  height: 2rpx;
+  background-color: #eee;
+  width: 700rpx;
+  margin: 0 auto;
+}

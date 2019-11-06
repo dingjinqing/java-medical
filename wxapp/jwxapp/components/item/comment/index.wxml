@@ -1,0 +1,22 @@
+<view class="flex_outside_box">
+  <view class="flex_box">
+    <view class="item_left">
+      用户评价(123)
+    </view>
+    <view class="item_right">查看全部></view>
+  </view>
+  <view class="label-content comment_box">
+    <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>好评</text>
+    <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>中评</text>
+    <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>差评</text>
+    <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>有图</text>
+  </view>
+  <view class="item_line"></view>
+  <view class="flex_box">
+    <view class="item_left">卡卡</view>
+    <view class="item_right">******</view>
+  </view>
+  <view class="flex_box">
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  </view>
+</view>

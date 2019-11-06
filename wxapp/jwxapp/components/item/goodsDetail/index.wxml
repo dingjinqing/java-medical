@@ -1,0 +1,11 @@
+<view class="flex_outside_box">
+  <view class="flex_box">
+    <view class="item_left">
+      商品详情
+    </view>
+  </view>
+  <view class="item_line"></view>
+  <view class="goods_detail">
+    <rich-text nodes=""></rich-text>
+  </view>
+</view>

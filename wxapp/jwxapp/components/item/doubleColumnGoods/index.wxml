@@ -1,0 +1,15 @@
+<view class="goods_item">
+  <view class="goods_image">
+    <image src="{{imageUrl}}upload/245547/image/20190716/dnjTgj2BUl3e9XAUQAck.jpeg"></image>
+  </view>
+  <view class="goods_bottom">
+    <view class="goods_name two_lines">测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测</view>
+    <!-- <view class="goods_coupon">
+      <view class="coupon_item" style="color:{{comColor}};border-color:{{comColor}}">领券减￥10</view>
+    </view> -->
+    <view class="goods_price">
+      <text class="price" style="color:{{main_setting.comColor}};">￥800</text>
+      <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}};"></text>
+    </view>
+  </view>
+</view>

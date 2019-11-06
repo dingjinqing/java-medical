@@ -168,9 +168,13 @@
         <text class="footer_button" style="background-color:{{comColor}};">提交订单</text>
       </view>
     </view>
+  <!-- 修改余额 -->
   <v-balance-popup show="{{showBalanceDialog}}"/>
+  <!-- 修改积分 -->
   <v-score-popup show="{{showScoreDialog}}"/>
+  <!-- 选择会员卡 -->
   <v-select-card show="{{showCardDialog}}"/>
-  <v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bind/>
+  <!-- 选择自提/同城门店 -->
+  <v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bindsubmit="getSelectStore"/>
   <include src="../common/footer.wxml" />
 </view>

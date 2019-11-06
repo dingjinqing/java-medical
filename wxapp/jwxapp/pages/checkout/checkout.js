@@ -36,6 +36,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     this.getPayMoney()
+    wx.hideShareMenu()
   },
   // 选择地址
   addAddress(){
@@ -115,7 +116,12 @@ global.wxPage({
     if(this.data.chooseShippingIndex === 0) return;
     let storeDialogData = {};
     storeDialogData.openType = this.data.chooseShippingIndex;
-    storeDialogData.data = this.data.storeList;
+    storeDialogData.data = [
+      { id: 1, storeName: '伊泰大厦', address: '潘家园', distance:'5.46'},
+      { id: 2, storeName: '回龙观大厦', address: '西直门', distance:'0.15'},
+      { id: 3, storeName: '西二旗大厦', address: '西二旗', distance:'15'},
+      { id: 4, storeName: '霍营大厦', address: '蜂鸟社区', distance:'123'},
+    ];
     this.setData({
       showStoreDialog: true,
       storeDialogData: storeDialogData
@@ -127,6 +133,19 @@ global.wxPage({
     this.setData({
       'moneyInfo.useTotalprice': money.totalPrice - money.useBalance - money.useScore - money.useConpon - money.useCardBalance - money.useCardReduce - money.useTotalprice - money.useShipping
     })
+  },
+  // 获取门店改变
+  getSelectStore(info){
+    let {id:storeId,openType} = info.detail;
+    console.log(storeId, openType)
+    switch (openType) {
+      case 2:
+
+      break;
+      default:
+
+      break;
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

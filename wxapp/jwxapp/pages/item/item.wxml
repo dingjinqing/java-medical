@@ -2,55 +2,13 @@
   <include src="../common/header.wxml" /> 
   <view class="main-container">
     <view class="goods-image">
-      <swiper class="swiper" autoplay="true" circular="true" indicator-dots='true' indicator-active-color="#fff">
-      <block wx:for="{{imgUrls}}" wx:key="key" wx:for-index="index">
-        <swiper-item>
-          <image src="{{item}}" class="slide-image" mode="aspectFit" bindtap="preview" data-src='{{item}}'></image>
-          <view>
-            {{index+1}}
-          </view>
-        </swiper-item>
-      </block>
-    </swiper>
+      <v-goods-swiper goods-image="{{imgUrls}}" />
     </view>
-    <view class="goods-info">
-      <view class="goods-info_top">
-        <view class="goods_name">
-        卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣
-        </view>
-        <view class="goods_operate">
-          <view class="goods_share">
-            <text class="iconfont iconfenxiang"></text>
-          </view>
-          <view class="goods_collect">
-            <text class="iconfont iconshoucang1"></text>
-          </view>
-        </view>
-      </view>
-      <view class="goods_price_info">
-        <view class="goods_price" style='color:{{commonColor}}'>
-          <text>￥</text><text>100~800</text>
-        </view>
-      </view>
-      <view class="label-content" >
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人气爆款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人爆款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人气爆款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人爆款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人气爆款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人款</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>人气爆款</text>
-      </view>
-      <view class="flex-wrap">
-        <view class="flex-item">库存：100个</view>
-        <view class="flex-item">销量：100</view>
-        <view class="flex-item">运费：3</view>
-      </view>
-    </view>
-    
+    <v-goods-info>
+      <!--轮播图下方，商品信息上方插槽 -->
+      <!-- 限时降价 -->
+      <!-- 秒杀，拼团，砍价 -->
+    </v-goods-info>
     <!-- 发货地 -->
     <view class="flex_outside_box">
       <view class="flex_box">
@@ -65,6 +23,14 @@
         <view class="item_middle goods_coupon_list">
           <view class="goods_coupon_item" style='background:{{somColor}};color:{{comColor}};border-color:{{borColor}}'>满￥600减50</view>
           <view class="goods_coupon_item" style='background:{{somColor}};color:{{comColor}};border-color:{{borColor}}'>领券减￥10</view>
+        </view>
+        <view class="item_right">></view>
+      </view>
+      <view class="item_line"></view>
+      <view class="flex_box">
+        <view class="item_left">促销</view>
+        <view class="item_middle">
+          TODO
         </view>
         <view class="item_right">></view>
       </view>
@@ -90,28 +56,11 @@
       </view>
     </view>
     <!-- 用户评价 -->
-    <view class="flex_outside_box">
-      <view class="flex_box">
-        <view class="item_left">
-          用户评价(123)
-        </view>
-        <view class="item_right">查看全部></view>
-      </view>
-      <view class="label-content comment_box">
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>好评</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>中评</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>差评</text>
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}'>有图</text>
-      </view>
-      <view class="item_line"></view>
-      <view class="flex_box">
-        <view class="item_left">卡卡</view>
-        <view class="item_right">******</view>
-      </view>
-      <view class="flex_box">
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      </view>
-    </view>
+    <v-comment />
+
+    <!-- 商品详情 -->
+    <v-goods-detail />
+    
   </view>
   <view class="footer">
     <view class="small_view" bindtap="backHome">
