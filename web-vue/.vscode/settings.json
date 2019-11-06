@@ -17,7 +17,6 @@
   ],
   "eslint.autoFixOnSave": true,
   "editor.formatOnSave": true,
-  "editor.tabSize": 2,
   "javascript.format.enable": true,
   "prettier.singleQuote": true,
   "files.associations": {
@@ -29,6 +28,6 @@
     "wxml": "html"
   },
   "minapp-vscode.disableAutoConfig": true,
-  "code-runner.runInTerminal": true,
+  "window.zoomLevel": 1,
   "files.autoSave": "off"
 }

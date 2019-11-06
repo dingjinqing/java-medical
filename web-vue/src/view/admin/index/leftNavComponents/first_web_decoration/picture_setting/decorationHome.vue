@@ -207,14 +207,16 @@ export default {
     PictureNavigation: () => import('./decorationModules/graphicAndTextComponents/pictureNavigation'), // 图片导航
     CarouselPicture: () => import('./decorationModules/graphicAndTextComponents/CarouselPicture'), // 轮播图
     PictureAds: () => import('./decorationModules/graphicAndTextComponents/pictureAds'), //  图片广告
-    MagicMap: () => import('./decorationModules/graphicAndTextComponents/magicMap') // 魔方多图
+    MagicMap: () => import('./decorationModules/graphicAndTextComponents/magicMap'), // 魔方多图
+    ShopRecruit: () => import('./decorationModules/graphicAndTextComponents/ShopRecruit'), // 店招设置
+    MapModule: () => import('./decorationModules/graphicAndTextComponents/MapModule') // 地图模块
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'zb', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -379,6 +381,9 @@ export default {
           break
         case 'm_image_adver':
           moduleNameId = 13
+          break
+        case 'm_shop':
+          moduleNameId = 27
           break
       }
       return moduleNameId
@@ -550,6 +555,12 @@ export default {
               break
             case 14:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 14)
+              break
+            case 27:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 27)
+              break
+            case 28:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 28)
           }
           console.log(this_.showModulesList, this_.modulesData, insert)
         }
