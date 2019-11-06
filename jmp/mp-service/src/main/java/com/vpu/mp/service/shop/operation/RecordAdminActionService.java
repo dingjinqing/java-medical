@@ -103,6 +103,7 @@ public class RecordAdminActionService extends ShopBaseService {
 					.userName(pj.getUserName() + ":" + pj.getMobile())
 					.actionTypeName(RecordAdminActionPojo.ActionType.getNameByCode((int) pj.getActionType()))
 					.content(this.splicingAdminRecordForContent(pj.getTemplateId(), pj.getTemplateData(), language))
+					.actionType(pj.getActionType())
 					.build());
 		});
 		pageInfo.setDataList(infos);

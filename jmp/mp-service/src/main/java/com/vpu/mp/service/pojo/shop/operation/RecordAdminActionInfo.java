@@ -21,5 +21,7 @@ public class RecordAdminActionInfo {
     private Timestamp createTime;
 
     private String content;
+    
+    private Byte actionType;
 
 }
