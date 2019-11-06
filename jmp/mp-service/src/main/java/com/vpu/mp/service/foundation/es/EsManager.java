@@ -68,7 +68,8 @@ public class EsManager {
      */
     public boolean esState(){
         try {
-            return restHighLevelClient.ping(RequestOptions.DEFAULT);
+//            return restHighLevelClient.ping(RequestOptions.DEFAULT);
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
