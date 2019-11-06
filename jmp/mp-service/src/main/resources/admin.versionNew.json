@@ -1,5 +1,4 @@
-[
-	{
+[{
 		"vsName": "vsNameList",
 		"name": "所有的版本功能",
 		"enName": "",
@@ -37,10 +36,10 @@
 			"coupon_grant",
 			"activity_reward",
 			"integral_goods",
+			"reduce_price",
 			"seckill_goods",
 			"lottery",
 			"purchase_price",
-			"reduce_price",
 			"group_draw",
 			"pin_integration",
 			"package_sale",
@@ -50,12 +49,15 @@
 			"promote",
 			"assess",
 			"free_ship",
-			"reduce_price",
 			"coupon_package",
 			"comment_gift",
+			"first_special",
+			"give_gift",
+			"share_award",
 			"store_pay",
 			"technician",
-			"service"
+			"service",
+			"service_city"
 		]
 	},
 	{
@@ -386,6 +388,36 @@
 		"includeApi": []
 	},
 	{
+		"vsName": "comment_gift",
+		"name": "评价有礼",
+		"enName": "comment_gift",
+		"topIndex": 4,
+		"includeApi": []
+	},
+
+	{
+		"vsName": "first_special",
+		"name": "首单特惠",
+		"enName": "first_special",
+		"topIndex": 4,
+		"includeApi": []
+	},
+
+	{
+		"vsName": "give_gift",
+		"name": "我要送礼",
+		"enName": "give_gift",
+		"topIndex": 4,
+		"includeApi": []
+	},
+	{
+		"vsName": "share_award",
+		"name": "分享有礼",
+		"enName": "share_award",
+		"topIndex": 4,
+		"includeApi": []
+	},
+	{
 		"vsName": "store_pay",
 		"name": "门店买单",
 		"enName": "store_service_config",
@@ -403,6 +435,13 @@
 		"vsName": "service",
 		"name": "服务管理 ",
 		"enName": "store_service_config",
+		"topIndex": 5,
+		"includeApi": []
+	},
+	{
+		"vsName": "service_city",
+		"name": "同城配送",
+		"enName": "store_list",
 		"topIndex": 5,
 		"includeApi": []
 	}
