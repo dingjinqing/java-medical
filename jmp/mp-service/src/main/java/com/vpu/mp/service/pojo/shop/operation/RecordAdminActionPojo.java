@@ -25,7 +25,7 @@ public class RecordAdminActionPojo implements Serializable {
     private String    templateData;
     private String    mobile;
     private String    userName;
-
+    private Byte      accountType;
     /**
      * 操作模块(装修、商品、订单、会员、营销)
      */
@@ -152,20 +152,23 @@ public class RecordAdminActionPojo implements Serializable {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+    
 
-    @Override
-    public String toString() {
-        return "RecordAdminActionPojo{" +
-                "id=" + id +
-                ", sysId=" + sysId +
-                ", accountId=" + accountId +
-                ", actionType=" + actionType +
-                ", templateId='" + templateId + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", templateData='" + templateData + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", userName='" + userName + '\'' +
-                '}';
-    }
+    public Byte getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(Byte accountType) {
+		this.accountType = accountType;
+	}
+
+	@Override
+	public String toString() {
+		return "RecordAdminActionPojo [id=" + id + ", sysId=" + sysId + ", accountId=" + accountId + ", actionType="
+				+ actionType + ", templateId=" + templateId + ", createTime=" + createTime + ", updateTime="
+				+ updateTime + ", templateData=" + templateData + ", mobile=" + mobile + ", userName=" + userName
+				+ ", accountType=" + accountType + "]";
+	}
+
+	
 }

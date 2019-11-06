@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RecordAdminAction implements Serializable {
 
-    private static final long serialVersionUID = -1351606197;
+    private static final long serialVersionUID = 163242420;
 
     private Integer   id;
     private Integer   sysId;
@@ -35,6 +35,7 @@ public class RecordAdminAction implements Serializable {
     private String    mobile;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Byte      accountType;
 
     public RecordAdminAction() {}
 
@@ -49,6 +50,7 @@ public class RecordAdminAction implements Serializable {
         this.mobile = value.mobile;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.accountType = value.accountType;
     }
 
     public RecordAdminAction(
@@ -61,7 +63,8 @@ public class RecordAdminAction implements Serializable {
         String    userName,
         String    mobile,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      accountType
     ) {
         this.id = id;
         this.sysId = sysId;
@@ -73,6 +76,7 @@ public class RecordAdminAction implements Serializable {
         this.mobile = mobile;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.accountType = accountType;
     }
 
     public Integer getId() {
@@ -155,6 +159,14 @@ public class RecordAdminAction implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Byte getAccountType() {
+        return this.accountType;
+    }
+
+    public void setAccountType(Byte accountType) {
+        this.accountType = accountType;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RecordAdminAction (");
@@ -169,6 +181,7 @@ public class RecordAdminAction implements Serializable {
         sb.append(", ").append(mobile);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(accountType);
 
         sb.append(")");
         return sb.toString();

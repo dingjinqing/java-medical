@@ -79,7 +79,7 @@ public class RecordAdminActionService extends ShopBaseService {
 		SelectWhereStep<? extends Record> select = db()
 				.select(RECORD_ADMIN_ACTION.USER_NAME, RECORD_ADMIN_ACTION.MOBILE,
 						RECORD_ADMIN_ACTION.CREATE_TIME, RECORD_ADMIN_ACTION.ACTION_TYPE,
-						RECORD_ADMIN_ACTION.TEMPLATE_ID, RECORD_ADMIN_ACTION.TEMPLATE_DATA)
+						RECORD_ADMIN_ACTION.TEMPLATE_ID, RECORD_ADMIN_ACTION.TEMPLATE_DATA,RECORD_ADMIN_ACTION.ACCOUNT_TYPE)
 				.from(RECORD_ADMIN_ACTION);
 		buildParams(select, param);
 		select.orderBy(RECORD_ADMIN_ACTION.CREATE_TIME.asc());
@@ -103,7 +103,7 @@ public class RecordAdminActionService extends ShopBaseService {
 					.userName(pj.getUserName() + ":" + pj.getMobile())
 					.actionTypeName(RecordAdminActionPojo.ActionType.getNameByCode((int) pj.getActionType()))
 					.content(this.splicingAdminRecordForContent(pj.getTemplateId(), pj.getTemplateData(), language))
-					.actionType(pj.getActionType())
+					.accountType(pj.getAccountType())
 					.build());
 		});
 		pageInfo.setDataList(infos);
