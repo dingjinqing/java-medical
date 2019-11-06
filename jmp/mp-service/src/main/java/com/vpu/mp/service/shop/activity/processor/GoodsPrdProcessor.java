@@ -1,12 +1,10 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.AbstractCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsPrdForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsPrdProcessorDao;
-import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +24,7 @@ public class GoodsPrdProcessor extends GoodsPrdProcessorDao implements ActivityG
 
     @Override
     public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        List<Integer> goodsIds = capsules.stream().map(AbstractCapsule::getGoodsId).collect(Collectors.toList());
+        List<Integer> goodsIds = capsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setGoodsIds(goodsIds);
         return param;

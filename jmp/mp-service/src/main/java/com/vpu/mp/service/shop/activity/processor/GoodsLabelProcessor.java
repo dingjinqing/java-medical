@@ -7,7 +7,6 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
-import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
             } else if (allGoodsMap.size() > 0) {
                 returnMap.put(goodsId, allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
             } else {
-                return;
+                return ;
             }
         });
         return returnMap;

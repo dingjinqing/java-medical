@@ -3,11 +3,12 @@ package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 小程序-商品列表信息存储对象
@@ -15,8 +16,9 @@ import java.util.List;
  * @date 2019年10月29日
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class ActivityGoodsListCapsule extends AbstractCapsule {
+public class ActivityGoodsListCapsule {
+    private Integer goodsId;
+    private String goodsName;
     private Byte goodsType;
     private BigDecimal shopPrice;
     private BigDecimal marketPrice;
@@ -45,7 +47,8 @@ public class ActivityGoodsListCapsule extends AbstractCapsule {
     private Integer brandId;
     /**是否是使用默认规格*/
     private Boolean defaultPrd;
-
+    /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
+    private Set<Byte> processedTypes = new HashSet<>();
     /** 商品拥有的营销信息，由各个processor添加 */
     private List<ActivityForListInfo> activities = new ArrayList<>(2);
 }

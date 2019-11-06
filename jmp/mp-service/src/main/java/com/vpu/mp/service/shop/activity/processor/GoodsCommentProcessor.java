@@ -5,7 +5,6 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsCommentForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
-import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -27,7 +26,7 @@ public class GoodsCommentProcessor extends GoodsCommentProcessorDao implements A
     @Override
     public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
-        List<Integer> goodsIds = capsules.stream().map(x -> x.getGoodsId()).collect(Collectors.toList());
+        List<Integer> goodsIds = capsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
         param.setGoodsIds(goodsIds);
         return param;
     }
@@ -36,9 +35,7 @@ public class GoodsCommentProcessor extends GoodsCommentProcessorDao implements A
     public Map<Integer, GoodsCommentForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         Map<Integer, Long> goodsCommentNumInfo = getGoodsCommentNumInfo(param.getGoodsIds());
         Map<Integer,GoodsCommentForListInfo> returnMap = new HashMap<>();
-        goodsCommentNumInfo.forEach((key,value)->{
-            returnMap.put(key,new GoodsCommentForListInfo(value.intValue()));
-        });
+        goodsCommentNumInfo.forEach((key,value)-> returnMap.put(key,new GoodsCommentForListInfo(value.intValue())));
         return returnMap;
     }
 
