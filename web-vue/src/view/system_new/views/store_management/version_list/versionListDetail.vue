@@ -17,7 +17,7 @@
                   size="mini"
                   style="width:18%"
                   :placeholder="$t('authRoleList.tip2')"
-                  :disabled="!this.isEdit"
+                  :disabled="true"
                   v-model="versionName"
                 />
               </el-form-item>
@@ -29,7 +29,7 @@
                 <el-select
                   v-model="level"
                   placeholder="请选择"
-                  :disabled="!this.isEdit"
+                  :disabled="true"
                 >
                   <el-option
                     v-for="item in shopVersionList"
@@ -78,6 +78,7 @@
                           <li :class="specialLi">
                             <el-checkbox-group v-model="sub_0List">
                               <el-checkbox
+                                :disabled="sub_0CheckList.indexOf(subItem.vsName)!==-1||!isEdit"
                                 :class="subItem.vsName"
                                 :label="subItem.vsName"
                                 :name="subItem.vsName"
@@ -96,6 +97,7 @@
                           <li :class="specialLi">
                             <el-checkbox-group v-model="sub_1List">
                               <el-checkbox
+                                :disabled="sub_1CheckList.indexOf(subItem.vsName)!==-1||!isEdit"
                                 :class="subItem.vsName"
                                 :label="subItem.vsName"
                                 :name="subItem.vsName"
@@ -114,6 +116,7 @@
                           <li :class="specialLi">
                             <el-checkbox-group v-model="sub_2List">
                               <el-checkbox
+                                :disabled="sub_2CheckList.indexOf(subItem.vsName)!==-1||!isEdit"
                                 :class="subItem.vsName"
                                 :label="subItem.vsName"
                                 :name="subItem.vsName"
@@ -132,6 +135,7 @@
                           <li :class="specialLi">
                             <el-checkbox-group v-model="sub_3List">
                               <el-checkbox
+                                :disabled="sub_3CheckList.indexOf(subItem.vsName)!==-1||!isEdit"
                                 :class="subItem.vsName"
                                 :label="subItem.vsName"
                                 :name="subItem.vsName"
@@ -150,6 +154,7 @@
                           <li :class="specialLi">
                             <el-checkbox-group v-model="sub_4List">
                               <el-checkbox
+                                :disabled="sub_4CheckList.indexOf(subItem.vsName)!==-1||!isEdit"
                                 :class="subItem.vsName"
                                 :label="subItem.vsName"
                                 :name="subItem.vsName"
@@ -168,6 +173,7 @@
                           <li :class="specialLi">
                             <el-checkbox-group v-model="sub_5List">
                               <el-checkbox
+                                :disabled="sub_5CheckList.indexOf(subItem.vsName)!==-1||!isEdit"
                                 :class="subItem.vsName"
                                 :label="subItem.vsName"
                                 :name="subItem.vsName"
@@ -313,9 +319,9 @@ export default {
       type: Boolean,
       default: () => false
     },
-    sendVersionId: { // 传版本id
-      type: Number,
-      default: () => 0
+    sendVersion: { // 传版本号
+      type: String,
+      default: () => 'v0'
     },
     sendShopId: { // 编辑店铺版本权限时候传的shopId
       type: Number,
@@ -365,7 +371,13 @@ export default {
       sub_5List: [],
       shopVersionList: this.$t('versionList.shopVersion'),
       numConfig: {},
-      main_config: {}
+      main_config: {},
+      sub_0CheckList: [],
+      sub_1CheckList: [],
+      sub_2CheckList: [],
+      sub_3CheckList: [],
+      sub_4CheckList: [],
+      sub_5CheckList: []
     }
   },
   mounted () {
@@ -383,16 +395,15 @@ export default {
   },
   methods: {
     defaluteData () {
-      console.log('是编辑吗1111')
+      console.log('是编辑吗2222')
       console.log('isedit', this.isEdit)
-      console.log(this.sendVersionId)
+      console.log(this.sendVersion)
+      console.log('啦啦啦啦啦啦啦啦')
+      console.log(this.sendVersion !== 'v0')
       this.searchDef()
-      if (this.sendVersionId !== 0) {
+      if (this.sendVersion !== 'v0') {
+        console.log('this.search()')
         this.search()
-      }
-      if (this.isEdit === true && this.sendShopId !== 0) {
-        // 店铺列表页的编辑
-        this.searchShop()
       }
     },
     searchDef () {
@@ -421,28 +432,38 @@ export default {
       })
     },
     search () {
-      getOneVersionRequest(this.sendVersionId).then((res) => {
+      getOneVersionRequest(this.sendVersion).then((res) => {
         if (res.error === 0) {
           console.log('查回来')
           console.log(res.content)
           let data = res.content.content.main_config
           this.versionName = res.content.versionName
           this.level = res.content.level
-          console.log('查询出单独的店铺权限')
+          console.log('查询出单独的版本权限')
           console.log(data)
+          this.sub_0CheckList = data.sub_0
+          this.sub_1CheckList = data.sub_1
+          this.sub_2CheckList = data.sub_2
+          this.sub_3CheckList = data.sub_3
+          this.sub_4CheckList = data.sub_4
+          this.sub_5CheckList = data.sub_5
+
           this.sub_0List = data.sub_0
           this.sub_1List = data.sub_1
           this.sub_2List = data.sub_2
           this.sub_3List = data.sub_3
           this.sub_4List = data.sub_4
           this.sub_5List = data.sub_5
-          console.log(this.sub_0List)
+          console.log(this.sub_0CheckList)
           console.log('jieshu')
-
           this.numConfig = res.content.content.num_config
-
           console.log(this.numConfig)
           console.log(this.numConfig.picture_num)
+          if (this.isEdit === true && this.sendShopId !== 0) {
+            console.log('this.searchShops()')
+            // 店铺列表页的编辑
+            this.searchShop()
+          }
         } else {
           this.$message.error(res.message)
         }
@@ -460,7 +481,7 @@ export default {
           let data = res.content.main_config
           this.level = res.content.shopType
           this.versionName = res.content.versionName
-          console.log('转json')
+          console.log('查询出单独的店铺权限')
           console.log(data)
           this.sub_0List = data.sub_0
           this.sub_1List = data.sub_1
@@ -547,8 +568,8 @@ export default {
         default:
           break
       }
-      console.log(this.sub_4List)
-      console.log(this.sub_4List.length)
+      console.log(this.sub_0List)
+      console.log(this.sub_0List.length)
       console.log(this.checkRowList)
     },
     // 给左边赋值
@@ -584,20 +605,11 @@ export default {
       })
     },
     // 提交信息到父页面
-    submitInfo () {
-      if (this.isEmpty(this.roleName)) {
-        this.$message.error('权限组名称不能为空')
-        let params = {
-          'faClick': false
-        }
-        this.$emit('faClickChange', params)
-        return false
+    backHome () {
+      let params = {
+        'flag': 16
       }
-      let param = {
-        'roleName': this.roleName,
-        'privilegeList': this.privilegeList
-      }
-      this.$emit('privilegeInfo', param)
+      this.$emit('goHome', params)
     }
   }
 }
@@ -639,5 +651,17 @@ export default {
 }
 .dynamic /deep/ .el-form-item__content {
   display: inline-flex;
+}
+.table_box /deep/ .el-checkbox__input.is-disabled + span.el-checkbox__label {
+  color: #409eff;
+}
+
+.table_box
+  /deep/
+  .el-checkbox__input.is-disabled.is-checked
+  .el-checkbox__inner {
+  background-color: #409eff;
+  border-color: #409eff;
+  border: 1px solid #fff;
 }
 </style>

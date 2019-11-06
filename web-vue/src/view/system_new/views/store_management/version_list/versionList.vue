@@ -19,7 +19,7 @@
       v-if="showFlagTwo"
     >
       <versionListDetail
-        :sendVersionId="versionId"
+        :sendVersion="version"
         :isEdit="isEdit"
         :sendShopId="shopId"
       />
@@ -41,7 +41,7 @@ export default {
     return {
       showFlag: true,
       showFlagTwo: false,
-      versionId: null,
+      version: null,
       tabActive: 'first',
       isEdit: false,
       shopId: 0
@@ -62,7 +62,7 @@ export default {
     },
     show (data) {
       this.showFlagTwo = data.showFlagTwo
-      this.versionId = data.id
+      this.version = data.level
       this.isEdit = data.isEdit
       console.log('22222222222222222')
       console.log(this.isEdit)

@@ -54,9 +54,10 @@
         v-if="isShopVersion"
       >
         <versionListDetail
-          :sendVersionId="versionId"
+          :sendVersion="version"
           :isEdit="isEdit"
           :sendShopId="shopId"
+          @goHome="show"
         />
 
       </el-tab-pane>
@@ -96,7 +97,7 @@ export default {
       isShopRenenw: false,
       sendShowRe: null,
       isEdit: true,
-      versionId: 0,
+      version: null,
       shopId: 0,
       isShopVersion: false
 
@@ -137,8 +138,12 @@ export default {
         }
         if (data.flag === 6) {
           this.shopId = data.shopId
+          this.version = data.shopType
           this.isShopVersion = true
           this.tabActive = 'fifth'
+        } if (data.flag === 16) {
+          this.tabActive = 'first'
+          this.isShopVersion = false
         }
       }
     },
@@ -148,11 +153,13 @@ export default {
         this.firstShow = true
         this.secondShow = false
         this.isShowShopList = false
+        this.isShopVersion = false
       } if (this.tabActive === 'second') {
         this.shopTypes = '2'
         this.firstShow = false
         this.secondShow = true
         this.isShowShopList = false
+        this.isShopVersion = false
       }
     }
   },

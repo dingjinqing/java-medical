@@ -140,7 +140,7 @@ export default {
     show (data) {
       console.log('查看')
       let params = {
-        'id': data.id,
+        'level': data.level,
         'showFlagTwo': true,
         'isEdit': false
       }

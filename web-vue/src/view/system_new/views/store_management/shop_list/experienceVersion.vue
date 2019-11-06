@@ -343,7 +343,7 @@
               <el-button
                 class="xbutton"
                 type="text"
-                @click="btnShowVersion(scope.row.shopId)"
+                @click="btnShowVersion(scope.row)"
               >版本权限</el-button>
               <br>
               <el-button
@@ -1086,7 +1086,8 @@ export default {
     btnShowVersion (data) {
       console.log('版本权限')
       let params = {
-        'shopId': data,
+        'shopId': data.shopId,
+        'shopType': data.shopType,
         'flag': 6
       }
       this.$emit('sendShopId', params)
