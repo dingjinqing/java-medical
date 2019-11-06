@@ -13,6 +13,7 @@
                 type="primary"
                 size="small"
                 @click="clickUp"
+                style="margin-bottom: 20px;"
               >{{$t('authRoleList.addRoleGroup')}}</el-button>
             </el-form>
           </div>

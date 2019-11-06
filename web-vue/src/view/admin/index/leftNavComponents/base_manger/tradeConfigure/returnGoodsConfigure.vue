@@ -20,23 +20,38 @@
           class="chooseInfo"
         >{{$t('returnconfiguration.choosecanreturn')}}</div>
 
-        <div class="chooseBtn" @click="showChoosingGoods">
+        <div
+          class="chooseBtn"
+          @click="showChoosingGoods"
+        >
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectgoods')}}</span>
         </div>
-        <div class="chooseBtn" @click="showBusClassDialog(2)">
+        <div
+          class="chooseBtn"
+          @click="showBusClassDialog(2)"
+        >
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectplant')}}</span>
         </div>
-        <div class="chooseBtn" @click="showBusClassDialog(1)">
+        <div
+          class="chooseBtn"
+          @click="showBusClassDialog(1)"
+        >
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectshop')}}</span>
         </div>
-        <div class="chooseBtn" @click="showProductLabel">
+        <div
+          class="chooseBtn"
+          @click="showProductLabel"
+        >
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectlabel')}}</span>
         </div>
-        <div class="chooseBtn" @click="showBrandDialog">
+        <div
+          class="chooseBtn"
+          @click="showBrandDialog"
+        >
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectbrand')}}</span>
         </div>
@@ -206,7 +221,7 @@
 </template>
 
 <script>
-import {retrunUpdate, returnSelect} from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import { retrunUpdate, returnSelect } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import ProductLabel from '@/components/admin/addProductLabel'
 import BrandDialog from '@/components/admin/addBrandDialog'

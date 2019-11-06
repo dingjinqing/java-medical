@@ -1,30 +1,32 @@
 <template>
   <div class="payContent">
-    <el-tabs
-      v-model="defaultBtn"
-      @tab-click="handleClick"
-    >
-      <!--店铺子账户管理 -->
-      <el-tab-pane
-        :label="$t('authRoleList.authlabel1')"
-        name="first"
+    <div class="payContent_main">
+      <el-tabs
+        v-model="defaultBtn"
+        @tab-click="handleClick"
       >
-        <childConfig
-          v-if="showFlag"
-          @showAuthConfig="show"
-        />
-      </el-tab-pane>
-      <!--权限组管理 -->
-      <el-tab-pane
-        :label="$t('authRoleList.authlabel2')"
-        name="second"
-      >
-        <authorityConfigure
-          v-if="!showFlag"
-          @showAuthConfig="show"
-        />
-      </el-tab-pane>
-    </el-tabs>
+        <!--店铺子账户管理 -->
+        <el-tab-pane
+          :label="$t('authRoleList.authlabel1')"
+          name="first"
+        >
+          <childConfig
+            v-if="showFlag"
+            @showAuthConfig="show"
+          />
+        </el-tab-pane>
+        <!--权限组管理 -->
+        <el-tab-pane
+          :label="$t('authRoleList.authlabel2')"
+          name="second"
+        >
+          <authorityConfigure
+            v-if="!showFlag"
+            @showAuthConfig="show"
+          />
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </div>
 </template>
 
@@ -74,11 +76,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .payContent {
-  margin: 10px;
-  padding: 10px 20px 0 20px;
-  min-width: 1000px;
+  padding: 10px;
+  min-width: 100%;
   font-size: 14px;
   height: 100%;
-  background: #fff;
+  .payContent_main {
+    background-color: #fff;
+    padding: 10px 20px;
+  }
 }
 </style>

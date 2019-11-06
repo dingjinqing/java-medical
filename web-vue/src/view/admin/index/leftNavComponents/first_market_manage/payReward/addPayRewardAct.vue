@@ -170,7 +170,7 @@
           <el-form
             label-width="100px"
             label-position="right"
-            v-for="(item,index) in shareRules"
+            v-for="(item,index) in params.awardList"
             :key="index"
             class="order_form"
           >
@@ -191,7 +191,7 @@
 
             <el-form-item label="支付奖励：">
               <el-radio-group
-                v-model="params.awardList.giftType"
+                v-model="item.giftType"
                 class="itemOptions"
               >
                 <div style="margin-top:13px">
@@ -212,7 +212,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType==='2'"
+              v-if="item.giftType==='2'"
               label="普通优惠券："
             >
               <div class="middleContainer">
@@ -261,16 +261,9 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType==='3'"
+              v-if="item.giftType==='3'"
               label="分裂优惠券："
             >
-              <!-- <div class="coupon">
-                <img
-                  :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'"
-                  alt=""
-                >
-                <p>添加优惠券</p>
-              </div> -->
               <div class="middleContainer">
                 <div
                   v-for="(item,index) in rewardCouponObjs"
@@ -317,13 +310,13 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType==='4'"
+              v-if="item.giftType==='4'"
               label="幸运大抽奖："
             >
               <el-select
                 size="small"
                 style="width: 120px"
-                v-model="params.awardList.lotteryId"
+                v-model="item.lotteryId"
                 placeholder="请选择抽奖活动"
               >
                 <el-option
@@ -336,11 +329,11 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType==='5'"
+              v-if="item.giftType==='5'"
               label="余额："
             >
               <el-input
-                v-model="params.awardList.accountNumber"
+                v-model="item.accountNumber"
                 size="small"
                 style="width:120px"
                 placeholder="请输入余额"
@@ -348,7 +341,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType==='6'"
+              v-if="item.giftType==='6'"
               label="奖品："
             >
               <div
@@ -405,12 +398,12 @@
               </div>
             </el-form-item>
             <el-form-item
-              v-if="params.awardList.giftType==='6'"
+              v-if="item.giftType==='6'"
               label="赠品有效期："
             >
               <div>
                 <el-input
-                  v-model="params.awardList.keepDays"
+                  v-model="item.keepDays"
                   size="small"
                   style="width:100px"
                 ></el-input>
@@ -420,11 +413,11 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType==='7'"
+              v-if="item.giftType==='7'"
               label="积分："
             >
               <el-input
-                v-model="params.awardList.scoreNumber"
+                v-model="item.scoreNumber"
                 size="small"
                 style="width:120px"
                 placeholder="请输入积分"
@@ -432,7 +425,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType==='8'"
+              v-if="item.giftType ==='8'"
               label="活动图片："
             >
               <div style="display: flex">
@@ -451,11 +444,11 @@
               </div>
             </el-form-item>
             <el-form-item
-              v-if="params.awardList.giftType==='8'"
+              v-if="item.giftType ==='8'"
               label="设置链接："
             >
               <el-input
-                v-model="params.awardList.customLink"
+                v-model="item.customLink"
                 size="small"
                 style="width:200px"
               ></el-input>
@@ -471,7 +464,7 @@
             >
               <div>
                 <el-input
-                  v-model="params.awardList.awardNumber"
+                  v-model="item.awardNumber"
                   size="small"
                   style="width:100px"
                 ></el-input>
@@ -669,16 +662,16 @@ export default {
       let obj = {
         coupon: ''
       }
-      if (this.shareRules.length < 5) {
-        this.shareRules.push(obj)
+      if (this.params.awardList.length < 5) {
+        this.params.awardList.push(obj)
       } else {
         alert('最多可添加5个规则！')
       }
     },
     // 删除奖励
     deleteItem (index) {
-      console.log(this.shareRules)
-      this.shareRules.splice(index, 1)
+      console.log(this.params.awardList)
+      this.params.awardList.splice(index, 1)
       console.log(index)
     },
 
@@ -772,21 +765,22 @@ export default {
       }
     },
 
-    // 调起选择商品链接弹窗
+    // 调起链接弹窗
     chooseSelect () {
       this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
 
-    // 选择链接选中回传
+    // 链接数据选中回传
     handleToSelectLinkPath (link) {
       this.params.awardList.customLink = link
-      // console.log(path)
+      console.log(this.params.awardList.customLink)
     },
 
-    // 活动图片调起
+    // 活动图片弹窗调起
     handleImage () {
       this.tuneUp = !this.tuneUp
     },
+
     // 活动图片替换
     avatarSelectHandle (val) {
       this.params.awardList.image = val.imgPath
