@@ -494,7 +494,7 @@ public class GoodsService extends ShopBaseService {
      * @param dataList 分页结果集
      * @param pageListParam 数据筛选条件
      */
-    private void disposeGoodsPageListVo( List<GoodsPageListVo> dataList, GoodsPageListParam pageListParam) {
+    public void disposeGoodsPageListVo( List<GoodsPageListVo> dataList, GoodsPageListParam pageListParam) {
 
         // 处理商品平台分类：通过id值获取name值
         saas.sysCate.disposeCategoryName(dataList);

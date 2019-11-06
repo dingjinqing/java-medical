@@ -46,6 +46,8 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     @Autowired
     private GoodsSpecService goodsSpecService;
+    @Autowired
+    private GoodsService goodsService;
     /**
      * 规格名值描述分割符
      */
@@ -391,6 +393,7 @@ public class GoodsSpecProductService extends ShopBaseService {
                 .fetchInto(GoodsPageListVo.class);
         GoodsPageListParam pageListParam=new GoodsPageListParam();
         pageListParam.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
+        goodsService.disposeGoodsPageListVo(goodsPageListVos,pageListParam);
         return goodsPageListVos;
     }
 
