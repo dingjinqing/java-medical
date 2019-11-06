@@ -426,7 +426,7 @@
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      :backDataArr="labelInfo"
+      :backDataArr="commInfo"
     />
     <!-- 选择商品标签弹窗 -->
     <ProductLabel
@@ -556,6 +556,8 @@ export default {
       // 平台分类弹窗回调数据
       platClass: [],
       platClassRow: [],
+      // 平台分类/商家分类共享变量
+      commInfo: [],
       // 弹窗结果区分标识 1商家分类;2平台分类
       flag: 0,
       deliverMethods: [
@@ -901,6 +903,12 @@ export default {
       this.tuneUpBusClassDialog = !this.tuneUpBusClassDialog
       this.classFlag = classFlag
       this.flag = classFlag
+      // 弹窗结果区分标识 1商家分类;2平台分类
+      if (this.flag === 1) {
+        this.commInfo = this.busClass
+      } else if (this.flag === 2) {
+        this.commInfo = this.platClass
+      }
     },
     // 选择商家分类/平台分类弹窗回调显示
     busClassDialogResult (row) {
