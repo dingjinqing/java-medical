@@ -124,6 +124,9 @@ public class RecordAdminActionService extends ShopBaseService {
 		if (null != param.getEndCreateTime()) {
 			select.where(RECORD_ADMIN_ACTION.CREATE_TIME.lessOrEqual(param.getEndCreateTime()));
 		}
+		if (null!=param.getActionType()) {
+			select.where(RECORD_ADMIN_ACTION.ACTION_TYPE.eq(param.getActionType()));
+		}
 	}
 
 	private String splicingAdminRecordForContent(String templateIds, String datas, String language) {
