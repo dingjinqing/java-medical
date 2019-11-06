@@ -23,5 +23,6 @@ public class RecordAdminActionInfo {
     private String content;
     
     private Byte accountType;
-
+    
+    private Byte actionType;
 }
