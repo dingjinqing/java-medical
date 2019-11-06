@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityBaseInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.AbstractCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityBaseInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityParam;
 import org.slf4j.LoggerFactory;
 
@@ -18,15 +18,9 @@ import java.util.Map;
  */
 public interface ActivityProcessor<P extends ActivityParam,C extends AbstractCapsule,V extends ActivityBaseInfo>{
 
-    static boolean isGoodsTypeIn135610(byte goodsType) {
-        return goodsType== GoodsConstant.ACTIVITY_TYPE_GROUP_BUY||goodsType == GoodsConstant.ACTIVITY_TYPE_BARGAIN
-            || goodsType == GoodsConstant.ACTIVITY_TYPE_SEC_KILL || goodsType == GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE
-            || goodsType == GoodsConstant.ACTIVITY_TYPE_PRE_SALE ;
-    }
-
-    static boolean isGoodsTypeIn13510(byte goodsType) {
-        return goodsType== GoodsConstant.ACTIVITY_TYPE_GROUP_BUY||goodsType == GoodsConstant.ACTIVITY_TYPE_BARGAIN
-            || goodsType == GoodsConstant.ACTIVITY_TYPE_SEC_KILL || goodsType == GoodsConstant.ACTIVITY_TYPE_PRE_SALE ;
+    static boolean isGoodsTypeIn13510(Byte goodsType) {
+        return GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
+            || GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType);
     }
 
     int getPriority();

@@ -8,79 +8,79 @@ package com.vpu.mp.service.pojo.shop.goods;
 public class GoodsConstant {
     /****** 商品活动类型对应码 *****/
     /** 普通商品 */
-    public final static byte ACTIVITY_TYPE_GENERAL = 0;
+    public final static Byte ACTIVITY_TYPE_GENERAL = 0;
     /** 拼团商品 */
-    public final static byte ACTIVITY_TYPE_GROUP_BUY = 1;
+    public final static Byte ACTIVITY_TYPE_GROUP_BUY = 1;
     /** 返利商品 */
-    public final static byte ACTIVITY_TYPE_REBATE = 2;
+    public final static Byte ACTIVITY_TYPE_REBATE = 2;
     /** 砍价商品 */
-    public final static byte ACTIVITY_TYPE_BARGAIN = 3;
+    public final static Byte ACTIVITY_TYPE_BARGAIN = 3;
 
     /** 积分兑换商品 */
-    public final static byte ACTIVITY_TYPE_INTEGRAL = 4;
+    public final static Byte ACTIVITY_TYPE_INTEGRAL = 4;
     /** 秒杀商品 */
-    public final static byte ACTIVITY_TYPE_SEC_KILL = 5;
+    public final static Byte ACTIVITY_TYPE_SEC_KILL = 5;
     /** 限时降价 返利 */
-    public final static byte ACTIVITY_TYPE_REDUCE_PRICE = 6;
+    public final static Byte ACTIVITY_TYPE_REDUCE_PRICE = 6;
     /** 加价购 返利 */
-    public final static byte ACTIVITY_TYPE_PURCHASE_PRICE = 7;
+    public final static Byte ACTIVITY_TYPE_PURCHASE_PRICE = 7;
     /** 拼团抽奖 */
-    public final static byte ACTIVITY_TYPE_GROUP_DRAW = 8;
+    public final static Byte ACTIVITY_TYPE_GROUP_DRAW = 8;
     /** 一口价 */
-    public final static byte ACTIVITY_TYPE_PACKAGE_SALE = 9;
+    public final static Byte ACTIVITY_TYPE_PACKAGE_SALE = 9;
     /** 定金膨胀 */
-    public final static byte ACTIVITY_TYPE_PRE_SALE = 10;
+    public final static Byte ACTIVITY_TYPE_PRE_SALE = 10;
     /** 赠品 */
-    public final static byte ACTIVITY_TYPE_GIFT = 11;
+    public final static Byte ACTIVITY_TYPE_GIFT = 11;
     /** 幸运大抽奖 */
-    public final static byte ACTIVITY_TYPE_LOTTERY_PRESENT = 12;
+    public final static Byte ACTIVITY_TYPE_LOTTERY_PRESENT = 12;
     /** 限次卡兑换 */
-    public final static byte ACTIVITY_TYPE_EXCHANG_ORDER = 13;
+    public final static Byte ACTIVITY_TYPE_EXCHANG_ORDER = 13;
     /** 好友助力 */
-    public final static byte ACTIVITY_TYPE_PROMOTE_ORDER = 14;
+    public final static Byte ACTIVITY_TYPE_PROMOTE_ORDER = 14;
     /** 满包邮 */
-    public final static byte ACTIVITY_TYPE_FREESHIP_ORDER = 15;
+    public final static Byte ACTIVITY_TYPE_FREESHIP_ORDER = 15;
     /** 测评 */
-    public final static byte ACTIVITY_TYPE_ASSESS_ORDER = 16;
+    public final static Byte ACTIVITY_TYPE_ASSESS_ORDER = 16;
     /** 送礼 */
-    public final static byte ACTIVITY_TYPE_GIVE_GIFT = 17;
+    public final static Byte ACTIVITY_TYPE_GIVE_GIFT = 17;
     /** 首单特惠 */
-    public final static byte ACTIVITY_TYPE_FIRST_SPECIAL = 18;
+    public final static Byte ACTIVITY_TYPE_FIRST_SPECIAL = 18;
     /** 优惠券活动 */
-    public final static byte ACTIVITY_TYPE_COUPON = 19;
+    public final static Byte ACTIVITY_TYPE_COUPON = 19;
     /** 满折满减*/
-    public final static byte ACTIVITY_TYPE_FULL_REDUCTION = 20;
+    public final static Byte ACTIVITY_TYPE_FULL_REDUCTION = 20;
     /** 等级会员特殊照顾（不是营销活动）*/
-    public final static byte ACTIVITY_TYPE_MEMBER_GRADE = 21;
+    public final static Byte ACTIVITY_TYPE_MEMBER_GRADE = 21;
     /** 会员专享型（不是营销活动）*/
-    public final static byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 22;
+    public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 22;
     /** 代付订单 */
-    public final static byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
+    public final static Byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */
-    public final static byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
+    public final static Byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
     /**************** 结束 *****************/
 
     /****** 商品列表各种活动的处理优先级 *****/
     /**秒杀*/
-    public final static byte ACTIVITY_SEC_KILL_PRIORITY = 1;
+    public final static Byte ACTIVITY_SEC_KILL_PRIORITY = 1;
     /**预售*/
-    public final static byte ACTIVITY_PRE_SALE_PRIORITY = 5;
+    public final static Byte ACTIVITY_PRE_SALE_PRIORITY = 5;
     /**砍价*/
-    public final static byte ACTIVITY_BARGAIN_PRIORITY = 10;
+    public final static Byte ACTIVITY_BARGAIN_PRIORITY = 10;
     /**拼团*/
-    public final static byte ACTIVITY_GROUP_BUY_PRIORITY = 15;
+    public final static Byte ACTIVITY_GROUP_BUY_PRIORITY = 15;
     /**会员专享处理*/
-    public final static byte ACTIVITY_CARD_EXCLUSIVE_PRIORITY = 20;
+    public final static Byte ACTIVITY_CARD_EXCLUSIVE_PRIORITY = 20;
     /**首单特惠*/
-    public final static byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 25;
+    public final static Byte ACTIVITY_FIRST_SPECIAL_PRIORITY = 25;
     /**限时降价*/
-    public final static byte ACTIVITY_REDUCE_PRICE_PRIORITY = 30;
+    public final static Byte ACTIVITY_REDUCE_PRICE_PRIORITY = 30;
     /**等级卡会员价*/
-    public final static byte ACTIVITY_MEMBER_GRADE_PRIORITY = 35;
+    public final static Byte ACTIVITY_MEMBER_GRADE_PRIORITY = 35;
     /**优惠券*/
-    public final static byte ACTIVITY_COUPON_PRIORITY = 40;
+    public final static Byte ACTIVITY_COUPON_PRIORITY = 40;
     /** 满折满减 */
-    public final static byte ACTIVITY_FULL_REDUCTION_PRIORITY = 45;
+    public final static Byte ACTIVITY_FULL_REDUCTION_PRIORITY = 45;
 
     /**************** 结束 *****************/
 
