@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.goods.es;
 
-import com.vpu.mp.config.es.EsSearchConstant;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
