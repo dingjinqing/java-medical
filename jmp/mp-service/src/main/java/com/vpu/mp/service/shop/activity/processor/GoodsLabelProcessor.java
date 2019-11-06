@@ -1,8 +1,9 @@
-package com.vpu.mp.service.shop.activity.processor.list;
+package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
@@ -19,14 +20,14 @@ import java.util.Map;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsLabelForListProcessor extends GoodsLabelProcessorDao implements ActivityGoodsListProcessor<GoodsLabelForListInfo> {
+public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements ActivityGoodsListProcessor {
     @Override
-    public int getPriority() {
+    public Byte getPriority() {
         return 0;
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
+    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         List<Integer> goodsIds = new ArrayList<>();
         List<Integer> sortIds = new ArrayList<>();
@@ -47,7 +48,7 @@ public class GoodsLabelForListProcessor extends GoodsLabelProcessorDao implement
     }
 
     @Override
-    public Map<Integer, GoodsLabelForListInfo> getActivityInfo(ActivityGoodsListMpParam param) {
+    public Map<Integer, GoodsLabelForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         Map<Byte, Map<Integer, GoodsLabelForListInfo>> goodsLabelsMap = getGoodsClosestLabelsInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds());
         List<ActivityGoodsListMpParam.AllIdsParam> idsParams = param.getIdsParams();
         Map<Integer,GoodsLabelForListInfo> returnMap = new HashMap<>();
@@ -74,10 +75,10 @@ public class GoodsLabelForListProcessor extends GoodsLabelProcessorDao implement
     }
 
     @Override
-    public void process(Map<Integer, GoodsLabelForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            GoodsLabelForListInfo label = activityInfos.get(goodsId);
+            GoodsLabelForListInfo label = (GoodsLabelForListInfo) activityInfos.get(goodsId);
             if (label == null) {
                 return;
             }

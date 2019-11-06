@@ -1,7 +1,8 @@
-package com.vpu.mp.service.shop.activity.processor.list;
+package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.AbstractCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsPrdForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsPrdProcessorDao;
@@ -17,14 +18,14 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsPrdForListProcessor extends GoodsPrdProcessorDao implements ActivityGoodsListProcessor<GoodsPrdForListInfo> {
+public class GoodsPrdProcessor extends GoodsPrdProcessorDao implements ActivityGoodsListProcessor{
     @Override
-    public int getPriority() {
+    public Byte getPriority() {
         return 0;
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
+    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         List<Integer> goodsIds = capsules.stream().map(AbstractCapsule::getGoodsId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setGoodsIds(goodsIds);
@@ -32,15 +33,15 @@ public class GoodsPrdForListProcessor extends GoodsPrdProcessorDao implements Ac
     }
 
     @Override
-    public Map<Integer, GoodsPrdForListInfo> getActivityInfo(ActivityGoodsListMpParam param) {
+    public Map<Integer, GoodsPrdForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         return getGoodsPrdInfo(param.getGoodsIds());
     }
 
     @Override
-    public void process(Map<Integer, GoodsPrdForListInfo> prdInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ActivityForListInfo> prdInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId= capsule.getGoodsId();
-            GoodsPrdForListInfo prdInfo = prdInfos.get(goodsId);
+            GoodsPrdForListInfo prdInfo = (GoodsPrdForListInfo) prdInfos.get(goodsId);
             if (prdInfo == null) {
                 return;
             }

@@ -1,9 +1,10 @@
-package com.vpu.mp.service.shop.activity.processor.list;
+package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.AbstractCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.GroupBuyForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
@@ -19,16 +20,15 @@ import java.util.stream.Collectors;
  * @date 2019年10月29日
  */
 @Service
-public class GroupBuyForListProcessor extends GroupBuyProcessorDao implements
-    ActivityGoodsListProcessor<GroupBuyForListInfo> {
+public class GroupBuyProcessor extends GroupBuyProcessorDao implements ActivityGoodsListProcessor {
 
     @Override
-    public int getPriority() {
+    public Byte getPriority() {
         return GoodsConstant.ACTIVITY_GROUP_BUY_PRIORITY;
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
+    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         List<Integer> goodsIds = capsules.stream().filter(x -> x.getGoodsType() == GoodsConstant.ACTIVITY_TYPE_GROUP_BUY)
             .map(AbstractCapsule::getGoodsId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
@@ -38,15 +38,15 @@ public class GroupBuyForListProcessor extends GroupBuyProcessorDao implements
     }
 
     @Override
-    public Map<Integer, GroupBuyForListInfo> getActivityInfo(ActivityGoodsListMpParam param) {
+    public Map<Integer, GroupBuyForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         return getGoodsGroupBuyListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override
-    public void process(Map<Integer, GroupBuyForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            GroupBuyForListInfo activity = activityInfos.get(goodsId);
+            ActivityForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }

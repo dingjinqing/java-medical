@@ -1,12 +1,13 @@
-package com.vpu.mp.service.shop.activity.processor.list;
+package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.AbstractCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.ReducePriceForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.list.PreSaleForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
-import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
+import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +20,15 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class ReducePriceForListProcessor extends ReducePriceProcessorDao implements ActivityGoodsListProcessor<ReducePriceForListInfo> {
+public class PreSaleProcessor extends PreSaleProcessorDao implements ActivityGoodsListProcessor {
     @Override
-    public int getPriority() {
-        return GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY;
+    public Byte getPriority() {
+        return GoodsConstant.ACTIVITY_PRE_SALE_PRIORITY;
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
-        // 优惠券和满减活动外，未被其他活动处理
-        List<Integer> goodsIds = capsules.stream().filter(x -> x.getGoodsType() == GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE && x.getProcessedTypes().size() == 0)
+    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+        List<Integer> goodsIds = capsules.stream().filter(x -> x.getGoodsType() == GoodsConstant.ACTIVITY_TYPE_PRE_SALE)
             .map(AbstractCapsule::getGoodsId).collect(Collectors.toList());
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setGoodsIds(goodsIds);
@@ -37,21 +37,21 @@ public class ReducePriceForListProcessor extends ReducePriceProcessorDao impleme
     }
 
     @Override
-    public Map<Integer, ReducePriceForListInfo> getActivityInfo(ActivityGoodsListMpParam param) {
-        return getGoodsReduceListInfo(param.getGoodsIds(),param.getDate());
+    public Map<Integer, PreSaleForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+        return getGoodsPreSaleListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override
-    public void process(Map<Integer, ReducePriceForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            ReducePriceForListInfo activity = activityInfos.get(goodsId);
+            ActivityForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }
             capsule.setRealPrice(activity.getActivityPrice());
             capsule.getActivities().add(activity);
-            capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+            capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_PRE_SALE);
         });
     }
 }

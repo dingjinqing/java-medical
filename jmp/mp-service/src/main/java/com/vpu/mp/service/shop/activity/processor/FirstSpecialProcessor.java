@@ -1,13 +1,13 @@
-package com.vpu.mp.service.shop.activity.processor.list;
+package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.FirstSpecialForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
-import com.vpu.mp.service.shop.activity.processor.ActivityProcessor;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,32 +21,32 @@ import java.util.Map;
  * @date 2019年11月01日
  */
 @Service
-public class FirstSpecialForListProcessor extends FirstSpecialProcessorDao implements ActivityGoodsListProcessor<FirstSpecialForListInfo> {
+public class FirstSpecialProcessor extends FirstSpecialProcessorDao implements ActivityGoodsListProcessor {
 
     @Autowired OrderInfoService orderInfoService;
 
     @Override
-    public int getPriority() {
+    public Byte getPriority() {
         return GoodsConstant.ACTIVITY_FIRST_SPECIAL_PRIORITY;
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
         if (userId == null || orderInfoService.isNewUser(userId, true)) {
-            return filterParam(capsules);
+            return filterParamForList(capsules);
         }else {
             return null;
         }
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
+    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setDate(DateUtil.getLocalDateTime());
 
         List<Integer> goodsIds = new ArrayList<>();
         capsules.forEach(capsule->{
-            if (ActivityProcessor.isGoodsTypeIn13510(capsule.getGoodsType()) ||
+            if (GoodsConstant.isGoodsTypeIn13510(capsule.getGoodsType()) ||
                 capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 return;
             }
@@ -57,15 +57,15 @@ public class FirstSpecialForListProcessor extends FirstSpecialProcessorDao imple
     }
 
     @Override
-    public Map<Integer, FirstSpecialForListInfo> getActivityInfo(ActivityGoodsListMpParam param) {
+    public Map<Integer, FirstSpecialForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         return getGoodsFirstSpecialForListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override
-    public void process(Map<Integer, FirstSpecialForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            FirstSpecialForListInfo activity = activityInfos.get(goodsId);
+            ActivityForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }

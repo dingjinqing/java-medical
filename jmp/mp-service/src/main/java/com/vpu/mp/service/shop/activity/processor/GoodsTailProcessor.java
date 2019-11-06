@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.activity.processor.list;
+package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
@@ -15,19 +15,19 @@ import java.util.Map;
  * @date 2019年11月01日
  */
 @Service
-public class GoodsListTailProcessor implements ActivityGoodsListProcessor<ActivityForListInfo> {
+public class GoodsTailProcessor implements ActivityGoodsListProcessor {
     @Override
-    public int getPriority() {
-        return Integer.MAX_VALUE;
+    public Byte getPriority() {
+        return Byte.MAX_VALUE;
     }
 
     @Override
-    public Map<Integer, ActivityForListInfo> getActivityInfo(ActivityGoodsListMpParam param) {
+    public Map<Integer, ActivityForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         return null;
     }
 
     @Override
-    public void process(Map<Integer, ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             // 被活动处理了的话划线价就是活动价（已被活设置），否则就是商品的规格最低价(新增商品时该字段存的就是最低价)
             if (capsule.getProcessedTypes().size() == 0) {

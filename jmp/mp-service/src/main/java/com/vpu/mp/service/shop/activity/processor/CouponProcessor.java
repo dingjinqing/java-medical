@@ -1,13 +1,13 @@
-package com.vpu.mp.service.shop.activity.processor.list;
+package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.list.CouponForLsitInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
-import com.vpu.mp.service.shop.activity.processor.ActivityProcessor;
 import org.jooq.Record5;
 import org.springframework.stereotype.Service;
 
@@ -25,21 +25,21 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
  * @date 2019年10月30日
  */
 @Service
-public class CouponForListProcessor extends CouponProcessorDao implements ActivityGoodsListProcessor<CouponForLsitInfo> {
+public class CouponProcessor extends CouponProcessorDao implements ActivityGoodsListProcessor {
     @Override
-    public int getPriority() {
+    public Byte getPriority() {
         return GoodsConstant.ACTIVITY_COUPON_PRIORITY;
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParam(List<ActivityGoodsListCapsule> capsules) {
+    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
         param.setDate(DateUtil.getLocalDateTime());
 
         List<ActivityGoodsListMpParam.AllIdsParam> idParams = new ArrayList<>();
         for (ActivityGoodsListCapsule capsule : capsules) {
             // 这几种活动的商品可以不考虑
-            if (ActivityProcessor.isGoodsTypeIn13510(capsule.getGoodsType())) {
+            if (GoodsConstant.isGoodsTypeIn13510(capsule.getGoodsType())) {
                 continue;
             }
             ActivityGoodsListMpParam.AllIdsParam allIds = new ActivityGoodsListMpParam.AllIdsParam();
@@ -53,7 +53,7 @@ public class CouponForListProcessor extends CouponProcessorDao implements Activi
     }
 
     @Override
-    public Map<Integer, CouponForLsitInfo> getActivityInfo(ActivityGoodsListMpParam activityGoodsListMpParam) {
+    public Map<Integer, CouponForLsitInfo> getActivityInfoForList(ActivityGoodsListMpParam activityGoodsListMpParam) {
         List<ActivityGoodsListMpParam.AllIdsParam> idsParams = activityGoodsListMpParam.getIdsParams();
         Timestamp date = activityGoodsListMpParam.getDate();
         Map<Integer, CouponForLsitInfo> returnMap = new HashMap<>();
@@ -76,10 +76,10 @@ public class CouponForListProcessor extends CouponProcessorDao implements Activi
     }
 
     @Override
-    public void process(Map<Integer, CouponForLsitInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            CouponForLsitInfo activity = activityInfos.get(goodsId);
+            ActivityForListInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }

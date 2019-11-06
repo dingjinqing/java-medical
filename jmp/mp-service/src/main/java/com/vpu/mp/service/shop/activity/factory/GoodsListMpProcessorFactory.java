@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +17,16 @@ import java.util.Map;
 @Service
 public class GoodsListMpProcessorFactory extends AbstractProcessorFactory<ActivityGoodsListProcessor, ActivityGoodsListCapsule> {
     @Override
+    public void sortProcessors() {
+        processors.sort(Comparator.comparing(ActivityGoodsListProcessor::getPriority));
+    }
+
+    @Override
     public void doProcess(List<ActivityGoodsListCapsule> capsules,Integer userId) {
-        for (ActivityGoodsListProcessor<ActivityForListInfo> processor : processors) {
-            ActivityGoodsListMpParam param = processor.filterParam(capsules,userId);
-            Map<Integer, ActivityForListInfo> activityInfo = processor.getActivityInfo(param);
-            processor.process(activityInfo, capsules);
+        for (ActivityGoodsListProcessor processor : processors) {
+            ActivityGoodsListMpParam param = processor.filterParamForList(capsules, userId);
+            Map<Integer, ? extends ActivityForListInfo> activityInfoForList = processor.getActivityInfoForList(param);
+            processor.processForList(activityInfoForList,capsules);
         }
     }
 }

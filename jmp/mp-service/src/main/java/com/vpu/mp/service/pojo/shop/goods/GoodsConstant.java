@@ -131,4 +131,9 @@ public class GoodsConstant {
     public static final Byte RECOMMEND_SORT_TYPE  = 5;
     public static final Byte NORMAL_SORT_TYPE  = 6;
     public static final Byte GOODS_TYPE  = 7;
+
+    public static boolean isGoodsTypeIn13510(Byte goodsType) {
+        return GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
+            || GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType);
+    }
 }
