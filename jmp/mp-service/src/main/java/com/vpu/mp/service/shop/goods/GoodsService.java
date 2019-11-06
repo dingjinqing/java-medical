@@ -1,5 +1,41 @@
 package com.vpu.mp.service.shop.goods;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
+import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
+import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
+import static com.vpu.mp.db.shop.Tables.SORT;
+import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.vpu.mp.service.pojo.shop.goods.es.Fact;
+import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectFieldOrAsterisk;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectSelectStep;
+import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultDSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -97,7 +133,7 @@ public class GoodsService extends ShopBaseService {
     @Autowired
     public GoodsPriceService goodsPrice;
     @Autowired
-    private EsManager esManager;
+    private EsFactSearchService esFactSearchService;
     @Autowired
     private EsGoodsSearchService esGoodsSearchService;
 
@@ -105,18 +141,10 @@ public class GoodsService extends ShopBaseService {
      * 全部商品页面各个下拉框的数据初始化
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
      */
-    public GoodsInitialVo pageInitValue(GoodsPageListParam goodsPageListParam) throws IOException {
+    public GoodsInitialVo pageInitValue(GoodsPageListParam goodsPageListParam) throws Exception {
         GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
-        if( esManager.esState() ){
-            //条件转换
-            EsSearchParam param = esGoodsSearchService.goodsParamConvertEsGoodsParam(goodsPageListParam);
-            //es查询
-            Aggregations aggregations = esGoodsSearchService.getEsGoodsAggregationsByParam(param);
-            if( null == aggregations ){
-                return goodsInitialVo;
-            }
-            goodsInitialVo.setSysCates(esGoodsSearchService.assemblySysCatFactDataToVo(aggregations));
-            goodsInitialVo.setGoodsSorts(esGoodsSearchService.assemblySortFactDataToVo(aggregations));
+        if( esFactSearchService.esState() ){
+            esFactSearchService.assemblyFactByAdminGoodsListInit(goodsInitialVo,goodsPageListParam);
         }else{
             Condition condition = this.buildOptions(goodsPageListParam);
             goodsInitialVo.setGoodsSorts(goodsSort.getListBindedGoods(condition,goodsPageListParam.getSelectType()));
@@ -171,7 +199,21 @@ public class GoodsService extends ShopBaseService {
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      */
-    public PageResult<GoodsPageListVo> getPageList(GoodsPageListParam goodsPageListParam) {
+    public PageResult<GoodsPageListVo> getPageList(GoodsPageListParam goodsPageListParam)  {
+        PageResult<GoodsPageListVo> pageResult;
+        if( esFactSearchService.esState() ){
+            try {
+                pageResult =  esGoodsSearchService.searchGoodsPageByParam(goodsPageListParam);
+            } catch (IOException e) {
+                logger().info("es");
+                pageResult = getGoodsPageByDB(goodsPageListParam);
+            }
+        }else{
+            pageResult = getGoodsPageByDB(goodsPageListParam);
+        }
+        return pageResult;
+    }
+    private PageResult<GoodsPageListVo> getGoodsPageByDB(GoodsPageListParam goodsPageListParam){
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 
@@ -183,12 +225,11 @@ public class GoodsService extends ShopBaseService {
         // 拼接排序
         selectFrom = this.buildOrderFields(selectFrom, goodsPageListParam);
 
-        PageResult<GoodsPageListVo> pageResult = this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
+        PageResult<GoodsPageListVo> pageResult= this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
             goodsPageListParam.getPageRows(), GoodsPageListVo.class);
 
         // 结果集标签、平台分类、规格信息二次处理
         this.disposeGoodsPageListVo(pageResult.getDataList(),goodsPageListParam);
-
         return pageResult;
     }
 
