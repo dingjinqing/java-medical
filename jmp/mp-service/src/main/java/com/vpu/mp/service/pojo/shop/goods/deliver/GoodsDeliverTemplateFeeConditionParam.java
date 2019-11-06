@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.goods.deliver;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.math.BigDecimal;
+
 /**
  * @author liangchen
  * @date 2019年7月12日
@@ -23,11 +26,11 @@ public class GoodsDeliverTemplateFeeConditionParam {
 	private Integer fee0Con1Num;
 	/** 类型2，满N元包邮 */
 	@JsonProperty(value = "fee_0_con2_num")
-	private Integer fee0Con2Fee;
+	private BigDecimal fee0Con2Fee;
 	/** 类型3，满N件包邮 */
 	@JsonProperty(value = "fee_0_con3_num")
 	private Integer fee0Con3Num;
     /** 类型3，满N元包邮 */
 	@JsonProperty(value = "fee_0_con3_fee")
-	private Integer fee0Con3Fee;
+	private BigDecimal fee0Con3Fee;
 }
