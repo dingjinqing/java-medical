@@ -263,6 +263,8 @@ public class JsonResultMessage {
 	public static final String STORE_GROUP_NAME_EXIST = "store.group.name.exist";
 	public static final String STORE_POS_SHOP_ID_EXIST = "store.pos.shop.id.exist";
     public static final String CODE_DATA_NOT_EXIST = "data.not.exist";
+    public static final String CODE_STORE_NOT_EXIST = "store.not.exist";
+    public static final String CODE_STORE_SERVICE_NOT_EXIST = "store.service.not.exist";
     public static final String CODE_JACKSON_DESERIALIZATION_FAILED = "jackson.deserialization.failed";
     public static final String CODE_JACKSON_SERIALIZATION_FAILED = "jackson.serialization.failed";
     public static final String CODE_STORE_ALREADY_DEL = "store.already.delete";

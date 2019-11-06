@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -30,6 +32,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
+import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.WxPayment;
@@ -44,7 +47,11 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,6 +156,12 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public ScoreCfgService scoreCfgService;
+
+    /**
+     * The Service order service.门店服务订单
+     */
+    @Autowired
+    public ServiceOrderService serviceOrderService;
 
     public static final Byte BYTE_TWO = 2;
 
@@ -507,5 +520,75 @@ public class StoreWxService extends ShopBaseService {
      */
     public void aliMiniPay(UserRecord userInfo) {
 
+    }
+
+    public static final DateTimeFormatter HH_MM_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
+    // 门店服务预约详情
+    public void reservationDetail(Integer serviceId, Integer userId) {
+        Integer shopId = getShopId();
+        // 门店服务信息
+        StoreServiceParam service = storeService.getStoreService(serviceId);
+        Assert.notNull(service, JsonResultCode.CODE_STORE_SERVICE_NOT_EXIST);
+        // 门店信息
+        StorePojo storePojo = store.getStore(service.getStoreId());
+        Assert.notNull(storePojo, JsonResultCode.CODE_STORE_NOT_EXIST);
+
+        // 设置服务起始日期, 不能预约过期的服务, 持续时间最多两个月
+        LocalDate now = LocalDate.now();
+//        service.setStartDate(service.getStartDate().toLocalDate().compareTo(now) > 0 ? service.getStartDate() : Date.valueOf(now));
+        LocalDate startDate = service.getStartDate().toLocalDate().compareTo(now) > 0 ? service.getStartDate().toLocalDate() : now;
+        LocalDate twoMonthsLater = service.getStartDate().toLocalDate().plus(2, ChronoUnit.MONTHS);
+//        service.setEndDate(service.getEndDate().toLocalDate().compareTo(twoMonthsLater) > 0 ? Date.valueOf(twoMonthsLater) : service.getEndDate());
+        LocalDate endDate = service.getEndDate().toLocalDate().compareTo(now) > 0 ? service.getEndDate().toLocalDate() : twoMonthsLater;
+
+
+        // 服务可预约时段, 用服务时长(单位/分钟)切分成当前可预约的分段服务
+        LocalTime startPeriod = LocalTime.parse(service.getStartPeriod(), HH_MM_FORMATTER);
+        LocalTime endPeriod = LocalTime.parse(service.getEndPeriod(), HH_MM_FORMATTER);
+        int serviceDuration = service.getServiceDuration();
+
+
+        ReservationDetailVo detailVo = new ReservationDetailVo();
+        List<ReservationInfo> reservationList = new ArrayList<>();
+        for (LocalDate i = startDate; i.isBefore(endDate); i = i.plusDays(1)) {
+            reservationList.add(createReservationInfo(i, startPeriod, endPeriod, serviceDuration, service));
+        }
+        detailVo.setReservationInfoList(reservationList);
+    }
+
+    public ReservationInfo createReservationInfo(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, int serviceDuration, StoreServiceParam serviceInfo) {
+        ReservationInfo reservationInfo = new ReservationInfo();
+        reservationInfo.setReservationDate(date);
+        if (date.isEqual(LocalDate.now())) {
+            LocalTime localTime = LocalTime.now();
+            if (localTime.isAfter(startPeriod)) {
+                startPeriod.plus((((localTime.getMinute() - startPeriod.getMinute()) / serviceDuration + 1) * serviceDuration), ChronoUnit.MINUTES);
+            }
+        }
+        List<ReservationInfo.ReservationTime> reservationTimeList = new ArrayList<>();
+        for (LocalTime i = startPeriod; i.isBefore(endPeriod); i.plus(serviceDuration, ChronoUnit.MINUTES)) {
+            LocalTime start = i;
+            LocalTime end = start.plusMinutes(serviceDuration);
+            ReservationInfo.ReservationTime reservationTime = createReservationTime(date, start, end, serviceInfo);
+            if (reservationTime != null) {
+                reservationTimeList.add(reservationTime);
+            }
+        }
+        reservationInfo.setReservationTimeList(reservationTimeList);
+        return reservationInfo;
+    }
+
+    public ReservationInfo.ReservationTime createReservationTime(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, StoreServiceParam serviceInfo) {
+        // 服务类型:0无技师1有技师
+        Byte technicianFlag = serviceInfo.getServiceType();
+        if (technicianFlag.equals(BYTE_ZERO)) {
+            if (serviceOrderService.checkMaxNumOfReservations(serviceInfo.getId(), date, startPeriod, endPeriod) >= serviceInfo.getServicesNumber()) {
+                return null;
+            }
+        } else {
+
+        }
+        return (new ReservationInfo()).new ReservationTime();
     }
 }

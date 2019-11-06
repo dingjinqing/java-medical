@@ -14,11 +14,13 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN;
-import static com.vpu.mp.db.shop.Tables.STORE_SERVICE;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.DATE_TIME_FORMATTER;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * @author 黄荣刚
@@ -224,4 +226,12 @@ public class ServiceTechnicianService extends ShopBaseService {
 		return list;
 	}
 
+    public void getTechnicianList(Integer storeId, LocalDate date) {
+        db().select().from(SERVICE_TECHNICIAN)
+            .leftJoin(SERVICE_TECHNICIAN_SCHEDULE).on(SERVICE_TECHNICIAN.ID.eq(SERVICE_TECHNICIAN_SCHEDULE.TECHNICIAN_ID))
+            .leftJoin(SERVICE_SCHEDULE).on(SERVICE_TECHNICIAN_SCHEDULE.SCHEDULE_ID.eq(SERVICE_SCHEDULE.SCHEDULE_ID))
+            .where(SERVICE_TECHNICIAN.STORE_ID.eq(storeId))
+            .and(SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE.eq(date.format(DATE_TIME_FORMATTER)))
+            .and(SERVICE_TECHNICIAN.DEL_FLAG.eq(BYTE_ZERO));
+    }
 }
