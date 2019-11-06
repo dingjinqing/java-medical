@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = -998676850;
+    private static final long serialVersionUID = 55264720;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_member_card</code>
@@ -294,9 +294,24 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     public final TableField<MemberCardRecord, Integer> LIMIT = createField("limit", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "领取限制");
 
     /**
-     * The column <code>jmini_shop_444801.b2c_member_card.discount_brand_id</code>. 商品品牌id
+     * The column <code>jmini_shop_444801.b2c_member_card.discount_brand_id</code>. 折扣品牌ID
      */
-    public final TableField<MemberCardRecord, String> DISCOUNT_BRAND_ID = createField("discount_brand_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "商品品牌id");
+    public final TableField<MemberCardRecord, String> DISCOUNT_BRAND_ID = createField("discount_brand_id", org.jooq.impl.SQLDataType.VARCHAR(255), this, "折扣品牌ID");
+
+    /**
+     * The column <code>jmini_shop_444801.b2c_member_card.send_coupon_switch</code>. 是否开卡送券：0不是，1是
+     */
+    public final TableField<MemberCardRecord, Byte> SEND_COUPON_SWITCH = createField("send_coupon_switch", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否开卡送券：0不是，1是");
+
+    /**
+     * The column <code>jmini_shop_444801.b2c_member_card.send_coupon_type</code>. 送惠类型：0优惠券，1优惠券礼包
+     */
+    public final TableField<MemberCardRecord, Byte> SEND_COUPON_TYPE = createField("send_coupon_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "送惠类型：0优惠券，1优惠券礼包");
+
+    /**
+     * The column <code>jmini_shop_444801.b2c_member_card.send_coupon_ids</code>. 赠送优惠券或礼包id，字符串逗号隔开
+     */
+    public final TableField<MemberCardRecord, String> SEND_COUPON_IDS = createField("send_coupon_ids", org.jooq.impl.SQLDataType.VARCHAR(20), this, "赠送优惠券或礼包id，字符串逗号隔开");
 
     /**
      * Create a <code>jmini_shop_444801.b2c_member_card</code> table reference
