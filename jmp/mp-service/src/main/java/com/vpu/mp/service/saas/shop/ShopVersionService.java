@@ -345,9 +345,9 @@ public class ShopVersionService extends MainBaseService {
 		return result;
 	}
 	
-	public ShopVersionVo getOneVersion(Integer id) {
+	public ShopVersionVo getOneVersion(String level) {
 		// ShopVersionVo
-		ShopVersionRecord record = db().selectFrom(SHOP_VERSION).where(SHOP_VERSION.ID.eq(id)).fetchAny();
+		ShopVersionRecord record = db().selectFrom(SHOP_VERSION).where(SHOP_VERSION.LEVEL.eq(level)).fetchAny();
 		VersionConfig versionConfig = getVersionConfig(record.getLevel());
 		ShopVersionVo vo = new ShopVersionVo();
 		vo.setId(record.getId());
