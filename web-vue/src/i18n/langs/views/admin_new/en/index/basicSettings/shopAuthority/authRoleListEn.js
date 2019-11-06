@@ -128,6 +128,7 @@ export const en = {
   config_list: 'Store basic configuration',
   pay: 'transaction configuration',
   child_config: 'store permissions',
+  action_record: 'Operation record',
   message_config: 'template message',
   third_auth: 'Third-party docking',
   pledge: 'service commitment',
