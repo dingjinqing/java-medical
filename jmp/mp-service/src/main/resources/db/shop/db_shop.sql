@@ -1209,7 +1209,7 @@ create table `b2c_member_card`
     `send_money`        int(11)                 default null comment '开卡送钱',
     `charge_money`      text comment '充值活动策略',
     `use_time`          int(11)                 default null comment '使用时间 1工作日 2双休 0不限制',
-    `store_list`        varchar(191)   not null default '' comment '可用门店',
+    `store_list`        varchar(191)   not null default '[]' comment '可用门店',
     `count`             int(11)                 default null comment '卡总次数',
     `del_flag`          tinyint(1)     not null default '0' comment '1为删除状态',
     `grade`             char(10)       not null default '' comment '等级卡的等级',

@@ -1075,7 +1075,7 @@ ALTER TABLE b2c_comment_goods MODIFY COLUMN `comm_note` VARCHAR(255) COMMENT '�
 
 -- 修改会员卡表，可用门店store_list默认值
 ALTER TABLE `b2c_member_card` 
-MODIFY COLUMN `store_list` varchar(191)  NOT NULL DEFAULT '' COMMENT '可用门店' AFTER `use_time`;
+MODIFY COLUMN `store_list` varchar(191)  NOT NULL DEFAULT '[]' COMMENT '可用门店' AFTER `use_time`;
 -- 添加会员卡表添加三个与优惠券相关的字段
 ALTER TABLE `b2c_member_card` 
 ADD COLUMN `send_coupon_switch` tinyint(1) DEFAULT 0 COMMENT '是否开卡送券：0不是，1是' AFTER `discount_brand_id`,
