@@ -4201,6 +4201,7 @@ create table `b2c_record_admin_action`
     `mobile`        varchar(32)  not null comment '操作员手机号',
     `create_time`   timestamp             default current_timestamp comment '助力时间',
     `update_time`   timestamp             default current_timestamp on update current_timestamp comment '更新时间',
+    `account_type` tinyint(2) NOT NULL DEFAULT 1 COMMENT '账户类型，默认1商家账户',
     primary key (`id`)
 );
 -- --服务承诺表

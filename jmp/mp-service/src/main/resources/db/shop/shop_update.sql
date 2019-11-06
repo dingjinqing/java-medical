@@ -1081,3 +1081,7 @@ ALTER TABLE `b2c_member_card`
 ADD COLUMN `send_coupon_switch` tinyint(1) DEFAULT 0 COMMENT '是否开卡送券：0不是，1是' AFTER `discount_brand_id`,
 ADD COLUMN `send_coupon_type` tinyint(1) DEFAULT 0 COMMENT '送惠类型：0优惠券，1优惠券礼包' AFTER `send_coupon_switch`,
 ADD COLUMN `send_coupon_ids` varchar(20) DEFAULT NULL COMMENT '赠送优惠券或礼包id，字符串逗号隔开' AFTER `send_coupon_type`;
+
+--记录表添加账户类型
+ALTER TABLE `b2c_record_admin_action` 
+ADD COLUMN `account_type` TINYINT(2) NOT NULL DEFAULT 1 COMMENT '账户类型，默认1商家账户';
